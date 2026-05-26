@@ -19,6 +19,7 @@ import '../widgets/poi_popup.dart';
 import '../widgets/stage_progress_bar.dart';
 import '../widgets/trail_polyline.dart';
 import '../widgets/user_position_marker.dart';
+import '../../tracking/presentation/tracking_overlay.dart';
 
 /// Ecran carte plein ecran affichant le trace GPX du sentier.
 ///
@@ -242,6 +243,14 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
                   right: 0,
                   child: _buildProgressBar(trackPosAsync),
                 ),
+
+              // Overlay de tracking GPS
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: TrackingOverlay(trailId: widget.trailId),
+              ),
             ],
           ),
         ),

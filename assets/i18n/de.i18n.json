@@ -59,5 +59,16 @@
     "estimatedTime": "Geschätzte Dauer",
     "stages": "Etappen",
     "plan": "Planen"
+  },
+  "tracking": {
+    "start": "Starten",
+    "pause": "Pause",
+    "resume": "Fortsetzen",
+    "stop": "Stoppen",
+    "distance": "Entfernung",
+    "elevation": "Hohenmeter",
+    "speed": "Geschwindigkeit",
+    "time": "Zeit",
+    "confirmStop": "Tracking stoppen?"
   }
 }

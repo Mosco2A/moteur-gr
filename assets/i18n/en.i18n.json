@@ -59,5 +59,16 @@
     "estimatedTime": "Estimated time",
     "stages": "Stages",
     "plan": "Plan"
+  },
+  "tracking": {
+    "start": "Start",
+    "pause": "Pause",
+    "resume": "Resume",
+    "stop": "Stop",
+    "distance": "Distance",
+    "elevation": "Elevation",
+    "speed": "Speed",
+    "time": "Time",
+    "confirmStop": "Stop tracking?"
   }
 }
