@@ -9,22 +9,27 @@ import '../../../core/models/poi.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/loading_overlay.dart';
 import '../providers/gpx_track_provider.dart';
+import '../providers/location_provider.dart';
 import '../providers/map_pois_provider.dart';
 import '../providers/simplified_track_provider.dart';
+import '../providers/track_position_provider.dart';
 import '../widgets/poi_filter_bar.dart';
 import '../widgets/poi_marker.dart';
 import '../widgets/poi_popup.dart';
+import '../widgets/stage_progress_bar.dart';
 import '../widgets/trail_polyline.dart';
+import '../widgets/user_position_marker.dart';
 
-/// Écran carte plein écran affichant le tracé GPX du sentier.
+/// Ecran carte plein ecran affichant le trace GPX du sentier.
 ///
 /// Utilise flutter_map avec des tuiles OpenStreetMap.
-/// Le tracé est simplifié selon le niveau de zoom via Douglas-Peucker.
-/// Se centre automatiquement sur la bounding box du tracé au chargement.
+/// Le trace est simplifie selon le niveau de zoom via Douglas-Peucker.
+/// Se centre automatiquement sur la bounding box du trace au chargement.
+/// Affiche la position GPS de l'utilisateur et la progression d'etape.
 class TrailMapScreen extends ConsumerStatefulWidget {
   const TrailMapScreen({super.key, required this.trailId});
 
-  /// Identifiant du sentier à afficher
+  /// Identifiant du sentier a afficher
   final String trailId;
 
   @override
@@ -42,7 +47,7 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
     super.dispose();
   }
 
-  /// Calcule la bounding box englobant tous les points du tracé
+  /// Calcule la bounding box englobant tous les points du trace
   LatLngBounds _boundsFromPoints(List<TrackPoint> points) {
     var minLat = points.first.lat;
     var maxLat = points.first.lat;
@@ -60,6 +65,17 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
       LatLng(minLat, minLng),
       LatLng(maxLat, maxLng),
     );
+  }
+
+  /// Centre la carte sur la position GPS de l'utilisateur
+  void _centerOnUser() {
+    final positionAsync = ref.read(locationProvider);
+    positionAsync.whenData((position) {
+      _mapController.move(
+        LatLng(position.latitude, position.longitude),
+        15.0,
+      );
+    });
   }
 
   @override
@@ -92,101 +108,166 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
             );
           }
 
-          // Récupérer le tracé simplifié pour le zoom courant
-          final simplifiedAsync = ref.watch(
-            simplifiedTrackProvider((
-              trailId: widget.trailId,
-              zoomLevel: _currentZoom,
-            )),
-          );
-
-          // Récupérer les POIs filtrés pour le sentier
-          final poisAsync = ref.watch(mapPoisProvider(widget.trailId));
-          final filteredPois = poisAsync.valueOrNull ?? [];
-
-          final displayPoints = simplifiedAsync.valueOrNull ?? points;
-          final bounds = _boundsFromPoints(points);
-
-          return Column(
-            children: [
-              // Barre de filtres POI
-              PoiFilterBar(trailId: widget.trailId),
-
-              // Carte avec tracé et marqueurs POI
-              Expanded(
-                child: Stack(
-                  children: [
-                    FlutterMap(
-                      mapController: _mapController,
-                      options: MapOptions(
-                        initialCameraFit: CameraFit.bounds(
-                          bounds: bounds,
-                          padding: const EdgeInsets.all(32),
-                        ),
-                        onPositionChanged: (position, hasGesture) {
-                          final newZoom =
-                              position.zoom?.round() ?? _currentZoom;
-                          if (newZoom != _currentZoom) {
-                            setState(() => _currentZoom = newZoom);
-                          }
-                        },
-                        onTap: (_, __) {
-                          // Fermer le popup quand on tape ailleurs
-                          if (_selectedPoi != null) {
-                            setState(() => _selectedPoi = null);
-                          }
-                        },
-                      ),
-                      children: [
-                        TileLayer(
-                          urlTemplate:
-                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                          userAgentPackageName: 'com.moteur-gr.app',
-                        ),
-                        TrailPolyline.build(
-                          points: displayPoints,
-                          color: trailColor,
-                        ),
-                        // Couche des marqueurs POI
-                        MarkerLayer(
-                          markers: filteredPois.map((poi) {
-                            return Marker(
-                              point: LatLng(poi.lat, poi.lng),
-                              width: 36,
-                              height: 36,
-                              child: GestureDetector(
-                                onTap: () {
-                                  setState(() => _selectedPoi = poi);
-                                },
-                                child: PoiMarker(type: poi.type),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-
-                    // Popup du POI sélectionné
-                    if (_selectedPoi != null)
-                      Positioned(
-                        bottom: 16,
-                        left: 16,
-                        right: 16,
-                        child: Center(
-                          child: GestureDetector(
-                            onTap: () =>
-                                setState(() => _selectedPoi = null),
-                            child: PoiPopup(poi: _selectedPoi!),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ],
-          );
+          return _buildMapContent(context, points, trailColor);
         },
       ),
+    );
+  }
+
+  /// Construit le contenu carte avec trace, POIs, position et progression.
+  Widget _buildMapContent(
+    BuildContext context,
+    List<TrackPoint> points,
+    Color trailColor,
+  ) {
+    final simplifiedAsync = ref.watch(
+      simplifiedTrackProvider((
+        trailId: widget.trailId,
+        zoomLevel: _currentZoom,
+      )),
+    );
+
+    final poisAsync = ref.watch(mapPoisProvider(widget.trailId));
+    final filteredPois = poisAsync.valueOrNull ?? [];
+
+    // Position GPS de l'utilisateur
+    final userPositionAsync = ref.watch(locationProvider);
+
+    // Position projetee sur le trace
+    final trackPosAsync = ref.watch(trackPositionProvider);
+
+    final displayPoints = simplifiedAsync.valueOrNull ?? points;
+    final bounds = _boundsFromPoints(points);
+
+    return Column(
+      children: [
+        PoiFilterBar(trailId: widget.trailId),
+        Expanded(
+          child: Stack(
+            children: [
+              FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCameraFit: CameraFit.bounds(
+                    bounds: bounds,
+                    padding: const EdgeInsets.all(32),
+                  ),
+                  onPositionChanged: (position, hasGesture) {
+                    final newZoom = position.zoom?.round() ?? _currentZoom;
+                    if (newZoom != _currentZoom) {
+                      setState(() => _currentZoom = newZoom);
+                    }
+                  },
+                  onTap: (_, __) {
+                    if (_selectedPoi != null) {
+                      setState(() => _selectedPoi = null);
+                    }
+                  },
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.moteur-gr.app',
+                  ),
+                  TrailPolyline.build(
+                    points: displayPoints,
+                    color: trailColor,
+                  ),
+                  MarkerLayer(
+                    markers: [
+                      ...filteredPois.map((poi) {
+                        return Marker(
+                          point: LatLng(poi.lat, poi.lng),
+                          width: 36,
+                          height: 36,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() => _selectedPoi = poi);
+                            },
+                            child: PoiMarker(type: poi.type),
+                          ),
+                        );
+                      }),
+                      // Marqueur position utilisateur
+                      ...userPositionAsync.maybeWhen(
+                        data: (position) => [
+                          Marker(
+                            point: LatLng(
+                              position.latitude,
+                              position.longitude,
+                            ),
+                            width: 60,
+                            height: 60,
+                            child: const UserPositionMarker(),
+                          ),
+                        ],
+                        orElse: () => <Marker>[],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+
+              // Popup du POI selectionne
+              if (_selectedPoi != null)
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () => setState(() => _selectedPoi = null),
+                      child: PoiPopup(poi: _selectedPoi!),
+                    ),
+                  ),
+                ),
+
+              // Bouton centrer sur moi
+              Positioned(
+                right: 16,
+                bottom: _hasTrackPosition(trackPosAsync) ? 130 : 16,
+                child: FloatingActionButton.small(
+                  heroTag: 'centerOnMe',
+                  onPressed: _centerOnUser,
+                  child: const Icon(Icons.my_location),
+                ),
+              ),
+
+              // Barre de progression d'etape
+              if (_hasTrackPosition(trackPosAsync))
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: _buildProgressBar(trackPosAsync),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Verifie si la position sur le trace est disponible.
+  bool _hasTrackPosition(AsyncValue<TrackPositionState> trackPosAsync) {
+    return trackPosAsync.whenOrNull(data: (state) => true) ?? false;
+  }
+
+  /// Construit la barre de progression a partir de l'etat du trace.
+  Widget _buildProgressBar(AsyncValue<TrackPositionState> trackPosAsync) {
+    return trackPosAsync.when(
+      data: (state) {
+        final stageName = 'Etape ${state.stageDetection.stageNumber}';
+        return StageProgressBar(
+          stageName: stageName,
+          distanceRemainingKm: state.distanceRemainingKm,
+          progressRatio: state.progressRatio,
+          isOffTrack: state.isOffTrack,
+        );
+      },
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
     );
   }
 }
