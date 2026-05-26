@@ -7,6 +7,13 @@ import 'tables/checklist_items_table.dart';
 import 'tables/journal_entries_table.dart';
 import 'tables/weather_cache_table.dart';
 import 'tables/feedback_queue_table.dart';
+import 'tables/trail_meta_table.dart';
+import 'tables/trail_itineraries_table.dart';
+import 'tables/trail_stages_table.dart';
+import 'tables/trail_accommodations_table.dart';
+import 'tables/trail_pois_table.dart';
+import 'tables/trail_gpx_tracks_table.dart';
+import 'tables/trail_gpx_points_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -14,14 +21,22 @@ import 'daos/checklist_dao.dart';
 import 'daos/journal_dao.dart';
 import 'daos/weather_cache_dao.dart';
 import 'daos/feedback_queue_dao.dart';
+import 'daos/trail_meta_dao.dart';
+import 'daos/trail_itineraries_dao.dart';
+import 'daos/trail_stages_dao.dart';
+import 'daos/trail_accommodations_dao.dart';
+import 'daos/trail_pois_dao.dart';
+import 'daos/trail_gpx_tracks_dao.dart';
+import 'daos/trail_gpx_points_dao.dart';
 
 part 'database.g.dart';
 
-/// Base de données locale du Moteur GR.
+/// Base de donnees locale du Moteur GR.
 ///
-/// 7 tables : Stages, Pois, UserProgressEntries, ChecklistItems,
-/// JournalEntries (journal trek v3), WeatherCache (météo v5),
-/// FeedbackQueue (feedback offline v6).
+/// 14 tables : 7 existantes (Stages, Pois, UserProgressEntries,
+/// ChecklistItems, JournalEntries, WeatherCache, FeedbackQueue)
+/// + 7 nouvelles Phase 4 (TrailMeta, TrailItineraries, TrailStages,
+/// TrailAccommodations, TrailPois, TrailGpxTracks, TrailGpxPoints).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -32,6 +47,13 @@ part 'database.g.dart';
     JournalEntries,
     WeatherCache,
     FeedbackQueue,
+    TrailMeta,
+    TrailItineraries,
+    TrailStages,
+    TrailAccommodations,
+    TrailPois,
+    TrailGpxTracks,
+    TrailGpxPoints,
   ],
   daos: [
     StagesDao,
@@ -41,13 +63,20 @@ part 'database.g.dart';
     JournalDao,
     WeatherCacheDao,
     FeedbackQueueDao,
+    TrailMetaDao,
+    TrailItinerariesDao,
+    TrailStagesDao,
+    TrailAccommodationsDao,
+    TrailPoisDao,
+    TrailGpxTracksDao,
+    TrailGpxPointsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -59,21 +88,31 @@ class AppDatabase extends _$AppDatabase {
               userProgressEntries.totalTimeMinutes,
             );
           }
-          // Migration v2 -> v3 : création table journal_entries (E3.1)
+          // Migration v2 -> v3 : creation table journal_entries (E3.1)
           if (from < 3) {
             await migrator.createTable(journalEntries);
           }
-          // Migration v3 -> v4 : création table checklist_items (E3.2)
+          // Migration v3 -> v4 : creation table checklist_items (E3.2)
           if (from < 4) {
             await migrator.createTable(checklistItems);
           }
-          // Migration v4 -> v5 : création table weather_cache (E3.5a)
+          // Migration v4 -> v5 : creation table weather_cache (E3.5a)
           if (from < 5) {
             await migrator.createTable(weatherCache);
           }
-          // Migration v5 -> v6 : création table feedback_queue (E3.10)
+          // Migration v5 -> v6 : creation table feedback_queue (E3.10)
           if (from < 6) {
             await migrator.createTable(feedbackQueue);
+          }
+          // Migration v6 -> v7 : 7 tables donnees sentier (Phase 4 E4.2)
+          if (from < 7) {
+            await migrator.createTable(trailMeta);
+            await migrator.createTable(trailItineraries);
+            await migrator.createTable(trailStages);
+            await migrator.createTable(trailAccommodations);
+            await migrator.createTable(trailPois);
+            await migrator.createTable(trailGpxTracks);
+            await migrator.createTable(trailGpxPoints);
           }
         },
       );
