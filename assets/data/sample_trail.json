@@ -1,0 +1,101 @@
+{
+  "id": "test_trail",
+  "name": "Test Trail",
+  "displayName": "Sentier de Test",
+  "tagline": "Un sentier pour les tests",
+  "totalStages": 3,
+  "totalDistanceKm": 45.5,
+  "totalElevationGain": 2500,
+  "region": "TestRegion",
+  "country": "France",
+  "stages": [
+    {
+      "stageNumber": 1,
+      "name": "Depart - Etape 1",
+      "distanceKm": 12.5,
+      "elevationGainM": 800,
+      "elevationLossM": 400,
+      "description": "Premiere etape du sentier de test",
+      "startLat": 42.15,
+      "startLng": 9.10,
+      "endLat": 42.18,
+      "endLng": 9.12,
+      "difficulty": "moderate"
+    },
+    {
+      "stageNumber": 2,
+      "name": "Etape 1 - Etape 2",
+      "distanceKm": 18.0,
+      "elevationGainM": 1200,
+      "elevationLossM": 900,
+      "description": "Deuxieme etape du sentier de test",
+      "startLat": 42.18,
+      "startLng": 9.12,
+      "endLat": 42.22,
+      "endLng": 9.15,
+      "difficulty": "hard"
+    },
+    {
+      "stageNumber": 3,
+      "name": "Etape 2 - Arrivee",
+      "distanceKm": 15.0,
+      "elevationGainM": 500,
+      "elevationLossM": 700,
+      "description": "Derniere etape du sentier de test",
+      "startLat": 42.22,
+      "startLng": 9.15,
+      "endLat": 42.25,
+      "endLng": 9.18,
+      "difficulty": "easy"
+    }
+  ],
+  "pois": [
+    {
+      "stageNumber": 1,
+      "name": "Refuge du Col",
+      "description": "Refuge garde avec restauration",
+      "type": "shelter",
+      "lat": 42.16,
+      "lng": 9.11,
+      "altitudeM": 1500,
+      "openingHours": "Juin-Septembre"
+    },
+    {
+      "stageNumber": 1,
+      "name": "Source du Pont",
+      "description": "Point d'eau potable",
+      "type": "water",
+      "lat": 42.17,
+      "lng": 9.11,
+      "altitudeM": 1200
+    },
+    {
+      "stageNumber": 2,
+      "name": "Panorama Sommet",
+      "description": "Vue a 360 degres",
+      "type": "viewpoint",
+      "lat": 42.20,
+      "lng": 9.13,
+      "altitudeM": 2100
+    },
+    {
+      "stageNumber": 2,
+      "name": "Camping Plaine",
+      "description": "Aire de bivouac autorisee",
+      "type": "campsite",
+      "lat": 42.21,
+      "lng": 9.14,
+      "altitudeM": 1800
+    },
+    {
+      "stageNumber": 3,
+      "name": "Restaurant Arrivee",
+      "description": "Restaurant local",
+      "type": "restaurant",
+      "lat": 42.24,
+      "lng": 9.17,
+      "altitudeM": 800,
+      "openingHours": "12h-22h"
+    }
+  ]
+}
