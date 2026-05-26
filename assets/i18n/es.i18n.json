@@ -25,5 +25,18 @@
     "stages": "Etapas",
     "totalDistance": "Distancia total",
     "totalElevation": "Desnivel total"
+  },
+  "poi": {
+    "shelter": "Refugio",
+    "water": "Fuente de agua",
+    "viewpoint": "Mirador",
+    "campsite": "Vivac",
+    "restaurant": "Restaurante",
+    "emergency": "Emergencia",
+    "danger": "Peligro",
+    "shop": "Tienda",
+    "filter": "Filtrar puntos de interés",
+    "altitude": "Altitud",
+    "hours": "Horarios"
   }
 }
