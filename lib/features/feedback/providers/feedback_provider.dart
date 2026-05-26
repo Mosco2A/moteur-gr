@@ -1,0 +1,126 @@
+import 'package:drift/drift.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/data/daos/feedback_queue_dao.dart';
+import '../../../core/data/database.dart';
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/network/connectivity_monitor.dart';
+import '../../../core/providers/database_provider.dart';
+
+/// Provider du DAO feedback
+final feedbackQueueDaoProvider = Provider<FeedbackQueueDao>((ref) {
+  return FeedbackQueueDao(ref.watch(databaseProvider));
+});
+
+/// Types de feedback disponibles
+enum FeedbackType {
+  bug('bug', 'Bug / Problème'),
+  suggestion('suggestion', 'Suggestion'),
+  question('question', 'Question'),
+  other('other', 'Autre');
+
+  const FeedbackType(this.value, this.label);
+  final String value;
+  final String label;
+}
+
+/// État du formulaire de feedback
+class FeedbackState {
+  const FeedbackState({
+    this.pendingCount = 0,
+    this.isSubmitting = false,
+    this.lastSubmitSuccess,
+  });
+
+  final int pendingCount;
+  final bool isSubmitting;
+  final bool? lastSubmitSuccess;
+
+  FeedbackState copyWith({
+    int? pendingCount,
+    bool? isSubmitting,
+    bool? lastSubmitSuccess,
+  }) {
+    return FeedbackState(
+      pendingCount: pendingCount ?? this.pendingCount,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+      lastSubmitSuccess: lastSubmitSuccess,
+    );
+  }
+}
+
+/// Notifier pour gérer les feedbacks avec file d'attente offline
+class FeedbackNotifier extends StateNotifier<FeedbackState> {
+  FeedbackNotifier(this._dao, this._trailId, this._connectivity)
+      : super(const FeedbackState()) {
+    _loadPendingCount();
+  }
+
+  final FeedbackQueueDao _dao;
+  final String _trailId;
+  final ConnectivityStatus _connectivity;
+
+  Future<void> _loadPendingCount() async {
+    final count = await _dao.countPending();
+    state = state.copyWith(pendingCount: count);
+  }
+
+  /// Soumet un feedback (stocké localement, envoyé quand en ligne)
+  Future<bool> submitFeedback({
+    required FeedbackType type,
+    required String content,
+    int? rating,
+  }) async {
+    state = state.copyWith(isSubmitting: true);
+
+    try {
+      await _dao.addFeedback(FeedbackQueueCompanion(
+        trailId: Value(_trailId),
+        feedbackType: Value(type.value),
+        content: Value(content),
+        rating: Value(rating),
+        createdAt: Value(DateTime.now()),
+      ));
+
+      // Tenter l'envoi immédiat si en ligne
+      if (_connectivity == ConnectivityStatus.online) {
+        await _trySendPending();
+      }
+
+      await _loadPendingCount();
+      state = state.copyWith(isSubmitting: false, lastSubmitSuccess: true);
+      return true;
+    } catch (_) {
+      state = state.copyWith(isSubmitting: false, lastSubmitSuccess: false);
+      return false;
+    }
+  }
+
+  /// Tente d'envoyer les feedbacks en attente
+  Future<void> _trySendPending() async {
+    final pending = await _dao.getPending();
+    for (final feedback in pending) {
+      // Simulation d'envoi (pas de backend Firebase)
+      // En production, appeler l'API ici
+      await _dao.markSent(feedback.id);
+    }
+  }
+
+  /// Force le renvoi des feedbacks en attente
+  Future<void> retrySendPending() async {
+    if (_connectivity == ConnectivityStatus.online) {
+      await _trySendPending();
+      await _loadPendingCount();
+    }
+  }
+}
+
+/// Provider du feedback pour le sentier actif
+final feedbackProvider =
+    StateNotifierProvider<FeedbackNotifier, FeedbackState>((ref) {
+  final dao = ref.watch(feedbackQueueDaoProvider);
+  final trailId = ref.watch(trailIdProvider);
+  final connectivity =
+      ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatus.offline;
+  return FeedbackNotifier(dao, trailId, connectivity);
+});
