@@ -15,6 +15,7 @@ import '../../features/trail/presentation/no_data_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/trail/presentation/trail_list_screen.dart';
+import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
 
 /// Configuration du routeur GoRouter.
@@ -33,6 +34,7 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 ///   /trail/:id/feedback          - Feedback in-app
 ///   /settings                    - Parametres
 ///   /profile                     - Profil utilisateur
+///   /group/:id                   - Groupe localisation partagee
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 final appRouter = GoRouter(
@@ -115,6 +117,14 @@ final appRouter = GoRouter(
           builder: (context, state) => const FeedbackScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/group/:id',
+      name: 'group',
+      builder: (context, state) {
+        final trailId = state.pathParameters['id'] ?? '';
+        return GroupScreen(trailId: trailId);
+      },
     ),
     GoRoute(
       path: '/catalog',
