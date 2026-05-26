@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/checklist/presentation/checklist_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -11,12 +12,13 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 /// Configuration du routeur GoRouter.
 ///
 /// Routes :
-///   /trails                — Liste des sentiers
-///   /trail/:id             — Détail d'un sentier
-///   /trail/:id/stage/:num  — Détail d'une étape
-///   /trail/:id/map         — Carte du tracé GPX
-///   /trail/:id/planning    — Planning de répartition
-///   /settings              — Paramètres
+///   /trails                      - Liste des sentiers
+///   /trail/:id                   - Detail d un sentier
+///   /trail/:id/stage/:num        - Detail d une etape
+///   /trail/:id/map               - Carte du trace GPX
+///   /trail/:id/planning          - Planning de repartition
+///   /trail/:id/checklist         - Checklist materiel
+///   /settings                    - Parametres
 final appRouter = GoRouter(
   initialLocation: '/trails',
   routes: [
@@ -61,6 +63,11 @@ final appRouter = GoRouter(
             final trailId = state.pathParameters['id'] ?? '';
             return PlanningScreen(trailId: trailId);
           },
+        ),
+        GoRoute(
+          path: 'checklist',
+          name: 'trail-checklist',
+          builder: (context, state) => const ChecklistScreen(),
         ),
       ],
     ),

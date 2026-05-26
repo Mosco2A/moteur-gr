@@ -1701,6 +1701,355 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
   }
 }
 
+class $ChecklistItemsTable extends ChecklistItems
+    with TableInfo<$ChecklistItemsTable, ChecklistItem> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ChecklistItemsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _trailIdMeta =
+      const VerificationMeta('trailId');
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+      'trail_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
+  @override
+  late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
+      'item_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _categoryMeta =
+      const VerificationMeta('category');
+  @override
+  late final GeneratedColumn<String> category = GeneratedColumn<String>(
+      'category', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _isCheckedMeta =
+      const VerificationMeta('isChecked');
+  @override
+  late final GeneratedColumn<bool> isChecked = GeneratedColumn<bool>(
+      'is_checked', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("is_checked" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, trailId, itemId, category, isChecked, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'checklist_items';
+  @override
+  VerificationContext validateIntegrity(Insertable<ChecklistItem> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(_trailIdMeta,
+          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('item_id')) {
+      context.handle(_itemIdMeta,
+          itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
+    } else if (isInserting) {
+      context.missing(_itemIdMeta);
+    }
+    if (data.containsKey('category')) {
+      context.handle(_categoryMeta,
+          category.isAcceptableOrUnknown(data['category']!, _categoryMeta));
+    } else if (isInserting) {
+      context.missing(_categoryMeta);
+    }
+    if (data.containsKey('is_checked')) {
+      context.handle(_isCheckedMeta,
+          isChecked.isAcceptableOrUnknown(data['is_checked']!, _isCheckedMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ChecklistItem map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ChecklistItem(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      trailId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
+      itemId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}item_id'])!,
+      category: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}category'])!,
+      isChecked: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}is_checked'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+    );
+  }
+
+  @override
+  $ChecklistItemsTable createAlias(String alias) {
+    return $ChecklistItemsTable(attachedDatabase, alias);
+  }
+}
+
+class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
+  /// Cle primaire auto-incrementee
+  final int id;
+
+  /// Identifiant du sentier (ex: 'gr20')
+  final String trailId;
+
+  /// Identifiant unique de l'item (ex: 'backpack')
+  final String itemId;
+
+  /// Categorie de l'item (ex: 'equipment', 'clothing')
+  final String category;
+
+  /// Item coche ou non
+  final bool isChecked;
+
+  /// Date de derniere modification
+  final DateTime? updatedAt;
+  const ChecklistItem(
+      {required this.id,
+      required this.trailId,
+      required this.itemId,
+      required this.category,
+      required this.isChecked,
+      this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['item_id'] = Variable<String>(itemId);
+    map['category'] = Variable<String>(category);
+    map['is_checked'] = Variable<bool>(isChecked);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  ChecklistItemsCompanion toCompanion(bool nullToAbsent) {
+    return ChecklistItemsCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      itemId: Value(itemId),
+      category: Value(category),
+      isChecked: Value(isChecked),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory ChecklistItem.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ChecklistItem(
+      id: serializer.fromJson<int>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      itemId: serializer.fromJson<String>(json['itemId']),
+      category: serializer.fromJson<String>(json['category']),
+      isChecked: serializer.fromJson<bool>(json['isChecked']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'itemId': serializer.toJson<String>(itemId),
+      'category': serializer.toJson<String>(category),
+      'isChecked': serializer.toJson<bool>(isChecked),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+    };
+  }
+
+  ChecklistItem copyWith(
+          {int? id,
+          String? trailId,
+          String? itemId,
+          String? category,
+          bool? isChecked,
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
+      ChecklistItem(
+        id: id ?? this.id,
+        trailId: trailId ?? this.trailId,
+        itemId: itemId ?? this.itemId,
+        category: category ?? this.category,
+        isChecked: isChecked ?? this.isChecked,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+      );
+  ChecklistItem copyWithCompanion(ChecklistItemsCompanion data) {
+    return ChecklistItem(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      itemId: data.itemId.present ? data.itemId.value : this.itemId,
+      category: data.category.present ? data.category.value : this.category,
+      isChecked: data.isChecked.present ? data.isChecked.value : this.isChecked,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChecklistItem(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('itemId: $itemId, ')
+          ..write('category: $category, ')
+          ..write('isChecked: $isChecked, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, trailId, itemId, category, isChecked, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ChecklistItem &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.itemId == this.itemId &&
+          other.category == this.category &&
+          other.isChecked == this.isChecked &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
+  final Value<int> id;
+  final Value<String> trailId;
+  final Value<String> itemId;
+  final Value<String> category;
+  final Value<bool> isChecked;
+  final Value<DateTime?> updatedAt;
+  const ChecklistItemsCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.itemId = const Value.absent(),
+    this.category = const Value.absent(),
+    this.isChecked = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ChecklistItemsCompanion.insert({
+    this.id = const Value.absent(),
+    required String trailId,
+    required String itemId,
+    required String category,
+    this.isChecked = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  })  : trailId = Value(trailId),
+        itemId = Value(itemId),
+        category = Value(category);
+  static Insertable<ChecklistItem> custom({
+    Expression<int>? id,
+    Expression<String>? trailId,
+    Expression<String>? itemId,
+    Expression<String>? category,
+    Expression<bool>? isChecked,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (itemId != null) 'item_id': itemId,
+      if (category != null) 'category': category,
+      if (isChecked != null) 'is_checked': isChecked,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ChecklistItemsCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? trailId,
+      Value<String>? itemId,
+      Value<String>? category,
+      Value<bool>? isChecked,
+      Value<DateTime?>? updatedAt}) {
+    return ChecklistItemsCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      itemId: itemId ?? this.itemId,
+      category: category ?? this.category,
+      isChecked: isChecked ?? this.isChecked,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (itemId.present) {
+      map['item_id'] = Variable<String>(itemId.value);
+    }
+    if (category.present) {
+      map['category'] = Variable<String>(category.value);
+    }
+    if (isChecked.present) {
+      map['is_checked'] = Variable<bool>(isChecked.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ChecklistItemsCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('itemId: $itemId, ')
+          ..write('category: $category, ')
+          ..write('isChecked: $isChecked, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1708,15 +2057,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PoisTable pois = $PoisTable(this);
   late final $UserProgressEntriesTable userProgressEntries =
       $UserProgressEntriesTable(this);
+  late final $ChecklistItemsTable checklistItems = $ChecklistItemsTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
+  late final ChecklistDao checklistDao = ChecklistDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [stages, pois, userProgressEntries];
+      [stages, pois, userProgressEntries, checklistItems];
 }
 
 typedef $$StagesTableCreateCompanionBuilder = StagesCompanion Function({
@@ -2474,6 +2825,189 @@ typedef $$UserProgressEntriesTableProcessedTableManager = ProcessedTableManager<
     ),
     UserProgressEntry,
     PrefetchHooks Function()>;
+typedef $$ChecklistItemsTableCreateCompanionBuilder = ChecklistItemsCompanion
+    Function({
+  Value<int> id,
+  required String trailId,
+  required String itemId,
+  required String category,
+  Value<bool> isChecked,
+  Value<DateTime?> updatedAt,
+});
+typedef $$ChecklistItemsTableUpdateCompanionBuilder = ChecklistItemsCompanion
+    Function({
+  Value<int> id,
+  Value<String> trailId,
+  Value<String> itemId,
+  Value<String> category,
+  Value<bool> isChecked,
+  Value<DateTime?> updatedAt,
+});
+
+class $$ChecklistItemsTableFilterComposer
+    extends Composer<_$AppDatabase, $ChecklistItemsTable> {
+  $$ChecklistItemsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get itemId => $composableBuilder(
+      column: $table.itemId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get category => $composableBuilder(
+      column: $table.category, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get isChecked => $composableBuilder(
+      column: $table.isChecked, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$ChecklistItemsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ChecklistItemsTable> {
+  $$ChecklistItemsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get itemId => $composableBuilder(
+      column: $table.itemId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get category => $composableBuilder(
+      column: $table.category, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get isChecked => $composableBuilder(
+      column: $table.isChecked, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$ChecklistItemsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ChecklistItemsTable> {
+  $$ChecklistItemsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<String> get itemId =>
+      $composableBuilder(column: $table.itemId, builder: (column) => column);
+
+  GeneratedColumn<String> get category =>
+      $composableBuilder(column: $table.category, builder: (column) => column);
+
+  GeneratedColumn<bool> get isChecked =>
+      $composableBuilder(column: $table.isChecked, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ChecklistItemsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ChecklistItemsTable,
+    ChecklistItem,
+    $$ChecklistItemsTableFilterComposer,
+    $$ChecklistItemsTableOrderingComposer,
+    $$ChecklistItemsTableAnnotationComposer,
+    $$ChecklistItemsTableCreateCompanionBuilder,
+    $$ChecklistItemsTableUpdateCompanionBuilder,
+    (
+      ChecklistItem,
+      BaseReferences<_$AppDatabase, $ChecklistItemsTable, ChecklistItem>
+    ),
+    ChecklistItem,
+    PrefetchHooks Function()> {
+  $$ChecklistItemsTableTableManager(
+      _$AppDatabase db, $ChecklistItemsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ChecklistItemsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ChecklistItemsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ChecklistItemsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> trailId = const Value.absent(),
+            Value<String> itemId = const Value.absent(),
+            Value<String> category = const Value.absent(),
+            Value<bool> isChecked = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+          }) =>
+              ChecklistItemsCompanion(
+            id: id,
+            trailId: trailId,
+            itemId: itemId,
+            category: category,
+            isChecked: isChecked,
+            updatedAt: updatedAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String trailId,
+            required String itemId,
+            required String category,
+            Value<bool> isChecked = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+          }) =>
+              ChecklistItemsCompanion.insert(
+            id: id,
+            trailId: trailId,
+            itemId: itemId,
+            category: category,
+            isChecked: isChecked,
+            updatedAt: updatedAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ChecklistItemsTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ChecklistItemsTable,
+    ChecklistItem,
+    $$ChecklistItemsTableFilterComposer,
+    $$ChecklistItemsTableOrderingComposer,
+    $$ChecklistItemsTableAnnotationComposer,
+    $$ChecklistItemsTableCreateCompanionBuilder,
+    $$ChecklistItemsTableUpdateCompanionBuilder,
+    (
+      ChecklistItem,
+      BaseReferences<_$AppDatabase, $ChecklistItemsTable, ChecklistItem>
+    ),
+    ChecklistItem,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2483,4 +3017,6 @@ class $AppDatabaseManager {
   $$PoisTableTableManager get pois => $$PoisTableTableManager(_db, _db.pois);
   $$UserProgressEntriesTableTableManager get userProgressEntries =>
       $$UserProgressEntriesTableTableManager(_db, _db.userProgressEntries);
+  $$ChecklistItemsTableTableManager get checklistItems =>
+      $$ChecklistItemsTableTableManager(_db, _db.checklistItems);
 }

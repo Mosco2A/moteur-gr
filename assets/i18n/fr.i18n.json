@@ -1,22 +1,22 @@
 {
   "map": {
     "title": "Carte du sentier",
-    "loading": "Chargement du tracé...",
-    "noTrack": "Aucun tracé disponible",
+    "loading": "Chargement du tracÃ©...",
+    "noTrack": "Aucun tracÃ© disponible",
     "viewMap": "Voir la carte"
   },
   "stage": {
     "distance": "Distance",
-    "elevation": "Dénivelé",
-    "elevationGain": "Dénivelé positif",
-    "elevationLoss": "Dénivelé négatif",
-    "duration": "Durée estimée",
+    "elevation": "DÃ©nivelÃ©",
+    "elevationGain": "DÃ©nivelÃ© positif",
+    "elevationLoss": "DÃ©nivelÃ© nÃ©gatif",
+    "duration": "DurÃ©e estimÃ©e",
     "description": "Description",
-    "coordinates": "Coordonnées",
-    "pois": "Points d'intérêt",
+    "coordinates": "CoordonnÃ©es",
+    "pois": "Points d'intÃ©rÃªt",
     "difficulty": {
       "easy": "Facile",
-      "moderate": "Modéré",
+      "moderate": "ModÃ©rÃ©",
       "hard": "Difficile",
       "expert": "Expert"
     },
@@ -24,9 +24,9 @@
     "arrived": "Vous etes arrive !"
   },
   "trail": {
-    "stages": "Étapes",
+    "stages": "Ãtapes",
     "totalDistance": "Distance totale",
-    "totalElevation": "Dénivelé total"
+    "totalElevation": "DÃ©nivelÃ© total"
   },
   "poi": {
     "shelter": "Refuge",
@@ -37,7 +37,7 @@
     "emergency": "Urgence",
     "danger": "Danger",
     "shop": "Commerce",
-    "filter": "Filtrer les points d'intérêt",
+    "filter": "Filtrer les points d'intÃ©rÃªt",
     "altitude": "Altitude",
     "hours": "Horaires"
   },
@@ -50,14 +50,14 @@
   },
   "planning": {
     "title": "Planning",
-    "duration": "Dur�e",
+    "duration": "Durée",
     "days": "jours",
     "day": "Jour",
     "restDay": "Jour de repos",
     "totalDistance": "Distance totale",
-    "totalElevation": "D�nivel� total",
-    "estimatedTime": "Dur�e estim�e",
-    "stages": "�tapes",
+    "totalElevation": "Dénivelé total",
+    "estimatedTime": "Durée estimée",
+    "stages": "Étapes",
     "plan": "Planifier"
   },
   "tracking": {
@@ -70,5 +70,52 @@
     "speed": "Vitesse",
     "time": "Temps",
     "confirmStop": "Arreter le tracking ?"
+  },
+  "checklist": {
+    "title": "Checklist matériel",
+    "subtitle": "Préparez votre sac à dos",
+    "progress": "{checked}/{total} préparés",
+    "complete": "Checklist complète !",
+    "reset": "Réinitialiser",
+    "resetConfirm": "Réinitialiser la checklist ?",
+    "resetDescription": "Tous les éléments seront décochés.",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "categories": {
+      "equipment": "Équipement",
+      "clothing": "Vêtements",
+      "food": "Alimentation",
+      "safety": "Sécurité",
+      "documents": "Documents",
+      "hygiene": "Hygiène"
+    },
+    "items": {
+      "backpack": "Sac à dos",
+      "sleepingBag": "Sac de couchage",
+      "sleepingPad": "Matelas de sol",
+      "hikingPoles": "Bâtons de marche",
+      "headlamp": "Lampe frontale",
+      "waterBottle": "Gourde",
+      "hikingBoots": "Chaussures de randonnée",
+      "rainJacket": "Veste imperméable",
+      "warmLayer": "Couche chaude",
+      "hikingSocks": "Chaussettes de randonnée",
+      "hat": "Chapeau",
+      "gloves": "Gants",
+      "trailSnacks": "Encas de marche",
+      "energyBars": "Barres énergétiques",
+      "waterPurification": "Purification d'eau",
+      "firstAidKit": "Trousse de secours",
+      "whistle": "Sifflet",
+      "emergencyBlanket": "Couverture de survie",
+      "sunscreen": "Crème solaire",
+      "idCard": "Pièce d'identité",
+      "insurance": "Assurance",
+      "trailMap": "Carte du sentier",
+      "toiletPaper": "Papier toilette",
+      "handSanitizer": "Gel hydroalcoolique",
+      "towel": "Serviette"
+    },
+    "essential": "Essentiel"
   }
 }

@@ -70,5 +70,52 @@
     "speed": "Velocita",
     "time": "Tempo",
     "confirmStop": "Fermare il tracciamento?"
+  },
+  "checklist": {
+    "title": "Lista equipaggiamento",
+    "subtitle": "Prepara lo zaino",
+    "progress": "{checked}/{total} preparati",
+    "complete": "Lista completa!",
+    "reset": "Reimposta",
+    "resetConfirm": "Reimpostare la lista?",
+    "resetDescription": "Tutti gli elementi saranno deselezionati.",
+    "cancel": "Annulla",
+    "confirm": "Conferma",
+    "categories": {
+      "equipment": "Equipaggiamento",
+      "clothing": "Abbigliamento",
+      "food": "Alimentazione",
+      "safety": "Sicurezza",
+      "documents": "Documenti",
+      "hygiene": "Igiene"
+    },
+    "items": {
+      "backpack": "Zaino",
+      "sleepingBag": "Sacco a pelo",
+      "sleepingPad": "Materassino",
+      "hikingPoles": "Bastoncini da trekking",
+      "headlamp": "Lampada frontale",
+      "waterBottle": "Borraccia",
+      "hikingBoots": "Scarpe da trekking",
+      "rainJacket": "Giacca impermeabile",
+      "warmLayer": "Strato caldo",
+      "hikingSocks": "Calzini da trekking",
+      "hat": "Cappello",
+      "gloves": "Guanti",
+      "trailSnacks": "Snack da sentiero",
+      "energyBars": "Barrette energetiche",
+      "waterPurification": "Purificazione dell'acqua",
+      "firstAidKit": "Kit di primo soccorso",
+      "whistle": "Fischietto",
+      "emergencyBlanket": "Coperta di emergenza",
+      "sunscreen": "Protezione solare",
+      "idCard": "Carta d'identità",
+      "insurance": "Assicurazione",
+      "trailMap": "Mappa del sentiero",
+      "toiletPaper": "Carta igienica",
+      "handSanitizer": "Disinfettante mani",
+      "towel": "Asciugamano"
+    },
+    "essential": "Essenziale"
   }
 }

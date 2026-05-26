@@ -2,18 +2,18 @@
   "map": {
     "title": "Wanderkarte",
     "loading": "Strecke wird geladen...",
-    "noTrack": "Keine Strecke verfügbar",
+    "noTrack": "Keine Strecke verfÃ¼gbar",
     "viewMap": "Karte anzeigen"
   },
   "stage": {
     "distance": "Entfernung",
-    "elevation": "Höhenunterschied",
-    "elevationGain": "Höhenmeter aufwärts",
-    "elevationLoss": "Höhenmeter abwärts",
-    "duration": "Geschätzte Dauer",
+    "elevation": "HÃ¶henunterschied",
+    "elevationGain": "HÃ¶henmeter aufwÃ¤rts",
+    "elevationLoss": "HÃ¶henmeter abwÃ¤rts",
+    "duration": "GeschÃ¤tzte Dauer",
     "description": "Beschreibung",
     "coordinates": "Koordinaten",
-    "pois": "Sehenswürdigkeiten",
+    "pois": "SehenswÃ¼rdigkeiten",
     "difficulty": {
       "easy": "Leicht",
       "moderate": "Mittel",
@@ -26,20 +26,20 @@
   "trail": {
     "stages": "Etappen",
     "totalDistance": "Gesamtstrecke",
-    "totalElevation": "Gesamthöhenmeter"
+    "totalElevation": "GesamthÃ¶henmeter"
   },
   "poi": {
-    "shelter": "Schutzhütte",
+    "shelter": "SchutzhÃ¼tte",
     "water": "Wasserquelle",
     "viewpoint": "Aussichtspunkt",
     "campsite": "Biwakplatz",
     "restaurant": "Restaurant",
     "emergency": "Notfall",
     "danger": "Gefahr",
-    "shop": "Geschäft",
-    "filter": "Sehenswürdigkeiten filtern",
-    "altitude": "Höhe",
-    "hours": "Öffnungszeiten"
+    "shop": "GeschÃ¤ft",
+    "filter": "SehenswÃ¼rdigkeiten filtern",
+    "altitude": "HÃ¶he",
+    "hours": "Ãffnungszeiten"
   },
   "gps": {
     "permission": "GPS-Berechtigung erforderlich",
@@ -55,8 +55,8 @@
     "day": "Tag",
     "restDay": "Ruhetag",
     "totalDistance": "Gesamtstrecke",
-    "totalElevation": "Gesamth�henmeter",
-    "estimatedTime": "Gesch�tzte Dauer",
+    "totalElevation": "Gesamthöhenmeter",
+    "estimatedTime": "Geschätzte Dauer",
     "stages": "Etappen",
     "plan": "Planen"
   },
@@ -70,5 +70,52 @@
     "speed": "Geschwindigkeit",
     "time": "Zeit",
     "confirmStop": "Tracking stoppen?"
+  },
+  "checklist": {
+    "title": "Ausrüstungsliste",
+    "subtitle": "Packen Sie Ihren Rucksack",
+    "progress": "{checked}/{total} gepackt",
+    "complete": "Checkliste vollständig!",
+    "reset": "Zurücksetzen",
+    "resetConfirm": "Checkliste zurücksetzen?",
+    "resetDescription": "Alle Elemente werden abgehakt.",
+    "cancel": "Abbrechen",
+    "confirm": "Bestätigen",
+    "categories": {
+      "equipment": "Ausrüstung",
+      "clothing": "Kleidung",
+      "food": "Verpflegung",
+      "safety": "Sicherheit",
+      "documents": "Dokumente",
+      "hygiene": "Hygiene"
+    },
+    "items": {
+      "backpack": "Rucksack",
+      "sleepingBag": "Schlafsack",
+      "sleepingPad": "Isomatte",
+      "hikingPoles": "Wanderstöcke",
+      "headlamp": "Stirnlampe",
+      "waterBottle": "Trinkflasche",
+      "hikingBoots": "Wanderschuhe",
+      "rainJacket": "Regenjacke",
+      "warmLayer": "Wärmeschicht",
+      "hikingSocks": "Wandersocken",
+      "hat": "Hut",
+      "gloves": "Handschuhe",
+      "trailSnacks": "Wandersnacks",
+      "energyBars": "Energieriegel",
+      "waterPurification": "Wasseraufbereitung",
+      "firstAidKit": "Erste-Hilfe-Set",
+      "whistle": "Pfeife",
+      "emergencyBlanket": "Rettungsdecke",
+      "sunscreen": "Sonnenschutz",
+      "idCard": "Ausweis",
+      "insurance": "Versicherung",
+      "trailMap": "Wanderkarte",
+      "toiletPaper": "Toilettenpapier",
+      "handSanitizer": "Handdesinfektionsmittel",
+      "towel": "Handtuch"
+    },
+    "essential": "Wesentlich"
   }
 }

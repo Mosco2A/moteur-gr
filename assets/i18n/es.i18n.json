@@ -2,7 +2,7 @@
   "map": {
     "title": "Mapa del sendero",
     "loading": "Cargando el recorrido...",
-    "noTrack": "Ningún recorrido disponible",
+    "noTrack": "NingÃºn recorrido disponible",
     "viewMap": "Ver el mapa"
   },
   "stage": {
@@ -10,14 +10,14 @@
     "elevation": "Desnivel",
     "elevationGain": "Desnivel positivo",
     "elevationLoss": "Desnivel negativo",
-    "duration": "Duración estimada",
-    "description": "Descripción",
+    "duration": "DuraciÃ³n estimada",
+    "description": "DescripciÃ³n",
     "coordinates": "Coordenadas",
-    "pois": "Puntos de interés",
+    "pois": "Puntos de interÃ©s",
     "difficulty": {
-      "easy": "Fácil",
+      "easy": "FÃ¡cil",
       "moderate": "Moderado",
-      "hard": "Difícil",
+      "hard": "DifÃ­cil",
       "expert": "Experto"
     },
     "remaining": "{distance} km restantes",
@@ -37,7 +37,7 @@
     "emergency": "Emergencia",
     "danger": "Peligro",
     "shop": "Tienda",
-    "filter": "Filtrar puntos de interés",
+    "filter": "Filtrar puntos de interÃ©s",
     "altitude": "Altitud",
     "hours": "Horarios"
   },
@@ -49,14 +49,14 @@
     "centerOnMe": "Centrar en mi posicion"
   },
   "planning": {
-    "title": "Planificaci�n",
-    "duration": "Duraci�n",
-    "days": "d�as",
-    "day": "D�a",
-    "restDay": "D�a de descanso",
+    "title": "Planificación",
+    "duration": "Duración",
+    "days": "días",
+    "day": "Día",
+    "restDay": "Día de descanso",
     "totalDistance": "Distancia total",
     "totalElevation": "Desnivel total",
-    "estimatedTime": "Duraci�n estimada",
+    "estimatedTime": "Duración estimada",
     "stages": "Etapas",
     "plan": "Planificar"
   },
@@ -70,5 +70,52 @@
     "speed": "Velocidad",
     "time": "Tiempo",
     "confirmStop": "Detener el seguimiento?"
+  },
+  "checklist": {
+    "title": "Lista de equipo",
+    "subtitle": "Prepara tu mochila",
+    "progress": "{checked}/{total} preparados",
+    "complete": "Lista completa!",
+    "reset": "Reiniciar",
+    "resetConfirm": "Reiniciar la lista?",
+    "resetDescription": "Todos los elementos serán desmarcados.",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "categories": {
+      "equipment": "Equipo",
+      "clothing": "Ropa",
+      "food": "Alimentación",
+      "safety": "Seguridad",
+      "documents": "Documentos",
+      "hygiene": "Higiene"
+    },
+    "items": {
+      "backpack": "Mochila",
+      "sleepingBag": "Saco de dormir",
+      "sleepingPad": "Esterilla",
+      "hikingPoles": "Bastones de senderismo",
+      "headlamp": "Linterna frontal",
+      "waterBottle": "Botella de agua",
+      "hikingBoots": "Botas de senderismo",
+      "rainJacket": "Chaqueta impermeable",
+      "warmLayer": "Capa de abrigo",
+      "hikingSocks": "Calcetines de senderismo",
+      "hat": "Sombrero",
+      "gloves": "Guantes",
+      "trailSnacks": "Snacks de sendero",
+      "energyBars": "Barritas energéticas",
+      "waterPurification": "Purificación de agua",
+      "firstAidKit": "Botiquín",
+      "whistle": "Silbato",
+      "emergencyBlanket": "Manta de emergencia",
+      "sunscreen": "Protector solar",
+      "idCard": "Documento de identidad",
+      "insurance": "Seguro",
+      "trailMap": "Mapa del sendero",
+      "toiletPaper": "Papel higiénico",
+      "handSanitizer": "Gel desinfectante",
+      "towel": "Toalla"
+    },
+    "essential": "Esencial"
   }
 }

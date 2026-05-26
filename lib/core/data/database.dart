@@ -3,26 +3,29 @@ import 'package:drift/drift.dart';
 import 'tables/stages_table.dart';
 import 'tables/pois_table.dart';
 import 'tables/user_progress_table.dart';
+import 'tables/checklist_items_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
+import 'daos/checklist_dao.dart';
 
 part 'database.g.dart';
 
 /// Base de donnees locale du Moteur GR.
 ///
-/// 3 tables : Stages (etapes), Pois (points d'interet),
-/// UserProgressEntries (progression utilisateur).
+/// 4 tables : Stages (etapes), Pois (points d'interet),
+/// UserProgressEntries (progression utilisateur),
+/// ChecklistItems (checklist materiel).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
-  tables: [Stages, Pois, UserProgressEntries],
-  daos: [StagesDao, PoisDao, ProgressDao],
+  tables: [Stages, Pois, UserProgressEntries, ChecklistItems],
+  daos: [StagesDao, PoisDao, ProgressDao, ChecklistDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -33,6 +36,11 @@ class AppDatabase extends _$AppDatabase {
               userProgressEntries,
               userProgressEntries.totalTimeMinutes,
             );
+          }
+          // Migration v2 -> v4 : creation table checklist_items
+          // (v3 reservee pour journal_entries, ajoutee en E3.1)
+          if (from < 4) {
+            await migrator.createTable(checklistItems);
           }
         },
       );

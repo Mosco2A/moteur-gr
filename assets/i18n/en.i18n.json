@@ -70,5 +70,52 @@
     "speed": "Speed",
     "time": "Time",
     "confirmStop": "Stop tracking?"
+  },
+  "checklist": {
+    "title": "Gear checklist",
+    "subtitle": "Pack your backpack",
+    "progress": "{checked}/{total} packed",
+    "complete": "Checklist complete!",
+    "reset": "Reset",
+    "resetConfirm": "Reset checklist?",
+    "resetDescription": "All items will be unchecked.",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "categories": {
+      "equipment": "Equipment",
+      "clothing": "Clothing",
+      "food": "Food",
+      "safety": "Safety",
+      "documents": "Documents",
+      "hygiene": "Hygiene"
+    },
+    "items": {
+      "backpack": "Backpack",
+      "sleepingBag": "Sleeping bag",
+      "sleepingPad": "Sleeping pad",
+      "hikingPoles": "Hiking poles",
+      "headlamp": "Headlamp",
+      "waterBottle": "Water bottle",
+      "hikingBoots": "Hiking boots",
+      "rainJacket": "Rain jacket",
+      "warmLayer": "Warm layer",
+      "hikingSocks": "Hiking socks",
+      "hat": "Hat",
+      "gloves": "Gloves",
+      "trailSnacks": "Trail snacks",
+      "energyBars": "Energy bars",
+      "waterPurification": "Water purification",
+      "firstAidKit": "First aid kit",
+      "whistle": "Whistle",
+      "emergencyBlanket": "Emergency blanket",
+      "sunscreen": "Sunscreen",
+      "idCard": "ID card",
+      "insurance": "Insurance",
+      "trailMap": "Trail map",
+      "toiletPaper": "Toilet paper",
+      "handSanitizer": "Hand sanitizer",
+      "towel": "Towel"
+    },
+    "essential": "Essential"
   }
 }
