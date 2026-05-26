@@ -1,0 +1,26 @@
+import 'package:drift/drift.dart';
+
+import 'tables/stages_table.dart';
+import 'tables/pois_table.dart';
+import 'tables/user_progress_table.dart';
+import 'daos/stages_dao.dart';
+import 'daos/pois_dao.dart';
+import 'daos/progress_dao.dart';
+
+part 'database.g.dart';
+
+/// Base de donnees locale du Moteur GR.
+///
+/// 3 tables : Stages (etapes), Pois (points d'interet),
+/// UserProgressEntries (progression utilisateur).
+/// Utilise Drift (ex-moor) pour le mapping SQLite.
+@DriftDatabase(
+  tables: [Stages, Pois, UserProgressEntries],
+  daos: [StagesDao, PoisDao, ProgressDao],
+)
+class AppDatabase extends _$AppDatabase {
+  AppDatabase(super.e);
+
+  @override
+  int get schemaVersion => 1;
+}
