@@ -14,6 +14,7 @@ import '../../features/tips/presentation/tips_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/trail/presentation/trail_list_screen.dart';
+import '../../features/trail/presentation/trail_catalog_screen.dart';
 
 /// Configuration du routeur GoRouter.
 ///
@@ -31,6 +32,7 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 ///   /trail/:id/feedback          - Feedback in-app
 ///   /settings                    - Paramètres
 ///   /profile                     - Profil utilisateur
+///   /catalog                     - Catalogue de sentiers (telechargement)
 final appRouter = GoRouter(
   initialLocation: '/trails',
   routes: [
@@ -110,6 +112,11 @@ final appRouter = GoRouter(
           builder: (context, state) => const FeedbackScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/catalog',
+      name: 'catalog',
+      builder: (context, state) => const TrailCatalogScreen(),
     ),
     GoRoute(
       path: '/settings',
