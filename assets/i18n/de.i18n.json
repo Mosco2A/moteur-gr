@@ -1,0 +1,8 @@
+{
+  "map": {
+    "title": "Wanderkarte",
+    "loading": "Strecke wird geladen...",
+    "noTrack": "Keine Strecke verfügbar",
+    "viewMap": "Karte anzeigen"
+  }
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
@@ -10,9 +11,10 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 ///
 /// Routes :
 ///   /trails              — Liste des sentiers
-///   /trail/:id           — Detail d'un sentier
-///   /trail/:id/stage/:num — Detail d'une etape
-///   /settings            — Parametres
+///   /trail/:id           — Détail d'un sentier
+///   /trail/:id/stage/:num — Détail d'une étape
+///   /trail/:id/map       — Carte du tracé GPX
+///   /settings            — Paramètres
 final appRouter = GoRouter(
   initialLocation: '/trails',
   routes: [
@@ -40,6 +42,14 @@ final appRouter = GoRouter(
               trailId: trailId,
               stageNumber: stageNum,
             );
+          },
+        ),
+        GoRoute(
+          path: 'map',
+          name: 'trail-map',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return TrailMapScreen(trailId: trailId);
           },
         ),
       ],

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-/// Ecran detail d'un sentier.
+/// Écran détail d'un sentier.
 ///
-/// Placeholder Phase 1 — sera enrichi en Phase 2
-/// avec les etapes, carte, et progression.
+/// Affiche les informations principales du sentier
+/// et propose un bouton pour accéder à la carte du tracé.
 class TrailDetailScreen extends StatelessWidget {
   const TrailDetailScreen({super.key, required this.trailId});
 
-  /// Identifiant du sentier a afficher
+  /// Identifiant du sentier à afficher
   final String trailId;
 
   @override
@@ -29,6 +30,15 @@ class TrailDetailScreen extends StatelessWidget {
             Text(
               'ID: $trailId',
               style: theme.textTheme.bodyLarge,
+            ),
+            const SizedBox(height: 32),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: ElevatedButton.icon(
+                onPressed: () => context.go('/trail/$trailId/map'),
+                icon: const Icon(Icons.terrain),
+                label: const Text('Voir la carte'),
+              ),
             ),
           ],
         ),

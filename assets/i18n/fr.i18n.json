@@ -1,0 +1,8 @@
+{
+  "map": {
+    "title": "Carte du sentier",
+    "loading": "Chargement du tracé...",
+    "noTrack": "Aucun tracé disponible",
+    "viewMap": "Voir la carte"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "map": {
+    "title": "Trail map",
+    "loading": "Loading track...",
+    "noTrack": "No track available",
+    "viewMap": "View map"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "map": {
+    "title": "Mapa del sendero",
+    "loading": "Cargando el recorrido...",
+    "noTrack": "Ningún recorrido disponible",
+    "viewMap": "Ver el mapa"
+  }
+}

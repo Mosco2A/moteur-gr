@@ -15,13 +15,16 @@ void main() {
       expect(appRouter.configuration.routes.length, 3);
     });
 
-    test('la route /trail/:id a une sous-route stage', () {
+    test('la route /trail/:id a des sous-routes stage et map', () {
       final trailRoute = appRouter.configuration.routes[1] as GoRoute;
       expect(trailRoute.path, '/trail/:id');
-      expect(trailRoute.routes.length, 1);
+      expect(trailRoute.routes.length, 2);
 
       final stageRoute = trailRoute.routes[0] as GoRoute;
       expect(stageRoute.path, 'stage/:num');
+
+      final mapRoute = trailRoute.routes[1] as GoRoute;
+      expect(mapRoute.path, 'map');
     });
 
     test('les routes sont nommees correctement', () {
@@ -30,8 +33,12 @@ void main() {
       expect((routes[1] as GoRoute).name, 'trail-detail');
       expect((routes[2] as GoRoute).name, 'settings');
 
-      final stageRoute = (routes[1] as GoRoute).routes[0] as GoRoute;
+      final trailRoute = routes[1] as GoRoute;
+      final stageRoute = trailRoute.routes[0] as GoRoute;
       expect(stageRoute.name, 'stage-detail');
+
+      final mapRoute = trailRoute.routes[1] as GoRoute;
+      expect(mapRoute.name, 'trail-map');
     });
 
     testWidgets('navigation vers /trails affiche TrailListScreen',
