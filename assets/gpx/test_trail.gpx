@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="MoteurGR-TestData"
+     xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1
+       http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>Sentier des Volcans (fictif)</name>
+    <desc>Trace fictive pour tests du moteur. 5 etapes inventees en Auvergne.</desc>
+  </metadata>
+  <trk>
+    <name>test-trail</name>
+    <trkseg>
+      <!-- Etape 1 : Valmont -> Pic Brunel -->
+      <trkpt lat="45.5000" lon="2.8000"><ele>820</ele></trkpt>
+      <trkpt lat="45.5060" lon="2.8050"><ele>910</ele></trkpt>
+      <trkpt lat="45.5130" lon="2.8120"><ele>1040</ele></trkpt>
+      <trkpt lat="45.5200" lon="2.8200"><ele>1180</ele></trkpt>
+      <trkpt lat="45.5280" lon="2.8250"><ele>1320</ele></trkpt>
+      <trkpt lat="45.5350" lon="2.8300"><ele>1410</ele></trkpt>
+      <!-- Etape 2 : Pic Brunel -> Lac Dormant -->
+      <trkpt lat="45.5420" lon="2.8380"><ele>1350</ele></trkpt>
+      <trkpt lat="45.5500" lon="2.8430"><ele>1280</ele></trkpt>
+      <trkpt lat="45.5570" lon="2.8500"><ele>1420</ele></trkpt>
+      <trkpt lat="45.5650" lon="2.8560"><ele>1510</ele></trkpt>
+      <trkpt lat="45.5720" lon="2.8620"><ele>1380</ele></trkpt>
+      <trkpt lat="45.5800" lon="2.8700"><ele>1250</ele></trkpt>
+      <!-- Etape 3 : Lac Dormant -> Col des Brumes -->
+      <trkpt lat="45.5870" lon="2.8780"><ele>1310</ele></trkpt>
+      <trkpt lat="45.5940" lon="2.8850"><ele>1480</ele></trkpt>
+      <trkpt lat="45.6010" lon="2.8920"><ele>1620</ele></trkpt>
+      <trkpt lat="45.6080" lon="2.8970"><ele>1730</ele></trkpt>
+      <trkpt lat="45.6150" lon="2.9050"><ele>1650</ele></trkpt>
+      <!-- Etape 4 : Col des Brumes -> Refuge Bellevue -->
+      <trkpt lat="45.6230" lon="2.9120"><ele>1580</ele></trkpt>
+      <trkpt lat="45.6300" lon="2.9180"><ele>1450</ele></trkpt>
+      <trkpt lat="45.6380" lon="2.9250"><ele>1320</ele></trkpt>
+      <trkpt lat="45.6450" lon="2.9320"><ele>1190</ele></trkpt>
+      <trkpt lat="45.6520" lon="2.9400"><ele>1080</ele></trkpt>
+      <!-- Etape 5 : Refuge Bellevue -> Chaumont -->
+      <trkpt lat="45.6600" lon="2.9470"><ele>1020</ele></trkpt>
+      <trkpt lat="45.6670" lon="2.9530"><ele>940</ele></trkpt>
+      <trkpt lat="45.6740" lon="2.9600"><ele>870</ele></trkpt>
+      <trkpt lat="45.6820" lon="2.9660"><ele>790</ele></trkpt>
+      <trkpt lat="45.6900" lon="2.9720"><ele>720</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

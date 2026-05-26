@@ -2,27 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/config/trail_config.dart';
+import 'core/config/test_trail_config.dart';
 import 'core/engine/trail_engine.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 
 void main() {
-  const devConfig = TrailConfig(
-    id: 'dev',
-    name: 'DEV',
-    displayName: 'Moteur GR',
-    tagline: 'Votre compagnon de trek',
-    totalStages: 10,
-    totalDistanceKm: 100,
-    totalElevationGain: 5000,
-    region: 'Dev',
-    country: 'France',
-    primaryColorValue: 0xFF2D5016,
-    secondaryColorValue: 0xFF1565C0,
-    gpxAssetPath: 'assets/gpx/dev.gpx',
-  );
-
-  runApp(const MoteurGrApp(config: devConfig));
+  runApp(const MoteurGrApp(config: testTrailConfig));
 }
 
 /// Application racine du Moteur GR.
