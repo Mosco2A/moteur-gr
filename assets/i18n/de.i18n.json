@@ -4,5 +4,26 @@
     "loading": "Strecke wird geladen...",
     "noTrack": "Keine Strecke verfügbar",
     "viewMap": "Karte anzeigen"
+  },
+  "stage": {
+    "distance": "Entfernung",
+    "elevation": "Höhenunterschied",
+    "elevationGain": "Höhenmeter aufwärts",
+    "elevationLoss": "Höhenmeter abwärts",
+    "duration": "Geschätzte Dauer",
+    "description": "Beschreibung",
+    "coordinates": "Koordinaten",
+    "pois": "Sehenswürdigkeiten",
+    "difficulty": {
+      "easy": "Leicht",
+      "moderate": "Mittel",
+      "hard": "Schwer",
+      "expert": "Experte"
+    }
+  },
+  "trail": {
+    "stages": "Etappen",
+    "totalDistance": "Gesamtstrecke",
+    "totalElevation": "Gesamthöhenmeter"
   }
 }

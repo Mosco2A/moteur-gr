@@ -4,5 +4,26 @@
     "loading": "Cargando el recorrido...",
     "noTrack": "Ningún recorrido disponible",
     "viewMap": "Ver el mapa"
+  },
+  "stage": {
+    "distance": "Distancia",
+    "elevation": "Desnivel",
+    "elevationGain": "Desnivel positivo",
+    "elevationLoss": "Desnivel negativo",
+    "duration": "Duración estimada",
+    "description": "Descripción",
+    "coordinates": "Coordenadas",
+    "pois": "Puntos de interés",
+    "difficulty": {
+      "easy": "Fácil",
+      "moderate": "Moderado",
+      "hard": "Difícil",
+      "expert": "Experto"
+    }
+  },
+  "trail": {
+    "stages": "Etapas",
+    "totalDistance": "Distancia total",
+    "totalElevation": "Desnivel total"
   }
 }

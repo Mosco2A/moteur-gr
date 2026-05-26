@@ -4,5 +4,26 @@
     "loading": "Loading track...",
     "noTrack": "No track available",
     "viewMap": "View map"
+  },
+  "stage": {
+    "distance": "Distance",
+    "elevation": "Elevation",
+    "elevationGain": "Elevation gain",
+    "elevationLoss": "Elevation loss",
+    "duration": "Estimated duration",
+    "description": "Description",
+    "coordinates": "Coordinates",
+    "pois": "Points of interest",
+    "difficulty": {
+      "easy": "Easy",
+      "moderate": "Moderate",
+      "hard": "Hard",
+      "expert": "Expert"
+    }
+  },
+  "trail": {
+    "stages": "Stages",
+    "totalDistance": "Total distance",
+    "totalElevation": "Total elevation"
   }
 }
