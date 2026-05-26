@@ -1,0 +1,26 @@
+name: moteur_gr
+repository: https://github.com/Mosco2A/moteur-gr
+
+packages:
+  - .
+
+scripts:
+  analyze:
+    description: Analyse statique Flutter (zero warning)
+    run: melos exec -- flutter analyze --no-pub
+
+  format:
+    description: Formatage Dart (80 colonnes)
+    run: melos exec -- dart format --set-exit-if-changed .
+
+  test:
+    description: Lance tous les tests unitaires
+    run: melos exec -- flutter test --coverage
+
+  build_runner:
+    description: Generation de code (Freezed, Drift, Riverpod, Slang)
+    run: melos exec -- dart run build_runner build --delete-conflicting-outputs
+
+  clean:
+    description: Nettoyage complet (build, cache, generated)
+    run: melos exec -- flutter clean

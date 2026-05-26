@@ -15,6 +15,7 @@ import 'tables/trail_pois_table.dart';
 import 'tables/trail_gpx_tracks_table.dart';
 import 'tables/trail_gpx_points_table.dart';
 import 'tables/trail_manifests_table.dart';
+import 'tables/sync_queue_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -30,6 +31,7 @@ import 'daos/trail_pois_dao.dart';
 import 'daos/trail_gpx_tracks_dao.dart';
 import 'daos/trail_gpx_points_dao.dart';
 import 'daos/trail_manifests_dao.dart';
+import 'daos/sync_queue_dao.dart';
 
 part 'database.g.dart';
 
@@ -39,7 +41,8 @@ part 'database.g.dart';
 /// ChecklistItems, JournalEntries, WeatherCache, FeedbackQueue)
 /// + 7 Phase 4 (TrailMeta, TrailItineraries, TrailStages,
 /// TrailAccommodations, TrailPois, TrailGpxTracks, TrailGpxPoints)
-/// + 1 Phase 4 E4.3 (TrailManifests).
+/// + 1 Phase 4 E4.3 (TrailManifests)
+/// + 1 Phase 4 E4.4 (SyncQueue).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -58,6 +61,7 @@ part 'database.g.dart';
     TrailGpxTracks,
     TrailGpxPoints,
     TrailManifests,
+    SyncQueue,
   ],
   daos: [
     StagesDao,
@@ -75,13 +79,14 @@ part 'database.g.dart';
     TrailGpxTracksDao,
     TrailGpxPointsDao,
     TrailManifestsDao,
+    SyncQueueDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -122,6 +127,10 @@ class AppDatabase extends _$AppDatabase {
           // Migration v7 -> v8 : table manifeste sentier (Phase 4 E4.3)
           if (from < 8) {
             await migrator.createTable(trailManifests);
+          }
+          // Migration v8 -> v9 : table sync_queue (Phase 4 E4.4)
+          if (from < 9) {
+            await migrator.createTable(syncQueue);
           }
         },
       );
