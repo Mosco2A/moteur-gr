@@ -9,6 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class FirebaseService {
   FirebaseService._({required this.isAvailable});
 
+  /// Constructeur pour les tests unitaires.
+  FirebaseService.testOnly({required this.isAvailable});
+
+  /// Factory pour un service Firebase indisponible (mode local/test).
+  factory FirebaseService.unavailable() =>
+      FirebaseService._(isAvailable: false);
+
   /// Indique si Firebase est disponible et initialise
   final bool isAvailable;
 
