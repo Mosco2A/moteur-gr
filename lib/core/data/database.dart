@@ -14,6 +14,7 @@ import 'tables/trail_accommodations_table.dart';
 import 'tables/trail_pois_table.dart';
 import 'tables/trail_gpx_tracks_table.dart';
 import 'tables/trail_gpx_points_table.dart';
+import 'tables/trail_manifests_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -28,15 +29,17 @@ import 'daos/trail_accommodations_dao.dart';
 import 'daos/trail_pois_dao.dart';
 import 'daos/trail_gpx_tracks_dao.dart';
 import 'daos/trail_gpx_points_dao.dart';
+import 'daos/trail_manifests_dao.dart';
 
 part 'database.g.dart';
 
 /// Base de donnees locale du Moteur GR.
 ///
-/// 14 tables : 7 existantes (Stages, Pois, UserProgressEntries,
+/// 15 tables : 7 existantes (Stages, Pois, UserProgressEntries,
 /// ChecklistItems, JournalEntries, WeatherCache, FeedbackQueue)
-/// + 7 nouvelles Phase 4 (TrailMeta, TrailItineraries, TrailStages,
-/// TrailAccommodations, TrailPois, TrailGpxTracks, TrailGpxPoints).
+/// + 7 Phase 4 (TrailMeta, TrailItineraries, TrailStages,
+/// TrailAccommodations, TrailPois, TrailGpxTracks, TrailGpxPoints)
+/// + 1 Phase 4 E4.3 (TrailManifests).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -54,6 +57,7 @@ part 'database.g.dart';
     TrailPois,
     TrailGpxTracks,
     TrailGpxPoints,
+    TrailManifests,
   ],
   daos: [
     StagesDao,
@@ -70,13 +74,14 @@ part 'database.g.dart';
     TrailPoisDao,
     TrailGpxTracksDao,
     TrailGpxPointsDao,
+    TrailManifestsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -113,6 +118,10 @@ class AppDatabase extends _$AppDatabase {
             await migrator.createTable(trailPois);
             await migrator.createTable(trailGpxTracks);
             await migrator.createTable(trailGpxPoints);
+          }
+          // Migration v7 -> v8 : table manifeste sentier (Phase 4 E4.3)
+          if (from < 8) {
+            await migrator.createTable(trailManifests);
           }
         },
       );
