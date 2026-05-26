@@ -22,5 +22,18 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onUpgrade: (migrator, from, to) async {
+          // Migration v1 -> v2 : ajout colonne totalTimeMinutes
+          if (from < 2) {
+            await migrator.addColumn(
+              userProgressEntries,
+              userProgressEntries.totalTimeMinutes,
+            );
+          }
+        },
+      );
 }

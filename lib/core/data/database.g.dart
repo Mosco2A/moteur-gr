@@ -1231,6 +1231,14 @@ class $UserProgressEntriesTable extends UserProgressEntries
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       defaultValue: const Constant(0));
+  static const VerificationMeta _totalTimeMinutesMeta =
+      const VerificationMeta('totalTimeMinutes');
+  @override
+  late final GeneratedColumn<int> totalTimeMinutes = GeneratedColumn<int>(
+      'total_time_minutes', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   static const VerificationMeta _isCompletedMeta =
       const VerificationMeta('isCompleted');
   @override
@@ -1260,6 +1268,7 @@ class $UserProgressEntriesTable extends UserProgressEntries
         currentStage,
         totalDistanceWalkedKm,
         totalElevationGainedM,
+        totalTimeMinutes,
         isCompleted,
         startedAt,
         completedAt
@@ -1301,6 +1310,12 @@ class $UserProgressEntriesTable extends UserProgressEntries
           totalElevationGainedM.isAcceptableOrUnknown(
               data['total_elevation_gained_m']!, _totalElevationGainedMMeta));
     }
+    if (data.containsKey('total_time_minutes')) {
+      context.handle(
+          _totalTimeMinutesMeta,
+          totalTimeMinutes.isAcceptableOrUnknown(
+              data['total_time_minutes']!, _totalTimeMinutesMeta));
+    }
     if (data.containsKey('is_completed')) {
       context.handle(
           _isCompletedMeta,
@@ -1337,6 +1352,8 @@ class $UserProgressEntriesTable extends UserProgressEntries
           data['${effectivePrefix}total_distance_walked_km'])!,
       totalElevationGainedM: attachedDatabase.typeMapping.read(DriftSqlType.int,
           data['${effectivePrefix}total_elevation_gained_m'])!,
+      totalTimeMinutes: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}total_time_minutes'])!,
       isCompleted: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
       startedAt: attachedDatabase.typeMapping
@@ -1369,6 +1386,9 @@ class UserProgressEntry extends DataClass
   /// Denivele positif total cumule en metres
   final int totalElevationGainedM;
 
+  /// Temps total de marche en minutes (ajoute en v2)
+  final int totalTimeMinutes;
+
   /// Sentier complete ou non
   final bool isCompleted;
 
@@ -1383,6 +1403,7 @@ class UserProgressEntry extends DataClass
       required this.currentStage,
       required this.totalDistanceWalkedKm,
       required this.totalElevationGainedM,
+      required this.totalTimeMinutes,
       required this.isCompleted,
       this.startedAt,
       this.completedAt});
@@ -1394,6 +1415,7 @@ class UserProgressEntry extends DataClass
     map['current_stage'] = Variable<int>(currentStage);
     map['total_distance_walked_km'] = Variable<double>(totalDistanceWalkedKm);
     map['total_elevation_gained_m'] = Variable<int>(totalElevationGainedM);
+    map['total_time_minutes'] = Variable<int>(totalTimeMinutes);
     map['is_completed'] = Variable<bool>(isCompleted);
     if (!nullToAbsent || startedAt != null) {
       map['started_at'] = Variable<DateTime>(startedAt);
@@ -1411,6 +1433,7 @@ class UserProgressEntry extends DataClass
       currentStage: Value(currentStage),
       totalDistanceWalkedKm: Value(totalDistanceWalkedKm),
       totalElevationGainedM: Value(totalElevationGainedM),
+      totalTimeMinutes: Value(totalTimeMinutes),
       isCompleted: Value(isCompleted),
       startedAt: startedAt == null && nullToAbsent
           ? const Value.absent()
@@ -1432,6 +1455,7 @@ class UserProgressEntry extends DataClass
           serializer.fromJson<double>(json['totalDistanceWalkedKm']),
       totalElevationGainedM:
           serializer.fromJson<int>(json['totalElevationGainedM']),
+      totalTimeMinutes: serializer.fromJson<int>(json['totalTimeMinutes']),
       isCompleted: serializer.fromJson<bool>(json['isCompleted']),
       startedAt: serializer.fromJson<DateTime?>(json['startedAt']),
       completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
@@ -1446,6 +1470,7 @@ class UserProgressEntry extends DataClass
       'currentStage': serializer.toJson<int>(currentStage),
       'totalDistanceWalkedKm': serializer.toJson<double>(totalDistanceWalkedKm),
       'totalElevationGainedM': serializer.toJson<int>(totalElevationGainedM),
+      'totalTimeMinutes': serializer.toJson<int>(totalTimeMinutes),
       'isCompleted': serializer.toJson<bool>(isCompleted),
       'startedAt': serializer.toJson<DateTime?>(startedAt),
       'completedAt': serializer.toJson<DateTime?>(completedAt),
@@ -1458,6 +1483,7 @@ class UserProgressEntry extends DataClass
           int? currentStage,
           double? totalDistanceWalkedKm,
           int? totalElevationGainedM,
+          int? totalTimeMinutes,
           bool? isCompleted,
           Value<DateTime?> startedAt = const Value.absent(),
           Value<DateTime?> completedAt = const Value.absent()}) =>
@@ -1469,6 +1495,7 @@ class UserProgressEntry extends DataClass
             totalDistanceWalkedKm ?? this.totalDistanceWalkedKm,
         totalElevationGainedM:
             totalElevationGainedM ?? this.totalElevationGainedM,
+        totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
         isCompleted: isCompleted ?? this.isCompleted,
         startedAt: startedAt.present ? startedAt.value : this.startedAt,
         completedAt: completedAt.present ? completedAt.value : this.completedAt,
@@ -1486,6 +1513,9 @@ class UserProgressEntry extends DataClass
       totalElevationGainedM: data.totalElevationGainedM.present
           ? data.totalElevationGainedM.value
           : this.totalElevationGainedM,
+      totalTimeMinutes: data.totalTimeMinutes.present
+          ? data.totalTimeMinutes.value
+          : this.totalTimeMinutes,
       isCompleted:
           data.isCompleted.present ? data.isCompleted.value : this.isCompleted,
       startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
@@ -1502,6 +1532,7 @@ class UserProgressEntry extends DataClass
           ..write('currentStage: $currentStage, ')
           ..write('totalDistanceWalkedKm: $totalDistanceWalkedKm, ')
           ..write('totalElevationGainedM: $totalElevationGainedM, ')
+          ..write('totalTimeMinutes: $totalTimeMinutes, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('startedAt: $startedAt, ')
           ..write('completedAt: $completedAt')
@@ -1516,6 +1547,7 @@ class UserProgressEntry extends DataClass
       currentStage,
       totalDistanceWalkedKm,
       totalElevationGainedM,
+      totalTimeMinutes,
       isCompleted,
       startedAt,
       completedAt);
@@ -1528,6 +1560,7 @@ class UserProgressEntry extends DataClass
           other.currentStage == this.currentStage &&
           other.totalDistanceWalkedKm == this.totalDistanceWalkedKm &&
           other.totalElevationGainedM == this.totalElevationGainedM &&
+          other.totalTimeMinutes == this.totalTimeMinutes &&
           other.isCompleted == this.isCompleted &&
           other.startedAt == this.startedAt &&
           other.completedAt == this.completedAt);
@@ -1539,6 +1572,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
   final Value<int> currentStage;
   final Value<double> totalDistanceWalkedKm;
   final Value<int> totalElevationGainedM;
+  final Value<int> totalTimeMinutes;
   final Value<bool> isCompleted;
   final Value<DateTime?> startedAt;
   final Value<DateTime?> completedAt;
@@ -1548,6 +1582,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
     this.currentStage = const Value.absent(),
     this.totalDistanceWalkedKm = const Value.absent(),
     this.totalElevationGainedM = const Value.absent(),
+    this.totalTimeMinutes = const Value.absent(),
     this.isCompleted = const Value.absent(),
     this.startedAt = const Value.absent(),
     this.completedAt = const Value.absent(),
@@ -1558,6 +1593,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
     this.currentStage = const Value.absent(),
     this.totalDistanceWalkedKm = const Value.absent(),
     this.totalElevationGainedM = const Value.absent(),
+    this.totalTimeMinutes = const Value.absent(),
     this.isCompleted = const Value.absent(),
     this.startedAt = const Value.absent(),
     this.completedAt = const Value.absent(),
@@ -1568,6 +1604,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
     Expression<int>? currentStage,
     Expression<double>? totalDistanceWalkedKm,
     Expression<int>? totalElevationGainedM,
+    Expression<int>? totalTimeMinutes,
     Expression<bool>? isCompleted,
     Expression<DateTime>? startedAt,
     Expression<DateTime>? completedAt,
@@ -1580,6 +1617,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
         'total_distance_walked_km': totalDistanceWalkedKm,
       if (totalElevationGainedM != null)
         'total_elevation_gained_m': totalElevationGainedM,
+      if (totalTimeMinutes != null) 'total_time_minutes': totalTimeMinutes,
       if (isCompleted != null) 'is_completed': isCompleted,
       if (startedAt != null) 'started_at': startedAt,
       if (completedAt != null) 'completed_at': completedAt,
@@ -1592,6 +1630,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
       Value<int>? currentStage,
       Value<double>? totalDistanceWalkedKm,
       Value<int>? totalElevationGainedM,
+      Value<int>? totalTimeMinutes,
       Value<bool>? isCompleted,
       Value<DateTime?>? startedAt,
       Value<DateTime?>? completedAt}) {
@@ -1603,6 +1642,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
           totalDistanceWalkedKm ?? this.totalDistanceWalkedKm,
       totalElevationGainedM:
           totalElevationGainedM ?? this.totalElevationGainedM,
+      totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
       isCompleted: isCompleted ?? this.isCompleted,
       startedAt: startedAt ?? this.startedAt,
       completedAt: completedAt ?? this.completedAt,
@@ -1629,6 +1669,9 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
       map['total_elevation_gained_m'] =
           Variable<int>(totalElevationGainedM.value);
     }
+    if (totalTimeMinutes.present) {
+      map['total_time_minutes'] = Variable<int>(totalTimeMinutes.value);
+    }
     if (isCompleted.present) {
       map['is_completed'] = Variable<bool>(isCompleted.value);
     }
@@ -1649,6 +1692,7 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
           ..write('currentStage: $currentStage, ')
           ..write('totalDistanceWalkedKm: $totalDistanceWalkedKm, ')
           ..write('totalElevationGainedM: $totalElevationGainedM, ')
+          ..write('totalTimeMinutes: $totalTimeMinutes, ')
           ..write('isCompleted: $isCompleted, ')
           ..write('startedAt: $startedAt, ')
           ..write('completedAt: $completedAt')
@@ -2198,6 +2242,7 @@ typedef $$UserProgressEntriesTableCreateCompanionBuilder
   Value<int> currentStage,
   Value<double> totalDistanceWalkedKm,
   Value<int> totalElevationGainedM,
+  Value<int> totalTimeMinutes,
   Value<bool> isCompleted,
   Value<DateTime?> startedAt,
   Value<DateTime?> completedAt,
@@ -2209,6 +2254,7 @@ typedef $$UserProgressEntriesTableUpdateCompanionBuilder
   Value<int> currentStage,
   Value<double> totalDistanceWalkedKm,
   Value<int> totalElevationGainedM,
+  Value<int> totalTimeMinutes,
   Value<bool> isCompleted,
   Value<DateTime?> startedAt,
   Value<DateTime?> completedAt,
@@ -2238,6 +2284,10 @@ class $$UserProgressEntriesTableFilterComposer
 
   ColumnFilters<int> get totalElevationGainedM => $composableBuilder(
       column: $table.totalElevationGainedM,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get totalTimeMinutes => $composableBuilder(
+      column: $table.totalTimeMinutes,
       builder: (column) => ColumnFilters(column));
 
   ColumnFilters<bool> get isCompleted => $composableBuilder(
@@ -2277,6 +2327,10 @@ class $$UserProgressEntriesTableOrderingComposer
       column: $table.totalElevationGainedM,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get totalTimeMinutes => $composableBuilder(
+      column: $table.totalTimeMinutes,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get isCompleted => $composableBuilder(
       column: $table.isCompleted, builder: (column) => ColumnOrderings(column));
 
@@ -2310,6 +2364,9 @@ class $$UserProgressEntriesTableAnnotationComposer
 
   GeneratedColumn<int> get totalElevationGainedM => $composableBuilder(
       column: $table.totalElevationGainedM, builder: (column) => column);
+
+  GeneratedColumn<int> get totalTimeMinutes => $composableBuilder(
+      column: $table.totalTimeMinutes, builder: (column) => column);
 
   GeneratedColumn<bool> get isCompleted => $composableBuilder(
       column: $table.isCompleted, builder: (column) => column);
@@ -2356,6 +2413,7 @@ class $$UserProgressEntriesTableTableManager extends RootTableManager<
             Value<int> currentStage = const Value.absent(),
             Value<double> totalDistanceWalkedKm = const Value.absent(),
             Value<int> totalElevationGainedM = const Value.absent(),
+            Value<int> totalTimeMinutes = const Value.absent(),
             Value<bool> isCompleted = const Value.absent(),
             Value<DateTime?> startedAt = const Value.absent(),
             Value<DateTime?> completedAt = const Value.absent(),
@@ -2366,6 +2424,7 @@ class $$UserProgressEntriesTableTableManager extends RootTableManager<
             currentStage: currentStage,
             totalDistanceWalkedKm: totalDistanceWalkedKm,
             totalElevationGainedM: totalElevationGainedM,
+            totalTimeMinutes: totalTimeMinutes,
             isCompleted: isCompleted,
             startedAt: startedAt,
             completedAt: completedAt,
@@ -2376,6 +2435,7 @@ class $$UserProgressEntriesTableTableManager extends RootTableManager<
             Value<int> currentStage = const Value.absent(),
             Value<double> totalDistanceWalkedKm = const Value.absent(),
             Value<int> totalElevationGainedM = const Value.absent(),
+            Value<int> totalTimeMinutes = const Value.absent(),
             Value<bool> isCompleted = const Value.absent(),
             Value<DateTime?> startedAt = const Value.absent(),
             Value<DateTime?> completedAt = const Value.absent(),
@@ -2386,6 +2446,7 @@ class $$UserProgressEntriesTableTableManager extends RootTableManager<
             currentStage: currentStage,
             totalDistanceWalkedKm: totalDistanceWalkedKm,
             totalElevationGainedM: totalElevationGainedM,
+            totalTimeMinutes: totalTimeMinutes,
             isCompleted: isCompleted,
             startedAt: startedAt,
             completedAt: completedAt,

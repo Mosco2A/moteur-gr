@@ -29,6 +29,9 @@ class UserProgressModel with _$UserProgressModel {
     /// Denivele positif total cumule en metres
     @Default(0) int totalElevationGainedM,
 
+    /// Temps total de marche en minutes
+    @Default(0) int totalTimeMinutes,
+
     /// Sentier complete ou non
     @Default(false) bool isCompleted,
 
@@ -47,6 +50,7 @@ class UserProgressModel with _$UserProgressModel {
       currentStage: row.currentStage,
       totalDistanceWalkedKm: row.totalDistanceWalkedKm,
       totalElevationGainedM: row.totalElevationGainedM,
+      totalTimeMinutes: row.totalTimeMinutes,
       isCompleted: row.isCompleted,
       startedAt: row.startedAt,
       completedAt: row.completedAt,
@@ -60,6 +64,7 @@ class UserProgressModel with _$UserProgressModel {
       currentStage: Value(currentStage),
       totalDistanceWalkedKm: Value(totalDistanceWalkedKm),
       totalElevationGainedM: Value(totalElevationGainedM),
+      totalTimeMinutes: Value(totalTimeMinutes),
       isCompleted: Value(isCompleted),
       startedAt: Value(startedAt),
       completedAt: Value(completedAt),

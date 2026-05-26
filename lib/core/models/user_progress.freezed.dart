@@ -31,6 +31,9 @@ mixin _$UserProgressModel {
   /// Denivele positif total cumule en metres
   int get totalElevationGainedM => throw _privateConstructorUsedError;
 
+  /// Temps total de marche en minutes
+  int get totalTimeMinutes => throw _privateConstructorUsedError;
+
   /// Sentier complete ou non
   bool get isCompleted => throw _privateConstructorUsedError;
 
@@ -59,6 +62,7 @@ abstract class $UserProgressModelCopyWith<$Res> {
       int currentStage,
       double totalDistanceWalkedKm,
       int totalElevationGainedM,
+      int totalTimeMinutes,
       bool isCompleted,
       DateTime? startedAt,
       DateTime? completedAt});
@@ -84,6 +88,7 @@ class _$UserProgressModelCopyWithImpl<$Res, $Val extends UserProgressModel>
     Object? currentStage = null,
     Object? totalDistanceWalkedKm = null,
     Object? totalElevationGainedM = null,
+    Object? totalTimeMinutes = null,
     Object? isCompleted = null,
     Object? startedAt = freezed,
     Object? completedAt = freezed,
@@ -108,6 +113,10 @@ class _$UserProgressModelCopyWithImpl<$Res, $Val extends UserProgressModel>
       totalElevationGainedM: null == totalElevationGainedM
           ? _value.totalElevationGainedM
           : totalElevationGainedM // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalTimeMinutes: null == totalTimeMinutes
+          ? _value.totalTimeMinutes
+          : totalTimeMinutes // ignore: cast_nullable_to_non_nullable
               as int,
       isCompleted: null == isCompleted
           ? _value.isCompleted
@@ -139,6 +148,7 @@ abstract class _$$UserProgressModelImplCopyWith<$Res>
       int currentStage,
       double totalDistanceWalkedKm,
       int totalElevationGainedM,
+      int totalTimeMinutes,
       bool isCompleted,
       DateTime? startedAt,
       DateTime? completedAt});
@@ -162,6 +172,7 @@ class __$$UserProgressModelImplCopyWithImpl<$Res>
     Object? currentStage = null,
     Object? totalDistanceWalkedKm = null,
     Object? totalElevationGainedM = null,
+    Object? totalTimeMinutes = null,
     Object? isCompleted = null,
     Object? startedAt = freezed,
     Object? completedAt = freezed,
@@ -186,6 +197,10 @@ class __$$UserProgressModelImplCopyWithImpl<$Res>
       totalElevationGainedM: null == totalElevationGainedM
           ? _value.totalElevationGainedM
           : totalElevationGainedM // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalTimeMinutes: null == totalTimeMinutes
+          ? _value.totalTimeMinutes
+          : totalTimeMinutes // ignore: cast_nullable_to_non_nullable
               as int,
       isCompleted: null == isCompleted
           ? _value.isCompleted
@@ -212,6 +227,7 @@ class _$UserProgressModelImpl extends _UserProgressModel {
       this.currentStage = 1,
       this.totalDistanceWalkedKm = 0.0,
       this.totalElevationGainedM = 0,
+      this.totalTimeMinutes = 0,
       this.isCompleted = false,
       this.startedAt,
       this.completedAt})
@@ -241,6 +257,11 @@ class _$UserProgressModelImpl extends _UserProgressModel {
   @JsonKey()
   final int totalElevationGainedM;
 
+  /// Temps total de marche en minutes
+  @override
+  @JsonKey()
+  final int totalTimeMinutes;
+
   /// Sentier complete ou non
   @override
   @JsonKey()
@@ -256,7 +277,7 @@ class _$UserProgressModelImpl extends _UserProgressModel {
 
   @override
   String toString() {
-    return 'UserProgressModel(id: $id, trailId: $trailId, currentStage: $currentStage, totalDistanceWalkedKm: $totalDistanceWalkedKm, totalElevationGainedM: $totalElevationGainedM, isCompleted: $isCompleted, startedAt: $startedAt, completedAt: $completedAt)';
+    return 'UserProgressModel(id: $id, trailId: $trailId, currentStage: $currentStage, totalDistanceWalkedKm: $totalDistanceWalkedKm, totalElevationGainedM: $totalElevationGainedM, totalTimeMinutes: $totalTimeMinutes, isCompleted: $isCompleted, startedAt: $startedAt, completedAt: $completedAt)';
   }
 
   @override
@@ -272,6 +293,8 @@ class _$UserProgressModelImpl extends _UserProgressModel {
                 other.totalDistanceWalkedKm == totalDistanceWalkedKm) &&
             (identical(other.totalElevationGainedM, totalElevationGainedM) ||
                 other.totalElevationGainedM == totalElevationGainedM) &&
+            (identical(other.totalTimeMinutes, totalTimeMinutes) ||
+                other.totalTimeMinutes == totalTimeMinutes) &&
             (identical(other.isCompleted, isCompleted) ||
                 other.isCompleted == isCompleted) &&
             (identical(other.startedAt, startedAt) ||
@@ -288,6 +311,7 @@ class _$UserProgressModelImpl extends _UserProgressModel {
       currentStage,
       totalDistanceWalkedKm,
       totalElevationGainedM,
+      totalTimeMinutes,
       isCompleted,
       startedAt,
       completedAt);
@@ -309,6 +333,7 @@ abstract class _UserProgressModel extends UserProgressModel {
       final int currentStage,
       final double totalDistanceWalkedKm,
       final int totalElevationGainedM,
+      final int totalTimeMinutes,
       final bool isCompleted,
       final DateTime? startedAt,
       final DateTime? completedAt}) = _$UserProgressModelImpl;
@@ -333,6 +358,10 @@ abstract class _UserProgressModel extends UserProgressModel {
   /// Denivele positif total cumule en metres
   @override
   int get totalElevationGainedM;
+
+  /// Temps total de marche en minutes
+  @override
+  int get totalTimeMinutes;
 
   /// Sentier complete ou non
   @override
