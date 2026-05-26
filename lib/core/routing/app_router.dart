@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/checklist/presentation/checklist_screen.dart';
+import '../../features/feasibility/presentation/feasibility_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
+import '../../features/tips/presentation/tips_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/trail/presentation/trail_list_screen.dart';
@@ -18,6 +20,8 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 ///   /trail/:id/map               - Carte du trace GPX
 ///   /trail/:id/planning          - Planning de repartition
 ///   /trail/:id/checklist         - Checklist materiel
+///   /trail/:id/feasibility       - Questionnaire faisabilite
+///   /trail/:id/tips              - Fiches conseils
 ///   /settings                    - Parametres
 final appRouter = GoRouter(
   initialLocation: '/trails',
@@ -68,6 +72,16 @@ final appRouter = GoRouter(
           path: 'checklist',
           name: 'trail-checklist',
           builder: (context, state) => const ChecklistScreen(),
+        ),
+        GoRoute(
+          path: 'feasibility',
+          name: 'trail-feasibility',
+          builder: (context, state) => const FeasibilityScreen(),
+        ),
+        GoRoute(
+          path: 'tips',
+          name: 'trail-tips',
+          builder: (context, state) => const TipsScreen(),
         ),
       ],
     ),

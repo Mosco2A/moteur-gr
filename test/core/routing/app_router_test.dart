@@ -15,10 +15,10 @@ void main() {
       expect(appRouter.configuration.routes.length, 3);
     });
 
-    test('la route /trail/:id a des sous-routes stage map planning checklist', () {
+    test('la route /trail/:id a 6 sous-routes', () {
       final trailRoute = appRouter.configuration.routes[1] as GoRoute;
       expect(trailRoute.path, '/trail/:id');
-      expect(trailRoute.routes.length, 4);
+      expect(trailRoute.routes.length, 6);
 
       final stageRoute = trailRoute.routes[0] as GoRoute;
       expect(stageRoute.path, 'stage/:num');
@@ -31,6 +31,12 @@ void main() {
 
       final checklistRoute = trailRoute.routes[3] as GoRoute;
       expect(checklistRoute.path, 'checklist');
+
+      final feasibilityRoute = trailRoute.routes[4] as GoRoute;
+      expect(feasibilityRoute.path, 'feasibility');
+
+      final tipsRoute = trailRoute.routes[5] as GoRoute;
+      expect(tipsRoute.path, 'tips');
     });
 
     test('les routes sont nommees correctement', () {
@@ -40,17 +46,12 @@ void main() {
       expect((routes[2] as GoRoute).name, 'settings');
 
       final trailRoute = routes[1] as GoRoute;
-      final stageRoute = trailRoute.routes[0] as GoRoute;
-      expect(stageRoute.name, 'stage-detail');
-
-      final mapRoute = trailRoute.routes[1] as GoRoute;
-      expect(mapRoute.name, 'trail-map');
-
-      final planningRoute = trailRoute.routes[2] as GoRoute;
-      expect(planningRoute.name, 'trail-planning');
-
-      final checklistRoute = trailRoute.routes[3] as GoRoute;
-      expect(checklistRoute.name, 'trail-checklist');
+      expect((trailRoute.routes[0] as GoRoute).name, 'stage-detail');
+      expect((trailRoute.routes[1] as GoRoute).name, 'trail-map');
+      expect((trailRoute.routes[2] as GoRoute).name, 'trail-planning');
+      expect((trailRoute.routes[3] as GoRoute).name, 'trail-checklist');
+      expect((trailRoute.routes[4] as GoRoute).name, 'trail-feasibility');
+      expect((trailRoute.routes[5] as GoRoute).name, 'trail-tips');
     });
 
     testWidgets('navigation vers /trails affiche TrailListScreen',
