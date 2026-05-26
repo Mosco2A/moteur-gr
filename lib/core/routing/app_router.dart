@@ -11,6 +11,7 @@ import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
+import '../../features/trail/presentation/no_data_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/trail/presentation/trail_list_screen.dart';
@@ -20,21 +21,23 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 ///
 /// Routes :
 ///   /trails                      - Liste des sentiers
-///   /trail/:id                   - Détail d'un sentier
-///   /trail/:id/stage/:num        - Détail d'une étape
-///   /trail/:id/map               - Carte du tracé GPX
-///   /trail/:id/planning          - Planning de répartition
-///   /trail/:id/checklist         - Checklist matériel
-///   /trail/:id/feasibility       - Questionnaire faisabilité
+///   /trail/:id                   - Detail d'un sentier
+///   /trail/:id/stage/:num        - Detail d'une etape
+///   /trail/:id/map               - Carte du trace GPX
+///   /trail/:id/planning          - Planning de repartition
+///   /trail/:id/checklist         - Checklist materiel
+///   /trail/:id/feasibility       - Questionnaire faisabilite
 ///   /trail/:id/tips              - Fiches conseils
 ///   /trail/:id/journal           - Journal de trek
-///   /trail/:id/diploma           - Diplôme de fin de trek
+///   /trail/:id/diploma           - Diplome de fin de trek
 ///   /trail/:id/feedback          - Feedback in-app
-///   /settings                    - Paramètres
+///   /settings                    - Parametres
 ///   /profile                     - Profil utilisateur
 ///   /catalog                     - Catalogue de sentiers (telechargement)
+///   /no-data                     - Ecran bloquant sans donnees telechargees
 final appRouter = GoRouter(
   initialLocation: '/trails',
+  redirect: _guardNoData,
   routes: [
     GoRoute(
       path: '/trails',
@@ -119,6 +122,11 @@ final appRouter = GoRouter(
       builder: (context, state) => const TrailCatalogScreen(),
     ),
     GoRoute(
+      path: '/no-data',
+      name: 'no-data',
+      builder: (context, state) => const NoDataScreen(),
+    ),
+    GoRoute(
       path: '/settings',
       name: 'settings',
       builder: (context, state) => const SettingsScreen(),
@@ -136,3 +144,23 @@ final appRouter = GoRouter(
     ),
   ),
 );
+
+/// Flag indiquant si des sentiers sont telecharges.
+///
+/// Mis a jour par le CatalogNotifier apres chaque chargement.
+/// Quand false, le guard redirige vers /no-data.
+/// Quand true, navigation normale.
+bool hasDownloadedTrails = true;
+
+/// Guard de redirection : si aucun sentier telecharge,
+/// redirige vers /no-data (sauf /catalog et /no-data eux-memes).
+String? _guardNoData(BuildContext context, GoRouterState state) {
+  // Routes exclues du guard (doivent rester accessibles)
+  final excludedPaths = ['/no-data', '/catalog', '/settings', '/profile'];
+  if (excludedPaths.contains(state.uri.path)) return null;
+
+  // Si aucun sentier telecharge, rediriger vers l'ecran bloquant
+  if (!hasDownloadedTrails) return '/no-data';
+
+  return null;
+}
