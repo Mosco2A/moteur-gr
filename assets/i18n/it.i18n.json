@@ -117,5 +117,99 @@
       "towel": "Asciugamano"
     },
     "essential": "Essenziale"
+  },
+  "journal": {
+    "title": "Diario di trekking",
+    "empty": "Il tuo diario è vuoto",
+    "emptySubtitle": "Annota le tue impressioni e ricordi di trekking",
+    "addNote": "Nuova nota",
+    "stage": "Tappa",
+    "yourNote": "La tua nota",
+    "placeholder": "Descrivi la tua giornata di trekking...",
+    "save": "Salva",
+    "cancel": "Annulla",
+    "delete": "Elimina",
+    "photoLimit": "Limite di 3 foto al giorno raggiunto",
+    "photoTooBig": "Foto troppo grande (max 500 KB)"
+  },
+  "weather": {
+    "title": "Meteo",
+    "loading": "Caricamento meteo...",
+    "offline": "Nessuna connessione. Dati meteo non disponibili.",
+    "error": "Impossibile caricare il meteo.",
+    "cached": "Dati nella cache",
+    "alerts": "allerte meteo",
+    "refresh": "Aggiorna",
+    "temperature": "Temperatura",
+    "precipitation": "Precipitazioni",
+    "wind": "Vento",
+    "uv": "Indice UV"
+  },
+  "share": {
+    "title": "Condividi",
+    "generating": "Generazione...",
+    "share": "Condividi",
+    "error": "Errore durante la generazione"
+  },
+  "diploma": {
+    "title": "Diploma di trekking",
+    "yourName": "Il tuo nome",
+    "namePlaceholder": "Inserisci il tuo nome...",
+    "generatePdf": "Genera PDF",
+    "certifies": "Certifica che",
+    "completed": "ha percorso il"
+  },
+  "notifications": {
+    "morningReminder": "Promemoria mattutino",
+    "weatherAlerts": "Allerte meteo",
+    "countdown": "Promemoria G-2",
+    "countdownDesc": "Notifica 2 giorni prima della partenza"
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "language": "Lingua",
+    "units": "Unità",
+    "distance": "Distanza",
+    "temperature": "Temperatura",
+    "theme": "Tema",
+    "dark": "Scuro",
+    "light": "Chiaro",
+    "system": "Sistema",
+    "cache": "Cache",
+    "cacheEnabled": "Cache attivata",
+    "cacheDesc": "Dati disponibili offline",
+    "cacheSize": "Dimensione cache",
+    "notifications": "Notifiche"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "type": "Tipo di feedback",
+    "bug": "Bug / Problema",
+    "suggestion": "Suggerimento",
+    "question": "Domanda",
+    "other": "Altro",
+    "message": "Il tuo messaggio",
+    "messagePlaceholder": "Descrivi il tuo feedback...",
+    "satisfaction": "Soddisfazione",
+    "send": "Invia",
+    "sending": "Invio...",
+    "thanks": "Grazie per il tuo feedback!",
+    "pending": "in attesa"
+  },
+  "auth": {
+    "profile": "Profilo",
+    "anonymous": "Escursionista anonimo",
+    "connectedVia": "Connesso tramite",
+    "signInGoogle": "Accedi con Google",
+    "signInGoogleDesc": "Per salvare i tuoi progressi",
+    "signOut": "Esci",
+    "signOutDesc": "Torna alla modalità anonima",
+    "signOutConfirm": "Disconnettersi?",
+    "signOutMessage": "Tornerai alla modalità anonima. I tuoi dati locali saranno conservati.",
+    "deleteAccount": "Elimina il mio account",
+    "deleteAccountDesc": "Tutti i tuoi dati saranno cancellati",
+    "deleteConfirm": "Eliminare il tuo account?",
+    "deleteMessage": "Questa azione è irreversibile. Tutti i tuoi dati, note e progressi saranno cancellati.",
+    "cancel": "Annulla"
   }
 }

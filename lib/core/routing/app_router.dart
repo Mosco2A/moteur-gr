@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
+import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/feasibility/presentation/feasibility_screen.dart';
+import '../../features/feedback/presentation/feedback_screen.dart';
+import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -15,14 +19,18 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 ///
 /// Routes :
 ///   /trails                      - Liste des sentiers
-///   /trail/:id                   - Detail d un sentier
-///   /trail/:id/stage/:num        - Detail d une etape
-///   /trail/:id/map               - Carte du trace GPX
-///   /trail/:id/planning          - Planning de repartition
-///   /trail/:id/checklist         - Checklist materiel
-///   /trail/:id/feasibility       - Questionnaire faisabilite
+///   /trail/:id                   - Détail d'un sentier
+///   /trail/:id/stage/:num        - Détail d'une étape
+///   /trail/:id/map               - Carte du tracé GPX
+///   /trail/:id/planning          - Planning de répartition
+///   /trail/:id/checklist         - Checklist matériel
+///   /trail/:id/feasibility       - Questionnaire faisabilité
 ///   /trail/:id/tips              - Fiches conseils
-///   /settings                    - Parametres
+///   /trail/:id/journal           - Journal de trek
+///   /trail/:id/diploma           - Diplôme de fin de trek
+///   /trail/:id/feedback          - Feedback in-app
+///   /settings                    - Paramètres
+///   /profile                     - Profil utilisateur
 final appRouter = GoRouter(
   initialLocation: '/trails',
   routes: [
@@ -83,12 +91,35 @@ final appRouter = GoRouter(
           name: 'trail-tips',
           builder: (context, state) => const TipsScreen(),
         ),
+        GoRoute(
+          path: 'journal',
+          name: 'trail-journal',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return JournalScreen(trailId: trailId);
+          },
+        ),
+        GoRoute(
+          path: 'diploma',
+          name: 'trail-diploma',
+          builder: (context, state) => const DiplomaScreen(),
+        ),
+        GoRoute(
+          path: 'feedback',
+          name: 'trail-feedback',
+          builder: (context, state) => const FeedbackScreen(),
+        ),
       ],
     ),
     GoRoute(
       path: '/settings',
       name: 'settings',
       builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: '/profile',
+      name: 'profile',
+      builder: (context, state) => const ProfileScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

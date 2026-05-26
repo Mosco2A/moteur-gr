@@ -117,5 +117,99 @@
       "towel": "Serviette"
     },
     "essential": "Essentiel"
+  },
+  "journal": {
+    "title": "Journal de trek",
+    "empty": "Votre journal est vide",
+    "emptySubtitle": "Notez vos impressions et souvenirs de trek",
+    "addNote": "Nouvelle note",
+    "stage": "Étape",
+    "yourNote": "Votre note",
+    "placeholder": "Décrivez votre journée de trek...",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "photoLimit": "Limite de 3 photos par jour atteinte",
+    "photoTooBig": "Photo trop volumineuse (max 500 Ko)"
+  },
+  "weather": {
+    "title": "Météo",
+    "loading": "Chargement de la météo...",
+    "offline": "Pas de connexion. Données météo indisponibles.",
+    "error": "Impossible de charger la météo.",
+    "cached": "Données en cache",
+    "alerts": "alertes météo",
+    "refresh": "Actualiser",
+    "temperature": "Température",
+    "precipitation": "Précipitations",
+    "wind": "Vent",
+    "uv": "Indice UV"
+  },
+  "share": {
+    "title": "Partager",
+    "generating": "Génération...",
+    "share": "Partager",
+    "error": "Erreur lors de la génération"
+  },
+  "diploma": {
+    "title": "Diplôme de trek",
+    "yourName": "Votre nom",
+    "namePlaceholder": "Entrez votre nom...",
+    "generatePdf": "Générer le PDF",
+    "certifies": "Certifie que",
+    "completed": "a parcouru le"
+  },
+  "notifications": {
+    "morningReminder": "Rappel du matin",
+    "weatherAlerts": "Alertes météo",
+    "countdown": "Rappel J-2",
+    "countdownDesc": "Notification 2 jours avant le départ"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "language": "Langue",
+    "units": "Unités",
+    "distance": "Distance",
+    "temperature": "Température",
+    "theme": "Thème",
+    "dark": "Sombre",
+    "light": "Clair",
+    "system": "Système",
+    "cache": "Cache",
+    "cacheEnabled": "Cache activé",
+    "cacheDesc": "Données disponibles hors ligne",
+    "cacheSize": "Taille du cache",
+    "notifications": "Notifications"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "type": "Type de retour",
+    "bug": "Bug / Problème",
+    "suggestion": "Suggestion",
+    "question": "Question",
+    "other": "Autre",
+    "message": "Votre message",
+    "messagePlaceholder": "Décrivez votre retour...",
+    "satisfaction": "Satisfaction",
+    "send": "Envoyer",
+    "sending": "Envoi...",
+    "thanks": "Merci pour votre retour !",
+    "pending": "en attente"
+  },
+  "auth": {
+    "profile": "Profil",
+    "anonymous": "Randonneur anonyme",
+    "connectedVia": "Connecté via",
+    "signInGoogle": "Se connecter avec Google",
+    "signInGoogleDesc": "Pour sauvegarder votre progression",
+    "signOut": "Se déconnecter",
+    "signOutDesc": "Revenir en mode anonyme",
+    "signOutConfirm": "Se déconnecter ?",
+    "signOutMessage": "Vous reviendrez en mode anonyme. Vos données locales sont conservées.",
+    "deleteAccount": "Supprimer mon compte",
+    "deleteAccountDesc": "Toutes vos données seront effacées",
+    "deleteConfirm": "Supprimer votre compte ?",
+    "deleteMessage": "Cette action est irréversible. Toutes vos données, notes et progression seront effacées.",
+    "cancel": "Annuler"
   }
 }

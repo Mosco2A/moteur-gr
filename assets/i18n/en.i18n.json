@@ -117,5 +117,99 @@
       "towel": "Towel"
     },
     "essential": "Essential"
+  },
+  "journal": {
+    "title": "Trek journal",
+    "empty": "Your journal is empty",
+    "emptySubtitle": "Write down your trek impressions and memories",
+    "addNote": "New note",
+    "stage": "Stage",
+    "yourNote": "Your note",
+    "placeholder": "Describe your hiking day...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "photoLimit": "3 photos per day limit reached",
+    "photoTooBig": "Photo too large (max 500 KB)"
+  },
+  "weather": {
+    "title": "Weather",
+    "loading": "Loading weather...",
+    "offline": "No connection. Weather data unavailable.",
+    "error": "Unable to load weather.",
+    "cached": "Cached data",
+    "alerts": "weather alerts",
+    "refresh": "Refresh",
+    "temperature": "Temperature",
+    "precipitation": "Precipitation",
+    "wind": "Wind",
+    "uv": "UV index"
+  },
+  "share": {
+    "title": "Share",
+    "generating": "Generating...",
+    "share": "Share",
+    "error": "Error during generation"
+  },
+  "diploma": {
+    "title": "Trek diploma",
+    "yourName": "Your name",
+    "namePlaceholder": "Enter your name...",
+    "generatePdf": "Generate PDF",
+    "certifies": "Certifies that",
+    "completed": "completed the"
+  },
+  "notifications": {
+    "morningReminder": "Morning reminder",
+    "weatherAlerts": "Weather alerts",
+    "countdown": "D-2 reminder",
+    "countdownDesc": "Notification 2 days before departure"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "units": "Units",
+    "distance": "Distance",
+    "temperature": "Temperature",
+    "theme": "Theme",
+    "dark": "Dark",
+    "light": "Light",
+    "system": "System",
+    "cache": "Cache",
+    "cacheEnabled": "Cache enabled",
+    "cacheDesc": "Data available offline",
+    "cacheSize": "Cache size",
+    "notifications": "Notifications"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "type": "Feedback type",
+    "bug": "Bug / Problem",
+    "suggestion": "Suggestion",
+    "question": "Question",
+    "other": "Other",
+    "message": "Your message",
+    "messagePlaceholder": "Describe your feedback...",
+    "satisfaction": "Satisfaction",
+    "send": "Send",
+    "sending": "Sending...",
+    "thanks": "Thank you for your feedback!",
+    "pending": "pending"
+  },
+  "auth": {
+    "profile": "Profile",
+    "anonymous": "Anonymous hiker",
+    "connectedVia": "Connected via",
+    "signInGoogle": "Sign in with Google",
+    "signInGoogleDesc": "To save your progress",
+    "signOut": "Sign out",
+    "signOutDesc": "Return to anonymous mode",
+    "signOutConfirm": "Sign out?",
+    "signOutMessage": "You will return to anonymous mode. Your local data is preserved.",
+    "deleteAccount": "Delete my account",
+    "deleteAccountDesc": "All your data will be erased",
+    "deleteConfirm": "Delete your account?",
+    "deleteMessage": "This action is irreversible. All your data, notes and progress will be erased.",
+    "cancel": "Cancel"
   }
 }

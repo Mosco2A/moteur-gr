@@ -10,15 +10,15 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/trails');
     });
 
-    test('le router contient 3 routes de premier niveau', () {
-      // /trails, /trail/:id, /settings
-      expect(appRouter.configuration.routes.length, 3);
+    test('le router contient 4 routes de premier niveau', () {
+      // /trails, /trail/:id, /settings, /profile
+      expect(appRouter.configuration.routes.length, 4);
     });
 
-    test('la route /trail/:id a 6 sous-routes', () {
+    test('la route /trail/:id a 9 sous-routes', () {
       final trailRoute = appRouter.configuration.routes[1] as GoRoute;
       expect(trailRoute.path, '/trail/:id');
-      expect(trailRoute.routes.length, 6);
+      expect(trailRoute.routes.length, 9);
 
       final stageRoute = trailRoute.routes[0] as GoRoute;
       expect(stageRoute.path, 'stage/:num');
@@ -37,6 +37,15 @@ void main() {
 
       final tipsRoute = trailRoute.routes[5] as GoRoute;
       expect(tipsRoute.path, 'tips');
+
+      final journalRoute = trailRoute.routes[6] as GoRoute;
+      expect(journalRoute.path, 'journal');
+
+      final diplomaRoute = trailRoute.routes[7] as GoRoute;
+      expect(diplomaRoute.path, 'diploma');
+
+      final feedbackRoute = trailRoute.routes[8] as GoRoute;
+      expect(feedbackRoute.path, 'feedback');
     });
 
     test('les routes sont nommees correctement', () {
@@ -44,6 +53,7 @@ void main() {
       expect((routes[0] as GoRoute).name, 'trails');
       expect((routes[1] as GoRoute).name, 'trail-detail');
       expect((routes[2] as GoRoute).name, 'settings');
+      expect((routes[3] as GoRoute).name, 'profile');
 
       final trailRoute = routes[1] as GoRoute;
       expect((trailRoute.routes[0] as GoRoute).name, 'stage-detail');
@@ -52,6 +62,9 @@ void main() {
       expect((trailRoute.routes[3] as GoRoute).name, 'trail-checklist');
       expect((trailRoute.routes[4] as GoRoute).name, 'trail-feasibility');
       expect((trailRoute.routes[5] as GoRoute).name, 'trail-tips');
+      expect((trailRoute.routes[6] as GoRoute).name, 'trail-journal');
+      expect((trailRoute.routes[7] as GoRoute).name, 'trail-diploma');
+      expect((trailRoute.routes[8] as GoRoute).name, 'trail-feedback');
     });
 
     testWidgets('navigation vers /trails affiche TrailListScreen',

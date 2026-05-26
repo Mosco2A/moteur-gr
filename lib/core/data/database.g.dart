@@ -2050,6 +2050,1233 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
   }
 }
 
+class $JournalEntriesTable extends JournalEntries
+    with TableInfo<$JournalEntriesTable, JournalEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $JournalEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _trailIdMeta =
+      const VerificationMeta('trailId');
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+      'trail_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _stageNumberMeta =
+      const VerificationMeta('stageNumber');
+  @override
+  late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
+      'stage_number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(''));
+  static const VerificationMeta _photoPathMeta =
+      const VerificationMeta('photoPath');
+  @override
+  late final GeneratedColumn<String> photoPath = GeneratedColumn<String>(
+      'photo_path', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _photoSizeBytesMeta =
+      const VerificationMeta('photoSizeBytes');
+  @override
+  late final GeneratedColumn<int> photoSizeBytes = GeneratedColumn<int>(
+      'photo_size_bytes', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        trailId,
+        stageNumber,
+        content,
+        photoPath,
+        photoSizeBytes,
+        createdAt,
+        updatedAt
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'journal_entries';
+  @override
+  VerificationContext validateIntegrity(Insertable<JournalEntry> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(_trailIdMeta,
+          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('stage_number')) {
+      context.handle(
+          _stageNumberMeta,
+          stageNumber.isAcceptableOrUnknown(
+              data['stage_number']!, _stageNumberMeta));
+    } else if (isInserting) {
+      context.missing(_stageNumberMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    }
+    if (data.containsKey('photo_path')) {
+      context.handle(_photoPathMeta,
+          photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta));
+    }
+    if (data.containsKey('photo_size_bytes')) {
+      context.handle(
+          _photoSizeBytesMeta,
+          photoSizeBytes.isAcceptableOrUnknown(
+              data['photo_size_bytes']!, _photoSizeBytesMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  JournalEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return JournalEntry(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      trailId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
+      stageNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stage_number'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      photoPath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}photo_path']),
+      photoSizeBytes: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}photo_size_bytes']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+    );
+  }
+
+  @override
+  $JournalEntriesTable createAlias(String alias) {
+    return $JournalEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class JournalEntry extends DataClass implements Insertable<JournalEntry> {
+  /// Clé primaire auto-incrémentée
+  final int id;
+
+  /// Identifiant du sentier (ex: 'gr20')
+  final String trailId;
+
+  /// Numéro d'étape (1-based)
+  final int stageNumber;
+
+  /// Contenu textuel de la note
+  final String content;
+
+  /// Chemin local de la photo (null si note sans photo)
+  final String? photoPath;
+
+  /// Taille de la photo en octets (pour vérifier compression < 500 Ko)
+  final int? photoSizeBytes;
+
+  /// Date de création de l'entrée
+  final DateTime createdAt;
+
+  /// Date de dernière modification
+  final DateTime? updatedAt;
+  const JournalEntry(
+      {required this.id,
+      required this.trailId,
+      required this.stageNumber,
+      required this.content,
+      this.photoPath,
+      this.photoSizeBytes,
+      required this.createdAt,
+      this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['stage_number'] = Variable<int>(stageNumber);
+    map['content'] = Variable<String>(content);
+    if (!nullToAbsent || photoPath != null) {
+      map['photo_path'] = Variable<String>(photoPath);
+    }
+    if (!nullToAbsent || photoSizeBytes != null) {
+      map['photo_size_bytes'] = Variable<int>(photoSizeBytes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  JournalEntriesCompanion toCompanion(bool nullToAbsent) {
+    return JournalEntriesCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      stageNumber: Value(stageNumber),
+      content: Value(content),
+      photoPath: photoPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoPath),
+      photoSizeBytes: photoSizeBytes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoSizeBytes),
+      createdAt: Value(createdAt),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory JournalEntry.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return JournalEntry(
+      id: serializer.fromJson<int>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      stageNumber: serializer.fromJson<int>(json['stageNumber']),
+      content: serializer.fromJson<String>(json['content']),
+      photoPath: serializer.fromJson<String?>(json['photoPath']),
+      photoSizeBytes: serializer.fromJson<int?>(json['photoSizeBytes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'stageNumber': serializer.toJson<int>(stageNumber),
+      'content': serializer.toJson<String>(content),
+      'photoPath': serializer.toJson<String?>(photoPath),
+      'photoSizeBytes': serializer.toJson<int?>(photoSizeBytes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+    };
+  }
+
+  JournalEntry copyWith(
+          {int? id,
+          String? trailId,
+          int? stageNumber,
+          String? content,
+          Value<String?> photoPath = const Value.absent(),
+          Value<int?> photoSizeBytes = const Value.absent(),
+          DateTime? createdAt,
+          Value<DateTime?> updatedAt = const Value.absent()}) =>
+      JournalEntry(
+        id: id ?? this.id,
+        trailId: trailId ?? this.trailId,
+        stageNumber: stageNumber ?? this.stageNumber,
+        content: content ?? this.content,
+        photoPath: photoPath.present ? photoPath.value : this.photoPath,
+        photoSizeBytes:
+            photoSizeBytes.present ? photoSizeBytes.value : this.photoSizeBytes,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+      );
+  JournalEntry copyWithCompanion(JournalEntriesCompanion data) {
+    return JournalEntry(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      stageNumber:
+          data.stageNumber.present ? data.stageNumber.value : this.stageNumber,
+      content: data.content.present ? data.content.value : this.content,
+      photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
+      photoSizeBytes: data.photoSizeBytes.present
+          ? data.photoSizeBytes.value
+          : this.photoSizeBytes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JournalEntry(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('stageNumber: $stageNumber, ')
+          ..write('content: $content, ')
+          ..write('photoPath: $photoPath, ')
+          ..write('photoSizeBytes: $photoSizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, trailId, stageNumber, content, photoPath,
+      photoSizeBytes, createdAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is JournalEntry &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.stageNumber == this.stageNumber &&
+          other.content == this.content &&
+          other.photoPath == this.photoPath &&
+          other.photoSizeBytes == this.photoSizeBytes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
+  final Value<int> id;
+  final Value<String> trailId;
+  final Value<int> stageNumber;
+  final Value<String> content;
+  final Value<String?> photoPath;
+  final Value<int?> photoSizeBytes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> updatedAt;
+  const JournalEntriesCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.stageNumber = const Value.absent(),
+    this.content = const Value.absent(),
+    this.photoPath = const Value.absent(),
+    this.photoSizeBytes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  JournalEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required String trailId,
+    required int stageNumber,
+    this.content = const Value.absent(),
+    this.photoPath = const Value.absent(),
+    this.photoSizeBytes = const Value.absent(),
+    required DateTime createdAt,
+    this.updatedAt = const Value.absent(),
+  })  : trailId = Value(trailId),
+        stageNumber = Value(stageNumber),
+        createdAt = Value(createdAt);
+  static Insertable<JournalEntry> custom({
+    Expression<int>? id,
+    Expression<String>? trailId,
+    Expression<int>? stageNumber,
+    Expression<String>? content,
+    Expression<String>? photoPath,
+    Expression<int>? photoSizeBytes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (stageNumber != null) 'stage_number': stageNumber,
+      if (content != null) 'content': content,
+      if (photoPath != null) 'photo_path': photoPath,
+      if (photoSizeBytes != null) 'photo_size_bytes': photoSizeBytes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  JournalEntriesCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? trailId,
+      Value<int>? stageNumber,
+      Value<String>? content,
+      Value<String?>? photoPath,
+      Value<int?>? photoSizeBytes,
+      Value<DateTime>? createdAt,
+      Value<DateTime?>? updatedAt}) {
+    return JournalEntriesCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      stageNumber: stageNumber ?? this.stageNumber,
+      content: content ?? this.content,
+      photoPath: photoPath ?? this.photoPath,
+      photoSizeBytes: photoSizeBytes ?? this.photoSizeBytes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (stageNumber.present) {
+      map['stage_number'] = Variable<int>(stageNumber.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (photoPath.present) {
+      map['photo_path'] = Variable<String>(photoPath.value);
+    }
+    if (photoSizeBytes.present) {
+      map['photo_size_bytes'] = Variable<int>(photoSizeBytes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('JournalEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('stageNumber: $stageNumber, ')
+          ..write('content: $content, ')
+          ..write('photoPath: $photoPath, ')
+          ..write('photoSizeBytes: $photoSizeBytes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WeatherCacheTable extends WeatherCache
+    with TableInfo<$WeatherCacheTable, WeatherCacheData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WeatherCacheTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _trailIdMeta =
+      const VerificationMeta('trailId');
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+      'trail_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _stageNumberMeta =
+      const VerificationMeta('stageNumber');
+  @override
+  late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
+      'stage_number', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _forecastJsonMeta =
+      const VerificationMeta('forecastJson');
+  @override
+  late final GeneratedColumn<String> forecastJson = GeneratedColumn<String>(
+      'forecast_json', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _fetchedAtMeta =
+      const VerificationMeta('fetchedAt');
+  @override
+  late final GeneratedColumn<DateTime> fetchedAt = GeneratedColumn<DateTime>(
+      'fetched_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _expiresAtMeta =
+      const VerificationMeta('expiresAt');
+  @override
+  late final GeneratedColumn<DateTime> expiresAt = GeneratedColumn<DateTime>(
+      'expires_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, trailId, stageNumber, forecastJson, fetchedAt, expiresAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'weather_cache';
+  @override
+  VerificationContext validateIntegrity(Insertable<WeatherCacheData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(_trailIdMeta,
+          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('stage_number')) {
+      context.handle(
+          _stageNumberMeta,
+          stageNumber.isAcceptableOrUnknown(
+              data['stage_number']!, _stageNumberMeta));
+    } else if (isInserting) {
+      context.missing(_stageNumberMeta);
+    }
+    if (data.containsKey('forecast_json')) {
+      context.handle(
+          _forecastJsonMeta,
+          forecastJson.isAcceptableOrUnknown(
+              data['forecast_json']!, _forecastJsonMeta));
+    } else if (isInserting) {
+      context.missing(_forecastJsonMeta);
+    }
+    if (data.containsKey('fetched_at')) {
+      context.handle(_fetchedAtMeta,
+          fetchedAt.isAcceptableOrUnknown(data['fetched_at']!, _fetchedAtMeta));
+    } else if (isInserting) {
+      context.missing(_fetchedAtMeta);
+    }
+    if (data.containsKey('expires_at')) {
+      context.handle(_expiresAtMeta,
+          expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta));
+    } else if (isInserting) {
+      context.missing(_expiresAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WeatherCacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WeatherCacheData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      trailId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
+      stageNumber: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}stage_number'])!,
+      forecastJson: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}forecast_json'])!,
+      fetchedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}fetched_at'])!,
+      expiresAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}expires_at'])!,
+    );
+  }
+
+  @override
+  $WeatherCacheTable createAlias(String alias) {
+    return $WeatherCacheTable(attachedDatabase, alias);
+  }
+}
+
+class WeatherCacheData extends DataClass
+    implements Insertable<WeatherCacheData> {
+  /// Clé primaire auto-incrémentée
+  final int id;
+
+  /// Identifiant du sentier (ex: 'gr20')
+  final String trailId;
+
+  /// Numéro d'étape concernée
+  final int stageNumber;
+
+  /// Données JSON brutes de la prévision météo
+  final String forecastJson;
+
+  /// Date de récupération (pour calcul TTL)
+  final DateTime fetchedAt;
+
+  /// Date d'expiration du cache (fetchedAt + 3h)
+  final DateTime expiresAt;
+  const WeatherCacheData(
+      {required this.id,
+      required this.trailId,
+      required this.stageNumber,
+      required this.forecastJson,
+      required this.fetchedAt,
+      required this.expiresAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['stage_number'] = Variable<int>(stageNumber);
+    map['forecast_json'] = Variable<String>(forecastJson);
+    map['fetched_at'] = Variable<DateTime>(fetchedAt);
+    map['expires_at'] = Variable<DateTime>(expiresAt);
+    return map;
+  }
+
+  WeatherCacheCompanion toCompanion(bool nullToAbsent) {
+    return WeatherCacheCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      stageNumber: Value(stageNumber),
+      forecastJson: Value(forecastJson),
+      fetchedAt: Value(fetchedAt),
+      expiresAt: Value(expiresAt),
+    );
+  }
+
+  factory WeatherCacheData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WeatherCacheData(
+      id: serializer.fromJson<int>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      stageNumber: serializer.fromJson<int>(json['stageNumber']),
+      forecastJson: serializer.fromJson<String>(json['forecastJson']),
+      fetchedAt: serializer.fromJson<DateTime>(json['fetchedAt']),
+      expiresAt: serializer.fromJson<DateTime>(json['expiresAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'stageNumber': serializer.toJson<int>(stageNumber),
+      'forecastJson': serializer.toJson<String>(forecastJson),
+      'fetchedAt': serializer.toJson<DateTime>(fetchedAt),
+      'expiresAt': serializer.toJson<DateTime>(expiresAt),
+    };
+  }
+
+  WeatherCacheData copyWith(
+          {int? id,
+          String? trailId,
+          int? stageNumber,
+          String? forecastJson,
+          DateTime? fetchedAt,
+          DateTime? expiresAt}) =>
+      WeatherCacheData(
+        id: id ?? this.id,
+        trailId: trailId ?? this.trailId,
+        stageNumber: stageNumber ?? this.stageNumber,
+        forecastJson: forecastJson ?? this.forecastJson,
+        fetchedAt: fetchedAt ?? this.fetchedAt,
+        expiresAt: expiresAt ?? this.expiresAt,
+      );
+  WeatherCacheData copyWithCompanion(WeatherCacheCompanion data) {
+    return WeatherCacheData(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      stageNumber:
+          data.stageNumber.present ? data.stageNumber.value : this.stageNumber,
+      forecastJson: data.forecastJson.present
+          ? data.forecastJson.value
+          : this.forecastJson,
+      fetchedAt: data.fetchedAt.present ? data.fetchedAt.value : this.fetchedAt,
+      expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeatherCacheData(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('stageNumber: $stageNumber, ')
+          ..write('forecastJson: $forecastJson, ')
+          ..write('fetchedAt: $fetchedAt, ')
+          ..write('expiresAt: $expiresAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, trailId, stageNumber, forecastJson, fetchedAt, expiresAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WeatherCacheData &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.stageNumber == this.stageNumber &&
+          other.forecastJson == this.forecastJson &&
+          other.fetchedAt == this.fetchedAt &&
+          other.expiresAt == this.expiresAt);
+}
+
+class WeatherCacheCompanion extends UpdateCompanion<WeatherCacheData> {
+  final Value<int> id;
+  final Value<String> trailId;
+  final Value<int> stageNumber;
+  final Value<String> forecastJson;
+  final Value<DateTime> fetchedAt;
+  final Value<DateTime> expiresAt;
+  const WeatherCacheCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.stageNumber = const Value.absent(),
+    this.forecastJson = const Value.absent(),
+    this.fetchedAt = const Value.absent(),
+    this.expiresAt = const Value.absent(),
+  });
+  WeatherCacheCompanion.insert({
+    this.id = const Value.absent(),
+    required String trailId,
+    required int stageNumber,
+    required String forecastJson,
+    required DateTime fetchedAt,
+    required DateTime expiresAt,
+  })  : trailId = Value(trailId),
+        stageNumber = Value(stageNumber),
+        forecastJson = Value(forecastJson),
+        fetchedAt = Value(fetchedAt),
+        expiresAt = Value(expiresAt);
+  static Insertable<WeatherCacheData> custom({
+    Expression<int>? id,
+    Expression<String>? trailId,
+    Expression<int>? stageNumber,
+    Expression<String>? forecastJson,
+    Expression<DateTime>? fetchedAt,
+    Expression<DateTime>? expiresAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (stageNumber != null) 'stage_number': stageNumber,
+      if (forecastJson != null) 'forecast_json': forecastJson,
+      if (fetchedAt != null) 'fetched_at': fetchedAt,
+      if (expiresAt != null) 'expires_at': expiresAt,
+    });
+  }
+
+  WeatherCacheCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? trailId,
+      Value<int>? stageNumber,
+      Value<String>? forecastJson,
+      Value<DateTime>? fetchedAt,
+      Value<DateTime>? expiresAt}) {
+    return WeatherCacheCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      stageNumber: stageNumber ?? this.stageNumber,
+      forecastJson: forecastJson ?? this.forecastJson,
+      fetchedAt: fetchedAt ?? this.fetchedAt,
+      expiresAt: expiresAt ?? this.expiresAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (stageNumber.present) {
+      map['stage_number'] = Variable<int>(stageNumber.value);
+    }
+    if (forecastJson.present) {
+      map['forecast_json'] = Variable<String>(forecastJson.value);
+    }
+    if (fetchedAt.present) {
+      map['fetched_at'] = Variable<DateTime>(fetchedAt.value);
+    }
+    if (expiresAt.present) {
+      map['expires_at'] = Variable<DateTime>(expiresAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WeatherCacheCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('stageNumber: $stageNumber, ')
+          ..write('forecastJson: $forecastJson, ')
+          ..write('fetchedAt: $fetchedAt, ')
+          ..write('expiresAt: $expiresAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FeedbackQueueTable extends FeedbackQueue
+    with TableInfo<$FeedbackQueueTable, FeedbackQueueData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FeedbackQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _trailIdMeta =
+      const VerificationMeta('trailId');
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+      'trail_id', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _feedbackTypeMeta =
+      const VerificationMeta('feedbackType');
+  @override
+  late final GeneratedColumn<String> feedbackType = GeneratedColumn<String>(
+      'feedback_type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _contentMeta =
+      const VerificationMeta('content');
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+      'content', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
+  @override
+  late final GeneratedColumn<int> rating = GeneratedColumn<int>(
+      'rating', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+      'status', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('pending'));
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, false,
+      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+  static const VerificationMeta _sentAtMeta = const VerificationMeta('sentAt');
+  @override
+  late final GeneratedColumn<DateTime> sentAt = GeneratedColumn<DateTime>(
+      'sent_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, trailId, feedbackType, content, rating, status, createdAt, sentAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'feedback_queue';
+  @override
+  VerificationContext validateIntegrity(Insertable<FeedbackQueueData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(_trailIdMeta,
+          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('feedback_type')) {
+      context.handle(
+          _feedbackTypeMeta,
+          feedbackType.isAcceptableOrUnknown(
+              data['feedback_type']!, _feedbackTypeMeta));
+    } else if (isInserting) {
+      context.missing(_feedbackTypeMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(_contentMeta,
+          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('rating')) {
+      context.handle(_ratingMeta,
+          rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta));
+    }
+    if (data.containsKey('status')) {
+      context.handle(_statusMeta,
+          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('sent_at')) {
+      context.handle(_sentAtMeta,
+          sentAt.isAcceptableOrUnknown(data['sent_at']!, _sentAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FeedbackQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FeedbackQueueData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      trailId: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
+      feedbackType: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}feedback_type'])!,
+      content: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
+      rating: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}rating']),
+      status: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
+      sentAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}sent_at']),
+    );
+  }
+
+  @override
+  $FeedbackQueueTable createAlias(String alias) {
+    return $FeedbackQueueTable(attachedDatabase, alias);
+  }
+}
+
+class FeedbackQueueData extends DataClass
+    implements Insertable<FeedbackQueueData> {
+  /// Clé primaire auto-incrémentée
+  final int id;
+
+  /// Identifiant du sentier (ex: 'gr20')
+  final String trailId;
+
+  /// Type de feedback ('bug', 'suggestion', 'question', 'other')
+  final String feedbackType;
+
+  /// Contenu du feedback
+  final String content;
+
+  /// Note de satisfaction (1-5, nullable)
+  final int? rating;
+
+  /// Statut d'envoi ('pending', 'sent', 'failed')
+  final String status;
+
+  /// Date de création
+  final DateTime createdAt;
+
+  /// Date d'envoi effectif (null si pas encore envoyé)
+  final DateTime? sentAt;
+  const FeedbackQueueData(
+      {required this.id,
+      required this.trailId,
+      required this.feedbackType,
+      required this.content,
+      this.rating,
+      required this.status,
+      required this.createdAt,
+      this.sentAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['feedback_type'] = Variable<String>(feedbackType);
+    map['content'] = Variable<String>(content);
+    if (!nullToAbsent || rating != null) {
+      map['rating'] = Variable<int>(rating);
+    }
+    map['status'] = Variable<String>(status);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || sentAt != null) {
+      map['sent_at'] = Variable<DateTime>(sentAt);
+    }
+    return map;
+  }
+
+  FeedbackQueueCompanion toCompanion(bool nullToAbsent) {
+    return FeedbackQueueCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      feedbackType: Value(feedbackType),
+      content: Value(content),
+      rating:
+          rating == null && nullToAbsent ? const Value.absent() : Value(rating),
+      status: Value(status),
+      createdAt: Value(createdAt),
+      sentAt:
+          sentAt == null && nullToAbsent ? const Value.absent() : Value(sentAt),
+    );
+  }
+
+  factory FeedbackQueueData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FeedbackQueueData(
+      id: serializer.fromJson<int>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      feedbackType: serializer.fromJson<String>(json['feedbackType']),
+      content: serializer.fromJson<String>(json['content']),
+      rating: serializer.fromJson<int?>(json['rating']),
+      status: serializer.fromJson<String>(json['status']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      sentAt: serializer.fromJson<DateTime?>(json['sentAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'feedbackType': serializer.toJson<String>(feedbackType),
+      'content': serializer.toJson<String>(content),
+      'rating': serializer.toJson<int?>(rating),
+      'status': serializer.toJson<String>(status),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'sentAt': serializer.toJson<DateTime?>(sentAt),
+    };
+  }
+
+  FeedbackQueueData copyWith(
+          {int? id,
+          String? trailId,
+          String? feedbackType,
+          String? content,
+          Value<int?> rating = const Value.absent(),
+          String? status,
+          DateTime? createdAt,
+          Value<DateTime?> sentAt = const Value.absent()}) =>
+      FeedbackQueueData(
+        id: id ?? this.id,
+        trailId: trailId ?? this.trailId,
+        feedbackType: feedbackType ?? this.feedbackType,
+        content: content ?? this.content,
+        rating: rating.present ? rating.value : this.rating,
+        status: status ?? this.status,
+        createdAt: createdAt ?? this.createdAt,
+        sentAt: sentAt.present ? sentAt.value : this.sentAt,
+      );
+  FeedbackQueueData copyWithCompanion(FeedbackQueueCompanion data) {
+    return FeedbackQueueData(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      feedbackType: data.feedbackType.present
+          ? data.feedbackType.value
+          : this.feedbackType,
+      content: data.content.present ? data.content.value : this.content,
+      rating: data.rating.present ? data.rating.value : this.rating,
+      status: data.status.present ? data.status.value : this.status,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      sentAt: data.sentAt.present ? data.sentAt.value : this.sentAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FeedbackQueueData(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('feedbackType: $feedbackType, ')
+          ..write('content: $content, ')
+          ..write('rating: $rating, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('sentAt: $sentAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, trailId, feedbackType, content, rating, status, createdAt, sentAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FeedbackQueueData &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.feedbackType == this.feedbackType &&
+          other.content == this.content &&
+          other.rating == this.rating &&
+          other.status == this.status &&
+          other.createdAt == this.createdAt &&
+          other.sentAt == this.sentAt);
+}
+
+class FeedbackQueueCompanion extends UpdateCompanion<FeedbackQueueData> {
+  final Value<int> id;
+  final Value<String> trailId;
+  final Value<String> feedbackType;
+  final Value<String> content;
+  final Value<int?> rating;
+  final Value<String> status;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> sentAt;
+  const FeedbackQueueCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.feedbackType = const Value.absent(),
+    this.content = const Value.absent(),
+    this.rating = const Value.absent(),
+    this.status = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.sentAt = const Value.absent(),
+  });
+  FeedbackQueueCompanion.insert({
+    this.id = const Value.absent(),
+    required String trailId,
+    required String feedbackType,
+    required String content,
+    this.rating = const Value.absent(),
+    this.status = const Value.absent(),
+    required DateTime createdAt,
+    this.sentAt = const Value.absent(),
+  })  : trailId = Value(trailId),
+        feedbackType = Value(feedbackType),
+        content = Value(content),
+        createdAt = Value(createdAt);
+  static Insertable<FeedbackQueueData> custom({
+    Expression<int>? id,
+    Expression<String>? trailId,
+    Expression<String>? feedbackType,
+    Expression<String>? content,
+    Expression<int>? rating,
+    Expression<String>? status,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? sentAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (feedbackType != null) 'feedback_type': feedbackType,
+      if (content != null) 'content': content,
+      if (rating != null) 'rating': rating,
+      if (status != null) 'status': status,
+      if (createdAt != null) 'created_at': createdAt,
+      if (sentAt != null) 'sent_at': sentAt,
+    });
+  }
+
+  FeedbackQueueCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? trailId,
+      Value<String>? feedbackType,
+      Value<String>? content,
+      Value<int?>? rating,
+      Value<String>? status,
+      Value<DateTime>? createdAt,
+      Value<DateTime?>? sentAt}) {
+    return FeedbackQueueCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      feedbackType: feedbackType ?? this.feedbackType,
+      content: content ?? this.content,
+      rating: rating ?? this.rating,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      sentAt: sentAt ?? this.sentAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (feedbackType.present) {
+      map['feedback_type'] = Variable<String>(feedbackType.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (rating.present) {
+      map['rating'] = Variable<int>(rating.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (sentAt.present) {
+      map['sent_at'] = Variable<DateTime>(sentAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FeedbackQueueCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('feedbackType: $feedbackType, ')
+          ..write('content: $content, ')
+          ..write('rating: $rating, ')
+          ..write('status: $status, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('sentAt: $sentAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2058,16 +3285,31 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $UserProgressEntriesTable userProgressEntries =
       $UserProgressEntriesTable(this);
   late final $ChecklistItemsTable checklistItems = $ChecklistItemsTable(this);
+  late final $JournalEntriesTable journalEntries = $JournalEntriesTable(this);
+  late final $WeatherCacheTable weatherCache = $WeatherCacheTable(this);
+  late final $FeedbackQueueTable feedbackQueue = $FeedbackQueueTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
   late final ChecklistDao checklistDao = ChecklistDao(this as AppDatabase);
+  late final JournalDao journalDao = JournalDao(this as AppDatabase);
+  late final WeatherCacheDao weatherCacheDao =
+      WeatherCacheDao(this as AppDatabase);
+  late final FeedbackQueueDao feedbackQueueDao =
+      FeedbackQueueDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [stages, pois, userProgressEntries, checklistItems];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        stages,
+        pois,
+        userProgressEntries,
+        checklistItems,
+        journalEntries,
+        weatherCache,
+        feedbackQueue
+      ];
 }
 
 typedef $$StagesTableCreateCompanionBuilder = StagesCompanion Function({
@@ -3008,6 +4250,617 @@ typedef $$ChecklistItemsTableProcessedTableManager = ProcessedTableManager<
     ),
     ChecklistItem,
     PrefetchHooks Function()>;
+typedef $$JournalEntriesTableCreateCompanionBuilder = JournalEntriesCompanion
+    Function({
+  Value<int> id,
+  required String trailId,
+  required int stageNumber,
+  Value<String> content,
+  Value<String?> photoPath,
+  Value<int?> photoSizeBytes,
+  required DateTime createdAt,
+  Value<DateTime?> updatedAt,
+});
+typedef $$JournalEntriesTableUpdateCompanionBuilder = JournalEntriesCompanion
+    Function({
+  Value<int> id,
+  Value<String> trailId,
+  Value<int> stageNumber,
+  Value<String> content,
+  Value<String?> photoPath,
+  Value<int?> photoSizeBytes,
+  Value<DateTime> createdAt,
+  Value<DateTime?> updatedAt,
+});
+
+class $$JournalEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $JournalEntriesTable> {
+  $$JournalEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get stageNumber => $composableBuilder(
+      column: $table.stageNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get photoPath => $composableBuilder(
+      column: $table.photoPath, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get photoSizeBytes => $composableBuilder(
+      column: $table.photoSizeBytes,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$JournalEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $JournalEntriesTable> {
+  $$JournalEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get stageNumber => $composableBuilder(
+      column: $table.stageNumber, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get photoPath => $composableBuilder(
+      column: $table.photoPath, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get photoSizeBytes => $composableBuilder(
+      column: $table.photoSizeBytes,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$JournalEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $JournalEntriesTable> {
+  $$JournalEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<int> get stageNumber => $composableBuilder(
+      column: $table.stageNumber, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get photoPath =>
+      $composableBuilder(column: $table.photoPath, builder: (column) => column);
+
+  GeneratedColumn<int> get photoSizeBytes => $composableBuilder(
+      column: $table.photoSizeBytes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$JournalEntriesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $JournalEntriesTable,
+    JournalEntry,
+    $$JournalEntriesTableFilterComposer,
+    $$JournalEntriesTableOrderingComposer,
+    $$JournalEntriesTableAnnotationComposer,
+    $$JournalEntriesTableCreateCompanionBuilder,
+    $$JournalEntriesTableUpdateCompanionBuilder,
+    (
+      JournalEntry,
+      BaseReferences<_$AppDatabase, $JournalEntriesTable, JournalEntry>
+    ),
+    JournalEntry,
+    PrefetchHooks Function()> {
+  $$JournalEntriesTableTableManager(
+      _$AppDatabase db, $JournalEntriesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$JournalEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$JournalEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$JournalEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> trailId = const Value.absent(),
+            Value<int> stageNumber = const Value.absent(),
+            Value<String> content = const Value.absent(),
+            Value<String?> photoPath = const Value.absent(),
+            Value<int?> photoSizeBytes = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+          }) =>
+              JournalEntriesCompanion(
+            id: id,
+            trailId: trailId,
+            stageNumber: stageNumber,
+            content: content,
+            photoPath: photoPath,
+            photoSizeBytes: photoSizeBytes,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String trailId,
+            required int stageNumber,
+            Value<String> content = const Value.absent(),
+            Value<String?> photoPath = const Value.absent(),
+            Value<int?> photoSizeBytes = const Value.absent(),
+            required DateTime createdAt,
+            Value<DateTime?> updatedAt = const Value.absent(),
+          }) =>
+              JournalEntriesCompanion.insert(
+            id: id,
+            trailId: trailId,
+            stageNumber: stageNumber,
+            content: content,
+            photoPath: photoPath,
+            photoSizeBytes: photoSizeBytes,
+            createdAt: createdAt,
+            updatedAt: updatedAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$JournalEntriesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $JournalEntriesTable,
+    JournalEntry,
+    $$JournalEntriesTableFilterComposer,
+    $$JournalEntriesTableOrderingComposer,
+    $$JournalEntriesTableAnnotationComposer,
+    $$JournalEntriesTableCreateCompanionBuilder,
+    $$JournalEntriesTableUpdateCompanionBuilder,
+    (
+      JournalEntry,
+      BaseReferences<_$AppDatabase, $JournalEntriesTable, JournalEntry>
+    ),
+    JournalEntry,
+    PrefetchHooks Function()>;
+typedef $$WeatherCacheTableCreateCompanionBuilder = WeatherCacheCompanion
+    Function({
+  Value<int> id,
+  required String trailId,
+  required int stageNumber,
+  required String forecastJson,
+  required DateTime fetchedAt,
+  required DateTime expiresAt,
+});
+typedef $$WeatherCacheTableUpdateCompanionBuilder = WeatherCacheCompanion
+    Function({
+  Value<int> id,
+  Value<String> trailId,
+  Value<int> stageNumber,
+  Value<String> forecastJson,
+  Value<DateTime> fetchedAt,
+  Value<DateTime> expiresAt,
+});
+
+class $$WeatherCacheTableFilterComposer
+    extends Composer<_$AppDatabase, $WeatherCacheTable> {
+  $$WeatherCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get stageNumber => $composableBuilder(
+      column: $table.stageNumber, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get forecastJson => $composableBuilder(
+      column: $table.forecastJson, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get fetchedAt => $composableBuilder(
+      column: $table.fetchedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get expiresAt => $composableBuilder(
+      column: $table.expiresAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$WeatherCacheTableOrderingComposer
+    extends Composer<_$AppDatabase, $WeatherCacheTable> {
+  $$WeatherCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get stageNumber => $composableBuilder(
+      column: $table.stageNumber, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get forecastJson => $composableBuilder(
+      column: $table.forecastJson,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get fetchedAt => $composableBuilder(
+      column: $table.fetchedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get expiresAt => $composableBuilder(
+      column: $table.expiresAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$WeatherCacheTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WeatherCacheTable> {
+  $$WeatherCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<int> get stageNumber => $composableBuilder(
+      column: $table.stageNumber, builder: (column) => column);
+
+  GeneratedColumn<String> get forecastJson => $composableBuilder(
+      column: $table.forecastJson, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get fetchedAt =>
+      $composableBuilder(column: $table.fetchedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get expiresAt =>
+      $composableBuilder(column: $table.expiresAt, builder: (column) => column);
+}
+
+class $$WeatherCacheTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $WeatherCacheTable,
+    WeatherCacheData,
+    $$WeatherCacheTableFilterComposer,
+    $$WeatherCacheTableOrderingComposer,
+    $$WeatherCacheTableAnnotationComposer,
+    $$WeatherCacheTableCreateCompanionBuilder,
+    $$WeatherCacheTableUpdateCompanionBuilder,
+    (
+      WeatherCacheData,
+      BaseReferences<_$AppDatabase, $WeatherCacheTable, WeatherCacheData>
+    ),
+    WeatherCacheData,
+    PrefetchHooks Function()> {
+  $$WeatherCacheTableTableManager(_$AppDatabase db, $WeatherCacheTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WeatherCacheTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WeatherCacheTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WeatherCacheTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> trailId = const Value.absent(),
+            Value<int> stageNumber = const Value.absent(),
+            Value<String> forecastJson = const Value.absent(),
+            Value<DateTime> fetchedAt = const Value.absent(),
+            Value<DateTime> expiresAt = const Value.absent(),
+          }) =>
+              WeatherCacheCompanion(
+            id: id,
+            trailId: trailId,
+            stageNumber: stageNumber,
+            forecastJson: forecastJson,
+            fetchedAt: fetchedAt,
+            expiresAt: expiresAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String trailId,
+            required int stageNumber,
+            required String forecastJson,
+            required DateTime fetchedAt,
+            required DateTime expiresAt,
+          }) =>
+              WeatherCacheCompanion.insert(
+            id: id,
+            trailId: trailId,
+            stageNumber: stageNumber,
+            forecastJson: forecastJson,
+            fetchedAt: fetchedAt,
+            expiresAt: expiresAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$WeatherCacheTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $WeatherCacheTable,
+    WeatherCacheData,
+    $$WeatherCacheTableFilterComposer,
+    $$WeatherCacheTableOrderingComposer,
+    $$WeatherCacheTableAnnotationComposer,
+    $$WeatherCacheTableCreateCompanionBuilder,
+    $$WeatherCacheTableUpdateCompanionBuilder,
+    (
+      WeatherCacheData,
+      BaseReferences<_$AppDatabase, $WeatherCacheTable, WeatherCacheData>
+    ),
+    WeatherCacheData,
+    PrefetchHooks Function()>;
+typedef $$FeedbackQueueTableCreateCompanionBuilder = FeedbackQueueCompanion
+    Function({
+  Value<int> id,
+  required String trailId,
+  required String feedbackType,
+  required String content,
+  Value<int?> rating,
+  Value<String> status,
+  required DateTime createdAt,
+  Value<DateTime?> sentAt,
+});
+typedef $$FeedbackQueueTableUpdateCompanionBuilder = FeedbackQueueCompanion
+    Function({
+  Value<int> id,
+  Value<String> trailId,
+  Value<String> feedbackType,
+  Value<String> content,
+  Value<int?> rating,
+  Value<String> status,
+  Value<DateTime> createdAt,
+  Value<DateTime?> sentAt,
+});
+
+class $$FeedbackQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $FeedbackQueueTable> {
+  $$FeedbackQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get feedbackType => $composableBuilder(
+      column: $table.feedbackType, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get rating => $composableBuilder(
+      column: $table.rating, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get sentAt => $composableBuilder(
+      column: $table.sentAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$FeedbackQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $FeedbackQueueTable> {
+  $$FeedbackQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get feedbackType => $composableBuilder(
+      column: $table.feedbackType,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get content => $composableBuilder(
+      column: $table.content, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get rating => $composableBuilder(
+      column: $table.rating, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get status => $composableBuilder(
+      column: $table.status, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get sentAt => $composableBuilder(
+      column: $table.sentAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$FeedbackQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FeedbackQueueTable> {
+  $$FeedbackQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<String> get feedbackType => $composableBuilder(
+      column: $table.feedbackType, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<int> get rating =>
+      $composableBuilder(column: $table.rating, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get sentAt =>
+      $composableBuilder(column: $table.sentAt, builder: (column) => column);
+}
+
+class $$FeedbackQueueTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $FeedbackQueueTable,
+    FeedbackQueueData,
+    $$FeedbackQueueTableFilterComposer,
+    $$FeedbackQueueTableOrderingComposer,
+    $$FeedbackQueueTableAnnotationComposer,
+    $$FeedbackQueueTableCreateCompanionBuilder,
+    $$FeedbackQueueTableUpdateCompanionBuilder,
+    (
+      FeedbackQueueData,
+      BaseReferences<_$AppDatabase, $FeedbackQueueTable, FeedbackQueueData>
+    ),
+    FeedbackQueueData,
+    PrefetchHooks Function()> {
+  $$FeedbackQueueTableTableManager(_$AppDatabase db, $FeedbackQueueTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FeedbackQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FeedbackQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FeedbackQueueTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> trailId = const Value.absent(),
+            Value<String> feedbackType = const Value.absent(),
+            Value<String> content = const Value.absent(),
+            Value<int?> rating = const Value.absent(),
+            Value<String> status = const Value.absent(),
+            Value<DateTime> createdAt = const Value.absent(),
+            Value<DateTime?> sentAt = const Value.absent(),
+          }) =>
+              FeedbackQueueCompanion(
+            id: id,
+            trailId: trailId,
+            feedbackType: feedbackType,
+            content: content,
+            rating: rating,
+            status: status,
+            createdAt: createdAt,
+            sentAt: sentAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String trailId,
+            required String feedbackType,
+            required String content,
+            Value<int?> rating = const Value.absent(),
+            Value<String> status = const Value.absent(),
+            required DateTime createdAt,
+            Value<DateTime?> sentAt = const Value.absent(),
+          }) =>
+              FeedbackQueueCompanion.insert(
+            id: id,
+            trailId: trailId,
+            feedbackType: feedbackType,
+            content: content,
+            rating: rating,
+            status: status,
+            createdAt: createdAt,
+            sentAt: sentAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$FeedbackQueueTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $FeedbackQueueTable,
+    FeedbackQueueData,
+    $$FeedbackQueueTableFilterComposer,
+    $$FeedbackQueueTableOrderingComposer,
+    $$FeedbackQueueTableAnnotationComposer,
+    $$FeedbackQueueTableCreateCompanionBuilder,
+    $$FeedbackQueueTableUpdateCompanionBuilder,
+    (
+      FeedbackQueueData,
+      BaseReferences<_$AppDatabase, $FeedbackQueueTable, FeedbackQueueData>
+    ),
+    FeedbackQueueData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3019,4 +4872,10 @@ class $AppDatabaseManager {
       $$UserProgressEntriesTableTableManager(_db, _db.userProgressEntries);
   $$ChecklistItemsTableTableManager get checklistItems =>
       $$ChecklistItemsTableTableManager(_db, _db.checklistItems);
+  $$JournalEntriesTableTableManager get journalEntries =>
+      $$JournalEntriesTableTableManager(_db, _db.journalEntries);
+  $$WeatherCacheTableTableManager get weatherCache =>
+      $$WeatherCacheTableTableManager(_db, _db.weatherCache);
+  $$FeedbackQueueTableTableManager get feedbackQueue =>
+      $$FeedbackQueueTableTableManager(_db, _db.feedbackQueue);
 }

@@ -117,5 +117,99 @@
       "towel": "Handtuch"
     },
     "essential": "Wesentlich"
+  },
+  "journal": {
+    "title": "Wandertagebuch",
+    "empty": "Ihr Tagebuch ist leer",
+    "emptySubtitle": "Notieren Sie Ihre Eindrücke und Erinnerungen",
+    "addNote": "Neue Notiz",
+    "stage": "Etappe",
+    "yourNote": "Ihre Notiz",
+    "placeholder": "Beschreiben Sie Ihren Wandertag...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "photoLimit": "Limit von 3 Fotos pro Tag erreicht",
+    "photoTooBig": "Foto zu groß (max 500 KB)"
+  },
+  "weather": {
+    "title": "Wetter",
+    "loading": "Wetter wird geladen...",
+    "offline": "Keine Verbindung. Wetterdaten nicht verfügbar.",
+    "error": "Wetter konnte nicht geladen werden.",
+    "cached": "Zwischengespeicherte Daten",
+    "alerts": "Wetterwarnungen",
+    "refresh": "Aktualisieren",
+    "temperature": "Temperatur",
+    "precipitation": "Niederschlag",
+    "wind": "Wind",
+    "uv": "UV-Index"
+  },
+  "share": {
+    "title": "Teilen",
+    "generating": "Wird generiert...",
+    "share": "Teilen",
+    "error": "Fehler bei der Erstellung"
+  },
+  "diploma": {
+    "title": "Wanderdiplom",
+    "yourName": "Ihr Name",
+    "namePlaceholder": "Geben Sie Ihren Namen ein...",
+    "generatePdf": "PDF erstellen",
+    "certifies": "Bestätigt, dass",
+    "completed": "den Weg abgeschlossen hat"
+  },
+  "notifications": {
+    "morningReminder": "Morgenerinnerung",
+    "weatherAlerts": "Wetterwarnungen",
+    "countdown": "Erinnerung 2 Tage vorher",
+    "countdownDesc": "Benachrichtigung 2 Tage vor Abreise"
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "language": "Sprache",
+    "units": "Einheiten",
+    "distance": "Entfernung",
+    "temperature": "Temperatur",
+    "theme": "Thema",
+    "dark": "Dunkel",
+    "light": "Hell",
+    "system": "System",
+    "cache": "Cache",
+    "cacheEnabled": "Cache aktiviert",
+    "cacheDesc": "Daten offline verfügbar",
+    "cacheSize": "Cache-Größe",
+    "notifications": "Benachrichtigungen"
+  },
+  "feedback": {
+    "title": "Feedback",
+    "type": "Feedbacktyp",
+    "bug": "Fehler / Problem",
+    "suggestion": "Vorschlag",
+    "question": "Frage",
+    "other": "Sonstiges",
+    "message": "Ihre Nachricht",
+    "messagePlaceholder": "Beschreiben Sie Ihr Feedback...",
+    "satisfaction": "Zufriedenheit",
+    "send": "Senden",
+    "sending": "Wird gesendet...",
+    "thanks": "Vielen Dank für Ihr Feedback!",
+    "pending": "ausstehend"
+  },
+  "auth": {
+    "profile": "Profil",
+    "anonymous": "Anonymer Wanderer",
+    "connectedVia": "Verbunden über",
+    "signInGoogle": "Mit Google anmelden",
+    "signInGoogleDesc": "Um Ihren Fortschritt zu speichern",
+    "signOut": "Abmelden",
+    "signOutDesc": "Zurück zum anonymen Modus",
+    "signOutConfirm": "Abmelden?",
+    "signOutMessage": "Sie kehren zum anonymen Modus zurück. Ihre lokalen Daten bleiben erhalten.",
+    "deleteAccount": "Mein Konto löschen",
+    "deleteAccountDesc": "Alle Ihre Daten werden gelöscht",
+    "deleteConfirm": "Konto löschen?",
+    "deleteMessage": "Diese Aktion ist unwiderruflich. Alle Ihre Daten, Notizen und Fortschritte werden gelöscht.",
+    "cancel": "Abbrechen"
   }
 }
