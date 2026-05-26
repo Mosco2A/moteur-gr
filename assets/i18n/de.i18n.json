@@ -19,7 +19,9 @@
       "moderate": "Mittel",
       "hard": "Schwer",
       "expert": "Experte"
-    }
+    },
+    "remaining": "{distance} km verbleibend",
+    "arrived": "Sie sind angekommen!"
   },
   "trail": {
     "stages": "Etappen",
@@ -38,5 +40,12 @@
     "filter": "Sehenswürdigkeiten filtern",
     "altitude": "Höhe",
     "hours": "Öffnungszeiten"
+  },
+  "gps": {
+    "permission": "GPS-Berechtigung erforderlich",
+    "denied": "Standortzugriff verweigert",
+    "disabled": "Standortdienst deaktiviert",
+    "offTrack": "Abseits der Strecke",
+    "centerOnMe": "Auf meine Position zentrieren"
   }
 }

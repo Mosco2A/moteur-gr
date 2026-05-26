@@ -19,7 +19,9 @@
       "moderate": "Moderado",
       "hard": "Difícil",
       "expert": "Experto"
-    }
+    },
+    "remaining": "{distance} km restantes",
+    "arrived": "Has llegado!"
   },
   "trail": {
     "stages": "Etapas",
@@ -38,5 +40,12 @@
     "filter": "Filtrar puntos de interés",
     "altitude": "Altitud",
     "hours": "Horarios"
+  },
+  "gps": {
+    "permission": "Permiso GPS requerido",
+    "denied": "Acceso a la ubicacion denegado",
+    "disabled": "Servicio de ubicacion desactivado",
+    "offTrack": "Fuera del sendero",
+    "centerOnMe": "Centrar en mi posicion"
   }
 }
