@@ -25,5 +25,18 @@
     "stages": "Étapes",
     "totalDistance": "Distance totale",
     "totalElevation": "Dénivelé total"
+  },
+  "poi": {
+    "shelter": "Refuge",
+    "water": "Point d'eau",
+    "viewpoint": "Point de vue",
+    "campsite": "Bivouac",
+    "restaurant": "Restaurant",
+    "emergency": "Urgence",
+    "danger": "Danger",
+    "shop": "Commerce",
+    "filter": "Filtrer les points d'intérêt",
+    "altitude": "Altitude",
+    "hours": "Horaires"
   }
 }

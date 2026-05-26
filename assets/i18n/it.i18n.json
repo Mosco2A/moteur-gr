@@ -25,5 +25,18 @@
     "stages": "Tappe",
     "totalDistance": "Distanza totale",
     "totalElevation": "Dislivello totale"
+  },
+  "poi": {
+    "shelter": "Rifugio",
+    "water": "Fonte d'acqua",
+    "viewpoint": "Punto panoramico",
+    "campsite": "Bivacco",
+    "restaurant": "Ristorante",
+    "emergency": "Emergenza",
+    "danger": "Pericolo",
+    "shop": "Negozio",
+    "filter": "Filtra i punti di interesse",
+    "altitude": "Altitudine",
+    "hours": "Orari"
   }
 }

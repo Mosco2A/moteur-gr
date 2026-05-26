@@ -5,10 +5,15 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_point.dart';
+import '../../../core/models/poi.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/loading_overlay.dart';
 import '../providers/gpx_track_provider.dart';
+import '../providers/map_pois_provider.dart';
 import '../providers/simplified_track_provider.dart';
+import '../widgets/poi_filter_bar.dart';
+import '../widgets/poi_marker.dart';
+import '../widgets/poi_popup.dart';
 import '../widgets/trail_polyline.dart';
 
 /// Écran carte plein écran affichant le tracé GPX du sentier.
@@ -29,6 +34,7 @@ class TrailMapScreen extends ConsumerStatefulWidget {
 class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
   final MapController _mapController = MapController();
   int _currentZoom = 10;
+  PoiModel? _selectedPoi;
 
   @override
   void dispose() {
@@ -94,32 +100,88 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
             )),
           );
 
+          // Récupérer les POIs filtrés pour le sentier
+          final poisAsync = ref.watch(mapPoisProvider(widget.trailId));
+          final filteredPois = poisAsync.valueOrNull ?? [];
+
           final displayPoints = simplifiedAsync.valueOrNull ?? points;
           final bounds = _boundsFromPoints(points);
 
-          return FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCameraFit: CameraFit.bounds(
-                bounds: bounds,
-                padding: const EdgeInsets.all(32),
-              ),
-              onPositionChanged: (position, hasGesture) {
-                final newZoom = position.zoom?.round() ?? _currentZoom;
-                if (newZoom != _currentZoom) {
-                  setState(() => _currentZoom = newZoom);
-                }
-              },
-            ),
+          return Column(
             children: [
-              TileLayer(
-                urlTemplate:
-                    'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.moteur-gr.app',
-              ),
-              TrailPolyline.build(
-                points: displayPoints,
-                color: trailColor,
+              // Barre de filtres POI
+              PoiFilterBar(trailId: widget.trailId),
+
+              // Carte avec tracé et marqueurs POI
+              Expanded(
+                child: Stack(
+                  children: [
+                    FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        initialCameraFit: CameraFit.bounds(
+                          bounds: bounds,
+                          padding: const EdgeInsets.all(32),
+                        ),
+                        onPositionChanged: (position, hasGesture) {
+                          final newZoom =
+                              position.zoom?.round() ?? _currentZoom;
+                          if (newZoom != _currentZoom) {
+                            setState(() => _currentZoom = newZoom);
+                          }
+                        },
+                        onTap: (_, __) {
+                          // Fermer le popup quand on tape ailleurs
+                          if (_selectedPoi != null) {
+                            setState(() => _selectedPoi = null);
+                          }
+                        },
+                      ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'com.moteur-gr.app',
+                        ),
+                        TrailPolyline.build(
+                          points: displayPoints,
+                          color: trailColor,
+                        ),
+                        // Couche des marqueurs POI
+                        MarkerLayer(
+                          markers: filteredPois.map((poi) {
+                            return Marker(
+                              point: LatLng(poi.lat, poi.lng),
+                              width: 36,
+                              height: 36,
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() => _selectedPoi = poi);
+                                },
+                                child: PoiMarker(type: poi.type),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+
+                    // Popup du POI sélectionné
+                    if (_selectedPoi != null)
+                      Positioned(
+                        bottom: 16,
+                        left: 16,
+                        right: 16,
+                        child: Center(
+                          child: GestureDetector(
+                            onTap: () =>
+                                setState(() => _selectedPoi = null),
+                            child: PoiPopup(poi: _selectedPoi!),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             ],
           );

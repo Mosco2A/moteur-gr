@@ -25,5 +25,18 @@
     "stages": "Stages",
     "totalDistance": "Total distance",
     "totalElevation": "Total elevation"
+  },
+  "poi": {
+    "shelter": "Shelter",
+    "water": "Water source",
+    "viewpoint": "Viewpoint",
+    "campsite": "Campsite",
+    "restaurant": "Restaurant",
+    "emergency": "Emergency",
+    "danger": "Danger",
+    "shop": "Shop",
+    "filter": "Filter points of interest",
+    "altitude": "Altitude",
+    "hours": "Opening hours"
   }
 }

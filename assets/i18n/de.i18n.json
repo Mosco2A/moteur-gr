@@ -25,5 +25,18 @@
     "stages": "Etappen",
     "totalDistance": "Gesamtstrecke",
     "totalElevation": "Gesamthöhenmeter"
+  },
+  "poi": {
+    "shelter": "Schutzhütte",
+    "water": "Wasserquelle",
+    "viewpoint": "Aussichtspunkt",
+    "campsite": "Biwakplatz",
+    "restaurant": "Restaurant",
+    "emergency": "Notfall",
+    "danger": "Gefahr",
+    "shop": "Geschäft",
+    "filter": "Sehenswürdigkeiten filtern",
+    "altitude": "Höhe",
+    "hours": "Öffnungszeiten"
   }
 }
