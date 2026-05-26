@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/config/trail_config.dart';
 import 'core/engine/trail_engine.dart';
+import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 
 void main() {
@@ -24,6 +25,10 @@ void main() {
   runApp(const MoteurGrApp(config: devConfig));
 }
 
+/// Application racine du Moteur GR.
+///
+/// Wrappee dans ProviderScope pour Riverpod,
+/// utilise GoRouter pour la navigation.
 class MoteurGrApp extends StatelessWidget {
   const MoteurGrApp({super.key, required this.config});
 
@@ -35,45 +40,14 @@ class MoteurGrApp extends StatelessWidget {
       overrides: [
         trailConfigProvider.overrideWithValue(config),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: config.displayName,
         debugShowCheckedModeBanner: false,
         theme: AppTheme.buildDarkTheme(
           primaryColor: Color(config.primaryColorValue),
           secondaryColor: Color(config.secondaryColorValue),
         ),
-        home: _HomeScreen(config: config),
-      ),
-    );
-  }
-}
-
-class _HomeScreen extends StatelessWidget {
-  const _HomeScreen({required this.config});
-  final TrailConfig config;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(config.displayName)),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.hiking, size: 80,
-              color: theme.colorScheme.primary),
-            const SizedBox(height: 24),
-            Text(config.displayName,
-              style: theme.textTheme.headlineLarge),
-            const SizedBox(height: 8),
-            Text(config.tagline,
-              style: theme.textTheme.bodyLarge),
-            const SizedBox(height: 32),
-            Text('Moteur GR v0.1.0',
-              style: theme.textTheme.bodySmall),
-          ],
-        ),
+        routerConfig: appRouter,
       ),
     );
   }
