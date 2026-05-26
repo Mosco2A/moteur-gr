@@ -18,7 +18,7 @@ void main() {
     test('la route /trail/:id a des sous-routes stage et map', () {
       final trailRoute = appRouter.configuration.routes[1] as GoRoute;
       expect(trailRoute.path, '/trail/:id');
-      expect(trailRoute.routes.length, 2);
+      expect(trailRoute.routes.length, 3);
 
       final stageRoute = trailRoute.routes[0] as GoRoute;
       expect(stageRoute.path, 'stage/:num');

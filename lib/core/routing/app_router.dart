@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/map/presentation/trail_map_screen.dart';
+import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
@@ -10,11 +11,12 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 /// Configuration du routeur GoRouter.
 ///
 /// Routes :
-///   /trails              — Liste des sentiers
-///   /trail/:id           — Détail d'un sentier
-///   /trail/:id/stage/:num — Détail d'une étape
-///   /trail/:id/map       — Carte du tracé GPX
-///   /settings            — Paramètres
+///   /trails                — Liste des sentiers
+///   /trail/:id             — Détail d'un sentier
+///   /trail/:id/stage/:num  — Détail d'une étape
+///   /trail/:id/map         — Carte du tracé GPX
+///   /trail/:id/planning    — Planning de répartition
+///   /settings              — Paramètres
 final appRouter = GoRouter(
   initialLocation: '/trails',
   routes: [
@@ -50,6 +52,14 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
             return TrailMapScreen(trailId: trailId);
+          },
+        ),
+        GoRoute(
+          path: 'planning',
+          name: 'trail-planning',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return PlanningScreen(trailId: trailId);
           },
         ),
       ],

@@ -47,5 +47,17 @@
     "disabled": "Servicio de ubicacion desactivado",
     "offTrack": "Fuera del sendero",
     "centerOnMe": "Centrar en mi posicion"
+  },
+  "planning": {
+    "title": "Planificación",
+    "duration": "Duración",
+    "days": "días",
+    "day": "Día",
+    "restDay": "Día de descanso",
+    "totalDistance": "Distancia total",
+    "totalElevation": "Desnivel total",
+    "estimatedTime": "Duración estimada",
+    "stages": "Etapas",
+    "plan": "Planificar"
   }
 }

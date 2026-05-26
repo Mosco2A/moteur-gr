@@ -85,14 +85,29 @@ class TrailDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
-      // Bouton vers la carte
+      // Boutons d'action en bas
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: ElevatedButton.icon(
-            onPressed: () => context.go('/trail/$trailId/map'),
-            icon: const Icon(Icons.terrain),
-            label: const Text('Voir la carte'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Bouton Planifier
+              OutlinedButton.icon(
+                onPressed: () =>
+                    context.go('/trail/$trailId/planning'),
+                icon: const Icon(Icons.calendar_month),
+                label: const Text('Planifier'),
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              // Bouton Voir la carte
+              ElevatedButton.icon(
+                onPressed: () =>
+                    context.go('/trail/$trailId/map'),
+                icon: const Icon(Icons.terrain),
+                label: const Text('Voir la carte'),
+              ),
+            ],
           ),
         ),
       ),

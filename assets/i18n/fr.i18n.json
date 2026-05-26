@@ -47,5 +47,17 @@
     "disabled": "Service de localisation desactive",
     "offTrack": "Hors trace",
     "centerOnMe": "Centrer sur ma position"
+  },
+  "planning": {
+    "title": "Planning",
+    "duration": "Durée",
+    "days": "jours",
+    "day": "Jour",
+    "restDay": "Jour de repos",
+    "totalDistance": "Distance totale",
+    "totalElevation": "Dénivelé total",
+    "estimatedTime": "Durée estimée",
+    "stages": "Étapes",
+    "plan": "Planifier"
   }
 }

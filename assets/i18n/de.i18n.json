@@ -47,5 +47,17 @@
     "disabled": "Standortdienst deaktiviert",
     "offTrack": "Abseits der Strecke",
     "centerOnMe": "Auf meine Position zentrieren"
+  },
+  "planning": {
+    "title": "Planung",
+    "duration": "Dauer",
+    "days": "Tage",
+    "day": "Tag",
+    "restDay": "Ruhetag",
+    "totalDistance": "Gesamtstrecke",
+    "totalElevation": "Gesamthöhenmeter",
+    "estimatedTime": "Geschätzte Dauer",
+    "stages": "Etappen",
+    "plan": "Planen"
   }
 }

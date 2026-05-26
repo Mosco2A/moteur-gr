@@ -47,5 +47,17 @@
     "disabled": "Location service disabled",
     "offTrack": "Off track",
     "centerOnMe": "Center on my position"
+  },
+  "planning": {
+    "title": "Planning",
+    "duration": "Duration",
+    "days": "days",
+    "day": "Day",
+    "restDay": "Rest day",
+    "totalDistance": "Total distance",
+    "totalElevation": "Total elevation",
+    "estimatedTime": "Estimated time",
+    "stages": "Stages",
+    "plan": "Plan"
   }
 }
