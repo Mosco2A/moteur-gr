@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/map/presentation/trail_map_screen.dart';
+import '../../features/trek/presentation/map/map_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
@@ -17,6 +18,7 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 ///   /trail/:id/map         — Carte du tracé GPX
 ///   /trail/:id/planning    — Planning de répartition
 ///   /settings              — Paramètres
+///   /map                   — Carte trek (assemblage complet)
 final appRouter = GoRouter(
   initialLocation: '/trails',
   routes: [
@@ -68,6 +70,11 @@ final appRouter = GoRouter(
       path: '/settings',
       name: 'settings',
       builder: (context, state) => const SettingsScreen(),
+    ),
+    GoRoute(
+      path: '/map',
+      name: 'trek-map',
+      builder: (context, state) => const MapScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(
