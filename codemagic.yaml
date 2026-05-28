@@ -1,0 +1,100 @@
+# =============================================================================
+# Codemagic CI/CD — Moteur GR (moteur_gr)
+# =============================================================================
+#
+# Deux workflows:
+#   1. pr_gate    — declenche sur chaque PR vers main
+#                   Qualite: analyze + test + format
+#   2. merge      — declenche sur push dans main (apres merge)
+#                   Qualite + build APK debug
+#
+# -----------------------------------------------------------------------------
+# Process Athena post-etape:
+#   Apres chaque etape du plan V7, Athena (agent communication) est notifiee
+#   pour mettre a jour le suivi de progression. Le workflow pr_gate valide
+#   la qualite AVANT merge; le workflow merge confirme la stabilite post-merge
+#   et declenche le build APK debug pour validation manuelle.
+#   Athena consomme les resultats CI (pass/fail) pour alimenter les rapports
+#   de progression du projet GR20.
+# -----------------------------------------------------------------------------
+
+workflows:
+
+  # ---------------------------------------------------------------------------
+  # Workflow 1 — PR Gate (qualite sur chaque Pull Request)
+  # ---------------------------------------------------------------------------
+  pr_gate:
+    name: PR Gate — Qualite
+    instance_type: mac_mini_m2
+    max_build_duration: 15
+
+    triggering:
+      events:
+        - pull_request
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: false
+
+    environment:
+      flutter: stable
+
+    scripts:
+      # Recuperation des dependances
+      - name: Flutter pub get
+        script: flutter pub get
+
+      # Analyse statique (dart analyze)
+      - name: Dart analyze
+        script: dart analyze --fatal-infos
+
+      # Tests unitaires et widget
+      - name: Flutter test
+        script: flutter test
+
+      # Verification du formatage (echec si non conforme)
+      - name: Flutter format check
+        script: dart format --set-exit-if-changed .
+
+  # ---------------------------------------------------------------------------
+  # Workflow 2 — Merge (qualite + build APK debug sur push main)
+  # ---------------------------------------------------------------------------
+  merge:
+    name: Merge — Qualite + Build APK
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+
+    environment:
+      flutter: stable
+
+    scripts:
+      # Recuperation des dependances
+      - name: Flutter pub get
+        script: flutter pub get
+
+      # Analyse statique (dart analyze)
+      - name: Dart analyze
+        script: dart analyze --fatal-infos
+
+      # Tests unitaires et widget
+      - name: Flutter test
+        script: flutter test
+
+      # Verification du formatage (echec si non conforme)
+      - name: Flutter format check
+        script: dart format --set-exit-if-changed .
+
+      # Build APK debug (validation post-merge)
+      - name: Build APK debug
+        script: flutter build apk --debug
+
+    artifacts:
+      - build/app/outputs/flutter-apk/app-debug.apk
