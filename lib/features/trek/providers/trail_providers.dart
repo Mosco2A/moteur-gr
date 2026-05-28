@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/providers/database_provider.dart';
 import '../data/drift_trail_data_provider.dart';
+import '../domain/models/stage.dart';
 import '../domain/trail_data_provider.dart';
 
 /// Provider Riverpod pour [TrailDataProvider].
@@ -43,4 +44,24 @@ final trailConfigProvider = Provider<TrailConfig>((ref) {
     'trailConfigProvider doit etre overridden avec la TrailConfig du sentier. '
     'Voir le main() de chaque app sentier.',
   );
+});
+
+/// Provider des etapes du sentier actif pour le mode trek.
+///
+/// Charge les etapes depuis [TrailDataProvider.getStages()]
+/// (implementation Drift injectee via [trailDataProvider]).
+/// Resultat en cache tant que le provider est vivant.
+///
+/// Usage dans un Consumer :
+/// ```dart
+/// Consumer(
+///   builder: (context, ref, _) {
+///     final stagesAsync = ref.watch(trekStagesProvider);
+///     return stagesAsync.when(...);
+///   },
+/// )
+/// ```
+final trekStagesProvider = FutureProvider<List<Stage>>((ref) async {
+  final provider = ref.watch(trailDataProvider);
+  return provider.getStages();
 });

@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
 import '../../../../shared/widgets/empty_state.dart';
 import '../../../../shared/widgets/loading_overlay.dart';
+import '../../../map/providers/location_provider.dart';
+import '../../providers/trail_providers.dart';
+import 'controls/map_controls.dart';
+import 'layers/stage_markers_layer.dart';
+import 'layers/trace_layer.dart';
+import 'layers/user_position_layer.dart';
 import '../../../map/providers/gpx_track_provider.dart';
-import '../../../map/widgets/trail_polyline.dart';
 import 'map_controller_notifier.dart';
 
 /// Ecran carte principal du mode trek.
@@ -95,10 +101,14 @@ class _MapBody extends StatelessWidget {
   }
 }
 
-/// Contenu carte avec FlutterMap et overlays.
+/// Contenu carte avec FlutterMap et overlays -- tous layers assembles.
 ///
 /// Affiche la carte une fois les points GPS charges.
-/// Chaque donnee reactive est dans son propre Consumer.
+/// Chaque donnee reactive est dans son propre Consumer :
+/// - MapController + trace GPX dans le Consumer principal
+/// - Etapes dans un Consumer dedie (StageMarkersLayer)
+/// - Position GPS dans un Consumer dedie (UserPositionLayer)
+/// - Controles dans un Consumer dedie (MapControls overlay)
 class _MapContent extends StatelessWidget {
   const _MapContent({
     required this.trailId,
@@ -123,6 +133,9 @@ class _MapContent extends StatelessWidget {
             );
 
             final bounds = _boundsFromPoints(points);
+            final latLngPoints = points
+                .map((tp) => LatLng(tp.lat, tp.lng))
+                .toList(growable: false);
 
             return FlutterMap(
               mapController: mapController,
@@ -133,45 +146,94 @@ class _MapContent extends StatelessWidget {
                 ),
               ),
               children: [
+                // Layer 1 : fond de carte OpenStreetMap
                 TileLayer(
                   urlTemplate:
                       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.moteur-gr.app',
                 ),
-                TrailPolyline.build(
-                  points: points,
+
+                // Layer 2 : trace GPX (polyline)
+                TraceLayer(
+                  points: latLngPoints,
                   color: trailColor,
+                ),
+
+                // Layer 3 : marqueurs des etapes (Consumer dedie)
+                Consumer(
+                  builder: (context, ref, _) {
+                    final stagesAsync = ref.watch(trekStagesProvider);
+                    return stagesAsync.when(
+                      loading: () => const SizedBox.shrink(),
+                      error: (_, __) => const SizedBox.shrink(),
+                      data: (stages) => StageMarkersLayer(
+                        stages: stages,
+                        onStageTap: (stageId) {
+                          context.pushNamed(
+                            'stage-detail',
+                            pathParameters: {
+                              'id': trailId,
+                              'num': _extractStageNumber(stageId),
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+
+                // Layer 4 : position GPS de l'utilisateur (Consumer dedie)
+                Consumer(
+                  builder: (context, ref, _) {
+                    final locationAsync = ref.watch(locationProvider);
+                    return locationAsync.when(
+                      loading: () => const UserPositionLayer(position: null),
+                      error: (_, __) =>
+                          const UserPositionLayer(position: null),
+                      data: (position) => UserPositionLayer(
+                        position: LatLng(
+                          position.latitude,
+                          position.longitude,
+                        ),
+                        accuracy: position.accuracy,
+                      ),
+                    );
+                  },
                 ),
               ],
             );
           },
         ),
 
-        // Overlay : bouton recentrer sur le trace
+        // Overlay : MapControls (zoom + centrer sur moi)
         Positioned(
           right: 16,
           bottom: 16,
           child: Consumer(
             builder: (context, ref, _) {
-              return FloatingActionButton.small(
-                heroTag: 'centerOnTrail',
-                onPressed: () {
-                  final controller = ref.read(mapControllerProvider);
-                  final bounds = _boundsFromPoints(points);
-                  controller.fitCamera(
-                    CameraFit.bounds(
-                      bounds: bounds,
-                      padding: const EdgeInsets.all(32),
-                    ),
-                  );
+              return MapControls(
+                mapController: ref.watch(mapControllerProvider),
+                onCenterOnMe: () {
+                  final locationAsync = ref.read(locationProvider);
+                  locationAsync.whenData((position) {
+                    ref.read(mapControllerProvider).move(
+                          LatLng(position.latitude, position.longitude),
+                          15.0,
+                        );
+                  });
                 },
-                child: const Icon(Icons.center_focus_strong),
               );
             },
           ),
         ),
       ],
     );
+  }
+
+  /// Extrait le numero d'etape depuis un stageId (format: 'trailId-N').
+  String _extractStageNumber(String stageId) {
+    final parts = stageId.split('-');
+    return parts.isNotEmpty ? parts.last : '1';
   }
 
   /// Calcule la bounding box englobant tous les points du trace.
