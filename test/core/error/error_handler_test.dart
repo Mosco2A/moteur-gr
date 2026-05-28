@@ -16,8 +16,8 @@ void main() {
         expect(ErrorHandler.classify(error), ErrorCategory.network);
       });
 
-      test('TimeoutException -> network', () {
-        final error = const TimeoutException('Request timed out');
+      test('AppTimeoutException -> network', () {
+        final error = const AppTimeoutException('Request timed out');
         expect(ErrorHandler.classify(error), ErrorCategory.network);
       });
 

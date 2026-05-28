@@ -92,7 +92,7 @@ class ErrorHandler {
     final message = error.toString().toLowerCase();
     return message.contains('timeout') ||
         message.contains('timed out') ||
-        error is TimeoutException;
+        error is AppTimeoutException;
   }
 
   static bool _isDatabaseError(Object error) {
@@ -118,11 +118,12 @@ class ErrorHandler {
 /// Exception de timeout generique.
 ///
 /// Utilisee quand une operation depasse sa duree maximale.
-class TimeoutException implements Exception {
-  const TimeoutException([this.message]);
+/// Nommee AppTimeoutException pour eviter le conflit avec dart:async.TimeoutException.
+class AppTimeoutException implements Exception {
+  const AppTimeoutException([this.message]);
   final String? message;
 
   @override
   String toString() =>
-      message != null ? 'TimeoutException: $message' : 'TimeoutException';
+      message != null ? 'AppTimeoutException: $message' : 'AppTimeoutException';
 }
