@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "questions": [
+    {
+      "id": "fitness_level",
+      "field": "fitnessLevel",
+      "labelFr": "Quel est votre niveau de forme physique ?",
+      "labelEn": "What is your fitness level?",
+      "type": "single_choice",
+      "options": [
+        {
+          "value": "sedentary",
+          "labelFr": "Sedentaire",
+          "labelEn": "Sedentary",
+          "icon": "airline_seat_recline_normal",
+          "maxKmPerDay": 10.0,
+          "maxHoursPerDay": 4.0
+        },
+        {
+          "value": "average",
+          "labelFr": "Moyen",
+          "labelEn": "Average",
+          "icon": "directions_walk",
+          "maxKmPerDay": 15.0,
+          "maxHoursPerDay": 6.0
+        },
+        {
+          "value": "fit",
+          "labelFr": "En forme",
+          "labelEn": "Fit",
+          "icon": "hiking",
+          "maxKmPerDay": 22.0,
+          "maxHoursPerDay": 8.0
+        },
+        {
+          "value": "athletic",
+          "labelFr": "Sportif",
+          "labelEn": "Athletic",
+          "icon": "fitness_center",
+          "maxKmPerDay": 30.0,
+          "maxHoursPerDay": 10.0
+        }
+      ]
+    },
+    {
+      "id": "experience",
+      "field": "experience",
+      "labelFr": "Quelle est votre experience en randonnee ?",
+      "labelEn": "What is your hiking experience?",
+      "type": "single_choice",
+      "options": [
+        {
+          "value": "beginner",
+          "labelFr": "Debutant",
+          "labelEn": "Beginner",
+          "icon": "school"
+        },
+        {
+          "value": "intermediate",
+          "labelFr": "Intermediaire",
+          "labelEn": "Intermediate",
+          "icon": "terrain"
+        },
+        {
+          "value": "experienced",
+          "labelFr": "Experimente",
+          "labelEn": "Experienced",
+          "icon": "landscape"
+        },
+        {
+          "value": "expert",
+          "labelFr": "Expert",
+          "labelEn": "Expert",
+          "icon": "military_tech"
+        }
+      ]
+    },
+    {
+      "id": "max_km",
+      "field": "maxKmPerDay",
+      "labelFr": "Distance maximale par jour (km) ?",
+      "labelEn": "Maximum distance per day (km)?",
+      "type": "slider",
+      "min": 5.0,
+      "max": 35.0,
+      "divisions": 30,
+      "defaultValue": 20.0,
+      "unit": "km"
+    },
+    {
+      "id": "max_hours",
+      "field": "maxHoursPerDay",
+      "labelFr": "Heures maximales de marche par jour ?",
+      "labelEn": "Maximum walking hours per day?",
+      "type": "slider",
+      "min": 3.0,
+      "max": 12.0,
+      "divisions": 18,
+      "defaultValue": 8.0,
+      "unit": "h"
+    },
+    {
+      "id": "group_mode",
+      "field": "groupMode",
+      "labelFr": "Partez-vous en groupe ?",
+      "labelEn": "Are you going in a group?",
+      "type": "boolean",
+      "defaultValue": false
+    }
+  ]
+}
