@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
+import '../../features/trek/presentation/stage_detail_screen.dart';
+import '../../features/trek/presentation/stage_list_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
@@ -19,6 +21,8 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 ///   /trail/:id/planning    — Planning de répartition
 ///   /settings              — Paramètres
 ///   /map                   — Carte trek (assemblage complet)
+///   /stages                — Liste des étapes (mode trek)
+///   /stages/:id            — Détail d'une étape (mode trek)
 final appRouter = GoRouter(
   initialLocation: '/trails',
   routes: [
@@ -75,6 +79,21 @@ final appRouter = GoRouter(
       path: '/map',
       name: 'trek-map',
       builder: (context, state) => const MapScreen(),
+    ),
+    GoRoute(
+      path: '/stages',
+      name: 'trek-stages',
+      builder: (context, state) => const StageListScreen(),
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'trek-stage-detail',
+          builder: (context, state) {
+            final stageId = state.pathParameters['id'] ?? '';
+            return TrekStageDetailScreen(stageId: stageId);
+          },
+        ),
+      ],
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

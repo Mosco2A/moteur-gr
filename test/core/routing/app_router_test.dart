@@ -10,9 +10,9 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/trails');
     });
 
-    test('le router contient 3 routes de premier niveau', () {
-      // /trails, /trail/:id, /settings
-      expect(appRouter.configuration.routes.length, 3);
+    test('le router contient 5 routes de premier niveau', () {
+      // /trails, /trail/:id, /settings, /map, /stages
+      expect(appRouter.configuration.routes.length, 5);
     });
 
     test('la route /trail/:id a des sous-routes stage et map', () {
@@ -32,6 +32,8 @@ void main() {
       expect((routes[0] as GoRoute).name, 'trails');
       expect((routes[1] as GoRoute).name, 'trail-detail');
       expect((routes[2] as GoRoute).name, 'settings');
+      expect((routes[3] as GoRoute).name, 'trek-map');
+      expect((routes[4] as GoRoute).name, 'trek-stages');
 
       final trailRoute = routes[1] as GoRoute;
       final stageRoute = trailRoute.routes[0] as GoRoute;
@@ -39,6 +41,10 @@ void main() {
 
       final mapRoute = trailRoute.routes[1] as GoRoute;
       expect(mapRoute.name, 'trail-map');
+
+      final stagesRoute = routes[4] as GoRoute;
+      expect(stagesRoute.routes.length, 1);
+      expect((stagesRoute.routes[0] as GoRoute).name, 'trek-stage-detail');
     });
 
     testWidgets('navigation vers /trails affiche TrailListScreen',

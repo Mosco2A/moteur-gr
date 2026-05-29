@@ -66,18 +66,26 @@ final trekStagesProvider = FutureProvider<List<Stage>>((ref) async {
   return provider.getStages();
 });
 
-/// Provider pour l identifiant du sentier actif en mode trek.
+/// Provider pour l'identifiant du sentier actif en mode trek.
 ///
 /// Permet aux ecrans de navigation (StageListScreen, StageDetailScreen)
-/// de connaitre le sentier en cours sans dependre de parametres d URL.
-/// Initialement vide --- doit etre mis a jour au demarrage du trek.
+/// de connaitre le sentier en cours sans dependre de parametres d'URL.
+/// Initialement vide — doit etre mis a jour au demarrage du trek.
+///
+/// ```dart
+/// ref.read(currentTrailIdProvider.notifier).state = 'gr20';
+/// ```
 final currentTrailIdProvider = StateProvider<String>((ref) => '');
 
 /// Provider pour charger une etape par son identifiant.
 ///
-/// Parametre par l id de l etape (format: trailId-N).
+/// Parametre par l'id de l'etape (format: 'trailId-N').
 /// Charge toutes les etapes via [trekStagesProvider] puis filtre.
 /// Retourne null si aucune etape ne correspond.
+///
+/// ```dart
+/// final stageAsync = ref.watch(stageByIdProvider('gr20-3'));
+/// ```
 final stageByIdProvider =
     FutureProvider.family<Stage?, String>((ref, id) async {
   final stages = await ref.watch(trekStagesProvider.future);
