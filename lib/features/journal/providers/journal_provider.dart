@@ -47,8 +47,8 @@ class JournalNotifier extends Notifier<JournalState> {
 
   @override
   JournalState build() {
-    _dao = ref.watch(journalDaoProvider);
-    _trailId = ref.watch(trailIdProvider);
+    _dao = ref.read(journalDaoProvider);
+    _trailId = ref.read(trailIdProvider);
     _loadEntries();
     return const JournalState(isLoading: true);
   }

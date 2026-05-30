@@ -70,10 +70,11 @@ class FeedbackNotifier extends Notifier<FeedbackState> {
 
   @override
   FeedbackState build() {
-    _dao = ref.watch(feedbackQueueDaoProvider);
-    _trailId = ref.watch(trailIdProvider);
+    _dao = ref.read(feedbackQueueDaoProvider);
+    _trailId = ref.read(trailIdProvider);
     _connectivity =
-        ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatusValues.offline;
+        ref.watch(connectivityProvider.select((asyncVal) =>
+            asyncVal.valueOrNull ?? ConnectivityStatusValues.offline));
     _loadPendingCount();
     return const FeedbackState();
   }

@@ -99,11 +99,11 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
 
   @override
   Future<CatalogState> build() async {
-    _manifestService = ref.watch(manifestServiceProvider);
-    final db = ref.watch(databaseProvider);
+    _manifestService = ref.read(manifestServiceProvider);
+    final db = ref.read(databaseProvider);
     _manifestsDao = TrailManifestsDao(db);
     _trailMetaDao = TrailMetaDao(db);
-    _connectivity = ref.watch(connectivityMonitorProvider);
+    _connectivity = ref.read(connectivityMonitorProvider);
 
     return _loadCatalog();
   }

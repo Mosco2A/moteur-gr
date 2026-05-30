@@ -68,8 +68,8 @@ final checklistProvider =
 class ChecklistNotifier extends Notifier<ChecklistState> {
   @override
   ChecklistState build() {
-    final db = ref.watch(databaseProvider);
-    final trailId = ref.watch(trailIdProvider);
+    final db = ref.read(databaseProvider);
+    final trailId = ref.read(trailIdProvider);
     _db = db;
     _trailId = trailId;
     _load();

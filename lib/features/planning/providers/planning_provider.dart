@@ -12,8 +12,7 @@ import '../models/day_plan.dart';
 class SelectedDurationNotifier extends Notifier<int> {
   @override
   int build() {
-    final config = ref.watch(trailConfigProvider);
-    return config.defaultDuration;
+    return ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
   }
 
   void set(int duration) => state = duration;

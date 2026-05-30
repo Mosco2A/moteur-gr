@@ -54,7 +54,7 @@ class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
 
   @override
   NotificationSettings build() {
-    _service = ref.watch(notificationServiceProvider);
+    _service = ref.read(notificationServiceProvider);
     _checkPermissions();
     return const NotificationSettings();
   }
