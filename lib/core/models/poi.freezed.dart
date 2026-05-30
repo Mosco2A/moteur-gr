@@ -35,8 +35,8 @@ mixin _$PoiModel {
   /// Description
   String get description => throw _privateConstructorUsedError;
 
-  /// Type de POI
-  PoiType get type => throw _privateConstructorUsedError;
+  /// Type de POI (String extensible, ex: water, refuge, danger)
+  String get type => throw _privateConstructorUsedError;
 
   /// Latitude
   double get lat => throw _privateConstructorUsedError;
@@ -71,7 +71,7 @@ abstract class $PoiModelCopyWith<$Res> {
       int stageNumber,
       String name,
       String description,
-      PoiType type,
+      String type,
       double lat,
       double lng,
       int altitudeM,
@@ -128,7 +128,7 @@ class _$PoiModelCopyWithImpl<$Res, $Val extends PoiModel>
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as PoiType,
+              as String,
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
@@ -163,7 +163,7 @@ abstract class _$$PoiModelImplCopyWith<$Res>
       int stageNumber,
       String name,
       String description,
-      PoiType type,
+      String type,
       double lat,
       double lng,
       int altitudeM,
@@ -218,7 +218,7 @@ class __$$PoiModelImplCopyWithImpl<$Res>
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as PoiType,
+              as String,
       lat: null == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
@@ -280,9 +280,9 @@ class _$PoiModelImpl extends _PoiModel {
   @JsonKey()
   final String description;
 
-  /// Type de POI
+  /// Type de POI (String extensible, ex: water, refuge, danger)
   @override
-  final PoiType type;
+  final String type;
 
   /// Latitude
   @override
@@ -355,7 +355,7 @@ abstract class _PoiModel extends PoiModel {
       required final int stageNumber,
       required final String name,
       final String description,
-      required final PoiType type,
+      required final String type,
       required final double lat,
       required final double lng,
       final int altitudeM,
@@ -385,9 +385,9 @@ abstract class _PoiModel extends PoiModel {
   @override
   String get description;
 
-  /// Type de POI
+  /// Type de POI (String extensible, ex: water, refuge, danger)
   @override
-  PoiType get type;
+  String get type;
 
   /// Latitude
   @override

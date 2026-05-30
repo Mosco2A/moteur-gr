@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/models/poi.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../poi/domain/poi_type_config.dart';
 import '../providers/map_pois_provider.dart';
-import 'poi_marker.dart';
 
 /// Barre horizontale de chips togglables pour filtrer les POIs par type.
 ///
@@ -17,20 +16,6 @@ class PoiFilterBar extends ConsumerWidget {
   /// Identifiant du sentier pour charger les types disponibles
   final String trailId;
 
-  /// Libelle francais court pour chaque type de POI
-  static String labelFor(PoiType type) {
-    return switch (type) {
-      PoiType.shelter => 'Refuge',
-      PoiType.water => 'Eau',
-      PoiType.viewpoint => 'Vue',
-      PoiType.campsite => 'Bivouac',
-      PoiType.restaurant => 'Restaurant',
-      PoiType.emergency => 'Urgence',
-      PoiType.danger => 'Danger',
-      PoiType.shop => 'Commerce',
-    };
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final availableAsync = ref.watch(availablePoiTypesProvider(trailId));
@@ -42,9 +27,11 @@ class PoiFilterBar extends ConsumerWidget {
       data: (availableTypes) {
         if (availableTypes.isEmpty) return const SizedBox.shrink();
 
-        // Trier les types dans l'ordre de l'enum pour un affichage stable
-        final sortedTypes = availableTypes.toList()
-          ..sort((a, b) => a.index.compareTo(b.index));
+        // Initialiser activeTypes si null (premier affichage)
+        final currentActive = activeTypes ?? availableTypes;
+
+        // Trier les types alphabetiquement pour un affichage stable
+        final sortedTypes = availableTypes.toList()..sort();
 
         return SizedBox(
           height: 48,
@@ -59,16 +46,17 @@ class PoiFilterBar extends ConsumerWidget {
                 const SizedBox(width: AppTheme.spacingSm),
             itemBuilder: (context, index) {
               final type = sortedTypes[index];
-              final isActive = activeTypes.contains(type);
-              final color = PoiMarker.colorFor(type);
+              final isActive = currentActive.contains(type);
+              final style = PoiTypeConfig.getStyle(type);
+              final color = style.color;
 
               return FilterChip(
                 avatar: Icon(
-                  PoiMarker.iconFor(type),
+                  style.icon,
                   size: 16,
                   color: isActive ? Colors.white : color,
                 ),
-                label: Text(labelFor(type)),
+                label: Text(style.labelKey),
                 selected: isActive,
                 selectedColor: color,
                 checkmarkColor: Colors.white,
@@ -76,8 +64,15 @@ class PoiFilterBar extends ConsumerWidget {
                   color: isActive ? Colors.white : null,
                   fontSize: 12,
                 ),
-                onSelected: (_) {
-                  ref.read(activePoiTypesProvider.notifier).toggle(type);
+                onSelected: (selected) {
+                  final notifier = ref.read(activePoiTypesProvider.notifier);
+                  final current = Set<String>.from(currentActive);
+                  if (selected) {
+                    current.add(type);
+                  } else {
+                    current.remove(type);
+                  }
+                  notifier.state = current;
                 },
               );
             },

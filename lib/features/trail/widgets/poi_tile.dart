@@ -2,39 +2,28 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/poi.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../poi/domain/poi_type_config.dart';
 
-/// Tuile d'affichage pour un point d'intérêt.
+/// Tuile d'affichage pour un point d'interet.
 ///
-/// Affiche l'icône typée, le nom, la description
+/// Affiche l'icone typee, le nom, la description
 /// et l'altitude si disponible.
 class PoiTile extends StatelessWidget {
   const PoiTile({super.key, required this.poi});
 
   final PoiModel poi;
 
-  /// Icône selon le type de POI
-  static IconData iconFor(PoiType type) {
-    return switch (type) {
-      PoiType.shelter => Icons.cabin,
-      PoiType.water => Icons.water_drop,
-      PoiType.viewpoint => Icons.landscape,
-      PoiType.campsite => Icons.holiday_village,
-      PoiType.restaurant => Icons.restaurant,
-      PoiType.emergency => Icons.local_hospital,
-      PoiType.danger => Icons.warning,
-      PoiType.shop => Icons.store,
-    };
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final style = PoiTypeConfig.getStyle(poi.type);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       child: Row(
         children: [
           Icon(
-            iconFor(poi.type),
+            style.icon,
             size: 20,
             color: theme.colorScheme.secondary,
           ),

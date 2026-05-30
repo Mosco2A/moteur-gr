@@ -14,7 +14,7 @@ void main() {
       trailId: 'test-trail',
       stageNumber: 1,
       name: 'Source du Tilleul',
-      type: PoiType.water,
+      type: 'water',
       lat: 45.506,
       lng: 2.805,
     ),
@@ -22,7 +22,7 @@ void main() {
       trailId: 'test-trail',
       stageNumber: 1,
       name: 'Belvédère de Valmont',
-      type: PoiType.viewpoint,
+      type: 'viewpoint',
       lat: 45.52,
       lng: 2.82,
     ),
@@ -30,7 +30,7 @@ void main() {
       trailId: 'test-trail',
       stageNumber: 2,
       name: 'Refuge du Pic Brunel',
-      type: PoiType.shelter,
+      type: 'shelter',
       lat: 45.542,
       lng: 2.838,
       altitudeM: 1350,
@@ -39,7 +39,7 @@ void main() {
       trailId: 'test-trail',
       stageNumber: 3,
       name: 'Passage des Ecailles',
-      type: PoiType.danger,
+      type: 'danger',
       lat: 45.557,
       lng: 2.85,
     ),
@@ -71,13 +71,13 @@ void main() {
       addTearDown(container.dispose);
 
       // Désactiver le type water
-      final activeTypes = Set<PoiType>.from(PoiType.values);
-      activeTypes.remove(PoiType.water);
+      final activeTypes = Set<String>.from(['shelter', 'water', 'viewpoint', 'campsite', 'restaurant', 'emergency', 'danger', 'shop']);
+      activeTypes.remove('water');
       container.read(activePoiTypesProvider.notifier).state = activeTypes;
 
       final result = await container.read(mapPoisProvider('test-trail').future);
       expect(result.length, 3);
-      expect(result.any((p) => p.type == PoiType.water), isFalse);
+      expect(result.any((p) => p.type == 'water'), isFalse);
     });
 
     test('retourne une liste vide quand tous les types sont désactivés',
@@ -110,7 +110,7 @@ void main() {
 
       // N'activer que shelter
       container.read(activePoiTypesProvider.notifier).state = {
-        PoiType.shelter,
+        'shelter',
       };
 
       final result = await container.read(mapPoisProvider('test-trail').future);
@@ -125,7 +125,7 @@ void main() {
       addTearDown(container.dispose);
 
       final active = container.read(activePoiTypesProvider);
-      expect(active, PoiType.values.toSet());
+      expect(active, isNull);
     });
 
     test('peut basculer un type', () {
@@ -133,13 +133,14 @@ void main() {
       addTearDown(container.dispose);
 
       final notifier = container.read(activePoiTypesProvider.notifier);
-      final current = Set<PoiType>.from(notifier.state);
-      current.remove(PoiType.danger);
+      final current = Set<String>.from(notifier.state ?? {'shelter', 'water', 'viewpoint', 'campsite', 'restaurant', 'emergency', 'danger', 'shop'});
+      current.remove('danger');
       notifier.state = current;
 
       final active = container.read(activePoiTypesProvider);
-      expect(active.contains(PoiType.danger), isFalse);
-      expect(active.length, PoiType.values.length - 1);
+      expect(active, isNotNull);
+      expect(active!.contains('danger'), isFalse);
+      expect(active.length, 7);
     });
   });
 
@@ -159,7 +160,7 @@ void main() {
       );
       expect(
         result,
-        {PoiType.water, PoiType.viewpoint, PoiType.shelter, PoiType.danger},
+        {'water', 'viewpoint', 'shelter', 'danger'},
       );
     });
 

@@ -6,30 +6,11 @@ import '../data/database.dart';
 part 'poi.freezed.dart';
 part 'poi.g.dart';
 
-/// Types de points d'interet supportes par le moteur.
-enum PoiType {
-  shelter,
-  water,
-  viewpoint,
-  campsite,
-  restaurant,
-  emergency,
-  danger,
-  shop;
-
-  /// Conversion depuis string (nom de l'enum)
-  static PoiType fromString(String value) {
-    return PoiType.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () => PoiType.viewpoint,
-    );
-  }
-}
-
 /// Modele immutable representant un point d'interet.
 ///
-/// Convertible depuis/vers la table Drift Pois
-/// et depuis JSON (chargement initial des donnees).
+/// Le type est un String extensible (ex: 'water', 'refuge', 'danger').
+/// Utiliser PoiTypeConfig.getStyle(type) pour obtenir icone/couleur.
+/// Convertible depuis/vers la table Drift Pois et depuis JSON.
 @freezed
 class PoiModel with _$PoiModel {
   const PoiModel._();
@@ -50,8 +31,8 @@ class PoiModel with _$PoiModel {
     /// Description
     @Default('') String description,
 
-    /// Type de POI
-    required PoiType type,
+    /// Type de POI (String extensible, ex: water, refuge, danger)
+    required String type,
 
     /// Latitude
     required double lat,
@@ -74,7 +55,7 @@ class PoiModel with _$PoiModel {
       stageNumber: row.stageNumber,
       name: row.name,
       description: row.description,
-      type: PoiType.fromString(row.type),
+      type: row.type,
       lat: row.lat,
       lng: row.lng,
       altitudeM: row.altitudeM,
@@ -89,7 +70,7 @@ class PoiModel with _$PoiModel {
       stageNumber: Value(stageNumber),
       name: Value(name),
       description: Value(description),
-      type: Value(type.name),
+      type: Value(type),
       lat: Value(lat),
       lng: Value(lng),
       altitudeM: Value(altitudeM),

@@ -13,7 +13,7 @@ _$PoiModelImpl _$$PoiModelImplFromJson(Map<String, dynamic> json) =>
       stageNumber: (json['stageNumber'] as num).toInt(),
       name: json['name'] as String,
       description: json['description'] as String? ?? '',
-      type: $enumDecode(_$PoiTypeEnumMap, json['type']),
+      type: json['type'] as String,
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
       altitudeM: (json['altitudeM'] as num?)?.toInt() ?? 0,
@@ -27,20 +27,9 @@ Map<String, dynamic> _$$PoiModelImplToJson(_$PoiModelImpl instance) =>
       'stageNumber': instance.stageNumber,
       'name': instance.name,
       'description': instance.description,
-      'type': _$PoiTypeEnumMap[instance.type]!,
+      'type': instance.type,
       'lat': instance.lat,
       'lng': instance.lng,
       'altitudeM': instance.altitudeM,
       'openingHours': instance.openingHours,
     };
-
-const _$PoiTypeEnumMap = {
-  PoiType.shelter: 'shelter',
-  PoiType.water: 'water',
-  PoiType.viewpoint: 'viewpoint',
-  PoiType.campsite: 'campsite',
-  PoiType.restaurant: 'restaurant',
-  PoiType.emergency: 'emergency',
-  PoiType.danger: 'danger',
-  PoiType.shop: 'shop',
-};
