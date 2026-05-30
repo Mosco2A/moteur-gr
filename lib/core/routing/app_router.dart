@@ -17,6 +17,7 @@ import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/trail/presentation/trail_list_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
+import '../../features/trek/presentation/map/map_screen.dart';
 
 /// Configuration du routeur GoRouter.
 ///
@@ -117,6 +118,14 @@ final appRouter = GoRouter(
           builder: (context, state) => const FeedbackScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: '/map',
+      name: 'map',
+      builder: (context, state) {
+        final trailId = state.uri.queryParameters['trailId'] ?? '';
+        return MapScreen(trailId: trailId);
+      },
     ),
     GoRoute(
       path: '/group/:id',

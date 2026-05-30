@@ -8,8 +8,14 @@ import '../../../../core/geo/track_point.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../map/providers/gpx_track_provider.dart';
+import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/simplified_track_provider.dart';
-import '../../../map/widgets/trail_polyline.dart';
+import '../../../trail/providers/stages_provider.dart';
+import '../../domain/models/stage.dart';
+import 'controls/map_controls.dart';
+import 'layers/stage_markers_layer.dart';
+import 'layers/trace_layer.dart';
+import 'layers/user_position_layer.dart';
 
 /// Provider du MapController, gere dans un Notifier pour le cycle de vie.
 ///
@@ -30,13 +36,12 @@ final mapControllerProvider =
   MapControllerNotifier.new,
 );
 
-/// Ecran carte orchestrateur — FlutterMap v8 + Consumer select.
+/// Ecran carte orchestrateur -- FlutterMap v8 + tous layers assembles.
 ///
-/// Structure : Scaffold > Stack > FlutterMap + overlay widgets.
-/// ZERO ref.watch() dans build() — chaque donnee passe par Consumer
+/// Structure : Scaffold > Stack > FlutterMap(TileLayer, TraceLayer,
+/// StageMarkersLayer, UserPositionLayer) + MapControls overlay.
+/// ZERO ref.watch() dans build() -- chaque donnee passe par Consumer
 /// avec select() pour un rebuild minimal et chirurgical.
-/// Gere les 3 etats AsyncValue : loading (LoadingView), error (ErrorView),
-/// data (carte avec trace).
 class MapScreen extends StatelessWidget {
   const MapScreen({super.key, required this.trailId});
 
@@ -86,10 +91,12 @@ class MapScreen extends StatelessWidget {
   }
 }
 
-/// Contenu carte interne — separe pour isoler les rebuilds.
+/// Contenu carte interne -- separe pour isoler les rebuilds.
 ///
 /// Recoit les points bruts en parametre (deja charges).
-/// Utilise Consumer + select() pour le trace simplifie et le zoom.
+/// Utilise Consumer + select() pour chaque layer independant.
+/// Stack : FlutterMap (TileLayer + TraceLayer + StageMarkersLayer
+/// + UserPositionLayer) en fond, MapControls en overlay.
 class _MapContent extends StatefulWidget {
   const _MapContent({required this.trailId, required this.rawPoints});
 
@@ -129,6 +136,7 @@ class _MapContentState extends State<_MapContent> {
 
     return Stack(
       children: [
+        // --- FlutterMap avec tous les layers ---
         Consumer(
           builder: (context, ref, _) {
             final mapController = ref.watch(mapControllerProvider);
@@ -147,6 +155,11 @@ class _MapContentState extends State<_MapContent> {
             final displayPoints =
                 simplifiedAsync.valueOrNull ?? widget.rawPoints;
 
+            // Convertir TrackPoint -> LatLng pour TraceLayer
+            final latLngPoints = displayPoints
+                .map((tp) => LatLng(tp.lat, tp.lng))
+                .toList(growable: false);
+
             return FlutterMap(
               mapController: mapController,
               options: MapOptions(
@@ -162,37 +175,111 @@ class _MapContentState extends State<_MapContent> {
                 },
               ),
               children: [
+                // 1. Fond de carte OSM
                 TileLayer(
                   urlTemplate:
                       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.moteur-gr.app',
                 ),
-                TrailPolyline.build(
-                  points: displayPoints,
+
+                // 2. Trace GPX
+                TraceLayer(
+                  points: latLngPoints,
                   color: trailColor,
+                ),
+
+                // 3. Marqueurs d etapes
+                Consumer(
+                  builder: (context, ref, _) {
+                    final stagesAsync = ref.watch(
+                      stagesProvider(widget.trailId).select(
+                        (async) => async.valueOrNull,
+                      ),
+                    );
+                    final stages = stagesAsync ?? [];
+
+                    if (stages.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+
+                    // Convertir StageModel -> Stage (domain)
+                    final domainStages = stages
+                        .map(
+                          (sm) => Stage(
+                            id: '${sm.stageNumber}',
+                            nameFr: sm.name,
+                            distance: sm.distanceKm,
+                            elevationGain: sm.elevationGainM,
+                            elevationLoss: sm.elevationLossM,
+                            orderIndex: sm.stageNumber,
+                            startLat: sm.startLat,
+                            startLng: sm.startLng,
+                            endLat: sm.endLat,
+                            endLng: sm.endLng,
+                            difficulty: sm.difficulty,
+                          ),
+                        )
+                        .toList();
+
+                    return StageMarkersLayer(stages: domainStages);
+                  },
+                ),
+
+                // 4. Position utilisateur
+                Consumer(
+                  builder: (context, ref, _) {
+                    final positionAsync = ref.watch(
+                      locationProvider.select(
+                        (async) => async.valueOrNull,
+                      ),
+                    );
+
+                    if (positionAsync == null) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return UserPositionLayer(
+                      position: LatLng(
+                        positionAsync.latitude,
+                        positionAsync.longitude,
+                      ),
+                      accuracy: positionAsync.accuracy,
+                    );
+                  },
                 ),
               ],
             );
           },
         ),
-        // Bouton centrer sur le trace
+
+        // --- MapControls overlay (zoom + center) ---
         Positioned(
           right: 16,
           bottom: 16,
           child: Consumer(
             builder: (context, ref, _) {
-              return FloatingActionButton.small(
-                heroTag: 'fitBounds',
-                onPressed: () {
-                  final controller = ref.read(mapControllerProvider);
-                  controller.fitCamera(
-                    CameraFit.bounds(
-                      bounds: bounds,
-                      padding: const EdgeInsets.all(32),
-                    ),
-                  );
+              final mapController = ref.read(mapControllerProvider);
+
+              return MapControls(
+                mapController: mapController,
+                onCenterOnMe: () {
+                  final posAsync = ref.read(locationProvider);
+                  final pos = posAsync.valueOrNull;
+                  if (pos != null) {
+                    mapController.move(
+                      LatLng(pos.latitude, pos.longitude),
+                      mapController.camera.zoom,
+                    );
+                  } else {
+                    // Fallback : recentrer sur le trace
+                    mapController.fitCamera(
+                      CameraFit.bounds(
+                        bounds: bounds,
+                        padding: const EdgeInsets.all(32),
+                      ),
+                    );
+                  }
                 },
-                child: const Icon(Icons.fit_screen),
               );
             },
           ),
