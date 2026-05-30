@@ -1,3 +1,7 @@
+// BRIDGE: Le nouvel ecran carte est lib/features/trek/presentation/map/map_screen.dart (MapScreen).
+// TrailMapScreen est conserve pour retrocompatibilite pendant la migration Phase 2.
+// A terme, app_router pointera vers MapScreen et ce fichier sera supprime.
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
