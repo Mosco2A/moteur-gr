@@ -4,21 +4,20 @@ part 'download_progress.freezed.dart';
 part 'download_progress.g.dart';
 
 /// Statut du telechargement d'un sentier.
-enum DownloadStatus {
-  /// En attente de demarrage
-  pending,
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef DownloadStatus = String;
 
-  /// Telechargement en cours
-  downloading,
-
-  /// Mis en pause (coupure reseau, etc.)
-  paused,
-
-  /// Telechargement termine avec succes
-  completed,
-
-  /// Erreur lors du telechargement
-  error,
+/// Valeurs connues pour DownloadStatus avec fallback generique.
+abstract class DownloadStatusValues {
+  static const String pending = 'pending';
+  static const String downloading = 'downloading';
+  static const String paused = 'paused';
+  static const String completed = 'completed';
+  static const String error = 'error';
+  static const String fallback = pending;
+  static const List<String> values = [pending, downloading, paused, completed, error];
+  static DownloadStatus fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Progression du telechargement d'un sentier.

@@ -80,16 +80,18 @@ class DownloadProgressIndicator extends StatelessWidget {
 
     Color barColor;
     switch (progress.status) {
-      case DownloadStatus.downloading:
+      case DownloadStatusValues.downloading:
         barColor = theme.colorScheme.primary;
-      case DownloadStatus.completed:
+      case DownloadStatusValues.completed:
         barColor = AppTheme.vertFacile;
-      case DownloadStatus.error:
+      case DownloadStatusValues.error:
         barColor = AppTheme.rougeUrgence;
-      case DownloadStatus.paused:
+      case DownloadStatusValues.paused:
         barColor = AppTheme.jauneModere;
-      case DownloadStatus.pending:
+      case DownloadStatusValues.pending:
         barColor = AppTheme.grisGranite;
+      default:
+        return const SizedBox.shrink();
     }
 
     return Column(

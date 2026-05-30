@@ -1,16 +1,30 @@
 /// Etat du tracking de randonnee.
 ///
-/// Represente les 4 etats possibles du suivi GPS.
-enum TrackingStatus {
+/// Represente les etats possibles du suivi GPS.
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef TrackingStatus = String;
+
+/// Valeurs connues pour TrackingStatus avec fallback generique.
+abstract class TrackingStatusValues {
   /// Pas de tracking en cours
-  idle,
+  static const String idle = 'idle';
 
   /// Enregistrement actif
-  recording,
+  static const String recording = 'recording';
 
   /// Enregistrement en pause
-  paused,
+  static const String paused = 'paused';
 
   /// Enregistrement termine
-  stopped,
+  static const String stopped = 'stopped';
+
+  /// Valeur par defaut pour les statuts inconnus
+  static const String fallback = idle;
+
+  /// Toutes les valeurs connues
+  static const List<String> values = [idle, recording, paused, stopped];
+
+  /// Convertit une chaine en TrackingStatus avec fallback
+  static TrackingStatus fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }

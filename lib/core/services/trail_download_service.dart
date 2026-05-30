@@ -68,7 +68,7 @@ class TrailDownloadService {
     _log.d('[TrailDownloadService] Debut telechargement $trailId');
 
     yield DownloadProgress(
-      trailId: trailId, status: DownloadStatus.downloading,
+      trailId: trailId, status: DownloadStatusValues.downloading,
       bytesDownloaded: 0, totalBytes: 0, currentStep: 'downloading',
     );
 
@@ -77,9 +77,9 @@ class TrailDownloadService {
 
     while (retryCount < _maxRetries) {
       final status = await connectivityMonitor.checkStatus();
-      if (status == ConnectivityStatus.offline) {
+      if (status == ConnectivityStatusValues.offline) {
         yield DownloadProgress(
-          trailId: trailId, status: DownloadStatus.paused,
+          trailId: trailId, status: DownloadStatusValues.paused,
           bytesDownloaded: 0, totalBytes: 0, currentStep: 'downloading',
           error: 'Hors ligne',
         );
@@ -91,7 +91,7 @@ class TrailDownloadService {
         if (response.statusCode == 200) {
           trailData = jsonDecode(response.body) as Map<String, dynamic>;
           yield DownloadProgress(
-            trailId: trailId, status: DownloadStatus.downloading,
+            trailId: trailId, status: DownloadStatusValues.downloading,
             bytesDownloaded: response.contentLength ?? response.body.length,
             totalBytes: response.contentLength ?? response.body.length,
             currentStep: 'downloaded',
@@ -112,7 +112,7 @@ class TrailDownloadService {
 
     if (trailData == null) {
       yield DownloadProgress(
-        trailId: trailId, status: DownloadStatus.error,
+        trailId: trailId, status: DownloadStatusValues.error,
         bytesDownloaded: 0, totalBytes: 0, currentStep: 'downloading',
         error: 'Echec telechargement apres $_maxRetries tentatives',
       );
@@ -149,7 +149,7 @@ class TrailDownloadService {
       if (completedActions.contains(action)) continue;
 
       yield DownloadProgress(
-        trailId: trailId, status: DownloadStatus.downloading,
+        trailId: trailId, status: DownloadStatusValues.downloading,
         bytesDownloaded: completedStepCount, totalBytes: totalSteps,
         currentStep: step,
       );
@@ -170,14 +170,14 @@ class TrailDownloadService {
         if (syncAction.retryCount + 1 >= _maxRetries) {
           await syncQueueDao.markFailed(syncAction.id, e.toString());
           yield DownloadProgress(
-            trailId: trailId, status: DownloadStatus.error,
+            trailId: trailId, status: DownloadStatusValues.error,
             bytesDownloaded: completedStepCount, totalBytes: totalSteps,
             currentStep: step, error: 'Echec insertion $step: $e',
           );
           return;
         }
         yield DownloadProgress(
-          trailId: trailId, status: DownloadStatus.paused,
+          trailId: trailId, status: DownloadStatusValues.paused,
           bytesDownloaded: completedStepCount, totalBytes: totalSteps,
           currentStep: step, error: 'Retry insertion $step',
         );
@@ -186,7 +186,7 @@ class TrailDownloadService {
     }
 
     yield DownloadProgress(
-      trailId: trailId, status: DownloadStatus.completed,
+      trailId: trailId, status: DownloadStatusValues.completed,
       bytesDownloaded: totalSteps, totalBytes: totalSteps,
       currentStep: 'completed',
     );

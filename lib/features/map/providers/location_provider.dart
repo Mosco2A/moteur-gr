@@ -3,25 +3,24 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
-/// État des permissions GPS.
+/// Etat des permissions GPS.
 ///
-/// Simplifie la gestion des différents cas (accordé, refusé,
-/// service désactivé) pour l'UI.
-enum GpsPermissionState {
-  /// Permission accordée, GPS actif
-  granted,
+/// Simplifie la gestion des differents cas (accorde, refuse,
+/// service desactive) pour l'UI.
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef GpsPermissionState = String;
 
-  /// Permission refusée par l'utilisateur
-  denied,
-
-  /// Permission refusée définitivement
-  deniedForever,
-
-  /// Service de localisation désactivé
-  disabled,
-
-  /// En attente de vérification
-  checking,
+/// Valeurs connues pour GpsPermissionState avec fallback generique.
+abstract class GpsPermissionStateValues {
+  static const String granted = 'granted';
+  static const String denied = 'denied';
+  static const String deniedForever = 'deniedForever';
+  static const String disabled = 'disabled';
+  static const String checking = 'checking';
+  static const String fallback = checking;
+  static const List<String> values = [granted, denied, deniedForever, disabled, checking];
+  static GpsPermissionState fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Provider de l'état des permissions GPS.
@@ -33,7 +32,7 @@ final gpsPermissionProvider =
   // Vérifier si le service GPS est activé
   final serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
-    return GpsPermissionState.disabled;
+    return GpsPermissionStateValues.disabled;
   }
 
   // Vérifier les permissions
@@ -43,15 +42,15 @@ final gpsPermissionProvider =
     // Demander la permission
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      return GpsPermissionState.denied;
+      return GpsPermissionStateValues.denied;
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
-    return GpsPermissionState.deniedForever;
+    return GpsPermissionStateValues.deniedForever;
   }
 
-  return GpsPermissionState.granted;
+  return GpsPermissionStateValues.granted;
 });
 
 /// Provider qui streame la position GPS de l'utilisateur.
@@ -67,7 +66,7 @@ final locationProvider = StreamProvider<Position>((ref) {
 
   permissionAsync.when(
     data: (state) {
-      if (state != GpsPermissionState.granted) {
+      if (state != GpsPermissionStateValues.granted) {
         controller.addError(
           StateError('Permission GPS non accordée: $state'),
         );

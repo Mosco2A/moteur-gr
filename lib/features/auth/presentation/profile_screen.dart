@@ -81,7 +81,7 @@ class ProfileScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(AppTheme.radiusChip),
             ),
             child: Text(
-              'Connecté via ${user.authMethod.label}',
+              'Connecté via ${AuthMethodValues.labelFor(user.authMethod)}',
               style: theme.textTheme.bodySmall,
             ),
           ),

@@ -94,7 +94,7 @@ class SyncScheduler {
 
     // Tenter la sync immediate si connecte
     final status = await connectivityMonitor.checkStatus();
-    if (status == ConnectivityStatus.online) {
+    if (status == ConnectivityStatusValues.online) {
       await cloudSyncService.syncUserData(
         _userId!, _trailId!,
         config: _config,
@@ -104,7 +104,7 @@ class SyncScheduler {
 
   /// Callback lors d un changement de connectivite.
   void _onConnectivityChange(ConnectivityStatus status) {
-    if (status == ConnectivityStatus.offline) {
+    if (status == ConnectivityStatusValues.offline) {
       _wasOffline = true;
       _log.d("[SyncScheduler] Passage offline");
       return;

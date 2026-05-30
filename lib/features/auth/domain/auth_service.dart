@@ -59,12 +59,28 @@ class AuthUser {
   final bool isAnonymous;
 }
 
-/// Méthodes d'authentification supportées
-enum AuthMethod {
-  anonymous('Anonyme'),
-  google('Google'),
-  apple('Apple');
+/// Methodes d'authentification supportees.
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef AuthMethod = String;
 
-  const AuthMethod(this.label);
-  final String label;
+/// Valeurs connues pour AuthMethod avec fallback generique.
+abstract class AuthMethodValues {
+  static const String anonymous = 'anonymous';
+  static const String google = 'google';
+  static const String apple = 'apple';
+  static const String fallback = anonymous;
+  static const List<String> values = [anonymous, google, apple];
+
+  /// Labels d'affichage par methode
+  static const Map<String, String> labels = {
+    anonymous: 'Anonyme',
+    google: 'Google',
+    apple: 'Apple',
+  };
+
+  /// Label d'affichage avec fallback
+  static String labelFor(String method) => labels[method] ?? method;
+
+  static AuthMethod fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }

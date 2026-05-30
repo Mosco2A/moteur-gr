@@ -37,8 +37,8 @@ class TrackingOverlay extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (tracking.status == TrackingStatus.recording ||
-              tracking.status == TrackingStatus.paused)
+          if (tracking.status == TrackingStatusValues.recording ||
+              tracking.status == TrackingStatusValues.paused)
             _buildStats(context, tracking),
           const SizedBox(height: AppTheme.spacingSm),
           _buildButtons(context, ref, tracking),
@@ -86,15 +86,15 @@ class TrackingOverlay extends ConsumerWidget {
     final notifier = ref.read(trackingProvider.notifier);
 
     switch (tracking.status) {
-      case TrackingStatus.idle:
-      case TrackingStatus.stopped:
+      case TrackingStatusValues.idle:
+      case TrackingStatusValues.stopped:
         return _ActionButton(
           label: 'Demarrer',
           icon: Icons.play_arrow,
           color: Colors.green,
           onPressed: () => notifier.start(trailId),
         );
-      case TrackingStatus.recording:
+      case TrackingStatusValues.recording:
         return Row(
           children: [
             Expanded(
@@ -116,7 +116,7 @@ class TrackingOverlay extends ConsumerWidget {
             ),
           ],
         );
-      case TrackingStatus.paused:
+      case TrackingStatusValues.paused:
         return Row(
           children: [
             Expanded(
@@ -138,6 +138,8 @@ class TrackingOverlay extends ConsumerWidget {
             ),
           ],
         );
+      default:
+        return const SizedBox.shrink();
     }
   }
 

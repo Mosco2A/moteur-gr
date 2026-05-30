@@ -32,13 +32,13 @@ class LocalAuthService implements AuthService {
 
     if (uid != null) {
       final name = prefs.getString(_keyName);
-      final methodIndex = prefs.getInt(_keyMethod) ?? 0;
+      final methodStr = prefs.getString(_keyMethod) ?? AuthMethodValues.anonymous;
 
       _currentUser = AuthUser(
         uid: uid,
-        authMethod: AuthMethod.values[methodIndex],
+        authMethod: AuthMethodValues.fromString(methodStr),
         displayName: name,
-        isAnonymous: methodIndex == 0,
+        isAnonymous: methodStr == AuthMethodValues.anonymous,
       );
       _authController.add(_currentUser);
     } else {
@@ -54,12 +54,12 @@ class LocalAuthService implements AuthService {
 
     _currentUser = AuthUser(
       uid: uid,
-      authMethod: AuthMethod.anonymous,
+      authMethod: AuthMethodValues.anonymous,
       isAnonymous: true,
     );
 
     await prefs.setString(_keyUid, uid);
-    await prefs.setInt(_keyMethod, AuthMethod.anonymous.index);
+    await prefs.setString(_keyMethod, AuthMethodValues.anonymous);
 
     _authController.add(_currentUser);
     return _currentUser!;
@@ -86,12 +86,12 @@ class LocalAuthService implements AuthService {
 
     _currentUser = AuthUser(
       uid: uid,
-      authMethod: AuthMethod.anonymous,
+      authMethod: AuthMethodValues.anonymous,
       isAnonymous: true,
     );
 
     await prefs.remove(_keyName);
-    await prefs.setInt(_keyMethod, AuthMethod.anonymous.index);
+    await prefs.setString(_keyMethod, AuthMethodValues.anonymous);
 
     _authController.add(_currentUser);
   }

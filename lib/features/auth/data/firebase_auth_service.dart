@@ -96,13 +96,13 @@ class FirebaseAuthService implements AuthService {
 
   /// Determine la methode d'authentification depuis les providers Firebase
   AuthMethod _resolveAuthMethod(fb.User fbUser) {
-    if (fbUser.isAnonymous) return AuthMethod.anonymous;
+    if (fbUser.isAnonymous) return AuthMethodValues.anonymous;
 
     for (final provider in fbUser.providerData) {
-      if (provider.providerId == 'google.com') return AuthMethod.google;
-      if (provider.providerId == 'apple.com') return AuthMethod.apple;
+      if (provider.providerId == 'google.com') return AuthMethodValues.google;
+      if (provider.providerId == 'apple.com') return AuthMethodValues.apple;
     }
 
-    return AuthMethod.anonymous;
+    return AuthMethodValues.anonymous;
   }
 }

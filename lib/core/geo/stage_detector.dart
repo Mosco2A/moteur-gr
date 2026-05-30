@@ -1,22 +1,36 @@
 import 'geo_utils.dart';
 import '../models/stage.dart';
 
-/// Événement de détection d'étape.
+/// Evenement de detection d'etape.
 ///
-/// Décrit la relation entre la position de l'utilisateur
-/// et les bornes d'une étape.
-enum StageDetectionEvent {
-  /// L'utilisateur est entré dans une étape (proche du point de départ)
-  entered,
+/// Decrit la relation entre la position de l'utilisateur
+/// et les bornes d'une etape.
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef StageDetectionEvent = String;
 
-  /// L'utilisateur a terminé une étape (proche du point d'arrivée)
-  exited,
+/// Valeurs connues pour StageDetectionEvent avec fallback generique.
+abstract class StageDetectionEventValues {
+  /// L'utilisateur est entre dans une etape (proche du point de depart)
+  static const String entered = 'entered';
 
-  /// L'utilisateur est entre deux étapes (hors rayon des bornes)
-  between,
+  /// L'utilisateur a termine une etape (proche du point d'arrivee)
+  static const String exited = 'exited';
 
-  /// Position inconnue ou pas d'étape correspondante
-  unknown,
+  /// L'utilisateur est entre deux etapes (hors rayon des bornes)
+  static const String between = 'between';
+
+  /// Position inconnue ou pas d'etape correspondante
+  static const String unknown = 'unknown';
+
+  /// Valeur par defaut pour les evenements inconnus
+  static const String fallback = unknown;
+
+  /// Toutes les valeurs connues
+  static const List<String> values = [entered, exited, between, unknown];
+
+  /// Convertit une chaine en StageDetectionEvent avec fallback
+  static StageDetectionEvent fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Résultat de la détection d'étape.
@@ -48,7 +62,7 @@ class StageDetector {
     required List<StageModel> stages,
   }) {
     if (stages.isEmpty) {
-      return (stageNumber: 0, event: StageDetectionEvent.unknown);
+      return (stageNumber: 0, event: StageDetectionEventValues.unknown);
     }
 
     // Vérifier la proximité avec les bornes de chaque étape
@@ -67,7 +81,7 @@ class StageDetector {
       if (distToStart <= toleranceRadiusM) {
         return (
           stageNumber: stage.stageNumber,
-          event: StageDetectionEvent.entered,
+          event: StageDetectionEventValues.entered,
         );
       }
 
@@ -75,7 +89,7 @@ class StageDetector {
       if (distToEnd <= toleranceRadiusM) {
         return (
           stageNumber: stage.stageNumber,
-          event: StageDetectionEvent.exited,
+          event: StageDetectionEventValues.exited,
         );
       }
     }
@@ -109,10 +123,10 @@ class StageDetector {
     if (bestStage != null) {
       return (
         stageNumber: bestStage.stageNumber,
-        event: StageDetectionEvent.between,
+        event: StageDetectionEventValues.between,
       );
     }
 
-    return (stageNumber: 0, event: StageDetectionEvent.unknown);
+    return (stageNumber: 0, event: StageDetectionEventValues.unknown);
   }
 }

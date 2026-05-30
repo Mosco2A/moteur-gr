@@ -52,28 +52,32 @@ class TrailCatalogCard extends StatelessWidget {
   /// Retourne la couleur du badge selon le statut.
   static Color statusColor(TrailLocalStatus status) {
     switch (status) {
-      case TrailLocalStatus.notDownloaded:
+      case TrailLocalStatusValues.notDownloaded:
         return AppTheme.grisGranite;
-      case TrailLocalStatus.downloading:
+      case TrailLocalStatusValues.downloading:
         return AppTheme.jauneModere;
-      case TrailLocalStatus.downloaded:
+      case TrailLocalStatusValues.downloaded:
         return AppTheme.vertFacile;
-      case TrailLocalStatus.updateAvailable:
+      case TrailLocalStatusValues.updateAvailable:
         return AppTheme.orangeDifficile;
+      default:
+        return AppTheme.grisGranite;
     }
   }
 
   /// Retourne le libelle du badge selon le statut.
   static String statusLabel(TrailLocalStatus status) {
     switch (status) {
-      case TrailLocalStatus.notDownloaded:
+      case TrailLocalStatusValues.notDownloaded:
         return _CatalogLabels.notDownloaded;
-      case TrailLocalStatus.downloading:
+      case TrailLocalStatusValues.downloading:
         return _CatalogLabels.downloading;
-      case TrailLocalStatus.downloaded:
+      case TrailLocalStatusValues.downloaded:
         return _CatalogLabels.downloaded;
-      case TrailLocalStatus.updateAvailable:
+      case TrailLocalStatusValues.updateAvailable:
         return _CatalogLabels.updateAvailable;
+      default:
+        return status;
     }
   }
 
@@ -143,7 +147,7 @@ class TrailCatalogCard extends StatelessWidget {
 
   Widget _buildActionButton(ThemeData theme) {
     switch (entry.localStatus) {
-      case TrailLocalStatus.notDownloaded:
+      case TrailLocalStatusValues.notDownloaded:
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -152,7 +156,7 @@ class TrailCatalogCard extends StatelessWidget {
             label: const Text(_CatalogLabels.download),
           ),
         );
-      case TrailLocalStatus.downloading:
+      case TrailLocalStatusValues.downloading:
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -165,7 +169,7 @@ class TrailCatalogCard extends StatelessWidget {
             label: const Text(_CatalogLabels.downloading),
           ),
         );
-      case TrailLocalStatus.downloaded:
+      case TrailLocalStatusValues.downloaded:
         return SizedBox(
           width: double.infinity,
           child: OutlinedButton.icon(
@@ -177,7 +181,7 @@ class TrailCatalogCard extends StatelessWidget {
             ),
           ),
         );
-      case TrailLocalStatus.updateAvailable:
+      case TrailLocalStatusValues.updateAvailable:
         return SizedBox(
           width: double.infinity,
           child: ElevatedButton.icon(
@@ -186,6 +190,8 @@ class TrailCatalogCard extends StatelessWidget {
             label: const Text(_CatalogLabels.update),
           ),
         );
+      default:
+        return const SizedBox.shrink();
     }
   }
 }

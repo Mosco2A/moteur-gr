@@ -12,16 +12,29 @@ final feedbackQueueDaoProvider = Provider<FeedbackQueueDao>((ref) {
   return FeedbackQueueDao(ref.watch(databaseProvider));
 });
 
-/// Types de feedback disponibles
-enum FeedbackType {
-  bug('bug', 'Bug / Probleme'),
-  suggestion('suggestion', 'Suggestion'),
-  question('question', 'Question'),
-  other('other', 'Autre');
+/// Types de feedback disponibles.
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef FeedbackType = String;
 
-  const FeedbackType(this.value, this.label);
-  final String value;
-  final String label;
+/// Valeurs connues pour FeedbackType avec fallback generique.
+abstract class FeedbackTypeValues {
+  static const String bug = 'bug';
+  static const String suggestion = 'suggestion';
+  static const String question = 'question';
+  static const String other = 'other';
+  static const String fallback = other;
+  static const List<String> values = [bug, suggestion, question, other];
+
+  static const Map<String, String> labels = {
+    bug: 'Bug / Probleme',
+    suggestion: 'Suggestion',
+    question: 'Question',
+    other: 'Autre',
+  };
+
+  static String labelFor(String type) => labels[type] ?? type;
+  static FeedbackType fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Etat du formulaire de feedback
@@ -60,7 +73,7 @@ class FeedbackNotifier extends Notifier<FeedbackState> {
     _dao = ref.watch(feedbackQueueDaoProvider);
     _trailId = ref.watch(trailIdProvider);
     _connectivity =
-        ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatus.offline;
+        ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatusValues.offline;
     _loadPendingCount();
     return const FeedbackState();
   }
@@ -81,14 +94,14 @@ class FeedbackNotifier extends Notifier<FeedbackState> {
     try {
       await _dao.addFeedback(FeedbackQueueCompanion(
         trailId: Value(_trailId),
-        feedbackType: Value(type.value),
+        feedbackType: Value(type),
         content: Value(content),
         rating: Value(rating),
         createdAt: Value(DateTime.now()),
       ));
 
       // Tenter l'envoi immediat si en ligne
-      if (_connectivity == ConnectivityStatus.online) {
+      if (_connectivity == ConnectivityStatusValues.online) {
         await _trySendPending();
       }
 
@@ -113,7 +126,7 @@ class FeedbackNotifier extends Notifier<FeedbackState> {
 
   /// Force le renvoi des feedbacks en attente
   Future<void> retrySendPending() async {
-    if (_connectivity == ConnectivityStatus.online) {
+    if (_connectivity == ConnectivityStatusValues.online) {
       await _trySendPending();
       await _loadPendingCount();
     }

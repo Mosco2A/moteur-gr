@@ -20,18 +20,19 @@ final _log = Logger(
 );
 
 /// Statut d une operation de sync cloud.
-enum CloudSyncStatus {
-  /// Sync en attente
-  idle,
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef CloudSyncStatus = String;
 
-  /// Sync en cours
-  syncing,
-
-  /// Derniere sync reussie
-  success,
-
-  /// Derniere sync echouee
-  error,
+/// Valeurs connues pour CloudSyncStatus avec fallback generique.
+abstract class CloudSyncStatusValues {
+  static const String idle = 'idle';
+  static const String syncing = 'syncing';
+  static const String success = 'success';
+  static const String error = 'error';
+  static const String fallback = idle;
+  static const List<String> values = [idle, syncing, success, error];
+  static CloudSyncStatus fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Resultat d une operation de synchronisation.
@@ -86,17 +87,17 @@ class CloudSyncService {
     if (!firebaseService.isAvailable) {
       _log.d("[CloudSync] Firebase non disponible, sync ignoree");
       return CloudSyncResult(
-        status: CloudSyncStatus.idle,
+        status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
       );
     }
 
     // Verifier la connectivite
     final connectivity = await connectivityMonitor.checkStatus();
-    if (connectivity == ConnectivityStatus.offline) {
+    if (connectivity == ConnectivityStatusValues.offline) {
       _log.d("[CloudSync] Hors ligne, sync reportee");
       return CloudSyncResult(
-        status: CloudSyncStatus.idle,
+        status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
       );
     }
@@ -191,7 +192,7 @@ class CloudSyncService {
 
         _log.d("[CloudSync] Sync terminee: $itemsSynced items");
         return CloudSyncResult(
-          status: CloudSyncStatus.success,
+          status: CloudSyncStatusValues.success,
           syncedAt: DateTime.now(),
           itemsSynced: itemsSynced,
         );
@@ -210,7 +211,7 @@ class CloudSyncService {
           ));
 
           return CloudSyncResult(
-            status: CloudSyncStatus.error,
+            status: CloudSyncStatusValues.error,
             syncedAt: DateTime.now(),
             error: e.toString(),
           );
@@ -224,7 +225,7 @@ class CloudSyncService {
     }
 
     return CloudSyncResult(
-      status: CloudSyncStatus.error,
+      status: CloudSyncStatusValues.error,
       syncedAt: DateTime.now(),
       error: "Max retries atteint",
     );
@@ -253,7 +254,7 @@ class CloudSyncService {
   }) async {
     if (!config.syncOnRefugeArrival) {
       return CloudSyncResult(
-        status: CloudSyncStatus.idle,
+        status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
       );
     }
@@ -268,14 +269,14 @@ class CloudSyncService {
   }) async {
     if (!config.syncOnReconnect) {
       return CloudSyncResult(
-        status: CloudSyncStatus.idle,
+        status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
       );
     }
 
     if (!firebaseService.isAvailable) {
       return CloudSyncResult(
-        status: CloudSyncStatus.idle,
+        status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
       );
     }
@@ -288,7 +289,7 @@ class CloudSyncService {
 
     if (syncActions.isEmpty) {
       return CloudSyncResult(
-        status: CloudSyncStatus.idle,
+        status: CloudSyncStatusValues.idle,
         syncedAt: DateTime.now(),
       );
     }
@@ -300,13 +301,13 @@ class CloudSyncService {
       final trailId = action.trailId;
       final uid = action.payload ?? userId;
       final result = await syncUserData(uid, trailId, config: config);
-      if (result.status == CloudSyncStatus.success) {
+      if (result.status == CloudSyncStatusValues.success) {
         totalSynced += result.itemsSynced;
       }
     }
 
     return CloudSyncResult(
-      status: CloudSyncStatus.success,
+      status: CloudSyncStatusValues.success,
       syncedAt: DateTime.now(),
       itemsSynced: totalSynced,
     );

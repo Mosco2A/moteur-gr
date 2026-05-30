@@ -13,7 +13,7 @@ import '../models/tracking_status.dart';
 /// Etat immutable du tracking expose a l UI.
 class TrackingState {
   const TrackingState({
-    this.status = TrackingStatus.idle,
+    this.status = TrackingStatusValues.idle,
     this.distanceM = 0.0,
     this.elevationGainM = 0,
     this.durationSec = 0,
@@ -61,13 +61,13 @@ class TrackingNotifier extends Notifier<TrackingState> {
 
   /// Demarre le tracking GPS.
   void start(String trailId) {
-    if (state.status == TrackingStatus.recording) {
+    if (state.status == TrackingStatusValues.recording) {
       return;
     }
     _trailId = trailId;
     _engine.reset();
     state = state.copyWith(
-      status: TrackingStatus.recording,
+      status: TrackingStatusValues.recording,
       distanceM: 0.0,
       elevationGainM: 0,
       durationSec: 0,
@@ -87,7 +87,7 @@ class TrackingNotifier extends Notifier<TrackingState> {
       _updateState();
     });
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (state.status == TrackingStatus.recording) {
+      if (state.status == TrackingStatusValues.recording) {
         _updateState();
       }
     });
@@ -95,33 +95,33 @@ class TrackingNotifier extends Notifier<TrackingState> {
 
   /// Met en pause le tracking.
   void pause() {
-    if (state.status != TrackingStatus.recording) {
+    if (state.status != TrackingStatusValues.recording) {
       return;
     }
     _engine.pause();
-    state = state.copyWith(status: TrackingStatus.paused);
+    state = state.copyWith(status: TrackingStatusValues.paused);
   }
 
   /// Reprend le tracking apres une pause.
   void resume() {
-    if (state.status != TrackingStatus.paused) {
+    if (state.status != TrackingStatusValues.paused) {
       return;
     }
     _engine.resume();
-    state = state.copyWith(status: TrackingStatus.recording);
+    state = state.copyWith(status: TrackingStatusValues.recording);
   }
 
   /// Arrete le tracking et sauvegarde la progression.
   Future<void> stop() async {
-    if (state.status != TrackingStatus.recording &&
-        state.status != TrackingStatus.paused) {
+    if (state.status != TrackingStatusValues.recording &&
+        state.status != TrackingStatusValues.paused) {
       return;
     }
     _locationSub?.cancel();
     _locationSub = null;
     _ticker?.cancel();
     _ticker = null;
-    state = state.copyWith(status: TrackingStatus.stopped);
+    state = state.copyWith(status: TrackingStatusValues.stopped);
     await _saveProgress();
     _engine.reset();
     state = const TrackingState();

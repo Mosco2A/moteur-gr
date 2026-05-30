@@ -157,7 +157,7 @@ class _CatalogEntryItem extends ConsumerWidget {
           onDelete: () => _confirmDelete(context, ref, entry.trailId),
         ),
         // Indicateur de progression si telechargement en cours
-        if (entry.localStatus == TrailLocalStatus.downloading)
+        if (entry.localStatus == TrailLocalStatusValues.downloading)
           _DownloadProgressSection(trailId: entry.trailId),
       ],
     );

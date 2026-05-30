@@ -20,18 +20,19 @@ final _log = Logger(
 // --- Modeles internes au catalogue ---
 
 /// Statut local d'un sentier dans le catalogue.
-enum TrailLocalStatus {
-  /// Jamais telecharge
-  notDownloaded,
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef TrailLocalStatus = String;
 
-  /// Telechargement en cours
-  downloading,
-
-  /// Telecharge et a jour
-  downloaded,
-
-  /// Mise a jour disponible (version distante > locale)
-  updateAvailable,
+/// Valeurs connues pour TrailLocalStatus avec fallback generique.
+abstract class TrailLocalStatusValues {
+  static const String notDownloaded = 'notDownloaded';
+  static const String downloading = 'downloading';
+  static const String downloaded = 'downloaded';
+  static const String updateAvailable = 'updateAvailable';
+  static const String fallback = notDownloaded;
+  static const List<String> values = [notDownloaded, downloading, downloaded, updateAvailable];
+  static TrailLocalStatus fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Entree du catalogue combinant donnees distantes et locales.
@@ -110,7 +111,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
   /// Charge le catalogue : fetch distant + merge local.
   Future<CatalogState> _loadCatalog() async {
     final connectivityStatus = await _connectivity.checkStatus();
-    final isOffline = connectivityStatus == ConnectivityStatus.offline;
+    final isOffline = connectivityStatus == ConnectivityStatusValues.offline;
 
     if (isOffline) {
       // Hors ligne : afficher uniquement les sentiers deja telecharges
@@ -123,7 +124,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
                 fileSize: m.fileSize,
                 status: m.status,
                 lastUpdated: m.lastUpdated,
-                localStatus: TrailLocalStatus.downloaded,
+                localStatus: TrailLocalStatusValues.downloaded,
                 localVersion: m.localVersion,
               ))
           .toList();
@@ -158,11 +159,11 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
 
       TrailLocalStatus localStatus;
       if (localVersion == null) {
-        localStatus = TrailLocalStatus.notDownloaded;
+        localStatus = TrailLocalStatusValues.notDownloaded;
       } else if (remote.dataVersion > localVersion) {
-        localStatus = TrailLocalStatus.updateAvailable;
+        localStatus = TrailLocalStatusValues.updateAvailable;
       } else {
-        localStatus = TrailLocalStatus.downloaded;
+        localStatus = TrailLocalStatusValues.downloaded;
       }
 
       entries.add(CatalogEntry(
@@ -183,9 +184,9 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
   CatalogEntry _buildEntryFromLocal(TrailManifest local) {
     final localStatus = local.localVersion != null
         ? (local.dataVersion > local.localVersion!
-            ? TrailLocalStatus.updateAvailable
-            : TrailLocalStatus.downloaded)
-        : TrailLocalStatus.notDownloaded;
+            ? TrailLocalStatusValues.updateAvailable
+            : TrailLocalStatusValues.downloaded)
+        : TrailLocalStatusValues.notDownloaded;
 
     return CatalogEntry(
       trailId: local.trailId,
@@ -209,13 +210,13 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
   /// Met a jour le statut en 'downloading' immediatement,
   /// puis ecoute le stream de progression du TrailDownloadService.
   Future<void> downloadTrail(String trailId) async {
-    _updateEntryStatus(trailId, TrailLocalStatus.downloading);
+    _updateEntryStatus(trailId, TrailLocalStatusValues.downloading);
 
     final downloadService = ref.read(trailDownloadServiceProvider);
     final manifestEntry = await _manifestsDao.getByTrailId(trailId);
     if (manifestEntry == null) {
       _log.e('[CatalogNotifier] Pas de manifeste pour $trailId');
-      _updateEntryStatus(trailId, TrailLocalStatus.notDownloaded);
+      _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
       return;
     }
 
@@ -226,7 +227,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       // Mettre a jour le stream de progression
       ref.read(downloadProgressProvider(trailId).notifier).setProgress(progress);
 
-      if (progress.status == DownloadStatus.completed) {
+      if (progress.status == DownloadStatusValues.completed) {
         // Marquer la version locale comme telechargee
         await _manifestsDao.insertOrReplace(
           TrailManifestsCompanion(
@@ -240,9 +241,9 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
             localVersion: Value(manifestEntry.dataVersion),
           ),
         );
-        _updateEntryStatus(trailId, TrailLocalStatus.downloaded);
-      } else if (progress.status == DownloadStatus.error) {
-        _updateEntryStatus(trailId, TrailLocalStatus.notDownloaded);
+        _updateEntryStatus(trailId, TrailLocalStatusValues.downloaded);
+      } else if (progress.status == DownloadStatusValues.error) {
+        _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
       }
     }
   }
@@ -268,7 +269,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
       );
     }
 
-    _updateEntryStatus(trailId, TrailLocalStatus.notDownloaded);
+    _updateEntryStatus(trailId, TrailLocalStatusValues.notDownloaded);
   }
 
   /// Met a jour le statut d'une entree dans l'etat courant.
@@ -285,7 +286,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
           status: e.status,
           lastUpdated: e.lastUpdated,
           localStatus: newStatus,
-          localVersion: newStatus == TrailLocalStatus.downloaded
+          localVersion: newStatus == TrailLocalStatusValues.downloaded
               ? e.dataVersion
               : e.localVersion,
         );

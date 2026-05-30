@@ -18,7 +18,7 @@ class SyncSettingsKeys {
 class SyncStatusInfo {
   const SyncStatusInfo({
     this.lastSyncTimestamp,
-    this.lastStatus = CloudSyncStatus.idle,
+    this.lastStatus = CloudSyncStatusValues.idle,
     this.isEnabled = true,
   });
 
@@ -114,8 +114,8 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
 
     state = SyncStatusInfo(
       lastSyncTimestamp: timestamp,
-      lastStatus: CloudSyncStatus.values[
-          statusIndex.clamp(0, CloudSyncStatus.values.length - 1)],
+      lastStatus: CloudSyncStatusValues.values[
+          statusIndex.clamp(0, CloudSyncStatusValues.values.length - 1)],
       isEnabled: enabled,
     );
   }
@@ -126,7 +126,7 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
       lastStatus: status,
       lastSyncTimestamp: timestamp ?? state.lastSyncTimestamp,
     );
-    _prefs?.setInt(SyncSettingsKeys.lastSyncStatus, status.index);
+    _prefs?.setInt(SyncSettingsKeys.lastSyncStatus, CloudSyncStatusValues.values.indexOf(status));
     if (timestamp != null) {
       _prefs?.setString(SyncSettingsKeys.lastSyncTimestamp, timestamp);
     }

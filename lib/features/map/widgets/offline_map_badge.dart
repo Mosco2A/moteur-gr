@@ -63,14 +63,16 @@ class OfflineMapBadge extends ConsumerWidget {
   /// Configuration visuelle selon le statut.
   (IconData, String, Color) _statusConfig(OfflineMapStatus status) {
     switch (status) {
-      case OfflineMapStatus.online:
+      case OfflineMapStatusValues.online:
         return (Icons.cloud_outlined, 'En ligne', Colors.orange);
-      case OfflineMapStatus.offlineAvailable:
+      case OfflineMapStatusValues.offlineAvailable:
         return (Icons.cloud_done, 'Offline OK', Colors.green);
-      case OfflineMapStatus.offlineOnly:
+      case OfflineMapStatusValues.offlineOnly:
         return (Icons.cloud_off, 'Offline', Colors.green.shade700);
-      case OfflineMapStatus.noMap:
+      case OfflineMapStatusValues.noMap:
         return (Icons.cloud_off, 'Pas de carte', Colors.red);
+      default:
+        return (Icons.help_outline, status, Colors.grey);
     }
   }
 }

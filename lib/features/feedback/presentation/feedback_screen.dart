@@ -17,7 +17,7 @@ class FeedbackScreen extends ConsumerStatefulWidget {
 
 class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
   final _contentController = TextEditingController();
-  FeedbackType _selectedType = FeedbackType.suggestion;
+  FeedbackType _selectedType = FeedbackTypeValues.suggestion;
   int? _rating;
 
   @override
@@ -68,10 +68,10 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             const SizedBox(height: AppTheme.spacingSm),
             Wrap(
               spacing: AppTheme.spacingSm,
-              children: FeedbackType.values.map((type) {
+              children: FeedbackTypeValues.values.map((type) {
                 final selected = type == _selectedType;
                 return ChoiceChip(
-                  label: Text(type.label),
+                  label: Text(FeedbackTypeValues.labelFor(type)),
                   selected: selected,
                   onSelected: (_) =>
                       setState(() => _selectedType = type),

@@ -35,7 +35,7 @@ class ManifestService {
   /// Retourne null si hors ligne ou en cas d'erreur HTTP.
   Future<TrailManifest?> fetchManifest(String url) async {
     final status = await connectivityMonitor.checkStatus();
-    if (status == ConnectivityStatus.offline) {
+    if (status == ConnectivityStatusValues.offline) {
       _log.d('[ManifestService] Hors ligne — fetch annule');
       return null;
     }

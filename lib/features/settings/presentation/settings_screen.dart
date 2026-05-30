@@ -27,10 +27,10 @@ class SettingsScreen extends ConsumerWidget {
           _sectionHeader(theme, Icons.language, 'Langue'),
           Card(
             child: Column(
-              children: AppLanguage.values.map((lang) {
+              children: AppLanguageValues.values.map((lang) {
                 final selected = lang == settings.language;
                 return ListTile(
-                  title: Text(lang.label),
+                  title: Text(AppLanguageValues.labelFor(lang)),
                   leading: Icon(
                     selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
                     color: selected ? theme.colorScheme.primary : null,
@@ -52,11 +52,11 @@ class SettingsScreen extends ConsumerWidget {
                 // Distance
                 ListTile(
                   title: const Text('Distance'),
-                  trailing: SegmentedButton<DistanceUnit>(
-                    segments: DistanceUnit.values
+                  trailing: SegmentedButton<String>(
+                    segments: DistanceUnitValues.values
                         .map((u) => ButtonSegment(
                               value: u,
-                              label: Text(u.symbol),
+                              label: Text(DistanceUnitValues.symbolFor(u)),
                             ))
                         .toList(),
                     selected: {settings.distanceUnit},
@@ -71,11 +71,11 @@ class SettingsScreen extends ConsumerWidget {
                 // Température
                 ListTile(
                   title: const Text('Température'),
-                  trailing: SegmentedButton<TemperatureUnit>(
-                    segments: TemperatureUnit.values
+                  trailing: SegmentedButton<String>(
+                    segments: TemperatureUnitValues.values
                         .map((u) => ButtonSegment(
                               value: u,
-                              label: Text(u.symbol),
+                              label: Text(TemperatureUnitValues.symbolFor(u)),
                             ))
                         .toList(),
                     selected: {settings.temperatureUnit},
@@ -95,10 +95,10 @@ class SettingsScreen extends ConsumerWidget {
           _sectionHeader(theme, Icons.palette, 'Thème'),
           Card(
             child: Column(
-              children: AppThemeMode.values.map((mode) {
+              children: AppThemeModeValues.values.map((mode) {
                 final selected = mode == settings.themeMode;
                 return ListTile(
-                  title: Text(mode.label),
+                  title: Text(AppThemeModeValues.labelFor(mode)),
                   leading: Icon(
                     selected ? Icons.radio_button_checked : Icons.radio_button_unchecked,
                     color: selected ? theme.colorScheme.primary : null,

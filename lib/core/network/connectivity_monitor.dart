@@ -11,9 +11,17 @@ final _log = Logger(
 );
 
 /// Statut de connectivite simplifie.
-enum ConnectivityStatus {
-  online,
-  offline,
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef ConnectivityStatus = String;
+
+/// Valeurs connues pour ConnectivityStatus avec fallback generique.
+abstract class ConnectivityStatusValues {
+  static const String online = 'online';
+  static const String offline = 'offline';
+  static const String fallback = offline;
+  static const List<String> values = [online, offline];
+  static ConnectivityStatus fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Moniteur de connectivite avec debounce online (5s).
@@ -30,7 +38,7 @@ class ConnectivityMonitor {
       return _mapResult(result);
     } catch (e) {
       _log.d('[ConnectivityMonitor] Erreur checkStatus: $e');
-      return ConnectivityStatus.offline;
+      return ConnectivityStatusValues.offline;
     }
   }
 
@@ -42,9 +50,9 @@ class ConnectivityMonitor {
 
   ConnectivityStatus _mapResult(ConnectivityResult result) {
     if (result == ConnectivityResult.none) {
-      return ConnectivityStatus.offline;
+      return ConnectivityStatusValues.offline;
     }
-    return ConnectivityStatus.online;
+    return ConnectivityStatusValues.online;
   }
 }
 
@@ -61,18 +69,18 @@ class _OnlineDebounceTransformer
 
     final subscription = stream.listen(
       (status) {
-        if (status == ConnectivityStatus.offline) {
+        if (status == ConnectivityStatusValues.offline) {
           debounceTimer?.cancel();
           debounceTimer = null;
-          if (lastEmitted != ConnectivityStatus.offline) {
-            lastEmitted = ConnectivityStatus.offline;
+          if (lastEmitted != ConnectivityStatusValues.offline) {
+            lastEmitted = ConnectivityStatusValues.offline;
             controller.add(status);
           }
         } else {
           debounceTimer?.cancel();
           debounceTimer = Timer(_duration, () {
-            if (lastEmitted != ConnectivityStatus.online) {
-              lastEmitted = ConnectivityStatus.online;
+            if (lastEmitted != ConnectivityStatusValues.online) {
+              lastEmitted = ConnectivityStatusValues.online;
               controller.add(status);
             }
           });

@@ -11,56 +11,84 @@ class SettingsKeys {
   static const String cacheSizeMb = 'settings_cache_size_mb';
 }
 
-/// Langues disponibles
-enum AppLanguage {
-  fr('Francais', 'fr'),
-  en('English', 'en'),
-  de('Deutsch', 'de'),
-  it('Italiano', 'it'),
-  es('Espanol', 'es');
+/// Langues disponibles.
+/// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
+typedef AppLanguage = String;
 
-  const AppLanguage(this.label, this.code);
-  final String label;
-  final String code;
+abstract class AppLanguageValues {
+  static const String fr = 'fr';
+  static const String en = 'en';
+  static const String de = 'de';
+  static const String it = 'it';
+  static const String es = 'es';
+  static const String fallback = fr;
+  static const List<String> values = [fr, en, de, it, es];
+
+  static const Map<String, String> labels = {
+    fr: 'Francais', en: 'English', de: 'Deutsch', it: 'Italiano', es: 'Espanol',
+  };
+  static String labelFor(String lang) => labels[lang] ?? lang;
+  static AppLanguage fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
-/// Unites de distance
-enum DistanceUnit {
-  km('Kilometres', 'km'),
-  miles('Miles', 'mi');
+/// Unites de distance.
+typedef DistanceUnit = String;
 
-  const DistanceUnit(this.label, this.symbol);
-  final String label;
-  final String symbol;
+abstract class DistanceUnitValues {
+  static const String km = 'km';
+  static const String miles = 'miles';
+  static const String fallback = km;
+  static const List<String> values = [km, miles];
+
+  static const Map<String, String> labels = {km: 'Kilometres', miles: 'Miles'};
+  static const Map<String, String> symbols = {km: 'km', miles: 'mi'};
+  static String labelFor(String unit) => labels[unit] ?? unit;
+  static String symbolFor(String unit) => symbols[unit] ?? unit;
+  static DistanceUnit fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
-/// Unites de temperature
-enum TemperatureUnit {
-  celsius('Celsius', '°C'),
-  fahrenheit('Fahrenheit', '°F');
+/// Unites de temperature.
+typedef TemperatureUnit = String;
 
-  const TemperatureUnit(this.label, this.symbol);
-  final String label;
-  final String symbol;
+abstract class TemperatureUnitValues {
+  static const String celsius = 'celsius';
+  static const String fahrenheit = 'fahrenheit';
+  static const String fallback = celsius;
+  static const List<String> values = [celsius, fahrenheit];
+
+  static const Map<String, String> labels = {celsius: 'Celsius', fahrenheit: 'Fahrenheit'};
+  static const Map<String, String> symbols = {celsius: '°C', fahrenheit: '°F'};
+  static String labelFor(String unit) => labels[unit] ?? unit;
+  static String symbolFor(String unit) => symbols[unit] ?? unit;
+  static TemperatureUnit fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
-/// Mode de theme
-enum AppThemeMode {
-  dark('Sombre'),
-  light('Clair'),
-  system('Systeme');
+/// Mode de theme.
+typedef AppThemeMode = String;
 
-  const AppThemeMode(this.label);
-  final String label;
+abstract class AppThemeModeValues {
+  static const String dark = 'dark';
+  static const String light = 'light';
+  static const String system = 'system';
+  static const String fallback = dark;
+  static const List<String> values = [dark, light, system];
+
+  static const Map<String, String> labels = {dark: 'Sombre', light: 'Clair', system: 'Systeme'};
+  static String labelFor(String mode) => labels[mode] ?? mode;
+  static AppThemeMode fromString(String value) =>
+      values.contains(value) ? value : fallback;
 }
 
 /// Etat des parametres complets
 class AppSettings {
   const AppSettings({
-    this.language = AppLanguage.fr,
-    this.distanceUnit = DistanceUnit.km,
-    this.temperatureUnit = TemperatureUnit.celsius,
-    this.themeMode = AppThemeMode.dark,
+    this.language = AppLanguageValues.fr,
+    this.distanceUnit = DistanceUnitValues.km,
+    this.temperatureUnit = TemperatureUnitValues.celsius,
+    this.themeMode = AppThemeModeValues.dark,
     this.cacheEnabled = true,
     this.cacheSizeMb = 500,
   });
@@ -101,24 +129,22 @@ class SettingsNotifier extends Notifier<AppSettings> {
     return const AppSettings();
   }
 
-  /// Charge les preferences sauvegardees
+  /// Charge les preferences sauvegardees (String-based)
   Future<void> _load() async {
     _prefs = await SharedPreferences.getInstance();
 
-    final langIndex = _prefs?.getInt(SettingsKeys.language) ?? 0;
-    final distIndex = _prefs?.getInt(SettingsKeys.distanceUnit) ?? 0;
-    final tempIndex = _prefs?.getInt(SettingsKeys.temperatureUnit) ?? 0;
-    final themeIndex = _prefs?.getInt(SettingsKeys.themeMode) ?? 0;
-    final cacheEnabled =
-        _prefs?.getBool(SettingsKeys.cacheEnabled) ?? true;
-    final cacheSizeMb =
-        _prefs?.getInt(SettingsKeys.cacheSizeMb) ?? 500;
+    final lang = _prefs?.getString(SettingsKeys.language) ?? AppLanguageValues.fr;
+    final dist = _prefs?.getString(SettingsKeys.distanceUnit) ?? DistanceUnitValues.km;
+    final temp = _prefs?.getString(SettingsKeys.temperatureUnit) ?? TemperatureUnitValues.celsius;
+    final theme = _prefs?.getString(SettingsKeys.themeMode) ?? AppThemeModeValues.dark;
+    final cacheEnabled = _prefs?.getBool(SettingsKeys.cacheEnabled) ?? true;
+    final cacheSizeMb = _prefs?.getInt(SettingsKeys.cacheSizeMb) ?? 500;
 
     state = AppSettings(
-      language: AppLanguage.values[langIndex.clamp(0, AppLanguage.values.length - 1)],
-      distanceUnit: DistanceUnit.values[distIndex.clamp(0, DistanceUnit.values.length - 1)],
-      temperatureUnit: TemperatureUnit.values[tempIndex.clamp(0, TemperatureUnit.values.length - 1)],
-      themeMode: AppThemeMode.values[themeIndex.clamp(0, AppThemeMode.values.length - 1)],
+      language: AppLanguageValues.fromString(lang),
+      distanceUnit: DistanceUnitValues.fromString(dist),
+      temperatureUnit: TemperatureUnitValues.fromString(temp),
+      themeMode: AppThemeModeValues.fromString(theme),
       cacheEnabled: cacheEnabled,
       cacheSizeMb: cacheSizeMb,
     );
@@ -126,22 +152,22 @@ class SettingsNotifier extends Notifier<AppSettings> {
 
   void setLanguage(AppLanguage language) {
     state = state.copyWith(language: language);
-    _prefs?.setInt(SettingsKeys.language, language.index);
+    _prefs?.setString(SettingsKeys.language, language);
   }
 
   void setDistanceUnit(DistanceUnit unit) {
     state = state.copyWith(distanceUnit: unit);
-    _prefs?.setInt(SettingsKeys.distanceUnit, unit.index);
+    _prefs?.setString(SettingsKeys.distanceUnit, unit);
   }
 
   void setTemperatureUnit(TemperatureUnit unit) {
     state = state.copyWith(temperatureUnit: unit);
-    _prefs?.setInt(SettingsKeys.temperatureUnit, unit.index);
+    _prefs?.setString(SettingsKeys.temperatureUnit, unit);
   }
 
   void setThemeMode(AppThemeMode mode) {
     state = state.copyWith(themeMode: mode);
-    _prefs?.setInt(SettingsKeys.themeMode, mode.index);
+    _prefs?.setString(SettingsKeys.themeMode, mode);
   }
 
   void setCacheEnabled(bool enabled) {
