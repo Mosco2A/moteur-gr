@@ -18,6 +18,10 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
+import '../../features/trek/presentation/stages/stage_list_screen.dart'
+    as trek_stages;
+import '../../features/trek/presentation/stages/stage_detail_screen.dart'
+    as trek_detail;
 
 /// Configuration du routeur GoRouter.
 ///
@@ -36,6 +40,8 @@ import '../../features/trek/presentation/map/map_screen.dart';
 ///   /settings                    - Parametres
 ///   /profile                     - Profil utilisateur
 ///   /group/:id                   - Groupe localisation partagee
+///   /stages                      - Liste des etapes (trek)
+///   /stages/:id                  - Detail d'une etape (trek)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 final appRouter = GoRouter(
@@ -116,6 +122,29 @@ final appRouter = GoRouter(
           path: 'feedback',
           name: 'trail-feedback',
           builder: (context, state) => const FeedbackScreen(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: '/stages',
+      name: 'stages',
+      builder: (context, state) {
+        final trailId = state.uri.queryParameters['trailId'] ?? '';
+        return trek_stages.StageListScreen(trailId: trailId);
+      },
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'stage-by-id',
+          builder: (context, state) {
+            final trailId = state.uri.queryParameters['trailId'] ?? '';
+            final stageId =
+                int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
+            return trek_detail.StageDetailScreen(
+              trailId: trailId,
+              stageId: stageId,
+            );
+          },
         ),
       ],
     ),
