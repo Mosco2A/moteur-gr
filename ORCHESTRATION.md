@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 30/05/2026 15:15
+MAJ: 30/05/2026 16:00
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -20,10 +20,10 @@ Phase 5: A FAIRE
 fix/phase2-batch1-corrections — 3 commits Vulcain (E2.1b, E2.1c, E2.5a) — A integrer dans Phase 2 refactoring
 
 ## Prochaine action
-Phase 2 E2.3a — MapScreen orchestrateur (GO-81 scope)
+Phase 2 E2.4a — StageListScreen (GO-81 scope)
 
 ## Derniere action
-Phase 2 en cours 30/05 15:15. 7/32 sous-etapes mergees (E2.1a-c, E2.2a-b, E2.5a). Prochaine: E2.3a.
+Phase 2 en cours 30/05 16:00. 13/32 merges. E2.3 carte complet 6/6. Prochaine: E2.4a.
 
 ## Regles
 - Skynet ne code PAS — delegue a Vulcain (dev) / Artemis (QA)
