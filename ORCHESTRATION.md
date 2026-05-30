@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 30/05/2026 20:00
+MAJ: 30/05/2026 23:10
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -20,10 +20,10 @@ Phase 5: A FAIRE
 fix/phase2-batch1-corrections — 3 commits Vulcain (E2.1b, E2.1c, E2.5a) — A integrer dans Phase 2 refactoring
 
 ## Prochaine action
-Phase 2 E2.7a — ItineraryCalculator (GO-81 scope)
+QA Phase 2 gate (Artemis) puis Phase 3 — GO Chris requis
 
 ## Derniere action
-Phase 2 en cours 30/05 20:00. 24/32 merges. E2.6 GPS complet 5/5. Prochaine: E2.7a.
+Phase 2 COMPLETE 30/05 23:10. 32/32 merges. Toutes sous-etapes faites conforme plan V8.
 
 ## Regles
 - Skynet ne code PAS — delegue a Vulcain (dev) / Artemis (QA)
