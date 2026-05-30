@@ -4,29 +4,8 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/pois_dao.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 
-/// Tests du modele PoiModel (fromJson, toCompanion, PoiType enum, fromDb).
+/// Tests du modele PoiModel (fromJson, toCompanion, String type, fromDb).
 void main() {
-  group('PoiType', () {
-    test('fromString reconnait tous les types', () {
-      expect(PoiType.fromString('shelter'), PoiType.shelter);
-      expect(PoiType.fromString('water'), PoiType.water);
-      expect(PoiType.fromString('viewpoint'), PoiType.viewpoint);
-      expect(PoiType.fromString('campsite'), PoiType.campsite);
-      expect(PoiType.fromString('restaurant'), PoiType.restaurant);
-      expect(PoiType.fromString('emergency'), PoiType.emergency);
-      expect(PoiType.fromString('danger'), PoiType.danger);
-      expect(PoiType.fromString('shop'), PoiType.shop);
-    });
-
-    test('fromString retourne viewpoint par defaut pour type inconnu', () {
-      expect(PoiType.fromString('unknown'), PoiType.viewpoint);
-    });
-
-    test('tous les types sont presents dans lenum', () {
-      expect(PoiType.values.length, 8);
-    });
-  });
-
   group('PoiModel', () {
     test('fromJson deserialise correctement', () {
       final json = {
@@ -45,7 +24,7 @@ void main() {
       final model = PoiModel.fromJson(json);
       expect(model.trailId, 'trail1');
       expect(model.name, 'Refuge du Sommet');
-      expect(model.type, PoiType.shelter);
+      expect(model.type, 'shelter');
       expect(model.altitudeM, 1800);
       expect(model.openingHours, 'Juin-Sept');
     });
@@ -72,7 +51,7 @@ void main() {
         trailId: 'trail1',
         stageNumber: 1,
         name: 'Source',
-        type: PoiType.water,
+        type: 'water',
         lat: 42.0,
         lng: 9.0,
         altitudeM: 1200,
@@ -93,7 +72,7 @@ void main() {
         stageNumber: 1,
         name: 'Refuge Test',
         description: 'Un refuge de test',
-        type: PoiType.shelter,
+        type: 'shelter',
         lat: 42.0,
         lng: 9.0,
         altitudeM: 1500,
@@ -106,21 +85,33 @@ void main() {
 
       expect(restored.trailId, original.trailId);
       expect(restored.name, original.name);
-      expect(restored.type, original.type);
+      expect(restored.type, 'shelter');
       expect(restored.altitudeM, original.altitudeM);
       expect(restored.openingHours, original.openingHours);
 
       await db.close();
     });
 
+    test('type String extensible accepte des types custom', () {
+      const model = PoiModel(
+        trailId: 't1',
+        stageNumber: 1,
+        name: 'Parking',
+        type: 'parking',
+        lat: 42.0,
+        lng: 9.0,
+      );
+      expect(model.type, 'parking');
+    });
+
     test('equality fonctionne avec freezed', () {
       const a = PoiModel(
         trailId: 't1', stageNumber: 1, name: 'A',
-        type: PoiType.water, lat: 42.0, lng: 9.0,
+        type: 'water', lat: 42.0, lng: 9.0,
       );
       const b = PoiModel(
         trailId: 't1', stageNumber: 1, name: 'A',
-        type: PoiType.water, lat: 42.0, lng: 9.0,
+        type: 'water', lat: 42.0, lng: 9.0,
       );
       expect(a, equals(b));
     });

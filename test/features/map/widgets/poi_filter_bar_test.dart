@@ -16,7 +16,7 @@ void main() {
       trailId: 'test-trail',
       stageNumber: 1,
       name: 'Source',
-      type: PoiType.water,
+      type: 'water',
       lat: 45.5,
       lng: 2.8,
     ),
@@ -24,7 +24,7 @@ void main() {
       trailId: 'test-trail',
       stageNumber: 1,
       name: 'Refuge',
-      type: PoiType.shelter,
+      type: 'shelter',
       lat: 45.52,
       lng: 2.82,
     ),
@@ -32,7 +32,7 @@ void main() {
       trailId: 'test-trail',
       stageNumber: 2,
       name: 'Vue',
-      type: PoiType.viewpoint,
+      type: 'viewpoint',
       lat: 45.54,
       lng: 2.84,
     ),
@@ -68,7 +68,7 @@ void main() {
 
       expect(find.text('Eau'), findsOneWidget);
       expect(find.text('Refuge'), findsOneWidget);
-      expect(find.text('Vue'), findsOneWidget);
+      expect(find.text('Point de vue'), findsOneWidget);
     });
 
     testWidgets('les chips sont tous activés par défaut', (tester) async {
@@ -124,15 +124,6 @@ void main() {
       expect(find.byType(FilterChip), findsNothing);
     });
 
-    testWidgets('labelFor retourne le bon libellé pour chaque type', (_) async {
-      expect(PoiFilterBar.labelFor(PoiType.shelter), 'Refuge');
-      expect(PoiFilterBar.labelFor(PoiType.water), 'Eau');
-      expect(PoiFilterBar.labelFor(PoiType.viewpoint), 'Vue');
-      expect(PoiFilterBar.labelFor(PoiType.campsite), 'Bivouac');
-      expect(PoiFilterBar.labelFor(PoiType.restaurant), 'Restaurant');
-      expect(PoiFilterBar.labelFor(PoiType.emergency), 'Urgence');
-      expect(PoiFilterBar.labelFor(PoiType.danger), 'Danger');
-      expect(PoiFilterBar.labelFor(PoiType.shop), 'Commerce');
-    });
+    
   });
 }
