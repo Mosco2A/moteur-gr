@@ -20,6 +20,8 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
 import '../../features/trek/presentation/stages/stage_list_screen.dart'
     as trek_stages;
+import '../../features/trek/presentation/planning/planning_screen.dart'
+    as trek_planning;
 import '../../features/trek/presentation/stages/stage_detail_screen.dart'
     as trek_detail;
 
@@ -40,6 +42,7 @@ import '../../features/trek/presentation/stages/stage_detail_screen.dart'
 ///   /settings                    - Parametres
 ///   /profile                     - Profil utilisateur
 ///   /group/:id                   - Groupe localisation partagee
+///   /planning                    - Planning itineraire (trek)
 ///   /stages                      - Liste des etapes (trek)
 ///   /stages/:id                  - Detail d'une etape (trek)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
@@ -155,6 +158,12 @@ final appRouter = GoRouter(
         final trailId = state.uri.queryParameters['trailId'] ?? '';
         return MapScreen(trailId: trailId);
       },
+    ),
+    GoRoute(
+      path: '/planning',
+      name: 'trek-planning',
+      builder: (context, state) =>
+          const trek_planning.TrekPlanningScreen(),
     ),
     GoRoute(
       path: '/group/:id',
