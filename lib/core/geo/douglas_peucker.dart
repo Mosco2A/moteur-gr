@@ -5,6 +5,11 @@ import 'track_point.dart';
 ///
 /// Version iterative pour supporter les traces longs
 /// sans risque de stack overflow.
+///
+/// @deprecated Phase 2 : utiliser [track_simplifier.dart] dans
+/// features/trek/data/ avec le modele TrackPoint Phase 2.
+/// Ce fichier est conserve pour la retro-compatibilite avec
+/// les providers map/ qui utilisent le TrackPoint core/geo/.
 class DouglasPeucker {
   DouglasPeucker._();
 
