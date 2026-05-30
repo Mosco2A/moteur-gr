@@ -153,8 +153,8 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
                     bounds: bounds,
                     padding: const EdgeInsets.all(32),
                   ),
-                  onPositionChanged: (position, hasGesture) {
-                    final newZoom = position.zoom?.round() ?? _currentZoom;
+                  onPositionChanged: (camera, hasGesture) {
+                    final newZoom = camera.zoom.round();
                     if (newZoom != _currentZoom) {
                       setState(() => _currentZoom = newZoom);
                     }

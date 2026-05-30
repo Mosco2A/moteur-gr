@@ -35,7 +35,7 @@ class OfflineTileProvider {
       try {
         final path = await mbtilesManager.getMbtilesPath(trailId);
         _log.d('[OfflineTileProvider] Tuiles MBTiles locales: $path');
-        return MbTilesTileProvider.fromPath(path);
+        return MbTilesTileProvider.fromPath(path: path);
       } catch (e) {
         _log.e('[OfflineTileProvider] Erreur ouverture MBTiles: $e');
         // Fallback sur le mode en ligne en cas d'erreur
