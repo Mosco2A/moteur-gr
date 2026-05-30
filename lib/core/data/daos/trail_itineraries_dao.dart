@@ -14,12 +14,12 @@ class TrailItinerariesDao extends DatabaseAccessor<AppDatabase>
   TrailItinerariesDao(super.db);
 
   /// Recupere tous les itineraires
-  Future<List<TrailItinerarie>> getAll() {
+  Future<List<TrailItinerary>> getAll() {
     return select(trailItineraries).get();
   }
 
   /// Recupere un itineraire par son id
-  Future<TrailItinerarie?> getById(String id) {
+  Future<TrailItinerary?> getById(String id) {
     return (select(trailItineraries)..where((t) => t.id.equals(id)))
         .getSingleOrNull();
   }
