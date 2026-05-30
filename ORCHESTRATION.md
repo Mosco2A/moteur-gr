@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 30/05/2026 14:12
+MAJ: 30/05/2026 14:50
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -17,13 +17,13 @@ Phase 4: commits presents, NON VALIDES (depend Phase 3)
 Phase 5: A FAIRE
 
 ## Branches en attente
-fix/phase2-batch1-corrections — 3 commits Vulcain (E2.1b, E2.1c, E2.5a) — NE PAS MERGER avant fin Phase 1
+fix/phase2-batch1-corrections — 3 commits Vulcain (E2.1b, E2.1c, E2.5a) — A integrer dans Phase 2 refactoring
 
 ## Prochaine action
-Phase 1 — Refactoring Riverpod 2 vers 3 + 16 enums vers String (#81752). GO Chris requis.
+Phase 2 — Refactoring 32 sous-etapes (chemins, signatures, completions). GO-81 scope actif.
 
 ## Derniere action
-Phase 0 COMPLETE 30/05 14:12. 7 commits (E0.1-E0.6 + fix Slang). QA Artemis 6/6 PASS. Mergee main.
+Phase 1 COMPLETE 30/05 14:50. 3 commits (Riverpod 3 + enums String + select fix). QA Artemis PASS apres fix. Mergee main.
 
 ## Regles
 - Skynet ne code PAS — delegue a Vulcain (dev) / Artemis (QA)
