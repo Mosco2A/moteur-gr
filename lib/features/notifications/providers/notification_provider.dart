@@ -7,7 +7,7 @@ final notificationServiceProvider = Provider<NotificationService>((ref) {
   return NotificationService();
 });
 
-/// État des paramètres de notification
+/// Etat des parametres de notification
 class NotificationSettings {
   const NotificationSettings({
     this.morningReminderEnabled = true,
@@ -48,14 +48,16 @@ class NotificationSettings {
   }
 }
 
-/// Notifier pour les paramètres de notification
-class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
-  NotificationSettingsNotifier(this._service)
-      : super(const NotificationSettings()) {
-    _checkPermissions();
-  }
+/// Notifier pour les parametres de notification
+class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
+  late NotificationService _service;
 
-  final NotificationService _service;
+  @override
+  NotificationSettings build() {
+    _service = ref.watch(notificationServiceProvider);
+    _checkPermissions();
+    return const NotificationSettings();
+  }
 
   Future<void> _checkPermissions() async {
     final granted = await _service.checkPermissions();
@@ -73,8 +75,8 @@ class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
       _service.scheduleMorningReminder(
         hour: state.morningReminderHour,
         minute: state.morningReminderMinute,
-        title: 'Bonne randonnée !',
-        body: 'N\'oubliez pas de vérifier la météo avant de partir.',
+        title: 'Bonne randonnee !',
+        body: "N'oubliez pas de verifier la meteo avant de partir.",
       );
     }
   }
@@ -95,9 +97,7 @@ class NotificationSettingsNotifier extends StateNotifier<NotificationSettings> {
   }
 }
 
-/// Provider des paramètres de notification
-final notificationSettingsProvider = StateNotifierProvider<
-    NotificationSettingsNotifier, NotificationSettings>((ref) {
-  final service = ref.watch(notificationServiceProvider);
-  return NotificationSettingsNotifier(service);
-});
+/// Provider des parametres de notification
+final notificationSettingsProvider =
+    NotifierProvider<NotificationSettingsNotifier, NotificationSettings>(
+        NotificationSettingsNotifier.new);

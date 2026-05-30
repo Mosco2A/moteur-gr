@@ -36,8 +36,8 @@ class PlanningScreen extends ConsumerWidget {
             availableDurations: config.availableDurations,
             selectedDuration: selectedDuration,
             onDurationChanged: (duration) {
-              ref.read(selectedDurationProvider.notifier).state =
-                  duration;
+              ref.read(selectedDurationProvider.notifier).set(
+                  duration);
             },
           ),
           const Divider(height: 1),

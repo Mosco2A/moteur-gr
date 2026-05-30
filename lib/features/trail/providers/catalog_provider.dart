@@ -224,7 +224,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
     await for (final progress
         in downloadService.downloadTrail(trailId, dataUrl)) {
       // Mettre a jour le stream de progression
-      ref.read(downloadProgressProvider(trailId).notifier).update(progress);
+      ref.read(downloadProgressProvider(trailId).notifier).setProgress(progress);
 
       if (progress.status == DownloadStatus.completed) {
         // Marquer la version locale comme telechargee
@@ -310,7 +310,7 @@ class DownloadProgressNotifier
   Future<DownloadProgress?> build(String arg) async => null;
 
   /// Met a jour la progression.
-  void update(DownloadProgress progress) {
+  void setProgress(DownloadProgress progress) {
     state = AsyncData(progress);
   }
 

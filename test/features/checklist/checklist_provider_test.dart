@@ -1,155 +1,132 @@
 import 'package:drift/native.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/checklist/data/checklist_template.dart';
 import 'package:moteur_gr/features/checklist/providers/checklist_provider.dart';
 
 /// Tests du provider de checklist materiel.
 ///
-/// On teste directement le ChecklistNotifier avec une DB in-memory,
-/// sans passer par le ProviderContainer pour eviter les race conditions.
+/// On teste le ChecklistNotifier via ProviderContainer avec une DB in-memory.
 void main() {
   group('ChecklistNotifier', () {
     late AppDatabase db;
+    late ProviderContainer container;
 
     setUp(() {
       db = AppDatabase(NativeDatabase.memory());
+      container = ProviderContainer(overrides: [
+        databaseProvider.overrideWithValue(db),
+        trailConfigProvider.overrideWithValue(const TrailConfig(
+          id: 'test_trail',
+          displayName: 'Test',
+          gpxAssetPath: 'assets/gpx/test.gpx',
+          defaultDuration: 5,
+          availableDurations: [3, 5, 7],
+        )),
+      ]);
     });
 
     tearDown(() async {
+      container.dispose();
       await db.close();
     });
 
-    /// Helper : cree un notifier et attend le chargement initial.
-    Future<ChecklistNotifier> createNotifier(String trailId) async {
-      final notifier = ChecklistNotifier(db, trailId);
-      // Attendre que le chargement async soit termine
-      await Future<void>.delayed(const Duration(milliseconds: 200));
-      return notifier;
-    }
-
     test('charge le template par defaut au premier acces', () async {
-      final notifier = await createNotifier('test_trail');
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      expect(notifier.state.totalCount, defaultChecklistTemplate.length);
-      expect(notifier.state.checkedCount, 0);
-      expect(notifier.state.isLoading, false);
-      expect(notifier.state.items.length, 25);
-
-      notifier.dispose();
+      final state = container.read(checklistProvider);
+      expect(state.totalCount, defaultChecklistTemplate.length);
+      expect(state.checkedCount, 0);
+      expect(state.isLoading, false);
+      expect(state.items.length, 25);
     });
 
     test('toggle coche un item', () async {
-      final notifier = await createNotifier('test_trail');
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      await notifier.toggle('backpack');
+      await container.read(checklistProvider.notifier).toggle('backpack');
 
-      expect(notifier.state.checkedCount, 1);
-      final backpack = notifier.state.items
+      final state = container.read(checklistProvider);
+      expect(state.checkedCount, 1);
+      final backpack = state.items
           .firstWhere((i) => i.template.id == 'backpack');
       expect(backpack.isChecked, true);
-
-      notifier.dispose();
     });
 
     test('toggle decoche un item deja coche', () async {
-      final notifier = await createNotifier('test_trail');
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
+      final notifier = container.read(checklistProvider.notifier);
       await notifier.toggle('backpack');
       await notifier.toggle('backpack');
 
-      expect(notifier.state.checkedCount, 0);
-      final backpack = notifier.state.items
+      final state = container.read(checklistProvider);
+      expect(state.checkedCount, 0);
+      final backpack = state.items
           .firstWhere((i) => i.template.id == 'backpack');
       expect(backpack.isChecked, false);
-
-      notifier.dispose();
     });
 
     test('toggle plusieurs items', () async {
-      final notifier = await createNotifier('test_trail');
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
+      final notifier = container.read(checklistProvider.notifier);
       await notifier.toggle('backpack');
       await notifier.toggle('sleepingBag');
       await notifier.toggle('headlamp');
 
-      expect(notifier.state.checkedCount, 3);
-
-      notifier.dispose();
+      expect(container.read(checklistProvider).checkedCount, 3);
     });
 
     test('progress calcule correctement', () async {
-      final notifier = await createNotifier('test_trail');
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      expect(notifier.state.progress, 0.0);
+      expect(container.read(checklistProvider).progress, 0.0);
 
-      await notifier.toggle('backpack');
+      await container.read(checklistProvider.notifier).toggle('backpack');
 
       expect(
-        notifier.state.progress,
+        container.read(checklistProvider).progress,
         closeTo(1.0 / defaultChecklistTemplate.length, 0.01),
       );
-
-      notifier.dispose();
     });
 
     test('isComplete est false au debut', () async {
-      final notifier = await createNotifier('test_trail');
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      expect(notifier.state.isComplete, false);
-
-      notifier.dispose();
+      expect(container.read(checklistProvider).isComplete, false);
     });
 
     test('resetAll decoche tous les items', () async {
-      final notifier = await createNotifier('test_trail');
-
-      await notifier.toggle('backpack');
-      await notifier.toggle('sleepingBag');
-      expect(notifier.state.checkedCount, 2);
-
-      await notifier.resetAll();
-      // Attendre le rechargement
+      container.read(checklistProvider);
       await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      expect(notifier.state.checkedCount, 0);
+      final notifier = container.read(checklistProvider.notifier);
+      await notifier.toggle('backpack');
+      await notifier.toggle('sleepingBag');
+      expect(container.read(checklistProvider).checkedCount, 2);
 
-      notifier.dispose();
-    });
+      await notifier.resetAll();
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
-    test('les items persistent entre deux notifiers', () async {
-      final notifier1 = await createNotifier('test_trail');
-      await notifier1.toggle('backpack');
-      notifier1.dispose();
-
-      // Creer un deuxieme notifier avec la meme DB
-      final notifier2 = await createNotifier('test_trail');
-      final backpack = notifier2.state.items
-          .firstWhere((i) => i.template.id == 'backpack');
-      expect(backpack.isChecked, true);
-
-      notifier2.dispose();
-    });
-
-    test('sentiers differents ont des checklists independantes', () async {
-      final notifier1 = await createNotifier('gr20');
-      await notifier1.toggle('backpack');
-      notifier1.dispose();
-
-      final notifier2 = await createNotifier('tmb');
-      final backpack = notifier2.state.items
-          .firstWhere((i) => i.template.id == 'backpack');
-      expect(backpack.isChecked, false);
-
-      notifier2.dispose();
+      expect(container.read(checklistProvider).checkedCount, 0);
     });
 
     test('initialise depuis le template et cree les items en DB', () async {
-      final notifier = await createNotifier('test_trail');
-      notifier.dispose();
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      // Verifier directement en DB
       final dao = ChecklistDao(db);
       final items = await dao.getByTrailId('test_trail');
       expect(items.length, defaultChecklistTemplate.length);

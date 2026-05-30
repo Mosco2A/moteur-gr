@@ -40,12 +40,14 @@ class SyncStatusInfo {
 }
 
 /// Notifier pour la configuration de sync cloud.
-class SyncConfigNotifier extends StateNotifier<SyncConfig> {
-  SyncConfigNotifier() : super(const SyncConfig()) {
-    _load();
-  }
-
+class SyncConfigNotifier extends Notifier<SyncConfig> {
   SharedPreferences? _prefs;
+
+  @override
+  SyncConfig build() {
+    _load();
+    return const SyncConfig();
+  }
 
   /// Charge la configuration depuis SharedPreferences.
   Future<void> _load() async {
@@ -91,17 +93,17 @@ class SyncConfigNotifier extends StateNotifier<SyncConfig> {
 
 /// Provider de la configuration sync cloud.
 final syncConfigProvider =
-    StateNotifierProvider<SyncConfigNotifier, SyncConfig>((ref) {
-  return SyncConfigNotifier();
-});
+    NotifierProvider<SyncConfigNotifier, SyncConfig>(SyncConfigNotifier.new);
 
 /// Notifier pour le statut de synchronisation.
-class SyncStatusNotifier extends StateNotifier<SyncStatusInfo> {
-  SyncStatusNotifier() : super(const SyncStatusInfo()) {
-    _load();
-  }
-
+class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
   SharedPreferences? _prefs;
+
+  @override
+  SyncStatusInfo build() {
+    _load();
+    return const SyncStatusInfo();
+  }
 
   Future<void> _load() async {
     _prefs = await SharedPreferences.getInstance();
@@ -139,9 +141,8 @@ class SyncStatusNotifier extends StateNotifier<SyncStatusInfo> {
 
 /// Provider du statut de synchronisation.
 final syncStatusProvider =
-    StateNotifierProvider<SyncStatusNotifier, SyncStatusInfo>((ref) {
-  return SyncStatusNotifier();
-});
+    NotifierProvider<SyncStatusNotifier, SyncStatusInfo>(
+        SyncStatusNotifier.new);
 
 /// Provider pour activer/desactiver la sync cloud.
 final toggleSyncProvider = Provider<void Function(bool)>((ref) {

@@ -3,8 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/group_member.dart';
 import '../services/group_tracking_service.dart';
 
-/// Code du groupe actif (null si pas dans un groupe).
-final groupCodeProvider = StateProvider<String?>((ref) => null);
+/// Notifier pour le code du groupe actif (null si pas dans un groupe).
+class GroupCodeNotifier extends Notifier<String?> {
+  @override
+  String? build() => null;
+
+  void set(String? code) => state = code;
+}
+
+final groupCodeProvider =
+    NotifierProvider<GroupCodeNotifier, String?>(GroupCodeNotifier.new);
 
 /// Stream des membres du groupe actif.
 final groupMembersProvider = StreamProvider<List<GroupMember>>((ref) {

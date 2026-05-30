@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Clés des préférences utilisateur
+/// Cles des preferences utilisateur
 class SettingsKeys {
   static const String language = 'settings_language';
   static const String distanceUnit = 'settings_distance_unit';
@@ -13,20 +13,20 @@ class SettingsKeys {
 
 /// Langues disponibles
 enum AppLanguage {
-  fr('Français', 'fr'),
+  fr('Francais', 'fr'),
   en('English', 'en'),
   de('Deutsch', 'de'),
   it('Italiano', 'it'),
-  es('Español', 'es');
+  es('Espanol', 'es');
 
   const AppLanguage(this.label, this.code);
   final String label;
   final String code;
 }
 
-/// Unités de distance
+/// Unites de distance
 enum DistanceUnit {
-  km('Kilomètres', 'km'),
+  km('Kilometres', 'km'),
   miles('Miles', 'mi');
 
   const DistanceUnit(this.label, this.symbol);
@@ -34,7 +34,7 @@ enum DistanceUnit {
   final String symbol;
 }
 
-/// Unités de température
+/// Unites de temperature
 enum TemperatureUnit {
   celsius('Celsius', '°C'),
   fahrenheit('Fahrenheit', '°F');
@@ -44,17 +44,17 @@ enum TemperatureUnit {
   final String symbol;
 }
 
-/// Mode de thème
+/// Mode de theme
 enum AppThemeMode {
   dark('Sombre'),
   light('Clair'),
-  system('Système');
+  system('Systeme');
 
   const AppThemeMode(this.label);
   final String label;
 }
 
-/// État des paramètres complets
+/// Etat des parametres complets
 class AppSettings {
   const AppSettings({
     this.language = AppLanguage.fr,
@@ -91,15 +91,17 @@ class AppSettings {
   }
 }
 
-/// Notifier pour les paramètres avec persistance SharedPreferences
-class SettingsNotifier extends StateNotifier<AppSettings> {
-  SettingsNotifier() : super(const AppSettings()) {
-    _load();
-  }
-
+/// Notifier pour les parametres avec persistance SharedPreferences
+class SettingsNotifier extends Notifier<AppSettings> {
   SharedPreferences? _prefs;
 
-  /// Charge les préférences sauvegardées
+  @override
+  AppSettings build() {
+    _load();
+    return const AppSettings();
+  }
+
+  /// Charge les preferences sauvegardees
   Future<void> _load() async {
     _prefs = await SharedPreferences.getInstance();
 
@@ -153,8 +155,6 @@ class SettingsNotifier extends StateNotifier<AppSettings> {
   }
 }
 
-/// Provider des paramètres de l'application
+/// Provider des parametres de l'application
 final settingsProvider =
-    StateNotifierProvider<SettingsNotifier, AppSettings>((ref) {
-  return SettingsNotifier();
-});
+    NotifierProvider<SettingsNotifier, AppSettings>(SettingsNotifier.new);

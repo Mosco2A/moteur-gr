@@ -11,7 +11,7 @@ final journalDaoProvider = Provider<JournalDao>((ref) {
   return JournalDao(ref.watch(databaseProvider));
 });
 
-/// État du journal pour un sentier
+/// Etat du journal pour un sentier
 class JournalState {
   const JournalState({
     this.entries = const [],
@@ -40,17 +40,20 @@ class JournalState {
   }
 }
 
-/// Notifier pour gérer le journal de trek
-class JournalNotifier extends StateNotifier<JournalState> {
-  JournalNotifier(this._dao, this._trailId)
-      : super(const JournalState(isLoading: true)) {
+/// Notifier pour gerer le journal de trek
+class JournalNotifier extends Notifier<JournalState> {
+  late JournalDao _dao;
+  late String _trailId;
+
+  @override
+  JournalState build() {
+    _dao = ref.watch(journalDaoProvider);
+    _trailId = ref.watch(trailIdProvider);
     _loadEntries();
+    return const JournalState(isLoading: true);
   }
 
-  final JournalDao _dao;
-  final String _trailId;
-
-  /// Charge les entrées depuis la base
+  /// Charge les entrees depuis la base
   Future<void> _loadEntries() async {
     final entries = await _dao.getByTrailId(_trailId);
     final photosToday = await _dao.countPhotosToday(_trailId);
@@ -78,19 +81,19 @@ class JournalNotifier extends StateNotifier<JournalState> {
     await _loadEntries();
   }
 
-  /// Ajoute une photo au journal (vérifie la limite quotidienne)
+  /// Ajoute une photo au journal (verifie la limite quotidienne)
   Future<bool> addPhoto({
     required int stageNumber,
     required String photoPath,
     required int photoSizeBytes,
     String content = '',
   }) async {
-    // Vérifier la limite de taille (500 Ko)
+    // Verifier la limite de taille (500 Ko)
     if (photoSizeBytes > JournalDao.maxPhotoSizeBytes) {
       return false;
     }
 
-    // Vérifier la limite quotidienne (3 photos/jour)
+    // Verifier la limite quotidienne (3 photos/jour)
     final canAdd = await _dao.canAddPhoto(_trailId);
     if (!canAdd) {
       return false;
@@ -109,7 +112,7 @@ class JournalNotifier extends StateNotifier<JournalState> {
     return true;
   }
 
-  /// Met à jour le texte d'une entrée
+  /// Met a jour le texte d'une entree
   Future<void> updateNote(int entryId, String content) async {
     await _dao.updateEntry(
       JournalEntriesCompanion(
@@ -121,13 +124,13 @@ class JournalNotifier extends StateNotifier<JournalState> {
     await _loadEntries();
   }
 
-  /// Supprime une entrée
+  /// Supprime une entree
   Future<void> deleteEntry(int entryId) async {
     await _dao.deleteEntry(entryId);
     await _loadEntries();
   }
 
-  /// Récupère les entrées d'une étape spécifique
+  /// Recupere les entrees d'une etape specifique
   Future<List<JournalEntry>> getStageEntries(int stageNumber) async {
     return _dao.getByStage(_trailId, stageNumber);
   }
@@ -135,8 +138,4 @@ class JournalNotifier extends StateNotifier<JournalState> {
 
 /// Provider du journal pour le sentier actif
 final journalProvider =
-    StateNotifierProvider<JournalNotifier, JournalState>((ref) {
-  final dao = ref.watch(journalDaoProvider);
-  final trailId = ref.watch(trailIdProvider);
-  return JournalNotifier(dao, trailId);
-});
+    NotifierProvider<JournalNotifier, JournalState>(JournalNotifier.new);

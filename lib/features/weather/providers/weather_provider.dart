@@ -9,19 +9,19 @@ import '../data/weather_service.dart';
 import '../models/weather_alert.dart';
 import '../models/weather_forecast.dart';
 
-/// Provider du service météo
+/// Provider du service meteo
 final weatherServiceProvider = Provider<WeatherService>((ref) {
   final service = WeatherService();
   ref.onDispose(() => service.dispose());
   return service;
 });
 
-/// Provider du DAO cache météo
+/// Provider du DAO cache meteo
 final weatherCacheDaoProvider = Provider<WeatherCacheDao>((ref) {
   return WeatherCacheDao(ref.watch(databaseProvider));
 });
 
-/// État de la météo pour une étape
+/// Etat de la meteo pour une etape
 class WeatherState {
   const WeatherState({
     this.forecast,
@@ -54,18 +54,12 @@ class WeatherState {
   }
 }
 
-/// Provider famille pour la météo d'une étape
-final weatherProvider = StateNotifierProvider.family<
-    WeatherNotifier, WeatherState, WeatherStageParams>((ref, params) {
-  return WeatherNotifier(
-    ref.watch(weatherServiceProvider),
-    ref.watch(weatherCacheDaoProvider),
-    ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatus.offline,
-    params,
-  );
-});
+/// Provider famille pour la meteo d'une etape
+final weatherProvider =
+    NotifierProvider.family<WeatherNotifier, WeatherState, WeatherStageParams>(
+        WeatherNotifier.new);
 
-/// Paramètres pour identifier une étape météo
+/// Parametres pour identifier une etape meteo
 class WeatherStageParams {
   const WeatherStageParams({
     required this.trailId,
@@ -89,28 +83,28 @@ class WeatherStageParams {
   int get hashCode => Object.hash(trailId, stageNumber);
 }
 
-/// Notifier pour charger la météo d'une étape (cache -> API -> cache)
-class WeatherNotifier extends StateNotifier<WeatherState> {
-  WeatherNotifier(
-    this._service,
-    this._cacheDao,
-    this._connectivity,
-    this._params,
-  ) : super(const WeatherState(isLoading: true)) {
+/// Notifier pour charger la meteo d'une etape (cache -> API -> cache)
+class WeatherNotifier extends FamilyNotifier<WeatherState, WeatherStageParams> {
+  late WeatherService _service;
+  late WeatherCacheDao _cacheDao;
+  late ConnectivityStatus _connectivity;
+
+  @override
+  WeatherState build(WeatherStageParams arg) {
+    _service = ref.watch(weatherServiceProvider);
+    _cacheDao = ref.watch(weatherCacheDaoProvider);
+    _connectivity =
+        ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatus.offline;
     _loadWeather();
+    return const WeatherState(isLoading: true);
   }
 
-  final WeatherService _service;
-  final WeatherCacheDao _cacheDao;
-  final ConnectivityStatus _connectivity;
-  final WeatherStageParams _params;
-
-  /// Charge la météo : cache d'abord, puis API si en ligne
+  /// Charge la meteo : cache d'abord, puis API si en ligne
   Future<void> _loadWeather() async {
-    // 1. Vérifier le cache
+    // 1. Verifier le cache
     final cached = await _cacheDao.getValidCache(
-      _params.trailId,
-      _params.stageNumber,
+      arg.trailId,
+      arg.stageNumber,
     );
 
     if (cached != null) {
@@ -125,7 +119,7 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
         );
         return;
       } catch (_) {
-        // Cache corrompu — continuer vers l'API
+        // Cache corrompu - continuer vers l'API
       }
     }
 
@@ -134,7 +128,7 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
       await refresh();
     } else {
       state = const WeatherState(
-        errorMessage: 'Pas de connexion. Données météo indisponibles.',
+        errorMessage: 'Pas de connexion. Donnees meteo indisponibles.',
       );
     }
   }
@@ -144,15 +138,15 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
     state = state.copyWith(isLoading: true);
 
     final forecast = await _service.fetchForecast(
-      latitude: _params.latitude,
-      longitude: _params.longitude,
+      latitude: arg.latitude,
+      longitude: arg.longitude,
     );
 
     if (forecast != null) {
       // Sauvegarder en cache
       await _cacheDao.upsertForecast(
-        trailId: _params.trailId,
-        stageNumber: _params.stageNumber,
+        trailId: arg.trailId,
+        stageNumber: arg.stageNumber,
         forecastJson: jsonEncode(forecast.toJson()),
       );
 
@@ -164,7 +158,7 @@ class WeatherNotifier extends StateNotifier<WeatherState> {
     } else {
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Impossible de charger la météo.',
+        errorMessage: 'Impossible de charger la meteo.',
       );
     }
   }

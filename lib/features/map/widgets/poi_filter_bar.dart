@@ -8,16 +8,16 @@ import 'poi_marker.dart';
 
 /// Barre horizontale de chips togglables pour filtrer les POIs par type.
 ///
-/// Affiche un chip par type de POI présent dans les données du sentier.
-/// Chip activé = type visible sur la carte.
-/// Chip désactivé = type masqué.
+/// Affiche un chip par type de POI present dans les donnees du sentier.
+/// Chip active = type visible sur la carte.
+/// Chip desactive = type masque.
 class PoiFilterBar extends ConsumerWidget {
   const PoiFilterBar({super.key, required this.trailId});
 
   /// Identifiant du sentier pour charger les types disponibles
   final String trailId;
 
-  /// Libellé français court pour chaque type de POI
+  /// Libelle francais court pour chaque type de POI
   static String labelFor(PoiType type) {
     return switch (type) {
       PoiType.shelter => 'Refuge',
@@ -76,15 +76,8 @@ class PoiFilterBar extends ConsumerWidget {
                   color: isActive ? Colors.white : null,
                   fontSize: 12,
                 ),
-                onSelected: (selected) {
-                  final notifier = ref.read(activePoiTypesProvider.notifier);
-                  final current = Set<PoiType>.from(notifier.state);
-                  if (selected) {
-                    current.add(type);
-                  } else {
-                    current.remove(type);
-                  }
-                  notifier.state = current;
+                onSelected: (_) {
+                  ref.read(activePoiTypesProvider.notifier).toggle(type);
                 },
               );
             },

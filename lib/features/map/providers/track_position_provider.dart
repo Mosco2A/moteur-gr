@@ -8,10 +8,10 @@ import '../../trail/providers/stages_provider.dart';
 import 'gpx_track_provider.dart';
 import 'location_provider.dart';
 
-/// Position de l'utilisateur sur le tracé avec toutes les infos calculées.
+/// Position de l'utilisateur sur le trace avec toutes les infos calculees.
 ///
-/// Combine la projection GPS sur le tracé, la détection d'étape,
-/// et les distances pour l'affichage temps réel.
+/// Combine la projection GPS sur le trace, la detection d'etape,
+/// et les distances pour l'affichage temps reel.
 class TrackPositionState {
   const TrackPositionState({
     required this.userLat,
@@ -30,33 +30,33 @@ class TrackPositionState {
   final double userLat;
   final double userLng;
 
-  /// Position projetée sur le tracé
+  /// Position projetee sur le trace
   final double projectedLat;
   final double projectedLng;
 
-  /// Distance perpendiculaire au tracé en mètres
+  /// Distance perpendiculaire au trace en metres
   final double distanceToTrackM;
 
-  /// Distance parcourue depuis le début en mètres
+  /// Distance parcourue depuis le debut en metres
   final double distanceFromStartM;
 
-  /// Distance restante jusqu'à la fin en mètres
+  /// Distance restante jusqu'a la fin en metres
   final double distanceRemainingM;
 
-  /// Index du segment courant sur le tracé
+  /// Index du segment courant sur le trace
   final int trackIndex;
 
-  /// Détection de l'étape courante
+  /// Detection de l'etape courante
   final StageDetection stageDetection;
 
-  /// Vrai si l'utilisateur est à plus de 100m du tracé
+  /// Vrai si l'utilisateur est a plus de 100m du trace
   final bool isOffTrack;
 
-  /// Distance restante en kilomètres, arrondie à 1 décimale
+  /// Distance restante en kilometres, arrondie a 1 decimale
   double get distanceRemainingKm =>
       (distanceRemainingM / 100).round() / 10;
 
-  /// Pourcentage de progression sur le tracé (0.0 à 1.0)
+  /// Pourcentage de progression sur le trace (0.0 a 1.0)
   double get progressRatio {
     final total = distanceFromStartM + distanceRemainingM;
     if (total <= 0) return 0.0;
@@ -64,15 +64,24 @@ class TrackPositionState {
   }
 }
 
-/// Seuil en mètres au-delà duquel l'utilisateur est considéré hors tracé.
+/// Seuil en metres au-dela duquel l'utilisateur est considere hors trace.
 const double _offTrackThresholdM = 100.0;
 
-/// Provider de la dernière projection connue (pour l'optimisation fenêtrée).
-final _lastTrackIndexProvider = StateProvider<int?>((ref) => null);
+/// Notifier pour le dernier index de projection connu (optimisation fenetree).
+class _LastTrackIndexNotifier extends Notifier<int?> {
+  @override
+  int? build() => null;
 
-/// Provider principal : combine position GPS + tracé + étapes.
+  void set(int? index) => state = index;
+}
+
+final _lastTrackIndexProvider =
+    NotifierProvider<_LastTrackIndexNotifier, int?>(
+        _LastTrackIndexNotifier.new);
+
+/// Provider principal : combine position GPS + trace + etapes.
 ///
-/// Calcule la projection en temps réel et expose un [TrackPositionState]
+/// Calcule la projection en temps reel et expose un [TrackPositionState]
 /// complet pour l'UI (carte + barre de progression).
 final trackPositionProvider =
     Provider<AsyncValue<TrackPositionState>>((ref) {
@@ -85,17 +94,17 @@ final trackPositionProvider =
   );
 });
 
-/// Calcule la projection à partir d'une position GPS reçue.
+/// Calcule la projection a partir d'une position GPS recue.
 AsyncValue<TrackPositionState> _computeProjection(
   Ref ref,
   Position position,
 ) {
-  // Récupérer le trailId depuis la config
+  // Recuperer le trailId depuis la config
   final trailId = ref.watch(
     gpxTrackProvider('default').select((_) => 'default'),
   );
 
-  // Récupérer le tracé GPX
+  // Recuperer le trace GPX
   final trackAsync = ref.watch(gpxTrackProvider(trailId));
   final stagesAsync = ref.watch(stagesProvider(trailId));
 
@@ -103,14 +112,14 @@ AsyncValue<TrackPositionState> _computeProjection(
     data: (trackPoints) {
       if (trackPoints.length < 2) {
         return AsyncError(
-          StateError('Tracé trop court pour la projection'),
+          StateError('Trace trop court pour la projection'),
           StackTrace.current,
         );
       }
 
       final lastIndex = ref.read(_lastTrackIndexProvider);
 
-      // Projeter la position sur le tracé
+      // Projeter la position sur le trace
       final projection = TrackProjector.project(
         userLat: position.latitude,
         userLng: position.longitude,
@@ -118,11 +127,11 @@ AsyncValue<TrackPositionState> _computeProjection(
         lastKnownIndex: lastIndex,
       );
 
-      // Mémoriser l'index pour l'optimisation fenêtrée
-      ref.read(_lastTrackIndexProvider.notifier).state =
-          projection.trackIndexPosition;
+      // Memoriser l'index pour l'optimisation fenetree
+      ref.read(_lastTrackIndexProvider.notifier).set(
+          projection.trackIndexPosition);
 
-      // Détecter l'étape courante
+      // Detecter l'etape courante
       final stages = stagesAsync.valueOrNull ?? <StageModel>[];
       final detection = StageDetector.detect(
         projectedLat: projection.projectedLat,

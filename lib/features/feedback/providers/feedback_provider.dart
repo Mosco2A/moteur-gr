@@ -14,7 +14,7 @@ final feedbackQueueDaoProvider = Provider<FeedbackQueueDao>((ref) {
 
 /// Types de feedback disponibles
 enum FeedbackType {
-  bug('bug', 'Bug / Problème'),
+  bug('bug', 'Bug / Probleme'),
   suggestion('suggestion', 'Suggestion'),
   question('question', 'Question'),
   other('other', 'Autre');
@@ -24,7 +24,7 @@ enum FeedbackType {
   final String label;
 }
 
-/// État du formulaire de feedback
+/// Etat du formulaire de feedback
 class FeedbackState {
   const FeedbackState({
     this.pendingCount = 0,
@@ -49,23 +49,28 @@ class FeedbackState {
   }
 }
 
-/// Notifier pour gérer les feedbacks avec file d'attente offline
-class FeedbackNotifier extends StateNotifier<FeedbackState> {
-  FeedbackNotifier(this._dao, this._trailId, this._connectivity)
-      : super(const FeedbackState()) {
-    _loadPendingCount();
-  }
+/// Notifier pour gerer les feedbacks avec file d'attente offline
+class FeedbackNotifier extends Notifier<FeedbackState> {
+  late FeedbackQueueDao _dao;
+  late String _trailId;
+  late ConnectivityStatus _connectivity;
 
-  final FeedbackQueueDao _dao;
-  final String _trailId;
-  final ConnectivityStatus _connectivity;
+  @override
+  FeedbackState build() {
+    _dao = ref.watch(feedbackQueueDaoProvider);
+    _trailId = ref.watch(trailIdProvider);
+    _connectivity =
+        ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatus.offline;
+    _loadPendingCount();
+    return const FeedbackState();
+  }
 
   Future<void> _loadPendingCount() async {
     final count = await _dao.countPending();
     state = state.copyWith(pendingCount: count);
   }
 
-  /// Soumet un feedback (stocké localement, envoyé quand en ligne)
+  /// Soumet un feedback (stocke localement, envoye quand en ligne)
   Future<bool> submitFeedback({
     required FeedbackType type,
     required String content,
@@ -82,7 +87,7 @@ class FeedbackNotifier extends StateNotifier<FeedbackState> {
         createdAt: Value(DateTime.now()),
       ));
 
-      // Tenter l'envoi immédiat si en ligne
+      // Tenter l'envoi immediat si en ligne
       if (_connectivity == ConnectivityStatus.online) {
         await _trySendPending();
       }
@@ -117,10 +122,4 @@ class FeedbackNotifier extends StateNotifier<FeedbackState> {
 
 /// Provider du feedback pour le sentier actif
 final feedbackProvider =
-    StateNotifierProvider<FeedbackNotifier, FeedbackState>((ref) {
-  final dao = ref.watch(feedbackQueueDaoProvider);
-  final trailId = ref.watch(trailIdProvider);
-  final connectivity =
-      ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatus.offline;
-  return FeedbackNotifier(dao, trailId, connectivity);
-});
+    NotifierProvider<FeedbackNotifier, FeedbackState>(FeedbackNotifier.new);

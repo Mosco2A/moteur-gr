@@ -62,21 +62,22 @@ class ChecklistItemState {
 /// Charge le template par defaut + l'etat persiste en DB.
 /// Chaque toggle est sauvegarde immediatement en Drift.
 final checklistProvider =
-    StateNotifierProvider<ChecklistNotifier, ChecklistState>((ref) {
-  final db = ref.watch(databaseProvider);
-  final trailId = ref.watch(trailIdProvider);
-  return ChecklistNotifier(db, trailId);
-});
+    NotifierProvider<ChecklistNotifier, ChecklistState>(ChecklistNotifier.new);
 
 /// Notifier qui gere l'etat de la checklist materiel.
-class ChecklistNotifier extends StateNotifier<ChecklistState> {
-  ChecklistNotifier(this._db, this._trailId)
-      : super(ChecklistState.empty) {
+class ChecklistNotifier extends Notifier<ChecklistState> {
+  @override
+  ChecklistState build() {
+    final db = ref.watch(databaseProvider);
+    final trailId = ref.watch(trailIdProvider);
+    _db = db;
+    _trailId = trailId;
     _load();
+    return ChecklistState.empty;
   }
 
-  final AppDatabase _db;
-  final String _trailId;
+  late AppDatabase _db;
+  late String _trailId;
 
   /// Charge l'etat de la checklist depuis la DB.
   /// Si la DB est vide, initialise depuis le template.

@@ -38,13 +38,16 @@ class DepartureReminderState {
 ///
 /// Sauvegarde les dates en SharedPreferences pour persistance
 /// entre les sessions. Gere aussi le flag de rappel planifie.
-class DownloadReminderNotifier extends StateNotifier<DepartureReminderState> {
-  DownloadReminderNotifier(this._trailId)
-      : super(const DepartureReminderState()) {
-    _loadFromPrefs();
-  }
+class DownloadReminderNotifier
+    extends FamilyNotifier<DepartureReminderState, String> {
+  late String _trailId;
 
-  final String _trailId;
+  @override
+  DepartureReminderState build(String arg) {
+    _trailId = arg;
+    _loadFromPrefs();
+    return const DepartureReminderState();
+  }
 
   /// Charge la date de depart et le statut du rappel depuis SharedPreferences.
   Future<void> _loadFromPrefs() async {
@@ -109,7 +112,7 @@ class DownloadReminderNotifier extends StateNotifier<DepartureReminderState> {
 /// Provider par sentier pour la gestion des rappels de depart.
 ///
 /// Usage : ref.watch(downloadReminderProvider('gr20'))
-final downloadReminderProvider = StateNotifierProvider.family<
+final downloadReminderProvider = NotifierProvider.family<
     DownloadReminderNotifier, DepartureReminderState, String>(
-  (ref, trailId) => DownloadReminderNotifier(trailId),
+  DownloadReminderNotifier.new,
 );

@@ -52,17 +52,18 @@ class FeasibilityState {
 /// Gere la navigation entre questions, le scoring et
 /// la persistance du resultat dans SharedPreferences.
 final feasibilityProvider =
-    StateNotifierProvider<FeasibilityNotifier, FeasibilityState>((ref) {
-  return FeasibilityNotifier();
-});
+    NotifierProvider<FeasibilityNotifier, FeasibilityState>(
+        FeasibilityNotifier.new);
 
 /// Notifier du questionnaire de faisabilite.
-class FeasibilityNotifier extends StateNotifier<FeasibilityState> {
-  FeasibilityNotifier() : super(FeasibilityState.empty) {
-    _loadSavedResult();
-  }
-
+class FeasibilityNotifier extends Notifier<FeasibilityState> {
   static const _prefsKey = 'feasibility_result';
+
+  @override
+  FeasibilityState build() {
+    _loadSavedResult();
+    return FeasibilityState.empty;
+  }
 
   /// Charge un resultat precedent depuis SharedPreferences.
   Future<void> _loadSavedResult() async {
@@ -82,7 +83,7 @@ class FeasibilityNotifier extends StateNotifier<FeasibilityState> {
         );
       }
     } catch (_) {
-      // Pas de resultat sauvegarde — etat initial
+      // Pas de resultat sauvegarde - etat initial
     }
   }
 
@@ -134,7 +135,7 @@ class FeasibilityNotifier extends StateNotifier<FeasibilityState> {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_prefsKey, json.encode({'answers': answers}));
     } catch (_) {
-      // Echec sauvegarde — non bloquant
+      // Echec sauvegarde - non bloquant
     }
   }
 }

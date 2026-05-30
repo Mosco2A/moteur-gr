@@ -44,14 +44,20 @@ class TrackingState {
 }
 
 /// Notifier du tracking GPS.
-class TrackingNotifier extends StateNotifier<TrackingState> {
-  TrackingNotifier(this._ref) : super(const TrackingState());
-
-  final Ref _ref;
+class TrackingNotifier extends Notifier<TrackingState> {
   final TrackingEngine _engine = TrackingEngine();
   StreamSubscription<Position>? _locationSub;
   Timer? _ticker;
   String _trailId = '';
+
+  @override
+  TrackingState build() {
+    ref.onDispose(() {
+      _locationSub?.cancel();
+      _ticker?.cancel();
+    });
+    return const TrackingState();
+  }
 
   /// Demarre le tracking GPS.
   void start(String trailId) {
@@ -126,7 +132,7 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
     if (_trailId.isEmpty) {
       return;
     }
-    final db = _ref.read(databaseProvider);
+    final db = ref.read(databaseProvider);
     final dao = ProgressDao(db);
     final existing = await dao.getByTrailId(_trailId);
     final prevDistKm = existing?.totalDistanceWalkedKm ?? 0.0;
@@ -152,17 +158,8 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
       speedKmh: _engine.averageSpeedKmh,
     );
   }
-
-  @override
-  void dispose() {
-    _locationSub?.cancel();
-    _ticker?.cancel();
-    super.dispose();
-  }
 }
 
 /// Provider du tracking GPS.
 final trackingProvider =
-    StateNotifierProvider<TrackingNotifier, TrackingState>((ref) {
-  return TrackingNotifier(ref);
-});
+    NotifierProvider<TrackingNotifier, TrackingState>(TrackingNotifier.new);

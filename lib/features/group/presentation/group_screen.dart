@@ -126,7 +126,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
     if (user == null) { setState(() { _isLoading = false; _error = 'Connexion requise'; }); return; }
     final service = ref.read(groupTrackingServiceProvider);
     final code = await service.createGroup(widget.trailId, uid: user.uid);
-    if (code != null) ref.read(groupCodeProvider.notifier).state = code;
+    if (code != null) ref.read(groupCodeProvider.notifier).set(code);
     else setState(() => _error = 'Impossible de creer le groupe');
     setState(() => _isLoading = false);
   }
@@ -139,7 +139,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
     if (user == null) { setState(() { _isLoading = false; _error = 'Connexion requise'; }); return; }
     final service = ref.read(groupTrackingServiceProvider);
     final joined = await service.joinGroup(code, uid: user.uid, displayName: user.displayName);
-    if (joined) { ref.read(groupCodeProvider.notifier).state = code; _codeController.clear(); }
+    if (joined) { ref.read(groupCodeProvider.notifier).set(code); _codeController.clear(); }
     else setState(() => _error = 'Groupe introuvable ou erreur');
     setState(() => _isLoading = false);
   }
@@ -147,7 +147,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
   Future<void> _leaveGroup() async {
     final service = ref.read(groupTrackingServiceProvider);
     await service.leaveGroup();
-    ref.read(groupCodeProvider.notifier).state = null;
+    ref.read(groupCodeProvider.notifier).set(null);
   }
 }
 
