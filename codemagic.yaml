@@ -1,0 +1,97 @@
+# Codemagic CI/CD pour Moteur GR
+# Deux workflows: pr_gate (PR) + merge (push main)
+
+workflows:
+  # --- Workflow PR Gate ---
+  # Declenche sur chaque Pull Request
+  # Steps: dart analyze + flutter test + flutter format check
+  pr_gate:
+    name: PR Gate
+    max_build_duration: 30
+    triggering:
+      events:
+        - pull_request
+      branch_patterns:
+        - pattern: '*'
+          include: true
+    environment:
+      flutter: stable
+      xcode: latest
+    scripts:
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (dart analyze)
+        script: |
+          dart analyze lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: dart analyze a detecte des problemes"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test)
+        script: |
+          flutter test --reporter=expanded
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue"
+            exit 1
+          fi
+
+      - name: Verification formatage (dart format)
+        script: |
+          dart format --set-exit-if-changed lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: code mal formate. Lancer 'dart format lib/ test/' localement."
+            exit 1
+          fi
+
+  # --- Workflow Merge (push main) ---
+  # Declenche sur chaque push dans main
+  # Steps: analyze + test + format + build APK debug
+  merge:
+    name: Merge Main
+    max_build_duration: 60
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+    environment:
+      flutter: stable
+      xcode: latest
+      android_signing:
+        - moteur_gr_debug
+    scripts:
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (dart analyze)
+        script: |
+          dart analyze lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: dart analyze a detecte des problemes"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test)
+        script: |
+          flutter test --reporter=expanded
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue"
+            exit 1
+          fi
+
+      - name: Verification formatage (dart format)
+        script: |
+          dart format --set-exit-if-changed lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: code mal formate"
+            exit 1
+          fi
+
+      - name: Build APK debug
+        script: flutter build apk --debug
+
+    artifacts:
+      - build/**/outputs/**/*.apk
