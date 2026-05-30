@@ -1,13 +1,19 @@
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:gpx/gpx.dart';
 
-import 'geo_utils.dart';
+import '../../features/trek/data/gpx_parser.dart' as trek_gpx;
 import 'track_point.dart';
+
+// Re-export les nouveaux types pour les usages existants
+export '../../features/trek/data/gpx_parser.dart'
+    show GpxParseResult, GpxMetadata;
 
 /// Parseur de fichiers GPX depuis les assets de l'application.
 ///
-/// Extrait les points du premier track et calcule
-/// les distances cumulees via Haversine.
+/// Conserve l'API historique (parseFromAsset, parseFromString)
+/// tout en deleguant au nouveau GpxParser (features/trek/data/).
+///
+/// Les nouveaux usages doivent utiliser [trek_gpx.GpxParser.parse()]
+/// pour acceder aux metadata et multi-segments.
 class GpxParser {
   GpxParser._();
 
@@ -24,45 +30,18 @@ class GpxParser {
 
   /// Parse un fichier GPX depuis une chaine XML.
   ///
-  /// Methode utilitaire, utilisable aussi dans les tests
-  /// sans avoir besoin de rootBundle.
+  /// Delegue au nouveau GpxParser et aplatit les segments.
+  /// Pour acceder aux metadata/multi-segments, utiliser
+  /// [trek_gpx.GpxParser.parse()] directement.
   static List<TrackPoint> parseFromString(String xmlString) {
-    final gpx = GpxReader().fromString(xmlString);
+    final result = trek_gpx.GpxParser.parse(xmlString);
+    return result.allTrackPoints;
+  }
 
-    if (gpx.trks.isEmpty) return [];
-
-    final track = gpx.trks.first;
-    final points = <TrackPoint>[];
-    var cumulativeDistance = 0.0;
-
-    for (final segment in track.trksegs) {
-      for (final wpt in segment.trkpts) {
-        final lat = wpt.lat;
-        final lng = wpt.lon;
-        final alt = wpt.ele;
-
-        if (lat == null || lng == null) continue;
-
-        // Calculer la distance depuis le point precedent
-        if (points.isNotEmpty) {
-          final prev = points.last;
-          cumulativeDistance += GeoUtils.haversineDistance(
-            prev.lat,
-            prev.lng,
-            lat.toDouble(),
-            lng.toDouble(),
-          );
-        }
-
-        points.add(TrackPoint(
-          lat: lat.toDouble(),
-          lng: lng.toDouble(),
-          altitude: alt?.toDouble() ?? 0.0,
-          distanceFromStart: cumulativeDistance,
-        ));
-      }
-    }
-
-    return points;
+  /// Parse complet avec metadata et multi-segments.
+  ///
+  /// Raccourci vers [trek_gpx.GpxParser.parse()].
+  static trek_gpx.GpxParseResult parse(String gpxContent) {
+    return trek_gpx.GpxParser.parse(gpxContent);
   }
 }
