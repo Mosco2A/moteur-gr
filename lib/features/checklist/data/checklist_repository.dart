@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart' show Value;
 
+import '../../../core/config/trail_config.dart';
 import '../../../core/data/database.dart';
 import '../../../core/data/daos/checklist_dao.dart';
 import '../domain/models/checklist_item.dart';
@@ -10,32 +11,40 @@ import '../data/checklist_template.dart';
 /// Fait le pont entre le modele Freezed (ChecklistItemModel),
 /// le template JSON configurable et la persistence Drift.
 /// Gere le chargement initial depuis le template et les operations CRUD.
+/// Le template est dynamique : il depend du sentier actif (TrailConfig).
 class ChecklistRepository {
   ChecklistRepository({
     required AppDatabase db,
-  }) : _dao = ChecklistDao(db);
+    required TrailConfig trailConfig,
+  })  : _dao = ChecklistDao(db),
+        _trailConfig = trailConfig;
 
   final ChecklistDao _dao;
 
-  /// Charge tous les items de checklist pour un sentier.
+  /// Configuration du sentier actif — determine le template a charger.
+  final TrailConfig _trailConfig;
+
+  /// Identifiant du sentier actif (raccourci).
+  String get trailId => _trailConfig.id;
+
+  /// Charge tous les items de checklist pour le sentier actif.
   ///
   /// Si la DB est vide pour ce sentier, initialise depuis le template
   /// configurable (avec overrides par sentier).
-  Future<List<ChecklistItemModel>> getItems(String trailId) async {
+  Future<List<ChecklistItemModel>> getItems() async {
     var dbItems = await _dao.getByTrailId(trailId);
 
     // Premiere ouverture : initialiser depuis le template
     if (dbItems.isEmpty) {
-      await _initFromTemplate(trailId);
+      await _initFromTemplate();
       dbItems = await _dao.getByTrailId(trailId);
     }
 
     return dbItems.map(_fromDbRow).toList();
   }
 
-  /// Charge les items d'une categorie pour un sentier.
+  /// Charge les items d'une categorie pour le sentier actif.
   Future<List<ChecklistItemModel>> getItemsByCategory(
-    String trailId,
     String category,
   ) async {
     final dbItems = await _dao.getByCategory(trailId, category);
@@ -43,12 +52,12 @@ class ChecklistRepository {
   }
 
   /// Coche ou decoche un item.
-  Future<void> toggleItem(String trailId, String itemId, bool checked) {
+  Future<void> toggleItem(String itemId, bool checked) {
     return _dao.toggleItem(trailId, itemId, checked);
   }
 
   /// Met a jour la note personnelle d'un item.
-  Future<void> updateNote(String trailId, String itemId, String? note) {
+  Future<void> updateNote(String itemId, String? note) {
     return _dao.upsertItem(ChecklistItemsCompanion(
       trailId: Value(trailId),
       itemId: Value(itemId),
@@ -56,25 +65,32 @@ class ChecklistRepository {
     ));
   }
 
-  /// Reinitialise la checklist d'un sentier (tout decocher).
-  Future<void> resetAll(String trailId) {
+  /// Reinitialise la checklist du sentier actif (tout decocher).
+  Future<void> resetAll() {
     return _dao.deleteByTrailId(trailId);
   }
 
-  /// Nombre d'items coches pour un sentier.
-  Future<int> countChecked(String trailId) {
+  /// Nombre d'items coches pour le sentier actif.
+  Future<int> countChecked() {
     return _dao.countChecked(trailId);
   }
 
-  /// Nombre total d'items pour un sentier.
-  Future<int> countTotal(String trailId) {
+  /// Nombre total d'items pour le sentier actif.
+  Future<int> countTotal() {
     return _dao.countTotal(trailId);
+  }
+
+  /// Retourne les items du template pour le sentier actif (sans DB).
+  ///
+  /// Utile pour comparer les templates entre sentiers.
+  Future<List<ChecklistTemplateItem>> getTemplateItems() {
+    return ChecklistTemplateLoader.loadForTrail(trailId);
   }
 
   /// Initialise la checklist en DB depuis le template configurable.
   ///
-  /// Charge le template avec overrides pour le sentier donne.
-  Future<void> _initFromTemplate(String trailId) async {
+  /// Charge le template avec overrides pour le sentier actif.
+  Future<void> _initFromTemplate() async {
     final templateItems = await ChecklistTemplateLoader.loadForTrail(trailId);
 
     final entries = templateItems.map((item) {
