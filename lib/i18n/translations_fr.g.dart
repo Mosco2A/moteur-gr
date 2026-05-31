@@ -664,6 +664,17 @@ class Translations$feasibility$fr {
 	late final Translations$feasibility$categories$fr categories = Translations$feasibility$categories$fr.internal(_root);
 	late final Translations$feasibility$questions$fr questions = Translations$feasibility$questions$fr.internal(_root);
 	late final Translations$feasibility$answers$fr answers = Translations$feasibility$answers$fr.internal(_root);
+
+	/// fr: 'Voir les recommandations'
+	String get seeRecommendations => 'Voir les recommandations';
+
+	/// fr: 'Votre profil'
+	String get yourProfile => 'Votre profil';
+
+	/// fr: 'Nos conseils'
+	String get tipsTitle => 'Nos conseils';
+
+	late final Translations$feasibility$recommendations$fr recommendations = Translations$feasibility$recommendations$fr.internal(_root);
 }
 
 // Path: stage.difficulty
@@ -990,6 +1001,159 @@ class Translations$feasibility$answers$fr {
 	String get motivationD => 'Passion absolue, rêve de longue date';
 }
 
+// Path: feasibility.recommendations
+class Translations$feasibility$recommendations$fr {
+	Translations$feasibility$recommendations$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$feasibility$recommendations$danger$fr danger = Translations$feasibility$recommendations$danger$fr.internal(_root);
+	late final Translations$feasibility$recommendations$caution$fr caution = Translations$feasibility$recommendations$caution$fr.internal(_root);
+	late final Translations$feasibility$recommendations$good$fr good = Translations$feasibility$recommendations$good$fr.internal(_root);
+	late final Translations$feasibility$recommendations$excellent$fr excellent = Translations$feasibility$recommendations$excellent$fr.internal(_root);
+}
+
+// Path: feasibility.recommendations.danger
+class Translations$feasibility$recommendations$danger$fr {
+	Translations$feasibility$recommendations$danger$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparation insuffisante'
+	String get title => 'Préparation insuffisante';
+
+	/// fr: 'Votre profil indique des lacunes importantes. Nous vous déconseillons de partir en l’état.'
+	String get summary => 'Votre profil indique des lacunes importantes. Nous vous déconseillons de partir en l’état.';
+
+	late final Translations$feasibility$recommendations$danger$tips$fr tips = Translations$feasibility$recommendations$danger$tips$fr.internal(_root);
+}
+
+// Path: feasibility.recommendations.caution
+class Translations$feasibility$recommendations$caution$fr {
+	Translations$feasibility$recommendations$caution$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparation à renforcer'
+	String get title => 'Préparation à renforcer';
+
+	/// fr: 'Vous avez des bases, mais certains points méritent une attention particulière.'
+	String get summary => 'Vous avez des bases, mais certains points méritent une attention particulière.';
+
+	late final Translations$feasibility$recommendations$caution$tips$fr tips = Translations$feasibility$recommendations$caution$tips$fr.internal(_root);
+}
+
+// Path: feasibility.recommendations.good
+class Translations$feasibility$recommendations$good$fr {
+	Translations$feasibility$recommendations$good$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Bonne préparation'
+	String get title => 'Bonne préparation';
+
+	/// fr: 'Votre profil est solide. Quelques ajustements et vous serez prêt(e).'
+	String get summary => 'Votre profil est solide. Quelques ajustements et vous serez prêt(e).';
+
+	late final Translations$feasibility$recommendations$good$tips$fr tips = Translations$feasibility$recommendations$good$tips$fr.internal(_root);
+}
+
+// Path: feasibility.recommendations.excellent
+class Translations$feasibility$recommendations$excellent$fr {
+	Translations$feasibility$recommendations$excellent$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparation optimale'
+	String get title => 'Préparation optimale';
+
+	/// fr: 'Vous êtes parfaitement préparé(e). Profitez du trek !'
+	String get summary => 'Vous êtes parfaitement préparé(e). Profitez du trek !';
+
+	late final Translations$feasibility$recommendations$excellent$tips$fr tips = Translations$feasibility$recommendations$excellent$tips$fr.internal(_root);
+}
+
+// Path: feasibility.recommendations.danger.tips
+class Translations$feasibility$recommendations$danger$tips$fr {
+	Translations$feasibility$recommendations$danger$tips$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Commencez par des randonnées courtes pour évaluer votre condition'
+	String get tip1 => 'Commencez par des randonnées courtes pour évaluer votre condition';
+
+	/// fr: 'Consultez un professionnel de santé avant un effort prolongé'
+	String get tip2 => 'Consultez un professionnel de santé avant un effort prolongé';
+
+	/// fr: 'Investissez dans un équipement adapté et testez-le'
+	String get tip3 => 'Investissez dans un équipement adapté et testez-le';
+}
+
+// Path: feasibility.recommendations.caution.tips
+class Translations$feasibility$recommendations$caution$tips$fr {
+	Translations$feasibility$recommendations$caution$tips$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Renforcez votre entraînement physique 6 à 8 semaines avant'
+	String get tip1 => 'Renforcez votre entraînement physique 6 à 8 semaines avant';
+
+	/// fr: 'Vérifiez et complétez votre équipement'
+	String get tip2 => 'Vérifiez et complétez votre équipement';
+
+	/// fr: 'Planifiez des étapes adaptées à votre niveau'
+	String get tip3 => 'Planifiez des étapes adaptées à votre niveau';
+}
+
+// Path: feasibility.recommendations.good.tips
+class Translations$feasibility$recommendations$good$tips$fr {
+	Translations$feasibility$recommendations$good$tips$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Maintenez votre rythme d’entraînement'
+	String get tip1 => 'Maintenez votre rythme d’entraînement';
+
+	/// fr: 'Prévoyez des marges dans votre planning'
+	String get tip2 => 'Prévoyez des marges dans votre planning';
+
+	/// fr: 'Consultez la météo régulièrement'
+	String get tip3 => 'Consultez la météo régulièrement';
+}
+
+// Path: feasibility.recommendations.excellent.tips
+class Translations$feasibility$recommendations$excellent$tips$fr {
+	Translations$feasibility$recommendations$excellent$tips$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Restez à l’écoute de votre corps'
+	String get tip1 => 'Restez à l’écoute de votre corps';
+
+	/// fr: 'Partagez votre expérience avec les randonneurs'
+	String get tip2 => 'Partagez votre expérience avec les randonneurs';
+
+	/// fr: 'Documentez votre aventure dans le journal'
+	String get tip3 => 'Documentez votre aventure dans le journal';
+}
+
 /// The flat map containing all translations for locale <fr>.
 /// Only for edge cases! For simple maps, use the map function of this library.
 ///
@@ -1233,6 +1397,29 @@ extension on Translations {
 			'feasibility.answers.motivationB' => 'Motivé(e) mais anxieux(se)',
 			'feasibility.answers.motivationC' => 'Motivé(e) et déterminé(e)',
 			'feasibility.answers.motivationD' => 'Passion absolue, rêve de longue date',
+			'feasibility.seeRecommendations' => 'Voir les recommandations',
+			'feasibility.yourProfile' => 'Votre profil',
+			'feasibility.tipsTitle' => 'Nos conseils',
+			'feasibility.recommendations.danger.title' => 'Préparation insuffisante',
+			'feasibility.recommendations.danger.summary' => 'Votre profil indique des lacunes importantes. Nous vous déconseillons de partir en l’état.',
+			'feasibility.recommendations.danger.tips.tip1' => 'Commencez par des randonnées courtes pour évaluer votre condition',
+			'feasibility.recommendations.danger.tips.tip2' => 'Consultez un professionnel de santé avant un effort prolongé',
+			'feasibility.recommendations.danger.tips.tip3' => 'Investissez dans un équipement adapté et testez-le',
+			'feasibility.recommendations.caution.title' => 'Préparation à renforcer',
+			'feasibility.recommendations.caution.summary' => 'Vous avez des bases, mais certains points méritent une attention particulière.',
+			'feasibility.recommendations.caution.tips.tip1' => 'Renforcez votre entraînement physique 6 à 8 semaines avant',
+			'feasibility.recommendations.caution.tips.tip2' => 'Vérifiez et complétez votre équipement',
+			'feasibility.recommendations.caution.tips.tip3' => 'Planifiez des étapes adaptées à votre niveau',
+			'feasibility.recommendations.good.title' => 'Bonne préparation',
+			'feasibility.recommendations.good.summary' => 'Votre profil est solide. Quelques ajustements et vous serez prêt(e).',
+			'feasibility.recommendations.good.tips.tip1' => 'Maintenez votre rythme d’entraînement',
+			'feasibility.recommendations.good.tips.tip2' => 'Prévoyez des marges dans votre planning',
+			'feasibility.recommendations.good.tips.tip3' => 'Consultez la météo régulièrement',
+			'feasibility.recommendations.excellent.title' => 'Préparation optimale',
+			'feasibility.recommendations.excellent.summary' => 'Vous êtes parfaitement préparé(e). Profitez du trek !',
+			'feasibility.recommendations.excellent.tips.tip1' => 'Restez à l’écoute de votre corps',
+			'feasibility.recommendations.excellent.tips.tip2' => 'Partagez votre expérience avec les randonneurs',
+			'feasibility.recommendations.excellent.tips.tip3' => 'Documentez votre aventure dans le journal',
 			_ => null,
 		};
 	}

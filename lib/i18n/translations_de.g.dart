@@ -364,6 +364,10 @@ class _Translations$feasibility$de extends Translations$feasibility$fr {
 	@override late final _Translations$feasibility$categories$de categories = _Translations$feasibility$categories$de._(_root);
 	@override late final _Translations$feasibility$questions$de questions = _Translations$feasibility$questions$de._(_root);
 	@override late final _Translations$feasibility$answers$de answers = _Translations$feasibility$answers$de._(_root);
+	@override String get seeRecommendations => 'Empfehlungen anzeigen';
+	@override String get yourProfile => 'Ihr Profil';
+	@override String get tipsTitle => 'Unsere Tipps';
+	@override late final _Translations$feasibility$recommendations$de recommendations = _Translations$feasibility$recommendations$de._(_root);
 }
 
 // Path: stage.difficulty
@@ -514,6 +518,115 @@ class _Translations$feasibility$answers$de extends Translations$feasibility$answ
 	@override String get motivationB => 'Motivated but anxious';
 	@override String get motivationC => 'Motivated and determined';
 	@override String get motivationD => 'Absolute passion, long-time dream';
+}
+
+// Path: feasibility.recommendations
+class _Translations$feasibility$recommendations$de extends Translations$feasibility$recommendations$fr {
+	_Translations$feasibility$recommendations$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$feasibility$recommendations$danger$de danger = _Translations$feasibility$recommendations$danger$de._(_root);
+	@override late final _Translations$feasibility$recommendations$caution$de caution = _Translations$feasibility$recommendations$caution$de._(_root);
+	@override late final _Translations$feasibility$recommendations$good$de good = _Translations$feasibility$recommendations$good$de._(_root);
+	@override late final _Translations$feasibility$recommendations$excellent$de excellent = _Translations$feasibility$recommendations$excellent$de._(_root);
+}
+
+// Path: feasibility.recommendations.danger
+class _Translations$feasibility$recommendations$danger$de extends Translations$feasibility$recommendations$danger$fr {
+	_Translations$feasibility$recommendations$danger$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Unzureichende Vorbereitung';
+	@override String get summary => 'Ihr Profil zeigt erhebliche Lücken. Wir raten vom Start ab.';
+	@override late final _Translations$feasibility$recommendations$danger$tips$de tips = _Translations$feasibility$recommendations$danger$tips$de._(_root);
+}
+
+// Path: feasibility.recommendations.caution
+class _Translations$feasibility$recommendations$caution$de extends Translations$feasibility$recommendations$caution$fr {
+	_Translations$feasibility$recommendations$caution$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Vorbereitung verstärken';
+	@override String get summary => 'Sie haben Grundlagen, aber einige Bereiche brauchen Aufmerksamkeit.';
+	@override late final _Translations$feasibility$recommendations$caution$tips$de tips = _Translations$feasibility$recommendations$caution$tips$de._(_root);
+}
+
+// Path: feasibility.recommendations.good
+class _Translations$feasibility$recommendations$good$de extends Translations$feasibility$recommendations$good$fr {
+	_Translations$feasibility$recommendations$good$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Gute Vorbereitung';
+	@override String get summary => 'Ihr Profil ist solide. Einige Anpassungen und Sie sind bereit.';
+	@override late final _Translations$feasibility$recommendations$good$tips$de tips = _Translations$feasibility$recommendations$good$tips$de._(_root);
+}
+
+// Path: feasibility.recommendations.excellent
+class _Translations$feasibility$recommendations$excellent$de extends Translations$feasibility$recommendations$excellent$fr {
+	_Translations$feasibility$recommendations$excellent$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Optimale Vorbereitung';
+	@override String get summary => 'Sie sind perfekt vorbereitet. Genießen Sie die Wanderung!';
+	@override late final _Translations$feasibility$recommendations$excellent$tips$de tips = _Translations$feasibility$recommendations$excellent$tips$de._(_root);
+}
+
+// Path: feasibility.recommendations.danger.tips
+class _Translations$feasibility$recommendations$danger$tips$de extends Translations$feasibility$recommendations$danger$tips$fr {
+	_Translations$feasibility$recommendations$danger$tips$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get tip1 => 'Beginnen Sie mit kurzen Wanderungen';
+	@override String get tip2 => 'Konsultieren Sie einen Arzt vor längerer Anstrengung';
+	@override String get tip3 => 'Investieren Sie in geeignete Ausrüstung';
+}
+
+// Path: feasibility.recommendations.caution.tips
+class _Translations$feasibility$recommendations$caution$tips$de extends Translations$feasibility$recommendations$caution$tips$fr {
+	_Translations$feasibility$recommendations$caution$tips$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get tip1 => 'Verstärken Sie Ihr Training 6 bis 8 Wochen vorher';
+	@override String get tip2 => 'Überprüfen und ergänzen Sie Ihre Ausrüstung';
+	@override String get tip3 => 'Planen Sie Etappen, die Ihrem Niveau entsprechen';
+}
+
+// Path: feasibility.recommendations.good.tips
+class _Translations$feasibility$recommendations$good$tips$de extends Translations$feasibility$recommendations$good$tips$fr {
+	_Translations$feasibility$recommendations$good$tips$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get tip1 => 'Halten Sie Ihr Trainingstempo aufrecht';
+	@override String get tip2 => 'Planen Sie Puffer in Ihrem Zeitplan ein';
+	@override String get tip3 => 'Überprüfen Sie regelmäßig das Wetter';
+}
+
+// Path: feasibility.recommendations.excellent.tips
+class _Translations$feasibility$recommendations$excellent$tips$de extends Translations$feasibility$recommendations$excellent$tips$fr {
+	_Translations$feasibility$recommendations$excellent$tips$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get tip1 => 'Hören Sie auf Ihren Körper';
+	@override String get tip2 => 'Teilen Sie Ihre Erfahrung mit anderen Wanderern';
+	@override String get tip3 => 'Dokumentieren Sie Ihr Abenteuer im Tagebuch';
 }
 
 /// The flat map containing all translations for locale <de>.
@@ -759,6 +872,29 @@ extension on TranslationsDe {
 			'feasibility.answers.motivationB' => 'Motivated but anxious',
 			'feasibility.answers.motivationC' => 'Motivated and determined',
 			'feasibility.answers.motivationD' => 'Absolute passion, long-time dream',
+			'feasibility.seeRecommendations' => 'Empfehlungen anzeigen',
+			'feasibility.yourProfile' => 'Ihr Profil',
+			'feasibility.tipsTitle' => 'Unsere Tipps',
+			'feasibility.recommendations.danger.title' => 'Unzureichende Vorbereitung',
+			'feasibility.recommendations.danger.summary' => 'Ihr Profil zeigt erhebliche Lücken. Wir raten vom Start ab.',
+			'feasibility.recommendations.danger.tips.tip1' => 'Beginnen Sie mit kurzen Wanderungen',
+			'feasibility.recommendations.danger.tips.tip2' => 'Konsultieren Sie einen Arzt vor längerer Anstrengung',
+			'feasibility.recommendations.danger.tips.tip3' => 'Investieren Sie in geeignete Ausrüstung',
+			'feasibility.recommendations.caution.title' => 'Vorbereitung verstärken',
+			'feasibility.recommendations.caution.summary' => 'Sie haben Grundlagen, aber einige Bereiche brauchen Aufmerksamkeit.',
+			'feasibility.recommendations.caution.tips.tip1' => 'Verstärken Sie Ihr Training 6 bis 8 Wochen vorher',
+			'feasibility.recommendations.caution.tips.tip2' => 'Überprüfen und ergänzen Sie Ihre Ausrüstung',
+			'feasibility.recommendations.caution.tips.tip3' => 'Planen Sie Etappen, die Ihrem Niveau entsprechen',
+			'feasibility.recommendations.good.title' => 'Gute Vorbereitung',
+			'feasibility.recommendations.good.summary' => 'Ihr Profil ist solide. Einige Anpassungen und Sie sind bereit.',
+			'feasibility.recommendations.good.tips.tip1' => 'Halten Sie Ihr Trainingstempo aufrecht',
+			'feasibility.recommendations.good.tips.tip2' => 'Planen Sie Puffer in Ihrem Zeitplan ein',
+			'feasibility.recommendations.good.tips.tip3' => 'Überprüfen Sie regelmäßig das Wetter',
+			'feasibility.recommendations.excellent.title' => 'Optimale Vorbereitung',
+			'feasibility.recommendations.excellent.summary' => 'Sie sind perfekt vorbereitet. Genießen Sie die Wanderung!',
+			'feasibility.recommendations.excellent.tips.tip1' => 'Hören Sie auf Ihren Körper',
+			'feasibility.recommendations.excellent.tips.tip2' => 'Teilen Sie Ihre Erfahrung mit anderen Wanderern',
+			'feasibility.recommendations.excellent.tips.tip3' => 'Dokumentieren Sie Ihr Abenteuer im Tagebuch',
 			_ => null,
 		};
 	}

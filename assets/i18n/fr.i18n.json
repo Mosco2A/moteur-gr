@@ -280,6 +280,47 @@
       "motivationB": "Motivé(e) mais anxieux(se)",
       "motivationC": "Motivé(e) et déterminé(e)",
       "motivationD": "Passion absolue, rêve de longue date"
+    },
+    "seeRecommendations": "Voir les recommandations",
+    "yourProfile": "Votre profil",
+    "tipsTitle": "Nos conseils",
+    "recommendations": {
+      "danger": {
+        "title": "Préparation insuffisante",
+        "summary": "Votre profil indique des lacunes importantes. Nous vous déconseillons de partir en l’état.",
+        "tips": {
+          "tip1": "Commencez par des randonnées courtes pour évaluer votre condition",
+          "tip2": "Consultez un professionnel de santé avant un effort prolongé",
+          "tip3": "Investissez dans un équipement adapté et testez-le"
+        }
+      },
+      "caution": {
+        "title": "Préparation à renforcer",
+        "summary": "Vous avez des bases, mais certains points méritent une attention particulière.",
+        "tips": {
+          "tip1": "Renforcez votre entraînement physique 6 à 8 semaines avant",
+          "tip2": "Vérifiez et complétez votre équipement",
+          "tip3": "Planifiez des étapes adaptées à votre niveau"
+        }
+      },
+      "good": {
+        "title": "Bonne préparation",
+        "summary": "Votre profil est solide. Quelques ajustements et vous serez prêt(e).",
+        "tips": {
+          "tip1": "Maintenez votre rythme d’entraînement",
+          "tip2": "Prévoyez des marges dans votre planning",
+          "tip3": "Consultez la météo régulièrement"
+        }
+      },
+      "excellent": {
+        "title": "Préparation optimale",
+        "summary": "Vous êtes parfaitement préparé(e). Profitez du trek !",
+        "tips": {
+          "tip1": "Restez à l’écoute de votre corps",
+          "tip2": "Partagez votre expérience avec les randonneurs",
+          "tip3": "Documentez votre aventure dans le journal"
+        }
+      }
     }
   }
 }

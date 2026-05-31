@@ -280,6 +280,47 @@
       "motivationB": "Motivated but anxious",
       "motivationC": "Motivated and determined",
       "motivationD": "Absolute passion, long-time dream"
+    },
+    "seeRecommendations": "See recommendations",
+    "yourProfile": "Your profile",
+    "tipsTitle": "Our tips",
+    "recommendations": {
+      "danger": {
+        "title": "Insufficient preparation",
+        "summary": "Your profile shows significant gaps. We do not recommend starting in this state.",
+        "tips": {
+          "tip1": "Start with short hikes to assess your fitness level",
+          "tip2": "Consult a healthcare professional before prolonged effort",
+          "tip3": "Invest in proper equipment and test it beforehand"
+        }
+      },
+      "caution": {
+        "title": "Preparation needs work",
+        "summary": "You have a foundation, but some areas need attention before departure.",
+        "tips": {
+          "tip1": "Strengthen your physical training 6 to 8 weeks ahead",
+          "tip2": "Check and complete your equipment",
+          "tip3": "Plan stages suited to your level"
+        }
+      },
+      "good": {
+        "title": "Good preparation",
+        "summary": "Your profile is solid. A few adjustments and you will be ready.",
+        "tips": {
+          "tip1": "Maintain your training pace until departure",
+          "tip2": "Include margins in your planning",
+          "tip3": "Check the weather regularly before departure"
+        }
+      },
+      "excellent": {
+        "title": "Optimal preparation",
+        "summary": "You are perfectly prepared. Enjoy the trek with peace of mind!",
+        "tips": {
+          "tip1": "Listen to your body during the trek",
+          "tip2": "Share your experience with fellow hikers",
+          "tip3": "Consider documenting your adventure in the journal"
+        }
+      }
     }
   }
 }

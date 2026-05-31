@@ -280,6 +280,47 @@
       "motivationB": "Motivated but anxious",
       "motivationC": "Motivated and determined",
       "motivationD": "Absolute passion, long-time dream"
+    },
+    "seeRecommendations": "Empfehlungen anzeigen",
+    "yourProfile": "Ihr Profil",
+    "tipsTitle": "Unsere Tipps",
+    "recommendations": {
+      "danger": {
+        "title": "Unzureichende Vorbereitung",
+        "summary": "Ihr Profil zeigt erhebliche Lücken. Wir raten vom Start ab.",
+        "tips": {
+          "tip1": "Beginnen Sie mit kurzen Wanderungen",
+          "tip2": "Konsultieren Sie einen Arzt vor längerer Anstrengung",
+          "tip3": "Investieren Sie in geeignete Ausrüstung"
+        }
+      },
+      "caution": {
+        "title": "Vorbereitung verstärken",
+        "summary": "Sie haben Grundlagen, aber einige Bereiche brauchen Aufmerksamkeit.",
+        "tips": {
+          "tip1": "Verstärken Sie Ihr Training 6 bis 8 Wochen vorher",
+          "tip2": "Überprüfen und ergänzen Sie Ihre Ausrüstung",
+          "tip3": "Planen Sie Etappen, die Ihrem Niveau entsprechen"
+        }
+      },
+      "good": {
+        "title": "Gute Vorbereitung",
+        "summary": "Ihr Profil ist solide. Einige Anpassungen und Sie sind bereit.",
+        "tips": {
+          "tip1": "Halten Sie Ihr Trainingstempo aufrecht",
+          "tip2": "Planen Sie Puffer in Ihrem Zeitplan ein",
+          "tip3": "Überprüfen Sie regelmäßig das Wetter"
+        }
+      },
+      "excellent": {
+        "title": "Optimale Vorbereitung",
+        "summary": "Sie sind perfekt vorbereitet. Genießen Sie die Wanderung!",
+        "tips": {
+          "tip1": "Hören Sie auf Ihren Körper",
+          "tip2": "Teilen Sie Ihre Erfahrung mit anderen Wanderern",
+          "tip3": "Dokumentieren Sie Ihr Abenteuer im Tagebuch"
+        }
+      }
     }
   }
 }

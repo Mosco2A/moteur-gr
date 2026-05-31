@@ -280,6 +280,47 @@
       "motivationB": "Motivated but anxious",
       "motivationC": "Motivated and determined",
       "motivationD": "Absolute passion, long-time dream"
+    },
+    "seeRecommendations": "Ver recomendaciones",
+    "yourProfile": "Su perfil",
+    "tipsTitle": "Nuestros consejos",
+    "recommendations": {
+      "danger": {
+        "title": "Preparación insuficiente",
+        "summary": "Su perfil muestra carencias importantes. No recomendamos partir.",
+        "tips": {
+          "tip1": "Comience con caminatas cortas para evaluar su condición",
+          "tip2": "Consulte a un profesional de salud",
+          "tip3": "Invierta en equipamiento adecuado y pruébelo"
+        }
+      },
+      "caution": {
+        "title": "Preparación a reforzar",
+        "summary": "Tiene una base, pero algunos puntos necesitan atención.",
+        "tips": {
+          "tip1": "Refuerce su entrenamiento 6 a 8 semanas antes",
+          "tip2": "Verifique y complete su equipamiento",
+          "tip3": "Planifique etapas adaptadas a su nivel"
+        }
+      },
+      "good": {
+        "title": "Buena preparación",
+        "summary": "Su perfil es sólido. Algunos ajustes y estará listo(a).",
+        "tips": {
+          "tip1": "Mantenga su ritmo de entrenamiento",
+          "tip2": "Prevea márgenes en su planificación",
+          "tip3": "Consulte la meteorología regularmente"
+        }
+      },
+      "excellent": {
+        "title": "Preparación óptima",
+        "summary": "Está perfectamente preparado(a). Disfrute del trekking!",
+        "tips": {
+          "tip1": "Escuche a su cuerpo durante el trekking",
+          "tip2": "Comparta su experiencia con otros senderistas",
+          "tip3": "Documente su aventura en el diario"
+        }
+      }
     }
   }
 }
