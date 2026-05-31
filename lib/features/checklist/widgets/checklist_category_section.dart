@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../providers/checklist_provider.dart';
+import 'checklist_item_widget.dart';
 
-/// Section de categorie dans la checklist materiel.
+/// Section de categorie dans la checklist materiel (E3.2b).
 ///
 /// Affiche un titre de categorie avec sa barre de progression
-/// et la liste des items cochables.
+/// et la liste des items cochables via ChecklistItemWidget.
 class ChecklistCategorySection extends StatelessWidget {
   const ChecklistCategorySection({
     super.key,
@@ -15,7 +16,7 @@ class ChecklistCategorySection extends StatelessWidget {
     required this.onToggle,
   });
 
-  /// Nom traduit de la categorie
+  /// Nom traduit de la categorie (resolu via Slang dans le screen)
   final String categoryName;
 
   /// Items de cette categorie
@@ -78,74 +79,16 @@ class ChecklistCategorySection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        // Liste des items
-        ...items.map((item) => _ChecklistItemTile(
-              item: item,
+        // Liste des items via ChecklistItemWidget
+        ...items.map((item) => ChecklistItemWidget(
+              itemId: item.template.id,
+              nameKey: item.template.nameKey,
+              isChecked: item.isChecked,
+              isEssential: item.template.isEssential,
               onToggle: () => onToggle(item.template.id),
             )),
         const SizedBox(height: AppTheme.spacingMd),
       ],
-    );
-  }
-}
-
-/// Tuile individuelle d un item de checklist.
-class _ChecklistItemTile extends StatelessWidget {
-  const _ChecklistItemTile({
-    required this.item,
-    required this.onToggle,
-  });
-
-  final ChecklistItemState item;
-  final VoidCallback onToggle;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return ListTile(
-      leading: Checkbox(
-        value: item.isChecked,
-        onChanged: (_) => onToggle(),
-        activeColor: theme.colorScheme.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
-      ),
-      title: Text(
-        item.template.nameKey,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          decoration:
-              item.isChecked ? TextDecoration.lineThrough : null,
-          color: item.isChecked
-              ? theme.colorScheme.onSurface.withAlpha(120)
-              : null,
-        ),
-      ),
-      trailing: item.template.isEssential
-          ? Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacingSm,
-                vertical: AppTheme.spacingXs,
-              ),
-              decoration: BoxDecoration(
-                color: AppTheme.rougeUrgence.withAlpha(40),
-                borderRadius:
-                    BorderRadius.circular(AppTheme.radiusChip),
-              ),
-              child: Text(
-                '!',
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: AppTheme.rougeUrgence,
-                  fontSize: 12,
-                ),
-              ),
-            )
-          : null,
-      onTap: onToggle,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingSm,
-      ),
-      dense: true,
     );
   }
 }
