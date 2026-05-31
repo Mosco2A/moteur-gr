@@ -9,7 +9,7 @@ part 'delta_update.g.dart';
 /// Seules les tables modifiees sont listees dans changedTables,
 /// permettant une MAJ partielle sans re-telecharger l integralite.
 @freezed
-class DeltaUpdate with _ {
+class DeltaUpdate with _$DeltaUpdate {
   const factory DeltaUpdate({
     /// Identifiant du sentier concerne
     required String trailId,
@@ -29,5 +29,5 @@ class DeltaUpdate with _ {
 
   /// Deserialisation depuis JSON
   factory DeltaUpdate.fromJson(Map<String, dynamic> json) =>
-      _(json);
+      _$DeltaUpdateFromJson(json);
 }
