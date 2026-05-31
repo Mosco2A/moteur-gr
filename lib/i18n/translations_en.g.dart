@@ -55,6 +55,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$settings$en settings = _Translations$settings$en._(_root);
 	@override late final _Translations$feedback$en feedback = _Translations$feedback$en._(_root);
 	@override late final _Translations$auth$en auth = _Translations$auth$en._(_root);
+	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
 }
 
 // Path: map
@@ -344,6 +345,27 @@ class _Translations$auth$en extends Translations$auth$fr {
 	@override String get cancel => 'Cancel';
 }
 
+// Path: feasibility
+class _Translations$feasibility$en extends Translations$feasibility$fr {
+	_Translations$feasibility$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Feasibility';
+	@override String get subtitle => 'Assess your preparation';
+	@override String get previous => 'Previous';
+	@override String get restart => 'Start over';
+	@override String get resultTitle => 'Your result';
+	@override String get weakPointsTitle => 'Areas to improve';
+	@override String get strongPointsTitle => 'Strong points';
+	@override String get progress => '{current}/{total}';
+	@override late final _Translations$feasibility$levels$en levels = _Translations$feasibility$levels$en._(_root);
+	@override late final _Translations$feasibility$categories$en categories = _Translations$feasibility$categories$en._(_root);
+	@override late final _Translations$feasibility$questions$en questions = _Translations$feasibility$questions$en._(_root);
+	@override late final _Translations$feasibility$answers$en answers = _Translations$feasibility$answers$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -404,6 +426,94 @@ class _Translations$checklist$items$en extends Translations$checklist$items$fr {
 	@override String get toiletPaper => 'Toilet paper';
 	@override String get handSanitizer => 'Hand sanitizer';
 	@override String get towel => 'Towel';
+}
+
+// Path: feasibility.levels
+class _Translations$feasibility$levels$en extends Translations$feasibility$levels$fr {
+	_Translations$feasibility$levels$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get danger => 'Not recommended';
+	@override String get caution => 'Preparation needed';
+	@override String get good => 'Feasible';
+	@override String get excellent => 'Excellent';
+}
+
+// Path: feasibility.categories
+class _Translations$feasibility$categories$en extends Translations$feasibility$categories$fr {
+	_Translations$feasibility$categories$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get fitness => 'Physical fitness';
+	@override String get experience => 'Experience';
+	@override String get gear => 'Equipment';
+	@override String get weather => 'Weather';
+	@override String get duration => 'Duration';
+	@override String get companion => 'Companions';
+	@override String get health => 'Health';
+	@override String get motivation => 'Motivation';
+}
+
+// Path: feasibility.questions
+class _Translations$feasibility$questions$en extends Translations$feasibility$questions$fr {
+	_Translations$feasibility$questions$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get fitnessQuestion => 'What is your physical fitness level?';
+	@override String get experienceQuestion => 'What is your hiking experience?';
+	@override String get gearQuestion => 'What is the state of your equipment?';
+	@override String get weatherQuestion => 'Have you checked weather conditions?';
+	@override String get durationQuestion => 'How many days do you plan?';
+	@override String get companionQuestion => 'Are you hiking with others?';
+	@override String get healthQuestion => 'Do you have any health concerns?';
+	@override String get motivationQuestion => 'What is your motivation level?';
+}
+
+// Path: feasibility.answers
+class _Translations$feasibility$answers$en extends Translations$feasibility$answers$fr {
+	_Translations$feasibility$answers$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get fitnessA => 'Sedentary, no training';
+	@override String get fitnessB => 'Occasional physical activity';
+	@override String get fitnessC => 'Regular exercise (2-3x/week)';
+	@override String get fitnessD => 'Seasoned athlete, specifically trained';
+	@override String get experienceA => 'No hiking experience';
+	@override String get experienceB => 'A few day hikes';
+	@override String get experienceC => 'Multi-day hikes completed';
+	@override String get experienceD => 'Experienced trekker, long trails done';
+	@override String get gearA => 'Incomplete or unsuitable gear';
+	@override String get gearB => 'Basic gear, some items missing';
+	@override String get gearC => 'Complete gear, good condition';
+	@override String get gearD => 'Technical gear, tested and proven';
+	@override String get weatherA => 'Not checked, no idea';
+	@override String get weatherB => 'Briefly checked, uncertain conditions';
+	@override String get weatherC => 'Checked, fair conditions expected';
+	@override String get weatherD => 'Thoroughly checked, favorable window';
+	@override String get durationA => 'No idea of the duration';
+	@override String get durationB => 'Underestimated or too ambitious';
+	@override String get durationC => 'Realistic plan with margins';
+	@override String get durationD => 'Detailed plan, rest days included';
+	@override String get companionA => 'Solo, no solo experience';
+	@override String get companionB => 'Solo, but experienced';
+	@override String get companionC => 'In a group, mixed levels';
+	@override String get companionD => 'In a group, all experienced';
+	@override String get healthA => 'Untreated health issues';
+	@override String get healthB => 'Minor issues, under control';
+	@override String get healthC => 'Generally good health';
+	@override String get healthD => 'Excellent health, recent checkup';
+	@override String get motivationA => 'Low motivation, hesitant';
+	@override String get motivationB => 'Motivated but anxious';
+	@override String get motivationC => 'Motivated and determined';
+	@override String get motivationD => 'Absolute passion, long-time dream';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -589,6 +699,66 @@ extension on TranslationsEn {
 			'auth.deleteConfirm' => 'Delete your account?',
 			'auth.deleteMessage' => 'This action is irreversible. All your data, notes and progress will be erased.',
 			'auth.cancel' => 'Cancel',
+			'feasibility.title' => 'Feasibility',
+			'feasibility.subtitle' => 'Assess your preparation',
+			'feasibility.previous' => 'Previous',
+			'feasibility.restart' => 'Start over',
+			'feasibility.resultTitle' => 'Your result',
+			'feasibility.weakPointsTitle' => 'Areas to improve',
+			'feasibility.strongPointsTitle' => 'Strong points',
+			'feasibility.progress' => '{current}/{total}',
+			'feasibility.levels.danger' => 'Not recommended',
+			'feasibility.levels.caution' => 'Preparation needed',
+			'feasibility.levels.good' => 'Feasible',
+			'feasibility.levels.excellent' => 'Excellent',
+			'feasibility.categories.fitness' => 'Physical fitness',
+			'feasibility.categories.experience' => 'Experience',
+			'feasibility.categories.gear' => 'Equipment',
+			'feasibility.categories.weather' => 'Weather',
+			'feasibility.categories.duration' => 'Duration',
+			'feasibility.categories.companion' => 'Companions',
+			'feasibility.categories.health' => 'Health',
+			'feasibility.categories.motivation' => 'Motivation',
+			'feasibility.questions.fitnessQuestion' => 'What is your physical fitness level?',
+			'feasibility.questions.experienceQuestion' => 'What is your hiking experience?',
+			'feasibility.questions.gearQuestion' => 'What is the state of your equipment?',
+			'feasibility.questions.weatherQuestion' => 'Have you checked weather conditions?',
+			'feasibility.questions.durationQuestion' => 'How many days do you plan?',
+			'feasibility.questions.companionQuestion' => 'Are you hiking with others?',
+			'feasibility.questions.healthQuestion' => 'Do you have any health concerns?',
+			'feasibility.questions.motivationQuestion' => 'What is your motivation level?',
+			'feasibility.answers.fitnessA' => 'Sedentary, no training',
+			'feasibility.answers.fitnessB' => 'Occasional physical activity',
+			'feasibility.answers.fitnessC' => 'Regular exercise (2-3x/week)',
+			'feasibility.answers.fitnessD' => 'Seasoned athlete, specifically trained',
+			'feasibility.answers.experienceA' => 'No hiking experience',
+			'feasibility.answers.experienceB' => 'A few day hikes',
+			'feasibility.answers.experienceC' => 'Multi-day hikes completed',
+			'feasibility.answers.experienceD' => 'Experienced trekker, long trails done',
+			'feasibility.answers.gearA' => 'Incomplete or unsuitable gear',
+			'feasibility.answers.gearB' => 'Basic gear, some items missing',
+			'feasibility.answers.gearC' => 'Complete gear, good condition',
+			'feasibility.answers.gearD' => 'Technical gear, tested and proven',
+			'feasibility.answers.weatherA' => 'Not checked, no idea',
+			'feasibility.answers.weatherB' => 'Briefly checked, uncertain conditions',
+			'feasibility.answers.weatherC' => 'Checked, fair conditions expected',
+			'feasibility.answers.weatherD' => 'Thoroughly checked, favorable window',
+			'feasibility.answers.durationA' => 'No idea of the duration',
+			'feasibility.answers.durationB' => 'Underestimated or too ambitious',
+			'feasibility.answers.durationC' => 'Realistic plan with margins',
+			'feasibility.answers.durationD' => 'Detailed plan, rest days included',
+			'feasibility.answers.companionA' => 'Solo, no solo experience',
+			'feasibility.answers.companionB' => 'Solo, but experienced',
+			'feasibility.answers.companionC' => 'In a group, mixed levels',
+			'feasibility.answers.companionD' => 'In a group, all experienced',
+			'feasibility.answers.healthA' => 'Untreated health issues',
+			'feasibility.answers.healthB' => 'Minor issues, under control',
+			'feasibility.answers.healthC' => 'Generally good health',
+			'feasibility.answers.healthD' => 'Excellent health, recent checkup',
+			'feasibility.answers.motivationA' => 'Low motivation, hesitant',
+			'feasibility.answers.motivationB' => 'Motivated but anxious',
+			'feasibility.answers.motivationC' => 'Motivated and determined',
+			'feasibility.answers.motivationD' => 'Absolute passion, long-time dream',
 			_ => null,
 		};
 	}

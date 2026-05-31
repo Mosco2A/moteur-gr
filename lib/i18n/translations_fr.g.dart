@@ -56,6 +56,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$settings$fr settings = Translations$settings$fr.internal(_root);
 	late final Translations$feedback$fr feedback = Translations$feedback$fr.internal(_root);
 	late final Translations$auth$fr auth = Translations$auth$fr.internal(_root);
+	late final Translations$feasibility$fr feasibility = Translations$feasibility$fr.internal(_root);
 }
 
 // Path: map
@@ -627,6 +628,44 @@ class Translations$auth$fr {
 	String get cancel => 'Annuler';
 }
 
+// Path: feasibility
+class Translations$feasibility$fr {
+	Translations$feasibility$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Faisabilité'
+	String get title => 'Faisabilité';
+
+	/// fr: 'Évaluez votre préparation'
+	String get subtitle => 'Évaluez votre préparation';
+
+	/// fr: 'Précédent'
+	String get previous => 'Précédent';
+
+	/// fr: 'Recommencer'
+	String get restart => 'Recommencer';
+
+	/// fr: 'Votre résultat'
+	String get resultTitle => 'Votre résultat';
+
+	/// fr: 'Points à améliorer'
+	String get weakPointsTitle => 'Points à améliorer';
+
+	/// fr: 'Points forts'
+	String get strongPointsTitle => 'Points forts';
+
+	/// fr: '{current}/{total}'
+	String get progress => '{current}/{total}';
+
+	late final Translations$feasibility$levels$fr levels = Translations$feasibility$levels$fr.internal(_root);
+	late final Translations$feasibility$categories$fr categories = Translations$feasibility$categories$fr.internal(_root);
+	late final Translations$feasibility$questions$fr questions = Translations$feasibility$questions$fr.internal(_root);
+	late final Translations$feasibility$answers$fr answers = Translations$feasibility$answers$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -757,6 +796,198 @@ class Translations$checklist$items$fr {
 
 	/// fr: 'Serviette'
 	String get towel => 'Serviette';
+}
+
+// Path: feasibility.levels
+class Translations$feasibility$levels$fr {
+	Translations$feasibility$levels$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Déconseillé'
+	String get danger => 'Déconseillé';
+
+	/// fr: 'Préparation nécessaire'
+	String get caution => 'Préparation nécessaire';
+
+	/// fr: 'Faisable'
+	String get good => 'Faisable';
+
+	/// fr: 'Excellent'
+	String get excellent => 'Excellent';
+}
+
+// Path: feasibility.categories
+class Translations$feasibility$categories$fr {
+	Translations$feasibility$categories$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Condition physique'
+	String get fitness => 'Condition physique';
+
+	/// fr: 'Expérience'
+	String get experience => 'Expérience';
+
+	/// fr: 'Équipement'
+	String get gear => 'Équipement';
+
+	/// fr: 'Météo'
+	String get weather => 'Météo';
+
+	/// fr: 'Durée'
+	String get duration => 'Durée';
+
+	/// fr: 'Accompagnement'
+	String get companion => 'Accompagnement';
+
+	/// fr: 'Santé'
+	String get health => 'Santé';
+
+	/// fr: 'Motivation'
+	String get motivation => 'Motivation';
+}
+
+// Path: feasibility.questions
+class Translations$feasibility$questions$fr {
+	Translations$feasibility$questions$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Quel est votre niveau de condition physique ?'
+	String get fitnessQuestion => 'Quel est votre niveau de condition physique ?';
+
+	/// fr: 'Quelle est votre expérience en randonnée ?'
+	String get experienceQuestion => 'Quelle est votre expérience en randonnée ?';
+
+	/// fr: 'Quel est l’état de votre équipement ?'
+	String get gearQuestion => 'Quel est l’état de votre équipement ?';
+
+	/// fr: 'Avez-vous vérifié les conditions météo ?'
+	String get weatherQuestion => 'Avez-vous vérifié les conditions météo ?';
+
+	/// fr: 'Combien de jours prévoyez-vous ?'
+	String get durationQuestion => 'Combien de jours prévoyez-vous ?';
+
+	/// fr: 'Êtes-vous accompagné(e) ?'
+	String get companionQuestion => 'Êtes-vous accompagné(e) ?';
+
+	/// fr: 'Avez-vous des problèmes de santé ?'
+	String get healthQuestion => 'Avez-vous des problèmes de santé ?';
+
+	/// fr: 'Quel est votre niveau de motivation ?'
+	String get motivationQuestion => 'Quel est votre niveau de motivation ?';
+}
+
+// Path: feasibility.answers
+class Translations$feasibility$answers$fr {
+	Translations$feasibility$answers$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Sédentaire, aucun entraînement'
+	String get fitnessA => 'Sédentaire, aucun entraînement';
+
+	/// fr: 'Activité physique occasionnelle'
+	String get fitnessB => 'Activité physique occasionnelle';
+
+	/// fr: 'Sport régulier (2-3x/semaine)'
+	String get fitnessC => 'Sport régulier (2-3x/semaine)';
+
+	/// fr: 'Sportif aguerri, entraîné spécifiquement'
+	String get fitnessD => 'Sportif aguerri, entraîné spécifiquement';
+
+	/// fr: 'Aucune expérience de randonnée'
+	String get experienceA => 'Aucune expérience de randonnée';
+
+	/// fr: 'Quelques randonnées à la journée'
+	String get experienceB => 'Quelques randonnées à la journée';
+
+	/// fr: 'Randonnées multi-jours déjà réalisées'
+	String get experienceC => 'Randonnées multi-jours déjà réalisées';
+
+	/// fr: 'Trekkeur expérimenté, GR déjà réalisés'
+	String get experienceD => 'Trekkeur expérimenté, GR déjà réalisés';
+
+	/// fr: 'Équipement incomplet ou inadapté'
+	String get gearA => 'Équipement incomplet ou inadapté';
+
+	/// fr: 'Équipement basique, quelques manques'
+	String get gearB => 'Équipement basique, quelques manques';
+
+	/// fr: 'Équipement complet, bon état'
+	String get gearC => 'Équipement complet, bon état';
+
+	/// fr: 'Équipement technique, rodé et testé'
+	String get gearD => 'Équipement technique, rodé et testé';
+
+	/// fr: 'Pas vérifié, aucune idée'
+	String get weatherA => 'Pas vérifié, aucune idée';
+
+	/// fr: 'Consulté vaguement, conditions incertaines'
+	String get weatherB => 'Consulté vaguement, conditions incertaines';
+
+	/// fr: 'Vérifié, conditions correctes prévues'
+	String get weatherC => 'Vérifié, conditions correctes prévues';
+
+	/// fr: 'Vérifié en détail, créneau favorable'
+	String get weatherD => 'Vérifié en détail, créneau favorable';
+
+	/// fr: 'Aucune idée de la durée'
+	String get durationA => 'Aucune idée de la durée';
+
+	/// fr: 'Durée sous-estimée ou trop ambitieuse'
+	String get durationB => 'Durée sous-estimée ou trop ambitieuse';
+
+	/// fr: 'Planning réaliste avec marges'
+	String get durationC => 'Planning réaliste avec marges';
+
+	/// fr: 'Planning détaillé, jours de repos prévus'
+	String get durationD => 'Planning détaillé, jours de repos prévus';
+
+	/// fr: 'Seul(e), sans expérience solo'
+	String get companionA => 'Seul(e), sans expérience solo';
+
+	/// fr: 'Seul(e), mais expérimenté(e)'
+	String get companionB => 'Seul(e), mais expérimenté(e)';
+
+	/// fr: 'En groupe, niveaux mixtes'
+	String get companionC => 'En groupe, niveaux mixtes';
+
+	/// fr: 'En groupe, tous expérimentés'
+	String get companionD => 'En groupe, tous expérimentés';
+
+	/// fr: 'Problèmes de santé non traités'
+	String get healthA => 'Problèmes de santé non traités';
+
+	/// fr: 'Problèmes mineurs, sous contrôle'
+	String get healthB => 'Problèmes mineurs, sous contrôle';
+
+	/// fr: 'Bonne santé générale'
+	String get healthC => 'Bonne santé générale';
+
+	/// fr: 'Excellent état de santé, bilan récent'
+	String get healthD => 'Excellent état de santé, bilan récent';
+
+	/// fr: 'Peu motivé(e), hésitant(e)'
+	String get motivationA => 'Peu motivé(e), hésitant(e)';
+
+	/// fr: 'Motivé(e) mais anxieux(se)'
+	String get motivationB => 'Motivé(e) mais anxieux(se)';
+
+	/// fr: 'Motivé(e) et déterminé(e)'
+	String get motivationC => 'Motivé(e) et déterminé(e)';
+
+	/// fr: 'Passion absolue, rêve de longue date'
+	String get motivationD => 'Passion absolue, rêve de longue date';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -942,6 +1173,66 @@ extension on Translations {
 			'auth.deleteConfirm' => 'Supprimer votre compte ?',
 			'auth.deleteMessage' => 'Cette action est irréversible. Toutes vos données, notes et progression seront effacées.',
 			'auth.cancel' => 'Annuler',
+			'feasibility.title' => 'Faisabilité',
+			'feasibility.subtitle' => 'Évaluez votre préparation',
+			'feasibility.previous' => 'Précédent',
+			'feasibility.restart' => 'Recommencer',
+			'feasibility.resultTitle' => 'Votre résultat',
+			'feasibility.weakPointsTitle' => 'Points à améliorer',
+			'feasibility.strongPointsTitle' => 'Points forts',
+			'feasibility.progress' => '{current}/{total}',
+			'feasibility.levels.danger' => 'Déconseillé',
+			'feasibility.levels.caution' => 'Préparation nécessaire',
+			'feasibility.levels.good' => 'Faisable',
+			'feasibility.levels.excellent' => 'Excellent',
+			'feasibility.categories.fitness' => 'Condition physique',
+			'feasibility.categories.experience' => 'Expérience',
+			'feasibility.categories.gear' => 'Équipement',
+			'feasibility.categories.weather' => 'Météo',
+			'feasibility.categories.duration' => 'Durée',
+			'feasibility.categories.companion' => 'Accompagnement',
+			'feasibility.categories.health' => 'Santé',
+			'feasibility.categories.motivation' => 'Motivation',
+			'feasibility.questions.fitnessQuestion' => 'Quel est votre niveau de condition physique ?',
+			'feasibility.questions.experienceQuestion' => 'Quelle est votre expérience en randonnée ?',
+			'feasibility.questions.gearQuestion' => 'Quel est l’état de votre équipement ?',
+			'feasibility.questions.weatherQuestion' => 'Avez-vous vérifié les conditions météo ?',
+			'feasibility.questions.durationQuestion' => 'Combien de jours prévoyez-vous ?',
+			'feasibility.questions.companionQuestion' => 'Êtes-vous accompagné(e) ?',
+			'feasibility.questions.healthQuestion' => 'Avez-vous des problèmes de santé ?',
+			'feasibility.questions.motivationQuestion' => 'Quel est votre niveau de motivation ?',
+			'feasibility.answers.fitnessA' => 'Sédentaire, aucun entraînement',
+			'feasibility.answers.fitnessB' => 'Activité physique occasionnelle',
+			'feasibility.answers.fitnessC' => 'Sport régulier (2-3x/semaine)',
+			'feasibility.answers.fitnessD' => 'Sportif aguerri, entraîné spécifiquement',
+			'feasibility.answers.experienceA' => 'Aucune expérience de randonnée',
+			'feasibility.answers.experienceB' => 'Quelques randonnées à la journée',
+			'feasibility.answers.experienceC' => 'Randonnées multi-jours déjà réalisées',
+			'feasibility.answers.experienceD' => 'Trekkeur expérimenté, GR déjà réalisés',
+			'feasibility.answers.gearA' => 'Équipement incomplet ou inadapté',
+			'feasibility.answers.gearB' => 'Équipement basique, quelques manques',
+			'feasibility.answers.gearC' => 'Équipement complet, bon état',
+			'feasibility.answers.gearD' => 'Équipement technique, rodé et testé',
+			'feasibility.answers.weatherA' => 'Pas vérifié, aucune idée',
+			'feasibility.answers.weatherB' => 'Consulté vaguement, conditions incertaines',
+			'feasibility.answers.weatherC' => 'Vérifié, conditions correctes prévues',
+			'feasibility.answers.weatherD' => 'Vérifié en détail, créneau favorable',
+			'feasibility.answers.durationA' => 'Aucune idée de la durée',
+			'feasibility.answers.durationB' => 'Durée sous-estimée ou trop ambitieuse',
+			'feasibility.answers.durationC' => 'Planning réaliste avec marges',
+			'feasibility.answers.durationD' => 'Planning détaillé, jours de repos prévus',
+			'feasibility.answers.companionA' => 'Seul(e), sans expérience solo',
+			'feasibility.answers.companionB' => 'Seul(e), mais expérimenté(e)',
+			'feasibility.answers.companionC' => 'En groupe, niveaux mixtes',
+			'feasibility.answers.companionD' => 'En groupe, tous expérimentés',
+			'feasibility.answers.healthA' => 'Problèmes de santé non traités',
+			'feasibility.answers.healthB' => 'Problèmes mineurs, sous contrôle',
+			'feasibility.answers.healthC' => 'Bonne santé générale',
+			'feasibility.answers.healthD' => 'Excellent état de santé, bilan récent',
+			'feasibility.answers.motivationA' => 'Peu motivé(e), hésitant(e)',
+			'feasibility.answers.motivationB' => 'Motivé(e) mais anxieux(se)',
+			'feasibility.answers.motivationC' => 'Motivé(e) et déterminé(e)',
+			'feasibility.answers.motivationD' => 'Passion absolue, rêve de longue date',
 			_ => null,
 		};
 	}

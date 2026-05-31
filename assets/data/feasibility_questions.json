@@ -1,0 +1,92 @@
+{
+  "questions": [
+    {
+      "id": "fitness",
+      "categoryKey": "fitness",
+      "questionKey": "fitnessQuestion",
+      "answers": [
+        { "answerKey": "fitnessA", "score": 0 },
+        { "answerKey": "fitnessB", "score": 1 },
+        { "answerKey": "fitnessC", "score": 2 },
+        { "answerKey": "fitnessD", "score": 3 }
+      ]
+    },
+    {
+      "id": "experience",
+      "categoryKey": "experience",
+      "questionKey": "experienceQuestion",
+      "answers": [
+        { "answerKey": "experienceA", "score": 0 },
+        { "answerKey": "experienceB", "score": 1 },
+        { "answerKey": "experienceC", "score": 2 },
+        { "answerKey": "experienceD", "score": 3 }
+      ]
+    },
+    {
+      "id": "gear",
+      "categoryKey": "gear",
+      "questionKey": "gearQuestion",
+      "answers": [
+        { "answerKey": "gearA", "score": 0 },
+        { "answerKey": "gearB", "score": 1 },
+        { "answerKey": "gearC", "score": 2 },
+        { "answerKey": "gearD", "score": 3 }
+      ]
+    },
+    {
+      "id": "weather",
+      "categoryKey": "weather",
+      "questionKey": "weatherQuestion",
+      "answers": [
+        { "answerKey": "weatherA", "score": 0 },
+        { "answerKey": "weatherB", "score": 1 },
+        { "answerKey": "weatherC", "score": 2 },
+        { "answerKey": "weatherD", "score": 3 }
+      ]
+    },
+    {
+      "id": "duration",
+      "categoryKey": "duration",
+      "questionKey": "durationQuestion",
+      "answers": [
+        { "answerKey": "durationA", "score": 0 },
+        { "answerKey": "durationB", "score": 1 },
+        { "answerKey": "durationC", "score": 2 },
+        { "answerKey": "durationD", "score": 3 }
+      ]
+    },
+    {
+      "id": "companion",
+      "categoryKey": "companion",
+      "questionKey": "companionQuestion",
+      "answers": [
+        { "answerKey": "companionA", "score": 0 },
+        { "answerKey": "companionB", "score": 1 },
+        { "answerKey": "companionC", "score": 2 },
+        { "answerKey": "companionD", "score": 3 }
+      ]
+    },
+    {
+      "id": "health",
+      "categoryKey": "health",
+      "questionKey": "healthQuestion",
+      "answers": [
+        { "answerKey": "healthA", "score": 0 },
+        { "answerKey": "healthB", "score": 1 },
+        { "answerKey": "healthC", "score": 2 },
+        { "answerKey": "healthD", "score": 3 }
+      ]
+    },
+    {
+      "id": "motivation",
+      "categoryKey": "motivation",
+      "questionKey": "motivationQuestion",
+      "answers": [
+        { "answerKey": "motivationA", "score": 0 },
+        { "answerKey": "motivationB", "score": 1 },
+        { "answerKey": "motivationC", "score": 2 },
+        { "answerKey": "motivationD", "score": 3 }
+      ]
+    }
+  ]
+}
