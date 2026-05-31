@@ -8,7 +8,7 @@ part 'trail.g.dart';
 /// Contient les metadonnees du sentier (nom, region, distance, etc.)
 /// Utilisable pour la liste des sentiers et les ecrans de detail.
 @freezed
-class Trail with _$Trail {
+abstract class Trail with _$Trail {
   const factory Trail({
     /// Identifiant unique (ex: 'mare_a_mare', 'tmb')
     required String id,

@@ -13,5 +13,7 @@ class TrailManifestsDaoManager {
   TrailManifestsDaoManager(this._db);
   $$TrailManifestsTableTableManager get trailManifests =>
       $$TrailManifestsTableTableManager(
-          _db.attachedDatabase, _db.trailManifests);
+        _db.attachedDatabase,
+        _db.trailManifests,
+      );
 }

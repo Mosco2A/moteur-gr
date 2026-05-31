@@ -52,7 +52,7 @@ void main() {
       );
 
       expect(result.stageNumber, 1);
-      expect(result.event, StageDetectionEvent.entered);
+      expect(result.event, StageDetectionEventValues.entered);
     });
 
     test('detecte la fin de la premiere etape', () {
@@ -67,7 +67,7 @@ void main() {
       expect(result.stageNumber, isIn([1, 2]));
       expect(
         result.event,
-        isIn([StageDetectionEvent.exited, StageDetectionEvent.entered]),
+        isIn([StageDetectionEventValues.exited, StageDetectionEventValues.entered]),
       );
     });
 
@@ -80,7 +80,7 @@ void main() {
       );
 
       expect(result.stageNumber, 2);
-      expect(result.event, StageDetectionEvent.between);
+      expect(result.event, StageDetectionEventValues.between);
     });
 
     test('detecte entre deux etapes quand hors rayon', () {
@@ -93,7 +93,7 @@ void main() {
 
       // Devrait detecter etape 1 en mode "between"
       expect(result.stageNumber, 1);
-      expect(result.event, StageDetectionEvent.between);
+      expect(result.event, StageDetectionEventValues.between);
     });
 
     test('retourne unknown avec une liste vide', () {
@@ -104,7 +104,7 @@ void main() {
       );
 
       expect(result.stageNumber, 0);
-      expect(result.event, StageDetectionEvent.unknown);
+      expect(result.event, StageDetectionEventValues.unknown);
     });
 
     test('detecte la fin de la derniere etape', () {
@@ -115,7 +115,7 @@ void main() {
       );
 
       expect(result.stageNumber, 3);
-      expect(result.event, StageDetectionEvent.exited);
+      expect(result.event, StageDetectionEventValues.exited);
     });
 
     test('rayon de tolerance est de 200 metres', () {

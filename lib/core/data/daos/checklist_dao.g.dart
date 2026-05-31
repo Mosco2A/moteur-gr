@@ -13,5 +13,7 @@ class ChecklistDaoManager {
   ChecklistDaoManager(this._db);
   $$ChecklistItemsTableTableManager get checklistItems =>
       $$ChecklistItemsTableTableManager(
-          _db.attachedDatabase, _db.checklistItems);
+        _db.attachedDatabase,
+        _db.checklistItems,
+      );
 }

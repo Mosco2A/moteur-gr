@@ -7,13 +7,12 @@ part of 'sync_config.dart';
 // **************************************************************************
 
 _SyncConfig _$SyncConfigFromJson(Map<String, dynamic> json) => _SyncConfig(
-      batchIntervalMinutes:
-          (json['batchIntervalMinutes'] as num?)?.toInt() ?? 60,
-      syncOnRefugeArrival: json['syncOnRefugeArrival'] as bool? ?? true,
-      syncOnReconnect: json['syncOnReconnect'] as bool? ?? true,
-      maxRetries: (json['maxRetries'] as num?)?.toInt() ?? 3,
-      lastSyncTimestamp: json['lastSyncTimestamp'] as String?,
-    );
+  batchIntervalMinutes: (json['batchIntervalMinutes'] as num?)?.toInt() ?? 60,
+  syncOnRefugeArrival: json['syncOnRefugeArrival'] as bool? ?? true,
+  syncOnReconnect: json['syncOnReconnect'] as bool? ?? true,
+  maxRetries: (json['maxRetries'] as num?)?.toInt() ?? 3,
+  lastSyncTimestamp: json['lastSyncTimestamp'] as String?,
+);
 
 Map<String, dynamic> _$SyncConfigToJson(_SyncConfig instance) =>
     <String, dynamic>{

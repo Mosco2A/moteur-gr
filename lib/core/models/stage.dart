@@ -11,7 +11,7 @@ part 'stage.g.dart';
 /// Convertible depuis/vers la table Drift Stages
 /// et depuis JSON (chargement initial des donnees).
 @freezed
-class StageModel with _$StageModel {
+abstract class StageModel with _$StageModel {
   const StageModel._();
 
   const factory StageModel({

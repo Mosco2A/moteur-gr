@@ -14,5 +14,7 @@ class TrailItinerariesDaoManager {
   TrailItinerariesDaoManager(this._db);
   $$TrailItinerariesTableTableManager get trailItineraries =>
       $$TrailItinerariesTableTableManager(
-          _db.attachedDatabase, _db.trailItineraries);
+        _db.attachedDatabase,
+        _db.trailItineraries,
+      );
 }

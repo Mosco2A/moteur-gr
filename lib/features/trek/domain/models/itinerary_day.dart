@@ -10,7 +10,7 @@ part 'itinerary_day.g.dart';
 /// Regroupe les etapes prevues pour un jour donne,
 /// avec les totaux calcules (distance, denivele, duree estimee).
 @freezed
-class ItineraryDay with _$ItineraryDay {
+abstract class ItineraryDay with _$ItineraryDay {
   const ItineraryDay._();
 
   const factory ItineraryDay({

@@ -8,7 +8,7 @@ part 'track_point.g.dart';
 /// Represente un point unique avec coordonnees, altitude
 /// et distance cumulee depuis le debut du trace.
 @freezed
-class TrackPoint with _$TrackPoint {
+abstract class TrackPoint with _$TrackPoint {
   const TrackPoint._();
 
   const factory TrackPoint({

@@ -11,7 +11,7 @@ part 'day_plan.g.dart';
 /// les totaux calculés (distance, dénivelé, durée),
 /// et un flag indiquant si c'est un jour de repos.
 @freezed
-class DayPlan with _$DayPlan {
+abstract class DayPlan with _$DayPlan {
   const DayPlan._();
 
   const factory DayPlan({

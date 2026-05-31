@@ -11,193 +11,278 @@ class $StagesTable extends Stages with TableInfo<$StagesTable, Stage> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _stageNumberMeta =
-      const VerificationMeta('stageNumber');
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageNumberMeta = const VerificationMeta(
+    'stageNumber',
+  );
   @override
   late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
-      'stage_number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'stage_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _distanceKmMeta =
-      const VerificationMeta('distanceKm');
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _distanceKmMeta = const VerificationMeta(
+    'distanceKm',
+  );
   @override
   late final GeneratedColumn<double> distanceKm = GeneratedColumn<double>(
-      'distance_km', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _elevationGainMMeta =
-      const VerificationMeta('elevationGainM');
+    'distance_km',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elevationGainMMeta = const VerificationMeta(
+    'elevationGainM',
+  );
   @override
   late final GeneratedColumn<int> elevationGainM = GeneratedColumn<int>(
-      'elevation_gain_m', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _elevationLossMMeta =
-      const VerificationMeta('elevationLossM');
+    'elevation_gain_m',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elevationLossMMeta = const VerificationMeta(
+    'elevationLossM',
+  );
   @override
   late final GeneratedColumn<int> elevationLossM = GeneratedColumn<int>(
-      'elevation_loss_m', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
+    'elevation_loss_m',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
-  static const VerificationMeta _startLatMeta =
-      const VerificationMeta('startLat');
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _startLatMeta = const VerificationMeta(
+    'startLat',
+  );
   @override
   late final GeneratedColumn<double> startLat = GeneratedColumn<double>(
-      'start_lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _startLngMeta =
-      const VerificationMeta('startLng');
+    'start_lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startLngMeta = const VerificationMeta(
+    'startLng',
+  );
   @override
   late final GeneratedColumn<double> startLng = GeneratedColumn<double>(
-      'start_lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'start_lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _endLatMeta = const VerificationMeta('endLat');
   @override
   late final GeneratedColumn<double> endLat = GeneratedColumn<double>(
-      'end_lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'end_lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _endLngMeta = const VerificationMeta('endLng');
   @override
   late final GeneratedColumn<double> endLng = GeneratedColumn<double>(
-      'end_lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _difficultyMeta =
-      const VerificationMeta('difficulty');
+    'end_lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _difficultyMeta = const VerificationMeta(
+    'difficulty',
+  );
   @override
   late final GeneratedColumn<String> difficulty = GeneratedColumn<String>(
-      'difficulty', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('moderate'));
+    'difficulty',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('moderate'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        trailId,
-        stageNumber,
-        name,
-        distanceKm,
-        elevationGainM,
-        elevationLossM,
-        description,
-        startLat,
-        startLng,
-        endLat,
-        endLng,
-        difficulty
-      ];
+    id,
+    trailId,
+    stageNumber,
+    name,
+    distanceKm,
+    elevationGainM,
+    elevationLossM,
+    description,
+    startLat,
+    startLng,
+    endLat,
+    endLng,
+    difficulty,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'stages';
   @override
-  VerificationContext validateIntegrity(Insertable<Stage> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Stage> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('stage_number')) {
       context.handle(
+        _stageNumberMeta,
+        stageNumber.isAcceptableOrUnknown(
+          data['stage_number']!,
           _stageNumberMeta,
-          stageNumber.isAcceptableOrUnknown(
-              data['stage_number']!, _stageNumberMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_stageNumberMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('distance_km')) {
       context.handle(
-          _distanceKmMeta,
-          distanceKm.isAcceptableOrUnknown(
-              data['distance_km']!, _distanceKmMeta));
+        _distanceKmMeta,
+        distanceKm.isAcceptableOrUnknown(data['distance_km']!, _distanceKmMeta),
+      );
     } else if (isInserting) {
       context.missing(_distanceKmMeta);
     }
     if (data.containsKey('elevation_gain_m')) {
       context.handle(
+        _elevationGainMMeta,
+        elevationGainM.isAcceptableOrUnknown(
+          data['elevation_gain_m']!,
           _elevationGainMMeta,
-          elevationGainM.isAcceptableOrUnknown(
-              data['elevation_gain_m']!, _elevationGainMMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_elevationGainMMeta);
     }
     if (data.containsKey('elevation_loss_m')) {
       context.handle(
+        _elevationLossMMeta,
+        elevationLossM.isAcceptableOrUnknown(
+          data['elevation_loss_m']!,
           _elevationLossMMeta,
-          elevationLossM.isAcceptableOrUnknown(
-              data['elevation_loss_m']!, _elevationLossMMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_elevationLossMMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
           _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
+        ),
+      );
     }
     if (data.containsKey('start_lat')) {
-      context.handle(_startLatMeta,
-          startLat.isAcceptableOrUnknown(data['start_lat']!, _startLatMeta));
+      context.handle(
+        _startLatMeta,
+        startLat.isAcceptableOrUnknown(data['start_lat']!, _startLatMeta),
+      );
     } else if (isInserting) {
       context.missing(_startLatMeta);
     }
     if (data.containsKey('start_lng')) {
-      context.handle(_startLngMeta,
-          startLng.isAcceptableOrUnknown(data['start_lng']!, _startLngMeta));
+      context.handle(
+        _startLngMeta,
+        startLng.isAcceptableOrUnknown(data['start_lng']!, _startLngMeta),
+      );
     } else if (isInserting) {
       context.missing(_startLngMeta);
     }
     if (data.containsKey('end_lat')) {
-      context.handle(_endLatMeta,
-          endLat.isAcceptableOrUnknown(data['end_lat']!, _endLatMeta));
+      context.handle(
+        _endLatMeta,
+        endLat.isAcceptableOrUnknown(data['end_lat']!, _endLatMeta),
+      );
     } else if (isInserting) {
       context.missing(_endLatMeta);
     }
     if (data.containsKey('end_lng')) {
-      context.handle(_endLngMeta,
-          endLng.isAcceptableOrUnknown(data['end_lng']!, _endLngMeta));
+      context.handle(
+        _endLngMeta,
+        endLng.isAcceptableOrUnknown(data['end_lng']!, _endLngMeta),
+      );
     } else if (isInserting) {
       context.missing(_endLngMeta);
     }
     if (data.containsKey('difficulty')) {
       context.handle(
-          _difficultyMeta,
-          difficulty.isAcceptableOrUnknown(
-              data['difficulty']!, _difficultyMeta));
+        _difficultyMeta,
+        difficulty.isAcceptableOrUnknown(data['difficulty']!, _difficultyMeta),
+      );
     }
     return context;
   }
@@ -208,32 +293,58 @@ class $StagesTable extends Stages with TableInfo<$StagesTable, Stage> {
   Stage map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Stage(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      stageNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}stage_number'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      distanceKm: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}distance_km'])!,
-      elevationGainM: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}elevation_gain_m'])!,
-      elevationLossM: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}elevation_loss_m'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
-      startLat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}start_lat'])!,
-      startLng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}start_lng'])!,
-      endLat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}end_lat'])!,
-      endLng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}end_lng'])!,
-      difficulty: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}difficulty'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      stageNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stage_number'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      distanceKm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}distance_km'],
+      )!,
+      elevationGainM: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}elevation_gain_m'],
+      )!,
+      elevationLossM: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}elevation_loss_m'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      startLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_lat'],
+      )!,
+      startLng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_lng'],
+      )!,
+      endLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_lat'],
+      )!,
+      endLng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_lng'],
+      )!,
+      difficulty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}difficulty'],
+      )!,
     );
   }
 
@@ -282,20 +393,21 @@ class Stage extends DataClass implements Insertable<Stage> {
 
   /// Difficulte (easy, moderate, hard, extreme)
   final String difficulty;
-  const Stage(
-      {required this.id,
-      required this.trailId,
-      required this.stageNumber,
-      required this.name,
-      required this.distanceKm,
-      required this.elevationGainM,
-      required this.elevationLossM,
-      required this.description,
-      required this.startLat,
-      required this.startLng,
-      required this.endLat,
-      required this.endLng,
-      required this.difficulty});
+  const Stage({
+    required this.id,
+    required this.trailId,
+    required this.stageNumber,
+    required this.name,
+    required this.distanceKm,
+    required this.elevationGainM,
+    required this.elevationLossM,
+    required this.description,
+    required this.startLat,
+    required this.startLng,
+    required this.endLat,
+    required this.endLng,
+    required this.difficulty,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -333,8 +445,10 @@ class Stage extends DataClass implements Insertable<Stage> {
     );
   }
 
-  factory Stage.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Stage.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Stage(
       id: serializer.fromJson<int>(json['id']),
@@ -372,58 +486,62 @@ class Stage extends DataClass implements Insertable<Stage> {
     };
   }
 
-  Stage copyWith(
-          {int? id,
-          String? trailId,
-          int? stageNumber,
-          String? name,
-          double? distanceKm,
-          int? elevationGainM,
-          int? elevationLossM,
-          String? description,
-          double? startLat,
-          double? startLng,
-          double? endLat,
-          double? endLng,
-          String? difficulty}) =>
-      Stage(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        stageNumber: stageNumber ?? this.stageNumber,
-        name: name ?? this.name,
-        distanceKm: distanceKm ?? this.distanceKm,
-        elevationGainM: elevationGainM ?? this.elevationGainM,
-        elevationLossM: elevationLossM ?? this.elevationLossM,
-        description: description ?? this.description,
-        startLat: startLat ?? this.startLat,
-        startLng: startLng ?? this.startLng,
-        endLat: endLat ?? this.endLat,
-        endLng: endLng ?? this.endLng,
-        difficulty: difficulty ?? this.difficulty,
-      );
+  Stage copyWith({
+    int? id,
+    String? trailId,
+    int? stageNumber,
+    String? name,
+    double? distanceKm,
+    int? elevationGainM,
+    int? elevationLossM,
+    String? description,
+    double? startLat,
+    double? startLng,
+    double? endLat,
+    double? endLng,
+    String? difficulty,
+  }) => Stage(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    stageNumber: stageNumber ?? this.stageNumber,
+    name: name ?? this.name,
+    distanceKm: distanceKm ?? this.distanceKm,
+    elevationGainM: elevationGainM ?? this.elevationGainM,
+    elevationLossM: elevationLossM ?? this.elevationLossM,
+    description: description ?? this.description,
+    startLat: startLat ?? this.startLat,
+    startLng: startLng ?? this.startLng,
+    endLat: endLat ?? this.endLat,
+    endLng: endLng ?? this.endLng,
+    difficulty: difficulty ?? this.difficulty,
+  );
   Stage copyWithCompanion(StagesCompanion data) {
     return Stage(
       id: data.id.present ? data.id.value : this.id,
       trailId: data.trailId.present ? data.trailId.value : this.trailId,
-      stageNumber:
-          data.stageNumber.present ? data.stageNumber.value : this.stageNumber,
+      stageNumber: data.stageNumber.present
+          ? data.stageNumber.value
+          : this.stageNumber,
       name: data.name.present ? data.name.value : this.name,
-      distanceKm:
-          data.distanceKm.present ? data.distanceKm.value : this.distanceKm,
+      distanceKm: data.distanceKm.present
+          ? data.distanceKm.value
+          : this.distanceKm,
       elevationGainM: data.elevationGainM.present
           ? data.elevationGainM.value
           : this.elevationGainM,
       elevationLossM: data.elevationLossM.present
           ? data.elevationLossM.value
           : this.elevationLossM,
-      description:
-          data.description.present ? data.description.value : this.description,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
       startLat: data.startLat.present ? data.startLat.value : this.startLat,
       startLng: data.startLng.present ? data.startLng.value : this.startLng,
       endLat: data.endLat.present ? data.endLat.value : this.endLat,
       endLng: data.endLng.present ? data.endLng.value : this.endLng,
-      difficulty:
-          data.difficulty.present ? data.difficulty.value : this.difficulty,
+      difficulty: data.difficulty.present
+          ? data.difficulty.value
+          : this.difficulty,
     );
   }
 
@@ -449,19 +567,20 @@ class Stage extends DataClass implements Insertable<Stage> {
 
   @override
   int get hashCode => Object.hash(
-      id,
-      trailId,
-      stageNumber,
-      name,
-      distanceKm,
-      elevationGainM,
-      elevationLossM,
-      description,
-      startLat,
-      startLng,
-      endLat,
-      endLng,
-      difficulty);
+    id,
+    trailId,
+    stageNumber,
+    name,
+    distanceKm,
+    elevationGainM,
+    elevationLossM,
+    description,
+    startLat,
+    startLng,
+    endLat,
+    endLng,
+    difficulty,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -524,16 +643,16 @@ class StagesCompanion extends UpdateCompanion<Stage> {
     required double endLat,
     required double endLng,
     this.difficulty = const Value.absent(),
-  })  : trailId = Value(trailId),
-        stageNumber = Value(stageNumber),
-        name = Value(name),
-        distanceKm = Value(distanceKm),
-        elevationGainM = Value(elevationGainM),
-        elevationLossM = Value(elevationLossM),
-        startLat = Value(startLat),
-        startLng = Value(startLng),
-        endLat = Value(endLat),
-        endLng = Value(endLng);
+  }) : trailId = Value(trailId),
+       stageNumber = Value(stageNumber),
+       name = Value(name),
+       distanceKm = Value(distanceKm),
+       elevationGainM = Value(elevationGainM),
+       elevationLossM = Value(elevationLossM),
+       startLat = Value(startLat),
+       startLng = Value(startLng),
+       endLat = Value(endLat),
+       endLng = Value(endLng);
   static Insertable<Stage> custom({
     Expression<int>? id,
     Expression<String>? trailId,
@@ -566,20 +685,21 @@ class StagesCompanion extends UpdateCompanion<Stage> {
     });
   }
 
-  StagesCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<int>? stageNumber,
-      Value<String>? name,
-      Value<double>? distanceKm,
-      Value<int>? elevationGainM,
-      Value<int>? elevationLossM,
-      Value<String>? description,
-      Value<double>? startLat,
-      Value<double>? startLng,
-      Value<double>? endLat,
-      Value<double>? endLng,
-      Value<String>? difficulty}) {
+  StagesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<int>? stageNumber,
+    Value<String>? name,
+    Value<double>? distanceKm,
+    Value<int>? elevationGainM,
+    Value<int>? elevationLossM,
+    Value<String>? description,
+    Value<double>? startLat,
+    Value<double>? startLng,
+    Value<double>? endLat,
+    Value<double>? endLng,
+    Value<String>? difficulty,
+  }) {
     return StagesCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -671,145 +791,211 @@ class $PoisTable extends Pois with TableInfo<$PoisTable, Poi> {
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _stageNumberMeta =
-      const VerificationMeta('stageNumber');
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageNumberMeta = const VerificationMeta(
+    'stageNumber',
+  );
   @override
   late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
-      'stage_number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'stage_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _descriptionMeta =
-      const VerificationMeta('description');
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
   @override
   late final GeneratedColumn<String> description = GeneratedColumn<String>(
-      'description', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
   late final GeneratedColumn<double> lat = GeneratedColumn<double>(
-      'lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _lngMeta = const VerificationMeta('lng');
   @override
   late final GeneratedColumn<double> lng = GeneratedColumn<double>(
-      'lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _altitudeMMeta =
-      const VerificationMeta('altitudeM');
+    'lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _altitudeMMeta = const VerificationMeta(
+    'altitudeM',
+  );
   @override
   late final GeneratedColumn<int> altitudeM = GeneratedColumn<int>(
-      'altitude_m', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _openingHoursMeta =
-      const VerificationMeta('openingHours');
+    'altitude_m',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _openingHoursMeta = const VerificationMeta(
+    'openingHours',
+  );
   @override
   late final GeneratedColumn<String> openingHours = GeneratedColumn<String>(
-      'opening_hours', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'opening_hours',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        trailId,
-        stageNumber,
-        name,
-        description,
-        type,
-        lat,
-        lng,
-        altitudeM,
-        openingHours
-      ];
+    id,
+    trailId,
+    stageNumber,
+    name,
+    description,
+    type,
+    lat,
+    lng,
+    altitudeM,
+    openingHours,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'pois';
   @override
-  VerificationContext validateIntegrity(Insertable<Poi> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<Poi> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('stage_number')) {
       context.handle(
+        _stageNumberMeta,
+        stageNumber.isAcceptableOrUnknown(
+          data['stage_number']!,
           _stageNumberMeta,
-          stageNumber.isAcceptableOrUnknown(
-              data['stage_number']!, _stageNumberMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_stageNumberMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
           _descriptionMeta,
-          description.isAcceptableOrUnknown(
-              data['description']!, _descriptionMeta));
+        ),
+      );
     }
     if (data.containsKey('type')) {
       context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
     if (data.containsKey('lat')) {
       context.handle(
-          _latMeta, lat.isAcceptableOrUnknown(data['lat']!, _latMeta));
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
     } else if (isInserting) {
       context.missing(_latMeta);
     }
     if (data.containsKey('lng')) {
       context.handle(
-          _lngMeta, lng.isAcceptableOrUnknown(data['lng']!, _lngMeta));
+        _lngMeta,
+        lng.isAcceptableOrUnknown(data['lng']!, _lngMeta),
+      );
     } else if (isInserting) {
       context.missing(_lngMeta);
     }
     if (data.containsKey('altitude_m')) {
-      context.handle(_altitudeMMeta,
-          altitudeM.isAcceptableOrUnknown(data['altitude_m']!, _altitudeMMeta));
+      context.handle(
+        _altitudeMMeta,
+        altitudeM.isAcceptableOrUnknown(data['altitude_m']!, _altitudeMMeta),
+      );
     }
     if (data.containsKey('opening_hours')) {
       context.handle(
+        _openingHoursMeta,
+        openingHours.isAcceptableOrUnknown(
+          data['opening_hours']!,
           _openingHoursMeta,
-          openingHours.isAcceptableOrUnknown(
-              data['opening_hours']!, _openingHoursMeta));
+        ),
+      );
     }
     return context;
   }
@@ -820,26 +1006,46 @@ class $PoisTable extends Pois with TableInfo<$PoisTable, Poi> {
   Poi map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return Poi(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      stageNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}stage_number'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      description: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      lat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lat'])!,
-      lng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lng'])!,
-      altitudeM: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}altitude_m'])!,
-      openingHours: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}opening_hours']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      stageNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stage_number'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      lat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lat'],
+      )!,
+      lng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lng'],
+      )!,
+      altitudeM: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}altitude_m'],
+      )!,
+      openingHours: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}opening_hours'],
+      ),
     );
   }
 
@@ -879,17 +1085,18 @@ class Poi extends DataClass implements Insertable<Poi> {
 
   /// Horaires d'ouverture (nullable)
   final String? openingHours;
-  const Poi(
-      {required this.id,
-      required this.trailId,
-      required this.stageNumber,
-      required this.name,
-      required this.description,
-      required this.type,
-      required this.lat,
-      required this.lng,
-      required this.altitudeM,
-      this.openingHours});
+  const Poi({
+    required this.id,
+    required this.trailId,
+    required this.stageNumber,
+    required this.name,
+    required this.description,
+    required this.type,
+    required this.lat,
+    required this.lng,
+    required this.altitudeM,
+    this.openingHours,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -925,8 +1132,10 @@ class Poi extends DataClass implements Insertable<Poi> {
     );
   }
 
-  factory Poi.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory Poi.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return Poi(
       id: serializer.fromJson<int>(json['id']),
@@ -958,39 +1167,40 @@ class Poi extends DataClass implements Insertable<Poi> {
     };
   }
 
-  Poi copyWith(
-          {int? id,
-          String? trailId,
-          int? stageNumber,
-          String? name,
-          String? description,
-          String? type,
-          double? lat,
-          double? lng,
-          int? altitudeM,
-          Value<String?> openingHours = const Value.absent()}) =>
-      Poi(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        stageNumber: stageNumber ?? this.stageNumber,
-        name: name ?? this.name,
-        description: description ?? this.description,
-        type: type ?? this.type,
-        lat: lat ?? this.lat,
-        lng: lng ?? this.lng,
-        altitudeM: altitudeM ?? this.altitudeM,
-        openingHours:
-            openingHours.present ? openingHours.value : this.openingHours,
-      );
+  Poi copyWith({
+    int? id,
+    String? trailId,
+    int? stageNumber,
+    String? name,
+    String? description,
+    String? type,
+    double? lat,
+    double? lng,
+    int? altitudeM,
+    Value<String?> openingHours = const Value.absent(),
+  }) => Poi(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    stageNumber: stageNumber ?? this.stageNumber,
+    name: name ?? this.name,
+    description: description ?? this.description,
+    type: type ?? this.type,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
+    altitudeM: altitudeM ?? this.altitudeM,
+    openingHours: openingHours.present ? openingHours.value : this.openingHours,
+  );
   Poi copyWithCompanion(PoisCompanion data) {
     return Poi(
       id: data.id.present ? data.id.value : this.id,
       trailId: data.trailId.present ? data.trailId.value : this.trailId,
-      stageNumber:
-          data.stageNumber.present ? data.stageNumber.value : this.stageNumber,
+      stageNumber: data.stageNumber.present
+          ? data.stageNumber.value
+          : this.stageNumber,
       name: data.name.present ? data.name.value : this.name,
-      description:
-          data.description.present ? data.description.value : this.description,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
       type: data.type.present ? data.type.value : this.type,
       lat: data.lat.present ? data.lat.value : this.lat,
       lng: data.lng.present ? data.lng.value : this.lng,
@@ -1019,8 +1229,18 @@ class Poi extends DataClass implements Insertable<Poi> {
   }
 
   @override
-  int get hashCode => Object.hash(id, trailId, stageNumber, name, description,
-      type, lat, lng, altitudeM, openingHours);
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    stageNumber,
+    name,
+    description,
+    type,
+    lat,
+    lng,
+    altitudeM,
+    openingHours,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1071,12 +1291,12 @@ class PoisCompanion extends UpdateCompanion<Poi> {
     required double lng,
     this.altitudeM = const Value.absent(),
     this.openingHours = const Value.absent(),
-  })  : trailId = Value(trailId),
-        stageNumber = Value(stageNumber),
-        name = Value(name),
-        type = Value(type),
-        lat = Value(lat),
-        lng = Value(lng);
+  }) : trailId = Value(trailId),
+       stageNumber = Value(stageNumber),
+       name = Value(name),
+       type = Value(type),
+       lat = Value(lat),
+       lng = Value(lng);
   static Insertable<Poi> custom({
     Expression<int>? id,
     Expression<String>? trailId,
@@ -1103,17 +1323,18 @@ class PoisCompanion extends UpdateCompanion<Poi> {
     });
   }
 
-  PoisCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<int>? stageNumber,
-      Value<String>? name,
-      Value<String>? description,
-      Value<String>? type,
-      Value<double>? lat,
-      Value<double>? lng,
-      Value<int>? altitudeM,
-      Value<String?>? openingHours}) {
+  PoisCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<int>? stageNumber,
+    Value<String>? name,
+    Value<String>? description,
+    Value<String>? type,
+    Value<double>? lat,
+    Value<double>? lng,
+    Value<int>? altitudeM,
+    Value<String?>? openingHours,
+  }) {
     return PoisCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -1191,146 +1412,206 @@ class $UserProgressEntriesTable extends UserProgressEntries
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
-  late final GeneratedColumn<String> trailId =
-      GeneratedColumn<String>('trail_id', aliasedName, false,
-          additionalChecks: GeneratedColumn.checkTextLength(
-            minTextLength: 1,
-          ),
-          type: DriftSqlType.string,
-          requiredDuringInsert: true);
-  static const VerificationMeta _currentStageMeta =
-      const VerificationMeta('currentStage');
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(minTextLength: 1),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currentStageMeta = const VerificationMeta(
+    'currentStage',
+  );
   @override
   late final GeneratedColumn<int> currentStage = GeneratedColumn<int>(
-      'current_stage', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(1));
+    'current_stage',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
   static const VerificationMeta _totalDistanceWalkedKmMeta =
       const VerificationMeta('totalDistanceWalkedKm');
   @override
   late final GeneratedColumn<double> totalDistanceWalkedKm =
-      GeneratedColumn<double>('total_distance_walked_km', aliasedName, false,
-          type: DriftSqlType.double,
-          requiredDuringInsert: false,
-          defaultValue: const Constant(0.0));
+      GeneratedColumn<double>(
+        'total_distance_walked_km',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0.0),
+      );
   static const VerificationMeta _totalElevationGainedMMeta =
       const VerificationMeta('totalElevationGainedM');
   @override
   late final GeneratedColumn<int> totalElevationGainedM = GeneratedColumn<int>(
-      'total_elevation_gained_m', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _totalTimeMinutesMeta =
-      const VerificationMeta('totalTimeMinutes');
+    'total_elevation_gained_m',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _totalTimeMinutesMeta = const VerificationMeta(
+    'totalTimeMinutes',
+  );
   @override
   late final GeneratedColumn<int> totalTimeMinutes = GeneratedColumn<int>(
-      'total_time_minutes', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
-  static const VerificationMeta _isCompletedMeta =
-      const VerificationMeta('isCompleted');
+    'total_time_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _isCompletedMeta = const VerificationMeta(
+    'isCompleted',
+  );
   @override
   late final GeneratedColumn<bool> isCompleted = GeneratedColumn<bool>(
-      'is_completed', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'CHECK ("is_completed" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _startedAtMeta =
-      const VerificationMeta('startedAt');
+    'is_completed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_completed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
   @override
   late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
-      'started_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _completedAtMeta =
-      const VerificationMeta('completedAt');
+    'started_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
   @override
   late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
-      'completed_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        trailId,
-        currentStage,
-        totalDistanceWalkedKm,
-        totalElevationGainedM,
-        totalTimeMinutes,
-        isCompleted,
-        startedAt,
-        completedAt
-      ];
+    id,
+    trailId,
+    currentStage,
+    totalDistanceWalkedKm,
+    totalElevationGainedM,
+    totalTimeMinutes,
+    isCompleted,
+    startedAt,
+    completedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'user_progress_entries';
   @override
-  VerificationContext validateIntegrity(Insertable<UserProgressEntry> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<UserProgressEntry> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('current_stage')) {
       context.handle(
+        _currentStageMeta,
+        currentStage.isAcceptableOrUnknown(
+          data['current_stage']!,
           _currentStageMeta,
-          currentStage.isAcceptableOrUnknown(
-              data['current_stage']!, _currentStageMeta));
+        ),
+      );
     }
     if (data.containsKey('total_distance_walked_km')) {
       context.handle(
+        _totalDistanceWalkedKmMeta,
+        totalDistanceWalkedKm.isAcceptableOrUnknown(
+          data['total_distance_walked_km']!,
           _totalDistanceWalkedKmMeta,
-          totalDistanceWalkedKm.isAcceptableOrUnknown(
-              data['total_distance_walked_km']!, _totalDistanceWalkedKmMeta));
+        ),
+      );
     }
     if (data.containsKey('total_elevation_gained_m')) {
       context.handle(
+        _totalElevationGainedMMeta,
+        totalElevationGainedM.isAcceptableOrUnknown(
+          data['total_elevation_gained_m']!,
           _totalElevationGainedMMeta,
-          totalElevationGainedM.isAcceptableOrUnknown(
-              data['total_elevation_gained_m']!, _totalElevationGainedMMeta));
+        ),
+      );
     }
     if (data.containsKey('total_time_minutes')) {
       context.handle(
+        _totalTimeMinutesMeta,
+        totalTimeMinutes.isAcceptableOrUnknown(
+          data['total_time_minutes']!,
           _totalTimeMinutesMeta,
-          totalTimeMinutes.isAcceptableOrUnknown(
-              data['total_time_minutes']!, _totalTimeMinutesMeta));
+        ),
+      );
     }
     if (data.containsKey('is_completed')) {
       context.handle(
+        _isCompletedMeta,
+        isCompleted.isAcceptableOrUnknown(
+          data['is_completed']!,
           _isCompletedMeta,
-          isCompleted.isAcceptableOrUnknown(
-              data['is_completed']!, _isCompletedMeta));
+        ),
+      );
     }
     if (data.containsKey('started_at')) {
-      context.handle(_startedAtMeta,
-          startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta));
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
     }
     if (data.containsKey('completed_at')) {
       context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
           _completedAtMeta,
-          completedAt.isAcceptableOrUnknown(
-              data['completed_at']!, _completedAtMeta));
+        ),
+      );
     }
     return context;
   }
@@ -1341,25 +1622,42 @@ class $UserProgressEntriesTable extends UserProgressEntries
   UserProgressEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return UserProgressEntry(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      currentStage: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}current_stage'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      currentStage: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}current_stage'],
+      )!,
       totalDistanceWalkedKm: attachedDatabase.typeMapping.read(
-          DriftSqlType.double,
-          data['${effectivePrefix}total_distance_walked_km'])!,
-      totalElevationGainedM: attachedDatabase.typeMapping.read(DriftSqlType.int,
-          data['${effectivePrefix}total_elevation_gained_m'])!,
+        DriftSqlType.double,
+        data['${effectivePrefix}total_distance_walked_km'],
+      )!,
+      totalElevationGainedM: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_elevation_gained_m'],
+      )!,
       totalTimeMinutes: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}total_time_minutes'])!,
-      isCompleted: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_completed'])!,
-      startedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}started_at']),
-      completedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}completed_at']),
+        DriftSqlType.int,
+        data['${effectivePrefix}total_time_minutes'],
+      )!,
+      isCompleted: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_completed'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      ),
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
     );
   }
 
@@ -1397,16 +1695,17 @@ class UserProgressEntry extends DataClass
 
   /// Date de fin du sentier (nullable)
   final DateTime? completedAt;
-  const UserProgressEntry(
-      {required this.id,
-      required this.trailId,
-      required this.currentStage,
-      required this.totalDistanceWalkedKm,
-      required this.totalElevationGainedM,
-      required this.totalTimeMinutes,
-      required this.isCompleted,
-      this.startedAt,
-      this.completedAt});
+  const UserProgressEntry({
+    required this.id,
+    required this.trailId,
+    required this.currentStage,
+    required this.totalDistanceWalkedKm,
+    required this.totalElevationGainedM,
+    required this.totalTimeMinutes,
+    required this.isCompleted,
+    this.startedAt,
+    this.completedAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1444,17 +1743,21 @@ class UserProgressEntry extends DataClass
     );
   }
 
-  factory UserProgressEntry.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory UserProgressEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return UserProgressEntry(
       id: serializer.fromJson<int>(json['id']),
       trailId: serializer.fromJson<String>(json['trailId']),
       currentStage: serializer.fromJson<int>(json['currentStage']),
-      totalDistanceWalkedKm:
-          serializer.fromJson<double>(json['totalDistanceWalkedKm']),
-      totalElevationGainedM:
-          serializer.fromJson<int>(json['totalElevationGainedM']),
+      totalDistanceWalkedKm: serializer.fromJson<double>(
+        json['totalDistanceWalkedKm'],
+      ),
+      totalElevationGainedM: serializer.fromJson<int>(
+        json['totalElevationGainedM'],
+      ),
       totalTimeMinutes: serializer.fromJson<int>(json['totalTimeMinutes']),
       isCompleted: serializer.fromJson<bool>(json['isCompleted']),
       startedAt: serializer.fromJson<DateTime?>(json['startedAt']),
@@ -1477,29 +1780,27 @@ class UserProgressEntry extends DataClass
     };
   }
 
-  UserProgressEntry copyWith(
-          {int? id,
-          String? trailId,
-          int? currentStage,
-          double? totalDistanceWalkedKm,
-          int? totalElevationGainedM,
-          int? totalTimeMinutes,
-          bool? isCompleted,
-          Value<DateTime?> startedAt = const Value.absent(),
-          Value<DateTime?> completedAt = const Value.absent()}) =>
-      UserProgressEntry(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        currentStage: currentStage ?? this.currentStage,
-        totalDistanceWalkedKm:
-            totalDistanceWalkedKm ?? this.totalDistanceWalkedKm,
-        totalElevationGainedM:
-            totalElevationGainedM ?? this.totalElevationGainedM,
-        totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
-        isCompleted: isCompleted ?? this.isCompleted,
-        startedAt: startedAt.present ? startedAt.value : this.startedAt,
-        completedAt: completedAt.present ? completedAt.value : this.completedAt,
-      );
+  UserProgressEntry copyWith({
+    int? id,
+    String? trailId,
+    int? currentStage,
+    double? totalDistanceWalkedKm,
+    int? totalElevationGainedM,
+    int? totalTimeMinutes,
+    bool? isCompleted,
+    Value<DateTime?> startedAt = const Value.absent(),
+    Value<DateTime?> completedAt = const Value.absent(),
+  }) => UserProgressEntry(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    currentStage: currentStage ?? this.currentStage,
+    totalDistanceWalkedKm: totalDistanceWalkedKm ?? this.totalDistanceWalkedKm,
+    totalElevationGainedM: totalElevationGainedM ?? this.totalElevationGainedM,
+    totalTimeMinutes: totalTimeMinutes ?? this.totalTimeMinutes,
+    isCompleted: isCompleted ?? this.isCompleted,
+    startedAt: startedAt.present ? startedAt.value : this.startedAt,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+  );
   UserProgressEntry copyWithCompanion(UserProgressEntriesCompanion data) {
     return UserProgressEntry(
       id: data.id.present ? data.id.value : this.id,
@@ -1516,11 +1817,13 @@ class UserProgressEntry extends DataClass
       totalTimeMinutes: data.totalTimeMinutes.present
           ? data.totalTimeMinutes.value
           : this.totalTimeMinutes,
-      isCompleted:
-          data.isCompleted.present ? data.isCompleted.value : this.isCompleted,
+      isCompleted: data.isCompleted.present
+          ? data.isCompleted.value
+          : this.isCompleted,
       startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
-      completedAt:
-          data.completedAt.present ? data.completedAt.value : this.completedAt,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
     );
   }
 
@@ -1542,15 +1845,16 @@ class UserProgressEntry extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id,
-      trailId,
-      currentStage,
-      totalDistanceWalkedKm,
-      totalElevationGainedM,
-      totalTimeMinutes,
-      isCompleted,
-      startedAt,
-      completedAt);
+    id,
+    trailId,
+    currentStage,
+    totalDistanceWalkedKm,
+    totalElevationGainedM,
+    totalTimeMinutes,
+    isCompleted,
+    startedAt,
+    completedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1624,16 +1928,17 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
     });
   }
 
-  UserProgressEntriesCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<int>? currentStage,
-      Value<double>? totalDistanceWalkedKm,
-      Value<int>? totalElevationGainedM,
-      Value<int>? totalTimeMinutes,
-      Value<bool>? isCompleted,
-      Value<DateTime?>? startedAt,
-      Value<DateTime?>? completedAt}) {
+  UserProgressEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<int>? currentStage,
+    Value<double>? totalDistanceWalkedKm,
+    Value<int>? totalElevationGainedM,
+    Value<int>? totalTimeMinutes,
+    Value<bool>? isCompleted,
+    Value<DateTime?>? startedAt,
+    Value<DateTime?>? completedAt,
+  }) {
     return UserProgressEntriesCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -1662,12 +1967,14 @@ class UserProgressEntriesCompanion extends UpdateCompanion<UserProgressEntry> {
       map['current_stage'] = Variable<int>(currentStage.value);
     }
     if (totalDistanceWalkedKm.present) {
-      map['total_distance_walked_km'] =
-          Variable<double>(totalDistanceWalkedKm.value);
+      map['total_distance_walked_km'] = Variable<double>(
+        totalDistanceWalkedKm.value,
+      );
     }
     if (totalElevationGainedM.present) {
-      map['total_elevation_gained_m'] =
-          Variable<int>(totalElevationGainedM.value);
+      map['total_elevation_gained_m'] = Variable<int>(
+        totalElevationGainedM.value,
+      );
     }
     if (totalTimeMinutes.present) {
       map['total_time_minutes'] = Variable<int>(totalTimeMinutes.value);
@@ -1710,86 +2017,132 @@ class $ChecklistItemsTable extends ChecklistItems
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _itemIdMeta = const VerificationMeta('itemId');
   @override
   late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
-      'item_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _categoryMeta =
-      const VerificationMeta('category');
+    'item_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _categoryMeta = const VerificationMeta(
+    'category',
+  );
   @override
   late final GeneratedColumn<String> category = GeneratedColumn<String>(
-      'category', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _isCheckedMeta =
-      const VerificationMeta('isChecked');
+    'category',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isCheckedMeta = const VerificationMeta(
+    'isChecked',
+  );
   @override
   late final GeneratedColumn<bool> isChecked = GeneratedColumn<bool>(
-      'is_checked', aliasedName, false,
-      type: DriftSqlType.bool,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("is_checked" IN (0, 1))'),
-      defaultValue: const Constant(false));
-  static const VerificationMeta _updatedAtMeta =
-      const VerificationMeta('updatedAt');
+    'is_checked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_checked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+    'updated_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, trailId, itemId, category, isChecked, updatedAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    itemId,
+    category,
+    isChecked,
+    updatedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'checklist_items';
   @override
-  VerificationContext validateIntegrity(Insertable<ChecklistItem> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<ChecklistItem> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('item_id')) {
-      context.handle(_itemIdMeta,
-          itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
+      context.handle(
+        _itemIdMeta,
+        itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_itemIdMeta);
     }
     if (data.containsKey('category')) {
-      context.handle(_categoryMeta,
-          category.isAcceptableOrUnknown(data['category']!, _categoryMeta));
+      context.handle(
+        _categoryMeta,
+        category.isAcceptableOrUnknown(data['category']!, _categoryMeta),
+      );
     } else if (isInserting) {
       context.missing(_categoryMeta);
     }
     if (data.containsKey('is_checked')) {
-      context.handle(_isCheckedMeta,
-          isChecked.isAcceptableOrUnknown(data['is_checked']!, _isCheckedMeta));
+      context.handle(
+        _isCheckedMeta,
+        isChecked.isAcceptableOrUnknown(data['is_checked']!, _isCheckedMeta),
+      );
     }
     if (data.containsKey('updated_at')) {
-      context.handle(_updatedAtMeta,
-          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
     }
     return context;
   }
@@ -1800,18 +2153,30 @@ class $ChecklistItemsTable extends ChecklistItems
   ChecklistItem map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return ChecklistItem(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      itemId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}item_id'])!,
-      category: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}category'])!,
-      isChecked: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}is_checked'])!,
-      updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      itemId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}item_id'],
+      )!,
+      category: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}category'],
+      )!,
+      isChecked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_checked'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      ),
     );
   }
 
@@ -1839,13 +2204,14 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
 
   /// Date de derniere modification
   final DateTime? updatedAt;
-  const ChecklistItem(
-      {required this.id,
-      required this.trailId,
-      required this.itemId,
-      required this.category,
-      required this.isChecked,
-      this.updatedAt});
+  const ChecklistItem({
+    required this.id,
+    required this.trailId,
+    required this.itemId,
+    required this.category,
+    required this.isChecked,
+    this.updatedAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1873,8 +2239,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     );
   }
 
-  factory ChecklistItem.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory ChecklistItem.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return ChecklistItem(
       id: serializer.fromJson<int>(json['id']),
@@ -1898,21 +2266,21 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     };
   }
 
-  ChecklistItem copyWith(
-          {int? id,
-          String? trailId,
-          String? itemId,
-          String? category,
-          bool? isChecked,
-          Value<DateTime?> updatedAt = const Value.absent()}) =>
-      ChecklistItem(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        itemId: itemId ?? this.itemId,
-        category: category ?? this.category,
-        isChecked: isChecked ?? this.isChecked,
-        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
-      );
+  ChecklistItem copyWith({
+    int? id,
+    String? trailId,
+    String? itemId,
+    String? category,
+    bool? isChecked,
+    Value<DateTime?> updatedAt = const Value.absent(),
+  }) => ChecklistItem(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    itemId: itemId ?? this.itemId,
+    category: category ?? this.category,
+    isChecked: isChecked ?? this.isChecked,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+  );
   ChecklistItem copyWithCompanion(ChecklistItemsCompanion data) {
     return ChecklistItem(
       id: data.id.present ? data.id.value : this.id,
@@ -1974,9 +2342,9 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     required String category,
     this.isChecked = const Value.absent(),
     this.updatedAt = const Value.absent(),
-  })  : trailId = Value(trailId),
-        itemId = Value(itemId),
-        category = Value(category);
+  }) : trailId = Value(trailId),
+       itemId = Value(itemId),
+       category = Value(category);
   static Insertable<ChecklistItem> custom({
     Expression<int>? id,
     Expression<String>? trailId,
@@ -1995,13 +2363,14 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     });
   }
 
-  ChecklistItemsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<String>? itemId,
-      Value<String>? category,
-      Value<bool>? isChecked,
-      Value<DateTime?>? updatedAt}) {
+  ChecklistItemsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<String>? itemId,
+    Value<String>? category,
+    Value<bool>? isChecked,
+    Value<DateTime?>? updatedAt,
+  }) {
     return ChecklistItemsCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -2059,117 +2428,173 @@ class $JournalEntriesTable extends JournalEntries
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _stageNumberMeta =
-      const VerificationMeta('stageNumber');
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageNumberMeta = const VerificationMeta(
+    'stageNumber',
+  );
   @override
   late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
-      'stage_number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _contentMeta =
-      const VerificationMeta('content');
+    'stage_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
   @override
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
-      'content', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(''));
-  static const VerificationMeta _photoPathMeta =
-      const VerificationMeta('photoPath');
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _photoPathMeta = const VerificationMeta(
+    'photoPath',
+  );
   @override
   late final GeneratedColumn<String> photoPath = GeneratedColumn<String>(
-      'photo_path', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _photoSizeBytesMeta =
-      const VerificationMeta('photoSizeBytes');
+    'photo_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _photoSizeBytesMeta = const VerificationMeta(
+    'photoSizeBytes',
+  );
   @override
   late final GeneratedColumn<int> photoSizeBytes = GeneratedColumn<int>(
-      'photo_size_bytes', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'photo_size_bytes',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _updatedAtMeta =
-      const VerificationMeta('updatedAt');
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
   @override
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-      'updated_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+    'updated_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        trailId,
-        stageNumber,
-        content,
-        photoPath,
-        photoSizeBytes,
-        createdAt,
-        updatedAt
-      ];
+    id,
+    trailId,
+    stageNumber,
+    content,
+    photoPath,
+    photoSizeBytes,
+    createdAt,
+    updatedAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'journal_entries';
   @override
-  VerificationContext validateIntegrity(Insertable<JournalEntry> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<JournalEntry> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('stage_number')) {
       context.handle(
+        _stageNumberMeta,
+        stageNumber.isAcceptableOrUnknown(
+          data['stage_number']!,
           _stageNumberMeta,
-          stageNumber.isAcceptableOrUnknown(
-              data['stage_number']!, _stageNumberMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_stageNumberMeta);
     }
     if (data.containsKey('content')) {
-      context.handle(_contentMeta,
-          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
     }
     if (data.containsKey('photo_path')) {
-      context.handle(_photoPathMeta,
-          photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta));
+      context.handle(
+        _photoPathMeta,
+        photoPath.isAcceptableOrUnknown(data['photo_path']!, _photoPathMeta),
+      );
     }
     if (data.containsKey('photo_size_bytes')) {
       context.handle(
+        _photoSizeBytesMeta,
+        photoSizeBytes.isAcceptableOrUnknown(
+          data['photo_size_bytes']!,
           _photoSizeBytesMeta,
-          photoSizeBytes.isAcceptableOrUnknown(
-              data['photo_size_bytes']!, _photoSizeBytesMeta));
+        ),
+      );
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('updated_at')) {
-      context.handle(_updatedAtMeta,
-          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
     }
     return context;
   }
@@ -2180,22 +2605,38 @@ class $JournalEntriesTable extends JournalEntries
   JournalEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return JournalEntry(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      stageNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}stage_number'])!,
-      content: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
-      photoPath: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}photo_path']),
-      photoSizeBytes: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}photo_size_bytes']),
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      updatedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      stageNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stage_number'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      photoPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}photo_path'],
+      ),
+      photoSizeBytes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}photo_size_bytes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      ),
     );
   }
 
@@ -2229,15 +2670,16 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
 
   /// Date de dernière modification
   final DateTime? updatedAt;
-  const JournalEntry(
-      {required this.id,
-      required this.trailId,
-      required this.stageNumber,
-      required this.content,
-      this.photoPath,
-      this.photoSizeBytes,
-      required this.createdAt,
-      this.updatedAt});
+  const JournalEntry({
+    required this.id,
+    required this.trailId,
+    required this.stageNumber,
+    required this.content,
+    this.photoPath,
+    this.photoSizeBytes,
+    required this.createdAt,
+    this.updatedAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2277,8 +2719,10 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
     );
   }
 
-  factory JournalEntry.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory JournalEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return JournalEntry(
       id: serializer.fromJson<int>(json['id']),
@@ -2306,32 +2750,34 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
     };
   }
 
-  JournalEntry copyWith(
-          {int? id,
-          String? trailId,
-          int? stageNumber,
-          String? content,
-          Value<String?> photoPath = const Value.absent(),
-          Value<int?> photoSizeBytes = const Value.absent(),
-          DateTime? createdAt,
-          Value<DateTime?> updatedAt = const Value.absent()}) =>
-      JournalEntry(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        stageNumber: stageNumber ?? this.stageNumber,
-        content: content ?? this.content,
-        photoPath: photoPath.present ? photoPath.value : this.photoPath,
-        photoSizeBytes:
-            photoSizeBytes.present ? photoSizeBytes.value : this.photoSizeBytes,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
-      );
+  JournalEntry copyWith({
+    int? id,
+    String? trailId,
+    int? stageNumber,
+    String? content,
+    Value<String?> photoPath = const Value.absent(),
+    Value<int?> photoSizeBytes = const Value.absent(),
+    DateTime? createdAt,
+    Value<DateTime?> updatedAt = const Value.absent(),
+  }) => JournalEntry(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    stageNumber: stageNumber ?? this.stageNumber,
+    content: content ?? this.content,
+    photoPath: photoPath.present ? photoPath.value : this.photoPath,
+    photoSizeBytes: photoSizeBytes.present
+        ? photoSizeBytes.value
+        : this.photoSizeBytes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+  );
   JournalEntry copyWithCompanion(JournalEntriesCompanion data) {
     return JournalEntry(
       id: data.id.present ? data.id.value : this.id,
       trailId: data.trailId.present ? data.trailId.value : this.trailId,
-      stageNumber:
-          data.stageNumber.present ? data.stageNumber.value : this.stageNumber,
+      stageNumber: data.stageNumber.present
+          ? data.stageNumber.value
+          : this.stageNumber,
       content: data.content.present ? data.content.value : this.content,
       photoPath: data.photoPath.present ? data.photoPath.value : this.photoPath,
       photoSizeBytes: data.photoSizeBytes.present
@@ -2358,8 +2804,16 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
   }
 
   @override
-  int get hashCode => Object.hash(id, trailId, stageNumber, content, photoPath,
-      photoSizeBytes, createdAt, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    stageNumber,
+    content,
+    photoPath,
+    photoSizeBytes,
+    createdAt,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2402,9 +2856,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
     this.photoSizeBytes = const Value.absent(),
     required DateTime createdAt,
     this.updatedAt = const Value.absent(),
-  })  : trailId = Value(trailId),
-        stageNumber = Value(stageNumber),
-        createdAt = Value(createdAt);
+  }) : trailId = Value(trailId),
+       stageNumber = Value(stageNumber),
+       createdAt = Value(createdAt);
   static Insertable<JournalEntry> custom({
     Expression<int>? id,
     Expression<String>? trailId,
@@ -2427,15 +2881,16 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
     });
   }
 
-  JournalEntriesCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<int>? stageNumber,
-      Value<String>? content,
-      Value<String?>? photoPath,
-      Value<int?>? photoSizeBytes,
-      Value<DateTime>? createdAt,
-      Value<DateTime?>? updatedAt}) {
+  JournalEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<int>? stageNumber,
+    Value<String>? content,
+    Value<String?>? photoPath,
+    Value<int?>? photoSizeBytes,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? updatedAt,
+  }) {
     return JournalEntriesCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -2503,89 +2958,138 @@ class $WeatherCacheTable extends WeatherCache
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _stageNumberMeta =
-      const VerificationMeta('stageNumber');
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageNumberMeta = const VerificationMeta(
+    'stageNumber',
+  );
   @override
   late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
-      'stage_number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _forecastJsonMeta =
-      const VerificationMeta('forecastJson');
+    'stage_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _forecastJsonMeta = const VerificationMeta(
+    'forecastJson',
+  );
   @override
   late final GeneratedColumn<String> forecastJson = GeneratedColumn<String>(
-      'forecast_json', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _fetchedAtMeta =
-      const VerificationMeta('fetchedAt');
+    'forecast_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fetchedAtMeta = const VerificationMeta(
+    'fetchedAt',
+  );
   @override
   late final GeneratedColumn<DateTime> fetchedAt = GeneratedColumn<DateTime>(
-      'fetched_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
-  static const VerificationMeta _expiresAtMeta =
-      const VerificationMeta('expiresAt');
+    'fetched_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
+    'expiresAt',
+  );
   @override
   late final GeneratedColumn<DateTime> expiresAt = GeneratedColumn<DateTime>(
-      'expires_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+    'expires_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, trailId, stageNumber, forecastJson, fetchedAt, expiresAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    stageNumber,
+    forecastJson,
+    fetchedAt,
+    expiresAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'weather_cache';
   @override
-  VerificationContext validateIntegrity(Insertable<WeatherCacheData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<WeatherCacheData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('stage_number')) {
       context.handle(
+        _stageNumberMeta,
+        stageNumber.isAcceptableOrUnknown(
+          data['stage_number']!,
           _stageNumberMeta,
-          stageNumber.isAcceptableOrUnknown(
-              data['stage_number']!, _stageNumberMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_stageNumberMeta);
     }
     if (data.containsKey('forecast_json')) {
       context.handle(
+        _forecastJsonMeta,
+        forecastJson.isAcceptableOrUnknown(
+          data['forecast_json']!,
           _forecastJsonMeta,
-          forecastJson.isAcceptableOrUnknown(
-              data['forecast_json']!, _forecastJsonMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_forecastJsonMeta);
     }
     if (data.containsKey('fetched_at')) {
-      context.handle(_fetchedAtMeta,
-          fetchedAt.isAcceptableOrUnknown(data['fetched_at']!, _fetchedAtMeta));
+      context.handle(
+        _fetchedAtMeta,
+        fetchedAt.isAcceptableOrUnknown(data['fetched_at']!, _fetchedAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_fetchedAtMeta);
     }
     if (data.containsKey('expires_at')) {
-      context.handle(_expiresAtMeta,
-          expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta));
+      context.handle(
+        _expiresAtMeta,
+        expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_expiresAtMeta);
     }
@@ -2598,18 +3102,30 @@ class $WeatherCacheTable extends WeatherCache
   WeatherCacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return WeatherCacheData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      stageNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}stage_number'])!,
-      forecastJson: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}forecast_json'])!,
-      fetchedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}fetched_at'])!,
-      expiresAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}expires_at'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      stageNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stage_number'],
+      )!,
+      forecastJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}forecast_json'],
+      )!,
+      fetchedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}fetched_at'],
+      )!,
+      expiresAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}expires_at'],
+      )!,
     );
   }
 
@@ -2638,13 +3154,14 @@ class WeatherCacheData extends DataClass
 
   /// Date d'expiration du cache (fetchedAt + 3h)
   final DateTime expiresAt;
-  const WeatherCacheData(
-      {required this.id,
-      required this.trailId,
-      required this.stageNumber,
-      required this.forecastJson,
-      required this.fetchedAt,
-      required this.expiresAt});
+  const WeatherCacheData({
+    required this.id,
+    required this.trailId,
+    required this.stageNumber,
+    required this.forecastJson,
+    required this.fetchedAt,
+    required this.expiresAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2668,8 +3185,10 @@ class WeatherCacheData extends DataClass
     );
   }
 
-  factory WeatherCacheData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory WeatherCacheData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return WeatherCacheData(
       id: serializer.fromJson<int>(json['id']),
@@ -2693,27 +3212,28 @@ class WeatherCacheData extends DataClass
     };
   }
 
-  WeatherCacheData copyWith(
-          {int? id,
-          String? trailId,
-          int? stageNumber,
-          String? forecastJson,
-          DateTime? fetchedAt,
-          DateTime? expiresAt}) =>
-      WeatherCacheData(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        stageNumber: stageNumber ?? this.stageNumber,
-        forecastJson: forecastJson ?? this.forecastJson,
-        fetchedAt: fetchedAt ?? this.fetchedAt,
-        expiresAt: expiresAt ?? this.expiresAt,
-      );
+  WeatherCacheData copyWith({
+    int? id,
+    String? trailId,
+    int? stageNumber,
+    String? forecastJson,
+    DateTime? fetchedAt,
+    DateTime? expiresAt,
+  }) => WeatherCacheData(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    stageNumber: stageNumber ?? this.stageNumber,
+    forecastJson: forecastJson ?? this.forecastJson,
+    fetchedAt: fetchedAt ?? this.fetchedAt,
+    expiresAt: expiresAt ?? this.expiresAt,
+  );
   WeatherCacheData copyWithCompanion(WeatherCacheCompanion data) {
     return WeatherCacheData(
       id: data.id.present ? data.id.value : this.id,
       trailId: data.trailId.present ? data.trailId.value : this.trailId,
-      stageNumber:
-          data.stageNumber.present ? data.stageNumber.value : this.stageNumber,
+      stageNumber: data.stageNumber.present
+          ? data.stageNumber.value
+          : this.stageNumber,
       forecastJson: data.forecastJson.present
           ? data.forecastJson.value
           : this.forecastJson,
@@ -2772,11 +3292,11 @@ class WeatherCacheCompanion extends UpdateCompanion<WeatherCacheData> {
     required String forecastJson,
     required DateTime fetchedAt,
     required DateTime expiresAt,
-  })  : trailId = Value(trailId),
-        stageNumber = Value(stageNumber),
-        forecastJson = Value(forecastJson),
-        fetchedAt = Value(fetchedAt),
-        expiresAt = Value(expiresAt);
+  }) : trailId = Value(trailId),
+       stageNumber = Value(stageNumber),
+       forecastJson = Value(forecastJson),
+       fetchedAt = Value(fetchedAt),
+       expiresAt = Value(expiresAt);
   static Insertable<WeatherCacheData> custom({
     Expression<int>? id,
     Expression<String>? trailId,
@@ -2795,13 +3315,14 @@ class WeatherCacheCompanion extends UpdateCompanion<WeatherCacheData> {
     });
   }
 
-  WeatherCacheCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<int>? stageNumber,
-      Value<String>? forecastJson,
-      Value<DateTime>? fetchedAt,
-      Value<DateTime>? expiresAt}) {
+  WeatherCacheCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<int>? stageNumber,
+    Value<String>? forecastJson,
+    Value<DateTime>? fetchedAt,
+    Value<DateTime>? expiresAt,
+  }) {
     return WeatherCacheCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -2859,106 +3380,166 @@ class $FeedbackQueueTable extends FeedbackQueue
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _feedbackTypeMeta =
-      const VerificationMeta('feedbackType');
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _feedbackTypeMeta = const VerificationMeta(
+    'feedbackType',
+  );
   @override
   late final GeneratedColumn<String> feedbackType = GeneratedColumn<String>(
-      'feedback_type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _contentMeta =
-      const VerificationMeta('content');
+    'feedback_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
   @override
   late final GeneratedColumn<String> content = GeneratedColumn<String>(
-      'content', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _ratingMeta = const VerificationMeta('rating');
   @override
   late final GeneratedColumn<int> rating = GeneratedColumn<int>(
-      'rating', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+    'rating',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
-      'status', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('pending'));
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.dateTime, requiredDuringInsert: true);
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _sentAtMeta = const VerificationMeta('sentAt');
   @override
   late final GeneratedColumn<DateTime> sentAt = GeneratedColumn<DateTime>(
-      'sent_at', aliasedName, true,
-      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+    'sent_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, trailId, feedbackType, content, rating, status, createdAt, sentAt];
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    feedbackType,
+    content,
+    rating,
+    status,
+    createdAt,
+    sentAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'feedback_queue';
   @override
-  VerificationContext validateIntegrity(Insertable<FeedbackQueueData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<FeedbackQueueData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('feedback_type')) {
       context.handle(
+        _feedbackTypeMeta,
+        feedbackType.isAcceptableOrUnknown(
+          data['feedback_type']!,
           _feedbackTypeMeta,
-          feedbackType.isAcceptableOrUnknown(
-              data['feedback_type']!, _feedbackTypeMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_feedbackTypeMeta);
     }
     if (data.containsKey('content')) {
-      context.handle(_contentMeta,
-          content.isAcceptableOrUnknown(data['content']!, _contentMeta));
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
     } else if (isInserting) {
       context.missing(_contentMeta);
     }
     if (data.containsKey('rating')) {
-      context.handle(_ratingMeta,
-          rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta));
+      context.handle(
+        _ratingMeta,
+        rating.isAcceptableOrUnknown(data['rating']!, _ratingMeta),
+      );
     }
     if (data.containsKey('status')) {
-      context.handle(_statusMeta,
-          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('sent_at')) {
-      context.handle(_sentAtMeta,
-          sentAt.isAcceptableOrUnknown(data['sent_at']!, _sentAtMeta));
+      context.handle(
+        _sentAtMeta,
+        sentAt.isAcceptableOrUnknown(data['sent_at']!, _sentAtMeta),
+      );
     }
     return context;
   }
@@ -2969,22 +3550,38 @@ class $FeedbackQueueTable extends FeedbackQueue
   FeedbackQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return FeedbackQueueData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      feedbackType: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}feedback_type'])!,
-      content: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}content'])!,
-      rating: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}rating']),
-      status: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at'])!,
-      sentAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.dateTime, data['${effectivePrefix}sent_at']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      feedbackType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}feedback_type'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      rating: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rating'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      sentAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}sent_at'],
+      ),
     );
   }
 
@@ -3019,15 +3616,16 @@ class FeedbackQueueData extends DataClass
 
   /// Date d'envoi effectif (null si pas encore envoyé)
   final DateTime? sentAt;
-  const FeedbackQueueData(
-      {required this.id,
-      required this.trailId,
-      required this.feedbackType,
-      required this.content,
-      this.rating,
-      required this.status,
-      required this.createdAt,
-      this.sentAt});
+  const FeedbackQueueData({
+    required this.id,
+    required this.trailId,
+    required this.feedbackType,
+    required this.content,
+    this.rating,
+    required this.status,
+    required this.createdAt,
+    this.sentAt,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3052,17 +3650,21 @@ class FeedbackQueueData extends DataClass
       trailId: Value(trailId),
       feedbackType: Value(feedbackType),
       content: Value(content),
-      rating:
-          rating == null && nullToAbsent ? const Value.absent() : Value(rating),
+      rating: rating == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rating),
       status: Value(status),
       createdAt: Value(createdAt),
-      sentAt:
-          sentAt == null && nullToAbsent ? const Value.absent() : Value(sentAt),
+      sentAt: sentAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sentAt),
     );
   }
 
-  factory FeedbackQueueData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory FeedbackQueueData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return FeedbackQueueData(
       id: serializer.fromJson<int>(json['id']),
@@ -3090,25 +3692,25 @@ class FeedbackQueueData extends DataClass
     };
   }
 
-  FeedbackQueueData copyWith(
-          {int? id,
-          String? trailId,
-          String? feedbackType,
-          String? content,
-          Value<int?> rating = const Value.absent(),
-          String? status,
-          DateTime? createdAt,
-          Value<DateTime?> sentAt = const Value.absent()}) =>
-      FeedbackQueueData(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        feedbackType: feedbackType ?? this.feedbackType,
-        content: content ?? this.content,
-        rating: rating.present ? rating.value : this.rating,
-        status: status ?? this.status,
-        createdAt: createdAt ?? this.createdAt,
-        sentAt: sentAt.present ? sentAt.value : this.sentAt,
-      );
+  FeedbackQueueData copyWith({
+    int? id,
+    String? trailId,
+    String? feedbackType,
+    String? content,
+    Value<int?> rating = const Value.absent(),
+    String? status,
+    DateTime? createdAt,
+    Value<DateTime?> sentAt = const Value.absent(),
+  }) => FeedbackQueueData(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    feedbackType: feedbackType ?? this.feedbackType,
+    content: content ?? this.content,
+    rating: rating.present ? rating.value : this.rating,
+    status: status ?? this.status,
+    createdAt: createdAt ?? this.createdAt,
+    sentAt: sentAt.present ? sentAt.value : this.sentAt,
+  );
   FeedbackQueueData copyWithCompanion(FeedbackQueueCompanion data) {
     return FeedbackQueueData(
       id: data.id.present ? data.id.value : this.id,
@@ -3141,7 +3743,15 @@ class FeedbackQueueData extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id, trailId, feedbackType, content, rating, status, createdAt, sentAt);
+    id,
+    trailId,
+    feedbackType,
+    content,
+    rating,
+    status,
+    createdAt,
+    sentAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3184,10 +3794,10 @@ class FeedbackQueueCompanion extends UpdateCompanion<FeedbackQueueData> {
     this.status = const Value.absent(),
     required DateTime createdAt,
     this.sentAt = const Value.absent(),
-  })  : trailId = Value(trailId),
-        feedbackType = Value(feedbackType),
-        content = Value(content),
-        createdAt = Value(createdAt);
+  }) : trailId = Value(trailId),
+       feedbackType = Value(feedbackType),
+       content = Value(content),
+       createdAt = Value(createdAt);
   static Insertable<FeedbackQueueData> custom({
     Expression<int>? id,
     Expression<String>? trailId,
@@ -3210,15 +3820,16 @@ class FeedbackQueueCompanion extends UpdateCompanion<FeedbackQueueData> {
     });
   }
 
-  FeedbackQueueCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<String>? feedbackType,
-      Value<String>? content,
-      Value<int?>? rating,
-      Value<String>? status,
-      Value<DateTime>? createdAt,
-      Value<DateTime?>? sentAt}) {
+  FeedbackQueueCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<String>? feedbackType,
+    Value<String>? content,
+    Value<int?>? rating,
+    Value<String>? status,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? sentAt,
+  }) {
     return FeedbackQueueCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -3286,45 +3897,72 @@ class $TrailMetaTable extends TrailMeta
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _codeMeta = const VerificationMeta('code');
   @override
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
-  static const VerificationMeta _dataVersionMeta =
-      const VerificationMeta('dataVersion');
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _dataVersionMeta = const VerificationMeta(
+    'dataVersion',
+  );
   @override
   late final GeneratedColumn<int> dataVersion = GeneratedColumn<int>(
-      'data_version', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _lastSyncMeta =
-      const VerificationMeta('lastSync');
+    'data_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastSyncMeta = const VerificationMeta(
+    'lastSync',
+  );
   @override
   late final GeneratedColumn<String> lastSync = GeneratedColumn<String>(
-      'last_sync', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'last_sync',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
-      'status', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('active'));
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('active'),
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, code, dataVersion, lastSync, status];
+  List<GeneratedColumn> get $columns => [
+    id,
+    code,
+    dataVersion,
+    lastSync,
+    status,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'trail_meta';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailMetaData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailMetaData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -3334,25 +3972,34 @@ class $TrailMetaTable extends TrailMeta
     }
     if (data.containsKey('code')) {
       context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
     } else if (isInserting) {
       context.missing(_codeMeta);
     }
     if (data.containsKey('data_version')) {
       context.handle(
+        _dataVersionMeta,
+        dataVersion.isAcceptableOrUnknown(
+          data['data_version']!,
           _dataVersionMeta,
-          dataVersion.isAcceptableOrUnknown(
-              data['data_version']!, _dataVersionMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_dataVersionMeta);
     }
     if (data.containsKey('last_sync')) {
-      context.handle(_lastSyncMeta,
-          lastSync.isAcceptableOrUnknown(data['last_sync']!, _lastSyncMeta));
+      context.handle(
+        _lastSyncMeta,
+        lastSync.isAcceptableOrUnknown(data['last_sync']!, _lastSyncMeta),
+      );
     }
     if (data.containsKey('status')) {
-      context.handle(_statusMeta,
-          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
     }
     return context;
   }
@@ -3363,16 +4010,26 @@ class $TrailMetaTable extends TrailMeta
   TrailMetaData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailMetaData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code'])!,
-      dataVersion: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}data_version'])!,
-      lastSync: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}last_sync']),
-      status: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      dataVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}data_version'],
+      )!,
+      lastSync: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_sync'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
     );
   }
 
@@ -3397,12 +4054,13 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
 
   /// Statut du sentier ('active', 'archived', 'draft')
   final String status;
-  const TrailMetaData(
-      {required this.id,
-      required this.code,
-      required this.dataVersion,
-      this.lastSync,
-      required this.status});
+  const TrailMetaData({
+    required this.id,
+    required this.code,
+    required this.dataVersion,
+    this.lastSync,
+    required this.status,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3428,8 +4086,10 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
     );
   }
 
-  factory TrailMetaData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailMetaData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailMetaData(
       id: serializer.fromJson<String>(json['id']),
@@ -3451,25 +4111,26 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
     };
   }
 
-  TrailMetaData copyWith(
-          {String? id,
-          String? code,
-          int? dataVersion,
-          Value<String?> lastSync = const Value.absent(),
-          String? status}) =>
-      TrailMetaData(
-        id: id ?? this.id,
-        code: code ?? this.code,
-        dataVersion: dataVersion ?? this.dataVersion,
-        lastSync: lastSync.present ? lastSync.value : this.lastSync,
-        status: status ?? this.status,
-      );
+  TrailMetaData copyWith({
+    String? id,
+    String? code,
+    int? dataVersion,
+    Value<String?> lastSync = const Value.absent(),
+    String? status,
+  }) => TrailMetaData(
+    id: id ?? this.id,
+    code: code ?? this.code,
+    dataVersion: dataVersion ?? this.dataVersion,
+    lastSync: lastSync.present ? lastSync.value : this.lastSync,
+    status: status ?? this.status,
+  );
   TrailMetaData copyWithCompanion(TrailMetaCompanion data) {
     return TrailMetaData(
       id: data.id.present ? data.id.value : this.id,
       code: data.code.present ? data.code.value : this.code,
-      dataVersion:
-          data.dataVersion.present ? data.dataVersion.value : this.dataVersion,
+      dataVersion: data.dataVersion.present
+          ? data.dataVersion.value
+          : this.dataVersion,
       lastSync: data.lastSync.present ? data.lastSync.value : this.lastSync,
       status: data.status.present ? data.status.value : this.status,
     );
@@ -3522,9 +4183,9 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     this.lastSync = const Value.absent(),
     this.status = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        code = Value(code),
-        dataVersion = Value(dataVersion);
+  }) : id = Value(id),
+       code = Value(code),
+       dataVersion = Value(dataVersion);
   static Insertable<TrailMetaData> custom({
     Expression<String>? id,
     Expression<String>? code,
@@ -3543,13 +4204,14 @@ class TrailMetaCompanion extends UpdateCompanion<TrailMetaData> {
     });
   }
 
-  TrailMetaCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? code,
-      Value<int>? dataVersion,
-      Value<String?>? lastSync,
-      Value<String>? status,
-      Value<int>? rowid}) {
+  TrailMetaCompanion copyWith({
+    Value<String>? id,
+    Value<String>? code,
+    Value<int>? dataVersion,
+    Value<String?>? lastSync,
+    Value<String>? status,
+    Value<int>? rowid,
+  }) {
     return TrailMetaCompanion(
       id: id ?? this.id,
       code: code ?? this.code,
@@ -3607,84 +4269,134 @@ class $TrailItinerariesTable extends TrailItineraries
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _codeMeta = const VerificationMeta('code');
   @override
   late final GeneratedColumn<String> code = GeneratedColumn<String>(
-      'code', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameFrMeta = const VerificationMeta('nameFr');
   @override
   late final GeneratedColumn<String> nameFr = GeneratedColumn<String>(
-      'name_fr', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_fr',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
   @override
   late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
-      'name_en', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameDeMeta = const VerificationMeta('nameDe');
   @override
   late final GeneratedColumn<String> nameDe = GeneratedColumn<String>(
-      'name_de', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_de',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameItMeta = const VerificationMeta('nameIt');
   @override
   late final GeneratedColumn<String> nameIt = GeneratedColumn<String>(
-      'name_it', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_it',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEsMeta = const VerificationMeta('nameEs');
   @override
   late final GeneratedColumn<String> nameEs = GeneratedColumn<String>(
-      'name_es', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _distanceKmMeta =
-      const VerificationMeta('distanceKm');
+    'name_es',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _distanceKmMeta = const VerificationMeta(
+    'distanceKm',
+  );
   @override
   late final GeneratedColumn<double> distanceKm = GeneratedColumn<double>(
-      'distance_km', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _elevationGainMeta =
-      const VerificationMeta('elevationGain');
+    'distance_km',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elevationGainMeta = const VerificationMeta(
+    'elevationGain',
+  );
   @override
   late final GeneratedColumn<int> elevationGain = GeneratedColumn<int>(
-      'elevation_gain', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _stageCountMeta =
-      const VerificationMeta('stageCount');
+    'elevation_gain',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageCountMeta = const VerificationMeta(
+    'stageCount',
+  );
   @override
   late final GeneratedColumn<int> stageCount = GeneratedColumn<int>(
-      'stage_count', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'stage_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        trailId,
-        code,
-        nameFr,
-        nameEn,
-        nameDe,
-        nameIt,
-        nameEs,
-        distanceKm,
-        elevationGain,
-        stageCount
-      ];
+    id,
+    trailId,
+    code,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    distanceKm,
+    elevationGain,
+    stageCount,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'trail_itineraries';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailItinerary> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailItinerary> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -3693,68 +4405,85 @@ class $TrailItinerariesTable extends TrailItineraries
       context.missing(_idMeta);
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('code')) {
       context.handle(
-          _codeMeta, code.isAcceptableOrUnknown(data['code']!, _codeMeta));
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
     } else if (isInserting) {
       context.missing(_codeMeta);
     }
     if (data.containsKey('name_fr')) {
-      context.handle(_nameFrMeta,
-          nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta));
+      context.handle(
+        _nameFrMeta,
+        nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameFrMeta);
     }
     if (data.containsKey('name_en')) {
-      context.handle(_nameEnMeta,
-          nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta));
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEnMeta);
     }
     if (data.containsKey('name_de')) {
-      context.handle(_nameDeMeta,
-          nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta));
+      context.handle(
+        _nameDeMeta,
+        nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameDeMeta);
     }
     if (data.containsKey('name_it')) {
-      context.handle(_nameItMeta,
-          nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta));
+      context.handle(
+        _nameItMeta,
+        nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameItMeta);
     }
     if (data.containsKey('name_es')) {
-      context.handle(_nameEsMeta,
-          nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta));
+      context.handle(
+        _nameEsMeta,
+        nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEsMeta);
     }
     if (data.containsKey('distance_km')) {
       context.handle(
-          _distanceKmMeta,
-          distanceKm.isAcceptableOrUnknown(
-              data['distance_km']!, _distanceKmMeta));
+        _distanceKmMeta,
+        distanceKm.isAcceptableOrUnknown(data['distance_km']!, _distanceKmMeta),
+      );
     } else if (isInserting) {
       context.missing(_distanceKmMeta);
     }
     if (data.containsKey('elevation_gain')) {
       context.handle(
+        _elevationGainMeta,
+        elevationGain.isAcceptableOrUnknown(
+          data['elevation_gain']!,
           _elevationGainMeta,
-          elevationGain.isAcceptableOrUnknown(
-              data['elevation_gain']!, _elevationGainMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_elevationGainMeta);
     }
     if (data.containsKey('stage_count')) {
       context.handle(
-          _stageCountMeta,
-          stageCount.isAcceptableOrUnknown(
-              data['stage_count']!, _stageCountMeta));
+        _stageCountMeta,
+        stageCount.isAcceptableOrUnknown(data['stage_count']!, _stageCountMeta),
+      );
     } else if (isInserting) {
       context.missing(_stageCountMeta);
     }
@@ -3767,28 +4496,50 @@ class $TrailItinerariesTable extends TrailItineraries
   TrailItinerary map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailItinerary(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      code: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}code'])!,
-      nameFr: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_fr'])!,
-      nameEn: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_en'])!,
-      nameDe: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_de'])!,
-      nameIt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_it'])!,
-      nameEs: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_es'])!,
-      distanceKm: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}distance_km'])!,
-      elevationGain: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}elevation_gain'])!,
-      stageCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}stage_count'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      nameFr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_fr'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameDe: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_de'],
+      )!,
+      nameIt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_it'],
+      )!,
+      nameEs: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_es'],
+      )!,
+      distanceKm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}distance_km'],
+      )!,
+      elevationGain: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}elevation_gain'],
+      )!,
+      stageCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stage_count'],
+      )!,
     );
   }
 
@@ -3831,18 +4582,19 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
 
   /// Nombre d'etapes
   final int stageCount;
-  const TrailItinerary(
-      {required this.id,
-      required this.trailId,
-      required this.code,
-      required this.nameFr,
-      required this.nameEn,
-      required this.nameDe,
-      required this.nameIt,
-      required this.nameEs,
-      required this.distanceKm,
-      required this.elevationGain,
-      required this.stageCount});
+  const TrailItinerary({
+    required this.id,
+    required this.trailId,
+    required this.code,
+    required this.nameFr,
+    required this.nameEn,
+    required this.nameDe,
+    required this.nameIt,
+    required this.nameEs,
+    required this.distanceKm,
+    required this.elevationGain,
+    required this.stageCount,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3876,8 +4628,10 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     );
   }
 
-  factory TrailItinerary.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailItinerary.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailItinerary(
       id: serializer.fromJson<String>(json['id']),
@@ -3911,31 +4665,31 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
     };
   }
 
-  TrailItinerary copyWith(
-          {String? id,
-          String? trailId,
-          String? code,
-          String? nameFr,
-          String? nameEn,
-          String? nameDe,
-          String? nameIt,
-          String? nameEs,
-          double? distanceKm,
-          int? elevationGain,
-          int? stageCount}) =>
-      TrailItinerary(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        code: code ?? this.code,
-        nameFr: nameFr ?? this.nameFr,
-        nameEn: nameEn ?? this.nameEn,
-        nameDe: nameDe ?? this.nameDe,
-        nameIt: nameIt ?? this.nameIt,
-        nameEs: nameEs ?? this.nameEs,
-        distanceKm: distanceKm ?? this.distanceKm,
-        elevationGain: elevationGain ?? this.elevationGain,
-        stageCount: stageCount ?? this.stageCount,
-      );
+  TrailItinerary copyWith({
+    String? id,
+    String? trailId,
+    String? code,
+    String? nameFr,
+    String? nameEn,
+    String? nameDe,
+    String? nameIt,
+    String? nameEs,
+    double? distanceKm,
+    int? elevationGain,
+    int? stageCount,
+  }) => TrailItinerary(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    code: code ?? this.code,
+    nameFr: nameFr ?? this.nameFr,
+    nameEn: nameEn ?? this.nameEn,
+    nameDe: nameDe ?? this.nameDe,
+    nameIt: nameIt ?? this.nameIt,
+    nameEs: nameEs ?? this.nameEs,
+    distanceKm: distanceKm ?? this.distanceKm,
+    elevationGain: elevationGain ?? this.elevationGain,
+    stageCount: stageCount ?? this.stageCount,
+  );
   TrailItinerary copyWithCompanion(TrailItinerariesCompanion data) {
     return TrailItinerary(
       id: data.id.present ? data.id.value : this.id,
@@ -3946,13 +4700,15 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
       nameDe: data.nameDe.present ? data.nameDe.value : this.nameDe,
       nameIt: data.nameIt.present ? data.nameIt.value : this.nameIt,
       nameEs: data.nameEs.present ? data.nameEs.value : this.nameEs,
-      distanceKm:
-          data.distanceKm.present ? data.distanceKm.value : this.distanceKm,
+      distanceKm: data.distanceKm.present
+          ? data.distanceKm.value
+          : this.distanceKm,
       elevationGain: data.elevationGain.present
           ? data.elevationGain.value
           : this.elevationGain,
-      stageCount:
-          data.stageCount.present ? data.stageCount.value : this.stageCount,
+      stageCount: data.stageCount.present
+          ? data.stageCount.value
+          : this.stageCount,
     );
   }
 
@@ -3975,8 +4731,19 @@ class TrailItinerary extends DataClass implements Insertable<TrailItinerary> {
   }
 
   @override
-  int get hashCode => Object.hash(id, trailId, code, nameFr, nameEn, nameDe,
-      nameIt, nameEs, distanceKm, elevationGain, stageCount);
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    code,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    distanceKm,
+    elevationGain,
+    stageCount,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4034,17 +4801,17 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     required int elevationGain,
     required int stageCount,
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        trailId = Value(trailId),
-        code = Value(code),
-        nameFr = Value(nameFr),
-        nameEn = Value(nameEn),
-        nameDe = Value(nameDe),
-        nameIt = Value(nameIt),
-        nameEs = Value(nameEs),
-        distanceKm = Value(distanceKm),
-        elevationGain = Value(elevationGain),
-        stageCount = Value(stageCount);
+  }) : id = Value(id),
+       trailId = Value(trailId),
+       code = Value(code),
+       nameFr = Value(nameFr),
+       nameEn = Value(nameEn),
+       nameDe = Value(nameDe),
+       nameIt = Value(nameIt),
+       nameEs = Value(nameEs),
+       distanceKm = Value(distanceKm),
+       elevationGain = Value(elevationGain),
+       stageCount = Value(stageCount);
   static Insertable<TrailItinerary> custom({
     Expression<String>? id,
     Expression<String>? trailId,
@@ -4075,19 +4842,20 @@ class TrailItinerariesCompanion extends UpdateCompanion<TrailItinerary> {
     });
   }
 
-  TrailItinerariesCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? trailId,
-      Value<String>? code,
-      Value<String>? nameFr,
-      Value<String>? nameEn,
-      Value<String>? nameDe,
-      Value<String>? nameIt,
-      Value<String>? nameEs,
-      Value<double>? distanceKm,
-      Value<int>? elevationGain,
-      Value<int>? stageCount,
-      Value<int>? rowid}) {
+  TrailItinerariesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? trailId,
+    Value<String>? code,
+    Value<String>? nameFr,
+    Value<String>? nameEn,
+    Value<String>? nameDe,
+    Value<String>? nameIt,
+    Value<String>? nameEs,
+    Value<double>? distanceKm,
+    Value<int>? elevationGain,
+    Value<int>? stageCount,
+    Value<int>? rowid,
+  }) {
     return TrailItinerariesCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -4175,125 +4943,204 @@ class $TrailStagesTable extends TrailStages
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _itineraryIdMeta =
-      const VerificationMeta('itineraryId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _itineraryIdMeta = const VerificationMeta(
+    'itineraryId',
+  );
   @override
   late final GeneratedColumn<String> itineraryId = GeneratedColumn<String>(
-      'itinerary_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _stageNumberMeta =
-      const VerificationMeta('stageNumber');
+    'itinerary_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageNumberMeta = const VerificationMeta(
+    'stageNumber',
+  );
   @override
   late final GeneratedColumn<int> stageNumber = GeneratedColumn<int>(
-      'stage_number', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'stage_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameFrMeta = const VerificationMeta('nameFr');
   @override
   late final GeneratedColumn<String> nameFr = GeneratedColumn<String>(
-      'name_fr', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_fr',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
   @override
   late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
-      'name_en', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameDeMeta = const VerificationMeta('nameDe');
   @override
   late final GeneratedColumn<String> nameDe = GeneratedColumn<String>(
-      'name_de', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_de',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameItMeta = const VerificationMeta('nameIt');
   @override
   late final GeneratedColumn<String> nameIt = GeneratedColumn<String>(
-      'name_it', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_it',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEsMeta = const VerificationMeta('nameEs');
   @override
   late final GeneratedColumn<String> nameEs = GeneratedColumn<String>(
-      'name_es', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _startLatMeta =
-      const VerificationMeta('startLat');
+    'name_es',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startLatMeta = const VerificationMeta(
+    'startLat',
+  );
   @override
   late final GeneratedColumn<double> startLat = GeneratedColumn<double>(
-      'start_lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _startLngMeta =
-      const VerificationMeta('startLng');
+    'start_lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startLngMeta = const VerificationMeta(
+    'startLng',
+  );
   @override
   late final GeneratedColumn<double> startLng = GeneratedColumn<double>(
-      'start_lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'start_lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _endLatMeta = const VerificationMeta('endLat');
   @override
   late final GeneratedColumn<double> endLat = GeneratedColumn<double>(
-      'end_lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'end_lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _endLngMeta = const VerificationMeta('endLng');
   @override
   late final GeneratedColumn<double> endLng = GeneratedColumn<double>(
-      'end_lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _distanceKmMeta =
-      const VerificationMeta('distanceKm');
+    'end_lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _distanceKmMeta = const VerificationMeta(
+    'distanceKm',
+  );
   @override
   late final GeneratedColumn<double> distanceKm = GeneratedColumn<double>(
-      'distance_km', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _elevationGainMeta =
-      const VerificationMeta('elevationGain');
+    'distance_km',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elevationGainMeta = const VerificationMeta(
+    'elevationGain',
+  );
   @override
   late final GeneratedColumn<int> elevationGain = GeneratedColumn<int>(
-      'elevation_gain', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _elevationLossMeta =
-      const VerificationMeta('elevationLoss');
+    'elevation_gain',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elevationLossMeta = const VerificationMeta(
+    'elevationLoss',
+  );
   @override
   late final GeneratedColumn<int> elevationLoss = GeneratedColumn<int>(
-      'elevation_loss', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _durationMinutesMeta =
-      const VerificationMeta('durationMinutes');
+    'elevation_loss',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationMinutesMeta = const VerificationMeta(
+    'durationMinutes',
+  );
   @override
   late final GeneratedColumn<int> durationMinutes = GeneratedColumn<int>(
-      'duration_minutes', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  static const VerificationMeta _difficultyMeta =
-      const VerificationMeta('difficulty');
+    'duration_minutes',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _difficultyMeta = const VerificationMeta(
+    'difficulty',
+  );
   @override
   late final GeneratedColumn<String> difficulty = GeneratedColumn<String>(
-      'difficulty', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'difficulty',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        itineraryId,
-        stageNumber,
-        nameFr,
-        nameEn,
-        nameDe,
-        nameIt,
-        nameEs,
-        startLat,
-        startLng,
-        endLat,
-        endLng,
-        distanceKm,
-        elevationGain,
-        elevationLoss,
-        durationMinutes,
-        difficulty
-      ];
+    id,
+    itineraryId,
+    stageNumber,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    startLat,
+    startLng,
+    endLat,
+    endLng,
+    distanceKm,
+    elevationGain,
+    elevationLoss,
+    durationMinutes,
+    difficulty,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'trail_stages';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailStage> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailStage> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -4303,111 +5150,144 @@ class $TrailStagesTable extends TrailStages
     }
     if (data.containsKey('itinerary_id')) {
       context.handle(
+        _itineraryIdMeta,
+        itineraryId.isAcceptableOrUnknown(
+          data['itinerary_id']!,
           _itineraryIdMeta,
-          itineraryId.isAcceptableOrUnknown(
-              data['itinerary_id']!, _itineraryIdMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_itineraryIdMeta);
     }
     if (data.containsKey('stage_number')) {
       context.handle(
+        _stageNumberMeta,
+        stageNumber.isAcceptableOrUnknown(
+          data['stage_number']!,
           _stageNumberMeta,
-          stageNumber.isAcceptableOrUnknown(
-              data['stage_number']!, _stageNumberMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_stageNumberMeta);
     }
     if (data.containsKey('name_fr')) {
-      context.handle(_nameFrMeta,
-          nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta));
+      context.handle(
+        _nameFrMeta,
+        nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameFrMeta);
     }
     if (data.containsKey('name_en')) {
-      context.handle(_nameEnMeta,
-          nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta));
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEnMeta);
     }
     if (data.containsKey('name_de')) {
-      context.handle(_nameDeMeta,
-          nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta));
+      context.handle(
+        _nameDeMeta,
+        nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameDeMeta);
     }
     if (data.containsKey('name_it')) {
-      context.handle(_nameItMeta,
-          nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta));
+      context.handle(
+        _nameItMeta,
+        nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameItMeta);
     }
     if (data.containsKey('name_es')) {
-      context.handle(_nameEsMeta,
-          nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta));
+      context.handle(
+        _nameEsMeta,
+        nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEsMeta);
     }
     if (data.containsKey('start_lat')) {
-      context.handle(_startLatMeta,
-          startLat.isAcceptableOrUnknown(data['start_lat']!, _startLatMeta));
+      context.handle(
+        _startLatMeta,
+        startLat.isAcceptableOrUnknown(data['start_lat']!, _startLatMeta),
+      );
     } else if (isInserting) {
       context.missing(_startLatMeta);
     }
     if (data.containsKey('start_lng')) {
-      context.handle(_startLngMeta,
-          startLng.isAcceptableOrUnknown(data['start_lng']!, _startLngMeta));
+      context.handle(
+        _startLngMeta,
+        startLng.isAcceptableOrUnknown(data['start_lng']!, _startLngMeta),
+      );
     } else if (isInserting) {
       context.missing(_startLngMeta);
     }
     if (data.containsKey('end_lat')) {
-      context.handle(_endLatMeta,
-          endLat.isAcceptableOrUnknown(data['end_lat']!, _endLatMeta));
+      context.handle(
+        _endLatMeta,
+        endLat.isAcceptableOrUnknown(data['end_lat']!, _endLatMeta),
+      );
     } else if (isInserting) {
       context.missing(_endLatMeta);
     }
     if (data.containsKey('end_lng')) {
-      context.handle(_endLngMeta,
-          endLng.isAcceptableOrUnknown(data['end_lng']!, _endLngMeta));
+      context.handle(
+        _endLngMeta,
+        endLng.isAcceptableOrUnknown(data['end_lng']!, _endLngMeta),
+      );
     } else if (isInserting) {
       context.missing(_endLngMeta);
     }
     if (data.containsKey('distance_km')) {
       context.handle(
-          _distanceKmMeta,
-          distanceKm.isAcceptableOrUnknown(
-              data['distance_km']!, _distanceKmMeta));
+        _distanceKmMeta,
+        distanceKm.isAcceptableOrUnknown(data['distance_km']!, _distanceKmMeta),
+      );
     } else if (isInserting) {
       context.missing(_distanceKmMeta);
     }
     if (data.containsKey('elevation_gain')) {
       context.handle(
+        _elevationGainMeta,
+        elevationGain.isAcceptableOrUnknown(
+          data['elevation_gain']!,
           _elevationGainMeta,
-          elevationGain.isAcceptableOrUnknown(
-              data['elevation_gain']!, _elevationGainMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_elevationGainMeta);
     }
     if (data.containsKey('elevation_loss')) {
       context.handle(
+        _elevationLossMeta,
+        elevationLoss.isAcceptableOrUnknown(
+          data['elevation_loss']!,
           _elevationLossMeta,
-          elevationLoss.isAcceptableOrUnknown(
-              data['elevation_loss']!, _elevationLossMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_elevationLossMeta);
     }
     if (data.containsKey('duration_minutes')) {
       context.handle(
+        _durationMinutesMeta,
+        durationMinutes.isAcceptableOrUnknown(
+          data['duration_minutes']!,
           _durationMinutesMeta,
-          durationMinutes.isAcceptableOrUnknown(
-              data['duration_minutes']!, _durationMinutesMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_durationMinutesMeta);
     }
     if (data.containsKey('difficulty')) {
       context.handle(
-          _difficultyMeta,
-          difficulty.isAcceptableOrUnknown(
-              data['difficulty']!, _difficultyMeta));
+        _difficultyMeta,
+        difficulty.isAcceptableOrUnknown(data['difficulty']!, _difficultyMeta),
+      );
     } else if (isInserting) {
       context.missing(_difficultyMeta);
     }
@@ -4420,40 +5300,74 @@ class $TrailStagesTable extends TrailStages
   TrailStage map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailStage(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      itineraryId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}itinerary_id'])!,
-      stageNumber: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}stage_number'])!,
-      nameFr: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_fr'])!,
-      nameEn: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_en'])!,
-      nameDe: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_de'])!,
-      nameIt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_it'])!,
-      nameEs: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_es'])!,
-      startLat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}start_lat'])!,
-      startLng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}start_lng'])!,
-      endLat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}end_lat'])!,
-      endLng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}end_lng'])!,
-      distanceKm: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}distance_km'])!,
-      elevationGain: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}elevation_gain'])!,
-      elevationLoss: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}elevation_loss'])!,
-      durationMinutes: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}duration_minutes'])!,
-      difficulty: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}difficulty'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      itineraryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}itinerary_id'],
+      )!,
+      stageNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stage_number'],
+      )!,
+      nameFr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_fr'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameDe: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_de'],
+      )!,
+      nameIt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_it'],
+      )!,
+      nameEs: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_es'],
+      )!,
+      startLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_lat'],
+      )!,
+      startLng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_lng'],
+      )!,
+      endLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_lat'],
+      )!,
+      endLng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_lng'],
+      )!,
+      distanceKm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}distance_km'],
+      )!,
+      elevationGain: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}elevation_gain'],
+      )!,
+      elevationLoss: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}elevation_loss'],
+      )!,
+      durationMinutes: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_minutes'],
+      )!,
+      difficulty: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}difficulty'],
+      )!,
     );
   }
 
@@ -4514,24 +5428,25 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
 
   /// Difficulte (easy, moderate, hard, extreme)
   final String difficulty;
-  const TrailStage(
-      {required this.id,
-      required this.itineraryId,
-      required this.stageNumber,
-      required this.nameFr,
-      required this.nameEn,
-      required this.nameDe,
-      required this.nameIt,
-      required this.nameEs,
-      required this.startLat,
-      required this.startLng,
-      required this.endLat,
-      required this.endLng,
-      required this.distanceKm,
-      required this.elevationGain,
-      required this.elevationLoss,
-      required this.durationMinutes,
-      required this.difficulty});
+  const TrailStage({
+    required this.id,
+    required this.itineraryId,
+    required this.stageNumber,
+    required this.nameFr,
+    required this.nameEn,
+    required this.nameDe,
+    required this.nameIt,
+    required this.nameEs,
+    required this.startLat,
+    required this.startLng,
+    required this.endLat,
+    required this.endLng,
+    required this.distanceKm,
+    required this.elevationGain,
+    required this.elevationLoss,
+    required this.durationMinutes,
+    required this.difficulty,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4577,8 +5492,10 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     );
   }
 
-  factory TrailStage.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailStage.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailStage(
       id: serializer.fromJson<String>(json['id']),
@@ -4624,50 +5541,52 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
     };
   }
 
-  TrailStage copyWith(
-          {String? id,
-          String? itineraryId,
-          int? stageNumber,
-          String? nameFr,
-          String? nameEn,
-          String? nameDe,
-          String? nameIt,
-          String? nameEs,
-          double? startLat,
-          double? startLng,
-          double? endLat,
-          double? endLng,
-          double? distanceKm,
-          int? elevationGain,
-          int? elevationLoss,
-          int? durationMinutes,
-          String? difficulty}) =>
-      TrailStage(
-        id: id ?? this.id,
-        itineraryId: itineraryId ?? this.itineraryId,
-        stageNumber: stageNumber ?? this.stageNumber,
-        nameFr: nameFr ?? this.nameFr,
-        nameEn: nameEn ?? this.nameEn,
-        nameDe: nameDe ?? this.nameDe,
-        nameIt: nameIt ?? this.nameIt,
-        nameEs: nameEs ?? this.nameEs,
-        startLat: startLat ?? this.startLat,
-        startLng: startLng ?? this.startLng,
-        endLat: endLat ?? this.endLat,
-        endLng: endLng ?? this.endLng,
-        distanceKm: distanceKm ?? this.distanceKm,
-        elevationGain: elevationGain ?? this.elevationGain,
-        elevationLoss: elevationLoss ?? this.elevationLoss,
-        durationMinutes: durationMinutes ?? this.durationMinutes,
-        difficulty: difficulty ?? this.difficulty,
-      );
+  TrailStage copyWith({
+    String? id,
+    String? itineraryId,
+    int? stageNumber,
+    String? nameFr,
+    String? nameEn,
+    String? nameDe,
+    String? nameIt,
+    String? nameEs,
+    double? startLat,
+    double? startLng,
+    double? endLat,
+    double? endLng,
+    double? distanceKm,
+    int? elevationGain,
+    int? elevationLoss,
+    int? durationMinutes,
+    String? difficulty,
+  }) => TrailStage(
+    id: id ?? this.id,
+    itineraryId: itineraryId ?? this.itineraryId,
+    stageNumber: stageNumber ?? this.stageNumber,
+    nameFr: nameFr ?? this.nameFr,
+    nameEn: nameEn ?? this.nameEn,
+    nameDe: nameDe ?? this.nameDe,
+    nameIt: nameIt ?? this.nameIt,
+    nameEs: nameEs ?? this.nameEs,
+    startLat: startLat ?? this.startLat,
+    startLng: startLng ?? this.startLng,
+    endLat: endLat ?? this.endLat,
+    endLng: endLng ?? this.endLng,
+    distanceKm: distanceKm ?? this.distanceKm,
+    elevationGain: elevationGain ?? this.elevationGain,
+    elevationLoss: elevationLoss ?? this.elevationLoss,
+    durationMinutes: durationMinutes ?? this.durationMinutes,
+    difficulty: difficulty ?? this.difficulty,
+  );
   TrailStage copyWithCompanion(TrailStagesCompanion data) {
     return TrailStage(
       id: data.id.present ? data.id.value : this.id,
-      itineraryId:
-          data.itineraryId.present ? data.itineraryId.value : this.itineraryId,
-      stageNumber:
-          data.stageNumber.present ? data.stageNumber.value : this.stageNumber,
+      itineraryId: data.itineraryId.present
+          ? data.itineraryId.value
+          : this.itineraryId,
+      stageNumber: data.stageNumber.present
+          ? data.stageNumber.value
+          : this.stageNumber,
       nameFr: data.nameFr.present ? data.nameFr.value : this.nameFr,
       nameEn: data.nameEn.present ? data.nameEn.value : this.nameEn,
       nameDe: data.nameDe.present ? data.nameDe.value : this.nameDe,
@@ -4677,8 +5596,9 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       startLng: data.startLng.present ? data.startLng.value : this.startLng,
       endLat: data.endLat.present ? data.endLat.value : this.endLat,
       endLng: data.endLng.present ? data.endLng.value : this.endLng,
-      distanceKm:
-          data.distanceKm.present ? data.distanceKm.value : this.distanceKm,
+      distanceKm: data.distanceKm.present
+          ? data.distanceKm.value
+          : this.distanceKm,
       elevationGain: data.elevationGain.present
           ? data.elevationGain.value
           : this.elevationGain,
@@ -4688,8 +5608,9 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
       durationMinutes: data.durationMinutes.present
           ? data.durationMinutes.value
           : this.durationMinutes,
-      difficulty:
-          data.difficulty.present ? data.difficulty.value : this.difficulty,
+      difficulty: data.difficulty.present
+          ? data.difficulty.value
+          : this.difficulty,
     );
   }
 
@@ -4719,23 +5640,24 @@ class TrailStage extends DataClass implements Insertable<TrailStage> {
 
   @override
   int get hashCode => Object.hash(
-      id,
-      itineraryId,
-      stageNumber,
-      nameFr,
-      nameEn,
-      nameDe,
-      nameIt,
-      nameEs,
-      startLat,
-      startLng,
-      endLat,
-      endLng,
-      distanceKm,
-      elevationGain,
-      elevationLoss,
-      durationMinutes,
-      difficulty);
+    id,
+    itineraryId,
+    stageNumber,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    startLat,
+    startLng,
+    endLat,
+    endLng,
+    distanceKm,
+    elevationGain,
+    elevationLoss,
+    durationMinutes,
+    difficulty,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4817,23 +5739,23 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     required int durationMinutes,
     required String difficulty,
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        itineraryId = Value(itineraryId),
-        stageNumber = Value(stageNumber),
-        nameFr = Value(nameFr),
-        nameEn = Value(nameEn),
-        nameDe = Value(nameDe),
-        nameIt = Value(nameIt),
-        nameEs = Value(nameEs),
-        startLat = Value(startLat),
-        startLng = Value(startLng),
-        endLat = Value(endLat),
-        endLng = Value(endLng),
-        distanceKm = Value(distanceKm),
-        elevationGain = Value(elevationGain),
-        elevationLoss = Value(elevationLoss),
-        durationMinutes = Value(durationMinutes),
-        difficulty = Value(difficulty);
+  }) : id = Value(id),
+       itineraryId = Value(itineraryId),
+       stageNumber = Value(stageNumber),
+       nameFr = Value(nameFr),
+       nameEn = Value(nameEn),
+       nameDe = Value(nameDe),
+       nameIt = Value(nameIt),
+       nameEs = Value(nameEs),
+       startLat = Value(startLat),
+       startLng = Value(startLng),
+       endLat = Value(endLat),
+       endLng = Value(endLng),
+       distanceKm = Value(distanceKm),
+       elevationGain = Value(elevationGain),
+       elevationLoss = Value(elevationLoss),
+       durationMinutes = Value(durationMinutes),
+       difficulty = Value(difficulty);
   static Insertable<TrailStage> custom({
     Expression<String>? id,
     Expression<String>? itineraryId,
@@ -4876,25 +5798,26 @@ class TrailStagesCompanion extends UpdateCompanion<TrailStage> {
     });
   }
 
-  TrailStagesCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? itineraryId,
-      Value<int>? stageNumber,
-      Value<String>? nameFr,
-      Value<String>? nameEn,
-      Value<String>? nameDe,
-      Value<String>? nameIt,
-      Value<String>? nameEs,
-      Value<double>? startLat,
-      Value<double>? startLng,
-      Value<double>? endLat,
-      Value<double>? endLng,
-      Value<double>? distanceKm,
-      Value<int>? elevationGain,
-      Value<int>? elevationLoss,
-      Value<int>? durationMinutes,
-      Value<String>? difficulty,
-      Value<int>? rowid}) {
+  TrailStagesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? itineraryId,
+    Value<int>? stageNumber,
+    Value<String>? nameFr,
+    Value<String>? nameEn,
+    Value<String>? nameDe,
+    Value<String>? nameIt,
+    Value<String>? nameEs,
+    Value<double>? startLat,
+    Value<double>? startLng,
+    Value<double>? endLat,
+    Value<double>? endLng,
+    Value<double>? distanceKm,
+    Value<int>? elevationGain,
+    Value<int>? elevationLoss,
+    Value<int>? durationMinutes,
+    Value<String>? difficulty,
+    Value<int>? rowid,
+  }) {
     return TrailStagesCompanion(
       id: id ?? this.id,
       itineraryId: itineraryId ?? this.itineraryId,
@@ -5012,115 +5935,186 @@ class $TrailAccommodationsTable extends TrailAccommodations
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _stageIdMeta =
-      const VerificationMeta('stageId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageIdMeta = const VerificationMeta(
+    'stageId',
+  );
   @override
   late final GeneratedColumn<String> stageId = GeneratedColumn<String>(
-      'stage_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'stage_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameFrMeta = const VerificationMeta('nameFr');
   @override
   late final GeneratedColumn<String> nameFr = GeneratedColumn<String>(
-      'name_fr', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_fr',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
   @override
   late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
-      'name_en', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameDeMeta = const VerificationMeta('nameDe');
   @override
   late final GeneratedColumn<String> nameDe = GeneratedColumn<String>(
-      'name_de', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_de',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameItMeta = const VerificationMeta('nameIt');
   @override
   late final GeneratedColumn<String> nameIt = GeneratedColumn<String>(
-      'name_it', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_it',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEsMeta = const VerificationMeta('nameEs');
   @override
   late final GeneratedColumn<String> nameEs = GeneratedColumn<String>(
-      'name_es', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_es',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
   late final GeneratedColumn<double> lat = GeneratedColumn<double>(
-      'lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _lngMeta = const VerificationMeta('lng');
   @override
   late final GeneratedColumn<double> lng = GeneratedColumn<double>(
-      'lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
   @override
   late final GeneratedColumn<String> phone = GeneratedColumn<String>(
-      'phone', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _emailMeta = const VerificationMeta('email');
   @override
   late final GeneratedColumn<String> email = GeneratedColumn<String>(
-      'email', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _websiteMeta =
-      const VerificationMeta('website');
+    'email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _websiteMeta = const VerificationMeta(
+    'website',
+  );
   @override
   late final GeneratedColumn<String> website = GeneratedColumn<String>(
-      'website', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _capacityMeta =
-      const VerificationMeta('capacity');
+    'website',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _capacityMeta = const VerificationMeta(
+    'capacity',
+  );
   @override
   late final GeneratedColumn<int> capacity = GeneratedColumn<int>(
-      'capacity', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
-  static const VerificationMeta _priceRangeMeta =
-      const VerificationMeta('priceRange');
+    'capacity',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _priceRangeMeta = const VerificationMeta(
+    'priceRange',
+  );
   @override
   late final GeneratedColumn<String> priceRange = GeneratedColumn<String>(
-      'price_range', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _bookingUrlMeta =
-      const VerificationMeta('bookingUrl');
+    'price_range',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bookingUrlMeta = const VerificationMeta(
+    'bookingUrl',
+  );
   @override
   late final GeneratedColumn<String> bookingUrl = GeneratedColumn<String>(
-      'booking_url', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'booking_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        stageId,
-        nameFr,
-        nameEn,
-        nameDe,
-        nameIt,
-        nameEs,
-        type,
-        lat,
-        lng,
-        phone,
-        email,
-        website,
-        capacity,
-        priceRange,
-        bookingUrl
-      ];
+    id,
+    stageId,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    type,
+    lat,
+    lng,
+    phone,
+    email,
+    website,
+    capacity,
+    priceRange,
+    bookingUrl,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'trail_accommodations';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailAccommodation> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailAccommodation> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -5129,86 +6123,112 @@ class $TrailAccommodationsTable extends TrailAccommodations
       context.missing(_idMeta);
     }
     if (data.containsKey('stage_id')) {
-      context.handle(_stageIdMeta,
-          stageId.isAcceptableOrUnknown(data['stage_id']!, _stageIdMeta));
+      context.handle(
+        _stageIdMeta,
+        stageId.isAcceptableOrUnknown(data['stage_id']!, _stageIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_stageIdMeta);
     }
     if (data.containsKey('name_fr')) {
-      context.handle(_nameFrMeta,
-          nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta));
+      context.handle(
+        _nameFrMeta,
+        nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameFrMeta);
     }
     if (data.containsKey('name_en')) {
-      context.handle(_nameEnMeta,
-          nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta));
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEnMeta);
     }
     if (data.containsKey('name_de')) {
-      context.handle(_nameDeMeta,
-          nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta));
+      context.handle(
+        _nameDeMeta,
+        nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameDeMeta);
     }
     if (data.containsKey('name_it')) {
-      context.handle(_nameItMeta,
-          nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta));
+      context.handle(
+        _nameItMeta,
+        nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameItMeta);
     }
     if (data.containsKey('name_es')) {
-      context.handle(_nameEsMeta,
-          nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta));
+      context.handle(
+        _nameEsMeta,
+        nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEsMeta);
     }
     if (data.containsKey('type')) {
       context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
     if (data.containsKey('lat')) {
       context.handle(
-          _latMeta, lat.isAcceptableOrUnknown(data['lat']!, _latMeta));
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
     } else if (isInserting) {
       context.missing(_latMeta);
     }
     if (data.containsKey('lng')) {
       context.handle(
-          _lngMeta, lng.isAcceptableOrUnknown(data['lng']!, _lngMeta));
+        _lngMeta,
+        lng.isAcceptableOrUnknown(data['lng']!, _lngMeta),
+      );
     } else if (isInserting) {
       context.missing(_lngMeta);
     }
     if (data.containsKey('phone')) {
       context.handle(
-          _phoneMeta, phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta));
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
     }
     if (data.containsKey('email')) {
       context.handle(
-          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
     }
     if (data.containsKey('website')) {
-      context.handle(_websiteMeta,
-          website.isAcceptableOrUnknown(data['website']!, _websiteMeta));
+      context.handle(
+        _websiteMeta,
+        website.isAcceptableOrUnknown(data['website']!, _websiteMeta),
+      );
     }
     if (data.containsKey('capacity')) {
-      context.handle(_capacityMeta,
-          capacity.isAcceptableOrUnknown(data['capacity']!, _capacityMeta));
+      context.handle(
+        _capacityMeta,
+        capacity.isAcceptableOrUnknown(data['capacity']!, _capacityMeta),
+      );
     }
     if (data.containsKey('price_range')) {
       context.handle(
-          _priceRangeMeta,
-          priceRange.isAcceptableOrUnknown(
-              data['price_range']!, _priceRangeMeta));
+        _priceRangeMeta,
+        priceRange.isAcceptableOrUnknown(data['price_range']!, _priceRangeMeta),
+      );
     }
     if (data.containsKey('booking_url')) {
       context.handle(
-          _bookingUrlMeta,
-          bookingUrl.isAcceptableOrUnknown(
-              data['booking_url']!, _bookingUrlMeta));
+        _bookingUrlMeta,
+        bookingUrl.isAcceptableOrUnknown(data['booking_url']!, _bookingUrlMeta),
+      );
     }
     return context;
   }
@@ -5219,38 +6239,70 @@ class $TrailAccommodationsTable extends TrailAccommodations
   TrailAccommodation map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailAccommodation(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      stageId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}stage_id'])!,
-      nameFr: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_fr'])!,
-      nameEn: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_en'])!,
-      nameDe: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_de'])!,
-      nameIt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_it'])!,
-      nameEs: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_es'])!,
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      lat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lat'])!,
-      lng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lng'])!,
-      phone: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}phone']),
-      email: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}email']),
-      website: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}website']),
-      capacity: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}capacity']),
-      priceRange: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}price_range']),
-      bookingUrl: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}booking_url']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      stageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stage_id'],
+      )!,
+      nameFr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_fr'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameDe: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_de'],
+      )!,
+      nameIt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_it'],
+      )!,
+      nameEs: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_es'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      lat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lat'],
+      )!,
+      lng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lng'],
+      )!,
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      ),
+      website: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}website'],
+      ),
+      capacity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}capacity'],
+      ),
+      priceRange: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}price_range'],
+      ),
+      bookingUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}booking_url'],
+      ),
     );
   }
 
@@ -5309,23 +6361,24 @@ class TrailAccommodation extends DataClass
 
   /// URL de reservation (nullable)
   final String? bookingUrl;
-  const TrailAccommodation(
-      {required this.id,
-      required this.stageId,
-      required this.nameFr,
-      required this.nameEn,
-      required this.nameDe,
-      required this.nameIt,
-      required this.nameEs,
-      required this.type,
-      required this.lat,
-      required this.lng,
-      this.phone,
-      this.email,
-      this.website,
-      this.capacity,
-      this.priceRange,
-      this.bookingUrl});
+  const TrailAccommodation({
+    required this.id,
+    required this.stageId,
+    required this.nameFr,
+    required this.nameEn,
+    required this.nameDe,
+    required this.nameIt,
+    required this.nameEs,
+    required this.type,
+    required this.lat,
+    required this.lng,
+    this.phone,
+    this.email,
+    this.website,
+    this.capacity,
+    this.priceRange,
+    this.bookingUrl,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -5372,10 +6425,12 @@ class TrailAccommodation extends DataClass
       type: Value(type),
       lat: Value(lat),
       lng: Value(lng),
-      phone:
-          phone == null && nullToAbsent ? const Value.absent() : Value(phone),
-      email:
-          email == null && nullToAbsent ? const Value.absent() : Value(email),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      email: email == null && nullToAbsent
+          ? const Value.absent()
+          : Value(email),
       website: website == null && nullToAbsent
           ? const Value.absent()
           : Value(website),
@@ -5391,8 +6446,10 @@ class TrailAccommodation extends DataClass
     );
   }
 
-  factory TrailAccommodation.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailAccommodation.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailAccommodation(
       id: serializer.fromJson<String>(json['id']),
@@ -5436,41 +6493,41 @@ class TrailAccommodation extends DataClass
     };
   }
 
-  TrailAccommodation copyWith(
-          {String? id,
-          String? stageId,
-          String? nameFr,
-          String? nameEn,
-          String? nameDe,
-          String? nameIt,
-          String? nameEs,
-          String? type,
-          double? lat,
-          double? lng,
-          Value<String?> phone = const Value.absent(),
-          Value<String?> email = const Value.absent(),
-          Value<String?> website = const Value.absent(),
-          Value<int?> capacity = const Value.absent(),
-          Value<String?> priceRange = const Value.absent(),
-          Value<String?> bookingUrl = const Value.absent()}) =>
-      TrailAccommodation(
-        id: id ?? this.id,
-        stageId: stageId ?? this.stageId,
-        nameFr: nameFr ?? this.nameFr,
-        nameEn: nameEn ?? this.nameEn,
-        nameDe: nameDe ?? this.nameDe,
-        nameIt: nameIt ?? this.nameIt,
-        nameEs: nameEs ?? this.nameEs,
-        type: type ?? this.type,
-        lat: lat ?? this.lat,
-        lng: lng ?? this.lng,
-        phone: phone.present ? phone.value : this.phone,
-        email: email.present ? email.value : this.email,
-        website: website.present ? website.value : this.website,
-        capacity: capacity.present ? capacity.value : this.capacity,
-        priceRange: priceRange.present ? priceRange.value : this.priceRange,
-        bookingUrl: bookingUrl.present ? bookingUrl.value : this.bookingUrl,
-      );
+  TrailAccommodation copyWith({
+    String? id,
+    String? stageId,
+    String? nameFr,
+    String? nameEn,
+    String? nameDe,
+    String? nameIt,
+    String? nameEs,
+    String? type,
+    double? lat,
+    double? lng,
+    Value<String?> phone = const Value.absent(),
+    Value<String?> email = const Value.absent(),
+    Value<String?> website = const Value.absent(),
+    Value<int?> capacity = const Value.absent(),
+    Value<String?> priceRange = const Value.absent(),
+    Value<String?> bookingUrl = const Value.absent(),
+  }) => TrailAccommodation(
+    id: id ?? this.id,
+    stageId: stageId ?? this.stageId,
+    nameFr: nameFr ?? this.nameFr,
+    nameEn: nameEn ?? this.nameEn,
+    nameDe: nameDe ?? this.nameDe,
+    nameIt: nameIt ?? this.nameIt,
+    nameEs: nameEs ?? this.nameEs,
+    type: type ?? this.type,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
+    phone: phone.present ? phone.value : this.phone,
+    email: email.present ? email.value : this.email,
+    website: website.present ? website.value : this.website,
+    capacity: capacity.present ? capacity.value : this.capacity,
+    priceRange: priceRange.present ? priceRange.value : this.priceRange,
+    bookingUrl: bookingUrl.present ? bookingUrl.value : this.bookingUrl,
+  );
   TrailAccommodation copyWithCompanion(TrailAccommodationsCompanion data) {
     return TrailAccommodation(
       id: data.id.present ? data.id.value : this.id,
@@ -5487,10 +6544,12 @@ class TrailAccommodation extends DataClass
       email: data.email.present ? data.email.value : this.email,
       website: data.website.present ? data.website.value : this.website,
       capacity: data.capacity.present ? data.capacity.value : this.capacity,
-      priceRange:
-          data.priceRange.present ? data.priceRange.value : this.priceRange,
-      bookingUrl:
-          data.bookingUrl.present ? data.bookingUrl.value : this.bookingUrl,
+      priceRange: data.priceRange.present
+          ? data.priceRange.value
+          : this.priceRange,
+      bookingUrl: data.bookingUrl.present
+          ? data.bookingUrl.value
+          : this.bookingUrl,
     );
   }
 
@@ -5519,22 +6578,23 @@ class TrailAccommodation extends DataClass
 
   @override
   int get hashCode => Object.hash(
-      id,
-      stageId,
-      nameFr,
-      nameEn,
-      nameDe,
-      nameIt,
-      nameEs,
-      type,
-      lat,
-      lng,
-      phone,
-      email,
-      website,
-      capacity,
-      priceRange,
-      bookingUrl);
+    id,
+    stageId,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    type,
+    lat,
+    lng,
+    phone,
+    email,
+    website,
+    capacity,
+    priceRange,
+    bookingUrl,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5612,16 +6672,16 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     this.priceRange = const Value.absent(),
     this.bookingUrl = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        stageId = Value(stageId),
-        nameFr = Value(nameFr),
-        nameEn = Value(nameEn),
-        nameDe = Value(nameDe),
-        nameIt = Value(nameIt),
-        nameEs = Value(nameEs),
-        type = Value(type),
-        lat = Value(lat),
-        lng = Value(lng);
+  }) : id = Value(id),
+       stageId = Value(stageId),
+       nameFr = Value(nameFr),
+       nameEn = Value(nameEn),
+       nameDe = Value(nameDe),
+       nameIt = Value(nameIt),
+       nameEs = Value(nameEs),
+       type = Value(type),
+       lat = Value(lat),
+       lng = Value(lng);
   static Insertable<TrailAccommodation> custom({
     Expression<String>? id,
     Expression<String>? stageId,
@@ -5662,24 +6722,25 @@ class TrailAccommodationsCompanion extends UpdateCompanion<TrailAccommodation> {
     });
   }
 
-  TrailAccommodationsCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? stageId,
-      Value<String>? nameFr,
-      Value<String>? nameEn,
-      Value<String>? nameDe,
-      Value<String>? nameIt,
-      Value<String>? nameEs,
-      Value<String>? type,
-      Value<double>? lat,
-      Value<double>? lng,
-      Value<String?>? phone,
-      Value<String?>? email,
-      Value<String?>? website,
-      Value<int?>? capacity,
-      Value<String?>? priceRange,
-      Value<String?>? bookingUrl,
-      Value<int>? rowid}) {
+  TrailAccommodationsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? stageId,
+    Value<String>? nameFr,
+    Value<String>? nameEn,
+    Value<String>? nameDe,
+    Value<String>? nameIt,
+    Value<String>? nameEs,
+    Value<String>? type,
+    Value<double>? lat,
+    Value<double>? lng,
+    Value<String?>? phone,
+    Value<String?>? email,
+    Value<String?>? website,
+    Value<int?>? capacity,
+    Value<String?>? priceRange,
+    Value<String?>? bookingUrl,
+    Value<int>? rowid,
+  }) {
     return TrailAccommodationsCompanion(
       id: id ?? this.id,
       stageId: stageId ?? this.stageId,
@@ -5792,117 +6853,190 @@ class $TrailPoisTable extends TrailPois
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _stageIdMeta =
-      const VerificationMeta('stageId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stageIdMeta = const VerificationMeta(
+    'stageId',
+  );
   @override
   late final GeneratedColumn<String> stageId = GeneratedColumn<String>(
-      'stage_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'stage_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameFrMeta = const VerificationMeta('nameFr');
   @override
   late final GeneratedColumn<String> nameFr = GeneratedColumn<String>(
-      'name_fr', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_fr',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEnMeta = const VerificationMeta('nameEn');
   @override
   late final GeneratedColumn<String> nameEn = GeneratedColumn<String>(
-      'name_en', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_en',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameDeMeta = const VerificationMeta('nameDe');
   @override
   late final GeneratedColumn<String> nameDe = GeneratedColumn<String>(
-      'name_de', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_de',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameItMeta = const VerificationMeta('nameIt');
   @override
   late final GeneratedColumn<String> nameIt = GeneratedColumn<String>(
-      'name_it', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'name_it',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameEsMeta = const VerificationMeta('nameEs');
   @override
   late final GeneratedColumn<String> nameEs = GeneratedColumn<String>(
-      'name_es', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _descriptionFrMeta =
-      const VerificationMeta('descriptionFr');
+    'name_es',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionFrMeta = const VerificationMeta(
+    'descriptionFr',
+  );
   @override
   late final GeneratedColumn<String> descriptionFr = GeneratedColumn<String>(
-      'description_fr', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _descriptionEnMeta =
-      const VerificationMeta('descriptionEn');
+    'description_fr',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionEnMeta = const VerificationMeta(
+    'descriptionEn',
+  );
   @override
   late final GeneratedColumn<String> descriptionEn = GeneratedColumn<String>(
-      'description_en', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _descriptionDeMeta =
-      const VerificationMeta('descriptionDe');
+    'description_en',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionDeMeta = const VerificationMeta(
+    'descriptionDe',
+  );
   @override
   late final GeneratedColumn<String> descriptionDe = GeneratedColumn<String>(
-      'description_de', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _descriptionItMeta =
-      const VerificationMeta('descriptionIt');
+    'description_de',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionItMeta = const VerificationMeta(
+    'descriptionIt',
+  );
   @override
   late final GeneratedColumn<String> descriptionIt = GeneratedColumn<String>(
-      'description_it', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _descriptionEsMeta =
-      const VerificationMeta('descriptionEs');
+    'description_it',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _descriptionEsMeta = const VerificationMeta(
+    'descriptionEs',
+  );
   @override
   late final GeneratedColumn<String> descriptionEs = GeneratedColumn<String>(
-      'description_es', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'description_es',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumn<String> type = GeneratedColumn<String>(
-      'type', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
   late final GeneratedColumn<double> lat = GeneratedColumn<double>(
-      'lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _lngMeta = const VerificationMeta('lng');
   @override
   late final GeneratedColumn<double> lng = GeneratedColumn<double>(
-      'lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _elevationMeta =
-      const VerificationMeta('elevation');
+    'lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elevationMeta = const VerificationMeta(
+    'elevation',
+  );
   @override
   late final GeneratedColumn<double> elevation = GeneratedColumn<double>(
-      'elevation', aliasedName, true,
-      type: DriftSqlType.double, requiredDuringInsert: false);
+    'elevation',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        stageId,
-        nameFr,
-        nameEn,
-        nameDe,
-        nameIt,
-        nameEs,
-        descriptionFr,
-        descriptionEn,
-        descriptionDe,
-        descriptionIt,
-        descriptionEs,
-        type,
-        lat,
-        lng,
-        elevation
-      ];
+    id,
+    stageId,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    descriptionFr,
+    descriptionEn,
+    descriptionDe,
+    descriptionIt,
+    descriptionEs,
+    type,
+    lat,
+    lng,
+    elevation,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'trail_pois';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailPoi> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailPoi> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -5911,92 +7045,127 @@ class $TrailPoisTable extends TrailPois
       context.missing(_idMeta);
     }
     if (data.containsKey('stage_id')) {
-      context.handle(_stageIdMeta,
-          stageId.isAcceptableOrUnknown(data['stage_id']!, _stageIdMeta));
+      context.handle(
+        _stageIdMeta,
+        stageId.isAcceptableOrUnknown(data['stage_id']!, _stageIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_stageIdMeta);
     }
     if (data.containsKey('name_fr')) {
-      context.handle(_nameFrMeta,
-          nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta));
+      context.handle(
+        _nameFrMeta,
+        nameFr.isAcceptableOrUnknown(data['name_fr']!, _nameFrMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameFrMeta);
     }
     if (data.containsKey('name_en')) {
-      context.handle(_nameEnMeta,
-          nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta));
+      context.handle(
+        _nameEnMeta,
+        nameEn.isAcceptableOrUnknown(data['name_en']!, _nameEnMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEnMeta);
     }
     if (data.containsKey('name_de')) {
-      context.handle(_nameDeMeta,
-          nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta));
+      context.handle(
+        _nameDeMeta,
+        nameDe.isAcceptableOrUnknown(data['name_de']!, _nameDeMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameDeMeta);
     }
     if (data.containsKey('name_it')) {
-      context.handle(_nameItMeta,
-          nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta));
+      context.handle(
+        _nameItMeta,
+        nameIt.isAcceptableOrUnknown(data['name_it']!, _nameItMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameItMeta);
     }
     if (data.containsKey('name_es')) {
-      context.handle(_nameEsMeta,
-          nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta));
+      context.handle(
+        _nameEsMeta,
+        nameEs.isAcceptableOrUnknown(data['name_es']!, _nameEsMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameEsMeta);
     }
     if (data.containsKey('description_fr')) {
       context.handle(
+        _descriptionFrMeta,
+        descriptionFr.isAcceptableOrUnknown(
+          data['description_fr']!,
           _descriptionFrMeta,
-          descriptionFr.isAcceptableOrUnknown(
-              data['description_fr']!, _descriptionFrMeta));
+        ),
+      );
     }
     if (data.containsKey('description_en')) {
       context.handle(
+        _descriptionEnMeta,
+        descriptionEn.isAcceptableOrUnknown(
+          data['description_en']!,
           _descriptionEnMeta,
-          descriptionEn.isAcceptableOrUnknown(
-              data['description_en']!, _descriptionEnMeta));
+        ),
+      );
     }
     if (data.containsKey('description_de')) {
       context.handle(
+        _descriptionDeMeta,
+        descriptionDe.isAcceptableOrUnknown(
+          data['description_de']!,
           _descriptionDeMeta,
-          descriptionDe.isAcceptableOrUnknown(
-              data['description_de']!, _descriptionDeMeta));
+        ),
+      );
     }
     if (data.containsKey('description_it')) {
       context.handle(
+        _descriptionItMeta,
+        descriptionIt.isAcceptableOrUnknown(
+          data['description_it']!,
           _descriptionItMeta,
-          descriptionIt.isAcceptableOrUnknown(
-              data['description_it']!, _descriptionItMeta));
+        ),
+      );
     }
     if (data.containsKey('description_es')) {
       context.handle(
+        _descriptionEsMeta,
+        descriptionEs.isAcceptableOrUnknown(
+          data['description_es']!,
           _descriptionEsMeta,
-          descriptionEs.isAcceptableOrUnknown(
-              data['description_es']!, _descriptionEsMeta));
+        ),
+      );
     }
     if (data.containsKey('type')) {
       context.handle(
-          _typeMeta, type.isAcceptableOrUnknown(data['type']!, _typeMeta));
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
     } else if (isInserting) {
       context.missing(_typeMeta);
     }
     if (data.containsKey('lat')) {
       context.handle(
-          _latMeta, lat.isAcceptableOrUnknown(data['lat']!, _latMeta));
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
     } else if (isInserting) {
       context.missing(_latMeta);
     }
     if (data.containsKey('lng')) {
       context.handle(
-          _lngMeta, lng.isAcceptableOrUnknown(data['lng']!, _lngMeta));
+        _lngMeta,
+        lng.isAcceptableOrUnknown(data['lng']!, _lngMeta),
+      );
     } else if (isInserting) {
       context.missing(_lngMeta);
     }
     if (data.containsKey('elevation')) {
-      context.handle(_elevationMeta,
-          elevation.isAcceptableOrUnknown(data['elevation']!, _elevationMeta));
+      context.handle(
+        _elevationMeta,
+        elevation.isAcceptableOrUnknown(data['elevation']!, _elevationMeta),
+      );
     }
     return context;
   }
@@ -6007,38 +7176,70 @@ class $TrailPoisTable extends TrailPois
   TrailPoi map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailPoi(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      stageId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}stage_id'])!,
-      nameFr: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_fr'])!,
-      nameEn: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_en'])!,
-      nameDe: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_de'])!,
-      nameIt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_it'])!,
-      nameEs: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name_es'])!,
-      descriptionFr: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description_fr']),
-      descriptionEn: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description_en']),
-      descriptionDe: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description_de']),
-      descriptionIt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description_it']),
-      descriptionEs: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}description_es']),
-      type: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
-      lat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lat'])!,
-      lng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lng'])!,
-      elevation: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}elevation']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      stageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stage_id'],
+      )!,
+      nameFr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_fr'],
+      )!,
+      nameEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_en'],
+      )!,
+      nameDe: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_de'],
+      )!,
+      nameIt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_it'],
+      )!,
+      nameEs: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name_es'],
+      )!,
+      descriptionFr: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description_fr'],
+      ),
+      descriptionEn: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description_en'],
+      ),
+      descriptionDe: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description_de'],
+      ),
+      descriptionIt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description_it'],
+      ),
+      descriptionEs: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description_es'],
+      ),
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      lat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lat'],
+      )!,
+      lng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lng'],
+      )!,
+      elevation: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}elevation'],
+      ),
     );
   }
 
@@ -6096,23 +7297,24 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
 
   /// Altitude en metres (nullable)
   final double? elevation;
-  const TrailPoi(
-      {required this.id,
-      required this.stageId,
-      required this.nameFr,
-      required this.nameEn,
-      required this.nameDe,
-      required this.nameIt,
-      required this.nameEs,
-      this.descriptionFr,
-      this.descriptionEn,
-      this.descriptionDe,
-      this.descriptionIt,
-      this.descriptionEs,
-      required this.type,
-      required this.lat,
-      required this.lng,
-      this.elevation});
+  const TrailPoi({
+    required this.id,
+    required this.stageId,
+    required this.nameFr,
+    required this.nameEn,
+    required this.nameDe,
+    required this.nameIt,
+    required this.nameEs,
+    this.descriptionFr,
+    this.descriptionEn,
+    this.descriptionDe,
+    this.descriptionIt,
+    this.descriptionEs,
+    required this.type,
+    required this.lat,
+    required this.lng,
+    this.elevation,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -6180,8 +7382,10 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     );
   }
 
-  factory TrailPoi.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailPoi.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailPoi(
       id: serializer.fromJson<String>(json['id']),
@@ -6225,46 +7429,51 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
     };
   }
 
-  TrailPoi copyWith(
-          {String? id,
-          String? stageId,
-          String? nameFr,
-          String? nameEn,
-          String? nameDe,
-          String? nameIt,
-          String? nameEs,
-          Value<String?> descriptionFr = const Value.absent(),
-          Value<String?> descriptionEn = const Value.absent(),
-          Value<String?> descriptionDe = const Value.absent(),
-          Value<String?> descriptionIt = const Value.absent(),
-          Value<String?> descriptionEs = const Value.absent(),
-          String? type,
-          double? lat,
-          double? lng,
-          Value<double?> elevation = const Value.absent()}) =>
-      TrailPoi(
-        id: id ?? this.id,
-        stageId: stageId ?? this.stageId,
-        nameFr: nameFr ?? this.nameFr,
-        nameEn: nameEn ?? this.nameEn,
-        nameDe: nameDe ?? this.nameDe,
-        nameIt: nameIt ?? this.nameIt,
-        nameEs: nameEs ?? this.nameEs,
-        descriptionFr:
-            descriptionFr.present ? descriptionFr.value : this.descriptionFr,
-        descriptionEn:
-            descriptionEn.present ? descriptionEn.value : this.descriptionEn,
-        descriptionDe:
-            descriptionDe.present ? descriptionDe.value : this.descriptionDe,
-        descriptionIt:
-            descriptionIt.present ? descriptionIt.value : this.descriptionIt,
-        descriptionEs:
-            descriptionEs.present ? descriptionEs.value : this.descriptionEs,
-        type: type ?? this.type,
-        lat: lat ?? this.lat,
-        lng: lng ?? this.lng,
-        elevation: elevation.present ? elevation.value : this.elevation,
-      );
+  TrailPoi copyWith({
+    String? id,
+    String? stageId,
+    String? nameFr,
+    String? nameEn,
+    String? nameDe,
+    String? nameIt,
+    String? nameEs,
+    Value<String?> descriptionFr = const Value.absent(),
+    Value<String?> descriptionEn = const Value.absent(),
+    Value<String?> descriptionDe = const Value.absent(),
+    Value<String?> descriptionIt = const Value.absent(),
+    Value<String?> descriptionEs = const Value.absent(),
+    String? type,
+    double? lat,
+    double? lng,
+    Value<double?> elevation = const Value.absent(),
+  }) => TrailPoi(
+    id: id ?? this.id,
+    stageId: stageId ?? this.stageId,
+    nameFr: nameFr ?? this.nameFr,
+    nameEn: nameEn ?? this.nameEn,
+    nameDe: nameDe ?? this.nameDe,
+    nameIt: nameIt ?? this.nameIt,
+    nameEs: nameEs ?? this.nameEs,
+    descriptionFr: descriptionFr.present
+        ? descriptionFr.value
+        : this.descriptionFr,
+    descriptionEn: descriptionEn.present
+        ? descriptionEn.value
+        : this.descriptionEn,
+    descriptionDe: descriptionDe.present
+        ? descriptionDe.value
+        : this.descriptionDe,
+    descriptionIt: descriptionIt.present
+        ? descriptionIt.value
+        : this.descriptionIt,
+    descriptionEs: descriptionEs.present
+        ? descriptionEs.value
+        : this.descriptionEs,
+    type: type ?? this.type,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
+    elevation: elevation.present ? elevation.value : this.elevation,
+  );
   TrailPoi copyWithCompanion(TrailPoisCompanion data) {
     return TrailPoi(
       id: data.id.present ? data.id.value : this.id,
@@ -6321,22 +7530,23 @@ class TrailPoi extends DataClass implements Insertable<TrailPoi> {
 
   @override
   int get hashCode => Object.hash(
-      id,
-      stageId,
-      nameFr,
-      nameEn,
-      nameDe,
-      nameIt,
-      nameEs,
-      descriptionFr,
-      descriptionEn,
-      descriptionDe,
-      descriptionIt,
-      descriptionEs,
-      type,
-      lat,
-      lng,
-      elevation);
+    id,
+    stageId,
+    nameFr,
+    nameEn,
+    nameDe,
+    nameIt,
+    nameEs,
+    descriptionFr,
+    descriptionEn,
+    descriptionDe,
+    descriptionIt,
+    descriptionEs,
+    type,
+    lat,
+    lng,
+    elevation,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -6414,16 +7624,16 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     required double lng,
     this.elevation = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        stageId = Value(stageId),
-        nameFr = Value(nameFr),
-        nameEn = Value(nameEn),
-        nameDe = Value(nameDe),
-        nameIt = Value(nameIt),
-        nameEs = Value(nameEs),
-        type = Value(type),
-        lat = Value(lat),
-        lng = Value(lng);
+  }) : id = Value(id),
+       stageId = Value(stageId),
+       nameFr = Value(nameFr),
+       nameEn = Value(nameEn),
+       nameDe = Value(nameDe),
+       nameIt = Value(nameIt),
+       nameEs = Value(nameEs),
+       type = Value(type),
+       lat = Value(lat),
+       lng = Value(lng);
   static Insertable<TrailPoi> custom({
     Expression<String>? id,
     Expression<String>? stageId,
@@ -6464,24 +7674,25 @@ class TrailPoisCompanion extends UpdateCompanion<TrailPoi> {
     });
   }
 
-  TrailPoisCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? stageId,
-      Value<String>? nameFr,
-      Value<String>? nameEn,
-      Value<String>? nameDe,
-      Value<String>? nameIt,
-      Value<String>? nameEs,
-      Value<String?>? descriptionFr,
-      Value<String?>? descriptionEn,
-      Value<String?>? descriptionDe,
-      Value<String?>? descriptionIt,
-      Value<String?>? descriptionEs,
-      Value<String>? type,
-      Value<double>? lat,
-      Value<double>? lng,
-      Value<double?>? elevation,
-      Value<int>? rowid}) {
+  TrailPoisCompanion copyWith({
+    Value<String>? id,
+    Value<String>? stageId,
+    Value<String>? nameFr,
+    Value<String>? nameEn,
+    Value<String>? nameDe,
+    Value<String>? nameIt,
+    Value<String>? nameEs,
+    Value<String?>? descriptionFr,
+    Value<String?>? descriptionEn,
+    Value<String?>? descriptionDe,
+    Value<String?>? descriptionIt,
+    Value<String?>? descriptionEs,
+    Value<String>? type,
+    Value<double>? lat,
+    Value<double>? lng,
+    Value<double?>? elevation,
+    Value<int>? rowid,
+  }) {
     return TrailPoisCompanion(
       id: id ?? this.id,
       stageId: stageId ?? this.stageId,
@@ -6594,25 +7805,43 @@ class $TrailGpxTracksTable extends TrailGpxTracks
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<String> id = GeneratedColumn<String>(
-      'id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _itineraryIdMeta =
-      const VerificationMeta('itineraryId');
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _itineraryIdMeta = const VerificationMeta(
+    'itineraryId',
+  );
   @override
   late final GeneratedColumn<String> itineraryId = GeneratedColumn<String>(
-      'itinerary_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'itinerary_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
-      'name', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _sourceUrlMeta =
-      const VerificationMeta('sourceUrl');
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sourceUrlMeta = const VerificationMeta(
+    'sourceUrl',
+  );
   @override
   late final GeneratedColumn<String> sourceUrl = GeneratedColumn<String>(
-      'source_url', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
+    'source_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [id, itineraryId, name, sourceUrl];
   @override
@@ -6621,8 +7850,10 @@ class $TrailGpxTracksTable extends TrailGpxTracks
   String get actualTableName => $name;
   static const String $name = 'trail_gpx_tracks';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailGpxTrack> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailGpxTrack> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
@@ -6632,21 +7863,28 @@ class $TrailGpxTracksTable extends TrailGpxTracks
     }
     if (data.containsKey('itinerary_id')) {
       context.handle(
+        _itineraryIdMeta,
+        itineraryId.isAcceptableOrUnknown(
+          data['itinerary_id']!,
           _itineraryIdMeta,
-          itineraryId.isAcceptableOrUnknown(
-              data['itinerary_id']!, _itineraryIdMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_itineraryIdMeta);
     }
     if (data.containsKey('name')) {
       context.handle(
-          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
     if (data.containsKey('source_url')) {
-      context.handle(_sourceUrlMeta,
-          sourceUrl.isAcceptableOrUnknown(data['source_url']!, _sourceUrlMeta));
+      context.handle(
+        _sourceUrlMeta,
+        sourceUrl.isAcceptableOrUnknown(data['source_url']!, _sourceUrlMeta),
+      );
     }
     return context;
   }
@@ -6657,14 +7895,22 @@ class $TrailGpxTracksTable extends TrailGpxTracks
   TrailGpxTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailGpxTrack(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}id'])!,
-      itineraryId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}itinerary_id'])!,
-      name: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
-      sourceUrl: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}source_url']),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      itineraryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}itinerary_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      sourceUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source_url'],
+      ),
     );
   }
 
@@ -6686,11 +7932,12 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
 
   /// URL source du fichier GPX (nullable)
   final String? sourceUrl;
-  const TrailGpxTrack(
-      {required this.id,
-      required this.itineraryId,
-      required this.name,
-      this.sourceUrl});
+  const TrailGpxTrack({
+    required this.id,
+    required this.itineraryId,
+    required this.name,
+    this.sourceUrl,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -6714,8 +7961,10 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
     );
   }
 
-  factory TrailGpxTrack.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailGpxTrack.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailGpxTrack(
       id: serializer.fromJson<String>(json['id']),
@@ -6735,22 +7984,23 @@ class TrailGpxTrack extends DataClass implements Insertable<TrailGpxTrack> {
     };
   }
 
-  TrailGpxTrack copyWith(
-          {String? id,
-          String? itineraryId,
-          String? name,
-          Value<String?> sourceUrl = const Value.absent()}) =>
-      TrailGpxTrack(
-        id: id ?? this.id,
-        itineraryId: itineraryId ?? this.itineraryId,
-        name: name ?? this.name,
-        sourceUrl: sourceUrl.present ? sourceUrl.value : this.sourceUrl,
-      );
+  TrailGpxTrack copyWith({
+    String? id,
+    String? itineraryId,
+    String? name,
+    Value<String?> sourceUrl = const Value.absent(),
+  }) => TrailGpxTrack(
+    id: id ?? this.id,
+    itineraryId: itineraryId ?? this.itineraryId,
+    name: name ?? this.name,
+    sourceUrl: sourceUrl.present ? sourceUrl.value : this.sourceUrl,
+  );
   TrailGpxTrack copyWithCompanion(TrailGpxTracksCompanion data) {
     return TrailGpxTrack(
       id: data.id.present ? data.id.value : this.id,
-      itineraryId:
-          data.itineraryId.present ? data.itineraryId.value : this.itineraryId,
+      itineraryId: data.itineraryId.present
+          ? data.itineraryId.value
+          : this.itineraryId,
       name: data.name.present ? data.name.value : this.name,
       sourceUrl: data.sourceUrl.present ? data.sourceUrl.value : this.sourceUrl,
     );
@@ -6798,9 +8048,9 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     required String name,
     this.sourceUrl = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : id = Value(id),
-        itineraryId = Value(itineraryId),
-        name = Value(name);
+  }) : id = Value(id),
+       itineraryId = Value(itineraryId),
+       name = Value(name);
   static Insertable<TrailGpxTrack> custom({
     Expression<String>? id,
     Expression<String>? itineraryId,
@@ -6817,12 +8067,13 @@ class TrailGpxTracksCompanion extends UpdateCompanion<TrailGpxTrack> {
     });
   }
 
-  TrailGpxTracksCompanion copyWith(
-      {Value<String>? id,
-      Value<String>? itineraryId,
-      Value<String>? name,
-      Value<String?>? sourceUrl,
-      Value<int>? rowid}) {
+  TrailGpxTracksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? itineraryId,
+    Value<String>? name,
+    Value<String?>? sourceUrl,
+    Value<int>? rowid,
+  }) {
     return TrailGpxTracksCompanion(
       id: id ?? this.id,
       itineraryId: itineraryId ?? this.itineraryId,
@@ -6875,85 +8126,131 @@ class $TrailGpxPointsTable extends TrailGpxPoints
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trackIdMeta =
-      const VerificationMeta('trackId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trackIdMeta = const VerificationMeta(
+    'trackId',
+  );
   @override
   late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
-      'track_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'track_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
   late final GeneratedColumn<double> lat = GeneratedColumn<double>(
-      'lat', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
+    'lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _lngMeta = const VerificationMeta('lng');
   @override
   late final GeneratedColumn<double> lng = GeneratedColumn<double>(
-      'lng', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _elevationMeta =
-      const VerificationMeta('elevation');
+    'lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _elevationMeta = const VerificationMeta(
+    'elevation',
+  );
   @override
   late final GeneratedColumn<double> elevation = GeneratedColumn<double>(
-      'elevation', aliasedName, false,
-      type: DriftSqlType.double, requiredDuringInsert: true);
-  static const VerificationMeta _sequenceIndexMeta =
-      const VerificationMeta('sequenceIndex');
+    'elevation',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sequenceIndexMeta = const VerificationMeta(
+    'sequenceIndex',
+  );
   @override
   late final GeneratedColumn<int> sequenceIndex = GeneratedColumn<int>(
-      'sequence_index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'sequence_index',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, trackId, lat, lng, elevation, sequenceIndex];
+  List<GeneratedColumn> get $columns => [
+    id,
+    trackId,
+    lat,
+    lng,
+    elevation,
+    sequenceIndex,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'trail_gpx_points';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailGpxPoint> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailGpxPoint> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('track_id')) {
-      context.handle(_trackIdMeta,
-          trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta));
+      context.handle(
+        _trackIdMeta,
+        trackId.isAcceptableOrUnknown(data['track_id']!, _trackIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trackIdMeta);
     }
     if (data.containsKey('lat')) {
       context.handle(
-          _latMeta, lat.isAcceptableOrUnknown(data['lat']!, _latMeta));
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
     } else if (isInserting) {
       context.missing(_latMeta);
     }
     if (data.containsKey('lng')) {
       context.handle(
-          _lngMeta, lng.isAcceptableOrUnknown(data['lng']!, _lngMeta));
+        _lngMeta,
+        lng.isAcceptableOrUnknown(data['lng']!, _lngMeta),
+      );
     } else if (isInserting) {
       context.missing(_lngMeta);
     }
     if (data.containsKey('elevation')) {
-      context.handle(_elevationMeta,
-          elevation.isAcceptableOrUnknown(data['elevation']!, _elevationMeta));
+      context.handle(
+        _elevationMeta,
+        elevation.isAcceptableOrUnknown(data['elevation']!, _elevationMeta),
+      );
     } else if (isInserting) {
       context.missing(_elevationMeta);
     }
     if (data.containsKey('sequence_index')) {
       context.handle(
+        _sequenceIndexMeta,
+        sequenceIndex.isAcceptableOrUnknown(
+          data['sequence_index']!,
           _sequenceIndexMeta,
-          sequenceIndex.isAcceptableOrUnknown(
-              data['sequence_index']!, _sequenceIndexMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_sequenceIndexMeta);
     }
@@ -6966,18 +8263,30 @@ class $TrailGpxPointsTable extends TrailGpxPoints
   TrailGpxPoint map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailGpxPoint(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trackId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}track_id'])!,
-      lat: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lat'])!,
-      lng: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}lng'])!,
-      elevation: attachedDatabase.typeMapping
-          .read(DriftSqlType.double, data['${effectivePrefix}elevation'])!,
-      sequenceIndex: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}sequence_index'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trackId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}track_id'],
+      )!,
+      lat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lat'],
+      )!,
+      lng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lng'],
+      )!,
+      elevation: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}elevation'],
+      )!,
+      sequenceIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sequence_index'],
+      )!,
     );
   }
 
@@ -7005,13 +8314,14 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
 
   /// Index de sequence pour l'ordre des points
   final int sequenceIndex;
-  const TrailGpxPoint(
-      {required this.id,
-      required this.trackId,
-      required this.lat,
-      required this.lng,
-      required this.elevation,
-      required this.sequenceIndex});
+  const TrailGpxPoint({
+    required this.id,
+    required this.trackId,
+    required this.lat,
+    required this.lng,
+    required this.elevation,
+    required this.sequenceIndex,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -7035,8 +8345,10 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     );
   }
 
-  factory TrailGpxPoint.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailGpxPoint.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailGpxPoint(
       id: serializer.fromJson<int>(json['id']),
@@ -7060,21 +8372,21 @@ class TrailGpxPoint extends DataClass implements Insertable<TrailGpxPoint> {
     };
   }
 
-  TrailGpxPoint copyWith(
-          {int? id,
-          String? trackId,
-          double? lat,
-          double? lng,
-          double? elevation,
-          int? sequenceIndex}) =>
-      TrailGpxPoint(
-        id: id ?? this.id,
-        trackId: trackId ?? this.trackId,
-        lat: lat ?? this.lat,
-        lng: lng ?? this.lng,
-        elevation: elevation ?? this.elevation,
-        sequenceIndex: sequenceIndex ?? this.sequenceIndex,
-      );
+  TrailGpxPoint copyWith({
+    int? id,
+    String? trackId,
+    double? lat,
+    double? lng,
+    double? elevation,
+    int? sequenceIndex,
+  }) => TrailGpxPoint(
+    id: id ?? this.id,
+    trackId: trackId ?? this.trackId,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
+    elevation: elevation ?? this.elevation,
+    sequenceIndex: sequenceIndex ?? this.sequenceIndex,
+  );
   TrailGpxPoint copyWithCompanion(TrailGpxPointsCompanion data) {
     return TrailGpxPoint(
       id: data.id.present ? data.id.value : this.id,
@@ -7138,11 +8450,11 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     required double lng,
     required double elevation,
     required int sequenceIndex,
-  })  : trackId = Value(trackId),
-        lat = Value(lat),
-        lng = Value(lng),
-        elevation = Value(elevation),
-        sequenceIndex = Value(sequenceIndex);
+  }) : trackId = Value(trackId),
+       lat = Value(lat),
+       lng = Value(lng),
+       elevation = Value(elevation),
+       sequenceIndex = Value(sequenceIndex);
   static Insertable<TrailGpxPoint> custom({
     Expression<int>? id,
     Expression<String>? trackId,
@@ -7161,13 +8473,14 @@ class TrailGpxPointsCompanion extends UpdateCompanion<TrailGpxPoint> {
     });
   }
 
-  TrailGpxPointsCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trackId,
-      Value<double>? lat,
-      Value<double>? lng,
-      Value<double>? elevation,
-      Value<int>? sequenceIndex}) {
+  TrailGpxPointsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trackId,
+    Value<double>? lat,
+    Value<double>? lng,
+    Value<double>? elevation,
+    Value<int>? sequenceIndex,
+  }) {
     return TrailGpxPointsCompanion(
       id: id ?? this.id,
       trackId: trackId ?? this.trackId,
@@ -7222,124 +8535,183 @@ class $TrailManifestsTable extends TrailManifests
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $TrailManifestsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dataVersionMeta =
-      const VerificationMeta('dataVersion');
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dataVersionMeta = const VerificationMeta(
+    'dataVersion',
+  );
   @override
   late final GeneratedColumn<int> dataVersion = GeneratedColumn<int>(
-      'data_version', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'data_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _hashMeta = const VerificationMeta('hash');
   @override
   late final GeneratedColumn<String> hash = GeneratedColumn<String>(
-      'hash', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _filePathMeta =
-      const VerificationMeta('filePath');
+    'hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _filePathMeta = const VerificationMeta(
+    'filePath',
+  );
   @override
   late final GeneratedColumn<String> filePath = GeneratedColumn<String>(
-      'file_path', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _fileSizeMeta =
-      const VerificationMeta('fileSize');
+    'file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileSizeMeta = const VerificationMeta(
+    'fileSize',
+  );
   @override
   late final GeneratedColumn<int> fileSize = GeneratedColumn<int>(
-      'file_size', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+    'file_size',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
-      'status', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _lastUpdatedMeta =
-      const VerificationMeta('lastUpdated');
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdatedMeta = const VerificationMeta(
+    'lastUpdated',
+  );
   @override
   late final GeneratedColumn<String> lastUpdated = GeneratedColumn<String>(
-      'last_updated', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _localVersionMeta =
-      const VerificationMeta('localVersion');
+    'last_updated',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localVersionMeta = const VerificationMeta(
+    'localVersion',
+  );
   @override
   late final GeneratedColumn<int> localVersion = GeneratedColumn<int>(
-      'local_version', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+    'local_version',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        trailId,
-        dataVersion,
-        hash,
-        filePath,
-        fileSize,
-        status,
-        lastUpdated,
-        localVersion
-      ];
+    trailId,
+    dataVersion,
+    hash,
+    filePath,
+    fileSize,
+    status,
+    lastUpdated,
+    localVersion,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'trail_manifests';
   @override
-  VerificationContext validateIntegrity(Insertable<TrailManifest> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<TrailManifest> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('data_version')) {
       context.handle(
+        _dataVersionMeta,
+        dataVersion.isAcceptableOrUnknown(
+          data['data_version']!,
           _dataVersionMeta,
-          dataVersion.isAcceptableOrUnknown(
-              data['data_version']!, _dataVersionMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_dataVersionMeta);
     }
     if (data.containsKey('hash')) {
       context.handle(
-          _hashMeta, hash.isAcceptableOrUnknown(data['hash']!, _hashMeta));
+        _hashMeta,
+        hash.isAcceptableOrUnknown(data['hash']!, _hashMeta),
+      );
     } else if (isInserting) {
       context.missing(_hashMeta);
     }
     if (data.containsKey('file_path')) {
-      context.handle(_filePathMeta,
-          filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta));
+      context.handle(
+        _filePathMeta,
+        filePath.isAcceptableOrUnknown(data['file_path']!, _filePathMeta),
+      );
     } else if (isInserting) {
       context.missing(_filePathMeta);
     }
     if (data.containsKey('file_size')) {
-      context.handle(_fileSizeMeta,
-          fileSize.isAcceptableOrUnknown(data['file_size']!, _fileSizeMeta));
+      context.handle(
+        _fileSizeMeta,
+        fileSize.isAcceptableOrUnknown(data['file_size']!, _fileSizeMeta),
+      );
     } else if (isInserting) {
       context.missing(_fileSizeMeta);
     }
     if (data.containsKey('status')) {
-      context.handle(_statusMeta,
-          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
     if (data.containsKey('last_updated')) {
       context.handle(
+        _lastUpdatedMeta,
+        lastUpdated.isAcceptableOrUnknown(
+          data['last_updated']!,
           _lastUpdatedMeta,
-          lastUpdated.isAcceptableOrUnknown(
-              data['last_updated']!, _lastUpdatedMeta));
+        ),
+      );
     } else if (isInserting) {
       context.missing(_lastUpdatedMeta);
     }
     if (data.containsKey('local_version')) {
       context.handle(
+        _localVersionMeta,
+        localVersion.isAcceptableOrUnknown(
+          data['local_version']!,
           _localVersionMeta,
-          localVersion.isAcceptableOrUnknown(
-              data['local_version']!, _localVersionMeta));
+        ),
+      );
     }
     return context;
   }
@@ -7350,22 +8722,38 @@ class $TrailManifestsTable extends TrailManifests
   TrailManifest map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return TrailManifest(
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      dataVersion: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}data_version'])!,
-      hash: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}hash'])!,
-      filePath: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}file_path'])!,
-      fileSize: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}file_size'])!,
-      status: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
-      lastUpdated: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}last_updated'])!,
-      localVersion: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}local_version']),
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      dataVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}data_version'],
+      )!,
+      hash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}hash'],
+      )!,
+      filePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_path'],
+      )!,
+      fileSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}file_size'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      lastUpdated: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_updated'],
+      )!,
+      localVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}local_version'],
+      ),
     );
   }
 
@@ -7399,15 +8787,16 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
 
   /// Version telechargee localement (null = jamais telecharge)
   final int? localVersion;
-  const TrailManifest(
-      {required this.trailId,
-      required this.dataVersion,
-      required this.hash,
-      required this.filePath,
-      required this.fileSize,
-      required this.status,
-      required this.lastUpdated,
-      this.localVersion});
+  const TrailManifest({
+    required this.trailId,
+    required this.dataVersion,
+    required this.hash,
+    required this.filePath,
+    required this.fileSize,
+    required this.status,
+    required this.lastUpdated,
+    this.localVersion,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -7439,8 +8828,10 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     );
   }
 
-  factory TrailManifest.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory TrailManifest.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return TrailManifest(
       trailId: serializer.fromJson<String>(json['trailId']),
@@ -7468,37 +8859,38 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
     };
   }
 
-  TrailManifest copyWith(
-          {String? trailId,
-          int? dataVersion,
-          String? hash,
-          String? filePath,
-          int? fileSize,
-          String? status,
-          String? lastUpdated,
-          Value<int?> localVersion = const Value.absent()}) =>
-      TrailManifest(
-        trailId: trailId ?? this.trailId,
-        dataVersion: dataVersion ?? this.dataVersion,
-        hash: hash ?? this.hash,
-        filePath: filePath ?? this.filePath,
-        fileSize: fileSize ?? this.fileSize,
-        status: status ?? this.status,
-        lastUpdated: lastUpdated ?? this.lastUpdated,
-        localVersion:
-            localVersion.present ? localVersion.value : this.localVersion,
-      );
+  TrailManifest copyWith({
+    String? trailId,
+    int? dataVersion,
+    String? hash,
+    String? filePath,
+    int? fileSize,
+    String? status,
+    String? lastUpdated,
+    Value<int?> localVersion = const Value.absent(),
+  }) => TrailManifest(
+    trailId: trailId ?? this.trailId,
+    dataVersion: dataVersion ?? this.dataVersion,
+    hash: hash ?? this.hash,
+    filePath: filePath ?? this.filePath,
+    fileSize: fileSize ?? this.fileSize,
+    status: status ?? this.status,
+    lastUpdated: lastUpdated ?? this.lastUpdated,
+    localVersion: localVersion.present ? localVersion.value : this.localVersion,
+  );
   TrailManifest copyWithCompanion(TrailManifestsCompanion data) {
     return TrailManifest(
       trailId: data.trailId.present ? data.trailId.value : this.trailId,
-      dataVersion:
-          data.dataVersion.present ? data.dataVersion.value : this.dataVersion,
+      dataVersion: data.dataVersion.present
+          ? data.dataVersion.value
+          : this.dataVersion,
       hash: data.hash.present ? data.hash.value : this.hash,
       filePath: data.filePath.present ? data.filePath.value : this.filePath,
       fileSize: data.fileSize.present ? data.fileSize.value : this.fileSize,
       status: data.status.present ? data.status.value : this.status,
-      lastUpdated:
-          data.lastUpdated.present ? data.lastUpdated.value : this.lastUpdated,
+      lastUpdated: data.lastUpdated.present
+          ? data.lastUpdated.value
+          : this.lastUpdated,
       localVersion: data.localVersion.present
           ? data.localVersion.value
           : this.localVersion,
@@ -7521,8 +8913,16 @@ class TrailManifest extends DataClass implements Insertable<TrailManifest> {
   }
 
   @override
-  int get hashCode => Object.hash(trailId, dataVersion, hash, filePath,
-      fileSize, status, lastUpdated, localVersion);
+  int get hashCode => Object.hash(
+    trailId,
+    dataVersion,
+    hash,
+    filePath,
+    fileSize,
+    status,
+    lastUpdated,
+    localVersion,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -7568,13 +8968,13 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     required String lastUpdated,
     this.localVersion = const Value.absent(),
     this.rowid = const Value.absent(),
-  })  : trailId = Value(trailId),
-        dataVersion = Value(dataVersion),
-        hash = Value(hash),
-        filePath = Value(filePath),
-        fileSize = Value(fileSize),
-        status = Value(status),
-        lastUpdated = Value(lastUpdated);
+  }) : trailId = Value(trailId),
+       dataVersion = Value(dataVersion),
+       hash = Value(hash),
+       filePath = Value(filePath),
+       fileSize = Value(fileSize),
+       status = Value(status),
+       lastUpdated = Value(lastUpdated);
   static Insertable<TrailManifest> custom({
     Expression<String>? trailId,
     Expression<int>? dataVersion,
@@ -7599,16 +8999,17 @@ class TrailManifestsCompanion extends UpdateCompanion<TrailManifest> {
     });
   }
 
-  TrailManifestsCompanion copyWith(
-      {Value<String>? trailId,
-      Value<int>? dataVersion,
-      Value<String>? hash,
-      Value<String>? filePath,
-      Value<int>? fileSize,
-      Value<String>? status,
-      Value<String>? lastUpdated,
-      Value<int?>? localVersion,
-      Value<int>? rowid}) {
+  TrailManifestsCompanion copyWith({
+    Value<String>? trailId,
+    Value<int>? dataVersion,
+    Value<String>? hash,
+    Value<String>? filePath,
+    Value<int>? fileSize,
+    Value<String>? status,
+    Value<String>? lastUpdated,
+    Value<int?>? localVersion,
+    Value<int>? rowid,
+  }) {
     return TrailManifestsCompanion(
       trailId: trailId ?? this.trailId,
       dataVersion: dataVersion ?? this.dataVersion,
@@ -7681,117 +9082,167 @@ class $SyncQueueTable extends SyncQueue
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _trailIdMeta =
-      const VerificationMeta('trailId');
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
   @override
   late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
-      'trail_id', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _actionMeta = const VerificationMeta('action');
   @override
   late final GeneratedColumn<String> action = GeneratedColumn<String>(
-      'action', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+    'action',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<String> status = GeneratedColumn<String>(
-      'status', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant('pending'));
-  static const VerificationMeta _payloadMeta =
-      const VerificationMeta('payload');
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
   @override
   late final GeneratedColumn<String> payload = GeneratedColumn<String>(
-      'payload', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _createdAtMeta =
-      const VerificationMeta('createdAt');
+    'payload',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
   @override
   late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
-      'created_at', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _completedAtMeta =
-      const VerificationMeta('completedAt');
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
   @override
   late final GeneratedColumn<String> completedAt = GeneratedColumn<String>(
-      'completed_at', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  static const VerificationMeta _retryCountMeta =
-      const VerificationMeta('retryCount');
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _retryCountMeta = const VerificationMeta(
+    'retryCount',
+  );
   @override
   late final GeneratedColumn<int> retryCount = GeneratedColumn<int>(
-      'retry_count', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultValue: const Constant(0));
+    'retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   @override
   List<GeneratedColumn> get $columns => [
-        id,
-        trailId,
-        action,
-        status,
-        payload,
-        createdAt,
-        completedAt,
-        retryCount
-      ];
+    id,
+    trailId,
+    action,
+    status,
+    payload,
+    createdAt,
+    completedAt,
+    retryCount,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
   static const String $name = 'sync_queue';
   @override
-  VerificationContext validateIntegrity(Insertable<SyncQueueData> instance,
-      {bool isInserting = false}) {
+  VerificationContext validateIntegrity(
+    Insertable<SyncQueueData> instance, {
+    bool isInserting = false,
+  }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
     if (data.containsKey('trail_id')) {
-      context.handle(_trailIdMeta,
-          trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta));
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
     }
     if (data.containsKey('action')) {
-      context.handle(_actionMeta,
-          action.isAcceptableOrUnknown(data['action']!, _actionMeta));
+      context.handle(
+        _actionMeta,
+        action.isAcceptableOrUnknown(data['action']!, _actionMeta),
+      );
     } else if (isInserting) {
       context.missing(_actionMeta);
     }
     if (data.containsKey('status')) {
-      context.handle(_statusMeta,
-          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
     }
     if (data.containsKey('payload')) {
-      context.handle(_payloadMeta,
-          payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta));
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
     }
     if (data.containsKey('created_at')) {
-      context.handle(_createdAtMeta,
-          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
     if (data.containsKey('completed_at')) {
       context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
           _completedAtMeta,
-          completedAt.isAcceptableOrUnknown(
-              data['completed_at']!, _completedAtMeta));
+        ),
+      );
     }
     if (data.containsKey('retry_count')) {
       context.handle(
-          _retryCountMeta,
-          retryCount.isAcceptableOrUnknown(
-              data['retry_count']!, _retryCountMeta));
+        _retryCountMeta,
+        retryCount.isAcceptableOrUnknown(data['retry_count']!, _retryCountMeta),
+      );
     }
     return context;
   }
@@ -7802,22 +9253,38 @@ class $SyncQueueTable extends SyncQueue
   SyncQueueData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
     return SyncQueueData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      trailId: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}trail_id'])!,
-      action: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}action'])!,
-      status: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}status'])!,
-      payload: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}payload']),
-      createdAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}created_at'])!,
-      completedAt: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}completed_at']),
-      retryCount: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}retry_count'])!,
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      action: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}action'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}completed_at'],
+      ),
+      retryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}retry_count'],
+      )!,
     );
   }
 
@@ -7851,15 +9318,16 @@ class SyncQueueData extends DataClass implements Insertable<SyncQueueData> {
 
   /// Nombre de tentatives echouees
   final int retryCount;
-  const SyncQueueData(
-      {required this.id,
-      required this.trailId,
-      required this.action,
-      required this.status,
-      this.payload,
-      required this.createdAt,
-      this.completedAt,
-      required this.retryCount});
+  const SyncQueueData({
+    required this.id,
+    required this.trailId,
+    required this.action,
+    required this.status,
+    this.payload,
+    required this.createdAt,
+    this.completedAt,
+    required this.retryCount,
+  });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -7895,8 +9363,10 @@ class SyncQueueData extends DataClass implements Insertable<SyncQueueData> {
     );
   }
 
-  factory SyncQueueData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
+  factory SyncQueueData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return SyncQueueData(
       id: serializer.fromJson<int>(json['id']),
@@ -7924,25 +9394,25 @@ class SyncQueueData extends DataClass implements Insertable<SyncQueueData> {
     };
   }
 
-  SyncQueueData copyWith(
-          {int? id,
-          String? trailId,
-          String? action,
-          String? status,
-          Value<String?> payload = const Value.absent(),
-          String? createdAt,
-          Value<String?> completedAt = const Value.absent(),
-          int? retryCount}) =>
-      SyncQueueData(
-        id: id ?? this.id,
-        trailId: trailId ?? this.trailId,
-        action: action ?? this.action,
-        status: status ?? this.status,
-        payload: payload.present ? payload.value : this.payload,
-        createdAt: createdAt ?? this.createdAt,
-        completedAt: completedAt.present ? completedAt.value : this.completedAt,
-        retryCount: retryCount ?? this.retryCount,
-      );
+  SyncQueueData copyWith({
+    int? id,
+    String? trailId,
+    String? action,
+    String? status,
+    Value<String?> payload = const Value.absent(),
+    String? createdAt,
+    Value<String?> completedAt = const Value.absent(),
+    int? retryCount,
+  }) => SyncQueueData(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    action: action ?? this.action,
+    status: status ?? this.status,
+    payload: payload.present ? payload.value : this.payload,
+    createdAt: createdAt ?? this.createdAt,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    retryCount: retryCount ?? this.retryCount,
+  );
   SyncQueueData copyWithCompanion(SyncQueueCompanion data) {
     return SyncQueueData(
       id: data.id.present ? data.id.value : this.id,
@@ -7951,10 +9421,12 @@ class SyncQueueData extends DataClass implements Insertable<SyncQueueData> {
       status: data.status.present ? data.status.value : this.status,
       payload: data.payload.present ? data.payload.value : this.payload,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      completedAt:
-          data.completedAt.present ? data.completedAt.value : this.completedAt,
-      retryCount:
-          data.retryCount.present ? data.retryCount.value : this.retryCount,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+      retryCount: data.retryCount.present
+          ? data.retryCount.value
+          : this.retryCount,
     );
   }
 
@@ -7975,7 +9447,15 @@ class SyncQueueData extends DataClass implements Insertable<SyncQueueData> {
 
   @override
   int get hashCode => Object.hash(
-      id, trailId, action, status, payload, createdAt, completedAt, retryCount);
+    id,
+    trailId,
+    action,
+    status,
+    payload,
+    createdAt,
+    completedAt,
+    retryCount,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -8018,9 +9498,9 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueData> {
     required String createdAt,
     this.completedAt = const Value.absent(),
     this.retryCount = const Value.absent(),
-  })  : trailId = Value(trailId),
-        action = Value(action),
-        createdAt = Value(createdAt);
+  }) : trailId = Value(trailId),
+       action = Value(action),
+       createdAt = Value(createdAt);
   static Insertable<SyncQueueData> custom({
     Expression<int>? id,
     Expression<String>? trailId,
@@ -8043,15 +9523,16 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueData> {
     });
   }
 
-  SyncQueueCompanion copyWith(
-      {Value<int>? id,
-      Value<String>? trailId,
-      Value<String>? action,
-      Value<String>? status,
-      Value<String?>? payload,
-      Value<String>? createdAt,
-      Value<String?>? completedAt,
-      Value<int>? retryCount}) {
+  SyncQueueCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<String>? action,
+    Value<String>? status,
+    Value<String?>? payload,
+    Value<String>? createdAt,
+    Value<String?>? completedAt,
+    Value<int>? retryCount,
+  }) {
     return SyncQueueCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
@@ -8122,8 +9603,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $WeatherCacheTable weatherCache = $WeatherCacheTable(this);
   late final $FeedbackQueueTable feedbackQueue = $FeedbackQueueTable(this);
   late final $TrailMetaTable trailMeta = $TrailMetaTable(this);
-  late final $TrailItinerariesTable trailItineraries =
-      $TrailItinerariesTable(this);
+  late final $TrailItinerariesTable trailItineraries = $TrailItinerariesTable(
+    this,
+  );
   late final $TrailStagesTable trailStages = $TrailStagesTable(this);
   late final $TrailAccommodationsTable trailAccommodations =
       $TrailAccommodationsTable(this);
@@ -8137,79 +9619,88 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
   late final ChecklistDao checklistDao = ChecklistDao(this as AppDatabase);
   late final JournalDao journalDao = JournalDao(this as AppDatabase);
-  late final WeatherCacheDao weatherCacheDao =
-      WeatherCacheDao(this as AppDatabase);
-  late final FeedbackQueueDao feedbackQueueDao =
-      FeedbackQueueDao(this as AppDatabase);
+  late final WeatherCacheDao weatherCacheDao = WeatherCacheDao(
+    this as AppDatabase,
+  );
+  late final FeedbackQueueDao feedbackQueueDao = FeedbackQueueDao(
+    this as AppDatabase,
+  );
   late final TrailMetaDao trailMetaDao = TrailMetaDao(this as AppDatabase);
-  late final TrailItinerariesDao trailItinerariesDao =
-      TrailItinerariesDao(this as AppDatabase);
-  late final TrailStagesDao trailStagesDao =
-      TrailStagesDao(this as AppDatabase);
+  late final TrailItinerariesDao trailItinerariesDao = TrailItinerariesDao(
+    this as AppDatabase,
+  );
+  late final TrailStagesDao trailStagesDao = TrailStagesDao(
+    this as AppDatabase,
+  );
   late final TrailAccommodationsDao trailAccommodationsDao =
       TrailAccommodationsDao(this as AppDatabase);
   late final TrailPoisDao trailPoisDao = TrailPoisDao(this as AppDatabase);
-  late final TrailGpxTracksDao trailGpxTracksDao =
-      TrailGpxTracksDao(this as AppDatabase);
-  late final TrailGpxPointsDao trailGpxPointsDao =
-      TrailGpxPointsDao(this as AppDatabase);
-  late final TrailManifestsDao trailManifestsDao =
-      TrailManifestsDao(this as AppDatabase);
+  late final TrailGpxTracksDao trailGpxTracksDao = TrailGpxTracksDao(
+    this as AppDatabase,
+  );
+  late final TrailGpxPointsDao trailGpxPointsDao = TrailGpxPointsDao(
+    this as AppDatabase,
+  );
+  late final TrailManifestsDao trailManifestsDao = TrailManifestsDao(
+    this as AppDatabase,
+  );
   late final SyncQueueDao syncQueueDao = SyncQueueDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities => [
-        stages,
-        pois,
-        userProgressEntries,
-        checklistItems,
-        journalEntries,
-        weatherCache,
-        feedbackQueue,
-        trailMeta,
-        trailItineraries,
-        trailStages,
-        trailAccommodations,
-        trailPois,
-        trailGpxTracks,
-        trailGpxPoints,
-        trailManifests,
-        syncQueue
-      ];
+    stages,
+    pois,
+    userProgressEntries,
+    checklistItems,
+    journalEntries,
+    weatherCache,
+    feedbackQueue,
+    trailMeta,
+    trailItineraries,
+    trailStages,
+    trailAccommodations,
+    trailPois,
+    trailGpxTracks,
+    trailGpxPoints,
+    trailManifests,
+    syncQueue,
+  ];
 }
 
-typedef $$StagesTableCreateCompanionBuilder = StagesCompanion Function({
-  Value<int> id,
-  required String trailId,
-  required int stageNumber,
-  required String name,
-  required double distanceKm,
-  required int elevationGainM,
-  required int elevationLossM,
-  Value<String> description,
-  required double startLat,
-  required double startLng,
-  required double endLat,
-  required double endLng,
-  Value<String> difficulty,
-});
-typedef $$StagesTableUpdateCompanionBuilder = StagesCompanion Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<int> stageNumber,
-  Value<String> name,
-  Value<double> distanceKm,
-  Value<int> elevationGainM,
-  Value<int> elevationLossM,
-  Value<String> description,
-  Value<double> startLat,
-  Value<double> startLng,
-  Value<double> endLat,
-  Value<double> endLng,
-  Value<String> difficulty,
-});
+typedef $$StagesTableCreateCompanionBuilder =
+    StagesCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required int stageNumber,
+      required String name,
+      required double distanceKm,
+      required int elevationGainM,
+      required int elevationLossM,
+      Value<String> description,
+      required double startLat,
+      required double startLng,
+      required double endLat,
+      required double endLng,
+      Value<String> difficulty,
+    });
+typedef $$StagesTableUpdateCompanionBuilder =
+    StagesCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<int> stageNumber,
+      Value<String> name,
+      Value<double> distanceKm,
+      Value<int> elevationGainM,
+      Value<int> elevationLossM,
+      Value<String> description,
+      Value<double> startLat,
+      Value<double> startLng,
+      Value<double> endLat,
+      Value<double> endLng,
+      Value<String> difficulty,
+    });
 
 class $$StagesTableFilterComposer
     extends Composer<_$AppDatabase, $StagesTable> {
@@ -8221,45 +9712,69 @@ class $$StagesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnFilters(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => ColumnFilters(column));
+    column: $table.distanceKm,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get elevationGainM => $composableBuilder(
-      column: $table.elevationGainM,
-      builder: (column) => ColumnFilters(column));
+    column: $table.elevationGainM,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get elevationLossM => $composableBuilder(
-      column: $table.elevationLossM,
-      builder: (column) => ColumnFilters(column));
+    column: $table.elevationLossM,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get startLat => $composableBuilder(
-      column: $table.startLat, builder: (column) => ColumnFilters(column));
+    column: $table.startLat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get startLng => $composableBuilder(
-      column: $table.startLng, builder: (column) => ColumnFilters(column));
+    column: $table.startLng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get endLat => $composableBuilder(
-      column: $table.endLat, builder: (column) => ColumnFilters(column));
+    column: $table.endLat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get endLng => $composableBuilder(
-      column: $table.endLng, builder: (column) => ColumnFilters(column));
+    column: $table.endLng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get difficulty => $composableBuilder(
-      column: $table.difficulty, builder: (column) => ColumnFilters(column));
+    column: $table.difficulty,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$StagesTableOrderingComposer
@@ -8272,45 +9787,69 @@ class $$StagesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnOrderings(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => ColumnOrderings(column));
+    column: $table.distanceKm,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get elevationGainM => $composableBuilder(
-      column: $table.elevationGainM,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.elevationGainM,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get elevationLossM => $composableBuilder(
-      column: $table.elevationLossM,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.elevationLossM,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get startLat => $composableBuilder(
-      column: $table.startLat, builder: (column) => ColumnOrderings(column));
+    column: $table.startLat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get startLng => $composableBuilder(
-      column: $table.startLng, builder: (column) => ColumnOrderings(column));
+    column: $table.startLng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get endLat => $composableBuilder(
-      column: $table.endLat, builder: (column) => ColumnOrderings(column));
+    column: $table.endLat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get endLng => $composableBuilder(
-      column: $table.endLng, builder: (column) => ColumnOrderings(column));
+    column: $table.endLng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get difficulty => $composableBuilder(
-      column: $table.difficulty, builder: (column) => ColumnOrderings(column));
+    column: $table.difficulty,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$StagesTableAnnotationComposer
@@ -8329,22 +9868,32 @@ class $$StagesTableAnnotationComposer
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
   GeneratedColumn<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => column);
+    column: $table.stageNumber,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
   GeneratedColumn<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => column);
+    column: $table.distanceKm,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get elevationGainM => $composableBuilder(
-      column: $table.elevationGainM, builder: (column) => column);
+    column: $table.elevationGainM,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get elevationLossM => $composableBuilder(
-      column: $table.elevationLossM, builder: (column) => column);
+    column: $table.elevationLossM,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
+    column: $table.description,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<double> get startLat =>
       $composableBuilder(column: $table.startLat, builder: (column) => column);
@@ -8359,23 +9908,29 @@ class $$StagesTableAnnotationComposer
       $composableBuilder(column: $table.endLng, builder: (column) => column);
 
   GeneratedColumn<String> get difficulty => $composableBuilder(
-      column: $table.difficulty, builder: (column) => column);
+    column: $table.difficulty,
+    builder: (column) => column,
+  );
 }
 
-class $$StagesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $StagesTable,
-    Stage,
-    $$StagesTableFilterComposer,
-    $$StagesTableOrderingComposer,
-    $$StagesTableAnnotationComposer,
-    $$StagesTableCreateCompanionBuilder,
-    $$StagesTableUpdateCompanionBuilder,
-    (Stage, BaseReferences<_$AppDatabase, $StagesTable, Stage>),
-    Stage,
-    PrefetchHooks Function()> {
+class $$StagesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $StagesTable,
+          Stage,
+          $$StagesTableFilterComposer,
+          $$StagesTableOrderingComposer,
+          $$StagesTableAnnotationComposer,
+          $$StagesTableCreateCompanionBuilder,
+          $$StagesTableUpdateCompanionBuilder,
+          (Stage, BaseReferences<_$AppDatabase, $StagesTable, Stage>),
+          Stage,
+          PrefetchHooks Function()
+        > {
   $$StagesTableTableManager(_$AppDatabase db, $StagesTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -8384,109 +9939,114 @@ class $$StagesTableTableManager extends RootTableManager<
               $$StagesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$StagesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<int> stageNumber = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<double> distanceKm = const Value.absent(),
-            Value<int> elevationGainM = const Value.absent(),
-            Value<int> elevationLossM = const Value.absent(),
-            Value<String> description = const Value.absent(),
-            Value<double> startLat = const Value.absent(),
-            Value<double> startLng = const Value.absent(),
-            Value<double> endLat = const Value.absent(),
-            Value<double> endLng = const Value.absent(),
-            Value<String> difficulty = const Value.absent(),
-          }) =>
-              StagesCompanion(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            name: name,
-            distanceKm: distanceKm,
-            elevationGainM: elevationGainM,
-            elevationLossM: elevationLossM,
-            description: description,
-            startLat: startLat,
-            startLng: startLng,
-            endLat: endLat,
-            endLng: endLng,
-            difficulty: difficulty,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            required int stageNumber,
-            required String name,
-            required double distanceKm,
-            required int elevationGainM,
-            required int elevationLossM,
-            Value<String> description = const Value.absent(),
-            required double startLat,
-            required double startLng,
-            required double endLat,
-            required double endLng,
-            Value<String> difficulty = const Value.absent(),
-          }) =>
-              StagesCompanion.insert(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            name: name,
-            distanceKm: distanceKm,
-            elevationGainM: elevationGainM,
-            elevationLossM: elevationLossM,
-            description: description,
-            startLat: startLat,
-            startLng: startLng,
-            endLat: endLat,
-            endLng: endLng,
-            difficulty: difficulty,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<int> stageNumber = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> distanceKm = const Value.absent(),
+                Value<int> elevationGainM = const Value.absent(),
+                Value<int> elevationLossM = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<double> startLat = const Value.absent(),
+                Value<double> startLng = const Value.absent(),
+                Value<double> endLat = const Value.absent(),
+                Value<double> endLng = const Value.absent(),
+                Value<String> difficulty = const Value.absent(),
+              }) => StagesCompanion(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                name: name,
+                distanceKm: distanceKm,
+                elevationGainM: elevationGainM,
+                elevationLossM: elevationLossM,
+                description: description,
+                startLat: startLat,
+                startLng: startLng,
+                endLat: endLat,
+                endLng: endLng,
+                difficulty: difficulty,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required int stageNumber,
+                required String name,
+                required double distanceKm,
+                required int elevationGainM,
+                required int elevationLossM,
+                Value<String> description = const Value.absent(),
+                required double startLat,
+                required double startLng,
+                required double endLat,
+                required double endLng,
+                Value<String> difficulty = const Value.absent(),
+              }) => StagesCompanion.insert(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                name: name,
+                distanceKm: distanceKm,
+                elevationGainM: elevationGainM,
+                elevationLossM: elevationLossM,
+                description: description,
+                startLat: startLat,
+                startLng: startLng,
+                endLat: endLat,
+                endLng: endLng,
+                difficulty: difficulty,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$StagesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $StagesTable,
-    Stage,
-    $$StagesTableFilterComposer,
-    $$StagesTableOrderingComposer,
-    $$StagesTableAnnotationComposer,
-    $$StagesTableCreateCompanionBuilder,
-    $$StagesTableUpdateCompanionBuilder,
-    (Stage, BaseReferences<_$AppDatabase, $StagesTable, Stage>),
-    Stage,
-    PrefetchHooks Function()>;
-typedef $$PoisTableCreateCompanionBuilder = PoisCompanion Function({
-  Value<int> id,
-  required String trailId,
-  required int stageNumber,
-  required String name,
-  Value<String> description,
-  required String type,
-  required double lat,
-  required double lng,
-  Value<int> altitudeM,
-  Value<String?> openingHours,
-});
-typedef $$PoisTableUpdateCompanionBuilder = PoisCompanion Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<int> stageNumber,
-  Value<String> name,
-  Value<String> description,
-  Value<String> type,
-  Value<double> lat,
-  Value<double> lng,
-  Value<int> altitudeM,
-  Value<String?> openingHours,
-});
+typedef $$StagesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $StagesTable,
+      Stage,
+      $$StagesTableFilterComposer,
+      $$StagesTableOrderingComposer,
+      $$StagesTableAnnotationComposer,
+      $$StagesTableCreateCompanionBuilder,
+      $$StagesTableUpdateCompanionBuilder,
+      (Stage, BaseReferences<_$AppDatabase, $StagesTable, Stage>),
+      Stage,
+      PrefetchHooks Function()
+    >;
+typedef $$PoisTableCreateCompanionBuilder =
+    PoisCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required int stageNumber,
+      required String name,
+      Value<String> description,
+      required String type,
+      required double lat,
+      required double lng,
+      Value<int> altitudeM,
+      Value<String?> openingHours,
+    });
+typedef $$PoisTableUpdateCompanionBuilder =
+    PoisCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<int> stageNumber,
+      Value<String> name,
+      Value<String> description,
+      Value<String> type,
+      Value<double> lat,
+      Value<double> lng,
+      Value<int> altitudeM,
+      Value<String?> openingHours,
+    });
 
 class $$PoisTableFilterComposer extends Composer<_$AppDatabase, $PoisTable> {
   $$PoisTableFilterComposer({
@@ -8497,34 +10057,54 @@ class $$PoisTableFilterComposer extends Composer<_$AppDatabase, $PoisTable> {
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnFilters(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnFilters(column));
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnFilters(column));
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnFilters(column));
+    column: $table.lat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnFilters(column));
+    column: $table.lng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get altitudeM => $composableBuilder(
-      column: $table.altitudeM, builder: (column) => ColumnFilters(column));
+    column: $table.altitudeM,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get openingHours => $composableBuilder(
-      column: $table.openingHours, builder: (column) => ColumnFilters(column));
+    column: $table.openingHours,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$PoisTableOrderingComposer extends Composer<_$AppDatabase, $PoisTable> {
@@ -8536,35 +10116,54 @@ class $$PoisTableOrderingComposer extends Composer<_$AppDatabase, $PoisTable> {
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnOrderings(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => ColumnOrderings(column));
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnOrderings(column));
+    column: $table.lat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnOrderings(column));
+    column: $table.lng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get altitudeM => $composableBuilder(
-      column: $table.altitudeM, builder: (column) => ColumnOrderings(column));
+    column: $table.altitudeM,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get openingHours => $composableBuilder(
-      column: $table.openingHours,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.openingHours,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$PoisTableAnnotationComposer
@@ -8583,13 +10182,17 @@ class $$PoisTableAnnotationComposer
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
   GeneratedColumn<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => column);
+    column: $table.stageNumber,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
 
   GeneratedColumn<String> get description => $composableBuilder(
-      column: $table.description, builder: (column) => column);
+    column: $table.description,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
@@ -8604,23 +10207,29 @@ class $$PoisTableAnnotationComposer
       $composableBuilder(column: $table.altitudeM, builder: (column) => column);
 
   GeneratedColumn<String> get openingHours => $composableBuilder(
-      column: $table.openingHours, builder: (column) => column);
+    column: $table.openingHours,
+    builder: (column) => column,
+  );
 }
 
-class $$PoisTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $PoisTable,
-    Poi,
-    $$PoisTableFilterComposer,
-    $$PoisTableOrderingComposer,
-    $$PoisTableAnnotationComposer,
-    $$PoisTableCreateCompanionBuilder,
-    $$PoisTableUpdateCompanionBuilder,
-    (Poi, BaseReferences<_$AppDatabase, $PoisTable, Poi>),
-    Poi,
-    PrefetchHooks Function()> {
+class $$PoisTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PoisTable,
+          Poi,
+          $$PoisTableFilterComposer,
+          $$PoisTableOrderingComposer,
+          $$PoisTableAnnotationComposer,
+          $$PoisTableCreateCompanionBuilder,
+          $$PoisTableUpdateCompanionBuilder,
+          (Poi, BaseReferences<_$AppDatabase, $PoisTable, Poi>),
+          Poi,
+          PrefetchHooks Function()
+        > {
   $$PoisTableTableManager(_$AppDatabase db, $PoisTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -8629,97 +10238,100 @@ class $$PoisTableTableManager extends RootTableManager<
               $$PoisTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$PoisTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<int> stageNumber = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String> description = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<double> lat = const Value.absent(),
-            Value<double> lng = const Value.absent(),
-            Value<int> altitudeM = const Value.absent(),
-            Value<String?> openingHours = const Value.absent(),
-          }) =>
-              PoisCompanion(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            name: name,
-            description: description,
-            type: type,
-            lat: lat,
-            lng: lng,
-            altitudeM: altitudeM,
-            openingHours: openingHours,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            required int stageNumber,
-            required String name,
-            Value<String> description = const Value.absent(),
-            required String type,
-            required double lat,
-            required double lng,
-            Value<int> altitudeM = const Value.absent(),
-            Value<String?> openingHours = const Value.absent(),
-          }) =>
-              PoisCompanion.insert(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            name: name,
-            description: description,
-            type: type,
-            lat: lat,
-            lng: lng,
-            altitudeM: altitudeM,
-            openingHours: openingHours,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<int> stageNumber = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lng = const Value.absent(),
+                Value<int> altitudeM = const Value.absent(),
+                Value<String?> openingHours = const Value.absent(),
+              }) => PoisCompanion(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                name: name,
+                description: description,
+                type: type,
+                lat: lat,
+                lng: lng,
+                altitudeM: altitudeM,
+                openingHours: openingHours,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required int stageNumber,
+                required String name,
+                Value<String> description = const Value.absent(),
+                required String type,
+                required double lat,
+                required double lng,
+                Value<int> altitudeM = const Value.absent(),
+                Value<String?> openingHours = const Value.absent(),
+              }) => PoisCompanion.insert(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                name: name,
+                description: description,
+                type: type,
+                lat: lat,
+                lng: lng,
+                altitudeM: altitudeM,
+                openingHours: openingHours,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$PoisTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $PoisTable,
-    Poi,
-    $$PoisTableFilterComposer,
-    $$PoisTableOrderingComposer,
-    $$PoisTableAnnotationComposer,
-    $$PoisTableCreateCompanionBuilder,
-    $$PoisTableUpdateCompanionBuilder,
-    (Poi, BaseReferences<_$AppDatabase, $PoisTable, Poi>),
-    Poi,
-    PrefetchHooks Function()>;
-typedef $$UserProgressEntriesTableCreateCompanionBuilder
-    = UserProgressEntriesCompanion Function({
-  Value<int> id,
-  required String trailId,
-  Value<int> currentStage,
-  Value<double> totalDistanceWalkedKm,
-  Value<int> totalElevationGainedM,
-  Value<int> totalTimeMinutes,
-  Value<bool> isCompleted,
-  Value<DateTime?> startedAt,
-  Value<DateTime?> completedAt,
-});
-typedef $$UserProgressEntriesTableUpdateCompanionBuilder
-    = UserProgressEntriesCompanion Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<int> currentStage,
-  Value<double> totalDistanceWalkedKm,
-  Value<int> totalElevationGainedM,
-  Value<int> totalTimeMinutes,
-  Value<bool> isCompleted,
-  Value<DateTime?> startedAt,
-  Value<DateTime?> completedAt,
-});
+typedef $$PoisTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PoisTable,
+      Poi,
+      $$PoisTableFilterComposer,
+      $$PoisTableOrderingComposer,
+      $$PoisTableAnnotationComposer,
+      $$PoisTableCreateCompanionBuilder,
+      $$PoisTableUpdateCompanionBuilder,
+      (Poi, BaseReferences<_$AppDatabase, $PoisTable, Poi>),
+      Poi,
+      PrefetchHooks Function()
+    >;
+typedef $$UserProgressEntriesTableCreateCompanionBuilder =
+    UserProgressEntriesCompanion Function({
+      Value<int> id,
+      required String trailId,
+      Value<int> currentStage,
+      Value<double> totalDistanceWalkedKm,
+      Value<int> totalElevationGainedM,
+      Value<int> totalTimeMinutes,
+      Value<bool> isCompleted,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> completedAt,
+    });
+typedef $$UserProgressEntriesTableUpdateCompanionBuilder =
+    UserProgressEntriesCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<int> currentStage,
+      Value<double> totalDistanceWalkedKm,
+      Value<int> totalElevationGainedM,
+      Value<int> totalTimeMinutes,
+      Value<bool> isCompleted,
+      Value<DateTime?> startedAt,
+      Value<DateTime?> completedAt,
+    });
 
 class $$UserProgressEntriesTableFilterComposer
     extends Composer<_$AppDatabase, $UserProgressEntriesTable> {
@@ -8731,34 +10343,49 @@ class $$UserProgressEntriesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get currentStage => $composableBuilder(
-      column: $table.currentStage, builder: (column) => ColumnFilters(column));
+    column: $table.currentStage,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get totalDistanceWalkedKm => $composableBuilder(
-      column: $table.totalDistanceWalkedKm,
-      builder: (column) => ColumnFilters(column));
+    column: $table.totalDistanceWalkedKm,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get totalElevationGainedM => $composableBuilder(
-      column: $table.totalElevationGainedM,
-      builder: (column) => ColumnFilters(column));
+    column: $table.totalElevationGainedM,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get totalTimeMinutes => $composableBuilder(
-      column: $table.totalTimeMinutes,
-      builder: (column) => ColumnFilters(column));
+    column: $table.totalTimeMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get isCompleted => $composableBuilder(
-      column: $table.isCompleted, builder: (column) => ColumnFilters(column));
+    column: $table.isCompleted,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get startedAt => $composableBuilder(
-      column: $table.startedAt, builder: (column) => ColumnFilters(column));
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get completedAt => $composableBuilder(
-      column: $table.completedAt, builder: (column) => ColumnFilters(column));
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$UserProgressEntriesTableOrderingComposer
@@ -8771,35 +10398,49 @@ class $$UserProgressEntriesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get currentStage => $composableBuilder(
-      column: $table.currentStage,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.currentStage,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get totalDistanceWalkedKm => $composableBuilder(
-      column: $table.totalDistanceWalkedKm,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.totalDistanceWalkedKm,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get totalElevationGainedM => $composableBuilder(
-      column: $table.totalElevationGainedM,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.totalElevationGainedM,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get totalTimeMinutes => $composableBuilder(
-      column: $table.totalTimeMinutes,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.totalTimeMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get isCompleted => $composableBuilder(
-      column: $table.isCompleted, builder: (column) => ColumnOrderings(column));
+    column: $table.isCompleted,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get startedAt => $composableBuilder(
-      column: $table.startedAt, builder: (column) => ColumnOrderings(column));
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get completedAt => $composableBuilder(
-      column: $table.completedAt, builder: (column) => ColumnOrderings(column));
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$UserProgressEntriesTableAnnotationComposer
@@ -8818,141 +10459,171 @@ class $$UserProgressEntriesTableAnnotationComposer
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
   GeneratedColumn<int> get currentStage => $composableBuilder(
-      column: $table.currentStage, builder: (column) => column);
+    column: $table.currentStage,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<double> get totalDistanceWalkedKm => $composableBuilder(
-      column: $table.totalDistanceWalkedKm, builder: (column) => column);
+    column: $table.totalDistanceWalkedKm,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get totalElevationGainedM => $composableBuilder(
-      column: $table.totalElevationGainedM, builder: (column) => column);
+    column: $table.totalElevationGainedM,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get totalTimeMinutes => $composableBuilder(
-      column: $table.totalTimeMinutes, builder: (column) => column);
+    column: $table.totalTimeMinutes,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<bool> get isCompleted => $composableBuilder(
-      column: $table.isCompleted, builder: (column) => column);
+    column: $table.isCompleted,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get startedAt =>
       $composableBuilder(column: $table.startedAt, builder: (column) => column);
 
   GeneratedColumn<DateTime> get completedAt => $composableBuilder(
-      column: $table.completedAt, builder: (column) => column);
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
 }
 
-class $$UserProgressEntriesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $UserProgressEntriesTable,
-    UserProgressEntry,
-    $$UserProgressEntriesTableFilterComposer,
-    $$UserProgressEntriesTableOrderingComposer,
-    $$UserProgressEntriesTableAnnotationComposer,
-    $$UserProgressEntriesTableCreateCompanionBuilder,
-    $$UserProgressEntriesTableUpdateCompanionBuilder,
-    (
-      UserProgressEntry,
-      BaseReferences<_$AppDatabase, $UserProgressEntriesTable,
-          UserProgressEntry>
-    ),
-    UserProgressEntry,
-    PrefetchHooks Function()> {
+class $$UserProgressEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserProgressEntriesTable,
+          UserProgressEntry,
+          $$UserProgressEntriesTableFilterComposer,
+          $$UserProgressEntriesTableOrderingComposer,
+          $$UserProgressEntriesTableAnnotationComposer,
+          $$UserProgressEntriesTableCreateCompanionBuilder,
+          $$UserProgressEntriesTableUpdateCompanionBuilder,
+          (
+            UserProgressEntry,
+            BaseReferences<
+              _$AppDatabase,
+              $UserProgressEntriesTable,
+              UserProgressEntry
+            >,
+          ),
+          UserProgressEntry,
+          PrefetchHooks Function()
+        > {
   $$UserProgressEntriesTableTableManager(
-      _$AppDatabase db, $UserProgressEntriesTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $UserProgressEntriesTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
               $$UserProgressEntriesTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
               $$UserProgressEntriesTableOrderingComposer(
-                  $db: db, $table: table),
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer: () =>
               $$UserProgressEntriesTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<int> currentStage = const Value.absent(),
-            Value<double> totalDistanceWalkedKm = const Value.absent(),
-            Value<int> totalElevationGainedM = const Value.absent(),
-            Value<int> totalTimeMinutes = const Value.absent(),
-            Value<bool> isCompleted = const Value.absent(),
-            Value<DateTime?> startedAt = const Value.absent(),
-            Value<DateTime?> completedAt = const Value.absent(),
-          }) =>
-              UserProgressEntriesCompanion(
-            id: id,
-            trailId: trailId,
-            currentStage: currentStage,
-            totalDistanceWalkedKm: totalDistanceWalkedKm,
-            totalElevationGainedM: totalElevationGainedM,
-            totalTimeMinutes: totalTimeMinutes,
-            isCompleted: isCompleted,
-            startedAt: startedAt,
-            completedAt: completedAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            Value<int> currentStage = const Value.absent(),
-            Value<double> totalDistanceWalkedKm = const Value.absent(),
-            Value<int> totalElevationGainedM = const Value.absent(),
-            Value<int> totalTimeMinutes = const Value.absent(),
-            Value<bool> isCompleted = const Value.absent(),
-            Value<DateTime?> startedAt = const Value.absent(),
-            Value<DateTime?> completedAt = const Value.absent(),
-          }) =>
-              UserProgressEntriesCompanion.insert(
-            id: id,
-            trailId: trailId,
-            currentStage: currentStage,
-            totalDistanceWalkedKm: totalDistanceWalkedKm,
-            totalElevationGainedM: totalElevationGainedM,
-            totalTimeMinutes: totalTimeMinutes,
-            isCompleted: isCompleted,
-            startedAt: startedAt,
-            completedAt: completedAt,
-          ),
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<int> currentStage = const Value.absent(),
+                Value<double> totalDistanceWalkedKm = const Value.absent(),
+                Value<int> totalElevationGainedM = const Value.absent(),
+                Value<int> totalTimeMinutes = const Value.absent(),
+                Value<bool> isCompleted = const Value.absent(),
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+              }) => UserProgressEntriesCompanion(
+                id: id,
+                trailId: trailId,
+                currentStage: currentStage,
+                totalDistanceWalkedKm: totalDistanceWalkedKm,
+                totalElevationGainedM: totalElevationGainedM,
+                totalTimeMinutes: totalTimeMinutes,
+                isCompleted: isCompleted,
+                startedAt: startedAt,
+                completedAt: completedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                Value<int> currentStage = const Value.absent(),
+                Value<double> totalDistanceWalkedKm = const Value.absent(),
+                Value<int> totalElevationGainedM = const Value.absent(),
+                Value<int> totalTimeMinutes = const Value.absent(),
+                Value<bool> isCompleted = const Value.absent(),
+                Value<DateTime?> startedAt = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+              }) => UserProgressEntriesCompanion.insert(
+                id: id,
+                trailId: trailId,
+                currentStage: currentStage,
+                totalDistanceWalkedKm: totalDistanceWalkedKm,
+                totalElevationGainedM: totalElevationGainedM,
+                totalTimeMinutes: totalTimeMinutes,
+                isCompleted: isCompleted,
+                startedAt: startedAt,
+                completedAt: completedAt,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$UserProgressEntriesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $UserProgressEntriesTable,
-    UserProgressEntry,
-    $$UserProgressEntriesTableFilterComposer,
-    $$UserProgressEntriesTableOrderingComposer,
-    $$UserProgressEntriesTableAnnotationComposer,
-    $$UserProgressEntriesTableCreateCompanionBuilder,
-    $$UserProgressEntriesTableUpdateCompanionBuilder,
-    (
+typedef $$UserProgressEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserProgressEntriesTable,
       UserProgressEntry,
-      BaseReferences<_$AppDatabase, $UserProgressEntriesTable,
-          UserProgressEntry>
-    ),
-    UserProgressEntry,
-    PrefetchHooks Function()>;
-typedef $$ChecklistItemsTableCreateCompanionBuilder = ChecklistItemsCompanion
-    Function({
-  Value<int> id,
-  required String trailId,
-  required String itemId,
-  required String category,
-  Value<bool> isChecked,
-  Value<DateTime?> updatedAt,
-});
-typedef $$ChecklistItemsTableUpdateCompanionBuilder = ChecklistItemsCompanion
-    Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<String> itemId,
-  Value<String> category,
-  Value<bool> isChecked,
-  Value<DateTime?> updatedAt,
-});
+      $$UserProgressEntriesTableFilterComposer,
+      $$UserProgressEntriesTableOrderingComposer,
+      $$UserProgressEntriesTableAnnotationComposer,
+      $$UserProgressEntriesTableCreateCompanionBuilder,
+      $$UserProgressEntriesTableUpdateCompanionBuilder,
+      (
+        UserProgressEntry,
+        BaseReferences<
+          _$AppDatabase,
+          $UserProgressEntriesTable,
+          UserProgressEntry
+        >,
+      ),
+      UserProgressEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$ChecklistItemsTableCreateCompanionBuilder =
+    ChecklistItemsCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required String itemId,
+      required String category,
+      Value<bool> isChecked,
+      Value<DateTime?> updatedAt,
+    });
+typedef $$ChecklistItemsTableUpdateCompanionBuilder =
+    ChecklistItemsCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<String> itemId,
+      Value<String> category,
+      Value<bool> isChecked,
+      Value<DateTime?> updatedAt,
+    });
 
 class $$ChecklistItemsTableFilterComposer
     extends Composer<_$AppDatabase, $ChecklistItemsTable> {
@@ -8964,22 +10635,34 @@ class $$ChecklistItemsTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get itemId => $composableBuilder(
-      column: $table.itemId, builder: (column) => ColumnFilters(column));
+    column: $table.itemId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get category => $composableBuilder(
-      column: $table.category, builder: (column) => ColumnFilters(column));
+    column: $table.category,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<bool> get isChecked => $composableBuilder(
-      column: $table.isChecked, builder: (column) => ColumnFilters(column));
+    column: $table.isChecked,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$ChecklistItemsTableOrderingComposer
@@ -8992,22 +10675,34 @@ class $$ChecklistItemsTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get itemId => $composableBuilder(
-      column: $table.itemId, builder: (column) => ColumnOrderings(column));
+    column: $table.itemId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get category => $composableBuilder(
-      column: $table.category, builder: (column) => ColumnOrderings(column));
+    column: $table.category,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<bool> get isChecked => $composableBuilder(
-      column: $table.isChecked, builder: (column) => ColumnOrderings(column));
+    column: $table.isChecked,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$ChecklistItemsTableAnnotationComposer
@@ -9038,24 +10733,29 @@ class $$ChecklistItemsTableAnnotationComposer
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 }
 
-class $$ChecklistItemsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $ChecklistItemsTable,
-    ChecklistItem,
-    $$ChecklistItemsTableFilterComposer,
-    $$ChecklistItemsTableOrderingComposer,
-    $$ChecklistItemsTableAnnotationComposer,
-    $$ChecklistItemsTableCreateCompanionBuilder,
-    $$ChecklistItemsTableUpdateCompanionBuilder,
-    (
-      ChecklistItem,
-      BaseReferences<_$AppDatabase, $ChecklistItemsTable, ChecklistItem>
-    ),
-    ChecklistItem,
-    PrefetchHooks Function()> {
+class $$ChecklistItemsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ChecklistItemsTable,
+          ChecklistItem,
+          $$ChecklistItemsTableFilterComposer,
+          $$ChecklistItemsTableOrderingComposer,
+          $$ChecklistItemsTableAnnotationComposer,
+          $$ChecklistItemsTableCreateCompanionBuilder,
+          $$ChecklistItemsTableUpdateCompanionBuilder,
+          (
+            ChecklistItem,
+            BaseReferences<_$AppDatabase, $ChecklistItemsTable, ChecklistItem>,
+          ),
+          ChecklistItem,
+          PrefetchHooks Function()
+        > {
   $$ChecklistItemsTableTableManager(
-      _$AppDatabase db, $ChecklistItemsTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $ChecklistItemsTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -9064,82 +10764,85 @@ class $$ChecklistItemsTableTableManager extends RootTableManager<
               $$ChecklistItemsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$ChecklistItemsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<String> itemId = const Value.absent(),
-            Value<String> category = const Value.absent(),
-            Value<bool> isChecked = const Value.absent(),
-            Value<DateTime?> updatedAt = const Value.absent(),
-          }) =>
-              ChecklistItemsCompanion(
-            id: id,
-            trailId: trailId,
-            itemId: itemId,
-            category: category,
-            isChecked: isChecked,
-            updatedAt: updatedAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            required String itemId,
-            required String category,
-            Value<bool> isChecked = const Value.absent(),
-            Value<DateTime?> updatedAt = const Value.absent(),
-          }) =>
-              ChecklistItemsCompanion.insert(
-            id: id,
-            trailId: trailId,
-            itemId: itemId,
-            category: category,
-            isChecked: isChecked,
-            updatedAt: updatedAt,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<String> itemId = const Value.absent(),
+                Value<String> category = const Value.absent(),
+                Value<bool> isChecked = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+              }) => ChecklistItemsCompanion(
+                id: id,
+                trailId: trailId,
+                itemId: itemId,
+                category: category,
+                isChecked: isChecked,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required String itemId,
+                required String category,
+                Value<bool> isChecked = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+              }) => ChecklistItemsCompanion.insert(
+                id: id,
+                trailId: trailId,
+                itemId: itemId,
+                category: category,
+                isChecked: isChecked,
+                updatedAt: updatedAt,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$ChecklistItemsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $ChecklistItemsTable,
-    ChecklistItem,
-    $$ChecklistItemsTableFilterComposer,
-    $$ChecklistItemsTableOrderingComposer,
-    $$ChecklistItemsTableAnnotationComposer,
-    $$ChecklistItemsTableCreateCompanionBuilder,
-    $$ChecklistItemsTableUpdateCompanionBuilder,
-    (
+typedef $$ChecklistItemsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ChecklistItemsTable,
       ChecklistItem,
-      BaseReferences<_$AppDatabase, $ChecklistItemsTable, ChecklistItem>
-    ),
-    ChecklistItem,
-    PrefetchHooks Function()>;
-typedef $$JournalEntriesTableCreateCompanionBuilder = JournalEntriesCompanion
-    Function({
-  Value<int> id,
-  required String trailId,
-  required int stageNumber,
-  Value<String> content,
-  Value<String?> photoPath,
-  Value<int?> photoSizeBytes,
-  required DateTime createdAt,
-  Value<DateTime?> updatedAt,
-});
-typedef $$JournalEntriesTableUpdateCompanionBuilder = JournalEntriesCompanion
-    Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<int> stageNumber,
-  Value<String> content,
-  Value<String?> photoPath,
-  Value<int?> photoSizeBytes,
-  Value<DateTime> createdAt,
-  Value<DateTime?> updatedAt,
-});
+      $$ChecklistItemsTableFilterComposer,
+      $$ChecklistItemsTableOrderingComposer,
+      $$ChecklistItemsTableAnnotationComposer,
+      $$ChecklistItemsTableCreateCompanionBuilder,
+      $$ChecklistItemsTableUpdateCompanionBuilder,
+      (
+        ChecklistItem,
+        BaseReferences<_$AppDatabase, $ChecklistItemsTable, ChecklistItem>,
+      ),
+      ChecklistItem,
+      PrefetchHooks Function()
+    >;
+typedef $$JournalEntriesTableCreateCompanionBuilder =
+    JournalEntriesCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required int stageNumber,
+      Value<String> content,
+      Value<String?> photoPath,
+      Value<int?> photoSizeBytes,
+      required DateTime createdAt,
+      Value<DateTime?> updatedAt,
+    });
+typedef $$JournalEntriesTableUpdateCompanionBuilder =
+    JournalEntriesCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<int> stageNumber,
+      Value<String> content,
+      Value<String?> photoPath,
+      Value<int?> photoSizeBytes,
+      Value<DateTime> createdAt,
+      Value<DateTime?> updatedAt,
+    });
 
 class $$JournalEntriesTableFilterComposer
     extends Composer<_$AppDatabase, $JournalEntriesTable> {
@@ -9151,29 +10854,44 @@ class $$JournalEntriesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnFilters(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnFilters(column));
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get photoPath => $composableBuilder(
-      column: $table.photoPath, builder: (column) => ColumnFilters(column));
+    column: $table.photoPath,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get photoSizeBytes => $composableBuilder(
-      column: $table.photoSizeBytes,
-      builder: (column) => ColumnFilters(column));
+    column: $table.photoSizeBytes,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$JournalEntriesTableOrderingComposer
@@ -9186,29 +10904,44 @@ class $$JournalEntriesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnOrderings(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnOrderings(column));
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get photoPath => $composableBuilder(
-      column: $table.photoPath, builder: (column) => ColumnOrderings(column));
+    column: $table.photoPath,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get photoSizeBytes => $composableBuilder(
-      column: $table.photoSizeBytes,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.photoSizeBytes,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$JournalEntriesTableAnnotationComposer
@@ -9227,7 +10960,9 @@ class $$JournalEntriesTableAnnotationComposer
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
   GeneratedColumn<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => column);
+    column: $table.stageNumber,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get content =>
       $composableBuilder(column: $table.content, builder: (column) => column);
@@ -9236,7 +10971,9 @@ class $$JournalEntriesTableAnnotationComposer
       $composableBuilder(column: $table.photoPath, builder: (column) => column);
 
   GeneratedColumn<int> get photoSizeBytes => $composableBuilder(
-      column: $table.photoSizeBytes, builder: (column) => column);
+    column: $table.photoSizeBytes,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -9245,24 +10982,29 @@ class $$JournalEntriesTableAnnotationComposer
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 }
 
-class $$JournalEntriesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $JournalEntriesTable,
-    JournalEntry,
-    $$JournalEntriesTableFilterComposer,
-    $$JournalEntriesTableOrderingComposer,
-    $$JournalEntriesTableAnnotationComposer,
-    $$JournalEntriesTableCreateCompanionBuilder,
-    $$JournalEntriesTableUpdateCompanionBuilder,
-    (
-      JournalEntry,
-      BaseReferences<_$AppDatabase, $JournalEntriesTable, JournalEntry>
-    ),
-    JournalEntry,
-    PrefetchHooks Function()> {
+class $$JournalEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $JournalEntriesTable,
+          JournalEntry,
+          $$JournalEntriesTableFilterComposer,
+          $$JournalEntriesTableOrderingComposer,
+          $$JournalEntriesTableAnnotationComposer,
+          $$JournalEntriesTableCreateCompanionBuilder,
+          $$JournalEntriesTableUpdateCompanionBuilder,
+          (
+            JournalEntry,
+            BaseReferences<_$AppDatabase, $JournalEntriesTable, JournalEntry>,
+          ),
+          JournalEntry,
+          PrefetchHooks Function()
+        > {
   $$JournalEntriesTableTableManager(
-      _$AppDatabase db, $JournalEntriesTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $JournalEntriesTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -9271,86 +11013,89 @@ class $$JournalEntriesTableTableManager extends RootTableManager<
               $$JournalEntriesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$JournalEntriesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<int> stageNumber = const Value.absent(),
-            Value<String> content = const Value.absent(),
-            Value<String?> photoPath = const Value.absent(),
-            Value<int?> photoSizeBytes = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<DateTime?> updatedAt = const Value.absent(),
-          }) =>
-              JournalEntriesCompanion(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            content: content,
-            photoPath: photoPath,
-            photoSizeBytes: photoSizeBytes,
-            createdAt: createdAt,
-            updatedAt: updatedAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            required int stageNumber,
-            Value<String> content = const Value.absent(),
-            Value<String?> photoPath = const Value.absent(),
-            Value<int?> photoSizeBytes = const Value.absent(),
-            required DateTime createdAt,
-            Value<DateTime?> updatedAt = const Value.absent(),
-          }) =>
-              JournalEntriesCompanion.insert(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            content: content,
-            photoPath: photoPath,
-            photoSizeBytes: photoSizeBytes,
-            createdAt: createdAt,
-            updatedAt: updatedAt,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<int> stageNumber = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String?> photoPath = const Value.absent(),
+                Value<int?> photoSizeBytes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+              }) => JournalEntriesCompanion(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                content: content,
+                photoPath: photoPath,
+                photoSizeBytes: photoSizeBytes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required int stageNumber,
+                Value<String> content = const Value.absent(),
+                Value<String?> photoPath = const Value.absent(),
+                Value<int?> photoSizeBytes = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> updatedAt = const Value.absent(),
+              }) => JournalEntriesCompanion.insert(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                content: content,
+                photoPath: photoPath,
+                photoSizeBytes: photoSizeBytes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$JournalEntriesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $JournalEntriesTable,
-    JournalEntry,
-    $$JournalEntriesTableFilterComposer,
-    $$JournalEntriesTableOrderingComposer,
-    $$JournalEntriesTableAnnotationComposer,
-    $$JournalEntriesTableCreateCompanionBuilder,
-    $$JournalEntriesTableUpdateCompanionBuilder,
-    (
+typedef $$JournalEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $JournalEntriesTable,
       JournalEntry,
-      BaseReferences<_$AppDatabase, $JournalEntriesTable, JournalEntry>
-    ),
-    JournalEntry,
-    PrefetchHooks Function()>;
-typedef $$WeatherCacheTableCreateCompanionBuilder = WeatherCacheCompanion
-    Function({
-  Value<int> id,
-  required String trailId,
-  required int stageNumber,
-  required String forecastJson,
-  required DateTime fetchedAt,
-  required DateTime expiresAt,
-});
-typedef $$WeatherCacheTableUpdateCompanionBuilder = WeatherCacheCompanion
-    Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<int> stageNumber,
-  Value<String> forecastJson,
-  Value<DateTime> fetchedAt,
-  Value<DateTime> expiresAt,
-});
+      $$JournalEntriesTableFilterComposer,
+      $$JournalEntriesTableOrderingComposer,
+      $$JournalEntriesTableAnnotationComposer,
+      $$JournalEntriesTableCreateCompanionBuilder,
+      $$JournalEntriesTableUpdateCompanionBuilder,
+      (
+        JournalEntry,
+        BaseReferences<_$AppDatabase, $JournalEntriesTable, JournalEntry>,
+      ),
+      JournalEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$WeatherCacheTableCreateCompanionBuilder =
+    WeatherCacheCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required int stageNumber,
+      required String forecastJson,
+      required DateTime fetchedAt,
+      required DateTime expiresAt,
+    });
+typedef $$WeatherCacheTableUpdateCompanionBuilder =
+    WeatherCacheCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<int> stageNumber,
+      Value<String> forecastJson,
+      Value<DateTime> fetchedAt,
+      Value<DateTime> expiresAt,
+    });
 
 class $$WeatherCacheTableFilterComposer
     extends Composer<_$AppDatabase, $WeatherCacheTable> {
@@ -9362,22 +11107,34 @@ class $$WeatherCacheTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnFilters(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get forecastJson => $composableBuilder(
-      column: $table.forecastJson, builder: (column) => ColumnFilters(column));
+    column: $table.forecastJson,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get fetchedAt => $composableBuilder(
-      column: $table.fetchedAt, builder: (column) => ColumnFilters(column));
+    column: $table.fetchedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get expiresAt => $composableBuilder(
-      column: $table.expiresAt, builder: (column) => ColumnFilters(column));
+    column: $table.expiresAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$WeatherCacheTableOrderingComposer
@@ -9390,23 +11147,34 @@ class $$WeatherCacheTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnOrderings(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get forecastJson => $composableBuilder(
-      column: $table.forecastJson,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.forecastJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get fetchedAt => $composableBuilder(
-      column: $table.fetchedAt, builder: (column) => ColumnOrderings(column));
+    column: $table.fetchedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get expiresAt => $composableBuilder(
-      column: $table.expiresAt, builder: (column) => ColumnOrderings(column));
+    column: $table.expiresAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$WeatherCacheTableAnnotationComposer
@@ -9425,10 +11193,14 @@ class $$WeatherCacheTableAnnotationComposer
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
   GeneratedColumn<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => column);
+    column: $table.stageNumber,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get forecastJson => $composableBuilder(
-      column: $table.forecastJson, builder: (column) => column);
+    column: $table.forecastJson,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get fetchedAt =>
       $composableBuilder(column: $table.fetchedAt, builder: (column) => column);
@@ -9437,23 +11209,27 @@ class $$WeatherCacheTableAnnotationComposer
       $composableBuilder(column: $table.expiresAt, builder: (column) => column);
 }
 
-class $$WeatherCacheTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $WeatherCacheTable,
-    WeatherCacheData,
-    $$WeatherCacheTableFilterComposer,
-    $$WeatherCacheTableOrderingComposer,
-    $$WeatherCacheTableAnnotationComposer,
-    $$WeatherCacheTableCreateCompanionBuilder,
-    $$WeatherCacheTableUpdateCompanionBuilder,
-    (
-      WeatherCacheData,
-      BaseReferences<_$AppDatabase, $WeatherCacheTable, WeatherCacheData>
-    ),
-    WeatherCacheData,
-    PrefetchHooks Function()> {
+class $$WeatherCacheTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WeatherCacheTable,
+          WeatherCacheData,
+          $$WeatherCacheTableFilterComposer,
+          $$WeatherCacheTableOrderingComposer,
+          $$WeatherCacheTableAnnotationComposer,
+          $$WeatherCacheTableCreateCompanionBuilder,
+          $$WeatherCacheTableUpdateCompanionBuilder,
+          (
+            WeatherCacheData,
+            BaseReferences<_$AppDatabase, $WeatherCacheTable, WeatherCacheData>,
+          ),
+          WeatherCacheData,
+          PrefetchHooks Function()
+        > {
   $$WeatherCacheTableTableManager(_$AppDatabase db, $WeatherCacheTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -9462,82 +11238,85 @@ class $$WeatherCacheTableTableManager extends RootTableManager<
               $$WeatherCacheTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$WeatherCacheTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<int> stageNumber = const Value.absent(),
-            Value<String> forecastJson = const Value.absent(),
-            Value<DateTime> fetchedAt = const Value.absent(),
-            Value<DateTime> expiresAt = const Value.absent(),
-          }) =>
-              WeatherCacheCompanion(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            forecastJson: forecastJson,
-            fetchedAt: fetchedAt,
-            expiresAt: expiresAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            required int stageNumber,
-            required String forecastJson,
-            required DateTime fetchedAt,
-            required DateTime expiresAt,
-          }) =>
-              WeatherCacheCompanion.insert(
-            id: id,
-            trailId: trailId,
-            stageNumber: stageNumber,
-            forecastJson: forecastJson,
-            fetchedAt: fetchedAt,
-            expiresAt: expiresAt,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<int> stageNumber = const Value.absent(),
+                Value<String> forecastJson = const Value.absent(),
+                Value<DateTime> fetchedAt = const Value.absent(),
+                Value<DateTime> expiresAt = const Value.absent(),
+              }) => WeatherCacheCompanion(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                forecastJson: forecastJson,
+                fetchedAt: fetchedAt,
+                expiresAt: expiresAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required int stageNumber,
+                required String forecastJson,
+                required DateTime fetchedAt,
+                required DateTime expiresAt,
+              }) => WeatherCacheCompanion.insert(
+                id: id,
+                trailId: trailId,
+                stageNumber: stageNumber,
+                forecastJson: forecastJson,
+                fetchedAt: fetchedAt,
+                expiresAt: expiresAt,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$WeatherCacheTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $WeatherCacheTable,
-    WeatherCacheData,
-    $$WeatherCacheTableFilterComposer,
-    $$WeatherCacheTableOrderingComposer,
-    $$WeatherCacheTableAnnotationComposer,
-    $$WeatherCacheTableCreateCompanionBuilder,
-    $$WeatherCacheTableUpdateCompanionBuilder,
-    (
+typedef $$WeatherCacheTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WeatherCacheTable,
       WeatherCacheData,
-      BaseReferences<_$AppDatabase, $WeatherCacheTable, WeatherCacheData>
-    ),
-    WeatherCacheData,
-    PrefetchHooks Function()>;
-typedef $$FeedbackQueueTableCreateCompanionBuilder = FeedbackQueueCompanion
-    Function({
-  Value<int> id,
-  required String trailId,
-  required String feedbackType,
-  required String content,
-  Value<int?> rating,
-  Value<String> status,
-  required DateTime createdAt,
-  Value<DateTime?> sentAt,
-});
-typedef $$FeedbackQueueTableUpdateCompanionBuilder = FeedbackQueueCompanion
-    Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<String> feedbackType,
-  Value<String> content,
-  Value<int?> rating,
-  Value<String> status,
-  Value<DateTime> createdAt,
-  Value<DateTime?> sentAt,
-});
+      $$WeatherCacheTableFilterComposer,
+      $$WeatherCacheTableOrderingComposer,
+      $$WeatherCacheTableAnnotationComposer,
+      $$WeatherCacheTableCreateCompanionBuilder,
+      $$WeatherCacheTableUpdateCompanionBuilder,
+      (
+        WeatherCacheData,
+        BaseReferences<_$AppDatabase, $WeatherCacheTable, WeatherCacheData>,
+      ),
+      WeatherCacheData,
+      PrefetchHooks Function()
+    >;
+typedef $$FeedbackQueueTableCreateCompanionBuilder =
+    FeedbackQueueCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required String feedbackType,
+      required String content,
+      Value<int?> rating,
+      Value<String> status,
+      required DateTime createdAt,
+      Value<DateTime?> sentAt,
+    });
+typedef $$FeedbackQueueTableUpdateCompanionBuilder =
+    FeedbackQueueCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<String> feedbackType,
+      Value<String> content,
+      Value<int?> rating,
+      Value<String> status,
+      Value<DateTime> createdAt,
+      Value<DateTime?> sentAt,
+    });
 
 class $$FeedbackQueueTableFilterComposer
     extends Composer<_$AppDatabase, $FeedbackQueueTable> {
@@ -9549,28 +11328,44 @@ class $$FeedbackQueueTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get feedbackType => $composableBuilder(
-      column: $table.feedbackType, builder: (column) => ColumnFilters(column));
+    column: $table.feedbackType,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnFilters(column));
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get rating => $composableBuilder(
-      column: $table.rating, builder: (column) => ColumnFilters(column));
+    column: $table.rating,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnFilters(column));
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<DateTime> get sentAt => $composableBuilder(
-      column: $table.sentAt, builder: (column) => ColumnFilters(column));
+    column: $table.sentAt,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$FeedbackQueueTableOrderingComposer
@@ -9583,29 +11378,44 @@ class $$FeedbackQueueTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get feedbackType => $composableBuilder(
-      column: $table.feedbackType,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.feedbackType,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get content => $composableBuilder(
-      column: $table.content, builder: (column) => ColumnOrderings(column));
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get rating => $composableBuilder(
-      column: $table.rating, builder: (column) => ColumnOrderings(column));
+    column: $table.rating,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<DateTime> get sentAt => $composableBuilder(
-      column: $table.sentAt, builder: (column) => ColumnOrderings(column));
+    column: $table.sentAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$FeedbackQueueTableAnnotationComposer
@@ -9624,7 +11434,9 @@ class $$FeedbackQueueTableAnnotationComposer
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
   GeneratedColumn<String> get feedbackType => $composableBuilder(
-      column: $table.feedbackType, builder: (column) => column);
+    column: $table.feedbackType,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get content =>
       $composableBuilder(column: $table.content, builder: (column) => column);
@@ -9642,23 +11454,31 @@ class $$FeedbackQueueTableAnnotationComposer
       $composableBuilder(column: $table.sentAt, builder: (column) => column);
 }
 
-class $$FeedbackQueueTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $FeedbackQueueTable,
-    FeedbackQueueData,
-    $$FeedbackQueueTableFilterComposer,
-    $$FeedbackQueueTableOrderingComposer,
-    $$FeedbackQueueTableAnnotationComposer,
-    $$FeedbackQueueTableCreateCompanionBuilder,
-    $$FeedbackQueueTableUpdateCompanionBuilder,
-    (
-      FeedbackQueueData,
-      BaseReferences<_$AppDatabase, $FeedbackQueueTable, FeedbackQueueData>
-    ),
-    FeedbackQueueData,
-    PrefetchHooks Function()> {
+class $$FeedbackQueueTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FeedbackQueueTable,
+          FeedbackQueueData,
+          $$FeedbackQueueTableFilterComposer,
+          $$FeedbackQueueTableOrderingComposer,
+          $$FeedbackQueueTableAnnotationComposer,
+          $$FeedbackQueueTableCreateCompanionBuilder,
+          $$FeedbackQueueTableUpdateCompanionBuilder,
+          (
+            FeedbackQueueData,
+            BaseReferences<
+              _$AppDatabase,
+              $FeedbackQueueTable,
+              FeedbackQueueData
+            >,
+          ),
+          FeedbackQueueData,
+          PrefetchHooks Function()
+        > {
   $$FeedbackQueueTableTableManager(_$AppDatabase db, $FeedbackQueueTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -9667,84 +11487,89 @@ class $$FeedbackQueueTableTableManager extends RootTableManager<
               $$FeedbackQueueTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$FeedbackQueueTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<String> feedbackType = const Value.absent(),
-            Value<String> content = const Value.absent(),
-            Value<int?> rating = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<DateTime> createdAt = const Value.absent(),
-            Value<DateTime?> sentAt = const Value.absent(),
-          }) =>
-              FeedbackQueueCompanion(
-            id: id,
-            trailId: trailId,
-            feedbackType: feedbackType,
-            content: content,
-            rating: rating,
-            status: status,
-            createdAt: createdAt,
-            sentAt: sentAt,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            required String feedbackType,
-            required String content,
-            Value<int?> rating = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            required DateTime createdAt,
-            Value<DateTime?> sentAt = const Value.absent(),
-          }) =>
-              FeedbackQueueCompanion.insert(
-            id: id,
-            trailId: trailId,
-            feedbackType: feedbackType,
-            content: content,
-            rating: rating,
-            status: status,
-            createdAt: createdAt,
-            sentAt: sentAt,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<String> feedbackType = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<int?> rating = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> sentAt = const Value.absent(),
+              }) => FeedbackQueueCompanion(
+                id: id,
+                trailId: trailId,
+                feedbackType: feedbackType,
+                content: content,
+                rating: rating,
+                status: status,
+                createdAt: createdAt,
+                sentAt: sentAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required String feedbackType,
+                required String content,
+                Value<int?> rating = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> sentAt = const Value.absent(),
+              }) => FeedbackQueueCompanion.insert(
+                id: id,
+                trailId: trailId,
+                feedbackType: feedbackType,
+                content: content,
+                rating: rating,
+                status: status,
+                createdAt: createdAt,
+                sentAt: sentAt,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$FeedbackQueueTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $FeedbackQueueTable,
-    FeedbackQueueData,
-    $$FeedbackQueueTableFilterComposer,
-    $$FeedbackQueueTableOrderingComposer,
-    $$FeedbackQueueTableAnnotationComposer,
-    $$FeedbackQueueTableCreateCompanionBuilder,
-    $$FeedbackQueueTableUpdateCompanionBuilder,
-    (
+typedef $$FeedbackQueueTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FeedbackQueueTable,
       FeedbackQueueData,
-      BaseReferences<_$AppDatabase, $FeedbackQueueTable, FeedbackQueueData>
-    ),
-    FeedbackQueueData,
-    PrefetchHooks Function()>;
-typedef $$TrailMetaTableCreateCompanionBuilder = TrailMetaCompanion Function({
-  required String id,
-  required String code,
-  required int dataVersion,
-  Value<String?> lastSync,
-  Value<String> status,
-  Value<int> rowid,
-});
-typedef $$TrailMetaTableUpdateCompanionBuilder = TrailMetaCompanion Function({
-  Value<String> id,
-  Value<String> code,
-  Value<int> dataVersion,
-  Value<String?> lastSync,
-  Value<String> status,
-  Value<int> rowid,
-});
+      $$FeedbackQueueTableFilterComposer,
+      $$FeedbackQueueTableOrderingComposer,
+      $$FeedbackQueueTableAnnotationComposer,
+      $$FeedbackQueueTableCreateCompanionBuilder,
+      $$FeedbackQueueTableUpdateCompanionBuilder,
+      (
+        FeedbackQueueData,
+        BaseReferences<_$AppDatabase, $FeedbackQueueTable, FeedbackQueueData>,
+      ),
+      FeedbackQueueData,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailMetaTableCreateCompanionBuilder =
+    TrailMetaCompanion Function({
+      required String id,
+      required String code,
+      required int dataVersion,
+      Value<String?> lastSync,
+      Value<String> status,
+      Value<int> rowid,
+    });
+typedef $$TrailMetaTableUpdateCompanionBuilder =
+    TrailMetaCompanion Function({
+      Value<String> id,
+      Value<String> code,
+      Value<int> dataVersion,
+      Value<String?> lastSync,
+      Value<String> status,
+      Value<int> rowid,
+    });
 
 class $$TrailMetaTableFilterComposer
     extends Composer<_$AppDatabase, $TrailMetaTable> {
@@ -9756,19 +11581,29 @@ class $$TrailMetaTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get dataVersion => $composableBuilder(
-      column: $table.dataVersion, builder: (column) => ColumnFilters(column));
+    column: $table.dataVersion,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get lastSync => $composableBuilder(
-      column: $table.lastSync, builder: (column) => ColumnFilters(column));
+    column: $table.lastSync,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnFilters(column));
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailMetaTableOrderingComposer
@@ -9781,19 +11616,29 @@ class $$TrailMetaTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get dataVersion => $composableBuilder(
-      column: $table.dataVersion, builder: (column) => ColumnOrderings(column));
+    column: $table.dataVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get lastSync => $composableBuilder(
-      column: $table.lastSync, builder: (column) => ColumnOrderings(column));
+    column: $table.lastSync,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailMetaTableAnnotationComposer
@@ -9812,7 +11657,9 @@ class $$TrailMetaTableAnnotationComposer
       $composableBuilder(column: $table.code, builder: (column) => column);
 
   GeneratedColumn<int> get dataVersion => $composableBuilder(
-      column: $table.dataVersion, builder: (column) => column);
+    column: $table.dataVersion,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get lastSync =>
       $composableBuilder(column: $table.lastSync, builder: (column) => column);
@@ -9821,23 +11668,27 @@ class $$TrailMetaTableAnnotationComposer
       $composableBuilder(column: $table.status, builder: (column) => column);
 }
 
-class $$TrailMetaTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailMetaTable,
-    TrailMetaData,
-    $$TrailMetaTableFilterComposer,
-    $$TrailMetaTableOrderingComposer,
-    $$TrailMetaTableAnnotationComposer,
-    $$TrailMetaTableCreateCompanionBuilder,
-    $$TrailMetaTableUpdateCompanionBuilder,
-    (
-      TrailMetaData,
-      BaseReferences<_$AppDatabase, $TrailMetaTable, TrailMetaData>
-    ),
-    TrailMetaData,
-    PrefetchHooks Function()> {
+class $$TrailMetaTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailMetaTable,
+          TrailMetaData,
+          $$TrailMetaTableFilterComposer,
+          $$TrailMetaTableOrderingComposer,
+          $$TrailMetaTableAnnotationComposer,
+          $$TrailMetaTableCreateCompanionBuilder,
+          $$TrailMetaTableUpdateCompanionBuilder,
+          (
+            TrailMetaData,
+            BaseReferences<_$AppDatabase, $TrailMetaTable, TrailMetaData>,
+          ),
+          TrailMetaData,
+          PrefetchHooks Function()
+        > {
   $$TrailMetaTableTableManager(_$AppDatabase db, $TrailMetaTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -9846,90 +11697,93 @@ class $$TrailMetaTableTableManager extends RootTableManager<
               $$TrailMetaTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$TrailMetaTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> code = const Value.absent(),
-            Value<int> dataVersion = const Value.absent(),
-            Value<String?> lastSync = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailMetaCompanion(
-            id: id,
-            code: code,
-            dataVersion: dataVersion,
-            lastSync: lastSync,
-            status: status,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String code,
-            required int dataVersion,
-            Value<String?> lastSync = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailMetaCompanion.insert(
-            id: id,
-            code: code,
-            dataVersion: dataVersion,
-            lastSync: lastSync,
-            status: status,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<int> dataVersion = const Value.absent(),
+                Value<String?> lastSync = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailMetaCompanion(
+                id: id,
+                code: code,
+                dataVersion: dataVersion,
+                lastSync: lastSync,
+                status: status,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String code,
+                required int dataVersion,
+                Value<String?> lastSync = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailMetaCompanion.insert(
+                id: id,
+                code: code,
+                dataVersion: dataVersion,
+                lastSync: lastSync,
+                status: status,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailMetaTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailMetaTable,
-    TrailMetaData,
-    $$TrailMetaTableFilterComposer,
-    $$TrailMetaTableOrderingComposer,
-    $$TrailMetaTableAnnotationComposer,
-    $$TrailMetaTableCreateCompanionBuilder,
-    $$TrailMetaTableUpdateCompanionBuilder,
-    (
+typedef $$TrailMetaTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailMetaTable,
       TrailMetaData,
-      BaseReferences<_$AppDatabase, $TrailMetaTable, TrailMetaData>
-    ),
-    TrailMetaData,
-    PrefetchHooks Function()>;
-typedef $$TrailItinerariesTableCreateCompanionBuilder
-    = TrailItinerariesCompanion Function({
-  required String id,
-  required String trailId,
-  required String code,
-  required String nameFr,
-  required String nameEn,
-  required String nameDe,
-  required String nameIt,
-  required String nameEs,
-  required double distanceKm,
-  required int elevationGain,
-  required int stageCount,
-  Value<int> rowid,
-});
-typedef $$TrailItinerariesTableUpdateCompanionBuilder
-    = TrailItinerariesCompanion Function({
-  Value<String> id,
-  Value<String> trailId,
-  Value<String> code,
-  Value<String> nameFr,
-  Value<String> nameEn,
-  Value<String> nameDe,
-  Value<String> nameIt,
-  Value<String> nameEs,
-  Value<double> distanceKm,
-  Value<int> elevationGain,
-  Value<int> stageCount,
-  Value<int> rowid,
-});
+      $$TrailMetaTableFilterComposer,
+      $$TrailMetaTableOrderingComposer,
+      $$TrailMetaTableAnnotationComposer,
+      $$TrailMetaTableCreateCompanionBuilder,
+      $$TrailMetaTableUpdateCompanionBuilder,
+      (
+        TrailMetaData,
+        BaseReferences<_$AppDatabase, $TrailMetaTable, TrailMetaData>,
+      ),
+      TrailMetaData,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailItinerariesTableCreateCompanionBuilder =
+    TrailItinerariesCompanion Function({
+      required String id,
+      required String trailId,
+      required String code,
+      required String nameFr,
+      required String nameEn,
+      required String nameDe,
+      required String nameIt,
+      required String nameEs,
+      required double distanceKm,
+      required int elevationGain,
+      required int stageCount,
+      Value<int> rowid,
+    });
+typedef $$TrailItinerariesTableUpdateCompanionBuilder =
+    TrailItinerariesCompanion Function({
+      Value<String> id,
+      Value<String> trailId,
+      Value<String> code,
+      Value<String> nameFr,
+      Value<String> nameEn,
+      Value<String> nameDe,
+      Value<String> nameIt,
+      Value<String> nameEs,
+      Value<double> distanceKm,
+      Value<int> elevationGain,
+      Value<int> stageCount,
+      Value<int> rowid,
+    });
 
 class $$TrailItinerariesTableFilterComposer
     extends Composer<_$AppDatabase, $TrailItinerariesTable> {
@@ -9941,37 +11795,59 @@ class $$TrailItinerariesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnFilters(column));
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnFilters(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnFilters(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnFilters(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnFilters(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnFilters(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => ColumnFilters(column));
+    column: $table.distanceKm,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get elevationGain => $composableBuilder(
-      column: $table.elevationGain, builder: (column) => ColumnFilters(column));
+    column: $table.elevationGain,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get stageCount => $composableBuilder(
-      column: $table.stageCount, builder: (column) => ColumnFilters(column));
+    column: $table.stageCount,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailItinerariesTableOrderingComposer
@@ -9984,38 +11860,59 @@ class $$TrailItinerariesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get code => $composableBuilder(
-      column: $table.code, builder: (column) => ColumnOrderings(column));
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnOrderings(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnOrderings(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnOrderings(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => ColumnOrderings(column));
+    column: $table.distanceKm,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get elevationGain => $composableBuilder(
-      column: $table.elevationGain,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.elevationGain,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get stageCount => $composableBuilder(
-      column: $table.stageCount, builder: (column) => ColumnOrderings(column));
+    column: $table.stageCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailItinerariesTableAnnotationComposer
@@ -10052,33 +11949,48 @@ class $$TrailItinerariesTableAnnotationComposer
       $composableBuilder(column: $table.nameEs, builder: (column) => column);
 
   GeneratedColumn<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => column);
+    column: $table.distanceKm,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get elevationGain => $composableBuilder(
-      column: $table.elevationGain, builder: (column) => column);
+    column: $table.elevationGain,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get stageCount => $composableBuilder(
-      column: $table.stageCount, builder: (column) => column);
+    column: $table.stageCount,
+    builder: (column) => column,
+  );
 }
 
-class $$TrailItinerariesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailItinerariesTable,
-    TrailItinerary,
-    $$TrailItinerariesTableFilterComposer,
-    $$TrailItinerariesTableOrderingComposer,
-    $$TrailItinerariesTableAnnotationComposer,
-    $$TrailItinerariesTableCreateCompanionBuilder,
-    $$TrailItinerariesTableUpdateCompanionBuilder,
-    (
-      TrailItinerary,
-      BaseReferences<_$AppDatabase, $TrailItinerariesTable, TrailItinerary>
-    ),
-    TrailItinerary,
-    PrefetchHooks Function()> {
+class $$TrailItinerariesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailItinerariesTable,
+          TrailItinerary,
+          $$TrailItinerariesTableFilterComposer,
+          $$TrailItinerariesTableOrderingComposer,
+          $$TrailItinerariesTableAnnotationComposer,
+          $$TrailItinerariesTableCreateCompanionBuilder,
+          $$TrailItinerariesTableUpdateCompanionBuilder,
+          (
+            TrailItinerary,
+            BaseReferences<
+              _$AppDatabase,
+              $TrailItinerariesTable,
+              TrailItinerary
+            >,
+          ),
+          TrailItinerary,
+          PrefetchHooks Function()
+        > {
   $$TrailItinerariesTableTableManager(
-      _$AppDatabase db, $TrailItinerariesTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $TrailItinerariesTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -10087,126 +11999,129 @@ class $$TrailItinerariesTableTableManager extends RootTableManager<
               $$TrailItinerariesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$TrailItinerariesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<String> code = const Value.absent(),
-            Value<String> nameFr = const Value.absent(),
-            Value<String> nameEn = const Value.absent(),
-            Value<String> nameDe = const Value.absent(),
-            Value<String> nameIt = const Value.absent(),
-            Value<String> nameEs = const Value.absent(),
-            Value<double> distanceKm = const Value.absent(),
-            Value<int> elevationGain = const Value.absent(),
-            Value<int> stageCount = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailItinerariesCompanion(
-            id: id,
-            trailId: trailId,
-            code: code,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            distanceKm: distanceKm,
-            elevationGain: elevationGain,
-            stageCount: stageCount,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String trailId,
-            required String code,
-            required String nameFr,
-            required String nameEn,
-            required String nameDe,
-            required String nameIt,
-            required String nameEs,
-            required double distanceKm,
-            required int elevationGain,
-            required int stageCount,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailItinerariesCompanion.insert(
-            id: id,
-            trailId: trailId,
-            code: code,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            distanceKm: distanceKm,
-            elevationGain: elevationGain,
-            stageCount: stageCount,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<String> nameFr = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameDe = const Value.absent(),
+                Value<String> nameIt = const Value.absent(),
+                Value<String> nameEs = const Value.absent(),
+                Value<double> distanceKm = const Value.absent(),
+                Value<int> elevationGain = const Value.absent(),
+                Value<int> stageCount = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailItinerariesCompanion(
+                id: id,
+                trailId: trailId,
+                code: code,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                distanceKm: distanceKm,
+                elevationGain: elevationGain,
+                stageCount: stageCount,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String trailId,
+                required String code,
+                required String nameFr,
+                required String nameEn,
+                required String nameDe,
+                required String nameIt,
+                required String nameEs,
+                required double distanceKm,
+                required int elevationGain,
+                required int stageCount,
+                Value<int> rowid = const Value.absent(),
+              }) => TrailItinerariesCompanion.insert(
+                id: id,
+                trailId: trailId,
+                code: code,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                distanceKm: distanceKm,
+                elevationGain: elevationGain,
+                stageCount: stageCount,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailItinerariesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailItinerariesTable,
-    TrailItinerary,
-    $$TrailItinerariesTableFilterComposer,
-    $$TrailItinerariesTableOrderingComposer,
-    $$TrailItinerariesTableAnnotationComposer,
-    $$TrailItinerariesTableCreateCompanionBuilder,
-    $$TrailItinerariesTableUpdateCompanionBuilder,
-    (
+typedef $$TrailItinerariesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailItinerariesTable,
       TrailItinerary,
-      BaseReferences<_$AppDatabase, $TrailItinerariesTable, TrailItinerary>
-    ),
-    TrailItinerary,
-    PrefetchHooks Function()>;
-typedef $$TrailStagesTableCreateCompanionBuilder = TrailStagesCompanion
-    Function({
-  required String id,
-  required String itineraryId,
-  required int stageNumber,
-  required String nameFr,
-  required String nameEn,
-  required String nameDe,
-  required String nameIt,
-  required String nameEs,
-  required double startLat,
-  required double startLng,
-  required double endLat,
-  required double endLng,
-  required double distanceKm,
-  required int elevationGain,
-  required int elevationLoss,
-  required int durationMinutes,
-  required String difficulty,
-  Value<int> rowid,
-});
-typedef $$TrailStagesTableUpdateCompanionBuilder = TrailStagesCompanion
-    Function({
-  Value<String> id,
-  Value<String> itineraryId,
-  Value<int> stageNumber,
-  Value<String> nameFr,
-  Value<String> nameEn,
-  Value<String> nameDe,
-  Value<String> nameIt,
-  Value<String> nameEs,
-  Value<double> startLat,
-  Value<double> startLng,
-  Value<double> endLat,
-  Value<double> endLng,
-  Value<double> distanceKm,
-  Value<int> elevationGain,
-  Value<int> elevationLoss,
-  Value<int> durationMinutes,
-  Value<String> difficulty,
-  Value<int> rowid,
-});
+      $$TrailItinerariesTableFilterComposer,
+      $$TrailItinerariesTableOrderingComposer,
+      $$TrailItinerariesTableAnnotationComposer,
+      $$TrailItinerariesTableCreateCompanionBuilder,
+      $$TrailItinerariesTableUpdateCompanionBuilder,
+      (
+        TrailItinerary,
+        BaseReferences<_$AppDatabase, $TrailItinerariesTable, TrailItinerary>,
+      ),
+      TrailItinerary,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailStagesTableCreateCompanionBuilder =
+    TrailStagesCompanion Function({
+      required String id,
+      required String itineraryId,
+      required int stageNumber,
+      required String nameFr,
+      required String nameEn,
+      required String nameDe,
+      required String nameIt,
+      required String nameEs,
+      required double startLat,
+      required double startLng,
+      required double endLat,
+      required double endLng,
+      required double distanceKm,
+      required int elevationGain,
+      required int elevationLoss,
+      required int durationMinutes,
+      required String difficulty,
+      Value<int> rowid,
+    });
+typedef $$TrailStagesTableUpdateCompanionBuilder =
+    TrailStagesCompanion Function({
+      Value<String> id,
+      Value<String> itineraryId,
+      Value<int> stageNumber,
+      Value<String> nameFr,
+      Value<String> nameEn,
+      Value<String> nameDe,
+      Value<String> nameIt,
+      Value<String> nameEs,
+      Value<double> startLat,
+      Value<double> startLng,
+      Value<double> endLat,
+      Value<double> endLng,
+      Value<double> distanceKm,
+      Value<int> elevationGain,
+      Value<int> elevationLoss,
+      Value<int> durationMinutes,
+      Value<String> difficulty,
+      Value<int> rowid,
+    });
 
 class $$TrailStagesTableFilterComposer
     extends Composer<_$AppDatabase, $TrailStagesTable> {
@@ -10218,56 +12133,89 @@ class $$TrailStagesTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get itineraryId => $composableBuilder(
-      column: $table.itineraryId, builder: (column) => ColumnFilters(column));
+    column: $table.itineraryId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnFilters(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnFilters(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnFilters(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnFilters(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnFilters(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnFilters(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get startLat => $composableBuilder(
-      column: $table.startLat, builder: (column) => ColumnFilters(column));
+    column: $table.startLat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get startLng => $composableBuilder(
-      column: $table.startLng, builder: (column) => ColumnFilters(column));
+    column: $table.startLng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get endLat => $composableBuilder(
-      column: $table.endLat, builder: (column) => ColumnFilters(column));
+    column: $table.endLat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get endLng => $composableBuilder(
-      column: $table.endLng, builder: (column) => ColumnFilters(column));
+    column: $table.endLng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => ColumnFilters(column));
+    column: $table.distanceKm,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get elevationGain => $composableBuilder(
-      column: $table.elevationGain, builder: (column) => ColumnFilters(column));
+    column: $table.elevationGain,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get elevationLoss => $composableBuilder(
-      column: $table.elevationLoss, builder: (column) => ColumnFilters(column));
+    column: $table.elevationLoss,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get durationMinutes => $composableBuilder(
-      column: $table.durationMinutes,
-      builder: (column) => ColumnFilters(column));
+    column: $table.durationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get difficulty => $composableBuilder(
-      column: $table.difficulty, builder: (column) => ColumnFilters(column));
+    column: $table.difficulty,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailStagesTableOrderingComposer
@@ -10280,58 +12228,89 @@ class $$TrailStagesTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get itineraryId => $composableBuilder(
-      column: $table.itineraryId, builder: (column) => ColumnOrderings(column));
+    column: $table.itineraryId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => ColumnOrderings(column));
+    column: $table.stageNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnOrderings(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnOrderings(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnOrderings(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get startLat => $composableBuilder(
-      column: $table.startLat, builder: (column) => ColumnOrderings(column));
+    column: $table.startLat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get startLng => $composableBuilder(
-      column: $table.startLng, builder: (column) => ColumnOrderings(column));
+    column: $table.startLng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get endLat => $composableBuilder(
-      column: $table.endLat, builder: (column) => ColumnOrderings(column));
+    column: $table.endLat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get endLng => $composableBuilder(
-      column: $table.endLng, builder: (column) => ColumnOrderings(column));
+    column: $table.endLng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => ColumnOrderings(column));
+    column: $table.distanceKm,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get elevationGain => $composableBuilder(
-      column: $table.elevationGain,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.elevationGain,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get elevationLoss => $composableBuilder(
-      column: $table.elevationLoss,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.elevationLoss,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get durationMinutes => $composableBuilder(
-      column: $table.durationMinutes,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.durationMinutes,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get difficulty => $composableBuilder(
-      column: $table.difficulty, builder: (column) => ColumnOrderings(column));
+    column: $table.difficulty,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailStagesTableAnnotationComposer
@@ -10347,10 +12326,14 @@ class $$TrailStagesTableAnnotationComposer
       $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get itineraryId => $composableBuilder(
-      column: $table.itineraryId, builder: (column) => column);
+    column: $table.itineraryId,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get stageNumber => $composableBuilder(
-      column: $table.stageNumber, builder: (column) => column);
+    column: $table.stageNumber,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get nameFr =>
       $composableBuilder(column: $table.nameFr, builder: (column) => column);
@@ -10380,35 +12363,52 @@ class $$TrailStagesTableAnnotationComposer
       $composableBuilder(column: $table.endLng, builder: (column) => column);
 
   GeneratedColumn<double> get distanceKm => $composableBuilder(
-      column: $table.distanceKm, builder: (column) => column);
+    column: $table.distanceKm,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get elevationGain => $composableBuilder(
-      column: $table.elevationGain, builder: (column) => column);
+    column: $table.elevationGain,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get elevationLoss => $composableBuilder(
-      column: $table.elevationLoss, builder: (column) => column);
+    column: $table.elevationLoss,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get durationMinutes => $composableBuilder(
-      column: $table.durationMinutes, builder: (column) => column);
+    column: $table.durationMinutes,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get difficulty => $composableBuilder(
-      column: $table.difficulty, builder: (column) => column);
+    column: $table.difficulty,
+    builder: (column) => column,
+  );
 }
 
-class $$TrailStagesTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailStagesTable,
-    TrailStage,
-    $$TrailStagesTableFilterComposer,
-    $$TrailStagesTableOrderingComposer,
-    $$TrailStagesTableAnnotationComposer,
-    $$TrailStagesTableCreateCompanionBuilder,
-    $$TrailStagesTableUpdateCompanionBuilder,
-    (TrailStage, BaseReferences<_$AppDatabase, $TrailStagesTable, TrailStage>),
-    TrailStage,
-    PrefetchHooks Function()> {
+class $$TrailStagesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailStagesTable,
+          TrailStage,
+          $$TrailStagesTableFilterComposer,
+          $$TrailStagesTableOrderingComposer,
+          $$TrailStagesTableAnnotationComposer,
+          $$TrailStagesTableCreateCompanionBuilder,
+          $$TrailStagesTableUpdateCompanionBuilder,
+          (
+            TrailStage,
+            BaseReferences<_$AppDatabase, $TrailStagesTable, TrailStage>,
+          ),
+          TrailStage,
+          PrefetchHooks Function()
+        > {
   $$TrailStagesTableTableManager(_$AppDatabase db, $TrailStagesTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -10417,145 +12417,151 @@ class $$TrailStagesTableTableManager extends RootTableManager<
               $$TrailStagesTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$TrailStagesTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> itineraryId = const Value.absent(),
-            Value<int> stageNumber = const Value.absent(),
-            Value<String> nameFr = const Value.absent(),
-            Value<String> nameEn = const Value.absent(),
-            Value<String> nameDe = const Value.absent(),
-            Value<String> nameIt = const Value.absent(),
-            Value<String> nameEs = const Value.absent(),
-            Value<double> startLat = const Value.absent(),
-            Value<double> startLng = const Value.absent(),
-            Value<double> endLat = const Value.absent(),
-            Value<double> endLng = const Value.absent(),
-            Value<double> distanceKm = const Value.absent(),
-            Value<int> elevationGain = const Value.absent(),
-            Value<int> elevationLoss = const Value.absent(),
-            Value<int> durationMinutes = const Value.absent(),
-            Value<String> difficulty = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailStagesCompanion(
-            id: id,
-            itineraryId: itineraryId,
-            stageNumber: stageNumber,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            startLat: startLat,
-            startLng: startLng,
-            endLat: endLat,
-            endLng: endLng,
-            distanceKm: distanceKm,
-            elevationGain: elevationGain,
-            elevationLoss: elevationLoss,
-            durationMinutes: durationMinutes,
-            difficulty: difficulty,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String itineraryId,
-            required int stageNumber,
-            required String nameFr,
-            required String nameEn,
-            required String nameDe,
-            required String nameIt,
-            required String nameEs,
-            required double startLat,
-            required double startLng,
-            required double endLat,
-            required double endLng,
-            required double distanceKm,
-            required int elevationGain,
-            required int elevationLoss,
-            required int durationMinutes,
-            required String difficulty,
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailStagesCompanion.insert(
-            id: id,
-            itineraryId: itineraryId,
-            stageNumber: stageNumber,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            startLat: startLat,
-            startLng: startLng,
-            endLat: endLat,
-            endLng: endLng,
-            distanceKm: distanceKm,
-            elevationGain: elevationGain,
-            elevationLoss: elevationLoss,
-            durationMinutes: durationMinutes,
-            difficulty: difficulty,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> itineraryId = const Value.absent(),
+                Value<int> stageNumber = const Value.absent(),
+                Value<String> nameFr = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameDe = const Value.absent(),
+                Value<String> nameIt = const Value.absent(),
+                Value<String> nameEs = const Value.absent(),
+                Value<double> startLat = const Value.absent(),
+                Value<double> startLng = const Value.absent(),
+                Value<double> endLat = const Value.absent(),
+                Value<double> endLng = const Value.absent(),
+                Value<double> distanceKm = const Value.absent(),
+                Value<int> elevationGain = const Value.absent(),
+                Value<int> elevationLoss = const Value.absent(),
+                Value<int> durationMinutes = const Value.absent(),
+                Value<String> difficulty = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailStagesCompanion(
+                id: id,
+                itineraryId: itineraryId,
+                stageNumber: stageNumber,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                startLat: startLat,
+                startLng: startLng,
+                endLat: endLat,
+                endLng: endLng,
+                distanceKm: distanceKm,
+                elevationGain: elevationGain,
+                elevationLoss: elevationLoss,
+                durationMinutes: durationMinutes,
+                difficulty: difficulty,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String itineraryId,
+                required int stageNumber,
+                required String nameFr,
+                required String nameEn,
+                required String nameDe,
+                required String nameIt,
+                required String nameEs,
+                required double startLat,
+                required double startLng,
+                required double endLat,
+                required double endLng,
+                required double distanceKm,
+                required int elevationGain,
+                required int elevationLoss,
+                required int durationMinutes,
+                required String difficulty,
+                Value<int> rowid = const Value.absent(),
+              }) => TrailStagesCompanion.insert(
+                id: id,
+                itineraryId: itineraryId,
+                stageNumber: stageNumber,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                startLat: startLat,
+                startLng: startLng,
+                endLat: endLat,
+                endLng: endLng,
+                distanceKm: distanceKm,
+                elevationGain: elevationGain,
+                elevationLoss: elevationLoss,
+                durationMinutes: durationMinutes,
+                difficulty: difficulty,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailStagesTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailStagesTable,
-    TrailStage,
-    $$TrailStagesTableFilterComposer,
-    $$TrailStagesTableOrderingComposer,
-    $$TrailStagesTableAnnotationComposer,
-    $$TrailStagesTableCreateCompanionBuilder,
-    $$TrailStagesTableUpdateCompanionBuilder,
-    (TrailStage, BaseReferences<_$AppDatabase, $TrailStagesTable, TrailStage>),
-    TrailStage,
-    PrefetchHooks Function()>;
-typedef $$TrailAccommodationsTableCreateCompanionBuilder
-    = TrailAccommodationsCompanion Function({
-  required String id,
-  required String stageId,
-  required String nameFr,
-  required String nameEn,
-  required String nameDe,
-  required String nameIt,
-  required String nameEs,
-  required String type,
-  required double lat,
-  required double lng,
-  Value<String?> phone,
-  Value<String?> email,
-  Value<String?> website,
-  Value<int?> capacity,
-  Value<String?> priceRange,
-  Value<String?> bookingUrl,
-  Value<int> rowid,
-});
-typedef $$TrailAccommodationsTableUpdateCompanionBuilder
-    = TrailAccommodationsCompanion Function({
-  Value<String> id,
-  Value<String> stageId,
-  Value<String> nameFr,
-  Value<String> nameEn,
-  Value<String> nameDe,
-  Value<String> nameIt,
-  Value<String> nameEs,
-  Value<String> type,
-  Value<double> lat,
-  Value<double> lng,
-  Value<String?> phone,
-  Value<String?> email,
-  Value<String?> website,
-  Value<int?> capacity,
-  Value<String?> priceRange,
-  Value<String?> bookingUrl,
-  Value<int> rowid,
-});
+typedef $$TrailStagesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailStagesTable,
+      TrailStage,
+      $$TrailStagesTableFilterComposer,
+      $$TrailStagesTableOrderingComposer,
+      $$TrailStagesTableAnnotationComposer,
+      $$TrailStagesTableCreateCompanionBuilder,
+      $$TrailStagesTableUpdateCompanionBuilder,
+      (
+        TrailStage,
+        BaseReferences<_$AppDatabase, $TrailStagesTable, TrailStage>,
+      ),
+      TrailStage,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailAccommodationsTableCreateCompanionBuilder =
+    TrailAccommodationsCompanion Function({
+      required String id,
+      required String stageId,
+      required String nameFr,
+      required String nameEn,
+      required String nameDe,
+      required String nameIt,
+      required String nameEs,
+      required String type,
+      required double lat,
+      required double lng,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> website,
+      Value<int?> capacity,
+      Value<String?> priceRange,
+      Value<String?> bookingUrl,
+      Value<int> rowid,
+    });
+typedef $$TrailAccommodationsTableUpdateCompanionBuilder =
+    TrailAccommodationsCompanion Function({
+      Value<String> id,
+      Value<String> stageId,
+      Value<String> nameFr,
+      Value<String> nameEn,
+      Value<String> nameDe,
+      Value<String> nameIt,
+      Value<String> nameEs,
+      Value<String> type,
+      Value<double> lat,
+      Value<double> lng,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> website,
+      Value<int?> capacity,
+      Value<String?> priceRange,
+      Value<String?> bookingUrl,
+      Value<int> rowid,
+    });
 
 class $$TrailAccommodationsTableFilterComposer
     extends Composer<_$AppDatabase, $TrailAccommodationsTable> {
@@ -10567,52 +12573,84 @@ class $$TrailAccommodationsTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get stageId => $composableBuilder(
-      column: $table.stageId, builder: (column) => ColumnFilters(column));
+    column: $table.stageId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnFilters(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnFilters(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnFilters(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnFilters(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnFilters(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnFilters(column));
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnFilters(column));
+    column: $table.lat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnFilters(column));
+    column: $table.lng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get phone => $composableBuilder(
-      column: $table.phone, builder: (column) => ColumnFilters(column));
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get email => $composableBuilder(
-      column: $table.email, builder: (column) => ColumnFilters(column));
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get website => $composableBuilder(
-      column: $table.website, builder: (column) => ColumnFilters(column));
+    column: $table.website,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get capacity => $composableBuilder(
-      column: $table.capacity, builder: (column) => ColumnFilters(column));
+    column: $table.capacity,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get priceRange => $composableBuilder(
-      column: $table.priceRange, builder: (column) => ColumnFilters(column));
+    column: $table.priceRange,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get bookingUrl => $composableBuilder(
-      column: $table.bookingUrl, builder: (column) => ColumnFilters(column));
+    column: $table.bookingUrl,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailAccommodationsTableOrderingComposer
@@ -10625,52 +12663,84 @@ class $$TrailAccommodationsTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get stageId => $composableBuilder(
-      column: $table.stageId, builder: (column) => ColumnOrderings(column));
+    column: $table.stageId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnOrderings(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnOrderings(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnOrderings(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnOrderings(column));
+    column: $table.lat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnOrderings(column));
+    column: $table.lng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get phone => $composableBuilder(
-      column: $table.phone, builder: (column) => ColumnOrderings(column));
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get email => $composableBuilder(
-      column: $table.email, builder: (column) => ColumnOrderings(column));
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get website => $composableBuilder(
-      column: $table.website, builder: (column) => ColumnOrderings(column));
+    column: $table.website,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get capacity => $composableBuilder(
-      column: $table.capacity, builder: (column) => ColumnOrderings(column));
+    column: $table.capacity,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get priceRange => $composableBuilder(
-      column: $table.priceRange, builder: (column) => ColumnOrderings(column));
+    column: $table.priceRange,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get bookingUrl => $composableBuilder(
-      column: $table.bookingUrl, builder: (column) => ColumnOrderings(column));
+    column: $table.bookingUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailAccommodationsTableAnnotationComposer
@@ -10725,178 +12795,202 @@ class $$TrailAccommodationsTableAnnotationComposer
       $composableBuilder(column: $table.capacity, builder: (column) => column);
 
   GeneratedColumn<String> get priceRange => $composableBuilder(
-      column: $table.priceRange, builder: (column) => column);
+    column: $table.priceRange,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get bookingUrl => $composableBuilder(
-      column: $table.bookingUrl, builder: (column) => column);
+    column: $table.bookingUrl,
+    builder: (column) => column,
+  );
 }
 
-class $$TrailAccommodationsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailAccommodationsTable,
-    TrailAccommodation,
-    $$TrailAccommodationsTableFilterComposer,
-    $$TrailAccommodationsTableOrderingComposer,
-    $$TrailAccommodationsTableAnnotationComposer,
-    $$TrailAccommodationsTableCreateCompanionBuilder,
-    $$TrailAccommodationsTableUpdateCompanionBuilder,
-    (
-      TrailAccommodation,
-      BaseReferences<_$AppDatabase, $TrailAccommodationsTable,
-          TrailAccommodation>
-    ),
-    TrailAccommodation,
-    PrefetchHooks Function()> {
+class $$TrailAccommodationsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailAccommodationsTable,
+          TrailAccommodation,
+          $$TrailAccommodationsTableFilterComposer,
+          $$TrailAccommodationsTableOrderingComposer,
+          $$TrailAccommodationsTableAnnotationComposer,
+          $$TrailAccommodationsTableCreateCompanionBuilder,
+          $$TrailAccommodationsTableUpdateCompanionBuilder,
+          (
+            TrailAccommodation,
+            BaseReferences<
+              _$AppDatabase,
+              $TrailAccommodationsTable,
+              TrailAccommodation
+            >,
+          ),
+          TrailAccommodation,
+          PrefetchHooks Function()
+        > {
   $$TrailAccommodationsTableTableManager(
-      _$AppDatabase db, $TrailAccommodationsTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $TrailAccommodationsTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
               $$TrailAccommodationsTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
               $$TrailAccommodationsTableOrderingComposer(
-                  $db: db, $table: table),
+                $db: db,
+                $table: table,
+              ),
           createComputedFieldComposer: () =>
               $$TrailAccommodationsTableAnnotationComposer(
-                  $db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> stageId = const Value.absent(),
-            Value<String> nameFr = const Value.absent(),
-            Value<String> nameEn = const Value.absent(),
-            Value<String> nameDe = const Value.absent(),
-            Value<String> nameIt = const Value.absent(),
-            Value<String> nameEs = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<double> lat = const Value.absent(),
-            Value<double> lng = const Value.absent(),
-            Value<String?> phone = const Value.absent(),
-            Value<String?> email = const Value.absent(),
-            Value<String?> website = const Value.absent(),
-            Value<int?> capacity = const Value.absent(),
-            Value<String?> priceRange = const Value.absent(),
-            Value<String?> bookingUrl = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailAccommodationsCompanion(
-            id: id,
-            stageId: stageId,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            type: type,
-            lat: lat,
-            lng: lng,
-            phone: phone,
-            email: email,
-            website: website,
-            capacity: capacity,
-            priceRange: priceRange,
-            bookingUrl: bookingUrl,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String stageId,
-            required String nameFr,
-            required String nameEn,
-            required String nameDe,
-            required String nameIt,
-            required String nameEs,
-            required String type,
-            required double lat,
-            required double lng,
-            Value<String?> phone = const Value.absent(),
-            Value<String?> email = const Value.absent(),
-            Value<String?> website = const Value.absent(),
-            Value<int?> capacity = const Value.absent(),
-            Value<String?> priceRange = const Value.absent(),
-            Value<String?> bookingUrl = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailAccommodationsCompanion.insert(
-            id: id,
-            stageId: stageId,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            type: type,
-            lat: lat,
-            lng: lng,
-            phone: phone,
-            email: email,
-            website: website,
-            capacity: capacity,
-            priceRange: priceRange,
-            bookingUrl: bookingUrl,
-            rowid: rowid,
-          ),
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> stageId = const Value.absent(),
+                Value<String> nameFr = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameDe = const Value.absent(),
+                Value<String> nameIt = const Value.absent(),
+                Value<String> nameEs = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lng = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                Value<int?> capacity = const Value.absent(),
+                Value<String?> priceRange = const Value.absent(),
+                Value<String?> bookingUrl = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailAccommodationsCompanion(
+                id: id,
+                stageId: stageId,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                type: type,
+                lat: lat,
+                lng: lng,
+                phone: phone,
+                email: email,
+                website: website,
+                capacity: capacity,
+                priceRange: priceRange,
+                bookingUrl: bookingUrl,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String stageId,
+                required String nameFr,
+                required String nameEn,
+                required String nameDe,
+                required String nameIt,
+                required String nameEs,
+                required String type,
+                required double lat,
+                required double lng,
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                Value<int?> capacity = const Value.absent(),
+                Value<String?> priceRange = const Value.absent(),
+                Value<String?> bookingUrl = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailAccommodationsCompanion.insert(
+                id: id,
+                stageId: stageId,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                type: type,
+                lat: lat,
+                lng: lng,
+                phone: phone,
+                email: email,
+                website: website,
+                capacity: capacity,
+                priceRange: priceRange,
+                bookingUrl: bookingUrl,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailAccommodationsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailAccommodationsTable,
-    TrailAccommodation,
-    $$TrailAccommodationsTableFilterComposer,
-    $$TrailAccommodationsTableOrderingComposer,
-    $$TrailAccommodationsTableAnnotationComposer,
-    $$TrailAccommodationsTableCreateCompanionBuilder,
-    $$TrailAccommodationsTableUpdateCompanionBuilder,
-    (
+typedef $$TrailAccommodationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailAccommodationsTable,
       TrailAccommodation,
-      BaseReferences<_$AppDatabase, $TrailAccommodationsTable,
-          TrailAccommodation>
-    ),
-    TrailAccommodation,
-    PrefetchHooks Function()>;
-typedef $$TrailPoisTableCreateCompanionBuilder = TrailPoisCompanion Function({
-  required String id,
-  required String stageId,
-  required String nameFr,
-  required String nameEn,
-  required String nameDe,
-  required String nameIt,
-  required String nameEs,
-  Value<String?> descriptionFr,
-  Value<String?> descriptionEn,
-  Value<String?> descriptionDe,
-  Value<String?> descriptionIt,
-  Value<String?> descriptionEs,
-  required String type,
-  required double lat,
-  required double lng,
-  Value<double?> elevation,
-  Value<int> rowid,
-});
-typedef $$TrailPoisTableUpdateCompanionBuilder = TrailPoisCompanion Function({
-  Value<String> id,
-  Value<String> stageId,
-  Value<String> nameFr,
-  Value<String> nameEn,
-  Value<String> nameDe,
-  Value<String> nameIt,
-  Value<String> nameEs,
-  Value<String?> descriptionFr,
-  Value<String?> descriptionEn,
-  Value<String?> descriptionDe,
-  Value<String?> descriptionIt,
-  Value<String?> descriptionEs,
-  Value<String> type,
-  Value<double> lat,
-  Value<double> lng,
-  Value<double?> elevation,
-  Value<int> rowid,
-});
+      $$TrailAccommodationsTableFilterComposer,
+      $$TrailAccommodationsTableOrderingComposer,
+      $$TrailAccommodationsTableAnnotationComposer,
+      $$TrailAccommodationsTableCreateCompanionBuilder,
+      $$TrailAccommodationsTableUpdateCompanionBuilder,
+      (
+        TrailAccommodation,
+        BaseReferences<
+          _$AppDatabase,
+          $TrailAccommodationsTable,
+          TrailAccommodation
+        >,
+      ),
+      TrailAccommodation,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailPoisTableCreateCompanionBuilder =
+    TrailPoisCompanion Function({
+      required String id,
+      required String stageId,
+      required String nameFr,
+      required String nameEn,
+      required String nameDe,
+      required String nameIt,
+      required String nameEs,
+      Value<String?> descriptionFr,
+      Value<String?> descriptionEn,
+      Value<String?> descriptionDe,
+      Value<String?> descriptionIt,
+      Value<String?> descriptionEs,
+      required String type,
+      required double lat,
+      required double lng,
+      Value<double?> elevation,
+      Value<int> rowid,
+    });
+typedef $$TrailPoisTableUpdateCompanionBuilder =
+    TrailPoisCompanion Function({
+      Value<String> id,
+      Value<String> stageId,
+      Value<String> nameFr,
+      Value<String> nameEn,
+      Value<String> nameDe,
+      Value<String> nameIt,
+      Value<String> nameEs,
+      Value<String?> descriptionFr,
+      Value<String?> descriptionEn,
+      Value<String?> descriptionDe,
+      Value<String?> descriptionIt,
+      Value<String?> descriptionEs,
+      Value<String> type,
+      Value<double> lat,
+      Value<double> lng,
+      Value<double?> elevation,
+      Value<int> rowid,
+    });
 
 class $$TrailPoisTableFilterComposer
     extends Composer<_$AppDatabase, $TrailPoisTable> {
@@ -10908,52 +13002,84 @@ class $$TrailPoisTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get stageId => $composableBuilder(
-      column: $table.stageId, builder: (column) => ColumnFilters(column));
+    column: $table.stageId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnFilters(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnFilters(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnFilters(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnFilters(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnFilters(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get descriptionFr => $composableBuilder(
-      column: $table.descriptionFr, builder: (column) => ColumnFilters(column));
+    column: $table.descriptionFr,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get descriptionEn => $composableBuilder(
-      column: $table.descriptionEn, builder: (column) => ColumnFilters(column));
+    column: $table.descriptionEn,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get descriptionDe => $composableBuilder(
-      column: $table.descriptionDe, builder: (column) => ColumnFilters(column));
+    column: $table.descriptionDe,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get descriptionIt => $composableBuilder(
-      column: $table.descriptionIt, builder: (column) => ColumnFilters(column));
+    column: $table.descriptionIt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get descriptionEs => $composableBuilder(
-      column: $table.descriptionEs, builder: (column) => ColumnFilters(column));
+    column: $table.descriptionEs,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnFilters(column));
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnFilters(column));
+    column: $table.lat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnFilters(column));
+    column: $table.lng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get elevation => $composableBuilder(
-      column: $table.elevation, builder: (column) => ColumnFilters(column));
+    column: $table.elevation,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailPoisTableOrderingComposer
@@ -10966,57 +13092,84 @@ class $$TrailPoisTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get stageId => $composableBuilder(
-      column: $table.stageId, builder: (column) => ColumnOrderings(column));
+    column: $table.stageId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameFr => $composableBuilder(
-      column: $table.nameFr, builder: (column) => ColumnOrderings(column));
+    column: $table.nameFr,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEn => $composableBuilder(
-      column: $table.nameEn, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEn,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameDe => $composableBuilder(
-      column: $table.nameDe, builder: (column) => ColumnOrderings(column));
+    column: $table.nameDe,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameIt => $composableBuilder(
-      column: $table.nameIt, builder: (column) => ColumnOrderings(column));
+    column: $table.nameIt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get nameEs => $composableBuilder(
-      column: $table.nameEs, builder: (column) => ColumnOrderings(column));
+    column: $table.nameEs,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get descriptionFr => $composableBuilder(
-      column: $table.descriptionFr,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.descriptionFr,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get descriptionEn => $composableBuilder(
-      column: $table.descriptionEn,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.descriptionEn,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get descriptionDe => $composableBuilder(
-      column: $table.descriptionDe,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.descriptionDe,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get descriptionIt => $composableBuilder(
-      column: $table.descriptionIt,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.descriptionIt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get descriptionEs => $composableBuilder(
-      column: $table.descriptionEs,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.descriptionEs,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get type => $composableBuilder(
-      column: $table.type, builder: (column) => ColumnOrderings(column));
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnOrderings(column));
+    column: $table.lat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnOrderings(column));
+    column: $table.lng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get elevation => $composableBuilder(
-      column: $table.elevation, builder: (column) => ColumnOrderings(column));
+    column: $table.elevation,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailPoisTableAnnotationComposer
@@ -11050,19 +13203,29 @@ class $$TrailPoisTableAnnotationComposer
       $composableBuilder(column: $table.nameEs, builder: (column) => column);
 
   GeneratedColumn<String> get descriptionFr => $composableBuilder(
-      column: $table.descriptionFr, builder: (column) => column);
+    column: $table.descriptionFr,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get descriptionEn => $composableBuilder(
-      column: $table.descriptionEn, builder: (column) => column);
+    column: $table.descriptionEn,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get descriptionDe => $composableBuilder(
-      column: $table.descriptionDe, builder: (column) => column);
+    column: $table.descriptionDe,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get descriptionIt => $composableBuilder(
-      column: $table.descriptionIt, builder: (column) => column);
+    column: $table.descriptionIt,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get descriptionEs => $composableBuilder(
-      column: $table.descriptionEs, builder: (column) => column);
+    column: $table.descriptionEs,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get type =>
       $composableBuilder(column: $table.type, builder: (column) => column);
@@ -11077,20 +13240,24 @@ class $$TrailPoisTableAnnotationComposer
       $composableBuilder(column: $table.elevation, builder: (column) => column);
 }
 
-class $$TrailPoisTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailPoisTable,
-    TrailPoi,
-    $$TrailPoisTableFilterComposer,
-    $$TrailPoisTableOrderingComposer,
-    $$TrailPoisTableAnnotationComposer,
-    $$TrailPoisTableCreateCompanionBuilder,
-    $$TrailPoisTableUpdateCompanionBuilder,
-    (TrailPoi, BaseReferences<_$AppDatabase, $TrailPoisTable, TrailPoi>),
-    TrailPoi,
-    PrefetchHooks Function()> {
+class $$TrailPoisTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailPoisTable,
+          TrailPoi,
+          $$TrailPoisTableFilterComposer,
+          $$TrailPoisTableOrderingComposer,
+          $$TrailPoisTableAnnotationComposer,
+          $$TrailPoisTableCreateCompanionBuilder,
+          $$TrailPoisTableUpdateCompanionBuilder,
+          (TrailPoi, BaseReferences<_$AppDatabase, $TrailPoisTable, TrailPoi>),
+          TrailPoi,
+          PrefetchHooks Function()
+        > {
   $$TrailPoisTableTableManager(_$AppDatabase db, $TrailPoisTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -11099,117 +13266,120 @@ class $$TrailPoisTableTableManager extends RootTableManager<
               $$TrailPoisTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$TrailPoisTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> stageId = const Value.absent(),
-            Value<String> nameFr = const Value.absent(),
-            Value<String> nameEn = const Value.absent(),
-            Value<String> nameDe = const Value.absent(),
-            Value<String> nameIt = const Value.absent(),
-            Value<String> nameEs = const Value.absent(),
-            Value<String?> descriptionFr = const Value.absent(),
-            Value<String?> descriptionEn = const Value.absent(),
-            Value<String?> descriptionDe = const Value.absent(),
-            Value<String?> descriptionIt = const Value.absent(),
-            Value<String?> descriptionEs = const Value.absent(),
-            Value<String> type = const Value.absent(),
-            Value<double> lat = const Value.absent(),
-            Value<double> lng = const Value.absent(),
-            Value<double?> elevation = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailPoisCompanion(
-            id: id,
-            stageId: stageId,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            descriptionFr: descriptionFr,
-            descriptionEn: descriptionEn,
-            descriptionDe: descriptionDe,
-            descriptionIt: descriptionIt,
-            descriptionEs: descriptionEs,
-            type: type,
-            lat: lat,
-            lng: lng,
-            elevation: elevation,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String stageId,
-            required String nameFr,
-            required String nameEn,
-            required String nameDe,
-            required String nameIt,
-            required String nameEs,
-            Value<String?> descriptionFr = const Value.absent(),
-            Value<String?> descriptionEn = const Value.absent(),
-            Value<String?> descriptionDe = const Value.absent(),
-            Value<String?> descriptionIt = const Value.absent(),
-            Value<String?> descriptionEs = const Value.absent(),
-            required String type,
-            required double lat,
-            required double lng,
-            Value<double?> elevation = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailPoisCompanion.insert(
-            id: id,
-            stageId: stageId,
-            nameFr: nameFr,
-            nameEn: nameEn,
-            nameDe: nameDe,
-            nameIt: nameIt,
-            nameEs: nameEs,
-            descriptionFr: descriptionFr,
-            descriptionEn: descriptionEn,
-            descriptionDe: descriptionDe,
-            descriptionIt: descriptionIt,
-            descriptionEs: descriptionEs,
-            type: type,
-            lat: lat,
-            lng: lng,
-            elevation: elevation,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> stageId = const Value.absent(),
+                Value<String> nameFr = const Value.absent(),
+                Value<String> nameEn = const Value.absent(),
+                Value<String> nameDe = const Value.absent(),
+                Value<String> nameIt = const Value.absent(),
+                Value<String> nameEs = const Value.absent(),
+                Value<String?> descriptionFr = const Value.absent(),
+                Value<String?> descriptionEn = const Value.absent(),
+                Value<String?> descriptionDe = const Value.absent(),
+                Value<String?> descriptionIt = const Value.absent(),
+                Value<String?> descriptionEs = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lng = const Value.absent(),
+                Value<double?> elevation = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailPoisCompanion(
+                id: id,
+                stageId: stageId,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                descriptionFr: descriptionFr,
+                descriptionEn: descriptionEn,
+                descriptionDe: descriptionDe,
+                descriptionIt: descriptionIt,
+                descriptionEs: descriptionEs,
+                type: type,
+                lat: lat,
+                lng: lng,
+                elevation: elevation,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String stageId,
+                required String nameFr,
+                required String nameEn,
+                required String nameDe,
+                required String nameIt,
+                required String nameEs,
+                Value<String?> descriptionFr = const Value.absent(),
+                Value<String?> descriptionEn = const Value.absent(),
+                Value<String?> descriptionDe = const Value.absent(),
+                Value<String?> descriptionIt = const Value.absent(),
+                Value<String?> descriptionEs = const Value.absent(),
+                required String type,
+                required double lat,
+                required double lng,
+                Value<double?> elevation = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailPoisCompanion.insert(
+                id: id,
+                stageId: stageId,
+                nameFr: nameFr,
+                nameEn: nameEn,
+                nameDe: nameDe,
+                nameIt: nameIt,
+                nameEs: nameEs,
+                descriptionFr: descriptionFr,
+                descriptionEn: descriptionEn,
+                descriptionDe: descriptionDe,
+                descriptionIt: descriptionIt,
+                descriptionEs: descriptionEs,
+                type: type,
+                lat: lat,
+                lng: lng,
+                elevation: elevation,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailPoisTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailPoisTable,
-    TrailPoi,
-    $$TrailPoisTableFilterComposer,
-    $$TrailPoisTableOrderingComposer,
-    $$TrailPoisTableAnnotationComposer,
-    $$TrailPoisTableCreateCompanionBuilder,
-    $$TrailPoisTableUpdateCompanionBuilder,
-    (TrailPoi, BaseReferences<_$AppDatabase, $TrailPoisTable, TrailPoi>),
-    TrailPoi,
-    PrefetchHooks Function()>;
-typedef $$TrailGpxTracksTableCreateCompanionBuilder = TrailGpxTracksCompanion
-    Function({
-  required String id,
-  required String itineraryId,
-  required String name,
-  Value<String?> sourceUrl,
-  Value<int> rowid,
-});
-typedef $$TrailGpxTracksTableUpdateCompanionBuilder = TrailGpxTracksCompanion
-    Function({
-  Value<String> id,
-  Value<String> itineraryId,
-  Value<String> name,
-  Value<String?> sourceUrl,
-  Value<int> rowid,
-});
+typedef $$TrailPoisTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailPoisTable,
+      TrailPoi,
+      $$TrailPoisTableFilterComposer,
+      $$TrailPoisTableOrderingComposer,
+      $$TrailPoisTableAnnotationComposer,
+      $$TrailPoisTableCreateCompanionBuilder,
+      $$TrailPoisTableUpdateCompanionBuilder,
+      (TrailPoi, BaseReferences<_$AppDatabase, $TrailPoisTable, TrailPoi>),
+      TrailPoi,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailGpxTracksTableCreateCompanionBuilder =
+    TrailGpxTracksCompanion Function({
+      required String id,
+      required String itineraryId,
+      required String name,
+      Value<String?> sourceUrl,
+      Value<int> rowid,
+    });
+typedef $$TrailGpxTracksTableUpdateCompanionBuilder =
+    TrailGpxTracksCompanion Function({
+      Value<String> id,
+      Value<String> itineraryId,
+      Value<String> name,
+      Value<String?> sourceUrl,
+      Value<int> rowid,
+    });
 
 class $$TrailGpxTracksTableFilterComposer
     extends Composer<_$AppDatabase, $TrailGpxTracksTable> {
@@ -11221,16 +13391,24 @@ class $$TrailGpxTracksTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get itineraryId => $composableBuilder(
-      column: $table.itineraryId, builder: (column) => ColumnFilters(column));
+    column: $table.itineraryId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnFilters(column));
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get sourceUrl => $composableBuilder(
-      column: $table.sourceUrl, builder: (column) => ColumnFilters(column));
+    column: $table.sourceUrl,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailGpxTracksTableOrderingComposer
@@ -11243,16 +13421,24 @@ class $$TrailGpxTracksTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get itineraryId => $composableBuilder(
-      column: $table.itineraryId, builder: (column) => ColumnOrderings(column));
+    column: $table.itineraryId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get name => $composableBuilder(
-      column: $table.name, builder: (column) => ColumnOrderings(column));
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get sourceUrl => $composableBuilder(
-      column: $table.sourceUrl, builder: (column) => ColumnOrderings(column));
+    column: $table.sourceUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailGpxTracksTableAnnotationComposer
@@ -11268,7 +13454,9 @@ class $$TrailGpxTracksTableAnnotationComposer
       $composableBuilder(column: $table.id, builder: (column) => column);
 
   GeneratedColumn<String> get itineraryId => $composableBuilder(
-      column: $table.itineraryId, builder: (column) => column);
+    column: $table.itineraryId,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get name =>
       $composableBuilder(column: $table.name, builder: (column) => column);
@@ -11277,24 +13465,29 @@ class $$TrailGpxTracksTableAnnotationComposer
       $composableBuilder(column: $table.sourceUrl, builder: (column) => column);
 }
 
-class $$TrailGpxTracksTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailGpxTracksTable,
-    TrailGpxTrack,
-    $$TrailGpxTracksTableFilterComposer,
-    $$TrailGpxTracksTableOrderingComposer,
-    $$TrailGpxTracksTableAnnotationComposer,
-    $$TrailGpxTracksTableCreateCompanionBuilder,
-    $$TrailGpxTracksTableUpdateCompanionBuilder,
-    (
-      TrailGpxTrack,
-      BaseReferences<_$AppDatabase, $TrailGpxTracksTable, TrailGpxTrack>
-    ),
-    TrailGpxTrack,
-    PrefetchHooks Function()> {
+class $$TrailGpxTracksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailGpxTracksTable,
+          TrailGpxTrack,
+          $$TrailGpxTracksTableFilterComposer,
+          $$TrailGpxTracksTableOrderingComposer,
+          $$TrailGpxTracksTableAnnotationComposer,
+          $$TrailGpxTracksTableCreateCompanionBuilder,
+          $$TrailGpxTracksTableUpdateCompanionBuilder,
+          (
+            TrailGpxTrack,
+            BaseReferences<_$AppDatabase, $TrailGpxTracksTable, TrailGpxTrack>,
+          ),
+          TrailGpxTrack,
+          PrefetchHooks Function()
+        > {
   $$TrailGpxTracksTableTableManager(
-      _$AppDatabase db, $TrailGpxTracksTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $TrailGpxTracksTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -11303,74 +13496,77 @@ class $$TrailGpxTracksTableTableManager extends RootTableManager<
               $$TrailGpxTracksTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$TrailGpxTracksTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> id = const Value.absent(),
-            Value<String> itineraryId = const Value.absent(),
-            Value<String> name = const Value.absent(),
-            Value<String?> sourceUrl = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailGpxTracksCompanion(
-            id: id,
-            itineraryId: itineraryId,
-            name: name,
-            sourceUrl: sourceUrl,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String id,
-            required String itineraryId,
-            required String name,
-            Value<String?> sourceUrl = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailGpxTracksCompanion.insert(
-            id: id,
-            itineraryId: itineraryId,
-            name: name,
-            sourceUrl: sourceUrl,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> itineraryId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailGpxTracksCompanion(
+                id: id,
+                itineraryId: itineraryId,
+                name: name,
+                sourceUrl: sourceUrl,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String itineraryId,
+                required String name,
+                Value<String?> sourceUrl = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailGpxTracksCompanion.insert(
+                id: id,
+                itineraryId: itineraryId,
+                name: name,
+                sourceUrl: sourceUrl,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailGpxTracksTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailGpxTracksTable,
-    TrailGpxTrack,
-    $$TrailGpxTracksTableFilterComposer,
-    $$TrailGpxTracksTableOrderingComposer,
-    $$TrailGpxTracksTableAnnotationComposer,
-    $$TrailGpxTracksTableCreateCompanionBuilder,
-    $$TrailGpxTracksTableUpdateCompanionBuilder,
-    (
+typedef $$TrailGpxTracksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailGpxTracksTable,
       TrailGpxTrack,
-      BaseReferences<_$AppDatabase, $TrailGpxTracksTable, TrailGpxTrack>
-    ),
-    TrailGpxTrack,
-    PrefetchHooks Function()>;
-typedef $$TrailGpxPointsTableCreateCompanionBuilder = TrailGpxPointsCompanion
-    Function({
-  Value<int> id,
-  required String trackId,
-  required double lat,
-  required double lng,
-  required double elevation,
-  required int sequenceIndex,
-});
-typedef $$TrailGpxPointsTableUpdateCompanionBuilder = TrailGpxPointsCompanion
-    Function({
-  Value<int> id,
-  Value<String> trackId,
-  Value<double> lat,
-  Value<double> lng,
-  Value<double> elevation,
-  Value<int> sequenceIndex,
-});
+      $$TrailGpxTracksTableFilterComposer,
+      $$TrailGpxTracksTableOrderingComposer,
+      $$TrailGpxTracksTableAnnotationComposer,
+      $$TrailGpxTracksTableCreateCompanionBuilder,
+      $$TrailGpxTracksTableUpdateCompanionBuilder,
+      (
+        TrailGpxTrack,
+        BaseReferences<_$AppDatabase, $TrailGpxTracksTable, TrailGpxTrack>,
+      ),
+      TrailGpxTrack,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailGpxPointsTableCreateCompanionBuilder =
+    TrailGpxPointsCompanion Function({
+      Value<int> id,
+      required String trackId,
+      required double lat,
+      required double lng,
+      required double elevation,
+      required int sequenceIndex,
+    });
+typedef $$TrailGpxPointsTableUpdateCompanionBuilder =
+    TrailGpxPointsCompanion Function({
+      Value<int> id,
+      Value<String> trackId,
+      Value<double> lat,
+      Value<double> lng,
+      Value<double> elevation,
+      Value<int> sequenceIndex,
+    });
 
 class $$TrailGpxPointsTableFilterComposer
     extends Composer<_$AppDatabase, $TrailGpxPointsTable> {
@@ -11382,22 +13578,34 @@ class $$TrailGpxPointsTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnFilters(column));
+    column: $table.trackId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnFilters(column));
+    column: $table.lat,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnFilters(column));
+    column: $table.lng,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<double> get elevation => $composableBuilder(
-      column: $table.elevation, builder: (column) => ColumnFilters(column));
+    column: $table.elevation,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get sequenceIndex => $composableBuilder(
-      column: $table.sequenceIndex, builder: (column) => ColumnFilters(column));
+    column: $table.sequenceIndex,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailGpxPointsTableOrderingComposer
@@ -11410,23 +13618,34 @@ class $$TrailGpxPointsTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trackId => $composableBuilder(
-      column: $table.trackId, builder: (column) => ColumnOrderings(column));
+    column: $table.trackId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lat => $composableBuilder(
-      column: $table.lat, builder: (column) => ColumnOrderings(column));
+    column: $table.lat,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get lng => $composableBuilder(
-      column: $table.lng, builder: (column) => ColumnOrderings(column));
+    column: $table.lng,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<double> get elevation => $composableBuilder(
-      column: $table.elevation, builder: (column) => ColumnOrderings(column));
+    column: $table.elevation,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get sequenceIndex => $composableBuilder(
-      column: $table.sequenceIndex,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.sequenceIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailGpxPointsTableAnnotationComposer
@@ -11454,27 +13673,34 @@ class $$TrailGpxPointsTableAnnotationComposer
       $composableBuilder(column: $table.elevation, builder: (column) => column);
 
   GeneratedColumn<int> get sequenceIndex => $composableBuilder(
-      column: $table.sequenceIndex, builder: (column) => column);
+    column: $table.sequenceIndex,
+    builder: (column) => column,
+  );
 }
 
-class $$TrailGpxPointsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailGpxPointsTable,
-    TrailGpxPoint,
-    $$TrailGpxPointsTableFilterComposer,
-    $$TrailGpxPointsTableOrderingComposer,
-    $$TrailGpxPointsTableAnnotationComposer,
-    $$TrailGpxPointsTableCreateCompanionBuilder,
-    $$TrailGpxPointsTableUpdateCompanionBuilder,
-    (
-      TrailGpxPoint,
-      BaseReferences<_$AppDatabase, $TrailGpxPointsTable, TrailGpxPoint>
-    ),
-    TrailGpxPoint,
-    PrefetchHooks Function()> {
+class $$TrailGpxPointsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailGpxPointsTable,
+          TrailGpxPoint,
+          $$TrailGpxPointsTableFilterComposer,
+          $$TrailGpxPointsTableOrderingComposer,
+          $$TrailGpxPointsTableAnnotationComposer,
+          $$TrailGpxPointsTableCreateCompanionBuilder,
+          $$TrailGpxPointsTableUpdateCompanionBuilder,
+          (
+            TrailGpxPoint,
+            BaseReferences<_$AppDatabase, $TrailGpxPointsTable, TrailGpxPoint>,
+          ),
+          TrailGpxPoint,
+          PrefetchHooks Function()
+        > {
   $$TrailGpxPointsTableTableManager(
-      _$AppDatabase db, $TrailGpxPointsTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $TrailGpxPointsTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -11483,84 +13709,87 @@ class $$TrailGpxPointsTableTableManager extends RootTableManager<
               $$TrailGpxPointsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$TrailGpxPointsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trackId = const Value.absent(),
-            Value<double> lat = const Value.absent(),
-            Value<double> lng = const Value.absent(),
-            Value<double> elevation = const Value.absent(),
-            Value<int> sequenceIndex = const Value.absent(),
-          }) =>
-              TrailGpxPointsCompanion(
-            id: id,
-            trackId: trackId,
-            lat: lat,
-            lng: lng,
-            elevation: elevation,
-            sequenceIndex: sequenceIndex,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trackId,
-            required double lat,
-            required double lng,
-            required double elevation,
-            required int sequenceIndex,
-          }) =>
-              TrailGpxPointsCompanion.insert(
-            id: id,
-            trackId: trackId,
-            lat: lat,
-            lng: lng,
-            elevation: elevation,
-            sequenceIndex: sequenceIndex,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trackId = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lng = const Value.absent(),
+                Value<double> elevation = const Value.absent(),
+                Value<int> sequenceIndex = const Value.absent(),
+              }) => TrailGpxPointsCompanion(
+                id: id,
+                trackId: trackId,
+                lat: lat,
+                lng: lng,
+                elevation: elevation,
+                sequenceIndex: sequenceIndex,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trackId,
+                required double lat,
+                required double lng,
+                required double elevation,
+                required int sequenceIndex,
+              }) => TrailGpxPointsCompanion.insert(
+                id: id,
+                trackId: trackId,
+                lat: lat,
+                lng: lng,
+                elevation: elevation,
+                sequenceIndex: sequenceIndex,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailGpxPointsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailGpxPointsTable,
-    TrailGpxPoint,
-    $$TrailGpxPointsTableFilterComposer,
-    $$TrailGpxPointsTableOrderingComposer,
-    $$TrailGpxPointsTableAnnotationComposer,
-    $$TrailGpxPointsTableCreateCompanionBuilder,
-    $$TrailGpxPointsTableUpdateCompanionBuilder,
-    (
+typedef $$TrailGpxPointsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailGpxPointsTable,
       TrailGpxPoint,
-      BaseReferences<_$AppDatabase, $TrailGpxPointsTable, TrailGpxPoint>
-    ),
-    TrailGpxPoint,
-    PrefetchHooks Function()>;
-typedef $$TrailManifestsTableCreateCompanionBuilder = TrailManifestsCompanion
-    Function({
-  required String trailId,
-  required int dataVersion,
-  required String hash,
-  required String filePath,
-  required int fileSize,
-  required String status,
-  required String lastUpdated,
-  Value<int?> localVersion,
-  Value<int> rowid,
-});
-typedef $$TrailManifestsTableUpdateCompanionBuilder = TrailManifestsCompanion
-    Function({
-  Value<String> trailId,
-  Value<int> dataVersion,
-  Value<String> hash,
-  Value<String> filePath,
-  Value<int> fileSize,
-  Value<String> status,
-  Value<String> lastUpdated,
-  Value<int?> localVersion,
-  Value<int> rowid,
-});
+      $$TrailGpxPointsTableFilterComposer,
+      $$TrailGpxPointsTableOrderingComposer,
+      $$TrailGpxPointsTableAnnotationComposer,
+      $$TrailGpxPointsTableCreateCompanionBuilder,
+      $$TrailGpxPointsTableUpdateCompanionBuilder,
+      (
+        TrailGpxPoint,
+        BaseReferences<_$AppDatabase, $TrailGpxPointsTable, TrailGpxPoint>,
+      ),
+      TrailGpxPoint,
+      PrefetchHooks Function()
+    >;
+typedef $$TrailManifestsTableCreateCompanionBuilder =
+    TrailManifestsCompanion Function({
+      required String trailId,
+      required int dataVersion,
+      required String hash,
+      required String filePath,
+      required int fileSize,
+      required String status,
+      required String lastUpdated,
+      Value<int?> localVersion,
+      Value<int> rowid,
+    });
+typedef $$TrailManifestsTableUpdateCompanionBuilder =
+    TrailManifestsCompanion Function({
+      Value<String> trailId,
+      Value<int> dataVersion,
+      Value<String> hash,
+      Value<String> filePath,
+      Value<int> fileSize,
+      Value<String> status,
+      Value<String> lastUpdated,
+      Value<int?> localVersion,
+      Value<int> rowid,
+    });
 
 class $$TrailManifestsTableFilterComposer
     extends Composer<_$AppDatabase, $TrailManifestsTable> {
@@ -11572,28 +13801,44 @@ class $$TrailManifestsTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get dataVersion => $composableBuilder(
-      column: $table.dataVersion, builder: (column) => ColumnFilters(column));
+    column: $table.dataVersion,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get hash => $composableBuilder(
-      column: $table.hash, builder: (column) => ColumnFilters(column));
+    column: $table.hash,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get filePath => $composableBuilder(
-      column: $table.filePath, builder: (column) => ColumnFilters(column));
+    column: $table.filePath,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get fileSize => $composableBuilder(
-      column: $table.fileSize, builder: (column) => ColumnFilters(column));
+    column: $table.fileSize,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnFilters(column));
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get lastUpdated => $composableBuilder(
-      column: $table.lastUpdated, builder: (column) => ColumnFilters(column));
+    column: $table.lastUpdated,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get localVersion => $composableBuilder(
-      column: $table.localVersion, builder: (column) => ColumnFilters(column));
+    column: $table.localVersion,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$TrailManifestsTableOrderingComposer
@@ -11606,29 +13851,44 @@ class $$TrailManifestsTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get dataVersion => $composableBuilder(
-      column: $table.dataVersion, builder: (column) => ColumnOrderings(column));
+    column: $table.dataVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get hash => $composableBuilder(
-      column: $table.hash, builder: (column) => ColumnOrderings(column));
+    column: $table.hash,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get filePath => $composableBuilder(
-      column: $table.filePath, builder: (column) => ColumnOrderings(column));
+    column: $table.filePath,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get fileSize => $composableBuilder(
-      column: $table.fileSize, builder: (column) => ColumnOrderings(column));
+    column: $table.fileSize,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get lastUpdated => $composableBuilder(
-      column: $table.lastUpdated, builder: (column) => ColumnOrderings(column));
+    column: $table.lastUpdated,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get localVersion => $composableBuilder(
-      column: $table.localVersion,
-      builder: (column) => ColumnOrderings(column));
+    column: $table.localVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TrailManifestsTableAnnotationComposer
@@ -11644,7 +13904,9 @@ class $$TrailManifestsTableAnnotationComposer
       $composableBuilder(column: $table.trailId, builder: (column) => column);
 
   GeneratedColumn<int> get dataVersion => $composableBuilder(
-      column: $table.dataVersion, builder: (column) => column);
+    column: $table.dataVersion,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<String> get hash =>
       $composableBuilder(column: $table.hash, builder: (column) => column);
@@ -11659,30 +13921,39 @@ class $$TrailManifestsTableAnnotationComposer
       $composableBuilder(column: $table.status, builder: (column) => column);
 
   GeneratedColumn<String> get lastUpdated => $composableBuilder(
-      column: $table.lastUpdated, builder: (column) => column);
+    column: $table.lastUpdated,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get localVersion => $composableBuilder(
-      column: $table.localVersion, builder: (column) => column);
+    column: $table.localVersion,
+    builder: (column) => column,
+  );
 }
 
-class $$TrailManifestsTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $TrailManifestsTable,
-    TrailManifest,
-    $$TrailManifestsTableFilterComposer,
-    $$TrailManifestsTableOrderingComposer,
-    $$TrailManifestsTableAnnotationComposer,
-    $$TrailManifestsTableCreateCompanionBuilder,
-    $$TrailManifestsTableUpdateCompanionBuilder,
-    (
-      TrailManifest,
-      BaseReferences<_$AppDatabase, $TrailManifestsTable, TrailManifest>
-    ),
-    TrailManifest,
-    PrefetchHooks Function()> {
+class $$TrailManifestsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrailManifestsTable,
+          TrailManifest,
+          $$TrailManifestsTableFilterComposer,
+          $$TrailManifestsTableOrderingComposer,
+          $$TrailManifestsTableAnnotationComposer,
+          $$TrailManifestsTableCreateCompanionBuilder,
+          $$TrailManifestsTableUpdateCompanionBuilder,
+          (
+            TrailManifest,
+            BaseReferences<_$AppDatabase, $TrailManifestsTable, TrailManifest>,
+          ),
+          TrailManifest,
+          PrefetchHooks Function()
+        > {
   $$TrailManifestsTableTableManager(
-      _$AppDatabase db, $TrailManifestsTable table)
-      : super(TableManagerState(
+    _$AppDatabase db,
+    $TrailManifestsTable table,
+  ) : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -11691,92 +13962,97 @@ class $$TrailManifestsTableTableManager extends RootTableManager<
               $$TrailManifestsTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$TrailManifestsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<String> trailId = const Value.absent(),
-            Value<int> dataVersion = const Value.absent(),
-            Value<String> hash = const Value.absent(),
-            Value<String> filePath = const Value.absent(),
-            Value<int> fileSize = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<String> lastUpdated = const Value.absent(),
-            Value<int?> localVersion = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailManifestsCompanion(
-            trailId: trailId,
-            dataVersion: dataVersion,
-            hash: hash,
-            filePath: filePath,
-            fileSize: fileSize,
-            status: status,
-            lastUpdated: lastUpdated,
-            localVersion: localVersion,
-            rowid: rowid,
-          ),
-          createCompanionCallback: ({
-            required String trailId,
-            required int dataVersion,
-            required String hash,
-            required String filePath,
-            required int fileSize,
-            required String status,
-            required String lastUpdated,
-            Value<int?> localVersion = const Value.absent(),
-            Value<int> rowid = const Value.absent(),
-          }) =>
-              TrailManifestsCompanion.insert(
-            trailId: trailId,
-            dataVersion: dataVersion,
-            hash: hash,
-            filePath: filePath,
-            fileSize: fileSize,
-            status: status,
-            lastUpdated: lastUpdated,
-            localVersion: localVersion,
-            rowid: rowid,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<String> trailId = const Value.absent(),
+                Value<int> dataVersion = const Value.absent(),
+                Value<String> hash = const Value.absent(),
+                Value<String> filePath = const Value.absent(),
+                Value<int> fileSize = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> lastUpdated = const Value.absent(),
+                Value<int?> localVersion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailManifestsCompanion(
+                trailId: trailId,
+                dataVersion: dataVersion,
+                hash: hash,
+                filePath: filePath,
+                fileSize: fileSize,
+                status: status,
+                lastUpdated: lastUpdated,
+                localVersion: localVersion,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String trailId,
+                required int dataVersion,
+                required String hash,
+                required String filePath,
+                required int fileSize,
+                required String status,
+                required String lastUpdated,
+                Value<int?> localVersion = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrailManifestsCompanion.insert(
+                trailId: trailId,
+                dataVersion: dataVersion,
+                hash: hash,
+                filePath: filePath,
+                fileSize: fileSize,
+                status: status,
+                lastUpdated: lastUpdated,
+                localVersion: localVersion,
+                rowid: rowid,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$TrailManifestsTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $TrailManifestsTable,
-    TrailManifest,
-    $$TrailManifestsTableFilterComposer,
-    $$TrailManifestsTableOrderingComposer,
-    $$TrailManifestsTableAnnotationComposer,
-    $$TrailManifestsTableCreateCompanionBuilder,
-    $$TrailManifestsTableUpdateCompanionBuilder,
-    (
+typedef $$TrailManifestsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrailManifestsTable,
       TrailManifest,
-      BaseReferences<_$AppDatabase, $TrailManifestsTable, TrailManifest>
-    ),
-    TrailManifest,
-    PrefetchHooks Function()>;
-typedef $$SyncQueueTableCreateCompanionBuilder = SyncQueueCompanion Function({
-  Value<int> id,
-  required String trailId,
-  required String action,
-  Value<String> status,
-  Value<String?> payload,
-  required String createdAt,
-  Value<String?> completedAt,
-  Value<int> retryCount,
-});
-typedef $$SyncQueueTableUpdateCompanionBuilder = SyncQueueCompanion Function({
-  Value<int> id,
-  Value<String> trailId,
-  Value<String> action,
-  Value<String> status,
-  Value<String?> payload,
-  Value<String> createdAt,
-  Value<String?> completedAt,
-  Value<int> retryCount,
-});
+      $$TrailManifestsTableFilterComposer,
+      $$TrailManifestsTableOrderingComposer,
+      $$TrailManifestsTableAnnotationComposer,
+      $$TrailManifestsTableCreateCompanionBuilder,
+      $$TrailManifestsTableUpdateCompanionBuilder,
+      (
+        TrailManifest,
+        BaseReferences<_$AppDatabase, $TrailManifestsTable, TrailManifest>,
+      ),
+      TrailManifest,
+      PrefetchHooks Function()
+    >;
+typedef $$SyncQueueTableCreateCompanionBuilder =
+    SyncQueueCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required String action,
+      Value<String> status,
+      Value<String?> payload,
+      required String createdAt,
+      Value<String?> completedAt,
+      Value<int> retryCount,
+    });
+typedef $$SyncQueueTableUpdateCompanionBuilder =
+    SyncQueueCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<String> action,
+      Value<String> status,
+      Value<String?> payload,
+      Value<String> createdAt,
+      Value<String?> completedAt,
+      Value<int> retryCount,
+    });
 
 class $$SyncQueueTableFilterComposer
     extends Composer<_$AppDatabase, $SyncQueueTable> {
@@ -11788,28 +14064,44 @@ class $$SyncQueueTableFilterComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnFilters<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnFilters(column));
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnFilters(column));
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get action => $composableBuilder(
-      column: $table.action, builder: (column) => ColumnFilters(column));
+    column: $table.action,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnFilters(column));
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get payload => $composableBuilder(
-      column: $table.payload, builder: (column) => ColumnFilters(column));
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<String> get completedAt => $composableBuilder(
-      column: $table.completedAt, builder: (column) => ColumnFilters(column));
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
 
   ColumnFilters<int> get retryCount => $composableBuilder(
-      column: $table.retryCount, builder: (column) => ColumnFilters(column));
+    column: $table.retryCount,
+    builder: (column) => ColumnFilters(column),
+  );
 }
 
 class $$SyncQueueTableOrderingComposer
@@ -11822,28 +14114,44 @@ class $$SyncQueueTableOrderingComposer
     super.$removeJoinBuilderFromRootComposer,
   });
   ColumnOrderings<int> get id => $composableBuilder(
-      column: $table.id, builder: (column) => ColumnOrderings(column));
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get trailId => $composableBuilder(
-      column: $table.trailId, builder: (column) => ColumnOrderings(column));
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get action => $composableBuilder(
-      column: $table.action, builder: (column) => ColumnOrderings(column));
+    column: $table.action,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get status => $composableBuilder(
-      column: $table.status, builder: (column) => ColumnOrderings(column));
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get payload => $composableBuilder(
-      column: $table.payload, builder: (column) => ColumnOrderings(column));
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get createdAt => $composableBuilder(
-      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<String> get completedAt => $composableBuilder(
-      column: $table.completedAt, builder: (column) => ColumnOrderings(column));
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 
   ColumnOrderings<int> get retryCount => $composableBuilder(
-      column: $table.retryCount, builder: (column) => ColumnOrderings(column));
+    column: $table.retryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$SyncQueueTableAnnotationComposer
@@ -11874,29 +14182,37 @@ class $$SyncQueueTableAnnotationComposer
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   GeneratedColumn<String> get completedAt => $composableBuilder(
-      column: $table.completedAt, builder: (column) => column);
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<int> get retryCount => $composableBuilder(
-      column: $table.retryCount, builder: (column) => column);
+    column: $table.retryCount,
+    builder: (column) => column,
+  );
 }
 
-class $$SyncQueueTableTableManager extends RootTableManager<
-    _$AppDatabase,
-    $SyncQueueTable,
-    SyncQueueData,
-    $$SyncQueueTableFilterComposer,
-    $$SyncQueueTableOrderingComposer,
-    $$SyncQueueTableAnnotationComposer,
-    $$SyncQueueTableCreateCompanionBuilder,
-    $$SyncQueueTableUpdateCompanionBuilder,
-    (
-      SyncQueueData,
-      BaseReferences<_$AppDatabase, $SyncQueueTable, SyncQueueData>
-    ),
-    SyncQueueData,
-    PrefetchHooks Function()> {
+class $$SyncQueueTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SyncQueueTable,
+          SyncQueueData,
+          $$SyncQueueTableFilterComposer,
+          $$SyncQueueTableOrderingComposer,
+          $$SyncQueueTableAnnotationComposer,
+          $$SyncQueueTableCreateCompanionBuilder,
+          $$SyncQueueTableUpdateCompanionBuilder,
+          (
+            SyncQueueData,
+            BaseReferences<_$AppDatabase, $SyncQueueTable, SyncQueueData>,
+          ),
+          SyncQueueData,
+          PrefetchHooks Function()
+        > {
   $$SyncQueueTableTableManager(_$AppDatabase db, $SyncQueueTable table)
-      : super(TableManagerState(
+    : super(
+        TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
@@ -11905,68 +14221,71 @@ class $$SyncQueueTableTableManager extends RootTableManager<
               $$SyncQueueTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
               $$SyncQueueTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            Value<String> trailId = const Value.absent(),
-            Value<String> action = const Value.absent(),
-            Value<String> status = const Value.absent(),
-            Value<String?> payload = const Value.absent(),
-            Value<String> createdAt = const Value.absent(),
-            Value<String?> completedAt = const Value.absent(),
-            Value<int> retryCount = const Value.absent(),
-          }) =>
-              SyncQueueCompanion(
-            id: id,
-            trailId: trailId,
-            action: action,
-            status: status,
-            payload: payload,
-            createdAt: createdAt,
-            completedAt: completedAt,
-            retryCount: retryCount,
-          ),
-          createCompanionCallback: ({
-            Value<int> id = const Value.absent(),
-            required String trailId,
-            required String action,
-            Value<String> status = const Value.absent(),
-            Value<String?> payload = const Value.absent(),
-            required String createdAt,
-            Value<String?> completedAt = const Value.absent(),
-            Value<int> retryCount = const Value.absent(),
-          }) =>
-              SyncQueueCompanion.insert(
-            id: id,
-            trailId: trailId,
-            action: action,
-            status: status,
-            payload: payload,
-            createdAt: createdAt,
-            completedAt: completedAt,
-            retryCount: retryCount,
-          ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<String> action = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String?> payload = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String?> completedAt = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+              }) => SyncQueueCompanion(
+                id: id,
+                trailId: trailId,
+                action: action,
+                status: status,
+                payload: payload,
+                createdAt: createdAt,
+                completedAt: completedAt,
+                retryCount: retryCount,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required String action,
+                Value<String> status = const Value.absent(),
+                Value<String?> payload = const Value.absent(),
+                required String createdAt,
+                Value<String?> completedAt = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+              }) => SyncQueueCompanion.insert(
+                id: id,
+                trailId: trailId,
+                action: action,
+                status: status,
+                payload: payload,
+                createdAt: createdAt,
+                completedAt: completedAt,
+                retryCount: retryCount,
+              ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
           prefetchHooksCallback: null,
-        ));
+        ),
+      );
 }
 
-typedef $$SyncQueueTableProcessedTableManager = ProcessedTableManager<
-    _$AppDatabase,
-    $SyncQueueTable,
-    SyncQueueData,
-    $$SyncQueueTableFilterComposer,
-    $$SyncQueueTableOrderingComposer,
-    $$SyncQueueTableAnnotationComposer,
-    $$SyncQueueTableCreateCompanionBuilder,
-    $$SyncQueueTableUpdateCompanionBuilder,
-    (
+typedef $$SyncQueueTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SyncQueueTable,
       SyncQueueData,
-      BaseReferences<_$AppDatabase, $SyncQueueTable, SyncQueueData>
-    ),
-    SyncQueueData,
-    PrefetchHooks Function()>;
+      $$SyncQueueTableFilterComposer,
+      $$SyncQueueTableOrderingComposer,
+      $$SyncQueueTableAnnotationComposer,
+      $$SyncQueueTableCreateCompanionBuilder,
+      $$SyncQueueTableUpdateCompanionBuilder,
+      (
+        SyncQueueData,
+        BaseReferences<_$AppDatabase, $SyncQueueTable, SyncQueueData>,
+      ),
+      SyncQueueData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;

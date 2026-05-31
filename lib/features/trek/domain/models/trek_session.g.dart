@@ -7,14 +7,14 @@ part of 'trek_session.dart';
 // **************************************************************************
 
 _TrekSession _$TrekSessionFromJson(Map<String, dynamic> json) => _TrekSession(
-      id: json['id'] as String,
-      trailId: json['trailId'] as String,
-      startedAt: DateTime.parse(json['startedAt'] as String),
-      finishedAt: json['finishedAt'] == null
-          ? null
-          : DateTime.parse(json['finishedAt'] as String),
-      status: json['status'] as String? ?? "active",
-    );
+  id: json['id'] as String,
+  trailId: json['trailId'] as String,
+  startedAt: DateTime.parse(json['startedAt'] as String),
+  finishedAt: json['finishedAt'] == null
+      ? null
+      : DateTime.parse(json['finishedAt'] as String),
+  status: json['status'] as String? ?? "active",
+);
 
 Map<String, dynamic> _$TrekSessionToJson(_TrekSession instance) =>
     <String, dynamic>{

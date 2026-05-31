@@ -8,7 +8,7 @@ part 'trek_session.g.dart';
 /// Represente une tentative de parcours avec horodatage
 /// debut/fin et statut extensible (String).
 @freezed
-class TrekSession with _$TrekSession {
+abstract class TrekSession with _$TrekSession {
   const TrekSession._();
 
   const factory TrekSession({

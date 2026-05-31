@@ -10,7 +10,7 @@ part 'user_progress.freezed.dart';
 /// Convertible depuis/vers la table Drift UserProgressEntries.
 /// Pas de fromJson car les donnees viennent uniquement de la DB locale.
 @freezed
-class UserProgressModel with _$UserProgressModel {
+abstract class UserProgressModel with _$UserProgressModel {
   const UserProgressModel._();
 
   const factory UserProgressModel({

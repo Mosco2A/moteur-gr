@@ -7,14 +7,14 @@ part of 'delta_update.dart';
 // **************************************************************************
 
 _DeltaUpdate _$DeltaUpdateFromJson(Map<String, dynamic> json) => _DeltaUpdate(
-      trailId: json['trailId'] as String,
-      fromVersion: (json['fromVersion'] as num).toInt(),
-      toVersion: (json['toVersion'] as num).toInt(),
-      changedTables: (json['changedTables'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
-      downloadSize: (json['downloadSize'] as num).toInt(),
-    );
+  trailId: json['trailId'] as String,
+  fromVersion: (json['fromVersion'] as num).toInt(),
+  toVersion: (json['toVersion'] as num).toInt(),
+  changedTables: (json['changedTables'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList(),
+  downloadSize: (json['downloadSize'] as num).toInt(),
+);
 
 Map<String, dynamic> _$DeltaUpdateToJson(_DeltaUpdate instance) =>
     <String, dynamic>{

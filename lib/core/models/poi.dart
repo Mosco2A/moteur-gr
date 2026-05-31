@@ -12,7 +12,7 @@ part 'poi.g.dart';
 /// Utiliser PoiTypeConfig.getStyle(type) pour obtenir icone/couleur.
 /// Convertible depuis/vers la table Drift Pois et depuis JSON.
 @freezed
-class PoiModel with _$PoiModel {
+abstract class PoiModel with _$PoiModel {
   const PoiModel._();
 
   const factory PoiModel({

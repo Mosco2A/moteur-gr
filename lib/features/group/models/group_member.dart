@@ -5,7 +5,7 @@ part 'group_member.g.dart';
 
 /// Membre d un groupe de localisation partagee.
 @freezed
-class GroupMember with _$GroupMember {
+abstract class GroupMember with _$GroupMember {
   const factory GroupMember({
     required String uid,
     String? displayName,
@@ -22,7 +22,7 @@ class GroupMember with _$GroupMember {
 /// Informations d un groupe de localisation partagee.
 /// Design #81460 : 2 mateurs gratuits max.
 @freezed
-class GroupInfo with _$GroupInfo {
+abstract class GroupInfo with _$GroupInfo {
   const factory GroupInfo({
     required String groupCode,
     required String trailId,

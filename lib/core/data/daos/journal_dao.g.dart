@@ -13,5 +13,7 @@ class JournalDaoManager {
   JournalDaoManager(this._db);
   $$JournalEntriesTableTableManager get journalEntries =>
       $$JournalEntriesTableTableManager(
-          _db.attachedDatabase, _db.journalEntries);
+        _db.attachedDatabase,
+        _db.journalEntries,
+      );
 }

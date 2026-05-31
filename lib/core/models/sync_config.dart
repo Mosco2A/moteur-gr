@@ -9,7 +9,7 @@ part 'sync_config.g.dart';
 /// automatiques (arrivee refuge, retour reseau), et retries.
 /// Persiste via SharedPreferences.
 @freezed
-class SyncConfig with _$SyncConfig {
+abstract class SyncConfig with _$SyncConfig {
   const factory SyncConfig({
     /// Intervalle en minutes entre deux syncs batch (defaut 60)
     @Default(60) int batchIntervalMinutes,

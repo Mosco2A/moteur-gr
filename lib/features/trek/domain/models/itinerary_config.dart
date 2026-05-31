@@ -8,7 +8,7 @@ part 'itinerary_config.g.dart';
 /// Parametres de planification fournis par l'utilisateur :
 /// distance max/jour, heures max/jour, date de depart, niveau de difficulte.
 @freezed
-class ItineraryConfig with _$ItineraryConfig {
+abstract class ItineraryConfig with _$ItineraryConfig {
   const ItineraryConfig._();
 
   const factory ItineraryConfig({

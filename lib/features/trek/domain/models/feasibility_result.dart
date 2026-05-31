@@ -8,7 +8,7 @@ part 'feasibility_result.g.dart';
 /// Score de 0 a 100, nombre de jours recommandes,
 /// liste d'avertissements, et en mode groupe, l'index du pire profil.
 @freezed
-class FeasibilityResult with _$FeasibilityResult {
+abstract class FeasibilityResult with _$FeasibilityResult {
   const FeasibilityResult._();
 
   const factory FeasibilityResult({

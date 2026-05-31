@@ -15,5 +15,7 @@ class TrailAccommodationsDaoManager {
   TrailAccommodationsDaoManager(this._db);
   $$TrailAccommodationsTableTableManager get trailAccommodations =>
       $$TrailAccommodationsTableTableManager(
-          _db.attachedDatabase, _db.trailAccommodations);
+        _db.attachedDatabase,
+        _db.trailAccommodations,
+      );
 }

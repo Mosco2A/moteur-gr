@@ -9,7 +9,7 @@ part 'trail_manifest.g.dart';
 /// avec leurs metadonnees de versionnement (hash, taille, etc.)
 /// Utilise pour detecter les mises a jour a telecharger.
 @freezed
-class TrailManifest with _$TrailManifest {
+abstract class TrailManifest with _$TrailManifest {
   const factory TrailManifest({
     /// Version du schema du manifeste
     required int schemaVersion,
@@ -28,7 +28,7 @@ class TrailManifest with _$TrailManifest {
 /// Represente un sentier avec sa version, son hash d'integrite
 /// et les informations de fichier associees.
 @freezed
-class TrailManifestEntry with _$TrailManifestEntry {
+abstract class TrailManifestEntry with _$TrailManifestEntry {
   const factory TrailManifestEntry({
     /// Identifiant unique du sentier (ex: 'gr20', 'mare_a_mare')
     required String trailId,

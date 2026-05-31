@@ -9,7 +9,7 @@ part 'feasibility_profile.g.dart';
 /// En mode groupe, aggrege plusieurs profils via groupProfiles
 /// et utilise le pire profil pour les recommandations.
 @freezed
-class FeasibilityProfile with _$FeasibilityProfile {
+abstract class FeasibilityProfile with _$FeasibilityProfile {
   const FeasibilityProfile._();
 
   const factory FeasibilityProfile({

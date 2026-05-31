@@ -8,7 +8,7 @@ part 'stage.g.dart';
 /// Supporte i18n 5 langues (fr, en, de, it, es),
 /// coordonnees GPS depart/arrivee, et difficulte extensible (String).
 @freezed
-class Stage with _$Stage {
+abstract class Stage with _$Stage {
   const Stage._();
 
   const factory Stage({

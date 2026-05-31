@@ -9,7 +9,7 @@ part 'trail_feasibility_params.g.dart';
 /// altitude, technicite, chaleur, neige, conditions custom.
 /// Inclut des templates de recommandation par cle.
 @freezed
-class TrailFeasibilityParams with _$TrailFeasibilityParams {
+abstract class TrailFeasibilityParams with _$TrailFeasibilityParams {
   const TrailFeasibilityParams._();
 
   const factory TrailFeasibilityParams({

@@ -13,5 +13,7 @@ class TrailGpxPointsDaoManager {
   TrailGpxPointsDaoManager(this._db);
   $$TrailGpxPointsTableTableManager get trailGpxPoints =>
       $$TrailGpxPointsTableTableManager(
-          _db.attachedDatabase, _db.trailGpxPoints);
+        _db.attachedDatabase,
+        _db.trailGpxPoints,
+      );
 }

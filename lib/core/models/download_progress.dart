@@ -25,7 +25,7 @@ abstract class DownloadStatusValues {
 /// Emis via un Stream pendant le telechargement pour
 /// permettre a l'UI d'afficher la barre de progression.
 @freezed
-class DownloadProgress with _$DownloadProgress {
+abstract class DownloadProgress with _$DownloadProgress {
   const factory DownloadProgress({
     /// Identifiant du sentier en cours de telechargement
     required String trailId,

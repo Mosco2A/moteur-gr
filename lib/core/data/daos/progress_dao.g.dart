@@ -14,5 +14,7 @@ class ProgressDaoManager {
   ProgressDaoManager(this._db);
   $$UserProgressEntriesTableTableManager get userProgressEntries =>
       $$UserProgressEntriesTableTableManager(
-          _db.attachedDatabase, _db.userProgressEntries);
+        _db.attachedDatabase,
+        _db.userProgressEntries,
+      );
 }

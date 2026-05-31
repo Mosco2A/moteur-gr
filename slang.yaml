@@ -5,6 +5,6 @@ input_directory: assets/i18n
 input_file_pattern: .i18n.json
 output_directory: lib/i18n
 output_file_name: translations.g.dart
-output_format: single_file
 key_case: camel
 fallback_strategy: base_locale
+lazy: false

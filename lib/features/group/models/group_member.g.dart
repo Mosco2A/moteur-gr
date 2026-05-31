@@ -7,13 +7,13 @@ part of 'group_member.dart';
 // **************************************************************************
 
 _GroupMember _$GroupMemberFromJson(Map<String, dynamic> json) => _GroupMember(
-      uid: json['uid'] as String,
-      displayName: json['displayName'] as String?,
-      lastLat: (json['lastLat'] as num).toDouble(),
-      lastLng: (json['lastLng'] as num).toDouble(),
-      lastUpdate: json['lastUpdate'] as String,
-      currentStageId: json['currentStageId'] as String?,
-    );
+  uid: json['uid'] as String,
+  displayName: json['displayName'] as String?,
+  lastLat: (json['lastLat'] as num).toDouble(),
+  lastLng: (json['lastLng'] as num).toDouble(),
+  lastUpdate: json['lastUpdate'] as String,
+  currentStageId: json['currentStageId'] as String?,
+);
 
 Map<String, dynamic> _$GroupMemberToJson(_GroupMember instance) =>
     <String, dynamic>{
@@ -26,14 +26,14 @@ Map<String, dynamic> _$GroupMemberToJson(_GroupMember instance) =>
     };
 
 _GroupInfo _$GroupInfoFromJson(Map<String, dynamic> json) => _GroupInfo(
-      groupCode: json['groupCode'] as String,
-      trailId: json['trailId'] as String,
-      createdBy: json['createdBy'] as String,
-      members: (json['members'] as List<dynamic>)
-          .map((e) => GroupMember.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      maxFreeWatchers: (json['maxFreeWatchers'] as num?)?.toInt() ?? 2,
-    );
+  groupCode: json['groupCode'] as String,
+  trailId: json['trailId'] as String,
+  createdBy: json['createdBy'] as String,
+  members: (json['members'] as List<dynamic>)
+      .map((e) => GroupMember.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  maxFreeWatchers: (json['maxFreeWatchers'] as num?)?.toInt() ?? 2,
+);
 
 Map<String, dynamic> _$GroupInfoToJson(_GroupInfo instance) =>
     <String, dynamic>{

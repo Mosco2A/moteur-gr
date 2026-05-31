@@ -10,8 +10,9 @@ _FeasibilityResult _$FeasibilityResultFromJson(Map<String, dynamic> json) =>
     _FeasibilityResult(
       score: (json['score'] as num).toDouble(),
       recommendedDays: (json['recommendedDays'] as num).toInt(),
-      warnings:
-          (json['warnings'] as List<dynamic>).map((e) => e as String).toList(),
+      warnings: (json['warnings'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
       isGroupAssessment: json['isGroupAssessment'] as bool? ?? false,
       worstProfileIndex: (json['worstProfileIndex'] as num?)?.toInt(),
     );
