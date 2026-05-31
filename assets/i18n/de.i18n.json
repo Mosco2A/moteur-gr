@@ -322,5 +322,24 @@
         }
       }
     }
+  },
+  "tips": {
+    "carouselTitle": "Trek-Tipps",
+    "allCategories": "Alle",
+    "swipeHint": "Wischen fuer mehr",
+    "detailTitle": "Tipp-Detail",
+    "readMore": "Mehr lesen",
+    "noTips": "Keine Tipps verfuegbar",
+    "categoryPreparation": "Vorbereitung",
+    "categoryEquipment": "Ausruestung",
+    "categoryNutrition": "Ernaehrung",
+    "categorySafety": "Sicherheit",
+    "categoryNature": "Natur",
+    "categoryRecovery": "Erholung",
+    "categoryGeneral": "Allgemein",
+    "priorityHigh": "Hohe Prioritaet",
+    "scope": "Wanderweg",
+    "season": "Saison",
+    "altitude": "Min. Hoehe"
   }
 }

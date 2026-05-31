@@ -322,5 +322,24 @@
         }
       }
     }
+  },
+  "tips": {
+    "carouselTitle": "Trek tips",
+    "allCategories": "All",
+    "swipeHint": "Swipe for more",
+    "detailTitle": "Tip detail",
+    "readMore": "Read more",
+    "noTips": "No tips available",
+    "categoryPreparation": "Preparation",
+    "categoryEquipment": "Equipment",
+    "categoryNutrition": "Nutrition",
+    "categorySafety": "Safety",
+    "categoryNature": "Nature",
+    "categoryRecovery": "Recovery",
+    "categoryGeneral": "General",
+    "priorityHigh": "High priority",
+    "scope": "Trail",
+    "season": "Season",
+    "altitude": "Min. altitude"
   }
 }

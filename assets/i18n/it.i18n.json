@@ -322,5 +322,24 @@
         }
       }
     }
+  },
+  "tips": {
+    "carouselTitle": "Consigli trek",
+    "allCategories": "Tutte",
+    "swipeHint": "Scorri per vedere altro",
+    "detailTitle": "Dettaglio consiglio",
+    "readMore": "Leggi di piu",
+    "noTips": "Nessun consiglio disponibile",
+    "categoryPreparation": "Preparazione",
+    "categoryEquipment": "Attrezzatura",
+    "categoryNutrition": "Nutrizione",
+    "categorySafety": "Sicurezza",
+    "categoryNature": "Natura",
+    "categoryRecovery": "Recupero",
+    "categoryGeneral": "Generale",
+    "priorityHigh": "Priorita alta",
+    "scope": "Sentiero",
+    "season": "Stagione",
+    "altitude": "Altitudine min."
   }
 }
