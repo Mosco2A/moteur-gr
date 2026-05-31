@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-import '../data/database.dart';
+import '../data/database.dart' hide TrailManifest;
 import '../data/daos/trail_manifests_dao.dart';
 import '../data/daos/trail_stages_dao.dart';
 import '../data/daos/trail_accommodations_dao.dart';

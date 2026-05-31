@@ -32,5 +32,13 @@ void main() {
             reason: 'Locale $code doit exister dans AppLocale');
       }
     });
+
+    test('la locale de base est FR (pas EN)', () {
+      // Verifier que strings.g.dart (base_locale en) a ete supprime
+      // et que seul translations.g.dart (base_locale fr) est utilise
+      final baseLocale = AppLocale.values.first;
+      expect(baseLocale.languageTag, equals('fr'),
+          reason: 'La base locale doit etre FR, pas EN');
+    });
   });
 }
