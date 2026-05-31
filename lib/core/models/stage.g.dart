@@ -6,8 +6,7 @@ part of 'stage.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$StageModelImpl _$$StageModelImplFromJson(Map<String, dynamic> json) =>
-    _$StageModelImpl(
+_StageModel _$StageModelFromJson(Map<String, dynamic> json) => _StageModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
       trailId: json['trailId'] as String,
       stageNumber: (json['stageNumber'] as num).toInt(),
@@ -23,7 +22,7 @@ _$StageModelImpl _$$StageModelImplFromJson(Map<String, dynamic> json) =>
       difficulty: json['difficulty'] as String? ?? 'moderate',
     );
 
-Map<String, dynamic> _$$StageModelImplToJson(_$StageModelImpl instance) =>
+Map<String, dynamic> _$StageModelToJson(_StageModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'trailId': instance.trailId,

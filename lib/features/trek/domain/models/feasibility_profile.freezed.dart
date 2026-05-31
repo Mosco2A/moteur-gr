@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,119 +9,81 @@ part of 'feasibility_profile.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-FeasibilityProfile _$FeasibilityProfileFromJson(Map<String, dynamic> json) {
-  return _FeasibilityProfile.fromJson(json);
-}
 
 /// @nodoc
 mixin _$FeasibilityProfile {
   /// Niveau de forme physique (String extensible, ex: beginner, intermediate, advanced)
-  String get fitnessLevel => throw _privateConstructorUsedError;
+  String get fitnessLevel;
 
   /// Experience de randonnee (String extensible, ex: novice, experienced, expert)
-  String get experience => throw _privateConstructorUsedError;
+  String get experience;
 
   /// Distance maximale par jour en km
-  double get maxKmPerDay => throw _privateConstructorUsedError;
+  double get maxKmPerDay;
 
   /// Duree maximale de marche par jour en heures
-  double get maxHoursPerDay => throw _privateConstructorUsedError;
+  double get maxHoursPerDay;
 
   /// True si evaluation de groupe (utilise le pire profil)
-  bool get groupMode => throw _privateConstructorUsedError;
+  bool get groupMode;
 
   /// Profils des membres du groupe (null si pas en mode groupe)
-  List<FeasibilityProfile>? get groupProfiles =>
-      throw _privateConstructorUsedError;
-
-  /// Serializes this FeasibilityProfile to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  List<FeasibilityProfile>? get groupProfiles;
 
   /// Create a copy of FeasibilityProfile
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $FeasibilityProfileCopyWith<FeasibilityProfile> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $FeasibilityProfileCopyWith<$Res> {
-  factory $FeasibilityProfileCopyWith(
-          FeasibilityProfile value, $Res Function(FeasibilityProfile) then) =
-      _$FeasibilityProfileCopyWithImpl<$Res, FeasibilityProfile>;
-  @useResult
-  $Res call(
-      {String fitnessLevel,
-      String experience,
-      double maxKmPerDay,
-      double maxHoursPerDay,
-      bool groupMode,
-      List<FeasibilityProfile>? groupProfiles});
-}
-
-/// @nodoc
-class _$FeasibilityProfileCopyWithImpl<$Res, $Val extends FeasibilityProfile>
-    implements $FeasibilityProfileCopyWith<$Res> {
-  _$FeasibilityProfileCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of FeasibilityProfile
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $FeasibilityProfileCopyWith<FeasibilityProfile> get copyWith =>
+      _$FeasibilityProfileCopyWithImpl<FeasibilityProfile>(
+          this as FeasibilityProfile, _$identity);
+
+  /// Serializes this FeasibilityProfile to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? fitnessLevel = null,
-    Object? experience = null,
-    Object? maxKmPerDay = null,
-    Object? maxHoursPerDay = null,
-    Object? groupMode = null,
-    Object? groupProfiles = freezed,
-  }) {
-    return _then(_value.copyWith(
-      fitnessLevel: null == fitnessLevel
-          ? _value.fitnessLevel
-          : fitnessLevel // ignore: cast_nullable_to_non_nullable
-              as String,
-      experience: null == experience
-          ? _value.experience
-          : experience // ignore: cast_nullable_to_non_nullable
-              as String,
-      maxKmPerDay: null == maxKmPerDay
-          ? _value.maxKmPerDay
-          : maxKmPerDay // ignore: cast_nullable_to_non_nullable
-              as double,
-      maxHoursPerDay: null == maxHoursPerDay
-          ? _value.maxHoursPerDay
-          : maxHoursPerDay // ignore: cast_nullable_to_non_nullable
-              as double,
-      groupMode: null == groupMode
-          ? _value.groupMode
-          : groupMode // ignore: cast_nullable_to_non_nullable
-              as bool,
-      groupProfiles: freezed == groupProfiles
-          ? _value.groupProfiles
-          : groupProfiles // ignore: cast_nullable_to_non_nullable
-              as List<FeasibilityProfile>?,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is FeasibilityProfile &&
+            (identical(other.fitnessLevel, fitnessLevel) ||
+                other.fitnessLevel == fitnessLevel) &&
+            (identical(other.experience, experience) ||
+                other.experience == experience) &&
+            (identical(other.maxKmPerDay, maxKmPerDay) ||
+                other.maxKmPerDay == maxKmPerDay) &&
+            (identical(other.maxHoursPerDay, maxHoursPerDay) ||
+                other.maxHoursPerDay == maxHoursPerDay) &&
+            (identical(other.groupMode, groupMode) ||
+                other.groupMode == groupMode) &&
+            const DeepCollectionEquality()
+                .equals(other.groupProfiles, groupProfiles));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      fitnessLevel,
+      experience,
+      maxKmPerDay,
+      maxHoursPerDay,
+      groupMode,
+      const DeepCollectionEquality().hash(groupProfiles));
+
+  @override
+  String toString() {
+    return 'FeasibilityProfile(fitnessLevel: $fitnessLevel, experience: $experience, maxKmPerDay: $maxKmPerDay, maxHoursPerDay: $maxHoursPerDay, groupMode: $groupMode, groupProfiles: $groupProfiles)';
   }
 }
 
 /// @nodoc
-abstract class _$$FeasibilityProfileImplCopyWith<$Res>
-    implements $FeasibilityProfileCopyWith<$Res> {
-  factory _$$FeasibilityProfileImplCopyWith(_$FeasibilityProfileImpl value,
-          $Res Function(_$FeasibilityProfileImpl) then) =
-      __$$FeasibilityProfileImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $FeasibilityProfileCopyWith<$Res> {
+  factory $FeasibilityProfileCopyWith(
+          FeasibilityProfile value, $Res Function(FeasibilityProfile) _then) =
+      _$FeasibilityProfileCopyWithImpl;
   @useResult
   $Res call(
       {String fitnessLevel,
@@ -133,12 +95,12 @@ abstract class _$$FeasibilityProfileImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$FeasibilityProfileImplCopyWithImpl<$Res>
-    extends _$FeasibilityProfileCopyWithImpl<$Res, _$FeasibilityProfileImpl>
-    implements _$$FeasibilityProfileImplCopyWith<$Res> {
-  __$$FeasibilityProfileImplCopyWithImpl(_$FeasibilityProfileImpl _value,
-      $Res Function(_$FeasibilityProfileImpl) _then)
-      : super(_value, _then);
+class _$FeasibilityProfileCopyWithImpl<$Res>
+    implements $FeasibilityProfileCopyWith<$Res> {
+  _$FeasibilityProfileCopyWithImpl(this._self, this._then);
+
+  final FeasibilityProfile _self;
+  final $Res Function(FeasibilityProfile) _then;
 
   /// Create a copy of FeasibilityProfile
   /// with the given fields replaced by the non-null parameter values.
@@ -152,39 +114,220 @@ class __$$FeasibilityProfileImplCopyWithImpl<$Res>
     Object? groupMode = null,
     Object? groupProfiles = freezed,
   }) {
-    return _then(_$FeasibilityProfileImpl(
+    return _then(_self.copyWith(
       fitnessLevel: null == fitnessLevel
-          ? _value.fitnessLevel
+          ? _self.fitnessLevel
           : fitnessLevel // ignore: cast_nullable_to_non_nullable
               as String,
       experience: null == experience
-          ? _value.experience
+          ? _self.experience
           : experience // ignore: cast_nullable_to_non_nullable
               as String,
       maxKmPerDay: null == maxKmPerDay
-          ? _value.maxKmPerDay
+          ? _self.maxKmPerDay
           : maxKmPerDay // ignore: cast_nullable_to_non_nullable
               as double,
       maxHoursPerDay: null == maxHoursPerDay
-          ? _value.maxHoursPerDay
+          ? _self.maxHoursPerDay
           : maxHoursPerDay // ignore: cast_nullable_to_non_nullable
               as double,
       groupMode: null == groupMode
-          ? _value.groupMode
+          ? _self.groupMode
           : groupMode // ignore: cast_nullable_to_non_nullable
               as bool,
       groupProfiles: freezed == groupProfiles
-          ? _value._groupProfiles
+          ? _self.groupProfiles
           : groupProfiles // ignore: cast_nullable_to_non_nullable
               as List<FeasibilityProfile>?,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [FeasibilityProfile].
+extension FeasibilityProfilePatterns on FeasibilityProfile {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_FeasibilityProfile value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _FeasibilityProfile() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_FeasibilityProfile value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FeasibilityProfile():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_FeasibilityProfile value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FeasibilityProfile() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String fitnessLevel,
+            String experience,
+            double maxKmPerDay,
+            double maxHoursPerDay,
+            bool groupMode,
+            List<FeasibilityProfile>? groupProfiles)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _FeasibilityProfile() when $default != null:
+        return $default(_that.fitnessLevel, _that.experience, _that.maxKmPerDay,
+            _that.maxHoursPerDay, _that.groupMode, _that.groupProfiles);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String fitnessLevel,
+            String experience,
+            double maxKmPerDay,
+            double maxHoursPerDay,
+            bool groupMode,
+            List<FeasibilityProfile>? groupProfiles)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FeasibilityProfile():
+        return $default(_that.fitnessLevel, _that.experience, _that.maxKmPerDay,
+            _that.maxHoursPerDay, _that.groupMode, _that.groupProfiles);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            String fitnessLevel,
+            String experience,
+            double maxKmPerDay,
+            double maxHoursPerDay,
+            bool groupMode,
+            List<FeasibilityProfile>? groupProfiles)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _FeasibilityProfile() when $default != null:
+        return $default(_that.fitnessLevel, _that.experience, _that.maxKmPerDay,
+            _that.maxHoursPerDay, _that.groupMode, _that.groupProfiles);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
-class _$FeasibilityProfileImpl extends _FeasibilityProfile {
-  const _$FeasibilityProfileImpl(
+class _FeasibilityProfile extends FeasibilityProfile {
+  const _FeasibilityProfile(
       {required this.fitnessLevel,
       required this.experience,
       required this.maxKmPerDay,
@@ -193,9 +336,8 @@ class _$FeasibilityProfileImpl extends _FeasibilityProfile {
       final List<FeasibilityProfile>? groupProfiles})
       : _groupProfiles = groupProfiles,
         super._();
-
-  factory _$FeasibilityProfileImpl.fromJson(Map<String, dynamic> json) =>
-      _$$FeasibilityProfileImplFromJson(json);
+  factory _FeasibilityProfile.fromJson(Map<String, dynamic> json) =>
+      _$FeasibilityProfileFromJson(json);
 
   /// Niveau de forme physique (String extensible, ex: beginner, intermediate, advanced)
   @override
@@ -231,16 +373,26 @@ class _$FeasibilityProfileImpl extends _FeasibilityProfile {
     return EqualUnmodifiableListView(value);
   }
 
+  /// Create a copy of FeasibilityProfile
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'FeasibilityProfile(fitnessLevel: $fitnessLevel, experience: $experience, maxKmPerDay: $maxKmPerDay, maxHoursPerDay: $maxHoursPerDay, groupMode: $groupMode, groupProfiles: $groupProfiles)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$FeasibilityProfileCopyWith<_FeasibilityProfile> get copyWith =>
+      __$FeasibilityProfileCopyWithImpl<_FeasibilityProfile>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$FeasibilityProfileToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FeasibilityProfileImpl &&
+            other is _FeasibilityProfile &&
             (identical(other.fitnessLevel, fitnessLevel) ||
                 other.fitnessLevel == fitnessLevel) &&
             (identical(other.experience, experience) ||
@@ -266,65 +418,76 @@ class _$FeasibilityProfileImpl extends _FeasibilityProfile {
       groupMode,
       const DeepCollectionEquality().hash(_groupProfiles));
 
-  /// Create a copy of FeasibilityProfile
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$FeasibilityProfileImplCopyWith<_$FeasibilityProfileImpl> get copyWith =>
-      __$$FeasibilityProfileImplCopyWithImpl<_$FeasibilityProfileImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$FeasibilityProfileImplToJson(
-      this,
-    );
+  String toString() {
+    return 'FeasibilityProfile(fitnessLevel: $fitnessLevel, experience: $experience, maxKmPerDay: $maxKmPerDay, maxHoursPerDay: $maxHoursPerDay, groupMode: $groupMode, groupProfiles: $groupProfiles)';
   }
 }
 
-abstract class _FeasibilityProfile extends FeasibilityProfile {
-  const factory _FeasibilityProfile(
-          {required final String fitnessLevel,
-          required final String experience,
-          required final double maxKmPerDay,
-          required final double maxHoursPerDay,
-          final bool groupMode,
-          final List<FeasibilityProfile>? groupProfiles}) =
-      _$FeasibilityProfileImpl;
-  const _FeasibilityProfile._() : super._();
-
-  factory _FeasibilityProfile.fromJson(Map<String, dynamic> json) =
-      _$FeasibilityProfileImpl.fromJson;
-
-  /// Niveau de forme physique (String extensible, ex: beginner, intermediate, advanced)
+/// @nodoc
+abstract mixin class _$FeasibilityProfileCopyWith<$Res>
+    implements $FeasibilityProfileCopyWith<$Res> {
+  factory _$FeasibilityProfileCopyWith(
+          _FeasibilityProfile value, $Res Function(_FeasibilityProfile) _then) =
+      __$FeasibilityProfileCopyWithImpl;
   @override
-  String get fitnessLevel;
+  @useResult
+  $Res call(
+      {String fitnessLevel,
+      String experience,
+      double maxKmPerDay,
+      double maxHoursPerDay,
+      bool groupMode,
+      List<FeasibilityProfile>? groupProfiles});
+}
 
-  /// Experience de randonnee (String extensible, ex: novice, experienced, expert)
-  @override
-  String get experience;
+/// @nodoc
+class __$FeasibilityProfileCopyWithImpl<$Res>
+    implements _$FeasibilityProfileCopyWith<$Res> {
+  __$FeasibilityProfileCopyWithImpl(this._self, this._then);
 
-  /// Distance maximale par jour en km
-  @override
-  double get maxKmPerDay;
-
-  /// Duree maximale de marche par jour en heures
-  @override
-  double get maxHoursPerDay;
-
-  /// True si evaluation de groupe (utilise le pire profil)
-  @override
-  bool get groupMode;
-
-  /// Profils des membres du groupe (null si pas en mode groupe)
-  @override
-  List<FeasibilityProfile>? get groupProfiles;
+  final _FeasibilityProfile _self;
+  final $Res Function(_FeasibilityProfile) _then;
 
   /// Create a copy of FeasibilityProfile
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FeasibilityProfileImplCopyWith<_$FeasibilityProfileImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? fitnessLevel = null,
+    Object? experience = null,
+    Object? maxKmPerDay = null,
+    Object? maxHoursPerDay = null,
+    Object? groupMode = null,
+    Object? groupProfiles = freezed,
+  }) {
+    return _then(_FeasibilityProfile(
+      fitnessLevel: null == fitnessLevel
+          ? _self.fitnessLevel
+          : fitnessLevel // ignore: cast_nullable_to_non_nullable
+              as String,
+      experience: null == experience
+          ? _self.experience
+          : experience // ignore: cast_nullable_to_non_nullable
+              as String,
+      maxKmPerDay: null == maxKmPerDay
+          ? _self.maxKmPerDay
+          : maxKmPerDay // ignore: cast_nullable_to_non_nullable
+              as double,
+      maxHoursPerDay: null == maxHoursPerDay
+          ? _self.maxHoursPerDay
+          : maxHoursPerDay // ignore: cast_nullable_to_non_nullable
+              as double,
+      groupMode: null == groupMode
+          ? _self.groupMode
+          : groupMode // ignore: cast_nullable_to_non_nullable
+              as bool,
+      groupProfiles: freezed == groupProfiles
+          ? _self._groupProfiles
+          : groupProfiles // ignore: cast_nullable_to_non_nullable
+              as List<FeasibilityProfile>?,
+    ));
+  }
 }
+
+// dart format on

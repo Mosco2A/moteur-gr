@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,100 +9,65 @@ part of 'itinerary_config.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ItineraryConfig _$ItineraryConfigFromJson(Map<String, dynamic> json) {
-  return _ItineraryConfig.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ItineraryConfig {
   /// Distance maximale par jour en km
-  double get maxKmPerDay => throw _privateConstructorUsedError;
+  double get maxKmPerDay;
 
   /// Duree maximale de marche par jour en heures
-  double get maxHoursPerDay => throw _privateConstructorUsedError;
+  double get maxHoursPerDay;
 
   /// Date de depart prevue
-  DateTime get startDate => throw _privateConstructorUsedError;
+  DateTime get startDate;
 
   /// Niveau de difficulte (String extensible, ex: easy, moderate, hard)
-  String get difficultyLevel => throw _privateConstructorUsedError;
-
-  /// Serializes this ItineraryConfig to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  String get difficultyLevel;
 
   /// Create a copy of ItineraryConfig
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ItineraryConfigCopyWith<ItineraryConfig> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ItineraryConfigCopyWith<$Res> {
-  factory $ItineraryConfigCopyWith(
-          ItineraryConfig value, $Res Function(ItineraryConfig) then) =
-      _$ItineraryConfigCopyWithImpl<$Res, ItineraryConfig>;
-  @useResult
-  $Res call(
-      {double maxKmPerDay,
-      double maxHoursPerDay,
-      DateTime startDate,
-      String difficultyLevel});
-}
-
-/// @nodoc
-class _$ItineraryConfigCopyWithImpl<$Res, $Val extends ItineraryConfig>
-    implements $ItineraryConfigCopyWith<$Res> {
-  _$ItineraryConfigCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of ItineraryConfig
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $ItineraryConfigCopyWith<ItineraryConfig> get copyWith =>
+      _$ItineraryConfigCopyWithImpl<ItineraryConfig>(
+          this as ItineraryConfig, _$identity);
+
+  /// Serializes this ItineraryConfig to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? maxKmPerDay = null,
-    Object? maxHoursPerDay = null,
-    Object? startDate = null,
-    Object? difficultyLevel = null,
-  }) {
-    return _then(_value.copyWith(
-      maxKmPerDay: null == maxKmPerDay
-          ? _value.maxKmPerDay
-          : maxKmPerDay // ignore: cast_nullable_to_non_nullable
-              as double,
-      maxHoursPerDay: null == maxHoursPerDay
-          ? _value.maxHoursPerDay
-          : maxHoursPerDay // ignore: cast_nullable_to_non_nullable
-              as double,
-      startDate: null == startDate
-          ? _value.startDate
-          : startDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      difficultyLevel: null == difficultyLevel
-          ? _value.difficultyLevel
-          : difficultyLevel // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ItineraryConfig &&
+            (identical(other.maxKmPerDay, maxKmPerDay) ||
+                other.maxKmPerDay == maxKmPerDay) &&
+            (identical(other.maxHoursPerDay, maxHoursPerDay) ||
+                other.maxHoursPerDay == maxHoursPerDay) &&
+            (identical(other.startDate, startDate) ||
+                other.startDate == startDate) &&
+            (identical(other.difficultyLevel, difficultyLevel) ||
+                other.difficultyLevel == difficultyLevel));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, maxKmPerDay, maxHoursPerDay, startDate, difficultyLevel);
+
+  @override
+  String toString() {
+    return 'ItineraryConfig(maxKmPerDay: $maxKmPerDay, maxHoursPerDay: $maxHoursPerDay, startDate: $startDate, difficultyLevel: $difficultyLevel)';
   }
 }
 
 /// @nodoc
-abstract class _$$ItineraryConfigImplCopyWith<$Res>
-    implements $ItineraryConfigCopyWith<$Res> {
-  factory _$$ItineraryConfigImplCopyWith(_$ItineraryConfigImpl value,
-          $Res Function(_$ItineraryConfigImpl) then) =
-      __$$ItineraryConfigImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ItineraryConfigCopyWith<$Res> {
+  factory $ItineraryConfigCopyWith(
+          ItineraryConfig value, $Res Function(ItineraryConfig) _then) =
+      _$ItineraryConfigCopyWithImpl;
   @useResult
   $Res call(
       {double maxKmPerDay,
@@ -112,12 +77,12 @@ abstract class _$$ItineraryConfigImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ItineraryConfigImplCopyWithImpl<$Res>
-    extends _$ItineraryConfigCopyWithImpl<$Res, _$ItineraryConfigImpl>
-    implements _$$ItineraryConfigImplCopyWith<$Res> {
-  __$$ItineraryConfigImplCopyWithImpl(
-      _$ItineraryConfigImpl _value, $Res Function(_$ItineraryConfigImpl) _then)
-      : super(_value, _then);
+class _$ItineraryConfigCopyWithImpl<$Res>
+    implements $ItineraryConfigCopyWith<$Res> {
+  _$ItineraryConfigCopyWithImpl(this._self, this._then);
+
+  final ItineraryConfig _self;
+  final $Res Function(ItineraryConfig) _then;
 
   /// Create a copy of ItineraryConfig
   /// with the given fields replaced by the non-null parameter values.
@@ -129,39 +94,204 @@ class __$$ItineraryConfigImplCopyWithImpl<$Res>
     Object? startDate = null,
     Object? difficultyLevel = null,
   }) {
-    return _then(_$ItineraryConfigImpl(
+    return _then(_self.copyWith(
       maxKmPerDay: null == maxKmPerDay
-          ? _value.maxKmPerDay
+          ? _self.maxKmPerDay
           : maxKmPerDay // ignore: cast_nullable_to_non_nullable
               as double,
       maxHoursPerDay: null == maxHoursPerDay
-          ? _value.maxHoursPerDay
+          ? _self.maxHoursPerDay
           : maxHoursPerDay // ignore: cast_nullable_to_non_nullable
               as double,
       startDate: null == startDate
-          ? _value.startDate
+          ? _self.startDate
           : startDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
       difficultyLevel: null == difficultyLevel
-          ? _value.difficultyLevel
+          ? _self.difficultyLevel
           : difficultyLevel // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [ItineraryConfig].
+extension ItineraryConfigPatterns on ItineraryConfig {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ItineraryConfig value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ItineraryConfig value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryConfig():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ItineraryConfig value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryConfig() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(double maxKmPerDay, double maxHoursPerDay,
+            DateTime startDate, String difficultyLevel)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryConfig() when $default != null:
+        return $default(_that.maxKmPerDay, _that.maxHoursPerDay,
+            _that.startDate, _that.difficultyLevel);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(double maxKmPerDay, double maxHoursPerDay,
+            DateTime startDate, String difficultyLevel)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryConfig():
+        return $default(_that.maxKmPerDay, _that.maxHoursPerDay,
+            _that.startDate, _that.difficultyLevel);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(double maxKmPerDay, double maxHoursPerDay,
+            DateTime startDate, String difficultyLevel)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryConfig() when $default != null:
+        return $default(_that.maxKmPerDay, _that.maxHoursPerDay,
+            _that.startDate, _that.difficultyLevel);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
-class _$ItineraryConfigImpl extends _ItineraryConfig {
-  const _$ItineraryConfigImpl(
+class _ItineraryConfig extends ItineraryConfig {
+  const _ItineraryConfig(
       {required this.maxKmPerDay,
       required this.maxHoursPerDay,
       required this.startDate,
       required this.difficultyLevel})
       : super._();
-
-  factory _$ItineraryConfigImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ItineraryConfigImplFromJson(json);
+  factory _ItineraryConfig.fromJson(Map<String, dynamic> json) =>
+      _$ItineraryConfigFromJson(json);
 
   /// Distance maximale par jour en km
   @override
@@ -179,16 +309,26 @@ class _$ItineraryConfigImpl extends _ItineraryConfig {
   @override
   final String difficultyLevel;
 
+  /// Create a copy of ItineraryConfig
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ItineraryConfig(maxKmPerDay: $maxKmPerDay, maxHoursPerDay: $maxHoursPerDay, startDate: $startDate, difficultyLevel: $difficultyLevel)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ItineraryConfigCopyWith<_ItineraryConfig> get copyWith =>
+      __$ItineraryConfigCopyWithImpl<_ItineraryConfig>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ItineraryConfigToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ItineraryConfigImpl &&
+            other is _ItineraryConfig &&
             (identical(other.maxKmPerDay, maxKmPerDay) ||
                 other.maxKmPerDay == maxKmPerDay) &&
             (identical(other.maxHoursPerDay, maxHoursPerDay) ||
@@ -204,54 +344,64 @@ class _$ItineraryConfigImpl extends _ItineraryConfig {
   int get hashCode => Object.hash(
       runtimeType, maxKmPerDay, maxHoursPerDay, startDate, difficultyLevel);
 
-  /// Create a copy of ItineraryConfig
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ItineraryConfigImplCopyWith<_$ItineraryConfigImpl> get copyWith =>
-      __$$ItineraryConfigImplCopyWithImpl<_$ItineraryConfigImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ItineraryConfigImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ItineraryConfig(maxKmPerDay: $maxKmPerDay, maxHoursPerDay: $maxHoursPerDay, startDate: $startDate, difficultyLevel: $difficultyLevel)';
   }
 }
 
-abstract class _ItineraryConfig extends ItineraryConfig {
-  const factory _ItineraryConfig(
-      {required final double maxKmPerDay,
-      required final double maxHoursPerDay,
-      required final DateTime startDate,
-      required final String difficultyLevel}) = _$ItineraryConfigImpl;
-  const _ItineraryConfig._() : super._();
-
-  factory _ItineraryConfig.fromJson(Map<String, dynamic> json) =
-      _$ItineraryConfigImpl.fromJson;
-
-  /// Distance maximale par jour en km
+/// @nodoc
+abstract mixin class _$ItineraryConfigCopyWith<$Res>
+    implements $ItineraryConfigCopyWith<$Res> {
+  factory _$ItineraryConfigCopyWith(
+          _ItineraryConfig value, $Res Function(_ItineraryConfig) _then) =
+      __$ItineraryConfigCopyWithImpl;
   @override
-  double get maxKmPerDay;
+  @useResult
+  $Res call(
+      {double maxKmPerDay,
+      double maxHoursPerDay,
+      DateTime startDate,
+      String difficultyLevel});
+}
 
-  /// Duree maximale de marche par jour en heures
-  @override
-  double get maxHoursPerDay;
+/// @nodoc
+class __$ItineraryConfigCopyWithImpl<$Res>
+    implements _$ItineraryConfigCopyWith<$Res> {
+  __$ItineraryConfigCopyWithImpl(this._self, this._then);
 
-  /// Date de depart prevue
-  @override
-  DateTime get startDate;
-
-  /// Niveau de difficulte (String extensible, ex: easy, moderate, hard)
-  @override
-  String get difficultyLevel;
+  final _ItineraryConfig _self;
+  final $Res Function(_ItineraryConfig) _then;
 
   /// Create a copy of ItineraryConfig
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ItineraryConfigImplCopyWith<_$ItineraryConfigImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? maxKmPerDay = null,
+    Object? maxHoursPerDay = null,
+    Object? startDate = null,
+    Object? difficultyLevel = null,
+  }) {
+    return _then(_ItineraryConfig(
+      maxKmPerDay: null == maxKmPerDay
+          ? _self.maxKmPerDay
+          : maxKmPerDay // ignore: cast_nullable_to_non_nullable
+              as double,
+      maxHoursPerDay: null == maxHoursPerDay
+          ? _self.maxHoursPerDay
+          : maxHoursPerDay // ignore: cast_nullable_to_non_nullable
+              as double,
+      startDate: null == startDate
+          ? _self.startDate
+          : startDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      difficultyLevel: null == difficultyLevel
+          ? _self.difficultyLevel
+          : difficultyLevel // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
+
+// dart format on

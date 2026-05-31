@@ -6,7 +6,7 @@ part of 'trail.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TrailImpl _$$TrailImplFromJson(Map<String, dynamic> json) => _$TrailImpl(
+_Trail _$TrailFromJson(Map<String, dynamic> json) => _Trail(
       id: json['id'] as String,
       name: json['name'] as String,
       displayName: json['displayName'] as String,
@@ -18,8 +18,7 @@ _$TrailImpl _$$TrailImplFromJson(Map<String, dynamic> json) => _$TrailImpl(
       country: json['country'] as String,
     );
 
-Map<String, dynamic> _$$TrailImplToJson(_$TrailImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TrailToJson(_Trail instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'displayName': instance.displayName,

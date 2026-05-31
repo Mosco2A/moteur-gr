@@ -27,7 +27,7 @@ void main() {
       );
     });
 
-    testWidgets('affiche l'icone de telechargement', (tester) async {
+    testWidgets('affiche l icone de telechargement', (tester) async {
       await tester.pumpWidget(
         const MaterialApp(
           home: NoDataScreen(),

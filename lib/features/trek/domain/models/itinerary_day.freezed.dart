@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,109 +9,74 @@ part of 'itinerary_day.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ItineraryDay _$ItineraryDayFromJson(Map<String, dynamic> json) {
-  return _ItineraryDay.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ItineraryDay {
   /// Numero du jour (1-indexed)
-  int get dayNumber => throw _privateConstructorUsedError;
+  int get dayNumber;
 
   /// Liste des etapes prevues ce jour
-  List<StageModel> get stages => throw _privateConstructorUsedError;
+  List<StageModel> get stages;
 
   /// Distance totale en km pour ce jour
-  double get totalDistance => throw _privateConstructorUsedError;
+  double get totalDistance;
 
   /// Denivele positif total en metres pour ce jour
-  int get totalElevation => throw _privateConstructorUsedError;
+  int get totalElevation;
 
   /// Duree estimee en heures
-  double get estimatedHours => throw _privateConstructorUsedError;
-
-  /// Serializes this ItineraryDay to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  double get estimatedHours;
 
   /// Create a copy of ItineraryDay
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ItineraryDayCopyWith<ItineraryDay> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ItineraryDayCopyWith<$Res> {
-  factory $ItineraryDayCopyWith(
-          ItineraryDay value, $Res Function(ItineraryDay) then) =
-      _$ItineraryDayCopyWithImpl<$Res, ItineraryDay>;
-  @useResult
-  $Res call(
-      {int dayNumber,
-      List<StageModel> stages,
-      double totalDistance,
-      int totalElevation,
-      double estimatedHours});
-}
-
-/// @nodoc
-class _$ItineraryDayCopyWithImpl<$Res, $Val extends ItineraryDay>
-    implements $ItineraryDayCopyWith<$Res> {
-  _$ItineraryDayCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of ItineraryDay
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $ItineraryDayCopyWith<ItineraryDay> get copyWith =>
+      _$ItineraryDayCopyWithImpl<ItineraryDay>(
+          this as ItineraryDay, _$identity);
+
+  /// Serializes this ItineraryDay to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? dayNumber = null,
-    Object? stages = null,
-    Object? totalDistance = null,
-    Object? totalElevation = null,
-    Object? estimatedHours = null,
-  }) {
-    return _then(_value.copyWith(
-      dayNumber: null == dayNumber
-          ? _value.dayNumber
-          : dayNumber // ignore: cast_nullable_to_non_nullable
-              as int,
-      stages: null == stages
-          ? _value.stages
-          : stages // ignore: cast_nullable_to_non_nullable
-              as List<StageModel>,
-      totalDistance: null == totalDistance
-          ? _value.totalDistance
-          : totalDistance // ignore: cast_nullable_to_non_nullable
-              as double,
-      totalElevation: null == totalElevation
-          ? _value.totalElevation
-          : totalElevation // ignore: cast_nullable_to_non_nullable
-              as int,
-      estimatedHours: null == estimatedHours
-          ? _value.estimatedHours
-          : estimatedHours // ignore: cast_nullable_to_non_nullable
-              as double,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ItineraryDay &&
+            (identical(other.dayNumber, dayNumber) ||
+                other.dayNumber == dayNumber) &&
+            const DeepCollectionEquality().equals(other.stages, stages) &&
+            (identical(other.totalDistance, totalDistance) ||
+                other.totalDistance == totalDistance) &&
+            (identical(other.totalElevation, totalElevation) ||
+                other.totalElevation == totalElevation) &&
+            (identical(other.estimatedHours, estimatedHours) ||
+                other.estimatedHours == estimatedHours));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      dayNumber,
+      const DeepCollectionEquality().hash(stages),
+      totalDistance,
+      totalElevation,
+      estimatedHours);
+
+  @override
+  String toString() {
+    return 'ItineraryDay(dayNumber: $dayNumber, stages: $stages, totalDistance: $totalDistance, totalElevation: $totalElevation, estimatedHours: $estimatedHours)';
   }
 }
 
 /// @nodoc
-abstract class _$$ItineraryDayImplCopyWith<$Res>
-    implements $ItineraryDayCopyWith<$Res> {
-  factory _$$ItineraryDayImplCopyWith(
-          _$ItineraryDayImpl value, $Res Function(_$ItineraryDayImpl) then) =
-      __$$ItineraryDayImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $ItineraryDayCopyWith<$Res> {
+  factory $ItineraryDayCopyWith(
+          ItineraryDay value, $Res Function(ItineraryDay) _then) =
+      _$ItineraryDayCopyWithImpl;
   @useResult
   $Res call(
       {int dayNumber,
@@ -122,12 +87,11 @@ abstract class _$$ItineraryDayImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ItineraryDayImplCopyWithImpl<$Res>
-    extends _$ItineraryDayCopyWithImpl<$Res, _$ItineraryDayImpl>
-    implements _$$ItineraryDayImplCopyWith<$Res> {
-  __$$ItineraryDayImplCopyWithImpl(
-      _$ItineraryDayImpl _value, $Res Function(_$ItineraryDayImpl) _then)
-      : super(_value, _then);
+class _$ItineraryDayCopyWithImpl<$Res> implements $ItineraryDayCopyWith<$Res> {
+  _$ItineraryDayCopyWithImpl(this._self, this._then);
+
+  final ItineraryDay _self;
+  final $Res Function(ItineraryDay) _then;
 
   /// Create a copy of ItineraryDay
   /// with the given fields replaced by the non-null parameter values.
@@ -140,35 +104,201 @@ class __$$ItineraryDayImplCopyWithImpl<$Res>
     Object? totalElevation = null,
     Object? estimatedHours = null,
   }) {
-    return _then(_$ItineraryDayImpl(
+    return _then(_self.copyWith(
       dayNumber: null == dayNumber
-          ? _value.dayNumber
+          ? _self.dayNumber
           : dayNumber // ignore: cast_nullable_to_non_nullable
               as int,
       stages: null == stages
-          ? _value._stages
+          ? _self.stages
           : stages // ignore: cast_nullable_to_non_nullable
               as List<StageModel>,
       totalDistance: null == totalDistance
-          ? _value.totalDistance
+          ? _self.totalDistance
           : totalDistance // ignore: cast_nullable_to_non_nullable
               as double,
       totalElevation: null == totalElevation
-          ? _value.totalElevation
+          ? _self.totalElevation
           : totalElevation // ignore: cast_nullable_to_non_nullable
               as int,
       estimatedHours: null == estimatedHours
-          ? _value.estimatedHours
+          ? _self.estimatedHours
           : estimatedHours // ignore: cast_nullable_to_non_nullable
               as double,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [ItineraryDay].
+extension ItineraryDayPatterns on ItineraryDay {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_ItineraryDay value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryDay() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_ItineraryDay value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryDay():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_ItineraryDay value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryDay() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(int dayNumber, List<StageModel> stages,
+            double totalDistance, int totalElevation, double estimatedHours)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryDay() when $default != null:
+        return $default(_that.dayNumber, _that.stages, _that.totalDistance,
+            _that.totalElevation, _that.estimatedHours);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(int dayNumber, List<StageModel> stages,
+            double totalDistance, int totalElevation, double estimatedHours)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryDay():
+        return $default(_that.dayNumber, _that.stages, _that.totalDistance,
+            _that.totalElevation, _that.estimatedHours);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(int dayNumber, List<StageModel> stages,
+            double totalDistance, int totalElevation, double estimatedHours)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _ItineraryDay() when $default != null:
+        return $default(_that.dayNumber, _that.stages, _that.totalDistance,
+            _that.totalElevation, _that.estimatedHours);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
-class _$ItineraryDayImpl extends _ItineraryDay {
-  const _$ItineraryDayImpl(
+class _ItineraryDay extends ItineraryDay {
+  const _ItineraryDay(
       {required this.dayNumber,
       required final List<StageModel> stages,
       required this.totalDistance,
@@ -176,9 +306,8 @@ class _$ItineraryDayImpl extends _ItineraryDay {
       required this.estimatedHours})
       : _stages = stages,
         super._();
-
-  factory _$ItineraryDayImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ItineraryDayImplFromJson(json);
+  factory _ItineraryDay.fromJson(Map<String, dynamic> json) =>
+      _$ItineraryDayFromJson(json);
 
   /// Numero du jour (1-indexed)
   @override
@@ -207,16 +336,26 @@ class _$ItineraryDayImpl extends _ItineraryDay {
   @override
   final double estimatedHours;
 
+  /// Create a copy of ItineraryDay
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'ItineraryDay(dayNumber: $dayNumber, stages: $stages, totalDistance: $totalDistance, totalElevation: $totalElevation, estimatedHours: $estimatedHours)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ItineraryDayCopyWith<_ItineraryDay> get copyWith =>
+      __$ItineraryDayCopyWithImpl<_ItineraryDay>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ItineraryDayToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ItineraryDayImpl &&
+            other is _ItineraryDay &&
             (identical(other.dayNumber, dayNumber) ||
                 other.dayNumber == dayNumber) &&
             const DeepCollectionEquality().equals(other._stages, _stages) &&
@@ -238,58 +377,70 @@ class _$ItineraryDayImpl extends _ItineraryDay {
       totalElevation,
       estimatedHours);
 
-  /// Create a copy of ItineraryDay
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$ItineraryDayImplCopyWith<_$ItineraryDayImpl> get copyWith =>
-      __$$ItineraryDayImplCopyWithImpl<_$ItineraryDayImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ItineraryDayImplToJson(
-      this,
-    );
+  String toString() {
+    return 'ItineraryDay(dayNumber: $dayNumber, stages: $stages, totalDistance: $totalDistance, totalElevation: $totalElevation, estimatedHours: $estimatedHours)';
   }
 }
 
-abstract class _ItineraryDay extends ItineraryDay {
-  const factory _ItineraryDay(
-      {required final int dayNumber,
-      required final List<StageModel> stages,
-      required final double totalDistance,
-      required final int totalElevation,
-      required final double estimatedHours}) = _$ItineraryDayImpl;
-  const _ItineraryDay._() : super._();
-
-  factory _ItineraryDay.fromJson(Map<String, dynamic> json) =
-      _$ItineraryDayImpl.fromJson;
-
-  /// Numero du jour (1-indexed)
+/// @nodoc
+abstract mixin class _$ItineraryDayCopyWith<$Res>
+    implements $ItineraryDayCopyWith<$Res> {
+  factory _$ItineraryDayCopyWith(
+          _ItineraryDay value, $Res Function(_ItineraryDay) _then) =
+      __$ItineraryDayCopyWithImpl;
   @override
-  int get dayNumber;
+  @useResult
+  $Res call(
+      {int dayNumber,
+      List<StageModel> stages,
+      double totalDistance,
+      int totalElevation,
+      double estimatedHours});
+}
 
-  /// Liste des etapes prevues ce jour
-  @override
-  List<StageModel> get stages;
+/// @nodoc
+class __$ItineraryDayCopyWithImpl<$Res>
+    implements _$ItineraryDayCopyWith<$Res> {
+  __$ItineraryDayCopyWithImpl(this._self, this._then);
 
-  /// Distance totale en km pour ce jour
-  @override
-  double get totalDistance;
-
-  /// Denivele positif total en metres pour ce jour
-  @override
-  int get totalElevation;
-
-  /// Duree estimee en heures
-  @override
-  double get estimatedHours;
+  final _ItineraryDay _self;
+  final $Res Function(_ItineraryDay) _then;
 
   /// Create a copy of ItineraryDay
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ItineraryDayImplCopyWith<_$ItineraryDayImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? dayNumber = null,
+    Object? stages = null,
+    Object? totalDistance = null,
+    Object? totalElevation = null,
+    Object? estimatedHours = null,
+  }) {
+    return _then(_ItineraryDay(
+      dayNumber: null == dayNumber
+          ? _self.dayNumber
+          : dayNumber // ignore: cast_nullable_to_non_nullable
+              as int,
+      stages: null == stages
+          ? _self._stages
+          : stages // ignore: cast_nullable_to_non_nullable
+              as List<StageModel>,
+      totalDistance: null == totalDistance
+          ? _self.totalDistance
+          : totalDistance // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalElevation: null == totalElevation
+          ? _self.totalElevation
+          : totalElevation // ignore: cast_nullable_to_non_nullable
+              as int,
+      estimatedHours: null == estimatedHours
+          ? _self.estimatedHours
+          : estimatedHours // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
 }
+
+// dart format on

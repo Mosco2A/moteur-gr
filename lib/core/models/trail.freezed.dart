@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,142 +9,83 @@ part of 'trail.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-Trail _$TrailFromJson(Map<String, dynamic> json) {
-  return _Trail.fromJson(json);
-}
 
 /// @nodoc
 mixin _$Trail {
   /// Identifiant unique (ex: 'mare_a_mare', 'tmb')
-  String get id => throw _privateConstructorUsedError;
+  String get id;
 
   /// Nom technique court (ex: 'Mare a Mare')
-  String get name => throw _privateConstructorUsedError;
+  String get name;
 
   /// Nom d'affichage dans l'app
-  String get displayName => throw _privateConstructorUsedError;
+  String get displayName;
 
   /// Accroche sous le nom
-  String get tagline => throw _privateConstructorUsedError;
+  String get tagline;
 
   /// Nombre total d'etapes
-  int get totalStages => throw _privateConstructorUsedError;
+  int get totalStages;
 
   /// Distance totale en km
-  double get totalDistanceKm => throw _privateConstructorUsedError;
+  double get totalDistanceKm;
 
   /// Denivele positif total en metres
-  int get totalElevationGain => throw _privateConstructorUsedError;
+  int get totalElevationGain;
 
   /// Region geographique
-  String get region => throw _privateConstructorUsedError;
+  String get region;
 
   /// Pays
-  String get country => throw _privateConstructorUsedError;
-
-  /// Serializes this Trail to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  String get country;
 
   /// Create a copy of Trail
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TrailCopyWith<Trail> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $TrailCopyWith<$Res> {
-  factory $TrailCopyWith(Trail value, $Res Function(Trail) then) =
-      _$TrailCopyWithImpl<$Res, Trail>;
-  @useResult
-  $Res call(
-      {String id,
-      String name,
-      String displayName,
-      String tagline,
-      int totalStages,
-      double totalDistanceKm,
-      int totalElevationGain,
-      String region,
-      String country});
-}
-
-/// @nodoc
-class _$TrailCopyWithImpl<$Res, $Val extends Trail>
-    implements $TrailCopyWith<$Res> {
-  _$TrailCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of Trail
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $TrailCopyWith<Trail> get copyWith =>
+      _$TrailCopyWithImpl<Trail>(this as Trail, _$identity);
+
+  /// Serializes this Trail to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? displayName = null,
-    Object? tagline = null,
-    Object? totalStages = null,
-    Object? totalDistanceKm = null,
-    Object? totalElevationGain = null,
-    Object? region = null,
-    Object? country = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      displayName: null == displayName
-          ? _value.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
-              as String,
-      tagline: null == tagline
-          ? _value.tagline
-          : tagline // ignore: cast_nullable_to_non_nullable
-              as String,
-      totalStages: null == totalStages
-          ? _value.totalStages
-          : totalStages // ignore: cast_nullable_to_non_nullable
-              as int,
-      totalDistanceKm: null == totalDistanceKm
-          ? _value.totalDistanceKm
-          : totalDistanceKm // ignore: cast_nullable_to_non_nullable
-              as double,
-      totalElevationGain: null == totalElevationGain
-          ? _value.totalElevationGain
-          : totalElevationGain // ignore: cast_nullable_to_non_nullable
-              as int,
-      region: null == region
-          ? _value.region
-          : region // ignore: cast_nullable_to_non_nullable
-              as String,
-      country: null == country
-          ? _value.country
-          : country // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Trail &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.displayName, displayName) ||
+                other.displayName == displayName) &&
+            (identical(other.tagline, tagline) || other.tagline == tagline) &&
+            (identical(other.totalStages, totalStages) ||
+                other.totalStages == totalStages) &&
+            (identical(other.totalDistanceKm, totalDistanceKm) ||
+                other.totalDistanceKm == totalDistanceKm) &&
+            (identical(other.totalElevationGain, totalElevationGain) ||
+                other.totalElevationGain == totalElevationGain) &&
+            (identical(other.region, region) || other.region == region) &&
+            (identical(other.country, country) || other.country == country));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name, displayName, tagline,
+      totalStages, totalDistanceKm, totalElevationGain, region, country);
+
+  @override
+  String toString() {
+    return 'Trail(id: $id, name: $name, displayName: $displayName, tagline: $tagline, totalStages: $totalStages, totalDistanceKm: $totalDistanceKm, totalElevationGain: $totalElevationGain, region: $region, country: $country)';
   }
 }
 
 /// @nodoc
-abstract class _$$TrailImplCopyWith<$Res> implements $TrailCopyWith<$Res> {
-  factory _$$TrailImplCopyWith(
-          _$TrailImpl value, $Res Function(_$TrailImpl) then) =
-      __$$TrailImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $TrailCopyWith<$Res> {
+  factory $TrailCopyWith(Trail value, $Res Function(Trail) _then) =
+      _$TrailCopyWithImpl;
   @useResult
   $Res call(
       {String id,
@@ -159,12 +100,11 @@ abstract class _$$TrailImplCopyWith<$Res> implements $TrailCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$TrailImplCopyWithImpl<$Res>
-    extends _$TrailCopyWithImpl<$Res, _$TrailImpl>
-    implements _$$TrailImplCopyWith<$Res> {
-  __$$TrailImplCopyWithImpl(
-      _$TrailImpl _value, $Res Function(_$TrailImpl) _then)
-      : super(_value, _then);
+class _$TrailCopyWithImpl<$Res> implements $TrailCopyWith<$Res> {
+  _$TrailCopyWithImpl(this._self, this._then);
+
+  final Trail _self;
+  final $Res Function(Trail) _then;
 
   /// Create a copy of Trail
   /// with the given fields replaced by the non-null parameter values.
@@ -181,51 +121,265 @@ class __$$TrailImplCopyWithImpl<$Res>
     Object? region = null,
     Object? country = null,
   }) {
-    return _then(_$TrailImpl(
+    return _then(_self.copyWith(
       id: null == id
-          ? _value.id
+          ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
       displayName: null == displayName
-          ? _value.displayName
+          ? _self.displayName
           : displayName // ignore: cast_nullable_to_non_nullable
               as String,
       tagline: null == tagline
-          ? _value.tagline
+          ? _self.tagline
           : tagline // ignore: cast_nullable_to_non_nullable
               as String,
       totalStages: null == totalStages
-          ? _value.totalStages
+          ? _self.totalStages
           : totalStages // ignore: cast_nullable_to_non_nullable
               as int,
       totalDistanceKm: null == totalDistanceKm
-          ? _value.totalDistanceKm
+          ? _self.totalDistanceKm
           : totalDistanceKm // ignore: cast_nullable_to_non_nullable
               as double,
       totalElevationGain: null == totalElevationGain
-          ? _value.totalElevationGain
+          ? _self.totalElevationGain
           : totalElevationGain // ignore: cast_nullable_to_non_nullable
               as int,
       region: null == region
-          ? _value.region
+          ? _self.region
           : region // ignore: cast_nullable_to_non_nullable
               as String,
       country: null == country
-          ? _value.country
+          ? _self.country
           : country // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
 }
 
+/// Adds pattern-matching-related methods to [Trail].
+extension TrailPatterns on Trail {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_Trail value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _Trail() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_Trail value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Trail():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_Trail value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Trail() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            String id,
+            String name,
+            String displayName,
+            String tagline,
+            int totalStages,
+            double totalDistanceKm,
+            int totalElevationGain,
+            String region,
+            String country)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _Trail() when $default != null:
+        return $default(
+            _that.id,
+            _that.name,
+            _that.displayName,
+            _that.tagline,
+            _that.totalStages,
+            _that.totalDistanceKm,
+            _that.totalElevationGain,
+            _that.region,
+            _that.country);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            String id,
+            String name,
+            String displayName,
+            String tagline,
+            int totalStages,
+            double totalDistanceKm,
+            int totalElevationGain,
+            String region,
+            String country)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Trail():
+        return $default(
+            _that.id,
+            _that.name,
+            _that.displayName,
+            _that.tagline,
+            _that.totalStages,
+            _that.totalDistanceKm,
+            _that.totalElevationGain,
+            _that.region,
+            _that.country);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            String id,
+            String name,
+            String displayName,
+            String tagline,
+            int totalStages,
+            double totalDistanceKm,
+            int totalElevationGain,
+            String region,
+            String country)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Trail() when $default != null:
+        return $default(
+            _that.id,
+            _that.name,
+            _that.displayName,
+            _that.tagline,
+            _that.totalStages,
+            _that.totalDistanceKm,
+            _that.totalElevationGain,
+            _that.region,
+            _that.country);
+      case _:
+        return null;
+    }
+  }
+}
+
 /// @nodoc
 @JsonSerializable()
-class _$TrailImpl implements _Trail {
-  const _$TrailImpl(
+class _Trail implements Trail {
+  const _Trail(
       {required this.id,
       required this.name,
       required this.displayName,
@@ -235,9 +389,7 @@ class _$TrailImpl implements _Trail {
       required this.totalElevationGain,
       required this.region,
       required this.country});
-
-  factory _$TrailImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TrailImplFromJson(json);
+  factory _Trail.fromJson(Map<String, dynamic> json) => _$TrailFromJson(json);
 
   /// Identifiant unique (ex: 'mare_a_mare', 'tmb')
   @override
@@ -276,16 +428,26 @@ class _$TrailImpl implements _Trail {
   @override
   final String country;
 
+  /// Create a copy of Trail
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'Trail(id: $id, name: $name, displayName: $displayName, tagline: $tagline, totalStages: $totalStages, totalDistanceKm: $totalDistanceKm, totalElevationGain: $totalElevationGain, region: $region, country: $country)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$TrailCopyWith<_Trail> get copyWith =>
+      __$TrailCopyWithImpl<_Trail>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$TrailToJson(
+      this,
+    );
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TrailImpl &&
+            other is _Trail &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.displayName, displayName) ||
@@ -306,76 +468,91 @@ class _$TrailImpl implements _Trail {
   int get hashCode => Object.hash(runtimeType, id, name, displayName, tagline,
       totalStages, totalDistanceKm, totalElevationGain, region, country);
 
-  /// Create a copy of Trail
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$TrailImplCopyWith<_$TrailImpl> get copyWith =>
-      __$$TrailImplCopyWithImpl<_$TrailImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$TrailImplToJson(
-      this,
-    );
+  String toString() {
+    return 'Trail(id: $id, name: $name, displayName: $displayName, tagline: $tagline, totalStages: $totalStages, totalDistanceKm: $totalDistanceKm, totalElevationGain: $totalElevationGain, region: $region, country: $country)';
   }
 }
 
-abstract class _Trail implements Trail {
-  const factory _Trail(
-      {required final String id,
-      required final String name,
-      required final String displayName,
-      final String tagline,
-      required final int totalStages,
-      required final double totalDistanceKm,
-      required final int totalElevationGain,
-      required final String region,
-      required final String country}) = _$TrailImpl;
-
-  factory _Trail.fromJson(Map<String, dynamic> json) = _$TrailImpl.fromJson;
-
-  /// Identifiant unique (ex: 'mare_a_mare', 'tmb')
+/// @nodoc
+abstract mixin class _$TrailCopyWith<$Res> implements $TrailCopyWith<$Res> {
+  factory _$TrailCopyWith(_Trail value, $Res Function(_Trail) _then) =
+      __$TrailCopyWithImpl;
   @override
-  String get id;
+  @useResult
+  $Res call(
+      {String id,
+      String name,
+      String displayName,
+      String tagline,
+      int totalStages,
+      double totalDistanceKm,
+      int totalElevationGain,
+      String region,
+      String country});
+}
 
-  /// Nom technique court (ex: 'Mare a Mare')
-  @override
-  String get name;
+/// @nodoc
+class __$TrailCopyWithImpl<$Res> implements _$TrailCopyWith<$Res> {
+  __$TrailCopyWithImpl(this._self, this._then);
 
-  /// Nom d'affichage dans l'app
-  @override
-  String get displayName;
-
-  /// Accroche sous le nom
-  @override
-  String get tagline;
-
-  /// Nombre total d'etapes
-  @override
-  int get totalStages;
-
-  /// Distance totale en km
-  @override
-  double get totalDistanceKm;
-
-  /// Denivele positif total en metres
-  @override
-  int get totalElevationGain;
-
-  /// Region geographique
-  @override
-  String get region;
-
-  /// Pays
-  @override
-  String get country;
+  final _Trail _self;
+  final $Res Function(_Trail) _then;
 
   /// Create a copy of Trail
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TrailImplCopyWith<_$TrailImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+    Object? displayName = null,
+    Object? tagline = null,
+    Object? totalStages = null,
+    Object? totalDistanceKm = null,
+    Object? totalElevationGain = null,
+    Object? region = null,
+    Object? country = null,
+  }) {
+    return _then(_Trail(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      displayName: null == displayName
+          ? _self.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String,
+      tagline: null == tagline
+          ? _self.tagline
+          : tagline // ignore: cast_nullable_to_non_nullable
+              as String,
+      totalStages: null == totalStages
+          ? _self.totalStages
+          : totalStages // ignore: cast_nullable_to_non_nullable
+              as int,
+      totalDistanceKm: null == totalDistanceKm
+          ? _self.totalDistanceKm
+          : totalDistanceKm // ignore: cast_nullable_to_non_nullable
+              as double,
+      totalElevationGain: null == totalElevationGain
+          ? _self.totalElevationGain
+          : totalElevationGain // ignore: cast_nullable_to_non_nullable
+              as int,
+      region: null == region
+          ? _self.region
+          : region // ignore: cast_nullable_to_non_nullable
+              as String,
+      country: null == country
+          ? _self.country
+          : country // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
+
+// dart format on

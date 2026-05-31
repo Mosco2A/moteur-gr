@@ -6,8 +6,8 @@ part of 'itinerary_day.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ItineraryDayImpl _$$ItineraryDayImplFromJson(Map<String, dynamic> json) =>
-    _$ItineraryDayImpl(
+_ItineraryDay _$ItineraryDayFromJson(Map<String, dynamic> json) =>
+    _ItineraryDay(
       dayNumber: (json['dayNumber'] as num).toInt(),
       stages: (json['stages'] as List<dynamic>)
           .map((e) => StageModel.fromJson(e as Map<String, dynamic>))
@@ -17,7 +17,7 @@ _$ItineraryDayImpl _$$ItineraryDayImplFromJson(Map<String, dynamic> json) =>
       estimatedHours: (json['estimatedHours'] as num).toDouble(),
     );
 
-Map<String, dynamic> _$$ItineraryDayImplToJson(_$ItineraryDayImpl instance) =>
+Map<String, dynamic> _$ItineraryDayToJson(_ItineraryDay instance) =>
     <String, dynamic>{
       'dayNumber': instance.dayNumber,
       'stages': instance.stages,

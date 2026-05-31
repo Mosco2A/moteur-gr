@@ -6,9 +6,9 @@ part of 'trail_feasibility_params.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TrailFeasibilityParamsImpl _$$TrailFeasibilityParamsImplFromJson(
+_TrailFeasibilityParams _$TrailFeasibilityParamsFromJson(
         Map<String, dynamic> json) =>
-    _$TrailFeasibilityParamsImpl(
+    _TrailFeasibilityParams(
       altitudeFactor: (json['altitudeFactor'] as num).toDouble(),
       technicalFactor: (json['technicalFactor'] as num).toDouble(),
       heatFactor: (json['heatFactor'] as num).toDouble(),
@@ -24,8 +24,8 @@ _$TrailFeasibilityParamsImpl _$$TrailFeasibilityParamsImplFromJson(
               const {},
     );
 
-Map<String, dynamic> _$$TrailFeasibilityParamsImplToJson(
-        _$TrailFeasibilityParamsImpl instance) =>
+Map<String, dynamic> _$TrailFeasibilityParamsToJson(
+        _TrailFeasibilityParams instance) =>
     <String, dynamic>{
       'altitudeFactor': instance.altitudeFactor,
       'technicalFactor': instance.technicalFactor,

@@ -6,8 +6,7 @@ part of 'poi.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PoiModelImpl _$$PoiModelImplFromJson(Map<String, dynamic> json) =>
-    _$PoiModelImpl(
+_PoiModel _$PoiModelFromJson(Map<String, dynamic> json) => _PoiModel(
       id: (json['id'] as num?)?.toInt() ?? 0,
       trailId: json['trailId'] as String,
       stageNumber: (json['stageNumber'] as num).toInt(),
@@ -20,8 +19,7 @@ _$PoiModelImpl _$$PoiModelImplFromJson(Map<String, dynamic> json) =>
       openingHours: json['openingHours'] as String?,
     );
 
-Map<String, dynamic> _$$PoiModelImplToJson(_$PoiModelImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$PoiModelToJson(_PoiModel instance) => <String, dynamic>{
       'id': instance.id,
       'trailId': instance.trailId,
       'stageNumber': instance.stageNumber,

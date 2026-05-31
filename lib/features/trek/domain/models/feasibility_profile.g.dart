@@ -6,9 +6,8 @@ part of 'feasibility_profile.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$FeasibilityProfileImpl _$$FeasibilityProfileImplFromJson(
-        Map<String, dynamic> json) =>
-    _$FeasibilityProfileImpl(
+_FeasibilityProfile _$FeasibilityProfileFromJson(Map<String, dynamic> json) =>
+    _FeasibilityProfile(
       fitnessLevel: json['fitnessLevel'] as String,
       experience: json['experience'] as String,
       maxKmPerDay: (json['maxKmPerDay'] as num).toDouble(),
@@ -19,8 +18,7 @@ _$FeasibilityProfileImpl _$$FeasibilityProfileImplFromJson(
           .toList(),
     );
 
-Map<String, dynamic> _$$FeasibilityProfileImplToJson(
-        _$FeasibilityProfileImpl instance) =>
+Map<String, dynamic> _$FeasibilityProfileToJson(_FeasibilityProfile instance) =>
     <String, dynamic>{
       'fitnessLevel': instance.fitnessLevel,
       'experience': instance.experience,

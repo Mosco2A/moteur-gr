@@ -6,8 +6,7 @@ part of 'trek_session.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TrekSessionImpl _$$TrekSessionImplFromJson(Map<String, dynamic> json) =>
-    _$TrekSessionImpl(
+_TrekSession _$TrekSessionFromJson(Map<String, dynamic> json) => _TrekSession(
       id: json['id'] as String,
       trailId: json['trailId'] as String,
       startedAt: DateTime.parse(json['startedAt'] as String),
@@ -17,7 +16,7 @@ _$TrekSessionImpl _$$TrekSessionImplFromJson(Map<String, dynamic> json) =>
       status: json['status'] as String? ?? "active",
     );
 
-Map<String, dynamic> _$$TrekSessionImplToJson(_$TrekSessionImpl instance) =>
+Map<String, dynamic> _$TrekSessionToJson(_TrekSession instance) =>
     <String, dynamic>{
       'id': instance.id,
       'trailId': instance.trailId,

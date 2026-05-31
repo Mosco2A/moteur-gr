@@ -6,9 +6,8 @@ part of 'feasibility_result.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$FeasibilityResultImpl _$$FeasibilityResultImplFromJson(
-        Map<String, dynamic> json) =>
-    _$FeasibilityResultImpl(
+_FeasibilityResult _$FeasibilityResultFromJson(Map<String, dynamic> json) =>
+    _FeasibilityResult(
       score: (json['score'] as num).toDouble(),
       recommendedDays: (json['recommendedDays'] as num).toInt(),
       warnings:
@@ -17,8 +16,7 @@ _$FeasibilityResultImpl _$$FeasibilityResultImplFromJson(
       worstProfileIndex: (json['worstProfileIndex'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$$FeasibilityResultImplToJson(
-        _$FeasibilityResultImpl instance) =>
+Map<String, dynamic> _$FeasibilityResultToJson(_FeasibilityResult instance) =>
     <String, dynamic>{
       'score': instance.score,
       'recommendedDays': instance.recommendedDays,
