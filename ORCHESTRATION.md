@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 30/05/2026 23:10
+MAJ: 31/05/2026 10:12
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -10,17 +10,17 @@ Specs V8: #82290 framework + #82293-#82299 par phase.
 
 ## Etat phases
 Phase 0: 6/6 COMPLETE — mergee main 30/05 14:12. QA Artemis 6/6 PASS.
-Phase 1: PARTIEL — 16 enums fermes (#81752), pattern Riverpod 2 (StateNotifierProvider), i18n Slang OK
-Phase 2: 1/23 STRICT OK — chemins incorrects, classes renommees, signatures divergentes
+Phase 1: 3/3 COMPLETE — Riverpod 2→3, 14 enums→String, ref.watch select fix. Mergee 30/05.
+Phase 2: 32/32 COMPLETE — merges 30/05 23:10. QA gate Artemis en attente. Conflit deps freezed/riverpod a resoudre (specs V9 #82574-82591).
 Phase 3: commits presents, NON VALIDES (depend Phase 2)
 Phase 4: commits presents, NON VALIDES (depend Phase 3)
 Phase 5: A FAIRE
 
 ## Branches en attente
-fix/phase2-batch1-corrections — 3 commits Vulcain (E2.1b, E2.1c, E2.5a) — A integrer dans Phase 2 refactoring
+Aucune — Phase 2 complete, branches integrees.
 
 ## Prochaine action
-QA Phase 2 gate (Artemis) puis Phase 3 — GO Chris requis
+Phase 2bis: upgrade deps freezed v3 + slang v4 (specs V9 #82574-82591 validees Chris). Puis QA gate Phase 2 (Artemis). Puis Phase 3 — GO Chris requis.
 
 ## Derniere action
 Phase 2 COMPLETE 30/05 23:10. 32/32 merges. Toutes sous-etapes faites conforme plan V8.
