@@ -56,6 +56,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feedback$de feedback = _Translations$feedback$de._(_root);
 	@override late final _Translations$auth$de auth = _Translations$auth$de._(_root);
 	@override late final _Translations$feasibility$de feasibility = _Translations$feasibility$de._(_root);
+	@override late final _Translations$tips$de tips = _Translations$tips$de._(_root);
 }
 
 // Path: map
@@ -234,6 +235,11 @@ class _Translations$weather$de extends Translations$weather$fr {
 	@override String get precipitation => 'Niederschlag';
 	@override String get wind => 'Wind';
 	@override String get uv => 'UV-Index';
+	@override String get fireRisk => 'Brandgefahr';
+	@override String get fireRiskDesc => 'Hohe Brandgefahr. Sicherheitshinweise beachten.';
+	@override String get fireSafetyTips => 'Brandschutzhinweise';
+	@override String get alertCount => 'Warnung';
+	@override String get alertCountPlural => 'Warnungen';
 }
 
 // Path: share
@@ -368,6 +374,32 @@ class _Translations$feasibility$de extends Translations$feasibility$fr {
 	@override String get yourProfile => 'Ihr Profil';
 	@override String get tipsTitle => 'Unsere Tipps';
 	@override late final _Translations$feasibility$recommendations$de recommendations = _Translations$feasibility$recommendations$de._(_root);
+}
+
+// Path: tips
+class _Translations$tips$de extends Translations$tips$fr {
+	_Translations$tips$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get carouselTitle => 'Trek-Tipps';
+	@override String get allCategories => 'Alle';
+	@override String get swipeHint => 'Wischen fuer mehr';
+	@override String get detailTitle => 'Tipp-Detail';
+	@override String get readMore => 'Mehr lesen';
+	@override String get noTips => 'Keine Tipps verfuegbar';
+	@override String get categoryPreparation => 'Vorbereitung';
+	@override String get categoryEquipment => 'Ausruestung';
+	@override String get categoryNutrition => 'Ernaehrung';
+	@override String get categorySafety => 'Sicherheit';
+	@override String get categoryNature => 'Natur';
+	@override String get categoryRecovery => 'Erholung';
+	@override String get categoryGeneral => 'Allgemein';
+	@override String get priorityHigh => 'Hohe Prioritaet';
+	@override String get scope => 'Wanderweg';
+	@override String get season => 'Saison';
+	@override String get altitude => 'Min. Hoehe';
 }
 
 // Path: stage.difficulty
@@ -757,6 +789,11 @@ extension on TranslationsDe {
 			'weather.precipitation' => 'Niederschlag',
 			'weather.wind' => 'Wind',
 			'weather.uv' => 'UV-Index',
+			'weather.fireRisk' => 'Brandgefahr',
+			'weather.fireRiskDesc' => 'Hohe Brandgefahr. Sicherheitshinweise beachten.',
+			'weather.fireSafetyTips' => 'Brandschutzhinweise',
+			'weather.alertCount' => 'Warnung',
+			'weather.alertCountPlural' => 'Warnungen',
 			'share.title' => 'Teilen',
 			'share.generating' => 'Wird generiert...',
 			'share.share' => 'Teilen',
@@ -895,6 +932,23 @@ extension on TranslationsDe {
 			'feasibility.recommendations.excellent.tips.tip1' => 'Hören Sie auf Ihren Körper',
 			'feasibility.recommendations.excellent.tips.tip2' => 'Teilen Sie Ihre Erfahrung mit anderen Wanderern',
 			'feasibility.recommendations.excellent.tips.tip3' => 'Dokumentieren Sie Ihr Abenteuer im Tagebuch',
+			'tips.carouselTitle' => 'Trek-Tipps',
+			'tips.allCategories' => 'Alle',
+			'tips.swipeHint' => 'Wischen fuer mehr',
+			'tips.detailTitle' => 'Tipp-Detail',
+			'tips.readMore' => 'Mehr lesen',
+			'tips.noTips' => 'Keine Tipps verfuegbar',
+			'tips.categoryPreparation' => 'Vorbereitung',
+			'tips.categoryEquipment' => 'Ausruestung',
+			'tips.categoryNutrition' => 'Ernaehrung',
+			'tips.categorySafety' => 'Sicherheit',
+			'tips.categoryNature' => 'Natur',
+			'tips.categoryRecovery' => 'Erholung',
+			'tips.categoryGeneral' => 'Allgemein',
+			'tips.priorityHigh' => 'Hohe Prioritaet',
+			'tips.scope' => 'Wanderweg',
+			'tips.season' => 'Saison',
+			'tips.altitude' => 'Min. Hoehe',
 			_ => null,
 		};
 	}

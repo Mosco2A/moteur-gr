@@ -143,7 +143,12 @@
     "temperature": "Temperatura",
     "precipitation": "Precipitazioni",
     "wind": "Vento",
-    "uv": "Indice UV"
+    "uv": "Indice UV",
+    "fireRisk": "Rischio incendio",
+    "fireRiskDesc": "Rischio incendio elevato. Consultare le istruzioni di sicurezza.",
+    "fireSafetyTips": "Istruzioni antincendio",
+    "alertCount": "allerta",
+    "alertCountPlural": "allerte"
   },
   "share": {
     "title": "Condividi",

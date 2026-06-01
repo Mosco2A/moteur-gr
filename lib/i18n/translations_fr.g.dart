@@ -57,6 +57,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$feedback$fr feedback = Translations$feedback$fr.internal(_root);
 	late final Translations$auth$fr auth = Translations$auth$fr.internal(_root);
 	late final Translations$feasibility$fr feasibility = Translations$feasibility$fr.internal(_root);
+	late final Translations$tips$fr tips = Translations$tips$fr.internal(_root);
 }
 
 // Path: map
@@ -407,6 +408,21 @@ class Translations$weather$fr {
 
 	/// fr: 'Indice UV'
 	String get uv => 'Indice UV';
+
+	/// fr: 'Risque incendie'
+	String get fireRisk => 'Risque incendie';
+
+	/// fr: 'Risque incendie eleve. Consultez les consignes de securite.'
+	String get fireRiskDesc => 'Risque incendie eleve. Consultez les consignes de securite.';
+
+	/// fr: 'Consignes incendie'
+	String get fireSafetyTips => 'Consignes incendie';
+
+	/// fr: 'alerte'
+	String get alertCount => 'alerte';
+
+	/// fr: 'alertes'
+	String get alertCountPlural => 'alertes';
 }
 
 // Path: share
@@ -675,6 +691,66 @@ class Translations$feasibility$fr {
 	String get tipsTitle => 'Nos conseils';
 
 	late final Translations$feasibility$recommendations$fr recommendations = Translations$feasibility$recommendations$fr.internal(_root);
+}
+
+// Path: tips
+class Translations$tips$fr {
+	Translations$tips$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Conseils trek'
+	String get carouselTitle => 'Conseils trek';
+
+	/// fr: 'Toutes'
+	String get allCategories => 'Toutes';
+
+	/// fr: 'Glissez pour voir plus'
+	String get swipeHint => 'Glissez pour voir plus';
+
+	/// fr: 'Détail du conseil'
+	String get detailTitle => 'Détail du conseil';
+
+	/// fr: 'Lire la suite'
+	String get readMore => 'Lire la suite';
+
+	/// fr: 'Aucun conseil disponible'
+	String get noTips => 'Aucun conseil disponible';
+
+	/// fr: 'Préparation'
+	String get categoryPreparation => 'Préparation';
+
+	/// fr: 'Équipement'
+	String get categoryEquipment => 'Équipement';
+
+	/// fr: 'Nutrition'
+	String get categoryNutrition => 'Nutrition';
+
+	/// fr: 'Sécurité'
+	String get categorySafety => 'Sécurité';
+
+	/// fr: 'Nature'
+	String get categoryNature => 'Nature';
+
+	/// fr: 'Récupération'
+	String get categoryRecovery => 'Récupération';
+
+	/// fr: 'Général'
+	String get categoryGeneral => 'Général';
+
+	/// fr: 'Priorité haute'
+	String get priorityHigh => 'Priorité haute';
+
+	/// fr: 'Sentier'
+	String get scope => 'Sentier';
+
+	/// fr: 'Saison'
+	String get season => 'Saison';
+
+	/// fr: 'Altitude min.'
+	String get altitude => 'Altitude min.';
 }
 
 // Path: stage.difficulty
@@ -1282,6 +1358,11 @@ extension on Translations {
 			'weather.precipitation' => 'Précipitations',
 			'weather.wind' => 'Vent',
 			'weather.uv' => 'Indice UV',
+			'weather.fireRisk' => 'Risque incendie',
+			'weather.fireRiskDesc' => 'Risque incendie eleve. Consultez les consignes de securite.',
+			'weather.fireSafetyTips' => 'Consignes incendie',
+			'weather.alertCount' => 'alerte',
+			'weather.alertCountPlural' => 'alertes',
 			'share.title' => 'Partager',
 			'share.generating' => 'Génération...',
 			'share.share' => 'Partager',
@@ -1420,6 +1501,23 @@ extension on Translations {
 			'feasibility.recommendations.excellent.tips.tip1' => 'Restez à l’écoute de votre corps',
 			'feasibility.recommendations.excellent.tips.tip2' => 'Partagez votre expérience avec les randonneurs',
 			'feasibility.recommendations.excellent.tips.tip3' => 'Documentez votre aventure dans le journal',
+			'tips.carouselTitle' => 'Conseils trek',
+			'tips.allCategories' => 'Toutes',
+			'tips.swipeHint' => 'Glissez pour voir plus',
+			'tips.detailTitle' => 'Détail du conseil',
+			'tips.readMore' => 'Lire la suite',
+			'tips.noTips' => 'Aucun conseil disponible',
+			'tips.categoryPreparation' => 'Préparation',
+			'tips.categoryEquipment' => 'Équipement',
+			'tips.categoryNutrition' => 'Nutrition',
+			'tips.categorySafety' => 'Sécurité',
+			'tips.categoryNature' => 'Nature',
+			'tips.categoryRecovery' => 'Récupération',
+			'tips.categoryGeneral' => 'Général',
+			'tips.priorityHigh' => 'Priorité haute',
+			'tips.scope' => 'Sentier',
+			'tips.season' => 'Saison',
+			'tips.altitude' => 'Altitude min.',
 			_ => null,
 		};
 	}

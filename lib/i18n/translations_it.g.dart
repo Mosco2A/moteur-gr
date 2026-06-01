@@ -56,6 +56,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feedback$it feedback = _Translations$feedback$it._(_root);
 	@override late final _Translations$auth$it auth = _Translations$auth$it._(_root);
 	@override late final _Translations$feasibility$it feasibility = _Translations$feasibility$it._(_root);
+	@override late final _Translations$tips$it tips = _Translations$tips$it._(_root);
 }
 
 // Path: map
@@ -234,6 +235,11 @@ class _Translations$weather$it extends Translations$weather$fr {
 	@override String get precipitation => 'Precipitazioni';
 	@override String get wind => 'Vento';
 	@override String get uv => 'Indice UV';
+	@override String get fireRisk => 'Rischio incendio';
+	@override String get fireRiskDesc => 'Rischio incendio elevato. Consultare le istruzioni di sicurezza.';
+	@override String get fireSafetyTips => 'Istruzioni antincendio';
+	@override String get alertCount => 'allerta';
+	@override String get alertCountPlural => 'allerte';
 }
 
 // Path: share
@@ -368,6 +374,32 @@ class _Translations$feasibility$it extends Translations$feasibility$fr {
 	@override String get yourProfile => 'Il vostro profilo';
 	@override String get tipsTitle => 'I nostri consigli';
 	@override late final _Translations$feasibility$recommendations$it recommendations = _Translations$feasibility$recommendations$it._(_root);
+}
+
+// Path: tips
+class _Translations$tips$it extends Translations$tips$fr {
+	_Translations$tips$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get carouselTitle => 'Consigli trek';
+	@override String get allCategories => 'Tutte';
+	@override String get swipeHint => 'Scorri per vedere altro';
+	@override String get detailTitle => 'Dettaglio consiglio';
+	@override String get readMore => 'Leggi di piu';
+	@override String get noTips => 'Nessun consiglio disponibile';
+	@override String get categoryPreparation => 'Preparazione';
+	@override String get categoryEquipment => 'Attrezzatura';
+	@override String get categoryNutrition => 'Nutrizione';
+	@override String get categorySafety => 'Sicurezza';
+	@override String get categoryNature => 'Natura';
+	@override String get categoryRecovery => 'Recupero';
+	@override String get categoryGeneral => 'Generale';
+	@override String get priorityHigh => 'Priorita alta';
+	@override String get scope => 'Sentiero';
+	@override String get season => 'Stagione';
+	@override String get altitude => 'Altitudine min.';
 }
 
 // Path: stage.difficulty
@@ -757,6 +789,11 @@ extension on TranslationsIt {
 			'weather.precipitation' => 'Precipitazioni',
 			'weather.wind' => 'Vento',
 			'weather.uv' => 'Indice UV',
+			'weather.fireRisk' => 'Rischio incendio',
+			'weather.fireRiskDesc' => 'Rischio incendio elevato. Consultare le istruzioni di sicurezza.',
+			'weather.fireSafetyTips' => 'Istruzioni antincendio',
+			'weather.alertCount' => 'allerta',
+			'weather.alertCountPlural' => 'allerte',
 			'share.title' => 'Condividi',
 			'share.generating' => 'Generazione...',
 			'share.share' => 'Condividi',
@@ -895,6 +932,23 @@ extension on TranslationsIt {
 			'feasibility.recommendations.excellent.tips.tip1' => 'Ascoltate il vostro corpo durante il trekking',
 			'feasibility.recommendations.excellent.tips.tip2' => 'Condividete la vostra esperienza',
 			'feasibility.recommendations.excellent.tips.tip3' => 'Documentate la vostra avventura nel diario',
+			'tips.carouselTitle' => 'Consigli trek',
+			'tips.allCategories' => 'Tutte',
+			'tips.swipeHint' => 'Scorri per vedere altro',
+			'tips.detailTitle' => 'Dettaglio consiglio',
+			'tips.readMore' => 'Leggi di piu',
+			'tips.noTips' => 'Nessun consiglio disponibile',
+			'tips.categoryPreparation' => 'Preparazione',
+			'tips.categoryEquipment' => 'Attrezzatura',
+			'tips.categoryNutrition' => 'Nutrizione',
+			'tips.categorySafety' => 'Sicurezza',
+			'tips.categoryNature' => 'Natura',
+			'tips.categoryRecovery' => 'Recupero',
+			'tips.categoryGeneral' => 'Generale',
+			'tips.priorityHigh' => 'Priorita alta',
+			'tips.scope' => 'Sentiero',
+			'tips.season' => 'Stagione',
+			'tips.altitude' => 'Altitudine min.',
 			_ => null,
 		};
 	}

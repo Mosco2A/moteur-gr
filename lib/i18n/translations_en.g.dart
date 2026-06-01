@@ -56,6 +56,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feedback$en feedback = _Translations$feedback$en._(_root);
 	@override late final _Translations$auth$en auth = _Translations$auth$en._(_root);
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
+	@override late final _Translations$tips$en tips = _Translations$tips$en._(_root);
 }
 
 // Path: map
@@ -234,6 +235,11 @@ class _Translations$weather$en extends Translations$weather$fr {
 	@override String get precipitation => 'Precipitation';
 	@override String get wind => 'Wind';
 	@override String get uv => 'UV index';
+	@override String get fireRisk => 'Fire risk';
+	@override String get fireRiskDesc => 'High fire risk. Check safety instructions.';
+	@override String get fireSafetyTips => 'Fire safety tips';
+	@override String get alertCount => 'alert';
+	@override String get alertCountPlural => 'alerts';
 }
 
 // Path: share
@@ -368,6 +374,32 @@ class _Translations$feasibility$en extends Translations$feasibility$fr {
 	@override String get yourProfile => 'Your profile';
 	@override String get tipsTitle => 'Our tips';
 	@override late final _Translations$feasibility$recommendations$en recommendations = _Translations$feasibility$recommendations$en._(_root);
+}
+
+// Path: tips
+class _Translations$tips$en extends Translations$tips$fr {
+	_Translations$tips$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get carouselTitle => 'Trek tips';
+	@override String get allCategories => 'All';
+	@override String get swipeHint => 'Swipe for more';
+	@override String get detailTitle => 'Tip detail';
+	@override String get readMore => 'Read more';
+	@override String get noTips => 'No tips available';
+	@override String get categoryPreparation => 'Preparation';
+	@override String get categoryEquipment => 'Equipment';
+	@override String get categoryNutrition => 'Nutrition';
+	@override String get categorySafety => 'Safety';
+	@override String get categoryNature => 'Nature';
+	@override String get categoryRecovery => 'Recovery';
+	@override String get categoryGeneral => 'General';
+	@override String get priorityHigh => 'High priority';
+	@override String get scope => 'Trail';
+	@override String get season => 'Season';
+	@override String get altitude => 'Min. altitude';
 }
 
 // Path: stage.difficulty
@@ -757,6 +789,11 @@ extension on TranslationsEn {
 			'weather.precipitation' => 'Precipitation',
 			'weather.wind' => 'Wind',
 			'weather.uv' => 'UV index',
+			'weather.fireRisk' => 'Fire risk',
+			'weather.fireRiskDesc' => 'High fire risk. Check safety instructions.',
+			'weather.fireSafetyTips' => 'Fire safety tips',
+			'weather.alertCount' => 'alert',
+			'weather.alertCountPlural' => 'alerts',
 			'share.title' => 'Share',
 			'share.generating' => 'Generating...',
 			'share.share' => 'Share',
@@ -895,6 +932,23 @@ extension on TranslationsEn {
 			'feasibility.recommendations.excellent.tips.tip1' => 'Listen to your body during the trek',
 			'feasibility.recommendations.excellent.tips.tip2' => 'Share your experience with fellow hikers',
 			'feasibility.recommendations.excellent.tips.tip3' => 'Consider documenting your adventure in the journal',
+			'tips.carouselTitle' => 'Trek tips',
+			'tips.allCategories' => 'All',
+			'tips.swipeHint' => 'Swipe for more',
+			'tips.detailTitle' => 'Tip detail',
+			'tips.readMore' => 'Read more',
+			'tips.noTips' => 'No tips available',
+			'tips.categoryPreparation' => 'Preparation',
+			'tips.categoryEquipment' => 'Equipment',
+			'tips.categoryNutrition' => 'Nutrition',
+			'tips.categorySafety' => 'Safety',
+			'tips.categoryNature' => 'Nature',
+			'tips.categoryRecovery' => 'Recovery',
+			'tips.categoryGeneral' => 'General',
+			'tips.priorityHigh' => 'High priority',
+			'tips.scope' => 'Trail',
+			'tips.season' => 'Season',
+			'tips.altitude' => 'Min. altitude',
 			_ => null,
 		};
 	}

@@ -143,7 +143,12 @@
     "temperature": "Temperatur",
     "precipitation": "Niederschlag",
     "wind": "Wind",
-    "uv": "UV-Index"
+    "uv": "UV-Index",
+    "fireRisk": "Brandgefahr",
+    "fireRiskDesc": "Hohe Brandgefahr. Sicherheitshinweise beachten.",
+    "fireSafetyTips": "Brandschutzhinweise",
+    "alertCount": "Warnung",
+    "alertCountPlural": "Warnungen"
   },
   "share": {
     "title": "Teilen",

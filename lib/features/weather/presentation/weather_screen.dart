@@ -2,14 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
+import '../../tips/domain/models/tip_card.dart';
+import '../models/fire_risk_config.dart';
+import '../models/weather_alert.dart';
 import '../providers/weather_provider.dart';
 import '../widgets/day_forecast_card.dart';
 import '../widgets/weather_alert_banner.dart';
 
-/// Écran météo par étape.
+/// Ecran meteo par etape.
 ///
-/// Affiche la prévision à 7 jours avec bandeau d'alerte
-/// si des conditions dangereuses sont prévues.
+/// Affiche la prevision a 7 jours avec bandeau d'alerte
+/// si des conditions dangereuses sont prevues.
+/// Supporte les alertes incendie parametrables via [FireRiskConfig]
+/// avec lien vers la fiche conseil securite_incendie.
 class WeatherScreen extends ConsumerWidget {
   const WeatherScreen({
     super.key,
@@ -18,6 +24,9 @@ class WeatherScreen extends ConsumerWidget {
     required this.latitude,
     required this.longitude,
     required this.stageName,
+    this.region = 'Corse',
+    this.fireRiskConfig = const FireRiskConfig(),
+    this.fireTipCard,
   });
 
   final String trailId;
@@ -26,8 +35,18 @@ class WeatherScreen extends ConsumerWidget {
   final double longitude;
   final String stageName;
 
+  /// Region geographique du sentier pour evaluation du risque incendie
+  final String region;
+
+  /// Config parametrable du risque incendie (seuils, mois, regions)
+  final FireRiskConfig fireRiskConfig;
+
+  /// Fiche conseil incendie pour le CTA (null = pas de CTA)
+  final TipCard? fireTipCard;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = Translations.of(context);
     final params = WeatherStageParams(
       trailId: trailId,
       stageNumber: stageNumber,
@@ -39,23 +58,37 @@ class WeatherScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Météo — $stageName'),
+        title: Text('${t.weather.title} — $stageName'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
+            tooltip: t.weather.refresh,
             onPressed: () =>
                 ref.read(weatherProvider(params).notifier).refresh(),
           ),
         ],
       ),
-      body: _buildBody(context, theme, weather),
+      body: _buildBody(context, theme, weather, t),
     );
   }
 
   Widget _buildBody(
-      BuildContext context, ThemeData theme, WeatherState weather) {
+    BuildContext context,
+    ThemeData theme,
+    WeatherState weather,
+    Translations t,
+  ) {
     if (weather.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: AppTheme.spacingBase),
+            Text(t.weather.loading, style: theme.textTheme.bodyMedium),
+          ],
+        ),
+      );
     }
 
     if (weather.errorMessage != null && weather.forecast == null) {
@@ -65,7 +98,7 @@ class WeatherScreen extends ConsumerWidget {
           children: [
             const Icon(Icons.cloud_off, size: 64),
             const SizedBox(height: AppTheme.spacingBase),
-            Text(weather.errorMessage!, style: theme.textTheme.bodyLarge),
+            Text(t.weather.error, style: theme.textTheme.bodyLarge),
           ],
         ),
       );
@@ -73,12 +106,23 @@ class WeatherScreen extends ConsumerWidget {
 
     final forecast = weather.forecast!;
 
+    // Combiner alertes meteo classiques + alertes incendie
+    final fireAlerts = WeatherAlert.fireAlertsFromForecast(
+      forecast,
+      fireConfig: fireRiskConfig,
+      region: region,
+    );
+    final allAlerts = [...weather.alerts, ...fireAlerts];
+
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
         // Bandeau d'alerte si conditions dangereuses
-        if (weather.alerts.isNotEmpty) ...[
-          WeatherAlertBanner(alerts: weather.alerts),
+        if (allAlerts.isNotEmpty) ...[
+          WeatherAlertBanner(
+            alerts: allAlerts,
+            fireTipCard: fireTipCard,
+          ),
           const SizedBox(height: AppTheme.spacingBase),
         ],
 
@@ -92,7 +136,7 @@ class WeatherScreen extends ConsumerWidget {
                     color: theme.colorScheme.onSurface.withAlpha(120)),
                 const SizedBox(width: 4),
                 Text(
-                  'Données en cache',
+                  t.weather.cached,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withAlpha(120),
                   ),
@@ -101,7 +145,7 @@ class WeatherScreen extends ConsumerWidget {
             ),
           ),
 
-        // Prévisions par jour
+        // Previsions par jour
         ...forecast.days.map((day) => DayForecastCard(day: day)),
       ],
     );
