@@ -229,6 +229,7 @@
     "type": "Feedbacktyp",
     "bug": "Fehler / Problem",
     "suggestion": "Vorschlag",
+    "compliment": "Kompliment",
     "question": "Frage",
     "other": "Sonstiges",
     "message": "Ihre Nachricht",

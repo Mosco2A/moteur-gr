@@ -229,6 +229,7 @@
     "type": "Tipo de comentario",
     "bug": "Error / Problema",
     "suggestion": "Sugerencia",
+    "compliment": "Cumplido",
     "question": "Pregunta",
     "other": "Otro",
     "message": "Tu mensaje",

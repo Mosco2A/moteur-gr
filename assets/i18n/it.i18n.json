@@ -229,6 +229,7 @@
     "type": "Tipo di feedback",
     "bug": "Bug / Problema",
     "suggestion": "Suggerimento",
+    "compliment": "Complimento",
     "question": "Domanda",
     "other": "Altro",
     "message": "Il tuo messaggio",

@@ -679,6 +679,9 @@ class Translations$feedback$fr {
 	/// fr: 'Suggestion'
 	String get suggestion => 'Suggestion';
 
+	/// fr: 'Compliment'
+	String get compliment => 'Compliment';
+
 	/// fr: 'Question'
 	String get question => 'Question';
 

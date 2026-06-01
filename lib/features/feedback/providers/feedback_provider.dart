@@ -21,13 +21,15 @@ abstract class FeedbackTypeValues {
   static const String bug = 'bug';
   static const String suggestion = 'suggestion';
   static const String question = 'question';
+  static const String compliment = 'compliment';
   static const String other = 'other';
   static const String fallback = other;
-  static const List<String> values = [bug, suggestion, question, other];
+  static const List<String> values = [bug, suggestion, compliment, question, other];
 
   static const Map<String, String> labels = {
     bug: 'Bug / Probleme',
     suggestion: 'Suggestion',
+    compliment: 'Compliment',
     question: 'Question',
     other: 'Autre',
   };

@@ -94,7 +94,7 @@ class WeatherNotifier extends FamilyNotifier<WeatherState, WeatherStageParams> {
     _service = ref.watch(weatherServiceProvider);
     _cacheDao = ref.watch(weatherCacheDaoProvider);
     _connectivity =
-        ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatus.offline;
+        ref.watch(connectivityProvider).valueOrNull ?? ConnectivityStatusValues.offline;
     _loadWeather();
     return const WeatherState(isLoading: true);
   }
@@ -124,7 +124,7 @@ class WeatherNotifier extends FamilyNotifier<WeatherState, WeatherStageParams> {
     }
 
     // 2. Appel API si en ligne
-    if (_connectivity == ConnectivityStatus.online) {
+    if (_connectivity == ConnectivityStatusValues.online) {
       await refresh();
     } else {
       state = const WeatherState(

@@ -355,6 +355,7 @@ class _Translations$feedback$es extends Translations$feedback$fr {
 	@override String get type => 'Tipo de comentario';
 	@override String get bug => 'Error / Problema';
 	@override String get suggestion => 'Sugerencia';
+	@override String get compliment => 'Cumplido';
 	@override String get question => 'Pregunta';
 	@override String get other => 'Otro';
 	@override String get message => 'Tu mensaje';
