@@ -1,21 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/firebase/firebase_service.dart';
-import '../data/firebase_auth_service.dart';
 import '../data/local_auth_service.dart';
 import '../domain/auth_service.dart';
 
 /// Provider du service d'authentification.
 ///
-/// Si Firebase est disponible, utilise FirebaseAuthService.
-/// Sinon, fallback sur LocalAuthService (mode offline/local).
+/// Utilise LocalAuthService (mode local, zero Firebase).
+/// L'interface AuthService permet de brancher d'autres implémentations
+/// plus tard sans toucher aux consumers.
 final authServiceProvider = Provider<AuthService>((ref) {
-  final isFirebaseAvailable = ref.watch(isFirebaseAvailableProvider);
-
-  if (isFirebaseAvailable) {
-    return FirebaseAuthService();
-  }
-
   final service = LocalAuthService();
   ref.onDispose(() => service.dispose());
   return service;
