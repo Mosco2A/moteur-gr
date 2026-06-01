@@ -154,7 +154,13 @@
     "title": "Teilen",
     "generating": "Wird generiert...",
     "share": "Teilen",
-    "error": "Fehler bei der Erstellung"
+    "error": "Fehler bei der Erstellung",
+    "errorShare": "Fehler beim Teilen",
+    "preview": "Vorschau",
+    "chooseTemplate": "Vorlage wählen",
+    "templateStats": "Statistiken",
+    "templateJourney": "Strecke",
+    "templateStage": "Etappe"
   },
   "diploma": {
     "title": "Wanderdiplom",

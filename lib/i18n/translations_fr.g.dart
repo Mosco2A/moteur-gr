@@ -444,6 +444,24 @@ class Translations$share$fr {
 
 	/// fr: 'Erreur lors de la génération'
 	String get error => 'Erreur lors de la génération';
+
+	/// fr: 'Erreur lors du partage'
+	String get errorShare => 'Erreur lors du partage';
+
+	/// fr: 'Aperçu'
+	String get preview => 'Aperçu';
+
+	/// fr: 'Choisir un template'
+	String get chooseTemplate => 'Choisir un template';
+
+	/// fr: 'Statistiques'
+	String get templateStats => 'Statistiques';
+
+	/// fr: 'Parcours'
+	String get templateJourney => 'Parcours';
+
+	/// fr: 'Étape'
+	String get templateStage => 'Étape';
 }
 
 // Path: diploma
@@ -1367,6 +1385,12 @@ extension on Translations {
 			'share.generating' => 'Génération...',
 			'share.share' => 'Partager',
 			'share.error' => 'Erreur lors de la génération',
+			'share.errorShare' => 'Erreur lors du partage',
+			'share.preview' => 'Aperçu',
+			'share.chooseTemplate' => 'Choisir un template',
+			'share.templateStats' => 'Statistiques',
+			'share.templateJourney' => 'Parcours',
+			'share.templateStage' => 'Étape',
 			'diploma.title' => 'Diplôme de trek',
 			'diploma.yourName' => 'Votre nom',
 			'diploma.namePlaceholder' => 'Entrez votre nom...',

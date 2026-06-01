@@ -253,6 +253,12 @@ class _Translations$share$es extends Translations$share$fr {
 	@override String get generating => 'Generando...';
 	@override String get share => 'Compartir';
 	@override String get error => 'Error durante la generación';
+	@override String get errorShare => 'Error al compartir';
+	@override String get preview => 'Vista previa';
+	@override String get chooseTemplate => 'Elegir plantilla';
+	@override String get templateStats => 'Estadísticas';
+	@override String get templateJourney => 'Recorrido';
+	@override String get templateStage => 'Etapa';
 }
 
 // Path: diploma
@@ -798,6 +804,12 @@ extension on TranslationsEs {
 			'share.generating' => 'Generando...',
 			'share.share' => 'Compartir',
 			'share.error' => 'Error durante la generación',
+			'share.errorShare' => 'Error al compartir',
+			'share.preview' => 'Vista previa',
+			'share.chooseTemplate' => 'Elegir plantilla',
+			'share.templateStats' => 'Estadísticas',
+			'share.templateJourney' => 'Recorrido',
+			'share.templateStage' => 'Etapa',
 			'diploma.title' => 'Diploma de trekking',
 			'diploma.yourName' => 'Tu nombre',
 			'diploma.namePlaceholder' => 'Introduce tu nombre...',

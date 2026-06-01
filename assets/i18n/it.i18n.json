@@ -154,7 +154,13 @@
     "title": "Condividi",
     "generating": "Generazione...",
     "share": "Condividi",
-    "error": "Errore durante la generazione"
+    "error": "Errore durante la generazione",
+    "errorShare": "Errore durante la condivisione",
+    "preview": "Anteprima",
+    "chooseTemplate": "Scegli un template",
+    "templateStats": "Statistiche",
+    "templateJourney": "Percorso",
+    "templateStage": "Tappa"
   },
   "diploma": {
     "title": "Diploma di trekking",

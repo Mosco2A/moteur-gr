@@ -154,7 +154,13 @@
     "title": "Share",
     "generating": "Generating...",
     "share": "Share",
-    "error": "Error during generation"
+    "error": "Error during generation",
+    "errorShare": "Error during sharing",
+    "preview": "Preview",
+    "chooseTemplate": "Choose a template",
+    "templateStats": "Statistics",
+    "templateJourney": "Journey",
+    "templateStage": "Stage"
   },
   "diploma": {
     "title": "Trek diploma",
