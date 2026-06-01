@@ -59,7 +59,8 @@ class DownloadReminderService {
     _log.d('[DownloadReminderService] Notification J-2 pour $trailId');
     await notificationService.scheduleCountdown(
       departureDate: departureDate,
-      trailName: trailId,
+      title: trailId,
+      body: trailId,
     );
   }
 

@@ -50,6 +50,7 @@ dependencies:
   # --- Background & Batterie ---
   flutter_local_notifications: ^18.0.0
   battery_plus: ^6.0.0
+  timezone: ^0.10.0
 
   # --- Utilitaires ---
   # --- i18n (Slang) ---
