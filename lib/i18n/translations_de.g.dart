@@ -57,6 +57,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$auth$de auth = _Translations$auth$de._(_root);
 	@override late final _Translations$feasibility$de feasibility = _Translations$feasibility$de._(_root);
 	@override late final _Translations$tips$de tips = _Translations$tips$de._(_root);
+	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
 }
 
 // Path: map
@@ -445,6 +446,17 @@ class _Translations$tips$de extends Translations$tips$fr {
 	@override String get scope => 'Wanderweg';
 	@override String get season => 'Saison';
 	@override String get altitude => 'Min. Hoehe';
+}
+
+// Path: goodies
+class _Translations$goodies$de extends Translations$goodies$fr {
+	_Translations$goodies$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Goodies-Shop';
+	@override String get comingSoon => 'Dieses Modul kommt bald. Bleiben Sie dran!';
 }
 
 // Path: stage.difficulty
@@ -1039,6 +1051,8 @@ extension on TranslationsDe {
 			'tips.scope' => 'Wanderweg',
 			'tips.season' => 'Saison',
 			'tips.altitude' => 'Min. Hoehe',
+			'goodies.title' => 'Goodies-Shop',
+			'goodies.comingSoon' => 'Dieses Modul kommt bald. Bleiben Sie dran!',
 			_ => null,
 		};
 	}

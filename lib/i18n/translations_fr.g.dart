@@ -58,6 +58,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$auth$fr auth = Translations$auth$fr.internal(_root);
 	late final Translations$feasibility$fr feasibility = Translations$feasibility$fr.internal(_root);
 	late final Translations$tips$fr tips = Translations$tips$fr.internal(_root);
+	late final Translations$goodies$fr goodies = Translations$goodies$fr.internal(_root);
 }
 
 // Path: map
@@ -888,6 +889,21 @@ class Translations$tips$fr {
 	String get altitude => 'Altitude min.';
 }
 
+// Path: goodies
+class Translations$goodies$fr {
+	Translations$goodies$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Boutique Goodies'
+	String get title => 'Boutique Goodies';
+
+	/// fr: 'Ce module arrive bientot. Restez connecte !'
+	String get comingSoon => 'Ce module arrive bientot. Restez connecte !';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1698,6 +1714,8 @@ extension on Translations {
 			'tips.scope' => 'Sentier',
 			'tips.season' => 'Saison',
 			'tips.altitude' => 'Altitude min.',
+			'goodies.title' => 'Boutique Goodies',
+			'goodies.comingSoon' => 'Ce module arrive bientot. Restez connecte !',
 			_ => null,
 		};
 	}

@@ -17,6 +17,8 @@ import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/trail/presentation/trail_list_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
+import '../../features/goodies/presentation/goodies_catalog_screen.dart';
+import '../config/feature_flags.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
 import '../../features/trek/presentation/stages/stage_list_screen.dart'
     as trek_stages;
@@ -46,6 +48,7 @@ import '../../features/trek/presentation/stages/stage_detail_screen.dart'
 ///   /stages                      - Liste des etapes (trek)
 ///   /stages/:id                  - Detail d'une etape (trek)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
+///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 final appRouter = GoRouter(
   initialLocation: '/trails',
@@ -177,6 +180,17 @@ final appRouter = GoRouter(
       path: '/catalog',
       name: 'catalog',
       builder: (context, state) => const TrailCatalogScreen(),
+    ),
+    GoRoute(
+      path: '/goodies',
+      name: 'goodies',
+      redirect: (context, state) {
+        // Garde par feature flag -- redirige vers /trails si desactive
+        final trailId = state.uri.queryParameters['trailId'] ?? '';
+        if (!FeatureFlags.isGoodiesEnabled(trailId)) return '/trails';
+        return null;
+      },
+      builder: (context, state) => const GoodiesCatalogScreen(),
     ),
     GoRoute(
       path: '/no-data',

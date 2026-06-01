@@ -391,5 +391,9 @@
     "scope": "Sendero",
     "season": "Temporada",
     "altitude": "Altitud min."
+  },
+  "goodies": {
+    "title": "Tienda de Goodies",
+    "comingSoon": "Este modulo llegara pronto. Mantente atento!"
   }
 }

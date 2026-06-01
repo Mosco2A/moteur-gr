@@ -391,5 +391,9 @@
     "scope": "Sentier",
     "season": "Saison",
     "altitude": "Altitude min."
+  },
+  "goodies": {
+    "title": "Boutique Goodies",
+    "comingSoon": "Ce module arrive bientot. Restez connecte !"
   }
 }

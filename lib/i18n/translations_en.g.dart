@@ -57,6 +57,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$auth$en auth = _Translations$auth$en._(_root);
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
 	@override late final _Translations$tips$en tips = _Translations$tips$en._(_root);
+	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
 }
 
 // Path: map
@@ -445,6 +446,17 @@ class _Translations$tips$en extends Translations$tips$fr {
 	@override String get scope => 'Trail';
 	@override String get season => 'Season';
 	@override String get altitude => 'Min. altitude';
+}
+
+// Path: goodies
+class _Translations$goodies$en extends Translations$goodies$fr {
+	_Translations$goodies$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Goodies Shop';
+	@override String get comingSoon => 'This module is coming soon. Stay tuned!';
 }
 
 // Path: stage.difficulty
@@ -1039,6 +1051,8 @@ extension on TranslationsEn {
 			'tips.scope' => 'Trail',
 			'tips.season' => 'Season',
 			'tips.altitude' => 'Min. altitude',
+			'goodies.title' => 'Goodies Shop',
+			'goodies.comingSoon' => 'This module is coming soon. Stay tuned!',
 			_ => null,
 		};
 	}

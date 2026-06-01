@@ -391,5 +391,9 @@
     "scope": "Wanderweg",
     "season": "Saison",
     "altitude": "Min. Hoehe"
+  },
+  "goodies": {
+    "title": "Goodies-Shop",
+    "comingSoon": "Dieses Modul kommt bald. Bleiben Sie dran!"
   }
 }

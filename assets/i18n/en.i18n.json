@@ -391,5 +391,9 @@
     "scope": "Trail",
     "season": "Season",
     "altitude": "Min. altitude"
+  },
+  "goodies": {
+    "title": "Goodies Shop",
+    "comingSoon": "This module is coming soon. Stay tuned!"
   }
 }

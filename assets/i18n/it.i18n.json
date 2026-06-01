@@ -391,5 +391,9 @@
     "scope": "Sentiero",
     "season": "Stagione",
     "altitude": "Altitudine min."
+  },
+  "goodies": {
+    "title": "Negozio Goodies",
+    "comingSoon": "Questo modulo arrivera presto. Resta connesso!"
   }
 }

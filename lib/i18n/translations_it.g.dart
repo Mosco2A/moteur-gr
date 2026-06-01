@@ -57,6 +57,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$auth$it auth = _Translations$auth$it._(_root);
 	@override late final _Translations$feasibility$it feasibility = _Translations$feasibility$it._(_root);
 	@override late final _Translations$tips$it tips = _Translations$tips$it._(_root);
+	@override late final _Translations$goodies$it goodies = _Translations$goodies$it._(_root);
 }
 
 // Path: map
@@ -445,6 +446,17 @@ class _Translations$tips$it extends Translations$tips$fr {
 	@override String get scope => 'Sentiero';
 	@override String get season => 'Stagione';
 	@override String get altitude => 'Altitudine min.';
+}
+
+// Path: goodies
+class _Translations$goodies$it extends Translations$goodies$fr {
+	_Translations$goodies$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Negozio Goodies';
+	@override String get comingSoon => 'Questo modulo arrivera presto. Resta connesso!';
 }
 
 // Path: stage.difficulty
@@ -1039,6 +1051,8 @@ extension on TranslationsIt {
 			'tips.scope' => 'Sentiero',
 			'tips.season' => 'Stagione',
 			'tips.altitude' => 'Altitudine min.',
+			'goodies.title' => 'Negozio Goodies',
+			'goodies.comingSoon' => 'Questo modulo arrivera presto. Resta connesso!',
 			_ => null,
 		};
 	}
