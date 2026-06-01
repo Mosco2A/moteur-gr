@@ -254,7 +254,13 @@
     "deleteAccountDesc": "Alle Ihre Daten werden gelöscht",
     "deleteConfirm": "Konto löschen?",
     "deleteMessage": "Diese Aktion ist unwiderruflich. Alle Ihre Daten, Notizen und Fortschritte werden gelöscht.",
-    "cancel": "Abbrechen"
+    "cancel": "Abbrechen",
+    "pseudonym": "Pseudonym",
+    "pseudonymHint": "Ihr Wandername",
+    "save": "Speichern",
+    "changeAvatar": "Avatar ändern",
+    "chooseAvatar": "Avatar wählen",
+    "errorLoading": "Ladefehler"
   },
   "feasibility": {
     "title": "Feasibility",

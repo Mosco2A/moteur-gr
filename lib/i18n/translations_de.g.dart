@@ -388,6 +388,12 @@ class _Translations$auth$de extends Translations$auth$fr {
 	@override String get deleteConfirm => 'Konto löschen?';
 	@override String get deleteMessage => 'Diese Aktion ist unwiderruflich. Alle Ihre Daten, Notizen und Fortschritte werden gelöscht.';
 	@override String get cancel => 'Abbrechen';
+	@override String get pseudonym => 'Pseudonym';
+	@override String get pseudonymHint => 'Ihr Wandername';
+	@override String get save => 'Speichern';
+	@override String get changeAvatar => 'Avatar ändern';
+	@override String get chooseAvatar => 'Avatar wählen';
+	@override String get errorLoading => 'Ladefehler';
 }
 
 // Path: feasibility
@@ -903,6 +909,7 @@ extension on TranslationsDe {
 			'feedback.type' => 'Feedbacktyp',
 			'feedback.bug' => 'Fehler / Problem',
 			'feedback.suggestion' => 'Vorschlag',
+			'feedback.compliment' => 'Kompliment',
 			'feedback.question' => 'Frage',
 			'feedback.other' => 'Sonstiges',
 			'feedback.message' => 'Ihre Nachricht',
@@ -926,6 +933,12 @@ extension on TranslationsDe {
 			'auth.deleteConfirm' => 'Konto löschen?',
 			'auth.deleteMessage' => 'Diese Aktion ist unwiderruflich. Alle Ihre Daten, Notizen und Fortschritte werden gelöscht.',
 			'auth.cancel' => 'Abbrechen',
+			'auth.pseudonym' => 'Pseudonym',
+			'auth.pseudonymHint' => 'Ihr Wandername',
+			'auth.save' => 'Speichern',
+			'auth.changeAvatar' => 'Avatar ändern',
+			'auth.chooseAvatar' => 'Avatar wählen',
+			'auth.errorLoading' => 'Ladefehler',
 			'feasibility.title' => 'Feasibility',
 			'feasibility.subtitle' => 'Assess your preparation',
 			'feasibility.previous' => 'Previous',

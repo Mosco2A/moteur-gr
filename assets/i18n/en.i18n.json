@@ -254,7 +254,13 @@
     "deleteAccountDesc": "All your data will be erased",
     "deleteConfirm": "Delete your account?",
     "deleteMessage": "This action is irreversible. All your data, notes and progress will be erased.",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "pseudonym": "Nickname",
+    "pseudonymHint": "Your hiker name",
+    "save": "Save",
+    "changeAvatar": "Change avatar",
+    "chooseAvatar": "Choose an avatar",
+    "errorLoading": "Loading error"
   },
   "feasibility": {
     "title": "Feasibility",

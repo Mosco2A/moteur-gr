@@ -22,6 +22,12 @@ abstract class AuthService {
   /// Suppression du compte
   Future<void> deleteAccount();
 
+  /// Met à jour le pseudonyme de l'utilisateur
+  Future<void> updateDisplayName(String name);
+
+  /// Met à jour l'index d'avatar local (choix parmi une liste prédéfinie)
+  Future<void> updateAvatarIndex(int index);
+
   /// Utilisateur courant (null si pas connecté)
   AuthUser? get currentUser;
 
@@ -37,6 +43,7 @@ class AuthUser {
     this.displayName,
     this.email,
     this.photoUrl,
+    this.avatarIndex = 0,
     this.isAnonymous = true,
   });
 
@@ -46,7 +53,7 @@ class AuthUser {
   /// Méthode d'authentification utilisée
   final AuthMethod authMethod;
 
-  /// Nom d'affichage (null si anonyme)
+  /// Nom d'affichage (null si anonyme sans pseudo)
   final String? displayName;
 
   /// Email (null si anonyme)
@@ -54,6 +61,9 @@ class AuthUser {
 
   /// URL de la photo de profil
   final String? photoUrl;
+
+  /// Index de l'avatar local choisi (0-7)
+  final int avatarIndex;
 
   /// Est un utilisateur anonyme
   final bool isAnonymous;

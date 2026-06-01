@@ -388,6 +388,12 @@ class _Translations$auth$es extends Translations$auth$fr {
 	@override String get deleteConfirm => '¿Eliminar tu cuenta?';
 	@override String get deleteMessage => 'Esta acción es irreversible. Todos tus datos, notas y progreso serán eliminados.';
 	@override String get cancel => 'Cancelar';
+	@override String get pseudonym => 'Seudónimo';
+	@override String get pseudonymHint => 'Tu nombre de senderista';
+	@override String get save => 'Guardar';
+	@override String get changeAvatar => 'Cambiar avatar';
+	@override String get chooseAvatar => 'Elegir un avatar';
+	@override String get errorLoading => 'Error de carga';
 }
 
 // Path: feasibility
@@ -903,6 +909,7 @@ extension on TranslationsEs {
 			'feedback.type' => 'Tipo de comentario',
 			'feedback.bug' => 'Error / Problema',
 			'feedback.suggestion' => 'Sugerencia',
+			'feedback.compliment' => 'Cumplido',
 			'feedback.question' => 'Pregunta',
 			'feedback.other' => 'Otro',
 			'feedback.message' => 'Tu mensaje',
@@ -926,6 +933,12 @@ extension on TranslationsEs {
 			'auth.deleteConfirm' => '¿Eliminar tu cuenta?',
 			'auth.deleteMessage' => 'Esta acción es irreversible. Todos tus datos, notas y progreso serán eliminados.',
 			'auth.cancel' => 'Cancelar',
+			'auth.pseudonym' => 'Seudónimo',
+			'auth.pseudonymHint' => 'Tu nombre de senderista',
+			'auth.save' => 'Guardar',
+			'auth.changeAvatar' => 'Cambiar avatar',
+			'auth.chooseAvatar' => 'Elegir un avatar',
+			'auth.errorLoading' => 'Error de carga',
 			'feasibility.title' => 'Feasibility',
 			'feasibility.subtitle' => 'Assess your preparation',
 			'feasibility.previous' => 'Previous',

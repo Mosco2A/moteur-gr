@@ -759,6 +759,24 @@ class Translations$auth$fr {
 
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
+
+	/// fr: 'Pseudonyme'
+	String get pseudonym => 'Pseudonyme';
+
+	/// fr: 'Votre nom de randonneur'
+	String get pseudonymHint => 'Votre nom de randonneur';
+
+	/// fr: 'Enregistrer'
+	String get save => 'Enregistrer';
+
+	/// fr: 'Changer l'avatar'
+	String get changeAvatar => 'Changer l\'avatar';
+
+	/// fr: 'Choisir un avatar'
+	String get chooseAvatar => 'Choisir un avatar';
+
+	/// fr: 'Erreur de chargement'
+	String get errorLoading => 'Erreur de chargement';
 }
 
 // Path: feasibility
@@ -1550,6 +1568,7 @@ extension on Translations {
 			'feedback.type' => 'Type de retour',
 			'feedback.bug' => 'Bug / Problème',
 			'feedback.suggestion' => 'Suggestion',
+			'feedback.compliment' => 'Compliment',
 			'feedback.question' => 'Question',
 			'feedback.other' => 'Autre',
 			'feedback.message' => 'Votre message',
@@ -1573,6 +1592,12 @@ extension on Translations {
 			'auth.deleteConfirm' => 'Supprimer votre compte ?',
 			'auth.deleteMessage' => 'Cette action est irréversible. Toutes vos données, notes et progression seront effacées.',
 			'auth.cancel' => 'Annuler',
+			'auth.pseudonym' => 'Pseudonyme',
+			'auth.pseudonymHint' => 'Votre nom de randonneur',
+			'auth.save' => 'Enregistrer',
+			'auth.changeAvatar' => 'Changer l\'avatar',
+			'auth.chooseAvatar' => 'Choisir un avatar',
+			'auth.errorLoading' => 'Erreur de chargement',
 			'feasibility.title' => 'Faisabilité',
 			'feasibility.subtitle' => 'Évaluez votre préparation',
 			'feasibility.previous' => 'Précédent',

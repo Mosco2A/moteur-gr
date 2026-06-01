@@ -2,27 +2,58 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
 
-/// Écran de profil utilisateur.
+/// Liste des icones d'avatars locaux predefinis.
 ///
-/// Affiche l'identité, permet de se connecter via Google,
-/// de se déconnecter ou de supprimer son compte.
-class ProfileScreen extends ConsumerWidget {
+/// 8 avatars thematiques randonnee, accessibles par index (0-7).
+const _avatarIcons = <IconData>[
+  Icons.hiking,
+  Icons.landscape,
+  Icons.terrain,
+  Icons.forest,
+  Icons.wb_sunny,
+  Icons.star,
+  Icons.explore,
+  Icons.nature_people,
+];
+
+/// Ecran de profil utilisateur.
+///
+/// Permet de modifier le pseudonyme, choisir un avatar local,
+/// se connecter via Google, se deconnecter ou supprimer son compte.
+/// Tous les textes passent par Slang (zero texte en dur).
+class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends ConsumerState<ProfileScreen> {
+  final _pseudoController = TextEditingController();
+  bool _isEditingPseudo = false;
+
+  @override
+  void dispose() {
+    _pseudoController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final userAsync = ref.watch(currentUserProvider);
+    final i18n = Translations.of(context);
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profil')),
+      appBar: AppBar(title: Text(i18n.auth.profile)),
       body: userAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => const Center(child: Text('Erreur')),
-        data: (user) => _buildProfile(context, ref, theme, user),
+        error: (_, __) => Center(child: Text(i18n.auth.errorLoading)),
+        data: (user) => _buildProfile(context, ref, theme, i18n, user),
       ),
     );
   }
@@ -31,6 +62,7 @@ class ProfileScreen extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     ThemeData theme,
+    Translations i18n,
     AuthUser? user,
   ) {
     if (user == null) {
@@ -40,36 +72,10 @@ class ProfileScreen extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
-        // Avatar
-        Center(
-          child: CircleAvatar(
-            radius: 48,
-            backgroundColor: theme.colorScheme.primaryContainer,
-            child: user.isAnonymous
-                ? Icon(Icons.person, size: 48,
-                    color: theme.colorScheme.primary)
-                : Text(
-                    (user.displayName ?? 'U')[0].toUpperCase(),
-                    style: theme.textTheme.headlineLarge?.copyWith(
-                      color: theme.colorScheme.primary,
-                    ),
-                  ),
-          ),
-        ),
+        _buildAvatarSection(context, ref, theme, i18n, user),
         const SizedBox(height: AppTheme.spacingBase),
-
-        // Nom
-        Center(
-          child: Text(
-            user.isAnonymous
-                ? 'Randonneur anonyme'
-                : user.displayName ?? 'Utilisateur',
-            style: theme.textTheme.headlineMedium,
-          ),
-        ),
+        _buildPseudoSection(context, ref, theme, i18n, user),
         const SizedBox(height: AppTheme.spacingSm),
-
-        // Méthode d'auth
         Center(
           child: Container(
             padding: const EdgeInsets.symmetric(
@@ -81,21 +87,18 @@ class ProfileScreen extends ConsumerWidget {
               borderRadius: BorderRadius.circular(AppTheme.radiusChip),
             ),
             child: Text(
-              'Connecté via ${AuthMethodValues.labelFor(user.authMethod)}',
+              '${i18n.auth.connectedVia} ${AuthMethodValues.labelFor(user.authMethod)}',
               style: theme.textTheme.bodySmall,
             ),
           ),
         ),
         const SizedBox(height: AppTheme.spacingXl),
-
-        // Connexion Google (si anonyme)
         if (user.isAnonymous) ...[
           Card(
             child: ListTile(
               leading: const Icon(Icons.login),
-              title: const Text('Se connecter avec Google'),
-              subtitle: const Text(
-                  'Pour sauvegarder votre progression'),
+              title: Text(i18n.auth.signInGoogle),
+              subtitle: Text(i18n.auth.signInGoogleDesc),
               trailing: const Icon(Icons.chevron_right),
               onTap: () async {
                 final service = ref.read(authServiceProvider);
@@ -105,75 +108,237 @@ class ProfileScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingSm),
         ],
-
-        // Déconnexion (si identifié)
         if (!user.isAnonymous) ...[
           Card(
             child: ListTile(
               leading: const Icon(Icons.logout),
-              title: const Text('Se déconnecter'),
-              subtitle: const Text('Revenir en mode anonyme'),
-              onTap: () => _confirmSignOut(context, ref),
+              title: Text(i18n.auth.signOut),
+              subtitle: Text(i18n.auth.signOutDesc),
+              onTap: () => _confirmSignOut(context, ref, i18n),
             ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
         ],
-
-        // Supprimer le compte
         Card(
           child: ListTile(
             leading: const Icon(Icons.delete_forever,
                 color: AppTheme.rougeUrgence),
-            title: const Text(
-              'Supprimer mon compte',
-              style: TextStyle(color: AppTheme.rougeUrgence),
+            title: Text(
+              i18n.auth.deleteAccount,
+              style: const TextStyle(color: AppTheme.rougeUrgence),
             ),
-            subtitle: const Text(
-                'Toutes vos données seront effacées'),
-            onTap: () => _confirmDelete(context, ref),
+            subtitle: Text(i18n.auth.deleteAccountDesc),
+            onTap: () => _confirmDelete(context, ref, i18n),
           ),
         ),
       ],
     );
   }
 
-  void _confirmSignOut(BuildContext context, WidgetRef ref) {
+  /// Section avatar : cercle avec icone + grille de selection
+  Widget _buildAvatarSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+    AuthUser user,
+  ) {
+    return Column(
+      children: [
+        Center(
+          child: GestureDetector(
+            onTap: () => _showAvatarPicker(context, ref, theme, i18n, user),
+            child: CircleAvatar(
+              radius: 48,
+              backgroundColor: theme.colorScheme.primaryContainer,
+              child: Icon(
+                _avatarIcons[user.avatarIndex.clamp(0, _avatarIcons.length - 1)],
+                size: 48,
+                color: theme.colorScheme.primary,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: AppTheme.spacingXs),
+        Center(
+          child: Text(
+            i18n.auth.changeAvatar,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.primary,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Grille de selection d'avatar dans un bottom sheet
+  void _showAvatarPicker(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+    AuthUser user,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppTheme.radiusBottomSheet),
+        ),
+      ),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingBase),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              i18n.auth.chooseAvatar,
+              style: theme.textTheme.titleMedium,
+            ),
+            const SizedBox(height: AppTheme.spacingBase),
+            GridView.builder(
+              shrinkWrap: true,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: AppTheme.spacingSm,
+                crossAxisSpacing: AppTheme.spacingSm,
+              ),
+              itemCount: _avatarIcons.length,
+              itemBuilder: (context, index) {
+                final isSelected = index == user.avatarIndex;
+                return GestureDetector(
+                  onTap: () {
+                    ref.read(authServiceProvider).updateAvatarIndex(index);
+                    Navigator.pop(context);
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surfaceContainerHighest,
+                    child: Icon(
+                      _avatarIcons[index],
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
+                          : theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Section pseudonyme : affichage + edition inline
+  Widget _buildPseudoSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+    AuthUser user,
+  ) {
+    if (_isEditingPseudo) {
+      return Card(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          child: Column(
+            children: [
+              TextField(
+                controller: _pseudoController,
+                autofocus: true,
+                maxLength: 30,
+                decoration: InputDecoration(
+                  labelText: i18n.auth.pseudonym,
+                  hintText: i18n.auth.pseudonymHint,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+                  ),
+                ),
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() => _isEditingPseudo = false);
+                    },
+                    child: Text(i18n.auth.cancel),
+                  ),
+                  const SizedBox(width: AppTheme.spacingSm),
+                  ElevatedButton(
+                    onPressed: () {
+                      ref
+                          .read(authServiceProvider)
+                          .updateDisplayName(_pseudoController.text);
+                      setState(() => _isEditingPseudo = false);
+                    },
+                    child: Text(i18n.auth.save),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    // Mode affichage
+    final displayName = user.displayName ?? i18n.auth.anonymous;
+    return Center(
+      child: GestureDetector(
+        onTap: () {
+          _pseudoController.text = user.displayName ?? '';
+          setState(() => _isEditingPseudo = true);
+        },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(displayName, style: theme.textTheme.headlineMedium),
+            const SizedBox(width: AppTheme.spacingXs),
+            Icon(Icons.edit, size: 18, color: theme.colorScheme.primary),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _confirmSignOut(BuildContext context, WidgetRef ref, Translations i18n) {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Se déconnecter ?'),
-        content: const Text(
-            'Vous reviendrez en mode anonyme. '
-            'Vos données locales sont conservées.'),
+        title: Text(i18n.auth.signOutConfirm),
+        content: Text(i18n.auth.signOutMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
+            child: Text(i18n.auth.cancel),
           ),
           ElevatedButton(
             onPressed: () {
               ref.read(authServiceProvider).signOut();
               Navigator.pop(context);
             },
-            child: const Text('Se déconnecter'),
+            child: Text(i18n.auth.signOut),
           ),
         ],
       ),
     );
   }
 
-  void _confirmDelete(BuildContext context, WidgetRef ref) {
+  void _confirmDelete(BuildContext context, WidgetRef ref, Translations i18n) {
     showDialog<void>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Supprimer votre compte ?'),
-        content: const Text(
-            'Cette action est irréversible. '
-            'Toutes vos données, notes et progression seront effacées.'),
+        title: Text(i18n.auth.deleteConfirm),
+        content: Text(i18n.auth.deleteMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
+            child: Text(i18n.auth.cancel),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -183,7 +348,7 @@ class ProfileScreen extends ConsumerWidget {
               ref.read(authServiceProvider).deleteAccount();
               Navigator.pop(context);
             },
-            child: const Text('Supprimer'),
+            child: Text(i18n.auth.deleteAccount),
           ),
         ],
       ),

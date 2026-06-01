@@ -254,7 +254,13 @@
     "deleteAccountDesc": "Toutes vos données seront effacées",
     "deleteConfirm": "Supprimer votre compte ?",
     "deleteMessage": "Cette action est irréversible. Toutes vos données, notes et progression seront effacées.",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "pseudonym": "Pseudonyme",
+    "pseudonymHint": "Votre nom de randonneur",
+    "save": "Enregistrer",
+    "changeAvatar": "Changer l'avatar",
+    "chooseAvatar": "Choisir un avatar",
+    "errorLoading": "Erreur de chargement"
   },
   "feasibility": {
     "title": "Faisabilité",
