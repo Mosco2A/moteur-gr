@@ -12,6 +12,7 @@ import '../../../core/data/daos/trail_gpx_points_dao.dart';
 import '../../../core/data/daos/trail_gpx_tracks_dao.dart';
 import '../domain/models/track_point.dart' as trek;
 import 'gpx_parser.dart';
+import '../../../features/tips/domain/models/tip_card.dart';
 import 'track_simplifier.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -23,6 +24,14 @@ const _kDataSeeded = 'data_seeded';
 const _kTrailId = 'mare-a-mare-centre';
 
 /// Chemin des assets de donnees Mare a Mare Centre.
+/// Chemins des fichiers JSON de fiches conseils.
+const _kTipAssets = [
+  'assets/tips/general_tips.json',
+  'assets/tips/mare_a_mare_tips.json',
+  'assets/tips/securite_neige.json',
+  'assets/tips/securite_incendie.json',
+];
+
 const _kAssetsBase = 'assets/data/mare_a_mare_centre';
 
 /// Chargement initial des donnees depuis les assets.
@@ -135,6 +144,21 @@ class SeedDataLoader {
         ),
       );
     }
+
+    // --- 8. Charger les fiches conseils ---
+    final allTips = <TipCard>[];
+    for (final assetPath in _kTipAssets) {
+      try {
+        final tipsJson = await _loadJsonList(assetPath);
+        final tips = tipsJson
+            .map((t) => TipCard.fromJson(t as Map<String, dynamic>))
+            .toList();
+        allTips.addAll(tips);
+      } catch (e) {
+        _log.w('Tip asset $assetPath non trouve ou invalide: $e');
+      }
+    }
+    _log.d('Fiches conseils chargees: ${allTips.length}');
 
     // --- 7. Marquer comme seed ---
     await _prefs.setBool(_kDataSeeded, true);

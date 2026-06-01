@@ -1,0 +1,117 @@
+[
+  {
+    "id": "mam-gestion-eau",
+    "titleFr": "Gestion de l'eau sur le Mare a Mare",
+    "titleEn": "Water management on the Mare a Mare",
+    "titleDe": "Wassermanagement auf dem Mare a Mare",
+    "titleIt": "Gestione dell'acqua sul Mare a Mare",
+    "titleEs": "Gestion del agua en el Mare a Mare",
+    "contentFr": "Le Mare a Mare Centre traverse des zones arides entre 500 et 1000 m. Les fontaines de village sont espacees de 4 a 6 heures. Emportez 2 litres minimum par etape. En ete, prevoyez 3 litres.",
+    "contentEn": "The Mare a Mare Centre crosses arid zones 500-1000 m. Village fountains spaced 4-6 hours apart. Carry 2+ litres per stage. In summer, plan 3 litres.",
+    "contentDe": "Mare a Mare Centre: trockene Gebiete 500-1000 m. Dorfbrunnen alle 4-6 Stunden. 2+ Liter pro Etappe. Im Sommer 3 Liter.",
+    "contentIt": "Il Mare a Mare Centre attraversa zone aride tra 500 e 1000 m. Fontane dei villaggi ogni 4-6 ore. Almeno 2 litri per tappa. In estate 3 litri.",
+    "contentEs": "El Mare a Mare Centre cruza zonas aridas entre 500 y 1000 m. Fuentes cada 4-6 horas. 2+ litros por etapa. En verano 3 litros.",
+    "scope": "mare_a_mare",
+    "season": "all",
+    "category": "nutrition",
+    "tags": [
+      "eau",
+      "hydratation",
+      "fontaine",
+      "mare_a_mare"
+    ],
+    "priority": 9
+  },
+  {
+    "id": "mam-hebergement",
+    "titleFr": "Gites d'etape du Mare a Mare",
+    "titleEn": "Stage lodges on the Mare a Mare",
+    "titleDe": "Etappenunterkuenfte auf dem Mare a Mare",
+    "titleIt": "Rifugi tappa del Mare a Mare",
+    "titleEs": "Albergues de etapa del Mare a Mare",
+    "contentFr": "Les gites communaux jalonnent chaque etape (15 a 25 euros la nuit). Reservez en juillet-aout, surtout Cozzano et Guitera-les-Bains. Drap de couchage obligatoire.",
+    "contentEn": "Municipal lodges each stage (15-25 euros/night). Book July-August, especially Cozzano and Guitera-les-Bains. Sleeping sheet required.",
+    "contentDe": "Kommunale Unterkuenfte pro Etappe (15-25 Euro). Juli-August buchen, besonders Cozzano und Guitera-les-Bains. Huettenschlafsack Pflicht.",
+    "contentIt": "Rifugi comunali su ogni tappa (15-25 euro/notte). Prenotate luglio-agosto, soprattutto Cozzano e Guitera-les-Bains. Lenzuolo-sacco obbligatorio.",
+    "contentEs": "Albergues comunales cada etapa (15-25 euros/noche). Reserve julio-agosto, sobre todo Cozzano y Guitera-les-Bains. Sabana-saco obligatoria.",
+    "scope": "mare_a_mare",
+    "season": "all",
+    "category": "preparation",
+    "tags": [
+      "gite",
+      "hebergement",
+      "reservation",
+      "mare_a_mare"
+    ],
+    "priority": 8
+  },
+  {
+    "id": "mam-difficulte",
+    "titleFr": "Difficulte moderee mais reguliere",
+    "titleEn": "Moderate but consistent difficulty",
+    "titleDe": "Maessige aber gleichmaessige Schwierigkeit",
+    "titleIt": "Difficolta moderata ma costante",
+    "titleEs": "Dificultad moderada pero constante",
+    "contentFr": "Le Mare a Mare Centre: etapes de 12 a 18 km avec 500 a 900 m de denivele. Prevoyez 5 a 7 heures de marche par jour. Terrain souvent pierreux.",
+    "contentEn": "Mare a Mare Centre: stages 12-18 km, 500-900 m elevation. Plan 5-7 hours walking/day. Often stony terrain.",
+    "contentDe": "Mare a Mare Centre: Etappen 12-18 km, 500-900 m Hoehenunterschied. 5-7 Stunden Gehzeit pro Tag. Oft steinig.",
+    "contentIt": "Mare a Mare Centre: tappe 12-18 km, 500-900 m dislivello. 5-7 ore di cammino/giorno. Terreno spesso sassoso.",
+    "contentEs": "Mare a Mare Centre: etapas 12-18 km, 500-900 m desnivel. 5-7 horas/dia. Terreno a menudo pedregoso.",
+    "scope": "mare_a_mare",
+    "season": "all",
+    "category": "preparation",
+    "tags": [
+      "difficulte",
+      "denivele",
+      "etape",
+      "mare_a_mare"
+    ],
+    "priority": 7
+  },
+  {
+    "id": "mam-chaleur",
+    "titleFr": "Chaleur estivale sur le Mare a Mare",
+    "titleEn": "Summer heat on the Mare a Mare",
+    "titleDe": "Sommerhitze auf dem Mare a Mare",
+    "titleIt": "Caldo estivo sul Mare a Mare",
+    "titleEs": "Calor estival en el Mare a Mare",
+    "contentFr": "Le Mare a Mare traverse des zones de maquis bas entre 300 et 800 m sans ombre. En ete, partez avant 7 h et faites une pause longue entre 12 h et 15 h. Jusqu'a 35 degres en juillet-aout.",
+    "contentEn": "Low maquis zones (300-800 m) with no shade. In summer, start before 7 am, break 12-3 pm. Up to 35 degrees in July-August.",
+    "contentDe": "Niedrige Macchia-Zonen (300-800 m) ohne Schatten. Im Sommer vor 7 Uhr starten, Pause 12-15 Uhr. Bis 35 Grad Juli-August.",
+    "contentIt": "Zone di macchia bassa (300-800 m) senza ombra. In estate partite prima delle 7, pausa 12-15. Fino a 35 gradi luglio-agosto.",
+    "contentEs": "Zonas de maquis bajo (300-800 m) sin sombra. En verano, salga antes de las 7, pausa 12-15. Hasta 35 grados julio-agosto.",
+    "scope": "mare_a_mare",
+    "season": "summer",
+    "category": "safety",
+    "tags": [
+      "chaleur",
+      "canicule",
+      "maquis",
+      "mare_a_mare"
+    ],
+    "priority": 8
+  },
+  {
+    "id": "mam-patrimoine",
+    "titleFr": "Villages et patrimoine sur le parcours",
+    "titleEn": "Villages and heritage along the route",
+    "titleDe": "Doerfer und Kulturerbe entlang der Strecke",
+    "titleIt": "Villaggi e patrimonio lungo il percorso",
+    "titleEs": "Pueblos y patrimonio a lo largo del recorrido",
+    "contentFr": "Villages de montagne authentiques (Cozzano, Guitera, Quasquara). Eglises romanes et charcuterie locale. Les epiceries ferment souvent entre 12 h et 16 h.",
+    "contentEn": "Authentic mountain villages (Cozzano, Guitera, Quasquara). Romanesque churches and local charcuterie. Village stores often close 12-4 pm.",
+    "contentDe": "Authentische Bergdoerfer (Cozzano, Guitera, Quasquara). Romanische Kirchen und lokale Wurstwaren. Dorfladen oft 12-16 Uhr geschlossen.",
+    "contentIt": "Villaggi autentici (Cozzano, Guitera, Quasquara). Chiese romaniche e salumeria locale. Botteghe spesso chiuse 12-16.",
+    "contentEs": "Pueblos autenticos (Cozzano, Guitera, Quasquara). Iglesias romanicas y charcuteria local. Tiendas cierran 12-16.",
+    "scope": "mare_a_mare",
+    "season": "all",
+    "category": "nature",
+    "tags": [
+      "village",
+      "patrimoine",
+      "culture",
+      "mare_a_mare"
+    ],
+    "priority": 5
+  }
+]
