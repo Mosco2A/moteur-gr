@@ -168,7 +168,16 @@
     "namePlaceholder": "Enter your name...",
     "generatePdf": "Generate PDF",
     "certifies": "Certifies that",
-    "completed": "completed the"
+    "completed": "completed the",
+    "pdfTitle": "DIPLOMA",
+    "pdfSubtitle": "Certificate of achievement",
+    "pdfStages": "{count} stages",
+    "pdfDistance": "{km} km covered",
+    "pdfElevation": "{meters} m elevation gain",
+    "pdfDuration": "in {days} days",
+    "pdfFrom": "From",
+    "pdfTo": "to",
+    "pdfIssuedOn": "Issued on {date}"
   },
   "notifications": {
     "morningReminder": "Morning reminder",

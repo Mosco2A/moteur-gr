@@ -64,6 +64,10 @@ dependencies:
   package_info_plus: ^8.0.0
   share_plus: ^10.1.4
 
+  # --- PDF ---
+  pdf: ^3.11.2
+  printing: ^5.13.4
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

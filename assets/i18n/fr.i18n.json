@@ -168,7 +168,16 @@
     "namePlaceholder": "Entrez votre nom...",
     "generatePdf": "Générer le PDF",
     "certifies": "Certifie que",
-    "completed": "a parcouru le"
+    "completed": "a parcouru le",
+    "pdfTitle": "DIPLÔME",
+    "pdfSubtitle": "Certificat d'accomplissement",
+    "pdfStages": "{count} étapes",
+    "pdfDistance": "{km} km parcourus",
+    "pdfElevation": "{meters} m de dénivelé positif",
+    "pdfDuration": "en {days} jours",
+    "pdfFrom": "Du",
+    "pdfTo": "au",
+    "pdfIssuedOn": "Délivré le {date}"
   },
   "notifications": {
     "morningReminder": "Rappel du matin",

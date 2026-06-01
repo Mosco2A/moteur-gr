@@ -3,10 +3,18 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  battery_plus
+  cloud_firestore
   connectivity_plus
+  firebase_auth
+  firebase_core
+  firebase_storage
   geolocator_windows
   permission_handler_windows
+  printing
+  share_plus
   sqlite3_flutter_libs
+  url_launcher_windows
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

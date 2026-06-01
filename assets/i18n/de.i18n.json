@@ -168,7 +168,16 @@
     "namePlaceholder": "Geben Sie Ihren Namen ein...",
     "generatePdf": "PDF erstellen",
     "certifies": "Bestätigt, dass",
-    "completed": "den Weg abgeschlossen hat"
+    "completed": "den Weg abgeschlossen hat",
+    "pdfTitle": "DIPLOM",
+    "pdfSubtitle": "Leistungszertifikat",
+    "pdfStages": "{count} Etappen",
+    "pdfDistance": "{km} km zurückgelegt",
+    "pdfElevation": "{meters} m Höhenunterschied",
+    "pdfDuration": "in {days} Tagen",
+    "pdfFrom": "Vom",
+    "pdfTo": "bis",
+    "pdfIssuedOn": "Ausgestellt am {date}"
   },
   "notifications": {
     "morningReminder": "Morgenerinnerung",
