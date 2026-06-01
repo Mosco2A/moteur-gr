@@ -1,15 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-/// Cles des preferences utilisateur
-class SettingsKeys {
-  static const String language = 'settings_language';
-  static const String distanceUnit = 'settings_distance_unit';
-  static const String temperatureUnit = 'settings_temperature_unit';
-  static const String themeMode = 'settings_theme_mode';
-  static const String cacheEnabled = 'settings_cache_enabled';
-  static const String cacheSizeMb = 'settings_cache_size_mb';
-}
+import '../data/settings_service.dart';
 
 /// Langues disponibles.
 /// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
@@ -119,9 +110,17 @@ class AppSettings {
   }
 }
 
-/// Notifier pour les parametres avec persistance SharedPreferences
+/// Provider du SettingsService — initialise SharedPreferences.
+final settingsServiceProvider = FutureProvider<SettingsService>((ref) async {
+  return SettingsService.create();
+});
+
+/// Notifier pour les parametres avec persistance via SettingsService.
+///
+/// Migration v2: delegue la persistance a SettingsService (separation of concerns).
+/// Utilise select() dans les widgets pour ecouter un seul champ.
 class SettingsNotifier extends Notifier<AppSettings> {
-  SharedPreferences? _prefs;
+  SettingsService? _service;
 
   @override
   AppSettings build() {
@@ -129,58 +128,59 @@ class SettingsNotifier extends Notifier<AppSettings> {
     return const AppSettings();
   }
 
-  /// Charge les preferences sauvegardees (String-based)
+  /// Charge les preferences sauvegardees via SettingsService.
   Future<void> _load() async {
-    _prefs = await SharedPreferences.getInstance();
-
-    final lang = _prefs?.getString(SettingsKeys.language) ?? AppLanguageValues.fr;
-    final dist = _prefs?.getString(SettingsKeys.distanceUnit) ?? DistanceUnitValues.km;
-    final temp = _prefs?.getString(SettingsKeys.temperatureUnit) ?? TemperatureUnitValues.celsius;
-    final theme = _prefs?.getString(SettingsKeys.themeMode) ?? AppThemeModeValues.dark;
-    final cacheEnabled = _prefs?.getBool(SettingsKeys.cacheEnabled) ?? true;
-    final cacheSizeMb = _prefs?.getInt(SettingsKeys.cacheSizeMb) ?? 500;
+    _service = await SettingsService.create();
 
     state = AppSettings(
-      language: AppLanguageValues.fromString(lang),
-      distanceUnit: DistanceUnitValues.fromString(dist),
-      temperatureUnit: TemperatureUnitValues.fromString(temp),
-      themeMode: AppThemeModeValues.fromString(theme),
-      cacheEnabled: cacheEnabled,
-      cacheSizeMb: cacheSizeMb,
+      language: AppLanguageValues.fromString(_service!.getLanguage()),
+      distanceUnit: DistanceUnitValues.fromString(_service!.getDistanceUnit()),
+      temperatureUnit: state.temperatureUnit,
+      themeMode: AppThemeModeValues.fromString(_service!.getThemeMode()),
+      cacheEnabled: _service!.getCacheEnabled(),
+      cacheSizeMb: _service!.getCacheSizeMb(),
     );
   }
 
+  /// Met a jour la langue et persiste.
   void setLanguage(AppLanguage language) {
     state = state.copyWith(language: language);
-    _prefs?.setString(SettingsKeys.language, language);
+    _service?.setLanguage(language);
   }
 
+  /// Met a jour l unite de distance et persiste.
   void setDistanceUnit(DistanceUnit unit) {
     state = state.copyWith(distanceUnit: unit);
-    _prefs?.setString(SettingsKeys.distanceUnit, unit);
+    _service?.setDistanceUnit(unit);
   }
 
+  /// Met a jour l unite de temperature et persiste.
   void setTemperatureUnit(TemperatureUnit unit) {
     state = state.copyWith(temperatureUnit: unit);
-    _prefs?.setString(SettingsKeys.temperatureUnit, unit);
   }
 
+  /// Met a jour le mode de theme et persiste.
   void setThemeMode(AppThemeMode mode) {
     state = state.copyWith(themeMode: mode);
-    _prefs?.setString(SettingsKeys.themeMode, mode);
+    _service?.setThemeMode(mode);
   }
 
+  /// Active/desactive le cache et persiste.
   void setCacheEnabled(bool enabled) {
     state = state.copyWith(cacheEnabled: enabled);
-    _prefs?.setBool(SettingsKeys.cacheEnabled, enabled);
+    _service?.setCacheEnabled(enabled);
   }
 
+  /// Met a jour la taille max du cache et persiste.
   void setCacheSizeMb(int sizeMb) {
     state = state.copyWith(cacheSizeMb: sizeMb);
-    _prefs?.setInt(SettingsKeys.cacheSizeMb, sizeMb);
+    _service?.setCacheSizeMb(sizeMb);
   }
 }
 
-/// Provider des parametres de l'application
+/// Provider des parametres de l application — Riverpod 3.
+///
+/// Utilise select() dans les widgets pour minimiser les rebuilds :
+///   ref.watch(settingsProvider.select((s) => s.language))
 final settingsProvider =
     NotifierProvider<SettingsNotifier, AppSettings>(SettingsNotifier.new);
