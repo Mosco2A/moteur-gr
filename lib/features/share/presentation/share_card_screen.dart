@@ -1,27 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../domain/share_card_generator.dart';
 
 /// Écran de prévisualisation et partage d'une carte trek.
 ///
-/// Affiche la carte 1080x1080 avec aperçu et bouton de partage.
-class ShareCardScreen extends StatefulWidget {
+/// Affiche la carte 1080x1080 avec branding dynamique
+/// et bouton de partage via share_plus.
+class ShareCardScreen extends ConsumerStatefulWidget {
   const ShareCardScreen({super.key, required this.data});
 
   final ShareCardData data;
 
   @override
-  State<ShareCardScreen> createState() => _ShareCardScreenState();
+  ConsumerState<ShareCardScreen> createState() => _ShareCardScreenState();
 }
 
-class _ShareCardScreenState extends State<ShareCardScreen> {
+class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
   final _repaintKey = GlobalKey();
   bool _isGenerating = false;
 
   @override
   Widget build(BuildContext context) {
+    final config = ref.watch(trailConfigProvider);
+    final branding = ShareCardGenerator.brandingFromConfig(config);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -34,7 +43,7 @@ class _ShareCardScreenState extends State<ShareCardScreen> {
                 aspectRatio: 1,
                 child: RepaintBoundary(
                   key: _repaintKey,
-                  child: _buildCardPreview(theme),
+                  child: _buildCardPreview(theme, branding),
                 ),
               ),
             ),
@@ -50,7 +59,7 @@ class _ShareCardScreenState extends State<ShareCardScreen> {
                       child: CircularProgressIndicator(strokeWidth: 2),
                     )
                   : const Icon(Icons.share),
-              label: Text(_isGenerating ? 'Génération...' : 'Partager'),
+              label: Text(_isGenerating ? '...' : 'Partager'),
             ),
           ),
         ],
@@ -58,7 +67,8 @@ class _ShareCardScreenState extends State<ShareCardScreen> {
     );
   }
 
-  Widget _buildCardPreview(ThemeData theme) {
+  /// Construit l'aperçu de la carte avec branding dynamique.
+  Widget _buildCardPreview(ThemeData theme, ShareCardBranding branding) {
     final dateFormat = DateFormat('d MMMM yyyy', 'fr_FR');
     final data = widget.data;
 
@@ -67,44 +77,66 @@ class _ShareCardScreenState extends State<ShareCardScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            theme.colorScheme.primaryContainer,
-            theme.colorScheme.primary.withAlpha(200),
-          ],
+          colors: branding.gradientColors,
         ),
       ),
       padding: const EdgeInsets.all(AppTheme.spacingXl),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Nom du sentier
+          // Carte miniature (si disponible)
+          if (data.mapSnapshotBytes != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                child: Image.memory(
+                  data.mapSnapshotBytes!,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          // Nom du sentier (dynamique depuis branding)
           Text(
-            data.trailName,
+            branding.trailName,
             style: theme.textTheme.headlineLarge?.copyWith(
               color: Colors.white,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: AppTheme.spacingSm),
-          // Étape
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.spacingBase,
-              vertical: AppTheme.spacingSm,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white.withAlpha(40),
-              borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-            ),
-            child: Text(
-              'Étape ${data.stageNumber} — ${data.stageName}',
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: Colors.white,
-              ),
+          const SizedBox(height: AppTheme.spacingXs),
+          // Région du sentier
+          Text(
+            branding.region,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.white.withAlpha(180),
+              fontWeight: FontWeight.w400,
             ),
           ),
+          // Étape (optionnel)
+          if (data.hasStageInfo) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.spacingBase,
+                vertical: AppTheme.spacingSm,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white.withAlpha(40),
+                borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+              ),
+              child: Text(
+                '${data.stageNumber} — ${data.stageName}',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
           const SizedBox(height: AppTheme.spacingXl),
-          // Stats
+          // Statistiques km / dénivelé
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -155,6 +187,7 @@ class _ShareCardScreenState extends State<ShareCardScreen> {
     );
   }
 
+  /// Génère l'image et lance le partage via share_plus.
   Future<void> _shareCard() async {
     setState(() => _isGenerating = true);
 
@@ -162,13 +195,31 @@ class _ShareCardScreenState extends State<ShareCardScreen> {
       repaintKey: _repaintKey,
     );
 
-    setState(() => _isGenerating = false);
-
-    if (bytes == null && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Erreur lors de la génération')),
-      );
+    if (bytes == null) {
+      setState(() => _isGenerating = false);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erreur lors de la génération')),
+        );
+      }
+      return;
     }
-    // Note: l'intégration share_plus sera activée quand le package sera ajouté
+
+    // Sauvegarde temporaire et partage via share_plus
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final file = File('${tempDir.path}/share_card.png');
+      await file.writeAsBytes(bytes);
+
+      await Share.shareXFiles([XFile(file.path)]);
+    } catch (_) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erreur lors du partage')),
+        );
+      }
+    }
+
+    setState(() => _isGenerating = false);
   }
 }
