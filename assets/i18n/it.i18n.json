@@ -177,7 +177,19 @@
     "pdfDuration": "in {days} giorni",
     "pdfFrom": "Dal",
     "pdfTo": "al",
-    "pdfIssuedOn": "Rilasciato il {date}"
+    "pdfIssuedOn": "Rilasciato il {date}",
+    "recapTitle": "La tua avventura",
+    "recapJournalPhotos": "Foto del diario",
+    "recapNoPhotos": "Nessuna foto nel diario",
+    "recapStats": "Statistiche",
+    "recapStages": "{count} tappe completate",
+    "recapDistance": "{km} km percorsi",
+    "recapElevation": "{meters} m di dislivello",
+    "recapDuration": "{days} giorni di trekking",
+    "recapMapTrace": "Tracciato del percorso",
+    "recapNoMap": "Tracciato non disponibile",
+    "recapJournalEntries": "{count} note del diario",
+    "downloadPdf": "Scarica diploma PDF"
   },
   "notifications": {
     "morningReminder": "Promemoria mattutino",

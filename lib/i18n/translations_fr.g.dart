@@ -489,6 +489,69 @@ class Translations$diploma$fr {
 
 	/// fr: 'a parcouru le'
 	String get completed => 'a parcouru le';
+
+	/// fr: 'DIPLÔME'
+	String get pdfTitle => 'DIPLÔME';
+
+	/// fr: 'Certificat d'accomplissement'
+	String get pdfSubtitle => 'Certificat d\'accomplissement';
+
+	/// fr: '{count} étapes'
+	String get pdfStages => '{count} étapes';
+
+	/// fr: '{km} km parcourus'
+	String get pdfDistance => '{km} km parcourus';
+
+	/// fr: '{meters} m de dénivelé positif'
+	String get pdfElevation => '{meters} m de dénivelé positif';
+
+	/// fr: 'en {days} jours'
+	String get pdfDuration => 'en {days} jours';
+
+	/// fr: 'Du'
+	String get pdfFrom => 'Du';
+
+	/// fr: 'au'
+	String get pdfTo => 'au';
+
+	/// fr: 'Délivré le {date}'
+	String get pdfIssuedOn => 'Délivré le {date}';
+
+	/// fr: 'Votre aventure'
+	String get recapTitle => 'Votre aventure';
+
+	/// fr: 'Photos du journal'
+	String get recapJournalPhotos => 'Photos du journal';
+
+	/// fr: 'Aucune photo dans le journal'
+	String get recapNoPhotos => 'Aucune photo dans le journal';
+
+	/// fr: 'Statistiques'
+	String get recapStats => 'Statistiques';
+
+	/// fr: '{count} etapes franchies'
+	String get recapStages => '{count} etapes franchies';
+
+	/// fr: '{km} km parcourus'
+	String get recapDistance => '{km} km parcourus';
+
+	/// fr: '{meters} m de denivele'
+	String get recapElevation => '{meters} m de denivele';
+
+	/// fr: '{days} jours de trek'
+	String get recapDuration => '{days} jours de trek';
+
+	/// fr: 'Trace du parcours'
+	String get recapMapTrace => 'Trace du parcours';
+
+	/// fr: 'Trace non disponible'
+	String get recapNoMap => 'Trace non disponible';
+
+	/// fr: '{count} notes de journal'
+	String get recapJournalEntries => '{count} notes de journal';
+
+	/// fr: 'Telecharger le diplome PDF'
+	String get downloadPdf => 'Telecharger le diplome PDF';
 }
 
 // Path: notifications
@@ -1397,6 +1460,27 @@ extension on Translations {
 			'diploma.generatePdf' => 'Générer le PDF',
 			'diploma.certifies' => 'Certifie que',
 			'diploma.completed' => 'a parcouru le',
+			'diploma.pdfTitle' => 'DIPLÔME',
+			'diploma.pdfSubtitle' => 'Certificat d\'accomplissement',
+			'diploma.pdfStages' => '{count} étapes',
+			'diploma.pdfDistance' => '{km} km parcourus',
+			'diploma.pdfElevation' => '{meters} m de dénivelé positif',
+			'diploma.pdfDuration' => 'en {days} jours',
+			'diploma.pdfFrom' => 'Du',
+			'diploma.pdfTo' => 'au',
+			'diploma.pdfIssuedOn' => 'Délivré le {date}',
+			'diploma.recapTitle' => 'Votre aventure',
+			'diploma.recapJournalPhotos' => 'Photos du journal',
+			'diploma.recapNoPhotos' => 'Aucune photo dans le journal',
+			'diploma.recapStats' => 'Statistiques',
+			'diploma.recapStages' => '{count} etapes franchies',
+			'diploma.recapDistance' => '{km} km parcourus',
+			'diploma.recapElevation' => '{meters} m de denivele',
+			'diploma.recapDuration' => '{days} jours de trek',
+			'diploma.recapMapTrace' => 'Trace du parcours',
+			'diploma.recapNoMap' => 'Trace non disponible',
+			'diploma.recapJournalEntries' => '{count} notes de journal',
+			'diploma.downloadPdf' => 'Telecharger le diplome PDF',
 			'notifications.morningReminder' => 'Rappel du matin',
 			'notifications.weatherAlerts' => 'Alertes météo',
 			'notifications.countdown' => 'Rappel J-2',

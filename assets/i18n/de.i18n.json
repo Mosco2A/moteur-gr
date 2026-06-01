@@ -177,7 +177,19 @@
     "pdfDuration": "in {days} Tagen",
     "pdfFrom": "Vom",
     "pdfTo": "bis",
-    "pdfIssuedOn": "Ausgestellt am {date}"
+    "pdfIssuedOn": "Ausgestellt am {date}",
+    "recapTitle": "Ihr Abenteuer",
+    "recapJournalPhotos": "Tagebuchfotos",
+    "recapNoPhotos": "Keine Fotos im Tagebuch",
+    "recapStats": "Statistiken",
+    "recapStages": "{count} Etappen absolviert",
+    "recapDistance": "{km} km zurueckgelegt",
+    "recapElevation": "{meters} m Hoehenunterschied",
+    "recapDuration": "{days} Tage Wanderung",
+    "recapMapTrace": "Routenverlauf",
+    "recapNoMap": "Verlauf nicht verfuegbar",
+    "recapJournalEntries": "{count} Tagebucheintraege",
+    "downloadPdf": "Diplom-PDF herunterladen"
   },
   "notifications": {
     "morningReminder": "Morgenerinnerung",

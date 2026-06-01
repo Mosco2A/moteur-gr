@@ -274,6 +274,27 @@ class _Translations$diploma$es extends Translations$diploma$fr {
 	@override String get generatePdf => 'Generar PDF';
 	@override String get certifies => 'Certifica que';
 	@override String get completed => 'ha recorrido el';
+	@override String get pdfTitle => 'DIPLOMA';
+	@override String get pdfSubtitle => 'Certificado de logro';
+	@override String get pdfStages => '{count} etapas';
+	@override String get pdfDistance => '{km} km recorridos';
+	@override String get pdfElevation => '{meters} m de desnivel positivo';
+	@override String get pdfDuration => 'en {days} días';
+	@override String get pdfFrom => 'Del';
+	@override String get pdfTo => 'al';
+	@override String get pdfIssuedOn => 'Emitido el {date}';
+	@override String get recapTitle => 'Tu aventura';
+	@override String get recapJournalPhotos => 'Fotos del diario';
+	@override String get recapNoPhotos => 'Sin fotos en el diario';
+	@override String get recapStats => 'Estadisticas';
+	@override String get recapStages => '{count} etapas completadas';
+	@override String get recapDistance => '{km} km recorridos';
+	@override String get recapElevation => '{meters} m de desnivel';
+	@override String get recapDuration => '{days} dias de trekking';
+	@override String get recapMapTrace => 'Trazado del recorrido';
+	@override String get recapNoMap => 'Trazado no disponible';
+	@override String get recapJournalEntries => '{count} notas del diario';
+	@override String get downloadPdf => 'Descargar diploma PDF';
 }
 
 // Path: notifications
@@ -816,6 +837,27 @@ extension on TranslationsEs {
 			'diploma.generatePdf' => 'Generar PDF',
 			'diploma.certifies' => 'Certifica que',
 			'diploma.completed' => 'ha recorrido el',
+			'diploma.pdfTitle' => 'DIPLOMA',
+			'diploma.pdfSubtitle' => 'Certificado de logro',
+			'diploma.pdfStages' => '{count} etapas',
+			'diploma.pdfDistance' => '{km} km recorridos',
+			'diploma.pdfElevation' => '{meters} m de desnivel positivo',
+			'diploma.pdfDuration' => 'en {days} días',
+			'diploma.pdfFrom' => 'Del',
+			'diploma.pdfTo' => 'al',
+			'diploma.pdfIssuedOn' => 'Emitido el {date}',
+			'diploma.recapTitle' => 'Tu aventura',
+			'diploma.recapJournalPhotos' => 'Fotos del diario',
+			'diploma.recapNoPhotos' => 'Sin fotos en el diario',
+			'diploma.recapStats' => 'Estadisticas',
+			'diploma.recapStages' => '{count} etapas completadas',
+			'diploma.recapDistance' => '{km} km recorridos',
+			'diploma.recapElevation' => '{meters} m de desnivel',
+			'diploma.recapDuration' => '{days} dias de trekking',
+			'diploma.recapMapTrace' => 'Trazado del recorrido',
+			'diploma.recapNoMap' => 'Trazado no disponible',
+			'diploma.recapJournalEntries' => '{count} notas del diario',
+			'diploma.downloadPdf' => 'Descargar diploma PDF',
 			'notifications.morningReminder' => 'Recordatorio matutino',
 			'notifications.weatherAlerts' => 'Alertas meteorológicas',
 			'notifications.countdown' => 'Recordatorio D-2',

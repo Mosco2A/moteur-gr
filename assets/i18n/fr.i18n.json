@@ -177,7 +177,19 @@
     "pdfDuration": "en {days} jours",
     "pdfFrom": "Du",
     "pdfTo": "au",
-    "pdfIssuedOn": "Délivré le {date}"
+    "pdfIssuedOn": "Délivré le {date}",
+    "recapTitle": "Votre aventure",
+    "recapJournalPhotos": "Photos du journal",
+    "recapNoPhotos": "Aucune photo dans le journal",
+    "recapStats": "Statistiques",
+    "recapStages": "{count} etapes franchies",
+    "recapDistance": "{km} km parcourus",
+    "recapElevation": "{meters} m de denivele",
+    "recapDuration": "{days} jours de trek",
+    "recapMapTrace": "Trace du parcours",
+    "recapNoMap": "Trace non disponible",
+    "recapJournalEntries": "{count} notes de journal",
+    "downloadPdf": "Telecharger le diplome PDF"
   },
   "notifications": {
     "morningReminder": "Rappel du matin",

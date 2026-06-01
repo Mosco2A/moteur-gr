@@ -274,6 +274,27 @@ class _Translations$diploma$it extends Translations$diploma$fr {
 	@override String get generatePdf => 'Genera PDF';
 	@override String get certifies => 'Certifica che';
 	@override String get completed => 'ha percorso il';
+	@override String get pdfTitle => 'DIPLOMA';
+	@override String get pdfSubtitle => 'Certificato di completamento';
+	@override String get pdfStages => '{count} tappe';
+	@override String get pdfDistance => '{km} km percorsi';
+	@override String get pdfElevation => '{meters} m di dislivello positivo';
+	@override String get pdfDuration => 'in {days} giorni';
+	@override String get pdfFrom => 'Dal';
+	@override String get pdfTo => 'al';
+	@override String get pdfIssuedOn => 'Rilasciato il {date}';
+	@override String get recapTitle => 'La tua avventura';
+	@override String get recapJournalPhotos => 'Foto del diario';
+	@override String get recapNoPhotos => 'Nessuna foto nel diario';
+	@override String get recapStats => 'Statistiche';
+	@override String get recapStages => '{count} tappe completate';
+	@override String get recapDistance => '{km} km percorsi';
+	@override String get recapElevation => '{meters} m di dislivello';
+	@override String get recapDuration => '{days} giorni di trekking';
+	@override String get recapMapTrace => 'Tracciato del percorso';
+	@override String get recapNoMap => 'Tracciato non disponibile';
+	@override String get recapJournalEntries => '{count} note del diario';
+	@override String get downloadPdf => 'Scarica diploma PDF';
 }
 
 // Path: notifications
@@ -816,6 +837,27 @@ extension on TranslationsIt {
 			'diploma.generatePdf' => 'Genera PDF',
 			'diploma.certifies' => 'Certifica che',
 			'diploma.completed' => 'ha percorso il',
+			'diploma.pdfTitle' => 'DIPLOMA',
+			'diploma.pdfSubtitle' => 'Certificato di completamento',
+			'diploma.pdfStages' => '{count} tappe',
+			'diploma.pdfDistance' => '{km} km percorsi',
+			'diploma.pdfElevation' => '{meters} m di dislivello positivo',
+			'diploma.pdfDuration' => 'in {days} giorni',
+			'diploma.pdfFrom' => 'Dal',
+			'diploma.pdfTo' => 'al',
+			'diploma.pdfIssuedOn' => 'Rilasciato il {date}',
+			'diploma.recapTitle' => 'La tua avventura',
+			'diploma.recapJournalPhotos' => 'Foto del diario',
+			'diploma.recapNoPhotos' => 'Nessuna foto nel diario',
+			'diploma.recapStats' => 'Statistiche',
+			'diploma.recapStages' => '{count} tappe completate',
+			'diploma.recapDistance' => '{km} km percorsi',
+			'diploma.recapElevation' => '{meters} m di dislivello',
+			'diploma.recapDuration' => '{days} giorni di trekking',
+			'diploma.recapMapTrace' => 'Tracciato del percorso',
+			'diploma.recapNoMap' => 'Tracciato non disponibile',
+			'diploma.recapJournalEntries' => '{count} note del diario',
+			'diploma.downloadPdf' => 'Scarica diploma PDF',
 			'notifications.morningReminder' => 'Promemoria mattutino',
 			'notifications.weatherAlerts' => 'Allerte meteo',
 			'notifications.countdown' => 'Promemoria G-2',

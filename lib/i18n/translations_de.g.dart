@@ -274,6 +274,27 @@ class _Translations$diploma$de extends Translations$diploma$fr {
 	@override String get generatePdf => 'PDF erstellen';
 	@override String get certifies => 'Bestätigt, dass';
 	@override String get completed => 'den Weg abgeschlossen hat';
+	@override String get pdfTitle => 'DIPLOM';
+	@override String get pdfSubtitle => 'Leistungszertifikat';
+	@override String get pdfStages => '{count} Etappen';
+	@override String get pdfDistance => '{km} km zurückgelegt';
+	@override String get pdfElevation => '{meters} m Höhenunterschied';
+	@override String get pdfDuration => 'in {days} Tagen';
+	@override String get pdfFrom => 'Vom';
+	@override String get pdfTo => 'bis';
+	@override String get pdfIssuedOn => 'Ausgestellt am {date}';
+	@override String get recapTitle => 'Ihr Abenteuer';
+	@override String get recapJournalPhotos => 'Tagebuchfotos';
+	@override String get recapNoPhotos => 'Keine Fotos im Tagebuch';
+	@override String get recapStats => 'Statistiken';
+	@override String get recapStages => '{count} Etappen absolviert';
+	@override String get recapDistance => '{km} km zurueckgelegt';
+	@override String get recapElevation => '{meters} m Hoehenunterschied';
+	@override String get recapDuration => '{days} Tage Wanderung';
+	@override String get recapMapTrace => 'Routenverlauf';
+	@override String get recapNoMap => 'Verlauf nicht verfuegbar';
+	@override String get recapJournalEntries => '{count} Tagebucheintraege';
+	@override String get downloadPdf => 'Diplom-PDF herunterladen';
 }
 
 // Path: notifications
@@ -816,6 +837,27 @@ extension on TranslationsDe {
 			'diploma.generatePdf' => 'PDF erstellen',
 			'diploma.certifies' => 'Bestätigt, dass',
 			'diploma.completed' => 'den Weg abgeschlossen hat',
+			'diploma.pdfTitle' => 'DIPLOM',
+			'diploma.pdfSubtitle' => 'Leistungszertifikat',
+			'diploma.pdfStages' => '{count} Etappen',
+			'diploma.pdfDistance' => '{km} km zurückgelegt',
+			'diploma.pdfElevation' => '{meters} m Höhenunterschied',
+			'diploma.pdfDuration' => 'in {days} Tagen',
+			'diploma.pdfFrom' => 'Vom',
+			'diploma.pdfTo' => 'bis',
+			'diploma.pdfIssuedOn' => 'Ausgestellt am {date}',
+			'diploma.recapTitle' => 'Ihr Abenteuer',
+			'diploma.recapJournalPhotos' => 'Tagebuchfotos',
+			'diploma.recapNoPhotos' => 'Keine Fotos im Tagebuch',
+			'diploma.recapStats' => 'Statistiken',
+			'diploma.recapStages' => '{count} Etappen absolviert',
+			'diploma.recapDistance' => '{km} km zurueckgelegt',
+			'diploma.recapElevation' => '{meters} m Hoehenunterschied',
+			'diploma.recapDuration' => '{days} Tage Wanderung',
+			'diploma.recapMapTrace' => 'Routenverlauf',
+			'diploma.recapNoMap' => 'Verlauf nicht verfuegbar',
+			'diploma.recapJournalEntries' => '{count} Tagebucheintraege',
+			'diploma.downloadPdf' => 'Diplom-PDF herunterladen',
 			'notifications.morningReminder' => 'Morgenerinnerung',
 			'notifications.weatherAlerts' => 'Wetterwarnungen',
 			'notifications.countdown' => 'Erinnerung 2 Tage vorher',
