@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -6,6 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// Gere l'initialisation conditionnelle de Firebase :
 /// - Si firebaseProjectId est fourni, Firebase est initialise
 /// - Si null, le moteur tourne en mode local uniquement
+///
+/// Ref #81812 B2 offline montagne — persistence Firestore activee
+/// pour garantir l'acces aux donnees hors connexion en montagne.
 class FirebaseService {
   FirebaseService._({required this.isAvailable});
 
@@ -25,6 +29,8 @@ class FirebaseService {
   /// avec isAvailable = false (mode offline/local).
   /// Les FirebaseOptions doivent etre fournies via
   /// DefaultFirebaseOptions (genere par FlutterFire CLI).
+  ///
+  /// Active la persistence Firestore pour le mode offline (#81812).
   static Future<FirebaseService> initialize({
     String? firebaseProjectId,
   }) async {
@@ -34,6 +40,14 @@ class FirebaseService {
 
     try {
       await Firebase.initializeApp();
+
+      // #81812 B2 offline montagne — persistence Firestore
+      // Permet l'acces aux donnees meme sans reseau (sentiers, POI, etapes)
+      FirebaseFirestore.instance.settings = const Settings(
+        persistenceEnabled: true,
+        cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+      );
+
       return FirebaseService._(isAvailable: true);
     } catch (e) {
       // En cas d echec d init, fallback en mode local
