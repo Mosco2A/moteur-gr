@@ -308,6 +308,10 @@ class _Translations$notifications$es extends Translations$notifications$fr {
 	@override String get weatherAlerts => 'Alertas meteorológicas';
 	@override String get countdown => 'Recordatorio D-2';
 	@override String get countdownDesc => 'Notificación 2 días antes de la salida';
+	@override String get schedulerCountdownTitle => 'Tu trek se acerca!';
+	@override String get schedulerCountdownBody => 'Salida en 2 dias. Revisa tu checklist y el tiempo.';
+	@override String get schedulerDailyTitle => 'Buen dia de trek!';
+	@override String get schedulerDailyBody => 'Consulta el tiempo y prepara la etapa del dia.';
 }
 
 // Path: settings
@@ -862,6 +866,10 @@ extension on TranslationsEs {
 			'notifications.weatherAlerts' => 'Alertas meteorológicas',
 			'notifications.countdown' => 'Recordatorio D-2',
 			'notifications.countdownDesc' => 'Notificación 2 días antes de la salida',
+			'notifications.schedulerCountdownTitle' => 'Tu trek se acerca!',
+			'notifications.schedulerCountdownBody' => 'Salida en 2 dias. Revisa tu checklist y el tiempo.',
+			'notifications.schedulerDailyTitle' => 'Buen dia de trek!',
+			'notifications.schedulerDailyBody' => 'Consulta el tiempo y prepara la etapa del dia.',
 			'settings.title' => 'Ajustes',
 			'settings.language' => 'Idioma',
 			'settings.units' => 'Unidades',

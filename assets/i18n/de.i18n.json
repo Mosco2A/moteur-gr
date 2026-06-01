@@ -195,7 +195,11 @@
     "morningReminder": "Morgenerinnerung",
     "weatherAlerts": "Wetterwarnungen",
     "countdown": "Erinnerung 2 Tage vorher",
-    "countdownDesc": "Benachrichtigung 2 Tage vor Abreise"
+    "countdownDesc": "Benachrichtigung 2 Tage vor Abreise",
+    "schedulerCountdownTitle": "Ihr Trek steht bevor!",
+    "schedulerCountdownBody": "Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.",
+    "schedulerDailyTitle": "Guten Trek-Tag!",
+    "schedulerDailyBody": "Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor."
   },
   "settings": {
     "title": "Einstellungen",

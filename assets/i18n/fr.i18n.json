@@ -195,7 +195,11 @@
     "morningReminder": "Rappel du matin",
     "weatherAlerts": "Alertes météo",
     "countdown": "Rappel J-2",
-    "countdownDesc": "Notification 2 jours avant le départ"
+    "countdownDesc": "Notification 2 jours avant le départ",
+    "schedulerCountdownTitle": "Votre trek approche !",
+    "schedulerCountdownBody": "Depart dans 2 jours. Verifiez votre checklist et la meteo.",
+    "schedulerDailyTitle": "Bonne journee de trek !",
+    "schedulerDailyBody": "Consultez la meteo et preparez votre etape du jour."
   },
   "settings": {
     "title": "Paramètres",

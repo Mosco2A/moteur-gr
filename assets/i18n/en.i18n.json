@@ -195,7 +195,11 @@
     "morningReminder": "Morning reminder",
     "weatherAlerts": "Weather alerts",
     "countdown": "D-2 reminder",
-    "countdownDesc": "Notification 2 days before departure"
+    "countdownDesc": "Notification 2 days before departure",
+    "schedulerCountdownTitle": "Your trek is coming up!",
+    "schedulerCountdownBody": "Departure in 2 days. Check your checklist and the weather.",
+    "schedulerDailyTitle": "Have a great trek day!",
+    "schedulerDailyBody": "Check the weather and prepare today's stage."
   },
   "settings": {
     "title": "Settings",

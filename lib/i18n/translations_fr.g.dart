@@ -573,6 +573,18 @@ class Translations$notifications$fr {
 
 	/// fr: 'Notification 2 jours avant le départ'
 	String get countdownDesc => 'Notification 2 jours avant le départ';
+
+	/// fr: 'Votre trek approche !'
+	String get schedulerCountdownTitle => 'Votre trek approche !';
+
+	/// fr: 'Depart dans 2 jours. Verifiez votre checklist et la meteo.'
+	String get schedulerCountdownBody => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.';
+
+	/// fr: 'Bonne journee de trek !'
+	String get schedulerDailyTitle => 'Bonne journee de trek !';
+
+	/// fr: 'Consultez la meteo et preparez votre etape du jour.'
+	String get schedulerDailyBody => 'Consultez la meteo et preparez votre etape du jour.';
 }
 
 // Path: settings
@@ -1485,6 +1497,10 @@ extension on Translations {
 			'notifications.weatherAlerts' => 'Alertes météo',
 			'notifications.countdown' => 'Rappel J-2',
 			'notifications.countdownDesc' => 'Notification 2 jours avant le départ',
+			'notifications.schedulerCountdownTitle' => 'Votre trek approche !',
+			'notifications.schedulerCountdownBody' => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.',
+			'notifications.schedulerDailyTitle' => 'Bonne journee de trek !',
+			'notifications.schedulerDailyBody' => 'Consultez la meteo et preparez votre etape du jour.',
 			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',
 			'settings.units' => 'Unités',

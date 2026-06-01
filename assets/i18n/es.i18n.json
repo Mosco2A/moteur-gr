@@ -195,7 +195,11 @@
     "morningReminder": "Recordatorio matutino",
     "weatherAlerts": "Alertas meteorológicas",
     "countdown": "Recordatorio D-2",
-    "countdownDesc": "Notificación 2 días antes de la salida"
+    "countdownDesc": "Notificación 2 días antes de la salida",
+    "schedulerCountdownTitle": "Tu trek se acerca!",
+    "schedulerCountdownBody": "Salida en 2 dias. Revisa tu checklist y el tiempo.",
+    "schedulerDailyTitle": "Buen dia de trek!",
+    "schedulerDailyBody": "Consulta el tiempo y prepara la etapa del dia."
   },
   "settings": {
     "title": "Ajustes",
