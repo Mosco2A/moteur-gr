@@ -215,7 +215,14 @@
     "cacheEnabled": "Cache enabled",
     "cacheDesc": "Data available offline",
     "cacheSize": "Cache size",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "morningReminder": "Morning reminder",
+    "weatherAlerts": "Weather alerts",
+    "weatherAlertsDesc": "Notified when dangerous conditions",
+    "countdownReminder": "D-2 reminder",
+    "countdownDesc": "Notification 2 days before departure",
+    "version": "Version",
+    "versionLabel": "App version"
   },
   "feedback": {
     "title": "Feedback",

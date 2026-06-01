@@ -215,7 +215,14 @@
     "cacheEnabled": "Cache aktiviert",
     "cacheDesc": "Daten offline verfügbar",
     "cacheSize": "Cache-Größe",
-    "notifications": "Benachrichtigungen"
+    "notifications": "Benachrichtigungen",
+    "morningReminder": "Morgenerinnerung",
+    "weatherAlerts": "Wetteralarme",
+    "weatherAlertsDesc": "Benachrichtigung bei gefährlichen Bedingungen",
+    "countdownReminder": "T-2 Erinnerung",
+    "countdownDesc": "Benachrichtigung 2 Tage vor der Abreise",
+    "version": "Version",
+    "versionLabel": "App-Version"
   },
   "feedback": {
     "title": "Feedback",

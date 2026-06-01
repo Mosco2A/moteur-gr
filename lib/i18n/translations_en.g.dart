@@ -335,6 +335,13 @@ class _Translations$settings$en extends Translations$settings$fr {
 	@override String get cacheDesc => 'Data available offline';
 	@override String get cacheSize => 'Cache size';
 	@override String get notifications => 'Notifications';
+	@override String get morningReminder => 'Morning reminder';
+	@override String get weatherAlerts => 'Weather alerts';
+	@override String get weatherAlertsDesc => 'Notified when dangerous conditions';
+	@override String get countdownReminder => 'D-2 reminder';
+	@override String get countdownDesc => 'Notification 2 days before departure';
+	@override String get version => 'Version';
+	@override String get versionLabel => 'App version';
 }
 
 // Path: feedback
@@ -884,6 +891,13 @@ extension on TranslationsEn {
 			'settings.cacheDesc' => 'Data available offline',
 			'settings.cacheSize' => 'Cache size',
 			'settings.notifications' => 'Notifications',
+			'settings.morningReminder' => 'Morning reminder',
+			'settings.weatherAlerts' => 'Weather alerts',
+			'settings.weatherAlertsDesc' => 'Notified when dangerous conditions',
+			'settings.countdownReminder' => 'D-2 reminder',
+			'settings.countdownDesc' => 'Notification 2 days before departure',
+			'settings.version' => 'Version',
+			'settings.versionLabel' => 'App version',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Feedback type',
 			'feedback.bug' => 'Bug / Problem',

@@ -636,6 +636,27 @@ class Translations$settings$fr {
 
 	/// fr: 'Notifications'
 	String get notifications => 'Notifications';
+
+	/// fr: 'Rappel du matin'
+	String get morningReminder => 'Rappel du matin';
+
+	/// fr: 'Alertes météo'
+	String get weatherAlerts => 'Alertes météo';
+
+	/// fr: 'Prévenu si conditions dangereuses'
+	String get weatherAlertsDesc => 'Prévenu si conditions dangereuses';
+
+	/// fr: 'Rappel J-2'
+	String get countdownReminder => 'Rappel J-2';
+
+	/// fr: 'Notification 2 jours avant le départ'
+	String get countdownDesc => 'Notification 2 jours avant le départ';
+
+	/// fr: 'Version'
+	String get version => 'Version';
+
+	/// fr: 'Version de l'application'
+	String get versionLabel => 'Version de l\'application';
 }
 
 // Path: feedback
@@ -1515,6 +1536,13 @@ extension on Translations {
 			'settings.cacheDesc' => 'Données disponibles hors ligne',
 			'settings.cacheSize' => 'Taille du cache',
 			'settings.notifications' => 'Notifications',
+			'settings.morningReminder' => 'Rappel du matin',
+			'settings.weatherAlerts' => 'Alertes météo',
+			'settings.weatherAlertsDesc' => 'Prévenu si conditions dangereuses',
+			'settings.countdownReminder' => 'Rappel J-2',
+			'settings.countdownDesc' => 'Notification 2 jours avant le départ',
+			'settings.version' => 'Version',
+			'settings.versionLabel' => 'Version de l\'application',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Type de retour',
 			'feedback.bug' => 'Bug / Problème',

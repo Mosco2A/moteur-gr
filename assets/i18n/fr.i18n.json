@@ -215,7 +215,14 @@
     "cacheEnabled": "Cache activé",
     "cacheDesc": "Données disponibles hors ligne",
     "cacheSize": "Taille du cache",
-    "notifications": "Notifications"
+    "notifications": "Notifications",
+    "morningReminder": "Rappel du matin",
+    "weatherAlerts": "Alertes météo",
+    "weatherAlertsDesc": "Prévenu si conditions dangereuses",
+    "countdownReminder": "Rappel J-2",
+    "countdownDesc": "Notification 2 jours avant le départ",
+    "version": "Version",
+    "versionLabel": "Version de l'application"
   },
   "feedback": {
     "title": "Feedback",
