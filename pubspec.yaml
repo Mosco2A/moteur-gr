@@ -64,6 +64,7 @@ dependencies:
   permission_handler: ^11.0.0
   package_info_plus: ^8.0.0
   share_plus: ^10.1.4
+  url_launcher: ^6.2.0
 
   # --- PDF ---
   pdf: ^3.11.2
