@@ -18,6 +18,8 @@ import '../../features/trail/presentation/trail_list_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
+import '../../features/booking/presentation/booking_screen.dart';
+import '../../features/safety/presentation/emergency_screen.dart';
 import '../config/feature_flags.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
 import '../../features/trek/presentation/stages/stage_list_screen.dart'
@@ -49,6 +51,8 @@ import '../../features/trek/presentation/stages/stage_detail_screen.dart'
 ///   /stages/:id                  - Detail d'une etape (trek)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
+///   /booking                     - Reservation (stub, gardee par FeatureFlags)
+///   /emergency                   - Contacts d'urgence (112, PGHM, personnels)
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 final appRouter = GoRouter(
   initialLocation: '/trails',
@@ -192,6 +196,24 @@ final appRouter = GoRouter(
       },
       builder: (context, state) => const GoodiesCatalogScreen(),
     ),
+    // E5.13 : Reservation (stub) -- garde par FeatureFlags
+    GoRoute(
+      path: '/booking',
+      name: 'booking',
+      redirect: (context, state) {
+        // Garde par feature flag -- redirige vers /trails si desactive
+        final trailId = state.uri.queryParameters['trailId'] ?? '';
+        if (!FeatureFlags.isBookingEnabled(trailId)) return '/trails';
+        return null;
+      },
+      builder: (context, state) => const BookingScreen(),
+    ),
+    // E5.14a : Contacts d'urgence (112, PGHM, contacts personnels)
+    GoRoute(
+      path: '/emergency',
+      name: 'emergency',
+      builder: (context, state) => const EmergencyScreen(),
+    ),
     GoRoute(
       path: '/no-data',
       name: 'no-data',
@@ -227,7 +249,7 @@ bool hasDownloadedTrails = true;
 /// redirige vers /no-data (sauf /catalog et /no-data eux-memes).
 String? _guardNoData(BuildContext context, GoRouterState state) {
   // Routes exclues du guard (doivent rester accessibles)
-  final excludedPaths = ['/no-data', '/catalog', '/settings', '/profile'];
+  final excludedPaths = ['/no-data', '/catalog', '/settings', '/profile', '/emergency'];
   if (excludedPaths.contains(state.uri.path)) return null;
 
   // Si aucun sentier telecharge, rediriger vers l'ecran bloquant
