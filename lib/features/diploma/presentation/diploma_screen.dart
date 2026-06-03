@@ -11,12 +11,14 @@ import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
 import '../domain/diploma_generator.dart';
 import '../domain/diploma_pdf_service.dart';
+import '../../after/providers/in_app_review_provider.dart';
 
 /// Ecran diplome de fin de trek avec recap aventure.
 ///
 /// Affiche : photos journal, statistiques, carte trace, bouton PDF.
 /// Tous les textes via Slang (t.diploma.*) -- zero texte en dur.
 /// Photos journal integrees via journal_repository existant.
+/// E5.17: Declenche la demande d'avis store post-diplome (1 fois par trek).
 class DiplomaScreen extends ConsumerStatefulWidget {
   const DiplomaScreen({super.key});
 
@@ -28,6 +30,24 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   final _nameController = TextEditingController();
   DiplomaData? _diplomaData;
   bool _isGeneratingPdf = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // E5.17: Demander un avis store apres affichage du diplome (trek termine).
+    // PostFrameCallback pour laisser le build se terminer avant la dialog native.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _requestInAppReviewIfEligible();
+    });
+  }
+
+  /// E5.17: Demande d'avis store — 1 seule fois par trek.
+  Future<void> _requestInAppReviewIfEligible() async {
+    final config = ref.read(trailConfigProvider);
+    final trailId = config.trailId;
+    final reviewService = ref.read(inAppReviewServiceProvider);
+    await reviewService.requestReviewIfEligible(trailId);
+  }
 
   @override
   void dispose() {
