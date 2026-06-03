@@ -34,6 +34,9 @@ dependencies:
   path_provider: ^2.1.0
   shared_preferences: ^2.2.0
 
+  # --- Home Screen Widget (E5.19a) ---
+  home_widget: ^0.6.0
+
   # --- UI ---
   google_fonts: ^6.1.0
   flutter_svg: ^2.0.0
