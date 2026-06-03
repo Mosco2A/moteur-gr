@@ -188,6 +188,12 @@ Le moteur supporte plusieurs sentiers. Chaque sentier definit :
 - Crashlytics : conditionnel RGPD (consentement utilisateur requis via SharedPreferences)
 - Config : `firebase_options.dart` genere par `flutterfire configure`
 
+## Roadmap
+
+La roadmap des phases 6-8 (features, social, communaute) et du plan securite est dans [ROADMAP.md](ROADMAP.md).
+
+23 features, 110.1 jours-agent estimes. Decisions architecturales cles : offline-first, sante local-only, deeplinks logistique, pas de secours auto.
+
 ## Pieges connus
 
 1. **Open-Meteo** : l'API Meteo-France ne supporte PAS `precipitation_probability_max` ni `uv_index_max` (erreur HTTP 400). Utiliser les champs standards uniquement.
