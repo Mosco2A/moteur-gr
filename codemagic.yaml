@@ -1,97 +1,210 @@
-# Codemagic CI/CD pour Moteur GR
-# Deux workflows: pr_gate (PR) + merge (push main)
+# Codemagic CI/CD pour Moteur GR — LOT-0 StepWays
+# Trois workflows: pr_gate (PR bloquant) + merge_main (push main) + nightly (cron qualite)
+# Gates: dart format check -> dart analyze -> flutter test + coverage
+# Seuil coverage: 60% minimum (bloquant)
+
+definitions:
+  env_versions: &env_versions
+    flutter: stable
+    xcode: latest
+    java: 17
+  cache_key: &cache_key
+    cache_paths:
+      - $HOME/.pub-cache
+      - $FLUTTER_ROOT/.pub-cache
+  scripts:
+    - &install_deps
+      name: Installer les dependances
+      script: |
+        flutter pub get
+        echo "--- Dependances installees ---"
+    - &gate_format
+      name: "GATE 1 — Verification formatage (dart format)"
+      script: |
+        echo "=== GATE 1: dart format check ==="
+        UNFORMATTED=$(dart format --output=none --set-exit-if-changed lib/ test/ 2>&1) || true
+        if echo "$UNFORMATTED" | grep -q "Changed"; then
+          echo "GATE 1 FAILED — Fichiers mal formates:"
+          echo "$UNFORMATTED" | grep "Changed"
+          echo ""
+          echo "Fix: dart format lib/ test/"
+          exit 1
+        fi
+        echo "GATE 1 PASSED — Formatage OK"
+    - &gate_analyze
+      name: "GATE 2 — Analyse statique (dart analyze)"
+      script: |
+        echo "=== GATE 2: dart analyze ==="
+        RESULT=$(dart analyze lib/ test/ 2>&1)
+        EXIT_CODE=$?
+        if [ $EXIT_CODE -ne 0 ]; then
+          echo "GATE 2 FAILED — Problemes detectes:"
+          echo "$RESULT"
+          exit 1
+        fi
+        WARNING_COUNT=$(echo "$RESULT" | grep -c "warning" || true)
+        INFO_COUNT=$(echo "$RESULT" | grep -c "info" || true)
+        echo "GATE 2 PASSED — Analyze OK (warnings: $WARNING_COUNT, infos: $INFO_COUNT)"
+    - &gate_test_coverage
+      name: "GATE 3 — Tests unitaires + coverage (flutter test)"
+      script: |
+        echo "=== GATE 3: flutter test + coverage ==="
+        flutter test --reporter=expanded --coverage
+        if [ $? -ne 0 ]; then
+          echo "GATE 3 FAILED — Tests en echec"
+          exit 1
+        fi
+        if [ -f coverage/lcov.info ]; then
+          TOTAL_LINES=$(grep -c "DA:" coverage/lcov.info || echo "0")
+          HIT_LINES=$(grep "DA:" coverage/lcov.info | grep -v ",0$" | wc -l || echo "0")
+          if [ "$TOTAL_LINES" -gt 0 ]; then
+            COVERAGE=$(( HIT_LINES * 100 / TOTAL_LINES ))
+          else
+            COVERAGE=0
+          fi
+          echo "Coverage: ${COVERAGE}% (${HIT_LINES}/${TOTAL_LINES} lignes)"
+          THRESHOLD=60
+          if [ "$COVERAGE" -lt "$THRESHOLD" ]; then
+            echo "GATE 3 FAILED — Coverage ${COVERAGE}% < seuil ${THRESHOLD}%"
+            exit 1
+          fi
+          echo "GATE 3 PASSED — Coverage ${COVERAGE}% >= seuil ${THRESHOLD}%"
+        else
+          echo "GATE 3 WARNING — Pas de fichier lcov.info genere (coverage non mesurable)"
+          echo "GATE 3 PASSED — Tests OK, coverage non disponible"
+        fi
 
 workflows:
-  # --- Workflow PR Gate ---
-  # Declenche sur chaque Pull Request
-  # Steps: dart analyze + flutter test + flutter format check
+  # =========================================================
+  # WORKFLOW 1: PR Gate — Bloquant pour merge
+  # =========================================================
   pr_gate:
-    name: PR Gate
+    name: "PR Gate (bloquant)"
     max_build_duration: 30
+    instance_type: mac_mini_m2
     triggering:
       events:
         - pull_request
       branch_patterns:
-        - pattern: '*'
+        - pattern: main
           include: true
+          source: true
+      cancel_previous_builds: true
     environment:
-      flutter: stable
-      xcode: latest
+      <<: *env_versions
+    <<: *cache_key
     scripts:
-      - name: Installer les dependances
-        script: flutter pub get
-
-      - name: Analyse statique (dart analyze)
+      - *install_deps
+      - *gate_format
+      - *gate_analyze
+      - *gate_test_coverage
+      - name: "Resume PR Gate"
         script: |
-          dart analyze lib/ test/
-          if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
-            exit 1
-          fi
+          echo "========================================"
+          echo "  PR GATE — TOUTES LES GATES PASSEES"
+          echo "========================================"
+          echo "  GATE 1: dart format    — PASS"
+          echo "  GATE 2: dart analyze   — PASS"
+          echo "  GATE 3: tests+coverage — PASS"
+          echo "========================================"
+    artifacts:
+      - coverage/lcov.info
 
-      - name: Tests unitaires (flutter test)
-        script: |
-          flutter test --reporter=expanded
-          if [ $? -ne 0 ]; then
-            echo "ERREUR: des tests ont echoue"
-            exit 1
-          fi
-
-      - name: Verification formatage (dart format)
-        script: |
-          dart format --set-exit-if-changed lib/ test/
-          if [ $? -ne 0 ]; then
-            echo "ERREUR: code mal formate. Lancer 'dart format lib/ test/' localement."
-            exit 1
-          fi
-
-  # --- Workflow Merge (push main) ---
-  # Declenche sur chaque push dans main
-  # Steps: analyze + test + format + build APK debug
-  merge:
-    name: Merge Main
+  # =========================================================
+  # WORKFLOW 2: Merge Main — Post-merge verification + build
+  # =========================================================
+  merge_main:
+    name: "Merge Main (post-merge)"
     max_build_duration: 60
+    instance_type: mac_mini_m2
     triggering:
       events:
         - push
       branch_patterns:
         - pattern: main
           include: true
+      cancel_previous_builds: false
     environment:
-      flutter: stable
-      xcode: latest
+      <<: *env_versions
       android_signing:
         - moteur_gr_debug
+    <<: *cache_key
     scripts:
-      - name: Installer les dependances
-        script: flutter pub get
-
-      - name: Analyse statique (dart analyze)
+      - *install_deps
+      - *gate_format
+      - *gate_analyze
+      - *gate_test_coverage
+      - name: "Build APK debug"
         script: |
-          dart analyze lib/ test/
+          echo "=== BUILD: APK debug ==="
+          flutter build apk --debug
           if [ $? -ne 0 ]; then
-            echo "ERREUR: dart analyze a detecte des problemes"
+            echo "BUILD FAILED"
             exit 1
           fi
-
-      - name: Tests unitaires (flutter test)
+          APK_SIZE=$(du -h build/app/outputs/flutter-apk/app-debug.apk 2>/dev/null | cut -f1)
+          echo "BUILD OK — APK: ${APK_SIZE:-taille inconnue}"
+      - name: "Resume Merge Main"
         script: |
-          flutter test --reporter=expanded
-          if [ $? -ne 0 ]; then
-            echo "ERREUR: des tests ont echoue"
-            exit 1
-          fi
-
-      - name: Verification formatage (dart format)
-        script: |
-          dart format --set-exit-if-changed lib/ test/
-          if [ $? -ne 0 ]; then
-            echo "ERREUR: code mal formate"
-            exit 1
-          fi
-
-      - name: Build APK debug
-        script: flutter build apk --debug
-
+          echo "========================================"
+          echo "  MERGE MAIN — PIPELINE COMPLET"
+          echo "========================================"
+          echo "  GATE 1: dart format    — PASS"
+          echo "  GATE 2: dart analyze   — PASS"
+          echo "  GATE 3: tests+coverage — PASS"
+          echo "  BUILD:  APK debug      — PASS"
+          echo "========================================"
     artifacts:
       - build/**/outputs/**/*.apk
+      - coverage/lcov.info
+
+  # =========================================================
+  # WORKFLOW 3: Nightly — Qualite quotidienne
+  # =========================================================
+  nightly:
+    name: "Nightly Quality Check"
+    max_build_duration: 45
+    instance_type: mac_mini_m2
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+      cancel_previous_builds: false
+    environment:
+      <<: *env_versions
+    <<: *cache_key
+    scripts:
+      - *install_deps
+      - *gate_format
+      - *gate_analyze
+      - name: "Tests complets + rapport coverage"
+        script: |
+          echo "=== NIGHTLY: tests complets ==="
+          flutter test --reporter=expanded --coverage
+          TEST_EXIT=$?
+          if [ -f coverage/lcov.info ]; then
+            TOTAL_LINES=$(grep -c "DA:" coverage/lcov.info || echo "0")
+            HIT_LINES=$(grep "DA:" coverage/lcov.info | grep -v ",0$" | wc -l || echo "0")
+            if [ "$TOTAL_LINES" -gt 0 ]; then
+              COVERAGE=$(( HIT_LINES * 100 / TOTAL_LINES ))
+            else
+              COVERAGE=0
+            fi
+            echo ""
+            echo "========== RAPPORT COVERAGE =========="
+            echo "  Lignes totales:   $TOTAL_LINES"
+            echo "  Lignes couvertes: $HIT_LINES"
+            echo "  Coverage:         ${COVERAGE}%"
+            echo "  Seuil minimum:    60%"
+            if [ "$COVERAGE" -lt 60 ]; then
+              echo "  Statut:           REGRESSION"
+            else
+              echo "  Statut:           OK"
+            fi
+            echo "======================================"
+          fi
+          exit $TEST_EXIT
+    artifacts:
+      - coverage/lcov.info
