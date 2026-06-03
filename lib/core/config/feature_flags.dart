@@ -1,58 +1,37 @@
-// Feature flags globaux de l'application GR20.
-//
-// Centralise tous les toggles features pour un controle
-// granulaire des fonctionnalites en production.
-// Convention : tout est FALSE par defaut, active par config Firestore.
-
-/// Feature flags de l'application GR20.
+/// Gestionnaire de feature flags pour le Moteur GR.
 ///
-/// Chaque flag controle l'activation d'une fonctionnalite.
-/// Les valeurs par defaut sont toutes FALSE (securite).
-/// L'activation se fait via Firestore Remote Config ou manuellement.
+/// Controle l'activation/desactivation de fonctionnalites par sentier.
+/// Par defaut, toutes les features experimentales sont OFF.
+/// L'activation se fait via configuration serveur ou override local.
 class FeatureFlags {
-  FeatureFlags._();
+  /// Cache interne des overrides par sentier
+  /// Cle: 'featureName:trailId', Valeur: etat du flag
+  static final Map<String, bool> _overrides = {};
 
-  // --- Cache interne des flags ---
-  static final Map<String, bool> _flags = {};
-
-  // --- Booking ---
-
-  /// Verifie si la reservation est activee pour un trail donne.
+  /// Verifie si la boutique goodies est activee pour un sentier donne.
   ///
-  /// Retourne FALSE par defaut -- la feature booking n'est activee
-  /// que lorsque la config Firestore le specifie explicitement.
+  /// Retourne false par defaut -- activation explicite requise.
+  static bool isGoodiesEnabled(String trailId) {
+    return _overrides['goodies:$trailId'] ?? false;
+  }
+
+
+  /// Verifie si la reservation est activee pour un sentier donne.
+  ///
+  /// Retourne false par defaut -- activation explicite requise.
   static bool isBookingEnabled(String trailId) {
-    return _flags['booking_$trailId'] ?? false;
+    return _overrides['booking:$trailId'] ?? false;
   }
 
-  /// Active ou desactive la reservation pour un trail.
+  /// Definit un override pour un flag donne.
   ///
-  /// Usage interne : appele par le service de config au chargement
-  /// des flags depuis Firestore.
-  static void setBookingEnabled(String trailId, {required bool enabled}) {
-    _flags['booking_$trailId'] = enabled;
+  /// Utilise pour les tests et la configuration dynamique.
+  static void setOverride(String feature, String trailId, {required bool enabled}) {
+    _overrides['$feature:$trailId'] = enabled;
   }
 
-  // --- Methodes generiques ---
-
-  /// Verifie un flag generique par cle.
-  static bool isEnabled(String key) {
-    return _flags[key] ?? false;
+  /// Supprime tous les overrides (usage tests uniquement).
+  static void clearOverrides() {
+    _overrides.clear();
   }
-
-  /// Definit un flag generique.
-  static void setFlag(String key, {required bool enabled}) {
-    _flags[key] = enabled;
-  }
-
-  /// Reinitialise tous les flags (utile pour les tests).
-  static void resetAll() {
-    _flags.clear();
-  }
-
-  /// Retourne une copie de tous les flags actifs (debug/logs).
-  static Map<String, bool> get activeFlags =>
-      Map.unmodifiable(
-        Map.fromEntries(_flags.entries.where((e) => e.value)),
-      );
 }
