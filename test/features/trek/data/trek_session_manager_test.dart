@@ -33,7 +33,7 @@ void main() {
       // Simuler une session active laissee par un crash (2h avant)
       final orphan = TrekSession(
         id: 'crash-session-001',
-        trailId: 'gr20-nord',
+        trailId: 'sentier-bleu-nord',
         startedAt: fakeNow.subtract(const Duration(hours: 2)),
         status: 'active',
       );
@@ -43,7 +43,7 @@ void main() {
 
       expect(pending, isNotNull);
       expect(pending!.session.id, equals('crash-session-001'));
-      expect(pending.session.trailId, equals('gr20-nord'));
+      expect(pending.session.trailId, equals('sentier-bleu-nord'));
       expect(pending.session.status, equals('active'));
       expect(pending.age.inHours, equals(2));
       expect(pending.isExpired, isFalse);
@@ -57,13 +57,13 @@ void main() {
     test('checkPendingSession prend la session la plus recente', () async {
       final older = TrekSession(
         id: 'old-session',
-        trailId: 'gr20-sud',
+        trailId: 'sentier-bleu-sud',
         startedAt: fakeNow.subtract(const Duration(days: 3)),
         status: 'active',
       );
       final newer = TrekSession(
         id: 'new-session',
-        trailId: 'gr20-nord',
+        trailId: 'sentier-bleu-nord',
         startedAt: fakeNow.subtract(const Duration(hours: 1)),
         status: 'active',
       );
@@ -78,13 +78,13 @@ void main() {
     test('cleanOrphans supprime sessions de plus de 7 jours', () async {
       final expired = TrekSession(
         id: 'expired-session',
-        trailId: 'gr20-nord',
+        trailId: 'sentier-bleu-nord',
         startedAt: fakeNow.subtract(const Duration(days: 10)),
         status: 'active',
       );
       final recent = TrekSession(
         id: 'recent-session',
-        trailId: 'gr20-sud',
+        trailId: 'sentier-bleu-sud',
         startedAt: fakeNow.subtract(const Duration(hours: 3)),
         status: 'active',
       );
@@ -117,7 +117,7 @@ void main() {
     test('PendingSession.isExpired a 7 jours', () {
       final session = TrekSession(
         id: 'test',
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         startedAt: DateTime.utc(2026, 6, 1),
         status: 'active',
       );

@@ -11,6 +11,8 @@ import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
 import '../domain/diploma_generator.dart';
 import '../domain/diploma_pdf_service.dart';
+import '../providers/session_trace_provider.dart';
+import 'widgets/session_trace_painter.dart';
 import '../../after/providers/in_app_review_provider.dart';
 
 /// Ecran diplome de fin de trek avec recap aventure.
@@ -95,8 +97,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             _StatsSection(config: config),
             const SizedBox(height: AppTheme.spacingLg),
 
-            // Section carte trace
-            _MapTraceSection(),
+            // Section carte trace (trace GPS reel de la session — F3)
+            const _MapTraceSection(),
             const SizedBox(height: AppTheme.spacingLg),
 
             // Section journal count
@@ -464,12 +466,20 @@ class _StatRow extends StatelessWidget {
   }
 }
 
-/// Section carte du trace (placeholder -- rendu reel via MapWidget).
-class _MapTraceSection extends StatelessWidget {
+/// Section carte du trace — trace GPS reel de la session (F3).
+///
+/// Lit le trace persiste de la derniere session de tracking du
+/// sentier actif (session_track_points) et le dessine via
+/// [SessionTracePainter]. Fallback : message recapNoMap si aucun
+/// trace enregistre.
+class _MapTraceSection extends ConsumerWidget {
+  const _MapTraceSection();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final diplomaT = t.diploma;
+    final traceAsync = ref.watch(sessionTraceProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -488,28 +498,58 @@ class _MapTraceSection extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
             ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.map,
-                    size: 48,
-                    color: theme.colorScheme.primary.withAlpha(120),
+            child: traceAsync.when(
+              data: (points) {
+                if (points.length < 2) {
+                  return _NoTracePlaceholder(message: diplomaT.recapNoMap);
+                }
+                return CustomPaint(
+                  painter: SessionTracePainter(
+                    points: [
+                      for (final p in points) Offset(p.lng, p.lat),
+                    ],
+                    color: theme.colorScheme.primary,
                   ),
-                  const SizedBox(height: AppTheme.spacingSm),
-                  Text(
-                    diplomaT.recapNoMap,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: AppTheme.grisGranite,
-                    ),
-                  ),
-                ],
-              ),
+                );
+              },
+              loading: () =>
+                  const Center(child: CircularProgressIndicator()),
+              error: (_, __) =>
+                  _NoTracePlaceholder(message: diplomaT.recapNoMap),
             ),
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Placeholder affiche quand aucun trace de session n'est disponible.
+class _NoTracePlaceholder extends StatelessWidget {
+  const _NoTracePlaceholder({required this.message});
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.map,
+            size: 48,
+            color: theme.colorScheme.primary.withAlpha(120),
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(
+            message,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: AppTheme.grisGranite,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

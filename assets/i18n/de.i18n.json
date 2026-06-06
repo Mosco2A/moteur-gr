@@ -55,6 +55,16 @@
     "altitude": "HÃ¶he",
     "hours": "Ãffnungszeiten"
   },
+  "accommodation": {
+    "types": {
+      "refuge": "Berghütte",
+      "bergerie": "Schäferhütte",
+      "gite": "Herberge",
+      "hotel": "Hotel",
+      "camping": "Campingplatz",
+      "bivouac": "Biwak"
+    }
+  },
   "gps": {
     "permission": "GPS-Berechtigung erforderlich",
     "denied": "Standortzugriff verweigert",

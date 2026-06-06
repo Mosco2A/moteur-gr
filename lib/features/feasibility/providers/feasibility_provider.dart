@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+import '../../../core/engine/trail_engine.dart';
+import '../data/feasibility_question_loader.dart';
 import '../data/feasibility_questions.dart';
 import '../domain/feasibility_calculator.dart';
 
@@ -10,6 +12,7 @@ class FeasibilityState {
   const FeasibilityState({
     required this.currentQuestionIndex,
     required this.answers,
+    this.questions = feasibilityQuestions,
     this.result,
     this.isCompleted = false,
   });
@@ -20,6 +23,11 @@ class FeasibilityState {
   /// Reponses donnees (questionId -> score)
   final Map<String, int> answers;
 
+  /// Questions du sentier actif (finitions V8 F2) — chargees par
+  /// trailId via FeasibilityQuestionLoader, template hardcode en
+  /// attendant le chargement.
+  final List<FeasibilityQuestion> questions;
+
   /// Resultat du questionnaire (null si pas termine)
   final FeasibilityResult? result;
 
@@ -28,10 +36,10 @@ class FeasibilityState {
 
   /// Question courante
   FeasibilityQuestion get currentQuestion =>
-      feasibilityQuestions[currentQuestionIndex];
+      questions[currentQuestionIndex];
 
   /// Nombre total de questions
-  int get totalQuestions => feasibilityQuestions.length;
+  int get totalQuestions => questions.length;
 
   /// Progression (0.0 a 1.0)
   double get progress => currentQuestionIndex / totalQuestions;
@@ -61,8 +69,28 @@ class FeasibilityNotifier extends Notifier<FeasibilityState> {
 
   @override
   FeasibilityState build() {
+    _loadQuestions();
     _loadSavedResult();
     return FeasibilityState.empty;
+  }
+
+  /// Charge les questions du sentier actif (version sentier via
+  /// TrailConfig, fallback fichier commun — finitions V8 F2).
+  Future<void> _loadQuestions() async {
+    try {
+      final config = ref.read(trailConfigProvider);
+      final questions = await FeasibilityQuestionLoader.load(config: config);
+      state = FeasibilityState(
+        currentQuestionIndex: state.currentQuestionIndex,
+        answers: state.answers,
+        questions: questions,
+        result: state.result,
+        isCompleted: state.isCompleted,
+      );
+    } catch (_) {
+      // trailConfigProvider non disponible (ex: tests) : questions
+      // template conservees.
+    }
   }
 
   /// Charge un resultat precedent depuis SharedPreferences.
@@ -76,8 +104,9 @@ class FeasibilityNotifier extends Notifier<FeasibilityState> {
             .map((k, v) => MapEntry(k, v as int));
         final result = FeasibilityCalculator.evaluate(answers);
         state = FeasibilityState(
-          currentQuestionIndex: feasibilityQuestions.length,
+          currentQuestionIndex: state.questions.length,
           answers: answers,
+          questions: state.questions,
           result: result,
           isCompleted: true,
         );
@@ -93,13 +122,14 @@ class FeasibilityNotifier extends Notifier<FeasibilityState> {
     newAnswers[questionId] = score;
 
     final nextIndex = state.currentQuestionIndex + 1;
-    final isComplete = nextIndex >= feasibilityQuestions.length;
+    final isComplete = nextIndex >= state.questions.length;
 
     if (isComplete) {
       final result = FeasibilityCalculator.evaluate(newAnswers);
       state = FeasibilityState(
         currentQuestionIndex: nextIndex,
         answers: newAnswers,
+        questions: state.questions,
         result: result,
         isCompleted: true,
       );
@@ -108,6 +138,7 @@ class FeasibilityNotifier extends Notifier<FeasibilityState> {
       state = FeasibilityState(
         currentQuestionIndex: nextIndex,
         answers: newAnswers,
+        questions: state.questions,
       );
     }
   }
@@ -118,6 +149,7 @@ class FeasibilityNotifier extends Notifier<FeasibilityState> {
       state = FeasibilityState(
         currentQuestionIndex: state.currentQuestionIndex - 1,
         answers: state.answers,
+        questions: state.questions,
       );
     }
   }

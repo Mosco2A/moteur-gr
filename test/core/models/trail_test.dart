@@ -13,7 +13,7 @@ void main() {
         'totalStages': 5,
         'totalDistanceKm': 80.5,
         'totalElevationGain': 4500,
-        'region': 'Corse',
+        'region': 'Region Test',
         'country': 'France',
       };
 
@@ -25,7 +25,7 @@ void main() {
       expect(trail.totalStages, 5);
       expect(trail.totalDistanceKm, 80.5);
       expect(trail.totalElevationGain, 4500);
-      expect(trail.region, 'Corse');
+      expect(trail.region, 'Region Test');
       expect(trail.country, 'France');
     });
 

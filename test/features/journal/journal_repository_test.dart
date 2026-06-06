@@ -26,20 +26,20 @@ void main() {
     test('addNote persiste la note et retourne le modele', () async {
       // Ajouter une note
       final entry = await repository.addNote(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 3,
         text: 'Magnifique vue depuis le Monte Cinto',
       );
 
       // Verifier le modele retourne
       expect(entry.id, greaterThan(0));
-      expect(entry.trailId, 'gr20');
+      expect(entry.trailId, 'sentier-bleu');
       expect(entry.stageNumber, 3);
       expect(entry.text, 'Magnifique vue depuis le Monte Cinto');
       expect(entry.createdAt, isNotNull);
 
       // Verifier la persistance en base
-      final entries = await repository.getByTrailId('gr20');
+      final entries = await repository.getByTrailId('sentier-bleu');
       expect(entries.length, 1);
       expect(entries.first.text, 'Magnifique vue depuis le Monte Cinto');
     });
@@ -48,40 +48,40 @@ void main() {
         () async {
       // Ajouter des notes sur differentes etapes
       await repository.addNote(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
         text: 'Depart de Calenzana',
       );
       await repository.addNote(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 2,
         text: 'Refuge de Carozzu',
       );
       await repository.addNote(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 2,
         text: 'Piscine naturelle geniale',
       );
       await repository.addNote(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 3,
         text: 'Haut Asco',
       );
 
       // Lecture filtree par etape 2
-      final stage2Entries = await repository.getByStage('gr20', 2);
+      final stage2Entries = await repository.getByStage('sentier-bleu', 2);
       expect(stage2Entries.length, 2);
       for (final entry in stage2Entries) {
         expect(entry.stageNumber, 2);
       }
 
       // Etape 1 = 1 note
-      final stage1Entries = await repository.getByStage('gr20', 1);
+      final stage1Entries = await repository.getByStage('sentier-bleu', 1);
       expect(stage1Entries.length, 1);
       expect(stage1Entries.first.text, 'Depart de Calenzana');
 
       // Etape inexistante = vide
-      final stage99 = await repository.getByStage('gr20', 99);
+      final stage99 = await repository.getByStage('sentier-bleu', 99);
       expect(stage99, isEmpty);
     });
   });

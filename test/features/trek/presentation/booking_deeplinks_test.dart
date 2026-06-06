@@ -17,7 +17,7 @@ void main() {
     stageId: 'stage-volcans-1',
     stageNumber: 1,
     nameFr: 'Refuge des Volcans',
-    type: AccommodationType.refuge,
+    type: AccommodationTypeValues.refuge,
     lat: 45.51,
     lng: 2.96,
     phone: '04 00 00 00 01',

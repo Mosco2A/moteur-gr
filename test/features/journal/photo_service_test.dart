@@ -48,7 +48,7 @@ void main() {
     });
 
     test('limite 3 photos/jour respectee — la 4eme est refusee', () async {
-      const trailId = 'gr20';
+      const trailId = 'sentier-bleu';
       final today = DateTime.now();
 
       // Inserer 3 photos pour aujourd'hui

@@ -3,22 +3,29 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'stage_accommodation.freezed.dart';
 part 'stage_accommodation.g.dart';
 
-/// Types d'hebergement le long d'un sentier.
-enum AccommodationType {
-  refuge,
-  bergerie,
-  gite,
-  hotel,
-  camping,
-  bivouac;
+/// Type d'hebergement le long d'un sentier.
+/// Utilise String pour extensibilite (#81752) — chaque sentier peut definir
+/// ses propres types dans son JSON. Une valeur inconnue est PRESERVEE telle
+/// quelle (jamais ecrasee) ; seul son AFFICHAGE passe par un fallback
+/// generique (voir accommodation_type_ui.dart).
+typedef AccommodationType = String;
 
-  /// Parse depuis la valeur texte stockee en base.
-  static AccommodationType fromDb(String value) {
-    return AccommodationType.values.firstWhere(
-      (e) => e.name == value,
-      orElse: () => AccommodationType.refuge,
-    );
-  }
+/// Valeurs connues pour AccommodationType (mapping label/icone dedie).
+abstract class AccommodationTypeValues {
+  static const String refuge = 'refuge';
+  static const String bergerie = 'bergerie';
+  static const String gite = 'gite';
+  static const String hotel = 'hotel';
+  static const String camping = 'camping';
+  static const String bivouac = 'bivouac';
+  static const List<String> values = [
+    refuge,
+    bergerie,
+    gite,
+    hotel,
+    camping,
+    bivouac,
+  ];
 }
 
 /// Hebergement rattache a une etape — modele domaine.

@@ -45,6 +45,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$stage$fr stage = Translations$stage$fr.internal(_root);
 	late final Translations$trail$fr trail = Translations$trail$fr.internal(_root);
 	late final Translations$poi$fr poi = Translations$poi$fr.internal(_root);
+	late final Translations$accommodation$fr accommodation = Translations$accommodation$fr.internal(_root);
 	late final Translations$gps$fr gps = Translations$gps$fr.internal(_root);
 	late final Translations$planning$fr planning = Translations$planning$fr.internal(_root);
 	late final Translations$tracking$fr tracking = Translations$tracking$fr.internal(_root);
@@ -231,6 +232,16 @@ class Translations$poi$fr {
 
 	/// fr: 'Horaires'
 	String get hours => 'Horaires';
+}
+
+// Path: accommodation
+class Translations$accommodation$fr {
+	Translations$accommodation$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$accommodation$types$fr types = Translations$accommodation$types$fr.internal(_root);
 }
 
 // Path: gps
@@ -1080,6 +1091,33 @@ class Translations$stage$difficulty$fr {
 	String get expert => 'Expert';
 }
 
+// Path: accommodation.types
+class Translations$accommodation$types$fr {
+	Translations$accommodation$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Refuge'
+	String get refuge => 'Refuge';
+
+	/// fr: 'Bergerie'
+	String get bergerie => 'Bergerie';
+
+	/// fr: 'Gîte'
+	String get gite => 'Gîte';
+
+	/// fr: 'Hôtel'
+	String get hotel => 'Hôtel';
+
+	/// fr: 'Camping'
+	String get camping => 'Camping';
+
+	/// fr: 'Bivouac'
+	String get bivouac => 'Bivouac';
+}
+
 // Path: checklist.categories
 class Translations$checklist$categories$fr {
 	Translations$checklist$categories$fr.internal(this._root);
@@ -1588,6 +1626,12 @@ extension on Translations {
 			'poi.filter' => 'Filtrer les points d\'intÃ©rÃªt',
 			'poi.altitude' => 'Altitude',
 			'poi.hours' => 'Horaires',
+			'accommodation.types.refuge' => 'Refuge',
+			'accommodation.types.bergerie' => 'Bergerie',
+			'accommodation.types.gite' => 'Gîte',
+			'accommodation.types.hotel' => 'Hôtel',
+			'accommodation.types.camping' => 'Camping',
+			'accommodation.types.bivouac' => 'Bivouac',
 			'gps.permission' => 'Autorisation GPS requise',
 			'gps.denied' => 'Acces a la localisation refuse',
 			'gps.disabled' => 'Service de localisation desactive',

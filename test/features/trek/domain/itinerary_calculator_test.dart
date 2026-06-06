@@ -8,7 +8,7 @@ import 'package:moteur_gr/features/trek/domain/models/trail_feasibility_params.d
 
 void main() {
   const stage1 = StageModel(
-    trailId: 'gr20',
+    trailId: 'sentier-bleu',
     stageNumber: 1,
     name: 'Calenzana - Ortu di u Piobbu',
     distanceKm: 12.0,
@@ -21,7 +21,7 @@ void main() {
   );
 
   const stage2 = StageModel(
-    trailId: 'gr20',
+    trailId: 'sentier-bleu',
     stageNumber: 2,
     name: 'Ortu di u Piobbu - Carrozzu',
     distanceKm: 8.0,
@@ -34,7 +34,7 @@ void main() {
   );
 
   const stage3 = StageModel(
-    trailId: 'gr20',
+    trailId: 'sentier-bleu',
     stageNumber: 3,
     name: 'Carrozzu - Ascu Stagnu',
     distanceKm: 6.0,

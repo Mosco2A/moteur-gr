@@ -42,7 +42,7 @@ void main() {
 
       // Act — soumettre un feedback
       final id = await service.submit(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         category: FeedbackCategory.bug,
         content: 'Crash au demarrage de la carte',
         rating: 2,
@@ -63,7 +63,7 @@ void main() {
 
       // Act
       final id = await service.submit(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         category: FeedbackCategory.suggestion,
         content: 'Ajouter un mode sombre',
       );
@@ -80,13 +80,13 @@ void main() {
       // Arrange — stocker offline
       monitor.fakeStatus = ConnectivityStatusValues.offline;
       await service.submit(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         category: FeedbackCategory.compliment,
         content: 'Super app !',
         rating: 5,
       );
       await service.submit(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         category: FeedbackCategory.bug,
         content: 'GPS instable en foret',
       );
@@ -104,7 +104,7 @@ void main() {
     test('flush retourne 0 quand hors ligne', () async {
       monitor.fakeStatus = ConnectivityStatusValues.offline;
       await service.submit(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         category: FeedbackCategory.bug,
         content: 'Test offline',
       );

@@ -55,6 +55,16 @@
     "altitude": "Altitude",
     "hours": "Horaires"
   },
+  "accommodation": {
+    "types": {
+      "refuge": "Refuge",
+      "bergerie": "Bergerie",
+      "gite": "Gîte",
+      "hotel": "Hôtel",
+      "camping": "Camping",
+      "bivouac": "Bivouac"
+    }
+  },
   "gps": {
     "permission": "Autorisation GPS requise",
     "denied": "Acces a la localisation refuse",

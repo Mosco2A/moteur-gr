@@ -42,7 +42,7 @@ void main() {
     // Inserer une etape de test avec coordonnees dynamiques
     await stagesDao.insertAll([
       const StagesCompanion(
-        trailId: Value('gr20'),
+        trailId: Value('sentier-bleu'),
         stageNumber: Value(1),
         name: Value('Calenzana - Ortu di u Piobbu'),
         distanceKm: Value(12.0),
@@ -84,7 +84,7 @@ void main() {
 
       // ACT
       final forecast = await repo.getForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
       );
 
@@ -97,7 +97,7 @@ void main() {
 
       // Verifier que le cache a ete rempli
       final cached = await cache.getCachedForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
       );
       expect(cached, isNotNull,
@@ -138,14 +138,14 @@ void main() {
       expect(forecast, isNotNull);
 
       await cacheValid.saveForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
         forecast: forecast!,
       );
 
       // ACT & ASSERT : cache avec TTL long => retourne la prevision
       final validResult = await cacheValid.getCachedForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
       );
       expect(validResult, isNotNull,
@@ -154,7 +154,7 @@ void main() {
 
       // ACT & ASSERT : cache avec TTL 0 => expire immediatement
       final expiredResult = await cacheExpired.getCachedForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
       );
       expect(expiredResult, isNull,

@@ -20,45 +20,45 @@ void main() {
   group('WeatherCacheDao', () {
     test('upsertForecast insère un cache', () async {
       await dao.upsertForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
         forecastJson: '{"test": true}',
       );
 
-      final cached = await dao.getValidCache('gr20', 1);
+      final cached = await dao.getValidCache('sentier-bleu', 1);
       expect(cached, isNotNull);
       expect(cached!.forecastJson, '{"test": true}');
     });
 
     test('getValidCache retourne null si aucun cache', () async {
-      final cached = await dao.getValidCache('gr20', 1);
+      final cached = await dao.getValidCache('sentier-bleu', 1);
       expect(cached, isNull);
     });
 
     test('upsertForecast remplace l\'ancien cache', () async {
       await dao.upsertForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
         forecastJson: '{"version": 1}',
       );
       await dao.upsertForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
         forecastJson: '{"version": 2}',
       );
 
-      final cached = await dao.getValidCache('gr20', 1);
+      final cached = await dao.getValidCache('sentier-bleu', 1);
       expect(cached!.forecastJson, '{"version": 2}');
     });
 
     test('clearByTrailId supprime le cache du sentier', () async {
       await dao.upsertForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
         forecastJson: '{}',
       );
       await dao.upsertForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 2,
         forecastJson: '{}',
       );
@@ -68,7 +68,7 @@ void main() {
         forecastJson: '{}',
       );
 
-      final deleted = await dao.clearByTrailId('gr20');
+      final deleted = await dao.clearByTrailId('sentier-bleu');
       expect(deleted, 2);
 
       final tmb = await dao.getValidCache('tmb', 1);

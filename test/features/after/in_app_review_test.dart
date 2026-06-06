@@ -27,7 +27,7 @@ void main() {
   group('InAppReview -- E5.17', () {
     test('demande faite 1 fois, pas 2 fois meme trek', () {
       final tracker = FakeReviewTracker();
-      const trailId = 'trek-gr20-2026-001';
+      const trailId = 'trek-bleu-2026-001';
 
       // Premiere demande : doit reussir
       expect(tracker.wasReviewRequested(trailId), isFalse);
@@ -40,7 +40,7 @@ void main() {
       expect(secondResult, isFalse);
 
       // Trek different : doit reussir
-      const otherTrailId = 'trek-gr20-2026-002';
+      const otherTrailId = 'trek-bleu-2026-002';
       expect(tracker.wasReviewRequested(otherTrailId), isFalse);
       final otherResult = tracker.requestReviewIfEligible(otherTrailId);
       expect(otherResult, isTrue);

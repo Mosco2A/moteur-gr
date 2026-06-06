@@ -11087,6 +11087,415 @@ class FollowerSlotsCompanion extends UpdateCompanion<FollowerSlotRow> {
   }
 }
 
+class $SessionTrackPointsTable extends SessionTrackPoints
+    with TableInfo<$SessionTrackPointsTable, SessionTrackPoint> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SessionTrackPointsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latMeta = const VerificationMeta('lat');
+  @override
+  late final GeneratedColumn<double> lat = GeneratedColumn<double>(
+    'lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lngMeta = const VerificationMeta('lng');
+  @override
+  late final GeneratedColumn<double> lng = GeneratedColumn<double>(
+    'lng',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _altitudeMeta = const VerificationMeta(
+    'altitude',
+  );
+  @override
+  late final GeneratedColumn<double> altitude = GeneratedColumn<double>(
+    'altitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _recordedAtMeta = const VerificationMeta(
+    'recordedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> recordedAt = GeneratedColumn<DateTime>(
+    'recorded_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    lat,
+    lng,
+    altitude,
+    recordedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'session_track_points';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SessionTrackPoint> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('lat')) {
+      context.handle(
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latMeta);
+    }
+    if (data.containsKey('lng')) {
+      context.handle(
+        _lngMeta,
+        lng.isAcceptableOrUnknown(data['lng']!, _lngMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lngMeta);
+    }
+    if (data.containsKey('altitude')) {
+      context.handle(
+        _altitudeMeta,
+        altitude.isAcceptableOrUnknown(data['altitude']!, _altitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_altitudeMeta);
+    }
+    if (data.containsKey('recorded_at')) {
+      context.handle(
+        _recordedAtMeta,
+        recordedAt.isAcceptableOrUnknown(data['recorded_at']!, _recordedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_recordedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SessionTrackPoint map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SessionTrackPoint(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      lat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lat'],
+      )!,
+      lng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lng'],
+      )!,
+      altitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}altitude'],
+      )!,
+      recordedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}recorded_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SessionTrackPointsTable createAlias(String alias) {
+    return $SessionTrackPointsTable(attachedDatabase, alias);
+  }
+}
+
+class SessionTrackPoint extends DataClass
+    implements Insertable<SessionTrackPoint> {
+  /// Clé primaire auto-incrémentée (ordre d'enregistrement)
+  final int id;
+
+  /// Identifiant du sentier (TrailConfig.id)
+  final String trailId;
+
+  /// Latitude WGS84
+  final double lat;
+
+  /// Longitude WGS84
+  final double lng;
+
+  /// Altitude en mètres
+  final double altitude;
+
+  /// Horodatage d'enregistrement du point
+  final DateTime recordedAt;
+  const SessionTrackPoint({
+    required this.id,
+    required this.trailId,
+    required this.lat,
+    required this.lng,
+    required this.altitude,
+    required this.recordedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['lat'] = Variable<double>(lat);
+    map['lng'] = Variable<double>(lng);
+    map['altitude'] = Variable<double>(altitude);
+    map['recorded_at'] = Variable<DateTime>(recordedAt);
+    return map;
+  }
+
+  SessionTrackPointsCompanion toCompanion(bool nullToAbsent) {
+    return SessionTrackPointsCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      lat: Value(lat),
+      lng: Value(lng),
+      altitude: Value(altitude),
+      recordedAt: Value(recordedAt),
+    );
+  }
+
+  factory SessionTrackPoint.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SessionTrackPoint(
+      id: serializer.fromJson<int>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      lat: serializer.fromJson<double>(json['lat']),
+      lng: serializer.fromJson<double>(json['lng']),
+      altitude: serializer.fromJson<double>(json['altitude']),
+      recordedAt: serializer.fromJson<DateTime>(json['recordedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'lat': serializer.toJson<double>(lat),
+      'lng': serializer.toJson<double>(lng),
+      'altitude': serializer.toJson<double>(altitude),
+      'recordedAt': serializer.toJson<DateTime>(recordedAt),
+    };
+  }
+
+  SessionTrackPoint copyWith({
+    int? id,
+    String? trailId,
+    double? lat,
+    double? lng,
+    double? altitude,
+    DateTime? recordedAt,
+  }) => SessionTrackPoint(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    lat: lat ?? this.lat,
+    lng: lng ?? this.lng,
+    altitude: altitude ?? this.altitude,
+    recordedAt: recordedAt ?? this.recordedAt,
+  );
+  SessionTrackPoint copyWithCompanion(SessionTrackPointsCompanion data) {
+    return SessionTrackPoint(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      lat: data.lat.present ? data.lat.value : this.lat,
+      lng: data.lng.present ? data.lng.value : this.lng,
+      altitude: data.altitude.present ? data.altitude.value : this.altitude,
+      recordedAt: data.recordedAt.present
+          ? data.recordedAt.value
+          : this.recordedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SessionTrackPoint(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
+          ..write('altitude: $altitude, ')
+          ..write('recordedAt: $recordedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, trailId, lat, lng, altitude, recordedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SessionTrackPoint &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.lat == this.lat &&
+          other.lng == this.lng &&
+          other.altitude == this.altitude &&
+          other.recordedAt == this.recordedAt);
+}
+
+class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
+  final Value<int> id;
+  final Value<String> trailId;
+  final Value<double> lat;
+  final Value<double> lng;
+  final Value<double> altitude;
+  final Value<DateTime> recordedAt;
+  const SessionTrackPointsCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.lat = const Value.absent(),
+    this.lng = const Value.absent(),
+    this.altitude = const Value.absent(),
+    this.recordedAt = const Value.absent(),
+  });
+  SessionTrackPointsCompanion.insert({
+    this.id = const Value.absent(),
+    required String trailId,
+    required double lat,
+    required double lng,
+    required double altitude,
+    required DateTime recordedAt,
+  }) : trailId = Value(trailId),
+       lat = Value(lat),
+       lng = Value(lng),
+       altitude = Value(altitude),
+       recordedAt = Value(recordedAt);
+  static Insertable<SessionTrackPoint> custom({
+    Expression<int>? id,
+    Expression<String>? trailId,
+    Expression<double>? lat,
+    Expression<double>? lng,
+    Expression<double>? altitude,
+    Expression<DateTime>? recordedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (lat != null) 'lat': lat,
+      if (lng != null) 'lng': lng,
+      if (altitude != null) 'altitude': altitude,
+      if (recordedAt != null) 'recorded_at': recordedAt,
+    });
+  }
+
+  SessionTrackPointsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<double>? lat,
+    Value<double>? lng,
+    Value<double>? altitude,
+    Value<DateTime>? recordedAt,
+  }) {
+    return SessionTrackPointsCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
+      altitude: altitude ?? this.altitude,
+      recordedAt: recordedAt ?? this.recordedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (lat.present) {
+      map['lat'] = Variable<double>(lat.value);
+    }
+    if (lng.present) {
+      map['lng'] = Variable<double>(lng.value);
+    }
+    if (altitude.present) {
+      map['altitude'] = Variable<double>(altitude.value);
+    }
+    if (recordedAt.present) {
+      map['recorded_at'] = Variable<DateTime>(recordedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SessionTrackPointsCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('lat: $lat, ')
+          ..write('lng: $lng, ')
+          ..write('altitude: $altitude, ')
+          ..write('recordedAt: $recordedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11115,6 +11524,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $HealthInfoEntriesTable(this);
   late final $FollowSessionsTable followSessions = $FollowSessionsTable(this);
   late final $FollowerSlotsTable followerSlots = $FollowerSlotsTable(this);
+  late final $SessionTrackPointsTable sessionTrackPoints =
+      $SessionTrackPointsTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -11156,6 +11567,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final FollowerSlotsDao followerSlotsDao = FollowerSlotsDao(
     this as AppDatabase,
   );
+  late final SessionTrackPointsDao sessionTrackPointsDao =
+      SessionTrackPointsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11181,6 +11594,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     healthInfoEntries,
     followSessions,
     followerSlots,
+    sessionTrackPoints,
   ];
 }
 
@@ -16620,6 +17034,234 @@ typedef $$FollowerSlotsTableProcessedTableManager =
       FollowerSlotRow,
       PrefetchHooks Function()
     >;
+typedef $$SessionTrackPointsTableCreateCompanionBuilder =
+    SessionTrackPointsCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required double lat,
+      required double lng,
+      required double altitude,
+      required DateTime recordedAt,
+    });
+typedef $$SessionTrackPointsTableUpdateCompanionBuilder =
+    SessionTrackPointsCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<double> lat,
+      Value<double> lng,
+      Value<double> altitude,
+      Value<DateTime> recordedAt,
+    });
+
+class $$SessionTrackPointsTableFilterComposer
+    extends Composer<_$AppDatabase, $SessionTrackPointsTable> {
+  $$SessionTrackPointsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lat => $composableBuilder(
+    column: $table.lat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lng => $composableBuilder(
+    column: $table.lng,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get altitude => $composableBuilder(
+    column: $table.altitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get recordedAt => $composableBuilder(
+    column: $table.recordedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SessionTrackPointsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SessionTrackPointsTable> {
+  $$SessionTrackPointsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lat => $composableBuilder(
+    column: $table.lat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lng => $composableBuilder(
+    column: $table.lng,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get altitude => $composableBuilder(
+    column: $table.altitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get recordedAt => $composableBuilder(
+    column: $table.recordedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SessionTrackPointsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SessionTrackPointsTable> {
+  $$SessionTrackPointsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<double> get lat =>
+      $composableBuilder(column: $table.lat, builder: (column) => column);
+
+  GeneratedColumn<double> get lng =>
+      $composableBuilder(column: $table.lng, builder: (column) => column);
+
+  GeneratedColumn<double> get altitude =>
+      $composableBuilder(column: $table.altitude, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get recordedAt => $composableBuilder(
+    column: $table.recordedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$SessionTrackPointsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SessionTrackPointsTable,
+          SessionTrackPoint,
+          $$SessionTrackPointsTableFilterComposer,
+          $$SessionTrackPointsTableOrderingComposer,
+          $$SessionTrackPointsTableAnnotationComposer,
+          $$SessionTrackPointsTableCreateCompanionBuilder,
+          $$SessionTrackPointsTableUpdateCompanionBuilder,
+          (
+            SessionTrackPoint,
+            BaseReferences<
+              _$AppDatabase,
+              $SessionTrackPointsTable,
+              SessionTrackPoint
+            >,
+          ),
+          SessionTrackPoint,
+          PrefetchHooks Function()
+        > {
+  $$SessionTrackPointsTableTableManager(
+    _$AppDatabase db,
+    $SessionTrackPointsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SessionTrackPointsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SessionTrackPointsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SessionTrackPointsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lng = const Value.absent(),
+                Value<double> altitude = const Value.absent(),
+                Value<DateTime> recordedAt = const Value.absent(),
+              }) => SessionTrackPointsCompanion(
+                id: id,
+                trailId: trailId,
+                lat: lat,
+                lng: lng,
+                altitude: altitude,
+                recordedAt: recordedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required double lat,
+                required double lng,
+                required double altitude,
+                required DateTime recordedAt,
+              }) => SessionTrackPointsCompanion.insert(
+                id: id,
+                trailId: trailId,
+                lat: lat,
+                lng: lng,
+                altitude: altitude,
+                recordedAt: recordedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SessionTrackPointsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SessionTrackPointsTable,
+      SessionTrackPoint,
+      $$SessionTrackPointsTableFilterComposer,
+      $$SessionTrackPointsTableOrderingComposer,
+      $$SessionTrackPointsTableAnnotationComposer,
+      $$SessionTrackPointsTableCreateCompanionBuilder,
+      $$SessionTrackPointsTableUpdateCompanionBuilder,
+      (
+        SessionTrackPoint,
+        BaseReferences<
+          _$AppDatabase,
+          $SessionTrackPointsTable,
+          SessionTrackPoint
+        >,
+      ),
+      SessionTrackPoint,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -16663,4 +17305,6 @@ class $AppDatabaseManager {
       $$FollowSessionsTableTableManager(_db, _db.followSessions);
   $$FollowerSlotsTableTableManager get followerSlots =>
       $$FollowerSlotsTableTableManager(_db, _db.followerSlots);
+  $$SessionTrackPointsTableTableManager get sessionTrackPoints =>
+      $$SessionTrackPointsTableTableManager(_db, _db.sessionTrackPoints);
 }

@@ -53,10 +53,10 @@ void main() {
         // photoUrl: null — JAMAIS stocke
       );
 
-      // Verifier : aucune PII dans l'AuthUser
-      expect(user.email, isNull, reason: 'Email ne doit JAMAIS etre stocke');
-      expect(user.photoUrl, isNull,
-          reason: 'Photo ne doit JAMAIS etre stockee');
+      // Verifier : aucune PII dans l'AuthUser.
+      // email/photoUrl n'existent PLUS dans le modele (F7) : le
+      // contrat zero PII est garanti a la compilation, plus fort
+      // qu'une assertion runtime.
       expect(user.displayName, isNull,
           reason: 'Nom Firebase ne doit JAMAIS etre stocke');
 

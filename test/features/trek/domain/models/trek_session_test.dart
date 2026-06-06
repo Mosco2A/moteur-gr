@@ -8,7 +8,7 @@ void main() {
     test('serialization roundtrip', () {
       final session = TrekSession(
         id: '550e8400-e29b-41d4-a716-446655440000',
-        trailId: 'gr20-nord',
+        trailId: 'sentier-bleu-nord',
         startedAt: DateTime.utc(2026, 6, 15, 7, 30),
         finishedAt: DateTime.utc(2026, 6, 15, 18, 45),
         status: 'completed',
@@ -21,7 +21,7 @@ void main() {
 
       expect(restored, equals(session));
       expect(restored.id, equals('550e8400-e29b-41d4-a716-446655440000'));
-      expect(restored.trailId, equals('gr20-nord'));
+      expect(restored.trailId, equals('sentier-bleu-nord'));
       expect(restored.startedAt, equals(DateTime.utc(2026, 6, 15, 7, 30)));
       expect(restored.finishedAt, equals(DateTime.utc(2026, 6, 15, 18, 45)));
       expect(restored.status, equals('completed'));
@@ -47,7 +47,7 @@ void main() {
     test('status String extensible', () {
       final session = TrekSession(
         id: 'def-456',
-        trailId: 'gr20-sud',
+        trailId: 'sentier-bleu-sud',
         startedAt: DateTime.utc(2026, 8, 1),
         status: 'paused',
       );

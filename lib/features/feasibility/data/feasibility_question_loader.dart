@@ -2,27 +2,45 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 
+import '../../../core/config/trail_config.dart';
 import 'feasibility_questions.dart';
 
 /// Service de chargement des questions de faisabilite depuis JSON.
 ///
-/// Charge le fichier assets/data/feasibility_questions.json
-/// et le parse en liste de FeasibilityQuestion.
-/// Permet la configuration des questions sans recompilation.
+/// Resolution par sentier (finitions V8 F2) :
+/// 1. version sentier `<seedAssetsBase>/feasibility_questions.json`
+///    (TrailConfig) si elle existe ;
+/// 2. fallback fichier commun `assets/data/feasibility_questions.json` ;
+/// 3. fallback template hardcode (securite).
+/// Permet a chaque sentier de definir ses propres questions sans
+/// recompilation du moteur.
 class FeasibilityQuestionLoader {
   const FeasibilityQuestionLoader._();
 
-  /// Chemin du fichier JSON de questions
-  static const String _assetPath = 'assets/data/feasibility_questions.json';
+  /// Chemin du fichier JSON commun a tous les sentiers.
+  static const String commonAssetPath =
+      'assets/data/feasibility_questions.json';
 
-  /// Charge les questions depuis le fichier JSON embarque.
+  /// Nom du fichier de questions dans les assets d'un sentier.
+  static const String trailFileName = 'feasibility_questions.json';
+
+  /// Charge les questions du sentier [config].
   ///
-  /// Retourne la liste des questions parsees.
-  /// En cas d'erreur de lecture/parsing, retourne le template
-  /// hardcode comme fallback de securite.
-  static Future<List<FeasibilityQuestion>> load() async {
+  /// Sans [config] (ou sans seedAssetsBase), charge directement le
+  /// fichier commun. En cas d'erreur de lecture/parsing, retourne le
+  /// template hardcode comme fallback de securite.
+  static Future<List<FeasibilityQuestion>> load({TrailConfig? config}) async {
+    final base = config?.seedAssetsBase;
+    if (base != null) {
+      try {
+        final jsonString = await rootBundle.loadString('$base/$trailFileName');
+        return parseQuestions(jsonString);
+      } catch (_) {
+        // Pas de version sentier : fallback fichier commun.
+      }
+    }
     try {
-      final jsonString = await rootBundle.loadString(_assetPath);
+      final jsonString = await rootBundle.loadString(commonAssetPath);
       return parseQuestions(jsonString);
     } catch (_) {
       // Fallback securite : questions hardcodees

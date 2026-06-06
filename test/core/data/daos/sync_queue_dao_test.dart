@@ -37,17 +37,17 @@ void main() {
 
   group('SyncQueueDao CRUD', () {
     test('insertOrReplace puis getByTrailId retourne les actions', () async {
-      await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta'));
-      await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_stages'));
-      final result = await dao.getByTrailId('gr20');
+      await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta'));
+      await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_stages'));
+      final result = await dao.getByTrailId('sentier-bleu');
       expect(result.length, 2);
       expect(result[0].action, 'insert_trail_meta');
       expect(result[1].action, 'insert_stages');
     });
 
     test('getPending retourne uniquement les actions pending', () async {
-      await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta', status: 'pending'));
-      await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_stages', status: 'completed'));
+      await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta', status: 'pending'));
+      await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_stages', status: 'completed'));
       final pending = await dao.getPending();
       expect(pending.length, 1);
       expect(pending[0].action, 'insert_trail_meta');
@@ -61,16 +61,16 @@ void main() {
 
   group('SyncQueueDao markCompleted', () {
     test('markCompleted change le statut et set completedAt', () async {
-      final id = await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta'));
+      final id = await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta'));
       await dao.markCompleted(id);
-      final actions = await dao.getByTrailId('gr20');
+      final actions = await dao.getByTrailId('sentier-bleu');
       expect(actions.length, 1);
       expect(actions[0].status, 'completed');
       expect(actions[0].completedAt, isNotNull);
     });
 
     test('markCompleted retire l action des pending', () async {
-      final id = await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta'));
+      final id = await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta'));
       await dao.markCompleted(id);
       final pending = await dao.getPending();
       expect(pending, isEmpty);
@@ -79,9 +79,9 @@ void main() {
 
   group('SyncQueueDao markFailed', () {
     test('markFailed change le statut et stocke l erreur', () async {
-      final id = await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta'));
+      final id = await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta'));
       await dao.markFailed(id, 'Network timeout');
-      final actions = await dao.getByTrailId('gr20');
+      final actions = await dao.getByTrailId('sentier-bleu');
       expect(actions[0].status, 'failed');
       expect(actions[0].payload, 'Network timeout');
     });
@@ -89,18 +89,18 @@ void main() {
 
   group('SyncQueueDao incrementRetry', () {
     test('incrementRetry augmente le compteur', () async {
-      final id = await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta'));
+      final id = await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta'));
       await dao.incrementRetry(id);
-      final actions = await dao.getByTrailId('gr20');
+      final actions = await dao.getByTrailId('sentier-bleu');
       expect(actions[0].retryCount, 1);
     });
 
     test('incrementRetry fonctionne plusieurs fois', () async {
-      final id = await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta'));
+      final id = await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta'));
       await dao.incrementRetry(id);
       await dao.incrementRetry(id);
       await dao.incrementRetry(id);
-      final actions = await dao.getByTrailId('gr20');
+      final actions = await dao.getByTrailId('sentier-bleu');
       expect(actions[0].retryCount, 3);
     });
 
@@ -111,10 +111,10 @@ void main() {
 
   group('SyncQueueDao deleteByTrailId', () {
     test('deleteByTrailId supprime toutes les actions du sentier', () async {
-      await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_trail_meta'));
-      await dao.insertOrReplace(makeAction(trailId: 'gr20', action: 'insert_stages'));
+      await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_trail_meta'));
+      await dao.insertOrReplace(makeAction(trailId: 'sentier-bleu', action: 'insert_stages'));
       await dao.insertOrReplace(makeAction(trailId: 'tmb', action: 'insert_trail_meta'));
-      final deleted = await dao.deleteByTrailId('gr20');
+      final deleted = await dao.deleteByTrailId('sentier-bleu');
       expect(deleted, 2);
       final remaining = await dao.getByTrailId('tmb');
       expect(remaining.length, 1);

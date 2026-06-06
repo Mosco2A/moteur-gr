@@ -15,23 +15,22 @@ void main() {
       expect(user.authMethod, AuthMethodValues.anonymous);
       expect(user.isAnonymous, true);
       expect(user.displayName, isNull);
-      expect(user.email, isNull);
-      expect(user.photoUrl, isNull);
+      // email/photoUrl n'existent plus dans AuthUser (F7) :
+      // zero PII garanti a la compilation.
     });
 
     test('constructeur identifié', () {
+      // F7 : le modele n'accepte AUCUNE PII (ni email ni photo),
+      // meme pour un utilisateur identifie — pseudo libre uniquement.
       const user = AuthUser(
         uid: 'google-uid',
         authMethod: AuthMethodValues.google,
-        displayName: 'Jean Dupont',
-        email: 'jean@example.com',
-        photoUrl: 'https://photo.url',
+        displayName: 'Pseudo Libre',
         isAnonymous: false,
       );
 
       expect(user.isAnonymous, false);
-      expect(user.displayName, 'Jean Dupont');
-      expect(user.email, 'jean@example.com');
+      expect(user.displayName, 'Pseudo Libre');
       expect(user.authMethod, AuthMethodValues.google);
     });
   });

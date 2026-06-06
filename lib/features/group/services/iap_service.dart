@@ -15,13 +15,31 @@ const kWebFollowPassProductId = 'web_follow_pass';
 /// Prix du pass suivi web en EUR.
 const kWebFollowPassPrice = 1.0;
 
+/// KILL-SWITCH paiement reel — finitions V8 F6.
+///
+/// `false` = AUCUN appel reel au store possible : toutes les methodes
+/// store de [IapService] sont court-circuitees en stub, quel que soit
+/// le `testMode` de l'instance. AUCUN produit store reel n'est cree
+/// cote Google Play / App Store a ce stade.
+///
+/// Pour activer le paiement reel (decision produit + GO explicite) :
+///  1. creer le produit [kWebFollowPassProductId] dans Play Console
+///     et App Store Connect ;
+///  2. implementer la verification des recus d'achat
+///     (purchaseStream -> verification -> handlePurchaseComplete),
+///     aujourd'hui buyAndGenerateLink est un flux mock ;
+///  3. passer cette constante a `true` (revue de code obligatoire).
+const bool kIapRealModeEnabled = false;
+
 /// Service d achat in-app pour le pass suivi web (E4.14).
 ///
 /// Permet a un proche d acheter un pass a 1 EUR pour suivre
 /// le randonneur depuis le web sans publicite.
 /// Apres achat, genere un [ShareLink] de type web permanent.
 ///
-/// STUBS/SANDBOX UNIQUEMENT : testMode bypasse le store ;
+/// STUBS/SANDBOX UNIQUEMENT : testMode (defaut) bypasse le store, et
+/// le kill-switch [kIapRealModeEnabled] verrouille TOUT appel reel
+/// meme si testMode est desactive (garde-fou anti-paiement-reel F6) ;
 /// en production le flux passe par purchaseStream (verification
 /// d achat requise avant generation du lien).
 ///
@@ -30,7 +48,7 @@ class IapService {
   IapService({
     InAppPurchase? iapInstance,
     this.linksConfig = const FollowLinksConfig(),
-    this.testMode = false,
+    this.testMode = true,
   }) : _iapOverride = iapInstance;
 
   /// Instance IAP injectee (ou null pour utiliser le singleton).
@@ -43,11 +61,21 @@ class IapService {
   InAppPurchase get _iap => _iapOverride ?? InAppPurchase.instance;
 
   /// Mode test pour bypasser les appels reels au store.
+  ///
+  /// `true` par DEFAUT (F6) : le mode reel est un opt-in explicite,
+  /// lui-meme verrouille par [kIapRealModeEnabled].
   final bool testMode;
+
+  /// Garde-fou central : true tant que les appels store sont interdits.
+  ///
+  /// Combine le testMode d'instance et le kill-switch global — une
+  /// instance construite avec `testMode: false` reste neutralisee
+  /// tant que [kIapRealModeEnabled] est false.
+  bool get _stubbed => testMode || !kIapRealModeEnabled;
 
   /// Verifie si l achat in-app est disponible sur l appareil.
   Future<bool> isAvailable() async {
-    if (testMode) return true;
+    if (_stubbed) return true;
     return _iap.isAvailable();
   }
 
@@ -56,7 +84,7 @@ class IapService {
   /// Retourne null si le produit n est pas trouve ou
   /// si le store est indisponible.
   Future<ProductDetails?> getPassDetails() async {
-    if (testMode) return null;
+    if (_stubbed) return null;
 
     final response = await _iap.queryProductDetails({kWebFollowPassProductId});
 
@@ -74,7 +102,7 @@ class IapService {
   /// Retourne `true` si l achat a ete initie (pas encore confirme).
   /// L ecoute des [purchaseStream] gere la confirmation.
   Future<bool> purchaseWebFollowPass({ProductDetails? productDetails}) async {
-    if (testMode) return true;
+    if (_stubbed) return true;
 
     final details = productDetails ?? await getPassDetails();
     if (details == null) {
@@ -141,13 +169,17 @@ class IapService {
   /// A appeler au demarrage du service pour gerer les achats
   /// en attente et les restaurations.
   Stream<List<PurchaseDetails>> get purchaseStream {
-    if (testMode) return const Stream.empty();
+    if (_stubbed) return const Stream.empty();
     return _iap.purchaseStream;
   }
 }
 
 /// Provider Riverpod pour le [IapService].
+///
+/// testMode force (F6) : aucun paiement reel possible depuis l'app.
+/// L'activation du mode reel passe par le kill-switch documente
+/// [kIapRealModeEnabled] — voir sa doc pour la procedure.
 final iapServiceProvider = Provider<IapService>((ref) {
   final links = ref.watch(followLinksConfigProvider);
-  return IapService(linksConfig: links);
+  return IapService(linksConfig: links, testMode: true);
 });

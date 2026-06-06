@@ -43,18 +43,18 @@ void main() {
 
   group('TrailManifestsDao CRUD', () {
     test('insertOrReplace puis getByTrailId retourne le bon manifest', () async {
-      await dao.insertOrReplace(makeManifest(trailId: 'gr20'));
+      await dao.insertOrReplace(makeManifest(trailId: 'sentier-bleu'));
 
-      final result = await dao.getByTrailId('gr20');
+      final result = await dao.getByTrailId('sentier-bleu');
       expect(result, isNotNull);
-      expect(result!.trailId, 'gr20');
+      expect(result!.trailId, 'sentier-bleu');
       expect(result.dataVersion, 1);
       expect(result.hash, 'test_hash_sha256');
       expect(result.status, 'active');
     });
 
     test('getAll retourne tous les manifests', () async {
-      await dao.insertOrReplace(makeManifest(trailId: 'gr20'));
+      await dao.insertOrReplace(makeManifest(trailId: 'sentier-bleu'));
       await dao.insertOrReplace(makeManifest(trailId: 'mare_a_mare'));
       await dao.insertOrReplace(makeManifest(trailId: 'tmb'));
 
@@ -69,26 +69,26 @@ void main() {
 
     test('insertOrReplace met a jour un manifest existant', () async {
       await dao.insertOrReplace(makeManifest(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         dataVersion: 1,
         hash: 'old_hash',
       ));
       await dao.insertOrReplace(makeManifest(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         dataVersion: 2,
         hash: 'new_hash',
       ));
 
-      final result = await dao.getByTrailId('gr20');
+      final result = await dao.getByTrailId('sentier-bleu');
       expect(result!.dataVersion, 2);
       expect(result.hash, 'new_hash');
     });
 
     test('deleteByTrailId supprime le bon manifest', () async {
-      await dao.insertOrReplace(makeManifest(trailId: 'gr20'));
+      await dao.insertOrReplace(makeManifest(trailId: 'sentier-bleu'));
       await dao.insertOrReplace(makeManifest(trailId: 'mare'));
 
-      final deleted = await dao.deleteByTrailId('gr20');
+      final deleted = await dao.deleteByTrailId('sentier-bleu');
       expect(deleted, 1);
 
       final remaining = await dao.getAll();
@@ -102,20 +102,20 @@ void main() {
     });
 
     test('localVersion nullable fonctionne', () async {
-      await dao.insertOrReplace(makeManifest(trailId: 'gr20'));
+      await dao.insertOrReplace(makeManifest(trailId: 'sentier-bleu'));
 
-      final result = await dao.getByTrailId('gr20');
+      final result = await dao.getByTrailId('sentier-bleu');
       expect(result!.localVersion, isNull);
     });
 
     test('localVersion se met a jour correctement', () async {
       await dao.insertOrReplace(makeManifest(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         dataVersion: 3,
         localVersion: 2,
       ));
 
-      final result = await dao.getByTrailId('gr20');
+      final result = await dao.getByTrailId('sentier-bleu');
       expect(result!.localVersion, 2);
       expect(result.dataVersion, 3);
     });
@@ -129,45 +129,45 @@ void main() {
 
     test('retourne true si localVersion est null', () async {
       await dao.insertOrReplace(makeManifest(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         dataVersion: 3,
         localVersion: null,
       ));
 
-      final needs = await dao.needsUpdate('gr20');
+      final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isTrue);
     });
 
     test('retourne true si dataVersion > localVersion', () async {
       await dao.insertOrReplace(makeManifest(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         dataVersion: 5,
         localVersion: 3,
       ));
 
-      final needs = await dao.needsUpdate('gr20');
+      final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isTrue);
     });
 
     test('retourne false si dataVersion == localVersion', () async {
       await dao.insertOrReplace(makeManifest(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         dataVersion: 3,
         localVersion: 3,
       ));
 
-      final needs = await dao.needsUpdate('gr20');
+      final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isFalse);
     });
 
     test('retourne false si dataVersion < localVersion', () async {
       await dao.insertOrReplace(makeManifest(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         dataVersion: 2,
         localVersion: 3,
       ));
 
-      final needs = await dao.needsUpdate('gr20');
+      final needs = await dao.needsUpdate('sentier-bleu');
       expect(needs, isFalse);
     });
   });

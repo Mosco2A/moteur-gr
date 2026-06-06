@@ -44,6 +44,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$stage$es stage = _Translations$stage$es._(_root);
 	@override late final _Translations$trail$es trail = _Translations$trail$es._(_root);
 	@override late final _Translations$poi$es poi = _Translations$poi$es._(_root);
+	@override late final _Translations$accommodation$es accommodation = _Translations$accommodation$es._(_root);
 	@override late final _Translations$gps$es gps = _Translations$gps$es._(_root);
 	@override late final _Translations$planning$es planning = _Translations$planning$es._(_root);
 	@override late final _Translations$tracking$es tracking = _Translations$tracking$es._(_root);
@@ -149,6 +150,16 @@ class _Translations$poi$es extends Translations$poi$fr {
 	@override String get filter => 'Filtrar puntos de interÃ©s';
 	@override String get altitude => 'Altitud';
 	@override String get hours => 'Horarios';
+}
+
+// Path: accommodation
+class _Translations$accommodation$es extends Translations$accommodation$fr {
+	_Translations$accommodation$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$accommodation$types$es types = _Translations$accommodation$types$es._(_root);
 }
 
 // Path: gps
@@ -557,6 +568,21 @@ class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr
 	@override String get expert => 'Experto';
 }
 
+// Path: accommodation.types
+class _Translations$accommodation$types$es extends Translations$accommodation$types$fr {
+	_Translations$accommodation$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Refugio';
+	@override String get bergerie => 'Majada';
+	@override String get gite => 'Albergue';
+	@override String get hotel => 'Hotel';
+	@override String get camping => 'Camping';
+	@override String get bivouac => 'Vivac';
+}
+
 // Path: checklist.categories
 class _Translations$checklist$categories$es extends Translations$checklist$categories$fr {
 	_Translations$checklist$categories$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -855,6 +881,12 @@ extension on TranslationsEs {
 			'poi.filter' => 'Filtrar puntos de interÃ©s',
 			'poi.altitude' => 'Altitud',
 			'poi.hours' => 'Horarios',
+			'accommodation.types.refuge' => 'Refugio',
+			'accommodation.types.bergerie' => 'Majada',
+			'accommodation.types.gite' => 'Albergue',
+			'accommodation.types.hotel' => 'Hotel',
+			'accommodation.types.camping' => 'Camping',
+			'accommodation.types.bivouac' => 'Vivac',
 			'gps.permission' => 'Permiso GPS requerido',
 			'gps.denied' => 'Acceso a la ubicacion denegado',
 			'gps.disabled' => 'Servicio de ubicacion desactivado',

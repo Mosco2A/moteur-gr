@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 06/06/2026 par Vulcain (Phase 4 bloc E4.10-E4.17 REINTEGRE + preuves)
+MAJ: 06/06/2026 par Vulcain (lot finitions V8 tache #324 COMPLETE + menage repo)
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -143,14 +143,116 @@ dart run slang OK (1695 strings, 5 locales, base fr) ; flutter analyze
 Branche claude/feat/E2.10-upgrade-deps = main + bda2435 + MAJ orchestration.
 PAS DE MERGE MAIN sans GO Chris.
 
+## Lot finitions V8 (tache #324, reserves gates #85352/#85353/#85359) — COMPLETE 06/06
+Branche claude/fix/finitions-v8 (depuis main f97d1f2), commits identite Vulcain,
+1 commit par fix. PAS DE MERGE MAIN sans GO.
+- F1 65574f4 : AccommodationType enum -> String parametrique (#81752).
+  fromDb supprime (il ECRASAIT toute valeur inconnue en refuge) : la valeur
+  DB/JSON est preservee telle quelle ; typedef + AccommodationTypeValues
+  (idiome ShareLinkType) ; mapping label/icone centralise
+  (accommodation_type_ui.dart) avec fallback generique a l'AFFICHAGE
+  uniquement (icone holiday_village + libelle = valeur brute) ; labels i18n
+  Slang 5 langues (accommodation.types.*) ; Freezed/Drift/tests adaptes
+  (+6 tests contrat preservation/fallback).
+- F2 2270d84 : questions faisabilite indexees par trailId. Resolution
+  <TrailConfig.seedAssetsBase>/feasibility_questions.json -> fallback
+  fichier commun assets/data/ -> template hardcode ; FeasibilityState porte
+  les questions chargees (le provider utilisait la constante hardcodee,
+  le JSON n'etait jamais lu) ; +3 tests (commun, fallback, priorite sentier).
+- F3 5fd1779 : recap diplome branche sur le trace GPS REEL de la session.
+  Constat : aucun canal n'existait (TrekRecorder/TrekStats jamais alimentes
+  hors tests, onSessionPersist no-op, zero persistence des points) ; le
+  pipeline reel est TrackingNotifier/TrackingEngine qui JETAIT les points au
+  stop. Livre bout-en-bout : table session_track_points (migration Drift
+  v12->v13) + DAO, persistence au fil de l'eau pendant l'enregistrement
+  (robuste a un arret brutal, trace remplace au start suivant),
+  sessionTraceProvider, rendu SessionTracePainter (CustomPaint offline,
+  zero tuile reseau), fallback recapNoMap conserve si aucun trace ;
+  +7 tests (DAO round-trip/isolation/clear, section, painter).
+- F4 ec7818b : code mort supprime — lib/features/after/presentation/
+  diploma_screen.dart (DiplomaAfterScreen, doublon orphelin : zero import,
+  zero route, zero test). Tests orphelins supprimes avec lui : AUCUN
+  (liste vide — aucun test ne le referencait). Residus in_app_review E5.17 :
+  service + provider + test sont REFERENCES par l'ecran diplome route
+  (features/diploma) -> vivants, conserves ; les seuls usages non references
+  etaient dans l'orphelin supprime.
+- F5 3d28028 : firestore.indexes.json cree — index composite
+  follow_sessions(shareCode ASC, isActive ASC) requis par la requete de
+  follow_web_screen ; l'orderBy(timestamp desc) sur la subcollection
+  positions est couvert par l'index single-field automatique. Les autres
+  acces Firestore du bloc cloud/suivi sont par chemin direct (zero index
+  composite supplementaire).
+- F6 14cbade : IapService garde-fou anti-paiement-reel — testMode TRUE par
+  defaut + kill-switch compile-time kIapRealModeEnabled=false documente
+  (procedure d'activation en 3 etapes dans la doc du flag) ; verrou central
+  _stubbed : meme une instance testMode:false ne peut PAS atteindre le
+  store tant que le kill-switch est off. AUCUN produit store reel cree.
+  +3 tests (kill-switch off, defaut testMode, verrou testMode:false).
+- F7 bca6e55 : purge dette PII AuthUser — champs email/photoUrl SUPPRIMES
+  du modele (zero PII garanti a la compilation, #81775), propagation
+  residuelle retiree de LocalAuthService. local_auth_service N'EST PAS
+  supprime : c'est le fallback offline officiel d'authServiceProvider
+  (Firebase indisponible), teste — neutralise (zero PII possible) et
+  documente comme tel. 2 tests realignes sur le contrat structurel (l'un
+  peuplait email='jean@example.com' dans le modele — dette reelle).
+- Decontamination fixtures tests legacy b8b17cc : 36 fichiers de test
+  purges de gr20/GR20/Corse (regle #81434) -> sentier-bleu/Sentier Bleu/
+  Region Test. Exceptions parametriques conservees : donnees reelles du
+  sentier Mare a Mare (assets/data/mare_a_mare_centre*, tips,
+  checklist_template overrides) + leurs 2 tests dedies
+  (mare_a_mare_data_test, trail_seeder_test).
+- Chore 3b02ddd : regeneration GeneratedPluginRegistrant.swift (macos),
+  plugins IAP/webview du bloc E4 merge — fichier genere tracke, diff
+  pendant depuis le merge.
+RE-SCOPE nommage seeder : la reserve "renommer le seeder par-sentier"
+  etait DEJA realisee par la decontamination #320 (TrailSeeder generique,
+  seed par TrailConfig.seedAssetsBase) ; mare_a_mare_prod_seeder.dart
+  n'existe QUE sur la vieille branche E4.15 jamais mergee. Aucun seeder
+  nomme par sentier sur main — point clos sans travail supplementaire.
+PREUVES 06/06 (transcript Vulcain, affichees) :
+  flutter analyze = "No issues found!" ; flutter test = 956 PASS / 0 FAIL /
+  0 SKIP (base 937 + 19 nouveaux tests F1/F2/F3/F6 ; AUCUN test supprime ni
+  skippe — F4 n'avait aucun test orphelin ; 2 tests realignes F7 documentes
+  ci-dessus). Grep gr20/pghm sur lib+android+ios+macos+web+test+assets = 0 ;
+  corse/mare-a-mare = uniquement assets parametriques du sentier reel et
+  leurs 2 tests de donnees (valide gate #85353).
+
+## Menage repo (lot finitions, 06/06)
+- Fichiers de travail untracked SUPPRIMES (apres verification : sorties
+  analyze/test des gates deja documentees en base/orchestration, scripts
+  one-shot deja appliques) : _artemis_*.txt/.bat, _gate*_*.txt,
+  _melos_*.txt, _gen_bottom_sheet.py, _patch1.py.
+- data/ (logs agent + ref-gr20 R1.1-R1.11 + staging/trail_variantes.dart)
+  et docs/rgpd/ (AIPD-capteurs-sante.docx) : contenu UNIQUE -> DEPLACES
+  hors repo vers C:/Users/Christophe/Claude/projets/interne/
+  Moteur-GR-archives/2026-06-06/ (rien de supprime).
+- Worktree .claude/worktrees/vulcain-E4.1b retire (git worktree remove ;
+  seules modifs = fichiers generes plugin registrant). La branche
+  claude/feat/phase4-E4.1b existe toujours.
+- Branche claude/test/E0-pipeline-check SUPPRIMEE local+remote (1 commit
+  de commentaire trivial, preuve pipeline tache #320 devenue inutile).
+- Branche claude/feat/E4.15-auth-anonymized : NON SUPPRIMEE — deltas
+  uniques constates (voir Branches en attente).
+
 ## Branches en attente
+claude/fix/finitions-v8 — lot finitions V8 #324 COMPLETE (commits ci-dessus),
+  preuves analyze 0 / test 956-0 affichees. Attend QA Artemis + GO Chris.
+  PAS DE MERGE sans GO.
 claude/feat/E4.10-17-reintegration — bloc E4.10-E4.17 reintegre (9 commits
   b5ea79a..fb125c0 + resync orchestration), preuves analyze 0 / test 937-0
   affichees. Attend QA Artemis + GO Chris. PAS DE MERGE sans GO.
-claude/feat/E4.15-auth-anonymized — OBSOLETE (bloc E4.10-E4.17 reintegre
-  via claude/feat/E4.10-17-reintegration ; E4.1a-E4.9 couverts par la serie
-  coarse deja sur main, gate #85353). Ne plus rien reprendre dessus —
-  candidate a suppression apres GO Chris.
+claude/feat/E4.15-auth-anonymized — CONSERVEE (correction 06/06 du statut
+  "obsolete") : verification git cherry/diff AVANT suppression = 28 commits
+  non merges, 30 fichiers sans equivalent sur main, dont des DELTAS UNIQUES
+  jamais portes par la serie coarse ni la reintegration :
+  E4.4b verification hash SHA-256 des telechargements (download_verifier
+  + test ; le trail_download_service de main n'a AUCUNE verification
+  d'integrite), E4.5a-d fiche detail catalogue / trail_switcher / filtres
+  TrailFilter+filter_bar / deep_link_handler + .well-known (App Links /
+  Universal Links absents de main), E4.8b sync photos dediee,
+  docs/firestore_schema.md. NE PLUS cherry-picker brut (pre-Freezed v3 /
+  pre-decontamination) mais REPRENDRE ces lots comme E4.10-17 (readaptation)
+  avant toute suppression de la branche.
 claude/feat/E2.10-upgrade-deps — constat git 06/06 : DEJA MERGEE sur main
   (422a94c). Statut GO/QA a confirmer par Skynet/Chris.
 claude/fix/E5-decontamination-gr20 — reprise Phase 5 ; constat git 06/06 :
@@ -158,15 +260,29 @@ claude/fix/E5-decontamination-gr20 — reprise Phase 5 ; constat git 06/06 :
   inclut ebde305). Statut GO/QA a confirmer par Skynet/Chris.
 
 ## Prochaine action
-1. QA gate Artemis sur claude/feat/E4.10-17-reintegration (bloc E4.10-E4.17,
+1. QA gate Artemis sur claude/fix/finitions-v8 (lot finitions #324 :
+   F1-F8, preuves analyze 0 / test 956-0 / greps dans le transcript).
+2. QA gate Artemis sur claude/feat/E4.10-17-reintegration (bloc E4.10-E4.17,
    conditions de la tache : 3 canaux, RGPD #81775, sync/restore, freemium
    sandbox, 937 tests, grep 0).
-2. GO Chris pour merge de claude/feat/E4.10-17-reintegration, puis
-   suppression de la branche obsolete claude/feat/E4.15-auth-anonymized.
-3. QA gate Artemis Phase 2 (toujours en attente) — NB : E2.10-upgrade-deps
+3. GO Chris pour merges. La branche claude/feat/E4.15-auth-anonymized reste
+   CONSERVEE tant que ses deltas uniques (E4.4b hash, E4.5a-d catalogue/
+   deep links, E4.8b photos, doc schema) ne sont pas reintegres — decision
+   de reprise a planifier.
+4. QA gate Artemis Phase 2 (toujours en attente) — NB : E2.10-upgrade-deps
    constatee deja mergee sur main (422a94c).
 
 ## Derniere action
+06/06 (finitions V8) : lot finitions tache #324 COMPLETE par Vulcain sur
+claude/fix/finitions-v8 — F1 type String hebergements (#81752, valeur
+inconnue preservee), F2 questions faisabilite par trailId, F3 trace GPS
+reelle du diplome (canal bout-en-bout cree : table v13 + persistence +
+rendu), F4 code mort (DiplomaAfterScreen, zero test orphelin), F5
+firestore.indexes.json, F6 kill-switch IAP anti-paiement-reel, F7 zero PII
+AuthUser compile-time, decontamination 36 fixtures tests legacy + menage
+repo (fichiers de travail purges, uniques archives hors repo,
+E0-pipeline-check supprimee, E4.15-auth-anonymized CONSERVEE pour deltas
+uniques documentes). Preuves : analyze 0 issue, 956/956 PASS, greps OK.
 06/06 (Phase 4) : REINTEGRATION du bloc dormant E4.10-E4.17 par Vulcain —
 9 lots readaptes depuis la branche obsolete claude/feat/E4.15-auth-anonymized
 vers claude/feat/E4.10-17-reintegration (Freezed v3, Slang v4 5 langues,

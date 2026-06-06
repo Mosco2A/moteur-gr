@@ -36,13 +36,13 @@ void main() {
   group('ChecklistDao', () {
     test('insertAll insere les items correctement', () async {
       final items = [
-        makeItem(trailId: 'gr20', itemId: 'backpack'),
-        makeItem(trailId: 'gr20', itemId: 'sleepingBag'),
-        makeItem(trailId: 'gr20', itemId: 'headlamp'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'backpack'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'sleepingBag'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'headlamp'),
       ];
       await dao.insertAll(items);
 
-      final result = await dao.getByTrailId('gr20');
+      final result = await dao.getByTrailId('sentier-bleu');
       expect(result.length, 3);
     });
 
@@ -53,88 +53,88 @@ void main() {
 
     test('getByTrailId filtre par sentier', () async {
       await dao.insertAll([
-        makeItem(trailId: 'gr20', itemId: 'backpack'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'backpack'),
         makeItem(trailId: 'tmb', itemId: 'backpack'),
-        makeItem(trailId: 'gr20', itemId: 'headlamp'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'headlamp'),
       ]);
 
-      final gr20 = await dao.getByTrailId('gr20');
+      final sentierBleu = await dao.getByTrailId('sentier-bleu');
       final tmb = await dao.getByTrailId('tmb');
-      expect(gr20.length, 2);
+      expect(sentierBleu.length, 2);
       expect(tmb.length, 1);
     });
 
     test('getByCategory filtre par categorie', () async {
       await dao.insertAll([
         makeItem(
-            trailId: 'gr20', itemId: 'backpack', category: 'equipment'),
+            trailId: 'sentier-bleu', itemId: 'backpack', category: 'equipment'),
         makeItem(
-            trailId: 'gr20', itemId: 'boots', category: 'clothing'),
+            trailId: 'sentier-bleu', itemId: 'boots', category: 'clothing'),
         makeItem(
-            trailId: 'gr20', itemId: 'headlamp', category: 'equipment'),
+            trailId: 'sentier-bleu', itemId: 'headlamp', category: 'equipment'),
       ]);
 
-      final equipment = await dao.getByCategory('gr20', 'equipment');
-      final clothing = await dao.getByCategory('gr20', 'clothing');
+      final equipment = await dao.getByCategory('sentier-bleu', 'equipment');
+      final clothing = await dao.getByCategory('sentier-bleu', 'clothing');
       expect(equipment.length, 2);
       expect(clothing.length, 1);
     });
 
     test('toggleItem coche un item', () async {
       await dao.insertAll([
-        makeItem(trailId: 'gr20', itemId: 'backpack'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'backpack'),
       ]);
 
-      await dao.toggleItem('gr20', 'backpack', true);
-      final items = await dao.getByTrailId('gr20');
+      await dao.toggleItem('sentier-bleu', 'backpack', true);
+      final items = await dao.getByTrailId('sentier-bleu');
       expect(items.first.isChecked, true);
     });
 
     test('toggleItem decoche un item', () async {
       await dao.insertAll([
-        makeItem(trailId: 'gr20', itemId: 'backpack', isChecked: true),
+        makeItem(trailId: 'sentier-bleu', itemId: 'backpack', isChecked: true),
       ]);
 
-      await dao.toggleItem('gr20', 'backpack', false);
-      final items = await dao.getByTrailId('gr20');
+      await dao.toggleItem('sentier-bleu', 'backpack', false);
+      final items = await dao.getByTrailId('sentier-bleu');
       expect(items.first.isChecked, false);
     });
 
     test('upsertItem insere un nouvel item', () async {
       await dao.upsertItem(
-        makeItem(trailId: 'gr20', itemId: 'newItem'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'newItem'),
       );
 
-      final items = await dao.getByTrailId('gr20');
+      final items = await dao.getByTrailId('sentier-bleu');
       expect(items.length, 1);
       expect(items.first.itemId, 'newItem');
     });
 
     test('upsertItem met a jour un item existant', () async {
       await dao.insertAll([
-        makeItem(trailId: 'gr20', itemId: 'backpack'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'backpack'),
       ]);
 
       await dao.upsertItem(const ChecklistItemsCompanion(
-        trailId: Value('gr20'),
+        trailId: Value('sentier-bleu'),
         itemId: Value('backpack'),
         category: Value('equipment'),
         isChecked: Value(true),
       ));
 
-      final items = await dao.getByTrailId('gr20');
+      final items = await dao.getByTrailId('sentier-bleu');
       expect(items.length, 1);
       expect(items.first.isChecked, true);
     });
 
     test('deleteByTrailId supprime les items du bon sentier', () async {
       await dao.insertAll([
-        makeItem(trailId: 'gr20', itemId: 'backpack'),
-        makeItem(trailId: 'gr20', itemId: 'headlamp'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'backpack'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'headlamp'),
         makeItem(trailId: 'tmb', itemId: 'backpack'),
       ]);
 
-      final deleted = await dao.deleteByTrailId('gr20');
+      final deleted = await dao.deleteByTrailId('sentier-bleu');
       expect(deleted, 2);
 
       final remaining = await dao.getByTrailId('tmb');
@@ -148,23 +148,23 @@ void main() {
 
     test('countChecked retourne le bon nombre', () async {
       await dao.insertAll([
-        makeItem(trailId: 'gr20', itemId: 'a', isChecked: true),
-        makeItem(trailId: 'gr20', itemId: 'b', isChecked: true),
-        makeItem(trailId: 'gr20', itemId: 'c', isChecked: false),
+        makeItem(trailId: 'sentier-bleu', itemId: 'a', isChecked: true),
+        makeItem(trailId: 'sentier-bleu', itemId: 'b', isChecked: true),
+        makeItem(trailId: 'sentier-bleu', itemId: 'c', isChecked: false),
       ]);
 
-      final count = await dao.countChecked('gr20');
+      final count = await dao.countChecked('sentier-bleu');
       expect(count, 2);
     });
 
     test('countTotal retourne le bon nombre', () async {
       await dao.insertAll([
-        makeItem(trailId: 'gr20', itemId: 'a'),
-        makeItem(trailId: 'gr20', itemId: 'b'),
-        makeItem(trailId: 'gr20', itemId: 'c'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'a'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'b'),
+        makeItem(trailId: 'sentier-bleu', itemId: 'c'),
       ]);
 
-      final count = await dao.countTotal('gr20');
+      final count = await dao.countTotal('sentier-bleu');
       expect(count, 3);
     });
 

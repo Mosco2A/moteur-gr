@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/models/stage_accommodation.dart';
 import '../providers/stage_providers.dart';
+import 'accommodation_type_ui.dart';
 import '../providers/trail_providers.dart';
 
 /// Provider des hebergements d'une etape du sentier actif.
@@ -77,7 +78,7 @@ class RefugeDetailScreen extends ConsumerWidget {
   ) {
     if (accommodations.isEmpty) return null;
     return accommodations.firstWhere(
-      (a) => a.type == AccommodationType.refuge,
+      (a) => a.type == AccommodationTypeValues.refuge,
       orElse: () => accommodations.first,
     );
   }
@@ -133,7 +134,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 ),
                 child: Icon(
-                  _typeIcon(accommodation.type),
+                  accommodationTypeIcon(accommodation.type),
                   color: theme.colorScheme.primary,
                   size: 32,
                 ),
@@ -152,7 +153,8 @@ class RefugeDetailScreen extends ConsumerWidget {
                       children: [
                         _badge(
                           theme,
-                          accommodation.type.name.toUpperCase(),
+                          accommodationTypeLabel(accommodation.type)
+                              .toUpperCase(),
                           theme.colorScheme.primary,
                         ),
                         const SizedBox(width: 8),
@@ -454,7 +456,7 @@ class RefugeDetailScreen extends ConsumerWidget {
               child: Row(
                 children: [
                   Icon(
-                    _typeIcon(accom.type),
+                    accommodationTypeIcon(accom.type),
                     color: theme.colorScheme.secondary,
                     size: 24,
                   ),
@@ -471,7 +473,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                         ),
                         Text(
                           [
-                            accom.type.name,
+                            accommodationTypeLabel(accom.type),
                             if (accom.priceRange != null) accom.priceRange!,
                           ].join(' | '),
                           style: theme.textTheme.bodySmall,
@@ -502,20 +504,4 @@ class RefugeDetailScreen extends ConsumerWidget {
     );
   }
 
-  IconData _typeIcon(AccommodationType type) {
-    switch (type) {
-      case AccommodationType.refuge:
-        return Icons.house;
-      case AccommodationType.bergerie:
-        return Icons.cabin;
-      case AccommodationType.gite:
-        return Icons.cottage;
-      case AccommodationType.hotel:
-        return Icons.hotel;
-      case AccommodationType.camping:
-        return Icons.park;
-      case AccommodationType.bivouac:
-        return Icons.nights_stay;
-    }
-  }
 }
