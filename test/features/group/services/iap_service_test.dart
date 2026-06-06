@@ -61,4 +61,31 @@ void main() {
       expect(available, isTrue);
     });
   });
+
+  group('IapService — garde-fou anti-paiement-reel (F6)', () {
+    test('kill-switch global desactive', () {
+      expect(kIapRealModeEnabled, isFalse,
+          reason: 'AUCUN produit store reel cree : le kill-switch doit '
+              'rester false tant que la procedure documentee (produits '
+              'store + verification recus + GO) n est pas executee');
+    });
+
+    test('testMode est force par defaut', () {
+      final defaultSvc = IapService();
+      expect(defaultSvc.testMode, isTrue);
+    });
+
+    test(
+        'meme testMode:false ne touche jamais le store '
+        'tant que le kill-switch est off', () async {
+      // Aucune instance IAP injectee : tout acces plateforme reel
+      // leverait MissingPluginException en environnement de test.
+      final svc = IapService(testMode: false);
+
+      expect(await svc.isAvailable(), isTrue);
+      expect(await svc.getPassDetails(), isNull);
+      expect(await svc.purchaseWebFollowPass(), isTrue);
+      expect(await svc.purchaseStream.isEmpty, isTrue);
+    });
+  });
 }
