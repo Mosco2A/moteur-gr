@@ -415,5 +415,10 @@
     "subtitle": "Descarga un sendero para empezar",
     "offlineHint": "Los datos estarán disponibles sin conexión para tu caminata.",
     "browseCta": "Explorar senderos"
+  },
+  "updates": {
+    "readyTitle": "Actualización lista",
+    "readyBodyOne": "Un sendero ha sido actualizado.",
+    "readyBodyMany": "$count senderos han sido actualizados."
   }
 }

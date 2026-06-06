@@ -60,6 +60,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tips$it tips = _Translations$tips$it._(_root);
 	@override late final _Translations$goodies$it goodies = _Translations$goodies$it._(_root);
 	@override late final _Translations$noData$it noData = _Translations$noData$it._(_root);
+	@override late final _Translations$updates$it updates = _Translations$updates$it._(_root);
 }
 
 // Path: nav
@@ -493,6 +494,18 @@ class _Translations$noData$it extends Translations$noData$fr {
 	@override String get subtitle => 'Scarica un sentiero per iniziare';
 	@override String get offlineHint => 'I dati saranno disponibili offline per la tua escursione.';
 	@override String get browseCta => 'Esplora i sentieri';
+}
+
+// Path: updates
+class _Translations$updates$it extends Translations$updates$fr {
+	_Translations$updates$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get readyTitle => 'Aggiornamento pronto';
+	@override String get readyBodyOne => 'Un sentiero è stato aggiornato.';
+	@override String readyBodyMany({required Object count}) => '${count} sentieri sono stati aggiornati.';
 }
 
 // Path: stage.difficulty
@@ -1105,6 +1118,9 @@ extension on TranslationsIt {
 			'noData.subtitle' => 'Scarica un sentiero per iniziare',
 			'noData.offlineHint' => 'I dati saranno disponibili offline per la tua escursione.',
 			'noData.browseCta' => 'Esplora i sentieri',
+			'updates.readyTitle' => 'Aggiornamento pronto',
+			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
+			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
 			_ => null,
 		};
 	}

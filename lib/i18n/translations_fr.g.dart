@@ -61,6 +61,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$tips$fr tips = Translations$tips$fr.internal(_root);
 	late final Translations$goodies$fr goodies = Translations$goodies$fr.internal(_root);
 	late final Translations$noData$fr noData = Translations$noData$fr.internal(_root);
+	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
 }
 
 // Path: nav
@@ -972,6 +973,24 @@ class Translations$noData$fr {
 	String get browseCta => 'Parcourir les sentiers';
 }
 
+// Path: updates
+class Translations$updates$fr {
+	Translations$updates$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mise à jour prête'
+	String get readyTitle => 'Mise à jour prête';
+
+	/// fr: 'Un sentier a été mis à jour.'
+	String get readyBodyOne => 'Un sentier a été mis à jour.';
+
+	/// fr: '$count sentiers ont été mis à jour.'
+	String readyBodyMany({required Object count}) => '${count} sentiers ont été mis à jour.';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1800,6 +1819,9 @@ extension on Translations {
 			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
 			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
 			'noData.browseCta' => 'Parcourir les sentiers',
+			'updates.readyTitle' => 'Mise à jour prête',
+			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
+			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
 			_ => null,
 		};
 	}

@@ -415,5 +415,10 @@
     "subtitle": "Download a trail to get started",
     "offlineHint": "Data will be available offline for your hike.",
     "browseCta": "Browse trails"
+  },
+  "updates": {
+    "readyTitle": "Update ready",
+    "readyBodyOne": "One trail has been updated.",
+    "readyBodyMany": "$count trails have been updated."
   }
 }

@@ -415,5 +415,10 @@
     "subtitle": "Scarica un sentiero per iniziare",
     "offlineHint": "I dati saranno disponibili offline per la tua escursione.",
     "browseCta": "Esplora i sentieri"
+  },
+  "updates": {
+    "readyTitle": "Aggiornamento pronto",
+    "readyBodyOne": "Un sentiero è stato aggiornato.",
+    "readyBodyMany": "$count sentieri sono stati aggiornati."
   }
 }

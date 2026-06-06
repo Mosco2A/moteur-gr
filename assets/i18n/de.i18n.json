@@ -415,5 +415,10 @@
     "subtitle": "Laden Sie einen Weg herunter, um zu beginnen",
     "offlineHint": "Die Daten sind offline für Ihre Wanderung verfügbar.",
     "browseCta": "Wege durchsuchen"
+  },
+  "updates": {
+    "readyTitle": "Update bereit",
+    "readyBodyOne": "Ein Weg wurde aktualisiert.",
+    "readyBodyMany": "$count Wege wurden aktualisiert."
   }
 }

@@ -60,6 +60,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tips$de tips = _Translations$tips$de._(_root);
 	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
 	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
+	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
 }
 
 // Path: nav
@@ -493,6 +494,18 @@ class _Translations$noData$de extends Translations$noData$fr {
 	@override String get subtitle => 'Laden Sie einen Weg herunter, um zu beginnen';
 	@override String get offlineHint => 'Die Daten sind offline für Ihre Wanderung verfügbar.';
 	@override String get browseCta => 'Wege durchsuchen';
+}
+
+// Path: updates
+class _Translations$updates$de extends Translations$updates$fr {
+	_Translations$updates$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get readyTitle => 'Update bereit';
+	@override String get readyBodyOne => 'Ein Weg wurde aktualisiert.';
+	@override String readyBodyMany({required Object count}) => '${count} Wege wurden aktualisiert.';
 }
 
 // Path: stage.difficulty
@@ -1105,6 +1118,9 @@ extension on TranslationsDe {
 			'noData.subtitle' => 'Laden Sie einen Weg herunter, um zu beginnen',
 			'noData.offlineHint' => 'Die Daten sind offline für Ihre Wanderung verfügbar.',
 			'noData.browseCta' => 'Wege durchsuchen',
+			'updates.readyTitle' => 'Update bereit',
+			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
+			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
 			_ => null,
 		};
 	}

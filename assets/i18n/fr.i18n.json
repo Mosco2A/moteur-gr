@@ -415,5 +415,10 @@
     "subtitle": "Téléchargez un sentier pour commencer",
     "offlineHint": "Les données seront disponibles hors ligne pour votre randonnée.",
     "browseCta": "Parcourir les sentiers"
+  },
+  "updates": {
+    "readyTitle": "Mise à jour prête",
+    "readyBodyOne": "Un sentier a été mis à jour.",
+    "readyBodyMany": "$count sentiers ont été mis à jour."
   }
 }

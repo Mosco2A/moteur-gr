@@ -60,6 +60,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tips$en tips = _Translations$tips$en._(_root);
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
 	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
+	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
 }
 
 // Path: nav
@@ -493,6 +494,18 @@ class _Translations$noData$en extends Translations$noData$fr {
 	@override String get subtitle => 'Download a trail to get started';
 	@override String get offlineHint => 'Data will be available offline for your hike.';
 	@override String get browseCta => 'Browse trails';
+}
+
+// Path: updates
+class _Translations$updates$en extends Translations$updates$fr {
+	_Translations$updates$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get readyTitle => 'Update ready';
+	@override String get readyBodyOne => 'One trail has been updated.';
+	@override String readyBodyMany({required Object count}) => '${count} trails have been updated.';
 }
 
 // Path: stage.difficulty
@@ -1105,6 +1118,9 @@ extension on TranslationsEn {
 			'noData.subtitle' => 'Download a trail to get started',
 			'noData.offlineHint' => 'Data will be available offline for your hike.',
 			'noData.browseCta' => 'Browse trails',
+			'updates.readyTitle' => 'Update ready',
+			'updates.readyBodyOne' => 'One trail has been updated.',
+			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
 			_ => null,
 		};
 	}
