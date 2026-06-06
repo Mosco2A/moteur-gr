@@ -39,6 +39,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	TranslationsEn $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsEn(meta: meta ?? this.$meta);
 
 	// Translations
+	@override late final _Translations$nav$en nav = _Translations$nav$en._(_root);
 	@override late final _Translations$map$en map = _Translations$map$en._(_root);
 	@override late final _Translations$stage$en stage = _Translations$stage$en._(_root);
 	@override late final _Translations$trail$en trail = _Translations$trail$en._(_root);
@@ -58,6 +59,27 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
 	@override late final _Translations$tips$en tips = _Translations$tips$en._(_root);
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
+}
+
+// Path: nav
+class _Translations$nav$en extends Translations$nav$fr {
+	_Translations$nav$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get map => 'Map';
+	@override String get stages => 'Stages';
+	@override String get planning => 'Planning';
+	@override String get journal => 'Journal';
+	@override String get more => 'More';
+	@override String get checklist => 'Gear checklist';
+	@override String get feasibility => 'Feasibility';
+	@override String get tips => 'Trek tips';
+	@override String get emergency => 'Emergency contacts';
+	@override String get catalog => 'Trail catalog';
+	@override String get profile => 'Profile';
+	@override String get settings => 'Settings';
 }
 
 // Path: map
@@ -726,6 +748,18 @@ class _Translations$feasibility$recommendations$excellent$tips$en extends Transl
 extension on TranslationsEn {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
+			'nav.map' => 'Map',
+			'nav.stages' => 'Stages',
+			'nav.planning' => 'Planning',
+			'nav.journal' => 'Journal',
+			'nav.more' => 'More',
+			'nav.checklist' => 'Gear checklist',
+			'nav.feasibility' => 'Feasibility',
+			'nav.tips' => 'Trek tips',
+			'nav.emergency' => 'Emergency contacts',
+			'nav.catalog' => 'Trail catalog',
+			'nav.profile' => 'Profile',
+			'nav.settings' => 'Settings',
 			'map.title' => 'Trail map',
 			'map.loading' => 'Loading track...',
 			'map.noTrack' => 'No track available',

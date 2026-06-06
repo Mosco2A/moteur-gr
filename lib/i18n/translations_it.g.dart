@@ -39,6 +39,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	TranslationsIt $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsIt(meta: meta ?? this.$meta);
 
 	// Translations
+	@override late final _Translations$nav$it nav = _Translations$nav$it._(_root);
 	@override late final _Translations$map$it map = _Translations$map$it._(_root);
 	@override late final _Translations$stage$it stage = _Translations$stage$it._(_root);
 	@override late final _Translations$trail$it trail = _Translations$trail$it._(_root);
@@ -58,6 +59,27 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$it feasibility = _Translations$feasibility$it._(_root);
 	@override late final _Translations$tips$it tips = _Translations$tips$it._(_root);
 	@override late final _Translations$goodies$it goodies = _Translations$goodies$it._(_root);
+}
+
+// Path: nav
+class _Translations$nav$it extends Translations$nav$fr {
+	_Translations$nav$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get map => 'Mappa';
+	@override String get stages => 'Tappe';
+	@override String get planning => 'Pianificazione';
+	@override String get journal => 'Diario';
+	@override String get more => 'Altro';
+	@override String get checklist => 'Lista attrezzatura';
+	@override String get feasibility => 'Fattibilità';
+	@override String get tips => 'Consigli trek';
+	@override String get emergency => 'Contatti emergenza';
+	@override String get catalog => 'Catalogo sentieri';
+	@override String get profile => 'Profilo';
+	@override String get settings => 'Impostazioni';
 }
 
 // Path: map
@@ -726,6 +748,18 @@ class _Translations$feasibility$recommendations$excellent$tips$it extends Transl
 extension on TranslationsIt {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
+			'nav.map' => 'Mappa',
+			'nav.stages' => 'Tappe',
+			'nav.planning' => 'Pianificazione',
+			'nav.journal' => 'Diario',
+			'nav.more' => 'Altro',
+			'nav.checklist' => 'Lista attrezzatura',
+			'nav.feasibility' => 'Fattibilità',
+			'nav.tips' => 'Consigli trek',
+			'nav.emergency' => 'Contatti emergenza',
+			'nav.catalog' => 'Catalogo sentieri',
+			'nav.profile' => 'Profilo',
+			'nav.settings' => 'Impostazioni',
 			'map.title' => 'Mappa del sentiero',
 			'map.loading' => 'Caricamento del tracciato...',
 			'map.noTrack' => 'Nessun tracciato disponibile',

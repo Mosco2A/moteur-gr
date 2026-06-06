@@ -1,4 +1,18 @@
 {
+  "nav": {
+    "map": "Carte",
+    "stages": "Étapes",
+    "planning": "Planning",
+    "journal": "Journal",
+    "more": "Plus",
+    "checklist": "Checklist matériel",
+    "feasibility": "Faisabilité",
+    "tips": "Conseils trek",
+    "emergency": "Contacts urgence",
+    "catalog": "Catalogue des sentiers",
+    "profile": "Profil",
+    "settings": "Paramètres"
+  },
   "map": {
     "title": "Carte du sentier",
     "loading": "Chargement du tracÃ©...",

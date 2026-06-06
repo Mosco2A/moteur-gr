@@ -1,4 +1,18 @@
 {
+  "nav": {
+    "map": "Map",
+    "stages": "Stages",
+    "planning": "Planning",
+    "journal": "Journal",
+    "more": "More",
+    "checklist": "Gear checklist",
+    "feasibility": "Feasibility",
+    "tips": "Trek tips",
+    "emergency": "Emergency contacts",
+    "catalog": "Trail catalog",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
   "map": {
     "title": "Trail map",
     "loading": "Loading track...",

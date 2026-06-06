@@ -1,4 +1,18 @@
 {
+  "nav": {
+    "map": "Karte",
+    "stages": "Etappen",
+    "planning": "Planung",
+    "journal": "Tagebuch",
+    "more": "Mehr",
+    "checklist": "Ausrüstungsliste",
+    "feasibility": "Machbarkeit",
+    "tips": "Trek-Tipps",
+    "emergency": "Notfallkontakte",
+    "catalog": "Wegekatalog",
+    "profile": "Profil",
+    "settings": "Einstellungen"
+  },
   "map": {
     "title": "Wanderkarte",
     "loading": "Strecke wird geladen...",
