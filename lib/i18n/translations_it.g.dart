@@ -59,6 +59,10 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$it feasibility = _Translations$feasibility$it._(_root);
 	@override late final _Translations$tips$it tips = _Translations$tips$it._(_root);
 	@override late final _Translations$goodies$it goodies = _Translations$goodies$it._(_root);
+	@override late final _Translations$noData$it noData = _Translations$noData$it._(_root);
+	@override late final _Translations$updates$it updates = _Translations$updates$it._(_root);
+	@override late final _Translations$follow$it follow = _Translations$follow$it._(_root);
+	@override late final _Translations$monetization$it monetization = _Translations$monetization$it._(_root);
 }
 
 // Path: nav
@@ -479,6 +483,65 @@ class _Translations$goodies$it extends Translations$goodies$fr {
 	// Translations
 	@override String get title => 'Negozio Goodies';
 	@override String get comingSoon => 'Questo modulo arrivera presto. Resta connesso!';
+}
+
+// Path: noData
+class _Translations$noData$it extends Translations$noData$fr {
+	_Translations$noData$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Nessun sentiero scaricato';
+	@override String get subtitle => 'Scarica un sentiero per iniziare';
+	@override String get offlineHint => 'I dati saranno disponibili offline per la tua escursione.';
+	@override String get browseCta => 'Esplora i sentieri';
+}
+
+// Path: updates
+class _Translations$updates$it extends Translations$updates$fr {
+	_Translations$updates$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get readyTitle => 'Aggiornamento pronto';
+	@override String get readyBodyOne => 'Un sentiero è stato aggiornato.';
+	@override String readyBodyMany({required Object count}) => '${count} sentieri sono stati aggiornati.';
+}
+
+// Path: follow
+class _Translations$follow$it extends Translations$follow$fr {
+	_Translations$follow$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Localizzazione in diretta';
+	@override String get connecting => 'Connessione…';
+	@override String get live => 'In diretta';
+	@override String get offline => 'Offline';
+	@override String get invalidLink => 'Link non valido';
+	@override String get invalidLinkHint => 'Questo link di localizzazione non esiste o è scaduto.';
+}
+
+// Path: monetization
+class _Translations$monetization$it extends Translations$monetization$fr {
+	_Translations$monetization$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get demoBanner => 'Modalità demo — tocca per sbloccare';
+	@override String get paywallTitle => 'Sblocca questo trek';
+	@override String get paywallBody => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.';
+	@override String get featureMap => 'Mappa offline + GPS + localizzazione in diretta';
+	@override String get featureJournal => 'Diario di viaggio completo';
+	@override String get featureDiploma => 'Diploma di fine trek';
+	@override String get featureFollowers => '2 follower gratuiti';
+	@override String get featureNoAds => 'Zero pubblicità';
+	@override String get buyCta => 'Sblocca questo trek';
+	@override String buyCtaWithPrice({required Object price}) => 'Sblocca questo trek — ${price} €';
 }
 
 // Path: stage.difficulty
@@ -1087,6 +1150,29 @@ extension on TranslationsIt {
 			'tips.altitude' => 'Altitudine min.',
 			'goodies.title' => 'Negozio Goodies',
 			'goodies.comingSoon' => 'Questo modulo arrivera presto. Resta connesso!',
+			'noData.title' => 'Nessun sentiero scaricato',
+			'noData.subtitle' => 'Scarica un sentiero per iniziare',
+			'noData.offlineHint' => 'I dati saranno disponibili offline per la tua escursione.',
+			'noData.browseCta' => 'Esplora i sentieri',
+			'updates.readyTitle' => 'Aggiornamento pronto',
+			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
+			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
+			'follow.title' => 'Localizzazione in diretta',
+			'follow.connecting' => 'Connessione…',
+			'follow.live' => 'In diretta',
+			'follow.offline' => 'Offline',
+			'follow.invalidLink' => 'Link non valido',
+			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
+			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
+			'monetization.paywallTitle' => 'Sblocca questo trek',
+			'monetization.paywallBody' => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.',
+			'monetization.featureMap' => 'Mappa offline + GPS + localizzazione in diretta',
+			'monetization.featureJournal' => 'Diario di viaggio completo',
+			'monetization.featureDiploma' => 'Diploma di fine trek',
+			'monetization.featureFollowers' => '2 follower gratuiti',
+			'monetization.featureNoAds' => 'Zero pubblicità',
+			'monetization.buyCta' => 'Sblocca questo trek',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
 			_ => null,
 		};
 	}

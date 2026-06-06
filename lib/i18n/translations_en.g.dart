@@ -59,6 +59,10 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
 	@override late final _Translations$tips$en tips = _Translations$tips$en._(_root);
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
+	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
+	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
+	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
+	@override late final _Translations$monetization$en monetization = _Translations$monetization$en._(_root);
 }
 
 // Path: nav
@@ -479,6 +483,65 @@ class _Translations$goodies$en extends Translations$goodies$fr {
 	// Translations
 	@override String get title => 'Goodies Shop';
 	@override String get comingSoon => 'This module is coming soon. Stay tuned!';
+}
+
+// Path: noData
+class _Translations$noData$en extends Translations$noData$fr {
+	_Translations$noData$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'No trail downloaded';
+	@override String get subtitle => 'Download a trail to get started';
+	@override String get offlineHint => 'Data will be available offline for your hike.';
+	@override String get browseCta => 'Browse trails';
+}
+
+// Path: updates
+class _Translations$updates$en extends Translations$updates$fr {
+	_Translations$updates$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get readyTitle => 'Update ready';
+	@override String get readyBodyOne => 'One trail has been updated.';
+	@override String readyBodyMany({required Object count}) => '${count} trails have been updated.';
+}
+
+// Path: follow
+class _Translations$follow$en extends Translations$follow$fr {
+	_Translations$follow$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Live tracking';
+	@override String get connecting => 'Connecting…';
+	@override String get live => 'Live';
+	@override String get offline => 'Offline';
+	@override String get invalidLink => 'Invalid link';
+	@override String get invalidLinkHint => 'This tracking link does not exist or has expired.';
+}
+
+// Path: monetization
+class _Translations$monetization$en extends Translations$monetization$fr {
+	_Translations$monetization$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get demoBanner => 'Demo mode — tap to unlock';
+	@override String get paywallTitle => 'Unlock this trek';
+	@override String get paywallBody => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.';
+	@override String get featureMap => 'Offline map + GPS + live tracking';
+	@override String get featureJournal => 'Full trek journal';
+	@override String get featureDiploma => 'End-of-trek diploma';
+	@override String get featureFollowers => '2 free followers';
+	@override String get featureNoAds => 'Zero ads';
+	@override String get buyCta => 'Unlock this trek';
+	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
 }
 
 // Path: stage.difficulty
@@ -1087,6 +1150,29 @@ extension on TranslationsEn {
 			'tips.altitude' => 'Min. altitude',
 			'goodies.title' => 'Goodies Shop',
 			'goodies.comingSoon' => 'This module is coming soon. Stay tuned!',
+			'noData.title' => 'No trail downloaded',
+			'noData.subtitle' => 'Download a trail to get started',
+			'noData.offlineHint' => 'Data will be available offline for your hike.',
+			'noData.browseCta' => 'Browse trails',
+			'updates.readyTitle' => 'Update ready',
+			'updates.readyBodyOne' => 'One trail has been updated.',
+			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
+			'follow.title' => 'Live tracking',
+			'follow.connecting' => 'Connecting…',
+			'follow.live' => 'Live',
+			'follow.offline' => 'Offline',
+			'follow.invalidLink' => 'Invalid link',
+			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
+			'monetization.demoBanner' => 'Demo mode — tap to unlock',
+			'monetization.paywallTitle' => 'Unlock this trek',
+			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
+			'monetization.featureMap' => 'Offline map + GPS + live tracking',
+			'monetization.featureJournal' => 'Full trek journal',
+			'monetization.featureDiploma' => 'End-of-trek diploma',
+			'monetization.featureFollowers' => '2 free followers',
+			'monetization.featureNoAds' => 'Zero ads',
+			'monetization.buyCta' => 'Unlock this trek',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
 			_ => null,
 		};
 	}

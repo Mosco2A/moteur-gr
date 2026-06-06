@@ -60,6 +60,10 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$feasibility$fr feasibility = Translations$feasibility$fr.internal(_root);
 	late final Translations$tips$fr tips = Translations$tips$fr.internal(_root);
 	late final Translations$goodies$fr goodies = Translations$goodies$fr.internal(_root);
+	late final Translations$noData$fr noData = Translations$noData$fr.internal(_root);
+	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
+	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
+	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
 }
 
 // Path: nav
@@ -950,6 +954,111 @@ class Translations$goodies$fr {
 	String get comingSoon => 'Ce module arrive bientot. Restez connecte !';
 }
 
+// Path: noData
+class Translations$noData$fr {
+	Translations$noData$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Aucun sentier téléchargé'
+	String get title => 'Aucun sentier téléchargé';
+
+	/// fr: 'Téléchargez un sentier pour commencer'
+	String get subtitle => 'Téléchargez un sentier pour commencer';
+
+	/// fr: 'Les données seront disponibles hors ligne pour votre randonnée.'
+	String get offlineHint => 'Les données seront disponibles hors ligne pour votre randonnée.';
+
+	/// fr: 'Parcourir les sentiers'
+	String get browseCta => 'Parcourir les sentiers';
+}
+
+// Path: updates
+class Translations$updates$fr {
+	Translations$updates$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mise à jour prête'
+	String get readyTitle => 'Mise à jour prête';
+
+	/// fr: 'Un sentier a été mis à jour.'
+	String get readyBodyOne => 'Un sentier a été mis à jour.';
+
+	/// fr: '$count sentiers ont été mis à jour.'
+	String readyBodyMany({required Object count}) => '${count} sentiers ont été mis à jour.';
+}
+
+// Path: follow
+class Translations$follow$fr {
+	Translations$follow$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Suivi en direct'
+	String get title => 'Suivi en direct';
+
+	/// fr: 'Connexion…'
+	String get connecting => 'Connexion…';
+
+	/// fr: 'En direct'
+	String get live => 'En direct';
+
+	/// fr: 'Hors ligne'
+	String get offline => 'Hors ligne';
+
+	/// fr: 'Lien invalide'
+	String get invalidLink => 'Lien invalide';
+
+	/// fr: 'Ce lien de suivi n'existe pas ou a expiré.'
+	String get invalidLinkHint => 'Ce lien de suivi n\'existe pas ou a expiré.';
+}
+
+// Path: monetization
+class Translations$monetization$fr {
+	Translations$monetization$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mode démo — touchez pour débloquer'
+	String get demoBanner => 'Mode démo — touchez pour débloquer';
+
+	/// fr: 'Débloquez ce trek'
+	String get paywallTitle => 'Débloquez ce trek';
+
+	/// fr: 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.'
+	String get paywallBody => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.';
+
+	/// fr: 'Carte hors ligne + GPS + suivi en direct'
+	String get featureMap => 'Carte hors ligne + GPS + suivi en direct';
+
+	/// fr: 'Journal de bord complet'
+	String get featureJournal => 'Journal de bord complet';
+
+	/// fr: 'Diplôme de fin de trek'
+	String get featureDiploma => 'Diplôme de fin de trek';
+
+	/// fr: '2 suiveurs gratuits'
+	String get featureFollowers => '2 suiveurs gratuits';
+
+	/// fr: 'Zéro publicité'
+	String get featureNoAds => 'Zéro publicité';
+
+	/// fr: 'Débloquer ce trek'
+	String get buyCta => 'Débloquer ce trek';
+
+	/// fr: 'Débloquer ce trek — $price €'
+	String buyCtaWithPrice({required Object price}) => 'Débloquer ce trek — ${price} €';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1774,6 +1883,29 @@ extension on Translations {
 			'tips.altitude' => 'Altitude min.',
 			'goodies.title' => 'Boutique Goodies',
 			'goodies.comingSoon' => 'Ce module arrive bientot. Restez connecte !',
+			'noData.title' => 'Aucun sentier téléchargé',
+			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
+			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
+			'noData.browseCta' => 'Parcourir les sentiers',
+			'updates.readyTitle' => 'Mise à jour prête',
+			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
+			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
+			'follow.title' => 'Suivi en direct',
+			'follow.connecting' => 'Connexion…',
+			'follow.live' => 'En direct',
+			'follow.offline' => 'Hors ligne',
+			'follow.invalidLink' => 'Lien invalide',
+			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
+			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
+			'monetization.paywallTitle' => 'Débloquez ce trek',
+			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.',
+			'monetization.featureMap' => 'Carte hors ligne + GPS + suivi en direct',
+			'monetization.featureJournal' => 'Journal de bord complet',
+			'monetization.featureDiploma' => 'Diplôme de fin de trek',
+			'monetization.featureFollowers' => '2 suiveurs gratuits',
+			'monetization.featureNoAds' => 'Zéro publicité',
+			'monetization.buyCta' => 'Débloquer ce trek',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer ce trek — ${price} €',
 			_ => null,
 		};
 	}

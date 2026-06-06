@@ -409,5 +409,36 @@
   "goodies": {
     "title": "Boutique Goodies",
     "comingSoon": "Ce module arrive bientot. Restez connecte !"
+  },
+  "noData": {
+    "title": "Aucun sentier téléchargé",
+    "subtitle": "Téléchargez un sentier pour commencer",
+    "offlineHint": "Les données seront disponibles hors ligne pour votre randonnée.",
+    "browseCta": "Parcourir les sentiers"
+  },
+  "updates": {
+    "readyTitle": "Mise à jour prête",
+    "readyBodyOne": "Un sentier a été mis à jour.",
+    "readyBodyMany": "$count sentiers ont été mis à jour."
+  },
+  "follow": {
+    "title": "Suivi en direct",
+    "connecting": "Connexion…",
+    "live": "En direct",
+    "offline": "Hors ligne",
+    "invalidLink": "Lien invalide",
+    "invalidLinkHint": "Ce lien de suivi n'existe pas ou a expiré."
+  },
+  "monetization": {
+    "demoBanner": "Mode démo — touchez pour débloquer",
+    "paywallTitle": "Débloquez ce trek",
+    "paywallBody": "Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.",
+    "featureMap": "Carte hors ligne + GPS + suivi en direct",
+    "featureJournal": "Journal de bord complet",
+    "featureDiploma": "Diplôme de fin de trek",
+    "featureFollowers": "2 suiveurs gratuits",
+    "featureNoAds": "Zéro publicité",
+    "buyCta": "Débloquer ce trek",
+    "buyCtaWithPrice": "Débloquer ce trek — $price €"
   }
 }

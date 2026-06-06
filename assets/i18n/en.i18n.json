@@ -409,5 +409,36 @@
   "goodies": {
     "title": "Goodies Shop",
     "comingSoon": "This module is coming soon. Stay tuned!"
+  },
+  "noData": {
+    "title": "No trail downloaded",
+    "subtitle": "Download a trail to get started",
+    "offlineHint": "Data will be available offline for your hike.",
+    "browseCta": "Browse trails"
+  },
+  "updates": {
+    "readyTitle": "Update ready",
+    "readyBodyOne": "One trail has been updated.",
+    "readyBodyMany": "$count trails have been updated."
+  },
+  "follow": {
+    "title": "Live tracking",
+    "connecting": "Connecting…",
+    "live": "Live",
+    "offline": "Offline",
+    "invalidLink": "Invalid link",
+    "invalidLinkHint": "This tracking link does not exist or has expired."
+  },
+  "monetization": {
+    "demoBanner": "Demo mode — tap to unlock",
+    "paywallTitle": "Unlock this trek",
+    "paywallBody": "Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.",
+    "featureMap": "Offline map + GPS + live tracking",
+    "featureJournal": "Full trek journal",
+    "featureDiploma": "End-of-trek diploma",
+    "featureFollowers": "2 free followers",
+    "featureNoAds": "Zero ads",
+    "buyCta": "Unlock this trek",
+    "buyCtaWithPrice": "Unlock this trek — €$price"
   }
 }

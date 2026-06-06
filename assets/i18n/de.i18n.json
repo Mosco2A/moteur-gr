@@ -409,5 +409,36 @@
   "goodies": {
     "title": "Goodies-Shop",
     "comingSoon": "Dieses Modul kommt bald. Bleiben Sie dran!"
+  },
+  "noData": {
+    "title": "Kein Weg heruntergeladen",
+    "subtitle": "Laden Sie einen Weg herunter, um zu beginnen",
+    "offlineHint": "Die Daten sind offline für Ihre Wanderung verfügbar.",
+    "browseCta": "Wege durchsuchen"
+  },
+  "updates": {
+    "readyTitle": "Update bereit",
+    "readyBodyOne": "Ein Weg wurde aktualisiert.",
+    "readyBodyMany": "$count Wege wurden aktualisiert."
+  },
+  "follow": {
+    "title": "Live-Verfolgung",
+    "connecting": "Verbinden…",
+    "live": "Live",
+    "offline": "Offline",
+    "invalidLink": "Ungültiger Link",
+    "invalidLinkHint": "Dieser Tracking-Link existiert nicht oder ist abgelaufen."
+  },
+  "monetization": {
+    "demoBanner": "Demo-Modus — zum Freischalten tippen",
+    "paywallTitle": "Diesen Trek freischalten",
+    "paywallBody": "Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.",
+    "featureMap": "Offline-Karte + GPS + Live-Tracking",
+    "featureJournal": "Vollständiges Trek-Tagebuch",
+    "featureDiploma": "Trek-Abschlussdiplom",
+    "featureFollowers": "2 kostenlose Follower",
+    "featureNoAds": "Keine Werbung",
+    "buyCta": "Diesen Trek freischalten",
+    "buyCtaWithPrice": "Diesen Trek freischalten — $price €"
   }
 }

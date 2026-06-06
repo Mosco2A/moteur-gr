@@ -17,6 +17,7 @@ import '../../features/trail/presentation/no_data_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/trail/presentation/trail_list_screen.dart';
+import '../../features/group/presentation/follow_web_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
@@ -74,6 +75,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/diploma           - Diplome de fin de trek
 ///   /trail/:id/feedback          - Feedback in-app
 ///   /group/:id                   - Groupe localisation partagee
+///   /follow/:code                - Suivi web temps reel (sans auth, E4.12a)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
 ///   /booking                     - Reservation (stub, gardee par FeatureFlags)
@@ -273,6 +275,15 @@ final appRouter = GoRouter(
         return GroupScreen(trailId: trailId);
       },
     ),
+    // E4.12a : page de suivi temps reel (lien partage, sans auth)
+    GoRoute(
+      path: '/follow/:code',
+      name: 'follow',
+      builder: (context, state) {
+        final shareCode = state.pathParameters['code'] ?? '';
+        return FollowWebScreen(shareCode: shareCode);
+      },
+    ),
     GoRoute(
       path: '/catalog',
       name: 'catalog',
@@ -369,6 +380,9 @@ String? _guardNoData(BuildContext context, GoRouterState state) {
   // Routes exclues du guard (doivent rester accessibles)
   final excludedPaths = ['/no-data', '/catalog', '/settings', '/profile', '/emergency'];
   if (excludedPaths.contains(state.uri.path)) return null;
+
+  // /follow/:code ne necessite pas de sentier telecharge (suivi web)
+  if (state.uri.path.startsWith('/follow/')) return null;
 
   // Si aucun sentier telecharge, rediriger vers l'ecran bloquant
   if (!hasDownloadedTrails) return '/no-data';

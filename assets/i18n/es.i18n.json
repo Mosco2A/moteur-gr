@@ -409,5 +409,36 @@
   "goodies": {
     "title": "Tienda de Goodies",
     "comingSoon": "Este modulo llegara pronto. Mantente atento!"
+  },
+  "noData": {
+    "title": "Ningún sendero descargado",
+    "subtitle": "Descarga un sendero para empezar",
+    "offlineHint": "Los datos estarán disponibles sin conexión para tu caminata.",
+    "browseCta": "Explorar senderos"
+  },
+  "updates": {
+    "readyTitle": "Actualización lista",
+    "readyBodyOne": "Un sendero ha sido actualizado.",
+    "readyBodyMany": "$count senderos han sido actualizados."
+  },
+  "follow": {
+    "title": "Seguimiento en directo",
+    "connecting": "Conectando…",
+    "live": "En directo",
+    "offline": "Sin conexión",
+    "invalidLink": "Enlace no válido",
+    "invalidLinkHint": "Este enlace de seguimiento no existe o ha caducado."
+  },
+  "monetization": {
+    "demoBanner": "Modo demo — toca para desbloquear",
+    "paywallTitle": "Desbloquea este trek",
+    "paywallBody": "El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.",
+    "featureMap": "Mapa sin conexión + GPS + seguimiento en directo",
+    "featureJournal": "Diario de ruta completo",
+    "featureDiploma": "Diploma de fin de trek",
+    "featureFollowers": "2 seguidores gratuitos",
+    "featureNoAds": "Cero publicidad",
+    "buyCta": "Desbloquear este trek",
+    "buyCtaWithPrice": "Desbloquear este trek — $price €"
   }
 }

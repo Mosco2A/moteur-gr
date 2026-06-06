@@ -23,6 +23,14 @@ class FeatureFlags {
     return _overrides['booking:$trailId'] ?? false;
   }
 
+  /// Verifie si le premium est debloque pour un sentier donne (E4.17).
+  ///
+  /// Retourne false par defaut (mode gratuit demo + pub, #81774).
+  /// Active par MonetizationService.purchaseTrail apres achat.
+  static bool isPremiumEnabled(String trailId) {
+    return _overrides['premium:$trailId'] ?? false;
+  }
+
   /// Definit un override pour un flag donne.
   ///
   /// Utilise pour les tests et la configuration dynamique.

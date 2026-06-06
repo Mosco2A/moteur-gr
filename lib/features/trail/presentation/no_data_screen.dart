@@ -1,18 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 
-/// Ecran bloquant affiche quand aucun sentier n'est telecharge.
+/// Provider qui indique si des sentiers sont disponibles localement.
+///
+/// Utilise par [NoDataScreen] pour rediriger vers la liste des
+/// sentiers des qu un sentier devient disponible (fin de
+/// telechargement catalogue). Mis a jour par le CatalogNotifier.
+final hasLocalTrailsProvider = StateProvider<bool>((ref) => false);
+
+/// Ecran bloquant affiche quand aucun sentier n'est telecharge (E4.10).
 ///
 /// Guide l'utilisateur vers le catalogue pour telecharger
 /// son premier sentier. Design coherent avec le theme dark.
-class NoDataScreen extends StatelessWidget {
+/// Redirige automatiquement vers /trails via [hasLocalTrailsProvider].
+/// Textes via Slang (t.noData.*) — zero texte en dur.
+class NoDataScreen extends ConsumerWidget {
   const NoDataScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final hasTrails = ref.watch(hasLocalTrailsProvider);
+
+    // Si des sentiers sont maintenant disponibles, rediriger
+    if (hasTrails) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) context.go('/trails');
+      });
+    }
 
     return Scaffold(
       body: SafeArea(
@@ -42,7 +61,7 @@ class NoDataScreen extends StatelessWidget {
 
                 // Titre
                 Text(
-                  'Aucun sentier telecharge',
+                  t.noData.title,
                   style: theme.textTheme.headlineMedium,
                   textAlign: TextAlign.center,
                 ),
@@ -50,7 +69,7 @@ class NoDataScreen extends StatelessWidget {
 
                 // Message explicatif
                 Text(
-                  'Telechargez un sentier pour commencer',
+                  t.noData.subtitle,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: AppTheme.grisGranite,
                   ),
@@ -58,8 +77,7 @@ class NoDataScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: AppTheme.spacingSm),
                 Text(
-                  'Les donnees seront disponibles hors ligne '
-                  'pour votre randonnee.',
+                  t.noData.offlineHint,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: AppTheme.grisGranite.withAlpha(180),
                   ),
@@ -71,7 +89,7 @@ class NoDataScreen extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: () => context.go('/catalog'),
                   icon: const Icon(Icons.explore),
-                  label: const Text('Parcourir les sentiers'),
+                  label: Text(t.noData.browseCta),
                 ),
                 const SizedBox(height: AppTheme.spacingBase),
               ],
