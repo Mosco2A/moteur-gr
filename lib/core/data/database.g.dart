@@ -10276,6 +10276,817 @@ class HealthInfoEntriesCompanion extends UpdateCompanion<HealthInfoEntry> {
   }
 }
 
+class $FollowSessionsTable extends FollowSessions
+    with TableInfo<$FollowSessionsTable, FollowSessionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FollowSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trekkerUserIdMeta = const VerificationMeta(
+    'trekkerUserId',
+  );
+  @override
+  late final GeneratedColumn<String> trekkerUserId = GeneratedColumn<String>(
+    'trekker_user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _shareCodeMeta = const VerificationMeta(
+    'shareCode',
+  );
+  @override
+  late final GeneratedColumn<String> shareCode = GeneratedColumn<String>(
+    'share_code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<String> createdAt = GeneratedColumn<String>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
+    'expiresAt',
+  );
+  @override
+  late final GeneratedColumn<String> expiresAt = GeneratedColumn<String>(
+    'expires_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    trekkerUserId,
+    shareCode,
+    createdAt,
+    expiresAt,
+    isActive,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'follow_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FollowSessionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('trekker_user_id')) {
+      context.handle(
+        _trekkerUserIdMeta,
+        trekkerUserId.isAcceptableOrUnknown(
+          data['trekker_user_id']!,
+          _trekkerUserIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_trekkerUserIdMeta);
+    }
+    if (data.containsKey('share_code')) {
+      context.handle(
+        _shareCodeMeta,
+        shareCode.isAcceptableOrUnknown(data['share_code']!, _shareCodeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_shareCodeMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('expires_at')) {
+      context.handle(
+        _expiresAtMeta,
+        expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_expiresAtMeta);
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FollowSessionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FollowSessionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      trekkerUserId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trekker_user_id'],
+      )!,
+      shareCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}share_code'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_at'],
+      )!,
+      expiresAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}expires_at'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+    );
+  }
+
+  @override
+  $FollowSessionsTable createAlias(String alias) {
+    return $FollowSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class FollowSessionRow extends DataClass
+    implements Insertable<FollowSessionRow> {
+  /// Identifiant unique (UUID)
+  final String id;
+
+  /// UID (anonymise) du randonneur suivi
+  final String trekkerUserId;
+
+  /// Code de partage unique (6 caracteres alphanum)
+  final String shareCode;
+
+  /// Date de creation (ISO 8601)
+  final String createdAt;
+
+  /// Date d expiration (ISO 8601)
+  final String expiresAt;
+
+  /// Session active ou terminee
+  final bool isActive;
+  const FollowSessionRow({
+    required this.id,
+    required this.trekkerUserId,
+    required this.shareCode,
+    required this.createdAt,
+    required this.expiresAt,
+    required this.isActive,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['trekker_user_id'] = Variable<String>(trekkerUserId);
+    map['share_code'] = Variable<String>(shareCode);
+    map['created_at'] = Variable<String>(createdAt);
+    map['expires_at'] = Variable<String>(expiresAt);
+    map['is_active'] = Variable<bool>(isActive);
+    return map;
+  }
+
+  FollowSessionsCompanion toCompanion(bool nullToAbsent) {
+    return FollowSessionsCompanion(
+      id: Value(id),
+      trekkerUserId: Value(trekkerUserId),
+      shareCode: Value(shareCode),
+      createdAt: Value(createdAt),
+      expiresAt: Value(expiresAt),
+      isActive: Value(isActive),
+    );
+  }
+
+  factory FollowSessionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FollowSessionRow(
+      id: serializer.fromJson<String>(json['id']),
+      trekkerUserId: serializer.fromJson<String>(json['trekkerUserId']),
+      shareCode: serializer.fromJson<String>(json['shareCode']),
+      createdAt: serializer.fromJson<String>(json['createdAt']),
+      expiresAt: serializer.fromJson<String>(json['expiresAt']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'trekkerUserId': serializer.toJson<String>(trekkerUserId),
+      'shareCode': serializer.toJson<String>(shareCode),
+      'createdAt': serializer.toJson<String>(createdAt),
+      'expiresAt': serializer.toJson<String>(expiresAt),
+      'isActive': serializer.toJson<bool>(isActive),
+    };
+  }
+
+  FollowSessionRow copyWith({
+    String? id,
+    String? trekkerUserId,
+    String? shareCode,
+    String? createdAt,
+    String? expiresAt,
+    bool? isActive,
+  }) => FollowSessionRow(
+    id: id ?? this.id,
+    trekkerUserId: trekkerUserId ?? this.trekkerUserId,
+    shareCode: shareCode ?? this.shareCode,
+    createdAt: createdAt ?? this.createdAt,
+    expiresAt: expiresAt ?? this.expiresAt,
+    isActive: isActive ?? this.isActive,
+  );
+  FollowSessionRow copyWithCompanion(FollowSessionsCompanion data) {
+    return FollowSessionRow(
+      id: data.id.present ? data.id.value : this.id,
+      trekkerUserId: data.trekkerUserId.present
+          ? data.trekkerUserId.value
+          : this.trekkerUserId,
+      shareCode: data.shareCode.present ? data.shareCode.value : this.shareCode,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FollowSessionRow(')
+          ..write('id: $id, ')
+          ..write('trekkerUserId: $trekkerUserId, ')
+          ..write('shareCode: $shareCode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('isActive: $isActive')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, trekkerUserId, shareCode, createdAt, expiresAt, isActive);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FollowSessionRow &&
+          other.id == this.id &&
+          other.trekkerUserId == this.trekkerUserId &&
+          other.shareCode == this.shareCode &&
+          other.createdAt == this.createdAt &&
+          other.expiresAt == this.expiresAt &&
+          other.isActive == this.isActive);
+}
+
+class FollowSessionsCompanion extends UpdateCompanion<FollowSessionRow> {
+  final Value<String> id;
+  final Value<String> trekkerUserId;
+  final Value<String> shareCode;
+  final Value<String> createdAt;
+  final Value<String> expiresAt;
+  final Value<bool> isActive;
+  final Value<int> rowid;
+  const FollowSessionsCompanion({
+    this.id = const Value.absent(),
+    this.trekkerUserId = const Value.absent(),
+    this.shareCode = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.expiresAt = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FollowSessionsCompanion.insert({
+    required String id,
+    required String trekkerUserId,
+    required String shareCode,
+    required String createdAt,
+    required String expiresAt,
+    this.isActive = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       trekkerUserId = Value(trekkerUserId),
+       shareCode = Value(shareCode),
+       createdAt = Value(createdAt),
+       expiresAt = Value(expiresAt);
+  static Insertable<FollowSessionRow> custom({
+    Expression<String>? id,
+    Expression<String>? trekkerUserId,
+    Expression<String>? shareCode,
+    Expression<String>? createdAt,
+    Expression<String>? expiresAt,
+    Expression<bool>? isActive,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trekkerUserId != null) 'trekker_user_id': trekkerUserId,
+      if (shareCode != null) 'share_code': shareCode,
+      if (createdAt != null) 'created_at': createdAt,
+      if (expiresAt != null) 'expires_at': expiresAt,
+      if (isActive != null) 'is_active': isActive,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FollowSessionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? trekkerUserId,
+    Value<String>? shareCode,
+    Value<String>? createdAt,
+    Value<String>? expiresAt,
+    Value<bool>? isActive,
+    Value<int>? rowid,
+  }) {
+    return FollowSessionsCompanion(
+      id: id ?? this.id,
+      trekkerUserId: trekkerUserId ?? this.trekkerUserId,
+      shareCode: shareCode ?? this.shareCode,
+      createdAt: createdAt ?? this.createdAt,
+      expiresAt: expiresAt ?? this.expiresAt,
+      isActive: isActive ?? this.isActive,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (trekkerUserId.present) {
+      map['trekker_user_id'] = Variable<String>(trekkerUserId.value);
+    }
+    if (shareCode.present) {
+      map['share_code'] = Variable<String>(shareCode.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<String>(createdAt.value);
+    }
+    if (expiresAt.present) {
+      map['expires_at'] = Variable<String>(expiresAt.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FollowSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('trekkerUserId: $trekkerUserId, ')
+          ..write('shareCode: $shareCode, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('isActive: $isActive, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $FollowerSlotsTable extends FollowerSlots
+    with TableInfo<$FollowerSlotsTable, FollowerSlotRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FollowerSlotsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+    'session_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _followerNameMeta = const VerificationMeta(
+    'followerName',
+  );
+  @override
+  late final GeneratedColumn<String> followerName = GeneratedColumn<String>(
+    'follower_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isPaidMeta = const VerificationMeta('isPaid');
+  @override
+  late final GeneratedColumn<bool> isPaid = GeneratedColumn<bool>(
+    'is_paid',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_paid" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _adSupportedMeta = const VerificationMeta(
+    'adSupported',
+  );
+  @override
+  late final GeneratedColumn<bool> adSupported = GeneratedColumn<bool>(
+    'ad_supported',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("ad_supported" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    sessionId,
+    followerName,
+    isPaid,
+    adSupported,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'follower_slots';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FollowerSlotRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sessionIdMeta);
+    }
+    if (data.containsKey('follower_name')) {
+      context.handle(
+        _followerNameMeta,
+        followerName.isAcceptableOrUnknown(
+          data['follower_name']!,
+          _followerNameMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_followerNameMeta);
+    }
+    if (data.containsKey('is_paid')) {
+      context.handle(
+        _isPaidMeta,
+        isPaid.isAcceptableOrUnknown(data['is_paid']!, _isPaidMeta),
+      );
+    }
+    if (data.containsKey('ad_supported')) {
+      context.handle(
+        _adSupportedMeta,
+        adSupported.isAcceptableOrUnknown(
+          data['ad_supported']!,
+          _adSupportedMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  FollowerSlotRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FollowerSlotRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_id'],
+      )!,
+      followerName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}follower_name'],
+      )!,
+      isPaid: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_paid'],
+      )!,
+      adSupported: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}ad_supported'],
+      )!,
+    );
+  }
+
+  @override
+  $FollowerSlotsTable createAlias(String alias) {
+    return $FollowerSlotsTable(attachedDatabase, alias);
+  }
+}
+
+class FollowerSlotRow extends DataClass implements Insertable<FollowerSlotRow> {
+  /// Identifiant unique (UUID)
+  final String id;
+
+  /// Reference vers la session de suivi
+  final String sessionId;
+
+  /// Nom du suiveur
+  final String followerName;
+
+  /// Slot paye (pass web ou app complementaire)
+  final bool isPaid;
+
+  /// Slot supporte par la publicite (3eme suiveur et plus)
+  final bool adSupported;
+  const FollowerSlotRow({
+    required this.id,
+    required this.sessionId,
+    required this.followerName,
+    required this.isPaid,
+    required this.adSupported,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['session_id'] = Variable<String>(sessionId);
+    map['follower_name'] = Variable<String>(followerName);
+    map['is_paid'] = Variable<bool>(isPaid);
+    map['ad_supported'] = Variable<bool>(adSupported);
+    return map;
+  }
+
+  FollowerSlotsCompanion toCompanion(bool nullToAbsent) {
+    return FollowerSlotsCompanion(
+      id: Value(id),
+      sessionId: Value(sessionId),
+      followerName: Value(followerName),
+      isPaid: Value(isPaid),
+      adSupported: Value(adSupported),
+    );
+  }
+
+  factory FollowerSlotRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FollowerSlotRow(
+      id: serializer.fromJson<String>(json['id']),
+      sessionId: serializer.fromJson<String>(json['sessionId']),
+      followerName: serializer.fromJson<String>(json['followerName']),
+      isPaid: serializer.fromJson<bool>(json['isPaid']),
+      adSupported: serializer.fromJson<bool>(json['adSupported']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'sessionId': serializer.toJson<String>(sessionId),
+      'followerName': serializer.toJson<String>(followerName),
+      'isPaid': serializer.toJson<bool>(isPaid),
+      'adSupported': serializer.toJson<bool>(adSupported),
+    };
+  }
+
+  FollowerSlotRow copyWith({
+    String? id,
+    String? sessionId,
+    String? followerName,
+    bool? isPaid,
+    bool? adSupported,
+  }) => FollowerSlotRow(
+    id: id ?? this.id,
+    sessionId: sessionId ?? this.sessionId,
+    followerName: followerName ?? this.followerName,
+    isPaid: isPaid ?? this.isPaid,
+    adSupported: adSupported ?? this.adSupported,
+  );
+  FollowerSlotRow copyWithCompanion(FollowerSlotsCompanion data) {
+    return FollowerSlotRow(
+      id: data.id.present ? data.id.value : this.id,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      followerName: data.followerName.present
+          ? data.followerName.value
+          : this.followerName,
+      isPaid: data.isPaid.present ? data.isPaid.value : this.isPaid,
+      adSupported: data.adSupported.present
+          ? data.adSupported.value
+          : this.adSupported,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FollowerSlotRow(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('followerName: $followerName, ')
+          ..write('isPaid: $isPaid, ')
+          ..write('adSupported: $adSupported')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, sessionId, followerName, isPaid, adSupported);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FollowerSlotRow &&
+          other.id == this.id &&
+          other.sessionId == this.sessionId &&
+          other.followerName == this.followerName &&
+          other.isPaid == this.isPaid &&
+          other.adSupported == this.adSupported);
+}
+
+class FollowerSlotsCompanion extends UpdateCompanion<FollowerSlotRow> {
+  final Value<String> id;
+  final Value<String> sessionId;
+  final Value<String> followerName;
+  final Value<bool> isPaid;
+  final Value<bool> adSupported;
+  final Value<int> rowid;
+  const FollowerSlotsCompanion({
+    this.id = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.followerName = const Value.absent(),
+    this.isPaid = const Value.absent(),
+    this.adSupported = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  FollowerSlotsCompanion.insert({
+    required String id,
+    required String sessionId,
+    required String followerName,
+    this.isPaid = const Value.absent(),
+    this.adSupported = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       sessionId = Value(sessionId),
+       followerName = Value(followerName);
+  static Insertable<FollowerSlotRow> custom({
+    Expression<String>? id,
+    Expression<String>? sessionId,
+    Expression<String>? followerName,
+    Expression<bool>? isPaid,
+    Expression<bool>? adSupported,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (sessionId != null) 'session_id': sessionId,
+      if (followerName != null) 'follower_name': followerName,
+      if (isPaid != null) 'is_paid': isPaid,
+      if (adSupported != null) 'ad_supported': adSupported,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  FollowerSlotsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? sessionId,
+    Value<String>? followerName,
+    Value<bool>? isPaid,
+    Value<bool>? adSupported,
+    Value<int>? rowid,
+  }) {
+    return FollowerSlotsCompanion(
+      id: id ?? this.id,
+      sessionId: sessionId ?? this.sessionId,
+      followerName: followerName ?? this.followerName,
+      isPaid: isPaid ?? this.isPaid,
+      adSupported: adSupported ?? this.adSupported,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (followerName.present) {
+      map['follower_name'] = Variable<String>(followerName.value);
+    }
+    if (isPaid.present) {
+      map['is_paid'] = Variable<bool>(isPaid.value);
+    }
+    if (adSupported.present) {
+      map['ad_supported'] = Variable<bool>(adSupported.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FollowerSlotsCompanion(')
+          ..write('id: $id, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('followerName: $followerName, ')
+          ..write('isPaid: $isPaid, ')
+          ..write('adSupported: $adSupported, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -10302,6 +11113,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ReviewRequestsTable reviewRequests = $ReviewRequestsTable(this);
   late final $HealthInfoEntriesTable healthInfoEntries =
       $HealthInfoEntriesTable(this);
+  late final $FollowSessionsTable followSessions = $FollowSessionsTable(this);
+  late final $FollowerSlotsTable followerSlots = $FollowerSlotsTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -10337,6 +11150,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final HealthInfoDao healthInfoDao = HealthInfoDao(this as AppDatabase);
+  late final FollowSessionsDao followSessionsDao = FollowSessionsDao(
+    this as AppDatabase,
+  );
+  late final FollowerSlotsDao followerSlotsDao = FollowerSlotsDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -10360,6 +11179,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncQueue,
     reviewRequests,
     healthInfoEntries,
+    followSessions,
+    followerSlots,
   ];
 }
 
@@ -15368,6 +16189,437 @@ typedef $$HealthInfoEntriesTableProcessedTableManager =
       HealthInfoEntry,
       PrefetchHooks Function()
     >;
+typedef $$FollowSessionsTableCreateCompanionBuilder =
+    FollowSessionsCompanion Function({
+      required String id,
+      required String trekkerUserId,
+      required String shareCode,
+      required String createdAt,
+      required String expiresAt,
+      Value<bool> isActive,
+      Value<int> rowid,
+    });
+typedef $$FollowSessionsTableUpdateCompanionBuilder =
+    FollowSessionsCompanion Function({
+      Value<String> id,
+      Value<String> trekkerUserId,
+      Value<String> shareCode,
+      Value<String> createdAt,
+      Value<String> expiresAt,
+      Value<bool> isActive,
+      Value<int> rowid,
+    });
+
+class $$FollowSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $FollowSessionsTable> {
+  $$FollowSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trekkerUserId => $composableBuilder(
+    column: $table.trekkerUserId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get shareCode => $composableBuilder(
+    column: $table.shareCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FollowSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FollowSessionsTable> {
+  $$FollowSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trekkerUserId => $composableBuilder(
+    column: $table.trekkerUserId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get shareCode => $composableBuilder(
+    column: $table.shareCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FollowSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FollowSessionsTable> {
+  $$FollowSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trekkerUserId => $composableBuilder(
+    column: $table.trekkerUserId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get shareCode =>
+      $composableBuilder(column: $table.shareCode, builder: (column) => column);
+
+  GeneratedColumn<String> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get expiresAt =>
+      $composableBuilder(column: $table.expiresAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+}
+
+class $$FollowSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FollowSessionsTable,
+          FollowSessionRow,
+          $$FollowSessionsTableFilterComposer,
+          $$FollowSessionsTableOrderingComposer,
+          $$FollowSessionsTableAnnotationComposer,
+          $$FollowSessionsTableCreateCompanionBuilder,
+          $$FollowSessionsTableUpdateCompanionBuilder,
+          (
+            FollowSessionRow,
+            BaseReferences<
+              _$AppDatabase,
+              $FollowSessionsTable,
+              FollowSessionRow
+            >,
+          ),
+          FollowSessionRow,
+          PrefetchHooks Function()
+        > {
+  $$FollowSessionsTableTableManager(
+    _$AppDatabase db,
+    $FollowSessionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FollowSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FollowSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FollowSessionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> trekkerUserId = const Value.absent(),
+                Value<String> shareCode = const Value.absent(),
+                Value<String> createdAt = const Value.absent(),
+                Value<String> expiresAt = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FollowSessionsCompanion(
+                id: id,
+                trekkerUserId: trekkerUserId,
+                shareCode: shareCode,
+                createdAt: createdAt,
+                expiresAt: expiresAt,
+                isActive: isActive,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String trekkerUserId,
+                required String shareCode,
+                required String createdAt,
+                required String expiresAt,
+                Value<bool> isActive = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FollowSessionsCompanion.insert(
+                id: id,
+                trekkerUserId: trekkerUserId,
+                shareCode: shareCode,
+                createdAt: createdAt,
+                expiresAt: expiresAt,
+                isActive: isActive,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FollowSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FollowSessionsTable,
+      FollowSessionRow,
+      $$FollowSessionsTableFilterComposer,
+      $$FollowSessionsTableOrderingComposer,
+      $$FollowSessionsTableAnnotationComposer,
+      $$FollowSessionsTableCreateCompanionBuilder,
+      $$FollowSessionsTableUpdateCompanionBuilder,
+      (
+        FollowSessionRow,
+        BaseReferences<_$AppDatabase, $FollowSessionsTable, FollowSessionRow>,
+      ),
+      FollowSessionRow,
+      PrefetchHooks Function()
+    >;
+typedef $$FollowerSlotsTableCreateCompanionBuilder =
+    FollowerSlotsCompanion Function({
+      required String id,
+      required String sessionId,
+      required String followerName,
+      Value<bool> isPaid,
+      Value<bool> adSupported,
+      Value<int> rowid,
+    });
+typedef $$FollowerSlotsTableUpdateCompanionBuilder =
+    FollowerSlotsCompanion Function({
+      Value<String> id,
+      Value<String> sessionId,
+      Value<String> followerName,
+      Value<bool> isPaid,
+      Value<bool> adSupported,
+      Value<int> rowid,
+    });
+
+class $$FollowerSlotsTableFilterComposer
+    extends Composer<_$AppDatabase, $FollowerSlotsTable> {
+  $$FollowerSlotsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get followerName => $composableBuilder(
+    column: $table.followerName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPaid => $composableBuilder(
+    column: $table.isPaid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get adSupported => $composableBuilder(
+    column: $table.adSupported,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FollowerSlotsTableOrderingComposer
+    extends Composer<_$AppDatabase, $FollowerSlotsTable> {
+  $$FollowerSlotsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get followerName => $composableBuilder(
+    column: $table.followerName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPaid => $composableBuilder(
+    column: $table.isPaid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get adSupported => $composableBuilder(
+    column: $table.adSupported,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FollowerSlotsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FollowerSlotsTable> {
+  $$FollowerSlotsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get sessionId =>
+      $composableBuilder(column: $table.sessionId, builder: (column) => column);
+
+  GeneratedColumn<String> get followerName => $composableBuilder(
+    column: $table.followerName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isPaid =>
+      $composableBuilder(column: $table.isPaid, builder: (column) => column);
+
+  GeneratedColumn<bool> get adSupported => $composableBuilder(
+    column: $table.adSupported,
+    builder: (column) => column,
+  );
+}
+
+class $$FollowerSlotsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FollowerSlotsTable,
+          FollowerSlotRow,
+          $$FollowerSlotsTableFilterComposer,
+          $$FollowerSlotsTableOrderingComposer,
+          $$FollowerSlotsTableAnnotationComposer,
+          $$FollowerSlotsTableCreateCompanionBuilder,
+          $$FollowerSlotsTableUpdateCompanionBuilder,
+          (
+            FollowerSlotRow,
+            BaseReferences<_$AppDatabase, $FollowerSlotsTable, FollowerSlotRow>,
+          ),
+          FollowerSlotRow,
+          PrefetchHooks Function()
+        > {
+  $$FollowerSlotsTableTableManager(_$AppDatabase db, $FollowerSlotsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FollowerSlotsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FollowerSlotsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FollowerSlotsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> sessionId = const Value.absent(),
+                Value<String> followerName = const Value.absent(),
+                Value<bool> isPaid = const Value.absent(),
+                Value<bool> adSupported = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FollowerSlotsCompanion(
+                id: id,
+                sessionId: sessionId,
+                followerName: followerName,
+                isPaid: isPaid,
+                adSupported: adSupported,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String sessionId,
+                required String followerName,
+                Value<bool> isPaid = const Value.absent(),
+                Value<bool> adSupported = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => FollowerSlotsCompanion.insert(
+                id: id,
+                sessionId: sessionId,
+                followerName: followerName,
+                isPaid: isPaid,
+                adSupported: adSupported,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FollowerSlotsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FollowerSlotsTable,
+      FollowerSlotRow,
+      $$FollowerSlotsTableFilterComposer,
+      $$FollowerSlotsTableOrderingComposer,
+      $$FollowerSlotsTableAnnotationComposer,
+      $$FollowerSlotsTableCreateCompanionBuilder,
+      $$FollowerSlotsTableUpdateCompanionBuilder,
+      (
+        FollowerSlotRow,
+        BaseReferences<_$AppDatabase, $FollowerSlotsTable, FollowerSlotRow>,
+      ),
+      FollowerSlotRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15407,4 +16659,8 @@ class $AppDatabaseManager {
       $$ReviewRequestsTableTableManager(_db, _db.reviewRequests);
   $$HealthInfoEntriesTableTableManager get healthInfoEntries =>
       $$HealthInfoEntriesTableTableManager(_db, _db.healthInfoEntries);
+  $$FollowSessionsTableTableManager get followSessions =>
+      $$FollowSessionsTableTableManager(_db, _db.followSessions);
+  $$FollowerSlotsTableTableManager get followerSlots =>
+      $$FollowerSlotsTableTableManager(_db, _db.followerSlots);
 }

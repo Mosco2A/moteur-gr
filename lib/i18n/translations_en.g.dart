@@ -59,6 +59,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
 	@override late final _Translations$tips$en tips = _Translations$tips$en._(_root);
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
+	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
 }
 
 // Path: nav
@@ -479,6 +480,19 @@ class _Translations$goodies$en extends Translations$goodies$fr {
 	// Translations
 	@override String get title => 'Goodies Shop';
 	@override String get comingSoon => 'This module is coming soon. Stay tuned!';
+}
+
+// Path: noData
+class _Translations$noData$en extends Translations$noData$fr {
+	_Translations$noData$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'No trail downloaded';
+	@override String get subtitle => 'Download a trail to get started';
+	@override String get offlineHint => 'Data will be available offline for your hike.';
+	@override String get browseCta => 'Browse trails';
 }
 
 // Path: stage.difficulty
@@ -1087,6 +1101,10 @@ extension on TranslationsEn {
 			'tips.altitude' => 'Min. altitude',
 			'goodies.title' => 'Goodies Shop',
 			'goodies.comingSoon' => 'This module is coming soon. Stay tuned!',
+			'noData.title' => 'No trail downloaded',
+			'noData.subtitle' => 'Download a trail to get started',
+			'noData.offlineHint' => 'Data will be available offline for your hike.',
+			'noData.browseCta' => 'Browse trails',
 			_ => null,
 		};
 	}

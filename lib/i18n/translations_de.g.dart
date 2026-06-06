@@ -59,6 +59,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$de feasibility = _Translations$feasibility$de._(_root);
 	@override late final _Translations$tips$de tips = _Translations$tips$de._(_root);
 	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
+	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
 }
 
 // Path: nav
@@ -479,6 +480,19 @@ class _Translations$goodies$de extends Translations$goodies$fr {
 	// Translations
 	@override String get title => 'Goodies-Shop';
 	@override String get comingSoon => 'Dieses Modul kommt bald. Bleiben Sie dran!';
+}
+
+// Path: noData
+class _Translations$noData$de extends Translations$noData$fr {
+	_Translations$noData$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Kein Weg heruntergeladen';
+	@override String get subtitle => 'Laden Sie einen Weg herunter, um zu beginnen';
+	@override String get offlineHint => 'Die Daten sind offline für Ihre Wanderung verfügbar.';
+	@override String get browseCta => 'Wege durchsuchen';
 }
 
 // Path: stage.difficulty
@@ -1087,6 +1101,10 @@ extension on TranslationsDe {
 			'tips.altitude' => 'Min. Hoehe',
 			'goodies.title' => 'Goodies-Shop',
 			'goodies.comingSoon' => 'Dieses Modul kommt bald. Bleiben Sie dran!',
+			'noData.title' => 'Kein Weg heruntergeladen',
+			'noData.subtitle' => 'Laden Sie einen Weg herunter, um zu beginnen',
+			'noData.offlineHint' => 'Die Daten sind offline für Ihre Wanderung verfügbar.',
+			'noData.browseCta' => 'Wege durchsuchen',
 			_ => null,
 		};
 	}

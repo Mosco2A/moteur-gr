@@ -59,6 +59,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$es feasibility = _Translations$feasibility$es._(_root);
 	@override late final _Translations$tips$es tips = _Translations$tips$es._(_root);
 	@override late final _Translations$goodies$es goodies = _Translations$goodies$es._(_root);
+	@override late final _Translations$noData$es noData = _Translations$noData$es._(_root);
 }
 
 // Path: nav
@@ -479,6 +480,19 @@ class _Translations$goodies$es extends Translations$goodies$fr {
 	// Translations
 	@override String get title => 'Tienda de Goodies';
 	@override String get comingSoon => 'Este modulo llegara pronto. Mantente atento!';
+}
+
+// Path: noData
+class _Translations$noData$es extends Translations$noData$fr {
+	_Translations$noData$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Ningún sendero descargado';
+	@override String get subtitle => 'Descarga un sendero para empezar';
+	@override String get offlineHint => 'Los datos estarán disponibles sin conexión para tu caminata.';
+	@override String get browseCta => 'Explorar senderos';
 }
 
 // Path: stage.difficulty
@@ -1087,6 +1101,10 @@ extension on TranslationsEs {
 			'tips.altitude' => 'Altitud min.',
 			'goodies.title' => 'Tienda de Goodies',
 			'goodies.comingSoon' => 'Este modulo llegara pronto. Mantente atento!',
+			'noData.title' => 'Ningún sendero descargado',
+			'noData.subtitle' => 'Descarga un sendero para empezar',
+			'noData.offlineHint' => 'Los datos estarán disponibles sin conexión para tu caminata.',
+			'noData.browseCta' => 'Explorar senderos',
 			_ => null,
 		};
 	}

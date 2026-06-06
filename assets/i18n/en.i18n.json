@@ -409,5 +409,11 @@
   "goodies": {
     "title": "Goodies Shop",
     "comingSoon": "This module is coming soon. Stay tuned!"
+  },
+  "noData": {
+    "title": "No trail downloaded",
+    "subtitle": "Download a trail to get started",
+    "offlineHint": "Data will be available offline for your hike.",
+    "browseCta": "Browse trails"
   }
 }

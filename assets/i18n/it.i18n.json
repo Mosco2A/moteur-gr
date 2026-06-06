@@ -409,5 +409,11 @@
   "goodies": {
     "title": "Negozio Goodies",
     "comingSoon": "Questo modulo arrivera presto. Resta connesso!"
+  },
+  "noData": {
+    "title": "Nessun sentiero scaricato",
+    "subtitle": "Scarica un sentiero per iniziare",
+    "offlineHint": "I dati saranno disponibili offline per la tua escursione.",
+    "browseCta": "Esplora i sentieri"
   }
 }

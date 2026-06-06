@@ -409,5 +409,11 @@
   "goodies": {
     "title": "Goodies-Shop",
     "comingSoon": "Dieses Modul kommt bald. Bleiben Sie dran!"
+  },
+  "noData": {
+    "title": "Kein Weg heruntergeladen",
+    "subtitle": "Laden Sie einen Weg herunter, um zu beginnen",
+    "offlineHint": "Die Daten sind offline für Ihre Wanderung verfügbar.",
+    "browseCta": "Wege durchsuchen"
   }
 }

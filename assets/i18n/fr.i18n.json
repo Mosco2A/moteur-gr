@@ -409,5 +409,11 @@
   "goodies": {
     "title": "Boutique Goodies",
     "comingSoon": "Ce module arrive bientot. Restez connecte !"
+  },
+  "noData": {
+    "title": "Aucun sentier téléchargé",
+    "subtitle": "Téléchargez un sentier pour commencer",
+    "offlineHint": "Les données seront disponibles hors ligne pour votre randonnée.",
+    "browseCta": "Parcourir les sentiers"
   }
 }

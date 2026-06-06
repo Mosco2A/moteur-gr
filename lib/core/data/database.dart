@@ -18,6 +18,8 @@ import 'tables/trail_manifests_table.dart';
 import 'tables/sync_queue_table.dart';
 import 'tables/review_requests_table.dart';
 import 'tables/health_info_table.dart';
+import 'tables/follow_sessions_table.dart';
+import 'tables/follower_slots_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -36,6 +38,8 @@ import 'daos/trail_manifests_dao.dart';
 import 'daos/sync_queue_dao.dart';
 import 'daos/review_requests_dao.dart';
 import 'daos/health_info_dao.dart';
+import 'daos/follow_sessions_dao.dart';
+import 'daos/follower_slots_dao.dart';
 
 part 'database.g.dart';
 
@@ -48,7 +52,8 @@ part 'database.g.dart';
 /// + 1 Phase 4 E4.3 (TrailManifests)
 /// + 1 Phase 4 E4.4 (SyncQueue)
 /// + 1 Phase 5 E5.17 (ReviewRequests)
-/// + 1 Phase 5 E5.16 (HealthInfoEntries).
+/// + 1 Phase 5 E5.16 (HealthInfoEntries)
+/// + 2 Phase 4 E4.10 (FollowSessions, FollowerSlots).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -70,6 +75,8 @@ part 'database.g.dart';
     SyncQueue,
     ReviewRequests,
     HealthInfoEntries,
+    FollowSessions,
+    FollowerSlots,
   ],
   daos: [
     StagesDao,
@@ -90,13 +97,15 @@ part 'database.g.dart';
     SyncQueueDao,
     ReviewRequestsDao,
     HealthInfoDao,
+    FollowSessionsDao,
+    FollowerSlotsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -149,6 +158,11 @@ class AppDatabase extends _$AppDatabase {
           // Migration v10 -> v11 : table health_info (Phase 5 E5.16)
           if (from < 11) {
             await migrator.createTable(healthInfoEntries);
+          }
+          // Migration v11 -> v12 : tables suivi trekkeur (Phase 4 E4.10)
+          if (from < 12) {
+            await migrator.createTable(followSessions);
+            await migrator.createTable(followerSlots);
           }
         },
       );
