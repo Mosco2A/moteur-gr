@@ -72,8 +72,8 @@ void main() {
       }
     });
 
-    test('scope generique (all) — decontamination GR20', () {
-      // Decontamination : les fiches neige ne sont plus couplees au GR20.
+    test('scope generique (all) — decontamination sentier-specifique', () {
+      // Decontamination : les fiches neige ne sont plus couplees a un sentier.
       // Elles s'appliquent a tout sentier de montagne, le ciblage se fait
       // par l'altitude (minAltitudeM >= 1500), pas par un trailId hardcode.
       for (final card in cards) {

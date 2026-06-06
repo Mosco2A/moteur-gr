@@ -43,7 +43,7 @@ void main() {
     // Inserer une etape de test avec coordonnees dynamiques
     await stagesDao.insertAll([
       const StagesCompanion(
-        trailId: Value('gr20'),
+        trailId: Value('sentier-bleu'),
         stageNumber: Value(1),
         name: Value('Calenzana - Ortu di u Piobbu'),
         distanceKm: Value(12.0),
@@ -82,7 +82,7 @@ void main() {
 
       // 1. Remplir le cache en simulant un appel online
       final forecast = await repo.getForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
       );
       expect(forecast, isNotNull,
@@ -103,7 +103,7 @@ void main() {
 
       // ACT : recuperer la meteo en mode offline (cache doit repondre)
       final cachedForecast = await offlineRepo.getForecast(
-        trailId: 'gr20',
+        trailId: 'sentier-bleu',
         stageNumber: 1,
       );
 
@@ -116,10 +116,10 @@ void main() {
       expect(cachedForecast.days[2].weatherCode, 1);
 
       // Verifier que les params du provider sont corrects
-      const params = WeatherStageParams(trailId: 'gr20', stageNumber: 1);
-      expect(params.trailId, 'gr20');
+      const params = WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1);
+      expect(params.trailId, 'sentier-bleu');
       expect(params.stageNumber, 1);
-      expect(params, equals(const WeatherStageParams(trailId: 'gr20', stageNumber: 1)));
+      expect(params, equals(const WeatherStageParams(trailId: 'sentier-bleu', stageNumber: 1)));
 
       apiService.dispose();
       offlineApiService.dispose();

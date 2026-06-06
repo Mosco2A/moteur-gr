@@ -13,7 +13,7 @@ void main() {
       final data = DiplomaPdfData(
         hikerName: 'Christophe',
         trailName: 'Fra li Monti',
-        trailRegion: 'Corse',
+        trailRegion: 'Region Test',
         totalStages: 16,
         totalDistanceKm: 180.0,
         totalElevationGain: 12000,

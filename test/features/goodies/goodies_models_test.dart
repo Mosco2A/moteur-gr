@@ -14,34 +14,34 @@ void main() {
     });
 
     test('retourne false par defaut pour tout sentier', () {
-      expect(FeatureFlags.isGoodiesEnabled('gr20'), false);
+      expect(FeatureFlags.isGoodiesEnabled('sentier-bleu'), false);
       expect(FeatureFlags.isGoodiesEnabled('gr10'), false);
       expect(FeatureFlags.isGoodiesEnabled('tmb'), false);
     });
 
     test('retourne true apres activation explicite', () {
-      FeatureFlags.setOverride('goodies', 'gr20', enabled: true);
-      expect(FeatureFlags.isGoodiesEnabled('gr20'), true);
+      FeatureFlags.setOverride('goodies', 'sentier-bleu', enabled: true);
+      expect(FeatureFlags.isGoodiesEnabled('sentier-bleu'), true);
       // Les autres sentiers restent OFF
       expect(FeatureFlags.isGoodiesEnabled('gr10'), false);
     });
 
     test('clearOverrides remet tout a false', () {
-      FeatureFlags.setOverride('goodies', 'gr20', enabled: true);
+      FeatureFlags.setOverride('goodies', 'sentier-bleu', enabled: true);
       FeatureFlags.clearOverrides();
-      expect(FeatureFlags.isGoodiesEnabled('gr20'), false);
+      expect(FeatureFlags.isGoodiesEnabled('sentier-bleu'), false);
     });
   });
 
   group('GoodieProduct serialization roundtrip', () {
     test('toJson -> fromJson preserve tous les champs', () {
       const product = GoodieProduct(
-        id: 'tshirt-gr20-001',
-        name: 'tshirt_gr20_finisher',
-        description: 'tshirt_gr20_finisher_desc',
+        id: 'tshirt-bleu-001',
+        name: 'tshirt_bleu_finisher',
+        description: 'tshirt_bleu_finisher_desc',
         type: 'tshirt',
         price: 2990,
-        image: 'assets/goodies/tshirt_gr20.png',
+        image: 'assets/goodies/tshirt_bleu.png',
         personalizable: true,
         trailSpecific: true,
       );
@@ -51,12 +51,12 @@ void main() {
       final decoded = json.decode(jsonString) as Map<String, dynamic>;
       final restored = GoodieProduct.fromJson(decoded);
 
-      expect(restored.id, 'tshirt-gr20-001');
-      expect(restored.name, 'tshirt_gr20_finisher');
-      expect(restored.description, 'tshirt_gr20_finisher_desc');
+      expect(restored.id, 'tshirt-bleu-001');
+      expect(restored.name, 'tshirt_bleu_finisher');
+      expect(restored.description, 'tshirt_bleu_finisher_desc');
       expect(restored.type, 'tshirt');
       expect(restored.price, 2990);
-      expect(restored.image, 'assets/goodies/tshirt_gr20.png');
+      expect(restored.image, 'assets/goodies/tshirt_bleu.png');
       expect(restored.personalizable, true);
       expect(restored.trailSpecific, true);
     });
@@ -81,8 +81,8 @@ void main() {
       final now = DateTime(2026, 6, 1, 10, 30);
       final order = GoodieOrder(
         id: 'order-001',
-        productId: 'tshirt-gr20-001',
-        trailId: 'gr20',
+        productId: 'tshirt-bleu-001',
+        trailId: 'sentier-bleu',
         quantity: 2,
         totalPrice: 5980,
         status: 'confirmed',
@@ -96,8 +96,8 @@ void main() {
       final restored = GoodieOrder.fromJson(decoded);
 
       expect(restored.id, 'order-001');
-      expect(restored.productId, 'tshirt-gr20-001');
-      expect(restored.trailId, 'gr20');
+      expect(restored.productId, 'tshirt-bleu-001');
+      expect(restored.trailId, 'sentier-bleu');
       expect(restored.quantity, 2);
       expect(restored.totalPrice, 5980);
       expect(restored.status, 'confirmed');
@@ -128,7 +128,7 @@ void main() {
         customName: 'Christophe',
         trekDate: 'Juin 2026',
         stageName: 'Vizzavona',
-        freeText: 'Mon premier GR20',
+        freeText: 'Mon premier grand sentier',
         customImagePath: '/photos/summit.jpg',
       );
 
@@ -142,7 +142,7 @@ void main() {
       expect(restored.customName, 'Christophe');
       expect(restored.trekDate, 'Juin 2026');
       expect(restored.stageName, 'Vizzavona');
-      expect(restored.freeText, 'Mon premier GR20');
+      expect(restored.freeText, 'Mon premier grand sentier');
       expect(restored.customImagePath, '/photos/summit.jpg');
     });
 

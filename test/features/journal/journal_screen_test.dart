@@ -16,10 +16,10 @@ void main() {
       ProviderScope(
         overrides: [
           databaseProvider.overrideWithValue(db),
-          trailIdProvider.overrideWithValue('gr20'),
+          trailIdProvider.overrideWithValue('sentier-bleu'),
         ],
         child: const MaterialApp(
-          home: JournalScreen(trailId: 'gr20'),
+          home: JournalScreen(trailId: 'sentier-bleu'),
         ),
       ),
     );

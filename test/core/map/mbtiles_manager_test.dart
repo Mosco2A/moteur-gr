@@ -44,9 +44,9 @@ void main() {
         });
         final manager = MBTilesManager(httpClient: mockClient);
 
-        await manager.downloadMbtiles('https://example.com/gr20.mbtiles', 'gr20');
+        await manager.downloadMbtiles('https://example.com/sentier-bleu.mbtiles', 'sentier-bleu');
 
-        final path = await manager.getMbtilesPath('gr20');
+        final path = await manager.getMbtilesPath('sentier-bleu');
         final file = File(path);
         expect(file.existsSync(), isTrue);
         expect(file.readAsBytesSync(), equals(fakeContent));

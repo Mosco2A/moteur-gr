@@ -17,7 +17,7 @@ void main() {
     container = ProviderContainer(
       overrides: [
         databaseProvider.overrideWithValue(db),
-        trailIdProvider.overrideWithValue('gr20'),
+        trailIdProvider.overrideWithValue('sentier-bleu'),
       ],
     );
   });

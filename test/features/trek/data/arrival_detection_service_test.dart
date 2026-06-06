@@ -48,7 +48,7 @@ Stage _fakeStage({
 }
 
 void main() {
-  // Etapes fictives en Corse (GR20).
+  // Etapes fictives (sentier de test, coordonnees arbitraires).
   // Etape 1 : (42.0, 9.0) -> (42.1, 9.1)
   // Etape 2 : (42.1, 9.1) -> (42.2, 9.2)
   // Etape 3 : (42.2, 9.2) -> (42.3, 9.3) — derniere etape

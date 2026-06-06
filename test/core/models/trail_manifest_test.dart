@@ -8,20 +8,20 @@ void main() {
   group('TrailManifestEntry', () {
     test('fromJson deserialise correctement', () {
       final json = {
-        'trailId': 'gr20',
+        'trailId': 'sentier-bleu',
         'dataVersion': 3,
         'hash': 'abc123def456',
-        'filePath': 'trails/gr20/data.json',
+        'filePath': 'trails/sentier-bleu/data.json',
         'fileSize': 524288,
         'status': 'active',
         'lastUpdated': '2026-05-26T12:00:00Z',
       };
 
       final entry = TrailManifestEntry.fromJson(json);
-      expect(entry.trailId, 'gr20');
+      expect(entry.trailId, 'sentier-bleu');
       expect(entry.dataVersion, 3);
       expect(entry.hash, 'abc123def456');
-      expect(entry.filePath, 'trails/gr20/data.json');
+      expect(entry.filePath, 'trails/sentier-bleu/data.json');
       expect(entry.fileSize, 524288);
       expect(entry.status, 'active');
       expect(entry.lastUpdated, '2026-05-26T12:00:00Z');
@@ -70,12 +70,12 @@ void main() {
 
     test('equality fonctionne avec freezed', () {
       const a = TrailManifestEntry(
-        trailId: 'gr20', dataVersion: 1, hash: 'h1',
+        trailId: 'sentier-bleu', dataVersion: 1, hash: 'h1',
         filePath: 'p', fileSize: 100, status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
       const b = TrailManifestEntry(
-        trailId: 'gr20', dataVersion: 1, hash: 'h1',
+        trailId: 'sentier-bleu', dataVersion: 1, hash: 'h1',
         filePath: 'p', fileSize: 100, status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
@@ -84,13 +84,13 @@ void main() {
 
     test('copyWith modifie un champ', () {
       const entry = TrailManifestEntry(
-        trailId: 'gr20', dataVersion: 1, hash: 'h1',
+        trailId: 'sentier-bleu', dataVersion: 1, hash: 'h1',
         filePath: 'p', fileSize: 100, status: 'active',
         lastUpdated: '2026-01-01T00:00:00Z',
       );
       final modified = entry.copyWith(dataVersion: 2);
       expect(modified.dataVersion, 2);
-      expect(modified.trailId, 'gr20');
+      expect(modified.trailId, 'sentier-bleu');
     });
   });
 
@@ -100,10 +100,10 @@ void main() {
         'schemaVersion': 1,
         'trails': [
           {
-            'trailId': 'gr20',
+            'trailId': 'sentier-bleu',
             'dataVersion': 3,
             'hash': 'abc123',
-            'filePath': 'trails/gr20/data.json',
+            'filePath': 'trails/sentier-bleu/data.json',
             'fileSize': 524288,
             'status': 'active',
             'lastUpdated': '2026-05-26T12:00:00Z',
@@ -123,7 +123,7 @@ void main() {
       final manifest = TrailManifest.fromJson(json);
       expect(manifest.schemaVersion, 1);
       expect(manifest.trails.length, 2);
-      expect(manifest.trails[0].trailId, 'gr20');
+      expect(manifest.trails[0].trailId, 'sentier-bleu');
       expect(manifest.trails[1].trailId, 'mare_a_mare');
     });
 
@@ -143,7 +143,7 @@ void main() {
         schemaVersion: 2,
         trails: [
           TrailManifestEntry(
-            trailId: 'gr20',
+            trailId: 'sentier-bleu',
             dataVersion: 3,
             hash: 'abc',
             filePath: 'p',
@@ -164,10 +164,10 @@ void main() {
         'schemaVersion': 1,
         'trails': [
           {
-            'trailId': 'gr20',
+            'trailId': 'sentier-bleu',
             'dataVersion': 4,
             'hash': 'sha256_full',
-            'filePath': 'trails/gr20/v4.json',
+            'filePath': 'trails/sentier-bleu/v4.json',
             'fileSize': 600000,
             'status': 'active',
             'lastUpdated': '2026-05-26T18:00:00Z',
@@ -184,7 +184,7 @@ void main() {
       );
 
       expect(reParsed.schemaVersion, 1);
-      expect(reParsed.trails.first.trailId, 'gr20');
+      expect(reParsed.trails.first.trailId, 'sentier-bleu');
       expect(reParsed.trails.first.dataVersion, 4);
       expect(reParsed.trails.first.hash, 'sha256_full');
     });

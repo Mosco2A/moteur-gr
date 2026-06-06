@@ -13,7 +13,7 @@ void main() {
       final data = DiplomaGenerator.createDiploma(
         hikerName: 'Christophe',
         trailName: 'Fra li Monti',
-        trailRegion: 'Corse',
+        trailRegion: 'Region Test',
         totalStages: 16,
         totalDistanceKm: 180.0,
         totalElevationGain: 12000,
@@ -23,7 +23,7 @@ void main() {
 
       expect(data.hikerName, 'Christophe');
       expect(data.trailName, 'Fra li Monti');
-      expect(data.trailRegion, 'Corse');
+      expect(data.trailRegion, 'Region Test');
       expect(data.totalStages, 16);
       expect(data.totalDistanceKm, 180.0);
       expect(data.totalElevationGain, 12000);
@@ -33,8 +33,8 @@ void main() {
     test('mainText contient le nom du randonneur', () {
       final data = DiplomaGenerator.createDiploma(
         hikerName: 'Jean',
-        trailName: 'GR20',
-        trailRegion: 'Corse',
+        trailName: 'Sentier Bleu',
+        trailRegion: 'Region Test',
         totalStages: 16,
         totalDistanceKm: 180.0,
         totalElevationGain: 12000,
@@ -43,7 +43,7 @@ void main() {
       );
 
       expect(data.mainText, contains('Jean'));
-      expect(data.mainText, contains('GR20'));
+      expect(data.mainText, contains('Sentier Bleu'));
       expect(data.mainText, contains('14 jours'));
       expect(data.mainText, contains('16 étapes'));
     });

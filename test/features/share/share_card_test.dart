@@ -6,7 +6,7 @@ void main() {
   group('ShareCardData', () {
     test('constructeur avec tous les champs', () {
       final data = ShareCardData(
-        trailName: 'GR20',
+        trailName: 'Sentier Bleu',
         stageName: 'Calenzana — Ortu di u Piobbu',
         stageNumber: 1,
         distanceKm: 12.5,
@@ -14,7 +14,7 @@ void main() {
         date: DateTime(2026, 7, 15),
       );
 
-      expect(data.trailName, 'GR20');
+      expect(data.trailName, 'Sentier Bleu');
       expect(data.stageNumber, 1);
       expect(data.distanceKm, 12.5);
       expect(data.elevationGain, 1560);
@@ -23,7 +23,7 @@ void main() {
 
     test('constructeur avec message personnalisé', () {
       final data = ShareCardData(
-        trailName: 'GR20',
+        trailName: 'Sentier Bleu',
         stageName: 'Étape test',
         stageNumber: 3,
         distanceKm: 8.0,

@@ -23,7 +23,7 @@ void main() {
         ],
       },
       'trailOverrides': {
-        'gr20': {
+        'sentier-bleu': {
           'addItems': [
             {'id': 'crampons', 'category': 'equipment', 'nameKey': 'crampons', 'isEssential': true},
           ],
@@ -54,35 +54,35 @@ void main() {
       expect(categories.length, 6);
     });
 
-    test('overrides GR20 ajoute crampons et retire towel', () {
+    test('overrides sentier ajoute crampons et retire towel', () {
       final defaultData = testJson['defaultTemplate'] as Map<String, dynamic>;
       final defaultItems = (defaultData['items'] as List<dynamic>)
           .map((e) => ChecklistTemplateItem.fromJson(e as Map<String, dynamic>))
           .toList();
 
       final overridesData = testJson['trailOverrides'] as Map<String, dynamic>;
-      final gr20Override = TrailChecklistOverride.fromJson(
-        overridesData['gr20'] as Map<String, dynamic>,
+      final trailOverride = TrailChecklistOverride.fromJson(
+        overridesData['sentier-bleu'] as Map<String, dynamic>,
       );
 
       // Simuler _applyOverrides
       var result = defaultItems
-          .where((item) => !gr20Override.removeItems.contains(item.id))
+          .where((item) => !trailOverride.removeItems.contains(item.id))
           .toList();
 
       result = result.map((item) {
-        if (gr20Override.essentialOverrides.containsKey(item.id)) {
+        if (trailOverride.essentialOverrides.containsKey(item.id)) {
           return ChecklistTemplateItem(
             id: item.id,
             category: item.category,
             nameKey: item.nameKey,
-            isEssential: gr20Override.essentialOverrides[item.id]!,
+            isEssential: trailOverride.essentialOverrides[item.id]!,
           );
         }
         return item;
       }).toList();
 
-      result.addAll(gr20Override.addItems);
+      result.addAll(trailOverride.addItems);
 
       // towel retire
       expect(result.any((i) => i.id == 'towel'), false);

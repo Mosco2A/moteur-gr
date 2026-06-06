@@ -19,7 +19,7 @@ void main() {
   });
 
   FeedbackQueueCompanion makeFeedback({
-    String trailId = 'gr20',
+    String trailId = 'sentier-bleu',
     String type = 'suggestion',
     String content = 'Super app !',
     int? rating,
@@ -66,12 +66,12 @@ void main() {
     });
 
     test('getByTrailId filtre par sentier', () async {
-      await dao.addFeedback(makeFeedback(trailId: 'gr20'));
+      await dao.addFeedback(makeFeedback(trailId: 'sentier-bleu'));
       await dao.addFeedback(makeFeedback(trailId: 'tmb'));
-      await dao.addFeedback(makeFeedback(trailId: 'gr20'));
+      await dao.addFeedback(makeFeedback(trailId: 'sentier-bleu'));
 
-      final gr20 = await dao.getByTrailId('gr20');
-      expect(gr20.length, 2);
+      final sentierBleu = await dao.getByTrailId('sentier-bleu');
+      expect(sentierBleu.length, 2);
 
       final tmb = await dao.getByTrailId('tmb');
       expect(tmb.length, 1);

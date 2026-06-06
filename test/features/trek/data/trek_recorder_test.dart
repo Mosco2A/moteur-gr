@@ -37,9 +37,9 @@ void main() {
 
     test('buffer flush a 10 points', () async {
       // Demarrer une session
-      final session = await recorder.start('gr20-nord');
+      final session = await recorder.start('sentier-bleu-nord');
       expect(session.status, equals('active'));
-      expect(session.trailId, equals('gr20-nord'));
+      expect(session.trailId, equals('sentier-bleu-nord'));
       expect(recorder.isRecording, isTrue);
 
       // Ajouter 9 points — pas de flush
@@ -113,7 +113,7 @@ void main() {
     });
 
     test('pause/resume controle le flux de points', () async {
-      await recorder.start('gr20-sud');
+      await recorder.start('sentier-bleu-sud');
 
       // Ajouter un point en mode recording
       await recorder.addPoint(makePoint(0));
@@ -140,10 +140,10 @@ void main() {
     });
 
     test('start sur session active leve StateError', () async {
-      await recorder.start('gr20-nord');
+      await recorder.start('sentier-bleu-nord');
 
       expect(
-        () => recorder.start('gr20-sud'),
+        () => recorder.start('sentier-bleu-sud'),
         throwsA(isA<StateError>()),
       );
 
@@ -165,7 +165,7 @@ void main() {
     });
 
     test('resume hors pause leve StateError', () async {
-      await recorder.start('gr20-nord');
+      await recorder.start('sentier-bleu-nord');
 
       // resume sans pause prealable
       expect(

@@ -10,7 +10,7 @@ void main() {
       // Sentier fictif de 2.5 km total
       final stats = TrekStats(totalDistanceKm: 2.5);
 
-      // Serie de 6 points simulant un parcours en Corse :
+      // Serie de 6 points simulant un parcours de test :
       // - Chaque segment ~ 250m horizontalement (0.00225 deg lat ~ 250m)
       // - Altitudes : 800 -> 810 -> 812 -> 900 -> 850 -> 860
       //   (810-800=10m D+, 812-810=2m bruit, 900-812=88m D+,

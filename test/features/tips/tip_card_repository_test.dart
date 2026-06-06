@@ -8,10 +8,10 @@ void main() {
   // --- Jeu de donnees de test ---
   final testCards = [
     const TipCard(
-      id: 'tip-summer-gr20',
-      titleFr: 'Conseil ete GR20',
+      id: 'tip-summer-bleu',
+      titleFr: 'Conseil ete Sentier Bleu',
       contentFr: 'Boire 3L par jour minimum.',
-      scope: 'gr20',
+      scope: 'sentier-bleu',
       season: 'summer',
       category: 'nutrition',
       priority: 10,
@@ -66,7 +66,7 @@ void main() {
     test('filtre saison summer retourne uniquement les fiches ete et all', () {
       final results = repo.filterCards(currentSeason: 'summer');
 
-      // Doit contenir : tip-summer-gr20, tip-all-all, tip-summer-mare, tip-altitude-high
+      // Doit contenir : tip-summer-bleu, tip-all-all, tip-summer-mare, tip-altitude-high
       // Ne doit PAS contenir : tip-winter-all
       expect(results.length, 4);
       expect(
@@ -75,7 +75,7 @@ void main() {
         reason: 'Les fiches hiver ne doivent pas apparaitre en ete',
       );
       expect(
-        results.any((c) => c.id == 'tip-summer-gr20'),
+        results.any((c) => c.id == 'tip-summer-bleu'),
         true,
         reason: 'Les fiches ete doivent apparaitre',
       );
@@ -90,10 +90,10 @@ void main() {
       final results = repo.filterCards(currentSeason: 'winter');
 
       // Doit contenir : tip-winter-all, tip-all-all, tip-altitude-high
-      // Ne doit PAS contenir : tip-summer-gr20, tip-summer-mare
+      // Ne doit PAS contenir : tip-summer-bleu, tip-summer-mare
       expect(results.length, 3);
       expect(
-        results.any((c) => c.id == 'tip-summer-gr20'),
+        results.any((c) => c.id == 'tip-summer-bleu'),
         false,
       );
       expect(
@@ -108,11 +108,11 @@ void main() {
 
     test('filtre scope + saison combine correctement', () {
       final results = repo.filterCards(
-        trailScope: 'gr20',
+        trailScope: 'sentier-bleu',
         currentSeason: 'summer',
       );
 
-      // scope gr20 + season summer : tip-summer-gr20, tip-all-all, tip-altitude-high
+      // scope sentier-bleu + season summer : tip-summer-bleu, tip-all-all, tip-altitude-high
       // tip-summer-mare exclu (scope mare_a_mare)
       // tip-winter-all exclu (season winter)
       expect(results.length, 3);
@@ -124,11 +124,11 @@ void main() {
       final results = repo.filterCards(currentAltitudeM: 1800);
 
       // tip-altitude-high (min 2000) exclu car 1800 < 2000
-      // tip-summer-gr20 (min 1500) inclus car 1800 >= 1500
+      // tip-summer-bleu (min 1500) inclus car 1800 >= 1500
       // Les 3 autres sans minAltitudeM inclus
       expect(results.length, 4);
       expect(results.any((c) => c.id == 'tip-altitude-high'), false);
-      expect(results.any((c) => c.id == 'tip-summer-gr20'), true);
+      expect(results.any((c) => c.id == 'tip-summer-bleu'), true);
     });
 
     test('sans filtre retourne tout trie par priorite decroissante', () {
