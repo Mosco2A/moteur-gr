@@ -66,6 +66,10 @@ class TrackingNotifier extends Notifier<TrackingState> {
     }
     _trailId = trailId;
     _engine.reset();
+    // F3 : nouvelle session -> le trace persiste de la session
+    // precedente est remplace.
+    final traceDao = ref.read(databaseProvider).sessionTrackPointsDao;
+    unawaited(traceDao.clearTrail(trailId));
     state = state.copyWith(
       status: TrackingStatusValues.recording,
       distanceM: 0.0,
@@ -79,11 +83,22 @@ class TrackingNotifier extends Notifier<TrackingState> {
         distanceFilter: 10,
       ),
     ).listen((position) {
+      if (_engine.isPaused) {
+        return;
+      }
       _engine.addPosition(
         position.latitude,
         position.longitude,
         position.altitude,
       );
+      // F3 : persistence au fil de l'eau du trace de session
+      // (lu par le recap diplome) — robuste a un arret brutal.
+      unawaited(traceDao.insertPoint(
+        trailId: trailId,
+        lat: position.latitude,
+        lng: position.longitude,
+        altitude: position.altitude,
+      ));
       _updateState();
     });
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {

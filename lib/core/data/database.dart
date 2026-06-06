@@ -20,6 +20,7 @@ import 'tables/review_requests_table.dart';
 import 'tables/health_info_table.dart';
 import 'tables/follow_sessions_table.dart';
 import 'tables/follower_slots_table.dart';
+import 'tables/session_track_points_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -40,6 +41,7 @@ import 'daos/review_requests_dao.dart';
 import 'daos/health_info_dao.dart';
 import 'daos/follow_sessions_dao.dart';
 import 'daos/follower_slots_dao.dart';
+import 'daos/session_track_points_dao.dart';
 
 part 'database.g.dart';
 
@@ -53,7 +55,8 @@ part 'database.g.dart';
 /// + 1 Phase 4 E4.4 (SyncQueue)
 /// + 1 Phase 5 E5.17 (ReviewRequests)
 /// + 1 Phase 5 E5.16 (HealthInfoEntries)
-/// + 2 Phase 4 E4.10 (FollowSessions, FollowerSlots).
+/// + 2 Phase 4 E4.10 (FollowSessions, FollowerSlots)
+/// + 1 finitions V8 F3 (SessionTrackPoints).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -77,6 +80,7 @@ part 'database.g.dart';
     HealthInfoEntries,
     FollowSessions,
     FollowerSlots,
+    SessionTrackPoints,
   ],
   daos: [
     StagesDao,
@@ -99,13 +103,14 @@ part 'database.g.dart';
     HealthInfoDao,
     FollowSessionsDao,
     FollowerSlotsDao,
+    SessionTrackPointsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -163,6 +168,11 @@ class AppDatabase extends _$AppDatabase {
           if (from < 12) {
             await migrator.createTable(followSessions);
             await migrator.createTable(followerSlots);
+          }
+          // Migration v12 -> v13 : table session_track_points
+          // (trace GPS reelle du recap diplome, finitions V8 F3)
+          if (from < 13) {
+            await migrator.createTable(sessionTrackPoints);
           }
         },
       );
