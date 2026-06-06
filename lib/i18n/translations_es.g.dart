@@ -62,6 +62,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$noData$es noData = _Translations$noData$es._(_root);
 	@override late final _Translations$updates$es updates = _Translations$updates$es._(_root);
 	@override late final _Translations$follow$es follow = _Translations$follow$es._(_root);
+	@override late final _Translations$monetization$es monetization = _Translations$monetization$es._(_root);
 }
 
 // Path: nav
@@ -522,6 +523,25 @@ class _Translations$follow$es extends Translations$follow$fr {
 	@override String get offline => 'Sin conexión';
 	@override String get invalidLink => 'Enlace no válido';
 	@override String get invalidLinkHint => 'Este enlace de seguimiento no existe o ha caducado.';
+}
+
+// Path: monetization
+class _Translations$monetization$es extends Translations$monetization$fr {
+	_Translations$monetization$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get demoBanner => 'Modo demo — toca para desbloquear';
+	@override String get paywallTitle => 'Desbloquea este trek';
+	@override String get paywallBody => 'El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.';
+	@override String get featureMap => 'Mapa sin conexión + GPS + seguimiento en directo';
+	@override String get featureJournal => 'Diario de ruta completo';
+	@override String get featureDiploma => 'Diploma de fin de trek';
+	@override String get featureFollowers => '2 seguidores gratuitos';
+	@override String get featureNoAds => 'Cero publicidad';
+	@override String get buyCta => 'Desbloquear este trek';
+	@override String buyCtaWithPrice({required Object price}) => 'Desbloquear este trek — ${price} €';
 }
 
 // Path: stage.difficulty
@@ -1143,6 +1163,16 @@ extension on TranslationsEs {
 			'follow.offline' => 'Sin conexión',
 			'follow.invalidLink' => 'Enlace no válido',
 			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
+			'monetization.demoBanner' => 'Modo demo — toca para desbloquear',
+			'monetization.paywallTitle' => 'Desbloquea este trek',
+			'monetization.paywallBody' => 'El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.',
+			'monetization.featureMap' => 'Mapa sin conexión + GPS + seguimiento en directo',
+			'monetization.featureJournal' => 'Diario de ruta completo',
+			'monetization.featureDiploma' => 'Diploma de fin de trek',
+			'monetization.featureFollowers' => '2 seguidores gratuitos',
+			'monetization.featureNoAds' => 'Cero publicidad',
+			'monetization.buyCta' => 'Desbloquear este trek',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Desbloquear este trek — ${price} €',
 			_ => null,
 		};
 	}

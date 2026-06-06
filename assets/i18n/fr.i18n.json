@@ -428,5 +428,17 @@
     "offline": "Hors ligne",
     "invalidLink": "Lien invalide",
     "invalidLinkHint": "Ce lien de suivi n'existe pas ou a expiré."
+  },
+  "monetization": {
+    "demoBanner": "Mode démo — touchez pour débloquer",
+    "paywallTitle": "Débloquez ce trek",
+    "paywallBody": "Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.",
+    "featureMap": "Carte hors ligne + GPS + suivi en direct",
+    "featureJournal": "Journal de bord complet",
+    "featureDiploma": "Diplôme de fin de trek",
+    "featureFollowers": "2 suiveurs gratuits",
+    "featureNoAds": "Zéro publicité",
+    "buyCta": "Débloquer ce trek",
+    "buyCtaWithPrice": "Débloquer ce trek — $price €"
   }
 }

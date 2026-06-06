@@ -63,6 +63,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$noData$fr noData = Translations$noData$fr.internal(_root);
 	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
 	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
+	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
 }
 
 // Path: nav
@@ -1019,6 +1020,45 @@ class Translations$follow$fr {
 	String get invalidLinkHint => 'Ce lien de suivi n\'existe pas ou a expiré.';
 }
 
+// Path: monetization
+class Translations$monetization$fr {
+	Translations$monetization$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mode démo — touchez pour débloquer'
+	String get demoBanner => 'Mode démo — touchez pour débloquer';
+
+	/// fr: 'Débloquez ce trek'
+	String get paywallTitle => 'Débloquez ce trek';
+
+	/// fr: 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.'
+	String get paywallBody => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.';
+
+	/// fr: 'Carte hors ligne + GPS + suivi en direct'
+	String get featureMap => 'Carte hors ligne + GPS + suivi en direct';
+
+	/// fr: 'Journal de bord complet'
+	String get featureJournal => 'Journal de bord complet';
+
+	/// fr: 'Diplôme de fin de trek'
+	String get featureDiploma => 'Diplôme de fin de trek';
+
+	/// fr: '2 suiveurs gratuits'
+	String get featureFollowers => '2 suiveurs gratuits';
+
+	/// fr: 'Zéro publicité'
+	String get featureNoAds => 'Zéro publicité';
+
+	/// fr: 'Débloquer ce trek'
+	String get buyCta => 'Débloquer ce trek';
+
+	/// fr: 'Débloquer ce trek — $price €'
+	String buyCtaWithPrice({required Object price}) => 'Débloquer ce trek — ${price} €';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1856,6 +1896,16 @@ extension on Translations {
 			'follow.offline' => 'Hors ligne',
 			'follow.invalidLink' => 'Lien invalide',
 			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
+			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
+			'monetization.paywallTitle' => 'Débloquez ce trek',
+			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.',
+			'monetization.featureMap' => 'Carte hors ligne + GPS + suivi en direct',
+			'monetization.featureJournal' => 'Journal de bord complet',
+			'monetization.featureDiploma' => 'Diplôme de fin de trek',
+			'monetization.featureFollowers' => '2 suiveurs gratuits',
+			'monetization.featureNoAds' => 'Zéro publicité',
+			'monetization.buyCta' => 'Débloquer ce trek',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer ce trek — ${price} €',
 			_ => null,
 		};
 	}

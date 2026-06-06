@@ -62,6 +62,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
 	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
 	@override late final _Translations$follow$de follow = _Translations$follow$de._(_root);
+	@override late final _Translations$monetization$de monetization = _Translations$monetization$de._(_root);
 }
 
 // Path: nav
@@ -522,6 +523,25 @@ class _Translations$follow$de extends Translations$follow$fr {
 	@override String get offline => 'Offline';
 	@override String get invalidLink => 'Ungültiger Link';
 	@override String get invalidLinkHint => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.';
+}
+
+// Path: monetization
+class _Translations$monetization$de extends Translations$monetization$fr {
+	_Translations$monetization$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get demoBanner => 'Demo-Modus — zum Freischalten tippen';
+	@override String get paywallTitle => 'Diesen Trek freischalten';
+	@override String get paywallBody => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.';
+	@override String get featureMap => 'Offline-Karte + GPS + Live-Tracking';
+	@override String get featureJournal => 'Vollständiges Trek-Tagebuch';
+	@override String get featureDiploma => 'Trek-Abschlussdiplom';
+	@override String get featureFollowers => '2 kostenlose Follower';
+	@override String get featureNoAds => 'Keine Werbung';
+	@override String get buyCta => 'Diesen Trek freischalten';
+	@override String buyCtaWithPrice({required Object price}) => 'Diesen Trek freischalten — ${price} €';
 }
 
 // Path: stage.difficulty
@@ -1143,6 +1163,16 @@ extension on TranslationsDe {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Ungültiger Link',
 			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
+			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
+			'monetization.paywallTitle' => 'Diesen Trek freischalten',
+			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',
+			'monetization.featureMap' => 'Offline-Karte + GPS + Live-Tracking',
+			'monetization.featureJournal' => 'Vollständiges Trek-Tagebuch',
+			'monetization.featureDiploma' => 'Trek-Abschlussdiplom',
+			'monetization.featureFollowers' => '2 kostenlose Follower',
+			'monetization.featureNoAds' => 'Keine Werbung',
+			'monetization.buyCta' => 'Diesen Trek freischalten',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Diesen Trek freischalten — ${price} €',
 			_ => null,
 		};
 	}

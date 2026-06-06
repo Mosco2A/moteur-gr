@@ -428,5 +428,17 @@
     "offline": "Offline",
     "invalidLink": "Invalid link",
     "invalidLinkHint": "This tracking link does not exist or has expired."
+  },
+  "monetization": {
+    "demoBanner": "Demo mode — tap to unlock",
+    "paywallTitle": "Unlock this trek",
+    "paywallBody": "Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.",
+    "featureMap": "Offline map + GPS + live tracking",
+    "featureJournal": "Full trek journal",
+    "featureDiploma": "End-of-trek diploma",
+    "featureFollowers": "2 free followers",
+    "featureNoAds": "Zero ads",
+    "buyCta": "Unlock this trek",
+    "buyCtaWithPrice": "Unlock this trek — €$price"
   }
 }

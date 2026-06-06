@@ -428,5 +428,17 @@
     "offline": "Sin conexión",
     "invalidLink": "Enlace no válido",
     "invalidLinkHint": "Este enlace de seguimiento no existe o ha caducado."
+  },
+  "monetization": {
+    "demoBanner": "Modo demo — toca para desbloquear",
+    "paywallTitle": "Desbloquea este trek",
+    "paywallBody": "El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.",
+    "featureMap": "Mapa sin conexión + GPS + seguimiento en directo",
+    "featureJournal": "Diario de ruta completo",
+    "featureDiploma": "Diploma de fin de trek",
+    "featureFollowers": "2 seguidores gratuitos",
+    "featureNoAds": "Cero publicidad",
+    "buyCta": "Desbloquear este trek",
+    "buyCtaWithPrice": "Desbloquear este trek — $price €"
   }
 }

@@ -428,5 +428,17 @@
     "offline": "Offline",
     "invalidLink": "Link non valido",
     "invalidLinkHint": "Questo link di localizzazione non esiste o è scaduto."
+  },
+  "monetization": {
+    "demoBanner": "Modalità demo — tocca per sbloccare",
+    "paywallTitle": "Sblocca questo trek",
+    "paywallBody": "La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.",
+    "featureMap": "Mappa offline + GPS + localizzazione in diretta",
+    "featureJournal": "Diario di viaggio completo",
+    "featureDiploma": "Diploma di fine trek",
+    "featureFollowers": "2 follower gratuiti",
+    "featureNoAds": "Zero pubblicità",
+    "buyCta": "Sblocca questo trek",
+    "buyCtaWithPrice": "Sblocca questo trek — $price €"
   }
 }
