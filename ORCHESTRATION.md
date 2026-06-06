@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 06/06/2026 par Vulcain (tache #320 — decontamination Phase 5)
+MAJ: 06/06/2026 par Vulcain (Phase 2bis E2.10 upgrade deps — COMPLETE + preuves)
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -12,6 +12,10 @@ Specs V8: #82290 framework + #82293-#82299 par phase.
 Phase 0: 6/6 COMPLETE — mergee main 30/05 14:12. QA Artemis 6/6 PASS.
 Phase 1: 3/3 COMPLETE — Riverpod 2→3, 14 enums→String, ref.watch select fix. Mergee 30/05.
 Phase 2: 32/32 COMPLETE — merges 30/05 23:10. QA gate Artemis en attente.
+Phase 2bis (E2.10 upgrade deps): 7/7 COMPLETE 06/06 — voir section dediee.
+  freezed 3.2.5 + freezed_annotation 3.1.0 + slang/slang_flutter/slang_build_runner
+  4.15.0. Preuves 06/06 : pub get OK, build_runner EXIT=0, analyze 0 issue,
+  test 881/881 PASS. Branche claude/feat/E2.10-upgrade-deps, PAS DE MERGE (GO requis).
 Phase 3: commits presents, NON VALIDES (depend Phase 2)
 Phase 4: commits presents, NON VALIDES (depend Phase 3)
 Phase 5: lots E5.x MERGES SUR MAIN (historique : commits faits par Skynet,
@@ -58,16 +62,51 @@ Phase 5: lots E5.x MERGES SUR MAIN (historique : commits faits par Skynet,
   "Derniere action") : 1 correctif code de prod (trek_stats.eta) + 6 tests
   realignes sur le comportement legitime (aucun test skippe/desactive/supprime).
 
+## Phase 2bis — E2.10 upgrade deps (specs V9 #82574-#82591) — COMPLETE 06/06
+Historique : les 7 sous-etapes E2.10a-g avaient ete executees par une session
+precedente et etaient DEJA dans l historique de main (entre Phase 2 et Phase 3),
+sans que ce fichier soit mis a jour. Commits (identite Skynet — faute process,
+regle "identite agent executant" non respectee, constat trace) :
+- 635bc13 E2.10a chore(deps): upgrade freezed to v3
+- bd46a8a E2.10b fix(models): corriger mixin DeltaUpdate tronque
+- 82d6eab E2.10c chore(deps): upgrade slang to v4
+- 9fa6f1b E2.10d chore(deps): pub get apres upgrade freezed+slang
+- 7666c99 E2.10e chore(codegen): regenerer fichiers apres upgrade freezed v3 + slang v4
+- bee60da E2.10f fix(models): abstract classes + slang v4 regen + test fixes
+- 36fa45c E2.10g chore(i18n): nettoyer doublon strings.g.dart (INCOMPLET : imports
+  migres + test ajoute, mais lib/gen/strings*.g.dart jamais supprimes)
+Achevement par Vulcain 06/06, branche claude/feat/E2.10-upgrade-deps :
+- bda2435 chore(i18n): E2.10g — supprimer le doublon lib/gen et fiabiliser la
+  generation slang. Cause racine : slang_build_runner ne lit pas slang.yaml
+  (defauts en/lib/gen a chaque build) ; de plus PostProcessBuilder incompatible
+  build_runner 2.15 sur sortie importee (InvalidOutputException, pas de fix amont).
+  => slang_build_runner desactive (build.yaml, documente), generation i18n par
+  `dart run slang` (config unique slang.yaml, base fr). lib/gen supprime.
+Preuves 06/06 (transcript Vulcain) : flutter pub get sans conflit ;
+dart run build_runner build EXIT=0 (966 outputs, freezed/json/drift regeneres) ;
+dart run slang OK (1695 strings, 5 locales, base fr) ; flutter analyze
+"No issues found!" ; flutter test 881/881 "All tests passed!" (0 skip, 0 supprime).
+Branche claude/feat/E2.10-upgrade-deps = main + bda2435 + MAJ orchestration.
+PAS DE MERGE MAIN sans GO Chris.
+
 ## Branches en attente
-claude/fix/E5-decontamination-gr20 — reprise Phase 5 complete, attend QA Artemis + GO Chris.
+claude/feat/E2.10-upgrade-deps — achevement Phase 2bis (E2.10g + orchestration),
+  attend QA Artemis + GO Chris.
+claude/fix/E5-decontamination-gr20 — reprise Phase 5 ; constat git 06/06 :
+  DEJA MERGEE sur main (90e75c2) ainsi que la reparation des 7 tests (c5e1981
+  inclut ebde305). Statut GO/QA a confirmer par Skynet/Chris.
 
 ## Prochaine action
-1. QA gate Artemis sur claude/fix/E5-decontamination-gr20 (re-audit R1.9/R1.10/R1.11).
-2. GO Chris pour merge main.
-3. Puis reprendre le fil normal : Phase 2bis (upgrade deps freezed v3 + slang v4,
-   specs V9 #82574-82591) → QA gate Phase 2 → Phase 3.
+1. QA gate Artemis sur claude/feat/E2.10-upgrade-deps (Phase 2bis E2.10,
+   gates #82590/#82591 — corriger le chemin GR20 -> Moteur-GR signale #82599).
+2. GO Chris pour merge de claude/feat/E2.10-upgrade-deps.
+3. QA gate Artemis Phase 2 (toujours en attente) → Phase 3.
 
 ## Derniere action
+06/06 (Phase 2bis) : achevement E2.10 par Vulcain — doublon i18n lib/gen reellement
+supprime (cause racine slang_build_runner documentee dans build.yaml), regen
+complete, preuves pub get / build_runner / analyze / test 881 PASS affichees,
+ORCHESTRATION resynchronise (la Phase 2bis etait faite mais jamais reportee ici).
 06/06 : Decontamination GR20 + reprise R1.9/R1.10/R1.11 par Vulcain (tache #320).
 Audit de reference : #85296-#85298 (Artemis, tache #319).
 06/06 (GO-21) : reparation des 7 tests rouges de la sauvegarde 82e7c48 par Vulcain.
