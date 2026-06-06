@@ -35,14 +35,17 @@ abstract class AuthService {
   Stream<AuthUser?> get authStateChanges;
 }
 
-/// Représentation de l'utilisateur authentifié
+/// Représentation de l'utilisateur authentifié.
+///
+/// ZERO PII par construction (#81775, finitions V8 F7) : le modèle
+/// ne porte NI email NI photo — aucune donnée personnelle ne peut
+/// transiter, même par accident. Le pseudonyme est libre et l'avatar
+/// est un index local (liste prédéfinie).
 class AuthUser {
   const AuthUser({
     required this.uid,
     required this.authMethod,
     this.displayName,
-    this.email,
-    this.photoUrl,
     this.avatarIndex = 0,
     this.isAnonymous = true,
   });
@@ -55,12 +58,6 @@ class AuthUser {
 
   /// Nom d'affichage (null si anonyme sans pseudo)
   final String? displayName;
-
-  /// Email (null si anonyme)
-  final String? email;
-
-  /// URL de la photo de profil
-  final String? photoUrl;
 
   /// Index de l'avatar local choisi (0-7)
   final int avatarIndex;

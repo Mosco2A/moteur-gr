@@ -7,8 +7,11 @@ import '../domain/auth_service.dart';
 
 /// Implémentation locale du service d'authentification.
 ///
-/// Stocke l'utilisateur dans SharedPreferences.
-/// Pas de backend Firebase, tout est local.
+/// FALLBACK OFFICIEL du moteur quand Firebase est indisponible
+/// (authServiceProvider) — cohérent avec l'offline-first.
+/// Stocke uid/pseudo/avatar dans SharedPreferences, zéro backend,
+/// zéro PII (finitions V8 F7) : aucune donnée email/photo ne peut
+/// être produite par ce service.
 class LocalAuthService implements AuthService {
   LocalAuthService();
 
@@ -126,8 +129,6 @@ class LocalAuthService implements AuthService {
       uid: _currentUser!.uid,
       authMethod: _currentUser!.authMethod,
       displayName: trimmed.isEmpty ? null : trimmed,
-      email: _currentUser!.email,
-      photoUrl: _currentUser!.photoUrl,
       avatarIndex: _currentUser!.avatarIndex,
       isAnonymous: _currentUser!.isAnonymous,
     );
@@ -152,8 +153,6 @@ class LocalAuthService implements AuthService {
       uid: _currentUser!.uid,
       authMethod: _currentUser!.authMethod,
       displayName: _currentUser!.displayName,
-      email: _currentUser!.email,
-      photoUrl: _currentUser!.photoUrl,
       avatarIndex: clampedIndex,
       isAnonymous: _currentUser!.isAnonymous,
     );
