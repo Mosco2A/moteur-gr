@@ -1,4 +1,18 @@
 {
+  "nav": {
+    "map": "Mapa",
+    "stages": "Etapas",
+    "planning": "Planificación",
+    "journal": "Diario",
+    "more": "Más",
+    "checklist": "Lista de equipo",
+    "feasibility": "Viabilidad",
+    "tips": "Consejos trek",
+    "emergency": "Contactos de emergencia",
+    "catalog": "Catálogo de senderos",
+    "profile": "Perfil",
+    "settings": "Ajustes"
+  },
   "map": {
     "title": "Mapa del sendero",
     "loading": "Cargando el recorrido...",

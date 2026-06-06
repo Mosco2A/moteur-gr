@@ -40,6 +40,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	Translations $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => Translations(meta: meta ?? this.$meta);
 
 	// Translations
+	late final Translations$nav$fr nav = Translations$nav$fr.internal(_root);
 	late final Translations$map$fr map = Translations$map$fr.internal(_root);
 	late final Translations$stage$fr stage = Translations$stage$fr.internal(_root);
 	late final Translations$trail$fr trail = Translations$trail$fr.internal(_root);
@@ -59,6 +60,51 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$feasibility$fr feasibility = Translations$feasibility$fr.internal(_root);
 	late final Translations$tips$fr tips = Translations$tips$fr.internal(_root);
 	late final Translations$goodies$fr goodies = Translations$goodies$fr.internal(_root);
+}
+
+// Path: nav
+class Translations$nav$fr {
+	Translations$nav$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Carte'
+	String get map => 'Carte';
+
+	/// fr: 'Étapes'
+	String get stages => 'Étapes';
+
+	/// fr: 'Planning'
+	String get planning => 'Planning';
+
+	/// fr: 'Journal'
+	String get journal => 'Journal';
+
+	/// fr: 'Plus'
+	String get more => 'Plus';
+
+	/// fr: 'Checklist matériel'
+	String get checklist => 'Checklist matériel';
+
+	/// fr: 'Faisabilité'
+	String get feasibility => 'Faisabilité';
+
+	/// fr: 'Conseils trek'
+	String get tips => 'Conseils trek';
+
+	/// fr: 'Contacts urgence'
+	String get emergency => 'Contacts urgence';
+
+	/// fr: 'Catalogue des sentiers'
+	String get catalog => 'Catalogue des sentiers';
+
+	/// fr: 'Profil'
+	String get profile => 'Profil';
+
+	/// fr: 'Paramètres'
+	String get settings => 'Paramètres';
 }
 
 // Path: map
@@ -1389,6 +1435,18 @@ class Translations$feasibility$recommendations$excellent$tips$fr {
 extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
+			'nav.map' => 'Carte',
+			'nav.stages' => 'Étapes',
+			'nav.planning' => 'Planning',
+			'nav.journal' => 'Journal',
+			'nav.more' => 'Plus',
+			'nav.checklist' => 'Checklist matériel',
+			'nav.feasibility' => 'Faisabilité',
+			'nav.tips' => 'Conseils trek',
+			'nav.emergency' => 'Contacts urgence',
+			'nav.catalog' => 'Catalogue des sentiers',
+			'nav.profile' => 'Profil',
+			'nav.settings' => 'Paramètres',
 			'map.title' => 'Carte du sentier',
 			'map.loading' => 'Chargement du tracÃ©...',
 			'map.noTrack' => 'Aucun tracÃ© disponible',

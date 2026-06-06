@@ -39,6 +39,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	TranslationsDe $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsDe(meta: meta ?? this.$meta);
 
 	// Translations
+	@override late final _Translations$nav$de nav = _Translations$nav$de._(_root);
 	@override late final _Translations$map$de map = _Translations$map$de._(_root);
 	@override late final _Translations$stage$de stage = _Translations$stage$de._(_root);
 	@override late final _Translations$trail$de trail = _Translations$trail$de._(_root);
@@ -58,6 +59,27 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$feasibility$de feasibility = _Translations$feasibility$de._(_root);
 	@override late final _Translations$tips$de tips = _Translations$tips$de._(_root);
 	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
+}
+
+// Path: nav
+class _Translations$nav$de extends Translations$nav$fr {
+	_Translations$nav$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get map => 'Karte';
+	@override String get stages => 'Etappen';
+	@override String get planning => 'Planung';
+	@override String get journal => 'Tagebuch';
+	@override String get more => 'Mehr';
+	@override String get checklist => 'Ausrüstungsliste';
+	@override String get feasibility => 'Machbarkeit';
+	@override String get tips => 'Trek-Tipps';
+	@override String get emergency => 'Notfallkontakte';
+	@override String get catalog => 'Wegekatalog';
+	@override String get profile => 'Profil';
+	@override String get settings => 'Einstellungen';
 }
 
 // Path: map
@@ -726,6 +748,18 @@ class _Translations$feasibility$recommendations$excellent$tips$de extends Transl
 extension on TranslationsDe {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
+			'nav.map' => 'Karte',
+			'nav.stages' => 'Etappen',
+			'nav.planning' => 'Planung',
+			'nav.journal' => 'Tagebuch',
+			'nav.more' => 'Mehr',
+			'nav.checklist' => 'Ausrüstungsliste',
+			'nav.feasibility' => 'Machbarkeit',
+			'nav.tips' => 'Trek-Tipps',
+			'nav.emergency' => 'Notfallkontakte',
+			'nav.catalog' => 'Wegekatalog',
+			'nav.profile' => 'Profil',
+			'nav.settings' => 'Einstellungen',
 			'map.title' => 'Wanderkarte',
 			'map.loading' => 'Strecke wird geladen...',
 			'map.noTrack' => 'Keine Strecke verfÃ¼gbar',

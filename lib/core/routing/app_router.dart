@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/profile_screen.dart';
@@ -8,6 +9,7 @@ import '../../features/feasibility/presentation/feasibility_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
+import '../../features/more/presentation/more_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
@@ -21,6 +23,8 @@ import '../../features/goodies/presentation/goodies_catalog_screen.dart';
 import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
 import '../config/feature_flags.dart';
+import '../engine/trail_engine.dart';
+import 'app_shell.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
 import '../../features/trek/presentation/stages/stage_list_screen.dart'
     as trek_stages;
@@ -29,9 +33,35 @@ import '../../features/trek/presentation/planning/planning_screen.dart'
 import '../../features/trek/presentation/stages/stage_detail_screen.dart'
     as trek_detail;
 
+/// Cles de navigation : racine + une par branche d'onglet (E2.9b).
+///
+/// La cle racine porte les routes hors-shell (detail sentier, modales).
+/// Chaque branche garde sa propre pile -> etat preserve par onglet.
+final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final _shellMapKey = GlobalKey<NavigatorState>(debugLabel: 'shell-map');
+final _shellStagesKey = GlobalKey<NavigatorState>(debugLabel: 'shell-stages');
+final _shellPlanningKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shell-planning');
+final _shellJournalKey = GlobalKey<NavigatorState>(debugLabel: 'shell-journal');
+final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
+
 /// Configuration du routeur GoRouter.
 ///
+/// Navigation principale (E2.9b) : bottom nav 5 onglets via
+/// [StatefulShellRoute.indexedStack] (Carte, Etapes, Planning, Journal, Plus).
+/// Les onglets preservent leur etat (IndexedStack natif). Les ecrans de
+/// detail et les modales restent des routes racine (hors shell) afin de
+/// s'afficher en plein ecran au-dessus de la barre.
+///
 /// Routes :
+///   --- Onglets (StatefulShellRoute) ---
+///   /map                         - Onglet Carte (trace GPX)
+///   /stages                      - Onglet Etapes (liste)
+///   /stages/:id                  - Detail d'une etape (trek)
+///   /planning                    - Onglet Planning (itineraire trek)
+///   /journal                     - Onglet Journal de trek
+///   /more                        - Onglet Plus (hub fonctions secondaires)
+///   --- Routes racine (hors shell) ---
 ///   /trails                      - Liste des sentiers
 ///   /trail/:id                   - Detail d'un sentier
 ///   /trail/:id/stage/:num        - Detail d'une etape
@@ -43,21 +73,121 @@ import '../../features/trek/presentation/stages/stage_detail_screen.dart'
 ///   /trail/:id/journal           - Journal de trek
 ///   /trail/:id/diploma           - Diplome de fin de trek
 ///   /trail/:id/feedback          - Feedback in-app
-///   /settings                    - Parametres
-///   /profile                     - Profil utilisateur
 ///   /group/:id                   - Groupe localisation partagee
-///   /planning                    - Planning itineraire (trek)
-///   /stages                      - Liste des etapes (trek)
-///   /stages/:id                  - Detail d'une etape (trek)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
 ///   /booking                     - Reservation (stub, gardee par FeatureFlags)
-///   /emergency                   - Contacts d'urgence (112, secours regionaux, personnels)
+///   /emergency                   - Contacts d'urgence
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
+///   /settings                    - Parametres
+///   /profile                     - Profil utilisateur
 final appRouter = GoRouter(
+  navigatorKey: _rootNavigatorKey,
   initialLocation: '/trails',
   redirect: _guardNoData,
   routes: [
+    // ===== Navigation principale : bottom nav 5 onglets =====
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) =>
+          AppShell(navigationShell: navigationShell),
+      branches: [
+        // --- Onglet 1 : Carte ---
+        StatefulShellBranch(
+          navigatorKey: _shellMapKey,
+          routes: [
+            GoRoute(
+              path: '/map',
+              name: 'map',
+              builder: (context, state) {
+                // trailId : query param prioritaire, sinon sentier actif.
+                final trailId = state.uri.queryParameters['trailId'];
+                return _TrailScopedScreen(
+                  explicitTrailId: trailId,
+                  builder: (id) => MapScreen(trailId: id),
+                );
+              },
+            ),
+          ],
+        ),
+        // --- Onglet 2 : Etapes ---
+        StatefulShellBranch(
+          navigatorKey: _shellStagesKey,
+          routes: [
+            GoRoute(
+              path: '/stages',
+              name: 'stages',
+              builder: (context, state) {
+                final trailId = state.uri.queryParameters['trailId'];
+                return _TrailScopedScreen(
+                  explicitTrailId: trailId,
+                  builder: (id) => trek_stages.StageListScreen(trailId: id),
+                );
+              },
+              routes: [
+                GoRoute(
+                  path: ':id',
+                  name: 'stage-by-id',
+                  builder: (context, state) {
+                    final trailId = state.uri.queryParameters['trailId'];
+                    final stageId =
+                        int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
+                    return _TrailScopedScreen(
+                      explicitTrailId: trailId,
+                      builder: (id) => trek_detail.StageDetailScreen(
+                        trailId: id,
+                        stageId: stageId,
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+        // --- Onglet 3 : Planning ---
+        StatefulShellBranch(
+          navigatorKey: _shellPlanningKey,
+          routes: [
+            GoRoute(
+              path: '/planning',
+              name: 'trek-planning',
+              builder: (context, state) =>
+                  const trek_planning.TrekPlanningScreen(),
+            ),
+          ],
+        ),
+        // --- Onglet 4 : Journal ---
+        StatefulShellBranch(
+          navigatorKey: _shellJournalKey,
+          routes: [
+            GoRoute(
+              path: '/journal',
+              name: 'journal',
+              builder: (context, state) {
+                final trailId = state.uri.queryParameters['trailId'];
+                return _TrailScopedScreen(
+                  explicitTrailId: trailId,
+                  builder: (id) => JournalScreen(trailId: id),
+                );
+              },
+            ),
+          ],
+        ),
+        // --- Onglet 5 : Plus ---
+        StatefulShellBranch(
+          navigatorKey: _shellMoreKey,
+          routes: [
+            GoRoute(
+              path: '/more',
+              name: 'more',
+              builder: (context, state) => const MoreScreen(),
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    // ===== Routes racine (hors shell, plein ecran) =====
     GoRoute(
       path: '/trails',
       name: 'trails',
@@ -136,43 +266,6 @@ final appRouter = GoRouter(
       ],
     ),
     GoRoute(
-      path: '/stages',
-      name: 'stages',
-      builder: (context, state) {
-        final trailId = state.uri.queryParameters['trailId'] ?? '';
-        return trek_stages.StageListScreen(trailId: trailId);
-      },
-      routes: [
-        GoRoute(
-          path: ':id',
-          name: 'stage-by-id',
-          builder: (context, state) {
-            final trailId = state.uri.queryParameters['trailId'] ?? '';
-            final stageId =
-                int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
-            return trek_detail.StageDetailScreen(
-              trailId: trailId,
-              stageId: stageId,
-            );
-          },
-        ),
-      ],
-    ),
-    GoRoute(
-      path: '/map',
-      name: 'map',
-      builder: (context, state) {
-        final trailId = state.uri.queryParameters['trailId'] ?? '';
-        return MapScreen(trailId: trailId);
-      },
-    ),
-    GoRoute(
-      path: '/planning',
-      name: 'trek-planning',
-      builder: (context, state) =>
-          const trek_planning.TrekPlanningScreen(),
-    ),
-    GoRoute(
       path: '/group/:id',
       name: 'group',
       builder: (context, state) {
@@ -237,6 +330,31 @@ final appRouter = GoRouter(
     ),
   ),
 );
+
+/// Resout le trailId d'un onglet : valeur explicite (query param) si fournie
+/// et non vide, sinon l'identifiant du sentier actif (trailConfigProvider).
+///
+/// Permet aux onglets Carte/Etapes/Journal de fonctionner sans query param
+/// (cas bottom nav) tout en restant compatibles avec les liens profonds
+/// `/stages?trailId=xxx` existants.
+class _TrailScopedScreen extends ConsumerWidget {
+  const _TrailScopedScreen({
+    required this.builder,
+    this.explicitTrailId,
+  });
+
+  final String? explicitTrailId;
+  final Widget Function(String trailId) builder;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fallbackId = ref.watch(trailConfigProvider.select((c) => c.id));
+    final id = (explicitTrailId != null && explicitTrailId!.isNotEmpty)
+        ? explicitTrailId!
+        : fallbackId;
+    return builder(id);
+  }
+}
 
 /// Flag indiquant si des sentiers sont telecharges.
 ///
