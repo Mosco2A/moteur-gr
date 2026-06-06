@@ -105,8 +105,10 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
         const SizedBox(height: AppTheme.spacingSm),
         membersAsync.when(
           data: (members) {
-            if (members.isEmpty) return const Center(child: Padding(
+            if (members.isEmpty) {
+              return const Center(child: Padding(
               padding: EdgeInsets.all(AppTheme.spacingLg), child: Text('Aucun membre')));
+            }
             return Column(children: members.map((m) => Padding(
               padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
               child: MemberPositionCard(member: m))).toList());
@@ -126,8 +128,11 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
     if (user == null) { setState(() { _isLoading = false; _error = 'Connexion requise'; }); return; }
     final service = ref.read(groupTrackingServiceProvider);
     final code = await service.createGroup(widget.trailId, uid: user.uid);
-    if (code != null) ref.read(groupCodeProvider.notifier).set(code);
-    else setState(() => _error = 'Impossible de creer le groupe');
+    if (code != null) {
+      ref.read(groupCodeProvider.notifier).set(code);
+    } else {
+      setState(() => _error = 'Impossible de creer le groupe');
+    }
     setState(() => _isLoading = false);
   }
 
@@ -140,7 +145,9 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
     final service = ref.read(groupTrackingServiceProvider);
     final joined = await service.joinGroup(code, uid: user.uid, displayName: user.displayName);
     if (joined) { ref.read(groupCodeProvider.notifier).set(code); _codeController.clear(); }
-    else setState(() => _error = 'Groupe introuvable ou erreur');
+    else {
+      setState(() => _error = 'Groupe introuvable ou erreur');
+    }
     setState(() => _isLoading = false);
   }
 

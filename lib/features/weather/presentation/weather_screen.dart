@@ -24,7 +24,7 @@ class WeatherScreen extends ConsumerWidget {
     required this.latitude,
     required this.longitude,
     required this.stageName,
-    this.region = 'Corse',
+    required this.region,
     this.fireRiskConfig = const FireRiskConfig(),
     this.fireTipCard,
   });

@@ -2,118 +2,139 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/data/trail_accommodations.dart';
-import '../../../core/data/trail_refuges.dart';
-import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/section_header.dart';
+import '../domain/models/stage_accommodation.dart';
 import '../providers/stage_providers.dart';
+import '../providers/trail_providers.dart';
 
-/// TREK-06 : Fiche refuge sur place.
+/// Provider des hebergements d'une etape du sentier actif.
 ///
-/// Informations pratiques du refuge (capacite, équipements, tarifs,
-/// horaires repas), bouton appeler, activites proches.
-/// Utilise les donnees de trail_refuges.dart et trail_accommodations.dart.
+/// Source : base Drift seedee par le seeder generique (par trailId).
+/// Aucune donnee d'hebergement n'est hardcodee dans le moteur.
+final accommodationsByStageProvider =
+    FutureProvider.family<List<StageAccommodation>, int>((ref, stage) async {
+  final trailId = ref.watch(currentTrailIdProvider);
+  if (trailId.isEmpty) return [];
+  final dataProvider = ref.watch(trailDataProvider);
+  return dataProvider.getAccommodations(trailId, stageNumber: stage);
+});
+
+/// TREK-06 : Fiche hebergement sur place.
+///
+/// Informations pratiques de l'hebergement principal de l'etape
+/// (capacite, tarifs, contact), bouton appeler / email / site web,
+/// et liste des autres hebergements de l'etape.
+/// Donnees chargees depuis la base du sentier actif (par trailId).
 class RefugeDetailScreen extends ConsumerWidget {
   const RefugeDetailScreen({super.key, this.stageNumber});
 
-  /// Numero d'étape du refuge a afficher.
-  /// Si null, utilise l'étape active.
+  /// Numero d'etape de l'hebergement a afficher.
+  /// Si null, utilise la premiere etape.
   final int? stageNumber;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final trailId = ref.watch(currentTrailIdProvider);
-    final stages = ref.watch(stagesProvider);
-
-    // Determiner l'étape
     final stage = stageNumber ?? 1;
-
-    // Trouver le refuge PNRC principal de cette étape
-    final refuges = gr20RefugesPNRC
-        .where((r) => r.stageNumber == stage)
-        .toList();
-    final mainRefuge = refuges.isNotEmpty ? refuges.first : null;
-
-    // Tous les hébergements de l'étape
-    final allAccom = accommodationsForStage(trailId, stage);
-
-    // Données de l'étape (async)
-    final stageData = stages.whenOrNull(
-      data: (list) => list.where((s) => s.stageNumber == stage).firstOrNull,
-    );
+    final accommodationsAsync =
+        ref.watch(accommodationsByStageProvider(stage));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(mainRefuge?.name ?? 'Refuge étape $stage'),
+        title: accommodationsAsync.maybeWhen(
+          data: (accommodations) => Text(
+            _mainAccommodation(accommodations)?.name ??
+                'Hebergements etape $stage',
+          ),
+          orElse: () => Text('Hebergements etape $stage'),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppTheme.spacingBase),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- En-tete refuge ---
-            if (mainRefuge != null) ...[
-              _buildRefugeHeader(theme, mainRefuge),
-              const SizedBox(height: AppTheme.spacingLg),
-
-              // --- Équipements ---
-              _buildEquipments(theme, mainRefuge),
-              const SizedBox(height: AppTheme.spacingLg),
-
-              // --- Horaires / Infos pratiques ---
-              _buildPracticalInfo(theme, mainRefuge),
-              const SizedBox(height: AppTheme.spacingLg),
-
-              // --- Section Réserver (deeplinks) ---
-              _buildBookingSection(context, mainRefuge),
-              const SizedBox(height: AppTheme.spacingLg),
-            ] else ...[
-              _buildNoRefugeInfo(theme, stage),
-              const SizedBox(height: AppTheme.spacingLg),
-            ],
-
-            // --- Autres hébergements ---
-            if (allAccom.length > 1) ...[
-              _buildOtherAccommodations(theme, allAccom, mainRefuge?.name),
-              const SizedBox(height: AppTheme.spacingLg),
-            ],
-
-            // --- Activites proches ---
-            _buildNearbyActivities(theme, stageData),
-            const SizedBox(height: AppTheme.spacingXl),
-          ],
+      body: accommodationsAsync.when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, _) => Center(
+          child: Text(
+            'Erreur de chargement des hebergements',
+            style: theme.textTheme.bodyLarge,
+          ),
         ),
+        data: (accommodations) =>
+            _buildContent(context, theme, stage, accommodations),
       ),
     );
   }
 
-  Widget _buildRefugeHeader(ThemeData theme, TrailRefuge refuge) {
+  /// Hebergement principal de l'etape : premier refuge,
+  /// sinon premier hebergement disponible.
+  StageAccommodation? _mainAccommodation(
+    List<StageAccommodation> accommodations,
+  ) {
+    if (accommodations.isEmpty) return null;
+    return accommodations.firstWhere(
+      (a) => a.type == AccommodationType.refuge,
+      orElse: () => accommodations.first,
+    );
+  }
+
+  Widget _buildContent(
+    BuildContext context,
+    ThemeData theme,
+    int stage,
+    List<StageAccommodation> accommodations,
+  ) {
+    final mainAccommodation = _mainAccommodation(accommodations);
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (mainAccommodation != null) ...[
+            _buildHeader(theme, mainAccommodation),
+            const SizedBox(height: AppTheme.spacingLg),
+            _buildPracticalInfo(theme, mainAccommodation),
+            const SizedBox(height: AppTheme.spacingLg),
+            _buildBookingSection(context, mainAccommodation),
+            const SizedBox(height: AppTheme.spacingLg),
+          ] else ...[
+            _buildNoAccommodationInfo(theme, stage),
+            const SizedBox(height: AppTheme.spacingLg),
+          ],
+          if (accommodations.length > 1) ...[
+            _buildOtherAccommodations(
+              theme,
+              accommodations,
+              mainAccommodation?.id,
+            ),
+            const SizedBox(height: AppTheme.spacingXl),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(ThemeData theme, StageAccommodation accommodation) {
     return AppCard(
-      backgroundColor: AppTheme.vertMaquis.withAlpha(30),
-      borderColor: AppTheme.vertMaquisLight.withAlpha(60),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              // Icone type
               Container(
                 padding: const EdgeInsets.all(AppTheme.spacingMd),
                 decoration: BoxDecoration(
-                  color: _typeColor(refuge.type).withAlpha(40),
+                  color: theme.colorScheme.primary.withAlpha(40),
                   borderRadius: BorderRadius.circular(AppTheme.radiusCard),
                 ),
                 child: Icon(
-                  _typeIcon(refuge.type),
-                  color: _typeColor(refuge.type),
+                  _typeIcon(accommodation.type),
+                  color: theme.colorScheme.primary,
                   size: 32,
                 ),
               ),
@@ -123,20 +144,22 @@ class RefugeDetailScreen extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      refuge.name,
+                      accommodation.name,
                       style: theme.textTheme.headlineSmall,
                     ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
                         _badge(
-                          refuge.type.name.toUpperCase(),
-                          _typeColor(refuge.type),
+                          theme,
+                          accommodation.type.name.toUpperCase(),
+                          theme.colorScheme.primary,
                         ),
                         const SizedBox(width: 8),
                         _badge(
-                          'Étape ${refuge.stageNumber}',
-                          AppTheme.bleuMed,
+                          theme,
+                          'Etape ${accommodation.stageNumber}',
+                          theme.colorScheme.secondary,
                         ),
                       ],
                     ),
@@ -146,21 +169,21 @@ class RefugeDetailScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
-          // Stats rapides
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _quickStat(theme, Icons.landscape, '${refuge.altitude}m',
-                  'Altitude'),
-              _quickStat(theme, Icons.people, '${refuge.capacity} places',
-                  'Capacite'),
+              if (accommodation.capacity != null)
+                _quickStat(
+                  theme,
+                  Icons.people,
+                  '${accommodation.capacity} places',
+                  'Capacite',
+                ),
               _quickStat(
                 theme,
                 Icons.euro,
-                refuge.pricePerNight != null
-                    ? '${refuge.pricePerNight!.toStringAsFixed(0)}EUR'
-                    : 'N/A',
-                'Par nuit',
+                accommodation.priceRange ?? 'N/A',
+                'Tarifs',
               ),
             ],
           ),
@@ -169,7 +192,7 @@ class RefugeDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _badge(String text, Color color) {
+  Widget _badge(ThemeData theme, String text, Color color) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
@@ -196,7 +219,7 @@ class RefugeDetailScreen extends ConsumerWidget {
   ) {
     return Column(
       children: [
-        Icon(icon, color: AppTheme.bleuLight, size: 20),
+        Icon(icon, color: theme.colorScheme.secondary, size: 20),
         const SizedBox(height: 2),
         Text(
           value,
@@ -209,72 +232,21 @@ class RefugeDetailScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildEquipments(ThemeData theme, TrailRefuge refuge) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SectionHeader(
-          title: 'Équipements',
-          icon: Icons.check_circle_outline,
-        ),
-        Wrap(
-          spacing: AppTheme.spacingMd,
-          runSpacing: AppTheme.spacingMd,
-          children: [
-            _equipmentChip(Icons.bed, 'Dortoir', true),
-            _equipmentChip(
-                Icons.shower, 'Douche', refuge.hasShower),
-            _equipmentChip(
-                Icons.restaurant, 'Repas', refuge.hasMeals),
-            _equipmentChip(
-                Icons.bolt, 'Électricité', refuge.hasElectricity),
-            _equipmentChip(Icons.wc, 'WC', true),
-            _equipmentChip(Icons.water_drop, 'Eau', true),
-          ],
-        ),
-      ],
-    );
-  }
+  Widget _buildPracticalInfo(
+    ThemeData theme,
+    StageAccommodation accommodation,
+  ) {
+    final rows = <Widget>[
+      if (accommodation.phone != null)
+        _infoRow(theme, Icons.phone, 'Telephone', accommodation.phone!),
+      if (accommodation.email != null)
+        _infoRow(theme, Icons.email, 'Email', accommodation.email!),
+      if (accommodation.website != null)
+        _infoRow(theme, Icons.language, 'Site web', accommodation.website!),
+    ];
 
-  Widget _equipmentChip(IconData icon, String label, bool available) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: available
-            ? AppTheme.vertMaquis.withAlpha(120)
-            : AppTheme.rougeUrgence.withAlpha(80),
-        borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-        border: Border.all(
-          color: available
-              ? AppTheme.vertMaquis
-              : AppTheme.rougeUrgence,
-          width: 2.5,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon,
-            size: 32,
-            color: available ? Colors.white : AppTheme.rougeUrgence,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-              color: available ? Colors.white : AppTheme.rougeUrgence,
-              decoration: available ? null : TextDecoration.lineThrough,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+    if (rows.isEmpty) return const SizedBox.shrink();
 
-  Widget _buildPracticalInfo(ThemeData theme, TrailRefuge refuge) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -285,26 +257,9 @@ class RefugeDetailScreen extends ConsumerWidget {
         AppCard(
           child: Column(
             children: [
-              _infoRow(theme, Icons.calendar_today, 'Ouverture',
-                  refuge.openingPeriod),
-              const Divider(height: 16),
-              _infoRow(theme, Icons.restaurant_menu, 'Diner',
-                  '19h00 (unique service)'),
-              const Divider(height: 16),
-              _infoRow(theme, Icons.free_breakfast, 'Petit-dejeuner',
-                  '6h30 - 7h30'),
-              const Divider(height: 16),
-              _infoRow(theme, Icons.access_time, 'Pique-nique',
-                  'Commande la veille'),
-              if (refuge.distanceFromTrail > 0) ...[
-                const Divider(height: 16),
-                _infoRow(theme, Icons.directions_walk, 'Distance sentier',
-                    '${refuge.distanceFromTrail}m'),
-              ],
-              if (refuge.website != null) ...[
-                const Divider(height: 16),
-                _infoRow(theme, Icons.language, 'Réservation',
-                    refuge.website!),
+              for (var i = 0; i < rows.length; i++) ...[
+                if (i > 0) const Divider(height: 16),
+                rows[i],
               ],
             ],
           ),
@@ -321,7 +276,7 @@ class RefugeDetailScreen extends ConsumerWidget {
   ) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: AppTheme.bleuLight),
+        Icon(icon, size: 20, color: theme.colorScheme.secondary),
         const SizedBox(width: AppTheme.spacingMd),
         Text(label, style: theme.textTheme.bodyMedium),
         const Spacer(),
@@ -338,13 +293,19 @@ class RefugeDetailScreen extends ConsumerWidget {
     );
   }
 
-  /// Section "Réserver" avec boutons CTA (appeler, email, site web).
+  /// Section "Reserver" avec boutons CTA (appeler, email, site web).
   /// Boutons affiches uniquement si les donnees sont presentes.
   /// E5.12b — Design #83560.
-  Widget _buildBookingSection(BuildContext context, TrailRefuge refuge) {
-    final hasPhone = refuge.phone != null && refuge.phone!.isNotEmpty;
-    final hasEmail = refuge.email != null && refuge.email!.isNotEmpty;
-    final hasWebsite = refuge.website != null && refuge.website!.isNotEmpty;
+  Widget _buildBookingSection(
+    BuildContext context,
+    StageAccommodation accommodation,
+  ) {
+    final hasPhone =
+        accommodation.phone != null && accommodation.phone!.isNotEmpty;
+    final hasEmail =
+        accommodation.email != null && accommodation.email!.isNotEmpty;
+    final website = accommodation.bookingUrl ?? accommodation.website;
+    final hasWebsite = website != null && website.isNotEmpty;
 
     // Pas de donnees de contact → pas de section
     if (!hasPhone && !hasEmail && !hasWebsite) {
@@ -355,7 +316,7 @@ class RefugeDetailScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(
-          title: 'Réserver',
+          title: 'Reserver',
           icon: Icons.bookmark_add_outlined,
         ),
         if (hasPhone)
@@ -366,8 +327,9 @@ class RefugeDetailScreen extends ConsumerWidget {
               icon: Icons.phone,
               variant: AppButtonVariant.secondary,
               onPressed: () async {
-                _logBookingAttempt('phone', refuge.name);
-                final phoneNumber = refuge.phone!.replaceAll(' ', '');
+                _logBookingAttempt('phone', accommodation.name);
+                final phoneNumber =
+                    accommodation.phone!.replaceAll(' ', '');
                 final uri = Uri(scheme: 'tel', path: phoneNumber);
                 if (await canLaunchUrl(uri)) {
                   await launchUrl(uri);
@@ -375,7 +337,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Appeler : ${refuge.phone}'),
+                        content: Text('Appeler : ${accommodation.phone}'),
                       ),
                     );
                   }
@@ -391,12 +353,12 @@ class RefugeDetailScreen extends ConsumerWidget {
               icon: Icons.email,
               variant: AppButtonVariant.outline,
               onPressed: () async {
-                _logBookingAttempt('email', refuge.name);
+                _logBookingAttempt('email', accommodation.name);
                 final uri = Uri(
                   scheme: 'mailto',
-                  path: refuge.email!,
+                  path: accommodation.email!,
                   queryParameters: {
-                    'subject': 'Réservation ${refuge.name}',
+                    'subject': 'Reservation ${accommodation.name}',
                   },
                 );
                 if (await canLaunchUrl(uri)) {
@@ -405,7 +367,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                   if (context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('Email : ${refuge.email}'),
+                        content: Text('Email : ${accommodation.email}'),
                       ),
                     );
                   }
@@ -419,15 +381,15 @@ class RefugeDetailScreen extends ConsumerWidget {
             icon: Icons.language,
             variant: AppButtonVariant.outline,
             onPressed: () async {
-              _logBookingAttempt('web', refuge.name);
-              final uri = Uri.parse(refuge.website!);
+              _logBookingAttempt('web', accommodation.name);
+              final uri = Uri.parse(website);
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
               } else {
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Site : ${refuge.website}'),
+                      content: Text('Site : $website'),
                     ),
                   );
                 }
@@ -439,7 +401,7 @@ class RefugeDetailScreen extends ConsumerWidget {
   }
 
   /// Logue un evenement analytics booking_attempt.
-  /// Type: phone, email ou web. POI: nom du refuge.
+  /// Type: phone, email ou web. POI: nom de l'hebergement.
   /// E5.12b — Design #83560.
   void _logBookingAttempt(String type, String poiName) {
     // TODO(E5.13): remplacer par FirebaseAnalytics.logEvent quand
@@ -447,18 +409,17 @@ class RefugeDetailScreen extends ConsumerWidget {
     debugPrint('[analytics] booking_attempt: type=$type, poi=$poiName');
   }
 
-  Widget _buildNoRefugeInfo(ThemeData theme, int stage) {
+  Widget _buildNoAccommodationInfo(ThemeData theme, int stage) {
     return AppCard(
-      backgroundColor: AppTheme.orangeTerre.withAlpha(20),
-      borderColor: AppTheme.orangeTerre.withAlpha(60),
       child: Row(
         children: [
-          const Icon(Icons.info_outline, color: AppTheme.orangeLight),
+          Icon(Icons.info_outline, color: theme.colorScheme.secondary),
           const SizedBox(width: AppTheme.spacingMd),
           Expanded(
             child: Text(
-              'Pas de refuge PNRC a l\'étape $stage. '
-              'Consultez les hébergements alternatifs ci-dessous.',
+              'Pas d\'hebergement reference a l\'etape $stage. '
+              'Les donnees du sentier seront completees '
+              'dans une prochaine mise a jour.',
               style: theme.textTheme.bodyMedium,
             ),
           ),
@@ -469,12 +430,12 @@ class RefugeDetailScreen extends ConsumerWidget {
 
   Widget _buildOtherAccommodations(
     ThemeData theme,
-    List<TrailAccommodation> accommodations,
-    String? mainRefugeName,
+    List<StageAccommodation> accommodations,
+    String? mainAccommodationId,
   ) {
-    // Exclure le refuge principal s'il est déjà affiche
+    // Exclure l'hebergement principal s'il est deja affiche
     final others = accommodations
-        .where((a) => a.name != mainRefugeName)
+        .where((a) => a.id != mainAccommodationId)
         .toList();
 
     if (others.isEmpty) return const SizedBox.shrink();
@@ -483,7 +444,7 @@ class RefugeDetailScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SectionHeader(
-          title: 'Autres hébergements',
+          title: 'Autres hebergements',
           icon: Icons.hotel,
         ),
         ...others.map((accom) {
@@ -493,8 +454,8 @@ class RefugeDetailScreen extends ConsumerWidget {
               child: Row(
                 children: [
                   Icon(
-                    _accommodationIcon(accom.type),
-                    color: AppTheme.bleuLight,
+                    _typeIcon(accom.type),
+                    color: theme.colorScheme.secondary,
                     size: 24,
                   ),
                   const SizedBox(width: AppTheme.spacingMd),
@@ -509,20 +470,11 @@ class RefugeDetailScreen extends ConsumerWidget {
                           ),
                         ),
                         Text(
-                          '${accom.priceRange} | ${accom.altitude}m',
+                          [
+                            accom.type.name,
+                            if (accom.priceRange != null) accom.priceRange!,
+                          ].join(' | '),
                           style: theme.textTheme.bodySmall,
-                        ),
-                        Wrap(
-                          spacing: 4,
-                          children: accom.amenities.take(3).map((a) {
-                            return Text(
-                              a,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: AppTheme.bleuLight,
-                                fontSize: 14,
-                              ),
-                            );
-                          }).toList(),
                         ),
                       ],
                     ),
@@ -530,7 +482,7 @@ class RefugeDetailScreen extends ConsumerWidget {
                   if (accom.phone != null)
                     IconButton(
                       icon: const Icon(Icons.phone, size: 20),
-                      color: AppTheme.vertMaquisLight,
+                      color: theme.colorScheme.primary,
                       onPressed: () async {
                         final uri = Uri(
                           scheme: 'tel',
@@ -550,7 +502,7 @@ class RefugeDetailScreen extends ConsumerWidget {
     );
   }
 
-  IconData _accommodationIcon(AccommodationType type) {
+  IconData _typeIcon(AccommodationType type) {
     switch (type) {
       case AccommodationType.refuge:
         return Icons.house;
@@ -566,122 +518,4 @@ class RefugeDetailScreen extends ConsumerWidget {
         return Icons.nights_stay;
     }
   }
-
-  Widget _buildNearbyActivities(ThemeData theme, StageModel? stage) {
-    // Activites génériques basees sur l'étape
-    final activities = <_NearbyActivity>[
-      if (stage != null && stage.stageNumber >= 9)
-        const _NearbyActivity(
-          icon: Icons.pool,
-          title: 'Baignade',
-          description: 'Vasques naturelles à proximité',
-        ),
-      const _NearbyActivity(
-        icon: Icons.photo_camera,
-        title: 'Point de vue',
-        description: 'Panorama montagne et mer',
-      ),
-      if (stage != null && stage.stageNumber <= 8)
-        const _NearbyActivity(
-          icon: Icons.hiking,
-          title: 'Sommet accessible',
-          description: 'Aller-retour possible depuis le refuge',
-        ),
-      const _NearbyActivity(
-        icon: Icons.local_florist,
-        title: 'Flore endemique',
-        description: 'Pins laricio, genets, maquis corse',
-      ),
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SectionHeader(
-          title: 'A proximité',
-          icon: Icons.explore,
-        ),
-        ...activities.map((activity) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppTheme.vertMaquis.withAlpha(30),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Icon(
-                    activity.icon,
-                    color: AppTheme.vertMaquisLight,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: AppTheme.spacingMd),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        activity.title,
-                        style: theme.textTheme.bodyLarge,
-                      ),
-                      Text(
-                        activity.description,
-                        style: theme.textTheme.bodySmall,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
-      ],
-    );
-  }
-
-  Color _typeColor(RefugeType type) {
-    switch (type) {
-      case RefugeType.refuge:
-        return AppTheme.orangeTerre;
-      case RefugeType.bergerie:
-        return AppTheme.orangeLight;
-      case RefugeType.gite:
-        return AppTheme.bleuMed;
-      case RefugeType.hotel:
-        return const Color(0xFF7B1FA2);
-      case RefugeType.camping:
-        return AppTheme.vertMaquis;
-    }
-  }
-
-  IconData _typeIcon(RefugeType type) {
-    switch (type) {
-      case RefugeType.refuge:
-        return Icons.house;
-      case RefugeType.bergerie:
-        return Icons.cabin;
-      case RefugeType.gite:
-        return Icons.cottage;
-      case RefugeType.hotel:
-        return Icons.hotel;
-      case RefugeType.camping:
-        return Icons.park;
-    }
-  }
-}
-
-/// Activite à proximité du refuge.
-class _NearbyActivity {
-  const _NearbyActivity({
-    required this.icon,
-    required this.title,
-    required this.description,
-  });
-
-  final IconData icon;
-  final String title;
-  final String description;
 }

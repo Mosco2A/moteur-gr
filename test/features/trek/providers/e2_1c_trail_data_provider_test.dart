@@ -10,6 +10,7 @@ import 'package:moteur_gr/core/geo/track_point.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trek/data/drift_trail_data_provider.dart';
+import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
 import 'package:moteur_gr/features/trek/domain/trail_data_provider.dart';
 import 'package:moteur_gr/features/trek/providers/trail_providers.dart';
 
@@ -102,6 +103,13 @@ class _FakeTrailDataProvider implements TrailDataProvider {
 
   @override
   Future<List<TrackPoint>> getTrackPoints(String stageId) async => [];
+
+  @override
+  Future<List<StageAccommodation>> getAccommodations(
+    String trailId, {
+    int? stageNumber,
+  }) async =>
+      [];
 
   @override
   TrailConfig getTrailConfig() => testTrailConfig;

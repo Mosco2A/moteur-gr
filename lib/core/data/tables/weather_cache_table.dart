@@ -8,7 +8,7 @@ class WeatherCache extends Table {
   /// Clé primaire auto-incrémentée
   IntColumn get id => integer().autoIncrement()();
 
-  /// Identifiant du sentier (ex: 'gr20')
+  /// Identifiant du sentier (ex: 'gr10')
   TextColumn get trailId => text()();
 
   /// Numéro d'étape concernée

@@ -15,8 +15,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Trail {
 
-/// Identifiant unique (ex: 'mare_a_mare', 'tmb')
- String get id;/// Nom technique court (ex: 'Mare a Mare')
+/// Identifiant unique (ex: 'sentier-volcans', 'tmb')
+ String get id;/// Nom technique court (ex: 'GR10')
  String get name;/// Nom d'affichage dans l'app
  String get displayName;/// Accroche sous le nom
  String get tagline;/// Nombre total d'etapes
@@ -229,9 +229,9 @@ class _Trail implements Trail {
   const _Trail({required this.id, required this.name, required this.displayName, this.tagline = '', required this.totalStages, required this.totalDistanceKm, required this.totalElevationGain, required this.region, required this.country});
   factory _Trail.fromJson(Map<String, dynamic> json) => _$TrailFromJson(json);
 
-/// Identifiant unique (ex: 'mare_a_mare', 'tmb')
+/// Identifiant unique (ex: 'sentier-volcans', 'tmb')
 @override final  String id;
-/// Nom technique court (ex: 'Mare a Mare')
+/// Nom technique court (ex: 'GR10')
 @override final  String name;
 /// Nom d'affichage dans l'app
 @override final  String displayName;

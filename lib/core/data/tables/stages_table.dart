@@ -8,7 +8,7 @@ class Stages extends Table {
   /// Cle primaire auto-incrementee
   IntColumn get id => integer().autoIncrement()();
 
-  /// Identifiant du sentier parent (ex: 'mare_a_mare')
+  /// Identifiant du sentier parent (ex: 'sentier-volcans')
   TextColumn get trailId => text()();
 
   /// Numero de l'etape dans le sentier (1-indexed)

@@ -14,8 +14,9 @@
 // - flutter.widget_trek_stage_index
 // - flutter.widget_trek_total_stages
 //
-// Layout : widget_trek_progress.xml (a creer dans res/layout/)
-// Config : widget_trek_info.xml (a creer dans res/xml/)
+// Layout : res/layout/widget_trek_progress.xml
+// Config : res/xml/widget_trek_info.xml
+// Declare dans AndroidManifest.xml (receiver APPWIDGET_UPDATE)
 
 package com.only1cent.moteur_gr
 
@@ -66,29 +67,20 @@ class TrekWidget : AppWidgetProvider() {
         val stageIndex = prefs.getInt("${PREFIX}stage_index", 0)
         val totalStages = prefs.getInt("${PREFIX}total_stages", 0)
 
-        // Placeholder : RemoteViews sera connecte au layout XML
-        // quand les ressources Android seront creees.
-        // Pour l'instant, le widget lit les donnees mais n'a pas
-        // de layout XML associe. Le layout sera :
-        //
-        // - Nom du trail (trailName)
-        // - Etape en cours (stageName) — "Etape 3/16"
-        // - Barre de progression (stageProgress %)
-        // - Distance restante + ETA
-        // - Altitude actuelle
-
-        // TODO: Creer res/layout/widget_trek_progress.xml
-        // TODO: Creer res/xml/widget_trek_info.xml
-        // TODO: Connecter RemoteViews au layout
-        //
-        // val views = RemoteViews(context.packageName, R.layout.widget_trek_progress)
-        // views.setTextViewText(R.id.trail_name, trailName)
-        // views.setTextViewText(R.id.stage_name, "$stageName ($stageIndex/$totalStages)")
-        // views.setProgressBar(R.id.progress_bar, 100, (stageProgress * 100).toInt(), false)
-        // views.setTextViewText(R.id.distance_remaining, "${(distanceRemaining / 1000).toInt()} km")
-        // views.setTextViewText(R.id.eta, "${etaMinutes} min")
-        // views.setTextViewText(R.id.altitude, "${altitude.toInt()} m")
-        // appWidgetManager.updateAppWidget(appWidgetId, views)
+        // Rendu RemoteViews depuis le layout widget_trek_progress
+        val views = RemoteViews(context.packageName, R.layout.widget_trek_progress)
+        views.setTextViewText(R.id.trail_name, trailName)
+        val stageLabel = if (totalStages > 0) {
+            "$stageName ($stageIndex/$totalStages)"
+        } else {
+            stageName
+        }
+        views.setTextViewText(R.id.stage_name, stageLabel)
+        views.setProgressBar(R.id.progress_bar, 100, (stageProgress * 100).toInt(), false)
+        views.setTextViewText(R.id.distance_remaining, "${(distanceRemaining / 1000).toInt()} km")
+        views.setTextViewText(R.id.eta, "$etaMinutes min")
+        views.setTextViewText(R.id.altitude, "${altitude.toInt()} m")
+        appWidgetManager.updateAppWidget(appWidgetId, views)
     }
 
     override fun onEnabled(context: Context) {

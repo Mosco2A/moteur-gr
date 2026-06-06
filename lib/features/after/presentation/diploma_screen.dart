@@ -7,8 +7,6 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../diploma/domain/diploma_generator.dart';
 import '../../diploma/domain/diploma_pdf_service.dart';
-import '../../journal/domain/models/journal_entry.dart';
-import '../../journal/providers/journal_providers.dart';
 import '../providers/in_app_review_provider.dart';
 
 /// E5.17 : Ecran diplome post-trek avec declenchement in-app review.
@@ -41,7 +39,7 @@ class _DiplomaAfterScreenState extends ConsumerState<DiplomaAfterScreen> {
   Future<void> _requestInAppReviewIfEligible() async {
     final config = ref.read(trailConfigProvider);
     // Utiliser le trailId comme identifiant unique pour la review
-    final trailId = config.trailId;
+    final trailId = config.id;
     final reviewService = ref.read(inAppReviewServiceProvider);
     await reviewService.requestReviewIfEligible(trailId);
   }

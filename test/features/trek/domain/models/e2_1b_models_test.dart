@@ -54,7 +54,7 @@ void main() {
         maxHoursPerDay: 5.0,
       );
 
-      final group = FeasibilityProfile(
+      const group = FeasibilityProfile(
         fitnessLevel: 'intermediate',
         experience: 'experienced',
         maxKmPerDay: 20.0,

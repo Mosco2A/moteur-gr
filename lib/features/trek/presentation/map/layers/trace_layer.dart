@@ -19,7 +19,7 @@ class TraceLayer extends StatelessWidget {
   /// Points GPS du trace a afficher.
   final List<LatLng> points;
 
-  /// Couleur du trace. Defaut bleu (pas rouge GR20).
+  /// Couleur du trace. Defaut bleu, surchargee par le theme du sentier.
   final Color color;
 
   /// Epaisseur du trait en pixels.

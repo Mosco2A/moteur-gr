@@ -30,7 +30,7 @@ abstract class TrailManifest with _$TrailManifest {
 @freezed
 abstract class TrailManifestEntry with _$TrailManifestEntry {
   const factory TrailManifestEntry({
-    /// Identifiant unique du sentier (ex: 'gr20', 'mare_a_mare')
+    /// Identifiant unique du sentier (ex: 'gr10', 'tmb')
     required String trailId,
 
     /// Version des donnees (incremente a chaque publication serveur)

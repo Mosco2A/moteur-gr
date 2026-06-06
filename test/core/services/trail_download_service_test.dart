@@ -18,7 +18,7 @@ import 'package:moteur_gr/core/services/trail_download_service.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 
 class FakeConnectivityMonitor extends ConnectivityMonitor {
-  ConnectivityStatus _status = ConnectivityStatus.online;
+  ConnectivityStatus _status = ConnectivityStatusValues.online;
   void setStatus(ConnectivityStatus s) => _status = s;
   @override
   Future<ConnectivityStatus> checkStatus() async => _status;
@@ -26,13 +26,13 @@ class FakeConnectivityMonitor extends ConnectivityMonitor {
 
 Map<String, dynamic> makeTrailData() {
   return {
-    'trail_meta': {'id': 't1', 'code': 'gr20', 'data_version': 3, 'status': 'active'},
+    'trail_meta': {'id': 't1', 'code': 'sentier-volcans', 'data_version': 3, 'status': 'active'},
     'itineraries': [{'id': 'i1', 'trail_id': 't1', 'code': 'ns', 'name_fr': 'NS', 'name_en': 'NS', 'name_de': 'NS', 'name_it': 'NS', 'name_es': 'NS', 'distance_km': 180.0, 'elevation_gain': 13000, 'stage_count': 16}],
-    'stages': [{'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'E1', 'name_en': 'E1', 'name_de': 'E1', 'name_it': 'E1', 'name_es': 'E1', 'start_lat': 42.5, 'start_lng': 8.85, 'end_lat': 42.47, 'end_lng': 8.91, 'distance_km': 12.0, 'elevation_gain': 1500, 'elevation_loss': 100, 'duration_minutes': 420, 'difficulty': 'hard'}],
-    'accommodations': [{'id': 'a1', 'stage_id': 's1', 'name_fr': 'Ref', 'name_en': 'Sh', 'name_de': 'H', 'name_it': 'R', 'name_es': 'R', 'type': 'refuge', 'lat': 42.47, 'lng': 8.91, 'phone': '+33', 'email': null, 'website': null, 'capacity': 30, 'price_range': '14EUR', 'booking_url': null}],
-    'pois': [{'id': 'p1', 'stage_id': 's1', 'name_fr': 'Src', 'name_en': 'Sp', 'name_de': 'Q', 'name_it': 'S', 'name_es': 'F', 'description_fr': 'E', 'description_en': 'W', 'description_de': null, 'description_it': null, 'description_es': null, 'type': 'water', 'lat': 42.49, 'lng': 8.88, 'elevation': 1400.0}],
-    'gpx_tracks': [{'id': 'tk1', 'itinerary_id': 'i1', 'name': 'GR20', 'source_url': null}],
-    'gpx_points': [{'track_id': 'tk1', 'lat': 42.5, 'lng': 8.85, 'elevation': 275.0, 'sequence_index': 0}, {'track_id': 'tk1', 'lat': 42.49, 'lng': 8.88, 'elevation': 1400.0, 'sequence_index': 1}],
+    'stages': [{'id': 's1', 'itinerary_id': 'i1', 'stage_number': 1, 'name_fr': 'E1', 'name_en': 'E1', 'name_de': 'E1', 'name_it': 'E1', 'name_es': 'E1', 'start_lat': 45.5, 'start_lng': 2.9, 'end_lat': 45.47, 'end_lng': 2.96, 'distance_km': 12.0, 'elevation_gain': 1500, 'elevation_loss': 100, 'duration_minutes': 420, 'difficulty': 'hard'}],
+    'accommodations': [{'id': 'a1', 'stage_id': 's1', 'name_fr': 'Ref', 'name_en': 'Sh', 'name_de': 'H', 'name_it': 'R', 'name_es': 'R', 'type': 'refuge', 'lat': 45.47, 'lng': 2.96, 'phone': '+33', 'email': null, 'website': null, 'capacity': 30, 'price_range': '14EUR', 'booking_url': null}],
+    'pois': [{'id': 'p1', 'stage_id': 's1', 'name_fr': 'Src', 'name_en': 'Sp', 'name_de': 'Q', 'name_it': 'S', 'name_es': 'F', 'description_fr': 'E', 'description_en': 'W', 'description_de': null, 'description_it': null, 'description_es': null, 'type': 'water', 'lat': 45.49, 'lng': 2.93, 'elevation': 1400.0}],
+    'gpx_tracks': [{'id': 'tk1', 'itinerary_id': 'i1', 'name': 'Sentier des Volcans', 'source_url': null}],
+    'gpx_points': [{'track_id': 'tk1', 'lat': 45.5, 'lng': 2.9, 'elevation': 275.0, 'sequence_index': 0}, {'track_id': 'tk1', 'lat': 45.49, 'lng': 2.93, 'elevation': 1400.0, 'sequence_index': 1}],
   };
 }
 
@@ -81,8 +81,8 @@ void main() {
       final mc = MockClient((r) async => http.Response(jsonEncode(makeTrailData()), 200));
       final svc = makeService(httpClient: mc);
       final evts = <DownloadProgress>[];
-      await for (final e in svc.downloadTrail('gr20', 'https://example.com/d.json')) { evts.add(e); }
-      expect(evts.last.status, DownloadStatus.completed);
+      await for (final e in svc.downloadTrail('sentier-volcans', 'https://example.com/d.json')) { evts.add(e); }
+      expect(evts.last.status, DownloadStatusValues.completed);
       expect((await trailMetaDao.getAll()).length, 1);
       expect((await trailGpxPointsDao.getAll()).length, 2);
     });
@@ -90,7 +90,7 @@ void main() {
       final mc = MockClient((r) async => http.Response(jsonEncode(makeTrailData()), 200));
       final svc = makeService(httpClient: mc);
       final steps = <String>[];
-      await for (final e in svc.downloadTrail('gr20', 'https://example.com/d.json')) { steps.add(e.currentStep); }
+      await for (final e in svc.downloadTrail('sentier-volcans', 'https://example.com/d.json')) { steps.add(e.currentStep); }
       expect(steps.first, 'downloading');
       expect(steps.last, 'completed');
     });
@@ -98,31 +98,31 @@ void main() {
 
   group('erreur reseau', () {
     test('paused offline', () async {
-      connectivity.setStatus(ConnectivityStatus.offline);
+      connectivity.setStatus(ConnectivityStatusValues.offline);
       final svc = makeService();
       final evts = <DownloadProgress>[];
-      await for (final e in svc.downloadTrail('gr20', 'https://example.com/d.json')) { evts.add(e); }
-      expect(evts.last.status, DownloadStatus.paused);
+      await for (final e in svc.downloadTrail('sentier-volcans', 'https://example.com/d.json')) { evts.add(e); }
+      expect(evts.last.status, DownloadStatusValues.paused);
     });
     test('error retries', () async {
       final mc = MockClient((r) async => http.Response('Err', 500));
       final svc = makeService(httpClient: mc);
       final evts = <DownloadProgress>[];
-      await for (final e in svc.downloadTrail('gr20', 'https://example.com/d.json')) { evts.add(e); }
-      expect(evts.last.status, DownloadStatus.error);
+      await for (final e in svc.downloadTrail('sentier-volcans', 'https://example.com/d.json')) { evts.add(e); }
+      expect(evts.last.status, DownloadStatusValues.error);
     });
   });
 
   group('reprise', () {
     test('skip completees', () async {
       final now = DateTime.now().toIso8601String();
-      await syncQueueDao.insertOrReplace(SyncQueueCompanion(trailId: const Value('gr20'), action: const Value('insert_trail_meta'), status: const Value('completed'), createdAt: Value(now), completedAt: Value(now)));
-      await syncQueueDao.insertOrReplace(SyncQueueCompanion(trailId: const Value('gr20'), action: const Value('insert_itineraries'), status: const Value('completed'), createdAt: Value(now), completedAt: Value(now)));
+      await syncQueueDao.insertOrReplace(SyncQueueCompanion(trailId: const Value('sentier-volcans'), action: const Value('insert_trail_meta'), status: const Value('completed'), createdAt: Value(now), completedAt: Value(now)));
+      await syncQueueDao.insertOrReplace(SyncQueueCompanion(trailId: const Value('sentier-volcans'), action: const Value('insert_itineraries'), status: const Value('completed'), createdAt: Value(now), completedAt: Value(now)));
       final mc = MockClient((r) async => http.Response(jsonEncode(makeTrailData()), 200));
       final svc = makeService(httpClient: mc);
       final steps = <String>[];
-      await for (final e in svc.downloadTrail('gr20', 'https://example.com/d.json')) {
-        if (e.status == DownloadStatus.downloading && e.currentStep != 'downloading' && e.currentStep != 'downloaded') steps.add(e.currentStep);
+      await for (final e in svc.downloadTrail('sentier-volcans', 'https://example.com/d.json')) {
+        if (e.status == DownloadStatusValues.downloading && e.currentStep != 'downloading' && e.currentStep != 'downloaded') steps.add(e.currentStep);
       }
       expect(steps.contains('trail_meta'), isFalse);
       expect(steps.contains('stages'), isTrue);
@@ -133,8 +133,8 @@ void main() {
     test('7 actions completees', () async {
       final mc = MockClient((r) async => http.Response(jsonEncode(makeTrailData()), 200));
       final svc = makeService(httpClient: mc);
-      await for (final _ in svc.downloadTrail('gr20', 'https://example.com/d.json')) {}
-      final acts = await syncQueueDao.getByTrailId('gr20');
+      await for (final _ in svc.downloadTrail('sentier-volcans', 'https://example.com/d.json')) {}
+      final acts = await syncQueueDao.getByTrailId('sentier-volcans');
       expect(acts.length, 7);
       for (final x in acts) { expect(x.status, 'completed'); }
     });

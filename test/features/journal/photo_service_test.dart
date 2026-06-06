@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -49,13 +48,13 @@ void main() {
     });
 
     test('limite 3 photos/jour respectee — la 4eme est refusee', () async {
-      final trailId = 'gr20';
+      const trailId = 'gr20';
       final today = DateTime.now();
 
       // Inserer 3 photos pour aujourd'hui
       for (var i = 0; i < 3; i++) {
         await dao.insertEntry(JournalEntriesCompanion(
-          trailId: Value(trailId),
+          trailId: const Value(trailId),
           stageNumber: const Value(1),
           content: Value('photo $i'),
           photoPath: Value('/photos/$i.jpg'),
@@ -84,7 +83,7 @@ void main() {
     });
 
     test('savePhoto reussit quand la limite n est pas atteinte', () async {
-      final trailId = 'tmb';
+      const trailId = 'tmb';
       final smallBytes = Uint8List(100);
       for (var i = 0; i < 100; i++) {
         smallBytes[i] = i % 256;

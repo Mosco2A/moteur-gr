@@ -1,49 +1,66 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/features/safety/data/emergency_contacts_service.dart';
 import 'package:moteur_gr/features/safety/domain/models/emergency_contact.dart';
 
 void main() {
+  // Secours regionaux d'un sentier FICTIF (Sentier des Volcans).
+  // Aucune correspondance reelle -- fixtures de test neutres.
+  const volcansEmergencyNumbers = [
+    TrailEmergencyNumber(
+      name: 'Secours montagne Volcans',
+      phone: '04 00 00 00 00',
+    ),
+  ];
+
   group('EmergencyContactsService', () {
-    late EmergencyContactsService service;
-
-    setUp(() {
-      service = EmergencyContactsService();
-    });
-
-    test('contacts secours automatiques toujours presents', () {
-      // Meme sans contacts personnels, les contacts auto sont la
+    test('112 universel toujours present, sans secours regional hardcode',
+        () {
+      // Service SANS config sentier : seul le 112 est propose
+      final service = EmergencyContactsService();
       final contacts = service.getContacts();
 
-      // Verifier que les contacts automatiques sont presents
       final autoContacts = contacts.where((c) => c.isAutomatic).toList();
-      expect(autoContacts.length, greaterThanOrEqualTo(2));
+      expect(autoContacts.length, equals(1),
+          reason: 'sans config sentier, seul le 112 doit etre present');
 
-      // Verifier 112 (urgences europeennes)
       final sos112 = autoContacts.where((c) => c.phone == '112');
       expect(sos112, isNotEmpty, reason: '112 doit etre present');
+    });
 
-      // Verifier PGHM
-      final pghm = autoContacts.where(
-        (c) => c.phone == '04 92 22 22 22',
+    test('secours regionaux injectes depuis la config du sentier', () {
+      // Service AVEC config sentier fictif : 112 + secours regional
+      final service = EmergencyContactsService(
+        trailEmergencyNumbers: volcansEmergencyNumbers,
       );
-      expect(pghm, isNotEmpty, reason: 'PGHM doit etre present');
+      final contacts = service.getContacts();
+
+      final autoContacts = contacts.where((c) => c.isAutomatic).toList();
+      expect(autoContacts.length, equals(2));
+
+      // 112 d'abord, secours regional du sentier ensuite
+      expect(autoContacts.first.phone, equals('112'));
+      expect(autoContacts.last.name, equals('Secours montagne Volcans'));
+      expect(autoContacts.last.phone, equals('04 00 00 00 00'));
     });
 
     test('appel avec bon numero -- format tel: correct', () {
-      // Verifier que le numero PGHM est correct et nettoyable
+      final service = EmergencyContactsService(
+        trailEmergencyNumbers: volcansEmergencyNumbers,
+      );
       final contacts = service.getContacts();
-      final pghm = contacts.firstWhere(
-        (c) => c.phone.contains('04 92 22 22 22'),
+      final regional = contacts.firstWhere(
+        (c) => c.phone.contains('04 00 00 00 00'),
       );
 
       // Le numero nettoye (sans espaces) doit donner le bon format tel:
-      final cleanPhone = pghm.phone.replaceAll(' ', '');
-      expect(cleanPhone, equals('0492222222'));
+      final cleanPhone = regional.phone.replaceAll(' ', '');
+      expect(cleanPhone, equals('0400000000'));
 
       // Verifier le format URI tel:
       final uri = Uri.parse('tel:$cleanPhone');
       expect(uri.scheme, equals('tel'));
-      expect(uri.path, equals('0492222222'));
+      expect(uri.path, equals('0400000000'));
 
       // Verifier aussi le 112
       final sos = contacts.firstWhere((c) => c.phone == '112');
@@ -56,7 +73,7 @@ void main() {
 
   group('EmergencyContact -- model', () {
     test('fromJson/toJson roundtrip', () {
-      final original = EmergencyContact(
+      const original = EmergencyContact(
         id: 'contact-1',
         name: 'Maman',
         phone: '06 12 34 56 78',
@@ -69,7 +86,9 @@ void main() {
     });
 
     test('contacts personnels ordonnes avant automatiques', () {
-      final service = EmergencyContactsService();
+      final service = EmergencyContactsService(
+        trailEmergencyNumbers: volcansEmergencyNumbers,
+      );
       service.addContact(const EmergencyContact(
         id: 'perso-1',
         name: 'Contact perso',

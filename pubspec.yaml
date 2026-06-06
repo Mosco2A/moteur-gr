@@ -74,11 +74,16 @@ dependencies:
   printing: ^5.13.4
 
   # --- In-App Review (E5.17) ---
-  in_app_review: ^6.0.0
+  in_app_review: ^2.0.12
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  melos: ^6.3.2
+  # Platform interfaces pour les fakes de tests (notifications, path_provider)
+  plugin_platform_interface: ^2.1.8
+  flutter_local_notifications_platform_interface: ^8.0.0
+  path_provider_platform_interface: ^2.1.2
   build_runner: ^2.4.0
   drift_dev: ^2.22.1
   freezed: ^3.2.5

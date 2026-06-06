@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- E5.19b : Fond du widget trek — couleur neutre du moteur
+     (gris ardoise sombre), coins arrondis Material. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FF37474F" />
+    <corners android:radius="16dp" />
+</shape>

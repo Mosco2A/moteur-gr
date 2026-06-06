@@ -1,4 +1,4 @@
-// Configuration de reservation pour un parcours GR20.
+// Configuration de reservation pour un parcours.
 //
 // Definit si la reservation est activee pour un trail,
 // les methodes de contact disponibles, et les infos partenaire.

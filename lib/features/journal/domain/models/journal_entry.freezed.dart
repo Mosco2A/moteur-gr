@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$JournalEntryModel {
 
 /// Cle primaire DB (0 si pas encore insere)
- int get id;/// Identifiant du sentier parent (ex: 'gr20')
+ int get id;/// Identifiant du sentier parent (ex: 'gr10')
  String get trailId;/// Numero de l'etape associee (1-indexed)
  int get stageNumber;/// Contenu textuel de la note
  String get text;/// Chemin local de la photo (null si note sans photo)
@@ -229,7 +229,7 @@ class _JournalEntryModel extends JournalEntryModel {
 
 /// Cle primaire DB (0 si pas encore insere)
 @override@JsonKey() final  int id;
-/// Identifiant du sentier parent (ex: 'gr20')
+/// Identifiant du sentier parent (ex: 'gr10')
 @override final  String trailId;
 /// Numero de l'etape associee (1-indexed)
 @override final  int stageNumber;

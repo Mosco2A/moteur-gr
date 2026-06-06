@@ -1,7 +1,8 @@
 // E5.14a — Ecran contacts d'urgence.
 //
 // Liste les contacts personnels ordonnes par priorite
-// + numeros de secours automatiques (112, PGHM).
+// + numeros de secours automatiques (112 + secours regionaux
+// du sentier actif via TrailConfig).
 // Bouton appel direct via url_launcher tel:.
 // Position GPS affichee en haut de l'ecran.
 
@@ -9,14 +10,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../data/emergency_contacts_service.dart';
 import '../domain/models/emergency_contact.dart';
 
 /// Provider pour le service de contacts d'urgence.
+///
+/// Les secours regionaux viennent de la config du sentier actif
+/// (TrailConfig.emergencyNumbers) — rien n'est hardcode.
 final emergencyContactsServiceProvider = Provider<EmergencyContactsService>(
-  (ref) => EmergencyContactsService(),
+  (ref) => EmergencyContactsService(
+    trailEmergencyNumbers: ref.watch(trailConfigProvider).emergencyNumbers,
+  ),
 );
 
 /// E5.14a : Ecran contacts d'urgence.

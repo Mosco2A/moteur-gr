@@ -4,76 +4,39 @@
 // groupe sanguin, allergies, traitements, medecin, assurance.
 // Ces donnees restent UNIQUEMENT sur le telephone (Drift).
 // JAMAIS envoyees vers Firestore ou un serveur distant.
-// Immutable — utiliser copyWith pour les modifications.
+// Freezed : immutable, copyWith, ==/hashCode, JSON generes.
+
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'health_info.freezed.dart';
+part 'health_info.g.dart';
 
 /// Informations de sante du randonneur — LOCAL ONLY.
 ///
 /// Ces donnees sont stockees exclusivement sur le telephone
 /// via Drift (pas de Firestore, pas de cloud). Elles sont
-/// accessibles depuis l ecran d urgence pour transmission
+/// accessibles depuis l'ecran d'urgence pour transmission
 /// orale aux secours en cas de besoin.
-class HealthInfo {
-  const HealthInfo({
-    this.bloodType = '',
-    this.allergies = '',
-    this.treatments = '',
-    this.doctorContact = '',
-    this.insuranceNumber = '',
-  });
+@freezed
+abstract class HealthInfo with _$HealthInfo {
+  const HealthInfo._();
 
-  /// Groupe sanguin (ex: 'A+', 'O-', 'AB+').
-  final String bloodType;
+  const factory HealthInfo({
+    /// Groupe sanguin (ex: 'A+', 'O-', 'AB+').
+    @Default('') String bloodType,
 
-  /// Allergies connues (texte libre, ex: 'Penicilline, arachides').
-  final String allergies;
+    /// Allergies connues (texte libre, ex: 'Penicilline, arachides').
+    @Default('') String allergies,
 
-  /// Traitements en cours (texte libre, ex: 'Levothyrox 50mg/j').
-  final String treatments;
+    /// Traitements en cours (texte libre, ex: 'Levothyrox 50mg/j').
+    @Default('') String treatments,
 
-  /// Contact du medecin traitant (nom + telephone).
-  final String doctorContact;
+    /// Contact du medecin traitant (nom + telephone).
+    @Default('') String doctorContact,
 
-  /// Numero d assurance / mutuelle / carte europeenne.
-  final String insuranceNumber;
-
-  /// Conversion depuis JSON (Drift cache local).
-  factory HealthInfo.fromJson(Map<String, dynamic> json) {
-    return HealthInfo(
-      bloodType: json['bloodType'] as String? ?? '',
-      allergies: json['allergies'] as String? ?? '',
-      treatments: json['treatments'] as String? ?? '',
-      doctorContact: json['doctorContact'] as String? ?? '',
-      insuranceNumber: json['insuranceNumber'] as String? ?? '',
-    );
-  }
-
-  /// Conversion vers JSON (Drift cache local).
-  Map<String, dynamic> toJson() {
-    return {
-      'bloodType': bloodType,
-      'allergies': allergies,
-      'treatments': treatments,
-      'doctorContact': doctorContact,
-      'insuranceNumber': insuranceNumber,
-    };
-  }
-
-  /// Copie avec modification.
-  HealthInfo copyWith({
-    String? bloodType,
-    String? allergies,
-    String? treatments,
-    String? doctorContact,
-    String? insuranceNumber,
-  }) {
-    return HealthInfo(
-      bloodType: bloodType ?? this.bloodType,
-      allergies: allergies ?? this.allergies,
-      treatments: treatments ?? this.treatments,
-      doctorContact: doctorContact ?? this.doctorContact,
-      insuranceNumber: insuranceNumber ?? this.insuranceNumber,
-    );
-  }
+    /// Numero d'assurance / mutuelle / carte europeenne.
+    @Default('') String insuranceNumber,
+  }) = _HealthInfo;
 
   /// Verifie si au moins un champ est renseigne.
   bool get hasData =>
@@ -83,29 +46,7 @@ class HealthInfo {
       doctorContact.isNotEmpty ||
       insuranceNumber.isNotEmpty;
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    return other is HealthInfo &&
-        other.bloodType == bloodType &&
-        other.allergies == allergies &&
-        other.treatments == treatments &&
-        other.doctorContact == doctorContact &&
-        other.insuranceNumber == insuranceNumber;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-        bloodType,
-        allergies,
-        treatments,
-        doctorContact,
-        insuranceNumber,
-      );
-
-  @override
-  String toString() =>
-      'HealthInfo(blood: $bloodType, allergies: $allergies, '
-      'treatments: $treatments, doctor: $doctorContact, '
-      'insurance: $insuranceNumber)';
+  /// Conversion depuis JSON (Drift cache local).
+  factory HealthInfo.fromJson(Map<String, dynamic> json) =>
+      _$HealthInfoFromJson(json);
 }

@@ -1,64 +1,86 @@
 // Service de persistence des reservations.
 //
-// Utilise Firestore (cloud) + Hive (cache local offline-first).
-// Le schema Hive remplace la table Drift specifiee dans le design original,
-// car le projet utilise Hive/Firestore, pas Drift.
+// Utilise Firestore (cloud) + SharedPreferences (cache local
+// offline-first, JSON encode). Le moteur n'utilise pas Hive :
+// la persistence locale structurelle est Drift, et ce cache
+// leger de reservations passe par SharedPreferences.
+
+import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../domain/models/accommodation_booking.dart';
 
-/// Nom de la box Hive pour le cache local des reservations.
-const String kBookingsBoxName = 'accommodation_bookings';
+/// Cle SharedPreferences pour le cache local des reservations.
+const String kBookingsPrefsKey = 'accommodation_bookings';
 
 /// Nom de la collection Firestore pour les reservations.
 const String kBookingsCollection = 'accommodation_bookings';
 
 /// Service de persistence pour les reservations d'hebergement.
 ///
-/// Ecrit dans Firestore (source de verite) et cache dans Hive (offline).
-/// Pattern identique a TrekService et FeedbackService.
+/// Ecrit dans Firestore (source de verite) et cache localement
+/// dans SharedPreferences (offline-first).
 class BookingDataService {
   BookingDataService({
     FirebaseFirestore? firestore,
-  }) : _firestore = firestore ?? FirebaseFirestore.instance;
+    SharedPreferences? prefs,
+  })  : _firestore = firestore ?? FirebaseFirestore.instance,
+        _prefs = prefs;
 
   final FirebaseFirestore _firestore;
+  SharedPreferences? _prefs;
 
   /// Reference a la collection Firestore.
   CollectionReference<Map<String, dynamic>> get _collection =>
       _firestore.collection(kBookingsCollection);
 
-  /// Sauvegarde une reservation (Firestore + Hive).
-  Future<void> saveBooking(AccommodationBooking booking) async {
-    final json = booking.toJson();
-
-    // Firestore (source de verite)
-    await _collection.doc(booking.id).set(json);
-
-    // Cache local Hive
-    final box = await Hive.openBox<Map>(kBookingsBoxName);
-    await box.put(booking.id, json);
+  Future<SharedPreferences> _getPrefs() async {
+    return _prefs ??= await SharedPreferences.getInstance();
   }
 
-  /// Recupere les reservations pour un trail depuis le cache Hive.
+  /// Lit le cache local (map id -> booking JSON).
+  Future<Map<String, dynamic>> _readCache() async {
+    final prefs = await _getPrefs();
+    final raw = prefs.getString(kBookingsPrefsKey);
+    if (raw == null || raw.isEmpty) return {};
+    return Map<String, dynamic>.from(json.decode(raw) as Map);
+  }
+
+  /// Ecrit le cache local.
+  Future<void> _writeCache(Map<String, dynamic> cache) async {
+    final prefs = await _getPrefs();
+    await prefs.setString(kBookingsPrefsKey, json.encode(cache));
+  }
+
+  /// Sauvegarde une reservation (Firestore + cache local).
+  Future<void> saveBooking(AccommodationBooking booking) async {
+    final bookingJson = booking.toJson();
+
+    // Firestore (source de verite)
+    await _collection.doc(booking.id).set(bookingJson);
+
+    // Cache local
+    final cache = await _readCache();
+    cache[booking.id] = bookingJson;
+    await _writeCache(cache);
+  }
+
+  /// Recupere les reservations pour un trail depuis le cache local.
   ///
   /// Offline-first : lit le cache local, pas Firestore.
   Future<List<AccommodationBooking>> getBookingsForTrail(
     String trailId,
   ) async {
-    final box = await Hive.openBox<Map>(kBookingsBoxName);
+    final cache = await _readCache();
     final bookings = <AccommodationBooking>[];
 
-    for (final key in box.keys) {
-      final raw = box.get(key);
-      if (raw != null) {
-        final json = Map<String, dynamic>.from(raw);
-        final booking = AccommodationBooking.fromJson(json);
-        if (booking.trailId == trailId) {
-          bookings.add(booking);
-        }
+    for (final raw in cache.values) {
+      final bookingJson = Map<String, dynamic>.from(raw as Map);
+      final booking = AccommodationBooking.fromJson(bookingJson);
+      if (booking.trailId == trailId) {
+        bookings.add(booking);
       }
     }
 
@@ -77,13 +99,14 @@ class BookingDataService {
       'status': newStatus.name,
     });
 
-    // Cache Hive
-    final box = await Hive.openBox<Map>(kBookingsBoxName);
-    final raw = box.get(bookingId);
+    // Cache local
+    final cache = await _readCache();
+    final raw = cache[bookingId];
     if (raw != null) {
-      final json = Map<String, dynamic>.from(raw);
-      json['status'] = newStatus.name;
-      await box.put(bookingId, json);
+      final bookingJson = Map<String, dynamic>.from(raw as Map);
+      bookingJson['status'] = newStatus.name;
+      cache[bookingId] = bookingJson;
+      await _writeCache(cache);
     }
   }
 
@@ -91,7 +114,8 @@ class BookingDataService {
   Future<void> deleteBooking(String bookingId) async {
     await _collection.doc(bookingId).delete();
 
-    final box = await Hive.openBox<Map>(kBookingsBoxName);
-    await box.delete(bookingId);
+    final cache = await _readCache();
+    cache.remove(bookingId);
+    await _writeCache(cache);
   }
 }

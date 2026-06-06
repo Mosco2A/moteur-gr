@@ -358,7 +358,7 @@ class Stage extends DataClass implements Insertable<Stage> {
   /// Cle primaire auto-incrementee
   final int id;
 
-  /// Identifiant du sentier parent (ex: 'mare_a_mare')
+  /// Identifiant du sentier parent (ex: 'sentier-volcans')
   final String trailId;
 
   /// Numero de l'etape dans le sentier (1-indexed)
@@ -2190,7 +2190,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
   /// Cle primaire auto-incrementee
   final int id;
 
-  /// Identifiant du sentier (ex: 'gr20')
+  /// Identifiant du sentier (ex: 'gr10')
   final String trailId;
 
   /// Identifiant unique de l'item (ex: 'backpack')
@@ -2650,7 +2650,7 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
   /// Clé primaire auto-incrémentée
   final int id;
 
-  /// Identifiant du sentier (ex: 'gr20')
+  /// Identifiant du sentier (ex: 'gr10')
   final String trailId;
 
   /// Numéro d'étape (1-based)
@@ -3140,7 +3140,7 @@ class WeatherCacheData extends DataClass
   /// Clé primaire auto-incrémentée
   final int id;
 
-  /// Identifiant du sentier (ex: 'gr20')
+  /// Identifiant du sentier (ex: 'gr10')
   final String trailId;
 
   /// Numéro d'étape concernée
@@ -3596,7 +3596,7 @@ class FeedbackQueueData extends DataClass
   /// Clé primaire auto-incrémentée
   final int id;
 
-  /// Identifiant du sentier (ex: 'gr20')
+  /// Identifiant du sentier (ex: 'gr10')
   final String trailId;
 
   /// Type de feedback ('bug', 'suggestion', 'question', 'other')
@@ -4043,7 +4043,7 @@ class TrailMetaData extends DataClass implements Insertable<TrailMetaData> {
   /// Identifiant unique (UUID Firestore)
   final String id;
 
-  /// Code unique du sentier (ex: 'gr20', 'mare_a_mare')
+  /// Code unique du sentier (ex: 'gr10', 'tmb')
   final String code;
 
   /// Version des donnees (incremente a chaque maj serveur)
@@ -9591,6 +9591,691 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueData> {
   }
 }
 
+class $ReviewRequestsTable extends ReviewRequests
+    with TableInfo<$ReviewRequestsTable, ReviewRequest> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReviewRequestsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    additionalChecks: GeneratedColumn.checkTextLength(
+      minTextLength: 1,
+      maxTextLength: 128,
+    ),
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _requestedAtMeta = const VerificationMeta(
+    'requestedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> requestedAt = GeneratedColumn<DateTime>(
+    'requested_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [id, trailId, requestedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'review_requests';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReviewRequest> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('requested_at')) {
+      context.handle(
+        _requestedAtMeta,
+        requestedAt.isAcceptableOrUnknown(
+          data['requested_at']!,
+          _requestedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_requestedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ReviewRequest map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReviewRequest(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      requestedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}requested_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ReviewRequestsTable createAlias(String alias) {
+    return $ReviewRequestsTable(attachedDatabase, alias);
+  }
+}
+
+class ReviewRequest extends DataClass implements Insertable<ReviewRequest> {
+  /// Cle primaire auto-incrementee
+  final int id;
+
+  /// Identifiant du sentier (ex: 'gr10-2026-001')
+  final String trailId;
+
+  /// Date de la demande de review
+  final DateTime requestedAt;
+  const ReviewRequest({
+    required this.id,
+    required this.trailId,
+    required this.requestedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['requested_at'] = Variable<DateTime>(requestedAt);
+    return map;
+  }
+
+  ReviewRequestsCompanion toCompanion(bool nullToAbsent) {
+    return ReviewRequestsCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      requestedAt: Value(requestedAt),
+    );
+  }
+
+  factory ReviewRequest.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReviewRequest(
+      id: serializer.fromJson<int>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      requestedAt: serializer.fromJson<DateTime>(json['requestedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'requestedAt': serializer.toJson<DateTime>(requestedAt),
+    };
+  }
+
+  ReviewRequest copyWith({int? id, String? trailId, DateTime? requestedAt}) =>
+      ReviewRequest(
+        id: id ?? this.id,
+        trailId: trailId ?? this.trailId,
+        requestedAt: requestedAt ?? this.requestedAt,
+      );
+  ReviewRequest copyWithCompanion(ReviewRequestsCompanion data) {
+    return ReviewRequest(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      requestedAt: data.requestedAt.present
+          ? data.requestedAt.value
+          : this.requestedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReviewRequest(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('requestedAt: $requestedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, trailId, requestedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReviewRequest &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.requestedAt == this.requestedAt);
+}
+
+class ReviewRequestsCompanion extends UpdateCompanion<ReviewRequest> {
+  final Value<int> id;
+  final Value<String> trailId;
+  final Value<DateTime> requestedAt;
+  const ReviewRequestsCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.requestedAt = const Value.absent(),
+  });
+  ReviewRequestsCompanion.insert({
+    this.id = const Value.absent(),
+    required String trailId,
+    required DateTime requestedAt,
+  }) : trailId = Value(trailId),
+       requestedAt = Value(requestedAt);
+  static Insertable<ReviewRequest> custom({
+    Expression<int>? id,
+    Expression<String>? trailId,
+    Expression<DateTime>? requestedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (requestedAt != null) 'requested_at': requestedAt,
+    });
+  }
+
+  ReviewRequestsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<DateTime>? requestedAt,
+  }) {
+    return ReviewRequestsCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      requestedAt: requestedAt ?? this.requestedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (requestedAt.present) {
+      map['requested_at'] = Variable<DateTime>(requestedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReviewRequestsCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('requestedAt: $requestedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HealthInfoEntriesTable extends HealthInfoEntries
+    with TableInfo<$HealthInfoEntriesTable, HealthInfoEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HealthInfoEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _bloodTypeMeta = const VerificationMeta(
+    'bloodType',
+  );
+  @override
+  late final GeneratedColumn<String> bloodType = GeneratedColumn<String>(
+    'blood_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _allergiesMeta = const VerificationMeta(
+    'allergies',
+  );
+  @override
+  late final GeneratedColumn<String> allergies = GeneratedColumn<String>(
+    'allergies',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _treatmentsMeta = const VerificationMeta(
+    'treatments',
+  );
+  @override
+  late final GeneratedColumn<String> treatments = GeneratedColumn<String>(
+    'treatments',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _doctorContactMeta = const VerificationMeta(
+    'doctorContact',
+  );
+  @override
+  late final GeneratedColumn<String> doctorContact = GeneratedColumn<String>(
+    'doctor_contact',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _insuranceNumberMeta = const VerificationMeta(
+    'insuranceNumber',
+  );
+  @override
+  late final GeneratedColumn<String> insuranceNumber = GeneratedColumn<String>(
+    'insurance_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    bloodType,
+    allergies,
+    treatments,
+    doctorContact,
+    insuranceNumber,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'health_info_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HealthInfoEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('blood_type')) {
+      context.handle(
+        _bloodTypeMeta,
+        bloodType.isAcceptableOrUnknown(data['blood_type']!, _bloodTypeMeta),
+      );
+    }
+    if (data.containsKey('allergies')) {
+      context.handle(
+        _allergiesMeta,
+        allergies.isAcceptableOrUnknown(data['allergies']!, _allergiesMeta),
+      );
+    }
+    if (data.containsKey('treatments')) {
+      context.handle(
+        _treatmentsMeta,
+        treatments.isAcceptableOrUnknown(data['treatments']!, _treatmentsMeta),
+      );
+    }
+    if (data.containsKey('doctor_contact')) {
+      context.handle(
+        _doctorContactMeta,
+        doctorContact.isAcceptableOrUnknown(
+          data['doctor_contact']!,
+          _doctorContactMeta,
+        ),
+      );
+    }
+    if (data.containsKey('insurance_number')) {
+      context.handle(
+        _insuranceNumberMeta,
+        insuranceNumber.isAcceptableOrUnknown(
+          data['insurance_number']!,
+          _insuranceNumberMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  HealthInfoEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HealthInfoEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      bloodType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}blood_type'],
+      )!,
+      allergies: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}allergies'],
+      )!,
+      treatments: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}treatments'],
+      )!,
+      doctorContact: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}doctor_contact'],
+      )!,
+      insuranceNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}insurance_number'],
+      )!,
+    );
+  }
+
+  @override
+  $HealthInfoEntriesTable createAlias(String alias) {
+    return $HealthInfoEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class HealthInfoEntry extends DataClass implements Insertable<HealthInfoEntry> {
+  /// Cle primaire auto-incrementee
+  final int id;
+
+  /// Groupe sanguin (ex: 'A+', 'O-', 'AB+')
+  final String bloodType;
+
+  /// Allergies connues (texte libre)
+  final String allergies;
+
+  /// Traitements en cours (texte libre)
+  final String treatments;
+
+  /// Contact du medecin traitant (nom + telephone)
+  final String doctorContact;
+
+  /// Numero d'assurance / mutuelle / carte europeenne
+  final String insuranceNumber;
+  const HealthInfoEntry({
+    required this.id,
+    required this.bloodType,
+    required this.allergies,
+    required this.treatments,
+    required this.doctorContact,
+    required this.insuranceNumber,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['blood_type'] = Variable<String>(bloodType);
+    map['allergies'] = Variable<String>(allergies);
+    map['treatments'] = Variable<String>(treatments);
+    map['doctor_contact'] = Variable<String>(doctorContact);
+    map['insurance_number'] = Variable<String>(insuranceNumber);
+    return map;
+  }
+
+  HealthInfoEntriesCompanion toCompanion(bool nullToAbsent) {
+    return HealthInfoEntriesCompanion(
+      id: Value(id),
+      bloodType: Value(bloodType),
+      allergies: Value(allergies),
+      treatments: Value(treatments),
+      doctorContact: Value(doctorContact),
+      insuranceNumber: Value(insuranceNumber),
+    );
+  }
+
+  factory HealthInfoEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HealthInfoEntry(
+      id: serializer.fromJson<int>(json['id']),
+      bloodType: serializer.fromJson<String>(json['bloodType']),
+      allergies: serializer.fromJson<String>(json['allergies']),
+      treatments: serializer.fromJson<String>(json['treatments']),
+      doctorContact: serializer.fromJson<String>(json['doctorContact']),
+      insuranceNumber: serializer.fromJson<String>(json['insuranceNumber']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'bloodType': serializer.toJson<String>(bloodType),
+      'allergies': serializer.toJson<String>(allergies),
+      'treatments': serializer.toJson<String>(treatments),
+      'doctorContact': serializer.toJson<String>(doctorContact),
+      'insuranceNumber': serializer.toJson<String>(insuranceNumber),
+    };
+  }
+
+  HealthInfoEntry copyWith({
+    int? id,
+    String? bloodType,
+    String? allergies,
+    String? treatments,
+    String? doctorContact,
+    String? insuranceNumber,
+  }) => HealthInfoEntry(
+    id: id ?? this.id,
+    bloodType: bloodType ?? this.bloodType,
+    allergies: allergies ?? this.allergies,
+    treatments: treatments ?? this.treatments,
+    doctorContact: doctorContact ?? this.doctorContact,
+    insuranceNumber: insuranceNumber ?? this.insuranceNumber,
+  );
+  HealthInfoEntry copyWithCompanion(HealthInfoEntriesCompanion data) {
+    return HealthInfoEntry(
+      id: data.id.present ? data.id.value : this.id,
+      bloodType: data.bloodType.present ? data.bloodType.value : this.bloodType,
+      allergies: data.allergies.present ? data.allergies.value : this.allergies,
+      treatments: data.treatments.present
+          ? data.treatments.value
+          : this.treatments,
+      doctorContact: data.doctorContact.present
+          ? data.doctorContact.value
+          : this.doctorContact,
+      insuranceNumber: data.insuranceNumber.present
+          ? data.insuranceNumber.value
+          : this.insuranceNumber,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HealthInfoEntry(')
+          ..write('id: $id, ')
+          ..write('bloodType: $bloodType, ')
+          ..write('allergies: $allergies, ')
+          ..write('treatments: $treatments, ')
+          ..write('doctorContact: $doctorContact, ')
+          ..write('insuranceNumber: $insuranceNumber')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    bloodType,
+    allergies,
+    treatments,
+    doctorContact,
+    insuranceNumber,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HealthInfoEntry &&
+          other.id == this.id &&
+          other.bloodType == this.bloodType &&
+          other.allergies == this.allergies &&
+          other.treatments == this.treatments &&
+          other.doctorContact == this.doctorContact &&
+          other.insuranceNumber == this.insuranceNumber);
+}
+
+class HealthInfoEntriesCompanion extends UpdateCompanion<HealthInfoEntry> {
+  final Value<int> id;
+  final Value<String> bloodType;
+  final Value<String> allergies;
+  final Value<String> treatments;
+  final Value<String> doctorContact;
+  final Value<String> insuranceNumber;
+  const HealthInfoEntriesCompanion({
+    this.id = const Value.absent(),
+    this.bloodType = const Value.absent(),
+    this.allergies = const Value.absent(),
+    this.treatments = const Value.absent(),
+    this.doctorContact = const Value.absent(),
+    this.insuranceNumber = const Value.absent(),
+  });
+  HealthInfoEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    this.bloodType = const Value.absent(),
+    this.allergies = const Value.absent(),
+    this.treatments = const Value.absent(),
+    this.doctorContact = const Value.absent(),
+    this.insuranceNumber = const Value.absent(),
+  });
+  static Insertable<HealthInfoEntry> custom({
+    Expression<int>? id,
+    Expression<String>? bloodType,
+    Expression<String>? allergies,
+    Expression<String>? treatments,
+    Expression<String>? doctorContact,
+    Expression<String>? insuranceNumber,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (bloodType != null) 'blood_type': bloodType,
+      if (allergies != null) 'allergies': allergies,
+      if (treatments != null) 'treatments': treatments,
+      if (doctorContact != null) 'doctor_contact': doctorContact,
+      if (insuranceNumber != null) 'insurance_number': insuranceNumber,
+    });
+  }
+
+  HealthInfoEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? bloodType,
+    Value<String>? allergies,
+    Value<String>? treatments,
+    Value<String>? doctorContact,
+    Value<String>? insuranceNumber,
+  }) {
+    return HealthInfoEntriesCompanion(
+      id: id ?? this.id,
+      bloodType: bloodType ?? this.bloodType,
+      allergies: allergies ?? this.allergies,
+      treatments: treatments ?? this.treatments,
+      doctorContact: doctorContact ?? this.doctorContact,
+      insuranceNumber: insuranceNumber ?? this.insuranceNumber,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (bloodType.present) {
+      map['blood_type'] = Variable<String>(bloodType.value);
+    }
+    if (allergies.present) {
+      map['allergies'] = Variable<String>(allergies.value);
+    }
+    if (treatments.present) {
+      map['treatments'] = Variable<String>(treatments.value);
+    }
+    if (doctorContact.present) {
+      map['doctor_contact'] = Variable<String>(doctorContact.value);
+    }
+    if (insuranceNumber.present) {
+      map['insurance_number'] = Variable<String>(insuranceNumber.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HealthInfoEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('bloodType: $bloodType, ')
+          ..write('allergies: $allergies, ')
+          ..write('treatments: $treatments, ')
+          ..write('doctorContact: $doctorContact, ')
+          ..write('insuranceNumber: $insuranceNumber')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -9614,6 +10299,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TrailGpxPointsTable trailGpxPoints = $TrailGpxPointsTable(this);
   late final $TrailManifestsTable trailManifests = $TrailManifestsTable(this);
   late final $SyncQueueTable syncQueue = $SyncQueueTable(this);
+  late final $ReviewRequestsTable reviewRequests = $ReviewRequestsTable(this);
+  late final $HealthInfoEntriesTable healthInfoEntries =
+      $HealthInfoEntriesTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -9645,6 +10333,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final SyncQueueDao syncQueueDao = SyncQueueDao(this as AppDatabase);
+  late final ReviewRequestsDao reviewRequestsDao = ReviewRequestsDao(
+    this as AppDatabase,
+  );
+  late final HealthInfoDao healthInfoDao = HealthInfoDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -9666,6 +10358,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     trailGpxPoints,
     trailManifests,
     syncQueue,
+    reviewRequests,
+    healthInfoEntries,
   ];
 }
 
@@ -14286,6 +14980,394 @@ typedef $$SyncQueueTableProcessedTableManager =
       SyncQueueData,
       PrefetchHooks Function()
     >;
+typedef $$ReviewRequestsTableCreateCompanionBuilder =
+    ReviewRequestsCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required DateTime requestedAt,
+    });
+typedef $$ReviewRequestsTableUpdateCompanionBuilder =
+    ReviewRequestsCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<DateTime> requestedAt,
+    });
+
+class $$ReviewRequestsTableFilterComposer
+    extends Composer<_$AppDatabase, $ReviewRequestsTable> {
+  $$ReviewRequestsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get requestedAt => $composableBuilder(
+    column: $table.requestedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ReviewRequestsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReviewRequestsTable> {
+  $$ReviewRequestsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get requestedAt => $composableBuilder(
+    column: $table.requestedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReviewRequestsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReviewRequestsTable> {
+  $$ReviewRequestsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get requestedAt => $composableBuilder(
+    column: $table.requestedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$ReviewRequestsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReviewRequestsTable,
+          ReviewRequest,
+          $$ReviewRequestsTableFilterComposer,
+          $$ReviewRequestsTableOrderingComposer,
+          $$ReviewRequestsTableAnnotationComposer,
+          $$ReviewRequestsTableCreateCompanionBuilder,
+          $$ReviewRequestsTableUpdateCompanionBuilder,
+          (
+            ReviewRequest,
+            BaseReferences<_$AppDatabase, $ReviewRequestsTable, ReviewRequest>,
+          ),
+          ReviewRequest,
+          PrefetchHooks Function()
+        > {
+  $$ReviewRequestsTableTableManager(
+    _$AppDatabase db,
+    $ReviewRequestsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReviewRequestsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReviewRequestsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReviewRequestsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<DateTime> requestedAt = const Value.absent(),
+              }) => ReviewRequestsCompanion(
+                id: id,
+                trailId: trailId,
+                requestedAt: requestedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required DateTime requestedAt,
+              }) => ReviewRequestsCompanion.insert(
+                id: id,
+                trailId: trailId,
+                requestedAt: requestedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReviewRequestsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReviewRequestsTable,
+      ReviewRequest,
+      $$ReviewRequestsTableFilterComposer,
+      $$ReviewRequestsTableOrderingComposer,
+      $$ReviewRequestsTableAnnotationComposer,
+      $$ReviewRequestsTableCreateCompanionBuilder,
+      $$ReviewRequestsTableUpdateCompanionBuilder,
+      (
+        ReviewRequest,
+        BaseReferences<_$AppDatabase, $ReviewRequestsTable, ReviewRequest>,
+      ),
+      ReviewRequest,
+      PrefetchHooks Function()
+    >;
+typedef $$HealthInfoEntriesTableCreateCompanionBuilder =
+    HealthInfoEntriesCompanion Function({
+      Value<int> id,
+      Value<String> bloodType,
+      Value<String> allergies,
+      Value<String> treatments,
+      Value<String> doctorContact,
+      Value<String> insuranceNumber,
+    });
+typedef $$HealthInfoEntriesTableUpdateCompanionBuilder =
+    HealthInfoEntriesCompanion Function({
+      Value<int> id,
+      Value<String> bloodType,
+      Value<String> allergies,
+      Value<String> treatments,
+      Value<String> doctorContact,
+      Value<String> insuranceNumber,
+    });
+
+class $$HealthInfoEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $HealthInfoEntriesTable> {
+  $$HealthInfoEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get bloodType => $composableBuilder(
+    column: $table.bloodType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get allergies => $composableBuilder(
+    column: $table.allergies,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get treatments => $composableBuilder(
+    column: $table.treatments,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get doctorContact => $composableBuilder(
+    column: $table.doctorContact,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get insuranceNumber => $composableBuilder(
+    column: $table.insuranceNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$HealthInfoEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $HealthInfoEntriesTable> {
+  $$HealthInfoEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get bloodType => $composableBuilder(
+    column: $table.bloodType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get allergies => $composableBuilder(
+    column: $table.allergies,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get treatments => $composableBuilder(
+    column: $table.treatments,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get doctorContact => $composableBuilder(
+    column: $table.doctorContact,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get insuranceNumber => $composableBuilder(
+    column: $table.insuranceNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HealthInfoEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HealthInfoEntriesTable> {
+  $$HealthInfoEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get bloodType =>
+      $composableBuilder(column: $table.bloodType, builder: (column) => column);
+
+  GeneratedColumn<String> get allergies =>
+      $composableBuilder(column: $table.allergies, builder: (column) => column);
+
+  GeneratedColumn<String> get treatments => $composableBuilder(
+    column: $table.treatments,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get doctorContact => $composableBuilder(
+    column: $table.doctorContact,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get insuranceNumber => $composableBuilder(
+    column: $table.insuranceNumber,
+    builder: (column) => column,
+  );
+}
+
+class $$HealthInfoEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HealthInfoEntriesTable,
+          HealthInfoEntry,
+          $$HealthInfoEntriesTableFilterComposer,
+          $$HealthInfoEntriesTableOrderingComposer,
+          $$HealthInfoEntriesTableAnnotationComposer,
+          $$HealthInfoEntriesTableCreateCompanionBuilder,
+          $$HealthInfoEntriesTableUpdateCompanionBuilder,
+          (
+            HealthInfoEntry,
+            BaseReferences<
+              _$AppDatabase,
+              $HealthInfoEntriesTable,
+              HealthInfoEntry
+            >,
+          ),
+          HealthInfoEntry,
+          PrefetchHooks Function()
+        > {
+  $$HealthInfoEntriesTableTableManager(
+    _$AppDatabase db,
+    $HealthInfoEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HealthInfoEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HealthInfoEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HealthInfoEntriesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> bloodType = const Value.absent(),
+                Value<String> allergies = const Value.absent(),
+                Value<String> treatments = const Value.absent(),
+                Value<String> doctorContact = const Value.absent(),
+                Value<String> insuranceNumber = const Value.absent(),
+              }) => HealthInfoEntriesCompanion(
+                id: id,
+                bloodType: bloodType,
+                allergies: allergies,
+                treatments: treatments,
+                doctorContact: doctorContact,
+                insuranceNumber: insuranceNumber,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> bloodType = const Value.absent(),
+                Value<String> allergies = const Value.absent(),
+                Value<String> treatments = const Value.absent(),
+                Value<String> doctorContact = const Value.absent(),
+                Value<String> insuranceNumber = const Value.absent(),
+              }) => HealthInfoEntriesCompanion.insert(
+                id: id,
+                bloodType: bloodType,
+                allergies: allergies,
+                treatments: treatments,
+                doctorContact: doctorContact,
+                insuranceNumber: insuranceNumber,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$HealthInfoEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HealthInfoEntriesTable,
+      HealthInfoEntry,
+      $$HealthInfoEntriesTableFilterComposer,
+      $$HealthInfoEntriesTableOrderingComposer,
+      $$HealthInfoEntriesTableAnnotationComposer,
+      $$HealthInfoEntriesTableCreateCompanionBuilder,
+      $$HealthInfoEntriesTableUpdateCompanionBuilder,
+      (
+        HealthInfoEntry,
+        BaseReferences<_$AppDatabase, $HealthInfoEntriesTable, HealthInfoEntry>,
+      ),
+      HealthInfoEntry,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -14321,4 +15403,8 @@ class $AppDatabaseManager {
       $$TrailManifestsTableTableManager(_db, _db.trailManifests);
   $$SyncQueueTableTableManager get syncQueue =>
       $$SyncQueueTableTableManager(_db, _db.syncQueue);
+  $$ReviewRequestsTableTableManager get reviewRequests =>
+      $$ReviewRequestsTableTableManager(_db, _db.reviewRequests);
+  $$HealthInfoEntriesTableTableManager get healthInfoEntries =>
+      $$HealthInfoEntriesTableTableManager(_db, _db.healthInfoEntries);
 }

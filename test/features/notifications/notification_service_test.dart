@@ -11,7 +11,8 @@ class FakeNotificationsPlatform extends Fake
     implements FlutterLocalNotificationsPlatform {
   bool cancelAllCalled = false;
 
-  @override
+  // Pas un override : la plateforme de base n'expose pas initialize,
+  // mais le fake en a besoin pour le pipeline du service.
   Future<bool?> initialize(
     String? defaultIcon, {
     List<DarwinNotificationCategory>? notificationCategories,

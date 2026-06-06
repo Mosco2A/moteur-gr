@@ -9,8 +9,8 @@ void main() {
     test('alerte meteo s\'affiche pour orage severe', () {
       // Prevision avec orage (code WMO 95)
       final forecast = WeatherForecast(
-        latitude: 42.15,
-        longitude: 9.1,
+        latitude: 45.51,
+        longitude: 2.96,
         days: [
           DayForecast(
             date: DateTime(2026, 7, 15),
@@ -36,8 +36,8 @@ void main() {
 
     test('alerte meteo s\'affiche pour neige', () {
       final forecast = WeatherForecast(
-        latitude: 42.15,
-        longitude: 9.1,
+        latitude: 45.51,
+        longitude: 2.96,
         days: [
           DayForecast(
             date: DateTime(2026, 3, 10),
@@ -61,19 +61,19 @@ void main() {
 
   group('WeatherAlertBanner - alerte incendie sur conditions', () {
     test('alerte incendie se declenche quand conditions reunies', () {
-      // Config : risque juin-sept, >= 30°C, regions Corse/PACA
+      // Config : risque juin-sept, >= 30°C, regions Auvergne/Cevennes
       const config = FireRiskConfig(
         riskMonthStart: 6,
         riskMonthEnd: 9,
         temperatureThreshold: 30.0,
-        riskRegions: ['Corse', 'PACA'],
+        riskRegions: ['Auvergne', 'Cevennes'],
         fireTipId: 'incendie-periode-risque',
       );
 
-      // Prevision en juillet, 35°C, region Corse -> doit declencher
+      // Prevision en juillet, 35°C, region Auvergne -> doit declencher
       final forecast = WeatherForecast(
-        latitude: 42.15,
-        longitude: 9.1,
+        latitude: 45.51,
+        longitude: 2.96,
         days: [
           DayForecast(
             date: DateTime(2026, 7, 15),
@@ -90,7 +90,7 @@ void main() {
       final fireAlerts = WeatherAlert.fireAlertsFromForecast(
         forecast,
         fireConfig: config,
-        region: 'Corse',
+        region: 'Auvergne',
       );
 
       expect(fireAlerts.isNotEmpty, true);
@@ -105,13 +105,13 @@ void main() {
         riskMonthStart: 6,
         riskMonthEnd: 9,
         temperatureThreshold: 30.0,
-        riskRegions: ['Corse'],
+        riskRegions: ['Auvergne'],
       );
 
       // Cas 1 : hors periode (mars)
       final forecastMarch = WeatherForecast(
-        latitude: 42.15,
-        longitude: 9.1,
+        latitude: 45.51,
+        longitude: 2.96,
         days: [
           DayForecast(
             date: DateTime(2026, 3, 15),
@@ -129,15 +129,15 @@ void main() {
         WeatherAlert.fireAlertsFromForecast(
           forecastMarch,
           fireConfig: config,
-          region: 'Corse',
+          region: 'Auvergne',
         ),
         isEmpty,
       );
 
       // Cas 2 : sous seuil temperature (25°C en ete)
       final forecastCool = WeatherForecast(
-        latitude: 42.15,
-        longitude: 9.1,
+        latitude: 45.51,
+        longitude: 2.96,
         days: [
           DayForecast(
             date: DateTime(2026, 7, 15),
@@ -155,7 +155,7 @@ void main() {
         WeatherAlert.fireAlertsFromForecast(
           forecastCool,
           fireConfig: config,
-          region: 'Corse',
+          region: 'Auvergne',
         ),
         isEmpty,
       );

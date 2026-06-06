@@ -42,6 +42,10 @@ class _ProgressLabels {
         return gpxPoints;
       case 'completed':
         return completed;
+      case 'paused':
+        return paused;
+      case 'error':
+        return error;
       default:
         return step;
     }

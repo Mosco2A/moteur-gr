@@ -6,7 +6,7 @@ import 'trail_providers.dart';
 /// Identifiant du sentier actif (selectionne par l'utilisateur).
 ///
 /// Utilise par stagesProvider pour charger les etapes du bon sentier.
-/// Modifiable via ref.read(currentTrailIdProvider.notifier).state = 'gr20'.
+/// Modifiable via ref.read(currentTrailIdProvider.notifier).state = 'gr10'.
 final currentTrailIdProvider = StateProvider<String>((ref) => '');
 
 /// Provider des etapes du sentier actif.

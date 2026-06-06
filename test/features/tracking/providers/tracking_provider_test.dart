@@ -26,12 +26,12 @@ void main() {
 
       final notifier = container.read(trackingProvider.notifier);
 
-      expect(container.read(trackingProvider).status, TrackingStatus.idle);
+      expect(container.read(trackingProvider).status, TrackingStatusValues.idle);
 
-      notifier.start('gr20');
+      notifier.start('sentier-volcans');
       expect(
         container.read(trackingProvider).status,
-        TrackingStatus.recording,
+        TrackingStatusValues.recording,
       );
 
       // Await stop avant dispose pour eviter les erreurs async
@@ -49,12 +49,12 @@ void main() {
       );
 
       final notifier = container.read(trackingProvider.notifier);
-      notifier.start('gr20');
+      notifier.start('sentier-volcans');
       notifier.pause();
 
       expect(
         container.read(trackingProvider).status,
-        TrackingStatus.paused,
+        TrackingStatusValues.paused,
       );
 
       await notifier.stop();
@@ -71,24 +71,24 @@ void main() {
       );
 
       final notifier = container.read(trackingProvider.notifier);
-      notifier.start('gr20');
+      notifier.start('sentier-volcans');
 
       expect(
         container.read(trackingProvider).status,
-        TrackingStatus.recording,
+        TrackingStatusValues.recording,
       );
 
       await notifier.stop();
 
       expect(
         container.read(trackingProvider).status,
-        TrackingStatus.idle,
+        TrackingStatusValues.idle,
       );
 
       // Verifier la sauvegarde en base
       final row = await db.select(db.userProgressEntries).getSingleOrNull();
       if (row != null) {
-        expect(row.trailId, 'gr20');
+        expect(row.trailId, 'sentier-volcans');
       }
 
       container.dispose();

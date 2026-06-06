@@ -18,7 +18,7 @@ abstract class JournalEntryModel with _$JournalEntryModel {
     /// Cle primaire DB (0 si pas encore insere)
     @Default(0) int id,
 
-    /// Identifiant du sentier parent (ex: 'gr20')
+    /// Identifiant du sentier parent (ex: 'gr10')
     required String trailId,
 
     /// Numero de l'etape associee (1-indexed)

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- E5.19b : Widget Home Screen progression trek -->
+    <string name="widget_trek_default_title">Trek</string>
+    <string name="widget_trek_description">Progression du trek en cours : etape, distance restante, altitude.</string>
+</resources>

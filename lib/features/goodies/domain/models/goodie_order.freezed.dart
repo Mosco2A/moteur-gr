@@ -17,7 +17,7 @@ mixin _$GoodieOrder {
 
 /// Identifiant unique de la commande
  String get id;/// Identifiant du produit commande
- String get productId;/// Identifiant du sentier associe (ex: 'gr20')
+ String get productId;/// Identifiant du sentier associe (ex: 'gr10')
  String get trailId;/// Quantite commandee
  int get quantity;/// Prix total en centimes
  int get totalPrice;/// Statut de la commande -- String extensible (pending, confirmed, shipped, delivered, cancelled, ...)
@@ -231,7 +231,7 @@ class _GoodieOrder extends GoodieOrder {
 @override final  String id;
 /// Identifiant du produit commande
 @override final  String productId;
-/// Identifiant du sentier associe (ex: 'gr20')
+/// Identifiant du sentier associe (ex: 'gr10')
 @override final  String trailId;
 /// Quantite commandee
 @override@JsonKey() final  int quantity;

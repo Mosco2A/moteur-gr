@@ -2,7 +2,6 @@ import "dart:async";
 
 import "package:drift/native.dart";
 import "package:flutter_test/flutter_test.dart";
-import "package:drift/drift.dart" hide isNull, isNotNull;
 import "package:moteur_gr/core/data/database.dart";
 import "package:moteur_gr/core/data/daos/checklist_dao.dart";
 import "package:moteur_gr/core/data/daos/journal_dao.dart";
@@ -16,7 +15,7 @@ import "package:moteur_gr/core/services/sync_scheduler.dart";
 
 /// Fake ConnectivityMonitor avec stream controllable.
 class FakeConnectivityMonitor extends ConnectivityMonitor {
-  ConnectivityStatus _status = ConnectivityStatus.online;
+  ConnectivityStatus _status = ConnectivityStatusValues.online;
   final _controller = StreamController<ConnectivityStatus>.broadcast();
 
   void setStatus(ConnectivityStatus s) {
@@ -82,7 +81,7 @@ void main() {
         connectivityMonitor: connectivity,
         firebaseService: FirebaseService.unavailable(),
       );
-      scheduler.start(userId: "user1", trailId: "gr20");
+      scheduler.start(userId: "user1", trailId: "sentier-volcans");
       expect(scheduler.isRunning, isFalse);
     });
 

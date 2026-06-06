@@ -24,6 +24,13 @@ class TrailItinerariesDao extends DatabaseAccessor<AppDatabase>
         .getSingleOrNull();
   }
 
+  /// Recupere les itineraires d'un sentier
+  Future<List<TrailItinerary>> getByTrailId(String trailId) {
+    return (select(trailItineraries)
+          ..where((t) => t.trailId.equals(trailId)))
+        .get();
+  }
+
   /// Insere ou remplace un itineraire
   Future<void> insertOrReplace(TrailItinerariesCompanion entry) {
     return into(trailItineraries).insertOnConflictUpdate(entry);

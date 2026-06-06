@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../providers/catalog_provider.dart';
@@ -35,7 +34,6 @@ class TrailCatalogScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final catalogAsync = ref.watch(catalogStateProvider);
-    final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
@@ -72,7 +70,7 @@ class _CatalogBody extends ConsumerWidget {
 
     // Aucun sentier et hors ligne
     if (catalog.entries.isEmpty && catalog.isOffline) {
-      return EmptyState(
+      return const EmptyState(
         icon: Icons.wifi_off,
         title: _ScreenLabels.offlineTitle,
         subtitle: _ScreenLabels.offlineSubtitle,
@@ -81,7 +79,7 @@ class _CatalogBody extends ConsumerWidget {
 
     // Aucun sentier en ligne
     if (catalog.entries.isEmpty) {
-      return EmptyState(
+      return const EmptyState(
         icon: Icons.explore_off,
         title: _ScreenLabels.emptyTitle,
         subtitle: _ScreenLabels.emptySubtitle,
@@ -101,7 +99,7 @@ class _CatalogBody extends ConsumerWidget {
             color: AppTheme.jauneModere.withAlpha(40),
             child: Row(
               children: [
-                Icon(Icons.wifi_off, size: 16, color: AppTheme.jauneModere),
+                const Icon(Icons.wifi_off, size: 16, color: AppTheme.jauneModere),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -185,7 +183,7 @@ class _CatalogEntryItem extends ConsumerWidget {
                   .read(catalogStateProvider.notifier)
                   .deleteTrailData(trailId);
             },
-            child: Text(
+            child: const Text(
               'Supprimer',
               style: TextStyle(color: AppTheme.rougeUrgence),
             ),

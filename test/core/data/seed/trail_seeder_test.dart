@@ -3,27 +3,27 @@ import 'dart:io';
 
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_itineraries_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_stages_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_accommodations_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
-import 'package:moteur_gr/core/data/seed/mare_a_mare_seeder.dart';
+import 'package:moteur_gr/core/data/seed/trail_seeder.dart';
 
-/// Tests du seeder Mare a Mare Centre.
+/// Tests du seeder generique TrailSeeder.
+/// Fixture : asset JSON du sentier Mare a Mare Centre (donnees sentier).
 ///
 /// Verifie le parsing JSON et l'insertion dans les DAOs
 /// sur une base in-memory.
 void main() {
   late AppDatabase db;
-  late MareAMareSeeder seeder;
+  late TrailSeeder seeder;
   late Map<String, dynamic> jsonData;
 
   setUp(() async {
     db = AppDatabase(NativeDatabase.memory());
-    seeder = MareAMareSeeder(db);
+    seeder = TrailSeeder(db);
 
     // Charger le JSON depuis le fichier asset
     final file = File('assets/data/mare_a_mare_centre.json');
@@ -35,7 +35,7 @@ void main() {
     await db.close();
   });
 
-  group('MareAMareSeeder - parsing JSON', () {
+  group('TrailSeeder - parsing JSON', () {
     test('le JSON contient trail_meta avec les bons champs', () {
       final meta = jsonData['trail_meta'] as Map<String, dynamic>;
       expect(meta['id'], 'mare-a-mare-centre');
@@ -102,7 +102,7 @@ void main() {
     });
   });
 
-  group('MareAMareSeeder - insertion en base', () {
+  group('TrailSeeder - insertion en base', () {
     test('seedFromJson insere le trail_meta', () async {
       await seeder.seedFromJson(jsonData);
 

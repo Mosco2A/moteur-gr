@@ -44,7 +44,7 @@ class TrailCatalogCard extends StatelessWidget {
 
   /// Formate une taille en octets en chaine lisible.
   static String formatFileSize(int bytes) {
-    if (bytes < 1024) return '${bytes} o';
+    if (bytes < 1024) return '$bytes o';
     if (bytes < 1024 * 1024) return '${(bytes / 1024).toStringAsFixed(0)} Ko';
     return '${(bytes / (1024 * 1024)).toStringAsFixed(1)} Mo';
   }
@@ -117,7 +117,7 @@ class TrailCatalogCard extends StatelessWidget {
             // Infos secondaires
             Row(
               children: [
-                Icon(Icons.storage, size: 14, color: AppTheme.grisGranite),
+                const Icon(Icons.storage, size: 14, color: AppTheme.grisGranite),
                 const SizedBox(width: 4),
                 Text(
                   formatFileSize(entry.fileSize),
@@ -126,7 +126,7 @@ class TrailCatalogCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingBase),
-                Icon(Icons.update, size: 14, color: AppTheme.grisGranite),
+                const Icon(Icons.update, size: 14, color: AppTheme.grisGranite),
                 const SizedBox(width: 4),
                 Text(
                   'v${entry.dataVersion}',
@@ -174,8 +174,8 @@ class TrailCatalogCard extends StatelessWidget {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: onDelete,
-            icon: Icon(Icons.delete_outline, color: AppTheme.rougeUrgence),
-            label: Text(
+            icon: const Icon(Icons.delete_outline, color: AppTheme.rougeUrgence),
+            label: const Text(
               _CatalogLabels.delete,
               style: TextStyle(color: AppTheme.rougeUrgence),
             ),

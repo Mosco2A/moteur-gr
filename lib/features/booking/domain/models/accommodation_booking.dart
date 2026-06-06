@@ -1,4 +1,4 @@
-// Modele de reservation d'hebergement GR20.
+// Modele de reservation d'hebergement.
 //
 // Represente une demande de reservation associee a un hebergement
 // et un parcours (trail). Le statut suit le cycle :
@@ -57,7 +57,7 @@ enum ContactMethod {
   }
 }
 
-/// Reservation d'un hebergement sur le GR20.
+/// Reservation d'un hebergement sur le sentier actif.
 ///
 /// Immutable -- utiliser [copyWith] pour les modifications.
 /// Serialisable JSON pour Firestore et cache local.
@@ -76,7 +76,7 @@ class AccommodationBooking {
   /// Identifiant unique de la reservation (UUID).
   final String id;
 
-  /// Identifiant de l'hebergement reserve (ref Gr20Accommodation).
+  /// Identifiant de l'hebergement reserve (ref StageAccommodation).
   final String accommodationId;
 
   /// Identifiant du parcours / trek associe.

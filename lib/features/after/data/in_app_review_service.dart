@@ -10,7 +10,7 @@ import '../../../core/data/daos/review_requests_dao.dart';
 /// - 1 SEULE demande par trek, jamais 2 fois le meme
 ///
 /// Adaptation Moteur-GR : utilise Drift (ReviewRequestsDao) au lieu
-/// de Hive (HiveBoxes.reviewRequested) du GR20.
+/// de la table Drift review_requests (1 demande max par sentier).
 class InAppReviewService {
   InAppReviewService({
     required ReviewRequestsDao reviewRequestsDao,

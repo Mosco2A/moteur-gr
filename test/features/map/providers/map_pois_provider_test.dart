@@ -71,7 +71,7 @@ void main() {
       addTearDown(container.dispose);
 
       // Désactiver le type water
-      final activeTypes = Set<String>.from(['shelter', 'water', 'viewpoint', 'campsite', 'restaurant', 'emergency', 'danger', 'shop']);
+      final activeTypes = <String>{'shelter', 'water', 'viewpoint', 'campsite', 'restaurant', 'emergency', 'danger', 'shop'};
       activeTypes.remove('water');
       container.read(activePoiTypesProvider.notifier).state = activeTypes;
 

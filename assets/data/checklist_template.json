@@ -163,27 +163,6 @@
     ]
   },
   "trailOverrides": {
-    "gr20": {
-      "addItems": [
-        {
-          "id": "crampons",
-          "category": "equipment",
-          "nameKey": "crampons",
-          "isEssential": true
-        },
-        {
-          "id": "helmet",
-          "category": "safety",
-          "nameKey": "helmet",
-          "isEssential": true
-        }
-      ],
-      "removeItems": [],
-      "essentialOverrides": {
-        "hikingPoles": true,
-        "gloves": true
-      }
-    },
     "mare_a_mare_centre": {
       "addItems": [
         {

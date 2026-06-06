@@ -1,8 +1,27 @@
+/// Numero de secours regional d'un sentier.
+///
+/// Fourni par la configuration du sentier (jamais hardcode dans
+/// le moteur). Exemple : secours montagne local de la region.
+/// Le 112 (urgences europeennes) est universel et gere par le
+/// moteur — ne pas le dupliquer ici.
+class TrailEmergencyNumber {
+  const TrailEmergencyNumber({
+    required this.name,
+    required this.phone,
+  });
+
+  /// Nom affiche du service de secours (ex: 'Secours montagne').
+  final String name;
+
+  /// Numero de telephone (format national ou international).
+  final String phone;
+}
+
 /// Configuration d'un sentier — coeur du Moteur GR.
 ///
-/// Chaque sentier (GR20, GR10, GR34, Tour du Mont Blanc, etc.)
-/// fournit sa propre instance de TrailConfig. Le moteur s'adapte
-/// automatiquement : couleurs, étapes, points d'intérêt, etc.
+/// Chaque sentier fournit sa propre instance de TrailConfig.
+/// Le moteur s'adapte automatiquement : couleurs, étapes,
+/// points d'intérêt, secours régionaux, etc.
 class TrailConfig {
   const TrailConfig({
     required this.id,
@@ -23,15 +42,18 @@ class TrailConfig {
     this.offlineFirst = true,
     this.hasPremium = false,
     this.firebaseProjectId,
+    this.emergencyNumbers = const [],
+    this.seedAssetsBase,
+    this.tipAssetPaths = const [],
   });
 
-  /// Identifiant unique du sentier (ex: 'gr20', 'gr10', 'tmb')
+  /// Identifiant unique du sentier (ex: 'gr10', 'tmb')
   final String id;
 
-  /// Nom technique court (ex: 'GR20')
+  /// Nom technique court (ex: 'GR10')
   final String name;
 
-  /// Nom d'affichage de l'app (ex: 'Fra li Monti')
+  /// Nom d'affichage de l'app (ex: 'Volcans Trail')
   final String displayName;
 
   /// Accroche sous le nom (ex: 'Votre compagnon de trek')
@@ -46,7 +68,7 @@ class TrailConfig {
   /// Dénivelé positif total en mètres
   final int totalElevationGain;
 
-  /// Région géographique (ex: 'Corse', 'Pyrénées')
+  /// Région géographique (ex: 'Auvergne', 'Pyrénées')
   final String region;
 
   /// Pays (ex: 'France', 'Suisse')
@@ -78,4 +100,16 @@ class TrailConfig {
 
   /// ID du projet Firebase (null = pas de backend Firebase)
   final String? firebaseProjectId;
+
+  /// Numeros de secours regionaux du sentier (ex: secours montagne
+  /// local). Affiches apres le 112 universel dans l'ecran urgence.
+  /// Vide par defaut : seul le 112 est propose.
+  final List<TrailEmergencyNumber> emergencyNumbers;
+
+  /// Racine des assets de donnees du sentier pour le seed initial
+  /// (ex: 'assets/data/mon_sentier'). Null = pas de seed embarque.
+  final String? seedAssetsBase;
+
+  /// Fichiers JSON de fiches conseils a charger au seed.
+  final List<String> tipAssetPaths;
 }

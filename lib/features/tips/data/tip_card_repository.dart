@@ -14,7 +14,7 @@ class TipCardRepository {
 
   /// Filtre les fiches conseils pertinentes pour le contexte donne.
   ///
-  /// [trailScope] : identifiant du sentier (gr20, mare_a_mare, ...) ou null pour tous.
+  /// [trailScope] : identifiant du sentier (gr10, tmb, ...) ou null pour tous.
   /// [currentSeason] : saison courante (summer, winter, ...) ou null pour toutes.
   /// [currentAltitudeM] : altitude courante en metres ou null pour ignorer le filtre altitude.
   /// Retourne les fiches triees par priorite decroissante.

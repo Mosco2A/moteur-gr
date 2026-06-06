@@ -46,7 +46,7 @@ class LockscreenSecurityData {
   /// Nom de l'etape en cours.
   final String? stageName;
 
-  /// Index de l'etape en cours (1-16).
+  /// Index de l'etape en cours (1..totalStages du sentier actif).
   final int? stageIndex;
 
   /// Verifie si les donnees sante sont presentes.
@@ -64,11 +64,16 @@ class LockscreenSecurityData {
 class LockscreenWidgetService {
   LockscreenWidgetService({
     required this.contactsService,
+    required this.trailName,
     FlutterLocalNotificationsPlugin? notificationsPlugin,
   }) : _notificationsPlugin =
             notificationsPlugin ?? FlutterLocalNotificationsPlugin();
 
   final EmergencyContactsService contactsService;
+
+  /// Nom du sentier actif (injecte depuis TrailConfig) —
+  /// utilise dans le titre de la notification secours.
+  final String trailName;
   final FlutterLocalNotificationsPlugin _notificationsPlugin;
   static const int _notificationId = 9001;
   static const String _channelId = 'emergency_lockscreen';
@@ -78,6 +83,17 @@ class LockscreenWidgetService {
   /// Donnees de secours actuelles (E5.20a).
   LockscreenSecurityData _securityData = const LockscreenSecurityData();
   LockscreenSecurityData get securityData => _securityData;
+
+  /// Titre de la notification secours — base sur le sentier actif.
+  String get notificationTitle => 'Secours $trailName';
+
+  /// Compose le corps complet de la notification :
+  /// contacts + sante + GPS + etape. Utilise par la notification
+  /// Android et expose pour les tests.
+  String buildNotificationContent(List<EmergencyContact> contacts) {
+    final body = _formatContactsForNotification(contacts);
+    return _enrichWithSecurityData(body);
+  }
 
   /// E5.20a : met a jour les donnees de secours.
   Future<void> updateSecurityData({
@@ -127,8 +143,7 @@ class LockscreenWidgetService {
   Future<void> _showAndroidNotification(
     List<EmergencyContact> contacts,
   ) async {
-    final body = _formatContactsForNotification(contacts);
-    final enrichedBody = _enrichWithSecurityData(body);
+    final enrichedBody = buildNotificationContent(contacts);
 
     final androidDetails = AndroidNotificationDetails(
       _channelId,
@@ -143,14 +158,14 @@ class LockscreenWidgetService {
       category: AndroidNotificationCategory.service,
       styleInformation: BigTextStyleInformation(
         enrichedBody,
-        contentTitle: 'Secours GR20',
+        contentTitle: notificationTitle,
         summaryText: 'Contacts + info sante',
       ),
     );
 
     final details = NotificationDetails(android: androidDetails);
     await _notificationsPlugin.show(
-      _notificationId, 'Secours GR20', enrichedBody, details,
+      _notificationId, notificationTitle, enrichedBody, details,
     );
   }
 
@@ -170,7 +185,7 @@ class LockscreenWidgetService {
     if (_securityData.hasHealthInfo) {
       final health = _securityData.healthInfo!;
       buffer.writeln();
-      buffer.writeln('\u2014\u014 SANTE \u2014\u2014');
+      buffer.writeln('\u2014\u2014 SANTE \u2014\u2014');
       if (health.bloodType.isNotEmpty) {
         buffer.writeln('Sang: ${health.bloodType}');
       }
@@ -197,9 +212,11 @@ class LockscreenWidgetService {
     return buffer.toString().trim();
   }
 
-  /// Met a jour le widget iOS via UserDefaults.
-  /// E5.20a : inclut les donnees de secours.
-  Future<void> _updateIosWidget(List<EmergencyContact> contacts) async {
+  /// Construit le payload secours du widget iOS.
+  /// E5.20a : contacts + sante + GPS + etape. Expose pour les tests.
+  Map<String, dynamic> buildIosSecurityPayload(
+    List<EmergencyContact> contacts,
+  ) {
     final contactsJson = contacts.map((c) => c.toJson()).toList();
     final securityPayload = <String, dynamic>{
       'contacts': contactsJson,
@@ -219,7 +236,13 @@ class LockscreenWidgetService {
         'index': _securityData.stageIndex,
       };
     }
-    _lastIosWidgetData = [securityPayload];
+    return securityPayload;
+  }
+
+  /// Met a jour le widget iOS via UserDefaults.
+  /// E5.20a : inclut les donnees de secours.
+  Future<void> _updateIosWidget(List<EmergencyContact> contacts) async {
+    _lastIosWidgetData = [buildIosSecurityPayload(contacts)];
   }
 
   Future<void> _clearIosWidget() async {
