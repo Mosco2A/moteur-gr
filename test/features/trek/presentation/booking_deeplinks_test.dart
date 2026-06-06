@@ -56,12 +56,17 @@ void main() {
         // Section header "Reserver" doit etre visible
         expect(find.text('Reserver'), findsOneWidget);
 
-        // Bouton Appeler visible (phone present)
+        // Bouton Appeler visible (phone present).
+        // "Appeler" n'est qu'un libelle de bouton (la ligne d'info pratique
+        // utilise "Telephone"), donc une seule occurrence attendue.
         expect(find.text('Appeler'), findsOneWidget);
         expect(find.byIcon(Icons.phone), findsWidgets);
 
-        // Bouton Site web visible (website present)
-        expect(find.text('Site web'), findsOneWidget);
+        // Bouton Site web visible (website present).
+        // "Site web" apparait DEUX fois par design : une fois comme libelle
+        // de la ligne "Informations pratiques", une fois comme bouton CTA
+        // de la section "Reserver".
+        expect(find.text('Site web'), findsNWidgets(2));
         expect(find.byIcon(Icons.language), findsWidgets);
 
         // Bouton Email absent (email null)

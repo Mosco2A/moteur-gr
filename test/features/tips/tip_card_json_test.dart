@@ -72,11 +72,14 @@ void main() {
       }
     });
 
-    test('scope sentier-specifique (gr20)', () {
+    test('scope generique (all) — decontamination GR20', () {
+      // Decontamination : les fiches neige ne sont plus couplees au GR20.
+      // Elles s'appliquent a tout sentier de montagne, le ciblage se fait
+      // par l'altitude (minAltitudeM >= 1500), pas par un trailId hardcode.
       for (final card in cards) {
-        expect(card.scope, 'gr20',
+        expect(card.scope, 'all',
             reason:
-                'Neige: scope doit etre gr20 (sentier-specifique), pas ${card.scope} pour ${card.id}');
+                'Neige: scope doit etre all (generique, cible par altitude), pas ${card.scope} pour ${card.id}');
       }
     });
 

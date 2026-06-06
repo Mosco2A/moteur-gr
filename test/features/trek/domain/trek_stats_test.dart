@@ -7,58 +7,58 @@ void main() {
   group('TrekStats', () {
     test('calcule distance, denivele, vitesse et ETA sur une serie de points',
         () {
-      // Sentier fictif de 5 km total
-      final stats = TrekStats(totalDistanceKm: 5.0);
+      // Sentier fictif de 2.5 km total
+      final stats = TrekStats(totalDistanceKm: 2.5);
 
       // Serie de 6 points simulant un parcours en Corse :
-      // - Chaque segment ~ 500m horizontalement (0.0045 deg lat ~ 500m)
+      // - Chaque segment ~ 250m horizontalement (0.00225 deg lat ~ 250m)
       // - Altitudes : 800 -> 810 -> 812 -> 900 -> 850 -> 860
       //   (810-800=10m D+, 812-810=2m bruit, 900-812=88m D+,
       //    850-900=50m D-, 860-850=10m D+)
-      // - Timestamps espaces de 10 min sauf un gap de 8 min (pause)
+      // - Echantillonnage actif toutes les 4 min (< seuil pause 5 min),
+      //   avec UN gap de 40 min entre les points 4 et 5 = la seule pause.
+      //   NB: a 250m / 4 min on est a ~3.75 km/h (allure rando realiste),
+      //   et l'intervalle reste sous le seuil de pause (300 s).
 
       final baseTime = DateTime(2026, 5, 30, 8, 0, 0);
 
       final points = [
         TrackPoint(
-          lat: 42.0000,
+          lat: 42.00000,
           lng: 9.0000,
           elevation: 800,
           timestamp: baseTime,
         ),
         TrackPoint(
-          lat: 42.0045,
+          lat: 42.00225,
           lng: 9.0000,
           elevation: 810,
-          timestamp: baseTime.add(const Duration(minutes: 10)),
+          timestamp: baseTime.add(const Duration(minutes: 4)),
         ),
         TrackPoint(
-          lat: 42.0090,
+          lat: 42.00450,
           lng: 9.0000,
           elevation: 812, // +2m = bruit, ignore
-          timestamp: baseTime.add(const Duration(minutes: 20)),
+          timestamp: baseTime.add(const Duration(minutes: 8)),
         ),
         TrackPoint(
-          lat: 42.0135,
+          lat: 42.00675,
           lng: 9.0000,
           elevation: 900,
-          timestamp: baseTime.add(const Duration(minutes: 30)),
+          timestamp: baseTime.add(const Duration(minutes: 12)),
         ),
-        // Gap de 8 min apres le point 4 -> PAUSE detectee (>5min = 300s)
-        // mais 8 min = 480s < seuil? Non, 8 min > 5 min -> pause
-        // Correction: 8 min entre les deux ne suffit pas.
-        // On met un vrai gap de 40 min pour forcer la pause.
+        // Gap de 40 min apres le point 4 -> PAUSE detectee (> seuil 5 min).
         TrackPoint(
-          lat: 42.0180,
+          lat: 42.00900,
           lng: 9.0000,
           elevation: 850,
-          timestamp: baseTime.add(const Duration(minutes: 70)), // +40 min gap
+          timestamp: baseTime.add(const Duration(minutes: 52)), // +40 min gap
         ),
         TrackPoint(
-          lat: 42.0225,
+          lat: 42.01125,
           lng: 9.0000,
           elevation: 860,
-          timestamp: baseTime.add(const Duration(minutes: 80)),
+          timestamp: baseTime.add(const Duration(minutes: 56)),
         ),
       ];
 
@@ -67,8 +67,8 @@ void main() {
       }
 
       // --- Distance ---
-      // 5 segments de ~500m chacun = ~2.5 km
-      expect(stats.distanceKm, closeTo(2.5, 0.15));
+      // 5 segments de ~250m chacun = ~1.25 km
+      expect(stats.distanceKm, closeTo(1.25, 0.1));
 
       // --- Denivele D+ ---
       // 10 (800->810) + 0 (bruit 2m) + 88 (812->900) + 10 (850->860) = 108m
@@ -83,26 +83,25 @@ void main() {
       expect(stats.altitudeMax, equals(900));
 
       // --- Pause ---
-      // Un gap de 40 min entre point 4 et 5
+      // Un seul gap > 5 min : entre point 4 et 5 (40 min).
       expect(stats.pauseCount, equals(1));
 
       // --- Duree active ---
-      // 4 segments actifs de 10 min = 40 min = 2400 s
-      // (le gap 30->70 = 40 min est exclu car pause)
-      expect(stats.elapsedDuration.inMinutes, equals(40));
+      // 4 segments actifs de 4 min = 16 min (le gap de 40 min est exclu).
+      expect(stats.elapsedDuration.inMinutes, equals(16));
 
       // --- Vitesse moyenne ---
-      // ~2.5 km en 40 min (0.667h) = ~3.75 km/h
-      expect(stats.avgSpeedKmh, closeTo(3.75, 0.5));
+      // ~1.25 km en 16 min (0.267h) = ~4.7 km/h
+      expect(stats.avgSpeedKmh, closeTo(4.7, 0.5));
 
       // --- Vitesse instantanee ---
-      // Dernier segment : ~500m en 10 min = ~3 km/h
-      expect(stats.currentSpeedKmh, closeTo(3.0, 0.5));
+      // Dernier segment : ~250m en 4 min = ~3.75 km/h
+      expect(stats.currentSpeedKmh, closeTo(3.75, 0.5));
 
       // --- ETA ---
-      // Reste ~2.5 km a ~3.75 km/h = ~40 min
+      // Reste ~1.25 km a ~4.7 km/h = ~16 min
       final etaMinutes = stats.eta!.inMinutes;
-      expect(etaMinutes, closeTo(40, 10));
+      expect(etaMinutes, closeTo(16, 5));
 
       // --- Point count ---
       expect(stats.pointCount, equals(6));

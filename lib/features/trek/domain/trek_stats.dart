@@ -77,11 +77,16 @@ class TrekStats {
 
   /// ETA estimee (temps restant) basee sur distance restante + vitesse moyenne.
   ///
-  /// Retourne null si pas assez de donnees (vitesse == 0 ou aucun point).
+  /// - Retourne [Duration.zero] si la distance totale est atteinte ou depassee
+  ///   (arrivee), independamment de la vitesse moyenne instantanee.
+  /// - Retourne null si la distance restante ne peut pas etre estimee
+  ///   (vitesse moyenne nulle, donc aucune progression temporelle exploitable).
   Duration? get eta {
-    if (avgSpeedKmh <= 0) return null;
     final remainingKm = _totalDistanceKm - distanceKm;
+    // Distance totale atteinte ou depassee -> arrivee, ETA = 0.
     if (remainingKm <= 0) return Duration.zero;
+    // Pas de vitesse moyenne exploitable -> ETA indeterminable.
+    if (avgSpeedKmh <= 0) return null;
     final hoursRemaining = remainingKm / avgSpeedKmh;
     return Duration(seconds: (hoursRemaining * 3600).round());
   }
