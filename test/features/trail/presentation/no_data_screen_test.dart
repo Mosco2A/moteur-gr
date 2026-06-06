@@ -11,8 +11,8 @@ void main() {
   group('NoDataScreen', () {
     testWidgets('affiche le titre et le message', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: const NoDataScreen(),
+        const MaterialApp(
+          home: NoDataScreen(),
         ),
       );
 

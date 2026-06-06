@@ -1,7 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:moteur_gr/core/config/trail_config.dart';
+import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
@@ -21,13 +21,7 @@ void main() {
       db = AppDatabase(NativeDatabase.memory());
       container = ProviderContainer(overrides: [
         databaseProvider.overrideWithValue(db),
-        trailConfigProvider.overrideWithValue(const TrailConfig(
-          id: 'test_trail',
-          displayName: 'Test',
-          gpxAssetPath: 'assets/gpx/test.gpx',
-          defaultDuration: 5,
-          availableDurations: [3, 5, 7],
-        )),
+        trailConfigProvider.overrideWithValue(testTrailConfig),
       ]);
     });
 
@@ -128,7 +122,7 @@ void main() {
       await Future<void>.delayed(const Duration(milliseconds: 200));
 
       final dao = ChecklistDao(db);
-      final items = await dao.getByTrailId('test_trail');
+      final items = await dao.getByTrailId(testTrailConfig.id);
       expect(items.length, defaultChecklistTemplate.length);
     });
   });

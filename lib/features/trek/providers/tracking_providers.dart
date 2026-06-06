@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/providers/service_providers.dart';
 import '../data/trek_recorder.dart';
 import '../domain/models/trek_session.dart';
 import '../domain/trek_stats.dart';
@@ -71,13 +73,43 @@ enum TrackingSessionStatus {
 
 /// Provider du TrekRecorder (E2.8a).
 ///
-/// Fournit une instance de TrekRecorder avec callbacks no-op.
-/// Les callbacks sont overrides au moment du start pour brancher
-/// sur Drift via les DAOs.
+/// Fournit une instance de TrekRecorder. La persistence Drift des
+/// points est branchee au moment du start (DAOs).
+/// E5.19a : chaque flush met a jour les donnees du widget Home
+/// Screen (WidgetDataService) avec la progression courante.
 /// Overridable dans les tests.
 final trekRecorderProvider = Provider<TrekRecorder>((ref) {
   return TrekRecorder(
-    onFlush: (sessionId, points) async {},
+    onFlush: (sessionId, points) async {
+      // E5.19a — MAJ widget Home Screen a chaque flush (10 positions).
+      final config = ref.read(trailConfigProvider);
+      final widgetData = ref.read(widgetDataServiceProvider);
+      final tracking = ref.read(trekSessionManagerProvider);
+
+      final totalKm = config.totalDistanceKm;
+      final doneKm = tracking.distanceKm;
+      final progress = totalKm > 0 ? (doneKm / totalKm) : 0.0;
+      final remainingKm =
+          (totalKm - doneKm) < 0 ? 0.0 : (totalKm - doneKm);
+      final etaMinutes = tracking.avgSpeedKmh > 0.5
+          ? (remainingKm / tracking.avgSpeedKmh * 60).round()
+          : 0;
+      final altitude = points.isNotEmpty ? points.last.elevation : 0.0;
+
+      await widgetData.updateWidgetData(
+        trailName: config.name,
+        // Le nom d'etape detaille arrive avec la detection d'etape ;
+        // en attendant, le widget affiche le sentier + progression.
+        stageName: config.name,
+        stageProgress: progress,
+        distanceRemaining: remainingKm * 1000,
+        etaMinutes: etaMinutes,
+        altitude: altitude,
+        stageIndex: 0,
+        totalStages: config.totalStages,
+        themeColorValue: config.primaryColorValue,
+      );
+    },
     onSessionPersist: (session) async {},
   );
 });

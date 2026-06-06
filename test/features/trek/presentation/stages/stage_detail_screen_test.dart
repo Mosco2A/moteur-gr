@@ -50,8 +50,9 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Nom affiche
-      expect(find.text('Col de Vergio'), findsOneWidget);
+      // Nom affiche DEUX fois par design : dans le titre de l'AppBar
+      // et dans l'en-tete du corps de l'ecran.
+      expect(find.text('Col de Vergio'), findsNWidgets(2));
 
       // Description affichee
       expect(

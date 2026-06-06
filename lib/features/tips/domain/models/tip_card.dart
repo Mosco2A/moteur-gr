@@ -46,7 +46,7 @@ abstract class TipCard with _$TipCard {
     /// Contenu -- espagnol
     @Default('') String contentEs,
 
-    /// Perimetre du conseil -- String extensible (gr20, mare_a_mare, all, ...)
+    /// Perimetre du conseil -- String extensible (gr10, tmb, all, ...)
     @Default('all') String scope,
 
     /// Saison de pertinence -- String extensible (summer, winter, spring, autumn, all, ...)

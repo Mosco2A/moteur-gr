@@ -586,12 +586,6 @@ class Translations$notifications$en {
 
 	/// en: 'Check the weather and prepare today's stage.'
 	String get schedulerDailyBody => 'Check the weather and prepare today\'s stage.';
-
-	/// en: 'Remember to download your trail!'
-	String get downloadReminderTitle => 'Remember to download your trail!';
-
-	/// en: 'Departure in 2 days. Download your trail for offline mode.'
-	String get downloadReminderBody => 'Departure in 2 days. Download your trail for offline mode.';
 }
 
 // Path: settings
@@ -1565,8 +1559,6 @@ extension on Translations {
 			'notifications.schedulerCountdownBody' => 'Departure in 2 days. Check your checklist and the weather.',
 			'notifications.schedulerDailyTitle' => 'Have a great trek day!',
 			'notifications.schedulerDailyBody' => 'Check the weather and prepare today\'s stage.',
-			'notifications.downloadReminderTitle' => 'Remember to download your trail!',
-			'notifications.downloadReminderBody' => 'Departure in 2 days. Download your trail for offline mode.',
 			'settings.title' => 'Settings',
 			'settings.language' => 'Language',
 			'settings.units' => 'Units',

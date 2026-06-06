@@ -25,7 +25,7 @@ void main() {
 
   // Etapes de test fictives
   final mockStages = [
-    StageModel(
+    const StageModel(
       trailId: 'test-trail',
       stageNumber: 1,
       name: 'Puy de Dome',
@@ -35,7 +35,7 @@ void main() {
       startLat: 45.77, startLng: 2.96,
       endLat: 45.78, endLng: 2.97,
     ),
-    StageModel(
+    const StageModel(
       trailId: 'test-trail',
       stageNumber: 2,
       name: 'Puy de Sancy',

@@ -8,7 +8,7 @@ class TrailMeta extends Table {
   /// Identifiant unique (UUID Firestore)
   TextColumn get id => text()();
 
-  /// Code unique du sentier (ex: 'gr20', 'mare_a_mare')
+  /// Code unique du sentier (ex: 'gr10', 'tmb')
   TextColumn get code => text().unique()();
 
   /// Version des donnees (incremente a chaque maj serveur)

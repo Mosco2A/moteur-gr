@@ -36,6 +36,7 @@ class WidgetDataService {
   static const String keyStageIndex = '${_prefix}stage_index';
   static const String keyTotalStages = '${_prefix}total_stages';
   static const String keyLastUpdate = '${_prefix}last_update';
+  static const String keyThemeColor = '${_prefix}theme_color';
 
   /// Initialise le service (charge SharedPreferences si pas injecte).
   Future<void> initialize() async {
@@ -55,10 +56,15 @@ class WidgetDataService {
     required double altitude,
     required int stageIndex,
     required int totalStages,
+    int? themeColorValue,
   }) async {
     await initialize();
     final prefs = _prefs;
     if (prefs == null) return;
+
+    if (themeColorValue != null) {
+      await prefs.setInt(keyThemeColor, themeColorValue);
+    }
 
     await prefs.setString(keyTrailName, trailName);
     await prefs.setString(keyStageName, stageName);
@@ -86,6 +92,7 @@ class WidgetDataService {
     await prefs.remove(keyStageIndex);
     await prefs.remove(keyTotalStages);
     await prefs.remove(keyLastUpdate);
+    await prefs.remove(keyThemeColor);
   }
 
   /// Retourne les donnees actuelles du widget (debug/test).

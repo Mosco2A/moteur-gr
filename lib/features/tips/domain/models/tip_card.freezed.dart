@@ -26,7 +26,7 @@ mixin _$TipCard {
  String get contentEn;/// Contenu -- allemand
  String get contentDe;/// Contenu -- italien
  String get contentIt;/// Contenu -- espagnol
- String get contentEs;/// Perimetre du conseil -- String extensible (gr20, mare_a_mare, all, ...)
+ String get contentEs;/// Perimetre du conseil -- String extensible (gr10, tmb, all, ...)
  String get scope;/// Saison de pertinence -- String extensible (summer, winter, spring, autumn, all, ...)
  String get season;/// Categorie du conseil -- String extensible (preparation, equipment, nutrition, safety, nature, recovery, ...)
  String get category;/// Tags libres pour filtrage supplementaire
@@ -269,7 +269,7 @@ class _TipCard extends TipCard {
 @override@JsonKey() final  String contentIt;
 /// Contenu -- espagnol
 @override@JsonKey() final  String contentEs;
-/// Perimetre du conseil -- String extensible (gr20, mare_a_mare, all, ...)
+/// Perimetre du conseil -- String extensible (gr10, tmb, all, ...)
 @override@JsonKey() final  String scope;
 /// Saison de pertinence -- String extensible (summer, winter, spring, autumn, all, ...)
 @override@JsonKey() final  String season;

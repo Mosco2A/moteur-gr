@@ -111,7 +111,7 @@ class DownloadReminderNotifier
 
 /// Provider par sentier pour la gestion des rappels de depart.
 ///
-/// Usage : ref.watch(downloadReminderProvider('gr20'))
+/// Usage : ref.watch(downloadReminderProvider('gr10'))
 final downloadReminderProvider = NotifierProvider.family<
     DownloadReminderNotifier, DepartureReminderState, String>(
   DownloadReminderNotifier.new,

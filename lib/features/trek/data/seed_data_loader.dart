@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/config/trail_config.dart';
 import '../../../core/data/database.dart';
 import '../../../core/data/daos/pois_dao.dart';
 import '../../../core/data/daos/stages_dao.dart';
@@ -20,20 +21,6 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// Cle SharedPreferences pour le flag de seed.
 const _kDataSeeded = 'data_seeded';
 
-/// Identifiant du sentier Mare a Mare Centre.
-const _kTrailId = 'mare-a-mare-centre';
-
-/// Chemin des assets de donnees Mare a Mare Centre.
-/// Chemins des fichiers JSON de fiches conseils.
-const _kTipAssets = [
-  'assets/tips/general_tips.json',
-  'assets/tips/mare_a_mare_tips.json',
-  'assets/tips/securite_neige.json',
-  'assets/tips/securite_incendie.json',
-];
-
-const _kAssetsBase = 'assets/data/mare_a_mare_centre';
-
 /// Chargement initial des donnees depuis les assets.
 ///
 /// Idempotent : ne fait rien si les donnees ont deja ete chargees
@@ -45,11 +32,17 @@ class SeedDataLoader {
   SeedDataLoader({
     required AppDatabase db,
     required SharedPreferences prefs,
+    required TrailConfig trailConfig,
   })  : _db = db,
-        _prefs = prefs;
+        _prefs = prefs,
+        _trailConfig = trailConfig;
 
   final AppDatabase _db;
   final SharedPreferences _prefs;
+
+  /// Config du sentier actif : fournit trailId, racine des assets
+  /// de seed et fiches conseils. Aucun sentier n'est hardcode ici.
+  final TrailConfig _trailConfig;
 
   /// Charge les donnees initiales si ce n'est pas deja fait.
   ///
@@ -61,12 +54,19 @@ class SeedDataLoader {
       return false;
     }
 
+    final assetsBase = _trailConfig.seedAssetsBase;
+    if (assetsBase == null) {
+      _log.d('Pas de seed assets pour ce sentier, skip');
+      return false;
+    }
+    final trailId = _trailConfig.id;
+
     final sw = Stopwatch()..start();
 
     // --- 1. Charger les JSON depuis les assets ---
-    final stagesJson = await _loadJsonList('$_kAssetsBase/stages.json');
-    final poisJson = await _loadJsonList('$_kAssetsBase/pois.json');
-    final gpxContent = await rootBundle.loadString('$_kAssetsBase/track.gpx');
+    final stagesJson = await _loadJsonList('$assetsBase/stages.json');
+    final poisJson = await _loadJsonList('$assetsBase/pois.json');
+    final gpxContent = await rootBundle.loadString('$assetsBase/track.gpx');
 
     // --- 2. Parser le GPX ---
     final gpxResult = GpxParser.parse(gpxContent);
@@ -109,7 +109,7 @@ class SeedDataLoader {
     final poiCompanions = poisJson.map((p) {
       final json = p as Map<String, dynamic>;
       return PoisCompanion(
-        trailId: const Value(_kTrailId),
+        trailId: Value(trailId),
         stageNumber: Value(json['stageNumber'] as int),
         name: Value(json['nameFr'] as String),
         description: Value(json['descriptionFr'] as String? ?? ''),
@@ -124,10 +124,10 @@ class SeedDataLoader {
     // --- 6. Insert GPX track + points ---
     final gpxTracksDao = TrailGpxTracksDao(_db);
     await gpxTracksDao.insertOrReplace(
-      const TrailGpxTracksCompanion(
-        id: Value(_kTrailId),
-        itineraryId: Value(_kTrailId),
-        name: Value('Mare a Mare Centre'),
+      TrailGpxTracksCompanion(
+        id: Value(trailId),
+        itineraryId: Value(trailId),
+        name: Value(_trailConfig.name),
       ),
     );
 
@@ -136,7 +136,7 @@ class SeedDataLoader {
       final pt = simplified[i];
       await gpxPointsDao.insertOrReplace(
         TrailGpxPointsCompanion(
-          trackId: const Value(_kTrailId),
+          trackId: Value(trailId),
           lat: Value(pt.lat),
           lng: Value(pt.lng),
           elevation: Value(pt.elevation),
@@ -145,9 +145,9 @@ class SeedDataLoader {
       );
     }
 
-    // --- 8. Charger les fiches conseils ---
+    // --- 8. Charger les fiches conseils (depuis la config sentier) ---
     final allTips = <TipCard>[];
-    for (final assetPath in _kTipAssets) {
+    for (final assetPath in _trailConfig.tipAssetPaths) {
       try {
         final tipsJson = await _loadJsonList(assetPath);
         final tips = tipsJson

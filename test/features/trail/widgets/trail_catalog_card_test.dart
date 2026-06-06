@@ -6,49 +6,49 @@ import 'package:moteur_gr/features/trail/widgets/trail_catalog_card.dart';
 /// Tests du widget TrailCatalogCard.
 void main() {
   const testEntry = CatalogEntry(
-    trailId: 'gr20',
+    trailId: 'sentier-volcans',
     dataVersion: 3,
     fileSize: 524288,
     status: 'active',
     lastUpdated: '2026-05-26T12:00:00Z',
-    localStatus: TrailLocalStatus.notDownloaded,
+    localStatus: TrailLocalStatusValues.notDownloaded,
   );
 
   const downloadedEntry = CatalogEntry(
-    trailId: 'mare_a_mare',
+    trailId: 'sentier-cantal',
     dataVersion: 2,
     fileSize: 1048576,
     status: 'active',
     lastUpdated: '2026-05-20T08:00:00Z',
-    localStatus: TrailLocalStatus.downloaded,
+    localStatus: TrailLocalStatusValues.downloaded,
     localVersion: 2,
   );
 
   const updateEntry = CatalogEntry(
-    trailId: 'gr10',
+    trailId: 'sentier-cezallier',
     dataVersion: 5,
     fileSize: 2097152,
     status: 'active',
     lastUpdated: '2026-05-25T10:00:00Z',
-    localStatus: TrailLocalStatus.updateAvailable,
+    localStatus: TrailLocalStatusValues.updateAvailable,
     localVersion: 3,
   );
 
   group('TrailCatalogCard', () {
     testWidgets('affiche le trailId', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: TrailCatalogCard(entry: testEntry),
           ),
         ),
       );
-      expect(find.text('gr20'), findsOneWidget);
+      expect(find.text('sentier-volcans'), findsOneWidget);
     });
 
     testWidgets('affiche la taille formatee', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: TrailCatalogCard(entry: testEntry),
           ),
@@ -59,7 +59,7 @@ void main() {
 
     testWidgets('affiche le badge Non telecharge', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: TrailCatalogCard(entry: testEntry),
           ),
@@ -71,7 +71,7 @@ void main() {
     testWidgets('affiche le bouton Telecharger quand non telecharge',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: TrailCatalogCard(entry: testEntry),
           ),
@@ -83,7 +83,7 @@ void main() {
     testWidgets('affiche le bouton Supprimer quand telecharge',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: TrailCatalogCard(entry: downloadedEntry),
           ),
@@ -96,7 +96,7 @@ void main() {
     testWidgets('affiche le bouton Mettre a jour quand MAJ dispo',
         (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
+        const MaterialApp(
           home: Scaffold(
             body: TrailCatalogCard(entry: updateEntry),
           ),
@@ -158,12 +158,12 @@ void main() {
 
   group('TrailCatalogCard.statusColor', () {
     test('retourne gris pour notDownloaded', () {
-      final color = TrailCatalogCard.statusColor(TrailLocalStatus.notDownloaded);
+      final color = TrailCatalogCard.statusColor(TrailLocalStatusValues.notDownloaded);
       expect(color, isNotNull);
     });
 
     test('retourne vert pour downloaded', () {
-      final color = TrailCatalogCard.statusColor(TrailLocalStatus.downloaded);
+      final color = TrailCatalogCard.statusColor(TrailLocalStatusValues.downloaded);
       expect(color, isNotNull);
     });
   });

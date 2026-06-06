@@ -7,7 +7,6 @@
 import 'package:drift/drift.dart';
 
 import '../../../core/data/database.dart';
-import '../../../core/data/tables/health_info_table.dart';
 import '../../../core/data/daos/health_info_dao.dart';
 import '../domain/models/health_info.dart';
 
@@ -31,11 +30,11 @@ class HealthInfoRepository {
     // Supprimer l'ancien profil puis inserer le nouveau
     await dao.deleteAll();
     await dao.insertEntry(HealthInfoEntriesCompanion.insert(
-      bloodType: info.bloodType,
-      allergies: info.allergies,
-      treatments: info.treatments,
-      doctorContact: info.doctorContact,
-      insuranceNumber: info.insuranceNumber,
+      bloodType: Value(info.bloodType),
+      allergies: Value(info.allergies),
+      treatments: Value(info.treatments),
+      doctorContact: Value(info.doctorContact),
+      insuranceNumber: Value(info.insuranceNumber),
     ));
   }
 

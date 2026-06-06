@@ -292,7 +292,7 @@ as List<TrailManifestEntry>,
 /// @nodoc
 mixin _$TrailManifestEntry {
 
-/// Identifiant unique du sentier (ex: 'gr20', 'mare_a_mare')
+/// Identifiant unique du sentier (ex: 'gr10', 'tmb')
  String get trailId;/// Version des donnees (incremente a chaque publication serveur)
  int get dataVersion;/// Hash SHA-256 du fichier de donnees
  String get hash;/// Chemin relatif du fichier de donnees sur le serveur
@@ -502,7 +502,7 @@ class _TrailManifestEntry implements TrailManifestEntry {
   const _TrailManifestEntry({required this.trailId, required this.dataVersion, required this.hash, required this.filePath, required this.fileSize, required this.status, required this.lastUpdated});
   factory _TrailManifestEntry.fromJson(Map<String, dynamic> json) => _$TrailManifestEntryFromJson(json);
 
-/// Identifiant unique du sentier (ex: 'gr20', 'mare_a_mare')
+/// Identifiant unique du sentier (ex: 'gr10', 'tmb')
 @override final  String trailId;
 /// Version des donnees (incremente a chaque publication serveur)
 @override final  int dataVersion;

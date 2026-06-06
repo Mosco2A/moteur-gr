@@ -132,22 +132,22 @@ void main() {
     });
 
     test('les champs i18n description sont corrects', () async {
-      await dao.insertOrReplace(TrailPoisCompanion(
-        id: const Value('p1'),
-        stageId: const Value('s1'),
-        nameFr: const Value('Bergerie'),
-        nameEn: const Value('Sheepfold'),
-        nameDe: const Value('Schaeferei'),
-        nameIt: const Value('Ovile'),
-        nameEs: const Value('Redil'),
-        descriptionFr: const Value('Ancienne bergerie en ruine'),
-        descriptionEn: const Value('Ancient ruined sheepfold'),
-        descriptionDe: const Value('Alte Schaeferei-Ruine'),
-        descriptionIt: const Value('Antico ovile in rovina'),
-        descriptionEs: const Value('Antiguo redil en ruinas'),
-        type: const Value('info'),
-        lat: const Value(42.1),
-        lng: const Value(9.1),
+      await dao.insertOrReplace(const TrailPoisCompanion(
+        id: Value('p1'),
+        stageId: Value('s1'),
+        nameFr: Value('Bergerie'),
+        nameEn: Value('Sheepfold'),
+        nameDe: Value('Schaeferei'),
+        nameIt: Value('Ovile'),
+        nameEs: Value('Redil'),
+        descriptionFr: Value('Ancienne bergerie en ruine'),
+        descriptionEn: Value('Ancient ruined sheepfold'),
+        descriptionDe: Value('Alte Schaeferei-Ruine'),
+        descriptionIt: Value('Antico ovile in rovina'),
+        descriptionEs: Value('Antiguo redil en ruinas'),
+        type: Value('info'),
+        lat: Value(42.1),
+        lng: Value(9.1),
       ));
 
       final result = await dao.getById('p1');

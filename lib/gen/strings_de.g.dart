@@ -311,8 +311,6 @@ class _Translations$notifications$de implements Translations$notifications$en {
 	@override String get schedulerCountdownBody => 'Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.';
 	@override String get schedulerDailyTitle => 'Guten Trek-Tag!';
 	@override String get schedulerDailyBody => 'Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.';
-	@override String get downloadReminderTitle => 'Denken Sie daran, Ihren Weg herunterzuladen!';
-	@override String get downloadReminderBody => 'Abreise in 2 Tagen. Laden Sie Ihren Weg fuer den Offline-Modus herunter.';
 }
 
 // Path: settings
@@ -896,8 +894,6 @@ extension on TranslationsDe {
 			'notifications.schedulerCountdownBody' => 'Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.',
 			'notifications.schedulerDailyTitle' => 'Guten Trek-Tag!',
 			'notifications.schedulerDailyBody' => 'Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.',
-			'notifications.downloadReminderTitle' => 'Denken Sie daran, Ihren Weg herunterzuladen!',
-			'notifications.downloadReminderBody' => 'Abreise in 2 Tagen. Laden Sie Ihren Weg fuer den Offline-Modus herunter.',
 			'settings.title' => 'Einstellungen',
 			'settings.language' => 'Sprache',
 			'settings.units' => 'Einheiten',

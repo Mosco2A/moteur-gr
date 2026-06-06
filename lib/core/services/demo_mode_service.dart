@@ -1,8 +1,8 @@
 // E5.18 — Service mode demo universel.
 //
 // Le mode demo s'applique a TOUT trek non achete, quel que soit
-// le statut de l'utilisateur. Un premium qui a achete le GR20
-// voit Mare a Mare en mode demo, et inversement.
+// le statut de l'utilisateur. Un premium qui a achete un sentier
+// voit les autres sentiers en mode demo, et inversement.
 //
 // Limites du mode demo :
 // - Carte visible, GPS desactive
@@ -38,7 +38,7 @@ class DemoModeService {
   ///
   /// Un trek est en mode demo s'il n'a PAS ete achete par
   /// l'utilisateur courant. Le statut premium n'entre pas en jeu :
-  /// un premium qui a achete le GR20 voit Mare a Mare en demo.
+  /// un premium voit tout sentier non achete en demo.
   bool isDemoMode(String trailId) {
     final purchased = _prefs?.getStringList(_purchasedTrailsKey) ?? [];
     return !purchased.contains(trailId);

@@ -19,7 +19,7 @@ abstract class GoodieOrder with _$GoodieOrder {
     /// Identifiant du produit commande
     required String productId,
 
-    /// Identifiant du sentier associe (ex: 'gr20')
+    /// Identifiant du sentier associe (ex: 'gr10')
     required String trailId,
 
     /// Quantite commandee

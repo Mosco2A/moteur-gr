@@ -11,10 +11,14 @@
     "contentDe": "Ueber 1500 m halten sich Schneefelder bis Juni. Nehmen Sie leichte Steigeisen mit Schnellverschluss mit und ueben Sie das Anlegen vor der Abfahrt.",
     "contentIt": "Sopra i 1500 m, i nevai persistono fino a giugno. Portate ramponi leggeri a fissaggio rapido e allenatevi a indossarli prima della partenza.",
     "contentEs": "Por encima de 1500 m, los neveros persisten hasta junio. Lleve crampones ligeros de fijacion rapida y practique su colocacion antes de partir.",
-    "scope": "gr20",
+    "scope": "all",
     "season": "winter",
     "category": "equipment",
-    "tags": ["crampons", "neige", "altitude"],
+    "tags": [
+      "crampons",
+      "neige",
+      "altitude"
+    ],
     "minAltitudeM": 1500,
     "priority": 10
   },
@@ -30,10 +34,14 @@
     "contentDe": "Wasserdichte Gamaschen schuetzen vor Kaelte und Feuchtigkeit im weichen Schnee. Waehlen Sie ein Modell, das ueber die Wade reicht und wasserdicht schliesst.",
     "contentIt": "Le ghette impermeabili proteggono dal freddo e dall'umidita nella neve molle. Scegliete un modello che sale sopra il polpaccio con chiusura stagna.",
     "contentEs": "Las polainas impermeables protegen del frio y la humedad en la nieve blanda. Elija un modelo que suba por encima de la pantorrilla con cierre estanco.",
-    "scope": "gr20",
+    "scope": "all",
     "season": "winter",
     "category": "equipment",
-    "tags": ["guetres", "neige", "impermeabilite"],
+    "tags": [
+      "guetres",
+      "neige",
+      "impermeabilite"
+    ],
     "minAltitudeM": 1500,
     "priority": 8
   },
@@ -49,10 +57,15 @@
     "contentDe": "Ueberqueren Sie Schneefelder frueh am Morgen, wenn der Schnee hart ist. Gehen Sie hangaufwaerts und setzen Sie die Steigeisen fest. Vermeiden Sie Ueberquerungen am Mittag, wenn der Schnee weich wird.",
     "contentIt": "Attraversate i nevai al mattino presto quando la neve e dura. Procedete verso il pendio piantando bene i ramponi. Evitate attraversamenti a meta giornata quando la neve si ammorbidisce.",
     "contentEs": "Cruce los neveros temprano por la manana cuando la nieve esta dura. Avance de cara a la pendiente clavando bien los crampones. Evite cruzar a mediodia cuando la nieve se ablanda.",
-    "scope": "gr20",
+    "scope": "all",
     "season": "spring",
     "category": "safety",
-    "tags": ["neige", "nevier", "traversee", "danger"],
+    "tags": [
+      "neige",
+      "nevier",
+      "traversee",
+      "danger"
+    ],
     "minAltitudeM": 1500,
     "priority": 9
   },
@@ -68,10 +81,15 @@
     "contentDe": "Im Winter und Fruehling bilden sich Schneewechten auf den Graten. Halten Sie Abstand vom Rand und gehen Sie nie auf eine Wechte. Sie koennen ohne Vorwarnung einstuerzen.",
     "contentIt": "In inverno e primavera, le cornici di neve si formano sulle creste. State lontani dal bordo e non camminate mai su una cornice. Possono crollare senza preavviso.",
     "contentEs": "En invierno y primavera, las cornisas de nieve se forman en las crestas. Mantengase alejado del borde y nunca camine sobre una cornisa. Pueden derrumbarse sin previo aviso.",
-    "scope": "gr20",
+    "scope": "all",
     "season": "winter",
     "category": "safety",
-    "tags": ["neige", "corniche", "danger", "crete"],
+    "tags": [
+      "neige",
+      "corniche",
+      "danger",
+      "crete"
+    ],
     "minAltitudeM": 1800,
     "priority": 10
   }

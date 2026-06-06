@@ -52,7 +52,7 @@ class ChecklistTemplateItem {
 /// Overrides specifiques a un sentier.
 ///
 /// Permet d'ajouter/retirer des items et de changer le flag essentiel
-/// par sentier (ex: crampons obligatoires sur le GR20).
+/// par sentier (ex: crampons obligatoires sur certains sentiers alpins).
 class TrailChecklistOverride {
   const TrailChecklistOverride({
     this.addItems = const [],

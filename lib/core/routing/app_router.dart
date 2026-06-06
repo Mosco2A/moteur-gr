@@ -52,7 +52,7 @@ import '../../features/trek/presentation/stages/stage_detail_screen.dart'
 ///   /catalog                     - Catalogue de sentiers (telechargement)
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
 ///   /booking                     - Reservation (stub, gardee par FeatureFlags)
-///   /emergency                   - Contacts d'urgence (112, PGHM, personnels)
+///   /emergency                   - Contacts d'urgence (112, secours regionaux, personnels)
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 final appRouter = GoRouter(
   initialLocation: '/trails',
@@ -208,7 +208,7 @@ final appRouter = GoRouter(
       },
       builder: (context, state) => const BookingScreen(),
     ),
-    // E5.14a : Contacts d'urgence (112, PGHM, contacts personnels)
+    // E5.14a : Contacts d'urgence (112, secours regionaux, contacts personnels)
     GoRoute(
       path: '/emergency',
       name: 'emergency',

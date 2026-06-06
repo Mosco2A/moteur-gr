@@ -10,10 +10,10 @@ part 'trail.g.dart';
 @freezed
 abstract class Trail with _$Trail {
   const factory Trail({
-    /// Identifiant unique (ex: 'mare_a_mare', 'tmb')
+    /// Identifiant unique (ex: 'sentier-volcans', 'tmb')
     required String id,
 
-    /// Nom technique court (ex: 'Mare a Mare')
+    /// Nom technique court (ex: 'GR10')
     required String name,
 
     /// Nom d'affichage dans l'app

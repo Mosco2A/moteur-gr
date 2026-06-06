@@ -6,33 +6,33 @@ import 'package:moteur_gr/features/booking/domain/models/booking_config.dart';
 void main() {
   group('FeatureFlags -- booking', () {
     setUp(() {
-      FeatureFlags.resetAll();
+      FeatureFlags.clearOverrides();
     });
 
     test('isBookingEnabled retourne FALSE par defaut', () {
-      expect(FeatureFlags.isBookingEnabled('gr20'), isFalse);
+      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isFalse);
       expect(FeatureFlags.isBookingEnabled('mare-a-mare'), isFalse);
       expect(FeatureFlags.isBookingEnabled(''), isFalse);
     });
 
     test('isBookingEnabled retourne TRUE apres activation', () {
-      FeatureFlags.setBookingEnabled('gr20', enabled: true);
-      expect(FeatureFlags.isBookingEnabled('gr20'), isTrue);
+      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: true);
+      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isTrue);
       expect(FeatureFlags.isBookingEnabled('mare-a-mare'), isFalse);
     });
 
-    test('setBookingEnabled peut desactiver un trail active', () {
-      FeatureFlags.setBookingEnabled('gr20', enabled: true);
-      expect(FeatureFlags.isBookingEnabled('gr20'), isTrue);
-      FeatureFlags.setBookingEnabled('gr20', enabled: false);
-      expect(FeatureFlags.isBookingEnabled('gr20'), isFalse);
+    test('setOverride peut desactiver un trail active', () {
+      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: true);
+      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isTrue);
+      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: false);
+      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isFalse);
     });
 
-    test('resetAll remet tous les flags a zero', () {
-      FeatureFlags.setBookingEnabled('gr20', enabled: true);
-      FeatureFlags.setBookingEnabled('mare-a-mare', enabled: true);
-      FeatureFlags.resetAll();
-      expect(FeatureFlags.isBookingEnabled('gr20'), isFalse);
+    test('clearOverrides remet tous les flags a zero', () {
+      FeatureFlags.setOverride('booking', 'sentier-volcans', enabled: true);
+      FeatureFlags.setOverride('booking', 'mare-a-mare', enabled: true);
+      FeatureFlags.clearOverrides();
+      expect(FeatureFlags.isBookingEnabled('sentier-volcans'), isFalse);
       expect(FeatureFlags.isBookingEnabled('mare-a-mare'), isFalse);
     });
   });
@@ -43,8 +43,8 @@ void main() {
       final bookedAt = DateTime(2026, 6, 1, 8, 0);
       final original = AccommodationBooking(
         id: 'booking-001',
-        accommodationId: 'refuge-ortu',
-        trailId: 'gr20',
+        accommodationId: 'refuge-cratere',
+        trailId: 'sentier-volcans',
         date: now,
         status: BookingStatus.requested,
         contactMethod: ContactMethod.phone,
@@ -66,8 +66,8 @@ void main() {
     test('fromJson/toJson roundtrip avec notes null', () {
       final original = AccommodationBooking(
         id: 'booking-002',
-        accommodationId: 'gite-conca',
-        trailId: 'gr20',
+        accommodationId: 'gite-puy',
+        trailId: 'sentier-volcans',
         date: DateTime(2026, 8, 1),
         status: BookingStatus.confirmed,
         contactMethod: ContactMethod.email,
@@ -85,7 +85,7 @@ void main() {
         final booking = AccommodationBooking(
           id: 'test-status',
           accommodationId: 'refuge-test',
-          trailId: 'gr20',
+          trailId: 'sentier-volcans',
           date: DateTime(2026, 7, 1),
           status: status,
           contactMethod: ContactMethod.web,
@@ -101,7 +101,7 @@ void main() {
         final booking = AccommodationBooking(
           id: 'test-method',
           accommodationId: 'refuge-test',
-          trailId: 'gr20',
+          trailId: 'sentier-volcans',
           date: DateTime(2026, 7, 1),
           status: BookingStatus.requested,
           contactMethod: method,
@@ -115,13 +115,13 @@ void main() {
 
   group('BookingConfig -- serialization roundtrip', () {
     test('fromJson/toJson roundtrip conserve toutes les donnees', () {
-      final original = BookingConfig(
-        trailId: 'gr20',
+      const original = BookingConfig(
+        trailId: 'sentier-volcans',
         bookingEnabled: false,
         bookingMethods: ['phone', 'email', 'web'],
-        partnerUrl: 'https://refuges-corse.fr',
-        partnerPhone: '+33 4 95 65 28 09',
-        partnerEmail: 'reservation@pnrc.fr',
+        partnerUrl: 'https://refuges-volcans.example',
+        partnerPhone: '+33 4 73 00 00 00',
+        partnerEmail: 'reservation@volcans.example',
       );
       final json = original.toJson();
       final restored = BookingConfig.fromJson(json);
@@ -144,21 +144,21 @@ void main() {
     });
 
     test('isOperational = true seulement si enabled + methodes', () {
-      final disabled = BookingConfig(
-        trailId: 'gr20',
+      const disabled = BookingConfig(
+        trailId: 'sentier-volcans',
         bookingEnabled: false,
         bookingMethods: ['phone'],
       );
       expect(disabled.isOperational, isFalse);
 
-      final noMethods = BookingConfig(
-        trailId: 'gr20',
+      const noMethods = BookingConfig(
+        trailId: 'sentier-volcans',
         bookingEnabled: true,
       );
       expect(noMethods.isOperational, isFalse);
 
-      final operational = BookingConfig(
-        trailId: 'gr20',
+      const operational = BookingConfig(
+        trailId: 'sentier-volcans',
         bookingEnabled: true,
         bookingMethods: ['phone'],
       );
@@ -171,7 +171,7 @@ void main() {
       final booking = AccommodationBooking(
         id: 'b1',
         accommodationId: 'a1',
-        trailId: 'gr20',
+        trailId: 'sentier-volcans',
         date: DateTime(2026, 7, 1),
         status: BookingStatus.cancelled,
         contactMethod: ContactMethod.phone,
@@ -185,7 +185,7 @@ void main() {
         final booking = AccommodationBooking(
           id: 'b1',
           accommodationId: 'a1',
-          trailId: 'gr20',
+          trailId: 'sentier-volcans',
           date: DateTime(2026, 7, 1),
           status: status,
           contactMethod: ContactMethod.phone,
@@ -199,7 +199,7 @@ void main() {
       final original = AccommodationBooking(
         id: 'b1',
         accommodationId: 'a1',
-        trailId: 'gr20',
+        trailId: 'sentier-volcans',
         date: DateTime(2026, 7, 1),
         status: BookingStatus.requested,
         contactMethod: ContactMethod.phone,
@@ -220,7 +220,7 @@ void main() {
       final a = AccommodationBooking(
         id: 'b1',
         accommodationId: 'a1',
-        trailId: 'gr20',
+        trailId: 'sentier-volcans',
         date: DateTime(2026, 7, 1),
         status: BookingStatus.requested,
         contactMethod: ContactMethod.phone,
@@ -229,7 +229,7 @@ void main() {
       final b = AccommodationBooking(
         id: 'b1',
         accommodationId: 'a1',
-        trailId: 'gr20',
+        trailId: 'sentier-volcans',
         date: DateTime(2026, 7, 1),
         status: BookingStatus.requested,
         contactMethod: ContactMethod.phone,

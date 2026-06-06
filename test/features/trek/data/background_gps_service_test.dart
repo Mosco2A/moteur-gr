@@ -6,13 +6,30 @@ import 'package:geolocator/geolocator.dart';
 import 'package:moteur_gr/features/trek/data/background_gps_service.dart';
 
 /// Mock Battery qui retourne un niveau de batterie configurable.
-class MockBattery extends Battery {
+///
+/// `Battery` (battery_plus) expose un constructeur factory singleton, donc on
+/// ne peut pas l'`extends` : on `implements` l'interface. Seul [batteryLevel]
+/// est utilise par BackgroundGpsService ; le reste n'est pas sollicite dans
+/// ces tests.
+class MockBattery implements Battery {
   MockBattery({required this.level});
 
   final int level;
 
   @override
   Future<int> get batteryLevel async => level;
+
+  @override
+  Future<bool> get isInBatterySaveMode =>
+      throw UnimplementedError('isInBatterySaveMode non utilise dans les tests');
+
+  @override
+  Future<BatteryState> get batteryState =>
+      throw UnimplementedError('batteryState non utilise dans les tests');
+
+  @override
+  Stream<BatteryState> get onBatteryStateChanged => throw UnimplementedError(
+      'onBatteryStateChanged non utilise dans les tests');
 }
 
 /// Helper : cree une Position de test avec les champs requis.

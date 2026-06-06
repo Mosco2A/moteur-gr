@@ -22,7 +22,7 @@ void main() {
         durationDays: 14,
       );
 
-      final labels = DiplomaPdfLabels(
+      const labels = DiplomaPdfLabels(
         title: 'DIPLOME',
         subtitle: "Certificat d'accomplissement",
         certifies: 'Certifie que',

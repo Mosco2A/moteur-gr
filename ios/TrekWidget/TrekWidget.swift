@@ -131,8 +131,31 @@ struct TrekWidgetEntryView: View {
         }
         .padding()
         .containerBackground(for: .widget) {
-            Color(red: 0.176, green: 0.314, blue: 0.086) // #2D5016
+            themeBackgroundColor
         }
+    }
+
+    /// Couleur de fond du widget : theme du sentier actif si fourni
+    /// par l'app (cle widget_trek_theme_color, ARGB int), sinon
+    /// gris ardoise neutre du moteur (#37474F).
+    private var themeBackgroundColor: Color {
+        let defaults = UserDefaults(suiteName: "group.com.only1cent.moteurGr")
+        let argb = defaults?.integer(forKey: "flutter.widget_trek_theme_color") ?? 0
+        guard argb != 0 else {
+            return Color(red: 0.216, green: 0.278, blue: 0.310) // #37474F
+        }
+        let red = Double((argb >> 16) & 0xFF) / 255.0
+        let green = Double((argb >> 8) & 0xFF) / 255.0
+        let blue = Double(argb & 0xFF) / 255.0
+        return Color(red: red, green: green, blue: blue)
+    }
+}
+
+/// Point d'entree de l'extension WidgetKit.
+@main
+struct TrekWidgetBundle: WidgetBundle {
+    var body: some Widget {
+        TrekWidget()
     }
 }
 

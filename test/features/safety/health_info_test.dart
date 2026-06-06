@@ -10,7 +10,7 @@ void main() {
   group('HealthInfo -- model', () {
     test('save+get roundtrip via fromJson/toJson', () {
       // Simuler un save (toJson) puis un get (fromJson)
-      final original = HealthInfo(
+      const original = HealthInfo(
         bloodType: 'A+',
         allergies: 'Penicilline, arachides',
         treatments: 'Levothyrox 50mg/j',

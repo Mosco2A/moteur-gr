@@ -12,7 +12,7 @@ class FireRiskConfig {
     this.riskMonthStart = 6,
     this.riskMonthEnd = 9,
     this.temperatureThreshold = 30.0,
-    this.riskRegions = const ['Corse', 'PACA', 'Languedoc'],
+    this.riskRegions = const [],
     this.fireTipId = 'incendie-periode-risque',
   });
 
@@ -25,7 +25,8 @@ class FireRiskConfig {
   /// Temperature max en degres C au-dessus de laquelle le risque est eleve
   final double temperatureThreshold;
 
-  /// Regions geographiques a risque incendie
+  /// Regions geographiques a risque incendie.
+  /// Vide par defaut : a fournir par la config du sentier.
   final List<String> riskRegions;
 
   /// ID de la fiche conseil incendie a afficher (lien vers tips)

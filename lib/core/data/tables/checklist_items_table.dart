@@ -8,7 +8,7 @@ class ChecklistItems extends Table {
   /// Cle primaire auto-incrementee
   IntColumn get id => integer().autoIncrement()();
 
-  /// Identifiant du sentier (ex: 'gr20')
+  /// Identifiant du sentier (ex: 'gr10')
   TextColumn get trailId => text()();
 
   /// Identifiant unique de l'item (ex: 'backpack')

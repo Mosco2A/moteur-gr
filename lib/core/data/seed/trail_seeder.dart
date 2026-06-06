@@ -10,15 +10,16 @@ import '../daos/trail_stages_dao.dart';
 import '../daos/trail_accommodations_dao.dart';
 import '../daos/trail_pois_dao.dart';
 
-/// Seeder pour le sentier Mare a Mare Centre.
+/// Seeder generique de donnees sentier (par trailId).
 ///
-/// Lit le JSON complet depuis les assets et insere les donnees
-/// dans les tables Drift dans l'ordre FK :
+/// Lit le JSON complet d'un sentier depuis les assets et insere
+/// les donnees dans les tables Drift dans l'ordre FK :
 /// trail_meta -> trail_itineraries -> trail_stages -> trail_accommodations -> trail_pois.
-class MareAMareSeeder {
+/// Le JSON porte le trailId : le seeder ne connait aucun sentier.
+class TrailSeeder {
   final AppDatabase _db;
 
-  MareAMareSeeder(this._db);
+  TrailSeeder(this._db);
 
   // Accesseurs DAOs
   TrailMetaDao get _metaDao => TrailMetaDao(_db);
@@ -30,7 +31,7 @@ class MareAMareSeeder {
   /// Insere les donnees depuis un fichier asset JSON.
   ///
   /// [assetPath] chemin vers le fichier dans les assets Flutter
-  /// (ex: 'assets/data/mare_a_mare_centre.json').
+  /// (fourni par TrailConfig.seedAssetsBase du sentier actif).
   Future<void> seedFromAsset(String assetPath) async {
     final jsonString = await rootBundle.loadString(assetPath);
     final jsonData = json.decode(jsonString) as Map<String, dynamic>;

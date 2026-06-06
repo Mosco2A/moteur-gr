@@ -18,7 +18,7 @@ void main() {
         trackIndex: 10,
         stageDetection: (
           stageNumber: 1,
-          event: StageDetectionEvent.between,
+          event: StageDetectionEventValues.between,
         ),
         isOffTrack: false,
       );
@@ -39,7 +39,7 @@ void main() {
         trackIndex: 10,
         stageDetection: (
           stageNumber: 1,
-          event: StageDetectionEvent.between,
+          event: StageDetectionEventValues.between,
         ),
         isOffTrack: false,
       );
@@ -60,7 +60,7 @@ void main() {
         trackIndex: 5,
         stageDetection: (
           stageNumber: 1,
-          event: StageDetectionEvent.between,
+          event: StageDetectionEventValues.between,
         ),
         isOffTrack: false,
       );
@@ -76,7 +76,7 @@ void main() {
         trackIndex: 5,
         stageDetection: (
           stageNumber: 1,
-          event: StageDetectionEvent.between,
+          event: StageDetectionEventValues.between,
         ),
         isOffTrack: true,
       );

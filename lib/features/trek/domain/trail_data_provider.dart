@@ -1,6 +1,7 @@
 import '../../../core/models/stage.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/geo/track_point.dart';
+import 'models/stage_accommodation.dart';
 
 /// Interface abstraite pour l'acces aux donnees d'un sentier.
 ///
@@ -13,6 +14,14 @@ abstract class TrailDataProvider {
 
   /// Recupere les points GPS d'une etape specifique
   Future<List<TrackPoint>> getTrackPoints(String stageId);
+
+  /// Recupere les hebergements d'un sentier, optionnellement
+  /// filtres par numero d'etape. Source : base seedee par le
+  /// seeder generique (jamais de donnees hardcodees).
+  Future<List<StageAccommodation>> getAccommodations(
+    String trailId, {
+    int? stageNumber,
+  });
 
   /// Recupere la configuration du sentier actif
   TrailConfig getTrailConfig();

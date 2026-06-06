@@ -44,7 +44,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   /// E5.17: Demande d'avis store — 1 seule fois par trek.
   Future<void> _requestInAppReviewIfEligible() async {
     final config = ref.read(trailConfigProvider);
-    final trailId = config.trailId;
+    final trailId = config.id;
     final reviewService = ref.read(inAppReviewServiceProvider);
     await reviewService.requestReviewIfEligible(trailId);
   }

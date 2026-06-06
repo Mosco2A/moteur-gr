@@ -22,7 +22,7 @@ class FakeMBTilesManager extends MBTilesManager {
 
 /// Fake ConnectivityMonitor pour controler le statut reseau.
 class FakeConnectivityMonitor extends ConnectivityMonitor {
-  ConnectivityStatus _status = ConnectivityStatus.online;
+  ConnectivityStatus _status = ConnectivityStatusValues.online;
   void setStatus(ConnectivityStatus s) => _status = s;
 
   @override
@@ -58,45 +58,55 @@ void main() {
     });
 
     test('online sans tuiles locales -> OfflineMapStatus.online', () async {
-      fakeConnectivity.setStatus(ConnectivityStatus.online);
+      fakeConnectivity.setStatus(ConnectivityStatusValues.online);
+
+      // Materialiser le statut de connectivite avant de lire le provider
+      // combine (qui lit connectivityProvider via valueOrNull, non bloquant).
+      await container.read(connectivityProvider.future);
 
       final result = await container.read(
         offlineMapStatusProvider('trail1').future,
       );
 
-      expect(result, OfflineMapStatus.online);
+      expect(result, OfflineMapStatusValues.online);
     });
 
     test('online avec tuiles locales -> OfflineMapStatus.offlineAvailable', () async {
-      fakeConnectivity.setStatus(ConnectivityStatus.online);
+      fakeConnectivity.setStatus(ConnectivityStatusValues.online);
       fakeMbtiles.addTrail('trail2');
+
+      await container.read(connectivityProvider.future);
 
       final result = await container.read(
         offlineMapStatusProvider('trail2').future,
       );
 
-      expect(result, OfflineMapStatus.offlineAvailable);
+      expect(result, OfflineMapStatusValues.offlineAvailable);
     });
 
     test('offline avec tuiles locales -> OfflineMapStatus.offlineOnly', () async {
-      fakeConnectivity.setStatus(ConnectivityStatus.offline);
+      fakeConnectivity.setStatus(ConnectivityStatusValues.offline);
       fakeMbtiles.addTrail('trail3');
+
+      await container.read(connectivityProvider.future);
 
       final result = await container.read(
         offlineMapStatusProvider('trail3').future,
       );
 
-      expect(result, OfflineMapStatus.offlineOnly);
+      expect(result, OfflineMapStatusValues.offlineOnly);
     });
 
     test('offline sans tuiles locales -> OfflineMapStatus.noMap', () async {
-      fakeConnectivity.setStatus(ConnectivityStatus.offline);
+      fakeConnectivity.setStatus(ConnectivityStatusValues.offline);
+
+      await container.read(connectivityProvider.future);
 
       final result = await container.read(
         offlineMapStatusProvider('trail4').future,
       );
 
-      expect(result, OfflineMapStatus.noMap);
+      expect(result, OfflineMapStatusValues.noMap);
     });
   });
 
