@@ -52,7 +52,11 @@ Phase 5: lots E5.x MERGES SUR MAIN (historique : commits faits par Skynet,
   E5.16 inacheve) ; in_app_review version corrigee (^2.0.12, ^6 n'existait pas) ;
   melos installe en dev_dependency (scripts melos.yaml desormais executables) ;
   exclusions analyzer (data/, build/, .claude/).
-- QA : melos run analyze = No issues found (exit 0). melos run test = voir gate.
+- QA : melos run analyze = No issues found (exit 0).
+  melos run test = GREEN — 874 PASS / 0 FAIL (exit 0).
+  Les 7 tests rouges de la sauvegarde 82e7c48 sont repares (tache GO-21, voir
+  "Derniere action") : 1 correctif code de prod (trek_stats.eta) + 6 tests
+  realignes sur le comportement legitime (aucun test skippe/desactive/supprime).
 
 ## Branches en attente
 claude/fix/E5-decontamination-gr20 — reprise Phase 5 complete, attend QA Artemis + GO Chris.
@@ -66,6 +70,27 @@ claude/fix/E5-decontamination-gr20 — reprise Phase 5 complete, attend QA Artem
 ## Derniere action
 06/06 : Decontamination GR20 + reprise R1.9/R1.10/R1.11 par Vulcain (tache #320).
 Audit de reference : #85296-#85298 (Artemis, tache #319).
+06/06 (GO-21) : reparation des 7 tests rouges de la sauvegarde 82e7c48 par Vulcain.
+Cause racine et correctif de chacun :
+1-2. app_router_test : assertions obsoletes (4 routes attendues) — le routeur a
+     legitimement 13 routes de 1er niveau depuis les features E5.x. Tests realignes
+     (13 routes, chemins + noms exacts). La decontamination n'avait touche que des
+     commentaires de app_router.dart (PGHM → secours regionaux).
+3.   tip_card_json (scope neige) : la decontamination a volontairement passe les
+     fiches neige de scope "gr20" a "all" (generique, cible par altitude >= 1500 m).
+     Test realigne sur le nouveau contrat (scope = all).
+4.   trek_stats (pauseCount) : fixture incoherente — points espaces de 10 min alors
+     que le seuil de pause est 5 min, d'ou 5 pauses au lieu d'1. Fixture refaite
+     (segments 250 m / 4 min actifs, un seul gap de 40 min) + assertions recalculees.
+     Le code de prod (seuil 5 min documente) etait correct.
+5.   trek_stats (ETA distance depassee) : VRAI BUG DE PROD. Le getter eta retournait
+     null quand la vitesse moyenne valait 0, AVANT de tester la distance restante.
+     Corrige : si distance totale atteinte/depassee -> Duration.zero d'abord.
+6.   booking_deeplinks ("Site web") : le libelle apparait 2x par design (ligne
+     "Informations pratiques" + bouton CTA "Reserver"). Assertion -> findsNWidgets(2).
+7.   stage_detail_screen ("Col de Vergio") : le nom apparait 2x par design (titre
+     AppBar + en-tete du corps). Assertion -> findsNWidgets(2).
+Resultat : melos run test 874/0, melos run analyze 0 issue. Aucun test desactive.
 
 ## Regles
 - Skynet ne code PAS — delegue a Vulcain (dev) / Artemis (QA)
