@@ -1,0 +1,21 @@
+# Config builders build_runner — Moteur GR
+#
+# E2.10g — slang_build_runner DESACTIVE (decision documentee) :
+# slang_build_runner 4.15.0 est un PostProcessBuilder ; build_runner 2.15.0
+# interdit a un post-process d'ecrire un asset deja present dans son graphe
+# (InvalidOutputException "Asset already exists"). Or translations.g.dart est
+# importe par lib/ et test/ : present sur disque = noeud source, absent =
+# noeud missing-source cree par le resolver. Dans les deux cas le build echoue.
+# (Versions les plus recentes des deux packages au 06/06/2026 — pas de fix amont.)
+#
+# De plus, sans options ici, ce builder genere avec ses DEFAUTS
+# (base_locale en, output lib/gen/strings.g.dart) => doublon i18n (bug E2.10g).
+#
+# => La generation i18n passe par le CLI : `dart run slang`
+#    (config unique : slang.yaml — base_locale fr, output lib/i18n).
+#    Reactiver ce builder seulement si slang/build_runner corrigent l'incompat.
+targets:
+  $default:
+    builders:
+      slang_build_runner:
+        enabled: false

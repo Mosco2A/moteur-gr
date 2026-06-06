@@ -1,5 +1,11 @@
 # Configuration Slang i18n pour Moteur GR
 # 5 langues: fr (base), en, de, it, es
+#
+# IMPORTANT (E2.10g) : config slang UNIQUE, lue par le CLI `dart run slang`
+# (= la commande de regeneration officielle, cf. en-tete des .g.dart generes).
+# slang_build_runner est DESACTIVE dans build.yaml : incompatible avec
+# build_runner 2.15 (post-process) et, sans options, il genererait un
+# doublon lib/gen/strings.g.dart en base_locale en. Voir build.yaml.
 base_locale: fr
 input_directory: assets/i18n
 input_file_pattern: .i18n.json
