@@ -420,5 +420,13 @@
     "readyTitle": "Update ready",
     "readyBodyOne": "One trail has been updated.",
     "readyBodyMany": "$count trails have been updated."
+  },
+  "follow": {
+    "title": "Live tracking",
+    "connecting": "Connecting…",
+    "live": "Live",
+    "offline": "Offline",
+    "invalidLink": "Invalid link",
+    "invalidLinkHint": "This tracking link does not exist or has expired."
   }
 }

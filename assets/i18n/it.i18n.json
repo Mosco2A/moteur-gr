@@ -420,5 +420,13 @@
     "readyTitle": "Aggiornamento pronto",
     "readyBodyOne": "Un sentiero è stato aggiornato.",
     "readyBodyMany": "$count sentieri sono stati aggiornati."
+  },
+  "follow": {
+    "title": "Localizzazione in diretta",
+    "connecting": "Connessione…",
+    "live": "In diretta",
+    "offline": "Offline",
+    "invalidLink": "Link non valido",
+    "invalidLinkHint": "Questo link di localizzazione non esiste o è scaduto."
   }
 }

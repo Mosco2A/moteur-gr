@@ -61,6 +61,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$it goodies = _Translations$goodies$it._(_root);
 	@override late final _Translations$noData$it noData = _Translations$noData$it._(_root);
 	@override late final _Translations$updates$it updates = _Translations$updates$it._(_root);
+	@override late final _Translations$follow$it follow = _Translations$follow$it._(_root);
 }
 
 // Path: nav
@@ -506,6 +507,21 @@ class _Translations$updates$it extends Translations$updates$fr {
 	@override String get readyTitle => 'Aggiornamento pronto';
 	@override String get readyBodyOne => 'Un sentiero è stato aggiornato.';
 	@override String readyBodyMany({required Object count}) => '${count} sentieri sono stati aggiornati.';
+}
+
+// Path: follow
+class _Translations$follow$it extends Translations$follow$fr {
+	_Translations$follow$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Localizzazione in diretta';
+	@override String get connecting => 'Connessione…';
+	@override String get live => 'In diretta';
+	@override String get offline => 'Offline';
+	@override String get invalidLink => 'Link non valido';
+	@override String get invalidLinkHint => 'Questo link di localizzazione non esiste o è scaduto.';
 }
 
 // Path: stage.difficulty
@@ -1121,6 +1137,12 @@ extension on TranslationsIt {
 			'updates.readyTitle' => 'Aggiornamento pronto',
 			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
+			'follow.title' => 'Localizzazione in diretta',
+			'follow.connecting' => 'Connessione…',
+			'follow.live' => 'In diretta',
+			'follow.offline' => 'Offline',
+			'follow.invalidLink' => 'Link non valido',
+			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
 			_ => null,
 		};
 	}

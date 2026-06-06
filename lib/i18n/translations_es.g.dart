@@ -61,6 +61,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$es goodies = _Translations$goodies$es._(_root);
 	@override late final _Translations$noData$es noData = _Translations$noData$es._(_root);
 	@override late final _Translations$updates$es updates = _Translations$updates$es._(_root);
+	@override late final _Translations$follow$es follow = _Translations$follow$es._(_root);
 }
 
 // Path: nav
@@ -506,6 +507,21 @@ class _Translations$updates$es extends Translations$updates$fr {
 	@override String get readyTitle => 'Actualización lista';
 	@override String get readyBodyOne => 'Un sendero ha sido actualizado.';
 	@override String readyBodyMany({required Object count}) => '${count} senderos han sido actualizados.';
+}
+
+// Path: follow
+class _Translations$follow$es extends Translations$follow$fr {
+	_Translations$follow$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Seguimiento en directo';
+	@override String get connecting => 'Conectando…';
+	@override String get live => 'En directo';
+	@override String get offline => 'Sin conexión';
+	@override String get invalidLink => 'Enlace no válido';
+	@override String get invalidLinkHint => 'Este enlace de seguimiento no existe o ha caducado.';
 }
 
 // Path: stage.difficulty
@@ -1121,6 +1137,12 @@ extension on TranslationsEs {
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
+			'follow.title' => 'Seguimiento en directo',
+			'follow.connecting' => 'Conectando…',
+			'follow.live' => 'En directo',
+			'follow.offline' => 'Sin conexión',
+			'follow.invalidLink' => 'Enlace no válido',
+			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
 			_ => null,
 		};
 	}

@@ -61,6 +61,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
 	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
 	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
+	@override late final _Translations$follow$de follow = _Translations$follow$de._(_root);
 }
 
 // Path: nav
@@ -506,6 +507,21 @@ class _Translations$updates$de extends Translations$updates$fr {
 	@override String get readyTitle => 'Update bereit';
 	@override String get readyBodyOne => 'Ein Weg wurde aktualisiert.';
 	@override String readyBodyMany({required Object count}) => '${count} Wege wurden aktualisiert.';
+}
+
+// Path: follow
+class _Translations$follow$de extends Translations$follow$fr {
+	_Translations$follow$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Live-Verfolgung';
+	@override String get connecting => 'Verbinden…';
+	@override String get live => 'Live';
+	@override String get offline => 'Offline';
+	@override String get invalidLink => 'Ungültiger Link';
+	@override String get invalidLinkHint => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.';
 }
 
 // Path: stage.difficulty
@@ -1121,6 +1137,12 @@ extension on TranslationsDe {
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
+			'follow.title' => 'Live-Verfolgung',
+			'follow.connecting' => 'Verbinden…',
+			'follow.live' => 'Live',
+			'follow.offline' => 'Offline',
+			'follow.invalidLink' => 'Ungültiger Link',
+			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
 			_ => null,
 		};
 	}

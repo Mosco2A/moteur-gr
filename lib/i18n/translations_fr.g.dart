@@ -62,6 +62,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$goodies$fr goodies = Translations$goodies$fr.internal(_root);
 	late final Translations$noData$fr noData = Translations$noData$fr.internal(_root);
 	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
+	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
 }
 
 // Path: nav
@@ -991,6 +992,33 @@ class Translations$updates$fr {
 	String readyBodyMany({required Object count}) => '${count} sentiers ont été mis à jour.';
 }
 
+// Path: follow
+class Translations$follow$fr {
+	Translations$follow$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Suivi en direct'
+	String get title => 'Suivi en direct';
+
+	/// fr: 'Connexion…'
+	String get connecting => 'Connexion…';
+
+	/// fr: 'En direct'
+	String get live => 'En direct';
+
+	/// fr: 'Hors ligne'
+	String get offline => 'Hors ligne';
+
+	/// fr: 'Lien invalide'
+	String get invalidLink => 'Lien invalide';
+
+	/// fr: 'Ce lien de suivi n'existe pas ou a expiré.'
+	String get invalidLinkHint => 'Ce lien de suivi n\'existe pas ou a expiré.';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1822,6 +1850,12 @@ extension on Translations {
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
+			'follow.title' => 'Suivi en direct',
+			'follow.connecting' => 'Connexion…',
+			'follow.live' => 'En direct',
+			'follow.offline' => 'Hors ligne',
+			'follow.invalidLink' => 'Lien invalide',
+			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
 			_ => null,
 		};
 	}

@@ -61,6 +61,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
 	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
 	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
+	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
 }
 
 // Path: nav
@@ -506,6 +507,21 @@ class _Translations$updates$en extends Translations$updates$fr {
 	@override String get readyTitle => 'Update ready';
 	@override String get readyBodyOne => 'One trail has been updated.';
 	@override String readyBodyMany({required Object count}) => '${count} trails have been updated.';
+}
+
+// Path: follow
+class _Translations$follow$en extends Translations$follow$fr {
+	_Translations$follow$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Live tracking';
+	@override String get connecting => 'Connecting…';
+	@override String get live => 'Live';
+	@override String get offline => 'Offline';
+	@override String get invalidLink => 'Invalid link';
+	@override String get invalidLinkHint => 'This tracking link does not exist or has expired.';
 }
 
 // Path: stage.difficulty
@@ -1121,6 +1137,12 @@ extension on TranslationsEn {
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
+			'follow.title' => 'Live tracking',
+			'follow.connecting' => 'Connecting…',
+			'follow.live' => 'Live',
+			'follow.offline' => 'Offline',
+			'follow.invalidLink' => 'Invalid link',
+			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
 			_ => null,
 		};
 	}

@@ -420,5 +420,13 @@
     "readyTitle": "Update bereit",
     "readyBodyOne": "Ein Weg wurde aktualisiert.",
     "readyBodyMany": "$count Wege wurden aktualisiert."
+  },
+  "follow": {
+    "title": "Live-Verfolgung",
+    "connecting": "Verbinden…",
+    "live": "Live",
+    "offline": "Offline",
+    "invalidLink": "Ungültiger Link",
+    "invalidLinkHint": "Dieser Tracking-Link existiert nicht oder ist abgelaufen."
   }
 }

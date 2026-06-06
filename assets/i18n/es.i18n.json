@@ -420,5 +420,13 @@
     "readyTitle": "Actualización lista",
     "readyBodyOne": "Un sendero ha sido actualizado.",
     "readyBodyMany": "$count senderos han sido actualizados."
+  },
+  "follow": {
+    "title": "Seguimiento en directo",
+    "connecting": "Conectando…",
+    "live": "En directo",
+    "offline": "Sin conexión",
+    "invalidLink": "Enlace no válido",
+    "invalidLinkHint": "Este enlace de seguimiento no existe o ha caducado."
   }
 }

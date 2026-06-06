@@ -420,5 +420,13 @@
     "readyTitle": "Mise à jour prête",
     "readyBodyOne": "Un sentier a été mis à jour.",
     "readyBodyMany": "$count sentiers ont été mis à jour."
+  },
+  "follow": {
+    "title": "Suivi en direct",
+    "connecting": "Connexion…",
+    "live": "En direct",
+    "offline": "Hors ligne",
+    "invalidLink": "Lien invalide",
+    "invalidLinkHint": "Ce lien de suivi n'existe pas ou a expiré."
   }
 }
