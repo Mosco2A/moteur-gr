@@ -55,6 +55,16 @@
     "altitude": "Altitude",
     "hours": "Opening hours"
   },
+  "accommodation": {
+    "types": {
+      "refuge": "Mountain hut",
+      "bergerie": "Shepherd's hut",
+      "gite": "Lodge",
+      "hotel": "Hotel",
+      "camping": "Campsite",
+      "bivouac": "Bivouac"
+    }
+  },
   "gps": {
     "permission": "GPS permission required",
     "denied": "Location access denied",

@@ -13,7 +13,7 @@ _StageAccommodation _$StageAccommodationFromJson(Map<String, dynamic> json) =>
       stageNumber: (json['stageNumber'] as num).toInt(),
       nameFr: json['nameFr'] as String,
       nameEn: json['nameEn'] as String? ?? '',
-      type: $enumDecode(_$AccommodationTypeEnumMap, json['type']),
+      type: json['type'] as String,
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
       phone: json['phone'] as String?,
@@ -31,7 +31,7 @@ Map<String, dynamic> _$StageAccommodationToJson(_StageAccommodation instance) =>
       'stageNumber': instance.stageNumber,
       'nameFr': instance.nameFr,
       'nameEn': instance.nameEn,
-      'type': _$AccommodationTypeEnumMap[instance.type]!,
+      'type': instance.type,
       'lat': instance.lat,
       'lng': instance.lng,
       'phone': instance.phone,
@@ -41,12 +41,3 @@ Map<String, dynamic> _$StageAccommodationToJson(_StageAccommodation instance) =>
       'priceRange': instance.priceRange,
       'bookingUrl': instance.bookingUrl,
     };
-
-const _$AccommodationTypeEnumMap = {
-  AccommodationType.refuge: 'refuge',
-  AccommodationType.bergerie: 'bergerie',
-  AccommodationType.gite: 'gite',
-  AccommodationType.hotel: 'hotel',
-  AccommodationType.camping: 'camping',
-  AccommodationType.bivouac: 'bivouac',
-};

@@ -93,7 +93,9 @@ class DriftTrailDataProvider implements TrailDataProvider {
             stageNumber: stage.stageNumber,
             nameFr: row.nameFr,
             nameEn: row.nameEn,
-            type: AccommodationType.fromDb(row.type),
+            // Type String libre (#81752) : la valeur DB est preservee
+            // telle quelle, y compris un type inconnu du moteur.
+            type: row.type,
             lat: row.lat,
             lng: row.lng,
             phone: row.phone,

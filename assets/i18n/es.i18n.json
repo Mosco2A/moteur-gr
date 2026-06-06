@@ -55,6 +55,16 @@
     "altitude": "Altitud",
     "hours": "Horarios"
   },
+  "accommodation": {
+    "types": {
+      "refuge": "Refugio",
+      "bergerie": "Majada",
+      "gite": "Albergue",
+      "hotel": "Hotel",
+      "camping": "Camping",
+      "bivouac": "Vivac"
+    }
+  },
   "gps": {
     "permission": "Permiso GPS requerido",
     "denied": "Acceso a la ubicacion denegado",

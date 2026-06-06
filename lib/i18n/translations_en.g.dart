@@ -44,6 +44,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$stage$en stage = _Translations$stage$en._(_root);
 	@override late final _Translations$trail$en trail = _Translations$trail$en._(_root);
 	@override late final _Translations$poi$en poi = _Translations$poi$en._(_root);
+	@override late final _Translations$accommodation$en accommodation = _Translations$accommodation$en._(_root);
 	@override late final _Translations$gps$en gps = _Translations$gps$en._(_root);
 	@override late final _Translations$planning$en planning = _Translations$planning$en._(_root);
 	@override late final _Translations$tracking$en tracking = _Translations$tracking$en._(_root);
@@ -149,6 +150,16 @@ class _Translations$poi$en extends Translations$poi$fr {
 	@override String get filter => 'Filter points of interest';
 	@override String get altitude => 'Altitude';
 	@override String get hours => 'Opening hours';
+}
+
+// Path: accommodation
+class _Translations$accommodation$en extends Translations$accommodation$fr {
+	_Translations$accommodation$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$accommodation$types$en types = _Translations$accommodation$types$en._(_root);
 }
 
 // Path: gps
@@ -557,6 +568,21 @@ class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr
 	@override String get expert => 'Expert';
 }
 
+// Path: accommodation.types
+class _Translations$accommodation$types$en extends Translations$accommodation$types$fr {
+	_Translations$accommodation$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Mountain hut';
+	@override String get bergerie => 'Shepherd\'s hut';
+	@override String get gite => 'Lodge';
+	@override String get hotel => 'Hotel';
+	@override String get camping => 'Campsite';
+	@override String get bivouac => 'Bivouac';
+}
+
 // Path: checklist.categories
 class _Translations$checklist$categories$en extends Translations$checklist$categories$fr {
 	_Translations$checklist$categories$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -855,6 +881,12 @@ extension on TranslationsEn {
 			'poi.filter' => 'Filter points of interest',
 			'poi.altitude' => 'Altitude',
 			'poi.hours' => 'Opening hours',
+			'accommodation.types.refuge' => 'Mountain hut',
+			'accommodation.types.bergerie' => 'Shepherd\'s hut',
+			'accommodation.types.gite' => 'Lodge',
+			'accommodation.types.hotel' => 'Hotel',
+			'accommodation.types.camping' => 'Campsite',
+			'accommodation.types.bivouac' => 'Bivouac',
 			'gps.permission' => 'GPS permission required',
 			'gps.denied' => 'Location access denied',
 			'gps.disabled' => 'Location service disabled',

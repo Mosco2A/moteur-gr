@@ -55,6 +55,16 @@
     "altitude": "Altitudine",
     "hours": "Orari"
   },
+  "accommodation": {
+    "types": {
+      "refuge": "Rifugio",
+      "bergerie": "Ovile",
+      "gite": "Ostello",
+      "hotel": "Hotel",
+      "camping": "Campeggio",
+      "bivouac": "Bivacco"
+    }
+  },
   "gps": {
     "permission": "Autorizzazione GPS richiesta",
     "denied": "Accesso alla posizione negato",
