@@ -28,11 +28,19 @@ abstract class GpsPermissionResultValues {
       values.contains(value) ? value : fallback;
 }
 
-/// Service GPS : permissions et stream de positions.
+/// Regime de precision GPS, pilote par le mouvement (E5.2b).
+///
+/// [resting] : utilisateur a l'arret -> precision basse (economie batterie).
+/// [moving]  : utilisateur en mouvement -> precision haute (suivi fidele).
+enum GpsAccuracyMode { resting, moving }
+
+/// Service GPS : permissions et stream de positions a precision adaptative.
 ///
 /// Responsabilites :
 /// - Demander les permissions foreground (puis background si besoin)
-/// - Fournir un Stream<Position> avec precision haute et filtre 10m
+/// - Fournir un Stream<Position> dont la `desiredAccuracy` s'ADAPTE au
+///   mouvement (haute en deplacement, basse au repos) tout en conservant
+///   un `distanceFilter` de 10 m
 /// - ZERO catch silencieux — toute erreur est loggee via ErrorHandler
 class GpsService {
   /// Wrapper Geolocator injecte pour testabilite.
@@ -56,6 +64,18 @@ class GpsService {
   final Future<LocationPermission> Function() _requestPermission;
   final Stream<Position> Function({required LocationSettings locationSettings})
       _getPositionStream;
+
+  /// Filtre de distance conserve dans tous les regimes de precision.
+  static const int distanceFilterMeters = 10;
+
+  /// Seuil (m/s) au-dela duquel on passe en mouvement (~3.6 km/h).
+  static const double movingSpeedThresholdMps = 1.0;
+
+  /// Seuil (m/s) en deca duquel on repasse au repos (~1.4 km/h).
+  ///
+  /// L'ecart avec [movingSpeedThresholdMps] cree une hysteresis qui evite
+  /// le battement (flapping) du regime autour d'une vitesse charniere.
+  static const double restingSpeedThresholdMps = 0.4;
 
   static Stream<Position> _defaultGetPositionStream({
     required LocationSettings locationSettings,
@@ -111,31 +131,98 @@ class GpsService {
     }
   }
 
-  /// Stream de positions GPS avec precision haute et filtre 10m.
+  /// Classe une vitesse en regime de precision, avec hysteresis.
   ///
-  /// Le stream emet des Position via Geolocator.
-  /// ZERO catch silencieux — les erreurs sont loggees et propagees.
-  Stream<Position> getPositionStream() {
-    const settings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 10,
-    );
+  /// Fonction PURE (sans effet de bord) — testable directement. Depuis
+  /// [current], on ne bascule en [GpsAccuracyMode.moving] qu'au-dela de
+  /// [movingSpeedThresholdMps], et on ne revient au repos qu'en deca de
+  /// [restingSpeedThresholdMps]. Une vitesse non finie est traitee comme
+  /// nulle (repos).
+  static GpsAccuracyMode classifyMovement(
+    double speedMps,
+    GpsAccuracyMode current,
+  ) {
+    final speed = speedMps.isFinite ? speedMps.abs() : 0.0;
+    if (current == GpsAccuracyMode.resting) {
+      return speed >= movingSpeedThresholdMps
+          ? GpsAccuracyMode.moving
+          : GpsAccuracyMode.resting;
+    }
+    return speed <= restingSpeedThresholdMps
+        ? GpsAccuracyMode.resting
+        : GpsAccuracyMode.moving;
+  }
 
-    return _getPositionStream(locationSettings: settings).handleError(
-      (Object error, StackTrace stackTrace) {
-        ErrorHandler.log(
-          error,
-          stackTrace: stackTrace,
-          context: 'GpsService.getPositionStream',
-        );
-        // Propager l'erreur au lieu de l'avaler
-        throw error; // ignore: only_throw_errors
-      },
+  /// Precision Geolocator correspondant a un [GpsAccuracyMode].
+  static LocationAccuracy accuracyForMode(GpsAccuracyMode mode) {
+    return mode == GpsAccuracyMode.moving
+        ? LocationAccuracy.high
+        : LocationAccuracy.low;
+  }
+
+  /// [LocationSettings] pour un regime donne (precision adaptative + filtre 10 m).
+  static LocationSettings settingsForMode(GpsAccuracyMode mode) {
+    return LocationSettings(
+      accuracy: accuracyForMode(mode),
+      distanceFilter: distanceFilterMeters,
     );
+  }
+
+  /// Stream de positions GPS a precision ADAPTATIVE et filtre 10 m.
+  ///
+  /// Demarre au repos (precision basse, economie batterie) puis bascule en
+  /// haute precision des qu'un mouvement est detecte ([classifyMovement]),
+  /// et inversement. Chaque changement de regime re-souscrit la source avec
+  /// la nouvelle `desiredAccuracy` (Geolocator fixe la precision a la
+  /// creation du stream). Le `distanceFilter` de 10 m est conserve partout.
+  ///
+  /// ZERO catch silencieux — les erreurs sont loggees ET propagees.
+  Stream<Position> getPositionStream() {
+    final controller = StreamController<Position>();
+    var mode = GpsAccuracyMode.resting;
+    StreamSubscription<Position>? sub;
+
+    void subscribe() {
+      sub = _getPositionStream(locationSettings: settingsForMode(mode)).listen(
+        (position) {
+          if (controller.isClosed) return;
+          controller.add(position);
+
+          final next = classifyMovement(position.speed, mode);
+          if (next != mode) {
+            mode = next;
+            // Re-souscrire avec la nouvelle precision.
+            sub?.cancel();
+            subscribe();
+          }
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          ErrorHandler.log(
+            error,
+            stackTrace: stackTrace,
+            context: 'GpsService.getPositionStream',
+          );
+          // Propager l'erreur au lieu de l'avaler.
+          if (!controller.isClosed) controller.addError(error, stackTrace);
+        },
+        onDone: () {
+          if (!controller.isClosed) controller.close();
+        },
+        cancelOnError: false,
+      );
+    }
+
+    controller
+      ..onListen = subscribe
+      ..onCancel = () async {
+        await sub?.cancel();
+      };
+
+    return controller.stream;
   }
 }
 
-/// Provider Riverpod 3 pour GpsService.
+/// Provider Riverpod pour GpsService.
 ///
 /// Fournit une instance par defaut utilisant Geolocator.
 /// Overridable dans les tests avec un mock.
