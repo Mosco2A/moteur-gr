@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Moteur Gr</string>
+	<string>StepWays</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,6 +26,20 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- P1-2 audit #327 : textes d usage des permissions (FR).
+	     Sans ces cles, iOS tue l app au premier acces GPS/photos. -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>StepWays utilise votre position pour vous situer sur le sentier, suivre votre progression d&#8217;étape en étape et enregistrer votre randonnée.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>L&#8217;accès à la position en arrière-plan permet de poursuivre l&#8217;enregistrement de votre randonnée écran éteint et de partager votre position en temps réel avec vos proches lorsque vous l&#8217;activez.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>L&#8217;appareil photo permet d&#8217;ajouter des photos à votre carnet de randonnée. Les photos restent sur votre téléphone.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>L&#8217;accès à vos photos permet d&#8217;illustrer votre carnet de randonnée. Les photos restent sur votre téléphone.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
