@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 07/06/2026 par Vulcain (lot remediation P0+P1 audit #327, tache #328, COMPLETE)
+MAJ: 07/06/2026 par Vulcain (lot E5 SOCLES perf/a11y/analytics — reintegration propre, COMPLETE)
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -64,6 +64,78 @@ Phase 5: lots E5.x MERGES SUR MAIN (historique : commits faits par Skynet,
   Les 7 tests rouges de la sauvegarde 82e7c48 sont repares (tache GO-21, voir
   "Derniere action") : 1 correctif code de prod (trek_stats.eta) + 6 tests
   realignes sur le comportement legitime (aucun test skippe/desactive/supprime).
+
+## Lot E5 SOCLES — perf/a11y/analytics (reintegration PROPRE, 07/06, Vulcain)
+Source : inventaire #85410-#85412 + plan V10 #83558-#83559. METHODE : reecriture
+propre depuis le plan, AUCUN cherry-pick des 17 branches stranded (pre-decontamination
++ pre-Freezed v3). Branche NEUVE claude/feat/E5-socles-perf-a11y-analytics depuis
+main (4153dc5). Stack reelle respectee : Riverpod 2.6.1, Freezed 3.2.5, Slang 4.15,
+flutter_map 8.2, geolocator 11. applicationId/namespace com.only1cent.moteur_gr.
+1 commit conventionnel par sous-lot, identite Vulcain.
+
+- E5.2a perf carte (3b2a8c8) COMPLETE : nouveau marker_cluster.dart (clustering par
+  grille spatiale O(n), seuil 50, ClusteredMarkerLayer bulles+tap) ; Douglas-Peucker
+  DYNAMIQUE (dynamicEpsilonForZoom continu par niveau, remplace les paliers discrets
+  de simplified_track_provider) ; RepaintBoundary sur les layers statiques (trace +
+  marqueurs) de map_screen ET trail_map_screen ; POIs clusterises en couche dediee,
+  position user isolee en couche dynamique. Test benchmark : 100 marqueurs clusterises
+  < 16 ms + correction algo + integration flutter_map (13 tests).
+- E5.2b perf GPS (7b5e996) COMPLETE : gps_service desiredAccuracy ADAPTATIVE (high en
+  mouvement / low au repos) via classifyMovement (fonction pure, hysteresis 0.4/1.0 m/s)
+  + re-souscription au changement de regime ; distanceFilter 10 m et handleError
+  conserves ; injection testable du constructeur intacte ; demarre au repos (batterie,
+  compat stream finis). LazyNetworkImage (shared/widgets) : CachedNetworkImage +
+  placeholder statique + fallback, null/vide-safe (dep deja presente) ; cable en photo
+  optionnelle du POI sheet. Tests : classifieur hysteresis + switch end-to-end
+  mouvement/repos + primitive lazy (10+8 tests).
+- E5.3 a11y (92c1845) COMPLETE — E5.3a+E5.3b reunis (overlap fichiers map_controls/
+  catalogue/detail inseparable) :
+  * E5.3a contraste+labels : main avait 0 Semantics. Section i18n a11y (5 langues) ;
+    Semantics ajoutes (controles carte tooltips Slang, bouton retour, marqueurs
+    etape/POI/position button|image+label, bulle cluster, tuiles stats suivi) ;
+    ExcludeSemantics sur les decors. WcagContrast (core/a11y) : luminance+ratio+seuils
+    AA/AA-large/non-text. AppTheme.grisTexteSecondaire (token texte secondaire conforme
+    AA sur fond SOMBRE ; grisGranite ~2.6:1 echoue mais conserve pour fonds clairs type
+    share card). Test audit : valeurs WCAG de reference + audit theme sombre + labels
+    5 langues (10 tests).
+  * E5.3b nav+texte : FocusTraversalGroup + OrderedTraversalPolicy + NumericFocusOrder
+    sur les controles carte (ordre zoom+ -> zoom- -> centrer) ; support textScale 2x
+    sans overflow (catalogue infos secondaires en Wrap + titre borne + badge Flexible/
+    ellipsis ; en-tete detail chips en Wrap). Tests focus + overflow 2x (5 tests).
+- E5.4 analytics ANONYME (3a55c98) COMPLETE : deps firebase_analytics ^11.6.0 +
+  firebase_crashlytics ^4.3.10 (compat firebase_core 3.x). AnalyticsService
+  (core/analytics) : logScreenView + 5 events (trail_downloaded/trek_started/
+  trek_completed/share_card/diploma_generated) + Crashlytics fatals+non-fatals.
+  ZERO-PII STRICT : aucun nom/email/uid/GPS en clair, tout identifiant = SHA-256
+  (crypto), pas de fingerprinting (distance/duree arrondies), API typee inviolable.
+  Gating isFirebaseAvailableProvider : indisponible => no-op zero crash. OPT-IN :
+  collecte coupee par defaut (setAnalyticsCollectionEnabled(false)), rien emis tant
+  que setConsent(granted:true) non appele. Puits abstraits + NoOp + impl Firebase
+  isolee (testabilite). Tests (suivent degraded_mode_test) : no-op si indisponible,
+  event correct si dispo, assert zero-PII sur les 5 events, opt-in, SHA-256 (8 tests).
+
+PREUVES 07/06 (transcript Vulcain, affichees) : flutter analyze = "No issues found!"
+(projet entier, 53 s) ; flutter test = 1012 PASS / 0 FAIL / 0 SKIP (base 962 + 50
+nouveaux tests des 3 sous-lots, AUCUN test supprime ni skippe) ; grep -riE
+fralimonti|gr20|corse|mare.a.mare sur les 37 fichiers touches = 1 seul hit JUSTIFIE
+(pubspec.yaml ligne asset assets/data/mare_a_mare_centre/ = sentier reel parametrique
+pre-existant, valide gate #85353, simplement decale par l'ajout des deps Firebase ;
+0 hit dans tout le code lib/test/i18n ecrit). 4 commits conventionnels 3b2a8c8..3a55c98.
+PAS DE MERGE MAIN sans GO.
+
+RESTE / DETTE TRACEE (hors run, non bloquant) :
+- E5.4 ne produit RIEN tant que wagon 3 (Christophe) n'a pas fait flutterfire configure
+  (DefaultFirebaseOptions branche dans firebase_service) ET le setup natif Crashlytics
+  (gradle/pod + symbolication). Cablage des call-sites (ref.read(analyticsServiceProvider)
+  .logXxx aux moments cles : download, start/stop trek, share, diplome) + ecran de
+  consentement RGPD relie a setConsent : infra prete, integration UI a faire.
+- a11y contraste residuel (audit honnete) : corrige la ou localise (token
+  grisTexteSecondaire pour le suivi). RESTE en dette theme : boutons d'action suivi
+  (texte blanc sur vert/orange clairs ~2.4:1) et certains textes secondaires grisGranite
+  sur fonds sombres < 4.5:1 — refonte au niveau ColorScheme (couleurs difficulte/statut
+  assombries ou texte fonce) a planifier, non couverte par ce lot.
+- macos/Flutter/GeneratedPluginRegistrant.swift : diff genere pendant (deja "diff
+  pendant" avant ce lot + plugins firebase macos) NON commite — cible mobile, hors scope.
 
 ## Phase 4 — bloc E4.10-E4.17 REINTEGRE (06/06, Vulcain)
 Contexte : la serie granulaire E4.10->E4.17 vivait sur la branche
@@ -318,6 +390,12 @@ regles (deny — feature groupe inerte en prod, a traiter a l activation) ;
 firebase_storage inutilise ; sel anonymisation fixe (P2-6 audit).
 
 ## Branches en attente
+claude/feat/E5-socles-perf-a11y-analytics — lot E5 SOCLES (perf carte/GPS,
+  a11y WCAG, analytics anonyme) COMPLETE 07/06 : 4 commits 3b2a8c8..3a55c98
+  depuis main 4153dc5, reecriture propre (zero cherry-pick des 17 stranded).
+  Preuves analyze 0 / test 1012-0-0 / grep touches = 1 hit parametrique justifie
+  affichees. Attend QA Artemis + GO Chris. PAS DE MERGE sans GO. Reste wagon 3
+  Firebase (analytics inerte tant que non configure) + dette contraste theme.
 claude/fix/remediation-p0p1-audit327 — lot remediation P0+P1 audit #327
   (tache #328) COMPLETE 07/06 : 8 commits 91c8863..3afd6c3 (+ resync
   orchestration), preuves analyze 0 / test 962-0 / regles emulateur
@@ -347,6 +425,11 @@ claude/fix/E5-decontamination-gr20 — reprise Phase 5 ; constat git 06/06 :
   inclut ebde305). Statut GO/QA a confirmer par Skynet/Chris.
 
 ## Prochaine action
+0bis. QA gate Artemis sur claude/feat/E5-socles-perf-a11y-analytics (lot E5
+   SOCLES : E5.2 perf carte/GPS, E5.3 a11y WCAG, E5.4 analytics anonyme zero-PII ;
+   preuves analyze 0 / test 1012-0-0 / grep 1 hit parametrique dans le transcript)
+   + GO Chris. Verifier specifiquement : zero-PII des events (SHA-256), opt-in par
+   defaut, no-op si Firebase indisponible, Semantics + contraste + textScale 2x.
 0. QA gate Artemis sur claude/fix/remediation-p0p1-audit327 (lot
    remediation audit #327, tache #328 : P0-1..P1-5, preuves analyze 0 /
    test 962-0 / regles emulateur 45-0 / greps dans le transcript) +
@@ -365,6 +448,16 @@ claude/fix/E5-decontamination-gr20 — reprise Phase 5 ; constat git 06/06 :
    constatee deja mergee sur main (422a94c).
 
 ## Derniere action
+07/06 (lot E5 SOCLES) : reintegration PROPRE perf/a11y/analytics par Vulcain sur
+claude/feat/E5-socles-perf-a11y-analytics (branche neuve depuis main 4153dc5, zero
+cherry-pick des 17 stranded) — E5.2a clustering marqueurs + Douglas-Peucker dynamique
++ RepaintBoundary (3b2a8c8), E5.2b GPS precision adaptative mouvement/repos + images
+lazy (7b5e996), E5.3 a11y WCAG AA : Semantics + labels Slang 5 langues + WcagContrast
++ focus ordonne + textScale 2x (92c1845), E5.4 analytics ANONYME zero-PII opt-in mode
+degrade no-op (3a55c98). Preuves : analyze 0 issue, 1012/1012 PASS (0 skip, base 962
++ 50 nouveaux), grep fichiers touches = 1 hit parametrique justifie (mare_a_mare_centre
+pubspec pre-existant). Voir section "Lot E5 SOCLES". RESTE wagon 3 Firebase + dette
+contraste theme (traces).
 07/06 (remediation audit #327) : lot P0+P1 tache #328 COMPLETE par
 Vulcain sur claude/fix/remediation-p0p1-audit327 — P0-1 regles
 Firestore follow_sessions + miroir public minimal sans trekkerUserId,
