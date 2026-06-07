@@ -63,6 +63,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$noData$it noData = _Translations$noData$it._(_root);
 	@override late final _Translations$updates$it updates = _Translations$updates$it._(_root);
 	@override late final _Translations$follow$it follow = _Translations$follow$it._(_root);
+	@override late final _Translations$cloud$it cloud = _Translations$cloud$it._(_root);
 	@override late final _Translations$monetization$it monetization = _Translations$monetization$it._(_root);
 }
 
@@ -534,6 +535,22 @@ class _Translations$follow$it extends Translations$follow$fr {
 	@override String get offline => 'Offline';
 	@override String get invalidLink => 'Link non valido';
 	@override String get invalidLinkHint => 'Questo link di localizzazione non esiste o è scaduto.';
+}
+
+// Path: cloud
+class _Translations$cloud$it extends Translations$cloud$fr {
+	_Translations$cloud$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get localModeTitle => 'Modalità locale';
+	@override String get localModeBody => 'Questa installazione non è collegata a un servizio cloud: localizzazione in diretta, backup online e account sono disattivati. I tuoi dati restano sul dispositivo.';
+	@override String get statusSection => 'Cloud';
+	@override String get statusActive => 'Servizi online attivi';
+	@override String get statusActiveDesc => 'Backup e localizzazione in diretta disponibili.';
+	@override String get statusLocal => 'Modalità locale (senza cloud)';
+	@override String get statusLocalDesc => 'Nessun dato viene inviato online. Configurazione cloud assente.';
 }
 
 // Path: monetization
@@ -1195,6 +1212,13 @@ extension on TranslationsIt {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Link non valido',
 			'follow.invalidLinkHint' => 'Questo link di localizzazione non esiste o è scaduto.',
+			'cloud.localModeTitle' => 'Modalità locale',
+			'cloud.localModeBody' => 'Questa installazione non è collegata a un servizio cloud: localizzazione in diretta, backup online e account sono disattivati. I tuoi dati restano sul dispositivo.',
+			'cloud.statusSection' => 'Cloud',
+			'cloud.statusActive' => 'Servizi online attivi',
+			'cloud.statusActiveDesc' => 'Backup e localizzazione in diretta disponibili.',
+			'cloud.statusLocal' => 'Modalità locale (senza cloud)',
+			'cloud.statusLocalDesc' => 'Nessun dato viene inviato online. Configurazione cloud assente.',
 			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			'monetization.paywallTitle' => 'Sblocca questo trek',
 			'monetization.paywallBody' => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.',

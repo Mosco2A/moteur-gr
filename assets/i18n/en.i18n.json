@@ -439,6 +439,15 @@
     "invalidLink": "Invalid link",
     "invalidLinkHint": "This tracking link does not exist or has expired."
   },
+  "cloud": {
+    "localModeTitle": "Local mode",
+    "localModeBody": "This installation is not connected to a cloud service: live tracking, online backup and account are disabled. Your data stays on this device.",
+    "statusSection": "Cloud",
+    "statusActive": "Online services active",
+    "statusActiveDesc": "Backup and live tracking available.",
+    "statusLocal": "Local mode (no cloud)",
+    "statusLocalDesc": "No data is sent online. Cloud configuration absent."
+  },
   "monetization": {
     "demoBanner": "Demo mode — tap to unlock",
     "paywallTitle": "Unlock this trek",

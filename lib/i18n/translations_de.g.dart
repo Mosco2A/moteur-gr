@@ -63,6 +63,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
 	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
 	@override late final _Translations$follow$de follow = _Translations$follow$de._(_root);
+	@override late final _Translations$cloud$de cloud = _Translations$cloud$de._(_root);
 	@override late final _Translations$monetization$de monetization = _Translations$monetization$de._(_root);
 }
 
@@ -534,6 +535,22 @@ class _Translations$follow$de extends Translations$follow$fr {
 	@override String get offline => 'Offline';
 	@override String get invalidLink => 'Ungültiger Link';
 	@override String get invalidLinkHint => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.';
+}
+
+// Path: cloud
+class _Translations$cloud$de extends Translations$cloud$fr {
+	_Translations$cloud$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get localModeTitle => 'Lokaler Modus';
+	@override String get localModeBody => 'Diese Installation ist mit keinem Cloud-Dienst verbunden: Live-Verfolgung, Online-Sicherung und Konto sind deaktiviert. Ihre Daten bleiben auf dem Gerät.';
+	@override String get statusSection => 'Cloud';
+	@override String get statusActive => 'Online-Dienste aktiv';
+	@override String get statusActiveDesc => 'Sicherung und Live-Verfolgung verfügbar.';
+	@override String get statusLocal => 'Lokaler Modus (ohne Cloud)';
+	@override String get statusLocalDesc => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.';
 }
 
 // Path: monetization
@@ -1195,6 +1212,13 @@ extension on TranslationsDe {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Ungültiger Link',
 			'follow.invalidLinkHint' => 'Dieser Tracking-Link existiert nicht oder ist abgelaufen.',
+			'cloud.localModeTitle' => 'Lokaler Modus',
+			'cloud.localModeBody' => 'Diese Installation ist mit keinem Cloud-Dienst verbunden: Live-Verfolgung, Online-Sicherung und Konto sind deaktiviert. Ihre Daten bleiben auf dem Gerät.',
+			'cloud.statusSection' => 'Cloud',
+			'cloud.statusActive' => 'Online-Dienste aktiv',
+			'cloud.statusActiveDesc' => 'Sicherung und Live-Verfolgung verfügbar.',
+			'cloud.statusLocal' => 'Lokaler Modus (ohne Cloud)',
+			'cloud.statusLocalDesc' => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.',
 			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
 			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',

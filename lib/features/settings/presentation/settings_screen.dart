@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../notifications/providers/notification_provider.dart';
@@ -43,6 +44,10 @@ class SettingsScreen extends ConsumerWidget {
 
           // --- Notifications ---
           _buildNotificationsSection(context, ref, theme, tr),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // --- Cloud (P1-4 audit #327 : etat explicite du mode local) ---
+          _buildCloudSection(context, ref, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
           // --- Version ---
@@ -318,6 +323,47 @@ class SettingsScreen extends ConsumerWidget {
                 },
               ),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Section cloud - etat explicite du mode local/cloud (P1-4 #327).
+  ///
+  /// Sans configuration Firebase, l app tourne 100% en local : cette
+  /// section le dit clairement (aucune donnee envoyee en ligne) au lieu
+  /// de laisser croire a une sauvegarde cloud active.
+  Widget _buildCloudSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations tr,
+  ) {
+    final available = ref.watch(isFirebaseAvailableProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeader(
+          theme,
+          available ? Icons.cloud_done : Icons.cloud_off,
+          tr.cloud.statusSection,
+        ),
+        Card(
+          child: ListTile(
+            leading: Icon(
+              available ? Icons.cloud_done : Icons.cloud_off,
+              color: available
+                  ? theme.colorScheme.primary
+                  : AppTheme.grisGranite,
+            ),
+            title: Text(
+              available ? tr.cloud.statusActive : tr.cloud.statusLocal,
+            ),
+            subtitle: Text(
+              available ? tr.cloud.statusActiveDesc : tr.cloud.statusLocalDesc,
+            ),
           ),
         ),
       ],

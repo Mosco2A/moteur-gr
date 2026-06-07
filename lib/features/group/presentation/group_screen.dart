@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/firebase/cloud_unavailable_notice.dart';
+import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../auth/providers/auth_provider.dart';
 import '../models/group_member.dart';
@@ -29,14 +31,22 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
   Widget build(BuildContext context) {
     final groupCode = ref.watch(groupCodeProvider);
     final membersAsync = ref.watch(groupMembersProvider);
+    final firebaseAvailable = ref.watch(isFirebaseAvailableProvider);
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Groupe'), actions: [
         if (groupCode != null) IconButton(icon: const Icon(Icons.exit_to_app),
           tooltip: 'Quitter le groupe', onPressed: _leaveGroup),
       ]),
-      body: groupCode == null ? _buildJoinOrCreate(theme)
-          : _buildGroupView(theme, groupCode, membersAsync),
+      // P1-4 audit #327 : sans Firebase, etat explicite a la place du
+      // formulaire (creer/rejoindre ne pourraient qu echouer).
+      body: !firebaseAvailable
+          ? const SingleChildScrollView(
+              padding: EdgeInsets.all(AppTheme.spacingBase),
+              child: CloudUnavailableNotice(),
+            )
+          : groupCode == null ? _buildJoinOrCreate(theme)
+              : _buildGroupView(theme, groupCode, membersAsync),
     );
   }
 

@@ -63,6 +63,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$noData$es noData = _Translations$noData$es._(_root);
 	@override late final _Translations$updates$es updates = _Translations$updates$es._(_root);
 	@override late final _Translations$follow$es follow = _Translations$follow$es._(_root);
+	@override late final _Translations$cloud$es cloud = _Translations$cloud$es._(_root);
 	@override late final _Translations$monetization$es monetization = _Translations$monetization$es._(_root);
 }
 
@@ -534,6 +535,22 @@ class _Translations$follow$es extends Translations$follow$fr {
 	@override String get offline => 'Sin conexión';
 	@override String get invalidLink => 'Enlace no válido';
 	@override String get invalidLinkHint => 'Este enlace de seguimiento no existe o ha caducado.';
+}
+
+// Path: cloud
+class _Translations$cloud$es extends Translations$cloud$fr {
+	_Translations$cloud$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get localModeTitle => 'Modo local';
+	@override String get localModeBody => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Sus datos permanecen en el dispositivo.';
+	@override String get statusSection => 'Nube';
+	@override String get statusActive => 'Servicios en línea activos';
+	@override String get statusActiveDesc => 'Copia de seguridad y seguimiento en directo disponibles.';
+	@override String get statusLocal => 'Modo local (sin nube)';
+	@override String get statusLocalDesc => 'No se envía ningún dato en línea. Falta la configuración de la nube.';
 }
 
 // Path: monetization
@@ -1195,6 +1212,13 @@ extension on TranslationsEs {
 			'follow.offline' => 'Sin conexión',
 			'follow.invalidLink' => 'Enlace no válido',
 			'follow.invalidLinkHint' => 'Este enlace de seguimiento no existe o ha caducado.',
+			'cloud.localModeTitle' => 'Modo local',
+			'cloud.localModeBody' => 'Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Sus datos permanecen en el dispositivo.',
+			'cloud.statusSection' => 'Nube',
+			'cloud.statusActive' => 'Servicios en línea activos',
+			'cloud.statusActiveDesc' => 'Copia de seguridad y seguimiento en directo disponibles.',
+			'cloud.statusLocal' => 'Modo local (sin nube)',
+			'cloud.statusLocalDesc' => 'No se envía ningún dato en línea. Falta la configuración de la nube.',
 			'monetization.demoBanner' => 'Modo demo — toca para desbloquear',
 			'monetization.paywallTitle' => 'Desbloquea este trek',
 			'monetization.paywallBody' => 'El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.',

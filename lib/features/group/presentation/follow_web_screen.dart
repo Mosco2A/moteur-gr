@@ -112,7 +112,12 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
           .orderBy('timestamp', descending: true)
           .limit(1)
           .snapshots()
-          .listen(_onPositionUpdate, onError: (_) {});
+          .listen(_onPositionUpdate, onError: (_) {
+        // P1-4 audit #327 : erreur de flux (ex. session expiree refusee
+        // par les regles) -> badge "hors ligne" au lieu d un faux "en
+        // direct" fige sur la derniere position.
+        if (mounted) setState(() => _sessionFound = false);
+      });
     } catch (_) {
       setState(() {
         _hasError = true;

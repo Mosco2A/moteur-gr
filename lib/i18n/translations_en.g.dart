@@ -63,6 +63,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
 	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
 	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
+	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
 	@override late final _Translations$monetization$en monetization = _Translations$monetization$en._(_root);
 }
 
@@ -534,6 +535,22 @@ class _Translations$follow$en extends Translations$follow$fr {
 	@override String get offline => 'Offline';
 	@override String get invalidLink => 'Invalid link';
 	@override String get invalidLinkHint => 'This tracking link does not exist or has expired.';
+}
+
+// Path: cloud
+class _Translations$cloud$en extends Translations$cloud$fr {
+	_Translations$cloud$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get localModeTitle => 'Local mode';
+	@override String get localModeBody => 'This installation is not connected to a cloud service: live tracking, online backup and account are disabled. Your data stays on this device.';
+	@override String get statusSection => 'Cloud';
+	@override String get statusActive => 'Online services active';
+	@override String get statusActiveDesc => 'Backup and live tracking available.';
+	@override String get statusLocal => 'Local mode (no cloud)';
+	@override String get statusLocalDesc => 'No data is sent online. Cloud configuration absent.';
 }
 
 // Path: monetization
@@ -1195,6 +1212,13 @@ extension on TranslationsEn {
 			'follow.offline' => 'Offline',
 			'follow.invalidLink' => 'Invalid link',
 			'follow.invalidLinkHint' => 'This tracking link does not exist or has expired.',
+			'cloud.localModeTitle' => 'Local mode',
+			'cloud.localModeBody' => 'This installation is not connected to a cloud service: live tracking, online backup and account are disabled. Your data stays on this device.',
+			'cloud.statusSection' => 'Cloud',
+			'cloud.statusActive' => 'Online services active',
+			'cloud.statusActiveDesc' => 'Backup and live tracking available.',
+			'cloud.statusLocal' => 'Local mode (no cloud)',
+			'cloud.statusLocalDesc' => 'No data is sent online. Cloud configuration absent.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
