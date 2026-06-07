@@ -1,10 +1,20 @@
-# Codemagic CI/CD pour Moteur GR
-# Deux workflows: pr_gate (PR) + merge (push main)
+# Codemagic CI/CD pour Moteur GR (StepWays)
+# Workflows:
+#   pr_gate         — PR : analyze + tests + format + regles Firestore
+#   merge           — push main : gate + APK debug
+#   android_release — tag v* : AAB release signe (secrets wagon 3)
+#   ios_release     — tag v* : IPA App Store (secrets wagon 3)
+#
+# P1-5 audit #327 : workflows release REECRITS depuis les specs (aucun
+# merge de la branche E5.6b pre-decontamination). Signature 100% par
+# variables d environnement Codemagic (groupes) — AUCUN secret dans le
+# repo. Secrets absents = ARRET PROPRE avec message explicite (jamais
+# d echec silencieux ni d artefact non signe presente comme release).
 
 workflows:
   # --- Workflow PR Gate ---
   # Declenche sur chaque Pull Request
-  # Steps: dart analyze + flutter test + flutter format check
+  # Steps: dart analyze + flutter test + format + tests regles Firestore
   pr_gate:
     name: PR Gate
     max_build_duration: 30
@@ -42,6 +52,19 @@ workflows:
           dart format --set-exit-if-changed lib/ test/
           if [ $? -ne 0 ]; then
             echo "ERREUR: code mal formate. Lancer 'dart format lib/ test/' localement."
+            exit 1
+          fi
+
+      # P0-2 audit #327 : les regles Firestore sont testees a CHAQUE PR
+      # (emulateur projet demo — hors ligne, zero credential).
+      # firebase-tools 13.x = compatible Java 17 des images CI.
+      - name: Tests des regles Firestore (emulateur)
+        script: |
+          npm --prefix firestore-tests ci
+          npx -y firebase-tools@13.35.1 emulators:exec --only firestore \
+            --project demo-stepways "npm --prefix firestore-tests test"
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: tests des regles Firestore en echec"
             exit 1
           fi
 
@@ -95,3 +118,174 @@ workflows:
 
     artifacts:
       - build/**/outputs/**/*.apk
+
+  # --- Workflow Android Release (AAB) ---
+  # Declenche sur tag v* (ou lancement manuel).
+  # Secrets attendus dans le groupe d env "stepways_android_signing"
+  # (a creer dans Codemagic au wagon 3 — keystore reel, cf. P1-3) :
+  #   CM_KEYSTORE           keystore release encode en base64
+  #   CM_KEYSTORE_PASSWORD  mot de passe du store
+  #   CM_KEY_ALIAS          alias de la cle
+  #   CM_KEY_PASSWORD       mot de passe de la cle
+  android_release:
+    name: Android Release (AAB)
+    max_build_duration: 60
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'v*'
+          include: true
+    environment:
+      flutter: stable
+      java: 17
+      groups:
+        - stepways_android_signing
+    scripts:
+      - name: Verifier les secrets de signature (arret propre sinon)
+        script: |
+          if [ -z "${CM_KEYSTORE:-}" ] || [ -z "${CM_KEYSTORE_PASSWORD:-}" ] \
+             || [ -z "${CM_KEY_ALIAS:-}" ] || [ -z "${CM_KEY_PASSWORD:-}" ]; then
+            echo "============================================================"
+            echo "ARRET — Secrets de signature Android ABSENTS."
+            echo ""
+            echo "Le groupe d environnement Codemagic 'stepways_android_signing'"
+            echo "doit fournir : CM_KEYSTORE (base64), CM_KEYSTORE_PASSWORD,"
+            echo "CM_KEY_ALIAS, CM_KEY_PASSWORD."
+            echo ""
+            echo "Keystore reel = wagon 3 (Christophe). Voir :"
+            echo "  - android/app/build.gradle.kts (P1-3, lecture key.properties)"
+            echo "  - docs/firebase-setup.md (perimetre wagon 3)"
+            echo ""
+            echo "Aucun AAB publiable ne peut etre produit sans signature :"
+            echo "ce workflow s arrete ICI, explicitement (pas d artefact"
+            echo "signe debug presente comme une release)."
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Secrets de signature presents — on continue."
+
+      - name: Installer keystore + key.properties (hors repo)
+        script: |
+          echo "$CM_KEYSTORE" | base64 --decode > "$CM_BUILD_DIR/release.keystore"
+          cat > "$CM_BUILD_DIR/android/key.properties" <<EOF
+          storeFile=$CM_BUILD_DIR/release.keystore
+          storePassword=$CM_KEYSTORE_PASSWORD
+          keyAlias=$CM_KEY_ALIAS
+          keyPassword=$CM_KEY_PASSWORD
+          EOF
+          echo "key.properties ecrit (le build.gradle.kts P1-3 le lira)."
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (dart analyze)
+        script: |
+          dart analyze lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: dart analyze a detecte des problemes"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test)
+        script: |
+          flutter test
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue — pas de release"
+            exit 1
+          fi
+
+      - name: Build AAB release signe
+        script: flutter build appbundle --release
+
+    artifacts:
+      - build/app/outputs/bundle/release/*.aab
+      - build/app/outputs/mapping/release/mapping.txt
+    # Publication Play Console : wagon 3 (necessite un service account
+    # Google Play — bloc "publishing: google_play:" a ajouter avec la
+    # cle dans un groupe d env, JAMAIS dans le repo).
+
+  # --- Workflow iOS Release (IPA) ---
+  # Declenche sur tag v* (ou lancement manuel).
+  # Secrets attendus dans le groupe d env "stepways_ios_signing"
+  # (a creer dans Codemagic au wagon 3 — compte App Store Connect) :
+  #   APP_STORE_CONNECT_ISSUER_ID       issuer id de la cle ASC
+  #   APP_STORE_CONNECT_KEY_IDENTIFIER  key id de la cle ASC
+  #   APP_STORE_CONNECT_PRIVATE_KEY     contenu .p8 de la cle ASC
+  #   CERTIFICATE_PRIVATE_KEY           cle privee RSA du certificat de
+  #                                     distribution (generee une fois)
+  #   BUNDLE_ID                         bundle id reel de l app iOS
+  ios_release:
+    name: iOS Release (IPA)
+    max_build_duration: 90
+    triggering:
+      events:
+        - tag
+      tag_patterns:
+        - pattern: 'v*'
+          include: true
+    environment:
+      flutter: stable
+      xcode: latest
+      groups:
+        - stepways_ios_signing
+    scripts:
+      - name: Verifier les secrets de signature (arret propre sinon)
+        script: |
+          if [ -z "${APP_STORE_CONNECT_ISSUER_ID:-}" ] \
+             || [ -z "${APP_STORE_CONNECT_KEY_IDENTIFIER:-}" ] \
+             || [ -z "${APP_STORE_CONNECT_PRIVATE_KEY:-}" ] \
+             || [ -z "${CERTIFICATE_PRIVATE_KEY:-}" ] \
+             || [ -z "${BUNDLE_ID:-}" ]; then
+            echo "============================================================"
+            echo "ARRET — Secrets de signature iOS ABSENTS."
+            echo ""
+            echo "Le groupe d environnement Codemagic 'stepways_ios_signing'"
+            echo "doit fournir : APP_STORE_CONNECT_ISSUER_ID,"
+            echo "APP_STORE_CONNECT_KEY_IDENTIFIER, APP_STORE_CONNECT_PRIVATE_KEY,"
+            echo "CERTIFICATE_PRIVATE_KEY, BUNDLE_ID."
+            echo ""
+            echo "Compte developpeur Apple + cles = wagon 3 (Christophe)."
+            echo "Aucun IPA distribuable ne peut etre produit sans signature :"
+            echo "ce workflow s arrete ICI, explicitement."
+            echo "============================================================"
+            exit 1
+          fi
+          echo "Secrets de signature presents — on continue."
+
+      - name: Recuperer certificats et profils de signature
+        script: |
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --certificate-key=@env:CERTIFICATE_PRIVATE_KEY \
+            --create
+          xcode-project use-profiles
+
+      - name: Installer les dependances
+        script: flutter pub get
+
+      - name: Analyse statique (dart analyze)
+        script: |
+          dart analyze lib/ test/
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: dart analyze a detecte des problemes"
+            exit 1
+          fi
+
+      - name: Tests unitaires (flutter test)
+        script: |
+          flutter test
+          if [ $? -ne 0 ]; then
+            echo "ERREUR: des tests ont echoue — pas de release"
+            exit 1
+          fi
+
+      - name: Build IPA release signe
+        script: |
+          flutter build ipa --release \
+            --export-options-plist=/Users/builder/export_options.plist
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+    # Publication TestFlight/App Store : wagon 3 (bloc "publishing:
+    # app_store_connect:" a ajouter quand le compte est cree).
