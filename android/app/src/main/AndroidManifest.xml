@@ -1,6 +1,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- P1-1 audit #327 — permissions reecrites proprement depuis les specs.
+         GPS sentier + enregistrement de rando en arriere-plan + suivi temps
+         reel (E2.6/E2.8/E4.11) ; notifications de suivi (Android 13+) ;
+         reseau pour Firebase/tuiles OSM/meteo. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- Enregistrement de la randonnee ecran eteint / app en arriere-plan.
+         Declaration Play Console requise (formulaire localisation arriere-plan). -->
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <!-- Service de premier plan du suivi GPS (Android 14+ exige le type dedie). -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <!-- Notification persistante du suivi + rappels (Android 13+). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
-        android:label="moteur_gr"
+        android:label="StepWays"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -25,6 +41,15 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- Service de suivi GPS au premier plan (plugin geolocator).
+             Redeclare explicitement avec son type location : exige par
+             Android 14+ pour demarrer le service pendant l enregistrement
+             d une rando (P1-1 audit #327). -->
+        <service
+            android:name="com.baseflow.geolocator.GeolocatorLocationService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
         <!-- E5.19b : Widget Home Screen progression trek -->
         <receiver
             android:name=".TrekWidget"
