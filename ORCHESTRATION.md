@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 06/06/2026 par Vulcain (lot finitions V8 tache #324 COMPLETE + menage repo)
+MAJ: 07/06/2026 par Vulcain (lot remediation P0+P1 audit #327, tache #328, COMPLETE)
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -234,7 +234,94 @@ PREUVES 06/06 (transcript Vulcain, affichees) :
 - Branche claude/feat/E4.15-auth-anonymized : NON SUPPRIMEE — deltas
   uniques constates (voir Branches en attente).
 
+## Lot remediation P0+P1 audit #327 (tache #328) — COMPLETE 07/06
+Audit independant Athena #85381-#85384 (GO-53) : produit solide en
+logique metier mais NON DEPLOYABLE (regles Firestore absentes pour
+follow_sessions, manifestes natifs vides, RGPD inexistant, release
+signee debug, CI sans release). Remediation par Vulcain, branche NEUVE
+claude/fix/remediation-p0p1-audit327 depuis main (ca16f2f), 1 commit
+par item, AUCUN cherry-pick de branche pre-decontamination.
+- P0-1 91c8863 : regles Firestore follow_sessions + sous-collections
+  followers/positions. Session privee owner-only strict (create borne
+  au schema exact, TTL <= 48h + 1h tolerance, update limite a isActive) ;
+  lecture positions par suiveur ANONYME uniquement si session valide
+  (get() serveur isActive + expiresAtTs) ; miroir public minimal
+  follow_sessions_public (shareCode/isActive/expiresAtTs, JAMAIS
+  trekkerUserId) pour la resolution shareCode->sessionId ; deny
+  explicite du reste ; trails/users intacts. FollowService = double
+  ecriture + champ Timestamp expiresAtTs (les regles ne parsent pas
+  l ISO-8601) + rollback ; FollowWebScreen lit le miroir + rejette les
+  sessions expirees ; index composite bascule sur follow_sessions_public.
+- P0-2 20e24c1 : tests des regles sous EMULATEUR — package Node dedie
+  firestore-tests/ (@firebase/rules-unit-testing 4 + firebase 11 +
+  node:test), firebase.json racine (projet demo-stepways hors ligne).
+  45 cas : matrice complete trekker OK / etranger KO / anonyme valide
+  OK / expiree KO / inactive KO / shareCode faux KO / trekkerUserId
+  verifie ABSENT du miroir / payloads bornes / parcours complet sans
+  seed admin / trails + users + catch-all deny. EXECUTION REELLE :
+  45/45 PASS (emulateur Firestore 1.19.8, firebase-tools 13.x car JDK
+  17 machine). Integres au pr_gate CI (P1-5).
+- P0-3 b34944a : docs/rgpd/ — politique de confidentialite FR + EN,
+  registre des traitements art.30 (7 traitements), data-safety.md =
+  mapping exact Play Data Safety + App Privacy/ATT Apple. Fidele au
+  code main : photos/sante/contacts = LOCAL-ONLY jamais transmis,
+  AdMob sandbox test, IAP verrouille, PAS d analytics/Crashlytics
+  (non merges), OSM/Open-Meteo IP transitoire, anonymisation
+  compile-time valorisee (#81775). Placeholders [ENTITE]/[ADRESSE]/
+  [CONTACT-EMAIL] — rien d invente juridiquement. Constat trace :
+  firebase_storage dependance INUTILISEE dans lib/ (retirer ou cabler).
+- P1-1 c4d51ef : AndroidManifest reecrit — ACCESS_FINE/COARSE/
+  BACKGROUND_LOCATION, FOREGROUND_SERVICE(+_LOCATION), POST_
+  NOTIFICATIONS, INTERNET + service geolocator redeclare
+  foregroundServiceType=location (Android 14+) ; label "StepWays" ;
+  package com.only1cent.moteur_gr partout ; widget E5.19b conserve.
+- P1-2 b99660d : Info.plist iOS — NSLocationWhenInUse + Always,
+  NSCamera, NSPhotoLibrary (textes FR niveau store, photos "restent
+  sur votre telephone"), UIBackgroundModes location,
+  CFBundleDisplayName StepWays.
+- P1-3 c054fb9 : build.gradle.kts — minSdk 23 / targetSdk 35 epingles ;
+  signingConfig release via android/key.properties (NON versionne,
+  .gitignore ok) avec FALLBACK EXPLICITE TRACE vers debug (logger.warn)
+  + TODO wagon 3 ; zero secret, zero keystore genere. Preuve gradle :
+  :app:signingReport EXIT=0, fallback verifie.
+- P1-4 5385ace : mode degrade sans Firebase durci — widget
+  CloudUnavailableNotice (i18n t.cloud.* 5 langues), GroupScreen sans
+  formulaire mort, ProfileScreen sans spinner infini + tuile Google
+  remplacee par la notice, FollowWebScreen badge hors-ligne sur erreur
+  de flux, SettingsScreen section Cloud (etat local/actif visible).
+  docs/firebase-setup.md = procedure flutterfire configure wagon 3
+  (projet DEDIE StepWays, JAMAIS gr20-app, region eur3, TTL 48h,
+  deploy rules+indexes). +6 tests degraded_mode.
+- P1-5 3afd6c3 : codemagic.yaml — workflows android_release (AAB) +
+  ios_release (IPA) sur tag v*, signature 100% par groupes d env
+  Codemagic, secrets absents = ARRET PROPRE message explicite (jamais
+  d echec silencieux ni d artefact debug presente comme release) ;
+  pr_gate enrichi du step tests de regles Firestore ; pr_gate/merge
+  existants intacts ; REECRITURE complete (zero merge E5.6b contamine).
+PREUVES 07/06 (transcript Vulcain, affichees) : flutter analyze =
+"No issues found!" ; flutter test = 962 PASS / 0 FAIL / 0 SKIP (base
+956 + 6 nouveaux P1-4, AUCUN test supprime ni skippe) ; tests regles
+emulateur 45/45 PASS reels ; grep fralimonti|gr20|corse|mare-a-mare
+sur les 35 fichiers touches = 1 seul hit JUSTIFIE (la ligne
+d INTERDICTION "JAMAIS le projet gr20-app" de docs/firebase-setup.md,
+exigee par la tache = garde anti-contamination, pas une contamination).
+PAS DE MERGE MAIN sans GO.
+RESTE WAGON 3 (Christophe, HORS run) : keystore reel + key.properties ;
+flutterfire configure projet stepways dedie + branchement
+DefaultFirebaseOptions (firebase_service.dart) + firebaseProjectId
+TrailConfig ; groupes d env Codemagic stepways_android_signing /
+stepways_ios_signing ; politique TTL Firestore follow_sessions(_public) ;
+build device reel Android+iOS (P1-6 audit) ; ATT + CMP avant ads
+reelles ; saisie Data Safety / App Privacy dans les consoles
+(docs/rgpd/data-safety.md). DETTE TRACEE : collection groups sans
+regles (deny — feature groupe inerte en prod, a traiter a l activation) ;
+firebase_storage inutilise ; sel anonymisation fixe (P2-6 audit).
+
 ## Branches en attente
+claude/fix/remediation-p0p1-audit327 — lot remediation P0+P1 audit #327
+  (tache #328) COMPLETE 07/06 : 8 commits 91c8863..3afd6c3 (+ resync
+  orchestration), preuves analyze 0 / test 962-0 / regles emulateur
+  45-0 affichees. Attend QA Artemis + GO Chris. PAS DE MERGE sans GO.
 claude/fix/finitions-v8 — lot finitions V8 #324 COMPLETE (commits ci-dessus),
   preuves analyze 0 / test 956-0 affichees. Attend QA Artemis + GO Chris.
   PAS DE MERGE sans GO.
@@ -260,6 +347,11 @@ claude/fix/E5-decontamination-gr20 — reprise Phase 5 ; constat git 06/06 :
   inclut ebde305). Statut GO/QA a confirmer par Skynet/Chris.
 
 ## Prochaine action
+0. QA gate Artemis sur claude/fix/remediation-p0p1-audit327 (lot
+   remediation audit #327, tache #328 : P0-1..P1-5, preuves analyze 0 /
+   test 962-0 / regles emulateur 45-0 / greps dans le transcript) +
+   GO Chris. Puis wagon 3 Christophe (keystore, Firebase reel, build
+   device — liste detaillee dans la section du lot).
 1. QA gate Artemis sur claude/fix/finitions-v8 (lot finitions #324 :
    F1-F8, preuves analyze 0 / test 956-0 / greps dans le transcript).
 2. QA gate Artemis sur claude/feat/E4.10-17-reintegration (bloc E4.10-E4.17,
@@ -273,6 +365,19 @@ claude/fix/E5-decontamination-gr20 — reprise Phase 5 ; constat git 06/06 :
    constatee deja mergee sur main (422a94c).
 
 ## Derniere action
+07/06 (remediation audit #327) : lot P0+P1 tache #328 COMPLETE par
+Vulcain sur claude/fix/remediation-p0p1-audit327 — P0-1 regles
+Firestore follow_sessions + miroir public minimal sans trekkerUserId,
+P0-2 45 tests de regles sous emulateur REELS (45/45 PASS) integres au
+pr_gate, P0-3 dossier RGPD complet (politique FR/EN, registre art.30,
+mapping stores/ATT), P1-1 AndroidManifest permissions + service
+location, P1-2 Info.plist cles d usage + background location, P1-3
+gradle minSdk23/targetSdk35 + signing key.properties fallback trace,
+P1-4 mode degrade sans Firebase (UI explicite, 6 tests) + doc setup
+wagon 3, P1-5 workflows release AAB/IPA signature conditionnelle arret
+propre. Preuves : analyze 0 issue, 962/962 PASS, emulateur 45/45,
+grep fichiers touches = 1 hit justifie (ligne d interdiction gr20-app).
+Voir section "Lot remediation P0+P1 audit #327".
 06/06 (finitions V8) : lot finitions tache #324 COMPLETE par Vulcain sur
 claude/fix/finitions-v8 — F1 type String hebergements (#81752, valeur
 inconnue preservee), F2 questions faisabilite par trailId, F3 trace GPS

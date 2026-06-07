@@ -1,6 +1,32 @@
 rules_version = '2';
+
+// Regles de securite Firestore — StepWays (moteur GR).
+//
+// P0-1 audit #327 (shards #85381-#85384) : couverture follow_sessions +
+// sous-collections followers/positions + miroir public minimal.
+// Modele de menace suivi temps reel (E4.10-E4.12) :
+//   - follow_sessions/{id} = document MAITRE prive (porte trekkerUserId).
+//     Lecture/ecriture STRICTEMENT reservees au proprietaire
+//     (request.auth.uid == trekkerUserId). Le suiveur anonyme ne lit
+//     JAMAIS ce document — trekkerUserId n est jamais expose.
+//   - follow_sessions_public/{id} = miroir public MINIMAL
+//     (shareCode / isActive / expiresAtTs uniquement) servant a resoudre
+//     shareCode -> sessionId cote suiveur anonyme (FollowWebScreen).
+//   - positions = lisibles par un suiveur anonyme UNIQUEMENT si la
+//     session est valide (isActive == true ET expiresAtTs non depasse,
+//     TTL 48h du modele), verification cote serveur via get().
+//     Les regles ne sachant pas parser les dates ISO-8601 du modele
+//     Dart, l expiration est portee par le champ Timestamp natif
+//     expiresAtTs ecrit par FollowService.
+//   - followers = ecrits/lus par le proprietaire uniquement (le flux
+//     addFollower passe par l app du trekker).
+// Tout le reste : deny (defaut Firestore, rendu explicite en fin de fichier).
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
     // Donnees sentiers — lecture publique, ecriture admin uniquement
     match /trails/{trailId} {
       allow read: if true;
@@ -9,12 +35,127 @@ service cloud.firestore {
         allow write: if request.auth != null && request.auth.token.admin == true;
       }
     }
+
     // Donnees utilisateur — lecture/ecriture par le proprietaire
     match /users/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
       match /{subcollection}/{docId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
+    }
+
+    // Session de suivi temps reel — document maitre PRIVE (E4.11)
+    match /follow_sessions/{sessionId} {
+      function sessionData() {
+        return get(/databases/$(database)/documents/follow_sessions/$(sessionId)).data;
+      }
+      function isSessionOwner() {
+        return isSignedIn() && sessionData().trekkerUserId == request.auth.uid;
+      }
+      // Session valide = active ET non expiree (TTL 48h du modele).
+      // Re-verifie COTE SERVEUR a chaque lecture de position.
+      function sessionIsValid() {
+        return sessionData().isActive == true
+          && sessionData().expiresAtTs > request.time;
+      }
+
+      // Creation par le trekker proprietaire UNIQUEMENT, payload borne :
+      // schema exact du FollowSession Dart + expiresAtTs (Timestamp regles).
+      // Borne 49h = TTL modele 48h + 1h de tolerance horloge client.
+      allow create: if isSignedIn()
+        && request.resource.data.trekkerUserId == request.auth.uid
+        && request.resource.data.keys().hasOnly(
+             ['id', 'trekkerUserId', 'shareCode', 'createdAt',
+              'expiresAt', 'isActive', 'expiresAtTs'])
+        && request.resource.data.id == sessionId
+        && request.resource.data.shareCode is string
+        && request.resource.data.shareCode.size() == 6
+        && request.resource.data.isActive is bool
+        && request.resource.data.expiresAtTs is timestamp
+        && request.resource.data.expiresAtTs > request.time
+        && request.resource.data.expiresAtTs <= request.time + duration.value(49, 'h');
+
+      // Lecture/suppression : proprietaire uniquement (jamais le suiveur).
+      allow get, list: if isSignedIn()
+        && resource.data.trekkerUserId == request.auth.uid;
+      allow delete: if isSignedIn()
+        && resource.data.trekkerUserId == request.auth.uid;
+
+      // Mise a jour : proprietaire, seul isActive peut changer
+      // (cloture de session) — identite et TTL immuables.
+      allow update: if isSignedIn()
+        && resource.data.trekkerUserId == request.auth.uid
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['isActive']);
+
+      // Positions GPS publiees par le trekker (FollowService.publishPosition
+      // + batchs GroupSyncService — memes cles, get() cachee par requete).
+      match /positions/{positionId} {
+        // Ecriture : trekker proprietaire, session active non expiree.
+        allow create: if isSessionOwner()
+          && sessionIsValid()
+          && request.resource.data.keys().hasOnly(
+               ['lat', 'lng', 'timestamp', 'stageId', 'batchedAt', 'syncMode'])
+          && request.resource.data.lat is number
+          && request.resource.data.lng is number;
+        // Lecture : suiveur ANONYME autorise si session valide
+        // (shareCode resolu en sessionId via le miroir public),
+        // ou proprietaire. Le document position n expose aucune identite.
+        allow get, list: if sessionIsValid() || isSessionOwner();
+        // Une position publiee est immuable.
+        allow update, delete: if false;
+      }
+
+      // Slots suiveurs — geres par l app du trekker au strict besoin :
+      // comptage (list) + creation bornee. Jamais de lecture anonyme.
+      match /followers/{slotId} {
+        allow get, list: if isSessionOwner();
+        allow create: if isSessionOwner()
+          && request.resource.data.keys().hasOnly(
+               ['id', 'sessionId', 'followerName', 'isPaid', 'adSupported'])
+          && request.resource.data.sessionId == sessionId;
+        allow update, delete: if false;
+      }
+    }
+
+    // Miroir public MINIMAL — resolution shareCode -> sessionId pour le
+    // suiveur anonyme, SANS exposer trekkerUserId (P0-1 audit #327).
+    match /follow_sessions_public/{sessionId} {
+      function privateSession() {
+        return get(/databases/$(database)/documents/follow_sessions/$(sessionId)).data;
+      }
+
+      // Lecture anonyme bornee aux sessions actives. La requete du
+      // FollowWebScreen filtre isActive == true (regle list prouvable).
+      // L expiration TTL est re-verifiee cote serveur a la lecture des
+      // positions (sessionIsValid) : un miroir actif expire n expose que
+      // shareCode + expiry, jamais une position ni une identite.
+      allow get, list: if resource.data.isActive == true;
+
+      // Ecriture par le proprietaire de la session privee correspondante
+      // uniquement, payload strictement minimal (JAMAIS trekkerUserId)
+      // et coherent avec la session maitre.
+      allow create: if isSignedIn()
+        && privateSession().trekkerUserId == request.auth.uid
+        && request.resource.data.keys().hasOnly(
+             ['shareCode', 'isActive', 'expiresAtTs'])
+        && request.resource.data.shareCode == privateSession().shareCode
+        && request.resource.data.isActive is bool
+        && request.resource.data.expiresAtTs is timestamp;
+      // Seul isActive peut changer (cloture) — shareCode/TTL immuables.
+      allow update: if isSignedIn()
+        && privateSession().trekkerUserId == request.auth.uid
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['isActive']);
+      allow delete: if isSignedIn()
+        && privateSession().trekkerUserId == request.auth.uid;
+    }
+
+    // Tout le reste : DENY explicite (collections sans regles dediees,
+    // ex. groups — feature groupe sans regles a ce jour, voir
+    // ORCHESTRATION wagon 3 / dette).
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

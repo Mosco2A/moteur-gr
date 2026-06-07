@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/firebase/cloud_unavailable_notice.dart';
+import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/auth_service.dart';
@@ -66,7 +68,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     AuthUser? user,
   ) {
     if (user == null) {
-      return const Center(child: CircularProgressIndicator());
+      // P1-4 audit #327 : etat explicite — un spinner infini masquait
+      // l absence d utilisateur (le stream a emis null, rien n arrivera).
+      return Center(child: Text(i18n.auth.errorLoading));
     }
 
     return ListView(
@@ -93,7 +97,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         const SizedBox(height: AppTheme.spacingXl),
-        if (user.isAnonymous) ...[
+        // P1-4 audit #327 : sans Firebase, la connexion Google ne peut
+        // qu echouer en silence — etat explicite a la place de la tuile.
+        if (user.isAnonymous &&
+            !ref.watch(isFirebaseAvailableProvider)) ...[
+          const CloudUnavailableNotice(),
+          const SizedBox(height: AppTheme.spacingSm),
+        ],
+        if (user.isAnonymous && ref.watch(isFirebaseAvailableProvider)) ...[
           Card(
             child: ListTile(
               leading: const Icon(Icons.login),

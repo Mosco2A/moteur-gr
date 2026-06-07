@@ -439,6 +439,15 @@
     "invalidLink": "Link non valido",
     "invalidLinkHint": "Questo link di localizzazione non esiste o è scaduto."
   },
+  "cloud": {
+    "localModeTitle": "Modalità locale",
+    "localModeBody": "Questa installazione non è collegata a un servizio cloud: localizzazione in diretta, backup online e account sono disattivati. I tuoi dati restano sul dispositivo.",
+    "statusSection": "Cloud",
+    "statusActive": "Servizi online attivi",
+    "statusActiveDesc": "Backup e localizzazione in diretta disponibili.",
+    "statusLocal": "Modalità locale (senza cloud)",
+    "statusLocalDesc": "Nessun dato viene inviato online. Configurazione cloud assente."
+  },
   "monetization": {
     "demoBanner": "Modalità demo — tocca per sbloccare",
     "paywallTitle": "Sblocca questo trek",

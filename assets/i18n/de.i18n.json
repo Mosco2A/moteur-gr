@@ -439,6 +439,15 @@
     "invalidLink": "Ungültiger Link",
     "invalidLinkHint": "Dieser Tracking-Link existiert nicht oder ist abgelaufen."
   },
+  "cloud": {
+    "localModeTitle": "Lokaler Modus",
+    "localModeBody": "Diese Installation ist mit keinem Cloud-Dienst verbunden: Live-Verfolgung, Online-Sicherung und Konto sind deaktiviert. Ihre Daten bleiben auf dem Gerät.",
+    "statusSection": "Cloud",
+    "statusActive": "Online-Dienste aktiv",
+    "statusActiveDesc": "Sicherung und Live-Verfolgung verfügbar.",
+    "statusLocal": "Lokaler Modus (ohne Cloud)",
+    "statusLocalDesc": "Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden."
+  },
   "monetization": {
     "demoBanner": "Demo-Modus — zum Freischalten tippen",
     "paywallTitle": "Diesen Trek freischalten",

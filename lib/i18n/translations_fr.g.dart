@@ -64,6 +64,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$noData$fr noData = Translations$noData$fr.internal(_root);
 	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
 	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
+	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
 }
 
@@ -1031,6 +1032,36 @@ class Translations$follow$fr {
 	String get invalidLinkHint => 'Ce lien de suivi n\'existe pas ou a expiré.';
 }
 
+// Path: cloud
+class Translations$cloud$fr {
+	Translations$cloud$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mode local'
+	String get localModeTitle => 'Mode local';
+
+	/// fr: 'Cette installation n'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l'appareil.'
+	String get localModeBody => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l\'appareil.';
+
+	/// fr: 'Cloud'
+	String get statusSection => 'Cloud';
+
+	/// fr: 'Services en ligne actifs'
+	String get statusActive => 'Services en ligne actifs';
+
+	/// fr: 'Sauvegarde et suivi en temps réel disponibles.'
+	String get statusActiveDesc => 'Sauvegarde et suivi en temps réel disponibles.';
+
+	/// fr: 'Mode local (sans cloud)'
+	String get statusLocal => 'Mode local (sans cloud)';
+
+	/// fr: 'Aucune donnée n'est envoyée en ligne. Configuration cloud absente.'
+	String get statusLocalDesc => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.';
+}
+
 // Path: monetization
 class Translations$monetization$fr {
 	Translations$monetization$fr.internal(this._root);
@@ -1940,6 +1971,13 @@ extension on Translations {
 			'follow.offline' => 'Hors ligne',
 			'follow.invalidLink' => 'Lien invalide',
 			'follow.invalidLinkHint' => 'Ce lien de suivi n\'existe pas ou a expiré.',
+			'cloud.localModeTitle' => 'Mode local',
+			'cloud.localModeBody' => 'Cette installation n\'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l\'appareil.',
+			'cloud.statusSection' => 'Cloud',
+			'cloud.statusActive' => 'Services en ligne actifs',
+			'cloud.statusActiveDesc' => 'Sauvegarde et suivi en temps réel disponibles.',
+			'cloud.statusLocal' => 'Mode local (sans cloud)',
+			'cloud.statusLocalDesc' => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.',
 			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
 			'monetization.paywallTitle' => 'Débloquez ce trek',
 			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.',

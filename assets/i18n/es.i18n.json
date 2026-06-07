@@ -439,6 +439,15 @@
     "invalidLink": "Enlace no válido",
     "invalidLinkHint": "Este enlace de seguimiento no existe o ha caducado."
   },
+  "cloud": {
+    "localModeTitle": "Modo local",
+    "localModeBody": "Esta instalación no está conectada a un servicio en la nube: el seguimiento en directo, la copia de seguridad en línea y la cuenta están desactivados. Sus datos permanecen en el dispositivo.",
+    "statusSection": "Nube",
+    "statusActive": "Servicios en línea activos",
+    "statusActiveDesc": "Copia de seguridad y seguimiento en directo disponibles.",
+    "statusLocal": "Modo local (sin nube)",
+    "statusLocalDesc": "No se envía ningún dato en línea. Falta la configuración de la nube."
+  },
   "monetization": {
     "demoBanner": "Modo demo — toca para desbloquear",
     "paywallTitle": "Desbloquea este trek",

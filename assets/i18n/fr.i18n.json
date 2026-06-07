@@ -439,6 +439,15 @@
     "invalidLink": "Lien invalide",
     "invalidLinkHint": "Ce lien de suivi n'existe pas ou a expiré."
   },
+  "cloud": {
+    "localModeTitle": "Mode local",
+    "localModeBody": "Cette installation n'est pas reliée à un service cloud : suivi en temps réel, sauvegarde en ligne et compte sont désactivés. Vos données restent sur l'appareil.",
+    "statusSection": "Cloud",
+    "statusActive": "Services en ligne actifs",
+    "statusActiveDesc": "Sauvegarde et suivi en temps réel disponibles.",
+    "statusLocal": "Mode local (sans cloud)",
+    "statusLocalDesc": "Aucune donnée n'est envoyée en ligne. Configuration cloud absente."
+  },
   "monetization": {
     "demoBanner": "Mode démo — touchez pour débloquer",
     "paywallTitle": "Débloquez ce trek",

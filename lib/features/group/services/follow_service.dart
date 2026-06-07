@@ -53,6 +53,13 @@ class FollowService {
 
   /// Cree une session de suivi avec un shareCode unique de 6 caracteres.
   ///
+  /// Ecrit le document maitre follow_sessions/{id} (prive, owner-only)
+  /// puis le miroir public minimal follow_sessions_public/{id} qui ne
+  /// porte QUE shareCode/isActive/expiresAtTs — jamais trekkerUserId
+  /// (P0-1 audit #327). Les regles Firestore ne sachant pas parser les
+  /// dates ISO-8601 du modele, l expiration TTL 48h est doublee d un
+  /// champ Timestamp natif expiresAtTs sur les deux documents.
+  ///
   /// Retourne la [FollowSession] creee ou null si Firebase indisponible.
   Future<FollowSession?> createSession({required String trekkerUserId}) async {
     if (!firebaseService.isAvailable) return null;
@@ -60,28 +67,49 @@ class FollowService {
     final sessionId = _uuid.v4();
     final shareCode = _generateShareCode();
     final now = DateTime.now();
+    final expiresAt = now.add(const Duration(hours: 48));
 
     final session = FollowSession(
       id: sessionId,
       trekkerUserId: trekkerUserId,
       shareCode: shareCode,
       createdAt: now.toIso8601String(),
-      expiresAt: now.add(const Duration(hours: 48)).toIso8601String(),
+      expiresAt: expiresAt.toIso8601String(),
       isActive: true,
     );
 
     try {
-      await firestore
-          .collection('follow_sessions')
-          .doc(sessionId)
-          .set(session.toJson());
-
-      _log.i('[FollowService] Session creee: $shareCode');
-      return session;
+      await firestore.collection('follow_sessions').doc(sessionId).set({
+        ...session.toJson(),
+        'expiresAtTs': Timestamp.fromDate(expiresAt),
+      });
     } catch (e) {
       _log.e('[FollowService] Erreur createSession: $e');
       return null;
     }
+
+    try {
+      await firestore
+          .collection('follow_sessions_public')
+          .doc(sessionId)
+          .set({
+        'shareCode': shareCode,
+        'isActive': true,
+        'expiresAtTs': Timestamp.fromDate(expiresAt),
+      });
+    } catch (e) {
+      // Sans miroir public, le suiveur ne peut pas resoudre le shareCode :
+      // rollback best-effort du document maitre pour ne pas laisser une
+      // session orpheline.
+      _log.e('[FollowService] Erreur miroir public: $e');
+      try {
+        await firestore.collection('follow_sessions').doc(sessionId).delete();
+      } catch (_) {}
+      return null;
+    }
+
+    _log.i('[FollowService] Session creee: $shareCode');
+    return session;
   }
 
   /// Ajoute un suiveur a la session. Max [kMaxFreeFollowers] gratuits.
