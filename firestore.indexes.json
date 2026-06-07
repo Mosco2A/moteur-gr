@@ -1,7 +1,7 @@
 {
   "indexes": [
     {
-      "collectionGroup": "follow_sessions",
+      "collectionGroup": "follow_sessions_public",
       "queryScope": "COLLECTION",
       "fields": [
         {

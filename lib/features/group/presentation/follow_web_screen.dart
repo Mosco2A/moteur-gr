@@ -71,8 +71,11 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
     }
     try {
       final firestore = FirebaseFirestore.instance;
+      // Resolution shareCode -> sessionId via le miroir public MINIMAL
+      // (follow_sessions_public ne porte jamais trekkerUserId — P0-1 #327).
+      // Le document maitre follow_sessions reste owner-only.
       final snapshot = await firestore
-          .collection('follow_sessions')
+          .collection('follow_sessions_public')
           .where('shareCode', isEqualTo: widget.shareCode)
           .where('isActive', isEqualTo: true)
           .limit(1)
@@ -84,7 +87,20 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
         });
         return;
       }
-      final sessionId = snapshot.docs.first.id;
+      final publicDoc = snapshot.docs.first;
+      // Session expiree (TTL 48h) : les regles refuseront de toute facon
+      // la lecture des positions — afficher l erreur lien invalide tout
+      // de suite plutot qu une carte vide.
+      final expiresAtTs = publicDoc.data()['expiresAtTs'];
+      if (expiresAtTs is Timestamp &&
+          !expiresAtTs.toDate().isAfter(DateTime.now())) {
+        setState(() {
+          _hasError = true;
+          _isLoading = false;
+        });
+        return;
+      }
+      final sessionId = publicDoc.id;
       setState(() {
         _sessionFound = true;
         _isLoading = false;
