@@ -182,13 +182,17 @@ class _MapContentState extends State<_MapContent> {
                   userAgentPackageName: 'com.moteur-gr.app',
                 ),
 
-                // 2. Trace GPX
-                TraceLayer(
-                  points: latLngPoints,
-                  color: trailColor,
+                // 2. Trace GPX (statique -> RepaintBoundary pour isoler
+                //    le raster du trace des rebuilds de la position GPS)
+                RepaintBoundary(
+                  child: TraceLayer(
+                    points: latLngPoints,
+                    color: trailColor,
+                  ),
                 ),
 
-                // 3. Marqueurs d etapes
+                // 3. Marqueurs d etapes (statiques -> RepaintBoundary +
+                //    clustering au-dela du seuil via le zoom courant)
                 Consumer(
                   builder: (context, ref, _) {
                     final stagesAsync = ref.watch(
@@ -221,7 +225,12 @@ class _MapContentState extends State<_MapContent> {
                         )
                         .toList();
 
-                    return StageMarkersLayer(stages: domainStages);
+                    return RepaintBoundary(
+                      child: StageMarkersLayer(
+                        stages: domainStages,
+                        zoom: _currentZoom.toDouble(),
+                      ),
+                    );
                   },
                 ),
 

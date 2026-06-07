@@ -2,24 +2,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/geo/douglas_peucker.dart';
 import '../../../core/geo/track_point.dart';
+import '../../trek/presentation/map/marker_cluster.dart';
 import 'gpx_track_provider.dart';
-
-/// Seuils de simplification Douglas-Peucker selon le niveau de zoom.
-///
-/// zoom < 9  → epsilon 200m (vue large, peu de points)
-/// zoom 9-12 → epsilon 50m  (vue intermédiaire)
-/// zoom >= 13 → epsilon 0   (tous les points, vue détaillée)
-double _epsilonForZoom(int zoomLevel) {
-  if (zoomLevel < 9) return 200.0;
-  if (zoomLevel <= 12) return 50.0;
-  return 0.0;
-}
 
 /// Provider du tracé simplifié, paramétré par (trailId, zoomLevel).
 ///
-/// Applique l'algorithme Douglas-Peucker avec un epsilon adapté
-/// au niveau de zoom courant. Les seuils sont discrets pour
-/// limiter les recalculs inutiles.
+/// Applique l'algorithme Douglas-Peucker avec un epsilon dynamique
+/// adapté au niveau de zoom courant ([dynamicEpsilonForZoom]) : l'epsilon
+/// décroît exponentiellement à mesure qu'on zoome, jusqu'à 0 (plein détail)
+/// au-delà du zoom 15. La famille reste clé sur un zoom entier pour mémoïser
+/// le calcul et ne le rejouer qu'au franchissement d'un niveau.
 final simplifiedTrackProvider = Provider.family<
     AsyncValue<List<TrackPoint>>, ({String trailId, int zoomLevel})>(
   (ref, params) {
@@ -27,7 +19,7 @@ final simplifiedTrackProvider = Provider.family<
 
     return rawTrack.when(
       data: (points) {
-        final epsilon = _epsilonForZoom(params.zoomLevel);
+        final epsilon = dynamicEpsilonForZoom(params.zoomLevel);
 
         // Pas de simplification si epsilon = 0
         if (epsilon == 0.0) return AsyncData(points);
