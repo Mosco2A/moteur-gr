@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../../i18n/translations.g.dart';
 import '../../../domain/models/stage.dart';
 import '../marker_cluster.dart';
 
@@ -51,28 +52,34 @@ class StageMarkersLayer extends StatelessWidget {
       point: LatLng(stage.startLat, stage.startLng),
       width: markerSize,
       height: markerSize,
-      child: GestureDetector(
-        onTap: onStageTap != null ? () => onStageTap!(stage.id) : null,
-        child: Container(
-          decoration: BoxDecoration(
-            color: _markerColor(index),
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.white, width: 2),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black26,
-                blurRadius: 4,
-                offset: Offset(0, 2),
+      child: Semantics(
+        button: onStageTap != null,
+        label: t.a11y.stageMarker(number: stage.orderIndex),
+        child: GestureDetector(
+          onTap: onStageTap != null ? () => onStageTap!(stage.id) : null,
+          child: ExcludeSemantics(
+            child: Container(
+              decoration: BoxDecoration(
+                color: _markerColor(index),
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 2),
+                boxShadow: const [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(0, 2),
+                  ),
+                ],
               ),
-            ],
-          ),
-          alignment: Alignment.center,
-          child: Text(
-            '${stage.orderIndex}',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
+              alignment: Alignment.center,
+              child: Text(
+                '${stage.orderIndex}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
             ),
           ),
         ),

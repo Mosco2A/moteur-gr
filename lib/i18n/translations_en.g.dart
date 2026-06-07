@@ -39,6 +39,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	TranslationsEn $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsEn(meta: meta ?? this.$meta);
 
 	// Translations
+	@override late final _Translations$a11y$en a11y = _Translations$a11y$en._(_root);
 	@override late final _Translations$nav$en nav = _Translations$nav$en._(_root);
 	@override late final _Translations$map$en map = _Translations$map$en._(_root);
 	@override late final _Translations$stage$en stage = _Translations$stage$en._(_root);
@@ -65,6 +66,29 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
 	@override late final _Translations$monetization$en monetization = _Translations$monetization$en._(_root);
+}
+
+// Path: a11y
+class _Translations$a11y$en extends Translations$a11y$fr {
+	_Translations$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get back => 'Back';
+	@override String get zoomIn => 'Zoom in';
+	@override String get zoomOut => 'Zoom out';
+	@override String get centerOnMe => 'Center on my position';
+	@override String get mapRegion => 'Trail map';
+	@override String get userPosition => 'Your position';
+	@override String stageMarker({required Object number}) => 'Stage ${number}';
+	@override String poiMarker({required Object name}) => 'Point of interest: ${name}';
+	@override String markerCluster({required Object count}) => '${count} grouped points';
+	@override String trailCard({required Object name}) => 'Trail ${name}';
+	@override String get startTracking => 'Start tracking';
+	@override String get pauseTracking => 'Pause tracking';
+	@override String get resumeTracking => 'Resume tracking';
+	@override String get stopTracking => 'Stop tracking';
 }
 
 // Path: nav
@@ -854,6 +878,20 @@ class _Translations$feasibility$recommendations$excellent$tips$en extends Transl
 extension on TranslationsEn {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
+			'a11y.back' => 'Back',
+			'a11y.zoomIn' => 'Zoom in',
+			'a11y.zoomOut' => 'Zoom out',
+			'a11y.centerOnMe' => 'Center on my position',
+			'a11y.mapRegion' => 'Trail map',
+			'a11y.userPosition' => 'Your position',
+			'a11y.stageMarker' => ({required Object number}) => 'Stage ${number}',
+			'a11y.poiMarker' => ({required Object name}) => 'Point of interest: ${name}',
+			'a11y.markerCluster' => ({required Object count}) => '${count} grouped points',
+			'a11y.trailCard' => ({required Object name}) => 'Trail ${name}',
+			'a11y.startTracking' => 'Start tracking',
+			'a11y.pauseTracking' => 'Pause tracking',
+			'a11y.resumeTracking' => 'Resume tracking',
+			'a11y.stopTracking' => 'Stop tracking',
 			'nav.map' => 'Map',
 			'nav.stages' => 'Stages',
 			'nav.planning' => 'Planning',

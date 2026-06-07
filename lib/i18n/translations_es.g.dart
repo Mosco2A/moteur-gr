@@ -39,6 +39,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	TranslationsEs $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => TranslationsEs(meta: meta ?? this.$meta);
 
 	// Translations
+	@override late final _Translations$a11y$es a11y = _Translations$a11y$es._(_root);
 	@override late final _Translations$nav$es nav = _Translations$nav$es._(_root);
 	@override late final _Translations$map$es map = _Translations$map$es._(_root);
 	@override late final _Translations$stage$es stage = _Translations$stage$es._(_root);
@@ -65,6 +66,29 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$follow$es follow = _Translations$follow$es._(_root);
 	@override late final _Translations$cloud$es cloud = _Translations$cloud$es._(_root);
 	@override late final _Translations$monetization$es monetization = _Translations$monetization$es._(_root);
+}
+
+// Path: a11y
+class _Translations$a11y$es extends Translations$a11y$fr {
+	_Translations$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get back => 'Volver';
+	@override String get zoomIn => 'Acercar';
+	@override String get zoomOut => 'Alejar';
+	@override String get centerOnMe => 'Centrar en mi posicion';
+	@override String get mapRegion => 'Mapa del sendero';
+	@override String get userPosition => 'Tu posicion';
+	@override String stageMarker({required Object number}) => 'Etapa ${number}';
+	@override String poiMarker({required Object name}) => 'Punto de interes: ${name}';
+	@override String markerCluster({required Object count}) => '${count} puntos agrupados';
+	@override String trailCard({required Object name}) => 'Sendero ${name}';
+	@override String get startTracking => 'Iniciar seguimiento';
+	@override String get pauseTracking => 'Pausar seguimiento';
+	@override String get resumeTracking => 'Reanudar seguimiento';
+	@override String get stopTracking => 'Detener seguimiento';
 }
 
 // Path: nav
@@ -854,6 +878,20 @@ class _Translations$feasibility$recommendations$excellent$tips$es extends Transl
 extension on TranslationsEs {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
+			'a11y.back' => 'Volver',
+			'a11y.zoomIn' => 'Acercar',
+			'a11y.zoomOut' => 'Alejar',
+			'a11y.centerOnMe' => 'Centrar en mi posicion',
+			'a11y.mapRegion' => 'Mapa del sendero',
+			'a11y.userPosition' => 'Tu posicion',
+			'a11y.stageMarker' => ({required Object number}) => 'Etapa ${number}',
+			'a11y.poiMarker' => ({required Object name}) => 'Punto de interes: ${name}',
+			'a11y.markerCluster' => ({required Object count}) => '${count} puntos agrupados',
+			'a11y.trailCard' => ({required Object name}) => 'Sendero ${name}',
+			'a11y.startTracking' => 'Iniciar seguimiento',
+			'a11y.pauseTracking' => 'Pausar seguimiento',
+			'a11y.resumeTracking' => 'Reanudar seguimiento',
+			'a11y.stopTracking' => 'Detener seguimiento',
 			'nav.map' => 'Mapa',
 			'nav.stages' => 'Etapas',
 			'nav.planning' => 'Planificación',

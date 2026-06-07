@@ -10,6 +10,7 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_point.dart';
 import '../../../core/models/poi.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/loading_overlay.dart';
 import '../../trek/presentation/map/marker_cluster.dart';
@@ -203,9 +204,15 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
                           point: point.position,
                           width: 36,
                           height: 36,
-                          child: GestureDetector(
-                            onTap: () => setState(() => _selectedPoi = poi),
-                            child: PoiMarker(type: poi.type),
+                          child: Semantics(
+                            button: true,
+                            label: t.a11y.poiMarker(name: poi.name),
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedPoi = poi),
+                              child: ExcludeSemantics(
+                                child: PoiMarker(type: poi.type),
+                              ),
+                            ),
                           ),
                         );
                       },
@@ -229,7 +236,11 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
                             ),
                             width: 60,
                             height: 60,
-                            child: const UserPositionMarker(),
+                            child: Semantics(
+                              label: t.a11y.userPosition,
+                              image: true,
+                              child: const UserPositionMarker(),
+                            ),
                           ),
                         ],
                         orElse: () => <Marker>[],

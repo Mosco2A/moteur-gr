@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/theme/app_theme.dart';
+import '../../../../../i18n/translations.g.dart';
 import '../../../providers/tracking_providers.dart';
 
 /// Overlay de tracking temps reel affiche sur la carte.
@@ -176,6 +177,7 @@ class _ButtonsRow extends StatelessWidget {
               label: 'Demarrer',
               icon: Icons.play_arrow,
               color: Colors.green,
+              semanticLabel: t.a11y.startTracking,
               onPressed: () => notifier.start(trailId),
             );
           case TrackingSessionStatus.recording:
@@ -186,6 +188,7 @@ class _ButtonsRow extends StatelessWidget {
                     label: 'Pause',
                     icon: Icons.pause,
                     color: Colors.orange,
+                    semanticLabel: t.a11y.pauseTracking,
                     onPressed: notifier.pause,
                   ),
                 ),
@@ -195,6 +198,7 @@ class _ButtonsRow extends StatelessWidget {
                     label: 'Stop',
                     icon: Icons.stop,
                     color: AppTheme.rougeUrgence,
+                    semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
                   ),
                 ),
@@ -208,6 +212,7 @@ class _ButtonsRow extends StatelessWidget {
                     label: 'Reprendre',
                     icon: Icons.play_arrow,
                     color: Colors.green,
+                    semanticLabel: t.a11y.resumeTracking,
                     onPressed: notifier.resume,
                   ),
                 ),
@@ -217,6 +222,7 @@ class _ButtonsRow extends StatelessWidget {
                     label: 'Stop',
                     icon: Icons.stop,
                     color: AppTheme.rougeUrgence,
+                    semanticLabel: t.a11y.stopTracking,
                     onPressed: () => _confirmStop(context, notifier),
                   ),
                 ),
@@ -269,20 +275,25 @@ class _StatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 18, color: theme.colorScheme.primary),
-        const SizedBox(height: 2),
-        Text(value, style: theme.textTheme.labelLarge),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: AppTheme.grisGranite,
-            fontSize: 12,
-          ),
+    return Semantics(
+      label: '$label : $value',
+      child: ExcludeSemantics(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 18, color: theme.colorScheme.primary),
+            const SizedBox(height: 2),
+            Text(value, style: theme.textTheme.labelLarge),
+            Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+                fontSize: 12,
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
@@ -294,6 +305,7 @@ class _ActionButton extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.onPressed,
+    this.semanticLabel,
   });
 
   final String label;
@@ -301,18 +313,27 @@ class _ActionButton extends StatelessWidget {
   final Color color;
   final VoidCallback onPressed;
 
+  /// Label d'accessibilite (Slang) decrivant l'action ; remplace le libelle
+  /// visuel pour les lecteurs d'ecran. Null -> on lit le libelle visible.
+  final String? semanticLabel;
+
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      onPressed: onPressed,
-      icon: Icon(icon, size: 20),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: Colors.white,
-        minimumSize: const Size(0, 44),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusButton),
+    return Semantics(
+      button: true,
+      label: semanticLabel ?? label,
+      excludeSemantics: true,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 20),
+        label: Text(label),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          minimumSize: const Size(0, 44),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppTheme.radiusButton),
+          ),
         ),
       ),
     );

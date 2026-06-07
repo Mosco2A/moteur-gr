@@ -1,4 +1,20 @@
 {
+  "a11y": {
+    "back": "Indietro",
+    "zoomIn": "Ingrandisci",
+    "zoomOut": "Riduci",
+    "centerOnMe": "Centra sulla mia posizione",
+    "mapRegion": "Mappa del sentiero",
+    "userPosition": "La tua posizione",
+    "stageMarker": "Tappa $number",
+    "poiMarker": "Punto di interesse: $name",
+    "markerCluster": "$count punti raggruppati",
+    "trailCard": "Sentiero $name",
+    "startTracking": "Avvia il monitoraggio",
+    "pauseTracking": "Sospendi il monitoraggio",
+    "resumeTracking": "Riprendi il monitoraggio",
+    "stopTracking": "Ferma il monitoraggio"
+  },
   "nav": {
     "map": "Mappa",
     "stages": "Tappe",

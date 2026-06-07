@@ -7,6 +7,7 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
+import '../../../../i18n/translations.g.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/simplified_track_provider.dart';
@@ -62,6 +63,7 @@ class MapScreen extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          tooltip: t.a11y.back,
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),

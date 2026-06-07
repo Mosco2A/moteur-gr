@@ -1,4 +1,20 @@
 {
+  "a11y": {
+    "back": "Back",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "centerOnMe": "Center on my position",
+    "mapRegion": "Trail map",
+    "userPosition": "Your position",
+    "stageMarker": "Stage $number",
+    "poiMarker": "Point of interest: $name",
+    "markerCluster": "$count grouped points",
+    "trailCard": "Trail $name",
+    "startTracking": "Start tracking",
+    "pauseTracking": "Pause tracking",
+    "resumeTracking": "Resume tracking",
+    "stopTracking": "Stop tracking"
+  },
   "nav": {
     "map": "Map",
     "stages": "Stages",

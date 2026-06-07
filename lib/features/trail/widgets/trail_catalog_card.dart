@@ -99,40 +99,65 @@ class TrailCatalogCard extends StatelessWidget {
             // Ligne titre + badge
             Row(
               children: [
-                Icon(Icons.terrain, color: theme.colorScheme.primary),
+                ExcludeSemantics(
+                  child: Icon(Icons.terrain, color: theme.colorScheme.primary),
+                ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
                     entry.trailId,
                     style: theme.textTheme.titleMedium,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
-                _StatusBadge(
-                  label: statusLabel(entry.localStatus),
-                  color: color,
+                const SizedBox(width: AppTheme.spacingSm),
+                Flexible(
+                  child: _StatusBadge(
+                    label: statusLabel(entry.localStatus),
+                    color: color,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            // Infos secondaires
-            Row(
+            // Infos secondaires — Wrap pour ne pas deborder a textScale 2x
+            Wrap(
+              spacing: AppTheme.spacingBase,
+              runSpacing: AppTheme.spacingXs,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
-                const Icon(Icons.storage, size: 14, color: AppTheme.grisGranite),
-                const SizedBox(width: 4),
-                Text(
-                  formatFileSize(entry.fileSize),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppTheme.grisGranite,
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const ExcludeSemantics(
+                      child: Icon(Icons.storage,
+                          size: 14, color: AppTheme.grisGranite),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      formatFileSize(entry.fileSize),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.grisGranite,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: AppTheme.spacingBase),
-                const Icon(Icons.update, size: 14, color: AppTheme.grisGranite),
-                const SizedBox(width: 4),
-                Text(
-                  'v${entry.dataVersion}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppTheme.grisGranite,
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const ExcludeSemantics(
+                      child: Icon(Icons.update,
+                          size: 14, color: AppTheme.grisGranite),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'v${entry.dataVersion}',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.grisGranite,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -217,6 +242,8 @@ class _StatusBadge extends StatelessWidget {
       ),
       child: Text(
         label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           color: color,
           fontSize: 12,

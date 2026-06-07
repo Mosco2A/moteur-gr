@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../i18n/translations.g.dart';
+
 /// Clustering de marqueurs + helpers de simplification dependants du zoom.
 ///
 /// Objectif perf (E5.2a) : au-dela de [kClusterThreshold] marqueurs, on
@@ -250,28 +252,34 @@ class _ClusterBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 2),
-          boxShadow: const [
-            BoxShadow(
-              color: Color(0x40000000),
-              blurRadius: 4,
-              offset: Offset(0, 2),
+    return Semantics(
+      button: onTap != null,
+      label: t.a11y.markerCluster(count: count),
+      child: GestureDetector(
+        onTap: onTap,
+        child: ExcludeSemantics(
+          child: Container(
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 2),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x40000000),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          '$count',
-          style: TextStyle(
-            color: textColor,
-            fontWeight: FontWeight.bold,
-            fontSize: count >= 100 ? 11 : 13,
+            alignment: Alignment.center,
+            child: Text(
+              '$count',
+              style: TextStyle(
+                color: textColor,
+                fontWeight: FontWeight.bold,
+                fontSize: count >= 100 ? 11 : 13,
+              ),
+            ),
           ),
         ),
       ),
