@@ -1,204 +1,247 @@
-# Ajouter un nouveau sentier -- Guide complet
+# Ajouter un nouveau sentier — Guide complet
 
-Ce guide documente la procedure pour integrer un nouveau sentier dans le Moteur GR. Le processus couvre l'import du trace GPS, la creation des points d'interet, les traductions, les cartes offline et le deploiement Firebase.
+Ce guide decrit, etape par etape, l'integration d'un nouveau sentier dans
+StepWays. Le moteur etant **generique**, ajouter un sentier ne demande
+**aucun code metier** : on fournit une configuration (`TrailConfig`), des
+donnees (JSON + GPX), des cartes offline (MBTiles) et des traductions (Slang).
 
-## 1. Import du trace GPX
+Vue d'ensemble des artefacts a produire :
 
-### Format attendu
+1. Un `TrailConfig` (couleurs, meta, secours, durees, assets de seed).
+2. Un fichier de donnees JSON (meta + itineraires + etapes + POIs).
+3. Un trace GPX.
+4. Un fichier MBTiles (carte offline).
+5. Les chaines de traduction Slang (5 langues) si le sentier ajoute du texte.
+6. La declaration des assets dans `pubspec.yaml`.
+7. (Optionnel) un manifest distant pour le catalogue/telechargement.
 
-Le fichier GPX doit contenir :
-- Un `<trk>` (track) avec un `<name>` explicite
-- Des `<trkseg>` (segments) correspondant aux etapes
-- Des `<trkpt>` (trackpoints) avec latitude, longitude et elevation
+> Convention : un identifiant de sentier en `kebab-case` (ex:
+> `mare-a-mare-centre`). Cet `id` relie le `TrailConfig`, les donnees JSON
+> (`trailId`) et les eventuels documents distants.
+
+## 1. TrailConfig
+
+Le moteur ne connait aucun sentier : tout vient de
+`lib/core/config/trail_config.dart`. Creer une instance pour le nouveau
+sentier (par convention, dans `lib/core/config/`, a cote de
+`test_trail_config.dart`) :
+
+```dart
+const monSentierConfig = TrailConfig(
+  id: 'mon-sentier',
+  name: 'Mon Sentier',
+  displayName: 'Mon Sentier Trail',
+  tagline: 'Votre compagnon de trek',
+  totalStages: 7,
+  totalDistanceKm: 84.0,
+  totalElevationGain: 3550,
+  region: 'Ma Region',
+  country: 'France',
+  primaryColorValue: 0xFF2E7D32,
+  secondaryColorValue: 0xFF1565C0,
+  gpxAssetPath: 'assets/gpx/mon_sentier.gpx',
+  availableDurations: [5, 7, 9],
+  defaultDuration: 7,
+  emergencyNumbers: [
+    TrailEmergencyNumber(name: 'Secours montagne', phone: '+33...'),
+  ],
+  // Racine des assets de seed (le JSON complet du sentier).
+  seedAssetsBase: 'assets/data/mon_sentier.json',
+  firebaseProjectId: null, // null = mode local (pas de backend)
+);
+```
+
+Le `112` (urgences europeennes) est gere par le moteur : ne le dupliquez
+pas dans `emergencyNumbers` (qui ne sert qu'aux secours **regionaux**).
+
+L'app injecte la config active dans `main.dart` via
+`ProviderScope(overrides: [trailConfigProvider.overrideWithValue(config)])`.
+
+## 2. Donnees du sentier (JSON de seed)
+
+Les donnees sont un **fichier JSON unique** charge au premier lancement par
+`TrailSeeder` (`lib/core/data/seed/trail_seeder.dart`) et inserees dans Drift
+dans l'ordre des cles etrangeres :
+`trail_meta -> itineraries -> stages -> accommodations -> pois`.
+
+Le seeder est **generique** : il lit le `trailId` depuis le JSON et ne
+contient aucune logique specifique a un sentier. Le chemin du fichier vient
+de `TrailConfig.seedAssetsBase`.
+
+Structure attendue (`assets/data/mon_sentier.json`) :
+
+```json
+{
+  "trail_meta": {
+    "id": "mon-sentier",
+    "code": "ms",
+    "dataVersion": 1,
+    "status": "active"
+  },
+  "itineraries": [
+    {
+      "id": "ms-ew",
+      "trailId": "mon-sentier",
+      "code": "EW",
+      "nameFr": "...", "nameEn": "...", "nameDe": "...",
+      "nameIt": "...", "nameEs": "...",
+      "distanceKm": 84.0,
+      "elevationGain": 3550,
+      "stageCount": 7
+    }
+  ],
+  "stages": [
+    {
+      "id": "ms-ew-s1",
+      "itineraryId": "ms-ew",
+      "stageNumber": 1,
+      "nameFr": "Depart — Etape 1", "nameEn": "...",
+      "startLat": 42.0156, "startLng": 9.4039,
+      "endLat": 41.9567, "endLng": 9.2864,
+      "distanceKm": 15.0,
+      "elevationGain": 850,
+      "elevationLoss": 100,
+      "durationMinutes": 330,
+      "difficulty": "hard"
+    }
+  ],
+  "accommodations": [],
+  "pois": [
+    {
+      "id": "ms-poi-01",
+      "stageId": "ms-ew-s1",
+      "stageNumber": 1,
+      "nameFr": "Gite d'etape", "nameEn": "Guesthouse",
+      "descriptionFr": "...", "descriptionEn": "...",
+      "type": "shelter",
+      "lat": 41.957, "lng": 9.287,
+      "altitudeM": 720
+    }
+  ]
+}
+```
+
+Points cles :
+- Les libelles sont **multilingues inline** (`nameFr`, `nameEn`, ...). Les
+  langues non fournies retombent sur la base (fr).
+- Chaque `stage` porte ses coordonnees depart/arrivee (profil + carte).
+- Chaque `poi` reference son etape (`stageId` / `stageNumber`).
+
+### Types de POI
+
+Le `type` d'un POI est une chaine **extensible** (pas un enum ferme), stylee
+par `lib/features/poi/domain/poi_type_config.dart`. Valeurs usuelles :
+
+- `shelter` — refuge / gite (capacite, demi-pension...)
+- `water` — point d'eau (source, fontaine)
+- `shop` — commerce (epicerie, restaurant)
+- `accommodation` — hebergement hors refuge (hotel, camping)
+- `viewpoint` — point de vue
+- `danger` — zone exposee
+- `transport` — bus, navette, taxi
+
+Un type inconnu reste affiche (icone neutre) : le moteur ne casse pas sur une
+valeur non prevue.
+
+## 3. Trace GPX
+
+1. Placer le GPX dans `assets/gpx/` (ex: `assets/gpx/mon_sentier.gpx`) et
+   renseigner `TrailConfig.gpxAssetPath`.
+2. Format : `<trk>` avec des `<trkseg>` et des `<trkpt lat=".." lon="..">`
+   portant l'elevation (`<ele>`), necessaire aux profils altimetriques.
+3. Le parser GPX du moteur extrait les trackpoints ; la simplification par
+   niveau de zoom utilise Douglas-Peucker (`lib/core/geo/`).
 
 ```xml
 <gpx version="1.1">
   <trk>
-    <name>Nom du sentier</name>
+    <name>Mon Sentier</name>
     <trkseg>
-      <trkpt lat="42.5078" lon="8.8303"><ele>1020</ele></trkpt>
-      ...
+      <trkpt lat="42.0156" lon="9.4039"><ele>20</ele></trkpt>
+      <!-- ... -->
     </trkseg>
   </trk>
 </gpx>
 ```
 
-### Procedure d'import
-
-1. Placer le fichier GPX dans `assets/gpx/` avec un nom descriptif (ex: `mare_a_mare_nord.gpx`)
-2. Declarer le fichier dans `pubspec.yaml` sous `flutter: assets:`
-3. Le parser `lib/features/trek/data/gpx_parser.dart` extrait automatiquement les trackpoints
-4. Verifier que l'elevation est presente sur chaque point (necessaire pour les profils altimetriques)
-
-### Decoupage en etapes
-
-Chaque sentier est decoupe en etapes. Le decoupage est defini dans les donnees statiques (`assets/data/`) avec pour chaque etape :
-- Nom de depart et d'arrivee
-- Distance (km)
-- Denivele positif et negatif (m)
-- Duree estimee
-- Difficulte (1-5)
-- Coordonnees du point de depart et d'arrivee
-
-## 2. Points d'interet (POIs)
-
-### Types de POI
-
-| Type | Description | Icone |
-|---|---|---|
-| `refuge` | Refuge de montagne (gardienne, capacite, reservations) | Maison |
-| `water` | Point d'eau (source, fontaine, riviere) | Goutte |
-| `shop` | Commerce (epicerie, restaurant) | Panier |
-| `accommodation` | Hebergement hors refuge (gite, hotel, camping) | Lit |
-| `viewpoint` | Point de vue remarquable | Jumelles |
-| `danger` | Zone dangereuse (passage expose, neige tardive) | Triangle |
-| `transport` | Arret de bus, navette, taxi | Bus |
-
-### Structure d'un POI
-
-Chaque POI est stocke dans Firestore sous `pois/{trail_id}/{poi_id}` avec :
-- `name` : nom affiche
-- `type` : enum parmi les types ci-dessus
-- `latitude`, `longitude` : coordonnees GPS
-- `elevation` : altitude en metres
-- `description` : texte descriptif
-- `stageIndex` : numero de l'etape associee
-- `photos` : liste d'URLs Firebase Storage
-- `metadata` : champs specifiques au type (capacite refuge, horaires commerce, etc.)
-
-### Ajout de POIs
-
-1. Preparer les donnees dans un fichier JSON structure
-2. Upload vers Firestore via un script d'import ou manuellement dans la console Firebase
-3. Les images associees vont dans Firebase Storage sous `pois/{trail_id}/`
-
-## 3. Traductions
-
-L'application utilise Slang pour l'internationalisation (type-safe, multi-namespace).
-
-### Fichiers de traduction
-
-Les fichiers de traduction sont dans `assets/i18n/` organises par langue et namespace :
-
-```
-assets/i18n/
-  fr/
-    common.yaml
-    trek.yaml
-    planning.yaml
-    auth.yaml
-  en/
-    common.yaml
-    trek.yaml
-    ...
-```
-
-### Ajouter des traductions pour un sentier
-
-Pour chaque nouveau sentier, ajouter dans les fichiers YAML :
-- Nom du sentier
-- Noms des etapes
-- Descriptions des refuges et POIs
-- Conseils specifiques au sentier
-
-Exemple dans `assets/i18n/fr/trek.yaml` :
-```yaml
-trails:
-  gr20:
-    name: "GR20 - Fra li Monti"
-    description: "Traversee de la Corse du Nord au Sud"
-    stages:
-      stage1:
-        name: "Calenzana - Ortu di u Piobbu"
-        description: "Premiere etape, montee raide depuis Calenzana"
-```
-
-Apres modification des fichiers de traduction, regenerer le code :
-```bash
-dart run build_runner build --delete-conflicting-outputs
-```
-
 ## 4. Cartes offline (MBTiles)
 
-### Pourquoi MBTiles
+Le rendu offline utilise `flutter_map` + `flutter_map_mbtiles`. Le MBTiles est
+un conteneur SQLite de tuiles par niveau de zoom.
 
-L'application utilise `flutter_map` avec `flutter_map_mbtiles` pour le rendu offline des cartes. Le format MBTiles est un conteneur SQLite qui stocke les tuiles de carte par niveau de zoom.
+1. **Source** : tuiles OpenStreetMap (ou fournisseur compatible).
+2. **Zone** : bounding box du sentier + marge de 5-10 km.
+3. **Zooms** : 10 a 16 (bon compromis taille/detail).
+4. **Outil** : `tippecanoe`, `mbutil`, ou MapTiler pour produire le `.mbtiles`.
+5. **Distribution** : soit embarque dans les assets, soit telecharge depuis
+   Firebase Storage par l'ecran catalogue (`flutter_map_mbtiles` ^1.0.4 lit le
+   fichier local). Prevoir un indicateur de progression (un GR fait ~200-300 Mo).
 
-### Generation des tuiles
+## 5. Traductions Slang (5 langues)
 
-1. **Source** : utiliser des tuiles OpenStreetMap ou un fournisseur compatible
-2. **Zone** : definir le bounding box du sentier + marge de 5-10 km
-3. **Niveaux de zoom** : generer les niveaux 10 a 16 (bon compromis taille/detail)
-4. **Outil** : `tippecanoe`, `mbutil`, ou `MapTiler` pour generer le fichier `.mbtiles`
+Les libelles de **donnees** (etapes, POIs) sont dans le JSON de seed. Les
+chaines **d'interface** specifiques au sentier (s'il y en a) passent par Slang.
 
-### Integration
+- Sources : un fichier JSON **par langue** dans `assets/i18n/` :
+  `fr.i18n.json` (base), `en.i18n.json`, `de.i18n.json`, `it.i18n.json`,
+  `es.i18n.json`.
+- Ajouter la cle dans **les 5 fichiers** (sinon fallback sur fr).
+- Regenerer le code Slang :
 
-1. Placer le fichier `.mbtiles` sur Firebase Storage sous `maps/{trail_id}/`
-2. L'ecran `OfflineDownloadScreen` permet a l'utilisateur de telecharger les tuiles
-3. Le fichier est stocke localement via `path_provider` dans le dossier documents de l'app
-4. `flutter_map_mbtiles ^1.0.4` lit directement le fichier local
-
-### Taille estimee
-
-Pour un sentier de type GR (zooms 10-16) : environ 200-300 Mo.
-Prevoir un indicateur de progression et permettre le telechargement par etape.
-
-## 5. Manifest trail (fiche sentier)
-
-Chaque sentier a un document Firestore dans `trails/{trail_id}` :
-
-```
-trails/{trail_id}:
-  name: "Nom du sentier"
-  country: "Pays"
-  region: "Region"
-  totalDistance: 180
-  totalElevationGain: 12000
-  totalStages: 16
-  difficulty: 5
-  duration:
-    min: 7
-    max: 16
-    recommended: 14
-  startPoint:
-    lat: 42.5078
-    lon: 8.8303
-    name: "Depart"
-  endPoint:
-    lat: 41.7374
-    lon: 9.3492
-    name: "Arrivee"
-  mbtilesUrl: "gs://<bucket>/maps/{trail_id}/{trail_id}.mbtiles"
-  mbtilesSize: 280000000
-  gpxAsset: "assets/gpx/{trail_id}.gpx"
-  available: true
-  premium: false
-  createdAt: <timestamp>
-  updatedAt: <timestamp>
+```bash
+dart run slang
 ```
 
-## 6. Upload Firebase
+> **Important** : Slang se regenere via la CLI `dart run slang`, **pas** via
+> `build_runner` (`slang_build_runner` est desactive dans `build.yaml`). Le code
+> genere atterrit dans `lib/i18n/translations.g.dart` (+ un fichier par langue).
+> Usage type-safe : `t.<namespace>.<cle>`.
 
-### Checklist deploiement
+## 6. Declarer les assets (pubspec.yaml)
 
-- [ ] Fichier GPX dans `assets/gpx/` et declare dans `pubspec.yaml`
-- [ ] POIs crees dans Firestore `pois/{trail_id}/`
-- [ ] Images POIs uploadees dans Storage `pois/{trail_id}/`
-- [ ] Traductions Slang mises a jour + `dart run build_runner build`
-- [ ] Fichier MBTiles genere et uploade dans Storage `maps/{trail_id}/`
-- [ ] Document trail cree dans Firestore `trails/{trail_id}`
-- [ ] Etapes creees dans Firestore `trails/{trail_id}/stages/`
-- [ ] Test complet sur emulateur (import GPX, navigation, POIs, cartes offline)
-- [ ] `flutter analyze` clean
-- [ ] Tests unitaires passes
+Ajouter les nouveaux chemins sous `flutter: assets:` :
 
-### Ordre des operations
+```yaml
+flutter:
+  assets:
+    - assets/gpx/
+    - assets/data/
+    - assets/data/mon_sentier/        # si vous regroupez les donnees
+    - assets/i18n/
+    - assets/tips/
+```
 
-1. Creer le document `trails/{trail_id}` dans Firestore
-2. Creer les documents `trails/{trail_id}/stages/{stage_index}`
-3. Creer les POIs dans `pois/{trail_id}/`
-4. Uploader les images dans Storage
-5. Uploader le fichier MBTiles dans Storage
-6. Ajouter le GPX dans les assets et rebuild
-7. Mettre a jour les traductions
-8. Tester en mode offline complet
+Puis `flutter pub get`.
+
+## 7. (Optionnel) Manifest catalogue / telechargement
+
+Si le sentier doit apparaitre dans le **catalogue telechargeable** (backend
+Firebase), publier une fiche dans le manifeste distant lu par le catalogue
+(`trailId`, version de donnees, taille MBTiles, URLs Storage). En mode local
+(sans Firebase), le sentier embarque est seede directement au lancement, sans
+manifest.
+
+## Checklist d'integration
+
+- [ ] `TrailConfig` cree (id, couleurs, secours, durees, `seedAssetsBase`,
+      `gpxAssetPath`).
+- [ ] JSON de seed valide (`trail_meta` + `itineraries` + `stages` + `pois`),
+      `trailId` coherent partout.
+- [ ] GPX present dans `assets/gpx/` avec elevation sur chaque point.
+- [ ] MBTiles genere (zooms 10-16) et distribue (assets ou Storage).
+- [ ] Chaines Slang ajoutees dans les 5 langues + `dart run slang`.
+- [ ] Assets declares dans `pubspec.yaml` + `flutter pub get`.
+- [ ] `dart run build_runner build --delete-conflicting-outputs` (Drift/Freezed).
+- [ ] `flutter analyze` clean.
+- [ ] `flutter test` au vert (ajouter des fixtures de test pour le sentier si
+      vous touchez a la logique).
+- [ ] Test manuel : seed -> catalogue -> detail -> carte offline -> navigation.
+- [ ] `bash scripts/scan_secrets.sh` : aucun secret, aucune marque/region
+      en dur hors des donnees parametriques.
+
+## Rappel : zero hardcoding
+
+Le sentier ne doit exister que dans **ses donnees** (`TrailConfig`, JSON, GPX,
+MBTiles, Slang). Aucun `if (trailId == 'mon-sentier')`, aucun nom de region ou
+de marque dans le code du moteur. C'est ce qui permet d'ajouter un sentier
+sans toucher au coeur — et ce que verifie la gate QA.

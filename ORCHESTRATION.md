@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 07/06/2026 par Vulcain (lot E5 SOCLES perf/a11y/analytics — reintegration propre, COMPLETE)
+MAJ: 08/06/2026 par Artemis (gate QA lot E5 CONSOLIDATION = VERTE/PASS, 1 reserve mineure non bloquante, verdict #85442 — branche claude/feat/E5-consolidation-polish-docs-security, EN ATTENTE GO Chris pour merge main)
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -153,6 +153,123 @@ RESTE / DETTE TRACEE (hors run, non bloquant) :
   assombries ou texte fonce) a planifier, non couverte par ce lot.
 - macos/Flutter/GeneratedPluginRegistrant.swift : diff genere pendant (deja "diff
   pendant" avant ce lot + plugins firebase macos) NON commite — cible mobile, hors scope.
+
+## Lot E5 CONSOLIDATION — polish UX + docs + securite (08/06, Vulcain)
+Source : plan V10 #83558 (E5.5) + #83559 (E5.9/E5.10) + inventaire #85410-85412.
+METHODE : ecriture propre depuis le plan (zero cherry-pick stranded). Branche NEUVE
+claude/feat/E5-consolidation-polish-docs-security depuis main 0a21c63 (socles deja
+fusionnes). Stack reelle confirmee : Riverpod 2.6.1 (providers manuels, PAS de
+generator/v3), Freezed 3.2.5, Slang 4.15 (CLI dart run slang, 1 JSON/langue),
+Drift 2.31, flutter_map 8.2. applicationId com.only1cent.moteur_gr. Contamination
+lib/scripts = 0, docs = 0 hors mentions parametriques justifiees (mare-a-mare).
+
+E5.5a (polish animations) — commit e4e8003 :
+- Hero transition liste->detail d'etape : widget partage StageNumberBadge
+  (lib/shared/widgets/) enveloppe d'un Hero (tag stable stage-number-N,
+  flightShuttleBuilder Material). Utilise dans StageListTile ET l'en-tete de
+  StageDetailScreen (trail) -> le numero "vole" de la carte vers le titre.
+- Micro-interactions haptiques : helper AppHaptics (lib/core/ui/app_haptics.dart,
+  heavy/medium/light). Cable sur SOS/appel urgence (heavy), partage carte (medium),
+  generation diplome PDF (medium), boutons de suivi Demarrer/Pause/Stop/Reprendre
+  (light).
+- Tests : stage_number_badge_hero_test (Hero present + 2 Hero en vol pendant la
+  transition) + app_haptics_test (canal plateforme HapticFeedback.* par niveau).
+
+E5.5b (dark mode + design system + contraste) — commits e4e8003 + 37f9dac :
+- Theme CLAIR ajoute : AppTheme.buildLightTheme(...) (pendant de buildDarkTheme,
+  memes couleurs injectees TrailConfig). main.dart cable theme: (clair) +
+  darkTheme: + themeMode: ThemeMode.dark (sombre par defaut, bascule sans casse).
+- RESERVE R2 (gate socles) RESORBEE — c'etait la dette tracee lignes 149-153 :
+  * boutons d'action suivi : Colors.green/Colors.orange (texte blanc ~2.2-2.8:1,
+    ECHEC AA) -> tokens AppTheme.actionStart (#2E7D32, blanc 5.1:1) /
+    actionPause (#BF360C, blanc 5.6:1). Stop = rougeUrgence (blanc 4.98:1, deja OK).
+  * grisGranite sur fonds sombres (~2.7:1) : tous les usages de TEXTE/ICONE
+    secondaire sur surface sombre migres vers grisTexteSecondaire (#B0B0B0, 7.7:1) —
+    ~20 occurrences (poi_popup, poi_tile, empty_state, paywall, no_data, follow_web,
+    group, member_position_card, stage_progress_bar, cloud_unavailable_notice,
+    diploma, download_progress_indicator, tracking_overlay, stage_detail trail+trek,
+    trail_catalog_card, bottom nav unselected). Les usages de grisGranite RESTANTS
+    sont des couleurs d'ELEMENT UI (badge statut, niveau difficulte, barre, toggle
+    desactive) >=3:1 OK (WCAG 1.4.11), + grisGranite reste le token des fonds CLAIRS
+    (share card, 6.2:1). grisTexteSecondaire jamais sur clair (2.2:1, teste).
+- Tests : a11y_audit_test etendu (boutons action AA, bottom nav unselected AA,
+  theme clair texte principal AA, grisGranite OK clair / grisTexteSecondaire KO clair)
+  + theme_switch_test (les 2 themes construisent + TrailDetailScreen/StageDetailScreen
+  s'affichent sans exception en clair ET sombre).
+ETAT R2 : la dette contraste tracee par la gate socles est CLOSE (boutons + textes
+secondaires). Reste un theme clair fonctionnel et teste, sombre toujours par defaut.
+
+E5.9 (documentation) — commit ba9f720 (reecriture PROPRE, decontamination) :
+- docs/README.md : architecture, stack REELLE (Riverpod 2.6 providers manuels,
+  Slang CLI 1 JSON/langue, Drift, structure lib/core+features reelle), lancement.
+- docs/ADD_TRAIL.md : guide complet ajout sentier (TrailConfig, JSON seed
+  trail_meta/itineraries/stages/pois multilingue inline, GPX, MBTiles, Slang
+  dart run slang, pubspec, manifest, checklist). Decrit le pipeline TrailSeeder reel.
+- docs/CONTRIBUTING.md : conventions (providers manuels, Slang CLI, Freezed,
+  Firebase optionnel, a11y), Conventional Commits, branches, tests (flutter_test +
+  ProviderContainer, PAS mocktail/patrol), gates.
+- docs/ADR/ : 001 Drift over Hive + 002 Slang over intl + 003 RENOMME
+  003-riverpod-over-bloc.md (etait 003-riverpod3...). ADR 003 dit Riverpod **2.6**
+  providers manuels, v3 = lot dedie futur (option A) — PLUS de claim "v3 native
+  persistence/retry". Decontamination des 3 ADR : suppression du cadrage "GR20
+  utilise X" (StepWays independant), correction Slang (1 JSON/langue via CLI, pas
+  YAML par namespace ni build_runner). 0 test (docs).
+EXACTITUDE : les anciens docs etaient contamines (Riverpod 3 + riverpod_generator,
+structure app/lib, Hive/intl en "actuel GR20", versions fausses) — entierement
+reecrits pour refleter l'etat REEL de main.
+
+E5.10 (securite tooling) — commit 939958c :
+- E5.10a scripts/security_audit.sh : dart pub outdated --json, distingue direct/
+  transitif, flag CRITIQUE = direct discontinued OU isCurrentAffectedByAdvisory/
+  isCurrentRetracted ; rapporte retards majeurs en INFO (NE force AUCUN upgrade,
+  note explicite Riverpod v3). EXIT 0 confirme (aucun critique ; js transitif
+  discontinued = avertissement, ~22 deps en retard majeur = info).
+- E5.10b scripts/scan_secrets.sh : scan contenu (regex cle PEM/AIza/ya29/AWS/
+  GitHub/Slack/Stripe/bearer + affectation sensible, garde-fou anti-faux-positif)
+  sur 370 fichiers suivis (hors generes/fixtures/docs) = 0 secret ; verifie
+  .gitignore (key.properties, *.keystore, *.jks, .env, google-services.json,
+  GoogleService-Info.plist) = complet ; firestore.rules LECTURE SEULE (161 lignes,
+  default-deny + follow_sessions confirmes, JAMAIS reecrites). EXIT 0 confirme.
+- .gitignore DURCI : ajout section secrets (les 6 patterns ci-dessus + *.pem/p12/p8/
+  mobileprovision + lib/firebase_options.dart). E5.6 CI/CD = deja couvert main
+  (remediation P1-5), NON refait. firestore.rules = deja P0-1, NON reecrites.
+
+PREUVES (08/06) : flutter analyze = No issues found (0). flutter test = 1028/1028
+PASS (baseline 1012 + 16 nouveaux tests E5.5, 0 supprime/skippe). security_audit.sh
+EXIT 0, scan_secrets.sh EXIT 0 (sorties affichees). grep contamination
+fralimonti/gr20/corse/mare-a-mare sur fichiers touches = 0 hors parametrique
+(2 mentions justifiees dans docs). 4 commits (e4e8003, 37f9dac, ba9f720, 939958c)
+sur claude/feat/E5-consolidation-polish-docs-security, pousses. PAS DE MERGE MAIN.
+EN ATTENTE gate Artemis + GO Chris.
+
+RESTE / NON FAIT (hors scope de ce lot) :
+- E5.7/E5.8/E5.1b (suite Phase 5 plan V10) — non traites ici.
+- E5.4 analytics reste inerte tant que wagon 3 (flutterfire configure) non fait.
+- Pipeline phases 6-8 (#83884) a derouler ulterieurement.
+
+### GATE QA Artemis — VERTE / PASS (08/06, verdict #85442)
+Re-verification INDEPENDANTE (zero confiance dev, preuves re-executees) :
+- flutter analyze = No issues found (0), EXIT 0 ; confirme flutter_riverpod 2.6.1
+  + riverpod 2.6.1 resolus (pubspec.lock).
+- flutter test = 1028/1028 PASS, EXIT 0, 0 FAIL 0 SKIP ; 0 test supprime,
+  3 fichiers test ajoutes + a11y_audit etendu (10->16).
+- scan_secrets.sh EXECUTE = EXIT 0 (370 fichiers, 0 secret, .gitignore complet,
+  firestore.rules 161 lignes LECTURE SEULE, JAMAIS reecrites : 0 commit dessus).
+- security_audit.sh EXECUTE = EXIT 0 (0 critique ; Riverpod v3 flag "lot futur,
+  ne pas forcer" ; seul `js` transitif discontinued, non bloquant).
+- grep fralimonti|gr20|corse|mare-a-mare sur fichiers touches = 0 dans lib/ et
+  scripts/ ; 2 hits docs JUSTIFIES (mare-a-mare-centre = id parametrique).
+- R2 contraste RESORBEE : ratios WCAG recalcules a la main, concordants avec les
+  asserts a11y_audit (actionStart 5.13 / actionPause 5.60 / rougeUrgence 4.98 sur
+  blanc ; grisTexteSecondaire 7.69 sur sombre, KO sur clair ; grisGranite KO sombre,
+  5.93 OK clair). grisGranite restant = couleurs d'ELEMENT UI (>=3:1), 0 en texte.
+- ADR 003 = Riverpod 2.6 providers manuels, v3 = lot futur, ZERO claim v3 ;
+  ancien 003-riverpod3 SUPPRIME. Theme clair/sombre : theme_switch_test rend
+  TrailDetail + StageDetail sans casse (takeException isNull). Stack confirmee :
+  Riverpod 2.6.1, applicationId com.only1cent.moteur_gr.
+- RESERVE MINEURE R-E5C.1 (non bloquante) : ligne "4 commits" (PREUVES, supra) =
+  en realite 5 commits (le 5e = resync ORCHESTRATION lui-meme). Cosmetique.
+VERDICT : GATE VERTE. Merge main = decision Chris apres GO (Artemis ne merge pas).
 
 ## Phase 4 — bloc E4.10-E4.17 REINTEGRE (06/06, Vulcain)
 Contexte : la serie granulaire E4.10->E4.17 vivait sur la branche

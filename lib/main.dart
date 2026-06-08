@@ -47,10 +47,18 @@ class MoteurGrApp extends StatelessWidget {
       child: MaterialApp.router(
         title: config.displayName,
         debugShowCheckedModeBanner: false,
-        theme: AppTheme.buildDarkTheme(
+        // Theme clair ET sombre injectes depuis TrailConfig (E5.5b).
+        // L'app reste sombre par defaut (design trek), mais le pendant
+        // clair existe et est cable -> bascule de theme sans casse.
+        theme: AppTheme.buildLightTheme(
           primaryColor: Color(config.primaryColorValue),
           secondaryColor: Color(config.secondaryColorValue),
         ),
+        darkTheme: AppTheme.buildDarkTheme(
+          primaryColor: Color(config.primaryColorValue),
+          secondaryColor: Color(config.secondaryColorValue),
+        ),
+        themeMode: ThemeMode.dark,
         routerConfig: appRouter,
       ),
     );

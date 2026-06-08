@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/share_card_generator.dart';
 import '../domain/share_card_template.dart';
@@ -274,6 +275,8 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
 
   /// Genere l'image et lance le partage via share_plus.
   Future<void> _shareCard() async {
+    // E5.5a : retour haptique moyen a la confirmation du partage.
+    AppHaptics.medium();
     setState(() => _isGenerating = true);
 
     final bytes = await ShareCardGenerator.generateCard(

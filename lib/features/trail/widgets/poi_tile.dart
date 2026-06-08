@@ -54,7 +54,7 @@ class PoiTile extends StatelessWidget {
             Text(
               '${poi.altitudeM}m',
               style: theme.textTheme.bodySmall?.copyWith(
-                color: AppTheme.grisGranite,
+                color: AppTheme.grisTexteSecondaire,
               ),
             ),
         ],

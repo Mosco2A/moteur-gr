@@ -230,7 +230,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
             Text(
               t.follow.invalidLinkHint,
               style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisGranite),
+                  ?.copyWith(color: AppTheme.grisTexteSecondaire),
               textAlign: TextAlign.center,
             ),
           ]),
@@ -298,7 +298,7 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
           Text(
             timeStr,
             style: theme.textTheme.bodySmall
-                ?.copyWith(color: AppTheme.grisGranite),
+                ?.copyWith(color: AppTheme.grisTexteSecondaire),
           ),
         ],
       ),

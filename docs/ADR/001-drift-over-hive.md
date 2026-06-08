@@ -2,82 +2,101 @@
 
 ## Statut
 
-Accepte (historique -- l'app GR20 utilise Hive, Drift est adopte pour le Moteur GR generique)
+Accepte.
 
 ## Contexte
 
-L'application GR20 originale utilise Hive comme base de donnees locale pour le cache et les preferences. Pour le Moteur GR (version generique multi-sentier), le choix du stockage local a ete reevalue.
+StepWays est un moteur de randonnee **offline-first** : la base locale est la
+source de verite hors reseau (etapes, POIs, points GPS, progression, journal,
+cache meteo). Le choix du moteur de stockage local conditionne la robustesse
+des migrations et la richesse des requetes. Deux options principales ont ete
+evaluees : **Hive** (cle-valeur) et **Drift** (ORM SQLite type-safe).
 
-### Hive -- utilisation actuelle GR20
+### Hive — option evaluee
 
-- Stockage cle-valeur simple et rapide
-- Pas de schema, pas de typage fort
-- Utilise pour : cache preferences (`app_settings`), donnees trek temporaires
-- Combine avec `sqflite` pour les track points GPS (besoin de requetes SQL)
+- Stockage cle-valeur simple et rapide.
+- Pas de schema relationnel, typage faible (`dynamic` + TypeAdapters generes).
+- Pas de systeme de migration incrementale.
+- Pas de requetes relationnelles : un besoin SQL impose une couche `sqflite`
+  en parallele (double stockage).
 
-### Drift -- choix pour le Moteur GR
+### Drift — option retenue
 
-- ORM SQLite type-safe pour Dart/Flutter
-- Schema defini en Dart, genere par `build_runner`
-- Migrations incrementales gerees automatiquement
-- Requetes SQL complexes possibles avec typage compile-time
+- ORM SQLite type-safe pour Dart/Flutter.
+- Schema defini en Dart, classes generees a la compilation (`build_runner`).
+- Migrations incrementales versionnees.
+- Requetes SQL complexes (jointures, filtres geo) avec typage compile-time.
 
 ## Decision
 
-**Adopter Drift pour le Moteur GR generique** tout en gardant Hive dans l'app GR20 existante (pas de migration retroactive).
+**Adopter Drift** comme unique moteur de stockage local de StepWays.
 
 ## Raisons
 
-### 1. Typage fort
+### 1. Typage fort a la compilation
 
-Hive stocke des `dynamic` par defaut. Les TypeAdapters ajoutent du typage mais la verification est a l'execution. Drift genere des classes Dart typees a la compilation :
+Les tables sont des classes Dart ; les erreurs de schema sont detectees au
+build, pas a l'execution.
 
 ```dart
-// Drift -- erreur de typage detectee a la compilation
-class Stages extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get name => text()();
-  RealColumn get distance => real()();
-  IntColumn get elevationGain => integer()();
+class TrailStages extends Table {
+  TextColumn get id => text()();
+  TextColumn get itineraryId => text().references(TrailItineraries, #id)();
+  IntColumn get stageNumber => integer()();
+  RealColumn get distanceKm => real()();
+  IntColumn get elevationGainM => integer()();
 }
 ```
 
 ### 2. Migrations robustes
 
-Hive n'a pas de systeme de migration. Changer la structure d'une box necessite de la vider et recreer. Drift supporte les migrations incrementales :
+Le schema evolue souvent (nouvelles features : suivi, journal, diplome). Drift
+gere les migrations incrementales versionnees, indispensables pour ne pas
+perdre les donnees locales d'un utilisateur entre deux versions de l'app.
 
 ```dart
 @override
 MigrationStrategy get migration => MigrationStrategy(
   onUpgrade: (m, from, to) async {
-    if (from < 2) {
-      await m.addColumn(stages, stages.difficulty);
-    }
-    if (from < 3) {
-      await m.createTable(pois);
-    }
+    if (from < 13) await m.createTable(sessionTrackPoints);
+    // ...
   },
 );
 ```
 
-### 3. Requetes SQL complexes
+### 3. Requetes relationnelles
 
-Pour le Moteur GR, les besoins de requetes sont plus complexes que le simple cle-valeur :
-- Chercher les POIs dans un rayon GPS
-- Filtrer les etapes par difficulte et duree
-- Agreger les statistiques de trek (distance totale, denivele cumule)
-- Jointures entre etapes, POIs et donnees de progression
+Les besoins depassent le cle-valeur :
+- POIs dans un rayon GPS, filtres par etape ;
+- etapes par difficulte / duree ;
+- agregats de trek (distance totale, denivele cumule) ;
+- jointures etapes / POIs / progression.
 
-Hive ne supporte pas les requetes relationnelles. L'app GR20 contourne ce probleme en utilisant `sqflite` en parallele pour les track points, creant une double couche de stockage.
+Hive ne le permet pas sans `sqflite` en doublon. Drift couvre tout nativement.
 
-### 4. Coherence de la stack
+### 4. Coherence du pipeline de generation
 
-Le Moteur GR utilise deja `build_runner` pour Freezed et Riverpod. Drift s'integre naturellement dans ce pipeline de generation de code, alors que Hive necessite ses propres TypeAdapters generes separement.
+StepWays utilise deja `build_runner` (Freezed, json_serializable). Drift s'y
+integre naturellement, alors que Hive imposerait ses propres TypeAdapters.
+
+### 5. Seed generique
+
+Le `TrailSeeder` insere un JSON de sentier dans les tables Drift dans l'ordre
+des cles etrangeres. Le schema relationnel modelise proprement la hierarchie
+`trail_meta -> itineraries -> stages -> accommodations -> pois`.
+
+## Alternatives ecartees
+
+- **Hive** : verbeux des qu'il faut du relationnel, pas de migrations, pas de
+  requetes SQL — recale pour un moteur offline-first riche.
+- **sqflite (brut)** : SQL non type, beaucoup de code manuel ; Drift apporte
+  le typage et les migrations par-dessus SQLite.
+- **Isar** : performant mais ecosysteme moins stable a l'epoque de la decision,
+  et moins aligne avec le pipeline `build_runner` deja en place.
 
 ## Consequences
 
-- Le Moteur GR utilise exclusivement Drift pour le stockage local
-- L'app GR20 existante conserve Hive (pas de refactoring retroactif)
-- Les developpeurs doivent connaitre la syntaxe Drift pour les tables et requetes
-- Les migrations doivent etre testees a chaque changement de schema
-- La base SQLite est stockee dans `moteur-gr.db` (jamais dans `gr20.db`)
+- StepWays utilise exclusivement Drift pour le stockage local.
+- Les developpeurs maitrisent la syntaxe Drift (tables, DAOs, requetes).
+- Toute evolution de schema s'accompagne d'une migration **testee**.
+- La base SQLite locale n'est jamais nommee d'apres un sentier en dur.

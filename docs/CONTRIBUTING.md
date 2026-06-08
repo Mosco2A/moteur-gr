@@ -1,97 +1,93 @@
-# Contribuer au projet Moteur GR
+# Contribuer a StepWays (moteur_gr)
 
 ## Conventions de code
 
 ### Langage
 
-- Code source : **anglais** (noms de classes, variables, fonctions)
-- Commentaires : **francais** (descriptions, TODOs, documentation inline)
-- Messages de commit : **anglais** (conventional commits)
+- Code source : **anglais** (classes, variables, fonctions).
+- Commentaires : **francais** (descriptions, TODOs, doc inline).
+- Messages de commit : **anglais ou francais court** au format Conventional
+  Commits (voir plus bas).
 
 ### Analyse statique
 
-Avant tout commit, le code doit passer `flutter analyze` sans warning ni erreur :
+Le code doit passer `flutter analyze` **sans warning ni erreur** avant tout
+commit. Les regles sont dans `analysis_options.yaml` a la racine.
 
 ```bash
 flutter analyze
 ```
 
-Les regles d'analyse sont definies dans `analysis_options.yaml` a la racine du projet.
-
 ### Formatage
-
-Le formatage Dart standard est utilise :
 
 ```bash
 dart format lib/ test/
 ```
 
-Largeur de ligne par defaut : 80 caracteres.
+### Ordre des imports
 
-### Imports
+1. `dart:` (SDK) ;
+2. `package:flutter/` ;
+3. `package:` (dependances tierces) ;
+4. imports relatifs du projet.
 
-Ordre des imports (convention Dart) :
-1. `dart:` (SDK)
-2. `package:flutter/` (framework)
-3. `package:` (dependances tierces)
-4. Imports relatifs du projet (preferer les imports relatifs dans le meme package)
+### Providers Riverpod — **manuels**
 
-### Providers Riverpod
-
-**OBLIGATION** : utiliser `riverpod_generator` pour tous les providers.
+Le projet utilise **Riverpod 2.6** avec des providers **declares a la main**.
+Il n'y a **pas** de `riverpod_generator` / `@riverpod` : aucune generation de
+code pour les providers.
 
 ```dart
-// BON -- provider genere
-@riverpod
-Future<List<Stage>> stages(StagesRef ref) async {
-  // ...
-}
-
-// MAUVAIS -- provider manuel
-final stagesProvider = FutureProvider<List<Stage>>((ref) async {
-  // ...
+// BON — provider manuel
+final stagesProvider =
+    FutureProvider.family<List<StageModel>, String>((ref, trailId) async {
+  final repo = ref.watch(stageRepositoryProvider);
+  return repo.fetchStages(trailId);
 });
-```
 
-Apres ajout ou modification d'un provider, regenerer le code :
-```bash
-dart run build_runner build --delete-conflicting-outputs
+// Etat mutable : NotifierProvider / AsyncNotifierProvider
+final catalogStateProvider =
+    AsyncNotifierProvider<CatalogNotifier, CatalogState>(CatalogNotifier.new);
+
+// A NE PAS FAIRE : pas d'annotation @riverpod (pas de generator dans ce projet)
 ```
 
 ### Modeles Freezed
 
-Tous les modeles de donnees utilisent `freezed` + `json_serializable` :
+Les modeles de donnees utilisent **Freezed 3.x** + `json_serializable`. Apres
+ajout/modif d'un modele, regenerer :
 
-```dart
-@freezed
-class Stage with _$Stage {
-  const factory Stage({
-    required String id,
-    required String name,
-    required double distance,
-    required int elevationGain,
-  }) = _Stage;
-
-  factory Stage.fromJson(Map<String, dynamic> json) => _$StageFromJson(json);
-}
+```bash
+dart run build_runner build --delete-conflicting-outputs
 ```
 
-### Firebase Firestore
+### i18n Slang — `dart run slang`
 
-Pattern obligatoire pour les snapshots temps reel (prevention donnees fantomes) :
+Zero texte en dur destine a l'utilisateur : tout passe par Slang
+(`t.<namespace>.<cle>`). Sources = 1 JSON par langue dans `assets/i18n/`
+(`fr.i18n.json` base + `en/de/it/es`). Toute nouvelle cle doit exister dans
+**les 5 langues**. Regeneration :
 
-```dart
-collection
-    .snapshots(includeMetadataChanges: true)
-    .where((snapshot) => !snapshot.metadata.isFromCache)
-    .map((snapshot) => snapshot.docs.map((doc) => Model.fromJson(doc.data())).toList());
+```bash
+dart run slang   # PAS build_runner — slang_build_runner est desactive (build.yaml)
 ```
+
+### Firebase optionnel
+
+Le moteur tourne sans backend si `TrailConfig.firebaseProjectId` est `null`.
+Toujours verifier `FirebaseService.isAvailable` avant un acces cloud, et
+prevoir l'etat degrade (`CloudUnavailableNotice`).
+
+### Accessibilite
+
+Cibler WCAG AA (contraste texte >= 4.5:1). Utiliser `WcagContrast`
+(`lib/core/a11y/`) pour valider, `grisTexteSecondaire` sur fond sombre et
+`grisGranite` sur fond clair. Ajouter les `Semantics` / labels Slang sur les
+controles importants.
 
 ## Conventional Commits
 
-Tous les messages de commit suivent la convention [Conventional Commits](https://www.conventionalcommits.org/) :
-
-### Format
+Format :
 
 ```
 <type>(<scope>): <description courte>
@@ -99,103 +95,99 @@ Tous les messages de commit suivent la convention [Conventional Commits](https:/
 <corps optionnel>
 ```
 
-### Types
+Types utilises :
 
-| Type | Utilisation |
-|---|---|
-| `feat` | Nouvelle fonctionnalite |
-| `fix` | Correction de bug |
-| `chore` | Maintenance, dependances, config |
-| `refactor` | Refactoring sans changement fonctionnel |
-| `test` | Ajout ou modification de tests |
-| `docs` | Documentation |
-| `style` | Formatage, pas de changement logique |
-| `perf` | Amelioration de performance |
-| `ci` | CI/CD (Codemagic, GitHub Actions) |
+- `feat` — nouvelle fonctionnalite
+- `fix` — correction de bug
+- `chore` — maintenance, dependances, config
+- `refactor` — refactoring sans changement fonctionnel
+- `test` — ajout/modif de tests
+- `docs` — documentation
+- `style` — formatage
+- `perf` — performance
+- `ci` — CI/CD (Codemagic)
 
-### Scopes courants
+Scopes courants : `auth`, `planning`, `trek`, `trail`, `group`, `poi`,
+`weather`, `journal`, `diploma`, `share`, `safety`, `tracking`, `core`,
+`shared`, `map`, `theme`, `firebase`, `i18n`, ou un identifiant d'etape
+(ex: `E5.5`).
 
-`auth`, `planning`, `trek`, `group`, `poi`, `after`, `settings`, `core`, `shared`, `map`, `firebase`
-
-### Exemples
+Exemples :
 
 ```
-feat(trek): add real-time GPS tracking with background service
-fix(auth): prevent ghost user documents for anonymous sessions
-chore(deps): bump flutter_map to ^6.1.0
-refactor(planning): extract stage calculation to dedicated service
-test(trek): add unit tests for GPX parser
-docs(readme): update architecture section
+feat(trek): suivi GPS temps reel avec service en arriere-plan
+fix(auth): zero PII pour les sessions anonymes
+feat(E5.5): polish UX — Hero etape + haptics + theme clair/sombre
+docs(readme): aligner la stack reelle (Riverpod 2.6, Slang CLI)
 ```
 
 ## Workflow de branche
 
-### Convention de nommage
+### Nommage
 
 ```
-claude/<type>/<description-courte>
+claude/<type>/<description-ou-etape>
 ```
 
-Exemples :
-- `claude/feat/gps-background-tracking`
-- `claude/fix/267-anti-fantomes-users`
-- `claude/chore/bump-dependencies`
+Exemples : `claude/feat/E5.15-sos-button`,
+`claude/fix/267-anti-fantomes-users`,
+`claude/feat/E5-consolidation-polish-docs-security`.
 
 ### Regles
 
-- **1 branche = 1 tache** : chaque branche correspond a une seule US ou fix
-- **Jamais de push direct sur `main`** : toujours passer par une PR
-- **Branche a jour** : rebase sur `main` avant de merger
-- **Branche ephemere** : supprimer apres merge
+- **1 branche = 1 tache/etape**.
+- **Jamais de push direct sur `main`** : seul l'orchestrateur fusionne sur
+  `main`, apres gate QA verte. Les contributeurs poussent sur leur branche.
+- **Branche a jour** depuis `main` avant la fusion.
+- **Commits** : identite git du **contributeur** (l'agent de dev — Vulcain
+  pour StepWays), jamais l'orchestrateur.
+- Pas de tag dans ce repo (aucun tag defini).
 
-## Pull Requests
+## Pull Requests / livraison
 
-### Contenu obligatoire
+### Contenu
 
-1. **Titre** : suit le format conventional commit (`feat(scope): description`)
-2. **Description** : contexte, ce qui change, pourquoi
-3. **Tests** : quels tests ajoutees ou modifies
-4. **Screenshots** : si changement UI
+1. Titre au format Conventional Commit.
+2. Description : contexte, ce qui change, pourquoi.
+3. Tests : lesquels ajoutes/modifies.
+4. Captures si changement UI.
 
-### Checklist avant PR
+### Checklist avant livraison
 
-- [ ] `flutter analyze` -- zero warning
-- [ ] `flutter test` -- tous les tests passent
-- [ ] Code generation a jour (`dart run build_runner build`)
-- [ ] Pas de `print()` ou `debugPrint()` residuels
-- [ ] Pas de TODO non documente
-- [ ] Traductions Slang a jour si texte modifie
-- [ ] Pas de donnees sensibles (cles API, tokens) dans le code
+- [ ] `flutter analyze` — zero warning.
+- [ ] `flutter test` — tout au vert, **aucun test supprime ni skippe**.
+- [ ] Code genere a jour (`dart run build_runner build`, `dart run slang`).
+- [ ] Pas de `print()` / `debugPrint()` residuel.
+- [ ] Traductions Slang a jour (5 langues) si texte modifie.
+- [ ] Aucune donnee sensible (cles, tokens) — `bash scripts/scan_secrets.sh`.
+- [ ] Aucune marque/region/sentier en dur (hors donnees parametriques).
 
-### Gates de livraison (DEC-041)
+### Gates de livraison
 
-Toute livraison passe par 3 gates obligatoires :
-1. **Gate 1 -- QA** : `flutter analyze` + tests unitaires + tests d'integration
-2. **Gate 2 -- Conformite** : respect du process + rapport de livraison
-3. **Gate 3 -- Build** : build release Android (AAB) + iOS (IPA), uniquement apres Gate 1+2 PASS
+Toute livraison passe par des gates obligatoires :
+
+1. **QA** : `flutter analyze` + `flutter test` (+ tests emulateur Firestore le
+   cas echeant).
+2. **Conformite** : respect du process + rapport.
+3. **Build** : AAB Android + IPA iOS, uniquement apres QA + conformite OK.
 
 ## Tests
 
 ### Organisation
 
-```
-test/
-  core/                    # Tests des utilitaires, constantes, routing
-  features/
-    auth/                  # Tests auth providers et services
-    planning/              # Tests planification
-    trek/                  # Tests GPS, GPX parser, trek service
-    ...
-  widget_test.dart         # Test du widget racine
-```
+`test/` est le miroir de `lib/` : `test/core/`, `test/features/<feature>/`,
+`test/shared/`, `test/i18n/`.
 
-### Types de tests
+### Types
 
-| Type | Outil | Cible |
-|---|---|---|
-| Unitaire | `flutter_test` + `mocktail` | Providers, services, modeles |
-| Widget | `flutter_test` | Ecrans, widgets isoles |
-| Integration | `patrol` | Flux complets (auth -> navigation -> journal) |
+- **Unitaire** — `flutter_test` : services, modeles, calculs, providers
+  (via `ProviderContainer` + overrides).
+- **Widget** — `flutter_test` : ecrans et widgets isoles
+  (`ProviderScope(overrides: [...])` + `pumpWidget`).
+- **Emulateur Firestore** — regles de securite (`firestore-tests/`).
+
+> Le projet n'utilise pas `mocktail` ni `patrol` : on s'appuie sur
+> `flutter_test`, les overrides Riverpod et des fakes/fixtures locaux.
 
 ### Commandes
 
@@ -203,30 +195,30 @@ test/
 # Tous les tests
 flutter test
 
-# Un fichier specifique
-flutter test test/features/trek/gpx_parser_test.dart
+# Un fichier
+flutter test test/features/trek/...
 
 # Avec couverture
 flutter test --coverage
 ```
 
-### Pattern de test
+### Pattern de test (widget + Riverpod)
 
 ```dart
-void main() {
-  group('GpxParser', () {
-    test('should parse trackpoints with elevation', () {
-      final parser = GpxParser();
-      final points = parser.parse(sampleGpxContent);
-      expect(points, isNotEmpty);
-      expect(points.first.elevation, isNotNull);
-    });
-
-    test('should handle missing elevation gracefully', () {
-      final parser = GpxParser();
-      final points = parser.parse(gpxWithoutElevation);
-      expect(points.first.elevation, equals(0));
-    });
-  });
-}
+testWidgets('affiche le detail d\'etape', (tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        trailConfigProvider.overrideWithValue(testTrailConfig),
+        stagesProvider('test-trail')
+            .overrideWith((ref) => Future.value([testStage])),
+      ],
+      child: const MaterialApp(
+        home: StageDetailScreen(trailId: 'test-trail', stageNumber: 1),
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
+  expect(find.text('Premiere etape'), findsOneWidget);
+});
 ```

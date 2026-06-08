@@ -50,3 +50,22 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 .firebase/
+
+# Secrets — NE JAMAIS committer (E5.10b, verifie par scripts/scan_secrets.sh)
+# Signature Android
+**/key.properties
+*.keystore
+*.jks
+# Variables d'environnement
+.env
+.env.*
+!.env.example
+# Config Firebase generee (cles projet)
+**/google-services.json
+**/GoogleService-Info.plist
+lib/firebase_options.dart
+# Cles / certificats divers
+*.pem
+*.p12
+*.p8
+*.mobileprovision

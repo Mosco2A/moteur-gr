@@ -127,7 +127,7 @@ class StageProgressBar extends StatelessWidget {
               Text(
                 '${distanceRemainingKm.toStringAsFixed(1)} km restants',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.grisGranite,
+                  color: AppTheme.grisTexteSecondaire,
                 ),
               ),
               Text(
