@@ -25,7 +25,7 @@ class CloudUnavailableNotice extends StatelessWidget {
             const Icon(
               Icons.cloud_off,
               size: 48,
-              color: AppTheme.grisGranite,
+              color: AppTheme.grisTexteSecondaire,
             ),
             const SizedBox(height: AppTheme.spacingBase),
             Text(
@@ -37,7 +37,7 @@ class CloudUnavailableNotice extends StatelessWidget {
             Text(
               tr.cloud.localModeBody,
               style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisGranite),
+                  ?.copyWith(color: AppTheme.grisTexteSecondaire),
               textAlign: TextAlign.center,
             ),
           ],
