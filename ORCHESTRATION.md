@@ -1,6 +1,6 @@
 # ORCHESTRATION MOTEUR-GR
 Source de verite du progres. Skynet lit ce fichier EN PREMIER a chaque session.
-MAJ: 08/06/2026 par Vulcain (lot E5 CONSOLIDATION polish UX + docs + securite — COMPLETE, branche claude/feat/E5-consolidation-polish-docs-security, EN ATTENTE gate Artemis + GO)
+MAJ: 08/06/2026 par Artemis (gate QA lot E5 CONSOLIDATION = VERTE/PASS, 1 reserve mineure non bloquante, verdict #85442 — branche claude/feat/E5-consolidation-polish-docs-security, EN ATTENTE GO Chris pour merge main)
 
 ## Plan
 V8 (index #82300 en memory.db). 130 sous-etapes, 32h, 158 tests.
@@ -246,6 +246,30 @@ RESTE / NON FAIT (hors scope de ce lot) :
 - E5.7/E5.8/E5.1b (suite Phase 5 plan V10) — non traites ici.
 - E5.4 analytics reste inerte tant que wagon 3 (flutterfire configure) non fait.
 - Pipeline phases 6-8 (#83884) a derouler ulterieurement.
+
+### GATE QA Artemis — VERTE / PASS (08/06, verdict #85442)
+Re-verification INDEPENDANTE (zero confiance dev, preuves re-executees) :
+- flutter analyze = No issues found (0), EXIT 0 ; confirme flutter_riverpod 2.6.1
+  + riverpod 2.6.1 resolus (pubspec.lock).
+- flutter test = 1028/1028 PASS, EXIT 0, 0 FAIL 0 SKIP ; 0 test supprime,
+  3 fichiers test ajoutes + a11y_audit etendu (10->16).
+- scan_secrets.sh EXECUTE = EXIT 0 (370 fichiers, 0 secret, .gitignore complet,
+  firestore.rules 161 lignes LECTURE SEULE, JAMAIS reecrites : 0 commit dessus).
+- security_audit.sh EXECUTE = EXIT 0 (0 critique ; Riverpod v3 flag "lot futur,
+  ne pas forcer" ; seul `js` transitif discontinued, non bloquant).
+- grep fralimonti|gr20|corse|mare-a-mare sur fichiers touches = 0 dans lib/ et
+  scripts/ ; 2 hits docs JUSTIFIES (mare-a-mare-centre = id parametrique).
+- R2 contraste RESORBEE : ratios WCAG recalcules a la main, concordants avec les
+  asserts a11y_audit (actionStart 5.13 / actionPause 5.60 / rougeUrgence 4.98 sur
+  blanc ; grisTexteSecondaire 7.69 sur sombre, KO sur clair ; grisGranite KO sombre,
+  5.93 OK clair). grisGranite restant = couleurs d'ELEMENT UI (>=3:1), 0 en texte.
+- ADR 003 = Riverpod 2.6 providers manuels, v3 = lot futur, ZERO claim v3 ;
+  ancien 003-riverpod3 SUPPRIME. Theme clair/sombre : theme_switch_test rend
+  TrailDetail + StageDetail sans casse (takeException isNull). Stack confirmee :
+  Riverpod 2.6.1, applicationId com.only1cent.moteur_gr.
+- RESERVE MINEURE R-E5C.1 (non bloquante) : ligne "4 commits" (PREUVES, supra) =
+  en realite 5 commits (le 5e = resync ORCHESTRATION lui-meme). Cosmetique.
+VERDICT : GATE VERTE. Merge main = decision Chris apres GO (Artemis ne merge pas).
 
 ## Phase 4 — bloc E4.10-E4.17 REINTEGRE (06/06, Vulcain)
 Contexte : la serie granulaire E4.10->E4.17 vivait sur la branche
