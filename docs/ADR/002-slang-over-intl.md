@@ -1,97 +1,111 @@
-# ADR-002 : Slang plutot que intl pour l'internationalisation
+# ADR-002 : Slang plutot que intl/ARB pour l'internationalisation
 
 ## Statut
 
-Accepte (historique -- l'app GR20 utilise intl/ARB, Slang est adopte pour le Moteur GR generique)
+Accepte.
 
 ## Contexte
 
-L'application GR20 utilise le systeme standard Flutter Localizations avec des fichiers ARB (Application Resource Bundle) et le package `intl`. Pour le Moteur GR, l'internationalisation a ete repensee pour supporter 5 langues (fr, en, de, it, es) avec un meilleur confort de developpement.
+StepWays vise 5 langues des le depart (fr, en, de, it, es) et impose **zero
+texte en dur** cote interface. Le choix du systeme d'i18n a ete evalue entre
+le standard Flutter (`flutter_localizations` + ARB + `intl`) et **Slang**
+(generation de code type-safe).
 
-### intl/ARB -- utilisation actuelle GR20
+### intl / ARB — option evaluee
 
-- Systeme officiel Flutter (`flutter_localizations`)
-- Fichiers `.arb` (JSON) dans `lib/l10n/`
-- Generation via `flutter gen-l10n`
-- 2 langues : fr (defaut) + en
+- Systeme officiel Flutter (`flutter gen-l10n`).
+- Fichiers `.arb` (JSON) par langue, cles accedees par chaine.
+- Pas de verification de cle a la compilation (faute de frappe = crash runtime).
+- Pluriels/genres via syntaxe ICU dans la chaine.
 
-### Slang -- choix pour le Moteur GR
+### Slang — option retenue
 
-- Package tiers type-safe pour i18n
-- Fichiers YAML/JSON structures par namespace
-- Generation via `build_runner`
-- Support natif des plurals, genres, parametres types
+- Generation de code Dart type-safe a partir de fichiers de traduction.
+- Acces aux cles **verifie a la compilation** (`t.<namespace>.<cle>`).
+- Pluriels, parametres types, namespaces sans syntaxe ICU lourde.
+- Fallback automatique vers la langue de base.
 
 ## Decision
 
-**Adopter Slang pour le Moteur GR generique** pour ses avantages en type-safety et en organisation par feature.
+**Adopter Slang** pour toute l'internationalisation de StepWays.
+
+## Organisation reelle des traductions
+
+> Important : contrairement a une organisation "un dossier par langue / un
+> fichier par namespace", StepWays utilise **un seul fichier JSON par langue**,
+> avec les namespaces **a l'interieur** du JSON.
+
+```
+assets/i18n/
+  fr.i18n.json   # langue de base
+  en.i18n.json
+  de.i18n.json
+  it.i18n.json
+  es.i18n.json
+```
+
+Configuration : `slang.yaml` (base_locale = `fr`, `input_file_pattern =
+.i18n.json`, sortie dans `lib/i18n/`).
+
+Regeneration via la **CLI Slang**, pas `build_runner` :
+
+```bash
+dart run slang
+```
+
+`slang_build_runner` est volontairement **desactive** dans `build.yaml` :
+incompatibilite avec la version de `build_runner` utilisee et risque de
+generer un doublon. Le code genere (`lib/i18n/translations.g.dart` +
+un fichier par langue) ne doit pas etre edite a la main.
 
 ## Raisons
 
 ### 1. Type-safety
 
-Avec intl, les cles de traduction sont des strings. Une faute de frappe compile mais plante a l'execution :
+Avec intl, une cle inexistante compile mais plante a l'execution. Avec Slang,
+la cle est un membre Dart : l'erreur est detectee au build.
 
 ```dart
-// intl -- pas d'erreur a la compilation, crash a l'execution si cle inexistante
-AppLocalizations.of(context)!.stageGr20_1_name
+// intl : crash runtime si la cle n'existe pas
+AppLocalizations.of(context)!.stageName;
 
-// Slang -- erreur de compilation si la cle n'existe pas
-t.trek.stages.stage1.name
+// Slang : erreur de COMPILATION si la cle n'existe pas
+t.trek.stage.name;
 ```
 
-### 2. Organisation par namespace
+### 2. Namespaces lisibles
 
-Slang permet d'organiser les traductions par feature/namespace dans des fichiers separes :
+Les cles sont organisees par namespace (feature) dans le JSON, et exposees en
+arborescence type-safe (`t.share.title`, `t.a11y.zoomIn`, `t.cloud.localModeTitle`).
 
-```
-assets/i18n/
-  fr/
-    common.yaml
-    trek.yaml
-    planning.yaml
-    auth.yaml
-  en/
-    common.yaml
-    trek.yaml
-    ...
-```
-
-Avec intl, tout est dans un seul fichier ARB par langue, ce qui devient difficile a maintenir avec 5 langues et des centaines de cles.
-
-### 3. Hot reload
-
-Slang genere du code Dart pur, ce qui permet le hot reload quand on modifie une traduction pendant le developpement. Avec intl, il faut souvent relancer `flutter gen-l10n` puis faire un hot restart.
-
-### 4. Plurals et parametres types
-
-Slang gere nativement les plurals, les genres et les parametres types sans syntax speciale ICU :
-
-```yaml
-# Slang -- syntaxe claire
-trek:
-  stages:
-    remaining:
-      one: "Il reste $count etape"
-      other: "Il reste $count etapes"
-    distance: "$km km parcourus sur $total km"
-```
+### 3. Pluriels et parametres types
 
 ```dart
-// Usage type-safe
-t.trek.stages.remaining(count: 3)  // "Il reste 3 etapes"
-t.trek.stages.distance(km: 45, total: 180)  // "45 km parcourus sur 180 km"
+t.a11y.stageMarker(number: 3);     // "Etape 3"
+t.a11y.markerCluster(count: 12);   // "12 points"
 ```
 
-### 5. Support multi-sentier
+### 4. Hot reload
 
-Le Moteur GR doit supporter plusieurs sentiers avec des traductions specifiques a chacun. Slang permet des namespaces dynamiques par sentier, alors qu'intl/ARB necessite de tout mettre dans un fichier plat.
+Slang genere du Dart pur : un changement de traduction est pris via hot reload
+apres regeneration, sans dependre du pipeline ARB.
+
+### 5. Couverture multilingue verifiable
+
+5 langues, fallback sur la base (fr). Des tests verifient que les cles
+sensibles (a11y notamment) sont non vides dans **chaque** langue.
+
+## Alternatives ecartees
+
+- **intl / ARB** : cles non typees (crash runtime), tooling ICU lourd,
+  organisation peu pratique a 5 langues.
+- **easy_localization** : runtime (cles en chaines), pas de type-safety.
 
 ## Consequences
 
-- Le Moteur GR utilise Slang pour toutes les traductions
-- 5 langues supportees : fr, en, de, it, es
-- Les fichiers de traduction sont dans `assets/i18n/{langue}/`
-- Zero texte en dur dans le code -- tout passe par Slang
-- L'app GR20 existante conserve intl/ARB (pas de migration retroactive)
-- Les developpeurs doivent apprendre la syntaxe Slang (YAML + generation)
+- StepWays utilise Slang pour toutes les chaines d'interface.
+- 5 langues : fr (base), en, de, it, es ; toute cle existe dans les 5.
+- Sources = 1 JSON par langue dans `assets/i18n/` ; regeneration `dart run slang`.
+- Zero texte en dur dans le code.
+- Les libelles de **donnees** (etapes, POIs) restent multilingues inline dans
+  le JSON de seed du sentier (champs `nameFr/En/De/It/Es`), pas dans Slang.
