@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
+import '../../../../../i18n/translations.g.dart';
+
 /// Controles de carte — zoom in, zoom out, centrer sur moi.
 ///
 /// Trois [FloatingActionButton] empiles verticalement (Material 3).
@@ -23,33 +25,49 @@ class MapControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        FloatingActionButton.small(
-          heroTag: 'mapZoomIn',
-          onPressed: _zoomIn,
-          backgroundColor: colorScheme.primaryContainer,
-          foregroundColor: colorScheme.onPrimaryContainer,
-          child: const Icon(Icons.add),
-        ),
-        const SizedBox(height: 8),
-        FloatingActionButton.small(
-          heroTag: 'mapZoomOut',
-          onPressed: _zoomOut,
-          backgroundColor: colorScheme.primaryContainer,
-          foregroundColor: colorScheme.onPrimaryContainer,
-          child: const Icon(Icons.remove),
-        ),
-        const SizedBox(height: 8),
-        FloatingActionButton.small(
-          heroTag: 'mapCenterOnMe',
-          onPressed: onCenterOnMe,
-          backgroundColor: colorScheme.primaryContainer,
-          foregroundColor: colorScheme.onPrimaryContainer,
-          child: const Icon(Icons.my_location),
-        ),
-      ],
+    // Ordre de focus logique (a11y E5.3b) : zoom + -> zoom - -> centrer.
+    return FocusTraversalGroup(
+      policy: OrderedTraversalPolicy(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FocusTraversalOrder(
+            order: const NumericFocusOrder(1),
+            child: FloatingActionButton.small(
+              heroTag: 'mapZoomIn',
+              onPressed: _zoomIn,
+              tooltip: t.a11y.zoomIn,
+              backgroundColor: colorScheme.primaryContainer,
+              foregroundColor: colorScheme.onPrimaryContainer,
+              child: const Icon(Icons.add),
+            ),
+          ),
+          const SizedBox(height: 8),
+          FocusTraversalOrder(
+            order: const NumericFocusOrder(2),
+            child: FloatingActionButton.small(
+              heroTag: 'mapZoomOut',
+              onPressed: _zoomOut,
+              tooltip: t.a11y.zoomOut,
+              backgroundColor: colorScheme.primaryContainer,
+              foregroundColor: colorScheme.onPrimaryContainer,
+              child: const Icon(Icons.remove),
+            ),
+          ),
+          const SizedBox(height: 8),
+          FocusTraversalOrder(
+            order: const NumericFocusOrder(3),
+            child: FloatingActionButton.small(
+              heroTag: 'mapCenterOnMe',
+              onPressed: onCenterOnMe,
+              tooltip: t.a11y.centerOnMe,
+              backgroundColor: colorScheme.primaryContainer,
+              foregroundColor: colorScheme.onPrimaryContainer,
+              child: const Icon(Icons.my_location),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

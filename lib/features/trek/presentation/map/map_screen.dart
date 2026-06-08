@@ -7,6 +7,7 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
+import '../../../../i18n/translations.g.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/simplified_track_provider.dart';
@@ -62,6 +63,7 @@ class MapScreen extends StatelessWidget {
         ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
+          tooltip: t.a11y.back,
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -182,13 +184,17 @@ class _MapContentState extends State<_MapContent> {
                   userAgentPackageName: 'com.moteur-gr.app',
                 ),
 
-                // 2. Trace GPX
-                TraceLayer(
-                  points: latLngPoints,
-                  color: trailColor,
+                // 2. Trace GPX (statique -> RepaintBoundary pour isoler
+                //    le raster du trace des rebuilds de la position GPS)
+                RepaintBoundary(
+                  child: TraceLayer(
+                    points: latLngPoints,
+                    color: trailColor,
+                  ),
                 ),
 
-                // 3. Marqueurs d etapes
+                // 3. Marqueurs d etapes (statiques -> RepaintBoundary +
+                //    clustering au-dela du seuil via le zoom courant)
                 Consumer(
                   builder: (context, ref, _) {
                     final stagesAsync = ref.watch(
@@ -221,7 +227,12 @@ class _MapContentState extends State<_MapContent> {
                         )
                         .toList();
 
-                    return StageMarkersLayer(stages: domainStages);
+                    return RepaintBoundary(
+                      child: StageMarkersLayer(
+                        stages: domainStages,
+                        zoom: _currentZoom.toDouble(),
+                      ),
+                    );
                   },
                 ),
 

@@ -40,6 +40,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	Translations $copyWith({TranslationMetadata<AppLocale, Translations>? meta}) => Translations(meta: meta ?? this.$meta);
 
 	// Translations
+	late final Translations$a11y$fr a11y = Translations$a11y$fr.internal(_root);
 	late final Translations$nav$fr nav = Translations$nav$fr.internal(_root);
 	late final Translations$map$fr map = Translations$map$fr.internal(_root);
 	late final Translations$stage$fr stage = Translations$stage$fr.internal(_root);
@@ -66,6 +67,57 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
 	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
+}
+
+// Path: a11y
+class Translations$a11y$fr {
+	Translations$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Retour'
+	String get back => 'Retour';
+
+	/// fr: 'Zoomer'
+	String get zoomIn => 'Zoomer';
+
+	/// fr: 'Dezoomer'
+	String get zoomOut => 'Dezoomer';
+
+	/// fr: 'Centrer sur ma position'
+	String get centerOnMe => 'Centrer sur ma position';
+
+	/// fr: 'Carte du sentier'
+	String get mapRegion => 'Carte du sentier';
+
+	/// fr: 'Votre position'
+	String get userPosition => 'Votre position';
+
+	/// fr: 'Etape $number'
+	String stageMarker({required Object number}) => 'Etape ${number}';
+
+	/// fr: 'Point d'interet : $name'
+	String poiMarker({required Object name}) => 'Point d\'interet : ${name}';
+
+	/// fr: '$count points groupes'
+	String markerCluster({required Object count}) => '${count} points groupes';
+
+	/// fr: 'Sentier $name'
+	String trailCard({required Object name}) => 'Sentier ${name}';
+
+	/// fr: 'Demarrer le suivi'
+	String get startTracking => 'Demarrer le suivi';
+
+	/// fr: 'Mettre le suivi en pause'
+	String get pauseTracking => 'Mettre le suivi en pause';
+
+	/// fr: 'Reprendre le suivi'
+	String get resumeTracking => 'Reprendre le suivi';
+
+	/// fr: 'Arreter le suivi'
+	String get stopTracking => 'Arreter le suivi';
 }
 
 // Path: nav
@@ -1613,6 +1665,20 @@ class Translations$feasibility$recommendations$excellent$tips$fr {
 extension on Translations {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
+			'a11y.back' => 'Retour',
+			'a11y.zoomIn' => 'Zoomer',
+			'a11y.zoomOut' => 'Dezoomer',
+			'a11y.centerOnMe' => 'Centrer sur ma position',
+			'a11y.mapRegion' => 'Carte du sentier',
+			'a11y.userPosition' => 'Votre position',
+			'a11y.stageMarker' => ({required Object number}) => 'Etape ${number}',
+			'a11y.poiMarker' => ({required Object name}) => 'Point d\'interet : ${name}',
+			'a11y.markerCluster' => ({required Object count}) => '${count} points groupes',
+			'a11y.trailCard' => ({required Object name}) => 'Sentier ${name}',
+			'a11y.startTracking' => 'Demarrer le suivi',
+			'a11y.pauseTracking' => 'Mettre le suivi en pause',
+			'a11y.resumeTracking' => 'Reprendre le suivi',
+			'a11y.stopTracking' => 'Arreter le suivi',
 			'nav.map' => 'Carte',
 			'nav.stages' => 'Étapes',
 			'nav.planning' => 'Planning',

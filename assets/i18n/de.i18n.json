@@ -1,4 +1,20 @@
 {
+  "a11y": {
+    "back": "Zuruck",
+    "zoomIn": "Vergrossern",
+    "zoomOut": "Verkleinern",
+    "centerOnMe": "Auf meine Position zentrieren",
+    "mapRegion": "Wanderkarte",
+    "userPosition": "Ihre Position",
+    "stageMarker": "Etappe $number",
+    "poiMarker": "Interessanter Punkt: $name",
+    "markerCluster": "$count gruppierte Punkte",
+    "trailCard": "Weg $name",
+    "startTracking": "Aufzeichnung starten",
+    "pauseTracking": "Aufzeichnung pausieren",
+    "resumeTracking": "Aufzeichnung fortsetzen",
+    "stopTracking": "Aufzeichnung beenden"
+  },
   "nav": {
     "map": "Karte",
     "stages": "Etappen",

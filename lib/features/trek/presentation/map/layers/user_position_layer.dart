@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../../i18n/translations.g.dart';
 import '../../../../map/widgets/user_position_marker.dart';
 
 /// Couche carte position utilisateur -- point bleu pulsant + cercle precision.
@@ -69,7 +70,11 @@ class UserPositionLayer extends StatelessWidget {
               point: pos,
               width: markerSize * 3,
               height: markerSize * 3,
-              child: UserPositionMarker(size: markerSize),
+              child: Semantics(
+                label: t.a11y.userPosition,
+                image: true,
+                child: UserPositionMarker(size: markerSize),
+              ),
             ),
           ],
         ),

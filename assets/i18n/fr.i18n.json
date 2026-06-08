@@ -1,4 +1,20 @@
 {
+  "a11y": {
+    "back": "Retour",
+    "zoomIn": "Zoomer",
+    "zoomOut": "Dezoomer",
+    "centerOnMe": "Centrer sur ma position",
+    "mapRegion": "Carte du sentier",
+    "userPosition": "Votre position",
+    "stageMarker": "Etape $number",
+    "poiMarker": "Point d'interet : $name",
+    "markerCluster": "$count points groupes",
+    "trailCard": "Sentier $name",
+    "startTracking": "Demarrer le suivi",
+    "pauseTracking": "Mettre le suivi en pause",
+    "resumeTracking": "Reprendre le suivi",
+    "stopTracking": "Arreter le suivi"
+  },
   "nav": {
     "map": "Carte",
     "stages": "Étapes",

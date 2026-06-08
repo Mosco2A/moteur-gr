@@ -10,6 +10,14 @@ class AppTheme {
 
   // --- Couleurs neutres (communes a tous les sentiers) ---
   static const grisGranite = Color(0xFF616161);
+
+  /// Texte secondaire lisible sur fond SOMBRE (WCAG AA, contraste >= 4.5:1).
+  ///
+  /// [grisGranite] (0xFF616161) reste adapte aux fonds clairs (ex: share card)
+  /// mais echoue le contraste AA sur les surfaces sombres du theme (~2.6:1).
+  /// Ce gris clair (~7:1 sur 0xFF1E1E1E) le remplace pour le texte secondaire
+  /// des ecrans sombres (suivi, etc.). Voir WcagContrast / audit a11y E5.3a.
+  static const grisTexteSecondaire = Color(0xFFB0B0B0);
   static const grisClair = Color(0xFFE0E0E0);
   static const grisFond = Color(0xFFF5F5F5);
   static const blancNeige = Color(0xFFFAFAFA);

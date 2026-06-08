@@ -10,8 +10,10 @@ import 'package:latlong2/latlong.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_point.dart';
 import '../../../core/models/poi.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/loading_overlay.dart';
+import '../../trek/presentation/map/marker_cluster.dart';
 import '../providers/gpx_track_provider.dart';
 import '../providers/location_provider.dart';
 import '../providers/map_pois_provider.dart';
@@ -175,26 +177,56 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
                         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.moteur-gr.app',
                   ),
-                  TrailPolyline.build(
-                    points: displayPoints,
-                    color: trailColor,
+                  // Trace statique -> RepaintBoundary (raster isole des
+                  // rebuilds POI/position)
+                  RepaintBoundary(
+                    child: TrailPolyline.build(
+                      points: displayPoints,
+                      color: trailColor,
+                    ),
                   ),
-                  MarkerLayer(
-                    markers: [
-                      ...filteredPois.map((poi) {
+                  // POIs statiques -> clusterises au-dela du seuil + raster
+                  // isole. Le marqueur de position utilisateur reste dans
+                  // une couche dynamique separee (au-dessus).
+                  RepaintBoundary(
+                    child: ClusteredMarkerLayer<PoiModel>(
+                      zoom: _currentZoom.toDouble(),
+                      points: [
+                        for (final poi in filteredPois)
+                          ClusterPoint<PoiModel>(
+                            position: LatLng(poi.lat, poi.lng),
+                            data: poi,
+                          ),
+                      ],
+                      singleMarkerBuilder: (context, point) {
+                        final poi = point.data;
                         return Marker(
-                          point: LatLng(poi.lat, poi.lng),
+                          point: point.position,
                           width: 36,
                           height: 36,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() => _selectedPoi = poi);
-                            },
-                            child: PoiMarker(type: poi.type),
+                          child: Semantics(
+                            button: true,
+                            label: t.a11y.poiMarker(name: poi.name),
+                            child: GestureDetector(
+                              onTap: () => setState(() => _selectedPoi = poi),
+                              child: ExcludeSemantics(
+                                child: PoiMarker(type: poi.type),
+                              ),
+                            ),
                           ),
                         );
-                      }),
-                      // Marqueur position utilisateur
+                      },
+                      onClusterTap: (cluster) {
+                        _mapController.move(
+                          cluster.position,
+                          _mapController.camera.zoom + 2,
+                        );
+                      },
+                    ),
+                  ),
+                  // Marqueur position utilisateur (dynamique, au-dessus)
+                  MarkerLayer(
+                    markers: [
                       ...userPositionAsync.maybeWhen(
                         data: (position) => [
                           Marker(
@@ -204,7 +236,11 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
                             ),
                             width: 60,
                             height: 60,
-                            child: const UserPositionMarker(),
+                            child: Semantics(
+                              label: t.a11y.userPosition,
+                              image: true,
+                              child: const UserPositionMarker(),
+                            ),
                           ),
                         ],
                         orElse: () => <Marker>[],

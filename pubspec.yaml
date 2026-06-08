@@ -82,6 +82,8 @@ dependencies:
 
   # --- In-App Purchase (E4.14/E4.17) — stubs/sandbox, aucun paiement reel ---
   in_app_purchase: ^3.2.0
+  firebase_analytics: ^11.6.0
+  firebase_crashlytics: ^4.3.10
 
 dev_dependencies:
   flutter_test:

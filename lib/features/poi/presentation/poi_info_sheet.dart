@@ -3,28 +3,38 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/poi.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/lazy_network_image.dart';
 import '../domain/poi_type_config.dart';
 
 /// Bottom sheet affichant le detail d'un POI.
 ///
-/// Affiche: nom i18n, icone/couleur via [PoiTypeConfig], description i18n,
-/// coordonnees GPS, altitude, horaires si disponibles, et un bouton
-/// de navigation vers la carte centree sur le POI.
+/// Affiche: photo (lazy, optionnelle), nom i18n, icone/couleur via
+/// [PoiTypeConfig], description i18n, coordonnees GPS, altitude, horaires si
+/// disponibles, et un bouton de navigation vers la carte centree sur le POI.
 class PoiInfoSheet extends StatelessWidget {
-  const PoiInfoSheet({super.key, required this.poi});
+  const PoiInfoSheet({super.key, required this.poi, this.imageUrl});
 
   /// Le POI a afficher.
   final PoiModel poi;
 
+  /// URL optionnelle d'une photo distante (chargee paresseusement).
+  ///
+  /// Null/vide -> aucun en-tete image (cas par defaut offline-first).
+  final String? imageUrl;
+
   /// Affiche le bottom sheet modal pour un POI donne.
-  static Future<void> show(BuildContext context, PoiModel poi) {
+  static Future<void> show(
+    BuildContext context,
+    PoiModel poi, {
+    String? imageUrl,
+  }) {
     return showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (_) => PoiInfoSheet(poi: poi),
+      builder: (_) => PoiInfoSheet(poi: poi, imageUrl: imageUrl),
     );
   }
 
@@ -80,6 +90,17 @@ class PoiInfoSheet extends StatelessWidget {
               ),
             ),
           ),
+
+          // Photo distante optionnelle (chargee paresseusement, cache disque)
+          if (imageUrl != null && imageUrl!.trim().isNotEmpty) ...[
+            LazyNetworkImage(
+              imageUrl: imageUrl,
+              height: 160,
+              width: double.infinity,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            const SizedBox(height: 16),
+          ],
 
           // En-tete: icone + nom + type
           Row(

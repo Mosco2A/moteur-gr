@@ -153,21 +153,21 @@ class _TrailHeader extends StatelessWidget {
             ),
           ],
           const SizedBox(height: AppTheme.spacingMd),
-          // Infos chiffrées
-          Row(
+          // Infos chiffrées — Wrap pour ne pas déborder à textScale 2x
+          Wrap(
+            spacing: AppTheme.spacingBase,
+            runSpacing: AppTheme.spacingXs,
             children: [
               _InfoChip(
                 icon: Icons.place,
                 label: config.region,
                 theme: theme,
               ),
-              const SizedBox(width: AppTheme.spacingBase),
               _InfoChip(
                 icon: Icons.straighten,
                 label: '${config.totalDistanceKm} km',
                 theme: theme,
               ),
-              const SizedBox(width: AppTheme.spacingBase),
               _InfoChip(
                 icon: Icons.trending_up,
                 label: '${config.totalElevationGain} m D+',
@@ -198,10 +198,12 @@ class _InfoChip extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: theme.colorScheme.primary,
+        ExcludeSemantics(
+          child: Icon(
+            icon,
+            size: 16,
+            color: theme.colorScheme.primary,
+          ),
         ),
         const SizedBox(width: 4),
         Text(
