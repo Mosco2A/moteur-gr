@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
+import '../../../shared/widgets/stage_number_badge.dart';
 import '../providers/pois_provider.dart';
 import '../providers/stages_provider.dart';
 import '../widgets/difficulty_badge.dart';
@@ -75,9 +76,11 @@ class StageDetailScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Nom et badge difficulté
+                // Numéro (Hero depuis la liste — E5.5a), nom et difficulté
                 Row(
                   children: [
+                    StageNumberBadge(number: stage.stageNumber),
+                    const SizedBox(width: AppTheme.spacingMd),
                     Expanded(
                       child: Text(
                         stage.name,
@@ -121,7 +124,7 @@ class StageDetailScreen extends ConsumerWidget {
                     child: Text(
                       'Aucun point d\'intérêt pour cette étape.',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: AppTheme.grisGranite,
+                        color: AppTheme.grisTexteSecondaire,
                       ),
                     ),
                   )

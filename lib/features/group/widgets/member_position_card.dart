@@ -23,7 +23,7 @@ class MemberPositionCard extends StatelessWidget {
           Text(member.displayName ?? 'Randonneur anonyme', style: theme.textTheme.titleSmall),
           const SizedBox(height: AppTheme.spacingXs),
           Text(_formatCoordinates(member.lastLat, member.lastLng),
-            style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.grisGranite)),
+            style: theme.textTheme.bodySmall?.copyWith(color: AppTheme.grisTexteSecondaire)),
           if (member.currentStageId != null) Padding(
             padding: const EdgeInsets.only(top: AppTheme.spacingXs),
             child: Text('Etape: ${member.currentStageId}', style: theme.textTheme.bodySmall)),

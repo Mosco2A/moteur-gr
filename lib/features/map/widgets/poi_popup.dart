@@ -74,13 +74,13 @@ class PoiPopup extends StatelessWidget {
                     const Icon(
                       Icons.terrain,
                       size: 14,
-                      color: AppTheme.grisGranite,
+                      color: AppTheme.grisTexteSecondaire,
                     ),
                     const SizedBox(width: AppTheme.spacingXs),
                     Text(
                       '${poi.altitudeM} m',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.grisGranite,
+                        color: AppTheme.grisTexteSecondaire,
                       ),
                     ),
                   ],
@@ -95,14 +95,14 @@ class PoiPopup extends StatelessWidget {
                     const Icon(
                       Icons.schedule,
                       size: 14,
-                      color: AppTheme.grisGranite,
+                      color: AppTheme.grisTexteSecondaire,
                     ),
                     const SizedBox(width: AppTheme.spacingXs),
                     Expanded(
                       child: Text(
                         poi.openingHours!,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppTheme.grisGranite,
+                          color: AppTheme.grisTexteSecondaire,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,

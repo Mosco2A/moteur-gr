@@ -71,7 +71,7 @@ class NoDataScreen extends ConsumerWidget {
                 Text(
                   t.noData.subtitle,
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: AppTheme.grisGranite,
+                    color: AppTheme.grisTexteSecondaire,
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -79,7 +79,7 @@ class NoDataScreen extends ConsumerWidget {
                 Text(
                   t.noData.offlineHint,
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: AppTheme.grisGranite.withAlpha(180),
+                    color: AppTheme.grisTexteSecondaire.withAlpha(180),
                   ),
                   textAlign: TextAlign.center,
                 ),

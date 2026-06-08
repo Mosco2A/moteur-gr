@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/stage_number_badge.dart';
 import 'difficulty_badge.dart';
 import 'elevation_indicator.dart';
 
@@ -53,8 +54,8 @@ class StageListTile extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Numéro de l'étape dans un cercle
-          _StageNumber(number: stage.stageNumber),
+          // Numéro de l'étape dans un cercle (Hero vers le détail — E5.5a)
+          StageNumberBadge(number: stage.stageNumber),
           const SizedBox(width: AppTheme.spacingMd),
           // Infos principales
           Expanded(
@@ -123,31 +124,3 @@ class StageListTile extends StatelessWidget {
   }
 }
 
-/// Cercle affichant le numéro d'étape
-class _StageNumber extends StatelessWidget {
-  const _StageNumber({required this.number});
-
-  final int number;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: theme.colorScheme.primaryContainer,
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        '$number',
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-      ),
-    );
-  }
-}

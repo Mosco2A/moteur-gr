@@ -336,13 +336,13 @@ class _StatRow extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          Icon(icon, size: 20, color: AppTheme.grisGranite),
+          Icon(icon, size: 20, color: AppTheme.grisTexteSecondaire),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
               label,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.grisGranite,
+                color: AppTheme.grisTexteSecondaire,
               ),
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
@@ -199,6 +200,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   /// Genere le PDF via DiplomaPdfService.
   Future<void> _generatePdf(TrailConfig config) async {
     if (_diplomaData == null) return;
+    // E5.5a : retour haptique moyen a la generation du diplome.
+    AppHaptics.medium();
     setState(() => _isGeneratingPdf = true);
 
     try {
@@ -308,7 +311,7 @@ class _JournalPhotosSection extends StatelessWidget {
                 child: Text(
                   diplomaT.recapNoPhotos,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.grisGranite,
+                    color: AppTheme.grisTexteSecondaire,
                   ),
                 ),
               ),
@@ -545,7 +548,7 @@ class _NoTracePlaceholder extends StatelessWidget {
           Text(
             message,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppTheme.grisGranite,
+              color: AppTheme.grisTexteSecondaire,
             ),
           ),
         ],

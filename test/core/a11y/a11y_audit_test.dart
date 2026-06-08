@@ -83,6 +83,81 @@ void main() {
       // fonds clairs) n'atteint pas 4.5:1 sur les surfaces sombres.
       expect(WcagContrast.meetsAA(AppTheme.grisGranite, surface), isFalse);
     });
+
+    test('libelle d\'onglet non selectionne (bottom nav) conforme AA — E5.5b',
+        () {
+      // Reserve R2 : grisGranite passait juste le seuil UI mais pas le confort
+      // de lecture. La barre utilise desormais grisTexteSecondaire (>= 4.5:1).
+      final navBg = theme.bottomNavigationBarTheme.backgroundColor!;
+      final unselected =
+          theme.bottomNavigationBarTheme.unselectedItemColor!;
+      expect(unselected, AppTheme.grisTexteSecondaire);
+      expect(WcagContrast.meetsAA(unselected, navBg), isTrue,
+          reason: 'ratio = '
+              '${WcagContrast.ratio(unselected, navBg).toStringAsFixed(2)}');
+    });
+  });
+
+  group('Audit contraste — boutons d\'action suivi (R2 resolue, E5.5b)', () {
+    test('texte blanc conforme AA sur les couleurs d\'action', () {
+      // Avant E5.5b : Colors.green/Colors.orange -> blanc a ~2.2-2.8:1 (echec).
+      // Apres : actionStart / actionPause / rougeUrgence -> blanc >= 4.5:1.
+      for (final c in [
+        AppTheme.actionStart,
+        AppTheme.actionPause,
+        AppTheme.rougeUrgence,
+      ]) {
+        expect(WcagContrast.meetsAA(Colors.white, c), isTrue,
+            reason: 'blanc sur $c = '
+                '${WcagContrast.ratio(Colors.white, c).toStringAsFixed(2)}:1');
+      }
+    });
+
+    test('les anciennes couleurs Material vives echouaient AA (regression doc)',
+        () {
+      // Garde-fou : si quelqu'un revient a Colors.green/orange, ce test
+      // rappelle pourquoi on ne le fait pas (echec AA texte blanc).
+      expect(WcagContrast.meetsAA(Colors.white, Colors.green), isFalse);
+      expect(WcagContrast.meetsAA(Colors.white, Colors.orange), isFalse);
+    });
+  });
+
+  group('Audit contraste — theme clair (E5.5b)', () {
+    final light = AppTheme.buildLightTheme(
+      primaryColor: const Color(0xFF2E7D32),
+      secondaryColor: const Color(0xFF1565C0),
+    );
+
+    test('texte principal conforme AA sur les surfaces claires', () {
+      final bodyColor = light.textTheme.bodyMedium!.color!;
+      for (final bg in [
+        light.colorScheme.surface,
+        light.scaffoldBackgroundColor,
+        light.colorScheme.surfaceContainerHighest,
+      ]) {
+        expect(WcagContrast.meetsAA(bodyColor, bg), isTrue,
+            reason: 'texte principal $bodyColor sur $bg = '
+                '${WcagContrast.ratio(bodyColor, bg).toStringAsFixed(2)}:1');
+      }
+    });
+
+    test('grisGranite reste conforme AA en texte secondaire sur fond clair', () {
+      // Justifie que grisGranite reste le token des contextes clairs
+      // (ex: carte de partage), la ou grisTexteSecondaire echouerait.
+      for (final bg in [light.colorScheme.surface, AppTheme.blancNeige]) {
+        expect(WcagContrast.meetsAA(AppTheme.grisGranite, bg), isTrue,
+            reason: 'ratio = '
+                '${WcagContrast.ratio(AppTheme.grisGranite, bg).toStringAsFixed(2)}');
+      }
+    });
+
+    test('grisTexteSecondaire ECHOUE sur fond clair (ne pas l\'y utiliser)', () {
+      // Symetrique du test sombre : le token clair n'est PAS lisible sur clair.
+      expect(
+          WcagContrast.meetsAA(
+              AppTheme.grisTexteSecondaire, AppTheme.blancNeige),
+          isFalse);
+    });
   });
 
   group('Labels a11y Slang — presents dans les 5 langues', () {

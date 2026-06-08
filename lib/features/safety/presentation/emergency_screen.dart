@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/app_haptics.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../data/emergency_contacts_service.dart';
 import '../domain/models/emergency_contact.dart';
@@ -195,6 +196,8 @@ class _EmergencyContactTile extends StatelessWidget {
     BuildContext context,
     EmergencyContact contact,
   ) async {
+    // E5.5a : retour haptique fort sur action critique (appel d'urgence).
+    AppHaptics.heavy();
     // Nettoyer le numero : retirer espaces pour le format tel:
     final cleanPhone = contact.phone.replaceAll(' ', '');
     try {

@@ -27,14 +27,14 @@ class EmptyState extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingXl),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: iconSize, color: iconColor ?? AppTheme.grisGranite.withAlpha(120)),
+          Icon(icon, size: iconSize, color: iconColor ?? AppTheme.grisTexteSecondaire.withAlpha(120)),
           const SizedBox(height: AppTheme.spacingBase),
-          Text(title, style: theme.textTheme.titleLarge?.copyWith(color: AppTheme.grisGranite),
+          Text(title, style: theme.textTheme.titleLarge?.copyWith(color: AppTheme.grisTexteSecondaire),
             textAlign: TextAlign.center),
           if (subtitle != null) ...[
             const SizedBox(height: AppTheme.spacingSm),
             Text(subtitle!, style: theme.textTheme.bodyMedium?.copyWith(
-              color: AppTheme.grisGranite.withAlpha(180)), textAlign: TextAlign.center),
+              color: AppTheme.grisTexteSecondaire.withAlpha(180)), textAlign: TextAlign.center),
           ],
           if (action != null) ...[const SizedBox(height: AppTheme.spacingLg), action!],
         ]),

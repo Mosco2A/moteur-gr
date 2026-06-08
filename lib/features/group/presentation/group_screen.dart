@@ -57,7 +57,7 @@ class _GroupScreenState extends ConsumerState<GroupScreen> {
         Text('Localisation partagee', style: theme.textTheme.headlineSmall),
         const SizedBox(height: AppTheme.spacingSm),
         Text('Partagez votre position avec votre groupe de randonnee.',
-          style: theme.textTheme.bodyMedium?.copyWith(color: AppTheme.grisGranite)),
+          style: theme.textTheme.bodyMedium?.copyWith(color: AppTheme.grisTexteSecondaire)),
         const SizedBox(height: AppTheme.spacingXl),
         ElevatedButton.icon(onPressed: _isLoading ? null : _createGroup,
           icon: _isLoading ? const SizedBox(width: 20, height: 20,

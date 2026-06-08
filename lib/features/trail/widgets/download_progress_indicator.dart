@@ -128,7 +128,7 @@ class DownloadProgressIndicator extends StatelessWidget {
               child: Text(
                 stepLabel,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.grisGranite,
+                  color: AppTheme.grisTexteSecondaire,
                 ),
                 overflow: TextOverflow.ellipsis,
               ),

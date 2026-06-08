@@ -74,7 +74,7 @@ class PaywallSheet extends ConsumerWidget {
             Text(
               t.monetization.paywallBody,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.grisGranite,
+                color: AppTheme.grisTexteSecondaire,
               ),
               textAlign: TextAlign.center,
             ),

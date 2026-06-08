@@ -132,13 +132,13 @@ class TrailCatalogCard extends StatelessWidget {
                   children: [
                     const ExcludeSemantics(
                       child: Icon(Icons.storage,
-                          size: 14, color: AppTheme.grisGranite),
+                          size: 14, color: AppTheme.grisTexteSecondaire),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       formatFileSize(entry.fileSize),
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.grisGranite,
+                        color: AppTheme.grisTexteSecondaire,
                       ),
                     ),
                   ],
@@ -148,13 +148,13 @@ class TrailCatalogCard extends StatelessWidget {
                   children: [
                     const ExcludeSemantics(
                       child: Icon(Icons.update,
-                          size: 14, color: AppTheme.grisGranite),
+                          size: 14, color: AppTheme.grisTexteSecondaire),
                     ),
                     const SizedBox(width: 4),
                     Text(
                       'v${entry.dataVersion}',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.grisGranite,
+                        color: AppTheme.grisTexteSecondaire,
                       ),
                     ),
                   ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/app_haptics.dart';
 import '../models/tracking_status.dart';
 import '../providers/tracking_provider.dart';
 
@@ -91,7 +92,7 @@ class TrackingOverlay extends ConsumerWidget {
         return _ActionButton(
           label: 'Demarrer',
           icon: Icons.play_arrow,
-          color: Colors.green,
+          color: AppTheme.actionStart,
           onPressed: () => notifier.start(trailId),
         );
       case TrackingStatusValues.recording:
@@ -101,7 +102,7 @@ class TrackingOverlay extends ConsumerWidget {
               child: _ActionButton(
                 label: 'Pause',
                 icon: Icons.pause,
-                color: Colors.orange,
+                color: AppTheme.actionPause,
                 onPressed: notifier.pause,
               ),
             ),
@@ -123,7 +124,7 @@ class TrackingOverlay extends ConsumerWidget {
               child: _ActionButton(
                 label: 'Reprendre',
                 icon: Icons.play_arrow,
-                color: Colors.green,
+                color: AppTheme.actionStart,
                 onPressed: notifier.resume,
               ),
             ),
@@ -204,7 +205,8 @@ class _StatTile extends StatelessWidget {
         Text(
           label,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: AppTheme.grisGranite,
+            // E5.5b : overlay sur surface sombre -> token clair conforme AA.
+            color: AppTheme.grisTexteSecondaire,
             fontSize: 12,
           ),
         ),
@@ -229,7 +231,11 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton.icon(
-      onPressed: onPressed,
+      // E5.5a : retour haptique leger sur les actions de suivi.
+      onPressed: () {
+        AppHaptics.light();
+        onPressed();
+      },
       icon: Icon(icon, size: 20),
       label: Text(label),
       style: ElevatedButton.styleFrom(
