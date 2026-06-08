@@ -123,6 +123,23 @@ pre-existant, valide gate #85353, simplement decale par l'ajout des deps Firebas
 0 hit dans tout le code lib/test/i18n ecrit). 4 commits conventionnels 3b2a8c8..3a55c98.
 PAS DE MERGE MAIN sans GO.
 
+GATE QA ARTEMIS 08/06 (#85426) — VERDICT : GATE VERTE (PASS). Preuves RE-EXECUTEES
+independamment (pas sur parole du dev) : flutter analyze projet entier = "No issues
+found!" (124.6 s, exit 0) ; flutter test = 1012 PASS / 0 FAIL / 0 SKIP (compteur final
+"+1012: All tests passed!", aucun marqueur de fail -N ni de skip ~N, exit 0) ; test
+files 166->173 = +7 fichiers AJOUTES (aucun test supprime ni skippe), 50 nouveaux tests
+comptes (a11y 10 + analytics 8 + catalog 2 + gps 10 + map_controls 3 + cluster 13 +
+lazy 4) ; grep fralimonti|gr20|corse|mare.a.mare sur les 38 fichiers touches = 0 hit
+code, 1 hit justifie pubspec asset mare_a_mare_centre. Controles cibles OK : zero-PII
+strict (5 events SHA-256, anti-fingerprint, test _assertNoPii cles+email+GPS), opt-in
+par defaut (consentement coupe, early-return), no-op total si Firebase indispo (zero
+crash), 13 Semantics reels + focus ordonne [1,2,3] + WcagContrast WCAG 2.x + textScale
+2x sans overflow, stack Riverpod 2.6/Freezed 3.2.5/Slang 4.15, applicationId
+com.only1cent.moteur_gr. Reserves NON BLOQUANTES (dette deja tracee ci-dessous) : R1
+cablage call-sites + ecran consentement RGPD (wagon 3), R2 contraste residuel boutons
+suivi (refonte ColorScheme), R3 analytics inerte tant que flutterfire configure non fait.
+EN ATTENTE GO CHRIS POUR MERGE MAIN (Artemis ne merge pas).
+
 RESTE / DETTE TRACEE (hors run, non bloquant) :
 - E5.4 ne produit RIEN tant que wagon 3 (Christophe) n'a pas fait flutterfire configure
   (DefaultFirebaseOptions branche dans firebase_service) ET le setup natif Crashlytics
@@ -393,9 +410,11 @@ firebase_storage inutilise ; sel anonymisation fixe (P2-6 audit).
 claude/feat/E5-socles-perf-a11y-analytics — lot E5 SOCLES (perf carte/GPS,
   a11y WCAG, analytics anonyme) COMPLETE 07/06 : 4 commits 3b2a8c8..3a55c98
   depuis main 4153dc5, reecriture propre (zero cherry-pick des 17 stranded).
-  Preuves analyze 0 / test 1012-0-0 / grep touches = 1 hit parametrique justifie
-  affichees. Attend QA Artemis + GO Chris. PAS DE MERGE sans GO. Reste wagon 3
-  Firebase (analytics inerte tant que non configure) + dette contraste theme.
+  Preuves analyze 0 / test 1012-0-0 / grep touches = 1 hit parametrique justifie.
+  GATE QA ARTEMIS VERTE 08/06 (#85426) — preuves re-executees independamment
+  (analyze 0 issue / test 1012-0-0 / +7 fichiers tests aucun supprime / grep 0 hit
+  code). Attend GO Chris. PAS DE MERGE sans GO. Reste wagon 3 Firebase (analytics
+  inerte tant que non configure) + dette contraste theme.
 claude/fix/remediation-p0p1-audit327 — lot remediation P0+P1 audit #327
   (tache #328) COMPLETE 07/06 : 8 commits 91c8863..3afd6c3 (+ resync
   orchestration), preuves analyze 0 / test 962-0 / regles emulateur
