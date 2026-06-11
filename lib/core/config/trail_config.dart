@@ -5,10 +5,7 @@
 /// Le 112 (urgences europeennes) est universel et gere par le
 /// moteur — ne pas le dupliquer ici.
 class TrailEmergencyNumber {
-  const TrailEmergencyNumber({
-    required this.name,
-    required this.phone,
-  });
+  const TrailEmergencyNumber({required this.name, required this.phone});
 
   /// Nom affiche du service de secours (ex: 'Secours montagne').
   final String name;
@@ -45,6 +42,7 @@ class TrailConfig {
     this.emergencyNumbers = const [],
     this.seedAssetsBase,
     this.tipAssetPaths = const [],
+    this.privacyPolicyUrl,
   });
 
   /// Identifiant unique du sentier (ex: 'gr10', 'tmb')
@@ -112,4 +110,12 @@ class TrailConfig {
 
   /// Fichiers JSON de fiches conseils a charger au seed.
   final List<String> tipAssetPaths;
+
+  /// URL de la politique de confidentialite du produit/sentier.
+  ///
+  /// Parametrique (jamais codee en dur dans le moteur) : fournie par la
+  /// configuration du sentier. Requise pour les fiches store (Google Play /
+  /// App Store) et l'ecran « Confidentialite ». Null = non renseignee
+  /// (l'UI masque alors le lien). Exemple : 'https://exemple.org/privacy'.
+  final String? privacyPolicyUrl;
 }
