@@ -1,0 +1,1 @@
+hiking,trekking,trail,GPS,offline,map,GPX,track,stage,planning,elevation,refuge,bivouac,mountain
