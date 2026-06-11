@@ -66,6 +66,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
 	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
 	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
+	late final Translations$onboarding$fr onboarding = Translations$onboarding$fr.internal(_root);
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
 }
 
@@ -1114,6 +1115,45 @@ class Translations$cloud$fr {
 	String get statusLocalDesc => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.';
 }
 
+// Path: onboarding
+class Translations$onboarding$fr {
+	Translations$onboarding$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Passer'
+	String get skip => 'Passer';
+
+	/// fr: 'Suivant'
+	String get next => 'Suivant';
+
+	/// fr: 'Commencer'
+	String get getStarted => 'Commencer';
+
+	/// fr: 'Bienvenue sur $appName'
+	String welcomeTitle({required Object appName}) => 'Bienvenue sur ${appName}';
+
+	/// fr: 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.'
+	String get welcomeSubtitle => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.';
+
+	/// fr: 'Choisissez votre langue'
+	String get languageTitle => 'Choisissez votre langue';
+
+	/// fr: 'Vous pourrez la modifier à tout moment dans les paramètres.'
+	String get languageSubtitle => 'Vous pourrez la modifier à tout moment dans les paramètres.';
+
+	/// fr: 'Téléchargez votre premier sentier'
+	String get downloadTitle => 'Téléchargez votre premier sentier';
+
+	/// fr: 'Parcourez le catalogue et téléchargez un sentier pour l'utiliser entièrement hors ligne.'
+	String get downloadSubtitle => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.';
+
+	/// fr: 'Parcourir le catalogue'
+	String get browseCatalog => 'Parcourir le catalogue';
+}
+
 // Path: monetization
 class Translations$monetization$fr {
 	Translations$monetization$fr.internal(this._root);
@@ -2044,6 +2084,16 @@ extension on Translations {
 			'cloud.statusActiveDesc' => 'Sauvegarde et suivi en temps réel disponibles.',
 			'cloud.statusLocal' => 'Mode local (sans cloud)',
 			'cloud.statusLocalDesc' => 'Aucune donnée n\'est envoyée en ligne. Configuration cloud absente.',
+			'onboarding.skip' => 'Passer',
+			'onboarding.next' => 'Suivant',
+			'onboarding.getStarted' => 'Commencer',
+			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
+			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.',
+			'onboarding.languageTitle' => 'Choisissez votre langue',
+			'onboarding.languageSubtitle' => 'Vous pourrez la modifier à tout moment dans les paramètres.',
+			'onboarding.downloadTitle' => 'Téléchargez votre premier sentier',
+			'onboarding.downloadSubtitle' => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.',
+			'onboarding.browseCatalog' => 'Parcourir le catalogue',
 			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
 			'monetization.paywallTitle' => 'Débloquez ce trek',
 			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.',

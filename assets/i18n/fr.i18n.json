@@ -464,6 +464,18 @@
     "statusLocal": "Mode local (sans cloud)",
     "statusLocalDesc": "Aucune donnée n'est envoyée en ligne. Configuration cloud absente."
   },
+  "onboarding": {
+    "skip": "Passer",
+    "next": "Suivant",
+    "getStarted": "Commencer",
+    "welcomeTitle": "Bienvenue sur $appName",
+    "welcomeSubtitle": "Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.",
+    "languageTitle": "Choisissez votre langue",
+    "languageSubtitle": "Vous pourrez la modifier à tout moment dans les paramètres.",
+    "downloadTitle": "Téléchargez votre premier sentier",
+    "downloadSubtitle": "Parcourez le catalogue et téléchargez un sentier pour l'utiliser entièrement hors ligne.",
+    "browseCatalog": "Parcourir le catalogue"
+  },
   "monetization": {
     "demoBanner": "Mode démo — touchez pour débloquer",
     "paywallTitle": "Débloquez ce trek",

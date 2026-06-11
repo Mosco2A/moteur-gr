@@ -464,6 +464,18 @@
     "statusLocal": "Modo local (sin nube)",
     "statusLocalDesc": "No se envía ningún dato en línea. Falta la configuración de la nube."
   },
+  "onboarding": {
+    "skip": "Saltar",
+    "next": "Siguiente",
+    "getStarted": "Empezar",
+    "welcomeTitle": "Bienvenido a $appName",
+    "welcomeSubtitle": "Tu compañero de senderismo sin conexión: mapa, navegación GPS, planificación y diario de trek.",
+    "languageTitle": "Elige tu idioma",
+    "languageSubtitle": "Podrás cambiarlo en cualquier momento en los ajustes.",
+    "downloadTitle": "Descarga tu primer sendero",
+    "downloadSubtitle": "Explora el catálogo y descarga un sendero para usarlo completamente sin conexión.",
+    "browseCatalog": "Explorar el catálogo"
+  },
   "monetization": {
     "demoBanner": "Modo demo — toca para desbloquear",
     "paywallTitle": "Desbloquea este trek",

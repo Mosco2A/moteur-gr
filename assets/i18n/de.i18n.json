@@ -464,6 +464,18 @@
     "statusLocal": "Lokaler Modus (ohne Cloud)",
     "statusLocalDesc": "Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden."
   },
+  "onboarding": {
+    "skip": "Überspringen",
+    "next": "Weiter",
+    "getStarted": "Los geht's",
+    "welcomeTitle": "Willkommen bei $appName",
+    "welcomeSubtitle": "Dein Offline-Wanderbegleiter: Karte, GPS-Navigation, Planung und Tourentagebuch.",
+    "languageTitle": "Wähle deine Sprache",
+    "languageSubtitle": "Du kannst sie jederzeit in den Einstellungen ändern.",
+    "downloadTitle": "Lade deinen ersten Weg herunter",
+    "downloadSubtitle": "Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.",
+    "browseCatalog": "Katalog durchsuchen"
+  },
   "monetization": {
     "demoBanner": "Demo-Modus — zum Freischalten tippen",
     "paywallTitle": "Diesen Trek freischalten",

@@ -464,6 +464,18 @@
     "statusLocal": "Modalità locale (senza cloud)",
     "statusLocalDesc": "Nessun dato viene inviato online. Configurazione cloud assente."
   },
+  "onboarding": {
+    "skip": "Salta",
+    "next": "Avanti",
+    "getStarted": "Inizia",
+    "welcomeTitle": "Benvenuto su $appName",
+    "welcomeSubtitle": "Il tuo compagno di trekking offline: mappa, navigazione GPS, pianificazione e diario di trek.",
+    "languageTitle": "Scegli la tua lingua",
+    "languageSubtitle": "Potrai modificarla in qualsiasi momento nelle impostazioni.",
+    "downloadTitle": "Scarica il tuo primo sentiero",
+    "downloadSubtitle": "Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.",
+    "browseCatalog": "Sfoglia il catalogo"
+  },
   "monetization": {
     "demoBanner": "Modalità demo — tocca per sbloccare",
     "paywallTitle": "Sblocca questo trek",
