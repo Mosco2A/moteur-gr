@@ -6,7 +6,7 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 /// Tests du routeur GoRouter (E2.9b — bottom nav 5 onglets + ShellRoute).
 ///
 /// Couvre :
-///   - structure de premier niveau (1 shell + 10 routes racine) ;
+///   - structure de premier niveau (1 shell + 12 routes racine) ;
 ///   - composition du StatefulShellRoute (5 branches, chemins, cles) ;
 ///   - preservation des liens profonds existants (/trail/:id et sous-routes) ;
 ///   - navigation entre onglets via la NavigationBar ;
@@ -17,11 +17,11 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/trails');
     });
 
-    test('le premier niveau contient 1 shell + 11 routes racine', () {
+    test('le premier niveau contient 1 shell + 12 routes racine', () {
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 12);
+      expect(routes.length, 13);
       expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 11);
+      expect(routes.whereType<GoRoute>().length, 12);
     });
 
     test('les routes racine (hors shell) sont celles attendues', () {
@@ -38,6 +38,7 @@ void main() {
         '/goodies',
         '/booking',
         '/emergency',
+        '/onboarding',
         '/no-data',
         '/settings',
         '/profile',
@@ -45,8 +46,9 @@ void main() {
     });
 
     test('les routes racine sont nommees correctement', () {
-      final routes =
-          appRouter.configuration.routes.whereType<GoRoute>().toList();
+      final routes = appRouter.configuration.routes
+          .whereType<GoRoute>()
+          .toList();
       expect(routes.map((r) => r.name).toList(), [
         'trails',
         'trail-detail',
@@ -56,6 +58,7 @@ void main() {
         'goodies',
         'booking',
         'emergency',
+        'onboarding',
         'no-data',
         'settings',
         'profile',
@@ -72,16 +75,14 @@ void main() {
     });
 
     test('chaque onglet porte le bon chemin racine', () {
-      final paths = shell()
-          .branches
+      final paths = shell().branches
           .map((b) => (b.routes.first as GoRoute).path)
           .toList();
       expect(paths, ['/map', '/stages', '/planning', '/journal', '/more']);
     });
 
     test('chaque onglet porte le bon nom de route', () {
-      final names = shell()
-          .branches
+      final names = shell().branches
           .map((b) => (b.routes.first as GoRoute).name)
           .toList();
       expect(names, ['map', 'stages', 'trek-planning', 'journal', 'more']);
@@ -110,8 +111,7 @@ void main() {
     test('la route /trail/:id conserve ses 9 sous-routes', () {
       final trail = trailRoute();
       expect(trail.routes.length, 9);
-      final subPaths =
-          trail.routes.map((r) => (r as GoRoute).path).toList();
+      final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
         'map',
@@ -147,9 +147,8 @@ void main() {
       final testRouter = GoRouter(
         initialLocation: '/route-inexistante',
         routes: appRouter.configuration.routes,
-        errorBuilder: (context, state) => Scaffold(
-          body: Center(child: Text('Erreur: ${state.uri.path}')),
-        ),
+        errorBuilder: (context, state) =>
+            Scaffold(body: Center(child: Text('Erreur: ${state.uri.path}'))),
       );
 
       await tester.pumpWidget(MaterialApp.router(routerConfig: testRouter));
@@ -183,12 +182,15 @@ void main() {
                   initialLocation: i == navigationShell.currentIndex,
                 ),
                 destinations: const [
+                  NavigationDestination(icon: Icon(Icons.map), label: 'Carte'),
                   NavigationDestination(
-                      icon: Icon(Icons.map), label: 'Carte'),
+                    icon: Icon(Icons.terrain),
+                    label: 'Etapes',
+                  ),
                   NavigationDestination(
-                      icon: Icon(Icons.terrain), label: 'Etapes'),
-                  NavigationDestination(
-                      icon: Icon(Icons.more_horiz), label: 'Plus'),
+                    icon: Icon(Icons.more_horiz),
+                    label: 'Plus',
+                  ),
                 ],
               ),
             ),
@@ -226,8 +228,9 @@ void main() {
       );
     }
 
-    testWidgets('la NavigationBar affiche les onglets et bascule de contenu',
-        (tester) async {
+    testWidgets('la NavigationBar affiche les onglets et bascule de contenu', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp.router(routerConfig: buildStubRouter()),
       );
@@ -247,8 +250,9 @@ void main() {
       expect(find.text('Ecran Plus'), findsOneWidget);
     });
 
-    testWidgets('l etat d un onglet est restaure apres bascule',
-        (tester) async {
+    testWidgets('l etat d un onglet est restaure apres bascule', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp.router(routerConfig: buildStubRouter()),
       );
