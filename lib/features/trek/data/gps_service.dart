@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -28,19 +29,24 @@ abstract class GpsPermissionResultValues {
       values.contains(value) ? value : fallback;
 }
 
-/// Regime de precision GPS, pilote par le mouvement (E5.2b).
+/// Regime de precision GPS, pilote par le mouvement (E5.2b + F6A-03).
 ///
 /// [resting] : utilisateur a l'arret -> precision basse (economie batterie).
-/// [moving]  : utilisateur en mouvement -> precision haute (suivi fidele).
-enum GpsAccuracyMode { resting, moving }
+/// [walking] : marche lente prolongee -> precision moyenne/balanced (palier
+///             intermediaire ajoute en F6A-03, correction CP1 #1 batterie).
+/// [moving]  : utilisateur en mouvement franc -> precision haute (suivi fidele).
+enum GpsAccuracyMode { resting, walking, moving }
 
 /// Service GPS : permissions et stream de positions a precision adaptative.
 ///
 /// Responsabilites :
 /// - Demander les permissions foreground (puis background si besoin)
 /// - Fournir un Stream<Position> dont la `desiredAccuracy` s'ADAPTE au
-///   mouvement (haute en deplacement, basse au repos) tout en conservant
-///   un `distanceFilter` de 10 m
+///   mouvement sur 3 paliers (haute en deplacement franc, moyenne/balanced en
+///   marche lente, basse au repos) tout en conservant un `distanceFilter` de
+///   10 m. Le palier `walking` (F6A-03) espace aussi l'intervalle d'updates
+///   (proxy de batching natif — `setMaxUpdateDelayMillis` n'est pas surface
+///   par geolocator 11, on allonge `intervalDuration` comme substitut).
 /// - ZERO catch silencieux — toute erreur est loggee via ErrorHandler
 class GpsService {
   /// Wrapper Geolocator injecte pour testabilite.
@@ -68,14 +74,29 @@ class GpsService {
   /// Filtre de distance conserve dans tous les regimes de precision.
   static const int distanceFilterMeters = 10;
 
-  /// Seuil (m/s) au-dela duquel on passe en mouvement (~3.6 km/h).
+  /// Seuil (m/s) au-dela duquel on passe en mouvement franc (~3.6 km/h).
   static const double movingSpeedThresholdMps = 1.0;
+
+  /// Seuil (m/s) d'entree en marche lente (~1.4 km/h). En deca on est au repos.
+  static const double walkingSpeedThresholdMps = 0.4;
 
   /// Seuil (m/s) en deca duquel on repasse au repos (~1.4 km/h).
   ///
-  /// L'ecart avec [movingSpeedThresholdMps] cree une hysteresis qui evite
-  /// le battement (flapping) du regime autour d'une vitesse charniere.
-  static const double restingSpeedThresholdMps = 0.4;
+  /// Egal a [walkingSpeedThresholdMps] : on quitte le repos a la meme vitesse
+  /// qu'on y revient, l'hysteresis anti-flapping etant portee par la marge
+  /// descendante depuis `moving` ([movingExitSpeedThresholdMps]).
+  static const double restingSpeedThresholdMps = walkingSpeedThresholdMps;
+
+  /// Seuil (m/s) sous lequel on redescend de `moving` vers `walking`
+  /// (~2.5 km/h). L'ecart avec [movingSpeedThresholdMps] cree l'hysteresis qui
+  /// evite le battement (flapping) autour de la charniere haute.
+  static const double movingExitSpeedThresholdMps = 0.7;
+
+  /// Intervalle d'updates GPS (Android) par regime — proxy de batching.
+  /// Croissant : plus on est immobile, plus on espace (economie batterie).
+  static const Duration movingInterval = Duration(seconds: 2);
+  static const Duration walkingInterval = Duration(seconds: 5);
+  static const Duration restingInterval = Duration(seconds: 15);
 
   static Stream<Position> _defaultGetPositionStream({
     required LocationSettings locationSettings,
@@ -131,37 +152,87 @@ class GpsService {
     }
   }
 
-  /// Classe une vitesse en regime de precision, avec hysteresis.
+  /// Classe une vitesse en regime de precision, machine a 3 etats avec
+  /// hysteresis (F6A-03).
   ///
-  /// Fonction PURE (sans effet de bord) — testable directement. Depuis
-  /// [current], on ne bascule en [GpsAccuracyMode.moving] qu'au-dela de
-  /// [movingSpeedThresholdMps], et on ne revient au repos qu'en deca de
-  /// [restingSpeedThresholdMps]. Une vitesse non finie est traitee comme
-  /// nulle (repos).
+  /// Fonction PURE (sans effet de bord) — testable directement. Transitions
+  /// depuis [current] :
+  /// - depuis [GpsAccuracyMode.resting] : -> moving si speed >=
+  ///   [movingSpeedThresholdMps] ; -> walking si speed >=
+  ///   [walkingSpeedThresholdMps] ; sinon reste resting.
+  /// - depuis [GpsAccuracyMode.walking] : -> moving si speed >=
+  ///   [movingSpeedThresholdMps] ; -> resting si speed <
+  ///   [restingSpeedThresholdMps] ; sinon reste walking.
+  /// - depuis [GpsAccuracyMode.moving] : -> resting si speed <=
+  ///   [restingSpeedThresholdMps] ; -> walking si speed <=
+  ///   [movingExitSpeedThresholdMps] ; sinon reste moving.
+  ///
+  /// L'asymetrie montee (1.0) / descente (0.7) depuis `moving` cree
+  /// l'hysteresis anti-flapping. Une vitesse non finie est traitee comme nulle
+  /// (repos).
   static GpsAccuracyMode classifyMovement(
     double speedMps,
     GpsAccuracyMode current,
   ) {
     final speed = speedMps.isFinite ? speedMps.abs() : 0.0;
-    if (current == GpsAccuracyMode.resting) {
-      return speed >= movingSpeedThresholdMps
-          ? GpsAccuracyMode.moving
-          : GpsAccuracyMode.resting;
+    switch (current) {
+      case GpsAccuracyMode.resting:
+        if (speed >= movingSpeedThresholdMps) return GpsAccuracyMode.moving;
+        if (speed >= walkingSpeedThresholdMps) return GpsAccuracyMode.walking;
+        return GpsAccuracyMode.resting;
+      case GpsAccuracyMode.walking:
+        if (speed >= movingSpeedThresholdMps) return GpsAccuracyMode.moving;
+        if (speed < restingSpeedThresholdMps) return GpsAccuracyMode.resting;
+        return GpsAccuracyMode.walking;
+      case GpsAccuracyMode.moving:
+        if (speed <= restingSpeedThresholdMps) return GpsAccuracyMode.resting;
+        if (speed <= movingExitSpeedThresholdMps) return GpsAccuracyMode.walking;
+        return GpsAccuracyMode.moving;
     }
-    return speed <= restingSpeedThresholdMps
-        ? GpsAccuracyMode.resting
-        : GpsAccuracyMode.moving;
   }
 
-  /// Precision Geolocator correspondant a un [GpsAccuracyMode].
+  /// Precision Geolocator correspondant a un [GpsAccuracyMode] (3 paliers).
   static LocationAccuracy accuracyForMode(GpsAccuracyMode mode) {
-    return mode == GpsAccuracyMode.moving
-        ? LocationAccuracy.high
-        : LocationAccuracy.low;
+    switch (mode) {
+      case GpsAccuracyMode.moving:
+        return LocationAccuracy.high;
+      case GpsAccuracyMode.walking:
+        return LocationAccuracy.medium;
+      case GpsAccuracyMode.resting:
+        return LocationAccuracy.low;
+    }
   }
 
-  /// [LocationSettings] pour un regime donne (precision adaptative + filtre 10 m).
+  /// Intervalle d'updates GPS pour un [GpsAccuracyMode] (espacement = proxy
+  /// de batching, F6A-03).
+  static Duration intervalForMode(GpsAccuracyMode mode) {
+    switch (mode) {
+      case GpsAccuracyMode.moving:
+        return movingInterval;
+      case GpsAccuracyMode.walking:
+        return walkingInterval;
+      case GpsAccuracyMode.resting:
+        return restingInterval;
+    }
+  }
+
+  /// [LocationSettings] pour un regime donne (precision adaptative + filtre
+  /// 10 m). Sur Android, utilise [AndroidSettings] avec un `intervalDuration`
+  /// croissant en marche lente / repos pour espacer (batcher) les updates ;
+  /// sur les autres plateformes, conserve un [LocationSettings] simple (l'API
+  /// d'intervalle est specifique Android).
+  ///
+  /// NOTE : `setMaxUpdateDelayMillis` (batching natif Android) n'est PAS
+  /// surface par geolocator 11 — on allonge `intervalDuration` comme substitut
+  /// fonctionnel (moins d'updates = moins de reveils GPS = economie batterie).
   static LocationSettings settingsForMode(GpsAccuracyMode mode) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return AndroidSettings(
+        accuracy: accuracyForMode(mode),
+        distanceFilter: distanceFilterMeters,
+        intervalDuration: intervalForMode(mode),
+      );
+    }
     return LocationSettings(
       accuracy: accuracyForMode(mode),
       distanceFilter: distanceFilterMeters,

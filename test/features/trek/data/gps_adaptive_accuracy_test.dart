@@ -20,7 +20,7 @@ Position _pos({double speed = 0, double lat = 42, double lng = 9}) {
   );
 }
 
-/// Tests E5.2b — precision GPS adaptative (mouvement/repos) + filtre 10 m.
+/// Tests E5.2b (maj F6A-03) — precision GPS adaptative 3 paliers + filtre 10 m.
 void main() {
   group('classifyMovement — hysteresis', () {
     test('repos : vitesse nulle reste repos', () {
@@ -33,10 +33,11 @@ void main() {
           GpsAccuracyMode.moving);
     });
 
-    test('repos : vitesse intermediaire reste repos (hysteresis)', () {
-      // 0.7 m/s entre les deux seuils : depuis le repos, on ne bascule pas.
+    test('repos : vitesse intermediaire -> walking (palier F6A-03)', () {
+      // 0.7 m/s : entre 0.4 et 1.0 -> palier intermediaire walking (avant
+      // F6A-03 cette bande restait au repos ; le palier balanced est ajoute).
       expect(GpsService.classifyMovement(0.7, GpsAccuracyMode.resting),
-          GpsAccuracyMode.resting);
+          GpsAccuracyMode.walking);
     });
 
     test('mouvement -> repos en deca du seuil bas', () {
@@ -44,9 +45,11 @@ void main() {
           GpsAccuracyMode.resting);
     });
 
-    test('mouvement : vitesse intermediaire reste mouvement (hysteresis)', () {
+    test('mouvement : vitesse intermediaire -> walking (hysteresis F6A-03)', () {
+      // Depuis moving, a 0.7 m/s on redescend vers le palier walking (et non
+      // jusqu au repos) : descente progressive via le palier intermediaire.
       expect(GpsService.classifyMovement(0.7, GpsAccuracyMode.moving),
-          GpsAccuracyMode.moving);
+          GpsAccuracyMode.walking);
     });
 
     test('vitesse non finie traitee comme repos', () {
@@ -56,7 +59,7 @@ void main() {
   });
 
   group('mapping precision', () {
-    test('mouvement -> high, repos -> low', () {
+    test('mouvement -> high, repos -> low (extremes preserves F6A-03)', () {
       expect(GpsService.accuracyForMode(GpsAccuracyMode.moving),
           LocationAccuracy.high);
       expect(GpsService.accuracyForMode(GpsAccuracyMode.resting),
