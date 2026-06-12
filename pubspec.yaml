@@ -24,6 +24,10 @@ dependencies:
   geolocator: ^11.0.0
   gpx: ^2.2.0
 
+  # --- Capteurs (Phase 6) ---
+  sensors_plus: ^6.0.0
+  pedometer: ^4.0.0
+
   # --- Stockage local (Drift) ---
   drift: ^2.22.1
   sqlite3_flutter_libs: ^0.5.28
