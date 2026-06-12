@@ -23,6 +23,7 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
 import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
+import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../config/feature_flags.dart';
 import '../engine/trail_engine.dart';
 import 'app_shell.dart';
@@ -41,8 +42,9 @@ import '../../features/trek/presentation/stages/stage_detail_screen.dart'
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 final _shellMapKey = GlobalKey<NavigatorState>(debugLabel: 'shell-map');
 final _shellStagesKey = GlobalKey<NavigatorState>(debugLabel: 'shell-stages');
-final _shellPlanningKey =
-    GlobalKey<NavigatorState>(debugLabel: 'shell-planning');
+final _shellPlanningKey = GlobalKey<NavigatorState>(
+  debugLabel: 'shell-planning',
+);
 final _shellJournalKey = GlobalKey<NavigatorState>(debugLabel: 'shell-journal');
 final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 
@@ -210,10 +212,7 @@ final appRouter = GoRouter(
             final trailId = state.pathParameters['id'] ?? '';
             final stageNum =
                 int.tryParse(state.pathParameters['num'] ?? '') ?? 1;
-            return StageDetailScreen(
-              trailId: trailId,
-              stageNumber: stageNum,
-            );
+            return StageDetailScreen(trailId: trailId, stageNumber: stageNum);
           },
         ),
         GoRoute(
@@ -318,6 +317,12 @@ final appRouter = GoRouter(
       name: 'emergency',
       builder: (context, state) => const EmergencyScreen(),
     ),
+    // E5.1a/b : ecran d'accueil affiche au tout premier lancement.
+    GoRoute(
+      path: '/onboarding',
+      name: 'onboarding',
+      builder: (context, state) => const OnboardingScreen(),
+    ),
     GoRoute(
       path: '/no-data',
       name: 'no-data',
@@ -336,9 +341,7 @@ final appRouter = GoRouter(
   ],
   errorBuilder: (context, state) => Scaffold(
     appBar: AppBar(title: const Text('Erreur')),
-    body: Center(
-      child: Text('Page introuvable : ${state.uri.path}'),
-    ),
+    body: Center(child: Text('Page introuvable : ${state.uri.path}')),
   ),
 );
 
@@ -349,10 +352,7 @@ final appRouter = GoRouter(
 /// (cas bottom nav) tout en restant compatibles avec les liens profonds
 /// `/stages?trailId=xxx` existants.
 class _TrailScopedScreen extends ConsumerWidget {
-  const _TrailScopedScreen({
-    required this.builder,
-    this.explicitTrailId,
-  });
+  const _TrailScopedScreen({required this.builder, this.explicitTrailId});
 
   final String? explicitTrailId;
   final Widget Function(String trailId) builder;
@@ -374,15 +374,43 @@ class _TrailScopedScreen extends ConsumerWidget {
 /// Quand true, navigation normale.
 bool hasDownloadedTrails = true;
 
-/// Guard de redirection : si aucun sentier telecharge,
-/// redirige vers /no-data (sauf /catalog et /no-data eux-memes).
+/// Flag indiquant si l'onboarding (E5.1a/b) a deja ete complete.
+///
+/// Initialise au demarrage depuis SharedPreferences (via
+/// [onboardingCompletedProvider]) dans main.dart, puis remis a `true`
+/// par [completeOnboarding] quand l'utilisateur termine ou passe l'accueil.
+/// Quand false, le guard redirige vers /onboarding (sauf /onboarding lui-meme).
+/// Defaut `true` : ne bloque ni les tests ni les flux qui ne l'initialisent
+/// pas explicitement (meme contrat permissif que [hasDownloadedTrails]).
+bool hasCompletedOnboarding = true;
+
+/// Guard de redirection principal.
+///
+/// Priorite 1 (E5.1b) : si l'onboarding n'a pas ete complete, rediriger vers
+/// /onboarding (premier lancement). L'ecran d'accueil prime sur tout le reste.
+/// Priorite 2 : si aucun sentier telecharge, rediriger vers /no-data
+/// (sauf /catalog, /no-data et quelques routes toujours accessibles).
 String? _guardNoData(BuildContext context, GoRouterState state) {
+  final path = state.uri.path;
+
+  // --- Priorite 1 : onboarding au premier lancement ---
+  // /onboarding doit rester accessible pour eviter une boucle de redirection.
+  if (path == '/onboarding') return null;
+  if (!hasCompletedOnboarding) return '/onboarding';
+
+  // --- Priorite 2 : guard "aucun sentier telecharge" ---
   // Routes exclues du guard (doivent rester accessibles)
-  final excludedPaths = ['/no-data', '/catalog', '/settings', '/profile', '/emergency'];
-  if (excludedPaths.contains(state.uri.path)) return null;
+  final excludedPaths = [
+    '/no-data',
+    '/catalog',
+    '/settings',
+    '/profile',
+    '/emergency',
+  ];
+  if (excludedPaths.contains(path)) return null;
 
   // /follow/:code ne necessite pas de sentier telecharge (suivi web)
-  if (state.uri.path.startsWith('/follow/')) return null;
+  if (path.startsWith('/follow/')) return null;
 
   // Si aucun sentier telecharge, rediriger vers l'ecran bloquant
   if (!hasDownloadedTrails) return '/no-data';

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fond de l'icone adaptive (E5.7b).
+     Couleur neutre, independante de tout sentier (marque parametrique).
+     Remplacer par un degrade ou un motif si la charte produit l'exige. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#37474F" />
+</shape>

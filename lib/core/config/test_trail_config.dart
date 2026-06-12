@@ -22,4 +22,5 @@ const testTrailConfig = TrailConfig(
   defaultDuration: 5,
   offlineFirst: true,
   hasPremium: false,
+  privacyPolicyUrl: 'https://example.org/test-trail/privacy',
 );

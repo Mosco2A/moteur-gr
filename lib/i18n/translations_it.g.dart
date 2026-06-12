@@ -65,6 +65,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$updates$it updates = _Translations$updates$it._(_root);
 	@override late final _Translations$follow$it follow = _Translations$follow$it._(_root);
 	@override late final _Translations$cloud$it cloud = _Translations$cloud$it._(_root);
+	@override late final _Translations$onboarding$it onboarding = _Translations$onboarding$it._(_root);
 	@override late final _Translations$monetization$it monetization = _Translations$monetization$it._(_root);
 }
 
@@ -575,6 +576,25 @@ class _Translations$cloud$it extends Translations$cloud$fr {
 	@override String get statusActiveDesc => 'Backup e localizzazione in diretta disponibili.';
 	@override String get statusLocal => 'Modalità locale (senza cloud)';
 	@override String get statusLocalDesc => 'Nessun dato viene inviato online. Configurazione cloud assente.';
+}
+
+// Path: onboarding
+class _Translations$onboarding$it extends Translations$onboarding$fr {
+	_Translations$onboarding$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get skip => 'Salta';
+	@override String get next => 'Avanti';
+	@override String get getStarted => 'Inizia';
+	@override String welcomeTitle({required Object appName}) => 'Benvenuto su ${appName}';
+	@override String get welcomeSubtitle => 'Il tuo compagno di trekking offline: mappa, navigazione GPS, pianificazione e diario di trek.';
+	@override String get languageTitle => 'Scegli la tua lingua';
+	@override String get languageSubtitle => 'Potrai modificarla in qualsiasi momento nelle impostazioni.';
+	@override String get downloadTitle => 'Scarica il tuo primo sentiero';
+	@override String get downloadSubtitle => 'Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.';
+	@override String get browseCatalog => 'Sfoglia il catalogo';
 }
 
 // Path: monetization
@@ -1257,6 +1277,16 @@ extension on TranslationsIt {
 			'cloud.statusActiveDesc' => 'Backup e localizzazione in diretta disponibili.',
 			'cloud.statusLocal' => 'Modalità locale (senza cloud)',
 			'cloud.statusLocalDesc' => 'Nessun dato viene inviato online. Configurazione cloud assente.',
+			'onboarding.skip' => 'Salta',
+			'onboarding.next' => 'Avanti',
+			'onboarding.getStarted' => 'Inizia',
+			'onboarding.welcomeTitle' => ({required Object appName}) => 'Benvenuto su ${appName}',
+			'onboarding.welcomeSubtitle' => 'Il tuo compagno di trekking offline: mappa, navigazione GPS, pianificazione e diario di trek.',
+			'onboarding.languageTitle' => 'Scegli la tua lingua',
+			'onboarding.languageSubtitle' => 'Potrai modificarla in qualsiasi momento nelle impostazioni.',
+			'onboarding.downloadTitle' => 'Scarica il tuo primo sentiero',
+			'onboarding.downloadSubtitle' => 'Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.',
+			'onboarding.browseCatalog' => 'Sfoglia il catalogo',
 			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			'monetization.paywallTitle' => 'Sblocca questo trek',
 			'monetization.paywallBody' => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.',

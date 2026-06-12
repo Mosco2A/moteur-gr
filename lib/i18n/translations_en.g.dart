@@ -65,6 +65,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
 	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
+	@override late final _Translations$onboarding$en onboarding = _Translations$onboarding$en._(_root);
 	@override late final _Translations$monetization$en monetization = _Translations$monetization$en._(_root);
 }
 
@@ -575,6 +576,25 @@ class _Translations$cloud$en extends Translations$cloud$fr {
 	@override String get statusActiveDesc => 'Backup and live tracking available.';
 	@override String get statusLocal => 'Local mode (no cloud)';
 	@override String get statusLocalDesc => 'No data is sent online. Cloud configuration absent.';
+}
+
+// Path: onboarding
+class _Translations$onboarding$en extends Translations$onboarding$fr {
+	_Translations$onboarding$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get skip => 'Skip';
+	@override String get next => 'Next';
+	@override String get getStarted => 'Get started';
+	@override String welcomeTitle({required Object appName}) => 'Welcome to ${appName}';
+	@override String get welcomeSubtitle => 'Your offline hiking companion: map, GPS navigation, planning and trek journal.';
+	@override String get languageTitle => 'Choose your language';
+	@override String get languageSubtitle => 'You can change it at any time in the settings.';
+	@override String get downloadTitle => 'Download your first trail';
+	@override String get downloadSubtitle => 'Browse the catalogue and download a trail to use it fully offline.';
+	@override String get browseCatalog => 'Browse the catalogue';
 }
 
 // Path: monetization
@@ -1257,6 +1277,16 @@ extension on TranslationsEn {
 			'cloud.statusActiveDesc' => 'Backup and live tracking available.',
 			'cloud.statusLocal' => 'Local mode (no cloud)',
 			'cloud.statusLocalDesc' => 'No data is sent online. Cloud configuration absent.',
+			'onboarding.skip' => 'Skip',
+			'onboarding.next' => 'Next',
+			'onboarding.getStarted' => 'Get started',
+			'onboarding.welcomeTitle' => ({required Object appName}) => 'Welcome to ${appName}',
+			'onboarding.welcomeSubtitle' => 'Your offline hiking companion: map, GPS navigation, planning and trek journal.',
+			'onboarding.languageTitle' => 'Choose your language',
+			'onboarding.languageSubtitle' => 'You can change it at any time in the settings.',
+			'onboarding.downloadTitle' => 'Download your first trail',
+			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
+			'onboarding.browseCatalog' => 'Browse the catalogue',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',

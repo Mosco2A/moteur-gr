@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 
 /// Tests de la configuration du sentier fictif.
@@ -72,6 +73,31 @@ void main() {
 
     test('id correspond au trailId attendu', () {
       expect(testTrailConfig.id, 'test-trail');
+    });
+
+    test('privacyPolicyUrl est une URL https parametrique (E5.7b/E5.8b)', () {
+      // Parametrique : fournie par la config, jamais codee en dur dans le
+      // moteur. Requise pour les fiches store et l'ecran confidentialite.
+      expect(testTrailConfig.privacyPolicyUrl, isNotNull);
+      expect(testTrailConfig.privacyPolicyUrl, startsWith('https://'));
+    });
+
+    test('privacyPolicyUrl est optionnel (null par defaut)', () {
+      const minimal = TrailConfig(
+        id: 'x',
+        name: 'X',
+        displayName: 'X',
+        tagline: 'x',
+        totalStages: 1,
+        totalDistanceKm: 1,
+        totalElevationGain: 1,
+        region: 'x',
+        country: 'x',
+        primaryColorValue: 0xFF000000,
+        secondaryColorValue: 0xFF000000,
+        gpxAssetPath: 'assets/gpx/x.gpx',
+      );
+      expect(minimal.privacyPolicyUrl, isNull);
     });
   });
 }

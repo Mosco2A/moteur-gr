@@ -65,6 +65,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$updates$es updates = _Translations$updates$es._(_root);
 	@override late final _Translations$follow$es follow = _Translations$follow$es._(_root);
 	@override late final _Translations$cloud$es cloud = _Translations$cloud$es._(_root);
+	@override late final _Translations$onboarding$es onboarding = _Translations$onboarding$es._(_root);
 	@override late final _Translations$monetization$es monetization = _Translations$monetization$es._(_root);
 }
 
@@ -575,6 +576,25 @@ class _Translations$cloud$es extends Translations$cloud$fr {
 	@override String get statusActiveDesc => 'Copia de seguridad y seguimiento en directo disponibles.';
 	@override String get statusLocal => 'Modo local (sin nube)';
 	@override String get statusLocalDesc => 'No se envía ningún dato en línea. Falta la configuración de la nube.';
+}
+
+// Path: onboarding
+class _Translations$onboarding$es extends Translations$onboarding$fr {
+	_Translations$onboarding$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get skip => 'Saltar';
+	@override String get next => 'Siguiente';
+	@override String get getStarted => 'Empezar';
+	@override String welcomeTitle({required Object appName}) => 'Bienvenido a ${appName}';
+	@override String get welcomeSubtitle => 'Tu compañero de senderismo sin conexión: mapa, navegación GPS, planificación y diario de trek.';
+	@override String get languageTitle => 'Elige tu idioma';
+	@override String get languageSubtitle => 'Podrás cambiarlo en cualquier momento en los ajustes.';
+	@override String get downloadTitle => 'Descarga tu primer sendero';
+	@override String get downloadSubtitle => 'Explora el catálogo y descarga un sendero para usarlo completamente sin conexión.';
+	@override String get browseCatalog => 'Explorar el catálogo';
 }
 
 // Path: monetization
@@ -1257,6 +1277,16 @@ extension on TranslationsEs {
 			'cloud.statusActiveDesc' => 'Copia de seguridad y seguimiento en directo disponibles.',
 			'cloud.statusLocal' => 'Modo local (sin nube)',
 			'cloud.statusLocalDesc' => 'No se envía ningún dato en línea. Falta la configuración de la nube.',
+			'onboarding.skip' => 'Saltar',
+			'onboarding.next' => 'Siguiente',
+			'onboarding.getStarted' => 'Empezar',
+			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenido a ${appName}',
+			'onboarding.welcomeSubtitle' => 'Tu compañero de senderismo sin conexión: mapa, navegación GPS, planificación y diario de trek.',
+			'onboarding.languageTitle' => 'Elige tu idioma',
+			'onboarding.languageSubtitle' => 'Podrás cambiarlo en cualquier momento en los ajustes.',
+			'onboarding.downloadTitle' => 'Descarga tu primer sendero',
+			'onboarding.downloadSubtitle' => 'Explora el catálogo y descarga un sendero para usarlo completamente sin conexión.',
+			'onboarding.browseCatalog' => 'Explorar el catálogo',
 			'monetization.demoBanner' => 'Modo demo — toca para desbloquear',
 			'monetization.paywallTitle' => 'Desbloquea este trek',
 			'monetization.paywallBody' => 'El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.',

@@ -65,6 +65,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
 	@override late final _Translations$follow$de follow = _Translations$follow$de._(_root);
 	@override late final _Translations$cloud$de cloud = _Translations$cloud$de._(_root);
+	@override late final _Translations$onboarding$de onboarding = _Translations$onboarding$de._(_root);
 	@override late final _Translations$monetization$de monetization = _Translations$monetization$de._(_root);
 }
 
@@ -575,6 +576,25 @@ class _Translations$cloud$de extends Translations$cloud$fr {
 	@override String get statusActiveDesc => 'Sicherung und Live-Verfolgung verfügbar.';
 	@override String get statusLocal => 'Lokaler Modus (ohne Cloud)';
 	@override String get statusLocalDesc => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.';
+}
+
+// Path: onboarding
+class _Translations$onboarding$de extends Translations$onboarding$fr {
+	_Translations$onboarding$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get skip => 'Überspringen';
+	@override String get next => 'Weiter';
+	@override String get getStarted => 'Los geht\'s';
+	@override String welcomeTitle({required Object appName}) => 'Willkommen bei ${appName}';
+	@override String get welcomeSubtitle => 'Dein Offline-Wanderbegleiter: Karte, GPS-Navigation, Planung und Tourentagebuch.';
+	@override String get languageTitle => 'Wähle deine Sprache';
+	@override String get languageSubtitle => 'Du kannst sie jederzeit in den Einstellungen ändern.';
+	@override String get downloadTitle => 'Lade deinen ersten Weg herunter';
+	@override String get downloadSubtitle => 'Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.';
+	@override String get browseCatalog => 'Katalog durchsuchen';
 }
 
 // Path: monetization
@@ -1257,6 +1277,16 @@ extension on TranslationsDe {
 			'cloud.statusActiveDesc' => 'Sicherung und Live-Verfolgung verfügbar.',
 			'cloud.statusLocal' => 'Lokaler Modus (ohne Cloud)',
 			'cloud.statusLocalDesc' => 'Es werden keine Daten online gesendet. Keine Cloud-Konfiguration vorhanden.',
+			'onboarding.skip' => 'Überspringen',
+			'onboarding.next' => 'Weiter',
+			'onboarding.getStarted' => 'Los geht\'s',
+			'onboarding.welcomeTitle' => ({required Object appName}) => 'Willkommen bei ${appName}',
+			'onboarding.welcomeSubtitle' => 'Dein Offline-Wanderbegleiter: Karte, GPS-Navigation, Planung und Tourentagebuch.',
+			'onboarding.languageTitle' => 'Wähle deine Sprache',
+			'onboarding.languageSubtitle' => 'Du kannst sie jederzeit in den Einstellungen ändern.',
+			'onboarding.downloadTitle' => 'Lade deinen ersten Weg herunter',
+			'onboarding.downloadSubtitle' => 'Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.',
+			'onboarding.browseCatalog' => 'Katalog durchsuchen',
 			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
 			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',

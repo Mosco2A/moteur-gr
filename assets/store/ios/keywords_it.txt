@@ -1,0 +1,1 @@
+escursione,trekking,sentiero,GPS,offline,mappa,GPX,traccia,tappa,dislivello,rifugio,bivacco,montagna

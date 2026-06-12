@@ -464,6 +464,18 @@
     "statusLocal": "Local mode (no cloud)",
     "statusLocalDesc": "No data is sent online. Cloud configuration absent."
   },
+  "onboarding": {
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get started",
+    "welcomeTitle": "Welcome to $appName",
+    "welcomeSubtitle": "Your offline hiking companion: map, GPS navigation, planning and trek journal.",
+    "languageTitle": "Choose your language",
+    "languageSubtitle": "You can change it at any time in the settings.",
+    "downloadTitle": "Download your first trail",
+    "downloadSubtitle": "Browse the catalogue and download a trail to use it fully offline.",
+    "browseCatalog": "Browse the catalogue"
+  },
   "monetization": {
     "demoBanner": "Demo mode — tap to unlock",
     "paywallTitle": "Unlock this trek",

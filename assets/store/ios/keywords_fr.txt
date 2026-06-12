@@ -1,0 +1,1 @@
+randonnée,trek,sentier,GPS,hors-ligne,carte,GPX,trace,étape,dénivelé,refuge,bivouac,montagne
