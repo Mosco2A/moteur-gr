@@ -36,6 +36,8 @@
 	<string>L&#8217;appareil photo permet d&#8217;ajouter des photos à votre carnet de randonnée. Les photos restent sur votre téléphone.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>L&#8217;accès à vos photos permet d&#8217;illustrer votre carnet de randonnée. Les photos restent sur votre téléphone.</string>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>StepWays utilise le Bluetooth pour se connecter a votre ceinture cardiaque et afficher votre frequence cardiaque pendant la randonnee. Cette donnee reste sur votre telephone.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
