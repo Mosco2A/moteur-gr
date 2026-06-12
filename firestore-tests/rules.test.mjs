@@ -85,6 +85,8 @@ const trekkerDb = () => testEnv.authenticatedContext(TREKKER).firestore();
 const strangerDb = () => testEnv.authenticatedContext(STRANGER).firestore();
 const adminDb = () =>
   testEnv.authenticatedContext('admin-uid', { admin: true }).firestore();
+const moderatorDb = () =>
+  testEnv.authenticatedContext('mod-uid', { moderator: true }).firestore();
 const anonDb = () => testEnv.unauthenticatedContext().firestore();
 
 /// Seed direct (regles desactivees) d une session + miroir + 1 position.
@@ -620,6 +622,134 @@ describe('parcours complet suiveur anonyme (sans seed admin)', () => {
     );
     assert.equal(positions.docs.length, 1);
     assert.equal(positions.docs[0].data().lat, 45.0);
+  });
+});
+
+describe('trail_reports — signalement offline-first + moderation DSA (F6C-04)', () => {
+  const REPORT = 'report-test-0001';
+
+  function reportPayload(overrides = {}) {
+    return {
+      type: 'obstacle',
+      latitude: 45.0,
+      longitude: 6.0,
+      authorUidHash: 'hash-abc-123',
+      createdAt: serverTimestamp(),
+      moderationState: 'visible',
+      ...overrides,
+    };
+  }
+
+  /// Seed direct (regles desactivees) d un signalement avec un etat donne.
+  async function seedReport({ moderationState = 'visible' } = {}) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'trail_reports', REPORT), {
+        type: 'danger',
+        latitude: 45.0,
+        longitude: 6.0,
+        authorUidHash: 'hash-seed',
+        createdAt: Timestamp.now(),
+        moderationState,
+      });
+    });
+  }
+
+  it('utilisateur authentifie cree un signalement valide', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'trail_reports', REPORT), reportPayload()),
+    );
+  });
+
+  it('un anonyme ne cree pas de signalement', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'trail_reports', REPORT), reportPayload()),
+    );
+  });
+
+  it('type hors liste refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'trail_reports', REPORT),
+        reportPayload({ type: 'blague' }),
+      ),
+    );
+  });
+
+  it('moderationState initial != visible refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'trail_reports', REPORT),
+        reportPayload({ moderationState: 'removed' }),
+      ),
+    );
+  });
+
+  it('champ hors schema refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'trail_reports', REPORT),
+        reportPayload({ champPirate: true }),
+      ),
+    );
+  });
+
+  it('lecture publique des signalements visible', async () => {
+    await seedReport({ moderationState: 'visible' });
+    await assertSucceeds(getDoc(doc(anonDb(), 'trail_reports', REPORT)));
+  });
+
+  it('signalement removed invisible en lecture', async () => {
+    await seedReport({ moderationState: 'removed' });
+    await assertFails(getDoc(doc(anonDb(), 'trail_reports', REPORT)));
+  });
+
+  it('auteur ne peut PAS re-editer le contenu (immutabilite)', async () => {
+    await seedReport();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'trail_reports', REPORT), {
+        latitude: 0.0,
+      }),
+    );
+  });
+
+  it('non-moderateur ne change pas moderationState', async () => {
+    await seedReport();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'trail_reports', REPORT), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur masque un signalement (moderationState=removed)', async () => {
+    await seedReport();
+    await assertSucceeds(
+      updateDoc(doc(moderatorDb(), 'trail_reports', REPORT), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur ne peut PAS editer le contenu (seul moderationState)', async () => {
+    await seedReport();
+    await assertFails(
+      updateDoc(doc(moderatorDb(), 'trail_reports', REPORT), {
+        moderationState: 'flagged',
+        latitude: 0.0,
+      }),
+    );
+  });
+
+  it('moderateur supprime un signalement', async () => {
+    await seedReport();
+    await assertSucceeds(
+      deleteDoc(doc(moderatorDb(), 'trail_reports', REPORT)),
+    );
+  });
+
+  it('utilisateur normal ne supprime pas un signalement', async () => {
+    await seedReport();
+    await assertFails(deleteDoc(doc(trekkerDb(), 'trail_reports', REPORT)));
   });
 });
 

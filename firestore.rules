@@ -151,6 +151,51 @@ service cloud.firestore {
         && privateSession().trekkerUserId == request.auth.uid;
     }
 
+    // Signalements terrain type Waze (Phase 6 F6C-04, audit A4 DSA).
+    //
+    // Modele : signalement cree par un utilisateur authentifie (UID hache
+    // cote client, jamais expose en clair), MODERATION A POSTERIORI (statut
+    // hebergeur DSA art. 16 — design Securite D4). Le contenu du signalement
+    // est IMMUABLE apres creation : seul un moderateur peut faire bouger
+    // moderationState (visible/flagged/removed). Lecture publique des reports
+    // non 'removed'. Pas d'edition a priori du contenu utilisateur.
+    match /trail_reports/{reportId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+      function validNewReport() {
+        return request.resource.data.type in ['obstacle', 'eau_a_sec', 'danger']
+          && request.resource.data.latitude is number
+          && request.resource.data.longitude is number
+          && request.resource.data.authorUidHash is string
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.moderationState == 'visible';
+      }
+
+      // Creation : utilisateur authentifie, payload borne + valide.
+      allow create: if isSignedIn()
+        && validNewReport()
+        && request.resource.data.keys().hasOnly(
+             ['type', 'latitude', 'longitude', 'authorUidHash',
+              'createdAt', 'moderationState', 'payload']);
+
+      // Lecture publique des signalements non retires (removed invisible).
+      allow get, list: if resource.data.moderationState != 'removed';
+
+      // Mise a jour : RESERVEE au moderateur, et SEUL moderationState bouge
+      // (contenu utilisateur immuable = statut hebergeur a posteriori).
+      allow update: if isModerator()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['moderationState'])
+        && request.resource.data.moderationState
+             in ['visible', 'flagged', 'removed'];
+
+      // Suppression dure : moderateur uniquement.
+      allow delete: if isModerator();
+    }
+
     // Tout le reste : DENY explicite (collections sans regles dediees,
     // ex. groups — feature groupe sans regles a ce jour, voir
     // ORCHESTRATION wagon 3 / dette).
