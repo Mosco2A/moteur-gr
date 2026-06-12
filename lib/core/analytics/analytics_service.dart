@@ -14,6 +14,9 @@ abstract final class AnalyticsEvents {
   static const String trekCompleted = 'trek_completed';
   static const String shareCard = 'share_card';
   static const String diplomaGenerated = 'diploma_generated';
+
+  /// Telemetrie regime GPS/batterie (F6A-04) — mesure terrain BAT-2.
+  static const String gpsRegime = 'gps_regime';
 }
 
 /// Puits analytics abstrait — decouple de Firebase pour la testabilite.
@@ -138,6 +141,22 @@ class AnalyticsService {
 
   Future<void> logDiplomaGenerated({required String trailId}) =>
       _log(AnalyticsEvents.diplomaGenerated, {'trail': anonymize(trailId)});
+
+  /// Telemetrie du regime GPS/batterie (F6A-04) pour mesurer la conso sur le
+  /// terrain (prereq BAT-2). Zero-PII : seul le nom du regime et un PALIER de
+  /// batterie grossier (tranche de 10 %, anti-fingerprinting) sont transmis,
+  /// jamais le niveau exact ni de position.
+  Future<void> logGpsRegime({
+    required String regime,
+    required int batteryPct,
+    required bool deferSync,
+  }) =>
+      _log(AnalyticsEvents.gpsRegime, {
+        'regime': regime,
+        // Palier de 10 % (ex. 23 % -> 20) : grossier, non identifiant.
+        'battery_bucket': (batteryPct ~/ 10) * 10,
+        'defer_sync': deferSync,
+      });
 
   /// Erreur non fatale (capturee/geree).
   Future<void> recordError(Object error, StackTrace? stack) async {
