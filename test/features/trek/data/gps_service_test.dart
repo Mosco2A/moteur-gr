@@ -83,6 +83,128 @@ void main() {
     });
   });
 
+  group('GpsService.classifyMovement (3 regimes + hysteresis, F6A-03)', () {
+    test('repos: en deca de 0.4 m/s reste resting', () {
+      expect(
+        GpsService.classifyMovement(0.2, GpsAccuracyMode.resting),
+        GpsAccuracyMode.resting,
+      );
+    });
+
+    test('repos -> walking a la charniere 0.4 m/s', () {
+      expect(
+        GpsService.classifyMovement(0.4, GpsAccuracyMode.resting),
+        GpsAccuracyMode.walking,
+      );
+      expect(
+        GpsService.classifyMovement(0.8, GpsAccuracyMode.resting),
+        GpsAccuracyMode.walking,
+      );
+    });
+
+    test('repos -> moving directement si >= 1.0 m/s', () {
+      expect(
+        GpsService.classifyMovement(1.5, GpsAccuracyMode.resting),
+        GpsAccuracyMode.moving,
+      );
+    });
+
+    test('walking -> moving a 1.0 m/s', () {
+      expect(
+        GpsService.classifyMovement(1.0, GpsAccuracyMode.walking),
+        GpsAccuracyMode.moving,
+      );
+    });
+
+    test('walking reste walking dans la bande 0.4-1.0', () {
+      expect(
+        GpsService.classifyMovement(0.7, GpsAccuracyMode.walking),
+        GpsAccuracyMode.walking,
+      );
+    });
+
+    test('walking -> resting sous 0.4 m/s', () {
+      expect(
+        GpsService.classifyMovement(0.3, GpsAccuracyMode.walking),
+        GpsAccuracyMode.resting,
+      );
+    });
+
+    test('moving -> walking par hysteresis (descend a <=0.7, pas a 0.9)', () {
+      // A 0.9 (entre 0.7 et 1.0) on RESTE moving : anti-flapping.
+      expect(
+        GpsService.classifyMovement(0.9, GpsAccuracyMode.moving),
+        GpsAccuracyMode.moving,
+      );
+      // A 0.7 on redescend en walking.
+      expect(
+        GpsService.classifyMovement(0.7, GpsAccuracyMode.moving),
+        GpsAccuracyMode.walking,
+      );
+    });
+
+    test('moving -> resting si quasi arret (<=0.4)', () {
+      expect(
+        GpsService.classifyMovement(0.3, GpsAccuracyMode.moving),
+        GpsAccuracyMode.resting,
+      );
+    });
+
+    test('sequence complete resting->walking->moving->walking->resting', () {
+      var mode = GpsAccuracyMode.resting;
+      mode = GpsService.classifyMovement(0.5, mode); // -> walking
+      expect(mode, GpsAccuracyMode.walking);
+      mode = GpsService.classifyMovement(1.2, mode); // -> moving
+      expect(mode, GpsAccuracyMode.moving);
+      mode = GpsService.classifyMovement(0.6, mode); // -> walking (hysteresis)
+      expect(mode, GpsAccuracyMode.walking);
+      mode = GpsService.classifyMovement(0.1, mode); // -> resting
+      expect(mode, GpsAccuracyMode.resting);
+    });
+
+    test('vitesse non finie traitee comme repos', () {
+      expect(
+        GpsService.classifyMovement(double.nan, GpsAccuracyMode.moving),
+        GpsAccuracyMode.resting,
+      );
+    });
+  });
+
+  group('GpsService.accuracyForMode (3 paliers, F6A-03)', () {
+    test('moving -> high', () {
+      expect(
+        GpsService.accuracyForMode(GpsAccuracyMode.moving),
+        LocationAccuracy.high,
+      );
+    });
+    test('walking -> medium (balanced)', () {
+      expect(
+        GpsService.accuracyForMode(GpsAccuracyMode.walking),
+        LocationAccuracy.medium,
+      );
+    });
+    test('resting -> low', () {
+      expect(
+        GpsService.accuracyForMode(GpsAccuracyMode.resting),
+        LocationAccuracy.low,
+      );
+    });
+  });
+
+  group('GpsService.intervalForMode (espacement croissant, F6A-03)', () {
+    test('intervalle resting > walking > moving (economie batterie)', () {
+      final moving = GpsService.intervalForMode(GpsAccuracyMode.moving);
+      final walking = GpsService.intervalForMode(GpsAccuracyMode.walking);
+      final resting = GpsService.intervalForMode(GpsAccuracyMode.resting);
+      expect(walking, greaterThan(moving));
+      expect(resting, greaterThan(walking));
+    });
+
+    test('distanceFilter conserve a 10 m', () {
+      expect(GpsService.distanceFilterMeters, 10);
+    });
+  });
+
   group('GpsService.getPositionStream', () {
     test('emet des positions depuis le stream mock', () async {
       final positions = [

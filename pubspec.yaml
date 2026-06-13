@@ -24,6 +24,18 @@ dependencies:
   geolocator: ^11.0.0
   gpx: ^2.2.0
 
+  # --- Capteurs (Phase 6) ---
+  sensors_plus: ^6.0.0
+  pedometer: ^4.0.0
+
+  # --- Frequence cardiaque & sante (Phase 6) ---
+  # NOTE F6F-01 : le design specifiait health ^11.0.0 mais health 11 exige
+  # intl <0.20.0, incompatible avec intl ^0.20.2 deja en stack. On prend la
+  # ligne health 13.x (compatible intl 0.20.x) plutot que de degrader intl
+  # (qui casserait toute l'app). Conflit remonte, non force (cf. design C5).
+  flutter_blue_plus: ^1.32.0
+  health: ^13.0.0
+
   # --- Stockage local (Drift) ---
   drift: ^2.22.1
   sqlite3_flutter_libs: ^0.5.28

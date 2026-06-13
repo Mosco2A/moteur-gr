@@ -11496,6 +11496,620 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   }
 }
 
+class $ReportLocalTable extends ReportLocal
+    with TableInfo<$ReportLocalTable, ReportLocalData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReportLocalTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncStateMeta = const VerificationMeta(
+    'syncState',
+  );
+  @override
+  late final GeneratedColumn<String> syncState = GeneratedColumn<String>(
+    'sync_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _remoteIdMeta = const VerificationMeta(
+    'remoteId',
+  );
+  @override
+  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
+    'remote_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    latitude,
+    longitude,
+    createdAt,
+    payload,
+    syncState,
+    remoteId,
+    attempts,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'report_local';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReportLocalData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latitudeMeta);
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_longitudeMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    }
+    if (data.containsKey('sync_state')) {
+      context.handle(
+        _syncStateMeta,
+        syncState.isAcceptableOrUnknown(data['sync_state']!, _syncStateMeta),
+      );
+    }
+    if (data.containsKey('remote_id')) {
+      context.handle(
+        _remoteIdMeta,
+        remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta),
+      );
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ReportLocalData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReportLocalData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      )!,
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      ),
+      syncState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_state'],
+      )!,
+      remoteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remote_id'],
+      ),
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $ReportLocalTable createAlias(String alias) {
+    return $ReportLocalTable(attachedDatabase, alias);
+  }
+}
+
+class ReportLocalData extends DataClass implements Insertable<ReportLocalData> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Type de signalement ('obstacle', 'eau_a_sec', 'danger').
+  final String type;
+
+  /// Latitude du signalement (degres decimaux).
+  final double latitude;
+
+  /// Longitude du signalement (degres decimaux).
+  final double longitude;
+
+  /// Date de creation locale (ISO 8601 UTC).
+  final DateTime createdAt;
+
+  /// Charge utile JSON optionnelle (details du signalement).
+  final String? payload;
+
+  /// Etat de synchronisation ('pending', 'synced', 'failed').
+  final String syncState;
+
+  /// Identifiant Firestore distant une fois synchronise (nullable).
+  final String? remoteId;
+
+  /// Nombre de tentatives de synchronisation echouees.
+  final int attempts;
+
+  /// Derniere erreur de synchronisation (nullable).
+  final String? lastError;
+  const ReportLocalData({
+    required this.id,
+    required this.type,
+    required this.latitude,
+    required this.longitude,
+    required this.createdAt,
+    this.payload,
+    required this.syncState,
+    this.remoteId,
+    required this.attempts,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['type'] = Variable<String>(type);
+    map['latitude'] = Variable<double>(latitude);
+    map['longitude'] = Variable<double>(longitude);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || payload != null) {
+      map['payload'] = Variable<String>(payload);
+    }
+    map['sync_state'] = Variable<String>(syncState);
+    if (!nullToAbsent || remoteId != null) {
+      map['remote_id'] = Variable<String>(remoteId);
+    }
+    map['attempts'] = Variable<int>(attempts);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  ReportLocalCompanion toCompanion(bool nullToAbsent) {
+    return ReportLocalCompanion(
+      id: Value(id),
+      type: Value(type),
+      latitude: Value(latitude),
+      longitude: Value(longitude),
+      createdAt: Value(createdAt),
+      payload: payload == null && nullToAbsent
+          ? const Value.absent()
+          : Value(payload),
+      syncState: Value(syncState),
+      remoteId: remoteId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remoteId),
+      attempts: Value(attempts),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory ReportLocalData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReportLocalData(
+      id: serializer.fromJson<int>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      latitude: serializer.fromJson<double>(json['latitude']),
+      longitude: serializer.fromJson<double>(json['longitude']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      payload: serializer.fromJson<String?>(json['payload']),
+      syncState: serializer.fromJson<String>(json['syncState']),
+      remoteId: serializer.fromJson<String?>(json['remoteId']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'type': serializer.toJson<String>(type),
+      'latitude': serializer.toJson<double>(latitude),
+      'longitude': serializer.toJson<double>(longitude),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'payload': serializer.toJson<String?>(payload),
+      'syncState': serializer.toJson<String>(syncState),
+      'remoteId': serializer.toJson<String?>(remoteId),
+      'attempts': serializer.toJson<int>(attempts),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  ReportLocalData copyWith({
+    int? id,
+    String? type,
+    double? latitude,
+    double? longitude,
+    DateTime? createdAt,
+    Value<String?> payload = const Value.absent(),
+    String? syncState,
+    Value<String?> remoteId = const Value.absent(),
+    int? attempts,
+    Value<String?> lastError = const Value.absent(),
+  }) => ReportLocalData(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    latitude: latitude ?? this.latitude,
+    longitude: longitude ?? this.longitude,
+    createdAt: createdAt ?? this.createdAt,
+    payload: payload.present ? payload.value : this.payload,
+    syncState: syncState ?? this.syncState,
+    remoteId: remoteId.present ? remoteId.value : this.remoteId,
+    attempts: attempts ?? this.attempts,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  ReportLocalData copyWithCompanion(ReportLocalCompanion data) {
+    return ReportLocalData(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      syncState: data.syncState.present ? data.syncState.value : this.syncState,
+      remoteId: data.remoteId.present ? data.remoteId.value : this.remoteId,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportLocalData(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('payload: $payload, ')
+          ..write('syncState: $syncState, ')
+          ..write('remoteId: $remoteId, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    type,
+    latitude,
+    longitude,
+    createdAt,
+    payload,
+    syncState,
+    remoteId,
+    attempts,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReportLocalData &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.createdAt == this.createdAt &&
+          other.payload == this.payload &&
+          other.syncState == this.syncState &&
+          other.remoteId == this.remoteId &&
+          other.attempts == this.attempts &&
+          other.lastError == this.lastError);
+}
+
+class ReportLocalCompanion extends UpdateCompanion<ReportLocalData> {
+  final Value<int> id;
+  final Value<String> type;
+  final Value<double> latitude;
+  final Value<double> longitude;
+  final Value<DateTime> createdAt;
+  final Value<String?> payload;
+  final Value<String> syncState;
+  final Value<String?> remoteId;
+  final Value<int> attempts;
+  final Value<String?> lastError;
+  const ReportLocalCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.syncState = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  ReportLocalCompanion.insert({
+    this.id = const Value.absent(),
+    required String type,
+    required double latitude,
+    required double longitude,
+    required DateTime createdAt,
+    this.payload = const Value.absent(),
+    this.syncState = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  }) : type = Value(type),
+       latitude = Value(latitude),
+       longitude = Value(longitude),
+       createdAt = Value(createdAt);
+  static Insertable<ReportLocalData> custom({
+    Expression<int>? id,
+    Expression<String>? type,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<DateTime>? createdAt,
+    Expression<String>? payload,
+    Expression<String>? syncState,
+    Expression<String>? remoteId,
+    Expression<int>? attempts,
+    Expression<String>? lastError,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (createdAt != null) 'created_at': createdAt,
+      if (payload != null) 'payload': payload,
+      if (syncState != null) 'sync_state': syncState,
+      if (remoteId != null) 'remote_id': remoteId,
+      if (attempts != null) 'attempts': attempts,
+      if (lastError != null) 'last_error': lastError,
+    });
+  }
+
+  ReportLocalCompanion copyWith({
+    Value<int>? id,
+    Value<String>? type,
+    Value<double>? latitude,
+    Value<double>? longitude,
+    Value<DateTime>? createdAt,
+    Value<String?>? payload,
+    Value<String>? syncState,
+    Value<String?>? remoteId,
+    Value<int>? attempts,
+    Value<String?>? lastError,
+  }) {
+    return ReportLocalCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      createdAt: createdAt ?? this.createdAt,
+      payload: payload ?? this.payload,
+      syncState: syncState ?? this.syncState,
+      remoteId: remoteId ?? this.remoteId,
+      attempts: attempts ?? this.attempts,
+      lastError: lastError ?? this.lastError,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (syncState.present) {
+      map['sync_state'] = Variable<String>(syncState.value);
+    }
+    if (remoteId.present) {
+      map['remote_id'] = Variable<String>(remoteId.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportLocalCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('payload: $payload, ')
+          ..write('syncState: $syncState, ')
+          ..write('remoteId: $remoteId, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11526,6 +12140,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $FollowerSlotsTable followerSlots = $FollowerSlotsTable(this);
   late final $SessionTrackPointsTable sessionTrackPoints =
       $SessionTrackPointsTable(this);
+  late final $ReportLocalTable reportLocal = $ReportLocalTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -11569,6 +12184,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final SessionTrackPointsDao sessionTrackPointsDao =
       SessionTrackPointsDao(this as AppDatabase);
+  late final ReportLocalDao reportLocalDao = ReportLocalDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -11595,6 +12213,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     followSessions,
     followerSlots,
     sessionTrackPoints,
+    reportLocal,
   ];
 }
 
@@ -17262,6 +17881,295 @@ typedef $$SessionTrackPointsTableProcessedTableManager =
       SessionTrackPoint,
       PrefetchHooks Function()
     >;
+typedef $$ReportLocalTableCreateCompanionBuilder =
+    ReportLocalCompanion Function({
+      Value<int> id,
+      required String type,
+      required double latitude,
+      required double longitude,
+      required DateTime createdAt,
+      Value<String?> payload,
+      Value<String> syncState,
+      Value<String?> remoteId,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+typedef $$ReportLocalTableUpdateCompanionBuilder =
+    ReportLocalCompanion Function({
+      Value<int> id,
+      Value<String> type,
+      Value<double> latitude,
+      Value<double> longitude,
+      Value<DateTime> createdAt,
+      Value<String?> payload,
+      Value<String> syncState,
+      Value<String?> remoteId,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+
+class $$ReportLocalTableFilterComposer
+    extends Composer<_$AppDatabase, $ReportLocalTable> {
+  $$ReportLocalTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remoteId => $composableBuilder(
+    column: $table.remoteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ReportLocalTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReportLocalTable> {
+  $$ReportLocalTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remoteId => $composableBuilder(
+    column: $table.remoteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReportLocalTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReportLocalTable> {
+  $$ReportLocalTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<String> get syncState =>
+      $composableBuilder(column: $table.syncState, builder: (column) => column);
+
+  GeneratedColumn<String> get remoteId =>
+      $composableBuilder(column: $table.remoteId, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$ReportLocalTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReportLocalTable,
+          ReportLocalData,
+          $$ReportLocalTableFilterComposer,
+          $$ReportLocalTableOrderingComposer,
+          $$ReportLocalTableAnnotationComposer,
+          $$ReportLocalTableCreateCompanionBuilder,
+          $$ReportLocalTableUpdateCompanionBuilder,
+          (
+            ReportLocalData,
+            BaseReferences<_$AppDatabase, $ReportLocalTable, ReportLocalData>,
+          ),
+          ReportLocalData,
+          PrefetchHooks Function()
+        > {
+  $$ReportLocalTableTableManager(_$AppDatabase db, $ReportLocalTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReportLocalTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReportLocalTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReportLocalTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<double> latitude = const Value.absent(),
+                Value<double> longitude = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> payload = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+                Value<String?> remoteId = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => ReportLocalCompanion(
+                id: id,
+                type: type,
+                latitude: latitude,
+                longitude: longitude,
+                createdAt: createdAt,
+                payload: payload,
+                syncState: syncState,
+                remoteId: remoteId,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String type,
+                required double latitude,
+                required double longitude,
+                required DateTime createdAt,
+                Value<String?> payload = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+                Value<String?> remoteId = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => ReportLocalCompanion.insert(
+                id: id,
+                type: type,
+                latitude: latitude,
+                longitude: longitude,
+                createdAt: createdAt,
+                payload: payload,
+                syncState: syncState,
+                remoteId: remoteId,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReportLocalTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReportLocalTable,
+      ReportLocalData,
+      $$ReportLocalTableFilterComposer,
+      $$ReportLocalTableOrderingComposer,
+      $$ReportLocalTableAnnotationComposer,
+      $$ReportLocalTableCreateCompanionBuilder,
+      $$ReportLocalTableUpdateCompanionBuilder,
+      (
+        ReportLocalData,
+        BaseReferences<_$AppDatabase, $ReportLocalTable, ReportLocalData>,
+      ),
+      ReportLocalData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -17307,4 +18215,6 @@ class $AppDatabaseManager {
       $$FollowerSlotsTableTableManager(_db, _db.followerSlots);
   $$SessionTrackPointsTableTableManager get sessionTrackPoints =>
       $$SessionTrackPointsTableTableManager(_db, _db.sessionTrackPoints);
+  $$ReportLocalTableTableManager get reportLocal =>
+      $$ReportLocalTableTableManager(_db, _db.reportLocal);
 }
