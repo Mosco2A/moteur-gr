@@ -22,6 +22,7 @@ import 'tables/follow_sessions_table.dart';
 import 'tables/follower_slots_table.dart';
 import 'tables/session_track_points_table.dart';
 import 'tables/report_local_table.dart';
+import 'tables/segments_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -44,6 +45,7 @@ import 'daos/follow_sessions_dao.dart';
 import 'daos/follower_slots_dao.dart';
 import 'daos/session_track_points_dao.dart';
 import 'daos/report_local_dao.dart';
+import 'daos/segments_dao.dart';
 
 part 'database.g.dart';
 
@@ -59,7 +61,8 @@ part 'database.g.dart';
 /// + 1 Phase 5 E5.16 (HealthInfoEntries)
 /// + 2 Phase 4 E4.10 (FollowSessions, FollowerSlots)
 /// + 1 finitions V8 F3 (SessionTrackPoints)
-/// + 1 Phase 6 F6C-01 (ReportLocal, signalements offline-first).
+/// + 1 Phase 6 F6C-01 (ReportLocal, signalements offline-first)
+/// + 2 Phase 7 F7A-01 (Segments, SegmentEffortLocal, social offline-first).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -85,6 +88,8 @@ part 'database.g.dart';
     FollowerSlots,
     SessionTrackPoints,
     ReportLocal,
+    Segments,
+    SegmentEffortLocal,
   ],
   daos: [
     StagesDao,
@@ -109,13 +114,14 @@ part 'database.g.dart';
     FollowerSlotsDao,
     SessionTrackPointsDao,
     ReportLocalDao,
+    SegmentsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -183,6 +189,12 @@ class AppDatabase extends _$AppDatabase {
           // (signalements terrain offline-first, Phase 6 F6C-01)
           if (from < 14) {
             await migrator.createTable(reportLocal);
+          }
+          // Migration v14 -> v15 : tables segments + efforts (Phase 7 F7A-01)
+          // (segments comparables + file d'efforts offline-first)
+          if (from < 15) {
+            await migrator.createTable(segments);
+            await migrator.createTable(segmentEffortLocal);
           }
         },
       );
