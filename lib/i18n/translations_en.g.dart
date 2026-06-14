@@ -786,6 +786,7 @@ class _Translations$waypoints$en extends Translations$waypoints$fr {
 	@override late final _Translations$waypoints$filters$en filters = _Translations$waypoints$filters$en._(_root);
 	@override late final _Translations$waypoints$detail$en detail = _Translations$waypoints$detail$en._(_root);
 	@override late final _Translations$waypoints$freshness$en freshness = _Translations$waypoints$freshness$en._(_root);
+	@override late final _Translations$waypoints$contribution$en contribution = _Translations$waypoints$contribution$en._(_root);
 }
 
 // Path: stage.difficulty
@@ -1101,6 +1102,33 @@ class _Translations$waypoints$freshness$en extends Translations$waypoints$freshn
 	@override String minutes({required Object n}) => 'updated ${n} min ago';
 	@override String hours({required Object n}) => 'updated ${n} h ago';
 	@override String days({required Object n}) => 'updated ${n} d ago';
+}
+
+// Path: waypoints.contribution
+class _Translations$waypoints$contribution$en extends Translations$waypoints$contribution$fr {
+	_Translations$waypoints$contribution$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get titleWaypoint => 'Add a waypoint';
+	@override String get titleComment => 'Report a condition';
+	@override String get chooseType => 'Waypoint type';
+	@override String get titleField => 'Waypoint title';
+	@override String get conditionPrompt => 'Describe the observed condition';
+	@override String get commentField => 'Your observation';
+	@override String get conditionField => 'State (optional)';
+	@override String get conditionHelper => 'e.g. water dried up, water flowing, slippery section';
+	@override String get latencyBanner => 'Will be published at the next network sync.';
+	@override String get submit => 'Save';
+	@override String get savedTitle => 'Contribution saved';
+	@override String get savedPendingSync => 'It will be published when the network is back.';
+	@override String pendingCount({required Object n}) => '${n} pending synchronization';
+	@override String get close => 'Close';
+	@override String get emptyTitle => 'Please enter a title for the waypoint.';
+	@override String get emptyComment => 'Please enter your observation.';
+	@override String get noLocation => 'GPS position unavailable. Try again under open sky.';
+	@override String get error => 'Cannot save right now.';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1799,6 +1827,24 @@ extension on TranslationsEn {
 			'waypoints.freshness.minutes' => ({required Object n}) => 'updated ${n} min ago',
 			'waypoints.freshness.hours' => ({required Object n}) => 'updated ${n} h ago',
 			'waypoints.freshness.days' => ({required Object n}) => 'updated ${n} d ago',
+			'waypoints.contribution.titleWaypoint' => 'Add a waypoint',
+			'waypoints.contribution.titleComment' => 'Report a condition',
+			'waypoints.contribution.chooseType' => 'Waypoint type',
+			'waypoints.contribution.titleField' => 'Waypoint title',
+			'waypoints.contribution.conditionPrompt' => 'Describe the observed condition',
+			'waypoints.contribution.commentField' => 'Your observation',
+			'waypoints.contribution.conditionField' => 'State (optional)',
+			'waypoints.contribution.conditionHelper' => 'e.g. water dried up, water flowing, slippery section',
+			'waypoints.contribution.latencyBanner' => 'Will be published at the next network sync.',
+			'waypoints.contribution.submit' => 'Save',
+			'waypoints.contribution.savedTitle' => 'Contribution saved',
+			'waypoints.contribution.savedPendingSync' => 'It will be published when the network is back.',
+			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} pending synchronization',
+			'waypoints.contribution.close' => 'Close',
+			'waypoints.contribution.emptyTitle' => 'Please enter a title for the waypoint.',
+			'waypoints.contribution.emptyComment' => 'Please enter your observation.',
+			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
+			'waypoints.contribution.error' => 'Cannot save right now.',
 			_ => null,
 		};
 	}

@@ -661,6 +661,26 @@
       "minutes": "vor $n Min aktualisiert",
       "hours": "vor $n Std aktualisiert",
       "days": "vor $n T aktualisiert"
+    },
+    "contribution": {
+      "titleWaypoint": "Wegpunkt hinzufugen",
+      "titleComment": "Zustand melden",
+      "chooseType": "Wegpunkttyp",
+      "titleField": "Titel des Wegpunkts",
+      "conditionPrompt": "Beschreiben Sie den beobachteten Zustand",
+      "commentField": "Ihre Beobachtung",
+      "conditionField": "Zustand (optional)",
+      "conditionHelper": "z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle",
+      "latencyBanner": "Wird bei der nachsten Synchronisierung veroffentlicht.",
+      "submit": "Speichern",
+      "savedTitle": "Beitrag gespeichert",
+      "savedPendingSync": "Er wird veroffentlicht, sobald das Netz wieder da ist.",
+      "pendingCount": "$n warten auf Synchronisierung",
+      "close": "Schliessen",
+      "emptyTitle": "Bitte einen Titel fur den Wegpunkt angeben.",
+      "emptyComment": "Bitte Ihre Beobachtung eingeben.",
+      "noLocation": "GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.",
+      "error": "Speichern derzeit nicht moglich."
     }
   }
 }

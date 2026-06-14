@@ -786,6 +786,7 @@ class _Translations$waypoints$it extends Translations$waypoints$fr {
 	@override late final _Translations$waypoints$filters$it filters = _Translations$waypoints$filters$it._(_root);
 	@override late final _Translations$waypoints$detail$it detail = _Translations$waypoints$detail$it._(_root);
 	@override late final _Translations$waypoints$freshness$it freshness = _Translations$waypoints$freshness$it._(_root);
+	@override late final _Translations$waypoints$contribution$it contribution = _Translations$waypoints$contribution$it._(_root);
 }
 
 // Path: stage.difficulty
@@ -1101,6 +1102,33 @@ class _Translations$waypoints$freshness$it extends Translations$waypoints$freshn
 	@override String minutes({required Object n}) => 'aggiornato ${n} min fa';
 	@override String hours({required Object n}) => 'aggiornato ${n} h fa';
 	@override String days({required Object n}) => 'aggiornato ${n} g fa';
+}
+
+// Path: waypoints.contribution
+class _Translations$waypoints$contribution$it extends Translations$waypoints$contribution$fr {
+	_Translations$waypoints$contribution$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get titleWaypoint => 'Aggiungi un punto';
+	@override String get titleComment => 'Segnala una condizione';
+	@override String get chooseType => 'Tipo di punto';
+	@override String get titleField => 'Titolo del punto';
+	@override String get conditionPrompt => 'Descrivi la condizione osservata';
+	@override String get commentField => 'La tua osservazione';
+	@override String get conditionField => 'Stato (facoltativo)';
+	@override String get conditionHelper => 'es. acqua esaurita, acqua scorre, passaggio scivoloso';
+	@override String get latencyBanner => 'Sara pubblicato alla prossima sincronizzazione di rete.';
+	@override String get submit => 'Salva';
+	@override String get savedTitle => 'Contributo salvato';
+	@override String get savedPendingSync => 'Sara pubblicato al ritorno della rete.';
+	@override String pendingCount({required Object n}) => '${n} in attesa di sincronizzazione';
+	@override String get close => 'Chiudi';
+	@override String get emptyTitle => 'Inserisci un titolo per il punto.';
+	@override String get emptyComment => 'Inserisci la tua osservazione.';
+	@override String get noLocation => 'Posizione GPS non disponibile. Riprova sotto cielo aperto.';
+	@override String get error => 'Impossibile salvare in questo momento.';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1799,6 +1827,24 @@ extension on TranslationsIt {
 			'waypoints.freshness.minutes' => ({required Object n}) => 'aggiornato ${n} min fa',
 			'waypoints.freshness.hours' => ({required Object n}) => 'aggiornato ${n} h fa',
 			'waypoints.freshness.days' => ({required Object n}) => 'aggiornato ${n} g fa',
+			'waypoints.contribution.titleWaypoint' => 'Aggiungi un punto',
+			'waypoints.contribution.titleComment' => 'Segnala una condizione',
+			'waypoints.contribution.chooseType' => 'Tipo di punto',
+			'waypoints.contribution.titleField' => 'Titolo del punto',
+			'waypoints.contribution.conditionPrompt' => 'Descrivi la condizione osservata',
+			'waypoints.contribution.commentField' => 'La tua osservazione',
+			'waypoints.contribution.conditionField' => 'Stato (facoltativo)',
+			'waypoints.contribution.conditionHelper' => 'es. acqua esaurita, acqua scorre, passaggio scivoloso',
+			'waypoints.contribution.latencyBanner' => 'Sara pubblicato alla prossima sincronizzazione di rete.',
+			'waypoints.contribution.submit' => 'Salva',
+			'waypoints.contribution.savedTitle' => 'Contributo salvato',
+			'waypoints.contribution.savedPendingSync' => 'Sara pubblicato al ritorno della rete.',
+			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
+			'waypoints.contribution.close' => 'Chiudi',
+			'waypoints.contribution.emptyTitle' => 'Inserisci un titolo per il punto.',
+			'waypoints.contribution.emptyComment' => 'Inserisci la tua osservazione.',
+			'waypoints.contribution.noLocation' => 'Posizione GPS non disponibile. Riprova sotto cielo aperto.',
+			'waypoints.contribution.error' => 'Impossibile salvare in questo momento.',
 			_ => null,
 		};
 	}
