@@ -753,6 +753,129 @@ describe('trail_reports — signalement offline-first + moderation DSA (F6C-04)'
   });
 });
 
+describe('segment_efforts — effort immuable + UID auteur (F7A-03)', () => {
+  const EFFORT = 'effort-test-0001';
+
+  function effortPayload(overrides = {}) {
+    return {
+      segmentId: 'seg-1',
+      authorUidHash: TREKKER,
+      durationSeconds: 600,
+      completedAt: serverTimestamp(),
+      ...overrides,
+    };
+  }
+
+  it('auteur authentifie cree son effort (authorUidHash == uid)', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'segment_efforts', EFFORT), effortPayload()),
+    );
+  });
+
+  it('un anonyme ne cree pas d effort', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'segment_efforts', EFFORT), effortPayload()),
+    );
+  });
+
+  it('usurpation d UID refusee (authorUidHash != uid)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'segment_efforts', EFFORT),
+        effortPayload({ authorUidHash: STRANGER }),
+      ),
+    );
+  });
+
+  it('durationSeconds <= 0 refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'segment_efforts', EFFORT),
+        effortPayload({ durationSeconds: 0 }),
+      ),
+    );
+  });
+
+  it('champ hors schema refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'segment_efforts', EFFORT),
+        effortPayload({ champPirate: true }),
+      ),
+    );
+  });
+
+  it('effort immuable : update et delete refuses meme par l auteur', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'segment_efforts', EFFORT), {
+        segmentId: 'seg-1',
+        authorUidHash: TREKKER,
+        durationSeconds: 600,
+        completedAt: Timestamp.now(),
+      });
+    });
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'segment_efforts', EFFORT), {
+        durationSeconds: 1,
+      }),
+    );
+    await assertFails(
+      deleteDoc(doc(trekkerDb(), 'segment_efforts', EFFORT)),
+    );
+  });
+
+  it('un effort n est PAS lisible par un autre utilisateur (lecture auteur only)', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'segment_efforts', EFFORT), {
+        segmentId: 'seg-1',
+        authorUidHash: TREKKER,
+        durationSeconds: 600,
+        completedAt: Timestamp.now(),
+      });
+    });
+    await assertSucceeds(getDoc(doc(trekkerDb(), 'segment_efforts', EFFORT)));
+    await assertFails(getDoc(doc(strangerDb(), 'segment_efforts', EFFORT)));
+  });
+});
+
+describe('segment_rankings — lecture publique, ecriture backend only (F7A-03)', () => {
+  const SEG = 'seg-1';
+
+  async function seedRanking() {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'segment_rankings', SEG), {
+        segmentId: SEG,
+        tranches: [
+          { tranche: 'all', participantCount: 6, published: true, entries: [] },
+        ],
+      });
+    });
+  }
+
+  it('lecture publique du classement agrege (cache offline)', async () => {
+    await seedRanking();
+    await assertSucceeds(getDoc(doc(anonDb(), 'segment_rankings', SEG)));
+  });
+
+  it('un client normal ne fabrique PAS un classement (R2)', async () => {
+    await assertFails(
+      setDoc(doc(trekkerDb(), 'segment_rankings', SEG), {
+        segmentId: SEG,
+        tranches: [],
+      }),
+    );
+  });
+
+  it('le backend (claim admin) ecrit le classement', async () => {
+    await assertSucceeds(
+      setDoc(doc(adminDb(), 'segment_rankings', SEG), {
+        segmentId: SEG,
+        tranches: [],
+      }),
+    );
+  });
+});
+
 describe('tout le reste — deny', () => {
   it('collection sans regles (groups) refusee meme authentifie', async () => {
     await assertFails(
