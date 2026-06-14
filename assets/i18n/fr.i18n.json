@@ -487,5 +487,25 @@
     "featureNoAds": "Zéro publicité",
     "buyCta": "Débloquer ce trek",
     "buyCtaWithPrice": "Débloquer ce trek — $price €"
+  },
+  "training": {
+    "title": "Préparation physique",
+    "localNotice": "Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.",
+    "reminderTitle": "Séance d'entraînement aujourd'hui",
+    "scheduleReminders": "Programmer les rappels",
+    "remindersScheduled": "$n rappel(s) programmé(s)",
+    "week": "Semaine $n",
+    "minutes": "$n min",
+    "progress": "$done/$total séances faites",
+    "types": {
+      "marche": "Marche",
+      "cardio": "Cardio",
+      "renforcement": "Renforcement"
+    },
+    "intensity": {
+      "faible": "Faible",
+      "moderee": "Modérée",
+      "elevee": "Élevée"
+    }
   }
 }

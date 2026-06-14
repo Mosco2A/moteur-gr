@@ -67,6 +67,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
 	@override late final _Translations$onboarding$en onboarding = _Translations$onboarding$en._(_root);
 	@override late final _Translations$monetization$en monetization = _Translations$monetization$en._(_root);
+	@override late final _Translations$training$en training = _Translations$training$en._(_root);
 }
 
 // Path: a11y
@@ -616,6 +617,25 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
 }
 
+// Path: training
+class _Translations$training$en extends Translations$training$fr {
+	_Translations$training$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Physical preparation';
+	@override String get localNotice => 'Your plan is computed and kept on your phone. Reminders are local notifications, with no tracking.';
+	@override String get reminderTitle => 'Training session today';
+	@override String get scheduleReminders => 'Schedule reminders';
+	@override String remindersScheduled({required Object n}) => '${n} reminder(s) scheduled';
+	@override String week({required Object n}) => 'Week ${n}';
+	@override String minutes({required Object n}) => '${n} min';
+	@override String progress({required Object done, required Object total}) => '${done}/${total} sessions done';
+	@override late final _Translations$training$types$en types = _Translations$training$types$en._(_root);
+	@override late final _Translations$training$intensity$en intensity = _Translations$training$intensity$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -792,6 +812,30 @@ class _Translations$feasibility$recommendations$en extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$en caution = _Translations$feasibility$recommendations$caution$en._(_root);
 	@override late final _Translations$feasibility$recommendations$good$en good = _Translations$feasibility$recommendations$good$en._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$en excellent = _Translations$feasibility$recommendations$excellent$en._(_root);
+}
+
+// Path: training.types
+class _Translations$training$types$en extends Translations$training$types$fr {
+	_Translations$training$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get marche => 'Walking';
+	@override String get cardio => 'Cardio';
+	@override String get renforcement => 'Strength';
+}
+
+// Path: training.intensity
+class _Translations$training$intensity$en extends Translations$training$intensity$fr {
+	_Translations$training$intensity$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get faible => 'Low';
+	@override String get moderee => 'Moderate';
+	@override String get elevee => 'High';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1341,20 @@ extension on TranslationsEn {
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Unlock this trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
+			'training.title' => 'Physical preparation',
+			'training.localNotice' => 'Your plan is computed and kept on your phone. Reminders are local notifications, with no tracking.',
+			'training.reminderTitle' => 'Training session today',
+			'training.scheduleReminders' => 'Schedule reminders',
+			'training.remindersScheduled' => ({required Object n}) => '${n} reminder(s) scheduled',
+			'training.week' => ({required Object n}) => 'Week ${n}',
+			'training.minutes' => ({required Object n}) => '${n} min',
+			'training.progress' => ({required Object done, required Object total}) => '${done}/${total} sessions done',
+			'training.types.marche' => 'Walking',
+			'training.types.cardio' => 'Cardio',
+			'training.types.renforcement' => 'Strength',
+			'training.intensity.faible' => 'Low',
+			'training.intensity.moderee' => 'Moderate',
+			'training.intensity.elevee' => 'High',
 			_ => null,
 		};
 	}

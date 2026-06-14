@@ -7,6 +7,7 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 const _morningBaseId = 1000;
 const _weatherBaseId = 2000;
 const _countdownBaseId = 3000;
+const _trainingBaseId = 4000;
 
 class NotificationService {
   NotificationService({
@@ -20,9 +21,11 @@ class NotificationService {
   static const String channelMorning = 'morning_reminder';
   static const String channelWeather = 'weather_alert';
   static const String channelCountdown = 'countdown';
+  static const String channelTraining = 'training_reminder';
   static const String channelMorningDesc = 'Morning departure reminders';
   static const String channelWeatherDesc = 'Weather alerts for the trail';
   static const String channelCountdownDesc = 'D-2 countdown before departure';
+  static const String channelTrainingDesc = 'Pre-trek training session reminders';
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -102,6 +105,33 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
     _log.d('[NotificationService] J-2 planifiee pour $scheduledDateTime (id=$id)');
+    return id;
+  }
+
+  /// Planifie un rappel LOCAL pour une séance d'entraînement (F6E-02).
+  ///
+  /// Notification 100 % LOCALE (aucun push serveur, aucun identifiant/tracking).
+  /// Ignorée si [dateTime] est déjà passée. [sessionIndex] sépare les ids.
+  Future<int> scheduleTrainingReminder({
+    required DateTime dateTime,
+    required String title,
+    required String body,
+    int sessionIndex = 0,
+  }) async {
+    await _ensureInitialized();
+    final id = _trainingBaseId + sessionIndex;
+    if (dateTime.isBefore(DateTime.now())) {
+      _log.d('[NotificationService] Rappel entrainement ignore (date passee: $dateTime)');
+      return id;
+    }
+    final scheduledTime = tz.TZDateTime.from(dateTime, tz.local);
+    await _plugin.zonedSchedule(
+      id, title, body, scheduledTime,
+      _notificationDetails(channelTraining, channelTrainingDesc),
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    );
+    _log.d('[NotificationService] Rappel entrainement planifie pour $dateTime (id=$id)');
     return id;
   }
 

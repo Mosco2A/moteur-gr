@@ -23,6 +23,7 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
 import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
+import '../../features/training/presentation/training_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../config/feature_flags.dart';
 import '../engine/trail_engine.dart';
@@ -82,6 +83,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
 ///   /booking                     - Reservation (stub, gardee par FeatureFlags)
 ///   /emergency                   - Contacts d'urgence
+///   /training                    - Programme d'entrainement pre-trek
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 ///   /settings                    - Parametres
 ///   /profile                     - Profil utilisateur
@@ -316,6 +318,12 @@ final appRouter = GoRouter(
       path: '/emergency',
       name: 'emergency',
       builder: (context, state) => const EmergencyScreen(),
+    ),
+    // F6E-02 : Programme d'entrainement pre-trek (rappels notifs LOCALES)
+    GoRoute(
+      path: '/training',
+      name: 'training',
+      builder: (context, state) => const TrainingScreen(),
     ),
     // E5.1a/b : ecran d'accueil affiche au tout premier lancement.
     GoRoute(

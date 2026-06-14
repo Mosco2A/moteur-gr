@@ -487,5 +487,25 @@
     "featureNoAds": "Keine Werbung",
     "buyCta": "Diesen Trek freischalten",
     "buyCtaWithPrice": "Diesen Trek freischalten — $price €"
+  },
+  "training": {
+    "title": "Körperliche Vorbereitung",
+    "localNotice": "Ihr Plan wird auf Ihrem Telefon berechnet und gespeichert. Erinnerungen sind lokale Benachrichtigungen, ohne Tracking.",
+    "reminderTitle": "Heute Trainingseinheit",
+    "scheduleReminders": "Erinnerungen planen",
+    "remindersScheduled": "$n Erinnerung(en) geplant",
+    "week": "Woche $n",
+    "minutes": "$n Min",
+    "progress": "$done/$total Einheiten erledigt",
+    "types": {
+      "marche": "Gehen",
+      "cardio": "Cardio",
+      "renforcement": "Kraft"
+    },
+    "intensity": {
+      "faible": "Niedrig",
+      "moderee": "Mittel",
+      "elevee": "Hoch"
+    }
   }
 }

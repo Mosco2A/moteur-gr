@@ -487,5 +487,25 @@
     "featureNoAds": "Zero ads",
     "buyCta": "Unlock this trek",
     "buyCtaWithPrice": "Unlock this trek — €$price"
+  },
+  "training": {
+    "title": "Physical preparation",
+    "localNotice": "Your plan is computed and kept on your phone. Reminders are local notifications, with no tracking.",
+    "reminderTitle": "Training session today",
+    "scheduleReminders": "Schedule reminders",
+    "remindersScheduled": "$n reminder(s) scheduled",
+    "week": "Week $n",
+    "minutes": "$n min",
+    "progress": "$done/$total sessions done",
+    "types": {
+      "marche": "Walking",
+      "cardio": "Cardio",
+      "renforcement": "Strength"
+    },
+    "intensity": {
+      "faible": "Low",
+      "moderee": "Moderate",
+      "elevee": "High"
+    }
   }
 }
