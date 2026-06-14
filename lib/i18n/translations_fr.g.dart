@@ -69,6 +69,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$onboarding$fr onboarding = Translations$onboarding$fr.internal(_root);
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
 	late final Translations$signalement$fr signalement = Translations$signalement$fr.internal(_root);
+	late final Translations$hebergement$fr hebergement = Translations$hebergement$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1232,6 +1233,35 @@ class Translations$signalement$fr {
 	String get close => 'Fermer';
 }
 
+// Path: hebergement
+class Translations$hebergement$fr {
+	Translations$hebergement$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Hébergements à proximité'
+	String get title => 'Hébergements à proximité';
+
+	/// fr: 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l'application.'
+	String get facilitatorNote => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.';
+
+	/// fr: 'Détour aller-retour : $km km'
+	String detourAR({required Object km}) => 'Détour aller-retour : ${km} km';
+
+	/// fr: 'Voir le site'
+	String get openSite => 'Voir le site';
+
+	/// fr: 'Impossible d'ouvrir ce lien sur cet appareil.'
+	String get cannotOpen => 'Impossible d\'ouvrir ce lien sur cet appareil.';
+
+	/// fr: 'Aucun hébergement répertorié à proximité pour le moment.'
+	String get empty => 'Aucun hébergement répertorié à proximité pour le moment.';
+
+	late final Translations$hebergement$types$fr types = Translations$hebergement$types$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1612,6 +1642,30 @@ class Translations$signalement$types$fr {
 
 	/// fr: 'Danger'
 	String get danger => 'Danger';
+}
+
+// Path: hebergement.types
+class Translations$hebergement$types$fr {
+	Translations$hebergement$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Refuge'
+	String get refuge => 'Refuge';
+
+	/// fr: 'Gîte'
+	String get gite => 'Gîte';
+
+	/// fr: 'Hôtel'
+	String get hotel => 'Hôtel';
+
+	/// fr: 'Camping'
+	String get camping => 'Camping';
+
+	/// fr: 'Chambre d'hôte'
+	String get chambreHote => 'Chambre d\'hôte';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2173,6 +2227,17 @@ extension on Translations {
 			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
 			'signalement.close' => 'Fermer',
+			'hebergement.title' => 'Hébergements à proximité',
+			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
+			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
+			'hebergement.openSite' => 'Voir le site',
+			'hebergement.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
+			'hebergement.empty' => 'Aucun hébergement répertorié à proximité pour le moment.',
+			'hebergement.types.refuge' => 'Refuge',
+			'hebergement.types.gite' => 'Gîte',
+			'hebergement.types.hotel' => 'Hôtel',
+			'hebergement.types.camping' => 'Camping',
+			'hebergement.types.chambreHote' => 'Chambre d\'hôte',
 			_ => null,
 		};
 	}

@@ -503,5 +503,20 @@
     "savedPendingSync": "Il sera partagé dès le retour du réseau.",
     "pendingCount": "$n en attente de synchronisation",
     "close": "Fermer"
+  },
+  "hebergement": {
+    "title": "Hébergements à proximité",
+    "facilitatorNote": "StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l'application.",
+    "detourAR": "Détour aller-retour : $km km",
+    "openSite": "Voir le site",
+    "cannotOpen": "Impossible d'ouvrir ce lien sur cet appareil.",
+    "empty": "Aucun hébergement répertorié à proximité pour le moment.",
+    "types": {
+      "refuge": "Refuge",
+      "gite": "Gîte",
+      "hotel": "Hôtel",
+      "camping": "Camping",
+      "chambreHote": "Chambre d'hôte"
+    }
   }
 }

@@ -503,5 +503,20 @@
     "savedPendingSync": "Sarà condivisa appena la rete sarà disponibile.",
     "pendingCount": "$n in attesa di sincronizzazione",
     "close": "Chiudi"
+  },
+  "hebergement": {
+    "title": "Alloggi nelle vicinanze",
+    "facilitatorNote": "StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell'app.",
+    "detourAR": "Deviazione andata e ritorno: $km km",
+    "openSite": "Vedi il sito",
+    "cannotOpen": "Impossibile aprire questo link su questo dispositivo.",
+    "empty": "Nessun alloggio elencato nelle vicinanze per ora.",
+    "types": {
+      "refuge": "Rifugio",
+      "gite": "Locanda",
+      "hotel": "Hotel",
+      "camping": "Campeggio",
+      "chambreHote": "Bed & breakfast"
+    }
   }
 }

@@ -68,6 +68,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$onboarding$de onboarding = _Translations$onboarding$de._(_root);
 	@override late final _Translations$monetization$de monetization = _Translations$monetization$de._(_root);
 	@override late final _Translations$signalement$de signalement = _Translations$signalement$de._(_root);
+	@override late final _Translations$hebergement$de hebergement = _Translations$hebergement$de._(_root);
 }
 
 // Path: a11y
@@ -636,6 +637,22 @@ class _Translations$signalement$de extends Translations$signalement$fr {
 	@override String get close => 'Schließen';
 }
 
+// Path: hebergement
+class _Translations$hebergement$de extends Translations$hebergement$fr {
+	_Translations$hebergement$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Unterkünfte in der Nähe';
+	@override String get facilitatorNote => 'StepWays verweist Sie an die Gastgeber. Die Buchung erfolgt auf deren Website: keine Zahlung in der App.';
+	@override String detourAR({required Object km}) => 'Umweg hin und zurück: ${km} km';
+	@override String get openSite => 'Website ansehen';
+	@override String get cannotOpen => 'Dieser Link konnte auf diesem Gerät nicht geöffnet werden.';
+	@override String get empty => 'Derzeit keine Unterkünfte in der Nähe gelistet.';
+	@override late final _Translations$hebergement$types$de types = _Translations$hebergement$types$de._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$de extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -824,6 +841,20 @@ class _Translations$signalement$types$de extends Translations$signalement$types$
 	@override String get obstacle => 'Hindernis auf dem Weg';
 	@override String get eauASec => 'Trockene Wasserstelle';
 	@override String get danger => 'Gefahr';
+}
+
+// Path: hebergement.types
+class _Translations$hebergement$types$de extends Translations$hebergement$types$fr {
+	_Translations$hebergement$types$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Berghütte';
+	@override String get gite => 'Gästehaus';
+	@override String get hotel => 'Hotel';
+	@override String get camping => 'Campingplatz';
+	@override String get chambreHote => 'Pension';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1341,6 +1372,17 @@ extension on TranslationsDe {
 			'signalement.savedPendingSync' => 'Sie wird geteilt, sobald das Netzwerk wieder da ist.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} warten auf Synchronisierung',
 			'signalement.close' => 'Schließen',
+			'hebergement.title' => 'Unterkünfte in der Nähe',
+			'hebergement.facilitatorNote' => 'StepWays verweist Sie an die Gastgeber. Die Buchung erfolgt auf deren Website: keine Zahlung in der App.',
+			'hebergement.detourAR' => ({required Object km}) => 'Umweg hin und zurück: ${km} km',
+			'hebergement.openSite' => 'Website ansehen',
+			'hebergement.cannotOpen' => 'Dieser Link konnte auf diesem Gerät nicht geöffnet werden.',
+			'hebergement.empty' => 'Derzeit keine Unterkünfte in der Nähe gelistet.',
+			'hebergement.types.refuge' => 'Berghütte',
+			'hebergement.types.gite' => 'Gästehaus',
+			'hebergement.types.hotel' => 'Hotel',
+			'hebergement.types.camping' => 'Campingplatz',
+			'hebergement.types.chambreHote' => 'Pension',
 			_ => null,
 		};
 	}
