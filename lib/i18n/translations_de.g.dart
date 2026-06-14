@@ -786,6 +786,7 @@ class _Translations$waypoints$de extends Translations$waypoints$fr {
 	@override late final _Translations$waypoints$filters$de filters = _Translations$waypoints$filters$de._(_root);
 	@override late final _Translations$waypoints$detail$de detail = _Translations$waypoints$detail$de._(_root);
 	@override late final _Translations$waypoints$freshness$de freshness = _Translations$waypoints$freshness$de._(_root);
+	@override late final _Translations$waypoints$contribution$de contribution = _Translations$waypoints$contribution$de._(_root);
 }
 
 // Path: stage.difficulty
@@ -1101,6 +1102,33 @@ class _Translations$waypoints$freshness$de extends Translations$waypoints$freshn
 	@override String minutes({required Object n}) => 'vor ${n} Min aktualisiert';
 	@override String hours({required Object n}) => 'vor ${n} Std aktualisiert';
 	@override String days({required Object n}) => 'vor ${n} T aktualisiert';
+}
+
+// Path: waypoints.contribution
+class _Translations$waypoints$contribution$de extends Translations$waypoints$contribution$fr {
+	_Translations$waypoints$contribution$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get titleWaypoint => 'Wegpunkt hinzufugen';
+	@override String get titleComment => 'Zustand melden';
+	@override String get chooseType => 'Wegpunkttyp';
+	@override String get titleField => 'Titel des Wegpunkts';
+	@override String get conditionPrompt => 'Beschreiben Sie den beobachteten Zustand';
+	@override String get commentField => 'Ihre Beobachtung';
+	@override String get conditionField => 'Zustand (optional)';
+	@override String get conditionHelper => 'z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle';
+	@override String get latencyBanner => 'Wird bei der nachsten Synchronisierung veroffentlicht.';
+	@override String get submit => 'Speichern';
+	@override String get savedTitle => 'Beitrag gespeichert';
+	@override String get savedPendingSync => 'Er wird veroffentlicht, sobald das Netz wieder da ist.';
+	@override String pendingCount({required Object n}) => '${n} warten auf Synchronisierung';
+	@override String get close => 'Schliessen';
+	@override String get emptyTitle => 'Bitte einen Titel fur den Wegpunkt angeben.';
+	@override String get emptyComment => 'Bitte Ihre Beobachtung eingeben.';
+	@override String get noLocation => 'GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.';
+	@override String get error => 'Speichern derzeit nicht moglich.';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1799,6 +1827,24 @@ extension on TranslationsDe {
 			'waypoints.freshness.minutes' => ({required Object n}) => 'vor ${n} Min aktualisiert',
 			'waypoints.freshness.hours' => ({required Object n}) => 'vor ${n} Std aktualisiert',
 			'waypoints.freshness.days' => ({required Object n}) => 'vor ${n} T aktualisiert',
+			'waypoints.contribution.titleWaypoint' => 'Wegpunkt hinzufugen',
+			'waypoints.contribution.titleComment' => 'Zustand melden',
+			'waypoints.contribution.chooseType' => 'Wegpunkttyp',
+			'waypoints.contribution.titleField' => 'Titel des Wegpunkts',
+			'waypoints.contribution.conditionPrompt' => 'Beschreiben Sie den beobachteten Zustand',
+			'waypoints.contribution.commentField' => 'Ihre Beobachtung',
+			'waypoints.contribution.conditionField' => 'Zustand (optional)',
+			'waypoints.contribution.conditionHelper' => 'z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle',
+			'waypoints.contribution.latencyBanner' => 'Wird bei der nachsten Synchronisierung veroffentlicht.',
+			'waypoints.contribution.submit' => 'Speichern',
+			'waypoints.contribution.savedTitle' => 'Beitrag gespeichert',
+			'waypoints.contribution.savedPendingSync' => 'Er wird veroffentlicht, sobald das Netz wieder da ist.',
+			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} warten auf Synchronisierung',
+			'waypoints.contribution.close' => 'Schliessen',
+			'waypoints.contribution.emptyTitle' => 'Bitte einen Titel fur den Wegpunkt angeben.',
+			'waypoints.contribution.emptyComment' => 'Bitte Ihre Beobachtung eingeben.',
+			'waypoints.contribution.noLocation' => 'GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.',
+			'waypoints.contribution.error' => 'Speichern derzeit nicht moglich.',
 			_ => null,
 		};
 	}

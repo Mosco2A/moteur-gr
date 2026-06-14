@@ -661,6 +661,26 @@
       "minutes": "updated $n min ago",
       "hours": "updated $n h ago",
       "days": "updated $n d ago"
+    },
+    "contribution": {
+      "titleWaypoint": "Add a waypoint",
+      "titleComment": "Report a condition",
+      "chooseType": "Waypoint type",
+      "titleField": "Waypoint title",
+      "conditionPrompt": "Describe the observed condition",
+      "commentField": "Your observation",
+      "conditionField": "State (optional)",
+      "conditionHelper": "e.g. water dried up, water flowing, slippery section",
+      "latencyBanner": "Will be published at the next network sync.",
+      "submit": "Save",
+      "savedTitle": "Contribution saved",
+      "savedPendingSync": "It will be published when the network is back.",
+      "pendingCount": "$n pending synchronization",
+      "close": "Close",
+      "emptyTitle": "Please enter a title for the waypoint.",
+      "emptyComment": "Please enter your observation.",
+      "noLocation": "GPS position unavailable. Try again under open sky.",
+      "error": "Cannot save right now."
     }
   }
 }

@@ -661,6 +661,26 @@
       "minutes": "mis à jour il y a $n min",
       "hours": "mis à jour il y a $n h",
       "days": "mis à jour il y a $n j"
+    },
+    "contribution": {
+      "titleWaypoint": "Ajouter un point",
+      "titleComment": "Signaler une condition",
+      "chooseType": "Type de point",
+      "titleField": "Titre du point",
+      "conditionPrompt": "Décrivez la condition observée",
+      "commentField": "Votre observation",
+      "conditionField": "État (optionnel)",
+      "conditionHelper": "ex : eau à sec, eau coule bien, passage glissant",
+      "latencyBanner": "Sera publié à la prochaine synchronisation réseau.",
+      "submit": "Enregistrer",
+      "savedTitle": "Contribution enregistrée",
+      "savedPendingSync": "Elle sera publiée dès le retour du réseau.",
+      "pendingCount": "$n en attente de synchronisation",
+      "close": "Fermer",
+      "emptyTitle": "Indiquez un titre pour le point.",
+      "emptyComment": "Saisissez votre observation.",
+      "noLocation": "Position GPS indisponible. Réessayez sous le ciel ouvert.",
+      "error": "Enregistrement impossible pour le moment."
     }
   }
 }

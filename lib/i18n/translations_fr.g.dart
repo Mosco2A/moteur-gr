@@ -1511,6 +1511,7 @@ class Translations$waypoints$fr {
 	late final Translations$waypoints$filters$fr filters = Translations$waypoints$filters$fr.internal(_root);
 	late final Translations$waypoints$detail$fr detail = Translations$waypoints$detail$fr.internal(_root);
 	late final Translations$waypoints$freshness$fr freshness = Translations$waypoints$freshness$fr.internal(_root);
+	late final Translations$waypoints$contribution$fr contribution = Translations$waypoints$contribution$fr.internal(_root);
 }
 
 // Path: stage.difficulty
@@ -2094,6 +2095,69 @@ class Translations$waypoints$freshness$fr {
 
 	/// fr: 'mis à jour il y a $n j'
 	String days({required Object n}) => 'mis à jour il y a ${n} j';
+}
+
+// Path: waypoints.contribution
+class Translations$waypoints$contribution$fr {
+	Translations$waypoints$contribution$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ajouter un point'
+	String get titleWaypoint => 'Ajouter un point';
+
+	/// fr: 'Signaler une condition'
+	String get titleComment => 'Signaler une condition';
+
+	/// fr: 'Type de point'
+	String get chooseType => 'Type de point';
+
+	/// fr: 'Titre du point'
+	String get titleField => 'Titre du point';
+
+	/// fr: 'Décrivez la condition observée'
+	String get conditionPrompt => 'Décrivez la condition observée';
+
+	/// fr: 'Votre observation'
+	String get commentField => 'Votre observation';
+
+	/// fr: 'État (optionnel)'
+	String get conditionField => 'État (optionnel)';
+
+	/// fr: 'ex : eau à sec, eau coule bien, passage glissant'
+	String get conditionHelper => 'ex : eau à sec, eau coule bien, passage glissant';
+
+	/// fr: 'Sera publié à la prochaine synchronisation réseau.'
+	String get latencyBanner => 'Sera publié à la prochaine synchronisation réseau.';
+
+	/// fr: 'Enregistrer'
+	String get submit => 'Enregistrer';
+
+	/// fr: 'Contribution enregistrée'
+	String get savedTitle => 'Contribution enregistrée';
+
+	/// fr: 'Elle sera publiée dès le retour du réseau.'
+	String get savedPendingSync => 'Elle sera publiée dès le retour du réseau.';
+
+	/// fr: '$n en attente de synchronisation'
+	String pendingCount({required Object n}) => '${n} en attente de synchronisation';
+
+	/// fr: 'Fermer'
+	String get close => 'Fermer';
+
+	/// fr: 'Indiquez un titre pour le point.'
+	String get emptyTitle => 'Indiquez un titre pour le point.';
+
+	/// fr: 'Saisissez votre observation.'
+	String get emptyComment => 'Saisissez votre observation.';
+
+	/// fr: 'Position GPS indisponible. Réessayez sous le ciel ouvert.'
+	String get noLocation => 'Position GPS indisponible. Réessayez sous le ciel ouvert.';
+
+	/// fr: 'Enregistrement impossible pour le moment.'
+	String get error => 'Enregistrement impossible pour le moment.';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2860,6 +2924,24 @@ extension on Translations {
 			'waypoints.freshness.minutes' => ({required Object n}) => 'mis à jour il y a ${n} min',
 			'waypoints.freshness.hours' => ({required Object n}) => 'mis à jour il y a ${n} h',
 			'waypoints.freshness.days' => ({required Object n}) => 'mis à jour il y a ${n} j',
+			'waypoints.contribution.titleWaypoint' => 'Ajouter un point',
+			'waypoints.contribution.titleComment' => 'Signaler une condition',
+			'waypoints.contribution.chooseType' => 'Type de point',
+			'waypoints.contribution.titleField' => 'Titre du point',
+			'waypoints.contribution.conditionPrompt' => 'Décrivez la condition observée',
+			'waypoints.contribution.commentField' => 'Votre observation',
+			'waypoints.contribution.conditionField' => 'État (optionnel)',
+			'waypoints.contribution.conditionHelper' => 'ex : eau à sec, eau coule bien, passage glissant',
+			'waypoints.contribution.latencyBanner' => 'Sera publié à la prochaine synchronisation réseau.',
+			'waypoints.contribution.submit' => 'Enregistrer',
+			'waypoints.contribution.savedTitle' => 'Contribution enregistrée',
+			'waypoints.contribution.savedPendingSync' => 'Elle sera publiée dès le retour du réseau.',
+			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
+			'waypoints.contribution.close' => 'Fermer',
+			'waypoints.contribution.emptyTitle' => 'Indiquez un titre pour le point.',
+			'waypoints.contribution.emptyComment' => 'Saisissez votre observation.',
+			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
+			'waypoints.contribution.error' => 'Enregistrement impossible pour le moment.',
 			_ => null,
 		};
 	}

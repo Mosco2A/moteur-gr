@@ -661,6 +661,26 @@
       "minutes": "actualizado hace $n min",
       "hours": "actualizado hace $n h",
       "days": "actualizado hace $n d"
+    },
+    "contribution": {
+      "titleWaypoint": "Anadir un punto",
+      "titleComment": "Senalar una condicion",
+      "chooseType": "Tipo de punto",
+      "titleField": "Titulo del punto",
+      "conditionPrompt": "Describe la condicion observada",
+      "commentField": "Tu observacion",
+      "conditionField": "Estado (opcional)",
+      "conditionHelper": "p. ej. agua agotada, agua corre, paso resbaladizo",
+      "latencyBanner": "Se publicara en la proxima sincronizacion de red.",
+      "submit": "Guardar",
+      "savedTitle": "Contribucion guardada",
+      "savedPendingSync": "Se publicara cuando vuelva la red.",
+      "pendingCount": "$n pendientes de sincronizacion",
+      "close": "Cerrar",
+      "emptyTitle": "Indica un titulo para el punto.",
+      "emptyComment": "Escribe tu observacion.",
+      "noLocation": "Posicion GPS no disponible. Intentalo de nuevo a cielo abierto.",
+      "error": "No se puede guardar ahora mismo."
     }
   }
 }
