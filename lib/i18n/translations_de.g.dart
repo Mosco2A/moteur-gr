@@ -74,6 +74,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$leaderboard$de leaderboard = _Translations$leaderboard$de._(_root);
 	@override late final _Translations$social$de social = _Translations$social$de._(_root);
 	@override late final _Translations$gamification$de gamification = _Translations$gamification$de._(_root);
+	@override late final _Translations$shareVisibility$de shareVisibility = _Translations$shareVisibility$de._(_root);
 }
 
 // Path: a11y
@@ -749,6 +750,28 @@ class _Translations$gamification$de extends Translations$gamification$fr {
 	@override String get tierExpert => 'Experte';
 	@override late final _Translations$gamification$badge$de badge = _Translations$gamification$badge$de._(_root);
 	@override late final _Translations$gamification$defi$de defi = _Translations$gamification$defi$de._(_root);
+}
+
+// Path: shareVisibility
+class _Translations$shareVisibility$de extends Translations$shareVisibility$fr {
+	_Translations$shareVisibility$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Teilen und Sichtbarkeit';
+	@override String get intro => 'Standardmäßig wird nichts geteilt. Aktiviere unten zweckweise, was du sichtbar machen möchtest.';
+	@override String get consentLink => 'Meine Einwilligung verwalten (Datenschutz)';
+	@override String get stageResults => 'Meine Etappenergebnisse teilen';
+	@override String get stageResultsDesc => 'Eine pseudonyme Karte (keine direkten personenbezogenen Daten).';
+	@override String get leaderboard => 'In Ranglisten erscheinen';
+	@override String get leaderboardDesc => 'Rangliste nach Gruppe, mit einem Pseudonym.';
+	@override String get activityFeed => 'Im Aktivitätsverlauf posten';
+	@override String get activityFeedDesc => 'Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.';
+	@override String get shareTitle => 'Diese Etappe teilen';
+	@override String get shareButton => 'Teilen';
+	@override String get privateNotice => 'Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.';
+	@override String get shared => 'Karte bereit zum Teilen.';
 }
 
 // Path: stage.difficulty
@@ -1671,6 +1694,19 @@ extension on TranslationsDe {
 			'gamification.defi.pseudonymNotice' => 'Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.',
 			'gamification.defi.notEnoughParticipants' => 'Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.',
 			'gamification.defi.noDefi' => 'Derzeit keine laufende Challenge.',
+			'shareVisibility.title' => 'Teilen und Sichtbarkeit',
+			'shareVisibility.intro' => 'Standardmäßig wird nichts geteilt. Aktiviere unten zweckweise, was du sichtbar machen möchtest.',
+			'shareVisibility.consentLink' => 'Meine Einwilligung verwalten (Datenschutz)',
+			'shareVisibility.stageResults' => 'Meine Etappenergebnisse teilen',
+			'shareVisibility.stageResultsDesc' => 'Eine pseudonyme Karte (keine direkten personenbezogenen Daten).',
+			'shareVisibility.leaderboard' => 'In Ranglisten erscheinen',
+			'shareVisibility.leaderboardDesc' => 'Rangliste nach Gruppe, mit einem Pseudonym.',
+			'shareVisibility.activityFeed' => 'Im Aktivitätsverlauf posten',
+			'shareVisibility.activityFeedDesc' => 'Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.',
+			'shareVisibility.shareTitle' => 'Diese Etappe teilen',
+			'shareVisibility.shareButton' => 'Teilen',
+			'shareVisibility.privateNotice' => 'Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.',
+			'shareVisibility.shared' => 'Karte bereit zum Teilen.',
 			_ => null,
 		};
 	}

@@ -617,5 +617,20 @@
       "notEnoughParticipants": "Pas assez de participants pour publier ce classement.",
       "noDefi": "Aucun défi en cours pour le moment."
     }
+  },
+  "shareVisibility": {
+    "title": "Partage et visibilité",
+    "intro": "Par défaut, rien n'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.",
+    "consentLink": "Gérer mon consentement (confidentialité)",
+    "stageResults": "Partager mes résultats d'étape",
+    "stageResultsDesc": "Une carte pseudonyme (sans données personnelles directes).",
+    "leaderboard": "Apparaître dans les classements",
+    "leaderboardDesc": "Classement par tranche, avec un pseudonyme.",
+    "activityFeed": "Publier au fil d'activité",
+    "activityFeedDesc": "Tes activités apparaissent dans le fil, sous pseudonyme.",
+    "shareTitle": "Partager cette étape",
+    "shareButton": "Partager",
+    "privateNotice": "Le partage est désactivé. Active-le dans Partage et visibilité.",
+    "shared": "Carte prête à partager."
   }
 }

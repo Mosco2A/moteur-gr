@@ -617,5 +617,20 @@
       "notEnoughParticipants": "No hay suficientes participantes para publicar esta clasificación.",
       "noDefi": "Ningún reto en curso por ahora."
     }
+  },
+  "shareVisibility": {
+    "title": "Compartir y visibilidad",
+    "intro": "Por defecto, no se comparte nada. Activa abajo, finalidad por finalidad, lo que quieras hacer visible.",
+    "consentLink": "Gestionar mi consentimiento (privacidad)",
+    "stageResults": "Compartir mis resultados de etapa",
+    "stageResultsDesc": "Una tarjeta con seudónimo (sin datos personales directos).",
+    "leaderboard": "Aparecer en las clasificaciones",
+    "leaderboardDesc": "Clasificación por grupo, con un seudónimo.",
+    "activityFeed": "Publicar en el registro de actividad",
+    "activityFeedDesc": "Tus actividades aparecen en el registro, con un seudónimo.",
+    "shareTitle": "Compartir esta etapa",
+    "shareButton": "Compartir",
+    "privateNotice": "Compartir está desactivado. Actívalo en Compartir y visibilidad.",
+    "shared": "Tarjeta lista para compartir."
   }
 }

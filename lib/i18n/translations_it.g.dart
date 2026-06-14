@@ -74,6 +74,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$leaderboard$it leaderboard = _Translations$leaderboard$it._(_root);
 	@override late final _Translations$social$it social = _Translations$social$it._(_root);
 	@override late final _Translations$gamification$it gamification = _Translations$gamification$it._(_root);
+	@override late final _Translations$shareVisibility$it shareVisibility = _Translations$shareVisibility$it._(_root);
 }
 
 // Path: a11y
@@ -749,6 +750,28 @@ class _Translations$gamification$it extends Translations$gamification$fr {
 	@override String get tierExpert => 'Esperto';
 	@override late final _Translations$gamification$badge$it badge = _Translations$gamification$badge$it._(_root);
 	@override late final _Translations$gamification$defi$it defi = _Translations$gamification$defi$it._(_root);
+}
+
+// Path: shareVisibility
+class _Translations$shareVisibility$it extends Translations$shareVisibility$fr {
+	_Translations$shareVisibility$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Condivisione e visibilità';
+	@override String get intro => 'Per impostazione predefinita, non viene condiviso nulla. Attiva qui sotto, finalità per finalità, ciò che vuoi rendere visibile.';
+	@override String get consentLink => 'Gestisci il mio consenso (privacy)';
+	@override String get stageResults => 'Condividi i miei risultati di tappa';
+	@override String get stageResultsDesc => 'Una scheda con pseudonimo (senza dati personali diretti).';
+	@override String get leaderboard => 'Apparire nelle classifiche';
+	@override String get leaderboardDesc => 'Classifica per fascia, con uno pseudonimo.';
+	@override String get activityFeed => 'Pubblica nel diario attività';
+	@override String get activityFeedDesc => 'Le tue attività appaiono nel diario, con uno pseudonimo.';
+	@override String get shareTitle => 'Condividi questa tappa';
+	@override String get shareButton => 'Condividi';
+	@override String get privateNotice => 'La condivisione è disattivata. Attivala in Condivisione e visibilità.';
+	@override String get shared => 'Scheda pronta da condividere.';
 }
 
 // Path: stage.difficulty
@@ -1671,6 +1694,19 @@ extension on TranslationsIt {
 			'gamification.defi.pseudonymNotice' => 'Classifica per fascia, con pseudonimi. Nessun dato personale diretto viene mostrato.',
 			'gamification.defi.notEnoughParticipants' => 'Partecipanti insufficienti per pubblicare questa classifica.',
 			'gamification.defi.noDefi' => 'Nessuna sfida in corso al momento.',
+			'shareVisibility.title' => 'Condivisione e visibilità',
+			'shareVisibility.intro' => 'Per impostazione predefinita, non viene condiviso nulla. Attiva qui sotto, finalità per finalità, ciò che vuoi rendere visibile.',
+			'shareVisibility.consentLink' => 'Gestisci il mio consenso (privacy)',
+			'shareVisibility.stageResults' => 'Condividi i miei risultati di tappa',
+			'shareVisibility.stageResultsDesc' => 'Una scheda con pseudonimo (senza dati personali diretti).',
+			'shareVisibility.leaderboard' => 'Apparire nelle classifiche',
+			'shareVisibility.leaderboardDesc' => 'Classifica per fascia, con uno pseudonimo.',
+			'shareVisibility.activityFeed' => 'Pubblica nel diario attività',
+			'shareVisibility.activityFeedDesc' => 'Le tue attività appaiono nel diario, con uno pseudonimo.',
+			'shareVisibility.shareTitle' => 'Condividi questa tappa',
+			'shareVisibility.shareButton' => 'Condividi',
+			'shareVisibility.privateNotice' => 'La condivisione è disattivata. Attivala in Condivisione e visibilità.',
+			'shareVisibility.shared' => 'Scheda pronta da condividere.',
 			_ => null,
 		};
 	}

@@ -617,5 +617,20 @@
       "notEnoughParticipants": "Not enough participants to publish this ranking.",
       "noDefi": "No challenge in progress right now."
     }
+  },
+  "shareVisibility": {
+    "title": "Sharing and visibility",
+    "intro": "By default, nothing is shared. Turn on below, purpose by purpose, what you want to make visible.",
+    "consentLink": "Manage my consent (privacy)",
+    "stageResults": "Share my stage results",
+    "stageResultsDesc": "A pseudonymous card (no direct personal data).",
+    "leaderboard": "Appear in leaderboards",
+    "leaderboardDesc": "Ranking by group, using a pseudonym.",
+    "activityFeed": "Post to the activity feed",
+    "activityFeedDesc": "Your activities appear in the feed, under a pseudonym.",
+    "shareTitle": "Share this stage",
+    "shareButton": "Share",
+    "privateNotice": "Sharing is off. Turn it on in Sharing and visibility.",
+    "shared": "Card ready to share."
   }
 }

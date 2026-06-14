@@ -617,5 +617,20 @@
       "notEnoughParticipants": "Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.",
       "noDefi": "Derzeit keine laufende Challenge."
     }
+  },
+  "shareVisibility": {
+    "title": "Teilen und Sichtbarkeit",
+    "intro": "Standardmäßig wird nichts geteilt. Aktiviere unten zweckweise, was du sichtbar machen möchtest.",
+    "consentLink": "Meine Einwilligung verwalten (Datenschutz)",
+    "stageResults": "Meine Etappenergebnisse teilen",
+    "stageResultsDesc": "Eine pseudonyme Karte (keine direkten personenbezogenen Daten).",
+    "leaderboard": "In Ranglisten erscheinen",
+    "leaderboardDesc": "Rangliste nach Gruppe, mit einem Pseudonym.",
+    "activityFeed": "Im Aktivitätsverlauf posten",
+    "activityFeedDesc": "Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.",
+    "shareTitle": "Diese Etappe teilen",
+    "shareButton": "Teilen",
+    "privateNotice": "Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.",
+    "shared": "Karte bereit zum Teilen."
   }
 }

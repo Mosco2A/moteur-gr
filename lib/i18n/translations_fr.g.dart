@@ -75,6 +75,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$leaderboard$fr leaderboard = Translations$leaderboard$fr.internal(_root);
 	late final Translations$social$fr social = Translations$social$fr.internal(_root);
 	late final Translations$gamification$fr gamification = Translations$gamification$fr.internal(_root);
+	late final Translations$shareVisibility$fr shareVisibility = Translations$shareVisibility$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1450,6 +1451,54 @@ class Translations$gamification$fr {
 	late final Translations$gamification$defi$fr defi = Translations$gamification$defi$fr.internal(_root);
 }
 
+// Path: shareVisibility
+class Translations$shareVisibility$fr {
+	Translations$shareVisibility$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Partage et visibilité'
+	String get title => 'Partage et visibilité';
+
+	/// fr: 'Par défaut, rien n'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.'
+	String get intro => 'Par défaut, rien n\'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.';
+
+	/// fr: 'Gérer mon consentement (confidentialité)'
+	String get consentLink => 'Gérer mon consentement (confidentialité)';
+
+	/// fr: 'Partager mes résultats d'étape'
+	String get stageResults => 'Partager mes résultats d\'étape';
+
+	/// fr: 'Une carte pseudonyme (sans données personnelles directes).'
+	String get stageResultsDesc => 'Une carte pseudonyme (sans données personnelles directes).';
+
+	/// fr: 'Apparaître dans les classements'
+	String get leaderboard => 'Apparaître dans les classements';
+
+	/// fr: 'Classement par tranche, avec un pseudonyme.'
+	String get leaderboardDesc => 'Classement par tranche, avec un pseudonyme.';
+
+	/// fr: 'Publier au fil d'activité'
+	String get activityFeed => 'Publier au fil d\'activité';
+
+	/// fr: 'Tes activités apparaissent dans le fil, sous pseudonyme.'
+	String get activityFeedDesc => 'Tes activités apparaissent dans le fil, sous pseudonyme.';
+
+	/// fr: 'Partager cette étape'
+	String get shareTitle => 'Partager cette étape';
+
+	/// fr: 'Partager'
+	String get shareButton => 'Partager';
+
+	/// fr: 'Le partage est désactivé. Active-le dans Partage et visibilité.'
+	String get privateNotice => 'Le partage est désactivé. Active-le dans Partage et visibilité.';
+
+	/// fr: 'Carte prête à partager.'
+	String get shared => 'Carte prête à partager.';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2666,6 +2715,19 @@ extension on Translations {
 			'gamification.defi.pseudonymNotice' => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.',
 			'gamification.defi.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
 			'gamification.defi.noDefi' => 'Aucun défi en cours pour le moment.',
+			'shareVisibility.title' => 'Partage et visibilité',
+			'shareVisibility.intro' => 'Par défaut, rien n\'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.',
+			'shareVisibility.consentLink' => 'Gérer mon consentement (confidentialité)',
+			'shareVisibility.stageResults' => 'Partager mes résultats d\'étape',
+			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
+			'shareVisibility.leaderboard' => 'Apparaître dans les classements',
+			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
+			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
+			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
+			'shareVisibility.shareTitle' => 'Partager cette étape',
+			'shareVisibility.shareButton' => 'Partager',
+			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
+			'shareVisibility.shared' => 'Carte prête à partager.',
 			_ => null,
 		};
 	}

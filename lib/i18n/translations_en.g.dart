@@ -74,6 +74,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$leaderboard$en leaderboard = _Translations$leaderboard$en._(_root);
 	@override late final _Translations$social$en social = _Translations$social$en._(_root);
 	@override late final _Translations$gamification$en gamification = _Translations$gamification$en._(_root);
+	@override late final _Translations$shareVisibility$en shareVisibility = _Translations$shareVisibility$en._(_root);
 }
 
 // Path: a11y
@@ -749,6 +750,28 @@ class _Translations$gamification$en extends Translations$gamification$fr {
 	@override String get tierExpert => 'Expert';
 	@override late final _Translations$gamification$badge$en badge = _Translations$gamification$badge$en._(_root);
 	@override late final _Translations$gamification$defi$en defi = _Translations$gamification$defi$en._(_root);
+}
+
+// Path: shareVisibility
+class _Translations$shareVisibility$en extends Translations$shareVisibility$fr {
+	_Translations$shareVisibility$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Sharing and visibility';
+	@override String get intro => 'By default, nothing is shared. Turn on below, purpose by purpose, what you want to make visible.';
+	@override String get consentLink => 'Manage my consent (privacy)';
+	@override String get stageResults => 'Share my stage results';
+	@override String get stageResultsDesc => 'A pseudonymous card (no direct personal data).';
+	@override String get leaderboard => 'Appear in leaderboards';
+	@override String get leaderboardDesc => 'Ranking by group, using a pseudonym.';
+	@override String get activityFeed => 'Post to the activity feed';
+	@override String get activityFeedDesc => 'Your activities appear in the feed, under a pseudonym.';
+	@override String get shareTitle => 'Share this stage';
+	@override String get shareButton => 'Share';
+	@override String get privateNotice => 'Sharing is off. Turn it on in Sharing and visibility.';
+	@override String get shared => 'Card ready to share.';
 }
 
 // Path: stage.difficulty
@@ -1671,6 +1694,19 @@ extension on TranslationsEn {
 			'gamification.defi.pseudonymNotice' => 'Ranking by group, using pseudonyms. No direct personal data is shown.',
 			'gamification.defi.notEnoughParticipants' => 'Not enough participants to publish this ranking.',
 			'gamification.defi.noDefi' => 'No challenge in progress right now.',
+			'shareVisibility.title' => 'Sharing and visibility',
+			'shareVisibility.intro' => 'By default, nothing is shared. Turn on below, purpose by purpose, what you want to make visible.',
+			'shareVisibility.consentLink' => 'Manage my consent (privacy)',
+			'shareVisibility.stageResults' => 'Share my stage results',
+			'shareVisibility.stageResultsDesc' => 'A pseudonymous card (no direct personal data).',
+			'shareVisibility.leaderboard' => 'Appear in leaderboards',
+			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
+			'shareVisibility.activityFeed' => 'Post to the activity feed',
+			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
+			'shareVisibility.shareTitle' => 'Share this stage',
+			'shareVisibility.shareButton' => 'Share',
+			'shareVisibility.privateNotice' => 'Sharing is off. Turn it on in Sharing and visibility.',
+			'shareVisibility.shared' => 'Card ready to share.',
 			_ => null,
 		};
 	}
