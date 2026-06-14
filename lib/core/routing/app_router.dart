@@ -23,6 +23,7 @@ import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
 import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
+import '../../features/safety/presentation/signalement_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../config/feature_flags.dart';
 import '../engine/trail_engine.dart';
@@ -82,6 +83,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /goodies                     - Boutique goodies (gardee par FeatureFlags)
 ///   /booking                     - Reservation (stub, gardee par FeatureFlags)
 ///   /emergency                   - Contacts d'urgence
+///   /signalement                 - Signalement terrain (offline-first)
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
 ///   /settings                    - Parametres
 ///   /profile                     - Profil utilisateur
@@ -316,6 +318,12 @@ final appRouter = GoRouter(
       path: '/emergency',
       name: 'emergency',
       builder: (context, state) => const EmergencyScreen(),
+    ),
+    // F6C-03 : Signalement terrain type Waze (offline-first, latence assumee)
+    GoRoute(
+      path: '/signalement',
+      name: 'signalement',
+      builder: (context, state) => const SignalementScreen(),
     ),
     // E5.1a/b : ecran d'accueil affiche au tout premier lancement.
     GoRoute(

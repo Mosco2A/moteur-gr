@@ -487,5 +487,21 @@
     "featureNoAds": "Zéro publicité",
     "buyCta": "Débloquer ce trek",
     "buyCtaWithPrice": "Débloquer ce trek — $price €"
+  },
+  "signalement": {
+    "title": "Signaler",
+    "chooseType": "Que voulez-vous signaler ?",
+    "types": {
+      "obstacle": "Obstacle sur le sentier",
+      "eauASec": "Point d'eau à sec",
+      "danger": "Danger"
+    },
+    "latencyBanner": "Enregistré. Visible par les autres randonneurs après synchronisation réseau.",
+    "confirm": "Confirmer le signalement",
+    "noLocation": "Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.",
+    "savedTitle": "Signalement enregistré",
+    "savedPendingSync": "Il sera partagé dès le retour du réseau.",
+    "pendingCount": "$n en attente de synchronisation",
+    "close": "Fermer"
   }
 }

@@ -67,6 +67,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$it cloud = _Translations$cloud$it._(_root);
 	@override late final _Translations$onboarding$it onboarding = _Translations$onboarding$it._(_root);
 	@override late final _Translations$monetization$it monetization = _Translations$monetization$it._(_root);
+	@override late final _Translations$signalement$it signalement = _Translations$signalement$it._(_root);
 }
 
 // Path: a11y
@@ -616,6 +617,25 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Sblocca questo trek — ${price} €';
 }
 
+// Path: signalement
+class _Translations$signalement$it extends Translations$signalement$fr {
+	_Translations$signalement$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Segnala';
+	@override String get chooseType => 'Cosa vuoi segnalare?';
+	@override late final _Translations$signalement$types$it types = _Translations$signalement$types$it._(_root);
+	@override String get latencyBanner => 'Salvato. Visibile agli altri escursionisti dopo la sincronizzazione di rete.';
+	@override String get confirm => 'Conferma segnalazione';
+	@override String get noLocation => 'Posizione GPS non disponibile al momento. Riprova sotto cielo aperto.';
+	@override String get savedTitle => 'Segnalazione salvata';
+	@override String get savedPendingSync => 'Sarà condivisa appena la rete sarà disponibile.';
+	@override String pendingCount({required Object n}) => '${n} in attesa di sincronizzazione';
+	@override String get close => 'Chiudi';
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -792,6 +812,18 @@ class _Translations$feasibility$recommendations$it extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$it caution = _Translations$feasibility$recommendations$caution$it._(_root);
 	@override late final _Translations$feasibility$recommendations$good$it good = _Translations$feasibility$recommendations$good$it._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$it excellent = _Translations$feasibility$recommendations$excellent$it._(_root);
+}
+
+// Path: signalement.types
+class _Translations$signalement$types$it extends Translations$signalement$types$fr {
+	_Translations$signalement$types$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get obstacle => 'Ostacolo sul sentiero';
+	@override String get eauASec => 'Punto d\'acqua a secco';
+	@override String get danger => 'Pericolo';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1329,18 @@ extension on TranslationsIt {
 			'monetization.featureNoAds' => 'Zero pubblicità',
 			'monetization.buyCta' => 'Sblocca questo trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
+			'signalement.title' => 'Segnala',
+			'signalement.chooseType' => 'Cosa vuoi segnalare?',
+			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
+			'signalement.types.eauASec' => 'Punto d\'acqua a secco',
+			'signalement.types.danger' => 'Pericolo',
+			'signalement.latencyBanner' => 'Salvato. Visibile agli altri escursionisti dopo la sincronizzazione di rete.',
+			'signalement.confirm' => 'Conferma segnalazione',
+			'signalement.noLocation' => 'Posizione GPS non disponibile al momento. Riprova sotto cielo aperto.',
+			'signalement.savedTitle' => 'Segnalazione salvata',
+			'signalement.savedPendingSync' => 'Sarà condivisa appena la rete sarà disponibile.',
+			'signalement.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
+			'signalement.close' => 'Chiudi',
 			_ => null,
 		};
 	}

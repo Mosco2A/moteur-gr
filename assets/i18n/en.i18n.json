@@ -487,5 +487,21 @@
     "featureNoAds": "Zero ads",
     "buyCta": "Unlock this trek",
     "buyCtaWithPrice": "Unlock this trek — €$price"
+  },
+  "signalement": {
+    "title": "Report",
+    "chooseType": "What do you want to report?",
+    "types": {
+      "obstacle": "Obstacle on the trail",
+      "eauASec": "Dry water point",
+      "danger": "Danger"
+    },
+    "latencyBanner": "Saved. Visible to other hikers once the network syncs.",
+    "confirm": "Confirm report",
+    "noLocation": "GPS position unavailable right now. Try again under open sky.",
+    "savedTitle": "Report saved",
+    "savedPendingSync": "It will be shared as soon as the network is back.",
+    "pendingCount": "$n awaiting sync",
+    "close": "Close"
   }
 }

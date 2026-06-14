@@ -487,5 +487,21 @@
     "featureNoAds": "Keine Werbung",
     "buyCta": "Diesen Trek freischalten",
     "buyCtaWithPrice": "Diesen Trek freischalten — $price €"
+  },
+  "signalement": {
+    "title": "Melden",
+    "chooseType": "Was möchten Sie melden?",
+    "types": {
+      "obstacle": "Hindernis auf dem Weg",
+      "eauASec": "Trockene Wasserstelle",
+      "danger": "Gefahr"
+    },
+    "latencyBanner": "Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.",
+    "confirm": "Meldung bestätigen",
+    "noLocation": "GPS-Position derzeit nicht verfügbar. Versuchen Sie es unter freiem Himmel erneut.",
+    "savedTitle": "Meldung gespeichert",
+    "savedPendingSync": "Sie wird geteilt, sobald das Netzwerk wieder da ist.",
+    "pendingCount": "$n warten auf Synchronisierung",
+    "close": "Schließen"
   }
 }
