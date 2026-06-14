@@ -12110,6 +12110,1911 @@ class ReportLocalCompanion extends UpdateCompanion<ReportLocalData> {
   }
 }
 
+class $SegmentsTable extends Segments with TableInfo<$SegmentsTable, Segment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SegmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nomMeta = const VerificationMeta('nom');
+  @override
+  late final GeneratedColumn<String> nom = GeneratedColumn<String>(
+    'nom',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _polylineGpxRefMeta = const VerificationMeta(
+    'polylineGpxRef',
+  );
+  @override
+  late final GeneratedColumn<String> polylineGpxRef = GeneratedColumn<String>(
+    'polyline_gpx_ref',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _distanceMMeta = const VerificationMeta(
+    'distanceM',
+  );
+  @override
+  late final GeneratedColumn<double> distanceM = GeneratedColumn<double>(
+    'distance_m',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deniveleMMeta = const VerificationMeta(
+    'deniveleM',
+  );
+  @override
+  late final GeneratedColumn<double> deniveleM = GeneratedColumn<double>(
+    'denivele_m',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    nom,
+    polylineGpxRef,
+    distanceM,
+    deniveleM,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'segments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Segment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('nom')) {
+      context.handle(
+        _nomMeta,
+        nom.isAcceptableOrUnknown(data['nom']!, _nomMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nomMeta);
+    }
+    if (data.containsKey('polyline_gpx_ref')) {
+      context.handle(
+        _polylineGpxRefMeta,
+        polylineGpxRef.isAcceptableOrUnknown(
+          data['polyline_gpx_ref']!,
+          _polylineGpxRefMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_polylineGpxRefMeta);
+    }
+    if (data.containsKey('distance_m')) {
+      context.handle(
+        _distanceMMeta,
+        distanceM.isAcceptableOrUnknown(data['distance_m']!, _distanceMMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_distanceMMeta);
+    }
+    if (data.containsKey('denivele_m')) {
+      context.handle(
+        _deniveleMMeta,
+        deniveleM.isAcceptableOrUnknown(data['denivele_m']!, _deniveleMMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_deniveleMMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Segment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Segment(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      nom: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nom'],
+      )!,
+      polylineGpxRef: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}polyline_gpx_ref'],
+      )!,
+      distanceM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}distance_m'],
+      )!,
+      deniveleM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}denivele_m'],
+      )!,
+    );
+  }
+
+  @override
+  $SegmentsTable createAlias(String alias) {
+    return $SegmentsTable(attachedDatabase, alias);
+  }
+}
+
+class Segment extends DataClass implements Insertable<Segment> {
+  /// Identifiant unique du segment (fourni serveur, stable).
+  final String id;
+
+  /// Identifiant du sentier auquel appartient le segment.
+  final String trailId;
+
+  /// Nom lisible du segment (libelle, i18n cote presentation).
+  final String nom;
+
+  /// Reference vers la polyline GPX de definition du segment.
+  /// Encodee en JSON (liste de {lat,lng}) ou cle de track GPX selon la source.
+  final String polylineGpxRef;
+
+  /// Distance du segment en metres.
+  final double distanceM;
+
+  /// Denivele positif du segment en metres.
+  final double deniveleM;
+  const Segment({
+    required this.id,
+    required this.trailId,
+    required this.nom,
+    required this.polylineGpxRef,
+    required this.distanceM,
+    required this.deniveleM,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['nom'] = Variable<String>(nom);
+    map['polyline_gpx_ref'] = Variable<String>(polylineGpxRef);
+    map['distance_m'] = Variable<double>(distanceM);
+    map['denivele_m'] = Variable<double>(deniveleM);
+    return map;
+  }
+
+  SegmentsCompanion toCompanion(bool nullToAbsent) {
+    return SegmentsCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      nom: Value(nom),
+      polylineGpxRef: Value(polylineGpxRef),
+      distanceM: Value(distanceM),
+      deniveleM: Value(deniveleM),
+    );
+  }
+
+  factory Segment.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Segment(
+      id: serializer.fromJson<String>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      nom: serializer.fromJson<String>(json['nom']),
+      polylineGpxRef: serializer.fromJson<String>(json['polylineGpxRef']),
+      distanceM: serializer.fromJson<double>(json['distanceM']),
+      deniveleM: serializer.fromJson<double>(json['deniveleM']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'nom': serializer.toJson<String>(nom),
+      'polylineGpxRef': serializer.toJson<String>(polylineGpxRef),
+      'distanceM': serializer.toJson<double>(distanceM),
+      'deniveleM': serializer.toJson<double>(deniveleM),
+    };
+  }
+
+  Segment copyWith({
+    String? id,
+    String? trailId,
+    String? nom,
+    String? polylineGpxRef,
+    double? distanceM,
+    double? deniveleM,
+  }) => Segment(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    nom: nom ?? this.nom,
+    polylineGpxRef: polylineGpxRef ?? this.polylineGpxRef,
+    distanceM: distanceM ?? this.distanceM,
+    deniveleM: deniveleM ?? this.deniveleM,
+  );
+  Segment copyWithCompanion(SegmentsCompanion data) {
+    return Segment(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      nom: data.nom.present ? data.nom.value : this.nom,
+      polylineGpxRef: data.polylineGpxRef.present
+          ? data.polylineGpxRef.value
+          : this.polylineGpxRef,
+      distanceM: data.distanceM.present ? data.distanceM.value : this.distanceM,
+      deniveleM: data.deniveleM.present ? data.deniveleM.value : this.deniveleM,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Segment(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('nom: $nom, ')
+          ..write('polylineGpxRef: $polylineGpxRef, ')
+          ..write('distanceM: $distanceM, ')
+          ..write('deniveleM: $deniveleM')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, trailId, nom, polylineGpxRef, distanceM, deniveleM);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Segment &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.nom == this.nom &&
+          other.polylineGpxRef == this.polylineGpxRef &&
+          other.distanceM == this.distanceM &&
+          other.deniveleM == this.deniveleM);
+}
+
+class SegmentsCompanion extends UpdateCompanion<Segment> {
+  final Value<String> id;
+  final Value<String> trailId;
+  final Value<String> nom;
+  final Value<String> polylineGpxRef;
+  final Value<double> distanceM;
+  final Value<double> deniveleM;
+  final Value<int> rowid;
+  const SegmentsCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.nom = const Value.absent(),
+    this.polylineGpxRef = const Value.absent(),
+    this.distanceM = const Value.absent(),
+    this.deniveleM = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SegmentsCompanion.insert({
+    required String id,
+    required String trailId,
+    required String nom,
+    required String polylineGpxRef,
+    required double distanceM,
+    required double deniveleM,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       trailId = Value(trailId),
+       nom = Value(nom),
+       polylineGpxRef = Value(polylineGpxRef),
+       distanceM = Value(distanceM),
+       deniveleM = Value(deniveleM);
+  static Insertable<Segment> custom({
+    Expression<String>? id,
+    Expression<String>? trailId,
+    Expression<String>? nom,
+    Expression<String>? polylineGpxRef,
+    Expression<double>? distanceM,
+    Expression<double>? deniveleM,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (nom != null) 'nom': nom,
+      if (polylineGpxRef != null) 'polyline_gpx_ref': polylineGpxRef,
+      if (distanceM != null) 'distance_m': distanceM,
+      if (deniveleM != null) 'denivele_m': deniveleM,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SegmentsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? trailId,
+    Value<String>? nom,
+    Value<String>? polylineGpxRef,
+    Value<double>? distanceM,
+    Value<double>? deniveleM,
+    Value<int>? rowid,
+  }) {
+    return SegmentsCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      nom: nom ?? this.nom,
+      polylineGpxRef: polylineGpxRef ?? this.polylineGpxRef,
+      distanceM: distanceM ?? this.distanceM,
+      deniveleM: deniveleM ?? this.deniveleM,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (nom.present) {
+      map['nom'] = Variable<String>(nom.value);
+    }
+    if (polylineGpxRef.present) {
+      map['polyline_gpx_ref'] = Variable<String>(polylineGpxRef.value);
+    }
+    if (distanceM.present) {
+      map['distance_m'] = Variable<double>(distanceM.value);
+    }
+    if (deniveleM.present) {
+      map['denivele_m'] = Variable<double>(deniveleM.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SegmentsCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('nom: $nom, ')
+          ..write('polylineGpxRef: $polylineGpxRef, ')
+          ..write('distanceM: $distanceM, ')
+          ..write('deniveleM: $deniveleM, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SegmentEffortLocalTable extends SegmentEffortLocal
+    with TableInfo<$SegmentEffortLocalTable, SegmentEffortLocalData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SegmentEffortLocalTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _segmentIdMeta = const VerificationMeta(
+    'segmentId',
+  );
+  @override
+  late final GeneratedColumn<String> segmentId = GeneratedColumn<String>(
+    'segment_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userUidHashMeta = const VerificationMeta(
+    'userUidHash',
+  );
+  @override
+  late final GeneratedColumn<String> userUidHash = GeneratedColumn<String>(
+    'user_uid_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _durationSecondsMeta = const VerificationMeta(
+    'durationSeconds',
+  );
+  @override
+  late final GeneratedColumn<int> durationSeconds = GeneratedColumn<int>(
+    'duration_seconds',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncStateMeta = const VerificationMeta(
+    'syncState',
+  );
+  @override
+  late final GeneratedColumn<String> syncState = GeneratedColumn<String>(
+    'sync_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _remoteIdMeta = const VerificationMeta(
+    'remoteId',
+  );
+  @override
+  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
+    'remote_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    segmentId,
+    userUidHash,
+    durationSeconds,
+    startedAt,
+    syncState,
+    remoteId,
+    attempts,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'segment_effort_local';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SegmentEffortLocalData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('segment_id')) {
+      context.handle(
+        _segmentIdMeta,
+        segmentId.isAcceptableOrUnknown(data['segment_id']!, _segmentIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_segmentIdMeta);
+    }
+    if (data.containsKey('user_uid_hash')) {
+      context.handle(
+        _userUidHashMeta,
+        userUidHash.isAcceptableOrUnknown(
+          data['user_uid_hash']!,
+          _userUidHashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_userUidHashMeta);
+    }
+    if (data.containsKey('duration_seconds')) {
+      context.handle(
+        _durationSecondsMeta,
+        durationSeconds.isAcceptableOrUnknown(
+          data['duration_seconds']!,
+          _durationSecondsMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_durationSecondsMeta);
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtMeta);
+    }
+    if (data.containsKey('sync_state')) {
+      context.handle(
+        _syncStateMeta,
+        syncState.isAcceptableOrUnknown(data['sync_state']!, _syncStateMeta),
+      );
+    }
+    if (data.containsKey('remote_id')) {
+      context.handle(
+        _remoteIdMeta,
+        remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta),
+      );
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SegmentEffortLocalData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SegmentEffortLocalData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      segmentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}segment_id'],
+      )!,
+      userUidHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_uid_hash'],
+      )!,
+      durationSeconds: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}duration_seconds'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      )!,
+      syncState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_state'],
+      )!,
+      remoteId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remote_id'],
+      ),
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $SegmentEffortLocalTable createAlias(String alias) {
+    return $SegmentEffortLocalTable(attachedDatabase, alias);
+  }
+}
+
+class SegmentEffortLocalData extends DataClass
+    implements Insertable<SegmentEffortLocalData> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Identifiant du segment concerne (FK logique vers Segments.id).
+  final String segmentId;
+
+  /// UID HACHE de l'auteur de l'effort (SHA-256, jamais de PII #85383).
+  final String userUidHash;
+
+  /// Duree de l'effort en secondes (calcul local pour affichage).
+  final int durationSeconds;
+
+  /// Horodatage de debut de l'effort (UTC).
+  final DateTime startedAt;
+
+  /// Etat de synchronisation ('pending', 'synced', 'failed').
+  final String syncState;
+
+  /// Identifiant Firestore distant une fois synchronise (nullable).
+  final String? remoteId;
+
+  /// Nombre de tentatives de synchronisation echouees.
+  final int attempts;
+
+  /// Derniere erreur de synchronisation (nullable).
+  final String? lastError;
+  const SegmentEffortLocalData({
+    required this.id,
+    required this.segmentId,
+    required this.userUidHash,
+    required this.durationSeconds,
+    required this.startedAt,
+    required this.syncState,
+    this.remoteId,
+    required this.attempts,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['segment_id'] = Variable<String>(segmentId);
+    map['user_uid_hash'] = Variable<String>(userUidHash);
+    map['duration_seconds'] = Variable<int>(durationSeconds);
+    map['started_at'] = Variable<DateTime>(startedAt);
+    map['sync_state'] = Variable<String>(syncState);
+    if (!nullToAbsent || remoteId != null) {
+      map['remote_id'] = Variable<String>(remoteId);
+    }
+    map['attempts'] = Variable<int>(attempts);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  SegmentEffortLocalCompanion toCompanion(bool nullToAbsent) {
+    return SegmentEffortLocalCompanion(
+      id: Value(id),
+      segmentId: Value(segmentId),
+      userUidHash: Value(userUidHash),
+      durationSeconds: Value(durationSeconds),
+      startedAt: Value(startedAt),
+      syncState: Value(syncState),
+      remoteId: remoteId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remoteId),
+      attempts: Value(attempts),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory SegmentEffortLocalData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SegmentEffortLocalData(
+      id: serializer.fromJson<int>(json['id']),
+      segmentId: serializer.fromJson<String>(json['segmentId']),
+      userUidHash: serializer.fromJson<String>(json['userUidHash']),
+      durationSeconds: serializer.fromJson<int>(json['durationSeconds']),
+      startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      syncState: serializer.fromJson<String>(json['syncState']),
+      remoteId: serializer.fromJson<String?>(json['remoteId']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'segmentId': serializer.toJson<String>(segmentId),
+      'userUidHash': serializer.toJson<String>(userUidHash),
+      'durationSeconds': serializer.toJson<int>(durationSeconds),
+      'startedAt': serializer.toJson<DateTime>(startedAt),
+      'syncState': serializer.toJson<String>(syncState),
+      'remoteId': serializer.toJson<String?>(remoteId),
+      'attempts': serializer.toJson<int>(attempts),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  SegmentEffortLocalData copyWith({
+    int? id,
+    String? segmentId,
+    String? userUidHash,
+    int? durationSeconds,
+    DateTime? startedAt,
+    String? syncState,
+    Value<String?> remoteId = const Value.absent(),
+    int? attempts,
+    Value<String?> lastError = const Value.absent(),
+  }) => SegmentEffortLocalData(
+    id: id ?? this.id,
+    segmentId: segmentId ?? this.segmentId,
+    userUidHash: userUidHash ?? this.userUidHash,
+    durationSeconds: durationSeconds ?? this.durationSeconds,
+    startedAt: startedAt ?? this.startedAt,
+    syncState: syncState ?? this.syncState,
+    remoteId: remoteId.present ? remoteId.value : this.remoteId,
+    attempts: attempts ?? this.attempts,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  SegmentEffortLocalData copyWithCompanion(SegmentEffortLocalCompanion data) {
+    return SegmentEffortLocalData(
+      id: data.id.present ? data.id.value : this.id,
+      segmentId: data.segmentId.present ? data.segmentId.value : this.segmentId,
+      userUidHash: data.userUidHash.present
+          ? data.userUidHash.value
+          : this.userUidHash,
+      durationSeconds: data.durationSeconds.present
+          ? data.durationSeconds.value
+          : this.durationSeconds,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      syncState: data.syncState.present ? data.syncState.value : this.syncState,
+      remoteId: data.remoteId.present ? data.remoteId.value : this.remoteId,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SegmentEffortLocalData(')
+          ..write('id: $id, ')
+          ..write('segmentId: $segmentId, ')
+          ..write('userUidHash: $userUidHash, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('syncState: $syncState, ')
+          ..write('remoteId: $remoteId, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    segmentId,
+    userUidHash,
+    durationSeconds,
+    startedAt,
+    syncState,
+    remoteId,
+    attempts,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SegmentEffortLocalData &&
+          other.id == this.id &&
+          other.segmentId == this.segmentId &&
+          other.userUidHash == this.userUidHash &&
+          other.durationSeconds == this.durationSeconds &&
+          other.startedAt == this.startedAt &&
+          other.syncState == this.syncState &&
+          other.remoteId == this.remoteId &&
+          other.attempts == this.attempts &&
+          other.lastError == this.lastError);
+}
+
+class SegmentEffortLocalCompanion
+    extends UpdateCompanion<SegmentEffortLocalData> {
+  final Value<int> id;
+  final Value<String> segmentId;
+  final Value<String> userUidHash;
+  final Value<int> durationSeconds;
+  final Value<DateTime> startedAt;
+  final Value<String> syncState;
+  final Value<String?> remoteId;
+  final Value<int> attempts;
+  final Value<String?> lastError;
+  const SegmentEffortLocalCompanion({
+    this.id = const Value.absent(),
+    this.segmentId = const Value.absent(),
+    this.userUidHash = const Value.absent(),
+    this.durationSeconds = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.syncState = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  SegmentEffortLocalCompanion.insert({
+    this.id = const Value.absent(),
+    required String segmentId,
+    required String userUidHash,
+    required int durationSeconds,
+    required DateTime startedAt,
+    this.syncState = const Value.absent(),
+    this.remoteId = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  }) : segmentId = Value(segmentId),
+       userUidHash = Value(userUidHash),
+       durationSeconds = Value(durationSeconds),
+       startedAt = Value(startedAt);
+  static Insertable<SegmentEffortLocalData> custom({
+    Expression<int>? id,
+    Expression<String>? segmentId,
+    Expression<String>? userUidHash,
+    Expression<int>? durationSeconds,
+    Expression<DateTime>? startedAt,
+    Expression<String>? syncState,
+    Expression<String>? remoteId,
+    Expression<int>? attempts,
+    Expression<String>? lastError,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (segmentId != null) 'segment_id': segmentId,
+      if (userUidHash != null) 'user_uid_hash': userUidHash,
+      if (durationSeconds != null) 'duration_seconds': durationSeconds,
+      if (startedAt != null) 'started_at': startedAt,
+      if (syncState != null) 'sync_state': syncState,
+      if (remoteId != null) 'remote_id': remoteId,
+      if (attempts != null) 'attempts': attempts,
+      if (lastError != null) 'last_error': lastError,
+    });
+  }
+
+  SegmentEffortLocalCompanion copyWith({
+    Value<int>? id,
+    Value<String>? segmentId,
+    Value<String>? userUidHash,
+    Value<int>? durationSeconds,
+    Value<DateTime>? startedAt,
+    Value<String>? syncState,
+    Value<String?>? remoteId,
+    Value<int>? attempts,
+    Value<String?>? lastError,
+  }) {
+    return SegmentEffortLocalCompanion(
+      id: id ?? this.id,
+      segmentId: segmentId ?? this.segmentId,
+      userUidHash: userUidHash ?? this.userUidHash,
+      durationSeconds: durationSeconds ?? this.durationSeconds,
+      startedAt: startedAt ?? this.startedAt,
+      syncState: syncState ?? this.syncState,
+      remoteId: remoteId ?? this.remoteId,
+      attempts: attempts ?? this.attempts,
+      lastError: lastError ?? this.lastError,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (segmentId.present) {
+      map['segment_id'] = Variable<String>(segmentId.value);
+    }
+    if (userUidHash.present) {
+      map['user_uid_hash'] = Variable<String>(userUidHash.value);
+    }
+    if (durationSeconds.present) {
+      map['duration_seconds'] = Variable<int>(durationSeconds.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (syncState.present) {
+      map['sync_state'] = Variable<String>(syncState.value);
+    }
+    if (remoteId.present) {
+      map['remote_id'] = Variable<String>(remoteId.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SegmentEffortLocalCompanion(')
+          ..write('id: $id, ')
+          ..write('segmentId: $segmentId, ')
+          ..write('userUidHash: $userUidHash, ')
+          ..write('durationSeconds: $durationSeconds, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('syncState: $syncState, ')
+          ..write('remoteId: $remoteId, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $KudosLocalTable extends KudosLocal
+    with TableInfo<$KudosLocalTable, KudosLocalData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KudosLocalTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _targetActivityIdMeta = const VerificationMeta(
+    'targetActivityId',
+  );
+  @override
+  late final GeneratedColumn<String> targetActivityId = GeneratedColumn<String>(
+    'target_activity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fromUidHashMeta = const VerificationMeta(
+    'fromUidHash',
+  );
+  @override
+  late final GeneratedColumn<String> fromUidHash = GeneratedColumn<String>(
+    'from_uid_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncStateMeta = const VerificationMeta(
+    'syncState',
+  );
+  @override
+  late final GeneratedColumn<String> syncState = GeneratedColumn<String>(
+    'sync_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    targetActivityId,
+    fromUidHash,
+    createdAt,
+    syncState,
+    attempts,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kudos_local';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KudosLocalData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('target_activity_id')) {
+      context.handle(
+        _targetActivityIdMeta,
+        targetActivityId.isAcceptableOrUnknown(
+          data['target_activity_id']!,
+          _targetActivityIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetActivityIdMeta);
+    }
+    if (data.containsKey('from_uid_hash')) {
+      context.handle(
+        _fromUidHashMeta,
+        fromUidHash.isAcceptableOrUnknown(
+          data['from_uid_hash']!,
+          _fromUidHashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fromUidHashMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('sync_state')) {
+      context.handle(
+        _syncStateMeta,
+        syncState.isAcceptableOrUnknown(data['sync_state']!, _syncStateMeta),
+      );
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KudosLocalData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KudosLocalData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      targetActivityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_activity_id'],
+      )!,
+      fromUidHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}from_uid_hash'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_state'],
+      )!,
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $KudosLocalTable createAlias(String alias) {
+    return $KudosLocalTable(attachedDatabase, alias);
+  }
+}
+
+class KudosLocalData extends DataClass implements Insertable<KudosLocalData> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Identifiant de l'activite ciblee par le kudo.
+  final String targetActivityId;
+
+  /// UID HACHE de l'auteur du kudo (jamais de PII #85383).
+  final String fromUidHash;
+
+  /// Date de creation locale (UTC).
+  final DateTime createdAt;
+
+  /// Etat de synchronisation ('pending', 'synced', 'failed').
+  final String syncState;
+
+  /// Nombre de tentatives de synchronisation echouees.
+  final int attempts;
+
+  /// Derniere erreur de synchronisation (nullable).
+  final String? lastError;
+  const KudosLocalData({
+    required this.id,
+    required this.targetActivityId,
+    required this.fromUidHash,
+    required this.createdAt,
+    required this.syncState,
+    required this.attempts,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['target_activity_id'] = Variable<String>(targetActivityId);
+    map['from_uid_hash'] = Variable<String>(fromUidHash);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['sync_state'] = Variable<String>(syncState);
+    map['attempts'] = Variable<int>(attempts);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  KudosLocalCompanion toCompanion(bool nullToAbsent) {
+    return KudosLocalCompanion(
+      id: Value(id),
+      targetActivityId: Value(targetActivityId),
+      fromUidHash: Value(fromUidHash),
+      createdAt: Value(createdAt),
+      syncState: Value(syncState),
+      attempts: Value(attempts),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory KudosLocalData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KudosLocalData(
+      id: serializer.fromJson<int>(json['id']),
+      targetActivityId: serializer.fromJson<String>(json['targetActivityId']),
+      fromUidHash: serializer.fromJson<String>(json['fromUidHash']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncState: serializer.fromJson<String>(json['syncState']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'targetActivityId': serializer.toJson<String>(targetActivityId),
+      'fromUidHash': serializer.toJson<String>(fromUidHash),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncState': serializer.toJson<String>(syncState),
+      'attempts': serializer.toJson<int>(attempts),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  KudosLocalData copyWith({
+    int? id,
+    String? targetActivityId,
+    String? fromUidHash,
+    DateTime? createdAt,
+    String? syncState,
+    int? attempts,
+    Value<String?> lastError = const Value.absent(),
+  }) => KudosLocalData(
+    id: id ?? this.id,
+    targetActivityId: targetActivityId ?? this.targetActivityId,
+    fromUidHash: fromUidHash ?? this.fromUidHash,
+    createdAt: createdAt ?? this.createdAt,
+    syncState: syncState ?? this.syncState,
+    attempts: attempts ?? this.attempts,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  KudosLocalData copyWithCompanion(KudosLocalCompanion data) {
+    return KudosLocalData(
+      id: data.id.present ? data.id.value : this.id,
+      targetActivityId: data.targetActivityId.present
+          ? data.targetActivityId.value
+          : this.targetActivityId,
+      fromUidHash: data.fromUidHash.present
+          ? data.fromUidHash.value
+          : this.fromUidHash,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncState: data.syncState.present ? data.syncState.value : this.syncState,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KudosLocalData(')
+          ..write('id: $id, ')
+          ..write('targetActivityId: $targetActivityId, ')
+          ..write('fromUidHash: $fromUidHash, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncState: $syncState, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    targetActivityId,
+    fromUidHash,
+    createdAt,
+    syncState,
+    attempts,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KudosLocalData &&
+          other.id == this.id &&
+          other.targetActivityId == this.targetActivityId &&
+          other.fromUidHash == this.fromUidHash &&
+          other.createdAt == this.createdAt &&
+          other.syncState == this.syncState &&
+          other.attempts == this.attempts &&
+          other.lastError == this.lastError);
+}
+
+class KudosLocalCompanion extends UpdateCompanion<KudosLocalData> {
+  final Value<int> id;
+  final Value<String> targetActivityId;
+  final Value<String> fromUidHash;
+  final Value<DateTime> createdAt;
+  final Value<String> syncState;
+  final Value<int> attempts;
+  final Value<String?> lastError;
+  const KudosLocalCompanion({
+    this.id = const Value.absent(),
+    this.targetActivityId = const Value.absent(),
+    this.fromUidHash = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncState = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  KudosLocalCompanion.insert({
+    this.id = const Value.absent(),
+    required String targetActivityId,
+    required String fromUidHash,
+    required DateTime createdAt,
+    this.syncState = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  }) : targetActivityId = Value(targetActivityId),
+       fromUidHash = Value(fromUidHash),
+       createdAt = Value(createdAt);
+  static Insertable<KudosLocalData> custom({
+    Expression<int>? id,
+    Expression<String>? targetActivityId,
+    Expression<String>? fromUidHash,
+    Expression<DateTime>? createdAt,
+    Expression<String>? syncState,
+    Expression<int>? attempts,
+    Expression<String>? lastError,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (targetActivityId != null) 'target_activity_id': targetActivityId,
+      if (fromUidHash != null) 'from_uid_hash': fromUidHash,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncState != null) 'sync_state': syncState,
+      if (attempts != null) 'attempts': attempts,
+      if (lastError != null) 'last_error': lastError,
+    });
+  }
+
+  KudosLocalCompanion copyWith({
+    Value<int>? id,
+    Value<String>? targetActivityId,
+    Value<String>? fromUidHash,
+    Value<DateTime>? createdAt,
+    Value<String>? syncState,
+    Value<int>? attempts,
+    Value<String?>? lastError,
+  }) {
+    return KudosLocalCompanion(
+      id: id ?? this.id,
+      targetActivityId: targetActivityId ?? this.targetActivityId,
+      fromUidHash: fromUidHash ?? this.fromUidHash,
+      createdAt: createdAt ?? this.createdAt,
+      syncState: syncState ?? this.syncState,
+      attempts: attempts ?? this.attempts,
+      lastError: lastError ?? this.lastError,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (targetActivityId.present) {
+      map['target_activity_id'] = Variable<String>(targetActivityId.value);
+    }
+    if (fromUidHash.present) {
+      map['from_uid_hash'] = Variable<String>(fromUidHash.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncState.present) {
+      map['sync_state'] = Variable<String>(syncState.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KudosLocalCompanion(')
+          ..write('id: $id, ')
+          ..write('targetActivityId: $targetActivityId, ')
+          ..write('fromUidHash: $fromUidHash, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncState: $syncState, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ActivityFeedCacheTable extends ActivityFeedCache
+    with TableInfo<$ActivityFeedCacheTable, ActivityFeedCacheData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ActivityFeedCacheTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorUidHashMeta = const VerificationMeta(
+    'authorUidHash',
+  );
+  @override
+  late final GeneratedColumn<String> authorUidHash = GeneratedColumn<String>(
+    'author_uid_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _moderationStateMeta = const VerificationMeta(
+    'moderationState',
+  );
+  @override
+  late final GeneratedColumn<String> moderationState = GeneratedColumn<String>(
+    'moderation_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('visible'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    authorUidHash,
+    payload,
+    createdAt,
+    moderationState,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'activity_feed_cache';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ActivityFeedCacheData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('author_uid_hash')) {
+      context.handle(
+        _authorUidHashMeta,
+        authorUidHash.isAcceptableOrUnknown(
+          data['author_uid_hash']!,
+          _authorUidHashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_authorUidHashMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('moderation_state')) {
+      context.handle(
+        _moderationStateMeta,
+        moderationState.isAcceptableOrUnknown(
+          data['moderation_state']!,
+          _moderationStateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ActivityFeedCacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ActivityFeedCacheData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      authorUidHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_uid_hash'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      moderationState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}moderation_state'],
+      )!,
+    );
+  }
+
+  @override
+  $ActivityFeedCacheTable createAlias(String alias) {
+    return $ActivityFeedCacheTable(attachedDatabase, alias);
+  }
+}
+
+class ActivityFeedCacheData extends DataClass
+    implements Insertable<ActivityFeedCacheData> {
+  /// Identifiant de l'activite (fourni serveur, stable).
+  final String id;
+
+  /// Type d'activite ('segment_effort', 'badge', 'defi', ...).
+  final String type;
+
+  /// UID HACHE de l'auteur de l'activite (jamais de PII #85383).
+  final String authorUidHash;
+
+  /// Charge utile JSON de l'activite (details d'affichage).
+  final String? payload;
+
+  /// Date de creation de l'activite (UTC).
+  final DateTime createdAt;
+
+  /// Etat de moderation ('visible', 'flagged', 'removed'). Defaut 'visible'.
+  final String moderationState;
+  const ActivityFeedCacheData({
+    required this.id,
+    required this.type,
+    required this.authorUidHash,
+    this.payload,
+    required this.createdAt,
+    required this.moderationState,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['type'] = Variable<String>(type);
+    map['author_uid_hash'] = Variable<String>(authorUidHash);
+    if (!nullToAbsent || payload != null) {
+      map['payload'] = Variable<String>(payload);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['moderation_state'] = Variable<String>(moderationState);
+    return map;
+  }
+
+  ActivityFeedCacheCompanion toCompanion(bool nullToAbsent) {
+    return ActivityFeedCacheCompanion(
+      id: Value(id),
+      type: Value(type),
+      authorUidHash: Value(authorUidHash),
+      payload: payload == null && nullToAbsent
+          ? const Value.absent()
+          : Value(payload),
+      createdAt: Value(createdAt),
+      moderationState: Value(moderationState),
+    );
+  }
+
+  factory ActivityFeedCacheData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ActivityFeedCacheData(
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      authorUidHash: serializer.fromJson<String>(json['authorUidHash']),
+      payload: serializer.fromJson<String?>(json['payload']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      moderationState: serializer.fromJson<String>(json['moderationState']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'authorUidHash': serializer.toJson<String>(authorUidHash),
+      'payload': serializer.toJson<String?>(payload),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'moderationState': serializer.toJson<String>(moderationState),
+    };
+  }
+
+  ActivityFeedCacheData copyWith({
+    String? id,
+    String? type,
+    String? authorUidHash,
+    Value<String?> payload = const Value.absent(),
+    DateTime? createdAt,
+    String? moderationState,
+  }) => ActivityFeedCacheData(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    authorUidHash: authorUidHash ?? this.authorUidHash,
+    payload: payload.present ? payload.value : this.payload,
+    createdAt: createdAt ?? this.createdAt,
+    moderationState: moderationState ?? this.moderationState,
+  );
+  ActivityFeedCacheData copyWithCompanion(ActivityFeedCacheCompanion data) {
+    return ActivityFeedCacheData(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      authorUidHash: data.authorUidHash.present
+          ? data.authorUidHash.value
+          : this.authorUidHash,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      moderationState: data.moderationState.present
+          ? data.moderationState.value
+          : this.moderationState,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActivityFeedCacheData(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('authorUidHash: $authorUidHash, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('moderationState: $moderationState')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, type, authorUidHash, payload, createdAt, moderationState);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ActivityFeedCacheData &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.authorUidHash == this.authorUidHash &&
+          other.payload == this.payload &&
+          other.createdAt == this.createdAt &&
+          other.moderationState == this.moderationState);
+}
+
+class ActivityFeedCacheCompanion
+    extends UpdateCompanion<ActivityFeedCacheData> {
+  final Value<String> id;
+  final Value<String> type;
+  final Value<String> authorUidHash;
+  final Value<String?> payload;
+  final Value<DateTime> createdAt;
+  final Value<String> moderationState;
+  final Value<int> rowid;
+  const ActivityFeedCacheCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.authorUidHash = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.moderationState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ActivityFeedCacheCompanion.insert({
+    required String id,
+    required String type,
+    required String authorUidHash,
+    this.payload = const Value.absent(),
+    required DateTime createdAt,
+    this.moderationState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       type = Value(type),
+       authorUidHash = Value(authorUidHash),
+       createdAt = Value(createdAt);
+  static Insertable<ActivityFeedCacheData> custom({
+    Expression<String>? id,
+    Expression<String>? type,
+    Expression<String>? authorUidHash,
+    Expression<String>? payload,
+    Expression<DateTime>? createdAt,
+    Expression<String>? moderationState,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (authorUidHash != null) 'author_uid_hash': authorUidHash,
+      if (payload != null) 'payload': payload,
+      if (createdAt != null) 'created_at': createdAt,
+      if (moderationState != null) 'moderation_state': moderationState,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ActivityFeedCacheCompanion copyWith({
+    Value<String>? id,
+    Value<String>? type,
+    Value<String>? authorUidHash,
+    Value<String?>? payload,
+    Value<DateTime>? createdAt,
+    Value<String>? moderationState,
+    Value<int>? rowid,
+  }) {
+    return ActivityFeedCacheCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      authorUidHash: authorUidHash ?? this.authorUidHash,
+      payload: payload ?? this.payload,
+      createdAt: createdAt ?? this.createdAt,
+      moderationState: moderationState ?? this.moderationState,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (authorUidHash.present) {
+      map['author_uid_hash'] = Variable<String>(authorUidHash.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (moderationState.present) {
+      map['moderation_state'] = Variable<String>(moderationState.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActivityFeedCacheCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('authorUidHash: $authorUidHash, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('moderationState: $moderationState, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -12141,6 +14046,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SessionTrackPointsTable sessionTrackPoints =
       $SessionTrackPointsTable(this);
   late final $ReportLocalTable reportLocal = $ReportLocalTable(this);
+  late final $SegmentsTable segments = $SegmentsTable(this);
+  late final $SegmentEffortLocalTable segmentEffortLocal =
+      $SegmentEffortLocalTable(this);
+  late final $KudosLocalTable kudosLocal = $KudosLocalTable(this);
+  late final $ActivityFeedCacheTable activityFeedCache =
+      $ActivityFeedCacheTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -12187,6 +14098,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final ReportLocalDao reportLocalDao = ReportLocalDao(
     this as AppDatabase,
   );
+  late final SegmentsDao segmentsDao = SegmentsDao(this as AppDatabase);
+  late final KudosFeedDao kudosFeedDao = KudosFeedDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -12214,6 +14127,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     followerSlots,
     sessionTrackPoints,
     reportLocal,
+    segments,
+    segmentEffortLocal,
+    kudosLocal,
+    activityFeedCache,
   ];
 }
 
@@ -18170,6 +20087,980 @@ typedef $$ReportLocalTableProcessedTableManager =
       ReportLocalData,
       PrefetchHooks Function()
     >;
+typedef $$SegmentsTableCreateCompanionBuilder =
+    SegmentsCompanion Function({
+      required String id,
+      required String trailId,
+      required String nom,
+      required String polylineGpxRef,
+      required double distanceM,
+      required double deniveleM,
+      Value<int> rowid,
+    });
+typedef $$SegmentsTableUpdateCompanionBuilder =
+    SegmentsCompanion Function({
+      Value<String> id,
+      Value<String> trailId,
+      Value<String> nom,
+      Value<String> polylineGpxRef,
+      Value<double> distanceM,
+      Value<double> deniveleM,
+      Value<int> rowid,
+    });
+
+class $$SegmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $SegmentsTable> {
+  $$SegmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nom => $composableBuilder(
+    column: $table.nom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get polylineGpxRef => $composableBuilder(
+    column: $table.polylineGpxRef,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get distanceM => $composableBuilder(
+    column: $table.distanceM,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get deniveleM => $composableBuilder(
+    column: $table.deniveleM,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SegmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SegmentsTable> {
+  $$SegmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nom => $composableBuilder(
+    column: $table.nom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get polylineGpxRef => $composableBuilder(
+    column: $table.polylineGpxRef,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get distanceM => $composableBuilder(
+    column: $table.distanceM,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get deniveleM => $composableBuilder(
+    column: $table.deniveleM,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SegmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SegmentsTable> {
+  $$SegmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<String> get nom =>
+      $composableBuilder(column: $table.nom, builder: (column) => column);
+
+  GeneratedColumn<String> get polylineGpxRef => $composableBuilder(
+    column: $table.polylineGpxRef,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get distanceM =>
+      $composableBuilder(column: $table.distanceM, builder: (column) => column);
+
+  GeneratedColumn<double> get deniveleM =>
+      $composableBuilder(column: $table.deniveleM, builder: (column) => column);
+}
+
+class $$SegmentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SegmentsTable,
+          Segment,
+          $$SegmentsTableFilterComposer,
+          $$SegmentsTableOrderingComposer,
+          $$SegmentsTableAnnotationComposer,
+          $$SegmentsTableCreateCompanionBuilder,
+          $$SegmentsTableUpdateCompanionBuilder,
+          (Segment, BaseReferences<_$AppDatabase, $SegmentsTable, Segment>),
+          Segment,
+          PrefetchHooks Function()
+        > {
+  $$SegmentsTableTableManager(_$AppDatabase db, $SegmentsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SegmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SegmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SegmentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<String> nom = const Value.absent(),
+                Value<String> polylineGpxRef = const Value.absent(),
+                Value<double> distanceM = const Value.absent(),
+                Value<double> deniveleM = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SegmentsCompanion(
+                id: id,
+                trailId: trailId,
+                nom: nom,
+                polylineGpxRef: polylineGpxRef,
+                distanceM: distanceM,
+                deniveleM: deniveleM,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String trailId,
+                required String nom,
+                required String polylineGpxRef,
+                required double distanceM,
+                required double deniveleM,
+                Value<int> rowid = const Value.absent(),
+              }) => SegmentsCompanion.insert(
+                id: id,
+                trailId: trailId,
+                nom: nom,
+                polylineGpxRef: polylineGpxRef,
+                distanceM: distanceM,
+                deniveleM: deniveleM,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SegmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SegmentsTable,
+      Segment,
+      $$SegmentsTableFilterComposer,
+      $$SegmentsTableOrderingComposer,
+      $$SegmentsTableAnnotationComposer,
+      $$SegmentsTableCreateCompanionBuilder,
+      $$SegmentsTableUpdateCompanionBuilder,
+      (Segment, BaseReferences<_$AppDatabase, $SegmentsTable, Segment>),
+      Segment,
+      PrefetchHooks Function()
+    >;
+typedef $$SegmentEffortLocalTableCreateCompanionBuilder =
+    SegmentEffortLocalCompanion Function({
+      Value<int> id,
+      required String segmentId,
+      required String userUidHash,
+      required int durationSeconds,
+      required DateTime startedAt,
+      Value<String> syncState,
+      Value<String?> remoteId,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+typedef $$SegmentEffortLocalTableUpdateCompanionBuilder =
+    SegmentEffortLocalCompanion Function({
+      Value<int> id,
+      Value<String> segmentId,
+      Value<String> userUidHash,
+      Value<int> durationSeconds,
+      Value<DateTime> startedAt,
+      Value<String> syncState,
+      Value<String?> remoteId,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+
+class $$SegmentEffortLocalTableFilterComposer
+    extends Composer<_$AppDatabase, $SegmentEffortLocalTable> {
+  $$SegmentEffortLocalTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get segmentId => $composableBuilder(
+    column: $table.segmentId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userUidHash => $composableBuilder(
+    column: $table.userUidHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get remoteId => $composableBuilder(
+    column: $table.remoteId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SegmentEffortLocalTableOrderingComposer
+    extends Composer<_$AppDatabase, $SegmentEffortLocalTable> {
+  $$SegmentEffortLocalTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get segmentId => $composableBuilder(
+    column: $table.segmentId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userUidHash => $composableBuilder(
+    column: $table.userUidHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get remoteId => $composableBuilder(
+    column: $table.remoteId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SegmentEffortLocalTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SegmentEffortLocalTable> {
+  $$SegmentEffortLocalTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get segmentId =>
+      $composableBuilder(column: $table.segmentId, builder: (column) => column);
+
+  GeneratedColumn<String> get userUidHash => $composableBuilder(
+    column: $table.userUidHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get durationSeconds => $composableBuilder(
+    column: $table.durationSeconds,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncState =>
+      $composableBuilder(column: $table.syncState, builder: (column) => column);
+
+  GeneratedColumn<String> get remoteId =>
+      $composableBuilder(column: $table.remoteId, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$SegmentEffortLocalTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SegmentEffortLocalTable,
+          SegmentEffortLocalData,
+          $$SegmentEffortLocalTableFilterComposer,
+          $$SegmentEffortLocalTableOrderingComposer,
+          $$SegmentEffortLocalTableAnnotationComposer,
+          $$SegmentEffortLocalTableCreateCompanionBuilder,
+          $$SegmentEffortLocalTableUpdateCompanionBuilder,
+          (
+            SegmentEffortLocalData,
+            BaseReferences<
+              _$AppDatabase,
+              $SegmentEffortLocalTable,
+              SegmentEffortLocalData
+            >,
+          ),
+          SegmentEffortLocalData,
+          PrefetchHooks Function()
+        > {
+  $$SegmentEffortLocalTableTableManager(
+    _$AppDatabase db,
+    $SegmentEffortLocalTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SegmentEffortLocalTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SegmentEffortLocalTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SegmentEffortLocalTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> segmentId = const Value.absent(),
+                Value<String> userUidHash = const Value.absent(),
+                Value<int> durationSeconds = const Value.absent(),
+                Value<DateTime> startedAt = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+                Value<String?> remoteId = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => SegmentEffortLocalCompanion(
+                id: id,
+                segmentId: segmentId,
+                userUidHash: userUidHash,
+                durationSeconds: durationSeconds,
+                startedAt: startedAt,
+                syncState: syncState,
+                remoteId: remoteId,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String segmentId,
+                required String userUidHash,
+                required int durationSeconds,
+                required DateTime startedAt,
+                Value<String> syncState = const Value.absent(),
+                Value<String?> remoteId = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => SegmentEffortLocalCompanion.insert(
+                id: id,
+                segmentId: segmentId,
+                userUidHash: userUidHash,
+                durationSeconds: durationSeconds,
+                startedAt: startedAt,
+                syncState: syncState,
+                remoteId: remoteId,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SegmentEffortLocalTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SegmentEffortLocalTable,
+      SegmentEffortLocalData,
+      $$SegmentEffortLocalTableFilterComposer,
+      $$SegmentEffortLocalTableOrderingComposer,
+      $$SegmentEffortLocalTableAnnotationComposer,
+      $$SegmentEffortLocalTableCreateCompanionBuilder,
+      $$SegmentEffortLocalTableUpdateCompanionBuilder,
+      (
+        SegmentEffortLocalData,
+        BaseReferences<
+          _$AppDatabase,
+          $SegmentEffortLocalTable,
+          SegmentEffortLocalData
+        >,
+      ),
+      SegmentEffortLocalData,
+      PrefetchHooks Function()
+    >;
+typedef $$KudosLocalTableCreateCompanionBuilder =
+    KudosLocalCompanion Function({
+      Value<int> id,
+      required String targetActivityId,
+      required String fromUidHash,
+      required DateTime createdAt,
+      Value<String> syncState,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+typedef $$KudosLocalTableUpdateCompanionBuilder =
+    KudosLocalCompanion Function({
+      Value<int> id,
+      Value<String> targetActivityId,
+      Value<String> fromUidHash,
+      Value<DateTime> createdAt,
+      Value<String> syncState,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+
+class $$KudosLocalTableFilterComposer
+    extends Composer<_$AppDatabase, $KudosLocalTable> {
+  $$KudosLocalTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetActivityId => $composableBuilder(
+    column: $table.targetActivityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fromUidHash => $composableBuilder(
+    column: $table.fromUidHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$KudosLocalTableOrderingComposer
+    extends Composer<_$AppDatabase, $KudosLocalTable> {
+  $$KudosLocalTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetActivityId => $composableBuilder(
+    column: $table.targetActivityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fromUidHash => $composableBuilder(
+    column: $table.fromUidHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$KudosLocalTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KudosLocalTable> {
+  $$KudosLocalTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get targetActivityId => $composableBuilder(
+    column: $table.targetActivityId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fromUidHash => $composableBuilder(
+    column: $table.fromUidHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncState =>
+      $composableBuilder(column: $table.syncState, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$KudosLocalTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $KudosLocalTable,
+          KudosLocalData,
+          $$KudosLocalTableFilterComposer,
+          $$KudosLocalTableOrderingComposer,
+          $$KudosLocalTableAnnotationComposer,
+          $$KudosLocalTableCreateCompanionBuilder,
+          $$KudosLocalTableUpdateCompanionBuilder,
+          (
+            KudosLocalData,
+            BaseReferences<_$AppDatabase, $KudosLocalTable, KudosLocalData>,
+          ),
+          KudosLocalData,
+          PrefetchHooks Function()
+        > {
+  $$KudosLocalTableTableManager(_$AppDatabase db, $KudosLocalTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KudosLocalTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KudosLocalTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KudosLocalTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> targetActivityId = const Value.absent(),
+                Value<String> fromUidHash = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => KudosLocalCompanion(
+                id: id,
+                targetActivityId: targetActivityId,
+                fromUidHash: fromUidHash,
+                createdAt: createdAt,
+                syncState: syncState,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String targetActivityId,
+                required String fromUidHash,
+                required DateTime createdAt,
+                Value<String> syncState = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => KudosLocalCompanion.insert(
+                id: id,
+                targetActivityId: targetActivityId,
+                fromUidHash: fromUidHash,
+                createdAt: createdAt,
+                syncState: syncState,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$KudosLocalTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $KudosLocalTable,
+      KudosLocalData,
+      $$KudosLocalTableFilterComposer,
+      $$KudosLocalTableOrderingComposer,
+      $$KudosLocalTableAnnotationComposer,
+      $$KudosLocalTableCreateCompanionBuilder,
+      $$KudosLocalTableUpdateCompanionBuilder,
+      (
+        KudosLocalData,
+        BaseReferences<_$AppDatabase, $KudosLocalTable, KudosLocalData>,
+      ),
+      KudosLocalData,
+      PrefetchHooks Function()
+    >;
+typedef $$ActivityFeedCacheTableCreateCompanionBuilder =
+    ActivityFeedCacheCompanion Function({
+      required String id,
+      required String type,
+      required String authorUidHash,
+      Value<String?> payload,
+      required DateTime createdAt,
+      Value<String> moderationState,
+      Value<int> rowid,
+    });
+typedef $$ActivityFeedCacheTableUpdateCompanionBuilder =
+    ActivityFeedCacheCompanion Function({
+      Value<String> id,
+      Value<String> type,
+      Value<String> authorUidHash,
+      Value<String?> payload,
+      Value<DateTime> createdAt,
+      Value<String> moderationState,
+      Value<int> rowid,
+    });
+
+class $$ActivityFeedCacheTableFilterComposer
+    extends Composer<_$AppDatabase, $ActivityFeedCacheTable> {
+  $$ActivityFeedCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ActivityFeedCacheTableOrderingComposer
+    extends Composer<_$AppDatabase, $ActivityFeedCacheTable> {
+  $$ActivityFeedCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ActivityFeedCacheTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ActivityFeedCacheTable> {
+  $$ActivityFeedCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => column,
+  );
+}
+
+class $$ActivityFeedCacheTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ActivityFeedCacheTable,
+          ActivityFeedCacheData,
+          $$ActivityFeedCacheTableFilterComposer,
+          $$ActivityFeedCacheTableOrderingComposer,
+          $$ActivityFeedCacheTableAnnotationComposer,
+          $$ActivityFeedCacheTableCreateCompanionBuilder,
+          $$ActivityFeedCacheTableUpdateCompanionBuilder,
+          (
+            ActivityFeedCacheData,
+            BaseReferences<
+              _$AppDatabase,
+              $ActivityFeedCacheTable,
+              ActivityFeedCacheData
+            >,
+          ),
+          ActivityFeedCacheData,
+          PrefetchHooks Function()
+        > {
+  $$ActivityFeedCacheTableTableManager(
+    _$AppDatabase db,
+    $ActivityFeedCacheTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ActivityFeedCacheTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ActivityFeedCacheTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ActivityFeedCacheTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> authorUidHash = const Value.absent(),
+                Value<String?> payload = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> moderationState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ActivityFeedCacheCompanion(
+                id: id,
+                type: type,
+                authorUidHash: authorUidHash,
+                payload: payload,
+                createdAt: createdAt,
+                moderationState: moderationState,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String type,
+                required String authorUidHash,
+                Value<String?> payload = const Value.absent(),
+                required DateTime createdAt,
+                Value<String> moderationState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ActivityFeedCacheCompanion.insert(
+                id: id,
+                type: type,
+                authorUidHash: authorUidHash,
+                payload: payload,
+                createdAt: createdAt,
+                moderationState: moderationState,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ActivityFeedCacheTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ActivityFeedCacheTable,
+      ActivityFeedCacheData,
+      $$ActivityFeedCacheTableFilterComposer,
+      $$ActivityFeedCacheTableOrderingComposer,
+      $$ActivityFeedCacheTableAnnotationComposer,
+      $$ActivityFeedCacheTableCreateCompanionBuilder,
+      $$ActivityFeedCacheTableUpdateCompanionBuilder,
+      (
+        ActivityFeedCacheData,
+        BaseReferences<
+          _$AppDatabase,
+          $ActivityFeedCacheTable,
+          ActivityFeedCacheData
+        >,
+      ),
+      ActivityFeedCacheData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -18217,4 +21108,12 @@ class $AppDatabaseManager {
       $$SessionTrackPointsTableTableManager(_db, _db.sessionTrackPoints);
   $$ReportLocalTableTableManager get reportLocal =>
       $$ReportLocalTableTableManager(_db, _db.reportLocal);
+  $$SegmentsTableTableManager get segments =>
+      $$SegmentsTableTableManager(_db, _db.segments);
+  $$SegmentEffortLocalTableTableManager get segmentEffortLocal =>
+      $$SegmentEffortLocalTableTableManager(_db, _db.segmentEffortLocal);
+  $$KudosLocalTableTableManager get kudosLocal =>
+      $$KudosLocalTableTableManager(_db, _db.kudosLocal);
+  $$ActivityFeedCacheTableTableManager get activityFeedCache =>
+      $$ActivityFeedCacheTableTableManager(_db, _db.activityFeedCache);
 }

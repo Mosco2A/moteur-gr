@@ -547,5 +547,90 @@
     "confidenceLow": "Ungefähr (schwaches GPS)",
     "durationHm": "$h Std $m Min",
     "durationM": "$m Min"
+  },
+  "leaderboard": {
+    "title": "König der Etappe",
+    "unavailable": "Rangliste derzeit nicht verfügbar.",
+    "empty": "Noch keine Rangliste für dieses Segment. Sei der Erste!",
+    "pseudonymNotice": "Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.",
+    "trancheLabel": "Gruppe: $tranche",
+    "notEnoughParticipants": "Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.",
+    "entrySemantics": "Rang $rank, $pseudonym, Zeit $time"
+  },
+  "social": {
+    "feedTitle": "Aktivitätsverlauf",
+    "empty": "Noch keine Aktivität.",
+    "kudos": "Anfeuern",
+    "kudosCount": "$n Kudos",
+    "report": "Melden",
+    "reportTitle": "Diesen Beitrag melden",
+    "reportReasonLabel": "Grund der Meldung",
+    "reasonSpam": "Spam oder Werbung",
+    "reasonAbuse": "Missbräuchlicher oder hasserfüllter Inhalt",
+    "reasonOther": "Andere",
+    "reportSend": "Meldung senden",
+    "reportSent": "Meldung gesendet. Unser Team prüft sie.",
+    "syncPending": "Wartet auf Synchronisierung",
+    "synced": "Synchronisiert",
+    "activitySegment": "hat ein Segment absolviert",
+    "activityBadge": "hat ein Abzeichen erhalten",
+    "activityDefi": "hat bei einer Challenge Fortschritte gemacht"
+  },
+  "gamification": {
+    "galleryTitle": "Meine Abzeichen",
+    "obtained": "Erhalten",
+    "locked": "Gesperrt",
+    "tierDebutant": "Anfänger",
+    "tierExpert": "Experte",
+    "badge": {
+      "firstStage": {
+        "titre": "Erste Etappe",
+        "description": "Du hast deine erste Etappe abgeschlossen."
+      },
+      "firstTrek": {
+        "titre": "Erster Trek",
+        "description": "Du hast deinen ersten vollständigen Trek beendet."
+      },
+      "firstSegment": {
+        "titre": "Erstes Segment",
+        "description": "Du hast dein erstes Segment absolviert."
+      },
+      "elevation5000": {
+        "titre": "5000 m Höhenmeter",
+        "description": "Du hast 5000 m Höhenmeter gesammelt."
+      },
+      "tenStages": {
+        "titre": "10 Etappen",
+        "description": "Du hast 10 Etappen abgeschlossen."
+      },
+      "challenger": {
+        "titre": "Herausforderer",
+        "description": "Du hast deine erste saisonale Challenge gemeistert."
+      }
+    },
+    "defi": {
+      "screenTitle": "Challenges",
+      "inProgress": "Laufend",
+      "progressLabel": "Fortschritt: $current / $target",
+      "rankingTitle": "Challenge-Rangliste",
+      "pseudonymNotice": "Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.",
+      "notEnoughParticipants": "Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.",
+      "noDefi": "Derzeit keine laufende Challenge."
+    }
+  },
+  "shareVisibility": {
+    "title": "Teilen und Sichtbarkeit",
+    "intro": "Standardmäßig wird nichts geteilt. Aktiviere unten zweckweise, was du sichtbar machen möchtest.",
+    "consentLink": "Meine Einwilligung verwalten (Datenschutz)",
+    "stageResults": "Meine Etappenergebnisse teilen",
+    "stageResultsDesc": "Eine pseudonyme Karte (keine direkten personenbezogenen Daten).",
+    "leaderboard": "In Ranglisten erscheinen",
+    "leaderboardDesc": "Rangliste nach Gruppe, mit einem Pseudonym.",
+    "activityFeed": "Im Aktivitätsverlauf posten",
+    "activityFeedDesc": "Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.",
+    "shareTitle": "Diese Etappe teilen",
+    "shareButton": "Teilen",
+    "privateNotice": "Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.",
+    "shared": "Karte bereit zum Teilen."
   }
 }

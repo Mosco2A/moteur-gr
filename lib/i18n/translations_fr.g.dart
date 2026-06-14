@@ -72,6 +72,10 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$hebergement$fr hebergement = Translations$hebergement$fr.internal(_root);
 	late final Translations$training$fr training = Translations$training$fr.internal(_root);
 	late final Translations$eta$fr eta = Translations$eta$fr.internal(_root);
+	late final Translations$leaderboard$fr leaderboard = Translations$leaderboard$fr.internal(_root);
+	late final Translations$social$fr social = Translations$social$fr.internal(_root);
+	late final Translations$gamification$fr gamification = Translations$gamification$fr.internal(_root);
+	late final Translations$shareVisibility$fr shareVisibility = Translations$shareVisibility$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1330,6 +1334,171 @@ class Translations$eta$fr {
 	String durationM({required Object m}) => '${m} min';
 }
 
+// Path: leaderboard
+class Translations$leaderboard$fr {
+	Translations$leaderboard$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Roi de l'étape'
+	String get title => 'Roi de l\'étape';
+
+	/// fr: 'Classement indisponible pour le moment.'
+	String get unavailable => 'Classement indisponible pour le moment.';
+
+	/// fr: 'Aucun classement pour ce segment. Sois le premier à le parcourir !'
+	String get empty => 'Aucun classement pour ce segment. Sois le premier à le parcourir !';
+
+	/// fr: 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n'est affichée.'
+	String get pseudonymNotice => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.';
+
+	/// fr: 'Tranche : $tranche'
+	String trancheLabel({required Object tranche}) => 'Tranche : ${tranche}';
+
+	/// fr: 'Pas assez de participants pour publier ce classement.'
+	String get notEnoughParticipants => 'Pas assez de participants pour publier ce classement.';
+
+	/// fr: 'Rang $rank, $pseudonym, temps $time'
+	String entrySemantics({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}';
+}
+
+// Path: social
+class Translations$social$fr {
+	Translations$social$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Fil d'activité'
+	String get feedTitle => 'Fil d\'activité';
+
+	/// fr: 'Aucune activité pour le moment.'
+	String get empty => 'Aucune activité pour le moment.';
+
+	/// fr: 'Encourager'
+	String get kudos => 'Encourager';
+
+	/// fr: '$n encouragement(s)'
+	String kudosCount({required Object n}) => '${n} encouragement(s)';
+
+	/// fr: 'Signaler'
+	String get report => 'Signaler';
+
+	/// fr: 'Signaler cette publication'
+	String get reportTitle => 'Signaler cette publication';
+
+	/// fr: 'Motif du signalement'
+	String get reportReasonLabel => 'Motif du signalement';
+
+	/// fr: 'Spam ou publicité'
+	String get reasonSpam => 'Spam ou publicité';
+
+	/// fr: 'Contenu abusif ou haineux'
+	String get reasonAbuse => 'Contenu abusif ou haineux';
+
+	/// fr: 'Autre'
+	String get reasonOther => 'Autre';
+
+	/// fr: 'Envoyer le signalement'
+	String get reportSend => 'Envoyer le signalement';
+
+	/// fr: 'Signalement envoyé. Il sera examiné par notre équipe.'
+	String get reportSent => 'Signalement envoyé. Il sera examiné par notre équipe.';
+
+	/// fr: 'En attente de synchronisation'
+	String get syncPending => 'En attente de synchronisation';
+
+	/// fr: 'Synchronisé'
+	String get synced => 'Synchronisé';
+
+	/// fr: 'a réalisé un segment'
+	String get activitySegment => 'a réalisé un segment';
+
+	/// fr: 'a obtenu un badge'
+	String get activityBadge => 'a obtenu un badge';
+
+	/// fr: 'a progressé dans un défi'
+	String get activityDefi => 'a progressé dans un défi';
+}
+
+// Path: gamification
+class Translations$gamification$fr {
+	Translations$gamification$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mes badges'
+	String get galleryTitle => 'Mes badges';
+
+	/// fr: 'Obtenu'
+	String get obtained => 'Obtenu';
+
+	/// fr: 'Verrouillé'
+	String get locked => 'Verrouillé';
+
+	/// fr: 'Débutant'
+	String get tierDebutant => 'Débutant';
+
+	/// fr: 'Expert'
+	String get tierExpert => 'Expert';
+
+	late final Translations$gamification$badge$fr badge = Translations$gamification$badge$fr.internal(_root);
+	late final Translations$gamification$defi$fr defi = Translations$gamification$defi$fr.internal(_root);
+}
+
+// Path: shareVisibility
+class Translations$shareVisibility$fr {
+	Translations$shareVisibility$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Partage et visibilité'
+	String get title => 'Partage et visibilité';
+
+	/// fr: 'Par défaut, rien n'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.'
+	String get intro => 'Par défaut, rien n\'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.';
+
+	/// fr: 'Gérer mon consentement (confidentialité)'
+	String get consentLink => 'Gérer mon consentement (confidentialité)';
+
+	/// fr: 'Partager mes résultats d'étape'
+	String get stageResults => 'Partager mes résultats d\'étape';
+
+	/// fr: 'Une carte pseudonyme (sans données personnelles directes).'
+	String get stageResultsDesc => 'Une carte pseudonyme (sans données personnelles directes).';
+
+	/// fr: 'Apparaître dans les classements'
+	String get leaderboard => 'Apparaître dans les classements';
+
+	/// fr: 'Classement par tranche, avec un pseudonyme.'
+	String get leaderboardDesc => 'Classement par tranche, avec un pseudonyme.';
+
+	/// fr: 'Publier au fil d'activité'
+	String get activityFeed => 'Publier au fil d\'activité';
+
+	/// fr: 'Tes activités apparaissent dans le fil, sous pseudonyme.'
+	String get activityFeedDesc => 'Tes activités apparaissent dans le fil, sous pseudonyme.';
+
+	/// fr: 'Partager cette étape'
+	String get shareTitle => 'Partager cette étape';
+
+	/// fr: 'Partager'
+	String get shareButton => 'Partager';
+
+	/// fr: 'Le partage est désactivé. Active-le dans Partage et visibilité.'
+	String get privateNotice => 'Le partage est désactivé. Active-le dans Partage et visibilité.';
+
+	/// fr: 'Carte prête à partager.'
+	String get shared => 'Carte prête à partager.';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1772,6 +1941,51 @@ class Translations$training$intensity$fr {
 	String get elevee => 'Élevée';
 }
 
+// Path: gamification.badge
+class Translations$gamification$badge$fr {
+	Translations$gamification$badge$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$gamification$badge$firstStage$fr firstStage = Translations$gamification$badge$firstStage$fr.internal(_root);
+	late final Translations$gamification$badge$firstTrek$fr firstTrek = Translations$gamification$badge$firstTrek$fr.internal(_root);
+	late final Translations$gamification$badge$firstSegment$fr firstSegment = Translations$gamification$badge$firstSegment$fr.internal(_root);
+	late final Translations$gamification$badge$elevation5000$fr elevation5000 = Translations$gamification$badge$elevation5000$fr.internal(_root);
+	late final Translations$gamification$badge$tenStages$fr tenStages = Translations$gamification$badge$tenStages$fr.internal(_root);
+	late final Translations$gamification$badge$challenger$fr challenger = Translations$gamification$badge$challenger$fr.internal(_root);
+}
+
+// Path: gamification.defi
+class Translations$gamification$defi$fr {
+	Translations$gamification$defi$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Défis'
+	String get screenTitle => 'Défis';
+
+	/// fr: 'En cours'
+	String get inProgress => 'En cours';
+
+	/// fr: 'Progression : $current / $target'
+	String progressLabel({required Object current, required Object target}) => 'Progression : ${current} / ${target}';
+
+	/// fr: 'Classement du défi'
+	String get rankingTitle => 'Classement du défi';
+
+	/// fr: 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n'est affichée.'
+	String get pseudonymNotice => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.';
+
+	/// fr: 'Pas assez de participants pour publier ce classement.'
+	String get notEnoughParticipants => 'Pas assez de participants pour publier ce classement.';
+
+	/// fr: 'Aucun défi en cours pour le moment.'
+	String get noDefi => 'Aucun défi en cours pour le moment.';
+}
+
 // Path: feasibility.recommendations.danger
 class Translations$feasibility$recommendations$danger$fr {
 	Translations$feasibility$recommendations$danger$fr.internal(this._root);
@@ -1838,6 +2052,96 @@ class Translations$feasibility$recommendations$excellent$fr {
 	String get summary => 'Vous êtes parfaitement préparé(e). Profitez du trek !';
 
 	late final Translations$feasibility$recommendations$excellent$tips$fr tips = Translations$feasibility$recommendations$excellent$tips$fr.internal(_root);
+}
+
+// Path: gamification.badge.firstStage
+class Translations$gamification$badge$firstStage$fr {
+	Translations$gamification$badge$firstStage$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Première étape'
+	String get titre => 'Première étape';
+
+	/// fr: 'Tu as terminé ta première étape.'
+	String get description => 'Tu as terminé ta première étape.';
+}
+
+// Path: gamification.badge.firstTrek
+class Translations$gamification$badge$firstTrek$fr {
+	Translations$gamification$badge$firstTrek$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Premier trek'
+	String get titre => 'Premier trek';
+
+	/// fr: 'Tu as bouclé ton premier trek complet.'
+	String get description => 'Tu as bouclé ton premier trek complet.';
+}
+
+// Path: gamification.badge.firstSegment
+class Translations$gamification$badge$firstSegment$fr {
+	Translations$gamification$badge$firstSegment$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Premier segment'
+	String get titre => 'Premier segment';
+
+	/// fr: 'Tu as parcouru ton premier segment.'
+	String get description => 'Tu as parcouru ton premier segment.';
+}
+
+// Path: gamification.badge.elevation5000
+class Translations$gamification$badge$elevation5000$fr {
+	Translations$gamification$badge$elevation5000$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: '5000 m de dénivelé'
+	String get titre => '5000 m de dénivelé';
+
+	/// fr: 'Tu as cumulé 5000 m de dénivelé positif.'
+	String get description => 'Tu as cumulé 5000 m de dénivelé positif.';
+}
+
+// Path: gamification.badge.tenStages
+class Translations$gamification$badge$tenStages$fr {
+	Translations$gamification$badge$tenStages$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: '10 étapes'
+	String get titre => '10 étapes';
+
+	/// fr: 'Tu as terminé 10 étapes.'
+	String get description => 'Tu as terminé 10 étapes.';
+}
+
+// Path: gamification.badge.challenger
+class Translations$gamification$badge$challenger$fr {
+	Translations$gamification$badge$challenger$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Challenger'
+	String get titre => 'Challenger';
+
+	/// fr: 'Tu as réussi ton premier défi saisonnier.'
+	String get description => 'Tu as réussi ton premier défi saisonnier.';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -2363,6 +2667,67 @@ extension on Translations {
 			'eta.confidenceLow' => 'Approximatif (GPS faible)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
 			'eta.durationM' => ({required Object m}) => '${m} min',
+			'leaderboard.title' => 'Roi de l\'étape',
+			'leaderboard.unavailable' => 'Classement indisponible pour le moment.',
+			'leaderboard.empty' => 'Aucun classement pour ce segment. Sois le premier à le parcourir !',
+			'leaderboard.pseudonymNotice' => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.',
+			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Tranche : ${tranche}',
+			'leaderboard.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
+			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}',
+			'social.feedTitle' => 'Fil d\'activité',
+			'social.empty' => 'Aucune activité pour le moment.',
+			'social.kudos' => 'Encourager',
+			'social.kudosCount' => ({required Object n}) => '${n} encouragement(s)',
+			'social.report' => 'Signaler',
+			'social.reportTitle' => 'Signaler cette publication',
+			'social.reportReasonLabel' => 'Motif du signalement',
+			'social.reasonSpam' => 'Spam ou publicité',
+			'social.reasonAbuse' => 'Contenu abusif ou haineux',
+			'social.reasonOther' => 'Autre',
+			'social.reportSend' => 'Envoyer le signalement',
+			'social.reportSent' => 'Signalement envoyé. Il sera examiné par notre équipe.',
+			'social.syncPending' => 'En attente de synchronisation',
+			'social.synced' => 'Synchronisé',
+			'social.activitySegment' => 'a réalisé un segment',
+			'social.activityBadge' => 'a obtenu un badge',
+			'social.activityDefi' => 'a progressé dans un défi',
+			'gamification.galleryTitle' => 'Mes badges',
+			'gamification.obtained' => 'Obtenu',
+			'gamification.locked' => 'Verrouillé',
+			'gamification.tierDebutant' => 'Débutant',
+			'gamification.tierExpert' => 'Expert',
+			'gamification.badge.firstStage.titre' => 'Première étape',
+			'gamification.badge.firstStage.description' => 'Tu as terminé ta première étape.',
+			'gamification.badge.firstTrek.titre' => 'Premier trek',
+			'gamification.badge.firstTrek.description' => 'Tu as bouclé ton premier trek complet.',
+			'gamification.badge.firstSegment.titre' => 'Premier segment',
+			'gamification.badge.firstSegment.description' => 'Tu as parcouru ton premier segment.',
+			'gamification.badge.elevation5000.titre' => '5000 m de dénivelé',
+			'gamification.badge.elevation5000.description' => 'Tu as cumulé 5000 m de dénivelé positif.',
+			'gamification.badge.tenStages.titre' => '10 étapes',
+			'gamification.badge.tenStages.description' => 'Tu as terminé 10 étapes.',
+			'gamification.badge.challenger.titre' => 'Challenger',
+			'gamification.badge.challenger.description' => 'Tu as réussi ton premier défi saisonnier.',
+			'gamification.defi.screenTitle' => 'Défis',
+			'gamification.defi.inProgress' => 'En cours',
+			'gamification.defi.progressLabel' => ({required Object current, required Object target}) => 'Progression : ${current} / ${target}',
+			'gamification.defi.rankingTitle' => 'Classement du défi',
+			'gamification.defi.pseudonymNotice' => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.',
+			'gamification.defi.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
+			'gamification.defi.noDefi' => 'Aucun défi en cours pour le moment.',
+			'shareVisibility.title' => 'Partage et visibilité',
+			'shareVisibility.intro' => 'Par défaut, rien n\'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.',
+			'shareVisibility.consentLink' => 'Gérer mon consentement (confidentialité)',
+			'shareVisibility.stageResults' => 'Partager mes résultats d\'étape',
+			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
+			'shareVisibility.leaderboard' => 'Apparaître dans les classements',
+			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
+			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
+			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
+			'shareVisibility.shareTitle' => 'Partager cette étape',
+			'shareVisibility.shareButton' => 'Partager',
+			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
+			'shareVisibility.shared' => 'Carte prête à partager.',
 			_ => null,
 		};
 	}

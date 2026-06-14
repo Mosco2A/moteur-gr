@@ -196,6 +196,144 @@ service cloud.firestore {
       allow delete: if isModerator();
     }
 
+    // Efforts de segment — leaderboard "Roi de l etape" (Phase 7 F7A-03).
+    //
+    // Modele (R1 pseudonyme / R2 calcul serveur) : un effort est ecrit par un
+    // utilisateur AUTHENTIFIE (UID HACHE cote client, jamais expose en clair).
+    // L'effort individuel est IMMUABLE apres creation (pas de re-edition, pas
+    // de triche par ecrasement). Le CLASSEMENT officiel n'est PAS calcule ici :
+    // une Cloud Function (classementSegment) agrege les efforts PAR TRANCHE
+    // avec K-ANONYMAT (k>=5) et publie un document de classement SANS
+    // timestamp fin individuel et avec des libelles PSEUDONYMES (jamais
+    // "anonyme"). Les efforts bruts ne sont pas lisibles publiquement (lecture
+    // reservee a l'auteur) : seul le doc de classement agrege est public.
+    match /segment_efforts/{effortId} {
+      function validNewEffort() {
+        return request.resource.data.segmentId is string
+          && request.resource.data.authorUidHash is string
+          && request.resource.data.durationSeconds is int
+          && request.resource.data.durationSeconds > 0
+          && request.resource.data.completedAt is timestamp;
+      }
+
+      // Creation : utilisateur authentifie, payload borne + valide.
+      // L'auteur ne peut ecrire QUE son propre UID hache (anti-usurpation).
+      allow create: if isSignedIn()
+        && validNewEffort()
+        && request.resource.data.authorUidHash == request.auth.uid
+        && request.resource.data.keys().hasOnly(
+             ['segmentId', 'authorUidHash', 'durationSeconds', 'completedAt']);
+
+      // Lecture : auteur uniquement (le classement public passe par le doc
+      // agrege segment_rankings, jamais par les efforts individuels).
+      allow get, list: if isSignedIn()
+        && resource.data.authorUidHash == request.auth.uid;
+
+      // Effort immuable : aucune re-edition ni suppression cote client.
+      allow update, delete: if false;
+    }
+
+    // Classement de segment AGREGE (publie par la Cloud Function, Phase 7
+    // F7A-03). Lecture publique (cache local offline-first, R2). Ecriture
+    // RESERVEE au backend (Cloud Function via Admin SDK qui bypass les rules,
+    // ou claim admin) : le client ne fabrique JAMAIS un classement (R2).
+    // Le document ne contient PAS de timestamp fin par individu et n'emploie
+    // jamais le mot "anonyme" — entrees pseudonymes par tranche (R1).
+    match /segment_rankings/{segmentId} {
+      function isBackend() {
+        return isSignedIn() && request.auth.token.admin == true;
+      }
+      allow get, list: if true;
+      allow create, update, delete: if isBackend();
+    }
+
+    // Classement de defi saisonnier AGREGE (Phase 7 F7C-02, meme pattern que
+    // segment_rankings : calcul serveur, k-anonymat, libelles pseudonymes).
+    match /defi_rankings/{defiId} {
+      function isBackendDefi() {
+        return isSignedIn() && request.auth.token.admin == true;
+      }
+      allow get, list: if true;
+      allow create, update, delete: if isBackendDefi();
+    }
+
+    // Kudos sur une activite du fil (Phase 7 F7B-02/F7B-03).
+    //
+    // Modele (idempotence X6) : le doc id EST hash(fromUidHash +
+    // targetActivityId) (calcule cote client, KudosService.remoteDocId) : un
+    // meme kudo re-pousse ecrit le MEME document -> jamais de doublon. Le kudo
+    // est IMMUABLE (pas d'update). L'auteur peut RETIRER son kudo (delete).
+    // fromUidHash == uid (anti-usurpation). UID hache, jamais de PII en clair.
+    match /kudos/{kudoId} {
+      function validNewKudo() {
+        return request.resource.data.fromUidHash is string
+          && request.resource.data.targetActivityId is string
+          && request.resource.data.createdAt is timestamp;
+      }
+
+      // Creation : utilisateur authentifie, payload borne, fromUidHash == uid.
+      allow create: if isSignedIn()
+        && validNewKudo()
+        && request.resource.data.fromUidHash == request.auth.uid
+        && request.resource.data.keys().hasOnly(
+             ['fromUidHash', 'targetActivityId', 'createdAt']);
+
+      // Lecture publique (compteur de kudos d'une activite).
+      allow get, list: if isSignedIn();
+
+      // Kudo immuable : aucune re-edition.
+      allow update: if false;
+
+      // Retrait : l'auteur du kudo uniquement.
+      allow delete: if isSignedIn()
+        && resource.data.fromUidHash == request.auth.uid;
+    }
+
+    // Fil d'activite (Phase 7 F7B-03). Contenu utilisateur -> HEBERGEUR DSA
+    // art. 16 (notice-and-action, moderation A POSTERIORI, design Securite D4).
+    //
+    // Modele : l'activite est creee par un utilisateur AUTHENTIFIE
+    // (authorUidHash == uid, UID hache jamais expose en clair), moderationState
+    // initial 'visible'. Le CONTENU est IMMUABLE apres creation (pas d'edition
+    // a priori). SEUL moderationState peut bouger, et SEULEMENT par un
+    // MODERATEUR (statut hebergeur). Lecture publique des activites non
+    // 'removed'.
+    match /activities/{activityId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+      function validNewActivity() {
+        return request.resource.data.authorUidHash is string
+          && request.resource.data.authorUidHash == request.auth.uid
+          && request.resource.data.type is string
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.moderationState == 'visible';
+      }
+
+      // Creation : utilisateur authentifie, payload borne + valide.
+      allow create: if isSignedIn()
+        && validNewActivity()
+        && request.resource.data.keys().hasOnly(
+             ['authorUidHash', 'type', 'payload', 'createdAt',
+              'moderationState']);
+
+      // Lecture publique des activites non retirees (removed invisible).
+      allow get, list: if resource.data.moderationState != 'removed';
+
+      // Mise a jour : RESERVEE au moderateur, et SEUL moderationState bouge
+      // (contenu utilisateur immuable = statut hebergeur a posteriori, DSA).
+      allow update: if isModerator()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['moderationState'])
+        && request.resource.data.moderationState
+             in ['visible', 'flagged', 'removed'];
+
+      // Suppression dure : moderateur uniquement.
+      allow delete: if isModerator();
+    }
+
     // Tout le reste : DENY explicite (collections sans regles dediees,
     // ex. groups — feature groupe sans regles a ce jour, voir
     // ORCHESTRATION wagon 3 / dette).

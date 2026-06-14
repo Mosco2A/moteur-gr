@@ -1,0 +1,83 @@
+// Cloud Functions StepWays — calcul SERVEUR des classements (Phase 7 F7A-03).
+//
+// Deploiement :
+//   cd functions && npm install
+//   firebase deploy --only functions:classementSegment,functions:classementDefi
+//
+// Modele (R2) : le client ecrit un effort dans segment_efforts (cf.
+// firestore.rules). Au declenchement, classementSegment RELIT tous les efforts
+// du segment et RECALCULE le doc segment_rankings/{segmentId} via la logique
+// PURE buildSegmentRanking (k-anonymat k>=5, libelles pseudonymes, sans
+// timestamp fin — R1). Le client ne fabrique JAMAIS le classement.
+//
+// Rollback : retirer/redeployer la version anterieure de la function, ou
+// supprimer la function (les rules continuent de proteger les collections).
+
+import { initializeApp } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import { onDocumentWritten } from 'firebase-functions/v2/firestore';
+
+import { buildSegmentRanking, buildDefiRanking } from './ranking.js';
+
+initializeApp();
+const db = getFirestore();
+
+/// Recalcule le classement d'un segment a chaque ecriture d'un effort.
+export const classementSegment = onDocumentWritten(
+  'segment_efforts/{effortId}',
+  async (event) => {
+    const after = event.data?.after?.data();
+    const before = event.data?.before?.data();
+    const segmentId = after?.segmentId ?? before?.segmentId;
+    if (!segmentId) return;
+
+    // Relit TOUS les efforts du segment (source de verite serveur, R2).
+    const snap = await db
+      .collection('segment_efforts')
+      .where('segmentId', '==', segmentId)
+      .get();
+
+    const efforts = snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        authorUidHash: data.authorUidHash,
+        durationSeconds: data.durationSeconds,
+        tranche: data.tranche, // optionnel — tranche large declaree a la remontee
+      };
+    });
+
+    const ranking = buildSegmentRanking(segmentId, efforts);
+    // Le doc agrege publie ne contient PAS de timestamp fin par individu (R1).
+    await db.collection('segment_rankings').doc(segmentId).set(ranking);
+  },
+);
+
+/// Recalcule le classement d'un defi a chaque ecriture d'une participation.
+export const classementDefi = onDocumentWritten(
+  'defi_participations/{participationId}',
+  async (event) => {
+    const after = event.data?.after?.data();
+    const before = event.data?.before?.data();
+    const defiId = after?.defiId ?? before?.defiId;
+    if (!defiId) return;
+
+    const snap = await db
+      .collection('defi_participations')
+      .where('defiId', '==', defiId)
+      .get();
+
+    const participations = snap.docs.map((d) => {
+      const data = d.data();
+      return {
+        authorUidHash: data.authorUidHash,
+        value: data.value,
+        tranche: data.tranche,
+      };
+    });
+
+    const ranking = buildDefiRanking(defiId, participations, {
+      ascending: false,
+    });
+    await db.collection('defi_rankings').doc(defiId).set(ranking);
+  },
+);

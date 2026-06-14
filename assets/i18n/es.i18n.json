@@ -547,5 +547,90 @@
     "confidenceLow": "Aproximado (GPS débil)",
     "durationHm": "$h h $m min",
     "durationM": "$m min"
+  },
+  "leaderboard": {
+    "title": "Rey de la etapa",
+    "unavailable": "Clasificación no disponible por ahora.",
+    "empty": "Aún no hay clasificación para este segmento. ¡Sé el primero en recorrerlo!",
+    "pseudonymNotice": "Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.",
+    "trancheLabel": "Grupo: $tranche",
+    "notEnoughParticipants": "No hay suficientes participantes para publicar esta clasificación.",
+    "entrySemantics": "Posición $rank, $pseudonym, tiempo $time"
+  },
+  "social": {
+    "feedTitle": "Registro de actividad",
+    "empty": "Ninguna actividad por ahora.",
+    "kudos": "Animar",
+    "kudosCount": "$n ánimos",
+    "report": "Denunciar",
+    "reportTitle": "Denunciar esta publicación",
+    "reportReasonLabel": "Motivo de la denuncia",
+    "reasonSpam": "Spam o publicidad",
+    "reasonAbuse": "Contenido abusivo o de odio",
+    "reasonOther": "Otro",
+    "reportSend": "Enviar denuncia",
+    "reportSent": "Denuncia enviada. Nuestro equipo la revisará.",
+    "syncPending": "Esperando sincronización",
+    "synced": "Sincronizado",
+    "activitySegment": "completó un segmento",
+    "activityBadge": "obtuvo una insignia",
+    "activityDefi": "avanzó en un reto"
+  },
+  "gamification": {
+    "galleryTitle": "Mis insignias",
+    "obtained": "Obtenida",
+    "locked": "Bloqueada",
+    "tierDebutant": "Principiante",
+    "tierExpert": "Experto",
+    "badge": {
+      "firstStage": {
+        "titre": "Primera etapa",
+        "description": "Has completado tu primera etapa."
+      },
+      "firstTrek": {
+        "titre": "Primer trek",
+        "description": "Has terminado tu primer trek completo."
+      },
+      "firstSegment": {
+        "titre": "Primer segmento",
+        "description": "Has recorrido tu primer segmento."
+      },
+      "elevation5000": {
+        "titre": "5000 m de desnivel",
+        "description": "Has acumulado 5000 m de desnivel positivo."
+      },
+      "tenStages": {
+        "titre": "10 etapas",
+        "description": "Has completado 10 etapas."
+      },
+      "challenger": {
+        "titre": "Retador",
+        "description": "Has completado tu primer reto de temporada."
+      }
+    },
+    "defi": {
+      "screenTitle": "Retos",
+      "inProgress": "En curso",
+      "progressLabel": "Progreso: $current / $target",
+      "rankingTitle": "Clasificación del reto",
+      "pseudonymNotice": "Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.",
+      "notEnoughParticipants": "No hay suficientes participantes para publicar esta clasificación.",
+      "noDefi": "Ningún reto en curso por ahora."
+    }
+  },
+  "shareVisibility": {
+    "title": "Compartir y visibilidad",
+    "intro": "Por defecto, no se comparte nada. Activa abajo, finalidad por finalidad, lo que quieras hacer visible.",
+    "consentLink": "Gestionar mi consentimiento (privacidad)",
+    "stageResults": "Compartir mis resultados de etapa",
+    "stageResultsDesc": "Una tarjeta con seudónimo (sin datos personales directos).",
+    "leaderboard": "Aparecer en las clasificaciones",
+    "leaderboardDesc": "Clasificación por grupo, con un seudónimo.",
+    "activityFeed": "Publicar en el registro de actividad",
+    "activityFeedDesc": "Tus actividades aparecen en el registro, con un seudónimo.",
+    "shareTitle": "Compartir esta etapa",
+    "shareButton": "Compartir",
+    "privateNotice": "Compartir está desactivado. Actívalo en Compartir y visibilidad.",
+    "shared": "Tarjeta lista para compartir."
   }
 }
