@@ -183,6 +183,40 @@ void main() {
       expect(a.screens, equals(['catalog']));
     });
 
+    test('trek_stats (F6B-03) emis arrondi et zero-PII', () async {
+      await service.logTrekStats(
+        trailId: 'sentier-bleu',
+        distanceKm: 12.6,
+        elevationGainM: 845.4,
+        activeDuration: const Duration(hours: 3, minutes: 12),
+        pauseCount: 2,
+        avgHeartRateBpm: 134,
+      );
+
+      expect(a.events, hasLength(1));
+      final ev = a.events.single;
+      expect(ev.name, equals(AnalyticsEvents.trekStats));
+      // Mesures arrondies (anti-fingerprinting).
+      expect(ev.params['distance_km'], equals(13));
+      expect(ev.params['elevation_gain_m'], equals(845));
+      expect(ev.params['active_min'], equals(192));
+      expect(ev.params['pauses'], equals(2));
+      // FC en palier de 10 bpm.
+      expect(ev.params['hr_bucket'], equals(130));
+      _assertNoPii(ev.params, rawTrailId: 'sentier-bleu');
+    });
+
+    test('trek_stats omet la FC si non fournie', () async {
+      await service.logTrekStats(
+        trailId: 'sentier-bleu',
+        distanceKm: 5.0,
+        elevationGainM: 100,
+        activeDuration: const Duration(hours: 1),
+        pauseCount: 0,
+      );
+      expect(a.events.single.params.containsKey('hr_bucket'), isFalse);
+    });
+
     test('Crashlytics : non-fatal et fatal enregistres avec le bon flag',
         () async {
       await service.recordError(StateError('non-fatal'), StackTrace.current);
