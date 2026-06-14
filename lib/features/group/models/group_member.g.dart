@@ -40,6 +40,6 @@ Map<String, dynamic> _$GroupInfoToJson(_GroupInfo instance) =>
       'groupCode': instance.groupCode,
       'trailId': instance.trailId,
       'createdBy': instance.createdBy,
-      'members': instance.members,
+      'members': instance.members.map((e) => e.toJson()).toList(),
       'maxFreeWatchers': instance.maxFreeWatchers,
     };

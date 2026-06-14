@@ -20,7 +20,7 @@ _ItineraryDay _$ItineraryDayFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ItineraryDayToJson(_ItineraryDay instance) =>
     <String, dynamic>{
       'dayNumber': instance.dayNumber,
-      'stages': instance.stages,
+      'stages': instance.stages.map((e) => e.toJson()).toList(),
       'totalDistance': instance.totalDistance,
       'totalElevation': instance.totalElevation,
       'estimatedHours': instance.estimatedHours,

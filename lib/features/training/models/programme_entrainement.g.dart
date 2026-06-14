@@ -51,5 +51,5 @@ Map<String, dynamic> _$ProgrammeEntrainementToJson(
 ) => <String, dynamic>{
   'id': instance.id,
   'dureeSemaines': instance.dureeSemaines,
-  'seances': instance.seances,
+  'seances': instance.seances.map((e) => e.toJson()).toList(),
 };

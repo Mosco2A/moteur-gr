@@ -19,7 +19,7 @@ _DayPlan _$DayPlanFromJson(Map<String, dynamic> json) => _DayPlan(
 
 Map<String, dynamic> _$DayPlanToJson(_DayPlan instance) => <String, dynamic>{
   'dayNumber': instance.dayNumber,
-  'stages': instance.stages,
+  'stages': instance.stages.map((e) => e.toJson()).toList(),
   'totalDistanceKm': instance.totalDistanceKm,
   'totalElevationGainM': instance.totalElevationGainM,
   'estimatedDurationHours': instance.estimatedDurationHours,

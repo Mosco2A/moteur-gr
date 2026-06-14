@@ -19,3 +19,12 @@ targets:
     builders:
       slang_build_runner:
         enabled: false
+      # F8C-01 (Phase 8 P8-C) : serialisation des modeles imbriques.
+      # explicit_to_json => les objets Freezed imbriques (ex TownGuide ->
+      # List<GuideSection> -> List<GuideItem>) serialisent via leur propre
+      # toJson() (maps), au lieu d'etre emis tels quels (objets), ce qui
+      # cassait l'aller-retour JSON. Sans effet sur les modeles a champs
+      # primitifs / List<String> (la quasi-totalite du projet).
+      json_serializable:
+        options:
+          explicit_to_json: true

@@ -25,5 +25,5 @@ Map<String, dynamic> _$FeasibilityProfileToJson(_FeasibilityProfile instance) =>
       'maxKmPerDay': instance.maxKmPerDay,
       'maxHoursPerDay': instance.maxHoursPerDay,
       'groupMode': instance.groupMode,
-      'groupProfiles': instance.groupProfiles,
+      'groupProfiles': instance.groupProfiles?.map((e) => e.toJson()).toList(),
     };
