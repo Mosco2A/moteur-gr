@@ -538,5 +538,14 @@
       "moderee": "Moderata",
       "elevee": "Elevata"
     }
+  },
+  "eta": {
+    "title": "Tempo stimato",
+    "toNextWaypoint": "Prossimo punto",
+    "toStageEnd": "Fine tappa",
+    "confidenceHigh": "Stima affidabile",
+    "confidenceLow": "Approssimativo (GPS debole)",
+    "durationHm": "$h h $m min",
+    "durationM": "$m min"
   }
 }

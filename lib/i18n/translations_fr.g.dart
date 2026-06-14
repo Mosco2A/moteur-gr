@@ -71,6 +71,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$signalement$fr signalement = Translations$signalement$fr.internal(_root);
 	late final Translations$hebergement$fr hebergement = Translations$hebergement$fr.internal(_root);
 	late final Translations$training$fr training = Translations$training$fr.internal(_root);
+	late final Translations$eta$fr eta = Translations$eta$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1299,6 +1300,36 @@ class Translations$training$fr {
 	late final Translations$training$intensity$fr intensity = Translations$training$intensity$fr.internal(_root);
 }
 
+// Path: eta
+class Translations$eta$fr {
+	Translations$eta$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Temps estimé'
+	String get title => 'Temps estimé';
+
+	/// fr: 'Prochain point'
+	String get toNextWaypoint => 'Prochain point';
+
+	/// fr: 'Fin d'étape'
+	String get toStageEnd => 'Fin d\'étape';
+
+	/// fr: 'Estimation fiable'
+	String get confidenceHigh => 'Estimation fiable';
+
+	/// fr: 'Approximatif (GPS faible)'
+	String get confidenceLow => 'Approximatif (GPS faible)';
+
+	/// fr: '$h h $m min'
+	String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
+
+	/// fr: '$m min'
+	String durationM({required Object m}) => '${m} min';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2325,6 +2356,13 @@ extension on Translations {
 			'training.intensity.faible' => 'Faible',
 			'training.intensity.moderee' => 'Modérée',
 			'training.intensity.elevee' => 'Élevée',
+			'eta.title' => 'Temps estimé',
+			'eta.toNextWaypoint' => 'Prochain point',
+			'eta.toStageEnd' => 'Fin d\'étape',
+			'eta.confidenceHigh' => 'Estimation fiable',
+			'eta.confidenceLow' => 'Approximatif (GPS faible)',
+			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
+			'eta.durationM' => ({required Object m}) => '${m} min',
 			_ => null,
 		};
 	}

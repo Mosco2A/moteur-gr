@@ -70,6 +70,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$signalement$es signalement = _Translations$signalement$es._(_root);
 	@override late final _Translations$hebergement$es hebergement = _Translations$hebergement$es._(_root);
 	@override late final _Translations$training$es training = _Translations$training$es._(_root);
+	@override late final _Translations$eta$es eta = _Translations$eta$es._(_root);
 }
 
 // Path: a11y
@@ -671,6 +672,22 @@ class _Translations$training$es extends Translations$training$fr {
 	@override String progress({required Object done, required Object total}) => '${done}/${total} sesiones hechas';
 	@override late final _Translations$training$types$es types = _Translations$training$types$es._(_root);
 	@override late final _Translations$training$intensity$es intensity = _Translations$training$intensity$es._(_root);
+}
+
+// Path: eta
+class _Translations$eta$es extends Translations$eta$fr {
+	_Translations$eta$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Tiempo estimado';
+	@override String get toNextWaypoint => 'Próximo punto';
+	@override String get toStageEnd => 'Fin de etapa';
+	@override String get confidenceHigh => 'Estimación fiable';
+	@override String get confidenceLow => 'Aproximado (GPS débil)';
+	@override String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
+	@override String durationM({required Object m}) => '${m} min';
 }
 
 // Path: stage.difficulty
@@ -1441,6 +1458,13 @@ extension on TranslationsEs {
 			'training.intensity.faible' => 'Baja',
 			'training.intensity.moderee' => 'Moderada',
 			'training.intensity.elevee' => 'Alta',
+			'eta.title' => 'Tiempo estimado',
+			'eta.toNextWaypoint' => 'Próximo punto',
+			'eta.toStageEnd' => 'Fin de etapa',
+			'eta.confidenceHigh' => 'Estimación fiable',
+			'eta.confidenceLow' => 'Aproximado (GPS débil)',
+			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
+			'eta.durationM' => ({required Object m}) => '${m} min',
 			_ => null,
 		};
 	}

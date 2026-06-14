@@ -538,5 +538,14 @@
       "moderee": "Modérée",
       "elevee": "Élevée"
     }
+  },
+  "eta": {
+    "title": "Temps estimé",
+    "toNextWaypoint": "Prochain point",
+    "toStageEnd": "Fin d'étape",
+    "confidenceHigh": "Estimation fiable",
+    "confidenceLow": "Approximatif (GPS faible)",
+    "durationHm": "$h h $m min",
+    "durationM": "$m min"
   }
 }

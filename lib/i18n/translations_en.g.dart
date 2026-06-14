@@ -70,6 +70,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$signalement$en signalement = _Translations$signalement$en._(_root);
 	@override late final _Translations$hebergement$en hebergement = _Translations$hebergement$en._(_root);
 	@override late final _Translations$training$en training = _Translations$training$en._(_root);
+	@override late final _Translations$eta$en eta = _Translations$eta$en._(_root);
 }
 
 // Path: a11y
@@ -671,6 +672,22 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String progress({required Object done, required Object total}) => '${done}/${total} sessions done';
 	@override late final _Translations$training$types$en types = _Translations$training$types$en._(_root);
 	@override late final _Translations$training$intensity$en intensity = _Translations$training$intensity$en._(_root);
+}
+
+// Path: eta
+class _Translations$eta$en extends Translations$eta$fr {
+	_Translations$eta$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Estimated time';
+	@override String get toNextWaypoint => 'Next point';
+	@override String get toStageEnd => 'Stage end';
+	@override String get confidenceHigh => 'Reliable estimate';
+	@override String get confidenceLow => 'Approximate (weak GPS)';
+	@override String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
+	@override String durationM({required Object m}) => '${m} min';
 }
 
 // Path: stage.difficulty
@@ -1441,6 +1458,13 @@ extension on TranslationsEn {
 			'training.intensity.faible' => 'Low',
 			'training.intensity.moderee' => 'Moderate',
 			'training.intensity.elevee' => 'High',
+			'eta.title' => 'Estimated time',
+			'eta.toNextWaypoint' => 'Next point',
+			'eta.toStageEnd' => 'Stage end',
+			'eta.confidenceHigh' => 'Reliable estimate',
+			'eta.confidenceLow' => 'Approximate (weak GPS)',
+			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
+			'eta.durationM' => ({required Object m}) => '${m} min',
 			_ => null,
 		};
 	}
