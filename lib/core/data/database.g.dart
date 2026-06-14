@@ -14015,6 +14015,1057 @@ class ActivityFeedCacheCompanion
   }
 }
 
+class $WaypointTable extends Waypoint
+    with TableInfo<$WaypointTable, WaypointData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WaypointTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titreMeta = const VerificationMeta('titre');
+  @override
+  late final GeneratedColumn<String> titre = GeneratedColumn<String>(
+    'titre',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastUpdatedAtMeta = const VerificationMeta(
+    'lastUpdatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastUpdatedAt =
+      GeneratedColumn<DateTime>(
+        'last_updated_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('officiel'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    type,
+    latitude,
+    longitude,
+    titre,
+    lastUpdatedAt,
+    source,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'waypoint';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WaypointData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latitudeMeta);
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_longitudeMeta);
+    }
+    if (data.containsKey('titre')) {
+      context.handle(
+        _titreMeta,
+        titre.isAcceptableOrUnknown(data['titre']!, _titreMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titreMeta);
+    }
+    if (data.containsKey('last_updated_at')) {
+      context.handle(
+        _lastUpdatedAtMeta,
+        lastUpdatedAt.isAcceptableOrUnknown(
+          data['last_updated_at']!,
+          _lastUpdatedAtMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_lastUpdatedAtMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WaypointData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WaypointData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      )!,
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      )!,
+      titre: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}titre'],
+      )!,
+      lastUpdatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_updated_at'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+    );
+  }
+
+  @override
+  $WaypointTable createAlias(String alias) {
+    return $WaypointTable(attachedDatabase, alias);
+  }
+}
+
+class WaypointData extends DataClass implements Insertable<WaypointData> {
+  /// Identifiant stable du waypoint (fourni serveur/seed).
+  final String id;
+
+  /// Identifiant du sentier auquel appartient le waypoint.
+  final String trailId;
+
+  /// Type de waypoint : 'eau', 'ravitaillement', 'danger', 'camp',
+  /// 'connectivite', 'jonction'.
+  final String type;
+
+  /// Latitude du waypoint (degres decimaux).
+  final double latitude;
+
+  /// Longitude du waypoint (degres decimaux).
+  final double longitude;
+
+  /// Titre court affiche du waypoint.
+  final String titre;
+
+  /// Date de derniere mise a jour (UTC).
+  final DateTime lastUpdatedAt;
+
+  /// Source du waypoint : 'officiel' ou 'communaute'.
+  final String source;
+  const WaypointData({
+    required this.id,
+    required this.trailId,
+    required this.type,
+    required this.latitude,
+    required this.longitude,
+    required this.titre,
+    required this.lastUpdatedAt,
+    required this.source,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['type'] = Variable<String>(type);
+    map['latitude'] = Variable<double>(latitude);
+    map['longitude'] = Variable<double>(longitude);
+    map['titre'] = Variable<String>(titre);
+    map['last_updated_at'] = Variable<DateTime>(lastUpdatedAt);
+    map['source'] = Variable<String>(source);
+    return map;
+  }
+
+  WaypointCompanion toCompanion(bool nullToAbsent) {
+    return WaypointCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      type: Value(type),
+      latitude: Value(latitude),
+      longitude: Value(longitude),
+      titre: Value(titre),
+      lastUpdatedAt: Value(lastUpdatedAt),
+      source: Value(source),
+    );
+  }
+
+  factory WaypointData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WaypointData(
+      id: serializer.fromJson<String>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      type: serializer.fromJson<String>(json['type']),
+      latitude: serializer.fromJson<double>(json['latitude']),
+      longitude: serializer.fromJson<double>(json['longitude']),
+      titre: serializer.fromJson<String>(json['titre']),
+      lastUpdatedAt: serializer.fromJson<DateTime>(json['lastUpdatedAt']),
+      source: serializer.fromJson<String>(json['source']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'type': serializer.toJson<String>(type),
+      'latitude': serializer.toJson<double>(latitude),
+      'longitude': serializer.toJson<double>(longitude),
+      'titre': serializer.toJson<String>(titre),
+      'lastUpdatedAt': serializer.toJson<DateTime>(lastUpdatedAt),
+      'source': serializer.toJson<String>(source),
+    };
+  }
+
+  WaypointData copyWith({
+    String? id,
+    String? trailId,
+    String? type,
+    double? latitude,
+    double? longitude,
+    String? titre,
+    DateTime? lastUpdatedAt,
+    String? source,
+  }) => WaypointData(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    type: type ?? this.type,
+    latitude: latitude ?? this.latitude,
+    longitude: longitude ?? this.longitude,
+    titre: titre ?? this.titre,
+    lastUpdatedAt: lastUpdatedAt ?? this.lastUpdatedAt,
+    source: source ?? this.source,
+  );
+  WaypointData copyWithCompanion(WaypointCompanion data) {
+    return WaypointData(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      type: data.type.present ? data.type.value : this.type,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      titre: data.titre.present ? data.titre.value : this.titre,
+      lastUpdatedAt: data.lastUpdatedAt.present
+          ? data.lastUpdatedAt.value
+          : this.lastUpdatedAt,
+      source: data.source.present ? data.source.value : this.source,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WaypointData(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('type: $type, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('titre: $titre, ')
+          ..write('lastUpdatedAt: $lastUpdatedAt, ')
+          ..write('source: $source')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    type,
+    latitude,
+    longitude,
+    titre,
+    lastUpdatedAt,
+    source,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WaypointData &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.type == this.type &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.titre == this.titre &&
+          other.lastUpdatedAt == this.lastUpdatedAt &&
+          other.source == this.source);
+}
+
+class WaypointCompanion extends UpdateCompanion<WaypointData> {
+  final Value<String> id;
+  final Value<String> trailId;
+  final Value<String> type;
+  final Value<double> latitude;
+  final Value<double> longitude;
+  final Value<String> titre;
+  final Value<DateTime> lastUpdatedAt;
+  final Value<String> source;
+  final Value<int> rowid;
+  const WaypointCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.type = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.titre = const Value.absent(),
+    this.lastUpdatedAt = const Value.absent(),
+    this.source = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WaypointCompanion.insert({
+    required String id,
+    required String trailId,
+    required String type,
+    required double latitude,
+    required double longitude,
+    required String titre,
+    required DateTime lastUpdatedAt,
+    this.source = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       trailId = Value(trailId),
+       type = Value(type),
+       latitude = Value(latitude),
+       longitude = Value(longitude),
+       titre = Value(titre),
+       lastUpdatedAt = Value(lastUpdatedAt);
+  static Insertable<WaypointData> custom({
+    Expression<String>? id,
+    Expression<String>? trailId,
+    Expression<String>? type,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<String>? titre,
+    Expression<DateTime>? lastUpdatedAt,
+    Expression<String>? source,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (type != null) 'type': type,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (titre != null) 'titre': titre,
+      if (lastUpdatedAt != null) 'last_updated_at': lastUpdatedAt,
+      if (source != null) 'source': source,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WaypointCompanion copyWith({
+    Value<String>? id,
+    Value<String>? trailId,
+    Value<String>? type,
+    Value<double>? latitude,
+    Value<double>? longitude,
+    Value<String>? titre,
+    Value<DateTime>? lastUpdatedAt,
+    Value<String>? source,
+    Value<int>? rowid,
+  }) {
+    return WaypointCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      type: type ?? this.type,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      titre: titre ?? this.titre,
+      lastUpdatedAt: lastUpdatedAt ?? this.lastUpdatedAt,
+      source: source ?? this.source,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (titre.present) {
+      map['titre'] = Variable<String>(titre.value);
+    }
+    if (lastUpdatedAt.present) {
+      map['last_updated_at'] = Variable<DateTime>(lastUpdatedAt.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WaypointCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('type: $type, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('titre: $titre, ')
+          ..write('lastUpdatedAt: $lastUpdatedAt, ')
+          ..write('source: $source, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WaypointCommentTable extends WaypointComment
+    with TableInfo<$WaypointCommentTable, WaypointCommentData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WaypointCommentTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _waypointIdMeta = const VerificationMeta(
+    'waypointId',
+  );
+  @override
+  late final GeneratedColumn<String> waypointId = GeneratedColumn<String>(
+    'waypoint_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorUidHashMeta = const VerificationMeta(
+    'authorUidHash',
+  );
+  @override
+  late final GeneratedColumn<String> authorUidHash = GeneratedColumn<String>(
+    'author_uid_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _texteMeta = const VerificationMeta('texte');
+  @override
+  late final GeneratedColumn<String> texte = GeneratedColumn<String>(
+    'texte',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _conditionMeta = const VerificationMeta(
+    'condition',
+  );
+  @override
+  late final GeneratedColumn<String> condition = GeneratedColumn<String>(
+    'condition',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _moderationStateMeta = const VerificationMeta(
+    'moderationState',
+  );
+  @override
+  late final GeneratedColumn<String> moderationState = GeneratedColumn<String>(
+    'moderation_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('visible'),
+  );
+  static const VerificationMeta _syncStateMeta = const VerificationMeta(
+    'syncState',
+  );
+  @override
+  late final GeneratedColumn<String> syncState = GeneratedColumn<String>(
+    'sync_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    waypointId,
+    authorUidHash,
+    texte,
+    condition,
+    createdAt,
+    moderationState,
+    syncState,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'waypoint_comment';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WaypointCommentData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('waypoint_id')) {
+      context.handle(
+        _waypointIdMeta,
+        waypointId.isAcceptableOrUnknown(data['waypoint_id']!, _waypointIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_waypointIdMeta);
+    }
+    if (data.containsKey('author_uid_hash')) {
+      context.handle(
+        _authorUidHashMeta,
+        authorUidHash.isAcceptableOrUnknown(
+          data['author_uid_hash']!,
+          _authorUidHashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_authorUidHashMeta);
+    }
+    if (data.containsKey('texte')) {
+      context.handle(
+        _texteMeta,
+        texte.isAcceptableOrUnknown(data['texte']!, _texteMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_texteMeta);
+    }
+    if (data.containsKey('condition')) {
+      context.handle(
+        _conditionMeta,
+        condition.isAcceptableOrUnknown(data['condition']!, _conditionMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('moderation_state')) {
+      context.handle(
+        _moderationStateMeta,
+        moderationState.isAcceptableOrUnknown(
+          data['moderation_state']!,
+          _moderationStateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_state')) {
+      context.handle(
+        _syncStateMeta,
+        syncState.isAcceptableOrUnknown(data['sync_state']!, _syncStateMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  WaypointCommentData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WaypointCommentData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      waypointId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}waypoint_id'],
+      )!,
+      authorUidHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_uid_hash'],
+      )!,
+      texte: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}texte'],
+      )!,
+      condition: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}condition'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      moderationState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}moderation_state'],
+      )!,
+      syncState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_state'],
+      )!,
+    );
+  }
+
+  @override
+  $WaypointCommentTable createAlias(String alias) {
+    return $WaypointCommentTable(attachedDatabase, alias);
+  }
+}
+
+class WaypointCommentData extends DataClass
+    implements Insertable<WaypointCommentData> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Identifiant du waypoint commente.
+  final String waypointId;
+
+  /// UID HACHE en SHA-256 de l'auteur (jamais de PII, #85383).
+  final String authorUidHash;
+
+  /// Texte du commentaire.
+  final String texte;
+
+  /// Condition terrain optionnelle (ex : 'eau_a_sec', 'eau_coule_fort').
+  final String? condition;
+
+  /// Date de creation locale (UTC).
+  final DateTime createdAt;
+
+  /// Etat de moderation ('visible', 'flagged', 'removed'). Defaut 'visible'.
+  final String moderationState;
+
+  /// Etat de synchronisation ('pending', 'synced', 'failed').
+  final String syncState;
+  const WaypointCommentData({
+    required this.id,
+    required this.waypointId,
+    required this.authorUidHash,
+    required this.texte,
+    this.condition,
+    required this.createdAt,
+    required this.moderationState,
+    required this.syncState,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['waypoint_id'] = Variable<String>(waypointId);
+    map['author_uid_hash'] = Variable<String>(authorUidHash);
+    map['texte'] = Variable<String>(texte);
+    if (!nullToAbsent || condition != null) {
+      map['condition'] = Variable<String>(condition);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['moderation_state'] = Variable<String>(moderationState);
+    map['sync_state'] = Variable<String>(syncState);
+    return map;
+  }
+
+  WaypointCommentCompanion toCompanion(bool nullToAbsent) {
+    return WaypointCommentCompanion(
+      id: Value(id),
+      waypointId: Value(waypointId),
+      authorUidHash: Value(authorUidHash),
+      texte: Value(texte),
+      condition: condition == null && nullToAbsent
+          ? const Value.absent()
+          : Value(condition),
+      createdAt: Value(createdAt),
+      moderationState: Value(moderationState),
+      syncState: Value(syncState),
+    );
+  }
+
+  factory WaypointCommentData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WaypointCommentData(
+      id: serializer.fromJson<int>(json['id']),
+      waypointId: serializer.fromJson<String>(json['waypointId']),
+      authorUidHash: serializer.fromJson<String>(json['authorUidHash']),
+      texte: serializer.fromJson<String>(json['texte']),
+      condition: serializer.fromJson<String?>(json['condition']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      moderationState: serializer.fromJson<String>(json['moderationState']),
+      syncState: serializer.fromJson<String>(json['syncState']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'waypointId': serializer.toJson<String>(waypointId),
+      'authorUidHash': serializer.toJson<String>(authorUidHash),
+      'texte': serializer.toJson<String>(texte),
+      'condition': serializer.toJson<String?>(condition),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'moderationState': serializer.toJson<String>(moderationState),
+      'syncState': serializer.toJson<String>(syncState),
+    };
+  }
+
+  WaypointCommentData copyWith({
+    int? id,
+    String? waypointId,
+    String? authorUidHash,
+    String? texte,
+    Value<String?> condition = const Value.absent(),
+    DateTime? createdAt,
+    String? moderationState,
+    String? syncState,
+  }) => WaypointCommentData(
+    id: id ?? this.id,
+    waypointId: waypointId ?? this.waypointId,
+    authorUidHash: authorUidHash ?? this.authorUidHash,
+    texte: texte ?? this.texte,
+    condition: condition.present ? condition.value : this.condition,
+    createdAt: createdAt ?? this.createdAt,
+    moderationState: moderationState ?? this.moderationState,
+    syncState: syncState ?? this.syncState,
+  );
+  WaypointCommentData copyWithCompanion(WaypointCommentCompanion data) {
+    return WaypointCommentData(
+      id: data.id.present ? data.id.value : this.id,
+      waypointId: data.waypointId.present
+          ? data.waypointId.value
+          : this.waypointId,
+      authorUidHash: data.authorUidHash.present
+          ? data.authorUidHash.value
+          : this.authorUidHash,
+      texte: data.texte.present ? data.texte.value : this.texte,
+      condition: data.condition.present ? data.condition.value : this.condition,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      moderationState: data.moderationState.present
+          ? data.moderationState.value
+          : this.moderationState,
+      syncState: data.syncState.present ? data.syncState.value : this.syncState,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WaypointCommentData(')
+          ..write('id: $id, ')
+          ..write('waypointId: $waypointId, ')
+          ..write('authorUidHash: $authorUidHash, ')
+          ..write('texte: $texte, ')
+          ..write('condition: $condition, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('moderationState: $moderationState, ')
+          ..write('syncState: $syncState')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    waypointId,
+    authorUidHash,
+    texte,
+    condition,
+    createdAt,
+    moderationState,
+    syncState,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WaypointCommentData &&
+          other.id == this.id &&
+          other.waypointId == this.waypointId &&
+          other.authorUidHash == this.authorUidHash &&
+          other.texte == this.texte &&
+          other.condition == this.condition &&
+          other.createdAt == this.createdAt &&
+          other.moderationState == this.moderationState &&
+          other.syncState == this.syncState);
+}
+
+class WaypointCommentCompanion extends UpdateCompanion<WaypointCommentData> {
+  final Value<int> id;
+  final Value<String> waypointId;
+  final Value<String> authorUidHash;
+  final Value<String> texte;
+  final Value<String?> condition;
+  final Value<DateTime> createdAt;
+  final Value<String> moderationState;
+  final Value<String> syncState;
+  const WaypointCommentCompanion({
+    this.id = const Value.absent(),
+    this.waypointId = const Value.absent(),
+    this.authorUidHash = const Value.absent(),
+    this.texte = const Value.absent(),
+    this.condition = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.moderationState = const Value.absent(),
+    this.syncState = const Value.absent(),
+  });
+  WaypointCommentCompanion.insert({
+    this.id = const Value.absent(),
+    required String waypointId,
+    required String authorUidHash,
+    required String texte,
+    this.condition = const Value.absent(),
+    required DateTime createdAt,
+    this.moderationState = const Value.absent(),
+    this.syncState = const Value.absent(),
+  }) : waypointId = Value(waypointId),
+       authorUidHash = Value(authorUidHash),
+       texte = Value(texte),
+       createdAt = Value(createdAt);
+  static Insertable<WaypointCommentData> custom({
+    Expression<int>? id,
+    Expression<String>? waypointId,
+    Expression<String>? authorUidHash,
+    Expression<String>? texte,
+    Expression<String>? condition,
+    Expression<DateTime>? createdAt,
+    Expression<String>? moderationState,
+    Expression<String>? syncState,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (waypointId != null) 'waypoint_id': waypointId,
+      if (authorUidHash != null) 'author_uid_hash': authorUidHash,
+      if (texte != null) 'texte': texte,
+      if (condition != null) 'condition': condition,
+      if (createdAt != null) 'created_at': createdAt,
+      if (moderationState != null) 'moderation_state': moderationState,
+      if (syncState != null) 'sync_state': syncState,
+    });
+  }
+
+  WaypointCommentCompanion copyWith({
+    Value<int>? id,
+    Value<String>? waypointId,
+    Value<String>? authorUidHash,
+    Value<String>? texte,
+    Value<String?>? condition,
+    Value<DateTime>? createdAt,
+    Value<String>? moderationState,
+    Value<String>? syncState,
+  }) {
+    return WaypointCommentCompanion(
+      id: id ?? this.id,
+      waypointId: waypointId ?? this.waypointId,
+      authorUidHash: authorUidHash ?? this.authorUidHash,
+      texte: texte ?? this.texte,
+      condition: condition ?? this.condition,
+      createdAt: createdAt ?? this.createdAt,
+      moderationState: moderationState ?? this.moderationState,
+      syncState: syncState ?? this.syncState,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (waypointId.present) {
+      map['waypoint_id'] = Variable<String>(waypointId.value);
+    }
+    if (authorUidHash.present) {
+      map['author_uid_hash'] = Variable<String>(authorUidHash.value);
+    }
+    if (texte.present) {
+      map['texte'] = Variable<String>(texte.value);
+    }
+    if (condition.present) {
+      map['condition'] = Variable<String>(condition.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (moderationState.present) {
+      map['moderation_state'] = Variable<String>(moderationState.value);
+    }
+    if (syncState.present) {
+      map['sync_state'] = Variable<String>(syncState.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WaypointCommentCompanion(')
+          ..write('id: $id, ')
+          ..write('waypointId: $waypointId, ')
+          ..write('authorUidHash: $authorUidHash, ')
+          ..write('texte: $texte, ')
+          ..write('condition: $condition, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('moderationState: $moderationState, ')
+          ..write('syncState: $syncState')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -14052,6 +15103,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $KudosLocalTable kudosLocal = $KudosLocalTable(this);
   late final $ActivityFeedCacheTable activityFeedCache =
       $ActivityFeedCacheTable(this);
+  late final $WaypointTable waypoint = $WaypointTable(this);
+  late final $WaypointCommentTable waypointComment = $WaypointCommentTable(
+    this,
+  );
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -14100,6 +15155,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final SegmentsDao segmentsDao = SegmentsDao(this as AppDatabase);
   late final KudosFeedDao kudosFeedDao = KudosFeedDao(this as AppDatabase);
+  late final WaypointsDao waypointsDao = WaypointsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -14131,6 +15187,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     segmentEffortLocal,
     kudosLocal,
     activityFeedCache,
+    waypoint,
+    waypointComment,
   ];
 }
 
@@ -21061,6 +22119,532 @@ typedef $$ActivityFeedCacheTableProcessedTableManager =
       ActivityFeedCacheData,
       PrefetchHooks Function()
     >;
+typedef $$WaypointTableCreateCompanionBuilder =
+    WaypointCompanion Function({
+      required String id,
+      required String trailId,
+      required String type,
+      required double latitude,
+      required double longitude,
+      required String titre,
+      required DateTime lastUpdatedAt,
+      Value<String> source,
+      Value<int> rowid,
+    });
+typedef $$WaypointTableUpdateCompanionBuilder =
+    WaypointCompanion Function({
+      Value<String> id,
+      Value<String> trailId,
+      Value<String> type,
+      Value<double> latitude,
+      Value<double> longitude,
+      Value<String> titre,
+      Value<DateTime> lastUpdatedAt,
+      Value<String> source,
+      Value<int> rowid,
+    });
+
+class $$WaypointTableFilterComposer
+    extends Composer<_$AppDatabase, $WaypointTable> {
+  $$WaypointTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get titre => $composableBuilder(
+    column: $table.titre,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastUpdatedAt => $composableBuilder(
+    column: $table.lastUpdatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WaypointTableOrderingComposer
+    extends Composer<_$AppDatabase, $WaypointTable> {
+  $$WaypointTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get titre => $composableBuilder(
+    column: $table.titre,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastUpdatedAt => $composableBuilder(
+    column: $table.lastUpdatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WaypointTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WaypointTable> {
+  $$WaypointTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<String> get titre =>
+      $composableBuilder(column: $table.titre, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastUpdatedAt => $composableBuilder(
+    column: $table.lastUpdatedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+}
+
+class $$WaypointTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WaypointTable,
+          WaypointData,
+          $$WaypointTableFilterComposer,
+          $$WaypointTableOrderingComposer,
+          $$WaypointTableAnnotationComposer,
+          $$WaypointTableCreateCompanionBuilder,
+          $$WaypointTableUpdateCompanionBuilder,
+          (
+            WaypointData,
+            BaseReferences<_$AppDatabase, $WaypointTable, WaypointData>,
+          ),
+          WaypointData,
+          PrefetchHooks Function()
+        > {
+  $$WaypointTableTableManager(_$AppDatabase db, $WaypointTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WaypointTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WaypointTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WaypointTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<double> latitude = const Value.absent(),
+                Value<double> longitude = const Value.absent(),
+                Value<String> titre = const Value.absent(),
+                Value<DateTime> lastUpdatedAt = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WaypointCompanion(
+                id: id,
+                trailId: trailId,
+                type: type,
+                latitude: latitude,
+                longitude: longitude,
+                titre: titre,
+                lastUpdatedAt: lastUpdatedAt,
+                source: source,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String trailId,
+                required String type,
+                required double latitude,
+                required double longitude,
+                required String titre,
+                required DateTime lastUpdatedAt,
+                Value<String> source = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WaypointCompanion.insert(
+                id: id,
+                trailId: trailId,
+                type: type,
+                latitude: latitude,
+                longitude: longitude,
+                titre: titre,
+                lastUpdatedAt: lastUpdatedAt,
+                source: source,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WaypointTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WaypointTable,
+      WaypointData,
+      $$WaypointTableFilterComposer,
+      $$WaypointTableOrderingComposer,
+      $$WaypointTableAnnotationComposer,
+      $$WaypointTableCreateCompanionBuilder,
+      $$WaypointTableUpdateCompanionBuilder,
+      (
+        WaypointData,
+        BaseReferences<_$AppDatabase, $WaypointTable, WaypointData>,
+      ),
+      WaypointData,
+      PrefetchHooks Function()
+    >;
+typedef $$WaypointCommentTableCreateCompanionBuilder =
+    WaypointCommentCompanion Function({
+      Value<int> id,
+      required String waypointId,
+      required String authorUidHash,
+      required String texte,
+      Value<String?> condition,
+      required DateTime createdAt,
+      Value<String> moderationState,
+      Value<String> syncState,
+    });
+typedef $$WaypointCommentTableUpdateCompanionBuilder =
+    WaypointCommentCompanion Function({
+      Value<int> id,
+      Value<String> waypointId,
+      Value<String> authorUidHash,
+      Value<String> texte,
+      Value<String?> condition,
+      Value<DateTime> createdAt,
+      Value<String> moderationState,
+      Value<String> syncState,
+    });
+
+class $$WaypointCommentTableFilterComposer
+    extends Composer<_$AppDatabase, $WaypointCommentTable> {
+  $$WaypointCommentTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get waypointId => $composableBuilder(
+    column: $table.waypointId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get texte => $composableBuilder(
+    column: $table.texte,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get condition => $composableBuilder(
+    column: $table.condition,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WaypointCommentTableOrderingComposer
+    extends Composer<_$AppDatabase, $WaypointCommentTable> {
+  $$WaypointCommentTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get waypointId => $composableBuilder(
+    column: $table.waypointId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get texte => $composableBuilder(
+    column: $table.texte,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get condition => $composableBuilder(
+    column: $table.condition,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WaypointCommentTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WaypointCommentTable> {
+  $$WaypointCommentTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get waypointId => $composableBuilder(
+    column: $table.waypointId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get texte =>
+      $composableBuilder(column: $table.texte, builder: (column) => column);
+
+  GeneratedColumn<String> get condition =>
+      $composableBuilder(column: $table.condition, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncState =>
+      $composableBuilder(column: $table.syncState, builder: (column) => column);
+}
+
+class $$WaypointCommentTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WaypointCommentTable,
+          WaypointCommentData,
+          $$WaypointCommentTableFilterComposer,
+          $$WaypointCommentTableOrderingComposer,
+          $$WaypointCommentTableAnnotationComposer,
+          $$WaypointCommentTableCreateCompanionBuilder,
+          $$WaypointCommentTableUpdateCompanionBuilder,
+          (
+            WaypointCommentData,
+            BaseReferences<
+              _$AppDatabase,
+              $WaypointCommentTable,
+              WaypointCommentData
+            >,
+          ),
+          WaypointCommentData,
+          PrefetchHooks Function()
+        > {
+  $$WaypointCommentTableTableManager(
+    _$AppDatabase db,
+    $WaypointCommentTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WaypointCommentTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WaypointCommentTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WaypointCommentTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> waypointId = const Value.absent(),
+                Value<String> authorUidHash = const Value.absent(),
+                Value<String> texte = const Value.absent(),
+                Value<String?> condition = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> moderationState = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+              }) => WaypointCommentCompanion(
+                id: id,
+                waypointId: waypointId,
+                authorUidHash: authorUidHash,
+                texte: texte,
+                condition: condition,
+                createdAt: createdAt,
+                moderationState: moderationState,
+                syncState: syncState,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String waypointId,
+                required String authorUidHash,
+                required String texte,
+                Value<String?> condition = const Value.absent(),
+                required DateTime createdAt,
+                Value<String> moderationState = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+              }) => WaypointCommentCompanion.insert(
+                id: id,
+                waypointId: waypointId,
+                authorUidHash: authorUidHash,
+                texte: texte,
+                condition: condition,
+                createdAt: createdAt,
+                moderationState: moderationState,
+                syncState: syncState,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WaypointCommentTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WaypointCommentTable,
+      WaypointCommentData,
+      $$WaypointCommentTableFilterComposer,
+      $$WaypointCommentTableOrderingComposer,
+      $$WaypointCommentTableAnnotationComposer,
+      $$WaypointCommentTableCreateCompanionBuilder,
+      $$WaypointCommentTableUpdateCompanionBuilder,
+      (
+        WaypointCommentData,
+        BaseReferences<
+          _$AppDatabase,
+          $WaypointCommentTable,
+          WaypointCommentData
+        >,
+      ),
+      WaypointCommentData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -21116,4 +22700,8 @@ class $AppDatabaseManager {
       $$KudosLocalTableTableManager(_db, _db.kudosLocal);
   $$ActivityFeedCacheTableTableManager get activityFeedCache =>
       $$ActivityFeedCacheTableTableManager(_db, _db.activityFeedCache);
+  $$WaypointTableTableManager get waypoint =>
+      $$WaypointTableTableManager(_db, _db.waypoint);
+  $$WaypointCommentTableTableManager get waypointComment =>
+      $$WaypointCommentTableTableManager(_db, _db.waypointComment);
 }
