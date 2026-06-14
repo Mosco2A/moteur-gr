@@ -632,5 +632,35 @@
     "shareButton": "Condividi",
     "privateNotice": "La condivisione è disattivata. Attivala in Condivisione e visibilità.",
     "shared": "Scheda pronta da condividere."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Acqua",
+      "ravitaillement": "Rifornimento",
+      "danger": "Pericolo",
+      "camp": "Campeggio",
+      "connectivite": "Connettivita",
+      "jonction": "Bivio"
+    },
+    "filters": {
+      "title": "Filtra i waypoint",
+      "showAll": "Mostra tutto",
+      "hideAll": "Nascondi tutto",
+      "recentConditionOnly": "Solo condizione recente"
+    },
+    "detail": {
+      "conditionsTitle": "Condizioni del terreno",
+      "noComments": "Nessuna condizione segnalata per ora.",
+      "commentsError": "Condizioni non disponibili.",
+      "report": "Segnala",
+      "reportAck": "Segnalazione salvata. Sara esaminata dopo la sincronizzazione.",
+      "pendingSync": "In attesa di sincronizzazione"
+    },
+    "freshness": {
+      "justNow": "aggiornato proprio ora",
+      "minutes": "aggiornato $n min fa",
+      "hours": "aggiornato $n h fa",
+      "days": "aggiornato $n g fa"
+    }
   }
 }

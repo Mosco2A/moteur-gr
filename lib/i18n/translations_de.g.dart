@@ -75,6 +75,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$social$de social = _Translations$social$de._(_root);
 	@override late final _Translations$gamification$de gamification = _Translations$gamification$de._(_root);
 	@override late final _Translations$shareVisibility$de shareVisibility = _Translations$shareVisibility$de._(_root);
+	@override late final _Translations$waypoints$de waypoints = _Translations$waypoints$de._(_root);
 }
 
 // Path: a11y
@@ -774,6 +775,19 @@ class _Translations$shareVisibility$de extends Translations$shareVisibility$fr {
 	@override String get shared => 'Karte bereit zum Teilen.';
 }
 
+// Path: waypoints
+class _Translations$waypoints$de extends Translations$waypoints$fr {
+	_Translations$waypoints$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$waypoints$types$de types = _Translations$waypoints$types$de._(_root);
+	@override late final _Translations$waypoints$filters$de filters = _Translations$waypoints$filters$de._(_root);
+	@override late final _Translations$waypoints$detail$de detail = _Translations$waypoints$detail$de._(_root);
+	@override late final _Translations$waypoints$freshness$de freshness = _Translations$waypoints$freshness$de._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$de extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1031,6 +1045,62 @@ class _Translations$gamification$defi$de extends Translations$gamification$defi$
 	@override String get pseudonymNotice => 'Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.';
 	@override String get notEnoughParticipants => 'Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.';
 	@override String get noDefi => 'Derzeit keine laufende Challenge.';
+}
+
+// Path: waypoints.types
+class _Translations$waypoints$types$de extends Translations$waypoints$types$fr {
+	_Translations$waypoints$types$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get eau => 'Wasser';
+	@override String get ravitaillement => 'Nachschub';
+	@override String get danger => 'Gefahr';
+	@override String get camp => 'Zeltplatz';
+	@override String get connectivite => 'Konnektivitat';
+	@override String get jonction => 'Kreuzung';
+}
+
+// Path: waypoints.filters
+class _Translations$waypoints$filters$de extends Translations$waypoints$filters$fr {
+	_Translations$waypoints$filters$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Wegpunkte filtern';
+	@override String get showAll => 'Alle anzeigen';
+	@override String get hideAll => 'Alle ausblenden';
+	@override String get recentConditionOnly => 'Nur aktueller Zustand';
+}
+
+// Path: waypoints.detail
+class _Translations$waypoints$detail$de extends Translations$waypoints$detail$fr {
+	_Translations$waypoints$detail$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get conditionsTitle => 'Gelandezustand';
+	@override String get noComments => 'Noch kein Zustand gemeldet.';
+	@override String get commentsError => 'Zustand nicht verfugbar.';
+	@override String get report => 'Melden';
+	@override String get reportAck => 'Meldung gespeichert. Sie wird nach der Synchronisierung gepruft.';
+	@override String get pendingSync => 'Warten auf Synchronisierung';
+}
+
+// Path: waypoints.freshness
+class _Translations$waypoints$freshness$de extends Translations$waypoints$freshness$fr {
+	_Translations$waypoints$freshness$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get justNow => 'gerade aktualisiert';
+	@override String minutes({required Object n}) => 'vor ${n} Min aktualisiert';
+	@override String hours({required Object n}) => 'vor ${n} Std aktualisiert';
+	@override String days({required Object n}) => 'vor ${n} T aktualisiert';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1707,6 +1777,28 @@ extension on TranslationsDe {
 			'shareVisibility.shareButton' => 'Teilen',
 			'shareVisibility.privateNotice' => 'Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.',
 			'shareVisibility.shared' => 'Karte bereit zum Teilen.',
+			'waypoints.types.eau' => 'Wasser',
+			'waypoints.types.ravitaillement' => 'Nachschub',
+			'waypoints.types.danger' => 'Gefahr',
+			'waypoints.types.camp' => 'Zeltplatz',
+			'waypoints.types.connectivite' => 'Konnektivitat',
+			'waypoints.types.jonction' => 'Kreuzung',
+			'waypoints.filters.title' => 'Wegpunkte filtern',
+			'waypoints.filters.showAll' => 'Alle anzeigen',
+			_ => null,
+		} ?? switch (path) {
+			'waypoints.filters.hideAll' => 'Alle ausblenden',
+			'waypoints.filters.recentConditionOnly' => 'Nur aktueller Zustand',
+			'waypoints.detail.conditionsTitle' => 'Gelandezustand',
+			'waypoints.detail.noComments' => 'Noch kein Zustand gemeldet.',
+			'waypoints.detail.commentsError' => 'Zustand nicht verfugbar.',
+			'waypoints.detail.report' => 'Melden',
+			'waypoints.detail.reportAck' => 'Meldung gespeichert. Sie wird nach der Synchronisierung gepruft.',
+			'waypoints.detail.pendingSync' => 'Warten auf Synchronisierung',
+			'waypoints.freshness.justNow' => 'gerade aktualisiert',
+			'waypoints.freshness.minutes' => ({required Object n}) => 'vor ${n} Min aktualisiert',
+			'waypoints.freshness.hours' => ({required Object n}) => 'vor ${n} Std aktualisiert',
+			'waypoints.freshness.days' => ({required Object n}) => 'vor ${n} T aktualisiert',
 			_ => null,
 		};
 	}

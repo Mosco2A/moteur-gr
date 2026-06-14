@@ -76,6 +76,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$social$fr social = Translations$social$fr.internal(_root);
 	late final Translations$gamification$fr gamification = Translations$gamification$fr.internal(_root);
 	late final Translations$shareVisibility$fr shareVisibility = Translations$shareVisibility$fr.internal(_root);
+	late final Translations$waypoints$fr waypoints = Translations$waypoints$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1499,6 +1500,19 @@ class Translations$shareVisibility$fr {
 	String get shared => 'Carte prête à partager.';
 }
 
+// Path: waypoints
+class Translations$waypoints$fr {
+	Translations$waypoints$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$waypoints$types$fr types = Translations$waypoints$types$fr.internal(_root);
+	late final Translations$waypoints$filters$fr filters = Translations$waypoints$filters$fr.internal(_root);
+	late final Translations$waypoints$detail$fr detail = Translations$waypoints$detail$fr.internal(_root);
+	late final Translations$waypoints$freshness$fr freshness = Translations$waypoints$freshness$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1984,6 +1998,102 @@ class Translations$gamification$defi$fr {
 
 	/// fr: 'Aucun défi en cours pour le moment.'
 	String get noDefi => 'Aucun défi en cours pour le moment.';
+}
+
+// Path: waypoints.types
+class Translations$waypoints$types$fr {
+	Translations$waypoints$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Eau'
+	String get eau => 'Eau';
+
+	/// fr: 'Ravitaillement'
+	String get ravitaillement => 'Ravitaillement';
+
+	/// fr: 'Danger'
+	String get danger => 'Danger';
+
+	/// fr: 'Bivouac'
+	String get camp => 'Bivouac';
+
+	/// fr: 'Connectivité'
+	String get connectivite => 'Connectivité';
+
+	/// fr: 'Jonction'
+	String get jonction => 'Jonction';
+}
+
+// Path: waypoints.filters
+class Translations$waypoints$filters$fr {
+	Translations$waypoints$filters$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Filtrer les waypoints'
+	String get title => 'Filtrer les waypoints';
+
+	/// fr: 'Tout afficher'
+	String get showAll => 'Tout afficher';
+
+	/// fr: 'Tout masquer'
+	String get hideAll => 'Tout masquer';
+
+	/// fr: 'Condition récente uniquement'
+	String get recentConditionOnly => 'Condition récente uniquement';
+}
+
+// Path: waypoints.detail
+class Translations$waypoints$detail$fr {
+	Translations$waypoints$detail$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Conditions terrain'
+	String get conditionsTitle => 'Conditions terrain';
+
+	/// fr: 'Aucune condition signalée pour le moment.'
+	String get noComments => 'Aucune condition signalée pour le moment.';
+
+	/// fr: 'Conditions indisponibles.'
+	String get commentsError => 'Conditions indisponibles.';
+
+	/// fr: 'Signaler'
+	String get report => 'Signaler';
+
+	/// fr: 'Signalement enregistré. Il sera examiné après synchronisation.'
+	String get reportAck => 'Signalement enregistré. Il sera examiné après synchronisation.';
+
+	/// fr: 'En attente de synchronisation'
+	String get pendingSync => 'En attente de synchronisation';
+}
+
+// Path: waypoints.freshness
+class Translations$waypoints$freshness$fr {
+	Translations$waypoints$freshness$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'mis à jour à l’instant'
+	String get justNow => 'mis à jour à l’instant';
+
+	/// fr: 'mis à jour il y a $n min'
+	String minutes({required Object n}) => 'mis à jour il y a ${n} min';
+
+	/// fr: 'mis à jour il y a $n h'
+	String hours({required Object n}) => 'mis à jour il y a ${n} h';
+
+	/// fr: 'mis à jour il y a $n j'
+	String days({required Object n}) => 'mis à jour il y a ${n} j';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2728,6 +2838,28 @@ extension on Translations {
 			'shareVisibility.shareButton' => 'Partager',
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
 			'shareVisibility.shared' => 'Carte prête à partager.',
+			'waypoints.types.eau' => 'Eau',
+			'waypoints.types.ravitaillement' => 'Ravitaillement',
+			'waypoints.types.danger' => 'Danger',
+			'waypoints.types.camp' => 'Bivouac',
+			'waypoints.types.connectivite' => 'Connectivité',
+			'waypoints.types.jonction' => 'Jonction',
+			'waypoints.filters.title' => 'Filtrer les waypoints',
+			'waypoints.filters.showAll' => 'Tout afficher',
+			_ => null,
+		} ?? switch (path) {
+			'waypoints.filters.hideAll' => 'Tout masquer',
+			'waypoints.filters.recentConditionOnly' => 'Condition récente uniquement',
+			'waypoints.detail.conditionsTitle' => 'Conditions terrain',
+			'waypoints.detail.noComments' => 'Aucune condition signalée pour le moment.',
+			'waypoints.detail.commentsError' => 'Conditions indisponibles.',
+			'waypoints.detail.report' => 'Signaler',
+			'waypoints.detail.reportAck' => 'Signalement enregistré. Il sera examiné après synchronisation.',
+			'waypoints.detail.pendingSync' => 'En attente de synchronisation',
+			'waypoints.freshness.justNow' => 'mis à jour à l’instant',
+			'waypoints.freshness.minutes' => ({required Object n}) => 'mis à jour il y a ${n} min',
+			'waypoints.freshness.hours' => ({required Object n}) => 'mis à jour il y a ${n} h',
+			'waypoints.freshness.days' => ({required Object n}) => 'mis à jour il y a ${n} j',
 			_ => null,
 		};
 	}
