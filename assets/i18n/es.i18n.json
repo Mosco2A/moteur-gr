@@ -632,5 +632,35 @@
     "shareButton": "Compartir",
     "privateNotice": "Compartir está desactivado. Actívalo en Compartir y visibilidad.",
     "shared": "Tarjeta lista para compartir."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Agua",
+      "ravitaillement": "Avituallamiento",
+      "danger": "Peligro",
+      "camp": "Acampada",
+      "connectivite": "Conectividad",
+      "jonction": "Cruce"
+    },
+    "filters": {
+      "title": "Filtrar waypoints",
+      "showAll": "Mostrar todo",
+      "hideAll": "Ocultar todo",
+      "recentConditionOnly": "Solo condicion reciente"
+    },
+    "detail": {
+      "conditionsTitle": "Condiciones del terreno",
+      "noComments": "Aun no se ha senalado ninguna condicion.",
+      "commentsError": "Condiciones no disponibles.",
+      "report": "Senalar",
+      "reportAck": "Senalamiento guardado. Se revisara tras la sincronizacion.",
+      "pendingSync": "Pendiente de sincronizacion"
+    },
+    "freshness": {
+      "justNow": "actualizado ahora mismo",
+      "minutes": "actualizado hace $n min",
+      "hours": "actualizado hace $n h",
+      "days": "actualizado hace $n d"
+    }
   }
 }

@@ -632,5 +632,35 @@
     "shareButton": "Partager",
     "privateNotice": "Le partage est désactivé. Active-le dans Partage et visibilité.",
     "shared": "Carte prête à partager."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Eau",
+      "ravitaillement": "Ravitaillement",
+      "danger": "Danger",
+      "camp": "Bivouac",
+      "connectivite": "Connectivité",
+      "jonction": "Jonction"
+    },
+    "filters": {
+      "title": "Filtrer les waypoints",
+      "showAll": "Tout afficher",
+      "hideAll": "Tout masquer",
+      "recentConditionOnly": "Condition récente uniquement"
+    },
+    "detail": {
+      "conditionsTitle": "Conditions terrain",
+      "noComments": "Aucune condition signalée pour le moment.",
+      "commentsError": "Conditions indisponibles.",
+      "report": "Signaler",
+      "reportAck": "Signalement enregistré. Il sera examiné après synchronisation.",
+      "pendingSync": "En attente de synchronisation"
+    },
+    "freshness": {
+      "justNow": "mis à jour à l’instant",
+      "minutes": "mis à jour il y a $n min",
+      "hours": "mis à jour il y a $n h",
+      "days": "mis à jour il y a $n j"
+    }
   }
 }

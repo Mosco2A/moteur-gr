@@ -632,5 +632,35 @@
     "shareButton": "Share",
     "privateNotice": "Sharing is off. Turn it on in Sharing and visibility.",
     "shared": "Card ready to share."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Water",
+      "ravitaillement": "Resupply",
+      "danger": "Danger",
+      "camp": "Campsite",
+      "connectivite": "Connectivity",
+      "jonction": "Junction"
+    },
+    "filters": {
+      "title": "Filter waypoints",
+      "showAll": "Show all",
+      "hideAll": "Hide all",
+      "recentConditionOnly": "Recent condition only"
+    },
+    "detail": {
+      "conditionsTitle": "Field conditions",
+      "noComments": "No condition reported yet.",
+      "commentsError": "Conditions unavailable.",
+      "report": "Report",
+      "reportAck": "Report saved. It will be reviewed after sync.",
+      "pendingSync": "Pending synchronization"
+    },
+    "freshness": {
+      "justNow": "updated just now",
+      "minutes": "updated $n min ago",
+      "hours": "updated $n h ago",
+      "days": "updated $n d ago"
+    }
   }
 }

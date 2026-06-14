@@ -632,5 +632,35 @@
     "shareButton": "Teilen",
     "privateNotice": "Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.",
     "shared": "Karte bereit zum Teilen."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Wasser",
+      "ravitaillement": "Nachschub",
+      "danger": "Gefahr",
+      "camp": "Zeltplatz",
+      "connectivite": "Konnektivitat",
+      "jonction": "Kreuzung"
+    },
+    "filters": {
+      "title": "Wegpunkte filtern",
+      "showAll": "Alle anzeigen",
+      "hideAll": "Alle ausblenden",
+      "recentConditionOnly": "Nur aktueller Zustand"
+    },
+    "detail": {
+      "conditionsTitle": "Gelandezustand",
+      "noComments": "Noch kein Zustand gemeldet.",
+      "commentsError": "Zustand nicht verfugbar.",
+      "report": "Melden",
+      "reportAck": "Meldung gespeichert. Sie wird nach der Synchronisierung gepruft.",
+      "pendingSync": "Warten auf Synchronisierung"
+    },
+    "freshness": {
+      "justNow": "gerade aktualisiert",
+      "minutes": "vor $n Min aktualisiert",
+      "hours": "vor $n Std aktualisiert",
+      "days": "vor $n T aktualisiert"
+    }
   }
 }

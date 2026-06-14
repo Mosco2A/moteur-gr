@@ -75,6 +75,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$social$it social = _Translations$social$it._(_root);
 	@override late final _Translations$gamification$it gamification = _Translations$gamification$it._(_root);
 	@override late final _Translations$shareVisibility$it shareVisibility = _Translations$shareVisibility$it._(_root);
+	@override late final _Translations$waypoints$it waypoints = _Translations$waypoints$it._(_root);
 }
 
 // Path: a11y
@@ -774,6 +775,19 @@ class _Translations$shareVisibility$it extends Translations$shareVisibility$fr {
 	@override String get shared => 'Scheda pronta da condividere.';
 }
 
+// Path: waypoints
+class _Translations$waypoints$it extends Translations$waypoints$fr {
+	_Translations$waypoints$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$waypoints$types$it types = _Translations$waypoints$types$it._(_root);
+	@override late final _Translations$waypoints$filters$it filters = _Translations$waypoints$filters$it._(_root);
+	@override late final _Translations$waypoints$detail$it detail = _Translations$waypoints$detail$it._(_root);
+	@override late final _Translations$waypoints$freshness$it freshness = _Translations$waypoints$freshness$it._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1031,6 +1045,62 @@ class _Translations$gamification$defi$it extends Translations$gamification$defi$
 	@override String get pseudonymNotice => 'Classifica per fascia, con pseudonimi. Nessun dato personale diretto viene mostrato.';
 	@override String get notEnoughParticipants => 'Partecipanti insufficienti per pubblicare questa classifica.';
 	@override String get noDefi => 'Nessuna sfida in corso al momento.';
+}
+
+// Path: waypoints.types
+class _Translations$waypoints$types$it extends Translations$waypoints$types$fr {
+	_Translations$waypoints$types$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get eau => 'Acqua';
+	@override String get ravitaillement => 'Rifornimento';
+	@override String get danger => 'Pericolo';
+	@override String get camp => 'Campeggio';
+	@override String get connectivite => 'Connettivita';
+	@override String get jonction => 'Bivio';
+}
+
+// Path: waypoints.filters
+class _Translations$waypoints$filters$it extends Translations$waypoints$filters$fr {
+	_Translations$waypoints$filters$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Filtra i waypoint';
+	@override String get showAll => 'Mostra tutto';
+	@override String get hideAll => 'Nascondi tutto';
+	@override String get recentConditionOnly => 'Solo condizione recente';
+}
+
+// Path: waypoints.detail
+class _Translations$waypoints$detail$it extends Translations$waypoints$detail$fr {
+	_Translations$waypoints$detail$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get conditionsTitle => 'Condizioni del terreno';
+	@override String get noComments => 'Nessuna condizione segnalata per ora.';
+	@override String get commentsError => 'Condizioni non disponibili.';
+	@override String get report => 'Segnala';
+	@override String get reportAck => 'Segnalazione salvata. Sara esaminata dopo la sincronizzazione.';
+	@override String get pendingSync => 'In attesa di sincronizzazione';
+}
+
+// Path: waypoints.freshness
+class _Translations$waypoints$freshness$it extends Translations$waypoints$freshness$fr {
+	_Translations$waypoints$freshness$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get justNow => 'aggiornato proprio ora';
+	@override String minutes({required Object n}) => 'aggiornato ${n} min fa';
+	@override String hours({required Object n}) => 'aggiornato ${n} h fa';
+	@override String days({required Object n}) => 'aggiornato ${n} g fa';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1707,6 +1777,28 @@ extension on TranslationsIt {
 			'shareVisibility.shareButton' => 'Condividi',
 			'shareVisibility.privateNotice' => 'La condivisione è disattivata. Attivala in Condivisione e visibilità.',
 			'shareVisibility.shared' => 'Scheda pronta da condividere.',
+			'waypoints.types.eau' => 'Acqua',
+			'waypoints.types.ravitaillement' => 'Rifornimento',
+			'waypoints.types.danger' => 'Pericolo',
+			'waypoints.types.camp' => 'Campeggio',
+			'waypoints.types.connectivite' => 'Connettivita',
+			'waypoints.types.jonction' => 'Bivio',
+			'waypoints.filters.title' => 'Filtra i waypoint',
+			'waypoints.filters.showAll' => 'Mostra tutto',
+			_ => null,
+		} ?? switch (path) {
+			'waypoints.filters.hideAll' => 'Nascondi tutto',
+			'waypoints.filters.recentConditionOnly' => 'Solo condizione recente',
+			'waypoints.detail.conditionsTitle' => 'Condizioni del terreno',
+			'waypoints.detail.noComments' => 'Nessuna condizione segnalata per ora.',
+			'waypoints.detail.commentsError' => 'Condizioni non disponibili.',
+			'waypoints.detail.report' => 'Segnala',
+			'waypoints.detail.reportAck' => 'Segnalazione salvata. Sara esaminata dopo la sincronizzazione.',
+			'waypoints.detail.pendingSync' => 'In attesa di sincronizzazione',
+			'waypoints.freshness.justNow' => 'aggiornato proprio ora',
+			'waypoints.freshness.minutes' => ({required Object n}) => 'aggiornato ${n} min fa',
+			'waypoints.freshness.hours' => ({required Object n}) => 'aggiornato ${n} h fa',
+			'waypoints.freshness.days' => ({required Object n}) => 'aggiornato ${n} g fa',
 			_ => null,
 		};
 	}
