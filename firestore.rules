@@ -334,6 +334,109 @@ service cloud.firestore {
       allow delete: if isModerator();
     }
 
+    // Waypoints communautaires type FarOut (Phase 8 F8A-03, audit A3/A4).
+    //
+    // Modele FarOut (R1) + HEBERGEUR DSA (R4/R5) : un waypoint communautaire
+    // (eau/ravitaillement/danger/camp/connectivite/jonction) est CONTRIBUE par
+    // un utilisateur AUTHENTIFIE (UID hache cote client, jamais expose en clair),
+    // source='communaute', moderationState initial 'visible' (PUBLICATION
+    // IMMEDIATE — surtout PAS de validation a priori facon Visorando = risque
+    // editeur, A4-7). MODERATION A POSTERIORI (statut hebergeur DSA art. 16,
+    // design Securite D4). Le CONTENU est IMMUABLE apres creation : SEUL
+    // moderationState peut bouger, et SEULEMENT par un moderateur. Lecture
+    // publique des waypoints non 'removed' (cache offline-first R3).
+    match /waypoints/{waypointId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+      function validNewWaypoint() {
+        return request.resource.data.trailId is string
+          && request.resource.data.type in
+               ['eau', 'ravitaillement', 'danger', 'camp',
+                'connectivite', 'jonction']
+          && request.resource.data.latitude is number
+          && request.resource.data.longitude is number
+          && request.resource.data.titre is string
+          && request.resource.data.authorUidHash is string
+          && request.resource.data.authorUidHash == request.auth.uid
+          && request.resource.data.source == 'communaute'
+          && request.resource.data.lastUpdatedAt is timestamp
+          && request.resource.data.moderationState == 'visible';
+      }
+
+      // Creation : utilisateur authentifie, payload borne + valide. L'auteur
+      // ne peut ecrire QUE son propre UID hache (anti-usurpation).
+      allow create: if isSignedIn()
+        && validNewWaypoint()
+        && request.resource.data.keys().hasOnly(
+             ['trailId', 'type', 'latitude', 'longitude', 'titre',
+              'authorUidHash', 'source', 'lastUpdatedAt', 'moderationState']);
+
+      // Lecture publique des waypoints non retires (removed invisible).
+      allow get, list: if resource.data.moderationState != 'removed';
+
+      // Mise a jour : RESERVEE au moderateur, et SEUL moderationState bouge
+      // (contenu utilisateur immuable = statut hebergeur a posteriori, DSA).
+      allow update: if isModerator()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['moderationState'])
+        && request.resource.data.moderationState
+             in ['visible', 'flagged', 'removed'];
+
+      // Suppression dure : moderateur uniquement.
+      allow delete: if isModerator();
+    }
+
+    // Commentaires de condition sur un waypoint (Phase 8 F8A-03). Contenu
+    // utilisateur -> HEBERGEUR DSA art. 16 (notice-and-action, moderation A
+    // POSTERIORI, design Securite D4).
+    //
+    // Modele : commentaire de condition terrain (ex 'eau_a_sec',
+    // 'eau_coule_fort', 'passage glissant') cree par un utilisateur AUTHENTIFIE
+    // (authorUidHash == uid, UID hache jamais expose en clair), moderationState
+    // initial 'visible'. Le CONTENU est IMMUABLE apres creation. SEUL
+    // moderationState peut bouger, et SEULEMENT par un MODERATEUR. Lecture
+    // publique des commentaires non 'removed'.
+    match /waypoint_comments/{commentId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+      function validNewComment() {
+        return request.resource.data.waypointId is string
+          && request.resource.data.authorUidHash is string
+          && request.resource.data.authorUidHash == request.auth.uid
+          && request.resource.data.texte is string
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.moderationState == 'visible';
+      }
+
+      // Creation : utilisateur authentifie, payload borne + valide.
+      // condition est OPTIONNEL (ex 'eau_a_sec') — accepte present ou absent.
+      allow create: if isSignedIn()
+        && validNewComment()
+        && request.resource.data.keys().hasOnly(
+             ['waypointId', 'authorUidHash', 'texte', 'condition',
+              'createdAt', 'moderationState']);
+
+      // Lecture publique des commentaires non retires (removed invisible).
+      allow get, list: if resource.data.moderationState != 'removed';
+
+      // Mise a jour : RESERVEE au moderateur, et SEUL moderationState bouge
+      // (contenu utilisateur immuable = statut hebergeur a posteriori, DSA).
+      allow update: if isModerator()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['moderationState'])
+        && request.resource.data.moderationState
+             in ['visible', 'flagged', 'removed'];
+
+      // Suppression dure : moderateur uniquement.
+      allow delete: if isModerator();
+    }
+
     // Tout le reste : DENY explicite (collections sans regles dediees,
     // ex. groups — feature groupe sans regles a ce jour, voir
     // ORCHESTRATION wagon 3 / dette).
