@@ -13111,6 +13111,910 @@ class SegmentEffortLocalCompanion
   }
 }
 
+class $KudosLocalTable extends KudosLocal
+    with TableInfo<$KudosLocalTable, KudosLocalData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $KudosLocalTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _targetActivityIdMeta = const VerificationMeta(
+    'targetActivityId',
+  );
+  @override
+  late final GeneratedColumn<String> targetActivityId = GeneratedColumn<String>(
+    'target_activity_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fromUidHashMeta = const VerificationMeta(
+    'fromUidHash',
+  );
+  @override
+  late final GeneratedColumn<String> fromUidHash = GeneratedColumn<String>(
+    'from_uid_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncStateMeta = const VerificationMeta(
+    'syncState',
+  );
+  @override
+  late final GeneratedColumn<String> syncState = GeneratedColumn<String>(
+    'sync_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    targetActivityId,
+    fromUidHash,
+    createdAt,
+    syncState,
+    attempts,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'kudos_local';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<KudosLocalData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('target_activity_id')) {
+      context.handle(
+        _targetActivityIdMeta,
+        targetActivityId.isAcceptableOrUnknown(
+          data['target_activity_id']!,
+          _targetActivityIdMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetActivityIdMeta);
+    }
+    if (data.containsKey('from_uid_hash')) {
+      context.handle(
+        _fromUidHashMeta,
+        fromUidHash.isAcceptableOrUnknown(
+          data['from_uid_hash']!,
+          _fromUidHashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_fromUidHashMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('sync_state')) {
+      context.handle(
+        _syncStateMeta,
+        syncState.isAcceptableOrUnknown(data['sync_state']!, _syncStateMeta),
+      );
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  KudosLocalData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return KudosLocalData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      targetActivityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}target_activity_id'],
+      )!,
+      fromUidHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}from_uid_hash'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_state'],
+      )!,
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $KudosLocalTable createAlias(String alias) {
+    return $KudosLocalTable(attachedDatabase, alias);
+  }
+}
+
+class KudosLocalData extends DataClass implements Insertable<KudosLocalData> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Identifiant de l'activite ciblee par le kudo.
+  final String targetActivityId;
+
+  /// UID HACHE de l'auteur du kudo (jamais de PII #85383).
+  final String fromUidHash;
+
+  /// Date de creation locale (UTC).
+  final DateTime createdAt;
+
+  /// Etat de synchronisation ('pending', 'synced', 'failed').
+  final String syncState;
+
+  /// Nombre de tentatives de synchronisation echouees.
+  final int attempts;
+
+  /// Derniere erreur de synchronisation (nullable).
+  final String? lastError;
+  const KudosLocalData({
+    required this.id,
+    required this.targetActivityId,
+    required this.fromUidHash,
+    required this.createdAt,
+    required this.syncState,
+    required this.attempts,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['target_activity_id'] = Variable<String>(targetActivityId);
+    map['from_uid_hash'] = Variable<String>(fromUidHash);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['sync_state'] = Variable<String>(syncState);
+    map['attempts'] = Variable<int>(attempts);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  KudosLocalCompanion toCompanion(bool nullToAbsent) {
+    return KudosLocalCompanion(
+      id: Value(id),
+      targetActivityId: Value(targetActivityId),
+      fromUidHash: Value(fromUidHash),
+      createdAt: Value(createdAt),
+      syncState: Value(syncState),
+      attempts: Value(attempts),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory KudosLocalData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return KudosLocalData(
+      id: serializer.fromJson<int>(json['id']),
+      targetActivityId: serializer.fromJson<String>(json['targetActivityId']),
+      fromUidHash: serializer.fromJson<String>(json['fromUidHash']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncState: serializer.fromJson<String>(json['syncState']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'targetActivityId': serializer.toJson<String>(targetActivityId),
+      'fromUidHash': serializer.toJson<String>(fromUidHash),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncState': serializer.toJson<String>(syncState),
+      'attempts': serializer.toJson<int>(attempts),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  KudosLocalData copyWith({
+    int? id,
+    String? targetActivityId,
+    String? fromUidHash,
+    DateTime? createdAt,
+    String? syncState,
+    int? attempts,
+    Value<String?> lastError = const Value.absent(),
+  }) => KudosLocalData(
+    id: id ?? this.id,
+    targetActivityId: targetActivityId ?? this.targetActivityId,
+    fromUidHash: fromUidHash ?? this.fromUidHash,
+    createdAt: createdAt ?? this.createdAt,
+    syncState: syncState ?? this.syncState,
+    attempts: attempts ?? this.attempts,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  KudosLocalData copyWithCompanion(KudosLocalCompanion data) {
+    return KudosLocalData(
+      id: data.id.present ? data.id.value : this.id,
+      targetActivityId: data.targetActivityId.present
+          ? data.targetActivityId.value
+          : this.targetActivityId,
+      fromUidHash: data.fromUidHash.present
+          ? data.fromUidHash.value
+          : this.fromUidHash,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncState: data.syncState.present ? data.syncState.value : this.syncState,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KudosLocalData(')
+          ..write('id: $id, ')
+          ..write('targetActivityId: $targetActivityId, ')
+          ..write('fromUidHash: $fromUidHash, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncState: $syncState, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    targetActivityId,
+    fromUidHash,
+    createdAt,
+    syncState,
+    attempts,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is KudosLocalData &&
+          other.id == this.id &&
+          other.targetActivityId == this.targetActivityId &&
+          other.fromUidHash == this.fromUidHash &&
+          other.createdAt == this.createdAt &&
+          other.syncState == this.syncState &&
+          other.attempts == this.attempts &&
+          other.lastError == this.lastError);
+}
+
+class KudosLocalCompanion extends UpdateCompanion<KudosLocalData> {
+  final Value<int> id;
+  final Value<String> targetActivityId;
+  final Value<String> fromUidHash;
+  final Value<DateTime> createdAt;
+  final Value<String> syncState;
+  final Value<int> attempts;
+  final Value<String?> lastError;
+  const KudosLocalCompanion({
+    this.id = const Value.absent(),
+    this.targetActivityId = const Value.absent(),
+    this.fromUidHash = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncState = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  });
+  KudosLocalCompanion.insert({
+    this.id = const Value.absent(),
+    required String targetActivityId,
+    required String fromUidHash,
+    required DateTime createdAt,
+    this.syncState = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.lastError = const Value.absent(),
+  }) : targetActivityId = Value(targetActivityId),
+       fromUidHash = Value(fromUidHash),
+       createdAt = Value(createdAt);
+  static Insertable<KudosLocalData> custom({
+    Expression<int>? id,
+    Expression<String>? targetActivityId,
+    Expression<String>? fromUidHash,
+    Expression<DateTime>? createdAt,
+    Expression<String>? syncState,
+    Expression<int>? attempts,
+    Expression<String>? lastError,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (targetActivityId != null) 'target_activity_id': targetActivityId,
+      if (fromUidHash != null) 'from_uid_hash': fromUidHash,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncState != null) 'sync_state': syncState,
+      if (attempts != null) 'attempts': attempts,
+      if (lastError != null) 'last_error': lastError,
+    });
+  }
+
+  KudosLocalCompanion copyWith({
+    Value<int>? id,
+    Value<String>? targetActivityId,
+    Value<String>? fromUidHash,
+    Value<DateTime>? createdAt,
+    Value<String>? syncState,
+    Value<int>? attempts,
+    Value<String?>? lastError,
+  }) {
+    return KudosLocalCompanion(
+      id: id ?? this.id,
+      targetActivityId: targetActivityId ?? this.targetActivityId,
+      fromUidHash: fromUidHash ?? this.fromUidHash,
+      createdAt: createdAt ?? this.createdAt,
+      syncState: syncState ?? this.syncState,
+      attempts: attempts ?? this.attempts,
+      lastError: lastError ?? this.lastError,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (targetActivityId.present) {
+      map['target_activity_id'] = Variable<String>(targetActivityId.value);
+    }
+    if (fromUidHash.present) {
+      map['from_uid_hash'] = Variable<String>(fromUidHash.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncState.present) {
+      map['sync_state'] = Variable<String>(syncState.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('KudosLocalCompanion(')
+          ..write('id: $id, ')
+          ..write('targetActivityId: $targetActivityId, ')
+          ..write('fromUidHash: $fromUidHash, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncState: $syncState, ')
+          ..write('attempts: $attempts, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ActivityFeedCacheTable extends ActivityFeedCache
+    with TableInfo<$ActivityFeedCacheTable, ActivityFeedCacheData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ActivityFeedCacheTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+    'type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _authorUidHashMeta = const VerificationMeta(
+    'authorUidHash',
+  );
+  @override
+  late final GeneratedColumn<String> authorUidHash = GeneratedColumn<String>(
+    'author_uid_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _moderationStateMeta = const VerificationMeta(
+    'moderationState',
+  );
+  @override
+  late final GeneratedColumn<String> moderationState = GeneratedColumn<String>(
+    'moderation_state',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('visible'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    type,
+    authorUidHash,
+    payload,
+    createdAt,
+    moderationState,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'activity_feed_cache';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ActivityFeedCacheData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('type')) {
+      context.handle(
+        _typeMeta,
+        type.isAcceptableOrUnknown(data['type']!, _typeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_typeMeta);
+    }
+    if (data.containsKey('author_uid_hash')) {
+      context.handle(
+        _authorUidHashMeta,
+        authorUidHash.isAcceptableOrUnknown(
+          data['author_uid_hash']!,
+          _authorUidHashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_authorUidHashMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('moderation_state')) {
+      context.handle(
+        _moderationStateMeta,
+        moderationState.isAcceptableOrUnknown(
+          data['moderation_state']!,
+          _moderationStateMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ActivityFeedCacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ActivityFeedCacheData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      type: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}type'],
+      )!,
+      authorUidHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}author_uid_hash'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      moderationState: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}moderation_state'],
+      )!,
+    );
+  }
+
+  @override
+  $ActivityFeedCacheTable createAlias(String alias) {
+    return $ActivityFeedCacheTable(attachedDatabase, alias);
+  }
+}
+
+class ActivityFeedCacheData extends DataClass
+    implements Insertable<ActivityFeedCacheData> {
+  /// Identifiant de l'activite (fourni serveur, stable).
+  final String id;
+
+  /// Type d'activite ('segment_effort', 'badge', 'defi', ...).
+  final String type;
+
+  /// UID HACHE de l'auteur de l'activite (jamais de PII #85383).
+  final String authorUidHash;
+
+  /// Charge utile JSON de l'activite (details d'affichage).
+  final String? payload;
+
+  /// Date de creation de l'activite (UTC).
+  final DateTime createdAt;
+
+  /// Etat de moderation ('visible', 'flagged', 'removed'). Defaut 'visible'.
+  final String moderationState;
+  const ActivityFeedCacheData({
+    required this.id,
+    required this.type,
+    required this.authorUidHash,
+    this.payload,
+    required this.createdAt,
+    required this.moderationState,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['type'] = Variable<String>(type);
+    map['author_uid_hash'] = Variable<String>(authorUidHash);
+    if (!nullToAbsent || payload != null) {
+      map['payload'] = Variable<String>(payload);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['moderation_state'] = Variable<String>(moderationState);
+    return map;
+  }
+
+  ActivityFeedCacheCompanion toCompanion(bool nullToAbsent) {
+    return ActivityFeedCacheCompanion(
+      id: Value(id),
+      type: Value(type),
+      authorUidHash: Value(authorUidHash),
+      payload: payload == null && nullToAbsent
+          ? const Value.absent()
+          : Value(payload),
+      createdAt: Value(createdAt),
+      moderationState: Value(moderationState),
+    );
+  }
+
+  factory ActivityFeedCacheData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ActivityFeedCacheData(
+      id: serializer.fromJson<String>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      authorUidHash: serializer.fromJson<String>(json['authorUidHash']),
+      payload: serializer.fromJson<String?>(json['payload']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      moderationState: serializer.fromJson<String>(json['moderationState']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'type': serializer.toJson<String>(type),
+      'authorUidHash': serializer.toJson<String>(authorUidHash),
+      'payload': serializer.toJson<String?>(payload),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'moderationState': serializer.toJson<String>(moderationState),
+    };
+  }
+
+  ActivityFeedCacheData copyWith({
+    String? id,
+    String? type,
+    String? authorUidHash,
+    Value<String?> payload = const Value.absent(),
+    DateTime? createdAt,
+    String? moderationState,
+  }) => ActivityFeedCacheData(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    authorUidHash: authorUidHash ?? this.authorUidHash,
+    payload: payload.present ? payload.value : this.payload,
+    createdAt: createdAt ?? this.createdAt,
+    moderationState: moderationState ?? this.moderationState,
+  );
+  ActivityFeedCacheData copyWithCompanion(ActivityFeedCacheCompanion data) {
+    return ActivityFeedCacheData(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      authorUidHash: data.authorUidHash.present
+          ? data.authorUidHash.value
+          : this.authorUidHash,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      moderationState: data.moderationState.present
+          ? data.moderationState.value
+          : this.moderationState,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActivityFeedCacheData(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('authorUidHash: $authorUidHash, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('moderationState: $moderationState')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, type, authorUidHash, payload, createdAt, moderationState);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ActivityFeedCacheData &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.authorUidHash == this.authorUidHash &&
+          other.payload == this.payload &&
+          other.createdAt == this.createdAt &&
+          other.moderationState == this.moderationState);
+}
+
+class ActivityFeedCacheCompanion
+    extends UpdateCompanion<ActivityFeedCacheData> {
+  final Value<String> id;
+  final Value<String> type;
+  final Value<String> authorUidHash;
+  final Value<String?> payload;
+  final Value<DateTime> createdAt;
+  final Value<String> moderationState;
+  final Value<int> rowid;
+  const ActivityFeedCacheCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.authorUidHash = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.moderationState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ActivityFeedCacheCompanion.insert({
+    required String id,
+    required String type,
+    required String authorUidHash,
+    this.payload = const Value.absent(),
+    required DateTime createdAt,
+    this.moderationState = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       type = Value(type),
+       authorUidHash = Value(authorUidHash),
+       createdAt = Value(createdAt);
+  static Insertable<ActivityFeedCacheData> custom({
+    Expression<String>? id,
+    Expression<String>? type,
+    Expression<String>? authorUidHash,
+    Expression<String>? payload,
+    Expression<DateTime>? createdAt,
+    Expression<String>? moderationState,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (authorUidHash != null) 'author_uid_hash': authorUidHash,
+      if (payload != null) 'payload': payload,
+      if (createdAt != null) 'created_at': createdAt,
+      if (moderationState != null) 'moderation_state': moderationState,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ActivityFeedCacheCompanion copyWith({
+    Value<String>? id,
+    Value<String>? type,
+    Value<String>? authorUidHash,
+    Value<String?>? payload,
+    Value<DateTime>? createdAt,
+    Value<String>? moderationState,
+    Value<int>? rowid,
+  }) {
+    return ActivityFeedCacheCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      authorUidHash: authorUidHash ?? this.authorUidHash,
+      payload: payload ?? this.payload,
+      createdAt: createdAt ?? this.createdAt,
+      moderationState: moderationState ?? this.moderationState,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (authorUidHash.present) {
+      map['author_uid_hash'] = Variable<String>(authorUidHash.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (moderationState.present) {
+      map['moderation_state'] = Variable<String>(moderationState.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ActivityFeedCacheCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('authorUidHash: $authorUidHash, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('moderationState: $moderationState, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -13145,6 +14049,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SegmentsTable segments = $SegmentsTable(this);
   late final $SegmentEffortLocalTable segmentEffortLocal =
       $SegmentEffortLocalTable(this);
+  late final $KudosLocalTable kudosLocal = $KudosLocalTable(this);
+  late final $ActivityFeedCacheTable activityFeedCache =
+      $ActivityFeedCacheTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -13192,6 +14099,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final SegmentsDao segmentsDao = SegmentsDao(this as AppDatabase);
+  late final KudosFeedDao kudosFeedDao = KudosFeedDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -13221,6 +14129,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     reportLocal,
     segments,
     segmentEffortLocal,
+    kudosLocal,
+    activityFeedCache,
   ];
 }
 
@@ -19679,6 +20589,478 @@ typedef $$SegmentEffortLocalTableProcessedTableManager =
       SegmentEffortLocalData,
       PrefetchHooks Function()
     >;
+typedef $$KudosLocalTableCreateCompanionBuilder =
+    KudosLocalCompanion Function({
+      Value<int> id,
+      required String targetActivityId,
+      required String fromUidHash,
+      required DateTime createdAt,
+      Value<String> syncState,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+typedef $$KudosLocalTableUpdateCompanionBuilder =
+    KudosLocalCompanion Function({
+      Value<int> id,
+      Value<String> targetActivityId,
+      Value<String> fromUidHash,
+      Value<DateTime> createdAt,
+      Value<String> syncState,
+      Value<int> attempts,
+      Value<String?> lastError,
+    });
+
+class $$KudosLocalTableFilterComposer
+    extends Composer<_$AppDatabase, $KudosLocalTable> {
+  $$KudosLocalTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get targetActivityId => $composableBuilder(
+    column: $table.targetActivityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fromUidHash => $composableBuilder(
+    column: $table.fromUidHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$KudosLocalTableOrderingComposer
+    extends Composer<_$AppDatabase, $KudosLocalTable> {
+  $$KudosLocalTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get targetActivityId => $composableBuilder(
+    column: $table.targetActivityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fromUidHash => $composableBuilder(
+    column: $table.fromUidHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncState => $composableBuilder(
+    column: $table.syncState,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$KudosLocalTableAnnotationComposer
+    extends Composer<_$AppDatabase, $KudosLocalTable> {
+  $$KudosLocalTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get targetActivityId => $composableBuilder(
+    column: $table.targetActivityId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fromUidHash => $composableBuilder(
+    column: $table.fromUidHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncState =>
+      $composableBuilder(column: $table.syncState, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$KudosLocalTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $KudosLocalTable,
+          KudosLocalData,
+          $$KudosLocalTableFilterComposer,
+          $$KudosLocalTableOrderingComposer,
+          $$KudosLocalTableAnnotationComposer,
+          $$KudosLocalTableCreateCompanionBuilder,
+          $$KudosLocalTableUpdateCompanionBuilder,
+          (
+            KudosLocalData,
+            BaseReferences<_$AppDatabase, $KudosLocalTable, KudosLocalData>,
+          ),
+          KudosLocalData,
+          PrefetchHooks Function()
+        > {
+  $$KudosLocalTableTableManager(_$AppDatabase db, $KudosLocalTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$KudosLocalTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$KudosLocalTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$KudosLocalTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> targetActivityId = const Value.absent(),
+                Value<String> fromUidHash = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> syncState = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => KudosLocalCompanion(
+                id: id,
+                targetActivityId: targetActivityId,
+                fromUidHash: fromUidHash,
+                createdAt: createdAt,
+                syncState: syncState,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String targetActivityId,
+                required String fromUidHash,
+                required DateTime createdAt,
+                Value<String> syncState = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+              }) => KudosLocalCompanion.insert(
+                id: id,
+                targetActivityId: targetActivityId,
+                fromUidHash: fromUidHash,
+                createdAt: createdAt,
+                syncState: syncState,
+                attempts: attempts,
+                lastError: lastError,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$KudosLocalTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $KudosLocalTable,
+      KudosLocalData,
+      $$KudosLocalTableFilterComposer,
+      $$KudosLocalTableOrderingComposer,
+      $$KudosLocalTableAnnotationComposer,
+      $$KudosLocalTableCreateCompanionBuilder,
+      $$KudosLocalTableUpdateCompanionBuilder,
+      (
+        KudosLocalData,
+        BaseReferences<_$AppDatabase, $KudosLocalTable, KudosLocalData>,
+      ),
+      KudosLocalData,
+      PrefetchHooks Function()
+    >;
+typedef $$ActivityFeedCacheTableCreateCompanionBuilder =
+    ActivityFeedCacheCompanion Function({
+      required String id,
+      required String type,
+      required String authorUidHash,
+      Value<String?> payload,
+      required DateTime createdAt,
+      Value<String> moderationState,
+      Value<int> rowid,
+    });
+typedef $$ActivityFeedCacheTableUpdateCompanionBuilder =
+    ActivityFeedCacheCompanion Function({
+      Value<String> id,
+      Value<String> type,
+      Value<String> authorUidHash,
+      Value<String?> payload,
+      Value<DateTime> createdAt,
+      Value<String> moderationState,
+      Value<int> rowid,
+    });
+
+class $$ActivityFeedCacheTableFilterComposer
+    extends Composer<_$AppDatabase, $ActivityFeedCacheTable> {
+  $$ActivityFeedCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ActivityFeedCacheTableOrderingComposer
+    extends Composer<_$AppDatabase, $ActivityFeedCacheTable> {
+  $$ActivityFeedCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get type => $composableBuilder(
+    column: $table.type,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ActivityFeedCacheTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ActivityFeedCacheTable> {
+  $$ActivityFeedCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<String> get authorUidHash => $composableBuilder(
+    column: $table.authorUidHash,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get moderationState => $composableBuilder(
+    column: $table.moderationState,
+    builder: (column) => column,
+  );
+}
+
+class $$ActivityFeedCacheTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ActivityFeedCacheTable,
+          ActivityFeedCacheData,
+          $$ActivityFeedCacheTableFilterComposer,
+          $$ActivityFeedCacheTableOrderingComposer,
+          $$ActivityFeedCacheTableAnnotationComposer,
+          $$ActivityFeedCacheTableCreateCompanionBuilder,
+          $$ActivityFeedCacheTableUpdateCompanionBuilder,
+          (
+            ActivityFeedCacheData,
+            BaseReferences<
+              _$AppDatabase,
+              $ActivityFeedCacheTable,
+              ActivityFeedCacheData
+            >,
+          ),
+          ActivityFeedCacheData,
+          PrefetchHooks Function()
+        > {
+  $$ActivityFeedCacheTableTableManager(
+    _$AppDatabase db,
+    $ActivityFeedCacheTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ActivityFeedCacheTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ActivityFeedCacheTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ActivityFeedCacheTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> type = const Value.absent(),
+                Value<String> authorUidHash = const Value.absent(),
+                Value<String?> payload = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<String> moderationState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ActivityFeedCacheCompanion(
+                id: id,
+                type: type,
+                authorUidHash: authorUidHash,
+                payload: payload,
+                createdAt: createdAt,
+                moderationState: moderationState,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String type,
+                required String authorUidHash,
+                Value<String?> payload = const Value.absent(),
+                required DateTime createdAt,
+                Value<String> moderationState = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ActivityFeedCacheCompanion.insert(
+                id: id,
+                type: type,
+                authorUidHash: authorUidHash,
+                payload: payload,
+                createdAt: createdAt,
+                moderationState: moderationState,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ActivityFeedCacheTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ActivityFeedCacheTable,
+      ActivityFeedCacheData,
+      $$ActivityFeedCacheTableFilterComposer,
+      $$ActivityFeedCacheTableOrderingComposer,
+      $$ActivityFeedCacheTableAnnotationComposer,
+      $$ActivityFeedCacheTableCreateCompanionBuilder,
+      $$ActivityFeedCacheTableUpdateCompanionBuilder,
+      (
+        ActivityFeedCacheData,
+        BaseReferences<
+          _$AppDatabase,
+          $ActivityFeedCacheTable,
+          ActivityFeedCacheData
+        >,
+      ),
+      ActivityFeedCacheData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19730,4 +21112,8 @@ class $AppDatabaseManager {
       $$SegmentsTableTableManager(_db, _db.segments);
   $$SegmentEffortLocalTableTableManager get segmentEffortLocal =>
       $$SegmentEffortLocalTableTableManager(_db, _db.segmentEffortLocal);
+  $$KudosLocalTableTableManager get kudosLocal =>
+      $$KudosLocalTableTableManager(_db, _db.kudosLocal);
+  $$ActivityFeedCacheTableTableManager get activityFeedCache =>
+      $$ActivityFeedCacheTableTableManager(_db, _db.activityFeedCache);
 }

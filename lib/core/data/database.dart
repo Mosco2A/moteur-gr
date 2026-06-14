@@ -23,6 +23,7 @@ import 'tables/follower_slots_table.dart';
 import 'tables/session_track_points_table.dart';
 import 'tables/report_local_table.dart';
 import 'tables/segments_table.dart';
+import 'tables/kudos_feed_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -46,6 +47,7 @@ import 'daos/follower_slots_dao.dart';
 import 'daos/session_track_points_dao.dart';
 import 'daos/report_local_dao.dart';
 import 'daos/segments_dao.dart';
+import 'daos/kudos_feed_dao.dart';
 
 part 'database.g.dart';
 
@@ -62,7 +64,8 @@ part 'database.g.dart';
 /// + 2 Phase 4 E4.10 (FollowSessions, FollowerSlots)
 /// + 1 finitions V8 F3 (SessionTrackPoints)
 /// + 1 Phase 6 F6C-01 (ReportLocal, signalements offline-first)
-/// + 2 Phase 7 F7A-01 (Segments, SegmentEffortLocal, social offline-first).
+/// + 2 Phase 7 F7A-01 (Segments, SegmentEffortLocal, social offline-first)
+/// + 2 Phase 7 F7B-01 (KudosLocal, ActivityFeedCache, kudos + fil offline).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -90,6 +93,8 @@ part 'database.g.dart';
     ReportLocal,
     Segments,
     SegmentEffortLocal,
+    KudosLocal,
+    ActivityFeedCache,
   ],
   daos: [
     StagesDao,
@@ -115,13 +120,14 @@ part 'database.g.dart';
     SessionTrackPointsDao,
     ReportLocalDao,
     SegmentsDao,
+    KudosFeedDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 15;
+  int get schemaVersion => 16;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -195,6 +201,12 @@ class AppDatabase extends _$AppDatabase {
           if (from < 15) {
             await migrator.createTable(segments);
             await migrator.createTable(segmentEffortLocal);
+          }
+          // Migration v15 -> v16 : tables kudos + fil d'activite (Phase 7 F7B-01)
+          // (kudos offline-first + cache du fil avec moderationState DSA)
+          if (from < 16) {
+            await migrator.createTable(kudosLocal);
+            await migrator.createTable(activityFeedCache);
           }
         },
       );
