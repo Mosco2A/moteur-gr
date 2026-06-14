@@ -68,6 +68,10 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
 	late final Translations$onboarding$fr onboarding = Translations$onboarding$fr.internal(_root);
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
+	late final Translations$signalement$fr signalement = Translations$signalement$fr.internal(_root);
+	late final Translations$hebergement$fr hebergement = Translations$hebergement$fr.internal(_root);
+	late final Translations$training$fr training = Translations$training$fr.internal(_root);
+	late final Translations$eta$fr eta = Translations$eta$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1193,6 +1197,139 @@ class Translations$monetization$fr {
 	String buyCtaWithPrice({required Object price}) => 'Débloquer ce trek — ${price} €';
 }
 
+// Path: signalement
+class Translations$signalement$fr {
+	Translations$signalement$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Signaler'
+	String get title => 'Signaler';
+
+	/// fr: 'Que voulez-vous signaler ?'
+	String get chooseType => 'Que voulez-vous signaler ?';
+
+	late final Translations$signalement$types$fr types = Translations$signalement$types$fr.internal(_root);
+
+	/// fr: 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.'
+	String get latencyBanner => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.';
+
+	/// fr: 'Confirmer le signalement'
+	String get confirm => 'Confirmer le signalement';
+
+	/// fr: 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.'
+	String get noLocation => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.';
+
+	/// fr: 'Signalement enregistré'
+	String get savedTitle => 'Signalement enregistré';
+
+	/// fr: 'Il sera partagé dès le retour du réseau.'
+	String get savedPendingSync => 'Il sera partagé dès le retour du réseau.';
+
+	/// fr: '$n en attente de synchronisation'
+	String pendingCount({required Object n}) => '${n} en attente de synchronisation';
+
+	/// fr: 'Fermer'
+	String get close => 'Fermer';
+}
+
+// Path: hebergement
+class Translations$hebergement$fr {
+	Translations$hebergement$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Hébergements à proximité'
+	String get title => 'Hébergements à proximité';
+
+	/// fr: 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l'application.'
+	String get facilitatorNote => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.';
+
+	/// fr: 'Détour aller-retour : $km km'
+	String detourAR({required Object km}) => 'Détour aller-retour : ${km} km';
+
+	/// fr: 'Voir le site'
+	String get openSite => 'Voir le site';
+
+	/// fr: 'Impossible d'ouvrir ce lien sur cet appareil.'
+	String get cannotOpen => 'Impossible d\'ouvrir ce lien sur cet appareil.';
+
+	/// fr: 'Aucun hébergement répertorié à proximité pour le moment.'
+	String get empty => 'Aucun hébergement répertorié à proximité pour le moment.';
+
+	late final Translations$hebergement$types$fr types = Translations$hebergement$types$fr.internal(_root);
+}
+
+// Path: training
+class Translations$training$fr {
+	Translations$training$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparation physique'
+	String get title => 'Préparation physique';
+
+	/// fr: 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.'
+	String get localNotice => 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.';
+
+	/// fr: 'Séance d'entraînement aujourd'hui'
+	String get reminderTitle => 'Séance d\'entraînement aujourd\'hui';
+
+	/// fr: 'Programmer les rappels'
+	String get scheduleReminders => 'Programmer les rappels';
+
+	/// fr: '$n rappel(s) programmé(s)'
+	String remindersScheduled({required Object n}) => '${n} rappel(s) programmé(s)';
+
+	/// fr: 'Semaine $n'
+	String week({required Object n}) => 'Semaine ${n}';
+
+	/// fr: '$n min'
+	String minutes({required Object n}) => '${n} min';
+
+	/// fr: '$done/$total séances faites'
+	String progress({required Object done, required Object total}) => '${done}/${total} séances faites';
+
+	late final Translations$training$types$fr types = Translations$training$types$fr.internal(_root);
+	late final Translations$training$intensity$fr intensity = Translations$training$intensity$fr.internal(_root);
+}
+
+// Path: eta
+class Translations$eta$fr {
+	Translations$eta$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Temps estimé'
+	String get title => 'Temps estimé';
+
+	/// fr: 'Prochain point'
+	String get toNextWaypoint => 'Prochain point';
+
+	/// fr: 'Fin d'étape'
+	String get toStageEnd => 'Fin d\'étape';
+
+	/// fr: 'Estimation fiable'
+	String get confidenceHigh => 'Estimation fiable';
+
+	/// fr: 'Approximatif (GPS faible)'
+	String get confidenceLow => 'Approximatif (GPS faible)';
+
+	/// fr: '$h h $m min'
+	String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
+
+	/// fr: '$m min'
+	String durationM({required Object m}) => '${m} min';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1555,6 +1692,84 @@ class Translations$feasibility$recommendations$fr {
 	late final Translations$feasibility$recommendations$caution$fr caution = Translations$feasibility$recommendations$caution$fr.internal(_root);
 	late final Translations$feasibility$recommendations$good$fr good = Translations$feasibility$recommendations$good$fr.internal(_root);
 	late final Translations$feasibility$recommendations$excellent$fr excellent = Translations$feasibility$recommendations$excellent$fr.internal(_root);
+}
+
+// Path: signalement.types
+class Translations$signalement$types$fr {
+	Translations$signalement$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Obstacle sur le sentier'
+	String get obstacle => 'Obstacle sur le sentier';
+
+	/// fr: 'Point d'eau à sec'
+	String get eauASec => 'Point d\'eau à sec';
+
+	/// fr: 'Danger'
+	String get danger => 'Danger';
+}
+
+// Path: hebergement.types
+class Translations$hebergement$types$fr {
+	Translations$hebergement$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Refuge'
+	String get refuge => 'Refuge';
+
+	/// fr: 'Gîte'
+	String get gite => 'Gîte';
+
+	/// fr: 'Hôtel'
+	String get hotel => 'Hôtel';
+
+	/// fr: 'Camping'
+	String get camping => 'Camping';
+
+	/// fr: 'Chambre d'hôte'
+	String get chambreHote => 'Chambre d\'hôte';
+}
+
+// Path: training.types
+class Translations$training$types$fr {
+	Translations$training$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Marche'
+	String get marche => 'Marche';
+
+	/// fr: 'Cardio'
+	String get cardio => 'Cardio';
+
+	/// fr: 'Renforcement'
+	String get renforcement => 'Renforcement';
+}
+
+// Path: training.intensity
+class Translations$training$intensity$fr {
+	Translations$training$intensity$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Faible'
+	String get faible => 'Faible';
+
+	/// fr: 'Modérée'
+	String get moderee => 'Modérée';
+
+	/// fr: 'Élevée'
+	String get elevee => 'Élevée';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2104,6 +2319,50 @@ extension on Translations {
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Débloquer ce trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer ce trek — ${price} €',
+			'signalement.title' => 'Signaler',
+			'signalement.chooseType' => 'Que voulez-vous signaler ?',
+			'signalement.types.obstacle' => 'Obstacle sur le sentier',
+			'signalement.types.eauASec' => 'Point d\'eau à sec',
+			'signalement.types.danger' => 'Danger',
+			'signalement.latencyBanner' => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.',
+			'signalement.confirm' => 'Confirmer le signalement',
+			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.',
+			'signalement.savedTitle' => 'Signalement enregistré',
+			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
+			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
+			'signalement.close' => 'Fermer',
+			'hebergement.title' => 'Hébergements à proximité',
+			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
+			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
+			'hebergement.openSite' => 'Voir le site',
+			'hebergement.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
+			'hebergement.empty' => 'Aucun hébergement répertorié à proximité pour le moment.',
+			'hebergement.types.refuge' => 'Refuge',
+			'hebergement.types.gite' => 'Gîte',
+			'hebergement.types.hotel' => 'Hôtel',
+			'hebergement.types.camping' => 'Camping',
+			'hebergement.types.chambreHote' => 'Chambre d\'hôte',
+			'training.title' => 'Préparation physique',
+			'training.localNotice' => 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.',
+			'training.reminderTitle' => 'Séance d\'entraînement aujourd\'hui',
+			'training.scheduleReminders' => 'Programmer les rappels',
+			'training.remindersScheduled' => ({required Object n}) => '${n} rappel(s) programmé(s)',
+			'training.week' => ({required Object n}) => 'Semaine ${n}',
+			'training.minutes' => ({required Object n}) => '${n} min',
+			'training.progress' => ({required Object done, required Object total}) => '${done}/${total} séances faites',
+			'training.types.marche' => 'Marche',
+			'training.types.cardio' => 'Cardio',
+			'training.types.renforcement' => 'Renforcement',
+			'training.intensity.faible' => 'Faible',
+			'training.intensity.moderee' => 'Modérée',
+			'training.intensity.elevee' => 'Élevée',
+			'eta.title' => 'Temps estimé',
+			'eta.toNextWaypoint' => 'Prochain point',
+			'eta.toStageEnd' => 'Fin d\'étape',
+			'eta.confidenceHigh' => 'Estimation fiable',
+			'eta.confidenceLow' => 'Approximatif (GPS faible)',
+			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
+			'eta.durationM' => ({required Object m}) => '${m} min',
 			_ => null,
 		};
 	}

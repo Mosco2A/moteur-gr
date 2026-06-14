@@ -67,6 +67,10 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
 	@override late final _Translations$onboarding$en onboarding = _Translations$onboarding$en._(_root);
 	@override late final _Translations$monetization$en monetization = _Translations$monetization$en._(_root);
+	@override late final _Translations$signalement$en signalement = _Translations$signalement$en._(_root);
+	@override late final _Translations$hebergement$en hebergement = _Translations$hebergement$en._(_root);
+	@override late final _Translations$training$en training = _Translations$training$en._(_root);
+	@override late final _Translations$eta$en eta = _Translations$eta$en._(_root);
 }
 
 // Path: a11y
@@ -616,6 +620,76 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
 }
 
+// Path: signalement
+class _Translations$signalement$en extends Translations$signalement$fr {
+	_Translations$signalement$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Report';
+	@override String get chooseType => 'What do you want to report?';
+	@override late final _Translations$signalement$types$en types = _Translations$signalement$types$en._(_root);
+	@override String get latencyBanner => 'Saved. Visible to other hikers once the network syncs.';
+	@override String get confirm => 'Confirm report';
+	@override String get noLocation => 'GPS position unavailable right now. Try again under open sky.';
+	@override String get savedTitle => 'Report saved';
+	@override String get savedPendingSync => 'It will be shared as soon as the network is back.';
+	@override String pendingCount({required Object n}) => '${n} awaiting sync';
+	@override String get close => 'Close';
+}
+
+// Path: hebergement
+class _Translations$hebergement$en extends Translations$hebergement$fr {
+	_Translations$hebergement$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Nearby accommodation';
+	@override String get facilitatorNote => 'StepWays points you to the hosts. Booking happens on their website: no payment inside the app.';
+	@override String detourAR({required Object km}) => 'Round-trip detour: ${km} km';
+	@override String get openSite => 'View website';
+	@override String get cannotOpen => 'Could not open this link on this device.';
+	@override String get empty => 'No accommodation listed nearby for now.';
+	@override late final _Translations$hebergement$types$en types = _Translations$hebergement$types$en._(_root);
+}
+
+// Path: training
+class _Translations$training$en extends Translations$training$fr {
+	_Translations$training$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Physical preparation';
+	@override String get localNotice => 'Your plan is computed and kept on your phone. Reminders are local notifications, with no tracking.';
+	@override String get reminderTitle => 'Training session today';
+	@override String get scheduleReminders => 'Schedule reminders';
+	@override String remindersScheduled({required Object n}) => '${n} reminder(s) scheduled';
+	@override String week({required Object n}) => 'Week ${n}';
+	@override String minutes({required Object n}) => '${n} min';
+	@override String progress({required Object done, required Object total}) => '${done}/${total} sessions done';
+	@override late final _Translations$training$types$en types = _Translations$training$types$en._(_root);
+	@override late final _Translations$training$intensity$en intensity = _Translations$training$intensity$en._(_root);
+}
+
+// Path: eta
+class _Translations$eta$en extends Translations$eta$fr {
+	_Translations$eta$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Estimated time';
+	@override String get toNextWaypoint => 'Next point';
+	@override String get toStageEnd => 'Stage end';
+	@override String get confidenceHigh => 'Reliable estimate';
+	@override String get confidenceLow => 'Approximate (weak GPS)';
+	@override String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
+	@override String durationM({required Object m}) => '${m} min';
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -792,6 +866,56 @@ class _Translations$feasibility$recommendations$en extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$en caution = _Translations$feasibility$recommendations$caution$en._(_root);
 	@override late final _Translations$feasibility$recommendations$good$en good = _Translations$feasibility$recommendations$good$en._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$en excellent = _Translations$feasibility$recommendations$excellent$en._(_root);
+}
+
+// Path: signalement.types
+class _Translations$signalement$types$en extends Translations$signalement$types$fr {
+	_Translations$signalement$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get obstacle => 'Obstacle on the trail';
+	@override String get eauASec => 'Dry water point';
+	@override String get danger => 'Danger';
+}
+
+// Path: hebergement.types
+class _Translations$hebergement$types$en extends Translations$hebergement$types$fr {
+	_Translations$hebergement$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Mountain hut';
+	@override String get gite => 'Lodge';
+	@override String get hotel => 'Hotel';
+	@override String get camping => 'Campsite';
+	@override String get chambreHote => 'Bed & breakfast';
+}
+
+// Path: training.types
+class _Translations$training$types$en extends Translations$training$types$fr {
+	_Translations$training$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get marche => 'Walking';
+	@override String get cardio => 'Cardio';
+	@override String get renforcement => 'Strength';
+}
+
+// Path: training.intensity
+class _Translations$training$intensity$en extends Translations$training$intensity$fr {
+	_Translations$training$intensity$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get faible => 'Low';
+	@override String get moderee => 'Moderate';
+	@override String get elevee => 'High';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1421,50 @@ extension on TranslationsEn {
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Unlock this trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
+			'signalement.title' => 'Report',
+			'signalement.chooseType' => 'What do you want to report?',
+			'signalement.types.obstacle' => 'Obstacle on the trail',
+			'signalement.types.eauASec' => 'Dry water point',
+			'signalement.types.danger' => 'Danger',
+			'signalement.latencyBanner' => 'Saved. Visible to other hikers once the network syncs.',
+			'signalement.confirm' => 'Confirm report',
+			'signalement.noLocation' => 'GPS position unavailable right now. Try again under open sky.',
+			'signalement.savedTitle' => 'Report saved',
+			'signalement.savedPendingSync' => 'It will be shared as soon as the network is back.',
+			'signalement.pendingCount' => ({required Object n}) => '${n} awaiting sync',
+			'signalement.close' => 'Close',
+			'hebergement.title' => 'Nearby accommodation',
+			'hebergement.facilitatorNote' => 'StepWays points you to the hosts. Booking happens on their website: no payment inside the app.',
+			'hebergement.detourAR' => ({required Object km}) => 'Round-trip detour: ${km} km',
+			'hebergement.openSite' => 'View website',
+			'hebergement.cannotOpen' => 'Could not open this link on this device.',
+			'hebergement.empty' => 'No accommodation listed nearby for now.',
+			'hebergement.types.refuge' => 'Mountain hut',
+			'hebergement.types.gite' => 'Lodge',
+			'hebergement.types.hotel' => 'Hotel',
+			'hebergement.types.camping' => 'Campsite',
+			'hebergement.types.chambreHote' => 'Bed & breakfast',
+			'training.title' => 'Physical preparation',
+			'training.localNotice' => 'Your plan is computed and kept on your phone. Reminders are local notifications, with no tracking.',
+			'training.reminderTitle' => 'Training session today',
+			'training.scheduleReminders' => 'Schedule reminders',
+			'training.remindersScheduled' => ({required Object n}) => '${n} reminder(s) scheduled',
+			'training.week' => ({required Object n}) => 'Week ${n}',
+			'training.minutes' => ({required Object n}) => '${n} min',
+			'training.progress' => ({required Object done, required Object total}) => '${done}/${total} sessions done',
+			'training.types.marche' => 'Walking',
+			'training.types.cardio' => 'Cardio',
+			'training.types.renforcement' => 'Strength',
+			'training.intensity.faible' => 'Low',
+			'training.intensity.moderee' => 'Moderate',
+			'training.intensity.elevee' => 'High',
+			'eta.title' => 'Estimated time',
+			'eta.toNextWaypoint' => 'Next point',
+			'eta.toStageEnd' => 'Stage end',
+			'eta.confidenceHigh' => 'Reliable estimate',
+			'eta.confidenceLow' => 'Approximate (weak GPS)',
+			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
+			'eta.durationM' => ({required Object m}) => '${m} min',
 			_ => null,
 		};
 	}

@@ -487,5 +487,65 @@
     "featureNoAds": "Zero ads",
     "buyCta": "Unlock this trek",
     "buyCtaWithPrice": "Unlock this trek — €$price"
+  },
+  "signalement": {
+    "title": "Report",
+    "chooseType": "What do you want to report?",
+    "types": {
+      "obstacle": "Obstacle on the trail",
+      "eauASec": "Dry water point",
+      "danger": "Danger"
+    },
+    "latencyBanner": "Saved. Visible to other hikers once the network syncs.",
+    "confirm": "Confirm report",
+    "noLocation": "GPS position unavailable right now. Try again under open sky.",
+    "savedTitle": "Report saved",
+    "savedPendingSync": "It will be shared as soon as the network is back.",
+    "pendingCount": "$n awaiting sync",
+    "close": "Close"
+  },
+  "hebergement": {
+    "title": "Nearby accommodation",
+    "facilitatorNote": "StepWays points you to the hosts. Booking happens on their website: no payment inside the app.",
+    "detourAR": "Round-trip detour: $km km",
+    "openSite": "View website",
+    "cannotOpen": "Could not open this link on this device.",
+    "empty": "No accommodation listed nearby for now.",
+    "types": {
+      "refuge": "Mountain hut",
+      "gite": "Lodge",
+      "hotel": "Hotel",
+      "camping": "Campsite",
+      "chambreHote": "Bed & breakfast"
+    }
+  },
+  "training": {
+    "title": "Physical preparation",
+    "localNotice": "Your plan is computed and kept on your phone. Reminders are local notifications, with no tracking.",
+    "reminderTitle": "Training session today",
+    "scheduleReminders": "Schedule reminders",
+    "remindersScheduled": "$n reminder(s) scheduled",
+    "week": "Week $n",
+    "minutes": "$n min",
+    "progress": "$done/$total sessions done",
+    "types": {
+      "marche": "Walking",
+      "cardio": "Cardio",
+      "renforcement": "Strength"
+    },
+    "intensity": {
+      "faible": "Low",
+      "moderee": "Moderate",
+      "elevee": "High"
+    }
+  },
+  "eta": {
+    "title": "Estimated time",
+    "toNextWaypoint": "Next point",
+    "toStageEnd": "Stage end",
+    "confidenceHigh": "Reliable estimate",
+    "confidenceLow": "Approximate (weak GPS)",
+    "durationHm": "$h h $m min",
+    "durationM": "$m min"
   }
 }

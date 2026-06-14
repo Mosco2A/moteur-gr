@@ -17,6 +17,9 @@ abstract final class AnalyticsEvents {
 
   /// Telemetrie regime GPS/batterie (F6A-04) — mesure terrain BAT-2.
   static const String gpsRegime = 'gps_regime';
+
+  /// Stats de fin d'etape (F6B-03) — denivele/allure/pauses agreges, zero-PII.
+  static const String trekStats = 'trek_stats';
 }
 
 /// Puits analytics abstrait — decouple de Firebase pour la testabilite.
@@ -156,6 +159,28 @@ class AnalyticsService {
         // Palier de 10 % (ex. 23 % -> 20) : grossier, non identifiant.
         'battery_bucket': (batteryPct ~/ 10) * 10,
         'defer_sync': deferSync,
+      });
+
+  /// Stats agregees de fin d'etape (F6B-03). Zero-PII : uniquement des mesures
+  /// arrondies grossierement (km/m/minutes/bpm entiers), aucune position ni
+  /// identifiant en clair (trailId hashe). Anti-fingerprinting via arrondis.
+  Future<void> logTrekStats({
+    required String trailId,
+    required double distanceKm,
+    required double elevationGainM,
+    required Duration activeDuration,
+    required int pauseCount,
+    int? avgHeartRateBpm,
+  }) =>
+      _log(AnalyticsEvents.trekStats, {
+        'trail': anonymize(trailId),
+        'distance_km': distanceKm.round(),
+        'elevation_gain_m': elevationGainM.round(),
+        'active_min': activeDuration.inMinutes,
+        'pauses': pauseCount,
+        if (avgHeartRateBpm != null)
+          // Palier de 10 bpm (anti-fingerprinting).
+          'hr_bucket': (avgHeartRateBpm ~/ 10) * 10,
       });
 
   /// Erreur non fatale (capturee/geree).

@@ -487,5 +487,65 @@
     "featureNoAds": "Keine Werbung",
     "buyCta": "Diesen Trek freischalten",
     "buyCtaWithPrice": "Diesen Trek freischalten — $price €"
+  },
+  "signalement": {
+    "title": "Melden",
+    "chooseType": "Was möchten Sie melden?",
+    "types": {
+      "obstacle": "Hindernis auf dem Weg",
+      "eauASec": "Trockene Wasserstelle",
+      "danger": "Gefahr"
+    },
+    "latencyBanner": "Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.",
+    "confirm": "Meldung bestätigen",
+    "noLocation": "GPS-Position derzeit nicht verfügbar. Versuchen Sie es unter freiem Himmel erneut.",
+    "savedTitle": "Meldung gespeichert",
+    "savedPendingSync": "Sie wird geteilt, sobald das Netzwerk wieder da ist.",
+    "pendingCount": "$n warten auf Synchronisierung",
+    "close": "Schließen"
+  },
+  "hebergement": {
+    "title": "Unterkünfte in der Nähe",
+    "facilitatorNote": "StepWays verweist Sie an die Gastgeber. Die Buchung erfolgt auf deren Website: keine Zahlung in der App.",
+    "detourAR": "Umweg hin und zurück: $km km",
+    "openSite": "Website ansehen",
+    "cannotOpen": "Dieser Link konnte auf diesem Gerät nicht geöffnet werden.",
+    "empty": "Derzeit keine Unterkünfte in der Nähe gelistet.",
+    "types": {
+      "refuge": "Berghütte",
+      "gite": "Gästehaus",
+      "hotel": "Hotel",
+      "camping": "Campingplatz",
+      "chambreHote": "Pension"
+    }
+  },
+  "training": {
+    "title": "Körperliche Vorbereitung",
+    "localNotice": "Ihr Plan wird auf Ihrem Telefon berechnet und gespeichert. Erinnerungen sind lokale Benachrichtigungen, ohne Tracking.",
+    "reminderTitle": "Heute Trainingseinheit",
+    "scheduleReminders": "Erinnerungen planen",
+    "remindersScheduled": "$n Erinnerung(en) geplant",
+    "week": "Woche $n",
+    "minutes": "$n Min",
+    "progress": "$done/$total Einheiten erledigt",
+    "types": {
+      "marche": "Gehen",
+      "cardio": "Cardio",
+      "renforcement": "Kraft"
+    },
+    "intensity": {
+      "faible": "Niedrig",
+      "moderee": "Mittel",
+      "elevee": "Hoch"
+    }
+  },
+  "eta": {
+    "title": "Geschätzte Zeit",
+    "toNextWaypoint": "Nächster Punkt",
+    "toStageEnd": "Etappenende",
+    "confidenceHigh": "Zuverlässige Schätzung",
+    "confidenceLow": "Ungefähr (schwaches GPS)",
+    "durationHm": "$h Std $m Min",
+    "durationM": "$m Min"
   }
 }

@@ -67,6 +67,10 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$es cloud = _Translations$cloud$es._(_root);
 	@override late final _Translations$onboarding$es onboarding = _Translations$onboarding$es._(_root);
 	@override late final _Translations$monetization$es monetization = _Translations$monetization$es._(_root);
+	@override late final _Translations$signalement$es signalement = _Translations$signalement$es._(_root);
+	@override late final _Translations$hebergement$es hebergement = _Translations$hebergement$es._(_root);
+	@override late final _Translations$training$es training = _Translations$training$es._(_root);
+	@override late final _Translations$eta$es eta = _Translations$eta$es._(_root);
 }
 
 // Path: a11y
@@ -616,6 +620,76 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Desbloquear este trek — ${price} €';
 }
 
+// Path: signalement
+class _Translations$signalement$es extends Translations$signalement$fr {
+	_Translations$signalement$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Notificar';
+	@override String get chooseType => '¿Qué quieres notificar?';
+	@override late final _Translations$signalement$types$es types = _Translations$signalement$types$es._(_root);
+	@override String get latencyBanner => 'Guardado. Visible para otros senderistas tras la sincronización de red.';
+	@override String get confirm => 'Confirmar notificación';
+	@override String get noLocation => 'Posición GPS no disponible ahora. Inténtalo de nuevo a cielo abierto.';
+	@override String get savedTitle => 'Notificación guardada';
+	@override String get savedPendingSync => 'Se compartirá en cuanto vuelva la red.';
+	@override String pendingCount({required Object n}) => '${n} en espera de sincronización';
+	@override String get close => 'Cerrar';
+}
+
+// Path: hebergement
+class _Translations$hebergement$es extends Translations$hebergement$fr {
+	_Translations$hebergement$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Alojamientos cercanos';
+	@override String get facilitatorNote => 'StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.';
+	@override String detourAR({required Object km}) => 'Desvío ida y vuelta: ${km} km';
+	@override String get openSite => 'Ver el sitio';
+	@override String get cannotOpen => 'No se pudo abrir este enlace en este dispositivo.';
+	@override String get empty => 'No hay alojamientos cerca por ahora.';
+	@override late final _Translations$hebergement$types$es types = _Translations$hebergement$types$es._(_root);
+}
+
+// Path: training
+class _Translations$training$es extends Translations$training$fr {
+	_Translations$training$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Preparación física';
+	@override String get localNotice => 'Tu plan se calcula y se guarda en tu teléfono. Los recordatorios son notificaciones locales, sin seguimiento.';
+	@override String get reminderTitle => 'Sesión de entrenamiento hoy';
+	@override String get scheduleReminders => 'Programar recordatorios';
+	@override String remindersScheduled({required Object n}) => '${n} recordatorio(s) programado(s)';
+	@override String week({required Object n}) => 'Semana ${n}';
+	@override String minutes({required Object n}) => '${n} min';
+	@override String progress({required Object done, required Object total}) => '${done}/${total} sesiones hechas';
+	@override late final _Translations$training$types$es types = _Translations$training$types$es._(_root);
+	@override late final _Translations$training$intensity$es intensity = _Translations$training$intensity$es._(_root);
+}
+
+// Path: eta
+class _Translations$eta$es extends Translations$eta$fr {
+	_Translations$eta$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Tiempo estimado';
+	@override String get toNextWaypoint => 'Próximo punto';
+	@override String get toStageEnd => 'Fin de etapa';
+	@override String get confidenceHigh => 'Estimación fiable';
+	@override String get confidenceLow => 'Aproximado (GPS débil)';
+	@override String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
+	@override String durationM({required Object m}) => '${m} min';
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -792,6 +866,56 @@ class _Translations$feasibility$recommendations$es extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$es caution = _Translations$feasibility$recommendations$caution$es._(_root);
 	@override late final _Translations$feasibility$recommendations$good$es good = _Translations$feasibility$recommendations$good$es._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$es excellent = _Translations$feasibility$recommendations$excellent$es._(_root);
+}
+
+// Path: signalement.types
+class _Translations$signalement$types$es extends Translations$signalement$types$fr {
+	_Translations$signalement$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get obstacle => 'Obstáculo en el sendero';
+	@override String get eauASec => 'Punto de agua seco';
+	@override String get danger => 'Peligro';
+}
+
+// Path: hebergement.types
+class _Translations$hebergement$types$es extends Translations$hebergement$types$fr {
+	_Translations$hebergement$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Refugio';
+	@override String get gite => 'Casa rural';
+	@override String get hotel => 'Hotel';
+	@override String get camping => 'Camping';
+	@override String get chambreHote => 'Casa de huéspedes';
+}
+
+// Path: training.types
+class _Translations$training$types$es extends Translations$training$types$fr {
+	_Translations$training$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get marche => 'Marcha';
+	@override String get cardio => 'Cardio';
+	@override String get renforcement => 'Fortalecimiento';
+}
+
+// Path: training.intensity
+class _Translations$training$intensity$es extends Translations$training$intensity$fr {
+	_Translations$training$intensity$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get faible => 'Baja';
+	@override String get moderee => 'Moderada';
+	@override String get elevee => 'Alta';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1421,50 @@ extension on TranslationsEs {
 			'monetization.featureNoAds' => 'Cero publicidad',
 			'monetization.buyCta' => 'Desbloquear este trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Desbloquear este trek — ${price} €',
+			'signalement.title' => 'Notificar',
+			'signalement.chooseType' => '¿Qué quieres notificar?',
+			'signalement.types.obstacle' => 'Obstáculo en el sendero',
+			'signalement.types.eauASec' => 'Punto de agua seco',
+			'signalement.types.danger' => 'Peligro',
+			'signalement.latencyBanner' => 'Guardado. Visible para otros senderistas tras la sincronización de red.',
+			'signalement.confirm' => 'Confirmar notificación',
+			'signalement.noLocation' => 'Posición GPS no disponible ahora. Inténtalo de nuevo a cielo abierto.',
+			'signalement.savedTitle' => 'Notificación guardada',
+			'signalement.savedPendingSync' => 'Se compartirá en cuanto vuelva la red.',
+			'signalement.pendingCount' => ({required Object n}) => '${n} en espera de sincronización',
+			'signalement.close' => 'Cerrar',
+			'hebergement.title' => 'Alojamientos cercanos',
+			'hebergement.facilitatorNote' => 'StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.',
+			'hebergement.detourAR' => ({required Object km}) => 'Desvío ida y vuelta: ${km} km',
+			'hebergement.openSite' => 'Ver el sitio',
+			'hebergement.cannotOpen' => 'No se pudo abrir este enlace en este dispositivo.',
+			'hebergement.empty' => 'No hay alojamientos cerca por ahora.',
+			'hebergement.types.refuge' => 'Refugio',
+			'hebergement.types.gite' => 'Casa rural',
+			'hebergement.types.hotel' => 'Hotel',
+			'hebergement.types.camping' => 'Camping',
+			'hebergement.types.chambreHote' => 'Casa de huéspedes',
+			'training.title' => 'Preparación física',
+			'training.localNotice' => 'Tu plan se calcula y se guarda en tu teléfono. Los recordatorios son notificaciones locales, sin seguimiento.',
+			'training.reminderTitle' => 'Sesión de entrenamiento hoy',
+			'training.scheduleReminders' => 'Programar recordatorios',
+			'training.remindersScheduled' => ({required Object n}) => '${n} recordatorio(s) programado(s)',
+			'training.week' => ({required Object n}) => 'Semana ${n}',
+			'training.minutes' => ({required Object n}) => '${n} min',
+			'training.progress' => ({required Object done, required Object total}) => '${done}/${total} sesiones hechas',
+			'training.types.marche' => 'Marcha',
+			'training.types.cardio' => 'Cardio',
+			'training.types.renforcement' => 'Fortalecimiento',
+			'training.intensity.faible' => 'Baja',
+			'training.intensity.moderee' => 'Moderada',
+			'training.intensity.elevee' => 'Alta',
+			'eta.title' => 'Tiempo estimado',
+			'eta.toNextWaypoint' => 'Próximo punto',
+			'eta.toStageEnd' => 'Fin de etapa',
+			'eta.confidenceHigh' => 'Estimación fiable',
+			'eta.confidenceLow' => 'Aproximado (GPS débil)',
+			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
+			'eta.durationM' => ({required Object m}) => '${m} min',
 			_ => null,
 		};
 	}

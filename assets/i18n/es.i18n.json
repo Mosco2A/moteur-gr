@@ -487,5 +487,65 @@
     "featureNoAds": "Cero publicidad",
     "buyCta": "Desbloquear este trek",
     "buyCtaWithPrice": "Desbloquear este trek — $price €"
+  },
+  "signalement": {
+    "title": "Notificar",
+    "chooseType": "¿Qué quieres notificar?",
+    "types": {
+      "obstacle": "Obstáculo en el sendero",
+      "eauASec": "Punto de agua seco",
+      "danger": "Peligro"
+    },
+    "latencyBanner": "Guardado. Visible para otros senderistas tras la sincronización de red.",
+    "confirm": "Confirmar notificación",
+    "noLocation": "Posición GPS no disponible ahora. Inténtalo de nuevo a cielo abierto.",
+    "savedTitle": "Notificación guardada",
+    "savedPendingSync": "Se compartirá en cuanto vuelva la red.",
+    "pendingCount": "$n en espera de sincronización",
+    "close": "Cerrar"
+  },
+  "hebergement": {
+    "title": "Alojamientos cercanos",
+    "facilitatorNote": "StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.",
+    "detourAR": "Desvío ida y vuelta: $km km",
+    "openSite": "Ver el sitio",
+    "cannotOpen": "No se pudo abrir este enlace en este dispositivo.",
+    "empty": "No hay alojamientos cerca por ahora.",
+    "types": {
+      "refuge": "Refugio",
+      "gite": "Casa rural",
+      "hotel": "Hotel",
+      "camping": "Camping",
+      "chambreHote": "Casa de huéspedes"
+    }
+  },
+  "training": {
+    "title": "Preparación física",
+    "localNotice": "Tu plan se calcula y se guarda en tu teléfono. Los recordatorios son notificaciones locales, sin seguimiento.",
+    "reminderTitle": "Sesión de entrenamiento hoy",
+    "scheduleReminders": "Programar recordatorios",
+    "remindersScheduled": "$n recordatorio(s) programado(s)",
+    "week": "Semana $n",
+    "minutes": "$n min",
+    "progress": "$done/$total sesiones hechas",
+    "types": {
+      "marche": "Marcha",
+      "cardio": "Cardio",
+      "renforcement": "Fortalecimiento"
+    },
+    "intensity": {
+      "faible": "Baja",
+      "moderee": "Moderada",
+      "elevee": "Alta"
+    }
+  },
+  "eta": {
+    "title": "Tiempo estimado",
+    "toNextWaypoint": "Próximo punto",
+    "toStageEnd": "Fin de etapa",
+    "confidenceHigh": "Estimación fiable",
+    "confidenceLow": "Aproximado (GPS débil)",
+    "durationHm": "$h h $m min",
+    "durationM": "$m min"
   }
 }
