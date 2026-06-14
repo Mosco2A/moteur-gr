@@ -575,5 +575,47 @@
     "activitySegment": "a réalisé un segment",
     "activityBadge": "a obtenu un badge",
     "activityDefi": "a progressé dans un défi"
+  },
+  "gamification": {
+    "galleryTitle": "Mes badges",
+    "obtained": "Obtenu",
+    "locked": "Verrouillé",
+    "tierDebutant": "Débutant",
+    "tierExpert": "Expert",
+    "badge": {
+      "firstStage": {
+        "titre": "Première étape",
+        "description": "Tu as terminé ta première étape."
+      },
+      "firstTrek": {
+        "titre": "Premier trek",
+        "description": "Tu as bouclé ton premier trek complet."
+      },
+      "firstSegment": {
+        "titre": "Premier segment",
+        "description": "Tu as parcouru ton premier segment."
+      },
+      "elevation5000": {
+        "titre": "5000 m de dénivelé",
+        "description": "Tu as cumulé 5000 m de dénivelé positif."
+      },
+      "tenStages": {
+        "titre": "10 étapes",
+        "description": "Tu as terminé 10 étapes."
+      },
+      "challenger": {
+        "titre": "Challenger",
+        "description": "Tu as réussi ton premier défi saisonnier."
+      }
+    },
+    "defi": {
+      "screenTitle": "Défis",
+      "inProgress": "En cours",
+      "progressLabel": "Progression : $current / $target",
+      "rankingTitle": "Classement du défi",
+      "pseudonymNotice": "Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n'est affichée.",
+      "notEnoughParticipants": "Pas assez de participants pour publier ce classement.",
+      "noDefi": "Aucun défi en cours pour le moment."
+    }
   }
 }

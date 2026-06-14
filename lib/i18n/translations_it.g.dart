@@ -73,6 +73,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$eta$it eta = _Translations$eta$it._(_root);
 	@override late final _Translations$leaderboard$it leaderboard = _Translations$leaderboard$it._(_root);
 	@override late final _Translations$social$it social = _Translations$social$it._(_root);
+	@override late final _Translations$gamification$it gamification = _Translations$gamification$it._(_root);
 }
 
 // Path: a11y
@@ -734,6 +735,22 @@ class _Translations$social$it extends Translations$social$fr {
 	@override String get activityDefi => 'ha fatto progressi in una sfida';
 }
 
+// Path: gamification
+class _Translations$gamification$it extends Translations$gamification$fr {
+	_Translations$gamification$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get galleryTitle => 'I miei distintivi';
+	@override String get obtained => 'Ottenuto';
+	@override String get locked => 'Bloccato';
+	@override String get tierDebutant => 'Principiante';
+	@override String get tierExpert => 'Esperto';
+	@override late final _Translations$gamification$badge$it badge = _Translations$gamification$badge$it._(_root);
+	@override late final _Translations$gamification$defi$it defi = _Translations$gamification$defi$it._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -962,6 +979,37 @@ class _Translations$training$intensity$it extends Translations$training$intensit
 	@override String get elevee => 'Elevata';
 }
 
+// Path: gamification.badge
+class _Translations$gamification$badge$it extends Translations$gamification$badge$fr {
+	_Translations$gamification$badge$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$gamification$badge$firstStage$it firstStage = _Translations$gamification$badge$firstStage$it._(_root);
+	@override late final _Translations$gamification$badge$firstTrek$it firstTrek = _Translations$gamification$badge$firstTrek$it._(_root);
+	@override late final _Translations$gamification$badge$firstSegment$it firstSegment = _Translations$gamification$badge$firstSegment$it._(_root);
+	@override late final _Translations$gamification$badge$elevation5000$it elevation5000 = _Translations$gamification$badge$elevation5000$it._(_root);
+	@override late final _Translations$gamification$badge$tenStages$it tenStages = _Translations$gamification$badge$tenStages$it._(_root);
+	@override late final _Translations$gamification$badge$challenger$it challenger = _Translations$gamification$badge$challenger$it._(_root);
+}
+
+// Path: gamification.defi
+class _Translations$gamification$defi$it extends Translations$gamification$defi$fr {
+	_Translations$gamification$defi$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get screenTitle => 'Sfide';
+	@override String get inProgress => 'In corso';
+	@override String progressLabel({required Object current, required Object target}) => 'Progresso: ${current} / ${target}';
+	@override String get rankingTitle => 'Classifica della sfida';
+	@override String get pseudonymNotice => 'Classifica per fascia, con pseudonimi. Nessun dato personale diretto viene mostrato.';
+	@override String get notEnoughParticipants => 'Partecipanti insufficienti per pubblicare questa classifica.';
+	@override String get noDefi => 'Nessuna sfida in corso al momento.';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$it extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1008,6 +1056,72 @@ class _Translations$feasibility$recommendations$excellent$it extends Translation
 	@override String get title => 'Preparazione ottimale';
 	@override String get summary => 'Siete perfettamente preparati. Godetevi il trekking!';
 	@override late final _Translations$feasibility$recommendations$excellent$tips$it tips = _Translations$feasibility$recommendations$excellent$tips$it._(_root);
+}
+
+// Path: gamification.badge.firstStage
+class _Translations$gamification$badge$firstStage$it extends Translations$gamification$badge$firstStage$fr {
+	_Translations$gamification$badge$firstStage$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get titre => 'Prima tappa';
+	@override String get description => 'Hai completato la tua prima tappa.';
+}
+
+// Path: gamification.badge.firstTrek
+class _Translations$gamification$badge$firstTrek$it extends Translations$gamification$badge$firstTrek$fr {
+	_Translations$gamification$badge$firstTrek$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get titre => 'Primo trek';
+	@override String get description => 'Hai concluso il tuo primo trek completo.';
+}
+
+// Path: gamification.badge.firstSegment
+class _Translations$gamification$badge$firstSegment$it extends Translations$gamification$badge$firstSegment$fr {
+	_Translations$gamification$badge$firstSegment$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get titre => 'Primo segmento';
+	@override String get description => 'Hai percorso il tuo primo segmento.';
+}
+
+// Path: gamification.badge.elevation5000
+class _Translations$gamification$badge$elevation5000$it extends Translations$gamification$badge$elevation5000$fr {
+	_Translations$gamification$badge$elevation5000$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get titre => '5000 m di dislivello';
+	@override String get description => 'Hai accumulato 5000 m di dislivello positivo.';
+}
+
+// Path: gamification.badge.tenStages
+class _Translations$gamification$badge$tenStages$it extends Translations$gamification$badge$tenStages$fr {
+	_Translations$gamification$badge$tenStages$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get titre => '10 tappe';
+	@override String get description => 'Hai completato 10 tappe.';
+}
+
+// Path: gamification.badge.challenger
+class _Translations$gamification$badge$challenger$it extends Translations$gamification$badge$challenger$fr {
+	_Translations$gamification$badge$challenger$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get titre => 'Sfidante';
+	@override String get description => 'Hai completato la tua prima sfida stagionale.';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -1533,6 +1647,30 @@ extension on TranslationsIt {
 			'social.activitySegment' => 'ha completato un segmento',
 			'social.activityBadge' => 'ha ottenuto un distintivo',
 			'social.activityDefi' => 'ha fatto progressi in una sfida',
+			'gamification.galleryTitle' => 'I miei distintivi',
+			'gamification.obtained' => 'Ottenuto',
+			'gamification.locked' => 'Bloccato',
+			'gamification.tierDebutant' => 'Principiante',
+			'gamification.tierExpert' => 'Esperto',
+			'gamification.badge.firstStage.titre' => 'Prima tappa',
+			'gamification.badge.firstStage.description' => 'Hai completato la tua prima tappa.',
+			'gamification.badge.firstTrek.titre' => 'Primo trek',
+			'gamification.badge.firstTrek.description' => 'Hai concluso il tuo primo trek completo.',
+			'gamification.badge.firstSegment.titre' => 'Primo segmento',
+			'gamification.badge.firstSegment.description' => 'Hai percorso il tuo primo segmento.',
+			'gamification.badge.elevation5000.titre' => '5000 m di dislivello',
+			'gamification.badge.elevation5000.description' => 'Hai accumulato 5000 m di dislivello positivo.',
+			'gamification.badge.tenStages.titre' => '10 tappe',
+			'gamification.badge.tenStages.description' => 'Hai completato 10 tappe.',
+			'gamification.badge.challenger.titre' => 'Sfidante',
+			'gamification.badge.challenger.description' => 'Hai completato la tua prima sfida stagionale.',
+			'gamification.defi.screenTitle' => 'Sfide',
+			'gamification.defi.inProgress' => 'In corso',
+			'gamification.defi.progressLabel' => ({required Object current, required Object target}) => 'Progresso: ${current} / ${target}',
+			'gamification.defi.rankingTitle' => 'Classifica della sfida',
+			'gamification.defi.pseudonymNotice' => 'Classifica per fascia, con pseudonimi. Nessun dato personale diretto viene mostrato.',
+			'gamification.defi.notEnoughParticipants' => 'Partecipanti insufficienti per pubblicare questa classifica.',
+			'gamification.defi.noDefi' => 'Nessuna sfida in corso al momento.',
 			_ => null,
 		};
 	}

@@ -575,5 +575,47 @@
     "activitySegment": "ha completato un segmento",
     "activityBadge": "ha ottenuto un distintivo",
     "activityDefi": "ha fatto progressi in una sfida"
+  },
+  "gamification": {
+    "galleryTitle": "I miei distintivi",
+    "obtained": "Ottenuto",
+    "locked": "Bloccato",
+    "tierDebutant": "Principiante",
+    "tierExpert": "Esperto",
+    "badge": {
+      "firstStage": {
+        "titre": "Prima tappa",
+        "description": "Hai completato la tua prima tappa."
+      },
+      "firstTrek": {
+        "titre": "Primo trek",
+        "description": "Hai concluso il tuo primo trek completo."
+      },
+      "firstSegment": {
+        "titre": "Primo segmento",
+        "description": "Hai percorso il tuo primo segmento."
+      },
+      "elevation5000": {
+        "titre": "5000 m di dislivello",
+        "description": "Hai accumulato 5000 m di dislivello positivo."
+      },
+      "tenStages": {
+        "titre": "10 tappe",
+        "description": "Hai completato 10 tappe."
+      },
+      "challenger": {
+        "titre": "Sfidante",
+        "description": "Hai completato la tua prima sfida stagionale."
+      }
+    },
+    "defi": {
+      "screenTitle": "Sfide",
+      "inProgress": "In corso",
+      "progressLabel": "Progresso: $current / $target",
+      "rankingTitle": "Classifica della sfida",
+      "pseudonymNotice": "Classifica per fascia, con pseudonimi. Nessun dato personale diretto viene mostrato.",
+      "notEnoughParticipants": "Partecipanti insufficienti per pubblicare questa classifica.",
+      "noDefi": "Nessuna sfida in corso al momento."
+    }
   }
 }

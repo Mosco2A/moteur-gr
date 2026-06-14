@@ -575,5 +575,47 @@
     "activitySegment": "completó un segmento",
     "activityBadge": "obtuvo una insignia",
     "activityDefi": "avanzó en un reto"
+  },
+  "gamification": {
+    "galleryTitle": "Mis insignias",
+    "obtained": "Obtenida",
+    "locked": "Bloqueada",
+    "tierDebutant": "Principiante",
+    "tierExpert": "Experto",
+    "badge": {
+      "firstStage": {
+        "titre": "Primera etapa",
+        "description": "Has completado tu primera etapa."
+      },
+      "firstTrek": {
+        "titre": "Primer trek",
+        "description": "Has terminado tu primer trek completo."
+      },
+      "firstSegment": {
+        "titre": "Primer segmento",
+        "description": "Has recorrido tu primer segmento."
+      },
+      "elevation5000": {
+        "titre": "5000 m de desnivel",
+        "description": "Has acumulado 5000 m de desnivel positivo."
+      },
+      "tenStages": {
+        "titre": "10 etapas",
+        "description": "Has completado 10 etapas."
+      },
+      "challenger": {
+        "titre": "Retador",
+        "description": "Has completado tu primer reto de temporada."
+      }
+    },
+    "defi": {
+      "screenTitle": "Retos",
+      "inProgress": "En curso",
+      "progressLabel": "Progreso: $current / $target",
+      "rankingTitle": "Clasificación del reto",
+      "pseudonymNotice": "Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.",
+      "notEnoughParticipants": "No hay suficientes participantes para publicar esta clasificación.",
+      "noDefi": "Ningún reto en curso por ahora."
+    }
   }
 }

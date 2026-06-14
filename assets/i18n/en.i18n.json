@@ -575,5 +575,47 @@
     "activitySegment": "completed a segment",
     "activityBadge": "earned a badge",
     "activityDefi": "made progress on a challenge"
+  },
+  "gamification": {
+    "galleryTitle": "My badges",
+    "obtained": "Earned",
+    "locked": "Locked",
+    "tierDebutant": "Beginner",
+    "tierExpert": "Expert",
+    "badge": {
+      "firstStage": {
+        "titre": "First stage",
+        "description": "You completed your first stage."
+      },
+      "firstTrek": {
+        "titre": "First trek",
+        "description": "You finished your first full trek."
+      },
+      "firstSegment": {
+        "titre": "First segment",
+        "description": "You ran your first segment."
+      },
+      "elevation5000": {
+        "titre": "5000 m of elevation",
+        "description": "You accumulated 5000 m of elevation gain."
+      },
+      "tenStages": {
+        "titre": "10 stages",
+        "description": "You completed 10 stages."
+      },
+      "challenger": {
+        "titre": "Challenger",
+        "description": "You completed your first seasonal challenge."
+      }
+    },
+    "defi": {
+      "screenTitle": "Challenges",
+      "inProgress": "In progress",
+      "progressLabel": "Progress: $current / $target",
+      "rankingTitle": "Challenge ranking",
+      "pseudonymNotice": "Ranking by group, using pseudonyms. No direct personal data is shown.",
+      "notEnoughParticipants": "Not enough participants to publish this ranking.",
+      "noDefi": "No challenge in progress right now."
+    }
   }
 }
