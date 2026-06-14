@@ -72,6 +72,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$hebergement$fr hebergement = Translations$hebergement$fr.internal(_root);
 	late final Translations$training$fr training = Translations$training$fr.internal(_root);
 	late final Translations$eta$fr eta = Translations$eta$fr.internal(_root);
+	late final Translations$leaderboard$fr leaderboard = Translations$leaderboard$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1330,6 +1331,36 @@ class Translations$eta$fr {
 	String durationM({required Object m}) => '${m} min';
 }
 
+// Path: leaderboard
+class Translations$leaderboard$fr {
+	Translations$leaderboard$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Roi de l'étape'
+	String get title => 'Roi de l\'étape';
+
+	/// fr: 'Classement indisponible pour le moment.'
+	String get unavailable => 'Classement indisponible pour le moment.';
+
+	/// fr: 'Aucun classement pour ce segment. Sois le premier à le parcourir !'
+	String get empty => 'Aucun classement pour ce segment. Sois le premier à le parcourir !';
+
+	/// fr: 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n'est affichée.'
+	String get pseudonymNotice => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.';
+
+	/// fr: 'Tranche : $tranche'
+	String trancheLabel({required Object tranche}) => 'Tranche : ${tranche}';
+
+	/// fr: 'Pas assez de participants pour publier ce classement.'
+	String get notEnoughParticipants => 'Pas assez de participants pour publier ce classement.';
+
+	/// fr: 'Rang $rank, $pseudonym, temps $time'
+	String entrySemantics({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2363,6 +2394,13 @@ extension on Translations {
 			'eta.confidenceLow' => 'Approximatif (GPS faible)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
 			'eta.durationM' => ({required Object m}) => '${m} min',
+			'leaderboard.title' => 'Roi de l\'étape',
+			'leaderboard.unavailable' => 'Classement indisponible pour le moment.',
+			'leaderboard.empty' => 'Aucun classement pour ce segment. Sois le premier à le parcourir !',
+			'leaderboard.pseudonymNotice' => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.',
+			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Tranche : ${tranche}',
+			'leaderboard.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
+			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}',
 			_ => null,
 		};
 	}

@@ -71,6 +71,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$hebergement$de hebergement = _Translations$hebergement$de._(_root);
 	@override late final _Translations$training$de training = _Translations$training$de._(_root);
 	@override late final _Translations$eta$de eta = _Translations$eta$de._(_root);
+	@override late final _Translations$leaderboard$de leaderboard = _Translations$leaderboard$de._(_root);
 }
 
 // Path: a11y
@@ -688,6 +689,22 @@ class _Translations$eta$de extends Translations$eta$fr {
 	@override String get confidenceLow => 'Ungefähr (schwaches GPS)';
 	@override String durationHm({required Object h, required Object m}) => '${h} Std ${m} Min';
 	@override String durationM({required Object m}) => '${m} Min';
+}
+
+// Path: leaderboard
+class _Translations$leaderboard$de extends Translations$leaderboard$fr {
+	_Translations$leaderboard$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'König der Etappe';
+	@override String get unavailable => 'Rangliste derzeit nicht verfügbar.';
+	@override String get empty => 'Noch keine Rangliste für dieses Segment. Sei der Erste!';
+	@override String get pseudonymNotice => 'Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.';
+	@override String trancheLabel({required Object tranche}) => 'Gruppe: ${tranche}';
+	@override String get notEnoughParticipants => 'Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.';
+	@override String entrySemantics({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, Zeit ${time}';
 }
 
 // Path: stage.difficulty
@@ -1465,6 +1482,13 @@ extension on TranslationsDe {
 			'eta.confidenceLow' => 'Ungefähr (schwaches GPS)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} Std ${m} Min',
 			'eta.durationM' => ({required Object m}) => '${m} Min',
+			'leaderboard.title' => 'König der Etappe',
+			'leaderboard.unavailable' => 'Rangliste derzeit nicht verfügbar.',
+			'leaderboard.empty' => 'Noch keine Rangliste für dieses Segment. Sei der Erste!',
+			'leaderboard.pseudonymNotice' => 'Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.',
+			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Gruppe: ${tranche}',
+			'leaderboard.notEnoughParticipants' => 'Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.',
+			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, Zeit ${time}',
 			_ => null,
 		};
 	}

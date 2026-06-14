@@ -547,5 +547,14 @@
     "confidenceLow": "Approssimativo (GPS debole)",
     "durationHm": "$h h $m min",
     "durationM": "$m min"
+  },
+  "leaderboard": {
+    "title": "Re della tappa",
+    "unavailable": "Classifica non disponibile al momento.",
+    "empty": "Nessuna classifica per questo segmento. Sii il primo a percorrerlo!",
+    "pseudonymNotice": "Classifica per fascia, con pseudonimi. Nessun dato personale diretto viene mostrato.",
+    "trancheLabel": "Fascia: $tranche",
+    "notEnoughParticipants": "Partecipanti insufficienti per pubblicare questa classifica.",
+    "entrySemantics": "Posizione $rank, $pseudonym, tempo $time"
   }
 }

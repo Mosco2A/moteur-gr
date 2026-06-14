@@ -547,5 +547,14 @@
     "confidenceLow": "Ungefähr (schwaches GPS)",
     "durationHm": "$h Std $m Min",
     "durationM": "$m Min"
+  },
+  "leaderboard": {
+    "title": "König der Etappe",
+    "unavailable": "Rangliste derzeit nicht verfügbar.",
+    "empty": "Noch keine Rangliste für dieses Segment. Sei der Erste!",
+    "pseudonymNotice": "Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.",
+    "trancheLabel": "Gruppe: $tranche",
+    "notEnoughParticipants": "Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.",
+    "entrySemantics": "Rang $rank, $pseudonym, Zeit $time"
   }
 }

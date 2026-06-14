@@ -71,6 +71,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$hebergement$es hebergement = _Translations$hebergement$es._(_root);
 	@override late final _Translations$training$es training = _Translations$training$es._(_root);
 	@override late final _Translations$eta$es eta = _Translations$eta$es._(_root);
+	@override late final _Translations$leaderboard$es leaderboard = _Translations$leaderboard$es._(_root);
 }
 
 // Path: a11y
@@ -688,6 +689,22 @@ class _Translations$eta$es extends Translations$eta$fr {
 	@override String get confidenceLow => 'Aproximado (GPS débil)';
 	@override String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
 	@override String durationM({required Object m}) => '${m} min';
+}
+
+// Path: leaderboard
+class _Translations$leaderboard$es extends Translations$leaderboard$fr {
+	_Translations$leaderboard$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Rey de la etapa';
+	@override String get unavailable => 'Clasificación no disponible por ahora.';
+	@override String get empty => 'Aún no hay clasificación para este segmento. ¡Sé el primero en recorrerlo!';
+	@override String get pseudonymNotice => 'Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.';
+	@override String trancheLabel({required Object tranche}) => 'Grupo: ${tranche}';
+	@override String get notEnoughParticipants => 'No hay suficientes participantes para publicar esta clasificación.';
+	@override String entrySemantics({required Object rank, required Object pseudonym, required Object time}) => 'Posición ${rank}, ${pseudonym}, tiempo ${time}';
 }
 
 // Path: stage.difficulty
@@ -1465,6 +1482,13 @@ extension on TranslationsEs {
 			'eta.confidenceLow' => 'Aproximado (GPS débil)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
 			'eta.durationM' => ({required Object m}) => '${m} min',
+			'leaderboard.title' => 'Rey de la etapa',
+			'leaderboard.unavailable' => 'Clasificación no disponible por ahora.',
+			'leaderboard.empty' => 'Aún no hay clasificación para este segmento. ¡Sé el primero en recorrerlo!',
+			'leaderboard.pseudonymNotice' => 'Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.',
+			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Grupo: ${tranche}',
+			'leaderboard.notEnoughParticipants' => 'No hay suficientes participantes para publicar esta clasificación.',
+			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Posición ${rank}, ${pseudonym}, tiempo ${time}',
 			_ => null,
 		};
 	}

@@ -547,5 +547,14 @@
     "confidenceLow": "Approximate (weak GPS)",
     "durationHm": "$h h $m min",
     "durationM": "$m min"
+  },
+  "leaderboard": {
+    "title": "King of the stage",
+    "unavailable": "Leaderboard unavailable right now.",
+    "empty": "No ranking for this segment yet. Be the first to run it!",
+    "pseudonymNotice": "Ranking by group, using pseudonyms. No direct personal data is shown.",
+    "trancheLabel": "Group: $tranche",
+    "notEnoughParticipants": "Not enough participants to publish this ranking.",
+    "entrySemantics": "Rank $rank, $pseudonym, time $time"
   }
 }

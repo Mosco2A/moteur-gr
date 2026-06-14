@@ -71,6 +71,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$hebergement$en hebergement = _Translations$hebergement$en._(_root);
 	@override late final _Translations$training$en training = _Translations$training$en._(_root);
 	@override late final _Translations$eta$en eta = _Translations$eta$en._(_root);
+	@override late final _Translations$leaderboard$en leaderboard = _Translations$leaderboard$en._(_root);
 }
 
 // Path: a11y
@@ -688,6 +689,22 @@ class _Translations$eta$en extends Translations$eta$fr {
 	@override String get confidenceLow => 'Approximate (weak GPS)';
 	@override String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
 	@override String durationM({required Object m}) => '${m} min';
+}
+
+// Path: leaderboard
+class _Translations$leaderboard$en extends Translations$leaderboard$fr {
+	_Translations$leaderboard$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'King of the stage';
+	@override String get unavailable => 'Leaderboard unavailable right now.';
+	@override String get empty => 'No ranking for this segment yet. Be the first to run it!';
+	@override String get pseudonymNotice => 'Ranking by group, using pseudonyms. No direct personal data is shown.';
+	@override String trancheLabel({required Object tranche}) => 'Group: ${tranche}';
+	@override String get notEnoughParticipants => 'Not enough participants to publish this ranking.';
+	@override String entrySemantics({required Object rank, required Object pseudonym, required Object time}) => 'Rank ${rank}, ${pseudonym}, time ${time}';
 }
 
 // Path: stage.difficulty
@@ -1465,6 +1482,13 @@ extension on TranslationsEn {
 			'eta.confidenceLow' => 'Approximate (weak GPS)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
 			'eta.durationM' => ({required Object m}) => '${m} min',
+			'leaderboard.title' => 'King of the stage',
+			'leaderboard.unavailable' => 'Leaderboard unavailable right now.',
+			'leaderboard.empty' => 'No ranking for this segment yet. Be the first to run it!',
+			'leaderboard.pseudonymNotice' => 'Ranking by group, using pseudonyms. No direct personal data is shown.',
+			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Group: ${tranche}',
+			'leaderboard.notEnoughParticipants' => 'Not enough participants to publish this ranking.',
+			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Rank ${rank}, ${pseudonym}, time ${time}',
 			_ => null,
 		};
 	}

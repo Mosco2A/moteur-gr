@@ -547,5 +547,14 @@
     "confidenceLow": "Aproximado (GPS débil)",
     "durationHm": "$h h $m min",
     "durationM": "$m min"
+  },
+  "leaderboard": {
+    "title": "Rey de la etapa",
+    "unavailable": "Clasificación no disponible por ahora.",
+    "empty": "Aún no hay clasificación para este segmento. ¡Sé el primero en recorrerlo!",
+    "pseudonymNotice": "Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.",
+    "trancheLabel": "Grupo: $tranche",
+    "notEnoughParticipants": "No hay suficientes participantes para publicar esta clasificación.",
+    "entrySemantics": "Posición $rank, $pseudonym, tiempo $time"
   }
 }

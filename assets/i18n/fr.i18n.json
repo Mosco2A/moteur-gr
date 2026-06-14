@@ -547,5 +547,14 @@
     "confidenceLow": "Approximatif (GPS faible)",
     "durationHm": "$h h $m min",
     "durationM": "$m min"
+  },
+  "leaderboard": {
+    "title": "Roi de l'étape",
+    "unavailable": "Classement indisponible pour le moment.",
+    "empty": "Aucun classement pour ce segment. Sois le premier à le parcourir !",
+    "pseudonymNotice": "Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n'est affichée.",
+    "trancheLabel": "Tranche : $tranche",
+    "notEnoughParticipants": "Pas assez de participants pour publier ce classement.",
+    "entrySemantics": "Rang $rank, $pseudonym, temps $time"
   }
 }
