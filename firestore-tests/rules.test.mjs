@@ -876,6 +876,172 @@ describe('segment_rankings — lecture publique, ecriture backend only (F7A-03)'
   });
 });
 
+describe('kudos — idempotent, immuable, retrait par l auteur (F7B-03)', () => {
+  // Doc id = hash(from+target) cote client : ici on simule un id stable.
+  const KUDO = 'kudo-hash-0001';
+
+  function kudoPayload(overrides = {}) {
+    return {
+      fromUidHash: TREKKER,
+      targetActivityId: 'act-1',
+      createdAt: serverTimestamp(),
+      ...overrides,
+    };
+  }
+
+  it('auteur authentifie cree son kudo (fromUidHash == uid)', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'kudos', KUDO), kudoPayload()),
+    );
+  });
+
+  it('re-creer le MEME id = idempotent (pas de doublon, ecrase le meme doc)', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'kudos', KUDO), kudoPayload()),
+    );
+    // setDoc sur le meme id reussit (cree/ecrase) : pas de second document.
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'kudos', KUDO), kudoPayload()),
+    );
+  });
+
+  it('usurpation refusee (fromUidHash != uid)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'kudos', KUDO),
+        kudoPayload({ fromUidHash: STRANGER }),
+      ),
+    );
+  });
+
+  it('un anonyme ne pose pas de kudo', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'kudos', KUDO), kudoPayload()),
+    );
+  });
+
+  it('kudo immuable (update refuse)', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'kudos', KUDO), {
+        fromUidHash: TREKKER,
+        targetActivityId: 'act-1',
+        createdAt: Timestamp.now(),
+      });
+    });
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'kudos', KUDO), { targetActivityId: 'act-2' }),
+    );
+  });
+
+  it('l auteur retire son kudo (delete), un autre ne peut pas', async () => {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'kudos', KUDO), {
+        fromUidHash: TREKKER,
+        targetActivityId: 'act-1',
+        createdAt: Timestamp.now(),
+      });
+    });
+    await assertFails(deleteDoc(doc(strangerDb(), 'kudos', KUDO)));
+    await assertSucceeds(deleteDoc(doc(trekkerDb(), 'kudos', KUDO)));
+  });
+});
+
+describe('activities — fil immuable + moderation hebergeur DSA (F7B-03)', () => {
+  const ACT = 'act-test-0001';
+
+  function activityPayload(overrides = {}) {
+    return {
+      authorUidHash: TREKKER,
+      type: 'segment_effort',
+      payload: '{}',
+      createdAt: serverTimestamp(),
+      moderationState: 'visible',
+      ...overrides,
+    };
+  }
+
+  async function seedActivity({ moderationState = 'visible' } = {}) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'activities', ACT), {
+        authorUidHash: TREKKER,
+        type: 'segment_effort',
+        payload: '{}',
+        createdAt: Timestamp.now(),
+        moderationState,
+      });
+    });
+  }
+
+  it('auteur authentifie cree une activite visible', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'activities', ACT), activityPayload()),
+    );
+  });
+
+  it('usurpation refusee (authorUidHash != uid)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'activities', ACT),
+        activityPayload({ authorUidHash: STRANGER }),
+      ),
+    );
+  });
+
+  it('moderationState initial != visible refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'activities', ACT),
+        activityPayload({ moderationState: 'flagged' }),
+      ),
+    );
+  });
+
+  it('activite removed invisible en lecture', async () => {
+    await seedActivity({ moderationState: 'removed' });
+    await assertFails(getDoc(doc(anonDb(), 'activities', ACT)));
+  });
+
+  it('activite visible lisible publiquement', async () => {
+    await seedActivity({ moderationState: 'visible' });
+    await assertSucceeds(getDoc(doc(anonDb(), 'activities', ACT)));
+  });
+
+  it('auteur ne peut PAS re-editer le contenu (immutabilite)', async () => {
+    await seedActivity();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'activities', ACT), { payload: '{"hack":1}' }),
+    );
+  });
+
+  it('non-moderateur ne change pas moderationState', async () => {
+    await seedActivity();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'activities', ACT), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur masque une activite (moderationState=removed)', async () => {
+    await seedActivity();
+    await assertSucceeds(
+      updateDoc(doc(moderatorDb(), 'activities', ACT), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur ne peut PAS editer le contenu (seul moderationState)', async () => {
+    await seedActivity();
+    await assertFails(
+      updateDoc(doc(moderatorDb(), 'activities', ACT), {
+        moderationState: 'flagged',
+        payload: '{"hack":1}',
+      }),
+    );
+  });
+});
+
 describe('tout le reste — deny', () => {
   it('collection sans regles (groups) refusee meme authentifie', async () => {
     await assertFails(

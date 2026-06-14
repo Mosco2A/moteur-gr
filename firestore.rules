@@ -257,6 +257,83 @@ service cloud.firestore {
       allow create, update, delete: if isBackendDefi();
     }
 
+    // Kudos sur une activite du fil (Phase 7 F7B-02/F7B-03).
+    //
+    // Modele (idempotence X6) : le doc id EST hash(fromUidHash +
+    // targetActivityId) (calcule cote client, KudosService.remoteDocId) : un
+    // meme kudo re-pousse ecrit le MEME document -> jamais de doublon. Le kudo
+    // est IMMUABLE (pas d'update). L'auteur peut RETIRER son kudo (delete).
+    // fromUidHash == uid (anti-usurpation). UID hache, jamais de PII en clair.
+    match /kudos/{kudoId} {
+      function validNewKudo() {
+        return request.resource.data.fromUidHash is string
+          && request.resource.data.targetActivityId is string
+          && request.resource.data.createdAt is timestamp;
+      }
+
+      // Creation : utilisateur authentifie, payload borne, fromUidHash == uid.
+      allow create: if isSignedIn()
+        && validNewKudo()
+        && request.resource.data.fromUidHash == request.auth.uid
+        && request.resource.data.keys().hasOnly(
+             ['fromUidHash', 'targetActivityId', 'createdAt']);
+
+      // Lecture publique (compteur de kudos d'une activite).
+      allow get, list: if isSignedIn();
+
+      // Kudo immuable : aucune re-edition.
+      allow update: if false;
+
+      // Retrait : l'auteur du kudo uniquement.
+      allow delete: if isSignedIn()
+        && resource.data.fromUidHash == request.auth.uid;
+    }
+
+    // Fil d'activite (Phase 7 F7B-03). Contenu utilisateur -> HEBERGEUR DSA
+    // art. 16 (notice-and-action, moderation A POSTERIORI, design Securite D4).
+    //
+    // Modele : l'activite est creee par un utilisateur AUTHENTIFIE
+    // (authorUidHash == uid, UID hache jamais expose en clair), moderationState
+    // initial 'visible'. Le CONTENU est IMMUABLE apres creation (pas d'edition
+    // a priori). SEUL moderationState peut bouger, et SEULEMENT par un
+    // MODERATEUR (statut hebergeur). Lecture publique des activites non
+    // 'removed'.
+    match /activities/{activityId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+      function validNewActivity() {
+        return request.resource.data.authorUidHash is string
+          && request.resource.data.authorUidHash == request.auth.uid
+          && request.resource.data.type is string
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.moderationState == 'visible';
+      }
+
+      // Creation : utilisateur authentifie, payload borne + valide.
+      allow create: if isSignedIn()
+        && validNewActivity()
+        && request.resource.data.keys().hasOnly(
+             ['authorUidHash', 'type', 'payload', 'createdAt',
+              'moderationState']);
+
+      // Lecture publique des activites non retirees (removed invisible).
+      allow get, list: if resource.data.moderationState != 'removed';
+
+      // Mise a jour : RESERVEE au moderateur, et SEUL moderationState bouge
+      // (contenu utilisateur immuable = statut hebergeur a posteriori, DSA).
+      allow update: if isModerator()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['moderationState'])
+        && request.resource.data.moderationState
+             in ['visible', 'flagged', 'removed'];
+
+      // Suppression dure : moderateur uniquement.
+      allow delete: if isModerator();
+    }
+
     // Tout le reste : DENY explicite (collections sans regles dediees,
     // ex. groups — feature groupe sans regles a ce jour, voir
     // ORCHESTRATION wagon 3 / dette).
