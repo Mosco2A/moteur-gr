@@ -6,7 +6,7 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 /// Tests du routeur GoRouter (E2.9b — bottom nav 5 onglets + ShellRoute).
 ///
 /// Couvre :
-///   - structure de premier niveau (1 shell + 13 routes racine) ;
+///   - structure de premier niveau (1 shell + 15 routes racine) ;
 ///   - composition du StatefulShellRoute (5 branches, chemins, cles) ;
 ///   - preservation des liens profonds existants (/trail/:id et sous-routes) ;
 ///   - navigation entre onglets via la NavigationBar ;
@@ -17,11 +17,11 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/trails');
     });
 
-    test('le premier niveau contient 1 shell + 13 routes racine', () {
+    test('le premier niveau contient 1 shell + 15 routes racine', () {
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 14);
+      expect(routes.length, 16);
       expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 13);
+      expect(routes.whereType<GoRoute>().length, 15);
     });
 
     test('les routes racine (hors shell) sont celles attendues', () {
@@ -40,6 +40,7 @@ void main() {
         '/accommodations-nearby',
         '/emergency',
         '/signalement',
+        '/training',
         '/onboarding',
         '/no-data',
         '/settings',
@@ -62,6 +63,7 @@ void main() {
         'accommodations-nearby',
         'emergency',
         'signalement',
+        'training',
         'onboarding',
         'no-data',
         'settings',

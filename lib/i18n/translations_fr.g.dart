@@ -70,6 +70,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
 	late final Translations$signalement$fr signalement = Translations$signalement$fr.internal(_root);
 	late final Translations$hebergement$fr hebergement = Translations$hebergement$fr.internal(_root);
+	late final Translations$training$fr training = Translations$training$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1262,6 +1263,42 @@ class Translations$hebergement$fr {
 	late final Translations$hebergement$types$fr types = Translations$hebergement$types$fr.internal(_root);
 }
 
+// Path: training
+class Translations$training$fr {
+	Translations$training$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparation physique'
+	String get title => 'Préparation physique';
+
+	/// fr: 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.'
+	String get localNotice => 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.';
+
+	/// fr: 'Séance d'entraînement aujourd'hui'
+	String get reminderTitle => 'Séance d\'entraînement aujourd\'hui';
+
+	/// fr: 'Programmer les rappels'
+	String get scheduleReminders => 'Programmer les rappels';
+
+	/// fr: '$n rappel(s) programmé(s)'
+	String remindersScheduled({required Object n}) => '${n} rappel(s) programmé(s)';
+
+	/// fr: 'Semaine $n'
+	String week({required Object n}) => 'Semaine ${n}';
+
+	/// fr: '$n min'
+	String minutes({required Object n}) => '${n} min';
+
+	/// fr: '$done/$total séances faites'
+	String progress({required Object done, required Object total}) => '${done}/${total} séances faites';
+
+	late final Translations$training$types$fr types = Translations$training$types$fr.internal(_root);
+	late final Translations$training$intensity$fr intensity = Translations$training$intensity$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1666,6 +1703,42 @@ class Translations$hebergement$types$fr {
 
 	/// fr: 'Chambre d'hôte'
 	String get chambreHote => 'Chambre d\'hôte';
+}
+
+// Path: training.types
+class Translations$training$types$fr {
+	Translations$training$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Marche'
+	String get marche => 'Marche';
+
+	/// fr: 'Cardio'
+	String get cardio => 'Cardio';
+
+	/// fr: 'Renforcement'
+	String get renforcement => 'Renforcement';
+}
+
+// Path: training.intensity
+class Translations$training$intensity$fr {
+	Translations$training$intensity$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Faible'
+	String get faible => 'Faible';
+
+	/// fr: 'Modérée'
+	String get moderee => 'Modérée';
+
+	/// fr: 'Élevée'
+	String get elevee => 'Élevée';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2238,6 +2311,20 @@ extension on Translations {
 			'hebergement.types.hotel' => 'Hôtel',
 			'hebergement.types.camping' => 'Camping',
 			'hebergement.types.chambreHote' => 'Chambre d\'hôte',
+			'training.title' => 'Préparation physique',
+			'training.localNotice' => 'Votre programme est calculé et conservé sur votre téléphone. Les rappels sont des notifications locales, sans suivi.',
+			'training.reminderTitle' => 'Séance d\'entraînement aujourd\'hui',
+			'training.scheduleReminders' => 'Programmer les rappels',
+			'training.remindersScheduled' => ({required Object n}) => '${n} rappel(s) programmé(s)',
+			'training.week' => ({required Object n}) => 'Semaine ${n}',
+			'training.minutes' => ({required Object n}) => '${n} min',
+			'training.progress' => ({required Object done, required Object total}) => '${done}/${total} séances faites',
+			'training.types.marche' => 'Marche',
+			'training.types.cardio' => 'Cardio',
+			'training.types.renforcement' => 'Renforcement',
+			'training.intensity.faible' => 'Faible',
+			'training.intensity.moderee' => 'Modérée',
+			'training.intensity.elevee' => 'Élevée',
 			_ => null,
 		};
 	}
