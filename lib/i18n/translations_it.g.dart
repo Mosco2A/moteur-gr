@@ -67,6 +67,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$it cloud = _Translations$cloud$it._(_root);
 	@override late final _Translations$onboarding$it onboarding = _Translations$onboarding$it._(_root);
 	@override late final _Translations$monetization$it monetization = _Translations$monetization$it._(_root);
+	@override late final _Translations$hebergement$it hebergement = _Translations$hebergement$it._(_root);
 }
 
 // Path: a11y
@@ -616,6 +617,22 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Sblocca questo trek — ${price} €';
 }
 
+// Path: hebergement
+class _Translations$hebergement$it extends Translations$hebergement$fr {
+	_Translations$hebergement$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Alloggi nelle vicinanze';
+	@override String get facilitatorNote => 'StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell\'app.';
+	@override String detourAR({required Object km}) => 'Deviazione andata e ritorno: ${km} km';
+	@override String get openSite => 'Vedi il sito';
+	@override String get cannotOpen => 'Impossibile aprire questo link su questo dispositivo.';
+	@override String get empty => 'Nessun alloggio elencato nelle vicinanze per ora.';
+	@override late final _Translations$hebergement$types$it types = _Translations$hebergement$types$it._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -792,6 +809,20 @@ class _Translations$feasibility$recommendations$it extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$it caution = _Translations$feasibility$recommendations$caution$it._(_root);
 	@override late final _Translations$feasibility$recommendations$good$it good = _Translations$feasibility$recommendations$good$it._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$it excellent = _Translations$feasibility$recommendations$excellent$it._(_root);
+}
+
+// Path: hebergement.types
+class _Translations$hebergement$types$it extends Translations$hebergement$types$fr {
+	_Translations$hebergement$types$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Rifugio';
+	@override String get gite => 'Locanda';
+	@override String get hotel => 'Hotel';
+	@override String get camping => 'Campeggio';
+	@override String get chambreHote => 'Bed & breakfast';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1328,17 @@ extension on TranslationsIt {
 			'monetization.featureNoAds' => 'Zero pubblicità',
 			'monetization.buyCta' => 'Sblocca questo trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
+			'hebergement.title' => 'Alloggi nelle vicinanze',
+			'hebergement.facilitatorNote' => 'StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell\'app.',
+			'hebergement.detourAR' => ({required Object km}) => 'Deviazione andata e ritorno: ${km} km',
+			'hebergement.openSite' => 'Vedi il sito',
+			'hebergement.cannotOpen' => 'Impossibile aprire questo link su questo dispositivo.',
+			'hebergement.empty' => 'Nessun alloggio elencato nelle vicinanze per ora.',
+			'hebergement.types.refuge' => 'Rifugio',
+			'hebergement.types.gite' => 'Locanda',
+			'hebergement.types.hotel' => 'Hotel',
+			'hebergement.types.camping' => 'Campeggio',
+			'hebergement.types.chambreHote' => 'Bed & breakfast',
 			_ => null,
 		};
 	}

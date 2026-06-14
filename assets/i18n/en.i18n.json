@@ -487,5 +487,20 @@
     "featureNoAds": "Zero ads",
     "buyCta": "Unlock this trek",
     "buyCtaWithPrice": "Unlock this trek — €$price"
+  },
+  "hebergement": {
+    "title": "Nearby accommodation",
+    "facilitatorNote": "StepWays points you to the hosts. Booking happens on their website: no payment inside the app.",
+    "detourAR": "Round-trip detour: $km km",
+    "openSite": "View website",
+    "cannotOpen": "Could not open this link on this device.",
+    "empty": "No accommodation listed nearby for now.",
+    "types": {
+      "refuge": "Mountain hut",
+      "gite": "Lodge",
+      "hotel": "Hotel",
+      "camping": "Campsite",
+      "chambreHote": "Bed & breakfast"
+    }
   }
 }

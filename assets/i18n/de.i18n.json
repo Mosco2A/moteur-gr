@@ -487,5 +487,20 @@
     "featureNoAds": "Keine Werbung",
     "buyCta": "Diesen Trek freischalten",
     "buyCtaWithPrice": "Diesen Trek freischalten — $price €"
+  },
+  "hebergement": {
+    "title": "Unterkünfte in der Nähe",
+    "facilitatorNote": "StepWays verweist Sie an die Gastgeber. Die Buchung erfolgt auf deren Website: keine Zahlung in der App.",
+    "detourAR": "Umweg hin und zurück: $km km",
+    "openSite": "Website ansehen",
+    "cannotOpen": "Dieser Link konnte auf diesem Gerät nicht geöffnet werden.",
+    "empty": "Derzeit keine Unterkünfte in der Nähe gelistet.",
+    "types": {
+      "refuge": "Berghütte",
+      "gite": "Gästehaus",
+      "hotel": "Hotel",
+      "camping": "Campingplatz",
+      "chambreHote": "Pension"
+    }
   }
 }

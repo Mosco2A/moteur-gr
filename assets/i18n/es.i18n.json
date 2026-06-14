@@ -487,5 +487,20 @@
     "featureNoAds": "Cero publicidad",
     "buyCta": "Desbloquear este trek",
     "buyCtaWithPrice": "Desbloquear este trek — $price €"
+  },
+  "hebergement": {
+    "title": "Alojamientos cercanos",
+    "facilitatorNote": "StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.",
+    "detourAR": "Desvío ida y vuelta: $km km",
+    "openSite": "Ver el sitio",
+    "cannotOpen": "No se pudo abrir este enlace en este dispositivo.",
+    "empty": "No hay alojamientos cerca por ahora.",
+    "types": {
+      "refuge": "Refugio",
+      "gite": "Casa rural",
+      "hotel": "Hotel",
+      "camping": "Camping",
+      "chambreHote": "Casa de huéspedes"
+    }
   }
 }

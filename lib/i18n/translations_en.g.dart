@@ -67,6 +67,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
 	@override late final _Translations$onboarding$en onboarding = _Translations$onboarding$en._(_root);
 	@override late final _Translations$monetization$en monetization = _Translations$monetization$en._(_root);
+	@override late final _Translations$hebergement$en hebergement = _Translations$hebergement$en._(_root);
 }
 
 // Path: a11y
@@ -616,6 +617,22 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
 }
 
+// Path: hebergement
+class _Translations$hebergement$en extends Translations$hebergement$fr {
+	_Translations$hebergement$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Nearby accommodation';
+	@override String get facilitatorNote => 'StepWays points you to the hosts. Booking happens on their website: no payment inside the app.';
+	@override String detourAR({required Object km}) => 'Round-trip detour: ${km} km';
+	@override String get openSite => 'View website';
+	@override String get cannotOpen => 'Could not open this link on this device.';
+	@override String get empty => 'No accommodation listed nearby for now.';
+	@override late final _Translations$hebergement$types$en types = _Translations$hebergement$types$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -792,6 +809,20 @@ class _Translations$feasibility$recommendations$en extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$en caution = _Translations$feasibility$recommendations$caution$en._(_root);
 	@override late final _Translations$feasibility$recommendations$good$en good = _Translations$feasibility$recommendations$good$en._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$en excellent = _Translations$feasibility$recommendations$excellent$en._(_root);
+}
+
+// Path: hebergement.types
+class _Translations$hebergement$types$en extends Translations$hebergement$types$fr {
+	_Translations$hebergement$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Mountain hut';
+	@override String get gite => 'Lodge';
+	@override String get hotel => 'Hotel';
+	@override String get camping => 'Campsite';
+	@override String get chambreHote => 'Bed & breakfast';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1328,17 @@ extension on TranslationsEn {
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Unlock this trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
+			'hebergement.title' => 'Nearby accommodation',
+			'hebergement.facilitatorNote' => 'StepWays points you to the hosts. Booking happens on their website: no payment inside the app.',
+			'hebergement.detourAR' => ({required Object km}) => 'Round-trip detour: ${km} km',
+			'hebergement.openSite' => 'View website',
+			'hebergement.cannotOpen' => 'Could not open this link on this device.',
+			'hebergement.empty' => 'No accommodation listed nearby for now.',
+			'hebergement.types.refuge' => 'Mountain hut',
+			'hebergement.types.gite' => 'Lodge',
+			'hebergement.types.hotel' => 'Hotel',
+			'hebergement.types.camping' => 'Campsite',
+			'hebergement.types.chambreHote' => 'Bed & breakfast',
 			_ => null,
 		};
 	}
