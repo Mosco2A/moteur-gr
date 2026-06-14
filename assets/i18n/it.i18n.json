@@ -556,5 +556,24 @@
     "trancheLabel": "Fascia: $tranche",
     "notEnoughParticipants": "Partecipanti insufficienti per pubblicare questa classifica.",
     "entrySemantics": "Posizione $rank, $pseudonym, tempo $time"
+  },
+  "social": {
+    "feedTitle": "Diario attività",
+    "empty": "Nessuna attività al momento.",
+    "kudos": "Incoraggia",
+    "kudosCount": "$n incoraggiamenti",
+    "report": "Segnala",
+    "reportTitle": "Segnala questo post",
+    "reportReasonLabel": "Motivo della segnalazione",
+    "reasonSpam": "Spam o pubblicità",
+    "reasonAbuse": "Contenuto offensivo o di odio",
+    "reasonOther": "Altro",
+    "reportSend": "Invia segnalazione",
+    "reportSent": "Segnalazione inviata. Il nostro team la esaminerà.",
+    "syncPending": "In attesa di sincronizzazione",
+    "synced": "Sincronizzato",
+    "activitySegment": "ha completato un segmento",
+    "activityBadge": "ha ottenuto un distintivo",
+    "activityDefi": "ha fatto progressi in una sfida"
   }
 }

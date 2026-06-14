@@ -556,5 +556,24 @@
     "trancheLabel": "Group: $tranche",
     "notEnoughParticipants": "Not enough participants to publish this ranking.",
     "entrySemantics": "Rank $rank, $pseudonym, time $time"
+  },
+  "social": {
+    "feedTitle": "Activity feed",
+    "empty": "No activity yet.",
+    "kudos": "Give kudos",
+    "kudosCount": "$n kudos",
+    "report": "Report",
+    "reportTitle": "Report this post",
+    "reportReasonLabel": "Reason for reporting",
+    "reasonSpam": "Spam or advertising",
+    "reasonAbuse": "Abusive or hateful content",
+    "reasonOther": "Other",
+    "reportSend": "Send report",
+    "reportSent": "Report sent. Our team will review it.",
+    "syncPending": "Waiting for sync",
+    "synced": "Synced",
+    "activitySegment": "completed a segment",
+    "activityBadge": "earned a badge",
+    "activityDefi": "made progress on a challenge"
   }
 }

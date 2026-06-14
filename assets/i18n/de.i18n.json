@@ -556,5 +556,24 @@
     "trancheLabel": "Gruppe: $tranche",
     "notEnoughParticipants": "Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.",
     "entrySemantics": "Rang $rank, $pseudonym, Zeit $time"
+  },
+  "social": {
+    "feedTitle": "Aktivitätsverlauf",
+    "empty": "Noch keine Aktivität.",
+    "kudos": "Anfeuern",
+    "kudosCount": "$n Kudos",
+    "report": "Melden",
+    "reportTitle": "Diesen Beitrag melden",
+    "reportReasonLabel": "Grund der Meldung",
+    "reasonSpam": "Spam oder Werbung",
+    "reasonAbuse": "Missbräuchlicher oder hasserfüllter Inhalt",
+    "reasonOther": "Andere",
+    "reportSend": "Meldung senden",
+    "reportSent": "Meldung gesendet. Unser Team prüft sie.",
+    "syncPending": "Wartet auf Synchronisierung",
+    "synced": "Synchronisiert",
+    "activitySegment": "hat ein Segment absolviert",
+    "activityBadge": "hat ein Abzeichen erhalten",
+    "activityDefi": "hat bei einer Challenge Fortschritte gemacht"
   }
 }

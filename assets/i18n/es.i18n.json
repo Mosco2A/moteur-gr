@@ -556,5 +556,24 @@
     "trancheLabel": "Grupo: $tranche",
     "notEnoughParticipants": "No hay suficientes participantes para publicar esta clasificación.",
     "entrySemantics": "Posición $rank, $pseudonym, tiempo $time"
+  },
+  "social": {
+    "feedTitle": "Registro de actividad",
+    "empty": "Ninguna actividad por ahora.",
+    "kudos": "Animar",
+    "kudosCount": "$n ánimos",
+    "report": "Denunciar",
+    "reportTitle": "Denunciar esta publicación",
+    "reportReasonLabel": "Motivo de la denuncia",
+    "reasonSpam": "Spam o publicidad",
+    "reasonAbuse": "Contenido abusivo o de odio",
+    "reasonOther": "Otro",
+    "reportSend": "Enviar denuncia",
+    "reportSent": "Denuncia enviada. Nuestro equipo la revisará.",
+    "syncPending": "Esperando sincronización",
+    "synced": "Sincronizado",
+    "activitySegment": "completó un segmento",
+    "activityBadge": "obtuvo una insignia",
+    "activityDefi": "avanzó en un reto"
   }
 }

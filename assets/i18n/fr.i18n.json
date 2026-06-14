@@ -556,5 +556,24 @@
     "trancheLabel": "Tranche : $tranche",
     "notEnoughParticipants": "Pas assez de participants pour publier ce classement.",
     "entrySemantics": "Rang $rank, $pseudonym, temps $time"
+  },
+  "social": {
+    "feedTitle": "Fil d'activité",
+    "empty": "Aucune activité pour le moment.",
+    "kudos": "Encourager",
+    "kudosCount": "$n encouragement(s)",
+    "report": "Signaler",
+    "reportTitle": "Signaler cette publication",
+    "reportReasonLabel": "Motif du signalement",
+    "reasonSpam": "Spam ou publicité",
+    "reasonAbuse": "Contenu abusif ou haineux",
+    "reasonOther": "Autre",
+    "reportSend": "Envoyer le signalement",
+    "reportSent": "Signalement envoyé. Il sera examiné par notre équipe.",
+    "syncPending": "En attente de synchronisation",
+    "synced": "Synchronisé",
+    "activitySegment": "a réalisé un segment",
+    "activityBadge": "a obtenu un badge",
+    "activityDefi": "a progressé dans un défi"
   }
 }

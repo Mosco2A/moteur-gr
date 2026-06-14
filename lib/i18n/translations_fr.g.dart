@@ -73,6 +73,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$training$fr training = Translations$training$fr.internal(_root);
 	late final Translations$eta$fr eta = Translations$eta$fr.internal(_root);
 	late final Translations$leaderboard$fr leaderboard = Translations$leaderboard$fr.internal(_root);
+	late final Translations$social$fr social = Translations$social$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1361,6 +1362,66 @@ class Translations$leaderboard$fr {
 	String entrySemantics({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}';
 }
 
+// Path: social
+class Translations$social$fr {
+	Translations$social$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Fil d'activité'
+	String get feedTitle => 'Fil d\'activité';
+
+	/// fr: 'Aucune activité pour le moment.'
+	String get empty => 'Aucune activité pour le moment.';
+
+	/// fr: 'Encourager'
+	String get kudos => 'Encourager';
+
+	/// fr: '$n encouragement(s)'
+	String kudosCount({required Object n}) => '${n} encouragement(s)';
+
+	/// fr: 'Signaler'
+	String get report => 'Signaler';
+
+	/// fr: 'Signaler cette publication'
+	String get reportTitle => 'Signaler cette publication';
+
+	/// fr: 'Motif du signalement'
+	String get reportReasonLabel => 'Motif du signalement';
+
+	/// fr: 'Spam ou publicité'
+	String get reasonSpam => 'Spam ou publicité';
+
+	/// fr: 'Contenu abusif ou haineux'
+	String get reasonAbuse => 'Contenu abusif ou haineux';
+
+	/// fr: 'Autre'
+	String get reasonOther => 'Autre';
+
+	/// fr: 'Envoyer le signalement'
+	String get reportSend => 'Envoyer le signalement';
+
+	/// fr: 'Signalement envoyé. Il sera examiné par notre équipe.'
+	String get reportSent => 'Signalement envoyé. Il sera examiné par notre équipe.';
+
+	/// fr: 'En attente de synchronisation'
+	String get syncPending => 'En attente de synchronisation';
+
+	/// fr: 'Synchronisé'
+	String get synced => 'Synchronisé';
+
+	/// fr: 'a réalisé un segment'
+	String get activitySegment => 'a réalisé un segment';
+
+	/// fr: 'a obtenu un badge'
+	String get activityBadge => 'a obtenu un badge';
+
+	/// fr: 'a progressé dans un défi'
+	String get activityDefi => 'a progressé dans un défi';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2401,6 +2462,23 @@ extension on Translations {
 			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Tranche : ${tranche}',
 			'leaderboard.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
 			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}',
+			'social.feedTitle' => 'Fil d\'activité',
+			'social.empty' => 'Aucune activité pour le moment.',
+			'social.kudos' => 'Encourager',
+			'social.kudosCount' => ({required Object n}) => '${n} encouragement(s)',
+			'social.report' => 'Signaler',
+			'social.reportTitle' => 'Signaler cette publication',
+			'social.reportReasonLabel' => 'Motif du signalement',
+			'social.reasonSpam' => 'Spam ou publicité',
+			'social.reasonAbuse' => 'Contenu abusif ou haineux',
+			'social.reasonOther' => 'Autre',
+			'social.reportSend' => 'Envoyer le signalement',
+			'social.reportSent' => 'Signalement envoyé. Il sera examiné par notre équipe.',
+			'social.syncPending' => 'En attente de synchronisation',
+			'social.synced' => 'Synchronisé',
+			'social.activitySegment' => 'a réalisé un segment',
+			'social.activityBadge' => 'a obtenu un badge',
+			'social.activityDefi' => 'a progressé dans un défi',
 			_ => null,
 		};
 	}

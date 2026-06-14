@@ -72,6 +72,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$training$es training = _Translations$training$es._(_root);
 	@override late final _Translations$eta$es eta = _Translations$eta$es._(_root);
 	@override late final _Translations$leaderboard$es leaderboard = _Translations$leaderboard$es._(_root);
+	@override late final _Translations$social$es social = _Translations$social$es._(_root);
 }
 
 // Path: a11y
@@ -705,6 +706,32 @@ class _Translations$leaderboard$es extends Translations$leaderboard$fr {
 	@override String trancheLabel({required Object tranche}) => 'Grupo: ${tranche}';
 	@override String get notEnoughParticipants => 'No hay suficientes participantes para publicar esta clasificación.';
 	@override String entrySemantics({required Object rank, required Object pseudonym, required Object time}) => 'Posición ${rank}, ${pseudonym}, tiempo ${time}';
+}
+
+// Path: social
+class _Translations$social$es extends Translations$social$fr {
+	_Translations$social$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get feedTitle => 'Registro de actividad';
+	@override String get empty => 'Ninguna actividad por ahora.';
+	@override String get kudos => 'Animar';
+	@override String kudosCount({required Object n}) => '${n} ánimos';
+	@override String get report => 'Denunciar';
+	@override String get reportTitle => 'Denunciar esta publicación';
+	@override String get reportReasonLabel => 'Motivo de la denuncia';
+	@override String get reasonSpam => 'Spam o publicidad';
+	@override String get reasonAbuse => 'Contenido abusivo o de odio';
+	@override String get reasonOther => 'Otro';
+	@override String get reportSend => 'Enviar denuncia';
+	@override String get reportSent => 'Denuncia enviada. Nuestro equipo la revisará.';
+	@override String get syncPending => 'Esperando sincronización';
+	@override String get synced => 'Sincronizado';
+	@override String get activitySegment => 'completó un segmento';
+	@override String get activityBadge => 'obtuvo una insignia';
+	@override String get activityDefi => 'avanzó en un reto';
 }
 
 // Path: stage.difficulty
@@ -1489,6 +1516,23 @@ extension on TranslationsEs {
 			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Grupo: ${tranche}',
 			'leaderboard.notEnoughParticipants' => 'No hay suficientes participantes para publicar esta clasificación.',
 			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Posición ${rank}, ${pseudonym}, tiempo ${time}',
+			'social.feedTitle' => 'Registro de actividad',
+			'social.empty' => 'Ninguna actividad por ahora.',
+			'social.kudos' => 'Animar',
+			'social.kudosCount' => ({required Object n}) => '${n} ánimos',
+			'social.report' => 'Denunciar',
+			'social.reportTitle' => 'Denunciar esta publicación',
+			'social.reportReasonLabel' => 'Motivo de la denuncia',
+			'social.reasonSpam' => 'Spam o publicidad',
+			'social.reasonAbuse' => 'Contenido abusivo o de odio',
+			'social.reasonOther' => 'Otro',
+			'social.reportSend' => 'Enviar denuncia',
+			'social.reportSent' => 'Denuncia enviada. Nuestro equipo la revisará.',
+			'social.syncPending' => 'Esperando sincronización',
+			'social.synced' => 'Sincronizado',
+			'social.activitySegment' => 'completó un segmento',
+			'social.activityBadge' => 'obtuvo una insignia',
+			'social.activityDefi' => 'avanzó en un reto',
 			_ => null,
 		};
 	}
