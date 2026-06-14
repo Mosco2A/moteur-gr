@@ -67,6 +67,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$es cloud = _Translations$cloud$es._(_root);
 	@override late final _Translations$onboarding$es onboarding = _Translations$onboarding$es._(_root);
 	@override late final _Translations$monetization$es monetization = _Translations$monetization$es._(_root);
+	@override late final _Translations$signalement$es signalement = _Translations$signalement$es._(_root);
 }
 
 // Path: a11y
@@ -616,6 +617,25 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Desbloquear este trek — ${price} €';
 }
 
+// Path: signalement
+class _Translations$signalement$es extends Translations$signalement$fr {
+	_Translations$signalement$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Notificar';
+	@override String get chooseType => '¿Qué quieres notificar?';
+	@override late final _Translations$signalement$types$es types = _Translations$signalement$types$es._(_root);
+	@override String get latencyBanner => 'Guardado. Visible para otros senderistas tras la sincronización de red.';
+	@override String get confirm => 'Confirmar notificación';
+	@override String get noLocation => 'Posición GPS no disponible ahora. Inténtalo de nuevo a cielo abierto.';
+	@override String get savedTitle => 'Notificación guardada';
+	@override String get savedPendingSync => 'Se compartirá en cuanto vuelva la red.';
+	@override String pendingCount({required Object n}) => '${n} en espera de sincronización';
+	@override String get close => 'Cerrar';
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -792,6 +812,18 @@ class _Translations$feasibility$recommendations$es extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$es caution = _Translations$feasibility$recommendations$caution$es._(_root);
 	@override late final _Translations$feasibility$recommendations$good$es good = _Translations$feasibility$recommendations$good$es._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$es excellent = _Translations$feasibility$recommendations$excellent$es._(_root);
+}
+
+// Path: signalement.types
+class _Translations$signalement$types$es extends Translations$signalement$types$fr {
+	_Translations$signalement$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get obstacle => 'Obstáculo en el sendero';
+	@override String get eauASec => 'Punto de agua seco';
+	@override String get danger => 'Peligro';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1329,18 @@ extension on TranslationsEs {
 			'monetization.featureNoAds' => 'Cero publicidad',
 			'monetization.buyCta' => 'Desbloquear este trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Desbloquear este trek — ${price} €',
+			'signalement.title' => 'Notificar',
+			'signalement.chooseType' => '¿Qué quieres notificar?',
+			'signalement.types.obstacle' => 'Obstáculo en el sendero',
+			'signalement.types.eauASec' => 'Punto de agua seco',
+			'signalement.types.danger' => 'Peligro',
+			'signalement.latencyBanner' => 'Guardado. Visible para otros senderistas tras la sincronización de red.',
+			'signalement.confirm' => 'Confirmar notificación',
+			'signalement.noLocation' => 'Posición GPS no disponible ahora. Inténtalo de nuevo a cielo abierto.',
+			'signalement.savedTitle' => 'Notificación guardada',
+			'signalement.savedPendingSync' => 'Se compartirá en cuanto vuelva la red.',
+			'signalement.pendingCount' => ({required Object n}) => '${n} en espera de sincronización',
+			'signalement.close' => 'Cerrar',
 			_ => null,
 		};
 	}

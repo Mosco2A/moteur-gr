@@ -67,6 +67,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$cloud$de cloud = _Translations$cloud$de._(_root);
 	@override late final _Translations$onboarding$de onboarding = _Translations$onboarding$de._(_root);
 	@override late final _Translations$monetization$de monetization = _Translations$monetization$de._(_root);
+	@override late final _Translations$signalement$de signalement = _Translations$signalement$de._(_root);
 }
 
 // Path: a11y
@@ -616,6 +617,25 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String buyCtaWithPrice({required Object price}) => 'Diesen Trek freischalten — ${price} €';
 }
 
+// Path: signalement
+class _Translations$signalement$de extends Translations$signalement$fr {
+	_Translations$signalement$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Melden';
+	@override String get chooseType => 'Was möchten Sie melden?';
+	@override late final _Translations$signalement$types$de types = _Translations$signalement$types$de._(_root);
+	@override String get latencyBanner => 'Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.';
+	@override String get confirm => 'Meldung bestätigen';
+	@override String get noLocation => 'GPS-Position derzeit nicht verfügbar. Versuchen Sie es unter freiem Himmel erneut.';
+	@override String get savedTitle => 'Meldung gespeichert';
+	@override String get savedPendingSync => 'Sie wird geteilt, sobald das Netzwerk wieder da ist.';
+	@override String pendingCount({required Object n}) => '${n} warten auf Synchronisierung';
+	@override String get close => 'Schließen';
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$de extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -792,6 +812,18 @@ class _Translations$feasibility$recommendations$de extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$de caution = _Translations$feasibility$recommendations$caution$de._(_root);
 	@override late final _Translations$feasibility$recommendations$good$de good = _Translations$feasibility$recommendations$good$de._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$de excellent = _Translations$feasibility$recommendations$excellent$de._(_root);
+}
+
+// Path: signalement.types
+class _Translations$signalement$types$de extends Translations$signalement$types$fr {
+	_Translations$signalement$types$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get obstacle => 'Hindernis auf dem Weg';
+	@override String get eauASec => 'Trockene Wasserstelle';
+	@override String get danger => 'Gefahr';
 }
 
 // Path: feasibility.recommendations.danger
@@ -1297,6 +1329,18 @@ extension on TranslationsDe {
 			'monetization.featureNoAds' => 'Keine Werbung',
 			'monetization.buyCta' => 'Diesen Trek freischalten',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Diesen Trek freischalten — ${price} €',
+			'signalement.title' => 'Melden',
+			'signalement.chooseType' => 'Was möchten Sie melden?',
+			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
+			'signalement.types.eauASec' => 'Trockene Wasserstelle',
+			'signalement.types.danger' => 'Gefahr',
+			'signalement.latencyBanner' => 'Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.',
+			'signalement.confirm' => 'Meldung bestätigen',
+			'signalement.noLocation' => 'GPS-Position derzeit nicht verfügbar. Versuchen Sie es unter freiem Himmel erneut.',
+			'signalement.savedTitle' => 'Meldung gespeichert',
+			'signalement.savedPendingSync' => 'Sie wird geteilt, sobald das Netzwerk wieder da ist.',
+			'signalement.pendingCount' => ({required Object n}) => '${n} warten auf Synchronisierung',
+			'signalement.close' => 'Schließen',
 			_ => null,
 		};
 	}

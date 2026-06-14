@@ -68,6 +68,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
 	late final Translations$onboarding$fr onboarding = Translations$onboarding$fr.internal(_root);
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
+	late final Translations$signalement$fr signalement = Translations$signalement$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1193,6 +1194,44 @@ class Translations$monetization$fr {
 	String buyCtaWithPrice({required Object price}) => 'Débloquer ce trek — ${price} €';
 }
 
+// Path: signalement
+class Translations$signalement$fr {
+	Translations$signalement$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Signaler'
+	String get title => 'Signaler';
+
+	/// fr: 'Que voulez-vous signaler ?'
+	String get chooseType => 'Que voulez-vous signaler ?';
+
+	late final Translations$signalement$types$fr types = Translations$signalement$types$fr.internal(_root);
+
+	/// fr: 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.'
+	String get latencyBanner => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.';
+
+	/// fr: 'Confirmer le signalement'
+	String get confirm => 'Confirmer le signalement';
+
+	/// fr: 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.'
+	String get noLocation => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.';
+
+	/// fr: 'Signalement enregistré'
+	String get savedTitle => 'Signalement enregistré';
+
+	/// fr: 'Il sera partagé dès le retour du réseau.'
+	String get savedPendingSync => 'Il sera partagé dès le retour du réseau.';
+
+	/// fr: '$n en attente de synchronisation'
+	String pendingCount({required Object n}) => '${n} en attente de synchronisation';
+
+	/// fr: 'Fermer'
+	String get close => 'Fermer';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1555,6 +1594,24 @@ class Translations$feasibility$recommendations$fr {
 	late final Translations$feasibility$recommendations$caution$fr caution = Translations$feasibility$recommendations$caution$fr.internal(_root);
 	late final Translations$feasibility$recommendations$good$fr good = Translations$feasibility$recommendations$good$fr.internal(_root);
 	late final Translations$feasibility$recommendations$excellent$fr excellent = Translations$feasibility$recommendations$excellent$fr.internal(_root);
+}
+
+// Path: signalement.types
+class Translations$signalement$types$fr {
+	Translations$signalement$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Obstacle sur le sentier'
+	String get obstacle => 'Obstacle sur le sentier';
+
+	/// fr: 'Point d'eau à sec'
+	String get eauASec => 'Point d\'eau à sec';
+
+	/// fr: 'Danger'
+	String get danger => 'Danger';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2104,6 +2161,18 @@ extension on Translations {
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Débloquer ce trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer ce trek — ${price} €',
+			'signalement.title' => 'Signaler',
+			'signalement.chooseType' => 'Que voulez-vous signaler ?',
+			'signalement.types.obstacle' => 'Obstacle sur le sentier',
+			'signalement.types.eauASec' => 'Point d\'eau à sec',
+			'signalement.types.danger' => 'Danger',
+			'signalement.latencyBanner' => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.',
+			'signalement.confirm' => 'Confirmer le signalement',
+			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.',
+			'signalement.savedTitle' => 'Signalement enregistré',
+			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
+			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
+			'signalement.close' => 'Fermer',
 			_ => null,
 		};
 	}
