@@ -68,6 +68,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
 	late final Translations$onboarding$fr onboarding = Translations$onboarding$fr.internal(_root);
 	late final Translations$monetization$fr monetization = Translations$monetization$fr.internal(_root);
+	late final Translations$eta$fr eta = Translations$eta$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1193,6 +1194,36 @@ class Translations$monetization$fr {
 	String buyCtaWithPrice({required Object price}) => 'Débloquer ce trek — ${price} €';
 }
 
+// Path: eta
+class Translations$eta$fr {
+	Translations$eta$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Temps estimé'
+	String get title => 'Temps estimé';
+
+	/// fr: 'Prochain point'
+	String get toNextWaypoint => 'Prochain point';
+
+	/// fr: 'Fin d'étape'
+	String get toStageEnd => 'Fin d\'étape';
+
+	/// fr: 'Estimation fiable'
+	String get confidenceHigh => 'Estimation fiable';
+
+	/// fr: 'Approximatif (GPS faible)'
+	String get confidenceLow => 'Approximatif (GPS faible)';
+
+	/// fr: '$h h $m min'
+	String durationHm({required Object h, required Object m}) => '${h} h ${m} min';
+
+	/// fr: '$m min'
+	String durationM({required Object m}) => '${m} min';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2104,6 +2135,13 @@ extension on Translations {
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Débloquer ce trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer ce trek — ${price} €',
+			'eta.title' => 'Temps estimé',
+			'eta.toNextWaypoint' => 'Prochain point',
+			'eta.toStageEnd' => 'Fin d\'étape',
+			'eta.confidenceHigh' => 'Estimation fiable',
+			'eta.confidenceLow' => 'Approximatif (GPS faible)',
+			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
+			'eta.durationM' => ({required Object m}) => '${m} min',
 			_ => null,
 		};
 	}

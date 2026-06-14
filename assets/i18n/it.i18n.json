@@ -487,5 +487,14 @@
     "featureNoAds": "Zero pubblicità",
     "buyCta": "Sblocca questo trek",
     "buyCtaWithPrice": "Sblocca questo trek — $price €"
+  },
+  "eta": {
+    "title": "Tempo stimato",
+    "toNextWaypoint": "Prossimo punto",
+    "toStageEnd": "Fine tappa",
+    "confidenceHigh": "Stima affidabile",
+    "confidenceLow": "Approssimativo (GPS debole)",
+    "durationHm": "$h h $m min",
+    "durationM": "$m min"
   }
 }

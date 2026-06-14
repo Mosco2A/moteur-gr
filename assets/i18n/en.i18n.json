@@ -487,5 +487,14 @@
     "featureNoAds": "Zero ads",
     "buyCta": "Unlock this trek",
     "buyCtaWithPrice": "Unlock this trek — €$price"
+  },
+  "eta": {
+    "title": "Estimated time",
+    "toNextWaypoint": "Next point",
+    "toStageEnd": "Stage end",
+    "confidenceHigh": "Reliable estimate",
+    "confidenceLow": "Approximate (weak GPS)",
+    "durationHm": "$h h $m min",
+    "durationM": "$m min"
   }
 }
