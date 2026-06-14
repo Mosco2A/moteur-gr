@@ -682,5 +682,61 @@
       "noLocation": "GPS position unavailable. Try again under open sky.",
       "error": "Cannot save right now."
     }
+  },
+  "packs": {
+    "title": "Trail packs",
+    "subtitle": "Download a pack to hike 100% offline.",
+    "alaCarteNote": "A la carte: buy only the pack you need, no subscription.",
+    "size": "$mo MB",
+    "states": {
+      "notDownloaded": "Not downloaded",
+      "downloaded": "Downloaded",
+      "updateAvailable": "Update available"
+    },
+    "actions": {
+      "download": "Download",
+      "update": "Update",
+      "delete": "Delete",
+      "retry": "Retry",
+      "buy": "Buy this pack",
+      "buyWithPrice": "Buy this pack — $price"
+    },
+    "progress": {
+      "downloading": "Downloading… $done/$total",
+      "verifying": "Verifying integrity…",
+      "completed": "Pack ready offline",
+      "error": "Download failed"
+    },
+    "delete": {
+      "confirmTitle": "Delete this pack?",
+      "confirmBody": "The pack will be removed from the device to free up space. You can download it again later.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "freed": "Space freed."
+    },
+    "empty": "No pack available for this trail.",
+    "a11y": {
+      "packCard": "Pack $nom, $state",
+      "downloadButton": "Download pack $nom",
+      "deleteButton": "Delete pack $nom"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare North",
+        "description": "The northern half of the trail, offline."
+      },
+      "sud": {
+        "nom": "Mare a Mare South",
+        "description": "The southern half of the trail, offline."
+      },
+      "complet": {
+        "nom": "Mare a Mare Full",
+        "description": "The whole trail, offline."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "The Mare a Mare trail, offline."
+      }
+    }
   }
 }

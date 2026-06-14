@@ -682,5 +682,61 @@
       "noLocation": "Position GPS indisponible. Réessayez sous le ciel ouvert.",
       "error": "Enregistrement impossible pour le moment."
     }
+  },
+  "packs": {
+    "title": "Packs sentier",
+    "subtitle": "Téléchargez un pack pour randonner 100% hors-ligne.",
+    "alaCarteNote": "À la carte : achetez seulement le pack qu'il vous faut, pas d'abonnement.",
+    "size": "$mo Mo",
+    "states": {
+      "notDownloaded": "Non téléchargé",
+      "downloaded": "Téléchargé",
+      "updateAvailable": "Mise à jour disponible"
+    },
+    "actions": {
+      "download": "Télécharger",
+      "update": "Mettre à jour",
+      "delete": "Supprimer",
+      "retry": "Réessayer",
+      "buy": "Acheter ce pack",
+      "buyWithPrice": "Acheter ce pack — $price"
+    },
+    "progress": {
+      "downloading": "Téléchargement… $done/$total",
+      "verifying": "Vérification de l'intégrité…",
+      "completed": "Pack prêt hors-ligne",
+      "error": "Échec du téléchargement"
+    },
+    "delete": {
+      "confirmTitle": "Supprimer ce pack ?",
+      "confirmBody": "Le pack sera retiré de l'appareil pour libérer de l'espace. Vous pourrez le retélécharger.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer",
+      "freed": "Espace libéré."
+    },
+    "empty": "Aucun pack disponible pour ce sentier.",
+    "a11y": {
+      "packCard": "Pack $nom, $state",
+      "downloadButton": "Télécharger le pack $nom",
+      "deleteButton": "Supprimer le pack $nom"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare Nord",
+        "description": "La moitié nord du sentier, hors-ligne."
+      },
+      "sud": {
+        "nom": "Mare a Mare Sud",
+        "description": "La moitié sud du sentier, hors-ligne."
+      },
+      "complet": {
+        "nom": "Mare a Mare Complet",
+        "description": "Tout le sentier, hors-ligne."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "Le sentier Mare a Mare, hors-ligne."
+      }
+    }
   }
 }

@@ -76,6 +76,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$gamification$it gamification = _Translations$gamification$it._(_root);
 	@override late final _Translations$shareVisibility$it shareVisibility = _Translations$shareVisibility$it._(_root);
 	@override late final _Translations$waypoints$it waypoints = _Translations$waypoints$it._(_root);
+	@override late final _Translations$packs$it packs = _Translations$packs$it._(_root);
 }
 
 // Path: a11y
@@ -789,6 +790,26 @@ class _Translations$waypoints$it extends Translations$waypoints$fr {
 	@override late final _Translations$waypoints$contribution$it contribution = _Translations$waypoints$contribution$it._(_root);
 }
 
+// Path: packs
+class _Translations$packs$it extends Translations$packs$fr {
+	_Translations$packs$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Pacchetti sentiero';
+	@override String get subtitle => 'Scarica un pacchetto per camminare 100% offline.';
+	@override String get alaCarteNote => 'A la carte: acquista solo il pacchetto che ti serve, nessun abbonamento.';
+	@override String size({required Object mo}) => '${mo} MB';
+	@override late final _Translations$packs$states$it states = _Translations$packs$states$it._(_root);
+	@override late final _Translations$packs$actions$it actions = _Translations$packs$actions$it._(_root);
+	@override late final _Translations$packs$progress$it progress = _Translations$packs$progress$it._(_root);
+	@override late final _Translations$packs$delete$it delete = _Translations$packs$delete$it._(_root);
+	@override String get empty => 'Nessun pacchetto disponibile per questo sentiero.';
+	@override late final _Translations$packs$a11y$it a11y = _Translations$packs$a11y$it._(_root);
+	@override late final _Translations$packs$types$it types = _Translations$packs$types$it._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1131,6 +1152,85 @@ class _Translations$waypoints$contribution$it extends Translations$waypoints$con
 	@override String get error => 'Impossibile salvare in questo momento.';
 }
 
+// Path: packs.states
+class _Translations$packs$states$it extends Translations$packs$states$fr {
+	_Translations$packs$states$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get notDownloaded => 'Non scaricato';
+	@override String get downloaded => 'Scaricato';
+	@override String get updateAvailable => 'Aggiornamento disponibile';
+}
+
+// Path: packs.actions
+class _Translations$packs$actions$it extends Translations$packs$actions$fr {
+	_Translations$packs$actions$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get download => 'Scarica';
+	@override String get update => 'Aggiorna';
+	@override String get delete => 'Elimina';
+	@override String get retry => 'Riprova';
+	@override String get buy => 'Acquista questo pacchetto';
+	@override String buyWithPrice({required Object price}) => 'Acquista questo pacchetto — ${price}';
+}
+
+// Path: packs.progress
+class _Translations$packs$progress$it extends Translations$packs$progress$fr {
+	_Translations$packs$progress$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String downloading({required Object done, required Object total}) => 'Scaricamento… ${done}/${total}';
+	@override String get verifying => 'Verifica integrità…';
+	@override String get completed => 'Pacchetto pronto offline';
+	@override String get error => 'Scaricamento non riuscito';
+}
+
+// Path: packs.delete
+class _Translations$packs$delete$it extends Translations$packs$delete$fr {
+	_Translations$packs$delete$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get confirmTitle => 'Eliminare questo pacchetto?';
+	@override String get confirmBody => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.';
+	@override String get cancel => 'Annulla';
+	@override String get confirm => 'Elimina';
+	@override String get freed => 'Spazio liberato.';
+}
+
+// Path: packs.a11y
+class _Translations$packs$a11y$it extends Translations$packs$a11y$fr {
+	_Translations$packs$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String packCard({required Object nom, required Object state}) => 'Pacchetto ${nom}, ${state}';
+	@override String downloadButton({required Object nom}) => 'Scarica il pacchetto ${nom}';
+	@override String deleteButton({required Object nom}) => 'Elimina il pacchetto ${nom}';
+}
+
+// Path: packs.types
+class _Translations$packs$types$it extends Translations$packs$types$fr {
+	_Translations$packs$types$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$packs$types$nord$it nord = _Translations$packs$types$nord$it._(_root);
+	@override late final _Translations$packs$types$sud$it sud = _Translations$packs$types$sud$it._(_root);
+	@override late final _Translations$packs$types$complet$it complet = _Translations$packs$types$complet$it._(_root);
+	@override late final _Translations$packs$types$mam$it mam = _Translations$packs$types$mam$it._(_root);
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$it extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1243,6 +1343,50 @@ class _Translations$gamification$badge$challenger$it extends Translations$gamifi
 	// Translations
 	@override String get titre => 'Sfidante';
 	@override String get description => 'Hai completato la tua prima sfida stagionale.';
+}
+
+// Path: packs.types.nord
+class _Translations$packs$types$nord$it extends Translations$packs$types$nord$fr {
+	_Translations$packs$types$nord$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare Nord';
+	@override String get description => 'La metà nord del sentiero, offline.';
+}
+
+// Path: packs.types.sud
+class _Translations$packs$types$sud$it extends Translations$packs$types$sud$fr {
+	_Translations$packs$types$sud$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare Sud';
+	@override String get description => 'La metà sud del sentiero, offline.';
+}
+
+// Path: packs.types.complet
+class _Translations$packs$types$complet$it extends Translations$packs$types$complet$fr {
+	_Translations$packs$types$complet$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare Completo';
+	@override String get description => 'Tutto il sentiero, offline.';
+}
+
+// Path: packs.types.mam
+class _Translations$packs$types$mam$it extends Translations$packs$types$mam$fr {
+	_Translations$packs$types$mam$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare';
+	@override String get description => 'Il sentiero Mare a Mare, offline.';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -1845,6 +1989,40 @@ extension on TranslationsIt {
 			'waypoints.contribution.emptyComment' => 'Inserisci la tua osservazione.',
 			'waypoints.contribution.noLocation' => 'Posizione GPS non disponibile. Riprova sotto cielo aperto.',
 			'waypoints.contribution.error' => 'Impossibile salvare in questo momento.',
+			'packs.title' => 'Pacchetti sentiero',
+			'packs.subtitle' => 'Scarica un pacchetto per camminare 100% offline.',
+			'packs.alaCarteNote' => 'A la carte: acquista solo il pacchetto che ti serve, nessun abbonamento.',
+			'packs.size' => ({required Object mo}) => '${mo} MB',
+			'packs.states.notDownloaded' => 'Non scaricato',
+			'packs.states.downloaded' => 'Scaricato',
+			'packs.states.updateAvailable' => 'Aggiornamento disponibile',
+			'packs.actions.download' => 'Scarica',
+			'packs.actions.update' => 'Aggiorna',
+			'packs.actions.delete' => 'Elimina',
+			'packs.actions.retry' => 'Riprova',
+			'packs.actions.buy' => 'Acquista questo pacchetto',
+			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acquista questo pacchetto — ${price}',
+			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Scaricamento… ${done}/${total}',
+			'packs.progress.verifying' => 'Verifica integrità…',
+			'packs.progress.completed' => 'Pacchetto pronto offline',
+			'packs.progress.error' => 'Scaricamento non riuscito',
+			'packs.delete.confirmTitle' => 'Eliminare questo pacchetto?',
+			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
+			'packs.delete.cancel' => 'Annulla',
+			'packs.delete.confirm' => 'Elimina',
+			'packs.delete.freed' => 'Spazio liberato.',
+			'packs.empty' => 'Nessun pacchetto disponibile per questo sentiero.',
+			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pacchetto ${nom}, ${state}',
+			'packs.a11y.downloadButton' => ({required Object nom}) => 'Scarica il pacchetto ${nom}',
+			'packs.a11y.deleteButton' => ({required Object nom}) => 'Elimina il pacchetto ${nom}',
+			'packs.types.nord.nom' => 'Mare a Mare Nord',
+			'packs.types.nord.description' => 'La metà nord del sentiero, offline.',
+			'packs.types.sud.nom' => 'Mare a Mare Sud',
+			'packs.types.sud.description' => 'La metà sud del sentiero, offline.',
+			'packs.types.complet.nom' => 'Mare a Mare Completo',
+			'packs.types.complet.description' => 'Tutto il sentiero, offline.',
+			'packs.types.mam.nom' => 'Mare a Mare',
+			'packs.types.mam.description' => 'Il sentiero Mare a Mare, offline.',
 			_ => null,
 		};
 	}
