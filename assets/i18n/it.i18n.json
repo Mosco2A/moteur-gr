@@ -682,5 +682,61 @@
       "noLocation": "Posizione GPS non disponibile. Riprova sotto cielo aperto.",
       "error": "Impossibile salvare in questo momento."
     }
+  },
+  "packs": {
+    "title": "Pacchetti sentiero",
+    "subtitle": "Scarica un pacchetto per camminare 100% offline.",
+    "alaCarteNote": "A la carte: acquista solo il pacchetto che ti serve, nessun abbonamento.",
+    "size": "$mo MB",
+    "states": {
+      "notDownloaded": "Non scaricato",
+      "downloaded": "Scaricato",
+      "updateAvailable": "Aggiornamento disponibile"
+    },
+    "actions": {
+      "download": "Scarica",
+      "update": "Aggiorna",
+      "delete": "Elimina",
+      "retry": "Riprova",
+      "buy": "Acquista questo pacchetto",
+      "buyWithPrice": "Acquista questo pacchetto — $price"
+    },
+    "progress": {
+      "downloading": "Scaricamento… $done/$total",
+      "verifying": "Verifica integrità…",
+      "completed": "Pacchetto pronto offline",
+      "error": "Scaricamento non riuscito"
+    },
+    "delete": {
+      "confirmTitle": "Eliminare questo pacchetto?",
+      "confirmBody": "Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.",
+      "cancel": "Annulla",
+      "confirm": "Elimina",
+      "freed": "Spazio liberato."
+    },
+    "empty": "Nessun pacchetto disponibile per questo sentiero.",
+    "a11y": {
+      "packCard": "Pacchetto $nom, $state",
+      "downloadButton": "Scarica il pacchetto $nom",
+      "deleteButton": "Elimina il pacchetto $nom"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare Nord",
+        "description": "La metà nord del sentiero, offline."
+      },
+      "sud": {
+        "nom": "Mare a Mare Sud",
+        "description": "La metà sud del sentiero, offline."
+      },
+      "complet": {
+        "nom": "Mare a Mare Completo",
+        "description": "Tutto il sentiero, offline."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "Il sentiero Mare a Mare, offline."
+      }
+    }
   }
 }

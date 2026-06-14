@@ -76,6 +76,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$gamification$en gamification = _Translations$gamification$en._(_root);
 	@override late final _Translations$shareVisibility$en shareVisibility = _Translations$shareVisibility$en._(_root);
 	@override late final _Translations$waypoints$en waypoints = _Translations$waypoints$en._(_root);
+	@override late final _Translations$packs$en packs = _Translations$packs$en._(_root);
 }
 
 // Path: a11y
@@ -789,6 +790,26 @@ class _Translations$waypoints$en extends Translations$waypoints$fr {
 	@override late final _Translations$waypoints$contribution$en contribution = _Translations$waypoints$contribution$en._(_root);
 }
 
+// Path: packs
+class _Translations$packs$en extends Translations$packs$fr {
+	_Translations$packs$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Trail packs';
+	@override String get subtitle => 'Download a pack to hike 100% offline.';
+	@override String get alaCarteNote => 'A la carte: buy only the pack you need, no subscription.';
+	@override String size({required Object mo}) => '${mo} MB';
+	@override late final _Translations$packs$states$en states = _Translations$packs$states$en._(_root);
+	@override late final _Translations$packs$actions$en actions = _Translations$packs$actions$en._(_root);
+	@override late final _Translations$packs$progress$en progress = _Translations$packs$progress$en._(_root);
+	@override late final _Translations$packs$delete$en delete = _Translations$packs$delete$en._(_root);
+	@override String get empty => 'No pack available for this trail.';
+	@override late final _Translations$packs$a11y$en a11y = _Translations$packs$a11y$en._(_root);
+	@override late final _Translations$packs$types$en types = _Translations$packs$types$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1131,6 +1152,85 @@ class _Translations$waypoints$contribution$en extends Translations$waypoints$con
 	@override String get error => 'Cannot save right now.';
 }
 
+// Path: packs.states
+class _Translations$packs$states$en extends Translations$packs$states$fr {
+	_Translations$packs$states$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get notDownloaded => 'Not downloaded';
+	@override String get downloaded => 'Downloaded';
+	@override String get updateAvailable => 'Update available';
+}
+
+// Path: packs.actions
+class _Translations$packs$actions$en extends Translations$packs$actions$fr {
+	_Translations$packs$actions$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get download => 'Download';
+	@override String get update => 'Update';
+	@override String get delete => 'Delete';
+	@override String get retry => 'Retry';
+	@override String get buy => 'Buy this pack';
+	@override String buyWithPrice({required Object price}) => 'Buy this pack — ${price}';
+}
+
+// Path: packs.progress
+class _Translations$packs$progress$en extends Translations$packs$progress$fr {
+	_Translations$packs$progress$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String downloading({required Object done, required Object total}) => 'Downloading… ${done}/${total}';
+	@override String get verifying => 'Verifying integrity…';
+	@override String get completed => 'Pack ready offline';
+	@override String get error => 'Download failed';
+}
+
+// Path: packs.delete
+class _Translations$packs$delete$en extends Translations$packs$delete$fr {
+	_Translations$packs$delete$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get confirmTitle => 'Delete this pack?';
+	@override String get confirmBody => 'The pack will be removed from the device to free up space. You can download it again later.';
+	@override String get cancel => 'Cancel';
+	@override String get confirm => 'Delete';
+	@override String get freed => 'Space freed.';
+}
+
+// Path: packs.a11y
+class _Translations$packs$a11y$en extends Translations$packs$a11y$fr {
+	_Translations$packs$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String packCard({required Object nom, required Object state}) => 'Pack ${nom}, ${state}';
+	@override String downloadButton({required Object nom}) => 'Download pack ${nom}';
+	@override String deleteButton({required Object nom}) => 'Delete pack ${nom}';
+}
+
+// Path: packs.types
+class _Translations$packs$types$en extends Translations$packs$types$fr {
+	_Translations$packs$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$packs$types$nord$en nord = _Translations$packs$types$nord$en._(_root);
+	@override late final _Translations$packs$types$sud$en sud = _Translations$packs$types$sud$en._(_root);
+	@override late final _Translations$packs$types$complet$en complet = _Translations$packs$types$complet$en._(_root);
+	@override late final _Translations$packs$types$mam$en mam = _Translations$packs$types$mam$en._(_root);
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$en extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1243,6 +1343,50 @@ class _Translations$gamification$badge$challenger$en extends Translations$gamifi
 	// Translations
 	@override String get titre => 'Challenger';
 	@override String get description => 'You completed your first seasonal challenge.';
+}
+
+// Path: packs.types.nord
+class _Translations$packs$types$nord$en extends Translations$packs$types$nord$fr {
+	_Translations$packs$types$nord$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare North';
+	@override String get description => 'The northern half of the trail, offline.';
+}
+
+// Path: packs.types.sud
+class _Translations$packs$types$sud$en extends Translations$packs$types$sud$fr {
+	_Translations$packs$types$sud$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare South';
+	@override String get description => 'The southern half of the trail, offline.';
+}
+
+// Path: packs.types.complet
+class _Translations$packs$types$complet$en extends Translations$packs$types$complet$fr {
+	_Translations$packs$types$complet$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare Full';
+	@override String get description => 'The whole trail, offline.';
+}
+
+// Path: packs.types.mam
+class _Translations$packs$types$mam$en extends Translations$packs$types$mam$fr {
+	_Translations$packs$types$mam$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare';
+	@override String get description => 'The Mare a Mare trail, offline.';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -1845,6 +1989,40 @@ extension on TranslationsEn {
 			'waypoints.contribution.emptyComment' => 'Please enter your observation.',
 			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
 			'waypoints.contribution.error' => 'Cannot save right now.',
+			'packs.title' => 'Trail packs',
+			'packs.subtitle' => 'Download a pack to hike 100% offline.',
+			'packs.alaCarteNote' => 'A la carte: buy only the pack you need, no subscription.',
+			'packs.size' => ({required Object mo}) => '${mo} MB',
+			'packs.states.notDownloaded' => 'Not downloaded',
+			'packs.states.downloaded' => 'Downloaded',
+			'packs.states.updateAvailable' => 'Update available',
+			'packs.actions.download' => 'Download',
+			'packs.actions.update' => 'Update',
+			'packs.actions.delete' => 'Delete',
+			'packs.actions.retry' => 'Retry',
+			'packs.actions.buy' => 'Buy this pack',
+			'packs.actions.buyWithPrice' => ({required Object price}) => 'Buy this pack — ${price}',
+			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Downloading… ${done}/${total}',
+			'packs.progress.verifying' => 'Verifying integrity…',
+			'packs.progress.completed' => 'Pack ready offline',
+			'packs.progress.error' => 'Download failed',
+			'packs.delete.confirmTitle' => 'Delete this pack?',
+			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
+			'packs.delete.cancel' => 'Cancel',
+			'packs.delete.confirm' => 'Delete',
+			'packs.delete.freed' => 'Space freed.',
+			'packs.empty' => 'No pack available for this trail.',
+			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
+			'packs.a11y.downloadButton' => ({required Object nom}) => 'Download pack ${nom}',
+			'packs.a11y.deleteButton' => ({required Object nom}) => 'Delete pack ${nom}',
+			'packs.types.nord.nom' => 'Mare a Mare North',
+			'packs.types.nord.description' => 'The northern half of the trail, offline.',
+			'packs.types.sud.nom' => 'Mare a Mare South',
+			'packs.types.sud.description' => 'The southern half of the trail, offline.',
+			'packs.types.complet.nom' => 'Mare a Mare Full',
+			'packs.types.complet.description' => 'The whole trail, offline.',
+			'packs.types.mam.nom' => 'Mare a Mare',
+			'packs.types.mam.description' => 'The Mare a Mare trail, offline.',
 			_ => null,
 		};
 	}

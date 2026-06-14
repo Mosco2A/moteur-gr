@@ -682,5 +682,61 @@
       "noLocation": "Posicion GPS no disponible. Intentalo de nuevo a cielo abierto.",
       "error": "No se puede guardar ahora mismo."
     }
+  },
+  "packs": {
+    "title": "Packs de sendero",
+    "subtitle": "Descarga un pack para caminar 100% sin conexión.",
+    "alaCarteNote": "A la carte: compra solo el pack que necesitas, sin suscripción.",
+    "size": "$mo MB",
+    "states": {
+      "notDownloaded": "No descargado",
+      "downloaded": "Descargado",
+      "updateAvailable": "Actualización disponible"
+    },
+    "actions": {
+      "download": "Descargar",
+      "update": "Actualizar",
+      "delete": "Eliminar",
+      "retry": "Reintentar",
+      "buy": "Comprar este pack",
+      "buyWithPrice": "Comprar este pack — $price"
+    },
+    "progress": {
+      "downloading": "Descargando… $done/$total",
+      "verifying": "Verificando integridad…",
+      "completed": "Pack listo sin conexión",
+      "error": "Error de descarga"
+    },
+    "delete": {
+      "confirmTitle": "¿Eliminar este pack?",
+      "confirmBody": "El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.",
+      "cancel": "Cancelar",
+      "confirm": "Eliminar",
+      "freed": "Espacio liberado."
+    },
+    "empty": "No hay pack disponible para este sendero.",
+    "a11y": {
+      "packCard": "Pack $nom, $state",
+      "downloadButton": "Descargar el pack $nom",
+      "deleteButton": "Eliminar el pack $nom"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare Norte",
+        "description": "La mitad norte del sendero, sin conexión."
+      },
+      "sud": {
+        "nom": "Mare a Mare Sur",
+        "description": "La mitad sur del sendero, sin conexión."
+      },
+      "complet": {
+        "nom": "Mare a Mare Completo",
+        "description": "Todo el sendero, sin conexión."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "El sendero Mare a Mare, sin conexión."
+      }
+    }
   }
 }

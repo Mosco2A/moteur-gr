@@ -682,5 +682,61 @@
       "noLocation": "GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.",
       "error": "Speichern derzeit nicht moglich."
     }
+  },
+  "packs": {
+    "title": "Wegpakete",
+    "subtitle": "Lade ein Paket herunter, um 100% offline zu wandern.",
+    "alaCarteNote": "A la carte: Kaufe nur das Paket, das du brauchst, kein Abo.",
+    "size": "$mo MB",
+    "states": {
+      "notDownloaded": "Nicht heruntergeladen",
+      "downloaded": "Heruntergeladen",
+      "updateAvailable": "Update verfügbar"
+    },
+    "actions": {
+      "download": "Herunterladen",
+      "update": "Aktualisieren",
+      "delete": "Löschen",
+      "retry": "Erneut versuchen",
+      "buy": "Dieses Paket kaufen",
+      "buyWithPrice": "Dieses Paket kaufen — $price"
+    },
+    "progress": {
+      "downloading": "Wird heruntergeladen… $done/$total",
+      "verifying": "Integrität wird geprüft…",
+      "completed": "Paket offline bereit",
+      "error": "Download fehlgeschlagen"
+    },
+    "delete": {
+      "confirmTitle": "Dieses Paket löschen?",
+      "confirmBody": "Das Paket wird vom Gerät entfernt, um Speicher freizugeben. Du kannst es später erneut herunterladen.",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen",
+      "freed": "Speicher freigegeben."
+    },
+    "empty": "Kein Paket für diesen Weg verfügbar.",
+    "a11y": {
+      "packCard": "Paket $nom, $state",
+      "downloadButton": "Paket $nom herunterladen",
+      "deleteButton": "Paket $nom löschen"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare Nord",
+        "description": "Die nördliche Hälfte des Wegs, offline."
+      },
+      "sud": {
+        "nom": "Mare a Mare Süd",
+        "description": "Die südliche Hälfte des Wegs, offline."
+      },
+      "complet": {
+        "nom": "Mare a Mare Komplett",
+        "description": "Der ganze Weg, offline."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "Der Mare-a-Mare-Weg, offline."
+      }
+    }
   }
 }

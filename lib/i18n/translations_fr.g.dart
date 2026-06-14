@@ -77,6 +77,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$gamification$fr gamification = Translations$gamification$fr.internal(_root);
 	late final Translations$shareVisibility$fr shareVisibility = Translations$shareVisibility$fr.internal(_root);
 	late final Translations$waypoints$fr waypoints = Translations$waypoints$fr.internal(_root);
+	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1514,6 +1515,38 @@ class Translations$waypoints$fr {
 	late final Translations$waypoints$contribution$fr contribution = Translations$waypoints$contribution$fr.internal(_root);
 }
 
+// Path: packs
+class Translations$packs$fr {
+	Translations$packs$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Packs sentier'
+	String get title => 'Packs sentier';
+
+	/// fr: 'Téléchargez un pack pour randonner 100% hors-ligne.'
+	String get subtitle => 'Téléchargez un pack pour randonner 100% hors-ligne.';
+
+	/// fr: 'À la carte : achetez seulement le pack qu'il vous faut, pas d'abonnement.'
+	String get alaCarteNote => 'À la carte : achetez seulement le pack qu\'il vous faut, pas d\'abonnement.';
+
+	/// fr: '$mo Mo'
+	String size({required Object mo}) => '${mo} Mo';
+
+	late final Translations$packs$states$fr states = Translations$packs$states$fr.internal(_root);
+	late final Translations$packs$actions$fr actions = Translations$packs$actions$fr.internal(_root);
+	late final Translations$packs$progress$fr progress = Translations$packs$progress$fr.internal(_root);
+	late final Translations$packs$delete$fr delete = Translations$packs$delete$fr.internal(_root);
+
+	/// fr: 'Aucun pack disponible pour ce sentier.'
+	String get empty => 'Aucun pack disponible pour ce sentier.';
+
+	late final Translations$packs$a11y$fr a11y = Translations$packs$a11y$fr.internal(_root);
+	late final Translations$packs$types$fr types = Translations$packs$types$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2160,6 +2193,127 @@ class Translations$waypoints$contribution$fr {
 	String get error => 'Enregistrement impossible pour le moment.';
 }
 
+// Path: packs.states
+class Translations$packs$states$fr {
+	Translations$packs$states$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Non téléchargé'
+	String get notDownloaded => 'Non téléchargé';
+
+	/// fr: 'Téléchargé'
+	String get downloaded => 'Téléchargé';
+
+	/// fr: 'Mise à jour disponible'
+	String get updateAvailable => 'Mise à jour disponible';
+}
+
+// Path: packs.actions
+class Translations$packs$actions$fr {
+	Translations$packs$actions$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Télécharger'
+	String get download => 'Télécharger';
+
+	/// fr: 'Mettre à jour'
+	String get update => 'Mettre à jour';
+
+	/// fr: 'Supprimer'
+	String get delete => 'Supprimer';
+
+	/// fr: 'Réessayer'
+	String get retry => 'Réessayer';
+
+	/// fr: 'Acheter ce pack'
+	String get buy => 'Acheter ce pack';
+
+	/// fr: 'Acheter ce pack — $price'
+	String buyWithPrice({required Object price}) => 'Acheter ce pack — ${price}';
+}
+
+// Path: packs.progress
+class Translations$packs$progress$fr {
+	Translations$packs$progress$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Téléchargement… $done/$total'
+	String downloading({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}';
+
+	/// fr: 'Vérification de l'intégrité…'
+	String get verifying => 'Vérification de l\'intégrité…';
+
+	/// fr: 'Pack prêt hors-ligne'
+	String get completed => 'Pack prêt hors-ligne';
+
+	/// fr: 'Échec du téléchargement'
+	String get error => 'Échec du téléchargement';
+}
+
+// Path: packs.delete
+class Translations$packs$delete$fr {
+	Translations$packs$delete$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Supprimer ce pack ?'
+	String get confirmTitle => 'Supprimer ce pack ?';
+
+	/// fr: 'Le pack sera retiré de l'appareil pour libérer de l'espace. Vous pourrez le retélécharger.'
+	String get confirmBody => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Supprimer'
+	String get confirm => 'Supprimer';
+
+	/// fr: 'Espace libéré.'
+	String get freed => 'Espace libéré.';
+}
+
+// Path: packs.a11y
+class Translations$packs$a11y$fr {
+	Translations$packs$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Pack $nom, $state'
+	String packCard({required Object nom, required Object state}) => 'Pack ${nom}, ${state}';
+
+	/// fr: 'Télécharger le pack $nom'
+	String downloadButton({required Object nom}) => 'Télécharger le pack ${nom}';
+
+	/// fr: 'Supprimer le pack $nom'
+	String deleteButton({required Object nom}) => 'Supprimer le pack ${nom}';
+}
+
+// Path: packs.types
+class Translations$packs$types$fr {
+	Translations$packs$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$packs$types$nord$fr nord = Translations$packs$types$nord$fr.internal(_root);
+	late final Translations$packs$types$sud$fr sud = Translations$packs$types$sud$fr.internal(_root);
+	late final Translations$packs$types$complet$fr complet = Translations$packs$types$complet$fr.internal(_root);
+	late final Translations$packs$types$mam$fr mam = Translations$packs$types$mam$fr.internal(_root);
+}
+
 // Path: feasibility.recommendations.danger
 class Translations$feasibility$recommendations$danger$fr {
 	Translations$feasibility$recommendations$danger$fr.internal(this._root);
@@ -2316,6 +2470,66 @@ class Translations$gamification$badge$challenger$fr {
 
 	/// fr: 'Tu as réussi ton premier défi saisonnier.'
 	String get description => 'Tu as réussi ton premier défi saisonnier.';
+}
+
+// Path: packs.types.nord
+class Translations$packs$types$nord$fr {
+	Translations$packs$types$nord$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare Nord'
+	String get nom => 'Mare a Mare Nord';
+
+	/// fr: 'La moitié nord du sentier, hors-ligne.'
+	String get description => 'La moitié nord du sentier, hors-ligne.';
+}
+
+// Path: packs.types.sud
+class Translations$packs$types$sud$fr {
+	Translations$packs$types$sud$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare Sud'
+	String get nom => 'Mare a Mare Sud';
+
+	/// fr: 'La moitié sud du sentier, hors-ligne.'
+	String get description => 'La moitié sud du sentier, hors-ligne.';
+}
+
+// Path: packs.types.complet
+class Translations$packs$types$complet$fr {
+	Translations$packs$types$complet$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare Complet'
+	String get nom => 'Mare a Mare Complet';
+
+	/// fr: 'Tout le sentier, hors-ligne.'
+	String get description => 'Tout le sentier, hors-ligne.';
+}
+
+// Path: packs.types.mam
+class Translations$packs$types$mam$fr {
+	Translations$packs$types$mam$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare'
+	String get nom => 'Mare a Mare';
+
+	/// fr: 'Le sentier Mare a Mare, hors-ligne.'
+	String get description => 'Le sentier Mare a Mare, hors-ligne.';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -2942,6 +3156,40 @@ extension on Translations {
 			'waypoints.contribution.emptyComment' => 'Saisissez votre observation.',
 			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
 			'waypoints.contribution.error' => 'Enregistrement impossible pour le moment.',
+			'packs.title' => 'Packs sentier',
+			'packs.subtitle' => 'Téléchargez un pack pour randonner 100% hors-ligne.',
+			'packs.alaCarteNote' => 'À la carte : achetez seulement le pack qu\'il vous faut, pas d\'abonnement.',
+			'packs.size' => ({required Object mo}) => '${mo} Mo',
+			'packs.states.notDownloaded' => 'Non téléchargé',
+			'packs.states.downloaded' => 'Téléchargé',
+			'packs.states.updateAvailable' => 'Mise à jour disponible',
+			'packs.actions.download' => 'Télécharger',
+			'packs.actions.update' => 'Mettre à jour',
+			'packs.actions.delete' => 'Supprimer',
+			'packs.actions.retry' => 'Réessayer',
+			'packs.actions.buy' => 'Acheter ce pack',
+			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acheter ce pack — ${price}',
+			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}',
+			'packs.progress.verifying' => 'Vérification de l\'intégrité…',
+			'packs.progress.completed' => 'Pack prêt hors-ligne',
+			'packs.progress.error' => 'Échec du téléchargement',
+			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
+			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
+			'packs.delete.cancel' => 'Annuler',
+			'packs.delete.confirm' => 'Supprimer',
+			'packs.delete.freed' => 'Espace libéré.',
+			'packs.empty' => 'Aucun pack disponible pour ce sentier.',
+			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
+			'packs.a11y.downloadButton' => ({required Object nom}) => 'Télécharger le pack ${nom}',
+			'packs.a11y.deleteButton' => ({required Object nom}) => 'Supprimer le pack ${nom}',
+			'packs.types.nord.nom' => 'Mare a Mare Nord',
+			'packs.types.nord.description' => 'La moitié nord du sentier, hors-ligne.',
+			'packs.types.sud.nom' => 'Mare a Mare Sud',
+			'packs.types.sud.description' => 'La moitié sud du sentier, hors-ligne.',
+			'packs.types.complet.nom' => 'Mare a Mare Complet',
+			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
+			'packs.types.mam.nom' => 'Mare a Mare',
+			'packs.types.mam.description' => 'Le sentier Mare a Mare, hors-ligne.',
 			_ => null,
 		};
 	}
