@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config/trail_config.dart';
+import '../config/trail_selection.dart';
 
 /// Moteur central du Moteur GR.
 ///
@@ -8,10 +9,15 @@ import '../config/trail_config.dart';
 /// actif. Tous les modules (thème, navigation, GPS, etc.) lisent
 /// la config depuis ce provider.
 ///
-/// Initialisation dans main.dart :
+/// Multi-sentiers (F8D-01, #84627) : par défaut, la config active est RÉSOLUE
+/// depuis la sélection de l'utilisateur ([selectedTrailIdProvider]) sur le
+/// catalogue ([resolvedTrailConfigProvider]). Changer de sentier (F8D-02) =
+/// écrire le nouvel id dans [selectedTrailIdProvider] ; toute l'app suit.
+///
+/// Override possible (mono-sentier dédié, tests) — l'override prime toujours :
 /// ```dart
 /// void main() {
-///   final config = TrailConfig(...);
+///   const config = TrailConfig(...);
 ///   runApp(
 ///     ProviderScope(
 ///       overrides: [
@@ -23,10 +29,8 @@ import '../config/trail_config.dart';
 /// }
 /// ```
 final trailConfigProvider = Provider<TrailConfig>((ref) {
-  throw UnimplementedError(
-    'trailConfigProvider doit être overridé dans main.dart '
-    'avec la configuration du sentier.',
-  );
+  // Par défaut : sentier sélectionné, résolu sur le catalogue (genericité).
+  return ref.watch(resolvedTrailConfigProvider);
 });
 
 /// Nom d'affichage du sentier actif.
