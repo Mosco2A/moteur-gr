@@ -58,11 +58,16 @@ class WeatherCacheDao extends DatabaseAccessor<AppDatabase>
     ));
   }
 
-  /// Supprime tout le cache expiré
-  Future<int> clearExpired() {
-    final now = DateTime.now();
+  /// Supprime tout le cache expiré (expiresAt < [now]).
+  ///
+  /// [now] est injectable pour rester déterministe en test et pour partager
+  /// la même horloge que la purge de rétention (D4B-02). Par défaut,
+  /// l'horloge système. Ne supprime JAMAIS une entrée encore valide
+  /// (expiresAt >= now) : le TTL de chaque entrée fait foi.
+  Future<int> clearExpired([DateTime? now]) {
+    final cutoff = now ?? DateTime.now();
     return (delete(weatherCache)
-          ..where((t) => t.expiresAt.isSmallerThanValue(now)))
+          ..where((t) => t.expiresAt.isSmallerThanValue(cutoff)))
         .go();
   }
 

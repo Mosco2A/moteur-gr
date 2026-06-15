@@ -197,7 +197,9 @@ class DataRetentionService {
     final contribCutoff = now.subtract(_policy.syncedContributions);
 
     // 1. Cache meteo expire (reutilise la logique TTL existante du DAO).
-    final expiredWeather = await _db.weatherCacheDao.clearExpired();
+    //    On passe la MEME horloge que le reste de la purge : sinon une entree
+    //    encore valide (expiresAt > now) serait supprimee a tort (D4B-02).
+    final expiredWeather = await _db.weatherCacheDao.clearExpired(now);
 
     // 2. File de synchro terminee et ancienne.
     final oldSync = await _db.syncQueueDao
