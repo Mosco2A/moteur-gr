@@ -17,11 +17,11 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/trails');
     });
 
-    test('le premier niveau contient 1 shell + 16 routes racine', () {
+    test('le premier niveau contient 1 shell + 17 routes racine', () {
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 17);
+      expect(routes.length, 18);
       expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 16);
+      expect(routes.whereType<GoRoute>().length, 17);
     });
 
     test('les routes racine (hors shell) sont celles attendues', () {
@@ -45,6 +45,7 @@ void main() {
         '/onboarding',
         '/no-data',
         '/settings',
+        '/consent',
         '/profile',
       ]);
     });
@@ -69,6 +70,7 @@ void main() {
         'onboarding',
         'no-data',
         'settings',
+        'consent',
         'profile',
       ]);
     });

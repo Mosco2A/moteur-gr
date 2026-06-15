@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/firebase/firebase_service.dart';
@@ -48,6 +49,10 @@ class SettingsScreen extends ConsumerWidget {
 
           // --- Cloud (P1-4 audit #327 : etat explicite du mode local) ---
           _buildCloudSection(context, ref, theme, tr),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // --- Confidentialite et consentement (D4A-02, RGPD) ---
+          _buildPrivacySection(context, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
           // --- Version ---
@@ -363,6 +368,41 @@ class SettingsScreen extends ConsumerWidget {
             ),
             subtitle: Text(
               available ? tr.cloud.statusActiveDesc : tr.cloud.statusLocalDesc,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Section confidentialite - acces a la gestion du consentement RGPD.
+  ///
+  /// D4A-02 : renvoie vers l'ecran de consentement granulaire ou l'utilisateur
+  /// peut consulter, modifier et RETIRER chaque consentement (par finalite,
+  /// sante isolee). a11y via [Semantics].
+  Widget _buildPrivacySection(
+    BuildContext context,
+    ThemeData theme,
+    Translations tr,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeader(
+          theme,
+          Icons.privacy_tip_outlined,
+          tr.consent.settingsEntry,
+        ),
+        Card(
+          child: Semantics(
+            button: true,
+            label: tr.consent.settingsEntry,
+            child: ListTile(
+              leading: const Icon(Icons.shield_outlined),
+              title: Text(tr.consent.settingsEntry),
+              subtitle: Text(tr.consent.settingsEntryDesc),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/consent'),
             ),
           ),
         ),

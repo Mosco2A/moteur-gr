@@ -283,14 +283,14 @@
   },
   "auth": {
     "profile": "Profile",
-    "anonymous": "Anonymous hiker",
+    "anonymous": "Hiker without account",
     "connectedVia": "Connected via",
     "signInGoogle": "Sign in with Google",
     "signInGoogleDesc": "To save your progress",
     "signOut": "Sign out",
-    "signOutDesc": "Return to anonymous mode",
+    "signOutDesc": "Return to no-account mode",
     "signOutConfirm": "Sign out?",
-    "signOutMessage": "You will return to anonymous mode. Your local data is preserved.",
+    "signOutMessage": "You will return to no-account mode. Your local data is preserved.",
     "deleteAccount": "Delete my account",
     "deleteAccountDesc": "All your data will be erased",
     "deleteConfirm": "Delete your account?",
@@ -782,6 +782,90 @@
       "trailCard": "Trail $nom, $region",
       "currentBadge": "Currently active trail",
       "selectButton": "Activate trail $nom"
+    }
+  },
+  "consent": {
+    "onboardingTitle": "Your privacy, your choice",
+    "onboardingIntro": "Nothing is enabled by default. Choose, purpose by purpose, what you allow. You can change everything at any time in the settings.",
+    "settingsTitle": "Privacy and consent",
+    "settingsIntro": "Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.",
+    "settingsEntry": "Privacy and consent",
+    "settingsEntryDesc": "Manage my permissions (location, sharing, health)",
+    "purposes": {
+      "locationNavigation": "Personal navigation",
+      "locationNavigationDesc": "Use your location for the map and to track your stage. Stays on your device.",
+      "socialSharing": "Social sharing",
+      "socialSharingDesc": "Appear in leaderboards and the community feed, under a pseudonym.",
+      "publicReporting": "Public reporting",
+      "publicReportingDesc": "Post reports (water, hazard, conditions) visible to other hikers.",
+      "healthData": "Health data",
+      "healthDataDesc": "Read your heart rate (chest strap or health app) to enrich your effort tracking."
+    },
+    "healthBadge": "Sensitive data",
+    "healthWarning": "Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.",
+    "granted": "Allowed",
+    "denied": "Not allowed",
+    "grant": "Allow",
+    "revoke": "Withdraw",
+    "decidedOn": "Chosen on $date",
+    "notDecided": "Awaiting your choice",
+    "acceptSelected": "Confirm my choices",
+    "declineAll": "Decline all",
+    "continueLabel": "Continue",
+    "privacyPolicyLink": "Read the privacy policy",
+    "reviewNeeded": "Our policy has changed: please review your choices.",
+    "a11y": {
+      "purposeToggle": "$purpose, currently $state",
+      "healthSection": "Health data section, reinforced consent",
+      "policyButton": "Open the privacy policy"
+    }
+  },
+  "moderation": {
+    "reportTitle": "Report this content",
+    "reportIntro": "Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.",
+    "reasonLabel": "Reason for reporting",
+    "reasons": {
+      "illegal": "Illegal content",
+      "harassment": "Harassment or hate",
+      "spam": "Spam or advertising",
+      "dangerous": "Dangerous or misleading information",
+      "other": "Other"
+    },
+    "detailsLabel": "Add details (optional)",
+    "detailsHint": "Add a comment to help the moderator.",
+    "contactLabel": "Your email address",
+    "contactHint": "To keep you informed about the handling (article 16).",
+    "goodFaithLabel": "I declare in good faith that this information is accurate.",
+    "submit": "Send report",
+    "submitting": "Sending…",
+    "sent": "Report sent. Thank you, a moderator will review it.",
+    "errorRequired": "Please fill in the reason, your email and the good-faith declaration.",
+    "errorGeneric": "The report could not be sent. Please try again.",
+    "cancel": "Cancel",
+    "reasonsTitle": "Why was this content restricted?",
+    "reasonsIntro": "In accordance with article 17, here is the reason for the moderation decision regarding your content.",
+    "decisionLabel": "Decision",
+    "decisions": {
+      "keep": "Content kept",
+      "restrict": "Content restricted",
+      "remove": "Content removed"
+    },
+    "noStatement": "No restriction has been applied to your content.",
+    "complaintAction": "Challenge this decision",
+    "complaintTitle": "Challenge a decision",
+    "complaintIntro": "You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).",
+    "complaintExposeLabel": "Your challenge",
+    "complaintExposeHint": "Describe the reasons for your challenge.",
+    "complaintSubmit": "Send challenge",
+    "complaintSent": "Challenge recorded. It will be reviewed.",
+    "complaintEmpty": "Please explain your challenge.",
+    "a11y": {
+      "reportForm": "Content reporting form",
+      "reasonSelector": "Report reason selector",
+      "goodFaithToggle": "Good-faith declaration, $state",
+      "submitReport": "Send report",
+      "statementCard": "Statement of reasons for the moderation decision",
+      "complaintForm": "Decision challenge form"
     }
   }
 }

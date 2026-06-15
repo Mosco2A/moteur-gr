@@ -80,6 +80,8 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
 	late final Translations$guides$fr guides = Translations$guides$fr.internal(_root);
 	late final Translations$trailSelection$fr trailSelection = Translations$trailSelection$fr.internal(_root);
+	late final Translations$consent$fr consent = Translations$consent$fr.internal(_root);
+	late final Translations$moderation$fr moderation = Translations$moderation$fr.internal(_root);
 }
 
 // Path: a11y
@@ -852,8 +854,8 @@ class Translations$auth$fr {
 	/// fr: 'Profil'
 	String get profile => 'Profil';
 
-	/// fr: 'Randonneur anonyme'
-	String get anonymous => 'Randonneur anonyme';
+	/// fr: 'Randonneur sans compte'
+	String get anonymous => 'Randonneur sans compte';
 
 	/// fr: 'Connecté via'
 	String get connectedVia => 'Connecté via';
@@ -867,14 +869,14 @@ class Translations$auth$fr {
 	/// fr: 'Se déconnecter'
 	String get signOut => 'Se déconnecter';
 
-	/// fr: 'Revenir en mode anonyme'
-	String get signOutDesc => 'Revenir en mode anonyme';
+	/// fr: 'Revenir au mode sans compte'
+	String get signOutDesc => 'Revenir au mode sans compte';
 
 	/// fr: 'Se déconnecter ?'
 	String get signOutConfirm => 'Se déconnecter ?';
 
-	/// fr: 'Vous reviendrez en mode anonyme. Vos données locales sont conservées.'
-	String get signOutMessage => 'Vous reviendrez en mode anonyme. Vos données locales sont conservées.';
+	/// fr: 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.'
+	String get signOutMessage => 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.';
 
 	/// fr: 'Supprimer mon compte'
 	String get deleteAccount => 'Supprimer mon compte';
@@ -1616,6 +1618,169 @@ class Translations$trailSelection$fr {
 	String stagesDistance({required Object stages, required Object km}) => '${stages} etapes - ${km} km';
 
 	late final Translations$trailSelection$a11y$fr a11y = Translations$trailSelection$a11y$fr.internal(_root);
+}
+
+// Path: consent
+class Translations$consent$fr {
+	Translations$consent$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Votre vie privée, votre choix'
+	String get onboardingTitle => 'Votre vie privée, votre choix';
+
+	/// fr: 'Rien n'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.'
+	String get onboardingIntro => 'Rien n\'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.';
+
+	/// fr: 'Confidentialité et consentement'
+	String get settingsTitle => 'Confidentialité et consentement';
+
+	/// fr: 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.'
+	String get settingsIntro => 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.';
+
+	/// fr: 'Confidentialité et consentement'
+	String get settingsEntry => 'Confidentialité et consentement';
+
+	/// fr: 'Gérer mes autorisations (géolocalisation, partage, santé)'
+	String get settingsEntryDesc => 'Gérer mes autorisations (géolocalisation, partage, santé)';
+
+	late final Translations$consent$purposes$fr purposes = Translations$consent$purposes$fr.internal(_root);
+
+	/// fr: 'Donnée sensible'
+	String get healthBadge => 'Donnée sensible';
+
+	/// fr: 'La fréquence cardiaque est une donnée de santé (article 9 RGPD). Ce consentement est demandé séparément et n'est jamais regroupé avec les autres. Vos données de santé ne sont pas envoyées sur nos serveurs.'
+	String get healthWarning => 'La fréquence cardiaque est une donnée de santé (article 9 RGPD). Ce consentement est demandé séparément et n\'est jamais regroupé avec les autres. Vos données de santé ne sont pas envoyées sur nos serveurs.';
+
+	/// fr: 'Autorisé'
+	String get granted => 'Autorisé';
+
+	/// fr: 'Non autorisé'
+	String get denied => 'Non autorisé';
+
+	/// fr: 'Autoriser'
+	String get grant => 'Autoriser';
+
+	/// fr: 'Retirer'
+	String get revoke => 'Retirer';
+
+	/// fr: 'Choix du $date'
+	String decidedOn({required Object date}) => 'Choix du ${date}';
+
+	/// fr: 'En attente de votre choix'
+	String get notDecided => 'En attente de votre choix';
+
+	/// fr: 'Valider mes choix'
+	String get acceptSelected => 'Valider mes choix';
+
+	/// fr: 'Tout refuser'
+	String get declineAll => 'Tout refuser';
+
+	/// fr: 'Continuer'
+	String get continueLabel => 'Continuer';
+
+	/// fr: 'Lire la politique de confidentialité'
+	String get privacyPolicyLink => 'Lire la politique de confidentialité';
+
+	/// fr: 'Notre politique a évolué : merci de revoir vos choix.'
+	String get reviewNeeded => 'Notre politique a évolué : merci de revoir vos choix.';
+
+	late final Translations$consent$a11y$fr a11y = Translations$consent$a11y$fr.internal(_root);
+}
+
+// Path: moderation
+class Translations$moderation$fr {
+	Translations$moderation$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Signaler ce contenu'
+	String get reportTitle => 'Signaler ce contenu';
+
+	/// fr: 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.'
+	String get reportIntro => 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.';
+
+	/// fr: 'Motif du signalement'
+	String get reasonLabel => 'Motif du signalement';
+
+	late final Translations$moderation$reasons$fr reasons = Translations$moderation$reasons$fr.internal(_root);
+
+	/// fr: 'Précisez (facultatif)'
+	String get detailsLabel => 'Précisez (facultatif)';
+
+	/// fr: 'Ajoutez un commentaire pour aider le modérateur.'
+	String get detailsHint => 'Ajoutez un commentaire pour aider le modérateur.';
+
+	/// fr: 'Votre adresse e-mail'
+	String get contactLabel => 'Votre adresse e-mail';
+
+	/// fr: 'Pour vous tenir informé du traitement (article 16).'
+	String get contactHint => 'Pour vous tenir informé du traitement (article 16).';
+
+	/// fr: 'Je déclare de bonne foi que ces informations sont exactes.'
+	String get goodFaithLabel => 'Je déclare de bonne foi que ces informations sont exactes.';
+
+	/// fr: 'Envoyer le signalement'
+	String get submit => 'Envoyer le signalement';
+
+	/// fr: 'Envoi en cours…'
+	String get submitting => 'Envoi en cours…';
+
+	/// fr: 'Signalement envoyé. Merci, un modérateur va l'examiner.'
+	String get sent => 'Signalement envoyé. Merci, un modérateur va l\'examiner.';
+
+	/// fr: 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.'
+	String get errorRequired => 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.';
+
+	/// fr: 'Le signalement n'a pas pu être envoyé. Réessayez.'
+	String get errorGeneric => 'Le signalement n\'a pas pu être envoyé. Réessayez.';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Pourquoi ce contenu a-t-il été restreint ?'
+	String get reasonsTitle => 'Pourquoi ce contenu a-t-il été restreint ?';
+
+	/// fr: 'Conformément à l'article 17, voici la raison de la décision de modération concernant votre contenu.'
+	String get reasonsIntro => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant votre contenu.';
+
+	/// fr: 'Décision'
+	String get decisionLabel => 'Décision';
+
+	late final Translations$moderation$decisions$fr decisions = Translations$moderation$decisions$fr.internal(_root);
+
+	/// fr: 'Aucune restriction n'a été appliquée à vos contenus.'
+	String get noStatement => 'Aucune restriction n\'a été appliquée à vos contenus.';
+
+	/// fr: 'Contester cette décision'
+	String get complaintAction => 'Contester cette décision';
+
+	/// fr: 'Contester une décision'
+	String get complaintTitle => 'Contester une décision';
+
+	/// fr: 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).'
+	String get complaintIntro => 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).';
+
+	/// fr: 'Votre contestation'
+	String get complaintExposeLabel => 'Votre contestation';
+
+	/// fr: 'Décrivez les raisons de votre contestation.'
+	String get complaintExposeHint => 'Décrivez les raisons de votre contestation.';
+
+	/// fr: 'Envoyer la contestation'
+	String get complaintSubmit => 'Envoyer la contestation';
+
+	/// fr: 'Contestation enregistrée. Elle sera examinée.'
+	String get complaintSent => 'Contestation enregistrée. Elle sera examinée.';
+
+	/// fr: 'Veuillez expliquer votre contestation.'
+	String get complaintEmpty => 'Veuillez expliquer votre contestation.';
+
+	late final Translations$moderation$a11y$fr a11y = Translations$moderation$a11y$fr.internal(_root);
 }
 
 // Path: stage.difficulty
@@ -2475,6 +2640,126 @@ class Translations$trailSelection$a11y$fr {
 	String selectButton({required Object nom}) => 'Activer le sentier ${nom}';
 }
 
+// Path: consent.purposes
+class Translations$consent$purposes$fr {
+	Translations$consent$purposes$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Navigation personnelle'
+	String get locationNavigation => 'Navigation personnelle';
+
+	/// fr: 'Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.'
+	String get locationNavigationDesc => 'Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.';
+
+	/// fr: 'Partage social'
+	String get socialSharing => 'Partage social';
+
+	/// fr: 'Apparaître dans les classements et le fil communautaire, sous pseudonyme.'
+	String get socialSharingDesc => 'Apparaître dans les classements et le fil communautaire, sous pseudonyme.';
+
+	/// fr: 'Signalement public'
+	String get publicReporting => 'Signalement public';
+
+	/// fr: 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.'
+	String get publicReportingDesc => 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.';
+
+	/// fr: 'Données de santé'
+	String get healthData => 'Données de santé';
+
+	/// fr: 'Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d'effort.'
+	String get healthDataDesc => 'Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d\'effort.';
+}
+
+// Path: consent.a11y
+class Translations$consent$a11y$fr {
+	Translations$consent$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: '$purpose, actuellement $state'
+	String purposeToggle({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}';
+
+	/// fr: 'Section données de santé, consentement renforcé'
+	String get healthSection => 'Section données de santé, consentement renforcé';
+
+	/// fr: 'Ouvrir la politique de confidentialité'
+	String get policyButton => 'Ouvrir la politique de confidentialité';
+}
+
+// Path: moderation.reasons
+class Translations$moderation$reasons$fr {
+	Translations$moderation$reasons$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Contenu illégal'
+	String get illegal => 'Contenu illégal';
+
+	/// fr: 'Harcèlement ou haine'
+	String get harassment => 'Harcèlement ou haine';
+
+	/// fr: 'Spam ou publicité'
+	String get spam => 'Spam ou publicité';
+
+	/// fr: 'Information dangereuse ou trompeuse'
+	String get dangerous => 'Information dangereuse ou trompeuse';
+
+	/// fr: 'Autre'
+	String get other => 'Autre';
+}
+
+// Path: moderation.decisions
+class Translations$moderation$decisions$fr {
+	Translations$moderation$decisions$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Contenu maintenu'
+	String get keep => 'Contenu maintenu';
+
+	/// fr: 'Contenu restreint'
+	String get restrict => 'Contenu restreint';
+
+	/// fr: 'Contenu retiré'
+	String get remove => 'Contenu retiré';
+}
+
+// Path: moderation.a11y
+class Translations$moderation$a11y$fr {
+	Translations$moderation$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Formulaire de signalement de contenu'
+	String get reportForm => 'Formulaire de signalement de contenu';
+
+	/// fr: 'Sélecteur de motif de signalement'
+	String get reasonSelector => 'Sélecteur de motif de signalement';
+
+	/// fr: 'Déclaration de bonne foi, $state'
+	String goodFaithToggle({required Object state}) => 'Déclaration de bonne foi, ${state}';
+
+	/// fr: 'Envoyer le signalement'
+	String get submitReport => 'Envoyer le signalement';
+
+	/// fr: 'Exposé des motifs de la décision de modération'
+	String get statementCard => 'Exposé des motifs de la décision de modération';
+
+	/// fr: 'Formulaire de contestation d'une décision'
+	String get complaintForm => 'Formulaire de contestation d\'une décision';
+}
+
 // Path: feasibility.recommendations.danger
 class Translations$feasibility$recommendations$danger$fr {
 	Translations$feasibility$recommendations$danger$fr.internal(this._root);
@@ -3012,14 +3297,14 @@ extension on Translations {
 			'feedback.thanks' => 'Merci pour votre retour !',
 			'feedback.pending' => 'en attente',
 			'auth.profile' => 'Profil',
-			'auth.anonymous' => 'Randonneur anonyme',
+			'auth.anonymous' => 'Randonneur sans compte',
 			'auth.connectedVia' => 'Connecté via',
 			'auth.signInGoogle' => 'Se connecter avec Google',
 			'auth.signInGoogleDesc' => 'Pour sauvegarder votre progression',
 			'auth.signOut' => 'Se déconnecter',
-			'auth.signOutDesc' => 'Revenir en mode anonyme',
+			'auth.signOutDesc' => 'Revenir au mode sans compte',
 			'auth.signOutConfirm' => 'Se déconnecter ?',
-			'auth.signOutMessage' => 'Vous reviendrez en mode anonyme. Vos données locales sont conservées.',
+			'auth.signOutMessage' => 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.',
 			'auth.deleteAccount' => 'Supprimer mon compte',
 			'auth.deleteAccountDesc' => 'Toutes vos données seront effacées',
 			'auth.deleteConfirm' => 'Supprimer votre compte ?',
@@ -3384,6 +3669,76 @@ extension on Translations {
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Sentier ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Sentier actuellement actif',
 			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activer le sentier ${nom}',
+			'consent.onboardingTitle' => 'Votre vie privée, votre choix',
+			'consent.onboardingIntro' => 'Rien n\'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.',
+			'consent.settingsTitle' => 'Confidentialité et consentement',
+			'consent.settingsIntro' => 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.',
+			'consent.settingsEntry' => 'Confidentialité et consentement',
+			'consent.settingsEntryDesc' => 'Gérer mes autorisations (géolocalisation, partage, santé)',
+			'consent.purposes.locationNavigation' => 'Navigation personnelle',
+			'consent.purposes.locationNavigationDesc' => 'Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.',
+			'consent.purposes.socialSharing' => 'Partage social',
+			'consent.purposes.socialSharingDesc' => 'Apparaître dans les classements et le fil communautaire, sous pseudonyme.',
+			'consent.purposes.publicReporting' => 'Signalement public',
+			'consent.purposes.publicReportingDesc' => 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.',
+			'consent.purposes.healthData' => 'Données de santé',
+			'consent.purposes.healthDataDesc' => 'Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d\'effort.',
+			'consent.healthBadge' => 'Donnée sensible',
+			'consent.healthWarning' => 'La fréquence cardiaque est une donnée de santé (article 9 RGPD). Ce consentement est demandé séparément et n\'est jamais regroupé avec les autres. Vos données de santé ne sont pas envoyées sur nos serveurs.',
+			'consent.granted' => 'Autorisé',
+			'consent.denied' => 'Non autorisé',
+			'consent.grant' => 'Autoriser',
+			'consent.revoke' => 'Retirer',
+			'consent.decidedOn' => ({required Object date}) => 'Choix du ${date}',
+			'consent.notDecided' => 'En attente de votre choix',
+			'consent.acceptSelected' => 'Valider mes choix',
+			'consent.declineAll' => 'Tout refuser',
+			'consent.continueLabel' => 'Continuer',
+			'consent.privacyPolicyLink' => 'Lire la politique de confidentialité',
+			'consent.reviewNeeded' => 'Notre politique a évolué : merci de revoir vos choix.',
+			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}',
+			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
+			'consent.a11y.policyButton' => 'Ouvrir la politique de confidentialité',
+			'moderation.reportTitle' => 'Signaler ce contenu',
+			'moderation.reportIntro' => 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.',
+			'moderation.reasonLabel' => 'Motif du signalement',
+			'moderation.reasons.illegal' => 'Contenu illégal',
+			'moderation.reasons.harassment' => 'Harcèlement ou haine',
+			'moderation.reasons.spam' => 'Spam ou publicité',
+			'moderation.reasons.dangerous' => 'Information dangereuse ou trompeuse',
+			'moderation.reasons.other' => 'Autre',
+			'moderation.detailsLabel' => 'Précisez (facultatif)',
+			'moderation.detailsHint' => 'Ajoutez un commentaire pour aider le modérateur.',
+			'moderation.contactLabel' => 'Votre adresse e-mail',
+			'moderation.contactHint' => 'Pour vous tenir informé du traitement (article 16).',
+			'moderation.goodFaithLabel' => 'Je déclare de bonne foi que ces informations sont exactes.',
+			'moderation.submit' => 'Envoyer le signalement',
+			'moderation.submitting' => 'Envoi en cours…',
+			'moderation.sent' => 'Signalement envoyé. Merci, un modérateur va l\'examiner.',
+			'moderation.errorRequired' => 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.',
+			'moderation.errorGeneric' => 'Le signalement n\'a pas pu être envoyé. Réessayez.',
+			'moderation.cancel' => 'Annuler',
+			'moderation.reasonsTitle' => 'Pourquoi ce contenu a-t-il été restreint ?',
+			'moderation.reasonsIntro' => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant votre contenu.',
+			'moderation.decisionLabel' => 'Décision',
+			'moderation.decisions.keep' => 'Contenu maintenu',
+			'moderation.decisions.restrict' => 'Contenu restreint',
+			'moderation.decisions.remove' => 'Contenu retiré',
+			'moderation.noStatement' => 'Aucune restriction n\'a été appliquée à vos contenus.',
+			'moderation.complaintAction' => 'Contester cette décision',
+			'moderation.complaintTitle' => 'Contester une décision',
+			'moderation.complaintIntro' => 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).',
+			'moderation.complaintExposeLabel' => 'Votre contestation',
+			'moderation.complaintExposeHint' => 'Décrivez les raisons de votre contestation.',
+			'moderation.complaintSubmit' => 'Envoyer la contestation',
+			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
+			'moderation.complaintEmpty' => 'Veuillez expliquer votre contestation.',
+			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
+			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
+			'moderation.a11y.submitReport' => 'Envoyer le signalement',
+			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
+			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			_ => null,
 		};
 	}

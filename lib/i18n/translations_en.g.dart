@@ -79,6 +79,8 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$packs$en packs = _Translations$packs$en._(_root);
 	@override late final _Translations$guides$en guides = _Translations$guides$en._(_root);
 	@override late final _Translations$trailSelection$en trailSelection = _Translations$trailSelection$en._(_root);
+	@override late final _Translations$consent$en consent = _Translations$consent$en._(_root);
+	@override late final _Translations$moderation$en moderation = _Translations$moderation$en._(_root);
 }
 
 // Path: a11y
@@ -452,14 +454,14 @@ class _Translations$auth$en extends Translations$auth$fr {
 
 	// Translations
 	@override String get profile => 'Profile';
-	@override String get anonymous => 'Anonymous hiker';
+	@override String get anonymous => 'Hiker without account';
 	@override String get connectedVia => 'Connected via';
 	@override String get signInGoogle => 'Sign in with Google';
 	@override String get signInGoogleDesc => 'To save your progress';
 	@override String get signOut => 'Sign out';
-	@override String get signOutDesc => 'Return to anonymous mode';
+	@override String get signOutDesc => 'Return to no-account mode';
 	@override String get signOutConfirm => 'Sign out?';
-	@override String get signOutMessage => 'You will return to anonymous mode. Your local data is preserved.';
+	@override String get signOutMessage => 'You will return to no-account mode. Your local data is preserved.';
 	@override String get deleteAccount => 'Delete my account';
 	@override String get deleteAccountDesc => 'All your data will be erased';
 	@override String get deleteConfirm => 'Delete your account?';
@@ -847,6 +849,74 @@ class _Translations$trailSelection$en extends Translations$trailSelection$fr {
 	@override String get selected => 'Selected trail';
 	@override String stagesDistance({required Object stages, required Object km}) => '${stages} stages - ${km} km';
 	@override late final _Translations$trailSelection$a11y$en a11y = _Translations$trailSelection$a11y$en._(_root);
+}
+
+// Path: consent
+class _Translations$consent$en extends Translations$consent$fr {
+	_Translations$consent$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get onboardingTitle => 'Your privacy, your choice';
+	@override String get onboardingIntro => 'Nothing is enabled by default. Choose, purpose by purpose, what you allow. You can change everything at any time in the settings.';
+	@override String get settingsTitle => 'Privacy and consent';
+	@override String get settingsIntro => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.';
+	@override String get settingsEntry => 'Privacy and consent';
+	@override String get settingsEntryDesc => 'Manage my permissions (location, sharing, health)';
+	@override late final _Translations$consent$purposes$en purposes = _Translations$consent$purposes$en._(_root);
+	@override String get healthBadge => 'Sensitive data';
+	@override String get healthWarning => 'Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.';
+	@override String get granted => 'Allowed';
+	@override String get denied => 'Not allowed';
+	@override String get grant => 'Allow';
+	@override String get revoke => 'Withdraw';
+	@override String decidedOn({required Object date}) => 'Chosen on ${date}';
+	@override String get notDecided => 'Awaiting your choice';
+	@override String get acceptSelected => 'Confirm my choices';
+	@override String get declineAll => 'Decline all';
+	@override String get continueLabel => 'Continue';
+	@override String get privacyPolicyLink => 'Read the privacy policy';
+	@override String get reviewNeeded => 'Our policy has changed: please review your choices.';
+	@override late final _Translations$consent$a11y$en a11y = _Translations$consent$a11y$en._(_root);
+}
+
+// Path: moderation
+class _Translations$moderation$en extends Translations$moderation$fr {
+	_Translations$moderation$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportTitle => 'Report this content';
+	@override String get reportIntro => 'Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.';
+	@override String get reasonLabel => 'Reason for reporting';
+	@override late final _Translations$moderation$reasons$en reasons = _Translations$moderation$reasons$en._(_root);
+	@override String get detailsLabel => 'Add details (optional)';
+	@override String get detailsHint => 'Add a comment to help the moderator.';
+	@override String get contactLabel => 'Your email address';
+	@override String get contactHint => 'To keep you informed about the handling (article 16).';
+	@override String get goodFaithLabel => 'I declare in good faith that this information is accurate.';
+	@override String get submit => 'Send report';
+	@override String get submitting => 'Sending…';
+	@override String get sent => 'Report sent. Thank you, a moderator will review it.';
+	@override String get errorRequired => 'Please fill in the reason, your email and the good-faith declaration.';
+	@override String get errorGeneric => 'The report could not be sent. Please try again.';
+	@override String get cancel => 'Cancel';
+	@override String get reasonsTitle => 'Why was this content restricted?';
+	@override String get reasonsIntro => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.';
+	@override String get decisionLabel => 'Decision';
+	@override late final _Translations$moderation$decisions$en decisions = _Translations$moderation$decisions$en._(_root);
+	@override String get noStatement => 'No restriction has been applied to your content.';
+	@override String get complaintAction => 'Challenge this decision';
+	@override String get complaintTitle => 'Challenge a decision';
+	@override String get complaintIntro => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).';
+	@override String get complaintExposeLabel => 'Your challenge';
+	@override String get complaintExposeHint => 'Describe the reasons for your challenge.';
+	@override String get complaintSubmit => 'Send challenge';
+	@override String get complaintSent => 'Challenge recorded. It will be reviewed.';
+	@override String get complaintEmpty => 'Please explain your challenge.';
+	@override late final _Translations$moderation$a11y$en a11y = _Translations$moderation$a11y$en._(_root);
 }
 
 // Path: stage.difficulty
@@ -1324,6 +1394,76 @@ class _Translations$trailSelection$a11y$en extends Translations$trailSelection$a
 	@override String selectButton({required Object nom}) => 'Activate trail ${nom}';
 }
 
+// Path: consent.purposes
+class _Translations$consent$purposes$en extends Translations$consent$purposes$fr {
+	_Translations$consent$purposes$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get locationNavigation => 'Personal navigation';
+	@override String get locationNavigationDesc => 'Use your location for the map and to track your stage. Stays on your device.';
+	@override String get socialSharing => 'Social sharing';
+	@override String get socialSharingDesc => 'Appear in leaderboards and the community feed, under a pseudonym.';
+	@override String get publicReporting => 'Public reporting';
+	@override String get publicReportingDesc => 'Post reports (water, hazard, conditions) visible to other hikers.';
+	@override String get healthData => 'Health data';
+	@override String get healthDataDesc => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.';
+}
+
+// Path: consent.a11y
+class _Translations$consent$a11y$en extends Translations$consent$a11y$fr {
+	_Translations$consent$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, currently ${state}';
+	@override String get healthSection => 'Health data section, reinforced consent';
+	@override String get policyButton => 'Open the privacy policy';
+}
+
+// Path: moderation.reasons
+class _Translations$moderation$reasons$en extends Translations$moderation$reasons$fr {
+	_Translations$moderation$reasons$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get illegal => 'Illegal content';
+	@override String get harassment => 'Harassment or hate';
+	@override String get spam => 'Spam or advertising';
+	@override String get dangerous => 'Dangerous or misleading information';
+	@override String get other => 'Other';
+}
+
+// Path: moderation.decisions
+class _Translations$moderation$decisions$en extends Translations$moderation$decisions$fr {
+	_Translations$moderation$decisions$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get keep => 'Content kept';
+	@override String get restrict => 'Content restricted';
+	@override String get remove => 'Content removed';
+}
+
+// Path: moderation.a11y
+class _Translations$moderation$a11y$en extends Translations$moderation$a11y$fr {
+	_Translations$moderation$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportForm => 'Content reporting form';
+	@override String get reasonSelector => 'Report reason selector';
+	@override String goodFaithToggle({required Object state}) => 'Good-faith declaration, ${state}';
+	@override String get submitReport => 'Send report';
+	@override String get statementCard => 'Statement of reasons for the moderation decision';
+	@override String get complaintForm => 'Decision challenge form';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$en extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1777,14 +1917,14 @@ extension on TranslationsEn {
 			'feedback.thanks' => 'Thank you for your feedback!',
 			'feedback.pending' => 'pending',
 			'auth.profile' => 'Profile',
-			'auth.anonymous' => 'Anonymous hiker',
+			'auth.anonymous' => 'Hiker without account',
 			'auth.connectedVia' => 'Connected via',
 			'auth.signInGoogle' => 'Sign in with Google',
 			'auth.signInGoogleDesc' => 'To save your progress',
 			'auth.signOut' => 'Sign out',
-			'auth.signOutDesc' => 'Return to anonymous mode',
+			'auth.signOutDesc' => 'Return to no-account mode',
 			'auth.signOutConfirm' => 'Sign out?',
-			'auth.signOutMessage' => 'You will return to anonymous mode. Your local data is preserved.',
+			'auth.signOutMessage' => 'You will return to no-account mode. Your local data is preserved.',
 			'auth.deleteAccount' => 'Delete my account',
 			'auth.deleteAccountDesc' => 'All your data will be erased',
 			'auth.deleteConfirm' => 'Delete your account?',
@@ -2149,6 +2289,76 @@ extension on TranslationsEn {
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Trail ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Currently active trail',
 			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activate trail ${nom}',
+			'consent.onboardingTitle' => 'Your privacy, your choice',
+			'consent.onboardingIntro' => 'Nothing is enabled by default. Choose, purpose by purpose, what you allow. You can change everything at any time in the settings.',
+			'consent.settingsTitle' => 'Privacy and consent',
+			'consent.settingsIntro' => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.',
+			'consent.settingsEntry' => 'Privacy and consent',
+			'consent.settingsEntryDesc' => 'Manage my permissions (location, sharing, health)',
+			'consent.purposes.locationNavigation' => 'Personal navigation',
+			'consent.purposes.locationNavigationDesc' => 'Use your location for the map and to track your stage. Stays on your device.',
+			'consent.purposes.socialSharing' => 'Social sharing',
+			'consent.purposes.socialSharingDesc' => 'Appear in leaderboards and the community feed, under a pseudonym.',
+			'consent.purposes.publicReporting' => 'Public reporting',
+			'consent.purposes.publicReportingDesc' => 'Post reports (water, hazard, conditions) visible to other hikers.',
+			'consent.purposes.healthData' => 'Health data',
+			'consent.purposes.healthDataDesc' => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.',
+			'consent.healthBadge' => 'Sensitive data',
+			'consent.healthWarning' => 'Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.',
+			'consent.granted' => 'Allowed',
+			'consent.denied' => 'Not allowed',
+			'consent.grant' => 'Allow',
+			'consent.revoke' => 'Withdraw',
+			'consent.decidedOn' => ({required Object date}) => 'Chosen on ${date}',
+			'consent.notDecided' => 'Awaiting your choice',
+			'consent.acceptSelected' => 'Confirm my choices',
+			'consent.declineAll' => 'Decline all',
+			'consent.continueLabel' => 'Continue',
+			'consent.privacyPolicyLink' => 'Read the privacy policy',
+			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
+			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
+			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
+			'consent.a11y.policyButton' => 'Open the privacy policy',
+			'moderation.reportTitle' => 'Report this content',
+			'moderation.reportIntro' => 'Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.',
+			'moderation.reasonLabel' => 'Reason for reporting',
+			'moderation.reasons.illegal' => 'Illegal content',
+			'moderation.reasons.harassment' => 'Harassment or hate',
+			'moderation.reasons.spam' => 'Spam or advertising',
+			'moderation.reasons.dangerous' => 'Dangerous or misleading information',
+			'moderation.reasons.other' => 'Other',
+			'moderation.detailsLabel' => 'Add details (optional)',
+			'moderation.detailsHint' => 'Add a comment to help the moderator.',
+			'moderation.contactLabel' => 'Your email address',
+			'moderation.contactHint' => 'To keep you informed about the handling (article 16).',
+			'moderation.goodFaithLabel' => 'I declare in good faith that this information is accurate.',
+			'moderation.submit' => 'Send report',
+			'moderation.submitting' => 'Sending…',
+			'moderation.sent' => 'Report sent. Thank you, a moderator will review it.',
+			'moderation.errorRequired' => 'Please fill in the reason, your email and the good-faith declaration.',
+			'moderation.errorGeneric' => 'The report could not be sent. Please try again.',
+			'moderation.cancel' => 'Cancel',
+			'moderation.reasonsTitle' => 'Why was this content restricted?',
+			'moderation.reasonsIntro' => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.',
+			'moderation.decisionLabel' => 'Decision',
+			'moderation.decisions.keep' => 'Content kept',
+			'moderation.decisions.restrict' => 'Content restricted',
+			'moderation.decisions.remove' => 'Content removed',
+			'moderation.noStatement' => 'No restriction has been applied to your content.',
+			'moderation.complaintAction' => 'Challenge this decision',
+			'moderation.complaintTitle' => 'Challenge a decision',
+			'moderation.complaintIntro' => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).',
+			'moderation.complaintExposeLabel' => 'Your challenge',
+			'moderation.complaintExposeHint' => 'Describe the reasons for your challenge.',
+			'moderation.complaintSubmit' => 'Send challenge',
+			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
+			'moderation.complaintEmpty' => 'Please explain your challenge.',
+			'moderation.a11y.reportForm' => 'Content reporting form',
+			'moderation.a11y.reasonSelector' => 'Report reason selector',
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
+			'moderation.a11y.submitReport' => 'Send report',
+			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
+			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			_ => null,
 		};
 	}

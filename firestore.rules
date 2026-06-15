@@ -437,6 +437,137 @@ service cloud.firestore {
       allow delete: if isModerator();
     }
 
+    // Notifications de moderation NOTICE-AND-ACTION (DSA art 16, design
+    // Securite D4 / D4C). Tout utilisateur AUTHENTIFIE peut signaler un contenu
+    // illicite : la notification porte les mentions de l'art 16 (motif,
+    // reference du contenu, contact du notifiant, declaration de bonne foi),
+    // est horodatee et nait au statut 'recue'. Le TRAITEMENT (lecture +
+    // changement de statut/decision) est STRICTEMENT RESERVE au role
+    // MODERATEUR (custom claim moderator, ou admin) — statut hebergeur, la
+    // moderation est a posteriori. Le contact du notifiant est une donnee
+    // personnelle (#85383) : jamais lisible par le public, seulement par le
+    // moderateur. La notification est IMMUABLE sur ses champs de fond : seuls
+    // 'status' et 'decision' peuvent evoluer (par un moderateur).
+    match /reports_moderation/{reportId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+      function validNewReport() {
+        return request.resource.data.contentType is string
+          && request.resource.data.contentType in
+               ['trail_reports', 'activities', 'waypoints',
+                'waypoint_comments']
+          && request.resource.data.contentRef is string
+          && request.resource.data.motif is string
+          && request.resource.data.motif.size() > 0
+          && request.resource.data.notifierContact is string
+          && request.resource.data.bonneFoi == true
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.status == 'recue';
+      }
+
+      // Creation : utilisateur authentifie, payload borne aux mentions art 16.
+      allow create: if isSignedIn()
+        && validNewReport()
+        && request.resource.data.keys().hasOnly(
+             ['contentType', 'contentRef', 'motif', 'notifierContact',
+              'bonneFoi', 'createdAt', 'status']);
+
+      // Lecture/listing : RESERVE au moderateur (le contact du notifiant est
+      // une donnee perso ; aucun acces public).
+      allow get, list: if isModerator();
+
+      // Traitement : RESERVE au moderateur, et SEULS status/decision bougent
+      // (les mentions art 16 du notifiant sont immuables). Le nouveau statut
+      // doit rester dans le cycle de vie connu.
+      allow update: if isModerator()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['status', 'decision'])
+        && request.resource.data.status
+             in ['recue', 'en_traitement', 'traitee'];
+
+      // Suppression : moderateur uniquement (purge/RGPD).
+      allow delete: if isModerator();
+    }
+
+    // Expose des motifs (DSA art 17, design Securite D4 / D4C). Quand un
+    // moderateur statue sur une notification, un enregistrement de MOTIVATION
+    // est cree a destination de l'AUTEUR du contenu restreint : il explique la
+    // raison de la restriction (champ authorUidHash = UID hache de l'auteur,
+    // contentType/contentRef, decision, motif, createdAt). ECRITURE reservee au
+    // backend/moderateur (le client ne fabrique JAMAIS une motivation).
+    // LECTURE par l'auteur concerne (authorUidHash == uid) ou un moderateur.
+    match /moderation_decisions/{decisionId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+
+      // Lecture : l'auteur du contenu restreint voit sa motivation (art 17),
+      // le moderateur aussi. Personne d'autre.
+      allow get, list: if isSignedIn()
+        && (resource.data.authorUidHash == request.auth.uid || isModerator());
+
+      // Ecriture/maj/suppression : backend ou moderateur uniquement (le client
+      // n'auto-motive pas une decision). En prod, la Cloud Function workflow
+      // (Admin SDK) ecrit ce document ; un moderateur authentifie le peut aussi.
+      allow create, update, delete: if isModerator();
+    }
+
+    // Plaintes / contestations (DSA art 20 — systeme interne de traitement des
+    // plaintes, design Securite D4 / D4C). Un utilisateur peut CONTESTER une
+    // decision de moderation le concernant. La plainte porte une reference a la
+    // decision/au contenu, un expose, l'UID hache du plaignant, un horodatage
+    // et nait au statut 'ouverte'. CREATION par tout utilisateur authentifie
+    // (complainantUidHash == uid, anti-usurpation). LECTURE par le plaignant ou
+    // un moderateur. TRAITEMENT (statut) reserve au moderateur.
+    match /moderation_complaints/{complaintId} {
+      function isModerator() {
+        return isSignedIn()
+          && (request.auth.token.moderator == true
+              || request.auth.token.admin == true);
+      }
+      function validNewComplaint() {
+        return request.resource.data.complainantUidHash is string
+          && request.resource.data.complainantUidHash == request.auth.uid
+          && request.resource.data.contentType is string
+          && request.resource.data.contentType in
+               ['trail_reports', 'activities', 'waypoints',
+                'waypoint_comments']
+          && request.resource.data.contentRef is string
+          && request.resource.data.expose is string
+          && request.resource.data.expose.size() > 0
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.status == 'ouverte';
+      }
+
+      // Creation : utilisateur authentifie, payload borne, UID == auteur.
+      allow create: if isSignedIn()
+        && validNewComplaint()
+        && request.resource.data.keys().hasOnly(
+             ['complainantUidHash', 'contentType', 'contentRef', 'expose',
+              'createdAt', 'status']);
+
+      // Lecture : le plaignant suit sa plainte, le moderateur la traite.
+      allow get, list: if isSignedIn()
+        && (resource.data.complainantUidHash == request.auth.uid
+            || isModerator());
+
+      // Traitement : moderateur uniquement, et SEUL status bouge (l'expose du
+      // plaignant est immuable).
+      allow update: if isModerator()
+        && request.resource.data.diff(resource.data)
+             .affectedKeys().hasOnly(['status'])
+        && request.resource.data.status
+             in ['ouverte', 'en_examen', 'tranchee'];
+
+      // Suppression : moderateur uniquement.
+      allow delete: if isModerator();
+    }
+
     // Tout le reste : DENY explicite (collections sans regles dediees,
     // ex. groups — feature groupe sans regles a ce jour, voir
     // ORCHESTRATION wagon 3 / dette).

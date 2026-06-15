@@ -283,14 +283,14 @@
   },
   "auth": {
     "profile": "Profilo",
-    "anonymous": "Escursionista anonimo",
+    "anonymous": "Escursionista senza account",
     "connectedVia": "Connesso tramite",
     "signInGoogle": "Accedi con Google",
     "signInGoogleDesc": "Per salvare i tuoi progressi",
     "signOut": "Esci",
-    "signOutDesc": "Torna alla modalità anonima",
+    "signOutDesc": "Torna alla modalità senza account",
     "signOutConfirm": "Disconnettersi?",
-    "signOutMessage": "Tornerai alla modalità anonima. I tuoi dati locali saranno conservati.",
+    "signOutMessage": "Tornerai alla modalità senza account. I tuoi dati locali saranno conservati.",
     "deleteAccount": "Elimina il mio account",
     "deleteAccountDesc": "Tutti i tuoi dati saranno cancellati",
     "deleteConfirm": "Eliminare il tuo account?",
@@ -782,6 +782,90 @@
       "trailCard": "Sentiero $nom, $region",
       "currentBadge": "Sentiero attualmente attivo",
       "selectButton": "Attiva il sentiero $nom"
+    }
+  },
+  "consent": {
+    "onboardingTitle": "La tua privacy, la tua scelta",
+    "onboardingIntro": "Nulla è attivato per impostazione predefinita. Scegli, finalità per finalità, ciò che autorizzi. Potrai modificare tutto in qualsiasi momento nelle impostazioni.",
+    "settingsTitle": "Privacy e consenso",
+    "settingsIntro": "Gestisci qui ogni autorizzazione. Puoi revocare un consenso in qualsiasi momento, senza conseguenze sul resto.",
+    "settingsEntry": "Privacy e consenso",
+    "settingsEntryDesc": "Gestire le mie autorizzazioni (posizione, condivisione, salute)",
+    "purposes": {
+      "locationNavigation": "Navigazione personale",
+      "locationNavigationDesc": "Usare la tua posizione per la mappa e il monitoraggio della tappa. Resta sul tuo dispositivo.",
+      "socialSharing": "Condivisione social",
+      "socialSharingDesc": "Apparire nelle classifiche e nel feed della community, sotto pseudonimo.",
+      "publicReporting": "Segnalazioni pubbliche",
+      "publicReportingDesc": "Pubblicare segnalazioni (acqua, pericolo, condizioni) visibili agli altri escursionisti.",
+      "healthData": "Dati sulla salute",
+      "healthDataDesc": "Leggere la tua frequenza cardiaca (fascia o app salute) per arricchire il monitoraggio dello sforzo."
+    },
+    "healthBadge": "Dato sensibile",
+    "healthWarning": "La frequenza cardiaca è un dato sulla salute (articolo 9 del GDPR). Questo consenso è richiesto separatamente e non viene mai raggruppato con gli altri. I tuoi dati sulla salute non vengono inviati ai nostri server.",
+    "granted": "Autorizzato",
+    "denied": "Non autorizzato",
+    "grant": "Autorizza",
+    "revoke": "Revoca",
+    "decidedOn": "Scelto il $date",
+    "notDecided": "In attesa della tua scelta",
+    "acceptSelected": "Conferma le mie scelte",
+    "declineAll": "Rifiuta tutto",
+    "continueLabel": "Continua",
+    "privacyPolicyLink": "Leggi l'informativa sulla privacy",
+    "reviewNeeded": "La nostra politica è cambiata: rivedi le tue scelte.",
+    "a11y": {
+      "purposeToggle": "$purpose, attualmente $state",
+      "healthSection": "Sezione dati sulla salute, consenso rafforzato",
+      "policyButton": "Apri l'informativa sulla privacy"
+    }
+  },
+  "moderation": {
+    "reportTitle": "Segnala questo contenuto",
+    "reportIntro": "Aiutaci a mantenere sana la community. Indica perché questo contenuto ti sembra illecito. La tua segnalazione sarà esaminata da un moderatore.",
+    "reasonLabel": "Motivo della segnalazione",
+    "reasons": {
+      "illegal": "Contenuto illegale",
+      "harassment": "Molestie o odio",
+      "spam": "Spam o pubblicità",
+      "dangerous": "Informazione pericolosa o ingannevole",
+      "other": "Altro"
+    },
+    "detailsLabel": "Aggiungi dettagli (facoltativo)",
+    "detailsHint": "Aggiungi un commento per aiutare il moderatore.",
+    "contactLabel": "Il tuo indirizzo e-mail",
+    "contactHint": "Per tenerti informato sulla gestione (articolo 16).",
+    "goodFaithLabel": "Dichiaro in buona fede che queste informazioni sono esatte.",
+    "submit": "Invia segnalazione",
+    "submitting": "Invio in corso…",
+    "sent": "Segnalazione inviata. Grazie, un moderatore la esaminerà.",
+    "errorRequired": "Compila il motivo, la tua e-mail e la dichiarazione di buona fede.",
+    "errorGeneric": "Impossibile inviare la segnalazione. Riprova.",
+    "cancel": "Annulla",
+    "reasonsTitle": "Perché questo contenuto è stato limitato?",
+    "reasonsIntro": "In conformità all'articolo 17, ecco il motivo della decisione di moderazione relativa al tuo contenuto.",
+    "decisionLabel": "Decisione",
+    "decisions": {
+      "keep": "Contenuto mantenuto",
+      "restrict": "Contenuto limitato",
+      "remove": "Contenuto rimosso"
+    },
+    "noStatement": "Nessuna restrizione è stata applicata ai tuoi contenuti.",
+    "complaintAction": "Contestare questa decisione",
+    "complaintTitle": "Contestare una decisione",
+    "complaintIntro": "Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).",
+    "complaintExposeLabel": "La tua contestazione",
+    "complaintExposeHint": "Descrivi i motivi della tua contestazione.",
+    "complaintSubmit": "Invia contestazione",
+    "complaintSent": "Contestazione registrata. Sarà esaminata.",
+    "complaintEmpty": "Spiega la tua contestazione.",
+    "a11y": {
+      "reportForm": "Modulo di segnalazione del contenuto",
+      "reasonSelector": "Selettore del motivo della segnalazione",
+      "goodFaithToggle": "Dichiarazione di buona fede, $state",
+      "submitReport": "Invia segnalazione",
+      "statementCard": "Motivazione della decisione di moderazione",
+      "complaintForm": "Modulo di contestazione della decisione"
     }
   }
 }

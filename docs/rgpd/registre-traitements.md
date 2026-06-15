@@ -1,14 +1,20 @@
 # Registre des activités de traitement — StepWays
 
-> Registre tenu au titre de l'**article 30 du RGPD**. Document de
-> travail (P0-3, audit #327) : à compléter (`[ENTITE]`, `[ADRESSE]`,
-> `[CONTACT-EMAIL]`) et à faire valider avant publication. Reflète le
-> code de l'application au 07/06/2026 (branche d'assainissement
-> audit #327) ; toute évolution fonctionnelle impose une mise à jour.
+> Registre tenu au titre de l'**article 30 du RGPD**.
+>
+> **ZONE JURISTE — validation obligatoire avant publication.** Document
+> rédigé par l'équipe technique, **non par un avocat** : à compléter
+> (`[ENTITE]`, `[ADRESSE]`, `[CONTACT-EMAIL]`, `[DPO-CONTACT]`) et à
+> **faire valider par un juriste / DPO** avant publication (réserve de
+> forme, design D4 #86166 / audit #86142). Consolidé le 15/06/2026 dans
+> le cadre du lot SEC-D (D4D-01) ; durées de conservation alignées sur
+> le service `DataRetentionService` (D4B-02, source de vérité). Toute
+> évolution fonctionnelle impose une mise à jour.
 
 **Responsable du traitement :** [ENTITE], [ADRESSE] — contact :
 [CONTACT-EMAIL]
-**Délégué à la protection des données :** le cas échéant, à désigner.
+**Délégué à la protection des données / référent :** [DPO-CONTACT] (à
+désigner — voir politique de confidentialité § 1).
 
 ## Vue d'ensemble
 
@@ -96,15 +102,53 @@ porte pas ces champs (garantie au niveau du code, réf. interne #81775).
 | Données | Transactions traitées par Apple/Google ; l'Application ne reçoit que l'état de l'achat — aucune donnée bancaire |
 | Base légale | Exécution du contrat |
 
+## T8 — Modération des contenus (hébergeur DSA)
+
+| Rubrique | Détail |
+|---|---|
+| Finalité | Traiter les signalements de contenus illicites/inappropriés (commentaires de points d'intérêt, activités, signalements de sentier) et appliquer une décision de modération — statut **hébergeur** au sens du DSA |
+| Base légale | Respect d'une obligation légale (règlement DSA, art. 16/17/20/23) ; consentement pour la publication volontaire du contenu signalé |
+| Personnes concernées | Notifiant (auteur du signalement) ; auteur du contenu signalé |
+| Données | Motif du signalement, référence du contenu, **contact du notifiant (e-mail)**, déclaration de bonne foi, horodatage, statut de traitement, décision et exposé des motifs (art. 17) |
+| Destinataires | Google Firebase / Cloud Firestore (sous-traitant) ; rôle **modérateur** (accès en lecture/traitement réservé via custom claim) |
+| Transferts hors UE | Identiques à T1 (renvoi `transferts-hors-ue.md`) |
+| Durée | Signalement et journal de modération : durée limitée au traitement et à l'éventuelle contestation (art. 20). **[JURISTE]** : fixer la durée de conservation des journaux de modération |
+| Sécurité | Règles Firestore : création par tout utilisateur authentifié (champs art. 16) ; lecture/traitement **réservés au rôle modérateur** ; modération a posteriori (statut hébergeur préservé) ; tests émulateur |
+
+> Mise en œuvre technique : `ModerationService` (D4C-01), règles +
+> Cloud Function de workflow (D4C-02), UI signaler/exposé-motifs/plaintes
+> (D4C-03), CGU/règles de modération (D4D-04).
+
+## Durées de conservation (synthèse — alignée D4B-02)
+
+Source de vérité : service `DataRetentionService` (D4B-02). Une purge
+locale automatique supprime les données expirées ; le droit à
+l'effacement (`deleteAccountData()`, art. 17) permet une suppression
+immédiate.
+
+| Catégorie <!-- #401 --> | Durée | Référence code |
+|---|---|---|
+| Sessions de suivi temps réel (positions partagées, serveur) | 48 h (expiration auto) | `expiresAt` + TTL Firestore |
+| Caches cartographiques / météo (local) | 7 jours | `RetentionPolicy.cartoCache` |
+| Contributions synchronisées — copie locale (signalements, efforts, kudos, commentaires) | 30 jours après synchro | `RetentionPolicy.syncedContributions` |
+| File de synchronisation terminée (local) | 7 jours | `RetentionPolicy.completedSyncQueue` |
+| Données synchronisées serveur (progression, journal, checklists) | Vie du compte | Effacement compte (art. 17) |
+| Identifiant pseudonymisé | Vie du compte | Effacement compte (art. 17) |
+
+> **[JURISTE]** : confirmer l'adéquation réglementaire des durées
+> techniques ci-dessus et la durée des journaux de modération (T8).
+
 ## Hors traitement serveur — données strictement locales
 
 Photos du journal, traces GPS détaillées des sessions, **données de
-santé** (groupe sanguin, allergies, traitements — décision interne :
-local-only, jamais transmises), contacts d'urgence, préférences.
+santé** (groupe sanguin, allergies, traitements, fréquence cardiaque —
+**catégorie particulière art. 9 RGPD** ; décision interne : local-only,
+jamais transmises ; consentement explicite renforcé séparé, AIPD
+dédiée `AIPD-capteurs-sante.md`), contacts d'urgence, préférences.
 Stockage : base locale chiffrée par les mécanismes systèmes de
-l'appareil ; suppression avec l'application. Ces données ne quittent
-jamais l'appareil — par conception et vérifié dans le code (aucun
-canal d'envoi n'existe).
+l'appareil ; suppression avec l'application ou via l'effacement du
+compte (art. 17). Ces données ne quittent jamais l'appareil — par
+conception et vérifié dans le code (aucun canal d'envoi n'existe).
 
 ## Mesures de sécurité transverses
 

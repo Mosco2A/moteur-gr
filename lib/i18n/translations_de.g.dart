@@ -79,6 +79,8 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$packs$de packs = _Translations$packs$de._(_root);
 	@override late final _Translations$guides$de guides = _Translations$guides$de._(_root);
 	@override late final _Translations$trailSelection$de trailSelection = _Translations$trailSelection$de._(_root);
+	@override late final _Translations$consent$de consent = _Translations$consent$de._(_root);
+	@override late final _Translations$moderation$de moderation = _Translations$moderation$de._(_root);
 }
 
 // Path: a11y
@@ -452,14 +454,14 @@ class _Translations$auth$de extends Translations$auth$fr {
 
 	// Translations
 	@override String get profile => 'Profil';
-	@override String get anonymous => 'Anonymer Wanderer';
+	@override String get anonymous => 'Wanderer ohne Konto';
 	@override String get connectedVia => 'Verbunden über';
 	@override String get signInGoogle => 'Mit Google anmelden';
 	@override String get signInGoogleDesc => 'Um Ihren Fortschritt zu speichern';
 	@override String get signOut => 'Abmelden';
-	@override String get signOutDesc => 'Zurück zum anonymen Modus';
+	@override String get signOutDesc => 'Zurück zum Modus ohne Konto';
 	@override String get signOutConfirm => 'Abmelden?';
-	@override String get signOutMessage => 'Sie kehren zum anonymen Modus zurück. Ihre lokalen Daten bleiben erhalten.';
+	@override String get signOutMessage => 'Sie kehren zum Modus ohne Konto zurück. Ihre lokalen Daten bleiben erhalten.';
 	@override String get deleteAccount => 'Mein Konto löschen';
 	@override String get deleteAccountDesc => 'Alle Ihre Daten werden gelöscht';
 	@override String get deleteConfirm => 'Konto löschen?';
@@ -847,6 +849,74 @@ class _Translations$trailSelection$de extends Translations$trailSelection$fr {
 	@override String get selected => 'Ausgewaehlter Weg';
 	@override String stagesDistance({required Object stages, required Object km}) => '${stages} Etappen - ${km} km';
 	@override late final _Translations$trailSelection$a11y$de a11y = _Translations$trailSelection$a11y$de._(_root);
+}
+
+// Path: consent
+class _Translations$consent$de extends Translations$consent$fr {
+	_Translations$consent$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get onboardingTitle => 'Ihre Privatsphäre, Ihre Wahl';
+	@override String get onboardingIntro => 'Standardmäßig ist nichts aktiviert. Wählen Sie Zweck für Zweck, was Sie erlauben. Sie können alles jederzeit in den Einstellungen ändern.';
+	@override String get settingsTitle => 'Datenschutz und Einwilligung';
+	@override String get settingsIntro => 'Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.';
+	@override String get settingsEntry => 'Datenschutz und Einwilligung';
+	@override String get settingsEntryDesc => 'Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)';
+	@override late final _Translations$consent$purposes$de purposes = _Translations$consent$purposes$de._(_root);
+	@override String get healthBadge => 'Sensible Daten';
+	@override String get healthWarning => 'Die Herzfrequenz ist ein Gesundheitsdatum (DSGVO Artikel 9). Diese Einwilligung wird separat erfragt und niemals mit den anderen gebündelt. Ihre Gesundheitsdaten werden nicht an unsere Server gesendet.';
+	@override String get granted => 'Erlaubt';
+	@override String get denied => 'Nicht erlaubt';
+	@override String get grant => 'Erlauben';
+	@override String get revoke => 'Widerrufen';
+	@override String decidedOn({required Object date}) => 'Gewählt am ${date}';
+	@override String get notDecided => 'Wartet auf Ihre Wahl';
+	@override String get acceptSelected => 'Meine Auswahl bestätigen';
+	@override String get declineAll => 'Alles ablehnen';
+	@override String get continueLabel => 'Weiter';
+	@override String get privacyPolicyLink => 'Datenschutzerklärung lesen';
+	@override String get reviewNeeded => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.';
+	@override late final _Translations$consent$a11y$de a11y = _Translations$consent$a11y$de._(_root);
+}
+
+// Path: moderation
+class _Translations$moderation$de extends Translations$moderation$fr {
+	_Translations$moderation$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportTitle => 'Diesen Inhalt melden';
+	@override String get reportIntro => 'Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.';
+	@override String get reasonLabel => 'Grund der Meldung';
+	@override late final _Translations$moderation$reasons$de reasons = _Translations$moderation$reasons$de._(_root);
+	@override String get detailsLabel => 'Details hinzufügen (optional)';
+	@override String get detailsHint => 'Fügen Sie einen Kommentar hinzu, um dem Moderator zu helfen.';
+	@override String get contactLabel => 'Ihre E-Mail-Adresse';
+	@override String get contactHint => 'Um Sie über die Bearbeitung zu informieren (Artikel 16).';
+	@override String get goodFaithLabel => 'Ich erkläre nach bestem Wissen, dass diese Angaben zutreffen.';
+	@override String get submit => 'Meldung senden';
+	@override String get submitting => 'Wird gesendet…';
+	@override String get sent => 'Meldung gesendet. Danke, ein Moderator wird sie prüfen.';
+	@override String get errorRequired => 'Bitte Grund, E-Mail und die Erklärung in gutem Glauben ausfüllen.';
+	@override String get errorGeneric => 'Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen.';
+	@override String get cancel => 'Abbrechen';
+	@override String get reasonsTitle => 'Warum wurde dieser Inhalt eingeschränkt?';
+	@override String get reasonsIntro => 'Gemäß Artikel 17 finden Sie hier den Grund für die Moderationsentscheidung zu Ihrem Inhalt.';
+	@override String get decisionLabel => 'Entscheidung';
+	@override late final _Translations$moderation$decisions$de decisions = _Translations$moderation$decisions$de._(_root);
+	@override String get noStatement => 'Auf Ihre Inhalte wurde keine Einschränkung angewendet.';
+	@override String get complaintAction => 'Diese Entscheidung anfechten';
+	@override String get complaintTitle => 'Eine Entscheidung anfechten';
+	@override String get complaintIntro => 'Sie können eine Moderationsentscheidung anfechten. Erklären Sie, warum die Entscheidung Ihrer Meinung nach ungerechtfertigt ist (Artikel 20).';
+	@override String get complaintExposeLabel => 'Ihre Anfechtung';
+	@override String get complaintExposeHint => 'Beschreiben Sie die Gründe für Ihre Anfechtung.';
+	@override String get complaintSubmit => 'Anfechtung senden';
+	@override String get complaintSent => 'Anfechtung erfasst. Sie wird geprüft.';
+	@override String get complaintEmpty => 'Bitte erklären Sie Ihre Anfechtung.';
+	@override late final _Translations$moderation$a11y$de a11y = _Translations$moderation$a11y$de._(_root);
 }
 
 // Path: stage.difficulty
@@ -1324,6 +1394,76 @@ class _Translations$trailSelection$a11y$de extends Translations$trailSelection$a
 	@override String selectButton({required Object nom}) => 'Weg ${nom} aktivieren';
 }
 
+// Path: consent.purposes
+class _Translations$consent$purposes$de extends Translations$consent$purposes$fr {
+	_Translations$consent$purposes$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get locationNavigation => 'Persönliche Navigation';
+	@override String get locationNavigationDesc => 'Ihren Standort für die Karte und die Etappenverfolgung nutzen. Bleibt auf Ihrem Gerät.';
+	@override String get socialSharing => 'Soziales Teilen';
+	@override String get socialSharingDesc => 'Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.';
+	@override String get publicReporting => 'Öffentliche Meldungen';
+	@override String get publicReportingDesc => 'Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.';
+	@override String get healthData => 'Gesundheitsdaten';
+	@override String get healthDataDesc => 'Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen.';
+}
+
+// Path: consent.a11y
+class _Translations$consent$a11y$de extends Translations$consent$a11y$fr {
+	_Translations$consent$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}';
+	@override String get healthSection => 'Bereich Gesundheitsdaten, verstärkte Einwilligung';
+	@override String get policyButton => 'Datenschutzerklärung öffnen';
+}
+
+// Path: moderation.reasons
+class _Translations$moderation$reasons$de extends Translations$moderation$reasons$fr {
+	_Translations$moderation$reasons$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get illegal => 'Illegaler Inhalt';
+	@override String get harassment => 'Belästigung oder Hass';
+	@override String get spam => 'Spam oder Werbung';
+	@override String get dangerous => 'Gefährliche oder irreführende Information';
+	@override String get other => 'Sonstiges';
+}
+
+// Path: moderation.decisions
+class _Translations$moderation$decisions$de extends Translations$moderation$decisions$fr {
+	_Translations$moderation$decisions$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get keep => 'Inhalt beibehalten';
+	@override String get restrict => 'Inhalt eingeschränkt';
+	@override String get remove => 'Inhalt entfernt';
+}
+
+// Path: moderation.a11y
+class _Translations$moderation$a11y$de extends Translations$moderation$a11y$fr {
+	_Translations$moderation$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportForm => 'Formular zur Inhaltsmeldung';
+	@override String get reasonSelector => 'Auswahl des Meldegrunds';
+	@override String goodFaithToggle({required Object state}) => 'Erklärung in gutem Glauben, ${state}';
+	@override String get submitReport => 'Meldung senden';
+	@override String get statementCard => 'Begründung der Moderationsentscheidung';
+	@override String get complaintForm => 'Formular zur Anfechtung der Entscheidung';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$de extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1777,14 +1917,14 @@ extension on TranslationsDe {
 			'feedback.thanks' => 'Vielen Dank für Ihr Feedback!',
 			'feedback.pending' => 'ausstehend',
 			'auth.profile' => 'Profil',
-			'auth.anonymous' => 'Anonymer Wanderer',
+			'auth.anonymous' => 'Wanderer ohne Konto',
 			'auth.connectedVia' => 'Verbunden über',
 			'auth.signInGoogle' => 'Mit Google anmelden',
 			'auth.signInGoogleDesc' => 'Um Ihren Fortschritt zu speichern',
 			'auth.signOut' => 'Abmelden',
-			'auth.signOutDesc' => 'Zurück zum anonymen Modus',
+			'auth.signOutDesc' => 'Zurück zum Modus ohne Konto',
 			'auth.signOutConfirm' => 'Abmelden?',
-			'auth.signOutMessage' => 'Sie kehren zum anonymen Modus zurück. Ihre lokalen Daten bleiben erhalten.',
+			'auth.signOutMessage' => 'Sie kehren zum Modus ohne Konto zurück. Ihre lokalen Daten bleiben erhalten.',
 			'auth.deleteAccount' => 'Mein Konto löschen',
 			'auth.deleteAccountDesc' => 'Alle Ihre Daten werden gelöscht',
 			'auth.deleteConfirm' => 'Konto löschen?',
@@ -2149,6 +2289,76 @@ extension on TranslationsDe {
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Weg ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Aktuell aktiver Weg',
 			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Weg ${nom} aktivieren',
+			'consent.onboardingTitle' => 'Ihre Privatsphäre, Ihre Wahl',
+			'consent.onboardingIntro' => 'Standardmäßig ist nichts aktiviert. Wählen Sie Zweck für Zweck, was Sie erlauben. Sie können alles jederzeit in den Einstellungen ändern.',
+			'consent.settingsTitle' => 'Datenschutz und Einwilligung',
+			'consent.settingsIntro' => 'Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.',
+			'consent.settingsEntry' => 'Datenschutz und Einwilligung',
+			'consent.settingsEntryDesc' => 'Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)',
+			'consent.purposes.locationNavigation' => 'Persönliche Navigation',
+			'consent.purposes.locationNavigationDesc' => 'Ihren Standort für die Karte und die Etappenverfolgung nutzen. Bleibt auf Ihrem Gerät.',
+			'consent.purposes.socialSharing' => 'Soziales Teilen',
+			'consent.purposes.socialSharingDesc' => 'Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.',
+			'consent.purposes.publicReporting' => 'Öffentliche Meldungen',
+			'consent.purposes.publicReportingDesc' => 'Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.',
+			'consent.purposes.healthData' => 'Gesundheitsdaten',
+			'consent.purposes.healthDataDesc' => 'Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen.',
+			'consent.healthBadge' => 'Sensible Daten',
+			'consent.healthWarning' => 'Die Herzfrequenz ist ein Gesundheitsdatum (DSGVO Artikel 9). Diese Einwilligung wird separat erfragt und niemals mit den anderen gebündelt. Ihre Gesundheitsdaten werden nicht an unsere Server gesendet.',
+			'consent.granted' => 'Erlaubt',
+			'consent.denied' => 'Nicht erlaubt',
+			'consent.grant' => 'Erlauben',
+			'consent.revoke' => 'Widerrufen',
+			'consent.decidedOn' => ({required Object date}) => 'Gewählt am ${date}',
+			'consent.notDecided' => 'Wartet auf Ihre Wahl',
+			'consent.acceptSelected' => 'Meine Auswahl bestätigen',
+			'consent.declineAll' => 'Alles ablehnen',
+			'consent.continueLabel' => 'Weiter',
+			'consent.privacyPolicyLink' => 'Datenschutzerklärung lesen',
+			'consent.reviewNeeded' => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.',
+			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
+			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
+			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
+			'moderation.reportTitle' => 'Diesen Inhalt melden',
+			'moderation.reportIntro' => 'Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.',
+			'moderation.reasonLabel' => 'Grund der Meldung',
+			'moderation.reasons.illegal' => 'Illegaler Inhalt',
+			'moderation.reasons.harassment' => 'Belästigung oder Hass',
+			'moderation.reasons.spam' => 'Spam oder Werbung',
+			'moderation.reasons.dangerous' => 'Gefährliche oder irreführende Information',
+			'moderation.reasons.other' => 'Sonstiges',
+			'moderation.detailsLabel' => 'Details hinzufügen (optional)',
+			'moderation.detailsHint' => 'Fügen Sie einen Kommentar hinzu, um dem Moderator zu helfen.',
+			'moderation.contactLabel' => 'Ihre E-Mail-Adresse',
+			'moderation.contactHint' => 'Um Sie über die Bearbeitung zu informieren (Artikel 16).',
+			'moderation.goodFaithLabel' => 'Ich erkläre nach bestem Wissen, dass diese Angaben zutreffen.',
+			'moderation.submit' => 'Meldung senden',
+			'moderation.submitting' => 'Wird gesendet…',
+			'moderation.sent' => 'Meldung gesendet. Danke, ein Moderator wird sie prüfen.',
+			'moderation.errorRequired' => 'Bitte Grund, E-Mail und die Erklärung in gutem Glauben ausfüllen.',
+			'moderation.errorGeneric' => 'Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen.',
+			'moderation.cancel' => 'Abbrechen',
+			'moderation.reasonsTitle' => 'Warum wurde dieser Inhalt eingeschränkt?',
+			'moderation.reasonsIntro' => 'Gemäß Artikel 17 finden Sie hier den Grund für die Moderationsentscheidung zu Ihrem Inhalt.',
+			'moderation.decisionLabel' => 'Entscheidung',
+			'moderation.decisions.keep' => 'Inhalt beibehalten',
+			'moderation.decisions.restrict' => 'Inhalt eingeschränkt',
+			'moderation.decisions.remove' => 'Inhalt entfernt',
+			'moderation.noStatement' => 'Auf Ihre Inhalte wurde keine Einschränkung angewendet.',
+			'moderation.complaintAction' => 'Diese Entscheidung anfechten',
+			'moderation.complaintTitle' => 'Eine Entscheidung anfechten',
+			'moderation.complaintIntro' => 'Sie können eine Moderationsentscheidung anfechten. Erklären Sie, warum die Entscheidung Ihrer Meinung nach ungerechtfertigt ist (Artikel 20).',
+			'moderation.complaintExposeLabel' => 'Ihre Anfechtung',
+			'moderation.complaintExposeHint' => 'Beschreiben Sie die Gründe für Ihre Anfechtung.',
+			'moderation.complaintSubmit' => 'Anfechtung senden',
+			'moderation.complaintSent' => 'Anfechtung erfasst. Sie wird geprüft.',
+			'moderation.complaintEmpty' => 'Bitte erklären Sie Ihre Anfechtung.',
+			'moderation.a11y.reportForm' => 'Formular zur Inhaltsmeldung',
+			'moderation.a11y.reasonSelector' => 'Auswahl des Meldegrunds',
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Erklärung in gutem Glauben, ${state}',
+			'moderation.a11y.submitReport' => 'Meldung senden',
+			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
+			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
 			_ => null,
 		};
 	}

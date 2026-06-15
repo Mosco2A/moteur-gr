@@ -41,7 +41,11 @@ void main() {
     });
 
     test('labels corrects', () {
-      expect(AuthMethodValues.labelFor(AuthMethodValues.anonymous), 'Anonyme');
+      // D4A-03 : pas de « anonyme » cote utilisateur -> « Sans compte ».
+      expect(
+        AuthMethodValues.labelFor(AuthMethodValues.anonymous),
+        'Sans compte',
+      );
       expect(AuthMethodValues.labelFor(AuthMethodValues.google), 'Google');
       expect(AuthMethodValues.labelFor(AuthMethodValues.apple), 'Apple');
     });
