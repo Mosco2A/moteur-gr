@@ -853,8 +853,8 @@ class Translations$auth$fr {
 	/// fr: 'Profil'
 	String get profile => 'Profil';
 
-	/// fr: 'Randonneur anonyme'
-	String get anonymous => 'Randonneur anonyme';
+	/// fr: 'Randonneur sans compte'
+	String get anonymous => 'Randonneur sans compte';
 
 	/// fr: 'Connecté via'
 	String get connectedVia => 'Connecté via';
@@ -868,14 +868,14 @@ class Translations$auth$fr {
 	/// fr: 'Se déconnecter'
 	String get signOut => 'Se déconnecter';
 
-	/// fr: 'Revenir en mode anonyme'
-	String get signOutDesc => 'Revenir en mode anonyme';
+	/// fr: 'Revenir au mode sans compte'
+	String get signOutDesc => 'Revenir au mode sans compte';
 
 	/// fr: 'Se déconnecter ?'
 	String get signOutConfirm => 'Se déconnecter ?';
 
-	/// fr: 'Vous reviendrez en mode anonyme. Vos données locales sont conservées.'
-	String get signOutMessage => 'Vous reviendrez en mode anonyme. Vos données locales sont conservées.';
+	/// fr: 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.'
+	String get signOutMessage => 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.';
 
 	/// fr: 'Supprimer mon compte'
 	String get deleteAccount => 'Supprimer mon compte';
@@ -3134,14 +3134,14 @@ extension on Translations {
 			'feedback.thanks' => 'Merci pour votre retour !',
 			'feedback.pending' => 'en attente',
 			'auth.profile' => 'Profil',
-			'auth.anonymous' => 'Randonneur anonyme',
+			'auth.anonymous' => 'Randonneur sans compte',
 			'auth.connectedVia' => 'Connecté via',
 			'auth.signInGoogle' => 'Se connecter avec Google',
 			'auth.signInGoogleDesc' => 'Pour sauvegarder votre progression',
 			'auth.signOut' => 'Se déconnecter',
-			'auth.signOutDesc' => 'Revenir en mode anonyme',
+			'auth.signOutDesc' => 'Revenir au mode sans compte',
 			'auth.signOutConfirm' => 'Se déconnecter ?',
-			'auth.signOutMessage' => 'Vous reviendrez en mode anonyme. Vos données locales sont conservées.',
+			'auth.signOutMessage' => 'Vous reviendrez au mode sans compte. Vos données locales sont conservées.',
 			'auth.deleteAccount' => 'Supprimer mon compte',
 			'auth.deleteAccountDesc' => 'Toutes vos données seront effacées',
 			'auth.deleteConfirm' => 'Supprimer votre compte ?',

@@ -78,9 +78,13 @@ abstract class AuthMethodValues {
   static const String fallback = anonymous;
   static const List<String> values = [anonymous, google, apple];
 
-  /// Labels d'affichage par methode
+  /// Labels d'affichage par methode.
+  ///
+  /// D4A-03 : pas de mot « anonyme » destine a l'utilisateur (l'app est
+  /// PSEUDONYME, pas anonyme — design #86166 C-2). Le mode sans connexion est
+  /// presente comme « Sans compte ». La cle technique reste 'anonymous'.
   static const Map<String, String> labels = {
-    anonymous: 'Anonyme',
+    anonymous: 'Sans compte',
     google: 'Google',
     apple: 'Apple',
   };

@@ -453,14 +453,14 @@ class _Translations$auth$es extends Translations$auth$fr {
 
 	// Translations
 	@override String get profile => 'Perfil';
-	@override String get anonymous => 'Senderista anónimo';
+	@override String get anonymous => 'Senderista sin cuenta';
 	@override String get connectedVia => 'Conectado vía';
 	@override String get signInGoogle => 'Iniciar sesión con Google';
 	@override String get signInGoogleDesc => 'Para guardar tu progreso';
 	@override String get signOut => 'Cerrar sesión';
-	@override String get signOutDesc => 'Volver al modo anónimo';
+	@override String get signOutDesc => 'Volver al modo sin cuenta';
 	@override String get signOutConfirm => '¿Cerrar sesión?';
-	@override String get signOutMessage => 'Volverás al modo anónimo. Tus datos locales se conservan.';
+	@override String get signOutMessage => 'Volverás al modo sin cuenta. Tus datos locales se conservan.';
 	@override String get deleteAccount => 'Eliminar mi cuenta';
 	@override String get deleteAccountDesc => 'Todos tus datos serán borrados';
 	@override String get deleteConfirm => '¿Eliminar tu cuenta?';
@@ -1837,14 +1837,14 @@ extension on TranslationsEs {
 			'feedback.thanks' => '¡Gracias por tu comentario!',
 			'feedback.pending' => 'pendiente',
 			'auth.profile' => 'Perfil',
-			'auth.anonymous' => 'Senderista anónimo',
+			'auth.anonymous' => 'Senderista sin cuenta',
 			'auth.connectedVia' => 'Conectado vía',
 			'auth.signInGoogle' => 'Iniciar sesión con Google',
 			'auth.signInGoogleDesc' => 'Para guardar tu progreso',
 			'auth.signOut' => 'Cerrar sesión',
-			'auth.signOutDesc' => 'Volver al modo anónimo',
+			'auth.signOutDesc' => 'Volver al modo sin cuenta',
 			'auth.signOutConfirm' => '¿Cerrar sesión?',
-			'auth.signOutMessage' => 'Volverás al modo anónimo. Tus datos locales se conservan.',
+			'auth.signOutMessage' => 'Volverás al modo sin cuenta. Tus datos locales se conservan.',
 			'auth.deleteAccount' => 'Eliminar mi cuenta',
 			'auth.deleteAccountDesc' => 'Todos tus datos serán borrados',
 			'auth.deleteConfirm' => '¿Eliminar tu cuenta?',

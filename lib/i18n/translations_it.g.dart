@@ -453,14 +453,14 @@ class _Translations$auth$it extends Translations$auth$fr {
 
 	// Translations
 	@override String get profile => 'Profilo';
-	@override String get anonymous => 'Escursionista anonimo';
+	@override String get anonymous => 'Escursionista senza account';
 	@override String get connectedVia => 'Connesso tramite';
 	@override String get signInGoogle => 'Accedi con Google';
 	@override String get signInGoogleDesc => 'Per salvare i tuoi progressi';
 	@override String get signOut => 'Esci';
-	@override String get signOutDesc => 'Torna alla modalità anonima';
+	@override String get signOutDesc => 'Torna alla modalità senza account';
 	@override String get signOutConfirm => 'Disconnettersi?';
-	@override String get signOutMessage => 'Tornerai alla modalità anonima. I tuoi dati locali saranno conservati.';
+	@override String get signOutMessage => 'Tornerai alla modalità senza account. I tuoi dati locali saranno conservati.';
 	@override String get deleteAccount => 'Elimina il mio account';
 	@override String get deleteAccountDesc => 'Tutti i tuoi dati saranno cancellati';
 	@override String get deleteConfirm => 'Eliminare il tuo account?';
@@ -1837,14 +1837,14 @@ extension on TranslationsIt {
 			'feedback.thanks' => 'Grazie per il tuo feedback!',
 			'feedback.pending' => 'in attesa',
 			'auth.profile' => 'Profilo',
-			'auth.anonymous' => 'Escursionista anonimo',
+			'auth.anonymous' => 'Escursionista senza account',
 			'auth.connectedVia' => 'Connesso tramite',
 			'auth.signInGoogle' => 'Accedi con Google',
 			'auth.signInGoogleDesc' => 'Per salvare i tuoi progressi',
 			'auth.signOut' => 'Esci',
-			'auth.signOutDesc' => 'Torna alla modalità anonima',
+			'auth.signOutDesc' => 'Torna alla modalità senza account',
 			'auth.signOutConfirm' => 'Disconnettersi?',
-			'auth.signOutMessage' => 'Tornerai alla modalità anonima. I tuoi dati locali saranno conservati.',
+			'auth.signOutMessage' => 'Tornerai alla modalità senza account. I tuoi dati locali saranno conservati.',
 			'auth.deleteAccount' => 'Elimina il mio account',
 			'auth.deleteAccountDesc' => 'Tutti i tuoi dati saranno cancellati',
 			'auth.deleteConfirm' => 'Eliminare il tuo account?',

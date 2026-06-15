@@ -453,14 +453,14 @@ class _Translations$auth$en extends Translations$auth$fr {
 
 	// Translations
 	@override String get profile => 'Profile';
-	@override String get anonymous => 'Anonymous hiker';
+	@override String get anonymous => 'Hiker without account';
 	@override String get connectedVia => 'Connected via';
 	@override String get signInGoogle => 'Sign in with Google';
 	@override String get signInGoogleDesc => 'To save your progress';
 	@override String get signOut => 'Sign out';
-	@override String get signOutDesc => 'Return to anonymous mode';
+	@override String get signOutDesc => 'Return to no-account mode';
 	@override String get signOutConfirm => 'Sign out?';
-	@override String get signOutMessage => 'You will return to anonymous mode. Your local data is preserved.';
+	@override String get signOutMessage => 'You will return to no-account mode. Your local data is preserved.';
 	@override String get deleteAccount => 'Delete my account';
 	@override String get deleteAccountDesc => 'All your data will be erased';
 	@override String get deleteConfirm => 'Delete your account?';
@@ -1837,14 +1837,14 @@ extension on TranslationsEn {
 			'feedback.thanks' => 'Thank you for your feedback!',
 			'feedback.pending' => 'pending',
 			'auth.profile' => 'Profile',
-			'auth.anonymous' => 'Anonymous hiker',
+			'auth.anonymous' => 'Hiker without account',
 			'auth.connectedVia' => 'Connected via',
 			'auth.signInGoogle' => 'Sign in with Google',
 			'auth.signInGoogleDesc' => 'To save your progress',
 			'auth.signOut' => 'Sign out',
-			'auth.signOutDesc' => 'Return to anonymous mode',
+			'auth.signOutDesc' => 'Return to no-account mode',
 			'auth.signOutConfirm' => 'Sign out?',
-			'auth.signOutMessage' => 'You will return to anonymous mode. Your local data is preserved.',
+			'auth.signOutMessage' => 'You will return to no-account mode. Your local data is preserved.',
 			'auth.deleteAccount' => 'Delete my account',
 			'auth.deleteAccountDesc' => 'All your data will be erased',
 			'auth.deleteConfirm' => 'Delete your account?',
