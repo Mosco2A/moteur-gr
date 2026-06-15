@@ -27,7 +27,8 @@
     "emergency": "Contatti emergenza",
     "catalog": "Catalogo sentieri",
     "profile": "Profilo",
-    "settings": "Impostazioni"
+    "settings": "Impostazioni",
+    "trailSelection": "Cambia sentiero"
   },
   "map": {
     "title": "Mappa del sentiero",
@@ -632,5 +633,155 @@
     "shareButton": "Condividi",
     "privateNotice": "La condivisione è disattivata. Attivala in Condivisione e visibilità.",
     "shared": "Scheda pronta da condividere."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Acqua",
+      "ravitaillement": "Rifornimento",
+      "danger": "Pericolo",
+      "camp": "Campeggio",
+      "connectivite": "Connettivita",
+      "jonction": "Bivio"
+    },
+    "filters": {
+      "title": "Filtra i waypoint",
+      "showAll": "Mostra tutto",
+      "hideAll": "Nascondi tutto",
+      "recentConditionOnly": "Solo condizione recente"
+    },
+    "detail": {
+      "conditionsTitle": "Condizioni del terreno",
+      "noComments": "Nessuna condizione segnalata per ora.",
+      "commentsError": "Condizioni non disponibili.",
+      "report": "Segnala",
+      "reportAck": "Segnalazione salvata. Sara esaminata dopo la sincronizzazione.",
+      "pendingSync": "In attesa di sincronizzazione"
+    },
+    "freshness": {
+      "justNow": "aggiornato proprio ora",
+      "minutes": "aggiornato $n min fa",
+      "hours": "aggiornato $n h fa",
+      "days": "aggiornato $n g fa"
+    },
+    "contribution": {
+      "titleWaypoint": "Aggiungi un punto",
+      "titleComment": "Segnala una condizione",
+      "chooseType": "Tipo di punto",
+      "titleField": "Titolo del punto",
+      "conditionPrompt": "Descrivi la condizione osservata",
+      "commentField": "La tua osservazione",
+      "conditionField": "Stato (facoltativo)",
+      "conditionHelper": "es. acqua esaurita, acqua scorre, passaggio scivoloso",
+      "latencyBanner": "Sara pubblicato alla prossima sincronizzazione di rete.",
+      "submit": "Salva",
+      "savedTitle": "Contributo salvato",
+      "savedPendingSync": "Sara pubblicato al ritorno della rete.",
+      "pendingCount": "$n in attesa di sincronizzazione",
+      "close": "Chiudi",
+      "emptyTitle": "Inserisci un titolo per il punto.",
+      "emptyComment": "Inserisci la tua osservazione.",
+      "noLocation": "Posizione GPS non disponibile. Riprova sotto cielo aperto.",
+      "error": "Impossibile salvare in questo momento."
+    }
+  },
+  "packs": {
+    "title": "Pacchetti sentiero",
+    "subtitle": "Scarica un pacchetto per camminare 100% offline.",
+    "alaCarteNote": "A la carte: acquista solo il pacchetto che ti serve, nessun abbonamento.",
+    "size": "$mo MB",
+    "states": {
+      "notDownloaded": "Non scaricato",
+      "downloaded": "Scaricato",
+      "updateAvailable": "Aggiornamento disponibile"
+    },
+    "actions": {
+      "download": "Scarica",
+      "update": "Aggiorna",
+      "delete": "Elimina",
+      "retry": "Riprova",
+      "buy": "Acquista questo pacchetto",
+      "buyWithPrice": "Acquista questo pacchetto — $price"
+    },
+    "progress": {
+      "downloading": "Scaricamento… $done/$total",
+      "verifying": "Verifica integrità…",
+      "completed": "Pacchetto pronto offline",
+      "error": "Scaricamento non riuscito"
+    },
+    "delete": {
+      "confirmTitle": "Eliminare questo pacchetto?",
+      "confirmBody": "Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.",
+      "cancel": "Annulla",
+      "confirm": "Elimina",
+      "freed": "Spazio liberato."
+    },
+    "empty": "Nessun pacchetto disponibile per questo sentiero.",
+    "a11y": {
+      "packCard": "Pacchetto $nom, $state",
+      "downloadButton": "Scarica il pacchetto $nom",
+      "deleteButton": "Elimina il pacchetto $nom"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare Nord",
+        "description": "La metà nord del sentiero, offline."
+      },
+      "sud": {
+        "nom": "Mare a Mare Sud",
+        "description": "La metà sud del sentiero, offline."
+      },
+      "complet": {
+        "nom": "Mare a Mare Completo",
+        "description": "Tutto il sentiero, offline."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "Il sentiero Mare a Mare, offline."
+      }
+    }
+  },
+  "guides": {
+    "title": "Guide delle tappe",
+    "subtitle": "Info pratiche su città e paesi, consultabili offline.",
+    "sectionsCount": "$n sezioni pratiche",
+    "empty": "Nessuna guida disponibile per questo sentiero.",
+    "noItems": "Ancora nessuna informazione in questa sezione.",
+    "facilitatorNote": "StepWays ti indirizza ai fornitori. Prenotazione e pagamento avvengono sul loro sito: niente nell'app.",
+    "openSite": "Apri il sito",
+    "cannotOpen": "Impossibile aprire questo link su questo dispositivo.",
+    "categories": {
+      "ravitaillement": "Rifornimento",
+      "hebergement": "Alloggio",
+      "transport": "Trasporti",
+      "services": "Servizi",
+      "eau": "Acqua",
+      "sante": "Salute"
+    },
+    "intro": {
+      "ravitaillement": "Dove fare scorta di provviste.",
+      "hebergement": "Dove dormire alla tappa.",
+      "transport": "Autobus, navette e collegamenti.",
+      "services": "Posta, banca, lavanderia e altro.",
+      "eau": "Punti d'acqua potabile.",
+      "sante": "Farmacia e cure nelle vicinanze."
+    },
+    "a11y": {
+      "guideCard": "Guida di $lieu",
+      "section": "Sezione $titre",
+      "openSiteButton": "Apri il sito di $nom"
+    }
+  },
+  "trailSelection": {
+    "title": "Cambia sentiero",
+    "subtitle": "Scegli il sentiero da esplorare. Tutta l app (mappa, tappe, punti di interesse, pacchetti, guide) segue la tua selezione.",
+    "current": "Sentiero attivo",
+    "select": "Scegli questo sentiero",
+    "selected": "Sentiero selezionato",
+    "stagesDistance": "$stages tappe - $km km",
+    "a11y": {
+      "trailCard": "Sentiero $nom, $region",
+      "currentBadge": "Sentiero attualmente attivo",
+      "selectButton": "Attiva il sentiero $nom"
+    }
   }
 }

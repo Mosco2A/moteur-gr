@@ -76,6 +76,10 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$social$fr social = Translations$social$fr.internal(_root);
 	late final Translations$gamification$fr gamification = Translations$gamification$fr.internal(_root);
 	late final Translations$shareVisibility$fr shareVisibility = Translations$shareVisibility$fr.internal(_root);
+	late final Translations$waypoints$fr waypoints = Translations$waypoints$fr.internal(_root);
+	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
+	late final Translations$guides$fr guides = Translations$guides$fr.internal(_root);
+	late final Translations$trailSelection$fr trailSelection = Translations$trailSelection$fr.internal(_root);
 }
 
 // Path: a11y
@@ -172,6 +176,9 @@ class Translations$nav$fr {
 
 	/// fr: 'Paramètres'
 	String get settings => 'Paramètres';
+
+	/// fr: 'Changer de sentier'
+	String get trailSelection => 'Changer de sentier';
 }
 
 // Path: map
@@ -1499,6 +1506,118 @@ class Translations$shareVisibility$fr {
 	String get shared => 'Carte prête à partager.';
 }
 
+// Path: waypoints
+class Translations$waypoints$fr {
+	Translations$waypoints$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$waypoints$types$fr types = Translations$waypoints$types$fr.internal(_root);
+	late final Translations$waypoints$filters$fr filters = Translations$waypoints$filters$fr.internal(_root);
+	late final Translations$waypoints$detail$fr detail = Translations$waypoints$detail$fr.internal(_root);
+	late final Translations$waypoints$freshness$fr freshness = Translations$waypoints$freshness$fr.internal(_root);
+	late final Translations$waypoints$contribution$fr contribution = Translations$waypoints$contribution$fr.internal(_root);
+}
+
+// Path: packs
+class Translations$packs$fr {
+	Translations$packs$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Packs sentier'
+	String get title => 'Packs sentier';
+
+	/// fr: 'Téléchargez un pack pour randonner 100% hors-ligne.'
+	String get subtitle => 'Téléchargez un pack pour randonner 100% hors-ligne.';
+
+	/// fr: 'À la carte : achetez seulement le pack qu'il vous faut, pas d'abonnement.'
+	String get alaCarteNote => 'À la carte : achetez seulement le pack qu\'il vous faut, pas d\'abonnement.';
+
+	/// fr: '$mo Mo'
+	String size({required Object mo}) => '${mo} Mo';
+
+	late final Translations$packs$states$fr states = Translations$packs$states$fr.internal(_root);
+	late final Translations$packs$actions$fr actions = Translations$packs$actions$fr.internal(_root);
+	late final Translations$packs$progress$fr progress = Translations$packs$progress$fr.internal(_root);
+	late final Translations$packs$delete$fr delete = Translations$packs$delete$fr.internal(_root);
+
+	/// fr: 'Aucun pack disponible pour ce sentier.'
+	String get empty => 'Aucun pack disponible pour ce sentier.';
+
+	late final Translations$packs$a11y$fr a11y = Translations$packs$a11y$fr.internal(_root);
+	late final Translations$packs$types$fr types = Translations$packs$types$fr.internal(_root);
+}
+
+// Path: guides
+class Translations$guides$fr {
+	Translations$guides$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Guides d'étape'
+	String get title => 'Guides d\'étape';
+
+	/// fr: 'Infos pratiques des villes et villages, consultables hors-ligne.'
+	String get subtitle => 'Infos pratiques des villes et villages, consultables hors-ligne.';
+
+	/// fr: '$n rubriques pratiques'
+	String sectionsCount({required Object n}) => '${n} rubriques pratiques';
+
+	/// fr: 'Aucun guide disponible pour ce sentier.'
+	String get empty => 'Aucun guide disponible pour ce sentier.';
+
+	/// fr: 'Aucune information dans cette section pour le moment.'
+	String get noItems => 'Aucune information dans cette section pour le moment.';
+
+	/// fr: 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.'
+	String get facilitatorNote => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.';
+
+	/// fr: 'Voir le site'
+	String get openSite => 'Voir le site';
+
+	/// fr: 'Impossible d'ouvrir ce lien sur cet appareil.'
+	String get cannotOpen => 'Impossible d\'ouvrir ce lien sur cet appareil.';
+
+	late final Translations$guides$categories$fr categories = Translations$guides$categories$fr.internal(_root);
+	late final Translations$guides$intro$fr intro = Translations$guides$intro$fr.internal(_root);
+	late final Translations$guides$a11y$fr a11y = Translations$guides$a11y$fr.internal(_root);
+}
+
+// Path: trailSelection
+class Translations$trailSelection$fr {
+	Translations$trailSelection$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Changer de sentier'
+	String get title => 'Changer de sentier';
+
+	/// fr: 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.'
+	String get subtitle => 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.';
+
+	/// fr: 'Sentier actif'
+	String get current => 'Sentier actif';
+
+	/// fr: 'Choisir ce sentier'
+	String get select => 'Choisir ce sentier';
+
+	/// fr: 'Sentier selectionne'
+	String get selected => 'Sentier selectionne';
+
+	/// fr: '$stages etapes - $km km'
+	String stagesDistance({required Object stages, required Object km}) => '${stages} etapes - ${km} km';
+
+	late final Translations$trailSelection$a11y$fr a11y = Translations$trailSelection$a11y$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -1986,6 +2105,376 @@ class Translations$gamification$defi$fr {
 	String get noDefi => 'Aucun défi en cours pour le moment.';
 }
 
+// Path: waypoints.types
+class Translations$waypoints$types$fr {
+	Translations$waypoints$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Eau'
+	String get eau => 'Eau';
+
+	/// fr: 'Ravitaillement'
+	String get ravitaillement => 'Ravitaillement';
+
+	/// fr: 'Danger'
+	String get danger => 'Danger';
+
+	/// fr: 'Bivouac'
+	String get camp => 'Bivouac';
+
+	/// fr: 'Connectivité'
+	String get connectivite => 'Connectivité';
+
+	/// fr: 'Jonction'
+	String get jonction => 'Jonction';
+}
+
+// Path: waypoints.filters
+class Translations$waypoints$filters$fr {
+	Translations$waypoints$filters$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Filtrer les waypoints'
+	String get title => 'Filtrer les waypoints';
+
+	/// fr: 'Tout afficher'
+	String get showAll => 'Tout afficher';
+
+	/// fr: 'Tout masquer'
+	String get hideAll => 'Tout masquer';
+
+	/// fr: 'Condition récente uniquement'
+	String get recentConditionOnly => 'Condition récente uniquement';
+}
+
+// Path: waypoints.detail
+class Translations$waypoints$detail$fr {
+	Translations$waypoints$detail$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Conditions terrain'
+	String get conditionsTitle => 'Conditions terrain';
+
+	/// fr: 'Aucune condition signalée pour le moment.'
+	String get noComments => 'Aucune condition signalée pour le moment.';
+
+	/// fr: 'Conditions indisponibles.'
+	String get commentsError => 'Conditions indisponibles.';
+
+	/// fr: 'Signaler'
+	String get report => 'Signaler';
+
+	/// fr: 'Signalement enregistré. Il sera examiné après synchronisation.'
+	String get reportAck => 'Signalement enregistré. Il sera examiné après synchronisation.';
+
+	/// fr: 'En attente de synchronisation'
+	String get pendingSync => 'En attente de synchronisation';
+}
+
+// Path: waypoints.freshness
+class Translations$waypoints$freshness$fr {
+	Translations$waypoints$freshness$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'mis à jour à l’instant'
+	String get justNow => 'mis à jour à l’instant';
+
+	/// fr: 'mis à jour il y a $n min'
+	String minutes({required Object n}) => 'mis à jour il y a ${n} min';
+
+	/// fr: 'mis à jour il y a $n h'
+	String hours({required Object n}) => 'mis à jour il y a ${n} h';
+
+	/// fr: 'mis à jour il y a $n j'
+	String days({required Object n}) => 'mis à jour il y a ${n} j';
+}
+
+// Path: waypoints.contribution
+class Translations$waypoints$contribution$fr {
+	Translations$waypoints$contribution$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ajouter un point'
+	String get titleWaypoint => 'Ajouter un point';
+
+	/// fr: 'Signaler une condition'
+	String get titleComment => 'Signaler une condition';
+
+	/// fr: 'Type de point'
+	String get chooseType => 'Type de point';
+
+	/// fr: 'Titre du point'
+	String get titleField => 'Titre du point';
+
+	/// fr: 'Décrivez la condition observée'
+	String get conditionPrompt => 'Décrivez la condition observée';
+
+	/// fr: 'Votre observation'
+	String get commentField => 'Votre observation';
+
+	/// fr: 'État (optionnel)'
+	String get conditionField => 'État (optionnel)';
+
+	/// fr: 'ex : eau à sec, eau coule bien, passage glissant'
+	String get conditionHelper => 'ex : eau à sec, eau coule bien, passage glissant';
+
+	/// fr: 'Sera publié à la prochaine synchronisation réseau.'
+	String get latencyBanner => 'Sera publié à la prochaine synchronisation réseau.';
+
+	/// fr: 'Enregistrer'
+	String get submit => 'Enregistrer';
+
+	/// fr: 'Contribution enregistrée'
+	String get savedTitle => 'Contribution enregistrée';
+
+	/// fr: 'Elle sera publiée dès le retour du réseau.'
+	String get savedPendingSync => 'Elle sera publiée dès le retour du réseau.';
+
+	/// fr: '$n en attente de synchronisation'
+	String pendingCount({required Object n}) => '${n} en attente de synchronisation';
+
+	/// fr: 'Fermer'
+	String get close => 'Fermer';
+
+	/// fr: 'Indiquez un titre pour le point.'
+	String get emptyTitle => 'Indiquez un titre pour le point.';
+
+	/// fr: 'Saisissez votre observation.'
+	String get emptyComment => 'Saisissez votre observation.';
+
+	/// fr: 'Position GPS indisponible. Réessayez sous le ciel ouvert.'
+	String get noLocation => 'Position GPS indisponible. Réessayez sous le ciel ouvert.';
+
+	/// fr: 'Enregistrement impossible pour le moment.'
+	String get error => 'Enregistrement impossible pour le moment.';
+}
+
+// Path: packs.states
+class Translations$packs$states$fr {
+	Translations$packs$states$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Non téléchargé'
+	String get notDownloaded => 'Non téléchargé';
+
+	/// fr: 'Téléchargé'
+	String get downloaded => 'Téléchargé';
+
+	/// fr: 'Mise à jour disponible'
+	String get updateAvailable => 'Mise à jour disponible';
+}
+
+// Path: packs.actions
+class Translations$packs$actions$fr {
+	Translations$packs$actions$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Télécharger'
+	String get download => 'Télécharger';
+
+	/// fr: 'Mettre à jour'
+	String get update => 'Mettre à jour';
+
+	/// fr: 'Supprimer'
+	String get delete => 'Supprimer';
+
+	/// fr: 'Réessayer'
+	String get retry => 'Réessayer';
+
+	/// fr: 'Acheter ce pack'
+	String get buy => 'Acheter ce pack';
+
+	/// fr: 'Acheter ce pack — $price'
+	String buyWithPrice({required Object price}) => 'Acheter ce pack — ${price}';
+}
+
+// Path: packs.progress
+class Translations$packs$progress$fr {
+	Translations$packs$progress$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Téléchargement… $done/$total'
+	String downloading({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}';
+
+	/// fr: 'Vérification de l'intégrité…'
+	String get verifying => 'Vérification de l\'intégrité…';
+
+	/// fr: 'Pack prêt hors-ligne'
+	String get completed => 'Pack prêt hors-ligne';
+
+	/// fr: 'Échec du téléchargement'
+	String get error => 'Échec du téléchargement';
+}
+
+// Path: packs.delete
+class Translations$packs$delete$fr {
+	Translations$packs$delete$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Supprimer ce pack ?'
+	String get confirmTitle => 'Supprimer ce pack ?';
+
+	/// fr: 'Le pack sera retiré de l'appareil pour libérer de l'espace. Vous pourrez le retélécharger.'
+	String get confirmBody => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Supprimer'
+	String get confirm => 'Supprimer';
+
+	/// fr: 'Espace libéré.'
+	String get freed => 'Espace libéré.';
+}
+
+// Path: packs.a11y
+class Translations$packs$a11y$fr {
+	Translations$packs$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Pack $nom, $state'
+	String packCard({required Object nom, required Object state}) => 'Pack ${nom}, ${state}';
+
+	/// fr: 'Télécharger le pack $nom'
+	String downloadButton({required Object nom}) => 'Télécharger le pack ${nom}';
+
+	/// fr: 'Supprimer le pack $nom'
+	String deleteButton({required Object nom}) => 'Supprimer le pack ${nom}';
+}
+
+// Path: packs.types
+class Translations$packs$types$fr {
+	Translations$packs$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$packs$types$nord$fr nord = Translations$packs$types$nord$fr.internal(_root);
+	late final Translations$packs$types$sud$fr sud = Translations$packs$types$sud$fr.internal(_root);
+	late final Translations$packs$types$complet$fr complet = Translations$packs$types$complet$fr.internal(_root);
+	late final Translations$packs$types$mam$fr mam = Translations$packs$types$mam$fr.internal(_root);
+}
+
+// Path: guides.categories
+class Translations$guides$categories$fr {
+	Translations$guides$categories$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ravitaillement'
+	String get ravitaillement => 'Ravitaillement';
+
+	/// fr: 'Hébergement'
+	String get hebergement => 'Hébergement';
+
+	/// fr: 'Transport'
+	String get transport => 'Transport';
+
+	/// fr: 'Services'
+	String get services => 'Services';
+
+	/// fr: 'Eau'
+	String get eau => 'Eau';
+
+	/// fr: 'Santé'
+	String get sante => 'Santé';
+}
+
+// Path: guides.intro
+class Translations$guides$intro$fr {
+	Translations$guides$intro$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Où faire le plein de provisions.'
+	String get ravitaillement => 'Où faire le plein de provisions.';
+
+	/// fr: 'Où dormir à l'étape.'
+	String get hebergement => 'Où dormir à l\'étape.';
+
+	/// fr: 'Bus, navettes et liaisons.'
+	String get transport => 'Bus, navettes et liaisons.';
+
+	/// fr: 'Poste, banque, laverie et autres services.'
+	String get services => 'Poste, banque, laverie et autres services.';
+
+	/// fr: 'Points d'eau potable.'
+	String get eau => 'Points d\'eau potable.';
+
+	/// fr: 'Pharmacie et soins de proximité.'
+	String get sante => 'Pharmacie et soins de proximité.';
+}
+
+// Path: guides.a11y
+class Translations$guides$a11y$fr {
+	Translations$guides$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Guide de $lieu'
+	String guideCard({required Object lieu}) => 'Guide de ${lieu}';
+
+	/// fr: 'Section $titre'
+	String section({required Object titre}) => 'Section ${titre}';
+
+	/// fr: 'Ouvrir le site de $nom'
+	String openSiteButton({required Object nom}) => 'Ouvrir le site de ${nom}';
+}
+
+// Path: trailSelection.a11y
+class Translations$trailSelection$a11y$fr {
+	Translations$trailSelection$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Sentier $nom, $region'
+	String trailCard({required Object nom, required Object region}) => 'Sentier ${nom}, ${region}';
+
+	/// fr: 'Sentier actuellement actif'
+	String get currentBadge => 'Sentier actuellement actif';
+
+	/// fr: 'Activer le sentier $nom'
+	String selectButton({required Object nom}) => 'Activer le sentier ${nom}';
+}
+
 // Path: feasibility.recommendations.danger
 class Translations$feasibility$recommendations$danger$fr {
 	Translations$feasibility$recommendations$danger$fr.internal(this._root);
@@ -2144,6 +2633,66 @@ class Translations$gamification$badge$challenger$fr {
 	String get description => 'Tu as réussi ton premier défi saisonnier.';
 }
 
+// Path: packs.types.nord
+class Translations$packs$types$nord$fr {
+	Translations$packs$types$nord$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare Nord'
+	String get nom => 'Mare a Mare Nord';
+
+	/// fr: 'La moitié nord du sentier, hors-ligne.'
+	String get description => 'La moitié nord du sentier, hors-ligne.';
+}
+
+// Path: packs.types.sud
+class Translations$packs$types$sud$fr {
+	Translations$packs$types$sud$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare Sud'
+	String get nom => 'Mare a Mare Sud';
+
+	/// fr: 'La moitié sud du sentier, hors-ligne.'
+	String get description => 'La moitié sud du sentier, hors-ligne.';
+}
+
+// Path: packs.types.complet
+class Translations$packs$types$complet$fr {
+	Translations$packs$types$complet$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare Complet'
+	String get nom => 'Mare a Mare Complet';
+
+	/// fr: 'Tout le sentier, hors-ligne.'
+	String get description => 'Tout le sentier, hors-ligne.';
+}
+
+// Path: packs.types.mam
+class Translations$packs$types$mam$fr {
+	Translations$packs$types$mam$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mare a Mare'
+	String get nom => 'Mare a Mare';
+
+	/// fr: 'Le sentier Mare a Mare, hors-ligne.'
+	String get description => 'Le sentier Mare a Mare, hors-ligne.';
+}
+
 // Path: feasibility.recommendations.danger.tips
 class Translations$feasibility$recommendations$danger$tips$fr {
 	Translations$feasibility$recommendations$danger$tips$fr.internal(this._root);
@@ -2250,6 +2799,7 @@ extension on Translations {
 			'nav.catalog' => 'Catalogue des sentiers',
 			'nav.profile' => 'Profil',
 			'nav.settings' => 'Paramètres',
+			'nav.trailSelection' => 'Changer de sentier',
 			'map.title' => 'Carte du sentier',
 			'map.loading' => 'Chargement du tracÃ©...',
 			'map.noTrack' => 'Aucun tracÃ© disponible',
@@ -2728,6 +3278,112 @@ extension on Translations {
 			'shareVisibility.shareButton' => 'Partager',
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
 			'shareVisibility.shared' => 'Carte prête à partager.',
+			'waypoints.types.eau' => 'Eau',
+			'waypoints.types.ravitaillement' => 'Ravitaillement',
+			'waypoints.types.danger' => 'Danger',
+			'waypoints.types.camp' => 'Bivouac',
+			'waypoints.types.connectivite' => 'Connectivité',
+			'waypoints.types.jonction' => 'Jonction',
+			'waypoints.filters.title' => 'Filtrer les waypoints',
+			_ => null,
+		} ?? switch (path) {
+			'waypoints.filters.showAll' => 'Tout afficher',
+			'waypoints.filters.hideAll' => 'Tout masquer',
+			'waypoints.filters.recentConditionOnly' => 'Condition récente uniquement',
+			'waypoints.detail.conditionsTitle' => 'Conditions terrain',
+			'waypoints.detail.noComments' => 'Aucune condition signalée pour le moment.',
+			'waypoints.detail.commentsError' => 'Conditions indisponibles.',
+			'waypoints.detail.report' => 'Signaler',
+			'waypoints.detail.reportAck' => 'Signalement enregistré. Il sera examiné après synchronisation.',
+			'waypoints.detail.pendingSync' => 'En attente de synchronisation',
+			'waypoints.freshness.justNow' => 'mis à jour à l’instant',
+			'waypoints.freshness.minutes' => ({required Object n}) => 'mis à jour il y a ${n} min',
+			'waypoints.freshness.hours' => ({required Object n}) => 'mis à jour il y a ${n} h',
+			'waypoints.freshness.days' => ({required Object n}) => 'mis à jour il y a ${n} j',
+			'waypoints.contribution.titleWaypoint' => 'Ajouter un point',
+			'waypoints.contribution.titleComment' => 'Signaler une condition',
+			'waypoints.contribution.chooseType' => 'Type de point',
+			'waypoints.contribution.titleField' => 'Titre du point',
+			'waypoints.contribution.conditionPrompt' => 'Décrivez la condition observée',
+			'waypoints.contribution.commentField' => 'Votre observation',
+			'waypoints.contribution.conditionField' => 'État (optionnel)',
+			'waypoints.contribution.conditionHelper' => 'ex : eau à sec, eau coule bien, passage glissant',
+			'waypoints.contribution.latencyBanner' => 'Sera publié à la prochaine synchronisation réseau.',
+			'waypoints.contribution.submit' => 'Enregistrer',
+			'waypoints.contribution.savedTitle' => 'Contribution enregistrée',
+			'waypoints.contribution.savedPendingSync' => 'Elle sera publiée dès le retour du réseau.',
+			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
+			'waypoints.contribution.close' => 'Fermer',
+			'waypoints.contribution.emptyTitle' => 'Indiquez un titre pour le point.',
+			'waypoints.contribution.emptyComment' => 'Saisissez votre observation.',
+			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
+			'waypoints.contribution.error' => 'Enregistrement impossible pour le moment.',
+			'packs.title' => 'Packs sentier',
+			'packs.subtitle' => 'Téléchargez un pack pour randonner 100% hors-ligne.',
+			'packs.alaCarteNote' => 'À la carte : achetez seulement le pack qu\'il vous faut, pas d\'abonnement.',
+			'packs.size' => ({required Object mo}) => '${mo} Mo',
+			'packs.states.notDownloaded' => 'Non téléchargé',
+			'packs.states.downloaded' => 'Téléchargé',
+			'packs.states.updateAvailable' => 'Mise à jour disponible',
+			'packs.actions.download' => 'Télécharger',
+			'packs.actions.update' => 'Mettre à jour',
+			'packs.actions.delete' => 'Supprimer',
+			'packs.actions.retry' => 'Réessayer',
+			'packs.actions.buy' => 'Acheter ce pack',
+			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acheter ce pack — ${price}',
+			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}',
+			'packs.progress.verifying' => 'Vérification de l\'intégrité…',
+			'packs.progress.completed' => 'Pack prêt hors-ligne',
+			'packs.progress.error' => 'Échec du téléchargement',
+			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
+			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
+			'packs.delete.cancel' => 'Annuler',
+			'packs.delete.confirm' => 'Supprimer',
+			'packs.delete.freed' => 'Espace libéré.',
+			'packs.empty' => 'Aucun pack disponible pour ce sentier.',
+			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
+			'packs.a11y.downloadButton' => ({required Object nom}) => 'Télécharger le pack ${nom}',
+			'packs.a11y.deleteButton' => ({required Object nom}) => 'Supprimer le pack ${nom}',
+			'packs.types.nord.nom' => 'Mare a Mare Nord',
+			'packs.types.nord.description' => 'La moitié nord du sentier, hors-ligne.',
+			'packs.types.sud.nom' => 'Mare a Mare Sud',
+			'packs.types.sud.description' => 'La moitié sud du sentier, hors-ligne.',
+			'packs.types.complet.nom' => 'Mare a Mare Complet',
+			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
+			'packs.types.mam.nom' => 'Mare a Mare',
+			'packs.types.mam.description' => 'Le sentier Mare a Mare, hors-ligne.',
+			'guides.title' => 'Guides d\'étape',
+			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
+			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
+			'guides.empty' => 'Aucun guide disponible pour ce sentier.',
+			'guides.noItems' => 'Aucune information dans cette section pour le moment.',
+			'guides.facilitatorNote' => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.',
+			'guides.openSite' => 'Voir le site',
+			'guides.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
+			'guides.categories.ravitaillement' => 'Ravitaillement',
+			'guides.categories.hebergement' => 'Hébergement',
+			'guides.categories.transport' => 'Transport',
+			'guides.categories.services' => 'Services',
+			'guides.categories.eau' => 'Eau',
+			'guides.categories.sante' => 'Santé',
+			'guides.intro.ravitaillement' => 'Où faire le plein de provisions.',
+			'guides.intro.hebergement' => 'Où dormir à l\'étape.',
+			'guides.intro.transport' => 'Bus, navettes et liaisons.',
+			'guides.intro.services' => 'Poste, banque, laverie et autres services.',
+			'guides.intro.eau' => 'Points d\'eau potable.',
+			'guides.intro.sante' => 'Pharmacie et soins de proximité.',
+			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guide de ${lieu}',
+			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
+			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Ouvrir le site de ${nom}',
+			'trailSelection.title' => 'Changer de sentier',
+			'trailSelection.subtitle' => 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.',
+			'trailSelection.current' => 'Sentier actif',
+			'trailSelection.select' => 'Choisir ce sentier',
+			'trailSelection.selected' => 'Sentier selectionne',
+			'trailSelection.stagesDistance' => ({required Object stages, required Object km}) => '${stages} etapes - ${km} km',
+			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Sentier ${nom}, ${region}',
+			'trailSelection.a11y.currentBadge' => 'Sentier actuellement actif',
+			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activer le sentier ${nom}',
 			_ => null,
 		};
 	}

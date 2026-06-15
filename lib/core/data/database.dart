@@ -24,6 +24,7 @@ import 'tables/session_track_points_table.dart';
 import 'tables/report_local_table.dart';
 import 'tables/segments_table.dart';
 import 'tables/kudos_feed_table.dart';
+import 'tables/waypoints_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -48,6 +49,7 @@ import 'daos/session_track_points_dao.dart';
 import 'daos/report_local_dao.dart';
 import 'daos/segments_dao.dart';
 import 'daos/kudos_feed_dao.dart';
+import 'daos/waypoints_dao.dart';
 
 part 'database.g.dart';
 
@@ -65,7 +67,8 @@ part 'database.g.dart';
 /// + 1 finitions V8 F3 (SessionTrackPoints)
 /// + 1 Phase 6 F6C-01 (ReportLocal, signalements offline-first)
 /// + 2 Phase 7 F7A-01 (Segments, SegmentEffortLocal, social offline-first)
-/// + 2 Phase 7 F7B-01 (KudosLocal, ActivityFeedCache, kudos + fil offline).
+/// + 2 Phase 7 F7B-01 (KudosLocal, ActivityFeedCache, kudos + fil offline)
+/// + 2 Phase 8 F8A-01 (Waypoint, WaypointComment, terrain FarOut-like offline).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -95,6 +98,8 @@ part 'database.g.dart';
     SegmentEffortLocal,
     KudosLocal,
     ActivityFeedCache,
+    Waypoint,
+    WaypointComment,
   ],
   daos: [
     StagesDao,
@@ -121,13 +126,14 @@ part 'database.g.dart';
     ReportLocalDao,
     SegmentsDao,
     KudosFeedDao,
+    WaypointsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 16;
+  int get schemaVersion => 17;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -207,6 +213,12 @@ class AppDatabase extends _$AppDatabase {
           if (from < 16) {
             await migrator.createTable(kudosLocal);
             await migrator.createTable(activityFeedCache);
+          }
+          // Migration v16 -> v17 : tables waypoint + commentaire (Phase 8 F8A-01)
+          // (points terrain FarOut-like + commentaires offline-first, DSA)
+          if (from < 17) {
+            await migrator.createTable(waypoint);
+            await migrator.createTable(waypointComment);
           }
         },
       );

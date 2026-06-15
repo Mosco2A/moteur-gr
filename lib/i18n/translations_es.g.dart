@@ -75,6 +75,10 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$social$es social = _Translations$social$es._(_root);
 	@override late final _Translations$gamification$es gamification = _Translations$gamification$es._(_root);
 	@override late final _Translations$shareVisibility$es shareVisibility = _Translations$shareVisibility$es._(_root);
+	@override late final _Translations$waypoints$es waypoints = _Translations$waypoints$es._(_root);
+	@override late final _Translations$packs$es packs = _Translations$packs$es._(_root);
+	@override late final _Translations$guides$es guides = _Translations$guides$es._(_root);
+	@override late final _Translations$trailSelection$es trailSelection = _Translations$trailSelection$es._(_root);
 }
 
 // Path: a11y
@@ -119,6 +123,7 @@ class _Translations$nav$es extends Translations$nav$fr {
 	@override String get catalog => 'Catálogo de senderos';
 	@override String get profile => 'Perfil';
 	@override String get settings => 'Ajustes';
+	@override String get trailSelection => 'Cambiar de sendero';
 }
 
 // Path: map
@@ -774,6 +779,76 @@ class _Translations$shareVisibility$es extends Translations$shareVisibility$fr {
 	@override String get shared => 'Tarjeta lista para compartir.';
 }
 
+// Path: waypoints
+class _Translations$waypoints$es extends Translations$waypoints$fr {
+	_Translations$waypoints$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$waypoints$types$es types = _Translations$waypoints$types$es._(_root);
+	@override late final _Translations$waypoints$filters$es filters = _Translations$waypoints$filters$es._(_root);
+	@override late final _Translations$waypoints$detail$es detail = _Translations$waypoints$detail$es._(_root);
+	@override late final _Translations$waypoints$freshness$es freshness = _Translations$waypoints$freshness$es._(_root);
+	@override late final _Translations$waypoints$contribution$es contribution = _Translations$waypoints$contribution$es._(_root);
+}
+
+// Path: packs
+class _Translations$packs$es extends Translations$packs$fr {
+	_Translations$packs$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Packs de sendero';
+	@override String get subtitle => 'Descarga un pack para caminar 100% sin conexión.';
+	@override String get alaCarteNote => 'A la carte: compra solo el pack que necesitas, sin suscripción.';
+	@override String size({required Object mo}) => '${mo} MB';
+	@override late final _Translations$packs$states$es states = _Translations$packs$states$es._(_root);
+	@override late final _Translations$packs$actions$es actions = _Translations$packs$actions$es._(_root);
+	@override late final _Translations$packs$progress$es progress = _Translations$packs$progress$es._(_root);
+	@override late final _Translations$packs$delete$es delete = _Translations$packs$delete$es._(_root);
+	@override String get empty => 'No hay pack disponible para este sendero.';
+	@override late final _Translations$packs$a11y$es a11y = _Translations$packs$a11y$es._(_root);
+	@override late final _Translations$packs$types$es types = _Translations$packs$types$es._(_root);
+}
+
+// Path: guides
+class _Translations$guides$es extends Translations$guides$fr {
+	_Translations$guides$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Guías de etapa';
+	@override String get subtitle => 'Información práctica de pueblos y aldeas, disponible sin conexión.';
+	@override String sectionsCount({required Object n}) => '${n} secciones practicas';
+	@override String get empty => 'No hay guía disponible para este sendero.';
+	@override String get noItems => 'Aún no hay información en esta sección.';
+	@override String get facilitatorNote => 'StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.';
+	@override String get openSite => 'Abrir el sitio';
+	@override String get cannotOpen => 'No se puede abrir este enlace en este dispositivo.';
+	@override late final _Translations$guides$categories$es categories = _Translations$guides$categories$es._(_root);
+	@override late final _Translations$guides$intro$es intro = _Translations$guides$intro$es._(_root);
+	@override late final _Translations$guides$a11y$es a11y = _Translations$guides$a11y$es._(_root);
+}
+
+// Path: trailSelection
+class _Translations$trailSelection$es extends Translations$trailSelection$fr {
+	_Translations$trailSelection$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Cambiar de sendero';
+	@override String get subtitle => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interes, packs, guias) sigue tu seleccion.';
+	@override String get current => 'Sendero activo';
+	@override String get select => 'Elegir este sendero';
+	@override String get selected => 'Sendero seleccionado';
+	@override String stagesDistance({required Object stages, required Object km}) => '${stages} etapas - ${km} km';
+	@override late final _Translations$trailSelection$a11y$es a11y = _Translations$trailSelection$a11y$es._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1033,6 +1108,222 @@ class _Translations$gamification$defi$es extends Translations$gamification$defi$
 	@override String get noDefi => 'Ningún reto en curso por ahora.';
 }
 
+// Path: waypoints.types
+class _Translations$waypoints$types$es extends Translations$waypoints$types$fr {
+	_Translations$waypoints$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get eau => 'Agua';
+	@override String get ravitaillement => 'Avituallamiento';
+	@override String get danger => 'Peligro';
+	@override String get camp => 'Acampada';
+	@override String get connectivite => 'Conectividad';
+	@override String get jonction => 'Cruce';
+}
+
+// Path: waypoints.filters
+class _Translations$waypoints$filters$es extends Translations$waypoints$filters$fr {
+	_Translations$waypoints$filters$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Filtrar waypoints';
+	@override String get showAll => 'Mostrar todo';
+	@override String get hideAll => 'Ocultar todo';
+	@override String get recentConditionOnly => 'Solo condicion reciente';
+}
+
+// Path: waypoints.detail
+class _Translations$waypoints$detail$es extends Translations$waypoints$detail$fr {
+	_Translations$waypoints$detail$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get conditionsTitle => 'Condiciones del terreno';
+	@override String get noComments => 'Aun no se ha senalado ninguna condicion.';
+	@override String get commentsError => 'Condiciones no disponibles.';
+	@override String get report => 'Senalar';
+	@override String get reportAck => 'Senalamiento guardado. Se revisara tras la sincronizacion.';
+	@override String get pendingSync => 'Pendiente de sincronizacion';
+}
+
+// Path: waypoints.freshness
+class _Translations$waypoints$freshness$es extends Translations$waypoints$freshness$fr {
+	_Translations$waypoints$freshness$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get justNow => 'actualizado ahora mismo';
+	@override String minutes({required Object n}) => 'actualizado hace ${n} min';
+	@override String hours({required Object n}) => 'actualizado hace ${n} h';
+	@override String days({required Object n}) => 'actualizado hace ${n} d';
+}
+
+// Path: waypoints.contribution
+class _Translations$waypoints$contribution$es extends Translations$waypoints$contribution$fr {
+	_Translations$waypoints$contribution$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get titleWaypoint => 'Anadir un punto';
+	@override String get titleComment => 'Senalar una condicion';
+	@override String get chooseType => 'Tipo de punto';
+	@override String get titleField => 'Titulo del punto';
+	@override String get conditionPrompt => 'Describe la condicion observada';
+	@override String get commentField => 'Tu observacion';
+	@override String get conditionField => 'Estado (opcional)';
+	@override String get conditionHelper => 'p. ej. agua agotada, agua corre, paso resbaladizo';
+	@override String get latencyBanner => 'Se publicara en la proxima sincronizacion de red.';
+	@override String get submit => 'Guardar';
+	@override String get savedTitle => 'Contribucion guardada';
+	@override String get savedPendingSync => 'Se publicara cuando vuelva la red.';
+	@override String pendingCount({required Object n}) => '${n} pendientes de sincronizacion';
+	@override String get close => 'Cerrar';
+	@override String get emptyTitle => 'Indica un titulo para el punto.';
+	@override String get emptyComment => 'Escribe tu observacion.';
+	@override String get noLocation => 'Posicion GPS no disponible. Intentalo de nuevo a cielo abierto.';
+	@override String get error => 'No se puede guardar ahora mismo.';
+}
+
+// Path: packs.states
+class _Translations$packs$states$es extends Translations$packs$states$fr {
+	_Translations$packs$states$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get notDownloaded => 'No descargado';
+	@override String get downloaded => 'Descargado';
+	@override String get updateAvailable => 'Actualización disponible';
+}
+
+// Path: packs.actions
+class _Translations$packs$actions$es extends Translations$packs$actions$fr {
+	_Translations$packs$actions$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get download => 'Descargar';
+	@override String get update => 'Actualizar';
+	@override String get delete => 'Eliminar';
+	@override String get retry => 'Reintentar';
+	@override String get buy => 'Comprar este pack';
+	@override String buyWithPrice({required Object price}) => 'Comprar este pack — ${price}';
+}
+
+// Path: packs.progress
+class _Translations$packs$progress$es extends Translations$packs$progress$fr {
+	_Translations$packs$progress$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String downloading({required Object done, required Object total}) => 'Descargando… ${done}/${total}';
+	@override String get verifying => 'Verificando integridad…';
+	@override String get completed => 'Pack listo sin conexión';
+	@override String get error => 'Error de descarga';
+}
+
+// Path: packs.delete
+class _Translations$packs$delete$es extends Translations$packs$delete$fr {
+	_Translations$packs$delete$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get confirmTitle => '¿Eliminar este pack?';
+	@override String get confirmBody => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.';
+	@override String get cancel => 'Cancelar';
+	@override String get confirm => 'Eliminar';
+	@override String get freed => 'Espacio liberado.';
+}
+
+// Path: packs.a11y
+class _Translations$packs$a11y$es extends Translations$packs$a11y$fr {
+	_Translations$packs$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String packCard({required Object nom, required Object state}) => 'Pack ${nom}, ${state}';
+	@override String downloadButton({required Object nom}) => 'Descargar el pack ${nom}';
+	@override String deleteButton({required Object nom}) => 'Eliminar el pack ${nom}';
+}
+
+// Path: packs.types
+class _Translations$packs$types$es extends Translations$packs$types$fr {
+	_Translations$packs$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$packs$types$nord$es nord = _Translations$packs$types$nord$es._(_root);
+	@override late final _Translations$packs$types$sud$es sud = _Translations$packs$types$sud$es._(_root);
+	@override late final _Translations$packs$types$complet$es complet = _Translations$packs$types$complet$es._(_root);
+	@override late final _Translations$packs$types$mam$es mam = _Translations$packs$types$mam$es._(_root);
+}
+
+// Path: guides.categories
+class _Translations$guides$categories$es extends Translations$guides$categories$fr {
+	_Translations$guides$categories$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get ravitaillement => 'Avituallamiento';
+	@override String get hebergement => 'Alojamiento';
+	@override String get transport => 'Transporte';
+	@override String get services => 'Servicios';
+	@override String get eau => 'Agua';
+	@override String get sante => 'Salud';
+}
+
+// Path: guides.intro
+class _Translations$guides$intro$es extends Translations$guides$intro$fr {
+	_Translations$guides$intro$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get ravitaillement => 'Dónde abastecerse de provisiones.';
+	@override String get hebergement => 'Dónde dormir en la etapa.';
+	@override String get transport => 'Autobuses, lanzaderas y conexiones.';
+	@override String get services => 'Correos, banco, lavandería y más.';
+	@override String get eau => 'Puntos de agua potable.';
+	@override String get sante => 'Farmacia y atención cercana.';
+}
+
+// Path: guides.a11y
+class _Translations$guides$a11y$es extends Translations$guides$a11y$fr {
+	_Translations$guides$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String guideCard({required Object lieu}) => 'Guía de ${lieu}';
+	@override String section({required Object titre}) => 'Sección ${titre}';
+	@override String openSiteButton({required Object nom}) => 'Abrir el sitio de ${nom}';
+}
+
+// Path: trailSelection.a11y
+class _Translations$trailSelection$a11y$es extends Translations$trailSelection$a11y$fr {
+	_Translations$trailSelection$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String trailCard({required Object nom, required Object region}) => 'Sendero ${nom}, ${region}';
+	@override String get currentBadge => 'Sendero actualmente activo';
+	@override String selectButton({required Object nom}) => 'Activar el sendero ${nom}';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$es extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1147,6 +1438,50 @@ class _Translations$gamification$badge$challenger$es extends Translations$gamifi
 	@override String get description => 'Has completado tu primer reto de temporada.';
 }
 
+// Path: packs.types.nord
+class _Translations$packs$types$nord$es extends Translations$packs$types$nord$fr {
+	_Translations$packs$types$nord$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare Norte';
+	@override String get description => 'La mitad norte del sendero, sin conexión.';
+}
+
+// Path: packs.types.sud
+class _Translations$packs$types$sud$es extends Translations$packs$types$sud$fr {
+	_Translations$packs$types$sud$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare Sur';
+	@override String get description => 'La mitad sur del sendero, sin conexión.';
+}
+
+// Path: packs.types.complet
+class _Translations$packs$types$complet$es extends Translations$packs$types$complet$fr {
+	_Translations$packs$types$complet$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare Completo';
+	@override String get description => 'Todo el sendero, sin conexión.';
+}
+
+// Path: packs.types.mam
+class _Translations$packs$types$mam$es extends Translations$packs$types$mam$fr {
+	_Translations$packs$types$mam$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get nom => 'Mare a Mare';
+	@override String get description => 'El sendero Mare a Mare, sin conexión.';
+}
+
 // Path: feasibility.recommendations.danger.tips
 class _Translations$feasibility$recommendations$danger$tips$es extends Translations$feasibility$recommendations$danger$tips$fr {
 	_Translations$feasibility$recommendations$danger$tips$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1229,6 +1564,7 @@ extension on TranslationsEs {
 			'nav.catalog' => 'Catálogo de senderos',
 			'nav.profile' => 'Perfil',
 			'nav.settings' => 'Ajustes',
+			'nav.trailSelection' => 'Cambiar de sendero',
 			'map.title' => 'Mapa del sendero',
 			'map.loading' => 'Cargando el recorrido...',
 			'map.noTrack' => 'NingÃºn recorrido disponible',
@@ -1707,6 +2043,112 @@ extension on TranslationsEs {
 			'shareVisibility.shareButton' => 'Compartir',
 			'shareVisibility.privateNotice' => 'Compartir está desactivado. Actívalo en Compartir y visibilidad.',
 			'shareVisibility.shared' => 'Tarjeta lista para compartir.',
+			'waypoints.types.eau' => 'Agua',
+			'waypoints.types.ravitaillement' => 'Avituallamiento',
+			'waypoints.types.danger' => 'Peligro',
+			'waypoints.types.camp' => 'Acampada',
+			'waypoints.types.connectivite' => 'Conectividad',
+			'waypoints.types.jonction' => 'Cruce',
+			'waypoints.filters.title' => 'Filtrar waypoints',
+			_ => null,
+		} ?? switch (path) {
+			'waypoints.filters.showAll' => 'Mostrar todo',
+			'waypoints.filters.hideAll' => 'Ocultar todo',
+			'waypoints.filters.recentConditionOnly' => 'Solo condicion reciente',
+			'waypoints.detail.conditionsTitle' => 'Condiciones del terreno',
+			'waypoints.detail.noComments' => 'Aun no se ha senalado ninguna condicion.',
+			'waypoints.detail.commentsError' => 'Condiciones no disponibles.',
+			'waypoints.detail.report' => 'Senalar',
+			'waypoints.detail.reportAck' => 'Senalamiento guardado. Se revisara tras la sincronizacion.',
+			'waypoints.detail.pendingSync' => 'Pendiente de sincronizacion',
+			'waypoints.freshness.justNow' => 'actualizado ahora mismo',
+			'waypoints.freshness.minutes' => ({required Object n}) => 'actualizado hace ${n} min',
+			'waypoints.freshness.hours' => ({required Object n}) => 'actualizado hace ${n} h',
+			'waypoints.freshness.days' => ({required Object n}) => 'actualizado hace ${n} d',
+			'waypoints.contribution.titleWaypoint' => 'Anadir un punto',
+			'waypoints.contribution.titleComment' => 'Senalar una condicion',
+			'waypoints.contribution.chooseType' => 'Tipo de punto',
+			'waypoints.contribution.titleField' => 'Titulo del punto',
+			'waypoints.contribution.conditionPrompt' => 'Describe la condicion observada',
+			'waypoints.contribution.commentField' => 'Tu observacion',
+			'waypoints.contribution.conditionField' => 'Estado (opcional)',
+			'waypoints.contribution.conditionHelper' => 'p. ej. agua agotada, agua corre, paso resbaladizo',
+			'waypoints.contribution.latencyBanner' => 'Se publicara en la proxima sincronizacion de red.',
+			'waypoints.contribution.submit' => 'Guardar',
+			'waypoints.contribution.savedTitle' => 'Contribucion guardada',
+			'waypoints.contribution.savedPendingSync' => 'Se publicara cuando vuelva la red.',
+			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} pendientes de sincronizacion',
+			'waypoints.contribution.close' => 'Cerrar',
+			'waypoints.contribution.emptyTitle' => 'Indica un titulo para el punto.',
+			'waypoints.contribution.emptyComment' => 'Escribe tu observacion.',
+			'waypoints.contribution.noLocation' => 'Posicion GPS no disponible. Intentalo de nuevo a cielo abierto.',
+			'waypoints.contribution.error' => 'No se puede guardar ahora mismo.',
+			'packs.title' => 'Packs de sendero',
+			'packs.subtitle' => 'Descarga un pack para caminar 100% sin conexión.',
+			'packs.alaCarteNote' => 'A la carte: compra solo el pack que necesitas, sin suscripción.',
+			'packs.size' => ({required Object mo}) => '${mo} MB',
+			'packs.states.notDownloaded' => 'No descargado',
+			'packs.states.downloaded' => 'Descargado',
+			'packs.states.updateAvailable' => 'Actualización disponible',
+			'packs.actions.download' => 'Descargar',
+			'packs.actions.update' => 'Actualizar',
+			'packs.actions.delete' => 'Eliminar',
+			'packs.actions.retry' => 'Reintentar',
+			'packs.actions.buy' => 'Comprar este pack',
+			'packs.actions.buyWithPrice' => ({required Object price}) => 'Comprar este pack — ${price}',
+			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Descargando… ${done}/${total}',
+			'packs.progress.verifying' => 'Verificando integridad…',
+			'packs.progress.completed' => 'Pack listo sin conexión',
+			'packs.progress.error' => 'Error de descarga',
+			'packs.delete.confirmTitle' => '¿Eliminar este pack?',
+			'packs.delete.confirmBody' => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.',
+			'packs.delete.cancel' => 'Cancelar',
+			'packs.delete.confirm' => 'Eliminar',
+			'packs.delete.freed' => 'Espacio liberado.',
+			'packs.empty' => 'No hay pack disponible para este sendero.',
+			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
+			'packs.a11y.downloadButton' => ({required Object nom}) => 'Descargar el pack ${nom}',
+			'packs.a11y.deleteButton' => ({required Object nom}) => 'Eliminar el pack ${nom}',
+			'packs.types.nord.nom' => 'Mare a Mare Norte',
+			'packs.types.nord.description' => 'La mitad norte del sendero, sin conexión.',
+			'packs.types.sud.nom' => 'Mare a Mare Sur',
+			'packs.types.sud.description' => 'La mitad sur del sendero, sin conexión.',
+			'packs.types.complet.nom' => 'Mare a Mare Completo',
+			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
+			'packs.types.mam.nom' => 'Mare a Mare',
+			'packs.types.mam.description' => 'El sendero Mare a Mare, sin conexión.',
+			'guides.title' => 'Guías de etapa',
+			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
+			'guides.sectionsCount' => ({required Object n}) => '${n} secciones practicas',
+			'guides.empty' => 'No hay guía disponible para este sendero.',
+			'guides.noItems' => 'Aún no hay información en esta sección.',
+			'guides.facilitatorNote' => 'StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.',
+			'guides.openSite' => 'Abrir el sitio',
+			'guides.cannotOpen' => 'No se puede abrir este enlace en este dispositivo.',
+			'guides.categories.ravitaillement' => 'Avituallamiento',
+			'guides.categories.hebergement' => 'Alojamiento',
+			'guides.categories.transport' => 'Transporte',
+			'guides.categories.services' => 'Servicios',
+			'guides.categories.eau' => 'Agua',
+			'guides.categories.sante' => 'Salud',
+			'guides.intro.ravitaillement' => 'Dónde abastecerse de provisiones.',
+			'guides.intro.hebergement' => 'Dónde dormir en la etapa.',
+			'guides.intro.transport' => 'Autobuses, lanzaderas y conexiones.',
+			'guides.intro.services' => 'Correos, banco, lavandería y más.',
+			'guides.intro.eau' => 'Puntos de agua potable.',
+			'guides.intro.sante' => 'Farmacia y atención cercana.',
+			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guía de ${lieu}',
+			'guides.a11y.section' => ({required Object titre}) => 'Sección ${titre}',
+			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Abrir el sitio de ${nom}',
+			'trailSelection.title' => 'Cambiar de sendero',
+			'trailSelection.subtitle' => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interes, packs, guias) sigue tu seleccion.',
+			'trailSelection.current' => 'Sendero activo',
+			'trailSelection.select' => 'Elegir este sendero',
+			'trailSelection.selected' => 'Sendero seleccionado',
+			'trailSelection.stagesDistance' => ({required Object stages, required Object km}) => '${stages} etapas - ${km} km',
+			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Sendero ${nom}, ${region}',
+			'trailSelection.a11y.currentBadge' => 'Sendero actualmente activo',
+			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activar el sendero ${nom}',
 			_ => null,
 		};
 	}

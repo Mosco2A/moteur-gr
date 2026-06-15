@@ -1042,6 +1042,285 @@ describe('activities — fil immuable + moderation hebergeur DSA (F7B-03)', () =
   });
 });
 
+describe('waypoints — communautaire FarOut + moderation hebergeur DSA (F8A-03)', () => {
+  const WP = 'wp-test-0001';
+
+  function waypointPayload(overrides = {}) {
+    return {
+      trailId: 'mare_a_mare_centre',
+      type: 'eau',
+      latitude: 42.0,
+      longitude: 9.0,
+      titre: 'Source du col',
+      authorUidHash: TREKKER,
+      source: 'communaute',
+      lastUpdatedAt: serverTimestamp(),
+      moderationState: 'visible',
+      ...overrides,
+    };
+  }
+
+  /// Seed direct (regles desactivees) d un waypoint avec un etat donne.
+  async function seedWaypoint({ moderationState = 'visible' } = {}) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'waypoints', WP), {
+        trailId: 'mare_a_mare_centre',
+        type: 'danger',
+        latitude: 42.0,
+        longitude: 9.0,
+        titre: 'Passage expose',
+        authorUidHash: 'hash-seed',
+        source: 'communaute',
+        lastUpdatedAt: Timestamp.now(),
+        moderationState,
+      });
+    });
+  }
+
+  it('utilisateur authentifie cree un waypoint communautaire valide', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'waypoints', WP), waypointPayload()),
+    );
+  });
+
+  it('un anonyme ne cree pas de waypoint', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'waypoints', WP), waypointPayload()),
+    );
+  });
+
+  it('usurpation d UID refusee (authorUidHash != uid)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoints', WP),
+        waypointPayload({ authorUidHash: STRANGER }),
+      ),
+    );
+  });
+
+  it('type hors liste refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoints', WP),
+        waypointPayload({ type: 'blague' }),
+      ),
+    );
+  });
+
+  it('source != communaute refusee (un officiel n est pas contribue ici)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoints', WP),
+        waypointPayload({ source: 'officiel' }),
+      ),
+    );
+  });
+
+  it('moderationState initial != visible refuse (publication immediate)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoints', WP),
+        waypointPayload({ moderationState: 'removed' }),
+      ),
+    );
+  });
+
+  it('champ hors schema refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoints', WP),
+        waypointPayload({ champPirate: true }),
+      ),
+    );
+  });
+
+  it('lecture publique des waypoints visible', async () => {
+    await seedWaypoint({ moderationState: 'visible' });
+    await assertSucceeds(getDoc(doc(anonDb(), 'waypoints', WP)));
+  });
+
+  it('waypoint removed invisible en lecture', async () => {
+    await seedWaypoint({ moderationState: 'removed' });
+    await assertFails(getDoc(doc(anonDb(), 'waypoints', WP)));
+  });
+
+  it('auteur ne peut PAS re-editer le contenu (immutabilite)', async () => {
+    await seedWaypoint();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'waypoints', WP), { titre: 'modifie' }),
+    );
+  });
+
+  it('non-moderateur ne change pas moderationState', async () => {
+    await seedWaypoint();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'waypoints', WP), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur masque un waypoint (moderationState=removed)', async () => {
+    await seedWaypoint();
+    await assertSucceeds(
+      updateDoc(doc(moderatorDb(), 'waypoints', WP), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur ne peut PAS editer le contenu (seul moderationState)', async () => {
+    await seedWaypoint();
+    await assertFails(
+      updateDoc(doc(moderatorDb(), 'waypoints', WP), {
+        moderationState: 'flagged',
+        titre: 'edit interdit',
+      }),
+    );
+  });
+
+  it('moderateur supprime un waypoint', async () => {
+    await seedWaypoint();
+    await assertSucceeds(deleteDoc(doc(moderatorDb(), 'waypoints', WP)));
+  });
+
+  it('utilisateur normal ne supprime pas un waypoint', async () => {
+    await seedWaypoint();
+    await assertFails(deleteDoc(doc(trekkerDb(), 'waypoints', WP)));
+  });
+});
+
+describe('waypoint_comments — condition immuable + moderation DSA (F8A-03)', () => {
+  const CMT = 'cmt-test-0001';
+
+  function commentPayload(overrides = {}) {
+    return {
+      waypointId: 'wp-test-0001',
+      authorUidHash: TREKKER,
+      texte: 'Source a sec',
+      condition: 'eau_a_sec',
+      createdAt: serverTimestamp(),
+      moderationState: 'visible',
+      ...overrides,
+    };
+  }
+
+  async function seedComment({ moderationState = 'visible' } = {}) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'waypoint_comments', CMT), {
+        waypointId: 'wp-test-0001',
+        authorUidHash: 'hash-seed',
+        texte: 'Eau coule bien',
+        condition: 'eau_coule_fort',
+        createdAt: Timestamp.now(),
+        moderationState,
+      });
+    });
+  }
+
+  it('utilisateur authentifie cree un commentaire valide', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'waypoint_comments', CMT), commentPayload()),
+    );
+  });
+
+  it('commentaire sans condition (optionnel) accepte', async () => {
+    await assertSucceeds(
+      setDoc(
+        doc(trekkerDb(), 'waypoint_comments', CMT),
+        commentPayload({ condition: null }),
+      ),
+    );
+  });
+
+  it('un anonyme ne cree pas de commentaire', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'waypoint_comments', CMT), commentPayload()),
+    );
+  });
+
+  it('usurpation d UID refusee (authorUidHash != uid)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoint_comments', CMT),
+        commentPayload({ authorUidHash: STRANGER }),
+      ),
+    );
+  });
+
+  it('moderationState initial != visible refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoint_comments', CMT),
+        commentPayload({ moderationState: 'flagged' }),
+      ),
+    );
+  });
+
+  it('champ hors schema refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'waypoint_comments', CMT),
+        commentPayload({ champPirate: true }),
+      ),
+    );
+  });
+
+  it('commentaire removed invisible en lecture', async () => {
+    await seedComment({ moderationState: 'removed' });
+    await assertFails(getDoc(doc(anonDb(), 'waypoint_comments', CMT)));
+  });
+
+  it('commentaire visible lisible publiquement', async () => {
+    await seedComment({ moderationState: 'visible' });
+    await assertSucceeds(getDoc(doc(anonDb(), 'waypoint_comments', CMT)));
+  });
+
+  it('auteur ne peut PAS re-editer le contenu (immutabilite)', async () => {
+    await seedComment();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'waypoint_comments', CMT), {
+        texte: 'modifie',
+      }),
+    );
+  });
+
+  it('non-moderateur ne change pas moderationState', async () => {
+    await seedComment();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'waypoint_comments', CMT), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur masque un commentaire (moderationState=removed)', async () => {
+    await seedComment();
+    await assertSucceeds(
+      updateDoc(doc(moderatorDb(), 'waypoint_comments', CMT), {
+        moderationState: 'removed',
+      }),
+    );
+  });
+
+  it('moderateur ne peut PAS editer le contenu (seul moderationState)', async () => {
+    await seedComment();
+    await assertFails(
+      updateDoc(doc(moderatorDb(), 'waypoint_comments', CMT), {
+        moderationState: 'flagged',
+        texte: 'edit interdit',
+      }),
+    );
+  });
+
+  it('moderateur supprime un commentaire', async () => {
+    await seedComment();
+    await assertSucceeds(
+      deleteDoc(doc(moderatorDb(), 'waypoint_comments', CMT)),
+    );
+  });
+});
+
 describe('tout le reste — deny', () => {
   it('collection sans regles (groups) refusee meme authentifie', async () => {
     await assertFails(

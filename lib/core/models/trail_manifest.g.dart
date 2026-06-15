@@ -17,7 +17,7 @@ _TrailManifest _$TrailManifestFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$TrailManifestToJson(_TrailManifest instance) =>
     <String, dynamic>{
       'schemaVersion': instance.schemaVersion,
-      'trails': instance.trails,
+      'trails': instance.trails.map((e) => e.toJson()).toList(),
     };
 
 _TrailManifestEntry _$TrailManifestEntryFromJson(Map<String, dynamic> json) =>

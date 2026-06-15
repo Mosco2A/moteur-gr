@@ -27,7 +27,8 @@
     "emergency": "Emergency contacts",
     "catalog": "Trail catalog",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "trailSelection": "Switch trail"
   },
   "map": {
     "title": "Trail map",
@@ -632,5 +633,155 @@
     "shareButton": "Share",
     "privateNotice": "Sharing is off. Turn it on in Sharing and visibility.",
     "shared": "Card ready to share."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Water",
+      "ravitaillement": "Resupply",
+      "danger": "Danger",
+      "camp": "Campsite",
+      "connectivite": "Connectivity",
+      "jonction": "Junction"
+    },
+    "filters": {
+      "title": "Filter waypoints",
+      "showAll": "Show all",
+      "hideAll": "Hide all",
+      "recentConditionOnly": "Recent condition only"
+    },
+    "detail": {
+      "conditionsTitle": "Field conditions",
+      "noComments": "No condition reported yet.",
+      "commentsError": "Conditions unavailable.",
+      "report": "Report",
+      "reportAck": "Report saved. It will be reviewed after sync.",
+      "pendingSync": "Pending synchronization"
+    },
+    "freshness": {
+      "justNow": "updated just now",
+      "minutes": "updated $n min ago",
+      "hours": "updated $n h ago",
+      "days": "updated $n d ago"
+    },
+    "contribution": {
+      "titleWaypoint": "Add a waypoint",
+      "titleComment": "Report a condition",
+      "chooseType": "Waypoint type",
+      "titleField": "Waypoint title",
+      "conditionPrompt": "Describe the observed condition",
+      "commentField": "Your observation",
+      "conditionField": "State (optional)",
+      "conditionHelper": "e.g. water dried up, water flowing, slippery section",
+      "latencyBanner": "Will be published at the next network sync.",
+      "submit": "Save",
+      "savedTitle": "Contribution saved",
+      "savedPendingSync": "It will be published when the network is back.",
+      "pendingCount": "$n pending synchronization",
+      "close": "Close",
+      "emptyTitle": "Please enter a title for the waypoint.",
+      "emptyComment": "Please enter your observation.",
+      "noLocation": "GPS position unavailable. Try again under open sky.",
+      "error": "Cannot save right now."
+    }
+  },
+  "packs": {
+    "title": "Trail packs",
+    "subtitle": "Download a pack to hike 100% offline.",
+    "alaCarteNote": "A la carte: buy only the pack you need, no subscription.",
+    "size": "$mo MB",
+    "states": {
+      "notDownloaded": "Not downloaded",
+      "downloaded": "Downloaded",
+      "updateAvailable": "Update available"
+    },
+    "actions": {
+      "download": "Download",
+      "update": "Update",
+      "delete": "Delete",
+      "retry": "Retry",
+      "buy": "Buy this pack",
+      "buyWithPrice": "Buy this pack — $price"
+    },
+    "progress": {
+      "downloading": "Downloading… $done/$total",
+      "verifying": "Verifying integrity…",
+      "completed": "Pack ready offline",
+      "error": "Download failed"
+    },
+    "delete": {
+      "confirmTitle": "Delete this pack?",
+      "confirmBody": "The pack will be removed from the device to free up space. You can download it again later.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "freed": "Space freed."
+    },
+    "empty": "No pack available for this trail.",
+    "a11y": {
+      "packCard": "Pack $nom, $state",
+      "downloadButton": "Download pack $nom",
+      "deleteButton": "Delete pack $nom"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare North",
+        "description": "The northern half of the trail, offline."
+      },
+      "sud": {
+        "nom": "Mare a Mare South",
+        "description": "The southern half of the trail, offline."
+      },
+      "complet": {
+        "nom": "Mare a Mare Full",
+        "description": "The whole trail, offline."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "The Mare a Mare trail, offline."
+      }
+    }
+  },
+  "guides": {
+    "title": "Town guides",
+    "subtitle": "Practical info for towns and villages, available offline.",
+    "sectionsCount": "$n practical sections",
+    "empty": "No guide available for this trail.",
+    "noItems": "No information in this section yet.",
+    "facilitatorNote": "StepWays points you to providers. Booking and payment happen on their site: nothing in the app.",
+    "openSite": "Open website",
+    "cannotOpen": "Can't open this link on this device.",
+    "categories": {
+      "ravitaillement": "Resupply",
+      "hebergement": "Accommodation",
+      "transport": "Transport",
+      "services": "Services",
+      "eau": "Water",
+      "sante": "Health"
+    },
+    "intro": {
+      "ravitaillement": "Where to stock up on supplies.",
+      "hebergement": "Where to sleep at the stage.",
+      "transport": "Buses, shuttles and connections.",
+      "services": "Post office, bank, laundry and more.",
+      "eau": "Drinking water points.",
+      "sante": "Pharmacy and nearby care."
+    },
+    "a11y": {
+      "guideCard": "Guide for $lieu",
+      "section": "Section $titre",
+      "openSiteButton": "Open the website of $nom"
+    }
+  },
+  "trailSelection": {
+    "title": "Switch trail",
+    "subtitle": "Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.",
+    "current": "Active trail",
+    "select": "Choose this trail",
+    "selected": "Selected trail",
+    "stagesDistance": "$stages stages - $km km",
+    "a11y": {
+      "trailCard": "Trail $nom, $region",
+      "currentBadge": "Currently active trail",
+      "selectButton": "Activate trail $nom"
+    }
   }
 }

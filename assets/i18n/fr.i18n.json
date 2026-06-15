@@ -27,7 +27,8 @@
     "emergency": "Contacts urgence",
     "catalog": "Catalogue des sentiers",
     "profile": "Profil",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "trailSelection": "Changer de sentier"
   },
   "map": {
     "title": "Carte du sentier",
@@ -632,5 +633,155 @@
     "shareButton": "Partager",
     "privateNotice": "Le partage est désactivé. Active-le dans Partage et visibilité.",
     "shared": "Carte prête à partager."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Eau",
+      "ravitaillement": "Ravitaillement",
+      "danger": "Danger",
+      "camp": "Bivouac",
+      "connectivite": "Connectivité",
+      "jonction": "Jonction"
+    },
+    "filters": {
+      "title": "Filtrer les waypoints",
+      "showAll": "Tout afficher",
+      "hideAll": "Tout masquer",
+      "recentConditionOnly": "Condition récente uniquement"
+    },
+    "detail": {
+      "conditionsTitle": "Conditions terrain",
+      "noComments": "Aucune condition signalée pour le moment.",
+      "commentsError": "Conditions indisponibles.",
+      "report": "Signaler",
+      "reportAck": "Signalement enregistré. Il sera examiné après synchronisation.",
+      "pendingSync": "En attente de synchronisation"
+    },
+    "freshness": {
+      "justNow": "mis à jour à l’instant",
+      "minutes": "mis à jour il y a $n min",
+      "hours": "mis à jour il y a $n h",
+      "days": "mis à jour il y a $n j"
+    },
+    "contribution": {
+      "titleWaypoint": "Ajouter un point",
+      "titleComment": "Signaler une condition",
+      "chooseType": "Type de point",
+      "titleField": "Titre du point",
+      "conditionPrompt": "Décrivez la condition observée",
+      "commentField": "Votre observation",
+      "conditionField": "État (optionnel)",
+      "conditionHelper": "ex : eau à sec, eau coule bien, passage glissant",
+      "latencyBanner": "Sera publié à la prochaine synchronisation réseau.",
+      "submit": "Enregistrer",
+      "savedTitle": "Contribution enregistrée",
+      "savedPendingSync": "Elle sera publiée dès le retour du réseau.",
+      "pendingCount": "$n en attente de synchronisation",
+      "close": "Fermer",
+      "emptyTitle": "Indiquez un titre pour le point.",
+      "emptyComment": "Saisissez votre observation.",
+      "noLocation": "Position GPS indisponible. Réessayez sous le ciel ouvert.",
+      "error": "Enregistrement impossible pour le moment."
+    }
+  },
+  "packs": {
+    "title": "Packs sentier",
+    "subtitle": "Téléchargez un pack pour randonner 100% hors-ligne.",
+    "alaCarteNote": "À la carte : achetez seulement le pack qu'il vous faut, pas d'abonnement.",
+    "size": "$mo Mo",
+    "states": {
+      "notDownloaded": "Non téléchargé",
+      "downloaded": "Téléchargé",
+      "updateAvailable": "Mise à jour disponible"
+    },
+    "actions": {
+      "download": "Télécharger",
+      "update": "Mettre à jour",
+      "delete": "Supprimer",
+      "retry": "Réessayer",
+      "buy": "Acheter ce pack",
+      "buyWithPrice": "Acheter ce pack — $price"
+    },
+    "progress": {
+      "downloading": "Téléchargement… $done/$total",
+      "verifying": "Vérification de l'intégrité…",
+      "completed": "Pack prêt hors-ligne",
+      "error": "Échec du téléchargement"
+    },
+    "delete": {
+      "confirmTitle": "Supprimer ce pack ?",
+      "confirmBody": "Le pack sera retiré de l'appareil pour libérer de l'espace. Vous pourrez le retélécharger.",
+      "cancel": "Annuler",
+      "confirm": "Supprimer",
+      "freed": "Espace libéré."
+    },
+    "empty": "Aucun pack disponible pour ce sentier.",
+    "a11y": {
+      "packCard": "Pack $nom, $state",
+      "downloadButton": "Télécharger le pack $nom",
+      "deleteButton": "Supprimer le pack $nom"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare Nord",
+        "description": "La moitié nord du sentier, hors-ligne."
+      },
+      "sud": {
+        "nom": "Mare a Mare Sud",
+        "description": "La moitié sud du sentier, hors-ligne."
+      },
+      "complet": {
+        "nom": "Mare a Mare Complet",
+        "description": "Tout le sentier, hors-ligne."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "Le sentier Mare a Mare, hors-ligne."
+      }
+    }
+  },
+  "guides": {
+    "title": "Guides d'étape",
+    "subtitle": "Infos pratiques des villes et villages, consultables hors-ligne.",
+    "sectionsCount": "$n rubriques pratiques",
+    "empty": "Aucun guide disponible pour ce sentier.",
+    "noItems": "Aucune information dans cette section pour le moment.",
+    "facilitatorNote": "StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.",
+    "openSite": "Voir le site",
+    "cannotOpen": "Impossible d'ouvrir ce lien sur cet appareil.",
+    "categories": {
+      "ravitaillement": "Ravitaillement",
+      "hebergement": "Hébergement",
+      "transport": "Transport",
+      "services": "Services",
+      "eau": "Eau",
+      "sante": "Santé"
+    },
+    "intro": {
+      "ravitaillement": "Où faire le plein de provisions.",
+      "hebergement": "Où dormir à l'étape.",
+      "transport": "Bus, navettes et liaisons.",
+      "services": "Poste, banque, laverie et autres services.",
+      "eau": "Points d'eau potable.",
+      "sante": "Pharmacie et soins de proximité."
+    },
+    "a11y": {
+      "guideCard": "Guide de $lieu",
+      "section": "Section $titre",
+      "openSiteButton": "Ouvrir le site de $nom"
+    }
+  },
+  "trailSelection": {
+    "title": "Changer de sentier",
+    "subtitle": "Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.",
+    "current": "Sentier actif",
+    "select": "Choisir ce sentier",
+    "selected": "Sentier selectionne",
+    "stagesDistance": "$stages etapes - $km km",
+    "a11y": {
+      "trailCard": "Sentier $nom, $region",
+      "currentBadge": "Sentier actuellement actif",
+      "selectButton": "Activer le sentier $nom"
+    }
   }
 }

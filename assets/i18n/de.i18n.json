@@ -27,7 +27,8 @@
     "emergency": "Notfallkontakte",
     "catalog": "Wegekatalog",
     "profile": "Profil",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "trailSelection": "Weg wechseln"
   },
   "map": {
     "title": "Wanderkarte",
@@ -632,5 +633,155 @@
     "shareButton": "Teilen",
     "privateNotice": "Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.",
     "shared": "Karte bereit zum Teilen."
+  },
+  "waypoints": {
+    "types": {
+      "eau": "Wasser",
+      "ravitaillement": "Nachschub",
+      "danger": "Gefahr",
+      "camp": "Zeltplatz",
+      "connectivite": "Konnektivitat",
+      "jonction": "Kreuzung"
+    },
+    "filters": {
+      "title": "Wegpunkte filtern",
+      "showAll": "Alle anzeigen",
+      "hideAll": "Alle ausblenden",
+      "recentConditionOnly": "Nur aktueller Zustand"
+    },
+    "detail": {
+      "conditionsTitle": "Gelandezustand",
+      "noComments": "Noch kein Zustand gemeldet.",
+      "commentsError": "Zustand nicht verfugbar.",
+      "report": "Melden",
+      "reportAck": "Meldung gespeichert. Sie wird nach der Synchronisierung gepruft.",
+      "pendingSync": "Warten auf Synchronisierung"
+    },
+    "freshness": {
+      "justNow": "gerade aktualisiert",
+      "minutes": "vor $n Min aktualisiert",
+      "hours": "vor $n Std aktualisiert",
+      "days": "vor $n T aktualisiert"
+    },
+    "contribution": {
+      "titleWaypoint": "Wegpunkt hinzufugen",
+      "titleComment": "Zustand melden",
+      "chooseType": "Wegpunkttyp",
+      "titleField": "Titel des Wegpunkts",
+      "conditionPrompt": "Beschreiben Sie den beobachteten Zustand",
+      "commentField": "Ihre Beobachtung",
+      "conditionField": "Zustand (optional)",
+      "conditionHelper": "z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle",
+      "latencyBanner": "Wird bei der nachsten Synchronisierung veroffentlicht.",
+      "submit": "Speichern",
+      "savedTitle": "Beitrag gespeichert",
+      "savedPendingSync": "Er wird veroffentlicht, sobald das Netz wieder da ist.",
+      "pendingCount": "$n warten auf Synchronisierung",
+      "close": "Schliessen",
+      "emptyTitle": "Bitte einen Titel fur den Wegpunkt angeben.",
+      "emptyComment": "Bitte Ihre Beobachtung eingeben.",
+      "noLocation": "GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.",
+      "error": "Speichern derzeit nicht moglich."
+    }
+  },
+  "packs": {
+    "title": "Wegpakete",
+    "subtitle": "Lade ein Paket herunter, um 100% offline zu wandern.",
+    "alaCarteNote": "A la carte: Kaufe nur das Paket, das du brauchst, kein Abo.",
+    "size": "$mo MB",
+    "states": {
+      "notDownloaded": "Nicht heruntergeladen",
+      "downloaded": "Heruntergeladen",
+      "updateAvailable": "Update verfügbar"
+    },
+    "actions": {
+      "download": "Herunterladen",
+      "update": "Aktualisieren",
+      "delete": "Löschen",
+      "retry": "Erneut versuchen",
+      "buy": "Dieses Paket kaufen",
+      "buyWithPrice": "Dieses Paket kaufen — $price"
+    },
+    "progress": {
+      "downloading": "Wird heruntergeladen… $done/$total",
+      "verifying": "Integrität wird geprüft…",
+      "completed": "Paket offline bereit",
+      "error": "Download fehlgeschlagen"
+    },
+    "delete": {
+      "confirmTitle": "Dieses Paket löschen?",
+      "confirmBody": "Das Paket wird vom Gerät entfernt, um Speicher freizugeben. Du kannst es später erneut herunterladen.",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen",
+      "freed": "Speicher freigegeben."
+    },
+    "empty": "Kein Paket für diesen Weg verfügbar.",
+    "a11y": {
+      "packCard": "Paket $nom, $state",
+      "downloadButton": "Paket $nom herunterladen",
+      "deleteButton": "Paket $nom löschen"
+    },
+    "types": {
+      "nord": {
+        "nom": "Mare a Mare Nord",
+        "description": "Die nördliche Hälfte des Wegs, offline."
+      },
+      "sud": {
+        "nom": "Mare a Mare Süd",
+        "description": "Die südliche Hälfte des Wegs, offline."
+      },
+      "complet": {
+        "nom": "Mare a Mare Komplett",
+        "description": "Der ganze Weg, offline."
+      },
+      "mam": {
+        "nom": "Mare a Mare",
+        "description": "Der Mare-a-Mare-Weg, offline."
+      }
+    }
+  },
+  "guides": {
+    "title": "Ortsführer",
+    "subtitle": "Praktische Infos zu Städten und Dörfern, offline verfügbar.",
+    "sectionsCount": "$n praktische Rubriken",
+    "empty": "Kein Führer für diesen Weg verfügbar.",
+    "noItems": "Noch keine Informationen in diesem Abschnitt.",
+    "facilitatorNote": "StepWays verweist Sie an Anbieter. Buchung und Zahlung erfolgen auf deren Website: nichts in der App.",
+    "openSite": "Website öffnen",
+    "cannotOpen": "Dieser Link kann auf diesem Gerät nicht geöffnet werden.",
+    "categories": {
+      "ravitaillement": "Verpflegung",
+      "hebergement": "Unterkunft",
+      "transport": "Transport",
+      "services": "Dienstleistungen",
+      "eau": "Wasser",
+      "sante": "Gesundheit"
+    },
+    "intro": {
+      "ravitaillement": "Wo man Vorräte auffüllt.",
+      "hebergement": "Wo man an der Etappe schläft.",
+      "transport": "Busse, Shuttles und Verbindungen.",
+      "services": "Post, Bank, Wäscherei und mehr.",
+      "eau": "Trinkwasserstellen.",
+      "sante": "Apotheke und Versorgung in der Nähe."
+    },
+    "a11y": {
+      "guideCard": "Führer für $lieu",
+      "section": "Abschnitt $titre",
+      "openSiteButton": "Website von $nom öffnen"
+    }
+  },
+  "trailSelection": {
+    "title": "Weg wechseln",
+    "subtitle": "Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.",
+    "current": "Aktiver Weg",
+    "select": "Diesen Weg waehlen",
+    "selected": "Ausgewaehlter Weg",
+    "stagesDistance": "$stages Etappen - $km km",
+    "a11y": {
+      "trailCard": "Weg $nom, $region",
+      "currentBadge": "Aktuell aktiver Weg",
+      "selectButton": "Weg $nom aktivieren"
+    }
   }
 }
