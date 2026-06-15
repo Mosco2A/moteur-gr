@@ -819,5 +819,53 @@
       "healthSection": "Health data section, reinforced consent",
       "policyButton": "Open the privacy policy"
     }
+  },
+  "moderation": {
+    "reportTitle": "Report this content",
+    "reportIntro": "Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.",
+    "reasonLabel": "Reason for reporting",
+    "reasons": {
+      "illegal": "Illegal content",
+      "harassment": "Harassment or hate",
+      "spam": "Spam or advertising",
+      "dangerous": "Dangerous or misleading information",
+      "other": "Other"
+    },
+    "detailsLabel": "Add details (optional)",
+    "detailsHint": "Add a comment to help the moderator.",
+    "contactLabel": "Your email address",
+    "contactHint": "To keep you informed about the handling (article 16).",
+    "goodFaithLabel": "I declare in good faith that this information is accurate.",
+    "submit": "Send report",
+    "submitting": "Sending…",
+    "sent": "Report sent. Thank you, a moderator will review it.",
+    "errorRequired": "Please fill in the reason, your email and the good-faith declaration.",
+    "errorGeneric": "The report could not be sent. Please try again.",
+    "cancel": "Cancel",
+    "reasonsTitle": "Why was this content restricted?",
+    "reasonsIntro": "In accordance with article 17, here is the reason for the moderation decision regarding your content.",
+    "decisionLabel": "Decision",
+    "decisions": {
+      "keep": "Content kept",
+      "restrict": "Content restricted",
+      "remove": "Content removed"
+    },
+    "noStatement": "No restriction has been applied to your content.",
+    "complaintAction": "Challenge this decision",
+    "complaintTitle": "Challenge a decision",
+    "complaintIntro": "You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).",
+    "complaintExposeLabel": "Your challenge",
+    "complaintExposeHint": "Describe the reasons for your challenge.",
+    "complaintSubmit": "Send challenge",
+    "complaintSent": "Challenge recorded. It will be reviewed.",
+    "complaintEmpty": "Please explain your challenge.",
+    "a11y": {
+      "reportForm": "Content reporting form",
+      "reasonSelector": "Report reason selector",
+      "goodFaithToggle": "Good-faith declaration, $state",
+      "submitReport": "Send report",
+      "statementCard": "Statement of reasons for the moderation decision",
+      "complaintForm": "Decision challenge form"
+    }
   }
 }

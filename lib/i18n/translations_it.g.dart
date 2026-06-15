@@ -80,6 +80,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$guides$it guides = _Translations$guides$it._(_root);
 	@override late final _Translations$trailSelection$it trailSelection = _Translations$trailSelection$it._(_root);
 	@override late final _Translations$consent$it consent = _Translations$consent$it._(_root);
+	@override late final _Translations$moderation$it moderation = _Translations$moderation$it._(_root);
 }
 
 // Path: a11y
@@ -880,6 +881,44 @@ class _Translations$consent$it extends Translations$consent$fr {
 	@override late final _Translations$consent$a11y$it a11y = _Translations$consent$a11y$it._(_root);
 }
 
+// Path: moderation
+class _Translations$moderation$it extends Translations$moderation$fr {
+	_Translations$moderation$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportTitle => 'Segnala questo contenuto';
+	@override String get reportIntro => 'Aiutaci a mantenere sana la community. Indica perché questo contenuto ti sembra illecito. La tua segnalazione sarà esaminata da un moderatore.';
+	@override String get reasonLabel => 'Motivo della segnalazione';
+	@override late final _Translations$moderation$reasons$it reasons = _Translations$moderation$reasons$it._(_root);
+	@override String get detailsLabel => 'Aggiungi dettagli (facoltativo)';
+	@override String get detailsHint => 'Aggiungi un commento per aiutare il moderatore.';
+	@override String get contactLabel => 'Il tuo indirizzo e-mail';
+	@override String get contactHint => 'Per tenerti informato sulla gestione (articolo 16).';
+	@override String get goodFaithLabel => 'Dichiaro in buona fede che queste informazioni sono esatte.';
+	@override String get submit => 'Invia segnalazione';
+	@override String get submitting => 'Invio in corso…';
+	@override String get sent => 'Segnalazione inviata. Grazie, un moderatore la esaminerà.';
+	@override String get errorRequired => 'Compila il motivo, la tua e-mail e la dichiarazione di buona fede.';
+	@override String get errorGeneric => 'Impossibile inviare la segnalazione. Riprova.';
+	@override String get cancel => 'Annulla';
+	@override String get reasonsTitle => 'Perché questo contenuto è stato limitato?';
+	@override String get reasonsIntro => 'In conformità all\'articolo 17, ecco il motivo della decisione di moderazione relativa al tuo contenuto.';
+	@override String get decisionLabel => 'Decisione';
+	@override late final _Translations$moderation$decisions$it decisions = _Translations$moderation$decisions$it._(_root);
+	@override String get noStatement => 'Nessuna restrizione è stata applicata ai tuoi contenuti.';
+	@override String get complaintAction => 'Contestare questa decisione';
+	@override String get complaintTitle => 'Contestare una decisione';
+	@override String get complaintIntro => 'Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).';
+	@override String get complaintExposeLabel => 'La tua contestazione';
+	@override String get complaintExposeHint => 'Descrivi i motivi della tua contestazione.';
+	@override String get complaintSubmit => 'Invia contestazione';
+	@override String get complaintSent => 'Contestazione registrata. Sarà esaminata.';
+	@override String get complaintEmpty => 'Spiega la tua contestazione.';
+	@override late final _Translations$moderation$a11y$it a11y = _Translations$moderation$a11y$it._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1382,6 +1421,47 @@ class _Translations$consent$a11y$it extends Translations$consent$a11y$fr {
 	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, attualmente ${state}';
 	@override String get healthSection => 'Sezione dati sulla salute, consenso rafforzato';
 	@override String get policyButton => 'Apri l\'informativa sulla privacy';
+}
+
+// Path: moderation.reasons
+class _Translations$moderation$reasons$it extends Translations$moderation$reasons$fr {
+	_Translations$moderation$reasons$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get illegal => 'Contenuto illegale';
+	@override String get harassment => 'Molestie o odio';
+	@override String get spam => 'Spam o pubblicità';
+	@override String get dangerous => 'Informazione pericolosa o ingannevole';
+	@override String get other => 'Altro';
+}
+
+// Path: moderation.decisions
+class _Translations$moderation$decisions$it extends Translations$moderation$decisions$fr {
+	_Translations$moderation$decisions$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get keep => 'Contenuto mantenuto';
+	@override String get restrict => 'Contenuto limitato';
+	@override String get remove => 'Contenuto rimosso';
+}
+
+// Path: moderation.a11y
+class _Translations$moderation$a11y$it extends Translations$moderation$a11y$fr {
+	_Translations$moderation$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportForm => 'Modulo di segnalazione del contenuto';
+	@override String get reasonSelector => 'Selettore del motivo della segnalazione';
+	@override String goodFaithToggle({required Object state}) => 'Dichiarazione di buona fede, ${state}';
+	@override String get submitReport => 'Invia segnalazione';
+	@override String get statementCard => 'Motivazione della decisione di moderazione';
+	@override String get complaintForm => 'Modulo di contestazione della decisione';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2239,6 +2319,46 @@ extension on TranslationsIt {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, attualmente ${state}',
 			'consent.a11y.healthSection' => 'Sezione dati sulla salute, consenso rafforzato',
 			'consent.a11y.policyButton' => 'Apri l\'informativa sulla privacy',
+			'moderation.reportTitle' => 'Segnala questo contenuto',
+			'moderation.reportIntro' => 'Aiutaci a mantenere sana la community. Indica perché questo contenuto ti sembra illecito. La tua segnalazione sarà esaminata da un moderatore.',
+			'moderation.reasonLabel' => 'Motivo della segnalazione',
+			'moderation.reasons.illegal' => 'Contenuto illegale',
+			'moderation.reasons.harassment' => 'Molestie o odio',
+			'moderation.reasons.spam' => 'Spam o pubblicità',
+			'moderation.reasons.dangerous' => 'Informazione pericolosa o ingannevole',
+			'moderation.reasons.other' => 'Altro',
+			'moderation.detailsLabel' => 'Aggiungi dettagli (facoltativo)',
+			'moderation.detailsHint' => 'Aggiungi un commento per aiutare il moderatore.',
+			'moderation.contactLabel' => 'Il tuo indirizzo e-mail',
+			'moderation.contactHint' => 'Per tenerti informato sulla gestione (articolo 16).',
+			'moderation.goodFaithLabel' => 'Dichiaro in buona fede che queste informazioni sono esatte.',
+			'moderation.submit' => 'Invia segnalazione',
+			'moderation.submitting' => 'Invio in corso…',
+			'moderation.sent' => 'Segnalazione inviata. Grazie, un moderatore la esaminerà.',
+			'moderation.errorRequired' => 'Compila il motivo, la tua e-mail e la dichiarazione di buona fede.',
+			'moderation.errorGeneric' => 'Impossibile inviare la segnalazione. Riprova.',
+			'moderation.cancel' => 'Annulla',
+			'moderation.reasonsTitle' => 'Perché questo contenuto è stato limitato?',
+			'moderation.reasonsIntro' => 'In conformità all\'articolo 17, ecco il motivo della decisione di moderazione relativa al tuo contenuto.',
+			'moderation.decisionLabel' => 'Decisione',
+			'moderation.decisions.keep' => 'Contenuto mantenuto',
+			'moderation.decisions.restrict' => 'Contenuto limitato',
+			'moderation.decisions.remove' => 'Contenuto rimosso',
+			'moderation.noStatement' => 'Nessuna restrizione è stata applicata ai tuoi contenuti.',
+			'moderation.complaintAction' => 'Contestare questa decisione',
+			'moderation.complaintTitle' => 'Contestare una decisione',
+			'moderation.complaintIntro' => 'Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).',
+			'moderation.complaintExposeLabel' => 'La tua contestazione',
+			'moderation.complaintExposeHint' => 'Descrivi i motivi della tua contestazione.',
+			'moderation.complaintSubmit' => 'Invia contestazione',
+			'moderation.complaintSent' => 'Contestazione registrata. Sarà esaminata.',
+			'moderation.complaintEmpty' => 'Spiega la tua contestazione.',
+			'moderation.a11y.reportForm' => 'Modulo di segnalazione del contenuto',
+			'moderation.a11y.reasonSelector' => 'Selettore del motivo della segnalazione',
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Dichiarazione di buona fede, ${state}',
+			'moderation.a11y.submitReport' => 'Invia segnalazione',
+			'moderation.a11y.statementCard' => 'Motivazione della decisione di moderazione',
+			'moderation.a11y.complaintForm' => 'Modulo di contestazione della decisione',
 			_ => null,
 		};
 	}
