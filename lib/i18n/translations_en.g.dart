@@ -77,6 +77,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$shareVisibility$en shareVisibility = _Translations$shareVisibility$en._(_root);
 	@override late final _Translations$waypoints$en waypoints = _Translations$waypoints$en._(_root);
 	@override late final _Translations$packs$en packs = _Translations$packs$en._(_root);
+	@override late final _Translations$guides$en guides = _Translations$guides$en._(_root);
 }
 
 // Path: a11y
@@ -810,6 +811,26 @@ class _Translations$packs$en extends Translations$packs$fr {
 	@override late final _Translations$packs$types$en types = _Translations$packs$types$en._(_root);
 }
 
+// Path: guides
+class _Translations$guides$en extends Translations$guides$fr {
+	_Translations$guides$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Town guides';
+	@override String get subtitle => 'Practical info for towns and villages, available offline.';
+	@override String sectionsCount({required Object n}) => '${n} practical sections';
+	@override String get empty => 'No guide available for this trail.';
+	@override String get noItems => 'No information in this section yet.';
+	@override String get facilitatorNote => 'StepWays points you to providers. Booking and payment happen on their site: nothing in the app.';
+	@override String get openSite => 'Open website';
+	@override String get cannotOpen => 'Can\'t open this link on this device.';
+	@override late final _Translations$guides$categories$en categories = _Translations$guides$categories$en._(_root);
+	@override late final _Translations$guides$intro$en intro = _Translations$guides$intro$en._(_root);
+	@override late final _Translations$guides$a11y$en a11y = _Translations$guides$a11y$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1229,6 +1250,48 @@ class _Translations$packs$types$en extends Translations$packs$types$fr {
 	@override late final _Translations$packs$types$sud$en sud = _Translations$packs$types$sud$en._(_root);
 	@override late final _Translations$packs$types$complet$en complet = _Translations$packs$types$complet$en._(_root);
 	@override late final _Translations$packs$types$mam$en mam = _Translations$packs$types$mam$en._(_root);
+}
+
+// Path: guides.categories
+class _Translations$guides$categories$en extends Translations$guides$categories$fr {
+	_Translations$guides$categories$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get ravitaillement => 'Resupply';
+	@override String get hebergement => 'Accommodation';
+	@override String get transport => 'Transport';
+	@override String get services => 'Services';
+	@override String get eau => 'Water';
+	@override String get sante => 'Health';
+}
+
+// Path: guides.intro
+class _Translations$guides$intro$en extends Translations$guides$intro$fr {
+	_Translations$guides$intro$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get ravitaillement => 'Where to stock up on supplies.';
+	@override String get hebergement => 'Where to sleep at the stage.';
+	@override String get transport => 'Buses, shuttles and connections.';
+	@override String get services => 'Post office, bank, laundry and more.';
+	@override String get eau => 'Drinking water points.';
+	@override String get sante => 'Pharmacy and nearby care.';
+}
+
+// Path: guides.a11y
+class _Translations$guides$a11y$en extends Translations$guides$a11y$fr {
+	_Translations$guides$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String guideCard({required Object lieu}) => 'Guide for ${lieu}';
+	@override String section({required Object titre}) => 'Section ${titre}';
+	@override String openSiteButton({required Object nom}) => 'Open the website of ${nom}';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2023,6 +2086,29 @@ extension on TranslationsEn {
 			'packs.types.complet.description' => 'The whole trail, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'The Mare a Mare trail, offline.',
+			'guides.title' => 'Town guides',
+			'guides.subtitle' => 'Practical info for towns and villages, available offline.',
+			'guides.sectionsCount' => ({required Object n}) => '${n} practical sections',
+			'guides.empty' => 'No guide available for this trail.',
+			'guides.noItems' => 'No information in this section yet.',
+			'guides.facilitatorNote' => 'StepWays points you to providers. Booking and payment happen on their site: nothing in the app.',
+			'guides.openSite' => 'Open website',
+			'guides.cannotOpen' => 'Can\'t open this link on this device.',
+			'guides.categories.ravitaillement' => 'Resupply',
+			'guides.categories.hebergement' => 'Accommodation',
+			'guides.categories.transport' => 'Transport',
+			'guides.categories.services' => 'Services',
+			'guides.categories.eau' => 'Water',
+			'guides.categories.sante' => 'Health',
+			'guides.intro.ravitaillement' => 'Where to stock up on supplies.',
+			'guides.intro.hebergement' => 'Where to sleep at the stage.',
+			'guides.intro.transport' => 'Buses, shuttles and connections.',
+			'guides.intro.services' => 'Post office, bank, laundry and more.',
+			'guides.intro.eau' => 'Drinking water points.',
+			'guides.intro.sante' => 'Pharmacy and nearby care.',
+			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guide for ${lieu}',
+			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
+			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Open the website of ${nom}',
 			_ => null,
 		};
 	}

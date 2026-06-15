@@ -78,6 +78,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$shareVisibility$fr shareVisibility = Translations$shareVisibility$fr.internal(_root);
 	late final Translations$waypoints$fr waypoints = Translations$waypoints$fr.internal(_root);
 	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
+	late final Translations$guides$fr guides = Translations$guides$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1547,6 +1548,43 @@ class Translations$packs$fr {
 	late final Translations$packs$types$fr types = Translations$packs$types$fr.internal(_root);
 }
 
+// Path: guides
+class Translations$guides$fr {
+	Translations$guides$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Guides d'étape'
+	String get title => 'Guides d\'étape';
+
+	/// fr: 'Infos pratiques des villes et villages, consultables hors-ligne.'
+	String get subtitle => 'Infos pratiques des villes et villages, consultables hors-ligne.';
+
+	/// fr: '$n rubriques pratiques'
+	String sectionsCount({required Object n}) => '${n} rubriques pratiques';
+
+	/// fr: 'Aucun guide disponible pour ce sentier.'
+	String get empty => 'Aucun guide disponible pour ce sentier.';
+
+	/// fr: 'Aucune information dans cette section pour le moment.'
+	String get noItems => 'Aucune information dans cette section pour le moment.';
+
+	/// fr: 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.'
+	String get facilitatorNote => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.';
+
+	/// fr: 'Voir le site'
+	String get openSite => 'Voir le site';
+
+	/// fr: 'Impossible d'ouvrir ce lien sur cet appareil.'
+	String get cannotOpen => 'Impossible d\'ouvrir ce lien sur cet appareil.';
+
+	late final Translations$guides$categories$fr categories = Translations$guides$categories$fr.internal(_root);
+	late final Translations$guides$intro$fr intro = Translations$guides$intro$fr.internal(_root);
+	late final Translations$guides$a11y$fr a11y = Translations$guides$a11y$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2312,6 +2350,78 @@ class Translations$packs$types$fr {
 	late final Translations$packs$types$sud$fr sud = Translations$packs$types$sud$fr.internal(_root);
 	late final Translations$packs$types$complet$fr complet = Translations$packs$types$complet$fr.internal(_root);
 	late final Translations$packs$types$mam$fr mam = Translations$packs$types$mam$fr.internal(_root);
+}
+
+// Path: guides.categories
+class Translations$guides$categories$fr {
+	Translations$guides$categories$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ravitaillement'
+	String get ravitaillement => 'Ravitaillement';
+
+	/// fr: 'Hébergement'
+	String get hebergement => 'Hébergement';
+
+	/// fr: 'Transport'
+	String get transport => 'Transport';
+
+	/// fr: 'Services'
+	String get services => 'Services';
+
+	/// fr: 'Eau'
+	String get eau => 'Eau';
+
+	/// fr: 'Santé'
+	String get sante => 'Santé';
+}
+
+// Path: guides.intro
+class Translations$guides$intro$fr {
+	Translations$guides$intro$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Où faire le plein de provisions.'
+	String get ravitaillement => 'Où faire le plein de provisions.';
+
+	/// fr: 'Où dormir à l'étape.'
+	String get hebergement => 'Où dormir à l\'étape.';
+
+	/// fr: 'Bus, navettes et liaisons.'
+	String get transport => 'Bus, navettes et liaisons.';
+
+	/// fr: 'Poste, banque, laverie et autres services.'
+	String get services => 'Poste, banque, laverie et autres services.';
+
+	/// fr: 'Points d'eau potable.'
+	String get eau => 'Points d\'eau potable.';
+
+	/// fr: 'Pharmacie et soins de proximité.'
+	String get sante => 'Pharmacie et soins de proximité.';
+}
+
+// Path: guides.a11y
+class Translations$guides$a11y$fr {
+	Translations$guides$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Guide de $lieu'
+	String guideCard({required Object lieu}) => 'Guide de ${lieu}';
+
+	/// fr: 'Section $titre'
+	String section({required Object titre}) => 'Section ${titre}';
+
+	/// fr: 'Ouvrir le site de $nom'
+	String openSiteButton({required Object nom}) => 'Ouvrir le site de ${nom}';
 }
 
 // Path: feasibility.recommendations.danger
@@ -3190,6 +3300,29 @@ extension on Translations {
 			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Le sentier Mare a Mare, hors-ligne.',
+			'guides.title' => 'Guides d\'étape',
+			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
+			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
+			'guides.empty' => 'Aucun guide disponible pour ce sentier.',
+			'guides.noItems' => 'Aucune information dans cette section pour le moment.',
+			'guides.facilitatorNote' => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.',
+			'guides.openSite' => 'Voir le site',
+			'guides.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
+			'guides.categories.ravitaillement' => 'Ravitaillement',
+			'guides.categories.hebergement' => 'Hébergement',
+			'guides.categories.transport' => 'Transport',
+			'guides.categories.services' => 'Services',
+			'guides.categories.eau' => 'Eau',
+			'guides.categories.sante' => 'Santé',
+			'guides.intro.ravitaillement' => 'Où faire le plein de provisions.',
+			'guides.intro.hebergement' => 'Où dormir à l\'étape.',
+			'guides.intro.transport' => 'Bus, navettes et liaisons.',
+			'guides.intro.services' => 'Poste, banque, laverie et autres services.',
+			'guides.intro.eau' => 'Points d\'eau potable.',
+			'guides.intro.sante' => 'Pharmacie et soins de proximité.',
+			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guide de ${lieu}',
+			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
+			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Ouvrir le site de ${nom}',
 			_ => null,
 		};
 	}

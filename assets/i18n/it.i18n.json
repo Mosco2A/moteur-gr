@@ -738,5 +738,36 @@
         "description": "Il sentiero Mare a Mare, offline."
       }
     }
+  },
+  "guides": {
+    "title": "Guide delle tappe",
+    "subtitle": "Info pratiche su città e paesi, consultabili offline.",
+    "sectionsCount": "$n sezioni pratiche",
+    "empty": "Nessuna guida disponibile per questo sentiero.",
+    "noItems": "Ancora nessuna informazione in questa sezione.",
+    "facilitatorNote": "StepWays ti indirizza ai fornitori. Prenotazione e pagamento avvengono sul loro sito: niente nell'app.",
+    "openSite": "Apri il sito",
+    "cannotOpen": "Impossibile aprire questo link su questo dispositivo.",
+    "categories": {
+      "ravitaillement": "Rifornimento",
+      "hebergement": "Alloggio",
+      "transport": "Trasporti",
+      "services": "Servizi",
+      "eau": "Acqua",
+      "sante": "Salute"
+    },
+    "intro": {
+      "ravitaillement": "Dove fare scorta di provviste.",
+      "hebergement": "Dove dormire alla tappa.",
+      "transport": "Autobus, navette e collegamenti.",
+      "services": "Posta, banca, lavanderia e altro.",
+      "eau": "Punti d'acqua potabile.",
+      "sante": "Farmacia e cure nelle vicinanze."
+    },
+    "a11y": {
+      "guideCard": "Guida di $lieu",
+      "section": "Sezione $titre",
+      "openSiteButton": "Apri il sito di $nom"
+    }
   }
 }

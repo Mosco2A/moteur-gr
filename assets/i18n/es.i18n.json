@@ -738,5 +738,36 @@
         "description": "El sendero Mare a Mare, sin conexión."
       }
     }
+  },
+  "guides": {
+    "title": "Guías de etapa",
+    "subtitle": "Información práctica de pueblos y aldeas, disponible sin conexión.",
+    "sectionsCount": "$n secciones practicas",
+    "empty": "No hay guía disponible para este sendero.",
+    "noItems": "Aún no hay información en esta sección.",
+    "facilitatorNote": "StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.",
+    "openSite": "Abrir el sitio",
+    "cannotOpen": "No se puede abrir este enlace en este dispositivo.",
+    "categories": {
+      "ravitaillement": "Avituallamiento",
+      "hebergement": "Alojamiento",
+      "transport": "Transporte",
+      "services": "Servicios",
+      "eau": "Agua",
+      "sante": "Salud"
+    },
+    "intro": {
+      "ravitaillement": "Dónde abastecerse de provisiones.",
+      "hebergement": "Dónde dormir en la etapa.",
+      "transport": "Autobuses, lanzaderas y conexiones.",
+      "services": "Correos, banco, lavandería y más.",
+      "eau": "Puntos de agua potable.",
+      "sante": "Farmacia y atención cercana."
+    },
+    "a11y": {
+      "guideCard": "Guía de $lieu",
+      "section": "Sección $titre",
+      "openSiteButton": "Abrir el sitio de $nom"
+    }
   }
 }

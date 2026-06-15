@@ -77,6 +77,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$shareVisibility$es shareVisibility = _Translations$shareVisibility$es._(_root);
 	@override late final _Translations$waypoints$es waypoints = _Translations$waypoints$es._(_root);
 	@override late final _Translations$packs$es packs = _Translations$packs$es._(_root);
+	@override late final _Translations$guides$es guides = _Translations$guides$es._(_root);
 }
 
 // Path: a11y
@@ -810,6 +811,26 @@ class _Translations$packs$es extends Translations$packs$fr {
 	@override late final _Translations$packs$types$es types = _Translations$packs$types$es._(_root);
 }
 
+// Path: guides
+class _Translations$guides$es extends Translations$guides$fr {
+	_Translations$guides$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Guías de etapa';
+	@override String get subtitle => 'Información práctica de pueblos y aldeas, disponible sin conexión.';
+	@override String sectionsCount({required Object n}) => '${n} secciones practicas';
+	@override String get empty => 'No hay guía disponible para este sendero.';
+	@override String get noItems => 'Aún no hay información en esta sección.';
+	@override String get facilitatorNote => 'StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.';
+	@override String get openSite => 'Abrir el sitio';
+	@override String get cannotOpen => 'No se puede abrir este enlace en este dispositivo.';
+	@override late final _Translations$guides$categories$es categories = _Translations$guides$categories$es._(_root);
+	@override late final _Translations$guides$intro$es intro = _Translations$guides$intro$es._(_root);
+	@override late final _Translations$guides$a11y$es a11y = _Translations$guides$a11y$es._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1229,6 +1250,48 @@ class _Translations$packs$types$es extends Translations$packs$types$fr {
 	@override late final _Translations$packs$types$sud$es sud = _Translations$packs$types$sud$es._(_root);
 	@override late final _Translations$packs$types$complet$es complet = _Translations$packs$types$complet$es._(_root);
 	@override late final _Translations$packs$types$mam$es mam = _Translations$packs$types$mam$es._(_root);
+}
+
+// Path: guides.categories
+class _Translations$guides$categories$es extends Translations$guides$categories$fr {
+	_Translations$guides$categories$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get ravitaillement => 'Avituallamiento';
+	@override String get hebergement => 'Alojamiento';
+	@override String get transport => 'Transporte';
+	@override String get services => 'Servicios';
+	@override String get eau => 'Agua';
+	@override String get sante => 'Salud';
+}
+
+// Path: guides.intro
+class _Translations$guides$intro$es extends Translations$guides$intro$fr {
+	_Translations$guides$intro$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get ravitaillement => 'Dónde abastecerse de provisiones.';
+	@override String get hebergement => 'Dónde dormir en la etapa.';
+	@override String get transport => 'Autobuses, lanzaderas y conexiones.';
+	@override String get services => 'Correos, banco, lavandería y más.';
+	@override String get eau => 'Puntos de agua potable.';
+	@override String get sante => 'Farmacia y atención cercana.';
+}
+
+// Path: guides.a11y
+class _Translations$guides$a11y$es extends Translations$guides$a11y$fr {
+	_Translations$guides$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String guideCard({required Object lieu}) => 'Guía de ${lieu}';
+	@override String section({required Object titre}) => 'Sección ${titre}';
+	@override String openSiteButton({required Object nom}) => 'Abrir el sitio de ${nom}';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2023,6 +2086,29 @@ extension on TranslationsEs {
 			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'El sendero Mare a Mare, sin conexión.',
+			'guides.title' => 'Guías de etapa',
+			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
+			'guides.sectionsCount' => ({required Object n}) => '${n} secciones practicas',
+			'guides.empty' => 'No hay guía disponible para este sendero.',
+			'guides.noItems' => 'Aún no hay información en esta sección.',
+			'guides.facilitatorNote' => 'StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.',
+			'guides.openSite' => 'Abrir el sitio',
+			'guides.cannotOpen' => 'No se puede abrir este enlace en este dispositivo.',
+			'guides.categories.ravitaillement' => 'Avituallamiento',
+			'guides.categories.hebergement' => 'Alojamiento',
+			'guides.categories.transport' => 'Transporte',
+			'guides.categories.services' => 'Servicios',
+			'guides.categories.eau' => 'Agua',
+			'guides.categories.sante' => 'Salud',
+			'guides.intro.ravitaillement' => 'Dónde abastecerse de provisiones.',
+			'guides.intro.hebergement' => 'Dónde dormir en la etapa.',
+			'guides.intro.transport' => 'Autobuses, lanzaderas y conexiones.',
+			'guides.intro.services' => 'Correos, banco, lavandería y más.',
+			'guides.intro.eau' => 'Puntos de agua potable.',
+			'guides.intro.sante' => 'Farmacia y atención cercana.',
+			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guía de ${lieu}',
+			'guides.a11y.section' => ({required Object titre}) => 'Sección ${titre}',
+			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Abrir el sitio de ${nom}',
 			_ => null,
 		};
 	}

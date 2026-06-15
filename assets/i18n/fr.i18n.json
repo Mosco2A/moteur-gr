@@ -738,5 +738,36 @@
         "description": "Le sentier Mare a Mare, hors-ligne."
       }
     }
+  },
+  "guides": {
+    "title": "Guides d'étape",
+    "subtitle": "Infos pratiques des villes et villages, consultables hors-ligne.",
+    "sectionsCount": "$n rubriques pratiques",
+    "empty": "Aucun guide disponible pour ce sentier.",
+    "noItems": "Aucune information dans cette section pour le moment.",
+    "facilitatorNote": "StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l'application.",
+    "openSite": "Voir le site",
+    "cannotOpen": "Impossible d'ouvrir ce lien sur cet appareil.",
+    "categories": {
+      "ravitaillement": "Ravitaillement",
+      "hebergement": "Hébergement",
+      "transport": "Transport",
+      "services": "Services",
+      "eau": "Eau",
+      "sante": "Santé"
+    },
+    "intro": {
+      "ravitaillement": "Où faire le plein de provisions.",
+      "hebergement": "Où dormir à l'étape.",
+      "transport": "Bus, navettes et liaisons.",
+      "services": "Poste, banque, laverie et autres services.",
+      "eau": "Points d'eau potable.",
+      "sante": "Pharmacie et soins de proximité."
+    },
+    "a11y": {
+      "guideCard": "Guide de $lieu",
+      "section": "Section $titre",
+      "openSiteButton": "Ouvrir le site de $nom"
+    }
   }
 }
