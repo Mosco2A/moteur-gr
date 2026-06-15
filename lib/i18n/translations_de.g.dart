@@ -79,6 +79,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$packs$de packs = _Translations$packs$de._(_root);
 	@override late final _Translations$guides$de guides = _Translations$guides$de._(_root);
 	@override late final _Translations$trailSelection$de trailSelection = _Translations$trailSelection$de._(_root);
+	@override late final _Translations$consent$de consent = _Translations$consent$de._(_root);
 }
 
 // Path: a11y
@@ -849,6 +850,36 @@ class _Translations$trailSelection$de extends Translations$trailSelection$fr {
 	@override late final _Translations$trailSelection$a11y$de a11y = _Translations$trailSelection$a11y$de._(_root);
 }
 
+// Path: consent
+class _Translations$consent$de extends Translations$consent$fr {
+	_Translations$consent$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get onboardingTitle => 'Ihre Privatsphäre, Ihre Wahl';
+	@override String get onboardingIntro => 'Standardmäßig ist nichts aktiviert. Wählen Sie Zweck für Zweck, was Sie erlauben. Sie können alles jederzeit in den Einstellungen ändern.';
+	@override String get settingsTitle => 'Datenschutz und Einwilligung';
+	@override String get settingsIntro => 'Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.';
+	@override String get settingsEntry => 'Datenschutz und Einwilligung';
+	@override String get settingsEntryDesc => 'Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)';
+	@override late final _Translations$consent$purposes$de purposes = _Translations$consent$purposes$de._(_root);
+	@override String get healthBadge => 'Sensible Daten';
+	@override String get healthWarning => 'Die Herzfrequenz ist ein Gesundheitsdatum (DSGVO Artikel 9). Diese Einwilligung wird separat erfragt und niemals mit den anderen gebündelt. Ihre Gesundheitsdaten werden nicht an unsere Server gesendet.';
+	@override String get granted => 'Erlaubt';
+	@override String get denied => 'Nicht erlaubt';
+	@override String get grant => 'Erlauben';
+	@override String get revoke => 'Widerrufen';
+	@override String decidedOn({required Object date}) => 'Gewählt am ${date}';
+	@override String get notDecided => 'Wartet auf Ihre Wahl';
+	@override String get acceptSelected => 'Meine Auswahl bestätigen';
+	@override String get declineAll => 'Alles ablehnen';
+	@override String get continueLabel => 'Weiter';
+	@override String get privacyPolicyLink => 'Datenschutzerklärung lesen';
+	@override String get reviewNeeded => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.';
+	@override late final _Translations$consent$a11y$de a11y = _Translations$consent$a11y$de._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$de extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1322,6 +1353,35 @@ class _Translations$trailSelection$a11y$de extends Translations$trailSelection$a
 	@override String trailCard({required Object nom, required Object region}) => 'Weg ${nom}, ${region}';
 	@override String get currentBadge => 'Aktuell aktiver Weg';
 	@override String selectButton({required Object nom}) => 'Weg ${nom} aktivieren';
+}
+
+// Path: consent.purposes
+class _Translations$consent$purposes$de extends Translations$consent$purposes$fr {
+	_Translations$consent$purposes$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get locationNavigation => 'Persönliche Navigation';
+	@override String get locationNavigationDesc => 'Ihren Standort für die Karte und die Etappenverfolgung nutzen. Bleibt auf Ihrem Gerät.';
+	@override String get socialSharing => 'Soziales Teilen';
+	@override String get socialSharingDesc => 'Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.';
+	@override String get publicReporting => 'Öffentliche Meldungen';
+	@override String get publicReportingDesc => 'Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.';
+	@override String get healthData => 'Gesundheitsdaten';
+	@override String get healthDataDesc => 'Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen.';
+}
+
+// Path: consent.a11y
+class _Translations$consent$a11y$de extends Translations$consent$a11y$fr {
+	_Translations$consent$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}';
+	@override String get healthSection => 'Bereich Gesundheitsdaten, verstärkte Einwilligung';
+	@override String get policyButton => 'Datenschutzerklärung öffnen';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2149,6 +2209,36 @@ extension on TranslationsDe {
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Weg ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Aktuell aktiver Weg',
 			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Weg ${nom} aktivieren',
+			'consent.onboardingTitle' => 'Ihre Privatsphäre, Ihre Wahl',
+			'consent.onboardingIntro' => 'Standardmäßig ist nichts aktiviert. Wählen Sie Zweck für Zweck, was Sie erlauben. Sie können alles jederzeit in den Einstellungen ändern.',
+			'consent.settingsTitle' => 'Datenschutz und Einwilligung',
+			'consent.settingsIntro' => 'Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.',
+			'consent.settingsEntry' => 'Datenschutz und Einwilligung',
+			'consent.settingsEntryDesc' => 'Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)',
+			'consent.purposes.locationNavigation' => 'Persönliche Navigation',
+			'consent.purposes.locationNavigationDesc' => 'Ihren Standort für die Karte und die Etappenverfolgung nutzen. Bleibt auf Ihrem Gerät.',
+			'consent.purposes.socialSharing' => 'Soziales Teilen',
+			'consent.purposes.socialSharingDesc' => 'Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.',
+			'consent.purposes.publicReporting' => 'Öffentliche Meldungen',
+			'consent.purposes.publicReportingDesc' => 'Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.',
+			'consent.purposes.healthData' => 'Gesundheitsdaten',
+			'consent.purposes.healthDataDesc' => 'Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen.',
+			'consent.healthBadge' => 'Sensible Daten',
+			'consent.healthWarning' => 'Die Herzfrequenz ist ein Gesundheitsdatum (DSGVO Artikel 9). Diese Einwilligung wird separat erfragt und niemals mit den anderen gebündelt. Ihre Gesundheitsdaten werden nicht an unsere Server gesendet.',
+			'consent.granted' => 'Erlaubt',
+			'consent.denied' => 'Nicht erlaubt',
+			'consent.grant' => 'Erlauben',
+			'consent.revoke' => 'Widerrufen',
+			'consent.decidedOn' => ({required Object date}) => 'Gewählt am ${date}',
+			'consent.notDecided' => 'Wartet auf Ihre Wahl',
+			'consent.acceptSelected' => 'Meine Auswahl bestätigen',
+			'consent.declineAll' => 'Alles ablehnen',
+			'consent.continueLabel' => 'Weiter',
+			'consent.privacyPolicyLink' => 'Datenschutzerklärung lesen',
+			'consent.reviewNeeded' => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.',
+			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
+			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
+			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
 			_ => null,
 		};
 	}

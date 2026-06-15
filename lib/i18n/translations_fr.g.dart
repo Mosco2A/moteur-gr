@@ -80,6 +80,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
 	late final Translations$guides$fr guides = Translations$guides$fr.internal(_root);
 	late final Translations$trailSelection$fr trailSelection = Translations$trailSelection$fr.internal(_root);
+	late final Translations$consent$fr consent = Translations$consent$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1618,6 +1619,76 @@ class Translations$trailSelection$fr {
 	late final Translations$trailSelection$a11y$fr a11y = Translations$trailSelection$a11y$fr.internal(_root);
 }
 
+// Path: consent
+class Translations$consent$fr {
+	Translations$consent$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Votre vie privée, votre choix'
+	String get onboardingTitle => 'Votre vie privée, votre choix';
+
+	/// fr: 'Rien n'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.'
+	String get onboardingIntro => 'Rien n\'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.';
+
+	/// fr: 'Confidentialité et consentement'
+	String get settingsTitle => 'Confidentialité et consentement';
+
+	/// fr: 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.'
+	String get settingsIntro => 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.';
+
+	/// fr: 'Confidentialité et consentement'
+	String get settingsEntry => 'Confidentialité et consentement';
+
+	/// fr: 'Gérer mes autorisations (géolocalisation, partage, santé)'
+	String get settingsEntryDesc => 'Gérer mes autorisations (géolocalisation, partage, santé)';
+
+	late final Translations$consent$purposes$fr purposes = Translations$consent$purposes$fr.internal(_root);
+
+	/// fr: 'Donnée sensible'
+	String get healthBadge => 'Donnée sensible';
+
+	/// fr: 'La fréquence cardiaque est une donnée de santé (article 9 RGPD). Ce consentement est demandé séparément et n'est jamais regroupé avec les autres. Vos données de santé ne sont pas envoyées sur nos serveurs.'
+	String get healthWarning => 'La fréquence cardiaque est une donnée de santé (article 9 RGPD). Ce consentement est demandé séparément et n\'est jamais regroupé avec les autres. Vos données de santé ne sont pas envoyées sur nos serveurs.';
+
+	/// fr: 'Autorisé'
+	String get granted => 'Autorisé';
+
+	/// fr: 'Non autorisé'
+	String get denied => 'Non autorisé';
+
+	/// fr: 'Autoriser'
+	String get grant => 'Autoriser';
+
+	/// fr: 'Retirer'
+	String get revoke => 'Retirer';
+
+	/// fr: 'Choix du $date'
+	String decidedOn({required Object date}) => 'Choix du ${date}';
+
+	/// fr: 'En attente de votre choix'
+	String get notDecided => 'En attente de votre choix';
+
+	/// fr: 'Valider mes choix'
+	String get acceptSelected => 'Valider mes choix';
+
+	/// fr: 'Tout refuser'
+	String get declineAll => 'Tout refuser';
+
+	/// fr: 'Continuer'
+	String get continueLabel => 'Continuer';
+
+	/// fr: 'Lire la politique de confidentialité'
+	String get privacyPolicyLink => 'Lire la politique de confidentialité';
+
+	/// fr: 'Notre politique a évolué : merci de revoir vos choix.'
+	String get reviewNeeded => 'Notre politique a évolué : merci de revoir vos choix.';
+
+	late final Translations$consent$a11y$fr a11y = Translations$consent$a11y$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2473,6 +2544,57 @@ class Translations$trailSelection$a11y$fr {
 
 	/// fr: 'Activer le sentier $nom'
 	String selectButton({required Object nom}) => 'Activer le sentier ${nom}';
+}
+
+// Path: consent.purposes
+class Translations$consent$purposes$fr {
+	Translations$consent$purposes$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Navigation personnelle'
+	String get locationNavigation => 'Navigation personnelle';
+
+	/// fr: 'Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.'
+	String get locationNavigationDesc => 'Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.';
+
+	/// fr: 'Partage social'
+	String get socialSharing => 'Partage social';
+
+	/// fr: 'Apparaître dans les classements et le fil communautaire, sous pseudonyme.'
+	String get socialSharingDesc => 'Apparaître dans les classements et le fil communautaire, sous pseudonyme.';
+
+	/// fr: 'Signalement public'
+	String get publicReporting => 'Signalement public';
+
+	/// fr: 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.'
+	String get publicReportingDesc => 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.';
+
+	/// fr: 'Données de santé'
+	String get healthData => 'Données de santé';
+
+	/// fr: 'Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d'effort.'
+	String get healthDataDesc => 'Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d\'effort.';
+}
+
+// Path: consent.a11y
+class Translations$consent$a11y$fr {
+	Translations$consent$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: '$purpose, actuellement $state'
+	String purposeToggle({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}';
+
+	/// fr: 'Section données de santé, consentement renforcé'
+	String get healthSection => 'Section données de santé, consentement renforcé';
+
+	/// fr: 'Ouvrir la politique de confidentialité'
+	String get policyButton => 'Ouvrir la politique de confidentialité';
 }
 
 // Path: feasibility.recommendations.danger
@@ -3384,6 +3506,36 @@ extension on Translations {
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Sentier ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Sentier actuellement actif',
 			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activer le sentier ${nom}',
+			'consent.onboardingTitle' => 'Votre vie privée, votre choix',
+			'consent.onboardingIntro' => 'Rien n\'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.',
+			'consent.settingsTitle' => 'Confidentialité et consentement',
+			'consent.settingsIntro' => 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.',
+			'consent.settingsEntry' => 'Confidentialité et consentement',
+			'consent.settingsEntryDesc' => 'Gérer mes autorisations (géolocalisation, partage, santé)',
+			'consent.purposes.locationNavigation' => 'Navigation personnelle',
+			'consent.purposes.locationNavigationDesc' => 'Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.',
+			'consent.purposes.socialSharing' => 'Partage social',
+			'consent.purposes.socialSharingDesc' => 'Apparaître dans les classements et le fil communautaire, sous pseudonyme.',
+			'consent.purposes.publicReporting' => 'Signalement public',
+			'consent.purposes.publicReportingDesc' => 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.',
+			'consent.purposes.healthData' => 'Données de santé',
+			'consent.purposes.healthDataDesc' => 'Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d\'effort.',
+			'consent.healthBadge' => 'Donnée sensible',
+			'consent.healthWarning' => 'La fréquence cardiaque est une donnée de santé (article 9 RGPD). Ce consentement est demandé séparément et n\'est jamais regroupé avec les autres. Vos données de santé ne sont pas envoyées sur nos serveurs.',
+			'consent.granted' => 'Autorisé',
+			'consent.denied' => 'Non autorisé',
+			'consent.grant' => 'Autoriser',
+			'consent.revoke' => 'Retirer',
+			'consent.decidedOn' => ({required Object date}) => 'Choix du ${date}',
+			'consent.notDecided' => 'En attente de votre choix',
+			'consent.acceptSelected' => 'Valider mes choix',
+			'consent.declineAll' => 'Tout refuser',
+			'consent.continueLabel' => 'Continuer',
+			'consent.privacyPolicyLink' => 'Lire la politique de confidentialité',
+			'consent.reviewNeeded' => 'Notre politique a évolué : merci de revoir vos choix.',
+			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}',
+			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
+			'consent.a11y.policyButton' => 'Ouvrir la politique de confidentialité',
 			_ => null,
 		};
 	}

@@ -79,6 +79,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$packs$en packs = _Translations$packs$en._(_root);
 	@override late final _Translations$guides$en guides = _Translations$guides$en._(_root);
 	@override late final _Translations$trailSelection$en trailSelection = _Translations$trailSelection$en._(_root);
+	@override late final _Translations$consent$en consent = _Translations$consent$en._(_root);
 }
 
 // Path: a11y
@@ -849,6 +850,36 @@ class _Translations$trailSelection$en extends Translations$trailSelection$fr {
 	@override late final _Translations$trailSelection$a11y$en a11y = _Translations$trailSelection$a11y$en._(_root);
 }
 
+// Path: consent
+class _Translations$consent$en extends Translations$consent$fr {
+	_Translations$consent$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get onboardingTitle => 'Your privacy, your choice';
+	@override String get onboardingIntro => 'Nothing is enabled by default. Choose, purpose by purpose, what you allow. You can change everything at any time in the settings.';
+	@override String get settingsTitle => 'Privacy and consent';
+	@override String get settingsIntro => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.';
+	@override String get settingsEntry => 'Privacy and consent';
+	@override String get settingsEntryDesc => 'Manage my permissions (location, sharing, health)';
+	@override late final _Translations$consent$purposes$en purposes = _Translations$consent$purposes$en._(_root);
+	@override String get healthBadge => 'Sensitive data';
+	@override String get healthWarning => 'Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.';
+	@override String get granted => 'Allowed';
+	@override String get denied => 'Not allowed';
+	@override String get grant => 'Allow';
+	@override String get revoke => 'Withdraw';
+	@override String decidedOn({required Object date}) => 'Chosen on ${date}';
+	@override String get notDecided => 'Awaiting your choice';
+	@override String get acceptSelected => 'Confirm my choices';
+	@override String get declineAll => 'Decline all';
+	@override String get continueLabel => 'Continue';
+	@override String get privacyPolicyLink => 'Read the privacy policy';
+	@override String get reviewNeeded => 'Our policy has changed: please review your choices.';
+	@override late final _Translations$consent$a11y$en a11y = _Translations$consent$a11y$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1322,6 +1353,35 @@ class _Translations$trailSelection$a11y$en extends Translations$trailSelection$a
 	@override String trailCard({required Object nom, required Object region}) => 'Trail ${nom}, ${region}';
 	@override String get currentBadge => 'Currently active trail';
 	@override String selectButton({required Object nom}) => 'Activate trail ${nom}';
+}
+
+// Path: consent.purposes
+class _Translations$consent$purposes$en extends Translations$consent$purposes$fr {
+	_Translations$consent$purposes$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get locationNavigation => 'Personal navigation';
+	@override String get locationNavigationDesc => 'Use your location for the map and to track your stage. Stays on your device.';
+	@override String get socialSharing => 'Social sharing';
+	@override String get socialSharingDesc => 'Appear in leaderboards and the community feed, under a pseudonym.';
+	@override String get publicReporting => 'Public reporting';
+	@override String get publicReportingDesc => 'Post reports (water, hazard, conditions) visible to other hikers.';
+	@override String get healthData => 'Health data';
+	@override String get healthDataDesc => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.';
+}
+
+// Path: consent.a11y
+class _Translations$consent$a11y$en extends Translations$consent$a11y$fr {
+	_Translations$consent$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, currently ${state}';
+	@override String get healthSection => 'Health data section, reinforced consent';
+	@override String get policyButton => 'Open the privacy policy';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2149,6 +2209,36 @@ extension on TranslationsEn {
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Trail ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Currently active trail',
 			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activate trail ${nom}',
+			'consent.onboardingTitle' => 'Your privacy, your choice',
+			'consent.onboardingIntro' => 'Nothing is enabled by default. Choose, purpose by purpose, what you allow. You can change everything at any time in the settings.',
+			'consent.settingsTitle' => 'Privacy and consent',
+			'consent.settingsIntro' => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.',
+			'consent.settingsEntry' => 'Privacy and consent',
+			'consent.settingsEntryDesc' => 'Manage my permissions (location, sharing, health)',
+			'consent.purposes.locationNavigation' => 'Personal navigation',
+			'consent.purposes.locationNavigationDesc' => 'Use your location for the map and to track your stage. Stays on your device.',
+			'consent.purposes.socialSharing' => 'Social sharing',
+			'consent.purposes.socialSharingDesc' => 'Appear in leaderboards and the community feed, under a pseudonym.',
+			'consent.purposes.publicReporting' => 'Public reporting',
+			'consent.purposes.publicReportingDesc' => 'Post reports (water, hazard, conditions) visible to other hikers.',
+			'consent.purposes.healthData' => 'Health data',
+			'consent.purposes.healthDataDesc' => 'Read your heart rate (chest strap or health app) to enrich your effort tracking.',
+			'consent.healthBadge' => 'Sensitive data',
+			'consent.healthWarning' => 'Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.',
+			'consent.granted' => 'Allowed',
+			'consent.denied' => 'Not allowed',
+			'consent.grant' => 'Allow',
+			'consent.revoke' => 'Withdraw',
+			'consent.decidedOn' => ({required Object date}) => 'Chosen on ${date}',
+			'consent.notDecided' => 'Awaiting your choice',
+			'consent.acceptSelected' => 'Confirm my choices',
+			'consent.declineAll' => 'Decline all',
+			'consent.continueLabel' => 'Continue',
+			'consent.privacyPolicyLink' => 'Read the privacy policy',
+			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
+			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
+			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
+			'consent.a11y.policyButton' => 'Open the privacy policy',
 			_ => null,
 		};
 	}

@@ -783,5 +783,41 @@
       "currentBadge": "Aktuell aktiver Weg",
       "selectButton": "Weg $nom aktivieren"
     }
+  },
+  "consent": {
+    "onboardingTitle": "Ihre Privatsphäre, Ihre Wahl",
+    "onboardingIntro": "Standardmäßig ist nichts aktiviert. Wählen Sie Zweck für Zweck, was Sie erlauben. Sie können alles jederzeit in den Einstellungen ändern.",
+    "settingsTitle": "Datenschutz und Einwilligung",
+    "settingsIntro": "Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.",
+    "settingsEntry": "Datenschutz und Einwilligung",
+    "settingsEntryDesc": "Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)",
+    "purposes": {
+      "locationNavigation": "Persönliche Navigation",
+      "locationNavigationDesc": "Ihren Standort für die Karte und die Etappenverfolgung nutzen. Bleibt auf Ihrem Gerät.",
+      "socialSharing": "Soziales Teilen",
+      "socialSharingDesc": "Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.",
+      "publicReporting": "Öffentliche Meldungen",
+      "publicReportingDesc": "Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.",
+      "healthData": "Gesundheitsdaten",
+      "healthDataDesc": "Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen."
+    },
+    "healthBadge": "Sensible Daten",
+    "healthWarning": "Die Herzfrequenz ist ein Gesundheitsdatum (DSGVO Artikel 9). Diese Einwilligung wird separat erfragt und niemals mit den anderen gebündelt. Ihre Gesundheitsdaten werden nicht an unsere Server gesendet.",
+    "granted": "Erlaubt",
+    "denied": "Nicht erlaubt",
+    "grant": "Erlauben",
+    "revoke": "Widerrufen",
+    "decidedOn": "Gewählt am $date",
+    "notDecided": "Wartet auf Ihre Wahl",
+    "acceptSelected": "Meine Auswahl bestätigen",
+    "declineAll": "Alles ablehnen",
+    "continueLabel": "Weiter",
+    "privacyPolicyLink": "Datenschutzerklärung lesen",
+    "reviewNeeded": "Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.",
+    "a11y": {
+      "purposeToggle": "$purpose, aktuell $state",
+      "healthSection": "Bereich Gesundheitsdaten, verstärkte Einwilligung",
+      "policyButton": "Datenschutzerklärung öffnen"
+    }
   }
 }

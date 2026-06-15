@@ -783,5 +783,41 @@
       "currentBadge": "Sentier actuellement actif",
       "selectButton": "Activer le sentier $nom"
     }
+  },
+  "consent": {
+    "onboardingTitle": "Votre vie privée, votre choix",
+    "onboardingIntro": "Rien n'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.",
+    "settingsTitle": "Confidentialité et consentement",
+    "settingsIntro": "Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.",
+    "settingsEntry": "Confidentialité et consentement",
+    "settingsEntryDesc": "Gérer mes autorisations (géolocalisation, partage, santé)",
+    "purposes": {
+      "locationNavigation": "Navigation personnelle",
+      "locationNavigationDesc": "Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.",
+      "socialSharing": "Partage social",
+      "socialSharingDesc": "Apparaître dans les classements et le fil communautaire, sous pseudonyme.",
+      "publicReporting": "Signalement public",
+      "publicReportingDesc": "Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.",
+      "healthData": "Données de santé",
+      "healthDataDesc": "Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d'effort."
+    },
+    "healthBadge": "Donnée sensible",
+    "healthWarning": "La fréquence cardiaque est une donnée de santé (article 9 RGPD). Ce consentement est demandé séparément et n'est jamais regroupé avec les autres. Vos données de santé ne sont pas envoyées sur nos serveurs.",
+    "granted": "Autorisé",
+    "denied": "Non autorisé",
+    "grant": "Autoriser",
+    "revoke": "Retirer",
+    "decidedOn": "Choix du $date",
+    "notDecided": "En attente de votre choix",
+    "acceptSelected": "Valider mes choix",
+    "declineAll": "Tout refuser",
+    "continueLabel": "Continuer",
+    "privacyPolicyLink": "Lire la politique de confidentialité",
+    "reviewNeeded": "Notre politique a évolué : merci de revoir vos choix.",
+    "a11y": {
+      "purposeToggle": "$purpose, actuellement $state",
+      "healthSection": "Section données de santé, consentement renforcé",
+      "policyButton": "Ouvrir la politique de confidentialité"
+    }
   }
 }

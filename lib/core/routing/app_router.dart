@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
+import '../../features/consent/presentation/consent_settings_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/feasibility/presentation/feasibility_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
@@ -369,6 +370,12 @@ final appRouter = GoRouter(
       path: '/settings',
       name: 'settings',
       builder: (context, state) => const SettingsScreen(),
+    ),
+    // D4A-02 : gestion du consentement RGPD granulaire (depuis les reglages).
+    GoRoute(
+      path: '/consent',
+      name: 'consent',
+      builder: (context, state) => const ConsentSettingsScreen(),
     ),
     GoRoute(
       path: '/profile',
