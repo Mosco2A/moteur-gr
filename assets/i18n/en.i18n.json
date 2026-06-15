@@ -27,7 +27,8 @@
     "emergency": "Emergency contacts",
     "catalog": "Trail catalog",
     "profile": "Profile",
-    "settings": "Settings"
+    "settings": "Settings",
+    "trailSelection": "Switch trail"
   },
   "map": {
     "title": "Trail map",
@@ -768,6 +769,19 @@
       "guideCard": "Guide for $lieu",
       "section": "Section $titre",
       "openSiteButton": "Open the website of $nom"
+    }
+  },
+  "trailSelection": {
+    "title": "Switch trail",
+    "subtitle": "Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.",
+    "current": "Active trail",
+    "select": "Choose this trail",
+    "selected": "Selected trail",
+    "stagesDistance": "$stages stages - $km km",
+    "a11y": {
+      "trailCard": "Trail $nom, $region",
+      "currentBadge": "Currently active trail",
+      "selectButton": "Activate trail $nom"
     }
   }
 }

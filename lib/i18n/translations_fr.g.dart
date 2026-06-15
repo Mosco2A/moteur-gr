@@ -79,6 +79,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$waypoints$fr waypoints = Translations$waypoints$fr.internal(_root);
 	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
 	late final Translations$guides$fr guides = Translations$guides$fr.internal(_root);
+	late final Translations$trailSelection$fr trailSelection = Translations$trailSelection$fr.internal(_root);
 }
 
 // Path: a11y
@@ -175,6 +176,9 @@ class Translations$nav$fr {
 
 	/// fr: 'Paramètres'
 	String get settings => 'Paramètres';
+
+	/// fr: 'Changer de sentier'
+	String get trailSelection => 'Changer de sentier';
 }
 
 // Path: map
@@ -1585,6 +1589,35 @@ class Translations$guides$fr {
 	late final Translations$guides$a11y$fr a11y = Translations$guides$a11y$fr.internal(_root);
 }
 
+// Path: trailSelection
+class Translations$trailSelection$fr {
+	Translations$trailSelection$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Changer de sentier'
+	String get title => 'Changer de sentier';
+
+	/// fr: 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.'
+	String get subtitle => 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.';
+
+	/// fr: 'Sentier actif'
+	String get current => 'Sentier actif';
+
+	/// fr: 'Choisir ce sentier'
+	String get select => 'Choisir ce sentier';
+
+	/// fr: 'Sentier selectionne'
+	String get selected => 'Sentier selectionne';
+
+	/// fr: '$stages etapes - $km km'
+	String stagesDistance({required Object stages, required Object km}) => '${stages} etapes - ${km} km';
+
+	late final Translations$trailSelection$a11y$fr a11y = Translations$trailSelection$a11y$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -2424,6 +2457,24 @@ class Translations$guides$a11y$fr {
 	String openSiteButton({required Object nom}) => 'Ouvrir le site de ${nom}';
 }
 
+// Path: trailSelection.a11y
+class Translations$trailSelection$a11y$fr {
+	Translations$trailSelection$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Sentier $nom, $region'
+	String trailCard({required Object nom, required Object region}) => 'Sentier ${nom}, ${region}';
+
+	/// fr: 'Sentier actuellement actif'
+	String get currentBadge => 'Sentier actuellement actif';
+
+	/// fr: 'Activer le sentier $nom'
+	String selectButton({required Object nom}) => 'Activer le sentier ${nom}';
+}
+
 // Path: feasibility.recommendations.danger
 class Translations$feasibility$recommendations$danger$fr {
 	Translations$feasibility$recommendations$danger$fr.internal(this._root);
@@ -2748,6 +2799,7 @@ extension on Translations {
 			'nav.catalog' => 'Catalogue des sentiers',
 			'nav.profile' => 'Profil',
 			'nav.settings' => 'Paramètres',
+			'nav.trailSelection' => 'Changer de sentier',
 			'map.title' => 'Carte du sentier',
 			'map.loading' => 'Chargement du tracÃ©...',
 			'map.noTrack' => 'Aucun tracÃ© disponible',
@@ -3233,9 +3285,9 @@ extension on Translations {
 			'waypoints.types.connectivite' => 'Connectivité',
 			'waypoints.types.jonction' => 'Jonction',
 			'waypoints.filters.title' => 'Filtrer les waypoints',
-			'waypoints.filters.showAll' => 'Tout afficher',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.filters.showAll' => 'Tout afficher',
 			'waypoints.filters.hideAll' => 'Tout masquer',
 			'waypoints.filters.recentConditionOnly' => 'Condition récente uniquement',
 			'waypoints.detail.conditionsTitle' => 'Conditions terrain',
@@ -3323,6 +3375,15 @@ extension on Translations {
 			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guide de ${lieu}',
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Ouvrir le site de ${nom}',
+			'trailSelection.title' => 'Changer de sentier',
+			'trailSelection.subtitle' => 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.',
+			'trailSelection.current' => 'Sentier actif',
+			'trailSelection.select' => 'Choisir ce sentier',
+			'trailSelection.selected' => 'Sentier selectionne',
+			'trailSelection.stagesDistance' => ({required Object stages, required Object km}) => '${stages} etapes - ${km} km',
+			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Sentier ${nom}, ${region}',
+			'trailSelection.a11y.currentBadge' => 'Sentier actuellement actif',
+			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activer le sentier ${nom}',
 			_ => null,
 		};
 	}

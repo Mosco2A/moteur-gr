@@ -27,7 +27,8 @@
     "emergency": "Contactos de emergencia",
     "catalog": "Catálogo de senderos",
     "profile": "Perfil",
-    "settings": "Ajustes"
+    "settings": "Ajustes",
+    "trailSelection": "Cambiar de sendero"
   },
   "map": {
     "title": "Mapa del sendero",
@@ -768,6 +769,19 @@
       "guideCard": "Guía de $lieu",
       "section": "Sección $titre",
       "openSiteButton": "Abrir el sitio de $nom"
+    }
+  },
+  "trailSelection": {
+    "title": "Cambiar de sendero",
+    "subtitle": "Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interes, packs, guias) sigue tu seleccion.",
+    "current": "Sendero activo",
+    "select": "Elegir este sendero",
+    "selected": "Sendero seleccionado",
+    "stagesDistance": "$stages etapas - $km km",
+    "a11y": {
+      "trailCard": "Sendero $nom, $region",
+      "currentBadge": "Sendero actualmente activo",
+      "selectButton": "Activar el sendero $nom"
     }
   }
 }

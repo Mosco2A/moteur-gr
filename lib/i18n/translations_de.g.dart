@@ -78,6 +78,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$waypoints$de waypoints = _Translations$waypoints$de._(_root);
 	@override late final _Translations$packs$de packs = _Translations$packs$de._(_root);
 	@override late final _Translations$guides$de guides = _Translations$guides$de._(_root);
+	@override late final _Translations$trailSelection$de trailSelection = _Translations$trailSelection$de._(_root);
 }
 
 // Path: a11y
@@ -122,6 +123,7 @@ class _Translations$nav$de extends Translations$nav$fr {
 	@override String get catalog => 'Wegekatalog';
 	@override String get profile => 'Profil';
 	@override String get settings => 'Einstellungen';
+	@override String get trailSelection => 'Weg wechseln';
 }
 
 // Path: map
@@ -831,6 +833,22 @@ class _Translations$guides$de extends Translations$guides$fr {
 	@override late final _Translations$guides$a11y$de a11y = _Translations$guides$a11y$de._(_root);
 }
 
+// Path: trailSelection
+class _Translations$trailSelection$de extends Translations$trailSelection$fr {
+	_Translations$trailSelection$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Weg wechseln';
+	@override String get subtitle => 'Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.';
+	@override String get current => 'Aktiver Weg';
+	@override String get select => 'Diesen Weg waehlen';
+	@override String get selected => 'Ausgewaehlter Weg';
+	@override String stagesDistance({required Object stages, required Object km}) => '${stages} Etappen - ${km} km';
+	@override late final _Translations$trailSelection$a11y$de a11y = _Translations$trailSelection$a11y$de._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$de extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1294,6 +1312,18 @@ class _Translations$guides$a11y$de extends Translations$guides$a11y$fr {
 	@override String openSiteButton({required Object nom}) => 'Website von ${nom} öffnen';
 }
 
+// Path: trailSelection.a11y
+class _Translations$trailSelection$a11y$de extends Translations$trailSelection$a11y$fr {
+	_Translations$trailSelection$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String trailCard({required Object nom, required Object region}) => 'Weg ${nom}, ${region}';
+	@override String get currentBadge => 'Aktuell aktiver Weg';
+	@override String selectButton({required Object nom}) => 'Weg ${nom} aktivieren';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$de extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1534,6 +1564,7 @@ extension on TranslationsDe {
 			'nav.catalog' => 'Wegekatalog',
 			'nav.profile' => 'Profil',
 			'nav.settings' => 'Einstellungen',
+			'nav.trailSelection' => 'Weg wechseln',
 			'map.title' => 'Wanderkarte',
 			'map.loading' => 'Strecke wird geladen...',
 			'map.noTrack' => 'Keine Strecke verfÃ¼gbar',
@@ -2019,9 +2050,9 @@ extension on TranslationsDe {
 			'waypoints.types.connectivite' => 'Konnektivitat',
 			'waypoints.types.jonction' => 'Kreuzung',
 			'waypoints.filters.title' => 'Wegpunkte filtern',
-			'waypoints.filters.showAll' => 'Alle anzeigen',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.filters.showAll' => 'Alle anzeigen',
 			'waypoints.filters.hideAll' => 'Alle ausblenden',
 			'waypoints.filters.recentConditionOnly' => 'Nur aktueller Zustand',
 			'waypoints.detail.conditionsTitle' => 'Gelandezustand',
@@ -2109,6 +2140,15 @@ extension on TranslationsDe {
 			'guides.a11y.guideCard' => ({required Object lieu}) => 'Führer für ${lieu}',
 			'guides.a11y.section' => ({required Object titre}) => 'Abschnitt ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Website von ${nom} öffnen',
+			'trailSelection.title' => 'Weg wechseln',
+			'trailSelection.subtitle' => 'Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.',
+			'trailSelection.current' => 'Aktiver Weg',
+			'trailSelection.select' => 'Diesen Weg waehlen',
+			'trailSelection.selected' => 'Ausgewaehlter Weg',
+			'trailSelection.stagesDistance' => ({required Object stages, required Object km}) => '${stages} Etappen - ${km} km',
+			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Weg ${nom}, ${region}',
+			'trailSelection.a11y.currentBadge' => 'Aktuell aktiver Weg',
+			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Weg ${nom} aktivieren',
 			_ => null,
 		};
 	}

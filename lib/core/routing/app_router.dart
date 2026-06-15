@@ -27,6 +27,7 @@ import '../../features/safety/presentation/emergency_screen.dart';
 import '../../features/safety/presentation/signalement_screen.dart';
 import '../../features/training/presentation/training_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/trail_selection/presentation/trail_selection_screen.dart';
 import '../config/feature_flags.dart';
 import '../engine/trail_engine.dart';
 import 'app_shell.dart';
@@ -293,6 +294,12 @@ final appRouter = GoRouter(
       path: '/catalog',
       name: 'catalog',
       builder: (context, state) => const TrailCatalogScreen(),
+    ),
+    // F8D-02 : selection / bascule de sentier (moteur generique multi-sentiers).
+    GoRoute(
+      path: '/trail-selection',
+      name: 'trail-selection',
+      builder: (context, state) => const TrailSelectionScreen(),
     ),
     GoRoute(
       path: '/goodies',

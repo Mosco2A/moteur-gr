@@ -78,6 +78,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$waypoints$es waypoints = _Translations$waypoints$es._(_root);
 	@override late final _Translations$packs$es packs = _Translations$packs$es._(_root);
 	@override late final _Translations$guides$es guides = _Translations$guides$es._(_root);
+	@override late final _Translations$trailSelection$es trailSelection = _Translations$trailSelection$es._(_root);
 }
 
 // Path: a11y
@@ -122,6 +123,7 @@ class _Translations$nav$es extends Translations$nav$fr {
 	@override String get catalog => 'Catálogo de senderos';
 	@override String get profile => 'Perfil';
 	@override String get settings => 'Ajustes';
+	@override String get trailSelection => 'Cambiar de sendero';
 }
 
 // Path: map
@@ -831,6 +833,22 @@ class _Translations$guides$es extends Translations$guides$fr {
 	@override late final _Translations$guides$a11y$es a11y = _Translations$guides$a11y$es._(_root);
 }
 
+// Path: trailSelection
+class _Translations$trailSelection$es extends Translations$trailSelection$fr {
+	_Translations$trailSelection$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Cambiar de sendero';
+	@override String get subtitle => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interes, packs, guias) sigue tu seleccion.';
+	@override String get current => 'Sendero activo';
+	@override String get select => 'Elegir este sendero';
+	@override String get selected => 'Sendero seleccionado';
+	@override String stagesDistance({required Object stages, required Object km}) => '${stages} etapas - ${km} km';
+	@override late final _Translations$trailSelection$a11y$es a11y = _Translations$trailSelection$a11y$es._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1294,6 +1312,18 @@ class _Translations$guides$a11y$es extends Translations$guides$a11y$fr {
 	@override String openSiteButton({required Object nom}) => 'Abrir el sitio de ${nom}';
 }
 
+// Path: trailSelection.a11y
+class _Translations$trailSelection$a11y$es extends Translations$trailSelection$a11y$fr {
+	_Translations$trailSelection$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String trailCard({required Object nom, required Object region}) => 'Sendero ${nom}, ${region}';
+	@override String get currentBadge => 'Sendero actualmente activo';
+	@override String selectButton({required Object nom}) => 'Activar el sendero ${nom}';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$es extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1534,6 +1564,7 @@ extension on TranslationsEs {
 			'nav.catalog' => 'Catálogo de senderos',
 			'nav.profile' => 'Perfil',
 			'nav.settings' => 'Ajustes',
+			'nav.trailSelection' => 'Cambiar de sendero',
 			'map.title' => 'Mapa del sendero',
 			'map.loading' => 'Cargando el recorrido...',
 			'map.noTrack' => 'NingÃºn recorrido disponible',
@@ -2019,9 +2050,9 @@ extension on TranslationsEs {
 			'waypoints.types.connectivite' => 'Conectividad',
 			'waypoints.types.jonction' => 'Cruce',
 			'waypoints.filters.title' => 'Filtrar waypoints',
-			'waypoints.filters.showAll' => 'Mostrar todo',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.filters.showAll' => 'Mostrar todo',
 			'waypoints.filters.hideAll' => 'Ocultar todo',
 			'waypoints.filters.recentConditionOnly' => 'Solo condicion reciente',
 			'waypoints.detail.conditionsTitle' => 'Condiciones del terreno',
@@ -2109,6 +2140,15 @@ extension on TranslationsEs {
 			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guía de ${lieu}',
 			'guides.a11y.section' => ({required Object titre}) => 'Sección ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Abrir el sitio de ${nom}',
+			'trailSelection.title' => 'Cambiar de sendero',
+			'trailSelection.subtitle' => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interes, packs, guias) sigue tu seleccion.',
+			'trailSelection.current' => 'Sendero activo',
+			'trailSelection.select' => 'Elegir este sendero',
+			'trailSelection.selected' => 'Sendero seleccionado',
+			'trailSelection.stagesDistance' => ({required Object stages, required Object km}) => '${stages} etapas - ${km} km',
+			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Sendero ${nom}, ${region}',
+			'trailSelection.a11y.currentBadge' => 'Sendero actualmente activo',
+			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activar el sendero ${nom}',
 			_ => null,
 		};
 	}

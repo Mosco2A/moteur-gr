@@ -78,6 +78,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$waypoints$en waypoints = _Translations$waypoints$en._(_root);
 	@override late final _Translations$packs$en packs = _Translations$packs$en._(_root);
 	@override late final _Translations$guides$en guides = _Translations$guides$en._(_root);
+	@override late final _Translations$trailSelection$en trailSelection = _Translations$trailSelection$en._(_root);
 }
 
 // Path: a11y
@@ -122,6 +123,7 @@ class _Translations$nav$en extends Translations$nav$fr {
 	@override String get catalog => 'Trail catalog';
 	@override String get profile => 'Profile';
 	@override String get settings => 'Settings';
+	@override String get trailSelection => 'Switch trail';
 }
 
 // Path: map
@@ -831,6 +833,22 @@ class _Translations$guides$en extends Translations$guides$fr {
 	@override late final _Translations$guides$a11y$en a11y = _Translations$guides$a11y$en._(_root);
 }
 
+// Path: trailSelection
+class _Translations$trailSelection$en extends Translations$trailSelection$fr {
+	_Translations$trailSelection$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Switch trail';
+	@override String get subtitle => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.';
+	@override String get current => 'Active trail';
+	@override String get select => 'Choose this trail';
+	@override String get selected => 'Selected trail';
+	@override String stagesDistance({required Object stages, required Object km}) => '${stages} stages - ${km} km';
+	@override late final _Translations$trailSelection$a11y$en a11y = _Translations$trailSelection$a11y$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1294,6 +1312,18 @@ class _Translations$guides$a11y$en extends Translations$guides$a11y$fr {
 	@override String openSiteButton({required Object nom}) => 'Open the website of ${nom}';
 }
 
+// Path: trailSelection.a11y
+class _Translations$trailSelection$a11y$en extends Translations$trailSelection$a11y$fr {
+	_Translations$trailSelection$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String trailCard({required Object nom, required Object region}) => 'Trail ${nom}, ${region}';
+	@override String get currentBadge => 'Currently active trail';
+	@override String selectButton({required Object nom}) => 'Activate trail ${nom}';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$en extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1534,6 +1564,7 @@ extension on TranslationsEn {
 			'nav.catalog' => 'Trail catalog',
 			'nav.profile' => 'Profile',
 			'nav.settings' => 'Settings',
+			'nav.trailSelection' => 'Switch trail',
 			'map.title' => 'Trail map',
 			'map.loading' => 'Loading track...',
 			'map.noTrack' => 'No track available',
@@ -2019,9 +2050,9 @@ extension on TranslationsEn {
 			'waypoints.types.connectivite' => 'Connectivity',
 			'waypoints.types.jonction' => 'Junction',
 			'waypoints.filters.title' => 'Filter waypoints',
-			'waypoints.filters.showAll' => 'Show all',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.filters.showAll' => 'Show all',
 			'waypoints.filters.hideAll' => 'Hide all',
 			'waypoints.filters.recentConditionOnly' => 'Recent condition only',
 			'waypoints.detail.conditionsTitle' => 'Field conditions',
@@ -2109,6 +2140,15 @@ extension on TranslationsEn {
 			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guide for ${lieu}',
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Open the website of ${nom}',
+			'trailSelection.title' => 'Switch trail',
+			'trailSelection.subtitle' => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.',
+			'trailSelection.current' => 'Active trail',
+			'trailSelection.select' => 'Choose this trail',
+			'trailSelection.selected' => 'Selected trail',
+			'trailSelection.stagesDistance' => ({required Object stages, required Object km}) => '${stages} stages - ${km} km',
+			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Trail ${nom}, ${region}',
+			'trailSelection.a11y.currentBadge' => 'Currently active trail',
+			'trailSelection.a11y.selectButton' => ({required Object nom}) => 'Activate trail ${nom}',
 			_ => null,
 		};
 	}

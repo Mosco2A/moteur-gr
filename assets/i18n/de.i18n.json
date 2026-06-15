@@ -27,7 +27,8 @@
     "emergency": "Notfallkontakte",
     "catalog": "Wegekatalog",
     "profile": "Profil",
-    "settings": "Einstellungen"
+    "settings": "Einstellungen",
+    "trailSelection": "Weg wechseln"
   },
   "map": {
     "title": "Wanderkarte",
@@ -768,6 +769,19 @@
       "guideCard": "Führer für $lieu",
       "section": "Abschnitt $titre",
       "openSiteButton": "Website von $nom öffnen"
+    }
+  },
+  "trailSelection": {
+    "title": "Weg wechseln",
+    "subtitle": "Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.",
+    "current": "Aktiver Weg",
+    "select": "Diesen Weg waehlen",
+    "selected": "Ausgewaehlter Weg",
+    "stagesDistance": "$stages Etappen - $km km",
+    "a11y": {
+      "trailCard": "Weg $nom, $region",
+      "currentBadge": "Aktuell aktiver Weg",
+      "selectButton": "Weg $nom aktivieren"
     }
   }
 }

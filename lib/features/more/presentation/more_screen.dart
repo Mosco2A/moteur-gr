@@ -52,6 +52,12 @@ class MoreScreen extends ConsumerWidget {
         label: tr.nav.catalog,
         onTap: () => context.push('/catalog'),
       ),
+      // F8D-02 : bascule de sentier (le moteur reste generique, #84627).
+      _MoreEntry(
+        icon: Icons.swap_horiz,
+        label: tr.nav.trailSelection,
+        onTap: () => context.push('/trail-selection'),
+      ),
       _MoreEntry(
         icon: Icons.person_outline,
         label: tr.nav.profile,
