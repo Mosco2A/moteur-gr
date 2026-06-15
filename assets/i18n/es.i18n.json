@@ -783,5 +783,41 @@
       "currentBadge": "Sendero actualmente activo",
       "selectButton": "Activar el sendero $nom"
     }
+  },
+  "consent": {
+    "onboardingTitle": "Tu privacidad, tu elección",
+    "onboardingIntro": "Nada está activado por defecto. Elige, finalidad por finalidad, lo que autorizas. Podrás cambiarlo todo en cualquier momento en los ajustes.",
+    "settingsTitle": "Privacidad y consentimiento",
+    "settingsIntro": "Gestiona aquí cada permiso. Puedes retirar un consentimiento en cualquier momento, sin afectar al resto.",
+    "settingsEntry": "Privacidad y consentimiento",
+    "settingsEntryDesc": "Gestionar mis permisos (ubicación, compartir, salud)",
+    "purposes": {
+      "locationNavigation": "Navegación personal",
+      "locationNavigationDesc": "Usar tu ubicación para el mapa y el seguimiento de tu etapa. Permanece en tu dispositivo.",
+      "socialSharing": "Compartir social",
+      "socialSharingDesc": "Aparecer en las clasificaciones y en el feed de la comunidad, con un seudónimo.",
+      "publicReporting": "Avisos públicos",
+      "publicReportingDesc": "Publicar avisos (agua, peligro, condiciones) visibles para otros senderistas.",
+      "healthData": "Datos de salud",
+      "healthDataDesc": "Leer tu frecuencia cardíaca (banda o app de salud) para enriquecer el seguimiento del esfuerzo."
+    },
+    "healthBadge": "Dato sensible",
+    "healthWarning": "La frecuencia cardíaca es un dato de salud (artículo 9 del RGPD). Este consentimiento se solicita por separado y nunca se agrupa con los demás. Tus datos de salud no se envían a nuestros servidores.",
+    "granted": "Autorizado",
+    "denied": "No autorizado",
+    "grant": "Autorizar",
+    "revoke": "Retirar",
+    "decidedOn": "Elegido el $date",
+    "notDecided": "A la espera de tu elección",
+    "acceptSelected": "Confirmar mis elecciones",
+    "declineAll": "Rechazar todo",
+    "continueLabel": "Continuar",
+    "privacyPolicyLink": "Leer la política de privacidad",
+    "reviewNeeded": "Nuestra política ha cambiado: revisa tus elecciones.",
+    "a11y": {
+      "purposeToggle": "$purpose, actualmente $state",
+      "healthSection": "Sección de datos de salud, consentimiento reforzado",
+      "policyButton": "Abrir la política de privacidad"
+    }
   }
 }

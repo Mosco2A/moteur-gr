@@ -783,5 +783,41 @@
       "currentBadge": "Sentiero attualmente attivo",
       "selectButton": "Attiva il sentiero $nom"
     }
+  },
+  "consent": {
+    "onboardingTitle": "La tua privacy, la tua scelta",
+    "onboardingIntro": "Nulla è attivato per impostazione predefinita. Scegli, finalità per finalità, ciò che autorizzi. Potrai modificare tutto in qualsiasi momento nelle impostazioni.",
+    "settingsTitle": "Privacy e consenso",
+    "settingsIntro": "Gestisci qui ogni autorizzazione. Puoi revocare un consenso in qualsiasi momento, senza conseguenze sul resto.",
+    "settingsEntry": "Privacy e consenso",
+    "settingsEntryDesc": "Gestire le mie autorizzazioni (posizione, condivisione, salute)",
+    "purposes": {
+      "locationNavigation": "Navigazione personale",
+      "locationNavigationDesc": "Usare la tua posizione per la mappa e il monitoraggio della tappa. Resta sul tuo dispositivo.",
+      "socialSharing": "Condivisione social",
+      "socialSharingDesc": "Apparire nelle classifiche e nel feed della community, sotto pseudonimo.",
+      "publicReporting": "Segnalazioni pubbliche",
+      "publicReportingDesc": "Pubblicare segnalazioni (acqua, pericolo, condizioni) visibili agli altri escursionisti.",
+      "healthData": "Dati sulla salute",
+      "healthDataDesc": "Leggere la tua frequenza cardiaca (fascia o app salute) per arricchire il monitoraggio dello sforzo."
+    },
+    "healthBadge": "Dato sensibile",
+    "healthWarning": "La frequenza cardiaca è un dato sulla salute (articolo 9 del GDPR). Questo consenso è richiesto separatamente e non viene mai raggruppato con gli altri. I tuoi dati sulla salute non vengono inviati ai nostri server.",
+    "granted": "Autorizzato",
+    "denied": "Non autorizzato",
+    "grant": "Autorizza",
+    "revoke": "Revoca",
+    "decidedOn": "Scelto il $date",
+    "notDecided": "In attesa della tua scelta",
+    "acceptSelected": "Conferma le mie scelte",
+    "declineAll": "Rifiuta tutto",
+    "continueLabel": "Continua",
+    "privacyPolicyLink": "Leggi l'informativa sulla privacy",
+    "reviewNeeded": "La nostra politica è cambiata: rivedi le tue scelte.",
+    "a11y": {
+      "purposeToggle": "$purpose, attualmente $state",
+      "healthSection": "Sezione dati sulla salute, consenso rafforzato",
+      "policyButton": "Apri l'informativa sulla privacy"
+    }
   }
 }

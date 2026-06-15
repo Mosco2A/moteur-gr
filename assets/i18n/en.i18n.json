@@ -783,5 +783,41 @@
       "currentBadge": "Currently active trail",
       "selectButton": "Activate trail $nom"
     }
+  },
+  "consent": {
+    "onboardingTitle": "Your privacy, your choice",
+    "onboardingIntro": "Nothing is enabled by default. Choose, purpose by purpose, what you allow. You can change everything at any time in the settings.",
+    "settingsTitle": "Privacy and consent",
+    "settingsIntro": "Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.",
+    "settingsEntry": "Privacy and consent",
+    "settingsEntryDesc": "Manage my permissions (location, sharing, health)",
+    "purposes": {
+      "locationNavigation": "Personal navigation",
+      "locationNavigationDesc": "Use your location for the map and to track your stage. Stays on your device.",
+      "socialSharing": "Social sharing",
+      "socialSharingDesc": "Appear in leaderboards and the community feed, under a pseudonym.",
+      "publicReporting": "Public reporting",
+      "publicReportingDesc": "Post reports (water, hazard, conditions) visible to other hikers.",
+      "healthData": "Health data",
+      "healthDataDesc": "Read your heart rate (chest strap or health app) to enrich your effort tracking."
+    },
+    "healthBadge": "Sensitive data",
+    "healthWarning": "Heart rate is health data (GDPR article 9). This consent is requested separately and is never bundled with the others. Your health data is not sent to our servers.",
+    "granted": "Allowed",
+    "denied": "Not allowed",
+    "grant": "Allow",
+    "revoke": "Withdraw",
+    "decidedOn": "Chosen on $date",
+    "notDecided": "Awaiting your choice",
+    "acceptSelected": "Confirm my choices",
+    "declineAll": "Decline all",
+    "continueLabel": "Continue",
+    "privacyPolicyLink": "Read the privacy policy",
+    "reviewNeeded": "Our policy has changed: please review your choices.",
+    "a11y": {
+      "purposeToggle": "$purpose, currently $state",
+      "healthSection": "Health data section, reinforced consent",
+      "policyButton": "Open the privacy policy"
+    }
   }
 }
