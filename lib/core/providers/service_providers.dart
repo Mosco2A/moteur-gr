@@ -11,7 +11,9 @@ import '../../features/trek/data/widget_data_service.dart';
 import '../services/consent_service.dart';
 import '../services/demo_mode_service.dart';
 import '../services/health_reader_service.dart';
+import '../services/firestore_moderation_store.dart';
 import '../services/heart_rate_ble_service.dart';
+import '../services/moderation_service.dart';
 import '../services/sensor_fusion_service.dart';
 
 /// Provider du service mode demo universel (E5.18).
@@ -58,5 +60,24 @@ final consentServiceProvider = Provider<ConsentService>((ref) {
 final consentServiceReadyProvider = FutureProvider<ConsentService>((ref) async {
   final service = ref.watch(consentServiceProvider);
   await service.initialize();
+  return service;
+});
+
+/// Provider du store Firestore des notifications de moderation (D4C-01).
+///
+/// Backend reel adosse a la collection `reports_moderation` (regles D4C-02).
+/// Overridable en test par un faux [ModerationStore] en memoire.
+final moderationStoreProvider = Provider<ModerationStore>(
+  (ref) => FirestoreModerationStore(),
+);
+
+/// Provider du service de moderation hebergeur DSA art 16 (D4C-01).
+///
+/// Notice-and-action : appele par les boutons « Signaler » des features
+/// communautaires (F6C-03 signalement, F7B-04 fil, F8A-04 waypoints). Libere
+/// son StreamController au dispose du scope.
+final moderationServiceProvider = Provider<ModerationService>((ref) {
+  final service = ModerationService(store: ref.watch(moderationStoreProvider));
+  ref.onDispose(service.dispose);
   return service;
 });
