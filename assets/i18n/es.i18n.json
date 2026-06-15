@@ -819,5 +819,53 @@
       "healthSection": "Sección de datos de salud, consentimiento reforzado",
       "policyButton": "Abrir la política de privacidad"
     }
+  },
+  "moderation": {
+    "reportTitle": "Denunciar este contenido",
+    "reportIntro": "Ayúdanos a mantener una comunidad sana. Indica por qué este contenido te parece ilícito. Tu denuncia será examinada por un moderador.",
+    "reasonLabel": "Motivo de la denuncia",
+    "reasons": {
+      "illegal": "Contenido ilegal",
+      "harassment": "Acoso u odio",
+      "spam": "Spam o publicidad",
+      "dangerous": "Información peligrosa o engañosa",
+      "other": "Otro"
+    },
+    "detailsLabel": "Añade detalles (opcional)",
+    "detailsHint": "Añade un comentario para ayudar al moderador.",
+    "contactLabel": "Tu dirección de correo electrónico",
+    "contactHint": "Para mantenerte informado sobre la gestión (artículo 16).",
+    "goodFaithLabel": "Declaro de buena fe que esta información es exacta.",
+    "submit": "Enviar denuncia",
+    "submitting": "Enviando…",
+    "sent": "Denuncia enviada. Gracias, un moderador la examinará.",
+    "errorRequired": "Completa el motivo, tu correo y la declaración de buena fe.",
+    "errorGeneric": "No se pudo enviar la denuncia. Inténtalo de nuevo.",
+    "cancel": "Cancelar",
+    "reasonsTitle": "¿Por qué se ha restringido este contenido?",
+    "reasonsIntro": "De conformidad con el artículo 17, aquí está el motivo de la decisión de moderación relativa a tu contenido.",
+    "decisionLabel": "Decisión",
+    "decisions": {
+      "keep": "Contenido mantenido",
+      "restrict": "Contenido restringido",
+      "remove": "Contenido retirado"
+    },
+    "noStatement": "No se ha aplicado ninguna restricción a tu contenido.",
+    "complaintAction": "Impugnar esta decisión",
+    "complaintTitle": "Impugnar una decisión",
+    "complaintIntro": "Puedes impugnar una decisión de moderación. Explica por qué consideras la decisión injustificada (artículo 20).",
+    "complaintExposeLabel": "Tu impugnación",
+    "complaintExposeHint": "Describe los motivos de tu impugnación.",
+    "complaintSubmit": "Enviar impugnación",
+    "complaintSent": "Impugnación registrada. Será examinada.",
+    "complaintEmpty": "Explica tu impugnación.",
+    "a11y": {
+      "reportForm": "Formulario de denuncia de contenido",
+      "reasonSelector": "Selector del motivo de la denuncia",
+      "goodFaithToggle": "Declaración de buena fe, $state",
+      "submitReport": "Enviar denuncia",
+      "statementCard": "Motivación de la decisión de moderación",
+      "complaintForm": "Formulario de impugnación de la decisión"
+    }
   }
 }

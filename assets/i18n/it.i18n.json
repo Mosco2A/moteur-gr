@@ -819,5 +819,53 @@
       "healthSection": "Sezione dati sulla salute, consenso rafforzato",
       "policyButton": "Apri l'informativa sulla privacy"
     }
+  },
+  "moderation": {
+    "reportTitle": "Segnala questo contenuto",
+    "reportIntro": "Aiutaci a mantenere sana la community. Indica perché questo contenuto ti sembra illecito. La tua segnalazione sarà esaminata da un moderatore.",
+    "reasonLabel": "Motivo della segnalazione",
+    "reasons": {
+      "illegal": "Contenuto illegale",
+      "harassment": "Molestie o odio",
+      "spam": "Spam o pubblicità",
+      "dangerous": "Informazione pericolosa o ingannevole",
+      "other": "Altro"
+    },
+    "detailsLabel": "Aggiungi dettagli (facoltativo)",
+    "detailsHint": "Aggiungi un commento per aiutare il moderatore.",
+    "contactLabel": "Il tuo indirizzo e-mail",
+    "contactHint": "Per tenerti informato sulla gestione (articolo 16).",
+    "goodFaithLabel": "Dichiaro in buona fede che queste informazioni sono esatte.",
+    "submit": "Invia segnalazione",
+    "submitting": "Invio in corso…",
+    "sent": "Segnalazione inviata. Grazie, un moderatore la esaminerà.",
+    "errorRequired": "Compila il motivo, la tua e-mail e la dichiarazione di buona fede.",
+    "errorGeneric": "Impossibile inviare la segnalazione. Riprova.",
+    "cancel": "Annulla",
+    "reasonsTitle": "Perché questo contenuto è stato limitato?",
+    "reasonsIntro": "In conformità all'articolo 17, ecco il motivo della decisione di moderazione relativa al tuo contenuto.",
+    "decisionLabel": "Decisione",
+    "decisions": {
+      "keep": "Contenuto mantenuto",
+      "restrict": "Contenuto limitato",
+      "remove": "Contenuto rimosso"
+    },
+    "noStatement": "Nessuna restrizione è stata applicata ai tuoi contenuti.",
+    "complaintAction": "Contestare questa decisione",
+    "complaintTitle": "Contestare una decisione",
+    "complaintIntro": "Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).",
+    "complaintExposeLabel": "La tua contestazione",
+    "complaintExposeHint": "Descrivi i motivi della tua contestazione.",
+    "complaintSubmit": "Invia contestazione",
+    "complaintSent": "Contestazione registrata. Sarà esaminata.",
+    "complaintEmpty": "Spiega la tua contestazione.",
+    "a11y": {
+      "reportForm": "Modulo di segnalazione del contenuto",
+      "reasonSelector": "Selettore del motivo della segnalazione",
+      "goodFaithToggle": "Dichiarazione di buona fede, $state",
+      "submitReport": "Invia segnalazione",
+      "statementCard": "Motivazione della decisione di moderazione",
+      "complaintForm": "Modulo di contestazione della decisione"
+    }
   }
 }

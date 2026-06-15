@@ -819,5 +819,53 @@
       "healthSection": "Section données de santé, consentement renforcé",
       "policyButton": "Ouvrir la politique de confidentialité"
     }
+  },
+  "moderation": {
+    "reportTitle": "Signaler ce contenu",
+    "reportIntro": "Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.",
+    "reasonLabel": "Motif du signalement",
+    "reasons": {
+      "illegal": "Contenu illégal",
+      "harassment": "Harcèlement ou haine",
+      "spam": "Spam ou publicité",
+      "dangerous": "Information dangereuse ou trompeuse",
+      "other": "Autre"
+    },
+    "detailsLabel": "Précisez (facultatif)",
+    "detailsHint": "Ajoutez un commentaire pour aider le modérateur.",
+    "contactLabel": "Votre adresse e-mail",
+    "contactHint": "Pour vous tenir informé du traitement (article 16).",
+    "goodFaithLabel": "Je déclare de bonne foi que ces informations sont exactes.",
+    "submit": "Envoyer le signalement",
+    "submitting": "Envoi en cours…",
+    "sent": "Signalement envoyé. Merci, un modérateur va l'examiner.",
+    "errorRequired": "Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.",
+    "errorGeneric": "Le signalement n'a pas pu être envoyé. Réessayez.",
+    "cancel": "Annuler",
+    "reasonsTitle": "Pourquoi ce contenu a-t-il été restreint ?",
+    "reasonsIntro": "Conformément à l'article 17, voici la raison de la décision de modération concernant votre contenu.",
+    "decisionLabel": "Décision",
+    "decisions": {
+      "keep": "Contenu maintenu",
+      "restrict": "Contenu restreint",
+      "remove": "Contenu retiré"
+    },
+    "noStatement": "Aucune restriction n'a été appliquée à vos contenus.",
+    "complaintAction": "Contester cette décision",
+    "complaintTitle": "Contester une décision",
+    "complaintIntro": "Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).",
+    "complaintExposeLabel": "Votre contestation",
+    "complaintExposeHint": "Décrivez les raisons de votre contestation.",
+    "complaintSubmit": "Envoyer la contestation",
+    "complaintSent": "Contestation enregistrée. Elle sera examinée.",
+    "complaintEmpty": "Veuillez expliquer votre contestation.",
+    "a11y": {
+      "reportForm": "Formulaire de signalement de contenu",
+      "reasonSelector": "Sélecteur de motif de signalement",
+      "goodFaithToggle": "Déclaration de bonne foi, $state",
+      "submitReport": "Envoyer le signalement",
+      "statementCard": "Exposé des motifs de la décision de modération",
+      "complaintForm": "Formulaire de contestation d'une décision"
+    }
   }
 }

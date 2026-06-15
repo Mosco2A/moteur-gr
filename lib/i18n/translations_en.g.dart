@@ -80,6 +80,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$guides$en guides = _Translations$guides$en._(_root);
 	@override late final _Translations$trailSelection$en trailSelection = _Translations$trailSelection$en._(_root);
 	@override late final _Translations$consent$en consent = _Translations$consent$en._(_root);
+	@override late final _Translations$moderation$en moderation = _Translations$moderation$en._(_root);
 }
 
 // Path: a11y
@@ -880,6 +881,44 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override late final _Translations$consent$a11y$en a11y = _Translations$consent$a11y$en._(_root);
 }
 
+// Path: moderation
+class _Translations$moderation$en extends Translations$moderation$fr {
+	_Translations$moderation$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportTitle => 'Report this content';
+	@override String get reportIntro => 'Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.';
+	@override String get reasonLabel => 'Reason for reporting';
+	@override late final _Translations$moderation$reasons$en reasons = _Translations$moderation$reasons$en._(_root);
+	@override String get detailsLabel => 'Add details (optional)';
+	@override String get detailsHint => 'Add a comment to help the moderator.';
+	@override String get contactLabel => 'Your email address';
+	@override String get contactHint => 'To keep you informed about the handling (article 16).';
+	@override String get goodFaithLabel => 'I declare in good faith that this information is accurate.';
+	@override String get submit => 'Send report';
+	@override String get submitting => 'Sending…';
+	@override String get sent => 'Report sent. Thank you, a moderator will review it.';
+	@override String get errorRequired => 'Please fill in the reason, your email and the good-faith declaration.';
+	@override String get errorGeneric => 'The report could not be sent. Please try again.';
+	@override String get cancel => 'Cancel';
+	@override String get reasonsTitle => 'Why was this content restricted?';
+	@override String get reasonsIntro => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.';
+	@override String get decisionLabel => 'Decision';
+	@override late final _Translations$moderation$decisions$en decisions = _Translations$moderation$decisions$en._(_root);
+	@override String get noStatement => 'No restriction has been applied to your content.';
+	@override String get complaintAction => 'Challenge this decision';
+	@override String get complaintTitle => 'Challenge a decision';
+	@override String get complaintIntro => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).';
+	@override String get complaintExposeLabel => 'Your challenge';
+	@override String get complaintExposeHint => 'Describe the reasons for your challenge.';
+	@override String get complaintSubmit => 'Send challenge';
+	@override String get complaintSent => 'Challenge recorded. It will be reviewed.';
+	@override String get complaintEmpty => 'Please explain your challenge.';
+	@override late final _Translations$moderation$a11y$en a11y = _Translations$moderation$a11y$en._(_root);
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$en extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1382,6 +1421,47 @@ class _Translations$consent$a11y$en extends Translations$consent$a11y$fr {
 	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, currently ${state}';
 	@override String get healthSection => 'Health data section, reinforced consent';
 	@override String get policyButton => 'Open the privacy policy';
+}
+
+// Path: moderation.reasons
+class _Translations$moderation$reasons$en extends Translations$moderation$reasons$fr {
+	_Translations$moderation$reasons$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get illegal => 'Illegal content';
+	@override String get harassment => 'Harassment or hate';
+	@override String get spam => 'Spam or advertising';
+	@override String get dangerous => 'Dangerous or misleading information';
+	@override String get other => 'Other';
+}
+
+// Path: moderation.decisions
+class _Translations$moderation$decisions$en extends Translations$moderation$decisions$fr {
+	_Translations$moderation$decisions$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get keep => 'Content kept';
+	@override String get restrict => 'Content restricted';
+	@override String get remove => 'Content removed';
+}
+
+// Path: moderation.a11y
+class _Translations$moderation$a11y$en extends Translations$moderation$a11y$fr {
+	_Translations$moderation$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportForm => 'Content reporting form';
+	@override String get reasonSelector => 'Report reason selector';
+	@override String goodFaithToggle({required Object state}) => 'Good-faith declaration, ${state}';
+	@override String get submitReport => 'Send report';
+	@override String get statementCard => 'Statement of reasons for the moderation decision';
+	@override String get complaintForm => 'Decision challenge form';
 }
 
 // Path: feasibility.recommendations.danger
@@ -2239,6 +2319,46 @@ extension on TranslationsEn {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
 			'consent.a11y.policyButton' => 'Open the privacy policy',
+			'moderation.reportTitle' => 'Report this content',
+			'moderation.reportIntro' => 'Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.',
+			'moderation.reasonLabel' => 'Reason for reporting',
+			'moderation.reasons.illegal' => 'Illegal content',
+			'moderation.reasons.harassment' => 'Harassment or hate',
+			'moderation.reasons.spam' => 'Spam or advertising',
+			'moderation.reasons.dangerous' => 'Dangerous or misleading information',
+			'moderation.reasons.other' => 'Other',
+			'moderation.detailsLabel' => 'Add details (optional)',
+			'moderation.detailsHint' => 'Add a comment to help the moderator.',
+			'moderation.contactLabel' => 'Your email address',
+			'moderation.contactHint' => 'To keep you informed about the handling (article 16).',
+			'moderation.goodFaithLabel' => 'I declare in good faith that this information is accurate.',
+			'moderation.submit' => 'Send report',
+			'moderation.submitting' => 'Sending…',
+			'moderation.sent' => 'Report sent. Thank you, a moderator will review it.',
+			'moderation.errorRequired' => 'Please fill in the reason, your email and the good-faith declaration.',
+			'moderation.errorGeneric' => 'The report could not be sent. Please try again.',
+			'moderation.cancel' => 'Cancel',
+			'moderation.reasonsTitle' => 'Why was this content restricted?',
+			'moderation.reasonsIntro' => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.',
+			'moderation.decisionLabel' => 'Decision',
+			'moderation.decisions.keep' => 'Content kept',
+			'moderation.decisions.restrict' => 'Content restricted',
+			'moderation.decisions.remove' => 'Content removed',
+			'moderation.noStatement' => 'No restriction has been applied to your content.',
+			'moderation.complaintAction' => 'Challenge this decision',
+			'moderation.complaintTitle' => 'Challenge a decision',
+			'moderation.complaintIntro' => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).',
+			'moderation.complaintExposeLabel' => 'Your challenge',
+			'moderation.complaintExposeHint' => 'Describe the reasons for your challenge.',
+			'moderation.complaintSubmit' => 'Send challenge',
+			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
+			'moderation.complaintEmpty' => 'Please explain your challenge.',
+			'moderation.a11y.reportForm' => 'Content reporting form',
+			'moderation.a11y.reasonSelector' => 'Report reason selector',
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
+			'moderation.a11y.submitReport' => 'Send report',
+			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
+			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			_ => null,
 		};
 	}

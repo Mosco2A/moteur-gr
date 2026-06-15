@@ -819,5 +819,53 @@
       "healthSection": "Bereich Gesundheitsdaten, verstärkte Einwilligung",
       "policyButton": "Datenschutzerklärung öffnen"
     }
+  },
+  "moderation": {
+    "reportTitle": "Diesen Inhalt melden",
+    "reportIntro": "Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.",
+    "reasonLabel": "Grund der Meldung",
+    "reasons": {
+      "illegal": "Illegaler Inhalt",
+      "harassment": "Belästigung oder Hass",
+      "spam": "Spam oder Werbung",
+      "dangerous": "Gefährliche oder irreführende Information",
+      "other": "Sonstiges"
+    },
+    "detailsLabel": "Details hinzufügen (optional)",
+    "detailsHint": "Fügen Sie einen Kommentar hinzu, um dem Moderator zu helfen.",
+    "contactLabel": "Ihre E-Mail-Adresse",
+    "contactHint": "Um Sie über die Bearbeitung zu informieren (Artikel 16).",
+    "goodFaithLabel": "Ich erkläre nach bestem Wissen, dass diese Angaben zutreffen.",
+    "submit": "Meldung senden",
+    "submitting": "Wird gesendet…",
+    "sent": "Meldung gesendet. Danke, ein Moderator wird sie prüfen.",
+    "errorRequired": "Bitte Grund, E-Mail und die Erklärung in gutem Glauben ausfüllen.",
+    "errorGeneric": "Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen.",
+    "cancel": "Abbrechen",
+    "reasonsTitle": "Warum wurde dieser Inhalt eingeschränkt?",
+    "reasonsIntro": "Gemäß Artikel 17 finden Sie hier den Grund für die Moderationsentscheidung zu Ihrem Inhalt.",
+    "decisionLabel": "Entscheidung",
+    "decisions": {
+      "keep": "Inhalt beibehalten",
+      "restrict": "Inhalt eingeschränkt",
+      "remove": "Inhalt entfernt"
+    },
+    "noStatement": "Auf Ihre Inhalte wurde keine Einschränkung angewendet.",
+    "complaintAction": "Diese Entscheidung anfechten",
+    "complaintTitle": "Eine Entscheidung anfechten",
+    "complaintIntro": "Sie können eine Moderationsentscheidung anfechten. Erklären Sie, warum die Entscheidung Ihrer Meinung nach ungerechtfertigt ist (Artikel 20).",
+    "complaintExposeLabel": "Ihre Anfechtung",
+    "complaintExposeHint": "Beschreiben Sie die Gründe für Ihre Anfechtung.",
+    "complaintSubmit": "Anfechtung senden",
+    "complaintSent": "Anfechtung erfasst. Sie wird geprüft.",
+    "complaintEmpty": "Bitte erklären Sie Ihre Anfechtung.",
+    "a11y": {
+      "reportForm": "Formular zur Inhaltsmeldung",
+      "reasonSelector": "Auswahl des Meldegrunds",
+      "goodFaithToggle": "Erklärung in gutem Glauben, $state",
+      "submitReport": "Meldung senden",
+      "statementCard": "Begründung der Moderationsentscheidung",
+      "complaintForm": "Formular zur Anfechtung der Entscheidung"
+    }
   }
 }
