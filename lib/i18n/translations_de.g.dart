@@ -453,14 +453,14 @@ class _Translations$auth$de extends Translations$auth$fr {
 
 	// Translations
 	@override String get profile => 'Profil';
-	@override String get anonymous => 'Anonymer Wanderer';
+	@override String get anonymous => 'Wanderer ohne Konto';
 	@override String get connectedVia => 'Verbunden über';
 	@override String get signInGoogle => 'Mit Google anmelden';
 	@override String get signInGoogleDesc => 'Um Ihren Fortschritt zu speichern';
 	@override String get signOut => 'Abmelden';
-	@override String get signOutDesc => 'Zurück zum anonymen Modus';
+	@override String get signOutDesc => 'Zurück zum Modus ohne Konto';
 	@override String get signOutConfirm => 'Abmelden?';
-	@override String get signOutMessage => 'Sie kehren zum anonymen Modus zurück. Ihre lokalen Daten bleiben erhalten.';
+	@override String get signOutMessage => 'Sie kehren zum Modus ohne Konto zurück. Ihre lokalen Daten bleiben erhalten.';
 	@override String get deleteAccount => 'Mein Konto löschen';
 	@override String get deleteAccountDesc => 'Alle Ihre Daten werden gelöscht';
 	@override String get deleteConfirm => 'Konto löschen?';
@@ -1837,14 +1837,14 @@ extension on TranslationsDe {
 			'feedback.thanks' => 'Vielen Dank für Ihr Feedback!',
 			'feedback.pending' => 'ausstehend',
 			'auth.profile' => 'Profil',
-			'auth.anonymous' => 'Anonymer Wanderer',
+			'auth.anonymous' => 'Wanderer ohne Konto',
 			'auth.connectedVia' => 'Verbunden über',
 			'auth.signInGoogle' => 'Mit Google anmelden',
 			'auth.signInGoogleDesc' => 'Um Ihren Fortschritt zu speichern',
 			'auth.signOut' => 'Abmelden',
-			'auth.signOutDesc' => 'Zurück zum anonymen Modus',
+			'auth.signOutDesc' => 'Zurück zum Modus ohne Konto',
 			'auth.signOutConfirm' => 'Abmelden?',
-			'auth.signOutMessage' => 'Sie kehren zum anonymen Modus zurück. Ihre lokalen Daten bleiben erhalten.',
+			'auth.signOutMessage' => 'Sie kehren zum Modus ohne Konto zurück. Ihre lokalen Daten bleiben erhalten.',
 			'auth.deleteAccount' => 'Mein Konto löschen',
 			'auth.deleteAccountDesc' => 'Alle Ihre Daten werden gelöscht',
 			'auth.deleteConfirm' => 'Konto löschen?',
