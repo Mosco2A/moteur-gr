@@ -1321,6 +1321,348 @@ describe('waypoint_comments — condition immuable + moderation DSA (F8A-03)', (
   });
 });
 
+describe('reports_moderation — notice-and-action art 16 (D4C-02)', () => {
+  const REPORT = 'report-mod-0001';
+
+  function reportPayload(overrides = {}) {
+    return {
+      contentType: 'waypoints',
+      contentRef: 'wp-1',
+      motif: 'Contenu illicite',
+      notifierContact: 'temoin@example.com',
+      bonneFoi: true,
+      createdAt: serverTimestamp(),
+      status: 'recue',
+      ...overrides,
+    };
+  }
+
+  /// Seed direct (regles desactivees) d une notification a un statut donne.
+  async function seedReport({ status = 'recue' } = {}) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'reports_moderation', REPORT), {
+        contentType: 'waypoints',
+        contentRef: 'wp-1',
+        motif: 'spam',
+        notifierContact: 'a@b.fr',
+        bonneFoi: true,
+        createdAt: Timestamp.now(),
+        status,
+      });
+    });
+  }
+
+  it('un utilisateur authentifie CREE une notification (art 16)', async () => {
+    await assertSucceeds(
+      setDoc(doc(trekkerDb(), 'reports_moderation', REPORT), reportPayload()),
+    );
+  });
+
+  it('un anonyme ne cree pas de notification', async () => {
+    await assertFails(
+      setDoc(doc(anonDb(), 'reports_moderation', REPORT), reportPayload()),
+    );
+  });
+
+  it('motif vide refuse (art 16 : explication etayee)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'reports_moderation', REPORT),
+        reportPayload({ motif: '' }),
+      ),
+    );
+  });
+
+  it('bonne foi non declaree refusee (art 16)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'reports_moderation', REPORT),
+        reportPayload({ bonneFoi: false }),
+      ),
+    );
+  });
+
+  it('contentType hors liste refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'reports_moderation', REPORT),
+        reportPayload({ contentType: 'collection_pirate' }),
+      ),
+    );
+  });
+
+  it('statut initial != recue refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'reports_moderation', REPORT),
+        reportPayload({ status: 'traitee' }),
+      ),
+    );
+  });
+
+  it('champ hors schema refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'reports_moderation', REPORT),
+        reportPayload({ champPirate: true }),
+      ),
+    );
+  });
+
+  it('un NON-moderateur ne lit PAS les notifications (contact protege)', async () => {
+    await seedReport();
+    await assertFails(getDoc(doc(trekkerDb(), 'reports_moderation', REPORT)));
+    await assertFails(getDoc(doc(anonDb(), 'reports_moderation', REPORT)));
+  });
+
+  it('le moderateur LIT les notifications', async () => {
+    await seedReport();
+    await assertSucceeds(
+      getDoc(doc(moderatorDb(), 'reports_moderation', REPORT)),
+    );
+  });
+
+  it('un NON-moderateur ne traite PAS (pas de changement de statut)', async () => {
+    await seedReport();
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'reports_moderation', REPORT), {
+        status: 'traitee',
+        decision: 'remove',
+      }),
+    );
+  });
+
+  it('le moderateur statue (status -> traitee + decision)', async () => {
+    await seedReport({ status: 'en_traitement' });
+    await assertSucceeds(
+      updateDoc(doc(moderatorDb(), 'reports_moderation', REPORT), {
+        status: 'traitee',
+        decision: 'remove',
+      }),
+    );
+  });
+
+  it('le moderateur ne peut PAS alterer les mentions du notifiant', async () => {
+    await seedReport();
+    await assertFails(
+      updateDoc(doc(moderatorDb(), 'reports_moderation', REPORT), {
+        status: 'traitee',
+        notifierContact: 'pirate@x.fr',
+      }),
+    );
+  });
+
+  it('un statut hors cycle de vie refuse meme pour le moderateur', async () => {
+    await seedReport();
+    await assertFails(
+      updateDoc(doc(moderatorDb(), 'reports_moderation', REPORT), {
+        status: 'zombie',
+      }),
+    );
+  });
+
+  it('le moderateur supprime une notification, pas un user normal', async () => {
+    await seedReport();
+    await assertFails(
+      deleteDoc(doc(trekkerDb(), 'reports_moderation', REPORT)),
+    );
+    await assertSucceeds(
+      deleteDoc(doc(moderatorDb(), 'reports_moderation', REPORT)),
+    );
+  });
+});
+
+describe('moderation_decisions — expose des motifs art 17 (D4C-02)', () => {
+  const DECISION = 'decision-0001';
+
+  /// Seed direct d un expose des motifs destine a un auteur donne.
+  async function seedDecision({ authorUidHash = TREKKER } = {}) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'moderation_decisions', DECISION), {
+        authorUidHash,
+        contentType: 'waypoints',
+        contentRef: 'wp-1',
+        decision: 'remove',
+        resultingState: 'removed',
+        motif: 'Contenu illicite',
+        reportId: 'report-mod-0001',
+        createdAt: Timestamp.now(),
+      });
+    });
+  }
+
+  it('l AUTEUR du contenu restreint lit sa motivation (art 17)', async () => {
+    await seedDecision({ authorUidHash: TREKKER });
+    await assertSucceeds(
+      getDoc(doc(trekkerDb(), 'moderation_decisions', DECISION)),
+    );
+  });
+
+  it('un autre utilisateur ne lit PAS la motivation', async () => {
+    await seedDecision({ authorUidHash: TREKKER });
+    await assertFails(
+      getDoc(doc(strangerDb(), 'moderation_decisions', DECISION)),
+    );
+  });
+
+  it('un anonyme ne lit pas la motivation', async () => {
+    await seedDecision({ authorUidHash: TREKKER });
+    await assertFails(
+      getDoc(doc(anonDb(), 'moderation_decisions', DECISION)),
+    );
+  });
+
+  it('le moderateur lit la motivation', async () => {
+    await seedDecision({ authorUidHash: STRANGER });
+    await assertSucceeds(
+      getDoc(doc(moderatorDb(), 'moderation_decisions', DECISION)),
+    );
+  });
+
+  it('le client n auto-motive PAS une decision (create refuse)', async () => {
+    await assertFails(
+      setDoc(doc(trekkerDb(), 'moderation_decisions', DECISION), {
+        authorUidHash: TREKKER,
+        contentType: 'waypoints',
+        contentRef: 'wp-1',
+        decision: 'keep',
+        resultingState: 'visible',
+        motif: 'auto',
+        createdAt: serverTimestamp(),
+      }),
+    );
+  });
+
+  it('le moderateur peut creer une motivation', async () => {
+    await assertSucceeds(
+      setDoc(doc(moderatorDb(), 'moderation_decisions', DECISION), {
+        authorUidHash: TREKKER,
+        contentType: 'waypoints',
+        contentRef: 'wp-1',
+        decision: 'remove',
+        resultingState: 'removed',
+        motif: 'Contenu illicite',
+        createdAt: serverTimestamp(),
+      }),
+    );
+  });
+});
+
+describe('moderation_complaints — plaintes art 20 (D4C-02)', () => {
+  const COMPLAINT = 'complaint-0001';
+
+  function complaintPayload(overrides = {}) {
+    return {
+      complainantUidHash: TREKKER,
+      contentType: 'waypoints',
+      contentRef: 'wp-1',
+      expose: 'Je conteste ce retrait, mon contenu est licite.',
+      createdAt: serverTimestamp(),
+      status: 'ouverte',
+      ...overrides,
+    };
+  }
+
+  async function seedComplaint({ complainantUidHash = TREKKER } = {}) {
+    await testEnv.withSecurityRulesDisabled(async (ctx) => {
+      await setDoc(doc(ctx.firestore(), 'moderation_complaints', COMPLAINT), {
+        complainantUidHash,
+        contentType: 'waypoints',
+        contentRef: 'wp-1',
+        expose: 'Contestation.',
+        createdAt: Timestamp.now(),
+        status: 'ouverte',
+      });
+    });
+  }
+
+  it('un utilisateur authentifie depose une plainte (art 20)', async () => {
+    await assertSucceeds(
+      setDoc(
+        doc(trekkerDb(), 'moderation_complaints', COMPLAINT),
+        complaintPayload(),
+      ),
+    );
+  });
+
+  it('un anonyme ne depose pas de plainte', async () => {
+    await assertFails(
+      setDoc(
+        doc(anonDb(), 'moderation_complaints', COMPLAINT),
+        complaintPayload(),
+      ),
+    );
+  });
+
+  it('usurpation refusee (complainantUidHash != uid)', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'moderation_complaints', COMPLAINT),
+        complaintPayload({ complainantUidHash: STRANGER }),
+      ),
+    );
+  });
+
+  it('expose vide refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'moderation_complaints', COMPLAINT),
+        complaintPayload({ expose: '' }),
+      ),
+    );
+  });
+
+  it('statut initial != ouverte refuse', async () => {
+    await assertFails(
+      setDoc(
+        doc(trekkerDb(), 'moderation_complaints', COMPLAINT),
+        complaintPayload({ status: 'tranchee' }),
+      ),
+    );
+  });
+
+  it('le plaignant suit sa plainte, un autre user non', async () => {
+    await seedComplaint({ complainantUidHash: TREKKER });
+    await assertSucceeds(
+      getDoc(doc(trekkerDb(), 'moderation_complaints', COMPLAINT)),
+    );
+    await assertFails(
+      getDoc(doc(strangerDb(), 'moderation_complaints', COMPLAINT)),
+    );
+  });
+
+  it('le moderateur lit et traite la plainte (status)', async () => {
+    await seedComplaint();
+    await assertSucceeds(
+      getDoc(doc(moderatorDb(), 'moderation_complaints', COMPLAINT)),
+    );
+    await assertSucceeds(
+      updateDoc(doc(moderatorDb(), 'moderation_complaints', COMPLAINT), {
+        status: 'en_examen',
+      }),
+    );
+  });
+
+  it('le plaignant ne change PAS le statut lui-meme', async () => {
+    await seedComplaint({ complainantUidHash: TREKKER });
+    await assertFails(
+      updateDoc(doc(trekkerDb(), 'moderation_complaints', COMPLAINT), {
+        status: 'tranchee',
+      }),
+    );
+  });
+
+  it('le moderateur ne peut PAS alterer l expose du plaignant', async () => {
+    await seedComplaint();
+    await assertFails(
+      updateDoc(doc(moderatorDb(), 'moderation_complaints', COMPLAINT), {
+        status: 'tranchee',
+        expose: 'falsifie',
+      }),
+    );
+  });
+});
+
 describe('tout le reste — deny', () => {
   it('collection sans regles (groups) refusee meme authentifie', async () => {
     await assertFails(

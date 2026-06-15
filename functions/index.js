@@ -18,6 +18,7 @@ import { getFirestore } from 'firebase-admin/firestore';
 import { onDocumentWritten } from 'firebase-functions/v2/firestore';
 
 import { buildSegmentRanking, buildDefiRanking } from './ranking.js';
+import { planModeration } from './moderation.js';
 
 initializeApp();
 const db = getFirestore();
@@ -79,5 +80,61 @@ export const classementDefi = onDocumentWritten(
       ascending: false,
     });
     await db.collection('defi_rankings').doc(defiId).set(ranking);
+  },
+);
+
+/// Workflow de moderation hebergeur DSA (D4C-02, design #86166).
+///
+/// Declenche a chaque ecriture d'une notification reports_moderation. Quand un
+/// moderateur STATUE (status -> 'traitee' avec une decision), la function :
+///   1. relit l'auteur (authorUidHash) du contenu cible (pour l'art 17) ;
+///   2. fait transiter le moderationState du contenu cible (A POSTERIORI :
+///      keep->visible / restrict->flagged / remove->removed) ;
+///   3. cree un enregistrement d'EXPOSE DES MOTIFS (art 17) dans
+///      moderation_decisions, destine a l'auteur du contenu restreint.
+/// La logique de decision est PURE (moderation.js, testee via node --test) ;
+/// cette function ne fait que l'I/O Firestore (Admin SDK = bypass des rules).
+///
+/// Rollback : retirer/redeployer la version anterieure ; les rules continuent
+/// de proteger reports_moderation / moderation_decisions independamment.
+export const moderationWorkflow = onDocumentWritten(
+  'reports_moderation/{reportId}',
+  async (event) => {
+    const before = event.data?.before?.data();
+    const after = event.data?.after?.data();
+    if (!after) return; // suppression -> rien a faire
+
+    // Reference du rapport (pour tracer l'expose des motifs).
+    const reportId = event.params?.reportId;
+    const afterWithId = { ...after, reportId };
+
+    // Pre-calcul defensif : pas de transition -> on ne lit meme pas le contenu.
+    const preview = planModeration(before, afterWithId, {});
+    if (!preview.process) return;
+
+    // Relit l'auteur du contenu cible (UID hache) pour l'expose des motifs.
+    let authorUidHash = null;
+    const targetSnap = await db
+      .collection(preview.contentCollection)
+      .doc(preview.contentRef)
+      .get();
+    if (targetSnap.exists) {
+      authorUidHash = targetSnap.data().authorUidHash ?? null;
+    }
+
+    const plan = planModeration(before, afterWithId, {
+      authorUidHash,
+      now: new Date(),
+    });
+    if (!plan.process) return;
+
+    // 1. Transition du moderationState du contenu cible (a posteriori).
+    await db
+      .collection(plan.contentCollection)
+      .doc(plan.contentRef)
+      .set({ moderationState: plan.newModerationState }, { merge: true });
+
+    // 2. Expose des motifs (art 17) destine a l'auteur du contenu restreint.
+    await db.collection('moderation_decisions').add(plan.statement);
   },
 );
