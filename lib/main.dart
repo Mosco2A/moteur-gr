@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/config/trail_config.dart';
 import 'core/config/test_trail_config.dart';
-import 'core/engine/trail_engine.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -49,7 +48,14 @@ class MoteurGrApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        trailConfigProvider.overrideWithValue(config),
+        // NOTE (cablage nav, design #88246) : on NE surcharge PLUS
+        // trailConfigProvider. L'override figeait le sentier actif sur
+        // testTrailConfig et court-circuitait selectedTrailIdProvider : la
+        // selection au catalogue n'avait alors aucun effet. Sans override,
+        // trailConfigProvider derive de selectedTrailIdProvider
+        // (cf. trail_engine.dart) et toute l'app suit le sentier choisi.
+        // Seul firebaseServiceProvider reste surcharge (service initialise
+        // au demarrage, hors graphe Riverpod pur).
         firebaseServiceProvider.overrideWithValue(firebaseService),
       ],
       // TranslationProvider (Slang) : requis pour Translations.of(context),
