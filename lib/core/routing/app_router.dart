@@ -203,10 +203,10 @@ final appRouter = GoRouter(
     ),
 
     // ===== Routes racine (hors shell, plein ecran) =====
-    // /trails : ancien stub Phase 1 (TrailListScreen) DESORMAIS MORT. Le
-    // catalogue (/catalog) est la liste reelle des sentiers (cablage #88246).
-    // On garde la route pour ne pas casser d eventuels liens profonds, mais
-    // elle redirige systematiquement vers /catalog (plus de builder de stub).
+    // /trails : ancien stub Phase 1 (TrailListScreen) SUPPRIME (cablage #88246).
+    // Le catalogue (/catalog) est la liste reelle des sentiers. On garde la
+    // route pour ne pas casser d eventuels liens profonds, mais elle redirige
+    // systematiquement vers /catalog (plus aucun ecran stub a afficher).
     GoRoute(
       path: '/trails',
       name: 'trails',
