@@ -62,6 +62,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tips$es tips = _Translations$tips$es._(_root);
 	@override late final _Translations$goodies$es goodies = _Translations$goodies$es._(_root);
 	@override late final _Translations$noData$es noData = _Translations$noData$es._(_root);
+	@override late final _Translations$catalog$es catalog = _Translations$catalog$es._(_root);
 	@override late final _Translations$updates$es updates = _Translations$updates$es._(_root);
 	@override late final _Translations$follow$es follow = _Translations$follow$es._(_root);
 	@override late final _Translations$cloud$es cloud = _Translations$cloud$es._(_root);
@@ -548,6 +549,18 @@ class _Translations$noData$es extends Translations$noData$fr {
 	@override String get subtitle => 'Descarga un sendero para empezar';
 	@override String get offlineHint => 'Los datos estarán disponibles sin conexión para tu caminata.';
 	@override String get browseCta => 'Explorar senderos';
+}
+
+// Path: catalog
+class _Translations$catalog$es extends Translations$catalog$fr {
+	_Translations$catalog$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get enter => 'Entrar';
+	@override String get mustDownload => 'Descarga este sendero para explorarlo.';
+	@override late final _Translations$catalog$a11y$es a11y = _Translations$catalog$a11y$es._(_root);
 }
 
 // Path: updates
@@ -1095,6 +1108,16 @@ class _Translations$feasibility$recommendations$es extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$es caution = _Translations$feasibility$recommendations$caution$es._(_root);
 	@override late final _Translations$feasibility$recommendations$good$es good = _Translations$feasibility$recommendations$good$es._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$es excellent = _Translations$feasibility$recommendations$excellent$es._(_root);
+}
+
+// Path: catalog.a11y
+class _Translations$catalog$a11y$es extends Translations$catalog$a11y$fr {
+	_Translations$catalog$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String enterButton({required Object nom}) => 'Entrar en el sendero ${nom}';
 }
 
 // Path: signalement.types
@@ -2042,6 +2065,9 @@ extension on TranslationsEs {
 			'noData.subtitle' => 'Descarga un sendero para empezar',
 			'noData.offlineHint' => 'Los datos estarán disponibles sin conexión para tu caminata.',
 			'noData.browseCta' => 'Explorar senderos',
+			'catalog.enter' => 'Entrar',
+			'catalog.mustDownload' => 'Descarga este sendero para explorarlo.',
+			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entrar en el sendero ${nom}',
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
@@ -2187,11 +2213,11 @@ extension on TranslationsEs {
 			'waypoints.types.ravitaillement' => 'Avituallamiento',
 			'waypoints.types.danger' => 'Peligro',
 			'waypoints.types.camp' => 'Acampada',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Conectividad',
 			'waypoints.types.jonction' => 'Cruce',
 			'waypoints.filters.title' => 'Filtrar waypoints',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.filters.showAll' => 'Mostrar todo',
 			'waypoints.filters.hideAll' => 'Ocultar todo',
 			'waypoints.filters.recentConditionOnly' => 'Solo condicion reciente',

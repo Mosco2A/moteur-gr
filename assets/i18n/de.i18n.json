@@ -443,6 +443,13 @@
     "offlineHint": "Die Daten sind offline für Ihre Wanderung verfügbar.",
     "browseCta": "Wege durchsuchen"
   },
+  "catalog": {
+    "enter": "Öffnen",
+    "mustDownload": "Laden Sie diesen Weg herunter, um ihn zu erkunden.",
+    "a11y": {
+      "enterButton": "Weg $nom öffnen"
+    }
+  },
   "updates": {
     "readyTitle": "Update bereit",
     "readyBodyOne": "Ein Weg wurde aktualisiert.",

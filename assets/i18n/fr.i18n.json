@@ -443,6 +443,13 @@
     "offlineHint": "Les données seront disponibles hors ligne pour votre randonnée.",
     "browseCta": "Parcourir les sentiers"
   },
+  "catalog": {
+    "enter": "Entrer",
+    "mustDownload": "Téléchargez ce sentier pour l'explorer.",
+    "a11y": {
+      "enterButton": "Entrer dans le sentier $nom"
+    }
+  },
   "updates": {
     "readyTitle": "Mise à jour prête",
     "readyBodyOne": "Un sentier a été mis à jour.",

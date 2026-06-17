@@ -443,6 +443,13 @@
     "offlineHint": "I dati saranno disponibili offline per la tua escursione.",
     "browseCta": "Esplora i sentieri"
   },
+  "catalog": {
+    "enter": "Entra",
+    "mustDownload": "Scarica questo sentiero per esplorarlo.",
+    "a11y": {
+      "enterButton": "Entra nel sentiero $nom"
+    }
+  },
   "updates": {
     "readyTitle": "Aggiornamento pronto",
     "readyBodyOne": "Un sentiero è stato aggiornato.",

@@ -62,6 +62,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tips$en tips = _Translations$tips$en._(_root);
 	@override late final _Translations$goodies$en goodies = _Translations$goodies$en._(_root);
 	@override late final _Translations$noData$en noData = _Translations$noData$en._(_root);
+	@override late final _Translations$catalog$en catalog = _Translations$catalog$en._(_root);
 	@override late final _Translations$updates$en updates = _Translations$updates$en._(_root);
 	@override late final _Translations$follow$en follow = _Translations$follow$en._(_root);
 	@override late final _Translations$cloud$en cloud = _Translations$cloud$en._(_root);
@@ -548,6 +549,18 @@ class _Translations$noData$en extends Translations$noData$fr {
 	@override String get subtitle => 'Download a trail to get started';
 	@override String get offlineHint => 'Data will be available offline for your hike.';
 	@override String get browseCta => 'Browse trails';
+}
+
+// Path: catalog
+class _Translations$catalog$en extends Translations$catalog$fr {
+	_Translations$catalog$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get enter => 'Enter';
+	@override String get mustDownload => 'Download this trail to explore it.';
+	@override late final _Translations$catalog$a11y$en a11y = _Translations$catalog$a11y$en._(_root);
 }
 
 // Path: updates
@@ -1095,6 +1108,16 @@ class _Translations$feasibility$recommendations$en extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$en caution = _Translations$feasibility$recommendations$caution$en._(_root);
 	@override late final _Translations$feasibility$recommendations$good$en good = _Translations$feasibility$recommendations$good$en._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$en excellent = _Translations$feasibility$recommendations$excellent$en._(_root);
+}
+
+// Path: catalog.a11y
+class _Translations$catalog$a11y$en extends Translations$catalog$a11y$fr {
+	_Translations$catalog$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String enterButton({required Object nom}) => 'Enter trail ${nom}';
 }
 
 // Path: signalement.types
@@ -2042,6 +2065,9 @@ extension on TranslationsEn {
 			'noData.subtitle' => 'Download a trail to get started',
 			'noData.offlineHint' => 'Data will be available offline for your hike.',
 			'noData.browseCta' => 'Browse trails',
+			'catalog.enter' => 'Enter',
+			'catalog.mustDownload' => 'Download this trail to explore it.',
+			'catalog.a11y.enterButton' => ({required Object nom}) => 'Enter trail ${nom}',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -2187,11 +2213,11 @@ extension on TranslationsEn {
 			'waypoints.types.ravitaillement' => 'Resupply',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Campsite',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Connectivity',
 			'waypoints.types.jonction' => 'Junction',
 			'waypoints.filters.title' => 'Filter waypoints',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.filters.showAll' => 'Show all',
 			'waypoints.filters.hideAll' => 'Hide all',
 			'waypoints.filters.recentConditionOnly' => 'Recent condition only',
