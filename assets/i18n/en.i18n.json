@@ -443,6 +443,16 @@
     "offlineHint": "Data will be available offline for your hike.",
     "browseCta": "Browse trails"
   },
+  "catalog": {
+    "title": "Trail catalog",
+    "enter": "Enter",
+    "mustDownload": "Download this trail to explore it.",
+    "emptyTitle": "No trail available",
+    "emptySubtitle": "No trail is offered in the catalog yet.",
+    "a11y": {
+      "enterButton": "Enter trail $nom"
+    }
+  },
   "updates": {
     "readyTitle": "Update ready",
     "readyBodyOne": "One trail has been updated.",

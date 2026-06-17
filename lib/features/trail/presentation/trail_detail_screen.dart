@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../providers/stages_provider.dart';
@@ -26,6 +28,7 @@ class TrailDetailScreen extends ConsumerWidget {
     final config = ref.watch(trailConfigProvider);
     final stagesAsync = ref.watch(stagesProvider(trailId));
     final theme = Theme.of(context);
+    final t = Translations.of(context);
 
     return Scaffold(
       appBar: AppBar(title: Text(config.displayName)),
@@ -92,26 +95,56 @@ class TrailDetailScreen extends ConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Bouton Planifier
-              OutlinedButton.icon(
-                onPressed: () =>
-                    context.go('/trail/$trailId/planning'),
-                icon: const Icon(Icons.calendar_month),
-                label: const Text('Planifier'),
+              // Action primaire : ENTRER dans le sentier (cablage nav #88246).
+              // Active ce sentier (selectedTrailIdProvider) puis ouvre le shell
+              // sur /map -> entree du coeur de l'app depuis le lien profond.
+              SizedBox(
+                width: double.infinity,
+                child: Semantics(
+                  button: true,
+                  label: t.catalog.a11y.enterButton(nom: config.displayName),
+                  child: FilledButton.icon(
+                    key: const ValueKey('trail-detail-enter'),
+                    onPressed: () => _enterTrail(context, ref),
+                    icon: const Icon(Icons.arrow_forward),
+                    label: Text(t.catalog.enter),
+                  ),
+                ),
               ),
               const SizedBox(height: AppTheme.spacingSm),
-              // Bouton Voir la carte
-              ElevatedButton.icon(
-                onPressed: () =>
-                    context.go('/trail/$trailId/map'),
-                icon: const Icon(Icons.terrain),
-                label: const Text('Voir la carte'),
+              // Actions secondaires cote a cote (compactes) : planifier / carte
+              // hors-shell. Disposees en Row pour ne pas allonger la barre.
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go('/trail/$trailId/planning'),
+                      icon: const Icon(Icons.calendar_month),
+                      label: const Text('Planifier'),
+                    ),
+                  ),
+                  const SizedBox(width: AppTheme.spacingSm),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => context.go('/trail/$trailId/map'),
+                      icon: const Icon(Icons.terrain),
+                      label: const Text('Voir la carte'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  /// Entre dans le sentier affiche : ecrit la selection (le moteur entier suit
+  /// via trailConfigProvider) puis ouvre le shell sur l'onglet Carte.
+  void _enterTrail(BuildContext context, WidgetRef ref) {
+    ref.read(selectedTrailIdProvider.notifier).state = trailId;
+    context.go('/map');
   }
 }
 

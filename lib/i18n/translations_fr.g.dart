@@ -63,6 +63,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$tips$fr tips = Translations$tips$fr.internal(_root);
 	late final Translations$goodies$fr goodies = Translations$goodies$fr.internal(_root);
 	late final Translations$noData$fr noData = Translations$noData$fr.internal(_root);
+	late final Translations$catalog$fr catalog = Translations$catalog$fr.internal(_root);
 	late final Translations$updates$fr updates = Translations$updates$fr.internal(_root);
 	late final Translations$follow$fr follow = Translations$follow$fr.internal(_root);
 	late final Translations$cloud$fr cloud = Translations$cloud$fr.internal(_root);
@@ -1055,6 +1056,32 @@ class Translations$noData$fr {
 
 	/// fr: 'Parcourir les sentiers'
 	String get browseCta => 'Parcourir les sentiers';
+}
+
+// Path: catalog
+class Translations$catalog$fr {
+	Translations$catalog$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Catalogue des sentiers'
+	String get title => 'Catalogue des sentiers';
+
+	/// fr: 'Entrer'
+	String get enter => 'Entrer';
+
+	/// fr: 'Téléchargez ce sentier pour l'explorer.'
+	String get mustDownload => 'Téléchargez ce sentier pour l\'explorer.';
+
+	/// fr: 'Aucun sentier disponible'
+	String get emptyTitle => 'Aucun sentier disponible';
+
+	/// fr: 'Aucun sentier n'est encore proposé au catalogue.'
+	String get emptySubtitle => 'Aucun sentier n\'est encore proposé au catalogue.';
+
+	late final Translations$catalog$a11y$fr a11y = Translations$catalog$a11y$fr.internal(_root);
 }
 
 // Path: updates
@@ -2145,6 +2172,18 @@ class Translations$feasibility$recommendations$fr {
 	late final Translations$feasibility$recommendations$caution$fr caution = Translations$feasibility$recommendations$caution$fr.internal(_root);
 	late final Translations$feasibility$recommendations$good$fr good = Translations$feasibility$recommendations$good$fr.internal(_root);
 	late final Translations$feasibility$recommendations$excellent$fr excellent = Translations$feasibility$recommendations$excellent$fr.internal(_root);
+}
+
+// Path: catalog.a11y
+class Translations$catalog$a11y$fr {
+	Translations$catalog$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Entrer dans le sentier $nom'
+	String enterButton({required Object nom}) => 'Entrer dans le sentier ${nom}';
 }
 
 // Path: signalement.types
@@ -3422,6 +3461,12 @@ extension on Translations {
 			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
 			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
 			'noData.browseCta' => 'Parcourir les sentiers',
+			'catalog.title' => 'Catalogue des sentiers',
+			'catalog.enter' => 'Entrer',
+			'catalog.mustDownload' => 'Téléchargez ce sentier pour l\'explorer.',
+			'catalog.emptyTitle' => 'Aucun sentier disponible',
+			'catalog.emptySubtitle' => 'Aucun sentier n\'est encore proposé au catalogue.',
+			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entrer dans le sentier ${nom}',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -3564,14 +3609,14 @@ extension on Translations {
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
 			'shareVisibility.shared' => 'Carte prête à partager.',
 			'waypoints.types.eau' => 'Eau',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Ravitaillement',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Bivouac',
 			'waypoints.types.connectivite' => 'Connectivité',
 			'waypoints.types.jonction' => 'Jonction',
 			'waypoints.filters.title' => 'Filtrer les waypoints',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.filters.showAll' => 'Tout afficher',
 			'waypoints.filters.hideAll' => 'Tout masquer',
 			'waypoints.filters.recentConditionOnly' => 'Condition récente uniquement',

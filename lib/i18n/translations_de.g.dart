@@ -62,6 +62,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tips$de tips = _Translations$tips$de._(_root);
 	@override late final _Translations$goodies$de goodies = _Translations$goodies$de._(_root);
 	@override late final _Translations$noData$de noData = _Translations$noData$de._(_root);
+	@override late final _Translations$catalog$de catalog = _Translations$catalog$de._(_root);
 	@override late final _Translations$updates$de updates = _Translations$updates$de._(_root);
 	@override late final _Translations$follow$de follow = _Translations$follow$de._(_root);
 	@override late final _Translations$cloud$de cloud = _Translations$cloud$de._(_root);
@@ -548,6 +549,21 @@ class _Translations$noData$de extends Translations$noData$fr {
 	@override String get subtitle => 'Laden Sie einen Weg herunter, um zu beginnen';
 	@override String get offlineHint => 'Die Daten sind offline für Ihre Wanderung verfügbar.';
 	@override String get browseCta => 'Wege durchsuchen';
+}
+
+// Path: catalog
+class _Translations$catalog$de extends Translations$catalog$fr {
+	_Translations$catalog$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Wegekatalog';
+	@override String get enter => 'Öffnen';
+	@override String get mustDownload => 'Laden Sie diesen Weg herunter, um ihn zu erkunden.';
+	@override String get emptyTitle => 'Kein Weg verfügbar';
+	@override String get emptySubtitle => 'Im Katalog wird noch kein Weg angeboten.';
+	@override late final _Translations$catalog$a11y$de a11y = _Translations$catalog$a11y$de._(_root);
 }
 
 // Path: updates
@@ -1095,6 +1111,16 @@ class _Translations$feasibility$recommendations$de extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$de caution = _Translations$feasibility$recommendations$caution$de._(_root);
 	@override late final _Translations$feasibility$recommendations$good$de good = _Translations$feasibility$recommendations$good$de._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$de excellent = _Translations$feasibility$recommendations$excellent$de._(_root);
+}
+
+// Path: catalog.a11y
+class _Translations$catalog$a11y$de extends Translations$catalog$a11y$fr {
+	_Translations$catalog$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String enterButton({required Object nom}) => 'Weg ${nom} öffnen';
 }
 
 // Path: signalement.types
@@ -2042,6 +2068,12 @@ extension on TranslationsDe {
 			'noData.subtitle' => 'Laden Sie einen Weg herunter, um zu beginnen',
 			'noData.offlineHint' => 'Die Daten sind offline für Ihre Wanderung verfügbar.',
 			'noData.browseCta' => 'Wege durchsuchen',
+			'catalog.title' => 'Wegekatalog',
+			'catalog.enter' => 'Öffnen',
+			'catalog.mustDownload' => 'Laden Sie diesen Weg herunter, um ihn zu erkunden.',
+			'catalog.emptyTitle' => 'Kein Weg verfügbar',
+			'catalog.emptySubtitle' => 'Im Katalog wird noch kein Weg angeboten.',
+			'catalog.a11y.enterButton' => ({required Object nom}) => 'Weg ${nom} öffnen',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
@@ -2184,14 +2216,14 @@ extension on TranslationsDe {
 			'shareVisibility.privateNotice' => 'Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.',
 			'shareVisibility.shared' => 'Karte bereit zum Teilen.',
 			'waypoints.types.eau' => 'Wasser',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Nachschub',
 			'waypoints.types.danger' => 'Gefahr',
 			'waypoints.types.camp' => 'Zeltplatz',
 			'waypoints.types.connectivite' => 'Konnektivitat',
 			'waypoints.types.jonction' => 'Kreuzung',
 			'waypoints.filters.title' => 'Wegpunkte filtern',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.filters.showAll' => 'Alle anzeigen',
 			'waypoints.filters.hideAll' => 'Alle ausblenden',
 			'waypoints.filters.recentConditionOnly' => 'Nur aktueller Zustand',

@@ -9,6 +9,7 @@ import 'package:moteur_gr/features/trail/presentation/stage_detail_screen.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_detail_screen.dart';
 import 'package:moteur_gr/features/trail/providers/pois_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests E5.5b — bascule de theme (clair/sombre) sans casse d'ecran.
 ///
@@ -62,9 +63,11 @@ void main() {
             poisProvider('test-trail')
                 .overrideWith((ref) => Future.value(const [])),
           ],
-          child: MaterialApp(
-            theme: theme,
-            home: TrailDetailScreen(trailId: testTrailConfig.id),
+          child: TranslationProvider(
+            child: MaterialApp(
+              theme: theme,
+              home: TrailDetailScreen(trailId: testTrailConfig.id),
+            ),
           ),
         );
 

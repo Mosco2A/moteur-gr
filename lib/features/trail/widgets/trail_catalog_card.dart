@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../providers/catalog_provider.dart';
 
 /// Libelles i18n pour les statuts de telechargement.
@@ -28,6 +29,7 @@ class TrailCatalogCard extends StatelessWidget {
     this.onDownload,
     this.onUpdate,
     this.onDelete,
+    this.onEnter,
   });
 
   /// Entree du catalogue a afficher
@@ -41,6 +43,13 @@ class TrailCatalogCard extends StatelessWidget {
 
   /// Callback suppression
   final VoidCallback? onDelete;
+
+  /// Callback "entrer dans le sentier" (cablage nav, design #88246).
+  ///
+  /// Fourni uniquement pour une entree telechargeable : ecrit la selection
+  /// (selectedTrailIdProvider) puis ouvre le shell sur /map cote ecran appelant.
+  /// Quand null, aucun bouton Entrer n'est affiche (retro-compat tests/usages).
+  final VoidCallback? onEnter;
 
   /// Formate une taille en octets en chaine lisible.
   static String formatFileSize(int bytes) {
@@ -163,14 +172,14 @@ class TrailCatalogCard extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.spacingMd),
             // Bouton action contextuel
-            _buildActionButton(theme),
+            _buildActionButton(context, theme),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildActionButton(ThemeData theme) {
+  Widget _buildActionButton(BuildContext context, ThemeData theme) {
     switch (entry.localStatus) {
       case TrailLocalStatusValues.notDownloaded:
         return SizedBox(
@@ -195,29 +204,70 @@ class TrailCatalogCard extends StatelessWidget {
           ),
         );
       case TrailLocalStatusValues.downloaded:
-        return SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: onDelete,
-            icon: const Icon(Icons.delete_outline, color: AppTheme.rougeUrgence),
-            label: const Text(
-              _CatalogLabels.delete,
-              style: TextStyle(color: AppTheme.rougeUrgence),
+        // Sentier utilisable : action primaire "Entrer" (cablage nav #88246)
+        // si onEnter fourni, puis suppression en secondaire.
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onEnter != null) ...[
+              _buildEnterButton(context),
+              const SizedBox(height: AppTheme.spacingSm),
+            ],
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: onDelete,
+                icon: const Icon(Icons.delete_outline,
+                    color: AppTheme.rougeUrgence),
+                label: const Text(
+                  _CatalogLabels.delete,
+                  style: TextStyle(color: AppTheme.rougeUrgence),
+                ),
+              ),
             ),
-          ),
+          ],
         );
       case TrailLocalStatusValues.updateAvailable:
-        return SizedBox(
-          width: double.infinity,
-          child: ElevatedButton.icon(
-            onPressed: onUpdate,
-            icon: const Icon(Icons.system_update_alt),
-            label: const Text(_CatalogLabels.update),
-          ),
+        // Donnees locales presentes (une MAJ existe) : "Entrer" reste possible
+        // sur la version locale, la MAJ est proposee en secondaire.
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (onEnter != null) ...[
+              _buildEnterButton(context),
+              const SizedBox(height: AppTheme.spacingSm),
+            ],
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: onUpdate,
+                icon: const Icon(Icons.system_update_alt),
+                label: const Text(_CatalogLabels.update),
+              ),
+            ),
+          ],
         );
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  /// Bouton primaire "Entrer dans le sentier" (i18n catalog.enter, design #88246).
+  Widget _buildEnterButton(BuildContext context) {
+    final t = Translations.of(context);
+    return SizedBox(
+      width: double.infinity,
+      child: Semantics(
+        button: true,
+        label: t.catalog.a11y.enterButton(nom: entry.trailId),
+        child: FilledButton.icon(
+          key: ValueKey('trail-enter-${entry.trailId}'),
+          onPressed: onEnter,
+          icon: const Icon(Icons.arrow_forward),
+          label: Text(t.catalog.enter),
+        ),
+      ),
+    );
   }
 }
 

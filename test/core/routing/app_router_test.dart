@@ -13,8 +13,8 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 ///   - restauration d'etat par onglet (IndexedStack natif).
 void main() {
   group('AppRouter — structure', () {
-    test('la route initiale est /trails', () {
-      expect(appRouter.routeInformationProvider.value.uri.path, '/trails');
+    test('la route initiale est /catalog (cablage nav #88246)', () {
+      expect(appRouter.routeInformationProvider.value.uri.path, '/catalog');
     });
 
     test('le premier niveau contient 1 shell + 17 routes racine', () {
@@ -165,6 +165,75 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.textContaining('Erreur'), findsOneWidget);
+    });
+  });
+
+  // ===========================================================================
+  // Cablage nav (#88246) : stub /trails neutralise + currentTrailGuard.
+  // On manipule les drapeaux globaux du module (hasCompletedOnboarding /
+  // hasDownloadedTrails) et on les restaure systematiquement apres chaque test.
+  // ===========================================================================
+  group('AppRouter — cablage nav (#88246)', () {
+    late bool savedOnboarding;
+    late bool savedDownloaded;
+
+    setUp(() {
+      savedOnboarding = hasCompletedOnboarding;
+      savedDownloaded = hasDownloadedTrails;
+      // Conditions nominales : onboarding fait, un sentier dispo.
+      hasCompletedOnboarding = true;
+      hasDownloadedTrails = true;
+    });
+
+    tearDown(() {
+      hasCompletedOnboarding = savedOnboarding;
+      hasDownloadedTrails = savedDownloaded;
+    });
+
+    test('la route /trails est une redirection (plus de builder de stub)', () {
+      final trails = appRouter.configuration.routes
+          .whereType<GoRoute>()
+          .firstWhere((r) => r.path == '/trails');
+      expect(trails.redirect, isNotNull,
+          reason: '/trails doit rediriger, pas afficher TrailListScreen');
+    });
+
+    test('onboarding non fait : toute route renvoie vers /onboarding', () {
+      hasCompletedOnboarding = false;
+      expect(redirectForPath('/catalog'), '/onboarding');
+      expect(redirectForPath('/map'), '/onboarding');
+      // /onboarding lui-meme n'est jamais redirige (pas de boucle).
+      expect(redirectForPath('/onboarding'), isNull);
+    });
+
+    test('sans sentier dispo, les routes du shell renvoient au catalogue', () {
+      hasDownloadedTrails = false;
+      for (final tab in ['/map', '/stages', '/planning', '/journal', '/more']) {
+        expect(redirectForPath(tab), '/catalog',
+            reason: '$tab (coeur) doit renvoyer au catalogue sans sentier');
+      }
+      // Une autre route hors-shell retombe sur l'ecran bloquant historique.
+      expect(redirectForPath('/trail/test-trail'), '/no-data');
+    });
+
+    test('routes toujours accessibles : aucune redirection', () {
+      hasDownloadedTrails = false; // meme sans sentier
+      for (final p in [
+        '/catalog',
+        '/trail-selection',
+        '/no-data',
+        '/settings',
+        '/profile',
+        '/emergency',
+      ]) {
+        expect(redirectForPath(p), isNull, reason: '$p doit rester accessible');
+      }
+    });
+
+    test('avec sentier dispo + onboarding fait : navigation libre', () {
+      // Conditions nominales (cf. setUp) -> shell atteignable directement.
+      expect(redirectForPath('/map'), isNull);
+      expect(redirectForPath('/stages'), isNull);
     });
   });
 

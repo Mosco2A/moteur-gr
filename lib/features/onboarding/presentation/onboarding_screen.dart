@@ -13,6 +13,13 @@ final _onboardingPageProvider = StateProvider.autoDispose<int>((ref) => 0);
 /// Nombre total de pages dans l'onboarding.
 const int _totalPages = 3;
 
+/// Hauteur reservee au bandeau haut (bouton « Passer »).
+const double _topBarHeight = 80;
+
+/// Hauteur reservee au bandeau bas (puces de pagination + bouton d'action).
+/// Bouton pleine largeur (~48) + marges (24*2) + puces (8) + interligne.
+const double _bottomBarHeight = 120;
+
 /// Ecran d'accueil affiche au tout premier lancement de l'application.
 ///
 /// PageView de 3 ecrans, 100% generique (aucune marque de sentier en dur —
@@ -33,19 +40,14 @@ class OnboardingScreen extends ConsumerStatefulWidget {
 }
 
 class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
-  late final PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController();
+  /// Va a la page [index] (bornee a l'intervalle valide) et met a jour l'etat.
+  void _goToPage(int index) {
+    final clamped = index.clamp(0, _totalPages - 1);
+    ref.read(_onboardingPageProvider.notifier).state = clamped;
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
+  /// Passe a la page suivante (utilise par le bouton « Suivant »).
+  void _nextPage() => _goToPage(ref.read(_onboardingPageProvider) + 1);
 
   @override
   Widget build(BuildContext context) {
@@ -55,20 +57,108 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
     // Nom de produit parametrique (jamais code en dur dans le moteur).
     final appName = ref.watch(trailConfigProvider.select((c) => c.displayName));
 
+    // REGRESSION EMULATEUR — pourquoi un Stack/Positioned et pas un
+    // Column[Align, Expanded(...), Padding] :
+    //   Sur l'emulateur Android, le tout premier frame arrive avec une surface
+    //   0x0 ("FlutterRenderer: Width is zero. 0,0") et un fort pic de charge au
+    //   demarrage (Choreographer "Skipped 265 frames"). Dans ces conditions, le
+    //   RenderFlex d'une Column ne terminait pas son layout : il restait en
+    //   "size: MISSING", n'attribuait pas les offsets verticaux a ses enfants
+    //   (tous empiles a Offset(0,0)) et le corps + le bas de page ne se
+    //   peignaient pas correctement. Reproduit avec PageView ET IndexedStack,
+    //   avec Impeller ET Skia, AVEC ou SANS enfant flex : le point commun etait
+    //   la mise en page par RenderFlex (Column). Un corps trivial sans Column
+    //   s'affichait, lui, parfaitement.
+    //   => On positionne les 3 zones avec un Stack + Positioned (RenderStack,
+    //   chemin de layout different de RenderFlex) : chaque zone a des bornes
+    //   explicites, aucune resolution sequentielle d'offsets. L'affichage et la
+    //   navigation (boutons + glissement) redeviennent fiables sur l'emulateur.
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            // --- Bouton « Passer » en haut a droite ---
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(AppTheme.spacingBase),
-                child: TextButton(
-                  onPressed: _finish,
-                  child: Text(
-                    tr.onboarding.skip,
-                    style: theme.textTheme.bodyLarge?.copyWith(
+            // --- Corps : 3 pages (sous les bandeaux, qui sont opaques) ---
+            // Bornes verticales explicites : sous le bandeau haut, au-dessus du
+            // bandeau bas. IndexedStack = aucune Scrollable/viewport.
+            Positioned(
+              top: _topBarHeight,
+              left: 0,
+              right: 0,
+              bottom: _bottomBarHeight,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onHorizontalDragEnd: (details) {
+                  final v = details.primaryVelocity ?? 0;
+                  if (v < -200) {
+                    _goToPage(currentPage + 1); // glissement vers la gauche
+                  } else if (v > 200) {
+                    _goToPage(currentPage - 1); // glissement vers la droite
+                  }
+                },
+                child: IndexedStack(
+                  index: currentPage,
+                  sizing: StackFit.expand,
+                  children: [
+                    _WelcomePage(tr: tr, theme: theme, appName: appName),
+                    _LanguagePage(tr: tr, theme: theme),
+                    _DownloadPage(
+                      tr: tr,
+                      theme: theme,
+                      onBrowse: _goToCatalog,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // --- Bandeau haut : bouton « Passer » a droite ---
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              height: _topBarHeight,
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppTheme.spacingBase),
+                  child: TextButton(
+                    onPressed: _finish,
+                    child: Text(
+                      tr.onboarding.skip,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+
+            // --- Bandeau bas : indicateur de page + bouton d'action ---
+            // On place les puces (a gauche) et le bouton (a droite) via deux
+            // Align dans un Stack, et NON via Row(spaceBetween). Raison : sur
+            // l'emulateur, tout RenderFlex qui doit DISTRIBUER de l'espace
+            // libre (Expanded, spaceBetween, MainAxisSize.max qui remplit)
+            // restait bloque "size: MISSING" au demarrage (surface 0x0 + pic de
+            // charge). Les flex qui se contentent d'envelopper leur contenu
+            // (MainAxisSize.min) fonctionnent : les puces gardent donc un Row
+            // min, et la repartition gauche/droite passe par des Align.
+            // Puces de pagination — centrees, juste au-dessus du bouton.
+            // Row en MainAxisSize.min (pas de distribution d'espace) dans un
+            // Align centre : aucun RenderFlex distributif -> fiable.
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: _bottomBarHeight - AppTheme.spacingLg,
+              child: Align(
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: List.generate(
+                    _totalPages,
+                    (index) => _PageDot(
+                      isActive: index == currentPage,
                       color: theme.colorScheme.primary,
                     ),
                   ),
@@ -76,49 +166,27 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               ),
             ),
 
-            // --- PageView principal ---
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                onPageChanged: (index) =>
-                    ref.read(_onboardingPageProvider.notifier).state = index,
-                children: [
-                  _WelcomePage(tr: tr, theme: theme, appName: appName),
-                  _LanguagePage(tr: tr, theme: theme),
-                  _DownloadPage(tr: tr, theme: theme, onBrowse: _goToCatalog),
-                ],
-              ),
-            ),
-
-            // --- Indicateur de page + bouton d'action ---
-            Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingLg),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: List.generate(
-                      _totalPages,
-                      (index) => _PageDot(
-                        isActive: index == currentPage,
-                        color: theme.colorScheme.primary,
-                      ),
-                    ),
-                  ),
-                  if (currentPage < _totalPages - 1)
-                    ElevatedButton(
-                      onPressed: () => _pageController.nextPage(
-                        duration: const Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      ),
-                      child: Text(tr.onboarding.next),
-                    )
-                  else
-                    ElevatedButton(
-                      onPressed: _finish,
-                      child: Text(tr.onboarding.getStarted),
-                    ),
-                ],
+            // Bouton d'action — pleine largeur, ancre en bas. La largeur fixe
+            // (double.infinity via SizedBox) n'est PAS une distribution de flex
+            // -> non concernee par le bug RenderFlex de l'emulateur.
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Padding(
+                padding: const EdgeInsets.all(AppTheme.spacingLg),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: currentPage < _totalPages - 1
+                      ? ElevatedButton(
+                          onPressed: _nextPage,
+                          child: Text(tr.onboarding.next),
+                        )
+                      : ElevatedButton(
+                          onPressed: _finish,
+                          child: Text(tr.onboarding.getStarted),
+                        ),
+                ),
               ),
             ),
           ],

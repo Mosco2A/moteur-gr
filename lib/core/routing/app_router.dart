@@ -17,7 +17,6 @@ import '../../features/tips/presentation/tips_screen.dart';
 import '../../features/trail/presentation/no_data_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
-import '../../features/trail/presentation/trail_list_screen.dart';
 import '../../features/group/presentation/follow_web_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
@@ -95,8 +94,12 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /profile                     - Profil utilisateur
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: '/trails',
-  redirect: _guardNoData,
+  // Cablage nav (#88246) : on demarre sur le CATALOGUE (et non plus sur le
+  // stub mort /trails). Le guard renvoie de toute facon vers /onboarding au
+  // premier lancement ; une fois l onboarding fait, /catalog est le point
+  // d entree d ou l utilisateur choisit un sentier puis entre dans le shell.
+  initialLocation: '/catalog',
+  redirect: _guardCurrentTrail,
   routes: [
     // ===== Navigation principale : bottom nav 5 onglets =====
     StatefulShellRoute.indexedStack(
@@ -200,10 +203,14 @@ final appRouter = GoRouter(
     ),
 
     // ===== Routes racine (hors shell, plein ecran) =====
+    // /trails : ancien stub Phase 1 (TrailListScreen) SUPPRIME (cablage #88246).
+    // Le catalogue (/catalog) est la liste reelle des sentiers. On garde la
+    // route pour ne pas casser d eventuels liens profonds, mais elle redirige
+    // systematiquement vers /catalog (plus aucun ecran stub a afficher).
     GoRoute(
       path: '/trails',
       name: 'trails',
-      builder: (context, state) => const TrailListScreen(),
+      redirect: (context, state) => '/catalog',
     ),
     GoRoute(
       path: '/trail/:id',
@@ -428,25 +435,43 @@ bool hasDownloadedTrails = true;
 /// pas explicitement (meme contrat permissif que [hasDownloadedTrails]).
 bool hasCompletedOnboarding = true;
 
-/// Guard de redirection principal.
+/// Chemins racine des 5 onglets du shell (StatefulShellRoute).
+///
+/// Ces routes constituent le COEUR de l'app : elles n'ont de sens qu'avec un
+/// sentier actif. Le guard les protege (cablage nav #88246) -> sans sentier
+/// utilisable, on renvoie vers le catalogue pour en choisir/telecharger un.
+const _shellTabPaths = <String>['/map', '/stages', '/planning', '/journal', '/more'];
+
+/// Guard de redirection principal (cablage nav #88246).
 ///
 /// Priorite 1 (E5.1b) : si l'onboarding n'a pas ete complete, rediriger vers
 /// /onboarding (premier lancement). L'ecran d'accueil prime sur tout le reste.
-/// Priorite 2 : si aucun sentier telecharge, rediriger vers /no-data
-/// (sauf /catalog, /no-data et quelques routes toujours accessibles).
-String? _guardNoData(BuildContext context, GoRouterState state) {
-  final path = state.uri.path;
+/// Priorite 2 (currentTrailGuard) : les routes du shell exigent un sentier
+/// utilisable. Sans sentier telecharge, on renvoie vers /catalog (l'utilisateur
+/// y choisit/telecharge un sentier puis entre dans le shell). Les autres routes
+/// hors-shell sans donnees retombent sur l'ecran bloquant /no-data.
+String? _guardCurrentTrail(BuildContext context, GoRouterState state) {
+  return redirectForPath(state.uri.path);
+}
 
+/// Logique PURE du guard (testable sans GoRouterState ni montage d'ecran).
+///
+/// Decide la cible de redirection pour un [path] donne, a partir des drapeaux
+/// globaux [hasCompletedOnboarding] / [hasDownloadedTrails]. Retourne `null`
+/// quand aucune redirection n'est requise. Extrait de [_guardCurrentTrail]
+/// (cablage nav #88246) pour rendre la politique de routage testable en unite.
+String? redirectForPath(String path) {
   // --- Priorite 1 : onboarding au premier lancement ---
   // /onboarding doit rester accessible pour eviter une boucle de redirection.
   if (path == '/onboarding') return null;
   if (!hasCompletedOnboarding) return '/onboarding';
 
-  // --- Priorite 2 : guard "aucun sentier telecharge" ---
-  // Routes exclues du guard (doivent rester accessibles)
-  final excludedPaths = [
+  // --- Priorite 2 : currentTrailGuard ---
+  // Routes toujours accessibles (n'exigent pas de sentier actif).
+  const excludedPaths = [
     '/no-data',
     '/catalog',
+    '/trail-selection',
     '/settings',
     '/profile',
     '/emergency',
@@ -456,8 +481,13 @@ String? _guardNoData(BuildContext context, GoRouterState state) {
   // /follow/:code ne necessite pas de sentier telecharge (suivi web)
   if (path.startsWith('/follow/')) return null;
 
-  // Si aucun sentier telecharge, rediriger vers l'ecran bloquant
-  if (!hasDownloadedTrails) return '/no-data';
+  // Sans sentier utilisable :
+  //  - routes du shell (coeur) -> retour au catalogue pour en choisir un ;
+  //  - autres routes -> ecran bloquant historique /no-data.
+  if (!hasDownloadedTrails) {
+    if (_shellTabPaths.contains(path)) return '/catalog';
+    return '/no-data';
+  }
 
   return null;
 }

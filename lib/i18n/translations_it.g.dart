@@ -62,6 +62,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$tips$it tips = _Translations$tips$it._(_root);
 	@override late final _Translations$goodies$it goodies = _Translations$goodies$it._(_root);
 	@override late final _Translations$noData$it noData = _Translations$noData$it._(_root);
+	@override late final _Translations$catalog$it catalog = _Translations$catalog$it._(_root);
 	@override late final _Translations$updates$it updates = _Translations$updates$it._(_root);
 	@override late final _Translations$follow$it follow = _Translations$follow$it._(_root);
 	@override late final _Translations$cloud$it cloud = _Translations$cloud$it._(_root);
@@ -548,6 +549,21 @@ class _Translations$noData$it extends Translations$noData$fr {
 	@override String get subtitle => 'Scarica un sentiero per iniziare';
 	@override String get offlineHint => 'I dati saranno disponibili offline per la tua escursione.';
 	@override String get browseCta => 'Esplora i sentieri';
+}
+
+// Path: catalog
+class _Translations$catalog$it extends Translations$catalog$fr {
+	_Translations$catalog$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Catalogo dei sentieri';
+	@override String get enter => 'Entra';
+	@override String get mustDownload => 'Scarica questo sentiero per esplorarlo.';
+	@override String get emptyTitle => 'Nessun sentiero disponibile';
+	@override String get emptySubtitle => 'Nessun sentiero è ancora proposto nel catalogo.';
+	@override late final _Translations$catalog$a11y$it a11y = _Translations$catalog$a11y$it._(_root);
 }
 
 // Path: updates
@@ -1095,6 +1111,16 @@ class _Translations$feasibility$recommendations$it extends Translations$feasibil
 	@override late final _Translations$feasibility$recommendations$caution$it caution = _Translations$feasibility$recommendations$caution$it._(_root);
 	@override late final _Translations$feasibility$recommendations$good$it good = _Translations$feasibility$recommendations$good$it._(_root);
 	@override late final _Translations$feasibility$recommendations$excellent$it excellent = _Translations$feasibility$recommendations$excellent$it._(_root);
+}
+
+// Path: catalog.a11y
+class _Translations$catalog$a11y$it extends Translations$catalog$a11y$fr {
+	_Translations$catalog$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String enterButton({required Object nom}) => 'Entra nel sentiero ${nom}';
 }
 
 // Path: signalement.types
@@ -2042,6 +2068,12 @@ extension on TranslationsIt {
 			'noData.subtitle' => 'Scarica un sentiero per iniziare',
 			'noData.offlineHint' => 'I dati saranno disponibili offline per la tua escursione.',
 			'noData.browseCta' => 'Esplora i sentieri',
+			'catalog.title' => 'Catalogo dei sentieri',
+			'catalog.enter' => 'Entra',
+			'catalog.mustDownload' => 'Scarica questo sentiero per esplorarlo.',
+			'catalog.emptyTitle' => 'Nessun sentiero disponibile',
+			'catalog.emptySubtitle' => 'Nessun sentiero è ancora proposto nel catalogo.',
+			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entra nel sentiero ${nom}',
 			'updates.readyTitle' => 'Aggiornamento pronto',
 			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
@@ -2184,14 +2216,14 @@ extension on TranslationsIt {
 			'shareVisibility.privateNotice' => 'La condivisione è disattivata. Attivala in Condivisione e visibilità.',
 			'shareVisibility.shared' => 'Scheda pronta da condividere.',
 			'waypoints.types.eau' => 'Acqua',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Rifornimento',
 			'waypoints.types.danger' => 'Pericolo',
 			'waypoints.types.camp' => 'Campeggio',
 			'waypoints.types.connectivite' => 'Connettivita',
 			'waypoints.types.jonction' => 'Bivio',
 			'waypoints.filters.title' => 'Filtra i waypoint',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.filters.showAll' => 'Mostra tutto',
 			'waypoints.filters.hideAll' => 'Nascondi tutto',
 			'waypoints.filters.recentConditionOnly' => 'Solo condizione recente',

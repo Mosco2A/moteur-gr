@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
+import 'package:moteur_gr/core/config/trail_selection.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_detail_screen.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests widget de l'écran TrailDetailScreen.
 ///
@@ -27,8 +30,10 @@ void main() {
               (ref) => completer.future,
             ),
           ],
-          child: const MaterialApp(
-            home: TrailDetailScreen(trailId: 'test-trail'),
+          child: TranslationProvider(
+            child: const MaterialApp(
+              home: TrailDetailScreen(trailId: 'test-trail'),
+            ),
           ),
         ),
       );
@@ -54,8 +59,10 @@ void main() {
               (ref) => Future.value(<StageModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailDetailScreen(trailId: 'test-trail'),
+          child: TranslationProvider(
+            child: const MaterialApp(
+              home: TrailDetailScreen(trailId: 'test-trail'),
+            ),
           ),
         ),
       );
@@ -77,8 +84,10 @@ void main() {
               (ref) => Future.value(<StageModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailDetailScreen(trailId: 'test-trail'),
+          child: TranslationProvider(
+            child: const MaterialApp(
+              home: TrailDetailScreen(trailId: 'test-trail'),
+            ),
           ),
         ),
       );
@@ -142,8 +151,10 @@ void main() {
               (ref) => Future.value(stages),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailDetailScreen(trailId: 'test-trail'),
+          child: TranslationProvider(
+            child: const MaterialApp(
+              home: TrailDetailScreen(trailId: 'test-trail'),
+            ),
           ),
         ),
       );
@@ -168,8 +179,10 @@ void main() {
               ),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailDetailScreen(trailId: 'test-trail'),
+          child: TranslationProvider(
+            child: const MaterialApp(
+              home: TrailDetailScreen(trailId: 'test-trail'),
+            ),
           ),
         ),
       );
@@ -191,8 +204,10 @@ void main() {
               (ref) => Future.value(<StageModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailDetailScreen(trailId: 'test-trail'),
+          child: TranslationProvider(
+            child: const MaterialApp(
+              home: TrailDetailScreen(trailId: 'test-trail'),
+            ),
           ),
         ),
       );
@@ -200,6 +215,55 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Voir la carte'), findsOneWidget);
+    });
+
+    testWidgets(
+        'le bouton Entrer active le sentier et ouvre le shell sur /map (#88246)',
+        (tester) async {
+      // Container partage pour lire la selection apres l'action UI.
+      final container = ProviderContainer(overrides: [
+        trailConfigProvider.overrideWithValue(testTrailConfig),
+        selectedTrailIdProvider.overrideWith((ref) => 'autre-sentier'),
+        stagesProvider('test-trail')
+            .overrideWith((ref) => Future.value(<StageModel>[])),
+      ]);
+      addTearDown(container.dispose);
+
+      // Routeur minimal : detail en racine + stub /map pour observer la nav.
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) =>
+                const TrailDetailScreen(trailId: 'test-trail'),
+          ),
+          GoRoute(
+            path: '/map',
+            builder: (context, state) =>
+                const Scaffold(body: Text('STUB MAP SCREEN')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Taper le bouton primaire "Entrer".
+      await tester.tap(find.byKey(const ValueKey('trail-detail-enter')));
+      await tester.pumpAndSettle();
+
+      // La selection pointe sur le sentier affiche -> moteur bascule.
+      expect(container.read(selectedTrailIdProvider), 'test-trail');
+      // On a navigue vers le shell (stub /map).
+      expect(find.text('STUB MAP SCREEN'), findsOneWidget);
     });
   });
 }
