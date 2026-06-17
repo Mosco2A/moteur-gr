@@ -29,6 +29,7 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -42,7 +43,7 @@ android {
         // P1-3 audit #327 : bornes SDK epinglees explicitement (plus de
         // dependance aux defauts flutter.*). minSdk 23 = socle commun des
         // plugins (geolocator, firebase) ; targetSdk 35 = exigence Play.
-        minSdk = 23
+        minSdk = 26
         targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -80,6 +81,10 @@ android {
             }
         }
     }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }
 
 flutter {

@@ -68,6 +68,14 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_trek_info" />
         </receiver>
+        <!-- AdMob (google_mobile_ads E4.13) — identifiant d'application
+             obligatoire, sans quoi le SDK Mobile Ads fait crasher l'app au
+             demarrage. Valeur = App ID de TEST PUBLIC officiel Google
+             (documente, libre d'usage en debug). L'App ID reel de production
+             sera depose plus tard via la config de release. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
