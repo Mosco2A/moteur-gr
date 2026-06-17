@@ -558,8 +558,11 @@ class _Translations$catalog$es extends Translations$catalog$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
+	@override String get title => 'Catálogo de senderos';
 	@override String get enter => 'Entrar';
 	@override String get mustDownload => 'Descarga este sendero para explorarlo.';
+	@override String get emptyTitle => 'Ningún sendero disponible';
+	@override String get emptySubtitle => 'Aún no hay ningún sendero en el catálogo.';
 	@override late final _Translations$catalog$a11y$es a11y = _Translations$catalog$a11y$es._(_root);
 }
 
@@ -2065,8 +2068,11 @@ extension on TranslationsEs {
 			'noData.subtitle' => 'Descarga un sendero para empezar',
 			'noData.offlineHint' => 'Los datos estarán disponibles sin conexión para tu caminata.',
 			'noData.browseCta' => 'Explorar senderos',
+			'catalog.title' => 'Catálogo de senderos',
 			'catalog.enter' => 'Entrar',
 			'catalog.mustDownload' => 'Descarga este sendero para explorarlo.',
+			'catalog.emptyTitle' => 'Ningún sendero disponible',
+			'catalog.emptySubtitle' => 'Aún no hay ningún sendero en el catálogo.',
 			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entrar en el sendero ${nom}',
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
@@ -2210,11 +2216,11 @@ extension on TranslationsEs {
 			'shareVisibility.privateNotice' => 'Compartir está desactivado. Actívalo en Compartir y visibilidad.',
 			'shareVisibility.shared' => 'Tarjeta lista para compartir.',
 			'waypoints.types.eau' => 'Agua',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Avituallamiento',
 			'waypoints.types.danger' => 'Peligro',
 			'waypoints.types.camp' => 'Acampada',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Conectividad',
 			'waypoints.types.jonction' => 'Cruce',
 			'waypoints.filters.title' => 'Filtrar waypoints',

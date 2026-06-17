@@ -558,8 +558,11 @@ class _Translations$catalog$de extends Translations$catalog$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
+	@override String get title => 'Wegekatalog';
 	@override String get enter => 'Öffnen';
 	@override String get mustDownload => 'Laden Sie diesen Weg herunter, um ihn zu erkunden.';
+	@override String get emptyTitle => 'Kein Weg verfügbar';
+	@override String get emptySubtitle => 'Im Katalog wird noch kein Weg angeboten.';
 	@override late final _Translations$catalog$a11y$de a11y = _Translations$catalog$a11y$de._(_root);
 }
 
@@ -2065,8 +2068,11 @@ extension on TranslationsDe {
 			'noData.subtitle' => 'Laden Sie einen Weg herunter, um zu beginnen',
 			'noData.offlineHint' => 'Die Daten sind offline für Ihre Wanderung verfügbar.',
 			'noData.browseCta' => 'Wege durchsuchen',
+			'catalog.title' => 'Wegekatalog',
 			'catalog.enter' => 'Öffnen',
 			'catalog.mustDownload' => 'Laden Sie diesen Weg herunter, um ihn zu erkunden.',
+			'catalog.emptyTitle' => 'Kein Weg verfügbar',
+			'catalog.emptySubtitle' => 'Im Katalog wird noch kein Weg angeboten.',
 			'catalog.a11y.enterButton' => ({required Object nom}) => 'Weg ${nom} öffnen',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
@@ -2210,11 +2216,11 @@ extension on TranslationsDe {
 			'shareVisibility.privateNotice' => 'Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.',
 			'shareVisibility.shared' => 'Karte bereit zum Teilen.',
 			'waypoints.types.eau' => 'Wasser',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Nachschub',
 			'waypoints.types.danger' => 'Gefahr',
 			'waypoints.types.camp' => 'Zeltplatz',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Konnektivitat',
 			'waypoints.types.jonction' => 'Kreuzung',
 			'waypoints.filters.title' => 'Wegpunkte filtern',

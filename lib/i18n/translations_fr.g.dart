@@ -1066,11 +1066,20 @@ class Translations$catalog$fr {
 
 	// Translations
 
+	/// fr: 'Catalogue des sentiers'
+	String get title => 'Catalogue des sentiers';
+
 	/// fr: 'Entrer'
 	String get enter => 'Entrer';
 
 	/// fr: 'Téléchargez ce sentier pour l'explorer.'
 	String get mustDownload => 'Téléchargez ce sentier pour l\'explorer.';
+
+	/// fr: 'Aucun sentier disponible'
+	String get emptyTitle => 'Aucun sentier disponible';
+
+	/// fr: 'Aucun sentier n'est encore proposé au catalogue.'
+	String get emptySubtitle => 'Aucun sentier n\'est encore proposé au catalogue.';
 
 	late final Translations$catalog$a11y$fr a11y = Translations$catalog$a11y$fr.internal(_root);
 }
@@ -3452,8 +3461,11 @@ extension on Translations {
 			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
 			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
 			'noData.browseCta' => 'Parcourir les sentiers',
+			'catalog.title' => 'Catalogue des sentiers',
 			'catalog.enter' => 'Entrer',
 			'catalog.mustDownload' => 'Téléchargez ce sentier pour l\'explorer.',
+			'catalog.emptyTitle' => 'Aucun sentier disponible',
+			'catalog.emptySubtitle' => 'Aucun sentier n\'est encore proposé au catalogue.',
 			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entrer dans le sentier ${nom}',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
@@ -3597,11 +3609,11 @@ extension on Translations {
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
 			'shareVisibility.shared' => 'Carte prête à partager.',
 			'waypoints.types.eau' => 'Eau',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Ravitaillement',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Bivouac',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Connectivité',
 			'waypoints.types.jonction' => 'Jonction',
 			'waypoints.filters.title' => 'Filtrer les waypoints',

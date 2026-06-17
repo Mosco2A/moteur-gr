@@ -444,8 +444,11 @@
     "browseCta": "Esplora i sentieri"
   },
   "catalog": {
+    "title": "Catalogo dei sentieri",
     "enter": "Entra",
     "mustDownload": "Scarica questo sentiero per esplorarlo.",
+    "emptyTitle": "Nessun sentiero disponibile",
+    "emptySubtitle": "Nessun sentiero è ancora proposto nel catalogo.",
     "a11y": {
       "enterButton": "Entra nel sentiero $nom"
     }

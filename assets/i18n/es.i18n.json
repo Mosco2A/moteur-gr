@@ -444,8 +444,11 @@
     "browseCta": "Explorar senderos"
   },
   "catalog": {
+    "title": "Catálogo de senderos",
     "enter": "Entrar",
     "mustDownload": "Descarga este sendero para explorarlo.",
+    "emptyTitle": "Ningún sendero disponible",
+    "emptySubtitle": "Aún no hay ningún sendero en el catálogo.",
     "a11y": {
       "enterButton": "Entrar en el sendero $nom"
     }

@@ -444,8 +444,11 @@
     "browseCta": "Wege durchsuchen"
   },
   "catalog": {
+    "title": "Wegekatalog",
     "enter": "Öffnen",
     "mustDownload": "Laden Sie diesen Weg herunter, um ihn zu erkunden.",
+    "emptyTitle": "Kein Weg verfügbar",
+    "emptySubtitle": "Im Katalog wird noch kein Weg angeboten.",
     "a11y": {
       "enterButton": "Weg $nom öffnen"
     }

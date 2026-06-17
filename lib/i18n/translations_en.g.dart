@@ -558,8 +558,11 @@ class _Translations$catalog$en extends Translations$catalog$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
+	@override String get title => 'Trail catalog';
 	@override String get enter => 'Enter';
 	@override String get mustDownload => 'Download this trail to explore it.';
+	@override String get emptyTitle => 'No trail available';
+	@override String get emptySubtitle => 'No trail is offered in the catalog yet.';
 	@override late final _Translations$catalog$a11y$en a11y = _Translations$catalog$a11y$en._(_root);
 }
 
@@ -2065,8 +2068,11 @@ extension on TranslationsEn {
 			'noData.subtitle' => 'Download a trail to get started',
 			'noData.offlineHint' => 'Data will be available offline for your hike.',
 			'noData.browseCta' => 'Browse trails',
+			'catalog.title' => 'Trail catalog',
 			'catalog.enter' => 'Enter',
 			'catalog.mustDownload' => 'Download this trail to explore it.',
+			'catalog.emptyTitle' => 'No trail available',
+			'catalog.emptySubtitle' => 'No trail is offered in the catalog yet.',
 			'catalog.a11y.enterButton' => ({required Object nom}) => 'Enter trail ${nom}',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
@@ -2210,11 +2216,11 @@ extension on TranslationsEn {
 			'shareVisibility.privateNotice' => 'Sharing is off. Turn it on in Sharing and visibility.',
 			'shareVisibility.shared' => 'Card ready to share.',
 			'waypoints.types.eau' => 'Water',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Resupply',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Campsite',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Connectivity',
 			'waypoints.types.jonction' => 'Junction',
 			'waypoints.filters.title' => 'Filter waypoints',
