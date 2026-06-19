@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
@@ -10,6 +11,7 @@ import 'package:moteur_gr/features/trek/presentation/stages/stage_list_screen.da
 ///
 /// (1) Affiche N StageCards pour N etapes.
 /// (2) Les etapes sont triees par stageNumber (orderIndex).
+/// (3) GO-62 : taper une carte ouvre le detail via /stages/:id.
 void main() {
   // Etapes de test dans le desordre (pour verifier le tri)
   final mockStages = [
@@ -108,6 +110,52 @@ void main() {
           .toList();
 
       expect(avatarTexts, ['1', '2', '3']);
+    });
+
+    testWidgets('taper une carte ouvre le detail via /stages/:id (GO-62)',
+        (tester) async {
+      // Routeur minimal : liste en racine + stub /stages/:id pour observer
+      // la navigation (meme cible que les marqueurs carte et le planning).
+      String? pushedId;
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (context, state) =>
+                const StageListScreen(trailId: 'test-trail'),
+            routes: [
+              GoRoute(
+                path: 'stages/:id',
+                builder: (context, state) {
+                  pushedId = state.pathParameters['id'];
+                  return const Scaffold(body: Text('STUB STAGE DETAIL'));
+                },
+              ),
+            ],
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            stagesProvider('test-trail').overrideWith(
+              (ref) => Future.value(mockStages),
+            ),
+          ],
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Taper la 2e etape (Capanelle - Prati, stageNumber 2).
+      await tester.tap(find.text('Capanelle - Prati'));
+      await tester.pumpAndSettle();
+
+      // Le detail (stub) est affiche et l'id route correspond au stageNumber.
+      expect(find.text('STUB STAGE DETAIL'), findsOneWidget);
+      expect(pushedId, '2');
     });
   });
 }

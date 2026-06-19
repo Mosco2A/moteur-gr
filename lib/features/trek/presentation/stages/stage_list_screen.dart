@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/stage.dart';
 import '../../../../core/ui/error_view.dart';
@@ -60,9 +61,11 @@ class StageListScreen extends ConsumerWidget {
   }
 }
 
-/// Carte placeholder pour une etape.
+/// Carte d'une etape dans la liste de l'onglet Etapes.
 ///
-/// ListTile dans un Card -- sera remplacee par un widget riche en E2.4b.
+/// ListTile dans un Card. Le tap ouvre le detail de l'etape via
+/// `/stages/:id` (meme route que les marqueurs carte et le planning),
+/// l'identifiant etant le [StageModel.stageNumber].
 class _StageCard extends StatelessWidget {
   const _StageCard({required this.stage});
 
@@ -73,6 +76,9 @@ class _StageCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: ListTile(
+        // Meme navigation que le planning et les marqueurs carte (GO-62) :
+        // push de la route nested /stages/:id avec le numero d'etape.
+        onTap: () => context.push('/stages/${stage.stageNumber}'),
         leading: CircleAvatar(
           child: Text('${stage.stageNumber}'),
         ),
