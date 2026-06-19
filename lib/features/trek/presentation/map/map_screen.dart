@@ -7,7 +7,6 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
-import '../../../../i18n/translations.g.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/simplified_track_provider.dart';
@@ -53,6 +52,14 @@ class MapScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // Onglet RACINE du shell (bottom nav). On NE met PAS de fleche retour :
+        // l'ecran est atteint via context.go('/map') (StatefulShellRoute) -- il
+        // n'y a aucune page a depiler sous lui sur le navigateur de la branche,
+        // donc un Navigator.pop() produisait un ecran noir permanent (bug
+        // emulateur GO-62). Le retour se fait par la barre d'onglets, pas par
+        // une fleche. `automaticallyImplyLeading: false` garantit qu'aucun
+        // bouton retour implicite n'est ajoute non plus.
+        automaticallyImplyLeading: false,
         title: Consumer(
           builder: (context, ref, _) {
             final name = ref.watch(
@@ -60,11 +67,6 @@ class MapScreen extends StatelessWidget {
             );
             return Text(name);
           },
-        ),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: t.a11y.back,
-          onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: Consumer(

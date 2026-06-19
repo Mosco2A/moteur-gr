@@ -1,3 +1,4 @@
+import 'mare_a_mare_trail_config.dart';
 import 'pyrenees_trail_config.dart';
 import 'test_trail_config.dart';
 import 'trail_config.dart';
@@ -12,17 +13,22 @@ import 'trail_config.dart';
 /// En P2-P3, le catalogue est embarque (donnees fictives, #84627). En Phase 4,
 /// le backend pourra fournir/mettre a jour la liste des sentiers disponibles.
 ///
-/// Contient au moins DEUX sentiers de regions differentes pour prouver la
-/// genericite : le sentier de demonstration d'Auvergne ([testTrailConfig]) et un
-/// premier sentier HORS Corse dans les Pyrenees ([pyreneesTrailConfig]).
+/// Contient plusieurs sentiers de regions differentes pour prouver la
+/// genericite : le premier sentier cible Mare a Mare Centre (Corse,
+/// [mareAMareTrailConfig], en TETE = sentier par defaut #84627/#86163), le
+/// sentier de demonstration d'Auvergne ([testTrailConfig]) et un sentier des
+/// Pyrenees ([pyreneesTrailConfig]).
 abstract final class TrailCatalog {
   TrailCatalog._();
 
   /// Tous les sentiers disponibles, dans l'ordre d'affichage du catalogue.
   ///
   /// `const` : la liste est figee a la compilation en P2-P3 (#84627). L'ordre
-  /// fait foi pour le selecteur de sentier (F8D-02).
+  /// fait foi pour le selecteur de sentier (F8D-02) ET pour le sentier par
+  /// defaut ([defaultTrail] = premier element). Mare a Mare Centre est en TETE :
+  /// c'est le sentier propose et centre par defaut a l'ouverture (GO-62).
   static const List<TrailConfig> all = <TrailConfig>[
+    mareAMareTrailConfig,
     testTrailConfig,
     pyreneesTrailConfig,
   ];

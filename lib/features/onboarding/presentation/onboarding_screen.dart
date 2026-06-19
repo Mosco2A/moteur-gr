@@ -105,7 +105,11 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                     _DownloadPage(
                       tr: tr,
                       theme: theme,
-                      onBrowse: _goToCatalog,
+                      // « Parcourir le catalogue » TERMINE aussi l'onboarding
+                      // (comme « Commencer ») : sans cela, le drapeau restait
+                      // false et le guard renvoyait vers /onboarding des l'entree
+                      // dans un sentier (bug GO-62 — action ressentie morte).
+                      onBrowse: _finish,
                     ),
                   ],
                 ),
