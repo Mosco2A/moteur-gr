@@ -2,19 +2,37 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/stages_dao.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
+import 'package:moteur_gr/features/trek/providers/seed_provider.dart';
 
 /// Tests du provider de stages.
 void main() {
+  // stagesProvider attend desormais trailSeedProvider (cablage seed GO-62),
+  // qui lit sharedPreferencesProvider : ces tests l'overrident avec un mock.
+  // Le seed cible le sentier ACTIF (mare-a-mare-centre) et n'interfere pas avec
+  // les sentiers synthetiques ('trail1', 'a', 'b', 'empty') verifies ici.
+  // rootBundle (assets de seed) exige une binding initialisee.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  Future<List<Override>> seedOverrides(AppDatabase db) async {
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    return [
+      databaseProvider.overrideWithValue(db),
+      sharedPreferencesProvider.overrideWithValue(prefs),
+    ];
+  }
+
   group('stagesProvider', () {
     test('retourne une liste vide pour un sentier sans etapes', () async {
       final db = AppDatabase(NativeDatabase.memory());
       final container = ProviderContainer(
-        overrides: [databaseProvider.overrideWithValue(db)],
+        overrides: await seedOverrides(db),
       );
 
       final stages = await container.read(stagesProvider('empty').future);
@@ -56,7 +74,7 @@ void main() {
       ]);
 
       final container = ProviderContainer(
-        overrides: [databaseProvider.overrideWithValue(db)],
+        overrides: await seedOverrides(db),
       );
 
       final stages = await container.read(stagesProvider('trail1').future);
@@ -101,7 +119,7 @@ void main() {
       ]);
 
       final container = ProviderContainer(
-        overrides: [databaseProvider.overrideWithValue(db)],
+        overrides: await seedOverrides(db),
       );
 
       final stagesA = await container.read(stagesProvider('a').future);

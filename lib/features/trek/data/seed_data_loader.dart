@@ -48,18 +48,34 @@ class SeedDataLoader {
   ///
   /// Retourne true si le seed a ete effectue,
   /// false si les donnees etaient deja presentes.
+  ///
+  /// IDEMPOTENCE basee sur le CONTENU de la base (pas seulement le flag
+  /// SharedPreferences). La base Drift de l'app est in-memory
+  /// (NativeDatabase.memory(), cf. databaseProvider) : elle est RECREEE vide a
+  /// chaque lancement alors que le flag prefs, lui, PERSISTE. Se fier au seul
+  /// flag laisserait donc une base vide apres le premier lancement (onglets
+  /// Etapes/Planning vides — bug GO-62). On verifie donc d'abord si les etapes
+  /// du sentier sont deja en base : si oui, rien a faire ; sinon, on (re)seed.
   Future<bool> seedIfNeeded() async {
-    if (_prefs.getBool(_kDataSeeded) == true) {
-      _log.d('Seed deja effectue, skip');
-      return false;
-    }
-
     final assetsBase = _trailConfig.seedAssetsBase;
     if (assetsBase == null) {
       _log.d('Pas de seed assets pour ce sentier, skip');
       return false;
     }
     final trailId = _trailConfig.id;
+
+    // Idempotence reelle : si les etapes sont deja en base pour ce sentier,
+    // le seed a deja ete effectue sur CETTE instance de base -> on ne refait
+    // rien (evite les doublons et le cout d'un re-parse GPX).
+    final existingStages = await StagesDao(_db).getByTrailId(trailId);
+    if (existingStages.isNotEmpty) {
+      _log.d(
+        'Seed deja present en base (${existingStages.length} etapes), skip',
+      );
+      // On aligne le flag prefs (lecture eventuelle ailleurs dans l'app).
+      await _prefs.setBool(_kDataSeeded, true);
+      return false;
+    }
 
     final sw = Stopwatch()..start();
 

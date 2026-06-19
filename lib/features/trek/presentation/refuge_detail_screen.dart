@@ -17,7 +17,7 @@ import '../providers/trail_providers.dart';
 /// Aucune donnee d'hebergement n'est hardcodee dans le moteur.
 final accommodationsByStageProvider =
     FutureProvider.family<List<StageAccommodation>, int>((ref, stage) async {
-  final trailId = ref.watch(currentTrailIdProvider);
+  final trailId = ref.watch(effectiveTrailIdProvider);
   if (trailId.isEmpty) return [];
   final dataProvider = ref.watch(trailDataProvider);
   return dataProvider.getAccommodations(trailId, stageNumber: stage);

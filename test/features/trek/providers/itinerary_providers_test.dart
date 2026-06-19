@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/geo/track_point.dart';
@@ -7,6 +8,7 @@ import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
 import 'package:moteur_gr/features/trek/domain/trail_data_provider.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';
+import 'package:moteur_gr/features/trek/providers/seed_provider.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/features/trek/providers/trail_providers.dart';
 
@@ -89,8 +91,17 @@ void main() {
     endLng: 9.0,
   );
 
+  // stagesProvider (non-famille) attend desormais trailSeedProvider, qui lit
+  // sharedPreferencesProvider : on l'override avec un mock. testConfig n'a pas
+  // de seedAssetsBase -> seedIfNeeded() est un no-op et le FakeTrailDataProvider
+  // reste la seule source des 3 etapes.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   group('itineraryProvider', () {
     test('retourne des ItineraryDays corrects avec 3 etapes', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+
       final fakeDataProvider = FakeTrailDataProvider(
         stages: [stage1, stage2, stage3],
         config: testConfig,
@@ -101,6 +112,7 @@ void main() {
           trailDataProvider.overrideWithValue(fakeDataProvider),
           trailConfigProvider.overrideWithValue(testConfig),
           currentTrailIdProvider.overrideWith((ref) => 'test-trail'),
+          sharedPreferencesProvider.overrideWithValue(prefs),
         ],
       );
       addTearDown(container.dispose);
