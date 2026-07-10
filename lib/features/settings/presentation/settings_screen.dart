@@ -327,6 +327,17 @@ class SettingsScreen extends ConsumerWidget {
                       .toggleCountdown(value);
                 },
               ),
+              const Divider(height: 1),
+              SwitchListTile(
+                title: Text(tr.settings.offTrackAlerts),
+                subtitle: Text(tr.settings.offTrackAlertsDesc),
+                value: notifications.offTrackAlerts,
+                onChanged: (value) {
+                  ref
+                      .read(notificationSettingsProvider.notifier)
+                      .toggleOffTrackAlerts(value);
+                },
+              ),
             ],
           ),
         ),

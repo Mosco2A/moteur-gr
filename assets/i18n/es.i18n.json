@@ -89,6 +89,11 @@
     "offTrack": "Fuera del sendero",
     "centerOnMe": "Centrar en mi posicion"
   },
+  "navAlert": {
+    "offTrackBanner": "Te estas alejando del sendero — $meters m. Comprueba tu posicion.",
+    "offTrackNotifTitle": "Estas saliendo del sendero",
+    "offTrackNotifBody": "Te estas alejando del sendero ($meters m). Comprueba tu posicion."
+  },
   "planning": {
     "title": "Planificación",
     "duration": "Duración",
@@ -262,6 +267,8 @@
     "weatherAlertsDesc": "Notificado si hay condiciones peligrosas",
     "countdownReminder": "Recordatorio D-2",
     "countdownDesc": "Notificación 2 días antes de la salida",
+    "offTrackAlerts": "Alerta fuera del sendero",
+    "offTrackAlertsDesc": "Notificación + vibración si sales del sendero",
     "version": "Versión",
     "versionLabel": "Versión de la aplicación"
   },

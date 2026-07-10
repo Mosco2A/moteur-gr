@@ -47,6 +47,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$poi$de poi = _Translations$poi$de._(_root);
 	@override late final _Translations$accommodation$de accommodation = _Translations$accommodation$de._(_root);
 	@override late final _Translations$gps$de gps = _Translations$gps$de._(_root);
+	@override late final _Translations$navAlert$de navAlert = _Translations$navAlert$de._(_root);
 	@override late final _Translations$planning$de planning = _Translations$planning$de._(_root);
 	@override late final _Translations$tracking$de tracking = _Translations$tracking$de._(_root);
 	@override late final _Translations$checklist$de checklist = _Translations$checklist$de._(_root);
@@ -216,6 +217,18 @@ class _Translations$gps$de extends Translations$gps$fr {
 	@override String get disabled => 'Standortdienst deaktiviert';
 	@override String get offTrack => 'Abseits der Strecke';
 	@override String get centerOnMe => 'Auf meine Position zentrieren';
+}
+
+// Path: navAlert
+class _Translations$navAlert$de extends Translations$navAlert$fr {
+	_Translations$navAlert$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String offTrackBanner({required Object meters}) => 'Sie entfernen sich vom Weg — ${meters} m. Uberprufen Sie Ihre Position.';
+	@override String get offTrackNotifTitle => 'Sie verlassen den Weg';
+	@override String offTrackNotifBody({required Object meters}) => 'Sie entfernen sich vom Weg (${meters} m). Uberprufen Sie Ihre Position.';
 }
 
 // Path: planning
@@ -420,6 +433,8 @@ class _Translations$settings$de extends Translations$settings$fr {
 	@override String get weatherAlertsDesc => 'Benachrichtigung bei gefährlichen Bedingungen';
 	@override String get countdownReminder => 'T-2 Erinnerung';
 	@override String get countdownDesc => 'Benachrichtigung 2 Tage vor der Abreise';
+	@override String get offTrackAlerts => 'Abseits-der-Strecke-Warnung';
+	@override String get offTrackAlertsDesc => 'Benachrichtigung + Vibration, wenn Sie den Weg verlassen';
 	@override String get version => 'Version';
 	@override String get versionLabel => 'App-Version';
 }
@@ -1774,6 +1789,9 @@ extension on TranslationsDe {
 			'gps.disabled' => 'Standortdienst deaktiviert',
 			'gps.offTrack' => 'Abseits der Strecke',
 			'gps.centerOnMe' => 'Auf meine Position zentrieren',
+			'navAlert.offTrackBanner' => ({required Object meters}) => 'Sie entfernen sich vom Weg — ${meters} m. Uberprufen Sie Ihre Position.',
+			'navAlert.offTrackNotifTitle' => 'Sie verlassen den Weg',
+			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Sie entfernen sich vom Weg (${meters} m). Uberprufen Sie Ihre Position.',
 			'planning.title' => 'Planung',
 			'planning.duration' => 'Dauer',
 			'planning.days' => 'Tage',
@@ -1926,6 +1944,8 @@ extension on TranslationsDe {
 			'settings.weatherAlertsDesc' => 'Benachrichtigung bei gefährlichen Bedingungen',
 			'settings.countdownReminder' => 'T-2 Erinnerung',
 			'settings.countdownDesc' => 'Benachrichtigung 2 Tage vor der Abreise',
+			'settings.offTrackAlerts' => 'Abseits-der-Strecke-Warnung',
+			'settings.offTrackAlertsDesc' => 'Benachrichtigung + Vibration, wenn Sie den Weg verlassen',
 			'settings.version' => 'Version',
 			'settings.versionLabel' => 'App-Version',
 			'feedback.title' => 'Feedback',
@@ -2211,13 +2231,13 @@ extension on TranslationsDe {
 			'shareVisibility.leaderboardDesc' => 'Rangliste nach Gruppe, mit einem Pseudonym.',
 			'shareVisibility.activityFeed' => 'Im Aktivitätsverlauf posten',
 			'shareVisibility.activityFeedDesc' => 'Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.shareTitle' => 'Diese Etappe teilen',
 			'shareVisibility.shareButton' => 'Teilen',
 			'shareVisibility.privateNotice' => 'Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.',
 			'shareVisibility.shared' => 'Karte bereit zum Teilen.',
 			'waypoints.types.eau' => 'Wasser',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Nachschub',
 			'waypoints.types.danger' => 'Gefahr',
 			'waypoints.types.camp' => 'Zeltplatz',

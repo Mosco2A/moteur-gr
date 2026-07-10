@@ -89,6 +89,11 @@
     "offTrack": "Abseits der Strecke",
     "centerOnMe": "Auf meine Position zentrieren"
   },
+  "navAlert": {
+    "offTrackBanner": "Sie entfernen sich vom Weg — $meters m. Uberprufen Sie Ihre Position.",
+    "offTrackNotifTitle": "Sie verlassen den Weg",
+    "offTrackNotifBody": "Sie entfernen sich vom Weg ($meters m). Uberprufen Sie Ihre Position."
+  },
   "planning": {
     "title": "Planung",
     "duration": "Dauer",
@@ -262,6 +267,8 @@
     "weatherAlertsDesc": "Benachrichtigung bei gefährlichen Bedingungen",
     "countdownReminder": "T-2 Erinnerung",
     "countdownDesc": "Benachrichtigung 2 Tage vor der Abreise",
+    "offTrackAlerts": "Abseits-der-Strecke-Warnung",
+    "offTrackAlertsDesc": "Benachrichtigung + Vibration, wenn Sie den Weg verlassen",
     "version": "Version",
     "versionLabel": "App-Version"
   },
