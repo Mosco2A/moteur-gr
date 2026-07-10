@@ -1,4 +1,5 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <!-- P1-1 audit #327 — permissions reecrites proprement depuis les specs.
          GPS sentier + enregistrement de rando en arriere-plan + suivi temps
          reel (E2.6/E2.8/E4.11) ; notifications de suivi (Android 13+) ;
@@ -13,6 +14,12 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <!-- Notification persistante du suivi + rappels (Android 13+). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Re-portage socle : exemption d'optimisation batterie (Doze) demandee au
+         lancement du trek (cas Samsung/OEM) pour que le foreground service de
+         capture GPS ne soit pas suspendu ecran eteint. -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!-- Maintien du CPU eveille pendant la capture de fond (flutter_background_service). -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Frequence cardiaque via ceinture BLE (Phase 6 F6F-02). Android 12+ :
          BLUETOOTH_SCAN (neverForLocation = pas de derivation de position via
@@ -56,6 +63,15 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="location" />
+        <!-- Re-portage socle : le foreground service de capture GPS de fond
+             (flutter_background_service) doit declarer son type `location` pour
+             demarrer pendant l'enregistrement sur Android 14+. On MERGE l'attribut
+             foregroundServiceType sur le service fourni par le plugin
+             (id.flutter.flutter_background_service.BackgroundService). -->
+        <service
+            android:name="id.flutter.flutter_background_service.BackgroundService"
+            android:foregroundServiceType="location"
+            tools:node="merge" />
         <!-- E5.19b : Widget Home Screen progression trek -->
         <receiver
             android:name=".TrekWidget"
