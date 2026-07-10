@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/app_haptics.dart';
+import '../../map/providers/track_position_provider.dart';
 import '../models/tracking_status.dart';
 import '../providers/tracking_provider.dart';
 
@@ -15,6 +16,11 @@ class TrackingOverlay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tracking = ref.watch(trackingProvider);
+    // Distance parcourue = source PROJETEE sur le trace (correctif build 117 :
+    // un aller-retour ne gonfle plus la valeur). Meme provider que la barre de
+    // progression / l'accueil / le HUB. On NE lit PAS tracking.distanceM (cumul
+    // GPS brut de TrackingEngine), garde uniquement pour la persistence Drift.
+    final coveredM = ref.watch(stageDistanceCoveredProvider);
     final theme = Theme.of(context);
 
     return Container(
@@ -40,7 +46,7 @@ class TrackingOverlay extends ConsumerWidget {
         children: [
           if (tracking.status == TrackingStatusValues.recording ||
               tracking.status == TrackingStatusValues.paused)
-            _buildStats(context, tracking),
+            _buildStats(context, tracking, coveredM),
           const SizedBox(height: AppTheme.spacingSm),
           _buildButtons(context, ref, tracking),
         ],
@@ -48,7 +54,11 @@ class TrackingOverlay extends ConsumerWidget {
     );
   }
 
-  Widget _buildStats(BuildContext context, TrackingState tracking) {
+  Widget _buildStats(
+    BuildContext context,
+    TrackingState tracking,
+    double coveredM,
+  ) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       child: Row(
@@ -61,7 +71,7 @@ class TrackingOverlay extends ConsumerWidget {
           ),
           _StatTile(
             icon: Icons.straighten,
-            value: _formatDistance(tracking.distanceM),
+            value: _formatDistance(coveredM),
             label: 'Distance',
           ),
           _StatTile(

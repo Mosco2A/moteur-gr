@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/trek/presentation/map/overlay/tracking_overlay.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 
@@ -11,13 +12,18 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 void main() {
   group('TrackingOverlay', () {
     testWidgets('affiche stats et 3 boutons en mode recording', (tester) async {
-      // Override le provider pour simuler l'etat recording
+      // Override les providers pour simuler l'etat recording.
+      // La distance affichee vient de la source PROJETEE
+      // (stageDistanceCoveredProvider), PAS du cumul brut distanceKm :
+      // on met un cumul GONFLE (9.9) different du projete (5.2) pour
+      // prouver que l'overlay ignore le cumul (correctif build 117).
       final container = ProviderContainer(
         overrides: [
+          stageDistanceCoveredProvider.overrideWithValue(5200.0),
           trekSessionManagerProvider.overrideWith(() {
             return _FakeNotifier(const TrackingSessionState(
               status: TrackingSessionStatus.recording,
-              distanceKm: 5.2,
+              distanceKm: 9.9, // cumul brut gonfle -> NE doit PAS s'afficher
               elevationGainM: 350.0,
               elapsedDuration: Duration(hours: 2, minutes: 15),
               currentSpeedKmh: 4.3,
@@ -43,8 +49,9 @@ void main() {
       expect(find.text('D+'), findsOneWidget);
       expect(find.text('Vitesse'), findsOneWidget);
 
-      // Valeurs des stats
+      // Valeurs des stats : distance = PROJETEE (5.2), pas le cumul (9.9).
       expect(find.text('5.2 km'), findsOneWidget);
+      expect(find.text('9.9 km'), findsNothing);
       expect(find.text('350 m'), findsOneWidget);
       expect(find.text('4.3 km/h'), findsOneWidget);
 
@@ -94,6 +101,7 @@ void main() {
     testWidgets('affiche Reprendre + Stop en mode paused', (tester) async {
       final container = ProviderContainer(
         overrides: [
+          stageDistanceCoveredProvider.overrideWithValue(3100.0),
           trekSessionManagerProvider.overrideWith(() {
             return _FakeNotifier(const TrackingSessionState(
               status: TrackingSessionStatus.paused,

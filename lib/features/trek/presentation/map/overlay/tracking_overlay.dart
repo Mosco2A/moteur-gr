@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../i18n/translations.g.dart';
+import '../../../../map/providers/track_position_provider.dart';
 import '../../../providers/tracking_providers.dart';
 
 /// Overlay de tracking temps reel affiche sur la carte.
@@ -77,15 +78,16 @@ class _StatsRow extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              // Distance
+              // Distance parcourue = source PROJETEE sur le trace
+              // (correctif build 117 : un aller-retour ne gonfle plus la
+              // valeur ; meme provider que la barre de progression, le HUB
+              // et l'accueil). JAMAIS le cumul GPS brut (distanceKm).
               Consumer(
                 builder: (context, ref, _) {
-                  final distanceKm = ref.watch(
-                    trekSessionManagerProvider.select((s) => s.distanceKm),
-                  );
+                  final coveredM = ref.watch(stageDistanceCoveredProvider);
                   return _StatTile(
                     icon: Icons.straighten,
-                    value: _formatDistance(distanceKm),
+                    value: _formatDistance(coveredM / 1000),
                     label: 'Distance',
                   );
                 },

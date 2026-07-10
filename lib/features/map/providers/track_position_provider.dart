@@ -158,3 +158,24 @@ AsyncValue<TrackPositionState> _computeProjection(
     error: (error, stack) => AsyncError(error, stack),
   );
 }
+
+/// Distance parcourue PROJETEE sur le trace, en metres (source unique).
+///
+/// Correctif build 117 (spec E10 RF-10 / AM-5 / RM-2, E13 RM-2 / AM-8) :
+/// la progression et le
+/// « parcouru » affiches doivent venir de la projection sur le trace
+/// (`TrackPositionState.distanceFromStartM`), JAMAIS du cumul GPS brut
+/// (`TrekStats.distanceKm` / `TrackingEngine.distanceMeters`) qui gonfle
+/// des qu'on fait un aller-retour. Home, carte et overlay lisent ce meme
+/// provider projete -> aucune divergence.
+///
+/// Retourne 0 tant que la position projetee n'est pas disponible
+/// (chargement GPS / trace, ou hors donnees) : on n'affiche jamais une
+/// distance parcourue erronee issue d'une autre source.
+final stageDistanceCoveredProvider = Provider<double>((ref) {
+  final trackPos = ref.watch(trackPositionProvider);
+  return trackPos.whenOrNull(
+        data: (state) => state.distanceFromStartM,
+      ) ??
+      0.0;
+});

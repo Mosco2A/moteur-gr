@@ -6,6 +6,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../shared/services/location_permission_service.dart';
+import '../../map/providers/track_position_provider.dart';
 import '../data/background_gps_service.dart';
 import '../data/trek_recorder.dart';
 import '../domain/models/trek_session.dart';
@@ -92,7 +93,11 @@ final trekRecorderProvider = Provider<TrekRecorder>((ref) {
       final tracking = ref.read(trekSessionManagerProvider);
 
       final totalKm = config.totalDistanceKm;
-      final doneKm = tracking.distanceKm;
+      // Coherence accueil<->carte (correctif build 117, spec AM-5/RM-2) :
+      // le « parcouru » et la progression du widget Home lisent la source
+      // PROJETEE sur le trace (stageDistanceCoveredProvider), JAMAIS le cumul
+      // GPS brut (tracking.distanceKm) qui gonfle sur un aller-retour.
+      final doneKm = ref.read(stageDistanceCoveredProvider) / 1000;
       final progress = totalKm > 0 ? (doneKm / totalKm) : 0.0;
       final remainingKm =
           (totalKm - doneKm) < 0 ? 0.0 : (totalKm - doneKm);
@@ -293,6 +298,20 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       avgSpeedKmh: stats.avgSpeedKmh,
     );
     state = finalState;
+  }
+
+  /// Termine le trek suite a la **detection d'arrivee a la derniere etape**
+  /// (evenement `trailEnd`, direction-aware). Finalise comme [stop] (statut
+  /// `completed` via TrekRecorder), mais declenche par la detection et non par
+  /// l'appui manuel sur « Terminer ». Idempotent : ne fait rien hors session
+  /// active. La completion n'a lieu qu'a la vraie derniere etape du parcours
+  /// dans le sens de marche.
+  Future<void> completeOnArrival() async {
+    if (state.status != TrackingSessionStatus.recording &&
+        state.status != TrackingSessionStatus.paused) {
+      return;
+    }
+    await stop();
   }
 
   /// Met a jour les stats depuis TrekStats.

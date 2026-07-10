@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:moteur_gr/features/trek/data/arrival_detection_service.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/features/trek/domain/trek_completion.dart';
 
 /// Helper : cree une Position de test avec les champs requis.
 Position _fakePosition({
@@ -146,6 +147,67 @@ void main() {
       service.reset();
 
       expect(service.alreadyArrived, isEmpty);
+    });
+
+    test('direction-aware SN : trailEnd = etape 1, PAS la derniere du JSON',
+        () async {
+      // Plan Sud->Nord : ordre de marche s3 -> s2 -> s1. La fin reelle = s1.
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'SN',
+        forwardDirectionCode: 'NS',
+      );
+      final service = ArrivalDetectionService(arrivalRadiusMeters: 15000.0);
+
+      final positions = [
+        // Fin de etape-1 (42.1, 9.1) = fin REELLE du trek en SN.
+        _fakePosition(lat: 42.1001, lng: 9.1001),
+      ];
+      final events = await service
+          .arrivalEvents(Stream.fromIterable(positions), stages, plan: plan)
+          .toList();
+
+      final s1 = events.where((e) => e.stageId == 'stage-1').toList();
+      expect(s1.length, equals(1));
+      expect(s1.first.type, equals('trailEnd'),
+          reason: 'En SN, la fin de trek est l etape 1 (fin du parcours).');
+    });
+
+    test(
+        'direction-aware SN : arrivee au refuge de DEPART (s4) => aucune '
+        'emission (anti-felicitations prematurees)', () async {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'SN',
+        forwardDirectionCode: 'NS',
+      );
+      final service = ArrivalDetectionService(arrivalRadiusMeters: 15000.0);
+
+      final positions = [
+        // Fin de etape-3 (42.3, 9.3) = point de DEPART en SN (etape s4 commence
+        // ici cote marche). La detection ne doit rien emettre pour le depart.
+        _fakePosition(lat: 42.3001, lng: 9.3001),
+      ];
+      final events = await service
+          .arrivalEvents(Stream.fromIterable(positions), stages, plan: plan)
+          .toList();
+
+      // s4 est l'etape de depart en SN -> jamais d'arrivee emise pour elle.
+      expect(events.where((e) => e.stageId == 'stage-4'), isEmpty,
+          reason: 'Pas d arrivee a l etape de depart (garde anti-premature).');
+    });
+
+    test('sans plan : comportement historique (trailEnd = plus grand orderIndex)',
+        () async {
+      final service = ArrivalDetectionService(arrivalRadiusMeters: 15000.0);
+      final positions = [
+        _fakePosition(lat: 42.3001, lng: 9.3001), // fin de stage-3 (max index)
+      ];
+      final events = await service
+          .arrivalEvents(Stream.fromIterable(positions), stages)
+          .toList();
+      final s3 = events.where((e) => e.stageId == 'stage-3').toList();
+      expect(s3.single.type, equals('trailEnd'));
     });
 
     test('rayon configurable respecte', () async {
