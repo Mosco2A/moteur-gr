@@ -47,6 +47,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$poi$en poi = _Translations$poi$en._(_root);
 	@override late final _Translations$accommodation$en accommodation = _Translations$accommodation$en._(_root);
 	@override late final _Translations$gps$en gps = _Translations$gps$en._(_root);
+	@override late final _Translations$navAlert$en navAlert = _Translations$navAlert$en._(_root);
 	@override late final _Translations$planning$en planning = _Translations$planning$en._(_root);
 	@override late final _Translations$tracking$en tracking = _Translations$tracking$en._(_root);
 	@override late final _Translations$checklist$en checklist = _Translations$checklist$en._(_root);
@@ -216,6 +217,18 @@ class _Translations$gps$en extends Translations$gps$fr {
 	@override String get disabled => 'Location service disabled';
 	@override String get offTrack => 'Off track';
 	@override String get centerOnMe => 'Center on my position';
+}
+
+// Path: navAlert
+class _Translations$navAlert$en extends Translations$navAlert$fr {
+	_Translations$navAlert$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String offTrackBanner({required Object meters}) => 'You are moving away from the trail — ${meters} m. Check your position.';
+	@override String get offTrackNotifTitle => 'You are leaving the trail';
+	@override String offTrackNotifBody({required Object meters}) => 'You are moving away from the trail (${meters} m). Check your position.';
 }
 
 // Path: planning
@@ -420,6 +433,8 @@ class _Translations$settings$en extends Translations$settings$fr {
 	@override String get weatherAlertsDesc => 'Notified when dangerous conditions';
 	@override String get countdownReminder => 'D-2 reminder';
 	@override String get countdownDesc => 'Notification 2 days before departure';
+	@override String get offTrackAlerts => 'Off-track alert';
+	@override String get offTrackAlertsDesc => 'Notification + vibration if you leave the trail';
 	@override String get version => 'Version';
 	@override String get versionLabel => 'App version';
 }
@@ -1774,6 +1789,9 @@ extension on TranslationsEn {
 			'gps.disabled' => 'Location service disabled',
 			'gps.offTrack' => 'Off track',
 			'gps.centerOnMe' => 'Center on my position',
+			'navAlert.offTrackBanner' => ({required Object meters}) => 'You are moving away from the trail — ${meters} m. Check your position.',
+			'navAlert.offTrackNotifTitle' => 'You are leaving the trail',
+			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'You are moving away from the trail (${meters} m). Check your position.',
 			'planning.title' => 'Planning',
 			'planning.duration' => 'Duration',
 			'planning.days' => 'days',
@@ -1926,6 +1944,8 @@ extension on TranslationsEn {
 			'settings.weatherAlertsDesc' => 'Notified when dangerous conditions',
 			'settings.countdownReminder' => 'D-2 reminder',
 			'settings.countdownDesc' => 'Notification 2 days before departure',
+			'settings.offTrackAlerts' => 'Off-track alert',
+			'settings.offTrackAlertsDesc' => 'Notification + vibration if you leave the trail',
 			'settings.version' => 'Version',
 			'settings.versionLabel' => 'App version',
 			'feedback.title' => 'Feedback',
@@ -2211,13 +2231,13 @@ extension on TranslationsEn {
 			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
 			'shareVisibility.activityFeed' => 'Post to the activity feed',
 			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.shareTitle' => 'Share this stage',
 			'shareVisibility.shareButton' => 'Share',
 			'shareVisibility.privateNotice' => 'Sharing is off. Turn it on in Sharing and visibility.',
 			'shareVisibility.shared' => 'Card ready to share.',
 			'waypoints.types.eau' => 'Water',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Resupply',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Campsite',

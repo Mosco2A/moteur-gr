@@ -89,6 +89,11 @@
     "offTrack": "Off track",
     "centerOnMe": "Center on my position"
   },
+  "navAlert": {
+    "offTrackBanner": "You are moving away from the trail — $meters m. Check your position.",
+    "offTrackNotifTitle": "You are leaving the trail",
+    "offTrackNotifBody": "You are moving away from the trail ($meters m). Check your position."
+  },
   "planning": {
     "title": "Planning",
     "duration": "Duration",
@@ -262,6 +267,8 @@
     "weatherAlertsDesc": "Notified when dangerous conditions",
     "countdownReminder": "D-2 reminder",
     "countdownDesc": "Notification 2 days before departure",
+    "offTrackAlerts": "Off-track alert",
+    "offTrackAlertsDesc": "Notification + vibration if you leave the trail",
     "version": "Version",
     "versionLabel": "App version"
   },

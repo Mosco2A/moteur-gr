@@ -10,7 +10,9 @@ import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
+import '../../../map/providers/off_track_provider.dart';
 import '../../../map/providers/simplified_track_provider.dart';
+import '../../../map/widgets/off_track_banner.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
 import 'controls/map_controls.dart';
@@ -292,6 +294,32 @@ class _MapContentState extends State<_MapContent> {
                   }
                 },
               );
+            },
+          ),
+        ),
+
+        // --- Alerte hors-trace (securite) : banniere in-screen en tete.
+        // La notification + la vibration partent du provider (meme telephone en
+        // poche) ; ici on injecte les libelles traduits (Slang) dans le provider
+        // et on affiche le bonus visuel. RepaintBoundary : isole du raster carte.
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: Consumer(
+            builder: (context, ref, _) {
+              // Sync des libelles de notification avec la langue courante,
+              // hors phase de build (setMessages modifie un provider).
+              final messages = OffTrackMessages(
+                notifTitle: t.navAlert.offTrackNotifTitle,
+                notifBody: (m) => t.navAlert.offTrackNotifBody(meters: m),
+              );
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                ref
+                    .read(offTrackMessagesProvider.notifier)
+                    .setMessages(messages);
+              });
+              return const RepaintBoundary(child: OffTrackBanner());
             },
           ),
         ),
