@@ -48,6 +48,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$poi$fr poi = Translations$poi$fr.internal(_root);
 	late final Translations$accommodation$fr accommodation = Translations$accommodation$fr.internal(_root);
 	late final Translations$gps$fr gps = Translations$gps$fr.internal(_root);
+	late final Translations$navAlert$fr navAlert = Translations$navAlert$fr.internal(_root);
 	late final Translations$planning$fr planning = Translations$planning$fr.internal(_root);
 	late final Translations$tracking$fr tracking = Translations$tracking$fr.internal(_root);
 	late final Translations$checklist$fr checklist = Translations$checklist$fr.internal(_root);
@@ -338,6 +339,24 @@ class Translations$gps$fr {
 
 	/// fr: 'Centrer sur ma position'
 	String get centerOnMe => 'Centrer sur ma position';
+}
+
+// Path: navAlert
+class Translations$navAlert$fr {
+	Translations$navAlert$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Vous vous eloignez du sentier — $meters m. Verifiez votre position.'
+	String offTrackBanner({required Object meters}) => 'Vous vous eloignez du sentier — ${meters} m. Verifiez votre position.';
+
+	/// fr: 'Vous quittez le sentier'
+	String get offTrackNotifTitle => 'Vous quittez le sentier';
+
+	/// fr: 'Vous vous eloignez du sentier ($meters m). Verifiez votre position.'
+	String offTrackNotifBody({required Object meters}) => 'Vous vous eloignez du sentier (${meters} m). Verifiez votre position.';
 }
 
 // Path: planning
@@ -785,6 +804,12 @@ class Translations$settings$fr {
 
 	/// fr: 'Notification 2 jours avant le départ'
 	String get countdownDesc => 'Notification 2 jours avant le départ';
+
+	/// fr: 'Alerte hors-trace'
+	String get offTrackAlerts => 'Alerte hors-trace';
+
+	/// fr: 'Notification + vibration si vous quittez le sentier'
+	String get offTrackAlertsDesc => 'Notification + vibration si vous quittez le sentier';
 
 	/// fr: 'Version'
 	String get version => 'Version';
@@ -3167,6 +3192,9 @@ extension on Translations {
 			'gps.disabled' => 'Service de localisation desactive',
 			'gps.offTrack' => 'Hors trace',
 			'gps.centerOnMe' => 'Centrer sur ma position',
+			'navAlert.offTrackBanner' => ({required Object meters}) => 'Vous vous eloignez du sentier — ${meters} m. Verifiez votre position.',
+			'navAlert.offTrackNotifTitle' => 'Vous quittez le sentier',
+			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Vous vous eloignez du sentier (${meters} m). Verifiez votre position.',
 			'planning.title' => 'Planning',
 			'planning.duration' => 'Durée',
 			'planning.days' => 'jours',
@@ -3319,6 +3347,8 @@ extension on Translations {
 			'settings.weatherAlertsDesc' => 'Prévenu si conditions dangereuses',
 			'settings.countdownReminder' => 'Rappel J-2',
 			'settings.countdownDesc' => 'Notification 2 jours avant le départ',
+			'settings.offTrackAlerts' => 'Alerte hors-trace',
+			'settings.offTrackAlertsDesc' => 'Notification + vibration si vous quittez le sentier',
 			'settings.version' => 'Version',
 			'settings.versionLabel' => 'Version de l\'application',
 			'feedback.title' => 'Feedback',
@@ -3604,13 +3634,13 @@ extension on Translations {
 			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.shareTitle' => 'Partager cette étape',
 			'shareVisibility.shareButton' => 'Partager',
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
 			'shareVisibility.shared' => 'Carte prête à partager.',
 			'waypoints.types.eau' => 'Eau',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.ravitaillement' => 'Ravitaillement',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Bivouac',

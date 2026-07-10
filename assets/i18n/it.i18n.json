@@ -89,6 +89,11 @@
     "offTrack": "Fuori tracciato",
     "centerOnMe": "Centra sulla mia posizione"
   },
+  "navAlert": {
+    "offTrackBanner": "Ti stai allontanando dal sentiero — $meters m. Controlla la tua posizione.",
+    "offTrackNotifTitle": "Stai lasciando il sentiero",
+    "offTrackNotifBody": "Ti stai allontanando dal sentiero ($meters m). Controlla la tua posizione."
+  },
   "planning": {
     "title": "Pianificazione",
     "duration": "Durata",
@@ -262,6 +267,8 @@
     "weatherAlertsDesc": "Avvisato in caso di condizioni pericolose",
     "countdownReminder": "Promemoria G-2",
     "countdownDesc": "Notifica 2 giorni prima della partenza",
+    "offTrackAlerts": "Avviso fuori tracciato",
+    "offTrackAlertsDesc": "Notifica + vibrazione se lasci il sentiero",
     "version": "Versione",
     "versionLabel": "Versione dell'app"
   },

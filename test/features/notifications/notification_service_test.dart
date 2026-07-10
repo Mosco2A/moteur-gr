@@ -52,6 +52,23 @@ void main() {
       expect(NotificationService.channelMorning, 'morning_reminder');
       expect(NotificationService.channelWeather, 'weather_alert');
       expect(NotificationService.channelCountdown, 'countdown');
+      expect(NotificationService.channelOffTrack, 'offtrack_alert');
+    });
+
+    test('canal hors-trace : constantes coherentes', () {
+      // Canal dedie generique (aucun sentier en dur) + description non vide.
+      expect(NotificationService.channelOffTrack, 'offtrack_alert');
+      expect(NotificationService.channelOffTrackDesc, isNotEmpty);
+    });
+
+    test('showOffTrackAlert / cancelOffTrackAlert n echouent pas (pipeline)',
+        () async {
+      // Le plugin route show/cancel via MethodChannel natif (non observable ici
+      // sans mock du channel) ; on valide surtout que le pipeline du service ne
+      // leve pas. Le CABLAGE transitions -> notification est couvert par le test
+      // d'integration off_track_provider_test (spy sur le service).
+      await service.showOffTrackAlert(title: 'T', body: 'B');
+      await service.cancelOffTrackAlert();
     });
 
     test('checkPermissions retourne true en environnement test', () async {

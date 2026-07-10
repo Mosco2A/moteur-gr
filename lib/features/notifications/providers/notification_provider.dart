@@ -15,6 +15,7 @@ class NotificationSettings {
     this.morningReminderMinute = 0,
     this.weatherAlertsEnabled = true,
     this.countdownEnabled = true,
+    this.offTrackAlerts = true,
     this.permissionGranted = false,
   });
 
@@ -23,6 +24,10 @@ class NotificationSettings {
   final int morningReminderMinute;
   final bool weatherAlertsEnabled;
   final bool countdownEnabled;
+
+  /// Alerte de securite hors-trace (notification + vibration). ON par defaut :
+  /// c'est une alerte de securite randonneur, l'utilisateur peut la couper.
+  final bool offTrackAlerts;
   final bool permissionGranted;
 
   NotificationSettings copyWith({
@@ -31,6 +36,7 @@ class NotificationSettings {
     int? morningReminderMinute,
     bool? weatherAlertsEnabled,
     bool? countdownEnabled,
+    bool? offTrackAlerts,
     bool? permissionGranted,
   }) {
     return NotificationSettings(
@@ -43,6 +49,7 @@ class NotificationSettings {
       weatherAlertsEnabled:
           weatherAlertsEnabled ?? this.weatherAlertsEnabled,
       countdownEnabled: countdownEnabled ?? this.countdownEnabled,
+      offTrackAlerts: offTrackAlerts ?? this.offTrackAlerts,
       permissionGranted: permissionGranted ?? this.permissionGranted,
     );
   }
@@ -94,6 +101,13 @@ class NotificationSettingsNotifier extends Notifier<NotificationSettings> {
 
   void toggleCountdown(bool enabled) {
     state = state.copyWith(countdownEnabled: enabled);
+  }
+
+  /// Active / desactive l'alerte de securite hors-trace. ON par defaut. Couper
+  /// n'affecte que la notification+vibration ; la surveillance in-screen suit
+  /// le meme reglage cote provider off-track.
+  void toggleOffTrackAlerts(bool enabled) {
+    state = state.copyWith(offTrackAlerts: enabled);
   }
 }
 

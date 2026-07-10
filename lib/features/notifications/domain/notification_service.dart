@@ -9,6 +9,11 @@ const _weatherBaseId = 2000;
 const _countdownBaseId = 3000;
 const _trainingBaseId = 4000;
 
+/// Id fixe de l'alerte hors-trace : UNE seule notification a la fois,
+/// remplacable / annulable au retour sur le trace. En dehors des plages de base
+/// des rappels planifies (matin/meteo/J-2/entrainement).
+const _offTrackId = 5000;
+
 class NotificationService {
   NotificationService({
     FlutterLocalNotificationsPlugin? plugin,
@@ -22,10 +27,17 @@ class NotificationService {
   static const String channelWeather = 'weather_alert';
   static const String channelCountdown = 'countdown';
   static const String channelTraining = 'training_reminder';
+
+  /// Canal dedie a l'alerte de securite hors-trace. Generique (aucun sentier
+  /// particulier). Importance HAUTE + visibilite publique -> la notification
+  /// surgit meme ecran verrouille (telephone en poche).
+  static const String channelOffTrack = 'offtrack_alert';
   static const String channelMorningDesc = 'Morning departure reminders';
   static const String channelWeatherDesc = 'Weather alerts for the trail';
   static const String channelCountdownDesc = 'D-2 countdown before departure';
   static const String channelTrainingDesc = 'Pre-trek training session reminders';
+  static const String channelOffTrackDesc =
+      'Alerts when you move away from the trail';
 
   Future<void> initialize() async {
     if (_initialized) return;
@@ -133,6 +145,44 @@ class NotificationService {
     );
     _log.d('[NotificationService] Rappel entrainement planifie pour $dateTime (id=$id)');
     return id;
+  }
+
+  /// Affiche IMMEDIATEMENT l'alerte hors-trace (F-OT, securite randonneur).
+  ///
+  /// Notification 100 % LOCALE, id fixe [_offTrackId] : une seule a la fois,
+  /// remplacee si rappelee. Canal dedie importance HAUTE + visibilite publique
+  /// pour surgir ecran verrouille (le randonneur a le telephone en poche).
+  /// Ne planifie rien : l'alerte est declenchee a la sortie du trace.
+  Future<void> showOffTrackAlert({
+    required String title,
+    required String body,
+  }) async {
+    await _ensureInitialized();
+    const details = NotificationDetails(
+      android: AndroidNotificationDetails(
+        channelOffTrack,
+        channelOffTrack,
+        channelDescription: channelOffTrackDesc,
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/ic_launcher',
+        visibility: NotificationVisibility.public,
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
+    );
+    await _plugin.show(_offTrackId, title, body, details);
+    _log.d('[NotificationService] Alerte hors-trace affichee (id=$_offTrackId)');
+  }
+
+  /// Leve l'alerte hors-trace (retour sur le trace).
+  Future<void> cancelOffTrackAlert() async {
+    await _ensureInitialized();
+    await _plugin.cancel(_offTrackId);
+    _log.d('[NotificationService] Alerte hors-trace levee (id=$_offTrackId)');
   }
 
   Future<void> cancelAll() async {
