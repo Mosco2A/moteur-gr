@@ -201,6 +201,20 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     state = finalState;
   }
 
+  /// Termine le trek suite a la **detection d'arrivee a la derniere etape**
+  /// (evenement `trailEnd`, direction-aware). Finalise comme [stop] (statut
+  /// `completed` via TrekRecorder), mais declenche par la detection et non par
+  /// l'appui manuel sur « Terminer ». Idempotent : ne fait rien hors session
+  /// active. La completion n'a lieu qu'a la vraie derniere etape du parcours
+  /// dans le sens de marche.
+  Future<void> completeOnArrival() async {
+    if (state.status != TrackingSessionStatus.recording &&
+        state.status != TrackingSessionStatus.paused) {
+      return;
+    }
+    await stop();
+  }
+
   /// Met a jour les stats depuis TrekStats.
   ///
   /// Appelee periodiquement par le pipeline GPS pour rafraichir
