@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/service_providers.dart';
+import '../../map/providers/track_position_provider.dart';
 import '../data/trek_recorder.dart';
 import '../domain/models/trek_session.dart';
 import '../domain/trek_stats.dart';
@@ -87,7 +88,11 @@ final trekRecorderProvider = Provider<TrekRecorder>((ref) {
       final tracking = ref.read(trekSessionManagerProvider);
 
       final totalKm = config.totalDistanceKm;
-      final doneKm = tracking.distanceKm;
+      // Coherence accueil<->carte (correctif build 117, spec AM-5/RM-2) :
+      // le « parcouru » et la progression du widget Home lisent la source
+      // PROJETEE sur le trace (stageDistanceCoveredProvider), JAMAIS le cumul
+      // GPS brut (tracking.distanceKm) qui gonfle sur un aller-retour.
+      final doneKm = ref.read(stageDistanceCoveredProvider) / 1000;
       final progress = totalKm > 0 ? (doneKm / totalKm) : 0.0;
       final remainingKm =
           (totalKm - doneKm) < 0 ? 0.0 : (totalKm - doneKm);
