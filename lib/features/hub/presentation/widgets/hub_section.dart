@@ -44,14 +44,24 @@ class HubSection extends StatelessWidget {
         ),
         const SizedBox(height: AppTheme.spacingMd),
         // Grille 2 colonnes non scrollable (le HUB scrolle pour elle).
-        GridView.count(
-          crossAxisCount: 2,
+        //
+        // Hauteur d'item FIXE ([mainAxisExtent]) plutot qu'un ratio largeur/hauteur :
+        // le contenu d'une [QuickAccessCard] (icone 28 + titre 1 ligne + sous-titre
+        // 2 lignes + espacements + padding) mesure ~140 px et ne depend pas de la
+        // largeur de cellule. Un [childAspectRatio] fixe rendait la cellule trop
+        // plate aux largeurs mobiles (~115 px a 390 px logiques) -> RenderFlex
+        // overflow. [mainAxisExtent] supprime cette dependance a la largeur.
+        GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: AppTheme.spacingMd,
-          crossAxisSpacing: AppTheme.spacingMd,
-          childAspectRatio: 1.5,
-          children: cards,
+          itemCount: cards.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: AppTheme.spacingMd,
+            crossAxisSpacing: AppTheme.spacingMd,
+            mainAxisExtent: 150,
+          ),
+          itemBuilder: (context, index) => cards[index],
         ),
       ],
     );
