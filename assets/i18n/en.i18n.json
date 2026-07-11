@@ -16,6 +16,7 @@
     "stopTracking": "Stop tracking"
   },
   "nav": {
+    "accueil": "Home",
     "map": "Map",
     "stages": "Stages",
     "planning": "Planning",
@@ -29,6 +30,72 @@
     "profile": "Profile",
     "settings": "Settings",
     "trailSelection": "Switch trail"
+  },
+  "branding": {
+    "tagline": "Your trekking companion",
+    "subline": "Prepare, hike, share"
+  },
+  "hub": {
+    "greeting": "Hello, $name!",
+    "greetingFallback": "Hiker",
+    "infoTooltip": "About this trail",
+    "profileTooltip": "My profile",
+    "infoSheetBody": "This trail guides you every step of the way: plan your itinerary, pack your bag, then set off with GPS navigation. Every feature is reachable from this home screen.",
+    "trekCard": {
+      "activeTitle": "Trek in progress",
+      "distanceCovered": "Distance covered",
+      "elevationGain": "Today's ascent",
+      "duration": "Walking time",
+      "progressLabel": "$percent% of the trail",
+      "resume": "Resume navigation",
+      "noTrekTitle": "Ready to go?",
+      "noTrekBody": "Plan your itinerary, then start your trek whenever you're ready.",
+      "plan": "Plan my trek"
+    },
+    "weather": {
+      "title": "Today's weather",
+      "stub": "Your stage weather is coming soon.",
+      "unavailable": "Weather unavailable right now."
+    },
+    "startCta": "Start the trek",
+    "sections": {
+      "prepare": "Prepare",
+      "hike": "Hike",
+      "info": "Information",
+      "after": "After the trek"
+    },
+    "cards": {
+      "feasibility": "Feasibility",
+      "feasibilitySub": "Assess your level",
+      "itinerary": "Itinerary",
+      "itinerarySub": "The trail route",
+      "programme": "Programme",
+      "programmeSub": "Spread out your stages",
+      "checklist": "Gear & bag",
+      "checklistSub": "Pack your backpack",
+      "training": "Physical prep",
+      "trainingSub": "Your training programme",
+      "offline": "Offline",
+      "offlineSub": "Download your trails",
+      "group": "My group",
+      "groupSub": "Track your companions",
+      "navigation": "Navigation",
+      "navigationSub": "Map and GPS tracking",
+      "journal": "Journal",
+      "journalSub": "Your notes and memories",
+      "accommodations": "Accommodation",
+      "accommodationsSub": "Where to sleep nearby",
+      "tips": "Tip sheets",
+      "tipsSub": "Our trekking tips",
+      "recap": "Recap",
+      "recapSub": "Your adventure summed up",
+      "diploma": "Diploma",
+      "diplomaSub": "Your finisher certificate"
+    },
+    "fab": {
+      "feedback": "Give feedback",
+      "sos": "SOS"
+    }
   },
   "map": {
     "title": "Trail map",

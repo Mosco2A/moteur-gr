@@ -16,6 +16,7 @@
     "stopTracking": "Arreter le suivi"
   },
   "nav": {
+    "accueil": "Accueil",
     "map": "Carte",
     "stages": "Étapes",
     "planning": "Planning",
@@ -29,6 +30,72 @@
     "profile": "Profil",
     "settings": "Paramètres",
     "trailSelection": "Changer de sentier"
+  },
+  "branding": {
+    "tagline": "Votre compagnon de trek",
+    "subline": "Préparez, marchez, partagez"
+  },
+  "hub": {
+    "greeting": "Bonjour, $name !",
+    "greetingFallback": "Randonneur",
+    "infoTooltip": "À propos de ce sentier",
+    "profileTooltip": "Mon profil",
+    "infoSheetBody": "Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d'accueil.",
+    "trekCard": {
+      "activeTitle": "Trek en cours",
+      "distanceCovered": "Distance parcourue",
+      "elevationGain": "Dénivelé du jour",
+      "duration": "Temps de marche",
+      "progressLabel": "$percent % du sentier",
+      "resume": "Reprendre la navigation",
+      "noTrekTitle": "Prêt à partir ?",
+      "noTrekBody": "Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.",
+      "plan": "Planifier mon trek"
+    },
+    "weather": {
+      "title": "Météo du jour",
+      "stub": "La météo de votre étape arrive bientôt.",
+      "unavailable": "Météo indisponible pour le moment."
+    },
+    "startCta": "Démarrer le trek",
+    "sections": {
+      "prepare": "Préparer",
+      "hike": "Randonner",
+      "info": "Informations",
+      "after": "Après le trek"
+    },
+    "cards": {
+      "feasibility": "Faisabilité",
+      "feasibilitySub": "Évaluez votre niveau",
+      "itinerary": "Itinéraire",
+      "itinerarySub": "Le tracé du sentier",
+      "programme": "Programme",
+      "programmeSub": "Répartissez vos étapes",
+      "checklist": "Matériel & sac",
+      "checklistSub": "Préparez votre sac à dos",
+      "training": "Préparation physique",
+      "trainingSub": "Votre programme d'entraînement",
+      "offline": "Hors ligne",
+      "offlineSub": "Téléchargez vos sentiers",
+      "group": "Mon groupe",
+      "groupSub": "Suivi de vos compagnons",
+      "navigation": "Navigation",
+      "navigationSub": "Carte et suivi GPS",
+      "journal": "Journal",
+      "journalSub": "Vos notes et souvenirs",
+      "accommodations": "Hébergements",
+      "accommodationsSub": "Où dormir à proximité",
+      "tips": "Fiches conseils",
+      "tipsSub": "Nos conseils de trek",
+      "recap": "Récapitulatif",
+      "recapSub": "Votre aventure en résumé",
+      "diploma": "Diplôme",
+      "diplomaSub": "Votre certificat de fin"
+    },
+    "fab": {
+      "feedback": "Donner mon avis",
+      "sos": "SOS"
+    }
   },
   "map": {
     "title": "Carte du sentier",

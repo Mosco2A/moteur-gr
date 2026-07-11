@@ -16,6 +16,7 @@
     "stopTracking": "Detener seguimiento"
   },
   "nav": {
+    "accueil": "Inicio",
     "map": "Mapa",
     "stages": "Etapas",
     "planning": "Planificación",
@@ -29,6 +30,72 @@
     "profile": "Perfil",
     "settings": "Ajustes",
     "trailSelection": "Cambiar de sendero"
+  },
+  "branding": {
+    "tagline": "Tu compañero de trekking",
+    "subline": "Prepara, camina, comparte"
+  },
+  "hub": {
+    "greeting": "¡Hola, $name!",
+    "greetingFallback": "Senderista",
+    "infoTooltip": "Acerca de este sendero",
+    "profileTooltip": "Mi perfil",
+    "infoSheetBody": "Este sendero te acompaña en cada paso: planifica tu itinerario, prepara tu mochila y luego sal con la navegación GPS. Cada función es accesible desde esta pantalla de inicio.",
+    "trekCard": {
+      "activeTitle": "Trek en curso",
+      "distanceCovered": "Distancia recorrida",
+      "elevationGain": "Desnivel de hoy",
+      "duration": "Tiempo de marcha",
+      "progressLabel": "$percent % del sendero",
+      "resume": "Reanudar la navegación",
+      "noTrekTitle": "¿Listo para salir?",
+      "noTrekBody": "Planifica tu itinerario y luego inicia tu trek cuando estés listo.",
+      "plan": "Planificar mi trek"
+    },
+    "weather": {
+      "title": "El tiempo de hoy",
+      "stub": "El tiempo de tu etapa llega pronto.",
+      "unavailable": "El tiempo no está disponible ahora."
+    },
+    "startCta": "Iniciar el trek",
+    "sections": {
+      "prepare": "Preparar",
+      "hike": "Caminar",
+      "info": "Información",
+      "after": "Después del trek"
+    },
+    "cards": {
+      "feasibility": "Viabilidad",
+      "feasibilitySub": "Evalúa tu nivel",
+      "itinerary": "Itinerario",
+      "itinerarySub": "El trazado del sendero",
+      "programme": "Programa",
+      "programmeSub": "Distribuye tus etapas",
+      "checklist": "Equipo y mochila",
+      "checklistSub": "Prepara tu mochila",
+      "training": "Preparación física",
+      "trainingSub": "Tu programa de entrenamiento",
+      "offline": "Sin conexión",
+      "offlineSub": "Descarga tus senderos",
+      "group": "Mi grupo",
+      "groupSub": "Sigue a tus compañeros",
+      "navigation": "Navegación",
+      "navigationSub": "Mapa y seguimiento GPS",
+      "journal": "Diario",
+      "journalSub": "Tus notas y recuerdos",
+      "accommodations": "Alojamientos",
+      "accommodationsSub": "Dónde dormir cerca",
+      "tips": "Fichas de consejos",
+      "tipsSub": "Nuestros consejos de trek",
+      "recap": "Resumen",
+      "recapSub": "Tu aventura resumida",
+      "diploma": "Diploma",
+      "diplomaSub": "Tu certificado final"
+    },
+    "fab": {
+      "feedback": "Dar mi opinión",
+      "sos": "SOS"
+    }
   },
   "map": {
     "title": "Mapa del sendero",
