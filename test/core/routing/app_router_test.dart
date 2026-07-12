@@ -3,25 +3,27 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/routing/app_router.dart';
 
-/// Tests du routeur GoRouter (E2.9b — bottom nav 5 onglets + ShellRoute).
+/// Tests du routeur GoRouter (E2.9b + HUB E07/AM-1 — bottom nav 5 onglets).
 ///
 /// Couvre :
-///   - structure de premier niveau (1 shell + 16 routes racine) ;
-///   - composition du StatefulShellRoute (5 branches, chemins, cles) ;
+///   - structure de premier niveau (1 shell + routes racine) ;
+///   - composition du StatefulShellRoute (5 branches Accueil/Carte/Etapes/
+///     Journal/Plus, chemins, cles) ;
+///   - Planning trek sorti de la barre -> route hors-shell /planning ;
 ///   - preservation des liens profonds existants (/trail/:id et sous-routes) ;
 ///   - navigation entre onglets via la NavigationBar ;
 ///   - restauration d'etat par onglet (IndexedStack natif).
 void main() {
   group('AppRouter — structure', () {
-    test('la route initiale est /catalog (cablage nav #88246)', () {
-      expect(appRouter.routeInformationProvider.value.uri.path, '/catalog');
+    test('la route initiale est /home (HUB E07, AM-1)', () {
+      expect(appRouter.routeInformationProvider.value.uri.path, '/home');
     });
 
-    test('le premier niveau contient 1 shell + 17 routes racine', () {
+    test('le premier niveau contient 1 shell + 18 routes racine', () {
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 18);
+      expect(routes.length, 19);
       expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 17);
+      expect(routes.whereType<GoRoute>().length, 18);
     });
 
     test('les routes racine (hors shell) sont celles attendues', () {
@@ -42,6 +44,8 @@ void main() {
         '/emergency',
         '/signalement',
         '/training',
+        // HUB E07 (#NAV02) : Planning trek sorti de la barre -> hors-shell.
+        '/planning',
         '/onboarding',
         '/no-data',
         '/settings',
@@ -67,6 +71,7 @@ void main() {
         'emergency',
         'signalement',
         'training',
+        'trek-planning',
         'onboarding',
         'no-data',
         'settings',
@@ -88,14 +93,15 @@ void main() {
       final paths = shell().branches
           .map((b) => (b.routes.first as GoRoute).path)
           .toList();
-      expect(paths, ['/map', '/stages', '/planning', '/journal', '/more']);
+      // HUB E07 (AM-1) : Accueil en position 1, Planning sorti de la barre.
+      expect(paths, ['/home', '/map', '/stages', '/journal', '/more']);
     });
 
     test('chaque onglet porte le bon nom de route', () {
       final names = shell().branches
           .map((b) => (b.routes.first as GoRoute).name)
           .toList();
-      expect(names, ['map', 'stages', 'trek-planning', 'journal', 'more']);
+      expect(names, ['home', 'map', 'stages', 'journal', 'more']);
     });
 
     test('chaque branche a sa propre cle de navigateur (etat isole)', () {
@@ -104,12 +110,20 @@ void main() {
     });
 
     test('l onglet Etapes conserve sa sous-route /stages/:id', () {
-      final stagesBranch = shell().branches[1];
+      // Accueil en index 0 -> Etapes passe en index 2 (Accueil/Carte/Etapes).
+      final stagesBranch = shell().branches[2];
       final stagesRoute = stagesBranch.routes.first as GoRoute;
       expect(stagesRoute.path, '/stages');
       expect(stagesRoute.routes.length, 1);
       expect((stagesRoute.routes.first as GoRoute).path, ':id');
       expect((stagesRoute.routes.first as GoRoute).name, 'stage-by-id');
+    });
+
+    test('l onglet Accueil (position 1) pointe vers le HUB /home', () {
+      final homeBranch = shell().branches.first;
+      final homeRoute = homeBranch.routes.first as GoRoute;
+      expect(homeRoute.path, '/home');
+      expect(homeRoute.name, 'home');
     });
   });
 
@@ -208,7 +222,8 @@ void main() {
 
     test('sans sentier dispo, les routes du shell renvoient au catalogue', () {
       hasDownloadedTrails = false;
-      for (final tab in ['/map', '/stages', '/planning', '/journal', '/more']) {
+      // HUB E07 (AM-1) : /home remplace /planning dans les onglets coeur.
+      for (final tab in ['/home', '/map', '/stages', '/journal', '/more']) {
         expect(redirectForPath(tab), '/catalog',
             reason: '$tab (coeur) doit renvoyer au catalogue sans sentier');
       }
@@ -232,6 +247,7 @@ void main() {
 
     test('avec sentier dispo + onboarding fait : navigation libre', () {
       // Conditions nominales (cf. setUp) -> shell atteignable directement.
+      expect(redirectForPath('/home'), isNull);
       expect(redirectForPath('/map'), isNull);
       expect(redirectForPath('/stages'), isNull);
     });

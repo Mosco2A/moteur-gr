@@ -3,13 +3,15 @@ import 'package:go_router/go_router.dart';
 
 import '../../i18n/translations.g.dart';
 
-/// Coquille applicative de la navigation principale (E2.9b).
+/// Coquille applicative de la navigation principale (E2.9b + HUB E07/AM-1).
 ///
 /// Affiche les 5 onglets de la bottom navigation Material 3
-/// (Carte, Etapes, Planning, Journal, Plus) via un [NavigationBar].
-/// Le contenu de chaque onglet est rendu par le [StatefulNavigationShell]
-/// fourni par GoRouter (StatefulShellRoute.indexedStack), ce qui preserve
-/// l'etat de chaque onglet entre les bascules (IndexedStack natif).
+/// (Accueil, Carte, Etapes, Journal, Plus) via un [NavigationBar]. Le HUB
+/// d'accueil (E07) prend la position 1 ; le Planning trek a quitte la barre (il
+/// descend dans le HUB via la carte « Programme »). Le contenu de chaque onglet
+/// est rendu par le [StatefulNavigationShell] fourni par GoRouter
+/// (StatefulShellRoute.indexedStack), ce qui preserve l'etat de chaque onglet
+/// entre les bascules (IndexedStack natif).
 ///
 /// Les libelles passent par Slang (t.nav.*) — zero texte en dur.
 class AppShell extends StatelessWidget {
@@ -40,6 +42,11 @@ class AppShell extends StatelessWidget {
         onDestinationSelected: _onDestinationSelected,
         destinations: [
           NavigationDestination(
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(Icons.home),
+            label: tr.nav.accueil,
+          ),
+          NavigationDestination(
             icon: const Icon(Icons.map_outlined),
             selectedIcon: const Icon(Icons.map),
             label: tr.nav.map,
@@ -48,11 +55,6 @@ class AppShell extends StatelessWidget {
             icon: const Icon(Icons.terrain_outlined),
             selectedIcon: const Icon(Icons.terrain),
             label: tr.nav.stages,
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.event_note_outlined),
-            selectedIcon: const Icon(Icons.event_note),
-            label: tr.nav.planning,
           ),
           NavigationDestination(
             icon: const Icon(Icons.menu_book_outlined),

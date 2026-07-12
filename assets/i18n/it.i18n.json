@@ -16,6 +16,7 @@
     "stopTracking": "Ferma il monitoraggio"
   },
   "nav": {
+    "accueil": "Home",
     "map": "Mappa",
     "stages": "Tappe",
     "planning": "Pianificazione",
@@ -29,6 +30,72 @@
     "profile": "Profilo",
     "settings": "Impostazioni",
     "trailSelection": "Cambia sentiero"
+  },
+  "branding": {
+    "tagline": "Il tuo compagno di trekking",
+    "subline": "Prepara, cammina, condividi"
+  },
+  "hub": {
+    "greeting": "Ciao, $name!",
+    "greetingFallback": "Escursionista",
+    "infoTooltip": "Info sul sentiero",
+    "profileTooltip": "Il mio profilo",
+    "infoSheetBody": "Questo sentiero ti accompagna a ogni passo: pianifica il tuo itinerario, prepara lo zaino e parti con la navigazione GPS. Ogni funzione è raggiungibile da questa schermata iniziale.",
+    "trekCard": {
+      "activeTitle": "Trek in corso",
+      "distanceCovered": "Distanza percorsa",
+      "elevationGain": "Dislivello di oggi",
+      "duration": "Tempo di cammino",
+      "progressLabel": "$percent % del sentiero",
+      "resume": "Riprendi la navigazione",
+      "noTrekTitle": "Pronto a partire?",
+      "noTrekBody": "Pianifica il tuo itinerario, poi avvia il trek quando sei pronto.",
+      "plan": "Pianifica il mio trek"
+    },
+    "weather": {
+      "title": "Meteo di oggi",
+      "stub": "Il meteo della tua tappa arriva presto.",
+      "unavailable": "Meteo non disponibile al momento."
+    },
+    "startCta": "Avvia il trek",
+    "sections": {
+      "prepare": "Preparare",
+      "hike": "Camminare",
+      "info": "Informazioni",
+      "after": "Dopo il trek"
+    },
+    "cards": {
+      "feasibility": "Fattibilità",
+      "feasibilitySub": "Valuta il tuo livello",
+      "itinerary": "Itinerario",
+      "itinerarySub": "Il tracciato del sentiero",
+      "programme": "Programma",
+      "programmeSub": "Distribuisci le tappe",
+      "checklist": "Attrezzatura e zaino",
+      "checklistSub": "Prepara il tuo zaino",
+      "training": "Preparazione fisica",
+      "trainingSub": "Il tuo programma di allenamento",
+      "offline": "Offline",
+      "offlineSub": "Scarica i tuoi sentieri",
+      "group": "Il mio gruppo",
+      "groupSub": "Segui i tuoi compagni",
+      "navigation": "Navigazione",
+      "navigationSub": "Mappa e tracciamento GPS",
+      "journal": "Diario",
+      "journalSub": "Le tue note e i ricordi",
+      "accommodations": "Alloggi",
+      "accommodationsSub": "Dove dormire nelle vicinanze",
+      "tips": "Schede consigli",
+      "tipsSub": "I nostri consigli trek",
+      "recap": "Riepilogo",
+      "recapSub": "La tua avventura in sintesi",
+      "diploma": "Diploma",
+      "diplomaSub": "Il tuo certificato finale"
+    },
+    "fab": {
+      "feedback": "Lascia un feedback",
+      "sos": "SOS"
+    }
   },
   "map": {
     "title": "Mappa del sentiero",

@@ -42,6 +42,8 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	// Translations
 	late final Translations$a11y$fr a11y = Translations$a11y$fr.internal(_root);
 	late final Translations$nav$fr nav = Translations$nav$fr.internal(_root);
+	late final Translations$branding$fr branding = Translations$branding$fr.internal(_root);
+	late final Translations$hub$fr hub = Translations$hub$fr.internal(_root);
 	late final Translations$map$fr map = Translations$map$fr.internal(_root);
 	late final Translations$stage$fr stage = Translations$stage$fr.internal(_root);
 	late final Translations$trail$fr trail = Translations$trail$fr.internal(_root);
@@ -145,6 +147,9 @@ class Translations$nav$fr {
 
 	// Translations
 
+	/// fr: 'Accueil'
+	String get accueil => 'Accueil';
+
 	/// fr: 'Carte'
 	String get map => 'Carte';
 
@@ -183,6 +188,55 @@ class Translations$nav$fr {
 
 	/// fr: 'Changer de sentier'
 	String get trailSelection => 'Changer de sentier';
+}
+
+// Path: branding
+class Translations$branding$fr {
+	Translations$branding$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Votre compagnon de trek'
+	String get tagline => 'Votre compagnon de trek';
+
+	/// fr: 'Préparez, marchez, partagez'
+	String get subline => 'Préparez, marchez, partagez';
+}
+
+// Path: hub
+class Translations$hub$fr {
+	Translations$hub$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Bonjour, $name !'
+	String greeting({required Object name}) => 'Bonjour, ${name} !';
+
+	/// fr: 'Randonneur'
+	String get greetingFallback => 'Randonneur';
+
+	/// fr: 'À propos de ce sentier'
+	String get infoTooltip => 'À propos de ce sentier';
+
+	/// fr: 'Mon profil'
+	String get profileTooltip => 'Mon profil';
+
+	/// fr: 'Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d'accueil.'
+	String get infoSheetBody => 'Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d\'accueil.';
+
+	late final Translations$hub$trekCard$fr trekCard = Translations$hub$trekCard$fr.internal(_root);
+	late final Translations$hub$weather$fr weather = Translations$hub$weather$fr.internal(_root);
+
+	/// fr: 'Démarrer le trek'
+	String get startCta => 'Démarrer le trek';
+
+	late final Translations$hub$sections$fr sections = Translations$hub$sections$fr.internal(_root);
+	late final Translations$hub$cards$fr cards = Translations$hub$cards$fr.internal(_root);
+	late final Translations$hub$fab$fr fab = Translations$hub$fab$fr.internal(_root);
 }
 
 // Path: map
@@ -1835,6 +1889,183 @@ class Translations$moderation$fr {
 	late final Translations$moderation$a11y$fr a11y = Translations$moderation$a11y$fr.internal(_root);
 }
 
+// Path: hub.trekCard
+class Translations$hub$trekCard$fr {
+	Translations$hub$trekCard$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Trek en cours'
+	String get activeTitle => 'Trek en cours';
+
+	/// fr: 'Distance parcourue'
+	String get distanceCovered => 'Distance parcourue';
+
+	/// fr: 'Dénivelé du jour'
+	String get elevationGain => 'Dénivelé du jour';
+
+	/// fr: 'Temps de marche'
+	String get duration => 'Temps de marche';
+
+	/// fr: '$percent % du sentier'
+	String progressLabel({required Object percent}) => '${percent} % du sentier';
+
+	/// fr: 'Reprendre la navigation'
+	String get resume => 'Reprendre la navigation';
+
+	/// fr: 'Prêt à partir ?'
+	String get noTrekTitle => 'Prêt à partir ?';
+
+	/// fr: 'Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.'
+	String get noTrekBody => 'Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.';
+
+	/// fr: 'Planifier mon trek'
+	String get plan => 'Planifier mon trek';
+}
+
+// Path: hub.weather
+class Translations$hub$weather$fr {
+	Translations$hub$weather$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Météo du jour'
+	String get title => 'Météo du jour';
+
+	/// fr: 'La météo de votre étape arrive bientôt.'
+	String get stub => 'La météo de votre étape arrive bientôt.';
+
+	/// fr: 'Météo indisponible pour le moment.'
+	String get unavailable => 'Météo indisponible pour le moment.';
+}
+
+// Path: hub.sections
+class Translations$hub$sections$fr {
+	Translations$hub$sections$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparer'
+	String get prepare => 'Préparer';
+
+	/// fr: 'Randonner'
+	String get hike => 'Randonner';
+
+	/// fr: 'Informations'
+	String get info => 'Informations';
+
+	/// fr: 'Après le trek'
+	String get after => 'Après le trek';
+}
+
+// Path: hub.cards
+class Translations$hub$cards$fr {
+	Translations$hub$cards$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Faisabilité'
+	String get feasibility => 'Faisabilité';
+
+	/// fr: 'Évaluez votre niveau'
+	String get feasibilitySub => 'Évaluez votre niveau';
+
+	/// fr: 'Itinéraire'
+	String get itinerary => 'Itinéraire';
+
+	/// fr: 'Le tracé du sentier'
+	String get itinerarySub => 'Le tracé du sentier';
+
+	/// fr: 'Programme'
+	String get programme => 'Programme';
+
+	/// fr: 'Répartissez vos étapes'
+	String get programmeSub => 'Répartissez vos étapes';
+
+	/// fr: 'Matériel & sac'
+	String get checklist => 'Matériel & sac';
+
+	/// fr: 'Préparez votre sac à dos'
+	String get checklistSub => 'Préparez votre sac à dos';
+
+	/// fr: 'Préparation physique'
+	String get training => 'Préparation physique';
+
+	/// fr: 'Votre programme d'entraînement'
+	String get trainingSub => 'Votre programme d\'entraînement';
+
+	/// fr: 'Hors ligne'
+	String get offline => 'Hors ligne';
+
+	/// fr: 'Téléchargez vos sentiers'
+	String get offlineSub => 'Téléchargez vos sentiers';
+
+	/// fr: 'Mon groupe'
+	String get group => 'Mon groupe';
+
+	/// fr: 'Suivi de vos compagnons'
+	String get groupSub => 'Suivi de vos compagnons';
+
+	/// fr: 'Navigation'
+	String get navigation => 'Navigation';
+
+	/// fr: 'Carte et suivi GPS'
+	String get navigationSub => 'Carte et suivi GPS';
+
+	/// fr: 'Journal'
+	String get journal => 'Journal';
+
+	/// fr: 'Vos notes et souvenirs'
+	String get journalSub => 'Vos notes et souvenirs';
+
+	/// fr: 'Hébergements'
+	String get accommodations => 'Hébergements';
+
+	/// fr: 'Où dormir à proximité'
+	String get accommodationsSub => 'Où dormir à proximité';
+
+	/// fr: 'Fiches conseils'
+	String get tips => 'Fiches conseils';
+
+	/// fr: 'Nos conseils de trek'
+	String get tipsSub => 'Nos conseils de trek';
+
+	/// fr: 'Récapitulatif'
+	String get recap => 'Récapitulatif';
+
+	/// fr: 'Votre aventure en résumé'
+	String get recapSub => 'Votre aventure en résumé';
+
+	/// fr: 'Diplôme'
+	String get diploma => 'Diplôme';
+
+	/// fr: 'Votre certificat de fin'
+	String get diplomaSub => 'Votre certificat de fin';
+}
+
+// Path: hub.fab
+class Translations$hub$fab$fr {
+	Translations$hub$fab$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Donner mon avis'
+	String get feedback => 'Donner mon avis';
+
+	/// fr: 'SOS'
+	String get sos => 'SOS';
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -3136,6 +3367,7 @@ extension on Translations {
 			'a11y.pauseTracking' => 'Mettre le suivi en pause',
 			'a11y.resumeTracking' => 'Reprendre le suivi',
 			'a11y.stopTracking' => 'Arreter le suivi',
+			'nav.accueil' => 'Accueil',
 			'nav.map' => 'Carte',
 			'nav.stages' => 'Étapes',
 			'nav.planning' => 'Planning',
@@ -3149,6 +3381,58 @@ extension on Translations {
 			'nav.profile' => 'Profil',
 			'nav.settings' => 'Paramètres',
 			'nav.trailSelection' => 'Changer de sentier',
+			'branding.tagline' => 'Votre compagnon de trek',
+			'branding.subline' => 'Préparez, marchez, partagez',
+			'hub.greeting' => ({required Object name}) => 'Bonjour, ${name} !',
+			'hub.greetingFallback' => 'Randonneur',
+			'hub.infoTooltip' => 'À propos de ce sentier',
+			'hub.profileTooltip' => 'Mon profil',
+			'hub.infoSheetBody' => 'Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d\'accueil.',
+			'hub.trekCard.activeTitle' => 'Trek en cours',
+			'hub.trekCard.distanceCovered' => 'Distance parcourue',
+			'hub.trekCard.elevationGain' => 'Dénivelé du jour',
+			'hub.trekCard.duration' => 'Temps de marche',
+			'hub.trekCard.progressLabel' => ({required Object percent}) => '${percent} % du sentier',
+			'hub.trekCard.resume' => 'Reprendre la navigation',
+			'hub.trekCard.noTrekTitle' => 'Prêt à partir ?',
+			'hub.trekCard.noTrekBody' => 'Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.',
+			'hub.trekCard.plan' => 'Planifier mon trek',
+			'hub.weather.title' => 'Météo du jour',
+			'hub.weather.stub' => 'La météo de votre étape arrive bientôt.',
+			'hub.weather.unavailable' => 'Météo indisponible pour le moment.',
+			'hub.startCta' => 'Démarrer le trek',
+			'hub.sections.prepare' => 'Préparer',
+			'hub.sections.hike' => 'Randonner',
+			'hub.sections.info' => 'Informations',
+			'hub.sections.after' => 'Après le trek',
+			'hub.cards.feasibility' => 'Faisabilité',
+			'hub.cards.feasibilitySub' => 'Évaluez votre niveau',
+			'hub.cards.itinerary' => 'Itinéraire',
+			'hub.cards.itinerarySub' => 'Le tracé du sentier',
+			'hub.cards.programme' => 'Programme',
+			'hub.cards.programmeSub' => 'Répartissez vos étapes',
+			'hub.cards.checklist' => 'Matériel & sac',
+			'hub.cards.checklistSub' => 'Préparez votre sac à dos',
+			'hub.cards.training' => 'Préparation physique',
+			'hub.cards.trainingSub' => 'Votre programme d\'entraînement',
+			'hub.cards.offline' => 'Hors ligne',
+			'hub.cards.offlineSub' => 'Téléchargez vos sentiers',
+			'hub.cards.group' => 'Mon groupe',
+			'hub.cards.groupSub' => 'Suivi de vos compagnons',
+			'hub.cards.navigation' => 'Navigation',
+			'hub.cards.navigationSub' => 'Carte et suivi GPS',
+			'hub.cards.journal' => 'Journal',
+			'hub.cards.journalSub' => 'Vos notes et souvenirs',
+			'hub.cards.accommodations' => 'Hébergements',
+			'hub.cards.accommodationsSub' => 'Où dormir à proximité',
+			'hub.cards.tips' => 'Fiches conseils',
+			'hub.cards.tipsSub' => 'Nos conseils de trek',
+			'hub.cards.recap' => 'Récapitulatif',
+			'hub.cards.recapSub' => 'Votre aventure en résumé',
+			'hub.cards.diploma' => 'Diplôme',
+			'hub.cards.diplomaSub' => 'Votre certificat de fin',
+			'hub.fab.feedback' => 'Donner mon avis',
+			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Carte du sentier',
 			'map.loading' => 'Chargement du tracÃ©...',
 			'map.noTrack' => 'Aucun tracÃ© disponible',
@@ -3581,6 +3865,8 @@ extension on Translations {
 			'leaderboard.unavailable' => 'Classement indisponible pour le moment.',
 			'leaderboard.empty' => 'Aucun classement pour ce segment. Sois le premier à le parcourir !',
 			'leaderboard.pseudonymNotice' => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.',
+			_ => null,
+		} ?? switch (path) {
 			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Tranche : ${tranche}',
 			'leaderboard.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
 			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}',
@@ -3634,8 +3920,6 @@ extension on Translations {
 			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.shareTitle' => 'Partager cette étape',
 			'shareVisibility.shareButton' => 'Partager',
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',

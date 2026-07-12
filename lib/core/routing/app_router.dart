@@ -6,6 +6,7 @@ import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
 import '../../features/consent/presentation/consent_settings_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
+import '../../features/hub/presentation/hub_screen.dart';
 import '../../features/feasibility/presentation/feasibility_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
@@ -44,31 +45,31 @@ import '../../features/trek/presentation/stages/stage_detail_screen.dart'
 /// La cle racine porte les routes hors-shell (detail sentier, modales).
 /// Chaque branche garde sa propre pile -> etat preserve par onglet.
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final _shellHomeKey = GlobalKey<NavigatorState>(debugLabel: 'shell-home');
 final _shellMapKey = GlobalKey<NavigatorState>(debugLabel: 'shell-map');
 final _shellStagesKey = GlobalKey<NavigatorState>(debugLabel: 'shell-stages');
-final _shellPlanningKey = GlobalKey<NavigatorState>(
-  debugLabel: 'shell-planning',
-);
 final _shellJournalKey = GlobalKey<NavigatorState>(debugLabel: 'shell-journal');
 final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 
 /// Configuration du routeur GoRouter.
 ///
-/// Navigation principale (E2.9b) : bottom nav 5 onglets via
-/// [StatefulShellRoute.indexedStack] (Carte, Etapes, Planning, Journal, Plus).
-/// Les onglets preservent leur etat (IndexedStack natif). Les ecrans de
-/// detail et les modales restent des routes racine (hors shell) afin de
-/// s'afficher en plein ecran au-dessus de la barre.
+/// Navigation principale (E2.9b + HUB E07/AM-1) : bottom nav 5 onglets via
+/// [StatefulShellRoute.indexedStack] (Accueil, Carte, Etapes, Journal, Plus).
+/// Le Planning trek a quitte la barre (il descend dans le HUB) et devient une
+/// route hors-shell plein ecran. Les onglets preservent leur etat (IndexedStack
+/// natif). Les ecrans de detail et les modales restent des routes racine (hors
+/// shell) afin de s'afficher en plein ecran au-dessus de la barre.
 ///
 /// Routes :
 ///   --- Onglets (StatefulShellRoute) ---
+///   /home                        - Onglet Accueil (HUB E07)
 ///   /map                         - Onglet Carte (trace GPX)
 ///   /stages                      - Onglet Etapes (liste)
 ///   /stages/:id                  - Detail d'une etape (trek)
-///   /planning                    - Onglet Planning (itineraire trek)
 ///   /journal                     - Onglet Journal de trek
 ///   /more                        - Onglet Plus (hub fonctions secondaires)
 ///   --- Routes racine (hors shell) ---
+///   /planning                    - Planning trek (hors-shell, via HUB)
 ///   /trails                      - Liste des sentiers
 ///   /trail/:id                   - Detail d'un sentier
 ///   /trail/:id/stage/:num        - Detail d'une etape
@@ -94,11 +95,12 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /profile                     - Profil utilisateur
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  // Cablage nav (#88246) : on demarre sur le CATALOGUE (et non plus sur le
-  // stub mort /trails). Le guard renvoie de toute facon vers /onboarding au
-  // premier lancement ; une fois l onboarding fait, /catalog est le point
-  // d entree d ou l utilisateur choisit un sentier puis entre dans le shell.
-  initialLocation: '/catalog',
+  // Cablage nav (#88246 + HUB E07/AM-1) : le guard renvoie vers /onboarding au
+  // premier lancement, puis vers /catalog tant qu aucun sentier n est
+  // telecharge (currentTrailGuard). Une fois un sentier actif, l entree du
+  // shell est le HUB d accueil (/home, onglet position 1) d ou l utilisateur
+  // rejoint toutes les fonctions du sentier.
+  initialLocation: '/home',
   redirect: _guardCurrentTrail,
   routes: [
     // ===== Navigation principale : bottom nav 5 onglets =====
@@ -106,7 +108,21 @@ final appRouter = GoRouter(
       builder: (context, state, navigationShell) =>
           AppShell(navigationShell: navigationShell),
       branches: [
-        // --- Onglet 1 : Carte ---
+        // --- Onglet 1 : Accueil (HUB E07, AM-1 #F11) ---
+        // Point d entree du shell : le HUB agrege l etat du trek et les points
+        // d entree vers les fonctions du sentier (Planning y descend via la
+        // carte « Programme », #NAV02).
+        StatefulShellBranch(
+          navigatorKey: _shellHomeKey,
+          routes: [
+            GoRoute(
+              path: '/home',
+              name: 'home',
+              builder: (context, state) => const HubScreen(),
+            ),
+          ],
+        ),
+        // --- Onglet 2 : Carte ---
         StatefulShellBranch(
           navigatorKey: _shellMapKey,
           routes: [
@@ -124,7 +140,7 @@ final appRouter = GoRouter(
             ),
           ],
         ),
-        // --- Onglet 2 : Etapes ---
+        // --- Onglet 3 : Etapes ---
         StatefulShellBranch(
           navigatorKey: _shellStagesKey,
           routes: [
@@ -156,18 +172,6 @@ final appRouter = GoRouter(
                   },
                 ),
               ],
-            ),
-          ],
-        ),
-        // --- Onglet 3 : Planning ---
-        StatefulShellBranch(
-          navigatorKey: _shellPlanningKey,
-          routes: [
-            GoRoute(
-              path: '/planning',
-              name: 'trek-planning',
-              builder: (context, state) =>
-                  const trek_planning.TrekPlanningScreen(),
             ),
           ],
         ),
@@ -362,6 +366,16 @@ final appRouter = GoRouter(
       name: 'training',
       builder: (context, state) => const TrainingScreen(),
     ),
+    // HUB E07 (AM-1 #F11 / #NAV02) : le Planning trek quitte la bottom-nav et
+    // devient une route hors-shell (plein ecran), atteinte via la carte
+    // « Programme » du HUB. Le nom 'trek-planning' est preserve (aucun lien
+    // profond casse). A ne pas confondre avec /trail/:id/planning (planning de
+    // repartition par sentier, R02).
+    GoRoute(
+      path: '/planning',
+      name: 'trek-planning',
+      builder: (context, state) => const trek_planning.TrekPlanningScreen(),
+    ),
     // E5.1a/b : ecran d'accueil affiche au tout premier lancement.
     GoRoute(
       path: '/onboarding',
@@ -440,7 +454,10 @@ bool hasCompletedOnboarding = true;
 /// Ces routes constituent le COEUR de l'app : elles n'ont de sens qu'avec un
 /// sentier actif. Le guard les protege (cablage nav #88246) -> sans sentier
 /// utilisable, on renvoie vers le catalogue pour en choisir/telecharger un.
-const _shellTabPaths = <String>['/map', '/stages', '/planning', '/journal', '/more'];
+///
+/// HUB E07 (AM-1 #F11 #NAV03) : « /home » (Accueil) remplace « /planning » dans
+/// la barre ; le Planning trek devient une route hors-shell (#NAV02).
+const _shellTabPaths = <String>['/home', '/map', '/stages', '/journal', '/more'];
 
 /// Guard de redirection principal (cablage nav #88246).
 ///

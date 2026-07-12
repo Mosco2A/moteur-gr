@@ -16,6 +16,7 @@
     "stopTracking": "Aufzeichnung beenden"
   },
   "nav": {
+    "accueil": "Start",
     "map": "Karte",
     "stages": "Etappen",
     "planning": "Planung",
@@ -29,6 +30,72 @@
     "profile": "Profil",
     "settings": "Einstellungen",
     "trailSelection": "Weg wechseln"
+  },
+  "branding": {
+    "tagline": "Ihr Trekking-Begleiter",
+    "subline": "Vorbereiten, wandern, teilen"
+  },
+  "hub": {
+    "greeting": "Hallo, $name!",
+    "greetingFallback": "Wanderer",
+    "infoTooltip": "Über diesen Weg",
+    "profileTooltip": "Mein Profil",
+    "infoSheetBody": "Dieser Weg begleitet Sie bei jedem Schritt: Planen Sie Ihre Route, packen Sie Ihren Rucksack und starten Sie dann mit der GPS-Navigation. Jede Funktion ist von diesem Startbildschirm aus erreichbar.",
+    "trekCard": {
+      "activeTitle": "Trek läuft",
+      "distanceCovered": "Zurückgelegte Strecke",
+      "elevationGain": "Anstieg heute",
+      "duration": "Gehzeit",
+      "progressLabel": "$percent % des Weges",
+      "resume": "Navigation fortsetzen",
+      "noTrekTitle": "Bereit loszugehen?",
+      "noTrekBody": "Planen Sie Ihre Route und starten Sie Ihren Trek, wann immer Sie bereit sind.",
+      "plan": "Meinen Trek planen"
+    },
+    "weather": {
+      "title": "Wetter heute",
+      "stub": "Das Wetter Ihrer Etappe kommt bald.",
+      "unavailable": "Wetter derzeit nicht verfügbar."
+    },
+    "startCta": "Trek starten",
+    "sections": {
+      "prepare": "Vorbereiten",
+      "hike": "Wandern",
+      "info": "Informationen",
+      "after": "Nach dem Trek"
+    },
+    "cards": {
+      "feasibility": "Machbarkeit",
+      "feasibilitySub": "Bewerten Sie Ihr Niveau",
+      "itinerary": "Route",
+      "itinerarySub": "Der Wegverlauf",
+      "programme": "Programm",
+      "programmeSub": "Etappen aufteilen",
+      "checklist": "Ausrüstung & Rucksack",
+      "checklistSub": "Packen Sie Ihren Rucksack",
+      "training": "Körperliche Vorbereitung",
+      "trainingSub": "Ihr Trainingsprogramm",
+      "offline": "Offline",
+      "offlineSub": "Wege herunterladen",
+      "group": "Meine Gruppe",
+      "groupSub": "Ihre Begleiter verfolgen",
+      "navigation": "Navigation",
+      "navigationSub": "Karte und GPS-Tracking",
+      "journal": "Tagebuch",
+      "journalSub": "Ihre Notizen und Erinnerungen",
+      "accommodations": "Unterkünfte",
+      "accommodationsSub": "Übernachten in der Nähe",
+      "tips": "Ratgeber",
+      "tipsSub": "Unsere Trekking-Tipps",
+      "recap": "Zusammenfassung",
+      "recapSub": "Ihr Abenteuer in Kürze",
+      "diploma": "Diplom",
+      "diplomaSub": "Ihre Abschlussurkunde"
+    },
+    "fab": {
+      "feedback": "Feedback geben",
+      "sos": "SOS"
+    }
   },
   "map": {
     "title": "Wanderkarte",

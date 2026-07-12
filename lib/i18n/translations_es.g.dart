@@ -41,6 +41,8 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	// Translations
 	@override late final _Translations$a11y$es a11y = _Translations$a11y$es._(_root);
 	@override late final _Translations$nav$es nav = _Translations$nav$es._(_root);
+	@override late final _Translations$branding$es branding = _Translations$branding$es._(_root);
+	@override late final _Translations$hub$es hub = _Translations$hub$es._(_root);
 	@override late final _Translations$map$es map = _Translations$map$es._(_root);
 	@override late final _Translations$stage$es stage = _Translations$stage$es._(_root);
 	@override late final _Translations$trail$es trail = _Translations$trail$es._(_root);
@@ -115,6 +117,7 @@ class _Translations$nav$es extends Translations$nav$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
+	@override String get accueil => 'Inicio';
 	@override String get map => 'Mapa';
 	@override String get stages => 'Etapas';
 	@override String get planning => 'Planificación';
@@ -128,6 +131,37 @@ class _Translations$nav$es extends Translations$nav$fr {
 	@override String get profile => 'Perfil';
 	@override String get settings => 'Ajustes';
 	@override String get trailSelection => 'Cambiar de sendero';
+}
+
+// Path: branding
+class _Translations$branding$es extends Translations$branding$fr {
+	_Translations$branding$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get tagline => 'Tu compañero de trekking';
+	@override String get subline => 'Prepara, camina, comparte';
+}
+
+// Path: hub
+class _Translations$hub$es extends Translations$hub$fr {
+	_Translations$hub$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String greeting({required Object name}) => '¡Hola, ${name}!';
+	@override String get greetingFallback => 'Senderista';
+	@override String get infoTooltip => 'Acerca de este sendero';
+	@override String get profileTooltip => 'Mi perfil';
+	@override String get infoSheetBody => 'Este sendero te acompaña en cada paso: planifica tu itinerario, prepara tu mochila y luego sal con la navegación GPS. Cada función es accesible desde esta pantalla de inicio.';
+	@override late final _Translations$hub$trekCard$es trekCard = _Translations$hub$trekCard$es._(_root);
+	@override late final _Translations$hub$weather$es weather = _Translations$hub$weather$es._(_root);
+	@override String get startCta => 'Iniciar el trek';
+	@override late final _Translations$hub$sections$es sections = _Translations$hub$sections$es._(_root);
+	@override late final _Translations$hub$cards$es cards = _Translations$hub$cards$es._(_root);
+	@override late final _Translations$hub$fab$es fab = _Translations$hub$fab$es._(_root);
 }
 
 // Path: map
@@ -950,6 +984,95 @@ class _Translations$moderation$es extends Translations$moderation$fr {
 	@override late final _Translations$moderation$a11y$es a11y = _Translations$moderation$a11y$es._(_root);
 }
 
+// Path: hub.trekCard
+class _Translations$hub$trekCard$es extends Translations$hub$trekCard$fr {
+	_Translations$hub$trekCard$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get activeTitle => 'Trek en curso';
+	@override String get distanceCovered => 'Distancia recorrida';
+	@override String get elevationGain => 'Desnivel de hoy';
+	@override String get duration => 'Tiempo de marcha';
+	@override String progressLabel({required Object percent}) => '${percent} % del sendero';
+	@override String get resume => 'Reanudar la navegación';
+	@override String get noTrekTitle => '¿Listo para salir?';
+	@override String get noTrekBody => 'Planifica tu itinerario y luego inicia tu trek cuando estés listo.';
+	@override String get plan => 'Planificar mi trek';
+}
+
+// Path: hub.weather
+class _Translations$hub$weather$es extends Translations$hub$weather$fr {
+	_Translations$hub$weather$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'El tiempo de hoy';
+	@override String get stub => 'El tiempo de tu etapa llega pronto.';
+	@override String get unavailable => 'El tiempo no está disponible ahora.';
+}
+
+// Path: hub.sections
+class _Translations$hub$sections$es extends Translations$hub$sections$fr {
+	_Translations$hub$sections$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get prepare => 'Preparar';
+	@override String get hike => 'Caminar';
+	@override String get info => 'Información';
+	@override String get after => 'Después del trek';
+}
+
+// Path: hub.cards
+class _Translations$hub$cards$es extends Translations$hub$cards$fr {
+	_Translations$hub$cards$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get feasibility => 'Viabilidad';
+	@override String get feasibilitySub => 'Evalúa tu nivel';
+	@override String get itinerary => 'Itinerario';
+	@override String get itinerarySub => 'El trazado del sendero';
+	@override String get programme => 'Programa';
+	@override String get programmeSub => 'Distribuye tus etapas';
+	@override String get checklist => 'Equipo y mochila';
+	@override String get checklistSub => 'Prepara tu mochila';
+	@override String get training => 'Preparación física';
+	@override String get trainingSub => 'Tu programa de entrenamiento';
+	@override String get offline => 'Sin conexión';
+	@override String get offlineSub => 'Descarga tus senderos';
+	@override String get group => 'Mi grupo';
+	@override String get groupSub => 'Sigue a tus compañeros';
+	@override String get navigation => 'Navegación';
+	@override String get navigationSub => 'Mapa y seguimiento GPS';
+	@override String get journal => 'Diario';
+	@override String get journalSub => 'Tus notas y recuerdos';
+	@override String get accommodations => 'Alojamientos';
+	@override String get accommodationsSub => 'Dónde dormir cerca';
+	@override String get tips => 'Fichas de consejos';
+	@override String get tipsSub => 'Nuestros consejos de trek';
+	@override String get recap => 'Resumen';
+	@override String get recapSub => 'Tu aventura resumida';
+	@override String get diploma => 'Diploma';
+	@override String get diplomaSub => 'Tu certificado final';
+}
+
+// Path: hub.fab
+class _Translations$hub$fab$es extends Translations$hub$fab$fr {
+	_Translations$hub$fab$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get feedback => 'Dar mi opinión';
+	@override String get sos => 'SOS';
+}
+
 // Path: stage.difficulty
 class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr {
 	_Translations$stage$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1733,6 +1856,7 @@ extension on TranslationsEs {
 			'a11y.pauseTracking' => 'Pausar seguimiento',
 			'a11y.resumeTracking' => 'Reanudar seguimiento',
 			'a11y.stopTracking' => 'Detener seguimiento',
+			'nav.accueil' => 'Inicio',
 			'nav.map' => 'Mapa',
 			'nav.stages' => 'Etapas',
 			'nav.planning' => 'Planificación',
@@ -1746,6 +1870,58 @@ extension on TranslationsEs {
 			'nav.profile' => 'Perfil',
 			'nav.settings' => 'Ajustes',
 			'nav.trailSelection' => 'Cambiar de sendero',
+			'branding.tagline' => 'Tu compañero de trekking',
+			'branding.subline' => 'Prepara, camina, comparte',
+			'hub.greeting' => ({required Object name}) => '¡Hola, ${name}!',
+			'hub.greetingFallback' => 'Senderista',
+			'hub.infoTooltip' => 'Acerca de este sendero',
+			'hub.profileTooltip' => 'Mi perfil',
+			'hub.infoSheetBody' => 'Este sendero te acompaña en cada paso: planifica tu itinerario, prepara tu mochila y luego sal con la navegación GPS. Cada función es accesible desde esta pantalla de inicio.',
+			'hub.trekCard.activeTitle' => 'Trek en curso',
+			'hub.trekCard.distanceCovered' => 'Distancia recorrida',
+			'hub.trekCard.elevationGain' => 'Desnivel de hoy',
+			'hub.trekCard.duration' => 'Tiempo de marcha',
+			'hub.trekCard.progressLabel' => ({required Object percent}) => '${percent} % del sendero',
+			'hub.trekCard.resume' => 'Reanudar la navegación',
+			'hub.trekCard.noTrekTitle' => '¿Listo para salir?',
+			'hub.trekCard.noTrekBody' => 'Planifica tu itinerario y luego inicia tu trek cuando estés listo.',
+			'hub.trekCard.plan' => 'Planificar mi trek',
+			'hub.weather.title' => 'El tiempo de hoy',
+			'hub.weather.stub' => 'El tiempo de tu etapa llega pronto.',
+			'hub.weather.unavailable' => 'El tiempo no está disponible ahora.',
+			'hub.startCta' => 'Iniciar el trek',
+			'hub.sections.prepare' => 'Preparar',
+			'hub.sections.hike' => 'Caminar',
+			'hub.sections.info' => 'Información',
+			'hub.sections.after' => 'Después del trek',
+			'hub.cards.feasibility' => 'Viabilidad',
+			'hub.cards.feasibilitySub' => 'Evalúa tu nivel',
+			'hub.cards.itinerary' => 'Itinerario',
+			'hub.cards.itinerarySub' => 'El trazado del sendero',
+			'hub.cards.programme' => 'Programa',
+			'hub.cards.programmeSub' => 'Distribuye tus etapas',
+			'hub.cards.checklist' => 'Equipo y mochila',
+			'hub.cards.checklistSub' => 'Prepara tu mochila',
+			'hub.cards.training' => 'Preparación física',
+			'hub.cards.trainingSub' => 'Tu programa de entrenamiento',
+			'hub.cards.offline' => 'Sin conexión',
+			'hub.cards.offlineSub' => 'Descarga tus senderos',
+			'hub.cards.group' => 'Mi grupo',
+			'hub.cards.groupSub' => 'Sigue a tus compañeros',
+			'hub.cards.navigation' => 'Navegación',
+			'hub.cards.navigationSub' => 'Mapa y seguimiento GPS',
+			'hub.cards.journal' => 'Diario',
+			'hub.cards.journalSub' => 'Tus notas y recuerdos',
+			'hub.cards.accommodations' => 'Alojamientos',
+			'hub.cards.accommodationsSub' => 'Dónde dormir cerca',
+			'hub.cards.tips' => 'Fichas de consejos',
+			'hub.cards.tipsSub' => 'Nuestros consejos de trek',
+			'hub.cards.recap' => 'Resumen',
+			'hub.cards.recapSub' => 'Tu aventura resumida',
+			'hub.cards.diploma' => 'Diploma',
+			'hub.cards.diplomaSub' => 'Tu certificado final',
+			'hub.fab.feedback' => 'Dar mi opinión',
+			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Mapa del sendero',
 			'map.loading' => 'Cargando el recorrido...',
 			'map.noTrack' => 'NingÃºn recorrido disponible',
@@ -2178,6 +2354,8 @@ extension on TranslationsEs {
 			'leaderboard.unavailable' => 'Clasificación no disponible por ahora.',
 			'leaderboard.empty' => 'Aún no hay clasificación para este segmento. ¡Sé el primero en recorrerlo!',
 			'leaderboard.pseudonymNotice' => 'Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.',
+			_ => null,
+		} ?? switch (path) {
 			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Grupo: ${tranche}',
 			'leaderboard.notEnoughParticipants' => 'No hay suficientes participantes para publicar esta clasificación.',
 			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Posición ${rank}, ${pseudonym}, tiempo ${time}',
@@ -2231,8 +2409,6 @@ extension on TranslationsEs {
 			'shareVisibility.leaderboardDesc' => 'Clasificación por grupo, con un seudónimo.',
 			'shareVisibility.activityFeed' => 'Publicar en el registro de actividad',
 			'shareVisibility.activityFeedDesc' => 'Tus actividades aparecen en el registro, con un seudónimo.',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.shareTitle' => 'Compartir esta etapa',
 			'shareVisibility.shareButton' => 'Compartir',
 			'shareVisibility.privateNotice' => 'Compartir está desactivado. Actívalo en Compartir y visibilidad.',
