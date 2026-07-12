@@ -3,6 +3,9 @@ import 'package:moteur_gr/features/weather/models/weather_alert.dart';
 import 'package:moteur_gr/features/weather/models/weather_forecast.dart';
 
 /// Tests des alertes météo.
+///
+/// LOT-B (D-5) : les libellés sont externalisés en i18n ; le modèle porte
+/// désormais un [WeatherAlertKind] sémantique. Les seuils sont inchangés.
 void main() {
   group('WeatherAlert', () {
     test('fromForecast détecte un orage', () {
@@ -23,8 +26,12 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      expect(alerts.any((a) => a.title == 'Orage prévu'), true);
+      expect(alerts.any((a) => a.kind == WeatherAlertKind.storm), true);
       expect(alerts.any((a) => a.severity == 'danger'), true);
+      // Le libellé de condition WMO est conservé pour paramétrer l'i18n.
+      final storm = alerts.firstWhere((a) => a.kind == WeatherAlertKind.storm);
+      expect(storm.conditionLabel, 'Orage');
+      expect(alerts.every((a) => a.type == AlertType.weather), true);
     });
 
     test('fromForecast détecte vent fort', () {
@@ -45,7 +52,8 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      expect(alerts.any((a) => a.title == 'Vent fort'), true);
+      final wind = alerts.firstWhere((a) => a.kind == WeatherAlertKind.wind);
+      expect(wind.amount, 70);
     });
 
     test('fromForecast détecte fortes précipitations', () {
@@ -66,7 +74,7 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      expect(alerts.any((a) => a.title == 'Fortes précipitations'), true);
+      expect(alerts.any((a) => a.kind == WeatherAlertKind.rain), true);
     });
 
     test('fromForecast détecte UV extrême', () {
@@ -87,7 +95,7 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      expect(alerts.any((a) => a.title == 'UV très élevé'), true);
+      expect(alerts.any((a) => a.kind == WeatherAlertKind.uv), true);
     });
 
     test('fromForecast détecte neige', () {
@@ -108,7 +116,7 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      expect(alerts.any((a) => a.title == 'Neige prévue'), true);
+      expect(alerts.any((a) => a.kind == WeatherAlertKind.snow), true);
     });
 
     test('fromForecast vide si beau temps', () {
@@ -150,7 +158,8 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      final windAlert = alerts.firstWhere((a) => a.title == 'Vent fort');
+      final windAlert =
+          alerts.firstWhere((a) => a.kind == WeatherAlertKind.wind);
       expect(windAlert.severity, 'danger');
     });
 
@@ -172,7 +181,8 @@ void main() {
       );
 
       final alerts = WeatherAlert.fromForecast(forecast);
-      final windAlert = alerts.firstWhere((a) => a.title == 'Vent fort');
+      final windAlert =
+          alerts.firstWhere((a) => a.kind == WeatherAlertKind.wind);
       expect(windAlert.severity, 'warning');
     });
   });

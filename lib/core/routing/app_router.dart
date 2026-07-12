@@ -15,6 +15,8 @@ import '../../features/more/presentation/more_screen.dart';
 import '../../features/planning/presentation/planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
+import '../../features/weather/presentation/weather_screen.dart';
+import '../../features/weather/providers/current_stage_provider.dart';
 import '../../features/trail/presentation/no_data_screen.dart';
 import '../../features/trail/presentation/stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
@@ -81,6 +83,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/journal           - Journal de trek
 ///   /trail/:id/diploma           - Diplome de fin de trek
 ///   /trail/:id/feedback          - Feedback in-app
+///   /trail/:id/weather           - Meteo d'une etape (E31, ?stage=n)
 ///   /group/:id                   - Groupe localisation partagee
 ///   /follow/:code                - Suivi web temps reel (sans auth, E4.12a)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
@@ -283,6 +286,22 @@ final appRouter = GoRouter(
           name: 'trail-feedback',
           builder: (context, state) => const FeedbackScreen(),
         ),
+        // E31 (LOT-B) : ecran meteo d'une etape. Numero d'etape via query
+        // ?stage=n (defaut : etape de reference hors trek, D-3). La region du
+        // sentier alimente l'evaluation incendie (inerte tant qu'E00 ne fournit
+        // pas la config). Coords resolues par le provider (coords auto, D-1).
+        GoRoute(
+          path: 'weather',
+          name: 'trail-weather',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            final stageParam = state.uri.queryParameters['stage'];
+            return _WeatherRouteScreen(
+              trailId: trailId,
+              stageParam: stageParam,
+            );
+          },
+        ),
       ],
     ),
     GoRoute(
@@ -429,6 +448,31 @@ class _TrailScopedScreen extends ConsumerWidget {
         ? explicitTrailId!
         : fallbackId;
     return builder(id);
+  }
+}
+
+/// Résout les paramètres de l'écran météo E31 (LOT-B).
+///
+/// Numéro d'étape = query `?stage=n` si valide, sinon l'étape de référence
+/// hors trek ([referenceStageNumberProvider], défaut 1, D-3). La région du
+/// sentier ([TrailConfig.region]) alimente l'évaluation incendie (inerte tant
+/// que le socle E00 ne fournit pas de config — dégradation propre).
+class _WeatherRouteScreen extends ConsumerWidget {
+  const _WeatherRouteScreen({required this.trailId, this.stageParam});
+
+  final String trailId;
+  final String? stageParam;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final fallbackStage = ref.watch(referenceStageNumberProvider);
+    final stageNumber = int.tryParse(stageParam ?? '') ?? fallbackStage;
+    final region = ref.watch(trailConfigProvider.select((c) => c.region));
+    return WeatherScreen(
+      trailId: trailId,
+      stageNumber: stageNumber,
+      region: region,
+    );
   }
 }
 

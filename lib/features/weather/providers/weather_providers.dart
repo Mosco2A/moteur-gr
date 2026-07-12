@@ -244,3 +244,9 @@ final weatherFromCacheProvider =
     stageWeatherProvider(params).select((s) => s.isFromCache),
   );
 });
+
+/// Toggle « alertes orage » de l'ecran meteo (RF-1, P7).
+///
+/// Etat leger en memoire (defaut : active). Quand desactive, le bandeau
+/// n'affiche pas les alertes de type orage (les autres restent visibles).
+final stormAlertsEnabledProvider = StateProvider<bool>((ref) => true);

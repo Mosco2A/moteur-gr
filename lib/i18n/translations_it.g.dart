@@ -367,6 +367,21 @@ class _Translations$weather$it extends Translations$weather$fr {
 	@override String get fireSafetyTips => 'Istruzioni antincendio';
 	@override String get alertCount => 'allerta';
 	@override String get alertCountPlural => 'allerte';
+	@override String get today => 'Oggi';
+	@override String get tomorrow => 'Domani';
+	@override String get dayPlus2 => 'Dopodomani';
+	@override String get allStages => 'Tutte le tappe';
+	@override String get noForecast => 'Nessuna previsione disponibile.';
+	@override String stageLabel({required Object number}) => 'Tappa ${number}';
+	@override String get stormAlertsTitle => 'Allerte temporali';
+	@override String get stormAlertsToggleOn => 'Allerte temporali attive';
+	@override String get stormAlertsToggleOff => 'Allerte temporali disattivate';
+	@override String lastUpdate({required Object date}) => 'Aggiornato ${date}';
+	@override String get guideTitle => 'Capire il meteo';
+	@override String get guideBody => 'Le previsioni coprono 7 giorni per ogni tappa. Attenzione alle allerte temporali e vento: in montagna il tempo cambia in fretta. Senza rete vengono mostrati gli ultimi dati salvati.';
+	@override late final _Translations$weather$source$it source = _Translations$weather$source$it._(_root);
+	@override late final _Translations$weather$recommendation$it recommendation = _Translations$weather$recommendation$it._(_root);
+	@override late final _Translations$weather$alert$it alert = _Translations$weather$alert$it._(_root);
 }
 
 // Path: share
@@ -1012,6 +1027,8 @@ class _Translations$hub$weather$it extends Translations$hub$weather$fr {
 	@override String get title => 'Meteo di oggi';
 	@override String get stub => 'Il meteo della tua tappa arriva presto.';
 	@override String get unavailable => 'Meteo non disponibile al momento.';
+	@override String get alertStorm => 'Allerta temporale';
+	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -1148,6 +1165,46 @@ class _Translations$checklist$items$it extends Translations$checklist$items$fr {
 	@override String get toiletPaper => 'Carta igienica';
 	@override String get handSanitizer => 'Disinfettante mani';
 	@override String get towel => 'Asciugamano';
+}
+
+// Path: weather.source
+class _Translations$weather$source$it extends Translations$weather$source$fr {
+	_Translations$weather$source$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get api => 'Dati in diretta';
+	@override String get cache => 'Dati salvati';
+	@override String get offline => 'Non in linea';
+	@override String get demo => 'Dati dimostrativi';
+}
+
+// Path: weather.recommendation
+class _Translations$weather$recommendation$it extends Translations$weather$recommendation$fr {
+	_Translations$weather$recommendation$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get ok => 'Condizioni favorevoli';
+	@override String get watch => 'Prudenza consigliata';
+	@override String get danger => 'Condizioni sfavorevoli';
+}
+
+// Path: weather.alert
+class _Translations$weather$alert$it extends Translations$weather$alert$fr {
+	_Translations$weather$alert$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$weather$alert$storm$it storm = _Translations$weather$alert$storm$it._(_root);
+	@override late final _Translations$weather$alert$wind$it wind = _Translations$weather$alert$wind$it._(_root);
+	@override late final _Translations$weather$alert$rain$it rain = _Translations$weather$alert$rain$it._(_root);
+	@override late final _Translations$weather$alert$snow$it snow = _Translations$weather$alert$snow$it._(_root);
+	@override late final _Translations$weather$alert$uv$it uv = _Translations$weather$alert$uv$it._(_root);
+	@override late final _Translations$weather$alert$fire$it fire = _Translations$weather$alert$fire$it._(_root);
 }
 
 // Path: feasibility.levels
@@ -1628,6 +1685,72 @@ class _Translations$moderation$a11y$it extends Translations$moderation$a11y$fr {
 	@override String get complaintForm => 'Modulo di contestazione della decisione';
 }
 
+// Path: weather.alert.storm
+class _Translations$weather$alert$storm$it extends Translations$weather$alert$storm$fr {
+	_Translations$weather$alert$storm$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Temporale previsto';
+	@override String desc({required Object condition}) => '${condition}. Evita le creste e le zone esposte.';
+}
+
+// Path: weather.alert.wind
+class _Translations$weather$alert$wind$it extends Translations$weather$alert$wind$fr {
+	_Translations$weather$alert$wind$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Vento forte';
+	@override String desc({required Object value}) => 'Raffiche fino a ${value} km/h. Prudenza nei passaggi esposti.';
+}
+
+// Path: weather.alert.rain
+class _Translations$weather$alert$rain$it extends Translations$weather$alert$rain$fr {
+	_Translations$weather$alert$rain$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Forti precipitazioni';
+	@override String desc({required Object value}) => '${value} mm previsti. Rischio di sentieri scivolosi e torrenti.';
+}
+
+// Path: weather.alert.snow
+class _Translations$weather$alert$snow$it extends Translations$weather$alert$snow$fr {
+	_Translations$weather$alert$snow$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Neve prevista';
+	@override String desc({required Object condition}) => '${condition}. Attrezzatura adeguata necessaria.';
+}
+
+// Path: weather.alert.uv
+class _Translations$weather$alert$uv$it extends Translations$weather$alert$uv$fr {
+	_Translations$weather$alert$uv$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'UV molto alto';
+	@override String desc({required Object value}) => 'Indice UV ${value}. Massima protezione solare consigliata.';
+}
+
+// Path: weather.alert.fire
+class _Translations$weather$alert$fire$it extends Translations$weather$alert$fire$fr {
+	_Translations$weather$alert$fire$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Rischio incendio';
+	@override String desc({required Object value}) => '${value}°C previsti. Rischio incendio elevato.';
+}
+
 // Path: feasibility.recommendations.danger
 class _Translations$feasibility$recommendations$danger$it extends Translations$feasibility$recommendations$danger$fr {
 	_Translations$feasibility$recommendations$danger$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1889,6 +2012,8 @@ extension on TranslationsIt {
 			'hub.weather.title' => 'Meteo di oggi',
 			'hub.weather.stub' => 'Il meteo della tua tappa arriva presto.',
 			'hub.weather.unavailable' => 'Meteo non disponibile al momento.',
+			'hub.weather.alertStorm' => 'Allerta temporale',
+			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Avvia il trek',
 			'hub.sections.prepare' => 'Preparare',
 			'hub.sections.hike' => 'Camminare',
@@ -2056,6 +2181,37 @@ extension on TranslationsIt {
 			'weather.fireSafetyTips' => 'Istruzioni antincendio',
 			'weather.alertCount' => 'allerta',
 			'weather.alertCountPlural' => 'allerte',
+			'weather.today' => 'Oggi',
+			'weather.tomorrow' => 'Domani',
+			'weather.dayPlus2' => 'Dopodomani',
+			'weather.allStages' => 'Tutte le tappe',
+			'weather.noForecast' => 'Nessuna previsione disponibile.',
+			'weather.stageLabel' => ({required Object number}) => 'Tappa ${number}',
+			'weather.stormAlertsTitle' => 'Allerte temporali',
+			'weather.stormAlertsToggleOn' => 'Allerte temporali attive',
+			'weather.stormAlertsToggleOff' => 'Allerte temporali disattivate',
+			'weather.lastUpdate' => ({required Object date}) => 'Aggiornato ${date}',
+			'weather.guideTitle' => 'Capire il meteo',
+			'weather.guideBody' => 'Le previsioni coprono 7 giorni per ogni tappa. Attenzione alle allerte temporali e vento: in montagna il tempo cambia in fretta. Senza rete vengono mostrati gli ultimi dati salvati.',
+			'weather.source.api' => 'Dati in diretta',
+			'weather.source.cache' => 'Dati salvati',
+			'weather.source.offline' => 'Non in linea',
+			'weather.source.demo' => 'Dati dimostrativi',
+			'weather.recommendation.ok' => 'Condizioni favorevoli',
+			'weather.recommendation.watch' => 'Prudenza consigliata',
+			'weather.recommendation.danger' => 'Condizioni sfavorevoli',
+			'weather.alert.storm.title' => 'Temporale previsto',
+			'weather.alert.storm.desc' => ({required Object condition}) => '${condition}. Evita le creste e le zone esposte.',
+			'weather.alert.wind.title' => 'Vento forte',
+			'weather.alert.wind.desc' => ({required Object value}) => 'Raffiche fino a ${value} km/h. Prudenza nei passaggi esposti.',
+			'weather.alert.rain.title' => 'Forti precipitazioni',
+			'weather.alert.rain.desc' => ({required Object value}) => '${value} mm previsti. Rischio di sentieri scivolosi e torrenti.',
+			'weather.alert.snow.title' => 'Neve prevista',
+			'weather.alert.snow.desc' => ({required Object condition}) => '${condition}. Attrezzatura adeguata necessaria.',
+			'weather.alert.uv.title' => 'UV molto alto',
+			'weather.alert.uv.desc' => ({required Object value}) => 'Indice UV ${value}. Massima protezione solare consigliata.',
+			'weather.alert.fire.title' => 'Rischio incendio',
+			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C previsti. Rischio incendio elevato.',
 			'share.title' => 'Condividi',
 			'share.generating' => 'Generazione...',
 			'share.share' => 'Condividi',
@@ -2321,6 +2477,8 @@ extension on TranslationsIt {
 			'hebergement.title' => 'Alloggi nelle vicinanze',
 			'hebergement.facilitatorNote' => 'StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell\'app.',
 			'hebergement.detourAR' => ({required Object km}) => 'Deviazione andata e ritorno: ${km} km',
+			_ => null,
+		} ?? switch (path) {
 			'hebergement.openSite' => 'Vedi il sito',
 			'hebergement.cannotOpen' => 'Impossibile aprire questo link su questo dispositivo.',
 			'hebergement.empty' => 'Nessun alloggio elencato nelle vicinanze per ora.',
@@ -2354,8 +2512,6 @@ extension on TranslationsIt {
 			'leaderboard.unavailable' => 'Classifica non disponibile al momento.',
 			'leaderboard.empty' => 'Nessuna classifica per questo segmento. Sii il primo a percorrerlo!',
 			'leaderboard.pseudonymNotice' => 'Classifica per fascia, con pseudonimi. Nessun dato personale diretto viene mostrato.',
-			_ => null,
-		} ?? switch (path) {
 			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Fascia: ${tranche}',
 			'leaderboard.notEnoughParticipants' => 'Partecipanti insufficienti per pubblicare questa classifica.',
 			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Posizione ${rank}, ${pseudonym}, tempo ${time}',
