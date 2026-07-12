@@ -25,10 +25,15 @@ class WeatherApiService {
   static const Duration timeout = Duration(seconds: 10);
 
   /// Parametres meteo demandes a l'API
+  ///
+  /// LOT-B (PT-5) : ajout de `precipitation_probability_max` pour la
+  /// probabilite d'orage (derivee `stormProbability`). Les champs neige
+  /// (snowfall, freezing_level_height) sont differes (dependance socle E00).
   static const String _dailyParams =
       'temperature_2m_max,temperature_2m_min,'
       'precipitation_sum,wind_speed_10m_max,'
-      'uv_index_max,weather_code';
+      'uv_index_max,weather_code,'
+      'precipitation_probability_max';
 
   /// Recupere la prevision meteo pour des coordonnees dynamiques.
   ///

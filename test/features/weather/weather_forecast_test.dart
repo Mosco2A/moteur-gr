@@ -135,6 +135,101 @@ void main() {
       expect(restored.weatherCode, 2);
     });
   });
+
+  // --- LOT-B : probabilité d'orage (PT-5) + dérivation stormProbability ---
+  group('DayForecast — orage (LOT-B)', () {
+    test('fromOpenMeteo parse precipitation_probability_max', () {
+      final json = {
+        'latitude': 42.0,
+        'longitude': 9.0,
+        'daily': {
+          'time': ['2026-07-01', '2026-07-02'],
+          'temperature_2m_max': [25.0, 22.0],
+          'temperature_2m_min': [15.0, 12.0],
+          'precipitation_sum': [0.0, 8.0],
+          'wind_speed_10m_max': [10.0, 20.0],
+          'uv_index_max': [7.0, 5.0],
+          'weather_code': [1, 80],
+          'precipitation_probability_max': [10, 75],
+        },
+      };
+      final forecast = WeatherForecast.fromOpenMeteo(json);
+      expect(forecast.days[0].precipitationProbabilityMax, 10);
+      expect(forecast.days[1].precipitationProbabilityMax, 75);
+    });
+
+    test('champ absent => precipitationProbabilityMax null (rétrocompat)', () {
+      final json = {
+        'latitude': 42.0,
+        'longitude': 9.0,
+        'daily': {
+          'time': ['2026-07-01'],
+          'temperature_2m_max': [25.0],
+          'temperature_2m_min': [15.0],
+          'precipitation_sum': [0.0],
+          'wind_speed_10m_max': [10.0],
+          'uv_index_max': [7.0],
+          'weather_code': [1],
+        },
+      };
+      final forecast = WeatherForecast.fromOpenMeteo(json);
+      expect(forecast.days.first.precipitationProbabilityMax, isNull);
+    });
+
+    test('stormProbability = 100 si code orage, sinon la proba de pluie', () {
+      final storm = DayForecast(
+        date: DateTime(2026, 7, 1),
+        temperatureMax: 20,
+        temperatureMin: 12,
+        precipitationMm: 5,
+        windSpeedKmh: 30,
+        uvIndex: 3,
+        weatherCode: 95,
+        precipitationProbabilityMax: 40,
+      );
+      expect(storm.isStorm, true);
+      expect(storm.stormProbability, 100);
+
+      final rainy = DayForecast(
+        date: DateTime(2026, 7, 2),
+        temperatureMax: 22,
+        temperatureMin: 14,
+        precipitationMm: 4,
+        windSpeedKmh: 15,
+        uvIndex: 4,
+        weatherCode: 80,
+        precipitationProbabilityMax: 65,
+      );
+      expect(rainy.isStorm, false);
+      expect(rainy.stormProbability, 65);
+
+      final clear = DayForecast(
+        date: DateTime(2026, 7, 3),
+        temperatureMax: 26,
+        temperatureMin: 16,
+        precipitationMm: 0,
+        windSpeedKmh: 8,
+        uvIndex: 6,
+        weatherCode: 1,
+      );
+      expect(clear.stormProbability, 0);
+    });
+
+    test('cache round-trip conserve precipitationProbabilityMax', () {
+      final original = DayForecast(
+        date: DateTime(2026, 7, 1),
+        temperatureMax: 20,
+        temperatureMin: 12,
+        precipitationMm: 5,
+        windSpeedKmh: 30,
+        uvIndex: 3,
+        weatherCode: 80,
+        precipitationProbabilityMax: 55,
+      );
+      final restored = DayForecast.fromJson(original.toJson());
+      expect(restored.precipitationProbabilityMax, 55);
+    });
+  });
 }
 
 /// Réponse Open-Meteo simulée

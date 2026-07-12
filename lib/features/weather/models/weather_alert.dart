@@ -12,17 +12,35 @@ enum AlertType {
   fire,
 }
 
+/// Nature semantique d'une alerte meteo.
+///
+/// LOT-B (D-5, RF-15) : les libelles (titre/description) sont EXTERNALISES en
+/// i18n (`weather.alert.*`, 5 langues). Le modele reste une donnee pure,
+/// sans texte en dur ni BuildContext : la resolution du libelle se fait au
+/// niveau widget via [Translations]. Chaque valeur mappe une cle Slang.
+enum WeatherAlertKind {
+  storm,
+  wind,
+  rain,
+  snow,
+  uv,
+  fire,
+}
+
 /// Alerte météo générée à partir des prévisions.
 ///
-/// Détecte automatiquement les conditions dangereuses
-/// et génère des alertes avec niveau de sévérité.
-/// Supporte 2 types : meteo classique et incendie.
+/// Détecte automatiquement les conditions dangereuses et génère des alertes
+/// avec niveau de sévérité et [kind] sémantique. Le texte affiché est résolu
+/// en i18n côté widget (LOT-B, D-5). Les données quantitatives utiles au
+/// message (vent, pluie, température, description WMO) sont exposées via
+/// [amount] / [conditionLabel] pour paramétrer les traductions.
 class WeatherAlert {
   const WeatherAlert({
     required this.severity,
-    required this.title,
-    required this.description,
+    required this.kind,
     required this.date,
+    this.amount,
+    this.conditionLabel,
     this.type = AlertType.weather,
     this.fireTipId,
   });
@@ -30,14 +48,19 @@ class WeatherAlert {
   /// Niveau de sévérité ('warning' = orange, 'danger' = rouge)
   final String severity;
 
-  /// Titre court de l'alerte
-  final String title;
-
-  /// Description détaillée
-  final String description;
+  /// Nature sémantique de l'alerte (pilote le libellé i18n + l'icône).
+  final WeatherAlertKind kind;
 
   /// Date concernée
   final DateTime date;
+
+  /// Grandeur associée au message (mm de pluie, km/h de vent, °C, indice UV).
+  /// Interprétée selon [kind] par la couche de présentation. Null si sans objet.
+  final double? amount;
+
+  /// Libellé de condition WMO (ex. description du code météo) quand pertinent
+  /// (orage/neige). Null sinon.
+  final String? conditionLabel;
 
   /// Type d'alerte (meteo classique ou incendie)
   final AlertType type;
@@ -45,7 +68,10 @@ class WeatherAlert {
   /// ID de la fiche conseil incendie (uniquement pour type == fire)
   final String? fireTipId;
 
-  /// Génère les alertes depuis une prévision
+  /// Génère les alertes météo classiques depuis une prévision.
+  ///
+  /// Les seuils sont conservés à l'identique (non-régression) ; seuls les
+  /// libellés sont désormais portés par [kind] (résolus en i18n côté widget).
   static List<WeatherAlert> fromForecast(WeatherForecast forecast) {
     final alerts = <WeatherAlert>[];
 
@@ -54,11 +80,9 @@ class WeatherAlert {
       if (day.weatherCode >= 95) {
         alerts.add(WeatherAlert(
           severity: 'danger',
-          title: 'Orage prévu',
-          description:
-              '${day.weatherDescription}. '
-              'Évitez les crêtes et les zones exposées.',
+          kind: WeatherAlertKind.storm,
           date: day.date,
+          conditionLabel: day.weatherDescription,
         ));
       }
 
@@ -66,11 +90,9 @@ class WeatherAlert {
       if (day.windSpeedKmh >= 60) {
         alerts.add(WeatherAlert(
           severity: day.windSpeedKmh >= 80 ? 'danger' : 'warning',
-          title: 'Vent fort',
-          description:
-              'Rafales jusqu\'à ${day.windSpeedKmh.round()} km/h. '
-              'Prudence sur les passages exposés.',
+          kind: WeatherAlertKind.wind,
           date: day.date,
+          amount: day.windSpeedKmh,
         ));
       }
 
@@ -78,11 +100,9 @@ class WeatherAlert {
       if (day.precipitationMm >= 20) {
         alerts.add(WeatherAlert(
           severity: day.precipitationMm >= 40 ? 'danger' : 'warning',
-          title: 'Fortes précipitations',
-          description:
-              '${day.precipitationMm.round()} mm prévus. '
-              'Risque de sentiers glissants et de torrents.',
+          kind: WeatherAlertKind.rain,
           date: day.date,
+          amount: day.precipitationMm,
         ));
       }
 
@@ -90,11 +110,9 @@ class WeatherAlert {
       if (day.weatherCode >= 71 && day.weatherCode <= 77) {
         alerts.add(WeatherAlert(
           severity: 'warning',
-          title: 'Neige prévue',
-          description:
-              '${day.weatherDescription}. '
-              'Équipement adapté nécessaire.',
+          kind: WeatherAlertKind.snow,
           date: day.date,
+          conditionLabel: day.weatherDescription,
         ));
       }
 
@@ -102,11 +120,9 @@ class WeatherAlert {
       if (day.uvIndex >= 8) {
         alerts.add(WeatherAlert(
           severity: 'warning',
-          title: 'UV très élevé',
-          description:
-              'Indice UV ${day.uvIndex.round()}. '
-              'Protection solaire maximale recommandée.',
+          kind: WeatherAlertKind.uv,
           date: day.date,
+          amount: day.uvIndex,
         ));
       }
     }
@@ -116,9 +132,10 @@ class WeatherAlert {
 
   /// Genere les alertes incendie depuis une prevision et une config.
   ///
-  /// Evalue chaque jour de la prevision contre les conditions
-  /// parametrees dans [fireConfig] pour la [region] donnee.
-  /// Retourne une liste d'alertes de type [AlertType.fire].
+  /// Evalue chaque jour de la prevision contre les conditions parametrees dans
+  /// [fireConfig] pour la [region] donnee. Retourne une liste d'alertes de type
+  /// [AlertType.fire] / [WeatherAlertKind.fire]. La [region] sert la config
+  /// (evaluation du risque) ; le libelle affiche est resolu en i18n cote widget.
   static List<WeatherAlert> fireAlertsFromForecast(
     WeatherForecast forecast, {
     required FireRiskConfig fireConfig,
@@ -134,11 +151,9 @@ class WeatherAlert {
       )) {
         alerts.add(WeatherAlert(
           severity: 'danger',
-          title: 'Risque incendie',
-          description:
-              '${day.temperatureMax.round()}°C prévus. '
-              'Risque incendie élevé en $region.',
+          kind: WeatherAlertKind.fire,
           date: day.date,
+          amount: day.temperatureMax,
           type: AlertType.fire,
           fireTipId: fireConfig.fireTipId,
         ));

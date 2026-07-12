@@ -55,7 +55,9 @@
     "weather": {
       "title": "Météo du jour",
       "stub": "La météo de votre étape arrive bientôt.",
-      "unavailable": "Météo indisponible pour le moment."
+      "unavailable": "Météo indisponible pour le moment.",
+      "alertStorm": "Alerte orage",
+      "tempRange": "$min° / $max°"
     },
     "startCta": "Démarrer le trek",
     "sections": {
@@ -261,7 +263,56 @@
     "fireRiskDesc": "Risque incendie eleve. Consultez les consignes de securite.",
     "fireSafetyTips": "Consignes incendie",
     "alertCount": "alerte",
-    "alertCountPlural": "alertes"
+    "alertCountPlural": "alertes",
+    "today": "Aujourd'hui",
+    "tomorrow": "Demain",
+    "dayPlus2": "Après-demain",
+    "allStages": "Toutes les étapes",
+    "noForecast": "Aucune prévision disponible.",
+    "stageLabel": "Étape $number",
+    "stormAlertsTitle": "Alertes orage",
+    "stormAlertsToggleOn": "Alertes orage activées",
+    "stormAlertsToggleOff": "Alertes orage désactivées",
+    "lastUpdate": "Mis à jour $date",
+    "guideTitle": "Comprendre la météo",
+    "guideBody": "Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l'absence de réseau, les dernières données enregistrées sont affichées.",
+    "source": {
+      "api": "Données en direct",
+      "cache": "Données enregistrées",
+      "offline": "Hors ligne",
+      "demo": "Données de démonstration"
+    },
+    "recommendation": {
+      "ok": "Conditions favorables",
+      "watch": "Vigilance recommandée",
+      "danger": "Conditions défavorables"
+    },
+    "alert": {
+      "storm": {
+        "title": "Orage prévu",
+        "desc": "$condition. Évitez les crêtes et les zones exposées."
+      },
+      "wind": {
+        "title": "Vent fort",
+        "desc": "Rafales jusqu'à $value km/h. Prudence sur les passages exposés."
+      },
+      "rain": {
+        "title": "Fortes précipitations",
+        "desc": "$value mm prévus. Risque de sentiers glissants et de torrents."
+      },
+      "snow": {
+        "title": "Neige prévue",
+        "desc": "$condition. Équipement adapté nécessaire."
+      },
+      "uv": {
+        "title": "UV très élevé",
+        "desc": "Indice UV $value. Protection solaire maximale recommandée."
+      },
+      "fire": {
+        "title": "Risque incendie",
+        "desc": "$value°C prévus. Risque incendie élevé."
+      }
+    }
   },
   "share": {
     "title": "Partager",

@@ -55,7 +55,9 @@
     "weather": {
       "title": "Wetter heute",
       "stub": "Das Wetter Ihrer Etappe kommt bald.",
-      "unavailable": "Wetter derzeit nicht verfügbar."
+      "unavailable": "Wetter derzeit nicht verfügbar.",
+      "alertStorm": "Gewitterwarnung",
+      "tempRange": "$min° / $max°"
     },
     "startCta": "Trek starten",
     "sections": {
@@ -261,7 +263,56 @@
     "fireRiskDesc": "Hohe Brandgefahr. Sicherheitshinweise beachten.",
     "fireSafetyTips": "Brandschutzhinweise",
     "alertCount": "Warnung",
-    "alertCountPlural": "Warnungen"
+    "alertCountPlural": "Warnungen",
+    "today": "Heute",
+    "tomorrow": "Morgen",
+    "dayPlus2": "Übermorgen",
+    "allStages": "Alle Etappen",
+    "noForecast": "Keine Vorhersage verfügbar.",
+    "stageLabel": "Etappe $number",
+    "stormAlertsTitle": "Gewitterwarnungen",
+    "stormAlertsToggleOn": "Gewitterwarnungen aktiviert",
+    "stormAlertsToggleOff": "Gewitterwarnungen deaktiviert",
+    "lastUpdate": "Aktualisiert $date",
+    "guideTitle": "Das Wetter verstehen",
+    "guideBody": "Die Vorhersage umfasst 7 Tage für jede Etappe. Achten Sie auf Gewitter- und Windwarnungen: In den Bergen ändert sich das Wetter schnell. Ohne Netz werden die zuletzt gespeicherten Daten angezeigt.",
+    "source": {
+      "api": "Live-Daten",
+      "cache": "Gespeicherte Daten",
+      "offline": "Offline",
+      "demo": "Demodaten"
+    },
+    "recommendation": {
+      "ok": "Günstige Bedingungen",
+      "watch": "Vorsicht geboten",
+      "danger": "Ungünstige Bedingungen"
+    },
+    "alert": {
+      "storm": {
+        "title": "Gewitter erwartet",
+        "desc": "$condition. Meiden Sie Grate und exponierte Bereiche."
+      },
+      "wind": {
+        "title": "Starker Wind",
+        "desc": "Böen bis $value km/h. Vorsicht an exponierten Stellen."
+      },
+      "rain": {
+        "title": "Starke Niederschläge",
+        "desc": "$value mm erwartet. Gefahr rutschiger Wege und Wildbäche."
+      },
+      "snow": {
+        "title": "Schnee erwartet",
+        "desc": "$condition. Geeignete Ausrüstung erforderlich."
+      },
+      "uv": {
+        "title": "Sehr hohe UV-Strahlung",
+        "desc": "UV-Index $value. Maximaler Sonnenschutz empfohlen."
+      },
+      "fire": {
+        "title": "Brandgefahr",
+        "desc": "$value°C erwartet. Hohe Brandgefahr."
+      }
+    }
   },
   "share": {
     "title": "Teilen",

@@ -20,9 +20,10 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///   - le rendu structurel du HUB (4 sections, cartes cablees) ;
 ///   - le cloisonnement (aucun libelle GR20 / Fra li Monti dans le HUB).
 ///
-/// D1..D5 (arbitrage #94902) : le mode demo est masque (aucun bandeau), la
-/// tuile meteo est un stub, aucune section Communaute. Ces tests verifient donc
-/// l'ABSENCE de ces elements autant que la presence du socle.
+/// D1..D5 (arbitrage #94902) : le mode demo est masque (aucun bandeau), aucune
+/// section Communaute. LOT-B : la tuile meteo est desormais REELLE (branchee sur
+/// stageWeatherProvider), plus un stub. Ces tests verifient l'ABSENCE des
+/// elements masques autant que la presence du socle.
 void main() {
   /// Enveloppe un [child] avec un ProviderScope override + Translations + un
   /// GoRouter minimal (les cartes du HUB utilisent context.go/push).
@@ -223,12 +224,14 @@ void main() {
       expect(find.text(t.hub.sections.after), findsOneWidget);
     });
 
-    testWidgets('rend la tuile meteo STUB (D3) et la salutation',
+    testWidgets('rend la tuile meteo reelle (LOT-B) et la salutation',
         (tester) async {
       await pumpTallHub(tester);
 
+      // La tuile meteo est desormais reelle (titre present, plus de stub).
+      // Sans donnees (DB de test vide), elle affiche l'etat indisponible.
       expect(find.text(t.hub.weather.title), findsOneWidget);
-      expect(find.text(t.hub.weather.stub), findsOneWidget);
+      expect(find.text(t.hub.weather.stub), findsNothing);
       expect(find.text(t.hub.greeting(name: 'Alex')), findsOneWidget);
     });
 

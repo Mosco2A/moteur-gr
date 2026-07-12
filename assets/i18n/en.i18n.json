@@ -55,7 +55,9 @@
     "weather": {
       "title": "Today's weather",
       "stub": "Your stage weather is coming soon.",
-      "unavailable": "Weather unavailable right now."
+      "unavailable": "Weather unavailable right now.",
+      "alertStorm": "Storm alert",
+      "tempRange": "$min° / $max°"
     },
     "startCta": "Start the trek",
     "sections": {
@@ -261,7 +263,56 @@
     "fireRiskDesc": "High fire risk. Check safety instructions.",
     "fireSafetyTips": "Fire safety tips",
     "alertCount": "alert",
-    "alertCountPlural": "alerts"
+    "alertCountPlural": "alerts",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "dayPlus2": "In two days",
+    "allStages": "All stages",
+    "noForecast": "No forecast available.",
+    "stageLabel": "Stage $number",
+    "stormAlertsTitle": "Storm alerts",
+    "stormAlertsToggleOn": "Storm alerts on",
+    "stormAlertsToggleOff": "Storm alerts off",
+    "lastUpdate": "Updated $date",
+    "guideTitle": "Understanding the weather",
+    "guideBody": "Forecasts cover 7 days for each stage. Watch storm and wind alerts: in the mountains, weather changes fast. When offline, the last saved data is shown.",
+    "source": {
+      "api": "Live data",
+      "cache": "Saved data",
+      "offline": "Offline",
+      "demo": "Demo data"
+    },
+    "recommendation": {
+      "ok": "Favourable conditions",
+      "watch": "Caution advised",
+      "danger": "Unfavourable conditions"
+    },
+    "alert": {
+      "storm": {
+        "title": "Storm expected",
+        "desc": "$condition. Avoid ridges and exposed areas."
+      },
+      "wind": {
+        "title": "Strong wind",
+        "desc": "Gusts up to $value km/h. Take care on exposed sections."
+      },
+      "rain": {
+        "title": "Heavy rainfall",
+        "desc": "$value mm expected. Risk of slippery trails and torrents."
+      },
+      "snow": {
+        "title": "Snow expected",
+        "desc": "$condition. Suitable gear required."
+      },
+      "uv": {
+        "title": "Very high UV",
+        "desc": "UV index $value. Maximum sun protection recommended."
+      },
+      "fire": {
+        "title": "Fire risk",
+        "desc": "$value°C expected. High fire risk."
+      }
+    }
   },
   "share": {
     "title": "Share",

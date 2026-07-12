@@ -23,6 +23,11 @@ class WeatherForecast {
     final windMax = (daily['wind_speed_10m_max'] as List).cast<num>();
     final uvMax = (daily['uv_index_max'] as List).cast<num>();
     final weatherCode = (daily['weather_code'] as List).cast<int>();
+    // Probabilité d'orage/précipitation (LOT-B, PT-5). Champ optionnel :
+    // absent des réponses/caches antérieurs => null (dérivé stormProbability).
+    final precipProb = (daily['precipitation_probability_max'] as List?)
+        ?.map((e) => e == null ? null : (e as num).toDouble())
+        .toList();
 
     final days = <DayForecast>[];
     for (var i = 0; i < dates.length; i++) {
@@ -34,6 +39,10 @@ class WeatherForecast {
         windSpeedKmh: windMax[i].toDouble(),
         uvIndex: uvMax[i].toDouble(),
         weatherCode: weatherCode[i],
+        precipitationProbabilityMax:
+            (precipProb != null && i < precipProb.length)
+                ? precipProb[i]
+                : null,
       ));
     }
 
@@ -73,6 +82,7 @@ class DayForecast {
     required this.windSpeedKmh,
     required this.uvIndex,
     required this.weatherCode,
+    this.precipitationProbabilityMax,
   });
 
   final DateTime date;
@@ -83,11 +93,30 @@ class DayForecast {
   final double uvIndex;
   final int weatherCode;
 
+  /// Probabilité maximale de précipitations dans la journée (0-100 %).
+  ///
+  /// Fournie par Open-Meteo (`precipitation_probability_max`, LOT-B PT-5).
+  /// Nullable : absente des caches/réponses antérieurs à l'enrichissement.
+  final double? precipitationProbabilityMax;
+
   /// Indicateur de conditions dangereuses (orage, neige, pluie forte)
   bool get isAlertCondition =>
       weatherCode >= 65 || // Pluie forte, neige, orage
       windSpeedKmh >= 60 || // Vent très fort
       precipitationMm >= 20; // Grosses précipitations
+
+  /// Vrai si un orage est prévu (code WMO 95/96/99).
+  bool get isStorm => weatherCode >= 95;
+
+  /// Probabilité d'orage dérivée (0-100 %) — AM-7.
+  ///
+  /// Combine le code WMO (orage certain => 100) et la probabilité de
+  /// précipitations Open-Meteo quand elle est disponible. Sert la pastille
+  /// d'alerte orage du HUB et le toggle de l'écran météo.
+  double get stormProbability {
+    if (isStorm) return 100;
+    return precipitationProbabilityMax ?? 0;
+  }
 
   /// Description textuelle du code météo WMO
   String get weatherDescription {
@@ -115,6 +144,8 @@ class DayForecast {
         'windSpeedKmh': windSpeedKmh,
         'uvIndex': uvIndex,
         'weatherCode': weatherCode,
+        if (precipitationProbabilityMax != null)
+          'precipitationProbabilityMax': precipitationProbabilityMax,
       };
 
   factory DayForecast.fromJson(Map<String, dynamic> json) {
@@ -126,6 +157,8 @@ class DayForecast {
       windSpeedKmh: (json['windSpeedKmh'] as num).toDouble(),
       uvIndex: (json['uvIndex'] as num).toDouble(),
       weatherCode: json['weatherCode'] as int,
+      precipitationProbabilityMax:
+          (json['precipitationProbabilityMax'] as num?)?.toDouble(),
     );
   }
 }

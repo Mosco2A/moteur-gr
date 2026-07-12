@@ -28,7 +28,7 @@ void main() {
 
       // Verifie qu'une alerte orage est generee
       expect(alerts.isNotEmpty, true);
-      expect(alerts.any((a) => a.title == 'Orage prévu'), true);
+      expect(alerts.any((a) => a.kind == WeatherAlertKind.storm), true);
       expect(alerts.any((a) => a.severity == 'danger'), true);
       // Toutes les alertes meteo classiques sont de type weather
       expect(alerts.every((a) => a.type == AlertType.weather), true);
@@ -54,7 +54,7 @@ void main() {
       final alerts = WeatherAlert.fromForecast(forecast);
 
       expect(alerts.isNotEmpty, true);
-      expect(alerts.any((a) => a.title == 'Neige prévue'), true);
+      expect(alerts.any((a) => a.kind == WeatherAlertKind.snow), true);
       expect(alerts.any((a) => a.severity == 'warning'), true);
     });
   });
@@ -97,7 +97,7 @@ void main() {
       expect(fireAlerts.first.type, AlertType.fire);
       expect(fireAlerts.first.severity, 'danger');
       expect(fireAlerts.first.fireTipId, 'incendie-periode-risque');
-      expect(fireAlerts.first.title, 'Risque incendie');
+      expect(fireAlerts.first.kind, WeatherAlertKind.fire);
     });
 
     test('pas d\'alerte incendie hors periode ou sous seuil', () {

@@ -88,7 +88,7 @@ class HubScreen extends ConsumerWidget {
           children: [
             // Salutation (RF-3).
             const HubHeader(),
-            // Tuile meteo (AM-3, STUB LOT-A).
+            // Tuile meteo reelle (AM-3, LOT-B) : ConsumerWidget (const OK).
             const HubWeatherCard(),
             const SizedBox(height: AppTheme.spacingBase),
             // Carte principale trek (RF-4, 2 etats).

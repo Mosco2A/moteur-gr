@@ -132,9 +132,9 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 9 sous-routes', () {
+    test('la route /trail/:id conserve ses 10 sous-routes (+ weather E31)', () {
       final trail = trailRoute();
-      expect(trail.routes.length, 9);
+      expect(trail.routes.length, 10);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -146,6 +146,7 @@ void main() {
         'journal',
         'diploma',
         'feedback',
+        'weather',
       ]);
     });
 
@@ -162,6 +163,7 @@ void main() {
         'trail-journal',
         'trail-diploma',
         'trail-feedback',
+        'trail-weather',
       ]);
     });
   });

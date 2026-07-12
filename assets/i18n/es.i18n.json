@@ -55,7 +55,9 @@
     "weather": {
       "title": "El tiempo de hoy",
       "stub": "El tiempo de tu etapa llega pronto.",
-      "unavailable": "El tiempo no está disponible ahora."
+      "unavailable": "El tiempo no está disponible ahora.",
+      "alertStorm": "Alerta de tormenta",
+      "tempRange": "$min° / $max°"
     },
     "startCta": "Iniciar el trek",
     "sections": {
@@ -261,7 +263,56 @@
     "fireRiskDesc": "Alto riesgo de incendio. Consulte las instrucciones de seguridad.",
     "fireSafetyTips": "Instrucciones contra incendios",
     "alertCount": "alerta",
-    "alertCountPlural": "alertas"
+    "alertCountPlural": "alertas",
+    "today": "Hoy",
+    "tomorrow": "Mañana",
+    "dayPlus2": "Pasado mañana",
+    "allStages": "Todas las etapas",
+    "noForecast": "No hay previsión disponible.",
+    "stageLabel": "Etapa $number",
+    "stormAlertsTitle": "Alertas de tormenta",
+    "stormAlertsToggleOn": "Alertas de tormenta activadas",
+    "stormAlertsToggleOff": "Alertas de tormenta desactivadas",
+    "lastUpdate": "Actualizado $date",
+    "guideTitle": "Entender la meteorología",
+    "guideBody": "Las previsiones cubren 7 días para cada etapa. Vigila las alertas de tormenta y viento: en la montaña el tiempo cambia rápido. Sin red se muestran los últimos datos guardados.",
+    "source": {
+      "api": "Datos en directo",
+      "cache": "Datos guardados",
+      "offline": "Sin conexión",
+      "demo": "Datos de demostración"
+    },
+    "recommendation": {
+      "ok": "Condiciones favorables",
+      "watch": "Precaución recomendada",
+      "danger": "Condiciones desfavorables"
+    },
+    "alert": {
+      "storm": {
+        "title": "Tormenta prevista",
+        "desc": "$condition. Evita las crestas y las zonas expuestas."
+      },
+      "wind": {
+        "title": "Viento fuerte",
+        "desc": "Rachas de hasta $value km/h. Precaución en los pasos expuestos."
+      },
+      "rain": {
+        "title": "Fuertes precipitaciones",
+        "desc": "$value mm previstos. Riesgo de senderos resbaladizos y torrentes."
+      },
+      "snow": {
+        "title": "Nieve prevista",
+        "desc": "$condition. Se necesita equipo adecuado."
+      },
+      "uv": {
+        "title": "UV muy alto",
+        "desc": "Índice UV $value. Se recomienda máxima protección solar."
+      },
+      "fire": {
+        "title": "Riesgo de incendio",
+        "desc": "$value°C previstos. Alto riesgo de incendio."
+      }
+    }
   },
   "share": {
     "title": "Compartir",

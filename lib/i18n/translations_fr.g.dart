@@ -630,6 +630,46 @@ class Translations$weather$fr {
 
 	/// fr: 'alertes'
 	String get alertCountPlural => 'alertes';
+
+	/// fr: 'Aujourd'hui'
+	String get today => 'Aujourd\'hui';
+
+	/// fr: 'Demain'
+	String get tomorrow => 'Demain';
+
+	/// fr: 'Après-demain'
+	String get dayPlus2 => 'Après-demain';
+
+	/// fr: 'Toutes les étapes'
+	String get allStages => 'Toutes les étapes';
+
+	/// fr: 'Aucune prévision disponible.'
+	String get noForecast => 'Aucune prévision disponible.';
+
+	/// fr: 'Étape $number'
+	String stageLabel({required Object number}) => 'Étape ${number}';
+
+	/// fr: 'Alertes orage'
+	String get stormAlertsTitle => 'Alertes orage';
+
+	/// fr: 'Alertes orage activées'
+	String get stormAlertsToggleOn => 'Alertes orage activées';
+
+	/// fr: 'Alertes orage désactivées'
+	String get stormAlertsToggleOff => 'Alertes orage désactivées';
+
+	/// fr: 'Mis à jour $date'
+	String lastUpdate({required Object date}) => 'Mis à jour ${date}';
+
+	/// fr: 'Comprendre la météo'
+	String get guideTitle => 'Comprendre la météo';
+
+	/// fr: 'Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l'absence de réseau, les dernières données enregistrées sont affichées.'
+	String get guideBody => 'Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l\'absence de réseau, les dernières données enregistrées sont affichées.';
+
+	late final Translations$weather$source$fr source = Translations$weather$source$fr.internal(_root);
+	late final Translations$weather$recommendation$fr recommendation = Translations$weather$recommendation$fr.internal(_root);
+	late final Translations$weather$alert$fr alert = Translations$weather$alert$fr.internal(_root);
 }
 
 // Path: share
@@ -1941,6 +1981,12 @@ class Translations$hub$weather$fr {
 
 	/// fr: 'Météo indisponible pour le moment.'
 	String get unavailable => 'Météo indisponible pour le moment.';
+
+	/// fr: 'Alerte orage'
+	String get alertStorm => 'Alerte orage';
+
+	/// fr: '$min° / $max°'
+	String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
 }
 
 // Path: hub.sections
@@ -2223,6 +2269,60 @@ class Translations$checklist$items$fr {
 
 	/// fr: 'Serviette'
 	String get towel => 'Serviette';
+}
+
+// Path: weather.source
+class Translations$weather$source$fr {
+	Translations$weather$source$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Données en direct'
+	String get api => 'Données en direct';
+
+	/// fr: 'Données enregistrées'
+	String get cache => 'Données enregistrées';
+
+	/// fr: 'Hors ligne'
+	String get offline => 'Hors ligne';
+
+	/// fr: 'Données de démonstration'
+	String get demo => 'Données de démonstration';
+}
+
+// Path: weather.recommendation
+class Translations$weather$recommendation$fr {
+	Translations$weather$recommendation$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Conditions favorables'
+	String get ok => 'Conditions favorables';
+
+	/// fr: 'Vigilance recommandée'
+	String get watch => 'Vigilance recommandée';
+
+	/// fr: 'Conditions défavorables'
+	String get danger => 'Conditions défavorables';
+}
+
+// Path: weather.alert
+class Translations$weather$alert$fr {
+	Translations$weather$alert$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+	late final Translations$weather$alert$storm$fr storm = Translations$weather$alert$storm$fr.internal(_root);
+	late final Translations$weather$alert$wind$fr wind = Translations$weather$alert$wind$fr.internal(_root);
+	late final Translations$weather$alert$rain$fr rain = Translations$weather$alert$rain$fr.internal(_root);
+	late final Translations$weather$alert$snow$fr snow = Translations$weather$alert$snow$fr.internal(_root);
+	late final Translations$weather$alert$uv$fr uv = Translations$weather$alert$uv$fr.internal(_root);
+	late final Translations$weather$alert$fire$fr fire = Translations$weather$alert$fire$fr.internal(_root);
 }
 
 // Path: feasibility.levels
@@ -3055,6 +3155,96 @@ class Translations$moderation$a11y$fr {
 	String get complaintForm => 'Formulaire de contestation d\'une décision';
 }
 
+// Path: weather.alert.storm
+class Translations$weather$alert$storm$fr {
+	Translations$weather$alert$storm$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Orage prévu'
+	String get title => 'Orage prévu';
+
+	/// fr: '$condition. Évitez les crêtes et les zones exposées.'
+	String desc({required Object condition}) => '${condition}. Évitez les crêtes et les zones exposées.';
+}
+
+// Path: weather.alert.wind
+class Translations$weather$alert$wind$fr {
+	Translations$weather$alert$wind$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Vent fort'
+	String get title => 'Vent fort';
+
+	/// fr: 'Rafales jusqu'à $value km/h. Prudence sur les passages exposés.'
+	String desc({required Object value}) => 'Rafales jusqu\'à ${value} km/h. Prudence sur les passages exposés.';
+}
+
+// Path: weather.alert.rain
+class Translations$weather$alert$rain$fr {
+	Translations$weather$alert$rain$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Fortes précipitations'
+	String get title => 'Fortes précipitations';
+
+	/// fr: '$value mm prévus. Risque de sentiers glissants et de torrents.'
+	String desc({required Object value}) => '${value} mm prévus. Risque de sentiers glissants et de torrents.';
+}
+
+// Path: weather.alert.snow
+class Translations$weather$alert$snow$fr {
+	Translations$weather$alert$snow$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Neige prévue'
+	String get title => 'Neige prévue';
+
+	/// fr: '$condition. Équipement adapté nécessaire.'
+	String desc({required Object condition}) => '${condition}. Équipement adapté nécessaire.';
+}
+
+// Path: weather.alert.uv
+class Translations$weather$alert$uv$fr {
+	Translations$weather$alert$uv$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'UV très élevé'
+	String get title => 'UV très élevé';
+
+	/// fr: 'Indice UV $value. Protection solaire maximale recommandée.'
+	String desc({required Object value}) => 'Indice UV ${value}. Protection solaire maximale recommandée.';
+}
+
+// Path: weather.alert.fire
+class Translations$weather$alert$fire$fr {
+	Translations$weather$alert$fire$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Risque incendie'
+	String get title => 'Risque incendie';
+
+	/// fr: '$value°C prévus. Risque incendie élevé.'
+	String desc({required Object value}) => '${value}°C prévus. Risque incendie élevé.';
+}
+
 // Path: feasibility.recommendations.danger
 class Translations$feasibility$recommendations$danger$fr {
 	Translations$feasibility$recommendations$danger$fr.internal(this._root);
@@ -3400,6 +3590,8 @@ extension on Translations {
 			'hub.weather.title' => 'Météo du jour',
 			'hub.weather.stub' => 'La météo de votre étape arrive bientôt.',
 			'hub.weather.unavailable' => 'Météo indisponible pour le moment.',
+			'hub.weather.alertStorm' => 'Alerte orage',
+			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Démarrer le trek',
 			'hub.sections.prepare' => 'Préparer',
 			'hub.sections.hike' => 'Randonner',
@@ -3567,6 +3759,37 @@ extension on Translations {
 			'weather.fireSafetyTips' => 'Consignes incendie',
 			'weather.alertCount' => 'alerte',
 			'weather.alertCountPlural' => 'alertes',
+			'weather.today' => 'Aujourd\'hui',
+			'weather.tomorrow' => 'Demain',
+			'weather.dayPlus2' => 'Après-demain',
+			'weather.allStages' => 'Toutes les étapes',
+			'weather.noForecast' => 'Aucune prévision disponible.',
+			'weather.stageLabel' => ({required Object number}) => 'Étape ${number}',
+			'weather.stormAlertsTitle' => 'Alertes orage',
+			'weather.stormAlertsToggleOn' => 'Alertes orage activées',
+			'weather.stormAlertsToggleOff' => 'Alertes orage désactivées',
+			'weather.lastUpdate' => ({required Object date}) => 'Mis à jour ${date}',
+			'weather.guideTitle' => 'Comprendre la météo',
+			'weather.guideBody' => 'Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l\'absence de réseau, les dernières données enregistrées sont affichées.',
+			'weather.source.api' => 'Données en direct',
+			'weather.source.cache' => 'Données enregistrées',
+			'weather.source.offline' => 'Hors ligne',
+			'weather.source.demo' => 'Données de démonstration',
+			'weather.recommendation.ok' => 'Conditions favorables',
+			'weather.recommendation.watch' => 'Vigilance recommandée',
+			'weather.recommendation.danger' => 'Conditions défavorables',
+			'weather.alert.storm.title' => 'Orage prévu',
+			'weather.alert.storm.desc' => ({required Object condition}) => '${condition}. Évitez les crêtes et les zones exposées.',
+			'weather.alert.wind.title' => 'Vent fort',
+			'weather.alert.wind.desc' => ({required Object value}) => 'Rafales jusqu\'à ${value} km/h. Prudence sur les passages exposés.',
+			'weather.alert.rain.title' => 'Fortes précipitations',
+			'weather.alert.rain.desc' => ({required Object value}) => '${value} mm prévus. Risque de sentiers glissants et de torrents.',
+			'weather.alert.snow.title' => 'Neige prévue',
+			'weather.alert.snow.desc' => ({required Object condition}) => '${condition}. Équipement adapté nécessaire.',
+			'weather.alert.uv.title' => 'UV très élevé',
+			'weather.alert.uv.desc' => ({required Object value}) => 'Indice UV ${value}. Protection solaire maximale recommandée.',
+			'weather.alert.fire.title' => 'Risque incendie',
+			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C prévus. Risque incendie élevé.',
 			'share.title' => 'Partager',
 			'share.generating' => 'Génération...',
 			'share.share' => 'Partager',
@@ -3832,6 +4055,8 @@ extension on Translations {
 			'hebergement.title' => 'Hébergements à proximité',
 			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
 			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
+			_ => null,
+		} ?? switch (path) {
 			'hebergement.openSite' => 'Voir le site',
 			'hebergement.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
 			'hebergement.empty' => 'Aucun hébergement répertorié à proximité pour le moment.',
@@ -3865,8 +4090,6 @@ extension on Translations {
 			'leaderboard.unavailable' => 'Classement indisponible pour le moment.',
 			'leaderboard.empty' => 'Aucun classement pour ce segment. Sois le premier à le parcourir !',
 			'leaderboard.pseudonymNotice' => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.',
-			_ => null,
-		} ?? switch (path) {
 			'leaderboard.trancheLabel' => ({required Object tranche}) => 'Tranche : ${tranche}',
 			'leaderboard.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
 			'leaderboard.entrySemantics' => ({required Object rank, required Object pseudonym, required Object time}) => 'Rang ${rank}, ${pseudonym}, temps ${time}',

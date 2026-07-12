@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../models/weather_forecast.dart';
+import '../presentation/weather_date_format.dart';
 
 /// Carte de prévision pour un jour.
 ///
@@ -16,7 +16,8 @@ class DayForecastCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dateFormat = DateFormat('EEEE d MMM', 'fr_FR');
+    // LOT-B (RF-15) : locale courante au lieu de 'fr_FR' figé (cloisonnement).
+    final languageCode = Localizations.localeOf(context).languageCode;
     final isAlert = day.isAlertCondition;
 
     return Card(
@@ -35,8 +36,8 @@ class DayForecastCard extends StatelessWidget {
             // Date + icône météo
             Row(
               children: [
-                Icon(
-                  _iconForWeather(day.weatherIconName),
+                WeatherIcon(
+                  iconName: day.weatherIconName,
                   size: 28,
                   color: isAlert
                       ? AppTheme.rougeUrgence
@@ -48,7 +49,7 @@ class DayForecastCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        dateFormat.format(day.date),
+                        formatWeatherDate(day.date, 'EEEE d MMM', languageCode),
                         style: theme.textTheme.titleMedium,
                       ),
                       Text(
@@ -81,8 +82,12 @@ class DayForecastCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            // Détails : précipitations, vent, UV
-            Row(
+            // Détails : précipitations, vent, UV.
+            // Wrap (pas Row) : évite tout débordement horizontal aux largeurs
+            // mobiles étroites (retour Lot A #95062).
+            Wrap(
+              spacing: AppTheme.spacingSm,
+              runSpacing: AppTheme.spacingXs,
               children: [
                 _detailChip(
                   context,
@@ -90,14 +95,12 @@ class DayForecastCard extends StatelessWidget {
                   '${day.precipitationMm.round()} mm',
                   day.precipitationMm >= 20,
                 ),
-                const SizedBox(width: AppTheme.spacingSm),
                 _detailChip(
                   context,
                   Icons.air,
                   '${day.windSpeedKmh.round()} km/h',
                   day.windSpeedKmh >= 60,
                 ),
-                const SizedBox(width: AppTheme.spacingSm),
                 _detailChip(
                   context,
                   Icons.wb_sunny_outlined,
@@ -143,7 +146,36 @@ class DayForecastCard extends StatelessWidget {
     );
   }
 
-  IconData _iconForWeather(String iconName) {
+  Color _tempColor(double temp) {
+    if (temp <= 0) return AppTheme.rougeExtreme;
+    if (temp <= 10) return AppTheme.orangeDifficile;
+    if (temp <= 25) return AppTheme.vertFacile;
+    return AppTheme.rougeUrgence;
+  }
+}
+
+/// Icône Material dérivée du nom de condition météo (`DayForecast.weatherIconName`).
+///
+/// Widget partagé par les cartes météo (jour, aujourd'hui, tuile HUB) pour
+/// éviter la duplication du mapping nom → [IconData].
+class WeatherIcon extends StatelessWidget {
+  const WeatherIcon({
+    super.key,
+    required this.iconName,
+    this.size = 24,
+    this.color,
+  });
+
+  final String iconName;
+  final double size;
+  final Color? color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(_iconFor(iconName), size: size, color: color);
+  }
+
+  static IconData _iconFor(String iconName) {
     switch (iconName) {
       case 'wb_sunny':
         return Icons.wb_sunny;
@@ -162,12 +194,5 @@ class DayForecastCard extends StatelessWidget {
       default:
         return Icons.cloud;
     }
-  }
-
-  Color _tempColor(double temp) {
-    if (temp <= 0) return AppTheme.rougeExtreme;
-    if (temp <= 10) return AppTheme.orangeDifficile;
-    if (temp <= 25) return AppTheme.vertFacile;
-    return AppTheme.rougeUrgence;
   }
 }
