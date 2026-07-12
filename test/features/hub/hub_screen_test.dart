@@ -261,6 +261,116 @@ void main() {
       expect(find.textContaining('Fra li Monti'), findsNothing);
     });
   });
+
+  // --- Non-regression overflow mobile (#95062, verdict Artemis ROUGE) ---
+  //
+  // Les tests structurels ci-dessus rendent le HUB a 1200 px de large
+  // ([pumpTallHub], Size(1200, 4000)) : a cette largeur AUCUN debordement
+  // horizontal n'apparait, ce qui masquait un overflow reel aux largeurs
+  // mobiles courantes. Un [childAspectRatio]/[Row] sans [Expanded] sur les
+  // titres faisait deborder la Row a droite a 360/390/412 px logiques (Text
+  // titleLarge plus large que la cellule).
+  //
+  // Ce groupe COMBLE le trou : il rend le HUB COMPLET a chaque largeur mobile,
+  // sur les 2 etats trek (idle ET recording), et ECHOUE si le moindre RenderFlex
+  // signale un overflow. Largeur = physicalSize / devicePixelRatio(1.0), donc
+  // px logiques. Hauteur volontairement tres grande pour monter toutes les
+  // sections (comme pumpTallHub) sans reintroduire de contrainte verticale.
+  group('non-regression overflow largeurs mobiles (#95062)', () {
+    // Largeurs logiques des combines Android les plus repandus.
+    const mobileWidths = <double>[360, 390, 412];
+
+    Widget hub(TrackingSessionStatus status) => wrap(
+          child: const HubScreen(),
+          overrides: [
+            userWith('Alex'),
+            trekWith(TrackingSessionState(
+              status: status,
+              // Valeurs realistes de l'etat « en cours » pour rendre les stats
+              // et le titre a leur pleine largeur.
+              distanceKm: 12.5,
+              elevationGainM: 640,
+              elapsedDuration: const Duration(hours: 3, minutes: 20),
+            )),
+          ],
+        );
+
+    /// Rend le HUB a [width] px logiques et renvoie la liste des messages
+    /// d'overflow RenderFlex captures pendant le layout (vide = aucun).
+    ///
+    /// Les erreurs de layout Flutter (dont le RenderFlex overflow) sont
+    /// recuperees par le binding de test comme "pending exceptions" : il faut
+    /// les CONSOMMER via [WidgetTester.takeException] avant la fin du test,
+    /// sinon le binding fait echouer le test avec une assertion opaque au lieu
+    /// du diagnostic d'overflow. On restaure [FlutterError.onError] de maniere
+    /// synchrone (pas en tearDown) pour la meme raison. Les erreurs NON liees a
+    /// un overflow sont relayees au handler d'origine (non avalees).
+    Future<List<String>> overflowsAt(
+      WidgetTester tester,
+      double width,
+      TrackingSessionStatus status,
+    ) async {
+      final captured = <String>[];
+      final previous = FlutterError.onError;
+      FlutterError.onError = (details) {
+        final message = details.exceptionAsString();
+        if (message.contains('overflowed')) {
+          captured.add(message.split('\n').first);
+        } else {
+          (previous ?? FlutterError.presentError)(details);
+        }
+      };
+
+      tester.view.physicalSize = Size(width, 6000);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+
+      try {
+        await tester.pumpWidget(hub(status));
+        await tester.pumpAndSettle();
+      } finally {
+        FlutterError.onError = previous;
+      }
+
+      // Draine les exceptions d'overflow que le binding a mises en attente,
+      // afin de laisser l'etat propre et de faire porter l'echec par le
+      // expect() ci-dessous (message lisible) plutot que par le binding.
+      for (var guard = 0; guard < captured.length + 8; guard++) {
+        final pending = tester.takeException();
+        if (pending == null) break;
+        if (!pending.toString().contains('overflowed')) {
+          // Exception inattendue : on la re-signale telle quelle.
+          throw pending;
+        }
+      }
+      return captured;
+    }
+
+    for (final width in mobileWidths) {
+      testWidgets('aucun overflow a ${width.toInt()} px — sans trek',
+          (tester) async {
+        final overflows =
+            await overflowsAt(tester, width, TrackingSessionStatus.idle);
+        expect(
+          overflows,
+          isEmpty,
+          reason: 'HUB sans trek deborde a ${width.toInt()} px : $overflows',
+        );
+      });
+
+      testWidgets('aucun overflow a ${width.toInt()} px — trek en cours',
+          (tester) async {
+        final overflows =
+            await overflowsAt(tester, width, TrackingSessionStatus.recording);
+        expect(
+          overflows,
+          isEmpty,
+          reason: 'HUB trek en cours deborde a ${width.toInt()} px : $overflows',
+        );
+      });
+    }
+  });
 }
 
 /// Notifier factice pilotant l'etat expose du trek (voir tracking_overlay_test).

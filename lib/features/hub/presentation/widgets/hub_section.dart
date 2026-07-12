@@ -39,7 +39,16 @@ class HubSection extends StatelessWidget {
           children: [
             Icon(icon, color: theme.colorScheme.primary, size: 22),
             const SizedBox(width: AppTheme.spacingSm),
-            Text(title, style: theme.textTheme.titleLarge),
+            // Flexible + ellipsis : le titre de section s'ajuste a la largeur
+            // (mobile 360 px) au lieu de deborder la Row a droite.
+            Expanded(
+              child: Text(
+                title,
+                style: theme.textTheme.titleLarge,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: AppTheme.spacingMd),

@@ -73,8 +73,16 @@ class _ActiveTrekCard extends ConsumerWidget {
             children: [
               Icon(Icons.directions_walk, color: scheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
-              Text(t.hub.trekCard.activeTitle,
-                  style: theme.textTheme.titleLarge),
+              // Flexible + ellipsis : le titre s'ajuste a la largeur (mobile
+              // 360 px) au lieu de deborder la Row a droite (fix overflow).
+              Expanded(
+                child: Text(
+                  t.hub.trekCard.activeTitle,
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
@@ -146,8 +154,16 @@ class _NoTrekCard extends ConsumerWidget {
             children: [
               Icon(Icons.map_outlined, color: scheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
-              Text(t.hub.trekCard.noTrekTitle,
-                  style: theme.textTheme.titleLarge),
+              // Flexible + ellipsis : le titre s'ajuste a la largeur (mobile
+              // 360 px) au lieu de deborder la Row a droite (fix overflow).
+              Expanded(
+                child: Text(
+                  t.hub.trekCard.noTrekTitle,
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppTheme.spacingSm),
