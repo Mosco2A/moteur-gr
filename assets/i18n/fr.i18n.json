@@ -906,6 +906,34 @@
       "openSiteButton": "Ouvrir le site de $nom"
     }
   },
+  "health": {
+    "title": "Informations santé",
+    "privacyBanner": "Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.",
+    "field": {
+      "bloodType": "Groupe sanguin",
+      "allergies": "Allergies",
+      "treatments": "Traitements en cours",
+      "doctor": "Médecin traitant",
+      "insurance": "N° assurance / mutuelle"
+    },
+    "hint": {
+      "bloodType": "Ex : A+, O-, AB+",
+      "allergies": "Ex : pénicilline, arachides",
+      "treatments": "Ex : Lévothyrox 50 mg/j",
+      "doctor": "Ex : Dr Dupont 04 95 xx xx xx",
+      "insurance": "Ex : carte européenne"
+    },
+    "save": "Sauvegarder",
+    "saving": "Sauvegarde…",
+    "saved": "Informations sauvegardées",
+    "emergencyHint": "En cas d'urgence, montrez cet écran aux secours.",
+    "entryTitle": "Mes infos santé",
+    "entrySubtitle": "À montrer aux secours (restées sur le téléphone)",
+    "a11y": {
+      "form": "Formulaire d'informations de santé",
+      "saveButton": "Enregistrer les informations de santé"
+    }
+  },
   "trailSelection": {
     "title": "Changer de sentier",
     "subtitle": "Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.",

@@ -6,9 +6,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/config/trail_config.dart';
 import 'core/config/test_trail_config.dart';
 import 'core/firebase/firebase_service.dart';
+import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
+import 'features/safety/presentation/health_info_screen.dart';
 import 'i18n/translations.g.dart';
 
 Future<void> main() async {
@@ -57,6 +59,16 @@ class MoteurGrApp extends StatelessWidget {
         // Seul firebaseServiceProvider reste surcharge (service initialise
         // au demarrage, hors graphe Riverpod pur).
         firebaseServiceProvider.overrideWithValue(firebaseService),
+        // E57 (LOT D/D1) : cablage explicite du DAO sante sur la base Drift
+        // unique (databaseProvider). Le provider auto-derive deja de
+        // databaseProvider ; l'override rend le point d'injection explicite au
+        // niveau racine (spec E57 RF-8). Donnees LOCAL ONLY (art. 9), jamais le
+        // cloud. NB : databaseProvider est en memoire (etat app-wide inchange,
+        // hors perimetre D1) -> persistance = duree de session, comme les
+        // autres features Drift aujourd'hui.
+        healthInfoDaoProvider.overrideWith(
+          (ref) => ref.watch(databaseProvider).healthInfoDao,
+        ),
       ],
       // TranslationProvider (Slang) : requis pour Translations.of(context),
       // utilise notamment par l'ecran d'onboarding (E5.1a).

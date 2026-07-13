@@ -906,6 +906,34 @@
       "openSiteButton": "Website von $nom öffnen"
     }
   },
+  "health": {
+    "title": "Gesundheitsinformationen",
+    "privacyBanner": "Diese Daten bleiben auf Ihrem Telefon. Sie werden niemals über das Internet gesendet.",
+    "field": {
+      "bloodType": "Blutgruppe",
+      "allergies": "Allergien",
+      "treatments": "Aktuelle Behandlungen",
+      "doctor": "Hausarzt",
+      "insurance": "Versicherungsnr. / Krankenkasse"
+    },
+    "hint": {
+      "bloodType": "z. B. A+, O-, AB+",
+      "allergies": "z. B. Penicillin, Erdnüsse",
+      "treatments": "z. B. Levothyrox 50 mg/Tag",
+      "doctor": "z. B. Dr. Müller +49 30 xxxx xxxx",
+      "insurance": "z. B. Europäische Krankenversicherungskarte"
+    },
+    "save": "Speichern",
+    "saving": "Speichern…",
+    "saved": "Informationen gespeichert",
+    "emergencyHint": "Zeigen Sie diesen Bildschirm im Notfall den Rettungskräften.",
+    "entryTitle": "Meine Gesundheitsdaten",
+    "entrySubtitle": "Den Rettungskräften zeigen (bleiben auf dem Telefon)",
+    "a11y": {
+      "form": "Formular für Gesundheitsinformationen",
+      "saveButton": "Gesundheitsinformationen speichern"
+    }
+  },
   "trailSelection": {
     "title": "Weg wechseln",
     "subtitle": "Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.",

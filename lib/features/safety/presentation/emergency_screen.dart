@@ -8,11 +8,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/app_haptics.dart';
+import '../../../i18n/translations.g.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../data/emergency_contacts_service.dart';
 import '../domain/models/emergency_contact.dart';
@@ -53,6 +55,10 @@ class EmergencyScreen extends ConsumerWidget {
         children: [
           // Bandeau position GPS
           _GpsPositionBanner(positionAsync: positionAsync),
+
+          // E57 (LOT D/D1) : acces a la fiche infos sante LOCAL ONLY.
+          // Usage terrain : montrer ses donnees vitales aux secours (RF-6/AM-4).
+          _HealthInfoEntry(),
 
           // Liste des contacts
           Expanded(
@@ -137,6 +143,47 @@ class _GpsPositionBanner extends StatelessWidget {
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+/// Entree vers la fiche infos sante (E57, LOT D/D1).
+///
+/// Point d'entree principal de la fiche sante (route `/health`) : usage terrain
+/// pour montrer ses donnees vitales aux secours (RF-6/AM-4). Les donnees restent
+/// LOCAL ONLY (Drift, art. 9). Libelles via Slang (`t.health.*`), couleurs du
+/// theme -- rien en dur.
+class _HealthInfoEntry extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTheme.spacingBase,
+        AppTheme.spacingBase,
+        AppTheme.spacingBase,
+        0,
+      ),
+      child: Card(
+        elevation: 1,
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: theme.colorScheme.primary,
+            child: const Icon(
+              Icons.medical_information_outlined,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          title: Text(
+            t.health.entryTitle,
+            style: const TextStyle(fontWeight: FontWeight.w600),
+          ),
+          subtitle: Text(t.health.entrySubtitle),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => context.push('/health'),
+        ),
       ),
     );
   }

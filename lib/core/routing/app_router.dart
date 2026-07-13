@@ -27,6 +27,7 @@ import '../../features/goodies/presentation/goodies_catalog_screen.dart';
 import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/booking/presentation/hebergements_peripheriques_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
+import '../../features/safety/presentation/health_info_screen.dart';
 import '../../features/safety/presentation/signalement_screen.dart';
 import '../../features/training/presentation/training_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
@@ -91,6 +92,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /booking                     - Reservation (stub, gardee par FeatureFlags)
 ///   /accommodations-nearby       - Hebergements peripheriques A/R (facilitateur)
 ///   /emergency                   - Contacts d'urgence
+///   /health                      - Fiche infos sante LOCAL ONLY (E57, via Urgence)
 ///   /signalement                 - Signalement terrain (offline-first)
 ///   /training                    - Programme d'entrainement pre-trek
 ///   /no-data                     - Ecran bloquant sans donnees telechargees
@@ -373,6 +375,14 @@ final appRouter = GoRouter(
       name: 'emergency',
       builder: (context, state) => const EmergencyScreen(),
     ),
+    // E57 (LOT D/D1) : fiche infos sante LOCAL ONLY (art. 9, jamais le cloud).
+    // Donnee personnelle independante du sentier (pas de trailId) : atteignable
+    // sans sentier actif (cf. excludedPaths). Entree principale = E29 Urgence.
+    GoRoute(
+      path: '/health',
+      name: 'health',
+      builder: (context, state) => const HealthInfoScreen(),
+    ),
     // F6C-03 : Signalement terrain type Waze (offline-first, latence assumee)
     GoRoute(
       path: '/signalement',
@@ -536,6 +546,8 @@ String? redirectForPath(String path) {
     '/settings',
     '/profile',
     '/emergency',
+    // E57 (LOT D/D1) : fiche sante = donnee personnelle, sans sentier requis.
+    '/health',
   ];
   if (excludedPaths.contains(path)) return null;
 
