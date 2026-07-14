@@ -24,7 +24,7 @@
     "more": "Plus",
     "checklist": "Checklist matériel",
     "feasibility": "Faisabilité",
-    "tips": "Conseils trek",
+    "tips": "Conseils randonnée",
     "emergency": "Contacts urgence",
     "catalog": "Catalogue des sentiers",
     "profile": "Profil",
@@ -32,7 +32,7 @@
     "trailSelection": "Changer de sentier"
   },
   "branding": {
-    "tagline": "Votre compagnon de trek",
+    "tagline": "Votre compagnon de randonnée",
     "subline": "Préparez, marchez, partagez"
   },
   "hub": {
@@ -42,15 +42,15 @@
     "profileTooltip": "Mon profil",
     "infoSheetBody": "Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d'accueil.",
     "trekCard": {
-      "activeTitle": "Trek en cours",
+      "activeTitle": "Randonnée en cours",
       "distanceCovered": "Distance parcourue",
       "elevationGain": "Dénivelé du jour",
       "duration": "Temps de marche",
       "progressLabel": "$percent % du sentier",
       "resume": "Reprendre la navigation",
       "noTrekTitle": "Prêt à partir ?",
-      "noTrekBody": "Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.",
-      "plan": "Planifier mon trek"
+      "noTrekBody": "Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.",
+      "plan": "Planifier ma randonnée"
     },
     "weather": {
       "title": "Météo du jour",
@@ -59,12 +59,12 @@
       "alertStorm": "Alerte orage",
       "tempRange": "$min° / $max°"
     },
-    "startCta": "Démarrer le trek",
+    "startCta": "Démarrer la randonnée",
     "sections": {
       "prepare": "Préparer",
       "hike": "Randonner",
       "info": "Informations",
-      "after": "Après le trek"
+      "after": "Après la randonnée"
     },
     "cards": {
       "feasibility": "Faisabilité",
@@ -88,7 +88,7 @@
       "accommodations": "Hébergements",
       "accommodationsSub": "Où dormir à proximité",
       "tips": "Fiches conseils",
-      "tipsSub": "Nos conseils de trek",
+      "tipsSub": "Nos conseils de randonnée",
       "townGuides": "Guides des villes",
       "townGuidesSub": "Infos pratiques des étapes",
       "recap": "Récapitulatif",
@@ -103,22 +103,22 @@
   },
   "map": {
     "title": "Carte du sentier",
-    "loading": "Chargement du tracÃ©...",
-    "noTrack": "Aucun tracÃ© disponible",
+    "loading": "Chargement du tracé...",
+    "noTrack": "Aucun tracé disponible",
     "viewMap": "Voir la carte"
   },
   "stage": {
     "distance": "Distance",
-    "elevation": "DÃ©nivelÃ©",
-    "elevationGain": "DÃ©nivelÃ© positif",
-    "elevationLoss": "DÃ©nivelÃ© nÃ©gatif",
-    "duration": "DurÃ©e estimÃ©e",
+    "elevation": "Dénivelé",
+    "elevationGain": "Dénivelé positif",
+    "elevationLoss": "Dénivelé négatif",
+    "duration": "Durée estimée",
     "description": "Description",
-    "coordinates": "CoordonnÃ©es",
-    "pois": "Points d'intÃ©rÃªt",
+    "coordinates": "Coordonnées",
+    "pois": "Points d'intérêt",
     "difficulty": {
       "easy": "Facile",
-      "moderate": "ModÃ©rÃ©",
+      "moderate": "Modéré",
       "hard": "Difficile",
       "expert": "Expert"
     },
@@ -126,9 +126,9 @@
     "arrived": "Vous etes arrive !"
   },
   "trail": {
-    "stages": "Ãtapes",
+    "stages": "Étapes",
     "totalDistance": "Distance totale",
-    "totalElevation": "DÃ©nivelÃ© total"
+    "totalElevation": "Dénivelé total"
   },
   "poi": {
     "shelter": "Refuge",
@@ -139,7 +139,7 @@
     "emergency": "Urgence",
     "danger": "Danger",
     "shop": "Commerce",
-    "filter": "Filtrer les points d'intÃ©rÃªt",
+    "filter": "Filtrer les points d'intérêt",
     "altitude": "Altitude",
     "hours": "Horaires"
   },
@@ -236,13 +236,13 @@
     "essential": "Essentiel"
   },
   "journal": {
-    "title": "Journal de trek",
+    "title": "Journal de randonnée",
     "empty": "Votre journal est vide",
-    "emptySubtitle": "Notez vos impressions et souvenirs de trek",
+    "emptySubtitle": "Notez vos impressions et souvenirs de randonnée",
     "addNote": "Nouvelle note",
     "stage": "Étape",
     "yourNote": "Votre note",
-    "placeholder": "Décrivez votre journée de trek...",
+    "placeholder": "Décrivez votre journée de randonnée...",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
@@ -329,7 +329,7 @@
     "templateStage": "Étape"
   },
   "diploma": {
-    "title": "Diplôme de trek",
+    "title": "Diplôme de randonnée",
     "yourName": "Votre nom",
     "namePlaceholder": "Entrez votre nom...",
     "generatePdf": "Générer le PDF",
@@ -351,7 +351,7 @@
     "recapStages": "{count} etapes franchies",
     "recapDistance": "{km} km parcourus",
     "recapElevation": "{meters} m de denivele",
-    "recapDuration": "{days} jours de trek",
+    "recapDuration": "{days} jours de randonnée",
     "recapMapTrace": "Trace du parcours",
     "recapNoMap": "Trace non disponible",
     "recapJournalEntries": "{count} notes de journal",
@@ -362,9 +362,9 @@
     "weatherAlerts": "Alertes météo",
     "countdown": "Rappel J-2",
     "countdownDesc": "Notification 2 jours avant le départ",
-    "schedulerCountdownTitle": "Votre trek approche !",
+    "schedulerCountdownTitle": "Votre randonnée approche !",
     "schedulerCountdownBody": "Depart dans 2 jours. Verifiez votre checklist et la meteo.",
-    "schedulerDailyTitle": "Bonne journee de trek !",
+    "schedulerDailyTitle": "Bonne journee de randonnée !",
     "schedulerDailyBody": "Consultez la meteo et preparez votre etape du jour."
   },
   "settings": {
@@ -473,7 +473,7 @@
       "experienceA": "Aucune expérience de randonnée",
       "experienceB": "Quelques randonnées à la journée",
       "experienceC": "Randonnées multi-jours déjà réalisées",
-      "experienceD": "Trekkeur expérimenté, GR déjà réalisés",
+      "experienceD": "Randonneur expérimenté, GR déjà réalisés",
       "gearA": "Équipement incomplet ou inadapté",
       "gearB": "Équipement basique, quelques manques",
       "gearC": "Équipement complet, bon état",
@@ -532,7 +532,7 @@
       },
       "excellent": {
         "title": "Préparation optimale",
-        "summary": "Vous êtes parfaitement préparé(e). Profitez du trek !",
+        "summary": "Vous êtes parfaitement préparé(e). Profitez de la randonnée !",
         "tips": {
           "tip1": "Restez à l’écoute de votre corps",
           "tip2": "Partagez votre expérience avec les randonneurs",
@@ -542,7 +542,7 @@
     }
   },
   "tips": {
-    "carouselTitle": "Conseils trek",
+    "carouselTitle": "Conseils randonnée",
     "allCategories": "Toutes",
     "swipeHint": "Glissez pour voir plus",
     "detailTitle": "Détail du conseil",
@@ -607,7 +607,7 @@
     "next": "Suivant",
     "getStarted": "Commencer",
     "welcomeTitle": "Bienvenue sur $appName",
-    "welcomeSubtitle": "Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.",
+    "welcomeSubtitle": "Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.",
     "languageTitle": "Choisissez votre langue",
     "languageSubtitle": "Vous pourrez la modifier à tout moment dans les paramètres.",
     "downloadTitle": "Téléchargez votre premier sentier",
@@ -616,15 +616,15 @@
   },
   "monetization": {
     "demoBanner": "Mode démo — touchez pour débloquer",
-    "paywallTitle": "Débloquez ce trek",
-    "paywallBody": "Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.",
+    "paywallTitle": "Débloquez cette randonnée",
+    "paywallBody": "Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.",
     "featureMap": "Carte hors ligne + GPS + suivi en direct",
     "featureJournal": "Journal de bord complet",
-    "featureDiploma": "Diplôme de fin de trek",
+    "featureDiploma": "Diplôme de fin de randonnée",
     "featureFollowers": "2 suiveurs gratuits",
     "featureNoAds": "Zéro publicité",
-    "buyCta": "Débloquer ce trek",
-    "buyCtaWithPrice": "Débloquer ce trek — $price €"
+    "buyCta": "Débloquer cette randonnée",
+    "buyCtaWithPrice": "Débloquer cette randonnée — $price €"
   },
   "signalement": {
     "title": "Signaler",
@@ -726,8 +726,8 @@
         "description": "Tu as terminé ta première étape."
       },
       "firstTrek": {
-        "titre": "Premier trek",
-        "description": "Tu as bouclé ton premier trek complet."
+        "titre": "Première randonnée",
+        "description": "Tu as bouclé ta première randonnée complète."
       },
       "firstSegment": {
         "titre": "Premier segment",

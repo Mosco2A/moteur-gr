@@ -104,7 +104,7 @@
   "map": {
     "title": "Mapa del sendero",
     "loading": "Cargando el recorrido...",
-    "noTrack": "NingÃºn recorrido disponible",
+    "noTrack": "Ningún recorrido disponible",
     "viewMap": "Ver el mapa"
   },
   "stage": {
@@ -112,14 +112,14 @@
     "elevation": "Desnivel",
     "elevationGain": "Desnivel positivo",
     "elevationLoss": "Desnivel negativo",
-    "duration": "DuraciÃ³n estimada",
-    "description": "DescripciÃ³n",
+    "duration": "Duración estimada",
+    "description": "Descripción",
     "coordinates": "Coordenadas",
-    "pois": "Puntos de interÃ©s",
+    "pois": "Puntos de interés",
     "difficulty": {
-      "easy": "FÃ¡cil",
+      "easy": "Fácil",
       "moderate": "Moderado",
-      "hard": "DifÃ­cil",
+      "hard": "Difícil",
       "expert": "Experto"
     },
     "remaining": "{distance} km restantes",
@@ -139,7 +139,7 @@
     "emergency": "Emergencia",
     "danger": "Peligro",
     "shop": "Tienda",
-    "filter": "Filtrar puntos de interÃ©s",
+    "filter": "Filtrar puntos de interés",
     "altitude": "Altitud",
     "hours": "Horarios"
   },

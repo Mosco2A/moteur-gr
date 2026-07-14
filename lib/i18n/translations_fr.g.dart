@@ -172,8 +172,8 @@ class Translations$nav$fr {
 	/// fr: 'Faisabilité'
 	String get feasibility => 'Faisabilité';
 
-	/// fr: 'Conseils trek'
-	String get tips => 'Conseils trek';
+	/// fr: 'Conseils randonnée'
+	String get tips => 'Conseils randonnée';
 
 	/// fr: 'Contacts urgence'
 	String get emergency => 'Contacts urgence';
@@ -199,8 +199,8 @@ class Translations$branding$fr {
 
 	// Translations
 
-	/// fr: 'Votre compagnon de trek'
-	String get tagline => 'Votre compagnon de trek';
+	/// fr: 'Votre compagnon de randonnée'
+	String get tagline => 'Votre compagnon de randonnée';
 
 	/// fr: 'Préparez, marchez, partagez'
 	String get subline => 'Préparez, marchez, partagez';
@@ -232,8 +232,8 @@ class Translations$hub$fr {
 	late final Translations$hub$trekCard$fr trekCard = Translations$hub$trekCard$fr.internal(_root);
 	late final Translations$hub$weather$fr weather = Translations$hub$weather$fr.internal(_root);
 
-	/// fr: 'Démarrer le trek'
-	String get startCta => 'Démarrer le trek';
+	/// fr: 'Démarrer la randonnée'
+	String get startCta => 'Démarrer la randonnée';
 
 	late final Translations$hub$sections$fr sections = Translations$hub$sections$fr.internal(_root);
 	late final Translations$hub$cards$fr cards = Translations$hub$cards$fr.internal(_root);
@@ -251,11 +251,11 @@ class Translations$map$fr {
 	/// fr: 'Carte du sentier'
 	String get title => 'Carte du sentier';
 
-	/// fr: 'Chargement du tracÃ©...'
-	String get loading => 'Chargement du tracÃ©...';
+	/// fr: 'Chargement du tracé...'
+	String get loading => 'Chargement du tracé...';
 
-	/// fr: 'Aucun tracÃ© disponible'
-	String get noTrack => 'Aucun tracÃ© disponible';
+	/// fr: 'Aucun tracé disponible'
+	String get noTrack => 'Aucun tracé disponible';
 
 	/// fr: 'Voir la carte'
 	String get viewMap => 'Voir la carte';
@@ -272,26 +272,26 @@ class Translations$stage$fr {
 	/// fr: 'Distance'
 	String get distance => 'Distance';
 
-	/// fr: 'DÃ©nivelÃ©'
-	String get elevation => 'DÃ©nivelÃ©';
+	/// fr: 'Dénivelé'
+	String get elevation => 'Dénivelé';
 
-	/// fr: 'DÃ©nivelÃ© positif'
-	String get elevationGain => 'DÃ©nivelÃ© positif';
+	/// fr: 'Dénivelé positif'
+	String get elevationGain => 'Dénivelé positif';
 
-	/// fr: 'DÃ©nivelÃ© nÃ©gatif'
-	String get elevationLoss => 'DÃ©nivelÃ© nÃ©gatif';
+	/// fr: 'Dénivelé négatif'
+	String get elevationLoss => 'Dénivelé négatif';
 
-	/// fr: 'DurÃ©e estimÃ©e'
-	String get duration => 'DurÃ©e estimÃ©e';
+	/// fr: 'Durée estimée'
+	String get duration => 'Durée estimée';
 
 	/// fr: 'Description'
 	String get description => 'Description';
 
-	/// fr: 'CoordonnÃ©es'
-	String get coordinates => 'CoordonnÃ©es';
+	/// fr: 'Coordonnées'
+	String get coordinates => 'Coordonnées';
 
-	/// fr: 'Points d'intÃ©rÃªt'
-	String get pois => 'Points d\'intÃ©rÃªt';
+	/// fr: 'Points d'intérêt'
+	String get pois => 'Points d\'intérêt';
 
 	late final Translations$stage$difficulty$fr difficulty = Translations$stage$difficulty$fr.internal(_root);
 
@@ -310,14 +310,14 @@ class Translations$trail$fr {
 
 	// Translations
 
-	/// fr: 'Ãtapes'
-	String get stages => 'Ãtapes';
+	/// fr: 'Étapes'
+	String get stages => 'Étapes';
 
 	/// fr: 'Distance totale'
 	String get totalDistance => 'Distance totale';
 
-	/// fr: 'DÃ©nivelÃ© total'
-	String get totalElevation => 'DÃ©nivelÃ© total';
+	/// fr: 'Dénivelé total'
+	String get totalElevation => 'Dénivelé total';
 }
 
 // Path: poi
@@ -352,8 +352,8 @@ class Translations$poi$fr {
 	/// fr: 'Commerce'
 	String get shop => 'Commerce';
 
-	/// fr: 'Filtrer les points d'intÃ©rÃªt'
-	String get filter => 'Filtrer les points d\'intÃ©rÃªt';
+	/// fr: 'Filtrer les points d'intérêt'
+	String get filter => 'Filtrer les points d\'intérêt';
 
 	/// fr: 'Altitude'
 	String get altitude => 'Altitude';
@@ -539,14 +539,14 @@ class Translations$journal$fr {
 
 	// Translations
 
-	/// fr: 'Journal de trek'
-	String get title => 'Journal de trek';
+	/// fr: 'Journal de randonnée'
+	String get title => 'Journal de randonnée';
 
 	/// fr: 'Votre journal est vide'
 	String get empty => 'Votre journal est vide';
 
-	/// fr: 'Notez vos impressions et souvenirs de trek'
-	String get emptySubtitle => 'Notez vos impressions et souvenirs de trek';
+	/// fr: 'Notez vos impressions et souvenirs de randonnée'
+	String get emptySubtitle => 'Notez vos impressions et souvenirs de randonnée';
 
 	/// fr: 'Nouvelle note'
 	String get addNote => 'Nouvelle note';
@@ -557,8 +557,8 @@ class Translations$journal$fr {
 	/// fr: 'Votre note'
 	String get yourNote => 'Votre note';
 
-	/// fr: 'Décrivez votre journée de trek...'
-	String get placeholder => 'Décrivez votre journée de trek...';
+	/// fr: 'Décrivez votre journée de randonnée...'
+	String get placeholder => 'Décrivez votre journée de randonnée...';
 
 	/// fr: 'Enregistrer'
 	String get save => 'Enregistrer';
@@ -720,8 +720,8 @@ class Translations$diploma$fr {
 
 	// Translations
 
-	/// fr: 'Diplôme de trek'
-	String get title => 'Diplôme de trek';
+	/// fr: 'Diplôme de randonnée'
+	String get title => 'Diplôme de randonnée';
 
 	/// fr: 'Votre nom'
 	String get yourName => 'Votre nom';
@@ -786,8 +786,8 @@ class Translations$diploma$fr {
 	/// fr: '{meters} m de denivele'
 	String get recapElevation => '{meters} m de denivele';
 
-	/// fr: '{days} jours de trek'
-	String get recapDuration => '{days} jours de trek';
+	/// fr: '{days} jours de randonnée'
+	String get recapDuration => '{days} jours de randonnée';
 
 	/// fr: 'Trace du parcours'
 	String get recapMapTrace => 'Trace du parcours';
@@ -822,14 +822,14 @@ class Translations$notifications$fr {
 	/// fr: 'Notification 2 jours avant le départ'
 	String get countdownDesc => 'Notification 2 jours avant le départ';
 
-	/// fr: 'Votre trek approche !'
-	String get schedulerCountdownTitle => 'Votre trek approche !';
+	/// fr: 'Votre randonnée approche !'
+	String get schedulerCountdownTitle => 'Votre randonnée approche !';
 
 	/// fr: 'Depart dans 2 jours. Verifiez votre checklist et la meteo.'
 	String get schedulerCountdownBody => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.';
 
-	/// fr: 'Bonne journee de trek !'
-	String get schedulerDailyTitle => 'Bonne journee de trek !';
+	/// fr: 'Bonne journee de randonnée !'
+	String get schedulerDailyTitle => 'Bonne journee de randonnée !';
 
 	/// fr: 'Consultez la meteo et preparez votre etape du jour.'
 	String get schedulerDailyBody => 'Consultez la meteo et preparez votre etape du jour.';
@@ -1090,8 +1090,8 @@ class Translations$tips$fr {
 
 	// Translations
 
-	/// fr: 'Conseils trek'
-	String get carouselTitle => 'Conseils trek';
+	/// fr: 'Conseils randonnée'
+	String get carouselTitle => 'Conseils randonnée';
 
 	/// fr: 'Toutes'
 	String get allCategories => 'Toutes';
@@ -1299,8 +1299,8 @@ class Translations$onboarding$fr {
 	/// fr: 'Bienvenue sur $appName'
 	String welcomeTitle({required Object appName}) => 'Bienvenue sur ${appName}';
 
-	/// fr: 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.'
-	String get welcomeSubtitle => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.';
+	/// fr: 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.'
+	String get welcomeSubtitle => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.';
 
 	/// fr: 'Choisissez votre langue'
 	String get languageTitle => 'Choisissez votre langue';
@@ -1329,11 +1329,11 @@ class Translations$monetization$fr {
 	/// fr: 'Mode démo — touchez pour débloquer'
 	String get demoBanner => 'Mode démo — touchez pour débloquer';
 
-	/// fr: 'Débloquez ce trek'
-	String get paywallTitle => 'Débloquez ce trek';
+	/// fr: 'Débloquez cette randonnée'
+	String get paywallTitle => 'Débloquez cette randonnée';
 
-	/// fr: 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.'
-	String get paywallBody => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.';
+	/// fr: 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.'
+	String get paywallBody => 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.';
 
 	/// fr: 'Carte hors ligne + GPS + suivi en direct'
 	String get featureMap => 'Carte hors ligne + GPS + suivi en direct';
@@ -1341,8 +1341,8 @@ class Translations$monetization$fr {
 	/// fr: 'Journal de bord complet'
 	String get featureJournal => 'Journal de bord complet';
 
-	/// fr: 'Diplôme de fin de trek'
-	String get featureDiploma => 'Diplôme de fin de trek';
+	/// fr: 'Diplôme de fin de randonnée'
+	String get featureDiploma => 'Diplôme de fin de randonnée';
 
 	/// fr: '2 suiveurs gratuits'
 	String get featureFollowers => '2 suiveurs gratuits';
@@ -1350,11 +1350,11 @@ class Translations$monetization$fr {
 	/// fr: 'Zéro publicité'
 	String get featureNoAds => 'Zéro publicité';
 
-	/// fr: 'Débloquer ce trek'
-	String get buyCta => 'Débloquer ce trek';
+	/// fr: 'Débloquer cette randonnée'
+	String get buyCta => 'Débloquer cette randonnée';
 
-	/// fr: 'Débloquer ce trek — $price €'
-	String buyCtaWithPrice({required Object price}) => 'Débloquer ce trek — ${price} €';
+	/// fr: 'Débloquer cette randonnée — $price €'
+	String buyCtaWithPrice({required Object price}) => 'Débloquer cette randonnée — ${price} €';
 }
 
 // Path: signalement
@@ -1976,8 +1976,8 @@ class Translations$hub$trekCard$fr {
 
 	// Translations
 
-	/// fr: 'Trek en cours'
-	String get activeTitle => 'Trek en cours';
+	/// fr: 'Randonnée en cours'
+	String get activeTitle => 'Randonnée en cours';
 
 	/// fr: 'Distance parcourue'
 	String get distanceCovered => 'Distance parcourue';
@@ -1997,11 +1997,11 @@ class Translations$hub$trekCard$fr {
 	/// fr: 'Prêt à partir ?'
 	String get noTrekTitle => 'Prêt à partir ?';
 
-	/// fr: 'Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.'
-	String get noTrekBody => 'Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.';
+	/// fr: 'Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.'
+	String get noTrekBody => 'Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.';
 
-	/// fr: 'Planifier mon trek'
-	String get plan => 'Planifier mon trek';
+	/// fr: 'Planifier ma randonnée'
+	String get plan => 'Planifier ma randonnée';
 }
 
 // Path: hub.weather
@@ -2045,8 +2045,8 @@ class Translations$hub$sections$fr {
 	/// fr: 'Informations'
 	String get info => 'Informations';
 
-	/// fr: 'Après le trek'
-	String get after => 'Après le trek';
+	/// fr: 'Après la randonnée'
+	String get after => 'Après la randonnée';
 }
 
 // Path: hub.cards
@@ -2120,8 +2120,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Fiches conseils'
 	String get tips => 'Fiches conseils';
 
-	/// fr: 'Nos conseils de trek'
-	String get tipsSub => 'Nos conseils de trek';
+	/// fr: 'Nos conseils de randonnée'
+	String get tipsSub => 'Nos conseils de randonnée';
 
 	/// fr: 'Guides des villes'
 	String get townGuides => 'Guides des villes';
@@ -2168,8 +2168,8 @@ class Translations$stage$difficulty$fr {
 	/// fr: 'Facile'
 	String get easy => 'Facile';
 
-	/// fr: 'ModÃ©rÃ©'
-	String get moderate => 'ModÃ©rÃ©';
+	/// fr: 'Modéré'
+	String get moderate => 'Modéré';
 
 	/// fr: 'Difficile'
 	String get hard => 'Difficile';
@@ -2486,8 +2486,8 @@ class Translations$feasibility$answers$fr {
 	/// fr: 'Randonnées multi-jours déjà réalisées'
 	String get experienceC => 'Randonnées multi-jours déjà réalisées';
 
-	/// fr: 'Trekkeur expérimenté, GR déjà réalisés'
-	String get experienceD => 'Trekkeur expérimenté, GR déjà réalisés';
+	/// fr: 'Randonneur expérimenté, GR déjà réalisés'
+	String get experienceD => 'Randonneur expérimenté, GR déjà réalisés';
 
 	/// fr: 'Équipement incomplet ou inadapté'
 	String get gearA => 'Équipement incomplet ou inadapté';
@@ -3415,8 +3415,8 @@ class Translations$feasibility$recommendations$excellent$fr {
 	/// fr: 'Préparation optimale'
 	String get title => 'Préparation optimale';
 
-	/// fr: 'Vous êtes parfaitement préparé(e). Profitez du trek !'
-	String get summary => 'Vous êtes parfaitement préparé(e). Profitez du trek !';
+	/// fr: 'Vous êtes parfaitement préparé(e). Profitez de la randonnée !'
+	String get summary => 'Vous êtes parfaitement préparé(e). Profitez de la randonnée !';
 
 	late final Translations$feasibility$recommendations$excellent$tips$fr tips = Translations$feasibility$recommendations$excellent$tips$fr.internal(_root);
 }
@@ -3444,11 +3444,11 @@ class Translations$gamification$badge$firstTrek$fr {
 
 	// Translations
 
-	/// fr: 'Premier trek'
-	String get titre => 'Premier trek';
+	/// fr: 'Première randonnée'
+	String get titre => 'Première randonnée';
 
-	/// fr: 'Tu as bouclé ton premier trek complet.'
-	String get description => 'Tu as bouclé ton premier trek complet.';
+	/// fr: 'Tu as bouclé ta première randonnée complète.'
+	String get description => 'Tu as bouclé ta première randonnée complète.';
 }
 
 // Path: gamification.badge.firstSegment
@@ -3673,38 +3673,38 @@ extension on Translations {
 			'nav.more' => 'Plus',
 			'nav.checklist' => 'Checklist matériel',
 			'nav.feasibility' => 'Faisabilité',
-			'nav.tips' => 'Conseils trek',
+			'nav.tips' => 'Conseils randonnée',
 			'nav.emergency' => 'Contacts urgence',
 			'nav.catalog' => 'Catalogue des sentiers',
 			'nav.profile' => 'Profil',
 			'nav.settings' => 'Paramètres',
 			'nav.trailSelection' => 'Changer de sentier',
-			'branding.tagline' => 'Votre compagnon de trek',
+			'branding.tagline' => 'Votre compagnon de randonnée',
 			'branding.subline' => 'Préparez, marchez, partagez',
 			'hub.greeting' => ({required Object name}) => 'Bonjour, ${name} !',
 			'hub.greetingFallback' => 'Randonneur',
 			'hub.infoTooltip' => 'À propos de ce sentier',
 			'hub.profileTooltip' => 'Mon profil',
 			'hub.infoSheetBody' => 'Ce sentier vous accompagne à chaque étape : préparez votre itinéraire, préparez votre sac, puis partez en navigation GPS. Chaque fonction est accessible depuis cet écran d\'accueil.',
-			'hub.trekCard.activeTitle' => 'Trek en cours',
+			'hub.trekCard.activeTitle' => 'Randonnée en cours',
 			'hub.trekCard.distanceCovered' => 'Distance parcourue',
 			'hub.trekCard.elevationGain' => 'Dénivelé du jour',
 			'hub.trekCard.duration' => 'Temps de marche',
 			'hub.trekCard.progressLabel' => ({required Object percent}) => '${percent} % du sentier',
 			'hub.trekCard.resume' => 'Reprendre la navigation',
 			'hub.trekCard.noTrekTitle' => 'Prêt à partir ?',
-			'hub.trekCard.noTrekBody' => 'Planifiez votre itinéraire, puis lancez votre trek quand vous êtes prêt.',
-			'hub.trekCard.plan' => 'Planifier mon trek',
+			'hub.trekCard.noTrekBody' => 'Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.',
+			'hub.trekCard.plan' => 'Planifier ma randonnée',
 			'hub.weather.title' => 'Météo du jour',
 			'hub.weather.stub' => 'La météo de votre étape arrive bientôt.',
 			'hub.weather.unavailable' => 'Météo indisponible pour le moment.',
 			'hub.weather.alertStorm' => 'Alerte orage',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
-			'hub.startCta' => 'Démarrer le trek',
+			'hub.startCta' => 'Démarrer la randonnée',
 			'hub.sections.prepare' => 'Préparer',
 			'hub.sections.hike' => 'Randonner',
 			'hub.sections.info' => 'Informations',
-			'hub.sections.after' => 'Après le trek',
+			'hub.sections.after' => 'Après la randonnée',
 			'hub.cards.feasibility' => 'Faisabilité',
 			'hub.cards.feasibilitySub' => 'Évaluez votre niveau',
 			'hub.cards.itinerary' => 'Itinéraire',
@@ -3726,7 +3726,7 @@ extension on Translations {
 			'hub.cards.accommodations' => 'Hébergements',
 			'hub.cards.accommodationsSub' => 'Où dormir à proximité',
 			'hub.cards.tips' => 'Fiches conseils',
-			'hub.cards.tipsSub' => 'Nos conseils de trek',
+			'hub.cards.tipsSub' => 'Nos conseils de randonnée',
 			'hub.cards.townGuides' => 'Guides des villes',
 			'hub.cards.townGuidesSub' => 'Infos pratiques des étapes',
 			'hub.cards.recap' => 'Récapitulatif',
@@ -3736,26 +3736,26 @@ extension on Translations {
 			'hub.fab.feedback' => 'Donner mon avis',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Carte du sentier',
-			'map.loading' => 'Chargement du tracÃ©...',
-			'map.noTrack' => 'Aucun tracÃ© disponible',
+			'map.loading' => 'Chargement du tracé...',
+			'map.noTrack' => 'Aucun tracé disponible',
 			'map.viewMap' => 'Voir la carte',
 			'stage.distance' => 'Distance',
-			'stage.elevation' => 'DÃ©nivelÃ©',
-			'stage.elevationGain' => 'DÃ©nivelÃ© positif',
-			'stage.elevationLoss' => 'DÃ©nivelÃ© nÃ©gatif',
-			'stage.duration' => 'DurÃ©e estimÃ©e',
+			'stage.elevation' => 'Dénivelé',
+			'stage.elevationGain' => 'Dénivelé positif',
+			'stage.elevationLoss' => 'Dénivelé négatif',
+			'stage.duration' => 'Durée estimée',
 			'stage.description' => 'Description',
-			'stage.coordinates' => 'CoordonnÃ©es',
-			'stage.pois' => 'Points d\'intÃ©rÃªt',
+			'stage.coordinates' => 'Coordonnées',
+			'stage.pois' => 'Points d\'intérêt',
 			'stage.difficulty.easy' => 'Facile',
-			'stage.difficulty.moderate' => 'ModÃ©rÃ©',
+			'stage.difficulty.moderate' => 'Modéré',
 			'stage.difficulty.hard' => 'Difficile',
 			'stage.difficulty.expert' => 'Expert',
 			'stage.remaining' => '{distance} km restants',
 			'stage.arrived' => 'Vous etes arrive !',
-			'trail.stages' => 'Ãtapes',
+			'trail.stages' => 'Étapes',
 			'trail.totalDistance' => 'Distance totale',
-			'trail.totalElevation' => 'DÃ©nivelÃ© total',
+			'trail.totalElevation' => 'Dénivelé total',
 			'poi.shelter' => 'Refuge',
 			'poi.water' => 'Point d\'eau',
 			'poi.viewpoint' => 'Point de vue',
@@ -3764,7 +3764,7 @@ extension on Translations {
 			'poi.emergency' => 'Urgence',
 			'poi.danger' => 'Danger',
 			'poi.shop' => 'Commerce',
-			'poi.filter' => 'Filtrer les points d\'intÃ©rÃªt',
+			'poi.filter' => 'Filtrer les points d\'intérêt',
 			'poi.altitude' => 'Altitude',
 			'poi.hours' => 'Horaires',
 			'accommodation.types.refuge' => 'Refuge',
@@ -3841,13 +3841,13 @@ extension on Translations {
 			'checklist.items.handSanitizer' => 'Gel hydroalcoolique',
 			'checklist.items.towel' => 'Serviette',
 			'checklist.essential' => 'Essentiel',
-			'journal.title' => 'Journal de trek',
+			'journal.title' => 'Journal de randonnée',
 			'journal.empty' => 'Votre journal est vide',
-			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de trek',
+			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de randonnée',
 			'journal.addNote' => 'Nouvelle note',
 			'journal.stage' => 'Étape',
 			'journal.yourNote' => 'Votre note',
-			'journal.placeholder' => 'Décrivez votre journée de trek...',
+			'journal.placeholder' => 'Décrivez votre journée de randonnée...',
 			'journal.save' => 'Enregistrer',
 			'journal.cancel' => 'Annuler',
 			'journal.delete' => 'Supprimer',
@@ -3910,7 +3910,7 @@ extension on Translations {
 			'share.templateStats' => 'Statistiques',
 			'share.templateJourney' => 'Parcours',
 			'share.templateStage' => 'Étape',
-			'diploma.title' => 'Diplôme de trek',
+			'diploma.title' => 'Diplôme de randonnée',
 			'diploma.yourName' => 'Votre nom',
 			'diploma.namePlaceholder' => 'Entrez votre nom...',
 			'diploma.generatePdf' => 'Générer le PDF',
@@ -3932,7 +3932,7 @@ extension on Translations {
 			'diploma.recapStages' => '{count} etapes franchies',
 			'diploma.recapDistance' => '{km} km parcourus',
 			'diploma.recapElevation' => '{meters} m de denivele',
-			'diploma.recapDuration' => '{days} jours de trek',
+			'diploma.recapDuration' => '{days} jours de randonnée',
 			'diploma.recapMapTrace' => 'Trace du parcours',
 			'diploma.recapNoMap' => 'Trace non disponible',
 			'diploma.recapJournalEntries' => '{count} notes de journal',
@@ -3941,9 +3941,9 @@ extension on Translations {
 			'notifications.weatherAlerts' => 'Alertes météo',
 			'notifications.countdown' => 'Rappel J-2',
 			'notifications.countdownDesc' => 'Notification 2 jours avant le départ',
-			'notifications.schedulerCountdownTitle' => 'Votre trek approche !',
+			'notifications.schedulerCountdownTitle' => 'Votre randonnée approche !',
 			'notifications.schedulerCountdownBody' => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.',
-			'notifications.schedulerDailyTitle' => 'Bonne journee de trek !',
+			'notifications.schedulerDailyTitle' => 'Bonne journee de randonnée !',
 			'notifications.schedulerDailyBody' => 'Consultez la meteo et preparez votre etape du jour.',
 			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',
@@ -4037,7 +4037,7 @@ extension on Translations {
 			'feasibility.answers.experienceA' => 'Aucune expérience de randonnée',
 			'feasibility.answers.experienceB' => 'Quelques randonnées à la journée',
 			'feasibility.answers.experienceC' => 'Randonnées multi-jours déjà réalisées',
-			'feasibility.answers.experienceD' => 'Trekkeur expérimenté, GR déjà réalisés',
+			'feasibility.answers.experienceD' => 'Randonneur expérimenté, GR déjà réalisés',
 			'feasibility.answers.gearA' => 'Équipement incomplet ou inadapté',
 			'feasibility.answers.gearB' => 'Équipement basique, quelques manques',
 			'feasibility.answers.gearC' => 'Équipement complet, bon état',
@@ -4081,11 +4081,11 @@ extension on Translations {
 			'feasibility.recommendations.good.tips.tip2' => 'Prévoyez des marges dans votre planning',
 			'feasibility.recommendations.good.tips.tip3' => 'Consultez la météo régulièrement',
 			'feasibility.recommendations.excellent.title' => 'Préparation optimale',
-			'feasibility.recommendations.excellent.summary' => 'Vous êtes parfaitement préparé(e). Profitez du trek !',
+			'feasibility.recommendations.excellent.summary' => 'Vous êtes parfaitement préparé(e). Profitez de la randonnée !',
 			'feasibility.recommendations.excellent.tips.tip1' => 'Restez à l’écoute de votre corps',
 			'feasibility.recommendations.excellent.tips.tip2' => 'Partagez votre expérience avec les randonneurs',
 			'feasibility.recommendations.excellent.tips.tip3' => 'Documentez votre aventure dans le journal',
-			'tips.carouselTitle' => 'Conseils trek',
+			'tips.carouselTitle' => 'Conseils randonnée',
 			'tips.allCategories' => 'Toutes',
 			'tips.swipeHint' => 'Glissez pour voir plus',
 			'tips.detailTitle' => 'Détail du conseil',
@@ -4134,22 +4134,22 @@ extension on Translations {
 			'onboarding.next' => 'Suivant',
 			'onboarding.getStarted' => 'Commencer',
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
-			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de trek.',
+			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.',
 			'onboarding.languageTitle' => 'Choisissez votre langue',
 			'onboarding.languageSubtitle' => 'Vous pourrez la modifier à tout moment dans les paramètres.',
 			'onboarding.downloadTitle' => 'Téléchargez votre premier sentier',
 			'onboarding.downloadSubtitle' => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.',
 			'onboarding.browseCatalog' => 'Parcourir le catalogue',
 			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
-			'monetization.paywallTitle' => 'Débloquez ce trek',
-			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre trek avec publicité. Le premium débloque tout, sans pub.',
+			'monetization.paywallTitle' => 'Débloquez cette randonnée',
+			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.',
 			'monetization.featureMap' => 'Carte hors ligne + GPS + suivi en direct',
 			'monetization.featureJournal' => 'Journal de bord complet',
-			'monetization.featureDiploma' => 'Diplôme de fin de trek',
+			'monetization.featureDiploma' => 'Diplôme de fin de randonnée',
 			'monetization.featureFollowers' => '2 suiveurs gratuits',
 			'monetization.featureNoAds' => 'Zéro publicité',
-			'monetization.buyCta' => 'Débloquer ce trek',
-			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer ce trek — ${price} €',
+			'monetization.buyCta' => 'Débloquer cette randonnée',
+			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer cette randonnée — ${price} €',
 			'signalement.title' => 'Signaler',
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
@@ -4227,8 +4227,8 @@ extension on Translations {
 			'gamification.tierExpert' => 'Expert',
 			'gamification.badge.firstStage.titre' => 'Première étape',
 			'gamification.badge.firstStage.description' => 'Tu as terminé ta première étape.',
-			'gamification.badge.firstTrek.titre' => 'Premier trek',
-			'gamification.badge.firstTrek.description' => 'Tu as bouclé ton premier trek complet.',
+			'gamification.badge.firstTrek.titre' => 'Première randonnée',
+			'gamification.badge.firstTrek.description' => 'Tu as bouclé ta première randonnée complète.',
 			'gamification.badge.firstSegment.titre' => 'Premier segment',
 			'gamification.badge.firstSegment.description' => 'Tu as parcouru ton premier segment.',
 			'gamification.badge.elevation5000.titre' => '5000 m de dénivelé',

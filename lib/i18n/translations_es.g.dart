@@ -174,7 +174,7 @@ class _Translations$map$es extends Translations$map$fr {
 	// Translations
 	@override String get title => 'Mapa del sendero';
 	@override String get loading => 'Cargando el recorrido...';
-	@override String get noTrack => 'NingÃºn recorrido disponible';
+	@override String get noTrack => 'Ningún recorrido disponible';
 	@override String get viewMap => 'Ver el mapa';
 }
 
@@ -189,10 +189,10 @@ class _Translations$stage$es extends Translations$stage$fr {
 	@override String get elevation => 'Desnivel';
 	@override String get elevationGain => 'Desnivel positivo';
 	@override String get elevationLoss => 'Desnivel negativo';
-	@override String get duration => 'DuraciÃ³n estimada';
-	@override String get description => 'DescripciÃ³n';
+	@override String get duration => 'Duración estimada';
+	@override String get description => 'Descripción';
 	@override String get coordinates => 'Coordenadas';
-	@override String get pois => 'Puntos de interÃ©s';
+	@override String get pois => 'Puntos de interés';
 	@override late final _Translations$stage$difficulty$es difficulty = _Translations$stage$difficulty$es._(_root);
 	@override String get remaining => '{distance} km restantes';
 	@override String get arrived => 'Has llegado!';
@@ -225,7 +225,7 @@ class _Translations$poi$es extends Translations$poi$fr {
 	@override String get emergency => 'Emergencia';
 	@override String get danger => 'Peligro';
 	@override String get shop => 'Tienda';
-	@override String get filter => 'Filtrar puntos de interÃ©s';
+	@override String get filter => 'Filtrar puntos de interés';
 	@override String get altitude => 'Altitud';
 	@override String get hours => 'Horarios';
 }
@@ -1120,9 +1120,9 @@ class _Translations$stage$difficulty$es extends Translations$stage$difficulty$fr
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get easy => 'FÃ¡cil';
+	@override String get easy => 'Fácil';
 	@override String get moderate => 'Moderado';
-	@override String get hard => 'DifÃ­cil';
+	@override String get hard => 'Difícil';
 	@override String get expert => 'Experto';
 }
 
@@ -2113,19 +2113,19 @@ extension on TranslationsEs {
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Mapa del sendero',
 			'map.loading' => 'Cargando el recorrido...',
-			'map.noTrack' => 'NingÃºn recorrido disponible',
+			'map.noTrack' => 'Ningún recorrido disponible',
 			'map.viewMap' => 'Ver el mapa',
 			'stage.distance' => 'Distancia',
 			'stage.elevation' => 'Desnivel',
 			'stage.elevationGain' => 'Desnivel positivo',
 			'stage.elevationLoss' => 'Desnivel negativo',
-			'stage.duration' => 'DuraciÃ³n estimada',
-			'stage.description' => 'DescripciÃ³n',
+			'stage.duration' => 'Duración estimada',
+			'stage.description' => 'Descripción',
 			'stage.coordinates' => 'Coordenadas',
-			'stage.pois' => 'Puntos de interÃ©s',
-			'stage.difficulty.easy' => 'FÃ¡cil',
+			'stage.pois' => 'Puntos de interés',
+			'stage.difficulty.easy' => 'Fácil',
 			'stage.difficulty.moderate' => 'Moderado',
-			'stage.difficulty.hard' => 'DifÃ­cil',
+			'stage.difficulty.hard' => 'Difícil',
 			'stage.difficulty.expert' => 'Experto',
 			'stage.remaining' => '{distance} km restantes',
 			'stage.arrived' => 'Has llegado!',
@@ -2140,7 +2140,7 @@ extension on TranslationsEs {
 			'poi.emergency' => 'Emergencia',
 			'poi.danger' => 'Peligro',
 			'poi.shop' => 'Tienda',
-			'poi.filter' => 'Filtrar puntos de interÃ©s',
+			'poi.filter' => 'Filtrar puntos de interés',
 			'poi.altitude' => 'Altitud',
 			'poi.hours' => 'Horarios',
 			'accommodation.types.refuge' => 'Refugio',

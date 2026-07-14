@@ -174,7 +174,7 @@ class _Translations$map$de extends Translations$map$fr {
 	// Translations
 	@override String get title => 'Wanderkarte';
 	@override String get loading => 'Strecke wird geladen...';
-	@override String get noTrack => 'Keine Strecke verfÃ¼gbar';
+	@override String get noTrack => 'Keine Strecke verfügbar';
 	@override String get viewMap => 'Karte anzeigen';
 }
 
@@ -186,13 +186,13 @@ class _Translations$stage$de extends Translations$stage$fr {
 
 	// Translations
 	@override String get distance => 'Entfernung';
-	@override String get elevation => 'HÃ¶henunterschied';
-	@override String get elevationGain => 'HÃ¶henmeter aufwÃ¤rts';
-	@override String get elevationLoss => 'HÃ¶henmeter abwÃ¤rts';
-	@override String get duration => 'GeschÃ¤tzte Dauer';
+	@override String get elevation => 'Höhenunterschied';
+	@override String get elevationGain => 'Höhenmeter aufwärts';
+	@override String get elevationLoss => 'Höhenmeter abwärts';
+	@override String get duration => 'Geschätzte Dauer';
 	@override String get description => 'Beschreibung';
 	@override String get coordinates => 'Koordinaten';
-	@override String get pois => 'SehenswÃ¼rdigkeiten';
+	@override String get pois => 'Sehenswürdigkeiten';
 	@override late final _Translations$stage$difficulty$de difficulty = _Translations$stage$difficulty$de._(_root);
 	@override String get remaining => '{distance} km verbleibend';
 	@override String get arrived => 'Sie sind angekommen!';
@@ -207,7 +207,7 @@ class _Translations$trail$de extends Translations$trail$fr {
 	// Translations
 	@override String get stages => 'Etappen';
 	@override String get totalDistance => 'Gesamtstrecke';
-	@override String get totalElevation => 'GesamthÃ¶henmeter';
+	@override String get totalElevation => 'Gesamthöhenmeter';
 }
 
 // Path: poi
@@ -217,17 +217,17 @@ class _Translations$poi$de extends Translations$poi$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get shelter => 'SchutzhÃ¼tte';
+	@override String get shelter => 'Schutzhütte';
 	@override String get water => 'Wasserquelle';
 	@override String get viewpoint => 'Aussichtspunkt';
 	@override String get campsite => 'Biwakplatz';
 	@override String get restaurant => 'Restaurant';
 	@override String get emergency => 'Notfall';
 	@override String get danger => 'Gefahr';
-	@override String get shop => 'GeschÃ¤ft';
-	@override String get filter => 'SehenswÃ¼rdigkeiten filtern';
-	@override String get altitude => 'HÃ¶he';
-	@override String get hours => 'Ãffnungszeiten';
+	@override String get shop => 'Geschäft';
+	@override String get filter => 'Sehenswürdigkeiten filtern';
+	@override String get altitude => 'Höhe';
+	@override String get hours => 'Öffnungszeiten';
 }
 
 // Path: accommodation
@@ -2113,16 +2113,16 @@ extension on TranslationsDe {
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Wanderkarte',
 			'map.loading' => 'Strecke wird geladen...',
-			'map.noTrack' => 'Keine Strecke verfÃ¼gbar',
+			'map.noTrack' => 'Keine Strecke verfügbar',
 			'map.viewMap' => 'Karte anzeigen',
 			'stage.distance' => 'Entfernung',
-			'stage.elevation' => 'HÃ¶henunterschied',
-			'stage.elevationGain' => 'HÃ¶henmeter aufwÃ¤rts',
-			'stage.elevationLoss' => 'HÃ¶henmeter abwÃ¤rts',
-			'stage.duration' => 'GeschÃ¤tzte Dauer',
+			'stage.elevation' => 'Höhenunterschied',
+			'stage.elevationGain' => 'Höhenmeter aufwärts',
+			'stage.elevationLoss' => 'Höhenmeter abwärts',
+			'stage.duration' => 'Geschätzte Dauer',
 			'stage.description' => 'Beschreibung',
 			'stage.coordinates' => 'Koordinaten',
-			'stage.pois' => 'SehenswÃ¼rdigkeiten',
+			'stage.pois' => 'Sehenswürdigkeiten',
 			'stage.difficulty.easy' => 'Leicht',
 			'stage.difficulty.moderate' => 'Mittel',
 			'stage.difficulty.hard' => 'Schwer',
@@ -2131,18 +2131,18 @@ extension on TranslationsDe {
 			'stage.arrived' => 'Sie sind angekommen!',
 			'trail.stages' => 'Etappen',
 			'trail.totalDistance' => 'Gesamtstrecke',
-			'trail.totalElevation' => 'GesamthÃ¶henmeter',
-			'poi.shelter' => 'SchutzhÃ¼tte',
+			'trail.totalElevation' => 'Gesamthöhenmeter',
+			'poi.shelter' => 'Schutzhütte',
 			'poi.water' => 'Wasserquelle',
 			'poi.viewpoint' => 'Aussichtspunkt',
 			'poi.campsite' => 'Biwakplatz',
 			'poi.restaurant' => 'Restaurant',
 			'poi.emergency' => 'Notfall',
 			'poi.danger' => 'Gefahr',
-			'poi.shop' => 'GeschÃ¤ft',
-			'poi.filter' => 'SehenswÃ¼rdigkeiten filtern',
-			'poi.altitude' => 'HÃ¶he',
-			'poi.hours' => 'Ãffnungszeiten',
+			'poi.shop' => 'Geschäft',
+			'poi.filter' => 'Sehenswürdigkeiten filtern',
+			'poi.altitude' => 'Höhe',
+			'poi.hours' => 'Öffnungszeiten',
 			'accommodation.types.refuge' => 'Berghütte',
 			'accommodation.types.bergerie' => 'Schäferhütte',
 			'accommodation.types.gite' => 'Herberge',
