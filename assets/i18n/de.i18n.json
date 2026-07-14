@@ -104,18 +104,18 @@
   "map": {
     "title": "Wanderkarte",
     "loading": "Strecke wird geladen...",
-    "noTrack": "Keine Strecke verfÃ¼gbar",
+    "noTrack": "Keine Strecke verfügbar",
     "viewMap": "Karte anzeigen"
   },
   "stage": {
     "distance": "Entfernung",
-    "elevation": "HÃ¶henunterschied",
-    "elevationGain": "HÃ¶henmeter aufwÃ¤rts",
-    "elevationLoss": "HÃ¶henmeter abwÃ¤rts",
-    "duration": "GeschÃ¤tzte Dauer",
+    "elevation": "Höhenunterschied",
+    "elevationGain": "Höhenmeter aufwärts",
+    "elevationLoss": "Höhenmeter abwärts",
+    "duration": "Geschätzte Dauer",
     "description": "Beschreibung",
     "coordinates": "Koordinaten",
-    "pois": "SehenswÃ¼rdigkeiten",
+    "pois": "Sehenswürdigkeiten",
     "difficulty": {
       "easy": "Leicht",
       "moderate": "Mittel",
@@ -128,20 +128,20 @@
   "trail": {
     "stages": "Etappen",
     "totalDistance": "Gesamtstrecke",
-    "totalElevation": "GesamthÃ¶henmeter"
+    "totalElevation": "Gesamthöhenmeter"
   },
   "poi": {
-    "shelter": "SchutzhÃ¼tte",
+    "shelter": "Schutzhütte",
     "water": "Wasserquelle",
     "viewpoint": "Aussichtspunkt",
     "campsite": "Biwakplatz",
     "restaurant": "Restaurant",
     "emergency": "Notfall",
     "danger": "Gefahr",
-    "shop": "GeschÃ¤ft",
-    "filter": "SehenswÃ¼rdigkeiten filtern",
-    "altitude": "HÃ¶he",
-    "hours": "Ãffnungszeiten"
+    "shop": "Geschäft",
+    "filter": "Sehenswürdigkeiten filtern",
+    "altitude": "Höhe",
+    "hours": "Öffnungszeiten"
   },
   "accommodation": {
     "types": {
