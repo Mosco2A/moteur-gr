@@ -143,7 +143,7 @@ class HubScreen extends ConsumerWidget {
                   onTap: () => context.push('/training'),
                 ),
                 QuickAccessCard(
-                  icon: Icons.download_outlined,
+                  icon: Icons.explore_outlined,
                   title: t.hub.cards.offline,
                   subtitle: t.hub.cards.offlineSub,
                   onTap: () => context.push('/catalog'),
