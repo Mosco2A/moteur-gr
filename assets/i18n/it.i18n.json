@@ -89,6 +89,8 @@
       "accommodationsSub": "Dove dormire nelle vicinanze",
       "tips": "Schede consigli",
       "tipsSub": "I nostri consigli trek",
+      "townGuides": "Guide delle città",
+      "townGuidesSub": "Info pratiche delle tappe",
       "recap": "Riepilogo",
       "recapSub": "La tua avventura in sintesi",
       "diploma": "Diploma",
@@ -876,7 +878,7 @@
     }
   },
   "guides": {
-    "title": "Guide delle tappe",
+    "title": "Guide delle città",
     "subtitle": "Info pratiche su città e paesi, consultabili offline.",
     "sectionsCount": "$n sezioni pratiche",
     "empty": "Nessuna guida disponibile per questo sentiero.",

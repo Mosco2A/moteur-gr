@@ -1094,6 +1094,8 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get accommodationsSub => 'Übernachten in der Nähe';
 	@override String get tips => 'Ratgeber';
 	@override String get tipsSub => 'Unsere Trekking-Tipps';
+	@override String get townGuides => 'Ortsführer';
+	@override String get townGuidesSub => 'Praktische Infos zu den Etappen';
 	@override String get recap => 'Zusammenfassung';
 	@override String get recapSub => 'Ihr Abenteuer in Kürze';
 	@override String get diploma => 'Diplom';
@@ -2101,6 +2103,8 @@ extension on TranslationsDe {
 			'hub.cards.accommodationsSub' => 'Übernachten in der Nähe',
 			'hub.cards.tips' => 'Ratgeber',
 			'hub.cards.tipsSub' => 'Unsere Trekking-Tipps',
+			'hub.cards.townGuides' => 'Ortsführer',
+			'hub.cards.townGuidesSub' => 'Praktische Infos zu den Etappen',
 			'hub.cards.recap' => 'Zusammenfassung',
 			'hub.cards.recapSub' => 'Ihr Abenteuer in Kürze',
 			'hub.cards.diploma' => 'Diplom',
@@ -2535,10 +2539,10 @@ extension on TranslationsDe {
 			'signalement.pendingCount' => ({required Object n}) => '${n} warten auf Synchronisierung',
 			'signalement.close' => 'Schließen',
 			'hebergement.title' => 'Unterkünfte in der Nähe',
-			'hebergement.facilitatorNote' => 'StepWays verweist Sie an die Gastgeber. Die Buchung erfolgt auf deren Website: keine Zahlung in der App.',
-			'hebergement.detourAR' => ({required Object km}) => 'Umweg hin und zurück: ${km} km',
 			_ => null,
 		} ?? switch (path) {
+			'hebergement.facilitatorNote' => 'StepWays verweist Sie an die Gastgeber. Die Buchung erfolgt auf deren Website: keine Zahlung in der App.',
+			'hebergement.detourAR' => ({required Object km}) => 'Umweg hin und zurück: ${km} km',
 			'hebergement.openSite' => 'Website ansehen',
 			'hebergement.cannotOpen' => 'Dieser Link konnte auf diesem Gerät nicht geöffnet werden.',
 			'hebergement.empty' => 'Derzeit keine Unterkünfte in der Nähe gelistet.',

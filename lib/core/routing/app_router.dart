@@ -24,6 +24,8 @@ import '../../features/group/presentation/follow_web_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
 import '../../features/trail/presentation/trail_catalog_screen.dart';
 import '../../features/goodies/presentation/goodies_catalog_screen.dart';
+import '../../features/guides/presentation/town_guide_detail_screen.dart';
+import '../../features/guides/presentation/town_guides_screen.dart';
 import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/booking/presentation/hebergements_peripheriques_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
@@ -85,6 +87,8 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/diploma           - Diplome de fin de trek
 ///   /trail/:id/feedback          - Feedback in-app
 ///   /trail/:id/weather           - Meteo d'une etape (E31, ?stage=n)
+///   /trail/:id/guides            - Guides villes (liste, E33)
+///   /trail/:id/guides/:guideId   - Guide ville (detail, E34)
 ///   /group/:id                   - Groupe localisation partagee
 ///   /follow/:code                - Suivi web temps reel (sans auth, E4.12a)
 ///   /catalog                     - Catalogue de sentiers (telechargement)
@@ -303,6 +307,34 @@ final appRouter = GoRouter(
               stageParam: stageParam,
             );
           },
+        ),
+        // E33/E34 (LOT D/D2) : cablage de la feature Guides villes (orpheline).
+        // Liste des guides pratiques des villes/villages d'etape (consultation
+        // 100 % offline, role facilitateur #84100). Entree = HUB section
+        // Informations. Le detail est atteint via la liste (E34) et deeplinkable
+        // par /trail/:id/guides/:guideId. Generique (trailId), zero localite en
+        // dur (#84627).
+        GoRoute(
+          path: 'guides',
+          name: 'trail-guides',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return TownGuidesScreen(trailId: trailId);
+          },
+          routes: [
+            GoRoute(
+              path: ':guideId',
+              name: 'trail-guide-detail',
+              builder: (context, state) {
+                final trailId = state.pathParameters['id'] ?? '';
+                final guideId = state.pathParameters['guideId'] ?? '';
+                return TownGuideDetailScreen(
+                  trailId: trailId,
+                  guideId: guideId,
+                );
+              },
+            ),
+          ],
         ),
       ],
     ),

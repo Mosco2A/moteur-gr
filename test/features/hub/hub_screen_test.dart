@@ -59,6 +59,11 @@ void main() {
           builder: (_, __) => const SizedBox(),
         ),
         GoRoute(path: '/trail/:id/tips', builder: (_, __) => const SizedBox()),
+        // E33/E34 (LOT D/D2) : cible de la carte « Guides des villes » (Infos).
+        GoRoute(
+          path: '/trail/:id/guides',
+          builder: (_, __) => const SizedBox(),
+        ),
         GoRoute(
           path: '/trail/:id/diploma',
           builder: (_, __) => const SizedBox(),
@@ -242,6 +247,8 @@ void main() {
       expect(find.text(t.hub.cards.programme), findsOneWidget);
       expect(find.text(t.hub.cards.navigation), findsOneWidget);
       expect(find.text(t.hub.cards.accommodations), findsOneWidget);
+      // E33/E34 (LOT D/D2) : carte « Guides des villes » cablee (section Infos).
+      expect(find.text(t.hub.cards.townGuides), findsOneWidget);
       expect(find.text(t.hub.cards.diploma), findsOneWidget);
     });
 

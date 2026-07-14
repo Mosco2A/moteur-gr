@@ -196,6 +196,14 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.tipsSub,
                   onTap: () => context.push('/trail/$trailId/tips'),
                 ),
+                // E33/E34 (LOT D/D2) : cablage feature Guides villes (orpheline).
+                // Route existante -> carte autorisee (regle S8 zero route morte).
+                QuickAccessCard(
+                  icon: Icons.location_city,
+                  title: t.hub.cards.townGuides,
+                  subtitle: t.hub.cards.townGuidesSub,
+                  onTap: () => context.push('/trail/$trailId/guides'),
+                ),
               ],
             ),
             const SizedBox(height: AppTheme.spacingLg),
