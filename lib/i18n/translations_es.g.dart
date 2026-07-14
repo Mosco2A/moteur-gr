@@ -903,7 +903,7 @@ class _Translations$guides$es extends Translations$guides$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Guías de etapa';
+	@override String get title => 'Guías de los pueblos';
 	@override String get subtitle => 'Información práctica de pueblos y aldeas, disponible sin conexión.';
 	@override String sectionsCount({required Object n}) => '${n} secciones practicas';
 	@override String get empty => 'No hay guía disponible para este sendero.';
@@ -1094,6 +1094,8 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get accommodationsSub => 'Dónde dormir cerca';
 	@override String get tips => 'Fichas de consejos';
 	@override String get tipsSub => 'Nuestros consejos de trek';
+	@override String get townGuides => 'Guías de los pueblos';
+	@override String get townGuidesSub => 'Info práctica de las etapas';
 	@override String get recap => 'Resumen';
 	@override String get recapSub => 'Tu aventura resumida';
 	@override String get diploma => 'Diploma';
@@ -2101,6 +2103,8 @@ extension on TranslationsEs {
 			'hub.cards.accommodationsSub' => 'Dónde dormir cerca',
 			'hub.cards.tips' => 'Fichas de consejos',
 			'hub.cards.tipsSub' => 'Nuestros consejos de trek',
+			'hub.cards.townGuides' => 'Guías de los pueblos',
+			'hub.cards.townGuidesSub' => 'Info práctica de las etapas',
 			'hub.cards.recap' => 'Resumen',
 			'hub.cards.recapSub' => 'Tu aventura resumida',
 			'hub.cards.diploma' => 'Diploma',
@@ -2535,10 +2539,10 @@ extension on TranslationsEs {
 			'signalement.pendingCount' => ({required Object n}) => '${n} en espera de sincronización',
 			'signalement.close' => 'Cerrar',
 			'hebergement.title' => 'Alojamientos cercanos',
-			'hebergement.facilitatorNote' => 'StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.',
-			'hebergement.detourAR' => ({required Object km}) => 'Desvío ida y vuelta: ${km} km',
 			_ => null,
 		} ?? switch (path) {
+			'hebergement.facilitatorNote' => 'StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.',
+			'hebergement.detourAR' => ({required Object km}) => 'Desvío ida y vuelta: ${km} km',
 			'hebergement.openSite' => 'Ver el sitio',
 			'hebergement.cannotOpen' => 'No se pudo abrir este enlace en este dispositivo.',
 			'hebergement.empty' => 'No hay alojamientos cerca por ahora.',
@@ -2701,7 +2705,7 @@ extension on TranslationsEs {
 			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'El sendero Mare a Mare, sin conexión.',
-			'guides.title' => 'Guías de etapa',
+			'guides.title' => 'Guías de los pueblos',
 			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones practicas',
 			'guides.empty' => 'No hay guía disponible para este sendero.',

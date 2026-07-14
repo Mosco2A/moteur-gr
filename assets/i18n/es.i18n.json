@@ -89,6 +89,8 @@
       "accommodationsSub": "Dónde dormir cerca",
       "tips": "Fichas de consejos",
       "tipsSub": "Nuestros consejos de trek",
+      "townGuides": "Guías de los pueblos",
+      "townGuidesSub": "Info práctica de las etapas",
       "recap": "Resumen",
       "recapSub": "Tu aventura resumida",
       "diploma": "Diploma",
@@ -876,7 +878,7 @@
     }
   },
   "guides": {
-    "title": "Guías de etapa",
+    "title": "Guías de los pueblos",
     "subtitle": "Información práctica de pueblos y aldeas, disponible sin conexión.",
     "sectionsCount": "$n secciones practicas",
     "empty": "No hay guía disponible para este sendero.",

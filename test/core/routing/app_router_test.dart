@@ -136,9 +136,10 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 10 sous-routes (+ weather E31)', () {
+    test('la route /trail/:id conserve ses 11 sous-routes (+ guides E33)', () {
+      // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       final trail = trailRoute();
-      expect(trail.routes.length, 10);
+      expect(trail.routes.length, 11);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -151,6 +152,7 @@ void main() {
         'diploma',
         'feedback',
         'weather',
+        'guides',
       ]);
     });
 
@@ -168,7 +170,20 @@ void main() {
         'trail-diploma',
         'trail-feedback',
         'trail-weather',
+        'trail-guides',
       ]);
+    });
+
+    test('la sous-route guides porte le detail /trail/:id/guides/:guideId', () {
+      // E34 (LOT D/D2) : deeplink du detail d'un guide ville.
+      final trail = trailRoute();
+      final guides = trail.routes
+          .whereType<GoRoute>()
+          .firstWhere((r) => r.path == 'guides');
+      expect(guides.routes.length, 1);
+      final detail = guides.routes.first as GoRoute;
+      expect(detail.path, ':guideId');
+      expect(detail.name, 'trail-guide-detail');
     });
   });
 

@@ -1709,8 +1709,8 @@ class Translations$guides$fr {
 
 	// Translations
 
-	/// fr: 'Guides d'étape'
-	String get title => 'Guides d\'étape';
+	/// fr: 'Guides des villes'
+	String get title => 'Guides des villes';
 
 	/// fr: 'Infos pratiques des villes et villages, consultables hors-ligne.'
 	String get subtitle => 'Infos pratiques des villes et villages, consultables hors-ligne.';
@@ -2122,6 +2122,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Nos conseils de trek'
 	String get tipsSub => 'Nos conseils de trek';
+
+	/// fr: 'Guides des villes'
+	String get townGuides => 'Guides des villes';
+
+	/// fr: 'Infos pratiques des étapes'
+	String get townGuidesSub => 'Infos pratiques des étapes';
 
 	/// fr: 'Récapitulatif'
 	String get recap => 'Récapitulatif';
@@ -3721,6 +3727,8 @@ extension on Translations {
 			'hub.cards.accommodationsSub' => 'Où dormir à proximité',
 			'hub.cards.tips' => 'Fiches conseils',
 			'hub.cards.tipsSub' => 'Nos conseils de trek',
+			'hub.cards.townGuides' => 'Guides des villes',
+			'hub.cards.townGuidesSub' => 'Infos pratiques des étapes',
 			'hub.cards.recap' => 'Récapitulatif',
 			'hub.cards.recapSub' => 'Votre aventure en résumé',
 			'hub.cards.diploma' => 'Diplôme',
@@ -4155,10 +4163,10 @@ extension on Translations {
 			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
 			'signalement.close' => 'Fermer',
 			'hebergement.title' => 'Hébergements à proximité',
-			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
-			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
 			_ => null,
 		} ?? switch (path) {
+			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
+			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
 			'hebergement.openSite' => 'Voir le site',
 			'hebergement.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
 			'hebergement.empty' => 'Aucun hébergement répertorié à proximité pour le moment.',
@@ -4321,7 +4329,7 @@ extension on Translations {
 			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Le sentier Mare a Mare, hors-ligne.',
-			'guides.title' => 'Guides d\'étape',
+			'guides.title' => 'Guides des villes',
 			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
 			'guides.empty' => 'Aucun guide disponible pour ce sentier.',

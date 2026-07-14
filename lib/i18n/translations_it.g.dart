@@ -903,7 +903,7 @@ class _Translations$guides$it extends Translations$guides$fr {
 	final TranslationsIt _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Guide delle tappe';
+	@override String get title => 'Guide delle città';
 	@override String get subtitle => 'Info pratiche su città e paesi, consultabili offline.';
 	@override String sectionsCount({required Object n}) => '${n} sezioni pratiche';
 	@override String get empty => 'Nessuna guida disponibile per questo sentiero.';
@@ -1094,6 +1094,8 @@ class _Translations$hub$cards$it extends Translations$hub$cards$fr {
 	@override String get accommodationsSub => 'Dove dormire nelle vicinanze';
 	@override String get tips => 'Schede consigli';
 	@override String get tipsSub => 'I nostri consigli trek';
+	@override String get townGuides => 'Guide delle città';
+	@override String get townGuidesSub => 'Info pratiche delle tappe';
 	@override String get recap => 'Riepilogo';
 	@override String get recapSub => 'La tua avventura in sintesi';
 	@override String get diploma => 'Diploma';
@@ -2101,6 +2103,8 @@ extension on TranslationsIt {
 			'hub.cards.accommodationsSub' => 'Dove dormire nelle vicinanze',
 			'hub.cards.tips' => 'Schede consigli',
 			'hub.cards.tipsSub' => 'I nostri consigli trek',
+			'hub.cards.townGuides' => 'Guide delle città',
+			'hub.cards.townGuidesSub' => 'Info pratiche delle tappe',
 			'hub.cards.recap' => 'Riepilogo',
 			'hub.cards.recapSub' => 'La tua avventura in sintesi',
 			'hub.cards.diploma' => 'Diploma',
@@ -2535,10 +2539,10 @@ extension on TranslationsIt {
 			'signalement.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
 			'signalement.close' => 'Chiudi',
 			'hebergement.title' => 'Alloggi nelle vicinanze',
-			'hebergement.facilitatorNote' => 'StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell\'app.',
-			'hebergement.detourAR' => ({required Object km}) => 'Deviazione andata e ritorno: ${km} km',
 			_ => null,
 		} ?? switch (path) {
+			'hebergement.facilitatorNote' => 'StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell\'app.',
+			'hebergement.detourAR' => ({required Object km}) => 'Deviazione andata e ritorno: ${km} km',
 			'hebergement.openSite' => 'Vedi il sito',
 			'hebergement.cannotOpen' => 'Impossibile aprire questo link su questo dispositivo.',
 			'hebergement.empty' => 'Nessun alloggio elencato nelle vicinanze per ora.',
@@ -2701,7 +2705,7 @@ extension on TranslationsIt {
 			'packs.types.complet.description' => 'Tutto il sentiero, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Il sentiero Mare a Mare, offline.',
-			'guides.title' => 'Guide delle tappe',
+			'guides.title' => 'Guide delle città',
 			'guides.subtitle' => 'Info pratiche su città e paesi, consultabili offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} sezioni pratiche',
 			'guides.empty' => 'Nessuna guida disponibile per questo sentiero.',
