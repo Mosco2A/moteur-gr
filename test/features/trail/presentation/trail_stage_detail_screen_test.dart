@@ -7,11 +7,11 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/core/models/stage.dart';
-import 'package:moteur_gr/features/trail/presentation/stage_detail_screen.dart';
+import 'package:moteur_gr/features/trail/presentation/trail_stage_detail_screen.dart';
 import 'package:moteur_gr/features/trail/providers/pois_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 
-/// Tests widget de l'écran StageDetailScreen.
+/// Tests widget de l'écran TrailStageDetailScreen.
 ///
 /// Vérifie l'affichage des infos de l'étape, des POIs
 /// associés et la gestion des états loading/error/vide.
@@ -70,7 +70,7 @@ void main() {
     lng: 9.15,
   );
 
-  group('StageDetailScreen', () {
+  group('TrailStageDetailScreen', () {
     testWidgets('affiche le nom de l\'étape', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -84,7 +84,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -110,7 +110,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -139,7 +139,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -167,7 +167,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -193,7 +193,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -223,7 +223,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -253,7 +253,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 99,
             ),
@@ -282,7 +282,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -312,7 +312,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),
@@ -341,7 +341,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 2,
             ),

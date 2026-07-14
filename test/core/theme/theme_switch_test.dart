@@ -5,7 +5,7 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
-import 'package:moteur_gr/features/trail/presentation/stage_detail_screen.dart';
+import 'package:moteur_gr/features/trail/presentation/trail_stage_detail_screen.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_detail_screen.dart';
 import 'package:moteur_gr/features/trail/providers/pois_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
@@ -91,7 +91,7 @@ void main() {
       });
     }
 
-    testWidgets('StageDetailScreen s\'affiche en theme clair (Hero badge)',
+    testWidgets('TrailStageDetailScreen s\'affiche en theme clair (Hero badge)',
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -105,7 +105,7 @@ void main() {
           child: MaterialApp(
             theme: AppTheme.buildLightTheme(
                 primaryColor: primary, secondaryColor: secondary),
-            home: const StageDetailScreen(
+            home: const TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 1,
             ),

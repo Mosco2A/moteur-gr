@@ -12,13 +12,13 @@ import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
-import '../../features/planning/presentation/planning_screen.dart';
+import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
 import '../../features/weather/presentation/weather_screen.dart';
 import '../../features/weather/providers/current_stage_provider.dart';
 import '../../features/trail/presentation/no_data_screen.dart';
-import '../../features/trail/presentation/stage_detail_screen.dart';
+import '../../features/trail/presentation/trail_stage_detail_screen.dart';
 import '../../features/trail/presentation/trail_detail_screen.dart';
 import '../../features/group/presentation/follow_web_screen.dart';
 import '../../features/group/presentation/group_screen.dart';
@@ -42,7 +42,7 @@ import '../../features/trek/presentation/stages/stage_list_screen.dart'
     as trek_stages;
 import '../../features/trek/presentation/planning/planning_screen.dart'
     as trek_planning;
-import '../../features/trek/presentation/stages/stage_detail_screen.dart'
+import '../../features/trek/presentation/stages/trek_stage_detail_screen.dart'
     as trek_detail;
 
 /// Cles de navigation : racine + une par branche d'onglet (E2.9b).
@@ -173,7 +173,7 @@ final appRouter = GoRouter(
                         int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
                     return _TrailScopedScreen(
                       explicitTrailId: trailId,
-                      builder: (id) => trek_detail.StageDetailScreen(
+                      builder: (id) => trek_detail.TrekStageDetailScreen(
                         trailId: id,
                         stageId: stageId,
                       ),
@@ -240,7 +240,7 @@ final appRouter = GoRouter(
             final trailId = state.pathParameters['id'] ?? '';
             final stageNum =
                 int.tryParse(state.pathParameters['num'] ?? '') ?? 1;
-            return StageDetailScreen(trailId: trailId, stageNumber: stageNum);
+            return TrailStageDetailScreen(trailId: trailId, stageNumber: stageNum);
           },
         ),
         GoRoute(
@@ -256,7 +256,7 @@ final appRouter = GoRouter(
           name: 'trail-planning',
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
-            return PlanningScreen(trailId: trailId);
+            return TrailPlanningScreen(trailId: trailId);
           },
         ),
         GoRoute(

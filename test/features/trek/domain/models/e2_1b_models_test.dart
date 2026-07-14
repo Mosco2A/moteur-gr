@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trek/domain/models/feasibility_profile.dart';
 import 'package:moteur_gr/features/trek/domain/models/itinerary_day.dart';
-import 'package:moteur_gr/features/trek/domain/models/trail_feasibility_params.dart';
+import 'package:moteur_gr/features/trail/domain/models/trail_feasibility_params.dart';
 
 /// Tests E2.1b — modeles Itinerary + Feasibility Freezed.
 void main() {

@@ -15,8 +15,8 @@ import '../widgets/duration_selector.dart';
 /// disponibles et affiche la répartition des étapes par jour.
 /// Le planning se recalcule automatiquement à chaque
 /// changement de durée.
-class PlanningScreen extends ConsumerWidget {
-  const PlanningScreen({super.key, required this.trailId});
+class TrailPlanningScreen extends ConsumerWidget {
+  const TrailPlanningScreen({super.key, required this.trailId});
 
   /// Identifiant du sentier à planifier
   final String trailId;

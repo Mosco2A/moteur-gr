@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
-import 'package:moteur_gr/features/planning/presentation/planning_screen.dart';
+import 'package:moteur_gr/features/planning/presentation/trail_planning_screen.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 
-/// Tests widget de l'écran PlanningScreen.
+/// Tests widget de l'écran TrailPlanningScreen.
 void main() {
   /// Fabrique une étape fictive
   StageModel makeStage(int num, double km, int gain) {
@@ -33,7 +33,7 @@ void main() {
     makeStage(5, 14.0, 700),
   ];
 
-  group('PlanningScreen', () {
+  group('TrailPlanningScreen', () {
     testWidgets('affiche le bon nombre de jours', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -44,7 +44,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: PlanningScreen(trailId: 'test-trail'),
+            home: TrailPlanningScreen(trailId: 'test-trail'),
           ),
         ),
       );
@@ -72,7 +72,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: PlanningScreen(trailId: 'test-trail'),
+            home: TrailPlanningScreen(trailId: 'test-trail'),
           ),
         ),
       );
@@ -100,7 +100,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: PlanningScreen(trailId: 'test-trail'),
+            home: TrailPlanningScreen(trailId: 'test-trail'),
           ),
         ),
       );
@@ -125,7 +125,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: PlanningScreen(trailId: 'test-trail'),
+            home: TrailPlanningScreen(trailId: 'test-trail'),
           ),
         ),
       );

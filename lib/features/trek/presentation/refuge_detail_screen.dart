@@ -9,7 +9,7 @@ import '../../../shared/widgets/section_header.dart';
 import '../domain/models/stage_accommodation.dart';
 import '../providers/stage_providers.dart';
 import 'accommodation_type_ui.dart';
-import '../providers/trail_providers.dart';
+import '../../trail/providers/trail_providers.dart';
 
 /// Provider des hebergements d'une etape du sentier actif.
 ///

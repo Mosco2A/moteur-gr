@@ -6,11 +6,11 @@ import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
-import 'package:moteur_gr/features/trek/presentation/stages/stage_detail_screen.dart';
+import 'package:moteur_gr/features/trek/presentation/stages/trek_stage_detail_screen.dart';
 
-/// Tests widget de StageDetailScreen (Phase 2 E2.4c).
+/// Tests widget de TrekStageDetailScreen (Phase 2 E2.4c).
 ///
-/// Verifie que StageDetailScreen affiche sans crash
+/// Verifie que TrekStageDetailScreen affiche sans crash
 /// avec les donnees de test (nom, description, stats, profil).
 void main() {
   // Etape de test avec toutes les valeurs remplies
@@ -29,7 +29,7 @@ void main() {
     difficulty: 'hard',
   );
 
-  group('StageDetailScreen E2.4c', () {
+  group('TrekStageDetailScreen E2.4c', () {
     testWidgets('affiche sans crash avec donnees completes', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -40,7 +40,7 @@ void main() {
             ),
           ],
           child: const MaterialApp(
-            home: StageDetailScreen(
+            home: TrekStageDetailScreen(
               trailId: 'test-trail',
               stageId: 3,
             ),
