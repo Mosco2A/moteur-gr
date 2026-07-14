@@ -82,6 +82,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$waypoints$it waypoints = _Translations$waypoints$it._(_root);
 	@override late final _Translations$packs$it packs = _Translations$packs$it._(_root);
 	@override late final _Translations$guides$it guides = _Translations$guides$it._(_root);
+	@override late final _Translations$health$it health = _Translations$health$it._(_root);
 	@override late final _Translations$trailSelection$it trailSelection = _Translations$trailSelection$it._(_root);
 	@override late final _Translations$consent$it consent = _Translations$consent$it._(_root);
 	@override late final _Translations$moderation$it moderation = _Translations$moderation$it._(_root);
@@ -915,6 +916,26 @@ class _Translations$guides$it extends Translations$guides$fr {
 	@override late final _Translations$guides$a11y$it a11y = _Translations$guides$a11y$it._(_root);
 }
 
+// Path: health
+class _Translations$health$it extends Translations$health$fr {
+	_Translations$health$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Informazioni sanitarie';
+	@override String get privacyBanner => 'Questi dati restano sul tuo telefono. Non vengono mai inviati su internet.';
+	@override late final _Translations$health$field$it field = _Translations$health$field$it._(_root);
+	@override late final _Translations$health$hint$it hint = _Translations$health$hint$it._(_root);
+	@override String get save => 'Salva';
+	@override String get saving => 'Salvataggio…';
+	@override String get saved => 'Informazioni salvate';
+	@override String get emergencyHint => 'In caso di emergenza, mostra questa schermata ai soccorsi.';
+	@override String get entryTitle => 'Le mie info sanitarie';
+	@override String get entrySubtitle => 'Da mostrare ai soccorsi (restano sul telefono)';
+	@override late final _Translations$health$a11y$it a11y = _Translations$health$a11y$it._(_root);
+}
+
 // Path: trailSelection
 class _Translations$trailSelection$it extends Translations$trailSelection$fr {
 	_Translations$trailSelection$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1601,6 +1622,45 @@ class _Translations$guides$a11y$it extends Translations$guides$a11y$fr {
 	@override String guideCard({required Object lieu}) => 'Guida di ${lieu}';
 	@override String section({required Object titre}) => 'Sezione ${titre}';
 	@override String openSiteButton({required Object nom}) => 'Apri il sito di ${nom}';
+}
+
+// Path: health.field
+class _Translations$health$field$it extends Translations$health$field$fr {
+	_Translations$health$field$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get bloodType => 'Gruppo sanguigno';
+	@override String get allergies => 'Allergie';
+	@override String get treatments => 'Terapie in corso';
+	@override String get doctor => 'Medico di base';
+	@override String get insurance => 'N. assicurazione / mutua';
+}
+
+// Path: health.hint
+class _Translations$health$hint$it extends Translations$health$hint$fr {
+	_Translations$health$hint$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get bloodType => 'Es. A+, O-, AB+';
+	@override String get allergies => 'Es. penicillina, arachidi';
+	@override String get treatments => 'Es. Levothyrox 50 mg/giorno';
+	@override String get doctor => 'Es. Dr. Rossi +39 06 xxxx xxxx';
+	@override String get insurance => 'Es. tessera europea';
+}
+
+// Path: health.a11y
+class _Translations$health$a11y$it extends Translations$health$a11y$fr {
+	_Translations$health$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get form => 'Modulo informazioni sanitarie';
+	@override String get saveButton => 'Salva le informazioni sanitarie';
 }
 
 // Path: trailSelection.a11y
@@ -2664,6 +2724,26 @@ extension on TranslationsIt {
 			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guida di ${lieu}',
 			'guides.a11y.section' => ({required Object titre}) => 'Sezione ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Apri il sito di ${nom}',
+			'health.title' => 'Informazioni sanitarie',
+			'health.privacyBanner' => 'Questi dati restano sul tuo telefono. Non vengono mai inviati su internet.',
+			'health.field.bloodType' => 'Gruppo sanguigno',
+			'health.field.allergies' => 'Allergie',
+			'health.field.treatments' => 'Terapie in corso',
+			'health.field.doctor' => 'Medico di base',
+			'health.field.insurance' => 'N. assicurazione / mutua',
+			'health.hint.bloodType' => 'Es. A+, O-, AB+',
+			'health.hint.allergies' => 'Es. penicillina, arachidi',
+			'health.hint.treatments' => 'Es. Levothyrox 50 mg/giorno',
+			'health.hint.doctor' => 'Es. Dr. Rossi +39 06 xxxx xxxx',
+			'health.hint.insurance' => 'Es. tessera europea',
+			'health.save' => 'Salva',
+			'health.saving' => 'Salvataggio…',
+			'health.saved' => 'Informazioni salvate',
+			'health.emergencyHint' => 'In caso di emergenza, mostra questa schermata ai soccorsi.',
+			'health.entryTitle' => 'Le mie info sanitarie',
+			'health.entrySubtitle' => 'Da mostrare ai soccorsi (restano sul telefono)',
+			'health.a11y.form' => 'Modulo informazioni sanitarie',
+			'health.a11y.saveButton' => 'Salva le informazioni sanitarie',
 			'trailSelection.title' => 'Cambia sentiero',
 			'trailSelection.subtitle' => 'Scegli il sentiero da esplorare. Tutta l app (mappa, tappe, punti di interesse, pacchetti, guide) segue la tua selezione.',
 			'trailSelection.current' => 'Sentiero attivo',

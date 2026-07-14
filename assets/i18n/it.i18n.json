@@ -906,6 +906,34 @@
       "openSiteButton": "Apri il sito di $nom"
     }
   },
+  "health": {
+    "title": "Informazioni sanitarie",
+    "privacyBanner": "Questi dati restano sul tuo telefono. Non vengono mai inviati su internet.",
+    "field": {
+      "bloodType": "Gruppo sanguigno",
+      "allergies": "Allergie",
+      "treatments": "Terapie in corso",
+      "doctor": "Medico di base",
+      "insurance": "N. assicurazione / mutua"
+    },
+    "hint": {
+      "bloodType": "Es. A+, O-, AB+",
+      "allergies": "Es. penicillina, arachidi",
+      "treatments": "Es. Levothyrox 50 mg/giorno",
+      "doctor": "Es. Dr. Rossi +39 06 xxxx xxxx",
+      "insurance": "Es. tessera europea"
+    },
+    "save": "Salva",
+    "saving": "Salvataggio…",
+    "saved": "Informazioni salvate",
+    "emergencyHint": "In caso di emergenza, mostra questa schermata ai soccorsi.",
+    "entryTitle": "Le mie info sanitarie",
+    "entrySubtitle": "Da mostrare ai soccorsi (restano sul telefono)",
+    "a11y": {
+      "form": "Modulo informazioni sanitarie",
+      "saveButton": "Salva le informazioni sanitarie"
+    }
+  },
   "trailSelection": {
     "title": "Cambia sentiero",
     "subtitle": "Scegli il sentiero da esplorare. Tutta l app (mappa, tappe, punti di interesse, pacchetti, guide) segue la tua selezione.",

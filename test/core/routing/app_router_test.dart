@@ -19,11 +19,12 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/home');
     });
 
-    test('le premier niveau contient 1 shell + 18 routes racine', () {
+    test('le premier niveau contient 1 shell + 19 routes racine', () {
+      // +1 : /health (E57 LOT D/D1, fiche sante hors-shell via Urgence).
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 19);
+      expect(routes.length, 20);
       expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 18);
+      expect(routes.whereType<GoRoute>().length, 19);
     });
 
     test('les routes racine (hors shell) sont celles attendues', () {
@@ -42,6 +43,8 @@ void main() {
         '/booking',
         '/accommodations-nearby',
         '/emergency',
+        // E57 (LOT D/D1) : fiche infos sante LOCAL ONLY (via Urgence E29).
+        '/health',
         '/signalement',
         '/training',
         // HUB E07 (#NAV02) : Planning trek sorti de la barre -> hors-shell.
@@ -69,6 +72,7 @@ void main() {
         'booking',
         'accommodations-nearby',
         'emergency',
+        'health',
         'signalement',
         'training',
         'trek-planning',
@@ -242,6 +246,8 @@ void main() {
         '/settings',
         '/profile',
         '/emergency',
+        // E57 (LOT D/D1) : fiche sante = donnee perso, accessible sans sentier.
+        '/health',
       ]) {
         expect(redirectForPath(p), isNull, reason: '$p doit rester accessible');
       }

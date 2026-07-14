@@ -1,24 +1,35 @@
-// E5.16 -- Ecran formulaire informations sante LOCAL ONLY.
+// E5.16 / E57 -- Ecran formulaire informations sante LOCAL ONLY.
 //
 // Formulaire 5 champs : groupe sanguin, allergies, traitements,
 // contact medecin, numero assurance.
-// Message explicite : ces donnees restent sur le telephone.
-// Accessible depuis l'ecran d'urgence (EmergencyScreen).
+// Message explicite : ces donnees restent sur le telephone (art. 9 RGPD,
+// LOCAL ONLY a vie -- jamais de Firestore, jamais de cloud, meme apres P4).
+// Accessible depuis l'ecran d'urgence (EmergencyScreen, route /health).
+//
+// LOT D / D1 (refonte UX StepWays) : cablage. Textes portes en Slang
+// (namespace `health`, 5 langues) et couleurs alignees sur le theme -- plus
+// aucun texte ni couleur en dur (spec E57 AM-1 / RM-6). Donnee personnelle
+// independante du sentier (AM-6 : pas de trailId, pas de trailConfigProvider).
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/health_info_dao.dart';
+import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../data/health_info_repository.dart';
 import '../domain/models/health_info.dart';
-import '../../../core/data/daos/health_info_dao.dart';
 
 /// Provider du DAO sante (Drift).
-final healthInfoDaoProvider = Provider<HealthInfoDao>((ref) {
-  throw UnimplementedError(
-    'healthInfoDaoProvider must be overridden with the actual DAO instance',
-  );
-});
+///
+/// Cablage LOT D/D1 : derive de [databaseProvider] (instance unique Drift).
+/// Le DAO est genere (`AppDatabase.healthInfoDao`). L'override par defaut
+/// pointe donc sur la vraie base ; les tests peuvent surcharger
+/// [databaseProvider] (DB in-memory) sans toucher a ce provider.
+final healthInfoDaoProvider = Provider<HealthInfoDao>(
+  (ref) => ref.watch(databaseProvider).healthInfoDao,
+);
 
 /// Provider du repository sante (LOCAL ONLY).
 final healthInfoRepositoryProvider = Provider<HealthInfoRepository>(
@@ -31,7 +42,7 @@ final healthInfoProvider = FutureProvider<HealthInfo>((ref) {
   return repo.get();
 });
 
-/// E5.16 : Ecran formulaire informations de sante.
+/// E5.16 / E57 : Ecran formulaire informations de sante.
 ///
 /// Formulaire avec 5 champs modifiables + bouton sauvegarder.
 /// Les donnees sont stockees localement (Drift) et ne quittent
@@ -101,7 +112,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
       setState(() => _isSaving = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Text('Informations sauvegardees'),
+          content: Text(t.health.saved),
           backgroundColor: Theme.of(context).colorScheme.primary,
           duration: const Duration(seconds: 2),
         ),
@@ -123,12 +134,11 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final primaryColor = theme.colorScheme.primary;
-    final primaryLight = theme.colorScheme.primary;
+    final colors = theme.colorScheme;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Informations sante'),
+        title: Text(t.health.title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
@@ -140,76 +150,158 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
               padding: const EdgeInsets.all(AppTheme.spacingBase),
               child: Form(
                 key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // Bandeau securite
-                    Container(
-                      padding: const EdgeInsets.all(AppTheme.spacingMd),
-                      decoration: BoxDecoration(
-                        color: primaryColor.withAlpha(30),
-                        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                        border: Border.all(color: primaryLight.withAlpha(80)),
+                child: Semantics(
+                  container: true,
+                  label: t.health.a11y.form,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Bandeau securite (message de confiance, RF-2).
+                      Container(
+                        padding: const EdgeInsets.all(AppTheme.spacingMd),
+                        decoration: BoxDecoration(
+                          color: colors.primary.withAlpha(30),
+                          borderRadius:
+                              BorderRadius.circular(AppTheme.radiusCard),
+                          border:
+                              Border.all(color: colors.primary.withAlpha(80)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.lock, color: colors.primary, size: 20),
+                            const SizedBox(width: AppTheme.spacingSm),
+                            Expanded(
+                              child: Text(
+                                t.health.privacyBanner,
+                                style: theme.textTheme.bodySmall
+                                    ?.copyWith(color: colors.primary),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          Icon(Icons.lock, color: primaryLight, size: 20),
-                          const SizedBox(width: AppTheme.spacingSm),
-                          Expanded(
-                            child: Text(
-                              'Ces donnees restent sur votre telephone. '
-                              'Elles ne sont jamais envoyees sur internet.',
-                              style: TextStyle(fontSize: 13, color: primaryLight),
+                      const SizedBox(height: AppTheme.spacingLg),
+                      _buildField(
+                        controller: _bloodTypeController,
+                        label: t.health.field.bloodType,
+                        hint: t.health.hint.bloodType,
+                        icon: Icons.bloodtype,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: AppTheme.spacingBase),
+                      _buildField(
+                        controller: _allergiesController,
+                        label: t.health.field.allergies,
+                        hint: t.health.hint.allergies,
+                        icon: Icons.warning_amber,
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: AppTheme.spacingBase),
+                      _buildField(
+                        controller: _treatmentsController,
+                        label: t.health.field.treatments,
+                        hint: t.health.hint.treatments,
+                        icon: Icons.medication,
+                        maxLines: 3,
+                      ),
+                      const SizedBox(height: AppTheme.spacingBase),
+                      _buildField(
+                        controller: _doctorController,
+                        label: t.health.field.doctor,
+                        hint: t.health.hint.doctor,
+                        icon: Icons.local_hospital,
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: AppTheme.spacingBase),
+                      _buildField(
+                        controller: _insuranceController,
+                        label: t.health.field.insurance,
+                        hint: t.health.hint.insurance,
+                        icon: Icons.shield,
+                        maxLines: 2,
+                      ),
+                      const SizedBox(height: AppTheme.spacingXl),
+                      Semantics(
+                        button: true,
+                        label: t.health.a11y.saveButton,
+                        child: ElevatedButton.icon(
+                          onPressed: _isSaving ? null : _save,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colors.primary,
+                            foregroundColor: colors.onPrimary,
+                            minimumSize: const Size(double.infinity, 52),
+                            shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(AppTheme.radiusButton),
                             ),
                           ),
-                        ],
+                          icon: _isSaving
+                              ? SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: colors.onPrimary,
+                                  ),
+                                )
+                              : const Icon(Icons.save),
+                          label: Text(
+                            _isSaving ? t.health.saving : t.health.save,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: AppTheme.spacingLg),
-                    _buildField(controller: _bloodTypeController, label: 'Groupe sanguin', hint: 'Ex: A+, O-, AB+', icon: Icons.bloodtype, maxLines: 1),
-                    const SizedBox(height: AppTheme.spacingBase),
-                    _buildField(controller: _allergiesController, label: 'Allergies', hint: 'Ex: Penicilline, arachides', icon: Icons.warning_amber, maxLines: 3),
-                    const SizedBox(height: AppTheme.spacingBase),
-                    _buildField(controller: _treatmentsController, label: 'Traitements en cours', hint: 'Ex: Levothyrox 50mg/j', icon: Icons.medication, maxLines: 3),
-                    const SizedBox(height: AppTheme.spacingBase),
-                    _buildField(controller: _doctorController, label: 'Medecin traitant', hint: 'Ex: Dr Dupont 04 95 xx xx xx', icon: Icons.local_hospital, maxLines: 2),
-                    const SizedBox(height: AppTheme.spacingBase),
-                    _buildField(controller: _insuranceController, label: 'N\u00b0 assurance / mutuelle', hint: 'Ex: Carte europeenne', icon: Icons.shield, maxLines: 2),
-                    const SizedBox(height: AppTheme.spacingXl),
-                    ElevatedButton.icon(
-                      onPressed: _isSaving ? null : _save,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        foregroundColor: Colors.white,
-                        minimumSize: const Size(double.infinity, 52),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusButton)),
+                      const SizedBox(height: AppTheme.spacingBase),
+                      Text(
+                        t.health.emergencyHint,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colors.onSurface.withAlpha(140),
+                          fontStyle: FontStyle.italic,
+                        ),
                       ),
-                      icon: _isSaving ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white)) : const Icon(Icons.save),
-                      label: Text(_isSaving ? 'Sauvegarde...' : 'Sauvegarder', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-                    ),
-                    const SizedBox(height: AppTheme.spacingBase),
-                    Text("En cas d'urgence, montrez cet ecran aux secours.", textAlign: TextAlign.center, style: theme.textTheme.bodySmall?.copyWith(color: Colors.white54, fontStyle: FontStyle.italic)),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
     );
   }
 
-  Widget _buildField({required TextEditingController controller, required String label, required String hint, required IconData icon, int maxLines = 1}) {
-    final primaryLight = Theme.of(context).colorScheme.primary;
+  Widget _buildField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
+    int maxLines = 1,
+  }) {
+    final colors = Theme.of(context).colorScheme;
     return TextFormField(
       controller: controller,
       maxLines: maxLines,
-      style: const TextStyle(color: Colors.white),
+      style: TextStyle(color: colors.onSurface),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        hintStyle: TextStyle(color: Colors.white.withAlpha(60), fontSize: 13),
-        prefixIcon: Icon(icon, color: primaryLight),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusInput)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusInput), borderSide: BorderSide(color: Colors.white.withAlpha(40))),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusInput), borderSide: BorderSide(color: primaryLight, width: 2)),
+        hintStyle: TextStyle(
+          color: colors.onSurface.withAlpha(90),
+          fontSize: 13,
+        ),
+        prefixIcon: Icon(icon, color: colors.primary),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+          borderSide: BorderSide(color: colors.onSurface.withAlpha(60)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppTheme.radiusInput),
+          borderSide: BorderSide(color: colors.primary, width: 2),
+        ),
       ),
     );
   }

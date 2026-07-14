@@ -83,6 +83,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$waypoints$fr waypoints = Translations$waypoints$fr.internal(_root);
 	late final Translations$packs$fr packs = Translations$packs$fr.internal(_root);
 	late final Translations$guides$fr guides = Translations$guides$fr.internal(_root);
+	late final Translations$health$fr health = Translations$health$fr.internal(_root);
 	late final Translations$trailSelection$fr trailSelection = Translations$trailSelection$fr.internal(_root);
 	late final Translations$consent$fr consent = Translations$consent$fr.internal(_root);
 	late final Translations$moderation$fr moderation = Translations$moderation$fr.internal(_root);
@@ -1737,6 +1738,44 @@ class Translations$guides$fr {
 	late final Translations$guides$a11y$fr a11y = Translations$guides$a11y$fr.internal(_root);
 }
 
+// Path: health
+class Translations$health$fr {
+	Translations$health$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Informations santé'
+	String get title => 'Informations santé';
+
+	/// fr: 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.'
+	String get privacyBanner => 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.';
+
+	late final Translations$health$field$fr field = Translations$health$field$fr.internal(_root);
+	late final Translations$health$hint$fr hint = Translations$health$hint$fr.internal(_root);
+
+	/// fr: 'Sauvegarder'
+	String get save => 'Sauvegarder';
+
+	/// fr: 'Sauvegarde…'
+	String get saving => 'Sauvegarde…';
+
+	/// fr: 'Informations sauvegardées'
+	String get saved => 'Informations sauvegardées';
+
+	/// fr: 'En cas d'urgence, montrez cet écran aux secours.'
+	String get emergencyHint => 'En cas d\'urgence, montrez cet écran aux secours.';
+
+	/// fr: 'Mes infos santé'
+	String get entryTitle => 'Mes infos santé';
+
+	/// fr: 'À montrer aux secours (restées sur le téléphone)'
+	String get entrySubtitle => 'À montrer aux secours (restées sur le téléphone)';
+
+	late final Translations$health$a11y$fr a11y = Translations$health$a11y$fr.internal(_root);
+}
+
 // Path: trailSelection
 class Translations$trailSelection$fr {
 	Translations$trailSelection$fr.internal(this._root);
@@ -3017,6 +3056,69 @@ class Translations$guides$a11y$fr {
 	String openSiteButton({required Object nom}) => 'Ouvrir le site de ${nom}';
 }
 
+// Path: health.field
+class Translations$health$field$fr {
+	Translations$health$field$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Groupe sanguin'
+	String get bloodType => 'Groupe sanguin';
+
+	/// fr: 'Allergies'
+	String get allergies => 'Allergies';
+
+	/// fr: 'Traitements en cours'
+	String get treatments => 'Traitements en cours';
+
+	/// fr: 'Médecin traitant'
+	String get doctor => 'Médecin traitant';
+
+	/// fr: 'N° assurance / mutuelle'
+	String get insurance => 'N° assurance / mutuelle';
+}
+
+// Path: health.hint
+class Translations$health$hint$fr {
+	Translations$health$hint$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ex : A+, O-, AB+'
+	String get bloodType => 'Ex : A+, O-, AB+';
+
+	/// fr: 'Ex : pénicilline, arachides'
+	String get allergies => 'Ex : pénicilline, arachides';
+
+	/// fr: 'Ex : Lévothyrox 50 mg/j'
+	String get treatments => 'Ex : Lévothyrox 50 mg/j';
+
+	/// fr: 'Ex : Dr Dupont 04 95 xx xx xx'
+	String get doctor => 'Ex : Dr Dupont 04 95 xx xx xx';
+
+	/// fr: 'Ex : carte européenne'
+	String get insurance => 'Ex : carte européenne';
+}
+
+// Path: health.a11y
+class Translations$health$a11y$fr {
+	Translations$health$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Formulaire d'informations de santé'
+	String get form => 'Formulaire d\'informations de santé';
+
+	/// fr: 'Enregistrer les informations de santé'
+	String get saveButton => 'Enregistrer les informations de santé';
+}
+
 // Path: trailSelection.a11y
 class Translations$trailSelection$a11y$fr {
 	Translations$trailSelection$a11y$fr.internal(this._root);
@@ -4242,6 +4344,26 @@ extension on Translations {
 			'guides.a11y.guideCard' => ({required Object lieu}) => 'Guide de ${lieu}',
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Ouvrir le site de ${nom}',
+			'health.title' => 'Informations santé',
+			'health.privacyBanner' => 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.',
+			'health.field.bloodType' => 'Groupe sanguin',
+			'health.field.allergies' => 'Allergies',
+			'health.field.treatments' => 'Traitements en cours',
+			'health.field.doctor' => 'Médecin traitant',
+			'health.field.insurance' => 'N° assurance / mutuelle',
+			'health.hint.bloodType' => 'Ex : A+, O-, AB+',
+			'health.hint.allergies' => 'Ex : pénicilline, arachides',
+			'health.hint.treatments' => 'Ex : Lévothyrox 50 mg/j',
+			'health.hint.doctor' => 'Ex : Dr Dupont 04 95 xx xx xx',
+			'health.hint.insurance' => 'Ex : carte européenne',
+			'health.save' => 'Sauvegarder',
+			'health.saving' => 'Sauvegarde…',
+			'health.saved' => 'Informations sauvegardées',
+			'health.emergencyHint' => 'En cas d\'urgence, montrez cet écran aux secours.',
+			'health.entryTitle' => 'Mes infos santé',
+			'health.entrySubtitle' => 'À montrer aux secours (restées sur le téléphone)',
+			'health.a11y.form' => 'Formulaire d\'informations de santé',
+			'health.a11y.saveButton' => 'Enregistrer les informations de santé',
 			'trailSelection.title' => 'Changer de sentier',
 			'trailSelection.subtitle' => 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.',
 			'trailSelection.current' => 'Sentier actif',

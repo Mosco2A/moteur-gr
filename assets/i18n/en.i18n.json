@@ -906,6 +906,34 @@
       "openSiteButton": "Open the website of $nom"
     }
   },
+  "health": {
+    "title": "Health information",
+    "privacyBanner": "This data stays on your phone. It is never sent over the internet.",
+    "field": {
+      "bloodType": "Blood type",
+      "allergies": "Allergies",
+      "treatments": "Current treatments",
+      "doctor": "Family doctor",
+      "insurance": "Insurance no. / health cover"
+    },
+    "hint": {
+      "bloodType": "e.g. A+, O-, AB+",
+      "allergies": "e.g. penicillin, peanuts",
+      "treatments": "e.g. Levothyrox 50 mg/day",
+      "doctor": "e.g. Dr Smith +44 20 xxxx xxxx",
+      "insurance": "e.g. European health card"
+    },
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Information saved",
+    "emergencyHint": "In an emergency, show this screen to the rescue team.",
+    "entryTitle": "My health info",
+    "entrySubtitle": "To show the rescue team (kept on the phone)",
+    "a11y": {
+      "form": "Health information form",
+      "saveButton": "Save health information"
+    }
+  },
   "trailSelection": {
     "title": "Switch trail",
     "subtitle": "Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.",

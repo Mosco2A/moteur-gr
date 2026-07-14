@@ -906,6 +906,34 @@
       "openSiteButton": "Abrir el sitio de $nom"
     }
   },
+  "health": {
+    "title": "Información de salud",
+    "privacyBanner": "Estos datos permanecen en tu teléfono. Nunca se envían por internet.",
+    "field": {
+      "bloodType": "Grupo sanguíneo",
+      "allergies": "Alergias",
+      "treatments": "Tratamientos en curso",
+      "doctor": "Médico de cabecera",
+      "insurance": "N.º de seguro / mutua"
+    },
+    "hint": {
+      "bloodType": "Ej.: A+, O-, AB+",
+      "allergies": "Ej.: penicilina, cacahuetes",
+      "treatments": "Ej.: Levothyrox 50 mg/día",
+      "doctor": "Ej.: Dr. García +34 91 xxx xx xx",
+      "insurance": "Ej.: tarjeta sanitaria europea"
+    },
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "saved": "Información guardada",
+    "emergencyHint": "En caso de emergencia, muestra esta pantalla a los servicios de rescate.",
+    "entryTitle": "Mi información de salud",
+    "entrySubtitle": "Para mostrar a los servicios de rescate (permanece en el teléfono)",
+    "a11y": {
+      "form": "Formulario de información de salud",
+      "saveButton": "Guardar la información de salud"
+    }
+  },
   "trailSelection": {
     "title": "Cambiar de sendero",
     "subtitle": "Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interes, packs, guias) sigue tu seleccion.",
