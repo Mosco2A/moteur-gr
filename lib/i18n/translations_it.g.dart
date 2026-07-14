@@ -1082,8 +1082,8 @@ class _Translations$hub$cards$it extends Translations$hub$cards$fr {
 	@override String get checklistSub => 'Prepara il tuo zaino';
 	@override String get training => 'Preparazione fisica';
 	@override String get trainingSub => 'Il tuo programma di allenamento';
-	@override String get offline => 'Offline';
-	@override String get offlineSub => 'Scarica i tuoi sentieri';
+	@override String get offline => 'Scopri i sentieri';
+	@override String get offlineSub => 'Sfoglia il catalogo';
 	@override String get group => 'Il mio gruppo';
 	@override String get groupSub => 'Segui i tuoi compagni';
 	@override String get navigation => 'Navigazione';
@@ -2091,8 +2091,8 @@ extension on TranslationsIt {
 			'hub.cards.checklistSub' => 'Prepara il tuo zaino',
 			'hub.cards.training' => 'Preparazione fisica',
 			'hub.cards.trainingSub' => 'Il tuo programma di allenamento',
-			'hub.cards.offline' => 'Offline',
-			'hub.cards.offlineSub' => 'Scarica i tuoi sentieri',
+			'hub.cards.offline' => 'Scopri i sentieri',
+			'hub.cards.offlineSub' => 'Sfoglia il catalogo',
 			'hub.cards.group' => 'Il mio gruppo',
 			'hub.cards.groupSub' => 'Segui i tuoi compagni',
 			'hub.cards.navigation' => 'Navigazione',

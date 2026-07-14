@@ -2087,11 +2087,11 @@ class Translations$hub$cards$fr {
 	/// fr: 'Votre programme d'entraînement'
 	String get trainingSub => 'Votre programme d\'entraînement';
 
-	/// fr: 'Hors ligne'
-	String get offline => 'Hors ligne';
+	/// fr: 'Découvrir des sentiers'
+	String get offline => 'Découvrir des sentiers';
 
-	/// fr: 'Téléchargez vos sentiers'
-	String get offlineSub => 'Téléchargez vos sentiers';
+	/// fr: 'Parcourez le catalogue'
+	String get offlineSub => 'Parcourez le catalogue';
 
 	/// fr: 'Mon groupe'
 	String get group => 'Mon groupe';
@@ -3715,8 +3715,8 @@ extension on Translations {
 			'hub.cards.checklistSub' => 'Préparez votre sac à dos',
 			'hub.cards.training' => 'Préparation physique',
 			'hub.cards.trainingSub' => 'Votre programme d\'entraînement',
-			'hub.cards.offline' => 'Hors ligne',
-			'hub.cards.offlineSub' => 'Téléchargez vos sentiers',
+			'hub.cards.offline' => 'Découvrir des sentiers',
+			'hub.cards.offlineSub' => 'Parcourez le catalogue',
 			'hub.cards.group' => 'Mon groupe',
 			'hub.cards.groupSub' => 'Suivi de vos compagnons',
 			'hub.cards.navigation' => 'Navigation',
