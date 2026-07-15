@@ -132,7 +132,7 @@ AsyncValue<TrackPositionState> _computeProjection(
           projection.trackIndexPosition);
 
       // Detecter l'etape courante
-      final stages = stagesAsync.valueOrNull ?? <StageModel>[];
+      final stages = stagesAsync.value ?? <StageModel>[];
       final detection = StageDetector.detect(
         projectedLat: projection.projectedLat,
         projectedLng: projection.projectedLng,

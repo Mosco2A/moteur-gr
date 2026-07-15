@@ -274,7 +274,7 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
 
   /// Met a jour le statut d'une entree dans l'etat courant.
   void _updateEntryStatus(String trailId, TrailLocalStatus newStatus) {
-    final current = state.valueOrNull;
+    final current = state.value;
     if (current == null) return;
 
     final updated = current.entries.map((e) {
@@ -305,10 +305,18 @@ final catalogStateProvider =
 // --- Provider de progression de telechargement ---
 
 /// Notifier simple pour la progression d'un telechargement en cours.
-class DownloadProgressNotifier
-    extends FamilyAsyncNotifier<DownloadProgress?, String> {
+class DownloadProgressNotifier extends AsyncNotifier<DownloadProgress?> {
+  // Riverpod 3 : FamilyAsyncNotifier retire (remplace par AsyncNotifier).
+  // L'argument de famille (trailId) est recu par le constructeur ; il n'est pas
+  // utilise ici mais conserve pour respecter la signature du tear-off .new
+  // attendu par AsyncNotifierProvider.family. Aucun changement de logique.
+  DownloadProgressNotifier(this._trailId);
+
+  // ignore: unused_field
+  final String _trailId;
+
   @override
-  Future<DownloadProgress?> build(String arg) async => null;
+  Future<DownloadProgress?> build() async => null;
 
   /// Met a jour la progression.
   void setProgress(DownloadProgress progress) {

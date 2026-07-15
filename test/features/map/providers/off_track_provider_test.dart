@@ -96,7 +96,7 @@ void main() {
     });
   });
 
-  /// Attend que le FutureProvider du trace soit resolu (valueOrNull != null),
+  /// Attend que le FutureProvider du trace soit resolu (value != null),
   /// puis (re)lit offTrackProvider pour declencher startListening.
   Future<void> primeTrack() async {
     await container.read(gpxTrackProvider(testTrailConfig.id).future);

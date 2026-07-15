@@ -46,7 +46,7 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
     final messenger = ScaffoldMessenger.of(context);
 
     // Position courante : dernière valeur du stream si dispo, sinon best-effort.
-    Position? position = ref.read(locationProvider).valueOrNull;
+    Position? position = ref.read(locationProvider).value;
     position ??= await _bestEffortPosition();
 
     if (position == null) {
@@ -92,7 +92,7 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
     final t = Translations.of(context);
     final theme = Theme.of(context);
     // Abonnement au flux GPS : garde [locationProvider] actif pour que
-    // `valueOrNull` expose la dernière position connue au moment de confirmer.
+    // `value` expose la dernière position connue au moment de confirmer.
     ref.watch(locationProvider);
 
     return Scaffold(

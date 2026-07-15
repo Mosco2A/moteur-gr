@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
@@ -35,7 +36,7 @@ final positionStreamProvider = StreamProvider<Position>((ref) {
 /// Retourne [] si le chargement n'est pas termine.
 final domainStagesProvider = Provider<List<Stage>>((ref) {
   final stagesAsync = ref.watch(
-    stagesProvider.select((async) => async.valueOrNull),
+    stagesProvider.select((async) => async.value),
   );
   final stages = stagesAsync ?? [];
 
@@ -161,7 +162,7 @@ final trekCongratulationsProvider = Provider<TrekCongratulations?>((ref) {
 /// trek) pour etre actif.
 final arrivalCompletionListenerProvider = Provider<void>((ref) {
   ref.listen<AsyncValue<ArrivalEvent>>(arrivalEventsProvider, (prev, next) {
-    final event = next.valueOrNull;
+    final event = next.value;
     if (event == null) return;
     if (event.type != 'trailEnd') return;
     // Fin reelle du trek atteinte -> completer la session.

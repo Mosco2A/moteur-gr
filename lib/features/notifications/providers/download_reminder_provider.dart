@@ -38,13 +38,17 @@ class DepartureReminderState {
 ///
 /// Sauvegarde les dates en SharedPreferences pour persistance
 /// entre les sessions. Gere aussi le flag de rappel planifie.
-class DownloadReminderNotifier
-    extends FamilyNotifier<DepartureReminderState, String> {
-  late String _trailId;
+class DownloadReminderNotifier extends Notifier<DepartureReminderState> {
+  // Riverpod 3 : FamilyNotifier retire (remplace par Notifier). L'argument de
+  // famille est desormais recu par le CONSTRUCTEUR (pattern officiel sans
+  // codegen) et non plus par build(String arg). Le tear-off .new passe a
+  // NotifierProvider.family transmet l'argument ici. Aucun changement de logique.
+  DownloadReminderNotifier(this._trailId);
+
+  final String _trailId;
 
   @override
-  DepartureReminderState build(String arg) {
-    _trailId = arg;
+  DepartureReminderState build() {
     _loadFromPrefs();
     return const DepartureReminderState();
   }

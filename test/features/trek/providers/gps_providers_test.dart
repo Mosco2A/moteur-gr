@@ -122,14 +122,14 @@ void main() {
 
       // Ecouter les changements
       container.listen(currentStageIdProvider, (prev, next) {
-        final value = next.valueOrNull;
+        final value = next.value;
         if (value != null && !emittedStageIds.contains(value)) {
           emittedStageIds.add(value);
         }
       });
 
       container.listen(arrivalEventsProvider, (prev, next) {
-        final value = next.valueOrNull;
+        final value = next.value;
         if (value != null) {
           emittedArrivals.add(value);
         }

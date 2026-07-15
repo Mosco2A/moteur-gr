@@ -100,7 +100,7 @@ class _WaypointContributionScreenState
           return;
         }
         // Position courante : derniere valeur GPS connue, sinon best-effort.
-        Position? position = ref.read(locationProvider).valueOrNull;
+        Position? position = ref.read(locationProvider).value;
         position ??= await _bestEffortPosition();
         if (position == null) {
           if (!mounted) return;

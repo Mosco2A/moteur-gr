@@ -72,7 +72,7 @@ class TrekStageDetailScreen extends ConsumerWidget {
           builder: (context, ref, _) {
             final name = ref.watch(
               stageByIdProvider((trailId: trailId, stageId: stageId)).select(
-                (async) => async.valueOrNull?.nameFr ?? 'Etape $stageId',
+                (async) => async.value?.nameFr ?? 'Etape $stageId',
               ),
             );
             return Text(name);

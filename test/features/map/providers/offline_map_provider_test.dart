@@ -60,8 +60,14 @@ void main() {
     test('online sans tuiles locales -> OfflineMapStatus.online', () async {
       fakeConnectivity.setStatus(ConnectivityStatusValues.online);
 
-      // Materialiser le statut de connectivite avant de lire le provider
-      // combine (qui lit connectivityProvider via valueOrNull, non bloquant).
+      // Riverpod 3 : un StreamProvider PAUSE sa souscription tant qu'aucun
+      // listener actif n'existe (BC-05). Un simple read(.future) ne suffit plus
+      // a demarrer le stream : sans abonnement, le generateur async* n'emet
+      // jamais et .future ne se resout pas. On maintient donc une souscription
+      // active (convention deja utilisee dans gps_providers_test) avant de
+      // materialiser le statut de connectivite. Zero changement de comportement
+      // applicatif : dans l'app, connectivityProvider est watch par des widgets.
+      container.listen(connectivityProvider, (_, _) {});
       await container.read(connectivityProvider.future);
 
       final result = await container.read(
@@ -75,6 +81,8 @@ void main() {
       fakeConnectivity.setStatus(ConnectivityStatusValues.online);
       fakeMbtiles.addTrail('trail2');
 
+      // Voir note BC-05 ci-dessus : listener actif pour reveiller le StreamProvider.
+      container.listen(connectivityProvider, (_, _) {});
       await container.read(connectivityProvider.future);
 
       final result = await container.read(
@@ -88,6 +96,8 @@ void main() {
       fakeConnectivity.setStatus(ConnectivityStatusValues.offline);
       fakeMbtiles.addTrail('trail3');
 
+      // Voir note BC-05 ci-dessus : listener actif pour reveiller le StreamProvider.
+      container.listen(connectivityProvider, (_, _) {});
       await container.read(connectivityProvider.future);
 
       final result = await container.read(
@@ -100,6 +110,8 @@ void main() {
     test('offline sans tuiles locales -> OfflineMapStatus.noMap', () async {
       fakeConnectivity.setStatus(ConnectivityStatusValues.offline);
 
+      // Voir note BC-05 ci-dessus : listener actif pour reveiller le StreamProvider.
+      container.listen(connectivityProvider, (_, _) {});
       await container.read(connectivityProvider.future);
 
       final result = await container.read(

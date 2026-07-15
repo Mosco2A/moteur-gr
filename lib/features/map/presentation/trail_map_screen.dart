@@ -135,7 +135,7 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
     );
 
     final poisAsync = ref.watch(mapPoisProvider(widget.trailId));
-    final filteredPois = poisAsync.valueOrNull ?? [];
+    final filteredPois = poisAsync.value ?? [];
 
     // Position GPS de l'utilisateur
     final userPositionAsync = ref.watch(locationProvider);
@@ -143,7 +143,7 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
     // Position projetee sur le trace
     final trackPosAsync = ref.watch(trackPositionProvider);
 
-    final displayPoints = simplifiedAsync.valueOrNull ?? points;
+    final displayPoints = simplifiedAsync.value ?? points;
     final bounds = _boundsFromPoints(points);
 
     return Column(

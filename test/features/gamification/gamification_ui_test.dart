@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/gamification/data/defi_service.dart';
 import 'package:moteur_gr/features/gamification/domain/defi_ranking.dart';

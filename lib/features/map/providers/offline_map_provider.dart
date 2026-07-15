@@ -37,7 +37,7 @@ final offlineMapStatusProvider =
     FutureProvider.family<OfflineMapStatus, String>((ref, trailId) async {
   // Etat de connectivite
   final connectivityAsync = ref.watch(connectivityProvider);
-  final connectivity = connectivityAsync.valueOrNull ?? ConnectivityStatusValues.online;
+  final connectivity = connectivityAsync.value ?? ConnectivityStatusValues.online;
 
   // Disponibilite des tuiles locales
   final manager = ref.watch(mbtilesManagerProvider);

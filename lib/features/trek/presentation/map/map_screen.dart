@@ -157,7 +157,7 @@ class _MapContentState extends State<_MapContent> {
             );
 
             final displayPoints =
-                simplifiedAsync.valueOrNull ?? widget.rawPoints;
+                simplifiedAsync.value ?? widget.rawPoints;
 
             // Convertir TrackPoint -> LatLng pour TraceLayer
             final latLngPoints = displayPoints
@@ -201,7 +201,7 @@ class _MapContentState extends State<_MapContent> {
                   builder: (context, ref, _) {
                     final stagesAsync = ref.watch(
                       stagesProvider(widget.trailId).select(
-                        (async) => async.valueOrNull,
+                        (async) => async.value,
                       ),
                     );
                     final stages = stagesAsync ?? [];
@@ -243,7 +243,7 @@ class _MapContentState extends State<_MapContent> {
                   builder: (context, ref, _) {
                     final positionAsync = ref.watch(
                       locationProvider.select(
-                        (async) => async.valueOrNull,
+                        (async) => async.value,
                       ),
                     );
 
@@ -277,7 +277,7 @@ class _MapContentState extends State<_MapContent> {
                 mapController: mapController,
                 onCenterOnMe: () {
                   final posAsync = ref.read(locationProvider);
-                  final pos = posAsync.valueOrNull;
+                  final pos = posAsync.value;
                   if (pos != null) {
                     mapController.move(
                       LatLng(pos.latitude, pos.longitude),

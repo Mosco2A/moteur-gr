@@ -45,7 +45,7 @@ class ConsentSettingsScreen extends ConsumerWidget {
             padding: const EdgeInsets.all(AppTheme.spacingBase),
             children: [
               // Banniere : la politique a evolue, revoir les choix.
-              if (reviewNeededAsync.valueOrNull == true)
+              if (reviewNeededAsync.value == true)
                 Card(
                   color: theme.colorScheme.tertiaryContainer,
                   child: ListTile(

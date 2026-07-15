@@ -30,6 +30,6 @@ final isGroupActiveProvider = Provider<bool>((ref) {
 
 /// Nombre de mateurs (membres hors createur).
 final watcherCountProvider = Provider<int>((ref) {
-  final members = ref.watch(groupMembersProvider).valueOrNull ?? [];
+  final members = ref.watch(groupMembersProvider).value ?? [];
   return members.length > 1 ? members.length - 1 : 0;
 });
