@@ -45,8 +45,8 @@ final stageByIdProvider =
 /// Affiche : nom i18n, description i18n, profil altimetrique (CustomPaint),
 /// stats (distance, D+, D-, duree estimee, difficulte).
 /// Utilise select() pour eviter un full rebuild.
-class StageDetailScreen extends ConsumerWidget {
-  const StageDetailScreen({
+class TrekStageDetailScreen extends ConsumerWidget {
+  const TrekStageDetailScreen({
     super.key,
     required this.trailId,
     required this.stageId,

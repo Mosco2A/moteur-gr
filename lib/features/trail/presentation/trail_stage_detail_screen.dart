@@ -19,8 +19,8 @@ import '../widgets/stage_stats_section.dart';
 /// distance, dénivelé D+/D-, difficulté, durée estimée,
 /// coordonnées départ/arrivée. Liste les POIs associés.
 /// Bouton vers la carte centré sur l'étape.
-class StageDetailScreen extends ConsumerWidget {
-  const StageDetailScreen({
+class TrailStageDetailScreen extends ConsumerWidget {
+  const TrailStageDetailScreen({
     super.key,
     required this.trailId,
     required this.stageNumber,

@@ -5,9 +5,9 @@ import '../domain/itinerary_calculator.dart';
 import '../domain/models/feasibility_profile.dart';
 import '../domain/models/itinerary_config.dart';
 import '../domain/models/itinerary_day.dart';
-import '../domain/models/trail_feasibility_params.dart';
+import '../../trail/domain/models/trail_feasibility_params.dart';
 import 'stage_providers.dart';
-import 'trail_providers.dart';
+import '../../trail/providers/trail_providers.dart';
 
 /// Configuration d'itineraire modifiable par l'utilisateur.
 ///

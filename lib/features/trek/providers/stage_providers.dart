@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/models/stage.dart';
-import 'trail_providers.dart';
+import '../../trail/providers/trail_providers.dart';
 
 /// Identifiant du sentier actif (selectionne par l'utilisateur).
 ///

@@ -1,7 +1,7 @@
 import '../../../core/models/stage.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/geo/track_point.dart';
-import 'models/stage_accommodation.dart';
+import '../../trek/domain/models/stage_accommodation.dart';
 
 /// Interface abstraite pour l'acces aux donnees d'un sentier.
 ///

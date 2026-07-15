@@ -9,10 +9,10 @@ import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/geo/track_point.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
-import 'package:moteur_gr/features/trek/data/drift_trail_data_provider.dart';
+import 'package:moteur_gr/features/trail/data/drift_trail_data_provider.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
-import 'package:moteur_gr/features/trek/domain/trail_data_provider.dart';
-import 'package:moteur_gr/features/trek/providers/trail_providers.dart';
+import 'package:moteur_gr/features/trail/domain/trail_data_provider.dart';
+import 'package:moteur_gr/features/trail/providers/trail_providers.dart';
 
 /// Tests E2.1c — interface TrailDataProvider + Drift implementation.
 void main() {
