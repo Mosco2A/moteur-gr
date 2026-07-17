@@ -62,7 +62,7 @@ class TrailStageDetailScreen extends ConsumerWidget {
           }
 
           // Filtrer les POIs de cette étape
-          final pois = poisAsync.valueOrNull
+          final pois = poisAsync.value
                   ?.where((p) => p.stageNumber == stageNumber)
                   .toList() ??
               [];

@@ -127,7 +127,7 @@ class WeatherScreen extends ConsumerWidget {
     WeatherForecast? forecast = weather.forecast;
     var source = _resolveSource(ref, weather);
     if (forecast == null) {
-      final stages = ref.watch(trailStagesProvider(trailId)).valueOrNull;
+      final stages = ref.watch(trailStagesProvider(trailId)).value;
       final stage =
           stages?.where((s) => s.stageNumber == stageNumber).firstOrNull;
       if (stage != null) {
@@ -203,7 +203,7 @@ class WeatherScreen extends ConsumerWidget {
     if (weather.isFromCache) return WeatherSource.cache;
     final status = ref
             .watch(connectivityProvider)
-            .valueOrNull ??
+            .value ??
         ConnectivityStatusValues.offline;
     return status == ConnectivityStatusValues.online
         ? WeatherSource.api

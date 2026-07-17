@@ -12,7 +12,10 @@ dependencies:
     sdk: flutter
 
   # --- State Management ---
-  flutter_riverpod: ^2.6.0
+  # Riverpod 3.x (migration INC-1) : bump de version + conservation des API
+  # legacy (StateProvider/StateNotifierProvider) via import legacy.dart. Aucun
+  # provider migre a ce stade. Retry auto neutralise au ProviderScope racine.
+  flutter_riverpod: ^3.3.2
 
   # --- Navigation ---
   go_router: ^13.0.0

@@ -76,7 +76,7 @@ class FeedbackNotifier extends Notifier<FeedbackState> {
     _trailId = ref.read(trailIdProvider);
     _connectivity =
         ref.watch(connectivityProvider.select((asyncVal) =>
-            asyncVal.valueOrNull ?? ConnectivityStatusValues.offline));
+            asyncVal.value ?? ConnectivityStatusValues.offline));
     _loadPendingCount();
     return const FeedbackState();
   }

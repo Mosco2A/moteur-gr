@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/weather_cache_dao.dart';
@@ -121,13 +122,20 @@ class WeatherState {
 ///   stageWeatherProvider(params).select((s) => s.forecast),
 /// );
 /// ```
-class StageWeatherNotifier
-    extends FamilyNotifier<WeatherState, WeatherStageParams> {
+class StageWeatherNotifier extends Notifier<WeatherState> {
+  // Riverpod 3 : FamilyNotifier retire (remplace par Notifier). Les parametres
+  // de famille (trailId + stageNumber) sont recus par le CONSTRUCTEUR (pattern
+  // officiel sans codegen) au lieu de build(WeatherStageParams arg). Aucun
+  // changement de logique : _params remplace mecaniquement l'ancien arg.
+  StageWeatherNotifier(this._params);
+
+  final WeatherStageParams _params;
+
   late WeatherRepository _repo;
   late ConnectivityStatus _connectivity;
 
   @override
-  WeatherState build(WeatherStageParams arg) {
+  WeatherState build() {
     // select() sur le repository — ne reconstruit que si l'instance change
     _repo = ref.watch(
       weatherRepositoryProvider.select((repo) => repo),
@@ -136,7 +144,7 @@ class StageWeatherNotifier
     // select() sur la connectivite — ne reconstruit que sur changement de statut
     _connectivity = ref.watch(
       connectivityProvider.select(
-        (asyncVal) => asyncVal.valueOrNull ?? ConnectivityStatusValues.offline,
+        (asyncVal) => asyncVal.value ?? ConnectivityStatusValues.offline,
       ),
     );
 
@@ -149,8 +157,8 @@ class StageWeatherNotifier
   Future<void> _loadWeather() async {
     // 1. Tenter le cache via le repository
     final forecast = await _repo.getForecast(
-      trailId: arg.trailId,
-      stageNumber: arg.stageNumber,
+      trailId: _params.trailId,
+      stageNumber: _params.stageNumber,
     );
 
     if (forecast != null) {
@@ -180,8 +188,8 @@ class StageWeatherNotifier
     state = state.copyWith(isLoading: true);
 
     final forecast = await _repo.refreshForecast(
-      trailId: arg.trailId,
-      stageNumber: arg.stageNumber,
+      trailId: _params.trailId,
+      stageNumber: _params.stageNumber,
     );
 
     if (forecast != null) {

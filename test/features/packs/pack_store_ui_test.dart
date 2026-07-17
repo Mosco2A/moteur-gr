@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/packs/data/pack_download_service.dart';
 import 'package:moteur_gr/features/packs/data/pack_storage.dart';
@@ -94,11 +95,20 @@ void main() {
     storage = _MemStorage();
   });
 
-  Widget wrap(Widget child, {List<Override> overrides = const []}) {
+  // Riverpod 3 interdit desormais d'overrider deux fois le meme provider dans
+  // un meme container (assertion "override a provider twice"). La source de
+  // fichiers est donc parametrable ici (defaut _OkSource) plutot que d'etre
+  // re-overridee par-dessus via `overrides` cote appelant. Zero changement de
+  // comportement : la source effective reste celle voulue par le test.
+  Widget wrap(
+    Widget child, {
+    List<Override> overrides = const [],
+    PackFileSource? source,
+  }) {
     return ProviderScope(
       overrides: [
         packStorageProvider.overrideWithValue(storage),
-        packFileSourceProvider.overrideWithValue(_OkSource()),
+        packFileSourceProvider.overrideWithValue(source ?? _OkSource()),
         ...overrides,
       ],
       child: TranslationProvider(
@@ -108,11 +118,15 @@ void main() {
   }
 
   // Variante avec Scaffold ancetre (pour les SnackBar de PackCard).
-  Widget wrapCard(Widget child, {List<Override> overrides = const []}) {
+  Widget wrapCard(
+    Widget child, {
+    List<Override> overrides = const [],
+    PackFileSource? source,
+  }) {
     return ProviderScope(
       overrides: [
         packStorageProvider.overrideWithValue(storage),
-        packFileSourceProvider.overrideWithValue(_OkSource()),
+        packFileSourceProvider.overrideWithValue(source ?? _OkSource()),
         ...overrides,
       ],
       child: TranslationProvider(
@@ -247,7 +261,7 @@ void main() {
 
       await tester.pumpWidget(wrapCard(
         PackCard(pack: pack, manifest: manifest),
-        overrides: [packFileSourceProvider.overrideWithValue(gated)],
+        source: gated,
       ));
       await tester.pumpAndSettle();
 

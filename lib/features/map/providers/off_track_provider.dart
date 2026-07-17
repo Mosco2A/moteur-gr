@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
@@ -245,7 +246,7 @@ final offTrackProvider =
     notificationSettingsProvider.select((s) => s.offTrackAlerts),
   );
   final trailId = ref.watch(trailIdProvider);
-  final track = ref.watch(gpxTrackProvider(trailId)).valueOrNull;
+  final track = ref.watch(gpxTrackProvider(trailId)).value;
 
   if (enabled && track != null && track.length >= 2) {
     notifier.startListening(

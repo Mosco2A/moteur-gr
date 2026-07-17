@@ -34,7 +34,7 @@ final currentUserProvider = StreamProvider<AuthUser?>((ref) {
 
 /// Provider synchrone de l'utilisateur (pour les guards GoRouter)
 final authStateProvider = Provider<AuthUser?>((ref) {
-  return ref.watch(currentUserProvider).valueOrNull;
+  return ref.watch(currentUserProvider).value;
 });
 
 /// Est connecte (meme anonyme = connecte)

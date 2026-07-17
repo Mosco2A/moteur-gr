@@ -70,6 +70,14 @@ class MoteurGrApp extends StatelessWidget {
           (ref) => ref.watch(databaseProvider).healthInfoDao,
         ),
       ],
+      // Migration Riverpod 3 (INC-1) : NEUTRALISATION du retry automatique.
+      // Riverpod 3 re-essaie par defaut tout provider Future/Stream qui leve
+      // (back-off exponentiel). Tant que le comportement n'a pas ete arbitre
+      // provider par provider (prevu en INC-4), on desactive ce retry au niveau
+      // racine pour garantir ZERO effet de bord comportemental vs Riverpod 2
+      // (pas de re-tentative en boucle sur une garde d'auth ou une erreur
+      // metier volontaire). Retourner null = aucune nouvelle tentative.
+      retry: (_, __) => null,
       // TranslationProvider (Slang) : requis pour Translations.of(context),
       // utilise notamment par l'ecran d'onboarding (E5.1a).
       child: TranslationProvider(
