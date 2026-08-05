@@ -174,27 +174,151 @@ void main() {
     });
 
     test(
-        'direction-aware SN : arrivee au refuge de DEPART (s4) => aucune '
-        'emission (anti-felicitations prematurees)', () async {
+        'direction-aware SN : arrivee au refuge de DEPART (stage-3) => aucune '
+        'emission (garde de position #98856)', () async {
       final plan = TrekPlan.fromStages(
         stages,
         direction: 'SN',
         forwardDirectionCode: 'NS',
       );
-      final service = ArrivalDetectionService(arrivalRadiusMeters: 15000.0);
+      // Rayon de depart genereux (5000m) pour couvrir nos coordonnees fictives.
+      final service = ArrivalDetectionService(
+        arrivalRadiusMeters: 15000.0,
+        departureRadiusMeters: 5000.0,
+      );
 
       final positions = [
-        // Fin de etape-3 (42.3, 9.3) = point de DEPART en SN (etape s4 commence
-        // ici cote marche). La detection ne doit rien emettre pour le depart.
+        // (42.3, 9.3) = end de stage-3 = point de DEPART en SN (extremite non
+        // partagee avec stage-2). Le garde de position doit tout neutraliser.
         _fakePosition(lat: 42.3001, lng: 9.3001),
       ];
       final events = await service
           .arrivalEvents(Stream.fromIterable(positions), stages, plan: plan)
           .toList();
 
-      // s4 est l'etape de depart en SN -> jamais d'arrivee emise pour elle.
-      expect(events.where((e) => e.stageId == 'stage-4'), isEmpty,
-          reason: 'Pas d arrivee a l etape de depart (garde anti-premature).');
+      // stage-3 est l'etape de depart en SN -> aucune arrivee emise au depart.
+      expect(events.where((e) => e.stageId == 'stage-3'), isEmpty,
+          reason: 'Pas d arrivee au point de depart (garde de position).');
+    });
+
+    // ---------------------------------------------------------------------
+    // #98856 (port GR20 07d7ce8) — VERROU OEUF-POULE de detection d'etape.
+    // Reproduit le blocage (l'etape de DEPART n'emettait JAMAIS d'arrivee, meme
+    // reelle, car ecartee par IDENTITE) puis prouve le fix dans les DEUX SENS.
+    // ---------------------------------------------------------------------
+    group('#98856 verrou oeuf-poule etape de depart', () {
+      test(
+          'NS (depart = stage-1) : arrivee REELLE a la fin de l etape de depart '
+          '=> stageEnd EMIS (avant le fix : rien, bloque a vie)', () async {
+        // Sens direct : depart = stage-1, son point de depart = start (42.0,9.0),
+        // sa fin reelle = end (42.1,9.1). On se place a la FIN.
+        final plan = TrekPlan.fromStages(
+          stages,
+          direction: 'NS',
+          forwardDirectionCode: 'NS',
+        );
+        final service = ArrivalDetectionService(
+          arrivalRadiusMeters: 15000.0,
+          departureRadiusMeters: 150.0,
+        );
+
+        final positions = [
+          _fakePosition(lat: 42.1001, lng: 9.1001), // fin reelle de stage-1
+        ];
+        final events = await service
+            .arrivalEvents(Stream.fromIterable(positions), stages, plan: plan)
+            .toList();
+
+        final s1 = events.where((e) => e.stageId == 'stage-1').toList();
+        expect(s1.length, equals(1),
+            reason: 'REPRO FIX : l etape de depart emet enfin son arrivee '
+                'reelle (avant #98856 : ecartee par identite -> bloque a 1).');
+        expect(s1.first.type, equals('stageEnd'),
+            reason: 'stage-1 n est pas la derniere en NS -> avancement.');
+      });
+
+      test(
+          'NS (depart = stage-1) : encore AU POINT DE DEPART (start) => aucune '
+          'emission (le vrai faux positif reste neutralise)', () async {
+        final plan = TrekPlan.fromStages(
+          stages,
+          direction: 'NS',
+          forwardDirectionCode: 'NS',
+        );
+        final service = ArrivalDetectionService(
+          arrivalRadiusMeters: 15000.0,
+          departureRadiusMeters: 5000.0,
+        );
+
+        final positions = [
+          _fakePosition(lat: 42.0001, lng: 9.0001), // au refuge de depart
+        ];
+        final events = await service
+            .arrivalEvents(Stream.fromIterable(positions), stages, plan: plan)
+            .toList();
+
+        expect(events.where((e) => e.stageId == 'stage-1'), isEmpty,
+            reason: 'Au point de depart : garde de position actif.');
+      });
+
+      test(
+          'SN (depart = stage-3) : la progression AVANCE au-dela de l etape de '
+          'depart (arrivee stage-2 => stageEnd) au lieu de rester bloquee',
+          () async {
+        // Sens inverse : ordre de marche stage-3 -> stage-2 -> stage-1. Le
+        // verrou historique bloquait sur l etape de depart. On prouve qu apres
+        // le depart, l arrivee a l etape suivante (stage-2, end=42.2,9.2) est
+        // bien captee (progression reelle) sans etre le finish (fin = stage-1).
+        final plan = TrekPlan.fromStages(
+          stages,
+          direction: 'SN',
+          forwardDirectionCode: 'NS',
+        );
+        // Rayon d'arrivee realiste (~1km) : seule la fin de stage-2 proche.
+        final service = ArrivalDetectionService(
+          arrivalRadiusMeters: 1000.0,
+          departureRadiusMeters: 150.0,
+        );
+
+        final positions = [
+          _fakePosition(lat: 42.2001, lng: 9.2001), // fin de stage-2 (jonction)
+        ];
+        final events = await service
+            .arrivalEvents(Stream.fromIterable(positions), stages, plan: plan)
+            .toList();
+
+        final s2 = events.where((e) => e.stageId == 'stage-2').toList();
+        expect(s2.length, equals(1),
+            reason: 'La progression avance au-dela du depart en SN.');
+        expect(s2.first.type, equals('stageEnd'),
+            reason: 'stage-2 n est pas la fin en SN (fin = stage-1).');
+      });
+
+      test(
+          'SN (depart = stage-3) : encore AU POINT DE DEPART (end=42.3,9.3) => '
+          'aucune emission pour l etape de depart (garde de position)',
+          () async {
+        final plan = TrekPlan.fromStages(
+          stages,
+          direction: 'SN',
+          forwardDirectionCode: 'NS',
+        );
+        // Rayon d'arrivee genereux : sans le garde, stage-3 emettrait au depart.
+        final service = ArrivalDetectionService(
+          arrivalRadiusMeters: 15000.0,
+          departureRadiusMeters: 150.0,
+        );
+
+        final positions = [
+          _fakePosition(lat: 42.3001, lng: 9.3001), // trailhead SN = end stage-3
+        ];
+        final events = await service
+            .arrivalEvents(Stream.fromIterable(positions), stages, plan: plan)
+            .toList();
+
+        expect(events.where((e) => e.stageId == 'stage-3'), isEmpty,
+            reason: 'Depart SN neutralise par le garde de position.');
+      });
     });
 
     test('sans plan : comportement historique (trailEnd = plus grand orderIndex)',

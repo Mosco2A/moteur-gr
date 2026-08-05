@@ -99,19 +99,41 @@ class TrekPlan {
 
   /// Resout l'arrivee a la fin de l'etape [stageId] : que doit-il se passer ?
   ///
-  /// 1. **Garde anti-felicitations prematurees** : si [stageId] est l'etape de
-  ///    depart, on ignore (un faux positif au demarrage ne termine JAMAIS le
-  ///    trek et ne fait pas avancer).
-  /// 2. Si [stageId] est la **vraie derniere etape** -> completer le trek.
-  /// 3. Sinon -> avancer a l'etape suivante.
-  /// 4. Etape hors parcours -> ignorer.
-  TrekArrivalOutcome resolveArrival(String stageId) {
+  /// 1. Etape hors parcours -> ignorer.
+  /// 2. **Faux positif au point de DEPART (#98856, port GR20 07d7ce8)** : si le
+  ///    caller signale [isFalsePositiveAtDeparture] (on est encore au refuge de
+  ///    depart de l'etape de depart — decision de POSITION, prise la ou la
+  ///    position est disponible : [ArrivalDetectionService]), on ignore. On NE
+  ///    bloque PLUS l'etape de depart par simple IDENTITE : l'ancien garde
+  ///    `if (isStartStage) ignore` ecartait aussi l'arrivee REELLE a la fin de
+  ///    l'etape de depart (verrou oeuf-poule : trek bloque a la 1re etape). Une
+  ///    arrivee genuine a la fin de l'etape de depart avance donc normalement.
+  /// 3. Ambiguite depart == fin (parcours mono-etape) -> ignorer : arriver a
+  ///    l'unique etape ne peut pas etre distingue du depart sans position, on
+  ///    laisse l'arret manuel (comportement historique preserve).
+  /// 4. Si [stageId] est la **vraie derniere etape** -> completer le trek.
+  /// 5. Sinon -> avancer a l'etape suivante.
+  ///
+  /// [isFalsePositiveAtDeparture] : fourni par le caller qui dispose de la
+  /// position (distToStart <= rayon de depart). Defaut false : sans info de
+  /// position, une arrivee de fin d'etape est prise au mot (l'etape de depart
+  /// n'est plus un cas special par identite).
+  TrekArrivalOutcome resolveArrival(
+    String stageId, {
+    bool isFalsePositiveAtDeparture = false,
+  }) {
     if (!contains(stageId)) {
       return const TrekArrivalOutcome.ignored();
     }
-    // Garde-fou dur : jamais de fin de trek (ni d'avancement) a l'etape de
-    // depart. Neutralise un faux positif de detection au lancement.
-    if (isStartStage(stageId)) {
+    // #98856 — Neutralise UNIQUEMENT un faux positif de detection au point de
+    // depart, signale par le caller (position). Remplace l'ancien blocage par
+    // identite qui creait le verrou oeuf-poule.
+    if (isFalsePositiveAtDeparture) {
+      return const TrekArrivalOutcome.ignored();
+    }
+    // Parcours mono-etape : depart == fin. Sans position pour trancher, on
+    // conserve le comportement historique (ignore, arret manuel).
+    if (isStartStage(stageId) && isFinalStage(stageId)) {
       return const TrekArrivalOutcome.ignored();
     }
     if (isFinalStage(stageId)) {

@@ -200,29 +200,67 @@ void main() {
       expect(outcome.isComplete, isTrue);
     });
 
-    test('SN : s4 = etape de DEPART -> ignore (anti-felicitations prematurees)',
-        () {
+    // #98856 (port GR20 07d7ce8) — VERROU OEUF-POULE : l'etape de depart n'est
+    // plus bloquee par IDENTITE. Un faux positif AU POINT DE DEPART (signale par
+    // le caller via position) est ignore ; une arrivee REELLE a la fin de
+    // l'etape de depart avance normalement (sinon le trek reste bloque a l'etape
+    // de depart a vie, cf. preuve terrain laugr20).
+    test(
+        'SN : s4 = DEPART, faux positif au refuge de depart -> ignore '
+        '(#98856 garde de position)', () {
       final plan = TrekPlan.fromStages(
         stages,
         direction: 'SN',
         forwardDirectionCode: 'NS',
       );
-      // En SN, s4 (plus grand orderIndex) est le DEPART : jamais une fin de trek.
-      final outcome = plan.resolveArrival('s4');
+      // Caller signale qu'on est encore au point de depart (distToStart<=rayon).
+      final outcome =
+          plan.resolveArrival('s4', isFalsePositiveAtDeparture: true);
       expect(outcome.action, TrekArrivalAction.ignore);
       expect(outcome.isComplete, isFalse);
       expect(outcome.isAdvance, isFalse);
     });
 
-    test('NS : s1 = etape de DEPART -> ignore (anti-felicitations prematurees)',
-        () {
+    test(
+        'SN : s4 = DEPART, arrivee REELLE en fin d etape -> avance vers s3 '
+        '(#98856 fix verrou : plus de blocage par identite)', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'SN',
+        forwardDirectionCode: 'NS',
+      );
+      // Pas de faux positif : on a genuinement atteint la fin de l'etape s4.
+      final outcome = plan.resolveArrival('s4');
+      expect(outcome.action, TrekArrivalAction.advance,
+          reason: 'La 1re etape doit pouvoir avancer (verrou oeuf-poule leve).');
+      expect(outcome.nextStageId, 's3');
+    });
+
+    test(
+        'NS : s1 = DEPART, faux positif au refuge de depart -> ignore '
+        '(#98856 garde de position)', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'NS',
+        forwardDirectionCode: 'NS',
+      );
+      final outcome =
+          plan.resolveArrival('s1', isFalsePositiveAtDeparture: true);
+      expect(outcome.action, TrekArrivalAction.ignore);
+    });
+
+    test(
+        'NS : s1 = DEPART, arrivee REELLE en fin d etape -> avance vers s2 '
+        '(#98856 fix verrou : plus de blocage par identite)', () {
       final plan = TrekPlan.fromStages(
         stages,
         direction: 'NS',
         forwardDirectionCode: 'NS',
       );
       final outcome = plan.resolveArrival('s1');
-      expect(outcome.action, TrekArrivalAction.ignore);
+      expect(outcome.action, TrekArrivalAction.advance,
+          reason: 'La 1re etape (NS) doit pouvoir avancer apres arrivee reelle.');
+      expect(outcome.nextStageId, 's2');
     });
 
     test('etape hors parcours -> ignore', () {
