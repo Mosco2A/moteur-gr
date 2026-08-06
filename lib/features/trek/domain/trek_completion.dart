@@ -86,6 +86,25 @@ class TrekPlan {
   /// True si [stageId] appartient au parcours.
   bool contains(String stageId) => orderedStageIds.contains(stageId);
 
+  /// GO-85 inc2 (porte du finisher, port GR20 #97501 chantier B) — le parcours
+  /// a-t-il ete REELLEMENT parcouru en entier ?
+  ///
+  /// True si et seulement si CHAQUE etape du parcours (dans le sens de marche)
+  /// figure dans [completed] (les etapes reellement completees, cf.
+  /// `TrekSession.completedStages`). Direction-aware et sans nombre en dur :
+  /// c'est l'ensemble des etapes du plan qui fait foi, quel que soit le sens.
+  ///
+  /// Critere BLOQUANT du finisher : atteindre la derniere etape ne suffit pas
+  /// si les etapes intermediaires n'ont pas ete marchees (demi-tour, arrivee
+  /// opportuniste). Un parcours vide renvoie false (rien a feliciter).
+  bool isFullyWalked(Set<String> completed) {
+    if (orderedStageIds.isEmpty) return false;
+    for (final id in orderedStageIds) {
+      if (!completed.contains(id)) return false;
+    }
+    return true;
+  }
+
   /// Etape SUIVANTE dans le sens de marche apres [stageId], ou null si [stageId]
   /// est la derniere (ou absent du parcours).
   ///

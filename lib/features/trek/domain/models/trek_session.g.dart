@@ -14,6 +14,12 @@ _TrekSession _$TrekSessionFromJson(Map<String, dynamic> json) => _TrekSession(
       ? null
       : DateTime.parse(json['finishedAt'] as String),
   status: json['status'] as String? ?? "active",
+  completedStages:
+      (json['completedStages'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList() ??
+      const <String>[],
+  parcoursFullyWalked: json['parcoursFullyWalked'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$TrekSessionToJson(_TrekSession instance) =>
@@ -23,4 +29,6 @@ Map<String, dynamic> _$TrekSessionToJson(_TrekSession instance) =>
       'startedAt': instance.startedAt.toIso8601String(),
       'finishedAt': instance.finishedAt?.toIso8601String(),
       'status': instance.status,
+      'completedStages': instance.completedStages,
+      'parcoursFullyWalked': instance.parcoursFullyWalked,
     };

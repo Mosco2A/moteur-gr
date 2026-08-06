@@ -300,17 +300,61 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     state = finalState;
   }
 
-  /// Termine le trek suite a la **detection d'arrivee a la derniere etape**
-  /// (evenement `trailEnd`, direction-aware). Finalise comme [stop] (statut
-  /// `completed` via TrekRecorder), mais declenche par la detection et non par
-  /// l'appui manuel sur « Terminer ». Idempotent : ne fait rien hors session
-  /// active. La completion n'a lieu qu'a la vraie derniere etape du parcours
-  /// dans le sens de marche.
-  Future<void> completeOnArrival() async {
+  /// GO-85 inc2 (persistance ALPHA, porte du finisher) — enregistre l'etape
+  /// [stageId] comme REELLEMENT completee sur la session courante.
+  ///
+  /// Appele a chaque arrivee detectee en fin d'etape (stageEnd/trailEnd) par le
+  /// pont d'arrivee. Idempotent (Set-like : pas de doublon) et sans effet hors
+  /// session active. Alimente [TrekSession.completedStages], le critere
+  /// BLOQUANT que la gate du finisher ([completeOnArrival]) verifie : un
+  /// demi-tour qui touche la derniere etape sans avoir marche les etapes
+  /// intermediaires ne pourra pas terminer le parcours.
+  void recordStageCompleted(String stageId) {
+    final session = state.session;
+    if (session == null) return;
     if (state.status != TrackingSessionStatus.recording &&
         state.status != TrackingSessionStatus.paused) {
       return;
     }
+    if (session.completedStages.contains(stageId)) return;
+
+    final updated = session.copyWith(
+      completedStages: [...session.completedStages, stageId],
+    );
+    state = state.copyWith(session: updated);
+  }
+
+  /// Termine le trek suite a la **detection d'arrivee a la derniere etape**
+  /// (evenement `trailEnd`, direction-aware) — MAIS uniquement si la **porte du
+  /// finisher** est ouverte.
+  ///
+  /// GO-85 inc2 (porte du finisher, port GR20) : la completion n'a lieu que si
+  /// [fullyWalked] est vrai, c.-a-d. si TOUTES les etapes du parcours ont ete
+  /// reellement marchees (cf. [TrekPlan.isFullyWalked] sur
+  /// [TrekSession.completedStages]). Atteindre la derniere etape ne suffit PAS :
+  /// un demi-tour ou une arrivee opportuniste (derniere etape touchee sans les
+  /// intermediaires) est REFUSE — pas de finish, pas de felicitations. Le
+  /// randonneur garde alors la main (arret manuel via [stop]).
+  ///
+  /// Quand la porte s'ouvre : on fige [TrekSession.parcoursFullyWalked] a vrai
+  /// puis on finalise comme [stop] (statut `completed`). Idempotent : ne fait
+  /// rien hors session active.
+  Future<void> completeOnArrival({required bool fullyWalked}) async {
+    if (state.status != TrackingSessionStatus.recording &&
+        state.status != TrackingSessionStatus.paused) {
+      return;
+    }
+    // Porte du finisher : parcours pas entierement marche -> pas de finish.
+    if (!fullyWalked) return;
+
+    // Trace du finisher legitime sur la session avant de finaliser.
+    final session = state.session;
+    if (session != null && !session.parcoursFullyWalked) {
+      state = state.copyWith(
+        session: session.copyWith(parcoursFullyWalked: true),
+      );
+    }
+
     await stop();
   }
 

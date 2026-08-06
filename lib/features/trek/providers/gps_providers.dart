@@ -149,23 +149,50 @@ final trekCongratulationsProvider = Provider<TrekCongratulations?>((ref) {
   return TrekCongratulations.forPlan(plan);
 });
 
-/// Pont **detection d'arrivee finale -> completion de session**.
+/// Pont **detection d'arrivee -> etapes completees + PORTE DU FINISHER**.
 ///
-/// Ecoute [arrivalEventsProvider] et, sur un evenement `trailEnd` (vraie
-/// derniere etape du parcours dans le sens de marche, direction-aware),
-/// finalise la session via `TrekSessionManagerNotifier.completeOnArrival()` :
-/// la completion du trek est declenchee UNIQUEMENT a la derniere etape reelle.
+/// Ecoute [arrivalEventsProvider] et, GO-85 inc2 (persistance ALPHA + porte du
+/// finisher, port GR20) :
 ///
-/// Les evenements `stageEnd` ne terminent PAS le trek : l'avancement d'etape
-/// reste pilote par ailleurs (la detection propose, cf. E13 RM-3). Ce provider
-/// doit etre **observe** (ex. `ref.listen`/`ref.watch` au montage de l'ecran de
-/// trek) pour etre actif.
+///  1. **Chaque** arrivee en fin d'etape (`stageEnd` OU `trailEnd`) est
+///     enregistree comme etape REELLEMENT completee sur la session
+///     (`recordStageCompleted` -> [TrekSession.completedStages]). C'est la
+///     memoire des etapes marchees, critere bloquant du finisher.
+///
+///  2. Sur `trailEnd` (vraie derniere etape du parcours dans le sens de marche,
+///     direction-aware), on ouvre la **porte du finisher** UNIQUEMENT si le
+///     parcours a ete entierement marche : `plan.isFullyWalked(completedStages)`.
+///     Un demi-tour ou une arrivee opportuniste a la derniere etape (sans avoir
+///     marche les etapes intermediaires) est REFUSE -> pas de finish, pas de
+///     felicitations (le randonneur garde la main, arret manuel).
+///
+/// Les evenements `stageEnd` ne terminent jamais le trek (l'avancement d'etape
+/// reste pilote par ailleurs, cf. E13 RM-3) : ils ne font qu'alimenter les
+/// etapes completees. Ce provider doit etre **observe** (ex. `ref.listen`/
+/// `ref.watch` au montage de l'ecran de trek) pour etre actif.
 final arrivalCompletionListenerProvider = Provider<void>((ref) {
   ref.listen<AsyncValue<ArrivalEvent>>(arrivalEventsProvider, (prev, next) {
     final event = next.value;
     if (event == null) return;
+
+    final notifier = ref.read(trekSessionManagerProvider.notifier);
+
+    // (1) Toute arrivee de fin d'etape (stageEnd/trailEnd) marque l'etape comme
+    // reellement completee : c'est ce registre qui alimente la gate finisher.
+    notifier.recordStageCompleted(event.stageId);
+
+    // (2) Seule la derniere etape reelle peut ouvrir la porte du finisher.
     if (event.type != 'trailEnd') return;
-    // Fin reelle du trek atteinte -> completer la session.
-    ref.read(trekSessionManagerProvider.notifier).completeOnArrival();
+
+    // Porte du finisher : le parcours doit avoir ete ENTIEREMENT marche. On lit
+    // les etapes completees APRES l'enregistrement ci-dessus (la derniere etape
+    // vient d'y etre ajoutee) et on confronte au plan (direction-aware).
+    final plan = ref.read(currentTrekPlanProvider);
+    final completed =
+        ref.read(trekSessionManagerProvider).session?.completedStages ??
+            const <String>[];
+    final fullyWalked = plan?.isFullyWalked(completed.toSet()) ?? false;
+
+    notifier.completeOnArrival(fullyWalked: fullyWalked);
   });
 });

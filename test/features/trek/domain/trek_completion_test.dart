@@ -287,6 +287,107 @@ void main() {
     });
   });
 
+  // GO-85 inc2 — PORTE DU FINISHER (port GR20 #97501 chantier B).
+  // isFullyWalked = critere BLOQUANT : le finisher ne s'ouvre que si TOUTES les
+  // etapes du parcours (dans le sens de marche) ont ete reellement completees.
+  // Reproduit le bug « demi-tour felicite » : atteindre la derniere etape sans
+  // avoir marche les intermediaires ne doit PAS terminer le parcours.
+  group('TrekPlan.isFullyWalked — porte du finisher', () {
+    test('NS parcours entier marche integralement -> finisher ouvert', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'NS',
+        forwardDirectionCode: 'NS',
+      );
+      expect(plan.isFullyWalked({'s1', 's2', 's3', 's4'}), isTrue);
+    });
+
+    test('NS demi-tour : derniere etape touchee mais intermediaires manquantes '
+        '-> finisher REFUSE', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'NS',
+        forwardDirectionCode: 'NS',
+      );
+      // Le randonneur a « touche » s1 (depart) et s4 (arrivee opportuniste),
+      // mais n'a jamais marche s2 ni s3 : le parcours n'est PAS complet.
+      expect(plan.isFullyWalked({'s1', 's4'}), isFalse);
+    });
+
+    test('NS une seule etape intermediaire manquante -> finisher REFUSE', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'NS',
+        forwardDirectionCode: 'NS',
+      );
+      expect(plan.isFullyWalked({'s1', 's2', 's4'}), isFalse,
+          reason: 's3 manquante : le parcours entier n est pas marche.');
+    });
+
+    test('SN (sens inverse) parcours entier marche -> finisher ouvert', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'SN',
+        forwardDirectionCode: 'NS',
+      );
+      // En SN, l'ordre de marche est s4->s3->s2->s1 ; l'ensemble reste le meme.
+      expect(plan.isFullyWalked({'s1', 's2', 's3', 's4'}), isTrue);
+    });
+
+    test('SN demi-tour : depart s4 + arrivee s1 touches, milieu manquant '
+        '-> finisher REFUSE', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'SN',
+        forwardDirectionCode: 'NS',
+      );
+      // En SN, s1 est la DERNIERE etape ; la toucher sans s2/s3 ne suffit pas.
+      expect(plan.isFullyWalked({'s4', 's1'}), isFalse);
+    });
+
+    test('parcours partiel (moitie nord s1..s2) entierement marche -> ouvert',
+        () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'NS',
+        forwardDirectionCode: 'NS',
+        stageIds: ['s1', 's2'],
+      );
+      // Seules s1 et s2 comptent : les avoir marchees suffit (parcours partiel).
+      expect(plan.isFullyWalked({'s1', 's2'}), isTrue);
+      // Etapes hors parcours ignorees : marcher s3/s4 en plus ne change rien.
+      expect(plan.isFullyWalked({'s1', 's2', 's3', 's4'}), isTrue);
+    });
+
+    test('parcours partiel : arrivee finale seule (s2) sans s1 -> REFUSE', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'NS',
+        forwardDirectionCode: 'NS',
+        stageIds: ['s1', 's2'],
+      );
+      expect(plan.isFullyWalked({'s2'}), isFalse);
+    });
+
+    test('aucune etape marchee -> finisher REFUSE', () {
+      final plan = TrekPlan.fromStages(
+        stages,
+        direction: 'NS',
+        forwardDirectionCode: 'NS',
+      );
+      expect(plan.isFullyWalked(const <String>{}), isFalse);
+    });
+
+    test('parcours vide -> finisher REFUSE (rien a feliciter)', () {
+      const plan = TrekPlan(
+        orderedStageIds: [],
+        direction: 'NS',
+        isFullTrail: true,
+      );
+      expect(plan.isFullyWalked({'s1'}), isFalse);
+    });
+  });
+
   group('TrekCongratulations — complet vs partiel', () {
     test('parcours entier -> felicitations completes', () {
       final plan = TrekPlan.fromStages(
