@@ -1,0 +1,73 @@
+# .gitattributes — projet Flutter/Dart (StepWays / Moteur-GR)
+# Objectif : figer les fins de ligne en LF pour tout le texte afin d'eliminer
+# definitivement le bruit git LF/CRLF sur les fichiers generes (.g.dart /
+# .freezed.dart) provoque par core.autocrlf=true en l'absence de .gitattributes.
+
+# Par defaut : detection auto du type, normalisation en LF dans le depot.
+* text=auto eol=lf
+
+# --- Sources & config texte : LF force (checkout ET commit) ---
+*.dart   text eol=lf
+*.yaml   text eol=lf
+*.yml    text eol=lf
+*.json   text eol=lf
+*.xml    text eol=lf
+*.md     text eol=lf
+*.txt    text eol=lf
+*.html   text eol=lf
+*.js     text eol=lf
+*.mjs    text eol=lf
+*.gradle text eol=lf
+*.kts    text eol=lf
+*.kt     text eol=lf
+*.java   text eol=lf
+*.swift  text eol=lf
+*.h      text eol=lf
+*.cpp    text eol=lf
+*.cc     text eol=lf
+*.cmake  text eol=lf
+*.properties text eol=lf
+*.gpx    text eol=lf
+*.rules  text eol=lf
+*.plist  text eol=lf
+*.entitlements text eol=lf
+*.xcconfig text eol=lf
+*.gitkeep text eol=lf
+*.gitignore text eol=lf
+*.gitattributes text eol=lf
+
+# Scripts shell : LF obligatoire (sinon cassent sous sh/bash)
+*.sh     text eol=lf
+
+# Scripts Windows : CRLF obligatoire
+*.bat    text eol=crlf
+*.cmd    text eol=crlf
+*.ps1    text eol=crlf
+
+# --- Binaires : jamais de conversion EOL, jamais de diff texte ---
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+*.gif    binary
+*.ico    binary
+*.webp   binary
+*.svg    binary
+*.mbtiles binary
+*.ttf    binary
+*.otf    binary
+*.woff   binary
+*.woff2  binary
+*.keystore binary
+*.jks    binary
+*.p12    binary
+*.p8     binary
+*.pem    binary
+*.pdf    binary
+*.zip    binary
+*.gz     binary
+*.jar    binary
+*.so     binary
+*.dll    binary
+*.dylib  binary
+*.a      binary
+*.class  binary
