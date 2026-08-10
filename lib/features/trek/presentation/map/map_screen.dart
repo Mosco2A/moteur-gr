@@ -74,8 +74,7 @@ class MapScreen extends StatelessWidget {
           final trackAsync = ref.watch(gpxTrackProvider(trailId));
 
           return trackAsync.when(
-            loading: () =>
-                const LoadingView(message: 'Chargement du trace...'),
+            loading: () => LoadingView(message: t.map.loading),
             error: (error, _) => ErrorView(
               message: 'Impossible de charger le trace',
               onRetry: () => ref.invalidate(gpxTrackProvider(trailId)),

@@ -196,6 +196,13 @@ class _Translations$stage$it extends Translations$stage$fr {
 	@override late final _Translations$stage$difficulty$it difficulty = _Translations$stage$difficulty$it._(_root);
 	@override String get remaining => '{distance} km rimanenti';
 	@override String get arrived => 'Sei arrivato!';
+	@override String get altitudeProfile => 'Profilo altimetrico';
+	@override String get statistics => 'Statistiche';
+	@override String get loading => 'Caricamento...';
+	@override String get loadingList => 'Caricamento delle tappe...';
+	@override String get dPlus => 'D+';
+	@override String get dMinus => 'D-';
+	@override String get difficultyLabel => 'Difficolta';
 }
 
 // Path: trail
@@ -301,6 +308,10 @@ class _Translations$tracking$it extends Translations$tracking$fr {
 	@override String get speed => 'Velocita';
 	@override String get time => 'Tempo';
 	@override String get confirmStop => 'Fermare il tracciamento?';
+	@override String get dPlus => 'D+';
+	@override String get stopSaveProgress => 'I tuoi progressi saranno salvati.';
+	@override String get cancel => 'Annulla';
+	@override String get stopButton => 'Stop';
 }
 
 // Path: checklist
@@ -1124,6 +1135,7 @@ class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr
 	@override String get moderate => 'Moderato';
 	@override String get hard => 'Difficile';
 	@override String get expert => 'Esperto';
+	@override String get extreme => 'Estremo';
 }
 
 // Path: accommodation.types
@@ -2127,8 +2139,16 @@ extension on TranslationsIt {
 			'stage.difficulty.moderate' => 'Moderato',
 			'stage.difficulty.hard' => 'Difficile',
 			'stage.difficulty.expert' => 'Esperto',
+			'stage.difficulty.extreme' => 'Estremo',
 			'stage.remaining' => '{distance} km rimanenti',
 			'stage.arrived' => 'Sei arrivato!',
+			'stage.altitudeProfile' => 'Profilo altimetrico',
+			'stage.statistics' => 'Statistiche',
+			'stage.loading' => 'Caricamento...',
+			'stage.loadingList' => 'Caricamento delle tappe...',
+			'stage.dPlus' => 'D+',
+			'stage.dMinus' => 'D-',
+			'stage.difficultyLabel' => 'Difficolta',
 			'trail.stages' => 'Tappe',
 			'trail.totalDistance' => 'Distanza totale',
 			'trail.totalElevation' => 'Dislivello totale',
@@ -2176,6 +2196,10 @@ extension on TranslationsIt {
 			'tracking.speed' => 'Velocita',
 			'tracking.time' => 'Tempo',
 			'tracking.confirmStop' => 'Fermare il tracciamento?',
+			'tracking.dPlus' => 'D+',
+			'tracking.stopSaveProgress' => 'I tuoi progressi saranno salvati.',
+			'tracking.cancel' => 'Annulla',
+			'tracking.stopButton' => 'Stop',
 			'checklist.title' => 'Lista equipaggiamento',
 			'checklist.subtitle' => 'Prepara lo zaino',
 			'checklist.progress' => '{checked}/{total} preparati',
@@ -2527,6 +2551,8 @@ extension on TranslationsIt {
 			'monetization.buyCta' => 'Sblocca questo trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
 			'signalement.title' => 'Segnala',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.chooseType' => 'Cosa vuoi segnalare?',
 			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
 			'signalement.types.eauASec' => 'Punto d\'acqua a secco',
@@ -2539,8 +2565,6 @@ extension on TranslationsIt {
 			'signalement.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
 			'signalement.close' => 'Chiudi',
 			'hebergement.title' => 'Alloggi nelle vicinanze',
-			_ => null,
-		} ?? switch (path) {
 			'hebergement.facilitatorNote' => 'StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell\'app.',
 			'hebergement.detourAR' => ({required Object km}) => 'Deviazione andata e ritorno: ${km} km',
 			'hebergement.openSite' => 'Vedi il sito',

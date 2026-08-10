@@ -88,7 +88,7 @@ class _StatsRow extends StatelessWidget {
                   return _StatTile(
                     icon: Icons.straighten,
                     value: _formatDistance(coveredM / 1000),
-                    label: 'Distance',
+                    label: t.tracking.distance,
                   );
                 },
               ),
@@ -102,7 +102,7 @@ class _StatsRow extends StatelessWidget {
                   return _StatTile(
                     icon: Icons.timer_outlined,
                     value: _formatDuration(duration),
-                    label: 'Temps',
+                    label: t.tracking.time,
                   );
                 },
               ),
@@ -116,7 +116,7 @@ class _StatsRow extends StatelessWidget {
                   return _StatTile(
                     icon: Icons.trending_up,
                     value: '${elevGain.round()} m',
-                    label: 'D+',
+                    label: t.tracking.dPlus,
                   );
                 },
               ),
@@ -130,7 +130,7 @@ class _StatsRow extends StatelessWidget {
                   return _StatTile(
                     icon: Icons.speed,
                     value: '${speed.toStringAsFixed(1)} km/h',
-                    label: 'Vitesse',
+                    label: t.tracking.speed,
                   );
                 },
               ),
@@ -176,7 +176,7 @@ class _ButtonsRow extends StatelessWidget {
           case TrackingSessionStatus.idle:
           case TrackingSessionStatus.stopped:
             return _ActionButton(
-              label: 'Demarrer',
+              label: t.tracking.start,
               icon: Icons.play_arrow,
               color: Colors.green,
               semanticLabel: t.a11y.startTracking,
@@ -187,7 +187,7 @@ class _ButtonsRow extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ActionButton(
-                    label: 'Pause',
+                    label: t.tracking.pause,
                     icon: Icons.pause,
                     color: Colors.orange,
                     semanticLabel: t.a11y.pauseTracking,
@@ -197,7 +197,7 @@ class _ButtonsRow extends StatelessWidget {
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: _ActionButton(
-                    label: 'Stop',
+                    label: t.tracking.stopButton,
                     icon: Icons.stop,
                     color: AppTheme.rougeUrgence,
                     semanticLabel: t.a11y.stopTracking,
@@ -211,7 +211,7 @@ class _ButtonsRow extends StatelessWidget {
               children: [
                 Expanded(
                   child: _ActionButton(
-                    label: 'Reprendre',
+                    label: t.tracking.resume,
                     icon: Icons.play_arrow,
                     color: Colors.green,
                     semanticLabel: t.a11y.resumeTracking,
@@ -221,7 +221,7 @@ class _ButtonsRow extends StatelessWidget {
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: _ActionButton(
-                    label: 'Stop',
+                    label: t.tracking.stopButton,
                     icon: Icons.stop,
                     color: AppTheme.rougeUrgence,
                     semanticLabel: t.a11y.stopTracking,
@@ -242,19 +242,19 @@ class _ButtonsRow extends StatelessWidget {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Arreter le tracking ?'),
-        content: const Text('La progression sera sauvegardee.'),
+        title: Text(t.tracking.confirmStop),
+        content: Text(t.tracking.stopSaveProgress),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Annuler'),
+            child: Text(t.tracking.cancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop(true);
               notifier.stop();
             },
-            child: const Text('Arreter'),
+            child: Text(t.tracking.stop),
           ),
         ],
       ),
