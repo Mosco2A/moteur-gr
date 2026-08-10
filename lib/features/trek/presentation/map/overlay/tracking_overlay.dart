@@ -178,7 +178,7 @@ class _ButtonsRow extends StatelessWidget {
             return _ActionButton(
               label: 'Demarrer',
               icon: Icons.play_arrow,
-              color: Colors.green,
+              color: AppTheme.actionStart,
               semanticLabel: t.a11y.startTracking,
               onPressed: () => notifier.start(trailId),
             );
@@ -189,7 +189,7 @@ class _ButtonsRow extends StatelessWidget {
                   child: _ActionButton(
                     label: 'Pause',
                     icon: Icons.pause,
-                    color: Colors.orange,
+                    color: AppTheme.actionPause,
                     semanticLabel: t.a11y.pauseTracking,
                     onPressed: notifier.pause,
                   ),
@@ -213,7 +213,7 @@ class _ButtonsRow extends StatelessWidget {
                   child: _ActionButton(
                     label: 'Reprendre',
                     icon: Icons.play_arrow,
-                    color: Colors.green,
+                    color: AppTheme.actionStart,
                     semanticLabel: t.a11y.resumeTracking,
                     onPressed: notifier.resume,
                   ),
