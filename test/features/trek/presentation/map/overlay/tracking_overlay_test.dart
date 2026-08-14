@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/trek/presentation/map/overlay/tracking_overlay.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
+
+/// Resout la couleur de fond d'un ElevatedButton pour l'etat par defaut.
+Color? _backgroundColorOf(WidgetTester tester, Finder buttonFinder) {
+  final button = tester.widget<ElevatedButton>(buttonFinder);
+  return button.style?.backgroundColor?.resolve(<WidgetState>{});
+}
 
 /// Tests widget du composant TrackingOverlay (Phase 2 E2.8d).
 ///
@@ -140,6 +147,101 @@ void main() {
     test('est un StatelessWidget', () {
       const widget = TrackingOverlay(trailId: 'test');
       expect(widget, isA<StatelessWidget>());
+    });
+  });
+
+  // SW-SKIN-L4 : les boutons d'action utilisent les tokens WCAG (actionStart /
+  // actionPause), pas les couleurs Material vives (Colors.green / Colors.orange)
+  // qui echouaient le contraste AA (texte blanc ~2.4:1). Le token blanc >= 4.5:1
+  // est prouve par test/core/a11y/a11y_audit_test.dart.
+  group('SW-SKIN-L4 couleurs tokens WCAG des boutons', () {
+    testWidgets('Demarrer porte actionStart en mode idle', (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          trekSessionManagerProvider.overrideWith(
+            () => _FakeNotifier(
+              const TrackingSessionState(status: TrackingSessionStatus.idle),
+            ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(body: TrackingOverlay(trailId: 'mare-a-mare')),
+          ),
+        ),
+      );
+
+      final demarrer = find.widgetWithText(ElevatedButton, 'Demarrer');
+      expect(demarrer, findsOneWidget);
+      expect(_backgroundColorOf(tester, demarrer), AppTheme.actionStart);
+      expect(_backgroundColorOf(tester, demarrer), isNot(Colors.green));
+
+      container.dispose();
+    });
+
+    testWidgets('Pause porte actionPause et Stop rougeUrgence en recording',
+        (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          stageDistanceCoveredProvider.overrideWithValue(1000.0),
+          trekSessionManagerProvider.overrideWith(
+            () => _FakeNotifier(
+              const TrackingSessionState(
+                status: TrackingSessionStatus.recording,
+              ),
+            ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(body: TrackingOverlay(trailId: 'mare-a-mare')),
+          ),
+        ),
+      );
+
+      final pause = find.widgetWithText(ElevatedButton, 'Pause');
+      final stop = find.widgetWithText(ElevatedButton, 'Stop');
+      expect(_backgroundColorOf(tester, pause), AppTheme.actionPause);
+      expect(_backgroundColorOf(tester, pause), isNot(Colors.orange));
+      expect(_backgroundColorOf(tester, stop), AppTheme.rougeUrgence);
+
+      container.dispose();
+    });
+
+    testWidgets('Reprendre porte actionStart en mode paused', (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          stageDistanceCoveredProvider.overrideWithValue(1000.0),
+          trekSessionManagerProvider.overrideWith(
+            () => _FakeNotifier(
+              const TrackingSessionState(status: TrackingSessionStatus.paused),
+            ),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const MaterialApp(
+            home: Scaffold(body: TrackingOverlay(trailId: 'mare-a-mare')),
+          ),
+        ),
+      );
+
+      final reprendre = find.widgetWithText(ElevatedButton, 'Reprendre');
+      expect(_backgroundColorOf(tester, reprendre), AppTheme.actionStart);
+      expect(_backgroundColorOf(tester, reprendre), isNot(Colors.green));
+
+      container.dispose();
     });
   });
 }
