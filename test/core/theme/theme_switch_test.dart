@@ -37,8 +37,12 @@ void main() {
   );
 
   group('AppTheme — construction des deux themes', () {
-    test('buildLightTheme et buildDarkTheme produisent la bonne brightness',
-        () {
+    // testWidgets (et non test) car construire le theme cable desormais
+    // google_fonts (SW-SKIN-L1) : le chargement de police echoue en test
+    // hors-ligne et remonte une exception benigne, drainee ici via
+    // takeException (le TextStyle renvoye porte bien la bonne famille).
+    testWidgets('buildLightTheme et buildDarkTheme produisent la bonne brightness',
+        (tester) async {
       final light = AppTheme.buildLightTheme(
           primaryColor: primary, secondaryColor: secondary);
       final dark = AppTheme.buildDarkTheme(
@@ -51,6 +55,13 @@ void main() {
       // Couleurs injectees depuis TrailConfig dans les deux themes.
       expect(light.colorScheme.primary, primary);
       expect(dark.colorScheme.primaryContainer, primary);
+
+      // Draine l'eventuelle exception de chargement google_fonts (offline).
+      await tester.pump(const Duration(milliseconds: 1));
+      final ex = tester.takeException();
+      if (ex != null) {
+        expect(ex.toString().toLowerCase(), contains('font'));
+      }
     });
   });
 
