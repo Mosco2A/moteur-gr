@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
+import '../../../../i18n/translations.g.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
 
@@ -80,8 +81,8 @@ class TrekStageDetailScreen extends ConsumerWidget {
         ),
       ),
       body: stageAsync.when(
-        loading: () => const LoadingView(
-          message: 'Chargement...',
+        loading: () => LoadingView(
+          message: t.stage.loading,
         ),
         error: (error, _) => ErrorView(
           message: 'Impossible de charger cette etape',
@@ -161,17 +162,17 @@ class _StageDetailContent extends StatelessWidget {
     return '${minutes}min';
   }
 
-  /// Retourne le libelle de difficulte.
+  /// Retourne le libelle de difficulte (i18n via l'enum, jamais de FR en dur).
   String _difficultyLabel() {
     switch (stage.difficulty) {
       case 'easy':
-        return 'Facile';
+        return t.stage.difficulty.easy;
       case 'moderate':
-        return 'Modere';
+        return t.stage.difficulty.moderate;
       case 'hard':
-        return 'Difficile';
+        return t.stage.difficulty.hard;
       case 'extreme':
-        return 'Extreme';
+        return t.stage.difficulty.extreme;
       default:
         return stage.difficulty;
     }
@@ -255,7 +256,7 @@ class _StageDetailContent extends StatelessWidget {
 
           // --- Profil altimetrique ---
           Text(
-            'Profil altimetrique',
+            t.stage.altitudeProfile,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: AppTheme.spacingSm),
@@ -281,33 +282,33 @@ class _StageDetailContent extends StatelessWidget {
 
           // --- Statistiques ---
           Text(
-            'Statistiques',
+            t.stage.statistics,
             style: theme.textTheme.titleMedium,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           _StatRow(
             icon: Icons.straighten,
-            label: 'Distance',
+            label: t.stage.distance,
             value: '${stage.distance.toStringAsFixed(1)} km',
           ),
           _StatRow(
             icon: Icons.trending_up,
-            label: 'D+',
+            label: t.stage.dPlus,
             value: '${stage.elevationGain} m',
           ),
           _StatRow(
             icon: Icons.trending_down,
-            label: 'D-',
+            label: t.stage.dMinus,
             value: '${stage.elevationLoss} m',
           ),
           _StatRow(
             icon: Icons.schedule,
-            label: 'Duree estimee',
+            label: t.stage.duration,
             value: _formattedDuration(),
           ),
           _StatRow(
             icon: Icons.signal_cellular_alt,
-            label: 'Difficulte',
+            label: t.stage.difficultyLabel,
             value: _difficultyLabel(),
           ),
         ],

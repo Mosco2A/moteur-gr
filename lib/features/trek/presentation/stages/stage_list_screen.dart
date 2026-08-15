@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/models/stage.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
+import '../../../../i18n/translations.g.dart';
 import '../../../trail/providers/stages_provider.dart';
 
 /// Ecran liste des etapes d'un sentier.
@@ -29,8 +30,8 @@ class StageListScreen extends ConsumerWidget {
         title: const Text('Etapes'),
       ),
       body: stagesAsync.when(
-        loading: () => const LoadingView(
-          message: 'Chargement des etapes...',
+        loading: () => LoadingView(
+          message: t.stage.loadingList,
         ),
         error: (error, _) => ErrorView(
           message: 'Impossible de charger les etapes',

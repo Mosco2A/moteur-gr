@@ -120,10 +120,18 @@
       "easy": "Fácil",
       "moderate": "Moderado",
       "hard": "Difícil",
-      "expert": "Experto"
+      "expert": "Experto",
+      "extreme": "Extremo"
     },
     "remaining": "{distance} km restantes",
-    "arrived": "Has llegado!"
+    "arrived": "Has llegado!",
+    "altitudeProfile": "Perfil altimetrico",
+    "statistics": "Estadisticas",
+    "loading": "Cargando...",
+    "loadingList": "Cargando las etapas...",
+    "dPlus": "D+",
+    "dMinus": "D-",
+    "difficultyLabel": "Dificultad"
   },
   "trail": {
     "stages": "Etapas",
@@ -186,7 +194,11 @@
     "elevation": "Desnivel",
     "speed": "Velocidad",
     "time": "Tiempo",
-    "confirmStop": "Detener el seguimiento?"
+    "confirmStop": "Detener el seguimiento?",
+    "dPlus": "D+",
+    "stopSaveProgress": "Tu progreso se guardara.",
+    "cancel": "Cancelar",
+    "stopButton": "Detener"
   },
   "checklist": {
     "title": "Lista de equipo",

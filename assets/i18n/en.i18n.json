@@ -120,10 +120,18 @@
       "easy": "Easy",
       "moderate": "Moderate",
       "hard": "Hard",
-      "expert": "Expert"
+      "expert": "Expert",
+      "extreme": "Extreme"
     },
     "remaining": "{distance} km remaining",
-    "arrived": "You have arrived!"
+    "arrived": "You have arrived!",
+    "altitudeProfile": "Elevation profile",
+    "statistics": "Statistics",
+    "loading": "Loading...",
+    "loadingList": "Loading stages...",
+    "dPlus": "D+",
+    "dMinus": "D-",
+    "difficultyLabel": "Difficulty"
   },
   "trail": {
     "stages": "Stages",
@@ -186,7 +194,11 @@
     "elevation": "Elevation",
     "speed": "Speed",
     "time": "Time",
-    "confirmStop": "Stop tracking?"
+    "confirmStop": "Stop tracking?",
+    "dPlus": "D+",
+    "stopSaveProgress": "Your progress will be saved.",
+    "cancel": "Cancel",
+    "stopButton": "Stop"
   },
   "checklist": {
     "title": "Gear checklist",
