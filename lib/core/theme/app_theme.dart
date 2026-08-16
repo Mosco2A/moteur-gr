@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Theme generique du Moteur GR.
 ///
@@ -7,6 +8,77 @@ import 'package:flutter/material.dart';
 /// communs a toutes les apps sentier.
 class AppTheme {
   AppTheme._();
+
+  // --- Typographie (SW-SKIN-L1) ---
+  //
+  // Couple de polices porte par le theme (jamais ecran par ecran) :
+  //  - Titres / display / labels : Space Grotesk (via [GoogleFonts.spaceGrotesk]).
+  //  - Corps / UI               : Inter        (via [GoogleFonts.inter]).
+  //  - Role "data" (gros chiffres km / D+ / duree) : Space Grotesk w700 +
+  //    FontFeature.tabularFigures() -> chiffres a chasse fixe (alignement HUD).
+  //
+  // Offline-first (arbitrage A1) : google_fonts recupere la police au runtime
+  // et la met en cache disque ; si aucun asset embarque ET pas de reseau, il
+  // retombe sur la police systeme (Roboto) — jamais de "boite tofu", jamais de
+  // blocage reseau. Pour un offline garanti au 1er lancement, deposer les .ttf
+  // dans assets/google_fonts/ (voir note de livraison) : google_fonts les
+  // detecte alors automatiquement et cesse tout fetch HTTP.
+
+  /// Base du role "data" (gros chiffres de stats) : Space Grotesk w700 avec
+  /// chiffres tabulaires. Reutilisable sans BuildContext ; la couleur et la
+  /// taille sont heritees du contexte de rendu (widget parent / DefaultTextStyle).
+  ///
+  /// Preferer [dataTextStyle] quand un BuildContext est disponible : la taille
+  /// et la couleur y sont alors alignees sur le TextTheme actif.
+  static TextStyle get dataTextStyleBase => GoogleFonts.spaceGrotesk(
+        fontWeight: FontWeight.w700,
+        fontFeatures: const [FontFeature.tabularFigures()],
+      );
+
+  /// Style du role "data" resolu depuis le [BuildContext].
+  ///
+  /// Reprend taille et couleur de `headlineMedium` (gros chiffre) du TextTheme
+  /// courant, en Space Grotesk w700 + chiffres tabulaires. A utiliser pour les
+  /// valeurs de stats (distance, D+, duree) du hub, de la fiche etape et du HUD.
+  static TextStyle dataTextStyle(BuildContext context) {
+    final base = Theme.of(context).textTheme.headlineMedium;
+    return GoogleFonts.spaceGrotesk(
+      textStyle: base,
+      fontWeight: FontWeight.w700,
+      fontFeatures: const [FontFeature.tabularFigures()],
+    );
+  }
+
+  /// Construit le [TextTheme] commun aux themes clair et sombre (SW-SKIN-L1).
+  ///
+  /// Les tailles et poids sont ceux de l'echelle typographique existante
+  /// (display 34/w700 … labelLarge 16/w600) : on n'assigne QUE la famille par
+  /// role. [onColor] est la couleur du texte (noir sur clair, gris clair sur
+  /// sombre) appliquee a tous les roles, a l'identique de l'ancien TextTheme.
+  ///
+  ///  - display / headline* / title* / label* -> Space Grotesk (titres).
+  ///  - body*                                  -> Inter (corps / UI).
+  static TextTheme _textTheme(Color onColor) {
+    TextStyle title(FontWeight weight, double size) => GoogleFonts.spaceGrotesk(
+          textStyle: TextStyle(fontWeight: weight, fontSize: size, color: onColor),
+        );
+    TextStyle body(FontWeight weight, double size) => GoogleFonts.inter(
+          textStyle: TextStyle(fontWeight: weight, fontSize: size, color: onColor),
+        );
+
+    return TextTheme(
+      displayLarge: title(FontWeight.w700, 34),
+      headlineLarge: title(FontWeight.w700, 28),
+      headlineMedium: title(FontWeight.w700, 24),
+      headlineSmall: title(FontWeight.w600, 22),
+      titleLarge: title(FontWeight.w600, 20),
+      titleMedium: title(FontWeight.w600, 18),
+      bodyLarge: body(FontWeight.w500, 20),
+      bodyMedium: body(FontWeight.w400, 18),
+      bodySmall: body(FontWeight.w400, 16),
+      labelLarge: title(FontWeight.w600, 16),
+    );
+  }
 
   // --- Couleurs neutres (communes a tous les sentiers) ---
   static const grisGranite = Color(0xFF616161);
@@ -154,18 +226,9 @@ class AppTheme {
           vertical: spacingMd,
         ),
       ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(fontWeight: FontWeight.w700, fontSize: 34, color: Color(0xFFF5F5F5)),
-        headlineLarge: TextStyle(fontWeight: FontWeight.w700, fontSize: 28, color: Color(0xFFF5F5F5)),
-        headlineMedium: TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: Color(0xFFF5F5F5)),
-        headlineSmall: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: Color(0xFFF5F5F5)),
-        titleLarge: TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: Color(0xFFF5F5F5)),
-        titleMedium: TextStyle(fontWeight: FontWeight.w600, fontSize: 18, color: Color(0xFFF5F5F5)),
-        bodyLarge: TextStyle(fontWeight: FontWeight.w500, fontSize: 20, color: Color(0xFFF5F5F5)),
-        bodyMedium: TextStyle(fontWeight: FontWeight.w400, fontSize: 18, color: Color(0xFFF5F5F5)),
-        bodySmall: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: Color(0xFFF5F5F5)),
-        labelLarge: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: Color(0xFFF5F5F5)),
-      ),
+      // SW-SKIN-L1 : familles portees par le theme (Space Grotesk / Inter),
+      // tailles et poids inchanges. Couleur texte sombre = gris clair (F5F5F5).
+      textTheme: _textTheme(const Color(0xFFF5F5F5)),
     );
   }
 
@@ -267,18 +330,9 @@ class AppTheme {
           vertical: spacingMd,
         ),
       ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(fontWeight: FontWeight.w700, fontSize: 34, color: noir),
-        headlineLarge: TextStyle(fontWeight: FontWeight.w700, fontSize: 28, color: noir),
-        headlineMedium: TextStyle(fontWeight: FontWeight.w700, fontSize: 24, color: noir),
-        headlineSmall: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: noir),
-        titleLarge: TextStyle(fontWeight: FontWeight.w600, fontSize: 20, color: noir),
-        titleMedium: TextStyle(fontWeight: FontWeight.w600, fontSize: 18, color: noir),
-        bodyLarge: TextStyle(fontWeight: FontWeight.w500, fontSize: 20, color: noir),
-        bodyMedium: TextStyle(fontWeight: FontWeight.w400, fontSize: 18, color: noir),
-        bodySmall: TextStyle(fontWeight: FontWeight.w400, fontSize: 16, color: noir),
-        labelLarge: TextStyle(fontWeight: FontWeight.w600, fontSize: 16, color: noir),
-      ),
+      // SW-SKIN-L1 : familles portees par le theme (Space Grotesk / Inter),
+      // tailles et poids inchanges. Couleur texte clair = noir (token existant).
+      textTheme: _textTheme(noir),
     );
   }
 
