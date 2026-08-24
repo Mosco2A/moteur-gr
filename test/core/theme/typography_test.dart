@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 
 /// Tests SW-SKIN-L1 — typographie portee par le theme (google_fonts).
@@ -25,10 +26,16 @@ void main() {
   const primary = Color(0xFF2E7D32);
   const secondary = Color(0xFF1565C0);
 
-  ThemeData light() =>
-      AppTheme.buildLightTheme(primaryColor: primary, secondaryColor: secondary);
-  ThemeData dark() =>
-      AppTheme.buildDarkTheme(primaryColor: primary, secondaryColor: secondary);
+  // SW-SKIN-L2 : la peau (defaut sentierVivant) est desormais requise ; elle
+  // n'affecte ni la typo ni les couleurs testees ici (neutralite L2).
+  ThemeData light() => AppTheme.buildLightTheme(
+      primaryColor: primary,
+      secondaryColor: secondary,
+      skin: AppSkin.sentierVivant);
+  ThemeData dark() => AppTheme.buildDarkTheme(
+      primaryColor: primary,
+      secondaryColor: secondary,
+      skin: AppSkin.sentierVivant);
 
   /// Laisse les futures de chargement de police se resoudre puis absorbe
   /// l'exception google_fonts (police non bundlee + pas de reseau en test).

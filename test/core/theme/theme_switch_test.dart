@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_stage_detail_screen.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_detail_screen.dart';
@@ -44,9 +45,13 @@ void main() {
     testWidgets('buildLightTheme et buildDarkTheme produisent la bonne brightness',
         (tester) async {
       final light = AppTheme.buildLightTheme(
-          primaryColor: primary, secondaryColor: secondary);
+          primaryColor: primary,
+          secondaryColor: secondary,
+          skin: AppSkin.sentierVivant);
       final dark = AppTheme.buildDarkTheme(
-          primaryColor: primary, secondaryColor: secondary);
+          primaryColor: primary,
+          secondaryColor: secondary,
+          skin: AppSkin.sentierVivant);
 
       expect(light.brightness, Brightness.light);
       expect(dark.brightness, Brightness.dark);
@@ -84,9 +89,13 @@ void main() {
 
     for (final entry in {
       'clair': AppTheme.buildLightTheme(
-          primaryColor: primary, secondaryColor: secondary),
+          primaryColor: primary,
+          secondaryColor: secondary,
+          skin: AppSkin.sentierVivant),
       'sombre': AppTheme.buildDarkTheme(
-          primaryColor: primary, secondaryColor: secondary),
+          primaryColor: primary,
+          secondaryColor: secondary,
+          skin: AppSkin.sentierVivant),
     }.entries) {
       testWidgets('TrailDetailScreen s\'affiche en theme ${entry.key}',
           (tester) async {
@@ -115,7 +124,9 @@ void main() {
           ],
           child: MaterialApp(
             theme: AppTheme.buildLightTheme(
-                primaryColor: primary, secondaryColor: secondary),
+                primaryColor: primary,
+                secondaryColor: secondary,
+                skin: AppSkin.sentierVivant),
             home: const TrailStageDetailScreen(
               trailId: 'test-trail',
               stageNumber: 1,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/a11y/wcag_contrast.dart';
+import 'package:moteur_gr/core/theme/app_skin.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -36,6 +37,7 @@ void main() {
     final theme = AppTheme.buildDarkTheme(
       primaryColor: const Color(0xFF2E7D32),
       secondaryColor: const Color(0xFF1565C0),
+      skin: AppSkin.sentierVivant,
     );
     final surface = theme.colorScheme.surface;
     final scaffold = theme.scaffoldBackgroundColor;
@@ -126,6 +128,7 @@ void main() {
     final light = AppTheme.buildLightTheme(
       primaryColor: const Color(0xFF2E7D32),
       secondaryColor: const Color(0xFF1565C0),
+      skin: AppSkin.sentierVivant,
     );
 
     test('texte principal conforme AA sur les surfaces claires', () {

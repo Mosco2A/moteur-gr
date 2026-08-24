@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'app_skin.dart';
+import 'skin_theme.dart';
+
 /// Theme generique du Moteur GR.
 ///
 /// Les couleurs primaires et secondaires sont injectees via TrailConfig.
@@ -131,9 +134,14 @@ class AppTheme {
   static const double radiusInput = 8;
 
   /// Genere un ThemeData dark a partir des couleurs du sentier.
+  ///
+  /// [skin] (SW-SKIN-L2) : peau active, resolue en [SkinTheme] et injectee dans
+  /// `ThemeData.extensions`. Neutralite : tant que les composants ne lisent pas
+  /// encore `SkinTheme` (avant L5/L6), la peau n'a AUCUN effet sur le rendu.
   static ThemeData buildDarkTheme({
     required Color primaryColor,
     required Color secondaryColor,
+    required AppSkin skin,
   }) {
     final primaryLight = _lighten(primaryColor, 0.3);
     final secondaryLight = _lighten(secondaryColor, 0.2);
@@ -229,6 +237,9 @@ class AppTheme {
       // SW-SKIN-L1 : familles portees par le theme (Space Grotesk / Inter),
       // tailles et poids inchanges. Couleur texte sombre = gris clair (F5F5F5).
       textTheme: _textTheme(const Color(0xFFF5F5F5)),
+      // SW-SKIN-L2 : porteur technique de la peau active. Neutre tant que les
+      // composants ne lisent pas encore SkinTheme (avant L5/L6).
+      extensions: <ThemeExtension<dynamic>>[SkinTheme.fromSkin(skin)],
     );
   }
 
@@ -239,9 +250,14 @@ class AppTheme {
   /// tokens de spacing/radius/typo restent communs. Le texte secondaire
   /// utilise [grisGranite] (conforme AA sur fond clair, ~6:1) et JAMAIS
   /// [grisTexteSecondaire] (reserve aux fonds sombres).
+  ///
+  /// [skin] (SW-SKIN-L2) : peau active, resolue en [SkinTheme] et injectee dans
+  /// `ThemeData.extensions`. Neutralite : tant que les composants ne lisent pas
+  /// encore `SkinTheme` (avant L5/L6), la peau n'a AUCUN effet sur le rendu.
   static ThemeData buildLightTheme({
     required Color primaryColor,
     required Color secondaryColor,
+    required AppSkin skin,
   }) {
     final primaryDark = _darken(primaryColor, 0.1);
     final secondaryDark = _darken(secondaryColor, 0.1);
@@ -333,6 +349,9 @@ class AppTheme {
       // SW-SKIN-L1 : familles portees par le theme (Space Grotesk / Inter),
       // tailles et poids inchanges. Couleur texte clair = noir (token existant).
       textTheme: _textTheme(noir),
+      // SW-SKIN-L2 : porteur technique de la peau active. Neutre tant que les
+      // composants ne lisent pas encore SkinTheme (avant L5/L6).
+      extensions: <ThemeExtension<dynamic>>[SkinTheme.fromSkin(skin)],
     );
   }
 
