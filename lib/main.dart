@@ -8,6 +8,7 @@ import 'core/config/test_trail_config.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
+import 'core/theme/app_skin.dart';
 import 'core/theme/app_theme.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/safety/presentation/health_info_screen.dart';
@@ -87,13 +88,19 @@ class MoteurGrApp extends StatelessWidget {
           // Theme clair ET sombre injectes depuis TrailConfig (E5.5b).
           // L'app reste sombre par defaut (design trek), mais le pendant
           // clair existe et est cable -> bascule de theme sans casse.
+          //
+          // SW-SKIN-L2 : peau active cablee en dur sur Sentier Vivant (defaut).
+          // La selection utilisateur (Reglages + carte) + persistance arrive en
+          // L7 (skinProvider) ; ici le porteur technique est en place, neutre.
           theme: AppTheme.buildLightTheme(
             primaryColor: Color(config.primaryColorValue),
             secondaryColor: Color(config.secondaryColorValue),
+            skin: AppSkin.sentierVivant,
           ),
           darkTheme: AppTheme.buildDarkTheme(
             primaryColor: Color(config.primaryColorValue),
             secondaryColor: Color(config.secondaryColorValue),
+            skin: AppSkin.sentierVivant,
           ),
           themeMode: ThemeMode.dark,
           routerConfig: appRouter,
