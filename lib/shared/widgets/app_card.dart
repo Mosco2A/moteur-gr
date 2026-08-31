@@ -29,8 +29,28 @@ class AppCard extends StatelessWidget {
     final theme = Theme.of(context);
     final effectiveRadius = borderRadius ?? BorderRadius.circular(AppTheme.radiusCard);
     final effectiveBg = backgroundColor ?? theme.colorScheme.surfaceContainerHighest;
+
+    // Le contenu est enveloppe dans un Material transparent : comme la `Card`
+    // Material (qu'AppCard remplace, SW-SKIN-L3), cela fournit l'ancetre
+    // Material requis par les widgets a encre (ListTile, InkWell, Switch...) et
+    // borne les splashs au rayon de la carte. Transparent + meme rayon => aucun
+    // changement visuel pour les appelants existants (le fond/ombre restent
+    // peints par le Container ci-dessous) ; on ne fait qu'ajouter le support
+    // d'encre qui manquait, evitant "No Material widget found" hors Scaffold.
+    final Widget inner = Material(
+      type: MaterialType.transparency,
+      borderRadius: effectiveRadius,
+      clipBehavior: Clip.antiAlias,
+      child: onTap != null
+          ? InkWell(onTap: onTap, borderRadius: effectiveRadius, child: Padding(
+              padding: padding ?? const EdgeInsets.all(AppTheme.spacingBase),
+              child: child))
+          : Padding(
+              padding: padding ?? const EdgeInsets.all(AppTheme.spacingBase),
+              child: child),
+    );
+
     final cardContent = Container(
-      padding: padding ?? const EdgeInsets.all(AppTheme.spacingBase),
       decoration: BoxDecoration(
         color: effectiveBg,
         borderRadius: effectiveRadius,
@@ -40,12 +60,9 @@ class AppCard extends StatelessWidget {
                 blurRadius: elevation * 2, offset: Offset(0, elevation))]
             : null,
       ),
-      child: child,
+      child: inner,
     );
-    if (onTap != null) {
-      return Padding(padding: margin ?? EdgeInsets.zero,
-        child: InkWell(onTap: onTap, borderRadius: effectiveRadius, child: cardContent));
-    }
+
     return Padding(padding: margin ?? EdgeInsets.zero, child: cardContent);
   }
 }

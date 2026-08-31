@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../providers/consent_ui_providers.dart';
 import 'consent_purpose_tile.dart';
 
@@ -46,8 +47,9 @@ class ConsentSettingsScreen extends ConsumerWidget {
             children: [
               // Banniere : la politique a evolue, revoir les choix.
               if (reviewNeededAsync.value == true)
-                Card(
-                  color: theme.colorScheme.tertiaryContainer,
+                AppCard(
+                  backgroundColor: theme.colorScheme.tertiaryContainer,
+                  padding: EdgeInsets.zero,
                   child: ListTile(
                     leading: const Icon(Icons.update),
                     title: Text(tr.consent.reviewNeeded),
@@ -60,81 +62,78 @@ class ConsentSettingsScreen extends ConsumerWidget {
               const SizedBox(height: AppTheme.spacingMd),
 
               // --- Finalites standard ---
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingMd,
-                  ),
-                  child: Column(
-                    children: [
-                      for (final purpose in standardPurposes) ...[
-                        ConsentPurposeTile(
-                          purpose: purpose,
-                          granted: states[purpose]?.granted ?? false,
-                          onChanged: (value) =>
-                              controller.set(purpose, granted: value),
-                        ),
-                        _DecisionDate(state: states[purpose]),
-                        if (purpose != standardPurposes.last)
-                          const Divider(height: 1),
-                      ],
+              AppCard(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.spacingMd,
+                ),
+                child: Column(
+                  children: [
+                    for (final purpose in standardPurposes) ...[
+                      ConsentPurposeTile(
+                        purpose: purpose,
+                        granted: states[purpose]?.granted ?? false,
+                        onChanged: (value) =>
+                            controller.set(purpose, granted: value),
+                      ),
+                      _DecisionDate(state: states[purpose]),
+                      if (purpose != standardPurposes.last)
+                        const Divider(height: 1),
                     ],
-                  ),
+                  ],
                 ),
               ),
               const SizedBox(height: AppTheme.spacingLg),
 
               // --- Section SANTE isolee (art 9) ---
-              Card(
-                color: theme.colorScheme.errorContainer.withAlpha(40),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppTheme.spacingMd),
-                  child: Semantics(
-                    container: true,
-                    label: tr.consent.a11y.healthSection,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.favorite_outline,
-                              size: 20,
-                              color: theme.colorScheme.error,
-                            ),
-                            const SizedBox(width: AppTheme.spacingSm),
-                            Expanded(
-                              child: Text(
-                                tr.consent.purposes.healthData,
-                                style: theme.textTheme.titleMedium,
-                              ),
-                            ),
-                            Chip(
-                              label: Text(tr.consent.healthBadge),
-                              visualDensity: VisualDensity.compact,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: AppTheme.spacingSm),
-                        Text(
-                          tr.consent.healthWarning,
-                          style: theme.textTheme.bodySmall,
-                        ),
-                        ConsentPurposeTile(
-                          purpose: ConsentPurpose.healthData,
-                          granted: states[ConsentPurpose.healthData]?.granted ??
-                              false,
-                          onChanged: (value) => controller.set(
-                            ConsentPurpose.healthData,
-                            granted: value,
+              AppCard(
+                backgroundColor:
+                    theme.colorScheme.errorContainer.withAlpha(40),
+                padding: const EdgeInsets.all(AppTheme.spacingMd),
+                child: Semantics(
+                  container: true,
+                  label: tr.consent.a11y.healthSection,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.favorite_outline,
+                            size: 20,
+                            color: theme.colorScheme.error,
                           ),
-                          hideDescription: true,
+                          const SizedBox(width: AppTheme.spacingSm),
+                          Expanded(
+                            child: Text(
+                              tr.consent.purposes.healthData,
+                              style: theme.textTheme.titleMedium,
+                            ),
+                          ),
+                          Chip(
+                            label: Text(tr.consent.healthBadge),
+                            visualDensity: VisualDensity.compact,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppTheme.spacingSm),
+                      Text(
+                        tr.consent.healthWarning,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      ConsentPurposeTile(
+                        purpose: ConsentPurpose.healthData,
+                        granted: states[ConsentPurpose.healthData]?.granted ??
+                            false,
+                        onChanged: (value) => controller.set(
+                          ConsentPurpose.healthData,
+                          granted: value,
                         ),
-                        _DecisionDate(
-                          state: states[ConsentPurpose.healthData],
-                        ),
-                      ],
-                    ),
+                        hideDescription: true,
+                      ),
+                      _DecisionDate(
+                        state: states[ConsentPurpose.healthData],
+                      ),
+                    ],
                   ),
                 ),
               ),

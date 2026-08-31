@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../providers/consent_ui_providers.dart';
 import 'consent_purpose_tile.dart';
 
@@ -114,9 +116,12 @@ class ConsentOnboardingScreen extends ConsumerWidget {
               const SizedBox(height: AppTheme.spacingMd),
 
               // --- Validation des choix ---
-              FilledButton(
+              // SW-SKIN-L3a : FilledButton -> AppButton primary (arbitrage #A5,
+              // mapping des FilledButton sur la variante primary du composant
+              // unifie). Iso-fonction : meme onPressed, meme libelle.
+              AppButton(
+                label: tr.consent.acceptSelected,
                 onPressed: onContinue,
-                child: Text(tr.consent.acceptSelected),
               ),
               const SizedBox(height: AppTheme.spacingXl),
             ],
@@ -147,48 +152,46 @@ class _HealthSection extends StatelessWidget {
     return Semantics(
       container: true,
       label: tr.consent.a11y.healthSection,
-      child: Card(
-        color: theme.colorScheme.errorContainer.withAlpha(40),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingMd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.favorite_outline,
-                    size: 20,
-                    color: theme.colorScheme.error,
+      child: AppCard(
+        backgroundColor: theme.colorScheme.errorContainer.withAlpha(40),
+        padding: const EdgeInsets.all(AppTheme.spacingMd),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.favorite_outline,
+                  size: 20,
+                  color: theme.colorScheme.error,
+                ),
+                const SizedBox(width: AppTheme.spacingSm),
+                Expanded(
+                  child: Text(
+                    tr.consent.purposes.healthData,
+                    style: theme.textTheme.titleMedium,
                   ),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  Expanded(
-                    child: Text(
-                      tr.consent.purposes.healthData,
-                      style: theme.textTheme.titleMedium,
-                    ),
-                  ),
-                  Chip(
-                    label: Text(tr.consent.healthBadge),
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor: theme.colorScheme.error.withAlpha(30),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              Text(
-                tr.consent.healthWarning,
-                style: theme.textTheme.bodySmall,
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              ConsentPurposeTile(
-                purpose: ConsentPurpose.healthData,
-                granted: granted,
-                onChanged: onChanged,
-                hideDescription: true,
-              ),
-            ],
-          ),
+                ),
+                Chip(
+                  label: Text(tr.consent.healthBadge),
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: theme.colorScheme.error.withAlpha(30),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            Text(
+              tr.consent.healthWarning,
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            ConsentPurposeTile(
+              purpose: ConsentPurpose.healthData,
+              granted: granted,
+              onChanged: onChanged,
+              hideDescription: true,
+            ),
+          ],
         ),
       ),
     );

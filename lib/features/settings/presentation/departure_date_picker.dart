@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 
 /// Widget de selection de la date de depart pour un sentier.
@@ -25,7 +26,8 @@ class DepartureDatePicker extends ConsumerWidget {
     final theme = Theme.of(context);
     final dateFormat = DateFormat('dd MMM yyyy', 'fr_FR');
 
-    return Card(
+    return AppCard(
+      padding: EdgeInsets.zero,
       child: ListTile(
         leading: Icon(
           Icons.calendar_today,
