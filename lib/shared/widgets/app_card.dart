@@ -13,6 +13,7 @@ class AppCard extends StatelessWidget {
     this.borderRadius,
     this.backgroundColor,
     this.borderColor,
+    this.borderWidth,
   });
 
   final Widget child;
@@ -23,6 +24,12 @@ class AppCard extends StatelessWidget {
   final BorderRadius? borderRadius;
   final Color? backgroundColor;
   final Color? borderColor;
+
+  /// Epaisseur du liseré quand [borderColor] est fourni (defaut 1.0). Permet de
+  /// conserver un contour semantique existant a l'identique — ex. la carte de
+  /// prevision en etat alerte, liseré rouge 1.5px (SW-SKIN-L3b) — sans recourir
+  /// a un parametre jetable. Sans effet si [borderColor] est null.
+  final double? borderWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +61,9 @@ class AppCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: effectiveBg,
         borderRadius: effectiveRadius,
-        border: borderColor != null ? Border.all(color: borderColor!) : null,
+        border: borderColor != null
+            ? Border.all(color: borderColor!, width: borderWidth ?? 1.0)
+            : null,
         boxShadow: elevation > 0
             ? [BoxShadow(color: Colors.black.withAlpha((elevation * 15).round()),
                 blurRadius: elevation * 2, offset: Offset(0, elevation))]

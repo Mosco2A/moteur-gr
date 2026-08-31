@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../domain/weather_recommendation.dart';
 import '../models/weather_forecast.dart';
 import 'day_forecast_card.dart' show WeatherIcon;
@@ -36,15 +37,13 @@ class TodayStageWeatherCard extends StatelessWidget {
         ),
     };
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingBase),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+    // SW-SKIN-L3b : Card -> AppCard (grammaire unifiee). Le Padding interne est
+    // porte par le parametre padding d'AppCard (memes marges spacingBase).
+    return AppCard(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
             // En-tête : « Aujourd'hui » + condition + températures.
             Row(
               children: [
@@ -136,7 +135,6 @@ class TodayStageWeatherCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 

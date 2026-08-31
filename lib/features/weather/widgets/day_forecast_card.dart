@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../models/weather_forecast.dart';
 import '../presentation/weather_date_format.dart';
 
@@ -20,19 +21,17 @@ class DayForecastCard extends StatelessWidget {
     final languageCode = Localizations.localeOf(context).languageCode;
     final isAlert = day.isAlertCondition;
 
-    return Card(
+    // SW-SKIN-L3b : Card -> AppCard (grammaire unifiee). Liseré d'alerte
+    // semantique (rouge 1.5px) conserve via borderColor/borderWidth ; padding
+    // interne porte par le parametre padding (memes marges spacingMd).
+    return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        side: isAlert
-            ? const BorderSide(color: AppTheme.rougeUrgence, width: 1.5)
-            : BorderSide.none,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingMd),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      borderColor: isAlert ? AppTheme.rougeUrgence : null,
+      borderWidth: isAlert ? 1.5 : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
             // Date + icône météo
             Row(
               children: [
@@ -111,7 +110,6 @@ class DayForecastCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 
