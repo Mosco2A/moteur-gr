@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/settings_provider.dart';
 
@@ -78,7 +79,8 @@ class SettingsScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionHeader(theme, Icons.language, tr.settings.language),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: Column(
             children: AppLanguageValues.values.map((lang) {
               final selected = lang == language;
@@ -119,7 +121,8 @@ class SettingsScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionHeader(theme, Icons.straighten, tr.settings.units),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
               // Distance
@@ -191,7 +194,8 @@ class SettingsScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionHeader(theme, Icons.palette, tr.settings.theme),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: Column(
             children: AppThemeModeValues.values.map((mode) {
               final selected = mode == themeMode;
@@ -232,7 +236,8 @@ class SettingsScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionHeader(theme, Icons.storage, tr.settings.cache),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
               SwitchListTile(
@@ -289,7 +294,8 @@ class SettingsScreen extends ConsumerWidget {
           Icons.notifications,
           tr.settings.notifications,
         ),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: Column(
             children: [
               SwitchListTile(
@@ -366,7 +372,8 @@ class SettingsScreen extends ConsumerWidget {
           available ? Icons.cloud_done : Icons.cloud_off,
           tr.cloud.statusSection,
         ),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: ListTile(
             leading: Icon(
               available ? Icons.cloud_done : Icons.cloud_off,
@@ -404,7 +411,8 @@ class SettingsScreen extends ConsumerWidget {
           Icons.privacy_tip_outlined,
           tr.consent.settingsEntry,
         ),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: Semantics(
             button: true,
             label: tr.consent.settingsEntry,
@@ -431,7 +439,8 @@ class SettingsScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _sectionHeader(theme, Icons.info_outline, tr.settings.version),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: FutureBuilder<PackageInfo>(
             future: PackageInfo.fromPlatform(),
             builder: (context, snapshot) {
