@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../tips/domain/models/tip_card.dart';
 import '../../tips/presentation/tip_detail_sheet.dart';
 import '../models/weather_alert.dart';
@@ -90,20 +91,16 @@ class WeatherAlertBanner extends StatelessWidget {
           // CTA vers fiche incendie si alerte fire active et fiche disponible
           if (hasFireAlert && fireTipCard != null) ...[
             const SizedBox(height: AppTheme.spacingSm),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () => TipDetailSheet.show(context, fireTipCard!),
-                icon: const Icon(Icons.local_fire_department, size: 18),
-                label: Text(t.weather.fireSafetyTips),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: AppTheme.rougeUrgence,
-                  side: const BorderSide(color: AppTheme.rougeUrgence),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppTheme.radiusButton),
-                  ),
-                ),
-              ),
+            // SW-SKIN-L3b : OutlinedButton -> AppButton (variante outline,
+            // pleine largeur). tone: rougeUrgence conserve la couleur SEMANTIQUE
+            // rouge du CTA securite incendie (bandeau danger) ; onPressed et
+            // libelle inchanges (iso-fonction).
+            AppButton(
+              variant: AppButtonVariant.outline,
+              tone: AppTheme.rougeUrgence,
+              icon: Icons.local_fire_department,
+              label: t.weather.fireSafetyTips,
+              onPressed: () => TipDetailSheet.show(context, fireTipCard!),
             ),
           ],
         ],

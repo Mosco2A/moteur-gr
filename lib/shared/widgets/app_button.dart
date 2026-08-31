@@ -13,6 +13,7 @@ class AppButton extends StatelessWidget {
     this.isLoading = false,
     this.icon,
     this.isFullWidth = true,
+    this.tone,
   });
 
   final String label;
@@ -21,6 +22,14 @@ class AppButton extends StatelessWidget {
   final bool isLoading;
   final IconData? icon;
   final bool isFullWidth;
+
+  /// Couleur semantique optionnelle (danger, succes...) appliquee a la variante
+  /// `outline` : teinte le texte, l'icone et la bordure sans changer la forme,
+  /// la taille ni le comportement. Sert aux CTA a sens fort (ex. conseil
+  /// securite incendie en rouge dans un bandeau d'alerte, SW-SKIN-L3b) tout en
+  /// gardant la grammaire unifiee du bouton. `null` => couleur du theme
+  /// (primary). Ignore pour primary/secondary (fonds pleins geres au theme).
+  final Color? tone;
 
   @override
   Widget build(BuildContext context) {
@@ -50,10 +59,12 @@ class AppButton extends StatelessWidget {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusButton))),
           child: child);
       case AppButtonVariant.outline:
+        // tone : couleur semantique optionnelle (rouge danger...) ; defaut = primary.
+        final outlineColor = tone ?? theme.colorScheme.primary;
         return OutlinedButton(onPressed: effectiveOnPressed,
           style: OutlinedButton.styleFrom(
-            foregroundColor: theme.colorScheme.primary, minimumSize: minSize,
-            side: BorderSide(color: theme.colorScheme.primary, width: 2),
+            foregroundColor: outlineColor, minimumSize: minSize,
+            side: BorderSide(color: outlineColor, width: 2),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusButton))),
           child: child);
     }

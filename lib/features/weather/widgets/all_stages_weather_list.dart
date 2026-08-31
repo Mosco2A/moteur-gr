@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/database.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../providers/current_stage_provider.dart';
 import '../providers/weather_providers.dart';
 import 'day_forecast_card.dart' show WeatherIcon;
@@ -25,11 +26,12 @@ class AllStagesWeatherList extends ConsumerWidget {
     final t = Translations.of(context);
     final stagesAsync = ref.watch(trailStagesProvider(trailId));
 
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-      ),
-      clipBehavior: Clip.antiAlias,
+    // SW-SKIN-L3b : Card -> AppCard (grammaire unifiee). padding zero car
+    // l'ExpansionTile gere sa propre mise en page pleine largeur ; AppCard
+    // clippe deja au rayon de la carte (Material antiAlias interne) comme le
+    // faisait clipBehavior: Clip.antiAlias. Rendu conserve.
+    return AppCard(
+      padding: EdgeInsets.zero,
       child: ExpansionTile(
         leading: const Icon(Icons.list_alt_outlined),
         title: Text(t.weather.allStages, style: theme.textTheme.titleMedium),
