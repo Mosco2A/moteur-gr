@@ -50,8 +50,8 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      // Nom affiche DEUX fois par design : dans le titre de l'AppBar
-      // et dans l'en-tete du corps de l'ecran.
+      // Nom affiche DEUX fois par design : dans le titre de l'AppBar et dans le
+      // titre de l'en-tete a degrade (AppGradientHeader, SW-SKIN-L5).
       expect(find.text('Col de Vergio'), findsNWidgets(2));
 
       // Description affichee
@@ -60,13 +60,19 @@ void main() {
         findsOneWidget,
       );
 
-      // Stats presentes
-      expect(find.text('14.5 km'), findsOneWidget);
-      expect(find.text('850 m'), findsOneWidget);
-      expect(find.text('620 m'), findsOneWidget);
+      // Stats presentes — SW-SKIN-L5 : rangee d'AppDataStat (valeur + unite
+      // separees, role data tabular). Distance 14.5 km, D+ +850 m, D- -620 m.
+      expect(find.text('14.5'), findsOneWidget);
+      expect(find.text('+850'), findsOneWidget);
+      expect(find.text('-620'), findsOneWidget);
+      // Unites "km"/"m" presentes (m apparait 2x : D+ et D-).
+      expect(find.text('km'), findsOneWidget);
+      expect(find.text('m'), findsNWidgets(2));
 
-      // Badge difficulte
-      expect(find.text('Difficile'), findsNWidgets(2));
+      // Badge difficulte — SW-SKIN-L5 : desormais UNE seule occurrence (le chip
+      // semantique ; l'ancienne ligne de stat "Difficulte" a ete retiree, la
+      // difficulte n'est jamais un gros chiffre data).
+      expect(find.text('Difficile'), findsOneWidget);
 
       // Profil altimetrique section
       expect(find.text('Profil altimetrique'), findsOneWidget);

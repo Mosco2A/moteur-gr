@@ -5,6 +5,8 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_data_stat.dart';
+import '../../../../shared/widgets/app_gradient_header.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
 
@@ -201,156 +203,135 @@ class _StageDetailContent extends StatelessWidget {
     final description = _localizedDescription(context);
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      // SW-SKIN-L5 : l'en-tete a degrade est plein cadre (pas de padding lateral
+      // pour le bandeau) ; le CORPS conserve le padding via un Padding interne.
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // --- Nom i18n + badge difficulte ---
-          Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: theme.colorScheme.primaryContainer,
-                foregroundColor: theme.colorScheme.onPrimaryContainer,
-                child: Text('${stage.orderIndex}'),
-              ),
-              const SizedBox(width: AppTheme.spacingMd),
-              Expanded(
-                child: Text(
-                  name,
-                  style: theme.textTheme.headlineSmall,
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.spacingSm,
-                  vertical: AppTheme.spacingXs,
-                ),
-                decoration: BoxDecoration(
-                  color: _difficultyColor().withAlpha(50),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                  border: Border.all(color: _difficultyColor()),
-                ),
-                child: Text(
-                  _difficultyLabel(),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: _difficultyColor(),
-                    fontWeight: FontWeight.bold,
+          // --- En-tete a degrade d'accent (SW-SKIN-L5) ---
+          // Remplace l'en-tete maison (CircleAvatar + nom + badge). Le numero
+          // d'etape devient le `trailing` (pastille accent), le nom le titre.
+          // Contraste texte garanti (§1.6). Le badge difficulte descend dans le
+          // corps (chip semantique), comme la maquette CCO peau A.
+          AppGradientHeader(
+            title: name,
+            trailing: CircleAvatar(
+              backgroundColor: Colors.white.withValues(alpha: 0.22),
+              foregroundColor: Colors.white,
+              child: Text('${stage.orderIndex}'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(AppTheme.spacingBase),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // --- Badge difficulte (chip semantique, couleur denivele) ---
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppTheme.spacingSm,
+                    vertical: AppTheme.spacingXs,
+                  ),
+                  decoration: BoxDecoration(
+                    color: _difficultyColor().withAlpha(50),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                    border: Border.all(color: _difficultyColor()),
+                  ),
+                  child: Text(
+                    _difficultyLabel(),
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: _difficultyColor(),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
 
-          // --- Description i18n ---
-          if (description.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.spacingBase),
-            Text(
-              description,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withAlpha(200),
-              ),
-            ),
-          ],
+                // --- Description i18n ---
+                if (description.isNotEmpty) ...[
+                  const SizedBox(height: AppTheme.spacingBase),
+                  Text(
+                    description,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurface.withAlpha(200),
+                    ),
+                  ),
+                ],
 
-          const SizedBox(height: AppTheme.spacingLg),
+                const SizedBox(height: AppTheme.spacingLg),
 
-          // --- Profil altimetrique ---
-          Text(
-            t.stage.altitudeProfile,
-            style: theme.textTheme.titleMedium,
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          Container(
-            height: 160,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-            ),
-            child: CustomPaint(
-              painter: _ElevationProfilePainter(
-                elevationGain: stage.elevationGain,
-                elevationLoss: stage.elevationLoss,
-                distance: stage.distance,
-                color: theme.colorScheme.primary,
-              ),
-              size: Size.infinite,
-            ),
-          ),
+                // --- Profil altimetrique ---
+                Text(
+                  t.stage.altitudeProfile,
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: AppTheme.spacingSm),
+                Container(
+                  height: 160,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                  ),
+                  child: CustomPaint(
+                    painter: _ElevationProfilePainter(
+                      elevationGain: stage.elevationGain,
+                      elevationLoss: stage.elevationLoss,
+                      distance: stage.distance,
+                      color: theme.colorScheme.primary,
+                    ),
+                    size: Size.infinite,
+                  ),
+                ),
 
-          const SizedBox(height: AppTheme.spacingLg),
+                const SizedBox(height: AppTheme.spacingLg),
 
-          // --- Statistiques ---
-          Text(
-            t.stage.statistics,
-            style: theme.textTheme.titleMedium,
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          _StatRow(
-            icon: Icons.straighten,
-            label: t.stage.distance,
-            value: '${stage.distance.toStringAsFixed(1)} km',
-          ),
-          _StatRow(
-            icon: Icons.trending_up,
-            label: t.stage.dPlus,
-            value: '${stage.elevationGain} m',
-          ),
-          _StatRow(
-            icon: Icons.trending_down,
-            label: t.stage.dMinus,
-            value: '${stage.elevationLoss} m',
-          ),
-          _StatRow(
-            icon: Icons.schedule,
-            label: t.stage.duration,
-            value: _formattedDuration(),
-          ),
-          _StatRow(
-            icon: Icons.signal_cellular_alt,
-            label: t.stage.difficultyLabel,
-            value: _difficultyLabel(),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Ligne de statistique avec icone, label et valeur.
-class _StatRow extends StatelessWidget {
-  const _StatRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: AppTheme.grisTexteSecondaire),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(
-              label,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.grisTexteSecondaire,
-              ),
-            ),
-          ),
-          Text(
-            value,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.bold,
+                // --- Statistiques : rangee de gros chiffres data (SW-SKIN-L5) ---
+                // Bloc plat (_StatRow) remplace par une rangee d'AppDataStat
+                // (distance, D+, D-, duree) en role data tabular L1. La valeur
+                // et l'unite sont separees (rendu tabular) ; la difficulte reste
+                // le chip ci-dessus (couleur denivele, jamais un gros chiffre).
+                Text(
+                  t.stage.statistics,
+                  style: theme.textTheme.titleMedium,
+                ),
+                const SizedBox(height: AppTheme.spacingSm),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: AppDataStat(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        label: t.stage.distance,
+                        value: stage.distance.toStringAsFixed(1),
+                        unit: 'km',
+                      ),
+                    ),
+                    Expanded(
+                      child: AppDataStat(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        label: t.stage.dPlus,
+                        value: '+${stage.elevationGain}',
+                        unit: 'm',
+                      ),
+                    ),
+                    Expanded(
+                      child: AppDataStat(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        label: t.stage.dMinus,
+                        value: '-${stage.elevationLoss}',
+                        unit: 'm',
+                      ),
+                    ),
+                    Expanded(
+                      child: AppDataStat(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        label: t.stage.duration,
+                        value: _formattedDuration(),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

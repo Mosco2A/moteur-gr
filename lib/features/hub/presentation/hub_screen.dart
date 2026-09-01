@@ -88,8 +88,11 @@ class HubScreen extends ConsumerWidget {
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
-            // Salutation (RF-3).
+            // Salutation (RF-3) — SW-SKIN-L5 : en-tete a degrade d'accent
+            // (AppGradientHeader). L'espacement bas, jadis porte par HubHeader,
+            // est ici explicite (le header est desormais un bandeau plein).
             const HubHeader(),
+            const SizedBox(height: AppTheme.spacingLg),
             // Tuile meteo reelle (AM-3, LOT-B) : ConsumerWidget (const OK).
             const HubWeatherCard(),
             const SizedBox(height: AppTheme.spacingBase),

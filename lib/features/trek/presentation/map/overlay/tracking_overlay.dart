@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../i18n/translations.g.dart';
 import '../../../../../shared/widgets/app_button.dart';
+import '../../../../../shared/widgets/app_data_stat.dart';
 import '../../../../map/providers/track_position_provider.dart';
 import '../../../providers/tracking_providers.dart';
 
@@ -83,7 +84,11 @@ class _StatsRow extends StatelessWidget {
               Consumer(
                 builder: (context, ref, _) {
                   final coveredM = ref.watch(stageDistanceCoveredProvider);
-                  return _StatTile(
+                  // AppDataStat (SW-SKIN-L5) remplace _StatTile : meme icone,
+                  // meme label, valeur formatee (unite incluse -> iso-rendu et
+                  // iso-semantique). Le Consumer/select autour reste intact ->
+                  // rebuild toujours au champ pres (distance projetee ici).
+                  return AppDataStat(
                     icon: Icons.straighten,
                     value: _formatDistance(coveredM / 1000),
                     label: t.tracking.distance,
@@ -96,7 +101,7 @@ class _StatsRow extends StatelessWidget {
                   final duration = ref.watch(
                     trekSessionManagerProvider.select((s) => s.elapsedDuration),
                   );
-                  return _StatTile(
+                  return AppDataStat(
                     icon: Icons.timer_outlined,
                     value: _formatDuration(duration),
                     label: t.tracking.time,
@@ -109,7 +114,7 @@ class _StatsRow extends StatelessWidget {
                   final elevGain = ref.watch(
                     trekSessionManagerProvider.select((s) => s.elevationGainM),
                   );
-                  return _StatTile(
+                  return AppDataStat(
                     icon: Icons.trending_up,
                     value: '${elevGain.round()} m',
                     label: t.tracking.dPlus,
@@ -122,7 +127,7 @@ class _StatsRow extends StatelessWidget {
                   final speed = ref.watch(
                     trekSessionManagerProvider.select((s) => s.currentSpeedKmh),
                   );
-                  return _StatTile(
+                  return AppDataStat(
                     icon: Icons.speed,
                     value: '${speed.toStringAsFixed(1)} km/h',
                     label: t.tracking.speed,
@@ -249,44 +254,6 @@ class _ButtonsRow extends StatelessWidget {
             child: Text(t.tracking.stop),
           ),
         ],
-      ),
-    );
-  }
-}
-
-/// Tuile d'une statistique individuelle.
-class _StatTile extends StatelessWidget {
-  const _StatTile({
-    required this.icon,
-    required this.value,
-    required this.label,
-  });
-
-  final IconData icon;
-  final String value;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Semantics(
-      label: '$label : $value',
-      child: ExcludeSemantics(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 18, color: theme.colorScheme.primary),
-            const SizedBox(height: 2),
-            Text(value, style: theme.textTheme.labelLarge),
-            Text(
-              label,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: AppTheme.grisTexteSecondaire,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
