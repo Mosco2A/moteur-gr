@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/activity_feed_providers.dart';
 import '../providers/kudos_providers.dart';
@@ -54,7 +55,8 @@ class ActivityFeedScreen extends ConsumerWidget {
               itemBuilder: (context, i) => _ActivityCard(
                 activity: activities[i],
                 currentUserUidHash: currentUserUidHash,
-                onReport: () => _openReportSheet(context, ref, activities[i].id),
+                onReport: () =>
+                    _openReportSheet(context, ref, activities[i].id),
               ),
             );
           },
@@ -80,9 +82,9 @@ class ActivityFeedScreen extends ConsumerWidget {
     if (reason == null) return;
     onReport?.call(activityId, reason);
     if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(t.social.reportSent)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.social.reportSent)));
   }
 }
 
@@ -239,10 +241,7 @@ class _ReportSheetState extends State<_ReportSheet> {
         children: [
           Text(t.social.reportTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: AppTheme.spacingMd),
-          Text(
-            t.social.reportReasonLabel,
-            style: theme.textTheme.bodyMedium,
-          ),
+          Text(t.social.reportReasonLabel, style: theme.textTheme.bodyMedium),
           RadioGroup<String>(
             groupValue: _reason,
             onChanged: (v) => setState(() => _reason = v ?? _reason),
@@ -265,12 +264,14 @@ class _ReportSheetState extends State<_ReportSheet> {
             ),
           ),
           const SizedBox(height: AppTheme.spacingMd),
+          // SW-SKIN-L3e : ElevatedButton -> AppButton primary, pleine largeur
+          // (Column crossAxisAlignment.stretch). Semantics(button+label) gardee.
           Semantics(
             button: true,
             label: t.social.reportSend,
-            child: ElevatedButton(
+            child: AppButton(
+              label: t.social.reportSend,
               onPressed: () => Navigator.of(context).pop(_reason),
-              child: Text(t.social.reportSend),
             ),
           ),
         ],

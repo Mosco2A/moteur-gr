@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/waypoint_service.dart';
@@ -123,11 +124,16 @@ class WaypointDetailSheet extends ConsumerWidget {
             Semantics(
               button: true,
               label: t.waypoints.detail.report,
-              child: OutlinedButton.icon(
+              // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
+              // largeur. Le theme OutlinedButton impose minimumSize infinie :
+              // malgre crossAxisAlignment.start le bouton s'etirait sur toute
+              // la largeur -> isFullWidth:true = iso-rendu. key/Semantics gardees.
+              child: AppButton(
                 key: const ValueKey('waypoint-report-button'),
+                variant: AppButtonVariant.outline,
+                icon: Icons.flag_outlined,
+                label: t.waypoints.detail.report,
                 onPressed: () => _onReport(context, t),
-                icon: const Icon(Icons.flag_outlined),
-                label: Text(t.waypoints.detail.report),
               ),
             ),
           ],
@@ -144,9 +150,9 @@ class WaypointDetailSheet extends ConsumerWidget {
     }
     // Accuse de prise en compte par defaut (notice enregistree, moderation a
     // posteriori cote serveur — D4).
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(t.waypoints.detail.reportAck)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.waypoints.detail.reportAck)));
   }
 }
 
@@ -168,7 +174,9 @@ class _CommentTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
-            comment.synced ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
+            comment.synced
+                ? Icons.cloud_done_outlined
+                : Icons.cloud_off_outlined,
             size: 16,
             color: comment.synced
                 ? theme.colorScheme.primary

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/moderation_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/moderation_ui_providers.dart';
 
@@ -52,12 +53,12 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
 
   /// Libelle localise d'un motif de signalement.
   String _reasonLabel(Translations tr, ReportReason reason) => switch (reason) {
-        ReportReason.illegal => tr.moderation.reasons.illegal,
-        ReportReason.harassment => tr.moderation.reasons.harassment,
-        ReportReason.spam => tr.moderation.reasons.spam,
-        ReportReason.dangerous => tr.moderation.reasons.dangerous,
-        ReportReason.other => tr.moderation.reasons.other,
-      };
+    ReportReason.illegal => tr.moderation.reasons.illegal,
+    ReportReason.harassment => tr.moderation.reasons.harassment,
+    ReportReason.spam => tr.moderation.reasons.spam,
+    ReportReason.dangerous => tr.moderation.reasons.dangerous,
+    ReportReason.other => tr.moderation.reasons.other,
+  };
 
   Future<void> _submit() async {
     final tr = Translations.of(context);
@@ -73,7 +74,9 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
     try {
-      await ref.read(moderationReportControllerProvider).submit(
+      await ref
+          .read(moderationReportControllerProvider)
+          .submit(
             contentType: widget.contentType,
             contentRef: widget.contentRef,
             reasonLabel: _reasonLabel(tr, _reason),
@@ -82,9 +85,7 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
             goodFaith: _goodFaith,
           );
       if (!mounted) return;
-      messenger.showSnackBar(
-        SnackBar(content: Text(tr.moderation.sent)),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(tr.moderation.sent)));
       navigator.pop(true);
     } on InvalidModerationReport {
       // Mention obligatoire manquante (art 16) — on affiche, on ne masque pas.
@@ -134,7 +135,10 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
               const SizedBox(height: AppTheme.spacingLg),
 
               // --- Motif (art 16) ---
-              Text(tr.moderation.reasonLabel, style: theme.textTheme.titleSmall),
+              Text(
+                tr.moderation.reasonLabel,
+                style: theme.textTheme.titleSmall,
+              ),
               const SizedBox(height: AppTheme.spacingSm),
               Semantics(
                 label: tr.moderation.a11y.reasonSelector,
@@ -193,8 +197,7 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
                 checked: _goodFaith,
                 label: tr.moderation.a11y.goodFaithToggle(
                   state: _goodFaith
-                      ? MaterialLocalizations.of(context)
-                          .okButtonLabel
+                      ? MaterialLocalizations.of(context).okButtonLabel
                       : '',
                 ),
                 child: CheckboxListTile(
@@ -202,8 +205,7 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
                   value: _goodFaith,
                   onChanged: _submitting
                       ? null
-                      : (value) =>
-                          setState(() => _goodFaith = value ?? false),
+                      : (value) => setState(() => _goodFaith = value ?? false),
                   title: Text(tr.moderation.goodFaithLabel),
                   controlAffinity: ListTileControlAffinity.leading,
                   contentPadding: EdgeInsets.zero,
@@ -215,8 +217,9 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
                 const SizedBox(height: AppTheme.spacingSm),
                 Text(
                   _error!,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.error),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
                 ),
               ],
               const SizedBox(height: AppTheme.spacingLg),
@@ -226,22 +229,26 @@ class _ReportContentSheetState extends ConsumerState<ReportContentSheet> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed:
-                        _submitting ? null : () => Navigator.of(context).pop(),
+                    onPressed: _submitting
+                        ? null
+                        : () => Navigator.of(context).pop(),
                     child: Text(tr.moderation.cancel),
                   ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Semantics(
                     button: true,
                     label: tr.moderation.a11y.submitReport,
-                    child: FilledButton(
+                    // SW-SKIN-L3e : FilledButton -> AppButton primary (arbitrage
+                    // #A5). isFullWidth:false : action de dialogue alignee a
+                    // droite aux cotes du TextButton Annuler (laisse tel quel).
+                    // Libelle bascule submitting/submit (iso). key/Semantics gardees.
+                    child: AppButton(
                       key: const ValueKey('report-submit'),
+                      isFullWidth: false,
+                      label: _submitting
+                          ? tr.moderation.submitting
+                          : tr.moderation.submit,
                       onPressed: _submitting ? null : _submit,
-                      child: Text(
-                        _submitting
-                            ? tr.moderation.submitting
-                            : tr.moderation.submit,
-                      ),
                     ),
                   ),
                 ],
@@ -267,9 +274,7 @@ Future<bool?> showReportSheet(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => ReportContentSheet(
-      contentType: contentType,
-      contentRef: contentRef,
-    ),
+    builder: (_) =>
+        ReportContentSheet(contentType: contentType, contentRef: contentRef),
   );
 }

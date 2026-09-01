@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/models/poi.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
 import 'poi_marker.dart';
 
 /// Popup affiché au tap sur un marqueur POI.
@@ -22,31 +23,82 @@ class PoiPopup extends StatelessWidget {
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 200),
-      child: Card(
+      // SW-SKIN-L3e : Card -> AppCard. elevation 6 conservee ; le rayon de
+      // carte (radiusCard) est le defaut d'AppCard ; padding md porte par
+      // AppCard (iso-rendu du popup POI, contrainte maxWidth 200 inchangee).
+      child: AppCard(
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingMd),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // En-tête : icône + nom
+        padding: const EdgeInsets.all(AppTheme.spacingMd),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // En-tête : icône + nom
+            Row(
+              children: [
+                Icon(PoiMarker.iconFor(poi.type), color: color, size: 20),
+                const SizedBox(width: AppTheme.spacingSm),
+                Expanded(
+                  child: Text(
+                    poi.name,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+
+            // Description
+            if (poi.description.isNotEmpty) ...[
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                poi.description,
+                style: theme.textTheme.bodySmall,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+
+            // Altitude
+            if (poi.altitudeM > 0) ...[
+              const SizedBox(height: AppTheme.spacingSm),
               Row(
                 children: [
-                  Icon(
-                    PoiMarker.iconFor(poi.type),
-                    color: color,
-                    size: 20,
+                  const Icon(
+                    Icons.terrain,
+                    size: 14,
+                    color: AppTheme.grisTexteSecondaire,
                   ),
-                  const SizedBox(width: AppTheme.spacingSm),
+                  const SizedBox(width: AppTheme.spacingXs),
+                  Text(
+                    '${poi.altitudeM} m',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.grisTexteSecondaire,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+
+            // Horaires
+            if (poi.openingHours != null) ...[
+              const SizedBox(height: AppTheme.spacingXs),
+              Row(
+                children: [
+                  const Icon(
+                    Icons.schedule,
+                    size: 14,
+                    color: AppTheme.grisTexteSecondaire,
+                  ),
+                  const SizedBox(width: AppTheme.spacingXs),
                   Expanded(
                     child: Text(
-                      poi.name,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+                      poi.openingHours!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: AppTheme.grisTexteSecondaire,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -54,65 +106,8 @@ class PoiPopup extends StatelessWidget {
                   ),
                 ],
               ),
-
-              // Description
-              if (poi.description.isNotEmpty) ...[
-                const SizedBox(height: AppTheme.spacingSm),
-                Text(
-                  poi.description,
-                  style: theme.textTheme.bodySmall,
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-
-              // Altitude
-              if (poi.altitudeM > 0) ...[
-                const SizedBox(height: AppTheme.spacingSm),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.terrain,
-                      size: 14,
-                      color: AppTheme.grisTexteSecondaire,
-                    ),
-                    const SizedBox(width: AppTheme.spacingXs),
-                    Text(
-                      '${poi.altitudeM} m',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.grisTexteSecondaire,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-
-              // Horaires
-              if (poi.openingHours != null) ...[
-                const SizedBox(height: AppTheme.spacingXs),
-                Row(
-                  children: [
-                    const Icon(
-                      Icons.schedule,
-                      size: 14,
-                      color: AppTheme.grisTexteSecondaire,
-                    ),
-                    const SizedBox(width: AppTheme.spacingXs),
-                    Expanded(
-                      child: Text(
-                        poi.openingHours!,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: AppTheme.grisTexteSecondaire,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ],
-          ),
+          ],
         ),
       ),
     );

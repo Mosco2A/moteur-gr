@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/booking/presentation/hebergements_peripheriques_screen.dart';
 import 'package:moteur_gr/features/booking/providers/hebergement_peripherique_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/app_card.dart';
 
 /// Lanceur de deeplink factice : enregistre les URLs ouvertes (pas de réseau).
 class _FakeDeeplinkLauncher implements DeeplinkLauncher {
@@ -28,15 +29,13 @@ void main() {
   setUp(() => fakeLauncher = _FakeDeeplinkLauncher());
 
   Widget wrap() => ProviderScope(
-        overrides: [
-          deeplinkLauncherProvider.overrideWithValue(fakeLauncher),
-        ],
-        child: TranslationProvider(
-          child: const MaterialApp(
-            home: HebergementsPeripheriquesScreen(trailId: 'test-trail'),
-          ),
-        ),
-      );
+    overrides: [deeplinkLauncherProvider.overrideWithValue(fakeLauncher)],
+    child: TranslationProvider(
+      child: const MaterialApp(
+        home: HebergementsPeripheriquesScreen(trailId: 'test-trail'),
+      ),
+    ),
+  );
 
   group('HebergementsPeripheriquesScreen', () {
     testWidgets('affiche le titre et le bandeau facilitateur', (tester) async {
@@ -52,15 +51,17 @@ void main() {
       await tester.pumpAndSettle();
 
       // Au moins une carte d'hébergement présente.
-      expect(find.byType(Card), findsWidgets);
+      // SW-SKIN-L3e : les Card Material ont ete unifiees en AppCard.
+      expect(find.byType(AppCard), findsWidgets);
       // Le détour A/R formaté apparaît (ex. 2.4 km).
       expect(find.text(t.hebergement.detourAR(km: '2.4')), findsOneWidget);
       // Bouton d'ouverture du site présent pour chaque hébergement.
       expect(find.text(t.hebergement.openSite), findsWidgets);
     });
 
-    testWidgets('le bouton ouvre un deeplink sortant (facilitateur)',
-        (tester) async {
+    testWidgets('le bouton ouvre un deeplink sortant (facilitateur)', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();
 
@@ -73,8 +74,9 @@ void main() {
       expect(fakeLauncher.opened.first, startsWith('https://'));
     });
 
-    testWidgets('affiche un message si le lien ne peut pas être ouvert',
-        (tester) async {
+    testWidgets('affiche un message si le lien ne peut pas être ouvert', (
+      tester,
+    ) async {
       fakeLauncher.result = false;
       await tester.pumpWidget(wrap());
       await tester.pumpAndSettle();

@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../../trek/providers/gps_providers.dart';
@@ -134,10 +135,7 @@ class _GpsPositionBanner extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Position : $lat, $lng  -  Alt. ${alt}m',
-                  style: const TextStyle(
-                    fontFamily: 'monospace',
-                    fontSize: 13,
-                  ),
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
                 ),
               ),
             ],
@@ -165,8 +163,11 @@ class _HealthInfoEntry extends StatelessWidget {
         AppTheme.spacingBase,
         0,
       ),
-      child: Card(
+      // SW-SKIN-L3e : Card -> AppCard. elevation 1 conservee ; padding zero
+      // car le ListTile porte son padding interne (iso-rendu de la tuile).
+      child: AppCard(
         elevation: 1,
+        padding: EdgeInsets.zero,
         child: ListTile(
           leading: CircleAvatar(
             backgroundColor: theme.colorScheme.primary,
@@ -200,15 +201,20 @@ class _EmergencyContactTile extends StatelessWidget {
     final theme = Theme.of(context);
     final isAuto = contact.isAutomatic;
 
-    return Card(
+    // SW-SKIN-L3e : Card -> AppCard. elevation dynamique conservee ; le fond
+    // teinte rouge (contact automatique = SOS) porte par backgroundColor ;
+    // padding zero car le ListTile porte son padding interne (iso-rendu).
+    return AppCard(
       elevation: isAuto ? 2 : 1,
-      color: isAuto
+      backgroundColor: isAuto
           ? AppTheme.rougeUrgence.withAlpha(20)
           : theme.colorScheme.surface,
+      padding: EdgeInsets.zero,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor:
-              isAuto ? AppTheme.rougeUrgence : theme.colorScheme.primary,
+          backgroundColor: isAuto
+              ? AppTheme.rougeUrgence
+              : theme.colorScheme.primary,
           child: Icon(
             isAuto ? Icons.local_hospital : Icons.person,
             color: Colors.white,

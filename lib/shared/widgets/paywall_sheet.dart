@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/services/monetization_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../i18n/translations.g.dart';
+import 'app_button.dart';
 
 /// Ouvre l ecran paywall en bottom sheet (E4.17).
 ///
@@ -85,22 +86,24 @@ class PaywallSheet extends ConsumerWidget {
             _FeatureLine(label: t.monetization.featureFollowers),
             _FeatureLine(label: t.monetization.featureNoAds),
             const SizedBox(height: AppTheme.spacingBase),
-            ElevatedButton.icon(
+            // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+            // largeur (theme = minimumSize infinie, le bouton remplissait deja
+            // la Column du sheet). Le libelle bascule prix/CTA selon le nombre
+            // d'etapes (iso). key preservee.
+            AppButton(
               key: const Key('paywall-buy-button'),
+              icon: Icons.lock_open,
+              label: totalStages > 0
+                  ? t.monetization.buyCtaWithPrice(
+                      price: price.toStringAsFixed(0),
+                    )
+                  : t.monetization.buyCta,
               onPressed: () async {
                 await ref
                     .read(monetizationServiceProvider)
                     .purchaseTrail(trailId);
                 if (context.mounted) Navigator.of(context).pop();
               },
-              icon: const Icon(Icons.lock_open),
-              label: Text(
-                totalStages > 0
-                    ? t.monetization.buyCtaWithPrice(
-                        price: price.toStringAsFixed(0),
-                      )
-                    : t.monetization.buyCta,
-              ),
             ),
           ],
         ),
@@ -122,8 +125,7 @@ class _FeatureLine extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
       child: Row(
         children: [
-          const Icon(Icons.check_circle,
-              size: 18, color: AppTheme.vertFacile),
+          const Icon(Icons.check_circle, size: 18, color: AppTheme.vertFacile),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(child: Text(label, style: theme.textTheme.bodyMedium)),
         ],

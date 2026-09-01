@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../../map/providers/location_provider.dart';
@@ -53,9 +54,7 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
       // Pas de position exploitable : on n'invente pas de coordonnées.
       if (!mounted) return;
       setState(() => _submitting = false);
-      messenger.showSnackBar(
-        SnackBar(content: Text(t.signalement.noLocation)),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(t.signalement.noLocation)));
       return;
     }
 
@@ -150,22 +149,19 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
                     // Bandeau de latence assumée (transparence, A2-6).
                     _LatencyBanner(message: t.signalement.latencyBanner),
                     const SizedBox(height: AppTheme.spacingMd),
+                    // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary.
+                    // isLoading porte l'etat _submitting (spinner + desactivation,
+                    // grammaire unifiee) ; minHeight 52 conserve la cible du CTA
+                    // pleine largeur. Semantics(button+label) preservee au-dessus.
                     Semantics(
                       button: true,
                       label: t.signalement.confirm,
-                      child: ElevatedButton.icon(
+                      child: AppButton(
+                        isLoading: _submitting,
+                        minHeight: 52,
+                        icon: Icons.send_rounded,
+                        label: t.signalement.confirm,
                         onPressed: _submitting ? null : _confirm,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 52),
-                        ),
-                        icon: _submitting
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.send_rounded),
-                        label: Text(t.signalement.confirm),
                       ),
                     ),
                   ],
@@ -220,9 +216,7 @@ class _TypeOption extends StatelessWidget {
             children: [
               Icon(icon, color: color, size: 28),
               const SizedBox(width: AppTheme.spacingMd),
-              Expanded(
-                child: Text(label, style: theme.textTheme.titleMedium),
-              ),
+              Expanded(child: Text(label, style: theme.textTheme.titleMedium)),
               if (selected)
                 Icon(Icons.check_circle, color: theme.colorScheme.primary),
             ],
@@ -321,10 +315,10 @@ class _SubmittedView extends ConsumerWidget {
             error: (_, __) => const SizedBox.shrink(),
           ),
           const SizedBox(height: AppTheme.spacingXl),
-          ElevatedButton(
-            onPressed: onClose,
-            child: Text(t.signalement.close),
-          ),
+          // SW-SKIN-L3e : ElevatedButton -> AppButton primary, pleine largeur.
+          // Le theme ElevatedButton impose minimumSize infinie : le bouton
+          // remplissait deja la Column -> isFullWidth:true = iso-rendu.
+          AppButton(label: t.signalement.close, onPressed: onClose),
         ],
       ),
     );

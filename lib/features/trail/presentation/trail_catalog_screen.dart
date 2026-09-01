@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 
@@ -73,83 +75,88 @@ class _AvailableTrailCard extends StatelessWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    return Card(
+    // SW-SKIN-L3e : Card -> AppCard. key + margin conserves ; padding base porte
+    // par AppCard (iso-rendu de la carte sentier du catalogue).
+    return AppCard(
       key: ValueKey('catalog-trail-${trail.id}'),
       margin: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingBase,
         vertical: AppTheme.spacingSm,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingBase),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Titre + icone.
-            Row(
-              children: [
-                ExcludeSemantics(
-                  child: Icon(Icons.terrain, color: theme.colorScheme.primary),
-                ),
-                const SizedBox(width: AppTheme.spacingSm),
-                Expanded(
-                  child: Text(
-                    trail.displayName,
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Titre + icone.
+          Row(
+            children: [
+              ExcludeSemantics(
+                child: Icon(Icons.terrain, color: theme.colorScheme.primary),
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  trail.displayName,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingXs),
-            // Region + pays.
-            Text(
-              '${trail.region}, ${trail.country}',
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: AppTheme.grisTexteSecondaire),
-            ),
-            const SizedBox(height: AppTheme.spacingXs),
-            // Stats principales — Wrap pour ne pas deborder a textScale 2x.
-            Wrap(
-              spacing: AppTheme.spacingBase,
-              runSpacing: AppTheme.spacingXs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                _InfoChip(
-                  icon: Icons.straighten,
-                  label: '${trail.totalDistanceKm.toStringAsFixed(0)} km',
-                  theme: theme,
-                ),
-                _InfoChip(
-                  icon: Icons.trending_up,
-                  label: '${trail.totalElevationGain} m D+',
-                  theme: theme,
-                ),
-                _InfoChip(
-                  icon: Icons.flag,
-                  label: '${trail.totalStages}',
-                  theme: theme,
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingMd),
-            // Action primaire : entrer dans le sentier (cablage nav #88246).
-            SizedBox(
-              width: double.infinity,
-              child: Semantics(
-                button: true,
-                label: t.catalog.a11y.enterButton(nom: trail.displayName),
-                child: FilledButton.icon(
-                  key: ValueKey('catalog-enter-${trail.id}'),
-                  onPressed: onEnter,
-                  icon: const Icon(Icons.arrow_forward),
-                  label: Text(t.catalog.enter),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingXs),
+          // Region + pays.
+          Text(
+            '${trail.region}, ${trail.country}',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: AppTheme.spacingXs),
+          // Stats principales — Wrap pour ne pas deborder a textScale 2x.
+          Wrap(
+            spacing: AppTheme.spacingBase,
+            runSpacing: AppTheme.spacingXs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              _InfoChip(
+                icon: Icons.straighten,
+                label: '${trail.totalDistanceKm.toStringAsFixed(0)} km',
+                theme: theme,
+              ),
+              _InfoChip(
+                icon: Icons.trending_up,
+                label: '${trail.totalElevationGain} m D+',
+                theme: theme,
+              ),
+              _InfoChip(
+                icon: Icons.flag,
+                label: '${trail.totalStages}',
+                theme: theme,
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          // Action primaire : entrer dans le sentier (cablage nav #88246).
+          SizedBox(
+            width: double.infinity,
+            child: Semantics(
+              button: true,
+              label: t.catalog.a11y.enterButton(nom: trail.displayName),
+              // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
+              // #A5), pleine largeur (SizedBox width infinity conserve).
+              // key/Semantics(button+label) preserves.
+              child: AppButton(
+                key: ValueKey('catalog-enter-${trail.id}'),
+                icon: Icons.arrow_forward,
+                label: t.catalog.enter,
+                onPressed: onEnter,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

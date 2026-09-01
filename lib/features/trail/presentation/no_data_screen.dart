@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 
 /// Provider qui indique si des sentiers sont disponibles localement.
@@ -38,9 +39,7 @@ class NoDataScreen extends ConsumerWidget {
       body: SafeArea(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.spacingXl,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingXl),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -87,10 +86,13 @@ class NoDataScreen extends ConsumerWidget {
                 const SizedBox(height: AppTheme.spacingXl),
 
                 // Bouton action principal
-                ElevatedButton.icon(
+                // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+                // largeur (theme = minimumSize infinie, le bouton remplissait
+                // deja la Column) -> isFullWidth:true = iso-rendu.
+                AppButton(
+                  icon: Icons.explore,
+                  label: t.noData.browseCta,
                   onPressed: () => context.go('/catalog'),
-                  icon: const Icon(Icons.explore),
-                  label: Text(t.noData.browseCta),
                 ),
                 const SizedBox(height: AppTheme.spacingBase),
               ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
@@ -41,18 +42,16 @@ class TrailStageDetailScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Étape $stageNumber')),
       body: stagesAsync.when(
-        loading: () => const Center(
-          child: CircularProgressIndicator(),
-        ),
+        loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => EmptyState(
           icon: Icons.error_outline,
           title: 'Impossible de charger l\'étape',
           subtitle: error.toString(),
         ),
         data: (stages) {
-          final stage = stages.where(
-            (s) => s.stageNumber == stageNumber,
-          ).firstOrNull;
+          final stage = stages
+              .where((s) => s.stageNumber == stageNumber)
+              .firstOrNull;
 
           if (stage == null) {
             return const EmptyState(
@@ -62,14 +61,14 @@ class TrailStageDetailScreen extends ConsumerWidget {
           }
 
           // Filtrer les POIs de cette étape
-          final pois = poisAsync.value
+          final pois =
+              poisAsync.value
                   ?.where((p) => p.stageNumber == stageNumber)
                   .toList() ??
               [];
 
           final duration = StageListTile.estimatedHours(stage);
-          final formattedDuration =
-              StageListTile.formatDuration(duration);
+          final formattedDuration = StageListTile.formatDuration(duration);
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -132,14 +131,15 @@ class TrailStageDetailScreen extends ConsumerWidget {
                   ...pois.map((poi) => PoiTile(poi: poi)),
                 const SizedBox(height: AppTheme.spacingLg),
                 // Bouton vers la carte
+                // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+                // largeur (SizedBox width infinity conserve). Libelle inchange.
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () => GoRouter.of(context).go(
-                      '/trail/$trailId/map',
-                    ),
-                    icon: const Icon(Icons.terrain),
-                    label: const Text('Voir sur la carte'),
+                  child: AppButton(
+                    icon: Icons.terrain,
+                    label: 'Voir sur la carte',
+                    onPressed: () =>
+                        GoRouter.of(context).go('/trail/$trailId/map'),
                   ),
                 ),
                 const SizedBox(height: AppTheme.spacingBase),

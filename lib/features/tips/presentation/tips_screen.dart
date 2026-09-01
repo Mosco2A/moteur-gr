@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../data/tips_data.dart';
 
 /// Ecran principal des fiches conseils.
@@ -13,9 +14,7 @@ class TipsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Conseils trek'),
-      ),
+      appBar: AppBar(title: const Text('Conseils trek')),
       body: GridView.builder(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -43,10 +42,7 @@ class TipsScreen extends StatelessWidget {
 
 /// Carte de categorie dans la grille.
 class _CategoryCard extends StatelessWidget {
-  const _CategoryCard({
-    required this.category,
-    required this.onTap,
-  });
+  const _CategoryCard({required this.category, required this.onTap});
 
   final TipCategory category;
   final VoidCallback onTap;
@@ -55,36 +51,34 @@ class _CategoryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                _resolveIcon(category.icon),
-                size: 36,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              Text(
-                category.nameKey,
-                style: theme.textTheme.titleMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: AppTheme.spacingXs),
-              Text(
-                '${category.tips.length} conseils',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.onSurface.withAlpha(150),
-                ),
-              ),
-            ],
+    // SW-SKIN-L3e : Card+InkWell -> AppCard. onTap + InkWell (borne au rayon
+    // carte) fournis par AppCard ; padding base porte par AppCard (iso-rendu
+    // de la tuile categorie cliquable).
+    return AppCard(
+      onTap: onTap,
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            _resolveIcon(category.icon),
+            size: 36,
+            color: theme.colorScheme.primary,
           ),
-        ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(
+            category.nameKey,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            '${category.tips.length} conseils',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(150),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -118,9 +112,7 @@ class _TipListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(category.nameKey),
-      ),
+      appBar: AppBar(title: Text(category.nameKey)),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         itemCount: category.tips.length,
@@ -143,13 +135,14 @@ class _TipCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Card(
+    // SW-SKIN-L3e : Card -> AppCard. margin conservee ; padding zero car
+    // l'ExpansionTile gere ses propres marges internes (iso-rendu). AppCard
+    // fournit le Material transparent requis par l'encre de l'ExpansionTile.
+    return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
+      padding: EdgeInsets.zero,
       child: ExpansionTile(
-        title: Text(
-          tip.titleKey,
-          style: theme.textTheme.titleMedium,
-        ),
+        title: Text(tip.titleKey, style: theme.textTheme.titleMedium),
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -158,10 +151,7 @@ class _TipCard extends StatelessWidget {
               AppTheme.spacingBase,
               AppTheme.spacingBase,
             ),
-            child: Text(
-              tip.contentKey,
-              style: theme.textTheme.bodyMedium,
-            ),
+            child: Text(tip.contentKey, style: theme.textTheme.bodyMedium),
           ),
         ],
       ),

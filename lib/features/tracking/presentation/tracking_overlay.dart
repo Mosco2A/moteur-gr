@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/app_haptics.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../map/providers/track_position_provider.dart';
 import '../models/tracking_status.dart';
 import '../providers/tracking_provider.dart';
@@ -240,22 +241,23 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton.icon(
-      // E5.5a : retour haptique leger sur les actions de suivi.
+    // SW-SKIN-L3e : ElevatedButton.icon a fond de couleur d'action -> AppButton
+    // variante filledTone (fond plein = tone, texte/icone blancs). Meme cas que
+    // l'overlay de suivi carte traite en L3c : tone porte la couleur d'ACTION
+    // (Demarrer/Pause/Stop) ; isFullWidth:false (minWidth 0 = dimensionne au
+    // contenu) ; minHeight 44 = cible tactile historique du HUD (iso-rendu).
+    // Le retour haptique leger est conserve dans onPressed.
+    return AppButton(
+      variant: AppButtonVariant.filledTone,
+      tone: color,
+      isFullWidth: false,
+      minHeight: 44,
+      icon: icon,
+      label: label,
       onPressed: () {
         AppHaptics.light();
         onPressed();
       },
-      icon: Icon(icon, size: 20),
-      label: Text(label),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: Colors.white,
-        minimumSize: const Size(0, 44),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppTheme.radiusButton),
-        ),
-      ),
     );
   }
 }

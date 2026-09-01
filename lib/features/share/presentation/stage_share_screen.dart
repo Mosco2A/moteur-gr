@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/share_service.dart';
 import '../providers/visibility_settings_provider.dart';
@@ -106,19 +107,23 @@ class _CardPreview extends StatelessWidget {
                 children: [
                   _Stat(label: 'km', value: card.distanceKm.toStringAsFixed(1)),
                   _Stat(label: 'D+', value: '${card.elevationGainM} m'),
-                  _Stat(label: 't', value: _formatDuration(card.durationSeconds)),
+                  _Stat(
+                    label: 't',
+                    value: _formatDuration(card.durationSeconds),
+                  ),
                 ],
               ),
-              if (card.badgeTitle != null &&
-                  card.badgeTitle!.isNotEmpty) ...[
+              if (card.badgeTitle != null && card.badgeTitle!.isNotEmpty) ...[
                 const SizedBox(height: AppTheme.spacingMd),
                 Row(
                   children: [
-                    Icon(Icons.emoji_events,
-                        size: 18, color: theme.colorScheme.primary),
+                    Icon(
+                      Icons.emoji_events,
+                      size: 18,
+                      color: theme.colorScheme.primary,
+                    ),
                     const SizedBox(width: AppTheme.spacingSm),
-                    Text(card.badgeTitle!,
-                        style: theme.textTheme.bodyMedium),
+                    Text(card.badgeTitle!, style: theme.textTheme.bodyMedium),
                   ],
                 ),
               ],
@@ -126,17 +131,18 @@ class _CardPreview extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppTheme.spacingLg),
+        // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine largeur
+        // (minimumSize infinie explicite conservee) ; minHeight 52 = meme cible.
+        // key/Semantics(button+label) preserves.
         Semantics(
           button: true,
           label: t.shareVisibility.shareButton,
-          child: ElevatedButton.icon(
+          child: AppButton(
             key: const ValueKey('share-button'),
+            minHeight: 52,
+            icon: Icons.share,
+            label: t.shareVisibility.shareButton,
             onPressed: () => onShare?.call(card),
-            icon: const Icon(Icons.share),
-            label: Text(t.shareVisibility.shareButton),
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size(double.infinity, 52),
-            ),
           ),
         ),
       ],
@@ -158,10 +164,12 @@ class _Stat extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(value, style: theme.textTheme.titleLarge),
-        Text(label,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: AppTheme.grisTexteSecondaire,
-            )),
+        Text(
+          label,
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: AppTheme.grisTexteSecondaire,
+          ),
+        ),
       ],
     );
   }
@@ -180,8 +188,7 @@ class _PrivateNotice extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.lock_outline,
-              size: 64, color: theme.colorScheme.outline),
+          Icon(Icons.lock_outline, size: 64, color: theme.colorScheme.outline),
           const SizedBox(height: AppTheme.spacingBase),
           Text(
             message,

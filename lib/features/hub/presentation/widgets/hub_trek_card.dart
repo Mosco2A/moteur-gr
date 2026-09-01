@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../shared/widgets/app_button.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../trek/providers/tracking_providers.dart';
@@ -31,7 +32,8 @@ class HubTrekCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tracking = ref.watch(trekSessionManagerProvider);
-    final isActive = tracking.status == TrackingSessionStatus.recording ||
+    final isActive =
+        tracking.status == TrackingSessionStatus.recording ||
         tracking.status == TrackingSessionStatus.paused;
 
     if (!isActive) {
@@ -55,14 +57,16 @@ class _ActiveTrekCard extends ConsumerWidget {
     final totalKm = ref.watch(
       trailConfigProvider.select((c) => c.totalDistanceKm),
     );
-    final progress =
-        totalKm > 0 ? (tracking.distanceKm / totalKm).clamp(0.0, 1.0) : 0.0;
+    final progress = totalKm > 0
+        ? (tracking.distanceKm / totalKm).clamp(0.0, 1.0)
+        : 0.0;
     final percent = (progress * 100).round();
 
     final hours = tracking.elapsedDuration.inHours;
     final minutes = tracking.elapsedDuration.inMinutes.remainder(60);
-    final durationText =
-        hours > 0 ? '${hours}h${minutes.toString().padLeft(2, '0')}' : '${minutes}min';
+    final durationText = hours > 0
+        ? '${hours}h${minutes.toString().padLeft(2, '0')}'
+        : '${minutes}min';
 
     return AppCard(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
@@ -97,10 +101,7 @@ class _ActiveTrekCard extends ConsumerWidget {
                 label: t.hub.trekCard.elevationGain,
                 value: '${tracking.elevationGainM.round()} m',
               ),
-              _Stat(
-                label: t.hub.trekCard.duration,
-                value: durationText,
-              ),
+              _Stat(label: t.hub.trekCard.duration, value: durationText),
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
@@ -121,12 +122,14 @@ class _ActiveTrekCard extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppTheme.spacingBase),
+          // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+          // largeur (SizedBox width infinity conserve). Libelle inchange.
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: AppButton(
+              icon: Icons.navigation_outlined,
+              label: t.hub.trekCard.resume,
               onPressed: () => context.go('/map'),
-              icon: const Icon(Icons.navigation_outlined),
-              label: Text(t.hub.trekCard.resume),
             ),
           ),
         ],
@@ -174,12 +177,14 @@ class _NoTrekCard extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppTheme.spacingBase),
+          // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+          // largeur (SizedBox width infinity conserve). Libelle inchange.
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton.icon(
+            child: AppButton(
+              icon: Icons.event_note_outlined,
+              label: t.hub.trekCard.plan,
               onPressed: () => context.push('/trail/$trailId/planning'),
-              icon: const Icon(Icons.event_note_outlined),
-              label: Text(t.hub.trekCard.plan),
             ),
           ),
         ],

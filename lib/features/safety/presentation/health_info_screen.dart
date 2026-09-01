@@ -17,6 +17,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/health_info_dao.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/health_info_repository.dart';
 import '../domain/models/health_info.dart';
@@ -161,10 +162,12 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         padding: const EdgeInsets.all(AppTheme.spacingMd),
                         decoration: BoxDecoration(
                           color: colors.primary.withAlpha(30),
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.radiusCard),
-                          border:
-                              Border.all(color: colors.primary.withAlpha(80)),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.radiusCard,
+                          ),
+                          border: Border.all(
+                            color: colors.primary.withAlpha(80),
+                          ),
                         ),
                         child: Row(
                           children: [
@@ -173,8 +176,9 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                             Expanded(
                               child: Text(
                                 t.health.privacyBanner,
-                                style: theme.textTheme.bodySmall
-                                    ?.copyWith(color: colors.primary),
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: colors.primary,
+                                ),
                               ),
                             ),
                           ],
@@ -221,37 +225,20 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         maxLines: 2,
                       ),
                       const SizedBox(height: AppTheme.spacingXl),
+                      // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary.
+                      // isLoading porte l'etat _isSaving (AppButton affiche son
+                      // spinner et desactive l'action, cf. grammaire unifiee) ;
+                      // minHeight 52 conserve la cible du CTA pleine largeur.
+                      // key/Semantics(button+label) preserves au-dessus.
                       Semantics(
                         button: true,
                         label: t.health.a11y.saveButton,
-                        child: ElevatedButton.icon(
+                        child: AppButton(
+                          isLoading: _isSaving,
+                          minHeight: 52,
+                          icon: Icons.save,
+                          label: t.health.save,
                           onPressed: _isSaving ? null : _save,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colors.primary,
-                            foregroundColor: colors.onPrimary,
-                            minimumSize: const Size(double.infinity, 52),
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.circular(AppTheme.radiusButton),
-                            ),
-                          ),
-                          icon: _isSaving
-                              ? SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: colors.onPrimary,
-                                  ),
-                                )
-                              : const Icon(Icons.save),
-                          label: Text(
-                            _isSaving ? t.health.saving : t.health.save,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
                         ),
                       ),
                       const SizedBox(height: AppTheme.spacingBase),

@@ -5,6 +5,8 @@ import '../../../core/firebase/cloud_unavailable_notice.dart';
 import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
 
@@ -99,13 +101,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         const SizedBox(height: AppTheme.spacingXl),
         // P1-4 audit #327 : sans Firebase, la connexion Google ne peut
         // qu echouer en silence — etat explicite a la place de la tuile.
-        if (user.isAnonymous &&
-            !ref.watch(isFirebaseAvailableProvider)) ...[
+        if (user.isAnonymous && !ref.watch(isFirebaseAvailableProvider)) ...[
           const CloudUnavailableNotice(),
           const SizedBox(height: AppTheme.spacingSm),
         ],
         if (user.isAnonymous && ref.watch(isFirebaseAvailableProvider)) ...[
-          Card(
+          // SW-SKIN-L3e : Card -> AppCard. padding zero car le ListTile porte
+          // deja son padding interne (iso-rendu de la tuile cliquable).
+          AppCard(
+            padding: EdgeInsets.zero,
             child: ListTile(
               leading: const Icon(Icons.login),
               title: Text(i18n.auth.signInGoogle),
@@ -120,7 +124,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           const SizedBox(height: AppTheme.spacingSm),
         ],
         if (!user.isAnonymous) ...[
-          Card(
+          // SW-SKIN-L3e : Card -> AppCard (padding zero, ListTile interne).
+          AppCard(
+            padding: EdgeInsets.zero,
             child: ListTile(
               leading: const Icon(Icons.logout),
               title: Text(i18n.auth.signOut),
@@ -130,10 +136,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
           const SizedBox(height: AppTheme.spacingSm),
         ],
-        Card(
+        // SW-SKIN-L3e : Card -> AppCard (padding zero, ListTile interne).
+        AppCard(
+          padding: EdgeInsets.zero,
           child: ListTile(
-            leading: const Icon(Icons.delete_forever,
-                color: AppTheme.rougeUrgence),
+            leading: const Icon(
+              Icons.delete_forever,
+              color: AppTheme.rougeUrgence,
+            ),
             title: Text(
               i18n.auth.deleteAccount,
               style: const TextStyle(color: AppTheme.rougeUrgence),
@@ -163,7 +173,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               radius: 48,
               backgroundColor: theme.colorScheme.primaryContainer,
               child: Icon(
-                _avatarIcons[user.avatarIndex.clamp(0, _avatarIcons.length - 1)],
+                _avatarIcons[user.avatarIndex.clamp(
+                  0,
+                  _avatarIcons.length - 1,
+                )],
                 size: 48,
                 color: theme.colorScheme.primary,
               ),
@@ -203,10 +216,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              i18n.auth.chooseAvatar,
-              style: theme.textTheme.titleMedium,
-            ),
+            Text(i18n.auth.chooseAvatar, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppTheme.spacingBase),
             GridView.builder(
               shrinkWrap: true,
@@ -252,47 +262,50 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     AuthUser user,
   ) {
     if (_isEditingPseudo) {
-      return Card(
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: Column(
-            children: [
-              TextField(
-                controller: _pseudoController,
-                autofocus: true,
-                maxLength: 30,
-                decoration: InputDecoration(
-                  labelText: i18n.auth.pseudonym,
-                  hintText: i18n.auth.pseudonymHint,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(AppTheme.radiusInput),
-                  ),
+      // SW-SKIN-L3e : Card -> AppCard, padding porte par AppCard (iso-rendu).
+      return AppCard(
+        padding: const EdgeInsets.all(AppTheme.spacingBase),
+        child: Column(
+          children: [
+            TextField(
+              controller: _pseudoController,
+              autofocus: true,
+              maxLength: 30,
+              decoration: InputDecoration(
+                labelText: i18n.auth.pseudonym,
+                hintText: i18n.auth.pseudonymHint,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusInput),
                 ),
               ),
-              const SizedBox(height: AppTheme.spacingSm),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      setState(() => _isEditingPseudo = false);
-                    },
-                    child: Text(i18n.auth.cancel),
-                  ),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  ElevatedButton(
-                    onPressed: () {
-                      ref
-                          .read(authServiceProvider)
-                          .updateDisplayName(_pseudoController.text);
-                      setState(() => _isEditingPseudo = false);
-                    },
-                    child: Text(i18n.auth.save),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () {
+                    setState(() => _isEditingPseudo = false);
+                  },
+                  child: Text(i18n.auth.cancel),
+                ),
+                const SizedBox(width: AppTheme.spacingSm),
+                // SW-SKIN-L3e : ElevatedButton -> AppButton primary.
+                // isFullWidth:false pour rester dans la rangee d'actions
+                // alignee a droite (iso-rendu du CTA d'edition).
+                AppButton(
+                  isFullWidth: false,
+                  label: i18n.auth.save,
+                  onPressed: () {
+                    ref
+                        .read(authServiceProvider)
+                        .updateDisplayName(_pseudoController.text);
+                    setState(() => _isEditingPseudo = false);
+                  },
+                ),
+              ],
+            ),
+          ],
         ),
       );
     }
@@ -328,12 +341,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(i18n.auth.cancel),
           ),
-          ElevatedButton(
+          // SW-SKIN-L3e : ElevatedButton -> AppButton primary, isFullWidth:false
+          // (action de dialogue, aux cotes du TextButton Annuler laisse tel quel).
+          AppButton(
+            isFullWidth: false,
+            label: i18n.auth.signOut,
             onPressed: () {
               ref.read(authServiceProvider).signOut();
               Navigator.pop(context);
             },
-            child: Text(i18n.auth.signOut),
           ),
         ],
       ),
@@ -351,15 +367,19 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             onPressed: () => Navigator.pop(context),
             child: Text(i18n.auth.cancel),
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.rougeUrgence,
-            ),
+          // SW-SKIN-L3e : ElevatedButton a fond rouge -> AppButton filledTone
+          // (fond plein = rougeUrgence, texte blanc). Conserve la couleur
+          // SEMANTIQUE de danger de la suppression de compte, isFullWidth:false
+          // pour rester une action de dialogue.
+          AppButton(
+            variant: AppButtonVariant.filledTone,
+            tone: AppTheme.rougeUrgence,
+            isFullWidth: false,
+            label: i18n.auth.deleteAccount,
             onPressed: () {
               ref.read(authServiceProvider).deleteAccount();
               Navigator.pop(context);
             },
-            child: Text(i18n.auth.deleteAccount),
           ),
         ],
       ),

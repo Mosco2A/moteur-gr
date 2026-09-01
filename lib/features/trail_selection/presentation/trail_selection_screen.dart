@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 
 /// Ecran de selection / bascule de sentier (F8D-02, Phase 8 P8-D, #84627).
@@ -81,102 +83,106 @@ class _TrailChoiceCard extends StatelessWidget {
         nom: trail.displayName,
         region: trail.region,
       ),
-      child: Card(
+      // SW-SKIN-L3e : Card -> AppCard. key + margin conserves. La bordure d'ETAT
+      // (sentier actif = liseré vert 2px) est portee par borderColor/borderWidth
+      // d'AppCard (param declaratif reutilisable, cf. cas alerte weather L3b),
+      // active uniquement quand selected -> iso-rendu de la mise en avant.
+      // padding md porte par AppCard.
+      child: AppCard(
         key: ValueKey('trail-choice-${trail.id}'),
         margin: const EdgeInsets.symmetric(
           horizontal: AppTheme.spacingMd,
           vertical: AppTheme.spacingXs,
         ),
-        // Le sentier actif est mis en avant visuellement (bordure couleur).
-        shape: selected
-            ? RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                side: const BorderSide(color: AppTheme.vertFacile, width: 2),
-              )
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingMd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Titre + badge « actif » si c'est le sentier courant.
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      trail.displayName,
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
+        borderColor: selected ? AppTheme.vertFacile : null,
+        borderWidth: selected ? 2 : null,
+        padding: const EdgeInsets.all(AppTheme.spacingMd),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Titre + badge « actif » si c'est le sentier courant.
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    trail.displayName,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (selected)
-                    Semantics(
-                      label: t.trailSelection.a11y.currentBadge,
-                      child: Container(
-                        key: ValueKey('trail-current-${trail.id}'),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppTheme.spacingSm,
-                          vertical: 2,
+                ),
+                if (selected)
+                  Semantics(
+                    label: t.trailSelection.a11y.currentBadge,
+                    child: Container(
+                      key: ValueKey('trail-current-${trail.id}'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.spacingSm,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.vertFacile.withAlpha(40),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusCard,
                         ),
-                        decoration: BoxDecoration(
-                          color: AppTheme.vertFacile.withAlpha(40),
-                          borderRadius:
-                              BorderRadius.circular(AppTheme.radiusCard),
-                        ),
-                        child: Text(
-                          t.trailSelection.current,
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            color: AppTheme.vertFacile,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      ),
+                      child: Text(
+                        t.trailSelection.current,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: AppTheme.vertFacile,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                ],
-              ),
-              const SizedBox(height: AppTheme.spacingXs),
-              // Region + pays.
-              Text(
-                '${trail.region}, ${trail.country}',
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: AppTheme.grisGranite),
-              ),
-              const SizedBox(height: AppTheme.spacingXs),
-              // Stats principales (etapes + distance) — donnees du sentier.
-              Text(
-                t.trailSelection.stagesDistance(
-                  stages: trail.totalStages,
-                  km: trail.totalDistanceKm.toStringAsFixed(0),
-                ),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: AppTheme.grisGranite),
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              // Action : activer ce sentier (desactivee si deja actif).
-              Align(
-                alignment: Alignment.centerRight,
-                child: Semantics(
-                  button: true,
-                  enabled: !selected,
-                  label:
-                      t.trailSelection.a11y.selectButton(nom: trail.displayName),
-                  child: FilledButton.icon(
-                    key: ValueKey('trail-select-${trail.id}'),
-                    onPressed: selected ? null : onSelect,
-                    icon: Icon(
-                      selected ? Icons.check : Icons.swap_horiz,
-                      size: 18,
-                    ),
-                    label: Text(
-                      selected
-                          ? t.trailSelection.selected
-                          : t.trailSelection.select,
-                    ),
                   ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            // Region + pays.
+            Text(
+              '${trail.region}, ${trail.country}',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            // Stats principales (etapes + distance) — donnees du sentier.
+            Text(
+              t.trailSelection.stagesDistance(
+                stages: trail.totalStages,
+                km: trail.totalDistanceKm.toStringAsFixed(0),
+              ),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            // Action : activer ce sentier (desactivee si deja actif).
+            // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
+            // #A5). isFullWidth:false : FilledButton n'est pas force pleine
+            // largeur par le theme, il restait dimensionne au contenu et aligne
+            // a droite dans l'Align (iso-rendu). Icone et libelle basculent
+            // selon l'etat actif. key/Semantics(button+enabled+label) gardees.
+            Align(
+              alignment: Alignment.centerRight,
+              child: Semantics(
+                button: true,
+                enabled: !selected,
+                label: t.trailSelection.a11y.selectButton(
+                  nom: trail.displayName,
+                ),
+                child: AppButton(
+                  key: ValueKey('trail-select-${trail.id}'),
+                  isFullWidth: false,
+                  icon: selected ? Icons.check : Icons.swap_horiz,
+                  label: selected
+                      ? t.trailSelection.selected
+                      : t.trailSelection.select,
+                  onPressed: selected ? null : onSelect,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

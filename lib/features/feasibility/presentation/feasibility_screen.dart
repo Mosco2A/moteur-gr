@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../domain/feasibility_calculator.dart';
 import '../providers/feasibility_provider.dart';
 
@@ -17,17 +19,19 @@ class FeasibilityScreen extends ConsumerWidget {
     final state = ref.watch(feasibilityProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Faisabilit\u00e9'),
-      ),
+      appBar: AppBar(title: const Text('Faisabilit\u00e9')),
       body: state.isCompleted
-          ? _ResultView(result: state.result!, onReset: () {
-              ref.read(feasibilityProvider.notifier).reset();
-            })
+          ? _ResultView(
+              result: state.result!,
+              onReset: () {
+                ref.read(feasibilityProvider.notifier).reset();
+              },
+            )
           : _QuestionView(
               state: state,
               onAnswer: (questionId, score) {
-                ref.read(feasibilityProvider.notifier)
+                ref
+                    .read(feasibilityProvider.notifier)
                     .answerQuestion(questionId, score);
               },
               onPrevious: () {
@@ -74,9 +78,7 @@ class _QuestionView extends StatelessWidget {
         ),
         // Question
         Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingLg,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
           child: Text(
             question.questionKey,
             style: theme.textTheme.headlineSmall,
@@ -93,12 +95,9 @@ class _QuestionView extends StatelessWidget {
             itemCount: question.answers.length,
             itemBuilder: (context, index) {
               final answer = question.answers[index];
-              final isSelected =
-                  state.answers[question.id] == answer.score;
+              final isSelected = state.answers[question.id] == answer.score;
               return Padding(
-                padding: const EdgeInsets.only(
-                  bottom: AppTheme.spacingSm,
-                ),
+                padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
                 child: _AnswerCard(
                   answerKey: answer.answerKey,
                   isSelected: isSelected,
@@ -138,39 +137,35 @@ class _AnswerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      color: isSelected
+    // SW-SKIN-L3e : Card+InkWell -> AppCard. onTap porte par AppCard (qui
+    // fournit son propre InkWell borne au rayon de carte) ; fond de selection
+    // via backgroundColor ; padding interne repris (iso-rendu de la tuile).
+    return AppCard(
+      backgroundColor: isSelected
           ? theme.colorScheme.primaryContainer
           : theme.colorScheme.surfaceContainerHighest,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: Row(
-            children: [
-              Icon(
-                isSelected
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_unchecked,
-                color: isSelected
-                    ? theme.colorScheme.onPrimaryContainer
-                    : theme.colorScheme.onSurface.withAlpha(150),
-              ),
-              const SizedBox(width: AppTheme.spacingMd),
-              Expanded(
-                child: Text(
-                  answerKey,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: isSelected
-                        ? theme.colorScheme.onPrimaryContainer
-                        : null,
-                  ),
-                ),
-              ),
-            ],
+      onTap: onTap,
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Row(
+        children: [
+          Icon(
+            isSelected
+                ? Icons.radio_button_checked
+                : Icons.radio_button_unchecked,
+            color: isSelected
+                ? theme.colorScheme.onPrimaryContainer
+                : theme.colorScheme.onSurface.withAlpha(150),
           ),
-        ),
+          const SizedBox(width: AppTheme.spacingMd),
+          Expanded(
+            child: Text(
+              answerKey,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: isSelected ? theme.colorScheme.onPrimaryContainer : null,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -178,10 +173,7 @@ class _AnswerCard extends StatelessWidget {
 
 /// Vue resultat avec score, jauge et recommandations.
 class _ResultView extends StatelessWidget {
-  const _ResultView({
-    required this.result,
-    required this.onReset,
-  });
+  const _ResultView({required this.result, required this.onReset});
 
   final FeasibilityResult result;
   final VoidCallback onReset;
@@ -207,8 +199,7 @@ class _ResultView extends StatelessWidget {
                 CircularProgressIndicator(
                   value: result.percentage,
                   strokeWidth: 12,
-                  backgroundColor:
-                      theme.colorScheme.onSurface.withAlpha(30),
+                  backgroundColor: theme.colorScheme.onSurface.withAlpha(30),
                   valueColor: AlwaysStoppedAnimation(color),
                 ),
                 Center(
@@ -253,34 +244,43 @@ class _ResultView extends StatelessWidget {
               style: theme.textTheme.titleMedium,
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            ...result.weakPoints.map((p) => ListTile(
-                  leading: const Icon(Icons.warning_amber,
-                      color: AppTheme.orangeDifficile),
-                  title: Text(p),
-                  dense: true,
-                )),
+            ...result.weakPoints.map(
+              (p) => ListTile(
+                leading: const Icon(
+                  Icons.warning_amber,
+                  color: AppTheme.orangeDifficile,
+                ),
+                title: Text(p),
+                dense: true,
+              ),
+            ),
             const SizedBox(height: AppTheme.spacingBase),
           ],
           // Points forts
           if (result.strongPoints.isNotEmpty) ...[
-            Text(
-              'Points forts',
-              style: theme.textTheme.titleMedium,
-            ),
+            Text('Points forts', style: theme.textTheme.titleMedium),
             const SizedBox(height: AppTheme.spacingSm),
-            ...result.strongPoints.map((p) => ListTile(
-                  leading: const Icon(Icons.check_circle,
-                      color: AppTheme.vertFacile),
-                  title: Text(p),
-                  dense: true,
-                )),
+            ...result.strongPoints.map(
+              (p) => ListTile(
+                leading: const Icon(
+                  Icons.check_circle,
+                  color: AppTheme.vertFacile,
+                ),
+                title: Text(p),
+                dense: true,
+              ),
+            ),
           ],
           const SizedBox(height: AppTheme.spacingXl),
-          // Bouton recommencer
-          OutlinedButton.icon(
+          // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
+          // largeur. Le theme OutlinedButton impose deja minimumSize infinie :
+          // dans cette Column le bouton s'etirait donc sur toute la largeur ->
+          // isFullWidth:true = iso-rendu. Libelle inchange (i18n = ressort L10).
+          AppButton(
+            variant: AppButtonVariant.outline,
+            icon: Icons.refresh,
+            label: 'Recommencer',
             onPressed: onReset,
-            icon: const Icon(Icons.refresh),
-            label: const Text('Recommencer'),
           ),
         ],
       ),

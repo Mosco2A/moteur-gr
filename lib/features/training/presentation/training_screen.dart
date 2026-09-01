@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../models/programme_entrainement.dart';
 import '../providers/training_providers.dart';
@@ -93,13 +95,14 @@ class TrainingScreen extends ConsumerWidget {
               child: Semantics(
                 button: true,
                 label: t.training.scheduleReminders,
-                child: ElevatedButton.icon(
+                // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+                // largeur (minimumSize infinie conservee) ; minHeight 52 = meme
+                // cible tactile. Semantics(button+label) preservee au-dessus.
+                child: AppButton(
+                  minHeight: 52,
+                  icon: Icons.notifications_active_outlined,
+                  label: t.training.scheduleReminders,
                   onPressed: () => _scheduleReminders(context, ref),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 52),
-                  ),
-                  icon: const Icon(Icons.notifications_active_outlined),
-                  label: Text(t.training.scheduleReminders),
                 ),
               ),
             ),
@@ -169,8 +172,12 @@ class _WeekSection extends StatelessWidget {
         ),
         ...seances.map((s) {
           final done = isDone(s.jourOffset);
-          return Card(
+          // SW-SKIN-L3e : Card -> AppCard. key conservee ; padding zero car le
+          // CheckboxListTile porte son padding interne (iso-rendu). AppCard
+          // fournit le Material transparent requis par l'encre de la case.
+          return AppCard(
             key: ValueKey('seance-${s.jourOffset}'),
+            padding: EdgeInsets.zero,
             child: CheckboxListTile(
               value: done,
               onChanged: (_) => onToggle(s.jourOffset),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
@@ -21,17 +22,13 @@ class ChecklistScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // select() pour ne reconstruire que si isLoading change
-    final isLoading = ref.watch(
-      checklistProvider.select((s) => s.isLoading),
-    );
+    final isLoading = ref.watch(checklistProvider.select((s) => s.isLoading));
 
     final checklistT = t.checklist;
 
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(checklistT.title),
-        ),
+        appBar: AppBar(title: Text(checklistT.title)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -40,14 +37,10 @@ class ChecklistScreen extends ConsumerWidget {
     final checkedCount = ref.watch(
       checklistProvider.select((s) => s.checkedCount),
     );
-    final totalCount = ref.watch(
-      checklistProvider.select((s) => s.totalCount),
-    );
+    final totalCount = ref.watch(checklistProvider.select((s) => s.totalCount));
 
     // select() pour la liste d items (reconstruire uniquement si items changent)
-    final items = ref.watch(
-      checklistProvider.select((s) => s.items),
-    );
+    final items = ref.watch(checklistProvider.select((s) => s.items));
 
     // Construction du label de progression via Slang
     // Le template Slang contient "{checked}/{total} prepares"
@@ -118,12 +111,15 @@ class ChecklistScreen extends ConsumerWidget {
             onPressed: () => Navigator.of(ctx).pop(),
             child: Text(checklistT.cancel),
           ),
-          ElevatedButton(
+          // SW-SKIN-L3e : ElevatedButton -> AppButton primary, isFullWidth:false
+          // (action de dialogue, aux cotes du TextButton Annuler laisse tel quel).
+          AppButton(
+            isFullWidth: false,
+            label: checklistT.confirm,
             onPressed: () {
               ref.read(checklistProvider.notifier).resetAll();
               Navigator.of(ctx).pop();
             },
-            child: Text(checklistT.confirm),
           ),
         ],
       ),

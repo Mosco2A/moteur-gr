@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../../map/providers/location_provider.dart';
@@ -176,26 +177,24 @@ class _WaypointContributionScreenState
                       ..._buildWaypointForm(t, theme),
                     const SizedBox(height: AppTheme.spacingMd),
                     // Bandeau de latence assumee (transparence, A2-6).
-                    _LatencyBanner(message: t.waypoints.contribution.latencyBanner),
+                    _LatencyBanner(
+                      message: t.waypoints.contribution.latencyBanner,
+                    ),
                     const SizedBox(height: AppTheme.spacingMd),
                     Semantics(
                       button: true,
                       label: t.waypoints.contribution.submit,
-                      child: ElevatedButton.icon(
+                      // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary.
+                      // isLoading porte l'etat _submitting (spinner interne +
+                      // desactivation) ; minHeight 52 conserve la cible du CTA
+                      // pleine largeur (iso-rendu). key/Semantics preserves.
+                      child: AppButton(
                         key: const ValueKey('waypoint-contribution-submit'),
+                        isLoading: _submitting,
+                        minHeight: 52,
+                        icon: Icons.save_outlined,
+                        label: t.waypoints.contribution.submit,
                         onPressed: _submitting ? null : _submit,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(double.infinity, 52),
-                        ),
-                        icon: _submitting
-                            ? const SizedBox(
-                                width: 20,
-                                height: 20,
-                                child:
-                                    CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : const Icon(Icons.save_outlined),
-                        label: Text(t.waypoints.contribution.submit),
                       ),
                     ),
                   ],
@@ -208,8 +207,10 @@ class _WaypointContributionScreenState
   /// Formulaire NOUVEAU WAYPOINT : selection du type + titre.
   List<Widget> _buildWaypointForm(Translations t, ThemeData theme) {
     return [
-      Text(t.waypoints.contribution.chooseType,
-          style: theme.textTheme.titleMedium),
+      Text(
+        t.waypoints.contribution.chooseType,
+        style: theme.textTheme.titleMedium,
+      ),
       const SizedBox(height: AppTheme.spacingSm),
       Wrap(
         spacing: AppTheme.spacingSm,
@@ -259,8 +260,10 @@ class _WaypointContributionScreenState
   /// Formulaire COMMENTAIRE de condition : texte + condition optionnelle.
   List<Widget> _buildCommentForm(Translations t, ThemeData theme) {
     return [
-      Text(t.waypoints.contribution.conditionPrompt,
-          style: theme.textTheme.titleMedium),
+      Text(
+        t.waypoints.contribution.conditionPrompt,
+        style: theme.textTheme.titleMedium,
+      ),
       const SizedBox(height: AppTheme.spacingSm),
       Semantics(
         textField: true,
@@ -403,10 +406,13 @@ class _SubmittedView extends ConsumerWidget {
             error: (_, __) => const SizedBox.shrink(),
           ),
           const SizedBox(height: AppTheme.spacingXl),
-          ElevatedButton(
+          // SW-SKIN-L3e : ElevatedButton -> AppButton primary, pleine largeur.
+          // Le theme ElevatedButton impose minimumSize infinie : le bouton
+          // remplissait deja la Column -> isFullWidth:true = iso-rendu. key gardee.
+          AppButton(
             key: const ValueKey('waypoint-contribution-close'),
+            label: t.waypoints.contribution.close,
             onPressed: onClose,
-            child: Text(t.waypoints.contribution.close),
           ),
         ],
       ),

@@ -63,7 +63,13 @@ class AppButton extends StatelessWidget {
                 Icon(icon, size: 20),
                 const SizedBox(width: AppTheme.spacingSm),
               ],
-              Text(label),
+              // Le libelle est `Flexible` (comme `ElevatedButton.icon`/
+              // `FilledButton.icon` de Material qui enveloppent leur label
+              // ainsi) : il peut se contraindre au lieu de deborder la Row
+              // interne quand le bouton est etroit et le texte long (ex.
+              // textScale 2x sur ecran 360px, cartes catalogue) — SW-SKIN-L3e.
+              // Sans effet quand le texte tient : la Row reste `min`.
+              Flexible(child: Text(label, textAlign: TextAlign.center)),
             ],
           );
     final minSize = isFullWidth
