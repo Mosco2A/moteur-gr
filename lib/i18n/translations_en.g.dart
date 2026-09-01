@@ -59,6 +59,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$diploma$en diploma = _Translations$diploma$en._(_root);
 	@override late final _Translations$notifications$en notifications = _Translations$notifications$en._(_root);
 	@override late final _Translations$settings$en settings = _Translations$settings$en._(_root);
+	@override late final _Translations$appearance$en appearance = _Translations$appearance$en._(_root);
 	@override late final _Translations$feedback$en feedback = _Translations$feedback$en._(_root);
 	@override late final _Translations$auth$en auth = _Translations$auth$en._(_root);
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
@@ -498,6 +499,26 @@ class _Translations$settings$en extends Translations$settings$fr {
 	@override String get offTrackAlertsDesc => 'Notification + vibration if you leave the trail';
 	@override String get version => 'Version';
 	@override String get versionLabel => 'App version';
+}
+
+// Path: appearance
+class _Translations$appearance$en extends Translations$appearance$fr {
+	_Translations$appearance$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Appearance';
+	@override String get subtitle => 'Choose the app’s look and feel';
+	@override String get skinSentierVivant => 'Living Trail';
+	@override String get skinSentierVivantDesc => 'Modern and colorful, the trail color takes the stage';
+	@override String get skinTopographique => 'Topographic';
+	@override String get skinTopographiqueDesc => 'Ordnance-map style, data first';
+	@override String get skinGrandAir => 'Great Outdoors';
+	@override String get skinGrandAirDesc => 'Full-screen photos, adventure-journal feel';
+	@override String get unavailableOnTrail => 'Unavailable on this trail';
+	@override String get changeSkin => 'Change skin';
+	@override String get selected => 'Selected';
 }
 
 // Path: feedback
@@ -2368,6 +2389,17 @@ extension on TranslationsEn {
 			'settings.offTrackAlertsDesc' => 'Notification + vibration if you leave the trail',
 			'settings.version' => 'Version',
 			'settings.versionLabel' => 'App version',
+			'appearance.title' => 'Appearance',
+			'appearance.subtitle' => 'Choose the app’s look and feel',
+			'appearance.skinSentierVivant' => 'Living Trail',
+			'appearance.skinSentierVivantDesc' => 'Modern and colorful, the trail color takes the stage',
+			'appearance.skinTopographique' => 'Topographic',
+			'appearance.skinTopographiqueDesc' => 'Ordnance-map style, data first',
+			'appearance.skinGrandAir' => 'Great Outdoors',
+			'appearance.skinGrandAirDesc' => 'Full-screen photos, adventure-journal feel',
+			'appearance.unavailableOnTrail' => 'Unavailable on this trail',
+			'appearance.changeSkin' => 'Change skin',
+			'appearance.selected' => 'Selected',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Feedback type',
 			'feedback.bug' => 'Bug / Problem',
@@ -2540,6 +2572,8 @@ extension on TranslationsEn {
 			'onboarding.downloadTitle' => 'Download your first trail',
 			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
 			'onboarding.browseCatalog' => 'Browse the catalogue',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
@@ -2551,8 +2585,6 @@ extension on TranslationsEn {
 			'monetization.buyCta' => 'Unlock this trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
 			'signalement.title' => 'Report',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
 			'signalement.types.eauASec' => 'Dry water point',

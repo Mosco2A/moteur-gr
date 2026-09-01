@@ -404,6 +404,19 @@
     "version": "Versión",
     "versionLabel": "Versión de la aplicación"
   },
+  "appearance": {
+    "title": "Apariencia",
+    "subtitle": "Elige el aspecto de la aplicación",
+    "skinSentierVivant": "Sendero Vivo",
+    "skinSentierVivantDesc": "Moderno y colorido, el color del sendero como protagonista",
+    "skinTopographique": "Topográfico",
+    "skinTopographiqueDesc": "Estilo mapa topográfico, datos en primer plano",
+    "skinGrandAir": "Aire Libre",
+    "skinGrandAirDesc": "Fotos a pantalla completa, ambiente de diario de aventura",
+    "unavailableOnTrail": "No disponible en este sendero",
+    "changeSkin": "Cambiar aspecto",
+    "selected": "Seleccionado"
+  },
   "feedback": {
     "title": "Comentarios",
     "type": "Tipo de comentario",

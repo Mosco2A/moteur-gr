@@ -404,6 +404,19 @@
     "version": "Version",
     "versionLabel": "App version"
   },
+  "appearance": {
+    "title": "Appearance",
+    "subtitle": "Choose the app’s look and feel",
+    "skinSentierVivant": "Living Trail",
+    "skinSentierVivantDesc": "Modern and colorful, the trail color takes the stage",
+    "skinTopographique": "Topographic",
+    "skinTopographiqueDesc": "Ordnance-map style, data first",
+    "skinGrandAir": "Great Outdoors",
+    "skinGrandAirDesc": "Full-screen photos, adventure-journal feel",
+    "unavailableOnTrail": "Unavailable on this trail",
+    "changeSkin": "Change skin",
+    "selected": "Selected"
+  },
   "feedback": {
     "title": "Feedback",
     "type": "Feedback type",

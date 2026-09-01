@@ -8,8 +8,8 @@ import 'core/config/test_trail_config.dart';
 import 'core/firebase/firebase_service.dart';
 import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
-import 'core/theme/app_skin.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/skin_provider.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/safety/presentation/health_info_screen.dart';
 import 'i18n/translations.g.dart';
@@ -82,30 +82,49 @@ class MoteurGrApp extends StatelessWidget {
       // TranslationProvider (Slang) : requis pour Translations.of(context),
       // utilise notamment par l'ecran d'onboarding (E5.1a).
       child: TranslationProvider(
-        child: MaterialApp.router(
-          title: config.displayName,
-          debugShowCheckedModeBanner: false,
-          // Theme clair ET sombre injectes depuis TrailConfig (E5.5b).
-          // L'app reste sombre par defaut (design trek), mais le pendant
-          // clair existe et est cable -> bascule de theme sans casse.
-          //
-          // SW-SKIN-L2 : peau active cablee en dur sur Sentier Vivant (defaut).
-          // La selection utilisateur (Reglages + carte) + persistance arrive en
-          // L7 (skinProvider) ; ici le porteur technique est en place, neutre.
-          theme: AppTheme.buildLightTheme(
-            primaryColor: Color(config.primaryColorValue),
-            secondaryColor: Color(config.secondaryColorValue),
-            skin: AppSkin.sentierVivant,
-          ),
-          darkTheme: AppTheme.buildDarkTheme(
-            primaryColor: Color(config.primaryColorValue),
-            secondaryColor: Color(config.secondaryColorValue),
-            skin: AppSkin.sentierVivant,
-          ),
-          themeMode: ThemeMode.dark,
-          routerConfig: appRouter,
-        ),
+        child: _MoteurGrMaterialApp(config: config),
       ),
+    );
+  }
+}
+
+/// MaterialApp pilote par la peau active (SW-SKIN-L7).
+///
+/// `ConsumerWidget` (donc SOUS le `ProviderScope`) : lit
+/// [effectiveSkinProvider] pour construire le theme avec la peau reellement
+/// appliquee (choix utilisateur persiste + fallback Grand Air->Sentier Vivant).
+/// Changer de peau => ce widget se reconstruit => `buildLightTheme`/
+/// `buildDarkTheme` regeneres avec la nouvelle peau => prise d'effet immediate.
+class _MoteurGrMaterialApp extends ConsumerWidget {
+  const _MoteurGrMaterialApp({required this.config});
+
+  final TrailConfig config;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // SW-SKIN-L7 : la peau active vient desormais du provider (au lieu du
+    // sentierVivant cable en dur en L2). effectiveSkin applique deja le
+    // fallback d'eligibilite (Grand Air -> Sentier Vivant si non eligible).
+    final skin = ref.watch(effectiveSkinProvider);
+
+    return MaterialApp.router(
+      title: config.displayName,
+      debugShowCheckedModeBanner: false,
+      // Theme clair ET sombre injectes depuis TrailConfig (E5.5b).
+      // L'app reste sombre par defaut (design trek), mais le pendant
+      // clair existe et est cable -> bascule de theme sans casse.
+      theme: AppTheme.buildLightTheme(
+        primaryColor: Color(config.primaryColorValue),
+        secondaryColor: Color(config.secondaryColorValue),
+        skin: skin,
+      ),
+      darkTheme: AppTheme.buildDarkTheme(
+        primaryColor: Color(config.primaryColorValue),
+        secondaryColor: Color(config.secondaryColorValue),
+        skin: skin,
+      ),
+      themeMode: ThemeMode.dark,
+      routerConfig: appRouter,
     );
   }
 }

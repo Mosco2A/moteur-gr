@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/trek/presentation/map/controls/map_controls.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests E5.3b — ordre de focus logique des controles carte (ecran principal).
+///
+/// SW-SKIN-L7 : un 4e bouton « Changer de peau » (ordre 0) precede desormais
+/// zoom+/zoom-/centrer (ordres 1/2/3).
 void main() {
   setUpAll(() {
     TestWidgetsFlutterBinding.ensureInitialized();
     LocaleSettings.setLocaleRaw('fr');
   });
 
-  Widget wrap(Widget child) =>
-      MaterialApp(home: Scaffold(body: Center(child: child)));
+  Widget wrap(Widget child) => ProviderScope(
+        child: TranslationProvider(
+          child: MaterialApp(home: Scaffold(body: Center(child: child))),
+        ),
+      );
 
-  testWidgets('controles carte : groupe de traversee ordonnee 1->2->3',
+  testWidgets('controles carte : groupe de traversee ordonnee 0->1->2->3',
       (tester) async {
     await tester.pumpWidget(
       wrap(MapControls(mapController: MapController(), onCenterOnMe: () {})),
@@ -30,12 +37,13 @@ void main() {
     );
     expect(group.policy, isA<OrderedTraversalPolicy>());
 
-    // Les trois boutons portent un ordre numerique strictement croissant.
+    // Les quatre boutons portent un ordre numerique strictement croissant
+    // (SW-SKIN-L7 : changer de peau = 0, puis zoom+/zoom-/centrer = 1/2/3).
     final orders = tester
         .widgetList<FocusTraversalOrder>(find.byType(FocusTraversalOrder))
         .map((w) => (w.order as NumericFocusOrder).order)
         .toList();
-    expect(orders, [1.0, 2.0, 3.0]);
+    expect(orders, [0.0, 1.0, 2.0, 3.0]);
   });
 
   testWidgets('controles carte : labels d\'accessibilite (tooltips Slang)',
@@ -44,6 +52,7 @@ void main() {
       wrap(MapControls(mapController: MapController(), onCenterOnMe: () {})),
     );
 
+    expect(find.byTooltip(t.appearance.changeSkin), findsOneWidget);
     expect(find.byTooltip(t.a11y.zoomIn), findsOneWidget);
     expect(find.byTooltip(t.a11y.zoomOut), findsOneWidget);
     expect(find.byTooltip(t.a11y.centerOnMe), findsOneWidget);
