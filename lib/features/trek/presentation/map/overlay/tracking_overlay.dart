@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../core/theme/app_theme.dart';
 import '../../../../../i18n/translations.g.dart';
+import '../../../../../shared/widgets/app_button.dart';
 import '../../../../map/providers/track_position_provider.dart';
 import '../../../providers/tracking_providers.dart';
 
@@ -42,10 +43,7 @@ class TrackingOverlay extends StatelessWidget {
         children: [
           const _StatsRow(key: Key('tracking_stats_row')),
           const SizedBox(height: AppTheme.spacingSm),
-          _ButtonsRow(
-            key: const Key('tracking_buttons_row'),
-            trailId: trailId,
-          ),
+          _ButtonsRow(key: const Key('tracking_buttons_row'), trailId: trailId),
         ],
       ),
     );
@@ -96,8 +94,7 @@ class _StatsRow extends StatelessWidget {
               Consumer(
                 builder: (context, ref, _) {
                   final duration = ref.watch(
-                    trekSessionManagerProvider
-                        .select((s) => s.elapsedDuration),
+                    trekSessionManagerProvider.select((s) => s.elapsedDuration),
                   );
                   return _StatTile(
                     icon: Icons.timer_outlined,
@@ -110,8 +107,7 @@ class _StatsRow extends StatelessWidget {
               Consumer(
                 builder: (context, ref, _) {
                   final elevGain = ref.watch(
-                    trekSessionManagerProvider
-                        .select((s) => s.elevationGainM),
+                    trekSessionManagerProvider.select((s) => s.elevationGainM),
                   );
                   return _StatTile(
                     icon: Icons.trending_up,
@@ -124,8 +120,7 @@ class _StatsRow extends StatelessWidget {
               Consumer(
                 builder: (context, ref, _) {
                   final speed = ref.watch(
-                    trekSessionManagerProvider
-                        .select((s) => s.currentSpeedKmh),
+                    trekSessionManagerProvider.select((s) => s.currentSpeedKmh),
                   );
                   return _StatTile(
                     icon: Icons.speed,
@@ -235,10 +230,7 @@ class _ButtonsRow extends StatelessWidget {
     );
   }
 
-  void _confirmStop(
-    BuildContext context,
-    TrekSessionManagerNotifier notifier,
-  ) {
+  void _confirmStop(BuildContext context, TrekSessionManagerNotifier notifier) {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -321,22 +313,23 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // AppButton variante filledTone : meme rendu qu'un ElevatedButton.icon a
+    // fond semantique (backgroundColor=color, texte/icone blancs, hauteur 44,
+    // rayon radiusButton) — SW-SKIN-L3c unifie la grammaire du bouton sans
+    // changer le visuel de ce HUD actif. Le Semantics(button, excludeSemantics)
+    // externe est conserve : c'est lui qui porte le label a11y d'action.
     return Semantics(
       button: true,
       label: semanticLabel ?? label,
       excludeSemantics: true,
-      child: ElevatedButton.icon(
+      child: AppButton(
+        label: label,
+        icon: icon,
         onPressed: onPressed,
-        icon: Icon(icon, size: 20),
-        label: Text(label),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color,
-          foregroundColor: Colors.white,
-          minimumSize: const Size(0, 44),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppTheme.radiusButton),
-          ),
-        ),
+        variant: AppButtonVariant.filledTone,
+        tone: color,
+        isFullWidth: false,
+        minHeight: 44,
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/stage_list_screen.dart';
+import 'package:moteur_gr/shared/widgets/app_card.dart';
 
 /// Tests du StageListScreen (Phase 2 E2.4a).
 ///
@@ -56,9 +57,9 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value(mockStages),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(mockStages)),
           ],
           child: const MaterialApp(
             home: StageListScreen(trailId: 'test-trail'),
@@ -69,21 +70,21 @@ void main() {
       // Attendre le chargement
       await tester.pumpAndSettle();
 
-      // Verifier que les 3 cartes sont presentes
-      expect(find.byType(Card), findsNWidgets(3));
+      // Verifier que les 3 cartes sont presentes (SW-SKIN-L3c : AppCard remplace
+      // le Card Material, la grammaire de carte est unifiee).
+      expect(find.byType(AppCard), findsNWidgets(3));
       expect(find.text('Vizzavona - Capanelle'), findsOneWidget);
       expect(find.text('Capanelle - Prati'), findsOneWidget);
       expect(find.text('Col de Bavella'), findsOneWidget);
     });
 
-    testWidgets('etapes triees par stageNumber (orderIndex)',
-        (tester) async {
+    testWidgets('etapes triees par stageNumber (orderIndex)', (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
-            stagesProvider('test-trail').overrideWith(
-              (ref) => Future.value(mockStages),
-            ),
+            stagesProvider(
+              'test-trail',
+            ).overrideWith((ref) => Future.value(mockStages)),
           ],
           child: const MaterialApp(
             home: StageListScreen(trailId: 'test-trail'),
@@ -95,15 +96,17 @@ void main() {
 
       // Recuperer les textes des CircleAvatar (numeros d etape)
       // dans l ordre d affichage
-      final cardFinder = find.byType(Card);
+      final cardFinder = find.byType(AppCard);
       expect(cardFinder, findsNWidgets(3));
 
       // Les numeros dans les CircleAvatar doivent etre 1, 2, 3 (tries)
       final avatarTexts = tester
-          .widgetList<Text>(find.descendant(
-            of: find.byType(CircleAvatar),
-            matching: find.byType(Text),
-          ))
+          .widgetList<Text>(
+            find.descendant(
+              of: find.byType(CircleAvatar),
+              matching: find.byType(Text),
+            ),
+          )
           .map((t) => t.data)
           .toList();
 
