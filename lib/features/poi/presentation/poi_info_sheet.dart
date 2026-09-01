@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/models/poi.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/lazy_network_image.dart';
 import '../domain/poi_type_config.dart';
 
@@ -123,8 +124,8 @@ class PoiInfoSheet extends StatelessWidget {
                     Text(
                       poi.name,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       typeName,
@@ -151,7 +152,8 @@ class PoiInfoSheet extends StatelessWidget {
           _InfoRow(
             icon: Icons.my_location,
             label: t.stage.coordinates,
-            value: '${poi.lat.toStringAsFixed(5)}, ${poi.lng.toStringAsFixed(5)}',
+            value:
+                '${poi.lat.toStringAsFixed(5)}, ${poi.lng.toStringAsFixed(5)}',
           ),
 
           // Altitude
@@ -173,15 +175,17 @@ class PoiInfoSheet extends StatelessWidget {
           const SizedBox(height: 20),
 
           // Bouton Voir sur carte
+          // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
+          // #A5), pleine largeur (SizedBox width infinity conserve, iso-rendu).
           SizedBox(
             width: double.infinity,
-            child: FilledButton.icon(
+            child: AppButton(
+              icon: Icons.map,
+              label: t.map.viewMap,
               onPressed: () {
                 Navigator.of(context).pop();
                 context.push('/map?trailId=${poi.trailId}');
               },
-              icon: const Icon(Icons.map),
-              label: Text(t.map.viewMap),
             ),
           ),
         ],
@@ -212,17 +216,9 @@ class _InfoRow extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             '$label : ',
-            style: TextStyle(
-              color: Colors.grey.shade600,
-              fontSize: 13,
-            ),
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 13),
-            ),
-          ),
+          Expanded(child: Text(value, style: const TextStyle(fontSize: 13))),
         ],
       ),
     );

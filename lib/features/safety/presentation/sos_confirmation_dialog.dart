@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 
 /// E5.15 : Dialog de confirmation SOS.
 ///
@@ -70,10 +71,7 @@ class SosConfirmationDialog extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.black,
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-              border: Border.all(
-                color: theme.colorScheme.primary,
-                width: 2,
-              ),
+              border: Border.all(color: theme.colorScheme.primary, width: 2),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,28 +163,21 @@ class SosConfirmationDialog extends StatelessWidget {
             ),
           ),
         ),
-        // Bouton confirmer — appel 112
-        ElevatedButton.icon(
+        // SW-SKIN-L3e : ElevatedButton.icon a fond rouge -> AppButton
+        // filledTone (fond plein = rougeUrgence, texte/icone blancs). Conserve
+        // la couleur SEMANTIQUE d'urgence de l'appel 112 ; isFullWidth:false
+        // pour rester une action de dialogue (aux cotes du TextButton Annuler
+        // laisse tel quel). Libelle inchange.
+        AppButton(
+          variant: AppButtonVariant.filledTone,
+          tone: AppTheme.rougeUrgence,
+          isFullWidth: false,
+          icon: Icons.phone,
+          label: 'Appeler 112',
           onPressed: () {
             Navigator.of(context).pop();
             _callEmergency();
           },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppTheme.rougeUrgence,
-            foregroundColor: Colors.white,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.spacingLg,
-              vertical: AppTheme.spacingMd,
-            ),
-          ),
-          icon: const Icon(Icons.phone, size: 20),
-          label: const Text(
-            'Appeler 112',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-            ),
-          ),
         ),
       ],
     );

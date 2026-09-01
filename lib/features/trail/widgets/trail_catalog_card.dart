@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/catalog_provider.dart';
 
@@ -95,86 +97,92 @@ class TrailCatalogCard extends StatelessWidget {
     final theme = Theme.of(context);
     final color = statusColor(entry.localStatus);
 
-    return Card(
+    // SW-SKIN-L3e : Card -> AppCard. margin conservee ; padding base porte par
+    // AppCard (iso-rendu de la carte sentier du catalogue local).
+    return AppCard(
       margin: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingBase,
         vertical: AppTheme.spacingSm,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingBase),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Ligne titre + badge
-            Row(
-              children: [
-                ExcludeSemantics(
-                  child: Icon(Icons.terrain, color: theme.colorScheme.primary),
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Ligne titre + badge
+          Row(
+            children: [
+              ExcludeSemantics(
+                child: Icon(Icons.terrain, color: theme.colorScheme.primary),
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  entry.trailId,
+                  style: theme.textTheme.titleMedium,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(width: AppTheme.spacingSm),
-                Expanded(
-                  child: Text(
-                    entry.trailId,
-                    style: theme.textTheme.titleMedium,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Flexible(
+                child: _StatusBadge(
+                  label: statusLabel(entry.localStatus),
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // Infos secondaires — Wrap pour ne pas deborder a textScale 2x
+          Wrap(
+            spacing: AppTheme.spacingBase,
+            runSpacing: AppTheme.spacingXs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const ExcludeSemantics(
+                    child: Icon(
+                      Icons.storage,
+                      size: 14,
+                      color: AppTheme.grisTexteSecondaire,
+                    ),
                   ),
-                ),
-                const SizedBox(width: AppTheme.spacingSm),
-                Flexible(
-                  child: _StatusBadge(
-                    label: statusLabel(entry.localStatus),
-                    color: color,
+                  const SizedBox(width: 4),
+                  Text(
+                    formatFileSize(entry.fileSize),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.grisTexteSecondaire,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            // Infos secondaires — Wrap pour ne pas deborder a textScale 2x
-            Wrap(
-              spacing: AppTheme.spacingBase,
-              runSpacing: AppTheme.spacingXs,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const ExcludeSemantics(
-                      child: Icon(Icons.storage,
-                          size: 14, color: AppTheme.grisTexteSecondaire),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const ExcludeSemantics(
+                    child: Icon(
+                      Icons.update,
+                      size: 14,
+                      color: AppTheme.grisTexteSecondaire,
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      formatFileSize(entry.fileSize),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.grisTexteSecondaire,
-                      ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    'v${entry.dataVersion}',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.grisTexteSecondaire,
                     ),
-                  ],
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const ExcludeSemantics(
-                      child: Icon(Icons.update,
-                          size: 14, color: AppTheme.grisTexteSecondaire),
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'v${entry.dataVersion}',
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        color: AppTheme.grisTexteSecondaire,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingMd),
-            // Bouton action contextuel
-            _buildActionButton(context, theme),
-          ],
-        ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          // Bouton action contextuel
+          _buildActionButton(context, theme),
+        ],
       ),
     );
   }
@@ -182,25 +190,26 @@ class TrailCatalogCard extends StatelessWidget {
   Widget _buildActionButton(BuildContext context, ThemeData theme) {
     switch (entry.localStatus) {
       case TrailLocalStatusValues.notDownloaded:
+        // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine largeur
+        // (SizedBox width infinity conserve).
         return SizedBox(
           width: double.infinity,
-          child: ElevatedButton.icon(
+          child: AppButton(
+            icon: Icons.download,
+            label: _CatalogLabels.download,
             onPressed: onDownload,
-            icon: const Icon(Icons.download),
-            label: const Text(_CatalogLabels.download),
           ),
         );
       case TrailLocalStatusValues.downloading:
-        return SizedBox(
+        // SW-SKIN-L3e : ElevatedButton.icon desactive avec spinner -> AppButton
+        // primary isLoading:true (spinner interne + desactivation, grammaire
+        // unifiee). Pleine largeur (SizedBox width infinity conserve).
+        return const SizedBox(
           width: double.infinity,
-          child: ElevatedButton.icon(
+          child: AppButton(
+            isLoading: true,
+            label: _CatalogLabels.downloading,
             onPressed: null,
-            icon: const SizedBox(
-              width: 18,
-              height: 18,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-            label: const Text(_CatalogLabels.downloading),
           ),
         );
       case TrailLocalStatusValues.downloaded:
@@ -213,16 +222,17 @@ class TrailCatalogCard extends StatelessWidget {
               _buildEnterButton(context),
               const SizedBox(height: AppTheme.spacingSm),
             ],
+            // SW-SKIN-L3e : OutlinedButton.icon rouge -> AppButton outline avec
+            // tone:rougeUrgence (teinte texte/icone/bordure = couleur SEMANTIQUE
+            // de suppression). Pleine largeur (SizedBox width infinity conserve).
             SizedBox(
               width: double.infinity,
-              child: OutlinedButton.icon(
+              child: AppButton(
+                variant: AppButtonVariant.outline,
+                tone: AppTheme.rougeUrgence,
+                icon: Icons.delete_outline,
+                label: _CatalogLabels.delete,
                 onPressed: onDelete,
-                icon: const Icon(Icons.delete_outline,
-                    color: AppTheme.rougeUrgence),
-                label: const Text(
-                  _CatalogLabels.delete,
-                  style: TextStyle(color: AppTheme.rougeUrgence),
-                ),
               ),
             ),
           ],
@@ -237,12 +247,14 @@ class TrailCatalogCard extends StatelessWidget {
               _buildEnterButton(context),
               const SizedBox(height: AppTheme.spacingSm),
             ],
+            // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+            // largeur (SizedBox width infinity conserve).
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton.icon(
+              child: AppButton(
+                icon: Icons.system_update_alt,
+                label: _CatalogLabels.update,
                 onPressed: onUpdate,
-                icon: const Icon(Icons.system_update_alt),
-                label: const Text(_CatalogLabels.update),
               ),
             ),
           ],
@@ -260,11 +272,13 @@ class TrailCatalogCard extends StatelessWidget {
       child: Semantics(
         button: true,
         label: t.catalog.a11y.enterButton(nom: entry.trailId),
-        child: FilledButton.icon(
+        // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage #A5),
+        // pleine largeur (SizedBox width infinity conserve). key/Semantics gardees.
+        child: AppButton(
           key: ValueKey('trail-enter-${entry.trailId}'),
+          icon: Icons.arrow_forward,
+          label: t.catalog.enter,
           onPressed: onEnter,
-          icon: const Icon(Icons.arrow_forward),
-          label: Text(t.catalog.enter),
         ),
       ),
     );

@@ -8,6 +8,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/share_card_generator.dart';
@@ -53,10 +54,7 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
             ),
             child: Align(
               alignment: Alignment.centerLeft,
-              child: Text(
-                t.share.preview,
-                style: theme.textTheme.titleMedium,
-              ),
+              child: Text(t.share.preview, style: theme.textTheme.titleMedium),
             ),
           ),
           // Preview de la carte
@@ -72,26 +70,24 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
             ),
           ),
           // Bouton partager
+          // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+          // largeur (theme = minimumSize infinie, le bouton remplissait deja le
+          // Padding). isLoading porte l'etat _isGenerating (spinner + desactive,
+          // grammaire unifiee) ; libelle inchange hors chargement.
           Padding(
             padding: const EdgeInsets.all(AppTheme.spacingBase),
-            child: ElevatedButton.icon(
+            child: AppButton(
+              isLoading: _isGenerating,
+              icon: Icons.share,
+              label: t.share.share,
               onPressed: _isGenerating ? null : _shareCard,
-              icon: _isGenerating
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.share),
-              label: Text(
-                _isGenerating ? t.share.generating : t.share.share,
-              ),
             ),
           ),
         ],
       ),
     );
   }
+
   /// Construit le selecteur horizontal de templates.
   /// Chaque chip correspond a un [ShareCardTemplate].
   Widget _buildTemplateSelector(
@@ -107,23 +103,20 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            t.share.chooseTemplate,
-            style: theme.textTheme.titleMedium,
-          ),
+          Text(t.share.chooseTemplate, style: theme.textTheme.titleMedium),
           const SizedBox(height: AppTheme.spacingSm),
           Wrap(
             spacing: AppTheme.spacingSm,
             children: ShareCardTemplate.values.map((template) {
               final isSelected = template == _selectedTemplate;
               return ChoiceChip(
-                  label: Text(_templateLabel(t, template)),
-                  selected: isSelected,
-                  selectedColor: branding.primaryColor.withAlpha(180),
-                  onSelected: (_) {
-                    setState(() => _selectedTemplate = template);
-                  },
-                );
+                label: Text(_templateLabel(t, template)),
+                selected: isSelected,
+                selectedColor: branding.primaryColor.withAlpha(180),
+                onSelected: (_) {
+                  setState(() => _selectedTemplate = template);
+                },
+              );
             }).toList(),
           ),
         ],
@@ -142,6 +135,7 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
         return t.share.templateStage;
     }
   }
+
   /// Construit l'apercu de la carte avec branding dynamique
   /// et layout adapte au template selectionne.
   Widget _buildCardPreview(ThemeData theme, ShareCardBranding branding) {
@@ -219,17 +213,14 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
             fit: BoxFit.scaleDown,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _statItem(
-                Icons.straighten,
-                '${data.distanceKm.toStringAsFixed(1)} km',
-              ),
-              const SizedBox(width: AppTheme.spacingXl),
-              _statItem(
-                Icons.trending_up,
-                '${data.elevationGain} m D+',
-              ),
-            ],
+              children: [
+                _statItem(
+                  Icons.straighten,
+                  '${data.distanceKm.toStringAsFixed(1)} km',
+                ),
+                const SizedBox(width: AppTheme.spacingXl),
+                _statItem(Icons.trending_up, '${data.elevationGain} m D+'),
+              ],
             ),
           ),
           const SizedBox(height: AppTheme.spacingLg),
@@ -256,6 +247,7 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
       ),
     );
   }
+
   Widget _statItem(IconData icon, String value) {
     return Column(
       children: [
@@ -287,9 +279,9 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
       setState(() => _isGenerating = false);
       if (mounted) {
         final t = Translations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.share.error)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(t.share.error)));
       }
       return;
     }
@@ -304,9 +296,9 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
     } catch (_) {
       if (mounted) {
         final t = Translations.of(context);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.share.errorShare)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(t.share.errorShare)));
       }
     }
 

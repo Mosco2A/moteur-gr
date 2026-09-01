@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/pack_purchase_service.dart';
 import '../domain/pack_download_progress.dart';
@@ -41,8 +43,9 @@ class PackCard extends ConsumerWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
     final state = ref.watch(packDownloadControllerProvider(pack.id));
-    final controller =
-        ref.read(packDownloadControllerProvider(pack.id).notifier);
+    final controller = ref.read(
+      packDownloadControllerProvider(pack.id).notifier,
+    );
     final purchase = ref.watch(packPurchaseServiceProvider);
 
     // Libelle + couleur de l'etat (telecharge / maj dispo / non telecharge).
@@ -51,72 +54,77 @@ class PackCard extends ConsumerWidget {
     return Semantics(
       container: true,
       label: t.packs.a11y.packCard(nom: pack.nom, state: stateLabel),
-      child: Card(
+      // SW-SKIN-L3e : Card -> AppCard. key + margin conserves ; padding md
+      // porte par AppCard (iso-rendu de la carte pack). Semantics(container)
+      // preservee au-dessus.
+      child: AppCard(
         key: ValueKey('pack-card-${pack.id}'),
         margin: const EdgeInsets.symmetric(
           horizontal: AppTheme.spacingMd,
           vertical: AppTheme.spacingSm,
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingMd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Titre + chip d'etat.
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      pack.nom,
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w600),
+        padding: const EdgeInsets.all(AppTheme.spacingMd),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Titre + chip d'etat.
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    pack.nom,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  _StateChip(
-                    key: ValueKey('pack-state-${pack.id}'),
-                    label: stateLabel,
-                    color: stateColor,
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppTheme.spacingXs),
-              Text(
-                pack.description,
-                style: theme.textTheme.bodyMedium
-                    ?.copyWith(color: AppTheme.grisGranite),
-              ),
-              const SizedBox(height: AppTheme.spacingXs),
-              // Taille (Mo).
-              Text(
-                t.packs.size(mo: manifest.tailleMo),
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: AppTheme.grisGranite),
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              // Progression OU actions.
-              if (state.isDownloading)
-                _PackProgress(state: state)
-              else
-                _PackActions(
-                  pack: pack,
-                  manifest: manifest,
-                  state: state,
-                  updateAvailable: updateAvailable,
-                  purchaseEnabled: purchase.purchaseEnabled,
-                  onDownload: () => controller.download(manifest),
-                  onDelete: () => _confirmDelete(context, ref, t),
                 ),
-              if (state.isError) ...[
-                const SizedBox(height: AppTheme.spacingXs),
-                Text(
-                  t.packs.progress.error,
-                  key: ValueKey('pack-error-${pack.id}'),
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: AppTheme.rougeUrgence),
+                _StateChip(
+                  key: ValueKey('pack-state-${pack.id}'),
+                  label: stateLabel,
+                  color: stateColor,
                 ),
               ],
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            Text(
+              pack.description,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            // Taille (Mo).
+            Text(
+              t.packs.size(mo: manifest.tailleMo),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            // Progression OU actions.
+            if (state.isDownloading)
+              _PackProgress(state: state)
+            else
+              _PackActions(
+                pack: pack,
+                manifest: manifest,
+                state: state,
+                updateAvailable: updateAvailable,
+                purchaseEnabled: purchase.purchaseEnabled,
+                onDownload: () => controller.download(manifest),
+                onDelete: () => _confirmDelete(context, ref, t),
+              ),
+            if (state.isError) ...[
+              const SizedBox(height: AppTheme.spacingXs),
+              Text(
+                t.packs.progress.error,
+                key: ValueKey('pack-error-${pack.id}'),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppTheme.rougeUrgence,
+                ),
+              ),
             ],
-          ),
+          ],
         ),
       ),
     );
@@ -160,13 +168,14 @@ class PackCard extends ConsumerWidget {
       ),
     );
     if (confirmed != true) return;
-    final freed =
-        await ref.read(packDownloadControllerProvider(pack.id).notifier).delete();
+    final freed = await ref
+        .read(packDownloadControllerProvider(pack.id).notifier)
+        .delete();
     if (!context.mounted) return;
     if (freed >= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.packs.delete.freed)),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(t.packs.delete.freed)));
     }
   }
 }
@@ -191,10 +200,10 @@ class _StateChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: Theme.of(context)
-            .textTheme
-            .labelSmall
-            ?.copyWith(color: color, fontWeight: FontWeight.w600),
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -213,8 +222,10 @@ class _PackProgress extends StatelessWidget {
     final verifying = state.status == PackDownloadStatus.verifying;
     final label = verifying
         ? t.packs.progress.verifying
-        : t.packs.progress
-            .downloading(done: state.filesDone, total: state.filesTotal);
+        : t.packs.progress.downloading(
+            done: state.filesDone,
+            total: state.filesTotal,
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -230,8 +241,9 @@ class _PackProgress extends StatelessWidget {
         const SizedBox(height: AppTheme.spacingXs),
         Text(
           label,
-          style: theme.textTheme.bodySmall
-              ?.copyWith(color: AppTheme.grisTexteSecondaire),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: AppTheme.grisTexteSecondaire,
+          ),
         ),
       ],
     );
@@ -283,11 +295,15 @@ class _PackActions extends StatelessWidget {
           Semantics(
             button: true,
             label: t.packs.a11y.downloadButton(nom: pack.nom),
-            child: FilledButton.icon(
+            // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
+            // #A5). isFullWidth:false : bouton dimensionne au contenu dans le
+            // Wrap (iso-rendu). key/Semantics conserves.
+            child: AppButton(
               key: ValueKey('pack-download-${pack.id}'),
+              isFullWidth: false,
+              icon: Icons.download,
+              label: primaryLabel,
               onPressed: onDownload,
-              icon: const Icon(Icons.download, size: 18),
-              label: Text(primaryLabel),
             ),
           ),
         // Bouton supprimer (gestion de l'espace) si telecharge.
@@ -295,11 +311,15 @@ class _PackActions extends StatelessWidget {
           Semantics(
             button: true,
             label: t.packs.a11y.deleteButton(nom: pack.nom),
-            child: OutlinedButton.icon(
+            // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline.
+            // isFullWidth:false : dimensionne au contenu dans le Wrap (iso).
+            child: AppButton(
               key: ValueKey('pack-delete-${pack.id}'),
+              variant: AppButtonVariant.outline,
+              isFullWidth: false,
+              icon: Icons.delete_outline,
+              label: t.packs.actions.delete,
               onPressed: onDelete,
-              icon: const Icon(Icons.delete_outline, size: 18),
-              label: Text(t.packs.actions.delete),
             ),
           ),
         // Bouton acheter — UNIQUEMENT si la monetisation est activee (R2).

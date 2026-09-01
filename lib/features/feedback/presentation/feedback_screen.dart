@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../providers/feedback_provider.dart';
 
 /// Écran de feedback in-app.
@@ -46,8 +47,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                   ),
                   decoration: BoxDecoration(
                     color: AppTheme.orangeDifficile.withAlpha(40),
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusChip),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                   ),
                   child: Text(
                     '${feedbackState.pendingCount} en attente',
@@ -73,8 +73,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                 return ChoiceChip(
                   label: Text(FeedbackTypeValues.labelFor(type)),
                   selected: selected,
-                  onSelected: (_) =>
-                      setState(() => _selectedType = type),
+                  onSelected: (_) => setState(() => _selectedType = type),
                 );
               }).toList(),
             ),
@@ -107,35 +106,28 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                     color: theme.colorScheme.primary,
                     size: 32,
                   ),
-                  onPressed: () =>
-                      setState(() => _rating = starIndex),
+                  onPressed: () => setState(() => _rating = starIndex),
                 );
               }),
             ),
             const SizedBox(height: AppTheme.spacingXl),
 
             // Bouton envoyer
-            ElevatedButton.icon(
-              onPressed: feedbackState.isSubmitting
-                  ? null
-                  : _submitFeedback,
-              icon: feedbackState.isSubmitting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.send),
-              label: Text(feedbackState.isSubmitting
-                  ? 'Envoi...'
-                  : 'Envoyer'),
+            // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+            // largeur (theme = minimumSize infinie). isLoading porte l'etat
+            // isSubmitting (spinner + desactivation, grammaire unifiee) ;
+            // libelle inchange hors envoi.
+            AppButton(
+              isLoading: feedbackState.isSubmitting,
+              icon: Icons.send,
+              label: 'Envoyer',
+              onPressed: feedbackState.isSubmitting ? null : _submitFeedback,
             ),
 
             // Message de succès/erreur
             if (feedbackState.lastSubmitSuccess == true)
               Padding(
-                padding:
-                    const EdgeInsets.only(top: AppTheme.spacingBase),
+                padding: const EdgeInsets.only(top: AppTheme.spacingBase),
                 child: Text(
                   'Merci pour votre retour !',
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -154,11 +146,9 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     final content = _contentController.text.trim();
     if (content.isEmpty) return;
 
-    ref.read(feedbackProvider.notifier).submitFeedback(
-          type: _selectedType,
-          content: content,
-          rating: _rating,
-        );
+    ref
+        .read(feedbackProvider.notifier)
+        .submitFeedback(type: _selectedType, content: content, rating: _rating);
 
     _contentController.clear();
     setState(() => _rating = null);

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../../safety/presentation/sos_button.dart';
 import '../../trek/providers/tracking_providers.dart';
@@ -48,7 +49,8 @@ class HubScreen extends ConsumerWidget {
     final trekStatus = ref.watch(
       trekSessionManagerProvider.select((s) => s.status),
     );
-    final isTrekActive = trekStatus == TrackingSessionStatus.recording ||
+    final isTrekActive =
+        trekStatus == TrackingSessionStatus.recording ||
         trekStatus == TrackingSessionStatus.paused;
 
     return Scaffold(
@@ -96,12 +98,15 @@ class HubScreen extends ConsumerWidget {
             // CTA « Demarrer » plein largeur si aucun trek reel actif (RF-7).
             if (!isTrekActive) ...[
               const SizedBox(height: AppTheme.spacingBase),
+              // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
+              // largeur (SizedBox width infinity conserve). Libelle inchange.
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton.icon(
+                child: AppButton(
+                  variant: AppButtonVariant.outline,
+                  icon: Icons.play_arrow,
+                  label: t.hub.startCta,
                   onPressed: () => context.push('/trail/$trailId/planning'),
-                  icon: const Icon(Icons.play_arrow),
-                  label: Text(t.hub.startCta),
                 ),
               ),
             ],

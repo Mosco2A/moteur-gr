@@ -8,6 +8,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 
 /// E5.13 : Ecran de reservation (stub).
 ///
@@ -58,10 +59,14 @@ class BookingScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppTheme.spacingXl),
-              FilledButton.icon(
+              // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
+              // #A5). isFullWidth:false : bouton centre a la taille du contenu
+              // (Column mainAxisAlignment.center), iso-rendu du CTA d'attente.
+              AppButton(
+                isFullWidth: false,
+                icon: Icons.map_outlined,
+                label: 'Voir les etapes',
                 onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.map_outlined),
-                label: const Text('Voir les etapes'),
               ),
             ],
           ),

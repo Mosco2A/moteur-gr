@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/onboarding_providers.dart';
 
@@ -103,11 +104,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   children: [
                     _WelcomePage(tr: tr, theme: theme, appName: appName),
                     _LanguagePage(tr: tr, theme: theme),
-                    _DownloadPage(
-                      tr: tr,
-                      theme: theme,
-                      onBrowse: _goToCatalog,
-                    ),
+                    _DownloadPage(tr: tr, theme: theme, onBrowse: _goToCatalog),
                   ],
                 ),
               ),
@@ -176,16 +173,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
               bottom: 0,
               child: Padding(
                 padding: const EdgeInsets.all(AppTheme.spacingLg),
+                // SW-SKIN-L3e : ElevatedButton -> AppButton primary, pleine
+                // largeur (dans le SizedBox width infinity conserve, iso-rendu).
                 child: SizedBox(
                   width: double.infinity,
                   child: currentPage < _totalPages - 1
-                      ? ElevatedButton(
+                      ? AppButton(
+                          label: tr.onboarding.next,
                           onPressed: _nextPage,
-                          child: Text(tr.onboarding.next),
                         )
-                      : ElevatedButton(
+                      : AppButton(
+                          label: tr.onboarding.getStarted,
                           onPressed: _finish,
-                          child: Text(tr.onboarding.getStarted),
                         ),
                 ),
               ),
@@ -370,10 +369,14 @@ class _DownloadPage extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.spacingLg),
-          OutlinedButton.icon(
+          // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
+          // largeur (theme OutlinedButton = minimumSize infinie, le bouton
+          // remplissait deja la Column) -> isFullWidth:true = iso-rendu.
+          AppButton(
+            variant: AppButtonVariant.outline,
+            icon: Icons.explore,
+            label: tr.onboarding.browseCatalog,
             onPressed: onBrowse,
-            icon: const Icon(Icons.explore),
-            label: Text(tr.onboarding.browseCatalog),
           ),
         ],
       ),

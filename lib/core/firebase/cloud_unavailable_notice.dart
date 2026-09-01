@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../i18n/translations.g.dart';
+import '../../shared/widgets/app_card.dart';
 import '../theme/app_theme.dart';
 
 /// Etat explicite du mode local (P1-4 audit #327).
@@ -16,32 +17,33 @@ class CloudUnavailableNotice extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tr = Translations.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingLg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.cloud_off,
-              size: 48,
+    // SW-SKIN-L3e : Card -> AppCard (grammaire unifiee). Le padding de la
+    // Padding interne est porte directement par AppCard.padding (iso-rendu).
+    return AppCard(
+      padding: const EdgeInsets.all(AppTheme.spacingLg),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(
+            Icons.cloud_off,
+            size: 48,
+            color: AppTheme.grisTexteSecondaire,
+          ),
+          const SizedBox(height: AppTheme.spacingBase),
+          Text(
+            tr.cloud.localModeTitle,
+            style: theme.textTheme.titleMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(
+            tr.cloud.localModeBody,
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: AppTheme.grisTexteSecondaire,
             ),
-            const SizedBox(height: AppTheme.spacingBase),
-            Text(
-              tr.cloud.localModeTitle,
-              style: theme.textTheme.titleMedium,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              tr.cloud.localModeBody,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisTexteSecondaire),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+            textAlign: TextAlign.center,
+          ),
+        ],
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/feedback_provider.dart';
 
@@ -96,9 +97,21 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                 Wrap(
                   spacing: AppTheme.spacingSm,
                   children: [
-                    _buildCategoryChip(FeedbackTypeValues.bug, t.feedback.bug, Icons.bug_report),
-                    _buildCategoryChip(FeedbackTypeValues.suggestion, t.feedback.suggestion, Icons.lightbulb_outline),
-                    _buildCategoryChip(FeedbackTypeValues.compliment, t.feedback.compliment, Icons.thumb_up_outlined),
+                    _buildCategoryChip(
+                      FeedbackTypeValues.bug,
+                      t.feedback.bug,
+                      Icons.bug_report,
+                    ),
+                    _buildCategoryChip(
+                      FeedbackTypeValues.suggestion,
+                      t.feedback.suggestion,
+                      Icons.lightbulb_outline,
+                    ),
+                    _buildCategoryChip(
+                      FeedbackTypeValues.compliment,
+                      t.feedback.compliment,
+                      Icons.thumb_up_outlined,
+                    ),
                   ],
                 ),
                 const SizedBox(height: AppTheme.spacingLg),
@@ -122,7 +135,10 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                 const SizedBox(height: AppTheme.spacingLg),
 
                 // Note de satisfaction 1-5 (etoiles)
-                Text(t.feedback.satisfaction, style: theme.textTheme.labelLarge),
+                Text(
+                  t.feedback.satisfaction,
+                  style: theme.textTheme.labelLarge,
+                ),
                 const SizedBox(height: AppTheme.spacingSm),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -143,20 +159,15 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
                 const SizedBox(height: AppTheme.spacingXl),
 
                 // Bouton envoyer
-                ElevatedButton.icon(
+                // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary, pleine
+                // largeur (theme = minimumSize infinie). isLoading porte l'etat
+                // isSubmitting (spinner + desactivation, grammaire unifiee) ;
+                // libelle inchange hors envoi.
+                AppButton(
+                  isLoading: feedbackState.isSubmitting,
+                  icon: Icons.send,
+                  label: t.feedback.send,
                   onPressed: feedbackState.isSubmitting ? null : _submit,
-                  icon: feedbackState.isSubmitting
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.send),
-                  label: Text(
-                    feedbackState.isSubmitting
-                        ? t.feedback.sending
-                        : t.feedback.send,
-                  ),
                 ),
 
                 // Message de confirmation apres envoi reussi
@@ -196,7 +207,9 @@ class _FeedbackBottomSheetState extends ConsumerState<FeedbackBottomSheet> {
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    ref.read(feedbackProvider.notifier).submitFeedback(
+    ref
+        .read(feedbackProvider.notifier)
+        .submitFeedback(
           type: _selectedCategory,
           content: _contentController.text.trim(),
           rating: _rating,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../data/tip_card_repository.dart';
 import '../data/tip_category_config.dart';
 import '../domain/models/tip_card.dart';
@@ -61,10 +62,7 @@ class TipCarousel extends ConsumerWidget {
           },
         ),
         const SizedBox(height: AppTheme.spacingMd),
-        if (cards.isEmpty)
-          const _EmptyState()
-        else
-          _CarouselView(cards: cards),
+        if (cards.isEmpty) const _EmptyState() else _CarouselView(cards: cards),
       ],
     );
   }
@@ -123,9 +121,8 @@ class _CategoryChips extends StatelessWidget {
                 ),
                 label: Text(meta.labelKey),
                 selected: selectedCategory == cat,
-                onSelected: (_) => onCategorySelected(
-                  selectedCategory == cat ? null : cat,
-                ),
+                onSelected: (_) =>
+                    onCategorySelected(selectedCategory == cat ? null : cat),
                 selectedColor: color.withAlpha(40),
                 checkmarkColor: color,
                 shape: RoundedRectangleBorder(
@@ -167,74 +164,76 @@ class _CarouselView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingSm),
             child: GestureDetector(
               onTap: () => TipDetailSheet.show(context, card),
-              child: Card(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                  side: BorderSide(color: color.withAlpha(80), width: 1.5),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(AppTheme.spacingBase),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(resolveIcon(meta.icon), color: color, size: 20),
-                          const SizedBox(width: AppTheme.spacingSm),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppTheme.spacingSm,
-                              vertical: 2,
-                            ),
-                            decoration: BoxDecoration(
-                              color: color.withAlpha(30),
-                              borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                            ),
-                            child: Text(
-                              card.category,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: color,
-                                fontWeight: FontWeight.w600,
-                              ),
+              // SW-SKIN-L3e : Card -> AppCard. Le liseré colore de CATEGORIE
+              // (1.5px) est porte par borderColor/borderWidth ; padding base
+              // porte par AppCard (iso-rendu). Le GestureDetector est conserve
+              // au-dessus (tap sans encre, comportement inchange).
+              child: AppCard(
+                borderColor: color.withAlpha(80),
+                borderWidth: 1.5,
+                padding: const EdgeInsets.all(AppTheme.spacingBase),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(resolveIcon(meta.icon), color: color, size: 20),
+                        const SizedBox(width: AppTheme.spacingSm),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppTheme.spacingSm,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: color.withAlpha(30),
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.radiusChip,
                             ),
                           ),
-                          const Spacer(),
-                          if (card.priority >= 8)
-                            const Icon(
-                              Icons.priority_high,
-                              color: AppTheme.rougeUrgence,
-                              size: 18,
+                          child: Text(
+                            card.category,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: color,
+                              fontWeight: FontWeight.w600,
                             ),
-                        ],
-                      ),
-                      const SizedBox(height: AppTheme.spacingMd),
-                      Text(
-                        card.titleFr,
-                        style: theme.textTheme.titleMedium,
-                        maxLines: 2,
+                          ),
+                        ),
+                        const Spacer(),
+                        if (card.priority >= 8)
+                          const Icon(
+                            Icons.priority_high,
+                            color: AppTheme.rougeUrgence,
+                            size: 18,
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: AppTheme.spacingMd),
+                    Text(
+                      card.titleFr,
+                      style: theme.textTheme.titleMedium,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: AppTheme.spacingSm),
+                    Expanded(
+                      child: Text(
+                        card.contentFr,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withAlpha(180),
+                        ),
+                        maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: AppTheme.spacingSm),
-                      Expanded(
-                        child: Text(
-                          card.contentFr,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: theme.colorScheme.onSurface.withAlpha(180),
-                          ),
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.swipe,
+                        size: 16,
+                        color: theme.colorScheme.onSurface.withAlpha(100),
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Icon(
-                          Icons.swipe,
-                          size: 16,
-                          color: theme.colorScheme.onSurface.withAlpha(100),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

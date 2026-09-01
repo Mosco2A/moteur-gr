@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../../../core/services/moderation_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import 'complaint_screen.dart';
 
@@ -88,38 +90,35 @@ class StatementOfReasonsScreen extends StatelessWidget {
                   Semantics(
                     container: true,
                     label: tr.moderation.a11y.statementCard,
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(AppTheme.spacingMd),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  Icons.gavel_outlined,
-                                  size: 20,
-                                  color: theme.colorScheme.primary,
-                                ),
-                                const SizedBox(width: AppTheme.spacingSm),
-                                Text(
-                                  tr.moderation.decisionLabel,
-                                  style: theme.textTheme.titleSmall,
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: AppTheme.spacingSm),
-                            Text(
-                              _decisionLabel(tr, st.decision),
-                              style: theme.textTheme.titleMedium,
-                            ),
-                            const Divider(height: AppTheme.spacingLg),
-                            Text(
-                              st.motif,
-                              style: theme.textTheme.bodyMedium,
-                            ),
-                          ],
-                        ),
+                    // SW-SKIN-L3e : Card -> AppCard, padding md porte par
+                    // AppCard (iso-rendu). Semantics(container) conservee.
+                    child: AppCard(
+                      padding: const EdgeInsets.all(AppTheme.spacingMd),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.gavel_outlined,
+                                size: 20,
+                                color: theme.colorScheme.primary,
+                              ),
+                              const SizedBox(width: AppTheme.spacingSm),
+                              Text(
+                                tr.moderation.decisionLabel,
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppTheme.spacingSm),
+                          Text(
+                            _decisionLabel(tr, st.decision),
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          const Divider(height: AppTheme.spacingLg),
+                          Text(st.motif, style: theme.textTheme.bodyMedium),
+                        ],
                       ),
                     ),
                   ),
@@ -128,8 +127,13 @@ class StatementOfReasonsScreen extends StatelessWidget {
                   // --- Acces aux plaintes (art 20) ---
                   Semantics(
                     button: true,
-                    child: OutlinedButton.icon(
+                    // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline,
+                    // pleine largeur (enfant de ListView). key/Semantics gardees.
+                    child: AppButton(
                       key: const ValueKey('statement-complaint-action'),
+                      variant: AppButtonVariant.outline,
+                      icon: Icons.balance_outlined,
+                      label: tr.moderation.complaintAction,
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute<void>(
                           builder: (_) => ComplaintScreen(
@@ -138,8 +142,6 @@ class StatementOfReasonsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      icon: const Icon(Icons.balance_outlined),
-                      label: Text(tr.moderation.complaintAction),
                     ),
                   ),
                 ],

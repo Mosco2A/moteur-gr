@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/features/map/widgets/poi_popup.dart';
+import 'package:moteur_gr/shared/widgets/app_card.dart';
 
 /// Tests du widget PoiPopup.
 ///
@@ -85,9 +86,11 @@ void main() {
       expect(find.byIcon(Icons.house), findsOneWidget);
     });
 
-    testWidgets('est encapsulé dans une Card', (tester) async {
+    testWidgets('est encapsulé dans une AppCard', (tester) async {
       await tester.pumpWidget(buildPopup(poiComplet));
-      expect(find.byType(Card), findsOneWidget);
+      // SW-SKIN-L3e : la Card Material a ete unifiee en AppCard.
+      expect(find.byType(AppCard), findsOneWidget);
+      expect(find.byType(Card), findsNothing);
     });
 
     testWidgets('la largeur maximale est contrainte', (tester) async {

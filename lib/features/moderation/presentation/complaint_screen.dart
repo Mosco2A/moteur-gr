@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/services/moderation_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../providers/moderation_ui_providers.dart';
 
@@ -55,7 +56,9 @@ class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
     try {
-      await ref.read(moderationComplaintControllerProvider).submit(
+      await ref
+          .read(moderationComplaintControllerProvider)
+          .submit(
             contentType: widget.contentType,
             contentRef: widget.contentRef,
             expose: _expose.text,
@@ -109,21 +112,24 @@ class _ComplaintScreenState extends ConsumerState<ComplaintScreen> {
                 const SizedBox(height: AppTheme.spacingSm),
                 Text(
                   _error!,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: theme.colorScheme.error),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.error,
+                  ),
                 ),
               ],
               const SizedBox(height: AppTheme.spacingLg),
               Semantics(
                 button: true,
-                child: FilledButton(
+                // SW-SKIN-L3e : FilledButton -> AppButton primary (arbitrage
+                // #A5), pleine largeur (enfant de ListView). Le libelle bascule
+                // toujours submitting/submit selon l'etat (iso-comportement) ;
+                // onPressed nul pendant l'envoi. key/Semantics preserves.
+                child: AppButton(
                   key: const ValueKey('complaint-submit'),
+                  label: _submitting
+                      ? tr.moderation.submitting
+                      : tr.moderation.complaintSubmit,
                   onPressed: _submitting ? null : _submit,
-                  child: Text(
-                    _submitting
-                        ? tr.moderation.submitting
-                        : tr.moderation.complaintSubmit,
-                  ),
                 ),
               ),
             ],

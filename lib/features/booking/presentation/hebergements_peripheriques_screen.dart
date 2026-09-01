@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/models/hebergement_peripherique.dart';
 import '../providers/hebergement_peripherique_providers.dart';
@@ -29,9 +31,7 @@ class HebergementsPeripheriquesScreen extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final opened = await launcher.open(h.deeplinkUrl);
     if (!opened) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(t.hebergement.cannotOpen)),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(t.hebergement.cannotOpen)));
     }
   }
 
@@ -117,66 +117,75 @@ class _HebergementCard extends StatelessWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    return Card(
+    // SW-SKIN-L3e : Card -> AppCard. key conservee (test ValueKey) ; padding md
+    // porte par AppCard (iso-rendu de la carte hebergement).
+    return AppCard(
       key: ValueKey('hebergement-${hebergement.id}'),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingMd),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(
+                _iconFor(hebergement.type),
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  hebergement.nom,
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            typeLabel,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // Détour aller-retour estimé.
+          Semantics(
+            label: t.hebergement.detourAR(
+              km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
+            ),
+            child: Row(
               children: [
-                Icon(_iconFor(hebergement.type), color: theme.colorScheme.primary),
-                const SizedBox(width: AppTheme.spacingSm),
-                Expanded(
-                  child: Text(
-                    hebergement.nom,
-                    style: theme.textTheme.titleMedium,
+                const Icon(Icons.directions_walk, size: 18),
+                const SizedBox(width: AppTheme.spacingXs),
+                Text(
+                  t.hebergement.detourAR(
+                    km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
                   ),
+                  style: theme.textTheme.bodyMedium,
                 ),
               ],
             ),
-            const SizedBox(height: AppTheme.spacingXs),
-            Text(
-              typeLabel,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: AppTheme.grisTexteSecondaire,
-              ),
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            // Détour aller-retour estimé.
-            Semantics(
-              label: t.hebergement.detourAR(
-                km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.directions_walk, size: 18),
-                  const SizedBox(width: AppTheme.spacingXs),
-                  Text(
-                    t.hebergement.detourAR(
-                      km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
-                    ),
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Align(
-              alignment: Alignment.centerRight,
-              child: Semantics(
-                button: true,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Align(
+            alignment: Alignment.centerRight,
+            child: Semantics(
+              button: true,
+              label: t.hebergement.openSite,
+              // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
+              // largeur. Le theme OutlinedButton impose minimumSize infinie :
+              // le bouton s'etirait deja sur toute la largeur (l'Align n'avait
+              // pas d'effet visible) -> isFullWidth:true = iso-rendu verifie
+              // par sonde de largeur. Semantics(button+label) conservee.
+              child: AppButton(
+                variant: AppButtonVariant.outline,
+                icon: Icons.open_in_new,
                 label: t.hebergement.openSite,
-                child: OutlinedButton.icon(
-                  onPressed: onOpen,
-                  icon: const Icon(Icons.open_in_new, size: 18),
-                  label: Text(t.hebergement.openSite),
-                ),
+                onPressed: onOpen,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
@@ -39,20 +40,13 @@ class TrailDetailScreen extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingSm),
           // Titre de section
           const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppTheme.spacingBase,
-            ),
-            child: SectionHeader(
-              title: 'Étapes',
-              icon: Icons.hiking,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingBase),
+            child: SectionHeader(title: 'Étapes', icon: Icons.hiking),
           ),
           // Liste des étapes (AsyncValue)
           Expanded(
             child: stagesAsync.when(
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
+              loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => EmptyState(
                 icon: Icons.error_outline,
                 title: 'Impossible de charger les étapes',
@@ -63,7 +57,8 @@ class TrailDetailScreen extends ConsumerWidget {
                   return const EmptyState(
                     icon: Icons.hiking,
                     title: 'Aucune étape disponible',
-                    subtitle: 'Les données du sentier ne sont pas '
+                    subtitle:
+                        'Les données du sentier ne sont pas '
                         'encore chargées.',
                   );
                 }
@@ -103,32 +98,40 @@ class TrailDetailScreen extends ConsumerWidget {
                 child: Semantics(
                   button: true,
                   label: t.catalog.a11y.enterButton(nom: config.displayName),
-                  child: FilledButton.icon(
+                  // SW-SKIN-L3e : FilledButton.icon -> AppButton primary
+                  // (arbitrage #A5), pleine largeur (SizedBox width infinity
+                  // conserve). key/Semantics(button+label) preserves.
+                  child: AppButton(
                     key: const ValueKey('trail-detail-enter'),
+                    icon: Icons.arrow_forward,
+                    label: t.catalog.enter,
                     onPressed: () => _enterTrail(context, ref),
-                    icon: const Icon(Icons.arrow_forward),
-                    label: Text(t.catalog.enter),
                   ),
                 ),
               ),
               const SizedBox(height: AppTheme.spacingSm),
               // Actions secondaires cote a cote (compactes) : planifier / carte
               // hors-shell. Disposees en Row pour ne pas allonger la barre.
+              // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline dans
+              // chaque Expanded (remplit sa colonne de flex, iso-rendu).
+              // Libelles inchanges (i18n = ressort de L10).
               Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton.icon(
+                    child: AppButton(
+                      variant: AppButtonVariant.outline,
+                      icon: Icons.calendar_month,
+                      label: 'Planifier',
                       onPressed: () => context.go('/trail/$trailId/planning'),
-                      icon: const Icon(Icons.calendar_month),
-                      label: const Text('Planifier'),
                     ),
                   ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Expanded(
-                    child: OutlinedButton.icon(
+                    child: AppButton(
+                      variant: AppButtonVariant.outline,
+                      icon: Icons.terrain,
+                      label: 'Voir la carte',
                       onPressed: () => context.go('/trail/$trailId/map'),
-                      icon: const Icon(Icons.terrain),
-                      label: const Text('Voir la carte'),
                     ),
                   ),
                 ],
@@ -163,19 +166,14 @@ class _TrailHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         border: Border(
-          bottom: BorderSide(
-            color: theme.colorScheme.outline.withAlpha(60),
-          ),
+          bottom: BorderSide(color: theme.colorScheme.outline.withAlpha(60)),
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Nom d'affichage
-          Text(
-            config.displayName,
-            style: theme.textTheme.headlineMedium,
-          ),
+          Text(config.displayName, style: theme.textTheme.headlineMedium),
           if ((config.tagline as String).isNotEmpty) ...[
             const SizedBox(height: AppTheme.spacingXs),
             Text(
@@ -191,11 +189,7 @@ class _TrailHeader extends StatelessWidget {
             spacing: AppTheme.spacingBase,
             runSpacing: AppTheme.spacingXs,
             children: [
-              _InfoChip(
-                icon: Icons.place,
-                label: config.region,
-                theme: theme,
-              ),
+              _InfoChip(icon: Icons.place, label: config.region, theme: theme),
               _InfoChip(
                 icon: Icons.straighten,
                 label: '${config.totalDistanceKm} km',
@@ -232,11 +226,7 @@ class _InfoChip extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         ExcludeSemantics(
-          child: Icon(
-            icon,
-            size: 16,
-            color: theme.colorScheme.primary,
-          ),
+          child: Icon(icon, size: 16, color: theme.colorScheme.primary),
         ),
         const SizedBox(width: 4),
         Text(
