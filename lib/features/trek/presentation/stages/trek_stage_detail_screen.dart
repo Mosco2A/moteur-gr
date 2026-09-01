@@ -7,6 +7,7 @@ import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../../shared/widgets/app_gradient_header.dart';
+import '../../../../shared/widgets/brand_alti_motif.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
 
@@ -265,21 +266,21 @@ class _StageDetailContent extends StatelessWidget {
                   style: theme.textTheme.titleMedium,
                 ),
                 const SizedBox(height: AppTheme.spacingSm),
-                Container(
-                  height: 160,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
+                // Motif de profil altimetrique de marque (SW-SKIN-L6).
+                // Ex-CustomPaint inline (_ElevationProfilePainter) factorise
+                // vers BrandAltiMotif. Variante `hero` = degrade d'accent
+                // (nouvelle identite assumee). Le modele Stage ne portant que
+                // D+/D-/distance (pas de points reels), on emploie le
+                // constructeur `.synthetic` -> parite de trace avec l'existant.
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                  child: Container(
                     color: theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                  ),
-                  child: CustomPaint(
-                    painter: _ElevationProfilePainter(
+                    child: BrandAltiMotif.synthetic(
                       elevationGain: stage.elevationGain,
                       elevationLoss: stage.elevationLoss,
                       distance: stage.distance,
-                      color: theme.colorScheme.primary,
                     ),
-                    size: Size.infinite,
                   ),
                 ),
 
@@ -340,113 +341,7 @@ class _StageDetailContent extends StatelessWidget {
   }
 }
 
-/// CustomPainter pour le profil altimetrique simplifie.
-///
-/// Dessine une courbe de type montagne representant le denivele
-/// de l'etape. Utilise un profil synthetique base sur D+ et D-
-/// car les points GPX detailles ne sont pas charges ici.
-class _ElevationProfilePainter extends CustomPainter {
-  _ElevationProfilePainter({
-    required this.elevationGain,
-    required this.elevationLoss,
-    required this.distance,
-    required this.color,
-  });
-
-  final int elevationGain;
-  final int elevationLoss;
-  final double distance;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (size.width <= 0 || size.height <= 0) return;
-
-    final paint = Paint()
-      ..color = color
-      ..strokeWidth = 2
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final fillPaint = Paint()
-      ..color = color.withAlpha(30)
-      ..style = PaintingStyle.fill;
-
-    const padding = 16.0;
-    final drawWidth = size.width - padding * 2;
-    final drawHeight = size.height - padding * 2;
-
-    // Profil synthetique : montee -> sommet -> descente
-    final total = elevationGain + elevationLoss;
-    final peakRatio = total > 0 ? elevationGain / total : 0.5;
-
-    final path = Path();
-    final fillPath = Path();
-
-    const startX = padding;
-    final startY = size.height - padding;
-    final peakX = padding + drawWidth * peakRatio;
-    const peakY = padding;
-    final endX = size.width - padding;
-    final endRatio = total > 0 ? (elevationGain - elevationLoss) / total : 0.0;
-    final endY = size.height - padding - drawHeight * endRatio.clamp(0.0, 0.8);
-
-    path.moveTo(startX, startY);
-    path.quadraticBezierTo(
-      (startX + peakX) / 2,
-      startY - drawHeight * 0.3,
-      peakX,
-      peakY,
-    );
-    path.quadraticBezierTo(
-      (peakX + endX) / 2,
-      peakY + drawHeight * 0.2,
-      endX,
-      endY,
-    );
-
-    fillPath.addPath(path, Offset.zero);
-    fillPath.lineTo(endX, size.height - padding);
-    fillPath.lineTo(startX, size.height - padding);
-    fillPath.close();
-
-    canvas.drawPath(fillPath, fillPaint);
-    canvas.drawPath(path, paint);
-
-    // Libelles aux extremites
-    final textStyle = TextStyle(
-      color: color,
-      fontSize: 10,
-      fontWeight: FontWeight.w500,
-    );
-
-    final startLabel = TextPainter(
-      text: TextSpan(text: '0 km', style: textStyle),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    startLabel.paint(canvas, Offset(startX, startY + 2));
-
-    final endLabel = TextPainter(
-      text: TextSpan(
-        text: '${distance.toStringAsFixed(1)} km',
-        style: textStyle,
-      ),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    endLabel.paint(canvas, Offset(endX - endLabel.width, startY + 2));
-
-    final peakLabel = TextPainter(
-      text: TextSpan(text: '+$elevationGain m', style: textStyle),
-      textDirection: TextDirection.ltr,
-    )..layout();
-    peakLabel.paint(canvas, Offset(peakX - peakLabel.width / 2, peakY - 14));
-  }
-
-  @override
-  bool shouldRepaint(covariant _ElevationProfilePainter oldDelegate) {
-    return oldDelegate.elevationGain != elevationGain ||
-        oldDelegate.elevationLoss != elevationLoss ||
-        oldDelegate.distance != distance ||
-        oldDelegate.color != color;
-  }
-}
+// Le profil altimetrique (ex-`_ElevationProfilePainter` inline) est desormais
+// factorise dans `BrandAltiMotif` (lib/shared/widgets/brand_alti_motif.dart,
+// SW-SKIN-L6). La fiche etape emploie `BrandAltiMotif.synthetic` -> parite de
+// trace, plus le degrade d'accent (identite assumee).
