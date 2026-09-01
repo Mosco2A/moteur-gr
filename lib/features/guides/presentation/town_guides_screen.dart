@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
 import 'town_guide_detail_screen.dart';
@@ -31,9 +32,10 @@ class TownGuidesScreen extends ConsumerWidget {
 
     // Catalogue OFFLINE : libelles de section localises via Slang (domaine pur
     // F8C-01). On ne garde que les guides porteurs de contenu consultable.
-    final guides = townGuidesForContext(context, trailId)
-        .where((g) => g.hasContent)
-        .toList(growable: false);
+    final guides = townGuidesForContext(
+      context,
+      trailId,
+    ).where((g) => g.hasContent).toList(growable: false);
 
     return Scaffold(
       appBar: AppBar(title: Text(t.guides.title)),
@@ -100,14 +102,14 @@ class _FacilitatorNote extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(Icons.info_outline,
-                size: 18, color: AppTheme.vertFacile),
+            const Icon(
+              Icons.info_outline,
+              size: 18,
+              color: AppTheme.vertFacile,
+            ),
             const SizedBox(width: AppTheme.spacingSm),
             Expanded(
-              child: Text(
-                text,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              child: Text(text, style: Theme.of(context).textTheme.bodySmall),
             ),
           ],
         ),
@@ -127,15 +129,17 @@ class _TownGuideTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
-    final categoriesCount =
-        guide.sections.where((s) => s.items.isNotEmpty).length;
+    final categoriesCount = guide.sections
+        .where((s) => s.items.isNotEmpty)
+        .length;
 
     return Semantics(
       container: true,
       button: true,
       label: t.guides.a11y.guideCard(lieu: guide.nomLieu),
-      child: Card(
+      child: AppCard(
         key: ValueKey('town-guide-card-${guide.id}'),
+        padding: EdgeInsets.zero,
         margin: const EdgeInsets.symmetric(
           horizontal: AppTheme.spacingMd,
           vertical: AppTheme.spacingXs,
@@ -144,13 +148,15 @@ class _TownGuideTile extends StatelessWidget {
           leading: const Icon(Icons.location_city, color: AppTheme.vertFacile),
           title: Text(
             guide.nomLieu,
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
           subtitle: Text(
             t.guides.sectionsCount(n: categoriesCount),
-            style: theme.textTheme.bodySmall
-                ?.copyWith(color: AppTheme.grisGranite),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisGranite,
+            ),
           ),
           trailing: const Icon(Icons.chevron_right),
           onTap: () => Navigator.of(context).push(

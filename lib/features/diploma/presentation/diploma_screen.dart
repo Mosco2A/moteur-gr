@@ -8,6 +8,8 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
 import '../domain/diploma_generator.dart';
@@ -107,7 +109,10 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             const SizedBox(height: AppTheme.spacingLg),
 
             // Saisie du nom
-            Text(diplomaT.yourName, style: Theme.of(context).textTheme.labelLarge),
+            Text(
+              diplomaT.yourName,
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
             const SizedBox(height: AppTheme.spacingSm),
             TextField(
               controller: _nameController,
@@ -121,12 +126,12 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             const SizedBox(height: AppTheme.spacingLg),
 
             // Bouton PDF
-            ElevatedButton.icon(
+            AppButton(
+              label: diplomaT.downloadPdf,
+              icon: Icons.picture_as_pdf,
               onPressed: _diplomaData != null && !_isGeneratingPdf
                   ? () => _generatePdf(config)
                   : null,
-              icon: const Icon(Icons.picture_as_pdf),
-              label: Text(diplomaT.downloadPdf),
             ),
           ],
         ),
@@ -158,7 +163,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   Widget _buildDiplomaPreview(ThemeData theme) {
     final data = _diplomaData!;
 
-    return Card(
+    return AppCard(
+      padding: EdgeInsets.zero,
       child: Container(
         padding: const EdgeInsets.all(AppTheme.spacingXl),
         decoration: BoxDecoration(
@@ -170,7 +176,11 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         ),
         child: Column(
           children: [
-            Icon(Icons.emoji_events, size: 48, color: theme.colorScheme.primary),
+            Icon(
+              Icons.emoji_events,
+              size: 48,
+              color: theme.colorScheme.primary,
+            ),
             const SizedBox(height: AppTheme.spacingBase),
             Text(
               t.diploma.pdfTitle,
@@ -237,9 +247,9 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
       await DiplomaPdfService.generatePdf(data: data, labels: labels);
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(diplomaT.generatePdf)),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(diplomaT.generatePdf)));
       }
     } finally {
       if (mounted) setState(() => _isGeneratingPdf = false);
@@ -304,15 +314,13 @@ class _JournalPhotosSection extends StatelessWidget {
         if (isLoading)
           const Center(child: CircularProgressIndicator())
         else if (photoEntries.isEmpty)
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingLg),
-              child: Center(
-                child: Text(
-                  diplomaT.recapNoPhotos,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.grisTexteSecondaire,
-                  ),
+          AppCard(
+            padding: const EdgeInsets.all(AppTheme.spacingLg),
+            child: Center(
+              child: Text(
+                diplomaT.recapNoPhotos,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: AppTheme.grisTexteSecondaire,
                 ),
               ),
             ),
@@ -407,40 +415,41 @@ class _StatsSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        Card(
-          child: Padding(
-            padding: const EdgeInsets.all(AppTheme.spacingBase),
-            child: Column(
-              children: [
-                _StatRow(
-                  icon: Icons.flag,
-                  label: diplomaT.recapStages
-                      .replaceAll('{count}', '${config.totalStages}'),
+        AppCard(
+          child: Column(
+            children: [
+              _StatRow(
+                icon: Icons.flag,
+                label: diplomaT.recapStages.replaceAll(
+                  '{count}',
+                  '${config.totalStages}',
                 ),
-                const Divider(height: AppTheme.spacingBase),
-                _StatRow(
-                  icon: Icons.straighten,
-                  label: diplomaT.recapDistance.replaceAll(
-                    '{km}',
-                    config.totalDistanceKm.toStringAsFixed(0),
-                  ),
+              ),
+              const Divider(height: AppTheme.spacingBase),
+              _StatRow(
+                icon: Icons.straighten,
+                label: diplomaT.recapDistance.replaceAll(
+                  '{km}',
+                  config.totalDistanceKm.toStringAsFixed(0),
                 ),
-                const Divider(height: AppTheme.spacingBase),
-                _StatRow(
-                  icon: Icons.trending_up,
-                  label: diplomaT.recapElevation.replaceAll(
-                    '{meters}',
-                    '${config.totalElevationGain}',
-                  ),
+              ),
+              const Divider(height: AppTheme.spacingBase),
+              _StatRow(
+                icon: Icons.trending_up,
+                label: diplomaT.recapElevation.replaceAll(
+                  '{meters}',
+                  '${config.totalElevationGain}',
                 ),
-                const Divider(height: AppTheme.spacingBase),
-                _StatRow(
-                  icon: Icons.calendar_today,
-                  label: diplomaT.recapDuration
-                      .replaceAll('{days}', '${config.defaultDuration}'),
+              ),
+              const Divider(height: AppTheme.spacingBase),
+              _StatRow(
+                icon: Icons.calendar_today,
+                label: diplomaT.recapDuration.replaceAll(
+                  '{days}',
+                  '${config.defaultDuration}',
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
@@ -461,9 +470,7 @@ class _StatRow extends StatelessWidget {
       children: [
         Icon(icon, color: theme.colorScheme.primary, size: 22),
         const SizedBox(width: AppTheme.spacingSm),
-        Expanded(
-          child: Text(label, style: theme.textTheme.bodyLarge),
-        ),
+        Expanded(child: Text(label, style: theme.textTheme.bodyLarge)),
       ],
     );
   }
@@ -494,7 +501,8 @@ class _MapTraceSection extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: AppTheme.spacingSm),
-        Card(
+        AppCard(
+          padding: EdgeInsets.zero,
           child: Container(
             height: 180,
             width: double.infinity,
@@ -508,15 +516,12 @@ class _MapTraceSection extends ConsumerWidget {
                 }
                 return CustomPaint(
                   painter: SessionTracePainter(
-                    points: [
-                      for (final p in points) Offset(p.lng, p.lat),
-                    ],
+                    points: [for (final p in points) Offset(p.lng, p.lat)],
                     color: theme.colorScheme.primary,
                   ),
                 );
               },
-              loading: () =>
-                  const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(child: CircularProgressIndicator()),
               error: (_, __) =>
                   _NoTracePlaceholder(message: diplomaT.recapNoMap),
             ),
@@ -567,15 +572,12 @@ class _JournalCountSection extends StatelessWidget {
     final theme = Theme.of(context);
     final diplomaT = t.diploma;
 
-    return Card(
+    return AppCard(
+      padding: EdgeInsets.zero,
       child: ListTile(
-        leading: Icon(
-          Icons.menu_book,
-          color: theme.colorScheme.primary,
-        ),
+        leading: Icon(Icons.menu_book, color: theme.colorScheme.primary),
         title: Text(
-          diplomaT.recapJournalEntries
-              .replaceAll('{count}', '$count'),
+          diplomaT.recapJournalEntries.replaceAll('{count}', '$count'),
           style: theme.textTheme.bodyLarge,
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 
 /// Dialogue d'ajout d'une note au journal.
 ///
@@ -35,18 +36,14 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Étape',
-              style: theme.textTheme.labelLarge,
-            ),
+            Text('Étape', style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
             DropdownButtonFormField<int>(
               initialValue: _stageNumber,
               items: List.generate(16, (i) => i + 1)
-                  .map((n) => DropdownMenuItem(
-                        value: n,
-                        child: Text('Étape $n'),
-                      ))
+                  .map(
+                    (n) => DropdownMenuItem(value: n, child: Text('Étape $n')),
+                  )
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
@@ -55,10 +52,7 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
               },
             ),
             const SizedBox(height: AppTheme.spacingBase),
-            Text(
-              'Votre note',
-              style: theme.textTheme.labelLarge,
-            ),
+            Text('Votre note', style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
             TextField(
               controller: _contentController,
@@ -75,7 +69,9 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
           onPressed: () => Navigator.of(context).pop(),
           child: const Text('Annuler'),
         ),
-        ElevatedButton(
+        AppButton(
+          label: 'Enregistrer',
+          isFullWidth: false,
           onPressed: () {
             final content = _contentController.text.trim();
             if (content.isNotEmpty) {
@@ -83,7 +79,6 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Enregistrer'),
         ),
       ],
     );

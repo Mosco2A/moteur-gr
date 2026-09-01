@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../domain/models/journal_entry.dart';
 import '../providers/journal_providers.dart';
 
@@ -57,8 +59,8 @@ class JournalScreen extends ConsumerWidget {
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : entryCount == 0
-              ? _EmptyJournalView(journalT: journalT)
-              : _JournalDayList(entriesByDay: entriesByDay),
+          ? _EmptyJournalView(journalT: journalT)
+          : _JournalDayList(entriesByDay: entriesByDay),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNoteDialog(context, ref),
         child: const Icon(Icons.add),
@@ -73,10 +75,9 @@ class JournalScreen extends ConsumerWidget {
       builder: (ctx) => _AddNoteDialogSlang(
         journalT: journalT,
         onSave: (stageNumber, content) {
-          ref.read(journalScreenProvider.notifier).addNote(
-                stageNumber: stageNumber,
-                content: content,
-              );
+          ref
+              .read(journalScreenProvider.notifier)
+              .addNote(stageNumber: stageNumber, content: content);
         },
       ),
     );
@@ -139,9 +140,7 @@ class _JournalDayList extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            ...dayEntries.map(
-              (entry) => _JournalEntryTile(entry: entry),
-            ),
+            ...dayEntries.map((entry) => _JournalEntryTile(entry: entry)),
           ],
         );
       },
@@ -165,74 +164,76 @@ class _JournalEntryTile extends ConsumerWidget {
     final journalT = t.journal;
     final stageLabel = [journalT.stage, entry.stageNumber.toString()].join(' ');
 
-    return Card(
+    return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingMd),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.terrain, size: 16, color: theme.colorScheme.primary),
-                const SizedBox(width: AppTheme.spacingXs),
-                Text(
-                  stageLabel,
-                  style: theme.textTheme.labelLarge?.copyWith(
-                    color: theme.colorScheme.primary,
-                  ),
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.terrain, size: 16, color: theme.colorScheme.primary),
+              const SizedBox(width: AppTheme.spacingXs),
+              Text(
+                stageLabel,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.primary,
                 ),
-                const Spacer(),
-                Text(
-                  timeFormat.format(entry.createdAt),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withAlpha(150),
-                  ),
+              ),
+              const Spacer(),
+              Text(
+                timeFormat.format(entry.createdAt),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.colorScheme.onSurface.withAlpha(150),
                 ),
-                PopupMenuButton<String>(
-                  onSelected: (value) {
-                    if (value == 'delete') {
-                      ref.read(journalScreenProvider.notifier).deleteEntry(entry.id);
-                    }
-                  },
-                  itemBuilder: (context) => [
-                    PopupMenuItem(
-                      value: 'delete',
-                      child: Row(
-                        children: [
-                          const Icon(Icons.delete_outline, size: 20),
-                          const SizedBox(width: 8),
-                          Text(journalT.delete),
-                        ],
-                      ),
+              ),
+              PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'delete') {
+                    ref
+                        .read(journalScreenProvider.notifier)
+                        .deleteEntry(entry.id);
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.delete_outline, size: 20),
+                        const SizedBox(width: 8),
+                        Text(journalT.delete),
+                      ],
                     ),
-                  ],
-                ),
-              ],
-            ),
-            if (entry.photoPath != null) ...[
-              const SizedBox(height: AppTheme.spacingSm),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                child: Image.file(
-                  File(entry.photoPath!),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          if (entry.photoPath != null) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+              child: Image.file(
+                File(entry.photoPath!),
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
                   height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                  errorBuilder: (_, __, ___) => Container(
-                    height: 200,
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    child: const Center(child: Icon(Icons.broken_image, size: 48)),
+                  color: theme.colorScheme.surfaceContainerHighest,
+                  child: const Center(
+                    child: Icon(Icons.broken_image, size: 48),
                   ),
                 ),
               ),
-            ],
-            if (entry.text.isNotEmpty) ...[
-              const SizedBox(height: AppTheme.spacingSm),
-              Text(entry.text, style: theme.textTheme.bodyMedium),
-            ],
+            ),
           ],
-        ),
+          if (entry.text.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            Text(entry.text, style: theme.textTheme.bodyMedium),
+          ],
+        ],
       ),
     );
   }
@@ -240,10 +241,7 @@ class _JournalEntryTile extends ConsumerWidget {
 
 /// Dialogue d ajout de note avec textes Slang.
 class _AddNoteDialogSlang extends StatefulWidget {
-  const _AddNoteDialogSlang({
-    required this.journalT,
-    required this.onSave,
-  });
+  const _AddNoteDialogSlang({required this.journalT, required this.onSave});
 
   final Translations$journal$fr journalT;
   final void Function(int stageNumber, String content) onSave;
@@ -279,10 +277,12 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
             DropdownButtonFormField<int>(
               initialValue: _stageNumber,
               items: List.generate(16, (i) => i + 1)
-                  .map((n) => DropdownMenuItem(
-                        value: n,
-                        child: Text([journalT.stage, n.toString()].join(' ')),
-                      ))
+                  .map(
+                    (n) => DropdownMenuItem(
+                      value: n,
+                      child: Text([journalT.stage, n.toString()].join(' ')),
+                    ),
+                  )
                   .toList(),
               onChanged: (value) {
                 if (value != null) {
@@ -296,9 +296,7 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
             TextField(
               controller: _contentController,
               maxLines: 5,
-              decoration: InputDecoration(
-                hintText: journalT.placeholder,
-              ),
+              decoration: InputDecoration(hintText: journalT.placeholder),
             ),
           ],
         ),
@@ -308,7 +306,9 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
           onPressed: () => Navigator.of(context).pop(),
           child: Text(journalT.cancel),
         ),
-        ElevatedButton(
+        AppButton(
+          label: journalT.save,
+          isFullWidth: false,
           onPressed: () {
             final content = _contentController.text.trim();
             if (content.isNotEmpty) {
@@ -316,7 +316,6 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
               Navigator.of(context).pop();
             }
           },
-          child: Text(journalT.save),
         ),
       ],
     );
