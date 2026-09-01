@@ -7,6 +7,7 @@ import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../trek/providers/tracking_providers.dart';
 
 /// Carte principale du trek (RF-4 / #ET-1 / #ET-2) — 2 etats.
@@ -90,18 +91,35 @@ class _ActiveTrekCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
-          // Stats du jour (distance / denivele / temps).
+          // Stats du jour (distance / denivele / temps) : gros chiffres data
+          // via AppDataStat (SW-SKIN-L5), role data tabular L1. Chaque tuile est
+          // `Expanded` (repartition en largeur egale, ex-`_Stat`), alignee a
+          // gauche. Valeur formatee avec unite incluse -> iso-texte pour les
+          // tests existants (find.text('12.5 km') / '640 m').
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _Stat(
-                label: t.hub.trekCard.distanceCovered,
-                value: '${tracking.distanceKm.toStringAsFixed(1)} km',
+              Expanded(
+                child: AppDataStat(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  label: t.hub.trekCard.distanceCovered,
+                  value: '${tracking.distanceKm.toStringAsFixed(1)} km',
+                ),
               ),
-              _Stat(
-                label: t.hub.trekCard.elevationGain,
-                value: '${tracking.elevationGainM.round()} m',
+              Expanded(
+                child: AppDataStat(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  label: t.hub.trekCard.elevationGain,
+                  value: '${tracking.elevationGainM.round()} m',
+                ),
               ),
-              _Stat(label: t.hub.trekCard.duration, value: durationText),
+              Expanded(
+                child: AppDataStat(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  label: t.hub.trekCard.duration,
+                  value: durationText,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
@@ -193,32 +211,3 @@ class _NoTrekCard extends ConsumerWidget {
   }
 }
 
-/// Cellule de statistique (valeur + libelle), repartie en largeur egale.
-class _Stat extends StatelessWidget {
-  const _Stat({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(value, style: theme.textTheme.titleMedium),
-          const SizedBox(height: AppTheme.spacingXs),
-          Text(
-            label,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
-  }
-}

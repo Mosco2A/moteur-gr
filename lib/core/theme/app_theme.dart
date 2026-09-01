@@ -366,4 +366,19 @@ class AppTheme {
     final hsl = HSLColor.fromColor(color);
     return hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0)).toColor();
   }
+
+  /// Eclaircit une couleur (variante publique, SW-SKIN-L5).
+  ///
+  /// Meme logique HSL que l'eclaircissement interne du `ColorScheme` : expose
+  /// pour les composants peau-aware (ex. `AppGradientHeader` derive son degrade
+  /// `primary -> lighten(primary)`) sans dupliquer le calcul.
+  static Color lighten(Color color, double amount) => _lighten(color, amount);
+
+  /// Assombrit une couleur (variante publique, SW-SKIN-L5).
+  ///
+  /// Meme logique HSL que l'assombrissement interne du `ColorScheme` : reutilisee
+  /// par le garde-fou de contraste des en-tetes (CCO §1.6) — si l'accent-sentier
+  /// est trop clair pour tenir le contraste AA du texte, on l'assombrit avec CE
+  /// calcul (pas un nouveau).
+  static Color darken(Color color, double amount) => _darken(color, amount);
 }

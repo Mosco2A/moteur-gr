@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/theme/app_theme.dart';
+import '../../../../core/engine/trail_engine.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_gradient_header.dart';
 import '../../providers/hub_providers.dart';
 
 /// En-tete du HUB : salutation personnalisee (RF-3).
@@ -12,24 +13,27 @@ import '../../providers/hub_providers.dart';
 /// salutation. Le prenom vient de [displayNameProvider] (derive du pseudonyme
 /// auth, ZERO PII), avec repli localise « Randonneur » (`t.hub.greetingFallback`)
 /// quand aucun pseudonyme n'est saisi.
+///
+/// SW-SKIN-L5 : la salutation est desormais portee par [AppGradientHeader] —
+/// bandeau a degrade d'accent-sentier (peau Sentier Vivant), contraste texte
+/// garanti (§1.6). Le nom du sentier ([TrailConfig.displayName]) devient le
+/// sous-titre (la couleur-sentier est le heros graphique de la Direction C). La
+/// famille et le traitement basculent automatiquement avec la peau (filet topo
+/// en L8, photo en L9) sans toucher cet ecran.
 class HubHeader extends ConsumerWidget {
   const HubHeader({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final displayName = ref.watch(displayNameProvider);
     final name = displayName ?? t.hub.greetingFallback;
+    final trailTitle = ref.watch(
+      trailConfigProvider.select((c) => c.displayName),
+    );
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          t.hub.greeting(name: name),
-          style: theme.textTheme.headlineMedium,
-        ),
-      ),
+    return AppGradientHeader(
+      title: t.hub.greeting(name: name),
+      subtitle: trailTitle,
     );
   }
 }
