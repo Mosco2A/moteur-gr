@@ -7,6 +7,10 @@ class SettingsKeys {
   static const String themeMode = 'settings_theme_mode';
   static const String cacheEnabled = 'settings_cache_enabled';
   static const String cacheSizeMb = 'settings_cache_size_mb';
+
+  /// Peau visuelle selectionnee (SW-SKIN-L7). Choix GLOBAL (pas par sentier),
+  /// persiste par le nom de l'enum [AppSkin] (ex: 'sentierVivant').
+  static const String skin = 'settings_skin';
 }
 
 /// Service de persistance des parametres via SharedPreferences.
@@ -71,4 +75,17 @@ class SettingsService {
   /// Persiste la taille max du cache.
   Future<bool> setCacheSizeMb(int sizeMb) =>
       _prefs.setInt(SettingsKeys.cacheSizeMb, sizeMb);
+
+  // --- Peau visuelle (SW-SKIN-L7) ---
+
+  /// Lit le nom de la peau selectionnee (fallback: null si aucun choix).
+  ///
+  /// Retourne la chaine brute (nom d'enum `AppSkin`, ex 'sentierVivant') ;
+  /// la resolution vers l'enum (avec defaut sur choix inconnu) est faite par
+  /// `skinProvider`. `null` -> jamais choisi -> defaut Sentier Vivant.
+  String? getSkin() => _prefs.getString(SettingsKeys.skin);
+
+  /// Persiste la peau choisie (nom d'enum `AppSkin`). Choix global au sentier.
+  Future<bool> setSkin(String skinName) =>
+      _prefs.setString(SettingsKeys.skin, skinName);
 }

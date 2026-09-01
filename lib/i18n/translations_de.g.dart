@@ -59,6 +59,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$diploma$de diploma = _Translations$diploma$de._(_root);
 	@override late final _Translations$notifications$de notifications = _Translations$notifications$de._(_root);
 	@override late final _Translations$settings$de settings = _Translations$settings$de._(_root);
+	@override late final _Translations$appearance$de appearance = _Translations$appearance$de._(_root);
 	@override late final _Translations$feedback$de feedback = _Translations$feedback$de._(_root);
 	@override late final _Translations$auth$de auth = _Translations$auth$de._(_root);
 	@override late final _Translations$feasibility$de feasibility = _Translations$feasibility$de._(_root);
@@ -498,6 +499,26 @@ class _Translations$settings$de extends Translations$settings$fr {
 	@override String get offTrackAlertsDesc => 'Benachrichtigung + Vibration, wenn Sie den Weg verlassen';
 	@override String get version => 'Version';
 	@override String get versionLabel => 'App-Version';
+}
+
+// Path: appearance
+class _Translations$appearance$de extends Translations$appearance$fr {
+	_Translations$appearance$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Erscheinungsbild';
+	@override String get subtitle => 'Wähle das Design der App';
+	@override String get skinSentierVivant => 'Lebendiger Pfad';
+	@override String get skinSentierVivantDesc => 'Modern und farbenfroh, die Wegfarbe im Mittelpunkt';
+	@override String get skinTopographique => 'Topografisch';
+	@override String get skinTopographiqueDesc => 'Stil einer Wanderkarte, Daten im Vordergrund';
+	@override String get skinGrandAir => 'Freiluft';
+	@override String get skinGrandAirDesc => 'Bildschirmfüllende Fotos, Abenteuertagebuch-Look';
+	@override String get unavailableOnTrail => 'Auf diesem Weg nicht verfügbar';
+	@override String get changeSkin => 'Design wechseln';
+	@override String get selected => 'Ausgewählt';
 }
 
 // Path: feedback
@@ -2368,6 +2389,17 @@ extension on TranslationsDe {
 			'settings.offTrackAlertsDesc' => 'Benachrichtigung + Vibration, wenn Sie den Weg verlassen',
 			'settings.version' => 'Version',
 			'settings.versionLabel' => 'App-Version',
+			'appearance.title' => 'Erscheinungsbild',
+			'appearance.subtitle' => 'Wähle das Design der App',
+			'appearance.skinSentierVivant' => 'Lebendiger Pfad',
+			'appearance.skinSentierVivantDesc' => 'Modern und farbenfroh, die Wegfarbe im Mittelpunkt',
+			'appearance.skinTopographique' => 'Topografisch',
+			'appearance.skinTopographiqueDesc' => 'Stil einer Wanderkarte, Daten im Vordergrund',
+			'appearance.skinGrandAir' => 'Freiluft',
+			'appearance.skinGrandAirDesc' => 'Bildschirmfüllende Fotos, Abenteuertagebuch-Look',
+			'appearance.unavailableOnTrail' => 'Auf diesem Weg nicht verfügbar',
+			'appearance.changeSkin' => 'Design wechseln',
+			'appearance.selected' => 'Ausgewählt',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Feedbacktyp',
 			'feedback.bug' => 'Fehler / Problem',
@@ -2540,6 +2572,8 @@ extension on TranslationsDe {
 			'onboarding.downloadTitle' => 'Lade deinen ersten Weg herunter',
 			'onboarding.downloadSubtitle' => 'Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.',
 			'onboarding.browseCatalog' => 'Katalog durchsuchen',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
 			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',
@@ -2551,8 +2585,6 @@ extension on TranslationsDe {
 			'monetization.buyCta' => 'Diesen Trek freischalten',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Diesen Trek freischalten — ${price} €',
 			'signalement.title' => 'Melden',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
 			'signalement.types.eauASec' => 'Trockene Wasserstelle',

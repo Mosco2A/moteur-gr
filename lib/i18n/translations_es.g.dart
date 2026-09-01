@@ -59,6 +59,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$diploma$es diploma = _Translations$diploma$es._(_root);
 	@override late final _Translations$notifications$es notifications = _Translations$notifications$es._(_root);
 	@override late final _Translations$settings$es settings = _Translations$settings$es._(_root);
+	@override late final _Translations$appearance$es appearance = _Translations$appearance$es._(_root);
 	@override late final _Translations$feedback$es feedback = _Translations$feedback$es._(_root);
 	@override late final _Translations$auth$es auth = _Translations$auth$es._(_root);
 	@override late final _Translations$feasibility$es feasibility = _Translations$feasibility$es._(_root);
@@ -498,6 +499,26 @@ class _Translations$settings$es extends Translations$settings$fr {
 	@override String get offTrackAlertsDesc => 'Notificación + vibración si sales del sendero';
 	@override String get version => 'Versión';
 	@override String get versionLabel => 'Versión de la aplicación';
+}
+
+// Path: appearance
+class _Translations$appearance$es extends Translations$appearance$fr {
+	_Translations$appearance$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Apariencia';
+	@override String get subtitle => 'Elige el aspecto de la aplicación';
+	@override String get skinSentierVivant => 'Sendero Vivo';
+	@override String get skinSentierVivantDesc => 'Moderno y colorido, el color del sendero como protagonista';
+	@override String get skinTopographique => 'Topográfico';
+	@override String get skinTopographiqueDesc => 'Estilo mapa topográfico, datos en primer plano';
+	@override String get skinGrandAir => 'Aire Libre';
+	@override String get skinGrandAirDesc => 'Fotos a pantalla completa, ambiente de diario de aventura';
+	@override String get unavailableOnTrail => 'No disponible en este sendero';
+	@override String get changeSkin => 'Cambiar aspecto';
+	@override String get selected => 'Seleccionado';
 }
 
 // Path: feedback
@@ -2368,6 +2389,17 @@ extension on TranslationsEs {
 			'settings.offTrackAlertsDesc' => 'Notificación + vibración si sales del sendero',
 			'settings.version' => 'Versión',
 			'settings.versionLabel' => 'Versión de la aplicación',
+			'appearance.title' => 'Apariencia',
+			'appearance.subtitle' => 'Elige el aspecto de la aplicación',
+			'appearance.skinSentierVivant' => 'Sendero Vivo',
+			'appearance.skinSentierVivantDesc' => 'Moderno y colorido, el color del sendero como protagonista',
+			'appearance.skinTopographique' => 'Topográfico',
+			'appearance.skinTopographiqueDesc' => 'Estilo mapa topográfico, datos en primer plano',
+			'appearance.skinGrandAir' => 'Aire Libre',
+			'appearance.skinGrandAirDesc' => 'Fotos a pantalla completa, ambiente de diario de aventura',
+			'appearance.unavailableOnTrail' => 'No disponible en este sendero',
+			'appearance.changeSkin' => 'Cambiar aspecto',
+			'appearance.selected' => 'Seleccionado',
 			'feedback.title' => 'Comentarios',
 			'feedback.type' => 'Tipo de comentario',
 			'feedback.bug' => 'Error / Problema',
@@ -2540,6 +2572,8 @@ extension on TranslationsEs {
 			'onboarding.downloadTitle' => 'Descarga tu primer sendero',
 			'onboarding.downloadSubtitle' => 'Explora el catálogo y descarga un sendero para usarlo completamente sin conexión.',
 			'onboarding.browseCatalog' => 'Explorar el catálogo',
+			_ => null,
+		} ?? switch (path) {
 			'monetization.demoBanner' => 'Modo demo — toca para desbloquear',
 			'monetization.paywallTitle' => 'Desbloquea este trek',
 			'monetization.paywallBody' => 'El modo gratuito permite preparar tu trek con publicidad. El premium lo desbloquea todo, sin anuncios.',
@@ -2551,8 +2585,6 @@ extension on TranslationsEs {
 			'monetization.buyCta' => 'Desbloquear este trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Desbloquear este trek — ${price} €',
 			'signalement.title' => 'Notificar',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
 			'signalement.types.eauASec' => 'Punto de agua seco',

@@ -404,6 +404,19 @@
     "version": "Version",
     "versionLabel": "App-Version"
   },
+  "appearance": {
+    "title": "Erscheinungsbild",
+    "subtitle": "Wähle das Design der App",
+    "skinSentierVivant": "Lebendiger Pfad",
+    "skinSentierVivantDesc": "Modern und farbenfroh, die Wegfarbe im Mittelpunkt",
+    "skinTopographique": "Topografisch",
+    "skinTopographiqueDesc": "Stil einer Wanderkarte, Daten im Vordergrund",
+    "skinGrandAir": "Freiluft",
+    "skinGrandAirDesc": "Bildschirmfüllende Fotos, Abenteuertagebuch-Look",
+    "unavailableOnTrail": "Auf diesem Weg nicht verfügbar",
+    "changeSkin": "Design wechseln",
+    "selected": "Ausgewählt"
+  },
   "feedback": {
     "title": "Feedback",
     "type": "Feedbacktyp",

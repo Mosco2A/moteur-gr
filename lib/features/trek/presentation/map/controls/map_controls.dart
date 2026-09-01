@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import '../../../../../i18n/translations.g.dart';
+import '../../../../settings/presentation/skin_selector.dart';
 
 /// Controles de carte — zoom in, zoom out, centrer sur moi.
 ///
@@ -25,12 +26,28 @@ class MapControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // Ordre de focus logique (a11y E5.3b) : zoom + -> zoom - -> centrer.
+    // Ordre de focus logique (a11y E5.3b) : changer de peau -> zoom + ->
+    // zoom - -> centrer.
     return FocusTraversalGroup(
       policy: OrderedTraversalPolicy(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Acces « Changer de peau » (SW-SKIN-L7) : ouvre le meme selecteur
+          // que les Reglages, en bottom-sheet. Le marcheur choisit sa peau
+          // directement depuis la carte (exige par le mandat).
+          FocusTraversalOrder(
+            order: const NumericFocusOrder(0),
+            child: FloatingActionButton.small(
+              heroTag: 'mapChangeSkin',
+              onPressed: () => showSkinSelectorSheet(context),
+              tooltip: t.appearance.changeSkin,
+              backgroundColor: colorScheme.primaryContainer,
+              foregroundColor: colorScheme.onPrimaryContainer,
+              child: const Icon(Icons.brush_outlined),
+            ),
+          ),
+          const SizedBox(height: 8),
           FocusTraversalOrder(
             order: const NumericFocusOrder(1),
             child: FloatingActionButton.small(
