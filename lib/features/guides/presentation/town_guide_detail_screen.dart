@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
 
@@ -63,8 +65,9 @@ class TownGuideDetailScreen extends ConsumerWidget {
     }
 
     // On n'affiche que les sections porteuses d'items consultables.
-    final sections =
-        guide.sections.where((s) => s.items.isNotEmpty).toList(growable: false);
+    final sections = guide.sections
+        .where((s) => s.items.isNotEmpty)
+        .toList(growable: false);
 
     return Scaffold(
       appBar: AppBar(title: Text(guide.nomLieu)),
@@ -91,8 +94,11 @@ class TownGuideDetailScreen extends ConsumerWidget {
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.info_outline,
-                        size: 18, color: AppTheme.vertFacile),
+                    const Icon(
+                      Icons.info_outline,
+                      size: 18,
+                      color: AppTheme.vertFacile,
+                    ),
                     const SizedBox(width: AppTheme.spacingSm),
                     Expanded(
                       child: Text(
@@ -115,8 +121,7 @@ class TownGuideDetailScreen extends ConsumerWidget {
               ),
             )
           else
-            for (final section in sections)
-              _GuideSectionCard(section: section),
+            for (final section in sections) _GuideSectionCard(section: section),
         ],
       ),
     );
@@ -134,39 +139,39 @@ class _GuideSectionCard extends StatelessWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    return Card(
+    return AppCard(
       key: ValueKey('guide-section-${section.normalizedCategorie}'),
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
       margin: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingMd,
         vertical: AppTheme.spacingXs,
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingMd),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Titre de section (Semantics « header » pour lecteurs d'ecran).
-            Semantics(
-              header: true,
-              label: t.guides.a11y.section(titre: section.titre),
-              child: Text(
-                section.titre,
-                style: theme.textTheme.titleMedium
-                    ?.copyWith(fontWeight: FontWeight.w600),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Titre de section (Semantics « header » pour lecteurs d'ecran).
+          Semantics(
+            header: true,
+            label: t.guides.a11y.section(titre: section.titre),
+            child: Text(
+              section.titre,
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
               ),
             ),
-            if (section.contenu.isNotEmpty) ...[
-              const SizedBox(height: AppTheme.spacingXs),
-              Text(
-                section.contenu,
-                style: theme.textTheme.bodySmall
-                    ?.copyWith(color: AppTheme.grisGranite),
+          ),
+          if (section.contenu.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.spacingXs),
+            Text(
+              section.contenu,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisGranite,
               ),
-            ],
-            const SizedBox(height: AppTheme.spacingSm),
-            for (final item in section.items) _GuideItemTile(item: item),
+            ),
           ],
-        ),
+          const SizedBox(height: AppTheme.spacingSm),
+          for (final item in section.items) _GuideItemTile(item: item),
+        ],
       ),
     );
   }
@@ -192,13 +197,15 @@ class _GuideItemTile extends ConsumerWidget {
           children: [
             Text(
               item.nom,
-              style: theme.textTheme.bodyLarge
-                  ?.copyWith(fontWeight: FontWeight.w500),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w500,
+              ),
             ),
             Text(
               item.description,
-              style: theme.textTheme.bodySmall
-                  ?.copyWith(color: AppTheme.grisGranite),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
             ),
             // Bouton FACILITATEUR : OUVRE le site du prestataire (lien SORTANT),
             // AUCUNE resa ni paiement in-app (#84100). Masque si pas de lien.
@@ -207,11 +214,13 @@ class _GuideItemTile extends ConsumerWidget {
               Semantics(
                 button: true,
                 label: t.guides.a11y.openSiteButton(nom: item.nom),
-                child: OutlinedButton.icon(
+                child: AppButton(
                   key: ValueKey('guide-deeplink-${item.nom}'),
+                  variant: AppButtonVariant.outline,
+                  isFullWidth: false,
+                  icon: Icons.open_in_new,
+                  label: t.guides.openSite,
                   onPressed: () => _openSite(context, ref),
-                  icon: const Icon(Icons.open_in_new, size: 18),
-                  label: Text(t.guides.openSite),
                 ),
               ),
             ],
@@ -234,8 +243,6 @@ class _GuideItemTile extends ConsumerWidget {
     final t = Translations.of(context);
     final ok = await launcher.open(url);
     if (ok) return;
-    messenger.showSnackBar(
-      SnackBar(content: Text(t.guides.cannotOpen)),
-    );
+    messenger.showSnackBar(SnackBar(content: Text(t.guides.cannotOpen)));
   }
 }
