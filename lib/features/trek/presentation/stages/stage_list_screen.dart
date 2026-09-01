@@ -5,6 +5,7 @@ import '../../../../core/models/stage.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/app_card.dart';
 import '../../../trail/providers/stages_provider.dart';
 
 /// Ecran liste des etapes d'un sentier.
@@ -26,22 +27,16 @@ class StageListScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Etapes'),
-      ),
+      appBar: AppBar(title: const Text('Etapes')),
       body: stagesAsync.when(
-        loading: () => LoadingView(
-          message: t.stage.loadingList,
-        ),
+        loading: () => LoadingView(message: t.stage.loadingList),
         error: (error, _) => ErrorView(
           message: 'Impossible de charger les etapes',
           onRetry: () => ref.invalidate(stagesProvider(trailId)),
         ),
         data: (stages) {
           if (stages.isEmpty) {
-            return const Center(
-              child: Text('Aucune etape disponible'),
-            );
+            return const Center(child: Text('Aucune etape disponible'));
           }
 
           // Tri par stageNumber (orderIndex)
@@ -71,12 +66,13 @@ class _StageCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    // SW-SKIN-L3c : Card Material -> AppCard. padding zero pour garder la
+    // ListTile bord a bord (elle porte son propre rembourrage).
+    return AppCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: EdgeInsets.zero,
       child: ListTile(
-        leading: CircleAvatar(
-          child: Text('${stage.stageNumber}'),
-        ),
+        leading: CircleAvatar(child: Text('${stage.stageNumber}')),
         title: Text(stage.name),
         subtitle: Text(
           '${stage.distanceKm.toStringAsFixed(1)} km  '

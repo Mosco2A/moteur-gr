@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/models/stage.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
+import '../../../../shared/widgets/app_card.dart';
 import '../../domain/models/itinerary_day.dart';
 import '../../providers/itinerary_providers.dart';
 
@@ -25,22 +26,16 @@ class TrekPlanningScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Planning'),
-      ),
+      appBar: AppBar(title: const Text('Planning')),
       body: itineraryAsync.when(
-        loading: () => const LoadingView(
-          message: 'Calcul du planning...',
-        ),
+        loading: () => const LoadingView(message: 'Calcul du planning...'),
         error: (error, _) => ErrorView(
           message: "Impossible de charger le planning",
           onRetry: () => ref.invalidate(itineraryProvider),
         ),
         data: (days) {
           if (days.isEmpty) {
-            return const Center(
-              child: Text('Aucun itineraire disponible'),
-            );
+            return const Center(child: Text('Aucun itineraire disponible'));
           }
 
           return ListView.builder(
@@ -71,31 +66,33 @@ class _DayTile extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        child: ExpansionTile(
-          leading: CircleAvatar(
-            backgroundColor: colorScheme.primaryContainer,
-            foregroundColor: colorScheme.onPrimaryContainer,
-            child: Text('${day.dayNumber}'),
-          ),
-          title: Text('Jour ${day.dayNumber}'),
-          subtitle: Text(
-            '${day.stageCount} etape${day.stageCount > 1 ? 's' : ''}'
-            '  -  '
-            '${day.totalDistance.toStringAsFixed(1)} km',
-          ),
-          children: day.stages.map((stage) {
-            return _PlanningStageCard(
-              stage: stage,
-              onTap: () {
-                context.push('/stages/${stage.stageNumber}');
-              },
-            );
-          }).toList(),
+    // SW-SKIN-L3c : Card Material -> AppCard. La marge symmetric(h8,v2) passe
+    // dans `margin` ; padding zero pour que l'ExpansionTile garde son propre
+    // rembourrage bord a bord (l'InkWell d'en-tete a son ancetre Material via
+    // AppCard).
+    return AppCard(
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      padding: EdgeInsets.zero,
+      child: ExpansionTile(
+        leading: CircleAvatar(
+          backgroundColor: colorScheme.primaryContainer,
+          foregroundColor: colorScheme.onPrimaryContainer,
+          child: Text('${day.dayNumber}'),
         ),
+        title: Text('Jour ${day.dayNumber}'),
+        subtitle: Text(
+          '${day.stageCount} etape${day.stageCount > 1 ? 's' : ''}'
+          '  -  '
+          '${day.totalDistance.toStringAsFixed(1)} km',
+        ),
+        children: day.stages.map((stage) {
+          return _PlanningStageCard(
+            stage: stage,
+            onTap: () {
+              context.push('/stages/${stage.stageNumber}');
+            },
+          );
+        }).toList(),
       ),
     );
   }
@@ -106,10 +103,7 @@ class _DayTile extends StatelessWidget {
 /// Affiche le numero, le nom, la distance et le denivele
 /// pour un StageModel. Tap navigue vers le detail.
 class _PlanningStageCard extends StatelessWidget {
-  const _PlanningStageCard({
-    required this.stage,
-    required this.onTap,
-  });
+  const _PlanningStageCard({required this.stage, required this.onTap});
 
   final StageModel stage;
   final VoidCallback onTap;
@@ -118,24 +112,25 @@ class _PlanningStageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
+    // SW-SKIN-L3c : Card Material -> AppCard. onTap sur la carte (InkWell
+    // interne borne au rayon) comme l'InkWell d'origine ; padding zero pour la
+    // ListTile bord a bord.
+    return AppCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: colorScheme.primaryContainer,
-            foregroundColor: colorScheme.onPrimaryContainer,
-            child: Text('${stage.stageNumber}'),
-          ),
-          title: Text(stage.name),
-          subtitle: Text(
-            '${stage.distanceKm.toStringAsFixed(1)} km  '
-            'D+ ${stage.elevationGainM} m',
-          ),
-          trailing: const Icon(Icons.chevron_right),
+      padding: EdgeInsets.zero,
+      onTap: onTap,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: colorScheme.primaryContainer,
+          foregroundColor: colorScheme.onPrimaryContainer,
+          child: Text('${stage.stageNumber}'),
         ),
+        title: Text(stage.name),
+        subtitle: Text(
+          '${stage.distanceKm.toStringAsFixed(1)} km  '
+          'D+ ${stage.elevationGainM} m',
+        ),
+        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }

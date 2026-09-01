@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_card.dart';
 import '../domain/eta_service.dart';
 import '../providers/eta_providers.dart';
 
@@ -30,59 +31,63 @@ class EtaWidget extends ConsumerWidget {
     }
 
     final low = estimate.confidence == EtaConfidence.low;
-    final confidenceLabel =
-        low ? t.eta.confidenceLow : t.eta.confidenceHigh;
+    final confidenceLabel = low ? t.eta.confidenceLow : t.eta.confidenceHigh;
 
     return Semantics(
-      label: '${t.eta.toNextWaypoint} ${_fmt(t, estimate.toNextWaypoint)}, '
+      label:
+          '${t.eta.toNextWaypoint} ${_fmt(t, estimate.toNextWaypoint)}, '
           '${t.eta.toStageEnd} ${_fmt(t, estimate.toStageEnd)}, $confidenceLabel',
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(AppTheme.spacingMd),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.schedule, size: 18, color: theme.colorScheme.primary),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  Text(t.eta.title, style: theme.textTheme.titleSmall),
-                ],
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              _EtaRow(
-                label: t.eta.toNextWaypoint,
-                value: _fmt(t, estimate.toNextWaypoint),
-              ),
-              const SizedBox(height: AppTheme.spacingXs),
-              _EtaRow(
-                label: t.eta.toStageEnd,
-                value: _fmt(t, estimate.toStageEnd),
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              // Indicateur de confiance.
-              Row(
-                children: [
-                  Icon(
-                    low ? Icons.gps_off : Icons.gps_fixed,
-                    size: 14,
+      // SW-SKIN-L3c : Card Material -> AppCard. Le Padding interne (spacingMd)
+      // est porte par le parametre `padding` d'AppCard -> rendu identique.
+      child: AppCard(
+        padding: const EdgeInsets.all(AppTheme.spacingMd),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  Icons.schedule,
+                  size: 18,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(width: AppTheme.spacingSm),
+                Text(t.eta.title, style: theme.textTheme.titleSmall),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            _EtaRow(
+              label: t.eta.toNextWaypoint,
+              value: _fmt(t, estimate.toNextWaypoint),
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            _EtaRow(
+              label: t.eta.toStageEnd,
+              value: _fmt(t, estimate.toStageEnd),
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            // Indicateur de confiance.
+            Row(
+              children: [
+                Icon(
+                  low ? Icons.gps_off : Icons.gps_fixed,
+                  size: 14,
+                  color: low
+                      ? theme.colorScheme.error
+                      : AppTheme.grisTexteSecondaire,
+                ),
+                const SizedBox(width: AppTheme.spacingXs),
+                Text(
+                  confidenceLabel,
+                  style: theme.textTheme.bodySmall?.copyWith(
                     color: low
                         ? theme.colorScheme.error
                         : AppTheme.grisTexteSecondaire,
                   ),
-                  const SizedBox(width: AppTheme.spacingXs),
-                  Text(
-                    confidenceLabel,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: low
-                          ? theme.colorScheme.error
-                          : AppTheme.grisTexteSecondaire,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

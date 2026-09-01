@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../shared/widgets/app_card.dart';
 import '../../domain/models/stage.dart';
 
 /// Carte Material 3 representant une etape de sentier.
@@ -8,11 +9,7 @@ import '../../domain/models/stage.dart';
 /// la distance en km, le denivele positif et la duree estimee.
 /// [onTap] declenche la navigation vers le detail de l'etape.
 class StageCard extends StatelessWidget {
-  const StageCard({
-    super.key,
-    required this.stage,
-    required this.onTap,
-  });
+  const StageCard({super.key, required this.stage, required this.onTap});
 
   /// Etape a afficher.
   final Stage stage;
@@ -71,21 +68,22 @@ class StageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Card(
+    // SW-SKIN-L3c : Card Material -> AppCard (grammaire unifiee). onTap porte
+    // sur la carte (InkWell interne d'AppCard, borne au rayon) comme l'InkWell
+    // d'origine ; padding zero pour garder la ListTile bord a bord.
+    return AppCard(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: ListTile(
-          leading: CircleAvatar(
-            backgroundColor: colorScheme.primaryContainer,
-            foregroundColor: colorScheme.onPrimaryContainer,
-            child: Text('${stage.orderIndex}'),
-          ),
-          title: Text(_localizedName(context)),
-          subtitle: Text(_subtitle()),
-          trailing: const Icon(Icons.chevron_right),
+      padding: EdgeInsets.zero,
+      onTap: onTap,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: colorScheme.primaryContainer,
+          foregroundColor: colorScheme.onPrimaryContainer,
+          child: Text('${stage.orderIndex}'),
         ),
+        title: Text(_localizedName(context)),
+        subtitle: Text(_subtitle()),
+        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }
