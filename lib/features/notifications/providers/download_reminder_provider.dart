@@ -54,8 +54,13 @@ class DownloadReminderNotifier extends Notifier<DepartureReminderState> {
   }
 
   /// Charge la date de depart et le statut du rappel depuis SharedPreferences.
+  ///
+  /// `ref.mounted` apres le gap async : si le provider a ete dispose pendant
+  /// l'attente (ex. container detruit tot en test, ou rebuild), on n'ecrit pas
+  /// `state` (sinon Riverpod 3 leve « Ref used after dispose »).
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!ref.mounted) return;
 
     final dateStr = prefs.getString('$_departureDatePrefix$_trailId');
     final scheduled =

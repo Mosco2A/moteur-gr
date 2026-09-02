@@ -80,6 +80,10 @@ class FeasibilityNotifier extends Notifier<FeasibilityState> {
     try {
       final config = ref.read(trailConfigProvider);
       final questions = await FeasibilityQuestionLoader.load(config: config);
+      // `ref.mounted` apres le gap async : provider dispose pendant l'attente
+      // (ex. container detruit tot en test) -> on n'ecrit pas `state` (sinon
+      // Riverpod 3 leve « Ref used after dispose »).
+      if (!ref.mounted) return;
       state = FeasibilityState(
         currentQuestionIndex: state.currentQuestionIndex,
         answers: state.answers,
@@ -97,6 +101,10 @@ class FeasibilityNotifier extends Notifier<FeasibilityState> {
   Future<void> _loadSavedResult() async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      // `ref.mounted` apres le gap async : provider dispose pendant l'attente
+      // (ex. container detruit tot en test) -> on n'ecrit pas `state` (sinon
+      // Riverpod 3 leve « Ref used after dispose »).
+      if (!ref.mounted) return;
       final saved = prefs.getString(_prefsKey);
       if (saved != null) {
         final data = json.decode(saved) as Map<String, dynamic>;
