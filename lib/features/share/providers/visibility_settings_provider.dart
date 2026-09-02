@@ -56,8 +56,15 @@ class VisibilitySettingsNotifier extends Notifier<VisibilitySettings> {
     return const VisibilitySettings();
   }
 
+  /// Charge les reglages de visibilite depuis SharedPreferences.
+  ///
+  /// `ref.mounted` apres le gap async : si le provider a ete dispose pendant
+  /// l'attente (ex. container detruit tot en test, ou rebuild), on n'ecrit pas
+  /// `state` (sinon Riverpod 3 leve « Ref used after dispose »).
   Future<void> _load() async {
-    _prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+    if (!ref.mounted) return;
+    _prefs = prefs;
     state = VisibilitySettings(
       shareStageResults:
           _prefs!.getBool(VisibilityKeys.shareStageResults) ?? false,

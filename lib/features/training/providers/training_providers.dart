@@ -74,6 +74,10 @@ class TrainingNotifier extends Notifier<TrainingState> {
 
   Future<void> _loadDone() async {
     final prefs = await SharedPreferences.getInstance();
+    // `ref.mounted` apres le gap async : si le provider a ete dispose pendant
+    // l'attente (ex. container detruit tot en test, ou rebuild), on n'ecrit pas
+    // `state` (sinon Riverpod 3 leve « Ref used after dispose »).
+    if (!ref.mounted) return;
     final raw = prefs.getStringList(_prefsDoneKey) ?? const [];
     final offsets = raw.map(int.tryParse).whereType<int>().toSet();
     state = state.copyWith(doneOffsets: offsets);

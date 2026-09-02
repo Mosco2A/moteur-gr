@@ -129,8 +129,14 @@ class SettingsNotifier extends Notifier<AppSettings> {
   }
 
   /// Charge les preferences sauvegardees via SettingsService.
+  ///
+  /// `ref.mounted` apres le gap async : si le provider a ete dispose pendant
+  /// l'attente (ex. container detruit tot en test, ou rebuild), on n'ecrit pas
+  /// `state` (sinon Riverpod 3 leve « Ref used after dispose »).
   Future<void> _load() async {
-    _service = await SettingsService.create();
+    final service = await SettingsService.create();
+    if (!ref.mounted) return;
+    _service = service;
 
     state = AppSettings(
       language: AppLanguageValues.fromString(_service!.getLanguage()),

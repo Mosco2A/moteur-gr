@@ -50,8 +50,14 @@ class SyncConfigNotifier extends Notifier<SyncConfig> {
   }
 
   /// Charge la configuration depuis SharedPreferences.
+  ///
+  /// `ref.mounted` apres le gap async : si le provider a ete dispose pendant
+  /// l'attente (ex. container detruit tot en test, ou rebuild), on n'ecrit pas
+  /// `state` (sinon Riverpod 3 leve « Ref used after dispose »).
   Future<void> _load() async {
-    _prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+    if (!ref.mounted) return;
+    _prefs = prefs;
 
     final interval = _prefs?.getInt(SyncSettingsKeys.batchInterval) ?? 60;
     final onRefuge = _prefs?.getBool(SyncSettingsKeys.syncOnRefuge) ?? true;
@@ -105,8 +111,15 @@ class SyncStatusNotifier extends Notifier<SyncStatusInfo> {
     return const SyncStatusInfo();
   }
 
+  /// Charge le statut de synchro depuis SharedPreferences.
+  ///
+  /// `ref.mounted` apres le gap async : si le provider a ete dispose pendant
+  /// l'attente (ex. container detruit tot en test, ou rebuild), on n'ecrit pas
+  /// `state` (sinon Riverpod 3 leve « Ref used after dispose »).
   Future<void> _load() async {
-    _prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
+    if (!ref.mounted) return;
+    _prefs = prefs;
 
     final timestamp = _prefs?.getString(SyncSettingsKeys.lastSyncTimestamp);
     final statusIndex = _prefs?.getInt(SyncSettingsKeys.lastSyncStatus) ?? 0;
