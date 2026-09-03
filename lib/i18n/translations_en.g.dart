@@ -114,6 +114,8 @@ class _Translations$a11y$en extends Translations$a11y$fr {
 	@override String get pauseTracking => 'Pause tracking';
 	@override String get resumeTracking => 'Resume tracking';
 	@override String get stopTracking => 'Stop tracking';
+	@override String get sos => 'SOS emergency call';
+	@override String get mapLayers => 'Map layers';
 }
 
 // Path: nav
@@ -181,6 +183,11 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get loading => 'Loading track...';
 	@override String get noTrack => 'No track available';
 	@override String get viewMap => 'View map';
+	@override String get layers => 'Layers';
+	@override String get layersTitle => 'Map layers';
+	@override String get layersSubtitle => 'Choose what to show on the map';
+	@override String stageRemaining({required Object km}) => '${km} km left';
+	@override String get offTrackChip => 'Off track';
 }
 
 // Path: stage
@@ -2495,6 +2502,8 @@ extension on TranslationsEn {
 			'a11y.pauseTracking' => 'Pause tracking',
 			'a11y.resumeTracking' => 'Resume tracking',
 			'a11y.stopTracking' => 'Stop tracking',
+			'a11y.sos' => 'SOS emergency call',
+			'a11y.mapLayers' => 'Map layers',
 			'nav.accueil' => 'Home',
 			'nav.map' => 'Map',
 			'nav.stages' => 'Stages',
@@ -2569,6 +2578,11 @@ extension on TranslationsEn {
 			'map.loading' => 'Loading track...',
 			'map.noTrack' => 'No track available',
 			'map.viewMap' => 'View map',
+			'map.layers' => 'Layers',
+			'map.layersTitle' => 'Map layers',
+			'map.layersSubtitle' => 'Choose what to show on the map',
+			'map.stageRemaining' => ({required Object km}) => '${km} km left',
+			'map.offTrackChip' => 'Off track',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Elevation',
 			'stage.elevationGain' => 'Elevation gain',
@@ -2986,6 +3000,8 @@ extension on TranslationsEn {
 			'settings.weatherAlertsDesc' => 'Notified when dangerous conditions',
 			'settings.countdownReminder' => 'D-2 reminder',
 			'settings.countdownDesc' => 'Notification 2 days before departure',
+			_ => null,
+		} ?? switch (path) {
 			'settings.offTrackAlerts' => 'Off-track alert',
 			'settings.offTrackAlertsDesc' => 'Notification + vibration if you leave the trail',
 			'settings.version' => 'Version',
@@ -2993,8 +3009,6 @@ extension on TranslationsEn {
 			'appearance.title' => 'Appearance',
 			'appearance.subtitle' => 'Choose the app’s look and feel',
 			'appearance.skinSentierVivant' => 'Living Trail',
-			_ => null,
-		} ?? switch (path) {
 			'appearance.skinSentierVivantDesc' => 'Modern and colorful, the trail color takes the stage',
 			'appearance.skinTopographique' => 'Topographic',
 			'appearance.skinTopographiqueDesc' => 'Ordnance-map style, data first',
@@ -3500,6 +3514,8 @@ extension on TranslationsEn {
 			'recap.elevation' => '{meters} m of elevation gain',
 			'recap.duration' => '{days} days',
 			'recap.dates' => 'From {start} to {end}',
+			_ => null,
+		} ?? switch (path) {
 			'recap.viewDiploma' => 'View my diploma',
 			'recap.noData' => 'No route data to display yet.',
 			'programme.title' => 'Programme',
@@ -3507,8 +3523,6 @@ extension on TranslationsEn {
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',
-			_ => null,
-		} ?? switch (path) {
 			'programme.stats.stages' => 'Stages',
 			'programme.stats.restCount' => '{count} rest',
 			'programme.legend.easy' => 'Easy',

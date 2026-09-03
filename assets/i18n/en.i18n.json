@@ -13,7 +13,9 @@
     "startTracking": "Start tracking",
     "pauseTracking": "Pause tracking",
     "resumeTracking": "Resume tracking",
-    "stopTracking": "Stop tracking"
+    "stopTracking": "Stop tracking",
+    "sos": "SOS emergency call",
+    "mapLayers": "Map layers"
   },
   "nav": {
     "accueil": "Home",
@@ -105,7 +107,12 @@
     "title": "Trail map",
     "loading": "Loading track...",
     "noTrack": "No track available",
-    "viewMap": "View map"
+    "viewMap": "View map",
+    "layers": "Layers",
+    "layersTitle": "Map layers",
+    "layersSubtitle": "Choose what to show on the map",
+    "stageRemaining": "$km km left",
+    "offTrackChip": "Off track"
   },
   "stage": {
     "distance": "Distance",

@@ -13,7 +13,9 @@
     "startTracking": "Aufzeichnung starten",
     "pauseTracking": "Aufzeichnung pausieren",
     "resumeTracking": "Aufzeichnung fortsetzen",
-    "stopTracking": "Aufzeichnung beenden"
+    "stopTracking": "Aufzeichnung beenden",
+    "sos": "SOS-Notruf",
+    "mapLayers": "Kartenebenen"
   },
   "nav": {
     "accueil": "Start",
@@ -105,7 +107,12 @@
     "title": "Wanderkarte",
     "loading": "Strecke wird geladen...",
     "noTrack": "Keine Strecke verfügbar",
-    "viewMap": "Karte anzeigen"
+    "viewMap": "Karte anzeigen",
+    "layers": "Ebenen",
+    "layersTitle": "Kartenebenen",
+    "layersSubtitle": "Wahlen Sie, was auf der Karte angezeigt wird",
+    "stageRemaining": "Noch $km km",
+    "offTrackChip": "Abseits"
   },
   "stage": {
     "distance": "Entfernung",

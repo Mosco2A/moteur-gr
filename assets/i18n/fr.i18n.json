@@ -13,7 +13,9 @@
     "startTracking": "Demarrer le suivi",
     "pauseTracking": "Mettre le suivi en pause",
     "resumeTracking": "Reprendre le suivi",
-    "stopTracking": "Arreter le suivi"
+    "stopTracking": "Arreter le suivi",
+    "sos": "Appel d'urgence SOS",
+    "mapLayers": "Calques de la carte"
   },
   "nav": {
     "accueil": "Accueil",
@@ -105,7 +107,12 @@
     "title": "Carte du sentier",
     "loading": "Chargement du tracé...",
     "noTrack": "Aucun tracé disponible",
-    "viewMap": "Voir la carte"
+    "viewMap": "Voir la carte",
+    "layers": "Calques",
+    "layersTitle": "Calques de la carte",
+    "layersSubtitle": "Choisissez les points affiches sur la carte",
+    "stageRemaining": "$km km restants",
+    "offTrackChip": "Hors trace"
   },
   "stage": {
     "distance": "Distance",

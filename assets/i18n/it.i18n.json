@@ -13,7 +13,9 @@
     "startTracking": "Avvia il monitoraggio",
     "pauseTracking": "Sospendi il monitoraggio",
     "resumeTracking": "Riprendi il monitoraggio",
-    "stopTracking": "Ferma il monitoraggio"
+    "stopTracking": "Ferma il monitoraggio",
+    "sos": "Chiamata di emergenza SOS",
+    "mapLayers": "Livelli della mappa"
   },
   "nav": {
     "accueil": "Home",
@@ -105,7 +107,12 @@
     "title": "Mappa del sentiero",
     "loading": "Caricamento del tracciato...",
     "noTrack": "Nessun tracciato disponibile",
-    "viewMap": "Vedi la mappa"
+    "viewMap": "Vedi la mappa",
+    "layers": "Livelli",
+    "layersTitle": "Livelli della mappa",
+    "layersSubtitle": "Scegli cosa mostrare sulla mappa",
+    "stageRemaining": "$km km rimanenti",
+    "offTrackChip": "Fuori traccia"
   },
   "stage": {
     "distance": "Distanza",

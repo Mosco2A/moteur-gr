@@ -127,9 +127,17 @@ AsyncValue<TrackPositionState> _computeProjection(
         lastKnownIndex: lastIndex,
       );
 
-      // Memoriser l'index pour l'optimisation fenetree
-      ref.read(_lastTrackIndexProvider.notifier).set(
-          projection.trackIndexPosition);
+      // Memoriser l'index pour l'optimisation fenetree.
+      // DIFFERE (microtask) : ecrire un autre provider PENDANT le build de
+      // celui-ci est interdit par Riverpod (assertion « Providers are not
+      // allowed to modify other providers during their initialization »).
+      // Ce provider N'OBSERVE PAS `_lastTrackIndexProvider` (ref.read plus
+      // haut) : le report hors phase de build ne cree donc aucune boucle de
+      // rebuild ; le prochain calcul lira simplement l'index memorise.
+      final memoIndex = projection.trackIndexPosition;
+      Future.microtask(() {
+        ref.read(_lastTrackIndexProvider.notifier).set(memoIndex);
+      });
 
       // Detecter l'etape courante
       final stages = stagesAsync.value ?? <StageModel>[];

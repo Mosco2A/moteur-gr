@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 
 /// Barre de progression d'étape affichée en bas de la carte.
 ///
@@ -91,7 +92,7 @@ class StageProgressBar extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        'Hors tracé',
+                        t.map.offTrackChip,
                         style: theme.textTheme.labelSmall?.copyWith(
                           color: AppTheme.rougeUrgence,
                           fontWeight: FontWeight.w600,
@@ -125,7 +126,9 @@ class StageProgressBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '${distanceRemainingKm.toStringAsFixed(1)} km restants',
+                t.map.stageRemaining(
+                  km: distanceRemainingKm.toStringAsFixed(1),
+                ),
                 style: theme.textTheme.bodySmall?.copyWith(
                   color: AppTheme.grisTexteSecondaire,
                 ),

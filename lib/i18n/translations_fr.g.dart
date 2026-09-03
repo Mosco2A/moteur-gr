@@ -143,6 +143,12 @@ class Translations$a11y$fr {
 
 	/// fr: 'Arreter le suivi'
 	String get stopTracking => 'Arreter le suivi';
+
+	/// fr: 'Appel d'urgence SOS'
+	String get sos => 'Appel d\'urgence SOS';
+
+	/// fr: 'Calques de la carte'
+	String get mapLayers => 'Calques de la carte';
 }
 
 // Path: nav
@@ -264,6 +270,21 @@ class Translations$map$fr {
 
 	/// fr: 'Voir la carte'
 	String get viewMap => 'Voir la carte';
+
+	/// fr: 'Calques'
+	String get layers => 'Calques';
+
+	/// fr: 'Calques de la carte'
+	String get layersTitle => 'Calques de la carte';
+
+	/// fr: 'Choisissez les points affiches sur la carte'
+	String get layersSubtitle => 'Choisissez les points affiches sur la carte';
+
+	/// fr: '$km km restants'
+	String stageRemaining({required Object km}) => '${km} km restants';
+
+	/// fr: 'Hors trace'
+	String get offTrackChip => 'Hors trace';
 }
 
 // Path: stage
@@ -4653,6 +4674,8 @@ extension on Translations {
 			'a11y.pauseTracking' => 'Mettre le suivi en pause',
 			'a11y.resumeTracking' => 'Reprendre le suivi',
 			'a11y.stopTracking' => 'Arreter le suivi',
+			'a11y.sos' => 'Appel d\'urgence SOS',
+			'a11y.mapLayers' => 'Calques de la carte',
 			'nav.accueil' => 'Accueil',
 			'nav.map' => 'Carte',
 			'nav.stages' => 'Étapes',
@@ -4727,6 +4750,11 @@ extension on Translations {
 			'map.loading' => 'Chargement du tracé...',
 			'map.noTrack' => 'Aucun tracé disponible',
 			'map.viewMap' => 'Voir la carte',
+			'map.layers' => 'Calques',
+			'map.layersTitle' => 'Calques de la carte',
+			'map.layersSubtitle' => 'Choisissez les points affiches sur la carte',
+			'map.stageRemaining' => ({required Object km}) => '${km} km restants',
+			'map.offTrackChip' => 'Hors trace',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Dénivelé',
 			'stage.elevationGain' => 'Dénivelé positif',
@@ -5144,6 +5172,8 @@ extension on Translations {
 			'settings.weatherAlertsDesc' => 'Prévenu si conditions dangereuses',
 			'settings.countdownReminder' => 'Rappel J-2',
 			'settings.countdownDesc' => 'Notification 2 jours avant le départ',
+			_ => null,
+		} ?? switch (path) {
 			'settings.offTrackAlerts' => 'Alerte hors-trace',
 			'settings.offTrackAlertsDesc' => 'Notification + vibration si vous quittez le sentier',
 			'settings.version' => 'Version',
@@ -5151,8 +5181,6 @@ extension on Translations {
 			'appearance.title' => 'Apparence',
 			'appearance.subtitle' => 'Choisissez l’habillage de l’application',
 			'appearance.skinSentierVivant' => 'Sentier Vivant',
-			_ => null,
-		} ?? switch (path) {
 			'appearance.skinSentierVivantDesc' => 'Moderne et coloré, la couleur du sentier en vedette',
 			'appearance.skinTopographique' => 'Topographique',
 			'appearance.skinTopographiqueDesc' => 'Style carte d’état-major, données en avant',
@@ -5658,6 +5686,8 @@ extension on Translations {
 			'recap.elevation' => '{meters} m de denivele positif',
 			'recap.duration' => '{days} jours',
 			'recap.dates' => 'Du {start} au {end}',
+			_ => null,
+		} ?? switch (path) {
 			'recap.viewDiploma' => 'Voir mon diplome',
 			'recap.noData' => 'Aucune donnee de parcours a afficher pour le moment.',
 			'programme.title' => 'Programme',
@@ -5665,8 +5695,6 @@ extension on Translations {
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',
-			_ => null,
-		} ?? switch (path) {
 			'programme.stats.stages' => 'Étapes',
 			'programme.stats.restCount' => '{count} repos',
 			'programme.legend.easy' => 'Facile',
