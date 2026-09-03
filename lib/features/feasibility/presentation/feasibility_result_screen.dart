@@ -2,51 +2,85 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/feasibility_calculator.dart';
 
 /// Ecran de resultat de faisabilite avec score et recommandations par profil.
 /// Tous les textes via Slang (t.feasibility.*) -- zero texte en dur.
+///
+/// PARITE GR20 (#99460) : structure clonee de l'ecran resultat GR20 — badge
+/// verdict + jauge de score + carte recommandation (titre/resume/conseils) +
+/// points faibles/forts + bouton « Recommencer » (equivalent GR20 « REFAIRE »).
+/// Reutilisable : monte en plein ecran (Scaffold+AppBar) OU embarque a la fin du
+/// questionnaire (sans Scaffold) via [embedded] — la vue resultat du
+/// questionnaire reutilise donc CETTE carte riche (pas de duplication, #99460).
 class FeasibilityResultScreen extends ConsumerWidget {
-  const FeasibilityResultScreen({super.key, required this.result});
+  const FeasibilityResultScreen({
+    super.key,
+    required this.result,
+    this.onReset,
+    this.embedded = false,
+  });
 
   /// Resultat du questionnaire de faisabilite.
   final FeasibilityResult result;
+
+  /// Action « Recommencer » (parite GR20). Si null, le bouton est masque.
+  final VoidCallback? onReset;
+
+  /// Rendu embarque (sans Scaffold/AppBar), pour la fin du questionnaire.
+  final bool embedded;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final feasibilityT = t.feasibility;
+    final body = SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.spacingLg),
+      child: Column(
+        children: [
+          _ScoreGauge(result: result),
+          const SizedBox(height: AppTheme.spacingLg),
+          _LevelBadge(level: result.level),
+          const SizedBox(height: AppTheme.spacingLg),
+          _RecommendationCard(level: result.level),
+          const SizedBox(height: AppTheme.spacingLg),
+          if (result.weakPoints.isNotEmpty) ...[
+            _PointsSection(
+              title: feasibilityT.weakPointsTitle,
+              points: result.weakPoints,
+              icon: Icons.warning_amber,
+              color: AppTheme.orangeDifficile,
+            ),
+            const SizedBox(height: AppTheme.spacingBase),
+          ],
+          if (result.strongPoints.isNotEmpty)
+            _PointsSection(
+              title: feasibilityT.strongPointsTitle,
+              points: result.strongPoints,
+              icon: Icons.check_circle,
+              color: AppTheme.vertFacile,
+            ),
+          // Bouton « Recommencer » (parite GR20 : REFAIRE LE QUESTIONNAIRE).
+          if (onReset != null) ...[
+            const SizedBox(height: AppTheme.spacingXl),
+            AppButton(
+              variant: AppButtonVariant.outline,
+              icon: Icons.refresh,
+              label: feasibilityT.restart,
+              onPressed: onReset,
+            ),
+          ],
+        ],
+      ),
+    );
+
+    if (embedded) return body;
+
     return Scaffold(
       appBar: AppBar(title: Text(feasibilityT.resultTitle)),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppTheme.spacingLg),
-        child: Column(
-          children: [
-            _ScoreGauge(result: result),
-            const SizedBox(height: AppTheme.spacingLg),
-            _LevelBadge(level: result.level),
-            const SizedBox(height: AppTheme.spacingLg),
-            _RecommendationCard(level: result.level),
-            const SizedBox(height: AppTheme.spacingLg),
-            if (result.weakPoints.isNotEmpty) ...[
-              _PointsSection(
-                title: feasibilityT.weakPointsTitle,
-                points: result.weakPoints,
-                icon: Icons.warning_amber,
-                color: AppTheme.orangeDifficile,
-              ),
-              const SizedBox(height: AppTheme.spacingBase),
-            ],
-            if (result.strongPoints.isNotEmpty)
-              _PointsSection(
-                title: feasibilityT.strongPointsTitle,
-                points: result.strongPoints,
-                icon: Icons.check_circle,
-                color: AppTheme.vertFacile,
-              ),
-          ],
-        ),
-      ),
+      body: body,
     );
   }
 }
