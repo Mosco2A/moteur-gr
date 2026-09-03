@@ -8,7 +8,7 @@ import '../../features/consent/presentation/consent_settings_screen.dart';
 import '../../features/after/presentation/adventure_recap_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/hub/presentation/hub_screen.dart';
-import '../../features/feasibility/presentation/feasibility_screen.dart';
+import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
@@ -276,10 +276,19 @@ final appRouter = GoRouter(
           name: 'trail-checklist',
           builder: (context, state) => const ChecklistScreen(),
         ),
+        // PARITE GR20 (#99460) — FAISABILITE : auto-evaluation -> verdict.
+        // La carte HUB « Faisabilite » (et l'entree « Plus ») ouvrent cet ecran
+        // via `context.push` (retour propre, pile preservee — pas de context.go).
+        // On cable la version Slang (`FeasibilityQuestionnaireScreen`, questions
+        // + reponses + categorie + progression via t.feasibility.*), et non plus
+        // l'ancien `FeasibilityScreen` qui affichait les CLES i18n brutes
+        // (questionKey/answerKey) et des libelles FR en dur — l'ecart audit
+        // #99455. Questionnaire + resultat/verdict = parite GR20, generique
+        // (questions par sentier via JSON, zero localite en dur).
         GoRoute(
           path: 'feasibility',
           name: 'trail-feasibility',
-          builder: (context, state) => const FeasibilityScreen(),
+          builder: (context, state) => const FeasibilityQuestionnaireScreen(),
         ),
         GoRoute(
           path: 'tips',

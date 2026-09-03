@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/feasibility_question_loader.dart';
 import '../data/feasibility_questions.dart';
 import '../domain/feasibility_calculator.dart';
+import 'feasibility_result_screen.dart';
 
 /// Provider qui charge les questions depuis le JSON configurable.
 final questionsFromJsonProvider = FutureProvider<List<FeasibilityQuestion>>((
@@ -127,8 +127,14 @@ class _FeasibilityQuestionnaireScreenState
             return const Center(child: CircularProgressIndicator());
           }
           if (state.isCompleted && state.result != null) {
-            return _QuestionnaireResultView(
+            // PARITE GR20 (#99460) : la vue resultat/verdict reutilise l'ecran
+            // resultat riche (badge verdict + jauge + carte recommandation avec
+            // conseils + points faibles/forts + « Recommencer »), embarque sans
+            // Scaffold pour rester sous l'AppBar du questionnaire. Pas de
+            // duplication : une seule implementation du resultat (#99460).
+            return FeasibilityResultScreen(
               result: state.result!,
+              embedded: true,
               onReset: () {
                 ref.read(questionnaireProvider.notifier).reset();
               },
@@ -298,163 +304,5 @@ class _QuestionnaireAnswerCard extends StatelessWidget {
         ],
       ),
     );
-  }
-}
-
-/// Vue resultat avec score, jauge et recommandations. Zero texte en dur.
-class _QuestionnaireResultView extends StatelessWidget {
-  const _QuestionnaireResultView({required this.result, required this.onReset});
-  final FeasibilityResult result;
-  final VoidCallback onReset;
-
-  String _resolveLevel(String level) {
-    final resolved = t['feasibility.levels.$level'];
-    if (resolved is String) return resolved;
-    return level;
-  }
-
-  String _resolveCategory(String key) {
-    final resolved = t['feasibility.categories.$key'];
-    if (resolved is String) return resolved;
-    return key;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final feasibilityT = t.feasibility;
-    final color = _levelColor(result.level);
-    final icon = _levelIcon(result.level);
-    final label = _resolveLevel(result.level);
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.spacingLg),
-      child: Column(
-        children: [
-          Text(feasibilityT.resultTitle, style: theme.textTheme.titleLarge),
-          const SizedBox(height: AppTheme.spacingLg),
-          SizedBox(
-            width: 140,
-            height: 140,
-            child: Stack(
-              fit: StackFit.expand,
-              children: [
-                CircularProgressIndicator(
-                  value: result.percentage,
-                  strokeWidth: 12,
-                  backgroundColor: theme.colorScheme.onSurface.withAlpha(30),
-                  valueColor: AlwaysStoppedAnimation(color),
-                ),
-                Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(icon, size: 36, color: color),
-                      Text(
-                        '${result.score}/${result.maxScore}',
-                        style: theme.textTheme.headlineMedium,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.spacingBase,
-              vertical: AppTheme.spacingSm,
-            ),
-            decoration: BoxDecoration(
-              color: color.withAlpha(40),
-              borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-            ),
-            child: Text(
-              label,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: color,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-          if (result.weakPoints.isNotEmpty) ...[
-            Text(
-              feasibilityT.weakPointsTitle,
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            ...result.weakPoints.map(
-              (p) => ListTile(
-                leading: const Icon(
-                  Icons.warning_amber,
-                  color: AppTheme.orangeDifficile,
-                ),
-                title: Text(_resolveCategory(p)),
-                dense: true,
-              ),
-            ),
-            const SizedBox(height: AppTheme.spacingBase),
-          ],
-          if (result.strongPoints.isNotEmpty) ...[
-            Text(
-              feasibilityT.strongPointsTitle,
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            ...result.strongPoints.map(
-              (p) => ListTile(
-                leading: const Icon(
-                  Icons.check_circle,
-                  color: AppTheme.vertFacile,
-                ),
-                title: Text(_resolveCategory(p)),
-                dense: true,
-              ),
-            ),
-          ],
-          const SizedBox(height: AppTheme.spacingXl),
-          // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine largeur
-          // (theme OutlinedButton = minimumSize infinie, le bouton remplissait
-          // deja la Column) -> isFullWidth:true = iso-rendu.
-          AppButton(
-            variant: AppButtonVariant.outline,
-            icon: Icons.refresh,
-            label: feasibilityT.restart,
-            onPressed: onReset,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Color _levelColor(String level) {
-    switch (level) {
-      case FeasibilityCalculator.levelDanger:
-        return AppTheme.rougeUrgence;
-      case FeasibilityCalculator.levelCaution:
-        return AppTheme.orangeDifficile;
-      case FeasibilityCalculator.levelGood:
-        return AppTheme.jauneModere;
-      case FeasibilityCalculator.levelExcellent:
-        return AppTheme.vertFacile;
-      default:
-        return AppTheme.grisGranite;
-    }
-  }
-
-  IconData _levelIcon(String level) {
-    switch (level) {
-      case FeasibilityCalculator.levelDanger:
-        return Icons.dangerous;
-      case FeasibilityCalculator.levelCaution:
-        return Icons.warning;
-      case FeasibilityCalculator.levelGood:
-        return Icons.thumb_up;
-      case FeasibilityCalculator.levelExcellent:
-        return Icons.star;
-      default:
-        return Icons.help;
-    }
   }
 }
