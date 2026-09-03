@@ -2,188 +2,775 @@
   "version": 1,
   "defaultTemplate": {
     "categories": [
-      "equipment",
+      "carrying",
+      "sleeping",
       "clothing",
-      "food",
-      "safety",
-      "documents",
-      "hygiene"
+      "cooking",
+      "foodWater",
+      "hygiene",
+      "firstAid",
+      "electronics",
+      "women",
+      "men",
+      "misc",
+      "dog"
     ],
     "items": [
       {
         "id": "backpack",
-        "category": "equipment",
+        "category": "carrying",
         "nameKey": "backpack",
-        "isEssential": true,
-        "weightGrams": 1400
+        "isEssential": false,
+        "weightGrams": 1400,
+        "quantity": 1,
+        "requirement": "recommended"
+      },
+      {
+        "id": "rainCover",
+        "category": "carrying",
+        "nameKey": "rainCover",
+        "isEssential": false,
+        "weightGrams": 100,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "dryBags",
+        "category": "carrying",
+        "nameKey": "dryBags",
+        "isEssential": false,
+        "weightGrams": 150,
+        "quantity": 3,
+        "requirement": "optional"
       },
       {
         "id": "sleepingBag",
-        "category": "equipment",
+        "category": "sleeping",
         "nameKey": "sleepingBag",
-        "isEssential": true,
-        "weightGrams": 900
+        "isEssential": false,
+        "weightGrams": 900,
+        "quantity": 1,
+        "requirement": "recommended"
       },
       {
         "id": "sleepingPad",
-        "category": "equipment",
+        "category": "sleeping",
         "nameKey": "sleepingPad",
         "isEssential": false,
-        "weightGrams": 400
+        "weightGrams": 400,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "hikingPoles",
-        "category": "equipment",
-        "nameKey": "hikingPoles",
+        "id": "sleepingLiner",
+        "category": "sleeping",
+        "nameKey": "sleepingLiner",
         "isEssential": false,
-        "weightGrams": 500
+        "weightGrams": 200,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "headlamp",
-        "category": "equipment",
-        "nameKey": "headlamp",
-        "isEssential": true,
-        "weightGrams": 80
+        "id": "pillow",
+        "category": "sleeping",
+        "nameKey": "pillow",
+        "isEssential": false,
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "waterBottle",
-        "category": "equipment",
-        "nameKey": "waterBottle",
-        "isEssential": true,
-        "weightGrams": 150
-      },
-      {
-        "id": "hikingBoots",
+        "id": "hikingPants",
         "category": "clothing",
-        "nameKey": "hikingBoots",
-        "isEssential": true,
-        "weightGrams": 0
+        "nameKey": "hikingPants",
+        "isEssential": false,
+        "weightGrams": 300,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "rainPants",
+        "category": "clothing",
+        "nameKey": "rainPants",
+        "isEssential": false,
+        "weightGrams": 200,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "shorts",
+        "category": "clothing",
+        "nameKey": "shorts",
+        "isEssential": false,
+        "weightGrams": 150,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "techTshirt",
+        "category": "clothing",
+        "nameKey": "techTshirt",
+        "isEssential": false,
+        "weightGrams": 150,
+        "quantity": 2,
+        "requirement": "optional"
+      },
+      {
+        "id": "fleece",
+        "category": "clothing",
+        "nameKey": "fleece",
+        "isEssential": false,
+        "weightGrams": 350,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
         "id": "rainJacket",
         "category": "clothing",
         "nameKey": "rainJacket",
         "isEssential": true,
-        "weightGrams": 400
+        "weightGrams": 400,
+        "quantity": 1,
+        "requirement": "required"
       },
       {
-        "id": "warmLayer",
+        "id": "underwear",
         "category": "clothing",
-        "nameKey": "warmLayer",
-        "isEssential": true,
-        "weightGrams": 350
+        "nameKey": "underwear",
+        "isEssential": false,
+        "weightGrams": 50,
+        "quantity": 3,
+        "requirement": "optional"
       },
       {
         "id": "hikingSocks",
         "category": "clothing",
         "nameKey": "hikingSocks",
         "isEssential": false,
-        "weightGrams": 60
+        "weightGrams": 60,
+        "quantity": 3,
+        "requirement": "optional"
+      },
+      {
+        "id": "gaiters",
+        "category": "clothing",
+        "nameKey": "gaiters",
+        "isEssential": false,
+        "weightGrams": 100,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
         "id": "hat",
         "category": "clothing",
         "nameKey": "hat",
         "isEssential": false,
-        "weightGrams": 80
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "gloves",
+        "id": "beanie",
         "category": "clothing",
-        "nameKey": "gloves",
+        "nameKey": "beanie",
         "isEssential": false,
-        "weightGrams": 40
+        "weightGrams": 50,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "trailSnacks",
-        "category": "food",
-        "nameKey": "trailSnacks",
+        "id": "buff",
+        "category": "clothing",
+        "nameKey": "buff",
         "isEssential": false,
-        "weightGrams": 150
+        "weightGrams": 40,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "lightGloves",
+        "category": "clothing",
+        "nameKey": "lightGloves",
+        "isEssential": false,
+        "weightGrams": 40,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "hikingBoots",
+        "category": "clothing",
+        "nameKey": "hikingBoots",
+        "isEssential": false,
+        "weightGrams": 0,
+        "quantity": 1,
+        "requirement": "recommended"
+      },
+      {
+        "id": "campSandals",
+        "category": "clothing",
+        "nameKey": "campSandals",
+        "isEssential": false,
+        "weightGrams": 200,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "stove",
+        "category": "cooking",
+        "nameKey": "stove",
+        "isEssential": false,
+        "weightGrams": 85,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "gasCanister",
+        "category": "cooking",
+        "nameKey": "gasCanister",
+        "isEssential": false,
+        "weightGrams": 230,
+        "quantity": 2,
+        "requirement": "optional"
+      },
+      {
+        "id": "cookpot",
+        "category": "cooking",
+        "nameKey": "cookpot",
+        "isEssential": false,
+        "weightGrams": 200,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "cutlery",
+        "category": "cooking",
+        "nameKey": "cutlery",
+        "isEssential": false,
+        "weightGrams": 60,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "waterBottle",
+        "category": "cooking",
+        "nameKey": "waterBottle",
+        "isEssential": true,
+        "weightGrams": 150,
+        "quantity": 1,
+        "requirement": "required"
+      },
+      {
+        "id": "knife",
+        "category": "cooking",
+        "nameKey": "knife",
+        "isEssential": false,
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "lighter",
+        "category": "cooking",
+        "nameKey": "lighter",
+        "isEssential": false,
+        "weightGrams": 20,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
         "id": "energyBars",
-        "category": "food",
+        "category": "foodWater",
         "nameKey": "energyBars",
         "isEssential": false,
-        "weightGrams": 35
+        "weightGrams": 35,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "driedFruits",
+        "category": "foodWater",
+        "nameKey": "driedFruits",
+        "isEssential": false,
+        "weightGrams": 150,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "freezeDriedMeal",
+        "category": "foodWater",
+        "nameKey": "freezeDriedMeal",
+        "isEssential": false,
+        "weightGrams": 100,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
         "id": "waterPurification",
-        "category": "food",
+        "category": "foodWater",
         "nameKey": "waterPurification",
         "isEssential": false,
-        "weightGrams": 30
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "firstAidKit",
-        "category": "safety",
-        "nameKey": "firstAidKit",
-        "isEssential": true,
-        "weightGrams": 250
-      },
-      {
-        "id": "whistle",
-        "category": "safety",
-        "nameKey": "whistle",
-        "isEssential": true,
-        "weightGrams": 10
-      },
-      {
-        "id": "emergencyBlanket",
-        "category": "safety",
-        "nameKey": "emergencyBlanket",
-        "isEssential": true,
-        "weightGrams": 60
-      },
-      {
-        "id": "sunscreen",
-        "category": "safety",
-        "nameKey": "sunscreen",
+        "id": "electrolytes",
+        "category": "foodWater",
+        "nameKey": "electrolytes",
         "isEssential": false,
-        "weightGrams": 100
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "idCard",
-        "category": "documents",
-        "nameKey": "idCard",
-        "isEssential": true,
-        "weightGrams": 0
-      },
-      {
-        "id": "insurance",
-        "category": "documents",
-        "nameKey": "insurance",
+        "id": "carriedWater",
+        "category": "foodWater",
+        "nameKey": "carriedWater",
         "isEssential": false,
-        "weightGrams": 0
+        "weightGrams": 1000,
+        "quantity": 2,
+        "requirement": "recommended"
       },
       {
-        "id": "trailMap",
-        "category": "documents",
-        "nameKey": "trailMap",
+        "id": "soap",
+        "category": "hygiene",
+        "nameKey": "soap",
         "isEssential": false,
-        "weightGrams": 80
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "toothbrush",
+        "category": "hygiene",
+        "nameKey": "toothbrush",
+        "isEssential": false,
+        "weightGrams": 15,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "toothpaste",
+        "category": "hygiene",
+        "nameKey": "toothpaste",
+        "isEssential": false,
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "microfiberTowel",
+        "category": "hygiene",
+        "nameKey": "microfiberTowel",
+        "isEssential": false,
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
         "id": "toiletPaper",
         "category": "hygiene",
         "nameKey": "toiletPaper",
         "isEssential": false,
-        "weightGrams": 50
+        "weightGrams": 50,
+        "quantity": 1,
+        "requirement": "optional"
       },
       {
-        "id": "handSanitizer",
+        "id": "trashBag",
         "category": "hygiene",
-        "nameKey": "handSanitizer",
+        "nameKey": "trashBag",
         "isEssential": false,
-        "weightGrams": 50
+        "weightGrams": 7,
+        "quantity": 3,
+        "requirement": "optional"
       },
       {
-        "id": "towel",
+        "id": "antiChafingCream",
         "category": "hygiene",
-        "nameKey": "towel",
+        "nameKey": "antiChafingCream",
         "isEssential": false,
-        "weightGrams": 80
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "earplugs",
+        "category": "hygiene",
+        "nameKey": "earplugs",
+        "isEssential": false,
+        "weightGrams": 5,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "bandages",
+        "category": "firstAid",
+        "nameKey": "bandages",
+        "isEssential": false,
+        "weightGrams": 10,
+        "quantity": 2,
+        "requirement": "recommended"
+      },
+      {
+        "id": "sterileCompresses",
+        "category": "firstAid",
+        "nameKey": "sterileCompresses",
+        "isEssential": false,
+        "weightGrams": 15,
+        "quantity": 2,
+        "requirement": "optional"
+      },
+      {
+        "id": "elasticBandage",
+        "category": "firstAid",
+        "nameKey": "elasticBandage",
+        "isEssential": false,
+        "weightGrams": 40,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "disinfectant",
+        "category": "firstAid",
+        "nameKey": "disinfectant",
+        "isEssential": false,
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "recommended"
+      },
+      {
+        "id": "painkillers",
+        "category": "firstAid",
+        "nameKey": "painkillers",
+        "isEssential": false,
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "sunscreen",
+        "category": "firstAid",
+        "nameKey": "sunscreen",
+        "isEssential": true,
+        "weightGrams": 100,
+        "quantity": 1,
+        "requirement": "required"
+      },
+      {
+        "id": "lipBalm",
+        "category": "firstAid",
+        "nameKey": "lipBalm",
+        "isEssential": false,
+        "weightGrams": 15,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "emergencyBlanket",
+        "category": "firstAid",
+        "nameKey": "emergencyBlanket",
+        "isEssential": true,
+        "weightGrams": 60,
+        "quantity": 1,
+        "requirement": "required"
+      },
+      {
+        "id": "tickRemover",
+        "category": "firstAid",
+        "nameKey": "tickRemover",
+        "isEssential": false,
+        "weightGrams": 5,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "whistle",
+        "category": "firstAid",
+        "nameKey": "whistle",
+        "isEssential": true,
+        "weightGrams": 10,
+        "quantity": 1,
+        "requirement": "required"
+      },
+      {
+        "id": "strapping",
+        "category": "firstAid",
+        "nameKey": "strapping",
+        "isEssential": false,
+        "weightGrams": 50,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "eyeDrops",
+        "category": "firstAid",
+        "nameKey": "eyeDrops",
+        "isEssential": false,
+        "weightGrams": 20,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "antiDiarrheal",
+        "category": "firstAid",
+        "nameKey": "antiDiarrheal",
+        "isEssential": false,
+        "weightGrams": 15,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "antihistamine",
+        "category": "firstAid",
+        "nameKey": "antihistamine",
+        "isEssential": false,
+        "weightGrams": 15,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "kneeTape",
+        "category": "firstAid",
+        "nameKey": "kneeTape",
+        "isEssential": false,
+        "weightGrams": 40,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "phone",
+        "category": "electronics",
+        "nameKey": "phone",
+        "isEssential": true,
+        "weightGrams": 200,
+        "quantity": 1,
+        "requirement": "required"
+      },
+      {
+        "id": "powerBank",
+        "category": "electronics",
+        "nameKey": "powerBank",
+        "isEssential": false,
+        "weightGrams": 350,
+        "quantity": 1,
+        "requirement": "recommended"
+      },
+      {
+        "id": "usbCable",
+        "category": "electronics",
+        "nameKey": "usbCable",
+        "isEssential": false,
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "headlamp",
+        "category": "electronics",
+        "nameKey": "headlamp",
+        "isEssential": true,
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "required"
+      },
+      {
+        "id": "spareBatteries",
+        "category": "electronics",
+        "nameKey": "spareBatteries",
+        "isEssential": false,
+        "weightGrams": 25,
+        "quantity": 2,
+        "requirement": "optional"
+      },
+      {
+        "id": "periodProtection",
+        "category": "women",
+        "nameKey": "periodProtection",
+        "isEssential": false,
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "sportsBra",
+        "category": "women",
+        "nameKey": "sportsBra",
+        "isEssential": false,
+        "weightGrams": 60,
+        "quantity": 2,
+        "requirement": "optional"
+      },
+      {
+        "id": "intimateWipes",
+        "category": "women",
+        "nameKey": "intimateWipes",
+        "isEssential": false,
+        "weightGrams": 20,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "peeCloth",
+        "category": "women",
+        "nameKey": "peeCloth",
+        "isEssential": false,
+        "weightGrams": 10,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "razor",
+        "category": "men",
+        "nameKey": "razor",
+        "isEssential": false,
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "techBoxers",
+        "category": "men",
+        "nameKey": "techBoxers",
+        "isEssential": false,
+        "weightGrams": 50,
+        "quantity": 3,
+        "requirement": "optional"
+      },
+      {
+        "id": "hikingPoles",
+        "category": "misc",
+        "nameKey": "hikingPoles",
+        "isEssential": false,
+        "weightGrams": 0,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "sunglasses",
+        "category": "misc",
+        "nameKey": "sunglasses",
+        "isEssential": false,
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "trailMap",
+        "category": "misc",
+        "nameKey": "trailMap",
+        "isEssential": false,
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "spareLaces",
+        "category": "misc",
+        "nameKey": "spareLaces",
+        "isEssential": false,
+        "weightGrams": 10,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "needleThread",
+        "category": "misc",
+        "nameKey": "needleThread",
+        "isEssential": false,
+        "weightGrams": 10,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "ductTape",
+        "category": "misc",
+        "nameKey": "ductTape",
+        "isEssential": false,
+        "weightGrams": 20,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "ziplocBags",
+        "category": "misc",
+        "nameKey": "ziplocBags",
+        "isEssential": false,
+        "weightGrams": 10,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "cord",
+        "category": "misc",
+        "nameKey": "cord",
+        "isEssential": false,
+        "weightGrams": 20,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "cash",
+        "category": "misc",
+        "nameKey": "cash",
+        "isEssential": false,
+        "weightGrams": 0,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "dogBowl",
+        "category": "dog",
+        "nameKey": "dogBowl",
+        "isEssential": false,
+        "weightGrams": 50,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "dogLeash",
+        "category": "dog",
+        "nameKey": "dogLeash",
+        "isEssential": false,
+        "weightGrams": 80,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "dogKibble",
+        "category": "dog",
+        "nameKey": "dogKibble",
+        "isEssential": false,
+        "weightGrams": 300,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "dogBooties",
+        "category": "dog",
+        "nameKey": "dogBooties",
+        "isEssential": false,
+        "weightGrams": 60,
+        "quantity": 4,
+        "requirement": "optional"
+      },
+      {
+        "id": "dogVaccineBook",
+        "category": "dog",
+        "nameKey": "dogVaccineBook",
+        "isEssential": false,
+        "weightGrams": 30,
+        "quantity": 1,
+        "requirement": "optional"
+      },
+      {
+        "id": "dogPoopBags",
+        "category": "dog",
+        "nameKey": "dogPoopBags",
+        "isEssential": false,
+        "weightGrams": 10,
+        "quantity": 10,
+        "requirement": "optional"
       }
     ]
   },
@@ -195,7 +782,9 @@
           "category": "clothing",
           "nameKey": "swimsuit",
           "isEssential": false,
-          "weightGrams": 150
+          "weightGrams": 150,
+          "quantity": 1,
+          "requirement": "optional"
         }
       ],
       "removeItems": [],

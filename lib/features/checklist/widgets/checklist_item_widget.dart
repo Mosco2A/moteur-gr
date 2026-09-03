@@ -2,189 +2,260 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../data/checklist_template.dart';
+import '../providers/checklist_provider.dart';
+import 'checklist_weight_banner.dart' show formatChecklistGrams;
 
-/// Widget cochable representant un item de checklist materiel.
-///
-/// Affiche le nom traduit via Slang, une checkbox interactive,
-/// et un badge "essentiel" si applicable.
-/// Le barrage du texte indique visuellement les items coches.
-class ChecklistItemWidget extends StatelessWidget {
-  const ChecklistItemWidget({
-    super.key,
-    required this.itemId,
-    required this.nameKey,
-    required this.isChecked,
-    required this.isEssential,
-    required this.onToggle,
-    this.weightGrams = 0,
-    this.onEditWeight,
-  });
+/// Pastille coloree du niveau d'exigence (parite GR20 — _RequirementDot).
+class ChecklistRequirementDot extends StatelessWidget {
+  const ChecklistRequirementDot({super.key, required this.requirement});
 
-  /// Identifiant unique de l'item (ex: 'backpack')
-  final String itemId;
-
-  /// Cle i18n de l'item (correspond a checklist.items.*)
-  final String nameKey;
-
-  /// Etat coche/decoche
-  final bool isChecked;
-
-  /// Item marque comme essentiel
-  final bool isEssential;
-
-  /// Callback au cochage/decochage
-  final VoidCallback onToggle;
-
-  /// Poids unitaire courant en grammes (parite GR20 « Materiel & Sac »).
-  final int weightGrams;
-
-  /// Callback d'edition du poids (chip poids tapable). Null = non editable.
-  final VoidCallback? onEditWeight;
-
-  /// Resout le nom traduit via Slang (lookup dynamique).
-  /// Retourne la cle brute si aucune traduction trouvee.
-  String _resolvedName() {
-    final resolved = t['checklist.items.$nameKey'];
-    if (resolved is String) return resolved;
-    return nameKey;
-  }
-
-  /// Formate un poids en grammes -> "1,2 kg" ou "350 g" (parite GR20).
-  String _formatWeight() {
-    if (weightGrams >= 1000) {
-      final kg = weightGrams / 1000.0;
-      return '${kg.toStringAsFixed(kg.truncateToDouble() == kg ? 0 : 1)}'
-          ' ${t.checklist.weight.kilograms}';
-    }
-    return '$weightGrams ${t.checklist.weight.grams}';
-  }
+  final ChecklistRequirement requirement;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final checklistT = t.checklist;
-    final displayName = _resolvedName();
-
-    // Chip poids (parite GR20) : affiche le poids unitaire, tapable pour editer.
-    // Masque pour un item porte / non pese (0 g) afin de ne pas suggerer une
-    // contribution nulle comme un choix.
-    final Widget? weightChip = weightGrams > 0
-        ? _WeightChip(
-            label: _formatWeight(),
-            onTap: onEditWeight,
-          )
-        : (onEditWeight != null
-            ? _WeightChip(
-                label: '— ${t.checklist.weight.grams}',
-                onTap: onEditWeight,
-                muted: true,
-              )
-            : null);
-
-    // Badge "essentiel" (rouge) + chip poids alignes a droite.
-    final trailingChildren = <Widget>[
-      if (isEssential)
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingSm,
-            vertical: AppTheme.spacingXs,
-          ),
-          decoration: BoxDecoration(
-            color: AppTheme.rougeUrgence.withAlpha(40),
-            borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-          ),
-          child: Text(
-            checklistT.essential,
-            style: theme.textTheme.labelSmall?.copyWith(
-              color: AppTheme.rougeUrgence,
-              fontSize: 10,
-            ),
-          ),
-        ),
-      if (weightChip != null) ...[
-        if (isEssential) const SizedBox(width: AppTheme.spacingXs),
-        weightChip,
-      ],
-    ];
-
-    return ListTile(
-      leading: Checkbox(
-        value: isChecked,
-        onChanged: (_) => onToggle(),
-        activeColor: theme.colorScheme.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(4),
-        ),
-      ),
-      title: Text(
-        displayName,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          decoration: isChecked ? TextDecoration.lineThrough : null,
-          color: isChecked
-              ? theme.colorScheme.onSurface.withAlpha(120)
-              : null,
-        ),
-      ),
-      trailing: trailingChildren.isEmpty
-          ? null
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: trailingChildren,
-            ),
-      onTap: onToggle,
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingSm,
-      ),
-      dense: true,
+    Color dotColor;
+    switch (requirement) {
+      case ChecklistRequirement.required:
+        dotColor = AppTheme.rougeUrgence;
+      case ChecklistRequirement.recommended:
+        dotColor = AppTheme.orangeDifficile;
+      case ChecklistRequirement.optional:
+        dotColor = AppTheme.grisGranite;
+    }
+    return Container(
+      width: 12,
+      height: 12,
+      decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
     );
   }
 }
 
-/// Chip poids unitaire d'un item (parite GR20 « Materiel & Sac »).
+/// Widget d'un article de la checklist materiel — CLONE du rendu GR20
+/// (« Materiel & Sac ») : layout 2 lignes.
 ///
-/// Tapable pour ouvrir l'edition du poids. [muted] grise le rendu pour un item
-/// dont le poids n'est pas encore renseigne.
-class _WeightChip extends StatelessWidget {
-  const _WeightChip({
-    required this.label,
-    this.onTap,
-    this.muted = false,
+/// Ligne 1 : checkbox + pastille exigence + nom (barre si coche) + badge
+/// « Obligatoire » (cadenas). Ligne 2 (alignee sous le nom) : poids
+/// (unitaire ou `NNNg xQ = total`), bouton panier (si non coche), boutons
+/// - / quantite / +, menu (Modifier / Supprimer). Appui long = editer.
+class ChecklistItemWidget extends StatelessWidget {
+  const ChecklistItemWidget({
+    super.key,
+    required this.item,
+    required this.onToggle,
+    required this.onEdit,
+    required this.onQuantityChanged,
+    required this.onToggleShoppingList,
+    this.onDelete,
   });
 
-  final String label;
-  final VoidCallback? onTap;
-  final bool muted;
+  /// Etat complet de l'article (template + coche + poids + quantite...).
+  final ChecklistItemState item;
+
+  /// Coche / decoche.
+  final VoidCallback onToggle;
+
+  /// Ouvre le dialogue d'edition (poids, et nom si custom).
+  final VoidCallback onEdit;
+
+  /// Change la quantite (delta applique par l'appelant).
+  final void Function(int newQuantity) onQuantityChanged;
+
+  /// Ajoute / retire de la liste de courses.
+  final VoidCallback onToggleShoppingList;
+
+  /// Supprime (articles custom uniquement). Null = non supprimable.
+  final VoidCallback? onDelete;
+
+  /// Nom affiche : nom custom si present, sinon resolution i18n du template.
+  String _displayName() {
+    if (item.isCustom) return item.customName ?? item.template.nameKey;
+    final resolved = t['checklist.items.${item.template.nameKey}'];
+    return resolved is String ? resolved : item.template.nameKey;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = muted
-        ? theme.colorScheme.onSurface.withAlpha(120)
-        : theme.colorScheme.primary;
+    final ui = t.checklist.ui;
+    final unit = t.checklist.weight.grams;
+    final isRequired =
+        item.template.requirement == ChecklistRequirement.required;
+    final name = _displayName();
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.spacingSm,
-          vertical: AppTheme.spacingXs,
-        ),
-        decoration: BoxDecoration(
-          color: color.withAlpha(24),
-          borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-          border: Border.all(color: color.withAlpha(70)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
+    // Texte du poids (parite GR20 : unitaire, ou "NNNg xQ = total").
+    final weightText = item.weightGrams > 0
+        ? (item.quantity > 1
+            ? '${item.weightGrams}$unit x${item.quantity} = '
+                '${formatChecklistGrams(item.totalWeightGrams)}'
+            : formatChecklistGrams(item.weightGrams))
+        : null;
+
+    return GestureDetector(
+      onLongPress: onEdit,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.scale_outlined, size: 14, color: color),
-            const SizedBox(width: 3),
-            Text(
-              label,
-              style: theme.textTheme.labelSmall?.copyWith(
-                color: color,
-                fontWeight: FontWeight.w600,
+            // Ligne 1 : checkbox + pastille + nom + badge Obligatoire.
+            Row(
+              children: [
+                Checkbox(
+                  value: item.isChecked,
+                  onChanged: (_) => onToggle(),
+                  activeColor: AppTheme.vertFacile,
+                ),
+                const SizedBox(width: 6),
+                ChecklistRequirementDot(requirement: item.template.requirement),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    item.quantity > 1 ? '$name (x${item.quantity})' : name,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      decoration:
+                          item.isChecked ? TextDecoration.lineThrough : null,
+                      color: item.isChecked ? AppTheme.grisGranite : null,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (isRequired)
+                  Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                    decoration: BoxDecoration(
+                      color: AppTheme.rougeUrgence.withAlpha(20),
+                      borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.lock,
+                            size: 14, color: AppTheme.rougeUrgence),
+                        const SizedBox(width: 2),
+                        Text(
+                          ui.requirementRequired,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppTheme.rougeUrgence,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
+            // Ligne 2 : poids + actions (alignees a droite sous le nom).
+            Padding(
+              padding: const EdgeInsets.only(left: 56),
+              child: Row(
+                children: [
+                  if (weightText != null)
+                    Flexible(
+                      child: Text(
+                        weightText,
+                        style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  const SizedBox(width: 8),
+                  // Panier — ajouter/retirer de la liste de courses (non coche).
+                  if (!item.isChecked)
+                    IconButton(
+                      icon: Icon(
+                        item.inShoppingList
+                            ? Icons.shopping_cart
+                            : Icons.add_shopping_cart,
+                        size: 18,
+                      ),
+                      color: item.inShoppingList
+                          ? AppTheme.vertFacile
+                          : AppTheme.grisGranite,
+                      padding: EdgeInsets.zero,
+                      constraints:
+                          const BoxConstraints(minWidth: 36, minHeight: 36),
+                      onPressed: onToggleShoppingList,
+                      tooltip: item.inShoppingList
+                          ? ui.removeFromShoppingList
+                          : ui.addToShoppingList,
+                    ),
+                  // Bouton - (toujours actif : deselectionne sous 1).
+                  IconButton(
+                    icon: const Icon(Icons.remove_circle_outline, size: 18),
+                    color: AppTheme.rougeUrgence,
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
+                    onPressed: () => onQuantityChanged(item.quantity - 1),
+                    tooltip: ui.reduceQuantity,
+                  ),
+                  SizedBox(
+                    width: 24,
+                    child: Text(
+                      '${item.quantity}',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  // Bouton +
+                  IconButton(
+                    icon: const Icon(Icons.add_circle_outline, size: 18),
+                    color: AppTheme.vertFacile,
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
+                    onPressed: () => onQuantityChanged(item.quantity + 1),
+                    tooltip: ui.increaseQuantity,
+                  ),
+                  // Menu edit + delete (delete si custom).
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert, size: 18),
+                    padding: EdgeInsets.zero,
+                    constraints:
+                        const BoxConstraints(minWidth: 36, minHeight: 36),
+                    itemBuilder: (ctx) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            const Icon(Icons.edit,
+                                size: 14, color: AppTheme.grisGranite),
+                            const SizedBox(width: 8),
+                            Text(ui.modify),
+                          ],
+                        ),
+                      ),
+                      if (item.isCustom)
+                        PopupMenuItem(
+                          value: 'delete',
+                          child: Row(
+                            children: [
+                              const Icon(Icons.delete_outline,
+                                  size: 14, color: AppTheme.rougeUrgence),
+                              const SizedBox(width: 8),
+                              Text(ui.delete,
+                                  style: const TextStyle(
+                                      color: AppTheme.rougeUrgence)),
+                            ],
+                          ),
+                        ),
+                    ],
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        onEdit();
+                      } else if (value == 'delete') {
+                        onDelete?.call();
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
           ],

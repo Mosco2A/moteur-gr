@@ -2085,6 +2085,59 @@ class $ChecklistItemsTable extends ChecklistItems
     requiredDuringInsert: false,
     defaultValue: const Constant(0),
   );
+  static const VerificationMeta _quantityMeta = const VerificationMeta(
+    'quantity',
+  );
+  @override
+  late final GeneratedColumn<int> quantity = GeneratedColumn<int>(
+    'quantity',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _isCustomMeta = const VerificationMeta(
+    'isCustom',
+  );
+  @override
+  late final GeneratedColumn<bool> isCustom = GeneratedColumn<bool>(
+    'is_custom',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_custom" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _inShoppingListMeta = const VerificationMeta(
+    'inShoppingList',
+  );
+  @override
+  late final GeneratedColumn<bool> inShoppingList = GeneratedColumn<bool>(
+    'in_shopping_list',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("in_shopping_list" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _customNameMeta = const VerificationMeta(
+    'customName',
+  );
+  @override
+  late final GeneratedColumn<String> customName = GeneratedColumn<String>(
+    'custom_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
@@ -2104,6 +2157,10 @@ class $ChecklistItemsTable extends ChecklistItems
     category,
     isChecked,
     weightGrams,
+    quantity,
+    isCustom,
+    inShoppingList,
+    customName,
     updatedAt,
   ];
   @override
@@ -2160,6 +2217,33 @@ class $ChecklistItemsTable extends ChecklistItems
         ),
       );
     }
+    if (data.containsKey('quantity')) {
+      context.handle(
+        _quantityMeta,
+        quantity.isAcceptableOrUnknown(data['quantity']!, _quantityMeta),
+      );
+    }
+    if (data.containsKey('is_custom')) {
+      context.handle(
+        _isCustomMeta,
+        isCustom.isAcceptableOrUnknown(data['is_custom']!, _isCustomMeta),
+      );
+    }
+    if (data.containsKey('in_shopping_list')) {
+      context.handle(
+        _inShoppingListMeta,
+        inShoppingList.isAcceptableOrUnknown(
+          data['in_shopping_list']!,
+          _inShoppingListMeta,
+        ),
+      );
+    }
+    if (data.containsKey('custom_name')) {
+      context.handle(
+        _customNameMeta,
+        customName.isAcceptableOrUnknown(data['custom_name']!, _customNameMeta),
+      );
+    }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
@@ -2199,6 +2283,22 @@ class $ChecklistItemsTable extends ChecklistItems
         DriftSqlType.int,
         data['${effectivePrefix}weight_grams'],
       )!,
+      quantity: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity'],
+      )!,
+      isCustom: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_custom'],
+      )!,
+      inShoppingList: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}in_shopping_list'],
+      )!,
+      customName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}custom_name'],
+      ),
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
@@ -2235,6 +2335,24 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
   /// coches). 0 = non pese / porte (ne contribue pas au total).
   final int weightGrams;
 
+  /// Quantite de l'article (parite GR20, migration v20). Min 1. Le poids total
+  /// d'un article coche = weightGrams * quantity.
+  final int quantity;
+
+  /// Article personnalise ajoute par l'utilisateur (parite GR20, migration v20).
+  ///
+  /// true = article cree via « Ajouter un item » (nom editable, supprimable).
+  /// false = article du template (nom en lecture seule, non supprimable).
+  final bool isCustom;
+
+  /// Article ajoute a la liste de courses (parite GR20, migration v20).
+  final bool inShoppingList;
+
+  /// Nom d'un article personnalise (parite GR20, migration v20).
+  ///
+  /// null pour les articles du template (nom resolu via i18n depuis itemId).
+  final String? customName;
+
   /// Date de derniere modification
   final DateTime? updatedAt;
   const ChecklistItem({
@@ -2244,6 +2362,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     required this.category,
     required this.isChecked,
     required this.weightGrams,
+    required this.quantity,
+    required this.isCustom,
+    required this.inShoppingList,
+    this.customName,
     this.updatedAt,
   });
   @override
@@ -2255,6 +2377,12 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     map['category'] = Variable<String>(category);
     map['is_checked'] = Variable<bool>(isChecked);
     map['weight_grams'] = Variable<int>(weightGrams);
+    map['quantity'] = Variable<int>(quantity);
+    map['is_custom'] = Variable<bool>(isCustom);
+    map['in_shopping_list'] = Variable<bool>(inShoppingList);
+    if (!nullToAbsent || customName != null) {
+      map['custom_name'] = Variable<String>(customName);
+    }
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
     }
@@ -2269,6 +2397,12 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       category: Value(category),
       isChecked: Value(isChecked),
       weightGrams: Value(weightGrams),
+      quantity: Value(quantity),
+      isCustom: Value(isCustom),
+      inShoppingList: Value(inShoppingList),
+      customName: customName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customName),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(updatedAt),
@@ -2287,6 +2421,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       category: serializer.fromJson<String>(json['category']),
       isChecked: serializer.fromJson<bool>(json['isChecked']),
       weightGrams: serializer.fromJson<int>(json['weightGrams']),
+      quantity: serializer.fromJson<int>(json['quantity']),
+      isCustom: serializer.fromJson<bool>(json['isCustom']),
+      inShoppingList: serializer.fromJson<bool>(json['inShoppingList']),
+      customName: serializer.fromJson<String?>(json['customName']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
@@ -2300,6 +2438,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       'category': serializer.toJson<String>(category),
       'isChecked': serializer.toJson<bool>(isChecked),
       'weightGrams': serializer.toJson<int>(weightGrams),
+      'quantity': serializer.toJson<int>(quantity),
+      'isCustom': serializer.toJson<bool>(isCustom),
+      'inShoppingList': serializer.toJson<bool>(inShoppingList),
+      'customName': serializer.toJson<String?>(customName),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
@@ -2311,6 +2453,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     String? category,
     bool? isChecked,
     int? weightGrams,
+    int? quantity,
+    bool? isCustom,
+    bool? inShoppingList,
+    Value<String?> customName = const Value.absent(),
     Value<DateTime?> updatedAt = const Value.absent(),
   }) => ChecklistItem(
     id: id ?? this.id,
@@ -2319,6 +2465,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     category: category ?? this.category,
     isChecked: isChecked ?? this.isChecked,
     weightGrams: weightGrams ?? this.weightGrams,
+    quantity: quantity ?? this.quantity,
+    isCustom: isCustom ?? this.isCustom,
+    inShoppingList: inShoppingList ?? this.inShoppingList,
+    customName: customName.present ? customName.value : this.customName,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
   );
   ChecklistItem copyWithCompanion(ChecklistItemsCompanion data) {
@@ -2331,6 +2481,14 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       weightGrams: data.weightGrams.present
           ? data.weightGrams.value
           : this.weightGrams,
+      quantity: data.quantity.present ? data.quantity.value : this.quantity,
+      isCustom: data.isCustom.present ? data.isCustom.value : this.isCustom,
+      inShoppingList: data.inShoppingList.present
+          ? data.inShoppingList.value
+          : this.inShoppingList,
+      customName: data.customName.present
+          ? data.customName.value
+          : this.customName,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -2344,6 +2502,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
           ..write('category: $category, ')
           ..write('isChecked: $isChecked, ')
           ..write('weightGrams: $weightGrams, ')
+          ..write('quantity: $quantity, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('inShoppingList: $inShoppingList, ')
+          ..write('customName: $customName, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
@@ -2357,6 +2519,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     category,
     isChecked,
     weightGrams,
+    quantity,
+    isCustom,
+    inShoppingList,
+    customName,
     updatedAt,
   );
   @override
@@ -2369,6 +2535,10 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
           other.category == this.category &&
           other.isChecked == this.isChecked &&
           other.weightGrams == this.weightGrams &&
+          other.quantity == this.quantity &&
+          other.isCustom == this.isCustom &&
+          other.inShoppingList == this.inShoppingList &&
+          other.customName == this.customName &&
           other.updatedAt == this.updatedAt);
 }
 
@@ -2379,6 +2549,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
   final Value<String> category;
   final Value<bool> isChecked;
   final Value<int> weightGrams;
+  final Value<int> quantity;
+  final Value<bool> isCustom;
+  final Value<bool> inShoppingList;
+  final Value<String?> customName;
   final Value<DateTime?> updatedAt;
   const ChecklistItemsCompanion({
     this.id = const Value.absent(),
@@ -2387,6 +2561,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     this.category = const Value.absent(),
     this.isChecked = const Value.absent(),
     this.weightGrams = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.inShoppingList = const Value.absent(),
+    this.customName = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
   ChecklistItemsCompanion.insert({
@@ -2396,6 +2574,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     required String category,
     this.isChecked = const Value.absent(),
     this.weightGrams = const Value.absent(),
+    this.quantity = const Value.absent(),
+    this.isCustom = const Value.absent(),
+    this.inShoppingList = const Value.absent(),
+    this.customName = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : trailId = Value(trailId),
        itemId = Value(itemId),
@@ -2407,6 +2589,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     Expression<String>? category,
     Expression<bool>? isChecked,
     Expression<int>? weightGrams,
+    Expression<int>? quantity,
+    Expression<bool>? isCustom,
+    Expression<bool>? inShoppingList,
+    Expression<String>? customName,
     Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
@@ -2416,6 +2602,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
       if (category != null) 'category': category,
       if (isChecked != null) 'is_checked': isChecked,
       if (weightGrams != null) 'weight_grams': weightGrams,
+      if (quantity != null) 'quantity': quantity,
+      if (isCustom != null) 'is_custom': isCustom,
+      if (inShoppingList != null) 'in_shopping_list': inShoppingList,
+      if (customName != null) 'custom_name': customName,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
@@ -2427,6 +2617,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     Value<String>? category,
     Value<bool>? isChecked,
     Value<int>? weightGrams,
+    Value<int>? quantity,
+    Value<bool>? isCustom,
+    Value<bool>? inShoppingList,
+    Value<String?>? customName,
     Value<DateTime?>? updatedAt,
   }) {
     return ChecklistItemsCompanion(
@@ -2436,6 +2630,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
       category: category ?? this.category,
       isChecked: isChecked ?? this.isChecked,
       weightGrams: weightGrams ?? this.weightGrams,
+      quantity: quantity ?? this.quantity,
+      isCustom: isCustom ?? this.isCustom,
+      inShoppingList: inShoppingList ?? this.inShoppingList,
+      customName: customName ?? this.customName,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -2461,6 +2659,18 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     if (weightGrams.present) {
       map['weight_grams'] = Variable<int>(weightGrams.value);
     }
+    if (quantity.present) {
+      map['quantity'] = Variable<int>(quantity.value);
+    }
+    if (isCustom.present) {
+      map['is_custom'] = Variable<bool>(isCustom.value);
+    }
+    if (inShoppingList.present) {
+      map['in_shopping_list'] = Variable<bool>(inShoppingList.value);
+    }
+    if (customName.present) {
+      map['custom_name'] = Variable<String>(customName.value);
+    }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
@@ -2476,6 +2686,10 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
           ..write('category: $category, ')
           ..write('isChecked: $isChecked, ')
           ..write('weightGrams: $weightGrams, ')
+          ..write('quantity: $quantity, ')
+          ..write('isCustom: $isCustom, ')
+          ..write('inShoppingList: $inShoppingList, ')
+          ..write('customName: $customName, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
@@ -16703,6 +16917,10 @@ typedef $$ChecklistItemsTableCreateCompanionBuilder =
       required String category,
       Value<bool> isChecked,
       Value<int> weightGrams,
+      Value<int> quantity,
+      Value<bool> isCustom,
+      Value<bool> inShoppingList,
+      Value<String?> customName,
       Value<DateTime?> updatedAt,
     });
 typedef $$ChecklistItemsTableUpdateCompanionBuilder =
@@ -16713,6 +16931,10 @@ typedef $$ChecklistItemsTableUpdateCompanionBuilder =
       Value<String> category,
       Value<bool> isChecked,
       Value<int> weightGrams,
+      Value<int> quantity,
+      Value<bool> isCustom,
+      Value<bool> inShoppingList,
+      Value<String?> customName,
       Value<DateTime?> updatedAt,
     });
 
@@ -16752,6 +16974,26 @@ class $$ChecklistItemsTableFilterComposer
 
   ColumnFilters<int> get weightGrams => $composableBuilder(
     column: $table.weightGrams,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isCustom => $composableBuilder(
+    column: $table.isCustom,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get inShoppingList => $composableBuilder(
+    column: $table.inShoppingList,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get customName => $composableBuilder(
+    column: $table.customName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16800,6 +17042,26 @@ class $$ChecklistItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get quantity => $composableBuilder(
+    column: $table.quantity,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isCustom => $composableBuilder(
+    column: $table.isCustom,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get inShoppingList => $composableBuilder(
+    column: $table.inShoppingList,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get customName => $composableBuilder(
+    column: $table.customName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
@@ -16832,6 +17094,22 @@ class $$ChecklistItemsTableAnnotationComposer
 
   GeneratedColumn<int> get weightGrams => $composableBuilder(
     column: $table.weightGrams,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get quantity =>
+      $composableBuilder(column: $table.quantity, builder: (column) => column);
+
+  GeneratedColumn<bool> get isCustom =>
+      $composableBuilder(column: $table.isCustom, builder: (column) => column);
+
+  GeneratedColumn<bool> get inShoppingList => $composableBuilder(
+    column: $table.inShoppingList,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get customName => $composableBuilder(
+    column: $table.customName,
     builder: (column) => column,
   );
 
@@ -16878,6 +17156,10 @@ class $$ChecklistItemsTableTableManager
                 Value<String> category = const Value.absent(),
                 Value<bool> isChecked = const Value.absent(),
                 Value<int> weightGrams = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+                Value<bool> isCustom = const Value.absent(),
+                Value<bool> inShoppingList = const Value.absent(),
+                Value<String?> customName = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => ChecklistItemsCompanion(
                 id: id,
@@ -16886,6 +17168,10 @@ class $$ChecklistItemsTableTableManager
                 category: category,
                 isChecked: isChecked,
                 weightGrams: weightGrams,
+                quantity: quantity,
+                isCustom: isCustom,
+                inShoppingList: inShoppingList,
+                customName: customName,
                 updatedAt: updatedAt,
               ),
           createCompanionCallback:
@@ -16896,6 +17182,10 @@ class $$ChecklistItemsTableTableManager
                 required String category,
                 Value<bool> isChecked = const Value.absent(),
                 Value<int> weightGrams = const Value.absent(),
+                Value<int> quantity = const Value.absent(),
+                Value<bool> isCustom = const Value.absent(),
+                Value<bool> inShoppingList = const Value.absent(),
+                Value<String?> customName = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => ChecklistItemsCompanion.insert(
                 id: id,
@@ -16904,6 +17194,10 @@ class $$ChecklistItemsTableTableManager
                 category: category,
                 isChecked: isChecked,
                 weightGrams: weightGrams,
+                quantity: quantity,
+                isCustom: isCustom,
+                inShoppingList: inShoppingList,
+                customName: customName,
                 updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0

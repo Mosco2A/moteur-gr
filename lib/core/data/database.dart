@@ -137,7 +137,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 19;
+  int get schemaVersion => 20;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -236,6 +236,27 @@ class AppDatabase extends _$AppDatabase {
             await migrator.addColumn(
               checklistItems,
               checklistItems.weightGrams,
+            );
+          }
+          // Migration v19 -> v20 : parite GR20 « Materiel & Sac » — clone
+          // integral (quantite par article, articles personnalises, liste de
+          // courses, nom custom) sur checklist_items.
+          if (from < 20) {
+            await migrator.addColumn(
+              checklistItems,
+              checklistItems.quantity,
+            );
+            await migrator.addColumn(
+              checklistItems,
+              checklistItems.isCustom,
+            );
+            await migrator.addColumn(
+              checklistItems,
+              checklistItems.inShoppingList,
+            );
+            await migrator.addColumn(
+              checklistItems,
+              checklistItems.customName,
             );
           }
         },

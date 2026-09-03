@@ -38,7 +38,8 @@ void main() {
       expect(state.totalCount, defaultChecklistTemplate.length);
       expect(state.checkedCount, 0);
       expect(state.isLoading, false);
-      expect(state.items.length, 25);
+      // Parite GR20 : le sac clone contient 84 articles par defaut.
+      expect(state.items.length, 84);
     });
 
     test('toggle coche un item', () async {
