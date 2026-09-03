@@ -138,7 +138,24 @@
     "loadingList": "Caricamento delle tappe...",
     "dPlus": "D+",
     "dMinus": "D-",
-    "difficultyLabel": "Difficolta"
+    "difficultyLabel": "Difficolta",
+    "waterSources": {
+      "title": "Punti d'acqua",
+      "count": "{n} sorgente/i",
+      "none": "Nessun punto d'acqua segnalato su questa tappa. Portate almeno 3 L a persona."
+    },
+    "accommodation": {
+      "title": "Alloggi",
+      "none": "Nessun alloggio segnalato su questa tappa."
+    },
+    "advice": {
+      "title": "Consigli",
+      "waterScarce": "Pochi punti d'acqua: partite con almeno 2,5 L.",
+      "waterAmple": "Riempite le borracce a ogni punto d'acqua incontrato.",
+      "hardStage": "Tappa tecnica: partite presto per evitare il caldo e i temporali del pomeriggio.",
+      "earlyStart": "Partenza consigliata prima delle 8 per approfittare del fresco mattutino.",
+      "bigClimb": "Forte dislivello positivo: dosate lo sforzo e fate pause regolari."
+    }
   },
   "trail": {
     "stages": "Tappe",

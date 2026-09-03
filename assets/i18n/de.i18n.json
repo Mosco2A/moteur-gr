@@ -138,7 +138,24 @@
     "loadingList": "Etappen werden geladen...",
     "dPlus": "D+",
     "dMinus": "D-",
-    "difficultyLabel": "Schwierigkeit"
+    "difficultyLabel": "Schwierigkeit",
+    "waterSources": {
+      "title": "Wasserstellen",
+      "count": "{n} Quelle(n)",
+      "none": "Keine Wasserstelle fuer diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit."
+    },
+    "accommodation": {
+      "title": "Unterkuenfte",
+      "none": "Keine Unterkunft fuer diese Etappe verzeichnet."
+    },
+    "advice": {
+      "title": "Tipps",
+      "waterScarce": "Wenige Wasserstellen: Starten Sie mit mindestens 2,5 L.",
+      "waterAmple": "Fuellen Sie Ihre Flaschen an jeder Wasserstelle auf.",
+      "hardStage": "Anspruchsvolle Etappe: Brechen Sie frueh auf, um Hitze und Nachmittagsgewitter zu vermeiden.",
+      "earlyStart": "Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kuehle zu nutzen.",
+      "bigClimb": "Grosser Aufstieg: Teilen Sie sich Ihre Kraefte ein und machen Sie regelmaessige Pausen."
+    }
   },
   "trail": {
     "stages": "Etappen",

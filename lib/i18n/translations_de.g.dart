@@ -215,6 +215,9 @@ class _Translations$stage$de extends Translations$stage$fr {
 	@override String get dPlus => 'D+';
 	@override String get dMinus => 'D-';
 	@override String get difficultyLabel => 'Schwierigkeit';
+	@override late final _Translations$stage$waterSources$de waterSources = _Translations$stage$waterSources$de._(_root);
+	@override late final _Translations$stage$accommodation$de accommodation = _Translations$stage$accommodation$de._(_root);
+	@override late final _Translations$stage$advice$de advice = _Translations$stage$advice$de._(_root);
 }
 
 // Path: trail
@@ -1257,6 +1260,44 @@ class _Translations$stage$difficulty$de extends Translations$stage$difficulty$fr
 	@override String get hard => 'Schwer';
 	@override String get expert => 'Experte';
 	@override String get extreme => 'Extrem';
+}
+
+// Path: stage.waterSources
+class _Translations$stage$waterSources$de extends Translations$stage$waterSources$fr {
+	_Translations$stage$waterSources$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Wasserstellen';
+	@override String get count => '{n} Quelle(n)';
+	@override String get none => 'Keine Wasserstelle fuer diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit.';
+}
+
+// Path: stage.accommodation
+class _Translations$stage$accommodation$de extends Translations$stage$accommodation$fr {
+	_Translations$stage$accommodation$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Unterkuenfte';
+	@override String get none => 'Keine Unterkunft fuer diese Etappe verzeichnet.';
+}
+
+// Path: stage.advice
+class _Translations$stage$advice$de extends Translations$stage$advice$fr {
+	_Translations$stage$advice$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Tipps';
+	@override String get waterScarce => 'Wenige Wasserstellen: Starten Sie mit mindestens 2,5 L.';
+	@override String get waterAmple => 'Fuellen Sie Ihre Flaschen an jeder Wasserstelle auf.';
+	@override String get hardStage => 'Anspruchsvolle Etappe: Brechen Sie frueh auf, um Hitze und Nachmittagsgewitter zu vermeiden.';
+	@override String get earlyStart => 'Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kuehle zu nutzen.';
+	@override String get bigClimb => 'Grosser Aufstieg: Teilen Sie sich Ihre Kraefte ein und machen Sie regelmaessige Pausen.';
 }
 
 // Path: accommodation.types
@@ -2605,6 +2646,17 @@ extension on TranslationsDe {
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
 			'stage.difficultyLabel' => 'Schwierigkeit',
+			'stage.waterSources.title' => 'Wasserstellen',
+			'stage.waterSources.count' => '{n} Quelle(n)',
+			'stage.waterSources.none' => 'Keine Wasserstelle fuer diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit.',
+			'stage.accommodation.title' => 'Unterkuenfte',
+			'stage.accommodation.none' => 'Keine Unterkunft fuer diese Etappe verzeichnet.',
+			'stage.advice.title' => 'Tipps',
+			'stage.advice.waterScarce' => 'Wenige Wasserstellen: Starten Sie mit mindestens 2,5 L.',
+			'stage.advice.waterAmple' => 'Fuellen Sie Ihre Flaschen an jeder Wasserstelle auf.',
+			'stage.advice.hardStage' => 'Anspruchsvolle Etappe: Brechen Sie frueh auf, um Hitze und Nachmittagsgewitter zu vermeiden.',
+			'stage.advice.earlyStart' => 'Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kuehle zu nutzen.',
+			'stage.advice.bigClimb' => 'Grosser Aufstieg: Teilen Sie sich Ihre Kraefte ein und machen Sie regelmaessige Pausen.',
 			'trail.stages' => 'Etappen',
 			'trail.totalDistance' => 'Gesamtstrecke',
 			'trail.totalElevation' => 'Gesamthöhenmeter',
@@ -2989,6 +3041,8 @@ extension on TranslationsDe {
 			'settings.theme' => 'Thema',
 			'settings.dark' => 'Dunkel',
 			'settings.light' => 'Hell',
+			_ => null,
+		} ?? switch (path) {
 			'settings.system' => 'System',
 			'settings.cache' => 'Cache',
 			'settings.cacheEnabled' => 'Cache aktiviert',
@@ -3000,8 +3054,6 @@ extension on TranslationsDe {
 			'settings.weatherAlertsDesc' => 'Benachrichtigung bei gefährlichen Bedingungen',
 			'settings.countdownReminder' => 'T-2 Erinnerung',
 			'settings.countdownDesc' => 'Benachrichtigung 2 Tage vor der Abreise',
-			_ => null,
-		} ?? switch (path) {
 			'settings.offTrackAlerts' => 'Abseits-der-Strecke-Warnung',
 			'settings.offTrackAlertsDesc' => 'Benachrichtigung + Vibration, wenn Sie den Weg verlassen',
 			'settings.version' => 'Version',
@@ -3503,6 +3555,8 @@ extension on TranslationsDe {
 			'recap.lockedTitle' => 'Verfugbar am Ende der Tour',
 			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',
 			'recap.finisherTitle' => 'Gluckwunsch!',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Du hast deine Route abgeschlossen',
 			'recap.partialTitle' => 'Deine Teilroute',
 			'recap.partialSubtitle' => 'Dein Abenteuer bleibt gespeichert',
@@ -3514,8 +3568,6 @@ extension on TranslationsDe {
 			'recap.elevation' => '{meters} m Hohenmeter',
 			'recap.duration' => '{days} Tage',
 			'recap.dates' => 'Vom {start} bis {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
 			'programme.title' => 'Programm',

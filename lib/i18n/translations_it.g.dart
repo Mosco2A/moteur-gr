@@ -215,6 +215,9 @@ class _Translations$stage$it extends Translations$stage$fr {
 	@override String get dPlus => 'D+';
 	@override String get dMinus => 'D-';
 	@override String get difficultyLabel => 'Difficolta';
+	@override late final _Translations$stage$waterSources$it waterSources = _Translations$stage$waterSources$it._(_root);
+	@override late final _Translations$stage$accommodation$it accommodation = _Translations$stage$accommodation$it._(_root);
+	@override late final _Translations$stage$advice$it advice = _Translations$stage$advice$it._(_root);
 }
 
 // Path: trail
@@ -1257,6 +1260,44 @@ class _Translations$stage$difficulty$it extends Translations$stage$difficulty$fr
 	@override String get hard => 'Difficile';
 	@override String get expert => 'Esperto';
 	@override String get extreme => 'Estremo';
+}
+
+// Path: stage.waterSources
+class _Translations$stage$waterSources$it extends Translations$stage$waterSources$fr {
+	_Translations$stage$waterSources$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Punti d\'acqua';
+	@override String get count => '{n} sorgente/i';
+	@override String get none => 'Nessun punto d\'acqua segnalato su questa tappa. Portate almeno 3 L a persona.';
+}
+
+// Path: stage.accommodation
+class _Translations$stage$accommodation$it extends Translations$stage$accommodation$fr {
+	_Translations$stage$accommodation$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Alloggi';
+	@override String get none => 'Nessun alloggio segnalato su questa tappa.';
+}
+
+// Path: stage.advice
+class _Translations$stage$advice$it extends Translations$stage$advice$fr {
+	_Translations$stage$advice$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Consigli';
+	@override String get waterScarce => 'Pochi punti d\'acqua: partite con almeno 2,5 L.';
+	@override String get waterAmple => 'Riempite le borracce a ogni punto d\'acqua incontrato.';
+	@override String get hardStage => 'Tappa tecnica: partite presto per evitare il caldo e i temporali del pomeriggio.';
+	@override String get earlyStart => 'Partenza consigliata prima delle 8 per approfittare del fresco mattutino.';
+	@override String get bigClimb => 'Forte dislivello positivo: dosate lo sforzo e fate pause regolari.';
 }
 
 // Path: accommodation.types
@@ -2605,6 +2646,17 @@ extension on TranslationsIt {
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
 			'stage.difficultyLabel' => 'Difficolta',
+			'stage.waterSources.title' => 'Punti d\'acqua',
+			'stage.waterSources.count' => '{n} sorgente/i',
+			'stage.waterSources.none' => 'Nessun punto d\'acqua segnalato su questa tappa. Portate almeno 3 L a persona.',
+			'stage.accommodation.title' => 'Alloggi',
+			'stage.accommodation.none' => 'Nessun alloggio segnalato su questa tappa.',
+			'stage.advice.title' => 'Consigli',
+			'stage.advice.waterScarce' => 'Pochi punti d\'acqua: partite con almeno 2,5 L.',
+			'stage.advice.waterAmple' => 'Riempite le borracce a ogni punto d\'acqua incontrato.',
+			'stage.advice.hardStage' => 'Tappa tecnica: partite presto per evitare il caldo e i temporali del pomeriggio.',
+			'stage.advice.earlyStart' => 'Partenza consigliata prima delle 8 per approfittare del fresco mattutino.',
+			'stage.advice.bigClimb' => 'Forte dislivello positivo: dosate lo sforzo e fate pause regolari.',
 			'trail.stages' => 'Tappe',
 			'trail.totalDistance' => 'Distanza totale',
 			'trail.totalElevation' => 'Dislivello totale',
@@ -2989,6 +3041,8 @@ extension on TranslationsIt {
 			'settings.theme' => 'Tema',
 			'settings.dark' => 'Scuro',
 			'settings.light' => 'Chiaro',
+			_ => null,
+		} ?? switch (path) {
 			'settings.system' => 'Sistema',
 			'settings.cache' => 'Cache',
 			'settings.cacheEnabled' => 'Cache attivata',
@@ -3000,8 +3054,6 @@ extension on TranslationsIt {
 			'settings.weatherAlertsDesc' => 'Avvisato in caso di condizioni pericolose',
 			'settings.countdownReminder' => 'Promemoria G-2',
 			'settings.countdownDesc' => 'Notifica 2 giorni prima della partenza',
-			_ => null,
-		} ?? switch (path) {
 			'settings.offTrackAlerts' => 'Avviso fuori tracciato',
 			'settings.offTrackAlertsDesc' => 'Notifica + vibrazione se lasci il sentiero',
 			'settings.version' => 'Versione',
@@ -3503,6 +3555,8 @@ extension on TranslationsIt {
 			'recap.lockedTitle' => 'Disponibile alla fine del trek',
 			'recap.lockedMessage' => 'Termina o abbandona il tuo percorso per rivedere il riepilogo della tua avventura.',
 			'recap.finisherTitle' => 'Congratulazioni!',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Hai completato il tuo percorso',
 			'recap.partialTitle' => 'Il tuo percorso parziale',
 			'recap.partialSubtitle' => 'La tua avventura resta registrata',
@@ -3514,8 +3568,6 @@ extension on TranslationsIt {
 			'recap.elevation' => '{meters} m di dislivello positivo',
 			'recap.duration' => '{days} giorni',
 			'recap.dates' => 'Dal {start} al {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Vedi il mio diploma',
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',
 			'programme.title' => 'Programma',
