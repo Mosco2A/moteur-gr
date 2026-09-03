@@ -1,14 +1,20 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage.dart';
 import '../../trail/providers/trail_providers.dart';
 
-/// Identifiant du sentier actif (selectionne par l'utilisateur).
+/// Identifiant du sentier actif, utilise par [stagesProvider] pour charger les
+/// etapes du bon sentier.
 ///
-/// Utilise par stagesProvider pour charger les etapes du bon sentier.
-/// Modifiable via ref.read(currentTrailIdProvider.notifier).state = 'gr10'.
-final currentTrailIdProvider = StateProvider<String>((ref) => '');
+/// DERIVE du sentier actif ([trailConfigProvider], lui-meme pilote par la
+/// selection catalogue) : par defaut il reflete donc le sentier courant. Sans
+/// cela il restait a chaine vide et JAMAIS ecrit (#99423 §4.1), d'ou une liste
+/// d'etapes toujours vide. Reste un [StateProvider] surchargeable/ecrasable
+/// (ex. tests, ou l'amorce qui le reaffirme apres le seed).
+final currentTrailIdProvider =
+    StateProvider<String>((ref) => ref.watch(trailConfigProvider).id);
 
 /// Provider des etapes du sentier actif.
 ///

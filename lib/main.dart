@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/config/mare_a_mare_centre_trail_config.dart';
 import 'core/config/trail_config.dart';
-import 'core/config/test_trail_config.dart';
 import 'core/firebase/firebase_service.dart';
+import 'core/providers/app_bootstrap_provider.dart';
 import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
@@ -23,13 +24,19 @@ Future<void> main() async {
   hasCompletedOnboarding = prefs.getBool(kOnboardingCompletedKey) ?? false;
 
   // Initialisation Firebase conditionnelle :
-  // si firebaseProjectId est null, le moteur reste en mode local
+  // si firebaseProjectId est null, le moteur reste en mode local.
+  // PARITE GR20 — LOT 1 (#99423) : la demo demarre sur Mare a Mare Centre
+  // (sentier reel de StepWays), en tete du catalogue. Le moteur reste
+  // generique : c'est une DONNEE (TrailConfig), aucune localite hardcodee ici.
   final firebaseService = await FirebaseService.initialize(
-    firebaseProjectId: testTrailConfig.firebaseProjectId,
+    firebaseProjectId: mareAMareCentreTrailConfig.firebaseProjectId,
   );
 
   runApp(
-    MoteurGrApp(config: testTrailConfig, firebaseService: firebaseService),
+    MoteurGrApp(
+      config: mareAMareCentreTrailConfig,
+      firebaseService: firebaseService,
+    ),
   );
 }
 
@@ -125,6 +132,79 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
       ),
       themeMode: ThemeMode.dark,
       routerConfig: appRouter,
+      // PARITE GR20 — LOT 1 (#99423 §4.1) : porte d'amorce. Le `builder` de
+      // MaterialApp.router enveloppe TOUT ecran route -> le seed du sentier
+      // actif (appBootstrapProvider) est declenche et ATTENDU avant le premier
+      // rendu des ecrans data. Sans cette garde, seedIfNeeded() n'etait appele
+      // nulle part : carte/etapes/POI vides et meteo « introuvable ».
+      builder: (context, child) => _BootstrapGate(child: child),
+    );
+  }
+}
+
+/// Porte d'amorce des donnees (PARITE GR20, LOT 1).
+///
+/// `ConsumerWidget` (sous le `ProviderScope`) : observe [appBootstrapProvider],
+/// qui force le seed du sentier actif (DB in-memory volatile -> re-seed a chaque
+/// lancement). Tant que le seed n'est pas resolu, affiche un ecran de chargement
+/// (i18n Slang) ; en cas d'echec, un ecran d'erreur discret. Une fois resolu, le
+/// [child] route (le HUB Mare a Mare Centre au premier lancement) s'affiche avec
+/// ses donnees deja en base.
+class _BootstrapGate extends ConsumerWidget {
+  const _BootstrapGate({required this.child});
+
+  /// Arbre route fourni par GoRouter (peut etre null tres tot dans le cycle de
+  /// vie de MaterialApp.router — on affiche alors le loader).
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bootstrap = ref.watch(appBootstrapProvider);
+    final t = Translations.of(context);
+
+    return bootstrap.when(
+      data: (_) => child ?? const SizedBox.shrink(),
+      loading: () => _BootstrapScaffold(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 24),
+            Text(
+              t.bootstrap.loading,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ],
+        ),
+      ),
+      error: (error, _) => _BootstrapScaffold(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Text(
+            '$error',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Echafaudage commun (loader / erreur) de la porte d'amorce : centre le
+/// contenu sur la couleur de fond du theme actif, pour une transition sans
+/// clignotement vers l'ecran route.
+class _BootstrapScaffold extends StatelessWidget {
+  const _BootstrapScaffold({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: Center(child: child),
     );
   }
 }

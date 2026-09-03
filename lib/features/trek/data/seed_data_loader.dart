@@ -18,9 +18,6 @@ import 'track_simplifier.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
-/// Cle SharedPreferences pour le flag de seed.
-const _kDataSeeded = 'data_seeded';
-
 /// Chargement initial des donnees depuis les assets.
 ///
 /// Idempotent : ne fait rien si les donnees ont deja ete chargees
@@ -29,6 +26,12 @@ const _kDataSeeded = 'data_seeded';
 /// Charge les stages (JSON), POIs (JSON), et GPX (parse + simplification
 /// Douglas-Peucker), puis insere en batch dans Drift.
 class SeedDataLoader {
+  /// Cle SharedPreferences du flag de seed.
+  ///
+  /// Publique pour que l'amorce (`appBootstrapProvider`) puisse la reinitialiser
+  /// et forcer un re-seed a chaque lancement tant que la DB est in-memory.
+  static const String kDataSeededPrefsKey = 'data_seeded';
+
   SeedDataLoader({
     required AppDatabase db,
     required SharedPreferences prefs,
@@ -49,7 +52,7 @@ class SeedDataLoader {
   /// Retourne true si le seed a ete effectue,
   /// false si les donnees etaient deja presentes.
   Future<bool> seedIfNeeded() async {
-    if (_prefs.getBool(_kDataSeeded) == true) {
+    if (_prefs.getBool(kDataSeededPrefsKey) == true) {
       _log.d('Seed deja effectue, skip');
       return false;
     }
@@ -161,7 +164,7 @@ class SeedDataLoader {
     _log.d('Fiches conseils chargees: ${allTips.length}');
 
     // --- 7. Marquer comme seed ---
-    await _prefs.setBool(_kDataSeeded, true);
+    await _prefs.setBool(kDataSeededPrefsKey, true);
 
     sw.stop();
     _log.i(

@@ -1057,5 +1057,8 @@
       "statementCard": "Statement of reasons for the moderation decision",
       "complaintForm": "Decision challenge form"
     }
+  },
+  "bootstrap": {
+    "loading": "Preparing your hike…"
   }
 }

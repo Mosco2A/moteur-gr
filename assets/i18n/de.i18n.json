@@ -1057,5 +1057,8 @@
       "statementCard": "Begründung der Moderationsentscheidung",
       "complaintForm": "Formular zur Anfechtung der Entscheidung"
     }
+  },
+  "bootstrap": {
+    "loading": "Ihre Wanderung wird vorbereitet…"
   }
 }

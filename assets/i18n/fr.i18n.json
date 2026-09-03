@@ -1057,5 +1057,8 @@
       "statementCard": "Exposé des motifs de la décision de modération",
       "complaintForm": "Formulaire de contestation d'une décision"
     }
+  },
+  "bootstrap": {
+    "loading": "Préparation de votre randonnée…"
   }
 }
