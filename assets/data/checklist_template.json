@@ -14,151 +14,176 @@
         "id": "backpack",
         "category": "equipment",
         "nameKey": "backpack",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 1400
       },
       {
         "id": "sleepingBag",
         "category": "equipment",
         "nameKey": "sleepingBag",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 900
       },
       {
         "id": "sleepingPad",
         "category": "equipment",
         "nameKey": "sleepingPad",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 400
       },
       {
         "id": "hikingPoles",
         "category": "equipment",
         "nameKey": "hikingPoles",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 500
       },
       {
         "id": "headlamp",
         "category": "equipment",
         "nameKey": "headlamp",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 80
       },
       {
         "id": "waterBottle",
         "category": "equipment",
         "nameKey": "waterBottle",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 150
       },
       {
         "id": "hikingBoots",
         "category": "clothing",
         "nameKey": "hikingBoots",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 0
       },
       {
         "id": "rainJacket",
         "category": "clothing",
         "nameKey": "rainJacket",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 400
       },
       {
         "id": "warmLayer",
         "category": "clothing",
         "nameKey": "warmLayer",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 350
       },
       {
         "id": "hikingSocks",
         "category": "clothing",
         "nameKey": "hikingSocks",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 60
       },
       {
         "id": "hat",
         "category": "clothing",
         "nameKey": "hat",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 80
       },
       {
         "id": "gloves",
         "category": "clothing",
         "nameKey": "gloves",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 40
       },
       {
         "id": "trailSnacks",
         "category": "food",
         "nameKey": "trailSnacks",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 150
       },
       {
         "id": "energyBars",
         "category": "food",
         "nameKey": "energyBars",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 35
       },
       {
         "id": "waterPurification",
         "category": "food",
         "nameKey": "waterPurification",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 30
       },
       {
         "id": "firstAidKit",
         "category": "safety",
         "nameKey": "firstAidKit",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 250
       },
       {
         "id": "whistle",
         "category": "safety",
         "nameKey": "whistle",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 10
       },
       {
         "id": "emergencyBlanket",
         "category": "safety",
         "nameKey": "emergencyBlanket",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 60
       },
       {
         "id": "sunscreen",
         "category": "safety",
         "nameKey": "sunscreen",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 100
       },
       {
         "id": "idCard",
         "category": "documents",
         "nameKey": "idCard",
-        "isEssential": true
+        "isEssential": true,
+        "weightGrams": 0
       },
       {
         "id": "insurance",
         "category": "documents",
         "nameKey": "insurance",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 0
       },
       {
         "id": "trailMap",
         "category": "documents",
         "nameKey": "trailMap",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 80
       },
       {
         "id": "toiletPaper",
         "category": "hygiene",
         "nameKey": "toiletPaper",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 50
       },
       {
         "id": "handSanitizer",
         "category": "hygiene",
         "nameKey": "handSanitizer",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 50
       },
       {
         "id": "towel",
         "category": "hygiene",
         "nameKey": "towel",
-        "isEssential": false
+        "isEssential": false,
+        "weightGrams": 80
       }
     ]
   },
@@ -169,7 +194,8 @@
           "id": "swimsuit",
           "category": "clothing",
           "nameKey": "swimsuit",
-          "isEssential": false
+          "isEssential": false,
+          "weightGrams": 150
         }
       ],
       "removeItems": [],

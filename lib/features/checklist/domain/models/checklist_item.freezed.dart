@@ -20,7 +20,8 @@ mixin _$ChecklistItemModel {
  String get templateId;/// Nom de l'item (cle i18n pour resolution via Slang)
  String get name;/// Categorie (ex: 'equipment', 'clothing', 'food', 'safety', 'documents', 'hygiene')
  String get category;/// Item coche ou non par l'utilisateur
- bool get isChecked;/// Note personnelle optionnelle de l'utilisateur
+ bool get isChecked;/// Poids unitaire en grammes (parite GR20 « Materiel & Sac »). 0 = non pese.
+ int get weightGrams;/// Note personnelle optionnelle de l'utilisateur
  String? get customNote;
 /// Create a copy of ChecklistItemModel
 /// with the given fields replaced by the non-null parameter values.
@@ -34,16 +35,16 @@ $ChecklistItemModelCopyWith<ChecklistItemModel> get copyWith => _$ChecklistItemM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.templateId, templateId) || other.templateId == templateId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.isChecked, isChecked) || other.isChecked == isChecked)&&(identical(other.customNote, customNote) || other.customNote == customNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChecklistItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.templateId, templateId) || other.templateId == templateId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.isChecked, isChecked) || other.isChecked == isChecked)&&(identical(other.weightGrams, weightGrams) || other.weightGrams == weightGrams)&&(identical(other.customNote, customNote) || other.customNote == customNote));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,templateId,name,category,isChecked,customNote);
+int get hashCode => Object.hash(runtimeType,id,templateId,name,category,isChecked,weightGrams,customNote);
 
 @override
 String toString() {
-  return 'ChecklistItemModel(id: $id, templateId: $templateId, name: $name, category: $category, isChecked: $isChecked, customNote: $customNote)';
+  return 'ChecklistItemModel(id: $id, templateId: $templateId, name: $name, category: $category, isChecked: $isChecked, weightGrams: $weightGrams, customNote: $customNote)';
 }
 
 
@@ -54,7 +55,7 @@ abstract mixin class $ChecklistItemModelCopyWith<$Res>  {
   factory $ChecklistItemModelCopyWith(ChecklistItemModel value, $Res Function(ChecklistItemModel) _then) = _$ChecklistItemModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String templateId, String name, String category, bool isChecked, String? customNote
+ int id, String templateId, String name, String category, bool isChecked, int weightGrams, String? customNote
 });
 
 
@@ -71,14 +72,15 @@ class _$ChecklistItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistItemModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? templateId = null,Object? name = null,Object? category = null,Object? isChecked = null,Object? customNote = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? templateId = null,Object? name = null,Object? category = null,Object? isChecked = null,Object? weightGrams = null,Object? customNote = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,templateId: null == templateId ? _self.templateId : templateId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,isChecked: null == isChecked ? _self.isChecked : isChecked // ignore: cast_nullable_to_non_nullable
-as bool,customNote: freezed == customNote ? _self.customNote : customNote // ignore: cast_nullable_to_non_nullable
+as bool,weightGrams: null == weightGrams ? _self.weightGrams : weightGrams // ignore: cast_nullable_to_non_nullable
+as int,customNote: freezed == customNote ? _self.customNote : customNote // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -164,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String templateId,  String name,  String category,  bool isChecked,  String? customNote)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String templateId,  String name,  String category,  bool isChecked,  int weightGrams,  String? customNote)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChecklistItemModel() when $default != null:
-return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChecked,_that.customNote);case _:
+return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChecked,_that.weightGrams,_that.customNote);case _:
   return orElse();
 
 }
@@ -185,10 +187,10 @@ return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChec
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String templateId,  String name,  String category,  bool isChecked,  String? customNote)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String templateId,  String name,  String category,  bool isChecked,  int weightGrams,  String? customNote)  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistItemModel():
-return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChecked,_that.customNote);case _:
+return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChecked,_that.weightGrams,_that.customNote);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +207,10 @@ return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChec
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String templateId,  String name,  String category,  bool isChecked,  String? customNote)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String templateId,  String name,  String category,  bool isChecked,  int weightGrams,  String? customNote)?  $default,) {final _that = this;
 switch (_that) {
 case _ChecklistItemModel() when $default != null:
-return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChecked,_that.customNote);case _:
+return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChecked,_that.weightGrams,_that.customNote);case _:
   return null;
 
 }
@@ -220,7 +222,7 @@ return $default(_that.id,_that.templateId,_that.name,_that.category,_that.isChec
 @JsonSerializable()
 
 class _ChecklistItemModel extends ChecklistItemModel {
-  const _ChecklistItemModel({this.id = 0, required this.templateId, required this.name, required this.category, this.isChecked = false, this.customNote}): super._();
+  const _ChecklistItemModel({this.id = 0, required this.templateId, required this.name, required this.category, this.isChecked = false, this.weightGrams = 0, this.customNote}): super._();
   factory _ChecklistItemModel.fromJson(Map<String, dynamic> json) => _$ChecklistItemModelFromJson(json);
 
 /// Cle primaire DB (0 si pas encore insere)
@@ -233,6 +235,8 @@ class _ChecklistItemModel extends ChecklistItemModel {
 @override final  String category;
 /// Item coche ou non par l'utilisateur
 @override@JsonKey() final  bool isChecked;
+/// Poids unitaire en grammes (parite GR20 « Materiel & Sac »). 0 = non pese.
+@override@JsonKey() final  int weightGrams;
 /// Note personnelle optionnelle de l'utilisateur
 @override final  String? customNote;
 
@@ -249,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.templateId, templateId) || other.templateId == templateId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.isChecked, isChecked) || other.isChecked == isChecked)&&(identical(other.customNote, customNote) || other.customNote == customNote));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChecklistItemModel&&(identical(other.id, id) || other.id == id)&&(identical(other.templateId, templateId) || other.templateId == templateId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.isChecked, isChecked) || other.isChecked == isChecked)&&(identical(other.weightGrams, weightGrams) || other.weightGrams == weightGrams)&&(identical(other.customNote, customNote) || other.customNote == customNote));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,templateId,name,category,isChecked,customNote);
+int get hashCode => Object.hash(runtimeType,id,templateId,name,category,isChecked,weightGrams,customNote);
 
 @override
 String toString() {
-  return 'ChecklistItemModel(id: $id, templateId: $templateId, name: $name, category: $category, isChecked: $isChecked, customNote: $customNote)';
+  return 'ChecklistItemModel(id: $id, templateId: $templateId, name: $name, category: $category, isChecked: $isChecked, weightGrams: $weightGrams, customNote: $customNote)';
 }
 
 
@@ -269,7 +273,7 @@ abstract mixin class _$ChecklistItemModelCopyWith<$Res> implements $ChecklistIte
   factory _$ChecklistItemModelCopyWith(_ChecklistItemModel value, $Res Function(_ChecklistItemModel) _then) = __$ChecklistItemModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String templateId, String name, String category, bool isChecked, String? customNote
+ int id, String templateId, String name, String category, bool isChecked, int weightGrams, String? customNote
 });
 
 
@@ -286,14 +290,15 @@ class __$ChecklistItemModelCopyWithImpl<$Res>
 
 /// Create a copy of ChecklistItemModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? templateId = null,Object? name = null,Object? category = null,Object? isChecked = null,Object? customNote = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? templateId = null,Object? name = null,Object? category = null,Object? isChecked = null,Object? weightGrams = null,Object? customNote = freezed,}) {
   return _then(_ChecklistItemModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,templateId: null == templateId ? _self.templateId : templateId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as String,isChecked: null == isChecked ? _self.isChecked : isChecked // ignore: cast_nullable_to_non_nullable
-as bool,customNote: freezed == customNote ? _self.customNote : customNote // ignore: cast_nullable_to_non_nullable
+as bool,weightGrams: null == weightGrams ? _self.weightGrams : weightGrams // ignore: cast_nullable_to_non_nullable
+as int,customNote: freezed == customNote ? _self.customNote : customNote // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

@@ -13,6 +13,7 @@ _ChecklistItemModel _$ChecklistItemModelFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String,
       category: json['category'] as String,
       isChecked: json['isChecked'] as bool? ?? false,
+      weightGrams: (json['weightGrams'] as num?)?.toInt() ?? 0,
       customNote: json['customNote'] as String?,
     );
 
@@ -23,5 +24,6 @@ Map<String, dynamic> _$ChecklistItemModelToJson(_ChecklistItemModel instance) =>
       'name': instance.name,
       'category': instance.category,
       'isChecked': instance.isChecked,
+      'weightGrams': instance.weightGrams,
       'customNote': instance.customNote,
     };

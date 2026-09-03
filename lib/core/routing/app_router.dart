@@ -43,6 +43,7 @@ import '../../features/trek/presentation/stages/stage_list_screen.dart'
     as trek_stages;
 import '../../features/trek/presentation/planning/planning_screen.dart'
     as trek_planning;
+import '../../features/trek/presentation/planning/itinerary_screen.dart';
 import '../../features/trek/presentation/stages/trek_stage_detail_screen.dart'
     as trek_detail;
 
@@ -259,6 +260,18 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
             return TrailPlanningScreen(trailId: trailId);
+          },
+        ),
+        // PARITE GR20 (#99433) : ecran « Itineraire » = deroule des etapes du
+        // sentier (infos par etape + action detail). Route hors-shell atteinte
+        // via `context.push` depuis le HUB -> retour propre (corrige le crash
+        // `context.go('/map')` qui vidait la pile de navigation).
+        GoRoute(
+          path: 'itinerary',
+          name: 'trail-itinerary',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return ItineraryScreen(trailId: trailId);
           },
         ),
         GoRoute(

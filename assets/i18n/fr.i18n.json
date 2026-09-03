@@ -70,7 +70,7 @@
       "feasibility": "Faisabilité",
       "feasibilitySub": "Évaluez votre niveau",
       "itinerary": "Itinéraire",
-      "itinerarySub": "Le tracé du sentier",
+      "itinerarySub": "Le deroule de vos etapes",
       "programme": "Programme",
       "programmeSub": "Répartissez vos étapes",
       "checklist": "Matériel & sac",
@@ -185,6 +185,23 @@
     "stages": "Étapes",
     "plan": "Planifier"
   },
+  "itinerary": {
+    "title": "Itineraire",
+    "subtitle": "Le deroule de vos etapes",
+    "empty": "Aucune etape disponible",
+    "emptyHint": "Les donnees du sentier ne sont pas chargees.",
+    "loading": "Chargement de l'itineraire...",
+    "error": "Impossible de charger l'itineraire",
+    "day": "Jour",
+    "stage": "Etape",
+    "stages": "Etapes",
+    "totalDistance": "Distance",
+    "totalElevation": "D+",
+    "restDay": "Jour de repos",
+    "viewStage": "Voir l'etape",
+    "openMap": "Voir sur la carte",
+    "stageCount": "{count} etapes"
+  },
   "tracking": {
     "start": "Demarrer",
     "pause": "Pause",
@@ -245,7 +262,24 @@
       "handSanitizer": "Gel hydroalcoolique",
       "towel": "Serviette"
     },
-    "essential": "Essentiel"
+    "essential": "Essentiel",
+    "weight": {
+      "title": "Poids du sac",
+      "total": "Poids total",
+      "bodyWeight": "Poids corporel",
+      "ratio": "Ratio sac / corps",
+      "perItem": "Poids par article",
+      "edit": "Modifier le poids",
+      "grams": "g",
+      "kilograms": "kg",
+      "adviceLight": "Sac leger - ideal",
+      "adviceOk": "Sac bien equilibre",
+      "adviceHeavy": "Sac lourd - pensez a alleger",
+      "adviceTooHeavy": "Trop lourd - allegez le sac",
+      "itemWeight": "Poids de l'article",
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    }
   },
   "journal": {
     "title": "Journal de randonnée",

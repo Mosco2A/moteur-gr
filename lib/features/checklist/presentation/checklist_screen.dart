@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -8,11 +9,16 @@ import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import '../widgets/checklist_category_section.dart';
 import '../widgets/checklist_progress_header.dart';
+import '../widgets/checklist_weight_banner.dart';
 
 /// Ecran principal de la checklist materiel (E3.2b).
 ///
 /// Affiche la progression globale en en-tete,
 /// puis les items groupes par categorie avec checkboxes.
+/// PARITE GR20 « Materiel & Sac » (#99433) : volet POIDS reintegre — poids par
+/// article (chip editable) + poids total du sac + poids corporel + jauge
+/// sac/corps ([ChecklistWeightBanner]). Generique (poids de reference du
+/// template, aucune localite en dur), hors systeme de peaux.
 /// Bouton reset dans l AppBar.
 /// Tout texte via Slang (t.checklist.*) — zero texte en dur.
 /// Riverpod 3 avec select() dans build.
@@ -42,6 +48,17 @@ class ChecklistScreen extends ConsumerWidget {
     // select() pour la liste d items (reconstruire uniquement si items changent)
     final items = ref.watch(checklistProvider.select((s) => s.items));
 
+    // PARITE GR20 : poids total + ratio sac/corps (etat derive du provider).
+    final checkedWeightGrams = ref.watch(
+      checklistProvider.select((s) => s.checkedWeightGrams),
+    );
+    final bodyWeightKg = ref.watch(
+      checklistProvider.select((s) => s.bodyWeightKg),
+    );
+    final backpackRatio = ref.watch(
+      checklistProvider.select((s) => s.backpackRatio),
+    );
+
     // Construction du label de progression via Slang
     // Le template Slang contient "{checked}/{total} prepares"
     // On remplace les placeholders manuellement
@@ -69,6 +86,14 @@ class ChecklistScreen extends ConsumerWidget {
             progressLabel: progressLabel,
             completeLabel: checklistT.complete,
           ),
+          // PARITE GR20 : volet POIDS du sac (total + jauge + poids corporel).
+          ChecklistWeightBanner(
+            checkedWeightGrams: checkedWeightGrams,
+            bodyWeightKg: bodyWeightKg,
+            backpackRatio: backpackRatio,
+            onBodyWeightChanged: (kg) =>
+                ref.read(checklistProvider.notifier).setBodyWeight(kg),
+          ),
           const Divider(height: 1),
           // Categories — chaque section utilise Slang pour le nom
           for (final category in checklistCategories)
@@ -80,11 +105,76 @@ class ChecklistScreen extends ConsumerWidget {
               onToggle: (itemId) {
                 ref.read(checklistProvider.notifier).toggle(itemId);
               },
+              onEditWeight: (itemId) => _showEditWeightDialog(
+                context,
+                ref,
+                itemId,
+              ),
             ),
           const SizedBox(height: AppTheme.spacingXxl),
         ],
       ),
     );
+  }
+
+  /// Dialogue d'edition du poids unitaire d'un article (parite GR20 « Sac »).
+  ///
+  /// Champ numerique en grammes, pre-rempli avec la valeur courante. Persiste
+  /// via [ChecklistNotifier.setItemWeight]. Tout texte via Slang.
+  Future<void> _showEditWeightDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String itemId,
+  ) async {
+    final item = ref
+        .read(checklistProvider)
+        .items
+        .firstWhere((i) => i.template.id == itemId);
+    final controller =
+        TextEditingController(text: item.weightGrams.toString());
+    final weightT = t.checklist.weight;
+    // Nom localise de l'article pour le titre du dialogue.
+    final resolvedName = t['checklist.items.${item.template.nameKey}'];
+    final itemName =
+        resolvedName is String ? resolvedName : item.template.nameKey;
+
+    final result = await showDialog<int>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(itemName),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          keyboardType: TextInputType.number,
+          inputFormatters: [
+            FilteringTextInputFormatter.digitsOnly,
+            LengthLimitingTextInputFormatter(5),
+          ],
+          decoration: InputDecoration(
+            labelText: weightT.itemWeight,
+            suffixText: weightT.grams,
+          ),
+          onSubmitted: (v) =>
+              Navigator.of(ctx).pop(int.tryParse(v) ?? item.weightGrams),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(weightT.cancel),
+          ),
+          AppButton(
+            isFullWidth: false,
+            label: weightT.save,
+            onPressed: () => Navigator.of(ctx)
+                .pop(int.tryParse(controller.text) ?? item.weightGrams),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null) {
+      await ref.read(checklistProvider.notifier).setItemWeight(itemId, result);
+    }
   }
 
   /// Resout le nom de categorie via Slang (lookup dynamique).

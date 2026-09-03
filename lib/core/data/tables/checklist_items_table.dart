@@ -21,6 +21,13 @@ class ChecklistItems extends Table {
   BoolColumn get isChecked =>
       boolean().withDefault(const Constant(false))();
 
+  /// Poids unitaire en grammes (parite GR20 « Materiel & Sac », migration v19).
+  ///
+  /// Initialise depuis le poids de reference du template ; editable par
+  /// l'utilisateur. Alimente la jauge poids du sac (total = somme des items
+  /// coches). 0 = non pese / porte (ne contribue pas au total).
+  IntColumn get weightGrams => integer().withDefault(const Constant(0))();
+
   /// Date de derniere modification
   DateTimeColumn get updatedAt => dateTime().nullable()();
 }

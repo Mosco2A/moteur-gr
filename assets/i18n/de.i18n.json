@@ -70,7 +70,7 @@
       "feasibility": "Machbarkeit",
       "feasibilitySub": "Bewerten Sie Ihr Niveau",
       "itinerary": "Route",
-      "itinerarySub": "Der Wegverlauf",
+      "itinerarySub": "Ihre Etappen im Detail",
       "programme": "Programm",
       "programmeSub": "Etappen aufteilen",
       "checklist": "Ausrüstung & Rucksack",
@@ -185,6 +185,23 @@
     "stages": "Etappen",
     "plan": "Planen"
   },
+  "itinerary": {
+    "title": "Route",
+    "subtitle": "Ihre Etappen, Tag fuer Tag",
+    "empty": "Keine Etappe verfuegbar",
+    "emptyHint": "Wegdaten sind nicht geladen.",
+    "loading": "Route wird geladen...",
+    "error": "Route kann nicht geladen werden",
+    "day": "Tag",
+    "stage": "Etappe",
+    "stages": "Etappen",
+    "totalDistance": "Distanz",
+    "totalElevation": "D+",
+    "restDay": "Ruhetag",
+    "viewStage": "Etappe ansehen",
+    "openMap": "Auf Karte ansehen",
+    "stageCount": "{count} Etappen"
+  },
   "tracking": {
     "start": "Starten",
     "pause": "Pause",
@@ -245,7 +262,24 @@
       "handSanitizer": "Handdesinfektionsmittel",
       "towel": "Handtuch"
     },
-    "essential": "Wesentlich"
+    "essential": "Wesentlich",
+    "weight": {
+      "title": "Rucksackgewicht",
+      "total": "Gesamtgewicht",
+      "bodyWeight": "Koerpergewicht",
+      "ratio": "Verhaeltnis Rucksack / Koerper",
+      "perItem": "Gewicht pro Artikel",
+      "edit": "Gewicht bearbeiten",
+      "grams": "g",
+      "kilograms": "kg",
+      "adviceLight": "Leichter Rucksack - ideal",
+      "adviceOk": "Gut ausbalancierter Rucksack",
+      "adviceHeavy": "Schwerer Rucksack - erwaegen Sie zu reduzieren",
+      "adviceTooHeavy": "Zu schwer - erleichtern Sie den Rucksack",
+      "itemWeight": "Artikelgewicht",
+      "cancel": "Abbrechen",
+      "save": "Speichern"
+    }
   },
   "journal": {
     "title": "Wandertagebuch",

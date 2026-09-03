@@ -183,10 +183,12 @@ void main() {
       const itemState = ChecklistItemState(
         template: template,
         isChecked: true,
+        weightGrams: 250,
       );
       expect(itemState.template.id, 'test');
       expect(itemState.template.isEssential, true);
       expect(itemState.isChecked, true);
+      expect(itemState.weightGrams, 250);
     });
   });
 }

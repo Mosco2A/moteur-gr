@@ -70,7 +70,7 @@
       "feasibility": "Viabilidad",
       "feasibilitySub": "Evalúa tu nivel",
       "itinerary": "Itinerario",
-      "itinerarySub": "El trazado del sendero",
+      "itinerarySub": "Tus etapas en detalle",
       "programme": "Programa",
       "programmeSub": "Distribuye tus etapas",
       "checklist": "Equipo y mochila",
@@ -185,6 +185,23 @@
     "stages": "Etapas",
     "plan": "Planificar"
   },
+  "itinerary": {
+    "title": "Itinerario",
+    "subtitle": "Tus etapas, dia a dia",
+    "empty": "Ninguna etapa disponible",
+    "emptyHint": "Los datos del sendero no estan cargados.",
+    "loading": "Cargando itinerario...",
+    "error": "No se puede cargar el itinerario",
+    "day": "Dia",
+    "stage": "Etapa",
+    "stages": "Etapas",
+    "totalDistance": "Distancia",
+    "totalElevation": "D+",
+    "restDay": "Dia de descanso",
+    "viewStage": "Ver etapa",
+    "openMap": "Ver en el mapa",
+    "stageCount": "{count} etapas"
+  },
   "tracking": {
     "start": "Iniciar",
     "pause": "Pausa",
@@ -245,7 +262,24 @@
       "handSanitizer": "Gel desinfectante",
       "towel": "Toalla"
     },
-    "essential": "Esencial"
+    "essential": "Esencial",
+    "weight": {
+      "title": "Peso de la mochila",
+      "total": "Peso total",
+      "bodyWeight": "Peso corporal",
+      "ratio": "Relacion mochila / cuerpo",
+      "perItem": "Peso por articulo",
+      "edit": "Editar peso",
+      "grams": "g",
+      "kilograms": "kg",
+      "adviceLight": "Mochila ligera - ideal",
+      "adviceOk": "Mochila bien equilibrada",
+      "adviceHeavy": "Mochila pesada - considera aligerar",
+      "adviceTooHeavy": "Demasiado pesada - aligera la mochila",
+      "itemWeight": "Peso del articulo",
+      "cancel": "Cancelar",
+      "save": "Guardar"
+    }
   },
   "journal": {
     "title": "Diario de trekking",

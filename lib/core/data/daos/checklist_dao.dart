@@ -59,6 +59,17 @@ class ChecklistDao extends DatabaseAccessor<AppDatabase>
     ));
   }
 
+  /// Met a jour le poids unitaire (grammes) d'un item (parite GR20 « Sac »).
+  Future<void> setWeight(String trailId, String itemId, int weightGrams) {
+    return (update(checklistItems)
+          ..where(
+              (t) => t.trailId.equals(trailId) & t.itemId.equals(itemId)))
+        .write(ChecklistItemsCompanion(
+      weightGrams: Value(weightGrams),
+      updatedAt: Value(DateTime.now()),
+    ));
+  }
+
   /// Insere une liste d'items en batch
   Future<void> insertAll(List<ChecklistItemsCompanion> entries) async {
     await batch((b) => b.insertAll(checklistItems, entries));

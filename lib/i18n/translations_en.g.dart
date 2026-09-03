@@ -51,6 +51,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$gps$en gps = _Translations$gps$en._(_root);
 	@override late final _Translations$navAlert$en navAlert = _Translations$navAlert$en._(_root);
 	@override late final _Translations$planning$en planning = _Translations$planning$en._(_root);
+	@override late final _Translations$itinerary$en itinerary = _Translations$itinerary$en._(_root);
 	@override late final _Translations$tracking$en tracking = _Translations$tracking$en._(_root);
 	@override late final _Translations$checklist$en checklist = _Translations$checklist$en._(_root);
 	@override late final _Translations$journal$en journal = _Translations$journal$en._(_root);
@@ -295,6 +296,30 @@ class _Translations$planning$en extends Translations$planning$fr {
 	@override String get plan => 'Plan';
 }
 
+// Path: itinerary
+class _Translations$itinerary$en extends Translations$itinerary$fr {
+	_Translations$itinerary$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Itinerary';
+	@override String get subtitle => 'Your stages, day by day';
+	@override String get empty => 'No stage available';
+	@override String get emptyHint => 'Trail data is not loaded.';
+	@override String get loading => 'Loading itinerary...';
+	@override String get error => 'Unable to load the itinerary';
+	@override String get day => 'Day';
+	@override String get stage => 'Stage';
+	@override String get stages => 'Stages';
+	@override String get totalDistance => 'Distance';
+	@override String get totalElevation => 'D+';
+	@override String get restDay => 'Rest day';
+	@override String get viewStage => 'View stage';
+	@override String get openMap => 'View on map';
+	@override String get stageCount => '{count} stages';
+}
+
 // Path: tracking
 class _Translations$tracking$en extends Translations$tracking$fr {
 	_Translations$tracking$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -336,6 +361,7 @@ class _Translations$checklist$en extends Translations$checklist$fr {
 	@override late final _Translations$checklist$categories$en categories = _Translations$checklist$categories$en._(_root);
 	@override late final _Translations$checklist$items$en items = _Translations$checklist$items$en._(_root);
 	@override String get essential => 'Essential';
+	@override late final _Translations$checklist$weight$en weight = _Translations$checklist$weight$en._(_root);
 }
 
 // Path: journal
@@ -1149,7 +1175,7 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get feasibility => 'Feasibility';
 	@override String get feasibilitySub => 'Assess your level';
 	@override String get itinerary => 'Itinerary';
-	@override String get itinerarySub => 'The trail route';
+	@override String get itinerarySub => 'Your stages, day by day';
 	@override String get programme => 'Programme';
 	@override String get programmeSub => 'Spread out your stages';
 	@override String get checklist => 'Gear & bag';
@@ -1263,6 +1289,30 @@ class _Translations$checklist$items$en extends Translations$checklist$items$fr {
 	@override String get toiletPaper => 'Toilet paper';
 	@override String get handSanitizer => 'Hand sanitizer';
 	@override String get towel => 'Towel';
+}
+
+// Path: checklist.weight
+class _Translations$checklist$weight$en extends Translations$checklist$weight$fr {
+	_Translations$checklist$weight$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Backpack weight';
+	@override String get total => 'Total weight';
+	@override String get bodyWeight => 'Body weight';
+	@override String get ratio => 'Pack / body ratio';
+	@override String get perItem => 'Weight per item';
+	@override String get edit => 'Edit weight';
+	@override String get grams => 'g';
+	@override String get kilograms => 'kg';
+	@override String get adviceLight => 'Light pack - ideal';
+	@override String get adviceOk => 'Well-balanced pack';
+	@override String get adviceHeavy => 'Heavy pack - consider lightening';
+	@override String get adviceTooHeavy => 'Too heavy - lighten your pack';
+	@override String get itemWeight => 'Item weight';
+	@override String get cancel => 'Cancel';
+	@override String get save => 'Save';
 }
 
 // Path: weather.source
@@ -2159,7 +2209,7 @@ extension on TranslationsEn {
 			'hub.cards.feasibility' => 'Feasibility',
 			'hub.cards.feasibilitySub' => 'Assess your level',
 			'hub.cards.itinerary' => 'Itinerary',
-			'hub.cards.itinerarySub' => 'The trail route',
+			'hub.cards.itinerarySub' => 'Your stages, day by day',
 			'hub.cards.programme' => 'Programme',
 			'hub.cards.programmeSub' => 'Spread out your stages',
 			'hub.cards.checklist' => 'Gear & bag',
@@ -2250,6 +2300,21 @@ extension on TranslationsEn {
 			'planning.estimatedTime' => 'Estimated time',
 			'planning.stages' => 'Stages',
 			'planning.plan' => 'Plan',
+			'itinerary.title' => 'Itinerary',
+			'itinerary.subtitle' => 'Your stages, day by day',
+			'itinerary.empty' => 'No stage available',
+			'itinerary.emptyHint' => 'Trail data is not loaded.',
+			'itinerary.loading' => 'Loading itinerary...',
+			'itinerary.error' => 'Unable to load the itinerary',
+			'itinerary.day' => 'Day',
+			'itinerary.stage' => 'Stage',
+			'itinerary.stages' => 'Stages',
+			'itinerary.totalDistance' => 'Distance',
+			'itinerary.totalElevation' => 'D+',
+			'itinerary.restDay' => 'Rest day',
+			'itinerary.viewStage' => 'View stage',
+			'itinerary.openMap' => 'View on map',
+			'itinerary.stageCount' => '{count} stages',
 			'tracking.start' => 'Start',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Resume',
@@ -2304,6 +2369,21 @@ extension on TranslationsEn {
 			'checklist.items.handSanitizer' => 'Hand sanitizer',
 			'checklist.items.towel' => 'Towel',
 			'checklist.essential' => 'Essential',
+			'checklist.weight.title' => 'Backpack weight',
+			'checklist.weight.total' => 'Total weight',
+			'checklist.weight.bodyWeight' => 'Body weight',
+			'checklist.weight.ratio' => 'Pack / body ratio',
+			'checklist.weight.perItem' => 'Weight per item',
+			'checklist.weight.edit' => 'Edit weight',
+			'checklist.weight.grams' => 'g',
+			'checklist.weight.kilograms' => 'kg',
+			'checklist.weight.adviceLight' => 'Light pack - ideal',
+			'checklist.weight.adviceOk' => 'Well-balanced pack',
+			'checklist.weight.adviceHeavy' => 'Heavy pack - consider lightening',
+			'checklist.weight.adviceTooHeavy' => 'Too heavy - lighten your pack',
+			'checklist.weight.itemWeight' => 'Item weight',
+			'checklist.weight.cancel' => 'Cancel',
+			'checklist.weight.save' => 'Save',
 			'journal.title' => 'Trek journal',
 			'journal.empty' => 'Your journal is empty',
 			'journal.emptySubtitle' => 'Write down your trek impressions and memories',
@@ -2584,6 +2664,8 @@ extension on TranslationsEn {
 			'goodies.comingSoon' => 'This module is coming soon. Stay tuned!',
 			'noData.title' => 'No trail downloaded',
 			'noData.subtitle' => 'Download a trail to get started',
+			_ => null,
+		} ?? switch (path) {
 			'noData.offlineHint' => 'Data will be available offline for your hike.',
 			'noData.browseCta' => 'Browse trails',
 			'catalog.title' => 'Trail catalog',
@@ -2614,8 +2696,6 @@ extension on TranslationsEn {
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Welcome to ${appName}',
 			'onboarding.welcomeSubtitle' => 'Your offline hiking companion: map, GPS navigation, planning and trek journal.',
 			'onboarding.languageTitle' => 'Choose your language',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.languageSubtitle' => 'You can change it at any time in the settings.',
 			'onboarding.downloadTitle' => 'Download your first trail',
 			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
