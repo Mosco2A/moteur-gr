@@ -15,6 +15,8 @@ import '../../../map/providers/simplified_track_provider.dart';
 import '../../../map/widgets/off_track_banner.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
+import '../../providers/gps_providers.dart';
+import '../../providers/tracking_providers.dart';
 import 'controls/map_controls.dart';
 import 'layers/stage_markers_layer.dart';
 import 'layers/trace_layer.dart';
@@ -322,7 +324,47 @@ class _MapContentState extends State<_MapContent> {
             },
           ),
         ),
+
+        // --- Pipeline detection d'etape -> arrivee -> finisher (PARITE GR20,
+        // LOT 2, #99433). L'ecran carte est l'ECRAN TERRAIN ACTIF de StepWays :
+        // on y monte le pont d'arrivee pour qu'il soit VIVANT pendant un trek.
+        // GR20 fait pareil dans active_stage_screen. Rendu invisible.
+        const _ArrivalPipelineMount(),
       ],
     );
+  }
+}
+
+/// Monte le pipeline « detection d'etape -> arrivee -> complétion/finisher »
+/// tant qu'un trek est en cours (PARITE GR20, LOT 2, #99433).
+///
+/// Au LOT 1, [arrivalCompletionListenerProvider] et [currentStageIdProvider]
+/// n'etaient observes par AUCUN ecran : la chaine terrain etait INERTE (aucune
+/// arrivee detectee, finisher jamais declenche). Cet element, monte dans l'ecran
+/// carte (terrain actif), les rend vivants — mais UNIQUEMENT quand une session
+/// est `recording`/`paused`, pour ne pas ouvrir le flux GPS hors trek (et rester
+/// neutre dans les tests d'ecran a l'arret). Ne rend rien a l'ecran.
+class _ArrivalPipelineMount extends ConsumerWidget {
+  const _ArrivalPipelineMount();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final status = ref.watch(
+      trekSessionManagerProvider.select((s) => s.status),
+    );
+    final trekActive = status == TrackingSessionStatus.recording ||
+        status == TrackingSessionStatus.paused;
+
+    if (trekActive) {
+      // Rend le pont d'arrivee -> etapes completees -> porte du finisher ACTIF
+      // (il s'auto-abonne a arrivalEventsProvider). Sans achat cote vitrine, le
+      // GPS est jouable (2.A) : le cycle complet peut donc se derouler.
+      ref.watch(arrivalCompletionListenerProvider);
+      // Alimente aussi la detection d'etape courante pendant la nav (parite
+      // GR20) : etape affichee coherente avec la position.
+      ref.watch(currentStageIdProvider);
+    }
+
+    return const SizedBox.shrink();
   }
 }

@@ -38,6 +38,7 @@ class TrailConfig {
     this.defaultDuration = 14,
     this.offlineFirst = true,
     this.hasPremium = false,
+    this.isShowcaseTrail = false,
     this.firebaseProjectId,
     this.emergencyNumbers = const [],
     this.seedAssetsBase,
@@ -95,6 +96,20 @@ class TrailConfig {
 
   /// Active les fonctionnalités premium
   final bool hasPremium;
+
+  /// Sentier VITRINE de démonstration (déblocage jouable sans achat).
+  ///
+  /// PARITÉ GR20, LOT 2 (#99433) : le sentier de démonstration par défaut
+  /// (`TrailCatalog.defaultTrail`) est une VITRINE entièrement jouable —
+  /// GPS, journal et navigation actifs — SANS achat, pour que la démo se
+  /// démontre de bout en bout (parité avec le mode démo « tout débloqué » de
+  /// GR20). C'est un FLAG de DONNÉE porté par la config du sentier, jamais un
+  /// id de localité codé en dur dans le moteur.
+  ///
+  /// GARDE-FOU (décision Christophe) : ce flag ne concerne QUE la vitrine. Le
+  /// modèle de monétisation à la carte reste INTACT sur tous les autres
+  /// sentiers (non-vitrine = mode démo / paywall inchangé). `false` par défaut.
+  final bool isShowcaseTrail;
 
   /// ID du projet Firebase (null = pas de backend Firebase)
   final String? firebaseProjectId;

@@ -103,4 +103,29 @@ void main() {
       expect(kPricePerStageEur, 1.0);
     });
   });
+
+  // PARITE GR20, LOT 2 (2.A, #99433) — vitrine debloquee cote monetisation.
+  group('LOT 2 vitrine debloquee', () {
+    test('vitrine = features premium sans achat, autre sentier reste en demo',
+        () async {
+      SharedPreferences.setMockInitialValues({});
+      final svcShowcase = MonetizationService(
+        prefs: await SharedPreferences.getInstance(),
+        showcaseTrailIds: {'vitrine-demo'},
+      );
+
+      // Vitrine : non achetee mais PAS en demo -> features premium (jouable).
+      expect(svcShowcase.isShowcaseTrail('vitrine-demo'), isTrue);
+      expect(svcShowcase.isTrailPurchased('vitrine-demo'), isFalse);
+      expect(svcShowcase.isDemoMode('vitrine-demo'), isFalse);
+      final feats = svcShowcase.getFeaturesForTrail('vitrine-demo');
+      expect(feats.isDemo, isFalse);
+      expect(feats.hasGpsTracking, isTrue);
+      expect(feats.hasJournal, isTrue);
+
+      // GARDE-FOU : un autre sentier non achete reste en demo (modele intact).
+      expect(svcShowcase.isDemoMode('sentier-payant'), isTrue);
+      expect(svcShowcase.getFeaturesForTrail('sentier-payant').isDemo, isTrue);
+    });
+  });
 }

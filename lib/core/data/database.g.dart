@@ -15066,6 +15066,504 @@ class WaypointCommentCompanion extends UpdateCompanion<WaypointCommentData> {
   }
 }
 
+class $TrekSessionsTable extends TrekSessions
+    with TableInfo<$TrekSessionsTable, TrekSessionRow> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrekSessionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _finishedAtMeta = const VerificationMeta(
+    'finishedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> finishedAt = GeneratedColumn<DateTime>(
+    'finished_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('active'),
+  );
+  static const VerificationMeta _completedStagesJsonMeta =
+      const VerificationMeta('completedStagesJson');
+  @override
+  late final GeneratedColumn<String> completedStagesJson =
+      GeneratedColumn<String>(
+        'completed_stages_json',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant('[]'),
+      );
+  static const VerificationMeta _parcoursFullyWalkedMeta =
+      const VerificationMeta('parcoursFullyWalked');
+  @override
+  late final GeneratedColumn<bool> parcoursFullyWalked = GeneratedColumn<bool>(
+    'parcours_fully_walked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("parcours_fully_walked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    startedAt,
+    finishedAt,
+    status,
+    completedStagesJson,
+    parcoursFullyWalked,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'trek_sessions';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrekSessionRow> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtMeta);
+    }
+    if (data.containsKey('finished_at')) {
+      context.handle(
+        _finishedAtMeta,
+        finishedAt.isAcceptableOrUnknown(data['finished_at']!, _finishedAtMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('completed_stages_json')) {
+      context.handle(
+        _completedStagesJsonMeta,
+        completedStagesJson.isAcceptableOrUnknown(
+          data['completed_stages_json']!,
+          _completedStagesJsonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('parcours_fully_walked')) {
+      context.handle(
+        _parcoursFullyWalkedMeta,
+        parcoursFullyWalked.isAcceptableOrUnknown(
+          data['parcours_fully_walked']!,
+          _parcoursFullyWalkedMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TrekSessionRow map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrekSessionRow(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      )!,
+      finishedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}finished_at'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      completedStagesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}completed_stages_json'],
+      )!,
+      parcoursFullyWalked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}parcours_fully_walked'],
+      )!,
+    );
+  }
+
+  @override
+  $TrekSessionsTable createAlias(String alias) {
+    return $TrekSessionsTable(attachedDatabase, alias);
+  }
+}
+
+class TrekSessionRow extends DataClass implements Insertable<TrekSessionRow> {
+  /// Identifiant unique de la session (UUID) — cle primaire metier.
+  final String id;
+
+  /// Identifiant du sentier parcouru (TrailConfig.id).
+  final String trailId;
+
+  /// Date/heure de debut de la session.
+  final DateTime startedAt;
+
+  /// Date/heure de fin (null tant que la session est en cours).
+  final DateTime? finishedAt;
+
+  /// Statut extensible (active, paused, completed, abandoned, ...).
+  final String status;
+
+  /// Etapes REELLEMENT completees, serialisees en JSON (liste de stageId).
+  ///
+  /// Critere bloquant du finisher : conserve entre les redemarrages pour que la
+  /// reprise de session reflete les etapes deja marchees. Defaut `[]`.
+  final String completedStagesJson;
+
+  /// Le parcours a-t-il ete REELLEMENT parcouru en entier (finisher legitime) ?
+  ///
+  /// Fige quand la porte du finisher s'ouvre. Defaut false. Persiste pour tracer
+  /// qu'un finisher a bien eu lieu (vs un arret manuel).
+  final bool parcoursFullyWalked;
+  const TrekSessionRow({
+    required this.id,
+    required this.trailId,
+    required this.startedAt,
+    this.finishedAt,
+    required this.status,
+    required this.completedStagesJson,
+    required this.parcoursFullyWalked,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['started_at'] = Variable<DateTime>(startedAt);
+    if (!nullToAbsent || finishedAt != null) {
+      map['finished_at'] = Variable<DateTime>(finishedAt);
+    }
+    map['status'] = Variable<String>(status);
+    map['completed_stages_json'] = Variable<String>(completedStagesJson);
+    map['parcours_fully_walked'] = Variable<bool>(parcoursFullyWalked);
+    return map;
+  }
+
+  TrekSessionsCompanion toCompanion(bool nullToAbsent) {
+    return TrekSessionsCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      startedAt: Value(startedAt),
+      finishedAt: finishedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(finishedAt),
+      status: Value(status),
+      completedStagesJson: Value(completedStagesJson),
+      parcoursFullyWalked: Value(parcoursFullyWalked),
+    );
+  }
+
+  factory TrekSessionRow.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrekSessionRow(
+      id: serializer.fromJson<String>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      finishedAt: serializer.fromJson<DateTime?>(json['finishedAt']),
+      status: serializer.fromJson<String>(json['status']),
+      completedStagesJson: serializer.fromJson<String>(
+        json['completedStagesJson'],
+      ),
+      parcoursFullyWalked: serializer.fromJson<bool>(
+        json['parcoursFullyWalked'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'startedAt': serializer.toJson<DateTime>(startedAt),
+      'finishedAt': serializer.toJson<DateTime?>(finishedAt),
+      'status': serializer.toJson<String>(status),
+      'completedStagesJson': serializer.toJson<String>(completedStagesJson),
+      'parcoursFullyWalked': serializer.toJson<bool>(parcoursFullyWalked),
+    };
+  }
+
+  TrekSessionRow copyWith({
+    String? id,
+    String? trailId,
+    DateTime? startedAt,
+    Value<DateTime?> finishedAt = const Value.absent(),
+    String? status,
+    String? completedStagesJson,
+    bool? parcoursFullyWalked,
+  }) => TrekSessionRow(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    startedAt: startedAt ?? this.startedAt,
+    finishedAt: finishedAt.present ? finishedAt.value : this.finishedAt,
+    status: status ?? this.status,
+    completedStagesJson: completedStagesJson ?? this.completedStagesJson,
+    parcoursFullyWalked: parcoursFullyWalked ?? this.parcoursFullyWalked,
+  );
+  TrekSessionRow copyWithCompanion(TrekSessionsCompanion data) {
+    return TrekSessionRow(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      finishedAt: data.finishedAt.present
+          ? data.finishedAt.value
+          : this.finishedAt,
+      status: data.status.present ? data.status.value : this.status,
+      completedStagesJson: data.completedStagesJson.present
+          ? data.completedStagesJson.value
+          : this.completedStagesJson,
+      parcoursFullyWalked: data.parcoursFullyWalked.present
+          ? data.parcoursFullyWalked.value
+          : this.parcoursFullyWalked,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrekSessionRow(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('finishedAt: $finishedAt, ')
+          ..write('status: $status, ')
+          ..write('completedStagesJson: $completedStagesJson, ')
+          ..write('parcoursFullyWalked: $parcoursFullyWalked')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    startedAt,
+    finishedAt,
+    status,
+    completedStagesJson,
+    parcoursFullyWalked,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrekSessionRow &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.startedAt == this.startedAt &&
+          other.finishedAt == this.finishedAt &&
+          other.status == this.status &&
+          other.completedStagesJson == this.completedStagesJson &&
+          other.parcoursFullyWalked == this.parcoursFullyWalked);
+}
+
+class TrekSessionsCompanion extends UpdateCompanion<TrekSessionRow> {
+  final Value<String> id;
+  final Value<String> trailId;
+  final Value<DateTime> startedAt;
+  final Value<DateTime?> finishedAt;
+  final Value<String> status;
+  final Value<String> completedStagesJson;
+  final Value<bool> parcoursFullyWalked;
+  final Value<int> rowid;
+  const TrekSessionsCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.finishedAt = const Value.absent(),
+    this.status = const Value.absent(),
+    this.completedStagesJson = const Value.absent(),
+    this.parcoursFullyWalked = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TrekSessionsCompanion.insert({
+    required String id,
+    required String trailId,
+    required DateTime startedAt,
+    this.finishedAt = const Value.absent(),
+    this.status = const Value.absent(),
+    this.completedStagesJson = const Value.absent(),
+    this.parcoursFullyWalked = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       trailId = Value(trailId),
+       startedAt = Value(startedAt);
+  static Insertable<TrekSessionRow> custom({
+    Expression<String>? id,
+    Expression<String>? trailId,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? finishedAt,
+    Expression<String>? status,
+    Expression<String>? completedStagesJson,
+    Expression<bool>? parcoursFullyWalked,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (startedAt != null) 'started_at': startedAt,
+      if (finishedAt != null) 'finished_at': finishedAt,
+      if (status != null) 'status': status,
+      if (completedStagesJson != null)
+        'completed_stages_json': completedStagesJson,
+      if (parcoursFullyWalked != null)
+        'parcours_fully_walked': parcoursFullyWalked,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TrekSessionsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? trailId,
+    Value<DateTime>? startedAt,
+    Value<DateTime?>? finishedAt,
+    Value<String>? status,
+    Value<String>? completedStagesJson,
+    Value<bool>? parcoursFullyWalked,
+    Value<int>? rowid,
+  }) {
+    return TrekSessionsCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      startedAt: startedAt ?? this.startedAt,
+      finishedAt: finishedAt ?? this.finishedAt,
+      status: status ?? this.status,
+      completedStagesJson: completedStagesJson ?? this.completedStagesJson,
+      parcoursFullyWalked: parcoursFullyWalked ?? this.parcoursFullyWalked,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (finishedAt.present) {
+      map['finished_at'] = Variable<DateTime>(finishedAt.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (completedStagesJson.present) {
+      map['completed_stages_json'] = Variable<String>(
+        completedStagesJson.value,
+      );
+    }
+    if (parcoursFullyWalked.present) {
+      map['parcours_fully_walked'] = Variable<bool>(parcoursFullyWalked.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrekSessionsCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('finishedAt: $finishedAt, ')
+          ..write('status: $status, ')
+          ..write('completedStagesJson: $completedStagesJson, ')
+          ..write('parcoursFullyWalked: $parcoursFullyWalked, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -15107,6 +15605,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $WaypointCommentTable waypointComment = $WaypointCommentTable(
     this,
   );
+  late final $TrekSessionsTable trekSessions = $TrekSessionsTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -15156,6 +15655,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final SegmentsDao segmentsDao = SegmentsDao(this as AppDatabase);
   late final KudosFeedDao kudosFeedDao = KudosFeedDao(this as AppDatabase);
   late final WaypointsDao waypointsDao = WaypointsDao(this as AppDatabase);
+  late final TrekSessionsDao trekSessionsDao = TrekSessionsDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -15189,6 +15691,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     activityFeedCache,
     waypoint,
     waypointComment,
+    trekSessions,
   ];
 }
 
@@ -22645,6 +23148,250 @@ typedef $$WaypointCommentTableProcessedTableManager =
       WaypointCommentData,
       PrefetchHooks Function()
     >;
+typedef $$TrekSessionsTableCreateCompanionBuilder =
+    TrekSessionsCompanion Function({
+      required String id,
+      required String trailId,
+      required DateTime startedAt,
+      Value<DateTime?> finishedAt,
+      Value<String> status,
+      Value<String> completedStagesJson,
+      Value<bool> parcoursFullyWalked,
+      Value<int> rowid,
+    });
+typedef $$TrekSessionsTableUpdateCompanionBuilder =
+    TrekSessionsCompanion Function({
+      Value<String> id,
+      Value<String> trailId,
+      Value<DateTime> startedAt,
+      Value<DateTime?> finishedAt,
+      Value<String> status,
+      Value<String> completedStagesJson,
+      Value<bool> parcoursFullyWalked,
+      Value<int> rowid,
+    });
+
+class $$TrekSessionsTableFilterComposer
+    extends Composer<_$AppDatabase, $TrekSessionsTable> {
+  $$TrekSessionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get finishedAt => $composableBuilder(
+    column: $table.finishedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get completedStagesJson => $composableBuilder(
+    column: $table.completedStagesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get parcoursFullyWalked => $composableBuilder(
+    column: $table.parcoursFullyWalked,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TrekSessionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TrekSessionsTable> {
+  $$TrekSessionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get finishedAt => $composableBuilder(
+    column: $table.finishedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get completedStagesJson => $composableBuilder(
+    column: $table.completedStagesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get parcoursFullyWalked => $composableBuilder(
+    column: $table.parcoursFullyWalked,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TrekSessionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TrekSessionsTable> {
+  $$TrekSessionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get finishedAt => $composableBuilder(
+    column: $table.finishedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get completedStagesJson => $composableBuilder(
+    column: $table.completedStagesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get parcoursFullyWalked => $composableBuilder(
+    column: $table.parcoursFullyWalked,
+    builder: (column) => column,
+  );
+}
+
+class $$TrekSessionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrekSessionsTable,
+          TrekSessionRow,
+          $$TrekSessionsTableFilterComposer,
+          $$TrekSessionsTableOrderingComposer,
+          $$TrekSessionsTableAnnotationComposer,
+          $$TrekSessionsTableCreateCompanionBuilder,
+          $$TrekSessionsTableUpdateCompanionBuilder,
+          (
+            TrekSessionRow,
+            BaseReferences<_$AppDatabase, $TrekSessionsTable, TrekSessionRow>,
+          ),
+          TrekSessionRow,
+          PrefetchHooks Function()
+        > {
+  $$TrekSessionsTableTableManager(_$AppDatabase db, $TrekSessionsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrekSessionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrekSessionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrekSessionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<DateTime> startedAt = const Value.absent(),
+                Value<DateTime?> finishedAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> completedStagesJson = const Value.absent(),
+                Value<bool> parcoursFullyWalked = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrekSessionsCompanion(
+                id: id,
+                trailId: trailId,
+                startedAt: startedAt,
+                finishedAt: finishedAt,
+                status: status,
+                completedStagesJson: completedStagesJson,
+                parcoursFullyWalked: parcoursFullyWalked,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String trailId,
+                required DateTime startedAt,
+                Value<DateTime?> finishedAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> completedStagesJson = const Value.absent(),
+                Value<bool> parcoursFullyWalked = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrekSessionsCompanion.insert(
+                id: id,
+                trailId: trailId,
+                startedAt: startedAt,
+                finishedAt: finishedAt,
+                status: status,
+                completedStagesJson: completedStagesJson,
+                parcoursFullyWalked: parcoursFullyWalked,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TrekSessionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrekSessionsTable,
+      TrekSessionRow,
+      $$TrekSessionsTableFilterComposer,
+      $$TrekSessionsTableOrderingComposer,
+      $$TrekSessionsTableAnnotationComposer,
+      $$TrekSessionsTableCreateCompanionBuilder,
+      $$TrekSessionsTableUpdateCompanionBuilder,
+      (
+        TrekSessionRow,
+        BaseReferences<_$AppDatabase, $TrekSessionsTable, TrekSessionRow>,
+      ),
+      TrekSessionRow,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -22704,4 +23451,6 @@ class $AppDatabaseManager {
       $$WaypointTableTableManager(_db, _db.waypoint);
   $$WaypointCommentTableTableManager get waypointComment =>
       $$WaypointCommentTableTableManager(_db, _db.waypointComment);
+  $$TrekSessionsTableTableManager get trekSessions =>
+      $$TrekSessionsTableTableManager(_db, _db.trekSessions);
 }
