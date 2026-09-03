@@ -217,10 +217,22 @@ class HubScreen extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingLg),
 
             // --- Section Apres le trek (RF-10) ---
+            // PARITE GR20, LOT 3 (#99433) : la section « Apres le trek » expose
+            // desormais la carte « Mon aventure » (recap des stats de la session
+            // reelle) EN PLUS du Diplome, comme le HUB GR20 (#U04). Les deux
+            // routes existent toujours (regle S8 « zero route morte ») ; la garde
+            // (recap accessible si termine/abandonne/vitrine ; diplome verrouille
+            // hors finisher, deverrouille en vitrine) est portee par les ecrans.
             HubSection(
               title: t.hub.sections.after,
               icon: Icons.emoji_events_outlined,
               cards: [
+                QuickAccessCard(
+                  icon: Icons.landscape_outlined,
+                  title: t.hub.cards.recap,
+                  subtitle: t.hub.cards.recapSub,
+                  onTap: () => context.push('/trail/$trailId/recap'),
+                ),
                 QuickAccessCard(
                   icon: Icons.workspace_premium_outlined,
                   title: t.hub.cards.diploma,

@@ -367,7 +367,11 @@
     "recapMapTrace": "Trace du parcours",
     "recapNoMap": "Trace non disponible",
     "recapJournalEntries": "{count} notes de journal",
-    "downloadPdf": "Telecharger le diplome PDF"
+    "downloadPdf": "Telecharger le diplome PDF",
+    "lockedTitle": "Diplome verrouille",
+    "lockedMessage": "Terminez l integralite de votre parcours pour debloquer votre diplome de finisher.",
+    "labelIntegral": "Parcours integral",
+    "labelPartial": "Parcours partiel"
   },
   "notifications": {
     "morningReminder": "Rappel du matin",
@@ -1060,5 +1064,24 @@
   },
   "bootstrap": {
     "loading": "Préparation de votre randonnée…"
+  },
+  "recap": {
+    "title": "Mon aventure",
+    "lockedTitle": "Disponible a la fin du trek",
+    "lockedMessage": "Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.",
+    "finisherTitle": "Felicitations !",
+    "finisherSubtitle": "Vous avez termine votre parcours",
+    "partialTitle": "Votre parcours partiel",
+    "partialSubtitle": "Votre aventure reste enregistree",
+    "statsSection": "Statistiques",
+    "traceSection": "Votre trace",
+    "noTrace": "Aucune trace GPS disponible",
+    "stages": "{done} / {total} etapes parcourues",
+    "distance": "{km} km parcourus",
+    "elevation": "{meters} m de denivele positif",
+    "duration": "{days} jours",
+    "dates": "Du {start} au {end}",
+    "viewDiploma": "Voir mon diplome",
+    "noData": "Aucune donnee de parcours a afficher pour le moment."
   }
 }

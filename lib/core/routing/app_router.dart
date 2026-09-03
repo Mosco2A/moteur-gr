@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
 import '../../features/consent/presentation/consent_settings_screen.dart';
+import '../../features/after/presentation/adventure_recap_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/hub/presentation/hub_screen.dart';
 import '../../features/feasibility/presentation/feasibility_screen.dart';
@@ -84,7 +85,8 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/feasibility       - Questionnaire faisabilite
 ///   /trail/:id/tips              - Fiches conseils
 ///   /trail/:id/journal           - Journal de trek
-///   /trail/:id/diploma           - Diplome de fin de trek
+///   /trail/:id/diploma           - Diplome de fin de trek (gate finisher)
+///   /trail/:id/recap             - Recap « Mon aventure » (stats session)
 ///   /trail/:id/feedback          - Feedback in-app
 ///   /trail/:id/weather           - Meteo d'une etape (E31, ?stage=n)
 ///   /trail/:id/guides            - Guides villes (liste, E33)
@@ -286,6 +288,14 @@ final appRouter = GoRouter(
           path: 'diploma',
           name: 'trail-diploma',
           builder: (context, state) => const DiplomaScreen(),
+        ),
+        // PARITE GR20, LOT 3 (#99433) : recap « Mon aventure » (stats de la
+        // session reelle). Accessible quand le trek est termine OU abandonne
+        // (plus la vitrine) — la garde est portee par l'ecran (parite GR20).
+        GoRoute(
+          path: 'recap',
+          name: 'trail-recap',
+          builder: (context, state) => const AdventureRecapScreen(),
         ),
         GoRoute(
           path: 'feedback',

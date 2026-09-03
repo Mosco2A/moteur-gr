@@ -367,7 +367,11 @@
     "recapMapTrace": "Trazado del recorrido",
     "recapNoMap": "Trazado no disponible",
     "recapJournalEntries": "{count} notas del diario",
-    "downloadPdf": "Descargar diploma PDF"
+    "downloadPdf": "Descargar diploma PDF",
+    "lockedTitle": "Diploma bloqueado",
+    "lockedMessage": "Completa toda tu ruta para desbloquear tu diploma de finisher.",
+    "labelIntegral": "Ruta integral",
+    "labelPartial": "Ruta parcial"
   },
   "notifications": {
     "morningReminder": "Recordatorio matutino",
@@ -1060,5 +1064,24 @@
   },
   "bootstrap": {
     "loading": "Preparando tu excursión…"
+  },
+  "recap": {
+    "title": "Mi aventura",
+    "lockedTitle": "Disponible al final de la ruta",
+    "lockedMessage": "Termina o abandona tu ruta para ver el resumen de tu aventura.",
+    "finisherTitle": "Felicidades!",
+    "finisherSubtitle": "Has completado tu ruta",
+    "partialTitle": "Tu ruta parcial",
+    "partialSubtitle": "Tu aventura queda registrada",
+    "statsSection": "Estadisticas",
+    "traceSection": "Tu trazado",
+    "noTrace": "No hay trazado GPS disponible",
+    "stages": "{done} / {total} etapas recorridas",
+    "distance": "{km} km recorridos",
+    "elevation": "{meters} m de desnivel positivo",
+    "duration": "{days} dias",
+    "dates": "Del {start} al {end}",
+    "viewDiploma": "Ver mi diploma",
+    "noData": "Aun no hay datos de ruta para mostrar."
   }
 }

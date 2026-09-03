@@ -136,10 +136,11 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 11 sous-routes (+ guides E33)', () {
+    test('la route /trail/:id conserve ses 12 sous-routes (+ recap LOT3)', () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
+      // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
       final trail = trailRoute();
-      expect(trail.routes.length, 11);
+      expect(trail.routes.length, 12);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -150,6 +151,7 @@ void main() {
         'tips',
         'journal',
         'diploma',
+        'recap',
         'feedback',
         'weather',
         'guides',
@@ -168,6 +170,7 @@ void main() {
         'trail-tips',
         'trail-journal',
         'trail-diploma',
+        'trail-recap',
         'trail-feedback',
         'trail-weather',
         'trail-guides',

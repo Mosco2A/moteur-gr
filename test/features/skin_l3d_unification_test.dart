@@ -18,6 +18,8 @@ import 'package:moteur_gr/core/data/daos/review_requests_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/providers/service_providers.dart';
+import 'package:moteur_gr/core/services/demo_mode_service.dart';
 import 'package:moteur_gr/features/after/data/in_app_review_service.dart';
 import 'package:moteur_gr/features/after/providers/in_app_review_provider.dart';
 import 'package:moteur_gr/features/diploma/presentation/diploma_screen.dart';
@@ -242,6 +244,13 @@ void main() {
           overrides: [
             databaseProvider.overrideWithValue(db),
             trailConfigProvider.overrideWithValue(testTrailConfig),
+            // PARITE GR20 LOT 3 (#99433) : le diplome est desormais gate au
+            // finisher. Pour tester la GRAMMAIRE des composants (AppCard/
+            // AppButton) on deverrouille via la VITRINE (testTrailConfig marque
+            // showcase) — le contenu du diplome est alors rendu.
+            demoModeServiceProvider.overrideWithValue(
+              DemoModeService(showcaseTrailIds: {testTrailConfig.id}),
+            ),
             // No-op review : evite l'appel plugin natif en post-frame.
             inAppReviewServiceProvider.overrideWithValue(
               _NoReviewService(db.reviewRequestsDao),

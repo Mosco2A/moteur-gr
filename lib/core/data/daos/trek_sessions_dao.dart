@@ -39,6 +39,27 @@ class TrekSessionsDao extends DatabaseAccessor<AppDatabase>
     return row == null ? null : _fromRow(row);
   }
 
+  /// Relit la DERNIERE session persistee du sentier [trailId], ou null si
+  /// aucune (PARITE GR20, LOT 3, #99433).
+  ///
+  /// « Derniere » = la plus recemment demarree ([TrekSession.startedAt] le plus
+  /// grand), avec la date de fin comme second critere (une session terminee
+  /// prime a horodatage egal). C'est la source de verite « apres le trek » : le
+  /// gate du diplome (finisher reel) et l'ecran Recap « Mon aventure » lisent
+  /// cette session pour refleter le parcours REELLEMENT effectue (etapes
+  /// marchees + drapeau finisher), y compris apres un redemarrage.
+  Future<TrekSession?> getLatestByTrailId(String trailId) async {
+    final row = await (select(trekSessions)
+          ..where((t) => t.trailId.equals(trailId))
+          ..orderBy([
+            (t) => OrderingTerm.desc(t.startedAt),
+            (t) => OrderingTerm.desc(t.finishedAt),
+          ])
+          ..limit(1))
+        .getSingleOrNull();
+    return row == null ? null : _fromRow(row);
+  }
+
   /// Sessions au statut `active` (candidates a la reprise apres crash).
   ///
   /// Alimente le detecteur de session orpheline ([TrekSessionManager]) : une

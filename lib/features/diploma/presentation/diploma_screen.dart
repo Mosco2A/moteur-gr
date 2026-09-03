@@ -12,10 +12,12 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
+import '../../trek/domain/trek_completion.dart';
 import '../domain/diploma_generator.dart';
 import '../domain/diploma_pdf_service.dart';
 import '../providers/session_trace_provider.dart';
 import 'widgets/session_trace_painter.dart';
+import '../../after/providers/adventure_recap_provider.dart';
 import '../../after/providers/in_app_review_provider.dart';
 
 /// Ecran diplome de fin de trek avec recap aventure.
@@ -47,7 +49,12 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   }
 
   /// E5.17: Demande d'avis store — 1 seule fois par trek.
+  ///
+  /// PARITE GR20, LOT 3 : ne se declenche que si le diplome est reellement
+  /// ACCESSIBLE (finisher reel ou vitrine). Sur un diplome verrouille, aucun
+  /// avis n'est demande (on ne felicite pas un trek non fini).
   Future<void> _requestInAppReviewIfEligible() async {
+    if (!ref.read(isDiplomaUnlockedProvider)) return;
     final config = ref.read(trailConfigProvider);
     final trailId = config.id;
     final reviewService = ref.read(inAppReviewServiceProvider);
@@ -65,6 +72,22 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     final diplomaT = t.diploma;
     final config = ref.watch(trailConfigProvider);
 
+    // PARITE GR20, LOT 3 (#99433), point 3.B(1) — GATE FINISHER + exception
+    // vitrine. Le diplome est VERROUILLE tant que le parcours n'a pas ete
+    // reellement parcouru en entier (session `parcoursFullyWalked`), SAUF sur un
+    // sentier VITRINE ou il est deverrouille pour la demonstration (comme le
+    // diplome GR20 en mode demo). Gate porte par [isDiplomaUnlockedProvider].
+    final isUnlocked = ref.watch(isDiplomaUnlockedProvider);
+    if (!isUnlocked) {
+      return Scaffold(
+        appBar: AppBar(title: Text(diplomaT.title)),
+        body: _LockedState(
+          title: diplomaT.lockedTitle,
+          message: diplomaT.lockedMessage,
+        ),
+      );
+    }
+
     // Journal : entrees avec photos (select pour granularite fine)
     final journalEntries = ref.watch(
       journalScreenProvider.select((s) => s.entries),
@@ -78,6 +101,18 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         .where((e) => e.photoPath != null && e.photoPath!.isNotEmpty)
         .toList();
 
+    // PARITE GR20, LOT 3 (#99433), point 3.B(2) — CHIFFRES REELS. Les stats du
+    // diplome refletent la SESSION REELLE (etapes REELLEMENT marchees,
+    // distance/D+ parcourus), pas les totaux statiques du sentier. On resout les
+    // stats reelles ([adventureStatsProvider]) ; en leur absence (vitrine sans
+    // session enregistree, demo), on retombe sur les totaux du sentier pour que
+    // la demonstration reste parlante — parite avec la demo GR20.
+    final realStats = ref.watch(adventureStatsProvider).value;
+
+    // PARITE GR20, LOT 3 (#99433), point 3.B(3) — LIBELLE Integral/partiel,
+    // branche sur [TrekCongratulations] du parcours reel.
+    final congrats = ref.watch(adventureCongratulationsProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text(diplomaT.title)),
       body: SingleChildScrollView(
@@ -89,6 +124,10 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             _RecapHeader(title: diplomaT.recapTitle),
             const SizedBox(height: AppTheme.spacingLg),
 
+            // Libelle parcours integral / partiel (parite GR20, 3.B.3).
+            _ParcoursLabel(congrats: congrats, stats: realStats),
+            const SizedBox(height: AppTheme.spacingLg),
+
             // Section photos journal
             _JournalPhotosSection(
               photoEntries: photoEntries,
@@ -96,8 +135,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             ),
             const SizedBox(height: AppTheme.spacingLg),
 
-            // Section statistiques
-            _StatsSection(config: config),
+            // Section statistiques REELLES de la session (fallback config).
+            _StatsSection(config: config, stats: realStats),
             const SizedBox(height: AppTheme.spacingLg),
 
             // Section carte trace (trace GPS reel de la session — F3)
@@ -117,7 +156,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             TextField(
               controller: _nameController,
               decoration: InputDecoration(hintText: diplomaT.namePlaceholder),
-              onChanged: (_) => _generateDiploma(config),
+              onChanged: (_) => _generateDiploma(config, realStats),
             ),
             const SizedBox(height: AppTheme.spacingLg),
 
@@ -130,7 +169,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
               label: diplomaT.downloadPdf,
               icon: Icons.picture_as_pdf,
               onPressed: _diplomaData != null && !_isGeneratingPdf
-                  ? () => _generatePdf(config)
+                  ? () => _generatePdf(config, realStats)
                   : null,
             ),
           ],
@@ -139,7 +178,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     );
   }
 
-  void _generateDiploma(TrailConfig config) {
+  void _generateDiploma(TrailConfig config, AdventureStats? stats) {
     final name = _nameController.text.trim();
     if (name.isEmpty) {
       setState(() => _diplomaData = null);
@@ -147,15 +186,21 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     }
 
     setState(() {
+      // Chiffres REELS de la session si disponibles (etapes marchees,
+      // distance/D+ parcourus, duree/date reelles), sinon fallback totaux du
+      // sentier (demo/vitrine sans session). Parite GR20, 3.B.2.
+      final useReal = stats != null && stats.hasWalkedStages;
       _diplomaData = DiplomaGenerator.createDiploma(
         hikerName: name,
         trailName: config.displayName,
         trailRegion: config.region,
-        totalStages: config.totalStages,
-        totalDistanceKm: config.totalDistanceKm,
-        totalElevationGain: config.totalElevationGain,
-        completionDate: DateTime.now(),
-        durationDays: config.defaultDuration,
+        totalStages: useReal ? stats.stagesWalked : config.totalStages,
+        totalDistanceKm: useReal ? stats.distanceKm : config.totalDistanceKm,
+        totalElevationGain:
+            useReal ? stats.elevationGainM : config.totalElevationGain,
+        completionDate:
+            useReal ? (stats.endDate ?? DateTime.now()) : DateTime.now(),
+        durationDays: useReal ? stats.durationDays : config.defaultDuration,
       );
     });
   }
@@ -208,7 +253,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   }
 
   /// Genere le PDF via DiplomaPdfService.
-  Future<void> _generatePdf(TrailConfig config) async {
+  Future<void> _generatePdf(TrailConfig config, AdventureStats? stats) async {
     if (_diplomaData == null) return;
     // E5.5a : retour haptique moyen a la generation du diplome.
     AppHaptics.medium();
@@ -216,18 +261,26 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
 
     try {
       final diplomaT = t.diploma;
+      // Chiffres REELS de la session si disponibles, sinon totaux du sentier
+      // (demo/vitrine). Meme regle que l'apercu (parite GR20, 3.B.2).
+      final useReal = stats != null && stats.hasWalkedStages;
+      final endDate =
+          useReal ? (stats.endDate ?? DateTime.now()) : DateTime.now();
+      final startDate = useReal
+          ? (stats.startDate ??
+              endDate.subtract(Duration(days: stats.durationDays)))
+          : DateTime.now().subtract(Duration(days: config.defaultDuration));
       final data = DiplomaPdfData(
         hikerName: _diplomaData!.hikerName,
         trailName: config.displayName,
         trailRegion: config.region,
-        totalStages: config.totalStages,
-        totalDistanceKm: config.totalDistanceKm,
-        totalElevationGain: config.totalElevationGain,
-        startDate: DateTime.now().subtract(
-          Duration(days: config.defaultDuration),
-        ),
-        endDate: DateTime.now(),
-        durationDays: config.defaultDuration,
+        totalStages: useReal ? stats.stagesWalked : config.totalStages,
+        totalDistanceKm: useReal ? stats.distanceKm : config.totalDistanceKm,
+        totalElevationGain:
+            useReal ? stats.elevationGainM : config.totalElevationGain,
+        startDate: startDate,
+        endDate: endDate,
+        durationDays: useReal ? stats.durationDays : config.defaultDuration,
       );
 
       final labels = DiplomaPdfLabels(
@@ -396,14 +449,32 @@ class _PhotoCard extends StatelessWidget {
 }
 
 /// Section statistiques du trek.
+///
+/// PARITE GR20, LOT 3 (#99433), point 3.B(2) : affiche les chiffres de la
+/// SESSION REELLE ([stats]) — etapes REELLEMENT marchees, distance/D+
+/// parcourus, duree reelle — quand ils existent. En leur absence (vitrine sans
+/// session enregistree / demo), retombe sur les totaux du sentier ([config])
+/// pour une demonstration parlante (parite avec la demo GR20).
 class _StatsSection extends StatelessWidget {
-  const _StatsSection({required this.config});
+  const _StatsSection({required this.config, required this.stats});
   final TrailConfig config;
+  final AdventureStats? stats;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final diplomaT = t.diploma;
+
+    final useReal = stats != null && stats!.hasWalkedStages;
+    final stagesText =
+        useReal ? '${stats!.stagesWalked}' : '${config.totalStages}';
+    final distanceText = useReal
+        ? stats!.distanceKm.toStringAsFixed(0)
+        : config.totalDistanceKm.toStringAsFixed(0);
+    final elevationText =
+        useReal ? '${stats!.elevationGainM}' : '${config.totalElevationGain}';
+    final durationText =
+        useReal ? '${stats!.durationDays}' : '${config.defaultDuration}';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -420,39 +491,132 @@ class _StatsSection extends StatelessWidget {
             children: [
               _StatRow(
                 icon: Icons.flag,
-                label: diplomaT.recapStages.replaceAll(
-                  '{count}',
-                  '${config.totalStages}',
-                ),
+                label: diplomaT.recapStages.replaceAll('{count}', stagesText),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
                 icon: Icons.straighten,
-                label: diplomaT.recapDistance.replaceAll(
-                  '{km}',
-                  config.totalDistanceKm.toStringAsFixed(0),
-                ),
+                label:
+                    diplomaT.recapDistance.replaceAll('{km}', distanceText),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
                 icon: Icons.trending_up,
-                label: diplomaT.recapElevation.replaceAll(
-                  '{meters}',
-                  '${config.totalElevationGain}',
-                ),
+                label: diplomaT.recapElevation
+                    .replaceAll('{meters}', elevationText),
               ),
               const Divider(height: AppTheme.spacingBase),
               _StatRow(
                 icon: Icons.calendar_today,
-                label: diplomaT.recapDuration.replaceAll(
-                  '{days}',
-                  '${config.defaultDuration}',
-                ),
+                label:
+                    diplomaT.recapDuration.replaceAll('{days}', durationText),
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Libelle « Parcours integral / partiel » derive du parcours reel.
+///
+/// PARITE GR20, LOT 3 (#99433), point 3.B(3) : branche
+/// [TrekCongratulations.partialLabel]/[TrekCompletionKind] -> libelle i18n.
+/// « Integral » quand le parcours reel est ENTIER et fini (finisher) ;
+/// « partiel » sinon. Sans plan (pas d'etapes chargees), rien n'est affiche.
+class _ParcoursLabel extends StatelessWidget {
+  const _ParcoursLabel({required this.congrats, required this.stats});
+  final TrekCongratulations? congrats;
+  final AdventureStats? stats;
+
+  @override
+  Widget build(BuildContext context) {
+    final congrats = this.congrats;
+    if (congrats == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final diplomaT = t.diploma;
+
+    // Integral = parcours ENTIER reellement fini (finisher). Un parcours partiel
+    // (portion) OU non entierement marche -> libelle « partiel ».
+    final isIntegral = congrats.isFull && (stats?.fullyWalked ?? false);
+    final label = isIntegral ? diplomaT.labelIntegral : diplomaT.labelPartial;
+
+    return Semantics(
+      label: label,
+      child: Center(
+        child: Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.spacingBase,
+            vertical: AppTheme.spacingSm,
+          ),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.primary.withAlpha(30),
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                isIntegral ? Icons.verified : Icons.terrain,
+                size: 18,
+                color: theme.colorScheme.primary,
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Text(
+                label,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Etat verrouille du diplome (trek non fini, hors vitrine) — parite GR20.
+class _LockedState extends StatelessWidget {
+  const _LockedState({required this.title, required this.message});
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingLg),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.lock_outline,
+              size: 64,
+              color: AppTheme.grisTexteSecondaire,
+            ),
+            const SizedBox(height: AppTheme.spacingLg),
+            Text(
+              title,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+            Text(
+              message,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
