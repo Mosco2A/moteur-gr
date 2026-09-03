@@ -103,6 +103,12 @@ class SeedDataLoader {
         endLat: Value((json['endLat'] as num).toDouble()),
         endLng: Value((json['endLng'] as num).toDouble()),
         difficulty: Value(json['difficulty'] as String? ?? 'moderate'),
+        // Champ riche OPTIONNEL (parite GR20) : duree estimee par etape en
+        // minutes, fournie par la donnee du sentier. Absente -> colonne NULL
+        // (l'affichage retombe sur une estimation, cf. stageDurationMinutes).
+        estimatedDurationMinutes: json['estimatedDurationMinutes'] == null
+            ? const Value.absent()
+            : Value((json['estimatedDurationMinutes'] as num).round()),
       );
     }).toList();
     await stagesDao.insertAll(stageCompanions);

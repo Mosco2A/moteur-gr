@@ -1,4 +1,5 @@
 import '../../../core/models/stage.dart';
+import '../../../core/models/stage_duration.dart';
 
 /// Une journee planifiee du PROGRAMME (parite GR20 `PlannedDay`).
 ///
@@ -37,11 +38,13 @@ class PlannedDay {
   int get totalElevationLossM =>
       stages.fold<int>(0, (sum, s) => sum + s.elevationLossM);
 
-  /// Duree estimee du jour, en heures (memes coefficients que GR20 /
+  /// Duree estimee du jour, en heures.
+  ///
+  /// Somme des durees d'etape via la source unique [stageDurationMinutes] : la
+  /// duree RICHE du sentier fait autorite par etape quand elle existe, sinon
+  /// repli sur la regle de marche Naismith (memes coefficients que GR20 /
   /// [PlanningCalculator] : distance / 4 km/h + D+ / 400 m/h).
-  double get estimatedHours =>
-      stages.fold<double>(0, (sum, s) => sum + s.distanceKm / 4.0) +
-      stages.fold<double>(0, (sum, s) => sum + s.elevationGainM / 400.0);
+  double get estimatedHours => totalStagesDurationMinutes(stages) / 60.0;
 
   /// Difficulte maximale des etapes du jour (echelle 1..4, teinte de la carte).
   /// Repli sur 1 (facile) pour un jour sans etape.

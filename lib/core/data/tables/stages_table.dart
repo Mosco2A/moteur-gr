@@ -43,4 +43,11 @@ class Stages extends Table {
 
   /// Difficulte (easy, moderate, hard, extreme)
   TextColumn get difficulty => text().withDefault(const Constant('moderate'))();
+
+  /// Duree estimee de l'etape, en MINUTES (parite GR20).
+  ///
+  /// Champ RICHE optionnel du socle « donnees externes ». NULLABLE : renseigne
+  /// uniquement pour les sentiers dont la source de donnees le fournit
+  /// (`stages.json`, backend P4). Ajoute en migration v20 -> v21.
+  IntColumn get estimatedDurationMinutes => integer().nullable()();
 }

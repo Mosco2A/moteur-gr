@@ -137,7 +137,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 20;
+  int get schemaVersion => 21;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -257,6 +257,16 @@ class AppDatabase extends _$AppDatabase {
             await migrator.addColumn(
               checklistItems,
               checklistItems.customName,
+            );
+          }
+          // Migration v20 -> v21 : parite GR20 « socle donnees » — colonne
+          // estimatedDurationMinutes (nullable) sur stages. Champ riche par
+          // etape (duree estimee) alimente par les donnees du sentier
+          // (stages.json, backend P4), affiche sur Itineraire et Programme.
+          if (from < 21) {
+            await migrator.addColumn(
+              stages,
+              stages.estimatedDurationMinutes,
             );
           }
         },

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/models/stage.dart';
+import '../../../../core/models/stage_duration.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
@@ -324,6 +325,15 @@ class _StageTile extends StatelessWidget {
                         icon: Icons.arrow_downward,
                         label: '${stage.elevationLossM} m',
                         color: theme.colorScheme.primary,
+                      ),
+                      // Duree par etape (parite GR20) — leve le residuel « pas
+                      // de duree » sur Itineraire. Valeur issue du socle
+                      // « donnees externes » ([stageDurationMinutes]) : donnee
+                      // du sentier si fournie, sinon estimation Naismith. Un
+                      // sentier sans la donnee reste affiche (repli propre).
+                      _MiniStat(
+                        icon: Icons.schedule,
+                        label: formatDurationMinutes(stageDurationMinutes(stage)),
                       ),
                     ],
                   ),

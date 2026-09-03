@@ -89,6 +89,54 @@ void main() {
       // Chip difficulte (semantique) present.
       expect(find.text(t.stage.difficulty.hard), findsOneWidget);
       expect(find.text(t.stage.difficulty.moderate), findsOneWidget);
+
+      // DUREE par etape (parite GR20, residuel leve). Aucune duree fournie sur
+      // ces etapes de test -> repli sur l estimation Naismith :
+      //   A : 14.5/4 + 850/400 = 5h45 ; B : 12/4 + 600/400 = 4h30.
+      expect(find.text('5h45'), findsOneWidget);
+      expect(find.text('4h30'), findsOneWidget);
+    });
+
+    testWidgets('affiche la duree RICHE du sentier quand elle est fournie',
+        (tester) async {
+      // Etape avec duree fournie (donnee du sentier) DIFFERENTE de l estimation
+      // (l estimation donnerait 5h45) : c est la DONNEE (6h30) qui s affiche.
+      const stageRiche = StageModel(
+        trailId: 'rich-trail',
+        stageNumber: 1,
+        name: 'Etape riche',
+        distanceKm: 14.5,
+        elevationGainM: 850,
+        elevationLossM: 620,
+        startLat: 42.10,
+        startLng: 9.05,
+        endLat: 42.15,
+        endLng: 9.10,
+        difficulty: 'hard',
+        estimatedDurationMinutes: 390,
+      );
+      final days = [
+        const ItineraryDay(
+          dayNumber: 1,
+          stages: [stageRiche],
+          totalDistance: 14.5,
+          totalElevation: 850,
+          estimatedHours: 6.5,
+        ),
+      ];
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [daysOverride(days)],
+          child: const MaterialApp(
+            home: ItineraryScreen(trailId: 'rich-trail'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('6h30'), findsOneWidget); // donnee = 390 min
+      expect(find.text('5h45'), findsNothing); // pas l estimation
     });
 
     testWidgets('affiche l en-tete de totaux (distance, D+, jours, etapes)',
