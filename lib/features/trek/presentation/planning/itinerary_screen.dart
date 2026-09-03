@@ -15,8 +15,8 @@ import '../../providers/itinerary_providers.dart';
 ///
 /// Reproduit le role de l'ecran « Itineraire » de GR20 cote StepWays : le
 /// DEROULE des etapes du sentier courant, jour par jour, avec les infos par
-/// etape (distance, D+, D-, duree estimee, difficulte) et des ACTIONS (voir le
-/// detail de l'etape, voir sur la carte). Avant ce lot, la carte « Itineraire »
+/// etape (distance, D+, D-, difficulte) et l'ACTION d'ouvrir le detail d'une
+/// etape. Avant ce lot, la carte « Itineraire »
 /// du HUB faisait `context.go('/map')` : la pile de navigation etait remplacee
 /// (bascule d'onglet du shell) et le retour depuis la carte plantait
 /// (`currentConfiguration.isNotEmpty`). Cet ecran est desormais une route
@@ -225,8 +225,8 @@ class _DayCard extends StatelessWidget {
   }
 }
 
-/// Tuile d'une etape : infos (distance, D+, D-, duree) + chip difficulte +
-/// actions (voir l'etape, voir sur la carte). Tap = detail de l'etape.
+/// Tuile d'une etape : infos par etape (distance, D+, D-) + chip difficulte.
+/// Action (parite GR20) : tap sur la tuile -> detail de l'etape (/stages/:num).
 class _StageTile extends StatelessWidget {
   const _StageTile({required this.stage});
 
