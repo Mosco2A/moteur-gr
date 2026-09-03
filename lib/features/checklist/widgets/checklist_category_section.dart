@@ -2,126 +2,113 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import 'checklist_item_widget.dart';
+import 'checklist_weight_banner.dart' show formatChecklistGrams;
 
-/// Section de categorie dans la checklist materiel (E3.2b).
+/// Section (Card + ExpansionTile) d'une categorie de materiel — CLONE du rendu
+/// GR20 « Materiel & Sac » (_GearCategoryCard).
 ///
-/// Affiche un titre de categorie avec sa barre de progression
-/// et la liste des items cochables via ChecklistItemWidget.
+/// En-tete : icone de categorie + nom + sous-titre « sous-total poids —
+/// coches/total ». Corps : liste des articles ([ChecklistItemWidget]) puis un
+/// bouton « Ajouter un item ».
 class ChecklistCategorySection extends StatelessWidget {
   const ChecklistCategorySection({
     super.key,
+    required this.categoryKey,
     required this.categoryName,
     required this.items,
     required this.onToggle,
-    this.onEditWeight,
+    required this.onEditItem,
+    required this.onDeleteItem,
+    required this.onAddItem,
+    required this.onQuantityChanged,
+    required this.onToggleShoppingList,
   });
 
-  /// Nom traduit de la categorie (resolu via Slang dans le screen)
+  /// Cle i18n de la categorie (pour l'icone).
+  final String categoryKey;
+
+  /// Nom traduit de la categorie (resolu via Slang dans le screen).
   final String categoryName;
 
-  /// Items de cette categorie
+  /// Articles de cette categorie.
   final List<ChecklistItemState> items;
 
-  /// Callback quand un item est coche/decoche
   final void Function(String itemId) onToggle;
+  final void Function(String itemId) onEditItem;
+  final void Function(String itemId) onDeleteItem;
+  final VoidCallback onAddItem;
+  final void Function(String itemId, int newQuantity) onQuantityChanged;
+  final void Function(String itemId) onToggleShoppingList;
 
-  /// Callback d'edition du poids d'un item (parite GR20). Null = non editable.
-  final void Function(String itemId)? onEditWeight;
-
-  /// Poids (g) des items COCHES de la categorie (sous-total, parite GR20).
+  /// Poids (g) des articles COCHES de la categorie (sous-total, parite GR20 :
+  /// quantite comprise).
   int get _checkedWeightGrams =>
-      items.where((i) => i.isChecked).fold(0, (s, i) => s + i.weightGrams);
+      items.where((i) => i.isChecked).fold(0, (s, i) => s + i.totalWeightGrams);
 
-  /// Formate un poids en grammes -> "1,2 kg" / "350 g".
-  static String _formatWeight(int grams) {
-    if (grams >= 1000) {
-      final kg = grams / 1000.0;
-      return '${kg.toStringAsFixed(kg.truncateToDouble() == kg ? 0 : 1)}'
-          ' ${t.checklist.weight.kilograms}';
-    }
-    return '$grams ${t.checklist.weight.grams}';
+  IconData get _icon {
+    final cp = checklistCategoryIconCodepoints[categoryKey];
+    if (cp == null) return Icons.more_horiz;
+    return IconData(cp, fontFamily: 'MaterialIcons');
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final checked = items.where((i) => i.isChecked).length;
-    final total = items.length;
-    final progress = total > 0 ? checked / total : 0.0;
+    final checkedInCat = items.where((i) => i.isChecked).length;
     final catWeight = _checkedWeightGrams;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // En-tete categorie avec progression + sous-total poids (parite GR20)
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingBase,
-            vertical: AppTheme.spacingSm,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  categoryName,
-                  style: theme.textTheme.titleMedium,
-                ),
-              ),
-              if (catWeight > 0) ...[
-                Text(
-                  _formatWeight(catWeight),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withAlpha(160),
-                  ),
-                ),
-                const SizedBox(width: AppTheme.spacingSm),
-              ],
-              Text(
-                '$checked/$total',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-            ],
+    return Card(
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
+      child: ExpansionTile(
+        leading: Icon(_icon, color: theme.colorScheme.primary, size: 22),
+        title: Text(
+          categoryName,
+          style: theme.textTheme.bodyLarge?.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
-        // Barre de progression de la categorie
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingBase,
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 4,
-              backgroundColor:
-                  theme.colorScheme.onSurface.withAlpha(30),
-              valueColor: AlwaysStoppedAnimation(
-                progress >= 1.0
-                    ? AppTheme.vertFacile
-                    : theme.colorScheme.primary,
+        subtitle: Text(
+          '${catWeight > 0 ? formatChecklistGrams(catWeight) : "0 ${t.checklist.weight.grams}"}'
+          ' — $checkedInCat/${items.length}',
+          style: theme.textTheme.bodySmall,
+        ),
+        initiallyExpanded: false,
+        childrenPadding: const EdgeInsets.only(
+          left: AppTheme.spacingSm,
+          right: AppTheme.spacingSm,
+          bottom: AppTheme.spacingSm,
+        ),
+        children: [
+          ...items.map((item) => ChecklistItemWidget(
+                item: item,
+                onToggle: () => onToggle(item.template.id),
+                onEdit: () => onEditItem(item.template.id),
+                onDelete: item.isCustom
+                    ? () => onDeleteItem(item.template.id)
+                    : null,
+                onQuantityChanged: (newQty) =>
+                    onQuantityChanged(item.template.id, newQty),
+                onToggleShoppingList: () =>
+                    onToggleShoppingList(item.template.id),
+              )),
+          // Bouton « Ajouter un item » (parite GR20).
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: onAddItem,
+              icon: const Icon(Icons.add, size: 16),
+              label: Text(t.checklist.ui.addItem),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                minimumSize: Size.zero,
               ),
             ),
           ),
-        ),
-        const SizedBox(height: AppTheme.spacingSm),
-        // Liste des items via ChecklistItemWidget
-        ...items.map((item) => ChecklistItemWidget(
-              itemId: item.template.id,
-              nameKey: item.template.nameKey,
-              isChecked: item.isChecked,
-              isEssential: item.template.isEssential,
-              weightGrams: item.weightGrams,
-              onEditWeight: onEditWeight == null
-                  ? null
-                  : () => onEditWeight!(item.template.id),
-              onToggle: () => onToggle(item.template.id),
-            )),
-        const SizedBox(height: AppTheme.spacingMd),
-      ],
+        ],
+      ),
     );
   }
 }

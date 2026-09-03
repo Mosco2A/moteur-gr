@@ -116,8 +116,8 @@ void main() {
   });
 
   group('defaultChecklistTemplate (retrocompat)', () {
-    test('contient 25 items', () {
-      expect(defaultChecklistTemplate.length, 25);
+    test('contient 84 articles (clone GR20)', () {
+      expect(defaultChecklistTemplate.length, 84);
     });
 
     test('tous les ids sont uniques', () {

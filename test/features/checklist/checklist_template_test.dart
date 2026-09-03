@@ -1,37 +1,46 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/checklist/data/checklist_template.dart';
 
-/// Tests du template de checklist materiel.
+/// Tests du template de checklist materiel — CLONE du contenu GR20
+/// « Materiel & Sac » (parite #99433).
 void main() {
   group('ChecklistTemplateItem', () {
     test('constructor initialise tous les champs', () {
       const item = ChecklistTemplateItem(
         id: 'test_item',
-        category: 'equipment',
+        category: 'carrying',
         nameKey: 'testKey',
         isEssential: true,
+        weightGrams: 500,
+        quantity: 2,
+        requirement: ChecklistRequirement.required,
       );
 
       expect(item.id, 'test_item');
-      expect(item.category, 'equipment');
+      expect(item.category, 'carrying');
       expect(item.nameKey, 'testKey');
       expect(item.isEssential, true);
+      expect(item.weightGrams, 500);
+      expect(item.quantity, 2);
+      expect(item.requirement, ChecklistRequirement.required);
     });
 
-    test('isEssential est false par defaut', () {
+    test('valeurs par defaut : optional, quantite 1, non essentiel', () {
       const item = ChecklistTemplateItem(
         id: 'test',
-        category: 'food',
+        category: 'foodWater',
         nameKey: 'test',
       );
 
       expect(item.isEssential, false);
+      expect(item.quantity, 1);
+      expect(item.requirement, ChecklistRequirement.optional);
     });
   });
 
-  group('defaultChecklistTemplate', () {
-    test('contient 25 items', () {
-      expect(defaultChecklistTemplate.length, 25);
+  group('defaultChecklistTemplate (clone GR20)', () {
+    test('contient 84 articles (clone du sac GR20)', () {
+      expect(defaultChecklistTemplate.length, 84);
     });
 
     test('tous les ids sont uniques', () {
@@ -49,61 +58,109 @@ void main() {
       }
     });
 
-    test('contient des items essentiels', () {
-      final essentials =
-          defaultChecklistTemplate.where((i) => i.isEssential);
-      expect(essentials.length, greaterThan(5));
+    test('contient des articles obligatoires (required)', () {
+      final required = defaultChecklistTemplate.where(
+          (i) => i.requirement == ChecklistRequirement.required);
+      expect(required.length, greaterThanOrEqualTo(5));
     });
 
-    test('chaque categorie a au moins un item', () {
+    test('chaque categorie a au moins un article', () {
       for (final category in checklistCategories) {
-        final items = defaultChecklistTemplate
-            .where((i) => i.category == category);
-        expect(
-          items.isNotEmpty,
-          true,
-          reason: 'Categorie vide: $category',
-        );
+        final items =
+            defaultChecklistTemplate.where((i) => i.category == category);
+        expect(items.isNotEmpty, true, reason: 'Categorie vide: $category');
       }
     });
 
-    test('les items essentiels incluent le sac a dos', () {
-      final backpack = defaultChecklistTemplate
-          .firstWhere((i) => i.id == 'backpack');
-      expect(backpack.isEssential, true);
+    test('les obligatoires incluent la veste impermeable (parite GR20)', () {
+      final rainJacket =
+          defaultChecklistTemplate.firstWhere((i) => i.id == 'rainJacket');
+      expect(rainJacket.requirement, ChecklistRequirement.required);
+      expect(rainJacket.isEssential, true);
     });
 
-    test('les items essentiels incluent la trousse de secours', () {
-      final firstAid = defaultChecklistTemplate
-          .firstWhere((i) => i.id == 'firstAidKit');
-      expect(firstAid.isEssential, true);
+    test('les obligatoires incluent le sifflet, la couverture de survie et '
+        'la lampe frontale (parite GR20)', () {
+      for (final id in ['whistle', 'emergencyBlanket', 'headlamp']) {
+        final item = defaultChecklistTemplate.firstWhere((i) => i.id == id);
+        expect(item.requirement, ChecklistRequirement.required,
+            reason: '$id doit etre obligatoire');
+      }
     });
 
-    test('les items essentiels incluent la piece identite', () {
-      final idCard = defaultChecklistTemplate
-          .firstWhere((i) => i.id == 'idCard');
-      expect(idCard.isEssential, true);
+    test('les quantites par defaut clonent GR20 (ex: t-shirt x2, gaz x2)', () {
+      expect(
+          defaultChecklistTemplate
+              .firstWhere((i) => i.id == 'techTshirt')
+              .quantity,
+          2);
+      expect(
+          defaultChecklistTemplate
+              .firstWhere((i) => i.id == 'gasCanister')
+              .quantity,
+          2);
+      expect(
+          defaultChecklistTemplate
+              .firstWhere((i) => i.id == 'dogPoopBags')
+              .quantity,
+          10);
+    });
+
+    test('les articles portes ont un poids 0 (chaussures, batons) — GR20', () {
+      expect(
+          defaultChecklistTemplate
+              .firstWhere((i) => i.id == 'hikingBoots')
+              .weightGrams,
+          0);
+      expect(
+          defaultChecklistTemplate
+              .firstWhere((i) => i.id == 'hikingPoles')
+              .weightGrams,
+          0);
     });
   });
 
-  group('checklistCategories', () {
-    test('contient 6 categories', () {
-      expect(checklistCategories.length, 6);
+  group('checklistCategories (clone GR20)', () {
+    test('contient les 12 categories de GR20', () {
+      expect(checklistCategories.length, 12);
     });
 
-    test('contient equipment clothing food safety documents hygiene',
-        () {
-      expect(checklistCategories, contains('equipment'));
-      expect(checklistCategories, contains('clothing'));
-      expect(checklistCategories, contains('food'));
-      expect(checklistCategories, contains('safety'));
-      expect(checklistCategories, contains('documents'));
-      expect(checklistCategories, contains('hygiene'));
+    test('contient carrying sleeping clothing cooking foodWater hygiene '
+        'firstAid electronics women men misc dog', () {
+      for (final c in [
+        'carrying',
+        'sleeping',
+        'clothing',
+        'cooking',
+        'foodWater',
+        'hygiene',
+        'firstAid',
+        'electronics',
+        'women',
+        'men',
+        'misc',
+        'dog',
+      ]) {
+        expect(checklistCategories, contains(c));
+      }
+    });
+
+    test('ordre GR20 : Femme, Homme, Divers, Chien en fin', () {
+      final n = checklistCategories.length;
+      expect(checklistCategories.sublist(n - 4),
+          ['women', 'men', 'misc', 'dog']);
     });
 
     test('pas de doublons', () {
       final unique = checklistCategories.toSet();
       expect(unique.length, checklistCategories.length);
+    });
+
+    test('chaque categorie a une icone', () {
+      for (final c in checklistCategories) {
+        expect(checklistCategoryIconCodepoints.containsKey(c), true,
+            reason: 'Icone manquante pour $c');
+      }
     });
   });
 }

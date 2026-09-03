@@ -170,8 +170,8 @@ class Translations$nav$fr {
 	/// fr: 'Plus'
 	String get more => 'Plus';
 
-	/// fr: 'Checklist matériel'
-	String get checklist => 'Checklist matériel';
+	/// fr: 'Materiel & Sac'
+	String get checklist => 'Materiel & Sac';
 
 	/// fr: 'Faisabilité'
 	String get feasibility => 'Faisabilité';
@@ -588,8 +588,8 @@ class Translations$checklist$fr {
 
 	// Translations
 
-	/// fr: 'Checklist matériel'
-	String get title => 'Checklist matériel';
+	/// fr: 'Materiel & Sac'
+	String get title => 'Materiel & Sac';
 
 	/// fr: 'Préparez votre sac à dos'
 	String get subtitle => 'Préparez votre sac à dos';
@@ -622,6 +622,7 @@ class Translations$checklist$fr {
 	String get essential => 'Essentiel';
 
 	late final Translations$checklist$weight$fr weight = Translations$checklist$weight$fr.internal(_root);
+	late final Translations$checklist$ui$fr ui = Translations$checklist$ui$fr.internal(_root);
 }
 
 // Path: journal
@@ -2294,11 +2295,11 @@ class Translations$hub$cards$fr {
 	/// fr: 'Répartissez vos étapes'
 	String get programmeSub => 'Répartissez vos étapes';
 
-	/// fr: 'Matériel & sac'
-	String get checklist => 'Matériel & sac';
+	/// fr: 'Materiel & Sac'
+	String get checklist => 'Materiel & Sac';
 
-	/// fr: 'Préparez votre sac à dos'
-	String get checklistSub => 'Préparez votre sac à dos';
+	/// fr: 'Preparez votre sac a dos'
+	String get checklistSub => 'Preparez votre sac a dos';
 
 	/// fr: 'Préparation physique'
 	String get training => 'Préparation physique';
@@ -2435,23 +2436,41 @@ class Translations$checklist$categories$fr {
 
 	// Translations
 
-	/// fr: 'Équipement'
-	String get equipment => 'Équipement';
+	/// fr: 'Sac & portage'
+	String get carrying => 'Sac & portage';
 
-	/// fr: 'Vêtements'
-	String get clothing => 'Vêtements';
+	/// fr: 'Couchage'
+	String get sleeping => 'Couchage';
 
-	/// fr: 'Alimentation'
-	String get food => 'Alimentation';
+	/// fr: 'Vetements'
+	String get clothing => 'Vetements';
 
-	/// fr: 'Sécurité'
-	String get safety => 'Sécurité';
+	/// fr: 'Cuisine'
+	String get cooking => 'Cuisine';
 
-	/// fr: 'Documents'
-	String get documents => 'Documents';
+	/// fr: 'Nourriture & Eau'
+	String get foodWater => 'Nourriture & Eau';
 
-	/// fr: 'Hygiène'
-	String get hygiene => 'Hygiène';
+	/// fr: 'Hygiene'
+	String get hygiene => 'Hygiene';
+
+	/// fr: 'Trousse de secours'
+	String get firstAid => 'Trousse de secours';
+
+	/// fr: 'Electronique'
+	String get electronics => 'Electronique';
+
+	/// fr: 'Femme'
+	String get women => 'Femme';
+
+	/// fr: 'Homme'
+	String get men => 'Homme';
+
+	/// fr: 'Divers'
+	String get misc => 'Divers';
+
+	/// fr: 'Chien'
+	String get dog => 'Chien';
 }
 
 // Path: checklist.items
@@ -2462,80 +2481,260 @@ class Translations$checklist$items$fr {
 
 	// Translations
 
-	/// fr: 'Sac à dos'
-	String get backpack => 'Sac à dos';
+	/// fr: 'Sac a dos 35-45L'
+	String get backpack => 'Sac a dos 35-45L';
 
-	/// fr: 'Sac de couchage'
-	String get sleepingBag => 'Sac de couchage';
+	/// fr: 'Housse de pluie sac'
+	String get rainCover => 'Housse de pluie sac';
 
-	/// fr: 'Matelas de sol'
-	String get sleepingPad => 'Matelas de sol';
+	/// fr: 'Sacs etanches (dry bags)'
+	String get dryBags => 'Sacs etanches (dry bags)';
 
-	/// fr: 'Bâtons de marche'
-	String get hikingPoles => 'Bâtons de marche';
+	/// fr: 'Sac de couchage (0-5C)'
+	String get sleepingBag => 'Sac de couchage (0-5C)';
 
-	/// fr: 'Lampe frontale'
-	String get headlamp => 'Lampe frontale';
+	/// fr: 'Matelas / tapis de sol'
+	String get sleepingPad => 'Matelas / tapis de sol';
 
-	/// fr: 'Gourde'
-	String get waterBottle => 'Gourde';
+	/// fr: 'Drap de sac / sac a viande'
+	String get sleepingLiner => 'Drap de sac / sac a viande';
 
-	/// fr: 'Chaussures de randonnée'
-	String get hikingBoots => 'Chaussures de randonnée';
+	/// fr: 'Oreiller gonflable'
+	String get pillow => 'Oreiller gonflable';
 
-	/// fr: 'Veste imperméable'
-	String get rainJacket => 'Veste imperméable';
+	/// fr: 'Pantalon de rando'
+	String get hikingPants => 'Pantalon de rando';
 
-	/// fr: 'Couche chaude'
-	String get warmLayer => 'Couche chaude';
+	/// fr: 'Pantalon de pluie'
+	String get rainPants => 'Pantalon de pluie';
 
-	/// fr: 'Chaussettes de randonnée'
-	String get hikingSocks => 'Chaussettes de randonnée';
+	/// fr: 'Short'
+	String get shorts => 'Short';
 
-	/// fr: 'Chapeau'
-	String get hat => 'Chapeau';
+	/// fr: 'T-shirt technique'
+	String get techTshirt => 'T-shirt technique';
 
-	/// fr: 'Gants'
-	String get gloves => 'Gants';
+	/// fr: 'Polaire / doudoune legere'
+	String get fleece => 'Polaire / doudoune legere';
 
-	/// fr: 'Encas de marche'
-	String get trailSnacks => 'Encas de marche';
+	/// fr: 'Veste impermeable Gore-Tex'
+	String get rainJacket => 'Veste impermeable Gore-Tex';
 
-	/// fr: 'Barres énergétiques'
-	String get energyBars => 'Barres énergétiques';
+	/// fr: 'Sous-vetement'
+	String get underwear => 'Sous-vetement';
 
-	/// fr: 'Purification d'eau'
-	String get waterPurification => 'Purification d\'eau';
+	/// fr: 'Chaussettes de rando'
+	String get hikingSocks => 'Chaussettes de rando';
 
-	/// fr: 'Trousse de secours'
-	String get firstAidKit => 'Trousse de secours';
+	/// fr: 'Guetres'
+	String get gaiters => 'Guetres';
 
-	/// fr: 'Sifflet'
-	String get whistle => 'Sifflet';
+	/// fr: 'Chapeau / casquette'
+	String get hat => 'Chapeau / casquette';
 
-	/// fr: 'Couverture de survie'
-	String get emergencyBlanket => 'Couverture de survie';
+	/// fr: 'Bonnet'
+	String get beanie => 'Bonnet';
 
-	/// fr: 'Crème solaire'
-	String get sunscreen => 'Crème solaire';
+	/// fr: 'Buff / tour de cou'
+	String get buff => 'Buff / tour de cou';
 
-	/// fr: 'Pièce d'identité'
-	String get idCard => 'Pièce d\'identité';
+	/// fr: 'Gants legers'
+	String get lightGloves => 'Gants legers';
 
-	/// fr: 'Assurance'
-	String get insurance => 'Assurance';
+	/// fr: 'Chaussures de rando (portees)'
+	String get hikingBoots => 'Chaussures de rando (portees)';
 
-	/// fr: 'Carte du sentier'
-	String get trailMap => 'Carte du sentier';
+	/// fr: 'Sandales de bivouac'
+	String get campSandals => 'Sandales de bivouac';
+
+	/// fr: 'Rechaud (PocketRocket)'
+	String get stove => 'Rechaud (PocketRocket)';
+
+	/// fr: 'Cartouche gaz'
+	String get gasCanister => 'Cartouche gaz';
+
+	/// fr: 'Popote / gamelle'
+	String get cookpot => 'Popote / gamelle';
+
+	/// fr: 'Couverts (cuillere, couteau)'
+	String get cutlery => 'Couverts (cuillere, couteau)';
+
+	/// fr: 'Gourde / poche a eau 2L'
+	String get waterBottle => 'Gourde / poche a eau 2L';
+
+	/// fr: 'Couteau pliant'
+	String get knife => 'Couteau pliant';
+
+	/// fr: 'Briquet'
+	String get lighter => 'Briquet';
+
+	/// fr: 'Barre energetique'
+	String get energyBars => 'Barre energetique';
+
+	/// fr: 'Fruits secs'
+	String get driedFruits => 'Fruits secs';
+
+	/// fr: 'Repas lyophilise'
+	String get freezeDriedMeal => 'Repas lyophilise';
+
+	/// fr: 'Pastilles purification eau'
+	String get waterPurification => 'Pastilles purification eau';
+
+	/// fr: 'Electrolytes'
+	String get electrolytes => 'Electrolytes';
+
+	/// fr: 'Eau transportee (1L = 1000g)'
+	String get carriedWater => 'Eau transportee (1L = 1000g)';
+
+	/// fr: 'Savon biodegradable'
+	String get soap => 'Savon biodegradable';
+
+	/// fr: 'Brosse a dents'
+	String get toothbrush => 'Brosse a dents';
+
+	/// fr: 'Dentifrice'
+	String get toothpaste => 'Dentifrice';
+
+	/// fr: 'Serviette microfibre'
+	String get microfiberTowel => 'Serviette microfibre';
 
 	/// fr: 'Papier toilette'
 	String get toiletPaper => 'Papier toilette';
 
-	/// fr: 'Gel hydroalcoolique'
-	String get handSanitizer => 'Gel hydroalcoolique';
+	/// fr: 'Sac poubelle'
+	String get trashBag => 'Sac poubelle';
 
-	/// fr: 'Serviette'
-	String get towel => 'Serviette';
+	/// fr: 'Creme anti-frottements'
+	String get antiChafingCream => 'Creme anti-frottements';
+
+	/// fr: 'Boules Quies'
+	String get earplugs => 'Boules Quies';
+
+	/// fr: 'Pansements assortis'
+	String get bandages => 'Pansements assortis';
+
+	/// fr: 'Compresses steriles'
+	String get sterileCompresses => 'Compresses steriles';
+
+	/// fr: 'Bande elastique'
+	String get elasticBandage => 'Bande elastique';
+
+	/// fr: 'Desinfectant (50ml)'
+	String get disinfectant => 'Desinfectant (50ml)';
+
+	/// fr: 'Doliprane / Ibuprofene'
+	String get painkillers => 'Doliprane / Ibuprofene';
+
+	/// fr: 'Creme solaire SPF50'
+	String get sunscreen => 'Creme solaire SPF50';
+
+	/// fr: 'Stick a levres SPF30'
+	String get lipBalm => 'Stick a levres SPF30';
+
+	/// fr: 'Couverture de survie'
+	String get emergencyBlanket => 'Couverture de survie';
+
+	/// fr: 'Tire-tiques'
+	String get tickRemover => 'Tire-tiques';
+
+	/// fr: 'Sifflet de secours'
+	String get whistle => 'Sifflet de secours';
+
+	/// fr: 'Elastoplaste / strapping'
+	String get strapping => 'Elastoplaste / strapping';
+
+	/// fr: 'Collyre'
+	String get eyeDrops => 'Collyre';
+
+	/// fr: 'Anti-diarrheique'
+	String get antiDiarrheal => 'Anti-diarrheique';
+
+	/// fr: 'Antihistaminique'
+	String get antihistamine => 'Antihistaminique';
+
+	/// fr: 'Tape genoux'
+	String get kneeTape => 'Tape genoux';
+
+	/// fr: 'Telephone'
+	String get phone => 'Telephone';
+
+	/// fr: 'Batterie externe 20000mAh'
+	String get powerBank => 'Batterie externe 20000mAh';
+
+	/// fr: 'Cable USB'
+	String get usbCable => 'Cable USB';
+
+	/// fr: 'Lampe frontale'
+	String get headlamp => 'Lampe frontale';
+
+	/// fr: 'Piles de rechange'
+	String get spareBatteries => 'Piles de rechange';
+
+	/// fr: 'Protections periodiques'
+	String get periodProtection => 'Protections periodiques';
+
+	/// fr: 'Brassiere sport'
+	String get sportsBra => 'Brassiere sport';
+
+	/// fr: 'Lingettes intimes'
+	String get intimateWipes => 'Lingettes intimes';
+
+	/// fr: 'Pee-cloth'
+	String get peeCloth => 'Pee-cloth';
+
+	/// fr: 'Rasoir'
+	String get razor => 'Rasoir';
+
+	/// fr: 'Calecons tech'
+	String get techBoxers => 'Calecons tech';
+
+	/// fr: 'Batons de marche (portes)'
+	String get hikingPoles => 'Batons de marche (portes)';
+
+	/// fr: 'Lunettes de soleil'
+	String get sunglasses => 'Lunettes de soleil';
+
+	/// fr: 'Carte IGN / topo'
+	String get trailMap => 'Carte IGN / topo';
+
+	/// fr: 'Lacets de rechange'
+	String get spareLaces => 'Lacets de rechange';
+
+	/// fr: 'Fil + aiguille'
+	String get needleThread => 'Fil + aiguille';
+
+	/// fr: 'Ruban adhesif'
+	String get ductTape => 'Ruban adhesif';
+
+	/// fr: 'Sacs ziploc'
+	String get ziplocBags => 'Sacs ziploc';
+
+	/// fr: 'Cordelle'
+	String get cord => 'Cordelle';
+
+	/// fr: 'Argent liquide'
+	String get cash => 'Argent liquide';
+
+	/// fr: 'Gamelle pliable'
+	String get dogBowl => 'Gamelle pliable';
+
+	/// fr: 'Laisse'
+	String get dogLeash => 'Laisse';
+
+	/// fr: 'Croquettes (ration/jour)'
+	String get dogKibble => 'Croquettes (ration/jour)';
+
+	/// fr: 'Bottines protection'
+	String get dogBooties => 'Bottines protection';
+
+	/// fr: 'Carnet de vaccins'
+	String get dogVaccineBook => 'Carnet de vaccins';
+
+	/// fr: 'Sacs a dejections'
+	String get dogPoopBags => 'Sacs a dejections';
+
+	/// fr: 'Maillot de bain'
+	String get swimsuit => 'Maillot de bain';
 }
 
 // Path: checklist.weight
@@ -2552,8 +2751,8 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Poids total'
 	String get total => 'Poids total';
 
-	/// fr: 'Poids corporel'
-	String get bodyWeight => 'Poids corporel';
+	/// fr: 'Poids corporel :'
+	String get bodyWeight => 'Poids corporel :';
 
 	/// fr: 'Ratio sac / corps'
 	String get ratio => 'Ratio sac / corps';
@@ -2570,17 +2769,23 @@ class Translations$checklist$weight$fr {
 	/// fr: 'kg'
 	String get kilograms => 'kg';
 
-	/// fr: 'Sac leger - ideal'
-	String get adviceLight => 'Sac leger - ideal';
+	/// fr: 'Sac ultra-leger — ideal pour le trek'
+	String get adviceUltraLight => 'Sac ultra-leger — ideal pour le trek';
+
+	/// fr: 'Sac ultra-leger — ideal pour le trek'
+	String get adviceLight => 'Sac ultra-leger — ideal pour le trek';
 
 	/// fr: 'Sac bien equilibre'
 	String get adviceOk => 'Sac bien equilibre';
 
-	/// fr: 'Sac lourd - pensez a alleger'
-	String get adviceHeavy => 'Sac lourd - pensez a alleger';
+	/// fr: 'Correct mais lourd — envisagez d'alleger'
+	String get adviceHeavy => 'Correct mais lourd — envisagez d\'alleger';
 
-	/// fr: 'Trop lourd - allegez le sac'
-	String get adviceTooHeavy => 'Trop lourd - allegez le sac';
+	/// fr: 'Attention genoux ! Allegez le sac'
+	String get adviceTooHeavy => 'Attention genoux ! Allegez le sac';
+
+	/// fr: 'Danger blessure — allegez absolument !'
+	String get adviceDanger => 'Danger blessure — allegez absolument !';
 
 	/// fr: 'Poids de l'article'
 	String get itemWeight => 'Poids de l\'article';
@@ -2590,6 +2795,249 @@ class Translations$checklist$weight$fr {
 
 	/// fr: 'Enregistrer'
 	String get save => 'Enregistrer';
+
+	/// fr: 'Ultra-leger, parfait !'
+	String get gaugeUltraLight => 'Ultra-leger, parfait !';
+
+	/// fr: 'Bien, sac equilibre'
+	String get gaugeOk => 'Bien, sac equilibre';
+
+	/// fr: 'Correct mais lourd'
+	String get gaugeHeavy => 'Correct mais lourd';
+
+	/// fr: 'Attention genoux !'
+	String get gaugeWarn => 'Attention genoux !';
+
+	/// fr: 'Danger blessure !'
+	String get gaugeDanger => 'Danger blessure !';
+
+	/// fr: '{pct}% du poids'
+	String get percentOfWeight => '{pct}% du poids';
+
+	/// fr: 'Objectif max : < 15% en refuge, < 20% en autonomie'
+	String get gaugeObjective => 'Objectif max : < 15% en refuge, < 20% en autonomie';
+
+	/// fr: '{checked} / {total} articles coches'
+	String get itemsChecked => '{checked} / {total} articles coches';
+}
+
+// Path: checklist.ui
+class Translations$checklist$ui$fr {
+	Translations$checklist$ui$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Materiel & Sac'
+	String get title => 'Materiel & Sac';
+
+	/// fr: 'Obligatoire'
+	String get requirementRequired => 'Obligatoire';
+
+	/// fr: 'Ajouter un item'
+	String get addItem => 'Ajouter un item';
+
+	/// fr: 'Ajouter un item'
+	String get addItemTitle => 'Ajouter un item';
+
+	/// fr: 'Nom'
+	String get fieldName => 'Nom';
+
+	/// fr: 'Poids (grammes)'
+	String get fieldWeightGrams => 'Poids (grammes)';
+
+	/// fr: 'Ajouter'
+	String get add => 'Ajouter';
+
+	/// fr: 'Modifier le poids'
+	String get editWeightTitle => 'Modifier le poids';
+
+	/// fr: 'Modifier l'item custom'
+	String get editCustomTitle => 'Modifier l\'item custom';
+
+	/// fr: 'Modifier'
+	String get modify => 'Modifier';
+
+	/// fr: 'Supprimer'
+	String get delete => 'Supprimer';
+
+	/// fr: 'Supprimer cet article ?'
+	String get deleteItemTitle => 'Supprimer cet article ?';
+
+	/// fr: 'L'article "{name}" sera definitivement supprime.'
+	String get deleteItemBody => 'L\'article "{name}" sera definitivement supprime.';
+
+	/// fr: 'Equipement obligatoire'
+	String get requiredWarnTitle => 'Equipement obligatoire';
+
+	/// fr: 'Cet equipement est obligatoire pour la securite (inspire reglementation UTMB). Voulez-vous vraiment le retirer ?'
+	String get requiredWarnBody => 'Cet equipement est obligatoire pour la securite (inspire reglementation UTMB). Voulez-vous vraiment le retirer ?';
+
+	/// fr: 'Garder'
+	String get keep => 'Garder';
+
+	/// fr: 'Retirer quand meme'
+	String get removeAnyway => 'Retirer quand meme';
+
+	/// fr: 'Reduire quantite'
+	String get reduceQuantity => 'Reduire quantite';
+
+	/// fr: 'Augmenter quantite'
+	String get increaseQuantity => 'Augmenter quantite';
+
+	/// fr: 'Ajouter a la liste de courses'
+	String get addToShoppingList => 'Ajouter a la liste de courses';
+
+	/// fr: 'Retirer de la liste'
+	String get removeFromShoppingList => 'Retirer de la liste';
+
+	/// fr: 'Aide'
+	String get help => 'Aide';
+
+	/// fr: 'Liste de courses'
+	String get shoppingListTitle => 'Liste de courses';
+
+	/// fr: 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.'
+	String get shoppingListEmpty => 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.';
+
+	/// fr: 'A acheter'
+	String get shoppingToBuy => 'A acheter';
+
+	/// fr: 'Deja achete'
+	String get shoppingPurchased => 'Deja achete';
+
+	/// fr: 'PARTAGER'
+	String get share => 'PARTAGER';
+
+	/// fr: 'Materiel & Sac'
+	String get infoTitle => 'Materiel & Sac';
+
+	/// fr: 'Cocher les items'
+	String get infoCheckTitle => 'Cocher les items';
+
+	/// fr: 'Cochez ce que vous emportez — le poids se recalcule en haut.'
+	String get infoCheckBody => 'Cochez ce que vous emportez — le poids se recalcule en haut.';
+
+	/// fr: 'Obligatoires'
+	String get infoRequiredTitle => 'Obligatoires';
+
+	/// fr: 'Items avec cadenas = reglementation (sifflet, lampe, couverture survie).'
+	String get infoRequiredBody => 'Items avec cadenas = reglementation (sifflet, lampe, couverture survie).';
+
+	/// fr: 'Jauge poids'
+	String get infoGaugeTitle => 'Jauge poids';
+
+	/// fr: 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.'
+	String get infoGaugeBody => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.';
+
+	/// fr: 'Ajouter'
+	String get infoAddTitle => 'Ajouter';
+
+	/// fr: 'Bouton + en bas de chaque categorie pour vos propres items.'
+	String get infoAddBody => 'Bouton + en bas de chaque categorie pour vos propres items.';
+
+	/// fr: 'Validez quand votre sac est pret — un check apparaitra sur l'accueil.'
+	String get infoValidateBody => 'Validez quand votre sac est pret — un check apparaitra sur l\'accueil.';
+
+	/// fr: 'Compris !'
+	String get infoUnderstood => 'Compris !';
+
+	/// fr: 'Preparation du sac'
+	String get prepTitle => 'Preparation du sac';
+
+	/// fr: '{prepared} / {total} items prepares'
+	String get prepCounter => '{prepared} / {total} items prepares';
+
+	/// fr: 'Tout est pret ! Bon trek'
+	String get prepAllReady => 'Tout est pret ! Bon trek';
+
+	/// fr: 'Checklist avant depart'
+	String get preDepartureTitle => 'Checklist avant depart';
+
+	/// fr: '{checked}/{total} verifies'
+	String get preDepartureCounter => '{checked}/{total} verifies';
+
+	/// fr: 'Verifier la meteo des prochains jours'
+	String get preDep1 => 'Verifier la meteo des prochains jours';
+
+	/// fr: 'Charger telephone + batterie externe'
+	String get preDep2 => 'Charger telephone + batterie externe';
+
+	/// fr: 'Prevenir un proche de votre itineraire'
+	String get preDep3 => 'Prevenir un proche de votre itineraire';
+
+	/// fr: 'Verifier que le sac est bien ferme et etanche'
+	String get preDep4 => 'Verifier que le sac est bien ferme et etanche';
+
+	/// fr: 'Remplir les gourdes (minimum 2L)'
+	String get preDep5 => 'Remplir les gourdes (minimum 2L)';
+
+	/// fr: 'Appliquer creme solaire et anti-frottements'
+	String get preDep6 => 'Appliquer creme solaire et anti-frottements';
+
+	/// fr: 'Verifier les lacets et le serrage des chaussures'
+	String get preDep7 => 'Verifier les lacets et le serrage des chaussures';
+
+	/// fr: 'Telecharger les cartes offline'
+	String get preDep8 => 'Telecharger les cartes offline';
+
+	/// fr: 'SAC OK — PRET A PARTIR'
+	String get bagOk => 'SAC OK — PRET A PARTIR';
+
+	/// fr: 'VALIDER MON SAC'
+	String get validateBag => 'VALIDER MON SAC';
+
+	/// fr: 'ANNULER LA VALIDATION'
+	String get cancelValidation => 'ANNULER LA VALIDATION';
+
+	/// fr: 'LISTE D'ACHAT'
+	String get shoppingListButton => 'LISTE D\'ACHAT';
+
+	/// fr: 'PARTAGER AVEC LE GROUPE'
+	String get shareGroup => 'PARTAGER AVEC LE GROUPE';
+
+	/// fr: 'EXPORTER LA LISTE'
+	String get exportList => 'EXPORTER LA LISTE';
+
+	/// fr: 'Sac valide'
+	String get bagValidTitle => 'Sac valide';
+
+	/// fr: 'Tous les {total} equipements obligatoires sont dans votre sac. Poids total : {weight} kg ({pct}% du poids corporel) Etes-vous certain que votre sac est pret ?'
+	String get bagValidBody => 'Tous les {total} equipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids corporel)\n\nEtes-vous certain que votre sac est pret ?';
+
+	/// fr: 'Verifier encore'
+	String get checkAgain => 'Verifier encore';
+
+	/// fr: 'Oui, sac OK'
+	String get yesBagOk => 'Oui, sac OK';
+
+	/// fr: 'Sac valide !'
+	String get bagValidatedSnack => 'Sac valide !';
+
+	/// fr: 'Validation du sac annulee — vous pouvez modifier votre materiel.'
+	String get validationCancelledSnack => 'Validation du sac annulee — vous pouvez modifier votre materiel.';
+
+	/// fr: 'Equipement manquant'
+	String get missingTitle => 'Equipement manquant';
+
+	/// fr: '{checked}/{total} equipements obligatoires coches.'
+	String get missingBody => '{checked}/{total} equipements obligatoires coches.';
+
+	/// fr: 'Il manque :'
+	String get missingList => 'Il manque :';
+
+	/// fr: 'Compris'
+	String get understood => 'Compris';
+
+	/// fr: 'Valider quand meme'
+	String get validateAnyway => 'Valider quand meme';
+
+	/// fr: 'Sac valide (avec items manquants) !'
+	String get bagValidatedMissingSnack => 'Sac valide (avec items manquants) !';
+
+	/// fr: 'Rejoignez un groupe pour partager votre checklist.'
+	String get shareGroupHint => 'Rejoignez un groupe pour partager votre checklist.';
 }
 
 // Path: weather.source
@@ -3947,7 +4395,7 @@ extension on Translations {
 			'nav.planning' => 'Planning',
 			'nav.journal' => 'Journal',
 			'nav.more' => 'Plus',
-			'nav.checklist' => 'Checklist matériel',
+			'nav.checklist' => 'Materiel & Sac',
 			'nav.feasibility' => 'Faisabilité',
 			'nav.tips' => 'Conseils randonnée',
 			'nav.emergency' => 'Contacts urgence',
@@ -3987,8 +4435,8 @@ extension on Translations {
 			'hub.cards.itinerarySub' => 'Le deroule de vos etapes',
 			'hub.cards.programme' => 'Programme',
 			'hub.cards.programmeSub' => 'Répartissez vos étapes',
-			'hub.cards.checklist' => 'Matériel & sac',
-			'hub.cards.checklistSub' => 'Préparez votre sac à dos',
+			'hub.cards.checklist' => 'Materiel & Sac',
+			'hub.cards.checklistSub' => 'Preparez votre sac a dos',
 			'hub.cards.training' => 'Préparation physique',
 			'hub.cards.trainingSub' => 'Votre programme d\'entraînement',
 			'hub.cards.offline' => 'Découvrir des sentiers',
@@ -4103,7 +4551,7 @@ extension on Translations {
 			'tracking.stopSaveProgress' => 'La progression sera sauvegardee.',
 			'tracking.cancel' => 'Annuler',
 			'tracking.stopButton' => 'Stop',
-			'checklist.title' => 'Checklist matériel',
+			'checklist.title' => 'Materiel & Sac',
 			'checklist.subtitle' => 'Préparez votre sac à dos',
 			'checklist.progress' => '{checked}/{total} préparés',
 			'checklist.complete' => 'Checklist complète !',
@@ -4112,53 +4560,199 @@ extension on Translations {
 			'checklist.resetDescription' => 'Tous les éléments seront décochés.',
 			'checklist.cancel' => 'Annuler',
 			'checklist.confirm' => 'Confirmer',
-			'checklist.categories.equipment' => 'Équipement',
-			'checklist.categories.clothing' => 'Vêtements',
-			'checklist.categories.food' => 'Alimentation',
-			'checklist.categories.safety' => 'Sécurité',
-			'checklist.categories.documents' => 'Documents',
-			'checklist.categories.hygiene' => 'Hygiène',
-			'checklist.items.backpack' => 'Sac à dos',
-			'checklist.items.sleepingBag' => 'Sac de couchage',
-			'checklist.items.sleepingPad' => 'Matelas de sol',
-			'checklist.items.hikingPoles' => 'Bâtons de marche',
-			'checklist.items.headlamp' => 'Lampe frontale',
-			'checklist.items.waterBottle' => 'Gourde',
-			'checklist.items.hikingBoots' => 'Chaussures de randonnée',
-			'checklist.items.rainJacket' => 'Veste imperméable',
-			'checklist.items.warmLayer' => 'Couche chaude',
-			'checklist.items.hikingSocks' => 'Chaussettes de randonnée',
-			'checklist.items.hat' => 'Chapeau',
-			'checklist.items.gloves' => 'Gants',
-			'checklist.items.trailSnacks' => 'Encas de marche',
-			'checklist.items.energyBars' => 'Barres énergétiques',
-			'checklist.items.waterPurification' => 'Purification d\'eau',
-			'checklist.items.firstAidKit' => 'Trousse de secours',
-			'checklist.items.whistle' => 'Sifflet',
-			'checklist.items.emergencyBlanket' => 'Couverture de survie',
-			'checklist.items.sunscreen' => 'Crème solaire',
-			'checklist.items.idCard' => 'Pièce d\'identité',
-			'checklist.items.insurance' => 'Assurance',
-			'checklist.items.trailMap' => 'Carte du sentier',
+			'checklist.categories.carrying' => 'Sac & portage',
+			'checklist.categories.sleeping' => 'Couchage',
+			'checklist.categories.clothing' => 'Vetements',
+			'checklist.categories.cooking' => 'Cuisine',
+			'checklist.categories.foodWater' => 'Nourriture & Eau',
+			'checklist.categories.hygiene' => 'Hygiene',
+			'checklist.categories.firstAid' => 'Trousse de secours',
+			'checklist.categories.electronics' => 'Electronique',
+			'checklist.categories.women' => 'Femme',
+			'checklist.categories.men' => 'Homme',
+			'checklist.categories.misc' => 'Divers',
+			'checklist.categories.dog' => 'Chien',
+			'checklist.items.backpack' => 'Sac a dos 35-45L',
+			'checklist.items.rainCover' => 'Housse de pluie sac',
+			'checklist.items.dryBags' => 'Sacs etanches (dry bags)',
+			'checklist.items.sleepingBag' => 'Sac de couchage (0-5C)',
+			'checklist.items.sleepingPad' => 'Matelas / tapis de sol',
+			'checklist.items.sleepingLiner' => 'Drap de sac / sac a viande',
+			'checklist.items.pillow' => 'Oreiller gonflable',
+			'checklist.items.hikingPants' => 'Pantalon de rando',
+			'checklist.items.rainPants' => 'Pantalon de pluie',
+			'checklist.items.shorts' => 'Short',
+			'checklist.items.techTshirt' => 'T-shirt technique',
+			'checklist.items.fleece' => 'Polaire / doudoune legere',
+			'checklist.items.rainJacket' => 'Veste impermeable Gore-Tex',
+			'checklist.items.underwear' => 'Sous-vetement',
+			'checklist.items.hikingSocks' => 'Chaussettes de rando',
+			'checklist.items.gaiters' => 'Guetres',
+			'checklist.items.hat' => 'Chapeau / casquette',
+			'checklist.items.beanie' => 'Bonnet',
+			'checklist.items.buff' => 'Buff / tour de cou',
+			'checklist.items.lightGloves' => 'Gants legers',
+			'checklist.items.hikingBoots' => 'Chaussures de rando (portees)',
+			'checklist.items.campSandals' => 'Sandales de bivouac',
+			'checklist.items.stove' => 'Rechaud (PocketRocket)',
+			'checklist.items.gasCanister' => 'Cartouche gaz',
+			'checklist.items.cookpot' => 'Popote / gamelle',
+			'checklist.items.cutlery' => 'Couverts (cuillere, couteau)',
+			'checklist.items.waterBottle' => 'Gourde / poche a eau 2L',
+			'checklist.items.knife' => 'Couteau pliant',
+			'checklist.items.lighter' => 'Briquet',
+			'checklist.items.energyBars' => 'Barre energetique',
+			'checklist.items.driedFruits' => 'Fruits secs',
+			'checklist.items.freezeDriedMeal' => 'Repas lyophilise',
+			'checklist.items.waterPurification' => 'Pastilles purification eau',
+			'checklist.items.electrolytes' => 'Electrolytes',
+			'checklist.items.carriedWater' => 'Eau transportee (1L = 1000g)',
+			'checklist.items.soap' => 'Savon biodegradable',
+			'checklist.items.toothbrush' => 'Brosse a dents',
+			'checklist.items.toothpaste' => 'Dentifrice',
+			'checklist.items.microfiberTowel' => 'Serviette microfibre',
 			'checklist.items.toiletPaper' => 'Papier toilette',
-			'checklist.items.handSanitizer' => 'Gel hydroalcoolique',
-			'checklist.items.towel' => 'Serviette',
+			'checklist.items.trashBag' => 'Sac poubelle',
+			'checklist.items.antiChafingCream' => 'Creme anti-frottements',
+			'checklist.items.earplugs' => 'Boules Quies',
+			'checklist.items.bandages' => 'Pansements assortis',
+			'checklist.items.sterileCompresses' => 'Compresses steriles',
+			'checklist.items.elasticBandage' => 'Bande elastique',
+			'checklist.items.disinfectant' => 'Desinfectant (50ml)',
+			'checklist.items.painkillers' => 'Doliprane / Ibuprofene',
+			'checklist.items.sunscreen' => 'Creme solaire SPF50',
+			'checklist.items.lipBalm' => 'Stick a levres SPF30',
+			'checklist.items.emergencyBlanket' => 'Couverture de survie',
+			'checklist.items.tickRemover' => 'Tire-tiques',
+			'checklist.items.whistle' => 'Sifflet de secours',
+			'checklist.items.strapping' => 'Elastoplaste / strapping',
+			'checklist.items.eyeDrops' => 'Collyre',
+			'checklist.items.antiDiarrheal' => 'Anti-diarrheique',
+			'checklist.items.antihistamine' => 'Antihistaminique',
+			'checklist.items.kneeTape' => 'Tape genoux',
+			'checklist.items.phone' => 'Telephone',
+			'checklist.items.powerBank' => 'Batterie externe 20000mAh',
+			'checklist.items.usbCable' => 'Cable USB',
+			'checklist.items.headlamp' => 'Lampe frontale',
+			'checklist.items.spareBatteries' => 'Piles de rechange',
+			'checklist.items.periodProtection' => 'Protections periodiques',
+			'checklist.items.sportsBra' => 'Brassiere sport',
+			'checklist.items.intimateWipes' => 'Lingettes intimes',
+			'checklist.items.peeCloth' => 'Pee-cloth',
+			'checklist.items.razor' => 'Rasoir',
+			'checklist.items.techBoxers' => 'Calecons tech',
+			'checklist.items.hikingPoles' => 'Batons de marche (portes)',
+			'checklist.items.sunglasses' => 'Lunettes de soleil',
+			'checklist.items.trailMap' => 'Carte IGN / topo',
+			'checklist.items.spareLaces' => 'Lacets de rechange',
+			'checklist.items.needleThread' => 'Fil + aiguille',
+			'checklist.items.ductTape' => 'Ruban adhesif',
+			'checklist.items.ziplocBags' => 'Sacs ziploc',
+			'checklist.items.cord' => 'Cordelle',
+			'checklist.items.cash' => 'Argent liquide',
+			'checklist.items.dogBowl' => 'Gamelle pliable',
+			'checklist.items.dogLeash' => 'Laisse',
+			'checklist.items.dogKibble' => 'Croquettes (ration/jour)',
+			'checklist.items.dogBooties' => 'Bottines protection',
+			'checklist.items.dogVaccineBook' => 'Carnet de vaccins',
+			'checklist.items.dogPoopBags' => 'Sacs a dejections',
+			'checklist.items.swimsuit' => 'Maillot de bain',
 			'checklist.essential' => 'Essentiel',
 			'checklist.weight.title' => 'Poids du sac',
 			'checklist.weight.total' => 'Poids total',
-			'checklist.weight.bodyWeight' => 'Poids corporel',
+			'checklist.weight.bodyWeight' => 'Poids corporel :',
 			'checklist.weight.ratio' => 'Ratio sac / corps',
 			'checklist.weight.perItem' => 'Poids par article',
 			'checklist.weight.edit' => 'Modifier le poids',
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
-			'checklist.weight.adviceLight' => 'Sac leger - ideal',
+			'checklist.weight.adviceUltraLight' => 'Sac ultra-leger — ideal pour le trek',
+			'checklist.weight.adviceLight' => 'Sac ultra-leger — ideal pour le trek',
 			'checklist.weight.adviceOk' => 'Sac bien equilibre',
-			'checklist.weight.adviceHeavy' => 'Sac lourd - pensez a alleger',
-			'checklist.weight.adviceTooHeavy' => 'Trop lourd - allegez le sac',
+			'checklist.weight.adviceHeavy' => 'Correct mais lourd — envisagez d\'alleger',
+			'checklist.weight.adviceTooHeavy' => 'Attention genoux ! Allegez le sac',
+			'checklist.weight.adviceDanger' => 'Danger blessure — allegez absolument !',
 			'checklist.weight.itemWeight' => 'Poids de l\'article',
 			'checklist.weight.cancel' => 'Annuler',
 			'checklist.weight.save' => 'Enregistrer',
+			'checklist.weight.gaugeUltraLight' => 'Ultra-leger, parfait !',
+			'checklist.weight.gaugeOk' => 'Bien, sac equilibre',
+			'checklist.weight.gaugeHeavy' => 'Correct mais lourd',
+			'checklist.weight.gaugeWarn' => 'Attention genoux !',
+			'checklist.weight.gaugeDanger' => 'Danger blessure !',
+			'checklist.weight.percentOfWeight' => '{pct}% du poids',
+			'checklist.weight.gaugeObjective' => 'Objectif max : < 15% en refuge, < 20% en autonomie',
+			'checklist.weight.itemsChecked' => '{checked} / {total} articles coches',
+			'checklist.ui.title' => 'Materiel & Sac',
+			'checklist.ui.requirementRequired' => 'Obligatoire',
+			'checklist.ui.addItem' => 'Ajouter un item',
+			'checklist.ui.addItemTitle' => 'Ajouter un item',
+			'checklist.ui.fieldName' => 'Nom',
+			'checklist.ui.fieldWeightGrams' => 'Poids (grammes)',
+			'checklist.ui.add' => 'Ajouter',
+			'checklist.ui.editWeightTitle' => 'Modifier le poids',
+			'checklist.ui.editCustomTitle' => 'Modifier l\'item custom',
+			'checklist.ui.modify' => 'Modifier',
+			'checklist.ui.delete' => 'Supprimer',
+			'checklist.ui.deleteItemTitle' => 'Supprimer cet article ?',
+			'checklist.ui.deleteItemBody' => 'L\'article "{name}" sera definitivement supprime.',
+			'checklist.ui.requiredWarnTitle' => 'Equipement obligatoire',
+			'checklist.ui.requiredWarnBody' => 'Cet equipement est obligatoire pour la securite (inspire reglementation UTMB). Voulez-vous vraiment le retirer ?',
+			'checklist.ui.keep' => 'Garder',
+			'checklist.ui.removeAnyway' => 'Retirer quand meme',
+			'checklist.ui.reduceQuantity' => 'Reduire quantite',
+			'checklist.ui.increaseQuantity' => 'Augmenter quantite',
+			'checklist.ui.addToShoppingList' => 'Ajouter a la liste de courses',
+			'checklist.ui.removeFromShoppingList' => 'Retirer de la liste',
+			'checklist.ui.help' => 'Aide',
+			'checklist.ui.shoppingListTitle' => 'Liste de courses',
+			'checklist.ui.shoppingListEmpty' => 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.',
+			'checklist.ui.shoppingToBuy' => 'A acheter',
+			'checklist.ui.shoppingPurchased' => 'Deja achete',
+			'checklist.ui.share' => 'PARTAGER',
+			'checklist.ui.infoTitle' => 'Materiel & Sac',
+			'checklist.ui.infoCheckTitle' => 'Cocher les items',
+			'checklist.ui.infoCheckBody' => 'Cochez ce que vous emportez — le poids se recalcule en haut.',
+			'checklist.ui.infoRequiredTitle' => 'Obligatoires',
+			'checklist.ui.infoRequiredBody' => 'Items avec cadenas = reglementation (sifflet, lampe, couverture survie).',
+			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
+			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
+			'checklist.ui.infoAddTitle' => 'Ajouter',
+			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque categorie pour vos propres items.',
+			'checklist.ui.infoValidateBody' => 'Validez quand votre sac est pret — un check apparaitra sur l\'accueil.',
+			'checklist.ui.infoUnderstood' => 'Compris !',
+			'checklist.ui.prepTitle' => 'Preparation du sac',
+			'checklist.ui.prepCounter' => '{prepared} / {total} items prepares',
+			'checklist.ui.prepAllReady' => 'Tout est pret ! Bon trek',
+			'checklist.ui.preDepartureTitle' => 'Checklist avant depart',
+			'checklist.ui.preDepartureCounter' => '{checked}/{total} verifies',
+			'checklist.ui.preDep1' => 'Verifier la meteo des prochains jours',
+			'checklist.ui.preDep2' => 'Charger telephone + batterie externe',
+			'checklist.ui.preDep3' => 'Prevenir un proche de votre itineraire',
+			'checklist.ui.preDep4' => 'Verifier que le sac est bien ferme et etanche',
+			'checklist.ui.preDep5' => 'Remplir les gourdes (minimum 2L)',
+			'checklist.ui.preDep6' => 'Appliquer creme solaire et anti-frottements',
+			'checklist.ui.preDep7' => 'Verifier les lacets et le serrage des chaussures',
+			'checklist.ui.preDep8' => 'Telecharger les cartes offline',
+			'checklist.ui.bagOk' => 'SAC OK — PRET A PARTIR',
+			'checklist.ui.validateBag' => 'VALIDER MON SAC',
+			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
+			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
+			'checklist.ui.shareGroup' => 'PARTAGER AVEC LE GROUPE',
+			'checklist.ui.exportList' => 'EXPORTER LA LISTE',
+			'checklist.ui.bagValidTitle' => 'Sac valide',
+			'checklist.ui.bagValidBody' => 'Tous les {total} equipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids corporel)\n\nEtes-vous certain que votre sac est pret ?',
+			'checklist.ui.checkAgain' => 'Verifier encore',
+			'checklist.ui.yesBagOk' => 'Oui, sac OK',
+			'checklist.ui.bagValidatedSnack' => 'Sac valide !',
+			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulee — vous pouvez modifier votre materiel.',
+			'checklist.ui.missingTitle' => 'Equipement manquant',
+			'checklist.ui.missingBody' => '{checked}/{total} equipements obligatoires coches.',
+			'checklist.ui.missingList' => 'Il manque :',
+			'checklist.ui.understood' => 'Compris',
+			'checklist.ui.validateAnyway' => 'Valider quand meme',
+			'checklist.ui.bagValidatedMissingSnack' => 'Sac valide (avec items manquants) !',
+			'checklist.ui.shareGroupHint' => 'Rejoignez un groupe pour partager votre checklist.',
 			'journal.title' => 'Journal de randonnée',
 			'journal.empty' => 'Votre journal est vide',
 			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de randonnée',
@@ -4293,6 +4887,8 @@ extension on Translations {
 			'appearance.title' => 'Apparence',
 			'appearance.subtitle' => 'Choisissez l’habillage de l’application',
 			'appearance.skinSentierVivant' => 'Sentier Vivant',
+			_ => null,
+		} ?? switch (path) {
 			'appearance.skinSentierVivantDesc' => 'Moderne et coloré, la couleur du sentier en vedette',
 			'appearance.skinTopographique' => 'Topographique',
 			'appearance.skinTopographiqueDesc' => 'Style carte d’état-major, données en avant',
@@ -4439,8 +5035,6 @@ extension on Translations {
 			'goodies.comingSoon' => 'Ce module arrive bientot. Restez connecte !',
 			'noData.title' => 'Aucun sentier téléchargé',
 			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
-			_ => null,
-		} ?? switch (path) {
 			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
 			'noData.browseCta' => 'Parcourir les sentiers',
 			'catalog.title' => 'Catalogue des sentiers',

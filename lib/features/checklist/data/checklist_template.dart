@@ -2,12 +2,23 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart' show rootBundle;
 
+/// Niveau d'exigence d'un article (parite GR20 « Materiel & Sac »).
+///
+/// - [required] : obligatoire (cadenas + garde-fou au decochage) ;
+/// - [recommended] : conseille ;
+/// - [optional] : facultatif (defaut).
+enum ChecklistRequirement { required, recommended, optional }
+
 /// Template de checklist materiel pour la randonnee.
 ///
 /// Donnees statiques embarquees — pas de reseau necessaire.
 /// Chaque item a un identifiant unique, une categorie,
-/// un nom i18n-ready et un flag "essentiel".
-/// Configurable par sentier via assets/data/checklist_template.json.
+/// un nom i18n-ready, un poids de reference, une quantite par defaut et un
+/// niveau d'exigence.
+/// PARITE GR20 « Materiel & Sac » : le contenu par defaut (categories, articles,
+/// poids, quantites, exigences) CLONE celui de l'ecran GR20. Reste generique :
+/// c'est une donnee (surchargeable par sentier via
+/// assets/data/checklist_template.json), aucune localite en dur.
 class ChecklistTemplateItem {
   const ChecklistTemplateItem({
     required this.id,
@@ -15,35 +26,48 @@ class ChecklistTemplateItem {
     required this.nameKey,
     this.isEssential = false,
     this.weightGrams = 0,
+    this.quantity = 1,
+    this.requirement = ChecklistRequirement.optional,
   });
 
   /// Identifiant unique de l'item (ex: 'backpack')
   final String id;
 
-  /// Categorie (ex: 'equipment', 'clothing', 'food', 'safety', 'documents', 'hygiene')
+  /// Categorie (cle i18n checklist.categories.*). Parite GR20 : 'carrying',
+  /// 'sleeping', 'clothing', 'cooking', 'foodWater', 'hygiene', 'firstAid',
+  /// 'electronics', 'women', 'men', 'misc', 'dog'.
   final String category;
 
   /// Cle i18n pour le nom de l'item (resolu via les traductions)
   final String nameKey;
 
-  /// Item indispensable (marque visuellement)
+  /// Item indispensable (retrocompat). Derive de [requirement] == required.
   final bool isEssential;
 
   /// Poids unitaire de reference en grammes (parite GR20 « Materiel & Sac »).
   ///
-  /// Sert de valeur par defaut de la jauge poids. 0 = non renseigne (l'item
-  /// ne contribue pas au poids tant qu'aucune valeur n'est fournie, ex :
-  /// chaussures portees). Surchargable par sentier via les overrides.
+  /// Sert de valeur par defaut de la jauge poids. 0 = non renseigne / porte
+  /// (l'article ne contribue pas au poids, ex : chaussures portees).
   final int weightGrams;
+
+  /// Quantite par defaut de l'article (parite GR20, min 1).
+  final int quantity;
+
+  /// Niveau d'exigence (parite GR20 : required / recommended / optional).
+  final ChecklistRequirement requirement;
 
   /// Construit depuis un JSON
   factory ChecklistTemplateItem.fromJson(Map<String, dynamic> json) {
+    final req = _requirementFromString(json['requirement'] as String?);
     return ChecklistTemplateItem(
       id: json['id'] as String,
       category: json['category'] as String,
       nameKey: json['nameKey'] as String,
-      isEssential: json['isEssential'] as bool? ?? false,
+      isEssential: json['isEssential'] as bool? ??
+          (req == ChecklistRequirement.required),
       weightGrams: json['weightGrams'] as int? ?? 0,
+      quantity: json['quantity'] as int? ?? 1,
+      requirement: req,
     );
   }
 
@@ -55,7 +79,20 @@ class ChecklistTemplateItem {
       'nameKey': nameKey,
       'isEssential': isEssential,
       'weightGrams': weightGrams,
+      'quantity': quantity,
+      'requirement': requirement.name,
     };
+  }
+
+  static ChecklistRequirement _requirementFromString(String? raw) {
+    switch (raw) {
+      case 'required':
+        return ChecklistRequirement.required;
+      case 'recommended':
+        return ChecklistRequirement.recommended;
+      default:
+        return ChecklistRequirement.optional;
+    }
   }
 }
 
@@ -156,13 +193,18 @@ class ChecklistTemplateLoader {
     // Appliquer les surcharges essentielles
     result = result.map((item) {
       if (override.essentialOverrides.containsKey(item.id)) {
+        final essential = override.essentialOverrides[item.id]!;
         return ChecklistTemplateItem(
           id: item.id,
           category: item.category,
           nameKey: item.nameKey,
-          isEssential: override.essentialOverrides[item.id]!,
-          // Le poids de reference n'est pas concerne par l'override essentiel.
+          isEssential: essential,
           weightGrams: item.weightGrams,
+          quantity: item.quantity,
+          // Aligner l'exigence sur la surcharge essentielle (required si vrai).
+          requirement: essential
+              ? ChecklistRequirement.required
+              : item.requirement,
         );
       }
       return item;
@@ -189,153 +231,538 @@ class ChecklistTemplateLoader {
   }
 }
 
-/// Template par defaut de checklist materiel trek.
+/// Categories disponibles pour la checklist — ORDRE = celui de l'ecran GR20
+/// « Materiel & Sac » (L-07 : ... Femme, Homme, Divers, Chien en fin).
 ///
-/// 6 categories, items essentiels flagues.
-/// Les cles correspondent aux entrees i18n checklist.items.*
-/// RETROCOMPAT: garde pour les usages existants.
-// Poids unitaires de reference (grammes) — parite GR20 « Materiel & Sac »
-// (poids moyen commerce outdoor 2024-2025). Generiques, non lies a un sentier ;
-// surchargeables par sentier via les overrides. weightGrams: 0 = porte / non
-// pese (ex : chaussures aux pieds) -> ne compte pas dans la jauge.
+/// Cles i18n : checklist.categories.<cle>. Generiques (aucune localite).
+const List<String> checklistCategories = [
+  'carrying', // Sac & portage
+  'sleeping', // Couchage
+  'clothing', // Vetements
+  'cooking', // Cuisine
+  'foodWater', // Nourriture & Eau
+  'hygiene', // Hygiene
+  'firstAid', // Trousse de secours
+  'electronics', // Electronique
+  'women', // Femme
+  'men', // Homme
+  'misc', // Divers
+  'dog', // Chien
+];
+
+/// Template par defaut de checklist materiel trek — CLONE du contenu GR20
+/// « Materiel & Sac ».
+///
+/// Poids unitaires de reference (grammes) = poids moyen commerce outdoor
+/// 2024-2025 (parite GR20). Quantites et niveaux d'exigence clones de GR20.
+/// Generiques, surchargeables par sentier via les overrides.
+/// weightGrams: 0 = porte / non pese (ex : chaussures aux pieds, batons portes)
+/// -> ne compte pas dans la jauge.
+/// RETROCOMPAT : reste `defaultChecklistTemplate` (meme nom d'API).
 const List<ChecklistTemplateItem> defaultChecklistTemplate = [
-  // --- Equipement ---
+  // --- Sac & portage ---
   ChecklistTemplateItem(
       id: 'backpack',
-      category: 'equipment',
+      category: 'carrying',
       nameKey: 'backpack',
-      isEssential: true,
-      weightGrams: 1400),
+      weightGrams: 1400,
+      requirement: ChecklistRequirement.recommended,
+      isEssential: false),
+  ChecklistTemplateItem(
+      id: 'rainCover',
+      category: 'carrying',
+      nameKey: 'rainCover',
+      weightGrams: 100),
+  ChecklistTemplateItem(
+      id: 'dryBags',
+      category: 'carrying',
+      nameKey: 'dryBags',
+      weightGrams: 150,
+      quantity: 3),
+
+  // --- Couchage ---
   ChecklistTemplateItem(
       id: 'sleepingBag',
-      category: 'equipment',
+      category: 'sleeping',
       nameKey: 'sleepingBag',
-      isEssential: true,
-      weightGrams: 900),
+      weightGrams: 900,
+      requirement: ChecklistRequirement.recommended,
+      isEssential: false),
   ChecklistTemplateItem(
       id: 'sleepingPad',
-      category: 'equipment',
+      category: 'sleeping',
       nameKey: 'sleepingPad',
       weightGrams: 400),
   ChecklistTemplateItem(
-      id: 'hikingPoles',
-      category: 'equipment',
-      nameKey: 'hikingPoles',
-      weightGrams: 500),
+      id: 'sleepingLiner',
+      category: 'sleeping',
+      nameKey: 'sleepingLiner',
+      weightGrams: 200),
   ChecklistTemplateItem(
-      id: 'headlamp',
-      category: 'equipment',
-      nameKey: 'headlamp',
-      isEssential: true,
+      id: 'pillow',
+      category: 'sleeping',
+      nameKey: 'pillow',
       weightGrams: 80),
-  ChecklistTemplateItem(
-      id: 'waterBottle',
-      category: 'equipment',
-      nameKey: 'waterBottle',
-      isEssential: true,
-      weightGrams: 150),
 
   // --- Vetements ---
   ChecklistTemplateItem(
-      id: 'hikingBoots',
+      id: 'hikingPants',
       category: 'clothing',
-      nameKey: 'hikingBoots',
-      isEssential: true,
-      weightGrams: 0),
+      nameKey: 'hikingPants',
+      weightGrams: 300),
+  ChecklistTemplateItem(
+      id: 'rainPants',
+      category: 'clothing',
+      nameKey: 'rainPants',
+      weightGrams: 200),
+  ChecklistTemplateItem(
+      id: 'shorts',
+      category: 'clothing',
+      nameKey: 'shorts',
+      weightGrams: 150),
+  ChecklistTemplateItem(
+      id: 'techTshirt',
+      category: 'clothing',
+      nameKey: 'techTshirt',
+      weightGrams: 150,
+      quantity: 2),
+  ChecklistTemplateItem(
+      id: 'fleece',
+      category: 'clothing',
+      nameKey: 'fleece',
+      weightGrams: 350),
   ChecklistTemplateItem(
       id: 'rainJacket',
       category: 'clothing',
       nameKey: 'rainJacket',
-      isEssential: true,
-      weightGrams: 400),
+      weightGrams: 400,
+      requirement: ChecklistRequirement.required,
+      isEssential: true),
   ChecklistTemplateItem(
-      id: 'warmLayer',
+      id: 'underwear',
       category: 'clothing',
-      nameKey: 'warmLayer',
-      isEssential: true,
-      weightGrams: 350),
+      nameKey: 'underwear',
+      weightGrams: 50,
+      quantity: 3),
   ChecklistTemplateItem(
       id: 'hikingSocks',
       category: 'clothing',
       nameKey: 'hikingSocks',
+      weightGrams: 60,
+      quantity: 3),
+  ChecklistTemplateItem(
+      id: 'gaiters',
+      category: 'clothing',
+      nameKey: 'gaiters',
+      weightGrams: 100),
+  ChecklistTemplateItem(
+      id: 'hat',
+      category: 'clothing',
+      nameKey: 'hat',
+      weightGrams: 80),
+  ChecklistTemplateItem(
+      id: 'beanie',
+      category: 'clothing',
+      nameKey: 'beanie',
+      weightGrams: 50),
+  ChecklistTemplateItem(
+      id: 'buff',
+      category: 'clothing',
+      nameKey: 'buff',
+      weightGrams: 40),
+  ChecklistTemplateItem(
+      id: 'lightGloves',
+      category: 'clothing',
+      nameKey: 'lightGloves',
+      weightGrams: 40),
+  ChecklistTemplateItem(
+      id: 'hikingBoots',
+      category: 'clothing',
+      nameKey: 'hikingBoots',
+      weightGrams: 0,
+      requirement: ChecklistRequirement.recommended,
+      isEssential: false),
+  ChecklistTemplateItem(
+      id: 'campSandals',
+      category: 'clothing',
+      nameKey: 'campSandals',
+      weightGrams: 200),
+
+  // --- Cuisine ---
+  ChecklistTemplateItem(
+      id: 'stove',
+      category: 'cooking',
+      nameKey: 'stove',
+      weightGrams: 85),
+  ChecklistTemplateItem(
+      id: 'gasCanister',
+      category: 'cooking',
+      nameKey: 'gasCanister',
+      weightGrams: 230,
+      quantity: 2),
+  ChecklistTemplateItem(
+      id: 'cookpot',
+      category: 'cooking',
+      nameKey: 'cookpot',
+      weightGrams: 200),
+  ChecklistTemplateItem(
+      id: 'cutlery',
+      category: 'cooking',
+      nameKey: 'cutlery',
       weightGrams: 60),
   ChecklistTemplateItem(
-      id: 'hat', category: 'clothing', nameKey: 'hat', weightGrams: 80),
+      id: 'waterBottle',
+      category: 'cooking',
+      nameKey: 'waterBottle',
+      weightGrams: 150,
+      requirement: ChecklistRequirement.required,
+      isEssential: true),
   ChecklistTemplateItem(
-      id: 'gloves', category: 'clothing', nameKey: 'gloves', weightGrams: 40),
+      id: 'knife',
+      category: 'cooking',
+      nameKey: 'knife',
+      weightGrams: 80),
+  ChecklistTemplateItem(
+      id: 'lighter',
+      category: 'cooking',
+      nameKey: 'lighter',
+      weightGrams: 20),
 
-  // --- Alimentation ---
+  // --- Nourriture & Eau ---
   ChecklistTemplateItem(
-      id: 'trailSnacks',
-      category: 'food',
-      nameKey: 'trailSnacks',
+      id: 'energyBars',
+      category: 'foodWater',
+      nameKey: 'energyBars',
+      weightGrams: 35,
+      quantity: 1),
+  ChecklistTemplateItem(
+      id: 'driedFruits',
+      category: 'foodWater',
+      nameKey: 'driedFruits',
       weightGrams: 150),
   ChecklistTemplateItem(
-      id: 'energyBars', category: 'food', nameKey: 'energyBars', weightGrams: 35),
+      id: 'freezeDriedMeal',
+      category: 'foodWater',
+      nameKey: 'freezeDriedMeal',
+      weightGrams: 100,
+      quantity: 1),
   ChecklistTemplateItem(
       id: 'waterPurification',
-      category: 'food',
+      category: 'foodWater',
       nameKey: 'waterPurification',
       weightGrams: 30),
-
-  // --- Securite ---
   ChecklistTemplateItem(
-      id: 'firstAidKit',
-      category: 'safety',
-      nameKey: 'firstAidKit',
-      isEssential: true,
-      weightGrams: 250),
+      id: 'electrolytes',
+      category: 'foodWater',
+      nameKey: 'electrolytes',
+      weightGrams: 30),
   ChecklistTemplateItem(
-      id: 'whistle',
-      category: 'safety',
-      nameKey: 'whistle',
-      isEssential: true,
-      weightGrams: 10),
-  ChecklistTemplateItem(
-      id: 'emergencyBlanket',
-      category: 'safety',
-      nameKey: 'emergencyBlanket',
-      isEssential: true,
-      weightGrams: 60),
-  ChecklistTemplateItem(
-      id: 'sunscreen', category: 'safety', nameKey: 'sunscreen', weightGrams: 100),
-
-  // --- Documents ---
-  ChecklistTemplateItem(
-      id: 'idCard',
-      category: 'documents',
-      nameKey: 'idCard',
-      isEssential: true,
-      weightGrams: 0),
-  ChecklistTemplateItem(
-      id: 'insurance',
-      category: 'documents',
-      nameKey: 'insurance',
-      weightGrams: 0),
-  ChecklistTemplateItem(
-      id: 'trailMap', category: 'documents', nameKey: 'trailMap', weightGrams: 80),
+      id: 'carriedWater',
+      category: 'foodWater',
+      nameKey: 'carriedWater',
+      weightGrams: 1000,
+      quantity: 2,
+      requirement: ChecklistRequirement.recommended,
+      isEssential: false),
 
   // --- Hygiene ---
+  ChecklistTemplateItem(
+      id: 'soap',
+      category: 'hygiene',
+      nameKey: 'soap',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'toothbrush',
+      category: 'hygiene',
+      nameKey: 'toothbrush',
+      weightGrams: 15),
+  ChecklistTemplateItem(
+      id: 'toothpaste',
+      category: 'hygiene',
+      nameKey: 'toothpaste',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'microfiberTowel',
+      category: 'hygiene',
+      nameKey: 'microfiberTowel',
+      weightGrams: 80),
   ChecklistTemplateItem(
       id: 'toiletPaper',
       category: 'hygiene',
       nameKey: 'toiletPaper',
       weightGrams: 50),
   ChecklistTemplateItem(
-      id: 'handSanitizer',
+      id: 'trashBag',
       category: 'hygiene',
-      nameKey: 'handSanitizer',
+      nameKey: 'trashBag',
+      weightGrams: 7,
+      quantity: 3),
+  ChecklistTemplateItem(
+      id: 'antiChafingCream',
+      category: 'hygiene',
+      nameKey: 'antiChafingCream',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'earplugs',
+      category: 'hygiene',
+      nameKey: 'earplugs',
+      weightGrams: 5),
+
+  // --- Trousse de secours ---
+  ChecklistTemplateItem(
+      id: 'bandages',
+      category: 'firstAid',
+      nameKey: 'bandages',
+      weightGrams: 10,
+      quantity: 2,
+      requirement: ChecklistRequirement.recommended,
+      isEssential: false),
+  ChecklistTemplateItem(
+      id: 'sterileCompresses',
+      category: 'firstAid',
+      nameKey: 'sterileCompresses',
+      weightGrams: 15,
+      quantity: 2),
+  ChecklistTemplateItem(
+      id: 'elasticBandage',
+      category: 'firstAid',
+      nameKey: 'elasticBandage',
+      weightGrams: 40),
+  ChecklistTemplateItem(
+      id: 'disinfectant',
+      category: 'firstAid',
+      nameKey: 'disinfectant',
+      weightGrams: 80,
+      requirement: ChecklistRequirement.recommended,
+      isEssential: false),
+  ChecklistTemplateItem(
+      id: 'painkillers',
+      category: 'firstAid',
+      nameKey: 'painkillers',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'sunscreen',
+      category: 'firstAid',
+      nameKey: 'sunscreen',
+      weightGrams: 100,
+      requirement: ChecklistRequirement.required,
+      isEssential: true),
+  ChecklistTemplateItem(
+      id: 'lipBalm',
+      category: 'firstAid',
+      nameKey: 'lipBalm',
+      weightGrams: 15),
+  ChecklistTemplateItem(
+      id: 'emergencyBlanket',
+      category: 'firstAid',
+      nameKey: 'emergencyBlanket',
+      weightGrams: 60,
+      requirement: ChecklistRequirement.required,
+      isEssential: true),
+  ChecklistTemplateItem(
+      id: 'tickRemover',
+      category: 'firstAid',
+      nameKey: 'tickRemover',
+      weightGrams: 5),
+  ChecklistTemplateItem(
+      id: 'whistle',
+      category: 'firstAid',
+      nameKey: 'whistle',
+      weightGrams: 10,
+      requirement: ChecklistRequirement.required,
+      isEssential: true),
+  ChecklistTemplateItem(
+      id: 'strapping',
+      category: 'firstAid',
+      nameKey: 'strapping',
       weightGrams: 50),
   ChecklistTemplateItem(
-      id: 'towel', category: 'hygiene', nameKey: 'towel', weightGrams: 80),
+      id: 'eyeDrops',
+      category: 'firstAid',
+      nameKey: 'eyeDrops',
+      weightGrams: 20),
+  ChecklistTemplateItem(
+      id: 'antiDiarrheal',
+      category: 'firstAid',
+      nameKey: 'antiDiarrheal',
+      weightGrams: 15),
+  ChecklistTemplateItem(
+      id: 'antihistamine',
+      category: 'firstAid',
+      nameKey: 'antihistamine',
+      weightGrams: 15),
+  ChecklistTemplateItem(
+      id: 'kneeTape',
+      category: 'firstAid',
+      nameKey: 'kneeTape',
+      weightGrams: 40),
+
+  // --- Electronique ---
+  ChecklistTemplateItem(
+      id: 'phone',
+      category: 'electronics',
+      nameKey: 'phone',
+      weightGrams: 200,
+      requirement: ChecklistRequirement.required,
+      isEssential: true),
+  ChecklistTemplateItem(
+      id: 'powerBank',
+      category: 'electronics',
+      nameKey: 'powerBank',
+      weightGrams: 350,
+      requirement: ChecklistRequirement.recommended,
+      isEssential: false),
+  ChecklistTemplateItem(
+      id: 'usbCable',
+      category: 'electronics',
+      nameKey: 'usbCable',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'headlamp',
+      category: 'electronics',
+      nameKey: 'headlamp',
+      weightGrams: 80,
+      requirement: ChecklistRequirement.required,
+      isEssential: true),
+  ChecklistTemplateItem(
+      id: 'spareBatteries',
+      category: 'electronics',
+      nameKey: 'spareBatteries',
+      weightGrams: 25,
+      quantity: 2),
+
+  // --- Femme ---
+  ChecklistTemplateItem(
+      id: 'periodProtection',
+      category: 'women',
+      nameKey: 'periodProtection',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'sportsBra',
+      category: 'women',
+      nameKey: 'sportsBra',
+      weightGrams: 60,
+      quantity: 2),
+  ChecklistTemplateItem(
+      id: 'intimateWipes',
+      category: 'women',
+      nameKey: 'intimateWipes',
+      weightGrams: 20),
+  ChecklistTemplateItem(
+      id: 'peeCloth',
+      category: 'women',
+      nameKey: 'peeCloth',
+      weightGrams: 10),
+
+  // --- Homme ---
+  ChecklistTemplateItem(
+      id: 'razor',
+      category: 'men',
+      nameKey: 'razor',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'techBoxers',
+      category: 'men',
+      nameKey: 'techBoxers',
+      weightGrams: 50,
+      quantity: 3),
+
+  // --- Divers ---
+  ChecklistTemplateItem(
+      id: 'hikingPoles',
+      category: 'misc',
+      nameKey: 'hikingPoles',
+      weightGrams: 0),
+  ChecklistTemplateItem(
+      id: 'sunglasses',
+      category: 'misc',
+      nameKey: 'sunglasses',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'trailMap',
+      category: 'misc',
+      nameKey: 'trailMap',
+      weightGrams: 80),
+  ChecklistTemplateItem(
+      id: 'spareLaces',
+      category: 'misc',
+      nameKey: 'spareLaces',
+      weightGrams: 10),
+  ChecklistTemplateItem(
+      id: 'needleThread',
+      category: 'misc',
+      nameKey: 'needleThread',
+      weightGrams: 10),
+  ChecklistTemplateItem(
+      id: 'ductTape',
+      category: 'misc',
+      nameKey: 'ductTape',
+      weightGrams: 20),
+  ChecklistTemplateItem(
+      id: 'ziplocBags',
+      category: 'misc',
+      nameKey: 'ziplocBags',
+      weightGrams: 10),
+  ChecklistTemplateItem(
+      id: 'cord',
+      category: 'misc',
+      nameKey: 'cord',
+      weightGrams: 20),
+  ChecklistTemplateItem(
+      id: 'cash',
+      category: 'misc',
+      nameKey: 'cash',
+      weightGrams: 0),
+
+  // --- Chien ---
+  ChecklistTemplateItem(
+      id: 'dogBowl',
+      category: 'dog',
+      nameKey: 'dogBowl',
+      weightGrams: 50),
+  ChecklistTemplateItem(
+      id: 'dogLeash',
+      category: 'dog',
+      nameKey: 'dogLeash',
+      weightGrams: 80),
+  ChecklistTemplateItem(
+      id: 'dogKibble',
+      category: 'dog',
+      nameKey: 'dogKibble',
+      weightGrams: 300),
+  ChecklistTemplateItem(
+      id: 'dogBooties',
+      category: 'dog',
+      nameKey: 'dogBooties',
+      weightGrams: 60,
+      quantity: 4),
+  ChecklistTemplateItem(
+      id: 'dogVaccineBook',
+      category: 'dog',
+      nameKey: 'dogVaccineBook',
+      weightGrams: 30),
+  ChecklistTemplateItem(
+      id: 'dogPoopBags',
+      category: 'dog',
+      nameKey: 'dogPoopBags',
+      weightGrams: 10,
+      quantity: 10),
 ];
 
-/// Categories disponibles pour la checklist.
-const List<String> checklistCategories = [
-  'equipment',
-  'clothing',
-  'food',
-  'safety',
-  'documents',
-  'hygiene',
-];
+/// Icones par categorie (parite GR20 « Materiel & Sac »). Cle = cle i18n de la
+/// categorie. Vit ici (donnee de template) pour rester generique/multi-sentier.
+const Map<String, int> checklistCategoryIconCodepoints = {
+  // Material Icons codepoints (const IconData construits dans la couche UI).
+  'carrying': 0xe3b0, // luggage
+  'sleeping': 0xe0a6, // bed
+  'clothing': 0xea58, // checkroom
+  'cooking': 0xe56c, // restaurant
+  'foodWater': 0xe57a, // fastfood
+  'hygiene': 0xf1b6, // soap
+  'firstAid': 0xe95d, // medical_services
+  'electronics': 0xe1a3, // battery_charging_full
+  'women': 0xe310, // female
+  'men': 0xe58e, // male
+  'misc': 0xe619, // more_horiz
+  'dog': 0xe4a1, // pets
+};
