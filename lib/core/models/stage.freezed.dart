@@ -28,7 +28,15 @@ mixin _$StageModel {
  double get startLng;/// Latitude du point d'arrivee
  double get endLat;/// Longitude du point d'arrivee
  double get endLng;/// Difficulte (easy, moderate, hard, extreme)
- String get difficulty;
+ String get difficulty;/// Duree estimee de l'etape, en MINUTES (parite GR20).
+///
+/// Champ RICHE optionnel du socle « donnees externes » : il est alimente
+/// par la source de donnees du sentier (`assets/data/<trail>/stages.json`,
+/// backend en P4), PAS calcule ici. `null` quand le sentier ne fournit pas
+/// la donnee -> l'affichage retombe proprement sur une estimation
+/// (cf. `stageDurationMinutes`), aucun crash. Nullable pour ne rien casser
+/// sur les sentiers plus pauvres (ex. test-trail).
+ int? get estimatedDurationMinutes;
 /// Create a copy of StageModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -41,16 +49,16 @@ $StageModelCopyWith<StageModel> get copyWith => _$StageModelCopyWithImpl<StageMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StageModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.distanceKm, distanceKm) || other.distanceKm == distanceKm)&&(identical(other.elevationGainM, elevationGainM) || other.elevationGainM == elevationGainM)&&(identical(other.elevationLossM, elevationLossM) || other.elevationLossM == elevationLossM)&&(identical(other.description, description) || other.description == description)&&(identical(other.startLat, startLat) || other.startLat == startLat)&&(identical(other.startLng, startLng) || other.startLng == startLng)&&(identical(other.endLat, endLat) || other.endLat == endLat)&&(identical(other.endLng, endLng) || other.endLng == endLng)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StageModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.distanceKm, distanceKm) || other.distanceKm == distanceKm)&&(identical(other.elevationGainM, elevationGainM) || other.elevationGainM == elevationGainM)&&(identical(other.elevationLossM, elevationLossM) || other.elevationLossM == elevationLossM)&&(identical(other.description, description) || other.description == description)&&(identical(other.startLat, startLat) || other.startLat == startLat)&&(identical(other.startLng, startLng) || other.startLng == startLng)&&(identical(other.endLat, endLat) || other.endLat == endLat)&&(identical(other.endLng, endLng) || other.endLng == endLng)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.estimatedDurationMinutes, estimatedDurationMinutes) || other.estimatedDurationMinutes == estimatedDurationMinutes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,distanceKm,elevationGainM,elevationLossM,description,startLat,startLng,endLat,endLng,difficulty);
+int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,distanceKm,elevationGainM,elevationLossM,description,startLat,startLng,endLat,endLng,difficulty,estimatedDurationMinutes);
 
 @override
 String toString() {
-  return 'StageModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, distanceKm: $distanceKm, elevationGainM: $elevationGainM, elevationLossM: $elevationLossM, description: $description, startLat: $startLat, startLng: $startLng, endLat: $endLat, endLng: $endLng, difficulty: $difficulty)';
+  return 'StageModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, distanceKm: $distanceKm, elevationGainM: $elevationGainM, elevationLossM: $elevationLossM, description: $description, startLat: $startLat, startLng: $startLng, endLat: $endLat, endLng: $endLng, difficulty: $difficulty, estimatedDurationMinutes: $estimatedDurationMinutes)';
 }
 
 
@@ -61,7 +69,7 @@ abstract mixin class $StageModelCopyWith<$Res>  {
   factory $StageModelCopyWith(StageModel value, $Res Function(StageModel) _then) = _$StageModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String trailId, int stageNumber, String name, double distanceKm, int elevationGainM, int elevationLossM, String description, double startLat, double startLng, double endLat, double endLng, String difficulty
+ int id, String trailId, int stageNumber, String name, double distanceKm, int elevationGainM, int elevationLossM, String description, double startLat, double startLng, double endLat, double endLng, String difficulty, int? estimatedDurationMinutes
 });
 
 
@@ -78,7 +86,7 @@ class _$StageModelCopyWithImpl<$Res>
 
 /// Create a copy of StageModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? distanceKm = null,Object? elevationGainM = null,Object? elevationLossM = null,Object? description = null,Object? startLat = null,Object? startLng = null,Object? endLat = null,Object? endLng = null,Object? difficulty = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? distanceKm = null,Object? elevationGainM = null,Object? elevationLossM = null,Object? description = null,Object? startLat = null,Object? startLng = null,Object? endLat = null,Object? endLng = null,Object? difficulty = null,Object? estimatedDurationMinutes = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
@@ -93,7 +101,8 @@ as double,startLng: null == startLng ? _self.startLng : startLng // ignore: cast
 as double,endLat: null == endLat ? _self.endLat : endLat // ignore: cast_nullable_to_non_nullable
 as double,endLng: null == endLng ? _self.endLng : endLng // ignore: cast_nullable_to_non_nullable
 as double,difficulty: null == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
-as String,
+as String,estimatedDurationMinutes: freezed == estimatedDurationMinutes ? _self.estimatedDurationMinutes : estimatedDurationMinutes // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -178,10 +187,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  double distanceKm,  int elevationGainM,  int elevationLossM,  String description,  double startLat,  double startLng,  double endLat,  double endLng,  String difficulty)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  double distanceKm,  int elevationGainM,  int elevationLossM,  String description,  double startLat,  double startLng,  double endLat,  double endLng,  String difficulty,  int? estimatedDurationMinutes)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StageModel() when $default != null:
-return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distanceKm,_that.elevationGainM,_that.elevationLossM,_that.description,_that.startLat,_that.startLng,_that.endLat,_that.endLng,_that.difficulty);case _:
+return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distanceKm,_that.elevationGainM,_that.elevationLossM,_that.description,_that.startLat,_that.startLng,_that.endLat,_that.endLng,_that.difficulty,_that.estimatedDurationMinutes);case _:
   return orElse();
 
 }
@@ -199,10 +208,10 @@ return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distan
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  double distanceKm,  int elevationGainM,  int elevationLossM,  String description,  double startLat,  double startLng,  double endLat,  double endLng,  String difficulty)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String trailId,  int stageNumber,  String name,  double distanceKm,  int elevationGainM,  int elevationLossM,  String description,  double startLat,  double startLng,  double endLat,  double endLng,  String difficulty,  int? estimatedDurationMinutes)  $default,) {final _that = this;
 switch (_that) {
 case _StageModel():
-return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distanceKm,_that.elevationGainM,_that.elevationLossM,_that.description,_that.startLat,_that.startLng,_that.endLat,_that.endLng,_that.difficulty);case _:
+return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distanceKm,_that.elevationGainM,_that.elevationLossM,_that.description,_that.startLat,_that.startLng,_that.endLat,_that.endLng,_that.difficulty,_that.estimatedDurationMinutes);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +228,10 @@ return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distan
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String trailId,  int stageNumber,  String name,  double distanceKm,  int elevationGainM,  int elevationLossM,  String description,  double startLat,  double startLng,  double endLat,  double endLng,  String difficulty)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String trailId,  int stageNumber,  String name,  double distanceKm,  int elevationGainM,  int elevationLossM,  String description,  double startLat,  double startLng,  double endLat,  double endLng,  String difficulty,  int? estimatedDurationMinutes)?  $default,) {final _that = this;
 switch (_that) {
 case _StageModel() when $default != null:
-return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distanceKm,_that.elevationGainM,_that.elevationLossM,_that.description,_that.startLat,_that.startLng,_that.endLat,_that.endLng,_that.difficulty);case _:
+return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distanceKm,_that.elevationGainM,_that.elevationLossM,_that.description,_that.startLat,_that.startLng,_that.endLat,_that.endLng,_that.difficulty,_that.estimatedDurationMinutes);case _:
   return null;
 
 }
@@ -234,7 +243,7 @@ return $default(_that.id,_that.trailId,_that.stageNumber,_that.name,_that.distan
 @JsonSerializable()
 
 class _StageModel extends StageModel {
-  const _StageModel({this.id = 0, required this.trailId, required this.stageNumber, required this.name, required this.distanceKm, required this.elevationGainM, required this.elevationLossM, this.description = '', required this.startLat, required this.startLng, required this.endLat, required this.endLng, this.difficulty = 'moderate'}): super._();
+  const _StageModel({this.id = 0, required this.trailId, required this.stageNumber, required this.name, required this.distanceKm, required this.elevationGainM, required this.elevationLossM, this.description = '', required this.startLat, required this.startLng, required this.endLat, required this.endLng, this.difficulty = 'moderate', this.estimatedDurationMinutes}): super._();
   factory _StageModel.fromJson(Map<String, dynamic> json) => _$StageModelFromJson(json);
 
 /// Cle primaire DB (0 si pas encore insere)
@@ -263,6 +272,15 @@ class _StageModel extends StageModel {
 @override final  double endLng;
 /// Difficulte (easy, moderate, hard, extreme)
 @override@JsonKey() final  String difficulty;
+/// Duree estimee de l'etape, en MINUTES (parite GR20).
+///
+/// Champ RICHE optionnel du socle « donnees externes » : il est alimente
+/// par la source de donnees du sentier (`assets/data/<trail>/stages.json`,
+/// backend en P4), PAS calcule ici. `null` quand le sentier ne fournit pas
+/// la donnee -> l'affichage retombe proprement sur une estimation
+/// (cf. `stageDurationMinutes`), aucun crash. Nullable pour ne rien casser
+/// sur les sentiers plus pauvres (ex. test-trail).
+@override final  int? estimatedDurationMinutes;
 
 /// Create a copy of StageModel
 /// with the given fields replaced by the non-null parameter values.
@@ -277,16 +295,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StageModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.distanceKm, distanceKm) || other.distanceKm == distanceKm)&&(identical(other.elevationGainM, elevationGainM) || other.elevationGainM == elevationGainM)&&(identical(other.elevationLossM, elevationLossM) || other.elevationLossM == elevationLossM)&&(identical(other.description, description) || other.description == description)&&(identical(other.startLat, startLat) || other.startLat == startLat)&&(identical(other.startLng, startLng) || other.startLng == startLng)&&(identical(other.endLat, endLat) || other.endLat == endLat)&&(identical(other.endLng, endLng) || other.endLng == endLng)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StageModel&&(identical(other.id, id) || other.id == id)&&(identical(other.trailId, trailId) || other.trailId == trailId)&&(identical(other.stageNumber, stageNumber) || other.stageNumber == stageNumber)&&(identical(other.name, name) || other.name == name)&&(identical(other.distanceKm, distanceKm) || other.distanceKm == distanceKm)&&(identical(other.elevationGainM, elevationGainM) || other.elevationGainM == elevationGainM)&&(identical(other.elevationLossM, elevationLossM) || other.elevationLossM == elevationLossM)&&(identical(other.description, description) || other.description == description)&&(identical(other.startLat, startLat) || other.startLat == startLat)&&(identical(other.startLng, startLng) || other.startLng == startLng)&&(identical(other.endLat, endLat) || other.endLat == endLat)&&(identical(other.endLng, endLng) || other.endLng == endLng)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty)&&(identical(other.estimatedDurationMinutes, estimatedDurationMinutes) || other.estimatedDurationMinutes == estimatedDurationMinutes));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,distanceKm,elevationGainM,elevationLossM,description,startLat,startLng,endLat,endLng,difficulty);
+int get hashCode => Object.hash(runtimeType,id,trailId,stageNumber,name,distanceKm,elevationGainM,elevationLossM,description,startLat,startLng,endLat,endLng,difficulty,estimatedDurationMinutes);
 
 @override
 String toString() {
-  return 'StageModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, distanceKm: $distanceKm, elevationGainM: $elevationGainM, elevationLossM: $elevationLossM, description: $description, startLat: $startLat, startLng: $startLng, endLat: $endLat, endLng: $endLng, difficulty: $difficulty)';
+  return 'StageModel(id: $id, trailId: $trailId, stageNumber: $stageNumber, name: $name, distanceKm: $distanceKm, elevationGainM: $elevationGainM, elevationLossM: $elevationLossM, description: $description, startLat: $startLat, startLng: $startLng, endLat: $endLat, endLng: $endLng, difficulty: $difficulty, estimatedDurationMinutes: $estimatedDurationMinutes)';
 }
 
 
@@ -297,7 +315,7 @@ abstract mixin class _$StageModelCopyWith<$Res> implements $StageModelCopyWith<$
   factory _$StageModelCopyWith(_StageModel value, $Res Function(_StageModel) _then) = __$StageModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String trailId, int stageNumber, String name, double distanceKm, int elevationGainM, int elevationLossM, String description, double startLat, double startLng, double endLat, double endLng, String difficulty
+ int id, String trailId, int stageNumber, String name, double distanceKm, int elevationGainM, int elevationLossM, String description, double startLat, double startLng, double endLat, double endLng, String difficulty, int? estimatedDurationMinutes
 });
 
 
@@ -314,7 +332,7 @@ class __$StageModelCopyWithImpl<$Res>
 
 /// Create a copy of StageModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? distanceKm = null,Object? elevationGainM = null,Object? elevationLossM = null,Object? description = null,Object? startLat = null,Object? startLng = null,Object? endLat = null,Object? endLng = null,Object? difficulty = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? trailId = null,Object? stageNumber = null,Object? name = null,Object? distanceKm = null,Object? elevationGainM = null,Object? elevationLossM = null,Object? description = null,Object? startLat = null,Object? startLng = null,Object? endLat = null,Object? endLng = null,Object? difficulty = null,Object? estimatedDurationMinutes = freezed,}) {
   return _then(_StageModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,trailId: null == trailId ? _self.trailId : trailId // ignore: cast_nullable_to_non_nullable
@@ -329,7 +347,8 @@ as double,startLng: null == startLng ? _self.startLng : startLng // ignore: cast
 as double,endLat: null == endLat ? _self.endLat : endLat // ignore: cast_nullable_to_non_nullable
 as double,endLng: null == endLng ? _self.endLng : endLng // ignore: cast_nullable_to_non_nullable
 as double,difficulty: null == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
-as String,
+as String,estimatedDurationMinutes: freezed == estimatedDurationMinutes ? _self.estimatedDurationMinutes : estimatedDurationMinutes // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

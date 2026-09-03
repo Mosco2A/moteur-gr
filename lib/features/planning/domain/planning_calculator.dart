@@ -1,4 +1,5 @@
 import '../../../core/models/stage.dart';
+import '../../../core/models/stage_duration.dart';
 import '../models/day_plan.dart';
 
 /// Calculateur de planning : répartit N étapes sur D jours.
@@ -19,10 +20,11 @@ class PlanningCalculator {
 
   /// Calcule la durée estimée en heures pour une étape.
   ///
-  /// Formule randonneur : distance / 4 km/h + dénivelé positif / 400 m/h
-  static double estimatedHours(StageModel stage) {
-    return stage.distanceKm / 4.0 + stage.elevationGainM / 400.0;
-  }
+  /// Source unique [stageDurationMinutes] : privilégie la durée RICHE du sentier
+  /// ([StageModel.estimatedDurationMinutes]) quand elle est fournie, sinon
+  /// applique la règle de marche Naismith (distance / 4 km/h + D+ / 400 m/h).
+  static double estimatedHours(StageModel stage) =>
+      stageDurationMinutes(stage) / 60.0;
 
   /// Répartit les [stages] sur [days] jours de manière équilibrée.
   ///

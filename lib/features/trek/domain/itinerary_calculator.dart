@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import '../../../core/models/stage.dart';
+import '../../../core/models/stage_duration.dart';
 import 'models/feasibility_profile.dart';
 import 'models/itinerary_config.dart';
 import 'models/itinerary_day.dart';
@@ -17,10 +18,12 @@ class ItineraryCalculator {
 
   /// Duree estimee en heures pour une etape.
   ///
-  /// Formule randonneur : distance / 4 km/h + denivele positif / 400 m/h
-  static double _estimatedHours(StageModel stage) {
-    return stage.distanceKm / 4.0 + stage.elevationGainM / 400.0;
-  }
+  /// Source unique [stageDurationMinutes] : privilegie la duree RICHE du sentier
+  /// ([StageModel.estimatedDurationMinutes]) quand elle existe, sinon retombe sur
+  /// la regle de marche Naismith (distance / 4 km/h + D+ / 400 m/h). La
+  /// repartition en jours reste ainsi coherente avec les durees affichees.
+  static double _estimatedHours(StageModel stage) =>
+      stageDurationMinutes(stage) / 60.0;
 
   /// Calcule l'itineraire multi-jours a partir des etapes et parametres.
   ///

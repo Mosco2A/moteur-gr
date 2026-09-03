@@ -92,5 +92,34 @@ void main() {
 
       await db.close();
     });
+
+    test('le seed charge la duree riche par etape (parite GR20 socle donnees)',
+        () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = AppDatabase(NativeDatabase.memory());
+
+      final loader = SeedDataLoader(
+        db: db,
+        prefs: prefs,
+        trailConfig: _seedTrailConfig,
+      );
+      await loader.seedIfNeeded();
+
+      final stagesDao = StagesDao(db);
+      final stages = await stagesDao.getByTrailId('mare-a-mare-centre');
+
+      // Toutes les etapes Mare a Mare portent une duree (donnee du sentier).
+      expect(
+        stages.every((s) => s.estimatedDurationMinutes != null),
+        isTrue,
+        reason: 'estimatedDurationMinutes alimente depuis stages.json',
+      );
+      // Valeur exacte de l etape 1 (Ghisonaccia — Catastaghju = 350 min).
+      final s1 = stages.firstWhere((s) => s.stageNumber == 1);
+      expect(s1.estimatedDurationMinutes, 350);
+
+      await db.close();
+    });
   });
 }

@@ -53,6 +53,16 @@ abstract class StageModel with _$StageModel {
 
     /// Difficulte (easy, moderate, hard, extreme)
     @Default('moderate') String difficulty,
+
+    /// Duree estimee de l'etape, en MINUTES (parite GR20).
+    ///
+    /// Champ RICHE optionnel du socle « donnees externes » : il est alimente
+    /// par la source de donnees du sentier (`assets/data/<trail>/stages.json`,
+    /// backend en P4), PAS calcule ici. `null` quand le sentier ne fournit pas
+    /// la donnee -> l'affichage retombe proprement sur une estimation
+    /// (cf. `stageDurationMinutes`), aucun crash. Nullable pour ne rien casser
+    /// sur les sentiers plus pauvres (ex. test-trail).
+    int? estimatedDurationMinutes,
   }) = _StageModel;
 
   /// Construit depuis une ligne Drift (table Stage)
@@ -71,6 +81,7 @@ abstract class StageModel with _$StageModel {
       endLat: row.endLat,
       endLng: row.endLng,
       difficulty: row.difficulty,
+      estimatedDurationMinutes: row.estimatedDurationMinutes,
     );
   }
 
@@ -89,6 +100,11 @@ abstract class StageModel with _$StageModel {
       endLat: Value(endLat),
       endLng: Value(endLng),
       difficulty: Value(difficulty),
+      // Colonne nullable : `Value.absent()` quand la donnee manque, pour ne pas
+      // ecraser un eventuel defaut et rester coherent avec un sentier pauvre.
+      estimatedDurationMinutes: estimatedDurationMinutes == null
+          ? const Value.absent()
+          : Value(estimatedDurationMinutes),
     );
   }
 
