@@ -1,3 +1,4 @@
+import 'mare_a_mare_centre_trail_config.dart';
 import 'pyrenees_trail_config.dart';
 import 'test_trail_config.dart';
 import 'trail_config.dart';
@@ -23,6 +24,10 @@ abstract final class TrailCatalog {
   /// `const` : la liste est figee a la compilation en P2-P3 (#84627). L'ordre
   /// fait foi pour le selecteur de sentier (F8D-02).
   static const List<TrailConfig> all = <TrailConfig>[
+    // Sentier de demonstration reel de StepWays (PARITE GR20, LOT 1, #99423).
+    // EN TETE => devient [defaultTrail] : l'app demarre dessus. Reste une DONNEE
+    // (TrailConfig), le moteur ne hardcode aucune localite.
+    mareAMareCentreTrailConfig,
     testTrailConfig,
     pyreneesTrailConfig,
   ];

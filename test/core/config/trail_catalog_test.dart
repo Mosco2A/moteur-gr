@@ -35,11 +35,18 @@ void main() {
       expect(pyr.gpxAssetPath, endsWith('.gpx'));
     });
 
-    test('AUCUN sentier ne hardcode la Corse / le Mare a Mare (#84627)', () {
-      // Le moteur est generique : aucune localite Corse ne doit etre cablee
-      // dans les configs de catalogue (donnees neutres en P2-P3).
+    test('les sentiers AUTRES que la demo restent neutres (genericite #84627)', () {
+      // PARITE GR20 — LOT 1 (#99423) : la demo StepWays est desormais un
+      // sentier REEL (Mare a Mare Centre, Corse), en tete du catalogue -> il a
+      // le DROIT de nommer sa vraie region/localite (c'est une DONNEE). La
+      // genericite du moteur (#84627) se prouve autrement : les AUTRES sentiers
+      // du catalogue restent neutres (aucune localite Corse cablee), et surtout
+      // le MOTEUR ne hardcode rien (cf. test dedie plus bas). On borne donc
+      // l'interdiction aux sentiers != demo par defaut.
       const interdits = ['corse', 'corsica', 'mare a mare', 'mare-a-mare', 'mam'];
-      for (final c in TrailCatalog.all) {
+      final autres = TrailCatalog.all
+          .where((c) => c.id != TrailCatalog.defaultTrail.id);
+      for (final c in autres) {
         final blob = [
           c.id,
           c.name,
@@ -50,7 +57,8 @@ void main() {
         ].join(' ').toLowerCase();
         for (final mot in interdits) {
           expect(blob.contains(mot), isFalse,
-              reason: 'config ${c.id} contient "$mot" (hardcode Corse interdit)');
+              reason: 'config ${c.id} contient "$mot" (hardcode Corse interdit '
+                  'hors sentier de demo)');
         }
       }
     });
@@ -71,6 +79,34 @@ void main() {
 
     test('defaultTrail est le premier du catalogue', () {
       expect(TrailCatalog.defaultTrail.id, TrailCatalog.all.first.id);
+    });
+  });
+
+  group('PARITE GR20 — LOT 1 : la demo demarre sur Mare a Mare Centre', () {
+    test('le catalogue contient le sentier Mare a Mare Centre', () {
+      expect(TrailCatalog.contains('mare-a-mare-centre'), isTrue);
+    });
+
+    test('defaultTrail = mare-a-mare-centre (l\'app demarre dessus)', () {
+      // Critere de « fait » (#99423) : au lancement, l'app ouvre le HUB Mare a
+      // Mare Centre -> le sentier par defaut du catalogue DOIT etre celui-ci.
+      expect(TrailCatalog.defaultTrail.id, 'mare-a-mare-centre');
+    });
+
+    test('la config par defaut porte 7 etapes en Corse (donnees seed)', () {
+      final demo = TrailCatalog.defaultTrail;
+      expect(demo.totalStages, 7);
+      expect(demo.region, 'Corse');
+      // seedAssetsBase pointe sur le DOSSIER de donnees reelles (mam-c-*),
+      // jamais le fichier test-only mare_a_mare_centre.json (mam-ew-*).
+      expect(demo.seedAssetsBase, 'assets/data/mare_a_mare_centre');
+    });
+
+    test('sans selection, trailConfigProvider = mare-a-mare-centre', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      expect(container.read(trailConfigProvider).id, 'mare-a-mare-centre');
     });
   });
 

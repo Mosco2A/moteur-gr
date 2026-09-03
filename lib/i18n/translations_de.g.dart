@@ -87,6 +87,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$trailSelection$de trailSelection = _Translations$trailSelection$de._(_root);
 	@override late final _Translations$consent$de consent = _Translations$consent$de._(_root);
 	@override late final _Translations$moderation$de moderation = _Translations$moderation$de._(_root);
+	@override late final _Translations$bootstrap$de bootstrap = _Translations$bootstrap$de._(_root);
 }
 
 // Path: a11y
@@ -1050,6 +1051,16 @@ class _Translations$moderation$de extends Translations$moderation$fr {
 	@override String get complaintSent => 'Anfechtung erfasst. Sie wird geprüft.';
 	@override String get complaintEmpty => 'Bitte erklären Sie Ihre Anfechtung.';
 	@override late final _Translations$moderation$a11y$de a11y = _Translations$moderation$a11y$de._(_root);
+}
+
+// Path: bootstrap
+class _Translations$bootstrap$de extends Translations$bootstrap$fr {
+	_Translations$bootstrap$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get loading => 'Ihre Wanderung wird vorbereitet…';
 }
 
 // Path: hub.trekCard
@@ -2883,6 +2894,7 @@ extension on TranslationsDe {
 			'moderation.a11y.submitReport' => 'Meldung senden',
 			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
 			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
+			'bootstrap.loading' => 'Ihre Wanderung wird vorbereitet…',
 			_ => null,
 		};
 	}

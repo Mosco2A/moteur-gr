@@ -87,6 +87,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$trailSelection$en trailSelection = _Translations$trailSelection$en._(_root);
 	@override late final _Translations$consent$en consent = _Translations$consent$en._(_root);
 	@override late final _Translations$moderation$en moderation = _Translations$moderation$en._(_root);
+	@override late final _Translations$bootstrap$en bootstrap = _Translations$bootstrap$en._(_root);
 }
 
 // Path: a11y
@@ -1050,6 +1051,16 @@ class _Translations$moderation$en extends Translations$moderation$fr {
 	@override String get complaintSent => 'Challenge recorded. It will be reviewed.';
 	@override String get complaintEmpty => 'Please explain your challenge.';
 	@override late final _Translations$moderation$a11y$en a11y = _Translations$moderation$a11y$en._(_root);
+}
+
+// Path: bootstrap
+class _Translations$bootstrap$en extends Translations$bootstrap$fr {
+	_Translations$bootstrap$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get loading => 'Preparing your hike…';
 }
 
 // Path: hub.trekCard
@@ -2883,6 +2894,7 @@ extension on TranslationsEn {
 			'moderation.a11y.submitReport' => 'Send report',
 			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
 			'moderation.a11y.complaintForm' => 'Decision challenge form',
+			'bootstrap.loading' => 'Preparing your hike…',
 			_ => null,
 		};
 	}

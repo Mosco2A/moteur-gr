@@ -1057,5 +1057,8 @@
       "statementCard": "Motivación de la decisión de moderación",
       "complaintForm": "Formulario de impugnación de la decisión"
     }
+  },
+  "bootstrap": {
+    "loading": "Preparando tu excursión…"
   }
 }

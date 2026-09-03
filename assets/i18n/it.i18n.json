@@ -1057,5 +1057,8 @@
       "statementCard": "Motivazione della decisione di moderazione",
       "complaintForm": "Modulo di contestazione della decisione"
     }
+  },
+  "bootstrap": {
+    "loading": "Preparazione della tua escursione…"
   }
 }

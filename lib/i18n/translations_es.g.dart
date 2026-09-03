@@ -87,6 +87,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$trailSelection$es trailSelection = _Translations$trailSelection$es._(_root);
 	@override late final _Translations$consent$es consent = _Translations$consent$es._(_root);
 	@override late final _Translations$moderation$es moderation = _Translations$moderation$es._(_root);
+	@override late final _Translations$bootstrap$es bootstrap = _Translations$bootstrap$es._(_root);
 }
 
 // Path: a11y
@@ -1050,6 +1051,16 @@ class _Translations$moderation$es extends Translations$moderation$fr {
 	@override String get complaintSent => 'Impugnación registrada. Será examinada.';
 	@override String get complaintEmpty => 'Explica tu impugnación.';
 	@override late final _Translations$moderation$a11y$es a11y = _Translations$moderation$a11y$es._(_root);
+}
+
+// Path: bootstrap
+class _Translations$bootstrap$es extends Translations$bootstrap$fr {
+	_Translations$bootstrap$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get loading => 'Preparando tu excursión…';
 }
 
 // Path: hub.trekCard
@@ -2883,6 +2894,7 @@ extension on TranslationsEs {
 			'moderation.a11y.submitReport' => 'Enviar denuncia',
 			'moderation.a11y.statementCard' => 'Motivación de la decisión de moderación',
 			'moderation.a11y.complaintForm' => 'Formulario de impugnación de la decisión',
+			'bootstrap.loading' => 'Preparando tu excursión…',
 			_ => null,
 		};
 	}
