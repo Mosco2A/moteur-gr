@@ -1265,5 +1265,74 @@
     "dates": "From {start} to {end}",
     "viewDiploma": "View my diploma",
     "noData": "No route data to display yet."
+  },
+  "programme": {
+    "title": "Programme",
+    "helpTooltip": "Help",
+    "stats": {
+      "distance": "Distance",
+      "elevation": "Ascent",
+      "days": "Days",
+      "stages": "Stages",
+      "restCount": "{count} rest"
+    },
+    "legend": {
+      "easy": "Easy",
+      "moderate": "Moderate",
+      "hard": "Hard",
+      "extreme": "Extreme"
+    },
+    "restDay": "Rest day",
+    "restDayLabel": "R",
+    "actions": {
+      "merge": "Merge",
+      "split": "Split",
+      "rest": "Rest",
+      "removeRest": "Remove this rest day"
+    },
+    "mergeBlocked": {
+      "noNext": "No next day",
+      "rest": "Cannot merge with a rest day",
+      "tooLong": "Too long: {hours}h (max {max}h/day)"
+    },
+    "replan": "Replan",
+    "replanButton": "REPLAN",
+    "replanDialog": {
+      "title": "Replan",
+      "message": "Replanning will reset your programme.\nYour rest days will be kept at the same positions.",
+      "cancel": "Cancel",
+      "confirm": "Replan"
+    },
+    "validate": "CONFIRM MY PROGRAMME",
+    "empty": {
+      "title": "Set up your itinerary first",
+      "message": "Choose your route and duration to generate your programme.",
+      "action": "SET UP ITINERARY"
+    },
+    "info": {
+      "title": "Programme",
+      "days": {
+        "title": "Trek days",
+        "body": "Each row = one day. Tap to see the full detail."
+      },
+      "reorder": {
+        "title": "Reorder",
+        "body": "Drag the handle on the right to change the day order."
+      },
+      "rest": {
+        "title": "Rest day",
+        "body": "Insert a recovery day between two stages."
+      },
+      "mergeSplit": {
+        "title": "Merge / Split",
+        "body": "Combine or split stages to match your pace."
+      },
+      "colors": {
+        "title": "Colours",
+        "body": "Green = easy, Orange = moderate, Red = hard (distance + ascent)."
+      },
+      "note": "The elevation profile at the bottom shows each day's ascent.",
+      "close": "Got it!"
+    }
   }
 }

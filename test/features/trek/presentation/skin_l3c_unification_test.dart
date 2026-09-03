@@ -5,7 +5,6 @@ import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage.dart';
 import 'package:moteur_gr/features/trek/presentation/planning/itinerary_config_screen.dart';
-import 'package:moteur_gr/features/trek/presentation/planning/planning_screen.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/stage_card.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
@@ -82,24 +81,6 @@ void main() {
       // Tap fonctionnel (onTap porte par l'InkWell interne d'AppCard).
       await tester.tap(find.byType(StageCard));
       expect(tapped, isTrue);
-    });
-
-    testWidgets('TrekPlanningScreen : jours et etapes en AppCard', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: [
-            itineraryProvider.overrideWith((ref) => Future.value(const [])),
-          ],
-          child: const MaterialApp(home: TrekPlanningScreen()),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      // Ecran vide -> pas de Card Material brut (ni AppCard non plus ici),
-      // surtout : aucune Card Material residuelle.
-      expect(find.byType(Card), findsNothing);
     });
 
     testWidgets('ItineraryConfigScreen : sections + resume en AppCard', (

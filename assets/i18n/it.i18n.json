@@ -1265,5 +1265,74 @@
     "dates": "Dal {start} al {end}",
     "viewDiploma": "Vedi il mio diploma",
     "noData": "Nessun dato di percorso da mostrare al momento."
+  },
+  "programme": {
+    "title": "Programma",
+    "helpTooltip": "Aiuto",
+    "stats": {
+      "distance": "Distanza",
+      "elevation": "Dislivello+",
+      "days": "Giorni",
+      "stages": "Tappe",
+      "restCount": "{count} riposo"
+    },
+    "legend": {
+      "easy": "Facile",
+      "moderate": "Moderato",
+      "hard": "Difficile",
+      "extreme": "Estremo"
+    },
+    "restDay": "Giorno di riposo",
+    "restDayLabel": "R",
+    "actions": {
+      "merge": "Raggruppa",
+      "split": "Dividi",
+      "rest": "Riposo",
+      "removeRest": "Rimuovi questo giorno di riposo"
+    },
+    "mergeBlocked": {
+      "noNext": "Nessun giorno successivo",
+      "rest": "Impossibile raggruppare con un giorno di riposo",
+      "tooLong": "Troppo lungo: {hours}h (max {max}h/giorno)"
+    },
+    "replan": "Ripianifica",
+    "replanButton": "RIPIANIFICA",
+    "replanDialog": {
+      "title": "Ripianifica",
+      "message": "La ripianificazione azzererà il tuo programma.\nI giorni di riposo saranno mantenuti nelle stesse posizioni.",
+      "cancel": "Annulla",
+      "confirm": "Ripianifica"
+    },
+    "validate": "CONFERMA IL MIO PROGRAMMA",
+    "empty": {
+      "title": "Configura prima il tuo itinerario",
+      "message": "Scegli il percorso e la durata per generare il tuo programma.",
+      "action": "CONFIGURA L'ITINERARIO"
+    },
+    "info": {
+      "title": "Programma",
+      "days": {
+        "title": "Giorni di trek",
+        "body": "Ogni riga = un giorno. Tocca per vedere il dettaglio completo."
+      },
+      "reorder": {
+        "title": "Riordina",
+        "body": "Trascina la maniglia a destra per cambiare l'ordine dei giorni."
+      },
+      "rest": {
+        "title": "Giorno di riposo",
+        "body": "Inserisci un giorno di recupero tra due tappe."
+      },
+      "mergeSplit": {
+        "title": "Raggruppa / Dividi",
+        "body": "Unisci o dividi le tappe secondo il tuo ritmo."
+      },
+      "colors": {
+        "title": "Colori",
+        "body": "Verde = facile, Arancione = medio, Rosso = difficile (distanza + dislivello)."
+      },
+      "note": "Il profilo altimetrico in basso mostra il dislivello di ogni giorno.",
+      "close": "Capito!"
+    }
   }
 }

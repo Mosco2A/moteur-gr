@@ -1265,5 +1265,74 @@
     "dates": "Du {start} au {end}",
     "viewDiploma": "Voir mon diplome",
     "noData": "Aucune donnee de parcours a afficher pour le moment."
+  },
+  "programme": {
+    "title": "Programme",
+    "helpTooltip": "Aide",
+    "stats": {
+      "distance": "Distance",
+      "elevation": "D+",
+      "days": "Jours",
+      "stages": "Étapes",
+      "restCount": "{count} repos"
+    },
+    "legend": {
+      "easy": "Facile",
+      "moderate": "Modéré",
+      "hard": "Difficile",
+      "extreme": "Extrême"
+    },
+    "restDay": "Jour de repos",
+    "restDayLabel": "R",
+    "actions": {
+      "merge": "Regrouper",
+      "split": "Séparer",
+      "rest": "Repos",
+      "removeRest": "Supprimer ce jour de repos"
+    },
+    "mergeBlocked": {
+      "noNext": "Pas de jour suivant",
+      "rest": "Impossible de grouper avec un jour de repos",
+      "tooLong": "Trop long : {hours}h (max {max}h/jour)"
+    },
+    "replan": "Replanifier",
+    "replanButton": "REPLANIFIER",
+    "replanDialog": {
+      "title": "Replanifier",
+      "message": "La replanification va réinitialiser votre programme.\nVos jours de repos seront préservés aux mêmes positions.",
+      "cancel": "Annuler",
+      "confirm": "Replanifier"
+    },
+    "validate": "VALIDER MON PROGRAMME",
+    "empty": {
+      "title": "Configurez d'abord votre itinéraire",
+      "message": "Choisissez votre parcours et la durée pour générer votre programme.",
+      "action": "CONFIGURER L'ITINÉRAIRE"
+    },
+    "info": {
+      "title": "Programme",
+      "days": {
+        "title": "Jours de trek",
+        "body": "Chaque ligne = un jour. Appuyez pour voir le détail complet."
+      },
+      "reorder": {
+        "title": "Réorganiser",
+        "body": "Glissez la poignée à droite pour changer l'ordre des jours."
+      },
+      "rest": {
+        "title": "Jour de repos",
+        "body": "Insérez un jour de récupération entre deux étapes."
+      },
+      "mergeSplit": {
+        "title": "Regrouper / Séparer",
+        "body": "Fusionnez ou découpez des étapes selon votre rythme."
+      },
+      "colors": {
+        "title": "Couleurs",
+        "body": "Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé)."
+      },
+      "note": "Le profil altimétrique en bas visualise le dénivelé de chaque jour.",
+      "close": "Compris !"
+    }
   }
 }
