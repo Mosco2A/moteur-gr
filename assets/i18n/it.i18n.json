@@ -70,7 +70,7 @@
       "feasibility": "Fattibilità",
       "feasibilitySub": "Valuta il tuo livello",
       "itinerary": "Itinerario",
-      "itinerarySub": "Il tracciato del sentiero",
+      "itinerarySub": "Le tue tappe in dettaglio",
       "programme": "Programma",
       "programmeSub": "Distribuisci le tappe",
       "checklist": "Attrezzatura e zaino",
@@ -185,6 +185,23 @@
     "stages": "Tappe",
     "plan": "Pianificare"
   },
+  "itinerary": {
+    "title": "Itinerario",
+    "subtitle": "Le tue tappe, giorno per giorno",
+    "empty": "Nessuna tappa disponibile",
+    "emptyHint": "I dati del sentiero non sono caricati.",
+    "loading": "Caricamento itinerario...",
+    "error": "Impossibile caricare l'itinerario",
+    "day": "Giorno",
+    "stage": "Tappa",
+    "stages": "Tappe",
+    "totalDistance": "Distanza",
+    "totalElevation": "D+",
+    "restDay": "Giorno di riposo",
+    "viewStage": "Vedi tappa",
+    "openMap": "Vedi sulla mappa",
+    "stageCount": "{count} tappe"
+  },
   "tracking": {
     "start": "Avvia",
     "pause": "Pausa",
@@ -245,7 +262,24 @@
       "handSanitizer": "Disinfettante mani",
       "towel": "Asciugamano"
     },
-    "essential": "Essenziale"
+    "essential": "Essenziale",
+    "weight": {
+      "title": "Peso dello zaino",
+      "total": "Peso totale",
+      "bodyWeight": "Peso corporeo",
+      "ratio": "Rapporto zaino / corpo",
+      "perItem": "Peso per articolo",
+      "edit": "Modifica peso",
+      "grams": "g",
+      "kilograms": "kg",
+      "adviceLight": "Zaino leggero - ideale",
+      "adviceOk": "Zaino ben bilanciato",
+      "adviceHeavy": "Zaino pesante - valuta di alleggerire",
+      "adviceTooHeavy": "Troppo pesante - alleggerisci lo zaino",
+      "itemWeight": "Peso articolo",
+      "cancel": "Annulla",
+      "save": "Salva"
+    }
   },
   "journal": {
     "title": "Diario di trekking",

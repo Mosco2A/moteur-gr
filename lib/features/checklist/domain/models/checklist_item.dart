@@ -28,6 +28,9 @@ abstract class ChecklistItemModel with _$ChecklistItemModel {
     /// Item coche ou non par l'utilisateur
     @Default(false) bool isChecked,
 
+    /// Poids unitaire en grammes (parite GR20 « Materiel & Sac »). 0 = non pese.
+    @Default(0) int weightGrams,
+
     /// Note personnelle optionnelle de l'utilisateur
     String? customNote,
   }) = _ChecklistItemModel;

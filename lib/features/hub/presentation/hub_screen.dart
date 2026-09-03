@@ -130,7 +130,12 @@ class HubScreen extends ConsumerWidget {
                   icon: Icons.route_outlined,
                   title: t.hub.cards.itinerary,
                   subtitle: t.hub.cards.itinerarySub,
-                  onTap: () => context.go('/map'),
+                  // PARITE GR20 (#99433) + fix crash retour : « Itineraire »
+                  // ouvre desormais l'ecran deroule des etapes (route hors-shell
+                  // via push) au lieu de context.go('/map') qui remplacait la
+                  // pile (bascule d'onglet) et plantait au retour
+                  // (currentConfiguration.isNotEmpty).
+                  onTap: () => context.push('/trail/$trailId/itinerary'),
                 ),
                 QuickAccessCard(
                   icon: Icons.event_note_outlined,

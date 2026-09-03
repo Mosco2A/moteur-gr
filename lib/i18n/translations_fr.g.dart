@@ -52,6 +52,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$gps$fr gps = Translations$gps$fr.internal(_root);
 	late final Translations$navAlert$fr navAlert = Translations$navAlert$fr.internal(_root);
 	late final Translations$planning$fr planning = Translations$planning$fr.internal(_root);
+	late final Translations$itinerary$fr itinerary = Translations$itinerary$fr.internal(_root);
 	late final Translations$tracking$fr tracking = Translations$tracking$fr.internal(_root);
 	late final Translations$checklist$fr checklist = Translations$checklist$fr.internal(_root);
 	late final Translations$journal$fr journal = Translations$journal$fr.internal(_root);
@@ -477,6 +478,60 @@ class Translations$planning$fr {
 	String get plan => 'Planifier';
 }
 
+// Path: itinerary
+class Translations$itinerary$fr {
+	Translations$itinerary$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Itineraire'
+	String get title => 'Itineraire';
+
+	/// fr: 'Le deroule de vos etapes'
+	String get subtitle => 'Le deroule de vos etapes';
+
+	/// fr: 'Aucune etape disponible'
+	String get empty => 'Aucune etape disponible';
+
+	/// fr: 'Les donnees du sentier ne sont pas chargees.'
+	String get emptyHint => 'Les donnees du sentier ne sont pas chargees.';
+
+	/// fr: 'Chargement de l'itineraire...'
+	String get loading => 'Chargement de l\'itineraire...';
+
+	/// fr: 'Impossible de charger l'itineraire'
+	String get error => 'Impossible de charger l\'itineraire';
+
+	/// fr: 'Jour'
+	String get day => 'Jour';
+
+	/// fr: 'Etape'
+	String get stage => 'Etape';
+
+	/// fr: 'Etapes'
+	String get stages => 'Etapes';
+
+	/// fr: 'Distance'
+	String get totalDistance => 'Distance';
+
+	/// fr: 'D+'
+	String get totalElevation => 'D+';
+
+	/// fr: 'Jour de repos'
+	String get restDay => 'Jour de repos';
+
+	/// fr: 'Voir l'etape'
+	String get viewStage => 'Voir l\'etape';
+
+	/// fr: 'Voir sur la carte'
+	String get openMap => 'Voir sur la carte';
+
+	/// fr: '{count} etapes'
+	String get stageCount => '{count} etapes';
+}
+
 // Path: tracking
 class Translations$tracking$fr {
 	Translations$tracking$fr.internal(this._root);
@@ -565,6 +620,8 @@ class Translations$checklist$fr {
 
 	/// fr: 'Essentiel'
 	String get essential => 'Essentiel';
+
+	late final Translations$checklist$weight$fr weight = Translations$checklist$weight$fr.internal(_root);
 }
 
 // Path: journal
@@ -2228,8 +2285,8 @@ class Translations$hub$cards$fr {
 	/// fr: 'Itinéraire'
 	String get itinerary => 'Itinéraire';
 
-	/// fr: 'Le tracé du sentier'
-	String get itinerarySub => 'Le tracé du sentier';
+	/// fr: 'Le deroule de vos etapes'
+	String get itinerarySub => 'Le deroule de vos etapes';
 
 	/// fr: 'Programme'
 	String get programme => 'Programme';
@@ -2479,6 +2536,60 @@ class Translations$checklist$items$fr {
 
 	/// fr: 'Serviette'
 	String get towel => 'Serviette';
+}
+
+// Path: checklist.weight
+class Translations$checklist$weight$fr {
+	Translations$checklist$weight$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Poids du sac'
+	String get title => 'Poids du sac';
+
+	/// fr: 'Poids total'
+	String get total => 'Poids total';
+
+	/// fr: 'Poids corporel'
+	String get bodyWeight => 'Poids corporel';
+
+	/// fr: 'Ratio sac / corps'
+	String get ratio => 'Ratio sac / corps';
+
+	/// fr: 'Poids par article'
+	String get perItem => 'Poids par article';
+
+	/// fr: 'Modifier le poids'
+	String get edit => 'Modifier le poids';
+
+	/// fr: 'g'
+	String get grams => 'g';
+
+	/// fr: 'kg'
+	String get kilograms => 'kg';
+
+	/// fr: 'Sac leger - ideal'
+	String get adviceLight => 'Sac leger - ideal';
+
+	/// fr: 'Sac bien equilibre'
+	String get adviceOk => 'Sac bien equilibre';
+
+	/// fr: 'Sac lourd - pensez a alleger'
+	String get adviceHeavy => 'Sac lourd - pensez a alleger';
+
+	/// fr: 'Trop lourd - allegez le sac'
+	String get adviceTooHeavy => 'Trop lourd - allegez le sac';
+
+	/// fr: 'Poids de l'article'
+	String get itemWeight => 'Poids de l\'article';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Enregistrer'
+	String get save => 'Enregistrer';
 }
 
 // Path: weather.source
@@ -3873,7 +3984,7 @@ extension on Translations {
 			'hub.cards.feasibility' => 'Faisabilité',
 			'hub.cards.feasibilitySub' => 'Évaluez votre niveau',
 			'hub.cards.itinerary' => 'Itinéraire',
-			'hub.cards.itinerarySub' => 'Le tracé du sentier',
+			'hub.cards.itinerarySub' => 'Le deroule de vos etapes',
 			'hub.cards.programme' => 'Programme',
 			'hub.cards.programmeSub' => 'Répartissez vos étapes',
 			'hub.cards.checklist' => 'Matériel & sac',
@@ -3964,6 +4075,21 @@ extension on Translations {
 			'planning.estimatedTime' => 'Durée estimée',
 			'planning.stages' => 'Étapes',
 			'planning.plan' => 'Planifier',
+			'itinerary.title' => 'Itineraire',
+			'itinerary.subtitle' => 'Le deroule de vos etapes',
+			'itinerary.empty' => 'Aucune etape disponible',
+			'itinerary.emptyHint' => 'Les donnees du sentier ne sont pas chargees.',
+			'itinerary.loading' => 'Chargement de l\'itineraire...',
+			'itinerary.error' => 'Impossible de charger l\'itineraire',
+			'itinerary.day' => 'Jour',
+			'itinerary.stage' => 'Etape',
+			'itinerary.stages' => 'Etapes',
+			'itinerary.totalDistance' => 'Distance',
+			'itinerary.totalElevation' => 'D+',
+			'itinerary.restDay' => 'Jour de repos',
+			'itinerary.viewStage' => 'Voir l\'etape',
+			'itinerary.openMap' => 'Voir sur la carte',
+			'itinerary.stageCount' => '{count} etapes',
 			'tracking.start' => 'Demarrer',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Reprendre',
@@ -4018,6 +4144,21 @@ extension on Translations {
 			'checklist.items.handSanitizer' => 'Gel hydroalcoolique',
 			'checklist.items.towel' => 'Serviette',
 			'checklist.essential' => 'Essentiel',
+			'checklist.weight.title' => 'Poids du sac',
+			'checklist.weight.total' => 'Poids total',
+			'checklist.weight.bodyWeight' => 'Poids corporel',
+			'checklist.weight.ratio' => 'Ratio sac / corps',
+			'checklist.weight.perItem' => 'Poids par article',
+			'checklist.weight.edit' => 'Modifier le poids',
+			'checklist.weight.grams' => 'g',
+			'checklist.weight.kilograms' => 'kg',
+			'checklist.weight.adviceLight' => 'Sac leger - ideal',
+			'checklist.weight.adviceOk' => 'Sac bien equilibre',
+			'checklist.weight.adviceHeavy' => 'Sac lourd - pensez a alleger',
+			'checklist.weight.adviceTooHeavy' => 'Trop lourd - allegez le sac',
+			'checklist.weight.itemWeight' => 'Poids de l\'article',
+			'checklist.weight.cancel' => 'Annuler',
+			'checklist.weight.save' => 'Enregistrer',
 			'journal.title' => 'Journal de randonnée',
 			'journal.empty' => 'Votre journal est vide',
 			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de randonnée',
@@ -4298,6 +4439,8 @@ extension on Translations {
 			'goodies.comingSoon' => 'Ce module arrive bientot. Restez connecte !',
 			'noData.title' => 'Aucun sentier téléchargé',
 			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
+			_ => null,
+		} ?? switch (path) {
 			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
 			'noData.browseCta' => 'Parcourir les sentiers',
 			'catalog.title' => 'Catalogue des sentiers',
@@ -4328,8 +4471,6 @@ extension on Translations {
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
 			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.',
 			'onboarding.languageTitle' => 'Choisissez votre langue',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.languageSubtitle' => 'Vous pourrez la modifier à tout moment dans les paramètres.',
 			'onboarding.downloadTitle' => 'Téléchargez votre premier sentier',
 			'onboarding.downloadSubtitle' => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.',

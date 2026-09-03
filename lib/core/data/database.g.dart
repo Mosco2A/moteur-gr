@@ -2073,6 +2073,18 @@ class $ChecklistItemsTable extends ChecklistItems
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _weightGramsMeta = const VerificationMeta(
+    'weightGrams',
+  );
+  @override
+  late final GeneratedColumn<int> weightGrams = GeneratedColumn<int>(
+    'weight_grams',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
   );
@@ -2091,6 +2103,7 @@ class $ChecklistItemsTable extends ChecklistItems
     itemId,
     category,
     isChecked,
+    weightGrams,
     updatedAt,
   ];
   @override
@@ -2138,6 +2151,15 @@ class $ChecklistItemsTable extends ChecklistItems
         isChecked.isAcceptableOrUnknown(data['is_checked']!, _isCheckedMeta),
       );
     }
+    if (data.containsKey('weight_grams')) {
+      context.handle(
+        _weightGramsMeta,
+        weightGrams.isAcceptableOrUnknown(
+          data['weight_grams']!,
+          _weightGramsMeta,
+        ),
+      );
+    }
     if (data.containsKey('updated_at')) {
       context.handle(
         _updatedAtMeta,
@@ -2173,6 +2195,10 @@ class $ChecklistItemsTable extends ChecklistItems
         DriftSqlType.bool,
         data['${effectivePrefix}is_checked'],
       )!,
+      weightGrams: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}weight_grams'],
+      )!,
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
@@ -2202,6 +2228,13 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
   /// Item coche ou non
   final bool isChecked;
 
+  /// Poids unitaire en grammes (parite GR20 « Materiel & Sac », migration v19).
+  ///
+  /// Initialise depuis le poids de reference du template ; editable par
+  /// l'utilisateur. Alimente la jauge poids du sac (total = somme des items
+  /// coches). 0 = non pese / porte (ne contribue pas au total).
+  final int weightGrams;
+
   /// Date de derniere modification
   final DateTime? updatedAt;
   const ChecklistItem({
@@ -2210,6 +2243,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     required this.itemId,
     required this.category,
     required this.isChecked,
+    required this.weightGrams,
     this.updatedAt,
   });
   @override
@@ -2220,6 +2254,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     map['item_id'] = Variable<String>(itemId);
     map['category'] = Variable<String>(category);
     map['is_checked'] = Variable<bool>(isChecked);
+    map['weight_grams'] = Variable<int>(weightGrams);
     if (!nullToAbsent || updatedAt != null) {
       map['updated_at'] = Variable<DateTime>(updatedAt);
     }
@@ -2233,6 +2268,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       itemId: Value(itemId),
       category: Value(category),
       isChecked: Value(isChecked),
+      weightGrams: Value(weightGrams),
       updatedAt: updatedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(updatedAt),
@@ -2250,6 +2286,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       itemId: serializer.fromJson<String>(json['itemId']),
       category: serializer.fromJson<String>(json['category']),
       isChecked: serializer.fromJson<bool>(json['isChecked']),
+      weightGrams: serializer.fromJson<int>(json['weightGrams']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
@@ -2262,6 +2299,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       'itemId': serializer.toJson<String>(itemId),
       'category': serializer.toJson<String>(category),
       'isChecked': serializer.toJson<bool>(isChecked),
+      'weightGrams': serializer.toJson<int>(weightGrams),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
@@ -2272,6 +2310,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     String? itemId,
     String? category,
     bool? isChecked,
+    int? weightGrams,
     Value<DateTime?> updatedAt = const Value.absent(),
   }) => ChecklistItem(
     id: id ?? this.id,
@@ -2279,6 +2318,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
     itemId: itemId ?? this.itemId,
     category: category ?? this.category,
     isChecked: isChecked ?? this.isChecked,
+    weightGrams: weightGrams ?? this.weightGrams,
     updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
   );
   ChecklistItem copyWithCompanion(ChecklistItemsCompanion data) {
@@ -2288,6 +2328,9 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
       itemId: data.itemId.present ? data.itemId.value : this.itemId,
       category: data.category.present ? data.category.value : this.category,
       isChecked: data.isChecked.present ? data.isChecked.value : this.isChecked,
+      weightGrams: data.weightGrams.present
+          ? data.weightGrams.value
+          : this.weightGrams,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
@@ -2300,14 +2343,22 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
           ..write('itemId: $itemId, ')
           ..write('category: $category, ')
           ..write('isChecked: $isChecked, ')
+          ..write('weightGrams: $weightGrams, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, trailId, itemId, category, isChecked, updatedAt);
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    itemId,
+    category,
+    isChecked,
+    weightGrams,
+    updatedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2317,6 +2368,7 @@ class ChecklistItem extends DataClass implements Insertable<ChecklistItem> {
           other.itemId == this.itemId &&
           other.category == this.category &&
           other.isChecked == this.isChecked &&
+          other.weightGrams == this.weightGrams &&
           other.updatedAt == this.updatedAt);
 }
 
@@ -2326,6 +2378,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
   final Value<String> itemId;
   final Value<String> category;
   final Value<bool> isChecked;
+  final Value<int> weightGrams;
   final Value<DateTime?> updatedAt;
   const ChecklistItemsCompanion({
     this.id = const Value.absent(),
@@ -2333,6 +2386,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     this.itemId = const Value.absent(),
     this.category = const Value.absent(),
     this.isChecked = const Value.absent(),
+    this.weightGrams = const Value.absent(),
     this.updatedAt = const Value.absent(),
   });
   ChecklistItemsCompanion.insert({
@@ -2341,6 +2395,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     required String itemId,
     required String category,
     this.isChecked = const Value.absent(),
+    this.weightGrams = const Value.absent(),
     this.updatedAt = const Value.absent(),
   }) : trailId = Value(trailId),
        itemId = Value(itemId),
@@ -2351,6 +2406,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     Expression<String>? itemId,
     Expression<String>? category,
     Expression<bool>? isChecked,
+    Expression<int>? weightGrams,
     Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
@@ -2359,6 +2415,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
       if (itemId != null) 'item_id': itemId,
       if (category != null) 'category': category,
       if (isChecked != null) 'is_checked': isChecked,
+      if (weightGrams != null) 'weight_grams': weightGrams,
       if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
@@ -2369,6 +2426,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     Value<String>? itemId,
     Value<String>? category,
     Value<bool>? isChecked,
+    Value<int>? weightGrams,
     Value<DateTime?>? updatedAt,
   }) {
     return ChecklistItemsCompanion(
@@ -2377,6 +2435,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
       itemId: itemId ?? this.itemId,
       category: category ?? this.category,
       isChecked: isChecked ?? this.isChecked,
+      weightGrams: weightGrams ?? this.weightGrams,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -2399,6 +2458,9 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
     if (isChecked.present) {
       map['is_checked'] = Variable<bool>(isChecked.value);
     }
+    if (weightGrams.present) {
+      map['weight_grams'] = Variable<int>(weightGrams.value);
+    }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
@@ -2413,6 +2475,7 @@ class ChecklistItemsCompanion extends UpdateCompanion<ChecklistItem> {
           ..write('itemId: $itemId, ')
           ..write('category: $category, ')
           ..write('isChecked: $isChecked, ')
+          ..write('weightGrams: $weightGrams, ')
           ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
@@ -16639,6 +16702,7 @@ typedef $$ChecklistItemsTableCreateCompanionBuilder =
       required String itemId,
       required String category,
       Value<bool> isChecked,
+      Value<int> weightGrams,
       Value<DateTime?> updatedAt,
     });
 typedef $$ChecklistItemsTableUpdateCompanionBuilder =
@@ -16648,6 +16712,7 @@ typedef $$ChecklistItemsTableUpdateCompanionBuilder =
       Value<String> itemId,
       Value<String> category,
       Value<bool> isChecked,
+      Value<int> weightGrams,
       Value<DateTime?> updatedAt,
     });
 
@@ -16682,6 +16747,11 @@ class $$ChecklistItemsTableFilterComposer
 
   ColumnFilters<bool> get isChecked => $composableBuilder(
     column: $table.isChecked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get weightGrams => $composableBuilder(
+    column: $table.weightGrams,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -16725,6 +16795,11 @@ class $$ChecklistItemsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get weightGrams => $composableBuilder(
+    column: $table.weightGrams,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
@@ -16754,6 +16829,11 @@ class $$ChecklistItemsTableAnnotationComposer
 
   GeneratedColumn<bool> get isChecked =>
       $composableBuilder(column: $table.isChecked, builder: (column) => column);
+
+  GeneratedColumn<int> get weightGrams => $composableBuilder(
+    column: $table.weightGrams,
+    builder: (column) => column,
+  );
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
@@ -16797,6 +16877,7 @@ class $$ChecklistItemsTableTableManager
                 Value<String> itemId = const Value.absent(),
                 Value<String> category = const Value.absent(),
                 Value<bool> isChecked = const Value.absent(),
+                Value<int> weightGrams = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => ChecklistItemsCompanion(
                 id: id,
@@ -16804,6 +16885,7 @@ class $$ChecklistItemsTableTableManager
                 itemId: itemId,
                 category: category,
                 isChecked: isChecked,
+                weightGrams: weightGrams,
                 updatedAt: updatedAt,
               ),
           createCompanionCallback:
@@ -16813,6 +16895,7 @@ class $$ChecklistItemsTableTableManager
                 required String itemId,
                 required String category,
                 Value<bool> isChecked = const Value.absent(),
+                Value<int> weightGrams = const Value.absent(),
                 Value<DateTime?> updatedAt = const Value.absent(),
               }) => ChecklistItemsCompanion.insert(
                 id: id,
@@ -16820,6 +16903,7 @@ class $$ChecklistItemsTableTableManager
                 itemId: itemId,
                 category: category,
                 isChecked: isChecked,
+                weightGrams: weightGrams,
                 updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0

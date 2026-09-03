@@ -51,6 +51,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$gps$es gps = _Translations$gps$es._(_root);
 	@override late final _Translations$navAlert$es navAlert = _Translations$navAlert$es._(_root);
 	@override late final _Translations$planning$es planning = _Translations$planning$es._(_root);
+	@override late final _Translations$itinerary$es itinerary = _Translations$itinerary$es._(_root);
 	@override late final _Translations$tracking$es tracking = _Translations$tracking$es._(_root);
 	@override late final _Translations$checklist$es checklist = _Translations$checklist$es._(_root);
 	@override late final _Translations$journal$es journal = _Translations$journal$es._(_root);
@@ -295,6 +296,30 @@ class _Translations$planning$es extends Translations$planning$fr {
 	@override String get plan => 'Planificar';
 }
 
+// Path: itinerary
+class _Translations$itinerary$es extends Translations$itinerary$fr {
+	_Translations$itinerary$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Itinerario';
+	@override String get subtitle => 'Tus etapas, dia a dia';
+	@override String get empty => 'Ninguna etapa disponible';
+	@override String get emptyHint => 'Los datos del sendero no estan cargados.';
+	@override String get loading => 'Cargando itinerario...';
+	@override String get error => 'No se puede cargar el itinerario';
+	@override String get day => 'Dia';
+	@override String get stage => 'Etapa';
+	@override String get stages => 'Etapas';
+	@override String get totalDistance => 'Distancia';
+	@override String get totalElevation => 'D+';
+	@override String get restDay => 'Dia de descanso';
+	@override String get viewStage => 'Ver etapa';
+	@override String get openMap => 'Ver en el mapa';
+	@override String get stageCount => '{count} etapas';
+}
+
 // Path: tracking
 class _Translations$tracking$es extends Translations$tracking$fr {
 	_Translations$tracking$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -336,6 +361,7 @@ class _Translations$checklist$es extends Translations$checklist$fr {
 	@override late final _Translations$checklist$categories$es categories = _Translations$checklist$categories$es._(_root);
 	@override late final _Translations$checklist$items$es items = _Translations$checklist$items$es._(_root);
 	@override String get essential => 'Esencial';
+	@override late final _Translations$checklist$weight$es weight = _Translations$checklist$weight$es._(_root);
 }
 
 // Path: journal
@@ -1149,7 +1175,7 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get feasibility => 'Viabilidad';
 	@override String get feasibilitySub => 'Evalúa tu nivel';
 	@override String get itinerary => 'Itinerario';
-	@override String get itinerarySub => 'El trazado del sendero';
+	@override String get itinerarySub => 'Tus etapas en detalle';
 	@override String get programme => 'Programa';
 	@override String get programmeSub => 'Distribuye tus etapas';
 	@override String get checklist => 'Equipo y mochila';
@@ -1263,6 +1289,30 @@ class _Translations$checklist$items$es extends Translations$checklist$items$fr {
 	@override String get toiletPaper => 'Papel higiénico';
 	@override String get handSanitizer => 'Gel desinfectante';
 	@override String get towel => 'Toalla';
+}
+
+// Path: checklist.weight
+class _Translations$checklist$weight$es extends Translations$checklist$weight$fr {
+	_Translations$checklist$weight$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Peso de la mochila';
+	@override String get total => 'Peso total';
+	@override String get bodyWeight => 'Peso corporal';
+	@override String get ratio => 'Relacion mochila / cuerpo';
+	@override String get perItem => 'Peso por articulo';
+	@override String get edit => 'Editar peso';
+	@override String get grams => 'g';
+	@override String get kilograms => 'kg';
+	@override String get adviceLight => 'Mochila ligera - ideal';
+	@override String get adviceOk => 'Mochila bien equilibrada';
+	@override String get adviceHeavy => 'Mochila pesada - considera aligerar';
+	@override String get adviceTooHeavy => 'Demasiado pesada - aligera la mochila';
+	@override String get itemWeight => 'Peso del articulo';
+	@override String get cancel => 'Cancelar';
+	@override String get save => 'Guardar';
 }
 
 // Path: weather.source
@@ -2159,7 +2209,7 @@ extension on TranslationsEs {
 			'hub.cards.feasibility' => 'Viabilidad',
 			'hub.cards.feasibilitySub' => 'Evalúa tu nivel',
 			'hub.cards.itinerary' => 'Itinerario',
-			'hub.cards.itinerarySub' => 'El trazado del sendero',
+			'hub.cards.itinerarySub' => 'Tus etapas en detalle',
 			'hub.cards.programme' => 'Programa',
 			'hub.cards.programmeSub' => 'Distribuye tus etapas',
 			'hub.cards.checklist' => 'Equipo y mochila',
@@ -2250,6 +2300,21 @@ extension on TranslationsEs {
 			'planning.estimatedTime' => 'Duración estimada',
 			'planning.stages' => 'Etapas',
 			'planning.plan' => 'Planificar',
+			'itinerary.title' => 'Itinerario',
+			'itinerary.subtitle' => 'Tus etapas, dia a dia',
+			'itinerary.empty' => 'Ninguna etapa disponible',
+			'itinerary.emptyHint' => 'Los datos del sendero no estan cargados.',
+			'itinerary.loading' => 'Cargando itinerario...',
+			'itinerary.error' => 'No se puede cargar el itinerario',
+			'itinerary.day' => 'Dia',
+			'itinerary.stage' => 'Etapa',
+			'itinerary.stages' => 'Etapas',
+			'itinerary.totalDistance' => 'Distancia',
+			'itinerary.totalElevation' => 'D+',
+			'itinerary.restDay' => 'Dia de descanso',
+			'itinerary.viewStage' => 'Ver etapa',
+			'itinerary.openMap' => 'Ver en el mapa',
+			'itinerary.stageCount' => '{count} etapas',
 			'tracking.start' => 'Iniciar',
 			'tracking.pause' => 'Pausa',
 			'tracking.resume' => 'Reanudar',
@@ -2304,6 +2369,21 @@ extension on TranslationsEs {
 			'checklist.items.handSanitizer' => 'Gel desinfectante',
 			'checklist.items.towel' => 'Toalla',
 			'checklist.essential' => 'Esencial',
+			'checklist.weight.title' => 'Peso de la mochila',
+			'checklist.weight.total' => 'Peso total',
+			'checklist.weight.bodyWeight' => 'Peso corporal',
+			'checklist.weight.ratio' => 'Relacion mochila / cuerpo',
+			'checklist.weight.perItem' => 'Peso por articulo',
+			'checklist.weight.edit' => 'Editar peso',
+			'checklist.weight.grams' => 'g',
+			'checklist.weight.kilograms' => 'kg',
+			'checklist.weight.adviceLight' => 'Mochila ligera - ideal',
+			'checklist.weight.adviceOk' => 'Mochila bien equilibrada',
+			'checklist.weight.adviceHeavy' => 'Mochila pesada - considera aligerar',
+			'checklist.weight.adviceTooHeavy' => 'Demasiado pesada - aligera la mochila',
+			'checklist.weight.itemWeight' => 'Peso del articulo',
+			'checklist.weight.cancel' => 'Cancelar',
+			'checklist.weight.save' => 'Guardar',
 			'journal.title' => 'Diario de trekking',
 			'journal.empty' => 'Tu diario está vacío',
 			'journal.emptySubtitle' => 'Anota tus impresiones y recuerdos de trekking',
@@ -2584,6 +2664,8 @@ extension on TranslationsEs {
 			'goodies.comingSoon' => 'Este modulo llegara pronto. Mantente atento!',
 			'noData.title' => 'Ningún sendero descargado',
 			'noData.subtitle' => 'Descarga un sendero para empezar',
+			_ => null,
+		} ?? switch (path) {
 			'noData.offlineHint' => 'Los datos estarán disponibles sin conexión para tu caminata.',
 			'noData.browseCta' => 'Explorar senderos',
 			'catalog.title' => 'Catálogo de senderos',
@@ -2614,8 +2696,6 @@ extension on TranslationsEs {
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenido a ${appName}',
 			'onboarding.welcomeSubtitle' => 'Tu compañero de senderismo sin conexión: mapa, navegación GPS, planificación y diario de trek.',
 			'onboarding.languageTitle' => 'Elige tu idioma',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.languageSubtitle' => 'Podrás cambiarlo en cualquier momento en los ajustes.',
 			'onboarding.downloadTitle' => 'Descarga tu primer sendero',
 			'onboarding.downloadSubtitle' => 'Explora el catálogo y descarga un sendero para usarlo completamente sin conexión.',

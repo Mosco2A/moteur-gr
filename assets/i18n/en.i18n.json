@@ -70,7 +70,7 @@
       "feasibility": "Feasibility",
       "feasibilitySub": "Assess your level",
       "itinerary": "Itinerary",
-      "itinerarySub": "The trail route",
+      "itinerarySub": "Your stages, day by day",
       "programme": "Programme",
       "programmeSub": "Spread out your stages",
       "checklist": "Gear & bag",
@@ -185,6 +185,23 @@
     "stages": "Stages",
     "plan": "Plan"
   },
+  "itinerary": {
+    "title": "Itinerary",
+    "subtitle": "Your stages, day by day",
+    "empty": "No stage available",
+    "emptyHint": "Trail data is not loaded.",
+    "loading": "Loading itinerary...",
+    "error": "Unable to load the itinerary",
+    "day": "Day",
+    "stage": "Stage",
+    "stages": "Stages",
+    "totalDistance": "Distance",
+    "totalElevation": "D+",
+    "restDay": "Rest day",
+    "viewStage": "View stage",
+    "openMap": "View on map",
+    "stageCount": "{count} stages"
+  },
   "tracking": {
     "start": "Start",
     "pause": "Pause",
@@ -245,7 +262,24 @@
       "handSanitizer": "Hand sanitizer",
       "towel": "Towel"
     },
-    "essential": "Essential"
+    "essential": "Essential",
+    "weight": {
+      "title": "Backpack weight",
+      "total": "Total weight",
+      "bodyWeight": "Body weight",
+      "ratio": "Pack / body ratio",
+      "perItem": "Weight per item",
+      "edit": "Edit weight",
+      "grams": "g",
+      "kilograms": "kg",
+      "adviceLight": "Light pack - ideal",
+      "adviceOk": "Well-balanced pack",
+      "adviceHeavy": "Heavy pack - consider lightening",
+      "adviceTooHeavy": "Too heavy - lighten your pack",
+      "itemWeight": "Item weight",
+      "cancel": "Cancel",
+      "save": "Save"
+    }
   },
   "journal": {
     "title": "Trek journal",

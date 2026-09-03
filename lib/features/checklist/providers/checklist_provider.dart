@@ -7,12 +7,19 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../data/checklist_template.dart';
 
+/// Poids corporel de reference par defaut (kg), parite GR20 « Materiel & Sac ».
+///
+/// Sert de denominateur au ratio sac/corps tant que l'utilisateur ne l'a pas
+/// personnalise. Valeur neutre, non liee a un sentier (moteur generique).
+const double kDefaultBodyWeightKg = 70.0;
+
 /// Etat de la checklist pour un sentier donne.
 class ChecklistState {
   const ChecklistState({
     required this.items,
     required this.checkedCount,
     required this.totalCount,
+    this.bodyWeightKg = kDefaultBodyWeightKg,
     this.isLoading = false,
   });
 
@@ -25,6 +32,9 @@ class ChecklistState {
   /// Nombre total d'items
   final int totalCount;
 
+  /// Poids corporel de l'utilisateur en kg (jauge sac/corps, parite GR20).
+  final double bodyWeightKg;
+
   /// Chargement en cours
   final bool isLoading;
 
@@ -33,6 +43,18 @@ class ChecklistState {
 
   /// Checklist complete
   bool get isComplete => checkedCount == totalCount && totalCount > 0;
+
+  /// Poids total du sac en grammes = somme des items COCHES (parite GR20).
+  int get checkedWeightGrams => items
+      .where((i) => i.isChecked)
+      .fold(0, (sum, i) => sum + i.weightGrams);
+
+  /// Poids total du sac en kg.
+  double get checkedWeightKg => checkedWeightGrams / 1000.0;
+
+  /// Ratio poids du sac / poids corporel (0 si poids corporel invalide).
+  double get backpackRatio =>
+      bodyWeightKg > 0 ? checkedWeightKg / bodyWeightKg : 0.0;
 
   /// Etat initial vide
   static const empty = ChecklistState(
@@ -48,6 +70,7 @@ class ChecklistItemState {
   const ChecklistItemState({
     required this.template,
     required this.isChecked,
+    required this.weightGrams,
   });
 
   /// Template de l'item (donnees statiques)
@@ -55,6 +78,9 @@ class ChecklistItemState {
 
   /// Item coche ou non (etat persistant)
   final bool isChecked;
+
+  /// Poids unitaire courant en grammes (persistant, editable, parite GR20).
+  final int weightGrams;
 }
 
 /// Provider de la checklist materiel pour le sentier actif.
@@ -97,10 +123,17 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     final itemStates = <ChecklistItemState>[];
     for (final template in defaultChecklistTemplate) {
       final dbMatch = dbItems.where((i) => i.itemId == template.id);
-      final isChecked = dbMatch.isNotEmpty && dbMatch.first.isChecked;
+      final hasRow = dbMatch.isNotEmpty;
+      final isChecked = hasRow && dbMatch.first.isChecked;
+      // Poids courant = valeur persistee si la ligne existe, sinon le poids de
+      // reference du template (parite GR20 : le sac est pre-rempli des poids
+      // moyens, l'utilisateur ajuste ensuite).
+      final weightGrams =
+          hasRow ? dbMatch.first.weightGrams : template.weightGrams;
       itemStates.add(ChecklistItemState(
         template: template,
         isChecked: isChecked,
+        weightGrams: weightGrams,
       ));
     }
 
@@ -120,6 +153,8 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
         itemId: Value(item.id),
         category: Value(item.category),
         isChecked: const Value(false),
+        // Poids de reference du template (parite GR20). Editable ensuite.
+        weightGrams: Value(item.weightGrams),
       );
     }).toList();
     await dao.insertAll(entries);
@@ -141,6 +176,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
         return ChecklistItemState(
           template: item.template,
           isChecked: newChecked,
+          weightGrams: item.weightGrams,
         );
       }
       return item;
@@ -151,6 +187,49 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       items: updatedItems,
       checkedCount: checked,
       totalCount: updatedItems.length,
+      bodyWeightKg: state.bodyWeightKg,
+    );
+  }
+
+  /// Met a jour le poids unitaire d'un item (grammes) et persiste (parite GR20).
+  ///
+  /// Le poids est borne a [0, 50000] g (garde-fou de saisie). Recalcule le
+  /// total via l'etat derive [ChecklistState.checkedWeightGrams].
+  Future<void> setItemWeight(String itemId, int weightGrams) async {
+    final clamped = weightGrams.clamp(0, 50000);
+    final dao = ChecklistDao(_db);
+    await dao.setWeight(_trailId, itemId, clamped);
+
+    final updatedItems = state.items.map((item) {
+      if (item.template.id == itemId) {
+        return ChecklistItemState(
+          template: item.template,
+          isChecked: item.isChecked,
+          weightGrams: clamped,
+        );
+      }
+      return item;
+    }).toList();
+
+    state = ChecklistState(
+      items: updatedItems,
+      checkedCount: state.checkedCount,
+      totalCount: state.totalCount,
+      bodyWeightKg: state.bodyWeightKg,
+    );
+  }
+
+  /// Met a jour le poids corporel (kg) pour la jauge sac/corps (parite GR20).
+  ///
+  /// Session courante uniquement (comme GR20 : non persiste). Ignore les
+  /// valeurs <= 0 (garde-fou).
+  void setBodyWeight(double kg) {
+    if (kg <= 0) return;
+    state = ChecklistState(
+      items: state.items,
+      checkedCount: state.checkedCount,
+      totalCount: state.totalCount,
+      bodyWeightKg: kg,
     );
   }
 

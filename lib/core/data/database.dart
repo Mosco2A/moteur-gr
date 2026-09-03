@@ -137,7 +137,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 18;
+  int get schemaVersion => 19;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -229,6 +229,14 @@ class AppDatabase extends _$AppDatabase {
           // completedStages/parcoursFullyWalked survivent au redemarrage)
           if (from < 18) {
             await migrator.createTable(trekSessions);
+          }
+          // Migration v18 -> v19 : colonne weightGrams sur checklist_items
+          // (PARITE GR20 « Materiel & Sac » : poids par article + total).
+          if (from < 19) {
+            await migrator.addColumn(
+              checklistItems,
+              checklistItems.weightGrams,
+            );
           }
         },
       );

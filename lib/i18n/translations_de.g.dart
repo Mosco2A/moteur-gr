@@ -51,6 +51,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$gps$de gps = _Translations$gps$de._(_root);
 	@override late final _Translations$navAlert$de navAlert = _Translations$navAlert$de._(_root);
 	@override late final _Translations$planning$de planning = _Translations$planning$de._(_root);
+	@override late final _Translations$itinerary$de itinerary = _Translations$itinerary$de._(_root);
 	@override late final _Translations$tracking$de tracking = _Translations$tracking$de._(_root);
 	@override late final _Translations$checklist$de checklist = _Translations$checklist$de._(_root);
 	@override late final _Translations$journal$de journal = _Translations$journal$de._(_root);
@@ -295,6 +296,30 @@ class _Translations$planning$de extends Translations$planning$fr {
 	@override String get plan => 'Planen';
 }
 
+// Path: itinerary
+class _Translations$itinerary$de extends Translations$itinerary$fr {
+	_Translations$itinerary$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Route';
+	@override String get subtitle => 'Ihre Etappen, Tag fuer Tag';
+	@override String get empty => 'Keine Etappe verfuegbar';
+	@override String get emptyHint => 'Wegdaten sind nicht geladen.';
+	@override String get loading => 'Route wird geladen...';
+	@override String get error => 'Route kann nicht geladen werden';
+	@override String get day => 'Tag';
+	@override String get stage => 'Etappe';
+	@override String get stages => 'Etappen';
+	@override String get totalDistance => 'Distanz';
+	@override String get totalElevation => 'D+';
+	@override String get restDay => 'Ruhetag';
+	@override String get viewStage => 'Etappe ansehen';
+	@override String get openMap => 'Auf Karte ansehen';
+	@override String get stageCount => '{count} Etappen';
+}
+
 // Path: tracking
 class _Translations$tracking$de extends Translations$tracking$fr {
 	_Translations$tracking$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -336,6 +361,7 @@ class _Translations$checklist$de extends Translations$checklist$fr {
 	@override late final _Translations$checklist$categories$de categories = _Translations$checklist$categories$de._(_root);
 	@override late final _Translations$checklist$items$de items = _Translations$checklist$items$de._(_root);
 	@override String get essential => 'Wesentlich';
+	@override late final _Translations$checklist$weight$de weight = _Translations$checklist$weight$de._(_root);
 }
 
 // Path: journal
@@ -1149,7 +1175,7 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get feasibility => 'Machbarkeit';
 	@override String get feasibilitySub => 'Bewerten Sie Ihr Niveau';
 	@override String get itinerary => 'Route';
-	@override String get itinerarySub => 'Der Wegverlauf';
+	@override String get itinerarySub => 'Ihre Etappen im Detail';
 	@override String get programme => 'Programm';
 	@override String get programmeSub => 'Etappen aufteilen';
 	@override String get checklist => 'Ausrüstung & Rucksack';
@@ -1263,6 +1289,30 @@ class _Translations$checklist$items$de extends Translations$checklist$items$fr {
 	@override String get toiletPaper => 'Toilettenpapier';
 	@override String get handSanitizer => 'Handdesinfektionsmittel';
 	@override String get towel => 'Handtuch';
+}
+
+// Path: checklist.weight
+class _Translations$checklist$weight$de extends Translations$checklist$weight$fr {
+	_Translations$checklist$weight$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Rucksackgewicht';
+	@override String get total => 'Gesamtgewicht';
+	@override String get bodyWeight => 'Koerpergewicht';
+	@override String get ratio => 'Verhaeltnis Rucksack / Koerper';
+	@override String get perItem => 'Gewicht pro Artikel';
+	@override String get edit => 'Gewicht bearbeiten';
+	@override String get grams => 'g';
+	@override String get kilograms => 'kg';
+	@override String get adviceLight => 'Leichter Rucksack - ideal';
+	@override String get adviceOk => 'Gut ausbalancierter Rucksack';
+	@override String get adviceHeavy => 'Schwerer Rucksack - erwaegen Sie zu reduzieren';
+	@override String get adviceTooHeavy => 'Zu schwer - erleichtern Sie den Rucksack';
+	@override String get itemWeight => 'Artikelgewicht';
+	@override String get cancel => 'Abbrechen';
+	@override String get save => 'Speichern';
 }
 
 // Path: weather.source
@@ -2159,7 +2209,7 @@ extension on TranslationsDe {
 			'hub.cards.feasibility' => 'Machbarkeit',
 			'hub.cards.feasibilitySub' => 'Bewerten Sie Ihr Niveau',
 			'hub.cards.itinerary' => 'Route',
-			'hub.cards.itinerarySub' => 'Der Wegverlauf',
+			'hub.cards.itinerarySub' => 'Ihre Etappen im Detail',
 			'hub.cards.programme' => 'Programm',
 			'hub.cards.programmeSub' => 'Etappen aufteilen',
 			'hub.cards.checklist' => 'Ausrüstung & Rucksack',
@@ -2250,6 +2300,21 @@ extension on TranslationsDe {
 			'planning.estimatedTime' => 'Geschätzte Dauer',
 			'planning.stages' => 'Etappen',
 			'planning.plan' => 'Planen',
+			'itinerary.title' => 'Route',
+			'itinerary.subtitle' => 'Ihre Etappen, Tag fuer Tag',
+			'itinerary.empty' => 'Keine Etappe verfuegbar',
+			'itinerary.emptyHint' => 'Wegdaten sind nicht geladen.',
+			'itinerary.loading' => 'Route wird geladen...',
+			'itinerary.error' => 'Route kann nicht geladen werden',
+			'itinerary.day' => 'Tag',
+			'itinerary.stage' => 'Etappe',
+			'itinerary.stages' => 'Etappen',
+			'itinerary.totalDistance' => 'Distanz',
+			'itinerary.totalElevation' => 'D+',
+			'itinerary.restDay' => 'Ruhetag',
+			'itinerary.viewStage' => 'Etappe ansehen',
+			'itinerary.openMap' => 'Auf Karte ansehen',
+			'itinerary.stageCount' => '{count} Etappen',
 			'tracking.start' => 'Starten',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Fortsetzen',
@@ -2304,6 +2369,21 @@ extension on TranslationsDe {
 			'checklist.items.handSanitizer' => 'Handdesinfektionsmittel',
 			'checklist.items.towel' => 'Handtuch',
 			'checklist.essential' => 'Wesentlich',
+			'checklist.weight.title' => 'Rucksackgewicht',
+			'checklist.weight.total' => 'Gesamtgewicht',
+			'checklist.weight.bodyWeight' => 'Koerpergewicht',
+			'checklist.weight.ratio' => 'Verhaeltnis Rucksack / Koerper',
+			'checklist.weight.perItem' => 'Gewicht pro Artikel',
+			'checklist.weight.edit' => 'Gewicht bearbeiten',
+			'checklist.weight.grams' => 'g',
+			'checklist.weight.kilograms' => 'kg',
+			'checklist.weight.adviceLight' => 'Leichter Rucksack - ideal',
+			'checklist.weight.adviceOk' => 'Gut ausbalancierter Rucksack',
+			'checklist.weight.adviceHeavy' => 'Schwerer Rucksack - erwaegen Sie zu reduzieren',
+			'checklist.weight.adviceTooHeavy' => 'Zu schwer - erleichtern Sie den Rucksack',
+			'checklist.weight.itemWeight' => 'Artikelgewicht',
+			'checklist.weight.cancel' => 'Abbrechen',
+			'checklist.weight.save' => 'Speichern',
 			'journal.title' => 'Wandertagebuch',
 			'journal.empty' => 'Ihr Tagebuch ist leer',
 			'journal.emptySubtitle' => 'Notieren Sie Ihre Eindrücke und Erinnerungen',
@@ -2584,6 +2664,8 @@ extension on TranslationsDe {
 			'goodies.comingSoon' => 'Dieses Modul kommt bald. Bleiben Sie dran!',
 			'noData.title' => 'Kein Weg heruntergeladen',
 			'noData.subtitle' => 'Laden Sie einen Weg herunter, um zu beginnen',
+			_ => null,
+		} ?? switch (path) {
 			'noData.offlineHint' => 'Die Daten sind offline für Ihre Wanderung verfügbar.',
 			'noData.browseCta' => 'Wege durchsuchen',
 			'catalog.title' => 'Wegekatalog',
@@ -2614,8 +2696,6 @@ extension on TranslationsDe {
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Willkommen bei ${appName}',
 			'onboarding.welcomeSubtitle' => 'Dein Offline-Wanderbegleiter: Karte, GPS-Navigation, Planung und Tourentagebuch.',
 			'onboarding.languageTitle' => 'Wähle deine Sprache',
-			_ => null,
-		} ?? switch (path) {
 			'onboarding.languageSubtitle' => 'Du kannst sie jederzeit in den Einstellungen ändern.',
 			'onboarding.downloadTitle' => 'Lade deinen ersten Weg herunter',
 			'onboarding.downloadSubtitle' => 'Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.',

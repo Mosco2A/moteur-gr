@@ -99,6 +99,7 @@ class ChecklistRepository {
         itemId: Value(item.id),
         category: Value(item.category),
         isChecked: const Value(false),
+        weightGrams: Value(item.weightGrams),
       );
     }).toList();
 
@@ -113,6 +114,7 @@ class ChecklistRepository {
       name: row.itemId, // Resolu en i18n par la couche presentation
       category: row.category,
       isChecked: row.isChecked,
+      weightGrams: row.weightGrams,
       customNote: null, // Pas encore de colonne note en DB
     );
   }
