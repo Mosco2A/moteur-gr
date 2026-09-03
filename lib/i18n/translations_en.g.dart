@@ -88,6 +88,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$consent$en consent = _Translations$consent$en._(_root);
 	@override late final _Translations$moderation$en moderation = _Translations$moderation$en._(_root);
 	@override late final _Translations$bootstrap$en bootstrap = _Translations$bootstrap$en._(_root);
+	@override late final _Translations$recap$en recap = _Translations$recap$en._(_root);
 }
 
 // Path: a11y
@@ -451,6 +452,10 @@ class _Translations$diploma$en extends Translations$diploma$fr {
 	@override String get recapNoMap => 'Trace not available';
 	@override String get recapJournalEntries => '{count} journal entries';
 	@override String get downloadPdf => 'Download diploma PDF';
+	@override String get lockedTitle => 'Diploma locked';
+	@override String get lockedMessage => 'Complete your entire route to unlock your finisher diploma.';
+	@override String get labelIntegral => 'Full route';
+	@override String get labelPartial => 'Partial route';
 }
 
 // Path: notifications
@@ -1061,6 +1066,32 @@ class _Translations$bootstrap$en extends Translations$bootstrap$fr {
 
 	// Translations
 	@override String get loading => 'Preparing your hike…';
+}
+
+// Path: recap
+class _Translations$recap$en extends Translations$recap$fr {
+	_Translations$recap$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'My adventure';
+	@override String get lockedTitle => 'Available at the end of the trek';
+	@override String get lockedMessage => 'Finish or abandon your route to view your adventure recap.';
+	@override String get finisherTitle => 'Congratulations!';
+	@override String get finisherSubtitle => 'You completed your route';
+	@override String get partialTitle => 'Your partial route';
+	@override String get partialSubtitle => 'Your adventure is still saved';
+	@override String get statsSection => 'Statistics';
+	@override String get traceSection => 'Your track';
+	@override String get noTrace => 'No GPS track available';
+	@override String get stages => '{done} / {total} stages walked';
+	@override String get distance => '{km} km travelled';
+	@override String get elevation => '{meters} m of elevation gain';
+	@override String get duration => '{days} days';
+	@override String get dates => 'From {start} to {end}';
+	@override String get viewDiploma => 'View my diploma';
+	@override String get noData => 'No route data to display yet.';
 }
 
 // Path: hub.trekCard
@@ -2369,6 +2400,10 @@ extension on TranslationsEn {
 			'diploma.recapNoMap' => 'Trace not available',
 			'diploma.recapJournalEntries' => '{count} journal entries',
 			'diploma.downloadPdf' => 'Download diploma PDF',
+			'diploma.lockedTitle' => 'Diploma locked',
+			'diploma.lockedMessage' => 'Complete your entire route to unlock your finisher diploma.',
+			'diploma.labelIntegral' => 'Full route',
+			'diploma.labelPartial' => 'Partial route',
 			'notifications.morningReminder' => 'Morning reminder',
 			'notifications.weatherAlerts' => 'Weather alerts',
 			'notifications.countdown' => 'D-2 reminder',
@@ -2579,12 +2614,12 @@ extension on TranslationsEn {
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Welcome to ${appName}',
 			'onboarding.welcomeSubtitle' => 'Your offline hiking companion: map, GPS navigation, planning and trek journal.',
 			'onboarding.languageTitle' => 'Choose your language',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.languageSubtitle' => 'You can change it at any time in the settings.',
 			'onboarding.downloadTitle' => 'Download your first trail',
 			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
 			'onboarding.browseCatalog' => 'Browse the catalogue',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
@@ -2895,6 +2930,23 @@ extension on TranslationsEn {
 			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
 			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			'bootstrap.loading' => 'Preparing your hike…',
+			'recap.title' => 'My adventure',
+			'recap.lockedTitle' => 'Available at the end of the trek',
+			'recap.lockedMessage' => 'Finish or abandon your route to view your adventure recap.',
+			'recap.finisherTitle' => 'Congratulations!',
+			'recap.finisherSubtitle' => 'You completed your route',
+			'recap.partialTitle' => 'Your partial route',
+			'recap.partialSubtitle' => 'Your adventure is still saved',
+			'recap.statsSection' => 'Statistics',
+			'recap.traceSection' => 'Your track',
+			'recap.noTrace' => 'No GPS track available',
+			'recap.stages' => '{done} / {total} stages walked',
+			'recap.distance' => '{km} km travelled',
+			'recap.elevation' => '{meters} m of elevation gain',
+			'recap.duration' => '{days} days',
+			'recap.dates' => 'From {start} to {end}',
+			'recap.viewDiploma' => 'View my diploma',
+			'recap.noData' => 'No route data to display yet.',
 			_ => null,
 		};
 	}

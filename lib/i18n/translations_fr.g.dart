@@ -89,6 +89,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$consent$fr consent = Translations$consent$fr.internal(_root);
 	late final Translations$moderation$fr moderation = Translations$moderation$fr.internal(_root);
 	late final Translations$bootstrap$fr bootstrap = Translations$bootstrap$fr.internal(_root);
+	late final Translations$recap$fr recap = Translations$recap$fr.internal(_root);
 }
 
 // Path: a11y
@@ -835,6 +836,18 @@ class Translations$diploma$fr {
 
 	/// fr: 'Telecharger le diplome PDF'
 	String get downloadPdf => 'Telecharger le diplome PDF';
+
+	/// fr: 'Diplome verrouille'
+	String get lockedTitle => 'Diplome verrouille';
+
+	/// fr: 'Terminez l integralite de votre parcours pour debloquer votre diplome de finisher.'
+	String get lockedMessage => 'Terminez l integralite de votre parcours pour debloquer votre diplome de finisher.';
+
+	/// fr: 'Parcours integral'
+	String get labelIntegral => 'Parcours integral';
+
+	/// fr: 'Parcours partiel'
+	String get labelPartial => 'Parcours partiel';
 }
 
 // Path: notifications
@@ -2055,6 +2068,66 @@ class Translations$bootstrap$fr {
 
 	/// fr: 'Préparation de votre randonnée…'
 	String get loading => 'Préparation de votre randonnée…';
+}
+
+// Path: recap
+class Translations$recap$fr {
+	Translations$recap$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mon aventure'
+	String get title => 'Mon aventure';
+
+	/// fr: 'Disponible a la fin du trek'
+	String get lockedTitle => 'Disponible a la fin du trek';
+
+	/// fr: 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.'
+	String get lockedMessage => 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.';
+
+	/// fr: 'Felicitations !'
+	String get finisherTitle => 'Felicitations !';
+
+	/// fr: 'Vous avez termine votre parcours'
+	String get finisherSubtitle => 'Vous avez termine votre parcours';
+
+	/// fr: 'Votre parcours partiel'
+	String get partialTitle => 'Votre parcours partiel';
+
+	/// fr: 'Votre aventure reste enregistree'
+	String get partialSubtitle => 'Votre aventure reste enregistree';
+
+	/// fr: 'Statistiques'
+	String get statsSection => 'Statistiques';
+
+	/// fr: 'Votre trace'
+	String get traceSection => 'Votre trace';
+
+	/// fr: 'Aucune trace GPS disponible'
+	String get noTrace => 'Aucune trace GPS disponible';
+
+	/// fr: '{done} / {total} etapes parcourues'
+	String get stages => '{done} / {total} etapes parcourues';
+
+	/// fr: '{km} km parcourus'
+	String get distance => '{km} km parcourus';
+
+	/// fr: '{meters} m de denivele positif'
+	String get elevation => '{meters} m de denivele positif';
+
+	/// fr: '{days} jours'
+	String get duration => '{days} jours';
+
+	/// fr: 'Du {start} au {end}'
+	String get dates => 'Du {start} au {end}';
+
+	/// fr: 'Voir mon diplome'
+	String get viewDiploma => 'Voir mon diplome';
+
+	/// fr: 'Aucune donnee de parcours a afficher pour le moment.'
+	String get noData => 'Aucune donnee de parcours a afficher pour le moment.';
 }
 
 // Path: hub.trekCard
@@ -4041,6 +4114,10 @@ extension on Translations {
 			'diploma.recapNoMap' => 'Trace non disponible',
 			'diploma.recapJournalEntries' => '{count} notes de journal',
 			'diploma.downloadPdf' => 'Telecharger le diplome PDF',
+			'diploma.lockedTitle' => 'Diplome verrouille',
+			'diploma.lockedMessage' => 'Terminez l integralite de votre parcours pour debloquer votre diplome de finisher.',
+			'diploma.labelIntegral' => 'Parcours integral',
+			'diploma.labelPartial' => 'Parcours partiel',
 			'notifications.morningReminder' => 'Rappel du matin',
 			'notifications.weatherAlerts' => 'Alertes météo',
 			'notifications.countdown' => 'Rappel J-2',
@@ -4251,12 +4328,12 @@ extension on Translations {
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Bienvenue sur ${appName}',
 			'onboarding.welcomeSubtitle' => 'Votre compagnon de randonnée hors ligne : carte, navigation GPS, planning et journal de randonnée.',
 			'onboarding.languageTitle' => 'Choisissez votre langue',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.languageSubtitle' => 'Vous pourrez la modifier à tout moment dans les paramètres.',
 			'onboarding.downloadTitle' => 'Téléchargez votre premier sentier',
 			'onboarding.downloadSubtitle' => 'Parcourez le catalogue et téléchargez un sentier pour l\'utiliser entièrement hors ligne.',
 			'onboarding.browseCatalog' => 'Parcourir le catalogue',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.demoBanner' => 'Mode démo — touchez pour débloquer',
 			'monetization.paywallTitle' => 'Débloquez cette randonnée',
 			'monetization.paywallBody' => 'Le mode gratuit permet de préparer votre randonnée avec publicité. Le premium débloque tout, sans pub.',
@@ -4567,6 +4644,23 @@ extension on Translations {
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			'bootstrap.loading' => 'Préparation de votre randonnée…',
+			'recap.title' => 'Mon aventure',
+			'recap.lockedTitle' => 'Disponible a la fin du trek',
+			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.',
+			'recap.finisherTitle' => 'Felicitations !',
+			'recap.finisherSubtitle' => 'Vous avez termine votre parcours',
+			'recap.partialTitle' => 'Votre parcours partiel',
+			'recap.partialSubtitle' => 'Votre aventure reste enregistree',
+			'recap.statsSection' => 'Statistiques',
+			'recap.traceSection' => 'Votre trace',
+			'recap.noTrace' => 'Aucune trace GPS disponible',
+			'recap.stages' => '{done} / {total} etapes parcourues',
+			'recap.distance' => '{km} km parcourus',
+			'recap.elevation' => '{meters} m de denivele positif',
+			'recap.duration' => '{days} jours',
+			'recap.dates' => 'Du {start} au {end}',
+			'recap.viewDiploma' => 'Voir mon diplome',
+			'recap.noData' => 'Aucune donnee de parcours a afficher pour le moment.',
 			_ => null,
 		};
 	}

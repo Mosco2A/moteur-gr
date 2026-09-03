@@ -88,6 +88,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$consent$de consent = _Translations$consent$de._(_root);
 	@override late final _Translations$moderation$de moderation = _Translations$moderation$de._(_root);
 	@override late final _Translations$bootstrap$de bootstrap = _Translations$bootstrap$de._(_root);
+	@override late final _Translations$recap$de recap = _Translations$recap$de._(_root);
 }
 
 // Path: a11y
@@ -451,6 +452,10 @@ class _Translations$diploma$de extends Translations$diploma$fr {
 	@override String get recapNoMap => 'Verlauf nicht verfuegbar';
 	@override String get recapJournalEntries => '{count} Tagebucheintraege';
 	@override String get downloadPdf => 'Diplom-PDF herunterladen';
+	@override String get lockedTitle => 'Diplom gesperrt';
+	@override String get lockedMessage => 'Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.';
+	@override String get labelIntegral => 'Gesamte Route';
+	@override String get labelPartial => 'Teilroute';
 }
 
 // Path: notifications
@@ -1061,6 +1066,32 @@ class _Translations$bootstrap$de extends Translations$bootstrap$fr {
 
 	// Translations
 	@override String get loading => 'Ihre Wanderung wird vorbereitet…';
+}
+
+// Path: recap
+class _Translations$recap$de extends Translations$recap$fr {
+	_Translations$recap$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Mein Abenteuer';
+	@override String get lockedTitle => 'Verfugbar am Ende der Tour';
+	@override String get lockedMessage => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.';
+	@override String get finisherTitle => 'Gluckwunsch!';
+	@override String get finisherSubtitle => 'Du hast deine Route abgeschlossen';
+	@override String get partialTitle => 'Deine Teilroute';
+	@override String get partialSubtitle => 'Dein Abenteuer bleibt gespeichert';
+	@override String get statsSection => 'Statistiken';
+	@override String get traceSection => 'Deine Spur';
+	@override String get noTrace => 'Keine GPS-Spur verfugbar';
+	@override String get stages => '{done} / {total} Etappen gelaufen';
+	@override String get distance => '{km} km zuruckgelegt';
+	@override String get elevation => '{meters} m Hohenmeter';
+	@override String get duration => '{days} Tage';
+	@override String get dates => 'Vom {start} bis {end}';
+	@override String get viewDiploma => 'Mein Diplom ansehen';
+	@override String get noData => 'Noch keine Routendaten zum Anzeigen.';
 }
 
 // Path: hub.trekCard
@@ -2369,6 +2400,10 @@ extension on TranslationsDe {
 			'diploma.recapNoMap' => 'Verlauf nicht verfuegbar',
 			'diploma.recapJournalEntries' => '{count} Tagebucheintraege',
 			'diploma.downloadPdf' => 'Diplom-PDF herunterladen',
+			'diploma.lockedTitle' => 'Diplom gesperrt',
+			'diploma.lockedMessage' => 'Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.',
+			'diploma.labelIntegral' => 'Gesamte Route',
+			'diploma.labelPartial' => 'Teilroute',
 			'notifications.morningReminder' => 'Morgenerinnerung',
 			'notifications.weatherAlerts' => 'Wetterwarnungen',
 			'notifications.countdown' => 'Erinnerung 2 Tage vorher',
@@ -2579,12 +2614,12 @@ extension on TranslationsDe {
 			'onboarding.welcomeTitle' => ({required Object appName}) => 'Willkommen bei ${appName}',
 			'onboarding.welcomeSubtitle' => 'Dein Offline-Wanderbegleiter: Karte, GPS-Navigation, Planung und Tourentagebuch.',
 			'onboarding.languageTitle' => 'Wähle deine Sprache',
+			_ => null,
+		} ?? switch (path) {
 			'onboarding.languageSubtitle' => 'Du kannst sie jederzeit in den Einstellungen ändern.',
 			'onboarding.downloadTitle' => 'Lade deinen ersten Weg herunter',
 			'onboarding.downloadSubtitle' => 'Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.',
 			'onboarding.browseCatalog' => 'Katalog durchsuchen',
-			_ => null,
-		} ?? switch (path) {
 			'monetization.demoBanner' => 'Demo-Modus — zum Freischalten tippen',
 			'monetization.paywallTitle' => 'Diesen Trek freischalten',
 			'monetization.paywallBody' => 'Im Gratis-Modus planen Sie Ihren Trek mit Werbung. Premium schaltet alles frei, werbefrei.',
@@ -2895,6 +2930,23 @@ extension on TranslationsDe {
 			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
 			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
 			'bootstrap.loading' => 'Ihre Wanderung wird vorbereitet…',
+			'recap.title' => 'Mein Abenteuer',
+			'recap.lockedTitle' => 'Verfugbar am Ende der Tour',
+			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',
+			'recap.finisherTitle' => 'Gluckwunsch!',
+			'recap.finisherSubtitle' => 'Du hast deine Route abgeschlossen',
+			'recap.partialTitle' => 'Deine Teilroute',
+			'recap.partialSubtitle' => 'Dein Abenteuer bleibt gespeichert',
+			'recap.statsSection' => 'Statistiken',
+			'recap.traceSection' => 'Deine Spur',
+			'recap.noTrace' => 'Keine GPS-Spur verfugbar',
+			'recap.stages' => '{done} / {total} Etappen gelaufen',
+			'recap.distance' => '{km} km zuruckgelegt',
+			'recap.elevation' => '{meters} m Hohenmeter',
+			'recap.duration' => '{days} Tage',
+			'recap.dates' => 'Vom {start} bis {end}',
+			'recap.viewDiploma' => 'Mein Diplom ansehen',
+			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
 			_ => null,
 		};
 	}

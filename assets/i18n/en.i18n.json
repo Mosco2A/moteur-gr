@@ -367,7 +367,11 @@
     "recapMapTrace": "Route trace",
     "recapNoMap": "Trace not available",
     "recapJournalEntries": "{count} journal entries",
-    "downloadPdf": "Download diploma PDF"
+    "downloadPdf": "Download diploma PDF",
+    "lockedTitle": "Diploma locked",
+    "lockedMessage": "Complete your entire route to unlock your finisher diploma.",
+    "labelIntegral": "Full route",
+    "labelPartial": "Partial route"
   },
   "notifications": {
     "morningReminder": "Morning reminder",
@@ -1060,5 +1064,24 @@
   },
   "bootstrap": {
     "loading": "Preparing your hike…"
+  },
+  "recap": {
+    "title": "My adventure",
+    "lockedTitle": "Available at the end of the trek",
+    "lockedMessage": "Finish or abandon your route to view your adventure recap.",
+    "finisherTitle": "Congratulations!",
+    "finisherSubtitle": "You completed your route",
+    "partialTitle": "Your partial route",
+    "partialSubtitle": "Your adventure is still saved",
+    "statsSection": "Statistics",
+    "traceSection": "Your track",
+    "noTrace": "No GPS track available",
+    "stages": "{done} / {total} stages walked",
+    "distance": "{km} km travelled",
+    "elevation": "{meters} m of elevation gain",
+    "duration": "{days} days",
+    "dates": "From {start} to {end}",
+    "viewDiploma": "View my diploma",
+    "noData": "No route data to display yet."
   }
 }

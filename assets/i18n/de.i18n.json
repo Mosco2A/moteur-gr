@@ -367,7 +367,11 @@
     "recapMapTrace": "Routenverlauf",
     "recapNoMap": "Verlauf nicht verfuegbar",
     "recapJournalEntries": "{count} Tagebucheintraege",
-    "downloadPdf": "Diplom-PDF herunterladen"
+    "downloadPdf": "Diplom-PDF herunterladen",
+    "lockedTitle": "Diplom gesperrt",
+    "lockedMessage": "Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.",
+    "labelIntegral": "Gesamte Route",
+    "labelPartial": "Teilroute"
   },
   "notifications": {
     "morningReminder": "Morgenerinnerung",
@@ -1060,5 +1064,24 @@
   },
   "bootstrap": {
     "loading": "Ihre Wanderung wird vorbereitet…"
+  },
+  "recap": {
+    "title": "Mein Abenteuer",
+    "lockedTitle": "Verfugbar am Ende der Tour",
+    "lockedMessage": "Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.",
+    "finisherTitle": "Gluckwunsch!",
+    "finisherSubtitle": "Du hast deine Route abgeschlossen",
+    "partialTitle": "Deine Teilroute",
+    "partialSubtitle": "Dein Abenteuer bleibt gespeichert",
+    "statsSection": "Statistiken",
+    "traceSection": "Deine Spur",
+    "noTrace": "Keine GPS-Spur verfugbar",
+    "stages": "{done} / {total} Etappen gelaufen",
+    "distance": "{km} km zuruckgelegt",
+    "elevation": "{meters} m Hohenmeter",
+    "duration": "{days} Tage",
+    "dates": "Vom {start} bis {end}",
+    "viewDiploma": "Mein Diplom ansehen",
+    "noData": "Noch keine Routendaten zum Anzeigen."
   }
 }
