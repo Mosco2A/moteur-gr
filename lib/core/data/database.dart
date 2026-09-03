@@ -25,6 +25,7 @@ import 'tables/report_local_table.dart';
 import 'tables/segments_table.dart';
 import 'tables/kudos_feed_table.dart';
 import 'tables/waypoints_table.dart';
+import 'tables/trek_sessions_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -50,6 +51,7 @@ import 'daos/report_local_dao.dart';
 import 'daos/segments_dao.dart';
 import 'daos/kudos_feed_dao.dart';
 import 'daos/waypoints_dao.dart';
+import 'daos/trek_sessions_dao.dart';
 
 part 'database.g.dart';
 
@@ -100,6 +102,7 @@ part 'database.g.dart';
     ActivityFeedCache,
     Waypoint,
     WaypointComment,
+    TrekSessions,
   ],
   daos: [
     StagesDao,
@@ -127,13 +130,14 @@ part 'database.g.dart';
     SegmentsDao,
     KudosFeedDao,
     WaypointsDao,
+    TrekSessionsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 17;
+  int get schemaVersion => 18;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -219,6 +223,12 @@ class AppDatabase extends _$AppDatabase {
           if (from < 17) {
             await migrator.createTable(waypoint);
             await migrator.createTable(waypointComment);
+          }
+          // Migration v17 -> v18 : table trek_sessions (PARITE GR20, LOT 2)
+          // (persistance locale de la session + memoire du finisher :
+          // completedStages/parcoursFullyWalked survivent au redemarrage)
+          if (from < 18) {
+            await migrator.createTable(trekSessions);
           }
         },
       );

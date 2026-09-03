@@ -120,7 +120,19 @@ final trekRecorderProvider = Provider<TrekRecorder>((ref) {
         themeColorValue: config.primaryColorValue,
       );
     },
-    onSessionPersist: (session) async {},
+    // GO-85 inc2 / PARITE GR20, LOT 2 (#99433) : persistance REELLE de la
+    // session en local Drift (au LOT 1 ce callback etait VIDE -> completedStages
+    // et parcoursFullyWalked etaient perdus au redemarrage). On upsert la
+    // session (par id) a chaque etape du cycle de vie (start/stop) ET a chaque
+    // etape marchee : la memoire du finisher SURVIT desormais a un
+    // redemarrage. Best-effort (ne casse jamais le trek). Firestore = Phase 4.
+    onSessionPersist: (session) async {
+      try {
+        await ref.read(databaseProvider).trekSessionsDao.upsertSession(session);
+      } catch (_) {
+        // Best-effort : un echec de persistance ne doit pas casser le trek.
+      }
+    },
   );
 });
 
@@ -181,6 +193,23 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 
   /// Sentier de la session active (pour rattacher les points de fond).
   String? _activeTrailId;
+
+  /// Persiste la session courante en local Drift (PARITE GR20, LOT 2, #99433).
+  ///
+  /// Branche la memoire du finisher sur la base : les mutations de session qui
+  /// n'ont PAS lieu via le TrekRecorder — [recordStageCompleted] (etape marchee)
+  /// et [completeOnArrival] (drapeau finisher) — doivent aussi etre ecrites pour
+  /// SURVIVRE a un redemarrage. Best-effort (ne casse jamais le trek).
+  Future<void> _persistSession(TrekSession session) async {
+    // Le provider a pu etre dispose pendant un gap async (ex. ecran quitte) :
+    // on evite tout acces a un Ref invalide.
+    if (!ref.mounted) return;
+    try {
+      await ref.read(databaseProvider).trekSessionsDao.upsertSession(session);
+    } catch (_) {
+      // Best-effort : un echec de persistance ne doit pas casser le trek.
+    }
+  }
 
   /// Demarre une session de tracking sur le sentier [trailId].
   ///
@@ -285,8 +314,26 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     _bgPointsSub = null;
     _activeTrailId = null;
 
+    // Session AUTORITAIRE du notifier (porte completedStages + le drapeau
+    // finisher). Capturee AVANT la finalisation pour la persister ensuite.
+    final authoritative = state.session;
+
     final recorder = ref.read(trekRecorderProvider);
     await recorder.stop();
+
+    // PARITE GR20, LOT 2 (#99433) : reecrire la session autoritaire finalisee
+    // APRES le recorder. Le TrekRecorder persiste sa session INTERNE (sans
+    // completedStages ni parcoursFullyWalked) : sans ce dernier upsert, l'etat
+    // final en base perdrait la memoire du finisher. Meme id -> derniere ecriture
+    // gagnante, avec les etapes marchees preservees.
+    if (authoritative != null) {
+      await _persistSession(
+        authoritative.copyWith(
+          status: 'completed',
+          finishedAt: authoritative.finishedAt ?? DateTime.now(),
+        ),
+      );
+    }
 
     final stats = ref.read(trekStatsProvider);
     final finalState = TrackingSessionState(
@@ -322,6 +369,11 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       completedStages: [...session.completedStages, stageId],
     );
     state = state.copyWith(session: updated);
+
+    // PARITE GR20, LOT 2 (#99433) : persister l'etape marchee tout de suite ->
+    // la memoire du finisher survit a un redemarrage (best-effort, non
+    // bloquant : cette mutation ne passe pas par le TrekRecorder).
+    unawaited(_persistSession(updated));
   }
 
   /// Termine le trek suite a la **detection d'arrivee a la derniere etape**
@@ -350,9 +402,14 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     // Trace du finisher legitime sur la session avant de finaliser.
     final session = state.session;
     if (session != null && !session.parcoursFullyWalked) {
-      state = state.copyWith(
-        session: session.copyWith(parcoursFullyWalked: true),
-      );
+      final finished = session.copyWith(parcoursFullyWalked: true);
+      state = state.copyWith(session: finished);
+      // PARITE GR20, LOT 2 (#99433) : persister le drapeau finisher (+ etapes
+      // marchees). Fire-and-forget (best-effort) pour NE PAS inserer de gap
+      // async avant stop() : la finalisation reste synchrone. La persistance
+      // AUTORITAIRE est de toute facon reecrite dans stop() (derniere ecriture
+      // gagnante), donc le flag survit au redemarrage meme si celui-ci echoue.
+      unawaited(_persistSession(finished));
     }
 
     await stop();

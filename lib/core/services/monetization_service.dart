@@ -3,6 +3,7 @@ import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../config/feature_flags.dart';
+import '../config/trail_catalog.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -72,9 +73,24 @@ class TrailFeatures {
 /// L etat premium est reflete dans FeatureFlags (premium:trailId)
 /// pour les gardes de routes synchrones.
 class MonetizationService {
-  MonetizationService({SharedPreferences? prefs}) : _prefs = prefs;
+  MonetizationService({SharedPreferences? prefs, Set<String>? showcaseTrailIds})
+      : _prefs = prefs,
+        _showcaseTrailIds = showcaseTrailIds;
 
   SharedPreferences? _prefs;
+
+  /// Sentiers VITRINE debloques sans achat (injecte ou derive du catalogue).
+  ///
+  /// PARITE GR20, LOT 2 (#99433) : un sentier vitrine est traite comme premium
+  /// (jouable) meme sans achat. Derive du flag de donnees
+  /// [TrailConfig.isShowcaseTrail] via [TrailCatalog.showcaseIds] — aucun id de
+  /// localite en dur. Overridable en test.
+  final Set<String>? _showcaseTrailIds;
+
+  Set<String> get _showcase => _showcaseTrailIds ?? TrailCatalog.showcaseIds;
+
+  /// Vrai si [trailId] est un sentier VITRINE (débloqué jouable sans achat).
+  bool isShowcaseTrail(String trailId) => _showcase.contains(trailId);
 
   /// Cache interne des achats par trailId.
   final Set<String> _purchases = {};
@@ -167,10 +183,14 @@ class MonetizationService {
 
   /// Retourne les features applicables pour un trek donne.
   ///
-  /// Si le trek est achete -> premium. Sinon -> gratuit (demo + pub).
-  /// Decision PAR TREK, pas par user (#81805 V7).
+  /// Si le trek est achete OU VITRINE -> premium (jouable). Sinon -> gratuit
+  /// (demo + pub). Decision PAR TREK, pas par user (#81805 V7).
+  ///
+  /// PARITE GR20, LOT 2 (#99433) : la vitrine ([isShowcaseTrail]) obtient les
+  /// features premium sans achat (GPS/journal/diplome), comme la demo « tout
+  /// debloque » de GR20 ; les autres sentiers non achetes restent en gratuit.
   TrailFeatures getFeaturesForTrail(String trailId) {
-    if (isTrailPurchased(trailId)) {
+    if (isTrailPurchased(trailId) || isShowcaseTrail(trailId)) {
       return getPremiumFeatures();
     }
     return getTrialFeatures();
@@ -180,7 +200,11 @@ class MonetizationService {
   ///
   /// Retourne true si ce trek n'a PAS ete achete,
   /// QUEL QUE SOIT le statut global de l'utilisateur (#81805 V7).
+  ///
+  /// EXCEPTION VITRINE (parite GR20, LOT 2) : un sentier vitrine
+  /// ([isShowcaseTrail]) n'est jamais en mode demo (jouable sans achat).
   bool isDemoMode(String trailId) {
+    if (isShowcaseTrail(trailId)) return false;
     return !isTrailPurchased(trailId);
   }
 

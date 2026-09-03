@@ -33,6 +33,12 @@ const mareAMareCentreTrailConfig = TrailConfig(
   defaultDuration: 7,
   offlineFirst: true,
   hasPremium: false,
+  // PARITE GR20, LOT 2 (#99433) : sentier VITRINE de demonstration. Entierement
+  // jouable (GPS + journal + navigation) SANS achat, comme le mode demo « tout
+  // debloque » de GR20. Le debridage passe par CE flag (donnee de config), pas
+  // par un id de localite en dur : seule la vitrine par defaut est debridee, le
+  // modele a la carte reste intact sur les autres sentiers (decision Christophe).
+  isShowcaseTrail: true,
   emergencyNumbers: [
     // Secours regional fourni par la config (jamais hardcode dans le moteur).
     TrailEmergencyNumber(name: 'Secours montagne Corse', phone: '+33495613636'),

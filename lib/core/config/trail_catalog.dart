@@ -40,6 +40,21 @@ abstract final class TrailCatalog {
   static List<String> get ids =>
       all.map((c) => c.id).toList(growable: false);
 
+  /// Identifiants des sentiers VITRINE (débloqués jouables sans achat).
+  ///
+  /// PARITÉ GR20, LOT 2 (#99433). Dérivé du FLAG de données
+  /// [TrailConfig.isShowcaseTrail] — jamais d'id de localité codé en dur. Les
+  /// services de démo/monétisation lisent cet ensemble pour traiter la vitrine
+  /// comme débloquée tout en laissant le modèle à la carte intact ailleurs.
+  static Set<String> get showcaseIds => all
+      .where((c) => c.isShowcaseTrail)
+      .map((c) => c.id)
+      .toSet();
+
+  /// Vrai si [id] est un sentier vitrine (débloqué jouable sans achat).
+  static bool isShowcase(String? id) =>
+      id != null && showcaseIds.contains(id);
+
   /// Retourne la config du sentier [id], ou null si inconnu.
   static TrailConfig? byId(String id) {
     for (final config in all) {
