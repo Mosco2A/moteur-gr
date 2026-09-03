@@ -1265,5 +1265,74 @@
     "dates": "Vom {start} bis {end}",
     "viewDiploma": "Mein Diplom ansehen",
     "noData": "Noch keine Routendaten zum Anzeigen."
+  },
+  "programme": {
+    "title": "Programm",
+    "helpTooltip": "Hilfe",
+    "stats": {
+      "distance": "Distanz",
+      "elevation": "Aufstieg",
+      "days": "Tage",
+      "stages": "Etappen",
+      "restCount": "{count} Ruhe"
+    },
+    "legend": {
+      "easy": "Leicht",
+      "moderate": "Mittel",
+      "hard": "Schwer",
+      "extreme": "Extrem"
+    },
+    "restDay": "Ruhetag",
+    "restDayLabel": "R",
+    "actions": {
+      "merge": "Zusammenlegen",
+      "split": "Aufteilen",
+      "rest": "Ruhe",
+      "removeRest": "Diesen Ruhetag entfernen"
+    },
+    "mergeBlocked": {
+      "noNext": "Kein Folgetag",
+      "rest": "Zusammenlegen mit Ruhetag nicht möglich",
+      "tooLong": "Zu lang: {hours}h (max. {max}h/Tag)"
+    },
+    "replan": "Neu planen",
+    "replanButton": "NEU PLANEN",
+    "replanDialog": {
+      "title": "Neu planen",
+      "message": "Die Neuplanung setzt Ihr Programm zurück.\nIhre Ruhetage bleiben an denselben Positionen erhalten.",
+      "cancel": "Abbrechen",
+      "confirm": "Neu planen"
+    },
+    "validate": "PROGRAMM BESTÄTIGEN",
+    "empty": {
+      "title": "Richten Sie zuerst Ihre Route ein",
+      "message": "Wählen Sie Route und Dauer, um Ihr Programm zu erstellen.",
+      "action": "ROUTE EINRICHTEN"
+    },
+    "info": {
+      "title": "Programm",
+      "days": {
+        "title": "Trektage",
+        "body": "Jede Zeile = ein Tag. Tippen für die vollständigen Details."
+      },
+      "reorder": {
+        "title": "Neu ordnen",
+        "body": "Ziehen Sie den Griff rechts, um die Reihenfolge der Tage zu ändern."
+      },
+      "rest": {
+        "title": "Ruhetag",
+        "body": "Fügen Sie einen Erholungstag zwischen zwei Etappen ein."
+      },
+      "mergeSplit": {
+        "title": "Zusammenlegen / Aufteilen",
+        "body": "Fassen Sie Etappen zusammen oder teilen Sie sie nach Ihrem Tempo."
+      },
+      "colors": {
+        "title": "Farben",
+        "body": "Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg)."
+      },
+      "note": "Das Höhenprofil unten zeigt den Aufstieg jedes Tages.",
+      "close": "Verstanden!"
+    }
   }
 }

@@ -90,6 +90,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$moderation$de moderation = _Translations$moderation$de._(_root);
 	@override late final _Translations$bootstrap$de bootstrap = _Translations$bootstrap$de._(_root);
 	@override late final _Translations$recap$de recap = _Translations$recap$de._(_root);
+	@override late final _Translations$programme$de programme = _Translations$programme$de._(_root);
 }
 
 // Path: a11y
@@ -1121,6 +1122,29 @@ class _Translations$recap$de extends Translations$recap$fr {
 	@override String get noData => 'Noch keine Routendaten zum Anzeigen.';
 }
 
+// Path: programme
+class _Translations$programme$de extends Translations$programme$fr {
+	_Translations$programme$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Programm';
+	@override String get helpTooltip => 'Hilfe';
+	@override late final _Translations$programme$stats$de stats = _Translations$programme$stats$de._(_root);
+	@override late final _Translations$programme$legend$de legend = _Translations$programme$legend$de._(_root);
+	@override String get restDay => 'Ruhetag';
+	@override String get restDayLabel => 'R';
+	@override late final _Translations$programme$actions$de actions = _Translations$programme$actions$de._(_root);
+	@override late final _Translations$programme$mergeBlocked$de mergeBlocked = _Translations$programme$mergeBlocked$de._(_root);
+	@override String get replan => 'Neu planen';
+	@override String get replanButton => 'NEU PLANEN';
+	@override late final _Translations$programme$replanDialog$de replanDialog = _Translations$programme$replanDialog$de._(_root);
+	@override String get validate => 'PROGRAMM BESTÄTIGEN';
+	@override late final _Translations$programme$empty$de empty = _Translations$programme$empty$de._(_root);
+	@override late final _Translations$programme$info$de info = _Translations$programme$info$de._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$de extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -2028,6 +2052,100 @@ class _Translations$moderation$a11y$de extends Translations$moderation$a11y$fr {
 	@override String get complaintForm => 'Formular zur Anfechtung der Entscheidung';
 }
 
+// Path: programme.stats
+class _Translations$programme$stats$de extends Translations$programme$stats$fr {
+	_Translations$programme$stats$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get distance => 'Distanz';
+	@override String get elevation => 'Aufstieg';
+	@override String get days => 'Tage';
+	@override String get stages => 'Etappen';
+	@override String get restCount => '{count} Ruhe';
+}
+
+// Path: programme.legend
+class _Translations$programme$legend$de extends Translations$programme$legend$fr {
+	_Translations$programme$legend$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get easy => 'Leicht';
+	@override String get moderate => 'Mittel';
+	@override String get hard => 'Schwer';
+	@override String get extreme => 'Extrem';
+}
+
+// Path: programme.actions
+class _Translations$programme$actions$de extends Translations$programme$actions$fr {
+	_Translations$programme$actions$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get merge => 'Zusammenlegen';
+	@override String get split => 'Aufteilen';
+	@override String get rest => 'Ruhe';
+	@override String get removeRest => 'Diesen Ruhetag entfernen';
+}
+
+// Path: programme.mergeBlocked
+class _Translations$programme$mergeBlocked$de extends Translations$programme$mergeBlocked$fr {
+	_Translations$programme$mergeBlocked$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get noNext => 'Kein Folgetag';
+	@override String get rest => 'Zusammenlegen mit Ruhetag nicht möglich';
+	@override String get tooLong => 'Zu lang: {hours}h (max. {max}h/Tag)';
+}
+
+// Path: programme.replanDialog
+class _Translations$programme$replanDialog$de extends Translations$programme$replanDialog$fr {
+	_Translations$programme$replanDialog$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Neu planen';
+	@override String get message => 'Die Neuplanung setzt Ihr Programm zurück.\nIhre Ruhetage bleiben an denselben Positionen erhalten.';
+	@override String get cancel => 'Abbrechen';
+	@override String get confirm => 'Neu planen';
+}
+
+// Path: programme.empty
+class _Translations$programme$empty$de extends Translations$programme$empty$fr {
+	_Translations$programme$empty$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Richten Sie zuerst Ihre Route ein';
+	@override String get message => 'Wählen Sie Route und Dauer, um Ihr Programm zu erstellen.';
+	@override String get action => 'ROUTE EINRICHTEN';
+}
+
+// Path: programme.info
+class _Translations$programme$info$de extends Translations$programme$info$fr {
+	_Translations$programme$info$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Programm';
+	@override late final _Translations$programme$info$days$de days = _Translations$programme$info$days$de._(_root);
+	@override late final _Translations$programme$info$reorder$de reorder = _Translations$programme$info$reorder$de._(_root);
+	@override late final _Translations$programme$info$rest$de rest = _Translations$programme$info$rest$de._(_root);
+	@override late final _Translations$programme$info$mergeSplit$de mergeSplit = _Translations$programme$info$mergeSplit$de._(_root);
+	@override late final _Translations$programme$info$colors$de colors = _Translations$programme$info$colors$de._(_root);
+	@override String get note => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.';
+	@override String get close => 'Verstanden!';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$de extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -2250,6 +2368,61 @@ class _Translations$packs$types$mam$de extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String get nom => 'Mare a Mare';
 	@override String get description => 'Der Mare-a-Mare-Weg, offline.';
+}
+
+// Path: programme.info.days
+class _Translations$programme$info$days$de extends Translations$programme$info$days$fr {
+	_Translations$programme$info$days$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Trektage';
+	@override String get body => 'Jede Zeile = ein Tag. Tippen für die vollständigen Details.';
+}
+
+// Path: programme.info.reorder
+class _Translations$programme$info$reorder$de extends Translations$programme$info$reorder$fr {
+	_Translations$programme$info$reorder$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Neu ordnen';
+	@override String get body => 'Ziehen Sie den Griff rechts, um die Reihenfolge der Tage zu ändern.';
+}
+
+// Path: programme.info.rest
+class _Translations$programme$info$rest$de extends Translations$programme$info$rest$fr {
+	_Translations$programme$info$rest$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Ruhetag';
+	@override String get body => 'Fügen Sie einen Erholungstag zwischen zwei Etappen ein.';
+}
+
+// Path: programme.info.mergeSplit
+class _Translations$programme$info$mergeSplit$de extends Translations$programme$info$mergeSplit$fr {
+	_Translations$programme$info$mergeSplit$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Zusammenlegen / Aufteilen';
+	@override String get body => 'Fassen Sie Etappen zusammen oder teilen Sie sie nach Ihrem Tempo.';
+}
+
+// Path: programme.info.colors
+class _Translations$programme$info$colors$de extends Translations$programme$info$colors$fr {
+	_Translations$programme$info$colors$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Farben';
+	@override String get body => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -3329,6 +3502,51 @@ extension on TranslationsDe {
 			'recap.dates' => 'Vom {start} bis {end}',
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
+			'programme.title' => 'Programm',
+			'programme.helpTooltip' => 'Hilfe',
+			'programme.stats.distance' => 'Distanz',
+			'programme.stats.elevation' => 'Aufstieg',
+			'programme.stats.days' => 'Tage',
+			_ => null,
+		} ?? switch (path) {
+			'programme.stats.stages' => 'Etappen',
+			'programme.stats.restCount' => '{count} Ruhe',
+			'programme.legend.easy' => 'Leicht',
+			'programme.legend.moderate' => 'Mittel',
+			'programme.legend.hard' => 'Schwer',
+			'programme.legend.extreme' => 'Extrem',
+			'programme.restDay' => 'Ruhetag',
+			'programme.restDayLabel' => 'R',
+			'programme.actions.merge' => 'Zusammenlegen',
+			'programme.actions.split' => 'Aufteilen',
+			'programme.actions.rest' => 'Ruhe',
+			'programme.actions.removeRest' => 'Diesen Ruhetag entfernen',
+			'programme.mergeBlocked.noNext' => 'Kein Folgetag',
+			'programme.mergeBlocked.rest' => 'Zusammenlegen mit Ruhetag nicht möglich',
+			'programme.mergeBlocked.tooLong' => 'Zu lang: {hours}h (max. {max}h/Tag)',
+			'programme.replan' => 'Neu planen',
+			'programme.replanButton' => 'NEU PLANEN',
+			'programme.replanDialog.title' => 'Neu planen',
+			'programme.replanDialog.message' => 'Die Neuplanung setzt Ihr Programm zurück.\nIhre Ruhetage bleiben an denselben Positionen erhalten.',
+			'programme.replanDialog.cancel' => 'Abbrechen',
+			'programme.replanDialog.confirm' => 'Neu planen',
+			'programme.validate' => 'PROGRAMM BESTÄTIGEN',
+			'programme.empty.title' => 'Richten Sie zuerst Ihre Route ein',
+			'programme.empty.message' => 'Wählen Sie Route und Dauer, um Ihr Programm zu erstellen.',
+			'programme.empty.action' => 'ROUTE EINRICHTEN',
+			'programme.info.title' => 'Programm',
+			'programme.info.days.title' => 'Trektage',
+			'programme.info.days.body' => 'Jede Zeile = ein Tag. Tippen für die vollständigen Details.',
+			'programme.info.reorder.title' => 'Neu ordnen',
+			'programme.info.reorder.body' => 'Ziehen Sie den Griff rechts, um die Reihenfolge der Tage zu ändern.',
+			'programme.info.rest.title' => 'Ruhetag',
+			'programme.info.rest.body' => 'Fügen Sie einen Erholungstag zwischen zwei Etappen ein.',
+			'programme.info.mergeSplit.title' => 'Zusammenlegen / Aufteilen',
+			'programme.info.mergeSplit.body' => 'Fassen Sie Etappen zusammen oder teilen Sie sie nach Ihrem Tempo.',
+			'programme.info.colors.title' => 'Farben',
+			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
+			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
+			'programme.info.close' => 'Verstanden!',
 			_ => null,
 		};
 	}

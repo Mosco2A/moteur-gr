@@ -91,6 +91,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$moderation$fr moderation = Translations$moderation$fr.internal(_root);
 	late final Translations$bootstrap$fr bootstrap = Translations$bootstrap$fr.internal(_root);
 	late final Translations$recap$fr recap = Translations$recap$fr.internal(_root);
+	late final Translations$programme$fr programme = Translations$programme$fr.internal(_root);
 }
 
 // Path: a11y
@@ -2188,6 +2189,47 @@ class Translations$recap$fr {
 	String get noData => 'Aucune donnee de parcours a afficher pour le moment.';
 }
 
+// Path: programme
+class Translations$programme$fr {
+	Translations$programme$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Programme'
+	String get title => 'Programme';
+
+	/// fr: 'Aide'
+	String get helpTooltip => 'Aide';
+
+	late final Translations$programme$stats$fr stats = Translations$programme$stats$fr.internal(_root);
+	late final Translations$programme$legend$fr legend = Translations$programme$legend$fr.internal(_root);
+
+	/// fr: 'Jour de repos'
+	String get restDay => 'Jour de repos';
+
+	/// fr: 'R'
+	String get restDayLabel => 'R';
+
+	late final Translations$programme$actions$fr actions = Translations$programme$actions$fr.internal(_root);
+	late final Translations$programme$mergeBlocked$fr mergeBlocked = Translations$programme$mergeBlocked$fr.internal(_root);
+
+	/// fr: 'Replanifier'
+	String get replan => 'Replanifier';
+
+	/// fr: 'REPLANIFIER'
+	String get replanButton => 'REPLANIFIER';
+
+	late final Translations$programme$replanDialog$fr replanDialog = Translations$programme$replanDialog$fr.internal(_root);
+
+	/// fr: 'VALIDER MON PROGRAMME'
+	String get validate => 'VALIDER MON PROGRAMME';
+
+	late final Translations$programme$empty$fr empty = Translations$programme$empty$fr.internal(_root);
+	late final Translations$programme$info$fr info = Translations$programme$info$fr.internal(_root);
+}
+
 // Path: hub.trekCard
 class Translations$hub$trekCard$fr {
 	Translations$hub$trekCard$fr.internal(this._root);
@@ -3987,6 +4029,153 @@ class Translations$moderation$a11y$fr {
 	String get complaintForm => 'Formulaire de contestation d\'une décision';
 }
 
+// Path: programme.stats
+class Translations$programme$stats$fr {
+	Translations$programme$stats$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Distance'
+	String get distance => 'Distance';
+
+	/// fr: 'D+'
+	String get elevation => 'D+';
+
+	/// fr: 'Jours'
+	String get days => 'Jours';
+
+	/// fr: 'Étapes'
+	String get stages => 'Étapes';
+
+	/// fr: '{count} repos'
+	String get restCount => '{count} repos';
+}
+
+// Path: programme.legend
+class Translations$programme$legend$fr {
+	Translations$programme$legend$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Facile'
+	String get easy => 'Facile';
+
+	/// fr: 'Modéré'
+	String get moderate => 'Modéré';
+
+	/// fr: 'Difficile'
+	String get hard => 'Difficile';
+
+	/// fr: 'Extrême'
+	String get extreme => 'Extrême';
+}
+
+// Path: programme.actions
+class Translations$programme$actions$fr {
+	Translations$programme$actions$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Regrouper'
+	String get merge => 'Regrouper';
+
+	/// fr: 'Séparer'
+	String get split => 'Séparer';
+
+	/// fr: 'Repos'
+	String get rest => 'Repos';
+
+	/// fr: 'Supprimer ce jour de repos'
+	String get removeRest => 'Supprimer ce jour de repos';
+}
+
+// Path: programme.mergeBlocked
+class Translations$programme$mergeBlocked$fr {
+	Translations$programme$mergeBlocked$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Pas de jour suivant'
+	String get noNext => 'Pas de jour suivant';
+
+	/// fr: 'Impossible de grouper avec un jour de repos'
+	String get rest => 'Impossible de grouper avec un jour de repos';
+
+	/// fr: 'Trop long : {hours}h (max {max}h/jour)'
+	String get tooLong => 'Trop long : {hours}h (max {max}h/jour)';
+}
+
+// Path: programme.replanDialog
+class Translations$programme$replanDialog$fr {
+	Translations$programme$replanDialog$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Replanifier'
+	String get title => 'Replanifier';
+
+	/// fr: 'La replanification va réinitialiser votre programme. Vos jours de repos seront préservés aux mêmes positions.'
+	String get message => 'La replanification va réinitialiser votre programme.\nVos jours de repos seront préservés aux mêmes positions.';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Replanifier'
+	String get confirm => 'Replanifier';
+}
+
+// Path: programme.empty
+class Translations$programme$empty$fr {
+	Translations$programme$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Configurez d'abord votre itinéraire'
+	String get title => 'Configurez d\'abord votre itinéraire';
+
+	/// fr: 'Choisissez votre parcours et la durée pour générer votre programme.'
+	String get message => 'Choisissez votre parcours et la durée pour générer votre programme.';
+
+	/// fr: 'CONFIGURER L'ITINÉRAIRE'
+	String get action => 'CONFIGURER L\'ITINÉRAIRE';
+}
+
+// Path: programme.info
+class Translations$programme$info$fr {
+	Translations$programme$info$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Programme'
+	String get title => 'Programme';
+
+	late final Translations$programme$info$days$fr days = Translations$programme$info$days$fr.internal(_root);
+	late final Translations$programme$info$reorder$fr reorder = Translations$programme$info$reorder$fr.internal(_root);
+	late final Translations$programme$info$rest$fr rest = Translations$programme$info$rest$fr.internal(_root);
+	late final Translations$programme$info$mergeSplit$fr mergeSplit = Translations$programme$info$mergeSplit$fr.internal(_root);
+	late final Translations$programme$info$colors$fr colors = Translations$programme$info$colors$fr.internal(_root);
+
+	/// fr: 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.'
+	String get note => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.';
+
+	/// fr: 'Compris !'
+	String get close => 'Compris !';
+}
+
 // Path: weather.alert.storm
 class Translations$weather$alert$storm$fr {
 	Translations$weather$alert$storm$fr.internal(this._root);
@@ -4293,6 +4482,81 @@ class Translations$packs$types$mam$fr {
 
 	/// fr: 'Le sentier Mare a Mare, hors-ligne.'
 	String get description => 'Le sentier Mare a Mare, hors-ligne.';
+}
+
+// Path: programme.info.days
+class Translations$programme$info$days$fr {
+	Translations$programme$info$days$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Jours de trek'
+	String get title => 'Jours de trek';
+
+	/// fr: 'Chaque ligne = un jour. Appuyez pour voir le détail complet.'
+	String get body => 'Chaque ligne = un jour. Appuyez pour voir le détail complet.';
+}
+
+// Path: programme.info.reorder
+class Translations$programme$info$reorder$fr {
+	Translations$programme$info$reorder$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Réorganiser'
+	String get title => 'Réorganiser';
+
+	/// fr: 'Glissez la poignée à droite pour changer l'ordre des jours.'
+	String get body => 'Glissez la poignée à droite pour changer l\'ordre des jours.';
+}
+
+// Path: programme.info.rest
+class Translations$programme$info$rest$fr {
+	Translations$programme$info$rest$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Jour de repos'
+	String get title => 'Jour de repos';
+
+	/// fr: 'Insérez un jour de récupération entre deux étapes.'
+	String get body => 'Insérez un jour de récupération entre deux étapes.';
+}
+
+// Path: programme.info.mergeSplit
+class Translations$programme$info$mergeSplit$fr {
+	Translations$programme$info$mergeSplit$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Regrouper / Séparer'
+	String get title => 'Regrouper / Séparer';
+
+	/// fr: 'Fusionnez ou découpez des étapes selon votre rythme.'
+	String get body => 'Fusionnez ou découpez des étapes selon votre rythme.';
+}
+
+// Path: programme.info.colors
+class Translations$programme$info$colors$fr {
+	Translations$programme$info$colors$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Couleurs'
+	String get title => 'Couleurs';
+
+	/// fr: 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).'
+	String get body => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -5396,6 +5660,51 @@ extension on Translations {
 			'recap.dates' => 'Du {start} au {end}',
 			'recap.viewDiploma' => 'Voir mon diplome',
 			'recap.noData' => 'Aucune donnee de parcours a afficher pour le moment.',
+			'programme.title' => 'Programme',
+			'programme.helpTooltip' => 'Aide',
+			'programme.stats.distance' => 'Distance',
+			'programme.stats.elevation' => 'D+',
+			'programme.stats.days' => 'Jours',
+			_ => null,
+		} ?? switch (path) {
+			'programme.stats.stages' => 'Étapes',
+			'programme.stats.restCount' => '{count} repos',
+			'programme.legend.easy' => 'Facile',
+			'programme.legend.moderate' => 'Modéré',
+			'programme.legend.hard' => 'Difficile',
+			'programme.legend.extreme' => 'Extrême',
+			'programme.restDay' => 'Jour de repos',
+			'programme.restDayLabel' => 'R',
+			'programme.actions.merge' => 'Regrouper',
+			'programme.actions.split' => 'Séparer',
+			'programme.actions.rest' => 'Repos',
+			'programme.actions.removeRest' => 'Supprimer ce jour de repos',
+			'programme.mergeBlocked.noNext' => 'Pas de jour suivant',
+			'programme.mergeBlocked.rest' => 'Impossible de grouper avec un jour de repos',
+			'programme.mergeBlocked.tooLong' => 'Trop long : {hours}h (max {max}h/jour)',
+			'programme.replan' => 'Replanifier',
+			'programme.replanButton' => 'REPLANIFIER',
+			'programme.replanDialog.title' => 'Replanifier',
+			'programme.replanDialog.message' => 'La replanification va réinitialiser votre programme.\nVos jours de repos seront préservés aux mêmes positions.',
+			'programme.replanDialog.cancel' => 'Annuler',
+			'programme.replanDialog.confirm' => 'Replanifier',
+			'programme.validate' => 'VALIDER MON PROGRAMME',
+			'programme.empty.title' => 'Configurez d\'abord votre itinéraire',
+			'programme.empty.message' => 'Choisissez votre parcours et la durée pour générer votre programme.',
+			'programme.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
+			'programme.info.title' => 'Programme',
+			'programme.info.days.title' => 'Jours de trek',
+			'programme.info.days.body' => 'Chaque ligne = un jour. Appuyez pour voir le détail complet.',
+			'programme.info.reorder.title' => 'Réorganiser',
+			'programme.info.reorder.body' => 'Glissez la poignée à droite pour changer l\'ordre des jours.',
+			'programme.info.rest.title' => 'Jour de repos',
+			'programme.info.rest.body' => 'Insérez un jour de récupération entre deux étapes.',
+			'programme.info.mergeSplit.title' => 'Regrouper / Séparer',
+			'programme.info.mergeSplit.body' => 'Fusionnez ou découpez des étapes selon votre rythme.',
+			'programme.info.colors.title' => 'Couleurs',
+			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
+			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
+			'programme.info.close' => 'Compris !',
 			_ => null,
 		};
 	}

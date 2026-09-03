@@ -90,6 +90,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$moderation$en moderation = _Translations$moderation$en._(_root);
 	@override late final _Translations$bootstrap$en bootstrap = _Translations$bootstrap$en._(_root);
 	@override late final _Translations$recap$en recap = _Translations$recap$en._(_root);
+	@override late final _Translations$programme$en programme = _Translations$programme$en._(_root);
 }
 
 // Path: a11y
@@ -1121,6 +1122,29 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String get noData => 'No route data to display yet.';
 }
 
+// Path: programme
+class _Translations$programme$en extends Translations$programme$fr {
+	_Translations$programme$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Programme';
+	@override String get helpTooltip => 'Help';
+	@override late final _Translations$programme$stats$en stats = _Translations$programme$stats$en._(_root);
+	@override late final _Translations$programme$legend$en legend = _Translations$programme$legend$en._(_root);
+	@override String get restDay => 'Rest day';
+	@override String get restDayLabel => 'R';
+	@override late final _Translations$programme$actions$en actions = _Translations$programme$actions$en._(_root);
+	@override late final _Translations$programme$mergeBlocked$en mergeBlocked = _Translations$programme$mergeBlocked$en._(_root);
+	@override String get replan => 'Replan';
+	@override String get replanButton => 'REPLAN';
+	@override late final _Translations$programme$replanDialog$en replanDialog = _Translations$programme$replanDialog$en._(_root);
+	@override String get validate => 'CONFIRM MY PROGRAMME';
+	@override late final _Translations$programme$empty$en empty = _Translations$programme$empty$en._(_root);
+	@override late final _Translations$programme$info$en info = _Translations$programme$info$en._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$en extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2028,6 +2052,100 @@ class _Translations$moderation$a11y$en extends Translations$moderation$a11y$fr {
 	@override String get complaintForm => 'Decision challenge form';
 }
 
+// Path: programme.stats
+class _Translations$programme$stats$en extends Translations$programme$stats$fr {
+	_Translations$programme$stats$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get distance => 'Distance';
+	@override String get elevation => 'Ascent';
+	@override String get days => 'Days';
+	@override String get stages => 'Stages';
+	@override String get restCount => '{count} rest';
+}
+
+// Path: programme.legend
+class _Translations$programme$legend$en extends Translations$programme$legend$fr {
+	_Translations$programme$legend$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get easy => 'Easy';
+	@override String get moderate => 'Moderate';
+	@override String get hard => 'Hard';
+	@override String get extreme => 'Extreme';
+}
+
+// Path: programme.actions
+class _Translations$programme$actions$en extends Translations$programme$actions$fr {
+	_Translations$programme$actions$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get merge => 'Merge';
+	@override String get split => 'Split';
+	@override String get rest => 'Rest';
+	@override String get removeRest => 'Remove this rest day';
+}
+
+// Path: programme.mergeBlocked
+class _Translations$programme$mergeBlocked$en extends Translations$programme$mergeBlocked$fr {
+	_Translations$programme$mergeBlocked$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get noNext => 'No next day';
+	@override String get rest => 'Cannot merge with a rest day';
+	@override String get tooLong => 'Too long: {hours}h (max {max}h/day)';
+}
+
+// Path: programme.replanDialog
+class _Translations$programme$replanDialog$en extends Translations$programme$replanDialog$fr {
+	_Translations$programme$replanDialog$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Replan';
+	@override String get message => 'Replanning will reset your programme.\nYour rest days will be kept at the same positions.';
+	@override String get cancel => 'Cancel';
+	@override String get confirm => 'Replan';
+}
+
+// Path: programme.empty
+class _Translations$programme$empty$en extends Translations$programme$empty$fr {
+	_Translations$programme$empty$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Set up your itinerary first';
+	@override String get message => 'Choose your route and duration to generate your programme.';
+	@override String get action => 'SET UP ITINERARY';
+}
+
+// Path: programme.info
+class _Translations$programme$info$en extends Translations$programme$info$fr {
+	_Translations$programme$info$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Programme';
+	@override late final _Translations$programme$info$days$en days = _Translations$programme$info$days$en._(_root);
+	@override late final _Translations$programme$info$reorder$en reorder = _Translations$programme$info$reorder$en._(_root);
+	@override late final _Translations$programme$info$rest$en rest = _Translations$programme$info$rest$en._(_root);
+	@override late final _Translations$programme$info$mergeSplit$en mergeSplit = _Translations$programme$info$mergeSplit$en._(_root);
+	@override late final _Translations$programme$info$colors$en colors = _Translations$programme$info$colors$en._(_root);
+	@override String get note => 'The elevation profile at the bottom shows each day\'s ascent.';
+	@override String get close => 'Got it!';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$en extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2250,6 +2368,61 @@ class _Translations$packs$types$mam$en extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String get nom => 'Mare a Mare';
 	@override String get description => 'The Mare a Mare trail, offline.';
+}
+
+// Path: programme.info.days
+class _Translations$programme$info$days$en extends Translations$programme$info$days$fr {
+	_Translations$programme$info$days$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Trek days';
+	@override String get body => 'Each row = one day. Tap to see the full detail.';
+}
+
+// Path: programme.info.reorder
+class _Translations$programme$info$reorder$en extends Translations$programme$info$reorder$fr {
+	_Translations$programme$info$reorder$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Reorder';
+	@override String get body => 'Drag the handle on the right to change the day order.';
+}
+
+// Path: programme.info.rest
+class _Translations$programme$info$rest$en extends Translations$programme$info$rest$fr {
+	_Translations$programme$info$rest$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Rest day';
+	@override String get body => 'Insert a recovery day between two stages.';
+}
+
+// Path: programme.info.mergeSplit
+class _Translations$programme$info$mergeSplit$en extends Translations$programme$info$mergeSplit$fr {
+	_Translations$programme$info$mergeSplit$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Merge / Split';
+	@override String get body => 'Combine or split stages to match your pace.';
+}
+
+// Path: programme.info.colors
+class _Translations$programme$info$colors$en extends Translations$programme$info$colors$fr {
+	_Translations$programme$info$colors$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Colours';
+	@override String get body => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -3329,6 +3502,51 @@ extension on TranslationsEn {
 			'recap.dates' => 'From {start} to {end}',
 			'recap.viewDiploma' => 'View my diploma',
 			'recap.noData' => 'No route data to display yet.',
+			'programme.title' => 'Programme',
+			'programme.helpTooltip' => 'Help',
+			'programme.stats.distance' => 'Distance',
+			'programme.stats.elevation' => 'Ascent',
+			'programme.stats.days' => 'Days',
+			_ => null,
+		} ?? switch (path) {
+			'programme.stats.stages' => 'Stages',
+			'programme.stats.restCount' => '{count} rest',
+			'programme.legend.easy' => 'Easy',
+			'programme.legend.moderate' => 'Moderate',
+			'programme.legend.hard' => 'Hard',
+			'programme.legend.extreme' => 'Extreme',
+			'programme.restDay' => 'Rest day',
+			'programme.restDayLabel' => 'R',
+			'programme.actions.merge' => 'Merge',
+			'programme.actions.split' => 'Split',
+			'programme.actions.rest' => 'Rest',
+			'programme.actions.removeRest' => 'Remove this rest day',
+			'programme.mergeBlocked.noNext' => 'No next day',
+			'programme.mergeBlocked.rest' => 'Cannot merge with a rest day',
+			'programme.mergeBlocked.tooLong' => 'Too long: {hours}h (max {max}h/day)',
+			'programme.replan' => 'Replan',
+			'programme.replanButton' => 'REPLAN',
+			'programme.replanDialog.title' => 'Replan',
+			'programme.replanDialog.message' => 'Replanning will reset your programme.\nYour rest days will be kept at the same positions.',
+			'programme.replanDialog.cancel' => 'Cancel',
+			'programme.replanDialog.confirm' => 'Replan',
+			'programme.validate' => 'CONFIRM MY PROGRAMME',
+			'programme.empty.title' => 'Set up your itinerary first',
+			'programme.empty.message' => 'Choose your route and duration to generate your programme.',
+			'programme.empty.action' => 'SET UP ITINERARY',
+			'programme.info.title' => 'Programme',
+			'programme.info.days.title' => 'Trek days',
+			'programme.info.days.body' => 'Each row = one day. Tap to see the full detail.',
+			'programme.info.reorder.title' => 'Reorder',
+			'programme.info.reorder.body' => 'Drag the handle on the right to change the day order.',
+			'programme.info.rest.title' => 'Rest day',
+			'programme.info.rest.body' => 'Insert a recovery day between two stages.',
+			'programme.info.mergeSplit.title' => 'Merge / Split',
+			'programme.info.mergeSplit.body' => 'Combine or split stages to match your pace.',
+			'programme.info.colors.title' => 'Colours',
+			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
+			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
+			'programme.info.close' => 'Got it!',
 			_ => null,
 		};
 	}

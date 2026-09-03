@@ -90,6 +90,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$moderation$es moderation = _Translations$moderation$es._(_root);
 	@override late final _Translations$bootstrap$es bootstrap = _Translations$bootstrap$es._(_root);
 	@override late final _Translations$recap$es recap = _Translations$recap$es._(_root);
+	@override late final _Translations$programme$es programme = _Translations$programme$es._(_root);
 }
 
 // Path: a11y
@@ -1121,6 +1122,29 @@ class _Translations$recap$es extends Translations$recap$fr {
 	@override String get noData => 'Aun no hay datos de ruta para mostrar.';
 }
 
+// Path: programme
+class _Translations$programme$es extends Translations$programme$fr {
+	_Translations$programme$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Programa';
+	@override String get helpTooltip => 'Ayuda';
+	@override late final _Translations$programme$stats$es stats = _Translations$programme$stats$es._(_root);
+	@override late final _Translations$programme$legend$es legend = _Translations$programme$legend$es._(_root);
+	@override String get restDay => 'Día de descanso';
+	@override String get restDayLabel => 'R';
+	@override late final _Translations$programme$actions$es actions = _Translations$programme$actions$es._(_root);
+	@override late final _Translations$programme$mergeBlocked$es mergeBlocked = _Translations$programme$mergeBlocked$es._(_root);
+	@override String get replan => 'Replanificar';
+	@override String get replanButton => 'REPLANIFICAR';
+	@override late final _Translations$programme$replanDialog$es replanDialog = _Translations$programme$replanDialog$es._(_root);
+	@override String get validate => 'CONFIRMAR MI PROGRAMA';
+	@override late final _Translations$programme$empty$es empty = _Translations$programme$empty$es._(_root);
+	@override late final _Translations$programme$info$es info = _Translations$programme$info$es._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$es extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -2028,6 +2052,100 @@ class _Translations$moderation$a11y$es extends Translations$moderation$a11y$fr {
 	@override String get complaintForm => 'Formulario de impugnación de la decisión';
 }
 
+// Path: programme.stats
+class _Translations$programme$stats$es extends Translations$programme$stats$fr {
+	_Translations$programme$stats$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get distance => 'Distancia';
+	@override String get elevation => 'Desnivel+';
+	@override String get days => 'Días';
+	@override String get stages => 'Etapas';
+	@override String get restCount => '{count} descanso';
+}
+
+// Path: programme.legend
+class _Translations$programme$legend$es extends Translations$programme$legend$fr {
+	_Translations$programme$legend$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get easy => 'Fácil';
+	@override String get moderate => 'Moderado';
+	@override String get hard => 'Difícil';
+	@override String get extreme => 'Extremo';
+}
+
+// Path: programme.actions
+class _Translations$programme$actions$es extends Translations$programme$actions$fr {
+	_Translations$programme$actions$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get merge => 'Agrupar';
+	@override String get split => 'Separar';
+	@override String get rest => 'Descanso';
+	@override String get removeRest => 'Eliminar este día de descanso';
+}
+
+// Path: programme.mergeBlocked
+class _Translations$programme$mergeBlocked$es extends Translations$programme$mergeBlocked$fr {
+	_Translations$programme$mergeBlocked$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get noNext => 'No hay día siguiente';
+	@override String get rest => 'No se puede agrupar con un día de descanso';
+	@override String get tooLong => 'Demasiado largo: {hours}h (máx {max}h/día)';
+}
+
+// Path: programme.replanDialog
+class _Translations$programme$replanDialog$es extends Translations$programme$replanDialog$fr {
+	_Translations$programme$replanDialog$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Replanificar';
+	@override String get message => 'La replanificación reiniciará tu programa.\nTus días de descanso se mantendrán en las mismas posiciones.';
+	@override String get cancel => 'Cancelar';
+	@override String get confirm => 'Replanificar';
+}
+
+// Path: programme.empty
+class _Translations$programme$empty$es extends Translations$programme$empty$fr {
+	_Translations$programme$empty$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Configura primero tu itinerario';
+	@override String get message => 'Elige tu ruta y la duración para generar tu programa.';
+	@override String get action => 'CONFIGURAR EL ITINERARIO';
+}
+
+// Path: programme.info
+class _Translations$programme$info$es extends Translations$programme$info$fr {
+	_Translations$programme$info$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Programa';
+	@override late final _Translations$programme$info$days$es days = _Translations$programme$info$days$es._(_root);
+	@override late final _Translations$programme$info$reorder$es reorder = _Translations$programme$info$reorder$es._(_root);
+	@override late final _Translations$programme$info$rest$es rest = _Translations$programme$info$rest$es._(_root);
+	@override late final _Translations$programme$info$mergeSplit$es mergeSplit = _Translations$programme$info$mergeSplit$es._(_root);
+	@override late final _Translations$programme$info$colors$es colors = _Translations$programme$info$colors$es._(_root);
+	@override String get note => 'El perfil altimétrico de abajo muestra el desnivel de cada día.';
+	@override String get close => '¡Entendido!';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$es extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -2250,6 +2368,61 @@ class _Translations$packs$types$mam$es extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String get nom => 'Mare a Mare';
 	@override String get description => 'El sendero Mare a Mare, sin conexión.';
+}
+
+// Path: programme.info.days
+class _Translations$programme$info$days$es extends Translations$programme$info$days$fr {
+	_Translations$programme$info$days$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Días de trek';
+	@override String get body => 'Cada línea = un día. Pulsa para ver el detalle completo.';
+}
+
+// Path: programme.info.reorder
+class _Translations$programme$info$reorder$es extends Translations$programme$info$reorder$fr {
+	_Translations$programme$info$reorder$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Reordenar';
+	@override String get body => 'Arrastra el asa de la derecha para cambiar el orden de los días.';
+}
+
+// Path: programme.info.rest
+class _Translations$programme$info$rest$es extends Translations$programme$info$rest$fr {
+	_Translations$programme$info$rest$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Día de descanso';
+	@override String get body => 'Inserta un día de recuperación entre dos etapas.';
+}
+
+// Path: programme.info.mergeSplit
+class _Translations$programme$info$mergeSplit$es extends Translations$programme$info$mergeSplit$fr {
+	_Translations$programme$info$mergeSplit$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Agrupar / Separar';
+	@override String get body => 'Combina o divide etapas según tu ritmo.';
+}
+
+// Path: programme.info.colors
+class _Translations$programme$info$colors$es extends Translations$programme$info$colors$fr {
+	_Translations$programme$info$colors$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Colores';
+	@override String get body => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).';
 }
 
 // Path: feasibility.recommendations.danger.tips
@@ -3329,6 +3502,51 @@ extension on TranslationsEs {
 			'recap.dates' => 'Del {start} al {end}',
 			'recap.viewDiploma' => 'Ver mi diploma',
 			'recap.noData' => 'Aun no hay datos de ruta para mostrar.',
+			'programme.title' => 'Programa',
+			'programme.helpTooltip' => 'Ayuda',
+			'programme.stats.distance' => 'Distancia',
+			'programme.stats.elevation' => 'Desnivel+',
+			'programme.stats.days' => 'Días',
+			_ => null,
+		} ?? switch (path) {
+			'programme.stats.stages' => 'Etapas',
+			'programme.stats.restCount' => '{count} descanso',
+			'programme.legend.easy' => 'Fácil',
+			'programme.legend.moderate' => 'Moderado',
+			'programme.legend.hard' => 'Difícil',
+			'programme.legend.extreme' => 'Extremo',
+			'programme.restDay' => 'Día de descanso',
+			'programme.restDayLabel' => 'R',
+			'programme.actions.merge' => 'Agrupar',
+			'programme.actions.split' => 'Separar',
+			'programme.actions.rest' => 'Descanso',
+			'programme.actions.removeRest' => 'Eliminar este día de descanso',
+			'programme.mergeBlocked.noNext' => 'No hay día siguiente',
+			'programme.mergeBlocked.rest' => 'No se puede agrupar con un día de descanso',
+			'programme.mergeBlocked.tooLong' => 'Demasiado largo: {hours}h (máx {max}h/día)',
+			'programme.replan' => 'Replanificar',
+			'programme.replanButton' => 'REPLANIFICAR',
+			'programme.replanDialog.title' => 'Replanificar',
+			'programme.replanDialog.message' => 'La replanificación reiniciará tu programa.\nTus días de descanso se mantendrán en las mismas posiciones.',
+			'programme.replanDialog.cancel' => 'Cancelar',
+			'programme.replanDialog.confirm' => 'Replanificar',
+			'programme.validate' => 'CONFIRMAR MI PROGRAMA',
+			'programme.empty.title' => 'Configura primero tu itinerario',
+			'programme.empty.message' => 'Elige tu ruta y la duración para generar tu programa.',
+			'programme.empty.action' => 'CONFIGURAR EL ITINERARIO',
+			'programme.info.title' => 'Programa',
+			'programme.info.days.title' => 'Días de trek',
+			'programme.info.days.body' => 'Cada línea = un día. Pulsa para ver el detalle completo.',
+			'programme.info.reorder.title' => 'Reordenar',
+			'programme.info.reorder.body' => 'Arrastra el asa de la derecha para cambiar el orden de los días.',
+			'programme.info.rest.title' => 'Día de descanso',
+			'programme.info.rest.body' => 'Inserta un día de recuperación entre dos etapas.',
+			'programme.info.mergeSplit.title' => 'Agrupar / Separar',
+			'programme.info.mergeSplit.body' => 'Combina o divide etapas según tu ritmo.',
+			'programme.info.colors.title' => 'Colores',
+			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
+			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
+			'programme.info.close' => '¡Entendido!',
 			_ => null,
 		};
 	}

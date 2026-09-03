@@ -9,7 +9,8 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 ///   - structure de premier niveau (1 shell + routes racine) ;
 ///   - composition du StatefulShellRoute (5 branches Accueil/Carte/Etapes/
 ///     Journal/Plus, chemins, cles) ;
-///   - Planning trek sorti de la barre -> route hors-shell /planning ;
+///   - PROGRAMME (parite GR20) atteint via /trail/:id/planning (sous-route),
+///     l'ancienne route hors-shell /planning (orpheline) ayant ete retiree ;
 ///   - preservation des liens profonds existants (/trail/:id et sous-routes) ;
 ///   - navigation entre onglets via la NavigationBar ;
 ///   - restauration d'etat par onglet (IndexedStack natif).
@@ -19,12 +20,14 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/home');
     });
 
-    test('le premier niveau contient 1 shell + 19 routes racine', () {
+    test('le premier niveau contient 1 shell + 18 routes racine', () {
       // +1 : /health (E57 LOT D/D1, fiche sante hors-shell via Urgence).
+      // -1 : /planning (trek-planning) RETIREE — doublon orphelin du PROGRAMME
+      // (parite GR20 #99460), desormais servi via /trail/:id/planning.
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 20);
+      expect(routes.length, 19);
       expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 19);
+      expect(routes.whereType<GoRoute>().length, 18);
     });
 
     test('les routes racine (hors shell) sont celles attendues', () {
@@ -47,8 +50,6 @@ void main() {
         '/health',
         '/signalement',
         '/training',
-        // HUB E07 (#NAV02) : Planning trek sorti de la barre -> hors-shell.
-        '/planning',
         '/onboarding',
         '/no-data',
         '/settings',
@@ -75,7 +76,6 @@ void main() {
         'health',
         'signalement',
         'training',
-        'trek-planning',
         'onboarding',
         'no-data',
         'settings',

@@ -41,8 +41,6 @@ import 'app_shell.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
 import '../../features/trek/presentation/stages/stage_list_screen.dart'
     as trek_stages;
-import '../../features/trek/presentation/planning/planning_screen.dart'
-    as trek_planning;
 import '../../features/trek/presentation/planning/itinerary_screen.dart';
 import '../../features/trek/presentation/stages/trek_stage_detail_screen.dart'
     as trek_detail;
@@ -76,12 +74,11 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /journal                     - Onglet Journal de trek
 ///   /more                        - Onglet Plus (hub fonctions secondaires)
 ///   --- Routes racine (hors shell) ---
-///   /planning                    - Planning trek (hors-shell, via HUB)
 ///   /trails                      - Liste des sentiers
 ///   /trail/:id                   - Detail d'un sentier
 ///   /trail/:id/stage/:num        - Detail d'une etape
 ///   /trail/:id/map               - Carte du trace GPX
-///   /trail/:id/planning          - Planning de repartition
+///   /trail/:id/planning          - PROGRAMME (clone GR20, via carte HUB)
 ///   /trail/:id/checklist         - Checklist materiel
 ///   /trail/:id/feasibility       - Questionnaire faisabilite
 ///   /trail/:id/tips              - Fiches conseils
@@ -450,16 +447,11 @@ final appRouter = GoRouter(
       name: 'training',
       builder: (context, state) => const TrainingScreen(),
     ),
-    // HUB E07 (AM-1 #F11 / #NAV02) : le Planning trek quitte la bottom-nav et
-    // devient une route hors-shell (plein ecran), atteinte via la carte
-    // « Programme » du HUB. Le nom 'trek-planning' est preserve (aucun lien
-    // profond casse). A ne pas confondre avec /trail/:id/planning (planning de
-    // repartition par sentier, R02).
-    GoRoute(
-      path: '/planning',
-      name: 'trek-planning',
-      builder: (context, state) => const trek_planning.TrekPlanningScreen(),
-    ),
+    // PARITE GR20 (#99460) — PROGRAMME : la carte « Programme » du HUB ouvre
+    // l'ecran PROGRAMME (clone GR20 `PlanningScreen`) via /trail/:id/planning
+    // (`TrailPlanningScreen`, ci-dessus). L'ancienne route hors-shell /planning
+    // (`trek-planning` -> `TrekPlanningScreen`, doublon PAUVRE et ORPHELIN :
+    // aucune navigation ne l'atteignait) a ete RETIREE — plus de route morte.
     // E5.1a/b : ecran d'accueil affiche au tout premier lancement.
     GoRoute(
       path: '/onboarding',
