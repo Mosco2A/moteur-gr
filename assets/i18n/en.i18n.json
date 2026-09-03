@@ -138,7 +138,24 @@
     "loadingList": "Loading stages...",
     "dPlus": "D+",
     "dMinus": "D-",
-    "difficultyLabel": "Difficulty"
+    "difficultyLabel": "Difficulty",
+    "waterSources": {
+      "title": "Water points",
+      "count": "{n} source(s)",
+      "none": "No water point listed for this stage. Carry at least 3 L per person."
+    },
+    "accommodation": {
+      "title": "Accommodation",
+      "none": "No accommodation listed for this stage."
+    },
+    "advice": {
+      "title": "Advice",
+      "waterScarce": "Few water points: set off with at least 2.5 L.",
+      "waterAmple": "Refill your bottles at every water point you pass.",
+      "hardStage": "Technical stage: leave early to avoid the heat and afternoon storms.",
+      "earlyStart": "Leaving before 8 am is recommended to enjoy the morning cool.",
+      "bigClimb": "Large positive elevation: pace yourself and take regular breaks."
+    }
   },
   "trail": {
     "stages": "Stages",

@@ -138,7 +138,24 @@
     "loadingList": "Cargando las etapas...",
     "dPlus": "D+",
     "dMinus": "D-",
-    "difficultyLabel": "Dificultad"
+    "difficultyLabel": "Dificultad",
+    "waterSources": {
+      "title": "Puntos de agua",
+      "count": "{n} fuente(s)",
+      "none": "No hay ningun punto de agua indicado en esta etapa. Lleve al menos 3 L por persona."
+    },
+    "accommodation": {
+      "title": "Alojamientos",
+      "none": "No hay ningun alojamiento indicado en esta etapa."
+    },
+    "advice": {
+      "title": "Consejos",
+      "waterScarce": "Pocos puntos de agua: salga con al menos 2,5 L.",
+      "waterAmple": "Rellene las cantimploras en cada punto de agua que encuentre.",
+      "hardStage": "Etapa tecnica: salga temprano para evitar el calor y las tormentas de la tarde.",
+      "earlyStart": "Se recomienda salir antes de las 8 h para aprovechar el fresco matinal.",
+      "bigClimb": "Fuerte desnivel positivo: dosifique el esfuerzo y haga pausas regulares."
+    }
   },
   "trail": {
     "stages": "Etapas",

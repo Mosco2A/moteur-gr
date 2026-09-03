@@ -347,6 +347,10 @@ class Translations$stage$fr {
 
 	/// fr: 'Difficulte'
 	String get difficultyLabel => 'Difficulte';
+
+	late final Translations$stage$waterSources$fr waterSources = Translations$stage$waterSources$fr.internal(_root);
+	late final Translations$stage$accommodation$fr accommodation = Translations$stage$accommodation$fr.internal(_root);
+	late final Translations$stage$advice$fr advice = Translations$stage$advice$fr.internal(_root);
 }
 
 // Path: trail
@@ -2462,6 +2466,66 @@ class Translations$stage$difficulty$fr {
 
 	/// fr: 'Extreme'
 	String get extreme => 'Extreme';
+}
+
+// Path: stage.waterSources
+class Translations$stage$waterSources$fr {
+	Translations$stage$waterSources$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Points d'eau'
+	String get title => 'Points d\'eau';
+
+	/// fr: '{n} source(s)'
+	String get count => '{n} source(s)';
+
+	/// fr: 'Pas de point d'eau reference sur cette etape. Prevoyez au moins 3 L par personne.'
+	String get none => 'Pas de point d\'eau reference sur cette etape. Prevoyez au moins 3 L par personne.';
+}
+
+// Path: stage.accommodation
+class Translations$stage$accommodation$fr {
+	Translations$stage$accommodation$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Hebergements'
+	String get title => 'Hebergements';
+
+	/// fr: 'Aucun hebergement reference sur cette etape.'
+	String get none => 'Aucun hebergement reference sur cette etape.';
+}
+
+// Path: stage.advice
+class Translations$stage$advice$fr {
+	Translations$stage$advice$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Conseils'
+	String get title => 'Conseils';
+
+	/// fr: 'Peu de points d'eau : partez avec au moins 2,5 L.'
+	String get waterScarce => 'Peu de points d\'eau : partez avec au moins 2,5 L.';
+
+	/// fr: 'Remplissez vos gourdes a chaque point d'eau rencontre.'
+	String get waterAmple => 'Remplissez vos gourdes a chaque point d\'eau rencontre.';
+
+	/// fr: 'Etape technique : partez tot le matin pour eviter la chaleur et les orages d'apres-midi.'
+	String get hardStage => 'Etape technique : partez tot le matin pour eviter la chaleur et les orages d\'apres-midi.';
+
+	/// fr: 'Depart recommande avant 8 h pour profiter de la fraicheur matinale.'
+	String get earlyStart => 'Depart recommande avant 8 h pour profiter de la fraicheur matinale.';
+
+	/// fr: 'Fort denivele positif : gerez votre effort, faites des pauses regulieres.'
+	String get bigClimb => 'Fort denivele positif : gerez votre effort, faites des pauses regulieres.';
 }
 
 // Path: accommodation.types
@@ -4777,6 +4841,17 @@ extension on Translations {
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
 			'stage.difficultyLabel' => 'Difficulte',
+			'stage.waterSources.title' => 'Points d\'eau',
+			'stage.waterSources.count' => '{n} source(s)',
+			'stage.waterSources.none' => 'Pas de point d\'eau reference sur cette etape. Prevoyez au moins 3 L par personne.',
+			'stage.accommodation.title' => 'Hebergements',
+			'stage.accommodation.none' => 'Aucun hebergement reference sur cette etape.',
+			'stage.advice.title' => 'Conseils',
+			'stage.advice.waterScarce' => 'Peu de points d\'eau : partez avec au moins 2,5 L.',
+			'stage.advice.waterAmple' => 'Remplissez vos gourdes a chaque point d\'eau rencontre.',
+			'stage.advice.hardStage' => 'Etape technique : partez tot le matin pour eviter la chaleur et les orages d\'apres-midi.',
+			'stage.advice.earlyStart' => 'Depart recommande avant 8 h pour profiter de la fraicheur matinale.',
+			'stage.advice.bigClimb' => 'Fort denivele positif : gerez votre effort, faites des pauses regulieres.',
 			'trail.stages' => 'Étapes',
 			'trail.totalDistance' => 'Distance totale',
 			'trail.totalElevation' => 'Dénivelé total',
@@ -5161,6 +5236,8 @@ extension on Translations {
 			'settings.theme' => 'Thème',
 			'settings.dark' => 'Sombre',
 			'settings.light' => 'Clair',
+			_ => null,
+		} ?? switch (path) {
 			'settings.system' => 'Système',
 			'settings.cache' => 'Cache',
 			'settings.cacheEnabled' => 'Cache activé',
@@ -5172,8 +5249,6 @@ extension on Translations {
 			'settings.weatherAlertsDesc' => 'Prévenu si conditions dangereuses',
 			'settings.countdownReminder' => 'Rappel J-2',
 			'settings.countdownDesc' => 'Notification 2 jours avant le départ',
-			_ => null,
-		} ?? switch (path) {
 			'settings.offTrackAlerts' => 'Alerte hors-trace',
 			'settings.offTrackAlertsDesc' => 'Notification + vibration si vous quittez le sentier',
 			'settings.version' => 'Version',
@@ -5675,6 +5750,8 @@ extension on Translations {
 			'recap.lockedTitle' => 'Disponible a la fin du trek',
 			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.',
 			'recap.finisherTitle' => 'Felicitations !',
+			_ => null,
+		} ?? switch (path) {
 			'recap.finisherSubtitle' => 'Vous avez termine votre parcours',
 			'recap.partialTitle' => 'Votre parcours partiel',
 			'recap.partialSubtitle' => 'Votre aventure reste enregistree',
@@ -5686,8 +5763,6 @@ extension on Translations {
 			'recap.elevation' => '{meters} m de denivele positif',
 			'recap.duration' => '{days} jours',
 			'recap.dates' => 'Du {start} au {end}',
-			_ => null,
-		} ?? switch (path) {
 			'recap.viewDiploma' => 'Voir mon diplome',
 			'recap.noData' => 'Aucune donnee de parcours a afficher pour le moment.',
 			'programme.title' => 'Programme',
