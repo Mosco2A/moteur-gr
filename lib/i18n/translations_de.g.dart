@@ -114,6 +114,8 @@ class _Translations$a11y$de extends Translations$a11y$fr {
 	@override String get pauseTracking => 'Aufzeichnung pausieren';
 	@override String get resumeTracking => 'Aufzeichnung fortsetzen';
 	@override String get stopTracking => 'Aufzeichnung beenden';
+	@override String get sos => 'SOS-Notruf';
+	@override String get mapLayers => 'Kartenebenen';
 }
 
 // Path: nav
@@ -181,6 +183,11 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get loading => 'Strecke wird geladen...';
 	@override String get noTrack => 'Keine Strecke verfügbar';
 	@override String get viewMap => 'Karte anzeigen';
+	@override String get layers => 'Ebenen';
+	@override String get layersTitle => 'Kartenebenen';
+	@override String get layersSubtitle => 'Wahlen Sie, was auf der Karte angezeigt wird';
+	@override String stageRemaining({required Object km}) => 'Noch ${km} km';
+	@override String get offTrackChip => 'Abseits';
 }
 
 // Path: stage
@@ -2495,6 +2502,8 @@ extension on TranslationsDe {
 			'a11y.pauseTracking' => 'Aufzeichnung pausieren',
 			'a11y.resumeTracking' => 'Aufzeichnung fortsetzen',
 			'a11y.stopTracking' => 'Aufzeichnung beenden',
+			'a11y.sos' => 'SOS-Notruf',
+			'a11y.mapLayers' => 'Kartenebenen',
 			'nav.accueil' => 'Start',
 			'nav.map' => 'Karte',
 			'nav.stages' => 'Etappen',
@@ -2569,6 +2578,11 @@ extension on TranslationsDe {
 			'map.loading' => 'Strecke wird geladen...',
 			'map.noTrack' => 'Keine Strecke verfügbar',
 			'map.viewMap' => 'Karte anzeigen',
+			'map.layers' => 'Ebenen',
+			'map.layersTitle' => 'Kartenebenen',
+			'map.layersSubtitle' => 'Wahlen Sie, was auf der Karte angezeigt wird',
+			'map.stageRemaining' => ({required Object km}) => 'Noch ${km} km',
+			'map.offTrackChip' => 'Abseits',
 			'stage.distance' => 'Entfernung',
 			'stage.elevation' => 'Höhenunterschied',
 			'stage.elevationGain' => 'Höhenmeter aufwärts',
@@ -2986,6 +3000,8 @@ extension on TranslationsDe {
 			'settings.weatherAlertsDesc' => 'Benachrichtigung bei gefährlichen Bedingungen',
 			'settings.countdownReminder' => 'T-2 Erinnerung',
 			'settings.countdownDesc' => 'Benachrichtigung 2 Tage vor der Abreise',
+			_ => null,
+		} ?? switch (path) {
 			'settings.offTrackAlerts' => 'Abseits-der-Strecke-Warnung',
 			'settings.offTrackAlertsDesc' => 'Benachrichtigung + Vibration, wenn Sie den Weg verlassen',
 			'settings.version' => 'Version',
@@ -2993,8 +3009,6 @@ extension on TranslationsDe {
 			'appearance.title' => 'Erscheinungsbild',
 			'appearance.subtitle' => 'Wähle das Design der App',
 			'appearance.skinSentierVivant' => 'Lebendiger Pfad',
-			_ => null,
-		} ?? switch (path) {
 			'appearance.skinSentierVivantDesc' => 'Modern und farbenfroh, die Wegfarbe im Mittelpunkt',
 			'appearance.skinTopographique' => 'Topografisch',
 			'appearance.skinTopographiqueDesc' => 'Stil einer Wanderkarte, Daten im Vordergrund',
@@ -3500,6 +3514,8 @@ extension on TranslationsDe {
 			'recap.elevation' => '{meters} m Hohenmeter',
 			'recap.duration' => '{days} Tage',
 			'recap.dates' => 'Vom {start} bis {end}',
+			_ => null,
+		} ?? switch (path) {
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
 			'programme.title' => 'Programm',
@@ -3507,8 +3523,6 @@ extension on TranslationsDe {
 			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
 			'programme.stats.days' => 'Tage',
-			_ => null,
-		} ?? switch (path) {
 			'programme.stats.stages' => 'Etappen',
 			'programme.stats.restCount' => '{count} Ruhe',
 			'programme.legend.easy' => 'Leicht',

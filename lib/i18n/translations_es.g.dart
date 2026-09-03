@@ -114,6 +114,8 @@ class _Translations$a11y$es extends Translations$a11y$fr {
 	@override String get pauseTracking => 'Pausar seguimiento';
 	@override String get resumeTracking => 'Reanudar seguimiento';
 	@override String get stopTracking => 'Detener seguimiento';
+	@override String get sos => 'Llamada de emergencia SOS';
+	@override String get mapLayers => 'Capas del mapa';
 }
 
 // Path: nav
@@ -181,6 +183,11 @@ class _Translations$map$es extends Translations$map$fr {
 	@override String get loading => 'Cargando el recorrido...';
 	@override String get noTrack => 'Ningún recorrido disponible';
 	@override String get viewMap => 'Ver el mapa';
+	@override String get layers => 'Capas';
+	@override String get layersTitle => 'Capas del mapa';
+	@override String get layersSubtitle => 'Elige que mostrar en el mapa';
+	@override String stageRemaining({required Object km}) => '${km} km restantes';
+	@override String get offTrackChip => 'Fuera de ruta';
 }
 
 // Path: stage
@@ -2495,6 +2502,8 @@ extension on TranslationsEs {
 			'a11y.pauseTracking' => 'Pausar seguimiento',
 			'a11y.resumeTracking' => 'Reanudar seguimiento',
 			'a11y.stopTracking' => 'Detener seguimiento',
+			'a11y.sos' => 'Llamada de emergencia SOS',
+			'a11y.mapLayers' => 'Capas del mapa',
 			'nav.accueil' => 'Inicio',
 			'nav.map' => 'Mapa',
 			'nav.stages' => 'Etapas',
@@ -2569,6 +2578,11 @@ extension on TranslationsEs {
 			'map.loading' => 'Cargando el recorrido...',
 			'map.noTrack' => 'Ningún recorrido disponible',
 			'map.viewMap' => 'Ver el mapa',
+			'map.layers' => 'Capas',
+			'map.layersTitle' => 'Capas del mapa',
+			'map.layersSubtitle' => 'Elige que mostrar en el mapa',
+			'map.stageRemaining' => ({required Object km}) => '${km} km restantes',
+			'map.offTrackChip' => 'Fuera de ruta',
 			'stage.distance' => 'Distancia',
 			'stage.elevation' => 'Desnivel',
 			'stage.elevationGain' => 'Desnivel positivo',
@@ -2986,6 +3000,8 @@ extension on TranslationsEs {
 			'settings.weatherAlertsDesc' => 'Notificado si hay condiciones peligrosas',
 			'settings.countdownReminder' => 'Recordatorio D-2',
 			'settings.countdownDesc' => 'Notificación 2 días antes de la salida',
+			_ => null,
+		} ?? switch (path) {
 			'settings.offTrackAlerts' => 'Alerta fuera del sendero',
 			'settings.offTrackAlertsDesc' => 'Notificación + vibración si sales del sendero',
 			'settings.version' => 'Versión',
@@ -2993,8 +3009,6 @@ extension on TranslationsEs {
 			'appearance.title' => 'Apariencia',
 			'appearance.subtitle' => 'Elige el aspecto de la aplicación',
 			'appearance.skinSentierVivant' => 'Sendero Vivo',
-			_ => null,
-		} ?? switch (path) {
 			'appearance.skinSentierVivantDesc' => 'Moderno y colorido, el color del sendero como protagonista',
 			'appearance.skinTopographique' => 'Topográfico',
 			'appearance.skinTopographiqueDesc' => 'Estilo mapa topográfico, datos en primer plano',
@@ -3500,6 +3514,8 @@ extension on TranslationsEs {
 			'recap.elevation' => '{meters} m de desnivel positivo',
 			'recap.duration' => '{days} dias',
 			'recap.dates' => 'Del {start} al {end}',
+			_ => null,
+		} ?? switch (path) {
 			'recap.viewDiploma' => 'Ver mi diploma',
 			'recap.noData' => 'Aun no hay datos de ruta para mostrar.',
 			'programme.title' => 'Programa',
@@ -3507,8 +3523,6 @@ extension on TranslationsEs {
 			'programme.stats.distance' => 'Distancia',
 			'programme.stats.elevation' => 'Desnivel+',
 			'programme.stats.days' => 'Días',
-			_ => null,
-		} ?? switch (path) {
 			'programme.stats.stages' => 'Etapas',
 			'programme.stats.restCount' => '{count} descanso',
 			'programme.legend.easy' => 'Fácil',

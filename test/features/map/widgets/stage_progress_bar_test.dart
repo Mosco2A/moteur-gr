@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/map/widgets/stage_progress_bar.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 
 void main() {
   Widget buildBar({
@@ -29,7 +30,7 @@ void main() {
 
     testWidgets('affiche la distance restante', (tester) async {
       await tester.pumpWidget(buildBar(distanceRemainingKm: 7.2));
-      expect(find.text('7.2 km restants'), findsOneWidget);
+      expect(find.text(t.map.stageRemaining(km: '7.2')), findsOneWidget);
     });
 
     testWidgets('affiche le pourcentage', (tester) async {
@@ -39,14 +40,14 @@ void main() {
 
     testWidgets('affiche indicateur hors trace', (tester) async {
       await tester.pumpWidget(buildBar(isOffTrack: true));
-      expect(find.text('Hors tracé'), findsOneWidget);
+      expect(find.text(t.map.offTrackChip), findsOneWidget);
       expect(find.byIcon(Icons.warning_amber_rounded), findsOneWidget);
     });
 
     testWidgets('cache indicateur hors trace quand sur le trace',
         (tester) async {
       await tester.pumpWidget(buildBar(isOffTrack: false));
-      expect(find.text('Hors tracé'), findsNothing);
+      expect(find.text(t.map.offTrackChip), findsNothing);
     });
 
     testWidgets('contient un LinearProgressIndicator', (tester) async {

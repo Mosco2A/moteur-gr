@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/tracking_providers.dart';
 import 'sos_confirmation_dialog.dart';
@@ -36,29 +37,37 @@ class SosButton extends ConsumerWidget {
     // Masque si pas de trek actif
     if (!isTrekActive) return const SizedBox.shrink();
 
-    return SizedBox(
-      width: 72,
-      height: 72,
-      child: FloatingActionButton(
-        heroTag: 'sos_e515',
-        backgroundColor: AppTheme.rougeUrgence,
-        elevation: 8,
-        shape: const CircleBorder(),
-        onPressed: () => _showSosConfirmation(context, ref),
-        child: const Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.emergency, color: Colors.white, size: 24),
-            Text(
-              'SOS',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 14,
-                letterSpacing: 1.2,
+    // a11y : le bouton porte un label explicite pour les lecteurs d'ecran
+    // (le contenu visuel « SOS » + icone est exclu de la semantique pour ne
+    // pas doubler l'annonce). Parite GR20 : SOS accessible pendant le trek.
+    return Semantics(
+      button: true,
+      label: t.a11y.sos,
+      excludeSemantics: true,
+      child: SizedBox(
+        width: 72,
+        height: 72,
+        child: FloatingActionButton(
+          heroTag: 'sos_e515',
+          backgroundColor: AppTheme.rougeUrgence,
+          elevation: 8,
+          shape: const CircleBorder(),
+          onPressed: () => _showSosConfirmation(context, ref),
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.emergency, color: Colors.white, size: 24),
+              Text(
+                'SOS',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 14,
+                  letterSpacing: 1.2,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
