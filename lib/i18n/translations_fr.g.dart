@@ -335,6 +335,9 @@ class Translations$stage$fr {
 	/// fr: 'Statistiques'
 	String get statistics => 'Statistiques';
 
+	/// fr: 'De {from} a {to}'
+	String get departureArrival => 'De {from} a {to}';
+
 	/// fr: 'Chargement...'
 	String get loading => 'Chargement...';
 
@@ -5148,6 +5151,7 @@ extension on Translations {
 			'stage.arrived' => 'Vous etes arrive !',
 			'stage.altitudeProfile' => 'Profil altimetrique',
 			'stage.statistics' => 'Statistiques',
+			'stage.departureArrival' => 'De {from} a {to}',
 			'stage.loading' => 'Chargement...',
 			'stage.loadingList' => 'Chargement des etapes...',
 			'stage.dPlus' => 'D+',
@@ -5543,9 +5547,9 @@ extension on Translations {
 			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',
 			'settings.units' => 'Unités',
-			'settings.distance' => 'Distance',
 			_ => null,
 		} ?? switch (path) {
+			'settings.distance' => 'Distance',
 			'settings.temperature' => 'Température',
 			'settings.theme' => 'Thème',
 			'settings.dark' => 'Sombre',
@@ -6057,9 +6061,9 @@ extension on Translations {
 			'moderation.a11y.submitReport' => 'Envoyer le signalement',
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
-			'bootstrap.loading' => 'Préparation de votre randonnée…',
 			_ => null,
 		} ?? switch (path) {
+			'bootstrap.loading' => 'Préparation de votre randonnée…',
 			'recap.title' => 'Mon aventure',
 			'recap.lockedTitle' => 'Disponible a la fin du trek',
 			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.',

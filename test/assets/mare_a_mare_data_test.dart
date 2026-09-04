@@ -78,6 +78,44 @@ void main() {
       }
     });
 
+    test('stages.json fournit les noms depart/arrivee de CHAQUE etape (parite '
+        'GR20)', () {
+      final file = File('assets/data/mare_a_mare_centre/stages.json');
+      final List<dynamic> stages =
+          jsonDecode(file.readAsStringSync()) as List<dynamic>;
+
+      for (final stage in stages) {
+        final map = stage as Map<String, dynamic>;
+
+        // Les noms riches sont fournis (donnee du sentier de reference).
+        expect(map.containsKey('departureName'), isTrue,
+            reason: 'departureName requis sur l etape ${map["stageNumber"]}');
+        expect(map.containsKey('arrivalName'), isTrue,
+            reason: 'arrivalName requis sur l etape ${map["stageNumber"]}');
+
+        final departure = map['departureName'] as String;
+        final arrival = map['arrivalName'] as String;
+        expect(departure.trim(), isNotEmpty);
+        expect(arrival.trim(), isNotEmpty);
+
+        // Coherence : les noms correspondent aux deux extremites du nom
+        // « Depart — Arrivee » de l etape.
+        final nameFr = map['nameFr'] as String;
+        expect(nameFr, contains(departure),
+            reason: 'departureName coherent avec nameFr');
+        expect(nameFr, contains(arrival),
+            reason: 'arrivalName coherent avec nameFr');
+      }
+
+      // Chainage : l arrivee d une etape = le depart de la suivante.
+      for (int i = 0; i < stages.length - 1; i++) {
+        final current = stages[i] as Map<String, dynamic>;
+        final next = stages[i + 1] as Map<String, dynamic>;
+        expect(current['arrivalName'], next['departureName'],
+            reason: 'Chainage etape ${i + 1} -> ${i + 2}');
+      }
+    });
+
     test('pois.json est valide et contient 20 POIs', () {
       final file = File('assets/data/mare_a_mare_centre/pois.json');
       expect(file.existsSync(), isTrue,

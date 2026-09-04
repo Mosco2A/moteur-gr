@@ -109,6 +109,15 @@ class SeedDataLoader {
         estimatedDurationMinutes: json['estimatedDurationMinutes'] == null
             ? const Value.absent()
             : Value((json['estimatedDurationMinutes'] as num).round()),
+        // Champs riches OPTIONNELS (parite GR20) : noms depart/arrivee de
+        // l'etape, fournis par la donnee du sentier. Absents -> colonnes NULL
+        // (l'affichage retombe sur le nom de l'etape, cf. fiche etape).
+        departureName: json['departureName'] == null
+            ? const Value.absent()
+            : Value(json['departureName'] as String),
+        arrivalName: json['arrivalName'] == null
+            ? const Value.absent()
+            : Value(json['arrivalName'] as String),
       );
     }).toList();
     await stagesDao.insertAll(stageCompanions);

@@ -160,6 +160,28 @@ class $StagesTable extends Stages with TableInfo<$StagesTable, Stage> {
         type: DriftSqlType.int,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _departureNameMeta = const VerificationMeta(
+    'departureName',
+  );
+  @override
+  late final GeneratedColumn<String> departureName = GeneratedColumn<String>(
+    'departure_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _arrivalNameMeta = const VerificationMeta(
+    'arrivalName',
+  );
+  @override
+  late final GeneratedColumn<String> arrivalName = GeneratedColumn<String>(
+    'arrival_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -176,6 +198,8 @@ class $StagesTable extends Stages with TableInfo<$StagesTable, Stage> {
     endLng,
     difficulty,
     estimatedDurationMinutes,
+    departureName,
+    arrivalName,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -305,6 +329,24 @@ class $StagesTable extends Stages with TableInfo<$StagesTable, Stage> {
         ),
       );
     }
+    if (data.containsKey('departure_name')) {
+      context.handle(
+        _departureNameMeta,
+        departureName.isAcceptableOrUnknown(
+          data['departure_name']!,
+          _departureNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('arrival_name')) {
+      context.handle(
+        _arrivalNameMeta,
+        arrivalName.isAcceptableOrUnknown(
+          data['arrival_name']!,
+          _arrivalNameMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -370,6 +412,14 @@ class $StagesTable extends Stages with TableInfo<$StagesTable, Stage> {
         DriftSqlType.int,
         data['${effectivePrefix}estimated_duration_minutes'],
       ),
+      departureName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}departure_name'],
+      ),
+      arrivalName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}arrival_name'],
+      ),
     );
   }
 
@@ -425,6 +475,24 @@ class Stage extends DataClass implements Insertable<Stage> {
   /// uniquement pour les sentiers dont la source de donnees le fournit
   /// (`stages.json`, backend P4). Ajoute en migration v20 -> v21.
   final int? estimatedDurationMinutes;
+
+  /// Nom du point de DEPART de l'etape (parite GR20 sous-ligne « Depart ->
+  /// Arrivee »).
+  ///
+  /// Champ RICHE optionnel du socle « donnees externes ». NULLABLE : renseigne
+  /// uniquement pour les sentiers dont la source de donnees le fournit
+  /// (`stages.json`, backend P4). Absent -> l'affichage retombe proprement sur
+  /// le nom de l'etape (cf. fiche etape). Ajoute en migration v22 -> v23.
+  final String? departureName;
+
+  /// Nom du point d'ARRIVEE de l'etape (parite GR20 sous-ligne « Depart ->
+  /// Arrivee »).
+  ///
+  /// Champ RICHE optionnel du socle « donnees externes ». NULLABLE : renseigne
+  /// uniquement pour les sentiers dont la source de donnees le fournit
+  /// (`stages.json`, backend P4). Absent -> l'affichage retombe proprement sur
+  /// le nom de l'etape (cf. fiche etape). Ajoute en migration v22 -> v23.
+  final String? arrivalName;
   const Stage({
     required this.id,
     required this.trailId,
@@ -440,6 +508,8 @@ class Stage extends DataClass implements Insertable<Stage> {
     required this.endLng,
     required this.difficulty,
     this.estimatedDurationMinutes,
+    this.departureName,
+    this.arrivalName,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -462,6 +532,12 @@ class Stage extends DataClass implements Insertable<Stage> {
         estimatedDurationMinutes,
       );
     }
+    if (!nullToAbsent || departureName != null) {
+      map['departure_name'] = Variable<String>(departureName);
+    }
+    if (!nullToAbsent || arrivalName != null) {
+      map['arrival_name'] = Variable<String>(arrivalName);
+    }
     return map;
   }
 
@@ -483,6 +559,12 @@ class Stage extends DataClass implements Insertable<Stage> {
       estimatedDurationMinutes: estimatedDurationMinutes == null && nullToAbsent
           ? const Value.absent()
           : Value(estimatedDurationMinutes),
+      departureName: departureName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(departureName),
+      arrivalName: arrivalName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(arrivalName),
     );
   }
 
@@ -508,6 +590,8 @@ class Stage extends DataClass implements Insertable<Stage> {
       estimatedDurationMinutes: serializer.fromJson<int?>(
         json['estimatedDurationMinutes'],
       ),
+      departureName: serializer.fromJson<String?>(json['departureName']),
+      arrivalName: serializer.fromJson<String?>(json['arrivalName']),
     );
   }
   @override
@@ -530,6 +614,8 @@ class Stage extends DataClass implements Insertable<Stage> {
       'estimatedDurationMinutes': serializer.toJson<int?>(
         estimatedDurationMinutes,
       ),
+      'departureName': serializer.toJson<String?>(departureName),
+      'arrivalName': serializer.toJson<String?>(arrivalName),
     };
   }
 
@@ -548,6 +634,8 @@ class Stage extends DataClass implements Insertable<Stage> {
     double? endLng,
     String? difficulty,
     Value<int?> estimatedDurationMinutes = const Value.absent(),
+    Value<String?> departureName = const Value.absent(),
+    Value<String?> arrivalName = const Value.absent(),
   }) => Stage(
     id: id ?? this.id,
     trailId: trailId ?? this.trailId,
@@ -565,6 +653,10 @@ class Stage extends DataClass implements Insertable<Stage> {
     estimatedDurationMinutes: estimatedDurationMinutes.present
         ? estimatedDurationMinutes.value
         : this.estimatedDurationMinutes,
+    departureName: departureName.present
+        ? departureName.value
+        : this.departureName,
+    arrivalName: arrivalName.present ? arrivalName.value : this.arrivalName,
   );
   Stage copyWithCompanion(StagesCompanion data) {
     return Stage(
@@ -596,6 +688,12 @@ class Stage extends DataClass implements Insertable<Stage> {
       estimatedDurationMinutes: data.estimatedDurationMinutes.present
           ? data.estimatedDurationMinutes.value
           : this.estimatedDurationMinutes,
+      departureName: data.departureName.present
+          ? data.departureName.value
+          : this.departureName,
+      arrivalName: data.arrivalName.present
+          ? data.arrivalName.value
+          : this.arrivalName,
     );
   }
 
@@ -615,7 +713,9 @@ class Stage extends DataClass implements Insertable<Stage> {
           ..write('endLat: $endLat, ')
           ..write('endLng: $endLng, ')
           ..write('difficulty: $difficulty, ')
-          ..write('estimatedDurationMinutes: $estimatedDurationMinutes')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('departureName: $departureName, ')
+          ..write('arrivalName: $arrivalName')
           ..write(')'))
         .toString();
   }
@@ -636,6 +736,8 @@ class Stage extends DataClass implements Insertable<Stage> {
     endLng,
     difficulty,
     estimatedDurationMinutes,
+    departureName,
+    arrivalName,
   );
   @override
   bool operator ==(Object other) =>
@@ -654,7 +756,9 @@ class Stage extends DataClass implements Insertable<Stage> {
           other.endLat == this.endLat &&
           other.endLng == this.endLng &&
           other.difficulty == this.difficulty &&
-          other.estimatedDurationMinutes == this.estimatedDurationMinutes);
+          other.estimatedDurationMinutes == this.estimatedDurationMinutes &&
+          other.departureName == this.departureName &&
+          other.arrivalName == this.arrivalName);
 }
 
 class StagesCompanion extends UpdateCompanion<Stage> {
@@ -672,6 +776,8 @@ class StagesCompanion extends UpdateCompanion<Stage> {
   final Value<double> endLng;
   final Value<String> difficulty;
   final Value<int?> estimatedDurationMinutes;
+  final Value<String?> departureName;
+  final Value<String?> arrivalName;
   const StagesCompanion({
     this.id = const Value.absent(),
     this.trailId = const Value.absent(),
@@ -687,6 +793,8 @@ class StagesCompanion extends UpdateCompanion<Stage> {
     this.endLng = const Value.absent(),
     this.difficulty = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
+    this.departureName = const Value.absent(),
+    this.arrivalName = const Value.absent(),
   });
   StagesCompanion.insert({
     this.id = const Value.absent(),
@@ -703,6 +811,8 @@ class StagesCompanion extends UpdateCompanion<Stage> {
     required double endLng,
     this.difficulty = const Value.absent(),
     this.estimatedDurationMinutes = const Value.absent(),
+    this.departureName = const Value.absent(),
+    this.arrivalName = const Value.absent(),
   }) : trailId = Value(trailId),
        stageNumber = Value(stageNumber),
        name = Value(name),
@@ -728,6 +838,8 @@ class StagesCompanion extends UpdateCompanion<Stage> {
     Expression<double>? endLng,
     Expression<String>? difficulty,
     Expression<int>? estimatedDurationMinutes,
+    Expression<String>? departureName,
+    Expression<String>? arrivalName,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -745,6 +857,8 @@ class StagesCompanion extends UpdateCompanion<Stage> {
       if (difficulty != null) 'difficulty': difficulty,
       if (estimatedDurationMinutes != null)
         'estimated_duration_minutes': estimatedDurationMinutes,
+      if (departureName != null) 'departure_name': departureName,
+      if (arrivalName != null) 'arrival_name': arrivalName,
     });
   }
 
@@ -763,6 +877,8 @@ class StagesCompanion extends UpdateCompanion<Stage> {
     Value<double>? endLng,
     Value<String>? difficulty,
     Value<int?>? estimatedDurationMinutes,
+    Value<String?>? departureName,
+    Value<String?>? arrivalName,
   }) {
     return StagesCompanion(
       id: id ?? this.id,
@@ -780,6 +896,8 @@ class StagesCompanion extends UpdateCompanion<Stage> {
       difficulty: difficulty ?? this.difficulty,
       estimatedDurationMinutes:
           estimatedDurationMinutes ?? this.estimatedDurationMinutes,
+      departureName: departureName ?? this.departureName,
+      arrivalName: arrivalName ?? this.arrivalName,
     );
   }
 
@@ -830,6 +948,12 @@ class StagesCompanion extends UpdateCompanion<Stage> {
         estimatedDurationMinutes.value,
       );
     }
+    if (departureName.present) {
+      map['departure_name'] = Variable<String>(departureName.value);
+    }
+    if (arrivalName.present) {
+      map['arrival_name'] = Variable<String>(arrivalName.value);
+    }
     return map;
   }
 
@@ -849,7 +973,9 @@ class StagesCompanion extends UpdateCompanion<Stage> {
           ..write('endLat: $endLat, ')
           ..write('endLng: $endLng, ')
           ..write('difficulty: $difficulty, ')
-          ..write('estimatedDurationMinutes: $estimatedDurationMinutes')
+          ..write('estimatedDurationMinutes: $estimatedDurationMinutes, ')
+          ..write('departureName: $departureName, ')
+          ..write('arrivalName: $arrivalName')
           ..write(')'))
         .toString();
   }
@@ -16481,6 +16607,8 @@ typedef $$StagesTableCreateCompanionBuilder =
       required double endLng,
       Value<String> difficulty,
       Value<int?> estimatedDurationMinutes,
+      Value<String?> departureName,
+      Value<String?> arrivalName,
     });
 typedef $$StagesTableUpdateCompanionBuilder =
     StagesCompanion Function({
@@ -16498,6 +16626,8 @@ typedef $$StagesTableUpdateCompanionBuilder =
       Value<double> endLng,
       Value<String> difficulty,
       Value<int?> estimatedDurationMinutes,
+      Value<String?> departureName,
+      Value<String?> arrivalName,
     });
 
 class $$StagesTableFilterComposer
@@ -16576,6 +16706,16 @@ class $$StagesTableFilterComposer
 
   ColumnFilters<int> get estimatedDurationMinutes => $composableBuilder(
     column: $table.estimatedDurationMinutes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get departureName => $composableBuilder(
+    column: $table.departureName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get arrivalName => $composableBuilder(
+    column: $table.arrivalName,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -16658,6 +16798,16 @@ class $$StagesTableOrderingComposer
     column: $table.estimatedDurationMinutes,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get departureName => $composableBuilder(
+    column: $table.departureName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get arrivalName => $composableBuilder(
+    column: $table.arrivalName,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$StagesTableAnnotationComposer
@@ -16724,6 +16874,16 @@ class $$StagesTableAnnotationComposer
     column: $table.estimatedDurationMinutes,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get departureName => $composableBuilder(
+    column: $table.departureName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get arrivalName => $composableBuilder(
+    column: $table.arrivalName,
+    builder: (column) => column,
+  );
 }
 
 class $$StagesTableTableManager
@@ -16768,6 +16928,8 @@ class $$StagesTableTableManager
                 Value<double> endLng = const Value.absent(),
                 Value<String> difficulty = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<String?> departureName = const Value.absent(),
+                Value<String?> arrivalName = const Value.absent(),
               }) => StagesCompanion(
                 id: id,
                 trailId: trailId,
@@ -16783,6 +16945,8 @@ class $$StagesTableTableManager
                 endLng: endLng,
                 difficulty: difficulty,
                 estimatedDurationMinutes: estimatedDurationMinutes,
+                departureName: departureName,
+                arrivalName: arrivalName,
               ),
           createCompanionCallback:
               ({
@@ -16800,6 +16964,8 @@ class $$StagesTableTableManager
                 required double endLng,
                 Value<String> difficulty = const Value.absent(),
                 Value<int?> estimatedDurationMinutes = const Value.absent(),
+                Value<String?> departureName = const Value.absent(),
+                Value<String?> arrivalName = const Value.absent(),
               }) => StagesCompanion.insert(
                 id: id,
                 trailId: trailId,
@@ -16815,6 +16981,8 @@ class $$StagesTableTableManager
                 endLng: endLng,
                 difficulty: difficulty,
                 estimatedDurationMinutes: estimatedDurationMinutes,
+                departureName: departureName,
+                arrivalName: arrivalName,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

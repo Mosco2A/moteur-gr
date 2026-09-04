@@ -76,5 +76,50 @@ void main() {
       final specialDifficulty = stage.copyWith(difficulty: 'T2-alpine');
       expect(specialDifficulty.difficulty, equals('T2-alpine'));
     });
+
+    test('porte les noms depart/arrivee (parite GR20) et roundtrip JSON', () {
+      const stage = Stage(
+        id: 'stage-3',
+        nameFr: 'Ghisonaccia — Catastaghju',
+        distance: 15.0,
+        elevationGain: 850,
+        elevationLoss: 100,
+        orderIndex: 1,
+        startLat: 42.0,
+        startLng: 9.4,
+        endLat: 41.9,
+        endLng: 9.2,
+        departureName: 'Ghisonaccia',
+        arrivalName: 'Catastaghju',
+      );
+
+      expect(stage.departureName, equals('Ghisonaccia'));
+      expect(stage.arrivalName, equals('Catastaghju'));
+
+      final restored = Stage.fromJson(stage.toJson());
+      expect(restored.departureName, equals('Ghisonaccia'));
+      expect(restored.arrivalName, equals('Catastaghju'));
+      expect(restored, equals(stage));
+    });
+
+    test('noms depart/arrivee absents -> chaines vides par defaut', () {
+      const stage = Stage(
+        id: 'stage-4',
+        nameFr: 'Etape sans noms',
+        distance: 5.0,
+        elevationGain: 300,
+        elevationLoss: 100,
+        orderIndex: 2,
+        startLat: 42.0,
+        startLng: 9.0,
+        endLat: 42.1,
+        endLng: 9.1,
+      );
+
+      // Defaut Freezed : chaine vide (jamais null) -> l'UI declenche le
+      // fallback (derivation du nom d'etape) proprement.
+      expect(stage.departureName, isEmpty);
+      expect(stage.arrivalName, isEmpty);
+    });
   });
 }

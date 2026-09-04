@@ -212,6 +212,7 @@ class _Translations$stage$de extends Translations$stage$fr {
 	@override String get arrived => 'Sie sind angekommen!';
 	@override String get altitudeProfile => 'Hohenprofil';
 	@override String get statistics => 'Statistiken';
+	@override String get departureArrival => 'Von {from} nach {to}';
 	@override String get loading => 'Laden...';
 	@override String get loadingList => 'Etappen werden geladen...';
 	@override String get dPlus => 'D+';
@@ -2827,6 +2828,7 @@ extension on TranslationsDe {
 			'stage.arrived' => 'Sie sind angekommen!',
 			'stage.altitudeProfile' => 'Hohenprofil',
 			'stage.statistics' => 'Statistiken',
+			'stage.departureArrival' => 'Von {from} nach {to}',
 			'stage.loading' => 'Laden...',
 			'stage.loadingList' => 'Etappen werden geladen...',
 			'stage.dPlus' => 'D+',
@@ -3222,9 +3224,9 @@ extension on TranslationsDe {
 			'settings.title' => 'Einstellungen',
 			'settings.language' => 'Sprache',
 			'settings.units' => 'Einheiten',
-			'settings.distance' => 'Entfernung',
 			_ => null,
 		} ?? switch (path) {
+			'settings.distance' => 'Entfernung',
 			'settings.temperature' => 'Temperatur',
 			'settings.theme' => 'Thema',
 			'settings.dark' => 'Dunkel',
@@ -3736,9 +3738,9 @@ extension on TranslationsDe {
 			'moderation.a11y.submitReport' => 'Meldung senden',
 			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
 			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
-			'bootstrap.loading' => 'Ihre Wanderung wird vorbereitet…',
 			_ => null,
 		} ?? switch (path) {
+			'bootstrap.loading' => 'Ihre Wanderung wird vorbereitet…',
 			'recap.title' => 'Mein Abenteuer',
 			'recap.lockedTitle' => 'Verfugbar am Ende der Tour',
 			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',

@@ -61,6 +61,11 @@ final stageByIdProvider =
       endLng: match.endLng,
       difficulty: match.difficulty,
       descriptionFr: match.description,
+      // Noms depart/arrivee (parite GR20 : sous-ligne « Depart -> Arrivee »).
+      // Donnee RICHE du sentier quand fournie ; vide sinon -> la fiche retombe
+      // proprement sur le nom de l'etape (fallback, cf. _departureArrivalLine).
+      departureName: match.departureName ?? '',
+      arrivalName: match.arrivalName ?? '',
     );
   },
 );
@@ -151,6 +156,36 @@ class _StageDetailContent extends ConsumerWidget {
       default:
         return stage.nameFr;
     }
+  }
+
+  /// Couple (depart, arrivee) a afficher sur la sous-ligne « Depart -> Arrivee »
+  /// (parite GR20). Retourne `null` quand aucune donnee exploitable n'est
+  /// disponible -> la sous-ligne est alors masquee (fallback propre).
+  ///
+  /// Priorite : (1) les noms RICHES du sentier (`departureName`/`arrivalName`)
+  /// quand ils sont fournis ; (2) a defaut, on derive les deux extremites du
+  /// NOM de l'etape lui-meme (convention socle « Depart — Arrivee », separateur
+  /// tiret demi-cadratin ou trait d'union). Aucune localite codee en dur.
+  ({String departure, String arrival})? _departureArrival() {
+    final dep = stage.departureName.trim();
+    final arr = stage.arrivalName.trim();
+    if (dep.isNotEmpty && arr.isNotEmpty) {
+      return (departure: dep, arrival: arr);
+    }
+
+    // Fallback : decouper le nom « Depart — Arrivee » (em-dash ou trait d'union
+    // entoure d'espaces, pour ne pas casser un nom compose type « Guitera-les-
+    // Bains »).
+    final name = stage.nameFr.trim();
+    final match = RegExp(r'\s+[—–-]\s+').firstMatch(name);
+    if (match != null) {
+      final left = name.substring(0, match.start).trim();
+      final right = name.substring(match.end).trim();
+      if (left.isNotEmpty && right.isNotEmpty) {
+        return (departure: left, arrival: right);
+      }
+    }
+    return null;
   }
 
   /// Retourne la description de l'etape selon la locale courante.
@@ -290,6 +325,19 @@ class _StageDetailContent extends ConsumerWidget {
                   ),
                 ),
 
+                // --- Sous-ligne « Depart -> Arrivee » (parite GR20) ---
+                // Affichee uniquement si une donnee exploitable existe (noms du
+                // sentier ou derivation du nom d'etape) ; masquee proprement
+                // sinon. Icone + « Depart  ->  Arrivee » en gris (parite GR20
+                // `_StageHeader`).
+                if (_departureArrival() case final route?) ...[
+                  const SizedBox(height: AppTheme.spacingSm),
+                  _DepartureArrivalLine(
+                    departure: route.departure,
+                    arrival: route.arrival,
+                  ),
+                ],
+
                 // --- Description i18n ---
                 if (description.isNotEmpty) ...[
                   const SizedBox(height: AppTheme.spacingBase),
@@ -391,6 +439,51 @@ class _StageDetailContent extends ConsumerWidget {
                   waterSourcesCount: waterPois.length,
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Sous-ligne « Depart -> Arrivee » de la fiche etape (parite GR20
+/// `_StageHeader`).
+///
+/// Icone de depart (accent du sentier, skin-aware) + « Depart  ->  Arrivee » en
+/// gris secondaire. `Expanded` pour tronquer proprement les noms longs.
+/// Un `Semantics` fournit un libelle accessible (i18n).
+class _DepartureArrivalLine extends StatelessWidget {
+  const _DepartureArrivalLine({
+    required this.departure,
+    required this.arrival,
+  });
+
+  final String departure;
+  final String arrival;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Semantics(
+      label: t.stage.departureArrival
+          .replaceAll('{from}', departure)
+          .replaceAll('{to}', arrival),
+      child: Row(
+        children: [
+          Icon(
+            Icons.play_arrow,
+            size: 22,
+            color: theme.colorScheme.primary,
+          ),
+          const SizedBox(width: AppTheme.spacingXs),
+          Expanded(
+            child: Text(
+              '$departure  →  $arrival',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
             ),
           ),
         ],

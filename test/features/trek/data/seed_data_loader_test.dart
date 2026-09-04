@@ -121,5 +121,37 @@ void main() {
 
       await db.close();
     });
+
+    test('le seed charge les noms depart/arrivee par etape (parite GR20)',
+        () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = AppDatabase(NativeDatabase.memory());
+
+      final loader = SeedDataLoader(
+        db: db,
+        prefs: prefs,
+        trailConfig: _seedTrailConfig,
+      );
+      await loader.seedIfNeeded();
+
+      final stagesDao = StagesDao(db);
+      final stages = await stagesDao.getByTrailId('mare-a-mare-centre');
+
+      // Toutes les etapes portent des noms depart/arrivee (donnee du sentier).
+      expect(
+        stages.every((s) =>
+            (s.departureName?.isNotEmpty ?? false) &&
+            (s.arrivalName?.isNotEmpty ?? false)),
+        isTrue,
+        reason: 'departureName/arrivalName alimentes depuis stages.json',
+      );
+      // Valeurs exactes de l etape 1 (Ghisonaccia — Catastaghju).
+      final s1 = stages.firstWhere((s) => s.stageNumber == 1);
+      expect(s1.departureName, 'Ghisonaccia');
+      expect(s1.arrivalName, 'Catastaghju');
+
+      await db.close();
+    });
   });
 }

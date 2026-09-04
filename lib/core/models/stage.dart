@@ -63,6 +63,26 @@ abstract class StageModel with _$StageModel {
     /// (cf. `stageDurationMinutes`), aucun crash. Nullable pour ne rien casser
     /// sur les sentiers plus pauvres (ex. test-trail).
     int? estimatedDurationMinutes,
+
+    /// Nom du point de DEPART de l'etape (parite GR20 sous-ligne « Depart ->
+    /// Arrivee »).
+    ///
+    /// Champ RICHE optionnel du socle « donnees externes » : alimente par la
+    /// source de donnees du sentier (`assets/data/<trail>/stages.json`, backend
+    /// en P4), PAS calcule ici. `null` quand le sentier ne fournit pas la
+    /// donnee -> l'affichage retombe proprement sur le nom de l'etape. Nullable
+    /// pour ne rien casser sur les sentiers plus pauvres.
+    String? departureName,
+
+    /// Nom du point d'ARRIVEE de l'etape (parite GR20 sous-ligne « Depart ->
+    /// Arrivee »).
+    ///
+    /// Champ RICHE optionnel du socle « donnees externes » : alimente par la
+    /// source de donnees du sentier (`assets/data/<trail>/stages.json`, backend
+    /// en P4), PAS calcule ici. `null` quand le sentier ne fournit pas la
+    /// donnee -> l'affichage retombe proprement sur le nom de l'etape. Nullable
+    /// pour ne rien casser sur les sentiers plus pauvres.
+    String? arrivalName,
   }) = _StageModel;
 
   /// Construit depuis une ligne Drift (table Stage)
@@ -82,6 +102,8 @@ abstract class StageModel with _$StageModel {
       endLng: row.endLng,
       difficulty: row.difficulty,
       estimatedDurationMinutes: row.estimatedDurationMinutes,
+      departureName: row.departureName,
+      arrivalName: row.arrivalName,
     );
   }
 
@@ -105,6 +127,12 @@ abstract class StageModel with _$StageModel {
       estimatedDurationMinutes: estimatedDurationMinutes == null
           ? const Value.absent()
           : Value(estimatedDurationMinutes),
+      // Noms depart/arrivee (parite GR20) : memes regles nullable que la duree.
+      departureName: departureName == null
+          ? const Value.absent()
+          : Value(departureName),
+      arrivalName:
+          arrivalName == null ? const Value.absent() : Value(arrivalName),
     );
   }
 
