@@ -13,6 +13,7 @@ import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
+import '../../features/planning/presentation/calendar_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
@@ -80,6 +81,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/stage/:num        - Detail d'une etape
 ///   /trail/:id/map               - Carte du trace GPX
 ///   /trail/:id/planning          - PROGRAMME (clone GR20, via carte HUB)
+///   /trail/:id/calendar          - CALENDRIER (dates + jours marche/repos)
 ///   /trail/:id/checklist         - Checklist materiel
 ///   /trail/:id/feasibility       - Questionnaire faisabilite
 ///   /trail/:id/tips              - Fiches conseils
@@ -258,6 +260,21 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
             return TrailPlanningScreen(trailId: trailId);
+          },
+        ),
+        // PARITE GR20 (#99460) — CALENDRIER : outil de DATES (clone GR20
+        // `CalendarScreen`). Choix de la date de depart (persistee par sentier
+        // via downloadReminderProvider), date d'arrivee calculee (depart +
+        // totalDays - 1), calendrier visuel mois par mois des jours de marche /
+        // repos du programme du sentier courant. La carte HUB « Calendrier »
+        // (section Preparer) ouvre cet ecran via `context.push` (retour propre).
+        // Generique multi-sentiers, zero hardcode.
+        GoRoute(
+          path: 'calendar',
+          name: 'trail-calendar',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return CalendarScreen(trailId: trailId);
           },
         ),
         // PARITE GR20 (#99433) : ecran « Itineraire » = deroule des etapes du

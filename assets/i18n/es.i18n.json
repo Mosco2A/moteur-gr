@@ -75,6 +75,8 @@
       "itinerarySub": "Tus etapas en detalle",
       "programme": "Programa",
       "programmeSub": "Distribuye tus etapas",
+      "calendar": "Calendario",
+      "calendarSub": "Elige las fechas",
       "nuitees": "Pernoctaciones",
       "nuiteesSub": "Reserva tus noches",
       "checklist": "Equipo & Mochila",
@@ -1359,6 +1361,52 @@
       },
       "note": "El perfil altimétrico de abajo muestra el desnivel de cada día.",
       "close": "¡Entendido!"
+    }
+  },
+  "calendar": {
+    "title": "Calendario",
+    "validate": "CONFIRMAR FECHAS",
+    "departure": "SALIDA",
+    "arrival": "LLEGADA",
+    "chooseDate": "Elegir una fecha",
+    "chooseDateAction": "ELEGIR UNA FECHA",
+    "previousMonth": "Mes anterior",
+    "nextMonth": "Mes siguiente",
+    "dayLabel": "D{n}",
+    "restDayLabel": "R",
+    "adjustStages": "AJUSTAR LAS ETAPAS",
+    "stageSingular": "Etapa {n}",
+    "stagesPlural": "Etapas {list}",
+    "splitStages": "Separar las etapas",
+    "mergeWithNext": "Agrupar con el día siguiente",
+    "weekdays": {
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mié",
+      "thu": "Jue",
+      "fri": "Vie",
+      "sat": "Sáb",
+      "sun": "Dom"
+    },
+    "legend": {
+      "start": "Salida",
+      "walk": "Marcha",
+      "rest": "Descanso",
+      "arrival": "Llegada"
+    },
+    "summary": {
+      "totalDays": "Días total",
+      "walkDays": "Días marcha",
+      "restDays": "Días descanso"
+    },
+    "noDate": {
+      "title": "Elige una fecha de salida",
+      "message": "El calendario de tu trek aparecerá automáticamente con los días de marcha y de descanso."
+    },
+    "empty": {
+      "title": "Configura primero tu itinerario",
+      "message": "Elige tu ruta y la duración para poder configurar tus fechas.",
+      "action": "CONFIGURAR EL ITINERARIO"
     }
   },
   "nuitees": {
