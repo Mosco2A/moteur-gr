@@ -15913,6 +15913,420 @@ class TrekSessionsCompanion extends UpdateCompanion<TrekSessionRow> {
   }
 }
 
+class $NuiteeSelectionsTable extends NuiteeSelections
+    with TableInfo<$NuiteeSelectionsTable, NuiteeSelection> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NuiteeSelectionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dayNumberMeta = const VerificationMeta(
+    'dayNumber',
+  );
+  @override
+  late final GeneratedColumn<int> dayNumber = GeneratedColumn<int>(
+    'day_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isBookedMeta = const VerificationMeta(
+    'isBooked',
+  );
+  @override
+  late final GeneratedColumn<bool> isBooked = GeneratedColumn<bool>(
+    'is_booked',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_booked" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _nuiteeTypeMeta = const VerificationMeta(
+    'nuiteeType',
+  );
+  @override
+  late final GeneratedColumn<String> nuiteeType = GeneratedColumn<String>(
+    'nuitee_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('refuge'),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    trailId,
+    dayNumber,
+    isBooked,
+    nuiteeType,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'nuitee_selections';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NuiteeSelection> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('day_number')) {
+      context.handle(
+        _dayNumberMeta,
+        dayNumber.isAcceptableOrUnknown(data['day_number']!, _dayNumberMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dayNumberMeta);
+    }
+    if (data.containsKey('is_booked')) {
+      context.handle(
+        _isBookedMeta,
+        isBooked.isAcceptableOrUnknown(data['is_booked']!, _isBookedMeta),
+      );
+    }
+    if (data.containsKey('nuitee_type')) {
+      context.handle(
+        _nuiteeTypeMeta,
+        nuiteeType.isAcceptableOrUnknown(data['nuitee_type']!, _nuiteeTypeMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NuiteeSelection map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NuiteeSelection(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      dayNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}day_number'],
+      )!,
+      isBooked: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_booked'],
+      )!,
+      nuiteeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}nuitee_type'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      ),
+    );
+  }
+
+  @override
+  $NuiteeSelectionsTable createAlias(String alias) {
+    return $NuiteeSelectionsTable(attachedDatabase, alias);
+  }
+}
+
+class NuiteeSelection extends DataClass implements Insertable<NuiteeSelection> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Identifiant du sentier (ex: 'gr10').
+  final String trailId;
+
+  /// Numero du jour du PROGRAMME (1-indexed ; 0 = nuit avant depart N0).
+  final int dayNumber;
+
+  /// Nuit reservee ou non (etat « a reserver » / « reserve », parite GR20).
+  final bool isBooked;
+
+  /// Type de nuitee choisi (nom de l'enum NuiteeType : refuge / gite /
+  /// bivouac / autreHebergement). String pour tolerer l'evolution de l'enum.
+  final String nuiteeType;
+
+  /// Date de derniere modification.
+  final DateTime? updatedAt;
+  const NuiteeSelection({
+    required this.id,
+    required this.trailId,
+    required this.dayNumber,
+    required this.isBooked,
+    required this.nuiteeType,
+    this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['trail_id'] = Variable<String>(trailId);
+    map['day_number'] = Variable<int>(dayNumber);
+    map['is_booked'] = Variable<bool>(isBooked);
+    map['nuitee_type'] = Variable<String>(nuiteeType);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    return map;
+  }
+
+  NuiteeSelectionsCompanion toCompanion(bool nullToAbsent) {
+    return NuiteeSelectionsCompanion(
+      id: Value(id),
+      trailId: Value(trailId),
+      dayNumber: Value(dayNumber),
+      isBooked: Value(isBooked),
+      nuiteeType: Value(nuiteeType),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory NuiteeSelection.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NuiteeSelection(
+      id: serializer.fromJson<int>(json['id']),
+      trailId: serializer.fromJson<String>(json['trailId']),
+      dayNumber: serializer.fromJson<int>(json['dayNumber']),
+      isBooked: serializer.fromJson<bool>(json['isBooked']),
+      nuiteeType: serializer.fromJson<String>(json['nuiteeType']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'trailId': serializer.toJson<String>(trailId),
+      'dayNumber': serializer.toJson<int>(dayNumber),
+      'isBooked': serializer.toJson<bool>(isBooked),
+      'nuiteeType': serializer.toJson<String>(nuiteeType),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+    };
+  }
+
+  NuiteeSelection copyWith({
+    int? id,
+    String? trailId,
+    int? dayNumber,
+    bool? isBooked,
+    String? nuiteeType,
+    Value<DateTime?> updatedAt = const Value.absent(),
+  }) => NuiteeSelection(
+    id: id ?? this.id,
+    trailId: trailId ?? this.trailId,
+    dayNumber: dayNumber ?? this.dayNumber,
+    isBooked: isBooked ?? this.isBooked,
+    nuiteeType: nuiteeType ?? this.nuiteeType,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+  );
+  NuiteeSelection copyWithCompanion(NuiteeSelectionsCompanion data) {
+    return NuiteeSelection(
+      id: data.id.present ? data.id.value : this.id,
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      dayNumber: data.dayNumber.present ? data.dayNumber.value : this.dayNumber,
+      isBooked: data.isBooked.present ? data.isBooked.value : this.isBooked,
+      nuiteeType: data.nuiteeType.present
+          ? data.nuiteeType.value
+          : this.nuiteeType,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NuiteeSelection(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('dayNumber: $dayNumber, ')
+          ..write('isBooked: $isBooked, ')
+          ..write('nuiteeType: $nuiteeType, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, trailId, dayNumber, isBooked, nuiteeType, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NuiteeSelection &&
+          other.id == this.id &&
+          other.trailId == this.trailId &&
+          other.dayNumber == this.dayNumber &&
+          other.isBooked == this.isBooked &&
+          other.nuiteeType == this.nuiteeType &&
+          other.updatedAt == this.updatedAt);
+}
+
+class NuiteeSelectionsCompanion extends UpdateCompanion<NuiteeSelection> {
+  final Value<int> id;
+  final Value<String> trailId;
+  final Value<int> dayNumber;
+  final Value<bool> isBooked;
+  final Value<String> nuiteeType;
+  final Value<DateTime?> updatedAt;
+  const NuiteeSelectionsCompanion({
+    this.id = const Value.absent(),
+    this.trailId = const Value.absent(),
+    this.dayNumber = const Value.absent(),
+    this.isBooked = const Value.absent(),
+    this.nuiteeType = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  NuiteeSelectionsCompanion.insert({
+    this.id = const Value.absent(),
+    required String trailId,
+    required int dayNumber,
+    this.isBooked = const Value.absent(),
+    this.nuiteeType = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : trailId = Value(trailId),
+       dayNumber = Value(dayNumber);
+  static Insertable<NuiteeSelection> custom({
+    Expression<int>? id,
+    Expression<String>? trailId,
+    Expression<int>? dayNumber,
+    Expression<bool>? isBooked,
+    Expression<String>? nuiteeType,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (trailId != null) 'trail_id': trailId,
+      if (dayNumber != null) 'day_number': dayNumber,
+      if (isBooked != null) 'is_booked': isBooked,
+      if (nuiteeType != null) 'nuitee_type': nuiteeType,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  NuiteeSelectionsCompanion copyWith({
+    Value<int>? id,
+    Value<String>? trailId,
+    Value<int>? dayNumber,
+    Value<bool>? isBooked,
+    Value<String>? nuiteeType,
+    Value<DateTime?>? updatedAt,
+  }) {
+    return NuiteeSelectionsCompanion(
+      id: id ?? this.id,
+      trailId: trailId ?? this.trailId,
+      dayNumber: dayNumber ?? this.dayNumber,
+      isBooked: isBooked ?? this.isBooked,
+      nuiteeType: nuiteeType ?? this.nuiteeType,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (dayNumber.present) {
+      map['day_number'] = Variable<int>(dayNumber.value);
+    }
+    if (isBooked.present) {
+      map['is_booked'] = Variable<bool>(isBooked.value);
+    }
+    if (nuiteeType.present) {
+      map['nuitee_type'] = Variable<String>(nuiteeType.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NuiteeSelectionsCompanion(')
+          ..write('id: $id, ')
+          ..write('trailId: $trailId, ')
+          ..write('dayNumber: $dayNumber, ')
+          ..write('isBooked: $isBooked, ')
+          ..write('nuiteeType: $nuiteeType, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -15955,6 +16369,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $TrekSessionsTable trekSessions = $TrekSessionsTable(this);
+  late final $NuiteeSelectionsTable nuiteeSelections = $NuiteeSelectionsTable(
+    this,
+  );
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -16007,6 +16424,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final TrekSessionsDao trekSessionsDao = TrekSessionsDao(
     this as AppDatabase,
   );
+  late final NuiteeSelectionsDao nuiteeSelectionsDao = NuiteeSelectionsDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -16041,6 +16461,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     waypoint,
     waypointComment,
     trekSessions,
+    nuiteeSelections,
   ];
 }
 
@@ -23863,6 +24284,227 @@ typedef $$TrekSessionsTableProcessedTableManager =
       TrekSessionRow,
       PrefetchHooks Function()
     >;
+typedef $$NuiteeSelectionsTableCreateCompanionBuilder =
+    NuiteeSelectionsCompanion Function({
+      Value<int> id,
+      required String trailId,
+      required int dayNumber,
+      Value<bool> isBooked,
+      Value<String> nuiteeType,
+      Value<DateTime?> updatedAt,
+    });
+typedef $$NuiteeSelectionsTableUpdateCompanionBuilder =
+    NuiteeSelectionsCompanion Function({
+      Value<int> id,
+      Value<String> trailId,
+      Value<int> dayNumber,
+      Value<bool> isBooked,
+      Value<String> nuiteeType,
+      Value<DateTime?> updatedAt,
+    });
+
+class $$NuiteeSelectionsTableFilterComposer
+    extends Composer<_$AppDatabase, $NuiteeSelectionsTable> {
+  $$NuiteeSelectionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dayNumber => $composableBuilder(
+    column: $table.dayNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isBooked => $composableBuilder(
+    column: $table.isBooked,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get nuiteeType => $composableBuilder(
+    column: $table.nuiteeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NuiteeSelectionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $NuiteeSelectionsTable> {
+  $$NuiteeSelectionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dayNumber => $composableBuilder(
+    column: $table.dayNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isBooked => $composableBuilder(
+    column: $table.isBooked,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get nuiteeType => $composableBuilder(
+    column: $table.nuiteeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NuiteeSelectionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NuiteeSelectionsTable> {
+  $$NuiteeSelectionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<int> get dayNumber =>
+      $composableBuilder(column: $table.dayNumber, builder: (column) => column);
+
+  GeneratedColumn<bool> get isBooked =>
+      $composableBuilder(column: $table.isBooked, builder: (column) => column);
+
+  GeneratedColumn<String> get nuiteeType => $composableBuilder(
+    column: $table.nuiteeType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$NuiteeSelectionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $NuiteeSelectionsTable,
+          NuiteeSelection,
+          $$NuiteeSelectionsTableFilterComposer,
+          $$NuiteeSelectionsTableOrderingComposer,
+          $$NuiteeSelectionsTableAnnotationComposer,
+          $$NuiteeSelectionsTableCreateCompanionBuilder,
+          $$NuiteeSelectionsTableUpdateCompanionBuilder,
+          (
+            NuiteeSelection,
+            BaseReferences<
+              _$AppDatabase,
+              $NuiteeSelectionsTable,
+              NuiteeSelection
+            >,
+          ),
+          NuiteeSelection,
+          PrefetchHooks Function()
+        > {
+  $$NuiteeSelectionsTableTableManager(
+    _$AppDatabase db,
+    $NuiteeSelectionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NuiteeSelectionsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NuiteeSelectionsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NuiteeSelectionsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> trailId = const Value.absent(),
+                Value<int> dayNumber = const Value.absent(),
+                Value<bool> isBooked = const Value.absent(),
+                Value<String> nuiteeType = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+              }) => NuiteeSelectionsCompanion(
+                id: id,
+                trailId: trailId,
+                dayNumber: dayNumber,
+                isBooked: isBooked,
+                nuiteeType: nuiteeType,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String trailId,
+                required int dayNumber,
+                Value<bool> isBooked = const Value.absent(),
+                Value<String> nuiteeType = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+              }) => NuiteeSelectionsCompanion.insert(
+                id: id,
+                trailId: trailId,
+                dayNumber: dayNumber,
+                isBooked: isBooked,
+                nuiteeType: nuiteeType,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NuiteeSelectionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $NuiteeSelectionsTable,
+      NuiteeSelection,
+      $$NuiteeSelectionsTableFilterComposer,
+      $$NuiteeSelectionsTableOrderingComposer,
+      $$NuiteeSelectionsTableAnnotationComposer,
+      $$NuiteeSelectionsTableCreateCompanionBuilder,
+      $$NuiteeSelectionsTableUpdateCompanionBuilder,
+      (
+        NuiteeSelection,
+        BaseReferences<_$AppDatabase, $NuiteeSelectionsTable, NuiteeSelection>,
+      ),
+      NuiteeSelection,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -23924,4 +24566,6 @@ class $AppDatabaseManager {
       $$WaypointCommentTableTableManager(_db, _db.waypointComment);
   $$TrekSessionsTableTableManager get trekSessions =>
       $$TrekSessionsTableTableManager(_db, _db.trekSessions);
+  $$NuiteeSelectionsTableTableManager get nuiteeSelections =>
+      $$NuiteeSelectionsTableTableManager(_db, _db.nuiteeSelections);
 }

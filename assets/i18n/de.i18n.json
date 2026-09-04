@@ -75,6 +75,8 @@
       "itinerarySub": "Ihre Etappen im Detail",
       "programme": "Programm",
       "programmeSub": "Etappen aufteilen",
+      "nuitees": "Übernachtungen",
+      "nuiteesSub": "Buchen Sie Ihre Nächte",
       "checklist": "Ausrustung & Rucksack",
       "checklistSub": "Bereite deinen Rucksack vor",
       "training": "Körperliche Vorbereitung",
@@ -1357,6 +1359,42 @@
       },
       "note": "Das Höhenprofil unten zeigt den Aufstieg jedes Tages.",
       "close": "Verstanden!"
+    }
+  },
+  "nuitees": {
+    "title": "Übernachtungen",
+    "guideTooltip": "Übernachtungs-Ratgeber",
+    "infoBar": "Buchen Sie jede Nacht in der Hochsaison im Voraus",
+    "types": {
+      "refuge": "Berghütte",
+      "gite": "Herberge",
+      "bivouac": "Biwak",
+      "autreHebergement": "Andere Unterkunft"
+    },
+    "guide": {
+      "title": "Übernachtungs-Ratgeber",
+      "refuge": "Bergunterkunft, Reservierung in der Hochsaison empfohlen.",
+      "gite": "Private Etappenherberge, oft mit Mahlzeiten und Duschen.",
+      "bivouac": "Zeltcamping, je nach örtlicher Regelung.",
+      "autre": "Hotel, Gästehaus oder Campingplatz abseits des Weges.",
+      "close": "Verstanden"
+    },
+    "card": {
+      "dayLabel": "T{n}",
+      "noPlace": "Unterkunft",
+      "available": "{count} Unterkünfte verfügbar",
+      "call": "{phone} anrufen",
+      "lockedHint": "Nacht abwählen, um den Typ zu ändern"
+    },
+    "summary": {
+      "remaining": "Noch {count} Nacht/Nächte",
+      "done": "{count} erledigt",
+      "allBooked": "ALLE NÄCHTE GEBUCHT"
+    },
+    "empty": {
+      "title": "Richten Sie zuerst Ihre Route ein",
+      "message": "Wählen Sie Strecke und Dauer, um Ihre Nächte zu planen.",
+      "action": "ROUTE EINRICHTEN"
     }
   }
 }

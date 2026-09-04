@@ -75,6 +75,8 @@
       "itinerarySub": "Tus etapas en detalle",
       "programme": "Programa",
       "programmeSub": "Distribuye tus etapas",
+      "nuitees": "Pernoctaciones",
+      "nuiteesSub": "Reserva tus noches",
       "checklist": "Equipo & Mochila",
       "checklistSub": "Prepara tu mochila",
       "training": "Preparación física",
@@ -1357,6 +1359,42 @@
       },
       "note": "El perfil altimétrico de abajo muestra el desnivel de cada día.",
       "close": "¡Entendido!"
+    }
+  },
+  "nuitees": {
+    "title": "Pernoctaciones",
+    "guideTooltip": "Guía de pernoctaciones",
+    "infoBar": "Reserva cada noche con antelación en temporada alta",
+    "types": {
+      "refuge": "Refugio",
+      "gite": "Albergue",
+      "bivouac": "Vivac",
+      "autreHebergement": "Otro alojamiento"
+    },
+    "guide": {
+      "title": "Guía de pernoctaciones",
+      "refuge": "Alojamiento de montaña, se recomienda reservar en temporada alta.",
+      "gite": "Albergue de etapa privado, a menudo con comidas y duchas.",
+      "bivouac": "Acampada en tienda, según la normativa local.",
+      "autre": "Hotel, casa de huéspedes o camping fuera del sendero.",
+      "close": "Entendido"
+    },
+    "card": {
+      "dayLabel": "D{n}",
+      "noPlace": "Alojamiento",
+      "available": "{count} alojamientos disponibles",
+      "call": "Llamar {phone}",
+      "lockedHint": "Desmarca la noche para cambiar el tipo"
+    },
+    "summary": {
+      "remaining": "{count} noche(s) restante(s)",
+      "done": "{count} OK",
+      "allBooked": "TODAS LAS NOCHES RESERVADAS"
+    },
+    "empty": {
+      "title": "Configura primero tu itinerario",
+      "message": "Elige tu ruta y duración para preparar tus noches.",
+      "action": "CONFIGURAR ITINERARIO"
     }
   }
 }

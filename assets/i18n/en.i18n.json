@@ -75,6 +75,8 @@
       "itinerarySub": "Your stages, day by day",
       "programme": "Programme",
       "programmeSub": "Spread out your stages",
+      "nuitees": "Overnight stays",
+      "nuiteesSub": "Book your nights",
       "checklist": "Gear & Pack",
       "checklistSub": "Prepare your backpack",
       "training": "Physical prep",
@@ -1357,6 +1359,42 @@
       },
       "note": "The elevation profile at the bottom shows each day's ascent.",
       "close": "Got it!"
+    }
+  },
+  "nuitees": {
+    "title": "Overnight stays",
+    "guideTooltip": "Overnight stays guide",
+    "infoBar": "Book each night in advance during peak season",
+    "types": {
+      "refuge": "Mountain hut",
+      "gite": "Lodge",
+      "bivouac": "Bivouac",
+      "autreHebergement": "Other lodging"
+    },
+    "guide": {
+      "title": "Overnight stays guide",
+      "refuge": "Mountain accommodation, booking recommended in peak season.",
+      "gite": "Private stopover lodge, often with meals and showers.",
+      "bivouac": "Tent camping, subject to local regulations.",
+      "autre": "Hotel, guesthouse or campsite off the trail.",
+      "close": "Got it"
+    },
+    "card": {
+      "dayLabel": "D{n}",
+      "noPlace": "Lodging",
+      "available": "{count} lodgings available",
+      "call": "Call {phone}",
+      "lockedHint": "Uncheck the night to change the type"
+    },
+    "summary": {
+      "remaining": "{count} night(s) left",
+      "done": "{count} done",
+      "allBooked": "ALL NIGHTS BOOKED"
+    },
+    "empty": {
+      "title": "Set up your itinerary first",
+      "message": "Choose your route and duration to plan your nights.",
+      "action": "SET UP ITINERARY"
     }
   }
 }

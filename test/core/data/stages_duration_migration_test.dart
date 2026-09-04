@@ -16,10 +16,15 @@ import 'package:moteur_gr/core/models/stage.dart';
 ///   4. la colonne accepte NULL (sentier pauvre) ET une valeur (sentier riche).
 void main() {
   group('Drift migration v20 -> v21 (stages.estimatedDurationMinutes)', () {
-    test('la version du schema est 21', () {
+    test('la version du schema est au moins 21 (introduction de la colonne)',
+        () {
       final db = AppDatabase(NativeDatabase.memory());
       addTearDown(db.close);
-      expect(db.schemaVersion, 21);
+      // La colonne `estimated_duration_minutes` est introduite en v21 ; le
+      // schema continue d'evoluer (ex. v22 : table nuitee_selections). On
+      // verifie donc le seuil d'introduction, sans fige a une version exacte
+      // qui casserait a chaque migration ulterieure.
+      expect(db.schemaVersion, greaterThanOrEqualTo(21));
     });
 
     test('la colonne estimated_duration_minutes existe sur stages', () async {

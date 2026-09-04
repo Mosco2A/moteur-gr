@@ -92,6 +92,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$bootstrap$fr bootstrap = Translations$bootstrap$fr.internal(_root);
 	late final Translations$recap$fr recap = Translations$recap$fr.internal(_root);
 	late final Translations$programme$fr programme = Translations$programme$fr.internal(_root);
+	late final Translations$nuitees$fr nuitees = Translations$nuitees$fr.internal(_root);
 }
 
 // Path: a11y
@@ -2255,6 +2256,30 @@ class Translations$programme$fr {
 	late final Translations$programme$info$fr info = Translations$programme$info$fr.internal(_root);
 }
 
+// Path: nuitees
+class Translations$nuitees$fr {
+	Translations$nuitees$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Réservations nuitées'
+	String get title => 'Réservations nuitées';
+
+	/// fr: 'Guide des nuitées'
+	String get guideTooltip => 'Guide des nuitées';
+
+	/// fr: 'Réservez chaque nuit à l'avance en haute saison'
+	String get infoBar => 'Réservez chaque nuit à l\'avance en haute saison';
+
+	late final Translations$nuitees$types$fr types = Translations$nuitees$types$fr.internal(_root);
+	late final Translations$nuitees$guide$fr guide = Translations$nuitees$guide$fr.internal(_root);
+	late final Translations$nuitees$card$fr card = Translations$nuitees$card$fr.internal(_root);
+	late final Translations$nuitees$summary$fr summary = Translations$nuitees$summary$fr.internal(_root);
+	late final Translations$nuitees$empty$fr empty = Translations$nuitees$empty$fr.internal(_root);
+}
+
 // Path: hub.trekCard
 class Translations$hub$trekCard$fr {
 	Translations$hub$trekCard$fr.internal(this._root);
@@ -2361,6 +2386,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Répartissez vos étapes'
 	String get programmeSub => 'Répartissez vos étapes';
+
+	/// fr: 'Nuitées'
+	String get nuitees => 'Nuitées';
+
+	/// fr: 'Réserver vos nuits'
+	String get nuiteesSub => 'Réserver vos nuits';
 
 	/// fr: 'Materiel & Sac'
 	String get checklist => 'Materiel & Sac';
@@ -4261,6 +4292,114 @@ class Translations$programme$info$fr {
 	String get close => 'Compris !';
 }
 
+// Path: nuitees.types
+class Translations$nuitees$types$fr {
+	Translations$nuitees$types$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Refuge'
+	String get refuge => 'Refuge';
+
+	/// fr: 'Gîte'
+	String get gite => 'Gîte';
+
+	/// fr: 'Bivouac'
+	String get bivouac => 'Bivouac';
+
+	/// fr: 'Autre hébergement'
+	String get autreHebergement => 'Autre hébergement';
+}
+
+// Path: nuitees.guide
+class Translations$nuitees$guide$fr {
+	Translations$nuitees$guide$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Guide des nuitées'
+	String get title => 'Guide des nuitées';
+
+	/// fr: 'Hébergement de montagne, réservation recommandée en haute saison.'
+	String get refuge => 'Hébergement de montagne, réservation recommandée en haute saison.';
+
+	/// fr: 'Hébergement d'étape privé, souvent avec repas et douches.'
+	String get gite => 'Hébergement d\'étape privé, souvent avec repas et douches.';
+
+	/// fr: 'Camping sous tente, selon la réglementation locale.'
+	String get bivouac => 'Camping sous tente, selon la réglementation locale.';
+
+	/// fr: 'Hôtel, chambre d'hôtes ou camping en dehors du sentier.'
+	String get autre => 'Hôtel, chambre d\'hôtes ou camping en dehors du sentier.';
+
+	/// fr: 'Compris'
+	String get close => 'Compris';
+}
+
+// Path: nuitees.card
+class Translations$nuitees$card$fr {
+	Translations$nuitees$card$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'J{n}'
+	String get dayLabel => 'J{n}';
+
+	/// fr: 'Hébergement'
+	String get noPlace => 'Hébergement';
+
+	/// fr: '{count} hébergements disponibles'
+	String get available => '{count} hébergements disponibles';
+
+	/// fr: 'Appeler {phone}'
+	String get call => 'Appeler {phone}';
+
+	/// fr: 'Décochez la nuit pour changer le type'
+	String get lockedHint => 'Décochez la nuit pour changer le type';
+}
+
+// Path: nuitees.summary
+class Translations$nuitees$summary$fr {
+	Translations$nuitees$summary$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: '{count} nuit(s) restante(s)'
+	String get remaining => '{count} nuit(s) restante(s)';
+
+	/// fr: '{count} OK'
+	String get done => '{count} OK';
+
+	/// fr: 'TOUTES LES NUITS RÉSERVÉES'
+	String get allBooked => 'TOUTES LES NUITS RÉSERVÉES';
+}
+
+// Path: nuitees.empty
+class Translations$nuitees$empty$fr {
+	Translations$nuitees$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Configurez d'abord votre itinéraire'
+	String get title => 'Configurez d\'abord votre itinéraire';
+
+	/// fr: 'Choisissez votre parcours et la durée pour préparer vos nuits.'
+	String get message => 'Choisissez votre parcours et la durée pour préparer vos nuits.';
+
+	/// fr: 'CONFIGURER L'ITINÉRAIRE'
+	String get action => 'CONFIGURER L\'ITINÉRAIRE';
+}
+
 // Path: weather.alert.storm
 class Translations$weather$alert$storm$fr {
 	Translations$weather$alert$storm$fr.internal(this._root);
@@ -4786,6 +4925,8 @@ extension on Translations {
 			'hub.cards.itinerarySub' => 'Le deroule de vos etapes',
 			'hub.cards.programme' => 'Programme',
 			'hub.cards.programmeSub' => 'Répartissez vos étapes',
+			'hub.cards.nuitees' => 'Nuitées',
+			'hub.cards.nuiteesSub' => 'Réserver vos nuits',
 			'hub.cards.checklist' => 'Materiel & Sac',
 			'hub.cards.checklistSub' => 'Preparez votre sac a dos',
 			'hub.cards.training' => 'Préparation physique',
@@ -5234,10 +5375,10 @@ extension on Translations {
 			'settings.distance' => 'Distance',
 			'settings.temperature' => 'Température',
 			'settings.theme' => 'Thème',
-			'settings.dark' => 'Sombre',
-			'settings.light' => 'Clair',
 			_ => null,
 		} ?? switch (path) {
+			'settings.dark' => 'Sombre',
+			'settings.light' => 'Clair',
 			'settings.system' => 'Système',
 			'settings.cache' => 'Cache',
 			'settings.cacheEnabled' => 'Cache activé',
@@ -5748,10 +5889,10 @@ extension on Translations {
 			'bootstrap.loading' => 'Préparation de votre randonnée…',
 			'recap.title' => 'Mon aventure',
 			'recap.lockedTitle' => 'Disponible a la fin du trek',
-			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.',
-			'recap.finisherTitle' => 'Felicitations !',
 			_ => null,
 		} ?? switch (path) {
+			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.',
+			'recap.finisherTitle' => 'Felicitations !',
 			'recap.finisherSubtitle' => 'Vous avez termine votre parcours',
 			'recap.partialTitle' => 'Votre parcours partiel',
 			'recap.partialSubtitle' => 'Votre aventure reste enregistree',
@@ -5808,6 +5949,30 @@ extension on Translations {
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
+			'nuitees.title' => 'Réservations nuitées',
+			'nuitees.guideTooltip' => 'Guide des nuitées',
+			'nuitees.infoBar' => 'Réservez chaque nuit à l\'avance en haute saison',
+			'nuitees.types.refuge' => 'Refuge',
+			'nuitees.types.gite' => 'Gîte',
+			'nuitees.types.bivouac' => 'Bivouac',
+			'nuitees.types.autreHebergement' => 'Autre hébergement',
+			'nuitees.guide.title' => 'Guide des nuitées',
+			'nuitees.guide.refuge' => 'Hébergement de montagne, réservation recommandée en haute saison.',
+			'nuitees.guide.gite' => 'Hébergement d\'étape privé, souvent avec repas et douches.',
+			'nuitees.guide.bivouac' => 'Camping sous tente, selon la réglementation locale.',
+			'nuitees.guide.autre' => 'Hôtel, chambre d\'hôtes ou camping en dehors du sentier.',
+			'nuitees.guide.close' => 'Compris',
+			'nuitees.card.dayLabel' => 'J{n}',
+			'nuitees.card.noPlace' => 'Hébergement',
+			'nuitees.card.available' => '{count} hébergements disponibles',
+			'nuitees.card.call' => 'Appeler {phone}',
+			'nuitees.card.lockedHint' => 'Décochez la nuit pour changer le type',
+			'nuitees.summary.remaining' => '{count} nuit(s) restante(s)',
+			'nuitees.summary.done' => '{count} OK',
+			'nuitees.summary.allBooked' => 'TOUTES LES NUITS RÉSERVÉES',
+			'nuitees.empty.title' => 'Configurez d\'abord votre itinéraire',
+			'nuitees.empty.message' => 'Choisissez votre parcours et la durée pour préparer vos nuits.',
+			'nuitees.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			_ => null,
 		};
 	}
