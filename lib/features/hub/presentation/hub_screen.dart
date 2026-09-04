@@ -143,6 +143,16 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.programmeSub,
                   onTap: () => context.push('/trail/$trailId/planning'),
                 ),
+                // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos
+                // nuits » (type de nuitee + reserve par nuit du programme).
+                // Route hors-shell atteinte via `context.push` -> retour propre
+                // (pile preservee, jamais context.go qui viderait la pile).
+                QuickAccessCard(
+                  icon: Icons.cabin,
+                  title: t.hub.cards.nuitees,
+                  subtitle: t.hub.cards.nuiteesSub,
+                  onTap: () => context.push('/trail/$trailId/nuitees'),
+                ),
                 QuickAccessCard(
                   icon: Icons.checklist_rtl,
                   title: t.hub.cards.checklist,

@@ -91,6 +91,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$bootstrap$es bootstrap = _Translations$bootstrap$es._(_root);
 	@override late final _Translations$recap$es recap = _Translations$recap$es._(_root);
 	@override late final _Translations$programme$es programme = _Translations$programme$es._(_root);
+	@override late final _Translations$nuitees$es nuitees = _Translations$nuitees$es._(_root);
 }
 
 // Path: a11y
@@ -1155,6 +1156,23 @@ class _Translations$programme$es extends Translations$programme$fr {
 	@override late final _Translations$programme$info$es info = _Translations$programme$info$es._(_root);
 }
 
+// Path: nuitees
+class _Translations$nuitees$es extends Translations$nuitees$fr {
+	_Translations$nuitees$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Pernoctaciones';
+	@override String get guideTooltip => 'Guía de pernoctaciones';
+	@override String get infoBar => 'Reserva cada noche con antelación en temporada alta';
+	@override late final _Translations$nuitees$types$es types = _Translations$nuitees$types$es._(_root);
+	@override late final _Translations$nuitees$guide$es guide = _Translations$nuitees$guide$es._(_root);
+	@override late final _Translations$nuitees$card$es card = _Translations$nuitees$card$es._(_root);
+	@override late final _Translations$nuitees$summary$es summary = _Translations$nuitees$summary$es._(_root);
+	@override late final _Translations$nuitees$empty$es empty = _Translations$nuitees$empty$es._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$es extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1213,6 +1231,8 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get itinerarySub => 'Tus etapas en detalle';
 	@override String get programme => 'Programa';
 	@override String get programmeSub => 'Distribuye tus etapas';
+	@override String get nuitees => 'Pernoctaciones';
+	@override String get nuiteesSub => 'Reserva tus noches';
 	@override String get checklist => 'Equipo & Mochila';
 	@override String get checklistSub => 'Prepara tu mochila';
 	@override String get training => 'Preparación física';
@@ -2194,6 +2214,72 @@ class _Translations$programme$info$es extends Translations$programme$info$fr {
 	@override String get close => '¡Entendido!';
 }
 
+// Path: nuitees.types
+class _Translations$nuitees$types$es extends Translations$nuitees$types$fr {
+	_Translations$nuitees$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get refuge => 'Refugio';
+	@override String get gite => 'Albergue';
+	@override String get bivouac => 'Vivac';
+	@override String get autreHebergement => 'Otro alojamiento';
+}
+
+// Path: nuitees.guide
+class _Translations$nuitees$guide$es extends Translations$nuitees$guide$fr {
+	_Translations$nuitees$guide$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Guía de pernoctaciones';
+	@override String get refuge => 'Alojamiento de montaña, se recomienda reservar en temporada alta.';
+	@override String get gite => 'Albergue de etapa privado, a menudo con comidas y duchas.';
+	@override String get bivouac => 'Acampada en tienda, según la normativa local.';
+	@override String get autre => 'Hotel, casa de huéspedes o camping fuera del sendero.';
+	@override String get close => 'Entendido';
+}
+
+// Path: nuitees.card
+class _Translations$nuitees$card$es extends Translations$nuitees$card$fr {
+	_Translations$nuitees$card$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get dayLabel => 'D{n}';
+	@override String get noPlace => 'Alojamiento';
+	@override String get available => '{count} alojamientos disponibles';
+	@override String get call => 'Llamar {phone}';
+	@override String get lockedHint => 'Desmarca la noche para cambiar el tipo';
+}
+
+// Path: nuitees.summary
+class _Translations$nuitees$summary$es extends Translations$nuitees$summary$fr {
+	_Translations$nuitees$summary$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get remaining => '{count} noche(s) restante(s)';
+	@override String get done => '{count} OK';
+	@override String get allBooked => 'TODAS LAS NOCHES RESERVADAS';
+}
+
+// Path: nuitees.empty
+class _Translations$nuitees$empty$es extends Translations$nuitees$empty$fr {
+	_Translations$nuitees$empty$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Configura primero tu itinerario';
+	@override String get message => 'Elige tu ruta y duración para preparar tus noches.';
+	@override String get action => 'CONFIGURAR ITINERARIO';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$es extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -2591,6 +2677,8 @@ extension on TranslationsEs {
 			'hub.cards.itinerarySub' => 'Tus etapas en detalle',
 			'hub.cards.programme' => 'Programa',
 			'hub.cards.programmeSub' => 'Distribuye tus etapas',
+			'hub.cards.nuitees' => 'Pernoctaciones',
+			'hub.cards.nuiteesSub' => 'Reserva tus noches',
 			'hub.cards.checklist' => 'Equipo & Mochila',
 			'hub.cards.checklistSub' => 'Prepara tu mochila',
 			'hub.cards.training' => 'Preparación física',
@@ -3039,10 +3127,10 @@ extension on TranslationsEs {
 			'settings.distance' => 'Distancia',
 			'settings.temperature' => 'Temperatura',
 			'settings.theme' => 'Tema',
-			'settings.dark' => 'Oscuro',
-			'settings.light' => 'Claro',
 			_ => null,
 		} ?? switch (path) {
+			'settings.dark' => 'Oscuro',
+			'settings.light' => 'Claro',
 			'settings.system' => 'Sistema',
 			'settings.cache' => 'Caché',
 			'settings.cacheEnabled' => 'Caché activada',
@@ -3553,10 +3641,10 @@ extension on TranslationsEs {
 			'bootstrap.loading' => 'Preparando tu excursión…',
 			'recap.title' => 'Mi aventura',
 			'recap.lockedTitle' => 'Disponible al final de la ruta',
-			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',
-			'recap.finisherTitle' => 'Felicidades!',
 			_ => null,
 		} ?? switch (path) {
+			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',
+			'recap.finisherTitle' => 'Felicidades!',
 			'recap.finisherSubtitle' => 'Has completado tu ruta',
 			'recap.partialTitle' => 'Tu ruta parcial',
 			'recap.partialSubtitle' => 'Tu aventura queda registrada',
@@ -3613,6 +3701,30 @@ extension on TranslationsEs {
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
 			'programme.info.close' => '¡Entendido!',
+			'nuitees.title' => 'Pernoctaciones',
+			'nuitees.guideTooltip' => 'Guía de pernoctaciones',
+			'nuitees.infoBar' => 'Reserva cada noche con antelación en temporada alta',
+			'nuitees.types.refuge' => 'Refugio',
+			'nuitees.types.gite' => 'Albergue',
+			'nuitees.types.bivouac' => 'Vivac',
+			'nuitees.types.autreHebergement' => 'Otro alojamiento',
+			'nuitees.guide.title' => 'Guía de pernoctaciones',
+			'nuitees.guide.refuge' => 'Alojamiento de montaña, se recomienda reservar en temporada alta.',
+			'nuitees.guide.gite' => 'Albergue de etapa privado, a menudo con comidas y duchas.',
+			'nuitees.guide.bivouac' => 'Acampada en tienda, según la normativa local.',
+			'nuitees.guide.autre' => 'Hotel, casa de huéspedes o camping fuera del sendero.',
+			'nuitees.guide.close' => 'Entendido',
+			'nuitees.card.dayLabel' => 'D{n}',
+			'nuitees.card.noPlace' => 'Alojamiento',
+			'nuitees.card.available' => '{count} alojamientos disponibles',
+			'nuitees.card.call' => 'Llamar {phone}',
+			'nuitees.card.lockedHint' => 'Desmarca la noche para cambiar el tipo',
+			'nuitees.summary.remaining' => '{count} noche(s) restante(s)',
+			'nuitees.summary.done' => '{count} OK',
+			'nuitees.summary.allBooked' => 'TODAS LAS NOCHES RESERVADAS',
+			'nuitees.empty.title' => 'Configura primero tu itinerario',
+			'nuitees.empty.message' => 'Elige tu ruta y duración para preparar tus noches.',
+			'nuitees.empty.action' => 'CONFIGURAR ITINERARIO',
 			_ => null,
 		};
 	}

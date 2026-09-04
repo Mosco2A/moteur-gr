@@ -29,6 +29,7 @@ import '../../features/guides/presentation/town_guide_detail_screen.dart';
 import '../../features/guides/presentation/town_guides_screen.dart';
 import '../../features/booking/presentation/booking_screen.dart';
 import '../../features/booking/presentation/hebergements_peripheriques_screen.dart';
+import '../../features/booking/presentation/nuitees_screen.dart';
 import '../../features/safety/presentation/emergency_screen.dart';
 import '../../features/safety/presentation/health_info_screen.dart';
 import '../../features/safety/presentation/signalement_screen.dart';
@@ -275,6 +276,23 @@ final appRouter = GoRouter(
           path: 'checklist',
           name: 'trail-checklist',
           builder: (context, state) => const ChecklistScreen(),
+        ),
+        // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos nuits »
+        // (clone GR20 `RefugeAssistantScreen`). Pour chaque nuit du programme :
+        // choix du type de nuitee (refuge / gite / bivouac / autre) + etat
+        // reserve, persistes en LOCAL (Drift, table nuitee_selections ; pas de
+        // Firebase avant Phase 4). Alimente par les donnees du sentier (module
+        // booking) ; generique multi-sentiers, fallback si aucun hebergement.
+        // La carte HUB « Nuitees » (section Preparer) ouvre cet ecran via
+        // `context.push` (retour propre). Le stub /booking reste derriere son
+        // FeatureFlag, non reference depuis le HUB (aligne sur GR20).
+        GoRoute(
+          path: 'nuitees',
+          name: 'trail-nuitees',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return NuiteesScreen(trailId: trailId);
+          },
         ),
         // PARITE GR20 (#99460) — FAISABILITE : auto-evaluation -> verdict.
         // La carte HUB « Faisabilite » (et l'entree « Plus ») ouvrent cet ecran

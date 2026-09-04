@@ -26,6 +26,7 @@ import 'tables/segments_table.dart';
 import 'tables/kudos_feed_table.dart';
 import 'tables/waypoints_table.dart';
 import 'tables/trek_sessions_table.dart';
+import 'tables/nuitee_selections_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -52,6 +53,7 @@ import 'daos/segments_dao.dart';
 import 'daos/kudos_feed_dao.dart';
 import 'daos/waypoints_dao.dart';
 import 'daos/trek_sessions_dao.dart';
+import 'daos/nuitee_selections_dao.dart';
 
 part 'database.g.dart';
 
@@ -103,6 +105,7 @@ part 'database.g.dart';
     Waypoint,
     WaypointComment,
     TrekSessions,
+    NuiteeSelections,
   ],
   daos: [
     StagesDao,
@@ -131,13 +134,14 @@ part 'database.g.dart';
     KudosFeedDao,
     WaypointsDao,
     TrekSessionsDao,
+    NuiteeSelectionsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 21;
+  int get schemaVersion => 22;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -268,6 +272,12 @@ class AppDatabase extends _$AppDatabase {
               stages,
               stages.estimatedDurationMinutes,
             );
+          }
+          // Migration v21 -> v22 : parite GR20 « Reserver vos nuits » — table
+          // nuitee_selections (etat par nuit du PROGRAMME : type de nuitee +
+          // reserve). Persistance 100 % locale (pas de Firebase avant Phase 4).
+          if (from < 22) {
+            await migrator.createTable(nuiteeSelections);
           }
         },
       );

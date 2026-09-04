@@ -75,6 +75,8 @@
       "itinerarySub": "Le deroule de vos etapes",
       "programme": "Programme",
       "programmeSub": "Répartissez vos étapes",
+      "nuitees": "Nuitées",
+      "nuiteesSub": "Réserver vos nuits",
       "checklist": "Materiel & Sac",
       "checklistSub": "Preparez votre sac a dos",
       "training": "Préparation physique",
@@ -1357,6 +1359,42 @@
       },
       "note": "Le profil altimétrique en bas visualise le dénivelé de chaque jour.",
       "close": "Compris !"
+    }
+  },
+  "nuitees": {
+    "title": "Réservations nuitées",
+    "guideTooltip": "Guide des nuitées",
+    "infoBar": "Réservez chaque nuit à l'avance en haute saison",
+    "types": {
+      "refuge": "Refuge",
+      "gite": "Gîte",
+      "bivouac": "Bivouac",
+      "autreHebergement": "Autre hébergement"
+    },
+    "guide": {
+      "title": "Guide des nuitées",
+      "refuge": "Hébergement de montagne, réservation recommandée en haute saison.",
+      "gite": "Hébergement d'étape privé, souvent avec repas et douches.",
+      "bivouac": "Camping sous tente, selon la réglementation locale.",
+      "autre": "Hôtel, chambre d'hôtes ou camping en dehors du sentier.",
+      "close": "Compris"
+    },
+    "card": {
+      "dayLabel": "J{n}",
+      "noPlace": "Hébergement",
+      "available": "{count} hébergements disponibles",
+      "call": "Appeler {phone}",
+      "lockedHint": "Décochez la nuit pour changer le type"
+    },
+    "summary": {
+      "remaining": "{count} nuit(s) restante(s)",
+      "done": "{count} OK",
+      "allBooked": "TOUTES LES NUITS RÉSERVÉES"
+    },
+    "empty": {
+      "title": "Configurez d'abord votre itinéraire",
+      "message": "Choisissez votre parcours et la durée pour préparer vos nuits.",
+      "action": "CONFIGURER L'ITINÉRAIRE"
     }
   }
 }
