@@ -138,6 +138,7 @@
     "arrived": "You have arrived!",
     "altitudeProfile": "Elevation profile",
     "statistics": "Statistics",
+    "departureArrival": "From {from} to {to}",
     "loading": "Loading...",
     "loadingList": "Loading stages...",
     "dPlus": "D+",

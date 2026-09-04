@@ -141,7 +141,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 22;
+  int get schemaVersion => 23;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -278,6 +278,21 @@ class AppDatabase extends _$AppDatabase {
           // reserve). Persistance 100 % locale (pas de Firebase avant Phase 4).
           if (from < 22) {
             await migrator.createTable(nuiteeSelections);
+          }
+          // Migration v22 -> v23 : parite GR20 « socle donnees » — colonnes
+          // departureName / arrivalName (nullable) sur stages. Noms des points
+          // de depart/arrivee par etape, alimentes par les donnees du sentier
+          // (stages.json, backend P4), affiches sur la sous-ligne « Depart ->
+          // Arrivee » de la fiche etape.
+          if (from < 23) {
+            await migrator.addColumn(
+              stages,
+              stages.departureName,
+            );
+            await migrator.addColumn(
+              stages,
+              stages.arrivalName,
+            );
           }
         },
       );

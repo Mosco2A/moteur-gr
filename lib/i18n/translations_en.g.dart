@@ -212,6 +212,7 @@ class _Translations$stage$en extends Translations$stage$fr {
 	@override String get arrived => 'You have arrived!';
 	@override String get altitudeProfile => 'Elevation profile';
 	@override String get statistics => 'Statistics';
+	@override String get departureArrival => 'From {from} to {to}';
 	@override String get loading => 'Loading...';
 	@override String get loadingList => 'Loading stages...';
 	@override String get dPlus => 'D+';
@@ -2827,6 +2828,7 @@ extension on TranslationsEn {
 			'stage.arrived' => 'You have arrived!',
 			'stage.altitudeProfile' => 'Elevation profile',
 			'stage.statistics' => 'Statistics',
+			'stage.departureArrival' => 'From {from} to {to}',
 			'stage.loading' => 'Loading...',
 			'stage.loadingList' => 'Loading stages...',
 			'stage.dPlus' => 'D+',
@@ -3222,9 +3224,9 @@ extension on TranslationsEn {
 			'settings.title' => 'Settings',
 			'settings.language' => 'Language',
 			'settings.units' => 'Units',
-			'settings.distance' => 'Distance',
 			_ => null,
 		} ?? switch (path) {
+			'settings.distance' => 'Distance',
 			'settings.temperature' => 'Temperature',
 			'settings.theme' => 'Theme',
 			'settings.dark' => 'Dark',
@@ -3736,9 +3738,9 @@ extension on TranslationsEn {
 			'moderation.a11y.submitReport' => 'Send report',
 			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
 			'moderation.a11y.complaintForm' => 'Decision challenge form',
-			'bootstrap.loading' => 'Preparing your hike…',
 			_ => null,
 		} ?? switch (path) {
+			'bootstrap.loading' => 'Preparing your hike…',
 			'recap.title' => 'My adventure',
 			'recap.lockedTitle' => 'Available at the end of the trek',
 			'recap.lockedMessage' => 'Finish or abandon your route to view your adventure recap.',

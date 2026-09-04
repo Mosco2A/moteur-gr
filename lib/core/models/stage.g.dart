@@ -21,6 +21,8 @@ _StageModel _$StageModelFromJson(Map<String, dynamic> json) => _StageModel(
   endLng: (json['endLng'] as num).toDouble(),
   difficulty: json['difficulty'] as String? ?? 'moderate',
   estimatedDurationMinutes: (json['estimatedDurationMinutes'] as num?)?.toInt(),
+  departureName: json['departureName'] as String?,
+  arrivalName: json['arrivalName'] as String?,
 );
 
 Map<String, dynamic> _$StageModelToJson(_StageModel instance) =>
@@ -39,4 +41,6 @@ Map<String, dynamic> _$StageModelToJson(_StageModel instance) =>
       'endLng': instance.endLng,
       'difficulty': instance.difficulty,
       'estimatedDurationMinutes': instance.estimatedDurationMinutes,
+      'departureName': instance.departureName,
+      'arrivalName': instance.arrivalName,
     };

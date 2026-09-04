@@ -238,6 +238,80 @@ void main() {
     });
   });
 
+  group('TrekStageDetailScreen parite GR20 — depart -> arrivee', () {
+    // Etape avec noms RICHES fournis par le sentier + nom « Depart — Arrivee ».
+    const namedStage = StageModel(
+      trailId: 'test-trail',
+      stageNumber: 3,
+      name: 'Ghisonaccia — Catastaghju',
+      distanceKm: 15.0,
+      elevationGainM: 850,
+      elevationLossM: 100,
+      description: 'desc',
+      startLat: 42.0,
+      startLng: 9.4,
+      endLat: 41.9,
+      endLng: 9.2,
+      difficulty: 'hard',
+      estimatedDurationMinutes: 350,
+      departureName: 'Ghisonaccia',
+      arrivalName: 'Catastaghju',
+    );
+
+    testWidgets('affiche la sous-ligne quand les noms sont fournis',
+        (tester) async {
+      await tester.pumpWidget(buildSubject(stages: [namedStage]));
+      await tester.pumpAndSettle();
+
+      // Sous-ligne « Depart  ->  Arrivee » (parite GR20). La fleche unicode et
+      // les deux noms sont dans un unique Text.
+      expect(
+        find.text('Ghisonaccia  →  Catastaghju'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+        'sans noms fournis, derive la sous-ligne du nom « Depart — Arrivee »',
+        (tester) async {
+      // Noms riches absents : seul le nom d'etape porte le couple.
+      const derivedStage = StageModel(
+        trailId: 'test-trail',
+        stageNumber: 3,
+        name: 'Cozzano — Guitera-les-Bains',
+        distanceKm: 10.0,
+        elevationGainM: 400,
+        elevationLossM: 500,
+        description: 'desc',
+        startLat: 42.0,
+        startLng: 9.1,
+        endLat: 41.9,
+        endLng: 9.1,
+        difficulty: 'easy',
+        // departureName / arrivalName non fournis -> fallback via le nom.
+      );
+      await tester.pumpWidget(buildSubject(stages: [derivedStage]));
+      await tester.pumpAndSettle();
+
+      // Le trait d'union interne de « Guitera-les-Bains » NE doit PAS etre
+      // pris pour le separateur (seul le tiret entoure d'espaces l'est).
+      expect(
+        find.text('Cozzano  →  Guitera-les-Bains'),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('sans noms ni separateur exploitable, masque la sous-ligne',
+        (tester) async {
+      // testStage.name == 'Col de Vergio' : aucun separateur, aucun nom riche.
+      await tester.pumpWidget(buildSubject());
+      await tester.pumpAndSettle();
+
+      // Aucune fleche « -> » affichee (sous-ligne masquee, fallback propre).
+      expect(find.textContaining('→'), findsNothing);
+    });
+  });
+
   group('TrekStageDetailScreen parite GR20 — conseils', () {
     testWidgets('affiche des conseils derives des stats', (tester) async {
       await tester.pumpWidget(buildSubject(pois: testPois));

@@ -74,6 +74,16 @@ abstract class Stage with _$Stage {
 
     /// Description — espagnol
     @Default('') String descriptionEs,
+
+    /// Nom du point de DEPART de l'etape (parite GR20 sous-ligne « Depart ->
+    /// Arrivee »). Vide quand la donnee du sentier ne le fournit pas ->
+    /// l'affichage retombe proprement sur le nom de l'etape.
+    @Default('') String departureName,
+
+    /// Nom du point d'ARRIVEE de l'etape (parite GR20 sous-ligne « Depart ->
+    /// Arrivee »). Vide quand la donnee du sentier ne le fournit pas ->
+    /// l'affichage retombe proprement sur le nom de l'etape.
+    @Default('') String arrivalName,
   }) = _Stage;
 
   /// Duree estimee sous forme de Duration

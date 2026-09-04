@@ -29,6 +29,8 @@ _Stage _$StageFromJson(Map<String, dynamic> json) => _Stage(
   descriptionDe: json['descriptionDe'] as String? ?? '',
   descriptionIt: json['descriptionIt'] as String? ?? '',
   descriptionEs: json['descriptionEs'] as String? ?? '',
+  departureName: json['departureName'] as String? ?? '',
+  arrivalName: json['arrivalName'] as String? ?? '',
 );
 
 Map<String, dynamic> _$StageToJson(_Stage instance) => <String, dynamic>{
@@ -53,4 +55,6 @@ Map<String, dynamic> _$StageToJson(_Stage instance) => <String, dynamic>{
   'descriptionDe': instance.descriptionDe,
   'descriptionIt': instance.descriptionIt,
   'descriptionEs': instance.descriptionEs,
+  'departureName': instance.departureName,
+  'arrivalName': instance.arrivalName,
 };

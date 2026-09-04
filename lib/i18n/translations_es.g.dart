@@ -212,6 +212,7 @@ class _Translations$stage$es extends Translations$stage$fr {
 	@override String get arrived => 'Has llegado!';
 	@override String get altitudeProfile => 'Perfil altimetrico';
 	@override String get statistics => 'Estadisticas';
+	@override String get departureArrival => 'De {from} a {to}';
 	@override String get loading => 'Cargando...';
 	@override String get loadingList => 'Cargando las etapas...';
 	@override String get dPlus => 'D+';
@@ -2827,6 +2828,7 @@ extension on TranslationsEs {
 			'stage.arrived' => 'Has llegado!',
 			'stage.altitudeProfile' => 'Perfil altimetrico',
 			'stage.statistics' => 'Estadisticas',
+			'stage.departureArrival' => 'De {from} a {to}',
 			'stage.loading' => 'Cargando...',
 			'stage.loadingList' => 'Cargando las etapas...',
 			'stage.dPlus' => 'D+',
@@ -3222,9 +3224,9 @@ extension on TranslationsEs {
 			'settings.title' => 'Ajustes',
 			'settings.language' => 'Idioma',
 			'settings.units' => 'Unidades',
-			'settings.distance' => 'Distancia',
 			_ => null,
 		} ?? switch (path) {
+			'settings.distance' => 'Distancia',
 			'settings.temperature' => 'Temperatura',
 			'settings.theme' => 'Tema',
 			'settings.dark' => 'Oscuro',
@@ -3736,9 +3738,9 @@ extension on TranslationsEs {
 			'moderation.a11y.submitReport' => 'Enviar denuncia',
 			'moderation.a11y.statementCard' => 'Motivación de la decisión de moderación',
 			'moderation.a11y.complaintForm' => 'Formulario de impugnación de la decisión',
-			'bootstrap.loading' => 'Preparando tu excursión…',
 			_ => null,
 		} ?? switch (path) {
+			'bootstrap.loading' => 'Preparando tu excursión…',
 			'recap.title' => 'Mi aventura',
 			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',

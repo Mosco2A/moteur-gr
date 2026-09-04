@@ -138,6 +138,7 @@
     "arrived": "Sei arrivato!",
     "altitudeProfile": "Profilo altimetrico",
     "statistics": "Statistiche",
+    "departureArrival": "Da {from} a {to}",
     "loading": "Caricamento...",
     "loadingList": "Caricamento delle tappe...",
     "dPlus": "D+",

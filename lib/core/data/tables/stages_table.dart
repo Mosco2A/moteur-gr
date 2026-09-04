@@ -50,4 +50,22 @@ class Stages extends Table {
   /// uniquement pour les sentiers dont la source de donnees le fournit
   /// (`stages.json`, backend P4). Ajoute en migration v20 -> v21.
   IntColumn get estimatedDurationMinutes => integer().nullable()();
+
+  /// Nom du point de DEPART de l'etape (parite GR20 sous-ligne « Depart ->
+  /// Arrivee »).
+  ///
+  /// Champ RICHE optionnel du socle « donnees externes ». NULLABLE : renseigne
+  /// uniquement pour les sentiers dont la source de donnees le fournit
+  /// (`stages.json`, backend P4). Absent -> l'affichage retombe proprement sur
+  /// le nom de l'etape (cf. fiche etape). Ajoute en migration v22 -> v23.
+  TextColumn get departureName => text().nullable()();
+
+  /// Nom du point d'ARRIVEE de l'etape (parite GR20 sous-ligne « Depart ->
+  /// Arrivee »).
+  ///
+  /// Champ RICHE optionnel du socle « donnees externes ». NULLABLE : renseigne
+  /// uniquement pour les sentiers dont la source de donnees le fournit
+  /// (`stages.json`, backend P4). Absent -> l'affichage retombe proprement sur
+  /// le nom de l'etape (cf. fiche etape). Ajoute en migration v22 -> v23.
+  TextColumn get arrivalName => text().nullable()();
 }
