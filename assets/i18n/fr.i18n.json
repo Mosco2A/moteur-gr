@@ -75,6 +75,8 @@
       "itinerarySub": "Le deroule de vos etapes",
       "programme": "Programme",
       "programmeSub": "Répartissez vos étapes",
+      "calendar": "Calendrier",
+      "calendarSub": "Choisir les dates",
       "nuitees": "Nuitées",
       "nuiteesSub": "Réserver vos nuits",
       "checklist": "Materiel & Sac",
@@ -1359,6 +1361,52 @@
       },
       "note": "Le profil altimétrique en bas visualise le dénivelé de chaque jour.",
       "close": "Compris !"
+    }
+  },
+  "calendar": {
+    "title": "Calendrier",
+    "validate": "VALIDER LES DATES",
+    "departure": "DÉPART",
+    "arrival": "ARRIVÉE",
+    "chooseDate": "Choisir une date",
+    "chooseDateAction": "CHOISIR UNE DATE",
+    "previousMonth": "Mois précédent",
+    "nextMonth": "Mois suivant",
+    "dayLabel": "J{n}",
+    "restDayLabel": "R",
+    "adjustStages": "AJUSTER LES ÉTAPES",
+    "stageSingular": "Étape {n}",
+    "stagesPlural": "Étapes {list}",
+    "splitStages": "Séparer les étapes",
+    "mergeWithNext": "Grouper avec le jour suivant",
+    "weekdays": {
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mer",
+      "thu": "Jeu",
+      "fri": "Ven",
+      "sat": "Sam",
+      "sun": "Dim"
+    },
+    "legend": {
+      "start": "Départ",
+      "walk": "Marche",
+      "rest": "Repos",
+      "arrival": "Arrivée"
+    },
+    "summary": {
+      "totalDays": "Jours total",
+      "walkDays": "Jours marche",
+      "restDays": "Jours repos"
+    },
+    "noDate": {
+      "title": "Choisissez une date de départ",
+      "message": "Le calendrier de votre trek s'affichera automatiquement avec les jours de marche et de repos."
+    },
+    "empty": {
+      "title": "Configurez d'abord votre itinéraire",
+      "message": "Choisissez votre parcours et la durée pour pouvoir configurer vos dates.",
+      "action": "CONFIGURER L'ITINÉRAIRE"
     }
   },
   "nuitees": {

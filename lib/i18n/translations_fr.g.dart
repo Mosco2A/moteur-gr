@@ -92,6 +92,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$bootstrap$fr bootstrap = Translations$bootstrap$fr.internal(_root);
 	late final Translations$recap$fr recap = Translations$recap$fr.internal(_root);
 	late final Translations$programme$fr programme = Translations$programme$fr.internal(_root);
+	late final Translations$calendar$fr calendar = Translations$calendar$fr.internal(_root);
 	late final Translations$nuitees$fr nuitees = Translations$nuitees$fr.internal(_root);
 }
 
@@ -2256,6 +2257,66 @@ class Translations$programme$fr {
 	late final Translations$programme$info$fr info = Translations$programme$info$fr.internal(_root);
 }
 
+// Path: calendar
+class Translations$calendar$fr {
+	Translations$calendar$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Calendrier'
+	String get title => 'Calendrier';
+
+	/// fr: 'VALIDER LES DATES'
+	String get validate => 'VALIDER LES DATES';
+
+	/// fr: 'DÉPART'
+	String get departure => 'DÉPART';
+
+	/// fr: 'ARRIVÉE'
+	String get arrival => 'ARRIVÉE';
+
+	/// fr: 'Choisir une date'
+	String get chooseDate => 'Choisir une date';
+
+	/// fr: 'CHOISIR UNE DATE'
+	String get chooseDateAction => 'CHOISIR UNE DATE';
+
+	/// fr: 'Mois précédent'
+	String get previousMonth => 'Mois précédent';
+
+	/// fr: 'Mois suivant'
+	String get nextMonth => 'Mois suivant';
+
+	/// fr: 'J{n}'
+	String get dayLabel => 'J{n}';
+
+	/// fr: 'R'
+	String get restDayLabel => 'R';
+
+	/// fr: 'AJUSTER LES ÉTAPES'
+	String get adjustStages => 'AJUSTER LES ÉTAPES';
+
+	/// fr: 'Étape {n}'
+	String get stageSingular => 'Étape {n}';
+
+	/// fr: 'Étapes {list}'
+	String get stagesPlural => 'Étapes {list}';
+
+	/// fr: 'Séparer les étapes'
+	String get splitStages => 'Séparer les étapes';
+
+	/// fr: 'Grouper avec le jour suivant'
+	String get mergeWithNext => 'Grouper avec le jour suivant';
+
+	late final Translations$calendar$weekdays$fr weekdays = Translations$calendar$weekdays$fr.internal(_root);
+	late final Translations$calendar$legend$fr legend = Translations$calendar$legend$fr.internal(_root);
+	late final Translations$calendar$summary$fr summary = Translations$calendar$summary$fr.internal(_root);
+	late final Translations$calendar$noDate$fr noDate = Translations$calendar$noDate$fr.internal(_root);
+	late final Translations$calendar$empty$fr empty = Translations$calendar$empty$fr.internal(_root);
+}
+
 // Path: nuitees
 class Translations$nuitees$fr {
 	Translations$nuitees$fr.internal(this._root);
@@ -2386,6 +2447,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Répartissez vos étapes'
 	String get programmeSub => 'Répartissez vos étapes';
+
+	/// fr: 'Calendrier'
+	String get calendar => 'Calendrier';
+
+	/// fr: 'Choisir les dates'
+	String get calendarSub => 'Choisir les dates';
 
 	/// fr: 'Nuitées'
 	String get nuitees => 'Nuitées';
@@ -4292,6 +4359,108 @@ class Translations$programme$info$fr {
 	String get close => 'Compris !';
 }
 
+// Path: calendar.weekdays
+class Translations$calendar$weekdays$fr {
+	Translations$calendar$weekdays$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Lun'
+	String get mon => 'Lun';
+
+	/// fr: 'Mar'
+	String get tue => 'Mar';
+
+	/// fr: 'Mer'
+	String get wed => 'Mer';
+
+	/// fr: 'Jeu'
+	String get thu => 'Jeu';
+
+	/// fr: 'Ven'
+	String get fri => 'Ven';
+
+	/// fr: 'Sam'
+	String get sat => 'Sam';
+
+	/// fr: 'Dim'
+	String get sun => 'Dim';
+}
+
+// Path: calendar.legend
+class Translations$calendar$legend$fr {
+	Translations$calendar$legend$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Départ'
+	String get start => 'Départ';
+
+	/// fr: 'Marche'
+	String get walk => 'Marche';
+
+	/// fr: 'Repos'
+	String get rest => 'Repos';
+
+	/// fr: 'Arrivée'
+	String get arrival => 'Arrivée';
+}
+
+// Path: calendar.summary
+class Translations$calendar$summary$fr {
+	Translations$calendar$summary$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Jours total'
+	String get totalDays => 'Jours total';
+
+	/// fr: 'Jours marche'
+	String get walkDays => 'Jours marche';
+
+	/// fr: 'Jours repos'
+	String get restDays => 'Jours repos';
+}
+
+// Path: calendar.noDate
+class Translations$calendar$noDate$fr {
+	Translations$calendar$noDate$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Choisissez une date de départ'
+	String get title => 'Choisissez une date de départ';
+
+	/// fr: 'Le calendrier de votre trek s'affichera automatiquement avec les jours de marche et de repos.'
+	String get message => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.';
+}
+
+// Path: calendar.empty
+class Translations$calendar$empty$fr {
+	Translations$calendar$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Configurez d'abord votre itinéraire'
+	String get title => 'Configurez d\'abord votre itinéraire';
+
+	/// fr: 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.'
+	String get message => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.';
+
+	/// fr: 'CONFIGURER L'ITINÉRAIRE'
+	String get action => 'CONFIGURER L\'ITINÉRAIRE';
+}
+
 // Path: nuitees.types
 class Translations$nuitees$types$fr {
 	Translations$nuitees$types$fr.internal(this._root);
@@ -4925,6 +5094,8 @@ extension on Translations {
 			'hub.cards.itinerarySub' => 'Le deroule de vos etapes',
 			'hub.cards.programme' => 'Programme',
 			'hub.cards.programmeSub' => 'Répartissez vos étapes',
+			'hub.cards.calendar' => 'Calendrier',
+			'hub.cards.calendarSub' => 'Choisir les dates',
 			'hub.cards.nuitees' => 'Nuitées',
 			'hub.cards.nuiteesSub' => 'Réserver vos nuits',
 			'hub.cards.checklist' => 'Materiel & Sac',
@@ -5373,10 +5544,10 @@ extension on Translations {
 			'settings.language' => 'Langue',
 			'settings.units' => 'Unités',
 			'settings.distance' => 'Distance',
-			'settings.temperature' => 'Température',
-			'settings.theme' => 'Thème',
 			_ => null,
 		} ?? switch (path) {
+			'settings.temperature' => 'Température',
+			'settings.theme' => 'Thème',
 			'settings.dark' => 'Sombre',
 			'settings.light' => 'Clair',
 			'settings.system' => 'Système',
@@ -5887,10 +6058,10 @@ extension on Translations {
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			'bootstrap.loading' => 'Préparation de votre randonnée…',
-			'recap.title' => 'Mon aventure',
-			'recap.lockedTitle' => 'Disponible a la fin du trek',
 			_ => null,
 		} ?? switch (path) {
+			'recap.title' => 'Mon aventure',
+			'recap.lockedTitle' => 'Disponible a la fin du trek',
 			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le recapitulatif de votre aventure.',
 			'recap.finisherTitle' => 'Felicitations !',
 			'recap.finisherSubtitle' => 'Vous avez termine votre parcours',
@@ -5949,6 +6120,40 @@ extension on Translations {
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
+			'calendar.title' => 'Calendrier',
+			'calendar.validate' => 'VALIDER LES DATES',
+			'calendar.departure' => 'DÉPART',
+			'calendar.arrival' => 'ARRIVÉE',
+			'calendar.chooseDate' => 'Choisir une date',
+			'calendar.chooseDateAction' => 'CHOISIR UNE DATE',
+			'calendar.previousMonth' => 'Mois précédent',
+			'calendar.nextMonth' => 'Mois suivant',
+			'calendar.dayLabel' => 'J{n}',
+			'calendar.restDayLabel' => 'R',
+			'calendar.adjustStages' => 'AJUSTER LES ÉTAPES',
+			'calendar.stageSingular' => 'Étape {n}',
+			'calendar.stagesPlural' => 'Étapes {list}',
+			'calendar.splitStages' => 'Séparer les étapes',
+			'calendar.mergeWithNext' => 'Grouper avec le jour suivant',
+			'calendar.weekdays.mon' => 'Lun',
+			'calendar.weekdays.tue' => 'Mar',
+			'calendar.weekdays.wed' => 'Mer',
+			'calendar.weekdays.thu' => 'Jeu',
+			'calendar.weekdays.fri' => 'Ven',
+			'calendar.weekdays.sat' => 'Sam',
+			'calendar.weekdays.sun' => 'Dim',
+			'calendar.legend.start' => 'Départ',
+			'calendar.legend.walk' => 'Marche',
+			'calendar.legend.rest' => 'Repos',
+			'calendar.legend.arrival' => 'Arrivée',
+			'calendar.summary.totalDays' => 'Jours total',
+			'calendar.summary.walkDays' => 'Jours marche',
+			'calendar.summary.restDays' => 'Jours repos',
+			'calendar.noDate.title' => 'Choisissez une date de départ',
+			'calendar.noDate.message' => 'Le calendrier de votre trek s\'affichera automatiquement avec les jours de marche et de repos.',
+			'calendar.empty.title' => 'Configurez d\'abord votre itinéraire',
+			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
+			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',
 			'nuitees.guideTooltip' => 'Guide des nuitées',
 			'nuitees.infoBar' => 'Réservez chaque nuit à l\'avance en haute saison',

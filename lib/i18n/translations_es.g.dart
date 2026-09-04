@@ -91,6 +91,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$bootstrap$es bootstrap = _Translations$bootstrap$es._(_root);
 	@override late final _Translations$recap$es recap = _Translations$recap$es._(_root);
 	@override late final _Translations$programme$es programme = _Translations$programme$es._(_root);
+	@override late final _Translations$calendar$es calendar = _Translations$calendar$es._(_root);
 	@override late final _Translations$nuitees$es nuitees = _Translations$nuitees$es._(_root);
 }
 
@@ -1156,6 +1157,35 @@ class _Translations$programme$es extends Translations$programme$fr {
 	@override late final _Translations$programme$info$es info = _Translations$programme$info$es._(_root);
 }
 
+// Path: calendar
+class _Translations$calendar$es extends Translations$calendar$fr {
+	_Translations$calendar$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Calendario';
+	@override String get validate => 'CONFIRMAR FECHAS';
+	@override String get departure => 'SALIDA';
+	@override String get arrival => 'LLEGADA';
+	@override String get chooseDate => 'Elegir una fecha';
+	@override String get chooseDateAction => 'ELEGIR UNA FECHA';
+	@override String get previousMonth => 'Mes anterior';
+	@override String get nextMonth => 'Mes siguiente';
+	@override String get dayLabel => 'D{n}';
+	@override String get restDayLabel => 'R';
+	@override String get adjustStages => 'AJUSTAR LAS ETAPAS';
+	@override String get stageSingular => 'Etapa {n}';
+	@override String get stagesPlural => 'Etapas {list}';
+	@override String get splitStages => 'Separar las etapas';
+	@override String get mergeWithNext => 'Agrupar con el día siguiente';
+	@override late final _Translations$calendar$weekdays$es weekdays = _Translations$calendar$weekdays$es._(_root);
+	@override late final _Translations$calendar$legend$es legend = _Translations$calendar$legend$es._(_root);
+	@override late final _Translations$calendar$summary$es summary = _Translations$calendar$summary$es._(_root);
+	@override late final _Translations$calendar$noDate$es noDate = _Translations$calendar$noDate$es._(_root);
+	@override late final _Translations$calendar$empty$es empty = _Translations$calendar$empty$es._(_root);
+}
+
 // Path: nuitees
 class _Translations$nuitees$es extends Translations$nuitees$fr {
 	_Translations$nuitees$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1231,6 +1261,8 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get itinerarySub => 'Tus etapas en detalle';
 	@override String get programme => 'Programa';
 	@override String get programmeSub => 'Distribuye tus etapas';
+	@override String get calendar => 'Calendario';
+	@override String get calendarSub => 'Elige las fechas';
 	@override String get nuitees => 'Pernoctaciones';
 	@override String get nuiteesSub => 'Reserva tus noches';
 	@override String get checklist => 'Equipo & Mochila';
@@ -2214,6 +2246,70 @@ class _Translations$programme$info$es extends Translations$programme$info$fr {
 	@override String get close => '¡Entendido!';
 }
 
+// Path: calendar.weekdays
+class _Translations$calendar$weekdays$es extends Translations$calendar$weekdays$fr {
+	_Translations$calendar$weekdays$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get mon => 'Lun';
+	@override String get tue => 'Mar';
+	@override String get wed => 'Mié';
+	@override String get thu => 'Jue';
+	@override String get fri => 'Vie';
+	@override String get sat => 'Sáb';
+	@override String get sun => 'Dom';
+}
+
+// Path: calendar.legend
+class _Translations$calendar$legend$es extends Translations$calendar$legend$fr {
+	_Translations$calendar$legend$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get start => 'Salida';
+	@override String get walk => 'Marcha';
+	@override String get rest => 'Descanso';
+	@override String get arrival => 'Llegada';
+}
+
+// Path: calendar.summary
+class _Translations$calendar$summary$es extends Translations$calendar$summary$fr {
+	_Translations$calendar$summary$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get totalDays => 'Días total';
+	@override String get walkDays => 'Días marcha';
+	@override String get restDays => 'Días descanso';
+}
+
+// Path: calendar.noDate
+class _Translations$calendar$noDate$es extends Translations$calendar$noDate$fr {
+	_Translations$calendar$noDate$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Elige una fecha de salida';
+	@override String get message => 'El calendario de tu trek aparecerá automáticamente con los días de marcha y de descanso.';
+}
+
+// Path: calendar.empty
+class _Translations$calendar$empty$es extends Translations$calendar$empty$fr {
+	_Translations$calendar$empty$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Configura primero tu itinerario';
+	@override String get message => 'Elige tu ruta y la duración para poder configurar tus fechas.';
+	@override String get action => 'CONFIGURAR EL ITINERARIO';
+}
+
 // Path: nuitees.types
 class _Translations$nuitees$types$es extends Translations$nuitees$types$fr {
 	_Translations$nuitees$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -2677,6 +2773,8 @@ extension on TranslationsEs {
 			'hub.cards.itinerarySub' => 'Tus etapas en detalle',
 			'hub.cards.programme' => 'Programa',
 			'hub.cards.programmeSub' => 'Distribuye tus etapas',
+			'hub.cards.calendar' => 'Calendario',
+			'hub.cards.calendarSub' => 'Elige las fechas',
 			'hub.cards.nuitees' => 'Pernoctaciones',
 			'hub.cards.nuiteesSub' => 'Reserva tus noches',
 			'hub.cards.checklist' => 'Equipo & Mochila',
@@ -3125,10 +3223,10 @@ extension on TranslationsEs {
 			'settings.language' => 'Idioma',
 			'settings.units' => 'Unidades',
 			'settings.distance' => 'Distancia',
-			'settings.temperature' => 'Temperatura',
-			'settings.theme' => 'Tema',
 			_ => null,
 		} ?? switch (path) {
+			'settings.temperature' => 'Temperatura',
+			'settings.theme' => 'Tema',
 			'settings.dark' => 'Oscuro',
 			'settings.light' => 'Claro',
 			'settings.system' => 'Sistema',
@@ -3639,10 +3737,10 @@ extension on TranslationsEs {
 			'moderation.a11y.statementCard' => 'Motivación de la decisión de moderación',
 			'moderation.a11y.complaintForm' => 'Formulario de impugnación de la decisión',
 			'bootstrap.loading' => 'Preparando tu excursión…',
-			'recap.title' => 'Mi aventura',
-			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			_ => null,
 		} ?? switch (path) {
+			'recap.title' => 'Mi aventura',
+			'recap.lockedTitle' => 'Disponible al final de la ruta',
 			'recap.lockedMessage' => 'Termina o abandona tu ruta para ver el resumen de tu aventura.',
 			'recap.finisherTitle' => 'Felicidades!',
 			'recap.finisherSubtitle' => 'Has completado tu ruta',
@@ -3701,6 +3799,40 @@ extension on TranslationsEs {
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
 			'programme.info.close' => '¡Entendido!',
+			'calendar.title' => 'Calendario',
+			'calendar.validate' => 'CONFIRMAR FECHAS',
+			'calendar.departure' => 'SALIDA',
+			'calendar.arrival' => 'LLEGADA',
+			'calendar.chooseDate' => 'Elegir una fecha',
+			'calendar.chooseDateAction' => 'ELEGIR UNA FECHA',
+			'calendar.previousMonth' => 'Mes anterior',
+			'calendar.nextMonth' => 'Mes siguiente',
+			'calendar.dayLabel' => 'D{n}',
+			'calendar.restDayLabel' => 'R',
+			'calendar.adjustStages' => 'AJUSTAR LAS ETAPAS',
+			'calendar.stageSingular' => 'Etapa {n}',
+			'calendar.stagesPlural' => 'Etapas {list}',
+			'calendar.splitStages' => 'Separar las etapas',
+			'calendar.mergeWithNext' => 'Agrupar con el día siguiente',
+			'calendar.weekdays.mon' => 'Lun',
+			'calendar.weekdays.tue' => 'Mar',
+			'calendar.weekdays.wed' => 'Mié',
+			'calendar.weekdays.thu' => 'Jue',
+			'calendar.weekdays.fri' => 'Vie',
+			'calendar.weekdays.sat' => 'Sáb',
+			'calendar.weekdays.sun' => 'Dom',
+			'calendar.legend.start' => 'Salida',
+			'calendar.legend.walk' => 'Marcha',
+			'calendar.legend.rest' => 'Descanso',
+			'calendar.legend.arrival' => 'Llegada',
+			'calendar.summary.totalDays' => 'Días total',
+			'calendar.summary.walkDays' => 'Días marcha',
+			'calendar.summary.restDays' => 'Días descanso',
+			'calendar.noDate.title' => 'Elige una fecha de salida',
+			'calendar.noDate.message' => 'El calendario de tu trek aparecerá automáticamente con los días de marcha y de descanso.',
+			'calendar.empty.title' => 'Configura primero tu itinerario',
+			'calendar.empty.message' => 'Elige tu ruta y la duración para poder configurar tus fechas.',
+			'calendar.empty.action' => 'CONFIGURAR EL ITINERARIO',
 			'nuitees.title' => 'Pernoctaciones',
 			'nuitees.guideTooltip' => 'Guía de pernoctaciones',
 			'nuitees.infoBar' => 'Reserva cada noche con antelación en temporada alta',

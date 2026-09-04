@@ -75,6 +75,8 @@
       "itinerarySub": "Your stages, day by day",
       "programme": "Programme",
       "programmeSub": "Spread out your stages",
+      "calendar": "Calendar",
+      "calendarSub": "Choose your dates",
       "nuitees": "Overnight stays",
       "nuiteesSub": "Book your nights",
       "checklist": "Gear & Pack",
@@ -1359,6 +1361,52 @@
       },
       "note": "The elevation profile at the bottom shows each day's ascent.",
       "close": "Got it!"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "validate": "CONFIRM DATES",
+    "departure": "DEPARTURE",
+    "arrival": "ARRIVAL",
+    "chooseDate": "Choose a date",
+    "chooseDateAction": "CHOOSE A DATE",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "dayLabel": "D{n}",
+    "restDayLabel": "R",
+    "adjustStages": "ADJUST STAGES",
+    "stageSingular": "Stage {n}",
+    "stagesPlural": "Stages {list}",
+    "splitStages": "Split the stages",
+    "mergeWithNext": "Merge with the next day",
+    "weekdays": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "legend": {
+      "start": "Departure",
+      "walk": "Hiking",
+      "rest": "Rest",
+      "arrival": "Arrival"
+    },
+    "summary": {
+      "totalDays": "Total days",
+      "walkDays": "Hiking days",
+      "restDays": "Rest days"
+    },
+    "noDate": {
+      "title": "Choose a departure date",
+      "message": "Your trek calendar will appear automatically with hiking and rest days."
+    },
+    "empty": {
+      "title": "Set up your itinerary first",
+      "message": "Choose your route and duration to be able to set up your dates.",
+      "action": "SET UP THE ITINERARY"
     }
   },
   "nuitees": {

@@ -143,6 +143,18 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.programmeSub,
                   onTap: () => context.push('/trail/$trailId/planning'),
                 ),
+                // PARITE GR20 (#99460) — CALENDRIER : outil de DATES (depart +
+                // arrivee calculee, calendrier visuel des jours de marche/repos
+                // du programme). Icone `calendar_month`, sous-titre « Choisir
+                // les dates » (parite GR20). Route hors-shell atteinte via
+                // `context.push` -> retour propre (jamais context.go qui viderait
+                // la pile).
+                QuickAccessCard(
+                  icon: Icons.calendar_month,
+                  title: t.hub.cards.calendar,
+                  subtitle: t.hub.cards.calendarSub,
+                  onTap: () => context.push('/trail/$trailId/calendar'),
+                ),
                 // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos
                 // nuits » (type de nuitee + reserve par nuit du programme).
                 // Route hors-shell atteinte via `context.push` -> retour propre

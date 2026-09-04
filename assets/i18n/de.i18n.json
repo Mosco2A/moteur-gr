@@ -75,6 +75,8 @@
       "itinerarySub": "Ihre Etappen im Detail",
       "programme": "Programm",
       "programmeSub": "Etappen aufteilen",
+      "calendar": "Kalender",
+      "calendarSub": "Daten wählen",
       "nuitees": "Übernachtungen",
       "nuiteesSub": "Buchen Sie Ihre Nächte",
       "checklist": "Ausrustung & Rucksack",
@@ -1359,6 +1361,52 @@
       },
       "note": "Das Höhenprofil unten zeigt den Aufstieg jedes Tages.",
       "close": "Verstanden!"
+    }
+  },
+  "calendar": {
+    "title": "Kalender",
+    "validate": "DATEN BESTÄTIGEN",
+    "departure": "ABREISE",
+    "arrival": "ANKUNFT",
+    "chooseDate": "Datum wählen",
+    "chooseDateAction": "DATUM WÄHLEN",
+    "previousMonth": "Voriger Monat",
+    "nextMonth": "Nächster Monat",
+    "dayLabel": "T{n}",
+    "restDayLabel": "R",
+    "adjustStages": "ETAPPEN ANPASSEN",
+    "stageSingular": "Etappe {n}",
+    "stagesPlural": "Etappen {list}",
+    "splitStages": "Etappen trennen",
+    "mergeWithNext": "Mit dem nächsten Tag zusammenlegen",
+    "weekdays": {
+      "mon": "Mo",
+      "tue": "Di",
+      "wed": "Mi",
+      "thu": "Do",
+      "fri": "Fr",
+      "sat": "Sa",
+      "sun": "So"
+    },
+    "legend": {
+      "start": "Abreise",
+      "walk": "Wandern",
+      "rest": "Ruhe",
+      "arrival": "Ankunft"
+    },
+    "summary": {
+      "totalDays": "Tage gesamt",
+      "walkDays": "Wandertage",
+      "restDays": "Ruhetage"
+    },
+    "noDate": {
+      "title": "Wähle ein Abreisedatum",
+      "message": "Dein Trek-Kalender wird automatisch mit Wander- und Ruhetagen angezeigt."
+    },
+    "empty": {
+      "title": "Richte zuerst deine Route ein",
+      "message": "Wähle deine Route und Dauer, um deine Daten festzulegen.",
+      "action": "ROUTE EINRICHTEN"
     }
   },
   "nuitees": {
