@@ -77,6 +77,8 @@
       "programmeSub": "Distribuye tus etapas",
       "calendar": "Calendario",
       "calendarSub": "Elige las fechas",
+      "transport": "Transporte",
+      "transportSub": "Ida y vuelta",
       "nuitees": "Pernoctaciones",
       "nuiteesSub": "Reserva tus noches",
       "checklist": "Equipo & Mochila",
@@ -1444,6 +1446,27 @@
       "title": "Configura primero tu itinerario",
       "message": "Elige tu ruta y duración para preparar tus noches.",
       "action": "CONFIGURAR ITINERARIO"
+    }
+  },
+  "transport": {
+    "title": "Transporte",
+    "tabJoin": "Llegar a la salida",
+    "tabJoinNamed": "Llegar a $name",
+    "tabLeave": "Salir de la llegada",
+    "tabLeaveNamed": "Salir de $name",
+    "joinTitle": "Llegar a $name",
+    "leaveTitle": "Salir de $name",
+    "adviceTitle": "Consejos prácticos",
+    "website": "Sitio web",
+    "a11y": {
+      "call": "Llamar a $label",
+      "website": "Abrir el sitio web"
+    },
+    "empty": {
+      "title": "Transporte próximamente",
+      "messageJoin": "La información para llegar a $name se añadirá pronto.",
+      "messageLeave": "La información para salir de $name se añadirá pronto.",
+      "messageGeneric": "La información de transporte de este sendero se añadirá pronto."
     }
   }
 }

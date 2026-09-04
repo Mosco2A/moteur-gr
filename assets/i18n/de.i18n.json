@@ -77,6 +77,8 @@
       "programmeSub": "Etappen aufteilen",
       "calendar": "Kalender",
       "calendarSub": "Daten wählen",
+      "transport": "Anreise",
+      "transportSub": "Hin & zurück",
       "nuitees": "Übernachtungen",
       "nuiteesSub": "Buchen Sie Ihre Nächte",
       "checklist": "Ausrustung & Rucksack",
@@ -1444,6 +1446,27 @@
       "title": "Richten Sie zuerst Ihre Route ein",
       "message": "Wählen Sie Strecke und Dauer, um Ihre Nächte zu planen.",
       "action": "ROUTE EINRICHTEN"
+    }
+  },
+  "transport": {
+    "title": "Anreise",
+    "tabJoin": "Zum Start",
+    "tabJoinNamed": "Nach $name",
+    "tabLeave": "Vom Ziel weg",
+    "tabLeaveNamed": "Ab $name",
+    "joinTitle": "Nach $name",
+    "leaveTitle": "Ab $name",
+    "adviceTitle": "Praktische Tipps",
+    "website": "Website",
+    "a11y": {
+      "call": "$label anrufen",
+      "website": "Website öffnen"
+    },
+    "empty": {
+      "title": "Anreise bald verfügbar",
+      "messageJoin": "Informationen zur Anreise nach $name folgen in Kürze.",
+      "messageLeave": "Informationen zur Abreise ab $name folgen in Kürze.",
+      "messageGeneric": "Anreiseinformationen für diesen Weg folgen in Kürze."
     }
   }
 }

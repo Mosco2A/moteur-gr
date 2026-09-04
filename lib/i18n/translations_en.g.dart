@@ -93,6 +93,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$programme$en programme = _Translations$programme$en._(_root);
 	@override late final _Translations$calendar$en calendar = _Translations$calendar$en._(_root);
 	@override late final _Translations$nuitees$en nuitees = _Translations$nuitees$en._(_root);
+	@override late final _Translations$transport$en transport = _Translations$transport$en._(_root);
 }
 
 // Path: a11y
@@ -1204,6 +1205,26 @@ class _Translations$nuitees$en extends Translations$nuitees$fr {
 	@override late final _Translations$nuitees$empty$en empty = _Translations$nuitees$empty$en._(_root);
 }
 
+// Path: transport
+class _Translations$transport$en extends Translations$transport$fr {
+	_Translations$transport$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Transport';
+	@override String get tabJoin => 'Getting to the start';
+	@override String tabJoinNamed({required Object name}) => 'Getting to ${name}';
+	@override String get tabLeave => 'Leaving the finish';
+	@override String tabLeaveNamed({required Object name}) => 'Leaving ${name}';
+	@override String joinTitle({required Object name}) => 'Getting to ${name}';
+	@override String leaveTitle({required Object name}) => 'Leaving ${name}';
+	@override String get adviceTitle => 'Practical tips';
+	@override String get website => 'Website';
+	@override late final _Translations$transport$a11y$en a11y = _Translations$transport$a11y$en._(_root);
+	@override late final _Translations$transport$empty$en empty = _Translations$transport$empty$en._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$en extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1264,6 +1285,8 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get programmeSub => 'Spread out your stages';
 	@override String get calendar => 'Calendar';
 	@override String get calendarSub => 'Choose your dates';
+	@override String get transport => 'Transport';
+	@override String get transportSub => 'Getting there & back';
 	@override String get nuitees => 'Overnight stays';
 	@override String get nuiteesSub => 'Book your nights';
 	@override String get checklist => 'Gear & Pack';
@@ -2377,6 +2400,30 @@ class _Translations$nuitees$empty$en extends Translations$nuitees$empty$fr {
 	@override String get action => 'SET UP ITINERARY';
 }
 
+// Path: transport.a11y
+class _Translations$transport$a11y$en extends Translations$transport$a11y$fr {
+	_Translations$transport$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String call({required Object label}) => 'Call ${label}';
+	@override String get website => 'Open website';
+}
+
+// Path: transport.empty
+class _Translations$transport$empty$en extends Translations$transport$empty$fr {
+	_Translations$transport$empty$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Transport coming soon';
+	@override String messageJoin({required Object name}) => 'Information on getting to ${name} will be added soon.';
+	@override String messageLeave({required Object name}) => 'Information on leaving ${name} will be added soon.';
+	@override String get messageGeneric => 'Transport information for this trail will be added soon.';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$en extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2776,6 +2823,8 @@ extension on TranslationsEn {
 			'hub.cards.programmeSub' => 'Spread out your stages',
 			'hub.cards.calendar' => 'Calendar',
 			'hub.cards.calendarSub' => 'Choose your dates',
+			'hub.cards.transport' => 'Transport',
+			'hub.cards.transportSub' => 'Getting there & back',
 			'hub.cards.nuitees' => 'Overnight stays',
 			'hub.cards.nuiteesSub' => 'Book your nights',
 			'hub.cards.checklist' => 'Gear & Pack',
@@ -3222,10 +3271,10 @@ extension on TranslationsEn {
 			'notifications.schedulerDailyTitle' => 'Have a great trek day!',
 			'notifications.schedulerDailyBody' => 'Check the weather and prepare today\'s stage.',
 			'settings.title' => 'Settings',
-			'settings.language' => 'Language',
-			'settings.units' => 'Units',
 			_ => null,
 		} ?? switch (path) {
+			'settings.language' => 'Language',
+			'settings.units' => 'Units',
 			'settings.distance' => 'Distance',
 			'settings.temperature' => 'Temperature',
 			'settings.theme' => 'Theme',
@@ -3736,10 +3785,10 @@ extension on TranslationsEn {
 			'moderation.a11y.reasonSelector' => 'Report reason selector',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
 			'moderation.a11y.submitReport' => 'Send report',
-			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
-			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
+			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			'bootstrap.loading' => 'Preparing your hike…',
 			'recap.title' => 'My adventure',
 			'recap.lockedTitle' => 'Available at the end of the trek',
@@ -3859,6 +3908,21 @@ extension on TranslationsEn {
 			'nuitees.empty.title' => 'Set up your itinerary first',
 			'nuitees.empty.message' => 'Choose your route and duration to plan your nights.',
 			'nuitees.empty.action' => 'SET UP ITINERARY',
+			'transport.title' => 'Transport',
+			'transport.tabJoin' => 'Getting to the start',
+			'transport.tabJoinNamed' => ({required Object name}) => 'Getting to ${name}',
+			'transport.tabLeave' => 'Leaving the finish',
+			'transport.tabLeaveNamed' => ({required Object name}) => 'Leaving ${name}',
+			'transport.joinTitle' => ({required Object name}) => 'Getting to ${name}',
+			'transport.leaveTitle' => ({required Object name}) => 'Leaving ${name}',
+			'transport.adviceTitle' => 'Practical tips',
+			'transport.website' => 'Website',
+			'transport.a11y.call' => ({required Object label}) => 'Call ${label}',
+			'transport.a11y.website' => 'Open website',
+			'transport.empty.title' => 'Transport coming soon',
+			'transport.empty.messageJoin' => ({required Object name}) => 'Information on getting to ${name} will be added soon.',
+			'transport.empty.messageLeave' => ({required Object name}) => 'Information on leaving ${name} will be added soon.',
+			'transport.empty.messageGeneric' => 'Transport information for this trail will be added soon.',
 			_ => null,
 		};
 	}

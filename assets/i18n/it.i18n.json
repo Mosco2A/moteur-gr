@@ -77,6 +77,8 @@
       "programmeSub": "Distribuisci le tappe",
       "calendar": "Calendario",
       "calendarSub": "Scegli le date",
+      "transport": "Trasporti",
+      "transportSub": "Andata e ritorno",
       "nuitees": "Pernottamenti",
       "nuiteesSub": "Prenota le tue notti",
       "checklist": "Attrezzatura & Zaino",
@@ -1444,6 +1446,27 @@
       "title": "Configura prima il tuo itinerario",
       "message": "Scegli percorso e durata per preparare i tuoi pernottamenti.",
       "action": "CONFIGURA ITINERARIO"
+    }
+  },
+  "transport": {
+    "title": "Trasporti",
+    "tabJoin": "Raggiungere la partenza",
+    "tabJoinNamed": "Raggiungere $name",
+    "tabLeave": "Ripartire dall'arrivo",
+    "tabLeaveNamed": "Ripartire da $name",
+    "joinTitle": "Raggiungere $name",
+    "leaveTitle": "Ripartire da $name",
+    "adviceTitle": "Consigli pratici",
+    "website": "Sito web",
+    "a11y": {
+      "call": "Chiama $label",
+      "website": "Apri il sito web"
+    },
+    "empty": {
+      "title": "Trasporti presto disponibili",
+      "messageJoin": "Le informazioni per raggiungere $name saranno aggiunte a breve.",
+      "messageLeave": "Le informazioni per ripartire da $name saranno aggiunte a breve.",
+      "messageGeneric": "Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve."
     }
   }
 }

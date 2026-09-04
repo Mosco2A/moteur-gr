@@ -136,21 +136,24 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 15 sous-routes (+ calendar)', () {
+    test('la route /trail/:id conserve ses 16 sous-routes (+ transport)', () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
       // +1 : 'itinerary' (PARITE GR20 #99433, deroule des etapes + fix nav).
       // +1 : 'nuitees' (PARITE GR20 #99460, assistant « Reserver vos nuits »).
       // +1 : 'calendar' (PARITE GR20 #99460, outil de DATES : depart/arrivee +
       //      calendrier des jours de marche/repos).
+      // +1 : 'transport' (PARITE GR20 #99460, ecran « Aller & retour »
+      //      data-driven : 2 onglets, endpoints resolus des donnees du sentier).
       final trail = trailRoute();
-      expect(trail.routes.length, 15);
+      expect(trail.routes.length, 16);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
         'map',
         'planning',
         'calendar',
+        'transport',
         'itinerary',
         'checklist',
         'nuitees',
@@ -173,6 +176,7 @@ void main() {
         'trail-map',
         'trail-planning',
         'trail-calendar',
+        'trail-transport',
         'trail-itinerary',
         'trail-checklist',
         'trail-nuitees',

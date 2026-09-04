@@ -77,6 +77,8 @@
       "programmeSub": "Spread out your stages",
       "calendar": "Calendar",
       "calendarSub": "Choose your dates",
+      "transport": "Transport",
+      "transportSub": "Getting there & back",
       "nuitees": "Overnight stays",
       "nuiteesSub": "Book your nights",
       "checklist": "Gear & Pack",
@@ -1444,6 +1446,27 @@
       "title": "Set up your itinerary first",
       "message": "Choose your route and duration to plan your nights.",
       "action": "SET UP ITINERARY"
+    }
+  },
+  "transport": {
+    "title": "Transport",
+    "tabJoin": "Getting to the start",
+    "tabJoinNamed": "Getting to $name",
+    "tabLeave": "Leaving the finish",
+    "tabLeaveNamed": "Leaving $name",
+    "joinTitle": "Getting to $name",
+    "leaveTitle": "Leaving $name",
+    "adviceTitle": "Practical tips",
+    "website": "Website",
+    "a11y": {
+      "call": "Call $label",
+      "website": "Open website"
+    },
+    "empty": {
+      "title": "Transport coming soon",
+      "messageJoin": "Information on getting to $name will be added soon.",
+      "messageLeave": "Information on leaving $name will be added soon.",
+      "messageGeneric": "Transport information for this trail will be added soon."
     }
   }
 }

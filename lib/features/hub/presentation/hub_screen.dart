@@ -165,6 +165,19 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.nuiteesSub,
                   onTap: () => context.push('/trail/$trailId/nuitees'),
                 ),
+                // PARITE GR20 (#99460) — TRANSPORT : carte « Aller & retour »
+                // (clone GR20 `TransportScreen`, data-driven). Deux onglets
+                // aller/retour, endpoints resolus depuis les donnees du sentier
+                // (direction-aware), contenu venant du catalogue transport du
+                // sentier. Route hors-shell atteinte via `context.push` (retour
+                // propre, pile preservee — jamais context.go qui viderait la
+                // pile). Generique multi-sentiers, zero hardcode de localite.
+                QuickAccessCard(
+                  icon: Icons.directions_bus,
+                  title: t.hub.cards.transport,
+                  subtitle: t.hub.cards.transportSub,
+                  onTap: () => context.push('/trail/$trailId/transport'),
+                ),
                 QuickAccessCard(
                   icon: Icons.checklist_rtl,
                   title: t.hub.cards.checklist,
