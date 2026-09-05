@@ -94,6 +94,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$programme$fr programme = Translations$programme$fr.internal(_root);
 	late final Translations$calendar$fr calendar = Translations$calendar$fr.internal(_root);
 	late final Translations$nuitees$fr nuitees = Translations$nuitees$fr.internal(_root);
+	late final Translations$transport$fr transport = Translations$transport$fr.internal(_root);
 }
 
 // Path: a11y
@@ -2344,6 +2345,45 @@ class Translations$nuitees$fr {
 	late final Translations$nuitees$empty$fr empty = Translations$nuitees$empty$fr.internal(_root);
 }
 
+// Path: transport
+class Translations$transport$fr {
+	Translations$transport$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Transport'
+	String get title => 'Transport';
+
+	/// fr: 'Rejoindre le départ'
+	String get tabJoin => 'Rejoindre le départ';
+
+	/// fr: 'Rejoindre $name'
+	String tabJoinNamed({required Object name}) => 'Rejoindre ${name}';
+
+	/// fr: 'Repartir de l'arrivée'
+	String get tabLeave => 'Repartir de l\'arrivée';
+
+	/// fr: 'Repartir de $name'
+	String tabLeaveNamed({required Object name}) => 'Repartir de ${name}';
+
+	/// fr: 'Rejoindre $name'
+	String joinTitle({required Object name}) => 'Rejoindre ${name}';
+
+	/// fr: 'Repartir de $name'
+	String leaveTitle({required Object name}) => 'Repartir de ${name}';
+
+	/// fr: 'Conseils pratiques'
+	String get adviceTitle => 'Conseils pratiques';
+
+	/// fr: 'Site web'
+	String get website => 'Site web';
+
+	late final Translations$transport$a11y$fr a11y = Translations$transport$a11y$fr.internal(_root);
+	late final Translations$transport$empty$fr empty = Translations$transport$empty$fr.internal(_root);
+}
+
 // Path: hub.trekCard
 class Translations$hub$trekCard$fr {
 	Translations$hub$trekCard$fr.internal(this._root);
@@ -2456,6 +2496,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Choisir les dates'
 	String get calendarSub => 'Choisir les dates';
+
+	/// fr: 'Transport'
+	String get transport => 'Transport';
+
+	/// fr: 'Aller & retour'
+	String get transportSub => 'Aller & retour';
 
 	/// fr: 'Nuitées'
 	String get nuitees => 'Nuitées';
@@ -4572,6 +4618,42 @@ class Translations$nuitees$empty$fr {
 	String get action => 'CONFIGURER L\'ITINÉRAIRE';
 }
 
+// Path: transport.a11y
+class Translations$transport$a11y$fr {
+	Translations$transport$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Appeler $label'
+	String call({required Object label}) => 'Appeler ${label}';
+
+	/// fr: 'Ouvrir le site web'
+	String get website => 'Ouvrir le site web';
+}
+
+// Path: transport.empty
+class Translations$transport$empty$fr {
+	Translations$transport$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Transport bientôt disponible'
+	String get title => 'Transport bientôt disponible';
+
+	/// fr: 'Les informations pour rejoindre $name seront ajoutées prochainement.'
+	String messageJoin({required Object name}) => 'Les informations pour rejoindre ${name} seront ajoutées prochainement.';
+
+	/// fr: 'Les informations pour repartir de $name seront ajoutées prochainement.'
+	String messageLeave({required Object name}) => 'Les informations pour repartir de ${name} seront ajoutées prochainement.';
+
+	/// fr: 'Les informations de transport de ce sentier seront ajoutées prochainement.'
+	String get messageGeneric => 'Les informations de transport de ce sentier seront ajoutées prochainement.';
+}
+
 // Path: weather.alert.storm
 class Translations$weather$alert$storm$fr {
 	Translations$weather$alert$storm$fr.internal(this._root);
@@ -5099,6 +5181,8 @@ extension on Translations {
 			'hub.cards.programmeSub' => 'Répartissez vos étapes',
 			'hub.cards.calendar' => 'Calendrier',
 			'hub.cards.calendarSub' => 'Choisir les dates',
+			'hub.cards.transport' => 'Transport',
+			'hub.cards.transportSub' => 'Aller & retour',
 			'hub.cards.nuitees' => 'Nuitées',
 			'hub.cards.nuiteesSub' => 'Réserver vos nuits',
 			'hub.cards.checklist' => 'Materiel & Sac',
@@ -5545,10 +5629,10 @@ extension on Translations {
 			'notifications.schedulerDailyTitle' => 'Bonne journee de randonnée !',
 			'notifications.schedulerDailyBody' => 'Consultez la meteo et preparez votre etape du jour.',
 			'settings.title' => 'Paramètres',
-			'settings.language' => 'Langue',
-			'settings.units' => 'Unités',
 			_ => null,
 		} ?? switch (path) {
+			'settings.language' => 'Langue',
+			'settings.units' => 'Unités',
 			'settings.distance' => 'Distance',
 			'settings.temperature' => 'Température',
 			'settings.theme' => 'Thème',
@@ -6059,10 +6143,10 @@ extension on Translations {
 			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
 			'moderation.a11y.submitReport' => 'Envoyer le signalement',
-			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
-			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
+			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			'bootstrap.loading' => 'Préparation de votre randonnée…',
 			'recap.title' => 'Mon aventure',
 			'recap.lockedTitle' => 'Disponible a la fin du trek',
@@ -6182,6 +6266,21 @@ extension on Translations {
 			'nuitees.empty.title' => 'Configurez d\'abord votre itinéraire',
 			'nuitees.empty.message' => 'Choisissez votre parcours et la durée pour préparer vos nuits.',
 			'nuitees.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
+			'transport.title' => 'Transport',
+			'transport.tabJoin' => 'Rejoindre le départ',
+			'transport.tabJoinNamed' => ({required Object name}) => 'Rejoindre ${name}',
+			'transport.tabLeave' => 'Repartir de l\'arrivée',
+			'transport.tabLeaveNamed' => ({required Object name}) => 'Repartir de ${name}',
+			'transport.joinTitle' => ({required Object name}) => 'Rejoindre ${name}',
+			'transport.leaveTitle' => ({required Object name}) => 'Repartir de ${name}',
+			'transport.adviceTitle' => 'Conseils pratiques',
+			'transport.website' => 'Site web',
+			'transport.a11y.call' => ({required Object label}) => 'Appeler ${label}',
+			'transport.a11y.website' => 'Ouvrir le site web',
+			'transport.empty.title' => 'Transport bientôt disponible',
+			'transport.empty.messageJoin' => ({required Object name}) => 'Les informations pour rejoindre ${name} seront ajoutées prochainement.',
+			'transport.empty.messageLeave' => ({required Object name}) => 'Les informations pour repartir de ${name} seront ajoutées prochainement.',
+			'transport.empty.messageGeneric' => 'Les informations de transport de ce sentier seront ajoutées prochainement.',
 			_ => null,
 		};
 	}

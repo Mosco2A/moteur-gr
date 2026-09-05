@@ -15,6 +15,7 @@ import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/planning/presentation/calendar_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
+import '../../features/planning/presentation/transport_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
 import '../../features/weather/presentation/weather_screen.dart';
@@ -82,6 +83,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/map               - Carte du trace GPX
 ///   /trail/:id/planning          - PROGRAMME (clone GR20, via carte HUB)
 ///   /trail/:id/calendar          - CALENDRIER (dates + jours marche/repos)
+///   /trail/:id/transport         - TRANSPORT (aller/retour, data-driven)
 ///   /trail/:id/checklist         - Checklist materiel
 ///   /trail/:id/feasibility       - Questionnaire faisabilite
 ///   /trail/:id/tips              - Fiches conseils
@@ -275,6 +277,23 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
             return CalendarScreen(trailId: trailId);
+          },
+        ),
+        // PARITE GR20 (#99460) — TRANSPORT : ecran « Aller & retour » (clone
+        // GR20 `TransportScreen`, data-driven). Deux onglets aller/retour, les
+        // endpoints (depart/arrivee) sont resolus depuis les DONNEES du sentier
+        // (etapes : departureName/arrivalName, direction-aware) et le contenu
+        // (modes, operateurs, horaires, tel/liens) vient du catalogue transport
+        // du sentier — PAS de widgets hardcodes par localite comme GR20. La
+        // carte HUB « Transport » (section Preparer) ouvre cet ecran via
+        // `context.push` (retour propre). Generique multi-sentiers, fallback si
+        // aucune donnee transport.
+        GoRoute(
+          path: 'transport',
+          name: 'trail-transport',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return TransportScreen(trailId: trailId);
           },
         ),
         // PARITE GR20 (#99433) : ecran « Itineraire » = deroule des etapes du

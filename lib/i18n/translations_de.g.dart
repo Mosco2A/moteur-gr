@@ -93,6 +93,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$programme$de programme = _Translations$programme$de._(_root);
 	@override late final _Translations$calendar$de calendar = _Translations$calendar$de._(_root);
 	@override late final _Translations$nuitees$de nuitees = _Translations$nuitees$de._(_root);
+	@override late final _Translations$transport$de transport = _Translations$transport$de._(_root);
 }
 
 // Path: a11y
@@ -1204,6 +1205,26 @@ class _Translations$nuitees$de extends Translations$nuitees$fr {
 	@override late final _Translations$nuitees$empty$de empty = _Translations$nuitees$empty$de._(_root);
 }
 
+// Path: transport
+class _Translations$transport$de extends Translations$transport$fr {
+	_Translations$transport$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Anreise';
+	@override String get tabJoin => 'Zum Start';
+	@override String tabJoinNamed({required Object name}) => 'Nach ${name}';
+	@override String get tabLeave => 'Vom Ziel weg';
+	@override String tabLeaveNamed({required Object name}) => 'Ab ${name}';
+	@override String joinTitle({required Object name}) => 'Nach ${name}';
+	@override String leaveTitle({required Object name}) => 'Ab ${name}';
+	@override String get adviceTitle => 'Praktische Tipps';
+	@override String get website => 'Website';
+	@override late final _Translations$transport$a11y$de a11y = _Translations$transport$a11y$de._(_root);
+	@override late final _Translations$transport$empty$de empty = _Translations$transport$empty$de._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$de extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1264,6 +1285,8 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get programmeSub => 'Etappen aufteilen';
 	@override String get calendar => 'Kalender';
 	@override String get calendarSub => 'Daten wählen';
+	@override String get transport => 'Anreise';
+	@override String get transportSub => 'Hin & zurück';
 	@override String get nuitees => 'Übernachtungen';
 	@override String get nuiteesSub => 'Buchen Sie Ihre Nächte';
 	@override String get checklist => 'Ausrustung & Rucksack';
@@ -2377,6 +2400,30 @@ class _Translations$nuitees$empty$de extends Translations$nuitees$empty$fr {
 	@override String get action => 'ROUTE EINRICHTEN';
 }
 
+// Path: transport.a11y
+class _Translations$transport$a11y$de extends Translations$transport$a11y$fr {
+	_Translations$transport$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String call({required Object label}) => '${label} anrufen';
+	@override String get website => 'Website öffnen';
+}
+
+// Path: transport.empty
+class _Translations$transport$empty$de extends Translations$transport$empty$fr {
+	_Translations$transport$empty$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Anreise bald verfügbar';
+	@override String messageJoin({required Object name}) => 'Informationen zur Anreise nach ${name} folgen in Kürze.';
+	@override String messageLeave({required Object name}) => 'Informationen zur Abreise ab ${name} folgen in Kürze.';
+	@override String get messageGeneric => 'Anreiseinformationen für diesen Weg folgen in Kürze.';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$de extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -2776,6 +2823,8 @@ extension on TranslationsDe {
 			'hub.cards.programmeSub' => 'Etappen aufteilen',
 			'hub.cards.calendar' => 'Kalender',
 			'hub.cards.calendarSub' => 'Daten wählen',
+			'hub.cards.transport' => 'Anreise',
+			'hub.cards.transportSub' => 'Hin & zurück',
 			'hub.cards.nuitees' => 'Übernachtungen',
 			'hub.cards.nuiteesSub' => 'Buchen Sie Ihre Nächte',
 			'hub.cards.checklist' => 'Ausrustung & Rucksack',
@@ -3222,10 +3271,10 @@ extension on TranslationsDe {
 			'notifications.schedulerDailyTitle' => 'Guten Trek-Tag!',
 			'notifications.schedulerDailyBody' => 'Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.',
 			'settings.title' => 'Einstellungen',
-			'settings.language' => 'Sprache',
-			'settings.units' => 'Einheiten',
 			_ => null,
 		} ?? switch (path) {
+			'settings.language' => 'Sprache',
+			'settings.units' => 'Einheiten',
 			'settings.distance' => 'Entfernung',
 			'settings.temperature' => 'Temperatur',
 			'settings.theme' => 'Thema',
@@ -3736,10 +3785,10 @@ extension on TranslationsDe {
 			'moderation.a11y.reasonSelector' => 'Auswahl des Meldegrunds',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Erklärung in gutem Glauben, ${state}',
 			'moderation.a11y.submitReport' => 'Meldung senden',
-			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
-			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
+			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
 			'bootstrap.loading' => 'Ihre Wanderung wird vorbereitet…',
 			'recap.title' => 'Mein Abenteuer',
 			'recap.lockedTitle' => 'Verfugbar am Ende der Tour',
@@ -3859,6 +3908,21 @@ extension on TranslationsDe {
 			'nuitees.empty.title' => 'Richten Sie zuerst Ihre Route ein',
 			'nuitees.empty.message' => 'Wählen Sie Strecke und Dauer, um Ihre Nächte zu planen.',
 			'nuitees.empty.action' => 'ROUTE EINRICHTEN',
+			'transport.title' => 'Anreise',
+			'transport.tabJoin' => 'Zum Start',
+			'transport.tabJoinNamed' => ({required Object name}) => 'Nach ${name}',
+			'transport.tabLeave' => 'Vom Ziel weg',
+			'transport.tabLeaveNamed' => ({required Object name}) => 'Ab ${name}',
+			'transport.joinTitle' => ({required Object name}) => 'Nach ${name}',
+			'transport.leaveTitle' => ({required Object name}) => 'Ab ${name}',
+			'transport.adviceTitle' => 'Praktische Tipps',
+			'transport.website' => 'Website',
+			'transport.a11y.call' => ({required Object label}) => '${label} anrufen',
+			'transport.a11y.website' => 'Website öffnen',
+			'transport.empty.title' => 'Anreise bald verfügbar',
+			'transport.empty.messageJoin' => ({required Object name}) => 'Informationen zur Anreise nach ${name} folgen in Kürze.',
+			'transport.empty.messageLeave' => ({required Object name}) => 'Informationen zur Abreise ab ${name} folgen in Kürze.',
+			'transport.empty.messageGeneric' => 'Anreiseinformationen für diesen Weg folgen in Kürze.',
 			_ => null,
 		};
 	}
