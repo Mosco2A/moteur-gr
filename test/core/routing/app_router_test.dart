@@ -136,7 +136,7 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 17 sous-routes (+ summary)', () {
+    test('la route /trail/:id conserve ses 18 sous-routes (+ shop)', () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
       // +1 : 'itinerary' (PARITE GR20 #99433, deroule des etapes + fix nav).
@@ -145,10 +145,12 @@ void main() {
       //      calendrier des jours de marche/repos).
       // +1 : 'transport' (PARITE GR20 #99460, ecran « Aller & retour »
       //      data-driven : 2 onglets, endpoints resolus des donnees du sentier).
+      // +1 : 'shop' (PARITE GR20 #99460, ecran « Ravitaillement » data-driven :
+      //      commerces par etape, filtres par type, alerte de gap).
       // +1 : 'summary' (PARITE GR20 #99460, ecran « Synthese du plan »
       //      agregateur : programme, stats, nuitees, dates du sentier courant).
       final trail = trailRoute();
-      expect(trail.routes.length, 17);
+      expect(trail.routes.length, 18);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -156,6 +158,7 @@ void main() {
         'planning',
         'calendar',
         'transport',
+        'shop',
         'summary',
         'itinerary',
         'checklist',
@@ -180,6 +183,7 @@ void main() {
         'trail-planning',
         'trail-calendar',
         'trail-transport',
+        'trail-shop',
         'trail-summary',
         'trail-itinerary',
         'trail-checklist',

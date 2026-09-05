@@ -94,6 +94,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$calendar$en calendar = _Translations$calendar$en._(_root);
 	@override late final _Translations$nuitees$en nuitees = _Translations$nuitees$en._(_root);
 	@override late final _Translations$transport$en transport = _Translations$transport$en._(_root);
+	@override late final _Translations$shop$en shop = _Translations$shop$en._(_root);
 	@override late final _Translations$summary$en summary = _Translations$summary$en._(_root);
 }
 
@@ -1226,6 +1227,36 @@ class _Translations$transport$en extends Translations$transport$fr {
 	@override late final _Translations$transport$empty$en empty = _Translations$transport$empty$en._(_root);
 }
 
+// Path: shop
+class _Translations$shop$en extends Translations$shop$fr {
+	_Translations$shop$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Supplies';
+	@override String get filterAll => 'All';
+	@override String get typeEpicerie => 'Grocery';
+	@override String get typeBar => 'Bar/Restaurant';
+	@override String get typePharmacie => 'Pharmacy';
+	@override String get typeGaz => 'Gas/Gear';
+	@override String get limitedTitle => 'Limited resupply points';
+	@override String stageHeader({required Object n}) => 'Stage ${n}';
+	@override String stageBadge({required Object n}) => 'Stage ${n}';
+	@override String gapShort({required Object n}) => 'Last resupply before ${n} stages without a shop';
+	@override String gapLong({required Object n}) => 'Last resupply before ${n} stages without a shop. Stock up!';
+	@override String get sectionInfo => 'Information';
+	@override String get sectionProducts => 'Available products';
+	@override String get fieldType => 'Type';
+	@override String get fieldStage => 'Stage';
+	@override String get fieldGps => 'GPS';
+	@override String get fieldHours => 'Hours';
+	@override String get website => 'Website';
+	@override String get filterEmpty => 'No shop for this filter.';
+	@override late final _Translations$shop$a11y$en a11y = _Translations$shop$a11y$en._(_root);
+	@override late final _Translations$shop$empty$en empty = _Translations$shop$empty$en._(_root);
+}
+
 // Path: summary
 class _Translations$summary$en extends Translations$summary$fr {
 	_Translations$summary$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1342,6 +1373,8 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get diplomaSub => 'Your finisher certificate';
 	@override String get resume => 'Summary';
 	@override String get resumeSub => 'Plan overview';
+	@override String get shop => 'Supplies';
+	@override String get shopSub => 'Groceries, pharmacies, gas';
 }
 
 // Path: hub.fab
@@ -2455,6 +2488,29 @@ class _Translations$transport$empty$en extends Translations$transport$empty$fr {
 	@override String get messageGeneric => 'Transport information for this trail will be added soon.';
 }
 
+// Path: shop.a11y
+class _Translations$shop$a11y$en extends Translations$shop$a11y$fr {
+	_Translations$shop$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String openDetail({required Object name}) => 'View details for ${name}';
+	@override String call({required Object label}) => 'Call ${label}';
+	@override String get website => 'Open website';
+}
+
+// Path: shop.empty
+class _Translations$shop$empty$en extends Translations$shop$empty$fr {
+	_Translations$shop$empty$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Supplies coming soon';
+	@override String get message => 'Shops and resupply points for this trail will be added soon.';
+}
+
 // Path: summary.stats
 class _Translations$summary$stats$en extends Translations$summary$stats$fr {
 	_Translations$summary$stats$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2959,6 +3015,8 @@ extension on TranslationsEn {
 			'hub.cards.diplomaSub' => 'Your finisher certificate',
 			'hub.cards.resume' => 'Summary',
 			'hub.cards.resumeSub' => 'Plan overview',
+			'hub.cards.shop' => 'Supplies',
+			'hub.cards.shopSub' => 'Groceries, pharmacies, gas',
 			'hub.fab.feedback' => 'Give feedback',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Trail map',
@@ -3377,10 +3435,10 @@ extension on TranslationsEn {
 			'notifications.countdown' => 'D-2 reminder',
 			'notifications.countdownDesc' => 'Notification 2 days before departure',
 			'notifications.schedulerCountdownTitle' => 'Your trek is coming up!',
-			'notifications.schedulerCountdownBody' => 'Departure in 2 days. Check your checklist and the weather.',
-			'notifications.schedulerDailyTitle' => 'Have a great trek day!',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.schedulerCountdownBody' => 'Departure in 2 days. Check your checklist and the weather.',
+			'notifications.schedulerDailyTitle' => 'Have a great trek day!',
 			'notifications.schedulerDailyBody' => 'Check the weather and prepare today\'s stage.',
 			'settings.title' => 'Settings',
 			'settings.language' => 'Language',
@@ -3891,10 +3949,10 @@ extension on TranslationsEn {
 			'moderation.complaintSubmit' => 'Send challenge',
 			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
 			'moderation.complaintEmpty' => 'Please explain your challenge.',
-			'moderation.a11y.reportForm' => 'Content reporting form',
-			'moderation.a11y.reasonSelector' => 'Report reason selector',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.reportForm' => 'Content reporting form',
+			'moderation.a11y.reasonSelector' => 'Report reason selector',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
 			'moderation.a11y.submitReport' => 'Send report',
 			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
@@ -4033,6 +4091,30 @@ extension on TranslationsEn {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Information on getting to ${name} will be added soon.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Information on leaving ${name} will be added soon.',
 			'transport.empty.messageGeneric' => 'Transport information for this trail will be added soon.',
+			'shop.title' => 'Supplies',
+			'shop.filterAll' => 'All',
+			'shop.typeEpicerie' => 'Grocery',
+			'shop.typeBar' => 'Bar/Restaurant',
+			'shop.typePharmacie' => 'Pharmacy',
+			'shop.typeGaz' => 'Gas/Gear',
+			'shop.limitedTitle' => 'Limited resupply points',
+			'shop.stageHeader' => ({required Object n}) => 'Stage ${n}',
+			'shop.stageBadge' => ({required Object n}) => 'Stage ${n}',
+			'shop.gapShort' => ({required Object n}) => 'Last resupply before ${n} stages without a shop',
+			'shop.gapLong' => ({required Object n}) => 'Last resupply before ${n} stages without a shop. Stock up!',
+			'shop.sectionInfo' => 'Information',
+			'shop.sectionProducts' => 'Available products',
+			'shop.fieldType' => 'Type',
+			'shop.fieldStage' => 'Stage',
+			'shop.fieldGps' => 'GPS',
+			'shop.fieldHours' => 'Hours',
+			'shop.website' => 'Website',
+			'shop.filterEmpty' => 'No shop for this filter.',
+			'shop.a11y.openDetail' => ({required Object name}) => 'View details for ${name}',
+			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
+			'shop.a11y.website' => 'Open website',
+			'shop.empty.title' => 'Supplies coming soon',
+			'shop.empty.message' => 'Shops and resupply points for this trail will be added soon.',
 			'summary.title' => 'Plan summary',
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			'summary.direction' => 'Direction',

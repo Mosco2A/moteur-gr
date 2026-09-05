@@ -95,6 +95,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$calendar$fr calendar = Translations$calendar$fr.internal(_root);
 	late final Translations$nuitees$fr nuitees = Translations$nuitees$fr.internal(_root);
 	late final Translations$transport$fr transport = Translations$transport$fr.internal(_root);
+	late final Translations$shop$fr shop = Translations$shop$fr.internal(_root);
 	late final Translations$summary$fr summary = Translations$summary$fr.internal(_root);
 }
 
@@ -2385,6 +2386,75 @@ class Translations$transport$fr {
 	late final Translations$transport$empty$fr empty = Translations$transport$empty$fr.internal(_root);
 }
 
+// Path: shop
+class Translations$shop$fr {
+	Translations$shop$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ravitaillement'
+	String get title => 'Ravitaillement';
+
+	/// fr: 'Tous'
+	String get filterAll => 'Tous';
+
+	/// fr: 'Épicerie'
+	String get typeEpicerie => 'Épicerie';
+
+	/// fr: 'Bar/Restaurant'
+	String get typeBar => 'Bar/Restaurant';
+
+	/// fr: 'Pharmacie'
+	String get typePharmacie => 'Pharmacie';
+
+	/// fr: 'Gaz/Matériel'
+	String get typeGaz => 'Gaz/Matériel';
+
+	/// fr: 'Points de ravitaillement limités'
+	String get limitedTitle => 'Points de ravitaillement limités';
+
+	/// fr: 'Étape $n'
+	String stageHeader({required Object n}) => 'Étape ${n}';
+
+	/// fr: 'Étape $n'
+	String stageBadge({required Object n}) => 'Étape ${n}';
+
+	/// fr: 'Dernier ravitaillement avant $n étapes sans commerce'
+	String gapShort({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce';
+
+	/// fr: 'Dernier ravitaillement avant $n étapes sans commerce. Prévoyez vos réserves !'
+	String gapLong({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce. Prévoyez vos réserves !';
+
+	/// fr: 'Informations'
+	String get sectionInfo => 'Informations';
+
+	/// fr: 'Produits disponibles'
+	String get sectionProducts => 'Produits disponibles';
+
+	/// fr: 'Type'
+	String get fieldType => 'Type';
+
+	/// fr: 'Étape'
+	String get fieldStage => 'Étape';
+
+	/// fr: 'GPS'
+	String get fieldGps => 'GPS';
+
+	/// fr: 'Horaires'
+	String get fieldHours => 'Horaires';
+
+	/// fr: 'Site web'
+	String get website => 'Site web';
+
+	/// fr: 'Aucun commerce pour ce filtre.'
+	String get filterEmpty => 'Aucun commerce pour ce filtre.';
+
+	late final Translations$shop$a11y$fr a11y = Translations$shop$a11y$fr.internal(_root);
+	late final Translations$shop$empty$fr empty = Translations$shop$empty$fr.internal(_root);
+}
+
 // Path: summary
 class Translations$summary$fr {
 	Translations$summary$fr.internal(this._root);
@@ -2639,6 +2709,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Synthèse du plan'
 	String get resumeSub => 'Synthèse du plan';
+
+	/// fr: 'Ravitaillement'
+	String get shop => 'Ravitaillement';
+
+	/// fr: 'Épiceries, pharmacies, gaz'
+	String get shopSub => 'Épiceries, pharmacies, gaz';
 }
 
 // Path: hub.fab
@@ -4719,6 +4795,39 @@ class Translations$transport$empty$fr {
 	String get messageGeneric => 'Les informations de transport de ce sentier seront ajoutées prochainement.';
 }
 
+// Path: shop.a11y
+class Translations$shop$a11y$fr {
+	Translations$shop$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Voir le détail de $name'
+	String openDetail({required Object name}) => 'Voir le détail de ${name}';
+
+	/// fr: 'Appeler $label'
+	String call({required Object label}) => 'Appeler ${label}';
+
+	/// fr: 'Ouvrir le site web'
+	String get website => 'Ouvrir le site web';
+}
+
+// Path: shop.empty
+class Translations$shop$empty$fr {
+	Translations$shop$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ravitaillement bientôt disponible'
+	String get title => 'Ravitaillement bientôt disponible';
+
+	/// fr: 'Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement.'
+	String get message => 'Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement.';
+}
+
 // Path: summary.stats
 class Translations$summary$stats$fr {
 	Translations$summary$stats$fr.internal(this._root);
@@ -5415,6 +5524,8 @@ extension on Translations {
 			'hub.cards.diplomaSub' => 'Votre certificat de fin',
 			'hub.cards.resume' => 'Résumé',
 			'hub.cards.resumeSub' => 'Synthèse du plan',
+			'hub.cards.shop' => 'Ravitaillement',
+			'hub.cards.shopSub' => 'Épiceries, pharmacies, gaz',
 			'hub.fab.feedback' => 'Donner mon avis',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Carte du sentier',
@@ -5833,10 +5944,10 @@ extension on Translations {
 			'notifications.countdown' => 'Rappel J-2',
 			'notifications.countdownDesc' => 'Notification 2 jours avant le départ',
 			'notifications.schedulerCountdownTitle' => 'Votre randonnée approche !',
-			'notifications.schedulerCountdownBody' => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.',
-			'notifications.schedulerDailyTitle' => 'Bonne journee de randonnée !',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.schedulerCountdownBody' => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.',
+			'notifications.schedulerDailyTitle' => 'Bonne journee de randonnée !',
 			'notifications.schedulerDailyBody' => 'Consultez la meteo et preparez votre etape du jour.',
 			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',
@@ -6347,10 +6458,10 @@ extension on Translations {
 			'moderation.complaintSubmit' => 'Envoyer la contestation',
 			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
 			'moderation.complaintEmpty' => 'Veuillez expliquer votre contestation.',
-			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
-			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
+			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
 			'moderation.a11y.submitReport' => 'Envoyer le signalement',
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
@@ -6489,6 +6600,30 @@ extension on Translations {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Les informations pour rejoindre ${name} seront ajoutées prochainement.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Les informations pour repartir de ${name} seront ajoutées prochainement.',
 			'transport.empty.messageGeneric' => 'Les informations de transport de ce sentier seront ajoutées prochainement.',
+			'shop.title' => 'Ravitaillement',
+			'shop.filterAll' => 'Tous',
+			'shop.typeEpicerie' => 'Épicerie',
+			'shop.typeBar' => 'Bar/Restaurant',
+			'shop.typePharmacie' => 'Pharmacie',
+			'shop.typeGaz' => 'Gaz/Matériel',
+			'shop.limitedTitle' => 'Points de ravitaillement limités',
+			'shop.stageHeader' => ({required Object n}) => 'Étape ${n}',
+			'shop.stageBadge' => ({required Object n}) => 'Étape ${n}',
+			'shop.gapShort' => ({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce',
+			'shop.gapLong' => ({required Object n}) => 'Dernier ravitaillement avant ${n} étapes sans commerce. Prévoyez vos réserves !',
+			'shop.sectionInfo' => 'Informations',
+			'shop.sectionProducts' => 'Produits disponibles',
+			'shop.fieldType' => 'Type',
+			'shop.fieldStage' => 'Étape',
+			'shop.fieldGps' => 'GPS',
+			'shop.fieldHours' => 'Horaires',
+			'shop.website' => 'Site web',
+			'shop.filterEmpty' => 'Aucun commerce pour ce filtre.',
+			'shop.a11y.openDetail' => ({required Object name}) => 'Voir le détail de ${name}',
+			'shop.a11y.call' => ({required Object label}) => 'Appeler ${label}',
+			'shop.a11y.website' => 'Ouvrir le site web',
+			'shop.empty.title' => 'Ravitaillement bientôt disponible',
+			'shop.empty.message' => 'Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement.',
 			'summary.title' => 'Résumé du plan',
 			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
 			'summary.direction' => 'Direction',

@@ -94,6 +94,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$calendar$es calendar = _Translations$calendar$es._(_root);
 	@override late final _Translations$nuitees$es nuitees = _Translations$nuitees$es._(_root);
 	@override late final _Translations$transport$es transport = _Translations$transport$es._(_root);
+	@override late final _Translations$shop$es shop = _Translations$shop$es._(_root);
 	@override late final _Translations$summary$es summary = _Translations$summary$es._(_root);
 }
 
@@ -1226,6 +1227,36 @@ class _Translations$transport$es extends Translations$transport$fr {
 	@override late final _Translations$transport$empty$es empty = _Translations$transport$empty$es._(_root);
 }
 
+// Path: shop
+class _Translations$shop$es extends Translations$shop$fr {
+	_Translations$shop$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Avituallamiento';
+	@override String get filterAll => 'Todos';
+	@override String get typeEpicerie => 'Tienda';
+	@override String get typeBar => 'Bar/Restaurante';
+	@override String get typePharmacie => 'Farmacia';
+	@override String get typeGaz => 'Gas/Material';
+	@override String get limitedTitle => 'Puntos de avituallamiento limitados';
+	@override String stageHeader({required Object n}) => 'Etapa ${n}';
+	@override String stageBadge({required Object n}) => 'Etapa ${n}';
+	@override String gapShort({required Object n}) => 'Último avituallamiento antes de ${n} etapas sin comercio';
+	@override String gapLong({required Object n}) => 'Último avituallamiento antes de ${n} etapas sin comercio. ¡Abastécete!';
+	@override String get sectionInfo => 'Información';
+	@override String get sectionProducts => 'Productos disponibles';
+	@override String get fieldType => 'Tipo';
+	@override String get fieldStage => 'Etapa';
+	@override String get fieldGps => 'GPS';
+	@override String get fieldHours => 'Horario';
+	@override String get website => 'Sitio web';
+	@override String get filterEmpty => 'Ningún comercio para este filtro.';
+	@override late final _Translations$shop$a11y$es a11y = _Translations$shop$a11y$es._(_root);
+	@override late final _Translations$shop$empty$es empty = _Translations$shop$empty$es._(_root);
+}
+
 // Path: summary
 class _Translations$summary$es extends Translations$summary$fr {
 	_Translations$summary$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -1342,6 +1373,8 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get diplomaSub => 'Tu certificado final';
 	@override String get resume => 'Resumen';
 	@override String get resumeSub => 'Síntesis del plan';
+	@override String get shop => 'Avituallamiento';
+	@override String get shopSub => 'Tiendas, farmacias, gas';
 }
 
 // Path: hub.fab
@@ -2455,6 +2488,29 @@ class _Translations$transport$empty$es extends Translations$transport$empty$fr {
 	@override String get messageGeneric => 'La información de transporte de este sendero se añadirá pronto.';
 }
 
+// Path: shop.a11y
+class _Translations$shop$a11y$es extends Translations$shop$a11y$fr {
+	_Translations$shop$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String openDetail({required Object name}) => 'Ver detalles de ${name}';
+	@override String call({required Object label}) => 'Llamar a ${label}';
+	@override String get website => 'Abrir el sitio web';
+}
+
+// Path: shop.empty
+class _Translations$shop$empty$es extends Translations$shop$empty$fr {
+	_Translations$shop$empty$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Avituallamiento próximamente';
+	@override String get message => 'Los comercios y puntos de avituallamiento de este sendero se añadirán pronto.';
+}
+
 // Path: summary.stats
 class _Translations$summary$stats$es extends Translations$summary$stats$fr {
 	_Translations$summary$stats$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -2959,6 +3015,8 @@ extension on TranslationsEs {
 			'hub.cards.diplomaSub' => 'Tu certificado final',
 			'hub.cards.resume' => 'Resumen',
 			'hub.cards.resumeSub' => 'Síntesis del plan',
+			'hub.cards.shop' => 'Avituallamiento',
+			'hub.cards.shopSub' => 'Tiendas, farmacias, gas',
 			'hub.fab.feedback' => 'Dar mi opinión',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Mapa del sendero',
@@ -3377,10 +3435,10 @@ extension on TranslationsEs {
 			'notifications.countdown' => 'Recordatorio D-2',
 			'notifications.countdownDesc' => 'Notificación 2 días antes de la salida',
 			'notifications.schedulerCountdownTitle' => 'Tu trek se acerca!',
-			'notifications.schedulerCountdownBody' => 'Salida en 2 dias. Revisa tu checklist y el tiempo.',
-			'notifications.schedulerDailyTitle' => 'Buen dia de trek!',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.schedulerCountdownBody' => 'Salida en 2 dias. Revisa tu checklist y el tiempo.',
+			'notifications.schedulerDailyTitle' => 'Buen dia de trek!',
 			'notifications.schedulerDailyBody' => 'Consulta el tiempo y prepara la etapa del dia.',
 			'settings.title' => 'Ajustes',
 			'settings.language' => 'Idioma',
@@ -3891,10 +3949,10 @@ extension on TranslationsEs {
 			'moderation.complaintSubmit' => 'Enviar impugnación',
 			'moderation.complaintSent' => 'Impugnación registrada. Será examinada.',
 			'moderation.complaintEmpty' => 'Explica tu impugnación.',
-			'moderation.a11y.reportForm' => 'Formulario de denuncia de contenido',
-			'moderation.a11y.reasonSelector' => 'Selector del motivo de la denuncia',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.reportForm' => 'Formulario de denuncia de contenido',
+			'moderation.a11y.reasonSelector' => 'Selector del motivo de la denuncia',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Declaración de buena fe, ${state}',
 			'moderation.a11y.submitReport' => 'Enviar denuncia',
 			'moderation.a11y.statementCard' => 'Motivación de la decisión de moderación',
@@ -4033,6 +4091,30 @@ extension on TranslationsEs {
 			'transport.empty.messageJoin' => ({required Object name}) => 'La información para llegar a ${name} se añadirá pronto.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'La información para salir de ${name} se añadirá pronto.',
 			'transport.empty.messageGeneric' => 'La información de transporte de este sendero se añadirá pronto.',
+			'shop.title' => 'Avituallamiento',
+			'shop.filterAll' => 'Todos',
+			'shop.typeEpicerie' => 'Tienda',
+			'shop.typeBar' => 'Bar/Restaurante',
+			'shop.typePharmacie' => 'Farmacia',
+			'shop.typeGaz' => 'Gas/Material',
+			'shop.limitedTitle' => 'Puntos de avituallamiento limitados',
+			'shop.stageHeader' => ({required Object n}) => 'Etapa ${n}',
+			'shop.stageBadge' => ({required Object n}) => 'Etapa ${n}',
+			'shop.gapShort' => ({required Object n}) => 'Último avituallamiento antes de ${n} etapas sin comercio',
+			'shop.gapLong' => ({required Object n}) => 'Último avituallamiento antes de ${n} etapas sin comercio. ¡Abastécete!',
+			'shop.sectionInfo' => 'Información',
+			'shop.sectionProducts' => 'Productos disponibles',
+			'shop.fieldType' => 'Tipo',
+			'shop.fieldStage' => 'Etapa',
+			'shop.fieldGps' => 'GPS',
+			'shop.fieldHours' => 'Horario',
+			'shop.website' => 'Sitio web',
+			'shop.filterEmpty' => 'Ningún comercio para este filtro.',
+			'shop.a11y.openDetail' => ({required Object name}) => 'Ver detalles de ${name}',
+			'shop.a11y.call' => ({required Object label}) => 'Llamar a ${label}',
+			'shop.a11y.website' => 'Abrir el sitio web',
+			'shop.empty.title' => 'Avituallamiento próximamente',
+			'shop.empty.message' => 'Los comercios y puntos de avituallamiento de este sendero se añadirán pronto.',
 			'summary.title' => 'Síntesis del plan',
 			'summary.configTitle' => ({required Object name}) => 'Mi ${name}',
 			'summary.direction' => 'Dirección',

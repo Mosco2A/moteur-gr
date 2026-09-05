@@ -104,7 +104,9 @@
       "diploma": "Diploma",
       "diplomaSub": "Your finisher certificate",
       "resume": "Summary",
-      "resumeSub": "Plan overview"
+      "resumeSub": "Plan overview",
+      "shop": "Supplies",
+      "shopSub": "Groceries, pharmacies, gas"
     },
     "fab": {
       "feedback": "Give feedback",
@@ -1469,6 +1471,36 @@
       "messageJoin": "Information on getting to $name will be added soon.",
       "messageLeave": "Information on leaving $name will be added soon.",
       "messageGeneric": "Transport information for this trail will be added soon."
+    }
+  },
+  "shop": {
+    "title": "Supplies",
+    "filterAll": "All",
+    "typeEpicerie": "Grocery",
+    "typeBar": "Bar/Restaurant",
+    "typePharmacie": "Pharmacy",
+    "typeGaz": "Gas/Gear",
+    "limitedTitle": "Limited resupply points",
+    "stageHeader": "Stage $n",
+    "stageBadge": "Stage $n",
+    "gapShort": "Last resupply before $n stages without a shop",
+    "gapLong": "Last resupply before $n stages without a shop. Stock up!",
+    "sectionInfo": "Information",
+    "sectionProducts": "Available products",
+    "fieldType": "Type",
+    "fieldStage": "Stage",
+    "fieldGps": "GPS",
+    "fieldHours": "Hours",
+    "website": "Website",
+    "filterEmpty": "No shop for this filter.",
+    "a11y": {
+      "openDetail": "View details for $name",
+      "call": "Call $label",
+      "website": "Open website"
+    },
+    "empty": {
+      "title": "Supplies coming soon",
+      "message": "Shops and resupply points for this trail will be added soon."
     }
   },
   "summary": {

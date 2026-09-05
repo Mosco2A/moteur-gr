@@ -104,7 +104,9 @@
       "diploma": "Diplôme",
       "diplomaSub": "Votre certificat de fin",
       "resume": "Résumé",
-      "resumeSub": "Synthèse du plan"
+      "resumeSub": "Synthèse du plan",
+      "shop": "Ravitaillement",
+      "shopSub": "Épiceries, pharmacies, gaz"
     },
     "fab": {
       "feedback": "Donner mon avis",
@@ -1469,6 +1471,36 @@
       "messageJoin": "Les informations pour rejoindre $name seront ajoutées prochainement.",
       "messageLeave": "Les informations pour repartir de $name seront ajoutées prochainement.",
       "messageGeneric": "Les informations de transport de ce sentier seront ajoutées prochainement."
+    }
+  },
+  "shop": {
+    "title": "Ravitaillement",
+    "filterAll": "Tous",
+    "typeEpicerie": "Épicerie",
+    "typeBar": "Bar/Restaurant",
+    "typePharmacie": "Pharmacie",
+    "typeGaz": "Gaz/Matériel",
+    "limitedTitle": "Points de ravitaillement limités",
+    "stageHeader": "Étape $n",
+    "stageBadge": "Étape $n",
+    "gapShort": "Dernier ravitaillement avant $n étapes sans commerce",
+    "gapLong": "Dernier ravitaillement avant $n étapes sans commerce. Prévoyez vos réserves !",
+    "sectionInfo": "Informations",
+    "sectionProducts": "Produits disponibles",
+    "fieldType": "Type",
+    "fieldStage": "Étape",
+    "fieldGps": "GPS",
+    "fieldHours": "Horaires",
+    "website": "Site web",
+    "filterEmpty": "Aucun commerce pour ce filtre.",
+    "a11y": {
+      "openDetail": "Voir le détail de $name",
+      "call": "Appeler $label",
+      "website": "Ouvrir le site web"
+    },
+    "empty": {
+      "title": "Ravitaillement bientôt disponible",
+      "message": "Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement."
     }
   },
   "summary": {
