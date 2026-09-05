@@ -316,6 +316,20 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.recapSub,
                   onTap: () => context.push('/trail/$trailId/recap'),
                 ),
+                // PARITE GR20 (Import GPX) — decision Skynet : point d'entree du
+                // HUB vers l'ecran d'import (clone GR20 generalise, data-driven).
+                // Cote GR20 l'ecran existait mais etait ORPHELIN (aucune entree
+                // UI) ; on comble le manque cote StepWays. Importer une trace
+                // enregistree par une autre app (Strava, Garmin…) pour generer
+                // un recapitulatif. Icone `upload_file` (parite GR20). Route
+                // hors-shell atteinte via `context.push` (retour propre, pile
+                // preservee — jamais context.go qui viderait la pile).
+                QuickAccessCard(
+                  icon: Icons.upload_file,
+                  title: t.hub.cards.importGpx,
+                  subtitle: t.hub.cards.importGpxSub,
+                  onTap: () => context.push('/trail/$trailId/import-gpx'),
+                ),
                 QuickAccessCard(
                   icon: Icons.workspace_premium_outlined,
                   title: t.hub.cards.diploma,

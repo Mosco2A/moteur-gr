@@ -97,6 +97,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$fireRisk$it fireRisk = _Translations$fireRisk$it._(_root);
 	@override late final _Translations$shop$it shop = _Translations$shop$it._(_root);
 	@override late final _Translations$summary$it summary = _Translations$summary$it._(_root);
+	@override late final _Translations$import$it import = _Translations$import$it._(_root);
 }
 
 // Path: a11y
@@ -1315,6 +1316,45 @@ class _Translations$summary$it extends Translations$summary$fr {
 	@override late final _Translations$summary$a11y$it a11y = _Translations$summary$a11y$it._(_root);
 }
 
+// Path: import
+class _Translations$import$it extends Translations$import$fr {
+	_Translations$import$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Importa un GPX';
+	@override String get headerTitle => 'Importa un file GPX';
+	@override String get headerBody => 'Importa una traccia GPS registrata con un\'altra app (Strava, Garmin, ecc.) per generare il tuo riepilogo.';
+	@override String get pickButton => 'SCEGLI UN FILE GPX';
+	@override String get traceSection => 'Traccia importata';
+	@override String get statsSection => 'Statistiche';
+	@override String get statDistance => 'Distanza';
+	@override String get statElevationGain => 'Dislivello +';
+	@override String get statElevationLoss => 'Dislivello -';
+	@override String get statDuration => 'Durata';
+	@override String get statDirection => 'Direzione';
+	@override String get statPoints => 'Punti GPS';
+	@override String get directionNS => 'Nord-Sud';
+	@override String get directionSN => 'Sud-Nord';
+	@override String get stagesSection => 'Tappe rilevate';
+	@override String get stagesCount => '{done}/{total}';
+	@override String get stageBadge => 'T{number}';
+	@override String get warningsSection => 'Avvisi';
+	@override String get warningOutOfBounds => '{count} punto/i fuori zona ignorati.';
+	@override String get warningOffTrail => 'Il {percent}% dei punti è lontano dal sentiero.';
+	@override String get invalidTooFewPoints => 'File GPX insufficiente: {count} punti (minimo 10).';
+	@override String get invalidOutOfBounds => 'La traccia non corrisponde alla zona di questo sentiero.';
+	@override String get errorUnreadable => 'Impossibile leggere il file.';
+	@override String get errorParsing => 'Impossibile leggere il file GPX.';
+	@override String get validateButton => 'CONFERMA IMPORTAZIONE';
+	@override String get confirmTitle => 'Confermare l\'importazione?';
+	@override String get confirmBody => 'Questa traccia sarà importata come il tuo percorso:\n\n- {points} punti GPS\n- {km} km\n- {stages} tappe rilevate\n- Direzione: {direction}';
+	@override String get cancel => 'Annulla';
+	@override String get validate => 'Conferma';
+	@override String get importedSnack => 'Traccia GPX importata!';
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$it extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1399,6 +1439,8 @@ class _Translations$hub$cards$it extends Translations$hub$cards$fr {
 	@override String get townGuidesSub => 'Info pratiche delle tappe';
 	@override String get recap => 'Riepilogo';
 	@override String get recapSub => 'La tua avventura in sintesi';
+	@override String get importGpx => 'Importa GPX';
+	@override String get importGpxSub => 'Importa una traccia GPS';
 	@override String get diploma => 'Diploma';
 	@override String get diplomaSub => 'Il tuo certificato finale';
 	@override String get resume => 'Riepilogo';
@@ -3142,6 +3184,8 @@ extension on TranslationsIt {
 			'hub.cards.townGuidesSub' => 'Info pratiche delle tappe',
 			'hub.cards.recap' => 'Riepilogo',
 			'hub.cards.recapSub' => 'La tua avventura in sintesi',
+			'hub.cards.importGpx' => 'Importa GPX',
+			'hub.cards.importGpxSub' => 'Importa una traccia GPS',
 			'hub.cards.diploma' => 'Diploma',
 			'hub.cards.diplomaSub' => 'Il tuo certificato finale',
 			'hub.cards.resume' => 'Riepilogo',
@@ -3564,10 +3608,10 @@ extension on TranslationsIt {
 			'diploma.labelIntegral' => 'Percorso integrale',
 			'diploma.labelPartial' => 'Percorso parziale',
 			'notifications.morningReminder' => 'Promemoria mattutino',
-			'notifications.weatherAlerts' => 'Allerte meteo',
-			'notifications.countdown' => 'Promemoria G-2',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.weatherAlerts' => 'Allerte meteo',
+			'notifications.countdown' => 'Promemoria G-2',
 			'notifications.countdownDesc' => 'Notifica 2 giorni prima della partenza',
 			'notifications.schedulerCountdownTitle' => 'Il tuo trek si avvicina!',
 			'notifications.schedulerCountdownBody' => 'Partenza tra 2 giorni. Controlla la checklist e il meteo.',
@@ -4078,10 +4122,10 @@ extension on TranslationsIt {
 			'moderation.complaintTitle' => 'Contestare una decisione',
 			'moderation.complaintIntro' => 'Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).',
 			'moderation.complaintExposeLabel' => 'La tua contestazione',
-			'moderation.complaintExposeHint' => 'Descrivi i motivi della tua contestazione.',
-			'moderation.complaintSubmit' => 'Invia contestazione',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintExposeHint' => 'Descrivi i motivi della tua contestazione.',
+			'moderation.complaintSubmit' => 'Invia contestazione',
 			'moderation.complaintSent' => 'Contestazione registrata. Sarà esaminata.',
 			'moderation.complaintEmpty' => 'Spiega la tua contestazione.',
 			'moderation.a11y.reportForm' => 'Modulo di segnalazione del contenuto',
@@ -4333,6 +4377,36 @@ extension on TranslationsIt {
 			'summary.a11y.export' => 'Esporta il piano in PDF',
 			'summary.a11y.download' => 'Scarica le mappe offline',
 			'summary.a11y.share' => 'Condividi il mio piano',
+			'import.title' => 'Importa un GPX',
+			'import.headerTitle' => 'Importa un file GPX',
+			'import.headerBody' => 'Importa una traccia GPS registrata con un\'altra app (Strava, Garmin, ecc.) per generare il tuo riepilogo.',
+			'import.pickButton' => 'SCEGLI UN FILE GPX',
+			'import.traceSection' => 'Traccia importata',
+			'import.statsSection' => 'Statistiche',
+			'import.statDistance' => 'Distanza',
+			'import.statElevationGain' => 'Dislivello +',
+			'import.statElevationLoss' => 'Dislivello -',
+			'import.statDuration' => 'Durata',
+			'import.statDirection' => 'Direzione',
+			'import.statPoints' => 'Punti GPS',
+			'import.directionNS' => 'Nord-Sud',
+			'import.directionSN' => 'Sud-Nord',
+			'import.stagesSection' => 'Tappe rilevate',
+			'import.stagesCount' => '{done}/{total}',
+			'import.stageBadge' => 'T{number}',
+			'import.warningsSection' => 'Avvisi',
+			'import.warningOutOfBounds' => '{count} punto/i fuori zona ignorati.',
+			'import.warningOffTrail' => 'Il {percent}% dei punti è lontano dal sentiero.',
+			'import.invalidTooFewPoints' => 'File GPX insufficiente: {count} punti (minimo 10).',
+			'import.invalidOutOfBounds' => 'La traccia non corrisponde alla zona di questo sentiero.',
+			'import.errorUnreadable' => 'Impossibile leggere il file.',
+			'import.errorParsing' => 'Impossibile leggere il file GPX.',
+			'import.validateButton' => 'CONFERMA IMPORTAZIONE',
+			'import.confirmTitle' => 'Confermare l\'importazione?',
+			'import.confirmBody' => 'Questa traccia sarà importata come il tuo percorso:\n\n- {points} punti GPS\n- {km} km\n- {stages} tappe rilevate\n- Direzione: {direction}',
+			'import.cancel' => 'Annulla',
+			'import.validate' => 'Conferma',
+			'import.importedSnack' => 'Traccia GPX importata!',
 			_ => null,
 		};
 	}

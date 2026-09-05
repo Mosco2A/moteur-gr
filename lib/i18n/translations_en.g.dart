@@ -97,6 +97,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$fireRisk$en fireRisk = _Translations$fireRisk$en._(_root);
 	@override late final _Translations$shop$en shop = _Translations$shop$en._(_root);
 	@override late final _Translations$summary$en summary = _Translations$summary$en._(_root);
+	@override late final _Translations$import$en import = _Translations$import$en._(_root);
 }
 
 // Path: a11y
@@ -1315,6 +1316,45 @@ class _Translations$summary$en extends Translations$summary$fr {
 	@override late final _Translations$summary$a11y$en a11y = _Translations$summary$a11y$en._(_root);
 }
 
+// Path: import
+class _Translations$import$en extends Translations$import$fr {
+	_Translations$import$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Import a GPX';
+	@override String get headerTitle => 'Import a GPX file';
+	@override String get headerBody => 'Import a GPS track recorded with another app (Strava, Garmin, etc.) to generate your summary.';
+	@override String get pickButton => 'CHOOSE A GPX FILE';
+	@override String get traceSection => 'Imported track';
+	@override String get statsSection => 'Statistics';
+	@override String get statDistance => 'Distance';
+	@override String get statElevationGain => 'Ascent';
+	@override String get statElevationLoss => 'Descent';
+	@override String get statDuration => 'Duration';
+	@override String get statDirection => 'Direction';
+	@override String get statPoints => 'GPS points';
+	@override String get directionNS => 'North-South';
+	@override String get directionSN => 'South-North';
+	@override String get stagesSection => 'Detected stages';
+	@override String get stagesCount => '{done}/{total}';
+	@override String get stageBadge => 'S{number}';
+	@override String get warningsSection => 'Warnings';
+	@override String get warningOutOfBounds => '{count} point(s) out of area ignored.';
+	@override String get warningOffTrail => '{percent}% of points are far from the trail.';
+	@override String get invalidTooFewPoints => 'GPX file too small: {count} points (minimum 10).';
+	@override String get invalidOutOfBounds => 'The track does not match this trail\'s area.';
+	@override String get errorUnreadable => 'Unable to read the file.';
+	@override String get errorParsing => 'The GPX file could not be read.';
+	@override String get validateButton => 'CONFIRM IMPORT';
+	@override String get confirmTitle => 'Confirm import?';
+	@override String get confirmBody => 'This track will be imported as your route:\n\n- {points} GPS points\n- {km} km\n- {stages} detected stages\n- Direction: {direction}';
+	@override String get cancel => 'Cancel';
+	@override String get validate => 'Confirm';
+	@override String get importedSnack => 'GPX track imported!';
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$en extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1399,6 +1439,8 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get townGuidesSub => 'Practical info for each stage';
 	@override String get recap => 'Recap';
 	@override String get recapSub => 'Your adventure summed up';
+	@override String get importGpx => 'GPX import';
+	@override String get importGpxSub => 'Import a GPS track';
 	@override String get diploma => 'Diploma';
 	@override String get diplomaSub => 'Your finisher certificate';
 	@override String get resume => 'Summary';
@@ -3142,6 +3184,8 @@ extension on TranslationsEn {
 			'hub.cards.townGuidesSub' => 'Practical info for each stage',
 			'hub.cards.recap' => 'Recap',
 			'hub.cards.recapSub' => 'Your adventure summed up',
+			'hub.cards.importGpx' => 'GPX import',
+			'hub.cards.importGpxSub' => 'Import a GPS track',
 			'hub.cards.diploma' => 'Diploma',
 			'hub.cards.diplomaSub' => 'Your finisher certificate',
 			'hub.cards.resume' => 'Summary',
@@ -3564,10 +3608,10 @@ extension on TranslationsEn {
 			'diploma.labelIntegral' => 'Full route',
 			'diploma.labelPartial' => 'Partial route',
 			'notifications.morningReminder' => 'Morning reminder',
-			'notifications.weatherAlerts' => 'Weather alerts',
-			'notifications.countdown' => 'D-2 reminder',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.weatherAlerts' => 'Weather alerts',
+			'notifications.countdown' => 'D-2 reminder',
 			'notifications.countdownDesc' => 'Notification 2 days before departure',
 			'notifications.schedulerCountdownTitle' => 'Your trek is coming up!',
 			'notifications.schedulerCountdownBody' => 'Departure in 2 days. Check your checklist and the weather.',
@@ -4078,10 +4122,10 @@ extension on TranslationsEn {
 			'moderation.complaintTitle' => 'Challenge a decision',
 			'moderation.complaintIntro' => 'You can challenge a moderation decision. Explain why you believe the decision is unjustified (article 20).',
 			'moderation.complaintExposeLabel' => 'Your challenge',
-			'moderation.complaintExposeHint' => 'Describe the reasons for your challenge.',
-			'moderation.complaintSubmit' => 'Send challenge',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintExposeHint' => 'Describe the reasons for your challenge.',
+			'moderation.complaintSubmit' => 'Send challenge',
 			'moderation.complaintSent' => 'Challenge recorded. It will be reviewed.',
 			'moderation.complaintEmpty' => 'Please explain your challenge.',
 			'moderation.a11y.reportForm' => 'Content reporting form',
@@ -4333,6 +4377,36 @@ extension on TranslationsEn {
 			'summary.a11y.export' => 'Export plan as PDF',
 			'summary.a11y.download' => 'Download offline maps',
 			'summary.a11y.share' => 'Share my plan',
+			'import.title' => 'Import a GPX',
+			'import.headerTitle' => 'Import a GPX file',
+			'import.headerBody' => 'Import a GPS track recorded with another app (Strava, Garmin, etc.) to generate your summary.',
+			'import.pickButton' => 'CHOOSE A GPX FILE',
+			'import.traceSection' => 'Imported track',
+			'import.statsSection' => 'Statistics',
+			'import.statDistance' => 'Distance',
+			'import.statElevationGain' => 'Ascent',
+			'import.statElevationLoss' => 'Descent',
+			'import.statDuration' => 'Duration',
+			'import.statDirection' => 'Direction',
+			'import.statPoints' => 'GPS points',
+			'import.directionNS' => 'North-South',
+			'import.directionSN' => 'South-North',
+			'import.stagesSection' => 'Detected stages',
+			'import.stagesCount' => '{done}/{total}',
+			'import.stageBadge' => 'S{number}',
+			'import.warningsSection' => 'Warnings',
+			'import.warningOutOfBounds' => '{count} point(s) out of area ignored.',
+			'import.warningOffTrail' => '{percent}% of points are far from the trail.',
+			'import.invalidTooFewPoints' => 'GPX file too small: {count} points (minimum 10).',
+			'import.invalidOutOfBounds' => 'The track does not match this trail\'s area.',
+			'import.errorUnreadable' => 'Unable to read the file.',
+			'import.errorParsing' => 'The GPX file could not be read.',
+			'import.validateButton' => 'CONFIRM IMPORT',
+			'import.confirmTitle' => 'Confirm import?',
+			'import.confirmBody' => 'This track will be imported as your route:\n\n- {points} GPS points\n- {km} km\n- {stages} detected stages\n- Direction: {direction}',
+			'import.cancel' => 'Cancel',
+			'import.validate' => 'Confirm',
+			'import.importedSnack' => 'GPX track imported!',
 			_ => null,
 		};
 	}

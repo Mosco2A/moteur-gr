@@ -98,6 +98,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$fireRisk$fr fireRisk = Translations$fireRisk$fr.internal(_root);
 	late final Translations$shop$fr shop = Translations$shop$fr.internal(_root);
 	late final Translations$summary$fr summary = Translations$summary$fr.internal(_root);
+	late final Translations$import$fr import = Translations$import$fr.internal(_root);
 }
 
 // Path: a11y
@@ -2572,6 +2573,105 @@ class Translations$summary$fr {
 	late final Translations$summary$a11y$fr a11y = Translations$summary$a11y$fr.internal(_root);
 }
 
+// Path: import
+class Translations$import$fr {
+	Translations$import$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Importer un GPX'
+	String get title => 'Importer un GPX';
+
+	/// fr: 'Importer un fichier GPX'
+	String get headerTitle => 'Importer un fichier GPX';
+
+	/// fr: 'Importez une trace GPS enregistree avec une autre application (Strava, Garmin, etc.) pour generer votre recapitulatif.'
+	String get headerBody => 'Importez une trace GPS enregistree avec une autre application (Strava, Garmin, etc.) pour generer votre recapitulatif.';
+
+	/// fr: 'CHOISIR UN FICHIER GPX'
+	String get pickButton => 'CHOISIR UN FICHIER GPX';
+
+	/// fr: 'Trace importee'
+	String get traceSection => 'Trace importee';
+
+	/// fr: 'Statistiques'
+	String get statsSection => 'Statistiques';
+
+	/// fr: 'Distance'
+	String get statDistance => 'Distance';
+
+	/// fr: 'D+'
+	String get statElevationGain => 'D+';
+
+	/// fr: 'D-'
+	String get statElevationLoss => 'D-';
+
+	/// fr: 'Duree'
+	String get statDuration => 'Duree';
+
+	/// fr: 'Direction'
+	String get statDirection => 'Direction';
+
+	/// fr: 'Points GPS'
+	String get statPoints => 'Points GPS';
+
+	/// fr: 'Nord-Sud'
+	String get directionNS => 'Nord-Sud';
+
+	/// fr: 'Sud-Nord'
+	String get directionSN => 'Sud-Nord';
+
+	/// fr: 'Etapes detectees'
+	String get stagesSection => 'Etapes detectees';
+
+	/// fr: '{done}/{total}'
+	String get stagesCount => '{done}/{total}';
+
+	/// fr: 'E{number}'
+	String get stageBadge => 'E{number}';
+
+	/// fr: 'Avertissements'
+	String get warningsSection => 'Avertissements';
+
+	/// fr: '{count} point(s) hors zone ignores.'
+	String get warningOutOfBounds => '{count} point(s) hors zone ignores.';
+
+	/// fr: '{percent}% des points sont eloignes de la trace du sentier.'
+	String get warningOffTrail => '{percent}% des points sont eloignes de la trace du sentier.';
+
+	/// fr: 'Fichier GPX insuffisant : {count} points (minimum 10).'
+	String get invalidTooFewPoints => 'Fichier GPX insuffisant : {count} points (minimum 10).';
+
+	/// fr: 'La trace ne correspond pas a la zone de ce sentier.'
+	String get invalidOutOfBounds => 'La trace ne correspond pas a la zone de ce sentier.';
+
+	/// fr: 'Impossible de lire le fichier.'
+	String get errorUnreadable => 'Impossible de lire le fichier.';
+
+	/// fr: 'Le fichier GPX n'a pas pu etre lu.'
+	String get errorParsing => 'Le fichier GPX n\'a pas pu etre lu.';
+
+	/// fr: 'VALIDER L'IMPORT'
+	String get validateButton => 'VALIDER L\'IMPORT';
+
+	/// fr: 'Valider l'import ?'
+	String get confirmTitle => 'Valider l\'import ?';
+
+	/// fr: 'Cette trace sera importee comme votre parcours : - {points} points GPS - {km} km - {stages} etapes detectees - Direction : {direction}'
+	String get confirmBody => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} etapes detectees\n- Direction : {direction}';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Valider'
+	String get validate => 'Valider';
+
+	/// fr: 'Trace GPX importee !'
+	String get importedSnack => 'Trace GPX importee !';
+}
+
 // Path: hub.trekCard
 class Translations$hub$trekCard$fr {
 	Translations$hub$trekCard$fr.internal(this._root);
@@ -2756,6 +2856,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Votre aventure en résumé'
 	String get recapSub => 'Votre aventure en résumé';
+
+	/// fr: 'Import GPX'
+	String get importGpx => 'Import GPX';
+
+	/// fr: 'Importer une trace GPS'
+	String get importGpxSub => 'Importer une trace GPS';
 
 	/// fr: 'Diplôme'
 	String get diploma => 'Diplôme';
@@ -5738,6 +5844,8 @@ extension on Translations {
 			'hub.cards.townGuidesSub' => 'Infos pratiques des étapes',
 			'hub.cards.recap' => 'Récapitulatif',
 			'hub.cards.recapSub' => 'Votre aventure en résumé',
+			'hub.cards.importGpx' => 'Import GPX',
+			'hub.cards.importGpxSub' => 'Importer une trace GPS',
 			'hub.cards.diploma' => 'Diplôme',
 			'hub.cards.diplomaSub' => 'Votre certificat de fin',
 			'hub.cards.resume' => 'Résumé',
@@ -6160,10 +6268,10 @@ extension on Translations {
 			'diploma.labelIntegral' => 'Parcours integral',
 			'diploma.labelPartial' => 'Parcours partiel',
 			'notifications.morningReminder' => 'Rappel du matin',
-			'notifications.weatherAlerts' => 'Alertes météo',
-			'notifications.countdown' => 'Rappel J-2',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.weatherAlerts' => 'Alertes météo',
+			'notifications.countdown' => 'Rappel J-2',
 			'notifications.countdownDesc' => 'Notification 2 jours avant le départ',
 			'notifications.schedulerCountdownTitle' => 'Votre randonnée approche !',
 			'notifications.schedulerCountdownBody' => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.',
@@ -6674,10 +6782,10 @@ extension on Translations {
 			'moderation.complaintTitle' => 'Contester une décision',
 			'moderation.complaintIntro' => 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).',
 			'moderation.complaintExposeLabel' => 'Votre contestation',
-			'moderation.complaintExposeHint' => 'Décrivez les raisons de votre contestation.',
-			'moderation.complaintSubmit' => 'Envoyer la contestation',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintExposeHint' => 'Décrivez les raisons de votre contestation.',
+			'moderation.complaintSubmit' => 'Envoyer la contestation',
 			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
 			'moderation.complaintEmpty' => 'Veuillez expliquer votre contestation.',
 			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
@@ -6929,6 +7037,36 @@ extension on Translations {
 			'summary.a11y.export' => 'Exporter le plan en PDF',
 			'summary.a11y.download' => 'Télécharger les cartes hors ligne',
 			'summary.a11y.share' => 'Partager mon plan',
+			'import.title' => 'Importer un GPX',
+			'import.headerTitle' => 'Importer un fichier GPX',
+			'import.headerBody' => 'Importez une trace GPS enregistree avec une autre application (Strava, Garmin, etc.) pour generer votre recapitulatif.',
+			'import.pickButton' => 'CHOISIR UN FICHIER GPX',
+			'import.traceSection' => 'Trace importee',
+			'import.statsSection' => 'Statistiques',
+			'import.statDistance' => 'Distance',
+			'import.statElevationGain' => 'D+',
+			'import.statElevationLoss' => 'D-',
+			'import.statDuration' => 'Duree',
+			'import.statDirection' => 'Direction',
+			'import.statPoints' => 'Points GPS',
+			'import.directionNS' => 'Nord-Sud',
+			'import.directionSN' => 'Sud-Nord',
+			'import.stagesSection' => 'Etapes detectees',
+			'import.stagesCount' => '{done}/{total}',
+			'import.stageBadge' => 'E{number}',
+			'import.warningsSection' => 'Avertissements',
+			'import.warningOutOfBounds' => '{count} point(s) hors zone ignores.',
+			'import.warningOffTrail' => '{percent}% des points sont eloignes de la trace du sentier.',
+			'import.invalidTooFewPoints' => 'Fichier GPX insuffisant : {count} points (minimum 10).',
+			'import.invalidOutOfBounds' => 'La trace ne correspond pas a la zone de ce sentier.',
+			'import.errorUnreadable' => 'Impossible de lire le fichier.',
+			'import.errorParsing' => 'Le fichier GPX n\'a pas pu etre lu.',
+			'import.validateButton' => 'VALIDER L\'IMPORT',
+			'import.confirmTitle' => 'Valider l\'import ?',
+			'import.confirmBody' => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} etapes detectees\n- Direction : {direction}',
+			'import.cancel' => 'Annuler',
+			'import.validate' => 'Valider',
+			'import.importedSnack' => 'Trace GPX importee !',
 			_ => null,
 		};
 	}
