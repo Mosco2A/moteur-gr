@@ -1242,7 +1242,7 @@ class _Translations$fireRisk$it extends Translations$fireRisk$fr {
 	@override String get refreshError => 'Nessuna connessione';
 	@override late final _Translations$fireRisk$update$it update = _Translations$fireRisk$update$it._(_root);
 	@override late final _Translations$fireRisk$duration$it duration = _Translations$fireRisk$duration$it._(_root);
-	@override String get fwiSource => 'Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI e l\'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.';
+	@override String get fwiSource => 'Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI è l\'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.';
 	@override late final _Translations$fireRisk$regulation$it regulation = _Translations$fireRisk$regulation$it._(_root);
 	@override String get levelsTitle => 'Livelli di rischio';
 	@override late final _Translations$fireRisk$level$it level = _Translations$fireRisk$level$it._(_root);
@@ -4281,7 +4281,7 @@ extension on TranslationsIt {
 			'fireRisk.duration.minutes' => ({required Object n}) => '${n} min',
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}g',
-			'fireRisk.fwiSource' => 'Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI e l\'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.',
+			'fireRisk.fwiSource' => 'Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI è l\'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.',
 			'fireRisk.regulation.title' => 'Normativa',
 			'fireRisk.regulation.decreeLink' => 'Consulta le ordinanze prefettizie',
 			'fireRisk.levelsTitle' => 'Livelli di rischio',

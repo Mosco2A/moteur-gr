@@ -1242,7 +1242,7 @@ class _Translations$fireRisk$de extends Translations$fireRisk$fr {
 	@override String get refreshError => 'Keine Verbindung';
 	@override late final _Translations$fireRisk$update$de update = _Translations$fireRisk$update$de._(_root);
 	@override late final _Translations$fireRisk$duration$de duration = _Translations$fireRisk$duration$de._(_root);
-	@override String get fwiSource => 'Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europaeischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.';
+	@override String get fwiSource => 'Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europäischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.';
 	@override late final _Translations$fireRisk$regulation$de regulation = _Translations$fireRisk$regulation$de._(_root);
 	@override String get levelsTitle => 'Risikostufen';
 	@override late final _Translations$fireRisk$level$de level = _Translations$fireRisk$level$de._(_root);
@@ -1252,7 +1252,7 @@ class _Translations$fireRisk$de extends Translations$fireRisk$fr {
 	@override String dayLevel({required Object level}) => 'St. ${level}';
 	@override late final _Translations$fireRisk$day$de day = _Translations$fireRisk$day$de._(_root);
 	@override String get noRisk => 'Derzeit kein Brandrisiko gemeldet';
-	@override String get numbersTitle => 'Nuetzliche Nummern';
+	@override String get numbersTitle => 'Nützliche Nummern';
 	@override late final _Translations$fireRisk$number$de number = _Translations$fireRisk$number$de._(_root);
 	@override late final _Translations$fireRisk$empty$de empty = _Translations$fireRisk$empty$de._(_root);
 	@override late final _Translations$fireRisk$a11y$de a11y = _Translations$fireRisk$a11y$de._(_root);
@@ -2597,7 +2597,7 @@ class _Translations$fireRisk$regulation$de extends Translations$fireRisk$regulat
 
 	// Translations
 	@override String get title => 'Vorschriften';
-	@override String get decreeLink => 'Praefektorale Erlasse ansehen';
+	@override String get decreeLink => 'Präfektorale Erlasse ansehen';
 }
 
 // Path: fireRisk.level
@@ -2609,7 +2609,7 @@ class _Translations$fireRisk$level$de extends Translations$fireRisk$level$fr {
 	// Translations
 	@override String get none => 'Keine';
 	@override String get low => 'Gering';
-	@override String get moderate => 'Maessig';
+	@override String get moderate => 'Mäßig';
 	@override String get high => 'Hoch';
 	@override String get veryHigh => 'Sehr hoch';
 	@override String get extreme => 'Extrem';
@@ -2645,8 +2645,8 @@ class _Translations$fireRisk$empty$de extends Translations$fireRisk$empty$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Brandrisiko nicht verfuegbar';
-	@override String get message => 'Die zur Berechnung des Brandrisikos noetigen Wetterdaten sind derzeit nicht verfuegbar. Versuchen Sie es erneut, sobald Sie verbunden sind.';
+	@override String get title => 'Brandrisiko nicht verfügbar';
+	@override String get message => 'Die zur Berechnung des Brandrisikos nötigen Wetterdaten sind derzeit nicht verfügbar. Versuchen Sie es erneut, sobald Sie verbunden sind.';
 }
 
 // Path: fireRisk.a11y
@@ -2657,7 +2657,7 @@ class _Translations$fireRisk$a11y$de extends Translations$fireRisk$a11y$fr {
 
 	// Translations
 	@override String call({required Object label, required Object number}) => '${label} unter ${number} anrufen';
-	@override String get decree => 'Praefektorale Erlasse oeffnen';
+	@override String get decree => 'Präfektorale Erlasse öffnen';
 	@override String levelBadge({required Object level}) => 'Risikostufe ${level} von 5';
 }
 
@@ -4281,13 +4281,13 @@ extension on TranslationsDe {
 			'fireRisk.duration.minutes' => ({required Object n}) => '${n} Min',
 			'fireRisk.duration.hours' => ({required Object n}) => '${n} Std',
 			'fireRisk.duration.days' => ({required Object n}) => '${n} T',
-			'fireRisk.fwiSource' => 'Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europaeischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.',
+			'fireRisk.fwiSource' => 'Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europäischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.',
 			'fireRisk.regulation.title' => 'Vorschriften',
-			'fireRisk.regulation.decreeLink' => 'Praefektorale Erlasse ansehen',
+			'fireRisk.regulation.decreeLink' => 'Präfektorale Erlasse ansehen',
 			'fireRisk.levelsTitle' => 'Risikostufen',
 			'fireRisk.level.none' => 'Keine',
 			'fireRisk.level.low' => 'Gering',
-			'fireRisk.level.moderate' => 'Maessig',
+			'fireRisk.level.moderate' => 'Mäßig',
 			'fireRisk.level.high' => 'Hoch',
 			'fireRisk.level.veryHigh' => 'Sehr hoch',
 			'fireRisk.level.extreme' => 'Extrem',
@@ -4299,13 +4299,13 @@ extension on TranslationsDe {
 			'fireRisk.day.tomorrow' => 'Morgen',
 			'fireRisk.day.plus' => ({required Object n}) => 'T+${n}',
 			'fireRisk.noRisk' => 'Derzeit kein Brandrisiko gemeldet',
-			'fireRisk.numbersTitle' => 'Nuetzliche Nummern',
+			'fireRisk.numbersTitle' => 'Nützliche Nummern',
 			'fireRisk.number.firefighters' => 'Feuerwehr',
 			'fireRisk.number.europeanEmergency' => 'Europ. Notruf',
-			'fireRisk.empty.title' => 'Brandrisiko nicht verfuegbar',
-			'fireRisk.empty.message' => 'Die zur Berechnung des Brandrisikos noetigen Wetterdaten sind derzeit nicht verfuegbar. Versuchen Sie es erneut, sobald Sie verbunden sind.',
+			'fireRisk.empty.title' => 'Brandrisiko nicht verfügbar',
+			'fireRisk.empty.message' => 'Die zur Berechnung des Brandrisikos nötigen Wetterdaten sind derzeit nicht verfügbar. Versuchen Sie es erneut, sobald Sie verbunden sind.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => '${label} unter ${number} anrufen',
-			'fireRisk.a11y.decree' => 'Praefektorale Erlasse oeffnen',
+			'fireRisk.a11y.decree' => 'Präfektorale Erlasse öffnen',
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Risikostufe ${level} von 5',
 			'shop.title' => 'Verpflegung',
 			'shop.filterAll' => 'Alle',
