@@ -105,6 +105,15 @@ class AppTheme {
   static const orangeDifficile = Color(0xFFFB8C00);
   static const rougeExtreme = Color(0xFFE53935);
 
+  // --- Couleur semantique "repos" (universelle pour le trek) ---
+  //
+  // Couleur du JOUR DE REPOS dans le programme et le profil altimetrique
+  // (parite GR20 : le repos est un bleu clair distinct de la couleur primaire
+  // du sentier, pour ne jamais se confondre avec un jour de marche). C'est une
+  // couleur SEMANTIQUE (comme l'orange de difficulte), PAS une couleur de peau :
+  // elle ne varie pas selon le sentier. Valeur alignee sur GR20 (`bleuLight`).
+  static const bleuRepos = Color(0xFF42A5F5);
+
   // --- Couleurs d'action (boutons de suivi) — WCAG AA avec texte blanc ---
   //
   // E5.5b : les boutons d'action du suivi (Demarrer/Reprendre/Pause/Stop)

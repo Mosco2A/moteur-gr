@@ -2238,6 +2238,7 @@ class Translations$programme$fr {
 	/// fr: 'Aide'
 	String get helpTooltip => 'Aide';
 
+	late final Translations$programme$duration$fr duration = Translations$programme$duration$fr.internal(_root);
 	late final Translations$programme$stats$fr stats = Translations$programme$stats$fr.internal(_root);
 	late final Translations$programme$legend$fr legend = Translations$programme$legend$fr.internal(_root);
 
@@ -4573,6 +4574,21 @@ class Translations$moderation$a11y$fr {
 	String get complaintForm => 'Formulaire de contestation d\'une décision';
 }
 
+// Path: programme.duration
+class Translations$programme$duration$fr {
+	Translations$programme$duration$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Nombre de jours'
+	String get label => 'Nombre de jours';
+
+	/// fr: '{count} j'
+	String get days => '{count} j';
+}
+
 // Path: programme.stats
 class Translations$programme$stats$fr {
 	Translations$programme$stats$fr.internal(this._root);
@@ -6814,6 +6830,8 @@ extension on Translations {
 			'recap.noData' => 'Aucune donnee de parcours a afficher pour le moment.',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Aide',
+			'programme.duration.label' => 'Nombre de jours',
+			'programme.duration.days' => '{count} j',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',

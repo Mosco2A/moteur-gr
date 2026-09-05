@@ -1149,6 +1149,7 @@ class _Translations$programme$it extends Translations$programme$fr {
 	// Translations
 	@override String get title => 'Programma';
 	@override String get helpTooltip => 'Aiuto';
+	@override late final _Translations$programme$duration$it duration = _Translations$programme$duration$it._(_root);
 	@override late final _Translations$programme$stats$it stats = _Translations$programme$stats$it._(_root);
 	@override late final _Translations$programme$legend$it legend = _Translations$programme$legend$it._(_root);
 	@override String get restDay => 'Giorno di riposo';
@@ -2312,6 +2313,17 @@ class _Translations$moderation$a11y$it extends Translations$moderation$a11y$fr {
 	@override String get submitReport => 'Invia segnalazione';
 	@override String get statementCard => 'Motivazione della decisione di moderazione';
 	@override String get complaintForm => 'Modulo di contestazione della decisione';
+}
+
+// Path: programme.duration
+class _Translations$programme$duration$it extends Translations$programme$duration$fr {
+	_Translations$programme$duration$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get label => 'Numero di giorni';
+	@override String get days => '{count} g';
 }
 
 // Path: programme.stats
@@ -4154,6 +4166,8 @@ extension on TranslationsIt {
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',
 			'programme.title' => 'Programma',
 			'programme.helpTooltip' => 'Aiuto',
+			'programme.duration.label' => 'Numero di giorni',
+			'programme.duration.days' => '{count} g',
 			'programme.stats.distance' => 'Distanza',
 			'programme.stats.elevation' => 'Dislivello+',
 			'programme.stats.days' => 'Giorni',

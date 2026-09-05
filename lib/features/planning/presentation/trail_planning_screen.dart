@@ -7,6 +7,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
+import '../providers/planning_provider.dart';
+import '../widgets/duration_selector.dart';
 
 /// Ecran PROGRAMME (parite GR20 `PlanningScreen`).
 ///
@@ -212,9 +214,23 @@ class _PlanningContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(plannedDaysProvider(trailId).notifier);
 
+    // Choix du nombre de jours (parite GR20) : bornes DERIVEES du nombre
+    // d'etapes du sentier, duree courante pilotee par selectedDurationProvider.
+    // Le programme (plannedDaysProvider) watch cette duree et se recalcule seul.
+    final bounds = ref.watch(durationBoundsProvider(trailId));
+    final selectedDuration = ref.watch(selectedDurationProvider);
+
     return Column(
       children: [
         _StatsHeader(stats: stats),
+        if (bounds.max > bounds.min)
+          DurationSelector(
+            availableDurations: bounds.options,
+            selectedDuration: bounds.clampDuration(selectedDuration),
+            onDurationChanged: (value) => ref
+                .read(selectedDurationProvider.notifier)
+                .set(bounds.clampDuration(value)),
+          ),
         if (days.any((d) => !d.isRestDay)) _ElevationProfile(days: days),
         const _DifficultyLegend(),
         Expanded(
@@ -445,7 +461,6 @@ class _ElevationProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (days.isEmpty) return const SizedBox.shrink();
-    final theme = Theme.of(context);
 
     final dayElevations = <int>[];
     final dayDifficulties = <int>[];
@@ -479,7 +494,9 @@ class _ElevationProfile extends StatelessWidget {
 
           Color barColor;
           if (isRestDay) {
-            barColor = theme.colorScheme.primary;
+            // Jour de repos = bleu semantique (parite GR20), jamais la couleur
+            // primaire du sentier (qui teinte les jours de marche).
+            barColor = AppTheme.bleuRepos;
           } else if (elevation == 0) {
             barColor = AppTheme.grisGranite.withAlpha(30);
           } else if (difficulty <= 1) {
@@ -681,7 +698,7 @@ class _DayCard extends ConsumerWidget {
                     icon: Icons.compress,
                     label: t.programme.actions.merge,
                     color: canMerge
-                        ? theme.colorScheme.primary
+                        ? AppTheme.bleuRepos
                         : AppTheme.grisGranite.withAlpha(80),
                     onPressed: canMerge
                         ? onMerge!
@@ -707,7 +724,7 @@ class _DayCard extends ConsumerWidget {
                   _ActionChip(
                     icon: Icons.self_improvement,
                     label: t.programme.actions.rest,
-                    color: theme.colorScheme.primary,
+                    color: AppTheme.bleuRepos,
                     onPressed: onAddRestDay,
                   ),
                 ],
@@ -720,8 +737,13 @@ class _DayCard extends ConsumerWidget {
   }
 
   /// Carte de jour de repos (parite GR20 `_buildRestDayCard`).
+  ///
+  /// Teinte en bleu semantique ([AppTheme.bleuRepos]) — jamais la couleur
+  /// primaire du sentier — pour distinguer visuellement le repos d'un jour de
+  /// marche (parite GR20).
   Widget _buildRestDayCard(BuildContext context, ThemeData theme) {
     final scheme = theme.colorScheme;
+    const restColor = AppTheme.bleuRepos;
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
       color: scheme.surfaceContainerHighest,
@@ -733,15 +755,15 @@ class _DayCard extends ConsumerWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: scheme.primary.withAlpha(20),
+                color: restColor.withAlpha(20),
                 borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                border: Border.all(color: scheme.primary.withAlpha(80), width: 2),
+                border: Border.all(color: restColor.withAlpha(80), width: 2),
               ),
               child: Center(
                 child: Text(
                   'J${day.dayNumber}',
                   style: theme.textTheme.labelLarge?.copyWith(
-                    color: scheme.primary,
+                    color: restColor,
                     fontSize: 14,
                   ),
                 ),
@@ -751,14 +773,15 @@ class _DayCard extends ConsumerWidget {
             Expanded(
               child: Row(
                 children: [
-                  Icon(Icons.self_improvement, size: 20, color: scheme.primary),
+                  const Icon(Icons.self_improvement,
+                      size: 20, color: restColor),
                   const SizedBox(width: AppTheme.spacingSm),
                   Flexible(
                     child: Text(
                       t.programme.restDay,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: scheme.primary,
+                        color: restColor,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

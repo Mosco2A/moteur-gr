@@ -1149,6 +1149,7 @@ class _Translations$programme$de extends Translations$programme$fr {
 	// Translations
 	@override String get title => 'Programm';
 	@override String get helpTooltip => 'Hilfe';
+	@override late final _Translations$programme$duration$de duration = _Translations$programme$duration$de._(_root);
 	@override late final _Translations$programme$stats$de stats = _Translations$programme$stats$de._(_root);
 	@override late final _Translations$programme$legend$de legend = _Translations$programme$legend$de._(_root);
 	@override String get restDay => 'Ruhetag';
@@ -2312,6 +2313,17 @@ class _Translations$moderation$a11y$de extends Translations$moderation$a11y$fr {
 	@override String get submitReport => 'Meldung senden';
 	@override String get statementCard => 'Begründung der Moderationsentscheidung';
 	@override String get complaintForm => 'Formular zur Anfechtung der Entscheidung';
+}
+
+// Path: programme.duration
+class _Translations$programme$duration$de extends Translations$programme$duration$fr {
+	_Translations$programme$duration$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get label => 'Anzahl der Tage';
+	@override String get days => '{count} T';
 }
 
 // Path: programme.stats
@@ -4154,6 +4166,8 @@ extension on TranslationsDe {
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
 			'programme.title' => 'Programm',
 			'programme.helpTooltip' => 'Hilfe',
+			'programme.duration.label' => 'Anzahl der Tage',
+			'programme.duration.days' => '{count} T',
 			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
 			'programme.stats.days' => 'Tage',
