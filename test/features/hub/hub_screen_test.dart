@@ -69,6 +69,11 @@ void main() {
           path: '/trail/:id/diploma',
           builder: (_, __) => const SizedBox(),
         ),
+        // PARITE GR20 (Import GPX) : cible de la carte « Import GPX » (Apres).
+        GoRoute(
+          path: '/trail/:id/import-gpx',
+          builder: (_, __) => const Scaffold(body: Text('IMPORT_GPX_STUB')),
+        ),
         GoRoute(
           path: '/trail/:id/feedback',
           builder: (_, __) => const SizedBox(),
@@ -256,6 +261,20 @@ void main() {
     testWidgets('CTA « Demarrer » present hors trek reel actif', (tester) async {
       await pumpTallHub(tester);
       expect(find.text(t.hub.startCta), findsOneWidget);
+    });
+
+    // PARITE GR20 (Import GPX) — la section « Apres » expose la carte « Import
+    // GPX » (point d'entree du HUB vers l'ecran d'import, decision Skynet), et
+    // un tap ouvre bien la route d'import (cablage S8 « zero route morte »).
+    testWidgets('carte « Import GPX » presente (section Apres) et cablee',
+        (tester) async {
+      await pumpTallHub(tester);
+      expect(find.text(t.hub.cards.importGpx), findsOneWidget);
+
+      await tester.tap(find.text(t.hub.cards.importGpx));
+      await tester.pumpAndSettle();
+      // La route d'import s'ouvre (ecran cible atteint).
+      expect(find.text('IMPORT_GPX_STUB'), findsOneWidget);
     });
 
     testWidgets('CTA « Demarrer » absent quand un trek reel est actif',

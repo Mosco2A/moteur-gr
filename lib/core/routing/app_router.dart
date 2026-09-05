@@ -6,6 +6,7 @@ import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
 import '../../features/consent/presentation/consent_settings_screen.dart';
 import '../../features/after/presentation/adventure_recap_screen.dart';
+import '../../features/after/presentation/gpx_import_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/hub/presentation/hub_screen.dart';
 import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
@@ -408,6 +409,23 @@ final appRouter = GoRouter(
           path: 'recap',
           name: 'trail-recap',
           builder: (context, state) => const AdventureRecapScreen(),
+        ),
+        // PARITE GR20 (Import GPX) — decision Skynet : cote GR20 l'ecran
+        // `GpxImportScreen` existe mais est ORPHELIN (route definie, aucun point
+        // d'entree UI), sans i18n, avec bornage Corse + refuges GR20 en dur. On
+        // le clone GENERALISE (data-driven par sentier : bornes/etapes/nb etapes
+        // venant des donnees du sentier) + i18n 5 langues, ET on lui ajoute un
+        // point d'entree dans le HUB (section « Apres »). L'import permet de
+        // generer un recapitulatif a partir d'une trace enregistree par une autre
+        // app (Strava, Garmin…). Route hors-shell atteinte via `context.push` ->
+        // retour propre ; post-validation -> recap d'aventure du sentier.
+        GoRoute(
+          path: 'import-gpx',
+          name: 'trail-import-gpx',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return GpxImportRouteScreen(trailId: trailId);
+          },
         ),
         GoRoute(
           path: 'feedback',

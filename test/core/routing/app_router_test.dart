@@ -136,7 +136,7 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 19 sous-routes (+ fire-risk)', () {
+    test('la route /trail/:id conserve ses 20 sous-routes (+ import-gpx)', () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
       // +1 : 'itinerary' (PARITE GR20 #99433, deroule des etapes + fix nav).
@@ -152,8 +152,11 @@ void main() {
       // +1 : 'fire-risk' (PARITE GR20 #99460, ecran « Risque incendie »
       //      data-driven : niveaux derives meteo, reglementation + secours du
       //      sentier). Place apres 'weather' (meme feature).
+      // +1 : 'import-gpx' (PARITE GR20 Import GPX, decision Skynet : clone GR20
+      //      generalise data-driven de l'ecran ORPHELIN cote GR20 + point
+      //      d'entree HUB). Place apres 'recap' (meme section « Apres »).
       final trail = trailRoute();
-      expect(trail.routes.length, 19);
+      expect(trail.routes.length, 20);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -171,6 +174,7 @@ void main() {
         'journal',
         'diploma',
         'recap',
+        'import-gpx',
         'feedback',
         'weather',
         'fire-risk',
@@ -197,6 +201,7 @@ void main() {
         'trail-journal',
         'trail-diploma',
         'trail-recap',
+        'trail-import-gpx',
         'trail-feedback',
         'trail-weather',
         'trail-fire-risk',

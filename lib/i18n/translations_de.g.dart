@@ -97,6 +97,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$fireRisk$de fireRisk = _Translations$fireRisk$de._(_root);
 	@override late final _Translations$shop$de shop = _Translations$shop$de._(_root);
 	@override late final _Translations$summary$de summary = _Translations$summary$de._(_root);
+	@override late final _Translations$import$de import = _Translations$import$de._(_root);
 }
 
 // Path: a11y
@@ -1315,6 +1316,45 @@ class _Translations$summary$de extends Translations$summary$fr {
 	@override late final _Translations$summary$a11y$de a11y = _Translations$summary$a11y$de._(_root);
 }
 
+// Path: import
+class _Translations$import$de extends Translations$import$fr {
+	_Translations$import$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'GPX importieren';
+	@override String get headerTitle => 'Eine GPX-Datei importieren';
+	@override String get headerBody => 'Importieren Sie einen mit einer anderen App (Strava, Garmin usw.) aufgezeichneten GPS-Track, um Ihre Zusammenfassung zu erstellen.';
+	@override String get pickButton => 'GPX-DATEI AUSWÄHLEN';
+	@override String get traceSection => 'Importierter Track';
+	@override String get statsSection => 'Statistiken';
+	@override String get statDistance => 'Distanz';
+	@override String get statElevationGain => 'Aufstieg';
+	@override String get statElevationLoss => 'Abstieg';
+	@override String get statDuration => 'Dauer';
+	@override String get statDirection => 'Richtung';
+	@override String get statPoints => 'GPS-Punkte';
+	@override String get directionNS => 'Nord-Süd';
+	@override String get directionSN => 'Süd-Nord';
+	@override String get stagesSection => 'Erkannte Etappen';
+	@override String get stagesCount => '{done}/{total}';
+	@override String get stageBadge => 'E{number}';
+	@override String get warningsSection => 'Warnungen';
+	@override String get warningOutOfBounds => '{count} Punkt(e) außerhalb des Gebiets ignoriert.';
+	@override String get warningOffTrail => '{percent}% der Punkte sind weit vom Weg entfernt.';
+	@override String get invalidTooFewPoints => 'GPX-Datei zu klein: {count} Punkte (mindestens 10).';
+	@override String get invalidOutOfBounds => 'Der Track passt nicht zum Gebiet dieses Weges.';
+	@override String get errorUnreadable => 'Datei kann nicht gelesen werden.';
+	@override String get errorParsing => 'Die GPX-Datei konnte nicht gelesen werden.';
+	@override String get validateButton => 'IMPORT BESTÄTIGEN';
+	@override String get confirmTitle => 'Import bestätigen?';
+	@override String get confirmBody => 'Dieser Track wird als Ihre Route importiert:\n\n- {points} GPS-Punkte\n- {km} km\n- {stages} erkannte Etappen\n- Richtung: {direction}';
+	@override String get cancel => 'Abbrechen';
+	@override String get validate => 'Bestätigen';
+	@override String get importedSnack => 'GPX-Track importiert!';
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$de extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1399,6 +1439,8 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get townGuidesSub => 'Praktische Infos zu den Etappen';
 	@override String get recap => 'Zusammenfassung';
 	@override String get recapSub => 'Ihr Abenteuer in Kürze';
+	@override String get importGpx => 'GPX-Import';
+	@override String get importGpxSub => 'Einen GPS-Track importieren';
 	@override String get diploma => 'Diplom';
 	@override String get diplomaSub => 'Ihre Abschlussurkunde';
 	@override String get resume => 'Zusammenfassung';
@@ -3142,6 +3184,8 @@ extension on TranslationsDe {
 			'hub.cards.townGuidesSub' => 'Praktische Infos zu den Etappen',
 			'hub.cards.recap' => 'Zusammenfassung',
 			'hub.cards.recapSub' => 'Ihr Abenteuer in Kürze',
+			'hub.cards.importGpx' => 'GPX-Import',
+			'hub.cards.importGpxSub' => 'Einen GPS-Track importieren',
 			'hub.cards.diploma' => 'Diplom',
 			'hub.cards.diplomaSub' => 'Ihre Abschlussurkunde',
 			'hub.cards.resume' => 'Zusammenfassung',
@@ -3564,10 +3608,10 @@ extension on TranslationsDe {
 			'diploma.labelIntegral' => 'Gesamte Route',
 			'diploma.labelPartial' => 'Teilroute',
 			'notifications.morningReminder' => 'Morgenerinnerung',
-			'notifications.weatherAlerts' => 'Wetterwarnungen',
-			'notifications.countdown' => 'Erinnerung 2 Tage vorher',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.weatherAlerts' => 'Wetterwarnungen',
+			'notifications.countdown' => 'Erinnerung 2 Tage vorher',
 			'notifications.countdownDesc' => 'Benachrichtigung 2 Tage vor Abreise',
 			'notifications.schedulerCountdownTitle' => 'Ihr Trek steht bevor!',
 			'notifications.schedulerCountdownBody' => 'Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.',
@@ -4078,10 +4122,10 @@ extension on TranslationsDe {
 			'moderation.complaintTitle' => 'Eine Entscheidung anfechten',
 			'moderation.complaintIntro' => 'Sie können eine Moderationsentscheidung anfechten. Erklären Sie, warum die Entscheidung Ihrer Meinung nach ungerechtfertigt ist (Artikel 20).',
 			'moderation.complaintExposeLabel' => 'Ihre Anfechtung',
-			'moderation.complaintExposeHint' => 'Beschreiben Sie die Gründe für Ihre Anfechtung.',
-			'moderation.complaintSubmit' => 'Anfechtung senden',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintExposeHint' => 'Beschreiben Sie die Gründe für Ihre Anfechtung.',
+			'moderation.complaintSubmit' => 'Anfechtung senden',
 			'moderation.complaintSent' => 'Anfechtung erfasst. Sie wird geprüft.',
 			'moderation.complaintEmpty' => 'Bitte erklären Sie Ihre Anfechtung.',
 			'moderation.a11y.reportForm' => 'Formular zur Inhaltsmeldung',
@@ -4333,6 +4377,36 @@ extension on TranslationsDe {
 			'summary.a11y.export' => 'Plan als PDF exportieren',
 			'summary.a11y.download' => 'Offline-Karten herunterladen',
 			'summary.a11y.share' => 'Meinen Plan teilen',
+			'import.title' => 'GPX importieren',
+			'import.headerTitle' => 'Eine GPX-Datei importieren',
+			'import.headerBody' => 'Importieren Sie einen mit einer anderen App (Strava, Garmin usw.) aufgezeichneten GPS-Track, um Ihre Zusammenfassung zu erstellen.',
+			'import.pickButton' => 'GPX-DATEI AUSWÄHLEN',
+			'import.traceSection' => 'Importierter Track',
+			'import.statsSection' => 'Statistiken',
+			'import.statDistance' => 'Distanz',
+			'import.statElevationGain' => 'Aufstieg',
+			'import.statElevationLoss' => 'Abstieg',
+			'import.statDuration' => 'Dauer',
+			'import.statDirection' => 'Richtung',
+			'import.statPoints' => 'GPS-Punkte',
+			'import.directionNS' => 'Nord-Süd',
+			'import.directionSN' => 'Süd-Nord',
+			'import.stagesSection' => 'Erkannte Etappen',
+			'import.stagesCount' => '{done}/{total}',
+			'import.stageBadge' => 'E{number}',
+			'import.warningsSection' => 'Warnungen',
+			'import.warningOutOfBounds' => '{count} Punkt(e) außerhalb des Gebiets ignoriert.',
+			'import.warningOffTrail' => '{percent}% der Punkte sind weit vom Weg entfernt.',
+			'import.invalidTooFewPoints' => 'GPX-Datei zu klein: {count} Punkte (mindestens 10).',
+			'import.invalidOutOfBounds' => 'Der Track passt nicht zum Gebiet dieses Weges.',
+			'import.errorUnreadable' => 'Datei kann nicht gelesen werden.',
+			'import.errorParsing' => 'Die GPX-Datei konnte nicht gelesen werden.',
+			'import.validateButton' => 'IMPORT BESTÄTIGEN',
+			'import.confirmTitle' => 'Import bestätigen?',
+			'import.confirmBody' => 'Dieser Track wird als Ihre Route importiert:\n\n- {points} GPS-Punkte\n- {km} km\n- {stages} erkannte Etappen\n- Richtung: {direction}',
+			'import.cancel' => 'Abbrechen',
+			'import.validate' => 'Bestätigen',
+			'import.importedSnack' => 'GPX-Track importiert!',
 			_ => null,
 		};
 	}
