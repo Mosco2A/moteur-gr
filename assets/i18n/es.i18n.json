@@ -102,7 +102,9 @@
       "recap": "Resumen",
       "recapSub": "Tu aventura resumida",
       "diploma": "Diploma",
-      "diplomaSub": "Tu certificado final"
+      "diplomaSub": "Tu certificado final",
+      "resume": "Resumen",
+      "resumeSub": "Síntesis del plan"
     },
     "fab": {
       "feedback": "Dar mi opinión",
@@ -1467,6 +1469,64 @@
       "messageJoin": "La información para llegar a $name se añadirá pronto.",
       "messageLeave": "La información para salir de $name se añadirá pronto.",
       "messageGeneric": "La información de transporte de este sendero se añadirá pronto."
+    }
+  },
+  "summary": {
+    "title": "Síntesis del plan",
+    "configTitle": "Mi $name",
+    "direction": "Dirección",
+    "duration": "Duración",
+    "durationValue": "$days días de marcha",
+    "durationValueWithRest": "$days días de marcha + $rest descanso",
+    "startDate": "Salida",
+    "endDate": "Llegada",
+    "stats": {
+      "title": "Estadísticas",
+      "distance": "Distancia total",
+      "elevationGain": "Desnivel positivo",
+      "elevationLoss": "Desnivel negativo",
+      "duration": "Tiempo estimado",
+      "stages": "Etapas",
+      "restDays": "Días de descanso"
+    },
+    "dayByDay": "Día a día",
+    "dayLabel": "D$n",
+    "stageLabel": "Etapa $n",
+    "restDay": "Día de descanso",
+    "restDayTitle": "Día de descanso — D$n",
+    "restDayPlace": "Lugar: $place",
+    "actions": {
+      "exportPdf": "EXPORTAR A PDF",
+      "exportPdfSoon": "¡Exportación a PDF próximamente! La función está en desarrollo.",
+      "downloadMaps": "DESCARGAR MAPAS SIN CONEXIÓN",
+      "downloadMapsSoon": "¡Descarga de mapas sin conexión próximamente! Esta función formará parte del módulo de senderismo.",
+      "share": "COMPARTIR MI PLAN"
+    },
+    "share": {
+      "titleLine": "Mi $name",
+      "walkDays": "$days días de marcha",
+      "walkDaysWithRest": "$days días de marcha + $rest días de descanso",
+      "distance": "Distancia: $km km",
+      "elevationGain": "Desnivel positivo: $m m",
+      "elevationLoss": "Desnivel negativo: $m m",
+      "duration": "Tiempo estimado: ~$h h",
+      "dates": "Del $start al $end",
+      "planning": "--- Plan día a día ---",
+      "dayRest": "D$n: Descanso",
+      "dayStages": "D$n: $stages",
+      "footer": "Planificado con $name"
+    },
+    "empty": {
+      "title": "Configura primero tu itinerario",
+      "message": "Elige tu ruta y la duración para ver la síntesis de tu plan.",
+      "action": "CONFIGURAR EL ITINERARIO"
+    },
+    "a11y": {
+      "dayTile": "Ver los detalles del día $day",
+      "restDayTile": "Detalles del día de descanso $day",
+      "export": "Exportar el plan a PDF",
+      "download": "Descargar mapas sin conexión",
+      "share": "Compartir mi plan"
     }
   }
 }

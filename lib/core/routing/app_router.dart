@@ -14,6 +14,7 @@ import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/planning/presentation/calendar_screen.dart';
+import '../../features/planning/presentation/plan_summary_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/planning/presentation/transport_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -294,6 +295,23 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
             return TransportScreen(trailId: trailId);
+          },
+        ),
+        // PARITE GR20 (#99460) — RESUME : ecran « Synthese du plan » (clone GR20
+        // `PlanSummaryScreen`, agregateur data-driven). Synthetise le programme
+        // du sentier courant (etat vide + 4 sections : configuration,
+        // statistiques globales, jour par jour tappable, boutons d'action). Les
+        // donnees viennent des providers StepWays deja en place (plannedDays,
+        // planningStats, nuitees, date de depart) — aucune donnee inventee. La
+        // carte HUB « Resume » (section Preparer) ouvre cet ecran via
+        // `context.push` (retour propre, pile preservee — jamais context.go qui
+        // viderait la pile). Generique multi-sentiers, zero hardcode de localite.
+        GoRoute(
+          path: 'summary',
+          name: 'trail-summary',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return PlanSummaryScreen(trailId: trailId);
           },
         ),
         // PARITE GR20 (#99433) : ecran « Itineraire » = deroule des etapes du

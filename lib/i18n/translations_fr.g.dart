@@ -95,6 +95,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$calendar$fr calendar = Translations$calendar$fr.internal(_root);
 	late final Translations$nuitees$fr nuitees = Translations$nuitees$fr.internal(_root);
 	late final Translations$transport$fr transport = Translations$transport$fr.internal(_root);
+	late final Translations$summary$fr summary = Translations$summary$fr.internal(_root);
 }
 
 // Path: a11y
@@ -2384,6 +2385,64 @@ class Translations$transport$fr {
 	late final Translations$transport$empty$fr empty = Translations$transport$empty$fr.internal(_root);
 }
 
+// Path: summary
+class Translations$summary$fr {
+	Translations$summary$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Résumé du plan'
+	String get title => 'Résumé du plan';
+
+	/// fr: 'Mon $name'
+	String configTitle({required Object name}) => 'Mon ${name}';
+
+	/// fr: 'Direction'
+	String get direction => 'Direction';
+
+	/// fr: 'Durée'
+	String get duration => 'Durée';
+
+	/// fr: '$days jours de marche'
+	String durationValue({required Object days}) => '${days} jours de marche';
+
+	/// fr: '$days jours de marche + $rest repos'
+	String durationValueWithRest({required Object days, required Object rest}) => '${days} jours de marche + ${rest} repos';
+
+	/// fr: 'Départ'
+	String get startDate => 'Départ';
+
+	/// fr: 'Arrivée'
+	String get endDate => 'Arrivée';
+
+	late final Translations$summary$stats$fr stats = Translations$summary$stats$fr.internal(_root);
+
+	/// fr: 'Jour par jour'
+	String get dayByDay => 'Jour par jour';
+
+	/// fr: 'J$n'
+	String dayLabel({required Object n}) => 'J${n}';
+
+	/// fr: 'Étape $n'
+	String stageLabel({required Object n}) => 'Étape ${n}';
+
+	/// fr: 'Jour de repos'
+	String get restDay => 'Jour de repos';
+
+	/// fr: 'Jour de repos — J$n'
+	String restDayTitle({required Object n}) => 'Jour de repos — J${n}';
+
+	/// fr: 'Lieu : $place'
+	String restDayPlace({required Object place}) => 'Lieu : ${place}';
+
+	late final Translations$summary$actions$fr actions = Translations$summary$actions$fr.internal(_root);
+	late final Translations$summary$share$fr share = Translations$summary$share$fr.internal(_root);
+	late final Translations$summary$empty$fr empty = Translations$summary$empty$fr.internal(_root);
+	late final Translations$summary$a11y$fr a11y = Translations$summary$a11y$fr.internal(_root);
+}
+
 // Path: hub.trekCard
 class Translations$hub$trekCard$fr {
 	Translations$hub$trekCard$fr.internal(this._root);
@@ -2574,6 +2633,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Votre certificat de fin'
 	String get diplomaSub => 'Votre certificat de fin';
+
+	/// fr: 'Résumé'
+	String get resume => 'Résumé';
+
+	/// fr: 'Synthèse du plan'
+	String get resumeSub => 'Synthèse du plan';
 }
 
 // Path: hub.fab
@@ -4654,6 +4719,147 @@ class Translations$transport$empty$fr {
 	String get messageGeneric => 'Les informations de transport de ce sentier seront ajoutées prochainement.';
 }
 
+// Path: summary.stats
+class Translations$summary$stats$fr {
+	Translations$summary$stats$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Statistiques'
+	String get title => 'Statistiques';
+
+	/// fr: 'Distance totale'
+	String get distance => 'Distance totale';
+
+	/// fr: 'D+ total'
+	String get elevationGain => 'D+ total';
+
+	/// fr: 'D- total'
+	String get elevationLoss => 'D- total';
+
+	/// fr: 'Durée estimée'
+	String get duration => 'Durée estimée';
+
+	/// fr: 'Étapes'
+	String get stages => 'Étapes';
+
+	/// fr: 'Jours de repos'
+	String get restDays => 'Jours de repos';
+}
+
+// Path: summary.actions
+class Translations$summary$actions$fr {
+	Translations$summary$actions$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'EXPORTER EN PDF'
+	String get exportPdf => 'EXPORTER EN PDF';
+
+	/// fr: 'Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.'
+	String get exportPdfSoon => 'Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.';
+
+	/// fr: 'TÉLÉCHARGER LES CARTES OFFLINE'
+	String get downloadMaps => 'TÉLÉCHARGER LES CARTES OFFLINE';
+
+	/// fr: 'Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.'
+	String get downloadMapsSoon => 'Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.';
+
+	/// fr: 'PARTAGER MON PLAN'
+	String get share => 'PARTAGER MON PLAN';
+}
+
+// Path: summary.share
+class Translations$summary$share$fr {
+	Translations$summary$share$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mon $name'
+	String titleLine({required Object name}) => 'Mon ${name}';
+
+	/// fr: '$days jours de marche'
+	String walkDays({required Object days}) => '${days} jours de marche';
+
+	/// fr: '$days jours de marche + $rest jours de repos'
+	String walkDaysWithRest({required Object days, required Object rest}) => '${days} jours de marche + ${rest} jours de repos';
+
+	/// fr: 'Distance : $km km'
+	String distance({required Object km}) => 'Distance : ${km} km';
+
+	/// fr: 'D+ total : $m m'
+	String elevationGain({required Object m}) => 'D+ total : ${m} m';
+
+	/// fr: 'D- total : $m m'
+	String elevationLoss({required Object m}) => 'D- total : ${m} m';
+
+	/// fr: 'Durée estimée : ~$h h'
+	String duration({required Object h}) => 'Durée estimée : ~${h} h';
+
+	/// fr: 'Du $start au $end'
+	String dates({required Object start, required Object end}) => 'Du ${start} au ${end}';
+
+	/// fr: '--- Planning jour par jour ---'
+	String get planning => '--- Planning jour par jour ---';
+
+	/// fr: 'J$n : Repos'
+	String dayRest({required Object n}) => 'J${n} : Repos';
+
+	/// fr: 'J$n : $stages'
+	String dayStages({required Object n, required Object stages}) => 'J${n} : ${stages}';
+
+	/// fr: 'Planifié avec $name'
+	String footer({required Object name}) => 'Planifié avec ${name}';
+}
+
+// Path: summary.empty
+class Translations$summary$empty$fr {
+	Translations$summary$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Configurez d'abord votre itinéraire'
+	String get title => 'Configurez d\'abord votre itinéraire';
+
+	/// fr: 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.'
+	String get message => 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.';
+
+	/// fr: 'CONFIGURER L'ITINÉRAIRE'
+	String get action => 'CONFIGURER L\'ITINÉRAIRE';
+}
+
+// Path: summary.a11y
+class Translations$summary$a11y$fr {
+	Translations$summary$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Voir le détail du jour $day'
+	String dayTile({required Object day}) => 'Voir le détail du jour ${day}';
+
+	/// fr: 'Détails du jour de repos $day'
+	String restDayTile({required Object day}) => 'Détails du jour de repos ${day}';
+
+	/// fr: 'Exporter le plan en PDF'
+	String get export => 'Exporter le plan en PDF';
+
+	/// fr: 'Télécharger les cartes hors ligne'
+	String get download => 'Télécharger les cartes hors ligne';
+
+	/// fr: 'Partager mon plan'
+	String get share => 'Partager mon plan';
+}
+
 // Path: weather.alert.storm
 class Translations$weather$alert$storm$fr {
 	Translations$weather$alert$storm$fr.internal(this._root);
@@ -5207,6 +5413,8 @@ extension on Translations {
 			'hub.cards.recapSub' => 'Votre aventure en résumé',
 			'hub.cards.diploma' => 'Diplôme',
 			'hub.cards.diplomaSub' => 'Votre certificat de fin',
+			'hub.cards.resume' => 'Résumé',
+			'hub.cards.resumeSub' => 'Synthèse du plan',
 			'hub.fab.feedback' => 'Donner mon avis',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Carte du sentier',
@@ -5627,10 +5835,10 @@ extension on Translations {
 			'notifications.schedulerCountdownTitle' => 'Votre randonnée approche !',
 			'notifications.schedulerCountdownBody' => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.',
 			'notifications.schedulerDailyTitle' => 'Bonne journee de randonnée !',
-			'notifications.schedulerDailyBody' => 'Consultez la meteo et preparez votre etape du jour.',
-			'settings.title' => 'Paramètres',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.schedulerDailyBody' => 'Consultez la meteo et preparez votre etape du jour.',
+			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',
 			'settings.units' => 'Unités',
 			'settings.distance' => 'Distance',
@@ -6141,10 +6349,10 @@ extension on Translations {
 			'moderation.complaintEmpty' => 'Veuillez expliquer votre contestation.',
 			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
 			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
-			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
-			'moderation.a11y.submitReport' => 'Envoyer le signalement',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
+			'moderation.a11y.submitReport' => 'Envoyer le signalement',
 			'moderation.a11y.statementCard' => 'Exposé des motifs de la décision de modération',
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			'bootstrap.loading' => 'Préparation de votre randonnée…',
@@ -6281,6 +6489,52 @@ extension on Translations {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Les informations pour rejoindre ${name} seront ajoutées prochainement.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Les informations pour repartir de ${name} seront ajoutées prochainement.',
 			'transport.empty.messageGeneric' => 'Les informations de transport de ce sentier seront ajoutées prochainement.',
+			'summary.title' => 'Résumé du plan',
+			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
+			'summary.direction' => 'Direction',
+			'summary.duration' => 'Durée',
+			'summary.durationValue' => ({required Object days}) => '${days} jours de marche',
+			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} jours de marche + ${rest} repos',
+			'summary.startDate' => 'Départ',
+			'summary.endDate' => 'Arrivée',
+			'summary.stats.title' => 'Statistiques',
+			'summary.stats.distance' => 'Distance totale',
+			'summary.stats.elevationGain' => 'D+ total',
+			'summary.stats.elevationLoss' => 'D- total',
+			'summary.stats.duration' => 'Durée estimée',
+			'summary.stats.stages' => 'Étapes',
+			'summary.stats.restDays' => 'Jours de repos',
+			'summary.dayByDay' => 'Jour par jour',
+			'summary.dayLabel' => ({required Object n}) => 'J${n}',
+			'summary.stageLabel' => ({required Object n}) => 'Étape ${n}',
+			'summary.restDay' => 'Jour de repos',
+			'summary.restDayTitle' => ({required Object n}) => 'Jour de repos — J${n}',
+			'summary.restDayPlace' => ({required Object place}) => 'Lieu : ${place}',
+			'summary.actions.exportPdf' => 'EXPORTER EN PDF',
+			'summary.actions.exportPdfSoon' => 'Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.',
+			'summary.actions.downloadMaps' => 'TÉLÉCHARGER LES CARTES OFFLINE',
+			'summary.actions.downloadMapsSoon' => 'Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.',
+			'summary.actions.share' => 'PARTAGER MON PLAN',
+			'summary.share.titleLine' => ({required Object name}) => 'Mon ${name}',
+			'summary.share.walkDays' => ({required Object days}) => '${days} jours de marche',
+			'summary.share.walkDaysWithRest' => ({required Object days, required Object rest}) => '${days} jours de marche + ${rest} jours de repos',
+			'summary.share.distance' => ({required Object km}) => 'Distance : ${km} km',
+			'summary.share.elevationGain' => ({required Object m}) => 'D+ total : ${m} m',
+			'summary.share.elevationLoss' => ({required Object m}) => 'D- total : ${m} m',
+			'summary.share.duration' => ({required Object h}) => 'Durée estimée : ~${h} h',
+			'summary.share.dates' => ({required Object start, required Object end}) => 'Du ${start} au ${end}',
+			'summary.share.planning' => '--- Planning jour par jour ---',
+			'summary.share.dayRest' => ({required Object n}) => 'J${n} : Repos',
+			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'J${n} : ${stages}',
+			'summary.share.footer' => ({required Object name}) => 'Planifié avec ${name}',
+			'summary.empty.title' => 'Configurez d\'abord votre itinéraire',
+			'summary.empty.message' => 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.',
+			'summary.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
+			'summary.a11y.dayTile' => ({required Object day}) => 'Voir le détail du jour ${day}',
+			'summary.a11y.restDayTile' => ({required Object day}) => 'Détails du jour de repos ${day}',
+			'summary.a11y.export' => 'Exporter le plan en PDF',
+			'summary.a11y.download' => 'Télécharger les cartes hors ligne',
+			'summary.a11y.share' => 'Partager mon plan',
 			_ => null,
 		};
 	}

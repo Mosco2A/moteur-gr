@@ -94,6 +94,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$calendar$en calendar = _Translations$calendar$en._(_root);
 	@override late final _Translations$nuitees$en nuitees = _Translations$nuitees$en._(_root);
 	@override late final _Translations$transport$en transport = _Translations$transport$en._(_root);
+	@override late final _Translations$summary$en summary = _Translations$summary$en._(_root);
 }
 
 // Path: a11y
@@ -1225,6 +1226,34 @@ class _Translations$transport$en extends Translations$transport$fr {
 	@override late final _Translations$transport$empty$en empty = _Translations$transport$empty$en._(_root);
 }
 
+// Path: summary
+class _Translations$summary$en extends Translations$summary$fr {
+	_Translations$summary$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Plan summary';
+	@override String configTitle({required Object name}) => 'My ${name}';
+	@override String get direction => 'Direction';
+	@override String get duration => 'Duration';
+	@override String durationValue({required Object days}) => '${days} walking days';
+	@override String durationValueWithRest({required Object days, required Object rest}) => '${days} walking days + ${rest} rest';
+	@override String get startDate => 'Departure';
+	@override String get endDate => 'Arrival';
+	@override late final _Translations$summary$stats$en stats = _Translations$summary$stats$en._(_root);
+	@override String get dayByDay => 'Day by day';
+	@override String dayLabel({required Object n}) => 'D${n}';
+	@override String stageLabel({required Object n}) => 'Stage ${n}';
+	@override String get restDay => 'Rest day';
+	@override String restDayTitle({required Object n}) => 'Rest day — D${n}';
+	@override String restDayPlace({required Object place}) => 'Place: ${place}';
+	@override late final _Translations$summary$actions$en actions = _Translations$summary$actions$en._(_root);
+	@override late final _Translations$summary$share$en share = _Translations$summary$share$en._(_root);
+	@override late final _Translations$summary$empty$en empty = _Translations$summary$empty$en._(_root);
+	@override late final _Translations$summary$a11y$en a11y = _Translations$summary$a11y$en._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$en extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1311,6 +1340,8 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get recapSub => 'Your adventure summed up';
 	@override String get diploma => 'Diploma';
 	@override String get diplomaSub => 'Your finisher certificate';
+	@override String get resume => 'Summary';
+	@override String get resumeSub => 'Plan overview';
 }
 
 // Path: hub.fab
@@ -2424,6 +2455,83 @@ class _Translations$transport$empty$en extends Translations$transport$empty$fr {
 	@override String get messageGeneric => 'Transport information for this trail will be added soon.';
 }
 
+// Path: summary.stats
+class _Translations$summary$stats$en extends Translations$summary$stats$fr {
+	_Translations$summary$stats$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Statistics';
+	@override String get distance => 'Total distance';
+	@override String get elevationGain => 'Total ascent';
+	@override String get elevationLoss => 'Total descent';
+	@override String get duration => 'Estimated time';
+	@override String get stages => 'Stages';
+	@override String get restDays => 'Rest days';
+}
+
+// Path: summary.actions
+class _Translations$summary$actions$en extends Translations$summary$actions$fr {
+	_Translations$summary$actions$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get exportPdf => 'EXPORT AS PDF';
+	@override String get exportPdfSoon => 'PDF export coming soon! This feature is under development.';
+	@override String get downloadMaps => 'DOWNLOAD OFFLINE MAPS';
+	@override String get downloadMapsSoon => 'Offline map download coming soon! This feature will be part of the hiking module.';
+	@override String get share => 'SHARE MY PLAN';
+}
+
+// Path: summary.share
+class _Translations$summary$share$en extends Translations$summary$share$fr {
+	_Translations$summary$share$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String titleLine({required Object name}) => 'My ${name}';
+	@override String walkDays({required Object days}) => '${days} walking days';
+	@override String walkDaysWithRest({required Object days, required Object rest}) => '${days} walking days + ${rest} rest days';
+	@override String distance({required Object km}) => 'Distance: ${km} km';
+	@override String elevationGain({required Object m}) => 'Total ascent: ${m} m';
+	@override String elevationLoss({required Object m}) => 'Total descent: ${m} m';
+	@override String duration({required Object h}) => 'Estimated time: ~${h} h';
+	@override String dates({required Object start, required Object end}) => 'From ${start} to ${end}';
+	@override String get planning => '--- Day-by-day plan ---';
+	@override String dayRest({required Object n}) => 'D${n}: Rest';
+	@override String dayStages({required Object n, required Object stages}) => 'D${n}: ${stages}';
+	@override String footer({required Object name}) => 'Planned with ${name}';
+}
+
+// Path: summary.empty
+class _Translations$summary$empty$en extends Translations$summary$empty$fr {
+	_Translations$summary$empty$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Set up your itinerary first';
+	@override String get message => 'Choose your route and duration to see your plan summary.';
+	@override String get action => 'SET UP ITINERARY';
+}
+
+// Path: summary.a11y
+class _Translations$summary$a11y$en extends Translations$summary$a11y$fr {
+	_Translations$summary$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String dayTile({required Object day}) => 'View details for day ${day}';
+	@override String restDayTile({required Object day}) => 'Rest day ${day} details';
+	@override String get export => 'Export plan as PDF';
+	@override String get download => 'Download offline maps';
+	@override String get share => 'Share my plan';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$en extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -2849,6 +2957,8 @@ extension on TranslationsEn {
 			'hub.cards.recapSub' => 'Your adventure summed up',
 			'hub.cards.diploma' => 'Diploma',
 			'hub.cards.diplomaSub' => 'Your finisher certificate',
+			'hub.cards.resume' => 'Summary',
+			'hub.cards.resumeSub' => 'Plan overview',
 			'hub.fab.feedback' => 'Give feedback',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Trail map',
@@ -3269,10 +3379,10 @@ extension on TranslationsEn {
 			'notifications.schedulerCountdownTitle' => 'Your trek is coming up!',
 			'notifications.schedulerCountdownBody' => 'Departure in 2 days. Check your checklist and the weather.',
 			'notifications.schedulerDailyTitle' => 'Have a great trek day!',
-			'notifications.schedulerDailyBody' => 'Check the weather and prepare today\'s stage.',
-			'settings.title' => 'Settings',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.schedulerDailyBody' => 'Check the weather and prepare today\'s stage.',
+			'settings.title' => 'Settings',
 			'settings.language' => 'Language',
 			'settings.units' => 'Units',
 			'settings.distance' => 'Distance',
@@ -3783,10 +3893,10 @@ extension on TranslationsEn {
 			'moderation.complaintEmpty' => 'Please explain your challenge.',
 			'moderation.a11y.reportForm' => 'Content reporting form',
 			'moderation.a11y.reasonSelector' => 'Report reason selector',
-			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
-			'moderation.a11y.submitReport' => 'Send report',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Good-faith declaration, ${state}',
+			'moderation.a11y.submitReport' => 'Send report',
 			'moderation.a11y.statementCard' => 'Statement of reasons for the moderation decision',
 			'moderation.a11y.complaintForm' => 'Decision challenge form',
 			'bootstrap.loading' => 'Preparing your hike…',
@@ -3923,6 +4033,52 @@ extension on TranslationsEn {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Information on getting to ${name} will be added soon.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Information on leaving ${name} will be added soon.',
 			'transport.empty.messageGeneric' => 'Transport information for this trail will be added soon.',
+			'summary.title' => 'Plan summary',
+			'summary.configTitle' => ({required Object name}) => 'My ${name}',
+			'summary.direction' => 'Direction',
+			'summary.duration' => 'Duration',
+			'summary.durationValue' => ({required Object days}) => '${days} walking days',
+			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} walking days + ${rest} rest',
+			'summary.startDate' => 'Departure',
+			'summary.endDate' => 'Arrival',
+			'summary.stats.title' => 'Statistics',
+			'summary.stats.distance' => 'Total distance',
+			'summary.stats.elevationGain' => 'Total ascent',
+			'summary.stats.elevationLoss' => 'Total descent',
+			'summary.stats.duration' => 'Estimated time',
+			'summary.stats.stages' => 'Stages',
+			'summary.stats.restDays' => 'Rest days',
+			'summary.dayByDay' => 'Day by day',
+			'summary.dayLabel' => ({required Object n}) => 'D${n}',
+			'summary.stageLabel' => ({required Object n}) => 'Stage ${n}',
+			'summary.restDay' => 'Rest day',
+			'summary.restDayTitle' => ({required Object n}) => 'Rest day — D${n}',
+			'summary.restDayPlace' => ({required Object place}) => 'Place: ${place}',
+			'summary.actions.exportPdf' => 'EXPORT AS PDF',
+			'summary.actions.exportPdfSoon' => 'PDF export coming soon! This feature is under development.',
+			'summary.actions.downloadMaps' => 'DOWNLOAD OFFLINE MAPS',
+			'summary.actions.downloadMapsSoon' => 'Offline map download coming soon! This feature will be part of the hiking module.',
+			'summary.actions.share' => 'SHARE MY PLAN',
+			'summary.share.titleLine' => ({required Object name}) => 'My ${name}',
+			'summary.share.walkDays' => ({required Object days}) => '${days} walking days',
+			'summary.share.walkDaysWithRest' => ({required Object days, required Object rest}) => '${days} walking days + ${rest} rest days',
+			'summary.share.distance' => ({required Object km}) => 'Distance: ${km} km',
+			'summary.share.elevationGain' => ({required Object m}) => 'Total ascent: ${m} m',
+			'summary.share.elevationLoss' => ({required Object m}) => 'Total descent: ${m} m',
+			'summary.share.duration' => ({required Object h}) => 'Estimated time: ~${h} h',
+			'summary.share.dates' => ({required Object start, required Object end}) => 'From ${start} to ${end}',
+			'summary.share.planning' => '--- Day-by-day plan ---',
+			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Rest',
+			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'D${n}: ${stages}',
+			'summary.share.footer' => ({required Object name}) => 'Planned with ${name}',
+			'summary.empty.title' => 'Set up your itinerary first',
+			'summary.empty.message' => 'Choose your route and duration to see your plan summary.',
+			'summary.empty.action' => 'SET UP ITINERARY',
+			'summary.a11y.dayTile' => ({required Object day}) => 'View details for day ${day}',
+			'summary.a11y.restDayTile' => ({required Object day}) => 'Rest day ${day} details',
+			'summary.a11y.export' => 'Export plan as PDF',
+			'summary.a11y.download' => 'Download offline maps',
+			'summary.a11y.share' => 'Share my plan',
 			_ => null,
 		};
 	}

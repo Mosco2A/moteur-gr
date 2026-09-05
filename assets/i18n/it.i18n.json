@@ -102,7 +102,9 @@
       "recap": "Riepilogo",
       "recapSub": "La tua avventura in sintesi",
       "diploma": "Diploma",
-      "diplomaSub": "Il tuo certificato finale"
+      "diplomaSub": "Il tuo certificato finale",
+      "resume": "Riepilogo",
+      "resumeSub": "Sintesi del piano"
     },
     "fab": {
       "feedback": "Lascia un feedback",
@@ -1467,6 +1469,64 @@
       "messageJoin": "Le informazioni per raggiungere $name saranno aggiunte a breve.",
       "messageLeave": "Le informazioni per ripartire da $name saranno aggiunte a breve.",
       "messageGeneric": "Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve."
+    }
+  },
+  "summary": {
+    "title": "Sintesi del piano",
+    "configTitle": "Il mio $name",
+    "direction": "Direzione",
+    "duration": "Durata",
+    "durationValue": "$days giorni di cammino",
+    "durationValueWithRest": "$days giorni di cammino + $rest riposo",
+    "startDate": "Partenza",
+    "endDate": "Arrivo",
+    "stats": {
+      "title": "Statistiche",
+      "distance": "Distanza totale",
+      "elevationGain": "Dislivello positivo",
+      "elevationLoss": "Dislivello negativo",
+      "duration": "Tempo stimato",
+      "stages": "Tappe",
+      "restDays": "Giorni di riposo"
+    },
+    "dayByDay": "Giorno per giorno",
+    "dayLabel": "G$n",
+    "stageLabel": "Tappa $n",
+    "restDay": "Giorno di riposo",
+    "restDayTitle": "Giorno di riposo — G$n",
+    "restDayPlace": "Luogo: $place",
+    "actions": {
+      "exportPdf": "ESPORTA IN PDF",
+      "exportPdfSoon": "Esportazione PDF presto disponibile! La funzione è in fase di sviluppo.",
+      "downloadMaps": "SCARICA LE MAPPE OFFLINE",
+      "downloadMapsSoon": "Download delle mappe offline presto disponibile! Questa funzione farà parte del modulo escursioni.",
+      "share": "CONDIVIDI IL MIO PIANO"
+    },
+    "share": {
+      "titleLine": "Il mio $name",
+      "walkDays": "$days giorni di cammino",
+      "walkDaysWithRest": "$days giorni di cammino + $rest giorni di riposo",
+      "distance": "Distanza: $km km",
+      "elevationGain": "Dislivello positivo: $m m",
+      "elevationLoss": "Dislivello negativo: $m m",
+      "duration": "Tempo stimato: ~$h h",
+      "dates": "Dal $start al $end",
+      "planning": "--- Programma giorno per giorno ---",
+      "dayRest": "G$n: Riposo",
+      "dayStages": "G$n: $stages",
+      "footer": "Pianificato con $name"
+    },
+    "empty": {
+      "title": "Configura prima il tuo itinerario",
+      "message": "Scegli il percorso e la durata per vedere la sintesi del tuo piano.",
+      "action": "CONFIGURA L'ITINERARIO"
+    },
+    "a11y": {
+      "dayTile": "Vedi i dettagli del giorno $day",
+      "restDayTile": "Dettagli del giorno di riposo $day",
+      "export": "Esporta il piano in PDF",
+      "download": "Scarica le mappe offline",
+      "share": "Condividi il mio piano"
     }
   }
 }
