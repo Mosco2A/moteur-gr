@@ -20,6 +20,7 @@ import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/planning/presentation/transport_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
+import '../../features/weather/presentation/fire_risk_screen.dart';
 import '../../features/weather/presentation/weather_screen.dart';
 import '../../features/weather/providers/current_stage_provider.dart';
 import '../../features/trail/presentation/no_data_screen.dart';
@@ -95,6 +96,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/recap             - Recap « Mon aventure » (stats session)
 ///   /trail/:id/feedback          - Feedback in-app
 ///   /trail/:id/weather           - Meteo d'une etape (E31, ?stage=n)
+///   /trail/:id/fire-risk         - RISQUE INCENDIE (niveaux derives meteo, data-driven)
 ///   /trail/:id/guides            - Guides villes (liste, E33)
 ///   /trail/:id/guides/:guideId   - Guide ville (detail, E34)
 ///   /group/:id                   - Groupe localisation partagee
@@ -426,6 +428,25 @@ final appRouter = GoRouter(
               trailId: trailId,
               stageParam: stageParam,
             );
+          },
+        ),
+        // PARITE GR20 (#99460) — RISQUE INCENDIE : ecran « Risques & alertes »
+        // (clone GR20 `FireRiskScreen`, data-driven). Le niveau de risque (0-5)
+        // est DERIVE de la meteo (parite GR20 : socle meteo reutilise + calcul
+        // `calculateFireRiskLevel` identique a GR20), agrege par etape. La
+        // REGLEMENTATION (periode/region/URL arretes/message) et les SECOURS
+        // regionaux viennent de la DONNEE du sentier (catalogue incendie +
+        // `TrailConfig.emergencyNumbers`) — aucune localite ni « Corse » en dur
+        // dans le moteur. La carte HUB « Incendie » (section Randonner) ouvre cet
+        // ecran via `context.push` (retour propre, pile preservee). Generique
+        // multi-sentiers, fallback informatif si aucune donnee meteo ;
+        // reglementation absente -> section masquee.
+        GoRoute(
+          path: 'fire-risk',
+          name: 'trail-fire-risk',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return FireRiskScreen(trailId: trailId);
           },
         ),
         // E33/E34 (LOT D/D2) : cablage de la feature Guides villes (orpheline).

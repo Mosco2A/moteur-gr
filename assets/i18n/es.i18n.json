@@ -106,7 +106,9 @@
       "resume": "Resumen",
       "resumeSub": "Síntesis del plan",
       "shop": "Avituallamiento",
-      "shopSub": "Tiendas, farmacias, gas"
+      "shopSub": "Tiendas, farmacias, gas",
+      "fire": "Incendio",
+      "fireSub": "Riesgos y alertas"
     },
     "fab": {
       "feedback": "Dar mi opinión",
@@ -1471,6 +1473,63 @@
       "messageJoin": "La información para llegar a $name se añadirá pronto.",
       "messageLeave": "La información para salir de $name se añadirá pronto.",
       "messageGeneric": "La información de transporte de este sendero se añadirá pronto."
+    }
+  },
+  "fireRisk": {
+    "title": "Riesgo de incendio",
+    "refresh": "Actualizar",
+    "refreshed": "Datos actualizados",
+    "refreshError": "Sin conexion",
+    "update": {
+      "live": "Datos actualizados",
+      "liveAt": "Act.: $date",
+      "cacheRecent": "Actualizado hace $duration",
+      "cacheOld": "Ultima act.: $date",
+      "never": "Nunca actualizado"
+    },
+    "duration": {
+      "seconds": "unos segundos",
+      "minutes": "$n min",
+      "hours": "${n}h",
+      "days": "${n}d"
+    },
+    "fwiSource": "Indice de riesgo basado en el Fire Weather Index (FWI) proporcionado por Open-Meteo (modelo Meteo-France). El FWI es el indice utilizado por el sistema europeo EFFIS para evaluar el riesgo de incendios forestales.",
+    "regulation": {
+      "title": "Normativa",
+      "decreeLink": "Consultar las ordenes prefectorales"
+    },
+    "levelsTitle": "Niveles de riesgo",
+    "level": {
+      "none": "Ninguno",
+      "low": "Bajo",
+      "moderate": "Moderado",
+      "high": "Alto",
+      "veryHigh": "Muy alto",
+      "extreme": "Extremo"
+    },
+    "stagesTitle": "Riesgo por etapa",
+    "stageBadge": "E$number",
+    "levelBadge": "Niv. $level",
+    "dayLevel": "Niv. $level",
+    "day": {
+      "today": "Hoy",
+      "tomorrow": "Man.",
+      "plus": "D+$n"
+    },
+    "noRisk": "Ningun riesgo de incendio senalado actualmente",
+    "numbersTitle": "Numeros utiles",
+    "number": {
+      "firefighters": "Bomberos",
+      "europeanEmergency": "Emergencia europea"
+    },
+    "empty": {
+      "title": "Riesgo de incendio no disponible",
+      "message": "Los datos meteorologicos necesarios para calcular el riesgo de incendio no estan disponibles ahora mismo. Intentalo de nuevo cuando estes conectado."
+    },
+    "a11y": {
+      "call": "Llamar a $label al $number",
+      "decree": "Abrir las ordenes prefectorales",
+      "levelBadge": "Nivel de riesgo $level de 5"
     }
   },
   "shop": {

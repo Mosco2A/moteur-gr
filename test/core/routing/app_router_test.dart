@@ -136,7 +136,7 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 18 sous-routes (+ shop)', () {
+    test('la route /trail/:id conserve ses 19 sous-routes (+ fire-risk)', () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
       // +1 : 'itinerary' (PARITE GR20 #99433, deroule des etapes + fix nav).
@@ -149,8 +149,11 @@ void main() {
       //      commerces par etape, filtres par type, alerte de gap).
       // +1 : 'summary' (PARITE GR20 #99460, ecran « Synthese du plan »
       //      agregateur : programme, stats, nuitees, dates du sentier courant).
+      // +1 : 'fire-risk' (PARITE GR20 #99460, ecran « Risque incendie »
+      //      data-driven : niveaux derives meteo, reglementation + secours du
+      //      sentier). Place apres 'weather' (meme feature).
       final trail = trailRoute();
-      expect(trail.routes.length, 18);
+      expect(trail.routes.length, 19);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -170,6 +173,7 @@ void main() {
         'recap',
         'feedback',
         'weather',
+        'fire-risk',
         'guides',
       ]);
     });
@@ -195,6 +199,7 @@ void main() {
         'trail-recap',
         'trail-feedback',
         'trail-weather',
+        'trail-fire-risk',
         'trail-guides',
       ]);
     });

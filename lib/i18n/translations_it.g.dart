@@ -94,6 +94,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$calendar$it calendar = _Translations$calendar$it._(_root);
 	@override late final _Translations$nuitees$it nuitees = _Translations$nuitees$it._(_root);
 	@override late final _Translations$transport$it transport = _Translations$transport$it._(_root);
+	@override late final _Translations$fireRisk$it fireRisk = _Translations$fireRisk$it._(_root);
 	@override late final _Translations$shop$it shop = _Translations$shop$it._(_root);
 	@override late final _Translations$summary$it summary = _Translations$summary$it._(_root);
 }
@@ -1227,6 +1228,35 @@ class _Translations$transport$it extends Translations$transport$fr {
 	@override late final _Translations$transport$empty$it empty = _Translations$transport$empty$it._(_root);
 }
 
+// Path: fireRisk
+class _Translations$fireRisk$it extends Translations$fireRisk$fr {
+	_Translations$fireRisk$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Rischio incendio';
+	@override String get refresh => 'Aggiorna';
+	@override String get refreshed => 'Dati aggiornati';
+	@override String get refreshError => 'Nessuna connessione';
+	@override late final _Translations$fireRisk$update$it update = _Translations$fireRisk$update$it._(_root);
+	@override late final _Translations$fireRisk$duration$it duration = _Translations$fireRisk$duration$it._(_root);
+	@override String get fwiSource => 'Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI e l\'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.';
+	@override late final _Translations$fireRisk$regulation$it regulation = _Translations$fireRisk$regulation$it._(_root);
+	@override String get levelsTitle => 'Livelli di rischio';
+	@override late final _Translations$fireRisk$level$it level = _Translations$fireRisk$level$it._(_root);
+	@override String get stagesTitle => 'Rischio per tappa';
+	@override String stageBadge({required Object number}) => 'T${number}';
+	@override String levelBadge({required Object level}) => 'Liv. ${level}';
+	@override String dayLevel({required Object level}) => 'Liv. ${level}';
+	@override late final _Translations$fireRisk$day$it day = _Translations$fireRisk$day$it._(_root);
+	@override String get noRisk => 'Nessun rischio incendio attualmente segnalato';
+	@override String get numbersTitle => 'Numeri utili';
+	@override late final _Translations$fireRisk$number$it number = _Translations$fireRisk$number$it._(_root);
+	@override late final _Translations$fireRisk$empty$it empty = _Translations$fireRisk$empty$it._(_root);
+	@override late final _Translations$fireRisk$a11y$it a11y = _Translations$fireRisk$a11y$it._(_root);
+}
+
 // Path: shop
 class _Translations$shop$it extends Translations$shop$fr {
 	_Translations$shop$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1375,6 +1405,8 @@ class _Translations$hub$cards$it extends Translations$hub$cards$fr {
 	@override String get resumeSub => 'Sintesi del piano';
 	@override String get shop => 'Rifornimenti';
 	@override String get shopSub => 'Alimentari, farmacie, gas';
+	@override String get fire => 'Incendio';
+	@override String get fireSub => 'Rischi e allerte';
 }
 
 // Path: hub.fab
@@ -2488,6 +2520,105 @@ class _Translations$transport$empty$it extends Translations$transport$empty$fr {
 	@override String get messageGeneric => 'Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve.';
 }
 
+// Path: fireRisk.update
+class _Translations$fireRisk$update$it extends Translations$fireRisk$update$fr {
+	_Translations$fireRisk$update$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get live => 'Dati aggiornati';
+	@override String liveAt({required Object date}) => 'Agg.: ${date}';
+	@override String cacheRecent({required Object duration}) => 'Aggiornato ${duration} fa';
+	@override String cacheOld({required Object date}) => 'Ultimo agg.: ${date}';
+	@override String get never => 'Mai aggiornato';
+}
+
+// Path: fireRisk.duration
+class _Translations$fireRisk$duration$it extends Translations$fireRisk$duration$fr {
+	_Translations$fireRisk$duration$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get seconds => 'pochi secondi';
+	@override String minutes({required Object n}) => '${n} min';
+	@override String hours({required Object n}) => '${n}h';
+	@override String days({required Object n}) => '${n}g';
+}
+
+// Path: fireRisk.regulation
+class _Translations$fireRisk$regulation$it extends Translations$fireRisk$regulation$fr {
+	_Translations$fireRisk$regulation$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Normativa';
+	@override String get decreeLink => 'Consulta le ordinanze prefettizie';
+}
+
+// Path: fireRisk.level
+class _Translations$fireRisk$level$it extends Translations$fireRisk$level$fr {
+	_Translations$fireRisk$level$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get none => 'Nessuno';
+	@override String get low => 'Basso';
+	@override String get moderate => 'Moderato';
+	@override String get high => 'Elevato';
+	@override String get veryHigh => 'Molto elevato';
+	@override String get extreme => 'Estremo';
+}
+
+// Path: fireRisk.day
+class _Translations$fireRisk$day$it extends Translations$fireRisk$day$fr {
+	_Translations$fireRisk$day$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get today => 'Oggi';
+	@override String get tomorrow => 'Dom.';
+	@override String plus({required Object n}) => 'G+${n}';
+}
+
+// Path: fireRisk.number
+class _Translations$fireRisk$number$it extends Translations$fireRisk$number$fr {
+	_Translations$fireRisk$number$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get firefighters => 'Vigili del fuoco';
+	@override String get europeanEmergency => 'Emergenza europea';
+}
+
+// Path: fireRisk.empty
+class _Translations$fireRisk$empty$it extends Translations$fireRisk$empty$fr {
+	_Translations$fireRisk$empty$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Rischio incendio non disponibile';
+	@override String get message => 'I dati meteo necessari per calcolare il rischio incendio non sono disponibili al momento. Riprova una volta connesso.';
+}
+
+// Path: fireRisk.a11y
+class _Translations$fireRisk$a11y$it extends Translations$fireRisk$a11y$fr {
+	_Translations$fireRisk$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String call({required Object label, required Object number}) => 'Chiama ${label} al ${number}';
+	@override String get decree => 'Apri le ordinanze prefettizie';
+	@override String levelBadge({required Object level}) => 'Livello di rischio ${level} su 5';
+}
+
 // Path: shop.a11y
 class _Translations$shop$a11y$it extends Translations$shop$a11y$fr {
 	_Translations$shop$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -3017,6 +3148,8 @@ extension on TranslationsIt {
 			'hub.cards.resumeSub' => 'Sintesi del piano',
 			'hub.cards.shop' => 'Rifornimenti',
 			'hub.cards.shopSub' => 'Alimentari, farmacie, gas',
+			'hub.cards.fire' => 'Incendio',
+			'hub.cards.fireSub' => 'Rischi e allerte',
 			'hub.fab.feedback' => 'Lascia un feedback',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Mappa del sentiero',
@@ -3433,10 +3566,10 @@ extension on TranslationsIt {
 			'notifications.morningReminder' => 'Promemoria mattutino',
 			'notifications.weatherAlerts' => 'Allerte meteo',
 			'notifications.countdown' => 'Promemoria G-2',
-			'notifications.countdownDesc' => 'Notifica 2 giorni prima della partenza',
-			'notifications.schedulerCountdownTitle' => 'Il tuo trek si avvicina!',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.countdownDesc' => 'Notifica 2 giorni prima della partenza',
+			'notifications.schedulerCountdownTitle' => 'Il tuo trek si avvicina!',
 			'notifications.schedulerCountdownBody' => 'Partenza tra 2 giorni. Controlla la checklist e il meteo.',
 			'notifications.schedulerDailyTitle' => 'Buona giornata di trek!',
 			'notifications.schedulerDailyBody' => 'Controlla il meteo e prepara la tappa di oggi.',
@@ -3947,10 +4080,10 @@ extension on TranslationsIt {
 			'moderation.complaintExposeLabel' => 'La tua contestazione',
 			'moderation.complaintExposeHint' => 'Descrivi i motivi della tua contestazione.',
 			'moderation.complaintSubmit' => 'Invia contestazione',
-			'moderation.complaintSent' => 'Contestazione registrata. Sarà esaminata.',
-			'moderation.complaintEmpty' => 'Spiega la tua contestazione.',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintSent' => 'Contestazione registrata. Sarà esaminata.',
+			'moderation.complaintEmpty' => 'Spiega la tua contestazione.',
 			'moderation.a11y.reportForm' => 'Modulo di segnalazione del contenuto',
 			'moderation.a11y.reasonSelector' => 'Selettore del motivo della segnalazione',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Dichiarazione di buona fede, ${state}',
@@ -4091,6 +4224,45 @@ extension on TranslationsIt {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Le informazioni per raggiungere ${name} saranno aggiunte a breve.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Le informazioni per ripartire da ${name} saranno aggiunte a breve.',
 			'transport.empty.messageGeneric' => 'Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve.',
+			'fireRisk.title' => 'Rischio incendio',
+			'fireRisk.refresh' => 'Aggiorna',
+			'fireRisk.refreshed' => 'Dati aggiornati',
+			'fireRisk.refreshError' => 'Nessuna connessione',
+			'fireRisk.update.live' => 'Dati aggiornati',
+			'fireRisk.update.liveAt' => ({required Object date}) => 'Agg.: ${date}',
+			'fireRisk.update.cacheRecent' => ({required Object duration}) => 'Aggiornato ${duration} fa',
+			'fireRisk.update.cacheOld' => ({required Object date}) => 'Ultimo agg.: ${date}',
+			'fireRisk.update.never' => 'Mai aggiornato',
+			'fireRisk.duration.seconds' => 'pochi secondi',
+			'fireRisk.duration.minutes' => ({required Object n}) => '${n} min',
+			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
+			'fireRisk.duration.days' => ({required Object n}) => '${n}g',
+			'fireRisk.fwiSource' => 'Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI e l\'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.',
+			'fireRisk.regulation.title' => 'Normativa',
+			'fireRisk.regulation.decreeLink' => 'Consulta le ordinanze prefettizie',
+			'fireRisk.levelsTitle' => 'Livelli di rischio',
+			'fireRisk.level.none' => 'Nessuno',
+			'fireRisk.level.low' => 'Basso',
+			'fireRisk.level.moderate' => 'Moderato',
+			'fireRisk.level.high' => 'Elevato',
+			'fireRisk.level.veryHigh' => 'Molto elevato',
+			'fireRisk.level.extreme' => 'Estremo',
+			'fireRisk.stagesTitle' => 'Rischio per tappa',
+			'fireRisk.stageBadge' => ({required Object number}) => 'T${number}',
+			'fireRisk.levelBadge' => ({required Object level}) => 'Liv. ${level}',
+			'fireRisk.dayLevel' => ({required Object level}) => 'Liv. ${level}',
+			'fireRisk.day.today' => 'Oggi',
+			'fireRisk.day.tomorrow' => 'Dom.',
+			'fireRisk.day.plus' => ({required Object n}) => 'G+${n}',
+			'fireRisk.noRisk' => 'Nessun rischio incendio attualmente segnalato',
+			'fireRisk.numbersTitle' => 'Numeri utili',
+			'fireRisk.number.firefighters' => 'Vigili del fuoco',
+			'fireRisk.number.europeanEmergency' => 'Emergenza europea',
+			'fireRisk.empty.title' => 'Rischio incendio non disponibile',
+			'fireRisk.empty.message' => 'I dati meteo necessari per calcolare il rischio incendio non sono disponibili al momento. Riprova una volta connesso.',
+			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Chiama ${label} al ${number}',
+			'fireRisk.a11y.decree' => 'Apri le ordinanze prefettizie',
+			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Livello di rischio ${level} su 5',
 			'shop.title' => 'Rifornimenti',
 			'shop.filterAll' => 'Tutti',
 			'shop.typeEpicerie' => 'Alimentari',

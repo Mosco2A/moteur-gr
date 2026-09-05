@@ -106,7 +106,9 @@
       "resume": "Zusammenfassung",
       "resumeSub": "Planübersicht",
       "shop": "Verpflegung",
-      "shopSub": "Lebensmittel, Apotheken, Gas"
+      "shopSub": "Lebensmittel, Apotheken, Gas",
+      "fire": "Brand",
+      "fireSub": "Risiken & Warnungen"
     },
     "fab": {
       "feedback": "Feedback geben",
@@ -1471,6 +1473,63 @@
       "messageJoin": "Informationen zur Anreise nach $name folgen in Kürze.",
       "messageLeave": "Informationen zur Abreise ab $name folgen in Kürze.",
       "messageGeneric": "Anreiseinformationen für diesen Weg folgen in Kürze."
+    }
+  },
+  "fireRisk": {
+    "title": "Brandrisiko",
+    "refresh": "Aktualisieren",
+    "refreshed": "Daten aktualisiert",
+    "refreshError": "Keine Verbindung",
+    "update": {
+      "live": "Daten aktuell",
+      "liveAt": "Akt.: $date",
+      "cacheRecent": "Aktualisiert vor $duration",
+      "cacheOld": "Letzte Akt.: $date",
+      "never": "Nie aktualisiert"
+    },
+    "duration": {
+      "seconds": "einige Sekunden",
+      "minutes": "$n Min",
+      "hours": "${n} Std",
+      "days": "${n} T"
+    },
+    "fwiSource": "Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europaeischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.",
+    "regulation": {
+      "title": "Vorschriften",
+      "decreeLink": "Praefektorale Erlasse ansehen"
+    },
+    "levelsTitle": "Risikostufen",
+    "level": {
+      "none": "Keine",
+      "low": "Gering",
+      "moderate": "Maessig",
+      "high": "Hoch",
+      "veryHigh": "Sehr hoch",
+      "extreme": "Extrem"
+    },
+    "stagesTitle": "Risiko pro Etappe",
+    "stageBadge": "E$number",
+    "levelBadge": "St. $level",
+    "dayLevel": "St. $level",
+    "day": {
+      "today": "Heute",
+      "tomorrow": "Morgen",
+      "plus": "T+$n"
+    },
+    "noRisk": "Derzeit kein Brandrisiko gemeldet",
+    "numbersTitle": "Nuetzliche Nummern",
+    "number": {
+      "firefighters": "Feuerwehr",
+      "europeanEmergency": "Europ. Notruf"
+    },
+    "empty": {
+      "title": "Brandrisiko nicht verfuegbar",
+      "message": "Die zur Berechnung des Brandrisikos noetigen Wetterdaten sind derzeit nicht verfuegbar. Versuchen Sie es erneut, sobald Sie verbunden sind."
+    },
+    "a11y": {
+      "call": "$label unter $number anrufen",
+      "decree": "Praefektorale Erlasse oeffnen",
+      "levelBadge": "Risikostufe $level von 5"
     }
   },
   "shop": {
