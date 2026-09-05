@@ -6,7 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/planning/presentation/trail_planning_screen.dart';
+import 'package:moteur_gr/features/planning/widgets/duration_selector.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -217,6 +219,90 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('HUB-HOME'), findsOneWidget);
       expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('SELECTEUR DE DUREE — choix du nombre de jours (parite GR20)', () {
+    testWidgets('le selecteur est affiche avec des durees derivees du sentier',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: baseOverrides(),
+          child: const MaterialApp(
+            home: TrailPlanningScreen(trailId: 'test-trail'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Le selecteur (DurationSelector) est bien branche dans l'ecran.
+      expect(find.byType(DurationSelector), findsOneWidget);
+      // Libelle du selecteur present.
+      expect(find.text(t.programme.duration.label), findsOneWidget);
+      // 5 etapes -> bornes min 3 / max 7 : le chip « 5 j » (defaut) est present.
+      final label5 = t.programme.duration.days.replaceAll('{count}', '5');
+      expect(find.text(label5), findsOneWidget);
+    });
+
+    testWidgets('changer la duree via le selecteur recalcule le programme',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: baseOverrides(),
+          child: const MaterialApp(
+            home: TrailPlanningScreen(trailId: 'test-trail'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Au depart : 5 jours = 5 etapes, aucun repos -> l'en-tete affiche « 5 »
+      // et le profil altimetrique n'a aucune barre « R ».
+      expect(find.text('5'), findsWidgets); // valeur « Jours » (et « Etapes »)
+      expect(find.text(t.programme.restDayLabel), findsNothing);
+
+      // Choisir 7 jours -> 5 etapes + 2 jours de repos. Le programme recalcule
+      // via selectedDurationProvider (watch par plannedDaysProvider) : l'en-tete
+      // et le profil altimetrique (toujours visibles) refletent le recalcul.
+      final label7 = t.programme.duration.days.replaceAll('{count}', '7');
+      await tester.ensureVisible(find.text(label7));
+      await tester.tap(find.text(label7));
+      await tester.pumpAndSettle();
+
+      // En-tete « Jours » = « 7 (2 repos) » : preuve directe du recalcul.
+      final restCount =
+          t.programme.stats.restCount.replaceAll('{count}', '2');
+      expect(find.text('7 ($restCount)'), findsOneWidget);
+      // Profil altimetrique : 2 barres de repos « R » apparues.
+      expect(find.text(t.programme.restDayLabel), findsNWidgets(2));
+    });
+  });
+
+  group('JOUR DE REPOS EN BLEU (parite GR20)', () {
+    testWidgets('la carte de jour de repos est teintee en bleu semantique',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: baseOverrides(),
+          child: const MaterialApp(
+            home: TrailPlanningScreen(trailId: 'test-trail'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Ajouter un jour de repos.
+      await tester.tap(find.text(t.programme.actions.rest).first);
+      await tester.pumpAndSettle();
+
+      // Le libelle « Jour de repos » est rendu en bleu (AppTheme.bleuRepos).
+      final restTexts = tester
+          .widgetList<Text>(find.text(t.programme.restDay))
+          .toList();
+      expect(restTexts, isNotEmpty);
+      final hasBlue = restTexts.any((w) => w.style?.color == AppTheme.bleuRepos);
+      expect(hasBlue, isTrue,
+          reason: 'le jour de repos doit etre affiche en bleu, pas en vert');
     });
   });
 }

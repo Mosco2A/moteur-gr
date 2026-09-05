@@ -1149,6 +1149,7 @@ class _Translations$programme$en extends Translations$programme$fr {
 	// Translations
 	@override String get title => 'Programme';
 	@override String get helpTooltip => 'Help';
+	@override late final _Translations$programme$duration$en duration = _Translations$programme$duration$en._(_root);
 	@override late final _Translations$programme$stats$en stats = _Translations$programme$stats$en._(_root);
 	@override late final _Translations$programme$legend$en legend = _Translations$programme$legend$en._(_root);
 	@override String get restDay => 'Rest day';
@@ -2312,6 +2313,17 @@ class _Translations$moderation$a11y$en extends Translations$moderation$a11y$fr {
 	@override String get submitReport => 'Send report';
 	@override String get statementCard => 'Statement of reasons for the moderation decision';
 	@override String get complaintForm => 'Decision challenge form';
+}
+
+// Path: programme.duration
+class _Translations$programme$duration$en extends Translations$programme$duration$fr {
+	_Translations$programme$duration$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get label => 'Number of days';
+	@override String get days => '{count} d';
 }
 
 // Path: programme.stats
@@ -4154,6 +4166,8 @@ extension on TranslationsEn {
 			'recap.noData' => 'No route data to display yet.',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Help',
+			'programme.duration.label' => 'Number of days',
+			'programme.duration.days' => '{count} d',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',

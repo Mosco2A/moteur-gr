@@ -1308,6 +1308,10 @@
   "programme": {
     "title": "Programme",
     "helpTooltip": "Help",
+    "duration": {
+      "label": "Number of days",
+      "days": "{count} d"
+    },
     "stats": {
       "distance": "Distance",
       "elevation": "Ascent",

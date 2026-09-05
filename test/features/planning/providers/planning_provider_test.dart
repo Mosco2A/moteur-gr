@@ -120,4 +120,62 @@ void main() {
       container.dispose();
     });
   });
+
+  group('DurationBounds — bornes derivees du nombre d etapes', () {
+    test('bornes generiques centrees sur le nombre d etapes', () {
+      // 5 etapes : min = ceil(5/2) = 3 ; marge repos = round(5/3) = 2 ;
+      // max = 5 + 2 = 7. Les bornes suivent le sentier, jamais « 16 » en dur.
+      final b = DurationBounds.fromStageCount(5);
+      expect(b.min, 3);
+      expect(b.max, 7);
+      expect(b.options, [3, 4, 5, 6, 7]);
+    });
+
+    test('un sentier a 1 etape n a pas de choix de duree', () {
+      final b = DurationBounds.fromStageCount(1);
+      expect(b.min, 1);
+      expect(b.max, 1);
+      expect(b.options, [1]);
+    });
+
+    test('cas vide (etapes non chargees) : borne neutre', () {
+      final b = DurationBounds.fromStageCount(0);
+      expect(b.min, 1);
+      expect(b.max, 1);
+    });
+
+    test('clampDuration ramene une valeur hors bornes', () {
+      final b = DurationBounds.fromStageCount(10); // min 5, max 10 + 3 = 13
+      expect(b.min, 5);
+      expect(b.max, 13);
+      expect(b.clampDuration(2), 5);
+      expect(b.clampDuration(99), 13);
+      expect(b.clampDuration(8), 8);
+    });
+
+    test('les bornes ne sont PAS hardcodees : varient avec le sentier', () {
+      final small = DurationBounds.fromStageCount(6);
+      final big = DurationBounds.fromStageCount(20);
+      expect(small.max, lessThan(big.max));
+      expect(small.min, lessThan(big.min));
+    });
+
+    test('durationBoundsProvider derive du nombre d etapes reel', () async {
+      final container = ProviderContainer(
+        overrides: [
+          trailConfigProvider.overrideWithValue(testTrailConfig),
+          stagesProvider('test-trail')
+              .overrideWith((ref) => Future.value(testStages)),
+        ],
+      );
+      // Force le chargement des etapes (5).
+      await container.read(stagesProvider('test-trail').future);
+      final bounds = container.read(durationBoundsProvider('test-trail'));
+      expect(bounds.min, 3);
+      expect(bounds.max, 7);
+      expect(bounds.options.contains(5), isTrue);
+
+      container.dispose();
+    });
+  });
 }
