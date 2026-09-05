@@ -102,7 +102,9 @@
       "recap": "Récapitulatif",
       "recapSub": "Votre aventure en résumé",
       "diploma": "Diplôme",
-      "diplomaSub": "Votre certificat de fin"
+      "diplomaSub": "Votre certificat de fin",
+      "resume": "Résumé",
+      "resumeSub": "Synthèse du plan"
     },
     "fab": {
       "feedback": "Donner mon avis",
@@ -1467,6 +1469,64 @@
       "messageJoin": "Les informations pour rejoindre $name seront ajoutées prochainement.",
       "messageLeave": "Les informations pour repartir de $name seront ajoutées prochainement.",
       "messageGeneric": "Les informations de transport de ce sentier seront ajoutées prochainement."
+    }
+  },
+  "summary": {
+    "title": "Résumé du plan",
+    "configTitle": "Mon $name",
+    "direction": "Direction",
+    "duration": "Durée",
+    "durationValue": "$days jours de marche",
+    "durationValueWithRest": "$days jours de marche + $rest repos",
+    "startDate": "Départ",
+    "endDate": "Arrivée",
+    "stats": {
+      "title": "Statistiques",
+      "distance": "Distance totale",
+      "elevationGain": "D+ total",
+      "elevationLoss": "D- total",
+      "duration": "Durée estimée",
+      "stages": "Étapes",
+      "restDays": "Jours de repos"
+    },
+    "dayByDay": "Jour par jour",
+    "dayLabel": "J$n",
+    "stageLabel": "Étape $n",
+    "restDay": "Jour de repos",
+    "restDayTitle": "Jour de repos — J$n",
+    "restDayPlace": "Lieu : $place",
+    "actions": {
+      "exportPdf": "EXPORTER EN PDF",
+      "exportPdfSoon": "Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.",
+      "downloadMaps": "TÉLÉCHARGER LES CARTES OFFLINE",
+      "downloadMapsSoon": "Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.",
+      "share": "PARTAGER MON PLAN"
+    },
+    "share": {
+      "titleLine": "Mon $name",
+      "walkDays": "$days jours de marche",
+      "walkDaysWithRest": "$days jours de marche + $rest jours de repos",
+      "distance": "Distance : $km km",
+      "elevationGain": "D+ total : $m m",
+      "elevationLoss": "D- total : $m m",
+      "duration": "Durée estimée : ~$h h",
+      "dates": "Du $start au $end",
+      "planning": "--- Planning jour par jour ---",
+      "dayRest": "J$n : Repos",
+      "dayStages": "J$n : $stages",
+      "footer": "Planifié avec $name"
+    },
+    "empty": {
+      "title": "Configurez d'abord votre itinéraire",
+      "message": "Choisissez votre parcours et la durée pour voir le résumé de votre plan.",
+      "action": "CONFIGURER L'ITINÉRAIRE"
+    },
+    "a11y": {
+      "dayTile": "Voir le détail du jour $day",
+      "restDayTile": "Détails du jour de repos $day",
+      "export": "Exporter le plan en PDF",
+      "download": "Télécharger les cartes hors ligne",
+      "share": "Partager mon plan"
     }
   }
 }

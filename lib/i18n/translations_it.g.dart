@@ -94,6 +94,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$calendar$it calendar = _Translations$calendar$it._(_root);
 	@override late final _Translations$nuitees$it nuitees = _Translations$nuitees$it._(_root);
 	@override late final _Translations$transport$it transport = _Translations$transport$it._(_root);
+	@override late final _Translations$summary$it summary = _Translations$summary$it._(_root);
 }
 
 // Path: a11y
@@ -1225,6 +1226,34 @@ class _Translations$transport$it extends Translations$transport$fr {
 	@override late final _Translations$transport$empty$it empty = _Translations$transport$empty$it._(_root);
 }
 
+// Path: summary
+class _Translations$summary$it extends Translations$summary$fr {
+	_Translations$summary$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Sintesi del piano';
+	@override String configTitle({required Object name}) => 'Il mio ${name}';
+	@override String get direction => 'Direzione';
+	@override String get duration => 'Durata';
+	@override String durationValue({required Object days}) => '${days} giorni di cammino';
+	@override String durationValueWithRest({required Object days, required Object rest}) => '${days} giorni di cammino + ${rest} riposo';
+	@override String get startDate => 'Partenza';
+	@override String get endDate => 'Arrivo';
+	@override late final _Translations$summary$stats$it stats = _Translations$summary$stats$it._(_root);
+	@override String get dayByDay => 'Giorno per giorno';
+	@override String dayLabel({required Object n}) => 'G${n}';
+	@override String stageLabel({required Object n}) => 'Tappa ${n}';
+	@override String get restDay => 'Giorno di riposo';
+	@override String restDayTitle({required Object n}) => 'Giorno di riposo — G${n}';
+	@override String restDayPlace({required Object place}) => 'Luogo: ${place}';
+	@override late final _Translations$summary$actions$it actions = _Translations$summary$actions$it._(_root);
+	@override late final _Translations$summary$share$it share = _Translations$summary$share$it._(_root);
+	@override late final _Translations$summary$empty$it empty = _Translations$summary$empty$it._(_root);
+	@override late final _Translations$summary$a11y$it a11y = _Translations$summary$a11y$it._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$it extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1311,6 +1340,8 @@ class _Translations$hub$cards$it extends Translations$hub$cards$fr {
 	@override String get recapSub => 'La tua avventura in sintesi';
 	@override String get diploma => 'Diploma';
 	@override String get diplomaSub => 'Il tuo certificato finale';
+	@override String get resume => 'Riepilogo';
+	@override String get resumeSub => 'Sintesi del piano';
 }
 
 // Path: hub.fab
@@ -2424,6 +2455,83 @@ class _Translations$transport$empty$it extends Translations$transport$empty$fr {
 	@override String get messageGeneric => 'Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve.';
 }
 
+// Path: summary.stats
+class _Translations$summary$stats$it extends Translations$summary$stats$fr {
+	_Translations$summary$stats$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Statistiche';
+	@override String get distance => 'Distanza totale';
+	@override String get elevationGain => 'Dislivello positivo';
+	@override String get elevationLoss => 'Dislivello negativo';
+	@override String get duration => 'Tempo stimato';
+	@override String get stages => 'Tappe';
+	@override String get restDays => 'Giorni di riposo';
+}
+
+// Path: summary.actions
+class _Translations$summary$actions$it extends Translations$summary$actions$fr {
+	_Translations$summary$actions$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get exportPdf => 'ESPORTA IN PDF';
+	@override String get exportPdfSoon => 'Esportazione PDF presto disponibile! La funzione è in fase di sviluppo.';
+	@override String get downloadMaps => 'SCARICA LE MAPPE OFFLINE';
+	@override String get downloadMapsSoon => 'Download delle mappe offline presto disponibile! Questa funzione farà parte del modulo escursioni.';
+	@override String get share => 'CONDIVIDI IL MIO PIANO';
+}
+
+// Path: summary.share
+class _Translations$summary$share$it extends Translations$summary$share$fr {
+	_Translations$summary$share$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String titleLine({required Object name}) => 'Il mio ${name}';
+	@override String walkDays({required Object days}) => '${days} giorni di cammino';
+	@override String walkDaysWithRest({required Object days, required Object rest}) => '${days} giorni di cammino + ${rest} giorni di riposo';
+	@override String distance({required Object km}) => 'Distanza: ${km} km';
+	@override String elevationGain({required Object m}) => 'Dislivello positivo: ${m} m';
+	@override String elevationLoss({required Object m}) => 'Dislivello negativo: ${m} m';
+	@override String duration({required Object h}) => 'Tempo stimato: ~${h} h';
+	@override String dates({required Object start, required Object end}) => 'Dal ${start} al ${end}';
+	@override String get planning => '--- Programma giorno per giorno ---';
+	@override String dayRest({required Object n}) => 'G${n}: Riposo';
+	@override String dayStages({required Object n, required Object stages}) => 'G${n}: ${stages}';
+	@override String footer({required Object name}) => 'Pianificato con ${name}';
+}
+
+// Path: summary.empty
+class _Translations$summary$empty$it extends Translations$summary$empty$fr {
+	_Translations$summary$empty$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Configura prima il tuo itinerario';
+	@override String get message => 'Scegli il percorso e la durata per vedere la sintesi del tuo piano.';
+	@override String get action => 'CONFIGURA L\'ITINERARIO';
+}
+
+// Path: summary.a11y
+class _Translations$summary$a11y$it extends Translations$summary$a11y$fr {
+	_Translations$summary$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String dayTile({required Object day}) => 'Vedi i dettagli del giorno ${day}';
+	@override String restDayTile({required Object day}) => 'Dettagli del giorno di riposo ${day}';
+	@override String get export => 'Esporta il piano in PDF';
+	@override String get download => 'Scarica le mappe offline';
+	@override String get share => 'Condividi il mio piano';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$it extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -2849,6 +2957,8 @@ extension on TranslationsIt {
 			'hub.cards.recapSub' => 'La tua avventura in sintesi',
 			'hub.cards.diploma' => 'Diploma',
 			'hub.cards.diplomaSub' => 'Il tuo certificato finale',
+			'hub.cards.resume' => 'Riepilogo',
+			'hub.cards.resumeSub' => 'Sintesi del piano',
 			'hub.fab.feedback' => 'Lascia un feedback',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Mappa del sentiero',
@@ -3269,10 +3379,10 @@ extension on TranslationsIt {
 			'notifications.schedulerCountdownTitle' => 'Il tuo trek si avvicina!',
 			'notifications.schedulerCountdownBody' => 'Partenza tra 2 giorni. Controlla la checklist e il meteo.',
 			'notifications.schedulerDailyTitle' => 'Buona giornata di trek!',
-			'notifications.schedulerDailyBody' => 'Controlla il meteo e prepara la tappa di oggi.',
-			'settings.title' => 'Impostazioni',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.schedulerDailyBody' => 'Controlla il meteo e prepara la tappa di oggi.',
+			'settings.title' => 'Impostazioni',
 			'settings.language' => 'Lingua',
 			'settings.units' => 'Unità',
 			'settings.distance' => 'Distanza',
@@ -3783,10 +3893,10 @@ extension on TranslationsIt {
 			'moderation.complaintEmpty' => 'Spiega la tua contestazione.',
 			'moderation.a11y.reportForm' => 'Modulo di segnalazione del contenuto',
 			'moderation.a11y.reasonSelector' => 'Selettore del motivo della segnalazione',
-			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Dichiarazione di buona fede, ${state}',
-			'moderation.a11y.submitReport' => 'Invia segnalazione',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Dichiarazione di buona fede, ${state}',
+			'moderation.a11y.submitReport' => 'Invia segnalazione',
 			'moderation.a11y.statementCard' => 'Motivazione della decisione di moderazione',
 			'moderation.a11y.complaintForm' => 'Modulo di contestazione della decisione',
 			'bootstrap.loading' => 'Preparazione della tua escursione…',
@@ -3923,6 +4033,52 @@ extension on TranslationsIt {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Le informazioni per raggiungere ${name} saranno aggiunte a breve.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Le informazioni per ripartire da ${name} saranno aggiunte a breve.',
 			'transport.empty.messageGeneric' => 'Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve.',
+			'summary.title' => 'Sintesi del piano',
+			'summary.configTitle' => ({required Object name}) => 'Il mio ${name}',
+			'summary.direction' => 'Direzione',
+			'summary.duration' => 'Durata',
+			'summary.durationValue' => ({required Object days}) => '${days} giorni di cammino',
+			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} giorni di cammino + ${rest} riposo',
+			'summary.startDate' => 'Partenza',
+			'summary.endDate' => 'Arrivo',
+			'summary.stats.title' => 'Statistiche',
+			'summary.stats.distance' => 'Distanza totale',
+			'summary.stats.elevationGain' => 'Dislivello positivo',
+			'summary.stats.elevationLoss' => 'Dislivello negativo',
+			'summary.stats.duration' => 'Tempo stimato',
+			'summary.stats.stages' => 'Tappe',
+			'summary.stats.restDays' => 'Giorni di riposo',
+			'summary.dayByDay' => 'Giorno per giorno',
+			'summary.dayLabel' => ({required Object n}) => 'G${n}',
+			'summary.stageLabel' => ({required Object n}) => 'Tappa ${n}',
+			'summary.restDay' => 'Giorno di riposo',
+			'summary.restDayTitle' => ({required Object n}) => 'Giorno di riposo — G${n}',
+			'summary.restDayPlace' => ({required Object place}) => 'Luogo: ${place}',
+			'summary.actions.exportPdf' => 'ESPORTA IN PDF',
+			'summary.actions.exportPdfSoon' => 'Esportazione PDF presto disponibile! La funzione è in fase di sviluppo.',
+			'summary.actions.downloadMaps' => 'SCARICA LE MAPPE OFFLINE',
+			'summary.actions.downloadMapsSoon' => 'Download delle mappe offline presto disponibile! Questa funzione farà parte del modulo escursioni.',
+			'summary.actions.share' => 'CONDIVIDI IL MIO PIANO',
+			'summary.share.titleLine' => ({required Object name}) => 'Il mio ${name}',
+			'summary.share.walkDays' => ({required Object days}) => '${days} giorni di cammino',
+			'summary.share.walkDaysWithRest' => ({required Object days, required Object rest}) => '${days} giorni di cammino + ${rest} giorni di riposo',
+			'summary.share.distance' => ({required Object km}) => 'Distanza: ${km} km',
+			'summary.share.elevationGain' => ({required Object m}) => 'Dislivello positivo: ${m} m',
+			'summary.share.elevationLoss' => ({required Object m}) => 'Dislivello negativo: ${m} m',
+			'summary.share.duration' => ({required Object h}) => 'Tempo stimato: ~${h} h',
+			'summary.share.dates' => ({required Object start, required Object end}) => 'Dal ${start} al ${end}',
+			'summary.share.planning' => '--- Programma giorno per giorno ---',
+			'summary.share.dayRest' => ({required Object n}) => 'G${n}: Riposo',
+			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'G${n}: ${stages}',
+			'summary.share.footer' => ({required Object name}) => 'Pianificato con ${name}',
+			'summary.empty.title' => 'Configura prima il tuo itinerario',
+			'summary.empty.message' => 'Scegli il percorso e la durata per vedere la sintesi del tuo piano.',
+			'summary.empty.action' => 'CONFIGURA L\'ITINERARIO',
+			'summary.a11y.dayTile' => ({required Object day}) => 'Vedi i dettagli del giorno ${day}',
+			'summary.a11y.restDayTile' => ({required Object day}) => 'Dettagli del giorno di riposo ${day}',
+			'summary.a11y.export' => 'Esporta il piano in PDF',
+			'summary.a11y.download' => 'Scarica le mappe offline',
+			'summary.a11y.share' => 'Condividi il mio piano',
 			_ => null,
 		};
 	}

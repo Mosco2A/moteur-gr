@@ -102,7 +102,9 @@
       "recap": "Zusammenfassung",
       "recapSub": "Ihr Abenteuer in Kürze",
       "diploma": "Diplom",
-      "diplomaSub": "Ihre Abschlussurkunde"
+      "diplomaSub": "Ihre Abschlussurkunde",
+      "resume": "Zusammenfassung",
+      "resumeSub": "Planübersicht"
     },
     "fab": {
       "feedback": "Feedback geben",
@@ -1467,6 +1469,64 @@
       "messageJoin": "Informationen zur Anreise nach $name folgen in Kürze.",
       "messageLeave": "Informationen zur Abreise ab $name folgen in Kürze.",
       "messageGeneric": "Anreiseinformationen für diesen Weg folgen in Kürze."
+    }
+  },
+  "summary": {
+    "title": "Planübersicht",
+    "configTitle": "Mein $name",
+    "direction": "Richtung",
+    "duration": "Dauer",
+    "durationValue": "$days Wandertage",
+    "durationValueWithRest": "$days Wandertage + $rest Ruhetage",
+    "startDate": "Abreise",
+    "endDate": "Ankunft",
+    "stats": {
+      "title": "Statistiken",
+      "distance": "Gesamtdistanz",
+      "elevationGain": "Aufstieg gesamt",
+      "elevationLoss": "Abstieg gesamt",
+      "duration": "Geschätzte Zeit",
+      "stages": "Etappen",
+      "restDays": "Ruhetage"
+    },
+    "dayByDay": "Tag für Tag",
+    "dayLabel": "T$n",
+    "stageLabel": "Etappe $n",
+    "restDay": "Ruhetag",
+    "restDayTitle": "Ruhetag — T$n",
+    "restDayPlace": "Ort: $place",
+    "actions": {
+      "exportPdf": "ALS PDF EXPORTIEREN",
+      "exportPdfSoon": "PDF-Export bald verfügbar! Diese Funktion wird noch entwickelt.",
+      "downloadMaps": "OFFLINE-KARTEN HERUNTERLADEN",
+      "downloadMapsSoon": "Offline-Karten-Download bald verfügbar! Diese Funktion wird Teil des Wandermoduls.",
+      "share": "MEINEN PLAN TEILEN"
+    },
+    "share": {
+      "titleLine": "Mein $name",
+      "walkDays": "$days Wandertage",
+      "walkDaysWithRest": "$days Wandertage + $rest Ruhetage",
+      "distance": "Distanz: $km km",
+      "elevationGain": "Aufstieg gesamt: $m m",
+      "elevationLoss": "Abstieg gesamt: $m m",
+      "duration": "Geschätzte Zeit: ~$h h",
+      "dates": "Vom $start bis $end",
+      "planning": "--- Tagesplan ---",
+      "dayRest": "T$n: Ruhetag",
+      "dayStages": "T$n: $stages",
+      "footer": "Geplant mit $name"
+    },
+    "empty": {
+      "title": "Richten Sie zuerst Ihre Route ein",
+      "message": "Wählen Sie Ihre Route und Dauer, um die Planübersicht zu sehen.",
+      "action": "ROUTE EINRICHTEN"
+    },
+    "a11y": {
+      "dayTile": "Details für Tag $day anzeigen",
+      "restDayTile": "Details zum Ruhetag $day",
+      "export": "Plan als PDF exportieren",
+      "download": "Offline-Karten herunterladen",
+      "share": "Meinen Plan teilen"
     }
   }
 }

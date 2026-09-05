@@ -178,6 +178,19 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.transportSub,
                   onTap: () => context.push('/trail/$trailId/transport'),
                 ),
+                // PARITE GR20 (#99460) — RESUME : carte « Synthese du plan »
+                // (clone GR20 `PlanSummaryScreen`). Agregateur : synthetise le
+                // programme, les stats, les nuitees et les dates du sentier
+                // courant (aucune donnee inventee). Icone `summarize`, sous-titre
+                // « Synthese du plan » (parite GR20). Route hors-shell atteinte
+                // via `context.push` -> retour propre (jamais context.go qui
+                // viderait la pile). Generique multi-sentiers, zero hardcode.
+                QuickAccessCard(
+                  icon: Icons.summarize,
+                  title: t.hub.cards.resume,
+                  subtitle: t.hub.cards.resumeSub,
+                  onTap: () => context.push('/trail/$trailId/summary'),
+                ),
                 QuickAccessCard(
                   icon: Icons.checklist_rtl,
                   title: t.hub.cards.checklist,

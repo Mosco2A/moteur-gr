@@ -102,7 +102,9 @@
       "recap": "Recap",
       "recapSub": "Your adventure summed up",
       "diploma": "Diploma",
-      "diplomaSub": "Your finisher certificate"
+      "diplomaSub": "Your finisher certificate",
+      "resume": "Summary",
+      "resumeSub": "Plan overview"
     },
     "fab": {
       "feedback": "Give feedback",
@@ -1467,6 +1469,64 @@
       "messageJoin": "Information on getting to $name will be added soon.",
       "messageLeave": "Information on leaving $name will be added soon.",
       "messageGeneric": "Transport information for this trail will be added soon."
+    }
+  },
+  "summary": {
+    "title": "Plan summary",
+    "configTitle": "My $name",
+    "direction": "Direction",
+    "duration": "Duration",
+    "durationValue": "$days walking days",
+    "durationValueWithRest": "$days walking days + $rest rest",
+    "startDate": "Departure",
+    "endDate": "Arrival",
+    "stats": {
+      "title": "Statistics",
+      "distance": "Total distance",
+      "elevationGain": "Total ascent",
+      "elevationLoss": "Total descent",
+      "duration": "Estimated time",
+      "stages": "Stages",
+      "restDays": "Rest days"
+    },
+    "dayByDay": "Day by day",
+    "dayLabel": "D$n",
+    "stageLabel": "Stage $n",
+    "restDay": "Rest day",
+    "restDayTitle": "Rest day — D$n",
+    "restDayPlace": "Place: $place",
+    "actions": {
+      "exportPdf": "EXPORT AS PDF",
+      "exportPdfSoon": "PDF export coming soon! This feature is under development.",
+      "downloadMaps": "DOWNLOAD OFFLINE MAPS",
+      "downloadMapsSoon": "Offline map download coming soon! This feature will be part of the hiking module.",
+      "share": "SHARE MY PLAN"
+    },
+    "share": {
+      "titleLine": "My $name",
+      "walkDays": "$days walking days",
+      "walkDaysWithRest": "$days walking days + $rest rest days",
+      "distance": "Distance: $km km",
+      "elevationGain": "Total ascent: $m m",
+      "elevationLoss": "Total descent: $m m",
+      "duration": "Estimated time: ~$h h",
+      "dates": "From $start to $end",
+      "planning": "--- Day-by-day plan ---",
+      "dayRest": "D$n: Rest",
+      "dayStages": "D$n: $stages",
+      "footer": "Planned with $name"
+    },
+    "empty": {
+      "title": "Set up your itinerary first",
+      "message": "Choose your route and duration to see your plan summary.",
+      "action": "SET UP ITINERARY"
+    },
+    "a11y": {
+      "dayTile": "View details for day $day",
+      "restDayTile": "Rest day $day details",
+      "export": "Export plan as PDF",
+      "download": "Download offline maps",
+      "share": "Share my plan"
     }
   }
 }
