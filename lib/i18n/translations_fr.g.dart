@@ -95,6 +95,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$calendar$fr calendar = Translations$calendar$fr.internal(_root);
 	late final Translations$nuitees$fr nuitees = Translations$nuitees$fr.internal(_root);
 	late final Translations$transport$fr transport = Translations$transport$fr.internal(_root);
+	late final Translations$fireRisk$fr fireRisk = Translations$fireRisk$fr.internal(_root);
 	late final Translations$shop$fr shop = Translations$shop$fr.internal(_root);
 	late final Translations$summary$fr summary = Translations$summary$fr.internal(_root);
 }
@@ -2386,6 +2387,64 @@ class Translations$transport$fr {
 	late final Translations$transport$empty$fr empty = Translations$transport$empty$fr.internal(_root);
 }
 
+// Path: fireRisk
+class Translations$fireRisk$fr {
+	Translations$fireRisk$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Risque incendie'
+	String get title => 'Risque incendie';
+
+	/// fr: 'Actualiser'
+	String get refresh => 'Actualiser';
+
+	/// fr: 'Données mises à jour'
+	String get refreshed => 'Données mises à jour';
+
+	/// fr: 'Pas de connexion'
+	String get refreshError => 'Pas de connexion';
+
+	late final Translations$fireRisk$update$fr update = Translations$fireRisk$update$fr.internal(_root);
+	late final Translations$fireRisk$duration$fr duration = Translations$fireRisk$duration$fr.internal(_root);
+
+	/// fr: 'Indice de risque basé sur le Fire Weather Index (FWI) fourni par Open-Meteo (modèle Météo-France). Le FWI est l'indice utilisé par le système européen EFFIS pour évaluer le risque de feux de forêt.'
+	String get fwiSource => 'Indice de risque basé sur le Fire Weather Index (FWI) fourni par Open-Meteo (modèle Météo-France). Le FWI est l\'indice utilisé par le système européen EFFIS pour évaluer le risque de feux de forêt.';
+
+	late final Translations$fireRisk$regulation$fr regulation = Translations$fireRisk$regulation$fr.internal(_root);
+
+	/// fr: 'Niveaux de risque'
+	String get levelsTitle => 'Niveaux de risque';
+
+	late final Translations$fireRisk$level$fr level = Translations$fireRisk$level$fr.internal(_root);
+
+	/// fr: 'Risque par étape'
+	String get stagesTitle => 'Risque par étape';
+
+	/// fr: 'E$number'
+	String stageBadge({required Object number}) => 'E${number}';
+
+	/// fr: 'Niv. $level'
+	String levelBadge({required Object level}) => 'Niv. ${level}';
+
+	/// fr: 'Niv. $level'
+	String dayLevel({required Object level}) => 'Niv. ${level}';
+
+	late final Translations$fireRisk$day$fr day = Translations$fireRisk$day$fr.internal(_root);
+
+	/// fr: 'Aucun risque incendie signalé actuellement'
+	String get noRisk => 'Aucun risque incendie signalé actuellement';
+
+	/// fr: 'Numéros utiles'
+	String get numbersTitle => 'Numéros utiles';
+
+	late final Translations$fireRisk$number$fr number = Translations$fireRisk$number$fr.internal(_root);
+	late final Translations$fireRisk$empty$fr empty = Translations$fireRisk$empty$fr.internal(_root);
+	late final Translations$fireRisk$a11y$fr a11y = Translations$fireRisk$a11y$fr.internal(_root);
+}
+
 // Path: shop
 class Translations$shop$fr {
 	Translations$shop$fr.internal(this._root);
@@ -2715,6 +2774,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Épiceries, pharmacies, gaz'
 	String get shopSub => 'Épiceries, pharmacies, gaz';
+
+	/// fr: 'Incendie'
+	String get fire => 'Incendie';
+
+	/// fr: 'Risques & alertes'
+	String get fireSub => 'Risques & alertes';
 }
 
 // Path: hub.fab
@@ -4795,6 +4860,159 @@ class Translations$transport$empty$fr {
 	String get messageGeneric => 'Les informations de transport de ce sentier seront ajoutées prochainement.';
 }
 
+// Path: fireRisk.update
+class Translations$fireRisk$update$fr {
+	Translations$fireRisk$update$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Données à jour'
+	String get live => 'Données à jour';
+
+	/// fr: 'MAJ : $date'
+	String liveAt({required Object date}) => 'MAJ : ${date}';
+
+	/// fr: 'MAJ il y a $duration'
+	String cacheRecent({required Object duration}) => 'MAJ il y a ${duration}';
+
+	/// fr: 'Dernière MAJ : $date'
+	String cacheOld({required Object date}) => 'Dernière MAJ : ${date}';
+
+	/// fr: 'Jamais mis à jour'
+	String get never => 'Jamais mis à jour';
+}
+
+// Path: fireRisk.duration
+class Translations$fireRisk$duration$fr {
+	Translations$fireRisk$duration$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'quelques secondes'
+	String get seconds => 'quelques secondes';
+
+	/// fr: '$n min'
+	String minutes({required Object n}) => '${n} min';
+
+	/// fr: '${n}h'
+	String hours({required Object n}) => '${n}h';
+
+	/// fr: '${n}j'
+	String days({required Object n}) => '${n}j';
+}
+
+// Path: fireRisk.regulation
+class Translations$fireRisk$regulation$fr {
+	Translations$fireRisk$regulation$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Réglementation'
+	String get title => 'Réglementation';
+
+	/// fr: 'Consulter les arrêtés préfectoraux'
+	String get decreeLink => 'Consulter les arrêtés préfectoraux';
+}
+
+// Path: fireRisk.level
+class Translations$fireRisk$level$fr {
+	Translations$fireRisk$level$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Aucun'
+	String get none => 'Aucun';
+
+	/// fr: 'Faible'
+	String get low => 'Faible';
+
+	/// fr: 'Modéré'
+	String get moderate => 'Modéré';
+
+	/// fr: 'Élevé'
+	String get high => 'Élevé';
+
+	/// fr: 'Très élevé'
+	String get veryHigh => 'Très élevé';
+
+	/// fr: 'Extrême'
+	String get extreme => 'Extrême';
+}
+
+// Path: fireRisk.day
+class Translations$fireRisk$day$fr {
+	Translations$fireRisk$day$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Auj.'
+	String get today => 'Auj.';
+
+	/// fr: 'Demain'
+	String get tomorrow => 'Demain';
+
+	/// fr: 'J+$n'
+	String plus({required Object n}) => 'J+${n}';
+}
+
+// Path: fireRisk.number
+class Translations$fireRisk$number$fr {
+	Translations$fireRisk$number$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Pompiers'
+	String get firefighters => 'Pompiers';
+
+	/// fr: 'Secours européens'
+	String get europeanEmergency => 'Secours européens';
+}
+
+// Path: fireRisk.empty
+class Translations$fireRisk$empty$fr {
+	Translations$fireRisk$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Risque incendie indisponible'
+	String get title => 'Risque incendie indisponible';
+
+	/// fr: 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté.'
+	String get message => 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté.';
+}
+
+// Path: fireRisk.a11y
+class Translations$fireRisk$a11y$fr {
+	Translations$fireRisk$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Appeler $label au $number'
+	String call({required Object label, required Object number}) => 'Appeler ${label} au ${number}';
+
+	/// fr: 'Ouvrir les arrêtés préfectoraux'
+	String get decree => 'Ouvrir les arrêtés préfectoraux';
+
+	/// fr: 'Niveau de risque $level sur 5'
+	String levelBadge({required Object level}) => 'Niveau de risque ${level} sur 5';
+}
+
 // Path: shop.a11y
 class Translations$shop$a11y$fr {
 	Translations$shop$a11y$fr.internal(this._root);
@@ -5526,6 +5744,8 @@ extension on Translations {
 			'hub.cards.resumeSub' => 'Synthèse du plan',
 			'hub.cards.shop' => 'Ravitaillement',
 			'hub.cards.shopSub' => 'Épiceries, pharmacies, gaz',
+			'hub.cards.fire' => 'Incendie',
+			'hub.cards.fireSub' => 'Risques & alertes',
 			'hub.fab.feedback' => 'Donner mon avis',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Carte du sentier',
@@ -5942,10 +6162,10 @@ extension on Translations {
 			'notifications.morningReminder' => 'Rappel du matin',
 			'notifications.weatherAlerts' => 'Alertes météo',
 			'notifications.countdown' => 'Rappel J-2',
-			'notifications.countdownDesc' => 'Notification 2 jours avant le départ',
-			'notifications.schedulerCountdownTitle' => 'Votre randonnée approche !',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.countdownDesc' => 'Notification 2 jours avant le départ',
+			'notifications.schedulerCountdownTitle' => 'Votre randonnée approche !',
 			'notifications.schedulerCountdownBody' => 'Depart dans 2 jours. Verifiez votre checklist et la meteo.',
 			'notifications.schedulerDailyTitle' => 'Bonne journee de randonnée !',
 			'notifications.schedulerDailyBody' => 'Consultez la meteo et preparez votre etape du jour.',
@@ -6456,10 +6676,10 @@ extension on Translations {
 			'moderation.complaintExposeLabel' => 'Votre contestation',
 			'moderation.complaintExposeHint' => 'Décrivez les raisons de votre contestation.',
 			'moderation.complaintSubmit' => 'Envoyer la contestation',
-			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
-			'moderation.complaintEmpty' => 'Veuillez expliquer votre contestation.',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintSent' => 'Contestation enregistrée. Elle sera examinée.',
+			'moderation.complaintEmpty' => 'Veuillez expliquer votre contestation.',
 			'moderation.a11y.reportForm' => 'Formulaire de signalement de contenu',
 			'moderation.a11y.reasonSelector' => 'Sélecteur de motif de signalement',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Déclaration de bonne foi, ${state}',
@@ -6600,6 +6820,45 @@ extension on Translations {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Les informations pour rejoindre ${name} seront ajoutées prochainement.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Les informations pour repartir de ${name} seront ajoutées prochainement.',
 			'transport.empty.messageGeneric' => 'Les informations de transport de ce sentier seront ajoutées prochainement.',
+			'fireRisk.title' => 'Risque incendie',
+			'fireRisk.refresh' => 'Actualiser',
+			'fireRisk.refreshed' => 'Données mises à jour',
+			'fireRisk.refreshError' => 'Pas de connexion',
+			'fireRisk.update.live' => 'Données à jour',
+			'fireRisk.update.liveAt' => ({required Object date}) => 'MAJ : ${date}',
+			'fireRisk.update.cacheRecent' => ({required Object duration}) => 'MAJ il y a ${duration}',
+			'fireRisk.update.cacheOld' => ({required Object date}) => 'Dernière MAJ : ${date}',
+			'fireRisk.update.never' => 'Jamais mis à jour',
+			'fireRisk.duration.seconds' => 'quelques secondes',
+			'fireRisk.duration.minutes' => ({required Object n}) => '${n} min',
+			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
+			'fireRisk.duration.days' => ({required Object n}) => '${n}j',
+			'fireRisk.fwiSource' => 'Indice de risque basé sur le Fire Weather Index (FWI) fourni par Open-Meteo (modèle Météo-France). Le FWI est l\'indice utilisé par le système européen EFFIS pour évaluer le risque de feux de forêt.',
+			'fireRisk.regulation.title' => 'Réglementation',
+			'fireRisk.regulation.decreeLink' => 'Consulter les arrêtés préfectoraux',
+			'fireRisk.levelsTitle' => 'Niveaux de risque',
+			'fireRisk.level.none' => 'Aucun',
+			'fireRisk.level.low' => 'Faible',
+			'fireRisk.level.moderate' => 'Modéré',
+			'fireRisk.level.high' => 'Élevé',
+			'fireRisk.level.veryHigh' => 'Très élevé',
+			'fireRisk.level.extreme' => 'Extrême',
+			'fireRisk.stagesTitle' => 'Risque par étape',
+			'fireRisk.stageBadge' => ({required Object number}) => 'E${number}',
+			'fireRisk.levelBadge' => ({required Object level}) => 'Niv. ${level}',
+			'fireRisk.dayLevel' => ({required Object level}) => 'Niv. ${level}',
+			'fireRisk.day.today' => 'Auj.',
+			'fireRisk.day.tomorrow' => 'Demain',
+			'fireRisk.day.plus' => ({required Object n}) => 'J+${n}',
+			'fireRisk.noRisk' => 'Aucun risque incendie signalé actuellement',
+			'fireRisk.numbersTitle' => 'Numéros utiles',
+			'fireRisk.number.firefighters' => 'Pompiers',
+			'fireRisk.number.europeanEmergency' => 'Secours européens',
+			'fireRisk.empty.title' => 'Risque incendie indisponible',
+			'fireRisk.empty.message' => 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté.',
+			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Appeler ${label} au ${number}',
+			'fireRisk.a11y.decree' => 'Ouvrir les arrêtés préfectoraux',
+			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Niveau de risque ${level} sur 5',
 			'shop.title' => 'Ravitaillement',
 			'shop.filterAll' => 'Tous',
 			'shop.typeEpicerie' => 'Épicerie',

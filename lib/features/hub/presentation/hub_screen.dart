@@ -251,6 +251,21 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.journalSub,
                   onTap: () => context.go('/journal'),
                 ),
+                // PARITE GR20 (#99460) — INCENDIE : carte « Risques & alertes »
+                // (clone GR20 `FireRiskScreen`, data-driven). Niveaux de risque
+                // (0-5) derives de la meteo (socle meteo reutilise + calcul
+                // identique GR20), reglementation + secours regionaux venant de
+                // la donnee du sentier (aucune localite en dur). Icone
+                // `local_fire_department` (rouge urgence, parite GR20). Route
+                // hors-shell atteinte via `context.push` (retour propre, pile
+                // preservee — jamais context.go qui viderait la pile). Generique
+                // multi-sentiers, fallback si aucune donnee meteo.
+                QuickAccessCard(
+                  icon: Icons.local_fire_department,
+                  title: t.hub.cards.fire,
+                  subtitle: t.hub.cards.fireSub,
+                  onTap: () => context.push('/trail/$trailId/fire-risk'),
+                ),
               ],
             ),
             const SizedBox(height: AppTheme.spacingLg),

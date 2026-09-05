@@ -106,7 +106,9 @@
       "resume": "Summary",
       "resumeSub": "Plan overview",
       "shop": "Supplies",
-      "shopSub": "Groceries, pharmacies, gas"
+      "shopSub": "Groceries, pharmacies, gas",
+      "fire": "Fire",
+      "fireSub": "Risks & alerts"
     },
     "fab": {
       "feedback": "Give feedback",
@@ -1471,6 +1473,63 @@
       "messageJoin": "Information on getting to $name will be added soon.",
       "messageLeave": "Information on leaving $name will be added soon.",
       "messageGeneric": "Transport information for this trail will be added soon."
+    }
+  },
+  "fireRisk": {
+    "title": "Fire risk",
+    "refresh": "Refresh",
+    "refreshed": "Data updated",
+    "refreshError": "No connection",
+    "update": {
+      "live": "Data up to date",
+      "liveAt": "Updated: $date",
+      "cacheRecent": "Updated $duration ago",
+      "cacheOld": "Last update: $date",
+      "never": "Never updated"
+    },
+    "duration": {
+      "seconds": "a few seconds",
+      "minutes": "$n min",
+      "hours": "${n}h",
+      "days": "${n}d"
+    },
+    "fwiSource": "Risk index based on the Fire Weather Index (FWI) provided by Open-Meteo (Meteo-France model). The FWI is the index used by the European EFFIS system to assess wildfire risk.",
+    "regulation": {
+      "title": "Regulations",
+      "decreeLink": "View prefectural orders"
+    },
+    "levelsTitle": "Risk levels",
+    "level": {
+      "none": "None",
+      "low": "Low",
+      "moderate": "Moderate",
+      "high": "High",
+      "veryHigh": "Very high",
+      "extreme": "Extreme"
+    },
+    "stagesTitle": "Risk by stage",
+    "stageBadge": "S$number",
+    "levelBadge": "Lvl $level",
+    "dayLevel": "Lvl $level",
+    "day": {
+      "today": "Today",
+      "tomorrow": "Tmrw",
+      "plus": "D+$n"
+    },
+    "noRisk": "No fire risk currently reported",
+    "numbersTitle": "Useful numbers",
+    "number": {
+      "firefighters": "Fire brigade",
+      "europeanEmergency": "European emergency"
+    },
+    "empty": {
+      "title": "Fire risk unavailable",
+      "message": "The weather data needed to compute fire risk is not available right now. Try again once connected."
+    },
+    "a11y": {
+      "call": "Call $label at $number",
+      "decree": "Open prefectural orders",
+      "levelBadge": "Risk level $level out of 5"
     }
   },
   "shop": {
