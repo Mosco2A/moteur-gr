@@ -15,6 +15,7 @@ import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/more/presentation/more_screen.dart';
 import '../../features/planning/presentation/calendar_screen.dart';
 import '../../features/planning/presentation/plan_summary_screen.dart';
+import '../../features/planning/presentation/shop_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/planning/presentation/transport_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -85,6 +86,7 @@ final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 ///   /trail/:id/planning          - PROGRAMME (clone GR20, via carte HUB)
 ///   /trail/:id/calendar          - CALENDRIER (dates + jours marche/repos)
 ///   /trail/:id/transport         - TRANSPORT (aller/retour, data-driven)
+///   /trail/:id/shop              - RAVITAILLEMENT (commerces par etape, data-driven)
 ///   /trail/:id/checklist         - Checklist materiel
 ///   /trail/:id/feasibility       - Questionnaire faisabilite
 ///   /trail/:id/tips              - Fiches conseils
@@ -295,6 +297,23 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
             return TransportScreen(trailId: trailId);
+          },
+        ),
+        // PARITE GR20 (#99460) — RAVITAILLEMENT : ecran « Commerces & services »
+        // (clone GR20 `ShopDetailScreen`, data-driven). Filtres par type
+        // (epicerie/bar/pharmacie/gaz), alerte « ravitaillement limite »
+        // data-driven, liste des commerces groupee par ETAPE, alerte de « gap »
+        // (etapes sans commerce), bottom sheet detail. Le contenu vient du
+        // catalogue ravitaillement du sentier (aucun commerce hardcode dans le
+        // moteur, parite « donnees externes »). La carte HUB « Ravitaillement »
+        // (section Preparer) ouvre cet ecran via `context.push` (retour propre,
+        // pile preservee). Generique multi-sentiers, fallback si aucune donnee.
+        GoRoute(
+          path: 'shop',
+          name: 'trail-shop',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return ShopScreen(trailId: trailId);
           },
         ),
         // PARITE GR20 (#99460) — RESUME : ecran « Synthese du plan » (clone GR20

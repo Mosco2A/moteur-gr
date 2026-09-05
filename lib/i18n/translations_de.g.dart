@@ -94,6 +94,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$calendar$de calendar = _Translations$calendar$de._(_root);
 	@override late final _Translations$nuitees$de nuitees = _Translations$nuitees$de._(_root);
 	@override late final _Translations$transport$de transport = _Translations$transport$de._(_root);
+	@override late final _Translations$shop$de shop = _Translations$shop$de._(_root);
 	@override late final _Translations$summary$de summary = _Translations$summary$de._(_root);
 }
 
@@ -1226,6 +1227,36 @@ class _Translations$transport$de extends Translations$transport$fr {
 	@override late final _Translations$transport$empty$de empty = _Translations$transport$empty$de._(_root);
 }
 
+// Path: shop
+class _Translations$shop$de extends Translations$shop$fr {
+	_Translations$shop$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Verpflegung';
+	@override String get filterAll => 'Alle';
+	@override String get typeEpicerie => 'Lebensmittel';
+	@override String get typeBar => 'Bar/Restaurant';
+	@override String get typePharmacie => 'Apotheke';
+	@override String get typeGaz => 'Gas/Ausrüstung';
+	@override String get limitedTitle => 'Begrenzte Versorgungspunkte';
+	@override String stageHeader({required Object n}) => 'Etappe ${n}';
+	@override String stageBadge({required Object n}) => 'Etappe ${n}';
+	@override String gapShort({required Object n}) => 'Letzte Versorgung vor ${n} Etappen ohne Geschäft';
+	@override String gapLong({required Object n}) => 'Letzte Versorgung vor ${n} Etappen ohne Geschäft. Decken Sie sich ein!';
+	@override String get sectionInfo => 'Informationen';
+	@override String get sectionProducts => 'Verfügbare Produkte';
+	@override String get fieldType => 'Typ';
+	@override String get fieldStage => 'Etappe';
+	@override String get fieldGps => 'GPS';
+	@override String get fieldHours => 'Öffnungszeiten';
+	@override String get website => 'Website';
+	@override String get filterEmpty => 'Kein Geschäft für diesen Filter.';
+	@override late final _Translations$shop$a11y$de a11y = _Translations$shop$a11y$de._(_root);
+	@override late final _Translations$shop$empty$de empty = _Translations$shop$empty$de._(_root);
+}
+
 // Path: summary
 class _Translations$summary$de extends Translations$summary$fr {
 	_Translations$summary$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -1342,6 +1373,8 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get diplomaSub => 'Ihre Abschlussurkunde';
 	@override String get resume => 'Zusammenfassung';
 	@override String get resumeSub => 'Planübersicht';
+	@override String get shop => 'Verpflegung';
+	@override String get shopSub => 'Lebensmittel, Apotheken, Gas';
 }
 
 // Path: hub.fab
@@ -2455,6 +2488,29 @@ class _Translations$transport$empty$de extends Translations$transport$empty$fr {
 	@override String get messageGeneric => 'Anreiseinformationen für diesen Weg folgen in Kürze.';
 }
 
+// Path: shop.a11y
+class _Translations$shop$a11y$de extends Translations$shop$a11y$fr {
+	_Translations$shop$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String openDetail({required Object name}) => 'Details zu ${name} anzeigen';
+	@override String call({required Object label}) => '${label} anrufen';
+	@override String get website => 'Website öffnen';
+}
+
+// Path: shop.empty
+class _Translations$shop$empty$de extends Translations$shop$empty$fr {
+	_Translations$shop$empty$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Verpflegung bald verfügbar';
+	@override String get message => 'Geschäfte und Versorgungspunkte für diesen Weg folgen in Kürze.';
+}
+
 // Path: summary.stats
 class _Translations$summary$stats$de extends Translations$summary$stats$fr {
 	_Translations$summary$stats$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -2959,6 +3015,8 @@ extension on TranslationsDe {
 			'hub.cards.diplomaSub' => 'Ihre Abschlussurkunde',
 			'hub.cards.resume' => 'Zusammenfassung',
 			'hub.cards.resumeSub' => 'Planübersicht',
+			'hub.cards.shop' => 'Verpflegung',
+			'hub.cards.shopSub' => 'Lebensmittel, Apotheken, Gas',
 			'hub.fab.feedback' => 'Feedback geben',
 			'hub.fab.sos' => 'SOS',
 			'map.title' => 'Wanderkarte',
@@ -3377,10 +3435,10 @@ extension on TranslationsDe {
 			'notifications.countdown' => 'Erinnerung 2 Tage vorher',
 			'notifications.countdownDesc' => 'Benachrichtigung 2 Tage vor Abreise',
 			'notifications.schedulerCountdownTitle' => 'Ihr Trek steht bevor!',
-			'notifications.schedulerCountdownBody' => 'Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.',
-			'notifications.schedulerDailyTitle' => 'Guten Trek-Tag!',
 			_ => null,
 		} ?? switch (path) {
+			'notifications.schedulerCountdownBody' => 'Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.',
+			'notifications.schedulerDailyTitle' => 'Guten Trek-Tag!',
 			'notifications.schedulerDailyBody' => 'Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.',
 			'settings.title' => 'Einstellungen',
 			'settings.language' => 'Sprache',
@@ -3891,10 +3949,10 @@ extension on TranslationsDe {
 			'moderation.complaintSubmit' => 'Anfechtung senden',
 			'moderation.complaintSent' => 'Anfechtung erfasst. Sie wird geprüft.',
 			'moderation.complaintEmpty' => 'Bitte erklären Sie Ihre Anfechtung.',
-			'moderation.a11y.reportForm' => 'Formular zur Inhaltsmeldung',
-			'moderation.a11y.reasonSelector' => 'Auswahl des Meldegrunds',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.a11y.reportForm' => 'Formular zur Inhaltsmeldung',
+			'moderation.a11y.reasonSelector' => 'Auswahl des Meldegrunds',
 			'moderation.a11y.goodFaithToggle' => ({required Object state}) => 'Erklärung in gutem Glauben, ${state}',
 			'moderation.a11y.submitReport' => 'Meldung senden',
 			'moderation.a11y.statementCard' => 'Begründung der Moderationsentscheidung',
@@ -4033,6 +4091,30 @@ extension on TranslationsDe {
 			'transport.empty.messageJoin' => ({required Object name}) => 'Informationen zur Anreise nach ${name} folgen in Kürze.',
 			'transport.empty.messageLeave' => ({required Object name}) => 'Informationen zur Abreise ab ${name} folgen in Kürze.',
 			'transport.empty.messageGeneric' => 'Anreiseinformationen für diesen Weg folgen in Kürze.',
+			'shop.title' => 'Verpflegung',
+			'shop.filterAll' => 'Alle',
+			'shop.typeEpicerie' => 'Lebensmittel',
+			'shop.typeBar' => 'Bar/Restaurant',
+			'shop.typePharmacie' => 'Apotheke',
+			'shop.typeGaz' => 'Gas/Ausrüstung',
+			'shop.limitedTitle' => 'Begrenzte Versorgungspunkte',
+			'shop.stageHeader' => ({required Object n}) => 'Etappe ${n}',
+			'shop.stageBadge' => ({required Object n}) => 'Etappe ${n}',
+			'shop.gapShort' => ({required Object n}) => 'Letzte Versorgung vor ${n} Etappen ohne Geschäft',
+			'shop.gapLong' => ({required Object n}) => 'Letzte Versorgung vor ${n} Etappen ohne Geschäft. Decken Sie sich ein!',
+			'shop.sectionInfo' => 'Informationen',
+			'shop.sectionProducts' => 'Verfügbare Produkte',
+			'shop.fieldType' => 'Typ',
+			'shop.fieldStage' => 'Etappe',
+			'shop.fieldGps' => 'GPS',
+			'shop.fieldHours' => 'Öffnungszeiten',
+			'shop.website' => 'Website',
+			'shop.filterEmpty' => 'Kein Geschäft für diesen Filter.',
+			'shop.a11y.openDetail' => ({required Object name}) => 'Details zu ${name} anzeigen',
+			'shop.a11y.call' => ({required Object label}) => '${label} anrufen',
+			'shop.a11y.website' => 'Website öffnen',
+			'shop.empty.title' => 'Verpflegung bald verfügbar',
+			'shop.empty.message' => 'Geschäfte und Versorgungspunkte für diesen Weg folgen in Kürze.',
 			'summary.title' => 'Planübersicht',
 			'summary.configTitle' => ({required Object name}) => 'Mein ${name}',
 			'summary.direction' => 'Richtung',

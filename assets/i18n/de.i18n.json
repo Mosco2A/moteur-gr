@@ -104,7 +104,9 @@
       "diploma": "Diplom",
       "diplomaSub": "Ihre Abschlussurkunde",
       "resume": "Zusammenfassung",
-      "resumeSub": "Planübersicht"
+      "resumeSub": "Planübersicht",
+      "shop": "Verpflegung",
+      "shopSub": "Lebensmittel, Apotheken, Gas"
     },
     "fab": {
       "feedback": "Feedback geben",
@@ -1469,6 +1471,36 @@
       "messageJoin": "Informationen zur Anreise nach $name folgen in Kürze.",
       "messageLeave": "Informationen zur Abreise ab $name folgen in Kürze.",
       "messageGeneric": "Anreiseinformationen für diesen Weg folgen in Kürze."
+    }
+  },
+  "shop": {
+    "title": "Verpflegung",
+    "filterAll": "Alle",
+    "typeEpicerie": "Lebensmittel",
+    "typeBar": "Bar/Restaurant",
+    "typePharmacie": "Apotheke",
+    "typeGaz": "Gas/Ausrüstung",
+    "limitedTitle": "Begrenzte Versorgungspunkte",
+    "stageHeader": "Etappe $n",
+    "stageBadge": "Etappe $n",
+    "gapShort": "Letzte Versorgung vor $n Etappen ohne Geschäft",
+    "gapLong": "Letzte Versorgung vor $n Etappen ohne Geschäft. Decken Sie sich ein!",
+    "sectionInfo": "Informationen",
+    "sectionProducts": "Verfügbare Produkte",
+    "fieldType": "Typ",
+    "fieldStage": "Etappe",
+    "fieldGps": "GPS",
+    "fieldHours": "Öffnungszeiten",
+    "website": "Website",
+    "filterEmpty": "Kein Geschäft für diesen Filter.",
+    "a11y": {
+      "openDetail": "Details zu $name anzeigen",
+      "call": "$label anrufen",
+      "website": "Website öffnen"
+    },
+    "empty": {
+      "title": "Verpflegung bald verfügbar",
+      "message": "Geschäfte und Versorgungspunkte für diesen Weg folgen in Kürze."
     }
   },
   "summary": {

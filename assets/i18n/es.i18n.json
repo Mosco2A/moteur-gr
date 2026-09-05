@@ -104,7 +104,9 @@
       "diploma": "Diploma",
       "diplomaSub": "Tu certificado final",
       "resume": "Resumen",
-      "resumeSub": "Síntesis del plan"
+      "resumeSub": "Síntesis del plan",
+      "shop": "Avituallamiento",
+      "shopSub": "Tiendas, farmacias, gas"
     },
     "fab": {
       "feedback": "Dar mi opinión",
@@ -1469,6 +1471,36 @@
       "messageJoin": "La información para llegar a $name se añadirá pronto.",
       "messageLeave": "La información para salir de $name se añadirá pronto.",
       "messageGeneric": "La información de transporte de este sendero se añadirá pronto."
+    }
+  },
+  "shop": {
+    "title": "Avituallamiento",
+    "filterAll": "Todos",
+    "typeEpicerie": "Tienda",
+    "typeBar": "Bar/Restaurante",
+    "typePharmacie": "Farmacia",
+    "typeGaz": "Gas/Material",
+    "limitedTitle": "Puntos de avituallamiento limitados",
+    "stageHeader": "Etapa $n",
+    "stageBadge": "Etapa $n",
+    "gapShort": "Último avituallamiento antes de $n etapas sin comercio",
+    "gapLong": "Último avituallamiento antes de $n etapas sin comercio. ¡Abastécete!",
+    "sectionInfo": "Información",
+    "sectionProducts": "Productos disponibles",
+    "fieldType": "Tipo",
+    "fieldStage": "Etapa",
+    "fieldGps": "GPS",
+    "fieldHours": "Horario",
+    "website": "Sitio web",
+    "filterEmpty": "Ningún comercio para este filtro.",
+    "a11y": {
+      "openDetail": "Ver detalles de $name",
+      "call": "Llamar a $label",
+      "website": "Abrir el sitio web"
+    },
+    "empty": {
+      "title": "Avituallamiento próximamente",
+      "message": "Los comercios y puntos de avituallamiento de este sendero se añadirán pronto."
     }
   },
   "summary": {

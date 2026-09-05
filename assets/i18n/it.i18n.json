@@ -104,7 +104,9 @@
       "diploma": "Diploma",
       "diplomaSub": "Il tuo certificato finale",
       "resume": "Riepilogo",
-      "resumeSub": "Sintesi del piano"
+      "resumeSub": "Sintesi del piano",
+      "shop": "Rifornimenti",
+      "shopSub": "Alimentari, farmacie, gas"
     },
     "fab": {
       "feedback": "Lascia un feedback",
@@ -1469,6 +1471,36 @@
       "messageJoin": "Le informazioni per raggiungere $name saranno aggiunte a breve.",
       "messageLeave": "Le informazioni per ripartire da $name saranno aggiunte a breve.",
       "messageGeneric": "Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve."
+    }
+  },
+  "shop": {
+    "title": "Rifornimenti",
+    "filterAll": "Tutti",
+    "typeEpicerie": "Alimentari",
+    "typeBar": "Bar/Ristorante",
+    "typePharmacie": "Farmacia",
+    "typeGaz": "Gas/Attrezzatura",
+    "limitedTitle": "Punti di rifornimento limitati",
+    "stageHeader": "Tappa $n",
+    "stageBadge": "Tappa $n",
+    "gapShort": "Ultimo rifornimento prima di $n tappe senza negozi",
+    "gapLong": "Ultimo rifornimento prima di $n tappe senza negozi. Fai scorta!",
+    "sectionInfo": "Informazioni",
+    "sectionProducts": "Prodotti disponibili",
+    "fieldType": "Tipo",
+    "fieldStage": "Tappa",
+    "fieldGps": "GPS",
+    "fieldHours": "Orari",
+    "website": "Sito web",
+    "filterEmpty": "Nessun negozio per questo filtro.",
+    "a11y": {
+      "openDetail": "Vedi i dettagli di $name",
+      "call": "Chiama $label",
+      "website": "Apri il sito web"
+    },
+    "empty": {
+      "title": "Rifornimenti presto disponibili",
+      "message": "I negozi e i punti di rifornimento di questo sentiero saranno aggiunti a breve."
     }
   },
   "summary": {

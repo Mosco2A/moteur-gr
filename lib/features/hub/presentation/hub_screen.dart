@@ -178,6 +178,21 @@ class HubScreen extends ConsumerWidget {
                   subtitle: t.hub.cards.transportSub,
                   onTap: () => context.push('/trail/$trailId/transport'),
                 ),
+                // PARITE GR20 (#99460) — RAVITAILLEMENT : carte « Epiceries,
+                // pharmacies, gaz » (clone GR20 `ShopDetailScreen`, data-driven).
+                // Liste des commerces du sentier groupee par etape, filtres par
+                // type, alerte de « gap » de ravitaillement — contenu venant du
+                // catalogue ravitaillement du sentier (aucun commerce hardcode).
+                // Icone `shopping_cart` (parite GR20). Route hors-shell atteinte
+                // via `context.push` (retour propre, pile preservee — jamais
+                // context.go qui viderait la pile). Generique multi-sentiers,
+                // zero hardcode de localite.
+                QuickAccessCard(
+                  icon: Icons.shopping_cart,
+                  title: t.hub.cards.shop,
+                  subtitle: t.hub.cards.shopSub,
+                  onTap: () => context.push('/trail/$trailId/shop'),
+                ),
                 // PARITE GR20 (#99460) — RESUME : carte « Synthese du plan »
                 // (clone GR20 `PlanSummaryScreen`). Agregateur : synthetise le
                 // programme, les stats, les nuitees et les dates du sentier
