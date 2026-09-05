@@ -1239,10 +1239,10 @@ class _Translations$fireRisk$es extends Translations$fireRisk$fr {
 	@override String get title => 'Riesgo de incendio';
 	@override String get refresh => 'Actualizar';
 	@override String get refreshed => 'Datos actualizados';
-	@override String get refreshError => 'Sin conexion';
+	@override String get refreshError => 'Sin conexión';
 	@override late final _Translations$fireRisk$update$es update = _Translations$fireRisk$update$es._(_root);
 	@override late final _Translations$fireRisk$duration$es duration = _Translations$fireRisk$duration$es._(_root);
-	@override String get fwiSource => 'Indice de riesgo basado en el Fire Weather Index (FWI) proporcionado por Open-Meteo (modelo Meteo-France). El FWI es el indice utilizado por el sistema europeo EFFIS para evaluar el riesgo de incendios forestales.';
+	@override String get fwiSource => 'Índice de riesgo basado en el Fire Weather Index (FWI) proporcionado por Open-Meteo (modelo Meteo-France). El FWI es el índice utilizado por el sistema europeo EFFIS para evaluar el riesgo de incendios forestales.';
 	@override late final _Translations$fireRisk$regulation$es regulation = _Translations$fireRisk$regulation$es._(_root);
 	@override String get levelsTitle => 'Niveles de riesgo';
 	@override late final _Translations$fireRisk$level$es level = _Translations$fireRisk$level$es._(_root);
@@ -1251,8 +1251,8 @@ class _Translations$fireRisk$es extends Translations$fireRisk$fr {
 	@override String levelBadge({required Object level}) => 'Niv. ${level}';
 	@override String dayLevel({required Object level}) => 'Niv. ${level}';
 	@override late final _Translations$fireRisk$day$es day = _Translations$fireRisk$day$es._(_root);
-	@override String get noRisk => 'Ningun riesgo de incendio senalado actualmente';
-	@override String get numbersTitle => 'Numeros utiles';
+	@override String get noRisk => 'Ningún riesgo de incendio señalado actualmente';
+	@override String get numbersTitle => 'Números útiles';
 	@override late final _Translations$fireRisk$number$es number = _Translations$fireRisk$number$es._(_root);
 	@override late final _Translations$fireRisk$empty$es empty = _Translations$fireRisk$empty$es._(_root);
 	@override late final _Translations$fireRisk$a11y$es a11y = _Translations$fireRisk$a11y$es._(_root);
@@ -2572,7 +2572,7 @@ class _Translations$fireRisk$update$es extends Translations$fireRisk$update$fr {
 	@override String get live => 'Datos actualizados';
 	@override String liveAt({required Object date}) => 'Act.: ${date}';
 	@override String cacheRecent({required Object duration}) => 'Actualizado hace ${duration}';
-	@override String cacheOld({required Object date}) => 'Ultima act.: ${date}';
+	@override String cacheOld({required Object date}) => 'Última act.: ${date}';
 	@override String get never => 'Nunca actualizado';
 }
 
@@ -2597,7 +2597,7 @@ class _Translations$fireRisk$regulation$es extends Translations$fireRisk$regulat
 
 	// Translations
 	@override String get title => 'Normativa';
-	@override String get decreeLink => 'Consultar las ordenes prefectorales';
+	@override String get decreeLink => 'Consultar las órdenes prefectorales';
 }
 
 // Path: fireRisk.level
@@ -2646,7 +2646,7 @@ class _Translations$fireRisk$empty$es extends Translations$fireRisk$empty$fr {
 
 	// Translations
 	@override String get title => 'Riesgo de incendio no disponible';
-	@override String get message => 'Los datos meteorologicos necesarios para calcular el riesgo de incendio no estan disponibles ahora mismo. Intentalo de nuevo cuando estes conectado.';
+	@override String get message => 'Los datos meteorológicos necesarios para calcular el riesgo de incendio no están disponibles ahora mismo. Inténtalo de nuevo cuando estés conectado.';
 }
 
 // Path: fireRisk.a11y
@@ -2657,7 +2657,7 @@ class _Translations$fireRisk$a11y$es extends Translations$fireRisk$a11y$fr {
 
 	// Translations
 	@override String call({required Object label, required Object number}) => 'Llamar a ${label} al ${number}';
-	@override String get decree => 'Abrir las ordenes prefectorales';
+	@override String get decree => 'Abrir las órdenes prefectorales';
 	@override String levelBadge({required Object level}) => 'Nivel de riesgo ${level} de 5';
 }
 
@@ -4271,19 +4271,19 @@ extension on TranslationsEs {
 			'fireRisk.title' => 'Riesgo de incendio',
 			'fireRisk.refresh' => 'Actualizar',
 			'fireRisk.refreshed' => 'Datos actualizados',
-			'fireRisk.refreshError' => 'Sin conexion',
+			'fireRisk.refreshError' => 'Sin conexión',
 			'fireRisk.update.live' => 'Datos actualizados',
 			'fireRisk.update.liveAt' => ({required Object date}) => 'Act.: ${date}',
 			'fireRisk.update.cacheRecent' => ({required Object duration}) => 'Actualizado hace ${duration}',
-			'fireRisk.update.cacheOld' => ({required Object date}) => 'Ultima act.: ${date}',
+			'fireRisk.update.cacheOld' => ({required Object date}) => 'Última act.: ${date}',
 			'fireRisk.update.never' => 'Nunca actualizado',
 			'fireRisk.duration.seconds' => 'unos segundos',
 			'fireRisk.duration.minutes' => ({required Object n}) => '${n} min',
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}d',
-			'fireRisk.fwiSource' => 'Indice de riesgo basado en el Fire Weather Index (FWI) proporcionado por Open-Meteo (modelo Meteo-France). El FWI es el indice utilizado por el sistema europeo EFFIS para evaluar el riesgo de incendios forestales.',
+			'fireRisk.fwiSource' => 'Índice de riesgo basado en el Fire Weather Index (FWI) proporcionado por Open-Meteo (modelo Meteo-France). El FWI es el índice utilizado por el sistema europeo EFFIS para evaluar el riesgo de incendios forestales.',
 			'fireRisk.regulation.title' => 'Normativa',
-			'fireRisk.regulation.decreeLink' => 'Consultar las ordenes prefectorales',
+			'fireRisk.regulation.decreeLink' => 'Consultar las órdenes prefectorales',
 			'fireRisk.levelsTitle' => 'Niveles de riesgo',
 			'fireRisk.level.none' => 'Ninguno',
 			'fireRisk.level.low' => 'Bajo',
@@ -4298,14 +4298,14 @@ extension on TranslationsEs {
 			'fireRisk.day.today' => 'Hoy',
 			'fireRisk.day.tomorrow' => 'Man.',
 			'fireRisk.day.plus' => ({required Object n}) => 'D+${n}',
-			'fireRisk.noRisk' => 'Ningun riesgo de incendio senalado actualmente',
-			'fireRisk.numbersTitle' => 'Numeros utiles',
+			'fireRisk.noRisk' => 'Ningún riesgo de incendio señalado actualmente',
+			'fireRisk.numbersTitle' => 'Números útiles',
 			'fireRisk.number.firefighters' => 'Bomberos',
 			'fireRisk.number.europeanEmergency' => 'Emergencia europea',
 			'fireRisk.empty.title' => 'Riesgo de incendio no disponible',
-			'fireRisk.empty.message' => 'Los datos meteorologicos necesarios para calcular el riesgo de incendio no estan disponibles ahora mismo. Intentalo de nuevo cuando estes conectado.',
+			'fireRisk.empty.message' => 'Los datos meteorológicos necesarios para calcular el riesgo de incendio no están disponibles ahora mismo. Inténtalo de nuevo cuando estés conectado.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Llamar a ${label} al ${number}',
-			'fireRisk.a11y.decree' => 'Abrir las ordenes prefectorales',
+			'fireRisk.a11y.decree' => 'Abrir las órdenes prefectorales',
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Nivel de riesgo ${level} de 5',
 			'shop.title' => 'Avituallamiento',
 			'shop.filterAll' => 'Todos',

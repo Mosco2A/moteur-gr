@@ -1495,16 +1495,16 @@
       "hours": "${n} Std",
       "days": "${n} T"
     },
-    "fwiSource": "Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europaeischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.",
+    "fwiSource": "Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europäischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.",
     "regulation": {
       "title": "Vorschriften",
-      "decreeLink": "Praefektorale Erlasse ansehen"
+      "decreeLink": "Präfektorale Erlasse ansehen"
     },
     "levelsTitle": "Risikostufen",
     "level": {
       "none": "Keine",
       "low": "Gering",
-      "moderate": "Maessig",
+      "moderate": "Mäßig",
       "high": "Hoch",
       "veryHigh": "Sehr hoch",
       "extreme": "Extrem"
@@ -1519,18 +1519,18 @@
       "plus": "T+$n"
     },
     "noRisk": "Derzeit kein Brandrisiko gemeldet",
-    "numbersTitle": "Nuetzliche Nummern",
+    "numbersTitle": "Nützliche Nummern",
     "number": {
       "firefighters": "Feuerwehr",
       "europeanEmergency": "Europ. Notruf"
     },
     "empty": {
-      "title": "Brandrisiko nicht verfuegbar",
-      "message": "Die zur Berechnung des Brandrisikos noetigen Wetterdaten sind derzeit nicht verfuegbar. Versuchen Sie es erneut, sobald Sie verbunden sind."
+      "title": "Brandrisiko nicht verfügbar",
+      "message": "Die zur Berechnung des Brandrisikos nötigen Wetterdaten sind derzeit nicht verfügbar. Versuchen Sie es erneut, sobald Sie verbunden sind."
     },
     "a11y": {
       "call": "$label unter $number anrufen",
-      "decree": "Praefektorale Erlasse oeffnen",
+      "decree": "Präfektorale Erlasse öffnen",
       "levelBadge": "Risikostufe $level von 5"
     }
   },

@@ -1495,7 +1495,7 @@
       "hours": "${n}h",
       "days": "${n}g"
     },
-    "fwiSource": "Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI e l'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.",
+    "fwiSource": "Indice di rischio basato sul Fire Weather Index (FWI) fornito da Open-Meteo (modello Meteo-France). Il FWI è l'indice usato dal sistema europeo EFFIS per valutare il rischio di incendi boschivi.",
     "regulation": {
       "title": "Normativa",
       "decreeLink": "Consulta le ordinanze prefettizie"
