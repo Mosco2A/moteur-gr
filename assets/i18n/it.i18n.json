@@ -1310,7 +1310,13 @@
     "helpTooltip": "Aiuto",
     "duration": {
       "label": "Numero di giorni",
-      "days": "{count} g"
+      "days": "{count} g",
+      "difficulty": {
+        "comfortable": "Comodo",
+        "standard": "Standard",
+        "sporty": "Sportivo",
+        "demanding": "Molto impegnativo"
+      }
     },
     "stats": {
       "distance": "Distanza",
@@ -1376,6 +1382,9 @@
       },
       "note": "Il profilo altimetrico in basso mostra il dislivello di ogni giorno.",
       "close": "Capito!"
+    },
+    "splitBlocked": {
+      "single": "Impossibile dividere: questa giornata ha una sola tappa"
     }
   },
   "calendar": {

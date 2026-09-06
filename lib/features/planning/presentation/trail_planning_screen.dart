@@ -225,8 +225,13 @@ class _PlanningContent extends ConsumerWidget {
         _StatsHeader(stats: stats),
         if (bounds.max > bounds.min)
           DurationSelector(
-            availableDurations: bounds.options,
+            minDuration: bounds.min,
+            maxDuration: bounds.max,
             selectedDuration: bounds.clampDuration(selectedDuration),
+            // Ratio de difficulte (parite GR20) = etapes / jours de MARCHE :
+            // on colore le curseur selon l'effort reel (repos exclus).
+            stageCount: stats.stageCount,
+            walkingDays: stats.trekDays,
             onDurationChanged: (value) => ref
                 .read(selectedDurationProvider.notifier)
                 .set(bounds.clampDuration(value)),
@@ -575,7 +580,7 @@ class _DayCard extends ConsumerWidget {
   final VoidCallback? onMerge;
 
   /// Traduit le code de blocage du notifier en libelle i18n (parite GR20).
-  String _mergeBlockedLabel(String code) {
+  String _mergeBlockedLabel(String? code) {
     switch (code) {
       case 'no-next':
         return t.programme.mergeBlocked.noNext;
@@ -589,8 +594,19 @@ class _DayCard extends ConsumerWidget {
             .replaceAll(
                 '{max}', PlannedDaysNotifier.maxManualHoursPerDay.toInt().toString());
       default:
-        return code;
+        return code ?? t.programme.mergeBlocked.noNext;
     }
+  }
+
+  /// Affiche un retour utilisateur quand une action de jour est indisponible
+  /// (snackbar bref, parite GR20) : la liste explique toujours pourquoi.
+  void _showActionBlocked(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 3),
+      ),
+    );
   }
 
   Color _difficultyColor(int rank) {
@@ -689,6 +705,12 @@ class _DayCard extends ConsumerWidget {
                 ),
               ),
               // Actions du jour + poignee de drag.
+              //
+              // Regrouper ET Separer sont TOUJOURS visibles (parite GR20 pour le
+              // merge, etendu au split) : quand l'action est impossible, le
+              // bouton est grise et un tap explique pourquoi (snackbar). Ainsi
+              // chaque jour montre clairement ce qu'il peut faire — la liste ne
+              // reste jamais « inerte ».
               Column(
                 children: [
                   const Icon(Icons.drag_handle,
@@ -697,30 +719,23 @@ class _DayCard extends ConsumerWidget {
                   _ActionChip(
                     icon: Icons.compress,
                     label: t.programme.actions.merge,
-                    color: canMerge
-                        ? AppTheme.bleuRepos
-                        : AppTheme.grisGranite.withAlpha(80),
+                    color: AppTheme.bleuRepos,
+                    enabled: canMerge,
                     onPressed: canMerge
                         ? onMerge!
-                        : () {
-                            final code = mergeBlockedReason;
-                            if (code != null) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(_mergeBlockedLabel(code)),
-                                  duration: const Duration(seconds: 3),
-                                ),
-                              );
-                            }
-                          },
+                        : () => _showActionBlocked(
+                            context, _mergeBlockedLabel(mergeBlockedReason)),
                   ),
-                  if (canSplit)
-                    _ActionChip(
-                      icon: Icons.call_split,
-                      label: t.programme.actions.split,
-                      color: AppTheme.orangeDifficile,
-                      onPressed: onSplit!,
-                    ),
+                  _ActionChip(
+                    icon: Icons.call_split,
+                    label: t.programme.actions.split,
+                    color: AppTheme.orangeDifficile,
+                    enabled: canSplit,
+                    onPressed: canSplit
+                        ? onSplit!
+                        : () => _showActionBlocked(
+                            context, t.programme.splitBlocked.single),
+                  ),
                   _ActionChip(
                     icon: Icons.self_improvement,
                     label: t.programme.actions.rest,
@@ -864,6 +879,7 @@ class _ActionChip extends StatelessWidget {
     required this.label,
     required this.color,
     required this.onPressed,
+    this.enabled = true,
   });
 
   final IconData icon;
@@ -871,34 +887,47 @@ class _ActionChip extends StatelessWidget {
   final Color color;
   final VoidCallback onPressed;
 
+  /// Action disponible : quand `false`, le chip est grise (mais reste tappable
+  /// pour afficher la raison via un snackbar) — parite GR20.
+  final bool enabled;
+
   @override
   Widget build(BuildContext context) {
+    // Grise quand indisponible : couleur neutre, mais le chip reste visible et
+    // tappable pour expliquer pourquoi l'action est bloquee.
+    final effectiveColor =
+        enabled ? color : AppTheme.grisGranite.withAlpha(120);
     return Padding(
       padding: const EdgeInsets.only(bottom: 2),
-      child: InkWell(
-        onTap: onPressed,
-        borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-          decoration: BoxDecoration(
-            color: color.withAlpha(20),
-            borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-            border: Border.all(color: color.withAlpha(60)),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(icon, size: 16, color: color),
-              const SizedBox(width: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: color,
+      child: Semantics(
+        button: true,
+        enabled: enabled,
+        label: label,
+        child: InkWell(
+          onTap: onPressed,
+          borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+            decoration: BoxDecoration(
+              color: effectiveColor.withAlpha(20),
+              borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+              border: Border.all(color: effectiveColor.withAlpha(60)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 16, color: effectiveColor),
+                const SizedBox(width: 4),
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: effectiveColor,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

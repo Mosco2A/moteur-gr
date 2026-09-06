@@ -1310,7 +1310,13 @@
     "helpTooltip": "Help",
     "duration": {
       "label": "Number of days",
-      "days": "{count} d"
+      "days": "{count} d",
+      "difficulty": {
+        "comfortable": "Comfortable",
+        "standard": "Standard",
+        "sporty": "Sporty",
+        "demanding": "Very demanding"
+      }
     },
     "stats": {
       "distance": "Distance",
@@ -1376,6 +1382,9 @@
       },
       "note": "The elevation profile at the bottom shows each day's ascent.",
       "close": "Got it!"
+    },
+    "splitBlocked": {
+      "single": "Cannot split: this day has a single stage"
     }
   },
   "calendar": {

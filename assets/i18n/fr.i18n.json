@@ -1310,7 +1310,13 @@
     "helpTooltip": "Aide",
     "duration": {
       "label": "Nombre de jours",
-      "days": "{count} j"
+      "days": "{count} j",
+      "difficulty": {
+        "comfortable": "Confortable",
+        "standard": "Standard",
+        "sporty": "Sportif",
+        "demanding": "Très exigeant"
+      }
     },
     "stats": {
       "distance": "Distance",
@@ -1376,6 +1382,9 @@
       },
       "note": "Le profil altimétrique en bas visualise le dénivelé de chaque jour.",
       "close": "Compris !"
+    },
+    "splitBlocked": {
+      "single": "Séparer impossible : un seul jour a une étape"
     }
   },
   "calendar": {

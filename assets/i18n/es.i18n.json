@@ -1310,7 +1310,13 @@
     "helpTooltip": "Ayuda",
     "duration": {
       "label": "Número de días",
-      "days": "{count} d"
+      "days": "{count} d",
+      "difficulty": {
+        "comfortable": "Cómodo",
+        "standard": "Estándar",
+        "sporty": "Deportivo",
+        "demanding": "Muy exigente"
+      }
     },
     "stats": {
       "distance": "Distancia",
@@ -1376,6 +1382,9 @@
       },
       "note": "El perfil altimétrico de abajo muestra el desnivel de cada día.",
       "close": "¡Entendido!"
+    },
+    "splitBlocked": {
+      "single": "No se puede dividir: este día tiene una sola etapa"
     }
   },
   "calendar": {

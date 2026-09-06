@@ -1162,6 +1162,7 @@ class _Translations$programme$en extends Translations$programme$fr {
 	@override String get validate => 'CONFIRM MY PROGRAMME';
 	@override late final _Translations$programme$empty$en empty = _Translations$programme$empty$en._(_root);
 	@override late final _Translations$programme$info$en info = _Translations$programme$info$en._(_root);
+	@override late final _Translations$programme$splitBlocked$en splitBlocked = _Translations$programme$splitBlocked$en._(_root);
 }
 
 // Path: calendar
@@ -2324,6 +2325,7 @@ class _Translations$programme$duration$en extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Number of days';
 	@override String get days => '{count} d';
+	@override late final _Translations$programme$duration$difficulty$en difficulty = _Translations$programme$duration$difficulty$en._(_root);
 }
 
 // Path: programme.stats
@@ -2418,6 +2420,16 @@ class _Translations$programme$info$en extends Translations$programme$info$fr {
 	@override late final _Translations$programme$info$colors$en colors = _Translations$programme$info$colors$en._(_root);
 	@override String get note => 'The elevation profile at the bottom shows each day\'s ascent.';
 	@override String get close => 'Got it!';
+}
+
+// Path: programme.splitBlocked
+class _Translations$programme$splitBlocked$en extends Translations$programme$splitBlocked$fr {
+	_Translations$programme$splitBlocked$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get single => 'Cannot split: this day has a single stage';
 }
 
 // Path: calendar.weekdays
@@ -2995,6 +3007,19 @@ class _Translations$packs$types$mam$en extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String get nom => 'Mare a Mare';
 	@override String get description => 'The Mare a Mare trail, offline.';
+}
+
+// Path: programme.duration.difficulty
+class _Translations$programme$duration$difficulty$en extends Translations$programme$duration$difficulty$fr {
+	_Translations$programme$duration$difficulty$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get comfortable => 'Comfortable';
+	@override String get standard => 'Standard';
+	@override String get sporty => 'Sporty';
+	@override String get demanding => 'Very demanding';
 }
 
 // Path: programme.info.days
@@ -4168,6 +4193,10 @@ extension on TranslationsEn {
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
 			'programme.duration.days' => '{count} d',
+			'programme.duration.difficulty.comfortable' => 'Comfortable',
+			'programme.duration.difficulty.standard' => 'Standard',
+			'programme.duration.difficulty.sporty' => 'Sporty',
+			'programme.duration.difficulty.demanding' => 'Very demanding',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'Ascent',
 			'programme.stats.days' => 'Days',
@@ -4209,6 +4238,7 @@ extension on TranslationsEn {
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
+			'programme.splitBlocked.single' => 'Cannot split: this day has a single stage',
 			'calendar.title' => 'Calendar',
 			'calendar.validate' => 'CONFIRM DATES',
 			'calendar.departure' => 'DEPARTURE',

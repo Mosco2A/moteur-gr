@@ -55,6 +55,28 @@ void main() {
             .overrideWith((ref) => Future.value(testStages)),
       ];
 
+  /// Pompe l'ecran PROGRAMME dans une surface HAUTE afin que la liste (lazy
+  /// `ReorderableListView`) rende TOUTES les cartes de jour sans culling de
+  /// viewport. Indispensable pour verifier les actions de CHAQUE jour et pour
+  /// interagir avec des jours au-dela du premier ecran. La taille est remise a
+  /// zero en fin de test.
+  Future<void> pumpProgramme(WidgetTester tester,
+      {Size size = const Size(500, 1600)}) async {
+    tester.view.physicalSize = size;
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: baseOverrides(),
+        child: const MaterialApp(
+          home: TrailPlanningScreen(trailId: 'test-trail'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+  }
+
   group('PROGRAMME — parite GR20', () {
     testWidgets('affiche le titre Programme et l en-tete de stats',
         (tester) async {
@@ -143,15 +165,9 @@ void main() {
 
     testWidgets('edition : ajouter un jour de repos (parite GR20)',
         (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: const MaterialApp(
-            home: TrailPlanningScreen(trailId: 'test-trail'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
+      // Surface haute : la liste (lazy) rend tous les jours, donc la carte de
+      // repos ajoutee reste visible (pas de culling de viewport).
+      await pumpProgramme(tester);
 
       // Pas de jour de repos au depart (5 jours = 5 etapes).
       expect(find.text(t.programme.restDay), findsNothing);
@@ -222,8 +238,8 @@ void main() {
     });
   });
 
-  group('SELECTEUR DE DUREE — choix du nombre de jours (parite GR20)', () {
-    testWidgets('le selecteur est affiche avec des durees derivees du sentier',
+  group('CURSEUR DE DUREE — slider colore par difficulte (parite GR20)', () {
+    testWidgets('le selecteur est un Slider borne par le nombre d etapes',
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -237,14 +253,25 @@ void main() {
 
       // Le selecteur (DurationSelector) est bien branche dans l'ecran.
       expect(find.byType(DurationSelector), findsOneWidget);
+      // C'est desormais un CURSEUR (Slider), plus des ChoiceChips (parite GR20).
+      expect(find.byType(Slider), findsOneWidget);
+      expect(find.byType(ChoiceChip), findsNothing);
       // Libelle du selecteur present.
       expect(find.text(t.programme.duration.label), findsOneWidget);
-      // 5 etapes -> bornes min 3 / max 7 : le chip « 5 j » (defaut) est present.
+
+      // 5 etapes -> bornes min 3 / max 7 : le slider porte ces bornes.
+      final slider = tester.widget<Slider>(find.byType(Slider));
+      expect(slider.min, 3.0);
+      expect(slider.max, 7.0);
+      expect(slider.divisions, 4); // 7 - 3
+      expect(slider.value, 5.0); // duree defaut
+
+      // La valeur courante « 5 j » est affichee en grand au-dessus du curseur.
       final label5 = t.programme.duration.days.replaceAll('{count}', '5');
-      expect(find.text(label5), findsOneWidget);
+      expect(find.text(label5), findsWidgets);
     });
 
-    testWidgets('changer la duree via le selecteur recalcule le programme',
+    testWidgets('la couleur du curseur suit la DIFFICULTE (ratio etapes/jours)',
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
@@ -256,17 +283,42 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Au depart : 5 jours = 5 etapes, aucun repos -> l'en-tete affiche « 5 »
-      // et le profil altimetrique n'a aucune barre « R ».
+      // 5 etapes / 5 jours de marche = ratio 1.0 -> « Standard » (jaune modere).
+      var slider = tester.widget<Slider>(find.byType(Slider));
+      expect(slider.activeColor, AppTheme.jauneModere);
+      expect(find.text(t.programme.duration.difficulty.standard), findsOneWidget);
+
+      // Descendre a 3 jours -> 5 etapes / 3 jours = 1.67 -> « Tres exigeant »
+      // (rouge). Le curseur DOIT changer de couleur (parite GR20).
+      slider.onChanged!(3);
+      await tester.pumpAndSettle();
+      slider = tester.widget<Slider>(find.byType(Slider));
+      expect(slider.activeColor, AppTheme.rougeExtreme);
+      expect(
+          find.text(t.programme.duration.difficulty.demanding), findsOneWidget);
+    });
+
+    testWidgets('changer la duree via le curseur recalcule le programme',
+        (tester) async {
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: baseOverrides(),
+          child: const MaterialApp(
+            home: TrailPlanningScreen(trailId: 'test-trail'),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Au depart : 5 jours = 5 etapes, aucun repos.
       expect(find.text('5'), findsWidgets); // valeur « Jours » (et « Etapes »)
       expect(find.text(t.programme.restDayLabel), findsNothing);
 
-      // Choisir 7 jours -> 5 etapes + 2 jours de repos. Le programme recalcule
-      // via selectedDurationProvider (watch par plannedDaysProvider) : l'en-tete
-      // et le profil altimetrique (toujours visibles) refletent le recalcul.
-      final label7 = t.programme.duration.days.replaceAll('{count}', '7');
-      await tester.ensureVisible(find.text(label7));
-      await tester.tap(find.text(label7));
+      // Glisser le curseur a 7 jours -> 5 etapes + 2 jours de repos. Le
+      // programme recalcule via selectedDurationProvider (watch par
+      // plannedDaysProvider).
+      final slider = tester.widget<Slider>(find.byType(Slider));
+      slider.onChanged!(7);
       await tester.pumpAndSettle();
 
       // En-tete « Jours » = « 7 (2 repos) » : preuve directe du recalcul.
@@ -281,15 +333,7 @@ void main() {
   group('JOUR DE REPOS EN BLEU (parite GR20)', () {
     testWidgets('la carte de jour de repos est teintee en bleu semantique',
         (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: const MaterialApp(
-            home: TrailPlanningScreen(trailId: 'test-trail'),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
+      await pumpProgramme(tester);
 
       // Ajouter un jour de repos.
       await tester.tap(find.text(t.programme.actions.rest).first);
@@ -303,6 +347,60 @@ void main() {
       final hasBlue = restTexts.any((w) => w.style?.color == AppTheme.bleuRepos);
       expect(hasBlue, isTrue,
           reason: 'le jour de repos doit etre affiche en bleu, pas en vert');
+    });
+  });
+
+  group('LISTE INTERACTIVE — Regrouper / Separer sur chaque jour (parite GR20)',
+      () {
+    testWidgets(
+        'Regrouper ET Separer sont TOUJOURS visibles sur les jours de marche',
+        (tester) async {
+      await pumpProgramme(tester);
+
+      // 5 jours de marche (1 etape/jour au depart) : chaque jour montre les
+      // DEUX actions, meme quand elles sont indisponibles (grisees). La liste
+      // n'est donc jamais « inerte ».
+      expect(find.text(t.programme.actions.merge), findsNWidgets(5));
+      expect(find.text(t.programme.actions.split), findsNWidgets(5));
+    });
+
+    testWidgets('Separer un jour indisponible (1 etape) explique pourquoi',
+        (tester) async {
+      await pumpProgramme(tester);
+
+      // Chaque jour n'a qu'une etape -> Separer est grise. Un tap explique
+      // pourquoi via un snackbar (feedback, parite GR20).
+      await tester.tap(find.text(t.programme.actions.split).first);
+      await tester.pumpAndSettle();
+      expect(find.text(t.programme.splitBlocked.single), findsOneWidget);
+    });
+
+    testWidgets('Regrouper puis Separer fonctionnent depuis la liste',
+        (tester) async {
+      await pumpProgramme(tester);
+
+      // Depart : 5 jours de marche (chaque jour = 1 etape). Regrouper le jour 1
+      // avec le suivant -> 4 jours de marche. Le jour fusionne porte alors 2
+      // etapes, donc Separer y devient possible.
+      expect(find.text('Etape 1 - Refuge 1'), findsOneWidget);
+
+      await tester.tap(find.text(t.programme.actions.merge).first);
+      await tester.pumpAndSettle();
+
+      // Apres regroupement : le jour 1 contient etapes 1 ET 2 (les deux noms
+      // sont visibles sur la meme carte). Preuve que Regrouper agit sur la liste.
+      expect(find.text('Etape 1 - Refuge 1'), findsOneWidget);
+      expect(find.text('Etape 2 - Refuge 2'), findsOneWidget);
+
+      // Separer le jour fusionne -> on retrouve des jours a une seule etape.
+      // (le 1er chip Separer correspond au jour 1, desormais separable).
+      await tester.tap(find.text(t.programme.actions.split).first);
+      await tester.pumpAndSettle();
+
+      // Aucune exception, la liste a bien reagi au split.
+      expect(tester.takeException(), isNull);
+      expect(find.text('Etape 1 - Refuge 1'), findsOneWidget);
+      expect(find.text('Etape 2 - Refuge 2'), findsOneWidget);
     });
   });
 }

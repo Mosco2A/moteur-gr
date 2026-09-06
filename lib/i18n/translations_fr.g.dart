@@ -2264,6 +2264,7 @@ class Translations$programme$fr {
 
 	late final Translations$programme$empty$fr empty = Translations$programme$empty$fr.internal(_root);
 	late final Translations$programme$info$fr info = Translations$programme$info$fr.internal(_root);
+	late final Translations$programme$splitBlocked$fr splitBlocked = Translations$programme$splitBlocked$fr.internal(_root);
 }
 
 // Path: calendar
@@ -4587,6 +4588,8 @@ class Translations$programme$duration$fr {
 
 	/// fr: '{count} j'
 	String get days => '{count} j';
+
+	late final Translations$programme$duration$difficulty$fr difficulty = Translations$programme$duration$difficulty$fr.internal(_root);
 }
 
 // Path: programme.stats
@@ -4734,6 +4737,18 @@ class Translations$programme$info$fr {
 
 	/// fr: 'Compris !'
 	String get close => 'Compris !';
+}
+
+// Path: programme.splitBlocked
+class Translations$programme$splitBlocked$fr {
+	Translations$programme$splitBlocked$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Séparer impossible : un seul jour a une étape'
+	String get single => 'Séparer impossible : un seul jour a une étape';
 }
 
 // Path: calendar.weekdays
@@ -5615,6 +5630,27 @@ class Translations$packs$types$mam$fr {
 
 	/// fr: 'Le sentier Mare a Mare, hors-ligne.'
 	String get description => 'Le sentier Mare a Mare, hors-ligne.';
+}
+
+// Path: programme.duration.difficulty
+class Translations$programme$duration$difficulty$fr {
+	Translations$programme$duration$difficulty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Confortable'
+	String get comfortable => 'Confortable';
+
+	/// fr: 'Standard'
+	String get standard => 'Standard';
+
+	/// fr: 'Sportif'
+	String get sporty => 'Sportif';
+
+	/// fr: 'Très exigeant'
+	String get demanding => 'Très exigeant';
 }
 
 // Path: programme.info.days
@@ -6832,6 +6868,10 @@ extension on Translations {
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
 			'programme.duration.days' => '{count} j',
+			'programme.duration.difficulty.comfortable' => 'Confortable',
+			'programme.duration.difficulty.standard' => 'Standard',
+			'programme.duration.difficulty.sporty' => 'Sportif',
+			'programme.duration.difficulty.demanding' => 'Très exigeant',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',
@@ -6873,6 +6913,7 @@ extension on Translations {
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
+			'programme.splitBlocked.single' => 'Séparer impossible : un seul jour a une étape',
 			'calendar.title' => 'Calendrier',
 			'calendar.validate' => 'VALIDER LES DATES',
 			'calendar.departure' => 'DÉPART',
