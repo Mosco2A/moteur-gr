@@ -1310,7 +1310,13 @@
     "helpTooltip": "Hilfe",
     "duration": {
       "label": "Anzahl der Tage",
-      "days": "{count} T"
+      "days": "{count} T",
+      "difficulty": {
+        "comfortable": "Gemütlich",
+        "standard": "Standard",
+        "sporty": "Sportlich",
+        "demanding": "Sehr anspruchsvoll"
+      }
     },
     "stats": {
       "distance": "Distanz",
@@ -1376,6 +1382,9 @@
       },
       "note": "Das Höhenprofil unten zeigt den Aufstieg jedes Tages.",
       "close": "Verstanden!"
+    },
+    "splitBlocked": {
+      "single": "Teilen nicht möglich: nur eine Etappe an diesem Tag"
     }
   },
   "calendar": {

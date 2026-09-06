@@ -1162,6 +1162,7 @@ class _Translations$programme$de extends Translations$programme$fr {
 	@override String get validate => 'PROGRAMM BESTÄTIGEN';
 	@override late final _Translations$programme$empty$de empty = _Translations$programme$empty$de._(_root);
 	@override late final _Translations$programme$info$de info = _Translations$programme$info$de._(_root);
+	@override late final _Translations$programme$splitBlocked$de splitBlocked = _Translations$programme$splitBlocked$de._(_root);
 }
 
 // Path: calendar
@@ -2324,6 +2325,7 @@ class _Translations$programme$duration$de extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Anzahl der Tage';
 	@override String get days => '{count} T';
+	@override late final _Translations$programme$duration$difficulty$de difficulty = _Translations$programme$duration$difficulty$de._(_root);
 }
 
 // Path: programme.stats
@@ -2418,6 +2420,16 @@ class _Translations$programme$info$de extends Translations$programme$info$fr {
 	@override late final _Translations$programme$info$colors$de colors = _Translations$programme$info$colors$de._(_root);
 	@override String get note => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.';
 	@override String get close => 'Verstanden!';
+}
+
+// Path: programme.splitBlocked
+class _Translations$programme$splitBlocked$de extends Translations$programme$splitBlocked$fr {
+	_Translations$programme$splitBlocked$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get single => 'Teilen nicht möglich: nur eine Etappe an diesem Tag';
 }
 
 // Path: calendar.weekdays
@@ -2995,6 +3007,19 @@ class _Translations$packs$types$mam$de extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String get nom => 'Mare a Mare';
 	@override String get description => 'Der Mare-a-Mare-Weg, offline.';
+}
+
+// Path: programme.duration.difficulty
+class _Translations$programme$duration$difficulty$de extends Translations$programme$duration$difficulty$fr {
+	_Translations$programme$duration$difficulty$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get comfortable => 'Gemütlich';
+	@override String get standard => 'Standard';
+	@override String get sporty => 'Sportlich';
+	@override String get demanding => 'Sehr anspruchsvoll';
 }
 
 // Path: programme.info.days
@@ -4168,6 +4193,10 @@ extension on TranslationsDe {
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
 			'programme.duration.days' => '{count} T',
+			'programme.duration.difficulty.comfortable' => 'Gemütlich',
+			'programme.duration.difficulty.standard' => 'Standard',
+			'programme.duration.difficulty.sporty' => 'Sportlich',
+			'programme.duration.difficulty.demanding' => 'Sehr anspruchsvoll',
 			'programme.stats.distance' => 'Distanz',
 			'programme.stats.elevation' => 'Aufstieg',
 			'programme.stats.days' => 'Tage',
@@ -4209,6 +4238,7 @@ extension on TranslationsDe {
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
 			'programme.info.close' => 'Verstanden!',
+			'programme.splitBlocked.single' => 'Teilen nicht möglich: nur eine Etappe an diesem Tag',
 			'calendar.title' => 'Kalender',
 			'calendar.validate' => 'DATEN BESTÄTIGEN',
 			'calendar.departure' => 'ABREISE',

@@ -1162,6 +1162,7 @@ class _Translations$programme$es extends Translations$programme$fr {
 	@override String get validate => 'CONFIRMAR MI PROGRAMA';
 	@override late final _Translations$programme$empty$es empty = _Translations$programme$empty$es._(_root);
 	@override late final _Translations$programme$info$es info = _Translations$programme$info$es._(_root);
+	@override late final _Translations$programme$splitBlocked$es splitBlocked = _Translations$programme$splitBlocked$es._(_root);
 }
 
 // Path: calendar
@@ -2324,6 +2325,7 @@ class _Translations$programme$duration$es extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Número de días';
 	@override String get days => '{count} d';
+	@override late final _Translations$programme$duration$difficulty$es difficulty = _Translations$programme$duration$difficulty$es._(_root);
 }
 
 // Path: programme.stats
@@ -2418,6 +2420,16 @@ class _Translations$programme$info$es extends Translations$programme$info$fr {
 	@override late final _Translations$programme$info$colors$es colors = _Translations$programme$info$colors$es._(_root);
 	@override String get note => 'El perfil altimétrico de abajo muestra el desnivel de cada día.';
 	@override String get close => '¡Entendido!';
+}
+
+// Path: programme.splitBlocked
+class _Translations$programme$splitBlocked$es extends Translations$programme$splitBlocked$fr {
+	_Translations$programme$splitBlocked$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get single => 'No se puede dividir: este día tiene una sola etapa';
 }
 
 // Path: calendar.weekdays
@@ -2995,6 +3007,19 @@ class _Translations$packs$types$mam$es extends Translations$packs$types$mam$fr {
 	// Translations
 	@override String get nom => 'Mare a Mare';
 	@override String get description => 'El sendero Mare a Mare, sin conexión.';
+}
+
+// Path: programme.duration.difficulty
+class _Translations$programme$duration$difficulty$es extends Translations$programme$duration$difficulty$fr {
+	_Translations$programme$duration$difficulty$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get comfortable => 'Cómodo';
+	@override String get standard => 'Estándar';
+	@override String get sporty => 'Deportivo';
+	@override String get demanding => 'Muy exigente';
 }
 
 // Path: programme.info.days
@@ -4168,6 +4193,10 @@ extension on TranslationsEs {
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
 			'programme.duration.days' => '{count} d',
+			'programme.duration.difficulty.comfortable' => 'Cómodo',
+			'programme.duration.difficulty.standard' => 'Estándar',
+			'programme.duration.difficulty.sporty' => 'Deportivo',
+			'programme.duration.difficulty.demanding' => 'Muy exigente',
 			'programme.stats.distance' => 'Distancia',
 			'programme.stats.elevation' => 'Desnivel+',
 			'programme.stats.days' => 'Días',
@@ -4209,6 +4238,7 @@ extension on TranslationsEs {
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
 			'programme.info.close' => '¡Entendido!',
+			'programme.splitBlocked.single' => 'No se puede dividir: este día tiene una sola etapa',
 			'calendar.title' => 'Calendario',
 			'calendar.validate' => 'CONFIRMAR FECHAS',
 			'calendar.departure' => 'SALIDA',
