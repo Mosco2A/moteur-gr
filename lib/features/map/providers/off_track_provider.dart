@@ -79,7 +79,16 @@ class OffTrackMessagesNotifier extends Notifier<OffTrackMessages> {
   }
 
   /// Injecte les libelles traduits (appele depuis l'UI carte).
-  void setMessages(OffTrackMessages messages) => state = messages;
+  ///
+  /// Idempotent sur le titre (stable par langue) : l'ecran carte appelle cette
+  /// methode via `addPostFrameCallback` a CHAQUE frame ; sans garde, chaque
+  /// frame reaffectait `state` (nouvel objet a chaque build) et notifiait les
+  /// listeners inutilement. On ne pousse donc un nouvel etat que si le titre a
+  /// reellement change (bascule de langue), pas a chaque frame.
+  void setMessages(OffTrackMessages messages) {
+    if (messages.notifTitle == state.notifTitle) return;
+    state = messages;
+  }
 }
 
 /// Messages de la notification hors-trace (fallback langue de base par defaut).
