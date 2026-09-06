@@ -38,6 +38,17 @@ class TrailGpxPointsDao extends DatabaseAccessor<AppDatabase>
     return into(trailGpxPoints).insert(entry);
   }
 
+  /// Insere une liste de points en batch (une seule transaction).
+  ///
+  /// Le seed inserait les points un par un dans une boucle `await`
+  /// (une transaction implicite par point) : sur la DB in-memory de l'isolate
+  /// UI, cela bloquait le thread principal proportionnellement au nombre de
+  /// points (jusqu'a plusieurs secondes / freeze visible). Le batch regroupe
+  /// tout en une transaction, comme `StagesDao.insertAll` / `PoisDao.insertAll`.
+  Future<void> insertAll(List<TrailGpxPointsCompanion> entries) async {
+    await batch((b) => b.insertAll(trailGpxPoints, entries));
+  }
+
   /// Supprime un point par son id
   Future<int> deleteById(int id) {
     return (delete(trailGpxPoints)..where((t) => t.id.equals(id))).go();

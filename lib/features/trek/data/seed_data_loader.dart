@@ -149,19 +149,22 @@ class SeedDataLoader {
       ),
     );
 
+    // Insertion des points GPX en BATCH (une seule transaction) plutot qu'un
+    // insert awaite par point. Sur la DB in-memory de l'isolate UI, la boucle
+    // serie bloquait le thread principal proportionnellement au nombre de
+    // points (freeze visible au demarrage / a l'ouverture des ecrans data).
     final gpxPointsDao = TrailGpxPointsDao(_db);
-    for (var i = 0; i < simplified.length; i++) {
-      final pt = simplified[i];
-      await gpxPointsDao.insertOrReplace(
+    final gpxCompanions = <TrailGpxPointsCompanion>[
+      for (var i = 0; i < simplified.length; i++)
         TrailGpxPointsCompanion(
           trackId: Value(trailId),
-          lat: Value(pt.lat),
-          lng: Value(pt.lng),
-          elevation: Value(pt.elevation),
+          lat: Value(simplified[i].lat),
+          lng: Value(simplified[i].lng),
+          elevation: Value(simplified[i].elevation),
           sequenceIndex: Value(i),
         ),
-      );
-    }
+    ];
+    await gpxPointsDao.insertAll(gpxCompanions);
 
     // --- 8. Charger les fiches conseils (depuis la config sentier) ---
     final allTips = <TipCard>[];
