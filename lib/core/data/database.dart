@@ -27,6 +27,9 @@ import 'tables/kudos_feed_table.dart';
 import 'tables/waypoints_table.dart';
 import 'tables/trek_sessions_table.dart';
 import 'tables/nuitee_selections_table.dart';
+import 'tables/wallet_balance_table.dart';
+import 'tables/trek_entitlements_table.dart';
+import 'tables/no_ads_state_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -54,6 +57,9 @@ import 'daos/kudos_feed_dao.dart';
 import 'daos/waypoints_dao.dart';
 import 'daos/trek_sessions_dao.dart';
 import 'daos/nuitee_selections_dao.dart';
+import 'daos/wallet_dao.dart';
+import 'daos/trek_entitlements_dao.dart';
+import 'daos/no_ads_dao.dart';
 
 part 'database.g.dart';
 
@@ -72,7 +78,9 @@ part 'database.g.dart';
 /// + 1 Phase 6 F6C-01 (ReportLocal, signalements offline-first)
 /// + 2 Phase 7 F7A-01 (Segments, SegmentEffortLocal, social offline-first)
 /// + 2 Phase 7 F7B-01 (KudosLocal, ActivityFeedCache, kudos + fil offline)
-/// + 2 Phase 8 F8A-01 (Waypoint, WaypointComment, terrain FarOut-like offline).
+/// + 2 Phase 8 F8A-01 (Waypoint, WaypointComment, terrain FarOut-like offline)
+/// + 3 StepWays LOT 1 wallet (WalletBalance, TrekEntitlements, NoAdsState,
+///   socle compte-etapes/abo/sans-pub, migration v24).
 /// Utilise Drift (ex-moor) pour le mapping SQLite.
 @DriftDatabase(
   tables: [
@@ -106,6 +114,9 @@ part 'database.g.dart';
     WaypointComment,
     TrekSessions,
     NuiteeSelections,
+    WalletBalance,
+    TrekEntitlements,
+    NoAdsState,
   ],
   daos: [
     StagesDao,
@@ -135,13 +146,16 @@ part 'database.g.dart';
     WaypointsDao,
     TrekSessionsDao,
     NuiteeSelectionsDao,
+    WalletDao,
+    TrekEntitlementsDao,
+    NoAdsDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 23;
+  int get schemaVersion => 24;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -293,6 +307,16 @@ class AppDatabase extends _$AppDatabase {
               stages,
               stages.arrivalName,
             );
+          }
+          // Migration v23 -> v24 : socle wallet StepWays (LOT 1, compte-etapes).
+          // STRICTEMENT ADDITIF (createTable only) : 3 nouvelles tables, aucune
+          // table/colonne existante touchee. Le legacy (2 cles prefs d'achats)
+          // est migre en RUNTIME (couche WalletStore/MonetizationService), pas
+          // ici en SQL.
+          if (from < 24) {
+            await migrator.createTable(walletBalance);
+            await migrator.createTable(trekEntitlements);
+            await migrator.createTable(noAdsState);
           }
         },
       );

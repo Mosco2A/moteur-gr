@@ -16453,6 +16453,1363 @@ class NuiteeSelectionsCompanion extends UpdateCompanion<NuiteeSelection> {
   }
 }
 
+class $WalletBalanceTable extends WalletBalance
+    with TableInfo<$WalletBalanceTable, WalletBalanceData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WalletBalanceTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _balanceStepsMeta = const VerificationMeta(
+    'balanceSteps',
+  );
+  @override
+  late final GeneratedColumn<int> balanceSteps = GeneratedColumn<int>(
+    'balance_steps',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lifetimeEarnedStepsMeta =
+      const VerificationMeta('lifetimeEarnedSteps');
+  @override
+  late final GeneratedColumn<int> lifetimeEarnedSteps = GeneratedColumn<int>(
+    'lifetime_earned_steps',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lifetimeSpentStepsMeta =
+      const VerificationMeta('lifetimeSpentSteps');
+  @override
+  late final GeneratedColumn<int> lifetimeSpentSteps = GeneratedColumn<int>(
+    'lifetime_spent_steps',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    userId,
+    balanceSteps,
+    lifetimeEarnedSteps,
+    lifetimeSpentSteps,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'wallet_balance';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WalletBalanceData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('balance_steps')) {
+      context.handle(
+        _balanceStepsMeta,
+        balanceSteps.isAcceptableOrUnknown(
+          data['balance_steps']!,
+          _balanceStepsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('lifetime_earned_steps')) {
+      context.handle(
+        _lifetimeEarnedStepsMeta,
+        lifetimeEarnedSteps.isAcceptableOrUnknown(
+          data['lifetime_earned_steps']!,
+          _lifetimeEarnedStepsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('lifetime_spent_steps')) {
+      context.handle(
+        _lifetimeSpentStepsMeta,
+        lifetimeSpentSteps.isAcceptableOrUnknown(
+          data['lifetime_spent_steps']!,
+          _lifetimeSpentStepsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {userId};
+  @override
+  WalletBalanceData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WalletBalanceData(
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      balanceSteps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}balance_steps'],
+      )!,
+      lifetimeEarnedSteps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lifetime_earned_steps'],
+      )!,
+      lifetimeSpentSteps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}lifetime_spent_steps'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $WalletBalanceTable createAlias(String alias) {
+    return $WalletBalanceTable(attachedDatabase, alias);
+  }
+}
+
+class WalletBalanceData extends DataClass
+    implements Insertable<WalletBalanceData> {
+  /// Identifiant utilisateur (hash SHA-256 deterministe) — cle primaire.
+  final String userId;
+
+  /// Solde courant du compte-etapes, en etapes. Defaut 0.
+  final int balanceSteps;
+
+  /// Total cumule d'etapes GAGNEES sur la duree de vie du compte. Defaut 0.
+  final int lifetimeEarnedSteps;
+
+  /// Total cumule d'etapes DEPENSEES sur la duree de vie du compte. Defaut 0.
+  final int lifetimeSpentSteps;
+
+  /// Date de derniere modification (last-write-wins du miroir cloud).
+  final DateTime updatedAt;
+  const WalletBalanceData({
+    required this.userId,
+    required this.balanceSteps,
+    required this.lifetimeEarnedSteps,
+    required this.lifetimeSpentSteps,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['user_id'] = Variable<String>(userId);
+    map['balance_steps'] = Variable<int>(balanceSteps);
+    map['lifetime_earned_steps'] = Variable<int>(lifetimeEarnedSteps);
+    map['lifetime_spent_steps'] = Variable<int>(lifetimeSpentSteps);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  WalletBalanceCompanion toCompanion(bool nullToAbsent) {
+    return WalletBalanceCompanion(
+      userId: Value(userId),
+      balanceSteps: Value(balanceSteps),
+      lifetimeEarnedSteps: Value(lifetimeEarnedSteps),
+      lifetimeSpentSteps: Value(lifetimeSpentSteps),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory WalletBalanceData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WalletBalanceData(
+      userId: serializer.fromJson<String>(json['userId']),
+      balanceSteps: serializer.fromJson<int>(json['balanceSteps']),
+      lifetimeEarnedSteps: serializer.fromJson<int>(
+        json['lifetimeEarnedSteps'],
+      ),
+      lifetimeSpentSteps: serializer.fromJson<int>(json['lifetimeSpentSteps']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'userId': serializer.toJson<String>(userId),
+      'balanceSteps': serializer.toJson<int>(balanceSteps),
+      'lifetimeEarnedSteps': serializer.toJson<int>(lifetimeEarnedSteps),
+      'lifetimeSpentSteps': serializer.toJson<int>(lifetimeSpentSteps),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  WalletBalanceData copyWith({
+    String? userId,
+    int? balanceSteps,
+    int? lifetimeEarnedSteps,
+    int? lifetimeSpentSteps,
+    DateTime? updatedAt,
+  }) => WalletBalanceData(
+    userId: userId ?? this.userId,
+    balanceSteps: balanceSteps ?? this.balanceSteps,
+    lifetimeEarnedSteps: lifetimeEarnedSteps ?? this.lifetimeEarnedSteps,
+    lifetimeSpentSteps: lifetimeSpentSteps ?? this.lifetimeSpentSteps,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  WalletBalanceData copyWithCompanion(WalletBalanceCompanion data) {
+    return WalletBalanceData(
+      userId: data.userId.present ? data.userId.value : this.userId,
+      balanceSteps: data.balanceSteps.present
+          ? data.balanceSteps.value
+          : this.balanceSteps,
+      lifetimeEarnedSteps: data.lifetimeEarnedSteps.present
+          ? data.lifetimeEarnedSteps.value
+          : this.lifetimeEarnedSteps,
+      lifetimeSpentSteps: data.lifetimeSpentSteps.present
+          ? data.lifetimeSpentSteps.value
+          : this.lifetimeSpentSteps,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WalletBalanceData(')
+          ..write('userId: $userId, ')
+          ..write('balanceSteps: $balanceSteps, ')
+          ..write('lifetimeEarnedSteps: $lifetimeEarnedSteps, ')
+          ..write('lifetimeSpentSteps: $lifetimeSpentSteps, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    userId,
+    balanceSteps,
+    lifetimeEarnedSteps,
+    lifetimeSpentSteps,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WalletBalanceData &&
+          other.userId == this.userId &&
+          other.balanceSteps == this.balanceSteps &&
+          other.lifetimeEarnedSteps == this.lifetimeEarnedSteps &&
+          other.lifetimeSpentSteps == this.lifetimeSpentSteps &&
+          other.updatedAt == this.updatedAt);
+}
+
+class WalletBalanceCompanion extends UpdateCompanion<WalletBalanceData> {
+  final Value<String> userId;
+  final Value<int> balanceSteps;
+  final Value<int> lifetimeEarnedSteps;
+  final Value<int> lifetimeSpentSteps;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const WalletBalanceCompanion({
+    this.userId = const Value.absent(),
+    this.balanceSteps = const Value.absent(),
+    this.lifetimeEarnedSteps = const Value.absent(),
+    this.lifetimeSpentSteps = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  WalletBalanceCompanion.insert({
+    required String userId,
+    this.balanceSteps = const Value.absent(),
+    this.lifetimeEarnedSteps = const Value.absent(),
+    this.lifetimeSpentSteps = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : userId = Value(userId),
+       updatedAt = Value(updatedAt);
+  static Insertable<WalletBalanceData> custom({
+    Expression<String>? userId,
+    Expression<int>? balanceSteps,
+    Expression<int>? lifetimeEarnedSteps,
+    Expression<int>? lifetimeSpentSteps,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (userId != null) 'user_id': userId,
+      if (balanceSteps != null) 'balance_steps': balanceSteps,
+      if (lifetimeEarnedSteps != null)
+        'lifetime_earned_steps': lifetimeEarnedSteps,
+      if (lifetimeSpentSteps != null)
+        'lifetime_spent_steps': lifetimeSpentSteps,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  WalletBalanceCompanion copyWith({
+    Value<String>? userId,
+    Value<int>? balanceSteps,
+    Value<int>? lifetimeEarnedSteps,
+    Value<int>? lifetimeSpentSteps,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return WalletBalanceCompanion(
+      userId: userId ?? this.userId,
+      balanceSteps: balanceSteps ?? this.balanceSteps,
+      lifetimeEarnedSteps: lifetimeEarnedSteps ?? this.lifetimeEarnedSteps,
+      lifetimeSpentSteps: lifetimeSpentSteps ?? this.lifetimeSpentSteps,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (balanceSteps.present) {
+      map['balance_steps'] = Variable<int>(balanceSteps.value);
+    }
+    if (lifetimeEarnedSteps.present) {
+      map['lifetime_earned_steps'] = Variable<int>(lifetimeEarnedSteps.value);
+    }
+    if (lifetimeSpentSteps.present) {
+      map['lifetime_spent_steps'] = Variable<int>(lifetimeSpentSteps.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WalletBalanceCompanion(')
+          ..write('userId: $userId, ')
+          ..write('balanceSteps: $balanceSteps, ')
+          ..write('lifetimeEarnedSteps: $lifetimeEarnedSteps, ')
+          ..write('lifetimeSpentSteps: $lifetimeSpentSteps, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TrekEntitlementsTable extends TrekEntitlements
+    with TableInfo<$TrekEntitlementsTable, TrekEntitlement> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrekEntitlementsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _trailIdMeta = const VerificationMeta(
+    'trailId',
+  );
+  @override
+  late final GeneratedColumn<String> trailId = GeneratedColumn<String>(
+    'trail_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ownedMeta = const VerificationMeta('owned');
+  @override
+  late final GeneratedColumn<bool> owned = GeneratedColumn<bool>(
+    'owned',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("owned" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _acquiredStagesMeta = const VerificationMeta(
+    'acquiredStages',
+  );
+  @override
+  late final GeneratedColumn<int> acquiredStages = GeneratedColumn<int>(
+    'acquired_stages',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _totalStagesMeta = const VerificationMeta(
+    'totalStages',
+  );
+  @override
+  late final GeneratedColumn<int> totalStages = GeneratedColumn<int>(
+    'total_stages',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _consumedComplementStepsMeta =
+      const VerificationMeta('consumedComplementSteps');
+  @override
+  late final GeneratedColumn<int> consumedComplementSteps =
+      GeneratedColumn<int>(
+        'consumed_complement_steps',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  static const VerificationMeta _purchaseSourceMeta = const VerificationMeta(
+    'purchaseSource',
+  );
+  @override
+  late final GeneratedColumn<String> purchaseSource = GeneratedColumn<String>(
+    'purchase_source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('none'),
+  );
+  static const VerificationMeta _purchasedAtMeta = const VerificationMeta(
+    'purchasedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> purchasedAt = GeneratedColumn<DateTime>(
+    'purchased_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    trailId,
+    owned,
+    acquiredStages,
+    totalStages,
+    consumedComplementSteps,
+    purchaseSource,
+    purchasedAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'trek_entitlements';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrekEntitlement> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('trail_id')) {
+      context.handle(
+        _trailIdMeta,
+        trailId.isAcceptableOrUnknown(data['trail_id']!, _trailIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('owned')) {
+      context.handle(
+        _ownedMeta,
+        owned.isAcceptableOrUnknown(data['owned']!, _ownedMeta),
+      );
+    }
+    if (data.containsKey('acquired_stages')) {
+      context.handle(
+        _acquiredStagesMeta,
+        acquiredStages.isAcceptableOrUnknown(
+          data['acquired_stages']!,
+          _acquiredStagesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('total_stages')) {
+      context.handle(
+        _totalStagesMeta,
+        totalStages.isAcceptableOrUnknown(
+          data['total_stages']!,
+          _totalStagesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('consumed_complement_steps')) {
+      context.handle(
+        _consumedComplementStepsMeta,
+        consumedComplementSteps.isAcceptableOrUnknown(
+          data['consumed_complement_steps']!,
+          _consumedComplementStepsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('purchase_source')) {
+      context.handle(
+        _purchaseSourceMeta,
+        purchaseSource.isAcceptableOrUnknown(
+          data['purchase_source']!,
+          _purchaseSourceMeta,
+        ),
+      );
+    }
+    if (data.containsKey('purchased_at')) {
+      context.handle(
+        _purchasedAtMeta,
+        purchasedAt.isAcceptableOrUnknown(
+          data['purchased_at']!,
+          _purchasedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {trailId};
+  @override
+  TrekEntitlement map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrekEntitlement(
+      trailId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trail_id'],
+      )!,
+      owned: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}owned'],
+      )!,
+      acquiredStages: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}acquired_stages'],
+      )!,
+      totalStages: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_stages'],
+      )!,
+      consumedComplementSteps: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}consumed_complement_steps'],
+      )!,
+      purchaseSource: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}purchase_source'],
+      )!,
+      purchasedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}purchased_at'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TrekEntitlementsTable createAlias(String alias) {
+    return $TrekEntitlementsTable(attachedDatabase, alias);
+  }
+}
+
+class TrekEntitlement extends DataClass implements Insertable<TrekEntitlement> {
+  /// Identifiant du sentier (ex: 'gr20') — cle primaire.
+  final String trailId;
+
+  /// Le trek est-il POSSEDE (achat confirme par le store) ? Defaut false.
+  final bool owned;
+
+  /// Nombre d'etapes deja acquises pour ce trek. Defaut 0.
+  final int acquiredStages;
+
+  /// Nombre total d'etapes du trek (0 tant qu'inconnu). Defaut 0.
+  final int totalStages;
+
+  /// Etapes de complement store deja consommees — base du rachat a la reprise
+  /// (abandon/reprise, quoteResume). Defaut 0.
+  final int consumedComplementSteps;
+
+  /// Origine de l'achat ('none' par defaut, puis 'wallet' / 'store' / ...).
+  final String purchaseSource;
+
+  /// Date d'achat (null tant que non achete).
+  final DateTime? purchasedAt;
+
+  /// Date de derniere modification (last-write-wins du miroir cloud).
+  final DateTime updatedAt;
+  const TrekEntitlement({
+    required this.trailId,
+    required this.owned,
+    required this.acquiredStages,
+    required this.totalStages,
+    required this.consumedComplementSteps,
+    required this.purchaseSource,
+    this.purchasedAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['trail_id'] = Variable<String>(trailId);
+    map['owned'] = Variable<bool>(owned);
+    map['acquired_stages'] = Variable<int>(acquiredStages);
+    map['total_stages'] = Variable<int>(totalStages);
+    map['consumed_complement_steps'] = Variable<int>(consumedComplementSteps);
+    map['purchase_source'] = Variable<String>(purchaseSource);
+    if (!nullToAbsent || purchasedAt != null) {
+      map['purchased_at'] = Variable<DateTime>(purchasedAt);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  TrekEntitlementsCompanion toCompanion(bool nullToAbsent) {
+    return TrekEntitlementsCompanion(
+      trailId: Value(trailId),
+      owned: Value(owned),
+      acquiredStages: Value(acquiredStages),
+      totalStages: Value(totalStages),
+      consumedComplementSteps: Value(consumedComplementSteps),
+      purchaseSource: Value(purchaseSource),
+      purchasedAt: purchasedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(purchasedAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory TrekEntitlement.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrekEntitlement(
+      trailId: serializer.fromJson<String>(json['trailId']),
+      owned: serializer.fromJson<bool>(json['owned']),
+      acquiredStages: serializer.fromJson<int>(json['acquiredStages']),
+      totalStages: serializer.fromJson<int>(json['totalStages']),
+      consumedComplementSteps: serializer.fromJson<int>(
+        json['consumedComplementSteps'],
+      ),
+      purchaseSource: serializer.fromJson<String>(json['purchaseSource']),
+      purchasedAt: serializer.fromJson<DateTime?>(json['purchasedAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'trailId': serializer.toJson<String>(trailId),
+      'owned': serializer.toJson<bool>(owned),
+      'acquiredStages': serializer.toJson<int>(acquiredStages),
+      'totalStages': serializer.toJson<int>(totalStages),
+      'consumedComplementSteps': serializer.toJson<int>(
+        consumedComplementSteps,
+      ),
+      'purchaseSource': serializer.toJson<String>(purchaseSource),
+      'purchasedAt': serializer.toJson<DateTime?>(purchasedAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  TrekEntitlement copyWith({
+    String? trailId,
+    bool? owned,
+    int? acquiredStages,
+    int? totalStages,
+    int? consumedComplementSteps,
+    String? purchaseSource,
+    Value<DateTime?> purchasedAt = const Value.absent(),
+    DateTime? updatedAt,
+  }) => TrekEntitlement(
+    trailId: trailId ?? this.trailId,
+    owned: owned ?? this.owned,
+    acquiredStages: acquiredStages ?? this.acquiredStages,
+    totalStages: totalStages ?? this.totalStages,
+    consumedComplementSteps:
+        consumedComplementSteps ?? this.consumedComplementSteps,
+    purchaseSource: purchaseSource ?? this.purchaseSource,
+    purchasedAt: purchasedAt.present ? purchasedAt.value : this.purchasedAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  TrekEntitlement copyWithCompanion(TrekEntitlementsCompanion data) {
+    return TrekEntitlement(
+      trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      owned: data.owned.present ? data.owned.value : this.owned,
+      acquiredStages: data.acquiredStages.present
+          ? data.acquiredStages.value
+          : this.acquiredStages,
+      totalStages: data.totalStages.present
+          ? data.totalStages.value
+          : this.totalStages,
+      consumedComplementSteps: data.consumedComplementSteps.present
+          ? data.consumedComplementSteps.value
+          : this.consumedComplementSteps,
+      purchaseSource: data.purchaseSource.present
+          ? data.purchaseSource.value
+          : this.purchaseSource,
+      purchasedAt: data.purchasedAt.present
+          ? data.purchasedAt.value
+          : this.purchasedAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrekEntitlement(')
+          ..write('trailId: $trailId, ')
+          ..write('owned: $owned, ')
+          ..write('acquiredStages: $acquiredStages, ')
+          ..write('totalStages: $totalStages, ')
+          ..write('consumedComplementSteps: $consumedComplementSteps, ')
+          ..write('purchaseSource: $purchaseSource, ')
+          ..write('purchasedAt: $purchasedAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    trailId,
+    owned,
+    acquiredStages,
+    totalStages,
+    consumedComplementSteps,
+    purchaseSource,
+    purchasedAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrekEntitlement &&
+          other.trailId == this.trailId &&
+          other.owned == this.owned &&
+          other.acquiredStages == this.acquiredStages &&
+          other.totalStages == this.totalStages &&
+          other.consumedComplementSteps == this.consumedComplementSteps &&
+          other.purchaseSource == this.purchaseSource &&
+          other.purchasedAt == this.purchasedAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class TrekEntitlementsCompanion extends UpdateCompanion<TrekEntitlement> {
+  final Value<String> trailId;
+  final Value<bool> owned;
+  final Value<int> acquiredStages;
+  final Value<int> totalStages;
+  final Value<int> consumedComplementSteps;
+  final Value<String> purchaseSource;
+  final Value<DateTime?> purchasedAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const TrekEntitlementsCompanion({
+    this.trailId = const Value.absent(),
+    this.owned = const Value.absent(),
+    this.acquiredStages = const Value.absent(),
+    this.totalStages = const Value.absent(),
+    this.consumedComplementSteps = const Value.absent(),
+    this.purchaseSource = const Value.absent(),
+    this.purchasedAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TrekEntitlementsCompanion.insert({
+    required String trailId,
+    this.owned = const Value.absent(),
+    this.acquiredStages = const Value.absent(),
+    this.totalStages = const Value.absent(),
+    this.consumedComplementSteps = const Value.absent(),
+    this.purchaseSource = const Value.absent(),
+    this.purchasedAt = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : trailId = Value(trailId),
+       updatedAt = Value(updatedAt);
+  static Insertable<TrekEntitlement> custom({
+    Expression<String>? trailId,
+    Expression<bool>? owned,
+    Expression<int>? acquiredStages,
+    Expression<int>? totalStages,
+    Expression<int>? consumedComplementSteps,
+    Expression<String>? purchaseSource,
+    Expression<DateTime>? purchasedAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (trailId != null) 'trail_id': trailId,
+      if (owned != null) 'owned': owned,
+      if (acquiredStages != null) 'acquired_stages': acquiredStages,
+      if (totalStages != null) 'total_stages': totalStages,
+      if (consumedComplementSteps != null)
+        'consumed_complement_steps': consumedComplementSteps,
+      if (purchaseSource != null) 'purchase_source': purchaseSource,
+      if (purchasedAt != null) 'purchased_at': purchasedAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TrekEntitlementsCompanion copyWith({
+    Value<String>? trailId,
+    Value<bool>? owned,
+    Value<int>? acquiredStages,
+    Value<int>? totalStages,
+    Value<int>? consumedComplementSteps,
+    Value<String>? purchaseSource,
+    Value<DateTime?>? purchasedAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return TrekEntitlementsCompanion(
+      trailId: trailId ?? this.trailId,
+      owned: owned ?? this.owned,
+      acquiredStages: acquiredStages ?? this.acquiredStages,
+      totalStages: totalStages ?? this.totalStages,
+      consumedComplementSteps:
+          consumedComplementSteps ?? this.consumedComplementSteps,
+      purchaseSource: purchaseSource ?? this.purchaseSource,
+      purchasedAt: purchasedAt ?? this.purchasedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (trailId.present) {
+      map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (owned.present) {
+      map['owned'] = Variable<bool>(owned.value);
+    }
+    if (acquiredStages.present) {
+      map['acquired_stages'] = Variable<int>(acquiredStages.value);
+    }
+    if (totalStages.present) {
+      map['total_stages'] = Variable<int>(totalStages.value);
+    }
+    if (consumedComplementSteps.present) {
+      map['consumed_complement_steps'] = Variable<int>(
+        consumedComplementSteps.value,
+      );
+    }
+    if (purchaseSource.present) {
+      map['purchase_source'] = Variable<String>(purchaseSource.value);
+    }
+    if (purchasedAt.present) {
+      map['purchased_at'] = Variable<DateTime>(purchasedAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrekEntitlementsCompanion(')
+          ..write('trailId: $trailId, ')
+          ..write('owned: $owned, ')
+          ..write('acquiredStages: $acquiredStages, ')
+          ..write('totalStages: $totalStages, ')
+          ..write('consumedComplementSteps: $consumedComplementSteps, ')
+          ..write('purchaseSource: $purchaseSource, ')
+          ..write('purchasedAt: $purchasedAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $NoAdsStateTable extends NoAdsState
+    with TableInfo<$NoAdsStateTable, NoAdsStateData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $NoAdsStateTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+    'source',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _scopeMeta = const VerificationMeta('scope');
+  @override
+  late final GeneratedColumn<String> scope = GeneratedColumn<String>(
+    'scope',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('global'),
+  );
+  static const VerificationMeta _startedAtMeta = const VerificationMeta(
+    'startedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startedAt = GeneratedColumn<DateTime>(
+    'started_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _expiresAtMeta = const VerificationMeta(
+    'expiresAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> expiresAt = GeneratedColumn<DateTime>(
+    'expires_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    source,
+    scope,
+    startedAt,
+    expiresAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'no_ads_state';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<NoAdsStateData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('source')) {
+      context.handle(
+        _sourceMeta,
+        source.isAcceptableOrUnknown(data['source']!, _sourceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sourceMeta);
+    }
+    if (data.containsKey('scope')) {
+      context.handle(
+        _scopeMeta,
+        scope.isAcceptableOrUnknown(data['scope']!, _scopeMeta),
+      );
+    }
+    if (data.containsKey('started_at')) {
+      context.handle(
+        _startedAtMeta,
+        startedAt.isAcceptableOrUnknown(data['started_at']!, _startedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startedAtMeta);
+    }
+    if (data.containsKey('expires_at')) {
+      context.handle(
+        _expiresAtMeta,
+        expiresAt.isAcceptableOrUnknown(data['expires_at']!, _expiresAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  NoAdsStateData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return NoAdsStateData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      source: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}source'],
+      )!,
+      scope: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}scope'],
+      )!,
+      startedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}started_at'],
+      )!,
+      expiresAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}expires_at'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $NoAdsStateTable createAlias(String alias) {
+    return $NoAdsStateTable(attachedDatabase, alias);
+  }
+}
+
+class NoAdsStateData extends DataClass implements Insertable<NoAdsStateData> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Source du sans-pub ('subscription' | 'reward').
+  final String source;
+
+  /// Portee du sans-pub ('global' par defaut ; extensible par sentier).
+  final String scope;
+
+  /// Date de debut de la periode sans-pub.
+  final DateTime startedAt;
+
+  /// Date d'expiration : null = abonnement tant qu'actif ; now + 24h = reward.
+  final DateTime? expiresAt;
+
+  /// Date de derniere modification (last-write-wins du miroir cloud).
+  final DateTime updatedAt;
+  const NoAdsStateData({
+    required this.id,
+    required this.source,
+    required this.scope,
+    required this.startedAt,
+    this.expiresAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['source'] = Variable<String>(source);
+    map['scope'] = Variable<String>(scope);
+    map['started_at'] = Variable<DateTime>(startedAt);
+    if (!nullToAbsent || expiresAt != null) {
+      map['expires_at'] = Variable<DateTime>(expiresAt);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  NoAdsStateCompanion toCompanion(bool nullToAbsent) {
+    return NoAdsStateCompanion(
+      id: Value(id),
+      source: Value(source),
+      scope: Value(scope),
+      startedAt: Value(startedAt),
+      expiresAt: expiresAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(expiresAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory NoAdsStateData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return NoAdsStateData(
+      id: serializer.fromJson<int>(json['id']),
+      source: serializer.fromJson<String>(json['source']),
+      scope: serializer.fromJson<String>(json['scope']),
+      startedAt: serializer.fromJson<DateTime>(json['startedAt']),
+      expiresAt: serializer.fromJson<DateTime?>(json['expiresAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'source': serializer.toJson<String>(source),
+      'scope': serializer.toJson<String>(scope),
+      'startedAt': serializer.toJson<DateTime>(startedAt),
+      'expiresAt': serializer.toJson<DateTime?>(expiresAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  NoAdsStateData copyWith({
+    int? id,
+    String? source,
+    String? scope,
+    DateTime? startedAt,
+    Value<DateTime?> expiresAt = const Value.absent(),
+    DateTime? updatedAt,
+  }) => NoAdsStateData(
+    id: id ?? this.id,
+    source: source ?? this.source,
+    scope: scope ?? this.scope,
+    startedAt: startedAt ?? this.startedAt,
+    expiresAt: expiresAt.present ? expiresAt.value : this.expiresAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  NoAdsStateData copyWithCompanion(NoAdsStateCompanion data) {
+    return NoAdsStateData(
+      id: data.id.present ? data.id.value : this.id,
+      source: data.source.present ? data.source.value : this.source,
+      scope: data.scope.present ? data.scope.value : this.scope,
+      startedAt: data.startedAt.present ? data.startedAt.value : this.startedAt,
+      expiresAt: data.expiresAt.present ? data.expiresAt.value : this.expiresAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoAdsStateData(')
+          ..write('id: $id, ')
+          ..write('source: $source, ')
+          ..write('scope: $scope, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, source, scope, startedAt, expiresAt, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is NoAdsStateData &&
+          other.id == this.id &&
+          other.source == this.source &&
+          other.scope == this.scope &&
+          other.startedAt == this.startedAt &&
+          other.expiresAt == this.expiresAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class NoAdsStateCompanion extends UpdateCompanion<NoAdsStateData> {
+  final Value<int> id;
+  final Value<String> source;
+  final Value<String> scope;
+  final Value<DateTime> startedAt;
+  final Value<DateTime?> expiresAt;
+  final Value<DateTime> updatedAt;
+  const NoAdsStateCompanion({
+    this.id = const Value.absent(),
+    this.source = const Value.absent(),
+    this.scope = const Value.absent(),
+    this.startedAt = const Value.absent(),
+    this.expiresAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  NoAdsStateCompanion.insert({
+    this.id = const Value.absent(),
+    required String source,
+    this.scope = const Value.absent(),
+    required DateTime startedAt,
+    this.expiresAt = const Value.absent(),
+    required DateTime updatedAt,
+  }) : source = Value(source),
+       startedAt = Value(startedAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<NoAdsStateData> custom({
+    Expression<int>? id,
+    Expression<String>? source,
+    Expression<String>? scope,
+    Expression<DateTime>? startedAt,
+    Expression<DateTime>? expiresAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (source != null) 'source': source,
+      if (scope != null) 'scope': scope,
+      if (startedAt != null) 'started_at': startedAt,
+      if (expiresAt != null) 'expires_at': expiresAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  NoAdsStateCompanion copyWith({
+    Value<int>? id,
+    Value<String>? source,
+    Value<String>? scope,
+    Value<DateTime>? startedAt,
+    Value<DateTime?>? expiresAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return NoAdsStateCompanion(
+      id: id ?? this.id,
+      source: source ?? this.source,
+      scope: scope ?? this.scope,
+      startedAt: startedAt ?? this.startedAt,
+      expiresAt: expiresAt ?? this.expiresAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (scope.present) {
+      map['scope'] = Variable<String>(scope.value);
+    }
+    if (startedAt.present) {
+      map['started_at'] = Variable<DateTime>(startedAt.value);
+    }
+    if (expiresAt.present) {
+      map['expires_at'] = Variable<DateTime>(expiresAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('NoAdsStateCompanion(')
+          ..write('id: $id, ')
+          ..write('source: $source, ')
+          ..write('scope: $scope, ')
+          ..write('startedAt: $startedAt, ')
+          ..write('expiresAt: $expiresAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -16498,6 +17855,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $NuiteeSelectionsTable nuiteeSelections = $NuiteeSelectionsTable(
     this,
   );
+  late final $WalletBalanceTable walletBalance = $WalletBalanceTable(this);
+  late final $TrekEntitlementsTable trekEntitlements = $TrekEntitlementsTable(
+    this,
+  );
+  late final $NoAdsStateTable noAdsState = $NoAdsStateTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -16553,6 +17915,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final NuiteeSelectionsDao nuiteeSelectionsDao = NuiteeSelectionsDao(
     this as AppDatabase,
   );
+  late final WalletDao walletDao = WalletDao(this as AppDatabase);
+  late final TrekEntitlementsDao trekEntitlementsDao = TrekEntitlementsDao(
+    this as AppDatabase,
+  );
+  late final NoAdsDao noAdsDao = NoAdsDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -16588,6 +17955,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     waypointComment,
     trekSessions,
     nuiteeSelections,
+    walletBalance,
+    trekEntitlements,
+    noAdsState,
   ];
 }
 
@@ -24673,6 +26043,702 @@ typedef $$NuiteeSelectionsTableProcessedTableManager =
       NuiteeSelection,
       PrefetchHooks Function()
     >;
+typedef $$WalletBalanceTableCreateCompanionBuilder =
+    WalletBalanceCompanion Function({
+      required String userId,
+      Value<int> balanceSteps,
+      Value<int> lifetimeEarnedSteps,
+      Value<int> lifetimeSpentSteps,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$WalletBalanceTableUpdateCompanionBuilder =
+    WalletBalanceCompanion Function({
+      Value<String> userId,
+      Value<int> balanceSteps,
+      Value<int> lifetimeEarnedSteps,
+      Value<int> lifetimeSpentSteps,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$WalletBalanceTableFilterComposer
+    extends Composer<_$AppDatabase, $WalletBalanceTable> {
+  $$WalletBalanceTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get balanceSteps => $composableBuilder(
+    column: $table.balanceSteps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lifetimeEarnedSteps => $composableBuilder(
+    column: $table.lifetimeEarnedSteps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get lifetimeSpentSteps => $composableBuilder(
+    column: $table.lifetimeSpentSteps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WalletBalanceTableOrderingComposer
+    extends Composer<_$AppDatabase, $WalletBalanceTable> {
+  $$WalletBalanceTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get balanceSteps => $composableBuilder(
+    column: $table.balanceSteps,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lifetimeEarnedSteps => $composableBuilder(
+    column: $table.lifetimeEarnedSteps,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get lifetimeSpentSteps => $composableBuilder(
+    column: $table.lifetimeSpentSteps,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WalletBalanceTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WalletBalanceTable> {
+  $$WalletBalanceTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<int> get balanceSteps => $composableBuilder(
+    column: $table.balanceSteps,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lifetimeEarnedSteps => $composableBuilder(
+    column: $table.lifetimeEarnedSteps,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get lifetimeSpentSteps => $composableBuilder(
+    column: $table.lifetimeSpentSteps,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$WalletBalanceTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WalletBalanceTable,
+          WalletBalanceData,
+          $$WalletBalanceTableFilterComposer,
+          $$WalletBalanceTableOrderingComposer,
+          $$WalletBalanceTableAnnotationComposer,
+          $$WalletBalanceTableCreateCompanionBuilder,
+          $$WalletBalanceTableUpdateCompanionBuilder,
+          (
+            WalletBalanceData,
+            BaseReferences<
+              _$AppDatabase,
+              $WalletBalanceTable,
+              WalletBalanceData
+            >,
+          ),
+          WalletBalanceData,
+          PrefetchHooks Function()
+        > {
+  $$WalletBalanceTableTableManager(_$AppDatabase db, $WalletBalanceTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WalletBalanceTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WalletBalanceTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WalletBalanceTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> userId = const Value.absent(),
+                Value<int> balanceSteps = const Value.absent(),
+                Value<int> lifetimeEarnedSteps = const Value.absent(),
+                Value<int> lifetimeSpentSteps = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => WalletBalanceCompanion(
+                userId: userId,
+                balanceSteps: balanceSteps,
+                lifetimeEarnedSteps: lifetimeEarnedSteps,
+                lifetimeSpentSteps: lifetimeSpentSteps,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String userId,
+                Value<int> balanceSteps = const Value.absent(),
+                Value<int> lifetimeEarnedSteps = const Value.absent(),
+                Value<int> lifetimeSpentSteps = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => WalletBalanceCompanion.insert(
+                userId: userId,
+                balanceSteps: balanceSteps,
+                lifetimeEarnedSteps: lifetimeEarnedSteps,
+                lifetimeSpentSteps: lifetimeSpentSteps,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WalletBalanceTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WalletBalanceTable,
+      WalletBalanceData,
+      $$WalletBalanceTableFilterComposer,
+      $$WalletBalanceTableOrderingComposer,
+      $$WalletBalanceTableAnnotationComposer,
+      $$WalletBalanceTableCreateCompanionBuilder,
+      $$WalletBalanceTableUpdateCompanionBuilder,
+      (
+        WalletBalanceData,
+        BaseReferences<_$AppDatabase, $WalletBalanceTable, WalletBalanceData>,
+      ),
+      WalletBalanceData,
+      PrefetchHooks Function()
+    >;
+typedef $$TrekEntitlementsTableCreateCompanionBuilder =
+    TrekEntitlementsCompanion Function({
+      required String trailId,
+      Value<bool> owned,
+      Value<int> acquiredStages,
+      Value<int> totalStages,
+      Value<int> consumedComplementSteps,
+      Value<String> purchaseSource,
+      Value<DateTime?> purchasedAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$TrekEntitlementsTableUpdateCompanionBuilder =
+    TrekEntitlementsCompanion Function({
+      Value<String> trailId,
+      Value<bool> owned,
+      Value<int> acquiredStages,
+      Value<int> totalStages,
+      Value<int> consumedComplementSteps,
+      Value<String> purchaseSource,
+      Value<DateTime?> purchasedAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$TrekEntitlementsTableFilterComposer
+    extends Composer<_$AppDatabase, $TrekEntitlementsTable> {
+  $$TrekEntitlementsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get owned => $composableBuilder(
+    column: $table.owned,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get acquiredStages => $composableBuilder(
+    column: $table.acquiredStages,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalStages => $composableBuilder(
+    column: $table.totalStages,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get consumedComplementSteps => $composableBuilder(
+    column: $table.consumedComplementSteps,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get purchaseSource => $composableBuilder(
+    column: $table.purchaseSource,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get purchasedAt => $composableBuilder(
+    column: $table.purchasedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TrekEntitlementsTableOrderingComposer
+    extends Composer<_$AppDatabase, $TrekEntitlementsTable> {
+  $$TrekEntitlementsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get trailId => $composableBuilder(
+    column: $table.trailId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get owned => $composableBuilder(
+    column: $table.owned,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get acquiredStages => $composableBuilder(
+    column: $table.acquiredStages,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalStages => $composableBuilder(
+    column: $table.totalStages,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get consumedComplementSteps => $composableBuilder(
+    column: $table.consumedComplementSteps,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get purchaseSource => $composableBuilder(
+    column: $table.purchaseSource,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get purchasedAt => $composableBuilder(
+    column: $table.purchasedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TrekEntitlementsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $TrekEntitlementsTable> {
+  $$TrekEntitlementsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get trailId =>
+      $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<bool> get owned =>
+      $composableBuilder(column: $table.owned, builder: (column) => column);
+
+  GeneratedColumn<int> get acquiredStages => $composableBuilder(
+    column: $table.acquiredStages,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalStages => $composableBuilder(
+    column: $table.totalStages,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get consumedComplementSteps => $composableBuilder(
+    column: $table.consumedComplementSteps,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get purchaseSource => $composableBuilder(
+    column: $table.purchaseSource,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get purchasedAt => $composableBuilder(
+    column: $table.purchasedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$TrekEntitlementsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $TrekEntitlementsTable,
+          TrekEntitlement,
+          $$TrekEntitlementsTableFilterComposer,
+          $$TrekEntitlementsTableOrderingComposer,
+          $$TrekEntitlementsTableAnnotationComposer,
+          $$TrekEntitlementsTableCreateCompanionBuilder,
+          $$TrekEntitlementsTableUpdateCompanionBuilder,
+          (
+            TrekEntitlement,
+            BaseReferences<
+              _$AppDatabase,
+              $TrekEntitlementsTable,
+              TrekEntitlement
+            >,
+          ),
+          TrekEntitlement,
+          PrefetchHooks Function()
+        > {
+  $$TrekEntitlementsTableTableManager(
+    _$AppDatabase db,
+    $TrekEntitlementsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrekEntitlementsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrekEntitlementsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrekEntitlementsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> trailId = const Value.absent(),
+                Value<bool> owned = const Value.absent(),
+                Value<int> acquiredStages = const Value.absent(),
+                Value<int> totalStages = const Value.absent(),
+                Value<int> consumedComplementSteps = const Value.absent(),
+                Value<String> purchaseSource = const Value.absent(),
+                Value<DateTime?> purchasedAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrekEntitlementsCompanion(
+                trailId: trailId,
+                owned: owned,
+                acquiredStages: acquiredStages,
+                totalStages: totalStages,
+                consumedComplementSteps: consumedComplementSteps,
+                purchaseSource: purchaseSource,
+                purchasedAt: purchasedAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String trailId,
+                Value<bool> owned = const Value.absent(),
+                Value<int> acquiredStages = const Value.absent(),
+                Value<int> totalStages = const Value.absent(),
+                Value<int> consumedComplementSteps = const Value.absent(),
+                Value<String> purchaseSource = const Value.absent(),
+                Value<DateTime?> purchasedAt = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => TrekEntitlementsCompanion.insert(
+                trailId: trailId,
+                owned: owned,
+                acquiredStages: acquiredStages,
+                totalStages: totalStages,
+                consumedComplementSteps: consumedComplementSteps,
+                purchaseSource: purchaseSource,
+                purchasedAt: purchasedAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TrekEntitlementsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $TrekEntitlementsTable,
+      TrekEntitlement,
+      $$TrekEntitlementsTableFilterComposer,
+      $$TrekEntitlementsTableOrderingComposer,
+      $$TrekEntitlementsTableAnnotationComposer,
+      $$TrekEntitlementsTableCreateCompanionBuilder,
+      $$TrekEntitlementsTableUpdateCompanionBuilder,
+      (
+        TrekEntitlement,
+        BaseReferences<_$AppDatabase, $TrekEntitlementsTable, TrekEntitlement>,
+      ),
+      TrekEntitlement,
+      PrefetchHooks Function()
+    >;
+typedef $$NoAdsStateTableCreateCompanionBuilder =
+    NoAdsStateCompanion Function({
+      Value<int> id,
+      required String source,
+      Value<String> scope,
+      required DateTime startedAt,
+      Value<DateTime?> expiresAt,
+      required DateTime updatedAt,
+    });
+typedef $$NoAdsStateTableUpdateCompanionBuilder =
+    NoAdsStateCompanion Function({
+      Value<int> id,
+      Value<String> source,
+      Value<String> scope,
+      Value<DateTime> startedAt,
+      Value<DateTime?> expiresAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$NoAdsStateTableFilterComposer
+    extends Composer<_$AppDatabase, $NoAdsStateTable> {
+  $$NoAdsStateTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get scope => $composableBuilder(
+    column: $table.scope,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$NoAdsStateTableOrderingComposer
+    extends Composer<_$AppDatabase, $NoAdsStateTable> {
+  $$NoAdsStateTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get source => $composableBuilder(
+    column: $table.source,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get scope => $composableBuilder(
+    column: $table.scope,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startedAt => $composableBuilder(
+    column: $table.startedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get expiresAt => $composableBuilder(
+    column: $table.expiresAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$NoAdsStateTableAnnotationComposer
+    extends Composer<_$AppDatabase, $NoAdsStateTable> {
+  $$NoAdsStateTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get scope =>
+      $composableBuilder(column: $table.scope, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startedAt =>
+      $composableBuilder(column: $table.startedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get expiresAt =>
+      $composableBuilder(column: $table.expiresAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$NoAdsStateTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $NoAdsStateTable,
+          NoAdsStateData,
+          $$NoAdsStateTableFilterComposer,
+          $$NoAdsStateTableOrderingComposer,
+          $$NoAdsStateTableAnnotationComposer,
+          $$NoAdsStateTableCreateCompanionBuilder,
+          $$NoAdsStateTableUpdateCompanionBuilder,
+          (
+            NoAdsStateData,
+            BaseReferences<_$AppDatabase, $NoAdsStateTable, NoAdsStateData>,
+          ),
+          NoAdsStateData,
+          PrefetchHooks Function()
+        > {
+  $$NoAdsStateTableTableManager(_$AppDatabase db, $NoAdsStateTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$NoAdsStateTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$NoAdsStateTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$NoAdsStateTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> source = const Value.absent(),
+                Value<String> scope = const Value.absent(),
+                Value<DateTime> startedAt = const Value.absent(),
+                Value<DateTime?> expiresAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => NoAdsStateCompanion(
+                id: id,
+                source: source,
+                scope: scope,
+                startedAt: startedAt,
+                expiresAt: expiresAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String source,
+                Value<String> scope = const Value.absent(),
+                required DateTime startedAt,
+                Value<DateTime?> expiresAt = const Value.absent(),
+                required DateTime updatedAt,
+              }) => NoAdsStateCompanion.insert(
+                id: id,
+                source: source,
+                scope: scope,
+                startedAt: startedAt,
+                expiresAt: expiresAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$NoAdsStateTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $NoAdsStateTable,
+      NoAdsStateData,
+      $$NoAdsStateTableFilterComposer,
+      $$NoAdsStateTableOrderingComposer,
+      $$NoAdsStateTableAnnotationComposer,
+      $$NoAdsStateTableCreateCompanionBuilder,
+      $$NoAdsStateTableUpdateCompanionBuilder,
+      (
+        NoAdsStateData,
+        BaseReferences<_$AppDatabase, $NoAdsStateTable, NoAdsStateData>,
+      ),
+      NoAdsStateData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -24736,4 +26802,10 @@ class $AppDatabaseManager {
       $$TrekSessionsTableTableManager(_db, _db.trekSessions);
   $$NuiteeSelectionsTableTableManager get nuiteeSelections =>
       $$NuiteeSelectionsTableTableManager(_db, _db.nuiteeSelections);
+  $$WalletBalanceTableTableManager get walletBalance =>
+      $$WalletBalanceTableTableManager(_db, _db.walletBalance);
+  $$TrekEntitlementsTableTableManager get trekEntitlements =>
+      $$TrekEntitlementsTableTableManager(_db, _db.trekEntitlements);
+  $$NoAdsStateTableTableManager get noAdsState =>
+      $$NoAdsStateTableTableManager(_db, _db.noAdsState);
 }
