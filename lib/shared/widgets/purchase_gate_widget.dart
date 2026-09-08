@@ -52,32 +52,25 @@ class PurchaseGateWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final monetization = ref.watch(monetizationServiceProvider);
-    // StepWays LOT 1 : l'acces derive des droits Drift (async). On evalue le
-    // mode demo via un FutureBuilder ; tant que c'est indetermine, on affiche le
-    // contenu nu (pas de flash du bandeau demo). On observe aussi
-    // monetizationReadyProvider pour rebuild une fois le service charge.
-    ref.watch(monetizationReadyProvider);
-
-    return FutureBuilder<bool>(
-      future: monetization.isDemoMode(trailId),
-      builder: (context, snapshot) {
-        final isDemo = snapshot.data ?? false;
-        if (!isDemo) {
-          // Trek jouable (achete / abo / vitrine) : affichage normal, pas de gate.
-          return child;
-        }
-        // Mode demo : bandeau + contenu.
-        return Column(
-          children: [
-            _DemoBanner(
-              text: demoBannerText ?? t.monetization.demoBanner,
-              onTap: onPurchaseTap ?? () => _openPaywall(context),
-            ),
-            Expanded(child: child),
-          ],
-        );
-      },
+    // StepWays LOT 1 : l'acces derive des droits Drift (async). On observe le
+    // mode demo REACTIF (isDemoModeProvider) : il se reevalue au boot ET a
+    // chaque mutation des droits, donc un achat pendant l'affichage bascule le
+    // bandeau sans le laisser perime (reserve QA). Tant que c'est indetermine
+    // (loading/error), on affiche le contenu nu (pas de flash du bandeau demo).
+    final isDemo = ref.watch(isDemoModeProvider(trailId)).value ?? false;
+    if (!isDemo) {
+      // Trek jouable (achete / abo / vitrine) : affichage normal, pas de gate.
+      return child;
+    }
+    // Mode demo : bandeau + contenu.
+    return Column(
+      children: [
+        _DemoBanner(
+          text: demoBannerText ?? t.monetization.demoBanner,
+          onTap: onPurchaseTap ?? () => _openPaywall(context),
+        ),
+        Expanded(child: child),
+      ],
     );
   }
 

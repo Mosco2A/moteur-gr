@@ -68,6 +68,16 @@ void main() {
     );
   }
 
+  // Le gate observe desormais un StreamProvider adosse a un stream Drift
+  // (isDemoModeProvider). Il faut demonter l'arbre AVANT la fin du corps de
+  // test pour que Riverpod annule la souscription Drift : sinon le timer de la
+  // query-stream reste pendant a la destruction de l'arbre (assertion
+  // !timersPending). On demonte puis on laisse les annulations se resorber.
+  Future<void> tearDownTree(WidgetTester tester) async {
+    await tester.pumpWidget(const SizedBox());
+    await tester.pumpAndSettle();
+  }
+
   group('PurchaseGateWidget', () {
     testWidgets('trek non achete : bandeau demo affiche', (tester) async {
       await tester.pumpWidget(wrap(
@@ -82,6 +92,7 @@ void main() {
       expect(find.text(t.monetization.demoBanner), findsOneWidget);
       expect(find.byIcon(Icons.lock_outline), findsOneWidget);
       expect(find.text('Contenu du trek'), findsOneWidget);
+      await tearDownTree(tester);
     });
 
     testWidgets('trek achete : contenu nu, pas de bandeau', (tester) async {
@@ -99,6 +110,33 @@ void main() {
       expect(find.text(t.monetization.demoBanner), findsNothing);
       expect(find.byIcon(Icons.lock_outline), findsNothing);
       expect(find.text('Contenu du trek'), findsOneWidget);
+      await tearDownTree(tester);
+    });
+
+    testWidgets(
+        'achat pendant affichage : le bandeau demo disparait sans remount '
+        '(reserve QA)', (tester) async {
+      await tester.pumpWidget(wrap(
+        const PurchaseGateWidget(
+          trailId: 'volcans',
+          totalStages: 12,
+          child: Text('Contenu du trek'),
+        ),
+      ));
+      await tester.pumpAndSettle();
+
+      // Etat initial : trek en demo -> bandeau visible.
+      expect(find.text(t.monetization.demoBanner), findsOneWidget);
+
+      // L'achat aboutit PENDANT que le gate est monte (aucun remount du widget).
+      await svc.buyTrail('volcans', totalStages: 12);
+      await tester.pumpAndSettle();
+
+      // isDemoModeProvider relance via le stream d'entitlements : bandeau parti.
+      expect(find.text(t.monetization.demoBanner), findsNothing);
+      expect(find.byIcon(Icons.lock_outline), findsNothing);
+      expect(find.text('Contenu du trek'), findsOneWidget);
+      await tearDownTree(tester);
     });
 
     testWidgets('tap bandeau ouvre le paywall, achat debloque via wallet',
@@ -133,6 +171,7 @@ void main() {
       expect(find.byType(PaywallSheet), findsNothing);
       expect(await svc.ownsTrail('volcans'), isTrue);
       expect(FeatureFlags.isPremiumEnabled('volcans'), isTrue);
+      await tearDownTree(tester);
     });
   });
 }

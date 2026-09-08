@@ -390,6 +390,14 @@ class MonetizationService {
     return e?.owned ?? false;
   }
 
+  /// Observe le droit d'accès du trek [trailId] (émet à chaque mutation Drift).
+  ///
+  /// Signal réactif du flip démo ⇄ jouable : quand un achat confirmé pose
+  /// `owned` ([_markOwned] → upsert), le stream émet et l'UI (gate) se
+  /// reconstruit sans rester sur un état périmé (StepWays LOT 1).
+  Stream<TrekEntitlement?> watchEntitlement(String trailId) =>
+      _entitlementsDao.watchByTrailId(trailId);
+
   /// Niveau d'accès effectif du trek (spec §2.4) : owned > subscriber > free.
   ///
   /// Priorité : possédé/vitrine → [TrailAccess.owned] ; sinon abo actif →
@@ -834,4 +842,27 @@ final monetizationReadyProvider = FutureProvider<MonetizationService>((ref) asyn
   final service = ref.watch(monetizationServiceProvider);
   await service.load();
   return service;
+});
+
+/// Observe le droit d'accès d'un trek (StreamProvider indexé par `trailId`).
+///
+/// Émet à chaque mutation Drift des `TrekEntitlements` : c'est le signal qui
+/// permet à [isDemoModeProvider] de se réévaluer quand un achat pose `owned`.
+final _entitlementProvider =
+    StreamProvider.family<TrekEntitlement?, String>((ref, trailId) {
+  return ref.watch(monetizationServiceProvider).watchEntitlement(trailId);
+});
+
+/// Mode démo RÉACTIF d'un trek (`isDemoMode`), indexé par `trailId`.
+///
+/// Remplace l'appel one-shot `FutureBuilder(monetization.isDemoMode(...))` du
+/// [PurchaseGateWidget] : en observant [monetizationReadyProvider] (boot) ET
+/// [_entitlementProvider] (mutations Drift), le calcul est RELANCÉ dès qu'un
+/// achat débloque le trek pendant l'affichage — le bandeau démo ne peut plus
+/// rester périmé (réserve QA StepWays LOT 1). Vitrine/abo restent couverts par
+/// la source unique [MonetizationService.isDemoMode].
+final isDemoModeProvider = FutureProvider.family<bool, String>((ref, trailId) async {
+  final service = await ref.watch(monetizationReadyProvider.future);
+  ref.watch(_entitlementProvider(trailId)); // relance au flip owned
+  return service.isDemoMode(trailId);
 });
