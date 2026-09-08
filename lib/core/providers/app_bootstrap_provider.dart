@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../engine/trail_engine.dart';
 import '../../features/trek/data/seed_data_loader.dart';
+import '../../features/trek/providers/session_recovery_provider.dart';
 import '../../features/trek/providers/stage_providers.dart';
 import '../services/monetization_service.dart';
 import 'database_provider.dart';
@@ -43,4 +44,12 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   // les 2 cles prefs legacy vers les droits (idempotent), demarre l'ecoute IAP
   // et resynchronise le cache FeatureFlags premium (gardes de routes synchrones).
   await ref.watch(monetizationReadyProvider.future);
+
+  // StepWays LOT 2 (C4) : reprise orpheline enfin cablee au boot. Nettoie les
+  // sessions en cours de plus de 7 jours puis detecte une eventuelle session
+  // orpheline (crash/fermeture brutale) que l'UI proposera de reprendre ou
+  // d'abandonner (`pendingSessionProvider`). Best-effort en interne : ne bloque
+  // jamais le demarrage. AVANT LOT 2, checkPendingSession/cleanOrphans
+  // existaient mais n'etaient JAMAIS appeles.
+  await ref.watch(pendingSessionProvider.future);
 });

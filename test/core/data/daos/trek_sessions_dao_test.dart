@@ -103,14 +103,20 @@ void main() {
       expect(actives.where((x) => x.id == 'sess-1').length, 1);
     });
 
-    test('findActiveSessions ne renvoie que les sessions actives', () async {
+    test('findActiveSessions renvoie les sessions active ET paused (C4a)',
+        () async {
+      // StepWays LOT 2, gap C4a : `paused` compte comme « en cours » (occupe
+      // l'unique creneau de rando active + candidate a la reprise orpheline).
       final dao = db.trekSessionsDao;
       await dao.upsertSession(session(id: 'a', status: 'active'));
       await dao.upsertSession(session(id: 'b', status: 'completed'));
       await dao.upsertSession(session(id: 'c', status: 'active'));
+      await dao.upsertSession(session(id: 'd', status: 'paused'));
+      await dao.upsertSession(session(id: 'e', status: 'abandoned'));
 
       final actives = await dao.findActiveSessions();
-      expect(actives.map((s) => s.id).toSet(), {'a', 'c'});
+      expect(actives.map((s) => s.id).toSet(), {'a', 'c', 'd'},
+          reason: 'active + paused seulement ; completed/abandoned exclus.');
     });
 
     test('updateStatus / deleteSession', () async {

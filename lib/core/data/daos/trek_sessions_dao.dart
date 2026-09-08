@@ -60,13 +60,22 @@ class TrekSessionsDao extends DatabaseAccessor<AppDatabase>
     return row == null ? null : _fromRow(row);
   }
 
-  /// Sessions au statut `active` (candidates a la reprise apres crash).
+  /// Statuts consideres « en cours » : une session `active` OU `paused` occupe
+  /// l'unique creneau de rando active (invariant C4, StepWays LOT 2).
+  static const List<String> kOngoingStatuses = <String>['active', 'paused'];
+
+  /// Sessions EN COURS (statut `active` OU `paused`) — StepWays LOT 2, gap C4a.
   ///
-  /// Alimente le detecteur de session orpheline ([TrekSessionManager]) : une
-  /// session `active` en base signale une fermeture brutale.
+  /// Alimente (1) le detecteur de session orpheline au boot
+  /// ([TrekSessionManager.checkPendingSession] / [cleanOrphans]) et (2) la garde
+  /// d'unicite cross-trail [ensureSingleActiveThenStart] : une session `active`
+  /// OU `paused` en base signale un trek deja en cours (fermeture brutale ou
+  /// simple mise en pause). AVANT LOT 2 seul `active` etait remonte -> une rando
+  /// mise en pause echappait a l'invariant « au plus 1 rando en cours » et a la
+  /// reprise orpheline. On inclut donc `paused` ([kOngoingStatuses]).
   Future<List<TrekSession>> findActiveSessions() async {
     final rows = await (select(trekSessions)
-          ..where((t) => t.status.equals('active')))
+          ..where((t) => t.status.isIn(kOngoingStatuses)))
         .get();
     return rows.map(_fromRow).toList();
   }

@@ -77,6 +77,43 @@ enum TrackingSessionStatus {
   stopped,
 }
 
+/// Decision de l'utilisateur face a un CONFLIT d'unicite (StepWays LOT 2, C4).
+///
+/// Quand [TrekSessionManagerNotifier.ensureSingleActiveThenStart] detecte qu'un
+/// AUTRE trek est deja en cours (session `active`|`paused`), la couche UI doit
+/// trancher via un dialog « Terminer / Abandonner » avant de demarrer le
+/// nouveau. Ce type est le CONTRAT data<->UI : la garde recoit un callback qui
+/// renvoie ce choix, sans que la couche data ne connaisse le dialog (aucune
+/// dependance Flutter/UI ici — les widgets vivent en Phase 4-5).
+enum ActiveTrekConflictChoice {
+  /// Terminer la rando en cours (finish, `completed`) puis demarrer la nouvelle.
+  finishCurrent,
+
+  /// Abandonner la rando en cours (`abandoned`) puis demarrer la nouvelle.
+  abandonCurrent,
+
+  /// Ne rien faire : garder la rando en cours, ne PAS demarrer la nouvelle.
+  cancel,
+}
+
+/// Callback fourni par l'UI pour resoudre un conflit d'unicite (dialog
+/// Terminer/Abandonner). Recoit le sentier DEJA en cours et renvoie le choix.
+typedef ActiveTrekConflictResolver = Future<ActiveTrekConflictChoice> Function(
+  String ongoingTrailId,
+);
+
+/// Issue d'un appel a [TrekSessionManagerNotifier.ensureSingleActiveThenStart].
+enum StartOutcome {
+  /// La nouvelle rando a bien demarre (aucun conflit, ou conflit resolu).
+  started,
+
+  /// Le meme trek etait deja en cours -> rien fait (idempotent).
+  alreadyActiveSameTrail,
+
+  /// Un autre trek etait en cours et l'utilisateur a ANNULE -> non demarre.
+  cancelled,
+}
+
 /// Provider du TrekRecorder (E2.8a).
 ///
 /// Fournit une instance de TrekRecorder. La persistence Drift des
@@ -242,6 +279,101 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     unawaited(_startBackgroundCapture(session.id, trailId));
   }
 
+  /// Garde d'UNICITE de rando active (StepWays LOT 2, C4) : garantit **au plus
+  /// une** session `active`|`paused`, CROSS-TRAIL et cross-restart, avant de
+  /// demarrer le trek [trailId].
+  ///
+  /// Contrat de la machine C4 : on interroge la source d'unicite
+  /// [TrekSessionsDao.findActiveSessions] (qui inclut `paused`, gap C4a) —
+  /// AUTORITAIRE au-dela de l'etat en memoire (couvre une session orpheline
+  /// laissee par un crash sur un AUTRE trek) :
+  ///  * aucune session en cours -> demarrage direct ([start]) ;
+  ///  * une session en cours sur le MEME trek -> idempotent, rien fait
+  ///    ([StartOutcome.alreadyActiveSameTrail]) ;
+  ///  * une session en cours sur un AUTRE trek -> on demande a l'UI via
+  ///    [resolve] (dialog Terminer/Abandonner) :
+  ///      - `finishCurrent`  -> [stop] la rando en cours, puis [start] ;
+  ///      - `abandonCurrent` -> [abandon] la rando en cours, puis [start] ;
+  ///      - `cancel`         -> on ne demarre pas ([StartOutcome.cancelled]).
+  ///
+  /// Si la rando en cours est CELLE du notifier (etat en memoire), on la termine
+  /// via [stop]/[abandon] (teardown complet). Si elle est ORPHELINE (autre trek,
+  /// pas dans l'etat en memoire), on la solde directement en base
+  /// (`updateStatus`) — il n'y a pas de capture de fond a arreter pour elle.
+  Future<StartOutcome> ensureSingleActiveThenStart(
+    String trailId, {
+    required ActiveTrekConflictResolver resolve,
+  }) async {
+    final dao = ref.read(databaseProvider).trekSessionsDao;
+    final ongoing = await dao.findActiveSessions();
+
+    // 1. Rien en cours -> demarrage direct.
+    if (ongoing.isEmpty) {
+      await start(trailId);
+      return StartOutcome.started;
+    }
+
+    // Session en cours la plus recente = celle qui occupe le creneau.
+    final current = ongoing.reduce(
+      (a, b) => a.startedAt.isAfter(b.startedAt) ? a : b,
+    );
+
+    // 2. Meme trek deja en cours -> idempotent.
+    if (current.trailId == trailId) {
+      return StartOutcome.alreadyActiveSameTrail;
+    }
+
+    // 3. Autre trek en cours -> l'UI tranche (dialog Terminer/Abandonner).
+    final choice = await resolve(current.trailId);
+    switch (choice) {
+      case ActiveTrekConflictChoice.cancel:
+        return StartOutcome.cancelled;
+      case ActiveTrekConflictChoice.finishCurrent:
+        await _resolveOngoing(current, status: 'completed');
+        break;
+      case ActiveTrekConflictChoice.abandonCurrent:
+        await _resolveOngoing(current, status: 'abandoned');
+        break;
+    }
+
+    await start(trailId);
+    return StartOutcome.started;
+  }
+
+  /// Solde la session EN COURS [current] avant d'en demarrer une autre.
+  ///
+  /// Si [current] est la session vivante du notifier (etat en memoire), on
+  /// passe par [stop]/[abandon] (teardown complet : capture de fond, abonnement,
+  /// persistance autoritaire). Sinon (session ORPHELINE d'un autre trek), on la
+  /// solde directement en base — il n'y a pas de tracking en memoire pour elle.
+  Future<void> _resolveOngoing(
+    TrekSession current, {
+    required String status,
+  }) async {
+    final isInMemory = state.session?.id == current.id &&
+        (state.status == TrackingSessionStatus.recording ||
+            state.status == TrackingSessionStatus.paused);
+    if (isInMemory) {
+      if (status == 'abandoned') {
+        await abandon();
+      } else {
+        await stop();
+      }
+      return;
+    }
+    // Session orpheline : solder son statut en base, best-effort.
+    try {
+      await ref.read(databaseProvider).trekSessionsDao.upsertSession(
+            current.copyWith(
+              status: status,
+              finishedAt: current.finishedAt ?? DateTime.now(),
+            ),
+          );
+    } catch (_) {
+      // Best-effort : un echec ne doit pas empecher le nouveau demarrage.
+    }
+  }
+
   /// Demarre la capture de fond + branche la persistance des points. Isole du
   /// chemin de demarrage principal (fire-and-forget) : ne jette jamais.
   Future<void> _startBackgroundCapture(String sessionId, String trailId) async {
@@ -295,8 +427,32 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     state = state.copyWith(status: TrackingSessionStatus.recording);
   }
 
-  /// Arrete le tracking et finalise la session.
+  /// Arrete le tracking et finalise la session en `completed`.
   Future<void> stop() async {
+    await _finalize(status: 'completed');
+  }
+
+  /// Abandonne le trek en cours (StepWays LOT 2, C4 — machine d'unicite).
+  ///
+  /// Finalise la session courante en `abandoned`, SANS toucher a
+  /// `parcoursFullyWalked` (jamais de faux finisher : un abandon n'ouvre pas la
+  /// porte du diplome). Meme teardown que [stop] (capture de fond arretee,
+  /// abonnement coupe, session persistee). Idempotent : ne fait rien hors
+  /// session active|paused. C'est la 3ᵉ transition de la machine (Demarrer /
+  /// Terminer / **Abandonner**) exigee par C4, utilisee par la garde
+  /// [ensureSingleActiveThenStart] pour liberer le creneau avant d'en lancer un
+  /// autre. La remise a zero de l'acquis cote droits (`onTrailAbandoned`) reste
+  /// portee par le [MonetizationService] — non declenchee ici (separation des
+  /// responsabilites : ce notifier gere la SESSION, pas les droits).
+  Future<void> abandon() async {
+    await _finalize(status: 'abandoned');
+  }
+
+  /// Teardown + persistance communs a [stop] (completed) et [abandon]
+  /// (abandoned). Facteur commun : seule la valeur de `status` ecrite en base
+  /// change ; `parcoursFullyWalked` n'est JAMAIS pose ici (il l'est en amont par
+  /// [completeOnArrival] uniquement, porte du finisher).
+  Future<void> _finalize({required String status}) async {
     if (state.status != TrackingSessionStatus.recording &&
         state.status != TrackingSessionStatus.paused) {
       return;
@@ -325,11 +481,12 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     // APRES le recorder. Le TrekRecorder persiste sa session INTERNE (sans
     // completedStages ni parcoursFullyWalked) : sans ce dernier upsert, l'etat
     // final en base perdrait la memoire du finisher. Meme id -> derniere ecriture
-    // gagnante, avec les etapes marchees preservees.
+    // gagnante, avec les etapes marchees preservees. `status` distingue
+    // completed (finish) d'abandoned (abandon) sans autre difference.
     if (authoritative != null) {
       await _persistSession(
         authoritative.copyWith(
-          status: 'completed',
+          status: status,
           finishedAt: authoritative.finishedAt ?? DateTime.now(),
         ),
       );
