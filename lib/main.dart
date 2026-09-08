@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'core/config/mare_a_mare_centre_trail_config.dart';
 import 'core/config/trail_config.dart';
 import 'core/firebase/firebase_service.dart';
+import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
 import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
@@ -142,14 +143,25 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
   }
 }
 
-/// Porte d'amorce des donnees (PARITE GR20, LOT 1).
+/// Porte d'amorce des donnees (PARITE GR20, LOT 1 ; StepWays LOT 2, Phase 5 —
+/// REACTIVE au changement de sentier).
 ///
 /// `ConsumerWidget` (sous le `ProviderScope`) : observe [appBootstrapProvider],
 /// qui force le seed du sentier actif (DB in-memory volatile -> re-seed a chaque
 /// lancement). Tant que le seed n'est pas resolu, affiche un ecran de chargement
 /// (i18n Slang) ; en cas d'echec, un ecran d'erreur discret. Une fois resolu, le
-/// [child] route (le HUB Mare a Mare Centre au premier lancement) s'affiche avec
-/// ses donnees deja en base.
+/// [child] route (« Mes treks » puis le cockpit) s'affiche avec ses donnees deja
+/// en base.
+///
+/// LOT 2 (§4, SEUL RISQUE TECHNIQUE identifie) : changer de sentier depuis
+/// « Mes treks » ecrit [selectedTrailIdProvider] -> [trailConfigProvider] change
+/// -> [appBootstrapProvider] (qui watch la config) RE-SEEDE la base pour le
+/// nouveau sentier. On observe explicitement l'id du sentier actif ici (barriere
+/// de re-seed lisible) et on affiche le loader PENDANT tout rechargement — y
+/// compris un refresh « en place » (Riverpod garde alors l'ancienne valeur avec
+/// `isLoading` vrai) : sans ca, l'app afficherait 1 frame l'ancien sentier
+/// (carte/etapes de l'ancien trek) avant le re-seed. On regarde donc
+/// `isLoading`/`isReloading` en plus du `hasValue` pour couvrir ce cas.
 class _BootstrapGate extends ConsumerWidget {
   const _BootstrapGate({required this.child});
 
@@ -159,25 +171,39 @@ class _BootstrapGate extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Barriere de re-seed : le changement de sentier actif doit rejouer l'amorce
+    // (le provider d'amorce watch deja la config ; cette lecture rend la
+    // dependance explicite et documente l'invalidation au niveau de la garde).
+    ref.watch(trailConfigProvider.select((c) => c.id));
+
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);
 
+    Widget loader() => _BootstrapScaffold(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(),
+              const SizedBox(height: 24),
+              Text(
+                t.bootstrap.loading,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+            ],
+          ),
+        );
+
+    // Rechargement en cours (premier seed OU re-seed apres changement de
+    // sentier) : montrer le loader meme si une valeur precedente subsiste, pour
+    // ne jamais laisser voir l'ancien sentier pendant le re-seed.
+    if (bootstrap.isLoading) return loader();
+
     return bootstrap.when(
+      skipLoadingOnReload: true,
+      skipLoadingOnRefresh: true,
       data: (_) => child ?? const SizedBox.shrink(),
-      loading: () => _BootstrapScaffold(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CircularProgressIndicator(),
-            const SizedBox(height: 24),
-            Text(
-              t.bootstrap.loading,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      ),
+      loading: loader,
       error: (error, _) => _BootstrapScaffold(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),

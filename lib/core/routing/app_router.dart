@@ -42,6 +42,7 @@ import '../../features/safety/presentation/signalement_screen.dart';
 import '../../features/training/presentation/training_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
 import '../../features/trail_selection/presentation/trail_selection_screen.dart';
+import '../../features/treks/presentation/my_treks_screen.dart';
 import '../config/feature_flags.dart';
 import '../engine/trail_engine.dart';
 import 'app_shell.dart';
@@ -118,9 +119,9 @@ final appRouter = GoRouter(
   // Cablage nav (#88246 + HUB E07/AM-1) : le guard renvoie vers /onboarding au
   // premier lancement, puis vers /catalog tant qu aucun sentier n est
   // telecharge (currentTrailGuard). Une fois un sentier actif, l entree du
-  // shell est le HUB d accueil (/home, onglet position 1) d ou l utilisateur
-  // rejoint toutes les fonctions du sentier.
-  initialLocation: '/home',
+  // shell est « Mes treks » (/my-treks, onglet position 1, StepWays LOT 2 —
+  // option A) d ou l utilisateur choisit un trek puis rejoint le cockpit /home.
+  initialLocation: '/my-treks',
   redirect: _guardCurrentTrail,
   routes: [
     // ===== Navigation principale : bottom nav 5 onglets =====
@@ -128,13 +129,22 @@ final appRouter = GoRouter(
       builder: (context, state, navigationShell) =>
           AppShell(navigationShell: navigationShell),
       branches: [
-        // --- Onglet 1 : Accueil (HUB E07, AM-1 #F11) ---
-        // Point d entree du shell : le HUB agrege l etat du trek et les points
-        // d entree vers les fonctions du sentier (Planning y descend via la
-        // carte « Programme », #NAV02).
+        // --- Onglet 1 : Accueil (StepWays LOT 2, Phase 5 — option A) ---
+        // L'ENTREE de l'onglet Accueil est desormais « Mes treks » (/my-treks) :
+        // l'accueil maison qui liste les treks possedes (En cours / Préparés /
+        // Terminés) + Découvrir + Mon compte. Selectionner un trek ecrit
+        // selectedTrailIdProvider puis bascule vers le cockpit /home, DANS LE
+        // MEME onglet (le HUB reste une route de cette branche : il agrege
+        // l'etat du sentier actif et les points d'entree de ses fonctions,
+        // #NAV02). /home n'est plus l'entree par defaut du shell.
         StatefulShellBranch(
           navigatorKey: _shellHomeKey,
           routes: [
+            GoRoute(
+              path: '/my-treks',
+              name: 'my-treks',
+              builder: (context, state) => const MyTreksScreen(),
+            ),
             GoRoute(
               path: '/home',
               name: 'home',
@@ -697,7 +707,18 @@ bool hasCompletedOnboarding = true;
 ///
 /// HUB E07 (AM-1 #F11 #NAV03) : « /home » (Accueil) remplace « /planning » dans
 /// la barre ; le Planning trek devient une route hors-shell (#NAV02).
-const _shellTabPaths = <String>['/home', '/map', '/stages', '/journal', '/more'];
+///
+/// StepWays LOT 2 (Phase 5 — option A) : l'onglet Accueil s'ouvre sur
+/// « /my-treks » (accueil maison) ; « /home » (cockpit) reste une route de la
+/// MEME branche, donc protegee de la meme facon (exige un sentier utilisable).
+const _shellTabPaths = <String>[
+  '/my-treks',
+  '/home',
+  '/map',
+  '/stages',
+  '/journal',
+  '/more',
+];
 
 /// Guard de redirection principal (cablage nav #88246).
 ///

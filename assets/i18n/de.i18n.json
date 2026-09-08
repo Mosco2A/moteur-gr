@@ -31,7 +31,8 @@
     "catalog": "Wegekatalog",
     "profile": "Profil",
     "settings": "Einstellungen",
-    "trailSelection": "Weg wechseln"
+    "trailSelection": "Weg wechseln",
+    "myTreks": "Meine Touren"
   },
   "branding": {
     "tagline": "Ihr Trekking-Begleiter",
@@ -52,7 +53,8 @@
       "resume": "Navigation fortsetzen",
       "noTrekTitle": "Bereit loszugehen?",
       "noTrekBody": "Planen Sie Ihre Route und starten Sie Ihren Trek, wann immer Sie bereit sind.",
-      "plan": "Meinen Trek planen"
+      "plan": "Meinen Trek planen",
+      "completedTitle": "Tour abgeschlossen"
     },
     "weather": {
       "title": "Wetter heute",
@@ -1666,5 +1668,36 @@
     "cancel": "Abbrechen",
     "validate": "Bestätigen",
     "importedSnack": "GPX-Track importiert!"
+  },
+  "myTreks": {
+    "title": "Meine Touren",
+    "sectionInProgress": "Laufend",
+    "sectionPrepared": "Vorbereitet",
+    "sectionCompleted": "Abgeschlossen",
+    "empty": "Noch keine Tour. Entdecke einen Weg, um zu beginnen.",
+    "discoverTitle": "Wege entdecken",
+    "discoverSubtitle": "Katalog durchsuchen",
+    "accountTitle": "Mein Konto",
+    "accountSubtitle": "Profil und Einstellungen",
+    "badge": {
+      "owned": "Im Besitz",
+      "prepared": "Vorbereitet",
+      "inProgress": "Laufend",
+      "completed": "Abgeschlossen"
+    },
+    "progressLabel": "$percent % des Weges",
+    "a11y": {
+      "trekCard": "Tour $nom, $state",
+      "openTrek": "Tour $nom öffnen"
+    }
+  },
+  "trekState": {
+    "abandonDialog": {
+      "title": "Eine Tour läuft bereits",
+      "message": "Du hast eine laufende Wanderung. Beende oder brich sie ab, bevor du eine neue startest.",
+      "finish": "Beenden",
+      "abandon": "Abbrechen",
+      "cancel": "Zurück"
+    }
   }
 }

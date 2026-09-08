@@ -16,8 +16,10 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 ///   - restauration d'etat par onglet (IndexedStack natif).
 void main() {
   group('AppRouter — structure', () {
-    test('la route initiale est /home (HUB E07, AM-1)', () {
-      expect(appRouter.routeInformationProvider.value.uri.path, '/home');
+    test('la route initiale est /my-treks (StepWays LOT 2 — option A)', () {
+      // L'onglet Accueil s'ouvre desormais sur « Mes treks » ; /home (cockpit)
+      // reste une route de la meme branche.
+      expect(appRouter.routeInformationProvider.value.uri.path, '/my-treks');
     });
 
     test('le premier niveau contient 1 shell + 18 routes racine', () {
@@ -97,15 +99,15 @@ void main() {
       final paths = shell().branches
           .map((b) => (b.routes.first as GoRoute).path)
           .toList();
-      // HUB E07 (AM-1) : Accueil en position 1, Planning sorti de la barre.
-      expect(paths, ['/home', '/map', '/stages', '/journal', '/more']);
+      // StepWays LOT 2 (option A) : l'onglet Accueil s'ouvre sur « Mes treks ».
+      expect(paths, ['/my-treks', '/map', '/stages', '/journal', '/more']);
     });
 
     test('chaque onglet porte le bon nom de route', () {
       final names = shell().branches
           .map((b) => (b.routes.first as GoRoute).name)
           .toList();
-      expect(names, ['home', 'map', 'stages', 'journal', 'more']);
+      expect(names, ['my-treks', 'map', 'stages', 'journal', 'more']);
     });
 
     test('chaque branche a sa propre cle de navigateur (etat isole)', () {
@@ -123,11 +125,17 @@ void main() {
       expect((stagesRoute.routes.first as GoRoute).name, 'stage-by-id');
     });
 
-    test('l onglet Accueil (position 1) pointe vers le HUB /home', () {
+    test('l onglet Accueil (position 1) s ouvre sur « Mes treks »', () {
+      // StepWays LOT 2 (option A) : entree = /my-treks ; le cockpit /home reste
+      // la seconde route de la MEME branche (accessible via go('/home')).
       final homeBranch = shell().branches.first;
-      final homeRoute = homeBranch.routes.first as GoRoute;
-      expect(homeRoute.path, '/home');
-      expect(homeRoute.name, 'home');
+      final entryRoute = homeBranch.routes.first as GoRoute;
+      expect(entryRoute.path, '/my-treks');
+      expect(entryRoute.name, 'my-treks');
+
+      final cockpitRoute = homeBranch.routes[1] as GoRoute;
+      expect(cockpitRoute.path, '/home');
+      expect(cockpitRoute.name, 'home');
     });
   });
 
@@ -278,8 +286,16 @@ void main() {
 
     test('sans sentier dispo, les routes du shell renvoient au catalogue', () {
       hasDownloadedTrails = false;
-      // HUB E07 (AM-1) : /home remplace /planning dans les onglets coeur.
-      for (final tab in ['/home', '/map', '/stages', '/journal', '/more']) {
+      // StepWays LOT 2 (option A) : /my-treks (entree Accueil) + /home (cockpit)
+      // sont dans la meme branche, tous deux proteges comme onglets coeur.
+      for (final tab in [
+        '/my-treks',
+        '/home',
+        '/map',
+        '/stages',
+        '/journal',
+        '/more',
+      ]) {
         expect(redirectForPath(tab), '/catalog',
             reason: '$tab (coeur) doit renvoyer au catalogue sans sentier');
       }
@@ -305,6 +321,7 @@ void main() {
 
     test('avec sentier dispo + onboarding fait : navigation libre', () {
       // Conditions nominales (cf. setUp) -> shell atteignable directement.
+      expect(redirectForPath('/my-treks'), isNull);
       expect(redirectForPath('/home'), isNull);
       expect(redirectForPath('/map'), isNull);
       expect(redirectForPath('/stages'), isNull);

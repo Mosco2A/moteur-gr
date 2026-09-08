@@ -8,8 +8,12 @@ import 'package:moteur_gr/features/auth/providers/auth_provider.dart';
 import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_header.dart';
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_trek_card.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/features/hub/providers/hub_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
+import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
+import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
+import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests du HUB d'accueil E07 (LOT-A, socle structurel).
@@ -151,8 +155,21 @@ void main() {
     });
   });
 
-  group('HubTrekCard (RF-4, 2 etats)', () {
-    testWidgets('etat « aucun trek » : invite a planifier', (tester) async {
+  group('HubTrekCard (StepWays LOT 2 — cycle de vie)', () {
+    // Override de l'etat DERIVE du sentier actif (source du branchement de la
+    // carte depuis LOT 2 Phase 5). Sans session en memoire, la carte suit cet
+    // etat (owned/prepared -> Démarrer, completed -> Revoir/Diplôme).
+    Override summaryWith(TrekLifecycleState state) {
+      return currentTrailSummaryProvider.overrideWith(
+        (ref) async => TrekSummary(
+          config: ref.watch(trailConfigProvider),
+          state: state,
+        ),
+      );
+    }
+
+    testWidgets('etat owned/prepared : CTA « Démarrer » (garde C4)',
+        (tester) async {
       await tester.pumpWidget(
         wrap(
           child: const HubTrekCard(),
@@ -161,13 +178,16 @@ void main() {
             trekWith(const TrackingSessionState(
               status: TrackingSessionStatus.idle,
             )),
+            summaryWith(TrekLifecycleState.owned),
           ],
         ),
       );
       await tester.pumpAndSettle();
 
+      // Nouvelle carte de demarrage : titre d'invite + CTA « Démarrer » (le CTA
+      // passe par la garde d'unicite C4, plus l'ancien « Planifier »).
       expect(find.text(t.hub.trekCard.noTrekTitle), findsOneWidget);
-      expect(find.text(t.hub.trekCard.plan), findsOneWidget);
+      expect(find.text(t.hub.startCta), findsOneWidget);
       // Pas d'elements de l'etat actif.
       expect(find.text(t.hub.trekCard.activeTitle), findsNothing);
       expect(find.text(t.hub.trekCard.resume), findsNothing);
@@ -196,8 +216,32 @@ void main() {
       // La distance parcourue s'affiche formatee.
       expect(find.text('12.5 km'), findsOneWidget);
       expect(find.text('640 m'), findsOneWidget);
-      // Pas d'invitation a planifier en trek actif.
-      expect(find.text(t.hub.trekCard.plan), findsNothing);
+      // Pas de CTA « Démarrer » en trek actif.
+      expect(find.text(t.hub.startCta), findsNothing);
+    });
+
+    testWidgets('etat « completed » : Revoir + Diplôme',
+        (tester) async {
+      await tester.pumpWidget(
+        wrap(
+          child: const HubTrekCard(),
+          overrides: [
+            userWith(null),
+            trekWith(const TrackingSessionState(
+              status: TrackingSessionStatus.idle,
+            )),
+            summaryWith(TrekLifecycleState.completed),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(t.hub.trekCard.completedTitle), findsOneWidget);
+      // Acces Revoir (recap) + Diplôme.
+      expect(find.byKey(const ValueKey('completed-review')), findsOneWidget);
+      expect(find.byKey(const ValueKey('completed-diploma')), findsOneWidget);
+      // Pas de CTA « Démarrer ».
+      expect(find.text(t.hub.startCta), findsNothing);
     });
   });
 

@@ -98,6 +98,8 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$shop$it shop = _Translations$shop$it._(_root);
 	@override late final _Translations$summary$it summary = _Translations$summary$it._(_root);
 	@override late final _Translations$import$it import = _Translations$import$it._(_root);
+	@override late final _Translations$myTreks$it myTreks = _Translations$myTreks$it._(_root);
+	@override late final _Translations$trekState$it trekState = _Translations$trekState$it._(_root);
 }
 
 // Path: a11y
@@ -146,6 +148,7 @@ class _Translations$nav$it extends Translations$nav$fr {
 	@override String get profile => 'Profilo';
 	@override String get settings => 'Impostazioni';
 	@override String get trailSelection => 'Cambia sentiero';
+	@override String get myTreks => 'I miei trek';
 }
 
 // Path: branding
@@ -1357,6 +1360,37 @@ class _Translations$import$it extends Translations$import$fr {
 	@override String get importedSnack => 'Traccia GPX importata!';
 }
 
+// Path: myTreks
+class _Translations$myTreks$it extends Translations$myTreks$fr {
+	_Translations$myTreks$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'I miei trek';
+	@override String get sectionInProgress => 'In corso';
+	@override String get sectionPrepared => 'Preparati';
+	@override String get sectionCompleted => 'Completati';
+	@override String get empty => 'Nessun trek per ora. Scopri un sentiero per iniziare.';
+	@override String get discoverTitle => 'Scopri sentieri';
+	@override String get discoverSubtitle => 'Sfoglia il catalogo';
+	@override String get accountTitle => 'Il mio account';
+	@override String get accountSubtitle => 'Profilo e impostazioni';
+	@override late final _Translations$myTreks$badge$it badge = _Translations$myTreks$badge$it._(_root);
+	@override String progressLabel({required Object percent}) => '${percent} % del sentiero';
+	@override late final _Translations$myTreks$a11y$it a11y = _Translations$myTreks$a11y$it._(_root);
+}
+
+// Path: trekState
+class _Translations$trekState$it extends Translations$trekState$fr {
+	_Translations$trekState$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override late final _Translations$trekState$abandonDialog$it abandonDialog = _Translations$trekState$abandonDialog$it._(_root);
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$it extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1373,6 +1407,7 @@ class _Translations$hub$trekCard$it extends Translations$hub$trekCard$fr {
 	@override String get noTrekTitle => 'Pronto a partire?';
 	@override String get noTrekBody => 'Pianifica il tuo itinerario, poi avvia il trek quando sei pronto.';
 	@override String get plan => 'Pianifica il mio trek';
+	@override String get completedTitle => 'Trek completato';
 }
 
 // Path: hub.weather
@@ -2785,6 +2820,44 @@ class _Translations$summary$a11y$it extends Translations$summary$a11y$fr {
 	@override String get share => 'Condividi il mio piano';
 }
 
+// Path: myTreks.badge
+class _Translations$myTreks$badge$it extends Translations$myTreks$badge$fr {
+	_Translations$myTreks$badge$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get owned => 'Posseduto';
+	@override String get prepared => 'Preparato';
+	@override String get inProgress => 'In corso';
+	@override String get completed => 'Completato';
+}
+
+// Path: myTreks.a11y
+class _Translations$myTreks$a11y$it extends Translations$myTreks$a11y$fr {
+	_Translations$myTreks$a11y$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String trekCard({required Object nom, required Object state}) => 'Trek ${nom}, ${state}';
+	@override String openTrek({required Object nom}) => 'Apri il trek ${nom}';
+}
+
+// Path: trekState.abandonDialog
+class _Translations$trekState$abandonDialog$it extends Translations$trekState$abandonDialog$fr {
+	_Translations$trekState$abandonDialog$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Un trek è già in corso';
+	@override String get message => 'Hai un\'escursione in corso. Terminala o abbandonala prima di iniziarne un\'altra.';
+	@override String get finish => 'Termina';
+	@override String get abandon => 'Abbandona';
+	@override String get cancel => 'Annulla';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$it extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -3163,6 +3236,7 @@ extension on TranslationsIt {
 			'nav.profile' => 'Profilo',
 			'nav.settings' => 'Impostazioni',
 			'nav.trailSelection' => 'Cambia sentiero',
+			'nav.myTreks' => 'I miei trek',
 			'branding.tagline' => 'Il tuo compagno di trekking',
 			'branding.subline' => 'Prepara, cammina, condividi',
 			'hub.greeting' => ({required Object name}) => 'Ciao, ${name}!',
@@ -3179,6 +3253,7 @@ extension on TranslationsIt {
 			'hub.trekCard.noTrekTitle' => 'Pronto a partire?',
 			'hub.trekCard.noTrekBody' => 'Pianifica il tuo itinerario, poi avvia il trek quando sei pronto.',
 			'hub.trekCard.plan' => 'Pianifica il mio trek',
+			'hub.trekCard.completedTitle' => 'Trek completato',
 			'hub.weather.title' => 'Meteo di oggi',
 			'hub.weather.stub' => 'Il meteo della tua tappa arriva presto.',
 			'hub.weather.unavailable' => 'Meteo non disponibile al momento.',
@@ -3643,10 +3718,10 @@ extension on TranslationsIt {
 			'diploma.lockedTitle' => 'Diploma bloccato',
 			'diploma.lockedMessage' => 'Completa l intero percorso per sbloccare il tuo diploma da finisher.',
 			'diploma.labelIntegral' => 'Percorso integrale',
-			'diploma.labelPartial' => 'Percorso parziale',
-			'notifications.morningReminder' => 'Promemoria mattutino',
 			_ => null,
 		} ?? switch (path) {
+			'diploma.labelPartial' => 'Percorso parziale',
+			'notifications.morningReminder' => 'Promemoria mattutino',
 			'notifications.weatherAlerts' => 'Allerte meteo',
 			'notifications.countdown' => 'Promemoria G-2',
 			'notifications.countdownDesc' => 'Notifica 2 giorni prima della partenza',
@@ -4157,10 +4232,10 @@ extension on TranslationsIt {
 			'moderation.noStatement' => 'Nessuna restrizione è stata applicata ai tuoi contenuti.',
 			'moderation.complaintAction' => 'Contestare questa decisione',
 			'moderation.complaintTitle' => 'Contestare una decisione',
-			'moderation.complaintIntro' => 'Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).',
-			'moderation.complaintExposeLabel' => 'La tua contestazione',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.complaintIntro' => 'Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).',
+			'moderation.complaintExposeLabel' => 'La tua contestazione',
 			'moderation.complaintExposeHint' => 'Descrivi i motivi della tua contestazione.',
 			'moderation.complaintSubmit' => 'Invia contestazione',
 			'moderation.complaintSent' => 'Contestazione registrata. Sarà esaminata.',
@@ -4451,6 +4526,27 @@ extension on TranslationsIt {
 			'import.cancel' => 'Annulla',
 			'import.validate' => 'Conferma',
 			'import.importedSnack' => 'Traccia GPX importata!',
+			'myTreks.title' => 'I miei trek',
+			'myTreks.sectionInProgress' => 'In corso',
+			'myTreks.sectionPrepared' => 'Preparati',
+			'myTreks.sectionCompleted' => 'Completati',
+			'myTreks.empty' => 'Nessun trek per ora. Scopri un sentiero per iniziare.',
+			'myTreks.discoverTitle' => 'Scopri sentieri',
+			'myTreks.discoverSubtitle' => 'Sfoglia il catalogo',
+			'myTreks.accountTitle' => 'Il mio account',
+			'myTreks.accountSubtitle' => 'Profilo e impostazioni',
+			'myTreks.badge.owned' => 'Posseduto',
+			'myTreks.badge.prepared' => 'Preparato',
+			'myTreks.badge.inProgress' => 'In corso',
+			'myTreks.badge.completed' => 'Completato',
+			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % del sentiero',
+			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
+			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Apri il trek ${nom}',
+			'trekState.abandonDialog.title' => 'Un trek è già in corso',
+			'trekState.abandonDialog.message' => 'Hai un\'escursione in corso. Terminala o abbandonala prima di iniziarne un\'altra.',
+			'trekState.abandonDialog.finish' => 'Termina',
+			'trekState.abandonDialog.abandon' => 'Abbandona',
+			'trekState.abandonDialog.cancel' => 'Annulla',
 			_ => null,
 		};
 	}

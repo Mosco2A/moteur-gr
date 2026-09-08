@@ -6,6 +6,7 @@ import 'package:moteur_gr/core/config/feature_flags.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/config/trail_selection.dart';
 import 'package:moteur_gr/core/data/database.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
@@ -228,6 +229,62 @@ void main() {
 
       final treks = await container.read(myTreksProvider.future);
       expect(treks.map((t) => t.trailId), ['gr20']);
+    });
+  });
+
+  group('currentTrailSummaryProvider — etat du sentier actif (cockpit)', () {
+    // Le provider watch trailConfigProvider : on l'override directement avec le
+    // sentier de test (le catalogue statique ne connait pas ces ids fictifs).
+    ProviderContainer cockpitContainer(TrailConfig active) {
+      final container = ProviderContainer(overrides: [
+        databaseProvider.overrideWithValue(db),
+        trailConfigProvider.overrideWithValue(active),
+      ]);
+      addTearDown(container.dispose);
+      return container;
+    }
+
+    test('derive owned quand rien fait sur le sentier actif', () async {
+      final container = cockpitContainer(_config('gr20'));
+
+      final summary = await container.read(currentTrailSummaryProvider.future);
+      expect(summary, isNotNull);
+      expect(summary!.state, TrekLifecycleState.owned);
+      expect(summary.trailId, 'gr20');
+    });
+
+    test('derive inProgress quand une session active existe sur le sentier',
+        () async {
+      await db.trekSessionsDao
+          .upsertSession(session('gr20', id: 'a', status: 'active'));
+      final container = cockpitContainer(_config('gr20'));
+
+      final summary = await container.read(currentTrailSummaryProvider.future);
+      expect(summary!.state, TrekLifecycleState.inProgress);
+    });
+
+    test('derive completed quand la derniere session est completed', () async {
+      await db.trekSessionsDao.upsertSession(session(
+        'gr20',
+        id: 'a',
+        status: 'completed',
+        finishedAt: DateTime.utc(2026, 5, 20, 17),
+      ));
+      final container = cockpitContainer(_config('gr20'));
+
+      final summary = await container.read(currentTrailSummaryProvider.future);
+      expect(summary!.state, TrekLifecycleState.completed);
+    });
+
+    test('ne depend PAS des droits : reflete meme un sentier non possede',
+        () async {
+      // Aucun entitlement pose, mais le sentier actif est jouable (vitrine) :
+      // le cockpit doit tout de meme refleter son etat (owned = point de depart).
+      final container = cockpitContainer(_config('demo', showcase: true));
+
+      final summary = await container.read(currentTrailSummaryProvider.future);
+      expect(summary, isNotNull);
+      expect(summary!.state, TrekLifecycleState.owned);
     });
   });
 

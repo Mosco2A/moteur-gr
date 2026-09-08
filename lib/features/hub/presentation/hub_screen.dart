@@ -4,10 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
 import '../../safety/presentation/sos_button.dart';
-import '../../trek/providers/tracking_providers.dart';
 import 'widgets/hub_header.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_trek_card.dart';
@@ -45,18 +43,17 @@ class HubScreen extends ConsumerWidget {
     );
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
 
-    // CTA « Demarrer » (RF-7) et FAB SOS ne s'affichent que hors trek reel actif.
-    final trekStatus = ref.watch(
-      trekSessionManagerProvider.select((s) => s.status),
-    );
-    final isTrekActive =
-        trekStatus == TrackingSessionStatus.recording ||
-        trekStatus == TrackingSessionStatus.paused;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(trailTitle),
         actions: [
+          // StepWays LOT 2 (Phase 5) : retour a l'accueil « Mes treks » (option
+          // A) — l'entree de l'onglet Accueil liste tous les treks possedes.
+          IconButton(
+            icon: const Icon(Icons.hiking),
+            tooltip: t.nav.myTreks,
+            onPressed: () => context.go('/my-treks'),
+          ),
           IconButton(
             icon: const Icon(Icons.info_outline),
             tooltip: t.hub.infoTooltip,
@@ -96,23 +93,14 @@ class HubScreen extends ConsumerWidget {
             // Tuile meteo reelle (AM-3, LOT-B) : ConsumerWidget (const OK).
             const HubWeatherCard(),
             const SizedBox(height: AppTheme.spacingBase),
-            // Carte principale trek (RF-4, 2 etats).
+            // Carte principale trek (RF-4), enrichie du cycle de vie multi-trek
+            // (StepWays LOT 2, Phase 5) : elle porte desormais elle-meme le CTA
+            // « Démarrer » (owned/prepared, via la garde d'unicite C4), la carte
+            // active (inProgress) ou « Revoir/Diplôme » (completed). L'ancien CTA
+            // « Démarrer » plein largeur au niveau de l'ecran (qui poussait vers
+            // la planification) est retire : la carte est la source unique du
+            // demarrage, garde C4 comprise (plus de double bouton).
             const HubTrekCard(),
-            // CTA « Demarrer » plein largeur si aucun trek reel actif (RF-7).
-            if (!isTrekActive) ...[
-              const SizedBox(height: AppTheme.spacingBase),
-              // SW-SKIN-L3e : OutlinedButton.icon -> AppButton outline, pleine
-              // largeur (SizedBox width infinity conserve). Libelle inchange.
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  variant: AppButtonVariant.outline,
-                  icon: Icons.play_arrow,
-                  label: t.hub.startCta,
-                  onPressed: () => context.push('/trail/$trailId/planning'),
-                ),
-              ),
-            ],
             const SizedBox(height: AppTheme.spacingLg),
 
             // --- Section Preparer (RF-6) ---

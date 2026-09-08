@@ -31,7 +31,8 @@
     "catalog": "Trail catalog",
     "profile": "Profile",
     "settings": "Settings",
-    "trailSelection": "Switch trail"
+    "trailSelection": "Switch trail",
+    "myTreks": "My treks"
   },
   "branding": {
     "tagline": "Your trekking companion",
@@ -52,7 +53,8 @@
       "resume": "Resume navigation",
       "noTrekTitle": "Ready to go?",
       "noTrekBody": "Plan your itinerary, then start your trek whenever you're ready.",
-      "plan": "Plan my trek"
+      "plan": "Plan my trek",
+      "completedTitle": "Trek completed"
     },
     "weather": {
       "title": "Today's weather",
@@ -1666,5 +1668,36 @@
     "cancel": "Cancel",
     "validate": "Confirm",
     "importedSnack": "GPX track imported!"
+  },
+  "myTreks": {
+    "title": "My treks",
+    "sectionInProgress": "In progress",
+    "sectionPrepared": "Prepared",
+    "sectionCompleted": "Completed",
+    "empty": "No trek yet. Discover a trail to get started.",
+    "discoverTitle": "Discover trails",
+    "discoverSubtitle": "Browse the catalog",
+    "accountTitle": "My account",
+    "accountSubtitle": "Profile and settings",
+    "badge": {
+      "owned": "Owned",
+      "prepared": "Prepared",
+      "inProgress": "In progress",
+      "completed": "Completed"
+    },
+    "progressLabel": "$percent % of the trail",
+    "a11y": {
+      "trekCard": "Trek $nom, $state",
+      "openTrek": "Open trek $nom"
+    }
+  },
+  "trekState": {
+    "abandonDialog": {
+      "title": "A trek is already in progress",
+      "message": "You have an ongoing hike. Finish it or give it up before starting another one.",
+      "finish": "Finish",
+      "abandon": "Give up",
+      "cancel": "Cancel"
+    }
   }
 }

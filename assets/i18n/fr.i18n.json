@@ -31,7 +31,8 @@
     "catalog": "Catalogue des sentiers",
     "profile": "Profil",
     "settings": "Paramètres",
-    "trailSelection": "Changer de sentier"
+    "trailSelection": "Changer de sentier",
+    "myTreks": "Mes treks"
   },
   "branding": {
     "tagline": "Votre compagnon de randonnée",
@@ -52,7 +53,8 @@
       "resume": "Reprendre la navigation",
       "noTrekTitle": "Prêt à partir ?",
       "noTrekBody": "Planifiez votre itinéraire, puis lancez votre randonnée quand vous êtes prêt.",
-      "plan": "Planifier ma randonnée"
+      "plan": "Planifier ma randonnée",
+      "completedTitle": "Trek terminé"
     },
     "weather": {
       "title": "Météo du jour",
@@ -1666,5 +1668,36 @@
     "cancel": "Annuler",
     "validate": "Valider",
     "importedSnack": "Trace GPX importee !"
+  },
+  "myTreks": {
+    "title": "Mes treks",
+    "sectionInProgress": "En cours",
+    "sectionPrepared": "Preparés",
+    "sectionCompleted": "Terminés",
+    "empty": "Aucun trek pour le moment. Découvrez un sentier pour commencer.",
+    "discoverTitle": "Découvrir des sentiers",
+    "discoverSubtitle": "Parcourez le catalogue",
+    "accountTitle": "Mon compte",
+    "accountSubtitle": "Profil et réglages",
+    "badge": {
+      "owned": "Possédé",
+      "prepared": "Préparé",
+      "inProgress": "En cours",
+      "completed": "Terminé"
+    },
+    "progressLabel": "$percent % du sentier",
+    "a11y": {
+      "trekCard": "Trek $nom, $state",
+      "openTrek": "Ouvrir le trek $nom"
+    }
+  },
+  "trekState": {
+    "abandonDialog": {
+      "title": "Un trek est déjà en cours",
+      "message": "Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d'en démarrer une autre.",
+      "finish": "Terminer",
+      "abandon": "Abandonner",
+      "cancel": "Annuler"
+    }
   }
 }

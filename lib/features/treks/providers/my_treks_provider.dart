@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/trail_selection.dart';
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../trek/domain/models/trek_session.dart';
 import '../domain/trek_lifecycle_state.dart';
@@ -90,6 +91,38 @@ void _sortForHome(List<TrekSummary> summaries) {
     return db.compareTo(da); // desc
   });
 }
+
+/// [TrekSummary] du sentier ACTIF (celui du cockpit `/home`), ou null si son
+/// id est absent du catalogue (StepWays LOT 2, Phase 5 — cockpit).
+///
+/// Derive l'etat ([TrekLifecycleState]) du sentier courant
+/// ([trailConfigProvider.id]) a la volee, exactement comme [myTreksProvider] le
+/// fait par trek, mais SANS dependre des droits ([ownedTrailIdsProvider]) : le
+/// cockpit reflete l'etat du sentier affiche qu'il soit « possede » ou non
+/// (vitrine, achat en cours de migration...). C'est la source unique de la
+/// carte principale du HUB ([HubTrekCard]) pour choisir entre « Démarrer »
+/// (owned/prepared), la carte active (inProgress) et « Revoir/Diplôme »
+/// (completed). Re-derive automatiquement au changement de sentier
+/// (`selectedTrailIdProvider`) ou de session.
+final currentTrailSummaryProvider = FutureProvider<TrekSummary?>((ref) async {
+  final config = ref.watch(trailConfigProvider);
+  final db = ref.watch(databaseProvider);
+
+  final latestSession = await db.trekSessionsDao.getLatestByTrailId(config.id);
+  final progress = await db.progressDao.getByTrailId(config.id);
+
+  final state = deriveState(
+    latestSession: latestSession,
+    hasPlanningOrProgress: progress != null,
+  );
+
+  return TrekSummary(
+    config: config,
+    state: state,
+    latestSession: latestSession,
+    progress: progress,
+  );
+});
 
 /// Identifiant du trek ACTUELLEMENT en cours (session `active`|`paused`), ou
 /// null si aucun (StepWays LOT 2, Phase 2 — invariant C4 : au plus 1).
