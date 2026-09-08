@@ -10,6 +10,8 @@ import "../data/daos/checklist_dao.dart";
 import "../data/daos/journal_dao.dart";
 import "../data/daos/progress_dao.dart";
 import "../data/daos/sync_queue_dao.dart";
+import "../data/daos/trek_entitlements_dao.dart";
+import "../data/daos/wallet_dao.dart";
 import "../firebase/firebase_service.dart";
 import "../models/sync_config.dart";
 import "../network/connectivity_monitor.dart";
@@ -62,6 +64,8 @@ class CloudSyncService {
     required this.syncQueueDao,
     required this.connectivityMonitor,
     required this.firebaseService,
+    this.walletDao,
+    this.entitlementsDao,
     FirebaseFirestore? firestore,
   }) : _firestore = firestore;
 
@@ -71,6 +75,14 @@ class CloudSyncService {
   final SyncQueueDao syncQueueDao;
   final ConnectivityMonitor connectivityMonitor;
   final FirebaseService firebaseService;
+
+  /// DAO du solde du compte-etapes (miroir cloud wallet, A5). Nullable pour
+  /// retro-compat des tests/instances qui ne syncent pas le wallet.
+  final WalletDao? walletDao;
+
+  /// DAO des droits par sentier (miroir cloud entitlements, A5).
+  final TrekEntitlementsDao? entitlementsDao;
+
   FirebaseFirestore? _firestore;
 
   /// Accesseur Firestore (lazy init pour les tests)
@@ -313,6 +325,126 @@ class CloudSyncService {
     );
   }
 
+  // --- Miroir cloud wallet (non nominatif, A5 / spec §5) -------------------
+  //
+  // Backup cloud du compte-etapes + droits par sentier. V1 = LOCAL-AUTHORITATIVE
+  // : le local (prefs + Drift) fait foi, le cloud n'est qu'une sauvegarde
+  // last-write-wins (aucune relecture cloud -> local ici). CONFIDENTIALITE
+  // (directive) : ENTIERS + TIMESTAMPS + trailId UNIQUEMENT. Zero nominatif,
+  // zero euro, zero receipt store. [userId] est le hash anonymise
+  // (`anonymous_id_service`), jamais un identifiant en clair. Le ledger fin
+  // multi-device (anti double-credit) est hors LOT 1.
+
+  /// Payload NON NOMINATIF du solde wallet (`users/{uid}/wallet/current`).
+  ///
+  /// Uniquement des entiers + un timestamp : solde courant et cumuls de vie.
+  /// Aucun champ nominatif, aucun euro. Fonction pure (testable sans reseau).
+  Map<String, dynamic> buildWalletPayload(
+    WalletBalanceData wallet, {
+    String? updatedAt,
+  }) {
+    return {
+      "balance_steps": wallet.balanceSteps,
+      "lifetime_earned": wallet.lifetimeEarnedSteps,
+      "lifetime_spent": wallet.lifetimeSpentSteps,
+      "updated_at": updatedAt ?? wallet.updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Payload NON NOMINATIF d'un droit de sentier
+  /// (`users/{uid}/entitlements/{trailId}`).
+  ///
+  /// trailId + entiers/bool + timestamp UNIQUEMENT. On ne pousse PAS
+  /// `purchaseSource` ni `purchasedAt` (non requis par le miroir A5 ; on reste
+  /// au strict minimum non nominatif). Fonction pure (testable sans reseau).
+  Map<String, dynamic> buildEntitlementPayload(
+    TrekEntitlement e, {
+    String? updatedAt,
+  }) {
+    return {
+      "owned": e.owned,
+      "acquired_steps": e.acquiredStages,
+      "consumed_complement_steps": e.consumedComplementSteps,
+      "updated_at": updatedAt ?? e.updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Synchronise le miroir cloud wallet + entitlements pour [userId] (A5).
+  ///
+  /// [userId] = hash anonymise (`anonymous_id_service`). Ecrit
+  /// `users/{uid}/wallet/current` (solde) et une sous-collection
+  /// `users/{uid}/entitlements/{trailId}` (un doc par sentier connu), en
+  /// last-write-wins ([_setWithLastWriteWins], champ `updated_at`).
+  ///
+  /// GRACEFUL NO-OP si Firebase indisponible, hors-ligne, ou DAOs wallet non
+  /// injectes (retourne `idle` sans rien ecrire). Retro-compat : les instances
+  /// sans [walletDao]/[entitlementsDao] ignorent simplement ce bloc.
+  Future<CloudSyncResult> syncWallet(String userId) async {
+    if (walletDao == null || entitlementsDao == null) {
+      _log.d("[CloudSync] DAOs wallet non injectes, sync wallet ignoree");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+
+    if (!firebaseService.isAvailable) {
+      _log.d("[CloudSync] Firebase non disponible, sync wallet ignoree");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+
+    final connectivity = await connectivityMonitor.checkStatus();
+    if (connectivity == ConnectivityStatusValues.offline) {
+      _log.d("[CloudSync] Hors ligne, sync wallet reportee");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+
+    try {
+      int itemsSynced = 0;
+      final base = firestore.collection("users").doc(userId);
+
+      // --- 1. Solde wallet (singleton) ---
+      final wallet = await walletDao!.getByUserId(userId);
+      if (wallet != null) {
+        await _setWithLastWriteWins(
+          base.collection("wallet").doc("current"),
+          buildWalletPayload(wallet),
+        );
+        itemsSynced++;
+      }
+
+      // --- 2. Droits par sentier (sous-collection) ---
+      final entitlements = await entitlementsDao!.getAll();
+      for (final e in entitlements) {
+        await _setWithLastWriteWins(
+          base.collection("entitlements").doc(e.trailId),
+          buildEntitlementPayload(e),
+        );
+        itemsSynced++;
+      }
+
+      _log.d("[CloudSync] Miroir wallet synchronise: $itemsSynced items");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.success,
+        syncedAt: DateTime.now(),
+        itemsSynced: itemsSynced,
+      );
+    } catch (e) {
+      _log.e("[CloudSync] Erreur sync wallet: $e");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.error,
+        syncedAt: DateTime.now(),
+        error: e.toString(),
+      );
+    }
+  }
+
   /// Ecriture Firestore avec strategie last-write-wins.
   Future<void> _setWithLastWriteWins(
     DocumentReference<Map<String, dynamic>> docRef,
@@ -352,5 +484,7 @@ final cloudSyncServiceProvider = Provider<CloudSyncService>((ref) {
     syncQueueDao: SyncQueueDao(db),
     connectivityMonitor: connectivity,
     firebaseService: firebase,
+    walletDao: db.walletDao,
+    entitlementsDao: db.trekEntitlementsDao,
   );
 });

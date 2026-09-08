@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
 
+import '../../../core/services/monetization_service.dart';
+
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Seuil de suiveurs gratuits (index 0 et 1 = gratuits, 2+ = pub).
@@ -35,12 +37,37 @@ class AdService {
   ///
   /// Retourne `true` si [followerIndex] >= 2 ET [isPaid] est `false`.
   /// Les index 0 et 1 sont gratuits, sans pub (#81759).
+  ///
+  /// [isPaid] est la DECISION sans-pub deja resolue — il NE doit PAS etre
+  /// recalcule ici. La source unique app-wide (#99404) est
+  /// [MonetizationService.isNoAdsActive] ; passer par [shouldShowAdForTrail]
+  /// (ST7) pour resoudre cette decision a partir d'un [trailId] sans dupliquer
+  /// la regle.
   bool shouldShowAd({
     required int followerIndex,
     required bool isPaid,
   }) {
     if (isPaid) return false;
     return followerIndex >= kFreeFollowerThreshold;
+  }
+
+  /// Variante app-wide branchee sur la SOURCE UNIQUE sans-pub (#99404, ST7).
+  ///
+  /// Resout la decision sans-pub via [MonetizationService.isNoAdsActive]
+  /// (= `ownsTrail || isSubscriberActive || isRewardNoAdsActive`, vitrine
+  /// incluse) puis delegue a [shouldShowAd]. AUCUNE regle recalculee ici : la
+  /// seule verite est portee par [MonetizationService]. Le contrat rewarded
+  /// (`grantRewardNoAds` / `isRewardNoAdsActive`, cote MonetizationService) est
+  /// conserve pour le futur widget rewarded (L6).
+  ///
+  /// Async car [MonetizationService.isNoAdsActive] lit les droits Drift.
+  Future<bool> shouldShowAdForTrail({
+    required int followerIndex,
+    required String trailId,
+    required MonetizationService monetization,
+  }) async {
+    final noAds = await monetization.isNoAdsActive(trailId);
+    return shouldShowAd(followerIndex: followerIndex, isPaid: noAds);
   }
 
   /// Pre-charge une interstitielle AdMob.
