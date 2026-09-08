@@ -53,22 +53,31 @@ class PurchaseGateWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final monetization = ref.watch(monetizationServiceProvider);
-    final isDemo = monetization.isDemoMode(trailId);
+    // StepWays LOT 1 : l'acces derive des droits Drift (async). On evalue le
+    // mode demo via un FutureBuilder ; tant que c'est indetermine, on affiche le
+    // contenu nu (pas de flash du bandeau demo). On observe aussi
+    // monetizationReadyProvider pour rebuild une fois le service charge.
+    ref.watch(monetizationReadyProvider);
 
-    if (!isDemo) {
-      // Trek achete : affichage normal, pas de gate.
-      return child;
-    }
-
-    // Mode demo : bandeau + contenu
-    return Column(
-      children: [
-        _DemoBanner(
-          text: demoBannerText ?? t.monetization.demoBanner,
-          onTap: onPurchaseTap ?? () => _openPaywall(context),
-        ),
-        Expanded(child: child),
-      ],
+    return FutureBuilder<bool>(
+      future: monetization.isDemoMode(trailId),
+      builder: (context, snapshot) {
+        final isDemo = snapshot.data ?? false;
+        if (!isDemo) {
+          // Trek jouable (achete / abo / vitrine) : affichage normal, pas de gate.
+          return child;
+        }
+        // Mode demo : bandeau + contenu.
+        return Column(
+          children: [
+            _DemoBanner(
+              text: demoBannerText ?? t.monetization.demoBanner,
+              onTap: onPurchaseTap ?? () => _openPaywall(context),
+            ),
+            Expanded(child: child),
+          ],
+        );
+      },
     );
   }
 
@@ -83,9 +92,9 @@ class PurchaseGateWidget extends ConsumerWidget {
 
   /// Verifie si un trek est en mode demo (statique, sans widget).
   ///
-  /// Raccourci pour verifier depuis du code non-widget.
-  /// PAR TREK, pas par user (#81805 V7).
-  static bool isDemoMode(MonetizationService service, String trailId) {
+  /// Raccourci pour verifier depuis du code non-widget. Async (l'acces derive
+  /// des droits Drift, StepWays LOT 1). PAR TREK, pas par user (#81805 V7).
+  static Future<bool> isDemoMode(MonetizationService service, String trailId) {
     return service.isDemoMode(trailId);
   }
 }

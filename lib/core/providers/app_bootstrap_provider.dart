@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../engine/trail_engine.dart';
 import '../../features/trek/data/seed_data_loader.dart';
 import '../../features/trek/providers/stage_providers.dart';
+import '../services/monetization_service.dart';
 import 'database_provider.dart';
 
 /// Amorce de l'application — chargement initial des donnees (PARITE GR20, LOT 1).
@@ -36,4 +37,10 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   // derive deja de `trailConfigProvider.id` (defaut), mais on l'ecrit
   // explicitement au cas ou une lecture prealable l'aurait fige a vide.
   ref.read(currentTrailIdProvider.notifier).state = config.id;
+
+  // StepWays LOT 1 (ST4/ST5) : charge le compte-etapes + droits AVANT le rendu.
+  // Corrige l'ancien `loadPurchases()` JAMAIS appele : hydrate le wallet, migre
+  // les 2 cles prefs legacy vers les droits (idempotent), demarre l'ecoute IAP
+  // et resynchronise le cache FeatureFlags premium (gardes de routes synchrones).
+  await ref.watch(monetizationReadyProvider.future);
 });

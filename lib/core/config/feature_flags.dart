@@ -25,8 +25,9 @@ class FeatureFlags {
 
   /// Verifie si le premium est debloque pour un sentier donne (E4.17).
   ///
-  /// Retourne false par defaut (mode gratuit demo + pub, #81774).
-  /// Active par MonetizationService.purchaseTrail apres achat.
+  /// Retourne false par defaut (mode gratuit demo + pub, #81774). Cache
+  /// synchrone alimente par MonetizationService (`owned` ou vitrine) pour les
+  /// gardes de routes synchrones (StepWays LOT 1, ST4).
   static bool isPremiumEnabled(String trailId) {
     return _overrides['premium:$trailId'] ?? false;
   }

@@ -36,15 +36,25 @@ import '../config/trail_catalog.dart';
 /// achete (parite GR20, LOT 2). Injection [showcaseTrailIds] overridable en
 /// test ; par defaut = [TrailCatalog.showcaseIds] (aucun hardcode de localite).
 class DemoModeService {
-  DemoModeService({SharedPreferences? prefs, Set<String>? showcaseTrailIds})
-      : _prefs = prefs,
-        _showcaseTrailIds = showcaseTrailIds;
+  DemoModeService({
+    SharedPreferences? prefs,
+    Set<String>? showcaseTrailIds,
+    Future<bool> Function(String trailId)? demoResolver,
+  })  : _prefs = prefs,
+        _showcaseTrailIds = showcaseTrailIds,
+        _demoResolver = demoResolver;
 
   /// Instance SharedPreferences (injectee ou chargee au premier appel).
   SharedPreferences? _prefs;
 
   /// Sentiers vitrine debloques sans achat (injecte ou derive du catalogue).
   final Set<String>? _showcaseTrailIds;
+
+  /// Delegue de reconciliation (StepWays LOT 1) : quand fourni, [isDemoModeAsync]
+  /// derive l'etat demo de la SOURCE UNIQUE (`MonetizationService`, droits Drift)
+  /// au lieu de la cle prefs legacy `purchased_trail_ids`. Cable par le provider ;
+  /// null = comportement autonome historique (compat tests E5.18).
+  final Future<bool> Function(String trailId)? _demoResolver;
 
   /// Ensemble effectif des sentiers vitrine (injection > catalogue).
   Set<String> get _showcase => _showcaseTrailIds ?? TrailCatalog.showcaseIds;
@@ -73,6 +83,19 @@ class DemoModeService {
     if (isShowcaseTrail(trailId)) return false;
     final purchased = _prefs?.getStringList(_purchasedTrailsKey) ?? [];
     return !purchased.contains(trailId);
+  }
+
+  /// Version RECONCILIEE (StepWays LOT 1) : delegue a la SOURCE UNIQUE quand un
+  /// [_demoResolver] est cable (droits Drift de `MonetizationService`), sinon
+  /// retombe sur [isDemoMode] (cle prefs legacy). Supprime le doublon d'achats :
+  /// `DemoModeService` et `MonetizationService` renvoient le meme etat demo.
+  ///
+  /// La vitrine reste TOUJOURS jouable (jamais en demo), quel que soit le mode.
+  Future<bool> isDemoModeAsync(String trailId) async {
+    if (isShowcaseTrail(trailId)) return false;
+    final resolver = _demoResolver;
+    if (resolver != null) return resolver(trailId);
+    return isDemoMode(trailId);
   }
 
   /// Enregistre un trail comme achete (sort du mode demo).

@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/trek/data/widget_data_service.dart';
 import '../services/consent_service.dart';
 import '../services/demo_mode_service.dart';
+import '../services/monetization_service.dart';
 import '../services/health_reader_service.dart';
 import '../services/firestore_moderation_store.dart';
 import '../services/heart_rate_ble_service.dart';
@@ -17,8 +18,16 @@ import '../services/moderation_service.dart';
 import '../services/sensor_fusion_service.dart';
 
 /// Provider du service mode demo universel (E5.18).
+///
+/// RECONCILIE (StepWays LOT 1, ST4) : le mode demo est delegue a la SOURCE
+/// UNIQUE `MonetizationService` (droits Drift) via [DemoModeService.isDemoModeAsync],
+/// supprimant le doublon avec la cle prefs legacy `purchased_trail_ids`. La
+/// detection vitrine (`isShowcaseTrail`) reste autonome (catalogue).
 final demoModeServiceProvider = Provider<DemoModeService>(
-  (ref) => DemoModeService(),
+  (ref) => DemoModeService(
+    demoResolver: (trailId) =>
+        ref.read(monetizationServiceProvider).isDemoMode(trailId),
+  ),
 );
 
 /// Provider du service de donnees widget Home Screen (E5.19a).

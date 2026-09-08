@@ -6,12 +6,12 @@ import '../../core/theme/app_theme.dart';
 import '../../i18n/translations.g.dart';
 import 'app_button.dart';
 
-/// Ouvre l ecran paywall en bottom sheet (E4.17).
+/// Ouvre l ecran paywall en bottom sheet (E4.17, StepWays LOT 1).
 ///
-/// Propose le deblocage premium du trek [trailId] :
-/// liste des avantages (#81774) + prix (1 EUR x etapes) + CTA.
-/// L achat est un STUB (MonetizationService.purchaseTrail) —
-/// aucun paiement reel n est declenche.
+/// Propose le deblocage du trek [trailId] : liste des avantages (#81774) + prix
+/// EUR indicatif (etapes x [kStepTierEur]) + CTA. L'achat passe par le
+/// compte-etapes ([MonetizationService.buyTrail]) : wallet d'abord, complement
+/// store. En mode stub IAP, aucun paiement reel n'est declenche.
 Future<void> showPaywallSheet(
   BuildContext context, {
   required String trailId,
@@ -46,7 +46,9 @@ class PaywallSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final monetization = ref.watch(monetizationServiceProvider);
-    final price = monetization.priceForTrail(totalStages: totalStages);
+    // Prix EUR indicatif : nombre d'etapes x tarif palier (kStepTierEur).
+    final steps = monetization.stepPriceForTrail(totalStages: totalStages);
+    final price = monetization.eurPriceForSteps(steps);
 
     return SafeArea(
       child: Padding(
@@ -95,13 +97,13 @@ class PaywallSheet extends ConsumerWidget {
               icon: Icons.lock_open,
               label: totalStages > 0
                   ? t.monetization.buyCtaWithPrice(
-                      price: price.toStringAsFixed(0),
+                      price: price.toStringAsFixed(2),
                     )
                   : t.monetization.buyCta,
               onPressed: () async {
                 await ref
                     .read(monetizationServiceProvider)
-                    .purchaseTrail(trailId);
+                    .buyTrail(trailId, totalStages: totalStages);
                 if (context.mounted) Navigator.of(context).pop();
               },
             ),

@@ -1,36 +1,69 @@
+import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/feature_flags.dart';
+import 'package:moteur_gr/core/data/database.dart';
+import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
+import 'package:moteur_gr/core/services/wallet_iap_service.dart';
+import 'package:moteur_gr/core/services/wallet_store.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/paywall_sheet.dart';
 import 'package:moteur_gr/shared/widgets/purchase_gate_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-/// Tests widget E4.17 — purchase gate + ecran paywall.
+/// Tests widget E4.17 / StepWays LOT 1 — purchase gate + ecran paywall.
 ///
-/// Verifie : bandeau demo en gratuit, contenu nu en premium,
-/// ouverture du paywall et achat stub qui debloque le trek.
+/// Verifie : bandeau demo en gratuit (free), contenu nu en jouable (owned),
+/// ouverture du paywall et achat via le compte-etapes (buyTrail) qui debloque
+/// le trek quand le wallet couvre le prix.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
+  late AppDatabase db;
+  late WalletStore wallet;
   late MonetizationService svc;
 
   setUp(() async {
     SharedPreferences.setMockInitialValues({});
     FeatureFlags.clearOverrides();
-    svc = MonetizationService(prefs: await SharedPreferences.getInstance());
+    db = AppDatabase(NativeDatabase.memory());
+    final prefs = await SharedPreferences.getInstance();
+    wallet = WalletStore(db: db, prefs: prefs);
+    addTearDown(wallet.dispose);
+    final iap = WalletIapService(
+      walletStore: wallet,
+      noAdsDao: db.noAdsDao,
+      testMode: true,
+    );
+    addTearDown(iap.stopListening);
+    svc = MonetizationService(
+      walletStore: wallet,
+      entitlementsDao: db.trekEntitlementsDao,
+      noAdsDao: db.noAdsDao,
+      iapService: iap,
+      connectivityMonitor: ConnectivityMonitor(),
+      prefs: prefs,
+      showcaseTrailIds: const {},
+    );
+    await svc.load();
+    // Wallet approvisionne pour que l'achat du paywall soit couvert (12 etapes).
+    await wallet.credit(50);
   });
 
-  tearDown(() {
-    svc.clearPurchases();
+  tearDown(() async {
     FeatureFlags.clearOverrides();
+    await db.close();
   });
 
   Widget wrap(Widget child) {
     return ProviderScope(
-      overrides: [monetizationServiceProvider.overrideWithValue(svc)],
+      overrides: [
+        monetizationServiceProvider.overrideWithValue(svc),
+        // Service deja charge : le gate rebuild sur cet etat resolu.
+        monetizationReadyProvider.overrideWith((ref) async => svc),
+      ],
       child: MaterialApp(home: Scaffold(body: child)),
     );
   }
@@ -52,7 +85,7 @@ void main() {
     });
 
     testWidgets('trek achete : contenu nu, pas de bandeau', (tester) async {
-      await svc.purchaseTrail('volcans');
+      await svc.buyTrail('volcans', totalStages: 12);
 
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
@@ -68,7 +101,7 @@ void main() {
       expect(find.text('Contenu du trek'), findsOneWidget);
     });
 
-    testWidgets('tap bandeau ouvre le paywall, achat stub debloque',
+    testWidgets('tap bandeau ouvre le paywall, achat debloque via wallet',
         (tester) async {
       await tester.pumpWidget(wrap(
         const PurchaseGateWidget(
@@ -79,26 +112,26 @@ void main() {
       ));
       await tester.pumpAndSettle();
 
-      // Ouvrir le paywall via le bandeau
+      // Ouvrir le paywall via le bandeau.
       await tester.tap(find.text(t.monetization.demoBanner));
       await tester.pumpAndSettle();
 
-      // Ecran paywall affiche : titre + avantages + prix 12 EUR
+      // Ecran paywall affiche : titre + avantages + prix EUR (12 x 0,99).
       expect(find.byType(PaywallSheet), findsOneWidget);
       expect(find.text(t.monetization.paywallTitle), findsOneWidget);
       expect(find.text(t.monetization.featureNoAds), findsOneWidget);
       expect(
-        find.text(t.monetization.buyCtaWithPrice(price: '12')),
+        find.text(t.monetization.buyCtaWithPrice(price: '11.88')),
         findsOneWidget,
       );
 
-      // Achat stub — aucun paiement reel
+      // Achat via le compte-etapes (wallet suffisant).
       await tester.tap(find.byKey(const Key('paywall-buy-button')));
       await tester.pumpAndSettle();
 
-      // Trek debloque : paywall ferme, statut premium actif
+      // Trek debloque : paywall ferme, possede, cache premium actif.
       expect(find.byType(PaywallSheet), findsNothing);
-      expect(svc.isTrailPurchased('volcans'), isTrue);
+      expect(await svc.ownsTrail('volcans'), isTrue);
       expect(FeatureFlags.isPremiumEnabled('volcans'), isTrue);
     });
   });
