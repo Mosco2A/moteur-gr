@@ -1698,6 +1698,12 @@
       "finish": "Terminar",
       "abandon": "Abandonar",
       "cancel": "Cancelar"
+    },
+    "resumeOrphanDialog": {
+      "title": "¿Reanudar tu excursión?",
+      "message": "Había una excursión en curso al cerrar la aplicación por última vez. ¿Quieres reanudarla o abandonarla?",
+      "resume": "Reanudar",
+      "abandon": "Abandonar"
     }
   }
 }

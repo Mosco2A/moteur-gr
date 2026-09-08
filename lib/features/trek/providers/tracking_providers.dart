@@ -448,6 +448,42 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     await _finalize(status: 'abandoned');
   }
 
+  /// Abandonne une session ORPHELINE detectee au boot (StepWays LOT 2, C4 —
+  /// reprise orpheline, complement §3).
+  ///
+  /// A distinguer de [abandon] : la session orpheline N'EST PAS celle vivante du
+  /// notifier (l'app vient de demarrer — aucun tracking en memoire, aucune
+  /// capture de fond a arreter). On la solde donc DIRECTEMENT en base
+  /// (`status=abandoned` + `finishedAt`), sans teardown, exactement comme la
+  /// branche orpheline de [_resolveOngoing]. `parcoursFullyWalked` n'est JAMAIS
+  /// touche (jamais de faux finisher). Best-effort : un echec de persistance ne
+  /// doit pas casser le demarrage. Renvoie `true` si le solde a reussi.
+  ///
+  /// Par securite (defense en profondeur) si [session] se trouvait etre CELLE du
+  /// notifier — cas theorique, l'orpheline est par definition hors memoire — on
+  /// delegue a [abandon] (teardown complet) plutot que d'ecrire en base a cote.
+  Future<bool> abandonPendingSession(TrekSession session) async {
+    final isInMemory = state.session?.id == session.id &&
+        (state.status == TrackingSessionStatus.recording ||
+            state.status == TrackingSessionStatus.paused);
+    if (isInMemory) {
+      await abandon();
+      return true;
+    }
+    try {
+      await ref.read(databaseProvider).trekSessionsDao.upsertSession(
+            session.copyWith(
+              status: 'abandoned',
+              finishedAt: session.finishedAt ?? DateTime.now(),
+            ),
+          );
+      return true;
+    } catch (_) {
+      // Best-effort : un echec ne doit pas casser le demarrage.
+      return false;
+    }
+  }
+
   /// Teardown + persistance communs a [stop] (completed) et [abandon]
   /// (abandoned). Facteur commun : seule la valeur de `status` ecrite en base
   /// change ; `parcoursFullyWalked` n'est JAMAIS pose ici (il l'est en amont par

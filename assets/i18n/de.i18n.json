@@ -1698,6 +1698,12 @@
       "finish": "Beenden",
       "abandon": "Abbrechen",
       "cancel": "Zurück"
+    },
+    "resumeOrphanDialog": {
+      "title": "Wanderung fortsetzen?",
+      "message": "Beim letzten Schließen der App lief noch eine Wanderung. Möchtest du sie fortsetzen oder abbrechen?",
+      "resume": "Fortsetzen",
+      "abandon": "Abbrechen"
     }
   }
 }

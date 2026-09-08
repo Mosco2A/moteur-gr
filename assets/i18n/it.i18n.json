@@ -1698,6 +1698,12 @@
       "finish": "Termina",
       "abandon": "Abbandona",
       "cancel": "Annulla"
+    },
+    "resumeOrphanDialog": {
+      "title": "Riprendere l'escursione?",
+      "message": "Un'escursione era ancora in corso all'ultima chiusura dell'app. Vuoi riprenderla o abbandonarla?",
+      "resume": "Riprendi",
+      "abandon": "Abbandona"
     }
   }
 }

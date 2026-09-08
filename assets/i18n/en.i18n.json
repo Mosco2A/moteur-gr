@@ -1698,6 +1698,12 @@
       "finish": "Finish",
       "abandon": "Give up",
       "cancel": "Cancel"
+    },
+    "resumeOrphanDialog": {
+      "title": "Resume your hike?",
+      "message": "A hike was still in progress when the app last closed. Would you like to resume it or give it up?",
+      "resume": "Resume",
+      "abandon": "Give up"
     }
   }
 }

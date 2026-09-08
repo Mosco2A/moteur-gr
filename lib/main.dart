@@ -14,6 +14,7 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/safety/presentation/health_info_screen.dart';
+import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
 
 Future<void> main() async {
@@ -202,7 +203,13 @@ class _BootstrapGate extends ConsumerWidget {
     return bootstrap.when(
       skipLoadingOnReload: true,
       skipLoadingOnRefresh: true,
-      data: (_) => child ?? const SizedBox.shrink(),
+      // Amorce resolue : on rend l'arbre route, SOUS la garde de reprise
+      // orpheline (StepWays LOT 2, C4 §3). `pendingSessionProvider` a deja ete
+      // awaite par `appBootstrapProvider` (donc immediatement disponible ici) ;
+      // s'il a detecte une rando laissee par un arret brutal, on propose
+      // Reprendre / Abandonner une seule fois au premier rendu.
+      data: (_) =>
+          OrphanSessionReprise(child: child ?? const SizedBox.shrink()),
       loading: loader,
       error: (error, _) => _BootstrapScaffold(
         child: Padding(

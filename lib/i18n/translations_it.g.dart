@@ -1389,6 +1389,7 @@ class _Translations$trekState$it extends Translations$trekState$fr {
 
 	// Translations
 	@override late final _Translations$trekState$abandonDialog$it abandonDialog = _Translations$trekState$abandonDialog$it._(_root);
+	@override late final _Translations$trekState$resumeOrphanDialog$it resumeOrphanDialog = _Translations$trekState$resumeOrphanDialog$it._(_root);
 }
 
 // Path: hub.trekCard
@@ -2856,6 +2857,19 @@ class _Translations$trekState$abandonDialog$it extends Translations$trekState$ab
 	@override String get finish => 'Termina';
 	@override String get abandon => 'Abbandona';
 	@override String get cancel => 'Annulla';
+}
+
+// Path: trekState.resumeOrphanDialog
+class _Translations$trekState$resumeOrphanDialog$it extends Translations$trekState$resumeOrphanDialog$fr {
+	_Translations$trekState$resumeOrphanDialog$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Riprendere l\'escursione?';
+	@override String get message => 'Un\'escursione era ancora in corso all\'ultima chiusura dell\'app. Vuoi riprenderla o abbandonarla?';
+	@override String get resume => 'Riprendi';
+	@override String get abandon => 'Abbandona';
 }
 
 // Path: weather.alert.storm
@@ -4547,6 +4561,10 @@ extension on TranslationsIt {
 			'trekState.abandonDialog.finish' => 'Termina',
 			'trekState.abandonDialog.abandon' => 'Abbandona',
 			'trekState.abandonDialog.cancel' => 'Annulla',
+			'trekState.resumeOrphanDialog.title' => 'Riprendere l\'escursione?',
+			'trekState.resumeOrphanDialog.message' => 'Un\'escursione era ancora in corso all\'ultima chiusura dell\'app. Vuoi riprenderla o abbandonarla?',
+			'trekState.resumeOrphanDialog.resume' => 'Riprendi',
+			'trekState.resumeOrphanDialog.abandon' => 'Abbandona',
 			_ => null,
 		};
 	}

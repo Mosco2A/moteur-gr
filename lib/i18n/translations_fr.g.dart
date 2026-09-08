@@ -2730,6 +2730,7 @@ class Translations$trekState$fr {
 
 	// Translations
 	late final Translations$trekState$abandonDialog$fr abandonDialog = Translations$trekState$abandonDialog$fr.internal(_root);
+	late final Translations$trekState$resumeOrphanDialog$fr resumeOrphanDialog = Translations$trekState$resumeOrphanDialog$fr.internal(_root);
 }
 
 // Path: hub.trekCard
@@ -5445,6 +5446,27 @@ class Translations$trekState$abandonDialog$fr {
 	String get cancel => 'Annuler';
 }
 
+// Path: trekState.resumeOrphanDialog
+class Translations$trekState$resumeOrphanDialog$fr {
+	Translations$trekState$resumeOrphanDialog$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Reprendre votre randonnée ?'
+	String get title => 'Reprendre votre randonnée ?';
+
+	/// fr: 'Une randonnée était en cours lors de la dernière fermeture de l'application. Voulez-vous la reprendre ou l'abandonner ?'
+	String get message => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?';
+
+	/// fr: 'Reprendre'
+	String get resume => 'Reprendre';
+
+	/// fr: 'Abandonner'
+	String get abandon => 'Abandonner';
+}
+
 // Path: weather.alert.storm
 class Translations$weather$alert$storm$fr {
 	Translations$weather$alert$storm$fr.internal(this._root);
@@ -7270,6 +7292,10 @@ extension on Translations {
 			'trekState.abandonDialog.finish' => 'Terminer',
 			'trekState.abandonDialog.abandon' => 'Abandonner',
 			'trekState.abandonDialog.cancel' => 'Annuler',
+			'trekState.resumeOrphanDialog.title' => 'Reprendre votre randonnée ?',
+			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?',
+			'trekState.resumeOrphanDialog.resume' => 'Reprendre',
+			'trekState.resumeOrphanDialog.abandon' => 'Abandonner',
 			_ => null,
 		};
 	}

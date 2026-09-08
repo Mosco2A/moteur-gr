@@ -1389,6 +1389,7 @@ class _Translations$trekState$en extends Translations$trekState$fr {
 
 	// Translations
 	@override late final _Translations$trekState$abandonDialog$en abandonDialog = _Translations$trekState$abandonDialog$en._(_root);
+	@override late final _Translations$trekState$resumeOrphanDialog$en resumeOrphanDialog = _Translations$trekState$resumeOrphanDialog$en._(_root);
 }
 
 // Path: hub.trekCard
@@ -2856,6 +2857,19 @@ class _Translations$trekState$abandonDialog$en extends Translations$trekState$ab
 	@override String get finish => 'Finish';
 	@override String get abandon => 'Give up';
 	@override String get cancel => 'Cancel';
+}
+
+// Path: trekState.resumeOrphanDialog
+class _Translations$trekState$resumeOrphanDialog$en extends Translations$trekState$resumeOrphanDialog$fr {
+	_Translations$trekState$resumeOrphanDialog$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Resume your hike?';
+	@override String get message => 'A hike was still in progress when the app last closed. Would you like to resume it or give it up?';
+	@override String get resume => 'Resume';
+	@override String get abandon => 'Give up';
 }
 
 // Path: weather.alert.storm
@@ -4547,6 +4561,10 @@ extension on TranslationsEn {
 			'trekState.abandonDialog.finish' => 'Finish',
 			'trekState.abandonDialog.abandon' => 'Give up',
 			'trekState.abandonDialog.cancel' => 'Cancel',
+			'trekState.resumeOrphanDialog.title' => 'Resume your hike?',
+			'trekState.resumeOrphanDialog.message' => 'A hike was still in progress when the app last closed. Would you like to resume it or give it up?',
+			'trekState.resumeOrphanDialog.resume' => 'Resume',
+			'trekState.resumeOrphanDialog.abandon' => 'Give up',
 			_ => null,
 		};
 	}

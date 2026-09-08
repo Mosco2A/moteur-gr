@@ -90,6 +90,84 @@ void main() {
     expect(container.read(trekSessionManagerProvider).status,
         TrackingSessionStatus.idle);
   });
+
+  test(
+      'abandonPendingSession() solde une orpheline HORS memoire directement en '
+      'base (abandoned, jamais fully walked)', () async {
+    final container = ProviderContainer(overrides: [
+      databaseProvider.overrideWithValue(db),
+      backgroundGpsServiceProvider.overrideWithValue(_NoopBgService()),
+    ]);
+    addTearDown(container.dispose);
+
+    // Session orpheline en base (crash/fermeture brutale), AUCUN tracking en
+    // memoire : l'app vient de demarrer (etat notifier idle).
+    final orphan = TrekSession(
+      id: 'orphan-boot',
+      trailId: 'gr20',
+      startedAt: DateTime.now().subtract(const Duration(hours: 3)),
+      status: 'active',
+      completedStages: const ['s1'],
+    );
+    await db.trekSessionsDao.upsertSession(orphan);
+
+    final notifier = container.read(trekSessionManagerProvider.notifier);
+    final ok = await notifier.abandonPendingSession(orphan);
+
+    expect(ok, isTrue);
+    // L'etat en memoire n'a pas ete touche (pas de teardown pour une orpheline).
+    expect(container.read(trekSessionManagerProvider).status,
+        TrackingSessionStatus.idle);
+
+    final persisted = await db.trekSessionsDao.getById('orphan-boot');
+    expect(persisted, isNotNull);
+    expect(persisted!.status, 'abandoned');
+    expect(persisted.parcoursFullyWalked, isFalse,
+        reason: 'Un abandon n ouvre jamais la porte du finisher.');
+    expect(persisted.finishedAt, isNotNull);
+    // Plus aucune session en cours -> invariant C4 restaure.
+    final ongoing = await db.trekSessionsDao.findActiveSessions();
+    expect(ongoing, isEmpty);
+  });
+
+  test(
+      'abandonPendingSession() delegue a abandon() si la session EST celle du '
+      'notifier (teardown complet)', () async {
+    final recorder = TrekRecorder(
+      onFlush: (_, __) async {},
+      onSessionPersist: (s) async => db.trekSessionsDao.upsertSession(s),
+    );
+    final container = ProviderContainer(overrides: [
+      databaseProvider.overrideWithValue(db),
+      trekRecorderProvider.overrideWithValue(recorder),
+      backgroundGpsServiceProvider.overrideWithValue(_NoopBgService()),
+    ]);
+    addTearDown(container.dispose);
+
+    final notifier = container.read(trekSessionManagerProvider.notifier);
+    final live = TrekSession(
+      id: 'sess-live',
+      trailId: 'gr20',
+      startedAt: DateTime.utc(2026, 6, 15, 8),
+      status: 'active',
+    );
+    await db.trekSessionsDao.upsertSession(live);
+    await recorder.start('gr20');
+    notifier.state = TrackingSessionState(
+      status: TrackingSessionStatus.recording,
+      session: live,
+    );
+
+    final ok = await notifier.abandonPendingSession(live);
+
+    expect(ok, isTrue);
+    // Teardown complet applique (comme abandon()) : etat arrete.
+    expect(container.read(trekSessionManagerProvider).status,
+        TrackingSessionStatus.stopped);
+    final persisted = await db.trekSessionsDao.getById('sess-live');
+    expect(persisted!.status, 'abandoned');
+    expect(persisted.parcoursFullyWalked, isFalse);
+  });
 }
 
 /// Fake d'isolate GPS de fond : no-op. Les appels de [_finalize] au service de

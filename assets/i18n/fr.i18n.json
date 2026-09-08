@@ -1698,6 +1698,12 @@
       "finish": "Terminer",
       "abandon": "Abandonner",
       "cancel": "Annuler"
+    },
+    "resumeOrphanDialog": {
+      "title": "Reprendre votre randonnée ?",
+      "message": "Une randonnée était en cours lors de la dernière fermeture de l'application. Voulez-vous la reprendre ou l'abandonner ?",
+      "resume": "Reprendre",
+      "abandon": "Abandonner"
     }
   }
 }
