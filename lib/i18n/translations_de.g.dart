@@ -185,6 +185,9 @@ class _Translations$navPilote$de extends Translations$navPilote$fr {
 	@override String get dominantHandDesc => 'Platziert SOS und Hauptbefehle auf Ihrer Handseite';
 	@override String get dominantHandRight => 'Rechtshänder';
 	@override String get dominantHandLeft => 'Linkshänder';
+	@override String get weatherBannerTitle => 'Hier und jetzt';
+	@override String get weatherBannerStages => 'Etappen-Wetter';
+	@override String get weatherBannerUnavailable => 'Lokales Wetter nicht verfügbar';
 }
 
 // Path: branding
@@ -3315,6 +3318,9 @@ extension on TranslationsDe {
 			'navPilote.dominantHandDesc' => 'Platziert SOS und Hauptbefehle auf Ihrer Handseite',
 			'navPilote.dominantHandRight' => 'Rechtshänder',
 			'navPilote.dominantHandLeft' => 'Linkshänder',
+			'navPilote.weatherBannerTitle' => 'Hier und jetzt',
+			'navPilote.weatherBannerStages' => 'Etappen-Wetter',
+			'navPilote.weatherBannerUnavailable' => 'Lokales Wetter nicht verfügbar',
 			'branding.tagline' => 'Ihr Trekking-Begleiter',
 			'branding.subline' => 'Vorbereiten, wandern, teilen',
 			'hub.greeting' => ({required Object name}) => 'Hallo, ${name}!',
@@ -3767,11 +3773,11 @@ extension on TranslationsDe {
 			'share.chooseTemplate' => 'Vorlage wählen',
 			'share.templateStats' => 'Statistiken',
 			'share.templateJourney' => 'Strecke',
+			_ => null,
+		} ?? switch (path) {
 			'share.templateStage' => 'Etappe',
 			'diploma.title' => 'Wanderdiplom',
 			'diploma.yourName' => 'Ihr Name',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.namePlaceholder' => 'Geben Sie Ihren Namen ein...',
 			'diploma.generatePdf' => 'PDF erstellen',
 			'diploma.certifies' => 'Bestätigt, dass',
@@ -4281,11 +4287,11 @@ extension on TranslationsDe {
 			'consent.continueLabel' => 'Weiter',
 			'consent.privacyPolicyLink' => 'Datenschutzerklärung lesen',
 			'consent.reviewNeeded' => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.',
+			_ => null,
+		} ?? switch (path) {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
 			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.reportTitle' => 'Diesen Inhalt melden',
 			'moderation.reportIntro' => 'Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.',
 			'moderation.reasonLabel' => 'Grund der Meldung',

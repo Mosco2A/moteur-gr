@@ -353,24 +353,54 @@ void main() {
       expect(find.text(t.hub.sections.hike), findsOneWidget);
     });
 
-    testWidgets('R15 : « Démarrer la randonnée » (HubTrekCard) ABSENT en '
-        'Randonner', (tester) async {
-      await pumpTall(tester,
-          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
-
-      // La HubTrekCard n'est montee qu'en phase Préparer : en Randonner, aucun
-      // CTA « Démarrer la randonnée » (t.hub.startCta) ne doit apparaitre.
-      expect(find.text(t.hub.startCta), findsNothing);
-    });
-
-    testWidgets('R15 : « Démarrer la randonnée » (HubTrekCard) PRESENT en '
-        'Préparer (etat prepared)', (tester) async {
+    testWidgets('R19 : « Prêt à partir / Démarrer la randonnée » (HubTrekCard) '
+        'ABSENT en Préparer (retiré, doublon barre du bas)', (tester) async {
       await pumpTall(tester,
           activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
 
-      // En phase Préparer avec un trek prepared, la HubTrekCard (_StartTrekCard)
-      // expose le CTA « Démarrer la randonnée » (t.hub.startCta).
-      expect(find.text(t.hub.startCta), findsOneWidget);
+      // R19 (V3) : le bloc « Prêt à partir » (HubTrekCard état prepared -> CTA
+      // « Démarrer la randonnée ») est RETIRÉ de Préparer. Le seul démarrage est
+      // le bouton « Démarrer le trek » de la barre du bas (transition de phase).
+      expect(find.text(t.hub.startCta), findsNothing);
+      // La HubTrekCard « Prêt à partir » n'est plus là (son titre non plus).
+      expect(find.text(t.hub.trekCard.noTrekTitle), findsNothing);
+      // Le seul démarrage reste le CTA de la barre du bas.
+      expect(inBar(find.text(t.navPilote.startTrek)), findsOneWidget);
+    });
+
+    testWidgets('R19 : « Démarrer la randonnée » (HubTrekCard) ABSENT en '
+        'Randonner aussi', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
+
+      // En Randonner (trek actif), la HubTrekCard montre la carte « en cours »
+      // (jamais « Démarrer ») : aucun CTA « Démarrer la randonnée ».
+      expect(find.text(t.hub.startCta), findsNothing);
+    });
+
+    testWidgets('R18 : BANDEAU météo/incendie localisé PRÉSENT en Randonner',
+        (tester) async {
+      await pumpTall(tester,
+          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
+
+      // Le bandeau « ici et maintenant » porte son titre + le bouton « météo
+      // des étapes » (accès au détail par étape). Sans données de test, il se
+      // dégrade proprement mais reste présent (accès préservé).
+      expect(find.text(t.navPilote.weatherBannerTitle), findsOneWidget);
+      expect(find.text(t.navPilote.weatherBannerStages), findsOneWidget);
+    });
+
+    testWidgets('R18 : PAS de météo en Préparer (ni bandeau ni tuile)',
+        (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      // Préparer = aucune météo : ni le bandeau localisé (titre/bouton), ni une
+      // tuile météo du jour (t.hub.weather.title). Le climat/saison/incendie de
+      // la zone vit dans les fiches d'info du trek (éditorial), pas ici.
+      expect(find.text(t.navPilote.weatherBannerTitle), findsNothing);
+      expect(find.text(t.navPilote.weatherBannerStages), findsNothing);
+      expect(find.text(t.hub.weather.title), findsNothing);
     });
 
     testWidgets(

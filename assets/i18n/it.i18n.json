@@ -60,7 +60,10 @@
     "dominantHand": "Mano dominante",
     "dominantHandDesc": "Posiziona SOS e comandi chiave dal lato della tua mano",
     "dominantHandRight": "Destrorso",
-    "dominantHandLeft": "Mancino"
+    "dominantHandLeft": "Mancino",
+    "weatherBannerTitle": "Qui e ora",
+    "weatherBannerStages": "Meteo per tappa",
+    "weatherBannerUnavailable": "Meteo localizzato non disponibile"
   },
   "branding": {
     "tagline": "Il tuo compagno di trekking",

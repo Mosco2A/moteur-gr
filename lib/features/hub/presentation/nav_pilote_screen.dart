@@ -13,12 +13,15 @@ import '../../settings/providers/settings_provider.dart';
 import '../../treks/domain/trek_lifecycle_state.dart';
 import '../../treks/providers/my_treks_provider.dart';
 import '../../trek/providers/gps_providers.dart';
+import '../../weather/models/weather_forecast.dart';
+import '../../weather/presentation/fire_risk_screen.dart' show fireRiskColor;
 import '../../weather/providers/current_stage_provider.dart';
+import '../../weather/providers/fire_risk_providers.dart' show FireRiskDay, trailFireRiskProvider;
 import '../../weather/providers/weather_providers.dart';
+import '../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
 import 'cockpit_phase.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_trek_card.dart';
-import 'widgets/hub_weather_card.dart';
 import 'widgets/quick_access_card.dart';
 import 'widgets/step_status_icon.dart';
 
@@ -55,9 +58,22 @@ import 'widgets/step_status_icon.dart';
 /// démo affiche un APERCU VERROUILLE (teaser premium qui incite a l'achat), pas
 /// un cockpit jouable. Le SOS suit le SEUL mode trek reel (jamais forcé en démo).
 ///
-/// GARDE-FOUS LOOK & FEEL : le CORPS reutilise les briques du HUB ([HubHeader],
-/// [HubWeatherCard], [HubTrekCard], [HubSection] + [QuickAccessCard]) — aucun
-/// style reinvente, tokens `AppTheme` inchanges. Zero texte en dur (Slang).
+/// R18/R19 (V3, retours Chris) :
+///  - **Préparer = AUCUNE météo** et **AUCUN bloc « Prêt à partir »**. Le climat
+///    habituel / la meilleure saison / le risque incendie de la ZONE relèvent de
+///    l'ÉDITORIAL des FICHES D'INFO du trek (boîte `fiches-conseils`), pas d'une
+///    carte météo. Le seul démarrage est le bouton « Démarrer le trek » de la
+///    barre du bas (la [HubTrekCard] état `prepared` — « Prêt à partir » — est
+///    RETIRÉE de Préparer, R19).
+///  - **Randonner = un BANDEAU EN HAUT** ([_LocalizedConditionsBanner]) : météo
+///    LOCALISÉE (position GPS courante via [localizedStageNumberProvider], dérivé
+///    du GPS -> étape détectée) + risque INCENDIE localisé, avec un bouton
+///    « météo des étapes » -> détail. Le DÉTAIL PAR ÉTAPE reste porté par les
+///    cartes Météo + Incendie de la section (R18).
+///
+/// GARDE-FOUS LOOK & FEEL : le CORPS reutilise les briques du HUB ([HubTrekCard],
+/// [HubSection] + [QuickAccessCard]) — aucun style reinvente, tokens `AppTheme`
+/// inchanges. Zero texte en dur (Slang).
 class NavPiloteScreen extends ConsumerStatefulWidget {
   const NavPiloteScreen({super.key});
 
@@ -158,21 +174,6 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
     // Progression derivee (R5) pour les coches des cartes de preparation.
     final prepProgress = _derivePrepProgress(lifecycle);
 
-    // R13 : la tuile météo du haut ne s'affiche QUE si la météo est reellement
-    // disponible (prevision en cache/API) ou en cours de chargement — sinon on
-    // la MASQUE proprement plutot que d'exposer « Météo indisponible » (l'acces
-    // meteo reste offert par la carte « Météo » de la phase Randonner). On ne
-    // touche PAS a [HubWeatherCard] (partagee avec le vrai hub + tests) : le
-    // filtre est porte ici, au niveau du pilote.
-    final weatherParams = WeatherStageParams(
-      trailId: trailId,
-      stageNumber: ref.watch(referenceStageNumberProvider),
-    );
-    final weatherHasForecast =
-        ref.watch(weatherForecastProvider(weatherParams)) != null;
-    final weatherLoading = ref.watch(weatherLoadingProvider(weatherParams));
-    final showWeatherTile = weatherHasForecast || weatherLoading;
-
     return Scaffold(
       // AppHeader : titre + Retour + actions Informations / Profil + Accueil.
       // R17 : la barre du HAUT porte la MARQUE de l'app (« StepWays »), PAS le
@@ -237,12 +238,10 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
               // --- CORPS : briques du HUB (look inchange) ---
               // R17 : la banniere « Bonjour, Randonneur ! » ([HubHeader]) est
               // RETIREE (remplissage inutile ; le nom du trek n'apparait qu'une
-              // fois, porte par la [HubTrekCard] en phase Préparer).
-              // R13 : tuile météo affichee seulement si donnees dispo/chargement.
-              if (showWeatherTile) ...[
-                const HubWeatherCard(),
-                const SizedBox(height: AppTheme.spacingBase),
-              ],
+              // fois, porte par la [HubTrekCard] en phase Randonner/Après).
+              // R18 (V3) : PLUS de tuile météo en tete du cockpit (Préparer =
+              // aucune météo). La météo « ici et maintenant » vit desormais dans
+              // le BANDEAU LOCALISÉ de la phase Randonner ([_buildHike]).
 
               // --- Bandeau d'EN-TETE de phase (R3, teinte pleine) ---
               // R11 : ce bandeau EST le titre de la phase. Les sections du corps
@@ -251,18 +250,19 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
               _PhaseHeaderBanner(phase: phase),
               const SizedBox(height: AppTheme.spacingBase),
 
-              // R15 : le bloc « Prêt à partir / Démarrer la randonnée »
-              // ([HubTrekCard] etat prepared) n'a de sens qu'en PREPARATION.
-              // - EN PROD (phase == lifecycle) : la [HubTrekCard] suit le
-              //   lifecycle — son switch n'affiche « Démarrer » (etat prepared)
-              //   QU'en phase Préparer, la carte « en cours » en Randonner et la
-              //   carte « terminé » en Après. On la garde donc dans ces 3 cas.
-              // - EN DEMO : la phase previsualisee est DECOUPLEE du lifecycle
-              //   reel (bug R15 : preview Randonner mais lifecycle prepared ->
-              //   « Démarrer » qui persiste). On ne montre alors la [HubTrekCard]
-              //   QUE si l'apercu porte sur Préparer ; en Randonner/Après démo,
-              //   c'est l'apercu VERROUILLE ([_LockedPhaseTeaser]) qui s'affiche.
-              if (!_demoTrekMode || phase == CockpitPhase.prepare) ...[
+              // R19 (V3) : le bloc « Prêt à partir / Démarrer la randonnée »
+              // ([HubTrekCard] etat `prepared`) est RETIRE de Préparer — il
+              // faisait DOUBLON avec le bouton « Démarrer le trek » de la barre
+              // du bas (seul et unique démarrage). En Préparer : cartes de prépa
+              // + bouton « Démarrer le trek », SANS le bloc « Prêt à partir ».
+              //
+              // La [HubTrekCard] garde tout son sens dans les AUTRES phases (elle
+              // n'y montre pas « Démarrer ») : carte « en cours » (stats + reprise)
+              // en Randonner, carte « terminé » (récap/diplôme) en Après. On ne la
+              // rend donc QU'en PROD et HORS Préparer. En démo (prépa-only, R16),
+              // jamais de [HubTrekCard] : Randonner/Après y sont des aperçus
+              // verrouillés ([_LockedPhaseTeaser]).
+              if (!_demoTrekMode && phase != CockpitPhase.prepare) ...[
                 const HubTrekCard(),
                 const SizedBox(height: AppTheme.spacingLg),
               ],
@@ -471,6 +471,11 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
   /// l'INTEGRALITE des cartes « en rando » (pas un extrait).
   /// R11 : `showHeader: false` — le bandeau de phase porte deja « Randonner ».
   ///
+  /// R18 (V3) : un BANDEAU EN HAUT ([_LocalizedConditionsBanner]) donne l'« ici
+  /// et maintenant » — météo LOCALISÉE (position GPS courante) + risque INCENDIE
+  /// localisé — avec un bouton « météo des étapes » -> détail. Les cartes Météo
+  /// et Incendie ci-dessous restent le DÉTAIL PAR ÉTAPE (parité GR20).
+  ///
   /// VIGILANCE Chris (R7) : les fiches de PREPA TERRAIN (checklist/sac, dangers)
   /// restent ACCESSIBLES en rando via une ENTREE SECONDAIRE (« Revoir la
   /// préparation ») — on ne masque pas Préparer, on ne le met pas en principal.
@@ -480,6 +485,9 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
     CategoryIconColors cat,
   ) {
     return [
+      // R18 : bandeau « ici et maintenant » (météo + incendie LOCALISÉS GPS).
+      _LocalizedConditionsBanner(trailId: trailId),
+      const SizedBox(height: AppTheme.spacingBase),
       HubSection(
         title: t.hub.sections.hike,
         showHeader: false,
@@ -520,8 +528,8 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
             onTap: () => context.push('/trail/$trailId/shop'),
           ),
           // Météo — GR20 :395-402 (Icons.wb_sunny, orangeTerre) ->
-          // /trail/:id/weather (WeatherScreen). R13 : la carte se degrade
-          // proprement si la meteo est indisponible (voir HubWeatherCard).
+          // /trail/:id/weather (WeatherScreen). R18 : DÉTAIL PAR ÉTAPE (le
+          // « ici et maintenant » localisé est porté par le bandeau du haut).
           QuickAccessCard(
             icon: Icons.wb_sunny_outlined,
             title: t.hub.cards.weather,
@@ -695,6 +703,222 @@ class _PhaseHeaderBanner extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// BANDEAU « ICI ET MAINTENANT » de la phase Randonner (R18, V3).
+///
+/// Donne les conditions LOCALISÉES à la position GPS courante : météo du jour +
+/// risque INCENDIE, à l'endroit où se trouve le randonneur. La localisation
+/// réutilise le socle météo StepWays PAR ÉTAPE (coordonnées résolues
+/// dynamiquement depuis Drift) via l'**étape détectée par le GPS**
+/// ([localizedStageNumberProvider], dérivé du pipeline `positionStream` ->
+/// détection d'étape) — même liaison GPS -> étape que le reste du moteur, aucune
+/// nouvelle source, jamais de localité en dur (#84627/#99460).
+///
+/// Structure (parité tuile HUB + carte jour) : icône météo + T° min/max +
+/// condition à gauche ; pastille de risque incendie colorée
+/// ([fireRiskColor], parité `FireRiskScreen`) ; bouton « météo des étapes » ->
+/// détail par étape (`/trail/:id/weather`). Dégradation propre : sans prévision
+/// localisée, le bandeau affiche « Météo localisée indisponible » MAIS conserve
+/// le bouton « météo des étapes » (l'accès au détail reste offert). Réutilise
+/// [AppCard] + tokens `AppTheme`, [WeatherIcon] partagé, zéro texte en dur.
+class _LocalizedConditionsBanner extends ConsumerWidget {
+  const _LocalizedConditionsBanner({required this.trailId});
+
+  final String trailId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+
+    // Étape LOCALISÉE (GPS -> étape détectée, repli étape de référence). La
+    // météo est chargée pour CETTE étape (coords dynamiques Drift).
+    final stageNumber = ref.watch(localizedStageNumberProvider);
+    final params =
+        WeatherStageParams(trailId: trailId, stageNumber: stageNumber);
+    final weather = ref.watch(stageWeatherProvider(params));
+    final forecast = weather.forecast;
+    final today = (forecast != null && forecast.days.isNotEmpty)
+        ? forecast.days.first
+        : null;
+
+    // Risque incendie LOCALISÉ = niveau d'AUJOURD'HUI de l'étape localisée
+    // (dérivé de la même météo, algorithme GR20 via [trailFireRiskProvider]).
+    final fireState = ref.watch(trailFireRiskProvider(trailId));
+    final localizedFire = fireState.stages
+        .where((s) => s.stageNumber == stageNumber)
+        .fold<FireRiskDay?>(
+      null,
+      (acc, s) => s.days.isNotEmpty ? s.days.first : acc,
+    );
+    final fireLevel = localizedFire?.level ?? 0;
+
+    return AppCard(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      // Liseré discret en teinte « Randonner » (ambiance de phase, R3) — signale
+      // le bloc « live » sans repeindre l'UI.
+      borderColor: AppTheme.phaseHike.withValues(alpha: 0.5),
+      borderWidth: 1,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Titre du bandeau (« Ici et maintenant ») + localisation par étape.
+          Row(
+            children: [
+              const Icon(Icons.my_location,
+                  size: 16, color: AppTheme.phaseHike),
+              const SizedBox(width: AppTheme.spacingXs),
+              Expanded(
+                child: Text(
+                  t.navPilote.weatherBannerTitle,
+                  style: theme.textTheme.labelLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Text(
+                t.weather.stageLabel(number: stageNumber),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: scheme.onSurface.withValues(alpha: 0.7),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // Ligne conditions : météo localisée (gauche) + pastille incendie.
+          Row(
+            children: [
+              _leadingWeather(context, today, weather.isLoading, scheme),
+              const SizedBox(width: AppTheme.spacingBase),
+              Expanded(child: _weatherText(context, today, weather.isLoading)),
+              if (fireLevel >= 1) ...[
+                const SizedBox(width: AppTheme.spacingSm),
+                _FireChip(level: fireLevel),
+              ],
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // Bouton « météo des étapes » -> détail par étape (toujours présent,
+          // même si la météo localisée est indisponible : accès préservé).
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: () => context.push('/trail/$trailId/weather'),
+              icon: const Icon(Icons.wb_sunny_outlined, size: 18),
+              label: Text(t.navPilote.weatherBannerStages),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Icône météo à gauche (parité tuile HUB) : condition du jour, skeleton en
+  /// chargement, nuage atténué si indisponible.
+  Widget _leadingWeather(
+    BuildContext context,
+    DayForecast? today,
+    bool loading,
+    ColorScheme scheme,
+  ) {
+    if (today != null) {
+      return WeatherIcon(
+        iconName: today.weatherIconName,
+        size: 32,
+        color: CategoryIconColors.of(context).orange, // parité Météo -> orange
+      );
+    }
+    if (loading) {
+      return const SizedBox(
+        width: 32,
+        height: 32,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    return Icon(
+      Icons.wb_cloudy_outlined,
+      size: 32,
+      color: scheme.onSurface.withValues(alpha: 0.6),
+    );
+  }
+
+  /// Texte météo localisée : T° min/max + condition, ou repli lisible.
+  Widget _weatherText(BuildContext context, DayForecast? today, bool loading) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    if (today != null) {
+      final temp = t.hub.weather.tempRange(
+        min: today.temperatureMin.round(),
+        max: today.temperatureMax.round(),
+      );
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(temp, style: theme.textTheme.titleMedium),
+          Text(
+            today.weatherDescription,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: scheme.onSurface.withValues(alpha: 0.7),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      );
+    }
+    return Text(
+      loading ? t.weather.loading : t.navPilote.weatherBannerUnavailable,
+      style: theme.textTheme.bodyMedium?.copyWith(
+        color: scheme.onSurface.withValues(alpha: 0.7),
+      ),
+    );
+  }
+}
+
+/// Pastille de risque INCENDIE localisé (parité `FireRiskScreen` : couleur
+/// sémantique par niveau + libellé « Niv. X »). N'apparaît qu'à partir du
+/// niveau 1 (parité GR20 : pas d'affichage si aucun risque).
+class _FireChip extends StatelessWidget {
+  const _FireChip({required this.level});
+
+  final int level;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = fireRiskColor(level);
+    return Semantics(
+      label: t.fireRisk.a11y.levelBadge(level: level),
+      excludeSemantics: true,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.spacingSm,
+          vertical: AppTheme.spacingXs,
+        ),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.18),
+          borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+          border: Border.all(color: color),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.local_fire_department, size: 14, color: color),
+            const SizedBox(width: 4),
+            Text(
+              t.fireRisk.levelBadge(level: level),
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

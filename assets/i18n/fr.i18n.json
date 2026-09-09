@@ -60,7 +60,10 @@
     "dominantHand": "Main dominante",
     "dominantHandDesc": "Place le SOS et les commandes clés du côté de votre main",
     "dominantHandRight": "Droitier",
-    "dominantHandLeft": "Gaucher"
+    "dominantHandLeft": "Gaucher",
+    "weatherBannerTitle": "Ici et maintenant",
+    "weatherBannerStages": "Météo des étapes",
+    "weatherBannerUnavailable": "Météo localisée indisponible"
   },
   "branding": {
     "tagline": "Votre compagnon de randonnée",

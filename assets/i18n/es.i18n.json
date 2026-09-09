@@ -60,7 +60,10 @@
     "dominantHand": "Mano dominante",
     "dominantHandDesc": "Coloca el SOS y los controles clave del lado de tu mano",
     "dominantHandRight": "Diestro",
-    "dominantHandLeft": "Zurdo"
+    "dominantHandLeft": "Zurdo",
+    "weatherBannerTitle": "Aquí y ahora",
+    "weatherBannerStages": "Meteo por etapas",
+    "weatherBannerUnavailable": "Meteo localizada no disponible"
   },
   "branding": {
     "tagline": "Tu compañero de trekking",

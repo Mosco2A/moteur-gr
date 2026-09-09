@@ -60,7 +60,10 @@
     "dominantHand": "Dominant hand",
     "dominantHandDesc": "Places SOS and key controls on your hand side",
     "dominantHandRight": "Right-handed",
-    "dominantHandLeft": "Left-handed"
+    "dominantHandLeft": "Left-handed",
+    "weatherBannerTitle": "Here and now",
+    "weatherBannerStages": "Stage forecast",
+    "weatherBannerUnavailable": "Local weather unavailable"
   },
   "branding": {
     "tagline": "Your trekking companion",

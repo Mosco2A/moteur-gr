@@ -60,7 +60,10 @@
     "dominantHand": "Dominante Hand",
     "dominantHandDesc": "Platziert SOS und Hauptbefehle auf Ihrer Handseite",
     "dominantHandRight": "Rechtshänder",
-    "dominantHandLeft": "Linkshänder"
+    "dominantHandLeft": "Linkshänder",
+    "weatherBannerTitle": "Hier und jetzt",
+    "weatherBannerStages": "Etappen-Wetter",
+    "weatherBannerUnavailable": "Lokales Wetter nicht verfügbar"
   },
   "branding": {
     "tagline": "Ihr Trekking-Begleiter",

@@ -185,6 +185,9 @@ class _Translations$navPilote$it extends Translations$navPilote$fr {
 	@override String get dominantHandDesc => 'Posiziona SOS e comandi chiave dal lato della tua mano';
 	@override String get dominantHandRight => 'Destrorso';
 	@override String get dominantHandLeft => 'Mancino';
+	@override String get weatherBannerTitle => 'Qui e ora';
+	@override String get weatherBannerStages => 'Meteo per tappa';
+	@override String get weatherBannerUnavailable => 'Meteo localizzato non disponibile';
 }
 
 // Path: branding
@@ -3315,6 +3318,9 @@ extension on TranslationsIt {
 			'navPilote.dominantHandDesc' => 'Posiziona SOS e comandi chiave dal lato della tua mano',
 			'navPilote.dominantHandRight' => 'Destrorso',
 			'navPilote.dominantHandLeft' => 'Mancino',
+			'navPilote.weatherBannerTitle' => 'Qui e ora',
+			'navPilote.weatherBannerStages' => 'Meteo per tappa',
+			'navPilote.weatherBannerUnavailable' => 'Meteo localizzato non disponibile',
 			'branding.tagline' => 'Il tuo compagno di trekking',
 			'branding.subline' => 'Prepara, cammina, condividi',
 			'hub.greeting' => ({required Object name}) => 'Ciao, ${name}!',
@@ -3767,11 +3773,11 @@ extension on TranslationsIt {
 			'share.chooseTemplate' => 'Scegli un template',
 			'share.templateStats' => 'Statistiche',
 			'share.templateJourney' => 'Percorso',
+			_ => null,
+		} ?? switch (path) {
 			'share.templateStage' => 'Tappa',
 			'diploma.title' => 'Diploma di trekking',
 			'diploma.yourName' => 'Il tuo nome',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.namePlaceholder' => 'Inserisci il tuo nome...',
 			'diploma.generatePdf' => 'Genera PDF',
 			'diploma.certifies' => 'Certifica che',
@@ -4281,11 +4287,11 @@ extension on TranslationsIt {
 			'consent.continueLabel' => 'Continua',
 			'consent.privacyPolicyLink' => 'Leggi l\'informativa sulla privacy',
 			'consent.reviewNeeded' => 'La nostra politica è cambiata: rivedi le tue scelte.',
+			_ => null,
+		} ?? switch (path) {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, attualmente ${state}',
 			'consent.a11y.healthSection' => 'Sezione dati sulla salute, consenso rafforzato',
 			'consent.a11y.policyButton' => 'Apri l\'informativa sulla privacy',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.reportTitle' => 'Segnala questo contenuto',
 			'moderation.reportIntro' => 'Aiutaci a mantenere sana la community. Indica perché questo contenuto ti sembra illecito. La tua segnalazione sarà esaminata da un moderatore.',
 			'moderation.reasonLabel' => 'Motivo della segnalazione',
