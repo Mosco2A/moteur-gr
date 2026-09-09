@@ -165,6 +165,7 @@ class _Translations$navPilote$it extends Translations$navPilote$fr {
 	@override String get hike => 'Camminare';
 	@override String get after => 'Dopo';
 	@override String get sos => 'SOS';
+	@override String get demoTrekMode => 'Simula modalità trek (demo)';
 	@override String get exitTitle => 'Uscire dall\'app?';
 	@override String get exitMessage => 'Sei nella schermata iniziale. Vuoi chiudere l\'app?';
 	@override String get exitConfirm => 'Esci';
@@ -3277,6 +3278,7 @@ extension on TranslationsIt {
 			'navPilote.hike' => 'Camminare',
 			'navPilote.after' => 'Dopo',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoTrekMode' => 'Simula modalità trek (demo)',
 			'navPilote.exitTitle' => 'Uscire dall\'app?',
 			'navPilote.exitMessage' => 'Sei nella schermata iniziale. Vuoi chiudere l\'app?',
 			'navPilote.exitConfirm' => 'Esci',
@@ -3751,9 +3753,9 @@ extension on TranslationsIt {
 			'diploma.recapJournalPhotos' => 'Foto del diario',
 			'diploma.recapNoPhotos' => 'Nessuna foto nel diario',
 			'diploma.recapStats' => 'Statistiche',
-			'diploma.recapStages' => '{count} tappe completate',
 			_ => null,
 		} ?? switch (path) {
+			'diploma.recapStages' => '{count} tappe completate',
 			'diploma.recapDistance' => '{km} km percorsi',
 			'diploma.recapElevation' => '{meters} m di dislivello',
 			'diploma.recapDuration' => '{days} giorni di trekking',
@@ -4265,9 +4267,9 @@ extension on TranslationsIt {
 			'moderation.submitting' => 'Invio in corso…',
 			'moderation.sent' => 'Segnalazione inviata. Grazie, un moderatore la esaminerà.',
 			'moderation.errorRequired' => 'Compila il motivo, la tua e-mail e la dichiarazione di buona fede.',
-			'moderation.errorGeneric' => 'Impossibile inviare la segnalazione. Riprova.',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.errorGeneric' => 'Impossibile inviare la segnalazione. Riprova.',
 			'moderation.cancel' => 'Annulla',
 			'moderation.reasonsTitle' => 'Perché questo contenuto è stato limitato?',
 			'moderation.reasonsIntro' => 'In conformità all\'articolo 17, ecco il motivo della decisione di moderazione relativa al tuo contenuto.',

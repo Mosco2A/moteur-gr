@@ -165,6 +165,7 @@ class _Translations$navPilote$de extends Translations$navPilote$fr {
 	@override String get hike => 'Wandern';
 	@override String get after => 'Danach';
 	@override String get sos => 'SOS';
+	@override String get demoTrekMode => 'Trek-Modus simulieren (Demo)';
 	@override String get exitTitle => 'App beenden?';
 	@override String get exitMessage => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?';
 	@override String get exitConfirm => 'Beenden';
@@ -3277,6 +3278,7 @@ extension on TranslationsDe {
 			'navPilote.hike' => 'Wandern',
 			'navPilote.after' => 'Danach',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoTrekMode' => 'Trek-Modus simulieren (Demo)',
 			'navPilote.exitTitle' => 'App beenden?',
 			'navPilote.exitMessage' => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?',
 			'navPilote.exitConfirm' => 'Beenden',
@@ -3751,9 +3753,9 @@ extension on TranslationsDe {
 			'diploma.recapJournalPhotos' => 'Tagebuchfotos',
 			'diploma.recapNoPhotos' => 'Keine Fotos im Tagebuch',
 			'diploma.recapStats' => 'Statistiken',
-			'diploma.recapStages' => '{count} Etappen absolviert',
 			_ => null,
 		} ?? switch (path) {
+			'diploma.recapStages' => '{count} Etappen absolviert',
 			'diploma.recapDistance' => '{km} km zurueckgelegt',
 			'diploma.recapElevation' => '{meters} m Hoehenunterschied',
 			'diploma.recapDuration' => '{days} Tage Wanderung',
@@ -4265,9 +4267,9 @@ extension on TranslationsDe {
 			'moderation.submitting' => 'Wird gesendet…',
 			'moderation.sent' => 'Meldung gesendet. Danke, ein Moderator wird sie prüfen.',
 			'moderation.errorRequired' => 'Bitte Grund, E-Mail und die Erklärung in gutem Glauben ausfüllen.',
-			'moderation.errorGeneric' => 'Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen.',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.errorGeneric' => 'Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen.',
 			'moderation.cancel' => 'Abbrechen',
 			'moderation.reasonsTitle' => 'Warum wurde dieser Inhalt eingeschränkt?',
 			'moderation.reasonsIntro' => 'Gemäß Artikel 17 finden Sie hier den Grund für die Moderationsentscheidung zu Ihrem Inhalt.',

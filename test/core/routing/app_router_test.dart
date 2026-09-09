@@ -16,10 +16,13 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 ///   - restauration d'etat par onglet (IndexedStack natif).
 void main() {
   group('AppRouter — structure', () {
-    test('la route initiale est /my-treks (StepWays LOT 2 — option A)', () {
-      // L'onglet Accueil s'ouvre desormais sur « Mes treks » ; /home (cockpit)
-      // reste une route de la meme branche.
-      expect(appRouter.routeInformationProvider.value.uri.path, '/my-treks');
+    test('la route initiale est /nav-pilote (DEMO branche jetable LOT 3)', () {
+      // DEMO PILOTE (branche jetable claude/feat/stepways-lot3-nav-pilote) :
+      // l'entree est temporairement forcee sur /nav-pilote pour que Chris
+      // tombe directement sur le demonstrateur. EN PROD l'entree reste
+      // « Mes treks » (/my-treks, StepWays LOT 2 — option A) : A RETABLIR
+      // (avec cet expect) avant merge.
+      expect(appRouter.routeInformationProvider.value.uri.path, '/nav-pilote');
     });
 
     test('le premier niveau contient 1 shell + 19 routes racine', () {

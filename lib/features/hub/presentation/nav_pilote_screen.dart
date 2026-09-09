@@ -54,6 +54,13 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
   final _hikeKey = GlobalKey();
   final _afterKey = GlobalKey();
 
+  // DEMO UNIQUEMENT (branche jetable) : force l'affichage du SOS dans la barre
+  // d'actions SANS avoir a demarrer une vraie rando, pour montrer a Chris la
+  // barre AVEC et SANS SOS. EN PROD le SOS reste conditionne au SEUL
+  // activeTrekIdProvider (mode trek reel) — ce toggle n'existe que pour la
+  // validation visuelle et DOIT disparaitre avant merge.
+  bool _demoTrekMode = false;
+
   void _scrollTo(GlobalKey key) {
     final ctx = key.currentContext;
     if (ctx == null) return;
@@ -99,7 +106,10 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
     // qu'une fois resolu ET non-null (etat neutre non clignotant pendant le
     // loading — AUDIT §m-1).
     final activeTrekId = ref.watch(activeTrekIdProvider).value;
-    final inTrekMode = activeTrekId != null;
+    // PROD : `activeTrekId != null` est le SEUL discriminant du mode trek.
+    // Le `|| _demoTrekMode` ci-dessous est un ADDITIF DE DEMO (branche jetable)
+    // pour montrer la barre avec SOS sans vraie rando — a retirer avant merge.
+    final inTrekMode = activeTrekId != null || _demoTrekMode;
 
     // Barre d'ACTIONS du cockpit : Preparer / Randonner / Apres (+ SOS si trek).
     final actions = <ContextualAction>[
@@ -139,6 +149,22 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
+            // --- TOGGLE DE DEMO (branche jetable) : bascule le mode trek pour
+            // faire apparaitre/disparaitre le SOS dans la barre d'actions, sans
+            // demarrer une vraie rando. PUREMENT visuel — a retirer avant merge.
+            Card(
+              child: SwitchListTile(
+                value: _demoTrekMode,
+                onChanged: (v) => setState(() => _demoTrekMode = v),
+                // Icone « labo/demo » (PAS Icons.emergency : ce dernier reste le
+                // marqueur exclusif du SOS dans la barre — sinon les tests de
+                // presence/absence du SOS compteraient ce toggle par erreur).
+                secondary: const Icon(Icons.science_outlined),
+                title: Text(t.navPilote.demoTrekMode),
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingBase),
+
             // --- CORPS : reutilise les briques du HUB (look inchange) ---
             const HubHeader(),
             const SizedBox(height: AppTheme.spacingLg),

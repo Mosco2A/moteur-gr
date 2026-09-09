@@ -41,6 +41,7 @@
     "hike": "Caminar",
     "after": "Después",
     "sos": "SOS",
+    "demoTrekMode": "Simular modo trek (demo)",
     "exitTitle": "¿Salir de la aplicación?",
     "exitMessage": "Estás en la pantalla de inicio. ¿Quieres cerrar la aplicación?",
     "exitConfirm": "Salir",

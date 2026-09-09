@@ -165,6 +165,7 @@ class _Translations$navPilote$es extends Translations$navPilote$fr {
 	@override String get hike => 'Caminar';
 	@override String get after => 'Después';
 	@override String get sos => 'SOS';
+	@override String get demoTrekMode => 'Simular modo trek (demo)';
 	@override String get exitTitle => '¿Salir de la aplicación?';
 	@override String get exitMessage => 'Estás en la pantalla de inicio. ¿Quieres cerrar la aplicación?';
 	@override String get exitConfirm => 'Salir';
@@ -3277,6 +3278,7 @@ extension on TranslationsEs {
 			'navPilote.hike' => 'Caminar',
 			'navPilote.after' => 'Después',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoTrekMode' => 'Simular modo trek (demo)',
 			'navPilote.exitTitle' => '¿Salir de la aplicación?',
 			'navPilote.exitMessage' => 'Estás en la pantalla de inicio. ¿Quieres cerrar la aplicación?',
 			'navPilote.exitConfirm' => 'Salir',
@@ -3751,9 +3753,9 @@ extension on TranslationsEs {
 			'diploma.recapJournalPhotos' => 'Fotos del diario',
 			'diploma.recapNoPhotos' => 'Sin fotos en el diario',
 			'diploma.recapStats' => 'Estadisticas',
-			'diploma.recapStages' => '{count} etapas completadas',
 			_ => null,
 		} ?? switch (path) {
+			'diploma.recapStages' => '{count} etapas completadas',
 			'diploma.recapDistance' => '{km} km recorridos',
 			'diploma.recapElevation' => '{meters} m de desnivel',
 			'diploma.recapDuration' => '{days} dias de trekking',
@@ -4265,9 +4267,9 @@ extension on TranslationsEs {
 			'moderation.submitting' => 'Enviando…',
 			'moderation.sent' => 'Denuncia enviada. Gracias, un moderador la examinará.',
 			'moderation.errorRequired' => 'Completa el motivo, tu correo y la declaración de buena fe.',
-			'moderation.errorGeneric' => 'No se pudo enviar la denuncia. Inténtalo de nuevo.',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.errorGeneric' => 'No se pudo enviar la denuncia. Inténtalo de nuevo.',
 			'moderation.cancel' => 'Cancelar',
 			'moderation.reasonsTitle' => '¿Por qué se ha restringido este contenido?',
 			'moderation.reasonsIntro' => 'De conformidad con el artículo 17, aquí está el motivo de la decisión de moderación relativa a tu contenido.',

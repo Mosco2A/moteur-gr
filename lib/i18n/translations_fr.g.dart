@@ -241,6 +241,9 @@ class Translations$navPilote$fr {
 	/// fr: 'SOS'
 	String get sos => 'SOS';
 
+	/// fr: 'Simuler mode trek (démo)'
+	String get demoTrekMode => 'Simuler mode trek (démo)';
+
 	/// fr: 'Quitter l'application ?'
 	String get exitTitle => 'Quitter l\'application ?';
 
@@ -6028,6 +6031,7 @@ extension on Translations {
 			'navPilote.hike' => 'Randonner',
 			'navPilote.after' => 'Après',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoTrekMode' => 'Simuler mode trek (démo)',
 			'navPilote.exitTitle' => 'Quitter l\'application ?',
 			'navPilote.exitMessage' => 'Vous êtes à l\'accueil. Voulez-vous fermer l\'application ?',
 			'navPilote.exitConfirm' => 'Quitter',
@@ -6502,9 +6506,9 @@ extension on Translations {
 			'diploma.recapJournalPhotos' => 'Photos du journal',
 			'diploma.recapNoPhotos' => 'Aucune photo dans le journal',
 			'diploma.recapStats' => 'Statistiques',
-			'diploma.recapStages' => '{count} etapes franchies',
 			_ => null,
 		} ?? switch (path) {
+			'diploma.recapStages' => '{count} etapes franchies',
 			'diploma.recapDistance' => '{km} km parcourus',
 			'diploma.recapElevation' => '{meters} m de denivele',
 			'diploma.recapDuration' => '{days} jours de randonnée',
@@ -7016,9 +7020,9 @@ extension on Translations {
 			'moderation.submitting' => 'Envoi en cours…',
 			'moderation.sent' => 'Signalement envoyé. Merci, un modérateur va l\'examiner.',
 			'moderation.errorRequired' => 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.',
-			'moderation.errorGeneric' => 'Le signalement n\'a pas pu être envoyé. Réessayez.',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.errorGeneric' => 'Le signalement n\'a pas pu être envoyé. Réessayez.',
 			'moderation.cancel' => 'Annuler',
 			'moderation.reasonsTitle' => 'Pourquoi ce contenu a-t-il été restreint ?',
 			'moderation.reasonsIntro' => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant votre contenu.',

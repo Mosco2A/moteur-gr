@@ -165,6 +165,7 @@ class _Translations$navPilote$en extends Translations$navPilote$fr {
 	@override String get hike => 'Hike';
 	@override String get after => 'After';
 	@override String get sos => 'SOS';
+	@override String get demoTrekMode => 'Simulate trek mode (demo)';
 	@override String get exitTitle => 'Exit the app?';
 	@override String get exitMessage => 'You are at the home screen. Do you want to close the app?';
 	@override String get exitConfirm => 'Exit';
@@ -3277,6 +3278,7 @@ extension on TranslationsEn {
 			'navPilote.hike' => 'Hike',
 			'navPilote.after' => 'After',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoTrekMode' => 'Simulate trek mode (demo)',
 			'navPilote.exitTitle' => 'Exit the app?',
 			'navPilote.exitMessage' => 'You are at the home screen. Do you want to close the app?',
 			'navPilote.exitConfirm' => 'Exit',
@@ -3751,9 +3753,9 @@ extension on TranslationsEn {
 			'diploma.recapJournalPhotos' => 'Journal photos',
 			'diploma.recapNoPhotos' => 'No photos in journal',
 			'diploma.recapStats' => 'Statistics',
-			'diploma.recapStages' => '{count} stages completed',
 			_ => null,
 		} ?? switch (path) {
+			'diploma.recapStages' => '{count} stages completed',
 			'diploma.recapDistance' => '{km} km covered',
 			'diploma.recapElevation' => '{meters} m elevation',
 			'diploma.recapDuration' => '{days} days of trekking',
@@ -4265,9 +4267,9 @@ extension on TranslationsEn {
 			'moderation.submitting' => 'Sending…',
 			'moderation.sent' => 'Report sent. Thank you, a moderator will review it.',
 			'moderation.errorRequired' => 'Please fill in the reason, your email and the good-faith declaration.',
-			'moderation.errorGeneric' => 'The report could not be sent. Please try again.',
 			_ => null,
 		} ?? switch (path) {
+			'moderation.errorGeneric' => 'The report could not be sent. Please try again.',
 			'moderation.cancel' => 'Cancel',
 			'moderation.reasonsTitle' => 'Why was this content restricted?',
 			'moderation.reasonsIntro' => 'In accordance with article 17, here is the reason for the moderation decision regarding your content.',
