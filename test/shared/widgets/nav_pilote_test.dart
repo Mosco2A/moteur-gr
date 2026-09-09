@@ -219,6 +219,11 @@ void main() {
           GoRoute(path: '/nav-pilote', builder: (_, __) => const NavPiloteScreen()),
           // Cibles neutres pour ne casser aucune navigation au tap.
           GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+          // Cible du bouton Profil de l'AppHeader (parite hub origine).
+          GoRoute(
+            path: '/profile',
+            builder: (_, __) => const Scaffold(body: Text('PROFILE_STUB')),
+          ),
           GoRoute(path: '/map', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/journal', builder: (_, __) => const SizedBox()),
           GoRoute(path: '/catalog', builder: (_, __) => const SizedBox()),
@@ -322,6 +327,51 @@ void main() {
       expect(find.byType(ContextualActionBar), findsOneWidget);
       // L'AppHeader coiffe l'ecran.
       expect(find.byType(AppHeader), findsOneWidget);
+    });
+
+    // PARITE HUB ORIGINE (hub_screen.dart L57-66, retours Chris 09/09) :
+    // l'AppHeader du pilote expose desormais un acces Informations (i, ouvre une
+    // fiche d'aide) et un acces Profil (person, route /profile) — comme l'AppBar
+    // du HUB d'origine. On verifie leur PRESENCE et leur ACTION.
+    testWidgets('AppHeader : actions Informations + Profil presentes (parite '
+        'hub origine)', (tester) async {
+      await pumpTall(tester, activeTrailId: null);
+      // Les deux tooltips Slang de l'origine (t.hub.infoTooltip / profileTooltip)
+      // sont uniques (les titres de section homonymes n'ont pas de tooltip).
+      expect(find.byTooltip(t.hub.infoTooltip), findsOneWidget);
+      expect(find.byTooltip(t.hub.profileTooltip), findsOneWidget);
+      // Icones standard, SCOPEES a l'AppBar (l'icone info_outline sert aussi de
+      // pastille au titre de la section « Informations » du corps -> on ne
+      // compte que celle de l'en-tete).
+      final inHeader = find.descendant(
+        of: find.byType(AppBar),
+        matching: find.byIcon(Icons.info_outline),
+      );
+      expect(inHeader, findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(AppBar),
+          matching: find.byIcon(Icons.person_outline),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('AppHeader : le bouton Profil route vers /profile',
+        (tester) async {
+      await pumpTall(tester, activeTrailId: null);
+      await tester.tap(find.byTooltip(t.hub.profileTooltip));
+      await tester.pumpAndSettle();
+      expect(find.text('PROFILE_STUB'), findsOneWidget);
+    });
+
+    testWidgets('AppHeader : le bouton Informations ouvre la fiche d\'aide',
+        (tester) async {
+      await pumpTall(tester, activeTrailId: null);
+      await tester.tap(find.byTooltip(t.hub.infoTooltip));
+      await tester.pumpAndSettle();
+      // La fiche (bottom-sheet) affiche le corps editorial Slang.
+      expect(find.text(t.hub.infoSheetBody), findsOneWidget);
     });
   });
 }

@@ -117,11 +117,15 @@ class _ActionButton extends StatelessWidget {
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  // Icone CENTREE horizontalement au-dessus du label (retour
+                  // Chris 09/09) — explicite pour ne pas dependre du defaut.
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Icon(action.icon, color: Colors.white, size: 22),
                     const SizedBox(height: AppTheme.spacingXs),
                     Text(
                       action.label,
+                      textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.labelLarge?.copyWith(
@@ -153,11 +157,15 @@ class _ActionButton extends StatelessWidget {
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            // Icone CENTREE horizontalement au-dessus du label (retour Chris
+            // 09/09) — explicite pour ne pas dependre du defaut du Column.
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(action.icon, color: scheme.onSurface, size: 22),
               const SizedBox(height: AppTheme.spacingXs),
               Text(
                 action.label,
+                textAlign: TextAlign.center,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.labelLarge?.copyWith(

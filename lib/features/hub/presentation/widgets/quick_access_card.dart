@@ -75,15 +75,23 @@ class QuickAccessCard extends StatelessWidget {
     return AppCard(
       onTap: enabled ? onTap : null,
       padding: const EdgeInsets.all(AppTheme.spacingBase),
+      // Parite GR20 (_QuickAccessCard L1128-1150, retour Chris 09/09) : contenu
+      // CENTRE — icone (pastille teintee) au-dessus, titre centre dessous. Avant,
+      // `crossAxisAlignment: start` collait l'icone a gauche (defaut du pilote) ;
+      // GR20 centre l'ensemble (`MainAxisAlignment.center` + `CrossAxisAlignment
+      // .center`, titre `textAlign: center`).
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
+          // Icone dans une pastille teintee (accent.withAlpha ~30) — centree
+          // horizontalement (GR20 _QuickAccessCard L1133-1141). Le verrou
+          // eventuel (carte desactivee) se place a droite via un cadenas
+          // superpose, sans decentrer la pastille.
+          Stack(
+            alignment: Alignment.center,
             children: [
-              // Parite GR20 : icone dans une pastille teintee (accent.withAlpha
-              // ~30) pour faire ressortir la variete categorielle (GR20
-              // _QuickAccessCard L1133-1141).
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
@@ -92,20 +100,26 @@ class QuickAccessCard extends StatelessWidget {
                 ),
                 child: Icon(icon, color: effectiveIconColor, size: 24),
               ),
-              if (!enabled) ...[
-                const Spacer(),
-                Icon(
-                  Icons.lock_outline,
-                  size: 18,
-                  color: scheme.onSurface.withValues(alpha: 0.38),
+              if (!enabled)
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Icon(
+                    Icons.lock_outline,
+                    size: 18,
+                    color: scheme.onSurface.withValues(alpha: 0.38),
+                  ),
                 ),
-              ],
             ],
           ),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             title,
             style: theme.textTheme.titleMedium?.copyWith(color: titleColor),
+            textAlign: TextAlign.center,
+            // 1 ligne : le budget de hauteur de la cellule (HubSection
+            // mainAxisExtent: 150) est calibre « titre 1 ligne + sous-titre 2
+            // lignes » — passer a 2 lignes deborde aux largeurs mobiles.
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -115,6 +129,7 @@ class QuickAccessCard extends StatelessWidget {
             style: theme.textTheme.bodySmall?.copyWith(
               color: scheme.onSurface.withValues(alpha: enabled ? 0.7 : 0.38),
             ),
+            textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),

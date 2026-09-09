@@ -95,6 +95,30 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
     );
   }
 
+  /// Fiche d'aide « Informations » — action (i) de l'AppHeader (PARITE hub
+  /// origine, hub_screen.dart `_showInfoSheet` L338-357). Contenu editorial
+  /// minimal via Slang (`t.hub.infoSheetBody`), zero texte en dur.
+  void _showInfoSheet(BuildContext context, String trailTitle) {
+    final theme = Theme.of(context);
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingLg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(trailTitle, style: theme.textTheme.titleLarge),
+            const SizedBox(height: AppTheme.spacingMd),
+            Text(t.hub.infoSheetBody, style: theme.textTheme.bodyMedium),
+            const SizedBox(height: AppTheme.spacingLg),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final trailTitle = ref.watch(
@@ -149,7 +173,29 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
     ];
 
     return Scaffold(
-      appBar: AppHeader(title: trailTitle),
+      // AppHeader : titre + Retour (leading) + actions Informations / Profil +
+      // Accueil (a droite). PARITE HUB ORIGINE (hub_screen.dart L57-66) : le HUB
+      // d'origine exposait, dans son AppBar, un acces « Informations » (i) qui
+      // ouvre une fiche d'aide (_showInfoSheet) ET un acces « Profil » (person)
+      // vers /profile. Le pilote les avait perdus -> on les REMET a l'identique
+      // (retours Chris 09/09). Icones STANDARD (foreground blanc herite de
+      // l'AppBarTheme, comme l'origine) — l'AppHeader place ces actions AVANT le
+      // bouton Accueil (meme ordre que l'origine : info, profil, accueil).
+      appBar: AppHeader(
+        title: trailTitle,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: t.hub.infoTooltip,
+            onPressed: () => _showInfoSheet(context, trailTitle),
+          ),
+          IconButton(
+            icon: const Icon(Icons.person_outline),
+            tooltip: t.hub.profileTooltip,
+            onPressed: () => context.push('/profile'),
+          ),
+        ],
+      ),
       // Barre d'ACTIONS en bas (BottomAppBar) — distincte d'une NavigationBar
       // (garde-fou G4/M-1). Absente si aucune action (jamais le cas ici).
       bottomNavigationBar: ContextualActionBar(actions: actions),
