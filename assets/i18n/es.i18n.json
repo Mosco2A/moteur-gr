@@ -32,7 +32,19 @@
     "profile": "Perfil",
     "settings": "Ajustes",
     "trailSelection": "Cambiar de sendero",
-    "myTreks": "Mis rutas"
+    "myTreks": "Mis rutas",
+    "back": "Atrás",
+    "home": "Inicio"
+  },
+  "navPilote": {
+    "prepare": "Preparar",
+    "hike": "Caminar",
+    "after": "Después",
+    "sos": "SOS",
+    "exitTitle": "¿Salir de la aplicación?",
+    "exitMessage": "Estás en la pantalla de inicio. ¿Quieres cerrar la aplicación?",
+    "exitConfirm": "Salir",
+    "exitCancel": "Quedarse"
   },
   "branding": {
     "tagline": "Tu compañero de trekking",

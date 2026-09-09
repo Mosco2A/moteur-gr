@@ -42,6 +42,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	// Translations
 	late final Translations$a11y$fr a11y = Translations$a11y$fr.internal(_root);
 	late final Translations$nav$fr nav = Translations$nav$fr.internal(_root);
+	late final Translations$navPilote$fr navPilote = Translations$navPilote$fr.internal(_root);
 	late final Translations$branding$fr branding = Translations$branding$fr.internal(_root);
 	late final Translations$hub$fr hub = Translations$hub$fr.internal(_root);
 	late final Translations$map$fr map = Translations$map$fr.internal(_root);
@@ -212,6 +213,45 @@ class Translations$nav$fr {
 
 	/// fr: 'Mes treks'
 	String get myTreks => 'Mes treks';
+
+	/// fr: 'Retour'
+	String get back => 'Retour';
+
+	/// fr: 'Accueil'
+	String get home => 'Accueil';
+}
+
+// Path: navPilote
+class Translations$navPilote$fr {
+	Translations$navPilote$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Préparer'
+	String get prepare => 'Préparer';
+
+	/// fr: 'Randonner'
+	String get hike => 'Randonner';
+
+	/// fr: 'Après'
+	String get after => 'Après';
+
+	/// fr: 'SOS'
+	String get sos => 'SOS';
+
+	/// fr: 'Quitter l'application ?'
+	String get exitTitle => 'Quitter l\'application ?';
+
+	/// fr: 'Vous êtes à l'accueil. Voulez-vous fermer l'application ?'
+	String get exitMessage => 'Vous êtes à l\'accueil. Voulez-vous fermer l\'application ?';
+
+	/// fr: 'Quitter'
+	String get exitConfirm => 'Quitter';
+
+	/// fr: 'Rester'
+	String get exitCancel => 'Rester';
 }
 
 // Path: branding
@@ -5982,6 +6022,16 @@ extension on Translations {
 			'nav.settings' => 'Paramètres',
 			'nav.trailSelection' => 'Changer de sentier',
 			'nav.myTreks' => 'Mes treks',
+			'nav.back' => 'Retour',
+			'nav.home' => 'Accueil',
+			'navPilote.prepare' => 'Préparer',
+			'navPilote.hike' => 'Randonner',
+			'navPilote.after' => 'Après',
+			'navPilote.sos' => 'SOS',
+			'navPilote.exitTitle' => 'Quitter l\'application ?',
+			'navPilote.exitMessage' => 'Vous êtes à l\'accueil. Voulez-vous fermer l\'application ?',
+			'navPilote.exitConfirm' => 'Quitter',
+			'navPilote.exitCancel' => 'Rester',
 			'branding.tagline' => 'Votre compagnon de randonnée',
 			'branding.subline' => 'Préparez, marchez, partagez',
 			'hub.greeting' => ({required Object name}) => 'Bonjour, ${name} !',
@@ -6453,6 +6503,8 @@ extension on Translations {
 			'diploma.recapNoPhotos' => 'Aucune photo dans le journal',
 			'diploma.recapStats' => 'Statistiques',
 			'diploma.recapStages' => '{count} etapes franchies',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.recapDistance' => '{km} km parcourus',
 			'diploma.recapElevation' => '{meters} m de denivele',
 			'diploma.recapDuration' => '{days} jours de randonnée',
@@ -6463,8 +6515,6 @@ extension on Translations {
 			'diploma.lockedTitle' => 'Diplome verrouille',
 			'diploma.lockedMessage' => 'Terminez l integralite de votre parcours pour debloquer votre diplome de finisher.',
 			'diploma.labelIntegral' => 'Parcours integral',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.labelPartial' => 'Parcours partiel',
 			'notifications.morningReminder' => 'Rappel du matin',
 			'notifications.weatherAlerts' => 'Alertes météo',
@@ -6967,6 +7017,8 @@ extension on Translations {
 			'moderation.sent' => 'Signalement envoyé. Merci, un modérateur va l\'examiner.',
 			'moderation.errorRequired' => 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.',
 			'moderation.errorGeneric' => 'Le signalement n\'a pas pu être envoyé. Réessayez.',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.cancel' => 'Annuler',
 			'moderation.reasonsTitle' => 'Pourquoi ce contenu a-t-il été restreint ?',
 			'moderation.reasonsIntro' => 'Conformément à l\'article 17, voici la raison de la décision de modération concernant votre contenu.',
@@ -6977,8 +7029,6 @@ extension on Translations {
 			'moderation.noStatement' => 'Aucune restriction n\'a été appliquée à vos contenus.',
 			'moderation.complaintAction' => 'Contester cette décision',
 			'moderation.complaintTitle' => 'Contester une décision',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.complaintIntro' => 'Vous pouvez contester une décision de modération. Expliquez pourquoi vous estimez la décision injustifiée (article 20).',
 			'moderation.complaintExposeLabel' => 'Votre contestation',
 			'moderation.complaintExposeHint' => 'Décrivez les raisons de votre contestation.',

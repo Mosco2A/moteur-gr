@@ -32,7 +32,19 @@
     "profile": "Profil",
     "settings": "Einstellungen",
     "trailSelection": "Weg wechseln",
-    "myTreks": "Meine Touren"
+    "myTreks": "Meine Touren",
+    "back": "Zuruck",
+    "home": "Start"
+  },
+  "navPilote": {
+    "prepare": "Vorbereiten",
+    "hike": "Wandern",
+    "after": "Danach",
+    "sos": "SOS",
+    "exitTitle": "App beenden?",
+    "exitMessage": "Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?",
+    "exitConfirm": "Beenden",
+    "exitCancel": "Bleiben"
   },
   "branding": {
     "tagline": "Ihr Trekking-Begleiter",

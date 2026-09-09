@@ -22,14 +22,16 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/my-treks');
     });
 
-    test('le premier niveau contient 1 shell + 18 routes racine', () {
+    test('le premier niveau contient 1 shell + 19 routes racine', () {
       // +1 : /health (E57 LOT D/D1, fiche sante hors-shell via Urgence).
       // -1 : /planning (trek-planning) RETIREE — doublon orphelin du PROGRAMME
       // (parite GR20 #99460), desormais servi via /trail/:id/planning.
+      // +1 : /nav-pilote (StepWays LOT 3 — ecran-pilote refonte nav, hors-shell
+      // DEDIE, demonstrateur visuel jetable a valider par Chris).
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 19);
+      expect(routes.length, 20);
       expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 18);
+      expect(routes.whereType<GoRoute>().length, 19);
     });
 
     test('les routes racine (hors shell) sont celles attendues', () {
@@ -57,6 +59,8 @@ void main() {
         '/settings',
         '/consent',
         '/profile',
+        // StepWays LOT 3 : ecran-pilote refonte nav (hors-shell dedie).
+        '/nav-pilote',
       ]);
     });
 
@@ -83,6 +87,7 @@ void main() {
         'settings',
         'consent',
         'profile',
+        'nav-pilote',
       ]);
     });
   });

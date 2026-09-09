@@ -32,7 +32,19 @@
     "profile": "Profile",
     "settings": "Settings",
     "trailSelection": "Switch trail",
-    "myTreks": "My treks"
+    "myTreks": "My treks",
+    "back": "Back",
+    "home": "Home"
+  },
+  "navPilote": {
+    "prepare": "Prepare",
+    "hike": "Hike",
+    "after": "After",
+    "sos": "SOS",
+    "exitTitle": "Exit the app?",
+    "exitMessage": "You are at the home screen. Do you want to close the app?",
+    "exitConfirm": "Exit",
+    "exitCancel": "Stay"
   },
   "branding": {
     "tagline": "Your trekking companion",

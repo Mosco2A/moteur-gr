@@ -9,6 +9,7 @@ import '../../features/after/presentation/adventure_recap_screen.dart';
 import '../../features/after/presentation/gpx_import_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/hub/presentation/hub_screen.dart';
+import '../../features/hub/presentation/nav_pilote_screen.dart';
 import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
@@ -627,6 +628,18 @@ final appRouter = GoRouter(
       path: '/profile',
       name: 'profile',
       builder: (context, state) => const ProfileScreen(),
+    ),
+    // StepWays LOT 3 (ECRAN-PILOTE nav, methode D2) : demonstrateur visuel de
+    // la refonte navigation (hub-and-push). Route HORS-SHELL DEDIEE -> pas de
+    // NavigationBar du shell (evite le double bottom bar). Rend le cockpit
+    // (contenu du HUB) redessine avec AppHeader (haut) + barre d'ACTIONS (bas),
+    // SOS saillant UNIQUEMENT en mode trek. Isole : ne demonte pas le
+    // StatefulShellRoute des autres ecrans. A valider par Chris avant de
+    // derouler les ~40 ecrans.
+    GoRoute(
+      path: '/nav-pilote',
+      name: 'nav-pilote',
+      builder: (context, state) => const NavPiloteScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(

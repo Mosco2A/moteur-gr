@@ -41,6 +41,7 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	// Translations
 	@override late final _Translations$a11y$it a11y = _Translations$a11y$it._(_root);
 	@override late final _Translations$nav$it nav = _Translations$nav$it._(_root);
+	@override late final _Translations$navPilote$it navPilote = _Translations$navPilote$it._(_root);
 	@override late final _Translations$branding$it branding = _Translations$branding$it._(_root);
 	@override late final _Translations$hub$it hub = _Translations$hub$it._(_root);
 	@override late final _Translations$map$it map = _Translations$map$it._(_root);
@@ -149,6 +150,25 @@ class _Translations$nav$it extends Translations$nav$fr {
 	@override String get settings => 'Impostazioni';
 	@override String get trailSelection => 'Cambia sentiero';
 	@override String get myTreks => 'I miei trek';
+	@override String get back => 'Indietro';
+	@override String get home => 'Home';
+}
+
+// Path: navPilote
+class _Translations$navPilote$it extends Translations$navPilote$fr {
+	_Translations$navPilote$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get prepare => 'Preparare';
+	@override String get hike => 'Camminare';
+	@override String get after => 'Dopo';
+	@override String get sos => 'SOS';
+	@override String get exitTitle => 'Uscire dall\'app?';
+	@override String get exitMessage => 'Sei nella schermata iniziale. Vuoi chiudere l\'app?';
+	@override String get exitConfirm => 'Esci';
+	@override String get exitCancel => 'Resta';
 }
 
 // Path: branding
@@ -3251,6 +3271,16 @@ extension on TranslationsIt {
 			'nav.settings' => 'Impostazioni',
 			'nav.trailSelection' => 'Cambia sentiero',
 			'nav.myTreks' => 'I miei trek',
+			'nav.back' => 'Indietro',
+			'nav.home' => 'Home',
+			'navPilote.prepare' => 'Preparare',
+			'navPilote.hike' => 'Camminare',
+			'navPilote.after' => 'Dopo',
+			'navPilote.sos' => 'SOS',
+			'navPilote.exitTitle' => 'Uscire dall\'app?',
+			'navPilote.exitMessage' => 'Sei nella schermata iniziale. Vuoi chiudere l\'app?',
+			'navPilote.exitConfirm' => 'Esci',
+			'navPilote.exitCancel' => 'Resta',
 			'branding.tagline' => 'Il tuo compagno di trekking',
 			'branding.subline' => 'Prepara, cammina, condividi',
 			'hub.greeting' => ({required Object name}) => 'Ciao, ${name}!',
@@ -3722,6 +3752,8 @@ extension on TranslationsIt {
 			'diploma.recapNoPhotos' => 'Nessuna foto nel diario',
 			'diploma.recapStats' => 'Statistiche',
 			'diploma.recapStages' => '{count} tappe completate',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.recapDistance' => '{km} km percorsi',
 			'diploma.recapElevation' => '{meters} m di dislivello',
 			'diploma.recapDuration' => '{days} giorni di trekking',
@@ -3732,8 +3764,6 @@ extension on TranslationsIt {
 			'diploma.lockedTitle' => 'Diploma bloccato',
 			'diploma.lockedMessage' => 'Completa l intero percorso per sbloccare il tuo diploma da finisher.',
 			'diploma.labelIntegral' => 'Percorso integrale',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.labelPartial' => 'Percorso parziale',
 			'notifications.morningReminder' => 'Promemoria mattutino',
 			'notifications.weatherAlerts' => 'Allerte meteo',
@@ -4236,6 +4266,8 @@ extension on TranslationsIt {
 			'moderation.sent' => 'Segnalazione inviata. Grazie, un moderatore la esaminerà.',
 			'moderation.errorRequired' => 'Compila il motivo, la tua e-mail e la dichiarazione di buona fede.',
 			'moderation.errorGeneric' => 'Impossibile inviare la segnalazione. Riprova.',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.cancel' => 'Annulla',
 			'moderation.reasonsTitle' => 'Perché questo contenuto è stato limitato?',
 			'moderation.reasonsIntro' => 'In conformità all\'articolo 17, ecco il motivo della decisione di moderazione relativa al tuo contenuto.',
@@ -4246,8 +4278,6 @@ extension on TranslationsIt {
 			'moderation.noStatement' => 'Nessuna restrizione è stata applicata ai tuoi contenuti.',
 			'moderation.complaintAction' => 'Contestare questa decisione',
 			'moderation.complaintTitle' => 'Contestare una decisione',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.complaintIntro' => 'Puoi contestare una decisione di moderazione. Spiega perché ritieni la decisione ingiustificata (articolo 20).',
 			'moderation.complaintExposeLabel' => 'La tua contestazione',
 			'moderation.complaintExposeHint' => 'Descrivi i motivi della tua contestazione.',
