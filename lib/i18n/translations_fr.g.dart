@@ -229,6 +229,9 @@ class Translations$navPilote$fr {
 
 	// Translations
 
+	/// fr: 'StepWays'
+	String get appTitle => 'StepWays';
+
 	/// fr: 'Préparer'
 	String get prepare => 'Préparer';
 
@@ -240,6 +243,12 @@ class Translations$navPilote$fr {
 
 	/// fr: 'SOS'
 	String get sos => 'SOS';
+
+	/// fr: '$phase — réservé aux treks achetés'
+	String demoLockedTitle({required Object phase}) => '${phase} — réservé aux treks achetés';
+
+	/// fr: 'En mode démo, seule la préparation est accessible. Débloquez ce trek pour randonner et revivre votre aventure.'
+	String get demoLockedBody => 'En mode démo, seule la préparation est accessible. Débloquez ce trek pour randonner et revivre votre aventure.';
 
 	/// fr: 'Simuler mode trek (démo)'
 	String get demoTrekMode => 'Simuler mode trek (démo)';
@@ -3023,6 +3032,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Épiceries, pharmacies, gaz'
 	String get shopSub => 'Épiceries, pharmacies, gaz';
+
+	/// fr: 'Météo'
+	String get weather => 'Météo';
+
+	/// fr: 'Prévisions par étape'
+	String get weatherSub => 'Prévisions par étape';
 
 	/// fr: 'Incendie'
 	String get fire => 'Incendie';
@@ -6063,10 +6078,13 @@ extension on Translations {
 			'nav.myTreks' => 'Mes treks',
 			'nav.back' => 'Retour',
 			'nav.home' => 'Accueil',
+			'navPilote.appTitle' => 'StepWays',
 			'navPilote.prepare' => 'Préparer',
 			'navPilote.hike' => 'Randonner',
 			'navPilote.after' => 'Après',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoLockedTitle' => ({required Object phase}) => '${phase} — réservé aux treks achetés',
+			'navPilote.demoLockedBody' => 'En mode démo, seule la préparation est accessible. Débloquez ce trek pour randonner et revivre votre aventure.',
 			'navPilote.demoTrekMode' => 'Simuler mode trek (démo)',
 			'navPilote.exitTitle' => 'Quitter l\'application ?',
 			'navPilote.exitMessage' => 'Vous êtes à l\'accueil. Voulez-vous fermer l\'application ?',
@@ -6151,6 +6169,8 @@ extension on Translations {
 			'hub.cards.resumeSub' => 'Synthèse du plan',
 			'hub.cards.shop' => 'Ravitaillement',
 			'hub.cards.shopSub' => 'Épiceries, pharmacies, gaz',
+			'hub.cards.weather' => 'Météo',
+			'hub.cards.weatherSub' => 'Prévisions par étape',
 			'hub.cards.fire' => 'Incendie',
 			'hub.cards.fireSub' => 'Risques & alertes',
 			'hub.fab.feedback' => 'Donner mon avis',
@@ -6537,13 +6557,13 @@ extension on Translations {
 			'share.templateStage' => 'Étape',
 			'diploma.title' => 'Diplôme de randonnée',
 			'diploma.yourName' => 'Votre nom',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.namePlaceholder' => 'Entrez votre nom...',
 			'diploma.generatePdf' => 'Générer le PDF',
 			'diploma.certifies' => 'Certifie que',
 			'diploma.completed' => 'a parcouru le',
 			'diploma.pdfTitle' => 'DIPLÔME',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.pdfSubtitle' => 'Certificat d\'accomplissement',
 			'diploma.pdfStages' => '{count} étapes',
 			'diploma.pdfDistance' => '{km} km parcourus',
@@ -7051,13 +7071,13 @@ extension on Translations {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}',
 			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
 			'consent.a11y.policyButton' => 'Ouvrir la politique de confidentialité',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.reportTitle' => 'Signaler ce contenu',
 			'moderation.reportIntro' => 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.',
 			'moderation.reasonLabel' => 'Motif du signalement',
 			'moderation.reasons.illegal' => 'Contenu illégal',
 			'moderation.reasons.harassment' => 'Harcèlement ou haine',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.reasons.spam' => 'Spam ou publicité',
 			'moderation.reasons.dangerous' => 'Information dangereuse ou trompeuse',
 			'moderation.reasons.other' => 'Autre',

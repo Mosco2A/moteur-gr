@@ -17,10 +17,17 @@ class HubSection extends StatelessWidget {
     required this.icon,
     required this.cards,
     this.iconColor,
+    this.showHeader = true,
   });
 
   /// Titre de la section (libelle localise).
   final String title;
+
+  /// Affiche l'en-tete (icone + titre) au-dessus de la grille. Defaut true
+  /// (comportement historique du hub). Le cockpit par phases (nav V2, R11) passe
+  /// `false` : le bandeau d'en-tete de phase porte deja le titre « Préparer /
+  /// Randonner / Après », inutile de le repeter juste en dessous (fin doublon).
+  final bool showHeader;
 
   /// Icone de la section.
   final IconData icon;
@@ -41,24 +48,27 @@ class HubSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // En-tete de section.
-        Row(
-          children: [
-            Icon(icon, color: iconColor ?? theme.colorScheme.primary, size: 22),
-            const SizedBox(width: AppTheme.spacingSm),
-            // Flexible + ellipsis : le titre de section s'ajuste a la largeur
-            // (mobile 360 px) au lieu de deborder la Row a droite.
-            Expanded(
-              child: Text(
-                title,
-                style: theme.textTheme.titleLarge,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+        // En-tete de section (masquable — R11 pour le cockpit par phases).
+        if (showHeader) ...[
+          Row(
+            children: [
+              Icon(icon,
+                  color: iconColor ?? theme.colorScheme.primary, size: 22),
+              const SizedBox(width: AppTheme.spacingSm),
+              // Flexible + ellipsis : le titre de section s'ajuste a la largeur
+              // (mobile 360 px) au lieu de deborder la Row a droite.
+              Expanded(
+                child: Text(
+                  title,
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: AppTheme.spacingMd),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+        ],
         // Grille 2 colonnes non scrollable (le HUB scrolle pour elle).
         //
         // Hauteur d'item FIXE ([mainAxisExtent]) plutot qu'un ratio largeur/hauteur :

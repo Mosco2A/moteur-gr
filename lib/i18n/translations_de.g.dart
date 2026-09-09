@@ -161,10 +161,13 @@ class _Translations$navPilote$de extends Translations$navPilote$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
+	@override String get appTitle => 'StepWays';
 	@override String get prepare => 'Vorbereiten';
 	@override String get hike => 'Wandern';
 	@override String get after => 'Danach';
 	@override String get sos => 'SOS';
+	@override String demoLockedTitle({required Object phase}) => '${phase} — nur für gekaufte Treks';
+	@override String get demoLockedBody => 'Im Demomodus ist nur die Vorbereitung verfügbar. Schalten Sie diesen Trek frei, um zu wandern und Ihr Abenteuer zu erleben.';
 	@override String get demoTrekMode => 'Trek-Modus simulieren (Demo)';
 	@override String get exitTitle => 'App beenden?';
 	@override String get exitMessage => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?';
@@ -1518,6 +1521,8 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get resumeSub => 'Planübersicht';
 	@override String get shop => 'Verpflegung';
 	@override String get shopSub => 'Lebensmittel, Apotheken, Gas';
+	@override String get weather => 'Wetter';
+	@override String get weatherSub => 'Vorhersage pro Etappe';
 	@override String get fire => 'Brand';
 	@override String get fireSub => 'Risiken & Warnungen';
 }
@@ -3286,10 +3291,13 @@ extension on TranslationsDe {
 			'nav.myTreks' => 'Meine Touren',
 			'nav.back' => 'Zuruck',
 			'nav.home' => 'Start',
+			'navPilote.appTitle' => 'StepWays',
 			'navPilote.prepare' => 'Vorbereiten',
 			'navPilote.hike' => 'Wandern',
 			'navPilote.after' => 'Danach',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoLockedTitle' => ({required Object phase}) => '${phase} — nur für gekaufte Treks',
+			'navPilote.demoLockedBody' => 'Im Demomodus ist nur die Vorbereitung verfügbar. Schalten Sie diesen Trek frei, um zu wandern und Ihr Abenteuer zu erleben.',
 			'navPilote.demoTrekMode' => 'Trek-Modus simulieren (Demo)',
 			'navPilote.exitTitle' => 'App beenden?',
 			'navPilote.exitMessage' => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?',
@@ -3374,6 +3382,8 @@ extension on TranslationsDe {
 			'hub.cards.resumeSub' => 'Planübersicht',
 			'hub.cards.shop' => 'Verpflegung',
 			'hub.cards.shopSub' => 'Lebensmittel, Apotheken, Gas',
+			'hub.cards.weather' => 'Wetter',
+			'hub.cards.weatherSub' => 'Vorhersage pro Etappe',
 			'hub.cards.fire' => 'Brand',
 			'hub.cards.fireSub' => 'Risiken & Warnungen',
 			'hub.fab.feedback' => 'Feedback geben',
@@ -3760,13 +3770,13 @@ extension on TranslationsDe {
 			'share.templateStage' => 'Etappe',
 			'diploma.title' => 'Wanderdiplom',
 			'diploma.yourName' => 'Ihr Name',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.namePlaceholder' => 'Geben Sie Ihren Namen ein...',
 			'diploma.generatePdf' => 'PDF erstellen',
 			'diploma.certifies' => 'Bestätigt, dass',
 			'diploma.completed' => 'den Weg abgeschlossen hat',
 			'diploma.pdfTitle' => 'DIPLOM',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.pdfSubtitle' => 'Leistungszertifikat',
 			'diploma.pdfStages' => '{count} Etappen',
 			'diploma.pdfDistance' => '{km} km zurückgelegt',
@@ -4274,13 +4284,13 @@ extension on TranslationsDe {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
 			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.reportTitle' => 'Diesen Inhalt melden',
 			'moderation.reportIntro' => 'Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.',
 			'moderation.reasonLabel' => 'Grund der Meldung',
 			'moderation.reasons.illegal' => 'Illegaler Inhalt',
 			'moderation.reasons.harassment' => 'Belästigung oder Hass',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.reasons.spam' => 'Spam oder Werbung',
 			'moderation.reasons.dangerous' => 'Gefährliche oder irreführende Information',
 			'moderation.reasons.other' => 'Sonstiges',

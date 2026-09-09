@@ -161,10 +161,13 @@ class _Translations$navPilote$en extends Translations$navPilote$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
+	@override String get appTitle => 'StepWays';
 	@override String get prepare => 'Prepare';
 	@override String get hike => 'Hike';
 	@override String get after => 'After';
 	@override String get sos => 'SOS';
+	@override String demoLockedTitle({required Object phase}) => '${phase} — for purchased treks only';
+	@override String get demoLockedBody => 'In demo mode, only preparation is available. Unlock this trek to hike and relive your adventure.';
 	@override String get demoTrekMode => 'Simulate trek mode (demo)';
 	@override String get exitTitle => 'Exit the app?';
 	@override String get exitMessage => 'You are at the home screen. Do you want to close the app?';
@@ -1518,6 +1521,8 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get resumeSub => 'Plan overview';
 	@override String get shop => 'Supplies';
 	@override String get shopSub => 'Groceries, pharmacies, gas';
+	@override String get weather => 'Weather';
+	@override String get weatherSub => 'Forecast by stage';
 	@override String get fire => 'Fire';
 	@override String get fireSub => 'Risks & alerts';
 }
@@ -3286,10 +3291,13 @@ extension on TranslationsEn {
 			'nav.myTreks' => 'My treks',
 			'nav.back' => 'Back',
 			'nav.home' => 'Home',
+			'navPilote.appTitle' => 'StepWays',
 			'navPilote.prepare' => 'Prepare',
 			'navPilote.hike' => 'Hike',
 			'navPilote.after' => 'After',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoLockedTitle' => ({required Object phase}) => '${phase} — for purchased treks only',
+			'navPilote.demoLockedBody' => 'In demo mode, only preparation is available. Unlock this trek to hike and relive your adventure.',
 			'navPilote.demoTrekMode' => 'Simulate trek mode (demo)',
 			'navPilote.exitTitle' => 'Exit the app?',
 			'navPilote.exitMessage' => 'You are at the home screen. Do you want to close the app?',
@@ -3374,6 +3382,8 @@ extension on TranslationsEn {
 			'hub.cards.resumeSub' => 'Plan overview',
 			'hub.cards.shop' => 'Supplies',
 			'hub.cards.shopSub' => 'Groceries, pharmacies, gas',
+			'hub.cards.weather' => 'Weather',
+			'hub.cards.weatherSub' => 'Forecast by stage',
 			'hub.cards.fire' => 'Fire',
 			'hub.cards.fireSub' => 'Risks & alerts',
 			'hub.fab.feedback' => 'Give feedback',
@@ -3760,13 +3770,13 @@ extension on TranslationsEn {
 			'share.templateStage' => 'Stage',
 			'diploma.title' => 'Trek diploma',
 			'diploma.yourName' => 'Your name',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.namePlaceholder' => 'Enter your name...',
 			'diploma.generatePdf' => 'Generate PDF',
 			'diploma.certifies' => 'Certifies that',
 			'diploma.completed' => 'completed the',
 			'diploma.pdfTitle' => 'DIPLOMA',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.pdfSubtitle' => 'Certificate of achievement',
 			'diploma.pdfStages' => '{count} stages',
 			'diploma.pdfDistance' => '{km} km covered',
@@ -4274,13 +4284,13 @@ extension on TranslationsEn {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
 			'consent.a11y.policyButton' => 'Open the privacy policy',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.reportTitle' => 'Report this content',
 			'moderation.reportIntro' => 'Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.',
 			'moderation.reasonLabel' => 'Reason for reporting',
 			'moderation.reasons.illegal' => 'Illegal content',
 			'moderation.reasons.harassment' => 'Harassment or hate',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.reasons.spam' => 'Spam or advertising',
 			'moderation.reasons.dangerous' => 'Dangerous or misleading information',
 			'moderation.reasons.other' => 'Other',

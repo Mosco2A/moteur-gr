@@ -37,10 +37,13 @@
     "home": "Home"
   },
   "navPilote": {
+    "appTitle": "StepWays",
     "prepare": "Preparare",
     "hike": "Camminare",
     "after": "Dopo",
     "sos": "SOS",
+    "demoLockedTitle": "$phase — solo per i trek acquistati",
+    "demoLockedBody": "In modalità demo è disponibile solo la preparazione. Sblocca questo trek per camminare e rivivere la tua avventura.",
     "demoTrekMode": "Simula modalità trek (demo)",
     "exitTitle": "Uscire dall'app?",
     "exitMessage": "Sei nella schermata iniziale. Vuoi chiudere l'app?",
@@ -136,6 +139,8 @@
       "resumeSub": "Sintesi del piano",
       "shop": "Rifornimenti",
       "shopSub": "Alimentari, farmacie, gas",
+      "weather": "Meteo",
+      "weatherSub": "Previsioni per tappa",
       "fire": "Incendio",
       "fireSub": "Rischi e allerte"
     },

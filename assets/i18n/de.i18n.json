@@ -37,10 +37,13 @@
     "home": "Start"
   },
   "navPilote": {
+    "appTitle": "StepWays",
     "prepare": "Vorbereiten",
     "hike": "Wandern",
     "after": "Danach",
     "sos": "SOS",
+    "demoLockedTitle": "$phase — nur für gekaufte Treks",
+    "demoLockedBody": "Im Demomodus ist nur die Vorbereitung verfügbar. Schalten Sie diesen Trek frei, um zu wandern und Ihr Abenteuer zu erleben.",
     "demoTrekMode": "Trek-Modus simulieren (Demo)",
     "exitTitle": "App beenden?",
     "exitMessage": "Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?",
@@ -136,6 +139,8 @@
       "resumeSub": "Planübersicht",
       "shop": "Verpflegung",
       "shopSub": "Lebensmittel, Apotheken, Gas",
+      "weather": "Wetter",
+      "weatherSub": "Vorhersage pro Etappe",
       "fire": "Brand",
       "fireSub": "Risiken & Warnungen"
     },

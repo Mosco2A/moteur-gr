@@ -324,6 +324,56 @@ void main() {
     });
 
     testWidgets(
+        'R14 : phase Randonner clone la LISTE COMPLETE des cartes GR20 '
+        '(ravitaillement + meteo + fiches info inclus)', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
+
+      // Les 8 cartes « en rando » (GR20 Randonner :297-414 + Informations
+      // :418-448) sont toutes montees — plus l'extrait Navigation/Journal/
+      // Incendie du pilote V1 (R14).
+      expect(find.text(t.hub.cards.navigation), findsOneWidget);
+      expect(find.text(t.hub.cards.journal), findsOneWidget);
+      expect(find.text(t.hub.cards.group), findsOneWidget); // Groupe live
+      expect(find.text(t.hub.cards.shop), findsOneWidget); // Ravitaillement
+      expect(find.text(t.hub.cards.weather), findsOneWidget); // Météo
+      expect(find.text(t.hub.cards.fire), findsOneWidget); // Incendie
+      expect(find.text(t.hub.cards.accommodations), findsOneWidget); // Hébergements
+      expect(find.text(t.hub.cards.tips), findsOneWidget); // Fiches conseils
+    });
+
+    testWidgets('R11 : pas de titre de section redondant sous le bandeau de '
+        'phase', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
+
+      // Le bandeau de phase porte « Randonner » (t.hub.sections.hike). Il ne
+      // doit PAS y avoir un 2e titre identique (l'ancienne en-tete HubSection).
+      // -> une seule occurrence du libelle de la phase Randonner.
+      expect(find.text(t.hub.sections.hike), findsOneWidget);
+    });
+
+    testWidgets('R15 : « Démarrer la randonnée » (HubTrekCard) ABSENT en '
+        'Randonner', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
+
+      // La HubTrekCard n'est montee qu'en phase Préparer : en Randonner, aucun
+      // CTA « Démarrer la randonnée » (t.hub.startCta) ne doit apparaitre.
+      expect(find.text(t.hub.startCta), findsNothing);
+    });
+
+    testWidgets('R15 : « Démarrer la randonnée » (HubTrekCard) PRESENT en '
+        'Préparer (etat prepared)', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      // En phase Préparer avec un trek prepared, la HubTrekCard (_StartTrekCard)
+      // expose le CTA « Démarrer la randonnée » (t.hub.startCta).
+      expect(find.text(t.hub.startCta), findsOneWidget);
+    });
+
+    testWidgets(
         'phase Preparer (prepared, pas de trek actif) : PAS de SOS + CTA '
         'Demarrer (R6)', (tester) async {
       await pumpTall(tester,
@@ -392,6 +442,56 @@ void main() {
       final sosX = tester.getCenter(find.byIcon(Icons.emergency)).dx;
       final ctaX = tester.getCenter(find.byIcon(Icons.flag_outlined)).dx;
       expect(sosX, lessThan(ctaX));
+    });
+
+    testWidgets('R16 : en démo, previsualiser Randonner affiche l\'apercu '
+        'VERROUILLE (pas le cockpit jouable)', (tester) async {
+      // Trek prepared, pas de trek reel actif : phase reelle = Préparer.
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      // Active la démo (revele les selecteurs d'apercu des phases, R8).
+      await tester.tap(find.text(t.navPilote.demoTrekMode));
+      await tester.pumpAndSettle();
+
+      // Previsualise la phase Randonner via le selecteur d'apercu (dans la
+      // barre : le meme libelle peut apparaitre dans le bandeau de phase).
+      await tester.tap(inBar(find.text(t.navPilote.hike)));
+      await tester.pumpAndSettle();
+
+      // R16 : la démo ne rend PAS Randonner jouable -> teaser verrouille, PAS
+      // les cartes de la section (Navigation absente), et PAS de SOS.
+      expect(find.text(t.navPilote.demoLockedBody), findsOneWidget);
+      expect(find.text(t.hub.cards.navigation), findsNothing);
+      expect(find.byIcon(Icons.emergency), findsNothing);
+    });
+
+    testWidgets('R16 : en démo, la PREPARATION reste jouable (cartes visibles)',
+        (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      await tester.tap(find.text(t.navPilote.demoTrekMode));
+      await tester.pumpAndSettle();
+      // Selecteur sur Préparer (phase par defaut) : cartes de prépa jouables.
+      // Tap dans la barre (le libelle « Préparer » figure aussi dans le bandeau).
+      await tester.tap(inBar(find.text(t.navPilote.prepare)));
+      await tester.pumpAndSettle();
+
+      expect(find.text(t.hub.cards.feasibility), findsOneWidget);
+      expect(find.text(t.navPilote.demoLockedBody), findsNothing);
+    });
+
+    testWidgets('R17 : l\'AppHeader affiche la MARQUE « StepWays » (pas le nom '
+        'du trek)', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      final titleInHeader = find.descendant(
+        of: find.byType(AppHeader),
+        matching: find.text(t.navPilote.appTitle),
+      );
+      expect(titleInHeader, findsOneWidget);
     });
 
     testWidgets('le pilote n\'affiche PAS de NavigationBar (hors-shell)',

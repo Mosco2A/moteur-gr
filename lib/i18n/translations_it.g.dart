@@ -161,10 +161,13 @@ class _Translations$navPilote$it extends Translations$navPilote$fr {
 	final TranslationsIt _root; // ignore: unused_field
 
 	// Translations
+	@override String get appTitle => 'StepWays';
 	@override String get prepare => 'Preparare';
 	@override String get hike => 'Camminare';
 	@override String get after => 'Dopo';
 	@override String get sos => 'SOS';
+	@override String demoLockedTitle({required Object phase}) => '${phase} — solo per i trek acquistati';
+	@override String get demoLockedBody => 'In modalità demo è disponibile solo la preparazione. Sblocca questo trek per camminare e rivivere la tua avventura.';
 	@override String get demoTrekMode => 'Simula modalità trek (demo)';
 	@override String get exitTitle => 'Uscire dall\'app?';
 	@override String get exitMessage => 'Sei nella schermata iniziale. Vuoi chiudere l\'app?';
@@ -1518,6 +1521,8 @@ class _Translations$hub$cards$it extends Translations$hub$cards$fr {
 	@override String get resumeSub => 'Sintesi del piano';
 	@override String get shop => 'Rifornimenti';
 	@override String get shopSub => 'Alimentari, farmacie, gas';
+	@override String get weather => 'Meteo';
+	@override String get weatherSub => 'Previsioni per tappa';
 	@override String get fire => 'Incendio';
 	@override String get fireSub => 'Rischi e allerte';
 }
@@ -3286,10 +3291,13 @@ extension on TranslationsIt {
 			'nav.myTreks' => 'I miei trek',
 			'nav.back' => 'Indietro',
 			'nav.home' => 'Home',
+			'navPilote.appTitle' => 'StepWays',
 			'navPilote.prepare' => 'Preparare',
 			'navPilote.hike' => 'Camminare',
 			'navPilote.after' => 'Dopo',
 			'navPilote.sos' => 'SOS',
+			'navPilote.demoLockedTitle' => ({required Object phase}) => '${phase} — solo per i trek acquistati',
+			'navPilote.demoLockedBody' => 'In modalità demo è disponibile solo la preparazione. Sblocca questo trek per camminare e rivivere la tua avventura.',
 			'navPilote.demoTrekMode' => 'Simula modalità trek (demo)',
 			'navPilote.exitTitle' => 'Uscire dall\'app?',
 			'navPilote.exitMessage' => 'Sei nella schermata iniziale. Vuoi chiudere l\'app?',
@@ -3374,6 +3382,8 @@ extension on TranslationsIt {
 			'hub.cards.resumeSub' => 'Sintesi del piano',
 			'hub.cards.shop' => 'Rifornimenti',
 			'hub.cards.shopSub' => 'Alimentari, farmacie, gas',
+			'hub.cards.weather' => 'Meteo',
+			'hub.cards.weatherSub' => 'Previsioni per tappa',
 			'hub.cards.fire' => 'Incendio',
 			'hub.cards.fireSub' => 'Rischi e allerte',
 			'hub.fab.feedback' => 'Lascia un feedback',
@@ -3760,13 +3770,13 @@ extension on TranslationsIt {
 			'share.templateStage' => 'Tappa',
 			'diploma.title' => 'Diploma di trekking',
 			'diploma.yourName' => 'Il tuo nome',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.namePlaceholder' => 'Inserisci il tuo nome...',
 			'diploma.generatePdf' => 'Genera PDF',
 			'diploma.certifies' => 'Certifica che',
 			'diploma.completed' => 'ha percorso il',
 			'diploma.pdfTitle' => 'DIPLOMA',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.pdfSubtitle' => 'Certificato di completamento',
 			'diploma.pdfStages' => '{count} tappe',
 			'diploma.pdfDistance' => '{km} km percorsi',
@@ -4274,13 +4284,13 @@ extension on TranslationsIt {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, attualmente ${state}',
 			'consent.a11y.healthSection' => 'Sezione dati sulla salute, consenso rafforzato',
 			'consent.a11y.policyButton' => 'Apri l\'informativa sulla privacy',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.reportTitle' => 'Segnala questo contenuto',
 			'moderation.reportIntro' => 'Aiutaci a mantenere sana la community. Indica perché questo contenuto ti sembra illecito. La tua segnalazione sarà esaminata da un moderatore.',
 			'moderation.reasonLabel' => 'Motivo della segnalazione',
 			'moderation.reasons.illegal' => 'Contenuto illegale',
 			'moderation.reasons.harassment' => 'Molestie o odio',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.reasons.spam' => 'Spam o pubblicità',
 			'moderation.reasons.dangerous' => 'Informazione pericolosa o ingannevole',
 			'moderation.reasons.other' => 'Altro',
