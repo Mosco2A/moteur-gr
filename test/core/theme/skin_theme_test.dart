@@ -299,9 +299,9 @@ void main() {
     testWidgets('typographie inchangee (familles + tailles/poids, clair)',
         (tester) async {
       final tt = light(AppSkin.sentierVivant).textTheme;
-      // Familles (L1) : titres Space Grotesk, corps Inter.
-      expect(tt.displayLarge?.fontFamily, contains('SpaceGrotesk'));
-      expect(tt.bodyMedium?.fontFamily, contains('Inter'));
+      // Familles (retour Chris 09/09 : parite GR20) : Montserrat partout.
+      expect(tt.displayLarge?.fontFamily, contains('Montserrat'));
+      expect(tt.bodyMedium?.fontFamily, contains('Montserrat'));
       // Tailles/poids de l'echelle typo, inchanges par L2.
       expect(tt.displayLarge?.fontSize, 34);
       expect(tt.displayLarge?.fontWeight, FontWeight.w700);

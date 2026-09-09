@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../weather/models/weather_forecast.dart';
@@ -50,7 +51,10 @@ class HubWeatherCard extends ConsumerWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       child: Row(
         children: [
-          _leading(context, today, state.isLoading, scheme),
+          // Icone meteo en orange categoriel (parite GR20 Meteo -> orangeTerre)
+          // au lieu de l'accent-sentier unique. Portee par le theme (#IR02).
+          _leading(context, today, state.isLoading, scheme,
+              CategoryIconColors.of(context).orange),
           const SizedBox(width: AppTheme.spacingBase),
           Expanded(
             child: Column(
@@ -94,12 +98,13 @@ class HubWeatherCard extends ConsumerWidget {
     DayForecast? today,
     bool loading,
     ColorScheme scheme,
+    Color accent,
   ) {
     if (today != null) {
       return WeatherIcon(
         iconName: today.weatherIconName,
         size: 32,
-        color: scheme.primary,
+        color: accent,
       );
     }
     if (loading) {

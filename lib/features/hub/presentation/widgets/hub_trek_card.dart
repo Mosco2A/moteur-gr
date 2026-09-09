@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../shared/widgets/app_button.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
@@ -100,7 +101,10 @@ class _ActiveTrekCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.directions_walk, color: scheme.primary),
+              // Icone "en cours" en vert categoriel (parite GR20 Navigation ->
+              // vertMaquis) plutot que l'accent-sentier unique (#IR02).
+              Icon(Icons.directions_walk,
+                  color: CategoryIconColors.of(context).green),
               const SizedBox(width: AppTheme.spacingSm),
               // Flexible + ellipsis : le titre s'ajuste a la largeur (mobile
               // 360 px) au lieu de deborder la Row a droite (fix overflow).
@@ -210,7 +214,10 @@ class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
         children: [
           Row(
             children: [
-              Icon(Icons.map_outlined, color: scheme.primary),
+              // Icone "carte" en vert categoriel (parite GR20 Navigation ->
+              // vertMaquis) plutot que l'accent-sentier unique (#IR02).
+              Icon(Icons.map_outlined,
+                  color: CategoryIconColors.of(context).green),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(

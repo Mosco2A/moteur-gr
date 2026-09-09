@@ -6,9 +6,9 @@ import 'package:moteur_gr/core/theme/app_theme.dart';
 
 /// Tests SW-SKIN-L1 — typographie portee par le theme (google_fonts).
 ///
-/// Verifie que les deux themes exposent bien :
-///  - Space Grotesk sur les roles titres (display / headline / title / label),
-///  - Inter sur les roles corps (body),
+/// Verifie que les deux themes exposent bien (retour Chris 09/09 : parite GR20)
+///  - Montserrat sur TOUS les roles (titres display/headline/title/label ET
+///    corps body),
 ///  - un role "data" en chiffres tabulaires (FontFeature.tabularFigures),
 /// et que les tailles/poids de l'echelle typographique restent inchanges.
 ///
@@ -53,26 +53,26 @@ void main() {
     for (final entry in {'clair': light, 'sombre': dark}.entries) {
       final buildTheme = entry.value;
 
-      testWidgets('theme ${entry.key} : titres en Space Grotesk',
+      testWidgets('theme ${entry.key} : titres en Montserrat',
           (tester) async {
         final tt = buildTheme().textTheme;
-        // Roles titres/display/labels -> Space Grotesk.
-        expect(tt.displayLarge?.fontFamily, contains('SpaceGrotesk'));
-        expect(tt.headlineLarge?.fontFamily, contains('SpaceGrotesk'));
-        expect(tt.headlineMedium?.fontFamily, contains('SpaceGrotesk'));
-        expect(tt.headlineSmall?.fontFamily, contains('SpaceGrotesk'));
-        expect(tt.titleLarge?.fontFamily, contains('SpaceGrotesk'));
-        expect(tt.titleMedium?.fontFamily, contains('SpaceGrotesk'));
-        expect(tt.labelLarge?.fontFamily, contains('SpaceGrotesk'));
+        // Roles titres/display/labels -> Montserrat (parite GR20).
+        expect(tt.displayLarge?.fontFamily, contains('Montserrat'));
+        expect(tt.headlineLarge?.fontFamily, contains('Montserrat'));
+        expect(tt.headlineMedium?.fontFamily, contains('Montserrat'));
+        expect(tt.headlineSmall?.fontFamily, contains('Montserrat'));
+        expect(tt.titleLarge?.fontFamily, contains('Montserrat'));
+        expect(tt.titleMedium?.fontFamily, contains('Montserrat'));
+        expect(tt.labelLarge?.fontFamily, contains('Montserrat'));
         await drainFontLoad(tester);
       });
 
-      testWidgets('theme ${entry.key} : corps en Inter', (tester) async {
+      testWidgets('theme ${entry.key} : corps en Montserrat', (tester) async {
         final tt = buildTheme().textTheme;
-        // Roles corps/UI -> Inter.
-        expect(tt.bodyLarge?.fontFamily, contains('Inter'));
-        expect(tt.bodyMedium?.fontFamily, contains('Inter'));
-        expect(tt.bodySmall?.fontFamily, contains('Inter'));
+        // Roles corps/UI -> Montserrat (parite GR20 : police unique).
+        expect(tt.bodyLarge?.fontFamily, contains('Montserrat'));
+        expect(tt.bodyMedium?.fontFamily, contains('Montserrat'));
+        expect(tt.bodySmall?.fontFamily, contains('Montserrat'));
         await drainFontLoad(tester);
       });
 
@@ -119,10 +119,10 @@ void main() {
   });
 
   group('SW-SKIN-L1 — role data (chiffres tabulaires)', () {
-    testWidgets('dataTextStyleBase : Space Grotesk w700 + tabularFigures',
+    testWidgets('dataTextStyleBase : Montserrat w700 + tabularFigures',
         (tester) async {
       final style = AppTheme.dataTextStyleBase;
-      expect(style.fontFamily, contains('SpaceGrotesk'));
+      expect(style.fontFamily, contains('Montserrat'));
       expect(style.fontWeight, FontWeight.w700);
       expect(style.fontFeatures, contains(const FontFeature.tabularFigures()));
       await drainFontLoad(tester);
@@ -143,7 +143,7 @@ void main() {
         ),
       );
 
-      expect(resolved.fontFamily, contains('SpaceGrotesk'));
+      expect(resolved.fontFamily, contains('Montserrat'));
       expect(resolved.fontWeight, FontWeight.w700);
       expect(resolved.fontFeatures, contains(const FontFeature.tabularFigures()));
       // Herite la taille du role headlineMedium (24) du theme actif.

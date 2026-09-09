@@ -24,12 +24,22 @@ class QuickAccessCard extends StatelessWidget {
     required this.title,
     required this.subtitle,
     required this.onTap,
+    this.iconColor,
     this.enabled = true,
     this.lockedLabel,
   });
 
   /// Icone illustrant la destination.
   final IconData icon;
+
+  /// Couleur categorielle de l'icone (retour Chris 09/09, reco #IR02).
+  ///
+  /// Fournie par l'appelant depuis la palette [CategoryIconColors] du theme
+  /// (variete GR20 : bleu / vert / orange / teal / rouge / jaune selon la
+  /// nature de la carte) — JAMAIS une couleur en dur. Si `null`, on retombe sur
+  /// l'accent-sentier (`colorScheme.primary`) : compatible avec les appels
+  /// existants qui ne passent pas encore de categorie.
+  final Color? iconColor;
 
   /// Titre de la carte (libelle localise).
   final String title;
@@ -52,9 +62,12 @@ class QuickAccessCard extends StatelessWidget {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
 
-    // Couleurs attenuees quand la carte est desactivee (verrou).
-    final iconColor =
-        enabled ? scheme.primary : scheme.onSurface.withValues(alpha: 0.38);
+    // Couleur categorielle (variete GR20) portee par le theme quand fournie,
+    // sinon repli sur l'accent-sentier. Attenuee quand la carte est desactivee
+    // (verrou).
+    final accent = iconColor ?? scheme.primary;
+    final effectiveIconColor =
+        enabled ? accent : scheme.onSurface.withValues(alpha: 0.38);
     final titleColor =
         enabled ? scheme.onSurface : scheme.onSurface.withValues(alpha: 0.38);
     final subtitleText = enabled ? subtitle : (lockedLabel ?? subtitle);
@@ -68,7 +81,17 @@ class QuickAccessCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: iconColor, size: 28),
+              // Parite GR20 : icone dans une pastille teintee (accent.withAlpha
+              // ~30) pour faire ressortir la variete categorielle (GR20
+              // _QuickAccessCard L1133-1141).
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: effectiveIconColor.withAlpha(enabled ? 30 : 20),
+                  borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                ),
+                child: Icon(icon, color: effectiveIconColor, size: 24),
+              ),
               if (!enabled) ...[
                 const Spacer(),
                 Icon(

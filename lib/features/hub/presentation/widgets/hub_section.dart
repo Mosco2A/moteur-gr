@@ -16,6 +16,7 @@ class HubSection extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.cards,
+    this.iconColor,
   });
 
   /// Titre de la section (libelle localise).
@@ -23,6 +24,12 @@ class HubSection extends StatelessWidget {
 
   /// Icone de la section.
   final IconData icon;
+
+  /// Couleur categorielle de l'icone d'en-tete (retour Chris 09/09, reco
+  /// #IR02, parite `SectionHeader.iconColor` de GR20). Fournie par l'appelant
+  /// depuis [CategoryIconColors] — jamais en dur. Si `null`, repli sur
+  /// l'accent-sentier (`colorScheme.primary`).
+  final Color? iconColor;
 
   /// Cartes d'acces rapide de la section.
   final List<QuickAccessCard> cards;
@@ -37,7 +44,7 @@ class HubSection extends StatelessWidget {
         // En-tete de section.
         Row(
           children: [
-            Icon(icon, color: theme.colorScheme.primary, size: 22),
+            Icon(icon, color: iconColor ?? theme.colorScheme.primary, size: 22),
             const SizedBox(width: AppTheme.spacingSm),
             // Flexible + ellipsis : le titre de section s'ajuste a la largeur
             // (mobile 360 px) au lieu de deborder la Row a droite.

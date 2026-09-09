@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'app_skin.dart';
+import 'category_icon_colors.dart';
 import 'skin_theme.dart';
 
 /// Theme generique du Moteur GR.
@@ -12,12 +13,14 @@ import 'skin_theme.dart';
 class AppTheme {
   AppTheme._();
 
-  // --- Typographie (SW-SKIN-L1) ---
+  // --- Typographie (SW-SKIN-L1 / retour Chris 09/09 : parite GR20) ---
   //
-  // Couple de polices porte par le theme (jamais ecran par ecran) :
-  //  - Titres / display / labels : Space Grotesk (via [GoogleFonts.spaceGrotesk]).
-  //  - Corps / UI               : Inter        (via [GoogleFonts.inter]).
-  //  - Role "data" (gros chiffres km / D+ / duree) : Space Grotesk w700 +
+  // Police UNIQUE portee par le theme (jamais ecran par ecran), alignee sur
+  // GR20 : Montserrat pour TOUS les roles (titres, corps, labels, data). Le
+  // couple Space Grotesk/Inter est abandonne au profit de la parite visuelle
+  // GR20 demandee par Chris. Les TAILLES et POIDS de l'echelle typo restent
+  // inchanges (conformes) : on ne fait qu'assigner la meme famille partout.
+  //  - Role "data" (gros chiffres km / D+ / duree) : Montserrat w700 +
   //    FontFeature.tabularFigures() -> chiffres a chasse fixe (alignement HUD).
   //
   // Offline-first (arbitrage A1) : google_fonts recupere la police au runtime
@@ -27,13 +30,13 @@ class AppTheme {
   // dans assets/google_fonts/ (voir note de livraison) : google_fonts les
   // detecte alors automatiquement et cesse tout fetch HTTP.
 
-  /// Base du role "data" (gros chiffres de stats) : Space Grotesk w700 avec
+  /// Base du role "data" (gros chiffres de stats) : Montserrat w700 avec
   /// chiffres tabulaires. Reutilisable sans BuildContext ; la couleur et la
   /// taille sont heritees du contexte de rendu (widget parent / DefaultTextStyle).
   ///
   /// Preferer [dataTextStyle] quand un BuildContext est disponible : la taille
   /// et la couleur y sont alors alignees sur le TextTheme actif.
-  static TextStyle get dataTextStyleBase => GoogleFonts.spaceGrotesk(
+  static TextStyle get dataTextStyleBase => GoogleFonts.montserrat(
         fontWeight: FontWeight.w700,
         fontFeatures: const [FontFeature.tabularFigures()],
       );
@@ -41,11 +44,11 @@ class AppTheme {
   /// Style du role "data" resolu depuis le [BuildContext].
   ///
   /// Reprend taille et couleur de `headlineMedium` (gros chiffre) du TextTheme
-  /// courant, en Space Grotesk w700 + chiffres tabulaires. A utiliser pour les
+  /// courant, en Montserrat w700 + chiffres tabulaires. A utiliser pour les
   /// valeurs de stats (distance, D+, duree) du hub, de la fiche etape et du HUD.
   static TextStyle dataTextStyle(BuildContext context) {
     final base = Theme.of(context).textTheme.headlineMedium;
-    return GoogleFonts.spaceGrotesk(
+    return GoogleFonts.montserrat(
       textStyle: base,
       fontWeight: FontWeight.w700,
       fontFeatures: const [FontFeature.tabularFigures()],
@@ -56,16 +59,16 @@ class AppTheme {
   ///
   /// Les tailles et poids sont ceux de l'echelle typographique existante
   /// (display 34/w700 … labelLarge 16/w600) : on n'assigne QUE la famille par
-  /// role. [onColor] est la couleur du texte (noir sur clair, gris clair sur
-  /// sombre) appliquee a tous les roles, a l'identique de l'ancien TextTheme.
+  /// role — Montserrat partout (parite GR20, retour Chris 09/09). [onColor] est
+  /// la couleur du texte (noir sur clair, gris clair sur sombre) appliquee a
+  /// tous les roles, a l'identique de l'ancien TextTheme.
   ///
-  ///  - display / headline* / title* / label* -> Space Grotesk (titres).
-  ///  - body*                                  -> Inter (corps / UI).
+  ///  - display / headline* / title* / label* / body* -> Montserrat.
   static TextTheme _textTheme(Color onColor) {
-    TextStyle title(FontWeight weight, double size) => GoogleFonts.spaceGrotesk(
+    TextStyle title(FontWeight weight, double size) => GoogleFonts.montserrat(
           textStyle: TextStyle(fontWeight: weight, fontSize: size, color: onColor),
         );
-    TextStyle body(FontWeight weight, double size) => GoogleFonts.inter(
+    TextStyle body(FontWeight weight, double size) => GoogleFonts.montserrat(
           textStyle: TextStyle(fontWeight: weight, fontSize: size, color: onColor),
         );
 
@@ -182,6 +185,14 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 4,
         centerTitle: true,
+        // Parite GR20 (retour Chris 09/09) : titre d'AppBar explicitement en
+        // Montserrat 18/w600 (comme GR20 app_theme.dart), au lieu du defaut M3
+        // (~titleLarge). Garantit que l'en-tete du pilote a la taille voulue.
+        titleTextStyle: GoogleFonts.montserrat(
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+          color: Colors.white,
+        ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: const Color(0xFF1E1E1E),
@@ -248,7 +259,13 @@ class AppTheme {
       textTheme: _textTheme(const Color(0xFFF5F5F5)),
       // SW-SKIN-L2 : porteur technique de la peau active. Neutre tant que les
       // composants ne lisent pas encore SkinTheme (avant L5/L6).
-      extensions: <ThemeExtension<dynamic>>[SkinTheme.fromSkin(skin)],
+      // CategoryIconColors (retour Chris 09/09, reco #IR02) : palette
+      // categorielle des icones du hub (variete GR20), portee par le theme —
+      // zero couleur en dur ecran par ecran.
+      extensions: <ThemeExtension<dynamic>>[
+        SkinTheme.fromSkin(skin),
+        CategoryIconColors.defaults,
+      ],
     );
   }
 
@@ -298,6 +315,14 @@ class AppTheme {
         foregroundColor: Colors.white,
         elevation: 4,
         centerTitle: true,
+        // Parite GR20 (retour Chris 09/09) : titre d'AppBar explicitement en
+        // Montserrat 18/w600 (comme GR20 app_theme.dart), au lieu du defaut M3
+        // (~titleLarge). Garantit que l'en-tete du pilote a la taille voulue.
+        titleTextStyle: GoogleFonts.montserrat(
+          fontWeight: FontWeight.w600,
+          fontSize: 18,
+          color: Colors.white,
+        ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: blancNeige,
@@ -360,7 +385,13 @@ class AppTheme {
       textTheme: _textTheme(noir),
       // SW-SKIN-L2 : porteur technique de la peau active. Neutre tant que les
       // composants ne lisent pas encore SkinTheme (avant L5/L6).
-      extensions: <ThemeExtension<dynamic>>[SkinTheme.fromSkin(skin)],
+      // CategoryIconColors (retour Chris 09/09, reco #IR02) : palette
+      // categorielle des icones du hub (variete GR20), portee par le theme —
+      // zero couleur en dur ecran par ecran.
+      extensions: <ThemeExtension<dynamic>>[
+        SkinTheme.fromSkin(skin),
+        CategoryIconColors.defaults,
+      ],
     );
   }
 
