@@ -45,7 +45,19 @@
     "exitTitle": "App beenden?",
     "exitMessage": "Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?",
     "exitConfirm": "Beenden",
-    "exitCancel": "Bleiben"
+    "exitCancel": "Bleiben",
+    "startTrek": "Trek starten",
+    "finishTrek": "Trek beenden",
+    "reviewPrep": "Vorbereitung ansehen",
+    "phasePrepareSub": "Bereiten Sie Ihren Trek vor dem Start vor",
+    "phaseHikeSub": "Ihr Trek läuft",
+    "phaseAfterSub": "Erleben Sie Ihr Abenteuer noch einmal",
+    "phaseBanner": "Aktuelle Phase",
+    "demoPreview": "Phasenvorschau (Demo): Vorbereiten, Wandern, Danach",
+    "dominantHand": "Dominante Hand",
+    "dominantHandDesc": "Platziert SOS und Hauptbefehle auf Ihrer Handseite",
+    "dominantHandRight": "Rechtshänder",
+    "dominantHandLeft": "Linkshänder"
   },
   "branding": {
     "tagline": "Ihr Trekking-Begleiter",

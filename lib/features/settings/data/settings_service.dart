@@ -11,6 +11,10 @@ class SettingsKeys {
   /// Peau visuelle selectionnee (SW-SKIN-L7). Choix GLOBAL (pas par sentier),
   /// persiste par le nom de l'enum [AppSkin] (ex: 'sentierVivant').
   static const String skin = 'settings_skin';
+
+  /// Lateralite (main dominante) pour l'ergonomie thumb zone (nav V2, R9/R10).
+  /// Valeurs 'right'|'left', defaut 'right' (droitier). Donnee NON sensible.
+  static const String dominantHand = 'settings_dominant_hand';
 }
 
 /// Service de persistance des parametres via SharedPreferences.
@@ -88,4 +92,18 @@ class SettingsService {
   /// Persiste la peau choisie (nom d'enum `AppSkin`). Choix global au sentier.
   Future<bool> setSkin(String skinName) =>
       _prefs.setString(SettingsKeys.skin, skinName);
+
+  // --- Lateralite / main dominante (nav V2, R9/R10) ---
+
+  /// Lit la main dominante sauvegardee (fallback: 'right' — droitier).
+  ///
+  /// Pilote la position du SOS et des commandes critiques cote main dominante
+  /// (thumb zone). Chaine brute ('right'|'left') ; la resolution vers l'enum
+  /// (avec defaut sur valeur inconnue) est faite par `DominantHandValues`.
+  String getDominantHand() =>
+      _prefs.getString(SettingsKeys.dominantHand) ?? 'right';
+
+  /// Persiste la main dominante choisie ('right'|'left').
+  Future<bool> setDominantHand(String hand) =>
+      _prefs.setString(SettingsKeys.dominantHand, hand);
 }

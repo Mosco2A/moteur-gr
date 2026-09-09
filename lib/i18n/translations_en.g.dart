@@ -170,6 +170,18 @@ class _Translations$navPilote$en extends Translations$navPilote$fr {
 	@override String get exitMessage => 'You are at the home screen. Do you want to close the app?';
 	@override String get exitConfirm => 'Exit';
 	@override String get exitCancel => 'Stay';
+	@override String get startTrek => 'Start the trek';
+	@override String get finishTrek => 'Finish the trek';
+	@override String get reviewPrep => 'Review preparation';
+	@override String get phasePrepareSub => 'Get your trek ready before departure';
+	@override String get phaseHikeSub => 'Your trek is in progress';
+	@override String get phaseAfterSub => 'Relive your adventure';
+	@override String get phaseBanner => 'Current phase';
+	@override String get demoPreview => 'Phase preview (demo): Prepare, Hike, After';
+	@override String get dominantHand => 'Dominant hand';
+	@override String get dominantHandDesc => 'Places SOS and key controls on your hand side';
+	@override String get dominantHandRight => 'Right-handed';
+	@override String get dominantHandLeft => 'Left-handed';
 }
 
 // Path: branding
@@ -3283,6 +3295,18 @@ extension on TranslationsEn {
 			'navPilote.exitMessage' => 'You are at the home screen. Do you want to close the app?',
 			'navPilote.exitConfirm' => 'Exit',
 			'navPilote.exitCancel' => 'Stay',
+			'navPilote.startTrek' => 'Start the trek',
+			'navPilote.finishTrek' => 'Finish the trek',
+			'navPilote.reviewPrep' => 'Review preparation',
+			'navPilote.phasePrepareSub' => 'Get your trek ready before departure',
+			'navPilote.phaseHikeSub' => 'Your trek is in progress',
+			'navPilote.phaseAfterSub' => 'Relive your adventure',
+			'navPilote.phaseBanner' => 'Current phase',
+			'navPilote.demoPreview' => 'Phase preview (demo): Prepare, Hike, After',
+			'navPilote.dominantHand' => 'Dominant hand',
+			'navPilote.dominantHandDesc' => 'Places SOS and key controls on your hand side',
+			'navPilote.dominantHandRight' => 'Right-handed',
+			'navPilote.dominantHandLeft' => 'Left-handed',
 			'branding.tagline' => 'Your trekking companion',
 			'branding.subline' => 'Prepare, hike, share',
 			'hub.greeting' => ({required Object name}) => 'Hello, ${name}!',
@@ -3741,6 +3765,8 @@ extension on TranslationsEn {
 			'diploma.certifies' => 'Certifies that',
 			'diploma.completed' => 'completed the',
 			'diploma.pdfTitle' => 'DIPLOMA',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.pdfSubtitle' => 'Certificate of achievement',
 			'diploma.pdfStages' => '{count} stages',
 			'diploma.pdfDistance' => '{km} km covered',
@@ -3753,8 +3779,6 @@ extension on TranslationsEn {
 			'diploma.recapJournalPhotos' => 'Journal photos',
 			'diploma.recapNoPhotos' => 'No photos in journal',
 			'diploma.recapStats' => 'Statistics',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.recapStages' => '{count} stages completed',
 			'diploma.recapDistance' => '{km} km covered',
 			'diploma.recapElevation' => '{meters} m elevation',
@@ -4255,6 +4279,8 @@ extension on TranslationsEn {
 			'moderation.reasonLabel' => 'Reason for reporting',
 			'moderation.reasons.illegal' => 'Illegal content',
 			'moderation.reasons.harassment' => 'Harassment or hate',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.reasons.spam' => 'Spam or advertising',
 			'moderation.reasons.dangerous' => 'Dangerous or misleading information',
 			'moderation.reasons.other' => 'Other',
@@ -4267,8 +4293,6 @@ extension on TranslationsEn {
 			'moderation.submitting' => 'Sending…',
 			'moderation.sent' => 'Report sent. Thank you, a moderator will review it.',
 			'moderation.errorRequired' => 'Please fill in the reason, your email and the good-faith declaration.',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.errorGeneric' => 'The report could not be sent. Please try again.',
 			'moderation.cancel' => 'Cancel',
 			'moderation.reasonsTitle' => 'Why was this content restricted?',

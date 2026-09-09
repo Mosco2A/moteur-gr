@@ -170,6 +170,18 @@ class _Translations$navPilote$de extends Translations$navPilote$fr {
 	@override String get exitMessage => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?';
 	@override String get exitConfirm => 'Beenden';
 	@override String get exitCancel => 'Bleiben';
+	@override String get startTrek => 'Trek starten';
+	@override String get finishTrek => 'Trek beenden';
+	@override String get reviewPrep => 'Vorbereitung ansehen';
+	@override String get phasePrepareSub => 'Bereiten Sie Ihren Trek vor dem Start vor';
+	@override String get phaseHikeSub => 'Ihr Trek läuft';
+	@override String get phaseAfterSub => 'Erleben Sie Ihr Abenteuer noch einmal';
+	@override String get phaseBanner => 'Aktuelle Phase';
+	@override String get demoPreview => 'Phasenvorschau (Demo): Vorbereiten, Wandern, Danach';
+	@override String get dominantHand => 'Dominante Hand';
+	@override String get dominantHandDesc => 'Platziert SOS und Hauptbefehle auf Ihrer Handseite';
+	@override String get dominantHandRight => 'Rechtshänder';
+	@override String get dominantHandLeft => 'Linkshänder';
 }
 
 // Path: branding
@@ -3283,6 +3295,18 @@ extension on TranslationsDe {
 			'navPilote.exitMessage' => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?',
 			'navPilote.exitConfirm' => 'Beenden',
 			'navPilote.exitCancel' => 'Bleiben',
+			'navPilote.startTrek' => 'Trek starten',
+			'navPilote.finishTrek' => 'Trek beenden',
+			'navPilote.reviewPrep' => 'Vorbereitung ansehen',
+			'navPilote.phasePrepareSub' => 'Bereiten Sie Ihren Trek vor dem Start vor',
+			'navPilote.phaseHikeSub' => 'Ihr Trek läuft',
+			'navPilote.phaseAfterSub' => 'Erleben Sie Ihr Abenteuer noch einmal',
+			'navPilote.phaseBanner' => 'Aktuelle Phase',
+			'navPilote.demoPreview' => 'Phasenvorschau (Demo): Vorbereiten, Wandern, Danach',
+			'navPilote.dominantHand' => 'Dominante Hand',
+			'navPilote.dominantHandDesc' => 'Platziert SOS und Hauptbefehle auf Ihrer Handseite',
+			'navPilote.dominantHandRight' => 'Rechtshänder',
+			'navPilote.dominantHandLeft' => 'Linkshänder',
 			'branding.tagline' => 'Ihr Trekking-Begleiter',
 			'branding.subline' => 'Vorbereiten, wandern, teilen',
 			'hub.greeting' => ({required Object name}) => 'Hallo, ${name}!',
@@ -3741,6 +3765,8 @@ extension on TranslationsDe {
 			'diploma.certifies' => 'Bestätigt, dass',
 			'diploma.completed' => 'den Weg abgeschlossen hat',
 			'diploma.pdfTitle' => 'DIPLOM',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.pdfSubtitle' => 'Leistungszertifikat',
 			'diploma.pdfStages' => '{count} Etappen',
 			'diploma.pdfDistance' => '{km} km zurückgelegt',
@@ -3753,8 +3779,6 @@ extension on TranslationsDe {
 			'diploma.recapJournalPhotos' => 'Tagebuchfotos',
 			'diploma.recapNoPhotos' => 'Keine Fotos im Tagebuch',
 			'diploma.recapStats' => 'Statistiken',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.recapStages' => '{count} Etappen absolviert',
 			'diploma.recapDistance' => '{km} km zurueckgelegt',
 			'diploma.recapElevation' => '{meters} m Hoehenunterschied',
@@ -4255,6 +4279,8 @@ extension on TranslationsDe {
 			'moderation.reasonLabel' => 'Grund der Meldung',
 			'moderation.reasons.illegal' => 'Illegaler Inhalt',
 			'moderation.reasons.harassment' => 'Belästigung oder Hass',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.reasons.spam' => 'Spam oder Werbung',
 			'moderation.reasons.dangerous' => 'Gefährliche oder irreführende Information',
 			'moderation.reasons.other' => 'Sonstiges',
@@ -4267,8 +4293,6 @@ extension on TranslationsDe {
 			'moderation.submitting' => 'Wird gesendet…',
 			'moderation.sent' => 'Meldung gesendet. Danke, ein Moderator wird sie prüfen.',
 			'moderation.errorRequired' => 'Bitte Grund, E-Mail und die Erklärung in gutem Glauben ausfüllen.',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.errorGeneric' => 'Die Meldung konnte nicht gesendet werden. Bitte erneut versuchen.',
 			'moderation.cancel' => 'Abbrechen',
 			'moderation.reasonsTitle' => 'Warum wurde dieser Inhalt eingeschränkt?',

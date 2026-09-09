@@ -45,7 +45,19 @@
     "exitTitle": "Quitter l'application ?",
     "exitMessage": "Vous êtes à l'accueil. Voulez-vous fermer l'application ?",
     "exitConfirm": "Quitter",
-    "exitCancel": "Rester"
+    "exitCancel": "Rester",
+    "startTrek": "Démarrer le trek",
+    "finishTrek": "Terminer le trek",
+    "reviewPrep": "Revoir la préparation",
+    "phasePrepareSub": "Organisez votre trek avant le départ",
+    "phaseHikeSub": "Votre trek est en cours",
+    "phaseAfterSub": "Revivez votre aventure",
+    "phaseBanner": "Phase en cours",
+    "demoPreview": "Aperçu des phases (démo) : Préparer, Randonner, Après",
+    "dominantHand": "Main dominante",
+    "dominantHandDesc": "Place le SOS et les commandes clés du côté de votre main",
+    "dominantHandRight": "Droitier",
+    "dominantHandLeft": "Gaucher"
   },
   "branding": {
     "tagline": "Votre compagnon de randonnée",

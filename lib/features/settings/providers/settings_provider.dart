@@ -73,6 +73,28 @@ abstract class AppThemeModeValues {
       values.contains(value) ? value : fallback;
 }
 
+/// Main dominante (lateralite) — ergonomie thumb zone (nav V2, R9/R10).
+///
+/// Pilote le cote des commandes critiques (SOS, commandes frequentes) : main
+/// dominante -> bord bas de ce cote (droitier=droite, gaucher=gauche). Donnee
+/// NON sensible. String extensible (valeurs inconnues -> fallback droitier).
+typedef DominantHand = String;
+
+abstract class DominantHandValues {
+  static const String right = 'right';
+  static const String left = 'left';
+
+  /// Defaut IMPOSE par Chris (R9) : droitier si non renseigne.
+  static const String fallback = right;
+  static const List<String> values = [right, left];
+
+  static DominantHand fromString(String value) =>
+      values.contains(value) ? value : fallback;
+
+  /// True si la main dominante est la droite (SOS/commandes -> bas-droite).
+  static bool isRight(DominantHand hand) => hand != left;
+}
+
 /// Etat des parametres complets
 class AppSettings {
   const AppSettings({
@@ -82,6 +104,7 @@ class AppSettings {
     this.themeMode = AppThemeModeValues.dark,
     this.cacheEnabled = true,
     this.cacheSizeMb = 500,
+    this.dominantHand = DominantHandValues.right,
   });
 
   final AppLanguage language;
@@ -91,6 +114,9 @@ class AppSettings {
   final bool cacheEnabled;
   final int cacheSizeMb;
 
+  /// Main dominante (lateralite, R9/R10). Defaut droitier.
+  final DominantHand dominantHand;
+
   AppSettings copyWith({
     AppLanguage? language,
     DistanceUnit? distanceUnit,
@@ -98,6 +124,7 @@ class AppSettings {
     AppThemeMode? themeMode,
     bool? cacheEnabled,
     int? cacheSizeMb,
+    DominantHand? dominantHand,
   }) {
     return AppSettings(
       language: language ?? this.language,
@@ -106,6 +133,7 @@ class AppSettings {
       themeMode: themeMode ?? this.themeMode,
       cacheEnabled: cacheEnabled ?? this.cacheEnabled,
       cacheSizeMb: cacheSizeMb ?? this.cacheSizeMb,
+      dominantHand: dominantHand ?? this.dominantHand,
     );
   }
 }
@@ -145,6 +173,7 @@ class SettingsNotifier extends Notifier<AppSettings> {
       themeMode: AppThemeModeValues.fromString(_service!.getThemeMode()),
       cacheEnabled: _service!.getCacheEnabled(),
       cacheSizeMb: _service!.getCacheSizeMb(),
+      dominantHand: DominantHandValues.fromString(_service!.getDominantHand()),
     );
   }
 
@@ -181,6 +210,13 @@ class SettingsNotifier extends Notifier<AppSettings> {
   void setCacheSizeMb(int sizeMb) {
     state = state.copyWith(cacheSizeMb: sizeMb);
     _service?.setCacheSizeMb(sizeMb);
+  }
+
+  /// Met a jour la main dominante (lateralite, R9/R10) et persiste.
+  void setDominantHand(DominantHand hand) {
+    final normalized = DominantHandValues.fromString(hand);
+    state = state.copyWith(dominantHand: normalized);
+    _service?.setDominantHand(normalized);
   }
 }
 

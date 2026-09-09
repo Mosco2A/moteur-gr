@@ -117,6 +117,26 @@ class AppTheme {
   // elle ne varie pas selon le sentier. Valeur alignee sur GR20 (`bleuLight`).
   static const bleuRepos = Color(0xFF42A5F5);
 
+  // --- Couleurs de PHASE du cockpit (nav V2, retour Chris R3) ---
+  //
+  // Teinte d'AMBIANCE d'une phase du cycle (Preparer / Randonner / Apres),
+  // appliquee en fond DISCRET du cockpit + accent du bandeau d'en-tete de phase
+  // (cf. `phaseColor` co-localise avec le cockpit). Ce ne sont PAS des couleurs
+  // de peau : elles signalent « ou tu es dans le cycle », jamais la marque du
+  // sentier — et ne recolorisent JAMAIS les icones categorielles.
+  // Valeurs iso-tokens `SectionHeader` GR20 (home_screen.dart :142/:297/:452) :
+  //  - Preparer -> bleuLight GR20 (0xFF42A5F5) ;
+  //  - Randonner -> vertMaquisLight GR20 (0xFF4CAF50) ;
+  //  - Apres -> jaune diplome GR20 (0xFFFDD835).
+  /// Teinte de la phase « Preparer » (parite GR20 `bleuLight`).
+  static const phasePrepare = Color(0xFF42A5F5);
+
+  /// Teinte de la phase « Randonner » (parite GR20 `vertMaquisLight`).
+  static const phaseHike = Color(0xFF4CAF50);
+
+  /// Teinte de la phase « Apres » (parite GR20 jaune diplome).
+  static const phaseAfter = Color(0xFFFDD835);
+
   // --- Couleurs d'action (boutons de suivi) — WCAG AA avec texte blanc ---
   //
   // E5.5b : les boutons d'action du suivi (Demarrer/Reprendre/Pause/Stop)

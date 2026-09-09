@@ -255,6 +255,42 @@ class Translations$navPilote$fr {
 
 	/// fr: 'Rester'
 	String get exitCancel => 'Rester';
+
+	/// fr: 'Démarrer le trek'
+	String get startTrek => 'Démarrer le trek';
+
+	/// fr: 'Terminer le trek'
+	String get finishTrek => 'Terminer le trek';
+
+	/// fr: 'Revoir la préparation'
+	String get reviewPrep => 'Revoir la préparation';
+
+	/// fr: 'Organisez votre trek avant le départ'
+	String get phasePrepareSub => 'Organisez votre trek avant le départ';
+
+	/// fr: 'Votre trek est en cours'
+	String get phaseHikeSub => 'Votre trek est en cours';
+
+	/// fr: 'Revivez votre aventure'
+	String get phaseAfterSub => 'Revivez votre aventure';
+
+	/// fr: 'Phase en cours'
+	String get phaseBanner => 'Phase en cours';
+
+	/// fr: 'Aperçu des phases (démo) : Préparer, Randonner, Après'
+	String get demoPreview => 'Aperçu des phases (démo) : Préparer, Randonner, Après';
+
+	/// fr: 'Main dominante'
+	String get dominantHand => 'Main dominante';
+
+	/// fr: 'Place le SOS et les commandes clés du côté de votre main'
+	String get dominantHandDesc => 'Place le SOS et les commandes clés du côté de votre main';
+
+	/// fr: 'Droitier'
+	String get dominantHandRight => 'Droitier';
+
+	/// fr: 'Gaucher'
+	String get dominantHandLeft => 'Gaucher';
 }
 
 // Path: branding
@@ -6036,6 +6072,18 @@ extension on Translations {
 			'navPilote.exitMessage' => 'Vous êtes à l\'accueil. Voulez-vous fermer l\'application ?',
 			'navPilote.exitConfirm' => 'Quitter',
 			'navPilote.exitCancel' => 'Rester',
+			'navPilote.startTrek' => 'Démarrer le trek',
+			'navPilote.finishTrek' => 'Terminer le trek',
+			'navPilote.reviewPrep' => 'Revoir la préparation',
+			'navPilote.phasePrepareSub' => 'Organisez votre trek avant le départ',
+			'navPilote.phaseHikeSub' => 'Votre trek est en cours',
+			'navPilote.phaseAfterSub' => 'Revivez votre aventure',
+			'navPilote.phaseBanner' => 'Phase en cours',
+			'navPilote.demoPreview' => 'Aperçu des phases (démo) : Préparer, Randonner, Après',
+			'navPilote.dominantHand' => 'Main dominante',
+			'navPilote.dominantHandDesc' => 'Place le SOS et les commandes clés du côté de votre main',
+			'navPilote.dominantHandRight' => 'Droitier',
+			'navPilote.dominantHandLeft' => 'Gaucher',
 			'branding.tagline' => 'Votre compagnon de randonnée',
 			'branding.subline' => 'Préparez, marchez, partagez',
 			'hub.greeting' => ({required Object name}) => 'Bonjour, ${name} !',
@@ -6494,6 +6542,8 @@ extension on Translations {
 			'diploma.certifies' => 'Certifie que',
 			'diploma.completed' => 'a parcouru le',
 			'diploma.pdfTitle' => 'DIPLÔME',
+			_ => null,
+		} ?? switch (path) {
 			'diploma.pdfSubtitle' => 'Certificat d\'accomplissement',
 			'diploma.pdfStages' => '{count} étapes',
 			'diploma.pdfDistance' => '{km} km parcourus',
@@ -6506,8 +6556,6 @@ extension on Translations {
 			'diploma.recapJournalPhotos' => 'Photos du journal',
 			'diploma.recapNoPhotos' => 'Aucune photo dans le journal',
 			'diploma.recapStats' => 'Statistiques',
-			_ => null,
-		} ?? switch (path) {
 			'diploma.recapStages' => '{count} etapes franchies',
 			'diploma.recapDistance' => '{km} km parcourus',
 			'diploma.recapElevation' => '{meters} m de denivele',
@@ -7008,6 +7056,8 @@ extension on Translations {
 			'moderation.reasonLabel' => 'Motif du signalement',
 			'moderation.reasons.illegal' => 'Contenu illégal',
 			'moderation.reasons.harassment' => 'Harcèlement ou haine',
+			_ => null,
+		} ?? switch (path) {
 			'moderation.reasons.spam' => 'Spam ou publicité',
 			'moderation.reasons.dangerous' => 'Information dangereuse ou trompeuse',
 			'moderation.reasons.other' => 'Autre',
@@ -7020,8 +7070,6 @@ extension on Translations {
 			'moderation.submitting' => 'Envoi en cours…',
 			'moderation.sent' => 'Signalement envoyé. Merci, un modérateur va l\'examiner.',
 			'moderation.errorRequired' => 'Veuillez compléter le motif, votre e-mail et la déclaration de bonne foi.',
-			_ => null,
-		} ?? switch (path) {
 			'moderation.errorGeneric' => 'Le signalement n\'a pas pu être envoyé. Réessayez.',
 			'moderation.cancel' => 'Annuler',
 			'moderation.reasonsTitle' => 'Pourquoi ce contenu a-t-il été restreint ?',

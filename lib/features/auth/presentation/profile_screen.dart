@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../settings/providers/settings_provider.dart';
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
 
@@ -99,6 +100,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
         const SizedBox(height: AppTheme.spacingXl),
+        // Lateralite / main dominante (nav V2, R9/R10) : place le SOS et les
+        // commandes critiques du cote de la main dominante (thumb zone). Donnee
+        // NON sensible, defaut droitier. Persiste via settingsProvider.
+        _buildDominantHandSection(context, ref, theme, i18n),
+        const SizedBox(height: AppTheme.spacingBase),
         // P1-4 audit #327 : sans Firebase, la connexion Google ne peut
         // qu echouer en silence — etat explicite a la place de la tuile.
         if (user.isAnonymous && !ref.watch(isFirebaseAvailableProvider)) ...[
@@ -153,6 +159,68 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  /// Section « main dominante » (lateralite, R9/R10).
+  ///
+  /// Choix droitier/gaucher (defaut droitier) via [SegmentedButton] : positionne
+  /// le SOS et les commandes critiques du cote de la main dominante (thumb zone,
+  /// atteignabilite a une main en marchant). Persiste par [settingsProvider].
+  Widget _buildDominantHandSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+  ) {
+    final hand = ref.watch(settingsProvider.select((s) => s.dominantHand));
+    return AppCard(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.pan_tool_outlined, color: theme.colorScheme.primary),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  i18n.navPilote.dominantHand,
+                  style: theme.textTheme.titleMedium,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            i18n.navPilote.dominantHandDesc,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          SegmentedButton<DominantHand>(
+            segments: [
+              ButtonSegment<DominantHand>(
+                value: DominantHandValues.right,
+                label: Text(i18n.navPilote.dominantHandRight),
+                icon: const Icon(Icons.back_hand_outlined),
+              ),
+              ButtonSegment<DominantHand>(
+                value: DominantHandValues.left,
+                label: Text(i18n.navPilote.dominantHandLeft),
+                icon: const Icon(Icons.front_hand_outlined),
+              ),
+            ],
+            selected: {DominantHandValues.fromString(hand)},
+            onSelectionChanged: (selection) {
+              ref
+                  .read(settingsProvider.notifier)
+                  .setDominantHand(selection.first);
+            },
+          ),
+        ],
+      ),
     );
   }
 

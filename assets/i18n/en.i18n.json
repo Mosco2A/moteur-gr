@@ -45,7 +45,19 @@
     "exitTitle": "Exit the app?",
     "exitMessage": "You are at the home screen. Do you want to close the app?",
     "exitConfirm": "Exit",
-    "exitCancel": "Stay"
+    "exitCancel": "Stay",
+    "startTrek": "Start the trek",
+    "finishTrek": "Finish the trek",
+    "reviewPrep": "Review preparation",
+    "phasePrepareSub": "Get your trek ready before departure",
+    "phaseHikeSub": "Your trek is in progress",
+    "phaseAfterSub": "Relive your adventure",
+    "phaseBanner": "Current phase",
+    "demoPreview": "Phase preview (demo): Prepare, Hike, After",
+    "dominantHand": "Dominant hand",
+    "dominantHandDesc": "Places SOS and key controls on your hand side",
+    "dominantHandRight": "Right-handed",
+    "dominantHandLeft": "Left-handed"
   },
   "branding": {
     "tagline": "Your trekking companion",

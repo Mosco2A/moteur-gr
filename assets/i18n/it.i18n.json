@@ -45,7 +45,19 @@
     "exitTitle": "Uscire dall'app?",
     "exitMessage": "Sei nella schermata iniziale. Vuoi chiudere l'app?",
     "exitConfirm": "Esci",
-    "exitCancel": "Resta"
+    "exitCancel": "Resta",
+    "startTrek": "Inizia il trek",
+    "finishTrek": "Termina il trek",
+    "reviewPrep": "Rivedi la preparazione",
+    "phasePrepareSub": "Organizza il tuo trek prima della partenza",
+    "phaseHikeSub": "Il tuo trek è in corso",
+    "phaseAfterSub": "Rivivi la tua avventura",
+    "phaseBanner": "Fase in corso",
+    "demoPreview": "Anteprima fasi (demo): Preparare, Camminare, Dopo",
+    "dominantHand": "Mano dominante",
+    "dominantHandDesc": "Posiziona SOS e comandi chiave dal lato della tua mano",
+    "dominantHandRight": "Destrorso",
+    "dominantHandLeft": "Mancino"
   },
   "branding": {
     "tagline": "Il tuo compagno di trekking",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../shared/widgets/app_card.dart';
+import 'step_status_icon.dart';
 
 /// Carte d'acces rapide du HUB (RF-14).
 ///
@@ -27,6 +28,7 @@ class QuickAccessCard extends StatelessWidget {
     this.iconColor,
     this.enabled = true,
     this.lockedLabel,
+    this.stepStatus,
   });
 
   /// Icone illustrant la destination.
@@ -56,6 +58,12 @@ class QuickAccessCard extends StatelessWidget {
   /// Libelle affiche a la place du sous-titre quand [enabled] est false
   /// (ex. « Terminez votre trek pour debloquer »). Localise.
   final String? lockedLabel;
+
+  /// Coche « sujet traite » (R5, clone GR20 `_buildStepStatusIcon`). Quand
+  /// fournie, une petite icone de statut (notStarted/inProgress/completed) est
+  /// posee sous le sous-titre — signal de progression sur les cartes de prepa.
+  /// `null` -> aucune coche (cartes sans notion de progression).
+  final PlanningStepStatus? stepStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +138,18 @@ class QuickAccessCard extends StatelessWidget {
               color: scheme.onSurface.withValues(alpha: enabled ? 0.7 : 0.38),
             ),
             textAlign: TextAlign.center,
-            maxLines: 2,
+            // Quand une coche de statut est presente, le sous-titre passe a 1
+            // ligne : le budget de hauteur de la cellule (mainAxisExtent 150)
+            // est calibre « titre 1 + sous-titre 2 » ; la coche prend la place
+            // de la 2e ligne (clone GR20 : coche petite sous le libelle).
+            maxLines: stepStatus != null ? 1 : 2,
             overflow: TextOverflow.ellipsis,
           ),
+          // Coche « sujet traite » (R5) sous le libelle, comme GR20.
+          if (stepStatus != null) ...[
+            const SizedBox(height: AppTheme.spacingXs),
+            StepStatusIcon(status: stepStatus!, size: 18),
+          ],
         ],
       ),
     );

@@ -3,10 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/auth/providers/auth_provider.dart';
 import 'package:moteur_gr/features/hub/presentation/nav_pilote_screen.dart';
+import 'package:moteur_gr/features/settings/providers/settings_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
+import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
+import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/app_header.dart';
@@ -208,9 +212,9 @@ void main() {
   });
 
   // ---------------------------------------------------------------------------
-  // NavPiloteScreen — SOS present/absent selon le mode trek
+  // NavPiloteScreen — COCKPIT PAR PHASES (nav V2, R3→R10)
   // ---------------------------------------------------------------------------
-  group('NavPiloteScreen (SOS mode trek)', () {
+  group('NavPiloteScreen (cockpit par phases)', () {
     /// Enveloppe le pilote dans un routeur minimal + overrides.
     Widget wrapPilote({List<Override> overrides = const []}) {
       final router = GoRouter(
@@ -270,11 +274,22 @@ void main() {
     Override activeTrek(String? trailId) =>
         activeTrekIdProvider.overrideWith((ref) async => trailId);
 
+    /// Phase du cockpit = lifecycle DERIVE du sentier actif (R7).
+    Override summaryWith(TrekLifecycleState state) =>
+        currentTrailSummaryProvider.overrideWith(
+          (ref) async => TrekSummary(
+            config: ref.watch(trailConfigProvider),
+            state: state,
+          ),
+        );
+
     /// Rend le pilote sur une surface tres haute pour monter toute la liste
     /// (barre d'actions comprise). Reinitialise a la fin du test.
     Future<void> pumpTall(
       WidgetTester tester, {
       required String? activeTrailId,
+      required TrekLifecycleState lifecycle,
+      List<Override> extra = const [],
     }) async {
       tester.view.physicalSize = const Size(1200, 4000);
       tester.view.devicePixelRatio = 1.0;
@@ -284,65 +299,119 @@ void main() {
         userNull,
         trekIdle,
         activeTrek(activeTrailId),
+        summaryWith(lifecycle),
+        ...extra,
       ]));
       await tester.pumpAndSettle();
     }
 
-    // NB : les labels « Préparer »/« Randonner » de la barre d'actions sont
-    // identiques aux titres de section (t.hub.sections.*) rendus dans le corps.
-    // On SCOPE donc les finds a la barre (BottomAppBar) pour ne compter que les
-    // items de la barre d'actions, pas les titres de section homonymes.
     Finder inBar(Finder f) =>
         find.descendant(of: find.byType(BottomAppBar), matching: f);
 
-    testWidgets('MODE TREK (trek actif) : SOS present dans la barre',
+    testWidgets(
+        'phase Randonner (inProgress + trek actif) : SOS present + CTA Terminer',
         (tester) async {
-      await pumpTall(tester, activeTrailId: 'volcans');
+      await pumpTall(tester,
+          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
 
-      // Barre d'actions : Preparer / Randonner / Apres + SOS saillant.
-      expect(inBar(find.text(t.navPilote.prepare)), findsOneWidget);
-      expect(inBar(find.text(t.navPilote.hike)), findsOneWidget);
-      expect(inBar(find.text(t.navPilote.after)), findsOneWidget);
+      // SOS present (phase Randonner + mode trek reel) — R9.
       expect(inBar(find.text(t.navPilote.sos)), findsOneWidget);
       expect(find.byIcon(Icons.emergency), findsOneWidget);
+      // CTA de transition = « Terminer le trek » (R7).
+      expect(inBar(find.text(t.navPilote.finishTrek)), findsOneWidget);
+      // Section Randonner affichee (titre de section dans le corps).
+      expect(find.text(t.hub.cards.navigation), findsOneWidget);
     });
 
-    testWidgets('HORS MODE TREK (aucun trek actif) : PAS de SOS',
-        (tester) async {
-      await pumpTall(tester, activeTrailId: null);
+    testWidgets(
+        'phase Preparer (prepared, pas de trek actif) : PAS de SOS + CTA '
+        'Demarrer (R6)', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
 
-      // Les 3 actions de navigation restent ; le SOS est ABSENT (AUDIT §M-2).
-      expect(inBar(find.text(t.navPilote.prepare)), findsOneWidget);
-      expect(inBar(find.text(t.navPilote.hike)), findsOneWidget);
-      expect(inBar(find.text(t.navPilote.after)), findsOneWidget);
+      // Hors phase Randonner -> pas de SOS (AUDIT §M-2 / R9).
       expect(inBar(find.text(t.navPilote.sos)), findsNothing);
       expect(find.byIcon(Icons.emergency), findsNothing);
+      // R6 : le CTA « Démarrer le trek » est le bouton de transition de phase.
+      expect(inBar(find.text(t.navPilote.startTrek)), findsOneWidget);
+      // Section Preparer affichee (une carte de prepa presente).
+      expect(find.text(t.hub.cards.feasibility), findsOneWidget);
+    });
+
+    testWidgets('R7 : UNE seule phase visible a la fois (Preparer pas de '
+        'Randonner)', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      // En phase Préparer, les cartes de la phase Randonner (Navigation/Journal)
+      // ne sont PAS montees (mode unique contextuel).
+      expect(find.text(t.hub.cards.feasibility), findsOneWidget);
+      expect(find.text(t.hub.cards.journal), findsNothing);
+    });
+
+    testWidgets('phase Apres (completed) : section Apres, PAS de SOS',
+        (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.completed);
+
+      expect(inBar(find.text(t.navPilote.sos)), findsNothing);
+      // Section Après : la carte Import GPX (unique a la phase Après, absente de
+      // la HubTrekCard) prouve que la section Après est bien montee.
+      expect(find.text(t.hub.cards.importGpx), findsOneWidget);
+      // Aucune pastille de transition (phase terminale) : ni Démarrer ni Terminer.
+      expect(inBar(find.text(t.navPilote.startTrek)), findsNothing);
+      expect(inBar(find.text(t.navPilote.finishTrek)), findsNothing);
+    });
+
+    testWidgets('R9 : SOS a DROITE par defaut (droitier)', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
+
+      // Le SOS (Icons.emergency) est a droite du CTA de transition (flag_outlined)
+      // : sa position horizontale (dx) est superieure.
+      final sosX = tester.getCenter(find.byIcon(Icons.emergency)).dx;
+      final ctaX = tester.getCenter(find.byIcon(Icons.flag_outlined)).dx;
+      expect(sosX, greaterThan(ctaX));
+    });
+
+    testWidgets('R9 : SOS a GAUCHE si main dominante gauche (gaucher)',
+        (tester) async {
+      await pumpTall(
+        tester,
+        activeTrailId: 'volcans',
+        lifecycle: TrekLifecycleState.inProgress,
+        extra: [
+          settingsProvider.overrideWith(
+            () => _FakeSettingsNotifier(const AppSettings(
+              dominantHand: DominantHandValues.left,
+            )),
+          ),
+        ],
+      );
+
+      final sosX = tester.getCenter(find.byIcon(Icons.emergency)).dx;
+      final ctaX = tester.getCenter(find.byIcon(Icons.flag_outlined)).dx;
+      expect(sosX, lessThan(ctaX));
     });
 
     testWidgets('le pilote n\'affiche PAS de NavigationBar (hors-shell)',
         (tester) async {
-      await pumpTall(tester, activeTrailId: null);
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
       // Pas de double bottom bar : la barre est une BottomAppBar d'actions.
       expect(find.byType(NavigationBar), findsNothing);
-      expect(find.byType(ContextualActionBar), findsOneWidget);
+      expect(find.byType(BottomAppBar), findsOneWidget);
       // L'AppHeader coiffe l'ecran.
       expect(find.byType(AppHeader), findsOneWidget);
     });
 
-    // PARITE HUB ORIGINE (hub_screen.dart L57-66, retours Chris 09/09) :
-    // l'AppHeader du pilote expose desormais un acces Informations (i, ouvre une
-    // fiche d'aide) et un acces Profil (person, route /profile) — comme l'AppBar
-    // du HUB d'origine. On verifie leur PRESENCE et leur ACTION.
+    // PARITE HUB ORIGINE (retours Chris) : Informations (i) + Profil (person).
     testWidgets('AppHeader : actions Informations + Profil presentes (parite '
         'hub origine)', (tester) async {
-      await pumpTall(tester, activeTrailId: null);
-      // Les deux tooltips Slang de l'origine (t.hub.infoTooltip / profileTooltip)
-      // sont uniques (les titres de section homonymes n'ont pas de tooltip).
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
       expect(find.byTooltip(t.hub.infoTooltip), findsOneWidget);
       expect(find.byTooltip(t.hub.profileTooltip), findsOneWidget);
-      // Icones standard, SCOPEES a l'AppBar (l'icone info_outline sert aussi de
-      // pastille au titre de la section « Informations » du corps -> on ne
-      // compte que celle de l'en-tete).
       final inHeader = find.descendant(
         of: find.byType(AppBar),
         matching: find.byIcon(Icons.info_outline),
@@ -359,7 +428,8 @@ void main() {
 
     testWidgets('AppHeader : le bouton Profil route vers /profile',
         (tester) async {
-      await pumpTall(tester, activeTrailId: null);
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
       await tester.tap(find.byTooltip(t.hub.profileTooltip));
       await tester.pumpAndSettle();
       expect(find.text('PROFILE_STUB'), findsOneWidget);
@@ -367,13 +437,23 @@ void main() {
 
     testWidgets('AppHeader : le bouton Informations ouvre la fiche d\'aide',
         (tester) async {
-      await pumpTall(tester, activeTrailId: null);
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
       await tester.tap(find.byTooltip(t.hub.infoTooltip));
       await tester.pumpAndSettle();
-      // La fiche (bottom-sheet) affiche le corps editorial Slang.
       expect(find.text(t.hub.infoSheetBody), findsOneWidget);
     });
   });
+}
+
+/// Notifier factice de settings (parite pattern _FakeTrekNotifier) pour piloter
+/// la main dominante en test (R9).
+class _FakeSettingsNotifier extends SettingsNotifier {
+  _FakeSettingsNotifier(this._initial);
+  final AppSettings _initial;
+
+  @override
+  AppSettings build() => _initial;
 }
 
 /// Notifier factice pilotant l'etat expose du trek (parite hub_screen_test).

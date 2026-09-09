@@ -45,7 +45,19 @@
     "exitTitle": "¿Salir de la aplicación?",
     "exitMessage": "Estás en la pantalla de inicio. ¿Quieres cerrar la aplicación?",
     "exitConfirm": "Salir",
-    "exitCancel": "Quedarse"
+    "exitCancel": "Quedarse",
+    "startTrek": "Iniciar el trek",
+    "finishTrek": "Finalizar el trek",
+    "reviewPrep": "Revisar la preparación",
+    "phasePrepareSub": "Organiza tu trek antes de salir",
+    "phaseHikeSub": "Tu trek está en curso",
+    "phaseAfterSub": "Revive tu aventura",
+    "phaseBanner": "Fase actual",
+    "demoPreview": "Vista previa de fases (demo): Preparar, Caminar, Después",
+    "dominantHand": "Mano dominante",
+    "dominantHandDesc": "Coloca el SOS y los controles clave del lado de tu mano",
+    "dominantHandRight": "Diestro",
+    "dominantHandLeft": "Zurdo"
   },
   "branding": {
     "tagline": "Tu compañero de trekking",
