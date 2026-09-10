@@ -138,6 +138,7 @@ class _Translations$nav$en extends Translations$nav$fr {
 	@override String get accueil => 'Home';
 	@override String get map => 'Map';
 	@override String get stages => 'Stages';
+	@override String get currentStage => 'Current stage';
 	@override String get planning => 'Planning';
 	@override String get journal => 'Journal';
 	@override String get more => 'More';
@@ -3287,6 +3288,7 @@ extension on TranslationsEn {
 			'nav.accueil' => 'Home',
 			'nav.map' => 'Map',
 			'nav.stages' => 'Stages',
+			'nav.currentStage' => 'Current stage',
 			'nav.planning' => 'Planning',
 			'nav.journal' => 'Journal',
 			'nav.more' => 'More',
@@ -3779,9 +3781,9 @@ extension on TranslationsEn {
 			'weather.alert.fire.title' => 'Fire risk',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C expected. High fire risk.',
 			'share.title' => 'Share',
-			'share.generating' => 'Generating...',
 			_ => null,
 		} ?? switch (path) {
+			'share.generating' => 'Generating...',
 			'share.share' => 'Share',
 			'share.error' => 'Error during generation',
 			'share.errorShare' => 'Error during sharing',
@@ -4293,9 +4295,9 @@ extension on TranslationsEn {
 			'consent.granted' => 'Allowed',
 			'consent.denied' => 'Not allowed',
 			'consent.grant' => 'Allow',
-			'consent.revoke' => 'Withdraw',
 			_ => null,
 		} ?? switch (path) {
+			'consent.revoke' => 'Withdraw',
 			'consent.decidedOn' => ({required Object date}) => 'Chosen on ${date}',
 			'consent.notDecided' => 'Awaiting your choice',
 			'consent.acceptSelected' => 'Confirm my choices',

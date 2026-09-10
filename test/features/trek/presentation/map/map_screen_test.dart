@@ -116,9 +116,13 @@ void main() {
       expect(find.text('Aucun trace disponible'), findsOneWidget);
     });
 
-    testWidgets('MapScreen est un StatelessWidget', (tester) async {
+    // StepWays LOT 3, Ph5 (§4) : MapScreen est devenu un ConsumerStatefulWidget
+    // pour porter la barre contextuelle (Étape en cours / Journal / SOS) via le
+    // mecanisme declaratif L3 ([ContextualActionsMixin]). Le corps carte reste
+    // dans [_MapContent] (inchange).
+    testWidgets('MapScreen est un ConsumerStatefulWidget', (tester) async {
       const screen = MapScreen(trailId: 'test-trail');
-      expect(screen, isA<StatelessWidget>());
+      expect(screen, isA<ConsumerStatefulWidget>());
     });
 
     testWidgets('assemblage complet -- tous layers avec donnees mock',

@@ -138,22 +138,57 @@ void main() {
       expect(find.byIcon(Icons.layers), findsOneWidget);
     });
 
-    testWidgets('SOS masque hors trek', (tester) async {
+    testWidgets('SOS overlay masque hors trek', (tester) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
 
-      // SosButton se rend en SizedBox.shrink hors trek : pas de bouton SOS.
+      // OVERLAY SOS ([SosButton], colonne bas-gauche) : se rend en
+      // SizedBox.shrink hors trek -> son sous-arbre ne porte AUCUNE icone SOS.
       expect(find.byType(SosButton), findsOneWidget); // widget monte
-      expect(find.byIcon(Icons.emergency), findsNothing); // mais invisible
+      expect(
+        find.descendant(
+          of: find.byType(SosButton),
+          matching: find.byIcon(Icons.emergency),
+        ),
+        findsNothing,
+        reason: 'overlay SOS invisible hors trek (parite SosButton)',
+      );
+
+      // ⚠ ARBITRAGE §4 (StepWays LOT 3, Ph5) : la BARRE contextuelle de la carte
+      // porte desormais une action SOS (Étape/Journal/SOS) INDEPENDANTE de
+      // l'overlay -> elle est presente meme hors trek. C'est le point de gout que
+      // Chris tranchera (garder overlay + barre, ou fusionner). On documente ici
+      // qu'a l'ecran il y a bien l'icone SOS de la barre (et une seule), pas celle
+      // de l'overlay.
+      expect(find.byIcon(Icons.emergency), findsOneWidget);
     });
 
-    testWidgets('SOS visible pendant un trek', (tester) async {
+    testWidgets('SOS overlay visible pendant un trek (+ SOS de barre §4)',
+        (tester) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
 
-      // Le bouton SOS (icone emergency + texte SOS) est affiche.
-      expect(find.byIcon(Icons.emergency), findsOneWidget);
-      expect(find.text('SOS'), findsOneWidget);
+      // OVERLAY SOS ([SosButton]) : visible en trek (icone + texte « SOS »).
+      expect(
+        find.descendant(
+          of: find.byType(SosButton),
+          matching: find.byIcon(Icons.emergency),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(SosButton),
+          matching: find.text('SOS'),
+        ),
+        findsOneWidget,
+      );
+
+      // ⚠ ARBITRAGE §4 : la barre contextuelle ajoute un 2e point SOS -> au TOTAL
+      // deux icones SOS a l'ecran en trek (overlay + barre). Attendu tant que
+      // Chris n'a pas tranche le gout (non bloquant).
+      expect(find.byIcon(Icons.emergency), findsNWidgets(2));
+      expect(find.text('SOS'), findsNWidgets(2));
     });
 
     testWidgets('barre d etape active affichee pendant un trek avec fix GPS',

@@ -178,6 +178,9 @@ class Translations$nav$fr {
 	/// fr: 'Étapes'
 	String get stages => 'Étapes';
 
+	/// fr: 'Étape en cours'
+	String get currentStage => 'Étape en cours';
+
 	/// fr: 'Planning'
 	String get planning => 'Planning';
 
@@ -6094,6 +6097,7 @@ extension on Translations {
 			'nav.accueil' => 'Accueil',
 			'nav.map' => 'Carte',
 			'nav.stages' => 'Étapes',
+			'nav.currentStage' => 'Étape en cours',
 			'nav.planning' => 'Planning',
 			'nav.journal' => 'Journal',
 			'nav.more' => 'Plus',
@@ -6586,9 +6590,9 @@ extension on Translations {
 			'weather.alert.fire.title' => 'Risque incendie',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C prévus. Risque incendie élevé.',
 			'share.title' => 'Partager',
-			'share.generating' => 'Génération...',
 			_ => null,
 		} ?? switch (path) {
+			'share.generating' => 'Génération...',
 			'share.share' => 'Partager',
 			'share.error' => 'Erreur lors de la génération',
 			'share.errorShare' => 'Erreur lors du partage',
@@ -7100,9 +7104,9 @@ extension on Translations {
 			'consent.granted' => 'Autorisé',
 			'consent.denied' => 'Non autorisé',
 			'consent.grant' => 'Autoriser',
-			'consent.revoke' => 'Retirer',
 			_ => null,
 		} ?? switch (path) {
+			'consent.revoke' => 'Retirer',
 			'consent.decidedOn' => ({required Object date}) => 'Choix du ${date}',
 			'consent.notDecided' => 'En attente de votre choix',
 			'consent.acceptSelected' => 'Valider mes choix',

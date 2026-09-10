@@ -7,9 +7,13 @@ import 'package:latlong2/latlong.dart';
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
 import '../../../../core/models/poi.dart';
+import '../../../../core/routing/contextual_actions_provider.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/contextual_action_bar.dart';
+import '../../../../shared/widgets/contextual_bottom_bar.dart';
+import '../../../safety/presentation/sos_confirmation_dialog.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/map_pois_provider.dart';
@@ -67,15 +71,89 @@ final mapControllerProvider =
 /// SOS, calques, banniere hors-trace).
 /// ZERO ref.watch() dans build() -- chaque donnee passe par Consumer
 /// avec select() pour un rebuild minimal et chirurgical.
-class MapScreen extends StatelessWidget {
+///
+/// CARTE TERRAIN (StepWays LOT 3, Ph5 — SPEC §4) : reçoit une BARRE CONTEXTUELLE
+/// (mecanisme L3, [ContextualActionsMixin] + [ContextualBottomBar]) : **Étape en
+/// cours / Journal / SOS** (§4). Le SOS y est une action SAILLANTE (rouge plein).
+///
+/// ⚠ ARBITRAGE À TRANCHER PAR CHRIS (signale au rapport) : la carte a DEJA un
+/// bouton SOS en overlay (colonne bas-gauche, [SosButton] qui se masque hors trek
+/// actif). Conformement au mandat, cet overlay SOS est CONSERVE INTACT et la barre
+/// §4 est ajoutee PAR-DESSUS sans le casser -> il y a donc TEMPORAIREMENT DEUX
+/// points SOS a l'ecran (overlay flottant + action de barre). De plus, le SOS de
+/// la barre suit §4 (toujours present), alors que l'overlay ne s'affiche qu'en
+/// trek actif. Chris tranchera le GOUT (garder l'overlay, la barre, ou fusionner)
+/// au reveil — non bloquant. La barre applique la proposition §4 telle quelle.
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key, required this.trailId});
 
   /// Identifiant du sentier a afficher sur la carte.
   final String trailId;
 
   @override
+  ConsumerState<MapScreen> createState() => _MapScreenState();
+}
+
+class _MapScreenState extends ConsumerState<MapScreen>
+    with ContextualActionsMixin {
+  /// Barre contextuelle de la carte (SPEC §4) : Étape en cours / Journal / SOS.
+  ///
+  /// - Étape en cours -> pousse la liste des etapes (`/stages`, l'etape courante
+  ///   y est mise en avant) ;
+  /// - Journal -> pousse le journal de trek (`/journal`) ;
+  /// - SOS -> action SAILLANTE (rouge) : ouvre la confirmation d'appel d'urgence
+  ///   (meme dialog que l'overlay [SosButton], position GPS courante).
+  @override
+  List<ContextualAction> buildContextualActions(BuildContext context) => [
+        ContextualAction(
+          icon: Icons.timeline_outlined,
+          label: t.nav.currentStage,
+          onPressed: () => context.push('/stages'),
+        ),
+        ContextualAction(
+          icon: Icons.menu_book_outlined,
+          label: t.nav.journal,
+          onPressed: () => context.push('/journal'),
+        ),
+        ContextualAction(
+          icon: Icons.emergency,
+          label: t.navPilote.sos,
+          semanticLabel: t.a11y.sos,
+          salient: true, // pastille pleine rouge (AppTheme.rougeUrgence).
+          onPressed: () => _showSos(context),
+        ),
+      ];
+
+  /// Ouvre la confirmation SOS avec la position GPS courante (parite [SosButton]
+  /// et cockpit) — meme dialog, aucune logique dupliquee cote appel d'urgence.
+  void _showSos(BuildContext context) {
+    double? latitude;
+    double? longitude;
+    double? altitude;
+    ref.read(positionStreamProvider).whenData((position) {
+      latitude = position.latitude;
+      longitude = position.longitude;
+      altitude = position.altitude;
+    });
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => SosConfirmationDialog(
+        latitude: latitude,
+        longitude: longitude,
+        altitude: altitude,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final trailId = widget.trailId;
     return Scaffold(
+      // Barre contextuelle declarative (L3) : Étape en cours / Journal / SOS (§4).
+      // L'overlay SOS existant du corps ([_MapContent]) reste INTACT (arbitrage
+      // signale en tete de classe) — la barre est ADDITIVE.
+      bottomNavigationBar: const ContextualBottomBar(),
       appBar: AppBar(
         title: Consumer(
           builder: (context, ref, _) {

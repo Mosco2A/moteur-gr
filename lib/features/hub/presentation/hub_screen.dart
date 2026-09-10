@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/routing/contextual_actions_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/contextual_action_bar.dart';
+import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../safety/presentation/sos_button.dart';
 import 'widgets/hub_header.dart';
 import 'widgets/hub_section.dart';
@@ -33,17 +36,75 @@ import 'widgets/quick_access_card.dart';
 /// (routes R01..R13 + `/training`) sont rendues. Tous les libelles passent par
 /// Slang (`t.hub.*`, `t.nav.*`) — zero texte en dur, aucun libelle propre a un
 /// sentier particulier (cloisonnement moteur generique).
-class HubScreen extends ConsumerWidget {
+///
+/// ACCUEIL TERRAIN (StepWays LOT 3, Ph5 — SPEC §4) : c'est le cockpit « terrain »
+/// (`/home`, rando active). Il CONSERVE son `AppBar` (acces Informations / Profil
+/// / Mes treks, retours Chris) et reçoit en plus une BARRE CONTEXTUELLE (mecanisme
+/// L3, [ContextualActionsMixin] + [ContextualBottomBar]) : **Préparer / Randonner
+/// / Après** (§4). Comme le hub affiche les sections dans UN scroll, ces trois
+/// actions FONT DEFILER jusqu'a la section correspondante (ancres [GlobalKey] +
+/// [Scrollable.ensureVisible]) — c'est un raccourci de defilement, pas une
+/// bascule de phase (la progression sequentielle gatee reste portee par le cockpit
+/// par phases, cf. `nav_pilote_screen.dart`). Zero nouvelle decision UX (§4 telle
+/// quelle).
+class HubScreen extends ConsumerStatefulWidget {
   const HubScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HubScreen> createState() => _HubScreenState();
+}
+
+class _HubScreenState extends ConsumerState<HubScreen>
+    with ContextualActionsMixin {
+  // Ancres de section pour le defilement pilote par la barre contextuelle (§4).
+  final GlobalKey _prepareKey = GlobalKey();
+  final GlobalKey _hikeKey = GlobalKey();
+  final GlobalKey _afterKey = GlobalKey();
+
+  /// Fait defiler jusqu'a la section ancree par [key] (raccourci de la barre §4).
+  /// Sans effet si la section n'est pas montee (defensif).
+  void _scrollTo(GlobalKey key) {
+    final ctx = key.currentContext;
+    if (ctx == null) return;
+    Scrollable.ensureVisible(
+      ctx,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      alignment: 0.0, // amene la section en HAUT de la zone visible.
+    );
+  }
+
+  /// Barre contextuelle de l'accueil terrain (SPEC §4) : Préparer / Randonner /
+  /// Après. Chaque action fait defiler jusqu'a la section homonyme du hub.
+  @override
+  List<ContextualAction> buildContextualActions(BuildContext context) => [
+        ContextualAction(
+          icon: Icons.assignment_outlined,
+          label: t.hub.sections.prepare,
+          onPressed: () => _scrollTo(_prepareKey),
+        ),
+        ContextualAction(
+          icon: Icons.hiking,
+          label: t.hub.sections.hike,
+          onPressed: () => _scrollTo(_hikeKey),
+        ),
+        ContextualAction(
+          icon: Icons.emoji_events_outlined,
+          label: t.hub.sections.after,
+          onPressed: () => _scrollTo(_afterKey),
+        ),
+      ];
+
+  @override
+  Widget build(BuildContext context) {
     final trailTitle = ref.watch(
       trailConfigProvider.select((c) => c.displayName),
     );
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
 
     return Scaffold(
+      // Barre contextuelle declarative (L3) : Préparer / Randonner / Après (§4).
+      bottomNavigationBar: const ContextualBottomBar(),
       appBar: AppBar(
         title: Text(trailTitle),
         actions: [
@@ -105,6 +166,7 @@ class HubScreen extends ConsumerWidget {
 
             // --- Section Preparer (RF-6) ---
             HubSection(
+              key: _prepareKey,
               title: t.hub.sections.prepare,
               icon: Icons.assignment_outlined,
               cards: [
@@ -224,6 +286,7 @@ class HubScreen extends ConsumerWidget {
 
             // --- Section Randonner (RF-8) ---
             HubSection(
+              key: _hikeKey,
               title: t.hub.sections.hike,
               icon: Icons.hiking,
               cards: [
@@ -298,6 +361,7 @@ class HubScreen extends ConsumerWidget {
             // (recap accessible si termine/abandonne/vitrine ; diplome verrouille
             // hors finisher, deverrouille en vitrine) est portee par les ecrans.
             HubSection(
+              key: _afterKey,
               title: t.hub.sections.after,
               icon: Icons.emoji_events_outlined,
               cards: [

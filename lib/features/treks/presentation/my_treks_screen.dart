@@ -3,8 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/config/trail_selection.dart';
+import '../../../core/routing/contextual_actions_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/contextual_action_bar.dart';
+import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../hub/presentation/widgets/hub_section.dart';
 import '../../hub/presentation/widgets/quick_access_card.dart';
 import '../domain/trek_lifecycle_state.dart';
@@ -24,16 +27,49 @@ import 'widgets/trek_summary_card.dart';
 ///
 /// Zero texte en dur (Slang `myTreks.*` / `nav.*`), zero localite hardcodee — le
 /// contenu vient integralement du provider. Etats loading/erreur/vide geres.
-class MyTreksScreen extends ConsumerWidget {
+///
+/// ACCUEIL MAISON (StepWays LOT 3, Ph5 — SPEC §4) : c'est l'ACCUEIL « maison »
+/// (aucune rando active). Il ne porte donc PAS d'`AppHeader` (§4 : « pas de
+/// header, c'est l'accueil ») — juste son `AppBar` de titre. Sa BARRE
+/// CONTEXTUELLE (mecanisme L3, [ContextualActionsMixin] + [ContextualBottomBar])
+/// porte les deux entrees transverses de l'accueil : **Découvrir** (-> /catalog)
+/// et **Mon compte** (-> /profile), conformement a §4. Les memes acces restent
+/// aussi disponibles en bas du corps (bandeau [HubSection] avec sous-titres) —
+/// la barre les rend atteignables a une main (thumb zone, §11.4) sans rien
+/// retirer du contenu.
+class MyTreksScreen extends ConsumerStatefulWidget {
   const MyTreksScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyTreksScreen> createState() => _MyTreksScreenState();
+}
+
+class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
+    with ContextualActionsMixin {
+  /// Barre contextuelle de l'accueil maison (SPEC §4) : Découvrir / Mon compte.
+  @override
+  List<ContextualAction> buildContextualActions(BuildContext context) => [
+        ContextualAction(
+          icon: Icons.explore_outlined,
+          label: t.myTreks.discoverTitle,
+          onPressed: () => context.go('/catalog'),
+        ),
+        ContextualAction(
+          icon: Icons.person_outline,
+          label: t.myTreks.accountTitle,
+          onPressed: () => context.push('/profile'),
+        ),
+      ];
+
+  @override
+  Widget build(BuildContext context) {
     final t = Translations.of(context);
     final treksAsync = ref.watch(myTreksProvider);
 
     return Scaffold(
       appBar: AppBar(title: Text(t.myTreks.title)),
+      // Barre contextuelle declarative (L3) : Découvrir / Mon compte (§4).
+      bottomNavigationBar: const ContextualBottomBar(),
       body: treksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(

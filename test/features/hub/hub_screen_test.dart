@@ -15,6 +15,8 @@ import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/contextual_action_bar.dart';
+import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
 
 /// Tests du HUB d'accueil E07 (LOT-A, socle structurel).
 ///
@@ -273,10 +275,14 @@ void main() {
     testWidgets('rend les 4 sections attendues', (tester) async {
       await pumpTallHub(tester);
 
-      expect(find.text(t.hub.sections.prepare), findsOneWidget);
-      expect(find.text(t.hub.sections.hike), findsOneWidget);
+      // StepWays LOT 3, Ph5 (§4) : la barre contextuelle du hub porte aussi
+      // « Préparer / Randonner / Après » -> ces 3 libelles apparaissent DEUX fois
+      // (en-tete de section dans le corps + action de barre). « Informations »
+      // n'a PAS d'action de barre (§4) -> une seule occurrence.
+      expect(find.text(t.hub.sections.prepare), findsNWidgets(2));
+      expect(find.text(t.hub.sections.hike), findsNWidgets(2));
       expect(find.text(t.hub.sections.info), findsOneWidget);
-      expect(find.text(t.hub.sections.after), findsOneWidget);
+      expect(find.text(t.hub.sections.after), findsNWidgets(2));
     });
 
     testWidgets('rend la tuile meteo reelle (LOT-B) et la salutation',
@@ -288,6 +294,44 @@ void main() {
       expect(find.text(t.hub.weather.title), findsOneWidget);
       expect(find.text(t.hub.weather.stub), findsNothing);
       expect(find.text(t.hub.greeting(name: 'Alex')), findsOneWidget);
+    });
+
+    testWidgets('barre contextuelle §4 : Préparer / Randonner / Après',
+        (tester) async {
+      await pumpTallHub(tester);
+
+      // La barre contextuelle (mecanisme L3) est presente et porte les 3 actions
+      // de defilement §4 (Préparer / Randonner / Après). « Informations » n'y est
+      // pas (§4).
+      expect(find.byType(ContextualBottomBar), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(ContextualActionBar),
+          matching: find.text(t.hub.sections.prepare),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(ContextualActionBar),
+          matching: find.text(t.hub.sections.hike),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(ContextualActionBar),
+          matching: find.text(t.hub.sections.after),
+        ),
+        findsOneWidget,
+      );
+      // Tap « Après » : ne plante pas (raccourci de defilement vers la section).
+      await tester.tap(find.descendant(
+        of: find.byType(ContextualActionBar),
+        matching: find.text(t.hub.sections.after),
+      ));
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
     });
 
     testWidgets('rend un echantillon de cartes cablees (S8)', (tester) async {

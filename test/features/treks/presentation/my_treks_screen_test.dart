@@ -9,6 +9,8 @@ import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
 import 'package:moteur_gr/features/treks/presentation/my_treks_screen.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:moteur_gr/shared/widgets/contextual_action_bar.dart';
+import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
 
 /// StepWays LOT 2, Phase 4 — ecran « Mes treks ».
 ///
@@ -79,9 +81,11 @@ void main() {
     expect(find.text(t.myTreks.sectionInProgress), findsAtLeastNWidgets(1));
     expect(find.text(t.myTreks.sectionPrepared), findsOneWidget);
     expect(find.text(t.myTreks.sectionCompleted), findsOneWidget);
-    // Bandeau Découvrir / Mon compte (reutilise HubSection).
-    expect(find.text(t.myTreks.discoverTitle), findsOneWidget);
-    expect(find.text(t.myTreks.accountTitle), findsOneWidget);
+    // Découvrir / Mon compte apparaissent DEUX fois : dans le bandeau du corps
+    // ([HubSection]) ET dans la barre contextuelle (§4, Ph5). Les deux coexistent
+    // (la barre ne retire pas le contenu du corps).
+    expect(find.text(t.myTreks.discoverTitle), findsNWidgets(2));
+    expect(find.text(t.myTreks.accountTitle), findsNWidgets(2));
   });
 
   testWidgets('une section vide n affiche pas son en-tete', (tester) async {
@@ -122,14 +126,58 @@ void main() {
     expect(container.read(selectedTrailIdProvider), 'gr20');
   });
 
-  testWidgets('bandeau : Découvrir -> /catalog', (tester) async {
+  testWidgets('bandeau du corps : Découvrir -> /catalog', (tester) async {
     await tester.pumpWidget(wrap(makeContainer([
       _summary('a', TrekLifecycleState.owned),
     ])));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text(t.myTreks.discoverTitle));
+    // Découvrir existe en 2 exemplaires (corps + barre §4) : on cible celui du
+    // CORPS (hors [ContextualActionBar]) pour tester le bandeau historique.
+    final bodyDiscover = find.descendant(
+      of: find.byType(ListView),
+      matching: find.text(t.myTreks.discoverTitle),
+    );
+    expect(bodyDiscover, findsOneWidget);
+    await tester.tap(bodyDiscover);
     await tester.pumpAndSettle();
     expect(find.text('CATALOG'), findsOneWidget);
+  });
+
+  group('barre contextuelle (SPEC §4, Ph5)', () {
+    testWidgets('l accueil maison declare la barre Découvrir / Mon compte',
+        (tester) async {
+      await tester.pumpWidget(wrap(makeContainer([
+        _summary('a', TrekLifecycleState.owned),
+      ])));
+      await tester.pumpAndSettle();
+
+      // La barre contextuelle est presente et porte les 2 actions §4.
+      expect(find.byType(ContextualBottomBar), findsOneWidget);
+      final barDiscover = find.descendant(
+        of: find.byType(ContextualActionBar),
+        matching: find.text(t.myTreks.discoverTitle),
+      );
+      final barAccount = find.descendant(
+        of: find.byType(ContextualActionBar),
+        matching: find.text(t.myTreks.accountTitle),
+      );
+      expect(barDiscover, findsOneWidget);
+      expect(barAccount, findsOneWidget);
+    });
+
+    testWidgets('barre : Découvrir -> /catalog', (tester) async {
+      await tester.pumpWidget(wrap(makeContainer([
+        _summary('a', TrekLifecycleState.owned),
+      ])));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.descendant(
+        of: find.byType(ContextualActionBar),
+        matching: find.text(t.myTreks.discoverTitle),
+      ));
+      await tester.pumpAndSettle();
+      expect(find.text('CATALOG'), findsOneWidget);
+    });
   });
 }

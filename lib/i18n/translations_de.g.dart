@@ -138,6 +138,7 @@ class _Translations$nav$de extends Translations$nav$fr {
 	@override String get accueil => 'Start';
 	@override String get map => 'Karte';
 	@override String get stages => 'Etappen';
+	@override String get currentStage => 'Aktuelle Etappe';
 	@override String get planning => 'Planung';
 	@override String get journal => 'Tagebuch';
 	@override String get more => 'Mehr';
@@ -3287,6 +3288,7 @@ extension on TranslationsDe {
 			'nav.accueil' => 'Start',
 			'nav.map' => 'Karte',
 			'nav.stages' => 'Etappen',
+			'nav.currentStage' => 'Aktuelle Etappe',
 			'nav.planning' => 'Planung',
 			'nav.journal' => 'Tagebuch',
 			'nav.more' => 'Mehr',
@@ -3779,9 +3781,9 @@ extension on TranslationsDe {
 			'weather.alert.fire.title' => 'Brandgefahr',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C erwartet. Hohe Brandgefahr.',
 			'share.title' => 'Teilen',
-			'share.generating' => 'Wird generiert...',
 			_ => null,
 		} ?? switch (path) {
+			'share.generating' => 'Wird generiert...',
 			'share.share' => 'Teilen',
 			'share.error' => 'Fehler bei der Erstellung',
 			'share.errorShare' => 'Fehler beim Teilen',
@@ -4293,9 +4295,9 @@ extension on TranslationsDe {
 			'consent.granted' => 'Erlaubt',
 			'consent.denied' => 'Nicht erlaubt',
 			'consent.grant' => 'Erlauben',
-			'consent.revoke' => 'Widerrufen',
 			_ => null,
 		} ?? switch (path) {
+			'consent.revoke' => 'Widerrufen',
 			'consent.decidedOn' => ({required Object date}) => 'Gewählt am ${date}',
 			'consent.notDecided' => 'Wartet auf Ihre Wahl',
 			'consent.acceptSelected' => 'Meine Auswahl bestätigen',
