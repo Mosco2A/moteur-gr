@@ -280,6 +280,9 @@ class Translations$navPilote$fr {
 	/// fr: 'Votre trek est en cours'
 	String get phaseHikeSub => 'Votre trek est en cours';
 
+	/// fr: '$trek en cours'
+	String phaseHikeInProgress({required Object trek}) => '${trek} en cours';
+
 	/// fr: 'Revivez votre aventure'
 	String get phaseAfterSub => 'Revivez votre aventure';
 
@@ -6104,6 +6107,7 @@ extension on Translations {
 			'navPilote.reviewPrep' => 'Revoir la préparation',
 			'navPilote.phasePrepareSub' => 'Organisez votre trek avant le départ',
 			'navPilote.phaseHikeSub' => 'Votre trek est en cours',
+			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} en cours',
 			'navPilote.phaseAfterSub' => 'Revivez votre aventure',
 			'navPilote.phaseBanner' => 'Phase en cours',
 			'navPilote.demoPreview' => 'Aperçu des phases (démo) : Préparer, Randonner, Après',
@@ -6565,9 +6569,9 @@ extension on Translations {
 			'share.preview' => 'Aperçu',
 			'share.chooseTemplate' => 'Choisir un template',
 			'share.templateStats' => 'Statistiques',
-			'share.templateJourney' => 'Parcours',
 			_ => null,
 		} ?? switch (path) {
+			'share.templateJourney' => 'Parcours',
 			'share.templateStage' => 'Étape',
 			'diploma.title' => 'Diplôme de randonnée',
 			'diploma.yourName' => 'Votre nom',
@@ -7079,9 +7083,9 @@ extension on Translations {
 			'consent.declineAll' => 'Tout refuser',
 			'consent.continueLabel' => 'Continuer',
 			'consent.privacyPolicyLink' => 'Lire la politique de confidentialité',
-			'consent.reviewNeeded' => 'Notre politique a évolué : merci de revoir vos choix.',
 			_ => null,
 		} ?? switch (path) {
+			'consent.reviewNeeded' => 'Notre politique a évolué : merci de revoir vos choix.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}',
 			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
 			'consent.a11y.policyButton' => 'Ouvrir la politique de confidentialité',

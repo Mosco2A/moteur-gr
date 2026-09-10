@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/core/config/trail_catalog.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/auth/providers/auth_provider.dart';
@@ -309,7 +310,8 @@ void main() {
         find.descendant(of: find.byType(BottomAppBar), matching: f);
 
     testWidgets(
-        'phase Randonner (inProgress + trek actif) : SOS present + CTA Terminer',
+        'phase Randonner (inProgress + trek actif) : SOS present + CTA '
+        'Navigation dans la barre + Terminer dans le corps (R21/R22)',
         (tester) async {
       await pumpTall(tester,
           activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
@@ -317,24 +319,34 @@ void main() {
       // SOS present (phase Randonner + mode trek reel) — R9.
       expect(inBar(find.text(t.navPilote.sos)), findsOneWidget);
       expect(find.byIcon(Icons.emergency), findsOneWidget);
-      // CTA de transition = « Terminer le trek » (R7).
-      expect(inBar(find.text(t.navPilote.finishTrek)), findsOneWidget);
-      // Section Randonner affichee (titre de section dans le corps).
-      expect(find.text(t.hub.cards.navigation), findsOneWidget);
+      // R22 : le CTA de la barre du bas est desormais « Navigation » (route
+      // vers la carte), plus « Terminer le trek ».
+      expect(inBar(find.text(t.hub.cards.navigation)), findsOneWidget);
+      // R21 : « Terminer le trek » a QUITTE la barre — il est dans le corps
+      // (bouton orange de fin de phase), plus dans la BottomAppBar.
+      expect(inBar(find.text(t.navPilote.finishTrek)), findsNothing);
+      expect(find.text(t.navPilote.finishTrek), findsOneWidget);
     });
 
     testWidgets(
-        'R14 : phase Randonner clone la LISTE COMPLETE des cartes GR20 '
+        'R14/R23 : phase Randonner = 7 cartes (Mon groupe RETIRÉ, R23) '
         '(ravitaillement + meteo + fiches info inclus)', (tester) async {
       await pumpTall(tester,
           activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
 
-      // Les 8 cartes « en rando » (GR20 Randonner :297-414 + Informations
-      // :418-448) sont toutes montees — plus l'extrait Navigation/Journal/
-      // Incendie du pilote V1 (R14).
-      expect(find.text(t.hub.cards.navigation), findsOneWidget);
+      // R23 : liste finale de 7 cartes « en rando » — « Mon groupe » (groupe
+      // live) est RETIRÉ (non fait dans cette version). « Navigation » figure
+      // dans le corps (carte) ET dans la barre (CTA R22) -> on scope le corps
+      // en excluant la BottomAppBar.
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text(t.hub.cards.navigation),
+        ),
+        findsOneWidget,
+      );
       expect(find.text(t.hub.cards.journal), findsOneWidget);
-      expect(find.text(t.hub.cards.group), findsOneWidget); // Groupe live
+      expect(find.text(t.hub.cards.group), findsNothing); // Mon groupe RETIRÉ (R23)
       expect(find.text(t.hub.cards.shop), findsOneWidget); // Ravitaillement
       expect(find.text(t.hub.cards.weather), findsOneWidget); // Météo
       expect(find.text(t.hub.cards.fire), findsOneWidget); // Incendie
@@ -342,15 +354,23 @@ void main() {
       expect(find.text(t.hub.cards.tips), findsOneWidget); // Fiches conseils
     });
 
-    testWidgets('R11 : pas de titre de section redondant sous le bandeau de '
-        'phase', (tester) async {
+    testWidgets('R11/R24 : bandeau = « <nom du trek> en cours », pas de titre '
+        'de section redondant', (tester) async {
       await pumpTall(tester,
           activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
 
-      // Le bandeau de phase porte « Randonner » (t.hub.sections.hike). Il ne
-      // doit PAS y avoir un 2e titre identique (l'ancienne en-tete HubSection).
-      // -> une seule occurrence du libelle de la phase Randonner.
-      expect(find.text(t.hub.sections.hike), findsOneWidget);
+      // R24 : le bandeau de phase Randonner affiche « <nom du trek> en cours »
+      // (nom du sentier courant), plus le generique « Randonner ». Le nom vient
+      // du sentier par defaut du catalogue (aucune localite hardcodee).
+      final trekName = TrailCatalog.defaultTrail.displayName;
+      expect(
+        find.text(t.navPilote.phaseHikeInProgress(trek: trekName)),
+        findsOneWidget,
+      );
+      // R11 : pas de titre de section redondant. Le libelle generique
+      // « Randonner » (t.hub.sections.hike) n'apparait plus du tout en Randonner
+      // (ni bandeau — remplace par le nom du trek — ni en-tete de section masquee).
+      expect(find.text(t.hub.sections.hike), findsNothing);
     });
 
     testWidgets('R19 : « Prêt à partir / Démarrer la randonnée » (HubTrekCard) '
@@ -447,10 +467,12 @@ void main() {
       await pumpTall(tester,
           activeTrailId: 'volcans', lifecycle: TrekLifecycleState.inProgress);
 
-      // Le SOS (Icons.emergency) est a droite du CTA de transition (flag_outlined)
-      // : sa position horizontale (dx) est superieure.
-      final sosX = tester.getCenter(find.byIcon(Icons.emergency)).dx;
-      final ctaX = tester.getCenter(find.byIcon(Icons.flag_outlined)).dx;
+      // Le SOS (Icons.emergency) est a droite du CTA de la barre (R22 :
+      // « Navigation », icone navigation_outlined) : dx superieur. On scope la
+      // BottomAppBar (l'icone flag du bouton « Terminer » vit dans le corps).
+      final sosX = tester.getCenter(inBar(find.byIcon(Icons.emergency))).dx;
+      final ctaX =
+          tester.getCenter(inBar(find.byIcon(Icons.navigation_outlined))).dx;
       expect(sosX, greaterThan(ctaX));
     });
 
@@ -469,8 +491,9 @@ void main() {
         ],
       );
 
-      final sosX = tester.getCenter(find.byIcon(Icons.emergency)).dx;
-      final ctaX = tester.getCenter(find.byIcon(Icons.flag_outlined)).dx;
+      final sosX = tester.getCenter(inBar(find.byIcon(Icons.emergency))).dx;
+      final ctaX =
+          tester.getCenter(inBar(find.byIcon(Icons.navigation_outlined))).dx;
       expect(sosX, lessThan(ctaX));
     });
 
@@ -490,9 +513,17 @@ void main() {
       await tester.pumpAndSettle();
 
       // R16 : la démo ne rend PAS Randonner jouable -> teaser verrouille, PAS
-      // les cartes de la section (Navigation absente), et PAS de SOS.
+      // les cartes de la section (carte Navigation absente DU CORPS ; le CTA
+      // « Navigation » de la barre R22 reste, on scope donc le ListView), et
+      // PAS de SOS.
       expect(find.text(t.navPilote.demoLockedBody), findsOneWidget);
-      expect(find.text(t.hub.cards.navigation), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text(t.hub.cards.navigation),
+        ),
+        findsNothing,
+      );
       expect(find.byIcon(Icons.emergency), findsNothing);
     });
 

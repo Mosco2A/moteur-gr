@@ -178,6 +178,7 @@ class _Translations$navPilote$es extends Translations$navPilote$fr {
 	@override String get reviewPrep => 'Revisar la preparación';
 	@override String get phasePrepareSub => 'Organiza tu trek antes de salir';
 	@override String get phaseHikeSub => 'Tu trek está en curso';
+	@override String phaseHikeInProgress({required Object trek}) => '${trek} en curso';
 	@override String get phaseAfterSub => 'Revive tu aventura';
 	@override String get phaseBanner => 'Fase actual';
 	@override String get demoPreview => 'Vista previa de fases (demo): Preparar, Caminar, Después';
@@ -3311,6 +3312,7 @@ extension on TranslationsEs {
 			'navPilote.reviewPrep' => 'Revisar la preparación',
 			'navPilote.phasePrepareSub' => 'Organiza tu trek antes de salir',
 			'navPilote.phaseHikeSub' => 'Tu trek está en curso',
+			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} en curso',
 			'navPilote.phaseAfterSub' => 'Revive tu aventura',
 			'navPilote.phaseBanner' => 'Fase actual',
 			'navPilote.demoPreview' => 'Vista previa de fases (demo): Preparar, Caminar, Después',
@@ -3772,9 +3774,9 @@ extension on TranslationsEs {
 			'share.preview' => 'Vista previa',
 			'share.chooseTemplate' => 'Elegir plantilla',
 			'share.templateStats' => 'Estadísticas',
-			'share.templateJourney' => 'Recorrido',
 			_ => null,
 		} ?? switch (path) {
+			'share.templateJourney' => 'Recorrido',
 			'share.templateStage' => 'Etapa',
 			'diploma.title' => 'Diploma de trekking',
 			'diploma.yourName' => 'Tu nombre',
@@ -4286,9 +4288,9 @@ extension on TranslationsEs {
 			'consent.declineAll' => 'Rechazar todo',
 			'consent.continueLabel' => 'Continuar',
 			'consent.privacyPolicyLink' => 'Leer la política de privacidad',
-			'consent.reviewNeeded' => 'Nuestra política ha cambiado: revisa tus elecciones.',
 			_ => null,
 		} ?? switch (path) {
+			'consent.reviewNeeded' => 'Nuestra política ha cambiado: revisa tus elecciones.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actualmente ${state}',
 			'consent.a11y.healthSection' => 'Sección de datos de salud, consentimiento reforzado',
 			'consent.a11y.policyButton' => 'Abrir la política de privacidad',

@@ -54,6 +54,7 @@
     "reviewPrep": "Rivedi la preparazione",
     "phasePrepareSub": "Organizza il tuo trek prima della partenza",
     "phaseHikeSub": "Il tuo trek è in corso",
+    "phaseHikeInProgress": "$trek in corso",
     "phaseAfterSub": "Rivivi la tua avventura",
     "phaseBanner": "Fase in corso",
     "demoPreview": "Anteprima fasi (demo): Preparare, Camminare, Dopo",

@@ -54,6 +54,7 @@
     "reviewPrep": "Vorbereitung ansehen",
     "phasePrepareSub": "Bereiten Sie Ihren Trek vor dem Start vor",
     "phaseHikeSub": "Ihr Trek läuft",
+    "phaseHikeInProgress": "$trek läuft",
     "phaseAfterSub": "Erleben Sie Ihr Abenteuer noch einmal",
     "phaseBanner": "Aktuelle Phase",
     "demoPreview": "Phasenvorschau (Demo): Vorbereiten, Wandern, Danach",

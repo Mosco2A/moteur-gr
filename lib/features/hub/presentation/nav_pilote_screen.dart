@@ -206,6 +206,8 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
         demoPreview: _demoTrekMode,
         onSos: () => _showSos(context),
         onTransition: () => _onTransition(context, phase),
+        // R22 : en Randonner, la barre porte « Navigation » -> carte/navigation.
+        onNavigate: () => context.push('/map'),
         onSelectPhase: (p) => setState(() => _previewPhase = p),
       ),
       // R3 : fond du cockpit TRES legerement teinte de la couleur de phase, en
@@ -247,22 +249,25 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
               // R11 : ce bandeau EST le titre de la phase. Les sections du corps
               // ne re-affichent donc PLUS de titre (`showHeader: false`), pour
               // eviter le doublon « Randonner »/« Préparer » juste en dessous.
-              _PhaseHeaderBanner(phase: phase),
+              // R24 : en Randonner, le bandeau affiche le NOM DU TREK suivi de
+              // « en cours » (ex. « Mare à Mare Centre en cours ») au lieu du
+              // generique « Randonner / Votre trek est en cours ». Le nom vient
+              // du sentier courant ([trailConfigProvider].displayName == trailTitle).
+              _PhaseHeaderBanner(phase: phase, trekName: trailTitle),
               const SizedBox(height: AppTheme.spacingBase),
 
               // R19 (V3) : le bloc « Prêt à partir / Démarrer la randonnée »
               // ([HubTrekCard] etat `prepared`) est RETIRE de Préparer — il
               // faisait DOUBLON avec le bouton « Démarrer le trek » de la barre
-              // du bas (seul et unique démarrage). En Préparer : cartes de prépa
-              // + bouton « Démarrer le trek », SANS le bloc « Prêt à partir ».
+              // du bas (seul et unique démarrage).
               //
-              // La [HubTrekCard] garde tout son sens dans les AUTRES phases (elle
-              // n'y montre pas « Démarrer ») : carte « en cours » (stats + reprise)
-              // en Randonner, carte « terminé » (récap/diplôme) en Après. On ne la
-              // rend donc QU'en PROD et HORS Préparer. En démo (prépa-only, R16),
-              // jamais de [HubTrekCard] : Randonner/Après y sont des aperçus
-              // verrouillés ([_LockedPhaseTeaser]).
-              if (!_demoTrekMode && phase != CockpitPhase.prepare) ...[
+              // R25 (DURCIT R15) : le bloc « Prêt à partir » n'a AUCUN sens en
+              // phase Randonner (le trek est deja en cours). On ne rend donc plus
+              // la [HubTrekCard] QU'en phase Après (carte « terminé » :
+              // récap/diplôme), JAMAIS en Préparer ni en Randonner. En démo
+              // (prépa-only, R16), jamais de [HubTrekCard] : Randonner/Après y sont
+              // des aperçus verrouillés ([_LockedPhaseTeaser]).
+              if (!_demoTrekMode && phase == CockpitPhase.after) ...[
                 const HubTrekCard(),
                 const SizedBox(height: AppTheme.spacingLg),
               ],
@@ -461,14 +466,19 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
   }
 
   /// Phase « Randonner » — clone COMPLET de la section GR20 « Randonner »
-  /// (`home_screen.dart:297-414`) : Navigation, Journal, Groupe live,
-  /// Ravitaillement, Météo, Incendie — AUGMENTE des cartes « Informations » GR20
-  /// (`:418-448` : Hébergements, Fiches conseils) que Chris rattache a Randonner
-  /// (R14 : « sur GR20 c'est DANS Randonner »).
+  /// (`home_screen.dart:297-414`) : Navigation, Journal, Ravitaillement, Météo,
+  /// Incendie — AUGMENTE des cartes « Informations » GR20 (`:418-448` :
+  /// Hébergements, Fiches conseils) que Chris rattache a Randonner (R14 : « sur
+  /// GR20 c'est DANS Randonner »).
   ///
   /// R14 : le pilote V1 ne clonait que Navigation/Journal/Incendie — RAVITAILLE-
   /// MENT, METEO et FICHES INFO manquaient. La liste ci-dessous est desormais
   /// l'INTEGRALITE des cartes « en rando » (pas un extrait).
+  /// R23 : la carte « Mon groupe » (groupe live) est RETIREE (non faite dans
+  /// cette version) -> liste finale de 7 cartes.
+  /// R21 : le bouton « Terminer le trek » (style ORANGE, parite GR20) est en BAS
+  /// de la zone scrollable, SOUS « Revoir la préparation » (fin de phase) — il
+  /// n'est PLUS dans la barre du bas (qui porte desormais « Navigation », R22).
   /// R11 : `showHeader: false` — le bandeau de phase porte deja « Randonner ».
   ///
   /// R18 (V3) : un BANDEAU EN HAUT ([_LocalizedConditionsBanner]) donne l'« ici
@@ -510,14 +520,10 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
             iconColor: cat.orange,
             onTap: () => context.push('/journal'),
           ),
-          // Groupe live — GR20 :368-376 (Icons.group, bleuLight) -> /group/:id.
-          QuickAccessCard(
-            icon: Icons.groups_outlined,
-            title: t.hub.cards.group,
-            subtitle: t.hub.cards.groupSub,
-            iconColor: cat.blue,
-            onTap: () => context.push('/group/$trailId'),
-          ),
+          // R23 : la carte « Mon groupe » (groupe live) est RETIREE de Randonner
+          // (fonctionnalite non faite dans cette version). Liste finale = 7 cartes
+          // (Navigation, Journal, Ravitaillement, Météo, Incendie, Hébergements,
+          // Fiches conseils).
           // Ravitaillement — GR20 :379-388 (Icons.shopping_cart,
           // vertMaquisLight) -> /trail/:id/shop (ShopScreen data-driven).
           QuickAccessCard(
@@ -571,6 +577,15 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
       // dangers) — reste atteignable en rando sans quitter la phase Randonner.
       _ReviewPrepEntry(
         onTap: () => context.push('/trail/$trailId/checklist'),
+      ),
+      const SizedBox(height: AppTheme.spacingLg),
+      // R21 : « Terminer le trek » — action de FIN DE PHASE, tout en BAS de la
+      // zone scrollable (sous « Revoir la préparation »), en bouton ORANGE
+      // (parite GR20 `home_screen.dart` orangeTerre). Il n'est PLUS dans la barre
+      // du bas (qui porte desormais « Navigation », R22). Meme action que
+      // l'ancienne pastille de transition (fin du trek -> phase Après).
+      _FinishTrekButton(
+        onPressed: () => _onTransition(context, CockpitPhase.hike),
       ),
     ];
   }
@@ -631,22 +646,29 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
 /// en teinte PLEINE de la phase (contraste fort, lisible). Signale « ou tu es
 /// dans le cycle » sans recoloriser les icones categorielles.
 class _PhaseHeaderBanner extends StatelessWidget {
-  const _PhaseHeaderBanner({required this.phase});
+  const _PhaseHeaderBanner({required this.phase, required this.trekName});
 
   final CockpitPhase phase;
+
+  /// Nom du trek courant (`trailConfigProvider.displayName`) — sert au libelle
+  /// « <nom du trek> en cours » de la phase Randonner (R24).
+  final String trekName;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final (title, subtitle, icon) = switch (phase) {
+    // R24 : en Randonner, le titre EST « <nom du trek> en cours » (ex. « Mare à
+    // Mare Centre en cours ») et il n'y a pas de sous-titre generique — le nom du
+    // trek porte l'information. Les autres phases gardent titre + sous-titre.
+    final (String title, String? subtitle, IconData icon) = switch (phase) {
       CockpitPhase.prepare => (
           t.hub.sections.prepare,
           t.navPilote.phasePrepareSub,
           Icons.assignment_outlined,
         ),
       CockpitPhase.hike => (
-          t.hub.sections.hike,
-          t.navPilote.phaseHikeSub,
+          t.navPilote.phaseHikeInProgress(trek: trekName),
+          null,
           Icons.hiking,
         ),
       CockpitPhase.after => (
@@ -691,14 +713,17 @@ class _PhaseHeaderBanner extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  subtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: onPhase.withValues(alpha: 0.85),
+                // Sous-titre optionnel : absent en Randonner (R24), ou le nom du
+                // trek + « en cours » se suffit a lui-meme dans le titre.
+                if (subtitle != null)
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: onPhase.withValues(alpha: 0.85),
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
               ],
             ),
           ),
@@ -947,6 +972,38 @@ class _ReviewPrepEntry extends StatelessWidget {
   }
 }
 
+/// Bouton « Terminer le trek » (R21) — action de FIN DE PHASE, tout en BAS de la
+/// zone scrollable de Randonner (sous « Revoir la préparation »).
+///
+/// STYLE ORANGE clone GR20 (`home_screen.dart` CTA pleine largeur, hauteur 52) :
+/// [FilledButton.icon] pleine largeur, fond orange (`CategoryIconColors.orange`
+/// == GR20 `orangeTerre` 0xFFE65100) + texte/icone blanc. Il a QUITTE la barre du
+/// bas (remplacee par « Navigation », R22) : sa place est ici, en fin de phase.
+class _FinishTrekButton extends StatelessWidget {
+  const _FinishTrekButton({required this.onPressed});
+
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    // Orange de parite GR20 (orangeTerre) — meme source que le reste du fichier.
+    final orange = CategoryIconColors.of(context).orange;
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: FilledButton.icon(
+        onPressed: onPressed,
+        icon: const Icon(Icons.flag_outlined, size: 22),
+        label: Text(t.navPilote.finishTrek),
+        style: FilledButton.styleFrom(
+          backgroundColor: orange,
+          foregroundColor: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
 /// Aperçu VERROUILLE d'une phase (R16) — démo/gratuit uniquement.
 ///
 /// Le mode démo ne rend jouable que la PREPARATION (frontière d'or MODELE_ECO :
@@ -1012,15 +1069,16 @@ class _LockedPhaseTeaser extends StatelessWidget {
 
 /// Barre d'ACTIONS du cockpit par phases (R6/R7/R9/R10).
 ///
-/// - **Action principale** = CTA de TRANSITION de phase, en BAS-CENTRE (R10,
-///   zone verte universelle, atteignable droitier ET gaucher) :
-///   Préparer→« Démarrer le trek » (R6) / Randonner→« Terminer le trek ».
+/// - **Action principale** en BAS-CENTRE (R10, zone verte universelle,
+///   atteignable droitier ET gaucher), en « pastille pleine accentuee » (R4) :
+///   Préparer→« Démarrer le trek » (R6, transition) / Randonner→« Navigation »
+///   (R22, route vers la carte). « Terminer le trek » N'EST PLUS ici (R21) : il
+///   vit desormais en bas de la zone scrollable (bouton orange, fin de phase).
 ///   Phase Après TERMINALE -> pas de CTA (actions dans les cartes du corps).
-///   Rendu « pastille pleine accentuee » lisible (R4).
 /// - **SOS** (R9) : phase Randonner UNIQUEMENT, place du COTE de la main
 ///   dominante ([sosOnRight] : droitier=droite, gaucher=gauche). Pastille pleine
 ///   rouge, cible >= 56 dp. Pas de chevauchement : le SOS occupe le bord (cote
-///   dominant), la transition le centre — jamais superposes.
+///   dominant), l'action le centre — jamais superposes.
 /// - **Démo** ([demoPreview]) : ajoute les selecteurs d'apercu des 3 phases (R8).
 ///
 /// C'est une [BottomAppBar] (barre d'actions), PAS une [NavigationBar]
@@ -1033,6 +1091,7 @@ class _CockpitActionBar extends StatelessWidget {
     required this.demoPreview,
     required this.onSos,
     required this.onTransition,
+    required this.onNavigate,
     required this.onSelectPhase,
   });
 
@@ -1042,17 +1101,27 @@ class _CockpitActionBar extends StatelessWidget {
   final bool demoPreview;
   final VoidCallback onSos;
   final VoidCallback onTransition;
+  final VoidCallback onNavigate;
   final ValueChanged<CockpitPhase> onSelectPhase;
 
   @override
   Widget build(BuildContext context) {
-    // CTA de transition selon la phase (R6/R7). L'AVANCEE du cycle est
-    // prepared→[Démarrer]→inProgress→[Terminer]→completed : la phase Après est
-    // TERMINALE (pas de phase suivante) -> AUCUNE pastille de transition (les
-    // actions Après vivent dans les cartes Recap/Diplome du corps).
-    final (String, IconData)? transitionSpec = switch (phase) {
-      CockpitPhase.prepare => (t.navPilote.startTrek, Icons.play_arrow),
-      CockpitPhase.hike => (t.navPilote.finishTrek, Icons.flag_outlined),
+    // Action principale de la barre selon la phase (R6/R7/R22) :
+    //  - Préparer -> « Démarrer le trek » (transition prepared→inProgress) ;
+    //  - Randonner -> « Navigation » (R22 : route vers la carte, PAS une
+    //    transition — « Terminer le trek » a migre en bas du corps, R21) ;
+    //  - Après (TERMINALE) -> AUCUN CTA (actions dans les cartes Recap/Diplome).
+    final (String, IconData, VoidCallback)? actionSpec = switch (phase) {
+      CockpitPhase.prepare => (
+          t.navPilote.startTrek,
+          Icons.play_arrow,
+          onTransition,
+        ),
+      CockpitPhase.hike => (
+          t.hub.cards.navigation,
+          Icons.navigation_outlined,
+          onNavigate,
+        ),
       CockpitPhase.after => null,
     };
 
@@ -1062,12 +1131,12 @@ class _CockpitActionBar extends StatelessWidget {
     // CTA principal en pastille pleine accentuee (R4) — vertMaquisLight (phase
     // Randonner) + texte/icone blanc, contraste AA sur fond sombre. Absent en
     // phase Après (spacer pour garder le SOS a sa place laterale si present).
-    final Widget center = transitionSpec == null
+    final Widget center = actionSpec == null
         ? const Spacer()
         : _TransitionPill(
-            label: transitionSpec.$1,
-            icon: transitionSpec.$2,
-            onPressed: onTransition,
+            label: actionSpec.$1,
+            icon: actionSpec.$2,
+            onPressed: actionSpec.$3,
           );
 
     return BottomAppBar(
@@ -1082,16 +1151,16 @@ class _CockpitActionBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Rangee principale : SOS (cote main dominante) + CTA transition
-          // (centre). Le SOS prend le bord dominant, la transition s'etire au
-          // centre -> jamais de chevauchement (R9/R10).
+          // Rangee principale : SOS (cote main dominante) + CTA principal
+          // (centre). Le SOS prend le bord dominant, le CTA s'etire au centre
+          // -> jamais de chevauchement (R9/R10).
           Row(
             children: [
               if (showSos && !sosOnRight) ...[
                 sos,
                 const SizedBox(width: AppTheme.spacingSm),
               ],
-              transitionSpec == null ? center : Expanded(child: center),
+              actionSpec == null ? center : Expanded(child: center),
               if (showSos && sosOnRight) ...[
                 const SizedBox(width: AppTheme.spacingSm),
                 sos,

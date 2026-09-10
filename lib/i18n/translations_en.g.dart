@@ -178,6 +178,7 @@ class _Translations$navPilote$en extends Translations$navPilote$fr {
 	@override String get reviewPrep => 'Review preparation';
 	@override String get phasePrepareSub => 'Get your trek ready before departure';
 	@override String get phaseHikeSub => 'Your trek is in progress';
+	@override String phaseHikeInProgress({required Object trek}) => '${trek} in progress';
 	@override String get phaseAfterSub => 'Relive your adventure';
 	@override String get phaseBanner => 'Current phase';
 	@override String get demoPreview => 'Phase preview (demo): Prepare, Hike, After';
@@ -3311,6 +3312,7 @@ extension on TranslationsEn {
 			'navPilote.reviewPrep' => 'Review preparation',
 			'navPilote.phasePrepareSub' => 'Get your trek ready before departure',
 			'navPilote.phaseHikeSub' => 'Your trek is in progress',
+			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} in progress',
 			'navPilote.phaseAfterSub' => 'Relive your adventure',
 			'navPilote.phaseBanner' => 'Current phase',
 			'navPilote.demoPreview' => 'Phase preview (demo): Prepare, Hike, After',
@@ -3772,9 +3774,9 @@ extension on TranslationsEn {
 			'share.preview' => 'Preview',
 			'share.chooseTemplate' => 'Choose a template',
 			'share.templateStats' => 'Statistics',
-			'share.templateJourney' => 'Journey',
 			_ => null,
 		} ?? switch (path) {
+			'share.templateJourney' => 'Journey',
 			'share.templateStage' => 'Stage',
 			'diploma.title' => 'Trek diploma',
 			'diploma.yourName' => 'Your name',
@@ -4286,9 +4288,9 @@ extension on TranslationsEn {
 			'consent.declineAll' => 'Decline all',
 			'consent.continueLabel' => 'Continue',
 			'consent.privacyPolicyLink' => 'Read the privacy policy',
-			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
 			_ => null,
 		} ?? switch (path) {
+			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
 			'consent.a11y.policyButton' => 'Open the privacy policy',
