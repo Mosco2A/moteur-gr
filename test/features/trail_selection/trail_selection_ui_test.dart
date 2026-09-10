@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/pyrenees_trail_config.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
@@ -16,12 +17,27 @@ import 'package:moteur_gr/shared/widgets/app_button.dart';
 /// Couvre : la liste reflete le catalogue, le sentier actif est marque (badge +
 /// bouton desactive), et selectionner un autre sentier BASCULE la selection —
 /// donc la config active ([trailConfigProvider]) qui propage tout le contexte.
+
+/// AppHeader (Ph5/L6d) utilise GoRouter -> heberge l'ecran dans un GoRouter
+/// minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
+Widget _hostTrailSelection() => MaterialApp.router(
+      routerConfig: GoRouter(
+        initialLocation: '/trail-selection',
+        routes: [
+          GoRoute(
+              path: '/trail-selection',
+              builder: (_, __) => const TrailSelectionScreen()),
+          GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+        ],
+      ),
+    );
+
 void main() {
   Widget wrap({List<Override> overrides = const []}) {
     return ProviderScope(
       overrides: overrides,
       child: TranslationProvider(
-        child: const MaterialApp(home: TrailSelectionScreen()),
+        child: _hostTrailSelection(),
       ),
     );
   }
@@ -90,7 +106,7 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: TranslationProvider(
-          child: const MaterialApp(home: TrailSelectionScreen()),
+          child: _hostTrailSelection(),
         ),
       ),
     );
@@ -132,7 +148,7 @@ void main() {
       UncontrolledProviderScope(
         container: container,
         child: TranslationProvider(
-          child: const MaterialApp(home: TrailSelectionScreen()),
+          child: _hostTrailSelection(),
         ),
       ),
     );

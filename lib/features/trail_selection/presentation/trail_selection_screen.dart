@@ -6,6 +6,7 @@ import '../../../core/config/trail_selection.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 
 /// Ecran de selection / bascule de sentier (F8D-02, Phase 8 P8-D, #84627).
@@ -27,7 +28,8 @@ class TrailSelectionScreen extends ConsumerWidget {
     final selectedId = ref.watch(selectedTrailIdProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.trailSelection.title)),
+      // Ph5 (L6d) : AppHeader universel (bascule de sentier — §4 standard).
+      appBar: AppHeader(title: t.trailSelection.title),
       body: ListView(
         key: const ValueKey('trail-selection-list'),
         padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),

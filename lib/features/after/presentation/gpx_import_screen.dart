@@ -12,6 +12,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../trek/domain/models/stage.dart';
 import '../data/gpx_import_service.dart';
@@ -47,7 +48,8 @@ class _GpxImportScreenState extends ConsumerState<GpxImportScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(t.import.title)),
+      // Ph5 (L6d) : AppHeader universel (phase Après — import GPX).
+      appBar: AppHeader(title: t.import.title),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         child: Column(

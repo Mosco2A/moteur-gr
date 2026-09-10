@@ -10,6 +10,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:moteur_gr/features/consent/presentation/consent_onboarding_screen.dart';
 import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
@@ -35,10 +36,20 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
   });
 
+  // AppHeader (Ph5/L6d) utilise GoRouter -> heberge le [child] dans un GoRouter
+  // minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
   Widget wrap(Widget child) {
     return ProviderScope(
       child: TranslationProvider(
-        child: MaterialApp(home: child),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/screen',
+            routes: [
+              GoRoute(path: '/screen', builder: (_, __) => child),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -32,11 +33,22 @@ void main() {
         'policyVersion': ConsentService.currentPolicyVersion,
       });
 
+  // AppHeader (Ph5/L6d) utilise GoRouter -> GoRouter minimal (+ /my-treks).
   Widget buildApp({VoidCallback? onPolicy}) {
     return ProviderScope(
       child: TranslationProvider(
-        child: MaterialApp(
-          home: ConsentSettingsScreen(onOpenPrivacyPolicy: onPolicy),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/consent',
+            routes: [
+              GoRoute(
+                path: '/consent',
+                builder: (_, __) =>
+                    ConsentSettingsScreen(onOpenPrivacyPolicy: onPolicy),
+              ),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
+          ),
         ),
       ),
     );

@@ -269,8 +269,20 @@ void main() {
               _NoReviewService(db.reviewRequestsDao),
             ),
           ],
+          // AppHeader (Ph5/L6d) utilise GoRouter -> GoRouter minimal (+ /my-treks).
           child: TranslationProvider(
-            child: const MaterialApp(home: DiplomaScreen()),
+            child: MaterialApp.router(
+              routerConfig: GoRouter(
+                initialLocation: '/diploma',
+                routes: [
+                  GoRoute(
+                      path: '/diploma',
+                      builder: (_, __) => const DiplomaScreen()),
+                  GoRoute(
+                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                ],
+              ),
+            ),
           ),
         ),
       );

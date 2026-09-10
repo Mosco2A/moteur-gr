@@ -10,6 +10,7 @@ import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
 import '../../trek/domain/trek_completion.dart';
@@ -80,7 +81,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     final isUnlocked = ref.watch(isDiplomaUnlockedProvider);
     if (!isUnlocked) {
       return Scaffold(
-        appBar: AppBar(title: Text(diplomaT.title)),
+        // Ph5 (L6d) : AppHeader universel (etat verrouille).
+        appBar: AppHeader(title: diplomaT.title),
         body: _LockedState(
           title: diplomaT.lockedTitle,
           message: diplomaT.lockedMessage,
@@ -114,7 +116,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     final congrats = ref.watch(adventureCongratulationsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(diplomaT.title)),
+      // Ph5 (L6d) : AppHeader universel (diplome deverrouille).
+      appBar: AppHeader(title: diplomaT.title),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         child: Column(

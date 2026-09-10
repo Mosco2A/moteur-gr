@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../providers/feedback_provider.dart';
 
 /// Écran de feedback in-app.
@@ -33,8 +35,10 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Feedback'),
+      // Ph5 (L6d) : AppHeader universel. Titre en dur « Feedback » -> Slang
+      // (t.feedback.title). Actions (badge « en attente ») conservees.
+      appBar: AppHeader(
+        title: t.feedback.title,
         actions: [
           if (feedbackState.pendingCount > 0)
             Padding(

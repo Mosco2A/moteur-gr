@@ -5,6 +5,7 @@ import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../providers/consent_ui_providers.dart';
 import 'consent_purpose_tile.dart';
 
@@ -37,7 +38,8 @@ class ConsentSettingsScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr.consent.settingsTitle)),
+      // Ph5 (L6d) : AppHeader universel (reglages consentement — §4 standard).
+      appBar: AppHeader(title: tr.consent.settingsTitle),
       body: SafeArea(
         child: statesAsync.when(
           loading: () => const Center(child: CircularProgressIndicator()),

@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../diploma/presentation/widgets/session_trace_painter.dart';
 import '../providers/adventure_recap_provider.dart';
@@ -35,7 +36,7 @@ class AdventureRecapScreen extends ConsumerWidget {
 
     if (!available) {
       return Scaffold(
-        appBar: AppBar(title: Text(recapT.title)),
+        appBar: AppHeader(title: recapT.title),
         body: _LockedState(
           title: recapT.lockedTitle,
           message: recapT.lockedMessage,
@@ -46,7 +47,8 @@ class AdventureRecapScreen extends ConsumerWidget {
     final statsAsync = ref.watch(adventureStatsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(recapT.title)),
+      // Ph5 (L6d) : AppHeader universel (phase Après — recap).
+      appBar: AppHeader(title: recapT.title),
       body: statsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => _LockedState(

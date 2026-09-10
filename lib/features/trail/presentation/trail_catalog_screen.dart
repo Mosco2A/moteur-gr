@@ -7,6 +7,7 @@ import '../../../core/config/trail_selection.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
 
@@ -29,7 +30,9 @@ class TrailCatalogScreen extends ConsumerWidget {
     final trails = ref.watch(availableTrailsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.catalog.title)),
+      // Ph5 (L6d) : AppHeader universel (catalogue — §4 header standard ; barre
+      // filtres/tri non prevue concretement -> pas de barre contextuelle).
+      appBar: AppHeader(title: t.catalog.title),
       body: trails.isEmpty
           ? EmptyState(
               icon: Icons.explore_off,

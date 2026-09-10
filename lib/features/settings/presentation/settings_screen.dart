@@ -7,6 +7,7 @@ import '../../../core/firebase/firebase_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/settings_provider.dart';
 import 'skin_selector.dart';
@@ -25,7 +26,8 @@ class SettingsScreen extends ConsumerWidget {
     final tr = Translations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr.settings.title)),
+      // Ph5 (L6d) : AppHeader universel (reglages — §4 header standard, barre absente).
+      appBar: AppHeader(title: tr.settings.title),
       body: ListView(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         children: [

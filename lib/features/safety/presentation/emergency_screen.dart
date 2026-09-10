@@ -14,6 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../../trek/providers/gps_providers.dart';
@@ -45,13 +46,10 @@ class EmergencyScreen extends ConsumerWidget {
     final positionAsync = ref.watch(positionStreamProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Contacts urgence'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      // Ph5 (L6d) : AppHeader universel. Titre en dur « Contacts urgence » ->
+      // Slang (t.nav.emergency). Leading custom (Navigator.pop) retire : back
+      // centralise (pop/accueil + Android).
+      appBar: AppHeader(title: t.nav.emergency),
       body: Column(
         children: [
           // Bandeau position GPS

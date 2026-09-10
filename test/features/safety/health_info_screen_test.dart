@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/safety/presentation/health_info_screen.dart';
@@ -35,8 +36,30 @@ void main() {
         // Câblage réel : le DAO santé auto-dérive de databaseProvider.
         databaseProvider.overrideWithValue(database ?? db),
       ],
+      // AppHeader (Ph5/L6d) utilise GoRouter (canPop/go). L'écran est atteint,
+      // comme en prod, PAR UN PUSH depuis l'écran Urgence -> on l'héberge en
+      // SOUS-ROUTE de /home (stack [/home, /home/health]) : `canPop()` est vrai et
+      // la sauvegarde (qui fait `Navigator.pop()`) revient bien au parent, sans
+      // dépiler la dernière page. L'écran santé reste rendu plein écran au-dessus.
       child: TranslationProvider(
-        child: const MaterialApp(home: HealthInfoScreen()),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/home/health',
+            routes: [
+              GoRoute(
+                path: '/home',
+                builder: (_, __) => const Scaffold(body: SizedBox()),
+                routes: [
+                  GoRoute(
+                    path: 'health',
+                    builder: (_, __) => const HealthInfoScreen(),
+                  ),
+                ],
+              ),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
+          ),
+        ),
       ),
     );
   }

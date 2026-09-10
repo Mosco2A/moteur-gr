@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/firebase/cloud_unavailable_notice.dart';
 import 'package:moteur_gr/core/firebase/firebase_service.dart';
 import 'package:moteur_gr/features/auth/domain/auth_service.dart';
@@ -36,8 +37,18 @@ void main() {
         ),
         ...extra,
       ],
+      // AppHeader (Ph5/L6d, ProfileScreen) utilise GoRouter -> GoRouter minimal
+      // (+ /my-treks). GroupScreen (hors scope L6) garde son AppBar : OK sous host.
       child: TranslationProvider(
-        child: MaterialApp(home: child),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/screen',
+            routes: [
+              GoRoute(path: '/screen', builder: (_, __) => child),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
+          ),
+        ),
       ),
     );
   }

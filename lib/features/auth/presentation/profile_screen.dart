@@ -7,6 +7,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
@@ -54,7 +55,8 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text(i18n.auth.profile)),
+      // Ph5 (L6d) : AppHeader universel (Mon compte — §4 header standard).
+      appBar: AppHeader(title: i18n.auth.profile),
       body: userAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => Center(child: Text(i18n.auth.errorLoading)),

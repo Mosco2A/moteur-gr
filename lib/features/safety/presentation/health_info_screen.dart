@@ -18,6 +18,7 @@ import '../../../core/data/daos/health_info_dao.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/health_info_repository.dart';
 import '../domain/models/health_info.dart';
@@ -138,13 +139,8 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     final colors = theme.colorScheme;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.health.title),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
+      // Ph5 (L6d) : AppHeader universel (back centralise). Leading custom retire.
+      appBar: AppHeader(title: t.health.title),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

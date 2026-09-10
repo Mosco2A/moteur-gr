@@ -3,6 +3,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
@@ -71,7 +72,17 @@ void main() {
             ),
           ),
         ],
-        child: const MaterialApp(home: DiplomaScreen()),
+        // AppHeader (Ph5/L6d) utilise GoRouter -> GoRouter minimal (+ /my-treks).
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/diploma',
+            routes: [
+              GoRoute(
+                  path: '/diploma', builder: (_, __) => const DiplomaScreen()),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
+          ),
+        ),
       ),
     );
     await tester.pumpAndSettle(const Duration(milliseconds: 400));
