@@ -5,6 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/domain/models/stage_accommodation.dart';
@@ -52,8 +53,9 @@ class NuiteesScreen extends ConsumerWidget {
     final progress = totalNuitees > 0 ? bookedCount / totalNuitees : 0.0;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.nuitees.title),
+      // Ph5 (L6b) : AppHeader universel + action (i) conservee (parite ecran).
+      appBar: AppHeader(
+        title: t.nuitees.title,
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),

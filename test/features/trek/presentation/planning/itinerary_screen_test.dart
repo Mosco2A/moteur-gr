@@ -63,15 +63,28 @@ void main() {
   Override daysOverride(List<ItineraryDay> days) =>
       itineraryProvider.overrideWith((ref) => Future.value(days));
 
+  /// AppHeader (Ph5/L6b) utilise GoRouter (canPop/go) -> on heberge l'ecran dans
+  /// un GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
+  Widget wrap(String trailId) => MaterialApp.router(
+        routerConfig: GoRouter(
+          initialLocation: '/itinerary',
+          routes: [
+            GoRoute(
+              path: '/itinerary',
+              builder: (_, __) => ItineraryScreen(trailId: trailId),
+            ),
+            GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+          ],
+        ),
+      );
+
   group('ItineraryScreen — deroule des etapes (parite GR20)', () {
     testWidgets('affiche le deroule des etapes avec infos par etape',
         (tester) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [daysOverride(mockDays)],
-          child: const MaterialApp(
-            home: ItineraryScreen(trailId: 'test-trail'),
-          ),
+          child: wrap('test-trail'),
         ),
       );
       await tester.pumpAndSettle();
@@ -128,9 +141,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [daysOverride(days)],
-          child: const MaterialApp(
-            home: ItineraryScreen(trailId: 'rich-trail'),
-          ),
+          child: wrap('rich-trail'),
         ),
       );
       await tester.pumpAndSettle();
@@ -144,9 +155,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [daysOverride(mockDays)],
-          child: const MaterialApp(
-            home: ItineraryScreen(trailId: 'test-trail'),
-          ),
+          child: wrap('test-trail'),
         ),
       );
       await tester.pumpAndSettle();
@@ -160,9 +169,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [daysOverride(const [])],
-          child: const MaterialApp(
-            home: ItineraryScreen(trailId: 'test-trail'),
-          ),
+          child: wrap('test-trail'),
         ),
       );
       await tester.pumpAndSettle();
@@ -224,9 +231,10 @@ void main() {
       expect(find.text(t.itinerary.title), findsOneWidget);
       expect(find.text('Depart - Refuge B'), findsOneWidget);
 
-      // RETOUR : bouton back de l AppBar. Ne doit PAS lever d exception
-      // (le bug d origine : "You have popped the last page off of the stack").
-      await tester.pageBack();
+      // RETOUR : bouton back de l'AppHeader (Ph5/L6b — tooltip Slang `nav.back`,
+      // remplace le back Material que ciblait `tester.pageBack()`). Ne doit PAS
+      // lever d'exception (bug d'origine : "popped the last page off the stack").
+      await tester.tap(find.byTooltip(t.nav.back));
       await tester.pumpAndSettle();
 
       // On est revenu au HUB, proprement, sans bascule vers la carte.

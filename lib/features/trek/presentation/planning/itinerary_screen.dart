@@ -9,6 +9,7 @@ import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../../shared/widgets/app_header.dart';
 import '../../../hub/providers/cockpit_start_providers.dart';
 import '../../domain/models/itinerary_day.dart';
 import '../../providers/itinerary_providers.dart';
@@ -47,7 +48,10 @@ class ItineraryScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.itinerary.title)),
+      // Ph5 (L6b) : AppHeader universel ([Retour]+[Accueil] contextuel). Ecran de
+      // preparation (fiche pushee depuis le cockpit) -> pas de barre contextuelle
+      // dediee (§4 ne prevoit pas d'actions specifiques ici).
+      appBar: AppHeader(title: t.itinerary.title),
       body: itineraryAsync.when(
         loading: () => LoadingView(message: t.itinerary.loading),
         error: (error, _) => ErrorView(

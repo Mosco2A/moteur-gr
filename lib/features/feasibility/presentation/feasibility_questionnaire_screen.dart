@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/feasibility_question_loader.dart';
 import '../data/feasibility_questions.dart';
@@ -111,7 +112,8 @@ class _FeasibilityQuestionnaireScreenState
     final questionsAsync = ref.watch(questionsFromJsonProvider);
     final feasibilityT = t.feasibility;
     return Scaffold(
-      appBar: AppBar(title: Text(feasibilityT.title)),
+      // Ph5 (L6b) : AppHeader universel (fiche de preparation pushee du cockpit).
+      appBar: AppHeader(title: feasibilityT.title),
       body: questionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (_, __) => Center(child: Text(feasibilityT.title)),

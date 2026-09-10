@@ -55,6 +55,22 @@ void main() {
             .overrideWith((ref) => Future.value(testStages)),
       ];
 
+  /// AppHeader (Ph5/L6b) utilise GoRouter (canPop/go) -> heberge l'ecran dans un
+  /// GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
+  Widget wrap() => MaterialApp.router(
+        routerConfig: GoRouter(
+          initialLocation: '/planning',
+          routes: [
+            GoRoute(
+              path: '/planning',
+              builder: (_, __) =>
+                  const TrailPlanningScreen(trailId: 'test-trail'),
+            ),
+            GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+          ],
+        ),
+      );
+
   /// Pompe l'ecran PROGRAMME dans une surface HAUTE afin que la liste (lazy
   /// `ReorderableListView`) rende TOUTES les cartes de jour sans culling de
   /// viewport. Indispensable pour verifier les actions de CHAQUE jour et pour
@@ -69,9 +85,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: baseOverrides(),
-        child: const MaterialApp(
-          home: TrailPlanningScreen(trailId: 'test-trail'),
-        ),
+        child: wrap(),
       ),
     );
     await tester.pumpAndSettle();
@@ -83,9 +97,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: baseOverrides(),
-          child: const MaterialApp(
-            home: TrailPlanningScreen(trailId: 'test-trail'),
-          ),
+          child: wrap(),
         ),
       );
       await tester.pumpAndSettle();
@@ -108,9 +120,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: baseOverrides(),
-          child: const MaterialApp(
-            home: TrailPlanningScreen(trailId: 'test-trail'),
-          ),
+          child: wrap(),
         ),
       );
       await tester.pumpAndSettle();
@@ -230,8 +240,9 @@ void main() {
       expect(find.text(t.programme.title), findsOneWidget);
       expect(find.text('Etape 1 - Refuge 1'), findsOneWidget);
 
-      // Retour propre vers le HUB (pas d'exception).
-      await tester.pageBack();
+      // Retour propre vers le HUB (pas d'exception) via le bouton back de
+      // l'AppHeader (Ph5/L6b — tooltip Slang `nav.back`, remplace pageBack()).
+      await tester.tap(find.byTooltip(t.nav.back));
       await tester.pumpAndSettle();
       expect(find.text('HUB-HOME'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -244,9 +255,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: baseOverrides(),
-          child: const MaterialApp(
-            home: TrailPlanningScreen(trailId: 'test-trail'),
-          ),
+          child: wrap(),
         ),
       );
       await tester.pumpAndSettle();
@@ -276,9 +285,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: baseOverrides(),
-          child: const MaterialApp(
-            home: TrailPlanningScreen(trailId: 'test-trail'),
-          ),
+          child: wrap(),
         ),
       );
       await tester.pumpAndSettle();
@@ -303,9 +310,7 @@ void main() {
       await tester.pumpWidget(
         ProviderScope(
           overrides: baseOverrides(),
-          child: const MaterialApp(
-            home: TrailPlanningScreen(trailId: 'test-trail'),
-          ),
+          child: wrap(),
         ),
       );
       await tester.pumpAndSettle();

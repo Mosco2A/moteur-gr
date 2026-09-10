@@ -265,11 +265,13 @@ void main() {
     // de route (le bouton back de l'AppBar apparait alors).
     await tester.tap(find.text('go-feasibility'));
     await settle(tester);
-    await pumpUntil(tester, find.byTooltip('Back'));
+    // Bouton back de l'AppHeader (Ph5/L6b — tooltip Slang `nav.back`, « Retour »
+    // en locale par defaut fr), remplace le tooltip Material « Back ».
+    await pumpUntil(tester, find.byTooltip(t.nav.back));
     expect(find.text(t.feasibility.title), findsWidgets);
 
-    // Retour : bouton back de l'AppBar -> on revient au HUB sans crash.
-    await tester.tap(find.byTooltip('Back'));
+    // Retour : bouton back de l'AppHeader -> on revient au HUB sans crash.
+    await tester.tap(find.byTooltip(t.nav.back));
     await settle(tester);
     await pumpUntil(tester, find.text('go-feasibility'));
     expect(find.text('go-feasibility'), findsOneWidget);

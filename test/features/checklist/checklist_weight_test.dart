@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
@@ -139,9 +140,20 @@ void main() {
             databaseProvider.overrideWithValue(db),
             trailConfigProvider.overrideWithValue(testTrail),
           ],
+          // AppHeader (Ph5/L6b) utilise GoRouter -> GoRouter minimal (+ /my-treks).
           child: TranslationProvider(
-            child: const MaterialApp(
-              home: ChecklistScreen(),
+            child: MaterialApp.router(
+              routerConfig: GoRouter(
+                initialLocation: '/checklist',
+                routes: [
+                  GoRoute(
+                    path: '/checklist',
+                    builder: (_, __) => const ChecklistScreen(),
+                  ),
+                  GoRoute(
+                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                ],
+              ),
             ),
           ),
         ),

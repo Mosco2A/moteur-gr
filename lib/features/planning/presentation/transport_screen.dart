@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/transport_info.dart';
 import '../providers/transport_providers.dart';
@@ -65,19 +65,10 @@ class TransportScreen extends ConsumerWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(t.transport.title),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            tooltip: t.a11y.back,
-            onPressed: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go('/home');
-              }
-            },
-          ),
+        // Ph5 (L6b) : AppHeader universel (back centralise) + TabBar conservee via
+        // le parametre `bottom`. Le back custom est retire (comportement repris).
+        appBar: AppHeader(
+          title: t.transport.title,
           bottom: TabBar(
             tabs: [
               Tab(

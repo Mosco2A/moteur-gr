@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
@@ -15,13 +16,27 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// Tests UI de PARITE : l'ecran StepWays reprend le NOM et les blocs de
 /// l'ecran GR20 « Materiel & Sac ».
 void main() {
+  // AppHeader (Ph5/L6b) utilise GoRouter (canPop/go) -> heberge l'ecran dans un
+  // GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
   Widget wrap(AppDatabase db) => ProviderScope(
         overrides: [
           databaseProvider.overrideWithValue(db),
           trailConfigProvider.overrideWithValue(testTrailConfig),
         ],
         child: TranslationProvider(
-          child: const MaterialApp(home: ChecklistScreen()),
+          child: MaterialApp.router(
+            routerConfig: GoRouter(
+              initialLocation: '/checklist',
+              routes: [
+                GoRoute(
+                  path: '/checklist',
+                  builder: (_, __) => const ChecklistScreen(),
+                ),
+                GoRoute(
+                    path: '/my-treks', builder: (_, __) => const SizedBox()),
+              ],
+            ),
+          ),
         ),
       );
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/shop_info.dart';
 import '../providers/shop_providers.dart';
@@ -49,20 +49,9 @@ class ShopScreen extends ConsumerWidget {
     final typeFilter = ref.watch(shopTypeFilterProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.shop.title),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: t.a11y.back,
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
-        ),
-      ),
+      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil + Android).
+      // Le back custom est retire (comportement repris a l'identique).
+      appBar: AppHeader(title: t.shop.title),
       // Fallback gracieux : aucune donnee ravitaillement pour ce sentier.
       body: (data == null || !data.hasShops)
           ? const _ShopEmptyState()

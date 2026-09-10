@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../hub/providers/cockpit_start_providers.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
@@ -52,8 +53,9 @@ class TrailPlanningScreen extends ConsumerWidget {
     });
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.programme.title),
+      // Ph5 (L6b) : AppHeader universel + action (i) conservee (parite ecran).
+      appBar: AppHeader(
+        title: t.programme.title,
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),

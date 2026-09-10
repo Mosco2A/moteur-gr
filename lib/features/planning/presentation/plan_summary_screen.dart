@@ -8,6 +8,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../booking/domain/models/nuitee_type.dart';
 import '../../booking/providers/nuitee_selections_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
@@ -68,20 +69,10 @@ class PlanSummaryScreen extends ConsumerWidget {
         ref.watch(downloadReminderProvider(trailId)).departureDate;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.summary.title),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: t.a11y.back,
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            } else {
-              context.go('/home');
-            }
-          },
-        ),
-      ),
+      // Ph5 (L6b) : AppHeader universel. Le back custom (pop sinon go '/home') est
+      // retire : l'AppHeader centralise EXACTEMENT ce comportement (pop si canPop,
+      // sinon accueil CONTEXTUEL) + back Android (PopScope). Aucune regression.
+      appBar: AppHeader(title: t.summary.title),
       body: SafeArea(
         child: days.isEmpty
             ? _EmptyState(trailId: trailId)

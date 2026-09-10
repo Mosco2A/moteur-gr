@@ -434,9 +434,10 @@ void main() {
       await pumpUntil(tester, find.text(t.nuitees.title));
       expect(find.text(t.nuitees.title), findsWidgets);
 
-      // Retour : bouton back de l'AppBar -> retour au HUB sans crash.
-      await pumpUntil(tester, find.byTooltip('Back'));
-      await tester.tap(find.byTooltip('Back'));
+      // Retour : bouton back de l'AppHeader (Ph5/L6b — tooltip Slang `nav.back`,
+      // « Retour » en locale par defaut fr) -> retour au HUB sans crash.
+      await pumpUntil(tester, find.byTooltip(t.nav.back));
+      await tester.tap(find.byTooltip(t.nav.back));
       await settle(tester);
       // On attend (borne) la fin de la transition de pop : l'ecran Nuitees a
       // disparu (son titre AppBar n'est plus rendu). NB : `Icons.cabin` sert

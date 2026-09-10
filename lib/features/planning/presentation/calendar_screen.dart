@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
@@ -83,10 +84,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     // afficher un etat vide (meme pattern que le PROGRAMME / GR20 `planning`).
     if (days.isEmpty) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text(t.calendar.title),
-          leading: _BackButton(),
-        ),
+        // Ph5 (L6b) : AppHeader universel (etat vide).
+        appBar: AppHeader(title: t.calendar.title),
         body: SafeArea(child: _EmptyItineraryState(trailId: widget.trailId)),
       );
     }
@@ -103,10 +102,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     final endDate = startDate?.add(Duration(days: totalDays - 1));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.calendar.title),
-        leading: _BackButton(),
-      ),
+      // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil + Android),
+      // remplace l'AppBar + _BackButton maison (meme comportement).
+      appBar: AppHeader(title: t.calendar.title),
       body: SafeArea(
         child: Column(
           children: [
@@ -539,24 +537,6 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           );
         }),
       ],
-    );
-  }
-}
-
-/// Bouton retour d'AppBar (parite GR20 : pop si possible, sinon retour HUB).
-class _BackButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      tooltip: t.a11y.back,
-      onPressed: () {
-        if (context.canPop()) {
-          context.pop();
-        } else {
-          context.go('/home');
-        }
-      },
     );
   }
 }

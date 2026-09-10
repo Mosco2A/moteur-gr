@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import '../widgets/checklist_bottom_actions.dart';
@@ -38,7 +39,8 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
 
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text(checklistT.title)),
+        // Ph5 (L6b) : AppHeader universel (etat de chargement).
+        appBar: AppHeader(title: checklistT.title),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -47,8 +49,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     final shoppingCount = state.shoppingListCount;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(checklistT.title),
+      // Ph5 (L6b) : AppHeader universel + actions conservees (i / liste de
+      // courses avec badge / reinitialiser) — parite ecran, aucune action perdue.
+      appBar: AppHeader(
+        title: checklistT.title,
         actions: [
           IconButton(
             icon: const Icon(Icons.info_outline),
