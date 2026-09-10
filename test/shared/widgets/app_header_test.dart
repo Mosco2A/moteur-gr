@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/app_header.dart';
 
@@ -35,8 +37,10 @@ void main() {
         ),
       ],
     );
-    return TranslationProvider(
-      child: MaterialApp.router(routerConfig: router),
+    return ProviderScope(
+      child: TranslationProvider(
+        child: MaterialApp.router(routerConfig: router),
+      ),
     );
   }
 
@@ -150,6 +154,59 @@ void main() {
       expect(find.text('MY_TREKS_STUB'), findsOneWidget);
     });
 
+    testWidgets('Ph3 : Accueil CONTEXTUEL -> /home quand une rando est active',
+        (tester) async {
+      // Accueil contextuel (homeLocationProvider) : un trek actif -> le bouton
+      // Accueil route vers le cockpit /home (terrain), pas /my-treks (maison).
+      final router = GoRouter(
+        initialLocation: '/start',
+        routes: [
+          GoRoute(
+            path: '/start',
+            builder: (context, __) => Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  onPressed: () => context.push('/page'),
+                  child: const Text('PUSH'),
+                ),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: '/page',
+            builder: (_, __) => const Scaffold(
+              appBar: AppHeader(title: 'Titre'),
+              body: SizedBox(),
+            ),
+          ),
+          GoRoute(
+            path: '/home',
+            builder: (_, __) => const Scaffold(body: Text('COCKPIT_STUB')),
+          ),
+          GoRoute(
+            path: '/my-treks',
+            builder: (_, __) => const Scaffold(body: Text('MY_TREKS_STUB')),
+          ),
+        ],
+      );
+      await tester.pumpWidget(ProviderScope(
+        overrides: [
+          activeTrekIdProvider.overrideWith((ref) async => 'volcans'),
+        ],
+        child: TranslationProvider(
+          child: MaterialApp.router(routerConfig: router),
+        ),
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('PUSH'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byTooltip(t.nav.home));
+      await tester.pumpAndSettle();
+      // Rando active -> accueil terrain (cockpit /home).
+      expect(find.text('COCKPIT_STUB'), findsOneWidget);
+    });
+
     testWidgets('onBack surcharge le geste retour', (tester) async {
       var custom = false;
       await tester.pumpWidget(wrap(
@@ -189,8 +246,10 @@ void main() {
           ),
         ],
       );
-      await tester.pumpWidget(TranslationProvider(
-        child: MaterialApp.router(routerConfig: router),
+      await tester.pumpWidget(ProviderScope(
+        child: TranslationProvider(
+          child: MaterialApp.router(routerConfig: router),
+        ),
       ));
       await tester.pumpAndSettle();
 
@@ -219,8 +278,10 @@ void main() {
           ),
         ],
       );
-      await tester.pumpWidget(TranslationProvider(
-        child: MaterialApp.router(routerConfig: router),
+      await tester.pumpWidget(ProviderScope(
+        child: TranslationProvider(
+          child: MaterialApp.router(routerConfig: router),
+        ),
       ));
       await tester.pumpAndSettle();
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../core/routing/home_location_provider.dart';
 import '../../i18n/translations.g.dart';
 
 /// En-tete universel de navigation StepWays (LOT 3 — refonte nav hub-and-push).
@@ -32,8 +34,14 @@ import '../../i18n/translations.g.dart';
 ///    silencieuse (fixed start destination). Le bouton [Accueil], lui, ne quitte
 ///    JAMAIS l'app : il route vers l'accueil ([homeLocation]).
 ///
+/// ACCUEIL CONTEXTUEL (StepWays LOT 3, Ph3) : quand [homeLocation] n'est PAS
+/// fourni, le bouton Accueil (et le fallback retour hors pile) dérive sa cible de
+/// [homeLocationProvider] (maison `/my-treks` si aucune rando active / terrain
+/// `/home` si rando active). Un appelant peut toujours forcer une cible explicite
+/// via [homeLocation] (ex. écran qui doit revenir à un accueil précis).
+///
 /// Zero texte en dur : tooltips et libelles via Slang (`t.nav.*`, `t.navPilote.*`).
-class AppHeader extends StatelessWidget implements PreferredSizeWidget {
+class AppHeader extends ConsumerWidget implements PreferredSizeWidget {
   const AppHeader({
     super.key,
     required this.title,
@@ -41,7 +49,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
     this.showHome = true,
     this.onBack,
     this.actions,
-    this.homeLocation = '/my-treks',
+    this.homeLocation,
     this.bottom,
   });
 
@@ -60,12 +68,11 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   /// Actions additionnelles a droite (AVANT le bouton Accueil). Optionnel.
   final List<Widget>? actions;
 
-  /// Destination du bouton [Accueil] et du fallback retour hors pile.
+  /// Destination EXPLICITE du bouton [Accueil] et du fallback retour hors pile.
   ///
-  /// Defaut `/my-treks` (accueil « maison »). Le selecteur d'accueil contextuel
-  /// (maison/terrain) sera cable en Ph3 ; ici on garde un defaut sur, qui couvre
-  /// le cas racine sans dependre du shell.
-  final String homeLocation;
+  /// `null` (défaut) → dérivée de [homeLocationProvider] (accueil CONTEXTUEL
+  /// maison/terrain, Ph3). Non-null → cible forcée par l'appelant.
+  final String? homeLocation;
 
   /// Zone optionnelle sous la barre (ex. TabBar). Passee telle quelle a l'AppBar.
   final PreferredSizeWidget? bottom;
@@ -75,8 +82,8 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
         kToolbarHeight + (bottom?.preferredSize.height ?? 0),
       );
 
-  /// Geste retour : pop si possible, sinon route vers l'accueil.
-  void _handleBack(BuildContext context) {
+  /// Geste retour : pop si possible, sinon route vers l'accueil ([home] résolu).
+  void _handleBack(BuildContext context, String home) {
     if (onBack != null) {
       onBack!();
       return;
@@ -84,7 +91,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
     if (context.canPop()) {
       context.pop();
     } else {
-      context.go(homeLocation);
+      context.go(home);
     }
   }
 
@@ -115,7 +122,11 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Accueil CONTEXTUEL (Ph3) : cible explicite si fournie, sinon dérivée du
+    // sélecteur maison/terrain ([homeLocationProvider]).
+    final String home = homeLocation ?? ref.watch(homeLocationProvider);
+
     // A la racine (pile vide) le geste systeme ne doit PAS quitter en silence :
     // canPop=false -> on intercepte et on demande confirmation. Hors racine,
     // canPop=true -> le Navigator depile normalement (predictive back preserve).
@@ -129,7 +140,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
           ? IconButton(
               icon: const BackButtonIcon(),
               tooltip: t.nav.back,
-              onPressed: () => _handleBack(context),
+              onPressed: () => _handleBack(context, home),
             )
           : null,
       // automaticallyImplyLeading=false quand on ne veut pas de retour (racine
@@ -142,7 +153,7 @@ class AppHeader extends StatelessWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.home_outlined),
             tooltip: t.nav.home,
             // Le bouton Accueil ne QUITTE JAMAIS l'app (Up-like, AUDIT §M-3).
-            onPressed: () => context.go(homeLocation),
+            onPressed: () => context.go(home),
           ),
       ],
       bottom: bottom,
