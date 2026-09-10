@@ -334,6 +334,22 @@ void main() {
       expect(redirectForPath('/map'), isNull);
       expect(redirectForPath('/stages'), isNull);
     });
+
+    // FIX LOT 0 (boucle /catalog -> /onboarding) : le guard lit la GLOBALE
+    // `hasCompletedOnboarding` (pas le provider). `completeOnboarding` doit
+    // desormais la passer a true ; alors le guard laisse passer /catalog.
+    // Regression guard : globale true -> /catalog non redirige ; false -> boucle.
+    test('LOT 0 — globale onboarding true : /catalog n est plus redirige', () {
+      hasCompletedOnboarding = true;
+      expect(redirectForPath('/catalog'), isNull,
+          reason: 'onboarding termine -> /catalog accessible (fin de boucle)');
+    });
+
+    test('LOT 0 — globale onboarding false : /catalog renvoie a /onboarding', () {
+      hasCompletedOnboarding = false;
+      expect(redirectForPath('/catalog'), '/onboarding',
+          reason: 'onboarding non termine -> retour /onboarding');
+    });
   });
 
   // ===========================================================================

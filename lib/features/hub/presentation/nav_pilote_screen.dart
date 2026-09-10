@@ -74,6 +74,24 @@ import 'widgets/step_status_icon.dart';
 /// GARDE-FOUS LOOK & FEEL : le CORPS reutilise les briques du HUB ([HubTrekCard],
 /// [HubSection] + [QuickAccessCard]) — aucun style reinvente, tokens `AppTheme`
 /// inchanges. Zero texte en dur (Slang).
+
+/// DEV JETABLE — A RETIRER AVANT MERGE.
+///
+/// Sur l'emulateur, un trek de demo frais n'a NI session NI progression : son
+/// etat derive ([TrekLifecycleState]) est donc `owned` -> phase `prepare`, et
+/// `activeTrekIdProvider` renvoie `null`. Le cockpit s'ouvre donc sur Préparer.
+///
+/// Pour CAPTURER VISUELLEMENT le vrai cockpit « Randonner » (phase inProgress :
+/// les 8 cartes + le bandeau meteo localise en haut) sans toucher a la base ni a
+/// la logique de verrouillage demo R16, ce drapeau force LOCALEMENT le sentier
+/// courant en etat `inProgress` + trek actif, UNIQUEMENT quand l'etat reel est
+/// `owned`/`null` (le cas emulateur). Il n'altere donc PAS les etats explicites
+/// (`prepared`/`inProgress`/`completed`) : les tests, qui surchargent toujours un
+/// etat explicite via `currentTrailSummaryProvider`/`activeTrekIdProvider`, ne
+/// sont pas impactes. Le mode demo (R16) lit `phase` derive ci-dessous, donc son
+/// comportement de verrouillage reste inchange.
+const bool kDevForceRandonner = true; // A RETIRER AVANT MERGE
+
 class NavPiloteScreen extends ConsumerStatefulWidget {
   const NavPiloteScreen({super.key});
 
@@ -150,7 +168,16 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
 
     // Etat de cycle de vie DERIVE du sentier actif -> phase principale (R7).
     final summary = ref.watch(currentTrailSummaryProvider).value;
-    final lifecycle = summary?.state;
+    var lifecycle = summary?.state;
+    // DEV JETABLE (kDevForceRandonner, A RETIRER AVANT MERGE) : sur l'emulateur,
+    // le trek de demo est `owned`/null -> Préparer. On le force `inProgress` pour
+    // afficher le vrai cockpit Randonner (_buildHike). GATE sur `owned`/null : les
+    // etats explicites (prepared/inProgress/completed) des tests sont preserves.
+    final devForcingRandonner = kDevForceRandonner &&
+        (lifecycle == null || lifecycle == TrekLifecycleState.owned);
+    if (devForcingRandonner) {
+      lifecycle = TrekLifecycleState.inProgress;
+    }
     final realPhase = CockpitPhase.fromLifecycle(lifecycle);
     // En démo, Chris peut previsualiser une autre phase (R8) ; sinon phase reelle.
     final phase = _demoTrekMode ? (_previewPhase ?? realPhase) : realPhase;
@@ -161,7 +188,11 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
     // suit donc le SEUL mode trek REEL (`activeTrekId != null`) : plus de force
     // par le toggle démo (qui ne sert qu'a reveler les selecteurs d'apercu R8).
     final activeTrekId = ref.watch(activeTrekIdProvider).value;
-    final inTrekMode = activeTrekId != null;
+    // DEV JETABLE (kDevForceRandonner, A RETIRER AVANT MERGE) : accorde le mode
+    // trek reel a la phase forcee ci-dessus, pour que le SOS s'affiche en capture
+    // Randonner. `devForcingRandonner` n'est vrai que dans le cas emulateur
+    // (etat owned/null) -> les tests, qui fixent un etat explicite, sont preserves.
+    final inTrekMode = activeTrekId != null || devForcingRandonner;
     // R9 : le SOS n'apparait QU'en phase Randonner ET en mode trek reel.
     final showSos = inTrekMode && phase == CockpitPhase.hike;
 
