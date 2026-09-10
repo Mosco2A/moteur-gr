@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
@@ -122,14 +123,26 @@ void main() {
             poisProvider('test-trail')
                 .overrideWith((ref) => Future.value(const [])),
           ],
-          child: MaterialApp(
+          // AppHeader (Ph5/L6c) utilise GoRouter -> MaterialApp.router (theme clair
+          // conserve) + GoRouter minimal (+ /my-treks).
+          child: MaterialApp.router(
             theme: AppTheme.buildLightTheme(
                 primaryColor: primary,
                 secondaryColor: secondary,
                 skin: AppSkin.sentierVivant),
-            home: const TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 1,
+            routerConfig: GoRouter(
+              initialLocation: '/stage',
+              routes: [
+                GoRoute(
+                  path: '/stage',
+                  builder: (_, __) => const TrailStageDetailScreen(
+                    trailId: 'test-trail',
+                    stageNumber: 1,
+                  ),
+                ),
+                GoRoute(
+                    path: '/my-treks', builder: (_, __) => const SizedBox()),
+              ],
             ),
           ),
         ),

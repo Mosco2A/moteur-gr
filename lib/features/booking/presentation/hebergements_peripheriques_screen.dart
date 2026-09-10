@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/models/hebergement_peripherique.dart';
 import '../providers/hebergement_peripherique_providers.dart';
@@ -42,7 +43,8 @@ class HebergementsPeripheriquesScreen extends ConsumerWidget {
     final hebergements = ref.watch(hebergementsPeripheriquesProvider(trailId));
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.hebergement.title)),
+      // Ph5 (L6c) : AppHeader universel (fiche info pushee du cockpit/carte).
+      appBar: AppHeader(title: t.hebergement.title),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

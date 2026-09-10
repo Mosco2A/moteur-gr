@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../core/ui/app_haptics.dart';
 import '../../../i18n/translations.g.dart';
 import '../../map/providers/location_provider.dart';
@@ -95,7 +96,8 @@ class _SignalementScreenState extends ConsumerState<SignalementScreen> {
     ref.watch(locationProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.signalement.title)),
+      // Ph5 (L6c) : AppHeader universel (ecran terrain pushe).
+      appBar: AppHeader(title: t.signalement.title),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(AppTheme.spacingBase),

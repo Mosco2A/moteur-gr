@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/booking/presentation/hebergements_peripheriques_screen.dart';
 import 'package:moteur_gr/features/booking/providers/hebergement_peripherique_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -28,11 +29,22 @@ void main() {
 
   setUp(() => fakeLauncher = _FakeDeeplinkLauncher());
 
+  // AppHeader (Ph5/L6c) utilise GoRouter -> GoRouter minimal (+ /my-treks).
   Widget wrap() => ProviderScope(
     overrides: [deeplinkLauncherProvider.overrideWithValue(fakeLauncher)],
     child: TranslationProvider(
-      child: const MaterialApp(
-        home: HebergementsPeripheriquesScreen(trailId: 'test-trail'),
+      child: MaterialApp.router(
+        routerConfig: GoRouter(
+          initialLocation: '/hebergements',
+          routes: [
+            GoRoute(
+              path: '/hebergements',
+              builder: (_, __) =>
+                  const HebergementsPeripheriquesScreen(trailId: 'test-trail'),
+            ),
+            GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+          ],
+        ),
       ),
     ),
   );

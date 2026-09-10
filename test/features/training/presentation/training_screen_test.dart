@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/notifications/domain/notification_service.dart';
 import 'package:moteur_gr/features/notifications/providers/notification_provider.dart';
 import 'package:moteur_gr/features/training/presentation/training_screen.dart';
@@ -38,12 +39,24 @@ void main() {
     fake = _FakeNotificationService();
   });
 
+  // AppHeader (Ph5/L6c) utilise GoRouter -> GoRouter minimal (+ /my-treks).
   Widget wrap() => ProviderScope(
         overrides: [
           notificationServiceProvider.overrideWithValue(fake),
         ],
         child: TranslationProvider(
-          child: const MaterialApp(home: TrainingScreen()),
+          child: MaterialApp.router(
+            routerConfig: GoRouter(
+              initialLocation: '/training',
+              routes: [
+                GoRoute(
+                    path: '/training',
+                    builder: (_, __) => const TrainingScreen()),
+                GoRoute(
+                    path: '/my-treks', builder: (_, __) => const SizedBox()),
+              ],
+            ),
+          ),
         ),
       );
 

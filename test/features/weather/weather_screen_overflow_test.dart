@@ -9,6 +9,7 @@ import 'package:moteur_gr/core/data/daos/stages_dao.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/weather/presentation/weather_screen.dart';
 import 'package:moteur_gr/features/weather/widgets/today_stage_weather_card.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -82,12 +83,22 @@ void main() {
           (ref) => Stream.value(ConnectivityStatusValues.offline),
         ),
       ],
+      // AppHeader (Ph5/L6c) utilise GoRouter -> GoRouter minimal (+ /my-treks).
       child: TranslationProvider(
-        child: const MaterialApp(
-          home: WeatherScreen(
-            trailId: 'test-trail',
-            stageNumber: 1,
-            region: 'Auvergne',
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/weather',
+            routes: [
+              GoRoute(
+                path: '/weather',
+                builder: (_, __) => const WeatherScreen(
+                  trailId: 'test-trail',
+                  stageNumber: 1,
+                  region: 'Auvergne',
+                ),
+              ),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
           ),
         ),
       ),

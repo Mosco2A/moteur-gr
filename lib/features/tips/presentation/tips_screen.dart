@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../data/tips_data.dart';
 
 /// Ecran principal des fiches conseils.
@@ -14,7 +16,9 @@ class TipsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Conseils trek')),
+      // Ph5 (L6c) : AppHeader universel. Titre via Slang (`nav.tips`) — fin du
+      // texte « Conseils trek » en dur.
+      appBar: AppHeader(title: t.nav.tips),
       body: GridView.builder(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -112,7 +116,14 @@ class _TipListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(category.nameKey)),
+      // Ph5 (L6c) : AppHeader universel. Cette sous-page est poussee via
+      // `Navigator.push(MaterialPageRoute)` (PAS une GoRoute) -> le retour doit
+      // depiler CE Navigator (`onBack` explicite), pas passer par le contrat
+      // go_router (canPop du GoRouter, qui ne « voit » pas cette route imperative).
+      appBar: AppHeader(
+        title: category.nameKey,
+        onBack: () => Navigator.of(context).maybePop(),
+      ),
       body: ListView.builder(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         itemCount: category.tips.length,

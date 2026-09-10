@@ -6,6 +6,7 @@ import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../domain/fire_risk.dart';
 import '../providers/current_stage_provider.dart';
@@ -51,13 +52,10 @@ class FireRiskScreen extends ConsumerWidget {
     final state = ref.watch(trailFireRiskProvider(trailId));
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.fireRisk.title),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          tooltip: t.a11y.back,
-          onPressed: () => Navigator.of(context).pop(),
-        ),
+      // Ph5 (L6c) : AppHeader universel (back centralise pop/accueil + Android).
+      // Le leading custom (Navigator.pop) est retire ; action refresh conservee.
+      appBar: AppHeader(
+        title: t.fireRisk.title,
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),

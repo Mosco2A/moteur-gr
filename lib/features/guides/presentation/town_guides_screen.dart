@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
 import 'town_guide_detail_screen.dart';
@@ -38,7 +39,8 @@ class TownGuidesScreen extends ConsumerWidget {
     ).where((g) => g.hasContent).toList(growable: false);
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.guides.title)),
+      // Ph5 (L6c) : AppHeader universel (fiche info pushee du cockpit).
+      appBar: AppHeader(title: t.guides.title),
       body: guides.isEmpty
           ? Center(
               child: Padding(

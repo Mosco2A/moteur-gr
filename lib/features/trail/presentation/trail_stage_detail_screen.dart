@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/empty_state.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../../shared/widgets/stage_number_badge.dart';
@@ -40,7 +42,9 @@ class TrailStageDetailScreen extends ConsumerWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: Text('Étape $stageNumber')),
+      // Ph5 (L6c) : AppHeader universel. Le titre passe par Slang
+      // (`a11y.stageMarker` = « Etape N ») — fin du texte « Étape N » en dur.
+      appBar: AppHeader(title: t.a11y.stageMarker(number: stageNumber)),
       body: stagesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => EmptyState(

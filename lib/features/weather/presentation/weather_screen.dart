@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../tips/domain/models/tip_card.dart';
 import '../data/weather_seed.dart';
 import '../models/fire_risk_config.dart';
@@ -63,8 +64,10 @@ class WeatherScreen extends ConsumerWidget {
     final stormAlertsEnabled = ref.watch(stormAlertsEnabledProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(t.weather.title),
+      // Ph5 (L6c) : AppHeader universel + actions conservees (guide / alertes
+      // orage / rafraichir) — parite ecran, aucune action perdue.
+      appBar: AppHeader(
+        title: t.weather.title,
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),

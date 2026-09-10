@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/poi.dart';
@@ -15,6 +16,25 @@ import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 ///
 /// Vérifie l'affichage des infos de l'étape, des POIs
 /// associés et la gestion des états loading/error/vide.
+
+/// AppHeader (Ph5/L6c) utilise GoRouter -> heberge l'ecran detail d'etape dans un
+/// GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
+Widget _host(int stageNumber) => MaterialApp.router(
+      routerConfig: GoRouter(
+        initialLocation: '/stage',
+        routes: [
+          GoRoute(
+            path: '/stage',
+            builder: (_, __) => TrailStageDetailScreen(
+              trailId: 'test-trail',
+              stageNumber: stageNumber,
+            ),
+          ),
+          GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+        ],
+      ),
+    );
+
 void main() {
   /// Étape de test
   const testStage = StageModel(
@@ -83,12 +103,7 @@ void main() {
               (ref) => Future.value(testPois),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -109,12 +124,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -138,12 +148,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -166,12 +171,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -192,12 +192,7 @@ void main() {
               (ref) => Future.value([...testPois, otherPoi]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -222,12 +217,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -252,12 +242,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 99,
-            ),
-          ),
+          child: _host(99),
         ),
       );
 
@@ -281,12 +266,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -311,12 +291,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 
@@ -340,12 +315,7 @@ void main() {
               (ref) => Future.value(<PoiModel>[]),
             ),
           ],
-          child: const MaterialApp(
-            home: TrailStageDetailScreen(
-              trailId: 'test-trail',
-              stageNumber: 2,
-            ),
-          ),
+          child: _host(2),
         ),
       );
 

@@ -12,6 +12,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/daos/review_requests_dao.dart';
@@ -151,12 +152,24 @@ void main() {
   // GUIDES
   // -------------------------------------------------------------------------
   group('SW-SKIN-L3d — guides', () {
+    // AppHeader (Ph5/L6c) utilise GoRouter -> GoRouter minimal (+ /my-treks).
     Widget wrapGuides(Widget child, {required GuideDeeplinkLauncher launcher}) {
       return ProviderScope(
         overrides: [
           guideDeeplinkLauncherProvider.overrideWithValue(launcher),
         ],
-        child: TranslationProvider(child: MaterialApp(home: child)),
+        child: TranslationProvider(
+          child: MaterialApp.router(
+            routerConfig: GoRouter(
+              initialLocation: '/screen',
+              routes: [
+                GoRoute(path: '/screen', builder: (_, __) => child),
+                GoRoute(
+                    path: '/my-treks', builder: (_, __) => const SizedBox()),
+              ],
+            ),
+          ),
+        ),
       );
     }
 

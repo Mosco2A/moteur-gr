@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../domain/town_guide.dart';
 import '../providers/guide_providers.dart';
 
@@ -50,7 +51,8 @@ class TownGuideDetailScreen extends ConsumerWidget {
     // Guide introuvable (purge du pack, id obsolete) : repli explicite offline.
     if (guide == null) {
       return Scaffold(
-        appBar: AppBar(title: Text(t.guides.title)),
+        // Ph5 (L6c) : AppHeader universel (repli guide introuvable).
+        appBar: AppHeader(title: t.guides.title),
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(AppTheme.spacingLg),
@@ -70,7 +72,11 @@ class TownGuideDetailScreen extends ConsumerWidget {
         .toList(growable: false);
 
     return Scaffold(
-      appBar: AppBar(title: Text(guide.nomLieu)),
+      // Ph5 (L6c) : AppHeader universel. Ecran a DOUBLE entree (liste guides via
+      // Navigator.push imperatif + deep-link GoRoute /trail/:id/guides/:guideId) :
+      // le back par defaut de l'AppHeader (canPop -> pop, sinon accueil) couvre
+      // les deux cas (pop de la route imperative, ou repli accueil en deep-link).
+      appBar: AppHeader(title: guide.nomLieu),
       body: ListView(
         key: ValueKey('town-guide-detail-${guide.id}'),
         padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),

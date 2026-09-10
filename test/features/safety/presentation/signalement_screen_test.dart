@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/safety/data/signalement_service.dart';
 import 'package:moteur_gr/features/safety/presentation/signalement_screen.dart';
@@ -28,11 +29,23 @@ Position _fakePosition() => Position(
 /// Vérifie : les 3 types proposés, le bandeau de latence (pas de promesse temps
 /// réel), la confirmation 1 geste qui crée un signalement local et bascule sur
 /// la vue « enregistré », et le changement de type sélectionné.
+/// AppHeader (Ph5/L6c) utilise GoRouter -> heberge un [child] dans un GoRouter
+/// minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
+Widget _hostRouter(Widget child) => MaterialApp.router(
+      routerConfig: GoRouter(
+        initialLocation: '/screen',
+        routes: [
+          GoRoute(path: '/screen', builder: (_, __) => child),
+          GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+        ],
+      ),
+    );
+
 void main() {
   Widget wrap(List<Override> overrides) => ProviderScope(
         overrides: overrides,
         child: TranslationProvider(
-          child: const MaterialApp(home: SignalementScreen()),
+          child: _hostRouter(const SignalementScreen()),
         ),
       );
 
@@ -81,7 +94,7 @@ void main() {
         UncontrolledProviderScope(
           container: container,
           child: TranslationProvider(
-            child: const MaterialApp(home: SignalementScreen()),
+            child: _hostRouter(const SignalementScreen()),
           ),
         ),
       );

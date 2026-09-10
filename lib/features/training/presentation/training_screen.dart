@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../models/programme_entrainement.dart';
 import '../providers/training_providers.dart';
@@ -46,7 +47,8 @@ class TrainingScreen extends ConsumerWidget {
     final weeks = byWeek.keys.toList()..sort();
 
     return Scaffold(
-      appBar: AppBar(title: Text(t.training.title)),
+      // Ph5 (L6c) : AppHeader universel (ecran secondaire pushe).
+      appBar: AppHeader(title: t.training.title),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

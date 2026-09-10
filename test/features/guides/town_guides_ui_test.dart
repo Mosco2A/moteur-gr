@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/guides/domain/town_guide.dart';
 import 'package:moteur_gr/features/guides/domain/town_guide_catalog.dart';
 import 'package:moteur_gr/features/guides/presentation/town_guide_detail_screen.dart';
@@ -39,13 +40,24 @@ List<TownGuide> _catalogGuides() => TownGuideCatalog.guidesFor(
 const _trailId = 'mare_a_mare_centre';
 
 void main() {
+  // AppHeader (Ph5/L6c) utilise GoRouter -> heberge le [child] dans un GoRouter
+  // minimal (+ /my-treks). Le detail est aussi atteint via Navigator.push (liste)
+  // -> le back par defaut de l'AppHeader depile cette route imperative.
   Widget wrap(Widget child, {required GuideDeeplinkLauncher launcher}) {
     return ProviderScope(
       overrides: [
         guideDeeplinkLauncherProvider.overrideWithValue(launcher),
       ],
       child: TranslationProvider(
-        child: MaterialApp(home: child),
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/screen',
+            routes: [
+              GoRoute(path: '/screen', builder: (_, __) => child),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
+          ),
+        ),
       ),
     );
   }
