@@ -16,13 +16,13 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 ///   - restauration d'etat par onglet (IndexedStack natif).
 void main() {
   group('AppRouter — structure', () {
-    test('la route initiale est /nav-pilote (DEMO branche jetable LOT 3)', () {
-      // DEMO PILOTE (branche jetable claude/feat/stepways-lot3-nav-pilote) :
-      // l'entree est temporairement forcee sur /nav-pilote pour que Chris
-      // tombe directement sur le demonstrateur. EN PROD l'entree reste
-      // « Mes treks » (/my-treks, StepWays LOT 2 — option A) : A RETABLIR
-      // (avec cet expect) avant merge.
-      expect(appRouter.routeInformationProvider.value.uri.path, '/nav-pilote');
+    test('la route initiale est /my-treks (retablie, L7 avant-merge)', () {
+      // StepWays LOT 3 Ph6 (L7) : l'entree demo '/nav-pilote' a ete RETIREE de
+      // initialLocation ; l'entree de PROD « Mes treks » (/my-treks, accueil
+      // « maison », StepWays LOT 2 — option A) est retablie. La ROUTE /nav-pilote
+      // reste definie (demonstrateur accessible pour la revue Chris) mais n'est
+      // plus le point d'entree (verifie plus bas dans la liste des routes).
+      expect(appRouter.routeInformationProvider.value.uri.path, '/my-treks');
     });
 
     test('Ph4 hub-and-push : PLUS de StatefulShellRoute, tout en routes racine',

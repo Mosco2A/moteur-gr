@@ -117,11 +117,12 @@ final appRouter = GoRouter(
   // telecharge (currentTrailGuard). Une fois un sentier actif, l entree du
   // shell est « Mes treks » (/my-treks, onglet position 1, StepWays LOT 2 —
   // option A) d ou l utilisateur choisit un trek puis rejoint le cockpit /home.
-  // DEMO PILOTE (branche jetable claude/feat/stepways-lot3-nav-pilote) :
-  // point d'entree force sur /nav-pilote pour que Chris tombe DIRECTEMENT sur
-  // le demonstrateur au demarrage (la route est isolee, sans bouton). En prod
-  // l'entree reste '/my-treks' — A RETABLIR avant merge.
-  initialLocation: '/nav-pilote',
+  // StepWays LOT 3 Ph6 (L7, nettoyage avant-merge) : l'entree est RETABLIE sur
+  // '/my-treks' (accueil « maison »). L'entree demo '/nav-pilote' (branche
+  // jetable) est RETIREE de initialLocation. La ROUTE /nav-pilote reste DEFINIE
+  // (accessible en interne pour la revue Chris du demonstrateur) mais n'est plus
+  // le point d'entree — aucun ecran ne la met en avant. Cf. SPEC §14 / mandat L7.
+  initialLocation: '/my-treks',
   redirect: _guardCurrentTrail,
   routes: [
     // ===== HUB-AND-PUSH (StepWays LOT 3, Ph4 — big-bang) =====
