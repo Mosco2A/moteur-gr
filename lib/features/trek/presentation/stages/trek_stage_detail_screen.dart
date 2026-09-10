@@ -9,6 +9,7 @@ import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
 import '../../../../shared/widgets/app_gradient_header.dart';
+import '../../../../shared/widgets/app_header.dart';
 import '../../../../shared/widgets/brand_alti_motif.dart';
 import '../../../poi/domain/poi_type_config.dart';
 import '../../../trail/providers/pois_provider.dart';
@@ -100,19 +101,13 @@ class TrekStageDetailScreen extends ConsumerWidget {
       ),
     );
 
+    // Ph5 (L6a) : titre = nom de l'etape (fallback numero) resolu depuis le
+    // provider deja observe -> plus besoin d'un Consumer imbrique pour l'AppBar.
+    final title = stageAsync.value?.nameFr ?? '${t.nav.stages} $stageId';
+
     return Scaffold(
-      appBar: AppBar(
-        title: Consumer(
-          builder: (context, ref, _) {
-            final name = ref.watch(
-              stageByIdProvider((trailId: trailId, stageId: stageId)).select(
-                (async) => async.value?.nameFr ?? 'Etape $stageId',
-              ),
-            );
-            return Text(name);
-          },
-        ),
-      ),
+      // Ph5 (L6a) : AppHeader universel. Ecran cœur -> barre absente (§4).
+      appBar: AppHeader(title: title),
       body: stageAsync.when(
         loading: () => LoadingView(
           message: t.stage.loading,

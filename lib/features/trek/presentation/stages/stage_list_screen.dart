@@ -6,6 +6,7 @@ import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../../shared/widgets/app_header.dart';
 import '../../../trail/providers/stages_provider.dart';
 
 /// Ecran liste des etapes d'un sentier.
@@ -27,7 +28,9 @@ class StageListScreen extends ConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Etapes')),
+      // Ph5 (L6a) : AppHeader universel. Titre via Slang (t.nav.stages) au lieu
+      // du 'Etapes' en dur (zero texte en dur). Ecran cœur -> barre absente (§4).
+      appBar: AppHeader(title: t.nav.stages),
       body: stagesAsync.when(
         loading: () => LoadingView(message: t.stage.loadingList),
         error: (error, _) => ErrorView(

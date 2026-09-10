@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
+import '../../../shared/widgets/app_header.dart';
 import '../domain/models/journal_entry.dart';
 import '../providers/journal_providers.dart';
 
@@ -41,8 +42,11 @@ class JournalScreen extends ConsumerWidget {
     final journalT = t.journal;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(journalT.title),
+      // Ph5 (L6a) : AppHeader universel ([Retour]+[Accueil] contextuel). Le
+      // badge du nombre d'entrees est passe en `actions` (rendu avant Accueil).
+      // Ecran cœur -> pas de barre contextuelle (§4).
+      appBar: AppHeader(
+        title: journalT.title,
         actions: [
           if (entryCount > 0)
             Padding(

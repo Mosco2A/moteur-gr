@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../../shared/widgets/app_header.dart';
 
 /// Ecran "Plus" — onglet hub de la bottom navigation (E2.9b).
 ///
@@ -71,7 +72,9 @@ class MoreScreen extends ConsumerWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(title: Text(tr.nav.more)),
+      // Ph5 (L6a) : AppHeader universel ([Retour]+[Accueil] contextuel) au lieu
+      // de l'AppBar maison. Ecran secondaire -> pas de barre contextuelle (§4).
+      appBar: AppHeader(title: tr.nav.more),
       body: ListView.separated(
         padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingSm),
         itemCount: entries.length,

@@ -2,6 +2,7 @@ import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
@@ -18,8 +19,19 @@ void main() {
           databaseProvider.overrideWithValue(db),
           trailIdProvider.overrideWithValue('sentier-bleu'),
         ],
-        child: const MaterialApp(
-          home: JournalScreen(trailId: 'sentier-bleu'),
+        // AppHeader (Ph5/L6a) utilise GoRouter -> on heberge l'ecran dans un
+        // GoRouter minimal (+ /my-treks pour l'accueil contextuel).
+        child: MaterialApp.router(
+          routerConfig: GoRouter(
+            initialLocation: '/journal',
+            routes: [
+              GoRoute(
+                path: '/journal',
+                builder: (_, __) => const JournalScreen(trailId: 'sentier-bleu'),
+              ),
+              GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+            ],
+          ),
         ),
       ),
     );

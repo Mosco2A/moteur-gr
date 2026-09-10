@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/features/trek/presentation/stages/stage_list_screen.dart';
 import 'package:moteur_gr/shared/widgets/app_card.dart';
+
+/// StageListScreen hébergé dans un GoRouter minimal : l'AppHeader (Ph5/L6a)
+/// utilise GoRouter (canPop/go), qui doit donc être présent dans l'arbre.
+Widget _hostStageList() {
+  final router = GoRouter(
+    initialLocation: '/stages',
+    routes: [
+      GoRoute(
+        path: '/stages',
+        builder: (_, __) => const StageListScreen(trailId: 'test-trail'),
+      ),
+      GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+    ],
+  );
+  return MaterialApp.router(routerConfig: router);
+}
 
 /// Tests du StageListScreen (Phase 2 E2.4a).
 ///
@@ -61,9 +78,7 @@ void main() {
               'test-trail',
             ).overrideWith((ref) => Future.value(mockStages)),
           ],
-          child: const MaterialApp(
-            home: StageListScreen(trailId: 'test-trail'),
-          ),
+          child: _hostStageList(),
         ),
       );
 
@@ -86,9 +101,7 @@ void main() {
               'test-trail',
             ).overrideWith((ref) => Future.value(mockStages)),
           ],
-          child: const MaterialApp(
-            home: StageListScreen(trailId: 'test-trail'),
-          ),
+          child: _hostStageList(),
         ),
       );
 

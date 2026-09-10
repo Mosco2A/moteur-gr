@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
@@ -89,6 +90,25 @@ void main() {
     List<StageModel> stages = const [testStage],
     List<PoiModel> pois = const [],
   }) {
+    // L'ecran porte desormais un AppHeader (Ph5/L6a) qui utilise GoRouter
+    // (canPop/go) : on l'heberge dans un GoRouter minimal (+ /my-treks pour
+    // l'accueil contextuel) au lieu d'un MaterialApp nu.
+    final router = GoRouter(
+      initialLocation: '/stage',
+      routes: [
+        GoRoute(
+          path: '/stage',
+          builder: (_, __) => const TrekStageDetailScreen(
+            trailId: 'test-trail',
+            stageId: 3,
+          ),
+        ),
+        GoRoute(
+          path: '/my-treks',
+          builder: (_, __) => const SizedBox(),
+        ),
+      ],
+    );
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
@@ -99,12 +119,7 @@ void main() {
           (ref) => Future.value(pois),
         ),
       ],
-      child: const MaterialApp(
-        home: TrekStageDetailScreen(
-          trailId: 'test-trail',
-          stageId: 3,
-        ),
-      ),
+      child: MaterialApp.router(routerConfig: router),
     );
   }
 
