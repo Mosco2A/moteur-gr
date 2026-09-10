@@ -176,6 +176,12 @@ class _Translations$navPilote$es extends Translations$navPilote$fr {
 	@override String get startTrek => 'Iniciar el trek';
 	@override String get finishTrek => 'Finalizar el trek';
 	@override String get reviewPrep => 'Revisar la preparación';
+	@override String get startGateSubtitle => 'Completa Itinerario, Fecha y Programa para empezar';
+	@override String get startAwayTitle => 'Iniciar el trek';
+	@override String startAwayBody({required Object distance}) => 'No pareces estar en el punto de salida (a ${distance} m). ¿Iniciar de todos modos?';
+	@override String get startNoGpsBody => 'Ubicación no disponible. ¿Iniciar de todos modos?';
+	@override String get startConfirm => 'Iniciar igualmente';
+	@override String get startCancel => 'Cancelar';
 	@override String get phasePrepareSub => 'Organiza tu trek antes de salir';
 	@override String get phaseHikeSub => 'Tu trek está en curso';
 	@override String phaseHikeInProgress({required Object trek}) => '${trek} en curso';
@@ -3310,6 +3316,12 @@ extension on TranslationsEs {
 			'navPilote.startTrek' => 'Iniciar el trek',
 			'navPilote.finishTrek' => 'Finalizar el trek',
 			'navPilote.reviewPrep' => 'Revisar la preparación',
+			'navPilote.startGateSubtitle' => 'Completa Itinerario, Fecha y Programa para empezar',
+			'navPilote.startAwayTitle' => 'Iniciar el trek',
+			'navPilote.startAwayBody' => ({required Object distance}) => 'No pareces estar en el punto de salida (a ${distance} m). ¿Iniciar de todos modos?',
+			'navPilote.startNoGpsBody' => 'Ubicación no disponible. ¿Iniciar de todos modos?',
+			'navPilote.startConfirm' => 'Iniciar igualmente',
+			'navPilote.startCancel' => 'Cancelar',
 			'navPilote.phasePrepareSub' => 'Organiza tu trek antes de salir',
 			'navPilote.phaseHikeSub' => 'Tu trek está en curso',
 			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} en curso',
@@ -3768,14 +3780,14 @@ extension on TranslationsEs {
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C previstos. Alto riesgo de incendio.',
 			'share.title' => 'Compartir',
 			'share.generating' => 'Generando...',
+			_ => null,
+		} ?? switch (path) {
 			'share.share' => 'Compartir',
 			'share.error' => 'Error durante la generación',
 			'share.errorShare' => 'Error al compartir',
 			'share.preview' => 'Vista previa',
 			'share.chooseTemplate' => 'Elegir plantilla',
 			'share.templateStats' => 'Estadísticas',
-			_ => null,
-		} ?? switch (path) {
 			'share.templateJourney' => 'Recorrido',
 			'share.templateStage' => 'Etapa',
 			'diploma.title' => 'Diploma de trekking',
@@ -4282,14 +4294,14 @@ extension on TranslationsEs {
 			'consent.denied' => 'No autorizado',
 			'consent.grant' => 'Autorizar',
 			'consent.revoke' => 'Retirar',
+			_ => null,
+		} ?? switch (path) {
 			'consent.decidedOn' => ({required Object date}) => 'Elegido el ${date}',
 			'consent.notDecided' => 'A la espera de tu elección',
 			'consent.acceptSelected' => 'Confirmar mis elecciones',
 			'consent.declineAll' => 'Rechazar todo',
 			'consent.continueLabel' => 'Continuar',
 			'consent.privacyPolicyLink' => 'Leer la política de privacidad',
-			_ => null,
-		} ?? switch (path) {
 			'consent.reviewNeeded' => 'Nuestra política ha cambiado: revisa tus elecciones.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actualmente ${state}',
 			'consent.a11y.healthSection' => 'Sección de datos de salud, consentimiento reforzado',

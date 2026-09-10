@@ -374,18 +374,60 @@ void main() {
     });
 
     testWidgets('R19 : « Prêt à partir / Démarrer la randonnée » (HubTrekCard) '
-        'ABSENT en Préparer (retiré, doublon barre du bas)', (tester) async {
+        'ABSENT en Préparer (retiré, doublon)', (tester) async {
       await pumpTall(tester,
           activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
 
       // R19 (V3) : le bloc « Prêt à partir » (HubTrekCard état prepared -> CTA
       // « Démarrer la randonnée ») est RETIRÉ de Préparer. Le seul démarrage est
-      // le bouton « Démarrer le trek » de la barre du bas (transition de phase).
+      // le bouton « Démarrer le trek » orange en fin de scroll (Q1/Q2).
       expect(find.text(t.hub.startCta), findsNothing);
       // La HubTrekCard « Prêt à partir » n'est plus là (son titre non plus).
       expect(find.text(t.hub.trekCard.noTrekTitle), findsNothing);
-      // Le seul démarrage reste le CTA de la barre du bas.
-      expect(inBar(find.text(t.navPilote.startTrek)), findsOneWidget);
+      // Q2 : « Démarrer le trek » n'est PLUS dans la barre (pastille supprimée),
+      // il est dans le CORPS (fin de scroll).
+      expect(inBar(find.text(t.navPilote.startTrek)), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text(t.navPilote.startTrek),
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('Q3/Groupe : « Découvrir » et « Groupe » ABSENTS du cockpit '
+        'Préparer (§12.3/§12.4)', (tester) async {
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      // Q3 (§12.3) : « Découvrir les sentiers » (t.hub.cards.offline) retiré du
+      // cockpit Préparer (vit dans « Mes treks »).
+      expect(find.text(t.hub.cards.offline), findsNothing);
+      // Scope Groupe (§12.4 b) : « Groupe » (t.hub.cards.group) retiré aussi.
+      expect(find.text(t.hub.cards.group), findsNothing);
+      // Les autres cartes de prépa restent (parité) — ex. Itinéraire, Programme.
+      expect(find.text(t.hub.cards.itinerary), findsOneWidget);
+      expect(find.text(t.hub.cards.programme), findsOneWidget);
+    });
+
+    testWidgets('Q1 : « Démarrer le trek » DÉSACTIVÉ tant que la gate 3 cartes '
+        'est fermée (§12.1/§12.5)', (tester) async {
+      // Gate par défaut fermée (aucune carte cœur faite en test) -> bouton grisé
+      // (onPressed null) + sous-texte d'explication présent.
+      await pumpTall(tester,
+          activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
+
+      final startBtn = tester.widget<FilledButton>(
+        find.ancestor(
+          of: find.text(t.navPilote.startTrek),
+          matching: find.byType(FilledButton),
+        ),
+      );
+      expect(startBtn.onPressed, isNull,
+          reason: 'gate fermée -> bouton Démarrer désactivé (grisé)');
+      // Sous-texte d'explication de la gate (§12.5).
+      expect(find.text(t.navPilote.startGateSubtitle), findsOneWidget);
     });
 
     testWidgets('R19 : « Démarrer la randonnée » (HubTrekCard) ABSENT en '
@@ -424,16 +466,24 @@ void main() {
     });
 
     testWidgets(
-        'phase Preparer (prepared, pas de trek actif) : PAS de SOS + CTA '
-        'Demarrer (R6)', (tester) async {
+        'phase Preparer (prepared, pas de trek actif) : PAS de SOS + bouton '
+        'Demarrer en fin de scroll (Q1/Q2)', (tester) async {
       await pumpTall(tester,
           activeTrailId: null, lifecycle: TrekLifecycleState.prepared);
 
       // Hors phase Randonner -> pas de SOS (AUDIT §M-2 / R9).
       expect(inBar(find.text(t.navPilote.sos)), findsNothing);
       expect(find.byIcon(Icons.emergency), findsNothing);
-      // R6 : le CTA « Démarrer le trek » est le bouton de transition de phase.
-      expect(inBar(find.text(t.navPilote.startTrek)), findsOneWidget);
+      // Q2 : « Démarrer le trek » est en fin de scroll (corps), PAS dans la barre
+      // (pastille de transition supprimée).
+      expect(inBar(find.text(t.navPilote.startTrek)), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byType(ListView),
+          matching: find.text(t.navPilote.startTrek),
+        ),
+        findsOneWidget,
+      );
       // Section Preparer affichee (une carte de prepa presente).
       expect(find.text(t.hub.cards.feasibility), findsOneWidget);
     });

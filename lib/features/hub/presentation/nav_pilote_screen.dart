@@ -11,8 +11,11 @@ import '../../../shared/widgets/app_header.dart';
 import '../../safety/presentation/sos_confirmation_dialog.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../../treks/domain/trek_lifecycle_state.dart';
+import '../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
 import '../../treks/providers/my_treks_provider.dart';
 import '../../trek/providers/gps_providers.dart';
+import '../../trek/providers/tracking_providers.dart';
+import '../providers/cockpit_start_providers.dart';
 import '../../weather/models/weather_forecast.dart';
 import '../../weather/presentation/fire_risk_screen.dart' show fireRiskColor;
 import '../../weather/providers/current_stage_provider.dart';
@@ -205,7 +208,6 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
         sosOnRight: sosOnRight,
         demoPreview: _demoTrekMode,
         onSos: () => _showSos(context),
-        onTransition: () => _onTransition(context, phase),
         // R22 : en Randonner, la barre porte « Navigation » -> carte/navigation.
         onNavigate: () => context.push('/map'),
         onSelectPhase: (p) => setState(() => _previewPhase = p),
@@ -446,22 +448,23 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
             iconColor: cat.teal,
             onTap: () => context.push('/training'),
           ),
-          QuickAccessCard(
-            icon: Icons.explore_outlined,
-            title: t.hub.cards.offline,
-            subtitle: t.hub.cards.offlineSub,
-            iconColor: cat.blue,
-            onTap: () => context.push('/catalog'),
-          ),
-          QuickAccessCard(
-            icon: Icons.groups_outlined,
-            title: t.hub.cards.group,
-            subtitle: t.hub.cards.groupSub,
-            iconColor: cat.greenLight,
-            onTap: () => context.push('/group/$trailId'),
-          ),
+          // Q3 (§12.3) : la carte « Découvrir les sentiers » (-> /catalog) est
+          // RETIREE du cockpit Préparer. Dans le cockpit d'un trek en préparation
+          // on ne choisit pas de sentier, on prépare celui déjà choisi.
+          // « Découvrir » vit dans l'accueil « Mes treks » (my_treks_screen.dart).
+          //
+          // SCOPE GROUPE (§12.4 b) : la carte « Groupe » (-> /group/:id) est aussi
+          // RETIREE — Groupe est HORS de cette version, on ne le clone nulle part
+          // dans le cockpit.
         ],
       ),
+      const SizedBox(height: AppTheme.spacingLg),
+      // Q1/Q2 (§12.1/§12.2) : « Démarrer le trek » — bouton ORANGE en FIN DE
+      // SCROLL (après toutes les cartes), PAS de pastille bas-centre. Désactivé
+      // (grisé) tant que les 3 cartes cœur ne sont pas faites (Itinéraire + Date
+      // + Programme) ; le démarrage réel (au clic) est gaté par la proximité GPS
+      // avec filet de secours (jamais de cul-de-sac). Voir [_StartTrekButton].
+      _StartTrekButton(trailId: trailId),
     ];
   }
 
@@ -1004,6 +1007,137 @@ class _FinishTrekButton extends StatelessWidget {
   }
 }
 
+/// Bouton « Démarrer le trek » (Q1/Q2, §12.1/§12.2/§12.5) — bouton ORANGE en FIN
+/// DE SCROLL de Préparer (parité [_FinishTrekButton]), PAS de pastille bas-centre.
+///
+/// GATE D'ACTIVATION (§12.5) : désactivé (grisé) tant que [prepareCoreDoneProvider]
+/// est faux (les 3 cartes cœur — Itinéraire + Date + Programme — pas toutes
+/// faites), avec un sous-texte d'explication. La proximité GPS NE conditionne PAS
+/// l'enable (filet anti-cul-de-sac).
+///
+/// AU CLIC (gate ouverte) : lit [startProximityProvider]. Si au point de départ
+/// -> démarrage direct ; sinon (hors zone OU GPS indisponible) -> dialog « Démarrer
+/// quand même ? » (jamais de blocage : si Oui, MÊME chemin). Le démarrage passe
+/// TOUJOURS par la garde d'unicité C4 [TrekSessionManagerNotifier.
+/// ensureSingleActiveThenStart] (comme `hub_trek_card.dart`), puis `push('/map')`
+/// au succès. Le cockpit ne bascule PAS la phase à la main : c'est la session
+/// `active` créée par la garde qui fait passer `deriveState` -> `inProgress` ->
+/// [CockpitPhase.hike].
+class _StartTrekButton extends ConsumerStatefulWidget {
+  const _StartTrekButton({required this.trailId});
+
+  final String trailId;
+
+  @override
+  ConsumerState<_StartTrekButton> createState() => _StartTrekButtonState();
+}
+
+class _StartTrekButtonState extends ConsumerState<_StartTrekButton> {
+  bool _starting = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final orange = CategoryIconColors.of(context).orange;
+    final theme = Theme.of(context);
+    final canStart = ref.watch(prepareCoreDoneProvider(widget.trailId));
+    final enabled = canStart && !_starting;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: FilledButton.icon(
+            // Désactivé => onPressed null (grisé natif). Q1 : SEUL le gate 3
+            // cartes conditionne l'enable (pas la proximité GPS).
+            onPressed: enabled ? () => _onStartPressed(context) : null,
+            icon: const Icon(Icons.play_arrow, size: 22),
+            label: Text(t.navPilote.startTrek),
+            style: FilledButton.styleFrom(
+              backgroundColor: orange,
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ),
+        // Sous-texte d'explication tant que la gate est fermée (§12.5).
+        if (!canStart) ...[
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            t.navPilote.startGateSubtitle,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  /// Clic sur « Démarrer » (gate ouverte). Choisit le CHEMIN selon la proximité
+  /// GPS : direct si au départ, sinon dialog de secours (jamais de cul-de-sac).
+  Future<void> _onStartPressed(BuildContext context) async {
+    final proximity = ref.read(startProximityProvider);
+    if (proximity.atDeparture) {
+      await _start(context);
+      return;
+    }
+    // Hors zone OU GPS indisponible -> confirmation (filet Q1). Si Oui, on démarre
+    // quand même (même chemin) ; si Non, on reste en Préparer.
+    final confirmed = await _confirmStartAway(context, proximity);
+    if (confirmed == true) {
+      if (!context.mounted) return;
+      await _start(context);
+    }
+  }
+
+  /// Démarrage effectif via la garde d'unicité C4 (parité `hub_trek_card.dart`),
+  /// puis navigation vers la carte au succès. AUCUNE logique de session recréée.
+  Future<void> _start(BuildContext context) async {
+    final notifier = ref.read(trekSessionManagerProvider.notifier);
+    setState(() => _starting = true);
+    try {
+      final outcome = await notifier.ensureSingleActiveThenStart(
+        widget.trailId,
+        resolve: (ongoingTrailId) =>
+            showActiveTrekConflictDialog(context, ongoingTrailId),
+      );
+      if (!context.mounted) return;
+      if (outcome == StartOutcome.started) {
+        context.push('/map');
+      }
+    } finally {
+      if (mounted) setState(() => _starting = false);
+    }
+  }
+
+  /// Dialog de secours « Démarrer quand même ? » (Q1 filet). Message adapté :
+  /// hors zone (avec distance) OU position indisponible.
+  Future<bool?> _confirmStartAway(BuildContext context, StartProximity p) {
+    final body = p.gpsAvailable && p.distanceMeters != null
+        ? t.navPilote.startAwayBody(distance: p.distanceMeters!.round())
+        : t.navPilote.startNoGpsBody;
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.navPilote.startAwayTitle),
+        content: Text(body),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(t.navPilote.startCancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: Text(t.navPilote.startConfirm),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 /// Aperçu VERROUILLE d'une phase (R16) — démo/gratuit uniquement.
 ///
 /// Le mode démo ne rend jouable que la PREPARATION (frontière d'or MODELE_ECO :
@@ -1090,7 +1224,6 @@ class _CockpitActionBar extends StatelessWidget {
     required this.sosOnRight,
     required this.demoPreview,
     required this.onSos,
-    required this.onTransition,
     required this.onNavigate,
     required this.onSelectPhase,
   });
@@ -1100,23 +1233,20 @@ class _CockpitActionBar extends StatelessWidget {
   final bool sosOnRight;
   final bool demoPreview;
   final VoidCallback onSos;
-  final VoidCallback onTransition;
   final VoidCallback onNavigate;
   final ValueChanged<CockpitPhase> onSelectPhase;
 
   @override
   Widget build(BuildContext context) {
-    // Action principale de la barre selon la phase (R6/R7/R22) :
-    //  - Préparer -> « Démarrer le trek » (transition prepared→inProgress) ;
+    // Action principale de la barre selon la phase (R22 + Q2 §12.2) :
+    //  - Préparer -> AUCUN CTA de barre : « Démarrer le trek » a QUITTÉ la barre
+    //    (pastille de transition SUPPRIMÉE, Q2) pour un bouton ORANGE en fin de
+    //    scroll ([_StartTrekButton]). UN SEUL point de départ.
     //  - Randonner -> « Navigation » (R22 : route vers la carte, PAS une
-    //    transition — « Terminer le trek » a migre en bas du corps, R21) ;
+    //    transition — « Terminer le trek » est en bas du corps, R21) ;
     //  - Après (TERMINALE) -> AUCUN CTA (actions dans les cartes Recap/Diplome).
     final (String, IconData, VoidCallback)? actionSpec = switch (phase) {
-      CockpitPhase.prepare => (
-          t.navPilote.startTrek,
-          Icons.play_arrow,
-          onTransition,
-        ),
+      CockpitPhase.prepare => null,
       CockpitPhase.hike => (
           t.hub.cards.navigation,
           Icons.navigation_outlined,

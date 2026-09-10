@@ -274,6 +274,24 @@ class Translations$navPilote$fr {
 	/// fr: 'Revoir la préparation'
 	String get reviewPrep => 'Revoir la préparation';
 
+	/// fr: 'Terminez Itinéraire, Date et Programme pour démarrer'
+	String get startGateSubtitle => 'Terminez Itinéraire, Date et Programme pour démarrer';
+
+	/// fr: 'Démarrer le trek'
+	String get startAwayTitle => 'Démarrer le trek';
+
+	/// fr: 'Tu ne sembles pas au point de départ (à $distance m). Démarrer quand même ?'
+	String startAwayBody({required Object distance}) => 'Tu ne sembles pas au point de départ (à ${distance} m). Démarrer quand même ?';
+
+	/// fr: 'Position indisponible. Démarrer quand même ?'
+	String get startNoGpsBody => 'Position indisponible. Démarrer quand même ?';
+
+	/// fr: 'Démarrer quand même'
+	String get startConfirm => 'Démarrer quand même';
+
+	/// fr: 'Annuler'
+	String get startCancel => 'Annuler';
+
 	/// fr: 'Organisez votre trek avant le départ'
 	String get phasePrepareSub => 'Organisez votre trek avant le départ';
 
@@ -6105,6 +6123,12 @@ extension on Translations {
 			'navPilote.startTrek' => 'Démarrer le trek',
 			'navPilote.finishTrek' => 'Terminer le trek',
 			'navPilote.reviewPrep' => 'Revoir la préparation',
+			'navPilote.startGateSubtitle' => 'Terminez Itinéraire, Date et Programme pour démarrer',
+			'navPilote.startAwayTitle' => 'Démarrer le trek',
+			'navPilote.startAwayBody' => ({required Object distance}) => 'Tu ne sembles pas au point de départ (à ${distance} m). Démarrer quand même ?',
+			'navPilote.startNoGpsBody' => 'Position indisponible. Démarrer quand même ?',
+			'navPilote.startConfirm' => 'Démarrer quand même',
+			'navPilote.startCancel' => 'Annuler',
 			'navPilote.phasePrepareSub' => 'Organisez votre trek avant le départ',
 			'navPilote.phaseHikeSub' => 'Votre trek est en cours',
 			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} en cours',
@@ -6563,14 +6587,14 @@ extension on Translations {
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C prévus. Risque incendie élevé.',
 			'share.title' => 'Partager',
 			'share.generating' => 'Génération...',
+			_ => null,
+		} ?? switch (path) {
 			'share.share' => 'Partager',
 			'share.error' => 'Erreur lors de la génération',
 			'share.errorShare' => 'Erreur lors du partage',
 			'share.preview' => 'Aperçu',
 			'share.chooseTemplate' => 'Choisir un template',
 			'share.templateStats' => 'Statistiques',
-			_ => null,
-		} ?? switch (path) {
 			'share.templateJourney' => 'Parcours',
 			'share.templateStage' => 'Étape',
 			'diploma.title' => 'Diplôme de randonnée',
@@ -7077,14 +7101,14 @@ extension on Translations {
 			'consent.denied' => 'Non autorisé',
 			'consent.grant' => 'Autoriser',
 			'consent.revoke' => 'Retirer',
+			_ => null,
+		} ?? switch (path) {
 			'consent.decidedOn' => ({required Object date}) => 'Choix du ${date}',
 			'consent.notDecided' => 'En attente de votre choix',
 			'consent.acceptSelected' => 'Valider mes choix',
 			'consent.declineAll' => 'Tout refuser',
 			'consent.continueLabel' => 'Continuer',
 			'consent.privacyPolicyLink' => 'Lire la politique de confidentialité',
-			_ => null,
-		} ?? switch (path) {
 			'consent.reviewNeeded' => 'Notre politique a évolué : merci de revoir vos choix.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}',
 			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',

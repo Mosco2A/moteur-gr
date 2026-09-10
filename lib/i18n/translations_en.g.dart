@@ -176,6 +176,12 @@ class _Translations$navPilote$en extends Translations$navPilote$fr {
 	@override String get startTrek => 'Start the trek';
 	@override String get finishTrek => 'Finish the trek';
 	@override String get reviewPrep => 'Review preparation';
+	@override String get startGateSubtitle => 'Complete Itinerary, Date and Programme to start';
+	@override String get startAwayTitle => 'Start the trek';
+	@override String startAwayBody({required Object distance}) => 'You don\'t seem to be at the starting point (${distance} m away). Start anyway?';
+	@override String get startNoGpsBody => 'Location unavailable. Start anyway?';
+	@override String get startConfirm => 'Start anyway';
+	@override String get startCancel => 'Cancel';
 	@override String get phasePrepareSub => 'Get your trek ready before departure';
 	@override String get phaseHikeSub => 'Your trek is in progress';
 	@override String phaseHikeInProgress({required Object trek}) => '${trek} in progress';
@@ -3310,6 +3316,12 @@ extension on TranslationsEn {
 			'navPilote.startTrek' => 'Start the trek',
 			'navPilote.finishTrek' => 'Finish the trek',
 			'navPilote.reviewPrep' => 'Review preparation',
+			'navPilote.startGateSubtitle' => 'Complete Itinerary, Date and Programme to start',
+			'navPilote.startAwayTitle' => 'Start the trek',
+			'navPilote.startAwayBody' => ({required Object distance}) => 'You don\'t seem to be at the starting point (${distance} m away). Start anyway?',
+			'navPilote.startNoGpsBody' => 'Location unavailable. Start anyway?',
+			'navPilote.startConfirm' => 'Start anyway',
+			'navPilote.startCancel' => 'Cancel',
 			'navPilote.phasePrepareSub' => 'Get your trek ready before departure',
 			'navPilote.phaseHikeSub' => 'Your trek is in progress',
 			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} in progress',
@@ -3768,14 +3780,14 @@ extension on TranslationsEn {
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C expected. High fire risk.',
 			'share.title' => 'Share',
 			'share.generating' => 'Generating...',
+			_ => null,
+		} ?? switch (path) {
 			'share.share' => 'Share',
 			'share.error' => 'Error during generation',
 			'share.errorShare' => 'Error during sharing',
 			'share.preview' => 'Preview',
 			'share.chooseTemplate' => 'Choose a template',
 			'share.templateStats' => 'Statistics',
-			_ => null,
-		} ?? switch (path) {
 			'share.templateJourney' => 'Journey',
 			'share.templateStage' => 'Stage',
 			'diploma.title' => 'Trek diploma',
@@ -4282,14 +4294,14 @@ extension on TranslationsEn {
 			'consent.denied' => 'Not allowed',
 			'consent.grant' => 'Allow',
 			'consent.revoke' => 'Withdraw',
+			_ => null,
+		} ?? switch (path) {
 			'consent.decidedOn' => ({required Object date}) => 'Chosen on ${date}',
 			'consent.notDecided' => 'Awaiting your choice',
 			'consent.acceptSelected' => 'Confirm my choices',
 			'consent.declineAll' => 'Decline all',
 			'consent.continueLabel' => 'Continue',
 			'consent.privacyPolicyLink' => 'Read the privacy policy',
-			_ => null,
-		} ?? switch (path) {
 			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, currently ${state}',
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',

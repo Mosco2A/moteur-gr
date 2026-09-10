@@ -176,6 +176,12 @@ class _Translations$navPilote$de extends Translations$navPilote$fr {
 	@override String get startTrek => 'Trek starten';
 	@override String get finishTrek => 'Trek beenden';
 	@override String get reviewPrep => 'Vorbereitung ansehen';
+	@override String get startGateSubtitle => 'Route, Datum und Programm abschließen, um zu starten';
+	@override String get startAwayTitle => 'Trek starten';
+	@override String startAwayBody({required Object distance}) => 'Du scheinst nicht am Startpunkt zu sein (${distance} m entfernt). Trotzdem starten?';
+	@override String get startNoGpsBody => 'Standort nicht verfügbar. Trotzdem starten?';
+	@override String get startConfirm => 'Trotzdem starten';
+	@override String get startCancel => 'Abbrechen';
 	@override String get phasePrepareSub => 'Bereiten Sie Ihren Trek vor dem Start vor';
 	@override String get phaseHikeSub => 'Ihr Trek läuft';
 	@override String phaseHikeInProgress({required Object trek}) => '${trek} läuft';
@@ -3310,6 +3316,12 @@ extension on TranslationsDe {
 			'navPilote.startTrek' => 'Trek starten',
 			'navPilote.finishTrek' => 'Trek beenden',
 			'navPilote.reviewPrep' => 'Vorbereitung ansehen',
+			'navPilote.startGateSubtitle' => 'Route, Datum und Programm abschließen, um zu starten',
+			'navPilote.startAwayTitle' => 'Trek starten',
+			'navPilote.startAwayBody' => ({required Object distance}) => 'Du scheinst nicht am Startpunkt zu sein (${distance} m entfernt). Trotzdem starten?',
+			'navPilote.startNoGpsBody' => 'Standort nicht verfügbar. Trotzdem starten?',
+			'navPilote.startConfirm' => 'Trotzdem starten',
+			'navPilote.startCancel' => 'Abbrechen',
 			'navPilote.phasePrepareSub' => 'Bereiten Sie Ihren Trek vor dem Start vor',
 			'navPilote.phaseHikeSub' => 'Ihr Trek läuft',
 			'navPilote.phaseHikeInProgress' => ({required Object trek}) => '${trek} läuft',
@@ -3768,14 +3780,14 @@ extension on TranslationsDe {
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C erwartet. Hohe Brandgefahr.',
 			'share.title' => 'Teilen',
 			'share.generating' => 'Wird generiert...',
+			_ => null,
+		} ?? switch (path) {
 			'share.share' => 'Teilen',
 			'share.error' => 'Fehler bei der Erstellung',
 			'share.errorShare' => 'Fehler beim Teilen',
 			'share.preview' => 'Vorschau',
 			'share.chooseTemplate' => 'Vorlage wählen',
 			'share.templateStats' => 'Statistiken',
-			_ => null,
-		} ?? switch (path) {
 			'share.templateJourney' => 'Strecke',
 			'share.templateStage' => 'Etappe',
 			'diploma.title' => 'Wanderdiplom',
@@ -4282,14 +4294,14 @@ extension on TranslationsDe {
 			'consent.denied' => 'Nicht erlaubt',
 			'consent.grant' => 'Erlauben',
 			'consent.revoke' => 'Widerrufen',
+			_ => null,
+		} ?? switch (path) {
 			'consent.decidedOn' => ({required Object date}) => 'Gewählt am ${date}',
 			'consent.notDecided' => 'Wartet auf Ihre Wahl',
 			'consent.acceptSelected' => 'Meine Auswahl bestätigen',
 			'consent.declineAll' => 'Alles ablehnen',
 			'consent.continueLabel' => 'Weiter',
 			'consent.privacyPolicyLink' => 'Datenschutzerklärung lesen',
-			_ => null,
-		} ?? switch (path) {
 			'consent.reviewNeeded' => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',

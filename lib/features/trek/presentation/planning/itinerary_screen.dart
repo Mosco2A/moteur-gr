@@ -9,6 +9,7 @@ import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
+import '../../../hub/providers/cockpit_start_providers.dart';
 import '../../domain/models/itinerary_day.dart';
 import '../../providers/itinerary_providers.dart';
 
@@ -35,6 +36,15 @@ class ItineraryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final itineraryAsync = ref.watch(itineraryProvider.select((a) => a));
+
+    // Q1 (§12.5) : ouvrir l'écran Itinéraire marque l'étape cœur « Itinéraire »
+    // comme faite (persisté par sentier) — l'un des 3 signaux qui débloquent
+    // « Démarrer le trek ». Idempotent ; planifié hors phase de build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(prepareCoreStepsProvider(trailId).notifier)
+          .markSeen(PrepCoreStep.itinerary);
+    });
 
     return Scaffold(
       appBar: AppBar(title: Text(t.itinerary.title)),

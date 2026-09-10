@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../hub/providers/cockpit_start_providers.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../providers/planning_provider.dart';
@@ -40,6 +41,15 @@ class TrailPlanningScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final days = ref.watch(plannedDaysProvider(trailId));
     final stats = ref.watch(planningStatsProvider(trailId));
+
+    // Q1 (§12.5) : ouvrir l'écran Programme marque l'étape cœur « Programme »
+    // comme faite (persisté par sentier) — l'un des 3 signaux qui débloquent
+    // « Démarrer le trek ». Idempotent ; planifié hors phase de build.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .read(prepareCoreStepsProvider(trailId).notifier)
+          .markSeen(PrepCoreStep.programme);
+    });
 
     return Scaffold(
       appBar: AppBar(
