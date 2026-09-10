@@ -175,7 +175,8 @@ class _ActiveTrekCard extends ConsumerWidget {
             child: AppButton(
               icon: Icons.navigation_outlined,
               label: t.hub.trekCard.resume,
-              onPressed: () => context.go('/map'),
+              // Ph4 (hub-and-push, SPEC §5) : push -> retour propre au cockpit.
+              onPressed: () => context.push('/map'),
             ),
           ),
         ],
@@ -273,8 +274,9 @@ class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
       if (!mounted) return;
       // Demarrage effectif -> on ouvre la navigation. Sur annulation ou meme
       // trek deja actif, on reste sur le HUB (la carte se re-derivera).
+      // Ph4 (hub-and-push, SPEC §5) : push -> retour propre au cockpit.
       if (outcome == StartOutcome.started) {
-        context.go('/map');
+        context.push('/map');
       }
     } finally {
       if (mounted) setState(() => _starting = false);

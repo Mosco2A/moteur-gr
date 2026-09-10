@@ -72,7 +72,8 @@ class TrailDetailScreen extends ConsumerWidget {
                     final stage = stages[index];
                     return StageListTile(
                       stage: stage,
-                      onTap: () => context.go(
+                      // Ph4 (hub-and-push, SPEC §5) : push -> retour propre.
+                      onTap: () => context.push(
                         '/trail/$trailId/stage/${stage.stageNumber}',
                       ),
                     );
@@ -122,7 +123,7 @@ class TrailDetailScreen extends ConsumerWidget {
                       variant: AppButtonVariant.outline,
                       icon: Icons.calendar_month,
                       label: 'Planifier',
-                      onPressed: () => context.go('/trail/$trailId/planning'),
+                      onPressed: () => context.push('/trail/$trailId/planning'),
                     ),
                   ),
                   const SizedBox(width: AppTheme.spacingSm),
@@ -131,7 +132,7 @@ class TrailDetailScreen extends ConsumerWidget {
                       variant: AppButtonVariant.outline,
                       icon: Icons.terrain,
                       label: 'Voir la carte',
-                      onPressed: () => context.go('/trail/$trailId/map'),
+                      onPressed: () => context.push('/trail/$trailId/map'),
                     ),
                   ),
                 ],
@@ -144,10 +145,13 @@ class TrailDetailScreen extends ConsumerWidget {
   }
 
   /// Entre dans le sentier affiche : ecrit la selection (le moteur entier suit
-  /// via trailConfigProvider) puis ouvre le shell sur l'onglet Carte.
+  /// via trailConfigProvider) puis ouvre la carte.
+  ///
+  /// Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la pile -> retour
+  /// propre vers la fiche du sentier. go() ecrasait la pile (heritage shell).
   void _enterTrail(BuildContext context, WidgetRef ref) {
     ref.read(selectedTrailIdProvider.notifier).state = trailId;
-    context.go('/map');
+    context.push('/map');
   }
 }
 

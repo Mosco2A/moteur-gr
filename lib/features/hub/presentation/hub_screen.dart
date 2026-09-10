@@ -231,13 +231,16 @@ class HubScreen extends ConsumerWidget {
                   icon: Icons.navigation_outlined,
                   title: t.hub.cards.navigation,
                   subtitle: t.hub.cards.navigationSub,
-                  onTap: () => context.go('/map'),
+                  // Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la
+                  // pile -> retour propre vers le cockpit. go() ecrasait la pile
+                  // (heritage shell/onglets, supprime).
+                  onTap: () => context.push('/map'),
                 ),
                 QuickAccessCard(
                   icon: Icons.menu_book_outlined,
                   title: t.hub.cards.journal,
                   subtitle: t.hub.cards.journalSub,
-                  onTap: () => context.go('/journal'),
+                  onTap: () => context.push('/journal'),
                 ),
                 // PARITE GR20 (#99460) — INCENDIE : carte « Risques & alertes »
                 // (clone GR20 `FireRiskScreen`, data-driven). Niveaux de risque

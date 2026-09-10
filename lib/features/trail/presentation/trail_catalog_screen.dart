@@ -54,10 +54,13 @@ class TrailCatalogScreen extends ConsumerWidget {
   }
 
   /// Entre dans le sentier [trailId] : ecrit la selection (le moteur entier
-  /// suit via trailConfigProvider) puis ouvre le shell sur l'onglet Carte.
+  /// suit via trailConfigProvider) puis ouvre la carte.
+  ///
+  /// Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la pile -> retour
+  /// propre vers le catalogue. go() ecrasait la pile (heritage shell, supprime).
   void _enterTrail(BuildContext context, WidgetRef ref, String trailId) {
     ref.read(selectedTrailIdProvider.notifier).state = trailId;
-    context.go('/map');
+    context.push('/map');
   }
 }
 

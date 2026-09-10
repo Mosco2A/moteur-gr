@@ -25,24 +25,29 @@ void main() {
       expect(appRouter.routeInformationProvider.value.uri.path, '/nav-pilote');
     });
 
-    test('le premier niveau contient 1 shell + 19 routes racine', () {
-      // +1 : /health (E57 LOT D/D1, fiche sante hors-shell via Urgence).
-      // -1 : /planning (trek-planning) RETIREE — doublon orphelin du PROGRAMME
-      // (parite GR20 #99460), desormais servi via /trail/:id/planning.
-      // +1 : /nav-pilote (StepWays LOT 3 — ecran-pilote refonte nav, hors-shell
-      // DEDIE, demonstrateur visuel jetable a valider par Chris).
+    test('Ph4 hub-and-push : PLUS de StatefulShellRoute, tout en routes racine',
+        () {
+      // Big-bang (SPEC §5) : le StatefulShellRoute.indexedStack + AppShell est
+      // SUPPRIME. Les 6 ex-onglets deviennent des routes racine plein ecran.
       final routes = appRouter.configuration.routes;
-      expect(routes.length, 20);
-      expect(routes.first, isA<StatefulShellRoute>());
-      expect(routes.whereType<GoRoute>().length, 19);
+      expect(routes.whereType<StatefulShellRoute>(), isEmpty,
+          reason: 'plus d onglets persistants (hub-and-push)');
+      expect(routes.every((r) => r is GoRoute), isTrue,
+          reason: 'toutes les routes de 1er niveau sont des GoRoute');
+      // 6 ex-shell (my-treks/home/map/stages/journal/more) + 19 racines = 25.
+      expect(routes.whereType<GoRoute>().length, 25);
     });
 
-    test('les routes racine (hors shell) sont celles attendues', () {
+    test('les 6 ex-onglets sont desormais des routes racine', () {
       final paths = appRouter.configuration.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toList();
-      expect(paths, [
+      // Les 6 ex-shell, EN TETE (ordre de declaration), puis les racines.
+      expect(paths.take(6).toList(),
+          ['/my-treks', '/home', '/map', '/stages', '/journal', '/more']);
+      // Les racines historiques suivent, inchangees.
+      expect(paths.skip(6).toList(), [
         '/trails',
         '/trail/:id',
         '/group/:id',
@@ -68,10 +73,17 @@ void main() {
     });
 
     test('les routes racine sont nommees correctement', () {
-      final routes = appRouter.configuration.routes
+      final names = appRouter.configuration.routes
           .whereType<GoRoute>()
+          .map((r) => r.name)
           .toList();
-      expect(routes.map((r) => r.name).toList(), [
+      expect(names, [
+        'my-treks',
+        'home',
+        'map',
+        'stages',
+        'journal',
+        'more',
         'trails',
         'trail-detail',
         'group',
@@ -95,55 +107,32 @@ void main() {
     });
   });
 
-  group('AppRouter — bottom nav (StatefulShellRoute)', () {
-    StatefulShellRoute shell() =>
-        appRouter.configuration.routes.first as StatefulShellRoute;
+  group('AppRouter — hub-and-push (ex-onglets en routes racine)', () {
+    GoRoute rootRoute(String path) => appRouter.configuration.routes
+        .whereType<GoRoute>()
+        .firstWhere((r) => r.path == path);
 
-    test('le shell expose exactement 5 branches (5 onglets)', () {
-      expect(shell().branches.length, 5);
+    test('les 6 ex-onglets resolvent le bon ecran (nom de route)', () {
+      expect(rootRoute('/my-treks').name, 'my-treks');
+      expect(rootRoute('/home').name, 'home');
+      expect(rootRoute('/map').name, 'map');
+      expect(rootRoute('/stages').name, 'stages');
+      expect(rootRoute('/journal').name, 'journal');
+      expect(rootRoute('/more').name, 'more');
     });
 
-    test('chaque onglet porte le bon chemin racine', () {
-      final paths = shell().branches
-          .map((b) => (b.routes.first as GoRoute).path)
-          .toList();
-      // StepWays LOT 2 (option A) : l'onglet Accueil s'ouvre sur « Mes treks ».
-      expect(paths, ['/my-treks', '/map', '/stages', '/journal', '/more']);
-    });
-
-    test('chaque onglet porte le bon nom de route', () {
-      final names = shell().branches
-          .map((b) => (b.routes.first as GoRoute).name)
-          .toList();
-      expect(names, ['my-treks', 'map', 'stages', 'journal', 'more']);
-    });
-
-    test('chaque branche a sa propre cle de navigateur (etat isole)', () {
-      final keys = shell().branches.map((b) => b.navigatorKey).toList();
-      expect(keys.toSet().length, 5, reason: 'cles distinctes par onglet');
-    });
-
-    test('l onglet Etapes conserve sa sous-route /stages/:id', () {
-      // Accueil en index 0 -> Etapes passe en index 2 (Accueil/Carte/Etapes).
-      final stagesBranch = shell().branches[2];
-      final stagesRoute = stagesBranch.routes.first as GoRoute;
-      expect(stagesRoute.path, '/stages');
+    test('/stages conserve sa sous-route /stages/:id', () {
+      final stagesRoute = rootRoute('/stages');
       expect(stagesRoute.routes.length, 1);
       expect((stagesRoute.routes.first as GoRoute).path, ':id');
       expect((stagesRoute.routes.first as GoRoute).name, 'stage-by-id');
     });
 
-    test('l onglet Accueil (position 1) s ouvre sur « Mes treks »', () {
-      // StepWays LOT 2 (option A) : entree = /my-treks ; le cockpit /home reste
-      // la seconde route de la MEME branche (accessible via go('/home')).
-      final homeBranch = shell().branches.first;
-      final entryRoute = homeBranch.routes.first as GoRoute;
-      expect(entryRoute.path, '/my-treks');
-      expect(entryRoute.name, 'my-treks');
-
-      final cockpitRoute = homeBranch.routes[1] as GoRoute;
-      expect(cockpitRoute.path, '/home');
-      expect(cockpitRoute.name, 'home');
+    test('/home (cockpit) et /my-treks (maison) sont 2 routes racine distinctes',
+        () {
+      // Ex-branche Accueil (my-treks + home) : desormais 2 racines separees.
+      expect(rootRoute('/my-treks').name, 'my-treks');
+      expect(rootRoute('/home').name, 'home');
     });
   });
 

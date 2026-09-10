@@ -46,7 +46,6 @@ import '../../features/trail_selection/presentation/trail_selection_screen.dart'
 import '../../features/treks/presentation/my_treks_screen.dart';
 import '../config/feature_flags.dart';
 import '../engine/trail_engine.dart';
-import 'app_shell.dart';
 import '../../features/trek/presentation/map/map_screen.dart';
 import '../../features/trek/presentation/stages/stage_list_screen.dart'
     as trek_stages;
@@ -54,16 +53,12 @@ import '../../features/trek/presentation/planning/itinerary_screen.dart';
 import '../../features/trek/presentation/stages/trek_stage_detail_screen.dart'
     as trek_detail;
 
-/// Cles de navigation : racine + une par branche d'onglet (E2.9b).
+/// Cle de navigation racine (StepWays LOT 3, Ph4 — hub-and-push).
 ///
-/// La cle racine porte les routes hors-shell (detail sentier, modales).
-/// Chaque branche garde sa propre pile -> etat preserve par onglet.
+/// Depuis le big-bang, il n'y a plus de branches d'onglet (StatefulShellRoute
+/// supprime) : une seule pile racine, sur laquelle on POUSSE les ecrans. Les
+/// cles de branche (`_shellHomeKey`, etc.) ont ete retirees avec le shell.
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final _shellHomeKey = GlobalKey<NavigatorState>(debugLabel: 'shell-home');
-final _shellMapKey = GlobalKey<NavigatorState>(debugLabel: 'shell-map');
-final _shellStagesKey = GlobalKey<NavigatorState>(debugLabel: 'shell-stages');
-final _shellJournalKey = GlobalKey<NavigatorState>(debugLabel: 'shell-journal');
-final _shellMoreKey = GlobalKey<NavigatorState>(debugLabel: 'shell-more');
 
 /// Configuration du routeur GoRouter.
 ///
@@ -129,116 +124,88 @@ final appRouter = GoRouter(
   initialLocation: '/nav-pilote',
   redirect: _guardCurrentTrail,
   routes: [
-    // ===== Navigation principale : bottom nav 5 onglets =====
-    StatefulShellRoute.indexedStack(
-      builder: (context, state, navigationShell) =>
-          AppShell(navigationShell: navigationShell),
-      branches: [
-        // --- Onglet 1 : Accueil (StepWays LOT 2, Phase 5 — option A) ---
-        // L'ENTREE de l'onglet Accueil est desormais « Mes treks » (/my-treks) :
-        // l'accueil maison qui liste les treks possedes (En cours / Préparés /
-        // Terminés) + Découvrir + Mon compte. Selectionner un trek ecrit
-        // selectedTrailIdProvider puis bascule vers le cockpit /home, DANS LE
-        // MEME onglet (le HUB reste une route de cette branche : il agrege
-        // l'etat du sentier actif et les points d'entree de ses fonctions,
-        // #NAV02). /home n'est plus l'entree par defaut du shell.
-        StatefulShellBranch(
-          navigatorKey: _shellHomeKey,
-          routes: [
-            GoRoute(
-              path: '/my-treks',
-              name: 'my-treks',
-              builder: (context, state) => const MyTreksScreen(),
-            ),
-            GoRoute(
-              path: '/home',
-              name: 'home',
-              builder: (context, state) => const HubScreen(),
-            ),
-          ],
-        ),
-        // --- Onglet 2 : Carte ---
-        StatefulShellBranch(
-          navigatorKey: _shellMapKey,
-          routes: [
-            GoRoute(
-              path: '/map',
-              name: 'map',
-              builder: (context, state) {
-                // trailId : query param prioritaire, sinon sentier actif.
-                final trailId = state.uri.queryParameters['trailId'];
-                return _TrailScopedScreen(
-                  explicitTrailId: trailId,
-                  builder: (id) => MapScreen(trailId: id),
-                );
-              },
-            ),
-          ],
-        ),
-        // --- Onglet 3 : Etapes ---
-        StatefulShellBranch(
-          navigatorKey: _shellStagesKey,
-          routes: [
-            GoRoute(
-              path: '/stages',
-              name: 'stages',
-              builder: (context, state) {
-                final trailId = state.uri.queryParameters['trailId'];
-                return _TrailScopedScreen(
-                  explicitTrailId: trailId,
-                  builder: (id) => trek_stages.StageListScreen(trailId: id),
-                );
-              },
-              routes: [
-                GoRoute(
-                  path: ':id',
-                  name: 'stage-by-id',
-                  builder: (context, state) {
-                    final trailId = state.uri.queryParameters['trailId'];
-                    final stageId =
-                        int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
-                    return _TrailScopedScreen(
-                      explicitTrailId: trailId,
-                      builder: (id) => trek_detail.TrekStageDetailScreen(
-                        trailId: id,
-                        stageId: stageId,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ],
-        ),
-        // --- Onglet 4 : Journal ---
-        StatefulShellBranch(
-          navigatorKey: _shellJournalKey,
-          routes: [
-            GoRoute(
-              path: '/journal',
-              name: 'journal',
-              builder: (context, state) {
-                final trailId = state.uri.queryParameters['trailId'];
-                return _TrailScopedScreen(
-                  explicitTrailId: trailId,
-                  builder: (id) => JournalScreen(trailId: id),
-                );
-              },
-            ),
-          ],
-        ),
-        // --- Onglet 5 : Plus ---
-        StatefulShellBranch(
-          navigatorKey: _shellMoreKey,
-          routes: [
-            GoRoute(
-              path: '/more',
-              name: 'more',
-              builder: (context, state) => const MoreScreen(),
-            ),
-          ],
+    // ===== HUB-AND-PUSH (StepWays LOT 3, Ph4 — big-bang) =====
+    // Le StatefulShellRoute.indexedStack + AppShell (bottom nav 5 onglets) est
+    // SUPPRIME : plus d'onglets persistants. Les 6 anciens paths du shell
+    // deviennent des ROUTES RACINE plein ecran (hub-and-push : on POUSSE depuis
+    // l'accueil, on revient par la pile). Les builders sont INCHANGES (refonte
+    // de CONTENANT, pas de contenu). Le back Android est centralise dans
+    // l'AppHeader (Ph1) ; l'accueil contextuel (Ph3) remplace la logique
+    // d'onglet. Deep-links preserves (?trailId=, /journal). Cf. SPEC §5.
+
+    // --- Accueil « maison » : liste des treks (StepWays LOT 2 — option A) ---
+    GoRoute(
+      path: '/my-treks',
+      name: 'my-treks',
+      builder: (context, state) => const MyTreksScreen(),
+    ),
+    // --- Accueil « terrain » : cockpit du trek actif (HUB) ---
+    GoRoute(
+      path: '/home',
+      name: 'home',
+      builder: (context, state) => const HubScreen(),
+    ),
+    // --- Carte ---
+    GoRoute(
+      path: '/map',
+      name: 'map',
+      builder: (context, state) {
+        // trailId : query param prioritaire, sinon sentier actif (deep-link
+        // ?trailId= preserve).
+        final trailId = state.uri.queryParameters['trailId'];
+        return _TrailScopedScreen(
+          explicitTrailId: trailId,
+          builder: (id) => MapScreen(trailId: id),
+        );
+      },
+    ),
+    // --- Etapes (+ detail :id) ---
+    GoRoute(
+      path: '/stages',
+      name: 'stages',
+      builder: (context, state) {
+        final trailId = state.uri.queryParameters['trailId'];
+        return _TrailScopedScreen(
+          explicitTrailId: trailId,
+          builder: (id) => trek_stages.StageListScreen(trailId: id),
+        );
+      },
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'stage-by-id',
+          builder: (context, state) {
+            final trailId = state.uri.queryParameters['trailId'];
+            final stageId =
+                int.tryParse(state.pathParameters['id'] ?? '') ?? 1;
+            return _TrailScopedScreen(
+              explicitTrailId: trailId,
+              builder: (id) => trek_detail.TrekStageDetailScreen(
+                trailId: id,
+                stageId: stageId,
+              ),
+            );
+          },
         ),
       ],
+    ),
+    // --- Journal (deep-link ?trailId= preserve) ---
+    GoRoute(
+      path: '/journal',
+      name: 'journal',
+      builder: (context, state) {
+        final trailId = state.uri.queryParameters['trailId'];
+        return _TrailScopedScreen(
+          explicitTrailId: trailId,
+          builder: (id) => JournalScreen(trailId: id),
+        );
+      },
+    ),
+    // --- Plus ---
+    GoRoute(
+      path: '/more',
+      name: 'more',
+      builder: (context, state) => const MoreScreen(),
     ),
 
     // ===== Routes racine (hors shell, plein ecran) =====
@@ -716,19 +683,14 @@ bool hasDownloadedTrails = true;
 /// pas explicitement (meme contrat permissif que [hasDownloadedTrails]).
 bool hasCompletedOnboarding = true;
 
-/// Chemins racine des 5 onglets du shell (StatefulShellRoute).
+/// Chemins CŒUR de l'app (ex-onglets du shell, désormais routes racine).
 ///
-/// Ces routes constituent le COEUR de l'app : elles n'ont de sens qu'avec un
-/// sentier actif. Le guard les protege (cablage nav #88246) -> sans sentier
-/// utilisable, on renvoie vers le catalogue pour en choisir/telecharger un.
-///
-/// HUB E07 (AM-1 #F11 #NAV03) : « /home » (Accueil) remplace « /planning » dans
-/// la barre ; le Planning trek devient une route hors-shell (#NAV02).
-///
-/// StepWays LOT 2 (Phase 5 — option A) : l'onglet Accueil s'ouvre sur
-/// « /my-treks » (accueil maison) ; « /home » (cockpit) reste une route de la
-/// MEME branche, donc protegee de la meme facon (exige un sentier utilisable).
-const _shellTabPaths = <String>[
+/// Ces routes n'ont de sens qu'avec un sentier actif : le guard les protège
+/// (cablage nav #88246) -> sans sentier utilisable, on renvoie vers le catalogue
+/// pour en choisir/telecharger un. Le StatefulShellRoute a été supprimé (Ph4,
+/// hub-and-push) mais la POLITIQUE de garde « ces chemins exigent un sentier »
+/// reste valable : la liste est donc conservée telle quelle.
+const _coreTrailPaths = <String>[
   '/my-treks',
   '/home',
   '/map',
@@ -782,7 +744,7 @@ String? redirectForPath(String path) {
   //  - routes du shell (coeur) -> retour au catalogue pour en choisir un ;
   //  - autres routes -> ecran bloquant historique /no-data.
   if (!hasDownloadedTrails) {
-    if (_shellTabPaths.contains(path)) return '/catalog';
+    if (_coreTrailPaths.contains(path)) return '/catalog';
     return '/no-data';
   }
 
