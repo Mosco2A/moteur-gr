@@ -11,6 +11,7 @@ import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/hub/presentation/hub_screen.dart';
 import '../../features/hub/presentation/nav_pilote_screen.dart';
 import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
+import '../../features/feasibility/presentation/hiker_profile_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
@@ -366,6 +367,15 @@ final appRouter = GoRouter(
           path: 'feasibility',
           name: 'trail-feasibility',
           builder: (context, state) => const FeasibilityQuestionnaireScreen(),
+        ),
+        // StepWays LOT 4 — FICHE D'INFO : 1ere page de la faisabilite (profil
+        // randonneur : age/taille/poids->IMC local, sexe optionnel, pays ISO).
+        // Donnee morpho SENSIBLE (art. 9 RGPD) : local + miroir cloud anonyme,
+        // consentement healthData (finalite morpho). Pushee (retour propre).
+        GoRoute(
+          path: 'hiker-profile',
+          name: 'trail-hiker-profile',
+          builder: (context, state) => const HikerProfileScreen(),
         ),
         GoRoute(
           path: 'tips',

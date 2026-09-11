@@ -30,6 +30,8 @@ import 'tables/nuitee_selections_table.dart';
 import 'tables/wallet_balance_table.dart';
 import 'tables/trek_entitlements_table.dart';
 import 'tables/no_ads_state_table.dart';
+import 'tables/hiker_profile_table.dart';
+import 'tables/past_hikes_table.dart';
 import 'daos/stages_dao.dart';
 import 'daos/pois_dao.dart';
 import 'daos/progress_dao.dart';
@@ -60,6 +62,8 @@ import 'daos/nuitee_selections_dao.dart';
 import 'daos/wallet_dao.dart';
 import 'daos/trek_entitlements_dao.dart';
 import 'daos/no_ads_dao.dart';
+import 'daos/hiker_profile_dao.dart';
+import 'daos/past_hikes_dao.dart';
 
 part 'database.g.dart';
 
@@ -117,6 +121,9 @@ part 'database.g.dart';
     WalletBalance,
     TrekEntitlements,
     NoAdsState,
+    HikerProfile,
+    PastHikeEntries,
+    HikerExperienceNote,
   ],
   daos: [
     StagesDao,
@@ -149,13 +156,15 @@ part 'database.g.dart';
     WalletDao,
     TrekEntitlementsDao,
     NoAdsDao,
+    HikerProfileDao,
+    PastHikesDao,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 24;
+  int get schemaVersion => 25;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -317,6 +326,16 @@ class AppDatabase extends _$AppDatabase {
             await migrator.createTable(walletBalance);
             await migrator.createTable(trekEntitlements);
             await migrator.createTable(noAdsState);
+          }
+          // Migration v24 -> v25 : socle faisabilite StepWays (LOT 4).
+          // STRICTEMENT ADDITIF (createTable only) : 3 nouvelles tables
+          // (profil randonneur SENSIBLE + randos passees + note d'experience
+          // globale), aucune table/colonne existante touchee. Donnees local
+          // durable (prefs) + miroir cloud anonyme (hash), zero nominatif.
+          if (from < 25) {
+            await migrator.createTable(hikerProfile);
+            await migrator.createTable(pastHikeEntries);
+            await migrator.createTable(hikerExperienceNote);
           }
         },
       );

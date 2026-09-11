@@ -102,6 +102,10 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$import$fr import = Translations$import$fr.internal(_root);
 	late final Translations$myTreks$fr myTreks = Translations$myTreks$fr.internal(_root);
 	late final Translations$trekState$fr trekState = Translations$trekState$fr.internal(_root);
+	late final Translations$hikerProfile$fr hikerProfile = Translations$hikerProfile$fr.internal(_root);
+	late final Translations$walkTest$fr walkTest = Translations$walkTest$fr.internal(_root);
+	late final Translations$pastHikes$fr pastHikes = Translations$pastHikes$fr.internal(_root);
+	late final Translations$ffrando$fr ffrando = Translations$ffrando$fr.internal(_root);
 }
 
 // Path: a11y
@@ -1390,6 +1394,32 @@ class Translations$feasibility$fr {
 	String get tipsTitle => 'Nos conseils';
 
 	late final Translations$feasibility$recommendations$fr recommendations = Translations$feasibility$recommendations$fr.internal(_root);
+
+	/// fr: 'Faisabilite pour ce trek'
+	String get objectiveTitle => 'Faisabilite pour ce trek';
+
+	/// fr: 'Verdict base sur votre profil reel croise avec les exigences du trek.'
+	String get objectiveIntro => 'Verdict base sur votre profil reel croise avec les exigences du trek.';
+
+	/// fr: 'Ma fiche d'info'
+	String get openProfile => 'Ma fiche d\'info';
+
+	/// fr: 'Test 6 minutes'
+	String get openWalkTest => 'Test 6 minutes';
+
+	/// fr: 'Mes 5 dernieres randos'
+	String get openPastHikes => 'Mes 5 dernieres randos';
+
+	/// fr: 'Base sur votre profil objectif'
+	String get sourceObjective => 'Base sur votre profil objectif';
+
+	/// fr: 'Base sur le questionnaire (en attendant votre profil)'
+	String get sourceFallback => 'Base sur le questionnaire (en attendant votre profil)';
+
+	/// fr: 'Ecart trop important'
+	String get gapTooHigh => 'Ecart trop important';
+
+	late final Translations$feasibility$gaps$fr gaps = Translations$feasibility$gaps$fr.internal(_root);
 }
 
 // Path: tips
@@ -2183,6 +2213,9 @@ class Translations$consent$fr {
 	String get reviewNeeded => 'Notre politique a évolué : merci de revoir vos choix.';
 
 	late final Translations$consent$a11y$fr a11y = Translations$consent$a11y$fr.internal(_root);
+
+	/// fr: 'Inclut votre morphologie (age, taille, poids) pour la faisabilite d'un trek. Donnee de sante, article 9 RGPD, gardee sur l'appareil.'
+	String get healthDataMorphoNote => 'Inclut votre morphologie (age, taille, poids) pour la faisabilite d\'un trek. Donnee de sante, article 9 RGPD, gardee sur l\'appareil.';
 }
 
 // Path: moderation
@@ -2852,6 +2885,270 @@ class Translations$trekState$fr {
 	// Translations
 	late final Translations$trekState$abandonDialog$fr abandonDialog = Translations$trekState$abandonDialog$fr.internal(_root);
 	late final Translations$trekState$resumeOrphanDialog$fr resumeOrphanDialog = Translations$trekState$resumeOrphanDialog$fr.internal(_root);
+}
+
+// Path: hikerProfile
+class Translations$hikerProfile$fr {
+	Translations$hikerProfile$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Fiche d'info'
+	String get title => 'Fiche d\'info';
+
+	/// fr: 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.'
+	String get privacyBanner => 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.';
+
+	/// fr: 'Age'
+	String get fieldAge => 'Age';
+
+	/// fr: 'En annees'
+	String get hintAge => 'En annees';
+
+	/// fr: 'Age invalide (5 a 120)'
+	String get errorAge => 'Age invalide (5 a 120)';
+
+	/// fr: 'Taille'
+	String get fieldHeight => 'Taille';
+
+	/// fr: 'En centimetres'
+	String get hintHeight => 'En centimetres';
+
+	/// fr: 'Taille invalide (80 a 250 cm)'
+	String get errorHeight => 'Taille invalide (80 a 250 cm)';
+
+	/// fr: 'Poids'
+	String get fieldWeight => 'Poids';
+
+	/// fr: 'En kilogrammes'
+	String get hintWeight => 'En kilogrammes';
+
+	/// fr: 'Poids invalide (25 a 300 kg)'
+	String get errorWeight => 'Poids invalide (25 a 300 kg)';
+
+	/// fr: 'Sexe (optionnel)'
+	String get fieldSex => 'Sexe (optionnel)';
+
+	/// fr: 'Femme'
+	String get sexFemale => 'Femme';
+
+	/// fr: 'Homme'
+	String get sexMale => 'Homme';
+
+	/// fr: 'Non precise'
+	String get sexUnspecified => 'Non precise';
+
+	/// fr: 'Pays'
+	String get fieldCountry => 'Pays';
+
+	/// fr: 'Code (ex. FR)'
+	String get hintCountry => 'Code (ex. FR)';
+
+	/// fr: 'IMC'
+	String get bmiLabel => 'IMC';
+
+	late final Translations$hikerProfile$bmiCategories$fr bmiCategories = Translations$hikerProfile$bmiCategories$fr.internal(_root);
+
+	/// fr: 'Donnees de morphologie (article 9 RGPD)'
+	String get consentTitle => 'Donnees de morphologie (article 9 RGPD)';
+
+	/// fr: 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.'
+	String get consentBody => 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.';
+
+	/// fr: 'J'autorise l'usage de ma morphologie pour la faisabilite'
+	String get consentToggle => 'J\'autorise l\'usage de ma morphologie pour la faisabilite';
+
+	/// fr: 'Enregistrer'
+	String get save => 'Enregistrer';
+
+	/// fr: 'Fiche enregistree'
+	String get saved => 'Fiche enregistree';
+
+	/// fr: 'Rien n'est pre-rempli : soyez honnete, c'est votre securite.'
+	String get morphoNotPrefilledHint => 'Rien n\'est pre-rempli : soyez honnete, c\'est votre securite.';
+
+	/// fr: 'A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant.'
+	String get seniorReminder => 'A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant.';
+}
+
+// Path: walkTest
+class Translations$walkTest$fr {
+	Translations$walkTest$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Test de marche 6 minutes'
+	String get title => 'Test de marche 6 minutes';
+
+	/// fr: 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre age et sexe.'
+	String get intro => 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre age et sexe.';
+
+	/// fr: 'Effort a eviter en cas de souci cardiaque non verifie. Arretez-vous en cas de gene.'
+	String get safetyWarning => 'Effort a eviter en cas de souci cardiaque non verifie. Arretez-vous en cas de gene.';
+
+	/// fr: 'Demarrer le test'
+	String get start => 'Demarrer le test';
+
+	/// fr: 'Arreter'
+	String get stop => 'Arreter';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Preparez-vous...'
+	String get countdown => 'Preparez-vous...';
+
+	/// fr: 'En cours'
+	String get running => 'En cours';
+
+	/// fr: 'Distance'
+	String get liveDistance => 'Distance';
+
+	/// fr: 'Temps restant'
+	String get timeLeft => 'Temps restant';
+
+	/// fr: 'm'
+	String get meters => 'm';
+
+	/// fr: 'Resultat du test'
+	String get resultTitle => 'Resultat du test';
+
+	/// fr: 'Distance parcourue'
+	String get resultDistance => 'Distance parcourue';
+
+	/// fr: 'Niveau estime'
+	String get resultLevel => 'Niveau estime';
+
+	/// fr: 'Realise le $date'
+	String resultDate({required Object date}) => 'Realise le ${date}';
+
+	/// fr: 'Refaire le test'
+	String get doneAgain => 'Refaire le test';
+
+	/// fr: 'Le GPS est necessaire pour mesurer la distance.'
+	String get gpsNeeded => 'Le GPS est necessaire pour mesurer la distance.';
+
+	/// fr: 'Autorisez la localisation pour lancer le test.'
+	String get gpsDenied => 'Autorisez la localisation pour lancer le test.';
+
+	/// fr: 'Rappel mensuel active'
+	String get monthlyReminderOn => 'Rappel mensuel active';
+
+	/// fr: 'Un rappel de test vous sera propose chaque mois pour suivre votre forme.'
+	String get monthlyReminderBody => 'Un rappel de test vous sera propose chaque mois pour suivre votre forme.';
+
+	/// fr: 'Test non realise'
+	String get notDoneYet => 'Test non realise';
+
+	/// fr: 'En attendant le test, votre niveau est estime a partir de votre questionnaire.'
+	String get fallbackNotice => 'En attendant le test, votre niveau est estime a partir de votre questionnaire.';
+
+	late final Translations$walkTest$levels$fr levels = Translations$walkTest$levels$fr.internal(_root);
+}
+
+// Path: pastHikes
+class Translations$pastHikes$fr {
+	Translations$pastHikes$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Vos 5 dernieres randos'
+	String get title => 'Vos 5 dernieres randos';
+
+	/// fr: 'Ajoutez jusqu'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu'une etiquette.'
+	String get intro => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.';
+
+	/// fr: 'Ajouter une rando'
+	String get addHike => 'Ajouter une rando';
+
+	/// fr: 'Aucune rando saisie pour l'instant.'
+	String get empty => 'Aucune rando saisie pour l\'instant.';
+
+	/// fr: 'Date'
+	String get fieldDate => 'Date';
+
+	/// fr: 'Nombre de jours'
+	String get fieldDays => 'Nombre de jours';
+
+	/// fr: 'Marche moyenne par jour (h)'
+	String get fieldAvgHours => 'Marche moyenne par jour (h)';
+
+	/// fr: 'Denivele + total (m)'
+	String get fieldElevation => 'Denivele + total (m)';
+
+	/// fr: 'Distance totale (km)'
+	String get fieldDistance => 'Distance totale (km)';
+
+	/// fr: 'par jour'
+	String get perDay => 'par jour';
+
+	/// fr: 'Modifier la rando'
+	String get editHike => 'Modifier la rando';
+
+	/// fr: 'Supprimer'
+	String get deleteHike => 'Supprimer';
+
+	/// fr: 'Enregistrer'
+	String get save => 'Enregistrer';
+
+	/// fr: 'Randos enregistrees'
+	String get saved => 'Randos enregistrees';
+
+	/// fr: 'Maximum de 5 randos atteint.'
+	String get maxReached => 'Maximum de 5 randos atteint.';
+
+	/// fr: 'Difficultes rencontrees'
+	String get difficultiesTitle => 'Difficultes rencontrees';
+
+	/// fr: 'Un seul texte pour l'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...'
+	String get difficultiesHint => 'Un seul texte pour l\'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...';
+
+	/// fr: 'Note enregistree'
+	String get difficultiesSaved => 'Note enregistree';
+}
+
+// Path: ffrando
+class Translations$ffrando$fr {
+	Translations$ffrando$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Cotation FFRandonnee'
+	String get cotationTitle => 'Cotation FFRandonnee';
+
+	/// fr: 'Effort'
+	String get effort => 'Effort';
+
+	/// fr: 'Technicite'
+	String get technicite => 'Technicite';
+
+	/// fr: 'Risque'
+	String get risque => 'Risque';
+
+	/// fr: 'Indice IBP'
+	String get ibpLabel => 'Indice IBP';
+
+	/// fr: 'Effort (1 a 5)'
+	String get effortScale => 'Effort (1 a 5)';
+
+	/// fr: 'Technicite (1 a 5)'
+	String get techniciteScale => 'Technicite (1 a 5)';
+
+	/// fr: 'Risque (1 a 5)'
+	String get risqueScale => 'Risque (1 a 5)';
+
+	/// fr: 'Non cote'
+	String get notRated => 'Non cote';
+
+	late final Translations$ffrando$effortLevels$fr effortLevels = Translations$ffrando$effortLevels$fr.internal(_root);
 }
 
 // Path: hub.trekCard
@@ -4074,6 +4371,36 @@ class Translations$feasibility$recommendations$fr {
 	late final Translations$feasibility$recommendations$caution$fr caution = Translations$feasibility$recommendations$caution$fr.internal(_root);
 	late final Translations$feasibility$recommendations$good$fr good = Translations$feasibility$recommendations$good$fr.internal(_root);
 	late final Translations$feasibility$recommendations$excellent$fr excellent = Translations$feasibility$recommendations$excellent$fr.internal(_root);
+}
+
+// Path: feasibility.gaps
+class Translations$feasibility$gaps$fr {
+	Translations$feasibility$gaps$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Denivele par jour trop eleve vs votre habitude'
+	String get elevationPerDay => 'Denivele par jour trop eleve vs votre habitude';
+
+	/// fr: 'Distance par jour superieure a votre experience'
+	String get distancePerDay => 'Distance par jour superieure a votre experience';
+
+	/// fr: 'Nombre de jours consecutifs jamais atteint'
+	String get consecutiveDays => 'Nombre de jours consecutifs jamais atteint';
+
+	/// fr: 'Technicite du terrain au-dessus de votre niveau'
+	String get technicity => 'Technicite du terrain au-dessus de votre niveau';
+
+	/// fr: 'Niveau de risque eleve pour ce trek'
+	String get risk => 'Niveau de risque eleve pour ce trek';
+
+	/// fr: 'Forme insuffisante au test 6 minutes'
+	String get fitness => 'Forme insuffisante au test 6 minutes';
+
+	/// fr: 'Effort global (IBP) superieur a votre experience'
+	String get effort => 'Effort global (IBP) superieur a votre experience';
 }
 
 // Path: catalog.a11y
@@ -5594,6 +5921,72 @@ class Translations$trekState$resumeOrphanDialog$fr {
 	String get abandon => 'Abandonner';
 }
 
+// Path: hikerProfile.bmiCategories
+class Translations$hikerProfile$bmiCategories$fr {
+	Translations$hikerProfile$bmiCategories$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Maigreur'
+	String get underweight => 'Maigreur';
+
+	/// fr: 'Corpulence normale'
+	String get normal => 'Corpulence normale';
+
+	/// fr: 'Surpoids'
+	String get overweight => 'Surpoids';
+
+	/// fr: 'Obesite'
+	String get obese => 'Obesite';
+}
+
+// Path: walkTest.levels
+class Translations$walkTest$levels$fr {
+	Translations$walkTest$levels$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Faible'
+	String get low => 'Faible';
+
+	/// fr: 'Moyen'
+	String get moderate => 'Moyen';
+
+	/// fr: 'Bon'
+	String get good => 'Bon';
+
+	/// fr: 'Excellent'
+	String get excellent => 'Excellent';
+}
+
+// Path: ffrando.effortLevels
+class Translations$ffrando$effortLevels$fr {
+	Translations$ffrando$effortLevels$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Tres facile'
+	String get k1 => 'Tres facile';
+
+	/// fr: 'Facile'
+	String get k2 => 'Facile';
+
+	/// fr: 'Moyen'
+	String get k3 => 'Moyen';
+
+	/// fr: 'Difficile'
+	String get k4 => 'Difficile';
+
+	/// fr: 'Tres difficile'
+	String get k5 => 'Tres difficile';
+}
+
 // Path: weather.alert.storm
 class Translations$weather$alert$storm$fr {
 	Translations$weather$alert$storm$fr.internal(this._root);
@@ -6791,6 +7184,21 @@ extension on Translations {
 			'feasibility.recommendations.excellent.tips.tip1' => 'Restez à l’écoute de votre corps',
 			'feasibility.recommendations.excellent.tips.tip2' => 'Partagez votre expérience avec les randonneurs',
 			'feasibility.recommendations.excellent.tips.tip3' => 'Documentez votre aventure dans le journal',
+			'feasibility.objectiveTitle' => 'Faisabilite pour ce trek',
+			'feasibility.objectiveIntro' => 'Verdict base sur votre profil reel croise avec les exigences du trek.',
+			'feasibility.openProfile' => 'Ma fiche d\'info',
+			'feasibility.openWalkTest' => 'Test 6 minutes',
+			'feasibility.openPastHikes' => 'Mes 5 dernieres randos',
+			'feasibility.sourceObjective' => 'Base sur votre profil objectif',
+			'feasibility.sourceFallback' => 'Base sur le questionnaire (en attendant votre profil)',
+			'feasibility.gapTooHigh' => 'Ecart trop important',
+			'feasibility.gaps.elevationPerDay' => 'Denivele par jour trop eleve vs votre habitude',
+			'feasibility.gaps.distancePerDay' => 'Distance par jour superieure a votre experience',
+			'feasibility.gaps.consecutiveDays' => 'Nombre de jours consecutifs jamais atteint',
+			'feasibility.gaps.technicity' => 'Technicite du terrain au-dessus de votre niveau',
+			'feasibility.gaps.risk' => 'Niveau de risque eleve pour ce trek',
+			'feasibility.gaps.fitness' => 'Forme insuffisante au test 6 minutes',
+			'feasibility.gaps.effort' => 'Effort global (IBP) superieur a votre experience',
 			'tips.carouselTitle' => 'Conseils randonnée',
 			'tips.allCategories' => 'Toutes',
 			'tips.swipeHint' => 'Glissez pour voir plus',
@@ -7089,6 +7497,8 @@ extension on Translations {
 			'consent.onboardingIntro' => 'Rien n\'est activé par défaut. Choisissez, finalité par finalité, ce que vous autorisez. Vous pourrez tout modifier à tout moment dans les réglages.',
 			'consent.settingsTitle' => 'Confidentialité et consentement',
 			'consent.settingsIntro' => 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.',
+			_ => null,
+		} ?? switch (path) {
 			'consent.settingsEntry' => 'Confidentialité et consentement',
 			'consent.settingsEntryDesc' => 'Gérer mes autorisations (géolocalisation, partage, santé)',
 			'consent.purposes.locationNavigation' => 'Navigation personnelle',
@@ -7104,8 +7514,6 @@ extension on Translations {
 			'consent.granted' => 'Autorisé',
 			'consent.denied' => 'Non autorisé',
 			'consent.grant' => 'Autoriser',
-			_ => null,
-		} ?? switch (path) {
 			'consent.revoke' => 'Retirer',
 			'consent.decidedOn' => ({required Object date}) => 'Choix du ${date}',
 			'consent.notDecided' => 'En attente de votre choix',
@@ -7117,6 +7525,7 @@ extension on Translations {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}',
 			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
 			'consent.a11y.policyButton' => 'Ouvrir la politique de confidentialité',
+			'consent.healthDataMorphoNote' => 'Inclut votre morphologie (age, taille, poids) pour la faisabilite d\'un trek. Donnee de sante, article 9 RGPD, gardee sur l\'appareil.',
 			'moderation.reportTitle' => 'Signaler ce contenu',
 			'moderation.reportIntro' => 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.',
 			'moderation.reasonLabel' => 'Motif du signalement',
@@ -7462,6 +7871,93 @@ extension on Translations {
 			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?',
 			'trekState.resumeOrphanDialog.resume' => 'Reprendre',
 			'trekState.resumeOrphanDialog.abandon' => 'Abandonner',
+			'hikerProfile.title' => 'Fiche d\'info',
+			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.',
+			'hikerProfile.fieldAge' => 'Age',
+			'hikerProfile.hintAge' => 'En annees',
+			'hikerProfile.errorAge' => 'Age invalide (5 a 120)',
+			'hikerProfile.fieldHeight' => 'Taille',
+			'hikerProfile.hintHeight' => 'En centimetres',
+			'hikerProfile.errorHeight' => 'Taille invalide (80 a 250 cm)',
+			'hikerProfile.fieldWeight' => 'Poids',
+			'hikerProfile.hintWeight' => 'En kilogrammes',
+			'hikerProfile.errorWeight' => 'Poids invalide (25 a 300 kg)',
+			'hikerProfile.fieldSex' => 'Sexe (optionnel)',
+			'hikerProfile.sexFemale' => 'Femme',
+			'hikerProfile.sexMale' => 'Homme',
+			'hikerProfile.sexUnspecified' => 'Non precise',
+			'hikerProfile.fieldCountry' => 'Pays',
+			'hikerProfile.hintCountry' => 'Code (ex. FR)',
+			'hikerProfile.bmiLabel' => 'IMC',
+			'hikerProfile.bmiCategories.underweight' => 'Maigreur',
+			'hikerProfile.bmiCategories.normal' => 'Corpulence normale',
+			'hikerProfile.bmiCategories.overweight' => 'Surpoids',
+			'hikerProfile.bmiCategories.obese' => 'Obesite',
+			'hikerProfile.consentTitle' => 'Donnees de morphologie (article 9 RGPD)',
+			'hikerProfile.consentBody' => 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.',
+			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilite',
+			'hikerProfile.save' => 'Enregistrer',
+			'hikerProfile.saved' => 'Fiche enregistree',
+			'hikerProfile.morphoNotPrefilledHint' => 'Rien n\'est pre-rempli : soyez honnete, c\'est votre securite.',
+			'hikerProfile.seniorReminder' => 'A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant.',
+			'walkTest.title' => 'Test de marche 6 minutes',
+			'walkTest.intro' => 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre age et sexe.',
+			'walkTest.safetyWarning' => 'Effort a eviter en cas de souci cardiaque non verifie. Arretez-vous en cas de gene.',
+			'walkTest.start' => 'Demarrer le test',
+			'walkTest.stop' => 'Arreter',
+			'walkTest.cancel' => 'Annuler',
+			'walkTest.countdown' => 'Preparez-vous...',
+			'walkTest.running' => 'En cours',
+			'walkTest.liveDistance' => 'Distance',
+			'walkTest.timeLeft' => 'Temps restant',
+			'walkTest.meters' => 'm',
+			'walkTest.resultTitle' => 'Resultat du test',
+			'walkTest.resultDistance' => 'Distance parcourue',
+			'walkTest.resultLevel' => 'Niveau estime',
+			'walkTest.resultDate' => ({required Object date}) => 'Realise le ${date}',
+			'walkTest.doneAgain' => 'Refaire le test',
+			'walkTest.gpsNeeded' => 'Le GPS est necessaire pour mesurer la distance.',
+			'walkTest.gpsDenied' => 'Autorisez la localisation pour lancer le test.',
+			'walkTest.monthlyReminderOn' => 'Rappel mensuel active',
+			'walkTest.monthlyReminderBody' => 'Un rappel de test vous sera propose chaque mois pour suivre votre forme.',
+			'walkTest.notDoneYet' => 'Test non realise',
+			'walkTest.fallbackNotice' => 'En attendant le test, votre niveau est estime a partir de votre questionnaire.',
+			'walkTest.levels.low' => 'Faible',
+			'walkTest.levels.moderate' => 'Moyen',
+			'walkTest.levels.good' => 'Bon',
+			'walkTest.levels.excellent' => 'Excellent',
+			'pastHikes.title' => 'Vos 5 dernieres randos',
+			'pastHikes.intro' => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.',
+			'pastHikes.addHike' => 'Ajouter une rando',
+			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
+			'pastHikes.fieldDate' => 'Date',
+			'pastHikes.fieldDays' => 'Nombre de jours',
+			'pastHikes.fieldAvgHours' => 'Marche moyenne par jour (h)',
+			'pastHikes.fieldElevation' => 'Denivele + total (m)',
+			'pastHikes.fieldDistance' => 'Distance totale (km)',
+			'pastHikes.perDay' => 'par jour',
+			'pastHikes.editHike' => 'Modifier la rando',
+			'pastHikes.deleteHike' => 'Supprimer',
+			'pastHikes.save' => 'Enregistrer',
+			'pastHikes.saved' => 'Randos enregistrees',
+			'pastHikes.maxReached' => 'Maximum de 5 randos atteint.',
+			'pastHikes.difficultiesTitle' => 'Difficultes rencontrees',
+			'pastHikes.difficultiesHint' => 'Un seul texte pour l\'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...',
+			'pastHikes.difficultiesSaved' => 'Note enregistree',
+			'ffrando.cotationTitle' => 'Cotation FFRandonnee',
+			'ffrando.effort' => 'Effort',
+			'ffrando.technicite' => 'Technicite',
+			'ffrando.risque' => 'Risque',
+			'ffrando.ibpLabel' => 'Indice IBP',
+			'ffrando.effortScale' => 'Effort (1 a 5)',
+			'ffrando.techniciteScale' => 'Technicite (1 a 5)',
+			'ffrando.risqueScale' => 'Risque (1 a 5)',
+			'ffrando.notRated' => 'Non cote',
+			'ffrando.effortLevels.k1' => 'Tres facile',
+			'ffrando.effortLevels.k2' => 'Facile',
+			'ffrando.effortLevels.k3' => 'Moyen',
+			'ffrando.effortLevels.k4' => 'Difficile',
+			'ffrando.effortLevels.k5' => 'Tres difficile',
 			_ => null,
 		};
 	}

@@ -832,6 +832,23 @@
           "tip3": "Documentez votre aventure dans le journal"
         }
       }
+    },
+    "objectiveTitle": "Faisabilite pour ce trek",
+    "objectiveIntro": "Verdict base sur votre profil reel croise avec les exigences du trek.",
+    "openProfile": "Ma fiche d'info",
+    "openWalkTest": "Test 6 minutes",
+    "openPastHikes": "Mes 5 dernieres randos",
+    "sourceObjective": "Base sur votre profil objectif",
+    "sourceFallback": "Base sur le questionnaire (en attendant votre profil)",
+    "gapTooHigh": "Ecart trop important",
+    "gaps": {
+      "elevationPerDay": "Denivele par jour trop eleve vs votre habitude",
+      "distancePerDay": "Distance par jour superieure a votre experience",
+      "consecutiveDays": "Nombre de jours consecutifs jamais atteint",
+      "technicity": "Technicite du terrain au-dessus de votre niveau",
+      "risk": "Niveau de risque eleve pour ce trek",
+      "fitness": "Forme insuffisante au test 6 minutes",
+      "effort": "Effort global (IBP) superieur a votre experience"
     }
   },
   "tips": {
@@ -1276,7 +1293,8 @@
       "purposeToggle": "$purpose, actuellement $state",
       "healthSection": "Section données de santé, consentement renforcé",
       "policyButton": "Ouvrir la politique de confidentialité"
-    }
+    },
+    "healthDataMorphoNote": "Inclut votre morphologie (age, taille, poids) pour la faisabilite d'un trek. Donnee de sante, article 9 RGPD, gardee sur l'appareil."
   },
   "moderation": {
     "reportTitle": "Signaler ce contenu",
@@ -1745,6 +1763,107 @@
       "message": "Une randonnée était en cours lors de la dernière fermeture de l'application. Voulez-vous la reprendre ou l'abandonner ?",
       "resume": "Reprendre",
       "abandon": "Abandonner"
+    }
+  },
+  "hikerProfile": {
+    "title": "Fiche d'info",
+    "privacyBanner": "Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.",
+    "fieldAge": "Age",
+    "hintAge": "En annees",
+    "errorAge": "Age invalide (5 a 120)",
+    "fieldHeight": "Taille",
+    "hintHeight": "En centimetres",
+    "errorHeight": "Taille invalide (80 a 250 cm)",
+    "fieldWeight": "Poids",
+    "hintWeight": "En kilogrammes",
+    "errorWeight": "Poids invalide (25 a 300 kg)",
+    "fieldSex": "Sexe (optionnel)",
+    "sexFemale": "Femme",
+    "sexMale": "Homme",
+    "sexUnspecified": "Non precise",
+    "fieldCountry": "Pays",
+    "hintCountry": "Code (ex. FR)",
+    "bmiLabel": "IMC",
+    "bmiCategories": {
+      "underweight": "Maigreur",
+      "normal": "Corpulence normale",
+      "overweight": "Surpoids",
+      "obese": "Obesite"
+    },
+    "consentTitle": "Donnees de morphologie (article 9 RGPD)",
+    "consentBody": "Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.",
+    "consentToggle": "J'autorise l'usage de ma morphologie pour la faisabilite",
+    "save": "Enregistrer",
+    "saved": "Fiche enregistree",
+    "morphoNotPrefilledHint": "Rien n'est pre-rempli : soyez honnete, c'est votre securite.",
+    "seniorReminder": "A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant."
+  },
+  "walkTest": {
+    "title": "Test de marche 6 minutes",
+    "intro": "Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre age et sexe.",
+    "safetyWarning": "Effort a eviter en cas de souci cardiaque non verifie. Arretez-vous en cas de gene.",
+    "start": "Demarrer le test",
+    "stop": "Arreter",
+    "cancel": "Annuler",
+    "countdown": "Preparez-vous...",
+    "running": "En cours",
+    "liveDistance": "Distance",
+    "timeLeft": "Temps restant",
+    "meters": "m",
+    "resultTitle": "Resultat du test",
+    "resultDistance": "Distance parcourue",
+    "resultLevel": "Niveau estime",
+    "resultDate": "Realise le $date",
+    "doneAgain": "Refaire le test",
+    "gpsNeeded": "Le GPS est necessaire pour mesurer la distance.",
+    "gpsDenied": "Autorisez la localisation pour lancer le test.",
+    "monthlyReminderOn": "Rappel mensuel active",
+    "monthlyReminderBody": "Un rappel de test vous sera propose chaque mois pour suivre votre forme.",
+    "notDoneYet": "Test non realise",
+    "fallbackNotice": "En attendant le test, votre niveau est estime a partir de votre questionnaire.",
+    "levels": {
+      "low": "Faible",
+      "moderate": "Moyen",
+      "good": "Bon",
+      "excellent": "Excellent"
+    }
+  },
+  "pastHikes": {
+    "title": "Vos 5 dernieres randos",
+    "intro": "Ajoutez jusqu'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu'une etiquette.",
+    "addHike": "Ajouter une rando",
+    "empty": "Aucune rando saisie pour l'instant.",
+    "fieldDate": "Date",
+    "fieldDays": "Nombre de jours",
+    "fieldAvgHours": "Marche moyenne par jour (h)",
+    "fieldElevation": "Denivele + total (m)",
+    "fieldDistance": "Distance totale (km)",
+    "perDay": "par jour",
+    "editHike": "Modifier la rando",
+    "deleteHike": "Supprimer",
+    "save": "Enregistrer",
+    "saved": "Randos enregistrees",
+    "maxReached": "Maximum de 5 randos atteint.",
+    "difficultiesTitle": "Difficultes rencontrees",
+    "difficultiesHint": "Un seul texte pour l'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...",
+    "difficultiesSaved": "Note enregistree"
+  },
+  "ffrando": {
+    "cotationTitle": "Cotation FFRandonnee",
+    "effort": "Effort",
+    "technicite": "Technicite",
+    "risque": "Risque",
+    "ibpLabel": "Indice IBP",
+    "effortScale": "Effort (1 a 5)",
+    "techniciteScale": "Technicite (1 a 5)",
+    "risqueScale": "Risque (1 a 5)",
+    "notRated": "Non cote",
+    "effortLevels": {
+      "1": "Tres facile",
+      "2": "Facile",
+      "3": "Moyen",
+      "4": "Difficile",
+      "5": "Tres difficile"
     }
   }
 }

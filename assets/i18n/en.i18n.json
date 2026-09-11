@@ -832,6 +832,23 @@
           "tip3": "Consider documenting your adventure in the journal"
         }
       }
+    },
+    "objectiveTitle": "Feasibility for this trek",
+    "objectiveIntro": "Verdict based on your real profile crossed with the trek requirements.",
+    "openProfile": "My details",
+    "openWalkTest": "6-minute test",
+    "openPastHikes": "My last 5 hikes",
+    "sourceObjective": "Based on your objective profile",
+    "sourceFallback": "Based on the questionnaire (until your profile is set)",
+    "gapTooHigh": "Gap too large",
+    "gaps": {
+      "elevationPerDay": "Daily elevation gain too high vs your habit",
+      "distancePerDay": "Daily distance above your experience",
+      "consecutiveDays": "More consecutive days than ever done",
+      "technicity": "Terrain technicality above your level",
+      "risk": "High risk level for this trek",
+      "fitness": "Fitness insufficient on the 6-minute test",
+      "effort": "Overall effort (IBP) above your experience"
     }
   },
   "tips": {
@@ -1276,7 +1293,8 @@
       "purposeToggle": "$purpose, currently $state",
       "healthSection": "Health data section, reinforced consent",
       "policyButton": "Open the privacy policy"
-    }
+    },
+    "healthDataMorphoNote": "Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device."
   },
   "moderation": {
     "reportTitle": "Report this content",
@@ -1745,6 +1763,107 @@
       "message": "A hike was still in progress when the app last closed. Would you like to resume it or give it up?",
       "resume": "Resume",
       "abandon": "Give up"
+    }
+  },
+  "hikerProfile": {
+    "title": "Your details",
+    "privacyBanner": "Your body metrics are sensitive data. They stay on your device (and an anonymous backup, without your name) to compute your feasibility.",
+    "fieldAge": "Age",
+    "hintAge": "In years",
+    "errorAge": "Invalid age (5 to 120)",
+    "fieldHeight": "Height",
+    "hintHeight": "In centimetres",
+    "errorHeight": "Invalid height (80 to 250 cm)",
+    "fieldWeight": "Weight",
+    "hintWeight": "In kilograms",
+    "errorWeight": "Invalid weight (25 to 300 kg)",
+    "fieldSex": "Sex (optional)",
+    "sexFemale": "Female",
+    "sexMale": "Male",
+    "sexUnspecified": "Unspecified",
+    "fieldCountry": "Country",
+    "hintCountry": "Code (e.g. FR)",
+    "bmiLabel": "BMI",
+    "bmiCategories": {
+      "underweight": "Underweight",
+      "normal": "Normal weight",
+      "overweight": "Overweight",
+      "obese": "Obesity"
+    },
+    "consentTitle": "Body metrics (GDPR article 9)",
+    "consentBody": "Age, height and weight are health data. They stay on your device and an anonymous backup (no name or email), never sent in clear. This consent is asked separately.",
+    "consentToggle": "I allow my body metrics to be used for feasibility",
+    "save": "Save",
+    "saved": "Details saved",
+    "morphoNotPrefilledHint": "Nothing is pre-filled: be honest, it is your safety.",
+    "seniorReminder": "From age 65, a medical check-up is advised before a demanding trek."
+  },
+  "walkTest": {
+    "title": "6-minute walk test",
+    "intro": "Walk as far as you can in 6 minutes on flat ground. GPS measures the distance; we compare it to norms for your age and sex.",
+    "safetyWarning": "Avoid this effort if you have an unchecked heart condition. Stop if you feel unwell.",
+    "start": "Start the test",
+    "stop": "Stop",
+    "cancel": "Cancel",
+    "countdown": "Get ready...",
+    "running": "In progress",
+    "liveDistance": "Distance",
+    "timeLeft": "Time left",
+    "meters": "m",
+    "resultTitle": "Test result",
+    "resultDistance": "Distance covered",
+    "resultLevel": "Estimated level",
+    "resultDate": "Taken on $date",
+    "doneAgain": "Retake the test",
+    "gpsNeeded": "GPS is required to measure the distance.",
+    "gpsDenied": "Allow location to start the test.",
+    "monthlyReminderOn": "Monthly reminder on",
+    "monthlyReminderBody": "A test reminder will be offered every month to track your fitness.",
+    "notDoneYet": "Test not taken",
+    "fallbackNotice": "Until you take the test, your level is estimated from your questionnaire.",
+    "levels": {
+      "low": "Low",
+      "moderate": "Moderate",
+      "good": "Good",
+      "excellent": "Excellent"
+    }
+  },
+  "pastHikes": {
+    "title": "Your last 5 hikes",
+    "intro": "Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.",
+    "addHike": "Add a hike",
+    "empty": "No hike entered yet.",
+    "fieldDate": "Date",
+    "fieldDays": "Number of days",
+    "fieldAvgHours": "Average walking per day (h)",
+    "fieldElevation": "Total elevation gain (m)",
+    "fieldDistance": "Total distance (km)",
+    "perDay": "per day",
+    "editHike": "Edit hike",
+    "deleteHike": "Delete",
+    "save": "Save",
+    "saved": "Hikes saved",
+    "maxReached": "Maximum of 5 hikes reached.",
+    "difficultiesTitle": "Difficulties encountered",
+    "difficultiesHint": "One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...",
+    "difficultiesSaved": "Note saved"
+  },
+  "ffrando": {
+    "cotationTitle": "FFRandonnee rating",
+    "effort": "Effort",
+    "technicite": "Technicality",
+    "risque": "Risk",
+    "ibpLabel": "IBP index",
+    "effortScale": "Effort (1 to 5)",
+    "techniciteScale": "Technicality (1 to 5)",
+    "risqueScale": "Risk (1 to 5)",
+    "notRated": "Not rated",
+    "effortLevels": {
+      "1": "Very easy",
+      "2": "Easy",
+      "3": "Moderate",
+      "4": "Hard",
+      "5": "Very hard"
     }
   }
 }

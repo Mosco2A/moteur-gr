@@ -17810,6 +17810,1284 @@ class NoAdsStateCompanion extends UpdateCompanion<NoAdsStateData> {
   }
 }
 
+class $HikerProfileTable extends HikerProfile
+    with TableInfo<$HikerProfileTable, HikerProfileData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HikerProfileTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ageMeta = const VerificationMeta('age');
+  @override
+  late final GeneratedColumn<int> age = GeneratedColumn<int>(
+    'age',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _heightCmMeta = const VerificationMeta(
+    'heightCm',
+  );
+  @override
+  late final GeneratedColumn<int> heightCm = GeneratedColumn<int>(
+    'height_cm',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _weightKgMeta = const VerificationMeta(
+    'weightKg',
+  );
+  @override
+  late final GeneratedColumn<double> weightKg = GeneratedColumn<double>(
+    'weight_kg',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _sexMeta = const VerificationMeta('sex');
+  @override
+  late final GeneratedColumn<String> sex = GeneratedColumn<String>(
+    'sex',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _countryIsoMeta = const VerificationMeta(
+    'countryIso',
+  );
+  @override
+  late final GeneratedColumn<String> countryIso = GeneratedColumn<String>(
+    'country_iso',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    userId,
+    age,
+    heightCm,
+    weightKg,
+    sex,
+    countryIso,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hiker_profile';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HikerProfileData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('age')) {
+      context.handle(
+        _ageMeta,
+        age.isAcceptableOrUnknown(data['age']!, _ageMeta),
+      );
+    }
+    if (data.containsKey('height_cm')) {
+      context.handle(
+        _heightCmMeta,
+        heightCm.isAcceptableOrUnknown(data['height_cm']!, _heightCmMeta),
+      );
+    }
+    if (data.containsKey('weight_kg')) {
+      context.handle(
+        _weightKgMeta,
+        weightKg.isAcceptableOrUnknown(data['weight_kg']!, _weightKgMeta),
+      );
+    }
+    if (data.containsKey('sex')) {
+      context.handle(
+        _sexMeta,
+        sex.isAcceptableOrUnknown(data['sex']!, _sexMeta),
+      );
+    }
+    if (data.containsKey('country_iso')) {
+      context.handle(
+        _countryIsoMeta,
+        countryIso.isAcceptableOrUnknown(data['country_iso']!, _countryIsoMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {userId};
+  @override
+  HikerProfileData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HikerProfileData(
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      age: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}age'],
+      )!,
+      heightCm: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}height_cm'],
+      )!,
+      weightKg: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}weight_kg'],
+      )!,
+      sex: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sex'],
+      ),
+      countryIso: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}country_iso'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $HikerProfileTable createAlias(String alias) {
+    return $HikerProfileTable(attachedDatabase, alias);
+  }
+}
+
+class HikerProfileData extends DataClass
+    implements Insertable<HikerProfileData> {
+  /// Identifiant utilisateur (hash SHA-256 deterministe) — cle primaire.
+  /// Avant liaison de compte : cle locale stable (`kHikerLocalUserId`).
+  final String userId;
+
+  /// Age en annees. Declencheur d'un rappel « consultation conseillee » 65+.
+  final int age;
+
+  /// Taille en centimetres (SENSIBLE). Sert au calcul local de l'IMC.
+  final int heightCm;
+
+  /// Poids en kilogrammes (SENSIBLE). Sert au calcul local de l'IMC.
+  final double weightKg;
+
+  /// Sexe (nullable, optionnel). Valeurs stables 'female' / 'male' ; null =
+  /// non renseigne (les normes du test 6 min retombent alors sur une moyenne).
+  final String? sex;
+
+  /// Code pays ISO 3166-1 alpha-2 (ex. 'FR', 'DE'), separe de la langue.
+  final String countryIso;
+
+  /// Date de derniere modification (last-write-wins du miroir cloud anonyme).
+  final DateTime updatedAt;
+  const HikerProfileData({
+    required this.userId,
+    required this.age,
+    required this.heightCm,
+    required this.weightKg,
+    this.sex,
+    required this.countryIso,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['user_id'] = Variable<String>(userId);
+    map['age'] = Variable<int>(age);
+    map['height_cm'] = Variable<int>(heightCm);
+    map['weight_kg'] = Variable<double>(weightKg);
+    if (!nullToAbsent || sex != null) {
+      map['sex'] = Variable<String>(sex);
+    }
+    map['country_iso'] = Variable<String>(countryIso);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  HikerProfileCompanion toCompanion(bool nullToAbsent) {
+    return HikerProfileCompanion(
+      userId: Value(userId),
+      age: Value(age),
+      heightCm: Value(heightCm),
+      weightKg: Value(weightKg),
+      sex: sex == null && nullToAbsent ? const Value.absent() : Value(sex),
+      countryIso: Value(countryIso),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory HikerProfileData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HikerProfileData(
+      userId: serializer.fromJson<String>(json['userId']),
+      age: serializer.fromJson<int>(json['age']),
+      heightCm: serializer.fromJson<int>(json['heightCm']),
+      weightKg: serializer.fromJson<double>(json['weightKg']),
+      sex: serializer.fromJson<String?>(json['sex']),
+      countryIso: serializer.fromJson<String>(json['countryIso']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'userId': serializer.toJson<String>(userId),
+      'age': serializer.toJson<int>(age),
+      'heightCm': serializer.toJson<int>(heightCm),
+      'weightKg': serializer.toJson<double>(weightKg),
+      'sex': serializer.toJson<String?>(sex),
+      'countryIso': serializer.toJson<String>(countryIso),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  HikerProfileData copyWith({
+    String? userId,
+    int? age,
+    int? heightCm,
+    double? weightKg,
+    Value<String?> sex = const Value.absent(),
+    String? countryIso,
+    DateTime? updatedAt,
+  }) => HikerProfileData(
+    userId: userId ?? this.userId,
+    age: age ?? this.age,
+    heightCm: heightCm ?? this.heightCm,
+    weightKg: weightKg ?? this.weightKg,
+    sex: sex.present ? sex.value : this.sex,
+    countryIso: countryIso ?? this.countryIso,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  HikerProfileData copyWithCompanion(HikerProfileCompanion data) {
+    return HikerProfileData(
+      userId: data.userId.present ? data.userId.value : this.userId,
+      age: data.age.present ? data.age.value : this.age,
+      heightCm: data.heightCm.present ? data.heightCm.value : this.heightCm,
+      weightKg: data.weightKg.present ? data.weightKg.value : this.weightKg,
+      sex: data.sex.present ? data.sex.value : this.sex,
+      countryIso: data.countryIso.present
+          ? data.countryIso.value
+          : this.countryIso,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HikerProfileData(')
+          ..write('userId: $userId, ')
+          ..write('age: $age, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('sex: $sex, ')
+          ..write('countryIso: $countryIso, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(userId, age, heightCm, weightKg, sex, countryIso, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HikerProfileData &&
+          other.userId == this.userId &&
+          other.age == this.age &&
+          other.heightCm == this.heightCm &&
+          other.weightKg == this.weightKg &&
+          other.sex == this.sex &&
+          other.countryIso == this.countryIso &&
+          other.updatedAt == this.updatedAt);
+}
+
+class HikerProfileCompanion extends UpdateCompanion<HikerProfileData> {
+  final Value<String> userId;
+  final Value<int> age;
+  final Value<int> heightCm;
+  final Value<double> weightKg;
+  final Value<String?> sex;
+  final Value<String> countryIso;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const HikerProfileCompanion({
+    this.userId = const Value.absent(),
+    this.age = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.countryIso = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HikerProfileCompanion.insert({
+    required String userId,
+    this.age = const Value.absent(),
+    this.heightCm = const Value.absent(),
+    this.weightKg = const Value.absent(),
+    this.sex = const Value.absent(),
+    this.countryIso = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : userId = Value(userId),
+       updatedAt = Value(updatedAt);
+  static Insertable<HikerProfileData> custom({
+    Expression<String>? userId,
+    Expression<int>? age,
+    Expression<int>? heightCm,
+    Expression<double>? weightKg,
+    Expression<String>? sex,
+    Expression<String>? countryIso,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (userId != null) 'user_id': userId,
+      if (age != null) 'age': age,
+      if (heightCm != null) 'height_cm': heightCm,
+      if (weightKg != null) 'weight_kg': weightKg,
+      if (sex != null) 'sex': sex,
+      if (countryIso != null) 'country_iso': countryIso,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HikerProfileCompanion copyWith({
+    Value<String>? userId,
+    Value<int>? age,
+    Value<int>? heightCm,
+    Value<double>? weightKg,
+    Value<String?>? sex,
+    Value<String>? countryIso,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return HikerProfileCompanion(
+      userId: userId ?? this.userId,
+      age: age ?? this.age,
+      heightCm: heightCm ?? this.heightCm,
+      weightKg: weightKg ?? this.weightKg,
+      sex: sex ?? this.sex,
+      countryIso: countryIso ?? this.countryIso,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (age.present) {
+      map['age'] = Variable<int>(age.value);
+    }
+    if (heightCm.present) {
+      map['height_cm'] = Variable<int>(heightCm.value);
+    }
+    if (weightKg.present) {
+      map['weight_kg'] = Variable<double>(weightKg.value);
+    }
+    if (sex.present) {
+      map['sex'] = Variable<String>(sex.value);
+    }
+    if (countryIso.present) {
+      map['country_iso'] = Variable<String>(countryIso.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HikerProfileCompanion(')
+          ..write('userId: $userId, ')
+          ..write('age: $age, ')
+          ..write('heightCm: $heightCm, ')
+          ..write('weightKg: $weightKg, ')
+          ..write('sex: $sex, ')
+          ..write('countryIso: $countryIso, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PastHikeEntriesTable extends PastHikeEntries
+    with TableInfo<$PastHikeEntriesTable, PastHikeEntry> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $PastHikeEntriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dateMeta = const VerificationMeta('date');
+  @override
+  late final GeneratedColumn<DateTime> date = GeneratedColumn<DateTime>(
+    'date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _daysMeta = const VerificationMeta('days');
+  @override
+  late final GeneratedColumn<int> days = GeneratedColumn<int>(
+    'days',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _avgWalkHoursPerDayMeta =
+      const VerificationMeta('avgWalkHoursPerDay');
+  @override
+  late final GeneratedColumn<double> avgWalkHoursPerDay =
+      GeneratedColumn<double>(
+        'avg_walk_hours_per_day',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(0),
+      );
+  static const VerificationMeta _totalElevationGainMeta =
+      const VerificationMeta('totalElevationGain');
+  @override
+  late final GeneratedColumn<int> totalElevationGain = GeneratedColumn<int>(
+    'total_elevation_gain',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _totalDistanceKmMeta = const VerificationMeta(
+    'totalDistanceKm',
+  );
+  @override
+  late final GeneratedColumn<double> totalDistanceKm = GeneratedColumn<double>(
+    'total_distance_km',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    userId,
+    date,
+    days,
+    avgWalkHoursPerDay,
+    totalElevationGain,
+    totalDistanceKm,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'past_hike_entries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<PastHikeEntry> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('date')) {
+      context.handle(
+        _dateMeta,
+        date.isAcceptableOrUnknown(data['date']!, _dateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_dateMeta);
+    }
+    if (data.containsKey('days')) {
+      context.handle(
+        _daysMeta,
+        days.isAcceptableOrUnknown(data['days']!, _daysMeta),
+      );
+    }
+    if (data.containsKey('avg_walk_hours_per_day')) {
+      context.handle(
+        _avgWalkHoursPerDayMeta,
+        avgWalkHoursPerDay.isAcceptableOrUnknown(
+          data['avg_walk_hours_per_day']!,
+          _avgWalkHoursPerDayMeta,
+        ),
+      );
+    }
+    if (data.containsKey('total_elevation_gain')) {
+      context.handle(
+        _totalElevationGainMeta,
+        totalElevationGain.isAcceptableOrUnknown(
+          data['total_elevation_gain']!,
+          _totalElevationGainMeta,
+        ),
+      );
+    }
+    if (data.containsKey('total_distance_km')) {
+      context.handle(
+        _totalDistanceKmMeta,
+        totalDistanceKm.isAcceptableOrUnknown(
+          data['total_distance_km']!,
+          _totalDistanceKmMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  PastHikeEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return PastHikeEntry(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      date: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}date'],
+      )!,
+      days: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}days'],
+      )!,
+      avgWalkHoursPerDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}avg_walk_hours_per_day'],
+      )!,
+      totalElevationGain: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_elevation_gain'],
+      )!,
+      totalDistanceKm: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total_distance_km'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $PastHikeEntriesTable createAlias(String alias) {
+    return $PastHikeEntriesTable(attachedDatabase, alias);
+  }
+}
+
+class PastHikeEntry extends DataClass implements Insertable<PastHikeEntry> {
+  /// Cle primaire auto-incrementee.
+  final int id;
+
+  /// Identifiant utilisateur (hash SHA-256 deterministe).
+  final String userId;
+
+  /// Date de la rando (recence — pese dans la deduction du niveau).
+  final DateTime date;
+
+  /// Nombre de jours de la rando (endurance multi-jours).
+  final int days;
+
+  /// Temps moyen de marche PAR JOUR, en heures.
+  final double avgWalkHoursPerDay;
+
+  /// Denivele positif TOTAL de la rando, en metres (habitude du D+).
+  final int totalElevationGain;
+
+  /// Distance TOTALE de la rando, en km (=> deduit le km/jour).
+  final double totalDistanceKm;
+
+  /// Horodatage de saisie/modification (last-write-wins du miroir cloud).
+  final DateTime updatedAt;
+  const PastHikeEntry({
+    required this.id,
+    required this.userId,
+    required this.date,
+    required this.days,
+    required this.avgWalkHoursPerDay,
+    required this.totalElevationGain,
+    required this.totalDistanceKm,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['user_id'] = Variable<String>(userId);
+    map['date'] = Variable<DateTime>(date);
+    map['days'] = Variable<int>(days);
+    map['avg_walk_hours_per_day'] = Variable<double>(avgWalkHoursPerDay);
+    map['total_elevation_gain'] = Variable<int>(totalElevationGain);
+    map['total_distance_km'] = Variable<double>(totalDistanceKm);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  PastHikeEntriesCompanion toCompanion(bool nullToAbsent) {
+    return PastHikeEntriesCompanion(
+      id: Value(id),
+      userId: Value(userId),
+      date: Value(date),
+      days: Value(days),
+      avgWalkHoursPerDay: Value(avgWalkHoursPerDay),
+      totalElevationGain: Value(totalElevationGain),
+      totalDistanceKm: Value(totalDistanceKm),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory PastHikeEntry.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return PastHikeEntry(
+      id: serializer.fromJson<int>(json['id']),
+      userId: serializer.fromJson<String>(json['userId']),
+      date: serializer.fromJson<DateTime>(json['date']),
+      days: serializer.fromJson<int>(json['days']),
+      avgWalkHoursPerDay: serializer.fromJson<double>(
+        json['avgWalkHoursPerDay'],
+      ),
+      totalElevationGain: serializer.fromJson<int>(json['totalElevationGain']),
+      totalDistanceKm: serializer.fromJson<double>(json['totalDistanceKm']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'userId': serializer.toJson<String>(userId),
+      'date': serializer.toJson<DateTime>(date),
+      'days': serializer.toJson<int>(days),
+      'avgWalkHoursPerDay': serializer.toJson<double>(avgWalkHoursPerDay),
+      'totalElevationGain': serializer.toJson<int>(totalElevationGain),
+      'totalDistanceKm': serializer.toJson<double>(totalDistanceKm),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  PastHikeEntry copyWith({
+    int? id,
+    String? userId,
+    DateTime? date,
+    int? days,
+    double? avgWalkHoursPerDay,
+    int? totalElevationGain,
+    double? totalDistanceKm,
+    DateTime? updatedAt,
+  }) => PastHikeEntry(
+    id: id ?? this.id,
+    userId: userId ?? this.userId,
+    date: date ?? this.date,
+    days: days ?? this.days,
+    avgWalkHoursPerDay: avgWalkHoursPerDay ?? this.avgWalkHoursPerDay,
+    totalElevationGain: totalElevationGain ?? this.totalElevationGain,
+    totalDistanceKm: totalDistanceKm ?? this.totalDistanceKm,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  PastHikeEntry copyWithCompanion(PastHikeEntriesCompanion data) {
+    return PastHikeEntry(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      date: data.date.present ? data.date.value : this.date,
+      days: data.days.present ? data.days.value : this.days,
+      avgWalkHoursPerDay: data.avgWalkHoursPerDay.present
+          ? data.avgWalkHoursPerDay.value
+          : this.avgWalkHoursPerDay,
+      totalElevationGain: data.totalElevationGain.present
+          ? data.totalElevationGain.value
+          : this.totalElevationGain,
+      totalDistanceKm: data.totalDistanceKm.present
+          ? data.totalDistanceKm.value
+          : this.totalDistanceKm,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PastHikeEntry(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('date: $date, ')
+          ..write('days: $days, ')
+          ..write('avgWalkHoursPerDay: $avgWalkHoursPerDay, ')
+          ..write('totalElevationGain: $totalElevationGain, ')
+          ..write('totalDistanceKm: $totalDistanceKm, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    userId,
+    date,
+    days,
+    avgWalkHoursPerDay,
+    totalElevationGain,
+    totalDistanceKm,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is PastHikeEntry &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.date == this.date &&
+          other.days == this.days &&
+          other.avgWalkHoursPerDay == this.avgWalkHoursPerDay &&
+          other.totalElevationGain == this.totalElevationGain &&
+          other.totalDistanceKm == this.totalDistanceKm &&
+          other.updatedAt == this.updatedAt);
+}
+
+class PastHikeEntriesCompanion extends UpdateCompanion<PastHikeEntry> {
+  final Value<int> id;
+  final Value<String> userId;
+  final Value<DateTime> date;
+  final Value<int> days;
+  final Value<double> avgWalkHoursPerDay;
+  final Value<int> totalElevationGain;
+  final Value<double> totalDistanceKm;
+  final Value<DateTime> updatedAt;
+  const PastHikeEntriesCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.date = const Value.absent(),
+    this.days = const Value.absent(),
+    this.avgWalkHoursPerDay = const Value.absent(),
+    this.totalElevationGain = const Value.absent(),
+    this.totalDistanceKm = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  PastHikeEntriesCompanion.insert({
+    this.id = const Value.absent(),
+    required String userId,
+    required DateTime date,
+    this.days = const Value.absent(),
+    this.avgWalkHoursPerDay = const Value.absent(),
+    this.totalElevationGain = const Value.absent(),
+    this.totalDistanceKm = const Value.absent(),
+    required DateTime updatedAt,
+  }) : userId = Value(userId),
+       date = Value(date),
+       updatedAt = Value(updatedAt);
+  static Insertable<PastHikeEntry> custom({
+    Expression<int>? id,
+    Expression<String>? userId,
+    Expression<DateTime>? date,
+    Expression<int>? days,
+    Expression<double>? avgWalkHoursPerDay,
+    Expression<int>? totalElevationGain,
+    Expression<double>? totalDistanceKm,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (date != null) 'date': date,
+      if (days != null) 'days': days,
+      if (avgWalkHoursPerDay != null)
+        'avg_walk_hours_per_day': avgWalkHoursPerDay,
+      if (totalElevationGain != null)
+        'total_elevation_gain': totalElevationGain,
+      if (totalDistanceKm != null) 'total_distance_km': totalDistanceKm,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  PastHikeEntriesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? userId,
+    Value<DateTime>? date,
+    Value<int>? days,
+    Value<double>? avgWalkHoursPerDay,
+    Value<int>? totalElevationGain,
+    Value<double>? totalDistanceKm,
+    Value<DateTime>? updatedAt,
+  }) {
+    return PastHikeEntriesCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      date: date ?? this.date,
+      days: days ?? this.days,
+      avgWalkHoursPerDay: avgWalkHoursPerDay ?? this.avgWalkHoursPerDay,
+      totalElevationGain: totalElevationGain ?? this.totalElevationGain,
+      totalDistanceKm: totalDistanceKm ?? this.totalDistanceKm,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (date.present) {
+      map['date'] = Variable<DateTime>(date.value);
+    }
+    if (days.present) {
+      map['days'] = Variable<int>(days.value);
+    }
+    if (avgWalkHoursPerDay.present) {
+      map['avg_walk_hours_per_day'] = Variable<double>(
+        avgWalkHoursPerDay.value,
+      );
+    }
+    if (totalElevationGain.present) {
+      map['total_elevation_gain'] = Variable<int>(totalElevationGain.value);
+    }
+    if (totalDistanceKm.present) {
+      map['total_distance_km'] = Variable<double>(totalDistanceKm.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PastHikeEntriesCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('date: $date, ')
+          ..write('days: $days, ')
+          ..write('avgWalkHoursPerDay: $avgWalkHoursPerDay, ')
+          ..write('totalElevationGain: $totalElevationGain, ')
+          ..write('totalDistanceKm: $totalDistanceKm, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $HikerExperienceNoteTable extends HikerExperienceNote
+    with TableInfo<$HikerExperienceNoteTable, HikerExperienceNoteData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $HikerExperienceNoteTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _freeTextDifficultiesMeta =
+      const VerificationMeta('freeTextDifficulties');
+  @override
+  late final GeneratedColumn<String> freeTextDifficulties =
+      GeneratedColumn<String>(
+        'free_text_difficulties',
+        aliasedName,
+        false,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+        defaultValue: const Constant(''),
+      );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    userId,
+    freeTextDifficulties,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'hiker_experience_note';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<HikerExperienceNoteData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('free_text_difficulties')) {
+      context.handle(
+        _freeTextDifficultiesMeta,
+        freeTextDifficulties.isAcceptableOrUnknown(
+          data['free_text_difficulties']!,
+          _freeTextDifficultiesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {userId};
+  @override
+  HikerExperienceNoteData map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return HikerExperienceNoteData(
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      freeTextDifficulties: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}free_text_difficulties'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $HikerExperienceNoteTable createAlias(String alias) {
+    return $HikerExperienceNoteTable(attachedDatabase, alias);
+  }
+}
+
+class HikerExperienceNoteData extends DataClass
+    implements Insertable<HikerExperienceNoteData> {
+  /// Identifiant utilisateur (hash SHA-256 deterministe) — cle primaire.
+  final String userId;
+
+  /// Texte libre global « difficultes rencontrees » (ampoules, genoux en
+  /// descente, essoufflement en altitude, coup de chaud...). Defaut vide.
+  final String freeTextDifficulties;
+
+  /// Horodatage de saisie/modification (last-write-wins du miroir cloud).
+  final DateTime updatedAt;
+  const HikerExperienceNoteData({
+    required this.userId,
+    required this.freeTextDifficulties,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['user_id'] = Variable<String>(userId);
+    map['free_text_difficulties'] = Variable<String>(freeTextDifficulties);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  HikerExperienceNoteCompanion toCompanion(bool nullToAbsent) {
+    return HikerExperienceNoteCompanion(
+      userId: Value(userId),
+      freeTextDifficulties: Value(freeTextDifficulties),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory HikerExperienceNoteData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return HikerExperienceNoteData(
+      userId: serializer.fromJson<String>(json['userId']),
+      freeTextDifficulties: serializer.fromJson<String>(
+        json['freeTextDifficulties'],
+      ),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'userId': serializer.toJson<String>(userId),
+      'freeTextDifficulties': serializer.toJson<String>(freeTextDifficulties),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  HikerExperienceNoteData copyWith({
+    String? userId,
+    String? freeTextDifficulties,
+    DateTime? updatedAt,
+  }) => HikerExperienceNoteData(
+    userId: userId ?? this.userId,
+    freeTextDifficulties: freeTextDifficulties ?? this.freeTextDifficulties,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  HikerExperienceNoteData copyWithCompanion(HikerExperienceNoteCompanion data) {
+    return HikerExperienceNoteData(
+      userId: data.userId.present ? data.userId.value : this.userId,
+      freeTextDifficulties: data.freeTextDifficulties.present
+          ? data.freeTextDifficulties.value
+          : this.freeTextDifficulties,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HikerExperienceNoteData(')
+          ..write('userId: $userId, ')
+          ..write('freeTextDifficulties: $freeTextDifficulties, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(userId, freeTextDifficulties, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is HikerExperienceNoteData &&
+          other.userId == this.userId &&
+          other.freeTextDifficulties == this.freeTextDifficulties &&
+          other.updatedAt == this.updatedAt);
+}
+
+class HikerExperienceNoteCompanion
+    extends UpdateCompanion<HikerExperienceNoteData> {
+  final Value<String> userId;
+  final Value<String> freeTextDifficulties;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const HikerExperienceNoteCompanion({
+    this.userId = const Value.absent(),
+    this.freeTextDifficulties = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  HikerExperienceNoteCompanion.insert({
+    required String userId,
+    this.freeTextDifficulties = const Value.absent(),
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : userId = Value(userId),
+       updatedAt = Value(updatedAt);
+  static Insertable<HikerExperienceNoteData> custom({
+    Expression<String>? userId,
+    Expression<String>? freeTextDifficulties,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (userId != null) 'user_id': userId,
+      if (freeTextDifficulties != null)
+        'free_text_difficulties': freeTextDifficulties,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  HikerExperienceNoteCompanion copyWith({
+    Value<String>? userId,
+    Value<String>? freeTextDifficulties,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return HikerExperienceNoteCompanion(
+      userId: userId ?? this.userId,
+      freeTextDifficulties: freeTextDifficulties ?? this.freeTextDifficulties,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (freeTextDifficulties.present) {
+      map['free_text_difficulties'] = Variable<String>(
+        freeTextDifficulties.value,
+      );
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('HikerExperienceNoteCompanion(')
+          ..write('userId: $userId, ')
+          ..write('freeTextDifficulties: $freeTextDifficulties, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -17860,6 +19138,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this,
   );
   late final $NoAdsStateTable noAdsState = $NoAdsStateTable(this);
+  late final $HikerProfileTable hikerProfile = $HikerProfileTable(this);
+  late final $PastHikeEntriesTable pastHikeEntries = $PastHikeEntriesTable(
+    this,
+  );
+  late final $HikerExperienceNoteTable hikerExperienceNote =
+      $HikerExperienceNoteTable(this);
   late final StagesDao stagesDao = StagesDao(this as AppDatabase);
   late final PoisDao poisDao = PoisDao(this as AppDatabase);
   late final ProgressDao progressDao = ProgressDao(this as AppDatabase);
@@ -17920,6 +19204,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     this as AppDatabase,
   );
   late final NoAdsDao noAdsDao = NoAdsDao(this as AppDatabase);
+  late final HikerProfileDao hikerProfileDao = HikerProfileDao(
+    this as AppDatabase,
+  );
+  late final PastHikesDao pastHikesDao = PastHikesDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -17958,6 +19246,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     walletBalance,
     trekEntitlements,
     noAdsState,
+    hikerProfile,
+    pastHikeEntries,
+    hikerExperienceNote,
   ];
 }
 
@@ -26739,6 +28030,685 @@ typedef $$NoAdsStateTableProcessedTableManager =
       NoAdsStateData,
       PrefetchHooks Function()
     >;
+typedef $$HikerProfileTableCreateCompanionBuilder =
+    HikerProfileCompanion Function({
+      required String userId,
+      Value<int> age,
+      Value<int> heightCm,
+      Value<double> weightKg,
+      Value<String?> sex,
+      Value<String> countryIso,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$HikerProfileTableUpdateCompanionBuilder =
+    HikerProfileCompanion Function({
+      Value<String> userId,
+      Value<int> age,
+      Value<int> heightCm,
+      Value<double> weightKg,
+      Value<String?> sex,
+      Value<String> countryIso,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$HikerProfileTableFilterComposer
+    extends Composer<_$AppDatabase, $HikerProfileTable> {
+  $$HikerProfileTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get age => $composableBuilder(
+    column: $table.age,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get countryIso => $composableBuilder(
+    column: $table.countryIso,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$HikerProfileTableOrderingComposer
+    extends Composer<_$AppDatabase, $HikerProfileTable> {
+  $$HikerProfileTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get age => $composableBuilder(
+    column: $table.age,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get heightCm => $composableBuilder(
+    column: $table.heightCm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get weightKg => $composableBuilder(
+    column: $table.weightKg,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sex => $composableBuilder(
+    column: $table.sex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get countryIso => $composableBuilder(
+    column: $table.countryIso,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HikerProfileTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HikerProfileTable> {
+  $$HikerProfileTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<int> get age =>
+      $composableBuilder(column: $table.age, builder: (column) => column);
+
+  GeneratedColumn<int> get heightCm =>
+      $composableBuilder(column: $table.heightCm, builder: (column) => column);
+
+  GeneratedColumn<double> get weightKg =>
+      $composableBuilder(column: $table.weightKg, builder: (column) => column);
+
+  GeneratedColumn<String> get sex =>
+      $composableBuilder(column: $table.sex, builder: (column) => column);
+
+  GeneratedColumn<String> get countryIso => $composableBuilder(
+    column: $table.countryIso,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$HikerProfileTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HikerProfileTable,
+          HikerProfileData,
+          $$HikerProfileTableFilterComposer,
+          $$HikerProfileTableOrderingComposer,
+          $$HikerProfileTableAnnotationComposer,
+          $$HikerProfileTableCreateCompanionBuilder,
+          $$HikerProfileTableUpdateCompanionBuilder,
+          (
+            HikerProfileData,
+            BaseReferences<_$AppDatabase, $HikerProfileTable, HikerProfileData>,
+          ),
+          HikerProfileData,
+          PrefetchHooks Function()
+        > {
+  $$HikerProfileTableTableManager(_$AppDatabase db, $HikerProfileTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HikerProfileTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HikerProfileTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$HikerProfileTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> userId = const Value.absent(),
+                Value<int> age = const Value.absent(),
+                Value<int> heightCm = const Value.absent(),
+                Value<double> weightKg = const Value.absent(),
+                Value<String?> sex = const Value.absent(),
+                Value<String> countryIso = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => HikerProfileCompanion(
+                userId: userId,
+                age: age,
+                heightCm: heightCm,
+                weightKg: weightKg,
+                sex: sex,
+                countryIso: countryIso,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String userId,
+                Value<int> age = const Value.absent(),
+                Value<int> heightCm = const Value.absent(),
+                Value<double> weightKg = const Value.absent(),
+                Value<String?> sex = const Value.absent(),
+                Value<String> countryIso = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => HikerProfileCompanion.insert(
+                userId: userId,
+                age: age,
+                heightCm: heightCm,
+                weightKg: weightKg,
+                sex: sex,
+                countryIso: countryIso,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$HikerProfileTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HikerProfileTable,
+      HikerProfileData,
+      $$HikerProfileTableFilterComposer,
+      $$HikerProfileTableOrderingComposer,
+      $$HikerProfileTableAnnotationComposer,
+      $$HikerProfileTableCreateCompanionBuilder,
+      $$HikerProfileTableUpdateCompanionBuilder,
+      (
+        HikerProfileData,
+        BaseReferences<_$AppDatabase, $HikerProfileTable, HikerProfileData>,
+      ),
+      HikerProfileData,
+      PrefetchHooks Function()
+    >;
+typedef $$PastHikeEntriesTableCreateCompanionBuilder =
+    PastHikeEntriesCompanion Function({
+      Value<int> id,
+      required String userId,
+      required DateTime date,
+      Value<int> days,
+      Value<double> avgWalkHoursPerDay,
+      Value<int> totalElevationGain,
+      Value<double> totalDistanceKm,
+      required DateTime updatedAt,
+    });
+typedef $$PastHikeEntriesTableUpdateCompanionBuilder =
+    PastHikeEntriesCompanion Function({
+      Value<int> id,
+      Value<String> userId,
+      Value<DateTime> date,
+      Value<int> days,
+      Value<double> avgWalkHoursPerDay,
+      Value<int> totalElevationGain,
+      Value<double> totalDistanceKm,
+      Value<DateTime> updatedAt,
+    });
+
+class $$PastHikeEntriesTableFilterComposer
+    extends Composer<_$AppDatabase, $PastHikeEntriesTable> {
+  $$PastHikeEntriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get days => $composableBuilder(
+    column: $table.days,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get avgWalkHoursPerDay => $composableBuilder(
+    column: $table.avgWalkHoursPerDay,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalElevationGain => $composableBuilder(
+    column: $table.totalElevationGain,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get totalDistanceKm => $composableBuilder(
+    column: $table.totalDistanceKm,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$PastHikeEntriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $PastHikeEntriesTable> {
+  $$PastHikeEntriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get date => $composableBuilder(
+    column: $table.date,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get days => $composableBuilder(
+    column: $table.days,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get avgWalkHoursPerDay => $composableBuilder(
+    column: $table.avgWalkHoursPerDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalElevationGain => $composableBuilder(
+    column: $table.totalElevationGain,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get totalDistanceKm => $composableBuilder(
+    column: $table.totalDistanceKm,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$PastHikeEntriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PastHikeEntriesTable> {
+  $$PastHikeEntriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get date =>
+      $composableBuilder(column: $table.date, builder: (column) => column);
+
+  GeneratedColumn<int> get days =>
+      $composableBuilder(column: $table.days, builder: (column) => column);
+
+  GeneratedColumn<double> get avgWalkHoursPerDay => $composableBuilder(
+    column: $table.avgWalkHoursPerDay,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalElevationGain => $composableBuilder(
+    column: $table.totalElevationGain,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get totalDistanceKm => $composableBuilder(
+    column: $table.totalDistanceKm,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$PastHikeEntriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $PastHikeEntriesTable,
+          PastHikeEntry,
+          $$PastHikeEntriesTableFilterComposer,
+          $$PastHikeEntriesTableOrderingComposer,
+          $$PastHikeEntriesTableAnnotationComposer,
+          $$PastHikeEntriesTableCreateCompanionBuilder,
+          $$PastHikeEntriesTableUpdateCompanionBuilder,
+          (
+            PastHikeEntry,
+            BaseReferences<_$AppDatabase, $PastHikeEntriesTable, PastHikeEntry>,
+          ),
+          PastHikeEntry,
+          PrefetchHooks Function()
+        > {
+  $$PastHikeEntriesTableTableManager(
+    _$AppDatabase db,
+    $PastHikeEntriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$PastHikeEntriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$PastHikeEntriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$PastHikeEntriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<DateTime> date = const Value.absent(),
+                Value<int> days = const Value.absent(),
+                Value<double> avgWalkHoursPerDay = const Value.absent(),
+                Value<int> totalElevationGain = const Value.absent(),
+                Value<double> totalDistanceKm = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => PastHikeEntriesCompanion(
+                id: id,
+                userId: userId,
+                date: date,
+                days: days,
+                avgWalkHoursPerDay: avgWalkHoursPerDay,
+                totalElevationGain: totalElevationGain,
+                totalDistanceKm: totalDistanceKm,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String userId,
+                required DateTime date,
+                Value<int> days = const Value.absent(),
+                Value<double> avgWalkHoursPerDay = const Value.absent(),
+                Value<int> totalElevationGain = const Value.absent(),
+                Value<double> totalDistanceKm = const Value.absent(),
+                required DateTime updatedAt,
+              }) => PastHikeEntriesCompanion.insert(
+                id: id,
+                userId: userId,
+                date: date,
+                days: days,
+                avgWalkHoursPerDay: avgWalkHoursPerDay,
+                totalElevationGain: totalElevationGain,
+                totalDistanceKm: totalDistanceKm,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$PastHikeEntriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $PastHikeEntriesTable,
+      PastHikeEntry,
+      $$PastHikeEntriesTableFilterComposer,
+      $$PastHikeEntriesTableOrderingComposer,
+      $$PastHikeEntriesTableAnnotationComposer,
+      $$PastHikeEntriesTableCreateCompanionBuilder,
+      $$PastHikeEntriesTableUpdateCompanionBuilder,
+      (
+        PastHikeEntry,
+        BaseReferences<_$AppDatabase, $PastHikeEntriesTable, PastHikeEntry>,
+      ),
+      PastHikeEntry,
+      PrefetchHooks Function()
+    >;
+typedef $$HikerExperienceNoteTableCreateCompanionBuilder =
+    HikerExperienceNoteCompanion Function({
+      required String userId,
+      Value<String> freeTextDifficulties,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$HikerExperienceNoteTableUpdateCompanionBuilder =
+    HikerExperienceNoteCompanion Function({
+      Value<String> userId,
+      Value<String> freeTextDifficulties,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$HikerExperienceNoteTableFilterComposer
+    extends Composer<_$AppDatabase, $HikerExperienceNoteTable> {
+  $$HikerExperienceNoteTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get freeTextDifficulties => $composableBuilder(
+    column: $table.freeTextDifficulties,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$HikerExperienceNoteTableOrderingComposer
+    extends Composer<_$AppDatabase, $HikerExperienceNoteTable> {
+  $$HikerExperienceNoteTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get freeTextDifficulties => $composableBuilder(
+    column: $table.freeTextDifficulties,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$HikerExperienceNoteTableAnnotationComposer
+    extends Composer<_$AppDatabase, $HikerExperienceNoteTable> {
+  $$HikerExperienceNoteTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get freeTextDifficulties => $composableBuilder(
+    column: $table.freeTextDifficulties,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$HikerExperienceNoteTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $HikerExperienceNoteTable,
+          HikerExperienceNoteData,
+          $$HikerExperienceNoteTableFilterComposer,
+          $$HikerExperienceNoteTableOrderingComposer,
+          $$HikerExperienceNoteTableAnnotationComposer,
+          $$HikerExperienceNoteTableCreateCompanionBuilder,
+          $$HikerExperienceNoteTableUpdateCompanionBuilder,
+          (
+            HikerExperienceNoteData,
+            BaseReferences<
+              _$AppDatabase,
+              $HikerExperienceNoteTable,
+              HikerExperienceNoteData
+            >,
+          ),
+          HikerExperienceNoteData,
+          PrefetchHooks Function()
+        > {
+  $$HikerExperienceNoteTableTableManager(
+    _$AppDatabase db,
+    $HikerExperienceNoteTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$HikerExperienceNoteTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$HikerExperienceNoteTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$HikerExperienceNoteTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> userId = const Value.absent(),
+                Value<String> freeTextDifficulties = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => HikerExperienceNoteCompanion(
+                userId: userId,
+                freeTextDifficulties: freeTextDifficulties,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String userId,
+                Value<String> freeTextDifficulties = const Value.absent(),
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => HikerExperienceNoteCompanion.insert(
+                userId: userId,
+                freeTextDifficulties: freeTextDifficulties,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$HikerExperienceNoteTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $HikerExperienceNoteTable,
+      HikerExperienceNoteData,
+      $$HikerExperienceNoteTableFilterComposer,
+      $$HikerExperienceNoteTableOrderingComposer,
+      $$HikerExperienceNoteTableAnnotationComposer,
+      $$HikerExperienceNoteTableCreateCompanionBuilder,
+      $$HikerExperienceNoteTableUpdateCompanionBuilder,
+      (
+        HikerExperienceNoteData,
+        BaseReferences<
+          _$AppDatabase,
+          $HikerExperienceNoteTable,
+          HikerExperienceNoteData
+        >,
+      ),
+      HikerExperienceNoteData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -26808,4 +28778,10 @@ class $AppDatabaseManager {
       $$TrekEntitlementsTableTableManager(_db, _db.trekEntitlements);
   $$NoAdsStateTableTableManager get noAdsState =>
       $$NoAdsStateTableTableManager(_db, _db.noAdsState);
+  $$HikerProfileTableTableManager get hikerProfile =>
+      $$HikerProfileTableTableManager(_db, _db.hikerProfile);
+  $$PastHikeEntriesTableTableManager get pastHikeEntries =>
+      $$PastHikeEntriesTableTableManager(_db, _db.pastHikeEntries);
+  $$HikerExperienceNoteTableTableManager get hikerExperienceNote =>
+      $$HikerExperienceNoteTableTableManager(_db, _db.hikerExperienceNote);
 }

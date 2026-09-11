@@ -832,6 +832,23 @@
           "tip3": "Dokumentieren Sie Ihr Abenteuer im Tagebuch"
         }
       }
+    },
+    "objectiveTitle": "Machbarkeit fur diesen Trek",
+    "objectiveIntro": "Urteil auf Basis Ihres echten Profils, gekreuzt mit den Anforderungen des Treks.",
+    "openProfile": "Meine Angaben",
+    "openWalkTest": "6-Minuten-Test",
+    "openPastHikes": "Meine letzten 5 Touren",
+    "sourceObjective": "Basierend auf Ihrem objektiven Profil",
+    "sourceFallback": "Basierend auf dem Fragebogen (bis Ihr Profil gesetzt ist)",
+    "gapTooHigh": "Zu grosse Abweichung",
+    "gaps": {
+      "elevationPerDay": "Taglicher Anstieg zu hoch gegenuber Ihrer Gewohnheit",
+      "distancePerDay": "Tagliche Distanz uber Ihrer Erfahrung",
+      "consecutiveDays": "Mehr aufeinanderfolgende Tage als je gemacht",
+      "technicity": "Gelandetechnik uber Ihrem Niveau",
+      "risk": "Hohes Risikoniveau fur diesen Trek",
+      "fitness": "Form beim 6-Minuten-Test unzureichend",
+      "effort": "Gesamtanstrengung (IBP) uber Ihrer Erfahrung"
     }
   },
   "tips": {
@@ -1276,7 +1293,8 @@
       "purposeToggle": "$purpose, aktuell $state",
       "healthSection": "Bereich Gesundheitsdaten, verstärkte Einwilligung",
       "policyButton": "Datenschutzerklärung öffnen"
-    }
+    },
+    "healthDataMorphoNote": "Umfasst Ihre Korperdaten (Alter, Grosse, Gewicht) fur die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerat gehalten."
   },
   "moderation": {
     "reportTitle": "Diesen Inhalt melden",
@@ -1745,6 +1763,107 @@
       "message": "Beim letzten Schließen der App lief noch eine Wanderung. Möchtest du sie fortsetzen oder abbrechen?",
       "resume": "Fortsetzen",
       "abandon": "Abbrechen"
+    }
+  },
+  "hikerProfile": {
+    "title": "Ihre Angaben",
+    "privacyBanner": "Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer anonymen Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.",
+    "fieldAge": "Alter",
+    "hintAge": "In Jahren",
+    "errorAge": "Ungultiges Alter (5 bis 120)",
+    "fieldHeight": "Grosse",
+    "hintHeight": "In Zentimetern",
+    "errorHeight": "Ungultige Grosse (80 bis 250 cm)",
+    "fieldWeight": "Gewicht",
+    "hintWeight": "In Kilogramm",
+    "errorWeight": "Ungultiges Gewicht (25 bis 300 kg)",
+    "fieldSex": "Geschlecht (optional)",
+    "sexFemale": "Weiblich",
+    "sexMale": "Mannlich",
+    "sexUnspecified": "Keine Angabe",
+    "fieldCountry": "Land",
+    "hintCountry": "Code (z. B. FR)",
+    "bmiLabel": "BMI",
+    "bmiCategories": {
+      "underweight": "Untergewicht",
+      "normal": "Normalgewicht",
+      "overweight": "Ubergewicht",
+      "obese": "Adipositas"
+    },
+    "consentTitle": "Korperdaten (DSGVO Artikel 9)",
+    "consentBody": "Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer anonymen Sicherung (kein Name, keine E-Mail), nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
+    "consentToggle": "Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit",
+    "save": "Speichern",
+    "saved": "Angaben gespeichert",
+    "morphoNotPrefilledHint": "Nichts ist vorausgefullt: Seien Sie ehrlich, es geht um Ihre Sicherheit.",
+    "seniorReminder": "Ab 65 Jahren wird vor einem anspruchsvollen Trek eine arztliche Untersuchung empfohlen."
+  },
+  "walkTest": {
+    "title": "6-Minuten-Gehtest",
+    "intro": "Gehen Sie in 6 Minuten so weit wie moglich auf ebenem Gelande. Das GPS misst die Distanz; wir vergleichen sie mit Normen fur Alter und Geschlecht.",
+    "safetyWarning": "Vermeiden Sie diese Anstrengung bei ungeklarten Herzproblemen. Horen Sie bei Unwohlsein auf.",
+    "start": "Test starten",
+    "stop": "Stoppen",
+    "cancel": "Abbrechen",
+    "countdown": "Machen Sie sich bereit...",
+    "running": "Lauft",
+    "liveDistance": "Distanz",
+    "timeLeft": "Verbleibende Zeit",
+    "meters": "m",
+    "resultTitle": "Testergebnis",
+    "resultDistance": "Zuruckgelegte Distanz",
+    "resultLevel": "Geschatztes Niveau",
+    "resultDate": "Durchgefuhrt am $date",
+    "doneAgain": "Test wiederholen",
+    "gpsNeeded": "GPS wird benotigt, um die Distanz zu messen.",
+    "gpsDenied": "Erlauben Sie den Standort, um den Test zu starten.",
+    "monthlyReminderOn": "Monatliche Erinnerung aktiv",
+    "monthlyReminderBody": "Jeden Monat wird eine Test-Erinnerung angeboten, um Ihre Form zu verfolgen.",
+    "notDoneYet": "Test nicht durchgefuhrt",
+    "fallbackNotice": "Bis zum Test wird Ihr Niveau aus Ihrem Fragebogen geschatzt.",
+    "levels": {
+      "low": "Niedrig",
+      "moderate": "Mittel",
+      "good": "Gut",
+      "excellent": "Ausgezeichnet"
+    }
+  },
+  "pastHikes": {
+    "title": "Ihre letzten 5 Touren",
+    "intro": "Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.",
+    "addHike": "Tour hinzufugen",
+    "empty": "Noch keine Tour erfasst.",
+    "fieldDate": "Datum",
+    "fieldDays": "Anzahl Tage",
+    "fieldAvgHours": "Durchschnittliches Gehen pro Tag (Std.)",
+    "fieldElevation": "Gesamtanstieg (m)",
+    "fieldDistance": "Gesamtdistanz (km)",
+    "perDay": "pro Tag",
+    "editHike": "Tour bearbeiten",
+    "deleteHike": "Loschen",
+    "save": "Speichern",
+    "saved": "Touren gespeichert",
+    "maxReached": "Maximum von 5 Touren erreicht.",
+    "difficultiesTitle": "Aufgetretene Schwierigkeiten",
+    "difficultiesHint": "Ein Text fur alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Hohe, Hitzestress...",
+    "difficultiesSaved": "Notiz gespeichert"
+  },
+  "ffrando": {
+    "cotationTitle": "FFRandonnee-Bewertung",
+    "effort": "Anstrengung",
+    "technicite": "Technik",
+    "risque": "Risiko",
+    "ibpLabel": "IBP-Index",
+    "effortScale": "Anstrengung (1 bis 5)",
+    "techniciteScale": "Technik (1 bis 5)",
+    "risqueScale": "Risiko (1 bis 5)",
+    "notRated": "Nicht bewertet",
+    "effortLevels": {
+      "1": "Sehr leicht",
+      "2": "Leicht",
+      "3": "Mittel",
+      "4": "Schwer",
+      "5": "Sehr schwer"
     }
   }
 }

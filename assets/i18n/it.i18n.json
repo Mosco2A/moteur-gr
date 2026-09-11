@@ -832,6 +832,23 @@
           "tip3": "Documentate la vostra avventura nel diario"
         }
       }
+    },
+    "objectiveTitle": "Fattibilita per questo trek",
+    "objectiveIntro": "Verdetto basato sul tuo profilo reale incrociato con i requisiti del trek.",
+    "openProfile": "I miei dati",
+    "openWalkTest": "Test di 6 minuti",
+    "openPastHikes": "Le mie ultime 5 escursioni",
+    "sourceObjective": "Basato sul tuo profilo oggettivo",
+    "sourceFallback": "Basato sul questionario (in attesa del profilo)",
+    "gapTooHigh": "Scarto troppo grande",
+    "gaps": {
+      "elevationPerDay": "Dislivello giornaliero troppo alto rispetto alla tua abitudine",
+      "distancePerDay": "Distanza giornaliera oltre la tua esperienza",
+      "consecutiveDays": "Piu giorni consecutivi di quanti mai fatti",
+      "technicity": "Tecnicita del terreno oltre il tuo livello",
+      "risk": "Livello di rischio alto per questo trek",
+      "fitness": "Forma insufficiente al test di 6 minuti",
+      "effort": "Sforzo globale (IBP) oltre la tua esperienza"
     }
   },
   "tips": {
@@ -1276,7 +1293,8 @@
       "purposeToggle": "$purpose, attualmente $state",
       "healthSection": "Sezione dati sulla salute, consenso rafforzato",
       "policyButton": "Apri l'informativa sulla privacy"
-    }
+    },
+    "healthDataMorphoNote": "Include i tuoi dati corporei (eta, altezza, peso) per la fattibilita del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo."
   },
   "moderation": {
     "reportTitle": "Segnala questo contenuto",
@@ -1745,6 +1763,107 @@
       "message": "Un'escursione era ancora in corso all'ultima chiusura dell'app. Vuoi riprenderla o abbandonarla?",
       "resume": "Riprendi",
       "abandon": "Abbandona"
+    }
+  },
+  "hikerProfile": {
+    "title": "I tuoi dati",
+    "privacyBanner": "I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup anonimo, senza il tuo nome) per calcolare la fattibilita.",
+    "fieldAge": "Eta",
+    "hintAge": "In anni",
+    "errorAge": "Eta non valida (5 a 120)",
+    "fieldHeight": "Altezza",
+    "hintHeight": "In centimetri",
+    "errorHeight": "Altezza non valida (80 a 250 cm)",
+    "fieldWeight": "Peso",
+    "hintWeight": "In chilogrammi",
+    "errorWeight": "Peso non valido (25 a 300 kg)",
+    "fieldSex": "Sesso (opzionale)",
+    "sexFemale": "Donna",
+    "sexMale": "Uomo",
+    "sexUnspecified": "Non specificato",
+    "fieldCountry": "Paese",
+    "hintCountry": "Codice (es. FR)",
+    "bmiLabel": "IMC",
+    "bmiCategories": {
+      "underweight": "Sottopeso",
+      "normal": "Normopeso",
+      "overweight": "Sovrappeso",
+      "obese": "Obesita"
+    },
+    "consentTitle": "Dati corporei (GDPR articolo 9)",
+    "consentBody": "Eta, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup anonimo (senza nome ne email), mai inviati in chiaro. Questo consenso e richiesto separatamente.",
+    "consentToggle": "Autorizzo l'uso dei miei dati corporei per la fattibilita",
+    "save": "Salva",
+    "saved": "Dati salvati",
+    "morphoNotPrefilledHint": "Nulla e precompilato: sii onesto, e la tua sicurezza.",
+    "seniorReminder": "Dai 65 anni, si consiglia una visita medica prima di un trek impegnativo."
+  },
+  "walkTest": {
+    "title": "Test del cammino di 6 minuti",
+    "intro": "Cammina il piu lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per eta e sesso.",
+    "safetyWarning": "Evita questo sforzo in caso di problemi cardiaci non verificati. Fermati se ti senti male.",
+    "start": "Avvia il test",
+    "stop": "Ferma",
+    "cancel": "Annulla",
+    "countdown": "Preparati...",
+    "running": "In corso",
+    "liveDistance": "Distanza",
+    "timeLeft": "Tempo rimanente",
+    "meters": "m",
+    "resultTitle": "Risultato del test",
+    "resultDistance": "Distanza percorsa",
+    "resultLevel": "Livello stimato",
+    "resultDate": "Eseguito il $date",
+    "doneAgain": "Rifai il test",
+    "gpsNeeded": "Il GPS e necessario per misurare la distanza.",
+    "gpsDenied": "Consenti la posizione per avviare il test.",
+    "monthlyReminderOn": "Promemoria mensile attivo",
+    "monthlyReminderBody": "Ogni mese ti verra proposto un promemoria del test per seguire la tua forma.",
+    "notDoneYet": "Test non eseguito",
+    "fallbackNotice": "In attesa del test, il tuo livello e stimato dal questionario.",
+    "levels": {
+      "low": "Basso",
+      "moderate": "Medio",
+      "good": "Buono",
+      "excellent": "Eccellente"
+    }
+  },
+  "pastHikes": {
+    "title": "Le tue ultime 5 escursioni",
+    "intro": "Aggiungi fino a 5 escursioni notevoli. Deduciamo il tuo livello reale (ritmo, resistenza, abitudine al dislivello) invece di un'etichetta.",
+    "addHike": "Aggiungi escursione",
+    "empty": "Nessuna escursione inserita.",
+    "fieldDate": "Data",
+    "fieldDays": "Numero di giorni",
+    "fieldAvgHours": "Cammino medio al giorno (h)",
+    "fieldElevation": "Dislivello + totale (m)",
+    "fieldDistance": "Distanza totale (km)",
+    "perDay": "al giorno",
+    "editHike": "Modifica escursione",
+    "deleteHike": "Elimina",
+    "save": "Salva",
+    "saved": "Escursioni salvate",
+    "maxReached": "Massimo di 5 escursioni raggiunto.",
+    "difficultiesTitle": "Difficolta incontrate",
+    "difficultiesHint": "Un solo testo per tutte queste escursioni: vesciche, ginocchia in discesa, affanno in quota, colpo di calore...",
+    "difficultiesSaved": "Nota salvata"
+  },
+  "ffrando": {
+    "cotationTitle": "Valutazione FFRandonnee",
+    "effort": "Sforzo",
+    "technicite": "Tecnicita",
+    "risque": "Rischio",
+    "ibpLabel": "Indice IBP",
+    "effortScale": "Sforzo (1 a 5)",
+    "techniciteScale": "Tecnicita (1 a 5)",
+    "risqueScale": "Rischio (1 a 5)",
+    "notRated": "Non valutato",
+    "effortLevels": {
+      "1": "Molto facile",
+      "2": "Facile",
+      "3": "Medio",
+      "4": "Difficile",
+      "5": "Molto difficile"
     }
   }
 }
