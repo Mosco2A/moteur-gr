@@ -1308,6 +1308,19 @@
     "a11y": {
       "form": "Formulario de información de salud",
       "saveButton": "Guardar la información de salud"
+    },
+    "delete": {
+      "button": "Borrar mi ficha",
+      "a11yButton": "Borrar mi ficha de salud — acción definitiva",
+      "confirmTitle": "¿Borrar tu ficha de salud?",
+      "confirmBody": "Es definitivo y local. Tu información se eliminará de este teléfono.",
+      "cancel": "Cancelar",
+      "confirm": "Borrar",
+      "done": "Ficha de salud borrada."
+    },
+    "consent": {
+      "purpose": "Esta información sirve para socorrerte. Permanece en tu teléfono, nunca se envía por internet.",
+      "manage": "Gestionar mi consentimiento de salud"
     }
   },
   "trailSelection": {
@@ -1928,6 +1941,21 @@
       "3": "Medio",
       "4": "Dificil",
       "5": "Muy dificil"
+    }
+  },
+  "sos": {
+    "title": "¿Llamar a emergencias?",
+    "body": "Está a punto de llamar al 112 (emergencias europeas).",
+    "positionTitle": "Su posición actual",
+    "positionUnavailable": "Posición GPS no disponible",
+    "altitudeUnavailable": "Altitud: no disponible",
+    "communicate": "Comunique estas coordenadas a los servicios de emergencia.",
+    "cancel": "Cancelar",
+    "call": "Llamar al 112",
+    "medicalId": {
+      "action": "Ficha médica del teléfono",
+      "hint": "Muestre sus datos vitales a emergencias, incluso con la pantalla bloqueada.",
+      "unavailable": "Abra la ficha médica en los ajustes de Salud de su teléfono."
     }
   }
 }

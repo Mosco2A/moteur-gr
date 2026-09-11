@@ -105,6 +105,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$walkTest$en walkTest = _Translations$walkTest$en._(_root);
 	@override late final _Translations$pastHikes$en pastHikes = _Translations$pastHikes$en._(_root);
 	@override late final _Translations$ffrando$en ffrando = _Translations$ffrando$en._(_root);
+	@override late final _Translations$sos$en sos = _Translations$sos$en._(_root);
 }
 
 // Path: a11y
@@ -1111,6 +1112,8 @@ class _Translations$health$en extends Translations$health$fr {
 	@override String get entryTitle => 'My health info';
 	@override String get entrySubtitle => 'To show the rescue team (kept on the phone)';
 	@override late final _Translations$health$a11y$en a11y = _Translations$health$a11y$en._(_root);
+	@override late final _Translations$health$delete$en delete = _Translations$health$delete$en._(_root);
+	@override late final _Translations$health$consent$en consent = _Translations$health$consent$en._(_root);
 }
 
 // Path: trailSelection
@@ -1594,6 +1597,24 @@ class _Translations$ffrando$en extends Translations$ffrando$fr {
 	@override String get risqueScale => 'Risk (1 to 5)';
 	@override String get notRated => 'Not rated';
 	@override late final _Translations$ffrando$effortLevels$en effortLevels = _Translations$ffrando$effortLevels$en._(_root);
+}
+
+// Path: sos
+class _Translations$sos$en extends Translations$sos$fr {
+	_Translations$sos$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Call emergency services?';
+	@override String get body => 'You are about to call 112 (European emergency number).';
+	@override String get positionTitle => 'Your current position';
+	@override String get positionUnavailable => 'GPS position unavailable';
+	@override String get altitudeUnavailable => 'Altitude: unavailable';
+	@override String get communicate => 'Share these coordinates with the rescuers.';
+	@override String get cancel => 'Cancel';
+	@override String get call => 'Call 112';
+	@override late final _Translations$sos$medicalId$en medicalId = _Translations$sos$medicalId$en._(_root);
 }
 
 // Path: hub.trekCard
@@ -2545,6 +2566,33 @@ class _Translations$health$a11y$en extends Translations$health$a11y$fr {
 	@override String get saveButton => 'Save health information';
 }
 
+// Path: health.delete
+class _Translations$health$delete$en extends Translations$health$delete$fr {
+	_Translations$health$delete$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get button => 'Delete my card';
+	@override String get a11yButton => 'Delete my health card — permanent action';
+	@override String get confirmTitle => 'Delete your health card?';
+	@override String get confirmBody => 'This is permanent and local. Your information will be removed from this phone.';
+	@override String get cancel => 'Cancel';
+	@override String get confirm => 'Delete';
+	@override String get done => 'Health card deleted.';
+}
+
+// Path: health.consent
+class _Translations$health$consent$en extends Translations$health$consent$fr {
+	_Translations$health$consent$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get purpose => 'This info helps rescuers assist you. It stays on your phone, never sent over the internet.';
+	@override String get manage => 'Manage my health consent';
+}
+
 // Path: trailSelection.a11y
 class _Translations$trailSelection$a11y$en extends Translations$trailSelection$a11y$fr {
 	_Translations$trailSelection$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3185,6 +3233,18 @@ class _Translations$ffrando$effortLevels$en extends Translations$ffrando$effortL
 	@override String get k3 => 'Moderate';
 	@override String get k4 => 'Hard';
 	@override String get k5 => 'Very hard';
+}
+
+// Path: sos.medicalId
+class _Translations$sos$medicalId$en extends Translations$sos$medicalId$fr {
+	_Translations$sos$medicalId$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get action => 'Phone medical ID';
+	@override String get hint => 'Show your vital info to rescuers, even on the lock screen.';
+	@override String get unavailable => 'Open the medical ID in your phone\'s Health settings.';
 }
 
 // Path: weather.alert.storm
@@ -4619,6 +4679,15 @@ extension on TranslationsEn {
 			'health.entrySubtitle' => 'To show the rescue team (kept on the phone)',
 			'health.a11y.form' => 'Health information form',
 			'health.a11y.saveButton' => 'Save health information',
+			'health.delete.button' => 'Delete my card',
+			'health.delete.a11yButton' => 'Delete my health card — permanent action',
+			'health.delete.confirmTitle' => 'Delete your health card?',
+			'health.delete.confirmBody' => 'This is permanent and local. Your information will be removed from this phone.',
+			'health.delete.cancel' => 'Cancel',
+			'health.delete.confirm' => 'Delete',
+			'health.delete.done' => 'Health card deleted.',
+			'health.consent.purpose' => 'This info helps rescuers assist you. It stays on your phone, never sent over the internet.',
+			'health.consent.manage' => 'Manage my health consent',
 			'trailSelection.title' => 'Switch trail',
 			'trailSelection.subtitle' => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.',
 			'trailSelection.current' => 'Active trail',
@@ -5079,6 +5148,8 @@ extension on TranslationsEn {
 			'pastHikes.difficultiesSaved' => 'Note saved',
 			'ffrando.cotationTitle' => 'FFRandonnee rating',
 			'ffrando.effort' => 'Effort',
+			_ => null,
+		} ?? switch (path) {
 			'ffrando.technicite' => 'Technicality',
 			'ffrando.risque' => 'Risk',
 			'ffrando.ibpLabel' => 'IBP index',
@@ -5088,11 +5159,20 @@ extension on TranslationsEn {
 			'ffrando.notRated' => 'Not rated',
 			'ffrando.effortLevels.k1' => 'Very easy',
 			'ffrando.effortLevels.k2' => 'Easy',
-			_ => null,
-		} ?? switch (path) {
 			'ffrando.effortLevels.k3' => 'Moderate',
 			'ffrando.effortLevels.k4' => 'Hard',
 			'ffrando.effortLevels.k5' => 'Very hard',
+			'sos.title' => 'Call emergency services?',
+			'sos.body' => 'You are about to call 112 (European emergency number).',
+			'sos.positionTitle' => 'Your current position',
+			'sos.positionUnavailable' => 'GPS position unavailable',
+			'sos.altitudeUnavailable' => 'Altitude: unavailable',
+			'sos.communicate' => 'Share these coordinates with the rescuers.',
+			'sos.cancel' => 'Cancel',
+			'sos.call' => 'Call 112',
+			'sos.medicalId.action' => 'Phone medical ID',
+			'sos.medicalId.hint' => 'Show your vital info to rescuers, even on the lock screen.',
+			'sos.medicalId.unavailable' => 'Open the medical ID in your phone\'s Health settings.',
 			_ => null,
 		};
 	}

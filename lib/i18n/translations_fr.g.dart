@@ -106,6 +106,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$walkTest$fr walkTest = Translations$walkTest$fr.internal(_root);
 	late final Translations$pastHikes$fr pastHikes = Translations$pastHikes$fr.internal(_root);
 	late final Translations$ffrando$fr ffrando = Translations$ffrando$fr.internal(_root);
+	late final Translations$sos$fr sos = Translations$sos$fr.internal(_root);
 }
 
 // Path: a11y
@@ -2201,6 +2202,8 @@ class Translations$health$fr {
 	String get entrySubtitle => 'À montrer aux secours (restées sur le téléphone)';
 
 	late final Translations$health$a11y$fr a11y = Translations$health$a11y$fr.internal(_root);
+	late final Translations$health$delete$fr delete = Translations$health$delete$fr.internal(_root);
+	late final Translations$health$consent$fr consent = Translations$health$consent$fr.internal(_root);
 }
 
 // Path: trailSelection
@@ -3236,6 +3239,41 @@ class Translations$ffrando$fr {
 	String get notRated => 'Non cote';
 
 	late final Translations$ffrando$effortLevels$fr effortLevels = Translations$ffrando$effortLevels$fr.internal(_root);
+}
+
+// Path: sos
+class Translations$sos$fr {
+	Translations$sos$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Appeler les secours ?'
+	String get title => 'Appeler les secours ?';
+
+	/// fr: 'Vous êtes sur le point d'appeler le 112 (urgences européennes).'
+	String get body => 'Vous êtes sur le point d\'appeler le 112 (urgences européennes).';
+
+	/// fr: 'Votre position actuelle'
+	String get positionTitle => 'Votre position actuelle';
+
+	/// fr: 'Position GPS indisponible'
+	String get positionUnavailable => 'Position GPS indisponible';
+
+	/// fr: 'Altitude : indisponible'
+	String get altitudeUnavailable => 'Altitude : indisponible';
+
+	/// fr: 'Communiquez ces coordonnées aux secours.'
+	String get communicate => 'Communiquez ces coordonnées aux secours.';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Appeler 112'
+	String get call => 'Appeler 112';
+
+	late final Translations$sos$medicalId$fr medicalId = Translations$sos$medicalId$fr.internal(_root);
 }
 
 // Path: hub.trekCard
@@ -5144,6 +5182,51 @@ class Translations$health$a11y$fr {
 	String get saveButton => 'Enregistrer les informations de santé';
 }
 
+// Path: health.delete
+class Translations$health$delete$fr {
+	Translations$health$delete$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Effacer ma fiche'
+	String get button => 'Effacer ma fiche';
+
+	/// fr: 'Effacer ma fiche santé — action définitive'
+	String get a11yButton => 'Effacer ma fiche santé — action définitive';
+
+	/// fr: 'Effacer ta fiche santé ?'
+	String get confirmTitle => 'Effacer ta fiche santé ?';
+
+	/// fr: 'C'est définitif et local. Tes informations seront supprimées de ce téléphone.'
+	String get confirmBody => 'C\'est définitif et local. Tes informations seront supprimées de ce téléphone.';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Effacer'
+	String get confirm => 'Effacer';
+
+	/// fr: 'Fiche santé effacée.'
+	String get done => 'Fiche santé effacée.';
+}
+
+// Path: health.consent
+class Translations$health$consent$fr {
+	Translations$health$consent$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ces infos servent à te secourir. Elles restent sur ton téléphone, jamais envoyées sur internet.'
+	String get purpose => 'Ces infos servent à te secourir. Elles restent sur ton téléphone, jamais envoyées sur internet.';
+
+	/// fr: 'Gérer mon consentement santé'
+	String get manage => 'Gérer mon consentement santé';
+}
+
 // Path: trailSelection.a11y
 class Translations$trailSelection$a11y$fr {
 	Translations$trailSelection$a11y$fr.internal(this._root);
@@ -6176,6 +6259,24 @@ class Translations$ffrando$effortLevels$fr {
 
 	/// fr: 'Tres difficile'
 	String get k5 => 'Tres difficile';
+}
+
+// Path: sos.medicalId
+class Translations$sos$medicalId$fr {
+	Translations$sos$medicalId$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Fiche médicale du téléphone'
+	String get action => 'Fiche médicale du téléphone';
+
+	/// fr: 'Affichez vos infos vitales aux secours, même écran verrouillé.'
+	String get hint => 'Affichez vos infos vitales aux secours, même écran verrouillé.';
+
+	/// fr: 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.'
+	String get unavailable => 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.';
 }
 
 // Path: weather.alert.storm
@@ -7754,6 +7855,15 @@ extension on Translations {
 			'health.entrySubtitle' => 'À montrer aux secours (restées sur le téléphone)',
 			'health.a11y.form' => 'Formulaire d\'informations de santé',
 			'health.a11y.saveButton' => 'Enregistrer les informations de santé',
+			'health.delete.button' => 'Effacer ma fiche',
+			'health.delete.a11yButton' => 'Effacer ma fiche santé — action définitive',
+			'health.delete.confirmTitle' => 'Effacer ta fiche santé ?',
+			'health.delete.confirmBody' => 'C\'est définitif et local. Tes informations seront supprimées de ce téléphone.',
+			'health.delete.cancel' => 'Annuler',
+			'health.delete.confirm' => 'Effacer',
+			'health.delete.done' => 'Fiche santé effacée.',
+			'health.consent.purpose' => 'Ces infos servent à te secourir. Elles restent sur ton téléphone, jamais envoyées sur internet.',
+			'health.consent.manage' => 'Gérer mon consentement santé',
 			'trailSelection.title' => 'Changer de sentier',
 			'trailSelection.subtitle' => 'Choisis le sentier a explorer. Tout l app (carte, etapes, points d interet, packs, guides) suit ta selection.',
 			'trailSelection.current' => 'Sentier actif',
@@ -8214,6 +8324,8 @@ extension on Translations {
 			'pastHikes.difficultiesSaved' => 'Note enregistree',
 			'ffrando.cotationTitle' => 'Cotation FFRandonnee',
 			'ffrando.effort' => 'Effort',
+			_ => null,
+		} ?? switch (path) {
 			'ffrando.technicite' => 'Technicite',
 			'ffrando.risque' => 'Risque',
 			'ffrando.ibpLabel' => 'Indice IBP',
@@ -8223,11 +8335,20 @@ extension on Translations {
 			'ffrando.notRated' => 'Non cote',
 			'ffrando.effortLevels.k1' => 'Tres facile',
 			'ffrando.effortLevels.k2' => 'Facile',
-			_ => null,
-		} ?? switch (path) {
 			'ffrando.effortLevels.k3' => 'Moyen',
 			'ffrando.effortLevels.k4' => 'Difficile',
 			'ffrando.effortLevels.k5' => 'Tres difficile',
+			'sos.title' => 'Appeler les secours ?',
+			'sos.body' => 'Vous êtes sur le point d\'appeler le 112 (urgences européennes).',
+			'sos.positionTitle' => 'Votre position actuelle',
+			'sos.positionUnavailable' => 'Position GPS indisponible',
+			'sos.altitudeUnavailable' => 'Altitude : indisponible',
+			'sos.communicate' => 'Communiquez ces coordonnées aux secours.',
+			'sos.cancel' => 'Annuler',
+			'sos.call' => 'Appeler 112',
+			'sos.medicalId.action' => 'Fiche médicale du téléphone',
+			'sos.medicalId.hint' => 'Affichez vos infos vitales aux secours, même écran verrouillé.',
+			'sos.medicalId.unavailable' => 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.',
 			_ => null,
 		};
 	}

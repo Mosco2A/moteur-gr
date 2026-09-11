@@ -1308,6 +1308,19 @@
     "a11y": {
       "form": "Formular für Gesundheitsinformationen",
       "saveButton": "Gesundheitsinformationen speichern"
+    },
+    "delete": {
+      "button": "Meine Karte löschen",
+      "a11yButton": "Meine Gesundheitskarte löschen — endgültige Aktion",
+      "confirmTitle": "Gesundheitskarte löschen?",
+      "confirmBody": "Endgültig und lokal. Deine Daten werden von diesem Telefon entfernt.",
+      "cancel": "Abbrechen",
+      "confirm": "Löschen",
+      "done": "Gesundheitskarte gelöscht."
+    },
+    "consent": {
+      "purpose": "Diese Infos helfen den Rettungskräften. Sie bleiben auf deinem Telefon, werden nie ins Internet gesendet.",
+      "manage": "Meine Gesundheits-Einwilligung verwalten"
     }
   },
   "trailSelection": {
@@ -1928,6 +1941,21 @@
       "3": "Mittel",
       "4": "Schwer",
       "5": "Sehr schwer"
+    }
+  },
+  "sos": {
+    "title": "Notruf absetzen?",
+    "body": "Sie sind dabei, den Notruf 112 (europäischer Notruf) zu wählen.",
+    "positionTitle": "Ihre aktuelle Position",
+    "positionUnavailable": "GPS-Position nicht verfügbar",
+    "altitudeUnavailable": "Höhe: nicht verfügbar",
+    "communicate": "Teilen Sie den Rettungskräften diese Koordinaten mit.",
+    "cancel": "Abbrechen",
+    "call": "112 anrufen",
+    "medicalId": {
+      "action": "Notfallpass des Telefons",
+      "hint": "Zeigen Sie den Rettungskräften Ihre Vitaldaten, auch im Sperrbildschirm.",
+      "unavailable": "Öffnen Sie den Notfallpass in den Gesundheitseinstellungen Ihres Telefons."
     }
   }
 }

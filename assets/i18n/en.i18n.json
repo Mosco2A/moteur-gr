@@ -1308,6 +1308,19 @@
     "a11y": {
       "form": "Health information form",
       "saveButton": "Save health information"
+    },
+    "delete": {
+      "button": "Delete my card",
+      "a11yButton": "Delete my health card — permanent action",
+      "confirmTitle": "Delete your health card?",
+      "confirmBody": "This is permanent and local. Your information will be removed from this phone.",
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "done": "Health card deleted."
+    },
+    "consent": {
+      "purpose": "This info helps rescuers assist you. It stays on your phone, never sent over the internet.",
+      "manage": "Manage my health consent"
     }
   },
   "trailSelection": {
@@ -1928,6 +1941,21 @@
       "3": "Moderate",
       "4": "Hard",
       "5": "Very hard"
+    }
+  },
+  "sos": {
+    "title": "Call emergency services?",
+    "body": "You are about to call 112 (European emergency number).",
+    "positionTitle": "Your current position",
+    "positionUnavailable": "GPS position unavailable",
+    "altitudeUnavailable": "Altitude: unavailable",
+    "communicate": "Share these coordinates with the rescuers.",
+    "cancel": "Cancel",
+    "call": "Call 112",
+    "medicalId": {
+      "action": "Phone medical ID",
+      "hint": "Show your vital info to rescuers, even on the lock screen.",
+      "unavailable": "Open the medical ID in your phone's Health settings."
     }
   }
 }

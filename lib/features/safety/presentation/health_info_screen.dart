@@ -13,6 +13,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/data/daos/health_info_dao.dart';
 import '../../../core/providers/database_provider.dart';
@@ -66,6 +67,11 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
 
   bool _isLoading = true;
   bool _isSaving = false;
+  bool _isDeleting = false;
+
+  /// Vrai si la fiche contient au moins une donnee (pilote l'affichage du
+  /// bouton « Effacer ma fiche » : rien a effacer sur une fiche vide).
+  bool _hasContent = false;
 
   @override
   void initState() {
@@ -85,10 +91,19 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
         _treatmentsController.text = info.treatments;
         _doctorController.text = info.doctorContact;
         _insuranceController.text = info.insuranceNumber;
+        _hasContent = _computeHasContent();
         _isLoading = false;
       });
     }
   }
+
+  /// Vrai si au moins un champ du formulaire est non vide.
+  bool _computeHasContent() =>
+      _bloodTypeController.text.trim().isNotEmpty ||
+      _allergiesController.text.trim().isNotEmpty ||
+      _treatmentsController.text.trim().isNotEmpty ||
+      _doctorController.text.trim().isNotEmpty ||
+      _insuranceController.text.trim().isNotEmpty;
 
   /// Sauvegarde les donnees du formulaire en local.
   Future<void> _save() async {
@@ -111,7 +126,10 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     ref.invalidate(healthInfoProvider);
 
     if (mounted) {
-      setState(() => _isSaving = false);
+      setState(() {
+        _isSaving = false;
+        _hasContent = _computeHasContent();
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(t.health.saved),
@@ -121,6 +139,56 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
       );
       Navigator.of(context).pop();
     }
+  }
+
+  /// Efface la fiche sante (E57) apres confirmation — branche le `delete()`
+  /// DEJA present dans le repository (aucun recodage). Local + instantane +
+  /// hors-ligne : aucune donnee ne quitte le telephone. Apres effacement, le
+  /// widget ecran verrouille cesse tout seul d'afficher la partie sante (le
+  /// repository est la source unique).
+  Future<void> _confirmAndDelete() async {
+    if (_isDeleting) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(t.health.delete.confirmTitle),
+        content: Text(t.health.delete.confirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: Text(t.health.delete.cancel),
+          ),
+          // Action DEFINITIVE : bouton rouge (couleur semantique d'urgence).
+          AppButton(
+            variant: AppButtonVariant.filledTone,
+            tone: AppTheme.rougeUrgence,
+            isFullWidth: false,
+            label: t.health.delete.confirm,
+            onPressed: () => Navigator.of(ctx).pop(true),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+
+    setState(() => _isDeleting = true);
+    final repo = ref.read(healthInfoRepositoryProvider);
+    await repo.delete();
+    ref.invalidate(healthInfoProvider);
+
+    if (!mounted) return;
+    setState(() {
+      _bloodTypeController.clear();
+      _allergiesController.clear();
+      _treatmentsController.clear();
+      _doctorController.clear();
+      _insuranceController.clear();
+      _hasContent = false;
+      _isDeleting = false;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(t.health.delete.done)),
+    );
   }
 
   @override
@@ -180,6 +248,16 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                           ],
                         ),
                       ),
+                      const SizedBox(height: AppTheme.spacingMd),
+                      // E57 (L6/H1) : rappel de FINALITE + lien vers la gestion du
+                      // consentement (art. 9 RGPD). Forme SOUPLE (reco ARBITRAGES
+                      // H1-a) : aucun envoi n'a lieu (local-only), on rappelle
+                      // l'usage « te secourir » et on offre l'acces a l'ecran
+                      // Confidentialite (finalite healthData) — pas de mur avant
+                      // saisie. Textes Slang.
+                      _ConsentReminder(
+                        onManage: () => context.push('/consent'),
+                      ),
                       const SizedBox(height: AppTheme.spacingLg),
                       _buildField(
                         controller: _bloodTypeController,
@@ -237,6 +315,27 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                           onPressed: _isSaving ? null : _save,
                         ),
                       ),
+                      // E57 (L6) : bouton « Effacer ma fiche » — branche sur le
+                      // delete() DEJA present. Visible uniquement si la fiche
+                      // contient quelque chose (rien a effacer sinon). Action
+                      // DEFINITIVE annoncee aux lecteurs d'ecran, confirmation
+                      // obligatoire (rouge).
+                      if (_hasContent) ...[
+                        const SizedBox(height: AppTheme.spacingBase),
+                        Semantics(
+                          button: true,
+                          label: t.health.delete.a11yButton,
+                          child: AppButton(
+                            variant: AppButtonVariant.outline,
+                            tone: AppTheme.rougeUrgence,
+                            isLoading: _isDeleting,
+                            minHeight: 52,
+                            icon: Icons.delete_outline,
+                            label: t.health.delete.button,
+                            onPressed: _isDeleting ? null : _confirmAndDelete,
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: AppTheme.spacingBase),
                       Text(
                         t.health.emergencyHint,
@@ -285,6 +384,61 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
           borderSide: BorderSide(color: colors.primary, width: 2),
         ),
+      ),
+    );
+  }
+}
+
+/// Rappel de FINALITE + lien vers la gestion du consentement sante (E57/H1).
+///
+/// Forme souple (ARBITRAGES H1-a) : rappelle que ces infos servent a secourir et
+/// restent sur le telephone, et offre un acces a l'ecran Confidentialite
+/// (finalite healthData). Ne bloque PAS la saisie (local-only, pas de
+/// « traitement » au sens strict). Textes Slang (5 langues).
+class _ConsentReminder extends StatelessWidget {
+  const _ConsentReminder({required this.onManage});
+
+  final VoidCallback onManage;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      decoration: BoxDecoration(
+        color: colors.surfaceContainerHighest.withAlpha(60),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.info_outline,
+                  size: 18, color: colors.onSurface.withAlpha(160)),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  t.health.consent.purpose,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colors.onSurface.withAlpha(200),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              key: const ValueKey('health-consent-manage'),
+              onPressed: onManage,
+              icon: const Icon(Icons.privacy_tip_outlined, size: 18),
+              label: Text(t.health.consent.manage),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1308,6 +1308,19 @@
     "a11y": {
       "form": "Formulaire d'informations de santé",
       "saveButton": "Enregistrer les informations de santé"
+    },
+    "delete": {
+      "button": "Effacer ma fiche",
+      "a11yButton": "Effacer ma fiche santé — action définitive",
+      "confirmTitle": "Effacer ta fiche santé ?",
+      "confirmBody": "C'est définitif et local. Tes informations seront supprimées de ce téléphone.",
+      "cancel": "Annuler",
+      "confirm": "Effacer",
+      "done": "Fiche santé effacée."
+    },
+    "consent": {
+      "purpose": "Ces infos servent à te secourir. Elles restent sur ton téléphone, jamais envoyées sur internet.",
+      "manage": "Gérer mon consentement santé"
     }
   },
   "trailSelection": {
@@ -1928,6 +1941,21 @@
       "3": "Moyen",
       "4": "Difficile",
       "5": "Tres difficile"
+    }
+  },
+  "sos": {
+    "title": "Appeler les secours ?",
+    "body": "Vous êtes sur le point d'appeler le 112 (urgences européennes).",
+    "positionTitle": "Votre position actuelle",
+    "positionUnavailable": "Position GPS indisponible",
+    "altitudeUnavailable": "Altitude : indisponible",
+    "communicate": "Communiquez ces coordonnées aux secours.",
+    "cancel": "Annuler",
+    "call": "Appeler 112",
+    "medicalId": {
+      "action": "Fiche médicale du téléphone",
+      "hint": "Affichez vos infos vitales aux secours, même écran verrouillé.",
+      "unavailable": "Ouvrez la fiche médicale dans les réglages Santé de votre téléphone."
     }
   }
 }

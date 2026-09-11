@@ -1308,6 +1308,19 @@
     "a11y": {
       "form": "Modulo informazioni sanitarie",
       "saveButton": "Salva le informazioni sanitarie"
+    },
+    "delete": {
+      "button": "Elimina la mia scheda",
+      "a11yButton": "Elimina la mia scheda sanitaria — azione definitiva",
+      "confirmTitle": "Eliminare la scheda sanitaria?",
+      "confirmBody": "È definitivo e locale. Le tue informazioni saranno rimosse da questo telefono.",
+      "cancel": "Annulla",
+      "confirm": "Elimina",
+      "done": "Scheda sanitaria eliminata."
+    },
+    "consent": {
+      "purpose": "Queste info servono a soccorrerti. Restano sul tuo telefono, mai inviate su internet.",
+      "manage": "Gestisci il mio consenso sanitario"
     }
   },
   "trailSelection": {
@@ -1928,6 +1941,21 @@
       "3": "Medio",
       "4": "Difficile",
       "5": "Molto difficile"
+    }
+  },
+  "sos": {
+    "title": "Chiamare i soccorsi?",
+    "body": "Stai per chiamare il 112 (emergenze europee).",
+    "positionTitle": "La tua posizione attuale",
+    "positionUnavailable": "Posizione GPS non disponibile",
+    "altitudeUnavailable": "Altitudine: non disponibile",
+    "communicate": "Comunica queste coordinate ai soccorsi.",
+    "cancel": "Annulla",
+    "call": "Chiama 112",
+    "medicalId": {
+      "action": "Scheda medica del telefono",
+      "hint": "Mostra i tuoi dati vitali ai soccorsi, anche a schermo bloccato.",
+      "unavailable": "Apri la scheda medica nelle impostazioni Salute del telefono."
     }
   }
 }
