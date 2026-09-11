@@ -21,6 +21,9 @@ _TipCard _$TipCardFromJson(Map<String, dynamic> json) => _TipCard(
   scope: json['scope'] as String? ?? 'all',
   season: json['season'] as String? ?? 'all',
   category: json['category'] as String? ?? 'general',
+  theme: json['theme'] as String? ?? '',
+  urlFacebook: json['urlFacebook'] as String?,
+  urlInstagram: json['urlInstagram'] as String?,
   tags:
       (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
@@ -44,6 +47,9 @@ Map<String, dynamic> _$TipCardToJson(_TipCard instance) => <String, dynamic>{
   'scope': instance.scope,
   'season': instance.season,
   'category': instance.category,
+  'theme': instance.theme,
+  'urlFacebook': instance.urlFacebook,
+  'urlInstagram': instance.urlInstagram,
   'tags': instance.tags,
   'minAltitudeM': instance.minAltitudeM,
   'imageAsset': instance.imageAsset,

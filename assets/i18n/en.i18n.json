@@ -887,7 +887,24 @@
     "priorityHigh": "High priority",
     "scope": "Trail",
     "season": "Season",
-    "altitude": "Min. altitude"
+    "altitude": "Min. altitude",
+    "screenTitle": "Advice sheets",
+    "screenIntro": "Everything to make your hike a success",
+    "followUs": "Follow us:",
+    "viewOnFacebook": "View on Facebook",
+    "viewOnInstagram": "Instagram",
+    "linkOffline": "Link unavailable offline",
+    "emptyThemed": "No advice sheet available for this trail.",
+    "moreTips": "+ $n tips",
+    "themes": {
+      "gear": "Gear",
+      "safety": "Safety",
+      "health": "Health",
+      "weather": "Weather",
+      "refuge": "Refuge life",
+      "nature": "Nature",
+      "other": "Misc"
+    }
   },
   "goodies": {
     "title": "Goodies Shop",

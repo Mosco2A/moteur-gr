@@ -887,7 +887,24 @@
     "priorityHigh": "Hohe Prioritaet",
     "scope": "Wanderweg",
     "season": "Saison",
-    "altitude": "Min. Hoehe"
+    "altitude": "Min. Hoehe",
+    "screenTitle": "Ratgeber",
+    "screenIntro": "Alles fur eine gelungene Wanderung",
+    "followUs": "Folgen Sie uns:",
+    "viewOnFacebook": "Auf Facebook ansehen",
+    "viewOnInstagram": "Instagram",
+    "linkOffline": "Link offline nicht verfugbar",
+    "emptyThemed": "Kein Ratgeber fur diesen Weg verfugbar.",
+    "moreTips": "+ $n Tipps",
+    "themes": {
+      "gear": "Ausrustung",
+      "safety": "Sicherheit",
+      "health": "Gesundheit",
+      "weather": "Wetter",
+      "refuge": "Huttenleben",
+      "nature": "Natur",
+      "other": "Sonstiges"
+    }
   },
   "goodies": {
     "title": "Goodies-Shop",

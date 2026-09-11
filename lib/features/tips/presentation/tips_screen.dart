@@ -1,171 +1,233 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
-import '../data/tips_data.dart';
+import '../domain/models/tip_card.dart';
+import '../domain/models/tip_theme.dart';
+import '../providers/tip_cards_provider.dart';
 
-/// Ecran principal des fiches conseils.
+/// Ecran FICHES CONSEILS — refonte StepWays LOT 5 (sous-ensemble C).
 ///
-/// Affiche les 6 categories sous forme de grille,
-/// chaque categorie mene a la liste de ses conseils.
-class TipsScreen extends StatelessWidget {
+/// Les fiches sont RANGEES PAR THEMES (decision Chris #99615) : au lieu d'une
+/// liste a plat, l'ecran presente des SECTIONS par theme (Materiel / Securite /
+/// Sante / Meteo / Vie du refuge / ...). Chaque fiche depliee peut porter un ou
+/// deux LIENS RESEAU (Facebook / Instagram) vers la fiche equivalente de la
+/// marque — champ `url` de la donnee, JAMAIS invente. L'entrainement N'EST PLUS
+/// une fiche conseil : c'est son propre ecran (sous-ensemble A).
+///
+/// Disponible en PREPA ET en RANDO (l'ecran est atteignable des deux phases du
+/// cockpit). OFFLINE : le contenu des fiches est embarque (lisible sans reseau) ;
+/// seuls les liens reseau requierent internet -> DEGRADATION PROPRE (bouton
+/// present ; si l'ouverture echoue, message neutre, la fiche reste lisible).
+///
+/// Contenu i18n INLINE (5 langues, [TipCard.localizedTitle/Content]) ; libelles
+/// d'interface via Slang. Look GR20 conserve ([AppCard], [ExpansionTile]).
+class TipsScreen extends ConsumerWidget {
   const TipsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final sections = ref.watch(tipCardsByThemeProvider);
+
     return Scaffold(
-      // Ph5 (L6c) : AppHeader universel. Titre via Slang (`nav.tips`) — fin du
-      // texte « Conseils trek » en dur.
-      appBar: AppHeader(title: t.nav.tips),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(AppTheme.spacingBase),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.2,
-          crossAxisSpacing: AppTheme.spacingMd,
-          mainAxisSpacing: AppTheme.spacingMd,
-        ),
-        itemCount: tipsCategories.length,
-        itemBuilder: (context, index) {
-          final category = tipsCategories[index];
-          return _CategoryCard(
-            category: category,
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => _TipListScreen(category: category),
+      appBar: AppHeader(title: t.tips.screenTitle),
+      body: SafeArea(
+        child: sections.isEmpty
+            ? _EmptyThemed()
+            : ListView(
+                padding: const EdgeInsets.all(AppTheme.spacingBase),
+                children: [
+                  Text(t.tips.screenIntro, style: theme.textTheme.bodyMedium),
+                  const SizedBox(height: AppTheme.spacingBase),
+                  for (final section in sections) _ThemeSection(section: section),
+                ],
               ),
-            ),
-          );
-        },
       ),
     );
   }
 }
 
-/// Carte de categorie dans la grille.
-class _CategoryCard extends StatelessWidget {
-  const _CategoryCard({required this.category, required this.onTap});
+/// Une SECTION par theme : titre de theme + fiches du theme.
+class _ThemeSection extends StatelessWidget {
+  const _ThemeSection({required this.section});
 
-  final TipCategory category;
-  final VoidCallback onTap;
+  final TipThemeSection section;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final labelRaw = t['tips.themes.${section.theme}'];
+    final label = labelRaw is String ? labelRaw : section.theme;
 
-    // SW-SKIN-L3e : Card+InkWell -> AppCard. onTap + InkWell (borne au rayon
-    // carte) fournis par AppCard ; padding base porte par AppCard (iso-rendu
-    // de la tuile categorie cliquable).
-    return AppCard(
-      onTap: onTap,
-      padding: const EdgeInsets.all(AppTheme.spacingBase),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            _resolveIcon(category.icon),
-            size: 36,
-            color: theme.colorScheme.primary,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Titre de THEME (parite wireframe : « ══ MATERIEL ══ »).
+        Padding(
+          padding: const EdgeInsets.only(
+            top: AppTheme.spacingSm,
+            bottom: AppTheme.spacingSm,
           ),
-          const SizedBox(height: AppTheme.spacingSm),
-          Text(
-            category.nameKey,
-            style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
+          child: Row(
+            children: [
+              Icon(_themeIcon(TipTheme.iconFor(section.theme)),
+                  size: 20, color: theme.colorScheme.primary),
+              const SizedBox(width: AppTheme.spacingSm),
+              Text(
+                label.toUpperCase(),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.5,
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: AppTheme.spacingXs),
-          Text(
-            '${category.tips.length} conseils',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurface.withAlpha(150),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  IconData _resolveIcon(String iconName) {
-    switch (iconName) {
-      case 'checklist':
-        return Icons.checklist;
-      case 'backpack':
-        return Icons.backpack;
-      case 'restaurant':
-        return Icons.restaurant;
-      case 'health_and_safety':
-        return Icons.health_and_safety;
-      case 'forest':
-        return Icons.forest;
-      case 'self_improvement':
-        return Icons.self_improvement;
-      default:
-        return Icons.info;
-    }
-  }
-}
-
-/// Ecran liste des conseils d une categorie.
-class _TipListScreen extends StatelessWidget {
-  const _TipListScreen({required this.category});
-
-  final TipCategory category;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // Ph5 (L6c) : AppHeader universel. Cette sous-page est poussee via
-      // `Navigator.push(MaterialPageRoute)` (PAS une GoRoute) -> le retour doit
-      // depiler CE Navigator (`onBack` explicite), pas passer par le contrat
-      // go_router (canPop du GoRouter, qui ne « voit » pas cette route imperative).
-      appBar: AppHeader(
-        title: category.nameKey,
-        onBack: () => Navigator.of(context).maybePop(),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(AppTheme.spacingBase),
-        itemCount: category.tips.length,
-        itemBuilder: (context, index) {
-          final tip = category.tips[index];
-          return _TipCard(tip: tip);
-        },
-      ),
+        ),
+        for (final card in section.cards) _TipCardTile(card: card),
+        const SizedBox(height: AppTheme.spacingSm),
+      ],
     );
   }
 }
 
-/// Carte expandable pour un conseil.
-class _TipCard extends StatelessWidget {
-  const _TipCard({required this.tip});
+/// Carte de fiche depliable (parite GR20) + boutons reseau (StepWays C).
+class _TipCardTile extends StatelessWidget {
+  const _TipCardTile({required this.card});
 
-  final Tip tip;
+  final TipCard card;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    // SW-SKIN-L3e : Card -> AppCard. margin conservee ; padding zero car
-    // l'ExpansionTile gere ses propres marges internes (iso-rendu). AppCard
-    // fournit le Material transparent requis par l'encre de l'ExpansionTile.
     return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingMd),
       padding: EdgeInsets.zero,
       child: ExpansionTile(
-        title: Text(tip.titleKey, style: theme.textTheme.titleMedium),
+        title: Text(card.localizedTitle, style: theme.textTheme.titleMedium),
+        childrenPadding: const EdgeInsets.fromLTRB(
+          AppTheme.spacingBase,
+          0,
+          AppTheme.spacingBase,
+          AppTheme.spacingBase,
+        ),
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppTheme.spacingBase,
-              0,
-              AppTheme.spacingBase,
-              AppTheme.spacingBase,
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              card.localizedContent,
+              style: theme.textTheme.bodyMedium,
             ),
-            child: Text(tip.contentKey, style: theme.textTheme.bodyMedium),
           ),
+          // Boutons reseau (uniquement si un lien est renseigne, spec C).
+          if (card.hasSocialLinks) ...[
+            const SizedBox(height: AppTheme.spacingMd),
+            _SocialLinks(card: card),
+          ],
         ],
       ),
     );
+  }
+}
+
+/// Boutons « Voir sur Facebook » / « Instagram » (champ url, StepWays C).
+///
+/// N'apparaissent QUE si le lien correspondant existe. Offline : l'ouverture
+/// echoue proprement (message neutre) sans casser l'ecran (contrainte non
+/// negociable). Aucune url en dur : tout vient de la donnee de la fiche.
+class _SocialLinks extends StatelessWidget {
+  const _SocialLinks({required this.card});
+
+  final TipCard card;
+
+  Future<void> _open(BuildContext context, String url) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final uri = Uri.tryParse(url);
+    var ok = false;
+    if (uri != null && await canLaunchUrl(uri)) {
+      ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+    if (!ok) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(t.tips.linkOffline)),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final fb = card.urlFacebook;
+    final ig = card.urlInstagram;
+    return Wrap(
+      spacing: AppTheme.spacingSm,
+      runSpacing: AppTheme.spacingSm,
+      children: [
+        if (fb != null && fb.isNotEmpty)
+          OutlinedButton.icon(
+            onPressed: () => _open(context, fb),
+            icon: const Icon(Icons.facebook, size: 18),
+            label: Text(t.tips.viewOnFacebook),
+          ),
+        if (ig != null && ig.isNotEmpty)
+          OutlinedButton.icon(
+            onPressed: () => _open(context, ig),
+            icon: const Icon(Icons.camera_alt_outlined, size: 18),
+            label: Text(t.tips.viewOnInstagram),
+          ),
+      ],
+    );
+  }
+}
+
+/// Etat vide (aucune fiche pour ce sentier) — message neutre, jamais casse.
+class _EmptyThemed extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingLg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.menu_book_outlined,
+                size: 48, color: theme.colorScheme.onSurface.withAlpha(120)),
+            const SizedBox(height: AppTheme.spacingMd),
+            Text(
+              t.tips.emptyThemed,
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurface.withAlpha(170),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Resout le nom d'icone de theme (donnee) en [IconData] (couche UI).
+IconData _themeIcon(String name) {
+  switch (name) {
+    case 'backpack':
+      return Icons.backpack;
+    case 'health_and_safety':
+      return Icons.health_and_safety;
+    case 'healing':
+      return Icons.healing;
+    case 'wb_sunny':
+      return Icons.wb_sunny;
+    case 'cabin':
+      return Icons.cabin;
+    case 'forest':
+      return Icons.forest;
+    default:
+      return Icons.info_outline;
   }
 }

@@ -887,7 +887,24 @@
     "priorityHigh": "Priorita alta",
     "scope": "Sentiero",
     "season": "Stagione",
-    "altitude": "Altitudine min."
+    "altitude": "Altitudine min.",
+    "screenTitle": "Schede consigli",
+    "screenIntro": "Tutto per una escursione riuscita",
+    "followUs": "Seguici:",
+    "viewOnFacebook": "Vedi su Facebook",
+    "viewOnInstagram": "Instagram",
+    "linkOffline": "Link non disponibile offline",
+    "emptyThemed": "Nessuna scheda consigli per questo sentiero.",
+    "moreTips": "+ $n consigli",
+    "themes": {
+      "gear": "Attrezzatura",
+      "safety": "Sicurezza",
+      "health": "Salute",
+      "weather": "Meteo",
+      "refuge": "Vita in rifugio",
+      "nature": "Natura",
+      "other": "Varie"
+    }
   },
   "goodies": {
     "title": "Negozio Goodies",

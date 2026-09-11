@@ -1494,6 +1494,32 @@ class Translations$tips$fr {
 
 	/// fr: 'Altitude min.'
 	String get altitude => 'Altitude min.';
+
+	/// fr: 'Fiches conseils'
+	String get screenTitle => 'Fiches conseils';
+
+	/// fr: 'Tout savoir pour reussir votre randonnee'
+	String get screenIntro => 'Tout savoir pour reussir votre randonnee';
+
+	/// fr: 'Suivez-nous :'
+	String get followUs => 'Suivez-nous :';
+
+	/// fr: 'Voir sur Facebook'
+	String get viewOnFacebook => 'Voir sur Facebook';
+
+	/// fr: 'Instagram'
+	String get viewOnInstagram => 'Instagram';
+
+	/// fr: 'Lien indisponible hors-ligne'
+	String get linkOffline => 'Lien indisponible hors-ligne';
+
+	/// fr: 'Aucune fiche conseil disponible pour ce sentier.'
+	String get emptyThemed => 'Aucune fiche conseil disponible pour ce sentier.';
+
+	/// fr: '+ $n conseils'
+	String moreTips({required Object n}) => '+ ${n} conseils';
+
+	late final Translations$tips$themes$fr themes = Translations$tips$themes$fr.internal(_root);
 }
 
 // Path: goodies
@@ -4510,6 +4536,36 @@ class Translations$feasibility$gaps$fr {
 	String get effort => 'Effort global (IBP) superieur a votre experience';
 }
 
+// Path: tips.themes
+class Translations$tips$themes$fr {
+	Translations$tips$themes$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Materiel'
+	String get gear => 'Materiel';
+
+	/// fr: 'Securite'
+	String get safety => 'Securite';
+
+	/// fr: 'Sante'
+	String get health => 'Sante';
+
+	/// fr: 'Meteo'
+	String get weather => 'Meteo';
+
+	/// fr: 'Vie du refuge'
+	String get refuge => 'Vie du refuge';
+
+	/// fr: 'Nature'
+	String get nature => 'Nature';
+
+	/// fr: 'Divers'
+	String get other => 'Divers';
+}
+
 // Path: catalog.a11y
 class Translations$catalog$a11y$fr {
 	Translations$catalog$a11y$fr.internal(this._root);
@@ -7340,6 +7396,21 @@ extension on Translations {
 			'tips.scope' => 'Sentier',
 			'tips.season' => 'Saison',
 			'tips.altitude' => 'Altitude min.',
+			'tips.screenTitle' => 'Fiches conseils',
+			'tips.screenIntro' => 'Tout savoir pour reussir votre randonnee',
+			'tips.followUs' => 'Suivez-nous :',
+			'tips.viewOnFacebook' => 'Voir sur Facebook',
+			'tips.viewOnInstagram' => 'Instagram',
+			'tips.linkOffline' => 'Lien indisponible hors-ligne',
+			'tips.emptyThemed' => 'Aucune fiche conseil disponible pour ce sentier.',
+			'tips.moreTips' => ({required Object n}) => '+ ${n} conseils',
+			'tips.themes.gear' => 'Materiel',
+			'tips.themes.safety' => 'Securite',
+			'tips.themes.health' => 'Sante',
+			'tips.themes.weather' => 'Meteo',
+			'tips.themes.refuge' => 'Vie du refuge',
+			'tips.themes.nature' => 'Nature',
+			'tips.themes.other' => 'Divers',
 			'goodies.title' => 'Boutique Goodies',
 			'goodies.comingSoon' => 'Ce module arrive bientot. Restez connecte !',
 			'noData.title' => 'Aucun sentier téléchargé',
@@ -7589,6 +7660,8 @@ extension on Translations {
 			'guides.openSite' => 'Voir le site',
 			'guides.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
 			'guides.categories.ravitaillement' => 'Ravitaillement',
+			_ => null,
+		} ?? switch (path) {
 			'guides.categories.hebergement' => 'Hébergement',
 			'guides.categories.transport' => 'Transport',
 			'guides.categories.services' => 'Services',
@@ -7604,8 +7677,6 @@ extension on Translations {
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Ouvrir le site de ${nom}',
 			'health.title' => 'Informations santé',
-			_ => null,
-		} ?? switch (path) {
 			'health.privacyBanner' => 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.',
 			'health.field.bloodType' => 'Groupe sanguin',
 			'health.field.allergies' => 'Allergies',

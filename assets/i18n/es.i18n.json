@@ -887,7 +887,24 @@
     "priorityHigh": "Prioridad alta",
     "scope": "Sendero",
     "season": "Temporada",
-    "altitude": "Altitud min."
+    "altitude": "Altitud min.",
+    "screenTitle": "Fichas de consejos",
+    "screenIntro": "Todo para que tu ruta sea un exito",
+    "followUs": "Siguenos:",
+    "viewOnFacebook": "Ver en Facebook",
+    "viewOnInstagram": "Instagram",
+    "linkOffline": "Enlace no disponible sin conexion",
+    "emptyThemed": "No hay fichas de consejos para este sendero.",
+    "moreTips": "+ $n consejos",
+    "themes": {
+      "gear": "Material",
+      "safety": "Seguridad",
+      "health": "Salud",
+      "weather": "Meteo",
+      "refuge": "Vida en refugio",
+      "nature": "Naturaleza",
+      "other": "Varios"
+    }
   },
   "goodies": {
     "title": "Tienda de Goodies",

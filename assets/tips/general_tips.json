@@ -19,7 +19,8 @@
       "hydratation",
       "sante"
     ],
-    "priority": 9
+    "priority": 9,
+    "theme": "health"
   },
   {
     "id": "general-vetements",
@@ -41,7 +42,8 @@
       "couches",
       "montagne"
     ],
-    "priority": 8
+    "priority": 8,
+    "theme": "gear"
   },
   {
     "id": "general-chaussures",
@@ -63,7 +65,8 @@
       "ampoules",
       "preparation"
     ],
-    "priority": 9
+    "priority": 9,
+    "theme": "gear"
   },
   {
     "id": "general-secours",
@@ -85,7 +88,8 @@
       "trousse",
       "urgence"
     ],
-    "priority": 8
+    "priority": 8,
+    "theme": "safety"
   },
   {
     "id": "general-solaire",
@@ -109,7 +113,8 @@
       "altitude"
     ],
     "minAltitudeM": 800,
-    "priority": 7
+    "priority": 7,
+    "theme": "health"
   },
   {
     "id": "general-alimentation",
@@ -131,7 +136,8 @@
       "energie",
       "calories"
     ],
-    "priority": 7
+    "priority": 7,
+    "theme": "health"
   },
   {
     "id": "general-nature",
@@ -154,7 +160,8 @@
       "faune",
       "flore"
     ],
-    "priority": 7
+    "priority": 7,
+    "theme": "nature"
   },
   {
     "id": "general-recup",
@@ -176,7 +183,8 @@
       "recuperation",
       "sommeil"
     ],
-    "priority": 6
+    "priority": 6,
+    "theme": "health"
   },
   {
     "id": "general-orage",
@@ -200,7 +208,8 @@
       "urgence"
     ],
     "minAltitudeM": 1000,
-    "priority": 10
+    "priority": 10,
+    "theme": "weather"
   },
   {
     "id": "general-batons",
@@ -222,6 +231,7 @@
       "genoux",
       "descente"
     ],
-    "priority": 6
+    "priority": 6,
+    "theme": "gear"
   }
 ]

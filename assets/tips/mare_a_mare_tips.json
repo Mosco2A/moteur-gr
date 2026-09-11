@@ -20,7 +20,8 @@
       "fontaine",
       "mare_a_mare"
     ],
-    "priority": 9
+    "priority": 9,
+    "theme": "health"
   },
   {
     "id": "mam-hebergement",
@@ -43,7 +44,8 @@
       "reservation",
       "mare_a_mare"
     ],
-    "priority": 8
+    "priority": 8,
+    "theme": "refuge"
   },
   {
     "id": "mam-difficulte",
@@ -66,7 +68,8 @@
       "etape",
       "mare_a_mare"
     ],
-    "priority": 7
+    "priority": 7,
+    "theme": "safety"
   },
   {
     "id": "mam-chaleur",
@@ -89,7 +92,8 @@
       "maquis",
       "mare_a_mare"
     ],
-    "priority": 8
+    "priority": 8,
+    "theme": "weather"
   },
   {
     "id": "mam-patrimoine",
@@ -112,6 +116,7 @@
       "culture",
       "mare_a_mare"
     ],
-    "priority": 5
+    "priority": 5,
+    "theme": "nature"
   }
 ]

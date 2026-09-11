@@ -742,6 +742,15 @@ class _Translations$tips$en extends Translations$tips$fr {
 	@override String get scope => 'Trail';
 	@override String get season => 'Season';
 	@override String get altitude => 'Min. altitude';
+	@override String get screenTitle => 'Advice sheets';
+	@override String get screenIntro => 'Everything to make your hike a success';
+	@override String get followUs => 'Follow us:';
+	@override String get viewOnFacebook => 'View on Facebook';
+	@override String get viewOnInstagram => 'Instagram';
+	@override String get linkOffline => 'Link unavailable offline';
+	@override String get emptyThemed => 'No advice sheet available for this trail.';
+	@override String moreTips({required Object n}) => '+ ${n} tips';
+	@override late final _Translations$tips$themes$en themes = _Translations$tips$themes$en._(_root);
 }
 
 // Path: goodies
@@ -2168,6 +2177,22 @@ class _Translations$feasibility$gaps$en extends Translations$feasibility$gaps$fr
 	@override String get risk => 'High risk level for this trek';
 	@override String get fitness => 'Fitness insufficient on the 6-minute test';
 	@override String get effort => 'Overall effort (IBP) above your experience';
+}
+
+// Path: tips.themes
+class _Translations$tips$themes$en extends Translations$tips$themes$fr {
+	_Translations$tips$themes$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get gear => 'Gear';
+	@override String get safety => 'Safety';
+	@override String get health => 'Health';
+	@override String get weather => 'Weather';
+	@override String get refuge => 'Refuge life';
+	@override String get nature => 'Nature';
+	@override String get other => 'Misc';
 }
 
 // Path: catalog.a11y
@@ -4256,6 +4281,21 @@ extension on TranslationsEn {
 			'tips.scope' => 'Trail',
 			'tips.season' => 'Season',
 			'tips.altitude' => 'Min. altitude',
+			'tips.screenTitle' => 'Advice sheets',
+			'tips.screenIntro' => 'Everything to make your hike a success',
+			'tips.followUs' => 'Follow us:',
+			'tips.viewOnFacebook' => 'View on Facebook',
+			'tips.viewOnInstagram' => 'Instagram',
+			'tips.linkOffline' => 'Link unavailable offline',
+			'tips.emptyThemed' => 'No advice sheet available for this trail.',
+			'tips.moreTips' => ({required Object n}) => '+ ${n} tips',
+			'tips.themes.gear' => 'Gear',
+			'tips.themes.safety' => 'Safety',
+			'tips.themes.health' => 'Health',
+			'tips.themes.weather' => 'Weather',
+			'tips.themes.refuge' => 'Refuge life',
+			'tips.themes.nature' => 'Nature',
+			'tips.themes.other' => 'Misc',
 			'goodies.title' => 'Goodies Shop',
 			'goodies.comingSoon' => 'This module is coming soon. Stay tuned!',
 			'noData.title' => 'No trail downloaded',
@@ -4505,6 +4545,8 @@ extension on TranslationsEn {
 			'guides.openSite' => 'Open website',
 			'guides.cannotOpen' => 'Can\'t open this link on this device.',
 			'guides.categories.ravitaillement' => 'Resupply',
+			_ => null,
+		} ?? switch (path) {
 			'guides.categories.hebergement' => 'Accommodation',
 			'guides.categories.transport' => 'Transport',
 			'guides.categories.services' => 'Services',
@@ -4520,8 +4562,6 @@ extension on TranslationsEn {
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Open the website of ${nom}',
 			'health.title' => 'Health information',
-			_ => null,
-		} ?? switch (path) {
 			'health.privacyBanner' => 'This data stays on your phone. It is never sent over the internet.',
 			'health.field.bloodType' => 'Blood type',
 			'health.field.allergies' => 'Allergies',

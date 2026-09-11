@@ -887,7 +887,24 @@
     "priorityHigh": "Priorité haute",
     "scope": "Sentier",
     "season": "Saison",
-    "altitude": "Altitude min."
+    "altitude": "Altitude min.",
+    "screenTitle": "Fiches conseils",
+    "screenIntro": "Tout savoir pour reussir votre randonnee",
+    "followUs": "Suivez-nous :",
+    "viewOnFacebook": "Voir sur Facebook",
+    "viewOnInstagram": "Instagram",
+    "linkOffline": "Lien indisponible hors-ligne",
+    "emptyThemed": "Aucune fiche conseil disponible pour ce sentier.",
+    "moreTips": "+ $n conseils",
+    "themes": {
+      "gear": "Materiel",
+      "safety": "Securite",
+      "health": "Sante",
+      "weather": "Meteo",
+      "refuge": "Vie du refuge",
+      "nature": "Nature",
+      "other": "Divers"
+    }
   },
   "goodies": {
     "title": "Boutique Goodies",

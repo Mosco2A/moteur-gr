@@ -742,6 +742,15 @@ class _Translations$tips$es extends Translations$tips$fr {
 	@override String get scope => 'Sendero';
 	@override String get season => 'Temporada';
 	@override String get altitude => 'Altitud min.';
+	@override String get screenTitle => 'Fichas de consejos';
+	@override String get screenIntro => 'Todo para que tu ruta sea un exito';
+	@override String get followUs => 'Siguenos:';
+	@override String get viewOnFacebook => 'Ver en Facebook';
+	@override String get viewOnInstagram => 'Instagram';
+	@override String get linkOffline => 'Enlace no disponible sin conexion';
+	@override String get emptyThemed => 'No hay fichas de consejos para este sendero.';
+	@override String moreTips({required Object n}) => '+ ${n} consejos';
+	@override late final _Translations$tips$themes$es themes = _Translations$tips$themes$es._(_root);
 }
 
 // Path: goodies
@@ -2168,6 +2177,22 @@ class _Translations$feasibility$gaps$es extends Translations$feasibility$gaps$fr
 	@override String get risk => 'Nivel de riesgo alto para este trek';
 	@override String get fitness => 'Forma insuficiente en la prueba de 6 minutos';
 	@override String get effort => 'Esfuerzo global (IBP) por encima de tu experiencia';
+}
+
+// Path: tips.themes
+class _Translations$tips$themes$es extends Translations$tips$themes$fr {
+	_Translations$tips$themes$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get gear => 'Material';
+	@override String get safety => 'Seguridad';
+	@override String get health => 'Salud';
+	@override String get weather => 'Meteo';
+	@override String get refuge => 'Vida en refugio';
+	@override String get nature => 'Naturaleza';
+	@override String get other => 'Varios';
 }
 
 // Path: catalog.a11y
@@ -4256,6 +4281,21 @@ extension on TranslationsEs {
 			'tips.scope' => 'Sendero',
 			'tips.season' => 'Temporada',
 			'tips.altitude' => 'Altitud min.',
+			'tips.screenTitle' => 'Fichas de consejos',
+			'tips.screenIntro' => 'Todo para que tu ruta sea un exito',
+			'tips.followUs' => 'Siguenos:',
+			'tips.viewOnFacebook' => 'Ver en Facebook',
+			'tips.viewOnInstagram' => 'Instagram',
+			'tips.linkOffline' => 'Enlace no disponible sin conexion',
+			'tips.emptyThemed' => 'No hay fichas de consejos para este sendero.',
+			'tips.moreTips' => ({required Object n}) => '+ ${n} consejos',
+			'tips.themes.gear' => 'Material',
+			'tips.themes.safety' => 'Seguridad',
+			'tips.themes.health' => 'Salud',
+			'tips.themes.weather' => 'Meteo',
+			'tips.themes.refuge' => 'Vida en refugio',
+			'tips.themes.nature' => 'Naturaleza',
+			'tips.themes.other' => 'Varios',
 			'goodies.title' => 'Tienda de Goodies',
 			'goodies.comingSoon' => 'Este modulo llegara pronto. Mantente atento!',
 			'noData.title' => 'Ningún sendero descargado',
@@ -4505,6 +4545,8 @@ extension on TranslationsEs {
 			'guides.openSite' => 'Abrir el sitio',
 			'guides.cannotOpen' => 'No se puede abrir este enlace en este dispositivo.',
 			'guides.categories.ravitaillement' => 'Avituallamiento',
+			_ => null,
+		} ?? switch (path) {
 			'guides.categories.hebergement' => 'Alojamiento',
 			'guides.categories.transport' => 'Transporte',
 			'guides.categories.services' => 'Servicios',
@@ -4520,8 +4562,6 @@ extension on TranslationsEs {
 			'guides.a11y.section' => ({required Object titre}) => 'Sección ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Abrir el sitio de ${nom}',
 			'health.title' => 'Información de salud',
-			_ => null,
-		} ?? switch (path) {
 			'health.privacyBanner' => 'Estos datos permanecen en tu teléfono. Nunca se envían por internet.',
 			'health.field.bloodType' => 'Grupo sanguíneo',
 			'health.field.allergies' => 'Alergias',
