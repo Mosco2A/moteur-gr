@@ -751,7 +751,8 @@
     "save": "Salva",
     "changeAvatar": "Cambia avatar",
     "chooseAvatar": "Scegli un avatar",
-    "errorLoading": "Errore di caricamento"
+    "errorLoading": "Errore di caricamento",
+    "appVersion": "StepWays v$version (build $build)"
   },
   "feasibility": {
     "title": "Feasibility",

@@ -1375,6 +1375,9 @@ class Translations$auth$fr {
 
 	/// fr: 'Erreur de chargement'
 	String get errorLoading => 'Erreur de chargement';
+
+	/// fr: 'StepWays v$version (build $build)'
+	String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
 }
 
 // Path: feasibility
@@ -7584,6 +7587,7 @@ extension on Translations {
 			'auth.changeAvatar' => 'Changer l\'avatar',
 			'auth.chooseAvatar' => 'Choisir un avatar',
 			'auth.errorLoading' => 'Erreur de chargement',
+			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
 			'feasibility.title' => 'Faisabilité',
 			'feasibility.subtitle' => 'Évaluez votre préparation',
 			'feasibility.previous' => 'Précédent',
@@ -7953,9 +7957,9 @@ extension on Translations {
 			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
 			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
 			'packs.delete.cancel' => 'Annuler',
-			'packs.delete.confirm' => 'Supprimer',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.confirm' => 'Supprimer',
 			'packs.delete.freed' => 'Espace libéré.',
 			'packs.empty' => 'Aucun pack disponible pour ce sentier.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
@@ -8467,9 +8471,9 @@ extension on Translations {
 			'pastHikes.addHike' => 'Ajouter une rando',
 			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
 			'pastHikes.fieldDate' => 'Date',
-			'pastHikes.fieldDays' => 'Nombre de jours',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.fieldDays' => 'Nombre de jours',
 			'pastHikes.fieldAvgHours' => 'Marche moyenne par jour (h)',
 			'pastHikes.fieldElevation' => 'Denivele + total (m)',
 			'pastHikes.fieldDistance' => 'Distance totale (km)',

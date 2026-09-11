@@ -690,6 +690,7 @@ class _Translations$auth$en extends Translations$auth$fr {
 	@override String get changeAvatar => 'Change avatar';
 	@override String get chooseAvatar => 'Choose an avatar';
 	@override String get errorLoading => 'Loading error';
+	@override String appVersion({required Object version, required Object build}) => 'StepWays v${version} (build ${build})';
 }
 
 // Path: feasibility
@@ -4332,6 +4333,7 @@ extension on TranslationsEn {
 			'auth.changeAvatar' => 'Change avatar',
 			'auth.chooseAvatar' => 'Choose an avatar',
 			'auth.errorLoading' => 'Loading error',
+			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
 			'feasibility.title' => 'Feasibility',
 			'feasibility.subtitle' => 'Assess your preparation',
 			'feasibility.previous' => 'Previous',
@@ -4701,9 +4703,9 @@ extension on TranslationsEn {
 			'packs.delete.confirmTitle' => 'Delete this pack?',
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
 			'packs.delete.cancel' => 'Cancel',
-			'packs.delete.confirm' => 'Delete',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.confirm' => 'Delete',
 			'packs.delete.freed' => 'Space freed.',
 			'packs.empty' => 'No pack available for this trail.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
@@ -5215,9 +5217,9 @@ extension on TranslationsEn {
 			'pastHikes.addHike' => 'Add a hike',
 			'pastHikes.empty' => 'No hike entered yet.',
 			'pastHikes.fieldDate' => 'Date',
-			'pastHikes.fieldDays' => 'Number of days',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.fieldDays' => 'Number of days',
 			'pastHikes.fieldAvgHours' => 'Average walking per day (h)',
 			'pastHikes.fieldElevation' => 'Total elevation gain (m)',
 			'pastHikes.fieldDistance' => 'Total distance (km)',

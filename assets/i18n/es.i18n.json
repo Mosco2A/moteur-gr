@@ -751,7 +751,8 @@
     "save": "Guardar",
     "changeAvatar": "Cambiar avatar",
     "chooseAvatar": "Elegir un avatar",
-    "errorLoading": "Error de carga"
+    "errorLoading": "Error de carga",
+    "appVersion": "StepWays v$version (build $build)"
   },
   "feasibility": {
     "title": "Feasibility",

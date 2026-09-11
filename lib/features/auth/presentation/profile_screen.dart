@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/firebase/cloud_unavailable_notice.dart';
 import '../../../core/firebase/firebase_service.dart';
@@ -8,6 +9,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/section_header.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../domain/auth_service.dart';
 import '../providers/auth_provider.dart';
@@ -28,9 +30,15 @@ const _avatarIcons = <IconData>[
 
 /// Ecran de profil utilisateur.
 ///
-/// Permet de modifier le pseudonyme, choisir un avatar local,
-/// se connecter via Google, se deconnecter ou supprimer son compte.
-/// Tous les textes passent par Slang (zero texte en dur).
+/// Parite GR20 (tache 517) : meme charpente que l'ecran profil GR20 —
+/// en-tete avatar centre + pseudo, sections regroupees par [SectionHeader]
+/// (compte, main dominante, zone dangereuse), et VERSION visible en bas de
+/// page (« StepWays v0.1.0 (build 1) », lue via package_info_plus).
+///
+/// Acquis finitions conserves : profil OK hors-ligne (aucun spinner infini —
+/// etat explicite si l'utilisateur est absent), acces au code de reconnexion
+/// via les Reglages, choix de la main dominante. Tous les textes passent par
+/// Slang (zero texte en dur), 5 langues.
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
 
@@ -78,11 +86,68 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       return Center(child: Text(i18n.auth.errorLoading));
     }
 
-    return ListView(
+    // Parite GR20 : SingleChildScrollView + Column, sections espacees de
+    // spacingLg entre elles (iso-rythme de l'ecran profil GR20).
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // En-tete : avatar centre + pseudo editable + methode de connexion.
+          _buildProfileHeader(context, ref, theme, i18n, user),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Section « Mon compte » (connexion / deconnexion).
+          SectionHeader(title: i18n.auth.profile, icon: Icons.person_outline),
+          const SizedBox(height: AppTheme.spacingSm),
+          _buildAccountSection(context, ref, theme, i18n, user),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Section « Main dominante » (lateralite, R9/R10) : place le SOS et
+          // les commandes critiques du cote de la main dominante (thumb zone).
+          // Donnee NON sensible, defaut droitier. Persiste via settingsProvider.
+          SectionHeader(
+            title: i18n.navPilote.dominantHand,
+            icon: Icons.pan_tool_outlined,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _buildDominantHandSection(context, ref, theme, i18n),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Zone dangereuse — suppression de compte (parite GR20 : section
+          // dediee en rouge, requise par les stores).
+          SectionHeader(
+            title: i18n.auth.deleteAccount,
+            icon: Icons.warning_amber_rounded,
+            iconColor: AppTheme.rougeUrgence,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _buildDangerZone(context, ref, theme, i18n),
+          const SizedBox(height: AppTheme.spacingXl),
+
+          // Version + build en bas de page (parite GR20, tache 517) :
+          // « StepWays v0.1.0 (build 1) », discret, centre, lu dynamiquement
+          // via package_info_plus. But : Chris VOIT la version a l'ecran.
+          _buildVersionFooter(theme, i18n),
+          const SizedBox(height: AppTheme.spacingMd),
+        ],
+      ),
+    );
+  }
+
+  /// En-tete profil (parite GR20) : avatar centre cliquable, pseudo editable
+  /// centre sous l'avatar, puis la puce « methode de connexion ».
+  Widget _buildProfileHeader(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+    AuthUser user,
+  ) {
+    return Column(
       children: [
         _buildAvatarSection(context, ref, theme, i18n, user),
-        const SizedBox(height: AppTheme.spacingBase),
+        const SizedBox(height: AppTheme.spacingXs),
         _buildPseudoSection(context, ref, theme, i18n, user),
         const SizedBox(height: AppTheme.spacingSm),
         Center(
@@ -101,66 +166,83 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             ),
           ),
         ),
-        const SizedBox(height: AppTheme.spacingXl),
-        // Lateralite / main dominante (nav V2, R9/R10) : place le SOS et les
-        // commandes critiques du cote de la main dominante (thumb zone). Donnee
-        // NON sensible, defaut droitier. Persiste via settingsProvider.
-        _buildDominantHandSection(context, ref, theme, i18n),
-        const SizedBox(height: AppTheme.spacingBase),
-        // P1-4 audit #327 : sans Firebase, la connexion Google ne peut
-        // qu echouer en silence — etat explicite a la place de la tuile.
-        if (user.isAnonymous && !ref.watch(isFirebaseAvailableProvider)) ...[
-          const CloudUnavailableNotice(),
-          const SizedBox(height: AppTheme.spacingSm),
-        ],
-        if (user.isAnonymous && ref.watch(isFirebaseAvailableProvider)) ...[
-          // SW-SKIN-L3e : Card -> AppCard. padding zero car le ListTile porte
-          // deja son padding interne (iso-rendu de la tuile cliquable).
-          AppCard(
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              leading: const Icon(Icons.login),
-              title: Text(i18n.auth.signInGoogle),
-              subtitle: Text(i18n.auth.signInGoogleDesc),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () async {
-                final service = ref.read(authServiceProvider);
-                await service.signInWithGoogleSilent();
-              },
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-        ],
-        if (!user.isAnonymous) ...[
-          // SW-SKIN-L3e : Card -> AppCard (padding zero, ListTile interne).
-          AppCard(
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              leading: const Icon(Icons.logout),
-              title: Text(i18n.auth.signOut),
-              subtitle: Text(i18n.auth.signOutDesc),
-              onTap: () => _confirmSignOut(context, ref, i18n),
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-        ],
-        // SW-SKIN-L3e : Card -> AppCard (padding zero, ListTile interne).
-        AppCard(
-          padding: EdgeInsets.zero,
-          child: ListTile(
-            leading: const Icon(
-              Icons.delete_forever,
-              color: AppTheme.rougeUrgence,
-            ),
-            title: Text(
-              i18n.auth.deleteAccount,
-              style: const TextStyle(color: AppTheme.rougeUrgence),
-            ),
-            subtitle: Text(i18n.auth.deleteAccountDesc),
-            onTap: () => _confirmDelete(context, ref, i18n),
-          ),
-        ),
       ],
+    );
+  }
+
+  /// Section « Mon compte » : connexion Google (si anonyme + Firebase dispo),
+  /// deconnexion (si connecte), ou notice cloud indisponible.
+  Widget _buildAccountSection(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+    AuthUser user,
+  ) {
+    // P1-4 audit #327 : sans Firebase, la connexion Google ne peut
+    // qu echouer en silence — etat explicite a la place de la tuile.
+    if (user.isAnonymous && !ref.watch(isFirebaseAvailableProvider)) {
+      return const CloudUnavailableNotice();
+    }
+
+    if (user.isAnonymous && ref.watch(isFirebaseAvailableProvider)) {
+      // SW-SKIN-L3e : Card -> AppCard. padding zero car le ListTile porte
+      // deja son padding interne (iso-rendu de la tuile cliquable).
+      return AppCard(
+        padding: EdgeInsets.zero,
+        child: ListTile(
+          leading: const Icon(Icons.login),
+          title: Text(i18n.auth.signInGoogle),
+          subtitle: Text(i18n.auth.signInGoogleDesc),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () async {
+            final service = ref.read(authServiceProvider);
+            await service.signInWithGoogleSilent();
+          },
+        ),
+      );
+    }
+
+    // Connecte : proposer la deconnexion.
+    return AppCard(
+      padding: EdgeInsets.zero,
+      child: ListTile(
+        leading: const Icon(Icons.logout),
+        title: Text(i18n.auth.signOut),
+        subtitle: Text(i18n.auth.signOutDesc),
+        onTap: () => _confirmSignOut(context, ref, i18n),
+      ),
+    );
+  }
+
+  /// Version + build en bas de page (parite GR20, tache 517).
+  ///
+  /// Lue dynamiquement via package_info_plus. Format mandate :
+  /// « StepWays v0.1.0 (build 1) ». Fallback discret « ... » le temps du
+  /// chargement du plugin (jamais de spinner — coherent avec l'offline-first).
+  Widget _buildVersionFooter(ThemeData theme, Translations i18n) {
+    return Center(
+      child: FutureBuilder<PackageInfo>(
+        future: PackageInfo.fromPlatform(),
+        builder: (context, snapshot) {
+          final String versionText;
+          if (snapshot.hasData) {
+            final info = snapshot.data!;
+            versionText = i18n.auth.appVersion(
+              version: info.version,
+              build: info.buildNumber,
+            );
+          } else {
+            versionText = '...';
+          }
+          return Text(
+            versionText,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -181,19 +263,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.pan_tool_outlined, color: theme.colorScheme.primary),
-              const SizedBox(width: AppTheme.spacingSm),
-              Expanded(
-                child: Text(
-                  i18n.navPilote.dominantHand,
-                  style: theme.textTheme.titleMedium,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacingXs),
           Text(
             i18n.navPilote.dominantHandDesc,
             style: theme.textTheme.bodySmall?.copyWith(
@@ -222,6 +291,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  /// Zone dangereuse — suppression de compte (parite GR20).
+  Widget _buildDangerZone(
+    BuildContext context,
+    WidgetRef ref,
+    ThemeData theme,
+    Translations i18n,
+  ) {
+    // SW-SKIN-L3e : Card -> AppCard (padding zero, ListTile interne).
+    return AppCard(
+      padding: EdgeInsets.zero,
+      borderColor: AppTheme.rougeUrgence.withValues(alpha: 0.4),
+      child: ListTile(
+        leading: const Icon(
+          Icons.delete_forever,
+          color: AppTheme.rougeUrgence,
+        ),
+        title: Text(
+          i18n.auth.deleteAccount,
+          style: const TextStyle(color: AppTheme.rougeUrgence),
+        ),
+        subtitle: Text(i18n.auth.deleteAccountDesc),
+        onTap: () => _confirmDelete(context, ref, i18n),
       ),
     );
   }
