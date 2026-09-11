@@ -908,9 +908,24 @@ class _Translations$training$it extends Translations$training$fr {
 	@override String remindersScheduled({required Object n}) => '${n} promemoria programmato/i';
 	@override String week({required Object n}) => 'Settimana ${n}';
 	@override String minutes({required Object n}) => '${n} min';
-	@override String progress({required Object done, required Object total}) => '${done}/${total} sessioni completate';
+	@override String progress({required Object done, required Object total}) => '${done} sessioni su ${total} completate';
 	@override late final _Translations$training$types$it types = _Translations$training$types$it._(_root);
 	@override late final _Translations$training$intensity$it intensity = _Translations$training$intensity$it._(_root);
+	@override String get paywallTitle => 'Programma di allenamento personalizzato';
+	@override String paywallIncludedIn({required Object trail}) => 'Incluso nel pacchetto « ${trail} ».';
+	@override String get paywallSubtitle => 'Piano adattato al tuo profilo e alla tua data di partenza.';
+	@override String get unlock => 'Sblocca';
+	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Un piano progressivo di ${weeks} settimane per affrontare i ${km} km e circa ${elevation} m di dislivello.';
+	@override String countdown({required Object days}) => 'Partenza tra ${days} giorni';
+	@override String planOverWeeks({required Object n}) => 'Piano su ${n} settimane';
+	@override String phaseWeeks({required Object start, required Object end, required Object title}) => 'Settimane ${start}-${end} · ${title}';
+	@override String get objectiveTitle => 'Obiettivo chiave';
+	@override String get inviteSetDate => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.';
+	@override String get inviteFillProfile => 'Compila la tua scheda per adattare il piano al tuo profilo.';
+	@override String get genericPlanNotice => 'Piano generico: un piano dedicato a questo sentiero arrivera presto.';
+	@override String get cautionVerdictNotice => 'La tua fattibilita invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.';
+	@override String departureTooClose({required Object days}) => 'Restano ${days} giorni: piano condensato sul tempo disponibile.';
+	@override String get noPlan => 'Programma di allenamento presto disponibile per questo sentiero.';
 }
 
 // Path: eta
@@ -4275,13 +4290,28 @@ extension on TranslationsIt {
 			'training.remindersScheduled' => ({required Object n}) => '${n} promemoria programmato/i',
 			'training.week' => ({required Object n}) => 'Settimana ${n}',
 			'training.minutes' => ({required Object n}) => '${n} min',
-			'training.progress' => ({required Object done, required Object total}) => '${done}/${total} sessioni completate',
+			'training.progress' => ({required Object done, required Object total}) => '${done} sessioni su ${total} completate',
 			'training.types.marche' => 'Camminata',
 			'training.types.cardio' => 'Cardio',
 			'training.types.renforcement' => 'Potenziamento',
 			'training.intensity.faible' => 'Bassa',
 			'training.intensity.moderee' => 'Moderata',
 			'training.intensity.elevee' => 'Elevata',
+			'training.paywallTitle' => 'Programma di allenamento personalizzato',
+			'training.paywallIncludedIn' => ({required Object trail}) => 'Incluso nel pacchetto « ${trail} ».',
+			'training.paywallSubtitle' => 'Piano adattato al tuo profilo e alla tua data di partenza.',
+			'training.unlock' => 'Sblocca',
+			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un piano progressivo di ${weeks} settimane per affrontare i ${km} km e circa ${elevation} m di dislivello.',
+			'training.countdown' => ({required Object days}) => 'Partenza tra ${days} giorni',
+			'training.planOverWeeks' => ({required Object n}) => 'Piano su ${n} settimane',
+			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Settimane ${start}-${end} · ${title}',
+			'training.objectiveTitle' => 'Obiettivo chiave',
+			'training.inviteSetDate' => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.',
+			'training.inviteFillProfile' => 'Compila la tua scheda per adattare il piano al tuo profilo.',
+			'training.genericPlanNotice' => 'Piano generico: un piano dedicato a questo sentiero arrivera presto.',
+			'training.cautionVerdictNotice' => 'La tua fattibilita invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.',
+			'training.departureTooClose' => ({required Object days}) => 'Restano ${days} giorni: piano condensato sul tempo disponibile.',
+			'training.noPlan' => 'Programma di allenamento presto disponibile per questo sentiero.',
 			'eta.title' => 'Tempo stimato',
 			'eta.toNextWaypoint' => 'Prossimo punto',
 			'eta.toStageEnd' => 'Fine tappa',
@@ -4463,6 +4493,8 @@ extension on TranslationsIt {
 			'health.emergencyHint' => 'In caso di emergenza, mostra questa schermata ai soccorsi.',
 			'health.entryTitle' => 'Le mie info sanitarie',
 			'health.entrySubtitle' => 'Da mostrare ai soccorsi (restano sul telefono)',
+			_ => null,
+		} ?? switch (path) {
 			'health.a11y.form' => 'Modulo informazioni sanitarie',
 			'health.a11y.saveButton' => 'Salva le informazioni sanitarie',
 			'trailSelection.title' => 'Cambia sentiero',
@@ -4478,8 +4510,6 @@ extension on TranslationsIt {
 			'consent.onboardingIntro' => 'Nulla è attivato per impostazione predefinita. Scegli, finalità per finalità, ciò che autorizzi. Potrai modificare tutto in qualsiasi momento nelle impostazioni.',
 			'consent.settingsTitle' => 'Privacy e consenso',
 			'consent.settingsIntro' => 'Gestisci qui ogni autorizzazione. Puoi revocare un consenso in qualsiasi momento, senza conseguenze sul resto.',
-			_ => null,
-		} ?? switch (path) {
 			'consent.settingsEntry' => 'Privacy e consenso',
 			'consent.settingsEntryDesc' => 'Gestire le mie autorizzazioni (posizione, condivisione, salute)',
 			'consent.purposes.locationNavigation' => 'Navigazione personale',

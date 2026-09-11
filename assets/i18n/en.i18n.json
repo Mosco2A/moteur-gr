@@ -975,7 +975,7 @@
     "remindersScheduled": "$n reminder(s) scheduled",
     "week": "Week $n",
     "minutes": "$n min",
-    "progress": "$done/$total sessions done",
+    "progress": "$done of $total sessions done",
     "types": {
       "marche": "Walking",
       "cardio": "Cardio",
@@ -985,7 +985,22 @@
       "faible": "Low",
       "moderee": "Moderate",
       "elevee": "High"
-    }
+    },
+    "paywallTitle": "Personalised training plan",
+    "paywallIncludedIn": "Included in the « $trail » pack.",
+    "paywallSubtitle": "Plan tailored to your profile and departure date.",
+    "unlock": "Unlock",
+    "effortIntro": "A progressive $weeks-week plan to tackle the $km km and about $elevation m of elevation gain.",
+    "countdown": "Departure in $days days",
+    "planOverWeeks": "$n-week plan",
+    "phaseWeeks": "Weeks $start-$end · $title",
+    "objectiveTitle": "Key objective",
+    "inviteSetDate": "Set your departure date in the Calendar to enable the countdown.",
+    "inviteFillProfile": "Fill in your info sheet to tailor the plan to your profile.",
+    "genericPlanNotice": "Generic plan: a plan dedicated to this trail is coming soon.",
+    "cautionVerdictNotice": "Your feasibility calls for caution: follow the progression and do not cut the preparation short.",
+    "departureTooClose": "$days days left: plan condensed to the available time.",
+    "noPlan": "Training plan coming soon for this trail."
   },
   "eta": {
     "title": "Estimated time",

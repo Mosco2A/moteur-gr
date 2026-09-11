@@ -975,7 +975,7 @@
     "remindersScheduled": "$n Erinnerung(en) geplant",
     "week": "Woche $n",
     "minutes": "$n Min",
-    "progress": "$done/$total Einheiten erledigt",
+    "progress": "$done von $total Einheiten erledigt",
     "types": {
       "marche": "Gehen",
       "cardio": "Cardio",
@@ -985,7 +985,22 @@
       "faible": "Niedrig",
       "moderee": "Mittel",
       "elevee": "Hoch"
-    }
+    },
+    "paywallTitle": "Personalisierter Trainingsplan",
+    "paywallIncludedIn": "Im Paket « $trail » enthalten.",
+    "paywallSubtitle": "Plan angepasst an Ihr Profil und Ihr Abreisedatum.",
+    "unlock": "Freischalten",
+    "effortIntro": "Ein progressiver $weeks-Wochen-Plan fur die $km km und rund $elevation m Hohenmeter.",
+    "countdown": "Abreise in $days Tagen",
+    "planOverWeeks": "Plan uber $n Wochen",
+    "phaseWeeks": "Wochen $start-$end · $title",
+    "objectiveTitle": "Schlusselziel",
+    "inviteSetDate": "Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.",
+    "inviteFillProfile": "Fullen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.",
+    "genericPlanNotice": "Generischer Plan: ein eigener Plan fur diesen Weg kommt bald.",
+    "cautionVerdictNotice": "Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.",
+    "departureTooClose": "Noch $days Tage: Plan auf die verfugbare Zeit verdichtet.",
+    "noPlan": "Trainingsplan fur diesen Weg bald verfugbar."
   },
   "eta": {
     "title": "Geschätzte Zeit",

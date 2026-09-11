@@ -84,6 +84,17 @@ class _VerdictView extends ConsumerWidget {
             ...result.gaps.map((g) => _GapTile(gap: g)),
             const SizedBox(height: AppTheme.spacingLg),
           ],
+          // StepWays LOT 5 (A) — PONT « es-tu pret ? » -> « voila comment le
+          // devenir » : bouton « Preparation physique » vers l'ecran
+          // ENTRAINEMENT (payant). C'est LA porte d'entree definie par la spec
+          // sur la page de resultat de la faisabilite. Libelle Slang reutilise
+          // (`hub.cards.training` == « Preparation physique »).
+          AppButton(
+            icon: Icons.fitness_center,
+            label: t.hub.cards.training,
+            onPressed: () => context.push('/training'),
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
           // Acces rapides pour completer / affiner le profil objectif.
           hasProfileAsync.maybeWhen(
             data: (has) => _ProfileShortcuts(trailId: trailId, complete: has),

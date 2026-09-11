@@ -908,9 +908,24 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String remindersScheduled({required Object n}) => '${n} reminder(s) scheduled';
 	@override String week({required Object n}) => 'Week ${n}';
 	@override String minutes({required Object n}) => '${n} min';
-	@override String progress({required Object done, required Object total}) => '${done}/${total} sessions done';
+	@override String progress({required Object done, required Object total}) => '${done} of ${total} sessions done';
 	@override late final _Translations$training$types$en types = _Translations$training$types$en._(_root);
 	@override late final _Translations$training$intensity$en intensity = _Translations$training$intensity$en._(_root);
+	@override String get paywallTitle => 'Personalised training plan';
+	@override String paywallIncludedIn({required Object trail}) => 'Included in the « ${trail} » pack.';
+	@override String get paywallSubtitle => 'Plan tailored to your profile and departure date.';
+	@override String get unlock => 'Unlock';
+	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.';
+	@override String countdown({required Object days}) => 'Departure in ${days} days';
+	@override String planOverWeeks({required Object n}) => '${n}-week plan';
+	@override String phaseWeeks({required Object start, required Object end, required Object title}) => 'Weeks ${start}-${end} · ${title}';
+	@override String get objectiveTitle => 'Key objective';
+	@override String get inviteSetDate => 'Set your departure date in the Calendar to enable the countdown.';
+	@override String get inviteFillProfile => 'Fill in your info sheet to tailor the plan to your profile.';
+	@override String get genericPlanNotice => 'Generic plan: a plan dedicated to this trail is coming soon.';
+	@override String get cautionVerdictNotice => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.';
+	@override String departureTooClose({required Object days}) => '${days} days left: plan condensed to the available time.';
+	@override String get noPlan => 'Training plan coming soon for this trail.';
 }
 
 // Path: eta
@@ -4275,13 +4290,28 @@ extension on TranslationsEn {
 			'training.remindersScheduled' => ({required Object n}) => '${n} reminder(s) scheduled',
 			'training.week' => ({required Object n}) => 'Week ${n}',
 			'training.minutes' => ({required Object n}) => '${n} min',
-			'training.progress' => ({required Object done, required Object total}) => '${done}/${total} sessions done',
+			'training.progress' => ({required Object done, required Object total}) => '${done} of ${total} sessions done',
 			'training.types.marche' => 'Walking',
 			'training.types.cardio' => 'Cardio',
 			'training.types.renforcement' => 'Strength',
 			'training.intensity.faible' => 'Low',
 			'training.intensity.moderee' => 'Moderate',
 			'training.intensity.elevee' => 'High',
+			'training.paywallTitle' => 'Personalised training plan',
+			'training.paywallIncludedIn' => ({required Object trail}) => 'Included in the « ${trail} » pack.',
+			'training.paywallSubtitle' => 'Plan tailored to your profile and departure date.',
+			'training.unlock' => 'Unlock',
+			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.',
+			'training.countdown' => ({required Object days}) => 'Departure in ${days} days',
+			'training.planOverWeeks' => ({required Object n}) => '${n}-week plan',
+			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Weeks ${start}-${end} · ${title}',
+			'training.objectiveTitle' => 'Key objective',
+			'training.inviteSetDate' => 'Set your departure date in the Calendar to enable the countdown.',
+			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
+			'training.genericPlanNotice' => 'Generic plan: a plan dedicated to this trail is coming soon.',
+			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
+			'training.departureTooClose' => ({required Object days}) => '${days} days left: plan condensed to the available time.',
+			'training.noPlan' => 'Training plan coming soon for this trail.',
 			'eta.title' => 'Estimated time',
 			'eta.toNextWaypoint' => 'Next point',
 			'eta.toStageEnd' => 'Stage end',
@@ -4463,6 +4493,8 @@ extension on TranslationsEn {
 			'health.emergencyHint' => 'In an emergency, show this screen to the rescue team.',
 			'health.entryTitle' => 'My health info',
 			'health.entrySubtitle' => 'To show the rescue team (kept on the phone)',
+			_ => null,
+		} ?? switch (path) {
 			'health.a11y.form' => 'Health information form',
 			'health.a11y.saveButton' => 'Save health information',
 			'trailSelection.title' => 'Switch trail',
@@ -4478,8 +4510,6 @@ extension on TranslationsEn {
 			'consent.onboardingIntro' => 'Nothing is enabled by default. Choose, purpose by purpose, what you allow. You can change everything at any time in the settings.',
 			'consent.settingsTitle' => 'Privacy and consent',
 			'consent.settingsIntro' => 'Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.',
-			_ => null,
-		} ?? switch (path) {
 			'consent.settingsEntry' => 'Privacy and consent',
 			'consent.settingsEntryDesc' => 'Manage my permissions (location, sharing, health)',
 			'consent.purposes.locationNavigation' => 'Personal navigation',

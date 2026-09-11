@@ -975,7 +975,7 @@
     "remindersScheduled": "$n recordatorio(s) programado(s)",
     "week": "Semana $n",
     "minutes": "$n min",
-    "progress": "$done/$total sesiones hechas",
+    "progress": "$done de $total sesiones hechas",
     "types": {
       "marche": "Marcha",
       "cardio": "Cardio",
@@ -985,7 +985,22 @@
       "faible": "Baja",
       "moderee": "Moderada",
       "elevee": "Alta"
-    }
+    },
+    "paywallTitle": "Programa de entrenamiento personalizado",
+    "paywallIncludedIn": "Incluido en el pack « $trail ».",
+    "paywallSubtitle": "Plan adaptado a tu perfil y a tu fecha de salida.",
+    "unlock": "Desbloquear",
+    "effortIntro": "Un plan progresivo de $weeks semanas para afrontar los $km km y unos $elevation m de desnivel.",
+    "countdown": "Salida en $days dias",
+    "planOverWeeks": "Plan de $n semanas",
+    "phaseWeeks": "Semanas $start-$end · $title",
+    "objectiveTitle": "Objetivo clave",
+    "inviteSetDate": "Fija tu fecha de salida en el Calendario para activar la cuenta atras.",
+    "inviteFillProfile": "Rellena tu ficha para adaptar el plan a tu perfil.",
+    "genericPlanNotice": "Plan generico: pronto habra un plan dedicado a este sendero.",
+    "cautionVerdictNotice": "Tu viabilidad invita a la prudencia: respeta la progresion y no acortes la preparacion.",
+    "departureTooClose": "Quedan $days dias: plan condensado al tiempo disponible.",
+    "noPlan": "Programa de entrenamiento disponible pronto para este sendero."
   },
   "eta": {
     "title": "Tiempo estimado",
