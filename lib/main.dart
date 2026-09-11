@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,6 +17,8 @@ import 'core/theme/skin_provider.dart';
 import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/safety/presentation/health_info_screen.dart';
+import 'features/settings/data/settings_service.dart';
+import 'features/settings/providers/settings_provider.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
 import 'i18n/translations.g.dart';
 
@@ -25,6 +29,28 @@ Future<void> main() async {
   // du routeur (synchrone) redirige vers /onboarding au tout premier lancement.
   final prefs = await SharedPreferences.getInstance();
   hasCompletedOnboarding = prefs.getBool(kOnboardingCompletedKey) ?? false;
+
+  // StepWays L7 (A — persistance de la langue) : RESTAURATION du choix de langue
+  // AVANT le premier rendu. Slang n'est PAS persistant par defaut.
+  // - 1er lancement (aucun choix sauve) : AUTO-DETECTION silencieuse de la
+  //   locale du telephone (useDeviceLocale) ; si elle n'est pas dans les 5
+  //   langues, Slang retombe sur la base (fr). Aucun ecran de choix impose
+  //   (recommandation i18n.md : detection auto + modifiable dans les reglages).
+  // - Lancements suivants : on rejoue le choix persiste (settings_language).
+  // Tout est EMBARQUE (assets/i18n) -> fonctionne 100% hors-ligne, mode avion.
+  final savedLanguage = prefs.getString(SettingsKeys.language);
+  if (savedLanguage != null && savedLanguage.isNotEmpty) {
+    LocaleSettings.setLocaleRawSync(savedLanguage);
+  } else {
+    LocaleSettings.useDeviceLocaleSync();
+  }
+
+  // StepWays L7 (A — dates/pluriels localises) : charge les donnees de locale
+  // `intl` pour les 5 langues. Sans cet appel, `DateFormat(pattern, locale)`
+  // levait `LocaleDataException` hors en_US (d'ou les repli defensifs des ecrans
+  // calendrier/meteo/resume). Desormais les dates s'ecrivent « a la mode » de
+  // chaque pays (lundi 7 juil. / Monday 7 Jul / Montag, 7. Juli...).
+  await initializeDateFormatting();
 
   // Initialisation Firebase conditionnelle :
   // si firebaseProjectId est null, le moteur reste en mode local.
@@ -115,9 +141,26 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
     // fallback d'eligibilite (Grand Air -> Sentier Vivant si non eligible).
     final skin = ref.watch(effectiveSkinProvider);
 
+    // StepWays L7 (A) : la MaterialApp suit la langue choisie. On observe le
+    // champ `language` des reglages : changer de langue reconstruit la
+    // MaterialApp avec la nouvelle `locale`, ce qui localise AUSSI les widgets
+    // Material natifs (DatePicker, tooltips...) et les formats de date `intl`.
+    // Le contenu Slang (t.*) bascule via TranslationProvider ; ici on aligne la
+    // locale Flutter/intl sur la locale Slang courante (source de verite unique).
+    final language = ref.watch(settingsProvider.select((s) => s.language));
+    final locale = AppLocaleUtils.parse(language).flutterLocale;
+
     return MaterialApp.router(
       title: config.displayName,
       debugShowCheckedModeBanner: false,
+      // StepWays L7 (A) : localisation Flutter native (5 langues embarquees).
+      locale: locale,
+      supportedLocales: AppLocaleUtils.supportedLocales,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       // Theme clair ET sombre injectes depuis TrailConfig (E5.5b).
       // L'app reste sombre par defaut (design trek), mais le pendant
       // clair existe et est cable -> bascule de theme sans casse.

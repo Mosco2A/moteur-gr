@@ -64,7 +64,7 @@ class EmergencyScreen extends ConsumerWidget {
             child: contacts.isEmpty
                 ? Center(
                     child: Text(
-                      'Aucun contact configure',
+                      t.sos.noContacts,
                       style: theme.textTheme.bodyLarge?.copyWith(
                         color: theme.colorScheme.onSurface.withAlpha(153),
                       ),
@@ -100,22 +100,22 @@ class _GpsPositionBanner extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       color: AppTheme.rougeUrgence.withAlpha(30),
       child: positionAsync.when(
-        loading: () => const Row(
+        loading: () => Row(
           children: [
-            SizedBox(
+            const SizedBox(
               width: 16,
               height: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
-            SizedBox(width: AppTheme.spacingSm),
-            Text('Acquisition GPS...'),
+            const SizedBox(width: AppTheme.spacingSm),
+            Text(t.sos.gpsAcquiring),
           ],
         ),
-        error: (_, __) => const Row(
+        error: (_, __) => Row(
           children: [
-            Icon(Icons.gps_off, size: 18, color: AppTheme.rougeUrgence),
-            SizedBox(width: AppTheme.spacingSm),
-            Text('Position GPS indisponible'),
+            const Icon(Icons.gps_off, size: 18, color: AppTheme.rougeUrgence),
+            const SizedBox(width: AppTheme.spacingSm),
+            Text(t.sos.positionUnavailable),
           ],
         ),
         data: (position) {
@@ -132,7 +132,7 @@ class _GpsPositionBanner extends StatelessWidget {
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
-                  'Position : $lat, $lng  -  Alt. ${alt}m',
+                  t.sos.positionLine(lat: lat, lng: lng, alt: alt),
                   style: const TextStyle(fontFamily: 'monospace', fontSize: 13),
                 ),
               ),
@@ -235,7 +235,7 @@ class _EmergencyContactTile extends StatelessWidget {
             color: isAuto ? AppTheme.rougeUrgence : theme.colorScheme.primary,
             size: 28,
           ),
-          tooltip: 'Appeler ${contact.name}',
+          tooltip: t.sos.callContact(name: contact.name),
           onPressed: () => _callContact(context, contact),
         ),
       ),

@@ -139,7 +139,9 @@ class _ShareCardScreenState extends ConsumerState<ShareCardScreen> {
   /// Construit l'apercu de la carte avec branding dynamique
   /// et layout adapte au template selectionne.
   Widget _buildCardPreview(ThemeData theme, ShareCardBranding branding) {
-    final dateFormat = DateFormat('d MMMM yyyy', 'fr_FR');
+    // StepWays L7 (A) : date localisee sur la langue de l'app (au lieu de 'fr_FR').
+    final dateFormat =
+        DateFormat('d MMMM yyyy', LocaleSettings.currentLocale.languageCode);
     final data = widget.data;
 
     return Container(

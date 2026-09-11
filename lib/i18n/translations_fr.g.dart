@@ -3270,6 +3270,18 @@ class Translations$sos$fr {
 	/// fr: 'Position GPS indisponible'
 	String get positionUnavailable => 'Position GPS indisponible';
 
+	/// fr: 'Acquisition GPS…'
+	String get gpsAcquiring => 'Acquisition GPS…';
+
+	/// fr: 'Position : $lat, $lng - Alt. $alt m'
+	String positionLine({required Object lat, required Object lng, required Object alt}) => 'Position : ${lat}, ${lng}  -  Alt. ${alt} m';
+
+	/// fr: 'Aucun contact configuré'
+	String get noContacts => 'Aucun contact configuré';
+
+	/// fr: 'Appeler $name'
+	String callContact({required Object name}) => 'Appeler ${name}';
+
 	/// fr: 'Altitude : indisponible'
 	String get altitudeUnavailable => 'Altitude : indisponible';
 
@@ -8354,6 +8366,10 @@ extension on Translations {
 			'sos.body' => 'Vous êtes sur le point d\'appeler le 112 (urgences européennes).',
 			'sos.positionTitle' => 'Votre position actuelle',
 			'sos.positionUnavailable' => 'Position GPS indisponible',
+			'sos.gpsAcquiring' => 'Acquisition GPS…',
+			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Position : ${lat}, ${lng}  -  Alt. ${alt} m',
+			'sos.noContacts' => 'Aucun contact configuré',
+			'sos.callContact' => ({required Object name}) => 'Appeler ${name}',
 			'sos.altitudeUnavailable' => 'Altitude : indisponible',
 			'sos.communicate' => 'Communiquez ces coordonnées aux secours.',
 			'sos.cancel' => 'Annuler',

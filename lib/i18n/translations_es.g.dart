@@ -1613,6 +1613,10 @@ class _Translations$sos$es extends Translations$sos$fr {
 	@override String get body => 'Está a punto de llamar al 112 (emergencias europeas).';
 	@override String get positionTitle => 'Su posición actual';
 	@override String get positionUnavailable => 'Posición GPS no disponible';
+	@override String get gpsAcquiring => 'Adquiriendo GPS…';
+	@override String positionLine({required Object lat, required Object lng, required Object alt}) => 'Posición: ${lat}, ${lng}  -  Alt. ${alt} m';
+	@override String get noContacts => 'Ningún contacto configurado';
+	@override String callContact({required Object name}) => 'Llamar a ${name}';
 	@override String get altitudeUnavailable => 'Altitud: no disponible';
 	@override String get communicate => 'Comunique estas coordenadas a los servicios de emergencia.';
 	@override String get cancel => 'Cancelar';
@@ -5172,6 +5176,10 @@ extension on TranslationsEs {
 			'sos.body' => 'Está a punto de llamar al 112 (emergencias europeas).',
 			'sos.positionTitle' => 'Su posición actual',
 			'sos.positionUnavailable' => 'Posición GPS no disponible',
+			'sos.gpsAcquiring' => 'Adquiriendo GPS…',
+			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Posición: ${lat}, ${lng}  -  Alt. ${alt} m',
+			'sos.noContacts' => 'Ningún contacto configurado',
+			'sos.callContact' => ({required Object name}) => 'Llamar a ${name}',
 			'sos.altitudeUnavailable' => 'Altitud: no disponible',
 			'sos.communicate' => 'Comunique estas coordenadas a los servicios de emergencia.',
 			'sos.cancel' => 'Cancelar',

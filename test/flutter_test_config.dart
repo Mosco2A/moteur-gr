@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 /// Configuration globale de la suite de tests (auto-chargee par `flutter test`).
 ///
@@ -22,6 +23,12 @@ import 'package:google_fonts/google_fonts.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   TestWidgetsFlutterBinding.ensureInitialized();
   GoogleFonts.config.allowRuntimeFetching = false;
+
+  // StepWays L7 (A — dates localisees) : charge les donnees de locale `intl`
+  // pour toute la suite, comme `main()` le fait en production
+  // (`initializeDateFormatting`). Sans ca, un `DateFormat(pattern, 'de'|'fr'...)`
+  // leverait `LocaleDataException` en test (seul en_US est charge par defaut).
+  await initializeDateFormatting();
 
   bool isGoogleFontsLoadError(Object error) {
     final msg = error.toString();

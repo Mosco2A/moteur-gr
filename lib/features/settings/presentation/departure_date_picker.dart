@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 
@@ -24,7 +25,9 @@ class DepartureDatePicker extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final reminderState = ref.watch(downloadReminderProvider(trailId));
     final theme = Theme.of(context);
-    final dateFormat = DateFormat('dd MMM yyyy', 'fr_FR');
+    // StepWays L7 (A) : date localisee sur la langue de l'app (au lieu de 'fr_FR').
+    final dateFormat =
+        DateFormat('dd MMM yyyy', LocaleSettings.currentLocale.languageCode);
 
     return AppCard(
       padding: EdgeInsets.zero,

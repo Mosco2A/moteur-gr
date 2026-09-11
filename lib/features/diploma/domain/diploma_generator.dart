@@ -1,5 +1,7 @@
 import 'package:intl/intl.dart';
 
+import '../../../i18n/translations.g.dart';
+
 /// Générateur de diplôme PDF de fin de trek.
 ///
 /// Crée un PDF A4 paysage avec le nom du randonneur,
@@ -29,8 +31,11 @@ class DiplomaGenerator {
       totalElevationGain: totalElevationGain,
       completionDate: completionDate,
       durationDays: durationDays,
-      formattedDate:
-          DateFormat('d MMMM yyyy', 'fr_FR').format(completionDate),
+      // StepWays L7 (A) : date localisee sur la langue de l'app (au lieu de 'fr_FR').
+      formattedDate: DateFormat(
+        'd MMMM yyyy',
+        LocaleSettings.currentLocale.languageCode,
+      ).format(completionDate),
     );
   }
 }

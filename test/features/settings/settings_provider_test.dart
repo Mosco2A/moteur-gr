@@ -60,11 +60,13 @@ void main() {
     });
 
     test('labels corrects', () {
-      expect(AppLanguageValues.labelFor('fr'), 'Francais');
+      // StepWays L7 (A) : endonymes ACCENTUES (chaque langue dans sa propre
+      // langue, i18n.md). Francais/Espanol -> Français/Español.
+      expect(AppLanguageValues.labelFor('fr'), 'Français');
       expect(AppLanguageValues.labelFor('en'), 'English');
       expect(AppLanguageValues.labelFor('de'), 'Deutsch');
       expect(AppLanguageValues.labelFor('it'), 'Italiano');
-      expect(AppLanguageValues.labelFor('es'), 'Espanol');
+      expect(AppLanguageValues.labelFor('es'), 'Español');
     });
 
     test('fromString avec valeur inconnue retourne fallback', () {
@@ -95,7 +97,13 @@ void main() {
       final container = ProviderContainer();
 
       // Declenche build() -> _load() (async : await SettingsService.create()).
-      expect(container.read(settingsProvider), const AppSettings());
+      // StepWays L7 : build() seed la langue depuis la locale Slang courante
+      // (fr par defaut en test) ; on verifie l'etat par defaut via ses champs
+      // (AppSettings n'a pas d'egalite de valeur, l'instance differe de const).
+      final initial = container.read(settingsProvider);
+      expect(initial.language, AppLanguageValues.fr);
+      expect(initial.distanceUnit, DistanceUnitValues.km);
+      expect(initial.themeMode, AppThemeModeValues.dark);
 
       // Dispose AVANT que le microtask de load ne reprenne apres l'await :
       // sans le garde `ref.mounted`, l'ecriture `state = ...` post-await

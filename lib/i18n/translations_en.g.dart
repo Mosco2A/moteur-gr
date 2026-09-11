@@ -1613,6 +1613,10 @@ class _Translations$sos$en extends Translations$sos$fr {
 	@override String get body => 'You are about to call 112 (European emergency number).';
 	@override String get positionTitle => 'Your current position';
 	@override String get positionUnavailable => 'GPS position unavailable';
+	@override String get gpsAcquiring => 'Acquiring GPS…';
+	@override String positionLine({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Alt. ${alt} m';
+	@override String get noContacts => 'No contact configured';
+	@override String callContact({required Object name}) => 'Call ${name}';
 	@override String get altitudeUnavailable => 'Altitude: unavailable';
 	@override String get communicate => 'Share these coordinates with the rescuers.';
 	@override String get cancel => 'Cancel';
@@ -5172,6 +5176,10 @@ extension on TranslationsEn {
 			'sos.body' => 'You are about to call 112 (European emergency number).',
 			'sos.positionTitle' => 'Your current position',
 			'sos.positionUnavailable' => 'GPS position unavailable',
+			'sos.gpsAcquiring' => 'Acquiring GPS…',
+			'sos.positionLine' => ({required Object lat, required Object lng, required Object alt}) => 'Position: ${lat}, ${lng}  -  Alt. ${alt} m',
+			'sos.noContacts' => 'No contact configured',
+			'sos.callContact' => ({required Object name}) => 'Call ${name}',
 			'sos.altitudeUnavailable' => 'Altitude: unavailable',
 			'sos.communicate' => 'Share these coordinates with the rescuers.',
 			'sos.cancel' => 'Cancel',

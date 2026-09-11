@@ -121,7 +121,10 @@ class _JournalDayList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final dateFormat = DateFormat('EEEE d MMMM yyyy', 'fr_FR');
+    // StepWays L7 (A) : date localisee sur la langue de l'app (au lieu de
+    // 'fr_FR' fige). `initializeDateFormatting` (main) charge les 5 locales.
+    final dateFormat =
+        DateFormat('EEEE d MMMM yyyy', LocaleSettings.currentLocale.languageCode);
     final dayKeys = entriesByDay.keys.toList();
 
     return ListView.builder(

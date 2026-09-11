@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../i18n/translations.g.dart';
 import '../data/settings_service.dart';
 
 /// Langues disponibles.
@@ -15,8 +16,12 @@ abstract class AppLanguageValues {
   static const String fallback = fr;
   static const List<String> values = [fr, en, de, it, es];
 
+  /// Libelles NATIFS (chaque langue ecrite dans sa propre langue, i18n.md §Le
+  /// choix de la langue). Endonymes accentues (jamais traduits, jamais
+  /// externalises via Slang : un nom de langue s'ecrit pareil quelle que soit la
+  /// langue de l'app).
   static const Map<String, String> labels = {
-    fr: 'Francais', en: 'English', de: 'Deutsch', it: 'Italiano', es: 'Espanol',
+    fr: 'Français', en: 'English', de: 'Deutsch', it: 'Italiano', es: 'Español',
   };
   static String labelFor(String lang) => labels[lang] ?? lang;
   static AppLanguage fromString(String value) =>
@@ -153,7 +158,16 @@ class SettingsNotifier extends Notifier<AppSettings> {
   @override
   AppSettings build() {
     _load();
-    return const AppSettings();
+    // StepWays L7 : seed la langue depuis la locale Slang DEJA appliquee par
+    // `main()` (choix persiste restaure, ou auto-detection au 1er lancement).
+    // Evite un frame de decalage ou la MaterialApp afficherait `fr` avant que
+    // `_load()` (async) ne relise la preference. Les autres champs gardent leurs
+    // defauts jusqu'a `_load()`.
+    return AppSettings(
+      language: AppLanguageValues.fromString(
+        LocaleSettings.currentLocale.languageCode,
+      ),
+    );
   }
 
   /// Charge les preferences sauvegardees via SettingsService.
@@ -177,10 +191,22 @@ class SettingsNotifier extends Notifier<AppSettings> {
     );
   }
 
-  /// Met a jour la langue et persiste.
+  /// Met a jour la langue, l'APPLIQUE immediatement et persiste (StepWays L7).
+  ///
+  /// Trois effets, dans cet ordre :
+  /// 1. `LocaleSettings.setLocaleRaw` bascule Slang -> tous les widgets sous
+  ///    `TranslationProvider` (`context.t` / `Translations.of`) se reconstruisent
+  ///    sur-le-champ, sans redemarrage.
+  /// 2. `state` change -> la `MaterialApp` (qui observe `language`) se
+  ///    reconstruit avec la nouvelle `locale` (widgets Material + formats de date
+  ///    `intl` alignes).
+  /// 3. Persistance SharedPreferences -> le choix est restaure au prochain
+  ///    lancement (cf. `main()`). Valeur normalisee (fallback fr si inconnue).
   void setLanguage(AppLanguage language) {
-    state = state.copyWith(language: language);
-    _service?.setLanguage(language);
+    final normalized = AppLanguageValues.fromString(language);
+    LocaleSettings.setLocaleRaw(normalized);
+    state = state.copyWith(language: normalized);
+    _service?.setLanguage(normalized);
   }
 
   /// Met a jour l unite de distance et persiste.
