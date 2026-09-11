@@ -9,7 +9,6 @@ import '../../features/after/presentation/adventure_recap_screen.dart';
 import '../../features/after/presentation/gpx_import_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/hub/presentation/hub_screen.dart';
-import '../../features/hub/presentation/nav_pilote_screen.dart';
 import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
 import '../../features/feasibility/presentation/hiker_profile_screen.dart';
 import '../../features/feasibility/presentation/walk_test_screen.dart';
@@ -122,10 +121,9 @@ final appRouter = GoRouter(
   // shell est « Mes treks » (/my-treks, onglet position 1, StepWays LOT 2 —
   // option A) d ou l utilisateur choisit un trek puis rejoint le cockpit /home.
   // StepWays LOT 3 Ph6 (L7, nettoyage avant-merge) : l'entree est RETABLIE sur
-  // '/my-treks' (accueil « maison »). L'entree demo '/nav-pilote' (branche
-  // jetable) est RETIREE de initialLocation. La ROUTE /nav-pilote reste DEFINIE
-  // (accessible en interne pour la revue Chris du demonstrateur) mais n'est plus
-  // le point d'entree — aucun ecran ne la met en avant. Cf. SPEC §14 / mandat L7.
+  // '/my-treks' (accueil « maison »). L'entree demo '/nav-pilote' avait ete
+  // RETIREE de initialLocation des L7 ; en L8 (RELEASE V1) la ROUTE elle-meme est
+  // supprimee du routeur (demonstrateur jetable, fichier conserve dormant).
   initialLocation: '/my-treks',
   redirect: _guardCurrentTrail,
   routes: [
@@ -428,15 +426,18 @@ final appRouter = GoRouter(
           name: 'trail-recap',
           builder: (context, state) => const AdventureRecapScreen(),
         ),
-        // PARITE GR20 (Import GPX) — decision Skynet : cote GR20 l'ecran
-        // `GpxImportScreen` existe mais est ORPHELIN (route definie, aucun point
-        // d'entree UI), sans i18n, avec bornage Corse + refuges GR20 en dur. On
-        // le clone GENERALISE (data-driven par sentier : bornes/etapes/nb etapes
-        // venant des donnees du sentier) + i18n 5 langues, ET on lui ajoute un
-        // point d'entree dans le HUB (section « Apres »). L'import permet de
-        // generer un recapitulatif a partir d'une trace enregistree par une autre
-        // app (Strava, Garmin…). Route hors-shell atteinte via `context.push` ->
-        // retour propre ; post-validation -> recap d'aventure du sentier.
+        // IMPORT-GPX (#E?? Import de trace) — ROUTE ORPHELINE ASSUMEE depuis
+        // StepWays L8 (decision Chris #99615-1, Option A du mandat retraits).
+        // L'import de trace GPX SORT du perimetre V1 : c'etait un ajout unilateral
+        // jamais discute, parke comme IDEE FUTURE gelee (« ajouter son propre
+        // sentier par une trace »). La carte « Import GPX » du HUB a ete
+        // SUPPRIMEE -> plus aucune porte d'entree UI (l'ecran est de nouveau
+        // invisible, comme cote GR20 ou il etait deja orphelin). On NE SUPPRIME
+        // PAS le code (clone generalise data-driven + i18n 5 langues,
+        // `GpxImportRouteScreen`) : parke, reutilisable si Chris relance l'idee.
+        // Route CONSERVEE (Option A : pas de suppression destructive, un futur
+        // deep-link resterait valide). Ne PAS re-cabler d'entree sans decision
+        // Chris. Cf. INVENTAIRE_ORPHELINS_L8.md.
         GoRoute(
           path: 'import-gpx',
           name: 'trail-import-gpx',
@@ -515,6 +516,13 @@ final appRouter = GoRouter(
         ),
       ],
     ),
+    // GROUPE (#E23/#E33) — DORMANT depuis StepWays L8 (decision Chris #99615-2).
+    // Le suivi de groupe en direct (code Firestore mort/demo cote GR20) est
+    // RETIRE du perimetre V1 : la carte « Mon groupe » du HUB a ete supprimee, si
+    // bien qu'AUCUNE navigation vivante n'atteint plus cet ecran. La route et le
+    // code (`GroupScreen`, feature `group/`) sont CONSERVES INTACTS (park, pas de
+    // suppression) : Chris a dit « pour l'instant » -> le groupe pourra revenir.
+    // Ne PAS re-cabler d'entree sans decision Chris. Cf. INVENTAIRE_ORPHELINS_L8.
     GoRoute(
       path: '/group/:id',
       name: 'group',
@@ -523,7 +531,9 @@ final appRouter = GoRouter(
         return GroupScreen(trailId: trailId);
       },
     ),
-    // E4.12a : page de suivi temps reel (lien partage, sans auth)
+    // E4.12a : page de suivi temps reel (lien partage, sans auth). ORPHELINE en
+    // nav (aucune entree UI) mais atteignable par deep-link /follow/:code ; liee
+    // au Groupe (dormant L8). Conservee. Cf. INVENTAIRE_ORPHELINS_L8.md.
     GoRoute(
       path: '/follow/:code',
       name: 'follow',
@@ -636,18 +646,13 @@ final appRouter = GoRouter(
       name: 'profile',
       builder: (context, state) => const ProfileScreen(),
     ),
-    // StepWays LOT 3 (ECRAN-PILOTE nav, methode D2) : demonstrateur visuel de
-    // la refonte navigation (hub-and-push). Route HORS-SHELL DEDIEE -> pas de
-    // NavigationBar du shell (evite le double bottom bar). Rend le cockpit
-    // (contenu du HUB) redessine avec AppHeader (haut) + barre d'ACTIONS (bas),
-    // SOS saillant UNIQUEMENT en mode trek. Isole : ne demonte pas le
-    // StatefulShellRoute des autres ecrans. A valider par Chris avant de
-    // derouler les ~40 ecrans.
-    GoRoute(
-      path: '/nav-pilote',
-      name: 'nav-pilote',
-      builder: (context, state) => const NavPiloteScreen(),
-    ),
+    // StepWays L8 (RELEASE V1, nettoyage conservateur) : la route de DEMO/pilote
+    // '/nav-pilote' (demonstrateur visuel JETABLE de la refonte navigation,
+    // methode D2) est RETIREE du routeur. C'etait une porte d'entree temporaire
+    // pour la revue Chris du cockpit-par-phases (nav V2), jamais destinee a la
+    // prod. Le FICHIER `nav_pilote_screen.dart` est CONSERVE (dormant) : il porte
+    // les decisions de design nav V2 (R3-R19) reutilisables ; il n'est plus
+    // reference par aucune route ni aucun ecran (cf. INVENTAIRE_ORPHELINS_L8.md).
   ],
   errorBuilder: (context, state) => Scaffold(
     appBar: AppBar(title: const Text('Erreur')),

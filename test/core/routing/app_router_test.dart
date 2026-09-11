@@ -19,9 +19,9 @@ void main() {
     test('la route initiale est /my-treks (retablie, L7 avant-merge)', () {
       // StepWays LOT 3 Ph6 (L7) : l'entree demo '/nav-pilote' a ete RETIREE de
       // initialLocation ; l'entree de PROD « Mes treks » (/my-treks, accueil
-      // « maison », StepWays LOT 2 — option A) est retablie. La ROUTE /nav-pilote
-      // reste definie (demonstrateur accessible pour la revue Chris) mais n'est
-      // plus le point d'entree (verifie plus bas dans la liste des routes).
+      // « maison », StepWays LOT 2 — option A) est retablie. StepWays L8 : la
+      // ROUTE /nav-pilote elle-meme a ete SUPPRIMEE du routeur (demonstrateur
+      // jetable, fichier conserve dormant) — verifie plus bas (25 -> 24 routes).
       expect(appRouter.routeInformationProvider.value.uri.path, '/my-treks');
     });
 
@@ -34,8 +34,9 @@ void main() {
           reason: 'plus d onglets persistants (hub-and-push)');
       expect(routes.every((r) => r is GoRoute), isTrue,
           reason: 'toutes les routes de 1er niveau sont des GoRoute');
-      // 6 ex-shell (my-treks/home/map/stages/journal/more) + 19 racines = 25.
-      expect(routes.whereType<GoRoute>().length, 25);
+      // 6 ex-shell (my-treks/home/map/stages/journal/more) + 18 racines = 24.
+      // StepWays L8 : la route de demo '/nav-pilote' a ete retiree (25 -> 24).
+      expect(routes.whereType<GoRoute>().length, 24);
     });
 
     test('les 6 ex-onglets sont desormais des routes racine', () {
@@ -67,8 +68,8 @@ void main() {
         '/settings',
         '/consent',
         '/profile',
-        // StepWays LOT 3 : ecran-pilote refonte nav (hors-shell dedie).
-        '/nav-pilote',
+        // StepWays L8 : la route de demo '/nav-pilote' (ecran-pilote refonte nav,
+        // hors-shell) a ete RETIREE du routeur (fichier conserve dormant).
       ]);
     });
 
@@ -102,7 +103,7 @@ void main() {
         'settings',
         'consent',
         'profile',
-        'nav-pilote',
+        // StepWays L8 : 'nav-pilote' retiree (route de demo supprimee).
       ]);
     });
   });

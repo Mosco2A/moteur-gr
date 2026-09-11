@@ -351,18 +351,17 @@ void main() {
       expect(find.text(t.hub.startCta), findsOneWidget);
     });
 
-    // PARITE GR20 (Import GPX) — la section « Apres » expose la carte « Import
-    // GPX » (point d'entree du HUB vers l'ecran d'import, decision Skynet), et
-    // un tap ouvre bien la route d'import (cablage S8 « zero route morte »).
-    testWidgets('carte « Import GPX » presente (section Apres) et cablee',
+    // StepWays L8 (RELEASE V1, retraits #99615) — les cartes « Import GPX »
+    // (section Apres) et « Mon groupe » (section Preparer) ont ete RETIREES du
+    // HUB : l'import de trace et le suivi de groupe en direct sortent du
+    // perimetre V1 (idee future gelee / code mort). Plus AUCUNE porte d'entree
+    // vers ces fonctions ; les routes + le code restent dormants (cf.
+    // INVENTAIRE_ORPHELINS_L8.md). Ce test verrouille l'ABSENCE des deux cartes.
+    testWidgets('cartes « Import GPX » et « Mon groupe » ABSENTES du HUB (L8)',
         (tester) async {
       await pumpTallHub(tester);
-      expect(find.text(t.hub.cards.importGpx), findsOneWidget);
-
-      await tester.tap(find.text(t.hub.cards.importGpx));
-      await tester.pumpAndSettle();
-      // La route d'import s'ouvre (ecran cible atteint).
-      expect(find.text('IMPORT_GPX_STUB'), findsOneWidget);
+      expect(find.text(t.hub.cards.importGpx), findsNothing);
+      expect(find.text(t.hub.cards.group), findsNothing);
     });
 
     testWidgets('CTA « Demarrer » absent quand un trek reel est actif',

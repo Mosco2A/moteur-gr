@@ -263,12 +263,11 @@ class _HubScreenState extends ConsumerState<HubScreen>
                   subtitle: t.hub.cards.offlineSub,
                   onTap: () => context.push('/catalog'),
                 ),
-                QuickAccessCard(
-                  icon: Icons.groups_outlined,
-                  title: t.hub.cards.group,
-                  subtitle: t.hub.cards.groupSub,
-                  onTap: () => context.push('/group/$trailId'),
-                ),
+                // GROUPE — carte « Mon groupe » RETIREE en StepWays L8 (decision
+                // Chris #99615-2). Le suivi de groupe en direct (code mort/demo)
+                // sort du perimetre V1 : plus de porte d'entree vers /group/:id
+                // (route + code CONSERVES dormants, cf. app_router.dart et
+                // INVENTAIRE_ORPHELINS_L8.md). Ne PAS remettre sans decision Chris.
               ],
             ),
             const SizedBox(height: AppTheme.spacingLg),
@@ -360,20 +359,12 @@ class _HubScreenState extends ConsumerState<HubScreen>
                   subtitle: t.hub.cards.recapSub,
                   onTap: () => context.push('/trail/$trailId/recap'),
                 ),
-                // PARITE GR20 (Import GPX) — decision Skynet : point d'entree du
-                // HUB vers l'ecran d'import (clone GR20 generalise, data-driven).
-                // Cote GR20 l'ecran existait mais etait ORPHELIN (aucune entree
-                // UI) ; on comble le manque cote StepWays. Importer une trace
-                // enregistree par une autre app (Strava, Garmin…) pour generer
-                // un recapitulatif. Icone `upload_file` (parite GR20). Route
-                // hors-shell atteinte via `context.push` (retour propre, pile
-                // preservee — jamais context.go qui viderait la pile).
-                QuickAccessCard(
-                  icon: Icons.upload_file,
-                  title: t.hub.cards.importGpx,
-                  subtitle: t.hub.cards.importGpxSub,
-                  onTap: () => context.push('/trail/$trailId/import-gpx'),
-                ),
+                // IMPORT-GPX — carte « Import GPX » RETIREE en StepWays L8
+                // (decision Chris #99615-1, Option A). L'import de trace sort du
+                // perimetre V1 (idee future gelee) : plus de porte d'entree vers
+                // /trail/:id/import-gpx. Route + code (clone data-driven i18n)
+                // CONSERVES dormants (cf. app_router.dart et
+                // INVENTAIRE_ORPHELINS_L8.md). Ne PAS remettre sans decision Chris.
                 QuickAccessCard(
                   icon: Icons.workspace_premium_outlined,
                   title: t.hub.cards.diploma,
