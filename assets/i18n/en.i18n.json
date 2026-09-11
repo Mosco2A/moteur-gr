@@ -1767,7 +1767,7 @@
   },
   "hikerProfile": {
     "title": "Your details",
-    "privacyBanner": "Your body metrics are sensitive data. They stay on your device (and an anonymous backup, without your name) to compute your feasibility.",
+    "privacyBanner": "Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.",
     "fieldAge": "Age",
     "hintAge": "In years",
     "errorAge": "Invalid age (5 to 120)",
@@ -1791,7 +1791,7 @@
       "obese": "Obesity"
     },
     "consentTitle": "Body metrics (GDPR article 9)",
-    "consentBody": "Age, height and weight are health data. They stay on your device and an anonymous backup (no name or email), never sent in clear. This consent is asked separately.",
+    "consentBody": "Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.",
     "consentToggle": "I allow my body metrics to be used for feasibility",
     "save": "Save",
     "saved": "Details saved",

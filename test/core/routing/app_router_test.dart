@@ -141,7 +141,8 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 20 sous-routes (+ import-gpx)', () {
+    test('la route /trail/:id conserve ses 24 sous-routes (+ faisabilite L4)',
+        () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
       // +1 : 'itinerary' (PARITE GR20 #99433, deroule des etapes + fix nav).
@@ -160,8 +161,12 @@ void main() {
       // +1 : 'import-gpx' (PARITE GR20 Import GPX, decision Skynet : clone GR20
       //      generalise data-driven de l'ecran ORPHELIN cote GR20 + point
       //      d'entree HUB). Place apres 'recap' (meme section « Apres »).
+      // +4 : StepWays LOT 4 (faisabilite) — 'feasibility-quiz' (fallback
+      //      questionnaire, l'ancien /feasibility), 'hiker-profile' (fiche
+      //      info), 'walk-test' (test 6 min), 'past-hikes' (5 dernieres randos).
+      //      Placees apres 'feasibility' (desormais le verdict objectif).
       final trail = trailRoute();
-      expect(trail.routes.length, 20);
+      expect(trail.routes.length, 24);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -175,6 +180,10 @@ void main() {
         'checklist',
         'nuitees',
         'feasibility',
+        'feasibility-quiz',
+        'hiker-profile',
+        'walk-test',
+        'past-hikes',
         'tips',
         'journal',
         'diploma',
@@ -202,6 +211,10 @@ void main() {
         'trail-checklist',
         'trail-nuitees',
         'trail-feasibility',
+        'trail-feasibility-quiz',
+        'trail-hiker-profile',
+        'trail-walk-test',
+        'trail-past-hikes',
         'trail-tips',
         'trail-journal',
         'trail-diploma',

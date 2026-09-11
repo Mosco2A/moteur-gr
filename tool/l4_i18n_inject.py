@@ -16,7 +16,7 @@ DATA = {
     "fr": {
         "hikerProfile": {
             "title": "Fiche d'info",
-            "privacyBanner": "Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.",
+            "privacyBanner": "Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde chiffree, sans votre nom) pour calculer votre faisabilite.",
             "fieldAge": "Age",
             "hintAge": "En annees",
             "errorAge": "Age invalide (5 a 120)",
@@ -40,7 +40,7 @@ DATA = {
                 "obese": "Obesite",
             },
             "consentTitle": "Donnees de morphologie (article 9 RGPD)",
-            "consentBody": "Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.",
+            "consentBody": "Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demande separement.",
             "consentToggle": "J'autorise l'usage de ma morphologie pour la faisabilite",
             "save": "Enregistrer",
             "saved": "Fiche enregistree",
@@ -119,7 +119,7 @@ DATA = {
     "en": {
         "hikerProfile": {
             "title": "Your details",
-            "privacyBanner": "Your body metrics are sensitive data. They stay on your device (and an anonymous backup, without your name) to compute your feasibility.",
+            "privacyBanner": "Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.",
             "fieldAge": "Age",
             "hintAge": "In years",
             "errorAge": "Invalid age (5 to 120)",
@@ -143,7 +143,7 @@ DATA = {
                 "obese": "Obesity",
             },
             "consentTitle": "Body metrics (GDPR article 9)",
-            "consentBody": "Age, height and weight are health data. They stay on your device and an anonymous backup (no name or email), never sent in clear. This consent is asked separately.",
+            "consentBody": "Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.",
             "consentToggle": "I allow my body metrics to be used for feasibility",
             "save": "Save",
             "saved": "Details saved",
@@ -222,7 +222,7 @@ DATA = {
     "de": {
         "hikerProfile": {
             "title": "Ihre Angaben",
-            "privacyBanner": "Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer anonymen Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.",
+            "privacyBanner": "Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer verschlusselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.",
             "fieldAge": "Alter",
             "hintAge": "In Jahren",
             "errorAge": "Ungultiges Alter (5 bis 120)",
@@ -246,7 +246,7 @@ DATA = {
                 "obese": "Adipositas",
             },
             "consentTitle": "Korperdaten (DSGVO Artikel 9)",
-            "consentBody": "Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer anonymen Sicherung (kein Name, keine E-Mail), nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
+            "consentBody": "Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
             "consentToggle": "Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit",
             "save": "Speichern",
             "saved": "Angaben gespeichert",
@@ -325,7 +325,7 @@ DATA = {
     "it": {
         "hikerProfile": {
             "title": "I tuoi dati",
-            "privacyBanner": "I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup anonimo, senza il tuo nome) per calcolare la fattibilita.",
+            "privacyBanner": "I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup cifrato, senza il tuo nome) per calcolare la fattibilita.",
             "fieldAge": "Eta",
             "hintAge": "In anni",
             "errorAge": "Eta non valida (5 a 120)",
@@ -349,7 +349,7 @@ DATA = {
                 "obese": "Obesita",
             },
             "consentTitle": "Dati corporei (GDPR articolo 9)",
-            "consentBody": "Eta, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup anonimo (senza nome ne email), mai inviati in chiaro. Questo consenso e richiesto separatamente.",
+            "consentBody": "Eta, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome ne email, mai inviati in chiaro. Questo consenso e richiesto separatamente.",
             "consentToggle": "Autorizzo l'uso dei miei dati corporei per la fattibilita",
             "save": "Salva",
             "saved": "Dati salvati",
@@ -428,7 +428,7 @@ DATA = {
     "es": {
         "hikerProfile": {
             "title": "Tus datos",
-            "privacyBanner": "Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia anonima, sin tu nombre) para calcular tu viabilidad.",
+            "privacyBanner": "Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia cifrada, sin tu nombre) para calcular tu viabilidad.",
             "fieldAge": "Edad",
             "hintAge": "En anos",
             "errorAge": "Edad no valida (5 a 120)",
@@ -452,7 +452,7 @@ DATA = {
                 "obese": "Obesidad",
             },
             "consentTitle": "Datos corporales (RGPD articulo 9)",
-            "consentBody": "Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia anonima (sin nombre ni correo), nunca enviados en claro. Este consentimiento se pide por separado.",
+            "consentBody": "Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.",
             "consentToggle": "Autorizo el uso de mis datos corporales para la viabilidad",
             "save": "Guardar",
             "saved": "Datos guardados",

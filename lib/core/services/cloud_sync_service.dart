@@ -12,6 +12,8 @@ import "../data/daos/progress_dao.dart";
 import "../data/daos/sync_queue_dao.dart";
 import "../data/daos/trek_entitlements_dao.dart";
 import "../data/daos/wallet_dao.dart";
+import "../data/daos/hiker_profile_dao.dart";
+import "../data/daos/past_hikes_dao.dart";
 import "../firebase/firebase_service.dart";
 import "../models/sync_config.dart";
 import "../network/connectivity_monitor.dart";
@@ -66,6 +68,8 @@ class CloudSyncService {
     required this.firebaseService,
     this.walletDao,
     this.entitlementsDao,
+    this.hikerProfileDao,
+    this.pastHikesDao,
     FirebaseFirestore? firestore,
   }) : _firestore = firestore;
 
@@ -82,6 +86,13 @@ class CloudSyncService {
 
   /// DAO des droits par sentier (miroir cloud entitlements, A5).
   final TrekEntitlementsDao? entitlementsDao;
+
+  /// DAO du profil randonneur (miroir cloud ANONYME, StepWays LOT 4). Nullable
+  /// pour retro-compat des instances/tests qui ne syncent pas le profil.
+  final HikerProfileDao? hikerProfileDao;
+
+  /// DAO des randos passees + note d'experience (miroir cloud ANONYME, LOT 4).
+  final PastHikesDao? pastHikesDao;
 
   FirebaseFirestore? _firestore;
 
@@ -445,6 +456,140 @@ class CloudSyncService {
     }
   }
 
+  // --- Miroir cloud du PROFIL randonneur (ANONYME, StepWays LOT 4) ---------
+  //
+  // Donnee morpho SENSIBLE (art. 9 RGPD). CONFIDENTIALITE (spec §3.1, FAI-D) :
+  // le miroir est rattache au HASH ANONYME (`anonymous_id_service`, comme le
+  // wallet), ZERO nom, ZERO e-mail -> anonymise cote serveur. Il sert AUSSI la
+  // restauration du profil au changement de telephone. Le local reste la
+  // source durable (last-write-wins via `updated_at`).
+  //
+  // GARDE-FOU consentement : l'appelant DOIT verifier
+  // `ConsentPurpose.healthData` avant d'invoquer [syncHikerProfile] (l'IMC
+  // n'est jamais pousse — donnee derivee recalculable, on ne stocke que la
+  // source : age/taille/poids).
+
+  /// Payload ANONYME du profil (`users/{uid}/profile/hiker`).
+  ///
+  /// Uniquement la morpho source + sexe/pays + timestamp. AUCUN nominatif,
+  /// AUCUN IMC (derive local). Fonction pure (testable sans reseau).
+  Map<String, dynamic> buildHikerProfilePayload(
+    HikerProfileData profile, {
+    String? updatedAt,
+  }) {
+    return {
+      "age": profile.age,
+      "height_cm": profile.heightCm,
+      "weight_kg": profile.weightKg,
+      "sex": profile.sex,
+      "country_iso": profile.countryIso,
+      "updated_at": updatedAt ?? profile.updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Payload ANONYME d'une rando passee (`users/{uid}/past_hikes/{n}`).
+  ///
+  /// Metriques d'effort uniquement (jours, D+, distance, temps) + timestamp.
+  /// Aucun nominatif, aucun trace fin. Fonction pure.
+  Map<String, dynamic> buildPastHikePayload(
+    PastHikeEntry hike, {
+    String? updatedAt,
+  }) {
+    return {
+      "date": hike.date.toIso8601String(),
+      "days": hike.days,
+      "avg_walk_hours_per_day": hike.avgWalkHoursPerDay,
+      "total_elevation_gain": hike.totalElevationGain,
+      "total_distance_km": hike.totalDistanceKm,
+      "updated_at": updatedAt ?? hike.updatedAt.toIso8601String(),
+    };
+  }
+
+  /// Synchronise le miroir cloud ANONYME du profil pour [userId] (hash).
+  ///
+  /// [userId] = hash anonymise (`anonymous_id_service`). Ecrit
+  /// `users/{uid}/profile/hiker` (morpho), une sous-collection
+  /// `users/{uid}/past_hikes/{n}` (randos) et
+  /// `users/{uid}/profile/experience_note` (texte libre global), en
+  /// last-write-wins ([_setWithLastWriteWins]).
+  ///
+  /// GRACEFUL NO-OP si Firebase indisponible, hors-ligne, ou DAOs profil non
+  /// injectes (retourne `idle` sans rien ecrire). Retro-compat assuree.
+  Future<CloudSyncResult> syncHikerProfile(String userId) async {
+    if (hikerProfileDao == null || pastHikesDao == null) {
+      _log.d("[CloudSync] DAOs profil non injectes, sync profil ignoree");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+    if (!firebaseService.isAvailable) {
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+    final connectivity = await connectivityMonitor.checkStatus();
+    if (connectivity == ConnectivityStatusValues.offline) {
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+
+    try {
+      int itemsSynced = 0;
+      final base = firestore.collection("users").doc(userId);
+
+      // --- 1. Profil (singleton) ---
+      final profile = await hikerProfileDao!.getByUserId(userId);
+      if (profile != null) {
+        await _setWithLastWriteWins(
+          base.collection("profile").doc("hiker"),
+          buildHikerProfilePayload(profile),
+        );
+        itemsSynced++;
+      }
+
+      // --- 2. Randos passees (sous-collection) ---
+      final hikes = await pastHikesDao!.getByUserId(userId);
+      for (var i = 0; i < hikes.length; i++) {
+        await _setWithLastWriteWins(
+          base.collection("past_hikes").doc("hike_${i + 1}"),
+          buildPastHikePayload(hikes[i]),
+        );
+        itemsSynced++;
+      }
+
+      // --- 3. Note d'experience globale (texte libre) ---
+      final note = await pastHikesDao!.getNote(userId);
+      if (note != null) {
+        await _setWithLastWriteWins(
+          base.collection("profile").doc("experience_note"),
+          {
+            "free_text_difficulties": note.freeTextDifficulties,
+            "updated_at": note.updatedAt.toIso8601String(),
+          },
+        );
+        itemsSynced++;
+      }
+
+      _log.d("[CloudSync] Miroir profil synchronise: $itemsSynced items");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.success,
+        syncedAt: DateTime.now(),
+        itemsSynced: itemsSynced,
+      );
+    } catch (e) {
+      _log.e("[CloudSync] Erreur sync profil: $e");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.error,
+        syncedAt: DateTime.now(),
+        error: e.toString(),
+      );
+    }
+  }
+
   /// Ecriture Firestore avec strategie last-write-wins.
   Future<void> _setWithLastWriteWins(
     DocumentReference<Map<String, dynamic>> docRef,
@@ -486,5 +631,7 @@ final cloudSyncServiceProvider = Provider<CloudSyncService>((ref) {
     firebaseService: firebase,
     walletDao: db.walletDao,
     entitlementsDao: db.trekEntitlementsDao,
+    hikerProfileDao: db.hikerProfileDao,
+    pastHikesDao: db.pastHikesDao,
   );
 });

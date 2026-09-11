@@ -1767,7 +1767,7 @@
   },
   "hikerProfile": {
     "title": "Ihre Angaben",
-    "privacyBanner": "Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer anonymen Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.",
+    "privacyBanner": "Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer verschlusselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.",
     "fieldAge": "Alter",
     "hintAge": "In Jahren",
     "errorAge": "Ungultiges Alter (5 bis 120)",
@@ -1791,7 +1791,7 @@
       "obese": "Adipositas"
     },
     "consentTitle": "Korperdaten (DSGVO Artikel 9)",
-    "consentBody": "Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer anonymen Sicherung (kein Name, keine E-Mail), nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
+    "consentBody": "Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
     "consentToggle": "Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit",
     "save": "Speichern",
     "saved": "Angaben gespeichert",

@@ -1767,7 +1767,7 @@
   },
   "hikerProfile": {
     "title": "I tuoi dati",
-    "privacyBanner": "I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup anonimo, senza il tuo nome) per calcolare la fattibilita.",
+    "privacyBanner": "I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup cifrato, senza il tuo nome) per calcolare la fattibilita.",
     "fieldAge": "Eta",
     "hintAge": "In anni",
     "errorAge": "Eta non valida (5 a 120)",
@@ -1791,7 +1791,7 @@
       "obese": "Obesita"
     },
     "consentTitle": "Dati corporei (GDPR articolo 9)",
-    "consentBody": "Eta, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup anonimo (senza nome ne email), mai inviati in chiaro. Questo consenso e richiesto separatamente.",
+    "consentBody": "Eta, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome ne email, mai inviati in chiaro. Questo consenso e richiesto separatamente.",
     "consentToggle": "Autorizzo l'uso dei miei dati corporei per la fattibilita",
     "save": "Salva",
     "saved": "Dati salvati",

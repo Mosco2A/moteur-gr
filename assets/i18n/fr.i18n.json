@@ -1767,7 +1767,7 @@
   },
   "hikerProfile": {
     "title": "Fiche d'info",
-    "privacyBanner": "Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.",
+    "privacyBanner": "Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde chiffree, sans votre nom) pour calculer votre faisabilite.",
     "fieldAge": "Age",
     "hintAge": "En annees",
     "errorAge": "Age invalide (5 a 120)",
@@ -1791,7 +1791,7 @@
       "obese": "Obesite"
     },
     "consentTitle": "Donnees de morphologie (article 9 RGPD)",
-    "consentBody": "Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.",
+    "consentBody": "Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demande separement.",
     "consentToggle": "J'autorise l'usage de ma morphologie pour la faisabilite",
     "save": "Enregistrer",
     "saved": "Fiche enregistree",

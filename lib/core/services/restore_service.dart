@@ -9,6 +9,8 @@ import '../data/database.dart';
 import '../data/daos/checklist_dao.dart';
 import '../data/daos/journal_dao.dart';
 import '../data/daos/progress_dao.dart';
+import '../data/daos/hiker_profile_dao.dart';
+import '../data/daos/past_hikes_dao.dart';
 import '../firebase/firebase_service.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
@@ -66,6 +68,8 @@ class RestoreService {
     required this.checklistDao,
     required this.connectivityMonitor,
     required this.firebaseService,
+    this.hikerProfileDao,
+    this.pastHikesDao,
     FirebaseFirestore? firestore,
   }) : _firestore = firestore;
 
@@ -74,6 +78,13 @@ class RestoreService {
   final ChecklistDao checklistDao;
   final ConnectivityMonitor connectivityMonitor;
   final FirebaseService firebaseService;
+
+  /// DAO du profil randonneur (restauration au changement de tel, LOT 4).
+  final HikerProfileDao? hikerProfileDao;
+
+  /// DAO des randos passees + note (restauration au changement de tel, LOT 4).
+  final PastHikesDao? pastHikesDao;
+
   FirebaseFirestore? _firestore;
 
   /// Accesseur Firestore (lazy init pour les tests).
@@ -174,6 +185,100 @@ class RestoreService {
       return RestoreResult(success: true, itemsRestored: itemsRestored);
     } catch (e) {
       _log.e('[Restore] Erreur restauration: $e');
+      return RestoreResult(success: false, error: e.toString());
+    }
+  }
+
+  /// Restaure le profil randonneur ANONYME depuis Firestore (StepWays LOT 4).
+  ///
+  /// Changement de telephone : se reconnecter avec le meme compte Apple/Google
+  /// redonne le meme [userId] hash (`anonymous_id_service`) -> on relit
+  /// `users/{uid}/profile/hiker`, `users/{uid}/past_hikes/*` et la note, et on
+  /// hydrate le miroir Drift local. Donnee SENSIBLE : rien de nominatif cote
+  /// serveur (hash seul). GRACEFUL NO-OP si DAOs non injectes / hors-ligne /
+  /// Firebase indisponible.
+  Future<RestoreResult> restoreHikerProfile(String userId) async {
+    if (hikerProfileDao == null || pastHikesDao == null) {
+      return const RestoreResult(success: false, error: 'daos_absent');
+    }
+    if (!firebaseService.isAvailable) {
+      return const RestoreResult(
+        success: false,
+        error: kRestoreErrorFirebaseUnavailable,
+      );
+    }
+    final status = await connectivityMonitor.checkStatus();
+    if (status == ConnectivityStatusValues.offline) {
+      return const RestoreResult(success: false, error: kRestoreErrorOffline);
+    }
+
+    try {
+      int restored = 0;
+      final base = firestore.collection('users').doc(userId);
+
+      // 1. Profil (singleton).
+      final profileSnap = await base.collection('profile').doc('hiker').get();
+      final pdata = profileSnap.data();
+      if (pdata != null) {
+        await hikerProfileDao!.upsert(HikerProfileCompanion(
+          userId: Value(userId),
+          age: Value(pdata['age'] as int? ?? 0),
+          heightCm: Value(pdata['height_cm'] as int? ?? 0),
+          weightKg: Value((pdata['weight_kg'] as num?)?.toDouble() ?? 0),
+          sex: Value(pdata['sex'] as String?),
+          countryIso: Value(pdata['country_iso'] as String? ?? ''),
+          updatedAt: Value(DateTime.tryParse(
+                  pdata['updated_at'] as String? ?? '') ??
+              DateTime.now()),
+        ));
+        restored++;
+      }
+
+      // 2. Randos passees (remplace la liste locale par la version cloud).
+      final hikesSnap = await base.collection('past_hikes').get();
+      if (hikesSnap.docs.isNotEmpty) {
+        await pastHikesDao!.deleteAllForUser(userId);
+        for (final doc in hikesSnap.docs) {
+          final h = doc.data();
+          await pastHikesDao!.insertHike(PastHikeEntriesCompanion(
+            userId: Value(userId),
+            date: Value(
+                DateTime.tryParse(h['date'] as String? ?? '') ??
+                    DateTime.now()),
+            days: Value(h['days'] as int? ?? 1),
+            avgWalkHoursPerDay:
+                Value((h['avg_walk_hours_per_day'] as num?)?.toDouble() ?? 0),
+            totalElevationGain: Value(h['total_elevation_gain'] as int? ?? 0),
+            totalDistanceKm:
+                Value((h['total_distance_km'] as num?)?.toDouble() ?? 0),
+            updatedAt: Value(DateTime.tryParse(
+                    h['updated_at'] as String? ?? '') ??
+                DateTime.now()),
+          ));
+          restored++;
+        }
+      }
+
+      // 3. Note d'experience globale.
+      final noteSnap =
+          await base.collection('profile').doc('experience_note').get();
+      final ndata = noteSnap.data();
+      if (ndata != null) {
+        await pastHikesDao!.upsertNote(HikerExperienceNoteCompanion(
+          userId: Value(userId),
+          freeTextDifficulties:
+              Value(ndata['free_text_difficulties'] as String? ?? ''),
+          updatedAt: Value(DateTime.tryParse(
+                  ndata['updated_at'] as String? ?? '') ??
+              DateTime.now()),
+        ));
+        restored++;
+      }
+
+      _log.d('[Restore] Profil restaure: $restored items');
+      return RestoreResult(success: true, itemsRestored: restored);
+    } catch (e) {
+      _log.e('[Restore] Erreur restauration profil: $e');
       return RestoreResult(success: false, error: e.toString());
     }
   }
@@ -279,5 +384,7 @@ final restoreServiceProvider = Provider<RestoreService>((ref) {
     checklistDao: ChecklistDao(db),
     connectivityMonitor: connectivity,
     firebaseService: firebase,
+    hikerProfileDao: db.hikerProfileDao,
+    pastHikesDao: db.pastHikesDao,
   );
 });

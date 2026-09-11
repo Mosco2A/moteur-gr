@@ -1461,7 +1461,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 
 	// Translations
 	@override String get title => 'Ihre Angaben';
-	@override String get privacyBanner => 'Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer anonymen Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.';
+	@override String get privacyBanner => 'Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer verschlusselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.';
 	@override String get fieldAge => 'Alter';
 	@override String get hintAge => 'In Jahren';
 	@override String get errorAge => 'Ungultiges Alter (5 bis 120)';
@@ -1480,7 +1480,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get bmiLabel => 'BMI';
 	@override late final _Translations$hikerProfile$bmiCategories$de bmiCategories = _Translations$hikerProfile$bmiCategories$de._(_root);
 	@override String get consentTitle => 'Korperdaten (DSGVO Artikel 9)';
-	@override String get consentBody => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer anonymen Sicherung (kein Name, keine E-Mail), nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
+	@override String get consentBody => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
 	@override String get consentToggle => 'Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit';
 	@override String get save => 'Speichern';
 	@override String get saved => 'Angaben gespeichert';
@@ -4853,7 +4853,7 @@ extension on TranslationsDe {
 			'trekState.resumeOrphanDialog.resume' => 'Fortsetzen',
 			'trekState.resumeOrphanDialog.abandon' => 'Abbrechen',
 			'hikerProfile.title' => 'Ihre Angaben',
-			'hikerProfile.privacyBanner' => 'Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer anonymen Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
+			'hikerProfile.privacyBanner' => 'Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer verschlusselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
 			'hikerProfile.fieldAge' => 'Alter',
 			'hikerProfile.hintAge' => 'In Jahren',
 			'hikerProfile.errorAge' => 'Ungultiges Alter (5 bis 120)',
@@ -4875,7 +4875,7 @@ extension on TranslationsDe {
 			'hikerProfile.bmiCategories.overweight' => 'Ubergewicht',
 			'hikerProfile.bmiCategories.obese' => 'Adipositas',
 			'hikerProfile.consentTitle' => 'Korperdaten (DSGVO Artikel 9)',
-			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer anonymen Sicherung (kein Name, keine E-Mail), nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
+			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
 			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit',
 			'hikerProfile.save' => 'Speichern',
 			'hikerProfile.saved' => 'Angaben gespeichert',

@@ -10,7 +10,6 @@ import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
 import 'package:moteur_gr/features/feasibility/presentation/past_hikes_screen.dart';
-import 'package:moteur_gr/features/feasibility/providers/hiker_profile_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests widget de l'ecran « 5 dernieres randos » (StepWays LOT 4, Ph3).

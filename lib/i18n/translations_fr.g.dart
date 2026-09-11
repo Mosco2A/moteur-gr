@@ -2898,8 +2898,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Fiche d'info'
 	String get title => 'Fiche d\'info';
 
-	/// fr: 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.'
-	String get privacyBanner => 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.';
+	/// fr: 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde chiffree, sans votre nom) pour calculer votre faisabilite.'
+	String get privacyBanner => 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde chiffree, sans votre nom) pour calculer votre faisabilite.';
 
 	/// fr: 'Age'
 	String get fieldAge => 'Age';
@@ -2954,8 +2954,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Donnees de morphologie (article 9 RGPD)'
 	String get consentTitle => 'Donnees de morphologie (article 9 RGPD)';
 
-	/// fr: 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.'
-	String get consentBody => 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.';
+	/// fr: 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demande separement.'
+	String get consentBody => 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demande separement.';
 
 	/// fr: 'J'autorise l'usage de ma morphologie pour la faisabilite'
 	String get consentToggle => 'J\'autorise l\'usage de ma morphologie pour la faisabilite';
@@ -7872,7 +7872,7 @@ extension on Translations {
 			'trekState.resumeOrphanDialog.resume' => 'Reprendre',
 			'trekState.resumeOrphanDialog.abandon' => 'Abandonner',
 			'hikerProfile.title' => 'Fiche d\'info',
-			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde anonyme, sans votre nom) pour calculer votre faisabilite.',
+			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde chiffree, sans votre nom) pour calculer votre faisabilite.',
 			'hikerProfile.fieldAge' => 'Age',
 			'hikerProfile.hintAge' => 'En annees',
 			'hikerProfile.errorAge' => 'Age invalide (5 a 120)',
@@ -7894,7 +7894,7 @@ extension on Translations {
 			'hikerProfile.bmiCategories.overweight' => 'Surpoids',
 			'hikerProfile.bmiCategories.obese' => 'Obesite',
 			'hikerProfile.consentTitle' => 'Donnees de morphologie (article 9 RGPD)',
-			'hikerProfile.consentBody' => 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde anonyme (sans nom ni e-mail), jamais transmises en clair. Ce consentement est demande separement.',
+			'hikerProfile.consentBody' => 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demande separement.',
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilite',
 			'hikerProfile.save' => 'Enregistrer',
 			'hikerProfile.saved' => 'Fiche enregistree',

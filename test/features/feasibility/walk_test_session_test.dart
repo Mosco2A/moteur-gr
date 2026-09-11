@@ -20,9 +20,9 @@ void main() {
       // 3 points alignes espaces de ~15 m chacun (~0.000135 deg lat).
       const lat0 = 48.0;
       const lng0 = 2.0;
-      final step = 15.0;
+      const step = 15.0;
       // Convertit 15 m en delta lat approx.
-      final dLat = step / 111320.0; // ~m par degre lat
+      const dLat = step / 111320.0; // ~m par degre lat
       s.addPosition(lat: lat0, lng: lng0, elapsed: const Duration(seconds: 2));
       s.addPosition(
           lat: lat0 + dLat, lng: lng0, elapsed: const Duration(seconds: 4));
@@ -34,7 +34,7 @@ void main() {
 
     test('ignore les positions au-dela de 6:00 (arret auto)', () {
       final s = WalkTestSession();
-      final dLat = 15.0 / 111320.0;
+      const dLat = 15.0 / 111320.0;
       s.addPosition(lat: 48.0, lng: 2.0, elapsed: const Duration(seconds: 2));
       // Point apres 6:01 -> ignore.
       final counted = s.addPosition(
@@ -50,7 +50,7 @@ void main() {
       final s = WalkTestSession();
       const lat = 48.0;
       const lng = 2.0;
-      final micro = 0.3 / 111320.0; // ~0.3 m
+      const micro = 0.3 / 111320.0; // ~0.3 m
       s.addPosition(lat: lat, lng: lng, elapsed: const Duration(seconds: 2));
       final counted = s.addPosition(
           lat: lat + micro, lng: lng, elapsed: const Duration(seconds: 4));
@@ -62,7 +62,7 @@ void main() {
       final s = WalkTestSession();
       s.addPosition(lat: 48.0, lng: 2.0, elapsed: const Duration(seconds: 2));
       // Saut de ~200 m.
-      final dLat = 200.0 / 111320.0;
+      const dLat = 200.0 / 111320.0;
       final counted = s.addPosition(
           lat: 48.0 + dLat, lng: 2.0, elapsed: const Duration(seconds: 4));
       expect(counted, isFalse);
@@ -71,7 +71,7 @@ void main() {
 
     test('reset remet a zero', () {
       final s = WalkTestSession();
-      final dLat = 15.0 / 111320.0;
+      const dLat = 15.0 / 111320.0;
       s.addPosition(lat: 48.0, lng: 2.0, elapsed: const Duration(seconds: 2));
       s.addPosition(
           lat: 48.0 + dLat, lng: 2.0, elapsed: const Duration(seconds: 4));

@@ -1461,7 +1461,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 
 	// Translations
 	@override String get title => 'Your details';
-	@override String get privacyBanner => 'Your body metrics are sensitive data. They stay on your device (and an anonymous backup, without your name) to compute your feasibility.';
+	@override String get privacyBanner => 'Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.';
 	@override String get fieldAge => 'Age';
 	@override String get hintAge => 'In years';
 	@override String get errorAge => 'Invalid age (5 to 120)';
@@ -1480,7 +1480,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get bmiLabel => 'BMI';
 	@override late final _Translations$hikerProfile$bmiCategories$en bmiCategories = _Translations$hikerProfile$bmiCategories$en._(_root);
 	@override String get consentTitle => 'Body metrics (GDPR article 9)';
-	@override String get consentBody => 'Age, height and weight are health data. They stay on your device and an anonymous backup (no name or email), never sent in clear. This consent is asked separately.';
+	@override String get consentBody => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.';
 	@override String get consentToggle => 'I allow my body metrics to be used for feasibility';
 	@override String get save => 'Save';
 	@override String get saved => 'Details saved';
@@ -4853,7 +4853,7 @@ extension on TranslationsEn {
 			'trekState.resumeOrphanDialog.resume' => 'Resume',
 			'trekState.resumeOrphanDialog.abandon' => 'Give up',
 			'hikerProfile.title' => 'Your details',
-			'hikerProfile.privacyBanner' => 'Your body metrics are sensitive data. They stay on your device (and an anonymous backup, without your name) to compute your feasibility.',
+			'hikerProfile.privacyBanner' => 'Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.',
 			'hikerProfile.fieldAge' => 'Age',
 			'hikerProfile.hintAge' => 'In years',
 			'hikerProfile.errorAge' => 'Invalid age (5 to 120)',
@@ -4875,7 +4875,7 @@ extension on TranslationsEn {
 			'hikerProfile.bmiCategories.overweight' => 'Overweight',
 			'hikerProfile.bmiCategories.obese' => 'Obesity',
 			'hikerProfile.consentTitle' => 'Body metrics (GDPR article 9)',
-			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and an anonymous backup (no name or email), never sent in clear. This consent is asked separately.',
+			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.',
 			'hikerProfile.consentToggle' => 'I allow my body metrics to be used for feasibility',
 			'hikerProfile.save' => 'Save',
 			'hikerProfile.saved' => 'Details saved',

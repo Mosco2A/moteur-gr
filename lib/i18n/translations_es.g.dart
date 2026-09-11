@@ -1461,7 +1461,7 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 
 	// Translations
 	@override String get title => 'Tus datos';
-	@override String get privacyBanner => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia anonima, sin tu nombre) para calcular tu viabilidad.';
+	@override String get privacyBanner => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia cifrada, sin tu nombre) para calcular tu viabilidad.';
 	@override String get fieldAge => 'Edad';
 	@override String get hintAge => 'En anos';
 	@override String get errorAge => 'Edad no valida (5 a 120)';
@@ -1480,7 +1480,7 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get bmiLabel => 'IMC';
 	@override late final _Translations$hikerProfile$bmiCategories$es bmiCategories = _Translations$hikerProfile$bmiCategories$es._(_root);
 	@override String get consentTitle => 'Datos corporales (RGPD articulo 9)';
-	@override String get consentBody => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia anonima (sin nombre ni correo), nunca enviados en claro. Este consentimiento se pide por separado.';
+	@override String get consentBody => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.';
 	@override String get consentToggle => 'Autorizo el uso de mis datos corporales para la viabilidad';
 	@override String get save => 'Guardar';
 	@override String get saved => 'Datos guardados';
@@ -4853,7 +4853,7 @@ extension on TranslationsEs {
 			'trekState.resumeOrphanDialog.resume' => 'Reanudar',
 			'trekState.resumeOrphanDialog.abandon' => 'Abandonar',
 			'hikerProfile.title' => 'Tus datos',
-			'hikerProfile.privacyBanner' => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia anonima, sin tu nombre) para calcular tu viabilidad.',
+			'hikerProfile.privacyBanner' => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia cifrada, sin tu nombre) para calcular tu viabilidad.',
 			'hikerProfile.fieldAge' => 'Edad',
 			'hikerProfile.hintAge' => 'En anos',
 			'hikerProfile.errorAge' => 'Edad no valida (5 a 120)',
@@ -4875,7 +4875,7 @@ extension on TranslationsEs {
 			'hikerProfile.bmiCategories.overweight' => 'Sobrepeso',
 			'hikerProfile.bmiCategories.obese' => 'Obesidad',
 			'hikerProfile.consentTitle' => 'Datos corporales (RGPD articulo 9)',
-			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia anonima (sin nombre ni correo), nunca enviados en claro. Este consentimiento se pide por separado.',
+			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',
 			'hikerProfile.consentToggle' => 'Autorizo el uso de mis datos corporales para la viabilidad',
 			'hikerProfile.save' => 'Guardar',
 			'hikerProfile.saved' => 'Datos guardados',
