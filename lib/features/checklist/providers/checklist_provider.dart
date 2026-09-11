@@ -5,7 +5,10 @@ import '../../../core/data/database.dart';
 import '../../../core/data/daos/checklist_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../notifications/providers/download_reminder_provider.dart';
+import '../data/checklist_seasonal_adapter.dart';
 import '../data/checklist_template.dart';
+import '../domain/season.dart';
 
 /// Poids corporel de reference par defaut (kg), parite GR20 « Materiel & Sac ».
 ///
@@ -153,6 +156,35 @@ class ChecklistItemState {
 final checklistProvider =
     NotifierProvider<ChecklistNotifier, ChecklistState>(ChecklistNotifier.new);
 
+/// Saison de reference du Sac ADAPTATIF (StepWays LOT 5, sous-ensemble B).
+///
+/// Cle stable [Season] (winter/spring/summer/autumn), DERIVEE de la DATE DE
+/// DEPART du Calendrier ([downloadReminderProvider]) — c'est la saison du trek
+/// qui compte — avec repli sur la date du JOUR ([currentSeasonNow]) tant qu'aucun
+/// depart n'est pose. N'est observee QUE par la section additive du Sac (l'ecran
+/// a acces aux prefs) : le SOCLE du Sac (template de base, parite GR20) ne depend
+/// PAS de cette source, il reste robuste sans prefs ni reseau.
+final checklistSeasonFromDepartureProvider = Provider<String>((ref) {
+  final trailId = ref.watch(trailIdProvider);
+  final departure = ref.watch(downloadReminderProvider(trailId)).departureDate;
+  return departure != null ? Season.fromDate(departure) : currentSeasonNow();
+});
+
+/// Suggestions saisonnieres du Sac (trek + saison de depart) — LOT 5 (B).
+///
+/// Articles pertinents a AJOUTER pour le sentier actif et la saison du depart
+/// (ou du jour). Additif (section a part) : la liste de base reste intacte
+/// (parite). Chargee depuis la donnee externalisee [ChecklistSeasonalAdapter].
+final checklistSeasonalSuggestionsProvider =
+    FutureProvider<List<ChecklistTemplateItem>>((ref) async {
+  final trailId = ref.watch(trailIdProvider);
+  final season = ref.watch(checklistSeasonFromDepartureProvider);
+  return ChecklistSeasonalAdapter.seasonalItems(
+    trailId: trailId,
+    season: season,
+  );
+});
+
 /// Notifier qui gere l'etat de la checklist materiel (parite GR20).
 class ChecklistNotifier extends Notifier<ChecklistState> {
   @override
@@ -167,6 +199,13 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
   late AppDatabase _db;
   late String _trailId;
+
+  /// Template de base (parite GR20 : 84 articles, ordre GR20). Le Sac ADAPTATIF
+  /// (LOT 5, B) n'INJECTE PAS d'articles ici (sinon la parite casserait) : les
+  /// suggestions saison/trek sont une SECTION additive a part
+  /// ([ChecklistSeasonalSection]), ajoutables au sac a la demande (comptees dans
+  /// la jauge une fois ajoutees, via le meme chemin que les articles custom).
+  List<ChecklistTemplateItem> get _template => defaultChecklistTemplate;
 
   /// Charge l'etat de la checklist depuis la DB.
   /// Si la DB est vide, initialise depuis le template.
@@ -199,8 +238,9 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   List<ChecklistItemState> _buildItemStates(List<ChecklistItem> dbItems) {
     final itemStates = <ChecklistItemState>[];
 
-    // Articles du template, dans l'ordre du template (= ordre GR20).
-    for (final template in defaultChecklistTemplate) {
+    // Articles du template resolu (base GR20 + ajouts saison/trek), dans l'ordre
+    // du template (parite : la base garde l'ordre GR20, les ajouts a la fin).
+    for (final template in _template) {
       final dbMatch = dbItems.where((i) => i.itemId == template.id);
       final hasRow = dbMatch.isNotEmpty;
       final row = hasRow ? dbMatch.first : null;
@@ -216,8 +256,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     }
 
     // Articles personnalises (isCustom en DB, non presents dans le template).
-    final templateIds =
-        defaultChecklistTemplate.map((t) => t.id).toSet();
+    final templateIds = _template.map((t) => t.id).toSet();
     for (final row in dbItems) {
       if (!row.isCustom || templateIds.contains(row.itemId)) continue;
       final customTemplate = ChecklistTemplateItem(
@@ -241,9 +280,9 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
     return itemStates;
   }
 
-  /// Initialise la checklist en DB depuis le template.
+  /// Initialise la checklist en DB depuis le template resolu (base + saison/trek).
   Future<void> _initFromTemplate(ChecklistDao dao) async {
-    final entries = defaultChecklistTemplate.map((item) {
+    final entries = _template.map((item) {
       return ChecklistItemsCompanion(
         trailId: Value(_trailId),
         itemId: Value(item.id),
@@ -383,6 +422,27 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       customName: trimmed,
     );
     _emit([...state.items, newItem]);
+  }
+
+  /// Ajoute au sac un article SUGGERE (Sac adaptatif saison/trek, LOT 5, B).
+  ///
+  /// Reutilise le chemin des articles custom ([addCustomItem]) — l'article
+  /// ajoute est coche et COMPTE donc dans la jauge (« jauge adaptee »).
+  /// IDEMPOTENT : si un article du meme nom est deja au sac, ne fait rien
+  /// (evite les doublons quand on retape la suggestion). Retourne true si ajout.
+  Future<bool> addSuggestedItem({
+    required String category,
+    required String name,
+    required int weightGrams,
+  }) async {
+    final trimmed = name.trim();
+    if (trimmed.isEmpty) return false;
+    final already = state.items.any(
+      (i) => i.isCustom && (i.customName?.trim() == trimmed),
+    );
+    if (already) return false;
+    await addCustomItem(category, trimmed, weightGrams);
+    return true;
   }
 
   /// Met a jour le nom d'un article personnalise et persiste (parite GR20).

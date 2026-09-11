@@ -1,0 +1,28 @@
+{
+  "_comment": "StepWays LOT 5 (B) — SAC ADAPTATIF (trek + saison). Couche ADDITIVE au template de base (parite GR20 : les 84 articles de defaultChecklistTemplate restent intacts). Pour un sentier + une saison donnes, on AJOUTE des articles pertinents (comptes dans la jauge). 'default' s'applique a tout sentier ; 'trails.<trailId>' precise par sentier. Saisons : winter/spring/summer/autumn (+ 'all' = toutes saisons). Aucun article n'est retire (jamais de regression de parite) ; on n'ajoute que du specifique saison/sentier. Les nameKey pointent vers checklist.items.* (i18n Slang, 5 langues) ou, a defaut, un libelle deja connu. weightGrams = poids de reference (jauge).",
+  "default": {
+    "winter": [
+      { "id": "seasonalMicrospikes", "category": "misc", "nameKey": "seasonalMicrospikes", "weightGrams": 350, "requirement": "recommended" },
+      { "id": "seasonalWarmGloves", "category": "clothing", "nameKey": "seasonalWarmGloves", "weightGrams": 120, "requirement": "recommended" },
+      { "id": "seasonalThermalBase", "category": "clothing", "nameKey": "seasonalThermalBase", "weightGrams": 200, "requirement": "recommended" }
+    ],
+    "summer": [
+      { "id": "seasonalExtraWater", "category": "foodWater", "nameKey": "seasonalExtraWater", "weightGrams": 1000, "quantity": 1, "requirement": "recommended" },
+      { "id": "seasonalSunHat", "category": "clothing", "nameKey": "seasonalSunHat", "weightGrams": 80, "requirement": "recommended" },
+      { "id": "seasonalElectrolytesPlus", "category": "foodWater", "nameKey": "seasonalElectrolytesPlus", "weightGrams": 40, "requirement": "optional" }
+    ],
+    "spring": [
+      { "id": "seasonalGaitersMud", "category": "clothing", "nameKey": "seasonalGaitersMud", "weightGrams": 100, "requirement": "optional" }
+    ],
+    "autumn": [
+      { "id": "seasonalHeadlampSpare", "category": "electronics", "nameKey": "seasonalHeadlampSpare", "weightGrams": 80, "requirement": "recommended" }
+    ]
+  },
+  "trails": {
+    "mare-a-mare-centre": {
+      "summer": [
+        { "id": "seasonalMamExtraWater", "category": "foodWater", "nameKey": "seasonalMamExtraWater", "weightGrams": 1000, "quantity": 1, "requirement": "required" }
+      ]
+    }
+  }
+}

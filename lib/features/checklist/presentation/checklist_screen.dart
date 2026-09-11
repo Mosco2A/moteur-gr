@@ -11,6 +11,7 @@ import '../widgets/checklist_bottom_actions.dart';
 import '../widgets/checklist_category_section.dart';
 import '../widgets/checklist_preparation_section.dart';
 import '../widgets/checklist_recommendation_banner.dart';
+import '../widgets/checklist_seasonal_section.dart';
 import '../widgets/checklist_shopping_modal.dart';
 import '../widgets/checklist_weight_banner.dart';
 
@@ -103,6 +104,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
+            // --- Section SAC ADAPTATIF (LOT 5, B) : suggestions saison + trek,
+            // ajoutables au sac (comptees dans la jauge). ADDITIVE : n'altere pas
+            // la liste de base (parite GR20 intacte). Masquee si rien a adapter.
+            const ChecklistSeasonalSection(),
             // --- Bandeau poids total + indicateur (pleine largeur, GR20) ---
             ChecklistWeightBanner(
               checkedWeightGrams: state.checkedWeightGrams,

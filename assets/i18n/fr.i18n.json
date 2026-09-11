@@ -408,7 +408,16 @@
       "dogBooties": "Bottines protection",
       "dogVaccineBook": "Carnet de vaccins",
       "dogPoopBags": "Sacs a dejections",
-      "swimsuit": "Maillot de bain"
+      "swimsuit": "Maillot de bain",
+      "seasonalMicrospikes": "Crampons legers (microspikes)",
+      "seasonalWarmGloves": "Gants chauds",
+      "seasonalThermalBase": "Sous-couche thermique",
+      "seasonalExtraWater": "Eau supplementaire",
+      "seasonalSunHat": "Chapeau de soleil",
+      "seasonalElectrolytesPlus": "Electrolytes (chaleur)",
+      "seasonalGaitersMud": "Guetres (boue de printemps)",
+      "seasonalHeadlampSpare": "Lampe frontale d'appoint (jours courts)",
+      "seasonalMamExtraWater": "Reserve d'eau renforcee (zones seches)"
     },
     "essential": "Essentiel",
     "weight": {
@@ -509,7 +518,17 @@
       "validateAnyway": "Valider quand meme",
       "bagValidatedMissingSnack": "Sac valide (avec items manquants) !",
       "shareGroupHint": "Rejoignez un groupe pour partager votre checklist."
-    }
+    },
+    "seasonalBanner": "Sac adapte a la saison ($season) et a votre sentier.",
+    "seasons": {
+      "winter": "hiver",
+      "spring": "printemps",
+      "summer": "ete",
+      "autumn": "automne"
+    },
+    "seasonalAdd": "Ajouter",
+    "seasonalAdded": "Ajoute",
+    "seasonalWeight": "$g g"
   },
   "journal": {
     "title": "Journal de randonnée",

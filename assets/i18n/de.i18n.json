@@ -408,7 +408,16 @@
       "dogBooties": "Schutzstiefel",
       "dogVaccineBook": "Impfpass",
       "dogPoopBags": "Kotbeutel",
-      "swimsuit": "Badeanzug"
+      "swimsuit": "Badeanzug",
+      "seasonalMicrospikes": "Leichte Steigeisen (Microspikes)",
+      "seasonalWarmGloves": "Warme Handschuhe",
+      "seasonalThermalBase": "Thermo-Unterschicht",
+      "seasonalExtraWater": "Zusatzliches Wasser",
+      "seasonalSunHat": "Sonnenhut",
+      "seasonalElectrolytesPlus": "Elektrolyte (Hitze)",
+      "seasonalGaitersMud": "Gamaschen (Fruhjahrsmatsch)",
+      "seasonalHeadlampSpare": "Ersatz-Stirnlampe (kurze Tage)",
+      "seasonalMamExtraWater": "Verstarkter Wasservorrat (trockene Zonen)"
     },
     "essential": "Wesentlich",
     "weight": {
@@ -509,7 +518,17 @@
       "validateAnyway": "Trotzdem bestatigen",
       "bagValidatedMissingSnack": "Rucksack bestatigt (mit fehlenden Artikeln)!",
       "shareGroupHint": "Tritt einer Gruppe bei, um deine Checkliste zu teilen."
-    }
+    },
+    "seasonalBanner": "Rucksack an die Saison ($season) und Ihren Weg angepasst.",
+    "seasons": {
+      "winter": "Winter",
+      "spring": "Fruhling",
+      "summer": "Sommer",
+      "autumn": "Herbst"
+    },
+    "seasonalAdd": "Hinzufugen",
+    "seasonalAdded": "Hinzugefugt",
+    "seasonalWeight": "$g g"
   },
   "journal": {
     "title": "Wandertagebuch",

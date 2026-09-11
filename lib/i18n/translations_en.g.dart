@@ -436,6 +436,11 @@ class _Translations$checklist$en extends Translations$checklist$fr {
 	@override String get essential => 'Essential';
 	@override late final _Translations$checklist$weight$en weight = _Translations$checklist$weight$en._(_root);
 	@override late final _Translations$checklist$ui$en ui = _Translations$checklist$ui$en._(_root);
+	@override String seasonalBanner({required Object season}) => 'Pack adapted to the season (${season}) and your trail.';
+	@override late final _Translations$checklist$seasons$en seasons = _Translations$checklist$seasons$en._(_root);
+	@override String get seasonalAdd => 'Add';
+	@override String get seasonalAdded => 'Added';
+	@override String seasonalWeight({required Object g}) => '${g} g';
 }
 
 // Path: journal
@@ -1871,6 +1876,15 @@ class _Translations$checklist$items$en extends Translations$checklist$items$fr {
 	@override String get dogVaccineBook => 'Vaccine record';
 	@override String get dogPoopBags => 'Poop bags';
 	@override String get swimsuit => 'Swimsuit';
+	@override String get seasonalMicrospikes => 'Light crampons (microspikes)';
+	@override String get seasonalWarmGloves => 'Warm gloves';
+	@override String get seasonalThermalBase => 'Thermal base layer';
+	@override String get seasonalExtraWater => 'Extra water';
+	@override String get seasonalSunHat => 'Sun hat';
+	@override String get seasonalElectrolytesPlus => 'Electrolytes (heat)';
+	@override String get seasonalGaitersMud => 'Gaiters (spring mud)';
+	@override String get seasonalHeadlampSpare => 'Spare headlamp (short days)';
+	@override String get seasonalMamExtraWater => 'Reinforced water supply (dry zones)';
 }
 
 // Path: checklist.weight
@@ -1984,6 +1998,19 @@ class _Translations$checklist$ui$en extends Translations$checklist$ui$fr {
 	@override String get validateAnyway => 'Validate anyway';
 	@override String get bagValidatedMissingSnack => 'Pack validated (with missing items)!';
 	@override String get shareGroupHint => 'Join a group to share your checklist.';
+}
+
+// Path: checklist.seasons
+class _Translations$checklist$seasons$en extends Translations$checklist$seasons$fr {
+	_Translations$checklist$seasons$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get winter => 'winter';
+	@override String get spring => 'spring';
+	@override String get summer => 'summer';
+	@override String get autumn => 'autumn';
 }
 
 // Path: weather.source
@@ -3823,6 +3850,15 @@ extension on TranslationsEn {
 			'checklist.items.dogVaccineBook' => 'Vaccine record',
 			'checklist.items.dogPoopBags' => 'Poop bags',
 			'checklist.items.swimsuit' => 'Swimsuit',
+			'checklist.items.seasonalMicrospikes' => 'Light crampons (microspikes)',
+			'checklist.items.seasonalWarmGloves' => 'Warm gloves',
+			'checklist.items.seasonalThermalBase' => 'Thermal base layer',
+			'checklist.items.seasonalExtraWater' => 'Extra water',
+			'checklist.items.seasonalSunHat' => 'Sun hat',
+			'checklist.items.seasonalElectrolytesPlus' => 'Electrolytes (heat)',
+			'checklist.items.seasonalGaitersMud' => 'Gaiters (spring mud)',
+			'checklist.items.seasonalHeadlampSpare' => 'Spare headlamp (short days)',
+			'checklist.items.seasonalMamExtraWater' => 'Reinforced water supply (dry zones)',
 			'checklist.essential' => 'Essential',
 			'checklist.weight.title' => 'Backpack weight',
 			'checklist.weight.total' => 'Total weight',
@@ -3919,6 +3955,14 @@ extension on TranslationsEn {
 			'checklist.ui.validateAnyway' => 'Validate anyway',
 			'checklist.ui.bagValidatedMissingSnack' => 'Pack validated (with missing items)!',
 			'checklist.ui.shareGroupHint' => 'Join a group to share your checklist.',
+			'checklist.seasonalBanner' => ({required Object season}) => 'Pack adapted to the season (${season}) and your trail.',
+			'checklist.seasons.winter' => 'winter',
+			'checklist.seasons.spring' => 'spring',
+			'checklist.seasons.summer' => 'summer',
+			'checklist.seasons.autumn' => 'autumn',
+			'checklist.seasonalAdd' => 'Add',
+			'checklist.seasonalAdded' => 'Added',
+			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'journal.title' => 'Trek journal',
 			'journal.empty' => 'Your journal is empty',
 			'journal.emptySubtitle' => 'Write down your trek impressions and memories',
@@ -3962,6 +4006,8 @@ extension on TranslationsEn {
 			'weather.source.api' => 'Live data',
 			'weather.source.cache' => 'Saved data',
 			'weather.source.offline' => 'Offline',
+			_ => null,
+		} ?? switch (path) {
 			'weather.source.demo' => 'Demo data',
 			'weather.recommendation.ok' => 'Favourable conditions',
 			'weather.recommendation.watch' => 'Caution advised',
@@ -3979,8 +4025,6 @@ extension on TranslationsEn {
 			'weather.alert.fire.title' => 'Fire risk',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C expected. High fire risk.',
 			'share.title' => 'Share',
-			_ => null,
-		} ?? switch (path) {
 			'share.generating' => 'Generating...',
 			'share.share' => 'Share',
 			'share.error' => 'Error during generation',
@@ -4476,6 +4520,8 @@ extension on TranslationsEn {
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Open the website of ${nom}',
 			'health.title' => 'Health information',
+			_ => null,
+		} ?? switch (path) {
 			'health.privacyBanner' => 'This data stays on your phone. It is never sent over the internet.',
 			'health.field.bloodType' => 'Blood type',
 			'health.field.allergies' => 'Allergies',
@@ -4493,8 +4539,6 @@ extension on TranslationsEn {
 			'health.emergencyHint' => 'In an emergency, show this screen to the rescue team.',
 			'health.entryTitle' => 'My health info',
 			'health.entrySubtitle' => 'To show the rescue team (kept on the phone)',
-			_ => null,
-		} ?? switch (path) {
 			'health.a11y.form' => 'Health information form',
 			'health.a11y.saveButton' => 'Save health information',
 			'trailSelection.title' => 'Switch trail',

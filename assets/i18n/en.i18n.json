@@ -408,7 +408,16 @@
       "dogBooties": "Protective booties",
       "dogVaccineBook": "Vaccine record",
       "dogPoopBags": "Poop bags",
-      "swimsuit": "Swimsuit"
+      "swimsuit": "Swimsuit",
+      "seasonalMicrospikes": "Light crampons (microspikes)",
+      "seasonalWarmGloves": "Warm gloves",
+      "seasonalThermalBase": "Thermal base layer",
+      "seasonalExtraWater": "Extra water",
+      "seasonalSunHat": "Sun hat",
+      "seasonalElectrolytesPlus": "Electrolytes (heat)",
+      "seasonalGaitersMud": "Gaiters (spring mud)",
+      "seasonalHeadlampSpare": "Spare headlamp (short days)",
+      "seasonalMamExtraWater": "Reinforced water supply (dry zones)"
     },
     "essential": "Essential",
     "weight": {
@@ -509,7 +518,17 @@
       "validateAnyway": "Validate anyway",
       "bagValidatedMissingSnack": "Pack validated (with missing items)!",
       "shareGroupHint": "Join a group to share your checklist."
-    }
+    },
+    "seasonalBanner": "Pack adapted to the season ($season) and your trail.",
+    "seasons": {
+      "winter": "winter",
+      "spring": "spring",
+      "summer": "summer",
+      "autumn": "autumn"
+    },
+    "seasonalAdd": "Add",
+    "seasonalAdded": "Added",
+    "seasonalWeight": "$g g"
   },
   "journal": {
     "title": "Trek journal",

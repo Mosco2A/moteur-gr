@@ -789,6 +789,20 @@ class Translations$checklist$fr {
 
 	late final Translations$checklist$weight$fr weight = Translations$checklist$weight$fr.internal(_root);
 	late final Translations$checklist$ui$fr ui = Translations$checklist$ui$fr.internal(_root);
+
+	/// fr: 'Sac adapte a la saison ($season) et a votre sentier.'
+	String seasonalBanner({required Object season}) => 'Sac adapte a la saison (${season}) et a votre sentier.';
+
+	late final Translations$checklist$seasons$fr seasons = Translations$checklist$seasons$fr.internal(_root);
+
+	/// fr: 'Ajouter'
+	String get seasonalAdd => 'Ajouter';
+
+	/// fr: 'Ajoute'
+	String get seasonalAdded => 'Ajoute';
+
+	/// fr: '$g g'
+	String seasonalWeight({required Object g}) => '${g} g';
 }
 
 // Path: journal
@@ -3854,6 +3868,33 @@ class Translations$checklist$items$fr {
 
 	/// fr: 'Maillot de bain'
 	String get swimsuit => 'Maillot de bain';
+
+	/// fr: 'Crampons legers (microspikes)'
+	String get seasonalMicrospikes => 'Crampons legers (microspikes)';
+
+	/// fr: 'Gants chauds'
+	String get seasonalWarmGloves => 'Gants chauds';
+
+	/// fr: 'Sous-couche thermique'
+	String get seasonalThermalBase => 'Sous-couche thermique';
+
+	/// fr: 'Eau supplementaire'
+	String get seasonalExtraWater => 'Eau supplementaire';
+
+	/// fr: 'Chapeau de soleil'
+	String get seasonalSunHat => 'Chapeau de soleil';
+
+	/// fr: 'Electrolytes (chaleur)'
+	String get seasonalElectrolytesPlus => 'Electrolytes (chaleur)';
+
+	/// fr: 'Guetres (boue de printemps)'
+	String get seasonalGaitersMud => 'Guetres (boue de printemps)';
+
+	/// fr: 'Lampe frontale d'appoint (jours courts)'
+	String get seasonalHeadlampSpare => 'Lampe frontale d\'appoint (jours courts)';
+
+	/// fr: 'Reserve d'eau renforcee (zones seches)'
+	String get seasonalMamExtraWater => 'Reserve d\'eau renforcee (zones seches)';
 }
 
 // Path: checklist.weight
@@ -4157,6 +4198,27 @@ class Translations$checklist$ui$fr {
 
 	/// fr: 'Rejoignez un groupe pour partager votre checklist.'
 	String get shareGroupHint => 'Rejoignez un groupe pour partager votre checklist.';
+}
+
+// Path: checklist.seasons
+class Translations$checklist$seasons$fr {
+	Translations$checklist$seasons$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'hiver'
+	String get winter => 'hiver';
+
+	/// fr: 'printemps'
+	String get spring => 'printemps';
+
+	/// fr: 'ete'
+	String get summer => 'ete';
+
+	/// fr: 'automne'
+	String get autumn => 'automne';
 }
 
 // Path: weather.source
@@ -6872,6 +6934,15 @@ extension on Translations {
 			'checklist.items.dogVaccineBook' => 'Carnet de vaccins',
 			'checklist.items.dogPoopBags' => 'Sacs a dejections',
 			'checklist.items.swimsuit' => 'Maillot de bain',
+			'checklist.items.seasonalMicrospikes' => 'Crampons legers (microspikes)',
+			'checklist.items.seasonalWarmGloves' => 'Gants chauds',
+			'checklist.items.seasonalThermalBase' => 'Sous-couche thermique',
+			'checklist.items.seasonalExtraWater' => 'Eau supplementaire',
+			'checklist.items.seasonalSunHat' => 'Chapeau de soleil',
+			'checklist.items.seasonalElectrolytesPlus' => 'Electrolytes (chaleur)',
+			'checklist.items.seasonalGaitersMud' => 'Guetres (boue de printemps)',
+			'checklist.items.seasonalHeadlampSpare' => 'Lampe frontale d\'appoint (jours courts)',
+			'checklist.items.seasonalMamExtraWater' => 'Reserve d\'eau renforcee (zones seches)',
 			'checklist.essential' => 'Essentiel',
 			'checklist.weight.title' => 'Poids du sac',
 			'checklist.weight.total' => 'Poids total',
@@ -6968,6 +7039,14 @@ extension on Translations {
 			'checklist.ui.validateAnyway' => 'Valider quand meme',
 			'checklist.ui.bagValidatedMissingSnack' => 'Sac valide (avec items manquants) !',
 			'checklist.ui.shareGroupHint' => 'Rejoignez un groupe pour partager votre checklist.',
+			'checklist.seasonalBanner' => ({required Object season}) => 'Sac adapte a la saison (${season}) et a votre sentier.',
+			'checklist.seasons.winter' => 'hiver',
+			'checklist.seasons.spring' => 'printemps',
+			'checklist.seasons.summer' => 'ete',
+			'checklist.seasons.autumn' => 'automne',
+			'checklist.seasonalAdd' => 'Ajouter',
+			'checklist.seasonalAdded' => 'Ajoute',
+			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'journal.title' => 'Journal de randonnée',
 			'journal.empty' => 'Votre journal est vide',
 			'journal.emptySubtitle' => 'Notez vos impressions et souvenirs de randonnée',
@@ -7011,6 +7090,8 @@ extension on Translations {
 			'weather.source.api' => 'Données en direct',
 			'weather.source.cache' => 'Données enregistrées',
 			'weather.source.offline' => 'Hors ligne',
+			_ => null,
+		} ?? switch (path) {
 			'weather.source.demo' => 'Données de démonstration',
 			'weather.recommendation.ok' => 'Conditions favorables',
 			'weather.recommendation.watch' => 'Vigilance recommandée',
@@ -7028,8 +7109,6 @@ extension on Translations {
 			'weather.alert.fire.title' => 'Risque incendie',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C prévus. Risque incendie élevé.',
 			'share.title' => 'Partager',
-			_ => null,
-		} ?? switch (path) {
 			'share.generating' => 'Génération...',
 			'share.share' => 'Partager',
 			'share.error' => 'Erreur lors de la génération',
@@ -7525,6 +7604,8 @@ extension on Translations {
 			'guides.a11y.section' => ({required Object titre}) => 'Section ${titre}',
 			'guides.a11y.openSiteButton' => ({required Object nom}) => 'Ouvrir le site de ${nom}',
 			'health.title' => 'Informations santé',
+			_ => null,
+		} ?? switch (path) {
 			'health.privacyBanner' => 'Ces données restent sur votre téléphone. Elles ne sont jamais envoyées sur internet.',
 			'health.field.bloodType' => 'Groupe sanguin',
 			'health.field.allergies' => 'Allergies',
@@ -7542,8 +7623,6 @@ extension on Translations {
 			'health.emergencyHint' => 'En cas d\'urgence, montrez cet écran aux secours.',
 			'health.entryTitle' => 'Mes infos santé',
 			'health.entrySubtitle' => 'À montrer aux secours (restées sur le téléphone)',
-			_ => null,
-		} ?? switch (path) {
 			'health.a11y.form' => 'Formulaire d\'informations de santé',
 			'health.a11y.saveButton' => 'Enregistrer les informations de santé',
 			'trailSelection.title' => 'Changer de sentier',

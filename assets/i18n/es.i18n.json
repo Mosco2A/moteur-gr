@@ -408,7 +408,16 @@
       "dogBooties": "Botines de proteccion",
       "dogVaccineBook": "Cartilla de vacunas",
       "dogPoopBags": "Bolsas para excrementos",
-      "swimsuit": "Banador"
+      "swimsuit": "Banador",
+      "seasonalMicrospikes": "Crampones ligeros (microspikes)",
+      "seasonalWarmGloves": "Guantes calidos",
+      "seasonalThermalBase": "Capa base termica",
+      "seasonalExtraWater": "Agua adicional",
+      "seasonalSunHat": "Sombrero para el sol",
+      "seasonalElectrolytesPlus": "Electrolitos (calor)",
+      "seasonalGaitersMud": "Polainas (barro de primavera)",
+      "seasonalHeadlampSpare": "Linterna frontal de repuesto (dias cortos)",
+      "seasonalMamExtraWater": "Reserva de agua reforzada (zonas secas)"
     },
     "essential": "Esencial",
     "weight": {
@@ -509,7 +518,17 @@
       "validateAnyway": "Validar de todos modos",
       "bagValidatedMissingSnack": "Mochila validada (con articulos faltantes)!",
       "shareGroupHint": "Unete a un grupo para compartir tu checklist."
-    }
+    },
+    "seasonalBanner": "Mochila adaptada a la temporada ($season) y a tu sendero.",
+    "seasons": {
+      "winter": "invierno",
+      "spring": "primavera",
+      "summer": "verano",
+      "autumn": "otono"
+    },
+    "seasonalAdd": "Anadir",
+    "seasonalAdded": "Anadido",
+    "seasonalWeight": "$g g"
   },
   "journal": {
     "title": "Diario de trekking",
