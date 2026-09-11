@@ -108,6 +108,15 @@ dependencies:
   firebase_analytics: ^11.6.0
   firebase_crashlytics: ^4.3.10
 
+  # --- Backup zero-knowledge (StepWays L7 B/C) ---
+  # flutter_secure_storage : stockage des SECRETS (cle de coffre) dans le
+  #   keystore OS (Android Keystore / iOS Keychain) — jamais en clair.
+  # cryptography : AES-GCM (chiffrement authentifie du blob) + PBKDF2 (derivation
+  #   de cle depuis le code de reconnexion). Chiffrement OBLIGATOIRE de tout
+  #   backup ; le serveur ne voit QUE du chiffre (zero-knowledge, directive §3).
+  flutter_secure_storage: ^10.3.2
+  cryptography: ^2.9.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -590,6 +590,87 @@ class CloudSyncService {
     }
   }
 
+  // --- Miroir cloud du BACKUP CHIFFRE zero-knowledge (StepWays L7, gap C) ---
+  //
+  // Transport d'un BLOB DEJA CHIFFRE (enveloppe [VaultEnvelope], produit par
+  // SecureVaultService) vers le miroir anonyme `users/{hash}/secure_backup/{k}`.
+  // Le serveur ne voit QUE du chiffre : ni identite, ni contenu (fiche sante
+  // art. 9). La CLE reste cote client (derivee du code de reconnexion, ou
+  // keystore OS) — jamais transmise. On ne stocke pas de champ nominatif ; le
+  // doc ne contient que le blob + un timestamp. [userId] = hash anonyme.
+  //
+  // Cette couche ne CHIFFRE ni ne DECHIFFRE : elle ne fait que STOCKER/LIRE le
+  // ciphertext (separation nette ; la crypto est dans SecureVaultService).
+
+  /// Depose le [encryptedBlob] (enveloppe chiffree serialisee) dans le miroir
+  /// anonyme sous `users/{userId}/secure_backup/{docKey}`. GRACEFUL NO-OP si
+  /// Firebase indisponible / hors-ligne. Retourne `success` si ecrit.
+  Future<CloudSyncResult> pushEncryptedBackup(
+    String userId,
+    String docKey,
+    String encryptedBlob,
+  ) async {
+    if (!firebaseService.isAvailable) {
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+    final connectivity = await connectivityMonitor.checkStatus();
+    if (connectivity == ConnectivityStatusValues.offline) {
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+      );
+    }
+    try {
+      final now = DateTime.now().toIso8601String();
+      await _setWithLastWriteWins(
+        firestore
+            .collection("users")
+            .doc(userId)
+            .collection("secure_backup")
+            .doc(docKey),
+        {"vault": encryptedBlob, "updated_at": now},
+      );
+      _log.d("[CloudSync] Backup chiffre pousse ($docKey)");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.success,
+        syncedAt: DateTime.now(),
+        itemsSynced: 1,
+      );
+    } catch (e) {
+      _log.e("[CloudSync] Erreur push backup chiffre: $e");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.error,
+        syncedAt: DateTime.now(),
+        error: e.toString(),
+      );
+    }
+  }
+
+  /// Lit le blob chiffre depose sous `users/{userId}/secure_backup/{docKey}`.
+  /// Retourne le ciphertext serialise, ou `null` si absent/indisponible. Le
+  /// dechiffrement (avec la cle cote client) est fait par l'appelant.
+  Future<String?> pullEncryptedBackup(String userId, String docKey) async {
+    if (!firebaseService.isAvailable) return null;
+    final connectivity = await connectivityMonitor.checkStatus();
+    if (connectivity == ConnectivityStatusValues.offline) return null;
+    try {
+      final snap = await firestore
+          .collection("users")
+          .doc(userId)
+          .collection("secure_backup")
+          .doc(docKey)
+          .get();
+      if (!snap.exists) return null;
+      return snap.data()?["vault"] as String?;
+    } catch (e) {
+      _log.e("[CloudSync] Erreur pull backup chiffre: $e");
+      return null;
+    }
+  }
+
   /// Ecriture Firestore avec strategie last-write-wins.
   Future<void> _setWithLastWriteWins(
     DocumentReference<Map<String, dynamic>> docRef,
