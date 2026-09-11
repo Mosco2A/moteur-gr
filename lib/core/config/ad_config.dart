@@ -19,8 +19,7 @@ abstract final class AdConfig {
       'ca-app-pub-3940256099942544/6300978111';
 
   /// Banniere de test officielle (iOS).
-  static const String _testBannerIos =
-      'ca-app-pub-3940256099942544/2934735716';
+  static const String _testBannerIos = 'ca-app-pub-3940256099942544/2934735716';
 
   /// Recompensee de test officielle (Android).
   static const String _testRewardedAndroid =
@@ -32,14 +31,18 @@ abstract final class AdConfig {
 
   // --- Injection PROD via --dart-define (vide par defaut => test) -----------
 
-  static const String _prodBannerAndroid =
-      String.fromEnvironment('ADMOB_BANNER_ANDROID');
-  static const String _prodBannerIos =
-      String.fromEnvironment('ADMOB_BANNER_IOS');
-  static const String _prodRewardedAndroid =
-      String.fromEnvironment('ADMOB_REWARDED_ANDROID');
-  static const String _prodRewardedIos =
-      String.fromEnvironment('ADMOB_REWARDED_IOS');
+  static const String _prodBannerAndroid = String.fromEnvironment(
+    'ADMOB_BANNER_ANDROID',
+  );
+  static const String _prodBannerIos = String.fromEnvironment(
+    'ADMOB_BANNER_IOS',
+  );
+  static const String _prodRewardedAndroid = String.fromEnvironment(
+    'ADMOB_REWARDED_ANDROID',
+  );
+  static const String _prodRewardedIos = String.fromEnvironment(
+    'ADMOB_REWARDED_IOS',
+  );
 
   /// Vrai si au moins un ad-unit de prod a ete injecte (release).
   static bool get hasProductionUnits =>

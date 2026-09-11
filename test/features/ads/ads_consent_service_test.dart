@@ -44,33 +44,36 @@ class _FakeConsentInformation implements ConsentInformation {
 
   @override
   Future<PrivacyOptionsRequirementStatus>
-      getPrivacyOptionsRequirementStatus() async => privacyRequired
-          ? PrivacyOptionsRequirementStatus.required
-          : PrivacyOptionsRequirementStatus.notRequired;
+  getPrivacyOptionsRequirementStatus() async => privacyRequired
+      ? PrivacyOptionsRequirementStatus.required
+      : PrivacyOptionsRequirementStatus.notRequired;
 }
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('AdsConsentService — UMP/CMP + init AdMob (A6)', () {
-    test('consentement obtenu -> SDK initialise + canRequestAds vrai', () async {
-      var initCalled = false;
-      final svc = AdsConsentService(
-        consentInformation: _FakeConsentInformation(canRequest: true),
-        loadAndShowIfRequired: (cb) async => cb(null),
-        initializeAds: () async {
-          initCalled = true;
-          return InitializationStatus(const {});
-        },
-        updateRequestConfiguration: (_) async {},
-      );
+    test(
+      'consentement obtenu -> SDK initialise + canRequestAds vrai',
+      () async {
+        var initCalled = false;
+        final svc = AdsConsentService(
+          consentInformation: _FakeConsentInformation(canRequest: true),
+          loadAndShowIfRequired: (cb) async => cb(null),
+          initializeAds: () async {
+            initCalled = true;
+            return InitializationStatus(const {});
+          },
+          updateRequestConfiguration: (_) async {},
+        );
 
-      final canRequest = await svc.ensureConsentAndInit();
+        final canRequest = await svc.ensureConsentAndInit();
 
-      expect(canRequest, isTrue);
-      expect(initCalled, isTrue);
-      expect(svc.adsInitialized, isTrue);
-    });
+        expect(canRequest, isTrue);
+        expect(initCalled, isTrue);
+        expect(svc.adsInitialized, isTrue);
+      },
+    );
 
     test('consentement NON obtenu -> SDK NON initialise, pas de pub', () async {
       var initCalled = false;
@@ -91,27 +94,31 @@ void main() {
       expect(svc.adsInitialized, isFalse);
     });
 
-    test('echec UMP non bloquant : ne crashe pas, pas d\'init si non autorise',
-        () async {
-      final svc = AdsConsentService(
-        consentInformation: _FakeConsentInformation(
-          canRequest: false,
-          updateFails: true,
-        ),
-        loadAndShowIfRequired: (cb) async => cb(null),
-        initializeAds: () async => InitializationStatus(const {}),
-        updateRequestConfiguration: (_) async {},
-      );
+    test(
+      'echec UMP non bloquant : ne crashe pas, pas d\'init si non autorise',
+      () async {
+        final svc = AdsConsentService(
+          consentInformation: _FakeConsentInformation(
+            canRequest: false,
+            updateFails: true,
+          ),
+          loadAndShowIfRequired: (cb) async => cb(null),
+          initializeAds: () async => InitializationStatus(const {}),
+          updateRequestConfiguration: (_) async {},
+        );
 
-      // Ne doit PAS lever (best-effort).
-      final canRequest = await svc.ensureConsentAndInit();
-      expect(canRequest, isFalse);
-    });
+        // Ne doit PAS lever (best-effort).
+        final canRequest = await svc.ensureConsentAndInit();
+        expect(canRequest, isFalse);
+      },
+    );
 
     test('isPrivacyOptionsRequired reflète l\'etat UMP', () async {
       final svc = AdsConsentService(
-        consentInformation:
-            _FakeConsentInformation(canRequest: true, privacyRequired: true),
+        consentInformation: _FakeConsentInformation(
+          canRequest: true,
+          privacyRequired: true,
+        ),
         loadAndShowIfRequired: (cb) async => cb(null),
         initializeAds: () async => InitializationStatus(const {}),
         updateRequestConfiguration: (_) async {},

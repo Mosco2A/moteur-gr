@@ -20,7 +20,8 @@ import '../providers/cockpit_start_providers.dart';
 import '../../weather/models/weather_forecast.dart';
 import '../../weather/presentation/fire_risk_screen.dart' show fireRiskColor;
 import '../../weather/providers/current_stage_provider.dart';
-import '../../weather/providers/fire_risk_providers.dart' show FireRiskDay, trailFireRiskProvider;
+import '../../weather/providers/fire_risk_providers.dart'
+    show FireRiskDay, trailFireRiskProvider;
 import '../../weather/providers/weather_providers.dart';
 import '../../weather/widgets/day_forecast_card.dart' show WeatherIcon;
 import 'cockpit_phase.dart';
@@ -235,7 +236,9 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
                   }),
                   secondary: const Icon(Icons.science_outlined),
                   title: Text(t.navPilote.demoTrekMode),
-                  subtitle: _demoTrekMode ? Text(t.navPilote.demoPreview) : null,
+                  subtitle: _demoTrekMode
+                      ? Text(t.navPilote.demoPreview)
+                      : null,
                 ),
               ),
               const SizedBox(height: AppTheme.spacingBase),
@@ -570,7 +573,8 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
             title: t.hub.cards.accommodations,
             subtitle: t.hub.cards.accommodationsSub,
             iconColor: cat.blue,
-            onTap: () => context.push('/accommodations-nearby?trailId=$trailId'),
+            onTap: () =>
+                context.push('/accommodations-nearby?trailId=$trailId'),
           ),
           // Fiches conseils (fiches information) — GR20 Informations :438-446
           // (Icons.menu_book, bleuMed) -> /trail/:id/tips. Rattache a Randonner
@@ -587,9 +591,7 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
       const SizedBox(height: AppTheme.spacingBase),
       // VIGILANCE R7 : entree secondaire vers la prepa terrain (checklist/sac,
       // dangers) — reste atteignable en rando sans quitter la phase Randonner.
-      _ReviewPrepEntry(
-        onTap: () => context.push('/trail/$trailId/checklist'),
-      ),
+      _ReviewPrepEntry(onTap: () => context.push('/trail/$trailId/checklist')),
       const SizedBox(height: AppTheme.spacingLg),
       // R21 : « Terminer le trek » — action de FIN DE PHASE, tout en BAS de la
       // zone scrollable (sous « Revoir la préparation »), en bouton ORANGE
@@ -674,27 +676,27 @@ class _PhaseHeaderBanner extends StatelessWidget {
     // trek porte l'information. Les autres phases gardent titre + sous-titre.
     final (String title, String? subtitle, IconData icon) = switch (phase) {
       CockpitPhase.prepare => (
-          t.hub.sections.prepare,
-          t.navPilote.phasePrepareSub,
-          Icons.assignment_outlined,
-        ),
+        t.hub.sections.prepare,
+        t.navPilote.phasePrepareSub,
+        Icons.assignment_outlined,
+      ),
       CockpitPhase.hike => (
-          t.navPilote.phaseHikeInProgress(trek: trekName),
-          null,
-          Icons.hiking,
-        ),
+        t.navPilote.phaseHikeInProgress(trek: trekName),
+        null,
+        Icons.hiking,
+      ),
       CockpitPhase.after => (
-          t.hub.sections.after,
-          t.navPilote.phaseAfterSub,
-          Icons.emoji_events_outlined,
-        ),
+        t.hub.sections.after,
+        t.navPilote.phaseAfterSub,
+        Icons.emoji_events_outlined,
+      ),
     };
 
     // Fond en teinte pleine de la phase ; texte/icone en couleur lisible dessus.
     // Les phases claires (jaune/vertLight/bleuLight) demandent un texte SOMBRE
     // pour le contraste AA -> on force le noir (parite « pastille pleine » R4).
-    final onPhase = ThemeData.estimateBrightnessForColor(phase.color) ==
-            Brightness.dark
+    final onPhase =
+        ThemeData.estimateBrightnessForColor(phase.color) == Brightness.dark
         ? Colors.white
         : AppTheme.noir;
 
@@ -775,8 +777,10 @@ class _LocalizedConditionsBanner extends ConsumerWidget {
     // Étape LOCALISÉE (GPS -> étape détectée, repli étape de référence). La
     // météo est chargée pour CETTE étape (coords dynamiques Drift).
     final stageNumber = ref.watch(localizedStageNumberProvider);
-    final params =
-        WeatherStageParams(trailId: trailId, stageNumber: stageNumber);
+    final params = WeatherStageParams(
+      trailId: trailId,
+      stageNumber: stageNumber,
+    );
     final weather = ref.watch(stageWeatherProvider(params));
     final forecast = weather.forecast;
     final today = (forecast != null && forecast.days.isNotEmpty)
@@ -789,9 +793,9 @@ class _LocalizedConditionsBanner extends ConsumerWidget {
     final localizedFire = fireState.stages
         .where((s) => s.stageNumber == stageNumber)
         .fold<FireRiskDay?>(
-      null,
-      (acc, s) => s.days.isNotEmpty ? s.days.first : acc,
-    );
+          null,
+          (acc, s) => s.days.isNotEmpty ? s.days.first : acc,
+        );
     final fireLevel = localizedFire?.level ?? 0;
 
     return AppCard(
@@ -806,8 +810,11 @@ class _LocalizedConditionsBanner extends ConsumerWidget {
           // Titre du bandeau (« Ici et maintenant ») + localisation par étape.
           Row(
             children: [
-              const Icon(Icons.my_location,
-                  size: 16, color: AppTheme.phaseHike),
+              const Icon(
+                Icons.my_location,
+                size: 16,
+                color: AppTheme.phaseHike,
+              ),
               const SizedBox(width: AppTheme.spacingXs),
               Expanded(
                 child: Text(
@@ -1257,10 +1264,10 @@ class _CockpitActionBar extends StatelessWidget {
     final (String, IconData, VoidCallback)? actionSpec = switch (phase) {
       CockpitPhase.prepare => null,
       CockpitPhase.hike => (
-          t.hub.cards.navigation,
-          Icons.navigation_outlined,
-          onNavigate,
-        ),
+        t.hub.cards.navigation,
+        Icons.navigation_outlined,
+        onNavigate,
+      ),
       CockpitPhase.after => null,
     };
 

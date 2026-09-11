@@ -65,9 +65,9 @@ class WaterSourceStatus {
 
   /// Etat « jamais signale » (aucun crowdsourcing pour ce point d'eau).
   const WaterSourceStatus.none()
-      : lastStatus = null,
-        reportCount = 0,
-        lastReportedAt = null;
+    : lastStatus = null,
+      reportCount = 0,
+      lastReportedAt = null;
 
   /// Dernier statut signale (`water_available`/`water_low`/`water_dry`), ou
   /// `null` si aucun signalement.
@@ -85,12 +85,8 @@ class WaterSourceStatus {
 
 /// Resultat d'un push distant : l'id Firestore attribue, ou une erreur.
 class RemotePushResult {
-  const RemotePushResult.success(this.remoteId)
-      : ok = true,
-        error = null;
-  const RemotePushResult.failure(this.error)
-      : ok = false,
-        remoteId = null;
+  const RemotePushResult.success(this.remoteId) : ok = true, error = null;
+  const RemotePushResult.failure(this.error) : ok = false, remoteId = null;
 
   final bool ok;
   final String? remoteId;
@@ -142,8 +138,8 @@ class SignalementService {
   SignalementService({
     required AppDatabase database,
     required ReportRemoteSink remoteSink,
-  })  : _dao = ReportLocalDao(database),
-        _remoteSink = remoteSink;
+  }) : _dao = ReportLocalDao(database),
+       _remoteSink = remoteSink;
 
   final ReportLocalDao _dao;
   final ReportRemoteSink _remoteSink;
@@ -163,7 +159,11 @@ class SignalementService {
     DateTime? now,
   }) async {
     if (!SignalementType.values.contains(type)) {
-      final err = ArgumentError.value(type, 'type', 'Type de signalement inconnu');
+      final err = ArgumentError.value(
+        type,
+        'type',
+        'Type de signalement inconnu',
+      );
       ErrorHandler.log(err, context: 'SignalementService.createLocal');
       throw err;
     }
@@ -178,8 +178,11 @@ class SignalementService {
         ),
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'SignalementService.createLocal');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'SignalementService.createLocal',
+      );
       rethrow;
     }
   }
@@ -216,8 +219,11 @@ class SignalementService {
         }
       }
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'SignalementService.trySync');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'SignalementService.trySync',
+      );
     }
     return synced;
   }
@@ -229,13 +235,15 @@ class SignalementService {
   Future<List<SignalementView>> localReports() async {
     final rows = await _dao.allReports();
     return rows
-        .map((r) => SignalementView(
-              type: r.type,
-              latitude: r.latitude,
-              longitude: r.longitude,
-              createdAt: r.createdAt,
-              synced: r.syncState == 'synced',
-            ))
+        .map(
+          (r) => SignalementView(
+            type: r.type,
+            latitude: r.latitude,
+            longitude: r.longitude,
+            createdAt: r.createdAt,
+            synced: r.syncState == 'synced',
+          ),
+        )
         .toList();
   }
 
@@ -254,8 +262,7 @@ class SignalementService {
     required String trailId,
     required int stageNumber,
     required String poiName,
-  }) =>
-      '$trailId#$stageNumber#${poiName.trim().toLowerCase()}';
+  }) => '$trailId#$stageNumber#${poiName.trim().toLowerCase()}';
 
   /// Signale le STATUT d'un point d'eau (crowdsourcing, I1) — offline-first.
   ///
@@ -321,9 +328,11 @@ class SignalementService {
     try {
       final rows = await _dao.allReports(); // deja tries: recents d'abord
       final matches = rows
-          .where((r) =>
-              SignalementType.isWaterStatus(r.type) &&
-              _payloadKey(r.payload) == key)
+          .where(
+            (r) =>
+                SignalementType.isWaterStatus(r.type) &&
+                _payloadKey(r.payload) == key,
+          )
           .toList(growable: false);
       if (matches.isEmpty) return const WaterSourceStatus.none();
       final last = matches.first; // allReports() renvoie le plus recent d'abord
@@ -333,8 +342,11 @@ class SignalementService {
         lastReportedAt: last.createdAt,
       );
     } on Exception catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'SignalementService.waterStatusFor');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'SignalementService.waterStatusFor',
+      );
       return const WaterSourceStatus.none();
     }
   }

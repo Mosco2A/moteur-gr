@@ -38,8 +38,10 @@ final rewardedAdServiceProvider = Provider<RewardedAdService>((ref) {
 /// (2) le consentement pub autorise les requêtes ([adsReadyProvider]). AUCUNE
 /// règle sans-pub recalculée ici : on lit la source unique. En prépa gratuite
 /// sans consentement pub, aucune bannière (conforme A6).
-final shouldShowBannerProvider =
-    FutureProvider.family<bool, String>((ref, trailId) async {
+final shouldShowBannerProvider = FutureProvider.family<bool, String>((
+  ref,
+  trailId,
+) async {
   final adsReady = await ref.watch(adsReadyProvider.future);
   if (!adsReady) return false;
   final monetization = await ref.watch(monetizationReadyProvider.future);
@@ -52,8 +54,9 @@ final shouldShowBannerProvider =
 ///
 /// Retourne `true` si le sans-pub 24 h a été crédité (récompense obtenue).
 /// Encapsule la mécanique pub + le crédit métier pour l'UI (un seul appel).
-final watchRewardedForNoAdsProvider =
-    FutureProvider.autoDispose<bool>((ref) async {
+final watchRewardedForNoAdsProvider = FutureProvider.autoDispose<bool>((
+  ref,
+) async {
   final rewarded = ref.watch(rewardedAdServiceProvider);
   final outcome = await rewarded.showRewarded();
   if (outcome == RewardedOutcome.earned) {

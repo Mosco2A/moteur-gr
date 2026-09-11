@@ -79,9 +79,11 @@ class WaterSourceRef {
 /// cache local (source de vérité hors-ligne) via [SignalementService].
 final waterSourceStatusProvider =
     FutureProvider.family<WaterSourceStatus, WaterSourceRef>((ref, src) {
-  return ref.watch(signalementServiceProvider).waterStatusFor(
-        trailId: src.trailId,
-        stageNumber: src.stageNumber,
-        poiName: src.poiName,
-      );
-});
+      return ref
+          .watch(signalementServiceProvider)
+          .waterStatusFor(
+            trailId: src.trailId,
+            stageNumber: src.stageNumber,
+            poiName: src.poiName,
+          );
+    });

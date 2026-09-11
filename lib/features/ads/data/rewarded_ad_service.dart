@@ -35,10 +35,11 @@ class RewardedAdService {
       required String adUnitId,
       required AdRequest request,
       required RewardedAdLoadCallback rewardedAdLoadCallback,
-    })? loadRewarded,
-  })  : _enabled = enabled,
-        _adUnitId = adUnitId ?? AdConfig.rewardedUnitId(),
-        _loadRewarded = loadRewarded ?? RewardedAd.load;
+    })?
+    loadRewarded,
+  }) : _enabled = enabled,
+       _adUnitId = adUnitId ?? AdConfig.rewardedUnitId(),
+       _loadRewarded = loadRewarded ?? RewardedAd.load;
 
   final bool _enabled;
   final String _adUnitId;
@@ -46,7 +47,8 @@ class RewardedAdService {
     required String adUnitId,
     required AdRequest request,
     required RewardedAdLoadCallback rewardedAdLoadCallback,
-  }) _loadRewarded;
+  })
+  _loadRewarded;
 
   RewardedAd? _ad;
 
@@ -81,8 +83,7 @@ class RewardedAdService {
       if (!completer.isCompleted) completer.complete();
     }
     // Garde anti-blocage : si aucun callback ne vient, on abandonne proprement.
-    await completer.future
-        .timeout(_loadTimeout, onTimeout: () {});
+    await completer.future.timeout(_loadTimeout, onTimeout: () {});
   }
 
   /// Affiche la pub rewarded et RÉSOUT l'issue (récompense / abandon / indispo).
@@ -104,9 +105,11 @@ class RewardedAdService {
       onAdDismissedFullScreenContent: (ad) {
         ad.dispose();
         if (!completer.isCompleted) {
-          completer.complete(earned
-              ? RewardedOutcome.earned
-              : RewardedOutcome.dismissedWithoutReward);
+          completer.complete(
+            earned
+                ? RewardedOutcome.earned
+                : RewardedOutcome.dismissedWithoutReward,
+          );
         }
       },
       onAdFailedToShowFullScreenContent: (ad, error) {

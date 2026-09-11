@@ -91,9 +91,7 @@ class MoteurGrApp extends StatelessWidget {
       retry: (_, __) => null,
       // TranslationProvider (Slang) : requis pour Translations.of(context),
       // utilise notamment par l'ecran d'onboarding (E5.1a).
-      child: TranslationProvider(
-        child: _MoteurGrMaterialApp(config: config),
-      ),
+      child: TranslationProvider(child: _MoteurGrMaterialApp(config: config)),
     );
   }
 }
@@ -188,19 +186,19 @@ class _BootstrapGate extends ConsumerWidget {
     final t = Translations.of(context);
 
     Widget loader() => _BootstrapScaffold(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CircularProgressIndicator(),
-              const SizedBox(height: 24),
-              Text(
-                t.bootstrap.loading,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(),
+          const SizedBox(height: 24),
+          Text(
+            t.bootstrap.loading,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
-        );
+        ],
+      ),
+    );
 
     // Rechargement en cours (premier seed OU re-seed apres changement de
     // sentier) : montrer le loader meme si une valeur precedente subsiste, pour

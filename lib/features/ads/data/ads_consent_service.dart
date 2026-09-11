@@ -19,23 +19,25 @@ import '../../../core/error/error_handler.dart';
 class AdsConsentService {
   AdsConsentService({
     ConsentInformation? consentInformation,
-    Future<void> Function(OnConsentFormDismissedListener)? loadAndShowIfRequired,
+    Future<void> Function(OnConsentFormDismissedListener)?
+    loadAndShowIfRequired,
     Future<InitializationStatus> Function()? initializeAds,
     Future<void> Function(RequestConfiguration)? updateRequestConfiguration,
     List<String> testDeviceIds = const <String>[],
-  })  : _consentInformation =
-            consentInformation ?? ConsentInformation.instance,
-        _loadAndShowIfRequired = loadAndShowIfRequired ??
-            ConsentForm.loadAndShowConsentFormIfRequired,
-        _initializeAds =
-            initializeAds ?? (() => MobileAds.instance.initialize()),
-        _updateRequestConfiguration = updateRequestConfiguration ??
-            MobileAds.instance.updateRequestConfiguration,
-        _testDeviceIds = testDeviceIds;
+  }) : _consentInformation = consentInformation ?? ConsentInformation.instance,
+       _loadAndShowIfRequired =
+           loadAndShowIfRequired ??
+           ConsentForm.loadAndShowConsentFormIfRequired,
+       _initializeAds =
+           initializeAds ?? (() => MobileAds.instance.initialize()),
+       _updateRequestConfiguration =
+           updateRequestConfiguration ??
+           MobileAds.instance.updateRequestConfiguration,
+       _testDeviceIds = testDeviceIds;
 
   final ConsentInformation _consentInformation;
   final Future<void> Function(OnConsentFormDismissedListener)
-      _loadAndShowIfRequired;
+  _loadAndShowIfRequired;
   final Future<InitializationStatus> Function() _initializeAds;
   final Future<void> Function(RequestConfiguration) _updateRequestConfiguration;
   final List<String> _testDeviceIds;
@@ -55,8 +57,11 @@ class AdsConsentService {
       await _requestConsentInfoUpdate();
       await _loadFormIfRequired();
     } on Object catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'AdsConsentService.ensureConsentAndInit');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'AdsConsentService.ensureConsentAndInit',
+      );
       // On tente quand même canRequestAds (un état caché peut exister).
     }
 
@@ -102,8 +107,11 @@ class AdsConsentService {
     try {
       return await _consentInformation.canRequestAds();
     } on Object catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'AdsConsentService.canRequestAds');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'AdsConsentService.canRequestAds',
+      );
       return false;
     }
   }
@@ -111,12 +119,15 @@ class AdsConsentService {
   /// Vrai si un point d'entrée « options de confidentialité » doit être proposé.
   Future<bool> isPrivacyOptionsRequired() async {
     try {
-      final status =
-          await _consentInformation.getPrivacyOptionsRequirementStatus();
+      final status = await _consentInformation
+          .getPrivacyOptionsRequirementStatus();
       return status == PrivacyOptionsRequirementStatus.required;
     } on Object catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'AdsConsentService.privacyOptions');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'AdsConsentService.privacyOptions',
+      );
       return false;
     }
   }
@@ -133,8 +144,11 @@ class AdsConsentService {
         }
       });
     } on Object catch (e, st) {
-      ErrorHandler.log(e,
-          stackTrace: st, context: 'AdsConsentService.showPrivacyOptions');
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'AdsConsentService.showPrivacyOptions',
+      );
     }
   }
 

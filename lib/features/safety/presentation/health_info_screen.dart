@@ -186,9 +186,9 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
       _hasContent = false;
       _isDeleting = false;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(t.health.delete.done)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.health.delete.done)));
   }
 
   @override
@@ -416,8 +416,11 @@ class _ConsentReminder extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(Icons.info_outline,
-                  size: 18, color: colors.onSurface.withAlpha(160)),
+              Icon(
+                Icons.info_outline,
+                size: 18,
+                color: colors.onSurface.withAlpha(160),
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(

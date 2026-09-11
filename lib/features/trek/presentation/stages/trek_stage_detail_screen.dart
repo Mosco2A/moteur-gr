@@ -34,44 +34,46 @@ const Set<String> _kAccommodationPoiTypes = {
 /// Parametre : record (trailId, stageId) ou stageId = stageNumber.
 /// Mappe le StageModel (core) vers le Stage (domain trek) avec i18n.
 final stageByIdProvider =
-    FutureProvider.family<Stage, ({String trailId, int stageId})>(
-  (ref, params) async {
-    final stages = await ref.watch(stagesProvider(params.trailId).future);
-    final match =
-        stages.where((s) => s.stageNumber == params.stageId).firstOrNull;
+    FutureProvider.family<Stage, ({String trailId, int stageId})>((
+      ref,
+      params,
+    ) async {
+      final stages = await ref.watch(stagesProvider(params.trailId).future);
+      final match = stages
+          .where((s) => s.stageNumber == params.stageId)
+          .firstOrNull;
 
-    if (match == null) {
-      throw StateError('Etape ${params.stageId} introuvable');
-    }
+      if (match == null) {
+        throw StateError('Etape ${params.stageId} introuvable');
+      }
 
-    return Stage(
-      id: '${match.stageNumber}',
-      nameFr: match.name,
-      distance: match.distanceKm,
-      elevationGain: match.elevationGainM,
-      elevationLoss: match.elevationLossM,
-      // Duree par etape (parite GR20 : la fiche affiche toujours une valeur,
-      // jamais « -- »). Le mapping oubliait ce champ -> l'affichage retombait
-      // sur 0s. On propage la duree EFFECTIVE de l'etape via
-      // `stageDurationMinutes` (donnee du sentier `estimatedDurationMinutes` si
-      // fournie, sinon estimation Naismith depuis distance + D+), convertie en
-      // secondes pour le modele serialisable `Stage`.
-      estimatedDurationSeconds: stageDurationMinutes(match) * 60,
-      orderIndex: match.stageNumber,
-      startLat: match.startLat,
-      startLng: match.startLng,
-      endLat: match.endLat,
-      endLng: match.endLng,
-      difficulty: match.difficulty,
-      descriptionFr: match.description,
-      // Noms depart/arrivee (parite GR20 : sous-ligne « Depart -> Arrivee »).
-      // Donnee RICHE du sentier quand fournie ; vide sinon -> la fiche retombe
-      // proprement sur le nom de l'etape (fallback, cf. _departureArrivalLine).
-      departureName: match.departureName ?? '',
-      arrivalName: match.arrivalName ?? '',
-    );
-  },
-);
+      return Stage(
+        id: '${match.stageNumber}',
+        nameFr: match.name,
+        distance: match.distanceKm,
+        elevationGain: match.elevationGainM,
+        elevationLoss: match.elevationLossM,
+        // Duree par etape (parite GR20 : la fiche affiche toujours une valeur,
+        // jamais « -- »). Le mapping oubliait ce champ -> l'affichage retombait
+        // sur 0s. On propage la duree EFFECTIVE de l'etape via
+        // `stageDurationMinutes` (donnee du sentier `estimatedDurationMinutes` si
+        // fournie, sinon estimation Naismith depuis distance + D+), convertie en
+        // secondes pour le modele serialisable `Stage`.
+        estimatedDurationSeconds: stageDurationMinutes(match) * 60,
+        orderIndex: match.stageNumber,
+        startLat: match.startLat,
+        startLng: match.startLng,
+        endLat: match.endLat,
+        endLng: match.endLng,
+        difficulty: match.difficulty,
+        descriptionFr: match.description,
+        // Noms depart/arrivee (parite GR20 : sous-ligne « Depart -> Arrivee »).
+        // Donnee RICHE du sentier quand fournie ; vide sinon -> la fiche retombe
+        // proprement sur le nom de l'etape (fallback, cf. _departureArrivalLine).
+        departureName: match.departureName ?? '',
+        arrivalName: match.arrivalName ?? '',
+      );
+    });
 
 /// Ecran detail d'une etape de sentier.
 ///
@@ -98,9 +100,10 @@ class TrekStageDetailScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stageAsync = ref.watch(
-      stageByIdProvider((trailId: trailId, stageId: stageId)).select(
-        (async) => async,
-      ),
+      stageByIdProvider((
+        trailId: trailId,
+        stageId: stageId,
+      )).select((async) => async),
     );
 
     // Ph5 (L6a) : titre = nom de l'etape (fallback numero) resolu depuis le
@@ -111,9 +114,7 @@ class TrekStageDetailScreen extends ConsumerWidget {
       // Ph5 (L6a) : AppHeader universel. Ecran cœur -> barre absente (§4).
       appBar: AppHeader(title: title),
       body: stageAsync.when(
-        loading: () => LoadingView(
-          message: t.stage.loading,
-        ),
+        loading: () => LoadingView(message: t.stage.loading),
         error: (error, _) => ErrorView(
           message: 'Impossible de charger cette etape',
           onRetry: () => ref.invalidate(
@@ -266,14 +267,16 @@ class _StageDetailContent extends ConsumerWidget {
     // eau/hebergement listes par etape). `orderIndex` == stageNumber.
     // AsyncValue tolerant : liste vide tant que la donnee n'est pas prete
     // (pas de spinner bloquant, le corps de la fiche reste affiche).
-    final stagePois = ref
+    final stagePois =
+        ref
             .watch(poisProvider(trailId))
             .value
             ?.where((p) => p.stageNumber == stage.orderIndex)
             .toList() ??
         const <PoiModel>[];
-    final waterPois =
-        stagePois.where((p) => p.type == 'water').toList(growable: false);
+    final waterPois = stagePois
+        .where((p) => p.type == 'water')
+        .toList(growable: false);
     final accommodationPois = stagePois
         .where((p) => _kAccommodationPoiTypes.contains(p.type))
         .toList(growable: false);
@@ -379,10 +382,7 @@ class _StageDetailContent extends ConsumerWidget {
                 // (distance, D+, D-, duree) en role data tabular L1. La valeur
                 // et l'unite sont separees (rendu tabular) ; la difficulte reste
                 // le chip ci-dessus (couleur denivele, jamais un gros chiffre).
-                Text(
-                  t.stage.statistics,
-                  style: theme.textTheme.titleMedium,
-                ),
+                Text(t.stage.statistics, style: theme.textTheme.titleMedium),
                 const SizedBox(height: AppTheme.spacingSm),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -451,10 +451,7 @@ class _StageDetailContent extends ConsumerWidget {
 /// gris secondaire. `Expanded` pour tronquer proprement les noms longs.
 /// Un `Semantics` fournit un libelle accessible (i18n).
 class _DepartureArrivalLine extends StatelessWidget {
-  const _DepartureArrivalLine({
-    required this.departure,
-    required this.arrival,
-  });
+  const _DepartureArrivalLine({required this.departure, required this.arrival});
 
   final String departure;
   final String arrival;
@@ -469,11 +466,7 @@ class _DepartureArrivalLine extends StatelessWidget {
           .replaceAll('{to}', arrival),
       child: Row(
         children: [
-          Icon(
-            Icons.play_arrow,
-            size: 22,
-            color: theme.colorScheme.primary,
-          ),
+          Icon(Icons.play_arrow, size: 22, color: theme.colorScheme.primary),
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(
@@ -551,8 +544,11 @@ class _WaterSourcesSection extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.warning_amber,
-                    size: 20, color: AppTheme.rougeUrgence),
+                const Icon(
+                  Icons.warning_amber,
+                  size: 20,
+                  color: AppTheme.rougeUrgence,
+                ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
@@ -609,8 +605,11 @@ class _WaterPointTile extends ConsumerWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(top: 4),
-                child: Icon(Icons.water_drop_outlined,
-                    size: 20, color: waterColor),
+                child: Icon(
+                  Icons.water_drop_outlined,
+                  size: 20,
+                  color: waterColor,
+                ),
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
@@ -624,10 +623,7 @@ class _WaterPointTile extends ConsumerWidget {
                       ),
                     ),
                     if (poi.description.isNotEmpty)
-                      Text(
-                        poi.description,
-                        style: theme.textTheme.bodySmall,
-                      ),
+                      Text(poi.description, style: theme.textTheme.bodySmall),
                   ],
                 ),
               ),
@@ -664,8 +660,11 @@ class _WaterPointTile extends ConsumerWidget {
               child: TextButton.icon(
                 key: ValueKey('water-report-${poi.stageNumber}-${poi.name}'),
                 onPressed: () => _openReportSheet(context, ref),
-                icon: Icon(Icons.add_location_alt_outlined,
-                    size: 18, color: waterColor),
+                icon: Icon(
+                  Icons.add_location_alt_outlined,
+                  size: 18,
+                  color: waterColor,
+                ),
                 label: Text(
                   t.signalement.water.reportAction,
                   style: theme.textTheme.bodySmall?.copyWith(color: waterColor),
@@ -698,8 +697,10 @@ class _WaterStatusChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final (label, color, icon) = _statusVisual(status.lastStatus);
-    final countText =
-        t.signalement.water.reportCount.replaceAll('{n}', '${status.reportCount}');
+    final countText = t.signalement.water.reportCount.replaceAll(
+      '{n}',
+      '${status.reportCount}',
+    );
     return Semantics(
       label: '$label, $countText',
       child: Container(
@@ -899,9 +900,7 @@ class _WaterStateButton extends StatelessWidget {
             children: [
               Icon(icon, color: color),
               const SizedBox(width: AppTheme.spacingMd),
-              Expanded(
-                child: Text(label, style: theme.textTheme.titleMedium),
-              ),
+              Expanded(child: Text(label, style: theme.textTheme.titleMedium)),
             ],
           ),
         ),
@@ -1000,8 +999,9 @@ class _AccommodationTile extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: color.withAlpha(120),
-                        borderRadius:
-                            BorderRadius.circular(AppTheme.radiusChip),
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.radiusChip,
+                        ),
                         border: Border.all(color: color),
                       ),
                       child: Text(
@@ -1016,10 +1016,7 @@ class _AccommodationTile extends StatelessWidget {
                 ),
                 if (poi.description.isNotEmpty) ...[
                   const SizedBox(height: 4),
-                  Text(
-                    poi.description,
-                    style: theme.textTheme.bodySmall,
-                  ),
+                  Text(poi.description, style: theme.textTheme.bodySmall),
                 ],
               ],
             ),
@@ -1036,10 +1033,7 @@ class _AccommodationTile extends StatelessWidget {
 /// nombre de points d'eau, difficulte, D+, et position dans le trek. Generique
 /// et calcule : aucun texte code en dur par localite.
 class _AdviceSection extends StatelessWidget {
-  const _AdviceSection({
-    required this.stage,
-    required this.waterSourcesCount,
-  });
+  const _AdviceSection({required this.stage, required this.waterSourcesCount});
 
   final Stage stage;
   final int waterSourcesCount;
@@ -1080,13 +1074,13 @@ class _AdviceSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.lightbulb_outline,
-                size: 20, color: AppTheme.jauneModere),
-            const SizedBox(width: AppTheme.spacingSm),
-            Text(
-              t.stage.advice.title,
-              style: theme.textTheme.titleMedium,
+            const Icon(
+              Icons.lightbulb_outline,
+              size: 20,
+              color: AppTheme.jauneModere,
             ),
+            const SizedBox(width: AppTheme.spacingSm),
+            Text(t.stage.advice.title, style: theme.textTheme.titleMedium),
           ],
         ),
         const SizedBox(height: AppTheme.spacingSm),
@@ -1107,15 +1101,15 @@ class _AdviceSection extends StatelessWidget {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(top: 6),
-                      child: Icon(Icons.circle,
-                          size: 6, color: AppTheme.jauneModere),
+                      child: Icon(
+                        Icons.circle,
+                        size: 6,
+                        color: AppTheme.jauneModere,
+                      ),
                     ),
                     const SizedBox(width: AppTheme.spacingSm),
                     Expanded(
-                      child: Text(
-                        tip,
-                        style: theme.textTheme.bodyMedium,
-                      ),
+                      child: Text(tip, style: theme.textTheme.bodyMedium),
                     ),
                   ],
                 ),

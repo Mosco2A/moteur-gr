@@ -177,8 +177,11 @@ class SosConfirmationDialog extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Icon(Icons.medical_information_outlined,
-                        size: 20, color: theme.colorScheme.primary),
+                    Icon(
+                      Icons.medical_information_outlined,
+                      size: 20,
+                      color: theme.colorScheme.primary,
+                    ),
                     const SizedBox(width: AppTheme.spacingSm),
                     Expanded(
                       child: Column(
@@ -258,8 +261,8 @@ class SosConfirmationDialog extends StatelessWidget {
   /// AUCUNE donnee sante ne transite par l'app (local-only) — c'est la 2e voie
   /// de secours, complementaire de l'appel 112 et de la fiche sante interne.
   void _openNativeMedicalId(BuildContext context) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(t.sos.medicalId.unavailable)),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(t.sos.medicalId.unavailable)));
   }
 }
