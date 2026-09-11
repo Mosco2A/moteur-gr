@@ -970,7 +970,10 @@
     "featureFollowers": "2 free followers",
     "featureNoAds": "Zero ads",
     "buyCta": "Unlock this trek",
-    "buyCtaWithPrice": "Unlock this trek — €$price"
+    "buyCtaWithPrice": "Unlock this trek — €$price",
+    "rewardedCta": "Watch an ad (24 h ad-free)",
+    "rewardedEarned": "Thanks! Ad-free for 24 h.",
+    "rewardedUnavailable": "No video available right now."
   },
   "signalement": {
     "title": "Report",

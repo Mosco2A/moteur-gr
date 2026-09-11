@@ -970,7 +970,10 @@
     "featureFollowers": "2 suiveurs gratuits",
     "featureNoAds": "Zéro publicité",
     "buyCta": "Débloquer cette randonnée",
-    "buyCtaWithPrice": "Débloquer cette randonnée — $price €"
+    "buyCtaWithPrice": "Débloquer cette randonnée — $price €",
+    "rewardedCta": "Regarder une pub (sans pub 24 h)",
+    "rewardedEarned": "Merci ! Sans publicité pendant 24 h.",
+    "rewardedUnavailable": "Aucune vidéo disponible pour le moment."
   },
   "signalement": {
     "title": "Signaler",

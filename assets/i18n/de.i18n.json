@@ -970,7 +970,10 @@
     "featureFollowers": "2 kostenlose Follower",
     "featureNoAds": "Keine Werbung",
     "buyCta": "Diesen Trek freischalten",
-    "buyCtaWithPrice": "Diesen Trek freischalten — $price €"
+    "buyCtaWithPrice": "Diesen Trek freischalten — $price €",
+    "rewardedCta": "Werbung ansehen (24 h werbefrei)",
+    "rewardedEarned": "Danke! 24 h werbefrei.",
+    "rewardedUnavailable": "Derzeit kein Video verfügbar."
   },
   "signalement": {
     "title": "Melden",

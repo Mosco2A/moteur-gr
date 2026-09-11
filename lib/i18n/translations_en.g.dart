@@ -872,6 +872,9 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Zero ads';
 	@override String get buyCta => 'Unlock this trek';
 	@override String buyCtaWithPrice({required Object price}) => 'Unlock this trek — €${price}';
+	@override String get rewardedCta => 'Watch an ad (24 h ad-free)';
+	@override String get rewardedEarned => 'Thanks! Ad-free for 24 h.';
+	@override String get rewardedUnavailable => 'No video available right now.';
 }
 
 // Path: signalement
@@ -4433,6 +4436,9 @@ extension on TranslationsEn {
 			'monetization.featureNoAds' => 'Zero ads',
 			'monetization.buyCta' => 'Unlock this trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Unlock this trek — €${price}',
+			'monetization.rewardedCta' => 'Watch an ad (24 h ad-free)',
+			'monetization.rewardedEarned' => 'Thanks! Ad-free for 24 h.',
+			'monetization.rewardedUnavailable' => 'No video available right now.',
 			'signalement.title' => 'Report',
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
@@ -4631,11 +4637,11 @@ extension on TranslationsEn {
 			'packs.types.sud.nom' => 'Mare a Mare South',
 			'packs.types.sud.description' => 'The southern half of the trail, offline.',
 			'packs.types.complet.nom' => 'Mare a Mare Full',
+			_ => null,
+		} ?? switch (path) {
 			'packs.types.complet.description' => 'The whole trail, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'The Mare a Mare trail, offline.',
-			_ => null,
-		} ?? switch (path) {
 			'guides.title' => 'Town guides',
 			'guides.subtitle' => 'Practical info for towns and villages, available offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} practical sections',
@@ -5145,11 +5151,11 @@ extension on TranslationsEn {
 			'pastHikes.maxReached' => 'Maximum of 5 hikes reached.',
 			'pastHikes.difficultiesTitle' => 'Difficulties encountered',
 			'pastHikes.difficultiesHint' => 'One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...',
+			_ => null,
+		} ?? switch (path) {
 			'pastHikes.difficultiesSaved' => 'Note saved',
 			'ffrando.cotationTitle' => 'FFRandonnee rating',
 			'ffrando.effort' => 'Effort',
-			_ => null,
-		} ?? switch (path) {
 			'ffrando.technicite' => 'Technicality',
 			'ffrando.risque' => 'Risk',
 			'ffrando.ibpLabel' => 'IBP index',

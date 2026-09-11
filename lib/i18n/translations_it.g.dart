@@ -872,6 +872,9 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Zero pubblicità';
 	@override String get buyCta => 'Sblocca questo trek';
 	@override String buyCtaWithPrice({required Object price}) => 'Sblocca questo trek — ${price} €';
+	@override String get rewardedCta => 'Guarda una pub (24 h senza pubblicità)';
+	@override String get rewardedEarned => 'Grazie! Senza pubblicità per 24 h.';
+	@override String get rewardedUnavailable => 'Nessun video disponibile al momento.';
 }
 
 // Path: signalement
@@ -4433,6 +4436,9 @@ extension on TranslationsIt {
 			'monetization.featureNoAds' => 'Zero pubblicità',
 			'monetization.buyCta' => 'Sblocca questo trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Sblocca questo trek — ${price} €',
+			'monetization.rewardedCta' => 'Guarda una pub (24 h senza pubblicità)',
+			'monetization.rewardedEarned' => 'Grazie! Senza pubblicità per 24 h.',
+			'monetization.rewardedUnavailable' => 'Nessun video disponibile al momento.',
 			'signalement.title' => 'Segnala',
 			'signalement.chooseType' => 'Cosa vuoi segnalare?',
 			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
@@ -4631,11 +4637,11 @@ extension on TranslationsIt {
 			'packs.types.sud.nom' => 'Mare a Mare Sud',
 			'packs.types.sud.description' => 'La metà sud del sentiero, offline.',
 			'packs.types.complet.nom' => 'Mare a Mare Completo',
+			_ => null,
+		} ?? switch (path) {
 			'packs.types.complet.description' => 'Tutto il sentiero, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Il sentiero Mare a Mare, offline.',
-			_ => null,
-		} ?? switch (path) {
 			'guides.title' => 'Guide delle città',
 			'guides.subtitle' => 'Info pratiche su città e paesi, consultabili offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} sezioni pratiche',
@@ -5145,11 +5151,11 @@ extension on TranslationsIt {
 			'pastHikes.maxReached' => 'Massimo di 5 escursioni raggiunto.',
 			'pastHikes.difficultiesTitle' => 'Difficolta incontrate',
 			'pastHikes.difficultiesHint' => 'Un solo testo per tutte queste escursioni: vesciche, ginocchia in discesa, affanno in quota, colpo di calore...',
+			_ => null,
+		} ?? switch (path) {
 			'pastHikes.difficultiesSaved' => 'Nota salvata',
 			'ffrando.cotationTitle' => 'Valutazione FFRandonnee',
 			'ffrando.effort' => 'Sforzo',
-			_ => null,
-		} ?? switch (path) {
 			'ffrando.technicite' => 'Tecnicita',
 			'ffrando.risque' => 'Rischio',
 			'ffrando.ibpLabel' => 'Indice IBP',

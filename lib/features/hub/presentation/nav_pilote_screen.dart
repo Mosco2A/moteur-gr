@@ -8,6 +8,7 @@ import '../../../core/theme/category_icon_colors.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../ads/presentation/ad_banner.dart';
 import '../../safety/presentation/sos_confirmation_dialog.dart';
 import '../../settings/providers/settings_provider.dart';
 import '../../treks/domain/trek_lifecycle_state.dart';
@@ -465,6 +466,14 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
       // + Programme) ; le démarrage réel (au clic) est gaté par la proximité GPS
       // avec filet de secours (jamais de cul-de-sac). Voir [_StartTrekButton].
       _StartTrekButton(trailId: trailId),
+      // StepWays L6/A6 : BANNIERE pub en PREPARATION GRATUITE uniquement. Se
+      // masque toute seule (SizedBox.shrink) si sans-pub actif (owned/abo/
+      // reward 24 h/vitrine) ou consentement UMP non obtenu. Jamais sur le
+      // terrain (mode Randonner), jamais d'interstitiel.
+      Padding(
+        padding: const EdgeInsets.only(top: AppTheme.spacingLg),
+        child: Center(child: AdBanner(trailId: trailId)),
+      ),
     ];
   }
 

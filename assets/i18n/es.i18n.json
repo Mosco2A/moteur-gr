@@ -970,7 +970,10 @@
     "featureFollowers": "2 seguidores gratuitos",
     "featureNoAds": "Cero publicidad",
     "buyCta": "Desbloquear este trek",
-    "buyCtaWithPrice": "Desbloquear este trek — $price €"
+    "buyCtaWithPrice": "Desbloquear este trek — $price €",
+    "rewardedCta": "Ver un anuncio (24 h sin anuncios)",
+    "rewardedEarned": "¡Gracias! Sin publicidad durante 24 h.",
+    "rewardedUnavailable": "No hay vídeo disponible ahora mismo."
   },
   "signalement": {
     "title": "Notificar",

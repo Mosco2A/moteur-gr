@@ -872,6 +872,9 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Cero publicidad';
 	@override String get buyCta => 'Desbloquear este trek';
 	@override String buyCtaWithPrice({required Object price}) => 'Desbloquear este trek — ${price} €';
+	@override String get rewardedCta => 'Ver un anuncio (24 h sin anuncios)';
+	@override String get rewardedEarned => '¡Gracias! Sin publicidad durante 24 h.';
+	@override String get rewardedUnavailable => 'No hay vídeo disponible ahora mismo.';
 }
 
 // Path: signalement
@@ -4433,6 +4436,9 @@ extension on TranslationsEs {
 			'monetization.featureNoAds' => 'Cero publicidad',
 			'monetization.buyCta' => 'Desbloquear este trek',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Desbloquear este trek — ${price} €',
+			'monetization.rewardedCta' => 'Ver un anuncio (24 h sin anuncios)',
+			'monetization.rewardedEarned' => '¡Gracias! Sin publicidad durante 24 h.',
+			'monetization.rewardedUnavailable' => 'No hay vídeo disponible ahora mismo.',
 			'signalement.title' => 'Notificar',
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
@@ -4631,11 +4637,11 @@ extension on TranslationsEs {
 			'packs.types.sud.nom' => 'Mare a Mare Sur',
 			'packs.types.sud.description' => 'La mitad sur del sendero, sin conexión.',
 			'packs.types.complet.nom' => 'Mare a Mare Completo',
+			_ => null,
+		} ?? switch (path) {
 			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'El sendero Mare a Mare, sin conexión.',
-			_ => null,
-		} ?? switch (path) {
 			'guides.title' => 'Guías de los pueblos',
 			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones practicas',
@@ -5145,11 +5151,11 @@ extension on TranslationsEs {
 			'pastHikes.maxReached' => 'Maximo de 5 rutas alcanzado.',
 			'pastHikes.difficultiesTitle' => 'Dificultades encontradas',
 			'pastHikes.difficultiesHint' => 'Un solo texto para todas estas rutas: ampollas, rodillas en bajada, ahogo en altitud, golpe de calor...',
+			_ => null,
+		} ?? switch (path) {
 			'pastHikes.difficultiesSaved' => 'Nota guardada',
 			'ffrando.cotationTitle' => 'Clasificacion FFRandonnee',
 			'ffrando.effort' => 'Esfuerzo',
-			_ => null,
-		} ?? switch (path) {
 			'ffrando.technicite' => 'Tecnicidad',
 			'ffrando.risque' => 'Riesgo',
 			'ffrando.ibpLabel' => 'Indice IBP',

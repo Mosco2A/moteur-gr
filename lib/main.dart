@@ -12,6 +12,7 @@ import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
+import 'features/ads/providers/ads_providers.dart';
 import 'features/onboarding/providers/onboarding_providers.dart';
 import 'features/safety/presentation/health_info_screen.dart';
 import 'features/treks/presentation/widgets/orphan_session_reprise.dart';
@@ -176,6 +177,12 @@ class _BootstrapGate extends ConsumerWidget {
     // (le provider d'amorce watch deja la config ; cette lecture rend la
     // dependance explicite et documente l'invalidation au niveau de la garde).
     ref.watch(trailConfigProvider.select((c) => c.id));
+
+    // StepWays L6/A6 : amorce PUB NON bloquante — resout le consentement UMP/CMP
+    // puis initialise le SDK AdMob en tache de fond. On `watch` sans gater le
+    // rendu dessus (best-effort) : l'app demarre meme si la pub echoue, et
+    // aucune banniere ne s'affiche tant que le consentement n'est pas obtenu.
+    ref.watch(adsReadyProvider);
 
     final bootstrap = ref.watch(appBootstrapProvider);
     final t = Translations.of(context);

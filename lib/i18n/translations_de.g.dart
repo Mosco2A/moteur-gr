@@ -872,6 +872,9 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get featureNoAds => 'Keine Werbung';
 	@override String get buyCta => 'Diesen Trek freischalten';
 	@override String buyCtaWithPrice({required Object price}) => 'Diesen Trek freischalten — ${price} €';
+	@override String get rewardedCta => 'Werbung ansehen (24 h werbefrei)';
+	@override String get rewardedEarned => 'Danke! 24 h werbefrei.';
+	@override String get rewardedUnavailable => 'Derzeit kein Video verfügbar.';
 }
 
 // Path: signalement
@@ -4433,6 +4436,9 @@ extension on TranslationsDe {
 			'monetization.featureNoAds' => 'Keine Werbung',
 			'monetization.buyCta' => 'Diesen Trek freischalten',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Diesen Trek freischalten — ${price} €',
+			'monetization.rewardedCta' => 'Werbung ansehen (24 h werbefrei)',
+			'monetization.rewardedEarned' => 'Danke! 24 h werbefrei.',
+			'monetization.rewardedUnavailable' => 'Derzeit kein Video verfügbar.',
 			'signalement.title' => 'Melden',
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
@@ -4631,11 +4637,11 @@ extension on TranslationsDe {
 			'packs.types.sud.nom' => 'Mare a Mare Süd',
 			'packs.types.sud.description' => 'Die südliche Hälfte des Wegs, offline.',
 			'packs.types.complet.nom' => 'Mare a Mare Komplett',
+			_ => null,
+		} ?? switch (path) {
 			'packs.types.complet.description' => 'Der ganze Weg, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Der Mare-a-Mare-Weg, offline.',
-			_ => null,
-		} ?? switch (path) {
 			'guides.title' => 'Ortsführer',
 			'guides.subtitle' => 'Praktische Infos zu Städten und Dörfern, offline verfügbar.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} praktische Rubriken',
@@ -5145,11 +5151,11 @@ extension on TranslationsDe {
 			'pastHikes.maxReached' => 'Maximum von 5 Touren erreicht.',
 			'pastHikes.difficultiesTitle' => 'Aufgetretene Schwierigkeiten',
 			'pastHikes.difficultiesHint' => 'Ein Text fur alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Hohe, Hitzestress...',
+			_ => null,
+		} ?? switch (path) {
 			'pastHikes.difficultiesSaved' => 'Notiz gespeichert',
 			'ffrando.cotationTitle' => 'FFRandonnee-Bewertung',
 			'ffrando.effort' => 'Anstrengung',
-			_ => null,
-		} ?? switch (path) {
 			'ffrando.technicite' => 'Technik',
 			'ffrando.risque' => 'Risiko',
 			'ffrando.ibpLabel' => 'IBP-Index',

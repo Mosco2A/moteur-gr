@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/services/monetization_service.dart';
 import '../../core/theme/app_theme.dart';
+import '../../features/ads/providers/ads_providers.dart';
 import '../../i18n/translations.g.dart';
 import 'app_button.dart';
 
@@ -107,8 +108,65 @@ class PaywallSheet extends ConsumerWidget {
                 if (context.mounted) Navigator.of(context).pop();
               },
             ),
+            // StepWays L6/A6 : voie sans-pub 24 h par pub RECOMPENSEE (rewarded).
+            // Affichee seulement si le consentement pub est obtenu (adsReady) —
+            // formats autorises = banniere + rewarded, PAS d'interstitiel.
+            const _RewardedNoAdsButton(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// CTA « Regarder une pub → sans pub 24 h » (rewarded, StepWays L6/A6).
+///
+/// Visible uniquement si la pub est disponible ([adsReadyProvider] : SDK
+/// initialise + consentement UMP obtenu). Au tap : joue une pub RECOMPENSEE et,
+/// si l'utilisateur la regarde jusqu'a la recompense, crédite le sans-pub 24 h
+/// via la SOURCE UNIQUE ([MonetizationService.grantRewardNoAds], encapsulee dans
+/// [watchRewardedForNoAdsProvider]). Aucun interstitiel.
+class _RewardedNoAdsButton extends ConsumerStatefulWidget {
+  const _RewardedNoAdsButton();
+
+  @override
+  ConsumerState<_RewardedNoAdsButton> createState() =>
+      _RewardedNoAdsButtonState();
+}
+
+class _RewardedNoAdsButtonState extends ConsumerState<_RewardedNoAdsButton> {
+  bool _busy = false;
+
+  Future<void> _watch() async {
+    if (_busy) return;
+    setState(() => _busy = true);
+    final messenger = ScaffoldMessenger.of(context);
+    final earnedMsg = t.monetization.rewardedEarned;
+    final failMsg = t.monetization.rewardedUnavailable;
+    // Provider autoDispose : refresh force une nouvelle lecture (nouvelle pub).
+    final earned = await ref.refresh(watchRewardedForNoAdsProvider.future);
+    if (!mounted) return;
+    setState(() => _busy = false);
+    messenger.showSnackBar(
+      SnackBar(content: Text(earned ? earnedMsg : failMsg)),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // N'affiche le CTA que si la pub est reellement disponible (consentement +
+    // SDK). Sinon rien (pas de bouton mort).
+    final adsReady = ref.watch(adsReadyProvider).value ?? false;
+    if (!adsReady) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(top: AppTheme.spacingSm),
+      child: AppButton(
+        key: const Key('paywall-rewarded-button'),
+        variant: AppButtonVariant.outline,
+        isLoading: _busy,
+        icon: Icons.ondemand_video_outlined,
+        label: t.monetization.rewardedCta,
+        onPressed: _busy ? null : _watch,
       ),
     );
   }

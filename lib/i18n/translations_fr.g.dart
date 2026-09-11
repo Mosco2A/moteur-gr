@@ -1736,6 +1736,15 @@ class Translations$monetization$fr {
 
 	/// fr: 'Débloquer cette randonnée — $price €'
 	String buyCtaWithPrice({required Object price}) => 'Débloquer cette randonnée — ${price} €';
+
+	/// fr: 'Regarder une pub (sans pub 24 h)'
+	String get rewardedCta => 'Regarder une pub (sans pub 24 h)';
+
+	/// fr: 'Merci ! Sans publicité pendant 24 h.'
+	String get rewardedEarned => 'Merci ! Sans publicité pendant 24 h.';
+
+	/// fr: 'Aucune vidéo disponible pour le moment.'
+	String get rewardedUnavailable => 'Aucune vidéo disponible pour le moment.';
 }
 
 // Path: signalement
@@ -7609,6 +7618,9 @@ extension on Translations {
 			'monetization.featureNoAds' => 'Zéro publicité',
 			'monetization.buyCta' => 'Débloquer cette randonnée',
 			'monetization.buyCtaWithPrice' => ({required Object price}) => 'Débloquer cette randonnée — ${price} €',
+			'monetization.rewardedCta' => 'Regarder une pub (sans pub 24 h)',
+			'monetization.rewardedEarned' => 'Merci ! Sans publicité pendant 24 h.',
+			'monetization.rewardedUnavailable' => 'Aucune vidéo disponible pour le moment.',
 			'signalement.title' => 'Signaler',
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
@@ -7807,11 +7819,11 @@ extension on Translations {
 			'packs.types.sud.nom' => 'Mare a Mare Sud',
 			'packs.types.sud.description' => 'La moitié sud du sentier, hors-ligne.',
 			'packs.types.complet.nom' => 'Mare a Mare Complet',
+			_ => null,
+		} ?? switch (path) {
 			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Le sentier Mare a Mare, hors-ligne.',
-			_ => null,
-		} ?? switch (path) {
 			'guides.title' => 'Guides des villes',
 			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
@@ -8321,11 +8333,11 @@ extension on Translations {
 			'pastHikes.maxReached' => 'Maximum de 5 randos atteint.',
 			'pastHikes.difficultiesTitle' => 'Difficultes rencontrees',
 			'pastHikes.difficultiesHint' => 'Un seul texte pour l\'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...',
+			_ => null,
+		} ?? switch (path) {
 			'pastHikes.difficultiesSaved' => 'Note enregistree',
 			'ffrando.cotationTitle' => 'Cotation FFRandonnee',
 			'ffrando.effort' => 'Effort',
-			_ => null,
-		} ?? switch (path) {
 			'ffrando.technicite' => 'Technicite',
 			'ffrando.risque' => 'Risque',
 			'ffrando.ibpLabel' => 'Indice IBP',
