@@ -78,9 +78,12 @@ class HubSection extends StatelessWidget {
         // mobiles (~115 px a 390 px logiques) -> RenderFlex overflow.
         // [mainAxisExtent] supprime cette dependance a la largeur.
         //
-        // Finitions V1 (point 6) : 150 -> 164 px pour accueillir un TITRE sur 2
+        // Finitions V1 (point 6) : 150 -> 180 px pour accueillir un TITRE sur 2
         // lignes (les titres longs « Découvrir des sentiers » etaient tronques a
-        // 1 ligne). Budget = 2 lignes titre + 2 lignes sous-titre, sans overflow.
+        // 1 ligne) SANS overflow quand le sous-titre occupe aussi 2 lignes
+        // (icone 36 + titre 2 lignes + sous-titre 2 lignes + espacements +
+        // padding). 164 debordait de 12 px sur la carte « Découvrir » (titre ET
+        // sous-titre longs) — 180 laisse la marge.
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -89,7 +92,7 @@ class HubSection extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: AppTheme.spacingMd,
             crossAxisSpacing: AppTheme.spacingMd,
-            mainAxisExtent: 164,
+            mainAxisExtent: 180,
           ),
           itemBuilder: (context, index) => cards[index],
         ),
