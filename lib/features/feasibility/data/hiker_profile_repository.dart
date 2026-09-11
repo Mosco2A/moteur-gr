@@ -12,6 +12,7 @@ import '../../../core/data/daos/past_hikes_dao.dart';
 import '../../../core/providers/database_provider.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/past_hike.dart';
+import '../domain/walk_test_result.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
@@ -31,6 +32,9 @@ const String kHikerPastHikesPrefsKey = 'hiker.pastHikes';
 
 /// Cle SharedPreferences : note d'experience globale (texte libre).
 const String kHikerExperienceNotePrefsKey = 'hiker.experienceNote';
+
+/// Cle SharedPreferences : dernier resultat du test de marche 6 minutes (JSON).
+const String kWalkTestResultPrefsKey = 'hiker.walkTestResult';
 
 /// Couche de persistance DUALE du profil randonneur (StepWays LOT 4, Ph1/Ph3).
 ///
@@ -204,6 +208,32 @@ class HikerProfileRepository {
         updatedAt: DateTime.now(),
       ),
     );
+  }
+
+  // --- Test de marche 6 minutes (dernier resultat date) --------------------
+
+  /// Relit le dernier resultat du test 6 min, ou null si jamais fait
+  /// (=> fallback auto-eval cote faisabilite).
+  Future<WalkTestResult?> getWalkTestResult() async {
+    final prefs = await _preferences;
+    final raw = prefs.getString(kWalkTestResultPrefsKey);
+    if (raw == null) return null;
+    try {
+      return WalkTestResult.fromJson(
+          json.decode(raw) as Map<String, dynamic>);
+    } catch (e) {
+      _log.e('[HikerProfileRepository] Resultat test 6 min illisible: $e');
+      return null;
+    }
+  }
+
+  /// Enregistre le resultat du test 6 min (remplace le precedent : recurrent).
+  Future<void> saveWalkTestResult(WalkTestResult result) async {
+    final prefs = await _preferences;
+    await prefs.setString(
+        kWalkTestResultPrefsKey, json.encode(result.toJson()));
+    _log.d('[HikerProfileRepository] Test 6 min: ${result.distanceMeters} m '
+        '-> ${result.level}');
   }
 }
 

@@ -12,6 +12,7 @@ import '../../features/hub/presentation/hub_screen.dart';
 import '../../features/hub/presentation/nav_pilote_screen.dart';
 import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
 import '../../features/feasibility/presentation/hiker_profile_screen.dart';
+import '../../features/feasibility/presentation/walk_test_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
@@ -376,6 +377,14 @@ final appRouter = GoRouter(
           path: 'hiker-profile',
           name: 'trail-hiker-profile',
           builder: (context, state) => const HikerProfileScreen(),
+        ),
+        // StepWays LOT 4 — TEST 6 MINUTES : niveau de forme objectif (mode
+        // chrono libre GPS, distance vs normes ATS/Enright age/sexe). Resultat
+        // date, rappel mensuel. Reutilise GpsService (sans conflit navigation).
+        GoRoute(
+          path: 'walk-test',
+          name: 'trail-walk-test',
+          builder: (context, state) => const WalkTestScreen(),
         ),
         GoRoute(
           path: 'tips',

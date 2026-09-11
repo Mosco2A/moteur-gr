@@ -9,6 +9,11 @@ const _weatherBaseId = 2000;
 const _countdownBaseId = 3000;
 const _trainingBaseId = 4000;
 
+/// Id fixe du rappel mensuel du test de marche 6 minutes (StepWays LOT 4).
+/// UN seul rappel a la fois (re-planifie a chaque test) — hors des plages de
+/// base des autres rappels.
+const _walkTestReminderId = 6000;
+
 /// Id fixe de l'alerte hors-trace : UNE seule notification a la fois,
 /// remplacable / annulable au retour sur le trace. En dehors des plages de base
 /// des rappels planifies (matin/meteo/J-2/entrainement).
@@ -27,6 +32,7 @@ class NotificationService {
   static const String channelWeather = 'weather_alert';
   static const String channelCountdown = 'countdown';
   static const String channelTraining = 'training_reminder';
+  static const String channelWalkTest = 'walk_test_reminder';
 
   /// Canal dedie a l'alerte de securite hors-trace. Generique (aucun sentier
   /// particulier). Importance HAUTE + visibilite publique -> la notification
@@ -36,6 +42,7 @@ class NotificationService {
   static const String channelWeatherDesc = 'Weather alerts for the trail';
   static const String channelCountdownDesc = 'D-2 countdown before departure';
   static const String channelTrainingDesc = 'Pre-trek training session reminders';
+  static const String channelWalkTestDesc = 'Monthly 6-minute walk test reminder';
   static const String channelOffTrackDesc =
       'Alerts when you move away from the trail';
 
@@ -144,6 +151,39 @@ class NotificationService {
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
     );
     _log.d('[NotificationService] Rappel entrainement planifie pour $dateTime (id=$id)');
+    return id;
+  }
+
+  /// Planifie le rappel MENSUEL du test de marche 6 minutes (StepWays LOT 4).
+  ///
+  /// Notification 100 % LOCALE (aucun push serveur, aucun identifiant). Un seul
+  /// rappel a la fois (id fixe [_walkTestReminderId]) : chaque nouveau test
+  /// re-planifie le prochain rappel ~1 mois plus tard. [afterDays] permet de
+  /// caler l'echeance (defaut 30 j). Ignore si l'echeance est deja passee.
+  Future<int> scheduleWalkTestReminder({
+    required String title,
+    required String body,
+    int afterDays = 30,
+  }) async {
+    await _ensureInitialized();
+    const id = _walkTestReminderId;
+    final target = DateTime.now().add(Duration(days: afterDays));
+    // Rappel a 10h le jour cible (heure raisonnable pour une marche de check).
+    final scheduled =
+        DateTime(target.year, target.month, target.day, 10, 0);
+    if (scheduled.isBefore(DateTime.now())) {
+      _log.d('[NotificationService] Rappel test 6 min ignore (date passee)');
+      return id;
+    }
+    final scheduledTime = tz.TZDateTime.from(scheduled, tz.local);
+    await _plugin.zonedSchedule(
+      id, title, body, scheduledTime,
+      _notificationDetails(channelWalkTest, channelWalkTestDesc),
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+    );
+    _log.d('[NotificationService] Rappel test 6 min planifie pour $scheduled');
     return id;
   }
 

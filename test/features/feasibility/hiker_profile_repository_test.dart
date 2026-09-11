@@ -6,6 +6,8 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
+import 'package:moteur_gr/features/feasibility/domain/walk_test_result.dart';
+import 'package:moteur_gr/features/feasibility/domain/walk_test_norms.dart';
 
 void main() {
   late AppDatabase db;
@@ -120,6 +122,34 @@ void main() {
           'genoux en descente, coup de chaud');
       final drift = await db.pastHikesDao.getNote(kHikerLocalUserId);
       expect(drift?.freeTextDifficulties, 'genoux en descente, coup de chaud');
+    });
+  });
+
+  group('Test 6 min — resultat date (fallback si absent)', () {
+    test('null si jamais fait', () async {
+      expect(await repo.getWalkTestResult(), isNull);
+    });
+
+    test('save + get du dernier resultat (remplace le precedent)', () async {
+      await repo.saveWalkTestResult(WalkTestResult(
+        distanceMeters: 620,
+        level: WalkTestLevel.good,
+        takenAt: DateTime(2026, 9, 1),
+      ));
+      var r = await repo.getWalkTestResult();
+      expect(r, isNotNull);
+      expect(r!.distanceMeters, 620);
+      expect(r.level, WalkTestLevel.good);
+
+      // Nouveau test -> remplace.
+      await repo.saveWalkTestResult(WalkTestResult(
+        distanceMeters: 680,
+        level: WalkTestLevel.excellent,
+        takenAt: DateTime(2026, 10, 1),
+      ));
+      r = await repo.getWalkTestResult();
+      expect(r!.distanceMeters, 680);
+      expect(r.level, WalkTestLevel.excellent);
     });
   });
 }
