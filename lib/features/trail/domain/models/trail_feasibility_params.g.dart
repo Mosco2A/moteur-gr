@@ -23,6 +23,9 @@ _TrailFeasibilityParams _$TrailFeasibilityParamsFromJson(
         (k, e) => MapEntry(k, e as String),
       ) ??
       const {},
+  effortRating: (json['effortRating'] as num?)?.toInt(),
+  technicite: (json['technicite'] as num?)?.toInt(),
+  risque: (json['risque'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$TrailFeasibilityParamsToJson(
@@ -34,4 +37,7 @@ Map<String, dynamic> _$TrailFeasibilityParamsToJson(
   'snowFactor': instance.snowFactor,
   'customConditions': instance.customConditions,
   'recommendationTemplates': instance.recommendationTemplates,
+  'effortRating': instance.effortRating,
+  'technicite': instance.technicite,
+  'risque': instance.risque,
 };

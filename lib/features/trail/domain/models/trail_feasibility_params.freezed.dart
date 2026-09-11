@@ -21,7 +21,16 @@ mixin _$TrailFeasibilityParams {
  double get heatFactor;/// Facteur d'ajustement neige (1.0 = neutre)
  double get snowFactor;/// Conditions supplementaires personnalisees
  List<String> get customConditions;/// Templates de recommandation par cle (ex: "heat" -> "Prevoyez 3L d'eau/jour")
- Map<String, String> get recommendationTemplates;
+ Map<String, String> get recommendationTemplates;// --- Cotation FFRandonnee (StepWays LOT 4, Ph4) ------------------------
+// 3 notes independantes 1-5 (FFRandonnee). Etend le modele au-dela du
+// simple `difficulty` (string). Nullable = non renseigne par ce sentier.
+/// EFFORT (1-5) — derive de l'indice IBP calcule sur le trace GPX
+/// (`IbpCalculator`). Peut etre pre-renseigne par la donnee du sentier ou
+/// calcule a la volee. Null = non cote.
+ int? get effortRating;/// TECHNICITE du terrain (1-5). Donnee du sentier (renseignee/tenue a jour
+/// par le systeme de donnees, DECISIONS §4.2). Null = non cotee.
+ int? get technicite;/// RISQUE — gravite d'une chute (1-5). Donnee du sentier. Null = non cote.
+ int? get risque;
 /// Create a copy of TrailFeasibilityParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -34,16 +43,16 @@ $TrailFeasibilityParamsCopyWith<TrailFeasibilityParams> get copyWith => _$TrailF
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrailFeasibilityParams&&(identical(other.altitudeFactor, altitudeFactor) || other.altitudeFactor == altitudeFactor)&&(identical(other.technicalFactor, technicalFactor) || other.technicalFactor == technicalFactor)&&(identical(other.heatFactor, heatFactor) || other.heatFactor == heatFactor)&&(identical(other.snowFactor, snowFactor) || other.snowFactor == snowFactor)&&const DeepCollectionEquality().equals(other.customConditions, customConditions)&&const DeepCollectionEquality().equals(other.recommendationTemplates, recommendationTemplates));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrailFeasibilityParams&&(identical(other.altitudeFactor, altitudeFactor) || other.altitudeFactor == altitudeFactor)&&(identical(other.technicalFactor, technicalFactor) || other.technicalFactor == technicalFactor)&&(identical(other.heatFactor, heatFactor) || other.heatFactor == heatFactor)&&(identical(other.snowFactor, snowFactor) || other.snowFactor == snowFactor)&&const DeepCollectionEquality().equals(other.customConditions, customConditions)&&const DeepCollectionEquality().equals(other.recommendationTemplates, recommendationTemplates)&&(identical(other.effortRating, effortRating) || other.effortRating == effortRating)&&(identical(other.technicite, technicite) || other.technicite == technicite)&&(identical(other.risque, risque) || other.risque == risque));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,altitudeFactor,technicalFactor,heatFactor,snowFactor,const DeepCollectionEquality().hash(customConditions),const DeepCollectionEquality().hash(recommendationTemplates));
+int get hashCode => Object.hash(runtimeType,altitudeFactor,technicalFactor,heatFactor,snowFactor,const DeepCollectionEquality().hash(customConditions),const DeepCollectionEquality().hash(recommendationTemplates),effortRating,technicite,risque);
 
 @override
 String toString() {
-  return 'TrailFeasibilityParams(altitudeFactor: $altitudeFactor, technicalFactor: $technicalFactor, heatFactor: $heatFactor, snowFactor: $snowFactor, customConditions: $customConditions, recommendationTemplates: $recommendationTemplates)';
+  return 'TrailFeasibilityParams(altitudeFactor: $altitudeFactor, technicalFactor: $technicalFactor, heatFactor: $heatFactor, snowFactor: $snowFactor, customConditions: $customConditions, recommendationTemplates: $recommendationTemplates, effortRating: $effortRating, technicite: $technicite, risque: $risque)';
 }
 
 
@@ -54,7 +63,7 @@ abstract mixin class $TrailFeasibilityParamsCopyWith<$Res>  {
   factory $TrailFeasibilityParamsCopyWith(TrailFeasibilityParams value, $Res Function(TrailFeasibilityParams) _then) = _$TrailFeasibilityParamsCopyWithImpl;
 @useResult
 $Res call({
- double altitudeFactor, double technicalFactor, double heatFactor, double snowFactor, List<String> customConditions, Map<String, String> recommendationTemplates
+ double altitudeFactor, double technicalFactor, double heatFactor, double snowFactor, List<String> customConditions, Map<String, String> recommendationTemplates, int? effortRating, int? technicite, int? risque
 });
 
 
@@ -71,7 +80,7 @@ class _$TrailFeasibilityParamsCopyWithImpl<$Res>
 
 /// Create a copy of TrailFeasibilityParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? altitudeFactor = null,Object? technicalFactor = null,Object? heatFactor = null,Object? snowFactor = null,Object? customConditions = null,Object? recommendationTemplates = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? altitudeFactor = null,Object? technicalFactor = null,Object? heatFactor = null,Object? snowFactor = null,Object? customConditions = null,Object? recommendationTemplates = null,Object? effortRating = freezed,Object? technicite = freezed,Object? risque = freezed,}) {
   return _then(_self.copyWith(
 altitudeFactor: null == altitudeFactor ? _self.altitudeFactor : altitudeFactor // ignore: cast_nullable_to_non_nullable
 as double,technicalFactor: null == technicalFactor ? _self.technicalFactor : technicalFactor // ignore: cast_nullable_to_non_nullable
@@ -79,7 +88,10 @@ as double,heatFactor: null == heatFactor ? _self.heatFactor : heatFactor // igno
 as double,snowFactor: null == snowFactor ? _self.snowFactor : snowFactor // ignore: cast_nullable_to_non_nullable
 as double,customConditions: null == customConditions ? _self.customConditions : customConditions // ignore: cast_nullable_to_non_nullable
 as List<String>,recommendationTemplates: null == recommendationTemplates ? _self.recommendationTemplates : recommendationTemplates // ignore: cast_nullable_to_non_nullable
-as Map<String, String>,
+as Map<String, String>,effortRating: freezed == effortRating ? _self.effortRating : effortRating // ignore: cast_nullable_to_non_nullable
+as int?,technicite: freezed == technicite ? _self.technicite : technicite // ignore: cast_nullable_to_non_nullable
+as int?,risque: freezed == risque ? _self.risque : risque // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -164,10 +176,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double altitudeFactor,  double technicalFactor,  double heatFactor,  double snowFactor,  List<String> customConditions,  Map<String, String> recommendationTemplates)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( double altitudeFactor,  double technicalFactor,  double heatFactor,  double snowFactor,  List<String> customConditions,  Map<String, String> recommendationTemplates,  int? effortRating,  int? technicite,  int? risque)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TrailFeasibilityParams() when $default != null:
-return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_that.snowFactor,_that.customConditions,_that.recommendationTemplates);case _:
+return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_that.snowFactor,_that.customConditions,_that.recommendationTemplates,_that.effortRating,_that.technicite,_that.risque);case _:
   return orElse();
 
 }
@@ -185,10 +197,10 @@ return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double altitudeFactor,  double technicalFactor,  double heatFactor,  double snowFactor,  List<String> customConditions,  Map<String, String> recommendationTemplates)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( double altitudeFactor,  double technicalFactor,  double heatFactor,  double snowFactor,  List<String> customConditions,  Map<String, String> recommendationTemplates,  int? effortRating,  int? technicite,  int? risque)  $default,) {final _that = this;
 switch (_that) {
 case _TrailFeasibilityParams():
-return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_that.snowFactor,_that.customConditions,_that.recommendationTemplates);case _:
+return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_that.snowFactor,_that.customConditions,_that.recommendationTemplates,_that.effortRating,_that.technicite,_that.risque);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +217,10 @@ return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double altitudeFactor,  double technicalFactor,  double heatFactor,  double snowFactor,  List<String> customConditions,  Map<String, String> recommendationTemplates)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( double altitudeFactor,  double technicalFactor,  double heatFactor,  double snowFactor,  List<String> customConditions,  Map<String, String> recommendationTemplates,  int? effortRating,  int? technicite,  int? risque)?  $default,) {final _that = this;
 switch (_that) {
 case _TrailFeasibilityParams() when $default != null:
-return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_that.snowFactor,_that.customConditions,_that.recommendationTemplates);case _:
+return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_that.snowFactor,_that.customConditions,_that.recommendationTemplates,_that.effortRating,_that.technicite,_that.risque);case _:
   return null;
 
 }
@@ -220,7 +232,7 @@ return $default(_that.altitudeFactor,_that.technicalFactor,_that.heatFactor,_tha
 @JsonSerializable()
 
 class _TrailFeasibilityParams extends TrailFeasibilityParams {
-  const _TrailFeasibilityParams({required this.altitudeFactor, required this.technicalFactor, required this.heatFactor, required this.snowFactor, final  List<String> customConditions = const [], final  Map<String, String> recommendationTemplates = const {}}): _customConditions = customConditions,_recommendationTemplates = recommendationTemplates,super._();
+  const _TrailFeasibilityParams({required this.altitudeFactor, required this.technicalFactor, required this.heatFactor, required this.snowFactor, final  List<String> customConditions = const [], final  Map<String, String> recommendationTemplates = const {}, this.effortRating, this.technicite, this.risque}): _customConditions = customConditions,_recommendationTemplates = recommendationTemplates,super._();
   factory _TrailFeasibilityParams.fromJson(Map<String, dynamic> json) => _$TrailFeasibilityParamsFromJson(json);
 
 /// Facteur d'ajustement altitude (1.0 = neutre, >1 = plus difficile)
@@ -249,6 +261,18 @@ class _TrailFeasibilityParams extends TrailFeasibilityParams {
   return EqualUnmodifiableMapView(_recommendationTemplates);
 }
 
+// --- Cotation FFRandonnee (StepWays LOT 4, Ph4) ------------------------
+// 3 notes independantes 1-5 (FFRandonnee). Etend le modele au-dela du
+// simple `difficulty` (string). Nullable = non renseigne par ce sentier.
+/// EFFORT (1-5) — derive de l'indice IBP calcule sur le trace GPX
+/// (`IbpCalculator`). Peut etre pre-renseigne par la donnee du sentier ou
+/// calcule a la volee. Null = non cote.
+@override final  int? effortRating;
+/// TECHNICITE du terrain (1-5). Donnee du sentier (renseignee/tenue a jour
+/// par le systeme de donnees, DECISIONS §4.2). Null = non cotee.
+@override final  int? technicite;
+/// RISQUE — gravite d'une chute (1-5). Donnee du sentier. Null = non cote.
+@override final  int? risque;
 
 /// Create a copy of TrailFeasibilityParams
 /// with the given fields replaced by the non-null parameter values.
@@ -263,16 +287,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrailFeasibilityParams&&(identical(other.altitudeFactor, altitudeFactor) || other.altitudeFactor == altitudeFactor)&&(identical(other.technicalFactor, technicalFactor) || other.technicalFactor == technicalFactor)&&(identical(other.heatFactor, heatFactor) || other.heatFactor == heatFactor)&&(identical(other.snowFactor, snowFactor) || other.snowFactor == snowFactor)&&const DeepCollectionEquality().equals(other._customConditions, _customConditions)&&const DeepCollectionEquality().equals(other._recommendationTemplates, _recommendationTemplates));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrailFeasibilityParams&&(identical(other.altitudeFactor, altitudeFactor) || other.altitudeFactor == altitudeFactor)&&(identical(other.technicalFactor, technicalFactor) || other.technicalFactor == technicalFactor)&&(identical(other.heatFactor, heatFactor) || other.heatFactor == heatFactor)&&(identical(other.snowFactor, snowFactor) || other.snowFactor == snowFactor)&&const DeepCollectionEquality().equals(other._customConditions, _customConditions)&&const DeepCollectionEquality().equals(other._recommendationTemplates, _recommendationTemplates)&&(identical(other.effortRating, effortRating) || other.effortRating == effortRating)&&(identical(other.technicite, technicite) || other.technicite == technicite)&&(identical(other.risque, risque) || other.risque == risque));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,altitudeFactor,technicalFactor,heatFactor,snowFactor,const DeepCollectionEquality().hash(_customConditions),const DeepCollectionEquality().hash(_recommendationTemplates));
+int get hashCode => Object.hash(runtimeType,altitudeFactor,technicalFactor,heatFactor,snowFactor,const DeepCollectionEquality().hash(_customConditions),const DeepCollectionEquality().hash(_recommendationTemplates),effortRating,technicite,risque);
 
 @override
 String toString() {
-  return 'TrailFeasibilityParams(altitudeFactor: $altitudeFactor, technicalFactor: $technicalFactor, heatFactor: $heatFactor, snowFactor: $snowFactor, customConditions: $customConditions, recommendationTemplates: $recommendationTemplates)';
+  return 'TrailFeasibilityParams(altitudeFactor: $altitudeFactor, technicalFactor: $technicalFactor, heatFactor: $heatFactor, snowFactor: $snowFactor, customConditions: $customConditions, recommendationTemplates: $recommendationTemplates, effortRating: $effortRating, technicite: $technicite, risque: $risque)';
 }
 
 
@@ -283,7 +307,7 @@ abstract mixin class _$TrailFeasibilityParamsCopyWith<$Res> implements $TrailFea
   factory _$TrailFeasibilityParamsCopyWith(_TrailFeasibilityParams value, $Res Function(_TrailFeasibilityParams) _then) = __$TrailFeasibilityParamsCopyWithImpl;
 @override @useResult
 $Res call({
- double altitudeFactor, double technicalFactor, double heatFactor, double snowFactor, List<String> customConditions, Map<String, String> recommendationTemplates
+ double altitudeFactor, double technicalFactor, double heatFactor, double snowFactor, List<String> customConditions, Map<String, String> recommendationTemplates, int? effortRating, int? technicite, int? risque
 });
 
 
@@ -300,7 +324,7 @@ class __$TrailFeasibilityParamsCopyWithImpl<$Res>
 
 /// Create a copy of TrailFeasibilityParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? altitudeFactor = null,Object? technicalFactor = null,Object? heatFactor = null,Object? snowFactor = null,Object? customConditions = null,Object? recommendationTemplates = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? altitudeFactor = null,Object? technicalFactor = null,Object? heatFactor = null,Object? snowFactor = null,Object? customConditions = null,Object? recommendationTemplates = null,Object? effortRating = freezed,Object? technicite = freezed,Object? risque = freezed,}) {
   return _then(_TrailFeasibilityParams(
 altitudeFactor: null == altitudeFactor ? _self.altitudeFactor : altitudeFactor // ignore: cast_nullable_to_non_nullable
 as double,technicalFactor: null == technicalFactor ? _self.technicalFactor : technicalFactor // ignore: cast_nullable_to_non_nullable
@@ -308,7 +332,10 @@ as double,heatFactor: null == heatFactor ? _self.heatFactor : heatFactor // igno
 as double,snowFactor: null == snowFactor ? _self.snowFactor : snowFactor // ignore: cast_nullable_to_non_nullable
 as double,customConditions: null == customConditions ? _self._customConditions : customConditions // ignore: cast_nullable_to_non_nullable
 as List<String>,recommendationTemplates: null == recommendationTemplates ? _self._recommendationTemplates : recommendationTemplates // ignore: cast_nullable_to_non_nullable
-as Map<String, String>,
+as Map<String, String>,effortRating: freezed == effortRating ? _self.effortRating : effortRating // ignore: cast_nullable_to_non_nullable
+as int?,technicite: freezed == technicite ? _self.technicite : technicite // ignore: cast_nullable_to_non_nullable
+as int?,risque: freezed == risque ? _self.risque : risque // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
