@@ -52,21 +52,24 @@ class ChecklistSeasonalSection extends ConsumerWidget {
           children: [
             Row(
               children: [
-                const Icon(Icons.wb_twilight,
-                    size: 20, color: AppTheme.bleuRepos),
+                const Icon(
+                  Icons.wb_twilight,
+                  size: 20,
+                  color: AppTheme.bleuRepos,
+                ),
                 const SizedBox(width: AppTheme.spacingSm),
                 Expanded(
                   child: Text(
                     t.checklist.seasonalBanner(season: seasonLabel),
-                    style: theme.textTheme.titleSmall
-                        ?.copyWith(fontWeight: FontWeight.w700),
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            for (final item in suggestions)
-              _SuggestionRow(item: item),
+            for (final item in suggestions) _SuggestionRow(item: item),
           ],
         ),
       ),
@@ -116,13 +119,17 @@ class _SuggestionRow extends ConsumerWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.check_circle,
-                    size: 18, color: AppTheme.vertFacile),
+                const Icon(
+                  Icons.check_circle,
+                  size: 18,
+                  color: AppTheme.vertFacile,
+                ),
                 const SizedBox(width: AppTheme.spacingXs),
                 Text(
                   t.checklist.seasonalAdded,
-                  style: theme.textTheme.bodySmall
-                      ?.copyWith(color: AppTheme.vertFacile),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: AppTheme.vertFacile,
+                  ),
                 ),
               ],
             )

@@ -76,8 +76,9 @@ class ChecklistSeasonalAdapter {
     if (additions.isEmpty) return base;
 
     final baseIds = base.map((i) => i.id).toSet();
-    final extras =
-        additions.where((i) => !baseIds.contains(i.id)).toList(growable: false);
+    final extras = additions
+        .where((i) => !baseIds.contains(i.id))
+        .toList(growable: false);
     if (extras.isEmpty) return base;
 
     return [...base, ...extras];

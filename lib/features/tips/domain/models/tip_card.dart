@@ -86,7 +86,8 @@ abstract class TipCard with _$TipCard {
   }) = _TipCard;
 
   /// Deserialisation depuis JSON
-  factory TipCard.fromJson(Map<String, dynamic> json) => _$TipCardFromJson(json);
+  factory TipCard.fromJson(Map<String, dynamic> json) =>
+      _$TipCardFromJson(json);
 
   /// Theme de regroupement RESOLU (StepWays LOT 5, C) : [theme] s'il est fourni,
   /// sinon derive de [category] ([TipTheme.fromCategory]) — jamais vide.
@@ -94,22 +95,17 @@ abstract class TipCard with _$TipCard {
       theme.isNotEmpty ? theme : TipTheme.fromCategory(category);
 
   /// Titre resolu selon la langue courante (i18n INLINE, repli FR base).
-  String get localizedTitle => _pick(
-        fr: titleFr,
-        en: titleEn,
-        de: titleDe,
-        it: titleIt,
-        es: titleEs,
-      );
+  String get localizedTitle =>
+      _pick(fr: titleFr, en: titleEn, de: titleDe, it: titleIt, es: titleEs);
 
   /// Contenu resolu selon la langue courante (i18n INLINE, repli FR base).
   String get localizedContent => _pick(
-        fr: contentFr,
-        en: contentEn,
-        de: contentDe,
-        it: contentIt,
-        es: contentEs,
-      );
+    fr: contentFr,
+    en: contentEn,
+    de: contentDe,
+    it: contentIt,
+    es: contentEs,
+  );
 
   /// Vrai si au moins un lien reseau (FB ou IG) est renseigne (bouton affiche).
   bool get hasSocialLinks =>

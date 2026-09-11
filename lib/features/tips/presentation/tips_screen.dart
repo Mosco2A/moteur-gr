@@ -44,7 +44,8 @@ class TipsScreen extends ConsumerWidget {
                 children: [
                   Text(t.tips.screenIntro, style: theme.textTheme.bodyMedium),
                   const SizedBox(height: AppTheme.spacingBase),
-                  for (final section in sections) _ThemeSection(section: section),
+                  for (final section in sections)
+                    _ThemeSection(section: section),
                 ],
               ),
       ),
@@ -75,8 +76,11 @@ class _ThemeSection extends StatelessWidget {
           ),
           child: Row(
             children: [
-              Icon(_themeIcon(TipTheme.iconFor(section.theme)),
-                  size: 20, color: theme.colorScheme.primary),
+              Icon(
+                _themeIcon(TipTheme.iconFor(section.theme)),
+                size: 20,
+                color: theme.colorScheme.primary,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Text(
                 label.toUpperCase(),
@@ -153,9 +157,7 @@ class _SocialLinks extends StatelessWidget {
       ok = await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
     if (!ok) {
-      messenger.showSnackBar(
-        SnackBar(content: Text(t.tips.linkOffline)),
-      );
+      messenger.showSnackBar(SnackBar(content: Text(t.tips.linkOffline)));
     }
   }
 
@@ -195,8 +197,11 @@ class _EmptyThemed extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.menu_book_outlined,
-                size: 48, color: theme.colorScheme.onSurface.withAlpha(120)),
+            Icon(
+              Icons.menu_book_outlined,
+              size: 48,
+              color: theme.colorScheme.onSurface.withAlpha(120),
+            ),
             const SizedBox(height: AppTheme.spacingMd),
             Text(
               t.tips.emptyThemed,
