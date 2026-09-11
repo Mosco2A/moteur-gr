@@ -14,6 +14,7 @@ import '../../features/feasibility/presentation/feasibility_questionnaire_screen
 import '../../features/feasibility/presentation/hiker_profile_screen.dart';
 import '../../features/feasibility/presentation/walk_test_screen.dart';
 import '../../features/feasibility/presentation/past_hikes_screen.dart';
+import '../../features/feasibility/presentation/trek_feasibility_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
@@ -356,18 +357,24 @@ final appRouter = GoRouter(
             return NuiteesScreen(trailId: trailId);
           },
         ),
-        // PARITE GR20 (#99460) — FAISABILITE : auto-evaluation -> verdict.
-        // La carte HUB « Faisabilite » (et l'entree « Plus ») ouvrent cet ecran
-        // via `context.push` (retour propre, pile preservee — pas de context.go).
-        // On cable la version Slang (`FeasibilityQuestionnaireScreen`, questions
-        // + reponses + categorie + progression via t.feasibility.*), et non plus
-        // l'ancien `FeasibilityScreen` qui affichait les CLES i18n brutes
-        // (questionKey/answerKey) et des libelles FR en dur — l'ecart audit
-        // #99455. Questionnaire + resultat/verdict = parite GR20, generique
-        // (questions par sentier via JSON, zero localite en dur).
+        // StepWays LOT 4 (Ph5) — FAISABILITE OBJECTIVE : croisement profil reel
+        // (fiche + test 6 min + 5 randos) x exigences du trek -> verdict +
+        // points faibles POUR CE TREK (seuils). C'est desormais LE systeme de
+        // faisabilite (spec §4). Le questionnaire 8-questions devient un
+        // fallback leger de dépannage, deplace sous /feasibility-quiz (l'ecran
+        // objectif y renvoie quand le profil objectif manque). La carte HUB
+        // « Faisabilite » ouvre cet ecran via `context.push` (retour propre).
         GoRoute(
           path: 'feasibility',
           name: 'trail-feasibility',
+          builder: (context, state) => const TrekFeasibilityScreen(),
+        ),
+        // Fallback de dépannage : questionnaire 8-questions auto-declaratif
+        // (version Slang `FeasibilityQuestionnaireScreen`). Conserve pour
+        // depanner quand le profil objectif n'est pas encore renseigne.
+        GoRoute(
+          path: 'feasibility-quiz',
+          name: 'trail-feasibility-quiz',
           builder: (context, state) => const FeasibilityQuestionnaireScreen(),
         ),
         // StepWays LOT 4 — FICHE D'INFO : 1ere page de la faisabilite (profil
