@@ -37,6 +37,16 @@ class SosButton extends ConsumerWidget {
     // Masque si pas de trek actif
     if (!isTrekActive) return const SizedBox.shrink();
 
+    // Finitions V1 (point 6) : GARDER le flux GPS CHAUD tant que le bouton SOS
+    // est visible. `positionStreamProvider` est un StreamProvider FROID (sans
+    // keepAlive) : un simple `ref.read` a l'ouverture du dialog trouvait souvent
+    // un stream pas encore emis -> « position GPS indisponible ». En le `watch`ant
+    // ici, un listener reste actif pendant tout le trek : une position fraiche
+    // est disponible AVANT que l'utilisateur ouvre le dialog. (En rando active,
+    // la carte l'alimente deja ; ce watch garantit le cas ou le SOS est ouvert
+    // hors de l'ecran carte.)
+    ref.watch(positionStreamProvider);
+
     // a11y : le bouton porte un label explicite pour les lecteurs d'ecran
     // (le contenu visuel « SOS » + icone est exclu de la semantique pour ne
     // pas doubler l'annonce). Parite GR20 : SOS accessible pendant le trek.

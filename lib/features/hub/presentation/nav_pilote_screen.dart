@@ -170,6 +170,12 @@ class _NavPiloteScreenState extends ConsumerState<NavPiloteScreen> {
     // R9 : le SOS n'apparait QU'en phase Randonner ET en mode trek reel.
     final showSos = inTrekMode && phase == CockpitPhase.hike;
 
+    // Finitions V1 (point 6) : garder le flux GPS CHAUD tant que le SOS est
+    // visible (positionStreamProvider est FROID). Sans ce watch, `_showSos`
+    // (ref.read) tombait sur un stream pas encore emis -> « position GPS
+    // indisponible ». Un listener actif fournit une position fraiche a l'ouverture.
+    if (showSos) ref.watch(positionStreamProvider);
+
     // R9/R10 : main dominante (defaut droitier) -> cote des commandes critiques.
     final dominantHand = ref.watch(
       settingsProvider.select((s) => s.dominantHand),

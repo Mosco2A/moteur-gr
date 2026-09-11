@@ -49,7 +49,7 @@ class TrailStageDetailScreen extends ConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => EmptyState(
           icon: Icons.error_outline,
-          title: 'Impossible de charger l\'étape',
+          title: t.common.cannotLoadStage,
           subtitle: error.toString(),
         ),
         data: (stages) {
@@ -125,7 +125,7 @@ class TrailStageDetailScreen extends ConsumerWidget {
                       vertical: AppTheme.spacingBase,
                     ),
                     child: Text(
-                      'Aucun point d\'intérêt pour cette étape.',
+                      t.common.noPoiForStage,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: AppTheme.grisTexteSecondaire,
                       ),

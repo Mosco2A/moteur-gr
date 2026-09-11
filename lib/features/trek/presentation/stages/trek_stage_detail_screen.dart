@@ -116,7 +116,7 @@ class TrekStageDetailScreen extends ConsumerWidget {
       body: stageAsync.when(
         loading: () => LoadingView(message: t.stage.loading),
         error: (error, _) => ErrorView(
-          message: 'Impossible de charger cette etape',
+          message: t.common.cannotLoadStage,
           onRetry: () => ref.invalidate(
             stageByIdProvider((trailId: trailId, stageId: stageId)),
           ),

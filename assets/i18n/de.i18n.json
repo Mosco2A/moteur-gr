@@ -158,6 +158,13 @@
     "fab": {
       "feedback": "Feedback geben",
       "sos": "SOS"
+    },
+    "finishTrek": {
+      "action": "Tour beenden",
+      "confirmTitle": "Tour beenden?",
+      "confirmBody": "Die Tour wird als beendet markiert. Nicht gegangene Etappen werden nicht bestätigt. Du kannst dein Abenteuer weiterhin ansehen.",
+      "confirm": "Beenden",
+      "cancel": "Abbrechen"
     }
   },
   "map": {
@@ -297,7 +304,9 @@
     "dPlus": "D+",
     "stopSaveProgress": "Ihr Fortschritt wird gespeichert.",
     "cancel": "Abbrechen",
-    "stopButton": "Stopp"
+    "stopButton": "Stopp",
+    "stopTitle": "Aufzeichnung beenden?",
+    "stopBody": "Dein Fortschritt wird gespeichert."
   },
   "checklist": {
     "title": "Ausrustung & Rucksack",
@@ -689,7 +698,9 @@
     "offTrackAlerts": "Abseits-der-Strecke-Warnung",
     "offTrackAlertsDesc": "Benachrichtigung + Vibration, wenn Sie den Weg verlassen",
     "version": "Version",
-    "versionLabel": "App-Version"
+    "versionLabel": "App-Version",
+    "noDateChosen": "Kein Datum gewählt",
+    "departureDate": "Startdatum"
   },
   "appearance": {
     "title": "Erscheinungsbild",
@@ -958,7 +969,8 @@
     "languageSubtitle": "Du kannst sie jederzeit in den Einstellungen ändern.",
     "downloadTitle": "Lade deinen ersten Weg herunter",
     "downloadSubtitle": "Durchsuche den Katalog und lade einen Weg herunter, um ihn vollständig offline zu nutzen.",
-    "browseCatalog": "Katalog durchsuchen"
+    "browseCatalog": "Katalog durchsuchen",
+    "recoveryNudge": "Denke daran, deinen Wiederherstellungscode zu notieren (in den Einstellungen): Er öffnet deine Daten auf einem anderen Telefon."
   },
   "monetization": {
     "demoBanner": "Demo-Modus — zum Freischalten tippen",
@@ -1828,7 +1840,8 @@
     "a11y": {
       "trekCard": "Tour $nom, $state",
       "openTrek": "Tour $nom öffnen"
-    }
+    },
+    "settingsSubtitle": "Sprache, Einheiten, Thema"
   },
   "trekState": {
     "abandonDialog": {
@@ -1964,5 +1977,29 @@
       "hint": "Zeigen Sie den Rettungskräften Ihre Vitaldaten, auch im Sperrbildschirm.",
       "unavailable": "Öffnen Sie den Notfallpass in den Gesundheitseinstellungen Ihres Telefons."
     }
+  },
+  "recovery": {
+    "section": "Konto und Wiederherstellung",
+    "sectionDesc": "Meinen Wiederherstellungscode anzeigen",
+    "title": "Mein Wiederherstellungscode",
+    "intro": "Dieser Code öffnet deinen Tresor (Profil, persönliche Angaben und Etappen-Guthaben) auf einem anderen Telefon. Notiere ihn und bewahre ihn sicher auf: Er funktioniert wie ein Passwort.",
+    "codeLabel": "Dein Code",
+    "copy": "Code kopieren",
+    "copied": "Code kopiert",
+    "warning": "Niemand sonst kann deinen Tresor lesen, auch wir nicht. Wenn du diesen Code verlierst, sind deine Daten unwiederbringlich verloren.",
+    "error": "Der Code kann derzeit nicht erzeugt werden."
+  },
+  "common": {
+    "cannotLoadStages": "Etappen können nicht geladen werden",
+    "noStages": "Keine Etappen verfügbar",
+    "cannotLoadStage": "Diese Etappe kann nicht geladen werden",
+    "stageNotFound": "Etappe nicht gefunden",
+    "cannotLoadTrack": "Track kann nicht geladen werden",
+    "loadingTrack": "Track wird geladen…",
+    "gpxEmpty": "Die GPX-Datei enthält keine Punkte.",
+    "noPoiForStage": "Kein interessanter Punkt für diese Etappe.",
+    "viewOnMap": "Auf Karte anzeigen",
+    "error": "Fehler",
+    "pageNotFound": "Seite nicht gefunden: $path"
   }
 }

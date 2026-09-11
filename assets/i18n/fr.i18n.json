@@ -158,6 +158,13 @@
     "fab": {
       "feedback": "Donner mon avis",
       "sos": "SOS"
+    },
+    "finishTrek": {
+      "action": "Terminer le trek",
+      "confirmTitle": "Terminer le trek ?",
+      "confirmBody": "Le trek sera marqué comme terminé. Les étapes non parcourues ne seront pas validées. Vous pourrez revoir votre aventure.",
+      "confirm": "Terminer",
+      "cancel": "Annuler"
     }
   },
   "map": {
@@ -297,7 +304,9 @@
     "dPlus": "D+",
     "stopSaveProgress": "La progression sera sauvegardee.",
     "cancel": "Annuler",
-    "stopButton": "Stop"
+    "stopButton": "Stop",
+    "stopTitle": "Arrêter le suivi ?",
+    "stopBody": "La progression sera sauvegardée."
   },
   "checklist": {
     "title": "Materiel & Sac",
@@ -689,7 +698,9 @@
     "offTrackAlerts": "Alerte hors-trace",
     "offTrackAlertsDesc": "Notification + vibration si vous quittez le sentier",
     "version": "Version",
-    "versionLabel": "Version de l'application"
+    "versionLabel": "Version de l'application",
+    "noDateChosen": "Aucune date choisie",
+    "departureDate": "Date de départ"
   },
   "appearance": {
     "title": "Apparence",
@@ -958,7 +969,8 @@
     "languageSubtitle": "Vous pourrez la modifier à tout moment dans les paramètres.",
     "downloadTitle": "Téléchargez votre premier sentier",
     "downloadSubtitle": "Parcourez le catalogue et téléchargez un sentier pour l'utiliser entièrement hors ligne.",
-    "browseCatalog": "Parcourir le catalogue"
+    "browseCatalog": "Parcourir le catalogue",
+    "recoveryNudge": "Pensez à noter votre code de reconnexion (dans les réglages) : il ouvre vos données sur un autre téléphone."
   },
   "monetization": {
     "demoBanner": "Mode démo — touchez pour débloquer",
@@ -1828,7 +1840,8 @@
     "a11y": {
       "trekCard": "Trek $nom, $state",
       "openTrek": "Ouvrir le trek $nom"
-    }
+    },
+    "settingsSubtitle": "Langue, unités, thème"
   },
   "trekState": {
     "abandonDialog": {
@@ -1964,5 +1977,29 @@
       "hint": "Affichez vos infos vitales aux secours, même écran verrouillé.",
       "unavailable": "Ouvrez la fiche médicale dans les réglages Santé de votre téléphone."
     }
+  },
+  "recovery": {
+    "section": "Compte et reconnexion",
+    "sectionDesc": "Voir mon code de reconnexion",
+    "title": "Mon code de reconnexion",
+    "intro": "Ce code ouvre votre coffre (profil, fiche de renseignement et solde d'étapes) sur un autre téléphone. Notez-le et gardez-le en lieu sûr : il fonctionne comme un mot de passe.",
+    "codeLabel": "Votre code",
+    "copy": "Copier le code",
+    "copied": "Code copié",
+    "warning": "Personne d'autre ne peut lire votre coffre, pas même nous. Si vous perdez ce code, vos données seront définitivement irrécupérables.",
+    "error": "Impossible de générer le code pour le moment."
+  },
+  "common": {
+    "cannotLoadStages": "Impossible de charger les étapes",
+    "noStages": "Aucune étape disponible",
+    "cannotLoadStage": "Impossible de charger cette étape",
+    "stageNotFound": "Étape introuvable",
+    "cannotLoadTrack": "Impossible de charger le tracé",
+    "loadingTrack": "Chargement du tracé…",
+    "gpxEmpty": "Le fichier GPX ne contient aucun point.",
+    "noPoiForStage": "Aucun point d'intérêt pour cette étape.",
+    "viewOnMap": "Voir sur la carte",
+    "error": "Erreur",
+    "pageNotFound": "Page introuvable : $path"
   }
 }

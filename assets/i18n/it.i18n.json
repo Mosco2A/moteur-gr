@@ -158,6 +158,13 @@
     "fab": {
       "feedback": "Lascia un feedback",
       "sos": "SOS"
+    },
+    "finishTrek": {
+      "action": "Termina il trek",
+      "confirmTitle": "Terminare il trek?",
+      "confirmBody": "Il trek sarà segnato come terminato. Le tappe non percorse non saranno convalidate. Potrai comunque rivedere la tua avventura.",
+      "confirm": "Termina",
+      "cancel": "Annulla"
     }
   },
   "map": {
@@ -297,7 +304,9 @@
     "dPlus": "D+",
     "stopSaveProgress": "I tuoi progressi saranno salvati.",
     "cancel": "Annulla",
-    "stopButton": "Stop"
+    "stopButton": "Stop",
+    "stopTitle": "Interrompere l'acquisizione?",
+    "stopBody": "I tuoi progressi saranno salvati."
   },
   "checklist": {
     "title": "Attrezzatura & Zaino",
@@ -689,7 +698,9 @@
     "offTrackAlerts": "Avviso fuori tracciato",
     "offTrackAlertsDesc": "Notifica + vibrazione se lasci il sentiero",
     "version": "Versione",
-    "versionLabel": "Versione dell'app"
+    "versionLabel": "Versione dell'app",
+    "noDateChosen": "Nessuna data scelta",
+    "departureDate": "Data di partenza"
   },
   "appearance": {
     "title": "Aspetto",
@@ -958,7 +969,8 @@
     "languageSubtitle": "Potrai modificarla in qualsiasi momento nelle impostazioni.",
     "downloadTitle": "Scarica il tuo primo sentiero",
     "downloadSubtitle": "Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.",
-    "browseCatalog": "Sfoglia il catalogo"
+    "browseCatalog": "Sfoglia il catalogo",
+    "recoveryNudge": "Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono."
   },
   "monetization": {
     "demoBanner": "Modalità demo — tocca per sbloccare",
@@ -1828,7 +1840,8 @@
     "a11y": {
       "trekCard": "Trek $nom, $state",
       "openTrek": "Apri il trek $nom"
-    }
+    },
+    "settingsSubtitle": "Lingua, unità, tema"
   },
   "trekState": {
     "abandonDialog": {
@@ -1964,5 +1977,29 @@
       "hint": "Mostra i tuoi dati vitali ai soccorsi, anche a schermo bloccato.",
       "unavailable": "Apri la scheda medica nelle impostazioni Salute del telefono."
     }
+  },
+  "recovery": {
+    "section": "Account e ripristino",
+    "sectionDesc": "Vedi il mio codice di ripristino",
+    "title": "Il mio codice di ripristino",
+    "intro": "Questo codice apre il tuo forziere (profilo, scheda informativa e saldo tappe) su un altro telefono. Annotalo e conservalo al sicuro: funziona come una password.",
+    "codeLabel": "Il tuo codice",
+    "copy": "Copia codice",
+    "copied": "Codice copiato",
+    "warning": "Nessun altro può leggere il tuo forziere, nemmeno noi. Se perdi questo codice, i tuoi dati saranno definitivamente irrecuperabili.",
+    "error": "Impossibile generare il codice in questo momento."
+  },
+  "common": {
+    "cannotLoadStages": "Impossibile caricare le tappe",
+    "noStages": "Nessuna tappa disponibile",
+    "cannotLoadStage": "Impossibile caricare questa tappa",
+    "stageNotFound": "Tappa non trovata",
+    "cannotLoadTrack": "Impossibile caricare il tracciato",
+    "loadingTrack": "Caricamento del tracciato…",
+    "gpxEmpty": "Il file GPX non contiene alcun punto.",
+    "noPoiForStage": "Nessun punto di interesse per questa tappa.",
+    "viewOnMap": "Vedi sulla mappa",
+    "error": "Errore",
+    "pageNotFound": "Pagina non trovata: $path"
   }
 }

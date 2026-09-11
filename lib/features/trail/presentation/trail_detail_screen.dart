@@ -49,17 +49,14 @@ class TrailDetailScreen extends ConsumerWidget {
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (error, _) => EmptyState(
                 icon: Icons.error_outline,
-                title: 'Impossible de charger les étapes',
+                title: t.common.cannotLoadStages,
                 subtitle: error.toString(),
               ),
               data: (stages) {
                 if (stages.isEmpty) {
-                  return const EmptyState(
+                  return EmptyState(
                     icon: Icons.hiking,
-                    title: 'Aucune étape disponible',
-                    subtitle:
-                        'Les données du sentier ne sont pas '
-                        'encore chargées.',
+                    title: t.common.noStages,
                   );
                 }
                 return ListView.builder(

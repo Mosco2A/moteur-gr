@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../domain/feasibility_calculator.dart';
@@ -240,7 +241,7 @@ class _ResultView extends StatelessWidget {
           // Points faibles
           if (result.weakPoints.isNotEmpty) ...[
             Text(
-              'Points \u00e0 am\u00e9liorer',
+              t.feasibility.weakPointsTitle,
               style: theme.textTheme.titleMedium,
             ),
             const SizedBox(height: AppTheme.spacingSm),
@@ -258,7 +259,7 @@ class _ResultView extends StatelessWidget {
           ],
           // Points forts
           if (result.strongPoints.isNotEmpty) ...[
-            Text('Points forts', style: theme.textTheme.titleMedium),
+            Text(t.feasibility.strongPointsTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppTheme.spacingSm),
             ...result.strongPoints.map(
               (p) => ListTile(

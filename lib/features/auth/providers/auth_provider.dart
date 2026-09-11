@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/firebase/firebase_service.dart';
@@ -21,7 +23,16 @@ final authServiceProvider = Provider<AuthService>((ref) {
     return service;
   }
 
+  // OFFLINE-FIRST (finitions V1, point 2) : sans cet `initialize()`, le
+  // LocalAuthService ne poussait JAMAIS d'utilisateur dans `authStateChanges`
+  // (il ne s'auto-connectait qu'appele explicitement). Resultat : hors reseau /
+  // sans Firebase, `currentUserProvider` restait bloque en `loading` -> spinner
+  // infini sur /profile. On amorce donc l'etat local (auto-connexion anonyme au
+  // 1er lancement, ou restauration des prefs) en fire-and-forget : le stream
+  // emet aussitot, jamais bloque par le reseau (parite du chemin Firebase, qui
+  // appelle deja `initialize()` ci-dessus). Best-effort, non bloquant.
   final service = LocalAuthService();
+  unawaited(service.initialize());
   ref.onDispose(() => service.dispose());
   return service;
 });

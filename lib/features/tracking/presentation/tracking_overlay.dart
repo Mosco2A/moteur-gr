@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/app_haptics.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../map/providers/track_position_provider.dart';
 import '../models/tracking_status.dart';
@@ -159,19 +160,19 @@ class TrackingOverlay extends ConsumerWidget {
     showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Arreter le tracking ?'),
-        content: const Text('La progression sera sauvegardee.'),
+        title: Text(t.tracking.stopTitle),
+        content: Text(t.tracking.stopBody),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Annuler'),
+            child: Text(t.tracking.cancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(ctx).pop(true);
               notifier.stop();
             },
-            child: const Text('Arreter'),
+            child: Text(t.tracking.stop),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../i18n/translations.g.dart';
 import '../../features/auth/presentation/profile_screen.dart';
 import '../../features/checklist/presentation/checklist_screen.dart';
 import '../../features/consent/presentation/consent_settings_screen.dart';
@@ -23,6 +24,7 @@ import '../../features/planning/presentation/plan_summary_screen.dart';
 import '../../features/planning/presentation/shop_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
 import '../../features/planning/presentation/transport_screen.dart';
+import '../../features/settings/presentation/recovery_code_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
 import '../../features/tips/presentation/tips_screen.dart';
 import '../../features/weather/presentation/fire_risk_screen.dart';
@@ -635,6 +637,16 @@ final appRouter = GoRouter(
       name: 'settings',
       builder: (context, state) => const SettingsScreen(),
     ),
+    // Finitions V1 (point 4) : ecran « Afficher mon code de reconnexion »
+    // (modele code-sur-tel blinde, decision Chris #99784). Affiche le code (cle
+    // du coffre chiffre : profil + fiche sante + solde wallet) pour que
+    // l'utilisateur le NOTE. Atteint depuis les reglages (push -> retour propre).
+    // Sans sentier requis (donnee de compte) -> ajoute aux excludedPaths du guard.
+    GoRoute(
+      path: '/recovery-code',
+      name: 'recovery-code',
+      builder: (context, state) => const RecoveryCodeScreen(),
+    ),
     // D4A-02 : gestion du consentement RGPD granulaire (depuis les reglages).
     GoRoute(
       path: '/consent',
@@ -655,8 +667,8 @@ final appRouter = GoRouter(
     // reference par aucune route ni aucun ecran (cf. INVENTAIRE_ORPHELINS_L8.md).
   ],
   errorBuilder: (context, state) => Scaffold(
-    appBar: AppBar(title: const Text('Erreur')),
-    body: Center(child: Text('Page introuvable : ${state.uri.path}')),
+    appBar: AppBar(title: Text(t.common.error)),
+    body: Center(child: Text(t.common.pageNotFound(path: state.uri.path))),
   ),
 );
 
@@ -775,6 +787,9 @@ String? redirectForPath(String path) {
     '/emergency',
     // E57 (LOT D/D1) : fiche sante = donnee personnelle, sans sentier requis.
     '/health',
+    // Finitions V1 (point 4) : code de reconnexion = donnee de compte, sans
+    // sentier requis (atteignable depuis les reglages, meme sans trek actif).
+    '/recovery-code',
   ];
   if (excludedPaths.contains(path)) return null;
 

@@ -336,8 +336,15 @@ class _DownloadPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingXl),
+    // Finitions V1 (point 4) : le nudge « code de reconnexion » ajoute du contenu
+    // en bas de page -> on rend la page DEFILANTE (comme la page langue) pour ne
+    // jamais deborder sur les petits ecrans (l'onboarding vit dans une zone a
+    // hauteur bornee, cf. Stack/Positioned du parent).
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingXl,
+        vertical: AppTheme.spacingLg,
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -377,6 +384,51 @@ class _DownloadPage extends StatelessWidget {
             icon: Icons.explore,
             label: tr.onboarding.browseCatalog,
             onPressed: onBrowse,
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+          // Finitions V1 (point 4) : NUDGE code de reconnexion (#99784). On
+          // invite l'utilisateur a noter TOT son code (affichable dans les
+          // reglages) — c'est la cle de son coffre, le perdre = donnees perdues.
+          // Nudge discret (pas de blocage) : le code s'affiche a la demande.
+          _RecoveryNudge(tr: tr, theme: theme),
+        ],
+      ),
+    );
+  }
+}
+
+/// Nudge « note ton code de reconnexion » de l'onboarding (Finitions V1, #99784).
+///
+/// Informe TOT que le code (affichable dans les réglages) ouvre le coffre sur un
+/// autre téléphone et qu'il faut le garder. Discret, non bloquant — l'écran
+/// dédié (réglages) reste la source d'affichage. Zéro texte en dur (Slang).
+class _RecoveryNudge extends StatelessWidget {
+  const _RecoveryNudge({required this.tr, required this.theme});
+
+  final Translations tr;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withAlpha(20),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.vpn_key_outlined,
+              size: 20, color: theme.colorScheme.primary),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(
+              tr.onboarding.recoveryNudge,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
+            ),
           ),
         ],
       ),

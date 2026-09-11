@@ -106,6 +106,8 @@ class TranslationsIt extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$pastHikes$it pastHikes = _Translations$pastHikes$it._(_root);
 	@override late final _Translations$ffrando$it ffrando = _Translations$ffrando$it._(_root);
 	@override late final _Translations$sos$it sos = _Translations$sos$it._(_root);
+	@override late final _Translations$recovery$it recovery = _Translations$recovery$it._(_root);
+	@override late final _Translations$common$it common = _Translations$common$it._(_root);
 }
 
 // Path: a11y
@@ -232,6 +234,7 @@ class _Translations$hub$it extends Translations$hub$fr {
 	@override late final _Translations$hub$sections$it sections = _Translations$hub$sections$it._(_root);
 	@override late final _Translations$hub$cards$it cards = _Translations$hub$cards$it._(_root);
 	@override late final _Translations$hub$fab$it fab = _Translations$hub$fab$it._(_root);
+	@override late final _Translations$hub$finishTrek$it finishTrek = _Translations$hub$finishTrek$it._(_root);
 }
 
 // Path: map
@@ -414,6 +417,8 @@ class _Translations$tracking$it extends Translations$tracking$fr {
 	@override String get stopSaveProgress => 'I tuoi progressi saranno salvati.';
 	@override String get cancel => 'Annulla';
 	@override String get stopButton => 'Stop';
+	@override String get stopTitle => 'Interrompere l\'acquisizione?';
+	@override String get stopBody => 'I tuoi progressi saranno salvati.';
 }
 
 // Path: checklist
@@ -611,6 +616,8 @@ class _Translations$settings$it extends Translations$settings$fr {
 	@override String get offTrackAlertsDesc => 'Notifica + vibrazione se lasci il sentiero';
 	@override String get version => 'Versione';
 	@override String get versionLabel => 'Versione dell\'app';
+	@override String get noDateChosen => 'Nessuna data scelta';
+	@override String get departureDate => 'Data di partenza';
 }
 
 // Path: appearance
@@ -853,6 +860,7 @@ class _Translations$onboarding$it extends Translations$onboarding$fr {
 	@override String get downloadTitle => 'Scarica il tuo primo sentiero';
 	@override String get downloadSubtitle => 'Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.';
 	@override String get browseCatalog => 'Sfoglia il catalogo';
+	@override String get recoveryNudge => 'Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono.';
 }
 
 // Path: monetization
@@ -1476,6 +1484,7 @@ class _Translations$myTreks$it extends Translations$myTreks$fr {
 	@override late final _Translations$myTreks$badge$it badge = _Translations$myTreks$badge$it._(_root);
 	@override String progressLabel({required Object percent}) => '${percent} % del sentiero';
 	@override late final _Translations$myTreks$a11y$it a11y = _Translations$myTreks$a11y$it._(_root);
+	@override String get settingsSubtitle => 'Lingua, unità, tema';
 }
 
 // Path: trekState
@@ -1624,6 +1633,44 @@ class _Translations$sos$it extends Translations$sos$fr {
 	@override late final _Translations$sos$medicalId$it medicalId = _Translations$sos$medicalId$it._(_root);
 }
 
+// Path: recovery
+class _Translations$recovery$it extends Translations$recovery$fr {
+	_Translations$recovery$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get section => 'Account e ripristino';
+	@override String get sectionDesc => 'Vedi il mio codice di ripristino';
+	@override String get title => 'Il mio codice di ripristino';
+	@override String get intro => 'Questo codice apre il tuo forziere (profilo, scheda informativa e saldo tappe) su un altro telefono. Annotalo e conservalo al sicuro: funziona come una password.';
+	@override String get codeLabel => 'Il tuo codice';
+	@override String get copy => 'Copia codice';
+	@override String get copied => 'Codice copiato';
+	@override String get warning => 'Nessun altro può leggere il tuo forziere, nemmeno noi. Se perdi questo codice, i tuoi dati saranno definitivamente irrecuperabili.';
+	@override String get error => 'Impossibile generare il codice in questo momento.';
+}
+
+// Path: common
+class _Translations$common$it extends Translations$common$fr {
+	_Translations$common$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get cannotLoadStages => 'Impossibile caricare le tappe';
+	@override String get noStages => 'Nessuna tappa disponibile';
+	@override String get cannotLoadStage => 'Impossibile caricare questa tappa';
+	@override String get stageNotFound => 'Tappa non trovata';
+	@override String get cannotLoadTrack => 'Impossibile caricare il tracciato';
+	@override String get loadingTrack => 'Caricamento del tracciato…';
+	@override String get gpxEmpty => 'Il file GPX non contiene alcun punto.';
+	@override String get noPoiForStage => 'Nessun punto di interesse per questa tappa.';
+	@override String get viewOnMap => 'Vedi sulla mappa';
+	@override String get error => 'Errore';
+	@override String pageNotFound({required Object path}) => 'Pagina non trovata: ${path}';
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$it extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -1732,6 +1779,20 @@ class _Translations$hub$fab$it extends Translations$hub$fab$fr {
 	// Translations
 	@override String get feedback => 'Lascia un feedback';
 	@override String get sos => 'SOS';
+}
+
+// Path: hub.finishTrek
+class _Translations$hub$finishTrek$it extends Translations$hub$finishTrek$fr {
+	_Translations$hub$finishTrek$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get action => 'Termina il trek';
+	@override String get confirmTitle => 'Terminare il trek?';
+	@override String get confirmBody => 'Il trek sarà segnato come terminato. Le tappe non percorse non saranno convalidate. Potrai comunque rivedere la tua avventura.';
+	@override String get confirm => 'Termina';
+	@override String get cancel => 'Annulla';
 }
 
 // Path: stage.difficulty
@@ -3756,6 +3817,11 @@ extension on TranslationsIt {
 			'hub.cards.fireSub' => 'Rischi e allerte',
 			'hub.fab.feedback' => 'Lascia un feedback',
 			'hub.fab.sos' => 'SOS',
+			'hub.finishTrek.action' => 'Termina il trek',
+			'hub.finishTrek.confirmTitle' => 'Terminare il trek?',
+			'hub.finishTrek.confirmBody' => 'Il trek sarà segnato come terminato. Le tappe non percorse non saranno convalidate. Potrai comunque rivedere la tua avventura.',
+			'hub.finishTrek.confirm' => 'Termina',
+			'hub.finishTrek.cancel' => 'Annulla',
 			'map.title' => 'Mappa del sentiero',
 			'map.loading' => 'Caricamento del tracciato...',
 			'map.noTrack' => 'Nessun tracciato disponibile',
@@ -3865,6 +3931,8 @@ extension on TranslationsIt {
 			'tracking.stopSaveProgress' => 'I tuoi progressi saranno salvati.',
 			'tracking.cancel' => 'Annulla',
 			'tracking.stopButton' => 'Stop',
+			'tracking.stopTitle' => 'Interrompere l\'acquisizione?',
+			'tracking.stopBody' => 'I tuoi progressi saranno salvati.',
 			'checklist.title' => 'Attrezzatura & Zaino',
 			'checklist.subtitle' => 'Prepara lo zaino',
 			'checklist.progress' => '{checked}/{total} preparati',
@@ -4120,6 +4188,8 @@ extension on TranslationsIt {
 			'weather.stageLabel' => ({required Object number}) => 'Tappa ${number}',
 			'weather.stormAlertsTitle' => 'Allerte temporali',
 			'weather.stormAlertsToggleOn' => 'Allerte temporali attive',
+			_ => null,
+		} ?? switch (path) {
 			'weather.stormAlertsToggleOff' => 'Allerte temporali disattivate',
 			'weather.lastUpdate' => ({required Object date}) => 'Aggiornato ${date}',
 			'weather.guideTitle' => 'Capire il meteo',
@@ -4127,8 +4197,6 @@ extension on TranslationsIt {
 			'weather.source.api' => 'Dati in diretta',
 			'weather.source.cache' => 'Dati salvati',
 			'weather.source.offline' => 'Non in linea',
-			_ => null,
-		} ?? switch (path) {
 			'weather.source.demo' => 'Dati dimostrativi',
 			'weather.recommendation.ok' => 'Condizioni favorevoli',
 			'weather.recommendation.watch' => 'Prudenza consigliata',
@@ -4217,6 +4285,8 @@ extension on TranslationsIt {
 			'settings.offTrackAlertsDesc' => 'Notifica + vibrazione se lasci il sentiero',
 			'settings.version' => 'Versione',
 			'settings.versionLabel' => 'Versione dell\'app',
+			'settings.noDateChosen' => 'Nessuna data scelta',
+			'settings.departureDate' => 'Data di partenza',
 			'appearance.title' => 'Aspetto',
 			'appearance.subtitle' => 'Scegli lo stile dell’app',
 			'appearance.skinSentierVivant' => 'Sentiero Vivo',
@@ -4430,6 +4500,7 @@ extension on TranslationsIt {
 			'onboarding.downloadTitle' => 'Scarica il tuo primo sentiero',
 			'onboarding.downloadSubtitle' => 'Sfoglia il catalogo e scarica un sentiero per usarlo completamente offline.',
 			'onboarding.browseCatalog' => 'Sfoglia il catalogo',
+			'onboarding.recoveryNudge' => 'Ricordati di annotare il tuo codice di ripristino (nelle impostazioni): apre i tuoi dati su un altro telefono.',
 			'monetization.demoBanner' => 'Modalità demo — tocca per sbloccare',
 			'monetization.paywallTitle' => 'Sblocca questo trek',
 			'monetization.paywallBody' => 'La modalità gratuita permette di preparare il trek con pubblicità. Il premium sblocca tutto, senza pubblicità.',
@@ -4631,6 +4702,8 @@ extension on TranslationsIt {
 			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
 			'packs.delete.cancel' => 'Annulla',
 			'packs.delete.confirm' => 'Elimina',
+			_ => null,
+		} ?? switch (path) {
 			'packs.delete.freed' => 'Spazio liberato.',
 			'packs.empty' => 'Nessun pacchetto disponibile per questo sentiero.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pacchetto ${nom}, ${state}',
@@ -4641,8 +4714,6 @@ extension on TranslationsIt {
 			'packs.types.sud.nom' => 'Mare a Mare Sud',
 			'packs.types.sud.description' => 'La metà sud del sentiero, offline.',
 			'packs.types.complet.nom' => 'Mare a Mare Completo',
-			_ => null,
-		} ?? switch (path) {
 			'packs.types.complet.description' => 'Tutto il sentiero, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Il sentiero Mare a Mare, offline.',
@@ -5074,6 +5145,7 @@ extension on TranslationsIt {
 			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % del sentiero',
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Apri il trek ${nom}',
+			'myTreks.settingsSubtitle' => 'Lingua, unità, tema',
 			'trekState.abandonDialog.title' => 'Un trek è già in corso',
 			'trekState.abandonDialog.message' => 'Hai un\'escursione in corso. Terminala o abbandonala prima di iniziarne un\'altra.',
 			'trekState.abandonDialog.finish' => 'Termina',
@@ -5144,6 +5216,8 @@ extension on TranslationsIt {
 			'pastHikes.empty' => 'Nessuna escursione inserita.',
 			'pastHikes.fieldDate' => 'Data',
 			'pastHikes.fieldDays' => 'Numero di giorni',
+			_ => null,
+		} ?? switch (path) {
 			'pastHikes.fieldAvgHours' => 'Cammino medio al giorno (h)',
 			'pastHikes.fieldElevation' => 'Dislivello + totale (m)',
 			'pastHikes.fieldDistance' => 'Distanza totale (km)',
@@ -5155,8 +5229,6 @@ extension on TranslationsIt {
 			'pastHikes.maxReached' => 'Massimo di 5 escursioni raggiunto.',
 			'pastHikes.difficultiesTitle' => 'Difficolta incontrate',
 			'pastHikes.difficultiesHint' => 'Un solo testo per tutte queste escursioni: vesciche, ginocchia in discesa, affanno in quota, colpo di calore...',
-			_ => null,
-		} ?? switch (path) {
 			'pastHikes.difficultiesSaved' => 'Nota salvata',
 			'ffrando.cotationTitle' => 'Valutazione FFRandonnee',
 			'ffrando.effort' => 'Sforzo',
@@ -5187,6 +5259,26 @@ extension on TranslationsIt {
 			'sos.medicalId.action' => 'Scheda medica del telefono',
 			'sos.medicalId.hint' => 'Mostra i tuoi dati vitali ai soccorsi, anche a schermo bloccato.',
 			'sos.medicalId.unavailable' => 'Apri la scheda medica nelle impostazioni Salute del telefono.',
+			'recovery.section' => 'Account e ripristino',
+			'recovery.sectionDesc' => 'Vedi il mio codice di ripristino',
+			'recovery.title' => 'Il mio codice di ripristino',
+			'recovery.intro' => 'Questo codice apre il tuo forziere (profilo, scheda informativa e saldo tappe) su un altro telefono. Annotalo e conservalo al sicuro: funziona come una password.',
+			'recovery.codeLabel' => 'Il tuo codice',
+			'recovery.copy' => 'Copia codice',
+			'recovery.copied' => 'Codice copiato',
+			'recovery.warning' => 'Nessun altro può leggere il tuo forziere, nemmeno noi. Se perdi questo codice, i tuoi dati saranno definitivamente irrecuperabili.',
+			'recovery.error' => 'Impossibile generare il codice in questo momento.',
+			'common.cannotLoadStages' => 'Impossibile caricare le tappe',
+			'common.noStages' => 'Nessuna tappa disponibile',
+			'common.cannotLoadStage' => 'Impossibile caricare questa tappa',
+			'common.stageNotFound' => 'Tappa non trovata',
+			'common.cannotLoadTrack' => 'Impossibile caricare il tracciato',
+			'common.loadingTrack' => 'Caricamento del tracciato…',
+			'common.gpxEmpty' => 'Il file GPX non contiene alcun punto.',
+			'common.noPoiForStage' => 'Nessun punto di interesse per questa tappa.',
+			'common.viewOnMap' => 'Vedi sulla mappa',
+			'common.error' => 'Errore',
+			'common.pageNotFound' => ({required Object path}) => 'Pagina non trovata: ${path}',
 			_ => null,
 		};
 	}

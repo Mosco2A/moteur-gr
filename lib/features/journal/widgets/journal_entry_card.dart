@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../core/data/database.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 
 /// Carte d'une entrée de journal.
@@ -40,7 +41,7 @@ class JournalEntryCard extends StatelessWidget {
               Icon(Icons.terrain, size: 16, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingXs),
               Text(
-                'Étape ${entry.stageNumber}',
+                '${t.journal.stage} ${entry.stageNumber}',
                 style: theme.textTheme.labelLarge?.copyWith(
                   color: theme.colorScheme.primary,
                 ),

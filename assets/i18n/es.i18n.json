@@ -158,6 +158,13 @@
     "fab": {
       "feedback": "Dar mi opinión",
       "sos": "SOS"
+    },
+    "finishTrek": {
+      "action": "Terminar el trek",
+      "confirmTitle": "¿Terminar el trek?",
+      "confirmBody": "El trek se marcará como terminado. Las etapas no recorridas no se validarán. Podrás revisar tu aventura.",
+      "confirm": "Terminar",
+      "cancel": "Cancelar"
     }
   },
   "map": {
@@ -297,7 +304,9 @@
     "dPlus": "D+",
     "stopSaveProgress": "Tu progreso se guardara.",
     "cancel": "Cancelar",
-    "stopButton": "Detener"
+    "stopButton": "Detener",
+    "stopTitle": "¿Detener el seguimiento?",
+    "stopBody": "Tu progreso se guardará."
   },
   "checklist": {
     "title": "Equipo & Mochila",
@@ -689,7 +698,9 @@
     "offTrackAlerts": "Alerta fuera del sendero",
     "offTrackAlertsDesc": "Notificación + vibración si sales del sendero",
     "version": "Versión",
-    "versionLabel": "Versión de la aplicación"
+    "versionLabel": "Versión de la aplicación",
+    "noDateChosen": "Ninguna fecha elegida",
+    "departureDate": "Fecha de salida"
   },
   "appearance": {
     "title": "Apariencia",
@@ -958,7 +969,8 @@
     "languageSubtitle": "Podrás cambiarlo en cualquier momento en los ajustes.",
     "downloadTitle": "Descarga tu primer sendero",
     "downloadSubtitle": "Explora el catálogo y descarga un sendero para usarlo completamente sin conexión.",
-    "browseCatalog": "Explorar el catálogo"
+    "browseCatalog": "Explorar el catálogo",
+    "recoveryNudge": "Recuerda anotar tu código de recuperación (en ajustes): abre tus datos en otro teléfono."
   },
   "monetization": {
     "demoBanner": "Modo demo — toca para desbloquear",
@@ -1828,7 +1840,8 @@
     "a11y": {
       "trekCard": "Ruta $nom, $state",
       "openTrek": "Abrir la ruta $nom"
-    }
+    },
+    "settingsSubtitle": "Idioma, unidades, tema"
   },
   "trekState": {
     "abandonDialog": {
@@ -1964,5 +1977,29 @@
       "hint": "Muestre sus datos vitales a emergencias, incluso con la pantalla bloqueada.",
       "unavailable": "Abra la ficha médica en los ajustes de Salud de su teléfono."
     }
+  },
+  "recovery": {
+    "section": "Cuenta y recuperación",
+    "sectionDesc": "Ver mi código de recuperación",
+    "title": "Mi código de recuperación",
+    "intro": "Este código abre tu caja fuerte (perfil, ficha personal y saldo de etapas) en otro teléfono. Anótalo y guárdalo en un lugar seguro: funciona como una contraseña.",
+    "codeLabel": "Tu código",
+    "copy": "Copiar código",
+    "copied": "Código copiado",
+    "warning": "Nadie más puede leer tu caja fuerte, ni siquiera nosotros. Si pierdes este código, tus datos serán irrecuperables para siempre.",
+    "error": "No se puede generar el código en este momento."
+  },
+  "common": {
+    "cannotLoadStages": "No se pueden cargar las etapas",
+    "noStages": "No hay etapas disponibles",
+    "cannotLoadStage": "No se puede cargar esta etapa",
+    "stageNotFound": "Etapa no encontrada",
+    "cannotLoadTrack": "No se puede cargar el trazado",
+    "loadingTrack": "Cargando el trazado…",
+    "gpxEmpty": "El archivo GPX no contiene ningún punto.",
+    "noPoiForStage": "Ningún punto de interés para esta etapa.",
+    "viewOnMap": "Ver en el mapa",
+    "error": "Error",
+    "pageNotFound": "Página no encontrada: $path"
   }
 }

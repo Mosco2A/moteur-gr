@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../models/day_plan.dart';
 
@@ -54,7 +55,7 @@ class _DayHeader extends StatelessWidget {
     return Row(
       children: [
         Text(
-          'Jour ${dayPlan.dayNumber}',
+          '${t.planning.day} ${dayPlan.dayNumber}',
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
           ),
@@ -72,7 +73,7 @@ class _DayHeader extends StatelessWidget {
                   BorderRadius.circular(AppTheme.radiusChip),
             ),
             child: Text(
-              'Repos',
+              t.planning.restDay,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.secondary,
                 fontWeight: FontWeight.w600,
@@ -104,7 +105,7 @@ class _RestDayContent extends StatelessWidget {
           ),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
-            'Jour de repos',
+            t.planning.restDay,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.colorScheme.onSurface.withAlpha(180),
               fontStyle: FontStyle.italic,

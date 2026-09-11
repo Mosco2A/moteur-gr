@@ -9,6 +9,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/contextual_action_bar.dart';
 import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../safety/presentation/sos_button.dart';
+import 'widgets/finish_trek_button.dart';
 import 'widgets/hub_header.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_trek_card.dart';
@@ -124,6 +125,17 @@ class _HubScreenState extends ConsumerState<HubScreen>
             icon: const Icon(Icons.person_outline),
             tooltip: t.hub.profileTooltip,
             onPressed: () => context.push('/profile'),
+          ),
+          // Finitions V1 (point 1) : acces REGLAGES depuis le cockpit. Le
+          // big-bang hub-and-push (L3) a supprime l'onglet « Plus » qui etait la
+          // SEULE porte vers /settings -> langue/unites/theme/confidentialite
+          // devenaient inatteignables apres l'onboarding. On retablit un acces
+          // atteignable via le header standard du cockpit (SPEC §4 : « Mon compte
+          // / reglages / ecrans info : header standard »). push -> retour propre.
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: t.nav.settings,
+            onPressed: () => context.push('/settings'),
           ),
         ],
       ),
@@ -373,6 +385,14 @@ class _HubScreenState extends ConsumerState<HubScreen>
                 ),
               ],
             ),
+
+            // --- « Terminer le trek » (Finitions V1, point 3) ---
+            // Bouton ORANGE en FIN DE SCROLL (décision Chris), symétrique du
+            // « Démarrer » porté par la HubTrekCard. Ne s'affiche QUE si un trek
+            // est en cours (le widget se masque lui-même sinon). Rétablit une fin
+            // MANUELLE atteignable — l'app ne dépend plus uniquement de la
+            // détection GPS d'arrivée pour terminer un trek.
+            const FinishTrekButton(),
           ],
         ),
       ),

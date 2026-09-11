@@ -100,18 +100,18 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
         ),
       ),
       body: rawTrack.when(
-        loading: () => const LoadingOverlay(message: 'Chargement du tracé...'),
+        loading: () => LoadingOverlay(message: t.common.loadingTrack),
         error: (error, _) => EmptyState(
           icon: Icons.error_outline,
-          title: 'Impossible de charger le tracé',
+          title: t.common.cannotLoadTrack,
           subtitle: error.toString(),
         ),
         data: (points) {
           if (points.isEmpty) {
-            return const EmptyState(
+            return EmptyState(
               icon: Icons.map_outlined,
-              title: 'Aucun tracé disponible',
-              subtitle: 'Le fichier GPX ne contient aucun point.',
+              title: t.map.noTrack,
+              subtitle: t.common.gpxEmpty,
             );
           }
 

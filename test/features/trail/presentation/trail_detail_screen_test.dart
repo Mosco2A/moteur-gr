@@ -190,7 +190,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('Impossible de charger les étapes'),
+        find.text(t.common.cannotLoadStages),
         findsOneWidget,
       );
     });

@@ -8,6 +8,7 @@ import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/geo/track_point.dart';
 import 'package:moteur_gr/features/map/presentation/trail_map_screen.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests widget de l'écran TrailMapScreen.
 ///
@@ -69,7 +70,7 @@ void main() {
 
       // Le message d'erreur doit être visible
       expect(
-        find.text('Impossible de charger le tracé'),
+        find.text(t.common.cannotLoadTrack),
         findsOneWidget,
       );
     });
@@ -92,7 +93,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.text('Aucun tracé disponible'), findsOneWidget);
+      expect(find.text(t.map.noTrack), findsOneWidget);
     });
 
     testWidgets('l\'AppBar affiche le nom du sentier et le bouton retour',

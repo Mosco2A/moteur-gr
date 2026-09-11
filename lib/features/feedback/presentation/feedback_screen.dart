@@ -54,7 +54,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
                     borderRadius: BorderRadius.circular(AppTheme.radiusChip),
                   ),
                   child: Text(
-                    '${feedbackState.pendingCount} en attente',
+                    '${feedbackState.pendingCount} ${t.feedback.pending}',
                     style: theme.textTheme.bodySmall,
                   ),
                 ),
@@ -68,7 +68,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Type de feedback
-            Text('Type de retour', style: theme.textTheme.labelLarge),
+            Text(t.feedback.type, style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
             Wrap(
               spacing: AppTheme.spacingSm,
@@ -84,19 +84,19 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             const SizedBox(height: AppTheme.spacingLg),
 
             // Contenu
-            Text('Votre message', style: theme.textTheme.labelLarge),
+            Text(t.feedback.message, style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
             TextField(
               controller: _contentController,
               maxLines: 6,
-              decoration: const InputDecoration(
-                hintText: 'Décrivez votre retour...',
+              decoration: InputDecoration(
+                hintText: t.feedback.messagePlaceholder,
               ),
             ),
             const SizedBox(height: AppTheme.spacingLg),
 
             // Note de satisfaction
-            Text('Satisfaction', style: theme.textTheme.labelLarge),
+            Text(t.feedback.satisfaction, style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -124,7 +124,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
             AppButton(
               isLoading: feedbackState.isSubmitting,
               icon: Icons.send,
-              label: 'Envoyer',
+              label: t.feedback.send,
               onPressed: feedbackState.isSubmitting ? null : _submitFeedback,
             ),
 
@@ -133,7 +133,7 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
               Padding(
                 padding: const EdgeInsets.only(top: AppTheme.spacingBase),
                 child: Text(
-                  'Merci pour votre retour !',
+                  t.feedback.thanks,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: AppTheme.vertFacile,
                   ),

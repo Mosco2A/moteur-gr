@@ -10,6 +10,7 @@ import 'package:moteur_gr/features/hub/presentation/widgets/hub_header.dart';
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_trek_card.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/features/hub/providers/hub_providers.dart';
+import 'package:moteur_gr/features/map/providers/track_position_provider.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/features/treks/domain/trek_lifecycle_state.dart';
 import 'package:moteur_gr/features/treks/domain/trek_summary.dart';
@@ -208,6 +209,11 @@ void main() {
               elevationGainM: 640.0,
               elapsedDuration: Duration(hours: 3, minutes: 20),
             )),
+            // Finitions V1 (point 7) : la « distance parcourue » de la carte vient
+            // desormais de la source PROJETEE ([stageDistanceCoveredProvider], en
+            // metres), pas du cumul GPS brut `tracking.distanceKm` (non cable ->
+            // toujours 0). On fournit 12500 m = 12.5 km pour cet etat de test.
+            stageDistanceCoveredProvider.overrideWithValue(12500.0),
           ],
         ),
       );
@@ -215,7 +221,7 @@ void main() {
 
       expect(find.text(t.hub.trekCard.activeTitle), findsOneWidget);
       expect(find.text(t.hub.trekCard.resume), findsOneWidget);
-      // La distance parcourue s'affiche formatee.
+      // La distance parcourue s'affiche formatee (source projetee).
       expect(find.text('12.5 km'), findsOneWidget);
       expect(find.text('640 m'), findsOneWidget);
       // Pas de CTA « Démarrer » en trek actif.

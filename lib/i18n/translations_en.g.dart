@@ -106,6 +106,8 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$pastHikes$en pastHikes = _Translations$pastHikes$en._(_root);
 	@override late final _Translations$ffrando$en ffrando = _Translations$ffrando$en._(_root);
 	@override late final _Translations$sos$en sos = _Translations$sos$en._(_root);
+	@override late final _Translations$recovery$en recovery = _Translations$recovery$en._(_root);
+	@override late final _Translations$common$en common = _Translations$common$en._(_root);
 }
 
 // Path: a11y
@@ -232,6 +234,7 @@ class _Translations$hub$en extends Translations$hub$fr {
 	@override late final _Translations$hub$sections$en sections = _Translations$hub$sections$en._(_root);
 	@override late final _Translations$hub$cards$en cards = _Translations$hub$cards$en._(_root);
 	@override late final _Translations$hub$fab$en fab = _Translations$hub$fab$en._(_root);
+	@override late final _Translations$hub$finishTrek$en finishTrek = _Translations$hub$finishTrek$en._(_root);
 }
 
 // Path: map
@@ -414,6 +417,8 @@ class _Translations$tracking$en extends Translations$tracking$fr {
 	@override String get stopSaveProgress => 'Your progress will be saved.';
 	@override String get cancel => 'Cancel';
 	@override String get stopButton => 'Stop';
+	@override String get stopTitle => 'Stop tracking?';
+	@override String get stopBody => 'Your progress will be saved.';
 }
 
 // Path: checklist
@@ -611,6 +616,8 @@ class _Translations$settings$en extends Translations$settings$fr {
 	@override String get offTrackAlertsDesc => 'Notification + vibration if you leave the trail';
 	@override String get version => 'Version';
 	@override String get versionLabel => 'App version';
+	@override String get noDateChosen => 'No date chosen';
+	@override String get departureDate => 'Departure date';
 }
 
 // Path: appearance
@@ -853,6 +860,7 @@ class _Translations$onboarding$en extends Translations$onboarding$fr {
 	@override String get downloadTitle => 'Download your first trail';
 	@override String get downloadSubtitle => 'Browse the catalogue and download a trail to use it fully offline.';
 	@override String get browseCatalog => 'Browse the catalogue';
+	@override String get recoveryNudge => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.';
 }
 
 // Path: monetization
@@ -1476,6 +1484,7 @@ class _Translations$myTreks$en extends Translations$myTreks$fr {
 	@override late final _Translations$myTreks$badge$en badge = _Translations$myTreks$badge$en._(_root);
 	@override String progressLabel({required Object percent}) => '${percent} % of the trail';
 	@override late final _Translations$myTreks$a11y$en a11y = _Translations$myTreks$a11y$en._(_root);
+	@override String get settingsSubtitle => 'Language, units, theme';
 }
 
 // Path: trekState
@@ -1624,6 +1633,44 @@ class _Translations$sos$en extends Translations$sos$fr {
 	@override late final _Translations$sos$medicalId$en medicalId = _Translations$sos$medicalId$en._(_root);
 }
 
+// Path: recovery
+class _Translations$recovery$en extends Translations$recovery$fr {
+	_Translations$recovery$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get section => 'Account and recovery';
+	@override String get sectionDesc => 'View my recovery code';
+	@override String get title => 'My recovery code';
+	@override String get intro => 'This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.';
+	@override String get codeLabel => 'Your code';
+	@override String get copy => 'Copy code';
+	@override String get copied => 'Code copied';
+	@override String get warning => 'No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.';
+	@override String get error => 'Unable to generate the code right now.';
+}
+
+// Path: common
+class _Translations$common$en extends Translations$common$fr {
+	_Translations$common$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get cannotLoadStages => 'Unable to load stages';
+	@override String get noStages => 'No stages available';
+	@override String get cannotLoadStage => 'Unable to load this stage';
+	@override String get stageNotFound => 'Stage not found';
+	@override String get cannotLoadTrack => 'Unable to load the track';
+	@override String get loadingTrack => 'Loading track…';
+	@override String get gpxEmpty => 'The GPX file contains no points.';
+	@override String get noPoiForStage => 'No point of interest for this stage.';
+	@override String get viewOnMap => 'View on map';
+	@override String get error => 'Error';
+	@override String pageNotFound({required Object path}) => 'Page not found: ${path}';
+}
+
 // Path: hub.trekCard
 class _Translations$hub$trekCard$en extends Translations$hub$trekCard$fr {
 	_Translations$hub$trekCard$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -1732,6 +1779,20 @@ class _Translations$hub$fab$en extends Translations$hub$fab$fr {
 	// Translations
 	@override String get feedback => 'Give feedback';
 	@override String get sos => 'SOS';
+}
+
+// Path: hub.finishTrek
+class _Translations$hub$finishTrek$en extends Translations$hub$finishTrek$fr {
+	_Translations$hub$finishTrek$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get action => 'Finish trek';
+	@override String get confirmTitle => 'Finish trek?';
+	@override String get confirmBody => 'The trek will be marked as finished. Stages you haven\'t walked won\'t be validated. You can still review your adventure.';
+	@override String get confirm => 'Finish';
+	@override String get cancel => 'Cancel';
 }
 
 // Path: stage.difficulty
@@ -3756,6 +3817,11 @@ extension on TranslationsEn {
 			'hub.cards.fireSub' => 'Risks & alerts',
 			'hub.fab.feedback' => 'Give feedback',
 			'hub.fab.sos' => 'SOS',
+			'hub.finishTrek.action' => 'Finish trek',
+			'hub.finishTrek.confirmTitle' => 'Finish trek?',
+			'hub.finishTrek.confirmBody' => 'The trek will be marked as finished. Stages you haven\'t walked won\'t be validated. You can still review your adventure.',
+			'hub.finishTrek.confirm' => 'Finish',
+			'hub.finishTrek.cancel' => 'Cancel',
 			'map.title' => 'Trail map',
 			'map.loading' => 'Loading track...',
 			'map.noTrack' => 'No track available',
@@ -3865,6 +3931,8 @@ extension on TranslationsEn {
 			'tracking.stopSaveProgress' => 'Your progress will be saved.',
 			'tracking.cancel' => 'Cancel',
 			'tracking.stopButton' => 'Stop',
+			'tracking.stopTitle' => 'Stop tracking?',
+			'tracking.stopBody' => 'Your progress will be saved.',
 			'checklist.title' => 'Gear & Pack',
 			'checklist.subtitle' => 'Pack your backpack',
 			'checklist.progress' => '{checked}/{total} packed',
@@ -4120,6 +4188,8 @@ extension on TranslationsEn {
 			'weather.stageLabel' => ({required Object number}) => 'Stage ${number}',
 			'weather.stormAlertsTitle' => 'Storm alerts',
 			'weather.stormAlertsToggleOn' => 'Storm alerts on',
+			_ => null,
+		} ?? switch (path) {
 			'weather.stormAlertsToggleOff' => 'Storm alerts off',
 			'weather.lastUpdate' => ({required Object date}) => 'Updated ${date}',
 			'weather.guideTitle' => 'Understanding the weather',
@@ -4127,8 +4197,6 @@ extension on TranslationsEn {
 			'weather.source.api' => 'Live data',
 			'weather.source.cache' => 'Saved data',
 			'weather.source.offline' => 'Offline',
-			_ => null,
-		} ?? switch (path) {
 			'weather.source.demo' => 'Demo data',
 			'weather.recommendation.ok' => 'Favourable conditions',
 			'weather.recommendation.watch' => 'Caution advised',
@@ -4217,6 +4285,8 @@ extension on TranslationsEn {
 			'settings.offTrackAlertsDesc' => 'Notification + vibration if you leave the trail',
 			'settings.version' => 'Version',
 			'settings.versionLabel' => 'App version',
+			'settings.noDateChosen' => 'No date chosen',
+			'settings.departureDate' => 'Departure date',
 			'appearance.title' => 'Appearance',
 			'appearance.subtitle' => 'Choose the app’s look and feel',
 			'appearance.skinSentierVivant' => 'Living Trail',
@@ -4430,6 +4500,7 @@ extension on TranslationsEn {
 			'onboarding.downloadTitle' => 'Download your first trail',
 			'onboarding.downloadSubtitle' => 'Browse the catalogue and download a trail to use it fully offline.',
 			'onboarding.browseCatalog' => 'Browse the catalogue',
+			'onboarding.recoveryNudge' => 'Remember to note your recovery code (in settings): it unlocks your data on another phone.',
 			'monetization.demoBanner' => 'Demo mode — tap to unlock',
 			'monetization.paywallTitle' => 'Unlock this trek',
 			'monetization.paywallBody' => 'Free mode lets you plan your trek with ads. Premium unlocks everything, ad-free.',
@@ -4631,6 +4702,8 @@ extension on TranslationsEn {
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
 			'packs.delete.cancel' => 'Cancel',
 			'packs.delete.confirm' => 'Delete',
+			_ => null,
+		} ?? switch (path) {
 			'packs.delete.freed' => 'Space freed.',
 			'packs.empty' => 'No pack available for this trail.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
@@ -4641,8 +4714,6 @@ extension on TranslationsEn {
 			'packs.types.sud.nom' => 'Mare a Mare South',
 			'packs.types.sud.description' => 'The southern half of the trail, offline.',
 			'packs.types.complet.nom' => 'Mare a Mare Full',
-			_ => null,
-		} ?? switch (path) {
 			'packs.types.complet.description' => 'The whole trail, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'The Mare a Mare trail, offline.',
@@ -5074,6 +5145,7 @@ extension on TranslationsEn {
 			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % of the trail',
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Open trek ${nom}',
+			'myTreks.settingsSubtitle' => 'Language, units, theme',
 			'trekState.abandonDialog.title' => 'A trek is already in progress',
 			'trekState.abandonDialog.message' => 'You have an ongoing hike. Finish it or give it up before starting another one.',
 			'trekState.abandonDialog.finish' => 'Finish',
@@ -5144,6 +5216,8 @@ extension on TranslationsEn {
 			'pastHikes.empty' => 'No hike entered yet.',
 			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Number of days',
+			_ => null,
+		} ?? switch (path) {
 			'pastHikes.fieldAvgHours' => 'Average walking per day (h)',
 			'pastHikes.fieldElevation' => 'Total elevation gain (m)',
 			'pastHikes.fieldDistance' => 'Total distance (km)',
@@ -5155,8 +5229,6 @@ extension on TranslationsEn {
 			'pastHikes.maxReached' => 'Maximum of 5 hikes reached.',
 			'pastHikes.difficultiesTitle' => 'Difficulties encountered',
 			'pastHikes.difficultiesHint' => 'One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...',
-			_ => null,
-		} ?? switch (path) {
 			'pastHikes.difficultiesSaved' => 'Note saved',
 			'ffrando.cotationTitle' => 'FFRandonnee rating',
 			'ffrando.effort' => 'Effort',
@@ -5187,6 +5259,26 @@ extension on TranslationsEn {
 			'sos.medicalId.action' => 'Phone medical ID',
 			'sos.medicalId.hint' => 'Show your vital info to rescuers, even on the lock screen.',
 			'sos.medicalId.unavailable' => 'Open the medical ID in your phone\'s Health settings.',
+			'recovery.section' => 'Account and recovery',
+			'recovery.sectionDesc' => 'View my recovery code',
+			'recovery.title' => 'My recovery code',
+			'recovery.intro' => 'This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.',
+			'recovery.codeLabel' => 'Your code',
+			'recovery.copy' => 'Copy code',
+			'recovery.copied' => 'Code copied',
+			'recovery.warning' => 'No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.',
+			'recovery.error' => 'Unable to generate the code right now.',
+			'common.cannotLoadStages' => 'Unable to load stages',
+			'common.noStages' => 'No stages available',
+			'common.cannotLoadStage' => 'Unable to load this stage',
+			'common.stageNotFound' => 'Stage not found',
+			'common.cannotLoadTrack' => 'Unable to load the track',
+			'common.loadingTrack' => 'Loading track…',
+			'common.gpxEmpty' => 'The GPX file contains no points.',
+			'common.noPoiForStage' => 'No point of interest for this stage.',
+			'common.viewOnMap' => 'View on map',
+			'common.error' => 'Error',
+			'common.pageNotFound' => ({required Object path}) => 'Page not found: ${path}',
 			_ => null,
 		};
 	}

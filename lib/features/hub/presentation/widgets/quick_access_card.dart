@@ -125,10 +125,12 @@ class QuickAccessCard extends StatelessWidget {
             title,
             style: theme.textTheme.titleMedium?.copyWith(color: titleColor),
             textAlign: TextAlign.center,
-            // 1 ligne : le budget de hauteur de la cellule (HubSection
-            // mainAxisExtent: 150) est calibre « titre 1 ligne + sous-titre 2
-            // lignes » — passer a 2 lignes deborde aux largeurs mobiles.
-            maxLines: 1,
+            // Finitions V1 (point 6) : titre sur 2 lignes. Les titres longs
+            // (« Découvrir des sentiers ») etaient TRONQUES a 1 ligne sur les
+            // cartes etroites (Mes treks). Le budget de hauteur de la cellule
+            // ([HubSection] mainAxisExtent) est releve en consequence (2 lignes
+            // titre + 2 lignes sous-titre) — plus de troncature, pas d'overflow.
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: AppTheme.spacingXs),

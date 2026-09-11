@@ -11,6 +11,7 @@ import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_stage_detail_screen.dart';
 import 'package:moteur_gr/features/trail/providers/pois_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests widget de l'écran TrailStageDetailScreen.
 ///
@@ -224,7 +225,7 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(
-        find.text('Aucun point d\'intérêt pour cette étape.'),
+        find.text(t.common.noPoiForStage),
         findsOneWidget,
       );
     });

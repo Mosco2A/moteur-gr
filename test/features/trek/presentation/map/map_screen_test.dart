@@ -10,6 +10,7 @@ import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/map/providers/gpx_track_provider.dart';
 import 'package:moteur_gr/features/map/providers/location_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 
 /// Tests integration du MapScreen assemble (Phase 2 E2.3f).
@@ -93,7 +94,7 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      expect(find.text('Impossible de charger le trace'), findsOneWidget);
+      expect(find.text(t.common.cannotLoadTrack), findsOneWidget);
       expect(find.text('Reessayer'), findsOneWidget);
     });
 
@@ -113,7 +114,7 @@ void main() {
       );
 
       await tester.pumpAndSettle();
-      expect(find.text('Aucun trace disponible'), findsOneWidget);
+      expect(find.text(t.map.noTrack), findsOneWidget);
     });
 
     // StepWays LOT 3, Ph5 (§4) : MapScreen est devenu un ConsumerStatefulWidget

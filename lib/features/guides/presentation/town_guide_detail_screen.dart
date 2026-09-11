@@ -79,44 +79,16 @@ class TownGuideDetailScreen extends ConsumerWidget {
       appBar: AppHeader(title: guide.nomLieu),
       body: ListView(
         key: ValueKey('town-guide-detail-${guide.id}'),
-        padding: const EdgeInsets.only(bottom: AppTheme.spacingLg),
+        padding: const EdgeInsets.only(
+          top: AppTheme.spacingSm,
+          bottom: AppTheme.spacingLg,
+        ),
         children: [
-          // Rappel FACILITATEUR (#84100) en tete du detail.
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppTheme.spacingMd,
-              AppTheme.spacingMd,
-              AppTheme.spacingMd,
-              AppTheme.spacingSm,
-            ),
-            child: Semantics(
-              label: t.guides.facilitatorNote,
-              child: Container(
-                key: const ValueKey('guide-detail-facilitator-note'),
-                padding: const EdgeInsets.all(AppTheme.spacingSm),
-                decoration: BoxDecoration(
-                  color: AppTheme.vertFacile.withAlpha(30),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.info_outline,
-                      size: 18,
-                      color: AppTheme.vertFacile,
-                    ),
-                    const SizedBox(width: AppTheme.spacingSm),
-                    Expanded(
-                      child: Text(
-                        t.guides.facilitatorNote,
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // Finitions V1 (point 6) : le rappel FACILITATEUR (#84100) n'est PLUS
+          // repete ici. Il est deja porte par l'ecran LISTE des guides
+          // (`TownGuidesScreen`, porte d'entree) : l'afficher a nouveau en tete
+          // de CHAQUE detail, juste apres l'avoir lu sur la liste, faisait une
+          // intro dupliquee (retour QA). On le garde a un seul endroit (la liste).
           if (sections.isEmpty)
             Padding(
               padding: const EdgeInsets.all(AppTheme.spacingLg),

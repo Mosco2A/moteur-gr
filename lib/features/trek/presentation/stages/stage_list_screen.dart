@@ -34,12 +34,12 @@ class StageListScreen extends ConsumerWidget {
       body: stagesAsync.when(
         loading: () => LoadingView(message: t.stage.loadingList),
         error: (error, _) => ErrorView(
-          message: 'Impossible de charger les etapes',
+          message: t.common.cannotLoadStages,
           onRetry: () => ref.invalidate(stagesProvider(trailId)),
         ),
         data: (stages) {
           if (stages.isEmpty) {
-            return const Center(child: Text('Aucune etape disponible'));
+            return Center(child: Text(t.common.noStages));
           }
 
           // Tri par stageNumber (orderIndex)

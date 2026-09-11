@@ -188,13 +188,13 @@ class _MapScreenState extends ConsumerState<MapScreen>
           return trackAsync.when(
             loading: () => LoadingView(message: t.map.loading),
             error: (error, _) => ErrorView(
-              message: 'Impossible de charger le trace',
+              message: t.common.cannotLoadTrack,
               onRetry: () => ref.invalidate(gpxTrackProvider(trailId)),
             ),
             data: (points) {
               if (points.isEmpty) {
-                return const ErrorView(
-                  message: 'Aucun trace disponible',
+                return ErrorView(
+                  message: t.map.noTrack,
                 );
               }
               return _MapContent(trailId: trailId, rawPoints: points);

@@ -34,9 +34,10 @@ void main() {
           reason: 'plus d onglets persistants (hub-and-push)');
       expect(routes.every((r) => r is GoRoute), isTrue,
           reason: 'toutes les routes de 1er niveau sont des GoRoute');
-      // 6 ex-shell (my-treks/home/map/stages/journal/more) + 18 racines = 24.
+      // 6 ex-shell (my-treks/home/map/stages/journal/more) + 19 racines = 25.
       // StepWays L8 : la route de demo '/nav-pilote' a ete retiree (25 -> 24).
-      expect(routes.whereType<GoRoute>().length, 24);
+      // Finitions V1 (point 4) : ajout de '/recovery-code' (24 -> 25).
+      expect(routes.whereType<GoRoute>().length, 25);
     });
 
     test('les 6 ex-onglets sont desormais des routes racine', () {
@@ -66,6 +67,8 @@ void main() {
         '/onboarding',
         '/no-data',
         '/settings',
+        // Finitions V1 (point 4) : ecran « afficher mon code de reconnexion ».
+        '/recovery-code',
         '/consent',
         '/profile',
         // StepWays L8 : la route de demo '/nav-pilote' (ecran-pilote refonte nav,
@@ -101,6 +104,8 @@ void main() {
         'onboarding',
         'no-data',
         'settings',
+        // Finitions V1 (point 4) : ecran code de reconnexion.
+        'recovery-code',
         'consent',
         'profile',
         // StepWays L8 : 'nav-pilote' retiree (route de demo supprimee).
@@ -325,6 +330,8 @@ void main() {
         '/emergency',
         // E57 (LOT D/D1) : fiche sante = donnee perso, accessible sans sentier.
         '/health',
+        // Finitions V1 (point 4) : code de reconnexion = donnee de compte.
+        '/recovery-code',
       ]) {
         expect(redirectForPath(p), isNull, reason: '$p doit rester accessible');
       }

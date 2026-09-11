@@ -63,6 +63,10 @@ class SettingsScreen extends ConsumerWidget {
           _buildPrivacySection(context, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
+          // --- Compte & reconnexion (Finitions V1, point 4) ---
+          _buildRecoverySection(context, theme, tr),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // --- Version ---
           _buildVersionSection(context, theme, tr),
           const SizedBox(height: AppTheme.spacingXl),
@@ -457,6 +461,38 @@ class SettingsScreen extends ConsumerWidget {
               subtitle: Text(tr.consent.settingsEntryDesc),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/consent'),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// Section « Compte & reconnexion » (Finitions V1, point 4).
+  ///
+  /// Entrée vers l'écran « Afficher mon code de reconnexion » (modèle
+  /// code-sur-tel blindé, #99784) : le code ouvre le coffre chiffré (profil +
+  /// fiche santé + solde wallet) sur un autre téléphone. a11y via [Semantics].
+  Widget _buildRecoverySection(
+    BuildContext context,
+    ThemeData theme,
+    Translations tr,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _sectionHeader(theme, Icons.vpn_key_outlined, tr.recovery.section),
+        AppCard(
+          padding: EdgeInsets.zero,
+          child: Semantics(
+            button: true,
+            label: tr.recovery.title,
+            child: ListTile(
+              leading: const Icon(Icons.vpn_key_outlined),
+              title: Text(tr.recovery.title),
+              subtitle: Text(tr.recovery.sectionDesc),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push('/recovery-code'),
             ),
           ),
         ),

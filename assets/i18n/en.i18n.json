@@ -158,6 +158,13 @@
     "fab": {
       "feedback": "Give feedback",
       "sos": "SOS"
+    },
+    "finishTrek": {
+      "action": "Finish trek",
+      "confirmTitle": "Finish trek?",
+      "confirmBody": "The trek will be marked as finished. Stages you haven't walked won't be validated. You can still review your adventure.",
+      "confirm": "Finish",
+      "cancel": "Cancel"
     }
   },
   "map": {
@@ -297,7 +304,9 @@
     "dPlus": "D+",
     "stopSaveProgress": "Your progress will be saved.",
     "cancel": "Cancel",
-    "stopButton": "Stop"
+    "stopButton": "Stop",
+    "stopTitle": "Stop tracking?",
+    "stopBody": "Your progress will be saved."
   },
   "checklist": {
     "title": "Gear & Pack",
@@ -689,7 +698,9 @@
     "offTrackAlerts": "Off-track alert",
     "offTrackAlertsDesc": "Notification + vibration if you leave the trail",
     "version": "Version",
-    "versionLabel": "App version"
+    "versionLabel": "App version",
+    "noDateChosen": "No date chosen",
+    "departureDate": "Departure date"
   },
   "appearance": {
     "title": "Appearance",
@@ -958,7 +969,8 @@
     "languageSubtitle": "You can change it at any time in the settings.",
     "downloadTitle": "Download your first trail",
     "downloadSubtitle": "Browse the catalogue and download a trail to use it fully offline.",
-    "browseCatalog": "Browse the catalogue"
+    "browseCatalog": "Browse the catalogue",
+    "recoveryNudge": "Remember to note your recovery code (in settings): it unlocks your data on another phone."
   },
   "monetization": {
     "demoBanner": "Demo mode — tap to unlock",
@@ -1828,7 +1840,8 @@
     "a11y": {
       "trekCard": "Trek $nom, $state",
       "openTrek": "Open trek $nom"
-    }
+    },
+    "settingsSubtitle": "Language, units, theme"
   },
   "trekState": {
     "abandonDialog": {
@@ -1964,5 +1977,29 @@
       "hint": "Show your vital info to rescuers, even on the lock screen.",
       "unavailable": "Open the medical ID in your phone's Health settings."
     }
+  },
+  "recovery": {
+    "section": "Account and recovery",
+    "sectionDesc": "View my recovery code",
+    "title": "My recovery code",
+    "intro": "This code unlocks your vault (profile, personal info and step balance) on another phone. Write it down and keep it safe: it works like a password.",
+    "codeLabel": "Your code",
+    "copy": "Copy code",
+    "copied": "Code copied",
+    "warning": "No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.",
+    "error": "Unable to generate the code right now."
+  },
+  "common": {
+    "cannotLoadStages": "Unable to load stages",
+    "noStages": "No stages available",
+    "cannotLoadStage": "Unable to load this stage",
+    "stageNotFound": "Stage not found",
+    "cannotLoadTrack": "Unable to load the track",
+    "loadingTrack": "Loading track…",
+    "gpxEmpty": "The GPX file contains no points.",
+    "noPoiForStage": "No point of interest for this stage.",
+    "viewOnMap": "View on map",
+    "error": "Error",
+    "pageNotFound": "Page not found: $path"
   }
 }

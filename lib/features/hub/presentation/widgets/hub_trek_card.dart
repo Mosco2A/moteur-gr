@@ -9,6 +9,7 @@ import '../../../../shared/widgets/app_button.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
+import '../../../map/providers/track_position_provider.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
 import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
 import '../../../treks/providers/my_treks_provider.dart';
@@ -83,9 +84,16 @@ class _ActiveTrekCard extends ConsumerWidget {
     final totalKm = ref.watch(
       trailConfigProvider.select((c) => c.totalDistanceKm),
     );
-    final progress = totalKm > 0
-        ? (tracking.distanceKm / totalKm).clamp(0.0, 1.0)
-        : 0.0;
+    // Finitions V1 (point 7) : « distance parcourue » = distance PROJETÉE sur le
+    // tracé ([stageDistanceCoveredProvider], mètres), la MÊME source unique que
+    // la carte, l'overlay et le widget (correctif build 117 / E10 RF-10). L'ancien
+    // affichage lisait `tracking.distanceKm` (cumul GPS brut de [TrekStats]), qui
+    // reste bloqué à 0 : le pipeline `TrekStats.addPoint`/`updateStats` N'EST PAS
+    // câblé (aucun appelant) -> d'où le « 0.0 km » constaté en QA. La source
+    // projetée, elle, est alimentée et ne gonfle pas sur un aller-retour.
+    final coveredKm = ref.watch(stageDistanceCoveredProvider) / 1000.0;
+    final progress =
+        totalKm > 0 ? (coveredKm / totalKm).clamp(0.0, 1.0) : 0.0;
     final percent = (progress * 100).round();
 
     final hours = tracking.elapsedDuration.inHours;
@@ -131,7 +139,9 @@ class _ActiveTrekCard extends ConsumerWidget {
                 child: AppDataStat(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   label: t.hub.trekCard.distanceCovered,
-                  value: '${tracking.distanceKm.toStringAsFixed(1)} km',
+                  // Point 7 : source PROJETÉE (cohérente carte/overlay/widget),
+                  // plus le cumul GPS brut non câblé qui affichait « 0.0 km ».
+                  value: '${coveredKm.toStringAsFixed(1)} km',
                 ),
               ),
               Expanded(

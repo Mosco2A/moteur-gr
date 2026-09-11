@@ -59,6 +59,16 @@ class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
           label: t.myTreks.accountTitle,
           onPressed: () => context.push('/profile'),
         ),
+        // Finitions V1 (point 1) : acces REGLAGES depuis l'accueil « maison ».
+        // Le big-bang hub-and-push (L3) a retire l'onglet « Plus », seule porte
+        // vers /settings -> langue/unites/theme/confidentialite etaient perdus
+        // apres l'onboarding. On retablit l'acces ici (SPEC §4 : reglages dans
+        // l'aire « Mon compte » de l'accueil). push -> retour propre.
+        ContextualAction(
+          icon: Icons.settings_outlined,
+          label: t.nav.settings,
+          onPressed: () => context.push('/settings'),
+        ),
       ];
 
   @override
@@ -173,6 +183,16 @@ class _MyTreksBody extends ConsumerWidget {
                 title: t.myTreks.accountTitle,
                 subtitle: t.myTreks.accountSubtitle,
                 onTap: () => context.push('/profile'),
+              ),
+              // Finitions V1 (point 1) : carte REGLAGES dans le bandeau « Mon
+              // compte » (SPEC §4). Rend langue/unites/theme/confidentialite
+              // atteignables depuis l'accueil apres l'onboarding (l'onglet
+              // « Plus », seule porte historique, a disparu au big-bang L3).
+              QuickAccessCard(
+                icon: Icons.settings_outlined,
+                title: t.nav.settings,
+                subtitle: t.myTreks.settingsSubtitle,
+                onTap: () => context.push('/settings'),
               ),
             ],
           ),

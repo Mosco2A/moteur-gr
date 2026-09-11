@@ -117,8 +117,10 @@ void main() {
 
       expect(find.byKey(ValueKey('town-guide-detail-${ref.id}')),
           findsOneWidget);
+      // Finitions V1 (point 6) : le rappel facilitateur n'est PLUS repete sur le
+      // detail (dedup de l'intro — il vit uniquement sur la liste, porte d'entree).
       expect(find.byKey(const ValueKey('guide-detail-facilitator-note')),
-          findsOneWidget);
+          findsNothing);
 
       // Chaque section porteuse d'items a sa carte + ses items rendus (offline).
       // La ListView est paresseuse : on fait defiler jusqu'a chaque section.

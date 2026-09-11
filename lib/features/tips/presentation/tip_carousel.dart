@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../data/tip_card_repository.dart';
 import '../data/tip_category_config.dart';
@@ -265,7 +266,7 @@ class _EmptyState extends StatelessWidget {
             ),
             const SizedBox(height: AppTheme.spacingMd),
             Text(
-              "Aucun conseil disponible",
+              t.tips.noTips,
               style: theme.textTheme.bodyMedium?.copyWith(
                 color: theme.colorScheme.onSurface.withAlpha(150),
               ),

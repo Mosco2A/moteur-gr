@@ -32,11 +32,11 @@ class DepartureDatePicker extends ConsumerWidget {
       padding: EdgeInsets.zero,
       child: ListTile(
         leading: Icon(Icons.calendar_today, color: theme.colorScheme.primary),
-        title: const Text('Date de depart'),
+        title: Text(t.settings.departureDate),
         subtitle: Text(
           reminderState.departureDate != null
               ? dateFormat.format(reminderState.departureDate!)
-              : 'Aucune date choisie',
+              : t.settings.noDateChosen,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: reminderState.departureDate != null
                 ? theme.colorScheme.onSurface

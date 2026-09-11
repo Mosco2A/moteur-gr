@@ -173,6 +173,22 @@ class WalletStore {
     return _snapshot;
   }
 
+  /// RESTAURE un solde complet depuis le coffre de reconnexion (StepWays —
+  /// modele code-sur-tel, #99784). Ecrit le [snapshot] tel quel (solde + cumuls)
+  /// vers la source durable (prefs) ET le miroir Drift, puis emet.
+  ///
+  /// A distinguer de [credit]/[debit] (deltas metier) : ici on POSE un etat
+  /// complet venu d'un autre appareil via le coffre chiffre. Idempotent.
+  Future<void> restoreSnapshot(WalletSnapshot snapshot) async {
+    await _apply(
+      balanceSteps: snapshot.balanceSteps,
+      lifetimeEarnedSteps: snapshot.lifetimeEarnedSteps,
+      lifetimeSpentSteps: snapshot.lifetimeSpentSteps,
+    );
+    _loaded = true;
+    _log.d('[WalletStore] Restaure depuis coffre: $_snapshot');
+  }
+
   /// Ecrit un nouvel etat vers prefs ET Drift, met a jour le cache et emet.
   Future<void> _apply({
     required int balanceSteps,

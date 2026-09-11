@@ -72,11 +72,15 @@ class HubSection extends StatelessWidget {
         // Grille 2 colonnes non scrollable (le HUB scrolle pour elle).
         //
         // Hauteur d'item FIXE ([mainAxisExtent]) plutot qu'un ratio largeur/hauteur :
-        // le contenu d'une [QuickAccessCard] (icone 28 + titre 1 ligne + sous-titre
-        // 2 lignes + espacements + padding) mesure ~140 px et ne depend pas de la
-        // largeur de cellule. Un [childAspectRatio] fixe rendait la cellule trop
-        // plate aux largeurs mobiles (~115 px a 390 px logiques) -> RenderFlex
-        // overflow. [mainAxisExtent] supprime cette dependance a la largeur.
+        // le contenu d'une [QuickAccessCard] (icone 28 + titre + sous-titre 2
+        // lignes + espacements + padding) ne depend pas de la largeur de cellule.
+        // Un [childAspectRatio] fixe rendait la cellule trop plate aux largeurs
+        // mobiles (~115 px a 390 px logiques) -> RenderFlex overflow.
+        // [mainAxisExtent] supprime cette dependance a la largeur.
+        //
+        // Finitions V1 (point 6) : 150 -> 164 px pour accueillir un TITRE sur 2
+        // lignes (les titres longs « Découvrir des sentiers » etaient tronques a
+        // 1 ligne). Budget = 2 lignes titre + 2 lignes sous-titre, sans overflow.
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -85,7 +89,7 @@ class HubSection extends StatelessWidget {
             crossAxisCount: 2,
             mainAxisSpacing: AppTheme.spacingMd,
             crossAxisSpacing: AppTheme.spacingMd,
-            mainAxisExtent: 150,
+            mainAxisExtent: 164,
           ),
           itemBuilder: (context, index) => cards[index],
         ),

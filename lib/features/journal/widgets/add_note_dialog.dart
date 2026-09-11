@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 
 /// Dialogue d'ajout d'une note au journal.
@@ -30,19 +31,22 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
     final theme = Theme.of(context);
 
     return AlertDialog(
-      title: const Text('Nouvelle note'),
+      title: Text(t.journal.addNote),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Étape', style: theme.textTheme.labelLarge),
+            Text(t.journal.stage, style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
             DropdownButtonFormField<int>(
               initialValue: _stageNumber,
               items: List.generate(16, (i) => i + 1)
                   .map(
-                    (n) => DropdownMenuItem(value: n, child: Text('Étape $n')),
+                    (n) => DropdownMenuItem(
+                      value: n,
+                      child: Text('${t.journal.stage} $n'),
+                    ),
                   )
                   .toList(),
               onChanged: (value) {
@@ -52,13 +56,13 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
               },
             ),
             const SizedBox(height: AppTheme.spacingBase),
-            Text('Votre note', style: theme.textTheme.labelLarge),
+            Text(t.journal.yourNote, style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
             TextField(
               controller: _contentController,
               maxLines: 5,
-              decoration: const InputDecoration(
-                hintText: 'Décrivez votre journée de trek...',
+              decoration: InputDecoration(
+                hintText: t.journal.placeholder,
               ),
             ),
           ],
@@ -67,10 +71,10 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Annuler'),
+          child: Text(t.journal.cancel),
         ),
         AppButton(
-          label: 'Enregistrer',
+          label: t.journal.save,
           isFullWidth: false,
           onPressed: () {
             final content = _contentController.text.trim();
