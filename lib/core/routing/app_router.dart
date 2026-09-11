@@ -13,6 +13,7 @@ import '../../features/hub/presentation/nav_pilote_screen.dart';
 import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
 import '../../features/feasibility/presentation/hiker_profile_screen.dart';
 import '../../features/feasibility/presentation/walk_test_screen.dart';
+import '../../features/feasibility/presentation/past_hikes_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
@@ -385,6 +386,14 @@ final appRouter = GoRouter(
           path: 'walk-test',
           name: 'trail-walk-test',
           builder: (context, state) => const WalkTestScreen(),
+        ),
+        // StepWays LOT 4 — 5 DERNIERES RANDOS : interview (date, jours, marche
+        // moy/j, D+ total, distance) + texte libre global « difficultes ». La
+        // faisabilite DEDUIT le niveau reel. Local + miroir cloud anonyme.
+        GoRoute(
+          path: 'past-hikes',
+          name: 'trail-past-hikes',
+          builder: (context, state) => const PastHikesScreen(),
         ),
         GoRoute(
           path: 'tips',
