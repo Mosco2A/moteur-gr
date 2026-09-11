@@ -24,11 +24,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 /// Le sérialisé est du JSON compact base64 — portable (Firestore, fichier,
 /// cloud OS) et indépendant de la plateforme.
 class SecureVaultService {
-  SecureVaultService({
-    FlutterSecureStorage? secureStorage,
-    AesGcm? cipher,
-  })  : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
-        _cipher = cipher ?? AesGcm.with256bits();
+  SecureVaultService({FlutterSecureStorage? secureStorage, AesGcm? cipher})
+    : _secureStorage = secureStorage ?? const FlutterSecureStorage(),
+      _cipher = cipher ?? AesGcm.with256bits();
 
   final FlutterSecureStorage _secureStorage;
   final AesGcm _cipher;
@@ -55,10 +53,7 @@ class SecureVaultService {
   /// secret) et régénéré à chaque (re)chiffrement. Déterministe : même
   /// (code, salt) => même clé (indispensable pour déchiffrer sur un autre tél).
   Future<SecretKey> deriveKeyFromCode(String code, List<int> salt) async {
-    final pbkdf2 = Pbkdf2.hmacSha256(
-      iterations: pbkdf2Iterations,
-      bits: 256,
-    );
+    final pbkdf2 = Pbkdf2.hmacSha256(iterations: pbkdf2Iterations, bits: 256);
     return pbkdf2.deriveKey(
       secretKey: SecretKey(utf8.encode(code)),
       nonce: salt,
@@ -267,9 +262,9 @@ class VaultEnvelope {
   /// Pratique pour le miroir cloud anonyme : on n'y met QUE l'enveloppe (donc
   /// du chiffré) sous `users/{hash}/...`. Aucun clair, aucun nominatif.
   Map<String, dynamic> toCloudMap({required String updatedAt}) => {
-        'vault': serialize(),
-        'updated_at': updatedAt,
-      };
+    'vault': serialize(),
+    'updated_at': updatedAt,
+  };
 }
 
 /// Échec de déchiffrement du coffre (clé fausse, blob altéré, version inconnue).

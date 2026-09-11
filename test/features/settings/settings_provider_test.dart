@@ -36,7 +36,9 @@ void main() {
 
     test('copyWith modifie les unites de temperature', () {
       const settings = AppSettings();
-      final updated = settings.copyWith(temperatureUnit: TemperatureUnitValues.fahrenheit);
+      final updated = settings.copyWith(
+        temperatureUnit: TemperatureUnitValues.fahrenheit,
+      );
       expect(updated.temperatureUnit, TemperatureUnitValues.fahrenheit);
     });
 
@@ -91,8 +93,7 @@ void main() {
   group('SettingsNotifier — robustesse dispose pendant le load', () {
     setUp(() => SharedPreferences.setMockInitialValues({}));
 
-    test(
-        'dispose du container pendant le _load async ne leve pas '
+    test('dispose du container pendant le _load async ne leve pas '
         '« Ref used after dispose »', () async {
       final container = ProviderContainer();
 
@@ -115,19 +116,21 @@ void main() {
       // Pas d'exception => garde effectif (le test echouerait sur throw async).
     });
 
-    test('sans dispose, la valeur persistee est bien relue apres le load',
-        () async {
-      SharedPreferences.setMockInitialValues({
-        'settings_language': AppLanguageValues.en,
-      });
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
+    test(
+      'sans dispose, la valeur persistee est bien relue apres le load',
+      () async {
+        SharedPreferences.setMockInitialValues({
+          'settings_language': AppLanguageValues.en,
+        });
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
 
-      // Etat initial = defaut, puis ecrase par la valeur relue.
-      expect(container.read(settingsProvider).language, AppLanguageValues.fr);
-      await Future<void>.delayed(Duration.zero);
-      expect(container.read(settingsProvider).language, AppLanguageValues.en);
-    });
+        // Etat initial = defaut, puis ecrase par la valeur relue.
+        expect(container.read(settingsProvider).language, AppLanguageValues.fr);
+        await Future<void>.delayed(Duration.zero);
+        expect(container.read(settingsProvider).language, AppLanguageValues.en);
+      },
+    );
   });
 
   // Meme durcissement anti-dispose (garde `ref.mounted` apres l'await, comme
@@ -135,53 +138,59 @@ void main() {
   // synchrone puis lecture async (SharedPreferences / service) qui ecrit `state`
   // APRES l'await. Sans le garde, disposer le container pendant le gap async
   // leverait « Cannot use "ref" after the provider was disposed » (Riverpod 3).
-  group('Notifiers au schema async-load — robustesse dispose pendant le load',
-      () {
-    setUp(() => SharedPreferences.setMockInitialValues({}));
+  group(
+    'Notifiers au schema async-load — robustesse dispose pendant le load',
+    () {
+      setUp(() => SharedPreferences.setMockInitialValues({}));
 
-    // Declenche le build+load async via [read] (qui lit le provider vise),
-    // dispose AVANT la fin du gap async, puis laisse microtasks/timers
-    // s'ecouler. Le test echoue si une exception « Ref used after dispose »
-    // remonte de facon asynchrone. On passe l'action de lecture en callback
-    // pour ne pas dependre du nom du type de base des providers Riverpod 3.
-    Future<void> expectNoThrowOnDisposeDuringLoad(
-      void Function(ProviderContainer) read,
-    ) async {
-      final container = ProviderContainer();
-      read(container);
-      container.dispose();
-      await Future<void>.delayed(Duration.zero);
-      await Future<void>.delayed(const Duration(milliseconds: 10));
-    }
+      // Declenche le build+load async via [read] (qui lit le provider vise),
+      // dispose AVANT la fin du gap async, puis laisse microtasks/timers
+      // s'ecouler. Le test echoue si une exception « Ref used after dispose »
+      // remonte de facon asynchrone. On passe l'action de lecture en callback
+      // pour ne pas dependre du nom du type de base des providers Riverpod 3.
+      Future<void> expectNoThrowOnDisposeDuringLoad(
+        void Function(ProviderContainer) read,
+      ) async {
+        final container = ProviderContainer();
+        read(container);
+        container.dispose();
+        await Future<void>.delayed(Duration.zero);
+        await Future<void>.delayed(const Duration(milliseconds: 10));
+      }
 
-    test('SyncConfigNotifier ne throw pas', () async {
-      await expectNoThrowOnDisposeDuringLoad((c) => c.read(syncConfigProvider));
-    });
+      test('SyncConfigNotifier ne throw pas', () async {
+        await expectNoThrowOnDisposeDuringLoad(
+          (c) => c.read(syncConfigProvider),
+        );
+      });
 
-    test('SyncStatusNotifier ne throw pas', () async {
-      await expectNoThrowOnDisposeDuringLoad((c) => c.read(syncStatusProvider));
-    });
+      test('SyncStatusNotifier ne throw pas', () async {
+        await expectNoThrowOnDisposeDuringLoad(
+          (c) => c.read(syncStatusProvider),
+        );
+      });
 
-    test('VisibilitySettingsNotifier ne throw pas', () async {
-      await expectNoThrowOnDisposeDuringLoad(
-        (c) => c.read(visibilitySettingsProvider),
-      );
-    });
+      test('VisibilitySettingsNotifier ne throw pas', () async {
+        await expectNoThrowOnDisposeDuringLoad(
+          (c) => c.read(visibilitySettingsProvider),
+        );
+      });
 
-    test('TrainingNotifier ne throw pas', () async {
-      await expectNoThrowOnDisposeDuringLoad((c) => c.read(trainingProvider));
-    });
+      test('TrainingNotifier ne throw pas', () async {
+        await expectNoThrowOnDisposeDuringLoad((c) => c.read(trainingProvider));
+      });
 
-    test('DownloadReminderNotifier ne throw pas', () async {
-      await expectNoThrowOnDisposeDuringLoad(
-        (c) => c.read(downloadReminderProvider('gr20')),
-      );
-    });
+      test('DownloadReminderNotifier ne throw pas', () async {
+        await expectNoThrowOnDisposeDuringLoad(
+          (c) => c.read(downloadReminderProvider('gr20')),
+        );
+      });
 
-    test('FeasibilityNotifier ne throw pas', () async {
-      await expectNoThrowOnDisposeDuringLoad(
-        (c) => c.read(feasibilityProvider),
-      );
-    });
-  });
+      test('FeasibilityNotifier ne throw pas', () async {
+        await expectNoThrowOnDisposeDuringLoad(
+          (c) => c.read(feasibilityProvider),
+        );
+      });
+    },
+  );
 }

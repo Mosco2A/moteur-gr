@@ -6,7 +6,8 @@ import 'package:logger/logger.dart';
 import '../../../core/services/cloud_sync_service.dart';
 import '../../../core/services/secure_vault_service.dart';
 import '../domain/models/health_info.dart';
-import '../presentation/health_info_screen.dart' show healthInfoRepositoryProvider;
+import '../presentation/health_info_screen.dart'
+    show healthInfoRepositoryProvider;
 import 'health_info_repository.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -37,9 +38,9 @@ class HealthBackupService {
     required SecureVaultService vault,
     required HealthInfoRepository healthRepository,
     CloudSyncService? cloudSync,
-  })  : _vault = vault,
-        _health = healthRepository,
-        _cloudSync = cloudSync;
+  }) : _vault = vault,
+       _health = healthRepository,
+       _cloudSync = cloudSync;
 
   final SecureVaultService _vault;
   final HealthInfoRepository _health;
@@ -149,9 +150,9 @@ class HealthBackupService {
   // --- (dé)sérialisation du contenu ----------------------------------------
 
   Map<String, dynamic> _wrap(HealthInfo info) => {
-        'kind': _kind,
-        'health': info.toJson(),
-      };
+    'kind': _kind,
+    'health': info.toJson(),
+  };
 
   HealthInfo _unwrap(Map<String, dynamic> data) {
     if (data['kind'] != _kind || data['health'] is! Map) {

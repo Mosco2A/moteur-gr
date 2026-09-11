@@ -19,9 +19,7 @@ import "../models/sync_config.dart";
 import "../network/connectivity_monitor.dart";
 import "../providers/database_provider.dart";
 
-final _log = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Statut d une operation de sync cloud.
 /// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
@@ -53,6 +51,7 @@ class CloudSyncResult {
   final int itemsSynced;
   final String? error;
 }
+
 /// Service de synchronisation des donnees utilisateur vers Firestore.
 ///
 /// Strategie last-write-wins : chaque document porte un updatedAt,
@@ -97,8 +96,7 @@ class CloudSyncService {
   FirebaseFirestore? _firestore;
 
   /// Accesseur Firestore (lazy init pour les tests)
-  FirebaseFirestore get firestore =>
-      _firestore ??= FirebaseFirestore.instance;
+  FirebaseFirestore get firestore => _firestore ??= FirebaseFirestore.instance;
 
   /// Synchronise toutes les donnees utilisateur pour un sentier.
   Future<CloudSyncResult> syncUserData(
@@ -175,9 +173,7 @@ class CloudSyncService {
           };
 
           await _setWithLastWriteWins(
-            basePath
-                .collection("journal_entries")
-                .doc("entry_${entry.id}"),
+            basePath.collection("journal_entries").doc("entry_${entry.id}"),
             entryData,
           );
           itemsSynced++;
@@ -195,9 +191,7 @@ class CloudSyncService {
           };
 
           await _setWithLastWriteWins(
-            basePath
-                .collection("checklist_items")
-                .doc("item_${item.itemId}"),
+            basePath.collection("checklist_items").doc("item_${item.itemId}"),
             itemData,
           );
           itemsSynced++;
@@ -205,13 +199,15 @@ class CloudSyncService {
 
         // --- Marquer la sync dans la queue ---
         final now = DateTime.now().toIso8601String();
-        await syncQueueDao.insertOrReplace(SyncQueueCompanion(
-          trailId: Value(trailId),
-          action: const Value("cloud_sync"),
-          status: const Value("completed"),
-          createdAt: Value(now),
-          completedAt: Value(now),
-        ));
+        await syncQueueDao.insertOrReplace(
+          SyncQueueCompanion(
+            trailId: Value(trailId),
+            action: const Value("cloud_sync"),
+            status: const Value("completed"),
+            createdAt: Value(now),
+            completedAt: Value(now),
+          ),
+        );
 
         _log.d("[CloudSync] Sync terminee: $itemsSynced items");
         return CloudSyncResult(
@@ -225,13 +221,15 @@ class CloudSyncService {
 
         if (retryCount > config.maxRetries) {
           final now = DateTime.now().toIso8601String();
-          await syncQueueDao.insertOrReplace(SyncQueueCompanion(
-            trailId: Value(trailId),
-            action: const Value("cloud_sync"),
-            status: const Value("failed"),
-            createdAt: Value(now),
-            payload: Value(e.toString()),
-          ));
+          await syncQueueDao.insertOrReplace(
+            SyncQueueCompanion(
+              trailId: Value(trailId),
+              action: const Value("cloud_sync"),
+              status: const Value("failed"),
+              createdAt: Value(now),
+              payload: Value(e.toString()),
+            ),
+          );
 
           return CloudSyncResult(
             status: CloudSyncStatusValues.error,
@@ -241,9 +239,7 @@ class CloudSyncService {
         }
 
         // Attente exponentielle entre les retries
-        await Future<void>.delayed(
-          Duration(seconds: retryCount * 2),
-        );
+        await Future<void>.delayed(Duration(seconds: retryCount * 2));
       }
     }
 
@@ -259,13 +255,15 @@ class CloudSyncService {
     if (!firebaseService.isAvailable) return;
 
     final now = DateTime.now().toIso8601String();
-    await syncQueueDao.insertOrReplace(SyncQueueCompanion(
-      trailId: Value(trailId),
-      action: const Value("cloud_sync_batch"),
-      status: const Value("pending"),
-      createdAt: Value(now),
-      payload: Value(userId),
-    ));
+    await syncQueueDao.insertOrReplace(
+      SyncQueueCompanion(
+        trailId: Value(trailId),
+        action: const Value("cloud_sync_batch"),
+        status: const Value("pending"),
+        createdAt: Value(now),
+        payload: Value(userId),
+      ),
+    );
     _log.d("[CloudSync] Batch sync enqueue pour $trailId");
   }
 
@@ -306,8 +304,9 @@ class CloudSyncService {
 
     final pending = await syncQueueDao.getPending();
     final syncActions = pending
-        .where((a) =>
-            a.action == "cloud_sync_batch" || a.action == "cloud_sync")
+        .where(
+          (a) => a.action == "cloud_sync_batch" || a.action == "cloud_sync",
+        )
         .toList();
 
     if (syncActions.isEmpty) {

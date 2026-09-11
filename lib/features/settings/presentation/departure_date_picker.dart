@@ -13,10 +13,7 @@ import '../../notifications/providers/download_reminder_provider.dart';
 /// pour ouvrir le DatePicker natif Flutter.
 /// Sauvegarde automatiquement en SharedPreferences via le provider.
 class DepartureDatePicker extends ConsumerWidget {
-  const DepartureDatePicker({
-    super.key,
-    required this.trailId,
-  });
+  const DepartureDatePicker({super.key, required this.trailId});
 
   /// Identifiant du sentier associe
   final String trailId;
@@ -26,16 +23,15 @@ class DepartureDatePicker extends ConsumerWidget {
     final reminderState = ref.watch(downloadReminderProvider(trailId));
     final theme = Theme.of(context);
     // StepWays L7 (A) : date localisee sur la langue de l'app (au lieu de 'fr_FR').
-    final dateFormat =
-        DateFormat('dd MMM yyyy', LocaleSettings.currentLocale.languageCode);
+    final dateFormat = DateFormat(
+      'dd MMM yyyy',
+      LocaleSettings.currentLocale.languageCode,
+    );
 
     return AppCard(
       padding: EdgeInsets.zero,
       child: ListTile(
-        leading: Icon(
-          Icons.calendar_today,
-          color: theme.colorScheme.primary,
-        ),
+        leading: Icon(Icons.calendar_today, color: theme.colorScheme.primary),
         title: const Text('Date de depart'),
         subtitle: Text(
           reminderState.departureDate != null

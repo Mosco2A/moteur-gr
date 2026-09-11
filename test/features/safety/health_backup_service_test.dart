@@ -42,34 +42,36 @@ void main() {
   });
 
   group('HealthBackupService — backup via code (cross-device)', () {
-    test('exportWithCode chiffre, restoreWithCode sur tél B restaure',
-        () async {
-      await repoA.save(sampleInfo);
+    test(
+      'exportWithCode chiffre, restoreWithCode sur tél B restaure',
+      () async {
+        await repoA.save(sampleInfo);
 
-      final blob = await serviceA.exportWithCode('MON-CODE-1234');
-      expect(blob, isNotNull);
-      // Zéro-knowledge : aucune donnée sensible en clair dans le blob.
-      expect(blob!.contains('Levothyrox'), isFalse);
-      expect(blob.contains('Pénicilline'), isFalse);
-      expect(blob.contains('O-'), isFalse);
+        final blob = await serviceA.exportWithCode('MON-CODE-1234');
+        expect(blob, isNotNull);
+        // Zéro-knowledge : aucune donnée sensible en clair dans le blob.
+        expect(blob!.contains('Levothyrox'), isFalse);
+        expect(blob.contains('Pénicilline'), isFalse);
+        expect(blob.contains('O-'), isFalse);
 
-      // Tél B : base NEUVE (vide), même code.
-      final dbB = AppDatabase(NativeDatabase.memory());
-      addTearDown(dbB.close);
-      final repoB = HealthInfoRepository(dao: HealthInfoDao(dbB));
-      final serviceB = HealthBackupService(
-        vault: SecureVaultService(),
-        healthRepository: repoB,
-      );
+        // Tél B : base NEUVE (vide), même code.
+        final dbB = AppDatabase(NativeDatabase.memory());
+        addTearDown(dbB.close);
+        final repoB = HealthInfoRepository(dao: HealthInfoDao(dbB));
+        final serviceB = HealthBackupService(
+          vault: SecureVaultService(),
+          healthRepository: repoB,
+        );
 
-      // Avant restauration : le tél B n'a rien.
-      expect((await repoB.get()).hasData, isFalse);
+        // Avant restauration : le tél B n'a rien.
+        expect((await repoB.get()).hasData, isFalse);
 
-      final restored = await serviceB.restoreWithCode('MON-CODE-1234', blob);
-      expect(restored, sampleInfo);
-      // Persisté en local sur le tél B.
-      expect(await repoB.get(), sampleInfo);
-    });
+        final restored = await serviceB.restoreWithCode('MON-CODE-1234', blob);
+        expect(restored, sampleInfo);
+        // Persisté en local sur le tél B.
+        expect(await repoB.get(), sampleInfo);
+      },
+    );
 
     test('mauvais code sur tél B => échec, AUCUNE écriture locale', () async {
       await repoA.save(sampleInfo);
@@ -99,7 +101,10 @@ void main() {
 
     test('blob sans sel => VaultDecryptException', () async {
       await expectLater(
-        serviceA.restoreWithCode('CODE', '{"v":1,"algo":"x","nonce":"AA==","mac":"AA==","ct":"AA=="}'),
+        serviceA.restoreWithCode(
+          'CODE',
+          '{"v":1,"algo":"x","nonce":"AA==","mac":"AA==","ct":"AA=="}',
+        ),
         throwsA(isA<VaultDecryptException>()),
       );
     });
@@ -118,8 +123,7 @@ void main() {
   });
 
   group('HealthBackupService — backup local (même appareil)', () {
-    test('exportWithLocalKey puis restoreWithLocalKey (même keystore)',
-        () async {
+    test('exportWithLocalKey puis restoreWithLocalKey (même keystore)', () async {
       await repoA.save(sampleInfo);
       final blob = await serviceA.exportWithLocalKey();
       expect(blob, isNotNull);

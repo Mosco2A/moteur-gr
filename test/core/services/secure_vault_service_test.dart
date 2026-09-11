@@ -24,46 +24,54 @@ void main() {
   };
 
   group('SecureVaultService — chiffrement AES-GCM', () {
-    test('round-trip: encryptJson puis decryptJson restitue les données',
-        () async {
-      final blob = await vault.encryptJson(sample, key: fixedKey);
-      final restored = await vault.decryptJson(blob, key: fixedKey);
-      expect(restored, sample);
-    });
+    test(
+      'round-trip: encryptJson puis decryptJson restitue les données',
+      () async {
+        final blob = await vault.encryptJson(sample, key: fixedKey);
+        final restored = await vault.decryptJson(blob, key: fixedKey);
+        expect(restored, sample);
+      },
+    );
 
-    test('le blob sérialisé ne contient AUCUN clair (zéro-knowledge)',
-        () async {
-      final blob = await vault.encryptJson(sample, key: fixedKey);
-      // Aucune valeur sensible visible dans le sérialisé.
-      expect(blob.contains('Pénicilline'), isFalse);
-      expect(blob.contains('Levothyrox'), isFalse);
-      expect(blob.contains('O-'), isFalse);
-      // Enveloppe auto-descriptive : algo présent, ciphertext base64.
-      final map = json.decode(blob) as Map<String, dynamic>;
-      expect(map['algo'], 'AES-GCM-256');
-      expect(map['v'], SecureVaultService.envelopeVersion);
-      expect(map['ct'], isA<String>());
-    });
+    test(
+      'le blob sérialisé ne contient AUCUN clair (zéro-knowledge)',
+      () async {
+        final blob = await vault.encryptJson(sample, key: fixedKey);
+        // Aucune valeur sensible visible dans le sérialisé.
+        expect(blob.contains('Pénicilline'), isFalse);
+        expect(blob.contains('Levothyrox'), isFalse);
+        expect(blob.contains('O-'), isFalse);
+        // Enveloppe auto-descriptive : algo présent, ciphertext base64.
+        final map = json.decode(blob) as Map<String, dynamic>;
+        expect(map['algo'], 'AES-GCM-256');
+        expect(map['v'], SecureVaultService.envelopeVersion);
+        expect(map['ct'], isA<String>());
+      },
+    );
 
-    test('nonce aléatoire : deux chiffrements du même clair diffèrent',
-        () async {
-      final a = await vault.encryptJson(sample, key: fixedKey);
-      final b = await vault.encryptJson(sample, key: fixedKey);
-      expect(a, isNot(equals(b)));
-      // Mais les deux déchiffrent vers la même valeur.
-      expect(await vault.decryptJson(a, key: fixedKey), sample);
-      expect(await vault.decryptJson(b, key: fixedKey), sample);
-    });
+    test(
+      'nonce aléatoire : deux chiffrements du même clair diffèrent',
+      () async {
+        final a = await vault.encryptJson(sample, key: fixedKey);
+        final b = await vault.encryptJson(sample, key: fixedKey);
+        expect(a, isNot(equals(b)));
+        // Mais les deux déchiffrent vers la même valeur.
+        expect(await vault.decryptJson(a, key: fixedKey), sample);
+        expect(await vault.decryptJson(b, key: fixedKey), sample);
+      },
+    );
 
-    test('mauvaise clé => VaultDecryptException (authentification GCM)',
-        () async {
-      final blob = await vault.encryptJson(sample, key: fixedKey);
-      final wrongKey = SecretKey(List<int>.generate(32, (i) => 255 - i));
-      expect(
-        () => vault.decryptJson(blob, key: wrongKey),
-        throwsA(isA<VaultDecryptException>()),
-      );
-    });
+    test(
+      'mauvaise clé => VaultDecryptException (authentification GCM)',
+      () async {
+        final blob = await vault.encryptJson(sample, key: fixedKey);
+        final wrongKey = SecretKey(List<int>.generate(32, (i) => 255 - i));
+        expect(
+          () => vault.decryptJson(blob, key: wrongKey),
+          throwsA(isA<VaultDecryptException>()),
+        );
+      },
+    );
 
     test('blob altéré (tamper) => VaultDecryptException', () async {
       final blob = await vault.encryptJson(sample, key: fixedKey);
@@ -108,8 +116,7 @@ void main() {
       expect(await k1.extractBytes(), isNot(equals(await k2.extractBytes())));
     });
 
-    test(
-        'scénario B : chiffrer sur tél A, re-dériver la clé sur tél B via le '
+    test('scénario B : chiffrer sur tél A, re-dériver la clé sur tél B via le '
         'code + sel de l\'enveloppe, déchiffrer', () async {
       // Tél A : dérive une clé du code, chiffre le coffre, embarque le sel.
       const code = 'ABCD-1234-EFGH';
@@ -125,20 +132,24 @@ void main() {
       expect(restored, sample);
     });
 
-    test('scénario B : mauvais code sur tél B => échec (pas de clair)',
-        () async {
-      const code = 'BON-CODE';
-      final salt = vault.newSalt();
-      final keyA = await vault.deriveKeyFromCode(code, salt);
-      final blob = await vault.encryptJson(sample, key: keyA, salt: salt);
+    test(
+      'scénario B : mauvais code sur tél B => échec (pas de clair)',
+      () async {
+        const code = 'BON-CODE';
+        final salt = vault.newSalt();
+        final keyA = await vault.deriveKeyFromCode(code, salt);
+        final blob = await vault.encryptJson(sample, key: keyA, salt: salt);
 
-      final wrongKey =
-          await vault.deriveKeyFromCode('MAUVAIS-CODE', vault.saltOf(blob)!);
-      expect(
-        () => vault.decryptJson(blob, key: wrongKey),
-        throwsA(isA<VaultDecryptException>()),
-      );
-    });
+        final wrongKey = await vault.deriveKeyFromCode(
+          'MAUVAIS-CODE',
+          vault.saltOf(blob)!,
+        );
+        expect(
+          () => vault.decryptJson(blob, key: wrongKey),
+          throwsA(isA<VaultDecryptException>()),
+        );
+      },
+    );
   });
 
   group('VaultEnvelope — sérialisation', () {

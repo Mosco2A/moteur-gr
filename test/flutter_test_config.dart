@@ -54,12 +54,12 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
 
   // Filet zone : les rejets de futures non-attendues (chemin emprunte par
   // google_fonts) sont avales s'ils correspondent au chargement de police.
-  await runZonedGuarded(
-    () async => testMain(),
-    (Object error, StackTrace stack) {
-      if (isGoogleFontsLoadError(error)) return;
-      // Erreur non liee aux polices : on la propage (echec legitime).
-      Zone.current.parent!.handleUncaughtError(error, stack);
-    },
-  );
+  await runZonedGuarded(() async => testMain(), (
+    Object error,
+    StackTrace stack,
+  ) {
+    if (isGoogleFontsLoadError(error)) return;
+    // Erreur non liee aux polices : on la propage (echec legitime).
+    Zone.current.parent!.handleUncaughtError(error, stack);
+  });
 }

@@ -21,7 +21,11 @@ abstract class AppLanguageValues {
   /// externalises via Slang : un nom de langue s'ecrit pareil quelle que soit la
   /// langue de l'app).
   static const Map<String, String> labels = {
-    fr: 'Français', en: 'English', de: 'Deutsch', it: 'Italiano', es: 'Español',
+    fr: 'Français',
+    en: 'English',
+    de: 'Deutsch',
+    it: 'Italiano',
+    es: 'Español',
   };
   static String labelFor(String lang) => labels[lang] ?? lang;
   static AppLanguage fromString(String value) =>
@@ -54,7 +58,10 @@ abstract class TemperatureUnitValues {
   static const String fallback = celsius;
   static const List<String> values = [celsius, fahrenheit];
 
-  static const Map<String, String> labels = {celsius: 'Celsius', fahrenheit: 'Fahrenheit'};
+  static const Map<String, String> labels = {
+    celsius: 'Celsius',
+    fahrenheit: 'Fahrenheit',
+  };
   static const Map<String, String> symbols = {celsius: '°C', fahrenheit: '°F'};
   static String labelFor(String unit) => labels[unit] ?? unit;
   static String symbolFor(String unit) => symbols[unit] ?? unit;
@@ -72,7 +79,11 @@ abstract class AppThemeModeValues {
   static const String fallback = dark;
   static const List<String> values = [dark, light, system];
 
-  static const Map<String, String> labels = {dark: 'Sombre', light: 'Clair', system: 'Systeme'};
+  static const Map<String, String> labels = {
+    dark: 'Sombre',
+    light: 'Clair',
+    system: 'Systeme',
+  };
   static String labelFor(String mode) => labels[mode] ?? mode;
   static AppThemeMode fromString(String value) =>
       values.contains(value) ? value : fallback;
@@ -250,5 +261,6 @@ class SettingsNotifier extends Notifier<AppSettings> {
 ///
 /// Utilise select() dans les widgets pour minimiser les rebuilds :
 ///   ref.watch(settingsProvider.select((s) => s.language))
-final settingsProvider =
-    NotifierProvider<SettingsNotifier, AppSettings>(SettingsNotifier.new);
+final settingsProvider = NotifierProvider<SettingsNotifier, AppSettings>(
+  SettingsNotifier.new,
+);
