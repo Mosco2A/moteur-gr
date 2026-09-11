@@ -126,4 +126,90 @@ void main() {
       expect(row.syncState, 'failed');
     });
   });
+
+  group('SignalementService — point d\'eau partage (I1, crowdsourcing)', () {
+    test('aucun signalement -> statut none', () async {
+      final service = SignalementService(database: db, remoteSink: _FakeSink());
+      final status = await service.waterStatusFor(
+        trailId: 'gr20',
+        stageNumber: 3,
+        poiName: 'Source de Vizzavona',
+      );
+      expect(status.hasReports, isFalse);
+      expect(status.lastStatus, isNull);
+      expect(status.reportCount, 0);
+    });
+
+    test('reportWaterStatus ecrit EN LOCAL (offline-first) et agrege', () async {
+      final service = SignalementService(database: db, remoteSink: _FakeSink());
+      // 2 signalements sur le MEME point d'eau, le dernier fait foi.
+      await service.reportWaterStatus(
+        trailId: 'gr20',
+        stageNumber: 3,
+        poiName: 'Source',
+        status: SignalementType.waterAvailable,
+        latitude: 42.1,
+        longitude: 9.1,
+        now: DateTime.utc(2026, 6, 12, 9),
+      );
+      await service.reportWaterStatus(
+        trailId: 'gr20',
+        stageNumber: 3,
+        poiName: 'Source',
+        status: SignalementType.waterDry,
+        latitude: 42.1,
+        longitude: 9.1,
+        now: DateTime.utc(2026, 6, 12, 11),
+      );
+      final status = await service.waterStatusFor(
+        trailId: 'gr20',
+        stageNumber: 3,
+        poiName: 'Source',
+      );
+      expect(status.reportCount, 2);
+      expect(status.lastStatus, SignalementType.waterDry); // le plus recent
+      // Partage par la meme file offline-first : 2 en attente de sync.
+      expect(await service.pendingCount(), 2);
+    });
+
+    test('statut isole PAR point d\'eau (cle sentier+etape+nom)', () async {
+      final service = SignalementService(database: db, remoteSink: _FakeSink());
+      await service.reportWaterStatus(
+        trailId: 'gr20',
+        stageNumber: 3,
+        poiName: 'Source A',
+        status: SignalementType.waterLow,
+        latitude: 1,
+        longitude: 2,
+      );
+      // Un autre point d'eau (nom different) n'herite pas du statut.
+      final other = await service.waterStatusFor(
+        trailId: 'gr20',
+        stageNumber: 3,
+        poiName: 'Source B',
+      );
+      expect(other.hasReports, isFalse);
+      final a = await service.waterStatusFor(
+        trailId: 'gr20',
+        stageNumber: 3,
+        poiName: 'Source A',
+      );
+      expect(a.lastStatus, SignalementType.waterLow);
+    });
+
+    test('statut de point d\'eau inconnu rejete', () async {
+      final service = SignalementService(database: db, remoteSink: _FakeSink());
+      expect(
+        () => service.reportWaterStatus(
+          trailId: 'gr20',
+          stageNumber: 1,
+          poiName: 'X',
+          status: 'pas_un_statut',
+          latitude: 0,
+          longitude: 0,
+        ),
+        throwsArgumentError,
+      );
+    });
+  });
 }

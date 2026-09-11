@@ -986,7 +986,20 @@
     "savedTitle": "Segnalazione salvata",
     "savedPendingSync": "Sarà condivisa appena la rete sarà disponibile.",
     "pendingCount": "$n in attesa di sincronizzazione",
-    "close": "Chiudi"
+    "close": "Chiudi",
+    "water": {
+      "reportAction": "Segnala lo stato",
+      "reportCount": "{n} segnalazione/i",
+      "sheetTitle": "Stato del punto d'acqua?",
+      "latencyHint": "Condiviso con gli altri escursionisti dopo la sincronizzazione di rete.",
+      "saved": "Grazie! Stato salvato.",
+      "states": {
+        "available": "Acqua disponibile",
+        "low": "Portata scarsa",
+        "dry": "A secco",
+        "unknown": "Stato sconosciuto"
+      }
+    }
   },
   "hebergement": {
     "title": "Alloggi nelle vicinanze",

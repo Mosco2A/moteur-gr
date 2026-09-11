@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
@@ -6,12 +7,80 @@ import '../../../core/data/daos/report_local_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/error/error_handler.dart';
 
-/// Types de signalement terrain (F6C-02).
+/// Types de signalement terrain (F6C-02) + statut de POINT D'EAU (StepWays L6/I1).
+///
+/// Les 3 types `water*` portent le CROWDSOURCING du point d'eau (spec
+/// enrich-signalement : « eau disponible / debit faible / a sec »). Ils
+/// REUTILISENT la meme file offline-first que les signalements terrain
+/// ([SignalementService], table `report_local`) : on ACTIVE l'existant, on ne
+/// cree pas de boite neuve (I2). Les anciens types (`obstacle`/`eau_a_sec`/
+/// `danger`) restent valides (parite GR20, aucune regression).
 abstract final class SignalementType {
   static const String obstacle = 'obstacle';
   static const String eauASec = 'eau_a_sec';
   static const String danger = 'danger';
-  static const List<String> values = [obstacle, eauASec, danger];
+
+  /// Statut point d'eau : eau disponible (crowdsourcing, I1).
+  static const String waterAvailable = 'water_available';
+
+  /// Statut point d'eau : debit faible (crowdsourcing, I1).
+  static const String waterLow = 'water_low';
+
+  /// Statut point d'eau : a sec (crowdsourcing, I1).
+  static const String waterDry = 'water_dry';
+
+  /// Les 3 statuts de point d'eau, du plus favorable au moins favorable.
+  static const List<String> waterStatuses = [
+    waterAvailable,
+    waterLow,
+    waterDry,
+  ];
+
+  static const List<String> values = [
+    obstacle,
+    eauASec,
+    danger,
+    waterAvailable,
+    waterLow,
+    waterDry,
+  ];
+
+  /// Vrai si [type] est un statut de point d'eau (crowdsourcing).
+  static bool isWaterStatus(String type) => waterStatuses.contains(type);
+}
+
+/// Etat partage d'un point d'eau (crowdsourcing offline-first, I1).
+///
+/// Agrege les signalements locaux (cache `report_local`) d'un point d'eau
+/// donne : le DERNIER statut signale ([lastStatus], `null` si jamais signale)
+/// et le NOMBRE de signalements ([reportCount]). Offline-first : calcule depuis
+/// le cache local (dernier signalement fait foi), la visibilite inter-utilisateurs
+/// arrive APRES synchronisation (latence assumee, comme les autres signalements).
+class WaterSourceStatus {
+  const WaterSourceStatus({
+    required this.lastStatus,
+    required this.reportCount,
+    this.lastReportedAt,
+  });
+
+  /// Etat « jamais signale » (aucun crowdsourcing pour ce point d'eau).
+  const WaterSourceStatus.none()
+      : lastStatus = null,
+        reportCount = 0,
+        lastReportedAt = null;
+
+  /// Dernier statut signale (`water_available`/`water_low`/`water_dry`), ou
+  /// `null` si aucun signalement.
+  final String? lastStatus;
+
+  /// Nombre de signalements de statut pour ce point d'eau.
+  final int reportCount;
+
+  /// Horodatage du dernier signalement (UTC), ou `null` si aucun.
+  final DateTime? lastReportedAt;
+
+  /// Vrai si au moins un signalement existe pour ce point d'eau.
+  bool get hasReports => reportCount > 0;
 }
 
 /// Resultat d'un push distant : l'id Firestore attribue, ou une erreur.
@@ -172,4 +241,117 @@ class SignalementService {
 
   /// Nombre de signalements en attente de synchronisation.
   Future<int> pendingCount() => _dao.countPending();
+
+  // --- Point d'eau partage (crowdsourcing offline-first, I1) ---------------
+
+  /// Cle stable d'un point d'eau pour regrouper ses signalements de statut.
+  ///
+  /// Derivee de l'identite du POI (sentier + etape + nom) : deux appareils qui
+  /// signalent LE MEME point d'eau produisent la meme cle, donc le compteur et
+  /// le dernier statut s'agregent correctement (crowdsourcing). Stockee dans le
+  /// `payload` JSON du signalement (la table reste generique, aucune migration).
+  static String waterSourceKey({
+    required String trailId,
+    required int stageNumber,
+    required String poiName,
+  }) =>
+      '$trailId#$stageNumber#${poiName.trim().toLowerCase()}';
+
+  /// Signale le STATUT d'un point d'eau (crowdsourcing, I1) — offline-first.
+  ///
+  /// ACTIVE la vraie persistance partagee demandee par la spec : ecrit EN LOCAL
+  /// d'abord (meme file que les signalements terrain), avec la position du POI et
+  /// un `payload` JSON portant l'identite du point d'eau + le statut. La
+  /// synchronisation differee ([trySync]) le partagera au retour du reseau.
+  ///
+  /// [status] DOIT etre l'un de [SignalementType.waterStatuses].
+  Future<int> reportWaterStatus({
+    required String trailId,
+    required int stageNumber,
+    required String poiName,
+    required String status,
+    required double latitude,
+    required double longitude,
+    DateTime? now,
+  }) async {
+    if (!SignalementType.isWaterStatus(status)) {
+      final err = ArgumentError.value(
+        status,
+        'status',
+        'Statut de point d\'eau inconnu',
+      );
+      ErrorHandler.log(err, context: 'SignalementService.reportWaterStatus');
+      throw err;
+    }
+    final payload = jsonEncode(<String, dynamic>{
+      'kind': 'water_source',
+      'key': waterSourceKey(
+        trailId: trailId,
+        stageNumber: stageNumber,
+        poiName: poiName,
+      ),
+      'trailId': trailId,
+      'stageNumber': stageNumber,
+      'poiName': poiName,
+    });
+    return createLocal(
+      type: status,
+      latitude: latitude,
+      longitude: longitude,
+      payload: payload,
+      now: now,
+    );
+  }
+
+  /// Etat partage d'un point d'eau : dernier statut + compteur (I1).
+  ///
+  /// Lit le cache local (offline-first) et agrege les signalements de statut du
+  /// point d'eau identifie par ([trailId], [stageNumber], [poiName]). Le DERNIER
+  /// signalement (le plus recent) fait foi pour [WaterSourceStatus.lastStatus].
+  Future<WaterSourceStatus> waterStatusFor({
+    required String trailId,
+    required int stageNumber,
+    required String poiName,
+  }) async {
+    final key = waterSourceKey(
+      trailId: trailId,
+      stageNumber: stageNumber,
+      poiName: poiName,
+    );
+    try {
+      final rows = await _dao.allReports(); // deja tries: recents d'abord
+      final matches = rows
+          .where((r) =>
+              SignalementType.isWaterStatus(r.type) &&
+              _payloadKey(r.payload) == key)
+          .toList(growable: false);
+      if (matches.isEmpty) return const WaterSourceStatus.none();
+      final last = matches.first; // allReports() renvoie le plus recent d'abord
+      return WaterSourceStatus(
+        lastStatus: last.type,
+        reportCount: matches.length,
+        lastReportedAt: last.createdAt,
+      );
+    } on Exception catch (e, st) {
+      ErrorHandler.log(e,
+          stackTrace: st, context: 'SignalementService.waterStatusFor');
+      return const WaterSourceStatus.none();
+    }
+  }
+
+  /// Extrait la cle point d'eau d'un `payload` JSON, ou `null` si absente/illisible.
+  String? _payloadKey(String? payload) {
+    if (payload == null || payload.isEmpty) return null;
+    try {
+      final decoded = jsonDecode(payload);
+      if (decoded is Map && decoded['kind'] == 'water_source') {
+        final key = decoded['key'];
+        return key is String ? key : null;
+      }
+    } on FormatException {
+      // payload non-JSON (anciens signalements) : pas une cle point d'eau.
+      return null;
+    }
+    return null;
+  }
 }

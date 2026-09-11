@@ -1773,6 +1773,8 @@ class Translations$signalement$fr {
 
 	/// fr: 'Fermer'
 	String get close => 'Fermer';
+
+	late final Translations$signalement$water$fr water = Translations$signalement$water$fr.internal(_root);
 }
 
 // Path: hebergement
@@ -4596,6 +4598,32 @@ class Translations$signalement$types$fr {
 	String get danger => 'Danger';
 }
 
+// Path: signalement.water
+class Translations$signalement$water$fr {
+	Translations$signalement$water$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Signaler l'état'
+	String get reportAction => 'Signaler l\'état';
+
+	/// fr: '{n} signalement(s)'
+	String get reportCount => '{n} signalement(s)';
+
+	/// fr: 'État du point d'eau ?'
+	String get sheetTitle => 'État du point d\'eau ?';
+
+	/// fr: 'Partagé avec les autres randonneurs après synchronisation réseau.'
+	String get latencyHint => 'Partagé avec les autres randonneurs après synchronisation réseau.';
+
+	/// fr: 'Merci ! État enregistré.'
+	String get saved => 'Merci ! État enregistré.';
+
+	late final Translations$signalement$water$states$fr states = Translations$signalement$water$states$fr.internal(_root);
+}
+
 // Path: hebergement.types
 class Translations$hebergement$types$fr {
 	Translations$hebergement$types$fr.internal(this._root);
@@ -6308,6 +6336,27 @@ class Translations$feasibility$recommendations$excellent$fr {
 	late final Translations$feasibility$recommendations$excellent$tips$fr tips = Translations$feasibility$recommendations$excellent$tips$fr.internal(_root);
 }
 
+// Path: signalement.water.states
+class Translations$signalement$water$states$fr {
+	Translations$signalement$water$states$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Eau disponible'
+	String get available => 'Eau disponible';
+
+	/// fr: 'Débit faible'
+	String get low => 'Débit faible';
+
+	/// fr: 'À sec'
+	String get dry => 'À sec';
+
+	/// fr: 'État inconnu'
+	String get unknown => 'État inconnu';
+}
+
 // Path: gamification.badge.firstStage
 class Translations$gamification$badge$firstStage$fr {
 	Translations$gamification$badge$firstStage$fr.internal(this._root);
@@ -7471,6 +7520,15 @@ extension on Translations {
 			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
 			'signalement.close' => 'Fermer',
+			'signalement.water.reportAction' => 'Signaler l\'état',
+			'signalement.water.reportCount' => '{n} signalement(s)',
+			'signalement.water.sheetTitle' => 'État du point d\'eau ?',
+			'signalement.water.latencyHint' => 'Partagé avec les autres randonneurs après synchronisation réseau.',
+			'signalement.water.saved' => 'Merci ! État enregistré.',
+			'signalement.water.states.available' => 'Eau disponible',
+			'signalement.water.states.low' => 'Débit faible',
+			'signalement.water.states.dry' => 'À sec',
+			'signalement.water.states.unknown' => 'État inconnu',
 			'hebergement.title' => 'Hébergements à proximité',
 			'hebergement.facilitatorNote' => 'StepWays vous oriente vers les hébergeurs. La réservation se fait sur leur site : aucun paiement dans l\'application.',
 			'hebergement.detourAR' => ({required Object km}) => 'Détour aller-retour : ${km} km',
@@ -7651,6 +7709,8 @@ extension on Translations {
 			'packs.types.complet.description' => 'Tout le sentier, hors-ligne.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Le sentier Mare a Mare, hors-ligne.',
+			_ => null,
+		} ?? switch (path) {
 			'guides.title' => 'Guides des villes',
 			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
@@ -7660,8 +7720,6 @@ extension on Translations {
 			'guides.openSite' => 'Voir le site',
 			'guides.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
 			'guides.categories.ravitaillement' => 'Ravitaillement',
-			_ => null,
-		} ?? switch (path) {
 			'guides.categories.hebergement' => 'Hébergement',
 			'guides.categories.transport' => 'Transport',
 			'guides.categories.services' => 'Services',
@@ -8165,6 +8223,8 @@ extension on Translations {
 			'ffrando.notRated' => 'Non cote',
 			'ffrando.effortLevels.k1' => 'Tres facile',
 			'ffrando.effortLevels.k2' => 'Facile',
+			_ => null,
+		} ?? switch (path) {
 			'ffrando.effortLevels.k3' => 'Moyen',
 			'ffrando.effortLevels.k4' => 'Difficile',
 			'ffrando.effortLevels.k5' => 'Tres difficile',

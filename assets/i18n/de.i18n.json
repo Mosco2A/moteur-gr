@@ -986,7 +986,20 @@
     "savedTitle": "Meldung gespeichert",
     "savedPendingSync": "Sie wird geteilt, sobald das Netzwerk wieder da ist.",
     "pendingCount": "$n warten auf Synchronisierung",
-    "close": "Schließen"
+    "close": "Schließen",
+    "water": {
+      "reportAction": "Zustand melden",
+      "reportCount": "{n} Meldung(en)",
+      "sheetTitle": "Zustand der Wasserstelle?",
+      "latencyHint": "Nach Netzwerk-Synchronisierung mit anderen Wanderern geteilt.",
+      "saved": "Danke! Zustand gespeichert.",
+      "states": {
+        "available": "Wasser verfügbar",
+        "low": "Geringer Durchfluss",
+        "dry": "Trocken",
+        "unknown": "Unbekannter Zustand"
+      }
+    }
   },
   "hebergement": {
     "title": "Unterkünfte in der Nähe",

@@ -45,3 +45,43 @@ final signalementServiceProvider = Provider<SignalementService>((ref) {
 final pendingSignalementCountProvider = FutureProvider<int>((ref) {
   return ref.watch(signalementServiceProvider).pendingCount();
 });
+
+/// Identite d'un point d'eau pour le crowdsourcing partage (I1).
+///
+/// Sert de cle de famille a [waterSourceStatusProvider] : deux appareils qui
+/// signalent LE MEME point d'eau partagent la meme identite (sentier + etape +
+/// nom), donc le compteur et le dernier statut s'agregent.
+class WaterSourceRef {
+  const WaterSourceRef({
+    required this.trailId,
+    required this.stageNumber,
+    required this.poiName,
+  });
+
+  final String trailId;
+  final int stageNumber;
+  final String poiName;
+
+  @override
+  bool operator ==(Object other) =>
+      other is WaterSourceRef &&
+      other.trailId == trailId &&
+      other.stageNumber == stageNumber &&
+      other.poiName == poiName;
+
+  @override
+  int get hashCode => Object.hash(trailId, stageNumber, poiName);
+}
+
+/// Etat partage d'un point d'eau (dernier statut + compteur, offline-first, I1).
+///
+/// Rechargé via `ref.invalidate` après un nouveau signalement de statut. Lit le
+/// cache local (source de vérité hors-ligne) via [SignalementService].
+final waterSourceStatusProvider =
+    FutureProvider.family<WaterSourceStatus, WaterSourceRef>((ref, src) {
+  return ref.watch(signalementServiceProvider).waterStatusFor(
+        trailId: src.trailId,
+        stageNumber: src.stageNumber,
+        poiName: src.poiName,
+      );
+});

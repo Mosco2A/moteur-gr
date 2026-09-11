@@ -12,6 +12,8 @@ import '../../../../shared/widgets/app_gradient_header.dart';
 import '../../../../shared/widgets/app_header.dart';
 import '../../../../shared/widgets/brand_alti_motif.dart';
 import '../../../poi/domain/poi_type_config.dart';
+import '../../../safety/data/signalement_service.dart';
+import '../../../safety/providers/signalement_providers.dart';
 import '../../../trail/providers/pois_provider.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
@@ -571,56 +573,338 @@ class _WaterSourcesSection extends StatelessWidget {
 }
 
 /// Tuile d'un point d'eau (parite GR20 `_WaterPointTile`).
-class _WaterPointTile extends StatelessWidget {
+///
+/// StepWays L6/I1 : ACTIVE le crowdsourcing partage du point d'eau. Affiche le
+/// DERNIER statut signale + le COMPTEUR (offline-first, via
+/// [waterSourceStatusProvider]) et un bouton « Signaler l'etat » qui ouvre les
+/// 3 etats (eau disponible / debit faible / a sec). Le signalement est ecrit EN
+/// LOCAL d'abord (meme file offline-first que les signalements terrain) puis
+/// partage au retour du reseau — AUCUNE promesse de temps reel.
+class _WaterPointTile extends ConsumerWidget {
   const _WaterPointTile({required this.poi});
 
   final PoiModel poi;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final waterColor = PoiTypeConfig.getStyle('water').color;
+    final statusAsync = ref.watch(
+      waterSourceStatusProvider(
+        WaterSourceRef(
+          trailId: poi.trailId,
+          stageNumber: poi.stageNumber,
+          poiName: poi.name,
+        ),
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-      child: Row(
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 4),
-            child: Icon(Icons.water_drop_outlined,
-                size: 20, color: waterColor),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  poi.name,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Icon(Icons.water_drop_outlined,
+                    size: 20, color: waterColor),
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      poi.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (poi.description.isNotEmpty)
+                      Text(
+                        poi.description,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                  ],
+                ),
+              ),
+              if (poi.altitudeM > 0)
+                Padding(
+                  padding: const EdgeInsets.only(left: AppTheme.spacingSm),
+                  child: Text(
+                    '${poi.altitudeM}m',
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: AppTheme.grisTexteSecondaire,
+                    ),
                   ),
                 ),
-                if (poi.description.isNotEmpty)
-                  Text(
-                    poi.description,
-                    style: theme.textTheme.bodySmall,
-                  ),
-              ],
-            ),
+            ],
           ),
-          if (poi.altitudeM > 0)
-            Padding(
-              padding: const EdgeInsets.only(left: AppTheme.spacingSm),
-              child: Text(
-                '${poi.altitudeM}m',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: AppTheme.grisTexteSecondaire,
+          // Statut partage (dernier signalement + compteur) — I1 crowdsourcing.
+          statusAsync.maybeWhen(
+            data: (status) => status.hasReports
+                ? Padding(
+                    padding: const EdgeInsets.only(
+                      left: 28,
+                      top: AppTheme.spacingXs,
+                    ),
+                    child: _WaterStatusChip(status: status),
+                  )
+                : const SizedBox.shrink(),
+            orElse: () => const SizedBox.shrink(),
+          ),
+          // Action de signalement de l'etat (offline-first).
+          Padding(
+            padding: const EdgeInsets.only(left: 20, top: 2),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton.icon(
+                key: ValueKey('water-report-${poi.stageNumber}-${poi.name}'),
+                onPressed: () => _openReportSheet(context, ref),
+                icon: Icon(Icons.add_location_alt_outlined,
+                    size: 18, color: waterColor),
+                label: Text(
+                  t.signalement.water.reportAction,
+                  style: theme.textTheme.bodySmall?.copyWith(color: waterColor),
                 ),
               ),
             ),
+          ),
         ],
+      ),
+    );
+  }
+
+  /// Ouvre la feuille de signalement de l'etat du point d'eau (3 etats).
+  Future<void> _openReportSheet(BuildContext context, WidgetRef ref) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => _WaterReportSheet(poi: poi),
+    );
+  }
+}
+
+/// Pastille du statut partage d'un point d'eau (dernier signalement + compteur).
+class _WaterStatusChip extends StatelessWidget {
+  const _WaterStatusChip({required this.status});
+
+  final WaterSourceStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final (label, color, icon) = _statusVisual(status.lastStatus);
+    final countText =
+        t.signalement.water.reportCount.replaceAll('{n}', '${status.reportCount}');
+    return Semantics(
+      label: '$label, $countText',
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.spacingSm,
+          vertical: 2,
+        ),
+        decoration: BoxDecoration(
+          color: color.withAlpha(24),
+          borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+          border: Border.all(color: color.withAlpha(90)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: 4),
+            Text(
+              label,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: color,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              countText,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Visuel (libelle i18n, couleur, icone) d'un statut de point d'eau.
+(String, Color, IconData) _statusVisual(String? status) {
+  switch (status) {
+    case 'water_available':
+      return (
+        t.signalement.water.states.available,
+        AppTheme.vertFacile,
+        Icons.water_drop,
+      );
+    case 'water_low':
+      return (
+        t.signalement.water.states.low,
+        AppTheme.orangeDifficile,
+        Icons.opacity,
+      );
+    case 'water_dry':
+      return (
+        t.signalement.water.states.dry,
+        AppTheme.rougeUrgence,
+        Icons.water_drop_outlined,
+      );
+    default:
+      return (
+        t.signalement.water.states.unknown,
+        AppTheme.grisTexteSecondaire,
+        Icons.help_outline,
+      );
+  }
+}
+
+/// Feuille de signalement de l'etat d'un point d'eau (3 etats, offline-first).
+///
+/// Ecrit EN LOCAL via [SignalementService.reportWaterStatus] a la position du
+/// POI (crowdsourcing I1). Un bandeau rappelle la latence assumee (visible par
+/// les autres apres synchronisation). Textes via Slang (5 langues).
+class _WaterReportSheet extends ConsumerStatefulWidget {
+  const _WaterReportSheet({required this.poi});
+
+  final PoiModel poi;
+
+  @override
+  ConsumerState<_WaterReportSheet> createState() => _WaterReportSheetState();
+}
+
+class _WaterReportSheetState extends ConsumerState<_WaterReportSheet> {
+  bool _submitting = false;
+
+  Future<void> _report(String status) async {
+    if (_submitting) return;
+    setState(() => _submitting = true);
+    final poi = widget.poi;
+    final service = ref.read(signalementServiceProvider);
+    final messenger = ScaffoldMessenger.of(context);
+    final savedMsg = t.signalement.water.saved;
+    // Position : celle du POI (donnee du sentier). Offline-first, jamais de
+    // coordonnee inventee — le point d'eau porte deja sa position.
+    await service.reportWaterStatus(
+      trailId: poi.trailId,
+      stageNumber: poi.stageNumber,
+      poiName: poi.name,
+      status: status,
+      latitude: poi.lat,
+      longitude: poi.lng,
+    );
+    // Rafraichit le statut partage affiche + le compteur d'attente global.
+    ref.invalidate(
+      waterSourceStatusProvider(
+        WaterSourceRef(
+          trailId: poi.trailId,
+          stageNumber: poi.stageNumber,
+          poiName: poi.name,
+        ),
+      ),
+    );
+    ref.invalidate(pendingSignalementCountProvider);
+    if (!mounted) return;
+    Navigator.of(context).maybePop();
+    messenger.showSnackBar(SnackBar(content: Text(savedMsg)));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppTheme.spacingLg,
+        0,
+        AppTheme.spacingLg,
+        AppTheme.spacingLg,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            t.signalement.water.sheetTitle,
+            style: theme.textTheme.titleMedium,
+          ),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            widget.poi.name,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          _WaterStateButton(
+            status: 'water_available',
+            onTap: _submitting ? null : () => _report('water_available'),
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _WaterStateButton(
+            status: 'water_low',
+            onTap: _submitting ? null : () => _report('water_low'),
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          _WaterStateButton(
+            status: 'water_dry',
+            onTap: _submitting ? null : () => _report('water_dry'),
+          ),
+          const SizedBox(height: AppTheme.spacingMd),
+          Text(
+            t.signalement.water.latencyHint,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bouton d'un etat de point d'eau dans la feuille de signalement.
+class _WaterStateButton extends StatelessWidget {
+  const _WaterStateButton({required this.status, required this.onTap});
+
+  final String status;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final (label, color, icon) = _statusVisual(status);
+    return Semantics(
+      button: true,
+      label: label,
+      child: InkWell(
+        key: ValueKey('water-state-$status'),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(AppTheme.spacingMd),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+            border: Border.all(color: color.withAlpha(120)),
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: color),
+              const SizedBox(width: AppTheme.spacingMd),
+              Expanded(
+                child: Text(label, style: theme.textTheme.titleMedium),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

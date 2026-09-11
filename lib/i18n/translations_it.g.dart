@@ -890,6 +890,7 @@ class _Translations$signalement$it extends Translations$signalement$fr {
 	@override String get savedPendingSync => 'Sarà condivisa appena la rete sarà disponibile.';
 	@override String pendingCount({required Object n}) => '${n} in attesa di sincronizzazione';
 	@override String get close => 'Chiudi';
+	@override late final _Translations$signalement$water$it water = _Translations$signalement$water$it._(_root);
 }
 
 // Path: hebergement
@@ -2217,6 +2218,21 @@ class _Translations$signalement$types$it extends Translations$signalement$types$
 	@override String get danger => 'Pericolo';
 }
 
+// Path: signalement.water
+class _Translations$signalement$water$it extends Translations$signalement$water$fr {
+	_Translations$signalement$water$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportAction => 'Segnala lo stato';
+	@override String get reportCount => '{n} segnalazione/i';
+	@override String get sheetTitle => 'Stato del punto d\'acqua?';
+	@override String get latencyHint => 'Condiviso con gli altri escursionisti dopo la sincronizzazione di rete.';
+	@override String get saved => 'Grazie! Stato salvato.';
+	@override late final _Translations$signalement$water$states$it states = _Translations$signalement$water$states$it._(_root);
+}
+
 // Path: hebergement.types
 class _Translations$hebergement$types$it extends Translations$hebergement$types$fr {
 	_Translations$hebergement$types$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -3283,6 +3299,19 @@ class _Translations$feasibility$recommendations$excellent$it extends Translation
 	@override String get title => 'Preparazione ottimale';
 	@override String get summary => 'Siete perfettamente preparati. Godetevi il trekking!';
 	@override late final _Translations$feasibility$recommendations$excellent$tips$it tips = _Translations$feasibility$recommendations$excellent$tips$it._(_root);
+}
+
+// Path: signalement.water.states
+class _Translations$signalement$water$states$it extends Translations$signalement$water$states$fr {
+	_Translations$signalement$water$states$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get available => 'Acqua disponibile';
+	@override String get low => 'Portata scarsa';
+	@override String get dry => 'A secco';
+	@override String get unknown => 'Stato sconosciuto';
 }
 
 // Path: gamification.badge.firstStage
@@ -4356,6 +4385,15 @@ extension on TranslationsIt {
 			'signalement.savedPendingSync' => 'Sarà condivisa appena la rete sarà disponibile.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
 			'signalement.close' => 'Chiudi',
+			'signalement.water.reportAction' => 'Segnala lo stato',
+			'signalement.water.reportCount' => '{n} segnalazione/i',
+			'signalement.water.sheetTitle' => 'Stato del punto d\'acqua?',
+			'signalement.water.latencyHint' => 'Condiviso con gli altri escursionisti dopo la sincronizzazione di rete.',
+			'signalement.water.saved' => 'Grazie! Stato salvato.',
+			'signalement.water.states.available' => 'Acqua disponibile',
+			'signalement.water.states.low' => 'Portata scarsa',
+			'signalement.water.states.dry' => 'A secco',
+			'signalement.water.states.unknown' => 'Stato sconosciuto',
 			'hebergement.title' => 'Alloggi nelle vicinanze',
 			'hebergement.facilitatorNote' => 'StepWays ti indirizza agli alloggi. La prenotazione avviene sul loro sito: nessun pagamento nell\'app.',
 			'hebergement.detourAR' => ({required Object km}) => 'Deviazione andata e ritorno: ${km} km',
@@ -4536,6 +4574,8 @@ extension on TranslationsIt {
 			'packs.types.complet.description' => 'Tutto il sentiero, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'Il sentiero Mare a Mare, offline.',
+			_ => null,
+		} ?? switch (path) {
 			'guides.title' => 'Guide delle città',
 			'guides.subtitle' => 'Info pratiche su città e paesi, consultabili offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} sezioni pratiche',
@@ -4545,8 +4585,6 @@ extension on TranslationsIt {
 			'guides.openSite' => 'Apri il sito',
 			'guides.cannotOpen' => 'Impossibile aprire questo link su questo dispositivo.',
 			'guides.categories.ravitaillement' => 'Rifornimento',
-			_ => null,
-		} ?? switch (path) {
 			'guides.categories.hebergement' => 'Alloggio',
 			'guides.categories.transport' => 'Trasporti',
 			'guides.categories.services' => 'Servizi',
@@ -5050,6 +5088,8 @@ extension on TranslationsIt {
 			'ffrando.notRated' => 'Non valutato',
 			'ffrando.effortLevels.k1' => 'Molto facile',
 			'ffrando.effortLevels.k2' => 'Facile',
+			_ => null,
+		} ?? switch (path) {
 			'ffrando.effortLevels.k3' => 'Medio',
 			'ffrando.effortLevels.k4' => 'Difficile',
 			'ffrando.effortLevels.k5' => 'Molto difficile',

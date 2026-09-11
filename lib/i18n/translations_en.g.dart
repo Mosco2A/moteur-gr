@@ -890,6 +890,7 @@ class _Translations$signalement$en extends Translations$signalement$fr {
 	@override String get savedPendingSync => 'It will be shared as soon as the network is back.';
 	@override String pendingCount({required Object n}) => '${n} awaiting sync';
 	@override String get close => 'Close';
+	@override late final _Translations$signalement$water$en water = _Translations$signalement$water$en._(_root);
 }
 
 // Path: hebergement
@@ -2217,6 +2218,21 @@ class _Translations$signalement$types$en extends Translations$signalement$types$
 	@override String get danger => 'Danger';
 }
 
+// Path: signalement.water
+class _Translations$signalement$water$en extends Translations$signalement$water$fr {
+	_Translations$signalement$water$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportAction => 'Report status';
+	@override String get reportCount => '{n} report(s)';
+	@override String get sheetTitle => 'Water point status?';
+	@override String get latencyHint => 'Shared with other hikers after network sync.';
+	@override String get saved => 'Thanks! Status saved.';
+	@override late final _Translations$signalement$water$states$en states = _Translations$signalement$water$states$en._(_root);
+}
+
 // Path: hebergement.types
 class _Translations$hebergement$types$en extends Translations$hebergement$types$fr {
 	_Translations$hebergement$types$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3283,6 +3299,19 @@ class _Translations$feasibility$recommendations$excellent$en extends Translation
 	@override String get title => 'Optimal preparation';
 	@override String get summary => 'You are perfectly prepared. Enjoy the trek with peace of mind!';
 	@override late final _Translations$feasibility$recommendations$excellent$tips$en tips = _Translations$feasibility$recommendations$excellent$tips$en._(_root);
+}
+
+// Path: signalement.water.states
+class _Translations$signalement$water$states$en extends Translations$signalement$water$states$fr {
+	_Translations$signalement$water$states$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get available => 'Water available';
+	@override String get low => 'Low flow';
+	@override String get dry => 'Dry';
+	@override String get unknown => 'Unknown status';
 }
 
 // Path: gamification.badge.firstStage
@@ -4356,6 +4385,15 @@ extension on TranslationsEn {
 			'signalement.savedPendingSync' => 'It will be shared as soon as the network is back.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} awaiting sync',
 			'signalement.close' => 'Close',
+			'signalement.water.reportAction' => 'Report status',
+			'signalement.water.reportCount' => '{n} report(s)',
+			'signalement.water.sheetTitle' => 'Water point status?',
+			'signalement.water.latencyHint' => 'Shared with other hikers after network sync.',
+			'signalement.water.saved' => 'Thanks! Status saved.',
+			'signalement.water.states.available' => 'Water available',
+			'signalement.water.states.low' => 'Low flow',
+			'signalement.water.states.dry' => 'Dry',
+			'signalement.water.states.unknown' => 'Unknown status',
 			'hebergement.title' => 'Nearby accommodation',
 			'hebergement.facilitatorNote' => 'StepWays points you to the hosts. Booking happens on their website: no payment inside the app.',
 			'hebergement.detourAR' => ({required Object km}) => 'Round-trip detour: ${km} km',
@@ -4536,6 +4574,8 @@ extension on TranslationsEn {
 			'packs.types.complet.description' => 'The whole trail, offline.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'The Mare a Mare trail, offline.',
+			_ => null,
+		} ?? switch (path) {
 			'guides.title' => 'Town guides',
 			'guides.subtitle' => 'Practical info for towns and villages, available offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} practical sections',
@@ -4545,8 +4585,6 @@ extension on TranslationsEn {
 			'guides.openSite' => 'Open website',
 			'guides.cannotOpen' => 'Can\'t open this link on this device.',
 			'guides.categories.ravitaillement' => 'Resupply',
-			_ => null,
-		} ?? switch (path) {
 			'guides.categories.hebergement' => 'Accommodation',
 			'guides.categories.transport' => 'Transport',
 			'guides.categories.services' => 'Services',
@@ -5050,6 +5088,8 @@ extension on TranslationsEn {
 			'ffrando.notRated' => 'Not rated',
 			'ffrando.effortLevels.k1' => 'Very easy',
 			'ffrando.effortLevels.k2' => 'Easy',
+			_ => null,
+		} ?? switch (path) {
 			'ffrando.effortLevels.k3' => 'Moderate',
 			'ffrando.effortLevels.k4' => 'Hard',
 			'ffrando.effortLevels.k5' => 'Very hard',

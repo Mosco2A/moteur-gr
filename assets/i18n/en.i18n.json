@@ -986,7 +986,20 @@
     "savedTitle": "Report saved",
     "savedPendingSync": "It will be shared as soon as the network is back.",
     "pendingCount": "$n awaiting sync",
-    "close": "Close"
+    "close": "Close",
+    "water": {
+      "reportAction": "Report status",
+      "reportCount": "{n} report(s)",
+      "sheetTitle": "Water point status?",
+      "latencyHint": "Shared with other hikers after network sync.",
+      "saved": "Thanks! Status saved.",
+      "states": {
+        "available": "Water available",
+        "low": "Low flow",
+        "dry": "Dry",
+        "unknown": "Unknown status"
+      }
+    }
   },
   "hebergement": {
     "title": "Nearby accommodation",

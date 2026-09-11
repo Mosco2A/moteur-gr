@@ -986,7 +986,20 @@
     "savedTitle": "Signalement enregistré",
     "savedPendingSync": "Il sera partagé dès le retour du réseau.",
     "pendingCount": "$n en attente de synchronisation",
-    "close": "Fermer"
+    "close": "Fermer",
+    "water": {
+      "reportAction": "Signaler l'état",
+      "reportCount": "{n} signalement(s)",
+      "sheetTitle": "État du point d'eau ?",
+      "latencyHint": "Partagé avec les autres randonneurs après synchronisation réseau.",
+      "saved": "Merci ! État enregistré.",
+      "states": {
+        "available": "Eau disponible",
+        "low": "Débit faible",
+        "dry": "À sec",
+        "unknown": "État inconnu"
+      }
+    }
   },
   "hebergement": {
     "title": "Hébergements à proximité",

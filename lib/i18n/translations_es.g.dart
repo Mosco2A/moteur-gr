@@ -890,6 +890,7 @@ class _Translations$signalement$es extends Translations$signalement$fr {
 	@override String get savedPendingSync => 'Se compartirá en cuanto vuelva la red.';
 	@override String pendingCount({required Object n}) => '${n} en espera de sincronización';
 	@override String get close => 'Cerrar';
+	@override late final _Translations$signalement$water$es water = _Translations$signalement$water$es._(_root);
 }
 
 // Path: hebergement
@@ -2217,6 +2218,21 @@ class _Translations$signalement$types$es extends Translations$signalement$types$
 	@override String get danger => 'Peligro';
 }
 
+// Path: signalement.water
+class _Translations$signalement$water$es extends Translations$signalement$water$fr {
+	_Translations$signalement$water$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get reportAction => 'Informar del estado';
+	@override String get reportCount => '{n} informe(s)';
+	@override String get sheetTitle => '¿Estado del punto de agua?';
+	@override String get latencyHint => 'Se comparte con otros senderistas tras la sincronización de red.';
+	@override String get saved => '¡Gracias! Estado guardado.';
+	@override late final _Translations$signalement$water$states$es states = _Translations$signalement$water$states$es._(_root);
+}
+
 // Path: hebergement.types
 class _Translations$hebergement$types$es extends Translations$hebergement$types$fr {
 	_Translations$hebergement$types$es._(TranslationsEs root) : this._root = root, super.internal(root);
@@ -3283,6 +3299,19 @@ class _Translations$feasibility$recommendations$excellent$es extends Translation
 	@override String get title => 'Preparación óptima';
 	@override String get summary => 'Está perfectamente preparado(a). Disfrute del trekking!';
 	@override late final _Translations$feasibility$recommendations$excellent$tips$es tips = _Translations$feasibility$recommendations$excellent$tips$es._(_root);
+}
+
+// Path: signalement.water.states
+class _Translations$signalement$water$states$es extends Translations$signalement$water$states$fr {
+	_Translations$signalement$water$states$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get available => 'Agua disponible';
+	@override String get low => 'Caudal bajo';
+	@override String get dry => 'Seco';
+	@override String get unknown => 'Estado desconocido';
 }
 
 // Path: gamification.badge.firstStage
@@ -4356,6 +4385,15 @@ extension on TranslationsEs {
 			'signalement.savedPendingSync' => 'Se compartirá en cuanto vuelva la red.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en espera de sincronización',
 			'signalement.close' => 'Cerrar',
+			'signalement.water.reportAction' => 'Informar del estado',
+			'signalement.water.reportCount' => '{n} informe(s)',
+			'signalement.water.sheetTitle' => '¿Estado del punto de agua?',
+			'signalement.water.latencyHint' => 'Se comparte con otros senderistas tras la sincronización de red.',
+			'signalement.water.saved' => '¡Gracias! Estado guardado.',
+			'signalement.water.states.available' => 'Agua disponible',
+			'signalement.water.states.low' => 'Caudal bajo',
+			'signalement.water.states.dry' => 'Seco',
+			'signalement.water.states.unknown' => 'Estado desconocido',
 			'hebergement.title' => 'Alojamientos cercanos',
 			'hebergement.facilitatorNote' => 'StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.',
 			'hebergement.detourAR' => ({required Object km}) => 'Desvío ida y vuelta: ${km} km',
@@ -4536,6 +4574,8 @@ extension on TranslationsEs {
 			'packs.types.complet.description' => 'Todo el sendero, sin conexión.',
 			'packs.types.mam.nom' => 'Mare a Mare',
 			'packs.types.mam.description' => 'El sendero Mare a Mare, sin conexión.',
+			_ => null,
+		} ?? switch (path) {
 			'guides.title' => 'Guías de los pueblos',
 			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones practicas',
@@ -4545,8 +4585,6 @@ extension on TranslationsEs {
 			'guides.openSite' => 'Abrir el sitio',
 			'guides.cannotOpen' => 'No se puede abrir este enlace en este dispositivo.',
 			'guides.categories.ravitaillement' => 'Avituallamiento',
-			_ => null,
-		} ?? switch (path) {
 			'guides.categories.hebergement' => 'Alojamiento',
 			'guides.categories.transport' => 'Transporte',
 			'guides.categories.services' => 'Servicios',
@@ -5050,6 +5088,8 @@ extension on TranslationsEs {
 			'ffrando.notRated' => 'Sin clasificar',
 			'ffrando.effortLevels.k1' => 'Muy facil',
 			'ffrando.effortLevels.k2' => 'Facil',
+			_ => null,
+		} ?? switch (path) {
 			'ffrando.effortLevels.k3' => 'Medio',
 			'ffrando.effortLevels.k4' => 'Dificil',
 			'ffrando.effortLevels.k5' => 'Muy dificil',
