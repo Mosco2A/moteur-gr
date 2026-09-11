@@ -127,21 +127,10 @@ class _HubScreenState extends ConsumerState<HubScreen>
           ),
         ],
       ),
-      // FAB : Feedback (toujours) + SOS (si trek actif, gere par SosButton qui
-      // se masque lui-meme hors trek). RF-12/RM-3.
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SosButton(),
-          const SizedBox(height: AppTheme.spacingMd),
-          FloatingActionButton.extended(
-            heroTag: 'hub_feedback',
-            onPressed: () => context.push('/trail/$trailId/feedback'),
-            icon: const Icon(Icons.feedback_outlined),
-            label: Text(t.hub.fab.feedback),
-          ),
-        ],
-      ),
+      // FAB : SOS uniquement (si trek actif, gere par SosButton qui se masque
+      // lui-meme hors trek). RM-3. Le FAB « Donner mon avis » (feedback) a ete
+      // retire du hub (jamais decide, retour Chris LOT 3).
+      floatingActionButton: const SosButton(),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
