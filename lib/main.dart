@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +25,14 @@ import 'i18n/translations.g.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // OFFLINE-FIRST (fix cycle 3) : interdit tout fetch HTTP de police au runtime.
+  // La typographie (Montserrat) est desormais EMBARQUEE comme famille Flutter
+  // native (pubspec `fonts:` + assets/fonts/, parite GR20) et resolue en local.
+  // Ce garde-fou garantit qu'aucun code (present ou futur) ne rappellera le
+  // reseau pour une police -> boot fiable en mode avion (cas Ines, payeuse
+  // offline, qui etait bloquee par l'echec de fetch de google_fonts au boot).
+  GoogleFonts.config.allowRuntimeFetching = false;
 
   // E5.1b — lit le flag d'onboarding AVANT le premier rendu pour que le guard
   // du routeur (synchrone) redirige vers /onboarding au tout premier lancement.

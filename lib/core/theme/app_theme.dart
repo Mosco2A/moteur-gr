@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'app_skin.dart';
 import 'category_icon_colors.dart';
@@ -23,12 +22,17 @@ class AppTheme {
   //  - Role "data" (gros chiffres km / D+ / duree) : Montserrat w700 +
   //    FontFeature.tabularFigures() -> chiffres a chasse fixe (alignement HUD).
   //
-  // Offline-first (arbitrage A1) : google_fonts recupere la police au runtime
-  // et la met en cache disque ; si aucun asset embarque ET pas de reseau, il
-  // retombe sur la police systeme (Roboto) — jamais de "boite tofu", jamais de
-  // blocage reseau. Pour un offline garanti au 1er lancement, deposer les .ttf
-  // dans assets/google_fonts/ (voir note de livraison) : google_fonts les
-  // detecte alors automatiquement et cesse tout fetch HTTP.
+  // Offline-first (parite GR20, fix cycle 3) : Montserrat est EMBARQUEE comme
+  // famille Flutter native (pubspec `fonts:` + assets/fonts/), et NON recuperee
+  // par google_fonts au runtime. Motif : le fetch HTTP de google_fonts echouait
+  // hors reseau (mode avion) et l'exception cassait le boot (bloquait Ines,
+  // payeuse offline). Avec la famille embarquee, la police est resolue localement
+  // sans reseau, et le matching de graisse de Flutter retombe proprement sur la
+  // graisse embarquee la plus proche (ex: w500 -> 600) sans jamais lever.
+
+  /// Nom de la famille de police embarquee (pubspec `fonts:`), partage par tous
+  /// les roles. Aligne sur GR20 (Montserrat partout).
+  static const String fontFamily = 'Montserrat';
 
   /// Base du role "data" (gros chiffres de stats) : Montserrat w700 avec
   /// chiffres tabulaires. Reutilisable sans BuildContext ; la couleur et la
@@ -36,9 +40,10 @@ class AppTheme {
   ///
   /// Preferer [dataTextStyle] quand un BuildContext est disponible : la taille
   /// et la couleur y sont alors alignees sur le TextTheme actif.
-  static TextStyle get dataTextStyleBase => GoogleFonts.montserrat(
+  static TextStyle get dataTextStyleBase => const TextStyle(
+        fontFamily: fontFamily,
         fontWeight: FontWeight.w700,
-        fontFeatures: const [FontFeature.tabularFigures()],
+        fontFeatures: [FontFeature.tabularFigures()],
       );
 
   /// Style du role "data" resolu depuis le [BuildContext].
@@ -47,9 +52,9 @@ class AppTheme {
   /// courant, en Montserrat w700 + chiffres tabulaires. A utiliser pour les
   /// valeurs de stats (distance, D+, duree) du hub, de la fiche etape et du HUD.
   static TextStyle dataTextStyle(BuildContext context) {
-    final base = Theme.of(context).textTheme.headlineMedium;
-    return GoogleFonts.montserrat(
-      textStyle: base,
+    final base = Theme.of(context).textTheme.headlineMedium ?? const TextStyle();
+    return base.copyWith(
+      fontFamily: fontFamily,
       fontWeight: FontWeight.w700,
       fontFeatures: const [FontFeature.tabularFigures()],
     );
@@ -65,11 +70,17 @@ class AppTheme {
   ///
   ///  - display / headline* / title* / label* / body* -> Montserrat.
   static TextTheme _textTheme(Color onColor) {
-    TextStyle title(FontWeight weight, double size) => GoogleFonts.montserrat(
-          textStyle: TextStyle(fontWeight: weight, fontSize: size, color: onColor),
+    TextStyle title(FontWeight weight, double size) => TextStyle(
+          fontFamily: fontFamily,
+          fontWeight: weight,
+          fontSize: size,
+          color: onColor,
         );
-    TextStyle body(FontWeight weight, double size) => GoogleFonts.montserrat(
-          textStyle: TextStyle(fontWeight: weight, fontSize: size, color: onColor),
+    TextStyle body(FontWeight weight, double size) => TextStyle(
+          fontFamily: fontFamily,
+          fontWeight: weight,
+          fontSize: size,
+          color: onColor,
         );
 
     return TextTheme(
@@ -208,7 +219,8 @@ class AppTheme {
         // Parite GR20 (retour Chris 09/09) : titre d'AppBar explicitement en
         // Montserrat 18/w600 (comme GR20 app_theme.dart), au lieu du defaut M3
         // (~titleLarge). Garantit que l'en-tete du pilote a la taille voulue.
-        titleTextStyle: GoogleFonts.montserrat(
+        titleTextStyle: const TextStyle(
+          fontFamily: fontFamily,
           fontWeight: FontWeight.w600,
           fontSize: 18,
           color: Colors.white,
@@ -338,7 +350,8 @@ class AppTheme {
         // Parite GR20 (retour Chris 09/09) : titre d'AppBar explicitement en
         // Montserrat 18/w600 (comme GR20 app_theme.dart), au lieu du defaut M3
         // (~titleLarge). Garantit que l'en-tete du pilote a la taille voulue.
-        titleTextStyle: GoogleFonts.montserrat(
+        titleTextStyle: const TextStyle(
+          fontFamily: fontFamily,
           fontWeight: FontWeight.w600,
           fontSize: 18,
           color: Colors.white,
