@@ -85,21 +85,35 @@ void main() {
     // Un dialog de conflit (C4) peut s interposer si un AUTRE trek tourne.
     await tapIfPresent(tester, find.textContaining('Terminer'), P, 'demarrer',
         'resoudre conflit trek (Terminer l autre)', warnIfMissing: false);
+
+    // FIX CYCLE 2 (issue 2) : les permissions de suivi (notif + localisation
+    // « Toujours » + batterie) sont desormais demandees AU DEMARRAGE, SUR LE
+    // COCKPIT (HubTrekCard._startWithGuard), AVANT le passage sur la carte. Les
+    // dialogs de permission sont NATIFS (hors arbre Flutter) : sur un run reel
+    // l'utilisateur y repond sur le cockpit, puis la carte s'ouvre DEGAGEE. Pour
+    // le rejeu automatise on PRE-ACCORDE ces permissions via adb (`pm grant` en
+    // amont du drive) -> aucun dialog ne doit recouvrir la carte. On laisse la
+    // sequence de demarrage aboutir avant de conclure.
+    await _observe(tester, const Duration(seconds: 2));
     await settleAndShoot(tester, P, '04_apres_demarrage');
     _logLocation(tester, P, 'apres_demarrage');
 
     // --- S assurer d etre sur la CARTE (navigation) ---
-    if (!present(find.byType(Scaffold).at(0)) ||
-        !_onMap(tester)) {
-      // Forcer l ouverture de la carte.
+    // Le demarrage (HubTrekCard) pousse lui-meme /map une fois les permissions
+    // resolues. Filet : si la sequence reste sur le cockpit (permissions non
+    // pre-accordees en env de test), on force l'ouverture de la carte.
+    if (!_onMap(tester)) {
       _goMap(tester, P);
+      await _observe(tester, const Duration(seconds: 1));
     }
     await settleAndShoot(tester, P, '05_carte');
     logStep(
         P,
         'carte',
         'Sur la carte = ${_onMap(tester)} ; '
-            'FlutterMap present = ${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))}');
+            'FlutterMap present = ${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))} ; '
+            'dialog permission par-dessus = ${present(find.textContaining('otification')) || present(find.textContaining('Autoriser'))} '
+            '(ATTENDU false apres pre-grant adb — issue 2).');
 
     // --- FENETRE D INJECTION GPS ---
     // Le script host-side pousse les points du trace PENDANT cette boucle. On
