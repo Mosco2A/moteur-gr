@@ -8,6 +8,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/contextual_action_bar.dart';
 import '../../../shared/widgets/contextual_bottom_bar.dart';
+import '../../../shared/widgets/empty_state.dart';
 import '../../hub/presentation/widgets/hub_section.dart';
 import '../../hub/presentation/widgets/quick_access_card.dart';
 import '../domain/trek_lifecycle_state.dart';
@@ -135,15 +136,27 @@ class _MyTreksBody extends ConsumerWidget {
       children: [
         // Etat vide : aucun trek possede (cas theorique — la vitrine en fournit
         // au moins un — mais l'ecran ne doit jamais paraitre casse).
+        //
+        // FIX CYCLE 2 (issue 4) : empty-state PROPRE « Découvrir » (icone + titre
+        // + invite + CTA explicite vers le catalogue), au lieu d'un simple texte
+        // centre. Reutilise le widget maison [EmptyState] (meme grammaire que le
+        // catalogue vide) — le bandeau « Découvrir / Mon compte » en bas de liste
+        // reste present, mais on offre ici une porte d'entree claire et saillante
+        // pour explorer. Aucune donnee inventee : « Mes treks » n'est jamais
+        // vraiment vide en usage nominal (la vitrine est un trek possede).
         if (isEmpty)
           Padding(
-            padding: const EdgeInsets.all(AppTheme.spacingLg),
-            child: Text(
-              t.myTreks.empty,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppTheme.grisGranite,
-                  ),
+            padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXl),
+            child: EmptyState(
+              icon: Icons.explore_outlined,
+              title: t.myTreks.emptyTitle,
+              subtitle: t.myTreks.empty,
+              action: FilledButton.icon(
+                key: const ValueKey('my-treks-empty-discover'),
+                onPressed: () => context.go('/catalog'),
+                icon: const Icon(Icons.explore_outlined),
+                label: Text(t.myTreks.discoverTitle),
+              ),
             ),
           ),
 

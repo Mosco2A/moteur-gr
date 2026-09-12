@@ -1477,6 +1477,7 @@ class _Translations$myTreks$de extends Translations$myTreks$fr {
 	@override String get sectionInProgress => 'Laufend';
 	@override String get sectionPrepared => 'Vorbereitet';
 	@override String get sectionCompleted => 'Abgeschlossen';
+	@override String get emptyTitle => 'Noch keine Touren';
 	@override String get empty => 'Noch keine Tour. Entdecke einen Weg, um zu beginnen.';
 	@override String get discoverTitle => 'Wege entdecken';
 	@override String get discoverSubtitle => 'Katalog durchsuchen';
@@ -5135,6 +5136,7 @@ extension on TranslationsDe {
 			'myTreks.sectionInProgress' => 'Laufend',
 			'myTreks.sectionPrepared' => 'Vorbereitet',
 			'myTreks.sectionCompleted' => 'Abgeschlossen',
+			'myTreks.emptyTitle' => 'Noch keine Touren',
 			'myTreks.empty' => 'Noch keine Tour. Entdecke einen Weg, um zu beginnen.',
 			'myTreks.discoverTitle' => 'Wege entdecken',
 			'myTreks.discoverSubtitle' => 'Katalog durchsuchen',
@@ -5216,9 +5218,9 @@ extension on TranslationsDe {
 			'pastHikes.intro' => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.',
 			'pastHikes.addHike' => 'Tour hinzufugen',
 			'pastHikes.empty' => 'Noch keine Tour erfasst.',
-			'pastHikes.fieldDate' => 'Datum',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.fieldDate' => 'Datum',
 			'pastHikes.fieldDays' => 'Anzahl Tage',
 			'pastHikes.fieldAvgHours' => 'Durchschnittliches Gehen pro Tag (Std.)',
 			'pastHikes.fieldElevation' => 'Gesamtanstieg (m)',

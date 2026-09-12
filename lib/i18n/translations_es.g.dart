@@ -1477,6 +1477,7 @@ class _Translations$myTreks$es extends Translations$myTreks$fr {
 	@override String get sectionInProgress => 'En curso';
 	@override String get sectionPrepared => 'Preparadas';
 	@override String get sectionCompleted => 'Terminadas';
+	@override String get emptyTitle => 'Aun no hay rutas';
 	@override String get empty => 'Aún no hay rutas. Descubre un sendero para empezar.';
 	@override String get discoverTitle => 'Descubrir senderos';
 	@override String get discoverSubtitle => 'Explora el catálogo';
@@ -5135,6 +5136,7 @@ extension on TranslationsEs {
 			'myTreks.sectionInProgress' => 'En curso',
 			'myTreks.sectionPrepared' => 'Preparadas',
 			'myTreks.sectionCompleted' => 'Terminadas',
+			'myTreks.emptyTitle' => 'Aun no hay rutas',
 			'myTreks.empty' => 'Aún no hay rutas. Descubre un sendero para empezar.',
 			'myTreks.discoverTitle' => 'Descubrir senderos',
 			'myTreks.discoverSubtitle' => 'Explora el catálogo',
@@ -5216,9 +5218,9 @@ extension on TranslationsEs {
 			'pastHikes.intro' => 'Anade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, habito de desnivel) en lugar de una etiqueta.',
 			'pastHikes.addHike' => 'Anadir ruta',
 			'pastHikes.empty' => 'Ninguna ruta introducida todavia.',
-			'pastHikes.fieldDate' => 'Fecha',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.fieldDate' => 'Fecha',
 			'pastHikes.fieldDays' => 'Numero de dias',
 			'pastHikes.fieldAvgHours' => 'Marcha media por dia (h)',
 			'pastHikes.fieldElevation' => 'Desnivel + total (m)',

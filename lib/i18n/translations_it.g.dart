@@ -1477,6 +1477,7 @@ class _Translations$myTreks$it extends Translations$myTreks$fr {
 	@override String get sectionInProgress => 'In corso';
 	@override String get sectionPrepared => 'Preparati';
 	@override String get sectionCompleted => 'Completati';
+	@override String get emptyTitle => 'Ancora nessun trek';
 	@override String get empty => 'Nessun trek per ora. Scopri un sentiero per iniziare.';
 	@override String get discoverTitle => 'Scopri sentieri';
 	@override String get discoverSubtitle => 'Sfoglia il catalogo';
@@ -5135,6 +5136,7 @@ extension on TranslationsIt {
 			'myTreks.sectionInProgress' => 'In corso',
 			'myTreks.sectionPrepared' => 'Preparati',
 			'myTreks.sectionCompleted' => 'Completati',
+			'myTreks.emptyTitle' => 'Ancora nessun trek',
 			'myTreks.empty' => 'Nessun trek per ora. Scopri un sentiero per iniziare.',
 			'myTreks.discoverTitle' => 'Scopri sentieri',
 			'myTreks.discoverSubtitle' => 'Sfoglia il catalogo',
@@ -5216,9 +5218,9 @@ extension on TranslationsIt {
 			'pastHikes.intro' => 'Aggiungi fino a 5 escursioni notevoli. Deduciamo il tuo livello reale (ritmo, resistenza, abitudine al dislivello) invece di un\'etichetta.',
 			'pastHikes.addHike' => 'Aggiungi escursione',
 			'pastHikes.empty' => 'Nessuna escursione inserita.',
-			'pastHikes.fieldDate' => 'Data',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.fieldDate' => 'Data',
 			'pastHikes.fieldDays' => 'Numero di giorni',
 			'pastHikes.fieldAvgHours' => 'Cammino medio al giorno (h)',
 			'pastHikes.fieldElevation' => 'Dislivello + totale (m)',

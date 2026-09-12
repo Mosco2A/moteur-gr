@@ -57,13 +57,20 @@ class TrailCatalogScreen extends ConsumerWidget {
   }
 
   /// Entre dans le sentier [trailId] : ecrit la selection (le moteur entier
-  /// suit via trailConfigProvider) puis ouvre la carte.
+  /// suit via trailConfigProvider) puis ouvre le COCKPIT DE PREPARATION.
   ///
-  /// Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la pile -> retour
-  /// propre vers le catalogue. go() ecrasait la pile (heritage shell, supprime).
+  /// FIX CYCLE 2 (issue 1) : « Entrer » ouvrait la CARTE DE NAVIGATION LIVE
+  /// (`/map`) — une debutante atterrissait directement sur la carte au lieu de la
+  /// fiche/prepa. NOMINAL GR20 : selectionner un sentier ouvre son COCKPIT (hub
+  /// Preparer/Randonner/Apres : faisabilite -> itineraire -> prepa), la carte
+  /// live restant reservee au DEMARRAGE EFFECTIF du trek. On aligne donc sur le
+  /// geste eprouve de l'accueil « Mes treks » ([MyTreksScreen] : selection +
+  /// `go('/home')`) : `go` bascule vers l'accueil « terrain » (cockpit), pas un
+  /// `push` d'ecran de detail — c'est un changement d'accueil contextuel, tout le
+  /// contexte du sentier suit la selection (trailConfigProvider en derive).
   void _enterTrail(BuildContext context, WidgetRef ref, String trailId) {
     ref.read(selectedTrailIdProvider.notifier).state = trailId;
-    context.push('/map');
+    context.go('/home');
   }
 }
 

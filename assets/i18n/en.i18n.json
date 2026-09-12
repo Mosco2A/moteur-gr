@@ -1826,6 +1826,7 @@
     "sectionInProgress": "In progress",
     "sectionPrepared": "Prepared",
     "sectionCompleted": "Completed",
+    "emptyTitle": "No treks yet",
     "empty": "No trek yet. Discover a trail to get started.",
     "discoverTitle": "Discover trails",
     "discoverSubtitle": "Browse the catalog",

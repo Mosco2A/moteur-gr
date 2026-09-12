@@ -1477,6 +1477,7 @@ class _Translations$myTreks$en extends Translations$myTreks$fr {
 	@override String get sectionInProgress => 'In progress';
 	@override String get sectionPrepared => 'Prepared';
 	@override String get sectionCompleted => 'Completed';
+	@override String get emptyTitle => 'No treks yet';
 	@override String get empty => 'No trek yet. Discover a trail to get started.';
 	@override String get discoverTitle => 'Discover trails';
 	@override String get discoverSubtitle => 'Browse the catalog';
@@ -5135,6 +5136,7 @@ extension on TranslationsEn {
 			'myTreks.sectionInProgress' => 'In progress',
 			'myTreks.sectionPrepared' => 'Prepared',
 			'myTreks.sectionCompleted' => 'Completed',
+			'myTreks.emptyTitle' => 'No treks yet',
 			'myTreks.empty' => 'No trek yet. Discover a trail to get started.',
 			'myTreks.discoverTitle' => 'Discover trails',
 			'myTreks.discoverSubtitle' => 'Browse the catalog',
@@ -5216,9 +5218,9 @@ extension on TranslationsEn {
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',
 			'pastHikes.empty' => 'No hike entered yet.',
-			'pastHikes.fieldDate' => 'Date',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Number of days',
 			'pastHikes.fieldAvgHours' => 'Average walking per day (h)',
 			'pastHikes.fieldElevation' => 'Total elevation gain (m)',

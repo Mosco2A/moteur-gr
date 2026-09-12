@@ -64,8 +64,9 @@ void main() {
           P,
           'selection',
           'Entrer dans la vitrine (repli)');
-      // « Entrer » ouvre la CARTE ; le sentier est desormais selectionne -> on
-      // rejoint le cockpit de preparation.
+      // FIX CYCLE 2 (issue 1) : « Entrer » ouvre desormais le COCKPIT /home
+      // (prepa), plus la carte live. `_goHome` reste un filet idempotent (etat
+      // connu) au cas ou l'entree serait detournee.
       _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '04_cockpit');

@@ -1826,6 +1826,7 @@
     "sectionInProgress": "Laufend",
     "sectionPrepared": "Vorbereitet",
     "sectionCompleted": "Abgeschlossen",
+    "emptyTitle": "Noch keine Touren",
     "empty": "Noch keine Tour. Entdecke einen Weg, um zu beginnen.",
     "discoverTitle": "Wege entdecken",
     "discoverSubtitle": "Katalog durchsuchen",

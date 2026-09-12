@@ -1826,6 +1826,7 @@
     "sectionInProgress": "En curso",
     "sectionPrepared": "Preparadas",
     "sectionCompleted": "Terminadas",
+    "emptyTitle": "Aun no hay rutas",
     "empty": "Aún no hay rutas. Descubre un sendero para empezar.",
     "discoverTitle": "Descubrir senderos",
     "discoverSubtitle": "Explora el catálogo",

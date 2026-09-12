@@ -55,43 +55,44 @@ void main() {
         'Catalogue affiche = ${present(catTitle)} ; '
         'sentiers avec bouton Entrer = ${enterBtn.evaluate().length}');
 
-    // --- Etape 3 : fiche sentier ---
-    // FINDING attendu : le bouton « Entrer » du catalogue fait push('/map') ->
-    // il ouvre la CARTE terrain du sentier (pas le cockpit de preparation). On
-    // le JOUE et on TRACE la destination reelle (signal QA), puis on rejoint le
-    // cockpit par le chemin utilisateur normal (accueil « Mes treks »).
+    // --- Etape 3 : entree dans le sentier -> COCKPIT DE PREPARATION ---
+    // FIX CYCLE 2 (issue 1) : « Entrer » ouvre desormais le COCKPIT (`/home`,
+    // sections Preparer/Randonner/Apres), PAS la carte de navigation live. On
+    // VERIFIE ce comportement corrige : apres le tap, on ne doit PAS etre sur la
+    // carte terrain. La carte reste reservee au demarrage effectif du trek.
     final entered = await tapIfPresent(
         tester,
         find.byKey(const ValueKey('catalog-enter-mare-a-mare-centre')),
         P,
-        'fiche_sentier',
+        'cockpit',
         'Entrer dans le sentier vitrine (cle catalog-enter)');
     if (!entered) {
-      await tapIfPresent(tester, enterBtn, P, 'fiche_sentier',
+      await tapIfPresent(tester, enterBtn, P, 'cockpit',
           'Entrer (1er sentier du catalogue)');
     }
     await settleAndShoot(tester, P, '07_apres_entrer');
     _logLocation(tester, P, 'apres_entrer');
+    final onMapAfterEnter = _onMap(tester);
     logStep(
         P,
-        'fiche_sentier',
-        'Ecran apres Entrer : carte terrain = ${_onMap(tester)} '
-            '(FINDING : « Entrer » catalogue -> /map, pas le cockpit de preparation).');
+        'cockpit',
+        'VERIF issue 1 : apres « Entrer », carte terrain = $onMapAfterEnter '
+            '(ATTENDU false — « Entrer » catalogue -> cockpit /home, pas /map).');
 
-    // Rejoindre le COCKPIT de preparation par le chemin utilisateur : retour a
-    // « Mes treks » puis ouverture du trek possede (go('/home')).
-    await _goMyTreks(tester, P);
-    await settleAndShoot(tester, P, '07b_mes_treks');
-    final trekCard = find
-        .byWidgetPredicate((w) => w.key.toString().contains('trek-summary-'));
-    if (present(trekCard)) {
-      await tester.tap(trekCard.first, warnIfMissed: false);
-      await pumpAndSettleTolerant(tester);
-      logStep(P, 'cockpit', 'TAP OK : carte de trek possede -> cockpit /home');
-    } else {
-      logStep(P, 'cockpit',
-          'Aucune carte trek-summary-* sur Mes treks — on force /home');
-      _goHome(tester, P);
+    // Filet : si (regression) on atterrissait quand meme sur la carte, on
+    // rejoint le cockpit par le chemin utilisateur (Mes treks -> trek possede).
+    if (onMapAfterEnter) {
+      await _goMyTreks(tester, P);
+      await settleAndShoot(tester, P, '07b_mes_treks');
+      final trekCard = find
+          .byWidgetPredicate((w) => w.key.toString().contains('trek-summary-'));
+      if (present(trekCard)) {
+        await tester.tap(trekCard.first, warnIfMissed: false);
+        await pumpAndSettleTolerant(tester);
+        logStep(P, 'cockpit', 'Filet : carte de trek possede -> cockpit /home');
+      } else {
+        _goHome(tester, P);
+      }
     }
     await settleAndShoot(tester, P, '07c_cockpit');
     _logLocation(tester, P, 'cockpit');

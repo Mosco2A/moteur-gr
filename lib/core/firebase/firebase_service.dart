@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../error/error_handler.dart';
 
 /// Service d'initialisation Firebase.
 ///
@@ -23,6 +26,19 @@ class FirebaseService {
   /// Indique si Firebase est disponible et initialise
   final bool isAvailable;
 
+  /// Delai maximum d'attente de l'init Firebase au demarrage (offline-first).
+  ///
+  /// Cold-boot HORS-LIGNE : `Firebase.initializeApp()` peut RESTER PENDU
+  /// (resolution DNS / tentative de contact des serveurs Google sans reseau) —
+  /// le `try/catch` ne rattrape pas un HANG, seulement une erreur. Sans borne de
+  /// temps, le premier frame n'est jamais rendu et l'app se fige au demarrage
+  /// (bug cycle 1 persona S4/offline). On borne donc l'init : au-dela, on
+  /// retombe en mode local (Firebase indisponible) et l'app demarre quand meme.
+  /// Le cache Firestore local (#81812) reste utilisable une fois le reseau revenu
+  /// et l'app relancee ; en attendant, tout le moteur fonctionne offline-first
+  /// (donnees embarquees / Drift).
+  static const Duration _initTimeout = Duration(seconds: 4);
+
   /// Initialise Firebase de maniere conditionnelle.
   ///
   /// Si [firebaseProjectId] est null, retourne un service
@@ -31,15 +47,22 @@ class FirebaseService {
   /// DefaultFirebaseOptions (genere par FlutterFire CLI).
   ///
   /// Active la persistence Firestore pour le mode offline (#81812).
+  ///
+  /// OFFLINE-FIRST (fix cycle 2, issue 3) : l'init est bornee par [_initTimeout]
+  /// (`.timeout(...)`). Un cold-boot sans reseau ou un SDK qui pend ne fige plus
+  /// le demarrage — au dela du delai, on bascule proprement en mode local (comme
+  /// pour toute autre erreur d'init), l'app s'ouvre offline-first.
   static Future<FirebaseService> initialize({
     String? firebaseProjectId,
+    @visibleForTesting Duration? timeout,
   }) async {
     if (firebaseProjectId == null) {
       return FirebaseService._(isAvailable: false);
     }
 
     try {
-      await Firebase.initializeApp();
+      // Borne de temps : offline, `initializeApp` peut PENDRE (pas juste jeter).
+      await Firebase.initializeApp().timeout(timeout ?? _initTimeout);
 
       // #81812 B2 offline montagne — persistence Firestore
       // Permet l'acces aux donnees meme sans reseau (sentiers, POI, etapes)
@@ -49,9 +72,11 @@ class FirebaseService {
       );
 
       return FirebaseService._(isAvailable: true);
-    } catch (e) {
-      // En cas d echec d init, fallback en mode local
-      // plutot que de crasher l app
+    } on Object catch (e, st) {
+      // En cas d'echec OU de TIMEOUT (TimeoutException) d'init, fallback en mode
+      // local plutot que de crasher/figer l'app (offline-first). Trace via le
+      // handler d'erreurs (aucun catch silencieux).
+      ErrorHandler.log(e, stackTrace: st, context: 'FirebaseService.initialize');
       return FirebaseService._(isAvailable: false);
     }
   }

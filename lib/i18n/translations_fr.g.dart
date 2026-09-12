@@ -2973,6 +2973,9 @@ class Translations$myTreks$fr {
 	/// fr: 'Terminés'
 	String get sectionCompleted => 'Terminés';
 
+	/// fr: 'Aucun trek pour le moment'
+	String get emptyTitle => 'Aucun trek pour le moment';
+
 	/// fr: 'Aucun trek pour le moment. Découvrez un sentier pour commencer.'
 	String get empty => 'Aucun trek pour le moment. Découvrez un sentier pour commencer.';
 
@@ -8389,6 +8392,7 @@ extension on Translations {
 			'myTreks.sectionInProgress' => 'En cours',
 			'myTreks.sectionPrepared' => 'Preparés',
 			'myTreks.sectionCompleted' => 'Terminés',
+			'myTreks.emptyTitle' => 'Aucun trek pour le moment',
 			'myTreks.empty' => 'Aucun trek pour le moment. Découvrez un sentier pour commencer.',
 			'myTreks.discoverTitle' => 'Découvrir des sentiers',
 			'myTreks.discoverSubtitle' => 'Parcourez le catalogue',
@@ -8470,9 +8474,9 @@ extension on Translations {
 			'pastHikes.intro' => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.',
 			'pastHikes.addHike' => 'Ajouter une rando',
 			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
-			'pastHikes.fieldDate' => 'Date',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Nombre de jours',
 			'pastHikes.fieldAvgHours' => 'Marche moyenne par jour (h)',
 			'pastHikes.fieldElevation' => 'Denivele + total (m)',

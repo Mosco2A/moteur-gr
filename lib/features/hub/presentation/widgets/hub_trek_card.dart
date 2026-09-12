@@ -9,6 +9,7 @@ import '../../../../shared/widgets/app_button.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
+import '../../../../shared/services/location_permission_service.dart';
 import '../../../map/providers/track_position_provider.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
 import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
@@ -270,6 +271,17 @@ class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
   /// si un AUTRE trek est en cours, delegue le choix a l'UI via le dialog
   /// [showActiveTrekConflictDialog] (Terminer/Abandonner/Annuler). Au succes,
   /// on bascule vers la carte (`/map`) pour naviguer.
+  ///
+  /// FIX CYCLE 2 (issue 2) : les demandes de PERMISSIONS de suivi (localisation
+  /// « Toujours » + notifications + exemption batterie) sont SEQUENCEES ICI,
+  /// AVANT d'entrer sur la carte — sur le cockpit (pre-trek), a la maniere de
+  /// l'ecran « Demarrer » de GR20. Auparavant, `start()` les declenchait en tache
+  /// de fond (`unawaited`) APRES le `push('/map')` : la pile de dialogs systeme
+  /// s'empilait PAR-DESSUS la carte et masquait le suivi GPS a l'arrivee. En les
+  /// resolvant en amont (et de maniere idempotente — `isGranted` court-circuite,
+  /// donc la re-demande de `_startBackgroundCapture` ne re-prompte pas), la carte
+  /// + le point GPS sont visibles et suivis des l'arrivee. Best-effort : un refus
+  /// n'empeche jamais le demarrage (invariant « jamais de cul-de-sac »).
   Future<void> _startWithGuard() async {
     final trailId = ref.read(trailConfigProvider).id;
     final notifier = ref.read(trekSessionManagerProvider.notifier);
@@ -284,8 +296,15 @@ class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
       if (!mounted) return;
       // Demarrage effectif -> on ouvre la navigation. Sur annulation ou meme
       // trek deja actif, on reste sur le HUB (la carte se re-derivera).
-      // Ph4 (hub-and-push, SPEC §5) : push -> retour propre au cockpit.
       if (outcome == StartOutcome.started) {
+        // Issue 2 : resoudre les permissions de suivi SUR LE COCKPIT, avant la
+        // carte (best-effort, non bloquant sur le resultat). Idempotent avec
+        // l'escalade de `_startBackgroundCapture` (deja lancee par `start`).
+        await ref
+            .read(locationPermissionServiceProvider)
+            .ensureBackgroundTracking();
+        if (!mounted) return;
+        // Ph4 (hub-and-push, SPEC §5) : push -> retour propre au cockpit.
         context.push('/map');
       }
     } finally {

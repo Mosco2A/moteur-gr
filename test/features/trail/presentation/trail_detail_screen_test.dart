@@ -218,7 +218,8 @@ void main() {
     });
 
     testWidgets(
-        'le bouton Entrer active le sentier et ouvre le shell sur /map (#88246)',
+        'le bouton Entrer active le sentier et ouvre le cockpit /home '
+        '(#88246 ; FIX CYCLE 2 issue 1)',
         (tester) async {
       // Container partage pour lire la selection apres l'action UI.
       final container = ProviderContainer(overrides: [
@@ -229,7 +230,8 @@ void main() {
       ]);
       addTearDown(container.dispose);
 
-      // Routeur minimal : detail en racine + stub /map pour observer la nav.
+      // Routeur minimal : detail en racine + stub /home (cockpit) pour observer
+      // la nav. « Entrer » mene desormais au COCKPIT, pas a la carte live.
       final router = GoRouter(
         initialLocation: '/',
         routes: [
@@ -239,9 +241,9 @@ void main() {
                 const TrailDetailScreen(trailId: 'test-trail'),
           ),
           GoRoute(
-            path: '/map',
+            path: '/home',
             builder: (context, state) =>
-                const Scaffold(body: Text('STUB MAP SCREEN')),
+                const Scaffold(body: Text('STUB HOME COCKPIT')),
           ),
         ],
       );
@@ -262,8 +264,8 @@ void main() {
 
       // La selection pointe sur le sentier affiche -> moteur bascule.
       expect(container.read(selectedTrailIdProvider), 'test-trail');
-      // On a navigue vers le shell (stub /map).
-      expect(find.text('STUB MAP SCREEN'), findsOneWidget);
+      // On a navigue vers le COCKPIT (stub /home) — PAS la carte live (issue 1).
+      expect(find.text('STUB HOME COCKPIT'), findsOneWidget);
     });
   });
 }
