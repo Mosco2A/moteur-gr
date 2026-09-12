@@ -13,7 +13,6 @@ import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/contextual_action_bar.dart';
 import '../../../../shared/widgets/contextual_bottom_bar.dart';
-import '../../../safety/presentation/sos_confirmation_dialog.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/map_pois_provider.dart';
@@ -74,16 +73,17 @@ final mapControllerProvider =
 ///
 /// CARTE TERRAIN (StepWays LOT 3, Ph5 — SPEC §4) : reçoit une BARRE CONTEXTUELLE
 /// (mecanisme L3, [ContextualActionsMixin] + [ContextualBottomBar]) : **Étape en
-/// cours / Journal / SOS** (§4). Le SOS y est une action SAILLANTE (rouge plein).
+/// cours / Journal** (§4).
 ///
-/// ⚠ ARBITRAGE À TRANCHER PAR CHRIS (signale au rapport) : la carte a DEJA un
-/// bouton SOS en overlay (colonne bas-gauche, [SosButton] qui se masque hors trek
-/// actif). Conformement au mandat, cet overlay SOS est CONSERVE INTACT et la barre
-/// §4 est ajoutee PAR-DESSUS sans le casser -> il y a donc TEMPORAIREMENT DEUX
-/// points SOS a l'ecran (overlay flottant + action de barre). De plus, le SOS de
-/// la barre suit §4 (toujours present), alors que l'overlay ne s'affiche qu'en
-/// trek actif. Chris tranchera le GOUT (garder l'overlay, la barre, ou fusionner)
-/// au reveil — non bloquant. La barre applique la proposition §4 telle quelle.
+/// SOS — ACCES UNIQUE ALIGNE GR20 (decision Chris 12/09, cycle 3) : le SOS n'a
+/// qu'UN SEUL point d'entree — le bouton flottant en overlay (colonne bas-gauche,
+/// [SosButton], visible en trek actif). C'est EXACTEMENT le placement GR20 (cf.
+/// `GR20/app/lib/features/trek/presentation/map_navigation_screen.dart` →
+/// `SosFloatingButton` positionne dans le Stack, bas-gauche ; GR20 n'a AUCUNE
+/// barre contextuelle ni SOS en barre). Le doublon d'acces SOS de la barre §4
+/// (herite du LOT 3) est donc RETIRE ici : la barre ne porte plus que « Étape en
+/// cours » et « Journal ». La FONCTION SOS reste pleinement joignable via
+/// l'overlay — seul le doublon d'UI disparait.
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key, required this.trailId});
 
@@ -96,13 +96,16 @@ class MapScreen extends ConsumerStatefulWidget {
 
 class _MapScreenState extends ConsumerState<MapScreen>
     with ContextualActionsMixin {
-  /// Barre contextuelle de la carte (SPEC §4) : Étape en cours / Journal / SOS.
+  /// Barre contextuelle de la carte (SPEC §4) : Étape en cours / Journal.
   ///
   /// - Étape en cours -> pousse la liste des etapes (`/stages`, l'etape courante
   ///   y est mise en avant) ;
-  /// - Journal -> pousse le journal de trek (`/journal`) ;
-  /// - SOS -> action SAILLANTE (rouge) : ouvre la confirmation d'appel d'urgence
-  ///   (meme dialog que l'overlay [SosButton], position GPS courante).
+  /// - Journal -> pousse le journal de trek (`/journal`).
+  ///
+  /// SOS — RETIRE de la barre (cycle 3, parite GR20) : l'appel d'urgence n'a
+  /// qu'UN acces, l'overlay flottant [SosButton] (voir docstring de [MapScreen]).
+  /// GR20 ne place aucun SOS en barre ; on ne garde donc que les deux actions
+  /// de navigation contextuelle. La fonction SOS reste joignable par l'overlay.
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [
         ContextualAction(
@@ -115,44 +118,16 @@ class _MapScreenState extends ConsumerState<MapScreen>
           label: t.nav.journal,
           onPressed: () => context.push('/journal'),
         ),
-        ContextualAction(
-          icon: Icons.emergency,
-          label: t.navPilote.sos,
-          semanticLabel: t.a11y.sos,
-          salient: true, // pastille pleine rouge (AppTheme.rougeUrgence).
-          onPressed: () => _showSos(context),
-        ),
       ];
-
-  /// Ouvre la confirmation SOS avec la position GPS courante (parite [SosButton]
-  /// et cockpit) — meme dialog, aucune logique dupliquee cote appel d'urgence.
-  void _showSos(BuildContext context) {
-    double? latitude;
-    double? longitude;
-    double? altitude;
-    ref.read(positionStreamProvider).whenData((position) {
-      latitude = position.latitude;
-      longitude = position.longitude;
-      altitude = position.altitude;
-    });
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (ctx) => SosConfirmationDialog(
-        latitude: latitude,
-        longitude: longitude,
-        altitude: altitude,
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     final trailId = widget.trailId;
     return Scaffold(
-      // Barre contextuelle declarative (L3) : Étape en cours / Journal / SOS (§4).
-      // L'overlay SOS existant du corps ([_MapContent]) reste INTACT (arbitrage
-      // signale en tete de classe) — la barre est ADDITIVE.
+      // Barre contextuelle declarative (L3) : Étape en cours / Journal (§4).
+      // SOS RETIRE de la barre (cycle 3, parite GR20) : l'unique acces SOS est
+      // l'overlay flottant [SosButton] du corps ([_MapContent]), a l'identique
+      // du placement GR20 (SosFloatingButton dans le Stack de la carte).
       bottomNavigationBar: const ContextualBottomBar(),
       appBar: AppBar(
         title: Consumer(

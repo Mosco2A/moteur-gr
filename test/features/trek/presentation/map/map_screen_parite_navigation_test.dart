@@ -138,7 +138,8 @@ void main() {
       expect(find.byIcon(Icons.layers), findsOneWidget);
     });
 
-    testWidgets('SOS overlay masque hors trek', (tester) async {
+    testWidgets('SOS overlay masque hors trek (acces unique, aucun SOS de barre)',
+        (tester) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
       await tester.pump(const Duration(milliseconds: 100));
 
@@ -154,16 +155,17 @@ void main() {
         reason: 'overlay SOS invisible hors trek (parite SosButton)',
       );
 
-      // ⚠ ARBITRAGE §4 (StepWays LOT 3, Ph5) : la BARRE contextuelle de la carte
-      // porte desormais une action SOS (Étape/Journal/SOS) INDEPENDANTE de
-      // l'overlay -> elle est presente meme hors trek. C'est le point de gout que
-      // Chris tranchera (garder overlay + barre, ou fusionner). On documente ici
-      // qu'a l'ecran il y a bien l'icone SOS de la barre (et une seule), pas celle
-      // de l'overlay.
-      expect(find.byIcon(Icons.emergency), findsOneWidget);
+      // SOS UNIQUE aligne GR20 (cycle 3) : le doublon SOS de la barre §4 a ete
+      // RETIRE. Hors trek, l'overlay est masque ET la barre ne porte plus de SOS
+      // -> AUCUNE icone SOS a l'ecran (exactement comme GR20, sans barre SOS).
+      expect(
+        find.byIcon(Icons.emergency),
+        findsNothing,
+        reason: 'plus de SOS en barre (retire cycle 3) + overlay masque hors trek',
+      );
     });
 
-    testWidgets('SOS overlay visible pendant un trek (+ SOS de barre §4)',
+    testWidgets('SOS overlay = SEUL acces pendant un trek (parite GR20)',
         (tester) async {
       await tester.pumpWidget(harness(status: TrackingSessionStatus.recording));
       await tester.pump(const Duration(milliseconds: 100));
@@ -184,11 +186,11 @@ void main() {
         findsOneWidget,
       );
 
-      // ⚠ ARBITRAGE §4 : la barre contextuelle ajoute un 2e point SOS -> au TOTAL
-      // deux icones SOS a l'ecran en trek (overlay + barre). Attendu tant que
-      // Chris n'a pas tranche le gout (non bloquant).
-      expect(find.byIcon(Icons.emergency), findsNWidgets(2));
-      expect(find.text('SOS'), findsNWidgets(2));
+      // SOS UNIQUE aligne GR20 (cycle 3) : plus de doublon en barre. En trek,
+      // il n'y a donc qu'UNE SEULE icone SOS et un seul texte « SOS » a l'ecran,
+      // ceux de l'overlay — a l'identique de GR20 (SosFloatingButton unique).
+      expect(find.byIcon(Icons.emergency), findsOneWidget);
+      expect(find.text('SOS'), findsOneWidget);
     });
 
     testWidgets('barre d etape active affichee pendant un trek avec fix GPS',

@@ -139,21 +139,26 @@ void main() {
     logStep(P, 'gps', 'FIN fenetre injection GPS');
     await settleAndShoot(tester, P, '07_apres_gps');
 
-    // --- Declencher SOS ---
-    // Sur la carte, l overlay SOS (FloatingActionButton rouge) est visible en
-    // trek actif. On tape dessus puis on capture le dialog de confirmation.
+    // --- Declencher SOS (ACCES UNIQUE aligne GR20, cycle 3) ---
+    // Depuis cycle 3, le SOS n'a qu'UN acces : l'overlay flottant (heroTag
+    // `sos_e515`, bas-gauche), a l'identique de GR20 (SosFloatingButton dans le
+    // Stack). L'ancien doublon en barre contextuelle a ete RETIRE. On VERIFIE
+    // donc qu'il n'y a plus qu'un seul FAB SOS et qu'il ouvre bien la confirmation.
     final sos = find.byWidgetPredicate((w) =>
         w is FloatingActionButton && (w.heroTag == 'sos_e515'));
+    logStep(P, 'sos',
+        'VERIF acces unique : FAB SOS overlay present = ${present(sos)} ; '
+        'action SOS en barre contextuelle (icone emergency) = '
+        '${present(find.byIcon(Icons.emergency))} (ATTENDU false — doublon retire cycle 3).');
     var sosTapped = false;
     if (present(sos)) {
       await tester.tap(sos.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
       sosTapped = true;
-      logStep(P, 'sos', 'TAP OK : bouton SOS (overlay carte)');
+      logStep(P, 'sos', 'TAP OK : bouton SOS (overlay carte, acces unique GR20)');
     } else {
-      // Repli : action SOS de la barre contextuelle (label SOS / icone urgence).
-      sosTapped = await tapIfPresent(tester, find.byIcon(Icons.emergency), P,
-          'sos', 'SOS (barre contextuelle / icone urgence)');
+      logStep(P, 'sos',
+          'COINCE : overlay SOS introuvable (trek non actif ?) — capture pour analyse');
     }
     await settleAndShoot(tester, P, '08_sos_dialog');
     if (sosTapped) {
@@ -203,7 +208,70 @@ void main() {
     await settleAndShoot(tester, P, '12_diplome');
     _logLocation(tester, P, 'diplome');
 
-    logStep(P, 'fin', 'Scenario S3 termine');
+    // --- APRES-TREK (CYCLE 3) : Journal « Vos notes et souvenirs » + Recap ---
+    // Le trek est TERMINE (diplome obtenu) -> on couvre l'apres-trek reel de la
+    // section « Apres la randonnee » du hub : le JOURNAL (vraie saisie d'un
+    // souvenir) et le RECAP « Mon aventure » (stats de la session). Jusqu'ici
+    // seul le diplome etait couvert (constat mission).
+
+    // 1) Journal : ouvrir, AJOUTER une note/souvenir (vraie saisie), capturer.
+    _goHome(tester, P);
+    final journalCard = textFrEn('Journal', 'Journal');
+    await scrollUntil(tester, journalCard, P, 'apres_journal',
+        'carte Journal (Vos notes et souvenirs)');
+    await tapIfPresent(tester, journalCard, P, 'apres_journal',
+        'ouvrir le Journal', warnIfMissing: false);
+    await settleAndShoot(tester, P, '13_journal_ouvert');
+    _logLocation(tester, P, 'apres_journal');
+    // Ouvrir le dialog d'ajout de note (FloatingActionButton + du journal).
+    await tapIfPresent(tester, find.byIcon(Icons.add), P, 'apres_journal',
+        'bouton + (ajouter une note/souvenir)', warnIfMissing: false);
+    await settleAndShoot(tester, P, '14_journal_add_dialog');
+    // Saisir un vrai souvenir dans le champ texte du dialog (TextField).
+    final noteField = find.byType(TextField);
+    const souvenir =
+        'Arrivee au sommet, vue magnifique sur la vallee. Quelle aventure !';
+    if (present(noteField)) {
+      await tester.enterText(noteField.first, souvenir);
+      await pumpAndSettleTolerant(tester);
+      logStep(P, 'apres_journal', 'SAISIE souvenir : "$souvenir"');
+    } else {
+      logStep(P, 'apres_journal',
+          'COINCE : champ de saisie de note introuvable dans le dialog');
+    }
+    await settleAndShoot(tester, P, '15_journal_note_saisie');
+    // Enregistrer la note (bouton « Enregistrer »/« Save » du dialog).
+    final noteSaved = await tapIfPresent(
+        tester, textFrEn('Enregistrer', 'Save'), P, 'apres_journal',
+        'enregistrer le souvenir', warnIfMissing: false);
+    await settleAndShoot(tester, P, '16_journal_note_enregistree');
+    // Verifier que la note apparait bien dans la liste (souvenir persiste).
+    final noteVisible = present(find.textContaining('Arrivee au sommet'));
+    logStep(P, 'apres_journal',
+        'Souvenir enregistre = $noteSaved ; visible dans le journal = '
+        '$noteVisible (le journal n\'est plus vide -> apres-trek couvert).');
+
+    // 2) Recap « Récapitulatif » (Votre aventure) : bilan post-trek (stats
+    // session), carte de la section « Apres la randonnee » du hub.
+    _goHome(tester, P);
+    final recapCard = textFrEn('Récapitulatif', 'Recap');
+    await scrollUntil(tester, recapCard, P, 'apres_recap',
+        'carte Recapitulatif (Votre aventure en resume)');
+    final recapOpened = await tapIfPresent(tester, recapCard, P, 'apres_recap',
+        'ouvrir le recap post-trek', warnIfMissing: false);
+    await settleAndShoot(tester, P, '17_recap_apres_trek');
+    _logLocation(tester, P, 'apres_recap');
+    // Indice de contenu : titre « Votre aventure » ou une stat (etapes/km).
+    final recapContent = present(find.text('Votre aventure')) ||
+        present(find.text('Your adventure')) ||
+        present(find.textContaining('Statistiques')) ||
+        present(find.textContaining('Statistics'));
+    logStep(P, 'apres_recap',
+        'Recap post-trek ouvert = $recapOpened ; contenu bilan visible = '
+        '$recapContent (« Votre aventure », stats session — en plus du diplome '
+        'et du journal).');
+
+    logStep(P, 'fin', 'Scenario S3 termine (realiser + apres-trek complet)');
     await flushJournal(P);
   });
 }

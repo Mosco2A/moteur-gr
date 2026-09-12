@@ -118,9 +118,9 @@ void main() {
     });
 
     // StepWays LOT 3, Ph5 (§4) : MapScreen est devenu un ConsumerStatefulWidget
-    // pour porter la barre contextuelle (Étape en cours / Journal / SOS) via le
-    // mecanisme declaratif L3 ([ContextualActionsMixin]). Le corps carte reste
-    // dans [_MapContent] (inchange).
+    // pour porter la barre contextuelle (Étape en cours / Journal ; SOS retire
+    // cycle 3, parite GR20) via le mecanisme declaratif L3
+    // ([ContextualActionsMixin]). Le corps carte reste dans [_MapContent].
     testWidgets('MapScreen est un ConsumerStatefulWidget', (tester) async {
       const screen = MapScreen(trailId: 'test-trail');
       expect(screen, isA<ConsumerStatefulWidget>());
