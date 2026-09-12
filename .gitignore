@@ -69,3 +69,8 @@ lib/firebase_options.dart
 *.p12
 *.p8
 *.mobileprovision
+
+# Artefacts de tests personas (captures, logs, pid) — sortie de run ephemere,
+# jamais versionnee. Les CAPTURES de preuve sont archivees hors repo par
+# l'autopilot (data/stepways_autopilot/ dans le repo Skynet).
+/data/

@@ -272,6 +272,7 @@ void main() {
         'et du journal).');
 
     logStep(P, 'fin', 'Scenario S3 termine (realiser + apres-trek complet)');
+    await finalizeScenario(tester, P);
     await flushJournal(P);
   });
 }

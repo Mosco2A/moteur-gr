@@ -288,7 +288,7 @@ void main() {
     }
     await settleAndShoot(tester, P, '19_checklist_coche');
 
-    // --- Etape 8 : demarre ---
+    // --- Etape 8 : DEMARRER le trek ---
     await _goHome(tester, P);
     // Le CTA « Demarrer la randonnee » est porte par la HubTrekCard, EN HAUT du
     // cockpit : on remonte en tete de la liste avant de le chercher (la liste
@@ -302,11 +302,175 @@ void main() {
     if (!started) {
       await tapIfPresent(tester, find.byIcon(Icons.play_arrow), P, 'demarrer',
           'CTA Demarrer (icone play)', warnIfMissing: false);
+      // Trek deja actif d'un run precedent -> « Reprendre la navigation ».
+      await tapIfPresent(tester,
+          textFrEn('Reprendre la navigation', 'Resume navigation'), P,
+          'demarrer', 'Reprendre la navigation (trek deja actif)',
+          warnIfMissing: false);
     }
+    // Conflit trek (C4) : un autre trek tourne -> resoudre (Terminer l'autre).
+    await tapIfPresent(tester, find.textContaining('Terminer'), P, 'demarrer',
+        'resoudre conflit trek (Terminer l autre)', warnIfMissing: false);
+    await _observe(tester, const Duration(seconds: 2));
     await settleAndShoot(tester, P, '20_demarrage');
     _logLocation(tester, P, 'apres_demarrage');
 
-    logStep(P, 'fin', 'Scenario S1 termine');
+    // ================================================================
+    // CIRCUIT COMPLET (directive Chris 12/09) — Lea vit AUSSI la phase
+    // RANDONNER puis APRES-TREK, dans le meme parcours continu :
+    //   MARCHER (GPS injecte) -> SOS -> TERMINER -> DIPLOME -> JOURNAL
+    //   (souvenir) -> RECAP.
+    // ================================================================
+
+    // --- Etape 9 : MARCHER — s'assurer d'etre sur la CARTE ---
+    // Le demarrage (HubTrekCard) pousse /map une fois les permissions resolues
+    // (pre-accordees via adb au lancement). Filet : sinon on force la carte.
+    if (!_onMap(tester)) {
+      _goMap(tester, P);
+      await _observe(tester, const Duration(seconds: 1));
+    }
+    await settleAndShoot(tester, P, '21_carte');
+    logStep(
+        P,
+        'carte',
+        'Sur la carte = ${_onMap(tester)} ; FlutterMap present = '
+            '${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))}.');
+
+    // Fenetre d'injection GPS (~40 s) : l'hote pousse les points du trace via
+    // `adb emu geo fix` (tool/persona_s3_geo_push.py). On observe + on capture le
+    // suivi (carte qui suit, barre d'etape, distance restante).
+    logStep(P, 'gps',
+        'DEBUT fenetre injection GPS (~40 s). Observation + captures periodiques.');
+    for (var i = 0; i < 8; i++) {
+      await _observe(tester, const Duration(seconds: 5));
+      await settleAndShoot(tester, P, '22_gps_tick_${i.toString().padLeft(2, '0')}',
+          timeout: const Duration(seconds: 2));
+      final suivi = _firstTextMatching(tester,
+          RegExp(r'\betape\b|\bEtape\b|\bkm\b|restant', caseSensitive: false));
+      logStep(P, 'gps',
+          'tick $i — indice suivi visible: ${suivi ?? "(aucun texte etape/km capte)"}');
+    }
+    logStep(P, 'gps', 'FIN fenetre injection GPS');
+    await settleAndShoot(tester, P, '23_apres_gps');
+
+    // --- Etape 10 : SOS (acces unique aligne GR20, overlay heroTag sos_e515) ---
+    final sos = find.byWidgetPredicate((w) =>
+        w is FloatingActionButton && (w.heroTag == 'sos_e515'));
+    logStep(P, 'sos',
+        'FAB SOS overlay present = ${present(sos)}.');
+    var sosTapped = false;
+    if (present(sos)) {
+      await tester.tap(sos.first, warnIfMissed: false);
+      await pumpAndSettleTolerant(tester);
+      sosTapped = true;
+      logStep(P, 'sos', 'TAP OK : bouton SOS (overlay carte)');
+    } else {
+      logStep(P, 'sos',
+          'COINCE : overlay SOS introuvable (trek non actif ?) — capture pour analyse');
+    }
+    await settleAndShoot(tester, P, '24_sos_dialog');
+    if (sosTapped) {
+      logStep(
+          P,
+          'sos',
+          'Dialog SOS ouvert = ${present(find.byType(Dialog)) || present(find.byType(AlertDialog))}. '
+              'On NE confirme PAS l appel 112 (pas d appel reel en test).');
+      await tapIfPresent(tester, find.textContaining('Annuler'), P, 'sos',
+          'fermer le dialog SOS (Annuler)', warnIfMissing: false);
+      if (present(find.byType(Dialog)) || present(find.byType(AlertDialog))) {
+        await tester.tapAt(const Offset(20, 20));
+        await pumpAndSettleTolerant(tester);
+      }
+    }
+    await settleAndShoot(tester, P, '25_apres_sos');
+
+    // --- Etape 11 : TERMINER le trek ---
+    // IMPORTANT (fiabilite) : terminer le trek ARRETE le service GPS de fond ->
+    // plus d'isolate vivant au teardown -> le run se cloture proprement.
+    await _goHome(tester, P);
+    await settleAndShoot(tester, P, '26_cockpit_fin');
+    final finished = await scrollUntil(tester, find.textContaining('Terminer'),
+        P, 'terminer', 'bouton Terminer le trek (fin de scroll)');
+    if (finished) {
+      await tapIfPresent(tester, find.textContaining('Terminer'), P, 'terminer',
+          'Terminer le trek');
+      // Confirmer si une boite de dialogue de confirmation apparait.
+      await tapIfPresent(tester, find.textContaining('Terminer'), P, 'terminer',
+          'confirmer fin de trek', warnIfMissing: false);
+    }
+    await settleAndShoot(tester, P, '27_apres_terminer');
+
+    // --- Etape 12 : DIPLOME ---
+    await _goHome(tester, P);
+    var diploma = await tapIfPresent(
+        tester, find.byKey(const ValueKey('completed-diploma')),
+        P, 'diplome', 'bouton Diplome (carte trek termine)', warnIfMissing: false);
+    if (!diploma) {
+      await scrollUntil(tester, find.text('Diplôme'), P, 'diplome',
+          'carte Diplome (section Apres)');
+      diploma = await tapIfPresent(
+          tester, find.text('Diplôme'), P, 'diplome', 'ouvrir Diplome');
+    }
+    await settleAndShoot(tester, P, '28_diplome');
+    _logLocation(tester, P, 'diplome');
+    logStep(P, 'diplome', 'Diplome ouvert = $diploma.');
+
+    // --- Etape 13 : APRES-TREK — Journal « Vos notes et souvenirs » ---
+    await _goHome(tester, P);
+    final journalCard = textFrEn('Journal', 'Journal');
+    await scrollUntil(tester, journalCard, P, 'apres_journal',
+        'carte Journal (Vos notes et souvenirs)');
+    await tapIfPresent(tester, journalCard, P, 'apres_journal',
+        'ouvrir le Journal', warnIfMissing: false);
+    await settleAndShoot(tester, P, '29_journal_ouvert');
+    _logLocation(tester, P, 'apres_journal');
+    // Ouvrir le dialog d'ajout de note (FloatingActionButton + du journal).
+    await tapIfPresent(tester, find.byIcon(Icons.add), P, 'apres_journal',
+        'bouton + (ajouter une note/souvenir)', warnIfMissing: false);
+    await settleAndShoot(tester, P, '30_journal_add_dialog');
+    // Saisir un vrai souvenir de debutante dans le champ texte du dialog.
+    final noteField = find.byType(TextField);
+    const souvenir =
+        'Ma toute premiere rando bouclee. Fiere de moi, la vue valait chaque pas !';
+    if (present(noteField)) {
+      await tester.enterText(noteField.first, souvenir);
+      await pumpAndSettleTolerant(tester);
+      logStep(P, 'apres_journal', 'SAISIE souvenir : "$souvenir"');
+    } else {
+      logStep(P, 'apres_journal',
+          'COINCE : champ de saisie de note introuvable dans le dialog');
+    }
+    await settleAndShoot(tester, P, '31_journal_note_saisie');
+    final noteSaved = await tapIfPresent(
+        tester, textFrEn('Enregistrer', 'Save'), P, 'apres_journal',
+        'enregistrer le souvenir', warnIfMissing: false);
+    await settleAndShoot(tester, P, '32_journal_note_enregistree');
+    final noteVisible = present(find.textContaining('premiere rando'));
+    logStep(P, 'apres_journal',
+        'Souvenir enregistre = $noteSaved ; visible dans le journal = '
+        '$noteVisible (le journal n\'est plus vide -> apres-trek couvert).');
+
+    // --- Etape 14 : APRES-TREK — Recap « Mon aventure » ---
+    await _goHome(tester, P);
+    final recapCard = textFrEn('Récapitulatif', 'Recap');
+    await scrollUntil(tester, recapCard, P, 'apres_recap',
+        'carte Recapitulatif (Votre aventure en resume)');
+    final recapOpened = await tapIfPresent(tester, recapCard, P, 'apres_recap',
+        'ouvrir le recap post-trek', warnIfMissing: false);
+    await settleAndShoot(tester, P, '33_recap_apres_trek');
+    _logLocation(tester, P, 'apres_recap');
+    final recapContent = present(find.text('Votre aventure')) ||
+        present(find.text('Your adventure')) ||
+        present(find.textContaining('Statistiques')) ||
+        present(find.textContaining('Statistics'));
+    logStep(P, 'apres_recap',
+        'Recap post-trek ouvert = $recapOpened ; contenu bilan visible = '
+        '$recapContent.');
+
+    logStep(P, 'fin',
+        'Scenario S1 termine — CIRCUIT COMPLET (preparer -> randonner -> apres).');
+    // Cloture propre : draine les artefacts de teardown (trek deja termine).
+    await finalizeScenario(tester, P);
     await flushJournal(P);
   });
 }
@@ -366,6 +530,40 @@ bool _onMap(WidgetTester tester) {
   return present(find.byWidgetPredicate(
           (w) => w.runtimeType.toString() == 'FlutterMap')) ||
       present(find.text('Étape en cours'));
+}
+
+/// Force l ouverture de la carte via le routeur (phase RANDONNER du circuit).
+void _goMap(WidgetTester tester, String persona) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    if (router != null) {
+      router.push('/map');
+      logStep(persona, 'nav', 'Ouverture carte /map (push)');
+    }
+  } catch (e) {
+    logStep(persona, 'nav', 'Ouverture carte impossible : $e');
+  }
+}
+
+/// Observation « live » : compose des frames pendant [d] sans exiger le repos
+/// (la carte GL / le suivi GPS ne se stabilisent jamais completement).
+Future<void> _observe(WidgetTester tester, Duration d) async {
+  final end = DateTime.now().add(d);
+  while (DateTime.now().isBefore(end)) {
+    await tester.pump(const Duration(milliseconds: 200));
+  }
+}
+
+/// Renvoie le 1er texte visible correspondant au motif (indice de suivi), ou null.
+String? _firstTextMatching(WidgetTester tester, RegExp re) {
+  final texts = find.byType(Text);
+  for (final e in texts.evaluate()) {
+    final w = e.widget as Text;
+    final data = w.data ?? w.textSpan?.toPlainText();
+    if (data != null && re.hasMatch(data)) return data;
+  }
+  return null;
 }
 
 /// Remonte en tete de la 1re liste defilante (fling vers le bas repete).
@@ -452,15 +650,19 @@ Future<void> _fillHikerProfile(WidgetTester tester, String persona) async {
     'Poids': '62',
   };
   var filledByLabel = 0;
-  byLabel.forEach((label, value) {
-    final field = find.widgetWithText(TextFormField, label);
+  // IMPORTANT : sous LiveTestWidgetsFlutterBinding (framePolicy fullyLive),
+  // `enterText` est une API guardee qui DOIT etre awaitee — un `forEach` avec
+  // closure synchrone declenche « Guarded function conflict » (2e enterText
+  // avant la fin du 1er) et FAIT ECHOUER le scenario. On boucle donc en `for`
+  // avec `await` sur chaque saisie.
+  for (final entry in byLabel.entries) {
+    final field = find.widgetWithText(TextFormField, entry.key);
     if (field.evaluate().isNotEmpty) {
-      // enterText est synchrone ici ; le pump suit apres la boucle.
-      tester.enterText(field.first, value);
+      await tester.enterText(field.first, entry.value);
+      await pumpAndSettleTolerant(tester);
       filledByLabel++;
     }
-  });
-  await pumpAndSettleTolerant(tester);
+  }
   if (filledByLabel >= 3) {
     logStep(persona, 'fiche_info',
         'SAISIE morpho par label : Age=32, Taille=165, Poids=62');

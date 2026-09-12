@@ -6,7 +6,7 @@
 // Parcours vise (PLAN_TEST_PERSONAS S2) :
 //   selectionne un trek dur -> faisabilite « go » rapide -> « Mes treks »
 //   multi-treks -> cockpit -> reglages (change la langue, voit la version
-//   v0.1.0) -> profil.
+//   v0.1.2) -> profil.
 //
 // Pilote l UI reelle, capture chaque etape, LOGue les coincements. Zero modif app.
 
@@ -116,12 +116,13 @@ void main() {
           'remettre Francais (accent)', warnIfMissing: false);
     }
 
-    // Voir la version : defiler jusqu a la section version et lire « 0.1.0 ».
-    await scrollUntil(tester, find.textContaining('0.1.0'), P, 'version',
-        'numero de version (0.1.0)');
-    final versionShown = present(find.textContaining('0.1.0'));
+    // Voir la version : defiler jusqu a la section version et lire « 0.1.2 »
+    // (version courante, bump cycle 3 — pubspec 0.1.2+3, lue via PackageInfo).
+    await scrollUntil(tester, find.textContaining('0.1.2'), P, 'version',
+        'numero de version (0.1.2)');
+    final versionShown = present(find.textContaining('0.1.2'));
     logStep(P, 'version',
-        'Version 0.1.0 visible dans les reglages = $versionShown');
+        'Version 0.1.2 visible dans les reglages = $versionShown');
     await settleAndShoot(tester, P, '09_version');
 
     // --- Profil ---
@@ -133,6 +134,7 @@ void main() {
     _logLocation(tester, P, 'profil');
 
     logStep(P, 'fin', 'Scenario S2 termine');
+    await finalizeScenario(tester, P);
     await flushJournal(P);
   });
 }

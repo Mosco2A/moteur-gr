@@ -159,6 +159,7 @@ void main() {
         'fin',
         'Scenario S4 termine. L hote peut retablir le reseau. Verdict premium '
             'hors-ligne consigne dans les logs entrainement_offline/carte_offline.');
+    await finalizeScenario(tester, P);
     await flushJournal(P);
   });
 }

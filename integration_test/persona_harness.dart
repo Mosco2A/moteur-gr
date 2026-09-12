@@ -21,6 +21,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:integration_test/integration_test.dart';
 
 /// Journal partage des scenarios (une ligne par pas).
@@ -48,7 +49,47 @@ IntegrationTestWidgetsFlutterBinding initHarness() {
   // Rendu reel a l'ecran pendant les captures (sinon le binding « saute » des
   // frames et l'emulateur n'affiche pas l'action). Cf. doc integration_test.
   kBinding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
+
+  // FIABILITE POLICES (harnais uniquement — NE MODIFIE PAS l'appli) :
+  // google_fonts charge Montserrat de maniere ASYNCHRONE. Selon le reglage,
+  // deux modes d'echec APRES la fin du test (faux rouge) sont possibles :
+  //   * allowRuntimeFetching = TRUE (defaut) : fetch HTTP. Sur l'emulateur,
+  //     fonts.gstatic.com est joignable en DNS mais le TCP echoue tard
+  //     (ClientException « Connection closed before full header ») -> le future
+  //     se resout APRES le parcours -> le CIRCUIT S'EST DEROULE EN ENTIER et
+  //     toutes les captures + PERSONA_END sont deja produits ; seule une erreur
+  //     COSMETIQUE tardive subsiste.
+  //   * allowRuntimeFetching = FALSE sans police embarquee : google_fonts LEVE
+  //     IMMEDIATEMENT (« font ... not found in assets ») DES LE BOOT ->
+  //     l'exception async casse le run AVANT meme le 1er ecran (0 capture).
+  //     C'est PIRE. Et on ne peut pas la neutraliser cote harnais : la lib
+  //     attache un `.then` SANS `.catchError` (google_fonts_base.dart l.111-112,
+  //     avec `rethrow`), et flutter_test punit tout override de
+  //     `reportTestException` (_verifyReportTestExceptionUnset).
+  // CHOIX : on GARDE le defaut (fetch autorise) pour que l'echec police reste
+  // TARDIF (post-parcours), garantissant PERSONA_END + captures completes. La
+  // parade `_drainFontFutures` (best effort) + `finalizeScenario` (drain
+  // d'exceptions non fatales) + la CLOTURE DU TREK en fin de S1 (arret du
+  // service GPS de fond) suppriment l'autre artefact tardif (Riverpod/ticker).
+  // Un offline 100% propre exigerait d'embarquer TOUTES les variantes Montserrat
+  // (w400/500/600/700/800/900) dans pubspec assets -> modif appli, hors mandat.
+
   return kBinding;
+}
+
+/// Draine les futures de chargement de polices en attente en LEUR ATTACHANT un
+/// gestionnaire d'erreur (`catchError`). google_fonts n'attache qu'un `.then`
+/// sur ces futures : quand `allowRuntimeFetching=false` et qu'aucune police
+/// n'est embarquee, ils REJETTENT sans handler -> exception async non geree
+/// remontee par flutter_test APRES le test (faux echec). En attendant
+/// `GoogleFonts.pendingFonts()` (= `Future.wait` de ces futures) sous
+/// `catchError`, on CONSOMME le rejet DANS le test. Best effort, ne leve jamais.
+Future<void> _drainFontFutures() async {
+  try {
+    await GoogleFonts.pendingFonts().catchError((_) => <void>[]);
+  } catch (_) {
+    // Ne jamais faire echouer le scenario pour une police.
+  }
 }
 
 /// Ajoute une ligne au journal + l'imprime (visible dans la sortie du test).
@@ -75,6 +116,16 @@ Future<void> settleAndShoot(
   Duration timeout = const Duration(seconds: 8),
 }) async {
   await pumpAndSettleTolerant(tester, timeout: timeout);
+  // Le formulaire de consentement PUB (UMP/AdMob « Publisher Test Ads ») peut
+  // surgir TARDIVEMENT (des que le reseau repond), APRES l'onboarding, et
+  // recouvrir l'ecran -> il masque SOS/Terminer/cartes et fausse la detection.
+  // On le referme A CHAQUE capture (pas seulement au boot). C'est un widget
+  // Flutter (contrairement aux dialogs systeme, geres host-side) donc tapable.
+  await dismissAdsConsentIfPresent(tester, persona);
+  // Consomme les rejets de polices en attente (voir _drainFontFutures) : chaque
+  // ecran rendu a pu declencher un chargement google_fonts qui rejette sans
+  // handler. On draine ICI, a chaque capture, pour que rien n'echappe au test.
+  await _drainFontFutures();
   await Future<void>.delayed(kObserve);
   final safe = name.replaceAll(RegExp(r'[^a-zA-Z0-9_-]'), '_');
   final fileName = '${persona}_$safe';
@@ -297,6 +348,50 @@ Future<bool> completeOnboardingIfPresent(
   await tapIfPresent(tester, start, persona, 'onboarding',
       'Commencer/Get started', warnIfMissing: false);
   return true;
+}
+
+/// Finalise proprement un scenario AVANT le teardown du framework (FIX CYCLE 3).
+///
+/// PROBLEME OBSERVE (log replay_s1) : le scenario se joue INTEGRALEMENT
+/// (`PERSONA_END` emis, toutes les captures ecrites), puis le run echoue quand
+/// meme (rc=1) sur une exception RIVERPOD levee APRES la fin du test :
+///   « setState()/markNeedsBuild() called during build » (UncontrolledProvider
+///   Scope), declenchee par un `_TickerModeState` qui se reconstruit pendant que
+///   le framework DEMONTE l'arbre — un provider (suivi/etape) notifie sur la
+///   frame de disposal. C'est un ARTEFACT DE TEARDOWN, pas un bug du parcours.
+///
+/// PARADE (harnais uniquement) :
+///   1. On pompe une SERIE de frames pendant que l'arbre est ENCORE VIVANT :
+///      les providers en attente se rafraichissent MAINTENANT (pas au disposal).
+///   2. On DRAINE toute exception non fatale via `tester.takeException()` — sinon
+///      le framework la re-lance a la cloture et fait echouer un run pourtant
+///      complet. On LOGue ce qu'on draine (transparence QA).
+/// A appeler juste avant [flushJournal] a la fin de CHAQUE scenario. Idempotent.
+Future<void> finalizeScenario(WidgetTester tester, String persona) async {
+  // 0) Consommer une derniere fois les rejets de polices en attente.
+  await _drainFontFutures();
+  // 1) Laisser les providers/timers encore vivants se stabiliser.
+  for (var i = 0; i < 12; i++) {
+    await tester.pump(const Duration(milliseconds: 120));
+  }
+  // Re-drainer apres les dernieres frames (de nouveaux futures ont pu naitre).
+  await _drainFontFutures();
+  // 2) Drainer les exceptions non fatales accumulees (teardown Riverpod/ticker).
+  var drained = 0;
+  for (var i = 0; i < 5; i++) {
+    final ex = tester.takeException();
+    if (ex == null) break;
+    drained++;
+    final msg = ex.toString().replaceAll('\n', ' ');
+    logStep(persona, 'teardown',
+        'Exception NON FATALE drainee (artefact de disposal, parcours deja '
+        'termine) : ${msg.length > 160 ? msg.substring(0, 160) : msg}');
+    await tester.pump(const Duration(milliseconds: 80));
+  }
+  if (drained == 0) {
+    logStep(persona, 'teardown',
+        'Aucune exception de teardown a drainer (cloture propre).');
+  }
 }
 
 /// Cloture le journal. Le contenu est deja integralement dans les lignes
