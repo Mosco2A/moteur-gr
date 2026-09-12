@@ -120,6 +120,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  # Harnais de tests d'integration joues sur emulateur/appareil (pilotage UI
+  # reel : taps, saisies, navigation). N'affecte PAS le code applicatif —
+  # dependance de TEST uniquement (tâche 518, tests personas en direct).
+  integration_test:
+    sdk: flutter
   melos: ^6.3.2
   # Platform interfaces pour les fakes de tests (notifications, path_provider)
   plugin_platform_interface: ^2.1.8
