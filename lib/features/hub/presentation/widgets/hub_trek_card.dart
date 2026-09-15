@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -272,34 +274,41 @@ class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
   /// [showActiveTrekConflictDialog] (Terminer/Abandonner/Annuler). Au succes,
   /// on bascule vers la carte (`/map`) pour naviguer.
   ///
-  /// FIX CYCLE 2 (issue 2) : les demandes de PERMISSIONS de suivi (localisation
-  /// « Toujours » + notifications + exemption batterie) sont SEQUENCEES ICI,
-  /// AVANT d'entrer sur la carte — sur le cockpit (pre-trek), a la maniere de
-  /// l'ecran « Demarrer » de GR20. Auparavant, `start()` les declenchait en tache
-  /// de fond (`unawaited`) APRES le `push('/map')` : la pile de dialogs systeme
-  /// s'empilait PAR-DESSUS la carte et masquait le suivi GPS a l'arrivee.
+  /// PERMISSIONS DE SUIVI — escalade NON BLOQUANTE (parite GR20, fix deadlock
+  /// demarrage). L'escalade « localisation Toujours + notifications + exemption
+  /// batterie » ([ensureBackgroundTracking]) est declenchee en FIRE-AND-FORGET
+  /// (`unawaited`), AVANT de demarrer, mais SANS l'attendre.
   ///
-  /// On resout donc l'escalade AVANT de demarrer la session : `start()` (via
-  /// `_startBackgroundCapture`) rappelle `ensureBackgroundTracking()`, mais de
-  /// maniere IDEMPOTENTE — les permissions etant deja accordees, `isGranted`
-  /// court-circuite et AUCUN nouveau dialog ne s'ouvre (donc pas de collision
-  /// « a request is already running »). La carte + le point GPS sont visibles et
-  /// suivis des l'arrivee. Best-effort : un refus n'empeche jamais le demarrage
-  /// (invariant « jamais de cul-de-sac »).
+  /// POURQUOI (preuve terrain, personas S1) : sur Android 11+, quand « Toujours »
+  /// n'est pas deja accorde, `permission_handler` route vers les REGLAGES systeme
+  /// (Settings) et la demande d'exemption batterie ouvre un DIALOG systeme. Si on
+  /// AWAIT cette escalade avant `push('/map')` (regression FIX CYCLE 2), le
+  /// `Future` ne se resout JAMAIS tant que l'utilisateur (ou le rejeu automatise)
+  /// n'a pas repondu a l'ecran systeme -> `_startWithGuard` reste bloque, la carte
+  /// n'est jamais poussee, le demarrage DEADLOCK (S1 Lea figeait 900 s au tap
+  /// « Demarrer »). GR20 fait explicitement l'inverse : `unawaited(_ensureBackground
+  /// Permission())` (start_trek_provider.dart) — « le foreground marche deja
+  /// (whileInUse) », l'escalade « tout le temps » est un bonus de fond.
+  ///
+  /// INVARIANT : le suivi PREMIER PLAN fonctionne des `whileInUse` (pre-accorde),
+  /// donc l'escalade de fond ne conditionne PAS le demarrage. Best-effort : un
+  /// refus ou un ecran systeme non resolu n'empeche jamais le trek de partir
+  /// (« jamais de cul-de-sac »). L'ancienne collision « a request is already
+  /// running » ne se produit plus : `start()`/`_startBackgroundCapture` rappellent
+  /// `ensureBackgroundTracking()` de maniere IDEMPOTENTE (permissions deja en cours
+  /// de resolution -> `isGranted` court-circuite au retour).
   Future<void> _startWithGuard() async {
     final trailId = ref.read(trailConfigProvider).id;
     final notifier = ref.read(trekSessionManagerProvider.notifier);
 
     setState(() => _starting = true);
     try {
-      // Issue 2 : escalader les permissions de suivi SUR LE COCKPIT, AVANT de
-      // demarrer la session (donc avant `_startBackgroundCapture`). On sequence
-      // les dialogs systeme ici, hors de la carte. Best-effort (le resultat ne
-      // conditionne pas le demarrage).
-      await ref
-          .read(locationPermissionServiceProvider)
-          .ensureBackgroundTracking();
-      if (!mounted) return;
+      // Escalade de fond NON BLOQUANTE (parite GR20) : on la lance sans l'attendre
+      // pour ne pas figer le demarrage derriere un ecran de reglages / dialog
+      // systeme (deadlock S1). Le foreground (whileInUse) suffit a demarrer.
+      unawaited(
+        ref.read(locationPermissionServiceProvider).ensureBackgroundTracking(),
+      );
 
       final outcome = await notifier.ensureSingleActiveThenStart(
         trailId,
