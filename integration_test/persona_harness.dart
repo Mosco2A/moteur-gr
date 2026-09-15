@@ -43,6 +43,13 @@ const Duration kObserve = Duration(milliseconds: 900);
 /// Delai laisse au DEMON host-side pour faire `adb screencap` apres le marqueur.
 const Duration kShotWait = Duration(milliseconds: 700);
 
+/// Plafond du drain des futures de polices (voir [_drainFontFutures]).
+///
+/// Sur l'emulateur OFFLINE, un fetch google_fonts peut ne JAMAIS se completer
+/// (connectionTimeout HttpClient = null). On borne l'attente pour ne jamais
+/// figer le scenario ; au-dela, on rend la main au test.
+const Duration kFontDrainTimeout = Duration(seconds: 3);
+
 /// Initialise le binding + la surface de capture. A appeler AVANT tout scenario.
 IntegrationTestWidgetsFlutterBinding initHarness() {
   kBinding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -86,7 +93,9 @@ IntegrationTestWidgetsFlutterBinding initHarness() {
 /// `catchError`, on CONSOMME le rejet DANS le test. Best effort, ne leve jamais.
 Future<void> _drainFontFutures() async {
   try {
-    await GoogleFonts.pendingFonts().catchError((_) => <void>[]);
+    await GoogleFonts.pendingFonts()
+        .catchError((_) => <void>[])
+        .timeout(kFontDrainTimeout, onTimeout: () => <void>[]);
   } catch (_) {
     // Ne jamais faire echouer le scenario pour une police.
   }
