@@ -207,6 +207,22 @@ class WalkTestController extends Notifier<WalkTestState> {
     state = const WalkTestState();
   }
 
+  /// Libere UNIQUEMENT les ressources temps reel (souscription GPS + timers)
+  /// SANS toucher a l'etat expose.
+  ///
+  /// A appeler quand l'ecran du test est retire alors qu'il tourne encore
+  /// (retour arriere pendant le compte a rebours / le chrono) : sans ca, la
+  /// souscription Geolocator et le chrono resteraient actifs en fond et
+  /// entreraient en conflit avec les souscriptions GPS du trek (carte,
+  /// detection d'etape, arrivee, service de fond) -> saturation du canal de
+  /// localisation et blocage au demarrage du trek. Idempotent (annuler un
+  /// timer/une souscription deja nulle est un no-op). N'ecrit pas `state` :
+  /// sur (via `dispose` de l'ecran) sans provoquer de rebuild pendant le
+  /// demontage de l'arbre, et preserve un resultat deja calcule.
+  void stopResources() {
+    _teardown();
+  }
+
   void _teardown() {
     _ticker?.cancel();
     _countdownTicker?.cancel();

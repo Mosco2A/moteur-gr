@@ -14,11 +14,38 @@ import '../providers/walk_test_provider.dart';
 /// Mode chrono LIBRE : compte a rebours, distance live via GPS, arret auto a
 /// 6:00, resultat date + niveau objectif, rappel mensuel. Tous les textes via
 /// Slang (`t.walkTest.*`) — zero texte en dur.
-class WalkTestScreen extends ConsumerWidget {
+///
+/// LIBERATION DES RESSOURCES (fix deadlock enchainement test 6 min -> trek) :
+/// le controleur ([walkTestControllerProvider]) est un `NotifierProvider`
+/// NON `autoDispose` (etat/resultat consommes par la faisabilite). Son
+/// `ref.onDispose` ne se declenche donc PAS quand on QUITTE cet ecran. Or si
+/// l'utilisateur lance le test puis revient en arriere sans attendre 6:00, la
+/// souscription GPS + le chrono resteraient ACTIFS en fond : au demarrage reel
+/// du trek s'ajouteraient alors d'AUTRES souscriptions Geolocator concurrentes
+/// (carte + detection d'etape + arrivee + service de fond) -> saturation du
+/// canal de localisation et blocage. On stoppe donc explicitement le test au
+/// `dispose` de l'ecran (cancel GPS + timers, remise a l'etat idle). Idempotent
+/// et sans effet si le test est deja termine/idle.
+class WalkTestScreen extends ConsumerStatefulWidget {
   const WalkTestScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<WalkTestScreen> createState() => _WalkTestScreenState();
+}
+
+class _WalkTestScreenState extends ConsumerState<WalkTestScreen> {
+  @override
+  void dispose() {
+    // Libere la souscription GPS + les timers du test s'ils tournent encore
+    // (retour arriere pendant le compte a rebours / le chrono). `stopResources`
+    // est idempotent et n'ecrit PAS l'etat (pas de rebuild pendant le
+    // demontage ; un resultat deja calcule est preserve).
+    ref.read(walkTestControllerProvider.notifier).stopResources();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(walkTestControllerProvider);
     final wt = t.walkTest;
 
