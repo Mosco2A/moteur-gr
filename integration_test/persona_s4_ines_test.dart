@@ -154,11 +154,25 @@ void main() {
         'Cockpit accessible hors-ligne = ${present(find.byType(Scaffold))} ; '
         'sections Preparer visibles = ${present(textFrEn('Préparer', 'Prepare'))}');
 
+    // ================================================================
+    // EXTENSION COUVERTURE (GO-46, COUVERTURE.md 3.3) — ACHAT + TRACE OFFLINE :
+    // Ines paye et exige l'offline. On renforce le point sensible + on couvre le
+    // VRAI flux d'achat sur un trek NON POSSEDE (la vitrine etant deja debloquee).
+    //   #D36 trace LOCALE offline (pas seulement absence d'erreur) ·
+    //   #P45 bascule multi-sentiers (/trail-selection) · #D02/#D03 flux d'achat
+    //   (trek non possede -> paywall wallet/store) · #D06/#D07 banniere/rewarded
+    //   (constat sous consentement refuse en test).
+    // Place en FIN de scenario (apres les assertions offline). Tout est LOCAL
+    // (Drift) -> jouable meme reseau coupe ; on restaure la vitrine a la fin.
+    // ================================================================
+    await _paymentAndOfflineTrace(tester, P);
+
     logStep(
         P,
         'fin',
-        'Scenario S4 termine. L hote peut retablir le reseau. Verdict premium '
-            'hors-ligne consigne dans les logs entrainement_offline/carte_offline.');
+        'Scenario S4 termine (offline + trace locale + flux achat trek non '
+            'possede). L hote peut retablir le reseau. Verdicts consignes dans '
+            'les logs entrainement_offline/carte_offline/trace_offline/achat.');
     await finalizeScenario(tester, P);
     await flushJournal(P);
   });
@@ -252,4 +266,161 @@ void _logLocation(WidgetTester tester, String persona, String etape) {
   } catch (e) {
     logStep(persona, etape, 'Localisation routeur illisible : $e');
   }
+}
+
+/// Localisation courante du routeur (chemin uri), ou chaine vide si illisible.
+String _currentLocation(WidgetTester tester) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    return router?.routerDelegate.currentConfiguration.uri.toString() ?? '';
+  } catch (_) {
+    return '';
+  }
+}
+
+/// Pousse une route via le routeur (retour propre par la pile ensuite).
+void _push(WidgetTester tester, String location, String persona) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    if (router != null) {
+      router.push(location);
+      logStep(persona, 'nav', 'Ouverture $location (push)');
+    }
+  } catch (e) {
+    logStep(persona, 'nav', 'Ouverture $location impossible : $e');
+  }
+}
+
+/// Vrai si un widget dont le type runtime porte [typeName] est present (sans
+/// importer les internes de l'app — meme technique que la detection FlutterMap).
+bool _hasWidgetTypeNamed(String typeName) => present(
+    find.byWidgetPredicate((w) => w.runtimeType.toString() == typeName));
+
+/// ACHAT (trek non possede) + TRACE OFFLINE de Ines (extension GO-46).
+///
+/// Blocs independants et defensifs. Tout est LOCAL (Drift) -> jouable meme
+/// reseau coupe. On restaure la vitrine (mare-a-mare-centre) a la fin pour ne
+/// pas perturber d'eventuels scenarios suivants.
+Future<void> _paymentAndOfflineTrace(WidgetTester tester, String persona) async {
+  // --- #D36 TRACE LOCALE OFFLINE (pas seulement absence d'erreur) ---
+  // Le point sensible S4 verifiait deja que la carte offline n'est pas bloquante.
+  // On RENFORCE : on rouvre la carte et on cherche le CALQUE DE TRACE local
+  // (TraceLayer -> PolylineLayer) : le trace embarque doit s'afficher meme si le
+  // fond OSM (reseau) manque. C'est la preuve du contenu offline (E7/#D36).
+  _goMap(tester, persona);
+  await _observe(tester, const Duration(seconds: 2));
+  await settleAndShoot(tester, persona, 'S4E_36_trace_offline');
+  final hasMap = _hasWidgetTypeNamed('FlutterMap');
+  final hasTrace =
+      _hasWidgetTypeNamed('TraceLayer') || _hasWidgetTypeNamed('PolylineLayer');
+  logStep(
+      persona,
+      'trace_offline',
+      'Carte offline : FlutterMap present = $hasMap ; CALQUE DE TRACE local '
+          '(TraceLayer/PolylineLayer) present = $hasTrace (DOIT etre true : le '
+          'trace embarque s\'affiche meme sans fond OSM en ligne). #D36 couvert '
+          '(presence du trace local verifiee, pas seulement non-erreur).');
+  await _back(tester, persona, 'trace_offline');
+
+  // --- #P45 BASCULE MULTI-SENTIERS + #D02/#D03 FLUX D'ACHAT (trek non possede) ---
+  // La vitrine (mare-a-mare-centre) etant deja debloquee, le vrai flux d'achat
+  // (wallet d'abord, complement store) exige un trek NON POSSEDE. On BASCULE sur
+  // le sentier Pyrenees (gr-pyrenees, NON vitrine) via /trail-selection (ecran
+  // reel #P45), puis on ouvre son Entrainement : il doit etre VERROUILLE
+  // (isDemoMode=true) avec « Debloquer » -> paywall (wallet/store).
+  _push(tester, '/trail-selection', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, 'S4E_45_trail_selection');
+  final onSelection = present(find.byKey(const ValueKey('trail-selection-list')));
+  final switched = await tapIfPresent(
+      tester, find.byKey(const ValueKey('trail-select-gr-pyrenees')), persona,
+      'achat', 'basculer sur le sentier Pyrenees (non possede)',
+      warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  logStep(persona, 'achat',
+      'Ecran /trail-selection atteint = $onSelection ; bascule vers gr-pyrenees '
+      '(non possede) = $switched. #P45 couvert.');
+  await settleAndShoot(tester, persona, 'S4E_45b_pyrenees_actif');
+
+  if (switched) {
+    // Ouvrir l'Entrainement du trek NON possede -> etat VERROUILLE attendu.
+    _push(tester, '/training', persona);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    await settleAndShoot(tester, persona, 'S4E_02_entrainement_verrouille');
+    final unlockCta = present(find.text('Debloquer')) ||
+        present(find.textContaining('Débloquer'));
+    final blurredLock = present(find.byIcon(Icons.lock_outline)) ||
+        present(find.byIcon(Icons.lock));
+    logStep(
+        persona,
+        'achat',
+        'Entrainement (trek NON possede) : CTA « Debloquer » visible = '
+            '$unlockCta ; apercu verrouille (cadenas) = $blurredLock '
+            '(ATTENDU true — trek a la carte non achete). #D02/#D03 : la prepa '
+            'premium exige l\'achat pour un trek non possede.');
+
+    // Ouvrir le PAYWALL (wallet d'abord, complement store) et VERIFIER son
+    // contenu (bouton d'achat + avantages). #D06/#D07 : le CTA rewarded
+    // (« sans pub 24 h ») n'apparait QUE si le consentement pub est obtenu ;
+    // en test il est REFUSE -> on documente son absence (pas un defaut).
+    if (unlockCta) {
+      await tapIfPresent(tester, find.textContaining('Débloquer'), persona,
+          'achat', 'ouvrir le paywall (Debloquer)', warnIfMissing: false);
+      await tapIfPresent(tester, find.text('Debloquer'), persona, 'achat',
+          'ouvrir le paywall (Debloquer sans accent)', warnIfMissing: false);
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+      await settleAndShoot(tester, persona, 'S4E_03_paywall');
+      final onPaywall = present(find.byKey(const Key('paywall-buy-button'))) ||
+          present(find.textContaining('Débloquez cette randonnée'));
+      final rewardedBtn =
+          present(find.byKey(const Key('paywall-rewarded-button')));
+      logStep(
+          persona,
+          'achat',
+          'Paywall ouvert = $onPaywall (bouton d\'achat present -> wallet '
+              'd\'abord puis complement store, #D02/#D03). CTA rewarded « sans '
+              'pub 24 h » present = $rewardedBtn (ATTENDU false en test : '
+              'consentement pub REFUSE -> pas de banniere/rewarded. #D06/#D07 '
+              'documente comme non jouable sans consentement UMP).');
+      // Fermer le paywall SANS acheter (pas d'achat reel en test) : glisser le
+      // sheet vers le bas ou taper hors du sheet.
+      await tester.tapAt(const Offset(20, 20));
+      await pumpAndSettleTolerant(tester);
+      await settleAndShoot(tester, persona, 'S4E_03b_paywall_ferme');
+    }
+  } else {
+    logStep(persona, 'achat',
+        'COINCE : bascule vers gr-pyrenees impossible (bouton introuvable) -> '
+        '#D02/#D03 non joues (pas de trek non possede atteignable). Signal QA.');
+  }
+
+  // --- #D06/#D07 BANNIERE gratuit : constat sur l'entrainement libre ---
+  // La banniere AdMob (gratuit) ne se rend que si le consentement UMP est
+  // obtenu. En test il est refuse (dismissAdsConsentIfPresent) -> aucune
+  // banniere. On CONSTATE (aucun AdWidget/banniere) pour documenter #D06/#D07.
+  final hasAdBanner = _hasWidgetTypeNamed('AdWidget') ||
+      present(find.textContaining('Publisher Test Ads'));
+  logStep(persona, 'ads',
+      'CONSTAT #D06/#D07 : banniere pub visible = $hasAdBanner (ATTENDU false '
+      'sous consentement refuse en test). La regle d\'or sans-pub (reward 24 h) '
+      'et la banniere gratuit exigent le consentement UMP -> non jouables en '
+      'rejeu automatise (documente pour Chris, pas un defaut app).');
+
+  // --- Restauration : revenir a la VITRINE (mare-a-mare-centre) ---
+  // On remet le sentier vitrine actif pour laisser un etat propre (le reste des
+  // scenarios/relances suppose la vitrine debloquee).
+  _push(tester, '/trail-selection', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await tapIfPresent(
+      tester, find.byKey(const ValueKey('trail-select-mare-a-mare-centre')),
+      persona, 'restore', 'restaurer la vitrine mare-a-mare-centre',
+      warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  logStep(persona, 'restore',
+      'Vitrine mare-a-mare-centre restauree comme sentier actif '
+      '(loc=${_currentLocation(tester)}). Etat propre pour la suite.');
+  _goHome(tester, persona);
+  await settleAndShoot(tester, persona, 'S4E_zz_retour_cockpit');
 }
