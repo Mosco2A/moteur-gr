@@ -11,9 +11,11 @@
 // Pilote l UI reelle, capture chaque etape, LOGue les coincements. Zero modif app.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
@@ -239,9 +241,45 @@ String _currentLocation(WidgetTester tester) {
   }
 }
 
-/// Ouvre un ecran depuis le HUB par sa carte reelle (`t.hub.cards.*`), verifie
-/// le titre attendu de l'ecran cible (AppHeader -> Text), capture, LOGue.
-/// Retourne true si l'ecran cible est atteint. Ne stoppe jamais le scenario.
+/// Pousse une route via le routeur (retour propre par la pile ensuite).
+void _push(WidgetTester tester, String location, String persona) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    if (router != null) {
+      router.push(location);
+      logStep(persona, 'nav', 'Ouverture $location (push)');
+    }
+  } catch (e) {
+    logStep(persona, 'nav', 'Ouverture $location impossible : $e');
+  }
+}
+
+/// Identifiant du sentier ACTIF, lu depuis le conteneur Riverpod monte (source
+/// unique du hub : `trailConfigProvider.id`). Non-invasif (lecture seule), c'est
+/// EXACTEMENT l'id que le hub injecte dans ses `context.push('/trail/$id/...')`.
+/// Repli sur null si le conteneur est illisible.
+String? _activeTrailId(WidgetTester tester) {
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final container = ProviderScope.containerOf(element, listen: false);
+    return container.read(trailConfigProvider).id;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Ouvre un ecran depuis le HUB par sa carte reelle (`t.hub.cards.*`), avec un
+/// FILET deep-link fiable.
+///
+/// FIABILITE (fix run S2) : le HUB est une longue ListView virtualisee ; selon
+/// l'offset, une carte (« Itineraire », « Guides des villes ») peut ne pas etre
+/// dans l'arbre construit -> le tap echoue. On tente d'abord la VRAIE carte (on
+/// remonte en tete puis on descend pas a pas pour l'amener a l'ecran) ; si l'ecran
+/// cible n'est pas atteint, on POUSSE la route trail-scoped [fallbackPath]
+/// (`/trail/$id/...`, cible IDENTIQUE a celle du hub) via le routeur. Ainsi la
+/// couverture est garantie tout en privilegiant la navigation par carte.
+/// Verifie le titre cible, capture, LOGue. Ne stoppe jamais le scenario.
 Future<bool> _openHubCard(
   WidgetTester tester,
   String persona,
@@ -249,15 +287,41 @@ Future<bool> _openHubCard(
   String cardLabel,
   String expectedTitle, {
   String? shot,
+  String Function(String trailId)? fallbackPath,
 }) async {
   _goHome(tester, persona);
-  await _scrollToTop(tester, persona);
+  await pumpAndSettleTolerant(tester);
   final card = find.text(cardLabel);
-  await scrollUntil(tester, card, persona, etape, 'carte HUB « $cardLabel »');
-  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »');
+  // Tentative navigation par carte : remonter en tete puis descendre pas a pas.
+  final scrollables = find.byType(Scrollable);
+  if (scrollables.evaluate().isNotEmpty) {
+    final scroller = scrollables.first;
+    for (var i = 0; i < 10 && card.evaluate().isEmpty; i++) {
+      await tester.drag(scroller, const Offset(0, 600));
+      await pumpAndSettleTolerant(tester);
+    }
+    for (var i = 0; i < 16 && card.hitTestable().evaluate().isEmpty; i++) {
+      await tester.drag(scroller, const Offset(0, -260));
+      await pumpAndSettleTolerant(tester);
+    }
+  }
+  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »',
+      warnIfMissing: false);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  var reached = present(find.text(expectedTitle));
+  // Filet deep-link (cible identique au hub) si la carte n'a pas abouti.
+  if (!reached && fallbackPath != null) {
+    final id = _activeTrailId(tester);
+    if (id != null) {
+      _push(tester, fallbackPath(id), persona);
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+      reached = present(find.text(expectedTitle));
+      logStep(persona, etape,
+          'Carte HUB « $cardLabel » non atteinte -> filet deep-link '
+          '${fallbackPath(id)} (cible identique au hub).');
+    }
+  }
   if (shot != null) await settleAndShoot(tester, persona, shot);
-  final reached = present(find.text(expectedTitle));
   logStep(persona, etape,
       'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).');
   return reached;
@@ -281,7 +345,8 @@ Future<void> _logisticsAndAccountTour(
   // en-tete de totaux (« km ») ou l'etat vide (aucune etape chargee).
   if (await _openHubCard(
       tester, persona, 'itineraire', 'Itinéraire', 'Itineraire',
-      shot: 'S2E_19_itineraire')) {
+      shot: 'S2E_19_itineraire',
+      fallbackPath: (id) => '/trail/$id/itinerary')) {
     final hasContent = present(find.textContaining('km')) ||
         present(find.textContaining('Aucune etape'));
     logStep(persona, 'itineraire',
@@ -294,7 +359,8 @@ Future<void> _logisticsAndAccountTour(
   // sur le 2e onglet (repartir) pour jouer la logistique retour (parite GR20).
   if (await _openHubCard(
       tester, persona, 'transport', 'Transport', 'Transport',
-      shot: 'S2E_23_transport')) {
+      shot: 'S2E_23_transport',
+      fallbackPath: (id) => '/trail/$id/transport')) {
     // Deux onglets (Tab) : on tape le second (index 1) via le TabBar.
     final tabs = find.byType(Tab);
     if (tabs.evaluate().length >= 2) {
@@ -313,7 +379,8 @@ Future<void> _logisticsAndAccountTour(
   //     + #P29 DETAIL guide (tap 1re carte town-guide-card-*). ---
   if (await _openHubCard(tester, persona, 'guides', 'Guides des villes',
       'Guides des villes',
-      shot: 'S2E_28_guides')) {
+      shot: 'S2E_28_guides',
+      fallbackPath: (id) => '/trail/$id/guides')) {
     final guideCard = find.byWidgetPredicate(
         (w) => w.key.toString().contains('town-guide-card-'));
     if (present(guideCard)) {

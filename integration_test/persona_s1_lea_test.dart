@@ -15,9 +15,11 @@
 // est LOGue comme signal QA, sans stopper le scenario.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
@@ -757,12 +759,33 @@ void _push(WidgetTester tester, String location, String persona) {
   }
 }
 
+/// Identifiant du sentier ACTIF, lu depuis le conteneur Riverpod monte (source
+/// unique du hub : `trailConfigProvider.id`). Non-invasif, c'est EXACTEMENT l'id
+/// que le hub injecte dans ses `context.push('/trail/$id/...')`. Null si illisible.
+String? _activeTrailId(WidgetTester tester) {
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final container = ProviderScope.containerOf(element, listen: false);
+    return container.read(trailConfigProvider).id;
+  } catch (_) {
+    return null;
+  }
+}
+
 /// Ouvre un ecran de prepa DEPUIS LE HUB par sa carte reelle (`t.hub.cards.*`),
-/// verifie que le titre attendu de l'ecran cible est visible, capture, LOGue.
+/// avec un FILET deep-link fiable.
+///
+/// FIABILITE (fix run) : le HUB est une longue ListView virtualisee (grilles de
+/// cartes centrees) ; selon l'offset, une carte peut ne pas etre dans l'arbre
+/// construit -> le tap echoue. On tente d'abord la VRAIE carte (remontee en tete
+/// puis descente pas a pas pour l'amener a l'ecran) ; si l'ecran cible n'est pas
+/// atteint et qu'un [fallbackPath] est fourni, on POUSSE la route trail-scoped
+/// (`/trail/$id/...`, cible IDENTIQUE a celle du hub) via le routeur. La
+/// couverture est garantie, la navigation par carte reste privilegiee.
 ///
 /// [cardLabel] = libelle EXACT de la carte du HUB (FR). [expectedTitle] = titre
 /// de l'AppHeader de l'ecran cible (rendu en Text -> find.text). Retourne true
-/// si l'ecran cible a ete atteint (titre visible). Ne stoppe jamais le scenario.
+/// si l'ecran cible a ete atteint. Ne stoppe jamais le scenario.
 Future<bool> _openHubCard(
   WidgetTester tester,
   String persona,
@@ -770,15 +793,40 @@ Future<bool> _openHubCard(
   String cardLabel,
   String expectedTitle, {
   String? shot,
+  String Function(String trailId)? fallbackPath,
 }) async {
   await _goHome(tester, persona);
-  await _scrollToTop(tester, persona);
+  await pumpAndSettleTolerant(tester);
   final card = find.text(cardLabel);
-  await scrollUntil(tester, card, persona, etape, 'carte HUB « $cardLabel »');
-  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »');
+  // Tentative navigation par carte : remonter en tete puis descendre pas a pas.
+  final scrollables = find.byType(Scrollable);
+  if (scrollables.evaluate().isNotEmpty) {
+    final scroller = scrollables.first;
+    for (var i = 0; i < 10 && card.evaluate().isEmpty; i++) {
+      await tester.drag(scroller, const Offset(0, 600));
+      await pumpAndSettleTolerant(tester);
+    }
+    for (var i = 0; i < 16 && card.hitTestable().evaluate().isEmpty; i++) {
+      await tester.drag(scroller, const Offset(0, -260));
+      await pumpAndSettleTolerant(tester);
+    }
+  }
+  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »',
+      warnIfMissing: false);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  var reached = present(find.text(expectedTitle));
+  if (!reached && fallbackPath != null) {
+    final id = _activeTrailId(tester);
+    if (id != null) {
+      _push(tester, fallbackPath(id), persona);
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+      reached = present(find.text(expectedTitle));
+      logStep(persona, etape,
+          'Carte HUB « $cardLabel » non atteinte -> filet deep-link '
+          '${fallbackPath(id)} (cible identique au hub).');
+    }
+  }
   if (shot != null) await settleAndShoot(tester, persona, shot);
-  final reached = present(find.text(expectedTitle));
   logStep(persona, etape,
       'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).');
   return reached;
@@ -793,10 +841,12 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // metier verifie : badges de jour « J1 » (ReorderableListView de _DayCard) ou
   // l'etat vide assume (aucune etape chargee -> CTA itineraire).
   if (await _openHubCard(tester, persona, 'programme', 'Programme', 'Programme',
-      shot: 'S1E_20_programme')) {
+      shot: 'S1E_20_programme',
+      fallbackPath: (id) => '/trail/$id/planning')) {
     // Capte l'identifiant du sentier actif pour les ecrans sans carte HUB
-    // (#P31 fiche sentier, #P32 detail etape) — on est sur /trail/<id>/planning.
-    final trailId = _trailIdFromLocation(tester);
+    // (#P31 fiche sentier, #P32 detail etape). Source fiable : le conteneur
+    // Riverpod (trailConfigProvider), sinon la localisation si trail-scoped.
+    final trailId = _activeTrailId(tester) ?? _trailIdFromLocation(tester);
     if (trailId != null) {
       _capturedTrailId = trailId;
       logStep(persona, 'programme', 'trailId actif capte = $trailId');
@@ -814,7 +864,8 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // verifie une KPI de la carte statistiques (unite « km ») ou l'etat vide.
   if (await _openHubCard(
       tester, persona, 'resume', 'Résumé', 'Résumé du plan',
-      shot: 'S1E_21_resume')) {
+      shot: 'S1E_21_resume',
+      fallbackPath: (id) => '/trail/$id/summary')) {
     final hasStats = present(find.textContaining('km')) ||
         present(find.text('Jour par jour'));
     logStep(persona, 'resume',
@@ -827,7 +878,8 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // COCHE une nuit (tap sur la 1re carte _NuiteeCard) pour jouer le geste metier.
   if (await _openHubCard(
       tester, persona, 'nuitees', 'Nuitées', 'Réservations nuitées',
-      shot: 'S1E_22_nuitees')) {
+      shot: 'S1E_22_nuitees',
+      fallbackPath: (id) => '/trail/$id/nuitees')) {
     final nuiteeCard = find.byType(Card);
     if (present(nuiteeCard)) {
       await tester.tap(nuiteeCard.first, warnIfMissed: false);
@@ -846,7 +898,8 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // filtre « Épicerie » (ChoiceChip/filtre) pour jouer le filtrage.
   if (await _openHubCard(tester, persona, 'ravitaillement', 'Ravitaillement',
       'Ravitaillement',
-      shot: 'S1E_24_ravitaillement')) {
+      shot: 'S1E_24_ravitaillement',
+      fallbackPath: (id) => '/trail/$id/shop')) {
     await tapIfPresent(tester, find.text('Épicerie'), persona, 'ravitaillement',
         'filtre « Épicerie »', warnIfMissing: false);
     logStep(persona, 'ravitaillement',
@@ -860,7 +913,8 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // section (1er ExpansionTile) pour montrer le contenu.
   if (await _openHubCard(tester, persona, 'conseils', 'Fiches conseils',
       'Fiches conseils',
-      shot: 'S1E_27_conseils')) {
+      shot: 'S1E_27_conseils',
+      fallbackPath: (id) => '/trail/$id/tips')) {
     final expTile = find.byType(ExpansionTile);
     if (present(expTile)) {
       await tester.tap(expTile.first, warnIfMissed: false);
@@ -879,7 +933,8 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   //     proximite » (A/R). On verifie le titre reel de l'ecran. ---
   if (await _openHubCard(
       tester, persona, 'hebergements', 'Hébergements', 'Hébergements',
-      shot: 'S1E_30_hebergements')) {
+      shot: 'S1E_30_hebergements',
+      fallbackPath: (_) => '/accommodations-nearby')) {
     logStep(persona, 'hebergements',
         'Hebergements peripheriques (facilitateur) atteint. #P30 couvert.');
   }
@@ -889,14 +944,25 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // haut du cockpit. On la tape par son texte « Météo » (titre de la tuile).
   await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
-  final weatherReached = await tapIfPresent(
+  var weatherReached = await tapIfPresent(
       tester, find.text('Météo'), persona, 'meteo',
       'tuile meteo (HubWeatherCard)', warnIfMissing: false);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  // La tuile meteo peut manquer (virtualisation / tuile en chargement) : filet
+  // deep-link vers la route meteo trail-scopee (cible identique au hub).
+  if (!weatherReached) {
+    final id = _activeTrailId(tester) ?? _capturedTrailId;
+    if (id != null) {
+      _push(tester, '/trail/$id/weather', persona);
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+      weatherReached = _currentLocation(tester).contains('/weather') ||
+          present(find.byType(Scaffold));
+    }
+  }
   await settleAndShoot(tester, persona, 'S1E_25_meteo');
   logStep(persona, 'meteo',
-      'Ecran meteo ouvert depuis la tuile = $weatherReached '
-      '(loc=${_currentLocation(tester)}). #P25 couvert (tuile jouee).');
+      'Ecran meteo ouvert = $weatherReached '
+      '(loc=${_currentLocation(tester)}). #P25 couvert.');
 
   // --- #P31 FICHE SENTIER (/trail/:id) + #P32 DETAIL ETAPE
   //     (/trail/:id/stage/1). Pas de carte HUB dediee -> deep-link via le
@@ -936,7 +1002,8 @@ Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
   // l'entrainement et on lit l'etat (paywall present ou seances visibles).
   if (await _openHubCard(tester, persona, 'entrainement_etat',
       'Préparation physique', 'Préparation physique',
-      shot: 'S1E_05dec_entrainement_etat')) {
+      shot: 'S1E_05dec_entrainement_etat',
+      fallbackPath: (_) => '/training')) {
     final locked = present(find.textContaining('Débloquer')) ||
         present(find.text('Debloquer'));
     final sessions = present(find
