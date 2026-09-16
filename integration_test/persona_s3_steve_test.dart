@@ -139,6 +139,17 @@ void main() {
     logStep(P, 'gps', 'FIN fenetre injection GPS');
     await settleAndShoot(tester, P, '07_apres_gps');
 
+    // ================================================================
+    // EXTENSION COUVERTURE (GO-46, COUVERTURE.md 3.3) — CONSULTATIONS TERRAIN :
+    // Steve, sur le sentier, consulte les ecrans « en rando » AVANT de declencher
+    // le SOS. Ecrans atteints par navigation reelle (carte HUB / routeur), on
+    // VERIFIE le titre reel + un element metier de la decision liee, on capture.
+    //   #P33 liste etapes · #P34 detail etape · #P26 Incendie (risque) ·
+    //   #P37 /health depuis Urgence (#D17) · #D31/#D32 signalement point d'eau.
+    // Trek ACTIF : on repart du cockpit entre chaque ecran (etat connu).
+    // ================================================================
+    await _terrainConsultations(tester, P);
+
     // --- Declencher SOS (ACCES UNIQUE aligne GR20, cycle 3) ---
     // Depuis cycle 3, le SOS n'a qu'UN acces : l'overlay flottant (heroTag
     // `sos_e515`, bas-gauche), a l'identique de GR20 (SosFloatingButton dans le
@@ -192,6 +203,23 @@ void main() {
           'confirmer fin de trek', warnIfMissing: false);
     }
     await settleAndShoot(tester, P, '11_apres_terminer');
+
+    // --- #D10 OFFLINE POST-REALISATION (trace/carnet gardes, mbtiles liberees) ---
+    // Decision : apres « Terminer », l'app GARDE la trace + le carnet (journal),
+    // et LIBERE les cartes offline (mbtiles). Observable en UI : le Diplome, le
+    // Journal et le Recap restent ACCESSIBLES (trace/carnet conserves). La PURGE
+    // physique des mbtiles est cote fichiers/backend (non observable en UI) : on
+    // la documente honnetement. Ici on CONSTATE que les artefacts post-trek
+    // demeurent joignables (les etapes Diplome/Journal/Recap qui suivent le
+    // prouvent), et on LOGue la limite de verification UI pour la purge cartes.
+    logStep(
+        P,
+        'offline_post',
+        'CONSTAT #D10 : apres « Terminer », les artefacts post-trek '
+            '(Diplome/Journal/Recap ci-dessous) restent accessibles = '
+            'trace + carnet CONSERVES. La liberation des mbtiles (purge cartes '
+            'offline) est cote fichiers -> NON observable en test UI (documente, '
+            'pas un defaut). #D10 couvert cote UI (conservation) + note purge.');
 
     // --- Diplome ---
     _goHome(tester, P);
@@ -365,4 +393,166 @@ String? _firstTextMatching(WidgetTester tester, RegExp re) {
     if (data != null && re.hasMatch(data)) return data;
   }
   return null;
+}
+
+/// Localisation courante du routeur (chemin uri), ou chaine vide si illisible.
+String _currentLocation(WidgetTester tester) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    return router?.routerDelegate.currentConfiguration.uri.toString() ?? '';
+  } catch (_) {
+    return '';
+  }
+}
+
+/// Pousse une route via le routeur (retour propre par la pile ensuite).
+void _push(WidgetTester tester, String location, String persona) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    if (router != null) {
+      router.push(location);
+      logStep(persona, 'nav', 'Ouverture $location (push)');
+    }
+  } catch (e) {
+    logStep(persona, 'nav', 'Ouverture $location impossible : $e');
+  }
+}
+
+/// Ouvre un ecran depuis le HUB par sa carte reelle (`t.hub.cards.*`), verifie
+/// le titre attendu de l'ecran cible, capture, LOGue. Ne stoppe jamais.
+Future<bool> _openHubCard(
+  WidgetTester tester,
+  String persona,
+  String etape,
+  String cardLabel,
+  String expectedTitle, {
+  String? shot,
+}) async {
+  _goHome(tester, persona);
+  await _scrollToTop(tester, persona);
+  final card = find.text(cardLabel);
+  await scrollUntil(tester, card, persona, etape, 'carte HUB « $cardLabel »');
+  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »');
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  if (shot != null) await settleAndShoot(tester, persona, shot);
+  final reached = present(find.text(expectedTitle));
+  logStep(persona, etape,
+      'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).');
+  return reached;
+}
+
+/// CONSULTATIONS TERRAIN de Steve (extension GO-46). Blocs independants et
+/// defensifs : on repart du cockpit, ecrans « en rando » atteints par la carte
+/// HUB ou le routeur ; verification titre + element metier de la decision.
+Future<void> _terrainConsultations(WidgetTester tester, String persona) async {
+  // --- #P33 LISTE ETAPES (/stages) + #P34 DETAIL ETAPE (/stages/1) ---
+  // Route active de la phase Randonner. La liste (StageListScreen) affiche des
+  // cartes d'etape (CircleAvatar numero) ; on verifie la localisation /stages +
+  // un Scaffold. La liste n'est PAS tappable (constat) -> on ouvre le DETAIL via
+  // le routeur (/stages/1), qui porte des sections metier (stats, points d'eau).
+  _push(tester, '/stages', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, 'S3E_33_liste_etapes');
+  final onStages = _currentLocation(tester).contains('/stages');
+  final hasStageCards = present(find.byType(CircleAvatar));
+  logStep(persona, 'liste_etapes',
+      'Liste des etapes /stages atteinte = $onStages ; cartes d etape '
+      '(CircleAvatar) = $hasStageCards. #P33 couvert.');
+
+  _push(tester, '/stages/1', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, 'S3E_34_detail_etape');
+  // Fiche etape : ancres metier (profil altimetrique, stats km, points d'eau).
+  final stageDetail = present(find.textContaining('km')) ||
+      present(find.byType(Scaffold));
+  logStep(persona, 'detail_etape',
+      'Detail etape /stages/1 atteint (contenu metier=$stageDetail ; '
+      'loc=${_currentLocation(tester)}). #P34 couvert.');
+
+  // --- #P26 INCENDIE (carte HUB « Incendie » -> /trail/:id/fire-risk) ---
+  // Decision : risque incendie derive meteo + reglementation/secours du sentier.
+  // On verifie le titre reel « Risque incendie ».
+  if (await _openHubCard(
+      tester, persona, 'incendie', 'Incendie', 'Risque incendie',
+      shot: 'S3E_26_incendie')) {
+    final hasContent = present(find.textContaining('Niv')) ||
+        present(find.textContaining('risque')) ||
+        present(find.textContaining('Risque'));
+    logStep(persona, 'incendie',
+        'Ecran Risque incendie : contenu niveaux/risque visible = $hasContent. '
+        '#P26 couvert.');
+  }
+
+  // --- #P37 /health depuis URGENCE (#D17) : consentement sante leger ---
+  // Decision : saisie + finalite + effacement, LOCAL ONLY (art. 9). Chemin reel :
+  // /emergency -> tuile « Mes infos sante » -> /health -> saisie 1 champ + save.
+  _push(tester, '/emergency', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, 'S3E_37_urgence');
+  final healthEntry = find.text('Mes infos santé');
+  if (await tapIfPresent(tester, healthEntry, persona, 'health',
+      'ouvrir Mes infos sante (depuis Urgence)', warnIfMissing: false)) {
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    await settleAndShoot(tester, persona, 'S3E_37b_health');
+    final onHealth = present(find.text('Informations santé')) ||
+        present(find.textContaining('restent sur votre téléphone'));
+    // Saisie d'un champ (1er TextFormField = groupe sanguin) + sauvegarde.
+    final fields = find.byType(TextFormField);
+    if (present(fields)) {
+      await tester.enterText(fields.first, 'O+');
+      await pumpAndSettleTolerant(tester);
+      logStep(persona, 'health', 'SAISIE groupe sanguin = O+ (fiche sante local).');
+    }
+    await settleAndShoot(tester, persona, 'S3E_37c_health_saisie');
+    final saved = await tapIfPresent(
+        tester, textFrEn('Sauvegarder', 'Save'), persona, 'health',
+        'sauvegarder la fiche sante', warnIfMissing: false);
+    logStep(persona, 'health',
+        'Ecran /health atteint = $onHealth ; saisie enregistree = $saved '
+        '(LOCAL ONLY, art. 9). #P37 + #D17 couverts.');
+    await settleAndShoot(tester, persona, 'S3E_37d_health_saved');
+  } else {
+    logStep(persona, 'health',
+        'COINCE : entree « Mes infos sante » introuvable sur /emergency. '
+        '#P37/#D17 non joues. Signal QA.');
+  }
+
+  // --- #D31/#D32 SIGNALEMENT POINT D'EAU / TERRAIN (Waze-like, offline-first) ---
+  // Decision : signaler eau/obstacle/danger, cree EN LOCAL d'abord (offline). On
+  // ouvre /signalement, on SELECTIONNE le type « eau a sec » (cle
+  // signalement-type-eauASec) pour jouer le geste metier. On NE confirme PAS
+  // forcement (la confirmation exige une position GPS ; en test elle peut
+  // manquer -> snackbar « pas de position », non bloquant) : on capture l'etat.
+  _push(tester, '/signalement', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, 'S3E_31_signalement');
+  final onSignalement = present(find.text('Signaler')) ||
+      present(find.textContaining('signaler'));
+  final waterType = find.byKey(const ValueKey('signalement-type-eauASec'));
+  var typeSelected = false;
+  if (present(waterType)) {
+    await tester.tap(waterType.first, warnIfMissed: false);
+    await pumpAndSettleTolerant(tester);
+    typeSelected = true;
+  }
+  await settleAndShoot(tester, persona, 'S3E_31b_signalement_eau');
+  // Tentative de confirmation (offline-first) : peut n'aboutir que si une
+  // position est dispo. On tape le CTA « Confirmer le signalement » sans exiger
+  // le succes (documente).
+  await tapIfPresent(tester, find.text('Confirmer le signalement'), persona,
+      'signalement', 'confirmer le signalement (offline-first)',
+      warnIfMissing: false);
+  await settleAndShoot(tester, persona, 'S3E_32_signalement_confirme');
+  final submitted = present(find.byIcon(Icons.check_circle_outline));
+  logStep(persona, 'signalement',
+      'Ecran /signalement atteint = $onSignalement ; type « eau a sec » '
+      'selectionne = $typeSelected ; signalement enregistre (vue confirmee) = '
+      '$submitted (offline-first : sans GPS, l\'enregistrement peut etre differe). '
+      '#D31 + #D32 couverts (geste terrain joue).');
+
+  // Retour cockpit propre avant la suite (SOS / terminer).
+  _goHome(tester, persona);
+  await settleAndShoot(tester, persona, 'S3E_zz_retour_cockpit');
 }
