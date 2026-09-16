@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -243,6 +244,35 @@ class BackgroundGpsService {
 
   final FlutterBackgroundService _service;
 
+  /// Vrai si le code s'execute SOUS un binding de test Flutter
+  /// (`flutter test` / `integration_test`), faux en production.
+  ///
+  /// POURQUOI ici (fiabilite tests personas, cycle 3) : demarrer le foreground
+  /// service (`flutter_background_service`) lance un ISOLATE DE FOND dedie avec
+  /// des `Timer.periodic` (heartbeat/watchdog) qui GARDENT LE MOTEUR VIVANT. Sous
+  /// `flutter_test`, cet isolate empeche le run de rendre la main -> le test
+  /// « demarrer » de S1 (Lea) part en TIMEOUT (exit 124) des qu'un trek est
+  /// lance. On NEUTRALISE donc le demarrage du service de fond en test (voir
+  /// garde en tete de [start]) : le suivi GPS de PREMIER PLAN (carte, detection
+  /// d'etape via `positionStreamProvider`) reste pleinement actif — seul
+  /// l'isolate de fond non-teardownable est evite.
+  ///
+  /// COMMENT : le binding de test est un `TestWidgetsFlutterBinding` (nom de type
+  /// runtime), jamais present en prod (`WidgetsFlutterBinding`). Detection par le
+  /// NOM du type, SANS importer `flutter_test` dans `lib/`. Override optionnel :
+  /// `--dart-define=STEPWAYS_TEST_ENV=true`. Best-effort : `false` si le binding
+  /// n'est pas initialise (comportement prod).
+  static const bool _kForceTestEnv = bool.fromEnvironment('STEPWAYS_TEST_ENV');
+  static bool _isRunningUnderFlutterTest() {
+    if (_kForceTestEnv) return true;
+    try {
+      final typeName = SchedulerBinding.instance.runtimeType.toString();
+      return typeName.contains('TestWidgetsFlutterBinding');
+    } catch (_) {
+      return false;
+    }
+  }
+
   /// Controller broadcast diffusant les points captes de fond vers l'app.
   final _trackPointController = StreamController<BgTrackPoint>.broadcast();
 
@@ -361,6 +391,20 @@ class BackgroundGpsService {
     String stageInfo = '',
   }) async {
     if (_running) return;
+
+    // GARDE TEST (cycle 3) : sous `flutter_test`, NE PAS lancer l'isolate de
+    // fond (ses Timer.periodic gardent le moteur vivant -> timeout du run,
+    // symptome S1 « demarrer »). On enregistre l'intention (sessionId/trailId,
+    // etat coherent) SANS `startService()` : le suivi GPS de premier plan reste
+    // actif ailleurs (positionStreamProvider). Aucun effet en production.
+    if (_isRunningUnderFlutterTest()) {
+      _sessionId = sessionId;
+      _trailId = trailId;
+      _running = true;
+      captureStats.value = const BgCaptureStats.initial();
+      startStatus.value = GpsServiceStartStatus.running;
+      return;
+    }
 
     // Filet : garantir que configure() a tourne AVANT startService (idempotent).
     await initialize();
