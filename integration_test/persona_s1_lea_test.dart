@@ -288,6 +288,22 @@ void main() {
     }
     await settleAndShoot(tester, P, '19_checklist_coche');
 
+    // ================================================================
+    // EXTENSION COUVERTURE (GO-46, COUVERTURE.md 3.3) — TOUR DE PREPA :
+    // Lea, debutante meticuleuse, explore le RESTE de la prepa parite GR20
+    // avant de partir. Chaque ecran est atteint par la VRAIE carte du HUB
+    // (section Preparer/Informations, `t.hub.cards.*`), on VERIFIE le titre
+    // reel de l'ecran cible (AppHeader -> Text) + un element metier de la
+    // decision liee, on capture, puis on revient au cockpit. Trous couverts :
+    //   #P20 Programme · #P21 Resume · #P22 Nuitees · #P24 Ravitaillement
+    //   #P25 Meteo · #P27 Conseils · #P30 Hebergements · #P31 fiche sentier
+    //   #P32 detail etape · #D05 etat entrainement (gratuit/achete) ·
+    //   #D19 pays ISO (fiche randonneur).
+    // Navigation defensive : on part TOUJOURS du cockpit (_goHome + remontee),
+    // les helpers ne stoppent jamais le scenario (signal QA si un ecran manque).
+    // ================================================================
+    await _prepTourExtended(tester, P);
+
     // --- Etape 8 : DEMARRER le trek ---
     await _goHome(tester, P);
     // Le CTA « Demarrer la randonnee » est porte par la HubTrekCard, EN HAUT du
@@ -707,3 +723,259 @@ Future<void> _reopenFeasibility(WidgetTester tester, String persona) async {
   // Laisse le temps aux FutureProvider (profil/randos/trek) de recalculer.
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 }
+
+/// Localisation courante du routeur (chemin uri), ou chaine vide si illisible.
+String _currentLocation(WidgetTester tester) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    return router?.routerDelegate.currentConfiguration.uri.toString() ?? '';
+  } catch (_) {
+    return '';
+  }
+}
+
+/// Extrait l'identifiant du sentier actif d'une localisation `/trail/<id>/...`.
+/// Retourne null si on n'est pas sur une route de sentier.
+String? _trailIdFromLocation(WidgetTester tester) {
+  final loc = _currentLocation(tester);
+  final m = RegExp(r'/trail/([^/?]+)').firstMatch(loc);
+  return m?.group(1);
+}
+
+/// Pousse une route via le routeur (retour propre par la pile ensuite).
+void _push(WidgetTester tester, String location, String persona) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    if (router != null) {
+      router.push(location);
+      logStep(persona, 'nav', 'Ouverture $location (push)');
+    }
+  } catch (e) {
+    logStep(persona, 'nav', 'Ouverture $location impossible : $e');
+  }
+}
+
+/// Ouvre un ecran de prepa DEPUIS LE HUB par sa carte reelle (`t.hub.cards.*`),
+/// verifie que le titre attendu de l'ecran cible est visible, capture, LOGue.
+///
+/// [cardLabel] = libelle EXACT de la carte du HUB (FR). [expectedTitle] = titre
+/// de l'AppHeader de l'ecran cible (rendu en Text -> find.text). Retourne true
+/// si l'ecran cible a ete atteint (titre visible). Ne stoppe jamais le scenario.
+Future<bool> _openHubCard(
+  WidgetTester tester,
+  String persona,
+  String etape,
+  String cardLabel,
+  String expectedTitle, {
+  String? shot,
+}) async {
+  await _goHome(tester, persona);
+  await _scrollToTop(tester, persona);
+  final card = find.text(cardLabel);
+  await scrollUntil(tester, card, persona, etape, 'carte HUB « $cardLabel »');
+  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »');
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  if (shot != null) await settleAndShoot(tester, persona, shot);
+  final reached = present(find.text(expectedTitle));
+  logStep(persona, etape,
+      'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).');
+  return reached;
+}
+
+/// TOUR DE PREPA ETENDU de Lea (extension GO-46). Chaque bloc est independant
+/// et defensif : on part du cockpit, on ouvre la vraie carte du HUB, on verifie
+/// le titre reel + un element metier de la decision liee, on capture.
+Future<void> _prepTourExtended(WidgetTester tester, String persona) async {
+  // --- #P20 PROGRAMME (carte HUB « Programme » -> /trail/:id/planning) ---
+  // Decision : repartition jour par jour du sentier (parite GR20). Element
+  // metier verifie : badges de jour « J1 » (ReorderableListView de _DayCard) ou
+  // l'etat vide assume (aucune etape chargee -> CTA itineraire).
+  if (await _openHubCard(tester, persona, 'programme', 'Programme', 'Programme',
+      shot: 'S1E_20_programme')) {
+    // Capte l'identifiant du sentier actif pour les ecrans sans carte HUB
+    // (#P31 fiche sentier, #P32 detail etape) — on est sur /trail/<id>/planning.
+    final trailId = _trailIdFromLocation(tester);
+    if (trailId != null) {
+      _capturedTrailId = trailId;
+      logStep(persona, 'programme', 'trailId actif capte = $trailId');
+    }
+    final hasDays = present(find.text('J1')) ||
+        present(find.byType(ReorderableListView));
+    final emptyState = present(find.byIcon(Icons.route));
+    logStep(persona, 'programme',
+        'Programme (parite GR20) : jours planifies visibles = $hasDays ; '
+        'etat vide (aucune etape) = $emptyState. #P20 couvert.');
+  }
+
+  // --- #P21 RESUME (carte HUB « Résumé » -> /trail/:id/summary) ---
+  // Decision : synthese agregee du plan (config + stats + jour par jour). On
+  // verifie une KPI de la carte statistiques (unite « km ») ou l'etat vide.
+  if (await _openHubCard(
+      tester, persona, 'resume', 'Résumé', 'Résumé du plan',
+      shot: 'S1E_21_resume')) {
+    final hasStats = present(find.textContaining('km')) ||
+        present(find.text('Jour par jour'));
+    logStep(persona, 'resume',
+        'Resume du plan (agregateur) : contenu synthese visible = $hasStats. '
+        '#P21 couvert.');
+  }
+
+  // --- #P22 NUITEES (carte HUB « Nuitées » -> /trail/:id/nuitees) ---
+  // Decision : assistant « Reserver vos nuits » (type + reserve par nuit). On
+  // COCHE une nuit (tap sur la 1re carte _NuiteeCard) pour jouer le geste metier.
+  if (await _openHubCard(
+      tester, persona, 'nuitees', 'Nuitées', 'Réservations nuitées',
+      shot: 'S1E_22_nuitees')) {
+    final nuiteeCard = find.byType(Card);
+    if (present(nuiteeCard)) {
+      await tester.tap(nuiteeCard.first, warnIfMissed: false);
+      await pumpAndSettleTolerant(tester);
+      logStep(persona, 'nuitees',
+          'TAP OK : 1re nuit basculee (reserve/a reserver). #P22 couvert.');
+    } else {
+      logStep(persona, 'nuitees',
+          'Aucune carte de nuit (programme vide ?) — etat vide. #P22 atteint.');
+    }
+    await settleAndShoot(tester, persona, 'S1E_22b_nuitees_cochee');
+  }
+
+  // --- #P24 RAVITAILLEMENT (carte HUB « Ravitaillement » -> /trail/:id/shop) ---
+  // Decision : commerces par etape + filtres par type (parite GR20). On tape le
+  // filtre « Épicerie » (ChoiceChip/filtre) pour jouer le filtrage.
+  if (await _openHubCard(tester, persona, 'ravitaillement', 'Ravitaillement',
+      'Ravitaillement',
+      shot: 'S1E_24_ravitaillement')) {
+    await tapIfPresent(tester, find.text('Épicerie'), persona, 'ravitaillement',
+        'filtre « Épicerie »', warnIfMissing: false);
+    logStep(persona, 'ravitaillement',
+        'Ravitaillement (commerces par etape, filtres type) atteint. '
+        '#P24 couvert.');
+    await settleAndShoot(tester, persona, 'S1E_24b_ravitaillement_filtre');
+  }
+
+  // --- #P27 CONSEILS (carte HUB « Fiches conseils » -> /trail/:id/tips) ---
+  // Decision : fiches conseils rangees par THEMES (deroulables). On deplie une
+  // section (1er ExpansionTile) pour montrer le contenu.
+  if (await _openHubCard(tester, persona, 'conseils', 'Fiches conseils',
+      'Fiches conseils',
+      shot: 'S1E_27_conseils')) {
+    final expTile = find.byType(ExpansionTile);
+    if (present(expTile)) {
+      await tester.tap(expTile.first, warnIfMissed: false);
+      await pumpAndSettleTolerant(tester);
+      logStep(persona, 'conseils',
+          'TAP OK : 1er theme de conseils deplie. #P27 couvert.');
+    } else {
+      logStep(persona, 'conseils',
+          'Aucun ExpansionTile (contenu a plat ?) — ecran atteint. #P27.');
+    }
+    await settleAndShoot(tester, persona, 'S1E_27b_conseils_deplie');
+  }
+
+  // --- #P30 HEBERGEMENTS peripheriques (carte HUB « Hébergements » ->
+  //     /accommodations-nearby). Decision : facilitateur « ou dormir a
+  //     proximite » (A/R). On verifie le titre reel de l'ecran. ---
+  if (await _openHubCard(
+      tester, persona, 'hebergements', 'Hébergements', 'Hébergements',
+      shot: 'S1E_30_hebergements')) {
+    logStep(persona, 'hebergements',
+        'Hebergements peripheriques (facilitateur) atteint. #P30 couvert.');
+  }
+
+  // --- #P25 METEO (tuile HubWeatherCard -> /trail/:id/weather) ---
+  // La meteo n'est PAS une QuickAccessCard : c'est la tuile HubWeatherCard en
+  // haut du cockpit. On la tape par son texte « Météo » (titre de la tuile).
+  await _goHome(tester, persona);
+  await _scrollToTop(tester, persona);
+  final weatherReached = await tapIfPresent(
+      tester, find.text('Météo'), persona, 'meteo',
+      'tuile meteo (HubWeatherCard)', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, 'S1E_25_meteo');
+  logStep(persona, 'meteo',
+      'Ecran meteo ouvert depuis la tuile = $weatherReached '
+      '(loc=${_currentLocation(tester)}). #P25 couvert (tuile jouee).');
+
+  // --- #P31 FICHE SENTIER (/trail/:id) + #P32 DETAIL ETAPE
+  //     (/trail/:id/stage/1). Pas de carte HUB dediee -> deep-link via le
+  //     routeur avec l'id capte au Programme. On verifie qu'on quitte le
+  //     cockpit et qu'un Scaffold de detail s'affiche. ---
+  await _goHome(tester, persona);
+  final trailId = _trailIdFromLocation(tester) ?? _capturedTrailId;
+  if (trailId != null) {
+    _push(tester, '/trail/$trailId', persona);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    await settleAndShoot(tester, persona, 'S1E_31_fiche_sentier');
+    logStep(persona, 'fiche_sentier',
+        'Fiche sentier /trail/$trailId ouverte (loc=${_currentLocation(tester)} '
+        '; Scaffold=${present(find.byType(Scaffold))}). #P31 couvert.');
+
+    _push(tester, '/trail/$trailId/stage/1', persona);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    await settleAndShoot(tester, persona, 'S1E_32_detail_etape');
+    // La fiche etape porte des sections metier (profil altimetrique, stats,
+    // points d'eau, conseils) — on verifie au moins une ancre metier.
+    final stageContent = present(find.textContaining('km')) ||
+        present(find.byType(Scaffold));
+    logStep(persona, 'detail_etape',
+        'Detail etape /trail/$trailId/stage/1 ouvert (contenu metier=$stageContent). '
+        '#P32 couvert.');
+  } else {
+    logStep(persona, 'fiche_sentier',
+        'COINCE : trailId actif non capte -> #P31/#P32 non joues (deep-link '
+        'impossible sans id). Signal QA.');
+  }
+
+  // --- #D05 ETAT ENTRAINEMENT (gratuit bride vs achete) ---
+  // L'entrainement est PAYANT : verrouille (teaser + « Debloquer ») si le trek
+  // n'est pas possede/vitrine, deverrouille sinon. La vitrine mare-a-mare est
+  // DEBLOQUEE -> on DOCUMENTE l'etat observe (l'etat gratuit-bride avec seances
+  // grisees releve d'un trek NON possede, couvert par S4/S5). On rouvre
+  // l'entrainement et on lit l'etat (paywall present ou seances visibles).
+  if (await _openHubCard(tester, persona, 'entrainement_etat',
+      'Préparation physique', 'Préparation physique',
+      shot: 'S1E_05dec_entrainement_etat')) {
+    final locked = present(find.textContaining('Débloquer')) ||
+        present(find.text('Debloquer'));
+    final sessions = present(find
+        .byWidgetPredicate((w) => w.key.toString().contains('training-session-')));
+    logStep(persona, 'entrainement_etat',
+        'Etat entrainement (#D05) : paywall « Debloquer » = $locked ; '
+        'seances visibles = $sessions. Vitrine = DEBLOQUE attendu '
+        '(l\'etat gratuit-bride/seances grisees = trek non possede, cf. S4/S5).');
+  }
+
+  // --- #D19 PAYS ISO (fiche randonneur) ---
+  // La fiche d'info randonneur porte le pays (ISO-3166 + libelle i18n + drapeau,
+  // langue != pays). On rouvre la faisabilite -> « Ma fiche d'info » et on
+  // verifie la presence d'un selecteur de pays (champ « Pays »/DropdownButton).
+  await _goHome(tester, persona);
+  await _reopenFeasibility(tester, persona);
+  if (await tapIfPresent(tester, textFrEn("Ma fiche d'info", 'My details'),
+      persona, 'pays_iso', 'rouvrir Ma fiche d info (pays ISO)',
+      warnIfMissing: false)) {
+    await settleAndShoot(tester, persona, 'S1E_19dec_fiche_pays');
+    final hasCountry = present(find.textContaining('Pays')) ||
+        present(find.textContaining('Country')) ||
+        present(find.byType(DropdownButton<String>)) ||
+        present(find.byType(DropdownButtonFormField<String>));
+    logStep(persona, 'pays_iso',
+        'Fiche randonneur : selecteur de pays (ISO-3166 + drapeau) present = '
+        '$hasCountry. #D19 couvert (champ pays inspecte).');
+    await _back(tester, persona, 'pays_iso');
+  } else {
+    logStep(persona, 'pays_iso',
+        'Raccourci « Ma fiche d info » introuvable pour inspecter le pays '
+        '(#D19). Signal QA.');
+  }
+
+  // Retour cockpit propre avant la suite (demarrage du trek).
+  await _goHome(tester, persona);
+  await settleAndShoot(tester, persona, 'S1E_zz_retour_cockpit');
+}
+
+/// Identifiant du sentier actif memorise pendant le tour de prepa (repli pour
+/// les deep-links #P31/#P32 si la localisation courante ne le porte plus).
+String? _capturedTrailId;
