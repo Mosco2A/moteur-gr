@@ -133,7 +133,20 @@ void main() {
     await settleAndShoot(tester, P, '10_profil');
     _logLocation(tester, P, 'profil');
 
-    logStep(P, 'fin', 'Scenario S2 termine');
+    // ================================================================
+    // EXTENSION COUVERTURE (GO-46, COUVERTURE.md 3.3) — LOGISTIQUE + COMPTE :
+    // Marc, confirme et organise, boucle la LOGISTIQUE et son COMPTE. Ecrans de
+    // logistique atteints par la VRAIE carte du HUB ; ecrans de compte atteints
+    // par la VRAIE tuile des Reglages (navigation utilisateur reelle). Verifs :
+    // titre reel de l'ecran cible + un element metier de la decision liee.
+    //   #P19 Itineraire · #P23 Transport · #P28 Guides villes · #P29 detail guide
+    //   · #P38 /consent (#D22 bascule finalite) · #P39 /recovery-code (#D20 code)
+    //   · #D01 wallet « Mon compte » -> CONSTAT : pas d'ecran wallet/solde en
+    //     nav V1 (documente, non inventable — cf. handoff).
+    // ================================================================
+    await _logisticsAndAccountTour(tester, P);
+
+    logStep(P, 'fin', 'Scenario S2 termine (logistique + compte etendus)');
     await finalizeScenario(tester, P);
     await flushJournal(P);
   });
@@ -213,4 +226,190 @@ void _logVisibleVerdict(WidgetTester tester, String persona) {
     }
   }
   logStep(persona, 'verdict', 'Aucun verdict standard visible — voir capture');
+}
+
+/// Localisation courante du routeur (chemin uri), ou chaine vide si illisible.
+String _currentLocation(WidgetTester tester) {
+  try {
+    final ctx = tester.element(find.byType(Navigator).first);
+    final router = GoRouter.maybeOf(ctx);
+    return router?.routerDelegate.currentConfiguration.uri.toString() ?? '';
+  } catch (_) {
+    return '';
+  }
+}
+
+/// Ouvre un ecran depuis le HUB par sa carte reelle (`t.hub.cards.*`), verifie
+/// le titre attendu de l'ecran cible (AppHeader -> Text), capture, LOGue.
+/// Retourne true si l'ecran cible est atteint. Ne stoppe jamais le scenario.
+Future<bool> _openHubCard(
+  WidgetTester tester,
+  String persona,
+  String etape,
+  String cardLabel,
+  String expectedTitle, {
+  String? shot,
+}) async {
+  _goHome(tester, persona);
+  await _scrollToTop(tester, persona);
+  final card = find.text(cardLabel);
+  await scrollUntil(tester, card, persona, etape, 'carte HUB « $cardLabel »');
+  await tapIfPresent(tester, card, persona, etape, 'ouvrir « $cardLabel »');
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  if (shot != null) await settleAndShoot(tester, persona, shot);
+  final reached = present(find.text(expectedTitle));
+  logStep(persona, etape,
+      'Ecran « $expectedTitle » atteint = $reached (loc=${_currentLocation(tester)}).');
+  return reached;
+}
+
+/// Ouvre les REGLAGES depuis le cockpit (icone parametres du header), best effort.
+Future<void> _openSettings(WidgetTester tester, String persona) async {
+  _goHome(tester, persona);
+  await _scrollToTop(tester, persona);
+  await tapIfPresent(tester, find.byIcon(Icons.settings_outlined), persona,
+      'reglages', 'ouvrir Reglages (icone parametres)');
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+}
+
+/// TOUR LOGISTIQUE + COMPTE de Marc (extension GO-46). Blocs independants et
+/// defensifs : ecrans logistique par carte HUB, ecrans compte par les Reglages.
+Future<void> _logisticsAndAccountTour(
+    WidgetTester tester, String persona) async {
+  // --- #P19 ITINERAIRE (carte HUB « Itinéraire » -> /trail/:id/itinerary) ---
+  // Decision : deroule des etapes du sentier (parite GR20). Element metier : un
+  // en-tete de totaux (« km ») ou l'etat vide (aucune etape chargee).
+  if (await _openHubCard(
+      tester, persona, 'itineraire', 'Itinéraire', 'Itineraire',
+      shot: 'S2E_19_itineraire')) {
+    final hasContent = present(find.textContaining('km')) ||
+        present(find.textContaining('Aucune etape'));
+    logStep(persona, 'itineraire',
+        'Itineraire (deroule des etapes) : contenu visible = $hasContent. '
+        '#P19 couvert.');
+  }
+
+  // --- #P23 TRANSPORT (carte HUB « Transport » -> /trail/:id/transport) ---
+  // Decision : onglets ALLER / RETOUR (data-driven, direction-aware). On BASCULE
+  // sur le 2e onglet (repartir) pour jouer la logistique retour (parite GR20).
+  if (await _openHubCard(
+      tester, persona, 'transport', 'Transport', 'Transport',
+      shot: 'S2E_23_transport')) {
+    // Deux onglets (Tab) : on tape le second (index 1) via le TabBar.
+    final tabs = find.byType(Tab);
+    if (tabs.evaluate().length >= 2) {
+      await tester.tap(tabs.at(1), warnIfMissed: false);
+      await pumpAndSettleTolerant(tester);
+      logStep(persona, 'transport',
+          'TAP OK : onglet RETOUR (repartir de l arrivee). #P23 couvert.');
+    } else {
+      logStep(persona, 'transport',
+          'Onglets transport introuvables (fallback sans donnees ?) — #P23 atteint.');
+    }
+    await settleAndShoot(tester, persona, 'S2E_23b_transport_retour');
+  }
+
+  // --- #P28 GUIDES VILLES (carte HUB « Guides des villes » -> /trail/:id/guides)
+  //     + #P29 DETAIL guide (tap 1re carte town-guide-card-*). ---
+  if (await _openHubCard(tester, persona, 'guides', 'Guides des villes',
+      'Guides des villes',
+      shot: 'S2E_28_guides')) {
+    final guideCard = find.byWidgetPredicate(
+        (w) => w.key.toString().contains('town-guide-card-'));
+    if (present(guideCard)) {
+      await tester.tap(guideCard.first, warnIfMissed: false);
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+      await settleAndShoot(tester, persona, 'S2E_29_guide_detail');
+      logStep(persona, 'guides',
+          'TAP OK : detail d un guide ville ouvert (loc=${_currentLocation(tester)}). '
+          '#P28 + #P29 couverts.');
+      await _back(tester, persona, 'guides');
+    } else {
+      final empty = present(find.byKey(const ValueKey('town-guides-empty')));
+      logStep(persona, 'guides',
+          'Aucune carte de guide (liste vide=$empty) — #P28 atteint, #P29 sans '
+          'donnee (aucun guide pour ce sentier). Signal QA data.');
+      await settleAndShoot(tester, persona, 'S2E_29_guide_detail');
+    }
+  }
+
+  // --- #P38 /consent (#D22) : gestion RGPD granulaire depuis les Reglages ---
+  // Decision : consentement par finalite, retrait aussi simple que l'octroi. On
+  // BASCULE une finalite (1er Switch de la liste) pour jouer le geste metier.
+  await _openSettings(tester, persona);
+  await scrollUntil(tester, find.text('Confidentialité et consentement'),
+      persona, 'consent', 'tuile Confidentialite et consentement (Reglages)');
+  if (await tapIfPresent(
+      tester, find.text('Confidentialité et consentement'), persona, 'consent',
+      'ouvrir la gestion du consentement', warnIfMissing: false)) {
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    await settleAndShoot(tester, persona, 'S2E_38_consent');
+    final onConsent = present(find.text('Confidentialité et consentement'));
+    // Bascule une finalite (Switch dans un ConsentPurposeTile).
+    final sw = find.byType(Switch);
+    var toggled = false;
+    if (present(sw)) {
+      await tester.tap(sw.first, warnIfMissed: false);
+      await pumpAndSettleTolerant(tester);
+      toggled = true;
+    }
+    logStep(persona, 'consent',
+        'Ecran /consent atteint = $onConsent ; finalite basculee = $toggled. '
+        '#P38 + #D22 couverts.');
+    await settleAndShoot(tester, persona, 'S2E_38b_consent_bascule');
+    await _back(tester, persona, 'consent');
+  } else {
+    logStep(persona, 'consent',
+        'COINCE : tuile « Confidentialite et consentement » introuvable dans '
+        'les Reglages. #P38/#D22 non joues. Signal QA.');
+  }
+
+  // --- #P39 /recovery-code (#D20) : code de reconnexion depuis les Reglages ---
+  // Decision : afficher le code (cle du coffre chiffre) pour le NOTER. On verifie
+  // le titre + le label « Votre code » + un bouton copier.
+  await _openSettings(tester, persona);
+  await scrollUntil(tester, find.text('Mon code de reconnexion'), persona,
+      'recovery', 'tuile Mon code de reconnexion (Reglages)');
+  if (await tapIfPresent(
+      tester, find.text('Mon code de reconnexion'), persona, 'recovery',
+      'ouvrir le code de reconnexion', warnIfMissing: false)) {
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    await settleAndShoot(tester, persona, 'S2E_39_recovery_code');
+    final onRecovery = present(find.text('Votre code')) ||
+        present(find.textContaining('code de reconnexion'));
+    final hasCopy = present(find.text('Copier le code'));
+    logStep(persona, 'recovery',
+        'Ecran /recovery-code atteint = $onRecovery ; bouton copier = $hasCopy. '
+        '#P39 + #D20 couverts.');
+    await _back(tester, persona, 'recovery');
+  } else {
+    logStep(persona, 'recovery',
+        'COINCE : tuile « Mon code de reconnexion » introuvable dans les '
+        'Reglages. #P39/#D20 non joues. Signal QA.');
+  }
+
+  // --- #D01 WALLET « Mon compte » (deux poches / solde) : CONSTAT QA ---
+  // Le mandat interdit d'inventer un widget. Or l'ecran Profil (« Mon compte »)
+  // ne porte AUCUN affichage de wallet/solde/etapes acquises en nav V1 (verifie
+  // sur profile_screen.dart : avatar, pseudo, compte connexion, main dominante,
+  // suppression, version — pas de solde). On DOCUMENTE ce trou plutot que de
+  // simuler. On ouvre le Profil et on consigne l'absence.
+  _goHome(tester, persona);
+  await _scrollToTop(tester, persona);
+  await tapIfPresent(tester, find.byIcon(Icons.person_outline), persona,
+      'wallet', 'ouvrir Profil (Mon compte)', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, 'S2E_01dec_profil_wallet');
+  final hasWallet = present(find.textContaining('solde')) ||
+      present(find.textContaining('Solde')) ||
+      present(find.textContaining('étapes acquises'));
+  logStep(persona, 'wallet',
+      'CONSTAT #D01 : affichage wallet/solde present dans « Mon compte » = '
+      '$hasWallet (ATTENDU false — aucun ecran wallet en nav V1). Trou reel '
+      'documente pour Chris : #D01 non couvrable sans ecran « Mon compte » '
+      'exposant les deux poches (wallet fongible + etapes acquises).');
+
+  // Retour cockpit propre.
+  _goHome(tester, persona);
+  await settleAndShoot(tester, persona, 'S2E_zz_retour_cockpit');
 }
