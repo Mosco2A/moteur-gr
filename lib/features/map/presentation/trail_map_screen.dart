@@ -9,6 +9,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_point.dart';
+import '../../../core/map/test_inert_tile_provider.dart';
 import '../../../core/models/poi.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/empty_state.dart';
@@ -172,10 +173,15 @@ class _TrailMapScreenState extends ConsumerState<TrailMapScreen> {
                   },
                 ),
                 children: [
+                  // tileProvider : null en prod (NetworkTileProvider par
+                  // defaut, fond OSM inchange) ; INERTE en test d'integration
+                  // (flag STEPWAYS_INERT_TILES) pour couper la tempete de
+                  // requetes OSM offline. Voir test_inert_tile_provider.dart.
                   TileLayer(
                     urlTemplate:
                         'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.moteur-gr.app',
+                    tileProvider: inertTileProviderOrNull(),
                   ),
                   // Trace statique -> RepaintBoundary (raster isole des
                   // rebuilds POI/position)

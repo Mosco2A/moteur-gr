@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
+import '../../../../core/map/test_inert_tile_provider.dart';
 import '../../../../core/models/poi.dart';
 import '../../../../core/routing/contextual_actions_provider.dart';
 import '../../../../core/ui/error_view.dart';
@@ -328,10 +329,19 @@ class _MapContentState extends State<_MapContent> {
               ),
               children: [
                 // 1. Fond de carte OSM
+                //
+                // tileProvider : en PROD, `inertTileProviderOrNull()` renvoie
+                // null -> TileLayer utilise son NetworkTileProvider par defaut
+                // (fond OSM en ligne, comportement inchange). En TEST
+                // d'integration (flag --dart-define=STEPWAYS_INERT_TILES=true),
+                // il renvoie un fournisseur INERTE (tuile transparente,
+                // synchrone) qui supprime la tempete de SocketException/retries
+                // offline responsable des timeouts/teardowns (cycle 3).
                 TileLayer(
                   urlTemplate:
                       'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.moteur-gr.app',
+                  tileProvider: inertTileProviderOrNull(),
                 ),
 
                 // 2. Trace GPX (statique -> RepaintBoundary pour isoler

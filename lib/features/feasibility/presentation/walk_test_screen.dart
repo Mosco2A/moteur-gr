@@ -34,13 +34,33 @@ class WalkTestScreen extends ConsumerStatefulWidget {
 }
 
 class _WalkTestScreenState extends ConsumerState<WalkTestScreen> {
+  /// Reference au notifier capturee TOT (hors `dispose`).
+  ///
+  /// Riverpod 3 INTERDIT `ref.read`/`ref.watch` dans `State.dispose()` : le
+  /// `BuildContext` y est deja desactive -> `StateError` « Using "ref" when a
+  /// widget is about to or has been unmounted is unsafe » (observe au teardown
+  /// des tests personas). On memorise donc le notifier ici (contexte encore
+  /// valide) et on l'utilise tel quel dans `dispose`. Cf. doc Riverpod :
+  /// « save the provider state in a field of your State class ».
+  WalkTestController? _controller;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Le provider n'est pas autoDispose : la reference reste stable, on la
+    // capture une seule fois (contexte valide, hors phase de demontage).
+    _controller ??= ref.read(walkTestControllerProvider.notifier);
+  }
+
   @override
   void dispose() {
     // Libere la souscription GPS + les timers du test s'ils tournent encore
     // (retour arriere pendant le compte a rebours / le chrono). `stopResources`
     // est idempotent et n'ecrit PAS l'etat (pas de rebuild pendant le
-    // demontage ; un resultat deja calcule est preserve).
-    ref.read(walkTestControllerProvider.notifier).stopResources();
+    // demontage ; un resultat deja calcule est preserve). On passe par la
+    // reference capturee (`_controller`) pour NE PAS toucher `ref` pendant le
+    // demontage (interdit en Riverpod 3).
+    _controller?.stopResources();
     super.dispose();
   }
 
