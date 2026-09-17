@@ -721,6 +721,7 @@ class _Translations$feasibility$en extends Translations$feasibility$fr {
 	@override String get openProfile => 'My details';
 	@override String get openWalkTest => '6-minute test';
 	@override String get openPastHikes => 'My last 5 hikes';
+	@override String get openQuestionnaire => 'Feasibility questions';
 	@override String get sourceObjective => 'Based on your objective profile';
 	@override String get sourceFallback => 'Based on the questionnaire (until your profile is set)';
 	@override String get gapTooHigh => 'Gap too large';
@@ -4427,6 +4428,7 @@ extension on TranslationsEn {
 			'feasibility.openProfile' => 'My details',
 			'feasibility.openWalkTest' => '6-minute test',
 			'feasibility.openPastHikes' => 'My last 5 hikes',
+			'feasibility.openQuestionnaire' => 'Feasibility questions',
 			'feasibility.sourceObjective' => 'Based on your objective profile',
 			'feasibility.sourceFallback' => 'Based on the questionnaire (until your profile is set)',
 			'feasibility.gapTooHigh' => 'Gap too large',
@@ -4707,9 +4709,9 @@ extension on TranslationsEn {
 			'packs.progress.error' => 'Download failed',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
-			'packs.delete.cancel' => 'Cancel',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Cancel',
 			'packs.delete.confirm' => 'Delete',
 			'packs.delete.freed' => 'Space freed.',
 			'packs.empty' => 'No pack available for this trail.',
@@ -5221,9 +5223,9 @@ extension on TranslationsEn {
 			'pastHikes.title' => 'Your last 5 hikes',
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',
-			'pastHikes.empty' => 'No hike entered yet.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.empty' => 'No hike entered yet.',
 			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Number of days',
 			'pastHikes.fieldAvgHours' => 'Average walking per day (h)',

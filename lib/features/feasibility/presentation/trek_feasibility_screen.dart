@@ -95,6 +95,20 @@ class _VerdictView extends ConsumerWidget {
             onPressed: () => context.push('/training'),
           ),
           const SizedBox(height: AppTheme.spacingLg),
+          // LOT 1 (retour Chris #6) : ACCES PERMANENT au questionnaire de
+          // faisabilite. Avant, le questionnaire n'etait atteignable QUE via la
+          // vue de dépannage (profil objectif indisponible) : des qu'un verdict
+          // objectif s'affichait, l'utilisateur ne « passait plus par les
+          // questions » et ne pouvait PLUS y revenir. On expose donc ici une
+          // entree explicite ; le questionnaire porte deja « Recommencer » pour
+          // re-repondre et recalculer le resultat (navigation GoRouter existante,
+          // route hors-shell atteinte via push -> retour propre au verdict).
+          _ShortcutCard(
+            icon: Icons.quiz_outlined,
+            label: t.feasibility.openQuestionnaire,
+            onTap: () => context.push('/trail/$trailId/feasibility-quiz'),
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
           // Acces rapides pour completer / affiner le profil objectif.
           hasProfileAsync.maybeWhen(
             data: (has) => _ProfileShortcuts(trailId: trailId, complete: has),

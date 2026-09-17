@@ -721,6 +721,7 @@ class _Translations$feasibility$es extends Translations$feasibility$fr {
 	@override String get openProfile => 'Mis datos';
 	@override String get openWalkTest => 'Prueba de 6 minutos';
 	@override String get openPastHikes => 'Mis ultimas 5 rutas';
+	@override String get openQuestionnaire => 'Preguntas de viabilidad';
 	@override String get sourceObjective => 'Basado en tu perfil objetivo';
 	@override String get sourceFallback => 'Basado en el cuestionario (mientras defines tu perfil)';
 	@override String get gapTooHigh => 'Diferencia demasiado grande';
@@ -4427,6 +4428,7 @@ extension on TranslationsEs {
 			'feasibility.openProfile' => 'Mis datos',
 			'feasibility.openWalkTest' => 'Prueba de 6 minutos',
 			'feasibility.openPastHikes' => 'Mis ultimas 5 rutas',
+			'feasibility.openQuestionnaire' => 'Preguntas de viabilidad',
 			'feasibility.sourceObjective' => 'Basado en tu perfil objetivo',
 			'feasibility.sourceFallback' => 'Basado en el cuestionario (mientras defines tu perfil)',
 			'feasibility.gapTooHigh' => 'Diferencia demasiado grande',
@@ -4707,9 +4709,9 @@ extension on TranslationsEs {
 			'packs.progress.error' => 'Error de descarga',
 			'packs.delete.confirmTitle' => '¿Eliminar este pack?',
 			'packs.delete.confirmBody' => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.',
-			'packs.delete.cancel' => 'Cancelar',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Cancelar',
 			'packs.delete.confirm' => 'Eliminar',
 			'packs.delete.freed' => 'Espacio liberado.',
 			'packs.empty' => 'No hay pack disponible para este sendero.',
@@ -5221,9 +5223,9 @@ extension on TranslationsEs {
 			'pastHikes.title' => 'Tus ultimas 5 rutas',
 			'pastHikes.intro' => 'Anade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, habito de desnivel) en lugar de una etiqueta.',
 			'pastHikes.addHike' => 'Anadir ruta',
-			'pastHikes.empty' => 'Ninguna ruta introducida todavia.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.empty' => 'Ninguna ruta introducida todavia.',
 			'pastHikes.fieldDate' => 'Fecha',
 			'pastHikes.fieldDays' => 'Numero de dias',
 			'pastHikes.fieldAvgHours' => 'Marcha media por dia (h)',

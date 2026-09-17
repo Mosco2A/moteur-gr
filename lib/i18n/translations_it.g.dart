@@ -721,6 +721,7 @@ class _Translations$feasibility$it extends Translations$feasibility$fr {
 	@override String get openProfile => 'I miei dati';
 	@override String get openWalkTest => 'Test di 6 minuti';
 	@override String get openPastHikes => 'Le mie ultime 5 escursioni';
+	@override String get openQuestionnaire => 'Domande di fattibilita';
 	@override String get sourceObjective => 'Basato sul tuo profilo oggettivo';
 	@override String get sourceFallback => 'Basato sul questionario (in attesa del profilo)';
 	@override String get gapTooHigh => 'Scarto troppo grande';
@@ -4427,6 +4428,7 @@ extension on TranslationsIt {
 			'feasibility.openProfile' => 'I miei dati',
 			'feasibility.openWalkTest' => 'Test di 6 minuti',
 			'feasibility.openPastHikes' => 'Le mie ultime 5 escursioni',
+			'feasibility.openQuestionnaire' => 'Domande di fattibilita',
 			'feasibility.sourceObjective' => 'Basato sul tuo profilo oggettivo',
 			'feasibility.sourceFallback' => 'Basato sul questionario (in attesa del profilo)',
 			'feasibility.gapTooHigh' => 'Scarto troppo grande',
@@ -4707,9 +4709,9 @@ extension on TranslationsIt {
 			'packs.progress.error' => 'Scaricamento non riuscito',
 			'packs.delete.confirmTitle' => 'Eliminare questo pacchetto?',
 			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
-			'packs.delete.cancel' => 'Annulla',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Annulla',
 			'packs.delete.confirm' => 'Elimina',
 			'packs.delete.freed' => 'Spazio liberato.',
 			'packs.empty' => 'Nessun pacchetto disponibile per questo sentiero.',
@@ -5221,9 +5223,9 @@ extension on TranslationsIt {
 			'pastHikes.title' => 'Le tue ultime 5 escursioni',
 			'pastHikes.intro' => 'Aggiungi fino a 5 escursioni notevoli. Deduciamo il tuo livello reale (ritmo, resistenza, abitudine al dislivello) invece di un\'etichetta.',
 			'pastHikes.addHike' => 'Aggiungi escursione',
-			'pastHikes.empty' => 'Nessuna escursione inserita.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.empty' => 'Nessuna escursione inserita.',
 			'pastHikes.fieldDate' => 'Data',
 			'pastHikes.fieldDays' => 'Numero di giorni',
 			'pastHikes.fieldAvgHours' => 'Cammino medio al giorno (h)',

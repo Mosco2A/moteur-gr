@@ -721,6 +721,7 @@ class _Translations$feasibility$de extends Translations$feasibility$fr {
 	@override String get openProfile => 'Meine Angaben';
 	@override String get openWalkTest => '6-Minuten-Test';
 	@override String get openPastHikes => 'Meine letzten 5 Touren';
+	@override String get openQuestionnaire => 'Machbarkeitsfragen';
 	@override String get sourceObjective => 'Basierend auf Ihrem objektiven Profil';
 	@override String get sourceFallback => 'Basierend auf dem Fragebogen (bis Ihr Profil gesetzt ist)';
 	@override String get gapTooHigh => 'Zu grosse Abweichung';
@@ -4427,6 +4428,7 @@ extension on TranslationsDe {
 			'feasibility.openProfile' => 'Meine Angaben',
 			'feasibility.openWalkTest' => '6-Minuten-Test',
 			'feasibility.openPastHikes' => 'Meine letzten 5 Touren',
+			'feasibility.openQuestionnaire' => 'Machbarkeitsfragen',
 			'feasibility.sourceObjective' => 'Basierend auf Ihrem objektiven Profil',
 			'feasibility.sourceFallback' => 'Basierend auf dem Fragebogen (bis Ihr Profil gesetzt ist)',
 			'feasibility.gapTooHigh' => 'Zu grosse Abweichung',
@@ -4707,9 +4709,9 @@ extension on TranslationsDe {
 			'packs.progress.error' => 'Download fehlgeschlagen',
 			'packs.delete.confirmTitle' => 'Dieses Paket löschen?',
 			'packs.delete.confirmBody' => 'Das Paket wird vom Gerät entfernt, um Speicher freizugeben. Du kannst es später erneut herunterladen.',
-			'packs.delete.cancel' => 'Abbrechen',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Abbrechen',
 			'packs.delete.confirm' => 'Löschen',
 			'packs.delete.freed' => 'Speicher freigegeben.',
 			'packs.empty' => 'Kein Paket für diesen Weg verfügbar.',
@@ -5221,9 +5223,9 @@ extension on TranslationsDe {
 			'pastHikes.title' => 'Ihre letzten 5 Touren',
 			'pastHikes.intro' => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.',
 			'pastHikes.addHike' => 'Tour hinzufugen',
-			'pastHikes.empty' => 'Noch keine Tour erfasst.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.empty' => 'Noch keine Tour erfasst.',
 			'pastHikes.fieldDate' => 'Datum',
 			'pastHikes.fieldDays' => 'Anzahl Tage',
 			'pastHikes.fieldAvgHours' => 'Durchschnittliches Gehen pro Tag (Std.)',

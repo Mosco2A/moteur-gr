@@ -1443,6 +1443,9 @@ class Translations$feasibility$fr {
 	/// fr: 'Mes 5 dernieres randos'
 	String get openPastHikes => 'Mes 5 dernieres randos';
 
+	/// fr: 'Questions de faisabilite'
+	String get openQuestionnaire => 'Questions de faisabilite';
+
 	/// fr: 'Base sur votre profil objectif'
 	String get sourceObjective => 'Base sur votre profil objectif';
 
@@ -7691,6 +7694,7 @@ extension on Translations {
 			'feasibility.openProfile' => 'Ma fiche d\'info',
 			'feasibility.openWalkTest' => 'Test 6 minutes',
 			'feasibility.openPastHikes' => 'Mes 5 dernieres randos',
+			'feasibility.openQuestionnaire' => 'Questions de faisabilite',
 			'feasibility.sourceObjective' => 'Base sur votre profil objectif',
 			'feasibility.sourceFallback' => 'Base sur le questionnaire (en attendant votre profil)',
 			'feasibility.gapTooHigh' => 'Ecart trop important',
@@ -7971,9 +7975,9 @@ extension on Translations {
 			'packs.progress.error' => 'Échec du téléchargement',
 			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
 			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
-			'packs.delete.cancel' => 'Annuler',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Annuler',
 			'packs.delete.confirm' => 'Supprimer',
 			'packs.delete.freed' => 'Espace libéré.',
 			'packs.empty' => 'Aucun pack disponible pour ce sentier.',
@@ -8485,9 +8489,9 @@ extension on Translations {
 			'pastHikes.title' => 'Vos 5 dernieres randos',
 			'pastHikes.intro' => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.',
 			'pastHikes.addHike' => 'Ajouter une rando',
-			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
 			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Nombre de jours',
 			'pastHikes.fieldAvgHours' => 'Marche moyenne par jour (h)',
