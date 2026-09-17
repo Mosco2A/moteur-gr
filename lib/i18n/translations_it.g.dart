@@ -231,6 +231,7 @@ class _Translations$hub$it extends Translations$hub$fr {
 	@override late final _Translations$hub$trekCard$it trekCard = _Translations$hub$trekCard$it._(_root);
 	@override late final _Translations$hub$weather$it weather = _Translations$hub$weather$it._(_root);
 	@override String get startCta => 'Avvia il trek';
+	@override String get startGateHint => 'Completa prima Itinerario, Data e Programma per iniziare.';
 	@override late final _Translations$hub$sections$it sections = _Translations$hub$sections$it._(_root);
 	@override late final _Translations$hub$cards$it cards = _Translations$hub$cards$it._(_root);
 	@override late final _Translations$hub$fab$it fab = _Translations$hub$fab$it._(_root);
@@ -3774,6 +3775,7 @@ extension on TranslationsIt {
 			'hub.weather.alertStorm' => 'Allerta temporale',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Avvia il trek',
+			'hub.startGateHint' => 'Completa prima Itinerario, Data e Programma per iniziare.',
 			'hub.sections.prepare' => 'Preparare',
 			'hub.sections.hike' => 'Camminare',
 			'hub.sections.info' => 'Informazioni',
@@ -4194,9 +4196,9 @@ extension on TranslationsIt {
 			'weather.noForecast' => 'Nessuna previsione disponibile.',
 			'weather.stageLabel' => ({required Object number}) => 'Tappa ${number}',
 			'weather.stormAlertsTitle' => 'Allerte temporali',
-			'weather.stormAlertsToggleOn' => 'Allerte temporali attive',
 			_ => null,
 		} ?? switch (path) {
+			'weather.stormAlertsToggleOn' => 'Allerte temporali attive',
 			'weather.stormAlertsToggleOff' => 'Allerte temporali disattivate',
 			'weather.lastUpdate' => ({required Object date}) => 'Aggiornato ${date}',
 			'weather.guideTitle' => 'Capire il meteo',
@@ -4708,9 +4710,9 @@ extension on TranslationsIt {
 			'packs.progress.completed' => 'Pacchetto pronto offline',
 			'packs.progress.error' => 'Scaricamento non riuscito',
 			'packs.delete.confirmTitle' => 'Eliminare questo pacchetto?',
-			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
 			'packs.delete.cancel' => 'Annulla',
 			'packs.delete.confirm' => 'Elimina',
 			'packs.delete.freed' => 'Spazio liberato.',
@@ -5222,9 +5224,9 @@ extension on TranslationsIt {
 			'walkTest.levels.excellent' => 'Eccellente',
 			'pastHikes.title' => 'Le tue ultime 5 escursioni',
 			'pastHikes.intro' => 'Aggiungi fino a 5 escursioni notevoli. Deduciamo il tuo livello reale (ritmo, resistenza, abitudine al dislivello) invece di un\'etichetta.',
-			'pastHikes.addHike' => 'Aggiungi escursione',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.addHike' => 'Aggiungi escursione',
 			'pastHikes.empty' => 'Nessuna escursione inserita.',
 			'pastHikes.fieldDate' => 'Data',
 			'pastHikes.fieldDays' => 'Numero di giorni',

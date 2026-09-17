@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,10 +9,8 @@ import '../../../../shared/widgets/app_button.dart';
 import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/app_card.dart';
 import '../../../../shared/widgets/app_data_stat.dart';
-import '../../../../shared/services/location_permission_service.dart';
 import '../../../map/providers/track_position_provider.dart';
 import '../../../treks/domain/trek_lifecycle_state.dart';
-import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
 import '../../../treks/providers/my_treks_provider.dart';
 import '../../../trek/providers/tracking_providers.dart';
 
@@ -95,8 +91,7 @@ class _ActiveTrekCard extends ConsumerWidget {
     // câblé (aucun appelant) -> d'où le « 0.0 km » constaté en QA. La source
     // projetée, elle, est alimentée et ne gonfle pas sur un aller-retour.
     final coveredKm = ref.watch(stageDistanceCoveredProvider) / 1000.0;
-    final progress =
-        totalKm > 0 ? (coveredKm / totalKm).clamp(0.0, 1.0) : 0.0;
+    final progress = totalKm > 0 ? (coveredKm / totalKm).clamp(0.0, 1.0) : 0.0;
     final percent = (progress * 100).round();
 
     final hours = tracking.elapsedDuration.inHours;
@@ -114,8 +109,10 @@ class _ActiveTrekCard extends ConsumerWidget {
             children: [
               // Icone "en cours" en vert categoriel (parite GR20 Navigation ->
               // vertMaquis) plutot que l'accent-sentier unique (#IR02).
-              Icon(Icons.directions_walk,
-                  color: CategoryIconColors.of(context).green),
+              Icon(
+                Icons.directions_walk,
+                color: CategoryIconColors.of(context).green,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               // Flexible + ellipsis : le titre s'ajuste a la largeur (mobile
               // 360 px) au lieu de deborder la Row a droite (fix overflow).
@@ -198,23 +195,18 @@ class _ActiveTrekCard extends ConsumerWidget {
   }
 }
 
-/// Etat « owned / prepared » : invite a demarrer, via la GARDE d'unicite C4.
+/// Etat « owned / prepared » : carte d'INVITE (titre + message), SANS bouton.
 ///
-/// Remplace l'ancien `_NoTrekCard` : meme rendu (titre + invite + CTA pleine
-/// largeur), mais le CTA « Démarrer » lance desormais
-/// [TrekSessionManagerNotifier.ensureSingleActiveThenStart] — la garde C4
-/// interpose un dialog Terminer/Abandonner si un AUTRE trek est deja en cours,
-/// puis demarre. La planification reste atteignable par la carte « Programme »
-/// de la section Preparer (inchangee).
-class _StartTrekCard extends ConsumerStatefulWidget {
+/// Retour Chris #3 (LOT 2) : l'action « Démarrer la randonnée » a QUITTE cette
+/// carte (elle etait en HAUT du cockpit et toujours active). Elle vit desormais
+/// EN BAS du cockpit ([HubStartTrekButton], `hub_screen.dart`), GRISEE tant que
+/// les infos minimum (Itineraire + Date + Programme) ne sont pas saisies. Cette
+/// carte ne porte donc plus que l'ETAT (invite a preparer/demarrer) — la garde
+/// d'unicite C4 et le demarrage reel sont portes par le bouton du bas.
+/// La planification reste atteignable par la carte « Programme » de la section
+/// Preparer (inchangee).
+class _StartTrekCard extends StatelessWidget {
   const _StartTrekCard();
-
-  @override
-  ConsumerState<_StartTrekCard> createState() => _StartTrekCardState();
-}
-
-class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
-  bool _starting = false;
 
   @override
   Widget build(BuildContext context) {
@@ -230,8 +222,10 @@ class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
             children: [
               // Icone "carte" en vert categoriel (parite GR20 Navigation ->
               // vertMaquis) plutot que l'accent-sentier unique (#IR02).
-              Icon(Icons.map_outlined,
-                  color: CategoryIconColors.of(context).green),
+              Icon(
+                Icons.map_outlined,
+                color: CategoryIconColors.of(context).green,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
@@ -250,81 +244,11 @@ class _StartTrekCardState extends ConsumerState<_StartTrekCard> {
               color: scheme.onSurface.withValues(alpha: 0.8),
             ),
           ),
-          const SizedBox(height: AppTheme.spacingBase),
-          // CTA « Démarrer » via la garde C4. Libelle Slang existant (startCta)
-          // -> pas de nouvelle cle pour un CTA equivalent.
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              icon: Icons.play_arrow,
-              label: t.hub.startCta,
-              isLoading: _starting,
-              onPressed: _starting ? null : _startWithGuard,
-            ),
-          ),
+          // Retour Chris #3 : plus de CTA « Démarrer » ici — il est en bas du
+          // cockpit ([HubStartTrekButton]), grise tant que le minimum manque.
         ],
       ),
     );
-  }
-
-  /// Demarre le sentier actif en passant par la garde d'unicite C4.
-  ///
-  /// La garde interroge la source d'unicite (sessions en cours cross-trail) et,
-  /// si un AUTRE trek est en cours, delegue le choix a l'UI via le dialog
-  /// [showActiveTrekConflictDialog] (Terminer/Abandonner/Annuler). Au succes,
-  /// on bascule vers la carte (`/map`) pour naviguer.
-  ///
-  /// PERMISSIONS DE SUIVI — escalade NON BLOQUANTE (parite GR20, fix deadlock
-  /// demarrage). L'escalade « localisation Toujours + notifications + exemption
-  /// batterie » ([ensureBackgroundTracking]) est declenchee en FIRE-AND-FORGET
-  /// (`unawaited`), AVANT de demarrer, mais SANS l'attendre.
-  ///
-  /// POURQUOI (preuve terrain, personas S1) : sur Android 11+, quand « Toujours »
-  /// n'est pas deja accorde, `permission_handler` route vers les REGLAGES systeme
-  /// (Settings) et la demande d'exemption batterie ouvre un DIALOG systeme. Si on
-  /// AWAIT cette escalade avant `push('/map')` (regression FIX CYCLE 2), le
-  /// `Future` ne se resout JAMAIS tant que l'utilisateur (ou le rejeu automatise)
-  /// n'a pas repondu a l'ecran systeme -> `_startWithGuard` reste bloque, la carte
-  /// n'est jamais poussee, le demarrage DEADLOCK (S1 Lea figeait 900 s au tap
-  /// « Demarrer »). GR20 fait explicitement l'inverse : `unawaited(_ensureBackground
-  /// Permission())` (start_trek_provider.dart) — « le foreground marche deja
-  /// (whileInUse) », l'escalade « tout le temps » est un bonus de fond.
-  ///
-  /// INVARIANT : le suivi PREMIER PLAN fonctionne des `whileInUse` (pre-accorde),
-  /// donc l'escalade de fond ne conditionne PAS le demarrage. Best-effort : un
-  /// refus ou un ecran systeme non resolu n'empeche jamais le trek de partir
-  /// (« jamais de cul-de-sac »). L'ancienne collision « a request is already
-  /// running » ne se produit plus : `start()`/`_startBackgroundCapture` rappellent
-  /// `ensureBackgroundTracking()` de maniere IDEMPOTENTE (permissions deja en cours
-  /// de resolution -> `isGranted` court-circuite au retour).
-  Future<void> _startWithGuard() async {
-    final trailId = ref.read(trailConfigProvider).id;
-    final notifier = ref.read(trekSessionManagerProvider.notifier);
-
-    setState(() => _starting = true);
-    try {
-      // Escalade de fond NON BLOQUANTE (parite GR20) : on la lance sans l'attendre
-      // pour ne pas figer le demarrage derriere un ecran de reglages / dialog
-      // systeme (deadlock S1). Le foreground (whileInUse) suffit a demarrer.
-      unawaited(
-        ref.read(locationPermissionServiceProvider).ensureBackgroundTracking(),
-      );
-
-      final outcome = await notifier.ensureSingleActiveThenStart(
-        trailId,
-        resolve: (ongoingTrailId) =>
-            showActiveTrekConflictDialog(context, ongoingTrailId),
-      );
-      if (!mounted) return;
-      // Demarrage effectif -> on ouvre la navigation. Sur annulation ou meme
-      // trek deja actif, on reste sur le HUB (la carte se re-derivera).
-      // Ph4 (hub-and-push, SPEC §5) : push -> retour propre au cockpit.
-      if (outcome == StartOutcome.started) {
-        context.push('/map');
-      }
-    } finally {
-      if (mounted) setState(() => _starting = false);
-    }
   }
 }
 
@@ -348,8 +272,10 @@ class _CompletedTrekCard extends ConsumerWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.emoji_events_outlined,
-                  color: AppTheme.vertFacile),
+              const Icon(
+                Icons.emoji_events_outlined,
+                color: AppTheme.vertFacile,
+              ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(

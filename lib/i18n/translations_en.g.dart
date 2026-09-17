@@ -231,6 +231,7 @@ class _Translations$hub$en extends Translations$hub$fr {
 	@override late final _Translations$hub$trekCard$en trekCard = _Translations$hub$trekCard$en._(_root);
 	@override late final _Translations$hub$weather$en weather = _Translations$hub$weather$en._(_root);
 	@override String get startCta => 'Start the trek';
+	@override String get startGateHint => 'Complete Itinerary, Date and Programme first to start.';
 	@override late final _Translations$hub$sections$en sections = _Translations$hub$sections$en._(_root);
 	@override late final _Translations$hub$cards$en cards = _Translations$hub$cards$en._(_root);
 	@override late final _Translations$hub$fab$en fab = _Translations$hub$fab$en._(_root);
@@ -3774,6 +3775,7 @@ extension on TranslationsEn {
 			'hub.weather.alertStorm' => 'Storm alert',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Start the trek',
+			'hub.startGateHint' => 'Complete Itinerary, Date and Programme first to start.',
 			'hub.sections.prepare' => 'Prepare',
 			'hub.sections.hike' => 'Hike',
 			'hub.sections.info' => 'Information',
@@ -4194,9 +4196,9 @@ extension on TranslationsEn {
 			'weather.noForecast' => 'No forecast available.',
 			'weather.stageLabel' => ({required Object number}) => 'Stage ${number}',
 			'weather.stormAlertsTitle' => 'Storm alerts',
-			'weather.stormAlertsToggleOn' => 'Storm alerts on',
 			_ => null,
 		} ?? switch (path) {
+			'weather.stormAlertsToggleOn' => 'Storm alerts on',
 			'weather.stormAlertsToggleOff' => 'Storm alerts off',
 			'weather.lastUpdate' => ({required Object date}) => 'Updated ${date}',
 			'weather.guideTitle' => 'Understanding the weather',
@@ -4708,9 +4710,9 @@ extension on TranslationsEn {
 			'packs.progress.completed' => 'Pack ready offline',
 			'packs.progress.error' => 'Download failed',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
-			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
 			'packs.delete.cancel' => 'Cancel',
 			'packs.delete.confirm' => 'Delete',
 			'packs.delete.freed' => 'Space freed.',
@@ -5222,9 +5224,9 @@ extension on TranslationsEn {
 			'walkTest.levels.excellent' => 'Excellent',
 			'pastHikes.title' => 'Your last 5 hikes',
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
-			'pastHikes.addHike' => 'Add a hike',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.addHike' => 'Add a hike',
 			'pastHikes.empty' => 'No hike entered yet.',
 			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Number of days',

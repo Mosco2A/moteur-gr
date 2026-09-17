@@ -103,6 +103,7 @@
       "tempRange": "$min° / $max°"
     },
     "startCta": "Avvia il trek",
+    "startGateHint": "Completa prima Itinerario, Data e Programma per iniziare.",
     "sections": {
       "prepare": "Preparare",
       "hike": "Camminare",

@@ -103,6 +103,7 @@
       "tempRange": "$min° / $max°"
     },
     "startCta": "Démarrer la randonnée",
+    "startGateHint": "Complète d'abord Itinéraire, Date et Programme pour démarrer.",
     "sections": {
       "prepare": "Préparer",
       "hike": "Randonner",
