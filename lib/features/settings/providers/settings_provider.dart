@@ -213,11 +213,30 @@ class SettingsNotifier extends Notifier<AppSettings> {
   ///    `intl` alignes).
   /// 3. Persistance SharedPreferences -> le choix est restaure au prochain
   ///    lancement (cf. `main()`). Valeur normalisee (fallback fr si inconnue).
+  ///
+  /// LOT 1 (retour Chris #1) : la persistance est desormais GARANTIE meme si le
+  /// choix intervient AVANT la fin de `_load()` (cas de l'onboarding, tout au
+  /// debut de l'app) : si `_service` n'est pas encore pret, on cree le service a
+  /// la volee (`SettingsService.create`) puis on ecrit. Sans ce filet, choisir
+  /// la langue tres tot n'ecrivait rien -> au relancement `main()` ne trouvait
+  /// aucune preference et repartait sur la locale du telephone (bug « demarre en
+  /// anglais tant qu'on n'a pas re-selectionne »).
   void setLanguage(AppLanguage language) {
     final normalized = AppLanguageValues.fromString(language);
     LocaleSettings.setLocaleRaw(normalized);
     state = state.copyWith(language: normalized);
-    _service?.setLanguage(normalized);
+    _persistLanguage(normalized);
+  }
+
+  /// Persiste la langue de facon robuste (cf. [setLanguage]).
+  ///
+  /// Utilise le service deja charge si disponible, sinon en cree un
+  /// immediatement. Volontairement « fire-and-forget » (SharedPreferences est
+  /// local, offline-first) : l'UI a deja bascule, l'ecriture suit.
+  Future<void> _persistLanguage(AppLanguage language) async {
+    final service = _service ?? await SettingsService.create();
+    _service ??= service;
+    await service.setLanguage(language);
   }
 
   /// Met a jour l unite de distance et persiste.

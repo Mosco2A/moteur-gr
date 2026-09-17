@@ -7,6 +7,7 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
+import '../../settings/providers/settings_provider.dart';
 import '../providers/onboarding_providers.dart';
 
 /// Page courante dans le PageView d'onboarding.
@@ -261,7 +262,17 @@ class _WelcomePage extends StatelessWidget {
 }
 
 /// Page 2 : choix de la langue (5 locales Slang).
-class _LanguagePage extends StatelessWidget {
+///
+/// LOT 1 (retour Chris #1) : le choix passe desormais par le `settingsProvider`
+/// (`setLanguage`) au lieu d'un `LocaleSettings.setLocale` direct. Ce dernier ne
+/// changeait la locale QU'EN MEMOIRE : le choix fait ICI (a l'onboarding) n'etait
+/// jamais persiste, donc au relancement `main()` ne retrouvait aucune preference
+/// et repartait sur la locale du telephone (bug « selectionne Francais mais
+/// demarre en anglais tant qu'on ne re-selectionne pas »). En passant par le
+/// provider, la langue est appliquee ET ecrite en SharedPreferences (offline),
+/// puis restauree au prochain demarrage. `ConsumerWidget` pour lire/ecrire le
+/// provider et refleter la selection courante.
+class _LanguagePage extends ConsumerWidget {
   const _LanguagePage({required this.tr, required this.theme});
 
   final Translations tr;
@@ -277,7 +288,11 @@ class _LanguagePage extends StatelessWidget {
   };
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Selection courante = langue des reglages (source de verite persistee),
+    // et non plus la seule locale en memoire de Slang.
+    final currentLanguage =
+        ref.watch(settingsProvider.select((s) => s.language));
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingXl),
       child: Column(
@@ -305,13 +320,17 @@ class _LanguagePage extends StatelessWidget {
           ),
           const SizedBox(height: AppTheme.spacingLg),
           ...AppLocale.values.map((locale) {
-            final isSelected = LocaleSettings.currentLocale == locale;
+            final isSelected = currentLanguage == locale.languageCode;
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
               child: ChoiceChip(
                 label: Text(_localeLabels[locale] ?? locale.languageCode),
                 selected: isSelected,
-                onSelected: (_) => LocaleSettings.setLocale(locale),
+                // Applique ET persiste (SharedPreferences, offline) via le
+                // provider -> restaure au prochain lancement (cf. main()).
+                onSelected: (_) => ref
+                    .read(settingsProvider.notifier)
+                    .setLanguage(locale.languageCode),
               ),
             );
           }),
