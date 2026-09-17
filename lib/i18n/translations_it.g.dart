@@ -1532,7 +1532,7 @@ class _Translations$hikerProfile$it extends Translations$hikerProfile$fr {
 	@override String get consentToggle => 'Autorizzo l\'uso dei miei dati corporei per la fattibilita';
 	@override String get save => 'Salva';
 	@override String get saved => 'Dati salvati';
-	@override String get morphoNotPrefilledHint => 'Nulla e precompilato: sii onesto, e la tua sicurezza.';
+	@override String get morphoNotPrefilledHint => 'Nulla è precompilato: inserisci i tuoi dati reali, è per la tua sicurezza.';
 	@override String get seniorReminder => 'Dai 65 anni, si consiglia una visita medica prima di un trek impegnativo.';
 }
 
@@ -5192,7 +5192,7 @@ extension on TranslationsIt {
 			'hikerProfile.consentToggle' => 'Autorizzo l\'uso dei miei dati corporei per la fattibilita',
 			'hikerProfile.save' => 'Salva',
 			'hikerProfile.saved' => 'Dati salvati',
-			'hikerProfile.morphoNotPrefilledHint' => 'Nulla e precompilato: sii onesto, e la tua sicurezza.',
+			'hikerProfile.morphoNotPrefilledHint' => 'Nulla è precompilato: inserisci i tuoi dati reali, è per la tua sicurezza.',
 			'hikerProfile.seniorReminder' => 'Dai 65 anni, si consiglia una visita medica prima di un trek impegnativo.',
 			'walkTest.title' => 'Test del cammino di 6 minuti',
 			'walkTest.intro' => 'Cammina il piu lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per eta e sesso.',

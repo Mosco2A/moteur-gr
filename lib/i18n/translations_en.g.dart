@@ -1532,7 +1532,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get consentToggle => 'I allow my body metrics to be used for feasibility';
 	@override String get save => 'Save';
 	@override String get saved => 'Details saved';
-	@override String get morphoNotPrefilledHint => 'Nothing is pre-filled: be honest, it is your safety.';
+	@override String get morphoNotPrefilledHint => 'Nothing is pre-filled: enter your real data, it is for your safety.';
 	@override String get seniorReminder => 'From age 65, a medical check-up is advised before a demanding trek.';
 }
 
@@ -5192,7 +5192,7 @@ extension on TranslationsEn {
 			'hikerProfile.consentToggle' => 'I allow my body metrics to be used for feasibility',
 			'hikerProfile.save' => 'Save',
 			'hikerProfile.saved' => 'Details saved',
-			'hikerProfile.morphoNotPrefilledHint' => 'Nothing is pre-filled: be honest, it is your safety.',
+			'hikerProfile.morphoNotPrefilledHint' => 'Nothing is pre-filled: enter your real data, it is for your safety.',
 			'hikerProfile.seniorReminder' => 'From age 65, a medical check-up is advised before a demanding trek.',
 			'walkTest.title' => '6-minute walk test',
 			'walkTest.intro' => 'Walk as far as you can in 6 minutes on flat ground. GPS measures the distance; we compare it to norms for your age and sex.',

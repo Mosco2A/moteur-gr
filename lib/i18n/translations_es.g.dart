@@ -1532,7 +1532,7 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get consentToggle => 'Autorizo el uso de mis datos corporales para la viabilidad';
 	@override String get save => 'Guardar';
 	@override String get saved => 'Datos guardados';
-	@override String get morphoNotPrefilledHint => 'Nada esta rellenado: se honesto, es tu seguridad.';
+	@override String get morphoNotPrefilledHint => 'Nada está rellenado: introduce tus datos reales, es por tu seguridad.';
 	@override String get seniorReminder => 'A partir de los 65 anos, se aconseja una revision medica antes de un trek exigente.';
 }
 
@@ -5192,7 +5192,7 @@ extension on TranslationsEs {
 			'hikerProfile.consentToggle' => 'Autorizo el uso de mis datos corporales para la viabilidad',
 			'hikerProfile.save' => 'Guardar',
 			'hikerProfile.saved' => 'Datos guardados',
-			'hikerProfile.morphoNotPrefilledHint' => 'Nada esta rellenado: se honesto, es tu seguridad.',
+			'hikerProfile.morphoNotPrefilledHint' => 'Nada está rellenado: introduce tus datos reales, es por tu seguridad.',
 			'hikerProfile.seniorReminder' => 'A partir de los 65 anos, se aconseja una revision medica antes de un trek exigente.',
 			'walkTest.title' => 'Prueba de marcha de 6 minutos',
 			'walkTest.intro' => 'Camina lo mas lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.',

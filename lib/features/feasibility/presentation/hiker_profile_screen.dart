@@ -15,7 +15,7 @@ import '../providers/hiker_profile_provider.dart';
 /// Ecran « Fiche d'info » — 1ere page de la faisabilite (StepWays LOT 4, Ph1).
 ///
 /// Saisie du profil randonneur : age, taille, poids (=> IMC calcule LOCALEMENT),
-/// sexe (optionnel), pays (ISO). Morpho NON pre-remplie (honnetete = securite).
+/// sexe (optionnel), pays (ISO). Morpho NON pre-remplie (vraies donnees = securite).
 ///
 /// CONFIDENTIALITE (art. 9 RGPD) : la morpho est une donnee SENSIBLE. Elle
 /// reste locale (+ miroir cloud anonyme par hash, jamais nominatif) et n'est

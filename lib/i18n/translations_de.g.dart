@@ -1532,7 +1532,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get consentToggle => 'Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit';
 	@override String get save => 'Speichern';
 	@override String get saved => 'Angaben gespeichert';
-	@override String get morphoNotPrefilledHint => 'Nichts ist vorausgefullt: Seien Sie ehrlich, es geht um Ihre Sicherheit.';
+	@override String get morphoNotPrefilledHint => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.';
 	@override String get seniorReminder => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine arztliche Untersuchung empfohlen.';
 }
 
@@ -5192,7 +5192,7 @@ extension on TranslationsDe {
 			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit',
 			'hikerProfile.save' => 'Speichern',
 			'hikerProfile.saved' => 'Angaben gespeichert',
-			'hikerProfile.morphoNotPrefilledHint' => 'Nichts ist vorausgefullt: Seien Sie ehrlich, es geht um Ihre Sicherheit.',
+			'hikerProfile.morphoNotPrefilledHint' => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.',
 			'hikerProfile.seniorReminder' => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine arztliche Untersuchung empfohlen.',
 			'walkTest.title' => '6-Minuten-Gehtest',
 			'walkTest.intro' => 'Gehen Sie in 6 Minuten so weit wie moglich auf ebenem Gelande. Das GPS misst die Distanz; wir vergleichen sie mit Normen fur Alter und Geschlecht.',

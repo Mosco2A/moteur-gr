@@ -1891,7 +1891,7 @@
     "consentToggle": "I allow my body metrics to be used for feasibility",
     "save": "Save",
     "saved": "Details saved",
-    "morphoNotPrefilledHint": "Nothing is pre-filled: be honest, it is your safety.",
+    "morphoNotPrefilledHint": "Nothing is pre-filled: enter your real data, it is for your safety.",
     "seniorReminder": "From age 65, a medical check-up is advised before a demanding trek."
   },
   "walkTest": {

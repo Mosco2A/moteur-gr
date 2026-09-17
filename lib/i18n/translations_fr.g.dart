@@ -3095,8 +3095,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Fiche enregistree'
 	String get saved => 'Fiche enregistree';
 
-	/// fr: 'Rien n'est pre-rempli : soyez honnete, c'est votre securite.'
-	String get morphoNotPrefilledHint => 'Rien n\'est pre-rempli : soyez honnete, c\'est votre securite.';
+	/// fr: 'Rien n'est pré-rempli : renseignez vos vraies données, c'est pour votre sécurité.'
+	String get morphoNotPrefilledHint => 'Rien n\'est pré-rempli : renseignez vos vraies données, c\'est pour votre sécurité.';
 
 	/// fr: 'A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant.'
 	String get seniorReminder => 'A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant.';
@@ -8458,7 +8458,7 @@ extension on Translations {
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilite',
 			'hikerProfile.save' => 'Enregistrer',
 			'hikerProfile.saved' => 'Fiche enregistree',
-			'hikerProfile.morphoNotPrefilledHint' => 'Rien n\'est pre-rempli : soyez honnete, c\'est votre securite.',
+			'hikerProfile.morphoNotPrefilledHint' => 'Rien n\'est pré-rempli : renseignez vos vraies données, c\'est pour votre sécurité.',
 			'hikerProfile.seniorReminder' => 'A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant.',
 			'walkTest.title' => 'Test de marche 6 minutes',
 			'walkTest.intro' => 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre age et sexe.',

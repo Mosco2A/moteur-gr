@@ -1891,7 +1891,7 @@
     "consentToggle": "J'autorise l'usage de ma morphologie pour la faisabilite",
     "save": "Enregistrer",
     "saved": "Fiche enregistree",
-    "morphoNotPrefilledHint": "Rien n'est pre-rempli : soyez honnete, c'est votre securite.",
+    "morphoNotPrefilledHint": "Rien n'est pré-rempli : renseignez vos vraies données, c'est pour votre sécurité.",
     "seniorReminder": "A partir de 65 ans, une consultation medicale est conseillee avant un trek exigeant."
   },
   "walkTest": {
