@@ -39,6 +39,20 @@ const int kHeightMaxCm = 250;
 const int kWeightMinKg = 30;
 const int kWeightMaxKg = 150;
 
+/// IMC live borne — logique pure et testable du retour QA polish.
+///
+/// Retourne l'IMC UNIQUEMENT si `heightCm` ET `weightKg` sont tous deux DANS LES
+/// BORNES metier (LOT 1 : taille [kHeightMinCm..kHeightMaxCm], poids
+/// [kWeightMinKg..kWeightMaxKg]). Sinon `null` -> l'ecran masque le bloc IMC.
+/// Evite d'afficher un IMC absurde tant que la saisie est invalide (ex. taille
+/// 800), et recalcule des que la saisie redevient valide.
+double? liveBmiWithinBounds(int? heightCm, double? weightKg) {
+  if (heightCm == null || weightKg == null) return null;
+  if (heightCm < kHeightMinCm || heightCm > kHeightMaxCm) return null;
+  if (weightKg < kWeightMinKg || weightKg > kWeightMaxKg) return null;
+  return HikerProfile(heightCm: heightCm, weightKg: weightKg).bmi;
+}
+
 class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _ageController = TextEditingController();
@@ -78,11 +92,13 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   static String _formatWeight(double kg) =>
       kg == kg.roundToDouble() ? '${kg.round()}' : '$kg';
 
-  double get _liveBmi {
-    final h = int.tryParse(_heightController.text.trim()) ?? 0;
-    final w = double.tryParse(_weightController.text.trim().replaceAll(',', '.')) ?? 0;
-    return HikerProfile(heightCm: h, weightKg: w).bmi ?? 0;
-  }
+  /// IMC live, calcule UNIQUEMENT si la saisie taille+poids est DANS LES BORNES
+  /// metier (voir [liveBmiWithinBounds]). `null` tant que la saisie est vide,
+  /// non numerique ou hors bornes -> le bloc IMC est masque.
+  double? get _liveBmi => liveBmiWithinBounds(
+        int.tryParse(_heightController.text.trim()),
+        double.tryParse(_weightController.text.trim().replaceAll(',', '.')),
+      );
 
   Future<void> _save() async {
     if (_saving) return;
@@ -193,8 +209,10 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                           v, kWeightMinKg, kWeightMaxKg, tp.errorWeight),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
-                    // IMC calcule (live), affiche seulement si taille+poids.
-                    if (_liveBmi > 0) _BmiCard(bmi: _liveBmi),
+                    // IMC calcule (live), affiche SEULEMENT si taille ET poids
+                    // sont saisis DANS LES BORNES (sinon `_liveBmi` == null et le
+                    // bloc est masque : pas d'IMC absurde sur saisie invalide).
+                    if (_liveBmi case final bmi?) _BmiCard(bmi: bmi),
                     const SizedBox(height: AppTheme.spacingBase),
                     // Sexe (optionnel)
                     Text(tp.fieldSex, style: theme.textTheme.labelLarge),
