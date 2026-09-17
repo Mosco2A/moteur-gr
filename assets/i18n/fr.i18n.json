@@ -888,6 +888,46 @@
       "risk": "Niveau de risque eleve pour ce trek",
       "fitness": "Forme insuffisante au test 6 minutes",
       "effort": "Effort global (IBP) superieur a votre experience"
+    },
+    "formula": {
+      "title": "Faisabilité pour ce trek",
+      "intro": "On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.",
+      "ceilingLabel": "Plafond conseillé : ${value} km-effort/jour (${level})",
+      "stagesTitle": "Étape par étape",
+      "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-effort",
+      "globalTitle": "Verdict global",
+      "hardestStage": "Étape la plus exigeante : ${stage}",
+      "daysOver": "${count} jour(s) au-dessus de ton plafond",
+      "daysOverNone": "Aucune journée au-dessus de ton plafond",
+      "limitingLabel": "Facteur limitant : ${factor}",
+      "trainingReco": "Entraînement conseillé : ${weeks} semaines avant le départ",
+      "adviceTitle": "Conseils pour ton programme",
+      "noStages": "Aucune étape à évaluer pour le moment.",
+      "levels": {
+        "beginner": "débutant",
+        "intermediate": "intermédiaire",
+        "confirmed": "confirmé",
+        "expert": "expert"
+      },
+      "verdicts": {
+        "green": "Faisable",
+        "orange": "Faisable avec préparation",
+        "red": "Au-dessus de tes capacités"
+      },
+      "limitingFactors": {
+        "distance": "la distance des étapes",
+        "elevation": "le dénivelé",
+        "chaining": "l'enchaînement des journées",
+        "none": "aucun"
+      },
+      "advice": {
+        "balancedOk": "Ton programme est équilibré : garde une marge et écoute ton corps.",
+        "balanced": "Répartis les étapes pour lisser l'effort au fil des jours.",
+        "optimalDays": "Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.",
+        "split": "Découpe l'étape ${stage} en deux : elle dépasse nettement ton plafond.",
+        "rest": "Prévois un jour de repos après l'étape ${stages}.",
+        "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique)."
+      }
     }
   },
   "tips": {

@@ -888,6 +888,46 @@
       "risk": "High risk level for this trek",
       "fitness": "Fitness insufficient on the 6-minute test",
       "effort": "Overall effort (IBP) above your experience"
+    },
+    "formula": {
+      "title": "Feasibility for this trek",
+      "intro": "We compare each stage's effort to what your profile can handle in a day. Green, orange or red light.",
+      "ceilingLabel": "Recommended ceiling: ${value} effort-km/day (${level})",
+      "stagesTitle": "Stage by stage",
+      "stageEffort": "${distance} km + ${elevation} m ascent = ${effort} effort-km",
+      "globalTitle": "Overall verdict",
+      "hardestStage": "Toughest stage: ${stage}",
+      "daysOver": "${count} day(s) above your ceiling",
+      "daysOverNone": "No day above your ceiling",
+      "limitingLabel": "Limiting factor: ${factor}",
+      "trainingReco": "Recommended training: ${weeks} weeks before departure",
+      "adviceTitle": "Tips for your plan",
+      "noStages": "No stage to assess yet.",
+      "levels": {
+        "beginner": "beginner",
+        "intermediate": "intermediate",
+        "confirmed": "confirmed",
+        "expert": "expert"
+      },
+      "verdicts": {
+        "green": "Feasible",
+        "orange": "Feasible with preparation",
+        "red": "Beyond your ability"
+      },
+      "limitingFactors": {
+        "distance": "the stage distances",
+        "elevation": "the elevation gain",
+        "chaining": "the day-to-day chaining",
+        "none": "none"
+      },
+      "advice": {
+        "balancedOk": "Your plan is balanced: keep a margin and listen to your body.",
+        "balanced": "Spread the stages out to smooth the effort across the days.",
+        "optimalDays": "Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.",
+        "split": "Split stage ${stage} in two: it clearly exceeds your ceiling.",
+        "rest": "Plan a rest day after stage ${stages}.",
+        "training": "Train for ${weeks} weeks before departure (physical preparation)."
+      }
     }
   },
   "tips": {

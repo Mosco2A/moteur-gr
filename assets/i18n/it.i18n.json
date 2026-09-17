@@ -888,6 +888,46 @@
       "risk": "Livello di rischio alto per questo trek",
       "fitness": "Forma insufficiente al test di 6 minuti",
       "effort": "Sforzo globale (IBP) oltre la tua esperienza"
+    },
+    "formula": {
+      "title": "Fattibilità per questo trek",
+      "intro": "Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.",
+      "ceilingLabel": "Soglia consigliata: ${value} km-sforzo/giorno (${level})",
+      "stagesTitle": "Tappa per tappa",
+      "stageEffort": "${distance} km + ${elevation} m dislivello = ${effort} km-sforzo",
+      "globalTitle": "Verdetto globale",
+      "hardestStage": "Tappa più impegnativa: ${stage}",
+      "daysOver": "${count} giorno/i oltre la tua soglia",
+      "daysOverNone": "Nessun giorno oltre la tua soglia",
+      "limitingLabel": "Fattore limitante: ${factor}",
+      "trainingReco": "Allenamento consigliato: ${weeks} settimane prima della partenza",
+      "adviceTitle": "Consigli per il tuo programma",
+      "noStages": "Nessuna tappa da valutare per ora.",
+      "levels": {
+        "beginner": "principiante",
+        "intermediate": "intermedio",
+        "confirmed": "esperto",
+        "expert": "avanzato"
+      },
+      "verdicts": {
+        "green": "Fattibile",
+        "orange": "Fattibile con preparazione",
+        "red": "Oltre le tue capacità"
+      },
+      "limitingFactors": {
+        "distance": "la distanza delle tappe",
+        "elevation": "il dislivello",
+        "chaining": "la successione dei giorni",
+        "none": "nessuno"
+      },
+      "advice": {
+        "balancedOk": "Il tuo programma è equilibrato: mantieni un margine e ascolta il corpo.",
+        "balanced": "Distribuisci le tappe per uniformare lo sforzo nei giorni.",
+        "optimalDays": "Punta a ${days} giorni di cammino (invece di ${current}) per restare sotto la soglia.",
+        "split": "Dividi la tappa ${stage} in due: supera nettamente la tua soglia.",
+        "rest": "Prevedi un giorno di riposo dopo la tappa ${stages}.",
+        "training": "Allénati ${weeks} settimane prima della partenza (preparazione fisica)."
+      }
     }
   },
   "tips": {

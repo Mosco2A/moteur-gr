@@ -888,6 +888,46 @@
       "risk": "Nivel de riesgo alto para este trek",
       "fitness": "Forma insuficiente en la prueba de 6 minutos",
       "effort": "Esfuerzo global (IBP) por encima de tu experiencia"
+    },
+    "formula": {
+      "title": "Viabilidad para este trek",
+      "intro": "Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.",
+      "ceilingLabel": "Tope recomendado: ${value} km-esfuerzo/día (${level})",
+      "stagesTitle": "Etapa por etapa",
+      "stageEffort": "${distance} km + ${elevation} m desnivel = ${effort} km-esfuerzo",
+      "globalTitle": "Veredicto global",
+      "hardestStage": "Etapa más exigente: ${stage}",
+      "daysOver": "${count} día(s) por encima de tu tope",
+      "daysOverNone": "Ningún día por encima de tu tope",
+      "limitingLabel": "Factor limitante: ${factor}",
+      "trainingReco": "Entrenamiento recomendado: ${weeks} semanas antes de salir",
+      "adviceTitle": "Consejos para tu programa",
+      "noStages": "Aún no hay ninguna etapa que evaluar.",
+      "levels": {
+        "beginner": "principiante",
+        "intermediate": "intermedio",
+        "confirmed": "avanzado",
+        "expert": "experto"
+      },
+      "verdicts": {
+        "green": "Viable",
+        "orange": "Viable con preparación",
+        "red": "Por encima de tus capacidades"
+      },
+      "limitingFactors": {
+        "distance": "la distancia de las etapas",
+        "elevation": "el desnivel",
+        "chaining": "el encadenamiento de los días",
+        "none": "ninguno"
+      },
+      "advice": {
+        "balancedOk": "Tu programa está equilibrado: guarda un margen y escucha a tu cuerpo.",
+        "balanced": "Reparte las etapas para suavizar el esfuerzo a lo largo de los días.",
+        "optimalDays": "Apunta a ${days} días de marcha (en vez de ${current}) para no pasar tu tope.",
+        "split": "Divide la etapa ${stage} en dos: supera claramente tu tope.",
+        "rest": "Prevé un día de descanso tras la etapa ${stages}.",
+        "training": "Entrena ${weeks} semanas antes de salir (preparación física)."
+      }
     }
   },
   "tips": {

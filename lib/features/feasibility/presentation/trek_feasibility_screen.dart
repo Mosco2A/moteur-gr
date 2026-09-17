@@ -8,35 +8,37 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
-import '../domain/trek_feasibility_calculator.dart';
+import '../domain/feasibility_formula.dart';
 import '../providers/trek_feasibility_provider.dart';
 
-/// Ecran de faisabilite OBJECTIVE profil x trek (StepWays LOT 4, Ph5).
+/// Ecran de faisabilite profil x trek — FORMULE V1 FEU TRICOLORE (LOT 3a,
+/// decision Chris #100068).
 ///
-/// Verdict base sur le profil reel (fiche + test 6 min + 5 randos) croise aux
-/// exigences du trek (D+/j, km/j, jours, technicite, risque, effort). Affiche
-/// le verdict + les points faibles POUR CE TREK, avec des acces rapides pour
-/// completer le profil. Le questionnaire reste un fallback de dépannage
-/// (accessible via /trail/:id/feasibility). Tous textes via Slang.
+/// Remplace le verdict binaire « Deconseille » par un feu tricolore : chaque
+/// etape est notee VERT / ORANGE / ROUGE selon le ratio effort (km-effort =
+/// distance + D+/100) sur le plafond journalier deduit du profil. Le verdict
+/// global nomme l'etape la plus dure, le nombre de jours au-dessus, le facteur
+/// limitant, et propose des conseils de programme (jours optimal, decoupe,
+/// repos). Le questionnaire reste un fallback de dépannage. Tous textes Slang.
 class TrekFeasibilityScreen extends ConsumerWidget {
   const TrekFeasibilityScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resultAsync = ref.watch(trekFeasibilityResultProvider);
+    final assessmentAsync = ref.watch(feasibilityAssessmentProvider);
     final f = t.feasibility;
 
     return Scaffold(
-      appBar: AppHeader(title: f.objectiveTitle),
-      body: resultAsync.when(
+      appBar: AppHeader(title: f.formula.title),
+      body: assessmentAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (_, __) => _FallbackToQuestionnaire(reason: f.objectiveIntro),
-        data: (result) {
-          if (result == null) {
-            // Pas d'exigences trek (pas d'etapes) -> questionnaire de dépannage.
+        error: (_, __) => _FallbackToQuestionnaire(reason: f.formula.intro),
+        data: (assessment) {
+          if (assessment == null) {
+            // Pas d'etapes -> questionnaire de dépannage.
             return _FallbackToQuestionnaire(reason: f.sourceFallback);
           }
-          return _VerdictView(result: result);
+          return _VerdictView(assessment: assessment);
         },
       ),
     );
@@ -44,8 +46,8 @@ class TrekFeasibilityScreen extends ConsumerWidget {
 }
 
 class _VerdictView extends ConsumerWidget {
-  const _VerdictView({required this.result});
-  final TrekFeasibilityResult result;
+  const _VerdictView({required this.assessment});
+  final FeasibilityAssessment assessment;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -59,16 +61,18 @@ class _VerdictView extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(f.objectiveIntro, style: theme.textTheme.bodyMedium),
+          Text(f.formula.intro, style: theme.textTheme.bodyMedium),
           const SizedBox(height: AppTheme.spacingLg),
-          _VerdictBadge(verdict: result.verdict),
+
+          // Verdict global (feu tricolore).
+          _VerdictBadge(verdict: assessment.globalVerdict),
           const SizedBox(height: AppTheme.spacingSm),
-          // Source du verdict (objectif vs dépannage).
           Center(
             child: Text(
-              result.usedObjectiveProfile
-                  ? f.sourceObjective
-                  : f.sourceFallback,
+              f.formula.ceilingLabel(
+                value: _fmt(assessment.dailyCeilingKmEffort),
+                level: _levelLabel(assessment.level),
+              ),
               style: theme.textTheme.bodySmall?.copyWith(
                 fontStyle: FontStyle.italic,
                 color: theme.colorScheme.onSurface.withAlpha(150),
@@ -77,38 +81,43 @@ class _VerdictView extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppTheme.spacingLg),
-          // Points faibles POUR CE TREK.
-          if (result.gaps.isNotEmpty) ...[
-            Text(f.weakPointsTitle, style: theme.textTheme.titleMedium),
+
+          // Synthese du verdict global : etape la plus dure, jours au-dessus,
+          // facteur limitant, reco entrainement.
+          _GlobalSummary(assessment: assessment),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Feu tricolore etape par etape.
+          Text(f.formula.stagesTitle, style: theme.textTheme.titleMedium),
+          const SizedBox(height: AppTheme.spacingSm),
+          ...assessment.stageVerdicts.map((v) => _StageTile(verdict: v)),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Conseils de programme (jours optimal, decoupe, repos, entrainement).
+          if (assessment.advice.isNotEmpty) ...[
+            Text(f.formula.adviceTitle, style: theme.textTheme.titleMedium),
             const SizedBox(height: AppTheme.spacingSm),
-            ...result.gaps.map((g) => _GapTile(gap: g)),
+            ...assessment.advice.map((a) => _AdviceTile(advice: a)),
             const SizedBox(height: AppTheme.spacingLg),
           ],
-          // StepWays LOT 5 (A) — PONT « es-tu pret ? » -> « voila comment le
-          // devenir » : bouton « Preparation physique » vers l'ecran
-          // ENTRAINEMENT (payant). C'est LA porte d'entree definie par la spec
-          // sur la page de resultat de la faisabilite. Libelle Slang reutilise
-          // (`hub.cards.training` == « Preparation physique »).
+
+          // Pont « es-tu pret ? » -> « voila comment le devenir » : prepa
+          // physique (payant), porte d'entree definie par la spec.
           AppButton(
             icon: Icons.fitness_center,
             label: t.hub.cards.training,
             onPressed: () => context.push('/training'),
           ),
           const SizedBox(height: AppTheme.spacingLg),
-          // LOT 1 (retour Chris #6) : ACCES PERMANENT au questionnaire de
-          // faisabilite. Avant, le questionnaire n'etait atteignable QUE via la
-          // vue de dépannage (profil objectif indisponible) : des qu'un verdict
-          // objectif s'affichait, l'utilisateur ne « passait plus par les
-          // questions » et ne pouvait PLUS y revenir. On expose donc ici une
-          // entree explicite ; le questionnaire porte deja « Recommencer » pour
-          // re-repondre et recalculer le resultat (navigation GoRouter existante,
-          // route hors-shell atteinte via push -> retour propre au verdict).
+
+          // LOT 1 (retour Chris #6) : acces permanent au questionnaire.
           _ShortcutCard(
             icon: Icons.quiz_outlined,
             label: t.feasibility.openQuestionnaire,
             onTap: () => context.push('/trail/$trailId/feasibility-quiz'),
           ),
           const SizedBox(height: AppTheme.spacingLg),
+
           // Acces rapides pour completer / affiner le profil objectif.
           hasProfileAsync.maybeWhen(
             data: (has) => _ProfileShortcuts(trailId: trailId, complete: has),
@@ -120,16 +129,98 @@ class _VerdictView extends ConsumerWidget {
   }
 }
 
-/// Badge de verdict colore (reutilise la semantique de couleur du niveau).
+/// Synthese textuelle du verdict global (hors tout vert).
+class _GlobalSummary extends StatelessWidget {
+  const _GlobalSummary({required this.assessment});
+  final FeasibilityAssessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+    final color = _verdictColor(assessment.globalVerdict);
+
+    final lines = <Widget>[];
+
+    // Etape la plus dure (nommee) si le trek n'est pas tout vert.
+    final hardest = assessment.hardestStage;
+    if (hardest != null &&
+        assessment.globalVerdict != FeasibilityVerdict.green) {
+      lines.add(_summaryLine(
+        theme,
+        Icons.trending_up,
+        f.hardestStage(stage: hardest.stage.name),
+        color,
+      ));
+    }
+
+    // Jours au-dessus du plafond.
+    lines.add(_summaryLine(
+      theme,
+      Icons.calendar_today,
+      assessment.daysOverCapacity > 0
+          ? f.daysOver(count: assessment.daysOverCapacity)
+          : f.daysOverNone,
+      assessment.daysOverCapacity > 0 ? color : AppTheme.vertFacile,
+    ));
+
+    // Facteur limitant nomme (si present).
+    if (assessment.limitingFactor != LimitingFactor.none) {
+      lines.add(_summaryLine(
+        theme,
+        Icons.warning_amber,
+        f.limitingLabel(factor: _limitingLabel(assessment.limitingFactor)),
+        color,
+      ));
+    }
+
+    // Reco entrainement (si non-vert).
+    if (assessment.recommendedTrainingWeeks > 0) {
+      lines.add(_summaryLine(
+        theme,
+        Icons.event_available,
+        f.trainingReco(weeks: assessment.recommendedTrainingWeeks),
+        theme.colorScheme.primary,
+      ));
+    }
+
+    return AppCard(
+      backgroundColor: color.withAlpha(14),
+      borderColor: color.withAlpha(60),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (var i = 0; i < lines.length; i++) ...[
+            if (i > 0) const SizedBox(height: AppTheme.spacingSm),
+            lines[i],
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _summaryLine(
+      ThemeData theme, IconData icon, String text, Color color) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: color),
+        const SizedBox(width: AppTheme.spacingSm),
+        Expanded(child: Text(text, style: theme.textTheme.bodyMedium)),
+      ],
+    );
+  }
+}
+
+/// Badge du verdict global (feu tricolore).
 class _VerdictBadge extends StatelessWidget {
   const _VerdictBadge({required this.verdict});
-  final String verdict;
+  final FeasibilityVerdict verdict;
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final color = _verdictColor(verdict);
     final icon = _verdictIcon(verdict);
-    final label = _resolveLevel(verdict);
     return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppTheme.spacingLg,
@@ -145,57 +236,99 @@ class _VerdictBadge extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 28),
           const SizedBox(width: AppTheme.spacingSm),
-          Text(
-            label,
-            style: theme.textTheme.titleLarge?.copyWith(
-              color: color,
-              fontWeight: FontWeight.bold,
+          Flexible(
+            child: Text(
+              _verdictLabel(verdict),
+              textAlign: TextAlign.center,
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: color,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
       ),
     );
   }
-
-  static String _resolveLevel(String verdict) {
-    final resolved = t['feasibility.levels.$verdict'];
-    return resolved is String ? resolved : verdict;
-  }
 }
 
-/// Tuile d'un point faible (categorie i18n + severite coloree).
-class _GapTile extends StatelessWidget {
-  const _GapTile({required this.gap});
-  final FeasibilityGapResult gap;
-
-  String _resolveGap(String category) {
-    final resolved = t['feasibility.gaps.$category'];
-    return resolved is String ? resolved : category;
-  }
+/// Tuile d'une etape avec sa pastille tricolore + son km-effort.
+class _StageTile extends StatelessWidget {
+  const _StageTile({required this.verdict});
+  final StageVerdict verdict;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final blocking = gap.severity == GapSeverity.blocking;
-    final color =
-        blocking ? AppTheme.rougeUrgence : AppTheme.orangeDifficile;
+    final f = t.feasibility.formula;
+    final color = _verdictColor(verdict.verdict);
+    final s = verdict.stage;
     return AppCard(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-      backgroundColor: color.withAlpha(18),
-      borderColor: color.withAlpha(70),
+      backgroundColor: color.withAlpha(14),
+      borderColor: color.withAlpha(60),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            blocking ? Icons.dangerous : Icons.warning_amber,
-            color: color,
+          // Pastille de couleur (feu tricolore).
+          Container(
+            width: 14,
+            height: 14,
+            margin: const EdgeInsets.only(top: 3),
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
           ),
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
-            child: Text(
-              _resolveGap(gap.category),
-              style: theme.textTheme.bodyMedium,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  s.name,
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  f.stageEffort(
+                    distance: _fmt(s.distanceKm),
+                    elevation: s.elevationGainM,
+                    effort: _fmt(s.effortKm),
+                  ),
+                  style: theme.textTheme.bodySmall,
+                ),
+              ],
             ),
+          ),
+          const SizedBox(width: AppTheme.spacingSm),
+          Text(
+            _verdictLabel(verdict.verdict),
+            style: theme.textTheme.labelMedium
+                ?.copyWith(color: color, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Tuile d'un conseil de programme (cle -> texte i18n resolu avec params).
+class _AdviceTile extends StatelessWidget {
+  const _AdviceTile({required this.advice});
+  final ProgramAdvice advice;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.tips_and_updates_outlined,
+              color: theme.colorScheme.primary, size: 20),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(_adviceText(advice), style: theme.textTheme.bodyMedium),
           ),
         ],
       ),
@@ -263,7 +396,7 @@ class _ShortcutCard extends StatelessWidget {
   }
 }
 
-/// Vue de dépannage : pas de profil objectif exploitable -> questionnaire.
+/// Vue de dépannage : pas d'etapes -> questionnaire.
 class _FallbackToQuestionnaire extends ConsumerWidget {
   const _FallbackToQuestionnaire({required this.reason});
   final String reason;
@@ -307,28 +440,95 @@ class _FallbackToQuestionnaire extends ConsumerWidget {
   }
 }
 
-Color _verdictColor(String verdict) {
+// --- Helpers de resolution enum -> i18n / couleur / icone -------------------
+
+/// Formatte un km-effort : entier si rond, sinon une decimale.
+String _fmt(double value) {
+  if (value == value.roundToDouble()) return value.round().toString();
+  return value.toStringAsFixed(1);
+}
+
+String _verdictLabel(FeasibilityVerdict verdict) {
+  final v = t.feasibility.formula.verdicts;
   switch (verdict) {
-    case TrekVerdict.danger:
-      return AppTheme.rougeUrgence;
-    case TrekVerdict.caution:
-      return AppTheme.orangeDifficile;
-    case TrekVerdict.go:
-      return AppTheme.vertFacile;
-    default:
-      return AppTheme.grisGranite;
+    case FeasibilityVerdict.green:
+      return v.green;
+    case FeasibilityVerdict.orange:
+      return v.orange;
+    case FeasibilityVerdict.red:
+      return v.red;
   }
 }
 
-IconData _verdictIcon(String verdict) {
-  switch (verdict) {
-    case TrekVerdict.danger:
-      return Icons.dangerous;
-    case TrekVerdict.caution:
-      return Icons.warning;
-    case TrekVerdict.go:
-      return Icons.check_circle;
+String _levelLabel(HikerLevel level) {
+  final l = t.feasibility.formula.levels;
+  switch (level) {
+    case HikerLevel.beginner:
+      return l.beginner;
+    case HikerLevel.intermediate:
+      return l.intermediate;
+    case HikerLevel.confirmed:
+      return l.confirmed;
+    case HikerLevel.expert:
+      return l.expert;
+  }
+}
+
+String _limitingLabel(LimitingFactor factor) {
+  final lf = t.feasibility.formula.limitingFactors;
+  switch (factor) {
+    case LimitingFactor.distance:
+      return lf.distance;
+    case LimitingFactor.elevation:
+      return lf.elevation;
+    case LimitingFactor.chaining:
+      return lf.chaining;
+    case LimitingFactor.none:
+      return lf.none;
+  }
+}
+
+String _adviceText(ProgramAdvice advice) {
+  final a = t.feasibility.formula.advice;
+  switch (advice.key) {
+    case 'balancedOk':
+      return a.balancedOk;
+    case 'balanced':
+      return a.balanced;
+    case 'optimalDays':
+      return a.optimalDays(
+        days: advice.params['days'] ?? '',
+        current: advice.params['current'] ?? '',
+      );
+    case 'split':
+      return a.split(stage: advice.params['stage'] ?? '');
+    case 'rest':
+      return a.rest(stages: advice.params['stages'] ?? '');
+    case 'training':
+      return a.training(weeks: advice.params['weeks'] ?? '');
     default:
-      return Icons.help;
+      return '';
+  }
+}
+
+Color _verdictColor(FeasibilityVerdict verdict) {
+  switch (verdict) {
+    case FeasibilityVerdict.red:
+      return AppTheme.rougeUrgence;
+    case FeasibilityVerdict.orange:
+      return AppTheme.orangeDifficile;
+    case FeasibilityVerdict.green:
+      return AppTheme.vertFacile;
+  }
+}
+
+IconData _verdictIcon(FeasibilityVerdict verdict) {
+  switch (verdict) {
+    case FeasibilityVerdict.red:
+      return Icons.dangerous;
+    case FeasibilityVerdict.orange:
+      return Icons.warning;
+    case FeasibilityVerdict.green:
+      return Icons.check_circle;
   }
 }

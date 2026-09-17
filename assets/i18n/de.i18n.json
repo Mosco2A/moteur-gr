@@ -888,6 +888,46 @@
       "risk": "Hohes Risikoniveau fur diesen Trek",
       "fitness": "Form beim 6-Minuten-Test unzureichend",
       "effort": "Gesamtanstrengung (IBP) uber Ihrer Erfahrung"
+    },
+    "formula": {
+      "title": "Machbarkeit für diese Tour",
+      "intro": "Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.",
+      "ceilingLabel": "Empfohlene Obergrenze: ${value} Aufwand-km/Tag (${level})",
+      "stagesTitle": "Etappe für Etappe",
+      "stageEffort": "${distance} km + ${elevation} m Aufstieg = ${effort} Aufwand-km",
+      "globalTitle": "Gesamturteil",
+      "hardestStage": "Anspruchsvollste Etappe: ${stage}",
+      "daysOver": "${count} Tag(e) über deiner Obergrenze",
+      "daysOverNone": "Kein Tag über deiner Obergrenze",
+      "limitingLabel": "Begrenzender Faktor: ${factor}",
+      "trainingReco": "Empfohlenes Training: ${weeks} Wochen vor dem Start",
+      "adviceTitle": "Tipps für deinen Plan",
+      "noStages": "Noch keine Etappe zu bewerten.",
+      "levels": {
+        "beginner": "Anfänger",
+        "intermediate": "Fortgeschritten",
+        "confirmed": "Erfahren",
+        "expert": "Experte"
+      },
+      "verdicts": {
+        "green": "Machbar",
+        "orange": "Machbar mit Vorbereitung",
+        "red": "Über deinem Niveau"
+      },
+      "limitingFactors": {
+        "distance": "die Etappenlänge",
+        "elevation": "der Höhenunterschied",
+        "chaining": "die Abfolge der Tage",
+        "none": "keiner"
+      },
+      "advice": {
+        "balancedOk": "Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.",
+        "balanced": "Verteile die Etappen, um den Aufwand über die Tage zu glätten.",
+        "optimalDays": "Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.",
+        "split": "Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.",
+        "rest": "Plane einen Ruhetag nach Etappe ${stages}.",
+        "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung)."
+      }
     }
   },
   "tips": {

@@ -1461,6 +1461,7 @@ class Translations$feasibility$fr {
 	String get gapTooHigh => 'Ecart trop important';
 
 	late final Translations$feasibility$gaps$fr gaps = Translations$feasibility$gaps$fr.internal(_root);
+	late final Translations$feasibility$formula$fr formula = Translations$feasibility$formula$fr.internal(_root);
 }
 
 // Path: tips
@@ -4770,6 +4771,59 @@ class Translations$feasibility$gaps$fr {
 	String get effort => 'Effort global (IBP) superieur a votre experience';
 }
 
+// Path: feasibility.formula
+class Translations$feasibility$formula$fr {
+	Translations$feasibility$formula$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Faisabilité pour ce trek'
+	String get title => 'Faisabilité pour ce trek';
+
+	/// fr: 'On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.'
+	String get intro => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.';
+
+	/// fr: 'Plafond conseillé : ${value} km-effort/jour (${level})'
+	String ceilingLabel({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-effort/jour (${level})';
+
+	/// fr: 'Étape par étape'
+	String get stagesTitle => 'Étape par étape';
+
+	/// fr: '${distance} km + ${elevation} m D+ = ${effort} km-effort'
+	String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-effort';
+
+	/// fr: 'Verdict global'
+	String get globalTitle => 'Verdict global';
+
+	/// fr: 'Étape la plus exigeante : ${stage}'
+	String hardestStage({required Object stage}) => 'Étape la plus exigeante : ${stage}';
+
+	/// fr: '${count} jour(s) au-dessus de ton plafond'
+	String daysOver({required Object count}) => '${count} jour(s) au-dessus de ton plafond';
+
+	/// fr: 'Aucune journée au-dessus de ton plafond'
+	String get daysOverNone => 'Aucune journée au-dessus de ton plafond';
+
+	/// fr: 'Facteur limitant : ${factor}'
+	String limitingLabel({required Object factor}) => 'Facteur limitant : ${factor}';
+
+	/// fr: 'Entraînement conseillé : ${weeks} semaines avant le départ'
+	String trainingReco({required Object weeks}) => 'Entraînement conseillé : ${weeks} semaines avant le départ';
+
+	/// fr: 'Conseils pour ton programme'
+	String get adviceTitle => 'Conseils pour ton programme';
+
+	/// fr: 'Aucune étape à évaluer pour le moment.'
+	String get noStages => 'Aucune étape à évaluer pour le moment.';
+
+	late final Translations$feasibility$formula$levels$fr levels = Translations$feasibility$formula$levels$fr.internal(_root);
+	late final Translations$feasibility$formula$verdicts$fr verdicts = Translations$feasibility$formula$verdicts$fr.internal(_root);
+	late final Translations$feasibility$formula$limitingFactors$fr limitingFactors = Translations$feasibility$formula$limitingFactors$fr.internal(_root);
+	late final Translations$feasibility$formula$advice$fr advice = Translations$feasibility$formula$advice$fr.internal(_root);
+}
+
 // Path: tips.themes
 class Translations$tips$themes$fr {
 	Translations$tips$themes$fr.internal(this._root);
@@ -6634,6 +6688,93 @@ class Translations$feasibility$recommendations$excellent$fr {
 	late final Translations$feasibility$recommendations$excellent$tips$fr tips = Translations$feasibility$recommendations$excellent$tips$fr.internal(_root);
 }
 
+// Path: feasibility.formula.levels
+class Translations$feasibility$formula$levels$fr {
+	Translations$feasibility$formula$levels$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'débutant'
+	String get beginner => 'débutant';
+
+	/// fr: 'intermédiaire'
+	String get intermediate => 'intermédiaire';
+
+	/// fr: 'confirmé'
+	String get confirmed => 'confirmé';
+
+	/// fr: 'expert'
+	String get expert => 'expert';
+}
+
+// Path: feasibility.formula.verdicts
+class Translations$feasibility$formula$verdicts$fr {
+	Translations$feasibility$formula$verdicts$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Faisable'
+	String get green => 'Faisable';
+
+	/// fr: 'Faisable avec préparation'
+	String get orange => 'Faisable avec préparation';
+
+	/// fr: 'Au-dessus de tes capacités'
+	String get red => 'Au-dessus de tes capacités';
+}
+
+// Path: feasibility.formula.limitingFactors
+class Translations$feasibility$formula$limitingFactors$fr {
+	Translations$feasibility$formula$limitingFactors$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'la distance des étapes'
+	String get distance => 'la distance des étapes';
+
+	/// fr: 'le dénivelé'
+	String get elevation => 'le dénivelé';
+
+	/// fr: 'l'enchaînement des journées'
+	String get chaining => 'l\'enchaînement des journées';
+
+	/// fr: 'aucun'
+	String get none => 'aucun';
+}
+
+// Path: feasibility.formula.advice
+class Translations$feasibility$formula$advice$fr {
+	Translations$feasibility$formula$advice$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ton programme est équilibré : garde une marge et écoute ton corps.'
+	String get balancedOk => 'Ton programme est équilibré : garde une marge et écoute ton corps.';
+
+	/// fr: 'Répartis les étapes pour lisser l'effort au fil des jours.'
+	String get balanced => 'Répartis les étapes pour lisser l\'effort au fil des jours.';
+
+	/// fr: 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.'
+	String optimalDays({required Object days, required Object current}) => 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.';
+
+	/// fr: 'Découpe l'étape ${stage} en deux : elle dépasse nettement ton plafond.'
+	String split({required Object stage}) => 'Découpe l\'étape ${stage} en deux : elle dépasse nettement ton plafond.';
+
+	/// fr: 'Prévois un jour de repos après l'étape ${stages}.'
+	String rest({required Object stages}) => 'Prévois un jour de repos après l\'étape ${stages}.';
+
+	/// fr: 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).'
+	String training({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).';
+}
+
 // Path: signalement.water.states
 class Translations$signalement$water$states$fr {
 	Translations$signalement$water$states$fr.internal(this._root);
@@ -7742,6 +7883,36 @@ extension on Translations {
 			'feasibility.gaps.risk' => 'Niveau de risque eleve pour ce trek',
 			'feasibility.gaps.fitness' => 'Forme insuffisante au test 6 minutes',
 			'feasibility.gaps.effort' => 'Effort global (IBP) superieur a votre experience',
+			'feasibility.formula.title' => 'Faisabilité pour ce trek',
+			'feasibility.formula.intro' => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.',
+			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-effort/jour (${level})',
+			'feasibility.formula.stagesTitle' => 'Étape par étape',
+			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-effort',
+			'feasibility.formula.globalTitle' => 'Verdict global',
+			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Étape la plus exigeante : ${stage}',
+			'feasibility.formula.daysOver' => ({required Object count}) => '${count} jour(s) au-dessus de ton plafond',
+			'feasibility.formula.daysOverNone' => 'Aucune journée au-dessus de ton plafond',
+			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Facteur limitant : ${factor}',
+			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Entraînement conseillé : ${weeks} semaines avant le départ',
+			'feasibility.formula.adviceTitle' => 'Conseils pour ton programme',
+			'feasibility.formula.noStages' => 'Aucune étape à évaluer pour le moment.',
+			'feasibility.formula.levels.beginner' => 'débutant',
+			'feasibility.formula.levels.intermediate' => 'intermédiaire',
+			'feasibility.formula.levels.confirmed' => 'confirmé',
+			'feasibility.formula.levels.expert' => 'expert',
+			'feasibility.formula.verdicts.green' => 'Faisable',
+			'feasibility.formula.verdicts.orange' => 'Faisable avec préparation',
+			'feasibility.formula.verdicts.red' => 'Au-dessus de tes capacités',
+			'feasibility.formula.limitingFactors.distance' => 'la distance des étapes',
+			'feasibility.formula.limitingFactors.elevation' => 'le dénivelé',
+			'feasibility.formula.limitingFactors.chaining' => 'l\'enchaînement des journées',
+			'feasibility.formula.limitingFactors.none' => 'aucun',
+			'feasibility.formula.advice.balancedOk' => 'Ton programme est équilibré : garde une marge et écoute ton corps.',
+			'feasibility.formula.advice.balanced' => 'Répartis les étapes pour lisser l\'effort au fil des jours.',
+			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.',
+			'feasibility.formula.advice.split' => ({required Object stage}) => 'Découpe l\'étape ${stage} en deux : elle dépasse nettement ton plafond.',
+			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après l\'étape ${stages}.',
+			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
 			'tips.carouselTitle' => 'Conseils randonnée',
 			'tips.allCategories' => 'Toutes',
 			'tips.swipeHint' => 'Glissez pour voir plus',
@@ -7977,6 +8148,8 @@ extension on Translations {
 			'waypoints.freshness.days' => ({required Object n}) => 'mis à jour il y a ${n} j',
 			'waypoints.contribution.titleWaypoint' => 'Ajouter un point',
 			'waypoints.contribution.titleComment' => 'Signaler une condition',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.contribution.chooseType' => 'Type de point',
 			'waypoints.contribution.titleField' => 'Titre du point',
 			'waypoints.contribution.conditionPrompt' => 'Décrivez la condition observée',
@@ -8007,8 +8180,6 @@ extension on Translations {
 			'packs.actions.buy' => 'Acheter ce pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acheter ce pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}',
-			_ => null,
-		} ?? switch (path) {
 			'packs.progress.verifying' => 'Vérification de l\'intégrité…',
 			'packs.progress.completed' => 'Pack prêt hors-ligne',
 			'packs.progress.error' => 'Échec du téléchargement',
@@ -8491,6 +8662,8 @@ extension on Translations {
 			'hikerProfile.bmiCategories.underweight' => 'Maigreur',
 			'hikerProfile.bmiCategories.normal' => 'Corpulence normale',
 			'hikerProfile.bmiCategories.overweight' => 'Surpoids',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.bmiCategories.obese' => 'Obesite',
 			'hikerProfile.consentTitle' => 'Donnees de morphologie (article 9 RGPD)',
 			'hikerProfile.consentBody' => 'Age, taille et poids sont des donnees de sante. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demande separement.',
@@ -8521,8 +8694,6 @@ extension on Translations {
 			'walkTest.monthlyReminderBody' => 'Un rappel de test vous sera propose chaque mois pour suivre votre forme.',
 			'walkTest.notDoneYet' => 'Test non realise',
 			'walkTest.fallbackNotice' => 'En attendant le test, votre niveau est estime a partir de votre questionnaire.',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.levels.low' => 'Faible',
 			'walkTest.levels.moderate' => 'Moyen',
 			'walkTest.levels.good' => 'Bon',
