@@ -151,7 +151,7 @@ void main() {
       expect(find.text('Difficile'), findsOneWidget);
 
       // Profil altimetrique section
-      expect(find.text('Profil altimetrique'), findsOneWidget);
+      expect(find.text('Profil altimétrique'), findsOneWidget);
 
       // Statistiques section
       expect(find.text('Statistiques'), findsOneWidget);
@@ -223,7 +223,7 @@ void main() {
       // Compteur "0 source(s)".
       expect(find.textContaining('0 source'), findsOneWidget);
       // Message d'avertissement (parite GR20 : prevoir de l'eau).
-      expect(find.textContaining('Prevoyez au moins 3 L'), findsOneWidget);
+      expect(find.textContaining('Prévoyez au moins 3 L'), findsOneWidget);
     });
   });
 
@@ -233,7 +233,7 @@ void main() {
       await tester.pumpWidget(buildSubject(pois: testPois));
       await tester.pumpAndSettle();
 
-      expect(find.text('Hebergements'), findsOneWidget);
+      expect(find.text('Hébergements'), findsOneWidget);
       expect(find.text('Refuge de Carrozzu'), findsOneWidget);
       // Un viewpoint n'est PAS un hebergement.
       expect(find.text('Belvedere du col'), findsNothing);
@@ -245,9 +245,9 @@ void main() {
       await tester.pumpWidget(buildSubject(pois: waterOnly));
       await tester.pumpAndSettle();
 
-      expect(find.text('Hebergements'), findsOneWidget);
+      expect(find.text('Hébergements'), findsOneWidget);
       expect(
-        find.text('Aucun hebergement reference sur cette etape.'),
+        find.text('Aucun hébergement référencé sur cette étape.'),
         findsOneWidget,
       );
     });
@@ -334,7 +334,7 @@ void main() {
 
       expect(find.text('Conseils'), findsOneWidget);
       // Etape 'hard' -> conseil "etape technique".
-      expect(find.textContaining('Etape technique'), findsOneWidget);
+      expect(find.textContaining('Étape technique'), findsOneWidget);
       // 2 points d'eau -> conseil "remplissez vos gourdes".
       expect(find.textContaining('Remplissez vos gourdes'), findsOneWidget);
     });

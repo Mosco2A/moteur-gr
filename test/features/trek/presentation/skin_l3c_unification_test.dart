@@ -194,7 +194,7 @@ void main() {
       );
 
       // AppButton filledTone conserve minHeight 44 (cible tactile a11y AA).
-      final demarrer = find.widgetWithText(ElevatedButton, 'Demarrer');
+      final demarrer = find.widgetWithText(ElevatedButton, 'Démarrer');
       final minSize = tester
           .widget<ElevatedButton>(demarrer)
           .style

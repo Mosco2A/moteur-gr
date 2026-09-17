@@ -96,7 +96,7 @@ void main() {
       );
 
       // Bouton Demarrer visible
-      expect(find.text('Demarrer'), findsOneWidget);
+      expect(find.text('Démarrer'), findsOneWidget);
       expect(find.byIcon(Icons.play_arrow), findsOneWidget);
 
       // Pas de stats en mode idle
@@ -175,7 +175,7 @@ void main() {
         ),
       );
 
-      final demarrer = find.widgetWithText(ElevatedButton, 'Demarrer');
+      final demarrer = find.widgetWithText(ElevatedButton, 'Démarrer');
       expect(demarrer, findsOneWidget);
       expect(_backgroundColorOf(tester, demarrer), AppTheme.actionStart);
       expect(_backgroundColorOf(tester, demarrer), isNot(Colors.green));
