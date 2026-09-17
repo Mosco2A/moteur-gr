@@ -9,8 +9,12 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/contextual_action_bar.dart';
 import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../safety/presentation/sos_button.dart';
+import '../../treks/providers/my_treks_provider.dart';
+import '../../trek/providers/tracking_providers.dart';
+import 'cockpit_phase.dart';
 import 'widgets/finish_trek_button.dart';
 import 'widgets/hub_section.dart';
+import 'widgets/hub_start_trek_button.dart';
 import 'widgets/hub_trek_card.dart';
 import 'widgets/hub_weather_card.dart';
 import 'widgets/quick_access_card.dart';
@@ -78,22 +82,22 @@ class _HubScreenState extends ConsumerState<HubScreen>
   /// Après. Chaque action fait defiler jusqu'a la section homonyme du hub.
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [
-        ContextualAction(
-          icon: Icons.assignment_outlined,
-          label: t.hub.sections.prepare,
-          onPressed: () => _scrollTo(_prepareKey),
-        ),
-        ContextualAction(
-          icon: Icons.hiking,
-          label: t.hub.sections.hike,
-          onPressed: () => _scrollTo(_hikeKey),
-        ),
-        ContextualAction(
-          icon: Icons.emoji_events_outlined,
-          label: t.hub.sections.after,
-          onPressed: () => _scrollTo(_afterKey),
-        ),
-      ];
+    ContextualAction(
+      icon: Icons.assignment_outlined,
+      label: t.hub.sections.prepare,
+      onPressed: () => _scrollTo(_prepareKey),
+    ),
+    ContextualAction(
+      icon: Icons.hiking,
+      label: t.hub.sections.hike,
+      onPressed: () => _scrollTo(_hikeKey),
+    ),
+    ContextualAction(
+      icon: Icons.emoji_events_outlined,
+      label: t.hub.sections.after,
+      onPressed: () => _scrollTo(_afterKey),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +105,37 @@ class _HubScreenState extends ConsumerState<HubScreen>
       trailConfigProvider.select((c) => c.displayName),
     );
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+
+    // Retour Chris #13 (LOT 2) : le menu du cockpit est CONTEXTUEL a l'etat du
+    // trek (DECISIONS.md §5.2, accueil « maison »/« terrain »). La PHASE est
+    // DERIVEE du cycle de vie reel du sentier actif ([currentTrailSummaryProvider]
+    // -> [TrekLifecycleState]) via [CockpitPhase.fromLifecycle] — jamais un flag
+    // invente. Regle :
+    //   * Préparer + Informations : TOUJOURS visibles (la prepa se fait avant/
+    //     pendant/apres) ;
+    //   * Randonner : visible UNIQUEMENT en mode rando active (phase hike,
+    //     lifecycle inProgress) ;
+    //   * Après le trek : visible UNIQUEMENT une fois le trek termine (phase
+    //     after, lifecycle completed).
+    // Tant qu'on n'est pas en rando, ni « Randonner » ni « Après-trek » ne
+    // s'affichent (retour Chris #13, « on en a deja parle »).
+    //
+    // PRIORITE A L'ETAT VIVANT (parite [HubTrekCard]) : une session de tracking
+    // `recording`/`paused` en memoire prime sur l'etat DERIVE (la session
+    // persistee peut ne pas etre encore reprise dans `currentTrailSummaryProvider`
+    // apres un demarrage). On considere donc « rando active » des que le tracking
+    // vit OU que le lifecycle vaut inProgress -> phase hike coherente avec la
+    // carte principale et le bouton de demarrage.
+    final tracking = ref.watch(trekSessionManagerProvider);
+    final liveActive =
+        tracking.status == TrackingSessionStatus.recording ||
+        tracking.status == TrackingSessionStatus.paused;
+    final lifecycle = ref.watch(currentTrailSummaryProvider).value?.state;
+    final phase = liveActive
+        ? CockpitPhase.hike
+        : CockpitPhase.fromLifecycle(lifecycle);
+    final showHike = phase == CockpitPhase.hike;
+    final showAfter = phase == CockpitPhase.after;
 
     return Scaffold(
       // Barre contextuelle declarative (L3) : Préparer / Randonner / Après (§4).
@@ -284,44 +319,50 @@ class _HubScreenState extends ConsumerState<HubScreen>
             const SizedBox(height: AppTheme.spacingLg),
 
             // --- Section Randonner (RF-8) ---
-            HubSection(
-              key: _hikeKey,
-              title: t.hub.sections.hike,
-              icon: Icons.hiking,
-              cards: [
-                QuickAccessCard(
-                  icon: Icons.navigation_outlined,
-                  title: t.hub.cards.navigation,
-                  subtitle: t.hub.cards.navigationSub,
-                  // Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la
-                  // pile -> retour propre vers le cockpit. go() ecrasait la pile
-                  // (heritage shell/onglets, supprime).
-                  onTap: () => context.push('/map'),
-                ),
-                QuickAccessCard(
-                  icon: Icons.menu_book_outlined,
-                  title: t.hub.cards.journal,
-                  subtitle: t.hub.cards.journalSub,
-                  onTap: () => context.push('/journal'),
-                ),
-                // PARITE GR20 (#99460) — INCENDIE : carte « Risques & alertes »
-                // (clone GR20 `FireRiskScreen`, data-driven). Niveaux de risque
-                // (0-5) derives de la meteo (socle meteo reutilise + calcul
-                // identique GR20), reglementation + secours regionaux venant de
-                // la donnee du sentier (aucune localite en dur). Icone
-                // `local_fire_department` (rouge urgence, parite GR20). Route
-                // hors-shell atteinte via `context.push` (retour propre, pile
-                // preservee — jamais context.go qui viderait la pile). Generique
-                // multi-sentiers, fallback si aucune donnee meteo.
-                QuickAccessCard(
-                  icon: Icons.local_fire_department,
-                  title: t.hub.cards.fire,
-                  subtitle: t.hub.cards.fireSub,
-                  onTap: () => context.push('/trail/$trailId/fire-risk'),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingLg),
+            // Retour Chris #13 : MASQUEE tant qu'on n'est pas en rando active
+            // (phase hike / lifecycle inProgress). En preparation, elle n'a pas
+            // lieu d'etre (les outils terrain — navigation, journal, incendie —
+            // ne servent qu'une fois parti). Rendue conditionnellement.
+            if (showHike) ...[
+              HubSection(
+                key: _hikeKey,
+                title: t.hub.sections.hike,
+                icon: Icons.hiking,
+                cards: [
+                  QuickAccessCard(
+                    icon: Icons.navigation_outlined,
+                    title: t.hub.cards.navigation,
+                    subtitle: t.hub.cards.navigationSub,
+                    // Ph4 (hub-and-push, SPEC §5) : push (pas go) pour PRESERVER la
+                    // pile -> retour propre vers le cockpit. go() ecrasait la pile
+                    // (heritage shell/onglets, supprime).
+                    onTap: () => context.push('/map'),
+                  ),
+                  QuickAccessCard(
+                    icon: Icons.menu_book_outlined,
+                    title: t.hub.cards.journal,
+                    subtitle: t.hub.cards.journalSub,
+                    onTap: () => context.push('/journal'),
+                  ),
+                  // PARITE GR20 (#99460) — INCENDIE : carte « Risques & alertes »
+                  // (clone GR20 `FireRiskScreen`, data-driven). Niveaux de risque
+                  // (0-5) derives de la meteo (socle meteo reutilise + calcul
+                  // identique GR20), reglementation + secours regionaux venant de
+                  // la donnee du sentier (aucune localite en dur). Icone
+                  // `local_fire_department` (rouge urgence, parite GR20). Route
+                  // hors-shell atteinte via `context.push` (retour propre, pile
+                  // preservee — jamais context.go qui viderait la pile). Generique
+                  // multi-sentiers, fallback si aucune donnee meteo.
+                  QuickAccessCard(
+                    icon: Icons.local_fire_department,
+                    title: t.hub.cards.fire,
+                    subtitle: t.hub.cards.fireSub,
+                    onTap: () => context.push('/trail/$trailId/fire-risk'),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.spacingLg),
+            ],
 
             // --- Section Informations (RF-9) ---
             HubSection(
@@ -359,31 +400,50 @@ class _HubScreenState extends ConsumerState<HubScreen>
             // routes existent toujours (regle S8 « zero route morte ») ; la garde
             // (recap accessible si termine/abandonne/vitrine ; diplome verrouille
             // hors finisher, deverrouille en vitrine) est portee par les ecrans.
-            HubSection(
-              key: _afterKey,
-              title: t.hub.sections.after,
-              icon: Icons.emoji_events_outlined,
-              cards: [
-                QuickAccessCard(
-                  icon: Icons.landscape_outlined,
-                  title: t.hub.cards.recap,
-                  subtitle: t.hub.cards.recapSub,
-                  onTap: () => context.push('/trail/$trailId/recap'),
-                ),
-                // IMPORT-GPX — carte « Import GPX » RETIREE en StepWays L8
-                // (decision Chris #99615-1, Option A). L'import de trace sort du
-                // perimetre V1 (idee future gelee) : plus de porte d'entree vers
-                // /trail/:id/import-gpx. Route + code (clone data-driven i18n)
-                // CONSERVES dormants (cf. app_router.dart et
-                // INVENTAIRE_ORPHELINS_L8.md). Ne PAS remettre sans decision Chris.
-                QuickAccessCard(
-                  icon: Icons.workspace_premium_outlined,
-                  title: t.hub.cards.diploma,
-                  subtitle: t.hub.cards.diplomaSub,
-                  onTap: () => context.push('/trail/$trailId/diploma'),
-                ),
-              ],
-            ),
+            //
+            // Retour Chris #13 : MASQUEE tant que le trek n'est pas TERMINE
+            // (phase after / lifecycle completed). Recap + diplome n'ont de sens
+            // qu'apres l'arrivee ; avant, la section « Après-trek » ne doit pas
+            // apparaitre dans le menu. Rendue conditionnellement.
+            if (showAfter) ...[
+              HubSection(
+                key: _afterKey,
+                title: t.hub.sections.after,
+                icon: Icons.emoji_events_outlined,
+                cards: [
+                  QuickAccessCard(
+                    icon: Icons.landscape_outlined,
+                    title: t.hub.cards.recap,
+                    subtitle: t.hub.cards.recapSub,
+                    onTap: () => context.push('/trail/$trailId/recap'),
+                  ),
+                  // IMPORT-GPX — carte « Import GPX » RETIREE en StepWays L8
+                  // (decision Chris #99615-1, Option A). L'import de trace sort du
+                  // perimetre V1 (idee future gelee) : plus de porte d'entree vers
+                  // /trail/:id/import-gpx. Route + code (clone data-driven i18n)
+                  // CONSERVES dormants (cf. app_router.dart et
+                  // INVENTAIRE_ORPHELINS_L8.md). Ne PAS remettre sans decision Chris.
+                  QuickAccessCard(
+                    icon: Icons.workspace_premium_outlined,
+                    title: t.hub.cards.diploma,
+                    subtitle: t.hub.cards.diplomaSub,
+                    onTap: () => context.push('/trail/$trailId/diploma'),
+                  ),
+                ],
+              ),
+            ],
+
+            // --- « Démarrer la randonnée » (retour Chris #3, LOT 2) ---
+            // Le bouton de demarrage est ICI, EN BAS du cockpit (apres les
+            // cartes de preparation), et non plus en haut (il etait porte par la
+            // [HubTrekCard], toujours actif). Il est GRISE tant que les infos
+            // minimum ne sont pas saisies (Itineraire + Date + Programme, gate
+            // [prepareCoreDoneProvider]) avec un message d'aide. Ne s'affiche
+            // QU'en phase de preparation (owned/prepared) : une fois parti ou
+            // termine, il n'a plus lieu d'etre (la carte active / le recap
+            // prennent le relais). Reutilise la garde d'unicite C4 + le filet de
+            // proximite GPS (jamais de cul-de-sac).
+            if (!showHike && !showAfter) HubStartTrekButton(trailId: trailId),
 
             // --- « Terminer le trek » (Finitions V1, point 3) ---
             // Bouton ORANGE en FIN DE SCROLL (décision Chris), symétrique du

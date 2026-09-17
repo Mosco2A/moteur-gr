@@ -35,10 +35,7 @@ import 'package:moteur_gr/shared/widgets/contextual_bottom_bar.dart';
 void main() {
   /// Enveloppe un [child] avec un ProviderScope override + Translations + un
   /// GoRouter minimal (les cartes du HUB utilisent context.go/push).
-  Widget wrap({
-    required Widget child,
-    List<Override> overrides = const [],
-  }) {
+  Widget wrap({required Widget child, List<Override> overrides = const []}) {
     final router = GoRouter(
       initialLocation: '/home',
       routes: [
@@ -145,8 +142,9 @@ void main() {
       expect(find.text(t.hub.greeting(name: 'Alex')), findsOneWidget);
     });
 
-    testWidgets('applique le repli localise « Randonneur » sans pseudonyme',
-        (tester) async {
+    testWidgets('applique le repli localise « Randonneur » sans pseudonyme', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(child: const HubHeader(), overrides: [userWith(null)]),
       );
@@ -164,51 +162,56 @@ void main() {
     // etat (owned/prepared -> Démarrer, completed -> Revoir/Diplôme).
     Override summaryWith(TrekLifecycleState state) {
       return currentTrailSummaryProvider.overrideWith(
-        (ref) async => TrekSummary(
-          config: ref.watch(trailConfigProvider),
-          state: state,
-        ),
+        (ref) async =>
+            TrekSummary(config: ref.watch(trailConfigProvider), state: state),
       );
     }
 
-    testWidgets('etat owned/prepared : CTA « Démarrer » (garde C4)',
-        (tester) async {
+    testWidgets('etat owned/prepared : carte d\'invite SANS bouton (retour #3)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           child: const HubTrekCard(),
           overrides: [
             userWith(null),
-            trekWith(const TrackingSessionState(
-              status: TrackingSessionStatus.idle,
-            )),
+            trekWith(
+              const TrackingSessionState(status: TrackingSessionStatus.idle),
+            ),
             summaryWith(TrekLifecycleState.owned),
           ],
         ),
       );
       await tester.pumpAndSettle();
 
-      // Nouvelle carte de demarrage : titre d'invite + CTA « Démarrer » (le CTA
-      // passe par la garde d'unicite C4, plus l'ancien « Planifier »).
+      // Retour Chris #3 (LOT 2) : la carte owned/prepared est une carte d'INVITE
+      // (titre + message), le CTA « Démarrer » a QUITTE cette carte -> il vit
+      // desormais EN BAS du cockpit ([HubStartTrekButton], teste dans HubScreen),
+      // grise tant que les infos minimum manquent. La carte ne porte donc plus le
+      // libelle de demarrage.
       expect(find.text(t.hub.trekCard.noTrekTitle), findsOneWidget);
-      expect(find.text(t.hub.startCta), findsOneWidget);
+      expect(find.text(t.hub.startCta), findsNothing);
       // Pas d'elements de l'etat actif.
       expect(find.text(t.hub.trekCard.activeTitle), findsNothing);
       expect(find.text(t.hub.trekCard.resume), findsNothing);
     });
 
-    testWidgets('etat « trek en cours » : stats + reprise navigation',
-        (tester) async {
+    testWidgets('etat « trek en cours » : stats + reprise navigation', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         wrap(
           child: const HubTrekCard(),
           overrides: [
             userWith(null),
-            trekWith(const TrackingSessionState(
-              status: TrackingSessionStatus.recording,
-              distanceKm: 12.5,
-              elevationGainM: 640.0,
-              elapsedDuration: Duration(hours: 3, minutes: 20),
-            )),
+            trekWith(
+              const TrackingSessionState(
+                status: TrackingSessionStatus.recording,
+                distanceKm: 12.5,
+                elevationGainM: 640.0,
+                elapsedDuration: Duration(hours: 3, minutes: 20),
+              ),
+            ),
             // Finitions V1 (point 7) : la « distance parcourue » de la carte vient
             // desormais de la source PROJETEE ([stageDistanceCoveredProvider], en
             // metres), pas du cumul GPS brut `tracking.distanceKm` (non cable ->
@@ -228,16 +231,15 @@ void main() {
       expect(find.text(t.hub.startCta), findsNothing);
     });
 
-    testWidgets('etat « completed » : Revoir + Diplôme',
-        (tester) async {
+    testWidgets('etat « completed » : Revoir + Diplôme', (tester) async {
       await tester.pumpWidget(
         wrap(
           child: const HubTrekCard(),
           overrides: [
             userWith(null),
-            trekWith(const TrackingSessionState(
-              status: TrackingSessionStatus.idle,
-            )),
+            trekWith(
+              const TrackingSessionState(status: TrackingSessionStatus.idle),
+            ),
             summaryWith(TrekLifecycleState.completed),
           ],
         ),
@@ -278,35 +280,60 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    testWidgets('rend les 4 sections attendues', (tester) async {
+    testWidgets('menu CONTEXTUEL en preparation : Randonner/Après MASQUES du '
+        'corps (retour #13)', (tester) async {
+      // Etat par defaut du HUB de test : aucune session vivante, aucun override
+      // de `currentTrailSummaryProvider` -> lifecycle null -> phase « préparer ».
       await pumpTallHub(tester);
 
-      // StepWays LOT 3, Ph5 (§4) : la barre contextuelle du hub porte aussi
-      // « Préparer / Randonner / Après » -> ces 3 libelles apparaissent DEUX fois
-      // (en-tete de section dans le corps + action de barre). « Informations »
-      // n'a PAS d'action de barre (§4) -> une seule occurrence.
+      // Retour Chris #13 : tant qu'on n'est PAS en rando, les sections
+      // « Randonner » et « Après-trek » ne s'affichent PAS dans le corps du menu.
+      // Elles subsistent UNIQUEMENT comme actions de defilement de la barre
+      // contextuelle (§4) -> une seule occurrence (la barre), pas deux.
+      // « Préparer » (corps + barre) = 2 ; « Informations » (corps, pas de barre)
+      // = 1.
       expect(find.text(t.hub.sections.prepare), findsNWidgets(2));
-      expect(find.text(t.hub.sections.hike), findsNWidgets(2));
       expect(find.text(t.hub.sections.info), findsOneWidget);
-      expect(find.text(t.hub.sections.after), findsNWidgets(2));
+      expect(find.text(t.hub.sections.hike), findsOneWidget);
+      expect(find.text(t.hub.sections.after), findsOneWidget);
+      // Les cartes PROPRES a ces sections masquees sont absentes du corps :
+      // Navigation (Randonner) et Diplôme (Après) ne sont pas rendues en prepa.
+      expect(find.text(t.hub.cards.navigation), findsNothing);
+      expect(find.text(t.hub.cards.diploma), findsNothing);
     });
 
-    testWidgets('rend la tuile meteo reelle (LOT-B), sans salutation redondante',
-        (tester) async {
-      await pumpTallHub(tester);
+    testWidgets('menu CONTEXTUEL en rando : section Randonner VISIBLE dans le '
+        'corps (retour #13)', (tester) async {
+      // Session de tracking vivante -> phase « randonner » : la section Randonner
+      // (et ses cartes) apparait dans le corps EN PLUS de la barre contextuelle.
+      await pumpTallHub(tester, status: TrackingSessionStatus.recording);
 
-      // La tuile meteo est desormais reelle (titre present, plus de stub).
-      // Sans donnees (DB de test vide), elle affiche l'etat indisponible.
-      expect(find.text(t.hub.weather.title), findsOneWidget);
-      expect(find.text(t.hub.weather.stub), findsNothing);
-      // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
-      // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
-      // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
-      expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
+      expect(find.text(t.hub.sections.hike), findsNWidgets(2));
+      // Carte propre a Randonner rendue dans le corps.
+      expect(find.text(t.hub.cards.navigation), findsOneWidget);
+      // Après-trek (trek non termine) reste masque du corps -> barre seule.
+      expect(find.text(t.hub.sections.after), findsOneWidget);
     });
 
-    testWidgets('barre contextuelle §4 : Préparer / Randonner / Après',
-        (tester) async {
+    testWidgets(
+      'rend la tuile meteo reelle (LOT-B), sans salutation redondante',
+      (tester) async {
+        await pumpTallHub(tester);
+
+        // La tuile meteo est desormais reelle (titre present, plus de stub).
+        // Sans donnees (DB de test vide), elle affiche l'etat indisponible.
+        expect(find.text(t.hub.weather.title), findsOneWidget);
+        expect(find.text(t.hub.weather.stub), findsNothing);
+        // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
+        // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
+        // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
+        expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
+      },
+    );
+
+    testWidgets('barre contextuelle §4 : Préparer / Randonner / Après', (
+      tester,
+    ) async {
       await pumpTallHub(tester);
 
       // La barre contextuelle (mecanisme L3) est presente et porte les 3 actions
@@ -335,10 +362,12 @@ void main() {
         findsOneWidget,
       );
       // Tap « Après » : ne plante pas (raccourci de defilement vers la section).
-      await tester.tap(find.descendant(
-        of: find.byType(ContextualActionBar),
-        matching: find.text(t.hub.sections.after),
-      ));
+      await tester.tap(
+        find.descendant(
+          of: find.byType(ContextualActionBar),
+          matching: find.text(t.hub.sections.after),
+        ),
+      );
       await tester.pumpAndSettle();
       expect(tester.takeException(), isNull);
     });
@@ -346,18 +375,32 @@ void main() {
     testWidgets('rend un echantillon de cartes cablees (S8)', (tester) async {
       await pumpTallHub(tester);
 
+      // Cartes des sections TOUJOURS visibles (Préparer + Informations) — l'etat
+      // par defaut est « préparer » (retour #13 : Randonner/Après masques).
       expect(find.text(t.hub.cards.feasibility), findsOneWidget);
       expect(find.text(t.hub.cards.programme), findsOneWidget);
-      expect(find.text(t.hub.cards.navigation), findsOneWidget);
       expect(find.text(t.hub.cards.accommodations), findsOneWidget);
       // E33/E34 (LOT D/D2) : carte « Guides des villes » cablee (section Infos).
       expect(find.text(t.hub.cards.townGuides), findsOneWidget);
-      expect(find.text(t.hub.cards.diploma), findsOneWidget);
     });
 
-    testWidgets('CTA « Demarrer » present hors trek reel actif', (tester) async {
+    testWidgets('bouton « Démarrer » EN BAS et GRISE tant que le minimum manque '
+        '(retour #3)', (tester) async {
       await pumpTallHub(tester);
+      // Le bouton de demarrage ([HubStartTrekButton]) est present en bas du
+      // cockpit (phase preparation). Son libelle est rendu meme desactive.
       expect(find.text(t.hub.startCta), findsOneWidget);
+      // Etat de test : aucune etape coeur faite (prefs vides) + pas de date ->
+      // gate `prepareCoreDoneProvider` fermee -> bouton DESACTIVE (onPressed null)
+      // et message d'aide affiche.
+      final button = tester.widget<FilledButton>(
+        find.ancestor(
+          of: find.text(t.hub.startCta),
+          matching: find.byType(FilledButton),
+        ),
+      );
+      expect(button.onPressed, isNull);
+      expect(find.text(t.hub.startGateHint), findsOneWidget);
     });
 
     // StepWays L8 (RELEASE V1, retraits #99615) — les cartes « Import GPX »
@@ -366,21 +409,25 @@ void main() {
     // perimetre V1 (idee future gelee / code mort). Plus AUCUNE porte d'entree
     // vers ces fonctions ; les routes + le code restent dormants (cf.
     // INVENTAIRE_ORPHELINS_L8.md). Ce test verrouille l'ABSENCE des deux cartes.
-    testWidgets('cartes « Import GPX » et « Mon groupe » ABSENTES du HUB (L8)',
-        (tester) async {
-      await pumpTallHub(tester);
-      expect(find.text(t.hub.cards.importGpx), findsNothing);
-      expect(find.text(t.hub.cards.group), findsNothing);
-    });
+    testWidgets(
+      'cartes « Import GPX » et « Mon groupe » ABSENTES du HUB (L8)',
+      (tester) async {
+        await pumpTallHub(tester);
+        expect(find.text(t.hub.cards.importGpx), findsNothing);
+        expect(find.text(t.hub.cards.group), findsNothing);
+      },
+    );
 
-    testWidgets('CTA « Demarrer » absent quand un trek reel est actif',
-        (tester) async {
+    testWidgets('CTA « Demarrer » absent quand un trek reel est actif', (
+      tester,
+    ) async {
       await pumpTallHub(tester, status: TrackingSessionStatus.recording);
       expect(find.text(t.hub.startCta), findsNothing);
     });
 
-    testWidgets('cloisonnement : aucun libelle GR20 / Fra li Monti (S2/S10)',
-        (tester) async {
+    testWidgets('cloisonnement : aucun libelle GR20 / Fra li Monti (S2/S10)', (
+      tester,
+    ) async {
       await pumpTallHub(tester);
 
       expect(find.textContaining('GR20'), findsNothing);
@@ -407,19 +454,21 @@ void main() {
     const mobileWidths = <double>[360, 390, 412];
 
     Widget hub(TrackingSessionStatus status) => wrap(
-          child: const HubScreen(),
-          overrides: [
-            userWith('Alex'),
-            trekWith(TrackingSessionState(
-              status: status,
-              // Valeurs realistes de l'etat « en cours » pour rendre les stats
-              // et le titre a leur pleine largeur.
-              distanceKm: 12.5,
-              elevationGainM: 640,
-              elapsedDuration: const Duration(hours: 3, minutes: 20),
-            )),
-          ],
-        );
+      child: const HubScreen(),
+      overrides: [
+        userWith('Alex'),
+        trekWith(
+          TrackingSessionState(
+            status: status,
+            // Valeurs realistes de l'etat « en cours » pour rendre les stats
+            // et le titre a leur pleine largeur.
+            distanceKm: 12.5,
+            elevationGainM: 640,
+            elapsedDuration: const Duration(hours: 3, minutes: 20),
+          ),
+        ),
+      ],
+    );
 
     /// Rend le HUB a [width] px logiques et renvoie la liste des messages
     /// d'overflow RenderFlex captures pendant le layout (vide = aucun).
@@ -474,10 +523,14 @@ void main() {
     }
 
     for (final width in mobileWidths) {
-      testWidgets('aucun overflow a ${width.toInt()} px — sans trek',
-          (tester) async {
-        final overflows =
-            await overflowsAt(tester, width, TrackingSessionStatus.idle);
+      testWidgets('aucun overflow a ${width.toInt()} px — sans trek', (
+        tester,
+      ) async {
+        final overflows = await overflowsAt(
+          tester,
+          width,
+          TrackingSessionStatus.idle,
+        );
         expect(
           overflows,
           isEmpty,
@@ -485,14 +538,19 @@ void main() {
         );
       });
 
-      testWidgets('aucun overflow a ${width.toInt()} px — trek en cours',
-          (tester) async {
-        final overflows =
-            await overflowsAt(tester, width, TrackingSessionStatus.recording);
+      testWidgets('aucun overflow a ${width.toInt()} px — trek en cours', (
+        tester,
+      ) async {
+        final overflows = await overflowsAt(
+          tester,
+          width,
+          TrackingSessionStatus.recording,
+        );
         expect(
           overflows,
           isEmpty,
-          reason: 'HUB trek en cours deborde a ${width.toInt()} px : $overflows',
+          reason:
+              'HUB trek en cours deborde a ${width.toInt()} px : $overflows',
         );
       });
     }
