@@ -1510,6 +1510,7 @@
       "confirm": "Replan"
     },
     "validate": "CONFIRM MY PROGRAMME",
+    "validateNext": "Confirm and choose dates",
     "empty": {
       "title": "Set up your itinerary first",
       "message": "Choose your route and duration to generate your programme.",

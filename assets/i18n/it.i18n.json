@@ -1510,6 +1510,7 @@
       "confirm": "Ripianifica"
     },
     "validate": "CONFERMA IL MIO PROGRAMMA",
+    "validateNext": "Conferma e scegli le date",
     "empty": {
       "title": "Configura prima il tuo itinerario",
       "message": "Scegli il percorso e la durata per generare il tuo programma.",

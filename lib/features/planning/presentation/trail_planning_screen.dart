@@ -327,12 +327,15 @@ class _PlanningContent extends ConsumerWidget {
         Padding(
           padding: const EdgeInsets.all(AppTheme.spacingLg),
           child: ElevatedButton(
-            onPressed: () {
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: Text(t.programme.validate),
+            // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE Dates<->Programme. Le
+            // flux de preparation est ORDONNE : Programme -> Dates -> cockpit.
+            // « Valider » AVANCE donc vers le choix des dates (push /calendar) au
+            // lieu de faire un simple pop (qui, quand on arrivait depuis le
+            // calendrier, renvoyait AU calendrier -> boucle). Depuis le
+            // calendrier, « Valider les dates » clot le sous-flux en retournant
+            // au cockpit (voir calendar_screen.dart) : aucun retour circulaire.
+            onPressed: () => context.push('/trail/$trailId/calendar'),
+            child: Text(t.programme.validateNext),
           ),
         ),
       ],

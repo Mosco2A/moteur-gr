@@ -1271,6 +1271,7 @@ class _Translations$programme$en extends Translations$programme$fr {
 	@override String get replanButton => 'REPLAN';
 	@override late final _Translations$programme$replanDialog$en replanDialog = _Translations$programme$replanDialog$en._(_root);
 	@override String get validate => 'CONFIRM MY PROGRAMME';
+	@override String get validateNext => 'Confirm and choose dates';
 	@override late final _Translations$programme$empty$en empty = _Translations$programme$empty$en._(_root);
 	@override late final _Translations$programme$info$en info = _Translations$programme$info$en._(_root);
 	@override late final _Translations$programme$splitBlocked$en splitBlocked = _Translations$programme$splitBlocked$en._(_root);
@@ -4913,6 +4914,7 @@ extension on TranslationsEn {
 			'programme.replanDialog.cancel' => 'Cancel',
 			'programme.replanDialog.confirm' => 'Replan',
 			'programme.validate' => 'CONFIRM MY PROGRAMME',
+			'programme.validateNext' => 'Confirm and choose dates',
 			'programme.empty.title' => 'Set up your itinerary first',
 			'programme.empty.message' => 'Choose your route and duration to generate your programme.',
 			'programme.empty.action' => 'SET UP ITINERARY',
@@ -5224,9 +5226,9 @@ extension on TranslationsEn {
 			'walkTest.levels.moderate' => 'Moderate',
 			'walkTest.levels.good' => 'Good',
 			'walkTest.levels.excellent' => 'Excellent',
-			'pastHikes.title' => 'Your last 5 hikes',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.title' => 'Your last 5 hikes',
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',
 			'pastHikes.empty' => 'No hike entered yet.',

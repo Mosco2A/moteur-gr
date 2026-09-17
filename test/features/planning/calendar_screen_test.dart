@@ -47,17 +47,17 @@ void main() {
   // --- Fixtures ------------------------------------------------------------
 
   StageModel stage(int n) => StageModel(
-        trailId: trailId,
-        stageNumber: n,
-        name: 'Etape $n',
-        distanceKm: 12,
-        elevationGainM: 600,
-        elevationLossM: 500,
-        startLat: 0,
-        startLng: 0,
-        endLat: 0,
-        endLng: 0,
-      );
+    trailId: trailId,
+    stageNumber: n,
+    name: 'Etape $n',
+    distanceKm: 12,
+    elevationGainM: 600,
+    elevationLossM: 500,
+    startLat: 0,
+    startLng: 0,
+    endLat: 0,
+    endLng: 0,
+  );
 
   /// Jour de marche portant l'etape [stageNumber].
   PlannedDay walkDay(int dayNumber, int stageNumber) =>
@@ -113,24 +113,17 @@ void main() {
 
   /// Overrides communs : programme + stats figes (evite le pipeline
   /// stages/repartition) et une date de depart deterministe (optionnelle).
-  overrides({
-    required List<PlannedDay> days,
-    DateTime? startDate,
-  }) =>
-      [
-        plannedDaysProvider(trailId).overrideWith(
-          (ref) => _StaticPlannedDays(ref, days),
-        ),
-        planningStatsProvider(trailId).overrideWithValue(statsFor(days)),
-        downloadReminderProvider(trailId).overrideWith(
-          () => _FakeReminderNotifier(startDate),
-        ),
-      ];
+  overrides({required List<PlannedDay> days, DateTime? startDate}) => [
+    plannedDaysProvider(
+      trailId,
+    ).overrideWith((ref) => _StaticPlannedDays(ref, days)),
+    planningStatsProvider(trailId).overrideWithValue(statsFor(days)),
+    downloadReminderProvider(
+      trailId,
+    ).overrideWith(() => _FakeReminderNotifier(startDate)),
+  ];
 
-  Widget wrap({
-    required List<PlannedDay> days,
-    DateTime? startDate,
-  }) {
+  Widget wrap({required List<PlannedDay> days, DateTime? startDate}) {
     final router = GoRouter(
       initialLocation: '/c',
       routes: [
@@ -151,54 +144,72 @@ void main() {
   // --- Date d'arrivee calculee --------------------------------------------
 
   group('dates depart / arrivee', () {
-    testWidgets('la date d\'arrivee = depart + (totalDays - 1)',
-        (tester) async {
+    testWidgets('la date d\'arrivee = depart + (totalDays - 1)', (
+      tester,
+    ) async {
       // Depart fixe : 1er juin 2030. Programme = 3 jours de marche => arrivee
       // le 3 juin 2030 (depart + 2). Slang fr : « lun 3 juin 2030 ».
       final start = DateTime(2030, 6, 1);
-      await tester.pumpWidget(wrap(
-        days: [walkDay(1, 1), walkDay(2, 2), walkDay(3, 3)],
-        startDate: start,
-      ));
+      await tester.pumpWidget(
+        wrap(
+          days: [walkDay(1, 1), walkDay(2, 2), walkDay(3, 3)],
+          startDate: start,
+        ),
+      );
       await settle(tester);
 
       // La section « ARRIVEE » affiche la date calculee (depart + 2 jours).
       // On verifie via le libelle localise attendu (parite GR20 EEE d MMM yyyy).
       expect(find.text(t.calendar.departure), findsOneWidget);
       expect(find.text(t.calendar.arrival), findsOneWidget);
-      expect(find.textContaining('3 juin 2030'), findsOneWidget,
-          reason: 'Arrivee = 1er juin + (3 - 1) jours = 3 juin');
-      expect(find.textContaining('1 juin 2030'), findsOneWidget,
-          reason: 'Depart affiche la date choisie');
+      expect(
+        find.textContaining('3 juin 2030'),
+        findsOneWidget,
+        reason: 'Arrivee = 1er juin + (3 - 1) jours = 3 juin',
+      );
+      expect(
+        find.textContaining('1 juin 2030'),
+        findsOneWidget,
+        reason: 'Depart affiche la date choisie',
+      );
     });
 
-    testWidgets('avec des jours de repos, l\'arrivee suit le total des jours',
-        (tester) async {
+    testWidgets('avec des jours de repos, l\'arrivee suit le total des jours', (
+      tester,
+    ) async {
       // 2 marche + 1 repos + 1 marche = 4 jours au total => arrivee = depart+3.
       final start = DateTime(2030, 6, 1);
-      await tester.pumpWidget(wrap(
-        days: [walkDay(1, 1), walkDay(2, 2), restDay(3), walkDay(4, 3)],
-        startDate: start,
-      ));
+      await tester.pumpWidget(
+        wrap(
+          days: [walkDay(1, 1), walkDay(2, 2), restDay(3), walkDay(4, 3)],
+          startDate: start,
+        ),
+      );
       await settle(tester);
 
-      expect(find.textContaining('4 juin 2030'), findsOneWidget,
-          reason: '4 jours (repos inclus) => arrivee le 4 juin');
+      expect(
+        find.textContaining('4 juin 2030'),
+        findsOneWidget,
+        reason: '4 jours (repos inclus) => arrivee le 4 juin',
+      );
     });
   });
 
   // --- Grille marche / repos ----------------------------------------------
 
   group('grille marche / repos', () {
-    testWidgets('affiche les libelles de jour de marche et de repos',
-        (tester) async {
+    testWidgets('affiche les libelles de jour de marche et de repos', (
+      tester,
+    ) async {
       // Depart aujourd'hui + 30 j (futur, pour ne pas etre « passe » et griser
       // les cellules, ce qui masquerait les labels J/R — parite GR20).
       final start = DateTime.now().add(const Duration(days: 30));
-      await tester.pumpWidget(wrap(
-        days: [walkDay(1, 1), restDay(2), walkDay(3, 2)],
-        startDate: start,
-      ));
+      await tester.pumpWidget(
+        wrap(
+          days: [walkDay(1, 1), restDay(2), walkDay(3, 2)],
+          startDate: start,
+        ),
+      );
       await settle(tester);
 
       // Le calendrier est rendu (en-tete de mois localise present).
@@ -207,8 +218,11 @@ void main() {
       expect(find.byIcon(Icons.chevron_right), findsOneWidget);
 
       // Un jour de repos existe -> le label repos « R » apparait dans la grille.
-      expect(find.text(t.calendar.restDayLabel), findsWidgets,
-          reason: 'Le jour de repos porte le label R dans le calendrier');
+      expect(
+        find.text(t.calendar.restDayLabel),
+        findsWidgets,
+        reason: 'Le jour de repos porte le label R dans le calendrier',
+      );
 
       // La legende marche/repos/depart/arrivee est presente.
       expect(find.text(t.calendar.legend.rest), findsOneWidget);
@@ -222,13 +236,16 @@ void main() {
       expect(start.month >= 1 && start.month <= 12, isTrue, reason: locale);
     });
 
-    testWidgets('le resume reflete le nombre de jours marche / repos',
-        (tester) async {
+    testWidgets('le resume reflete le nombre de jours marche / repos', (
+      tester,
+    ) async {
       final start = DateTime.now().add(const Duration(days: 30));
-      await tester.pumpWidget(wrap(
-        days: [walkDay(1, 1), restDay(2), walkDay(3, 2), walkDay(4, 3)],
-        startDate: start,
-      ));
+      await tester.pumpWidget(
+        wrap(
+          days: [walkDay(1, 1), restDay(2), walkDay(3, 2), walkDay(4, 3)],
+          startDate: start,
+        ),
+      );
       await settle(tester);
 
       // Resume : 4 jours total, 3 marche, 1 repos (parite GR20 _TrekSummary,
@@ -245,8 +262,9 @@ void main() {
   // --- Etat vide -----------------------------------------------------------
 
   group('etat vide', () {
-    testWidgets('aucun itineraire configure : etat vide sans crash',
-        (tester) async {
+    testWidgets('aucun itineraire configure : etat vide sans crash', (
+      tester,
+    ) async {
       await tester.pumpWidget(wrap(days: const [], startDate: null));
       await settle(tester);
 
@@ -257,15 +275,15 @@ void main() {
       expect(find.byIcon(Icons.chevron_left), findsNothing);
     });
 
-    testWidgets('itineraire present mais aucune date : invite a choisir',
-        (tester) async {
+    testWidgets('itineraire present mais aucune date : invite a choisir', (
+      tester,
+    ) async {
       // Jours presents mais date nulle : l'ecran s'affiche (le picker auto
       // M-05b s'ouvre puis se referme sans selection en test) et propose de
       // choisir une date, sans planter.
-      await tester.pumpWidget(wrap(
-        days: [walkDay(1, 1), walkDay(2, 2)],
-        startDate: null,
-      ));
+      await tester.pumpWidget(
+        wrap(days: [walkDay(1, 1), walkDay(2, 2)], startDate: null),
+      );
       await settle(tester);
       // Referme le picker eventuellement ouvert (annulation) pour revenir a
       // l'ecran, puis verifie l'etat « aucune date ».
@@ -283,8 +301,7 @@ void main() {
   // --- Persistance de la date (SharedPreferences) -------------------------
 
   group('persistance de la date de depart', () {
-    test('la date choisie est persistee et relue (nouveau container)',
-        () async {
+    test('la date choisie est persistee et relue (nouveau container)', () async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
 
       final container = ProviderContainer();
@@ -317,10 +334,14 @@ void main() {
       addTearDown(container2.dispose);
       container2.read(downloadReminderProvider(trailId));
       await Future<void>.delayed(const Duration(milliseconds: 200));
-      final reloaded =
-          container2.read(downloadReminderProvider(trailId)).departureDate;
-      expect(reloaded, chosen,
-          reason: 'La date de depart doit survivre au redemarrage (prefs)');
+      final reloaded = container2
+          .read(downloadReminderProvider(trailId))
+          .departureDate;
+      expect(
+        reloaded,
+        chosen,
+        reason: 'La date de depart doit survivre au redemarrage (prefs)',
+      );
     });
 
     test('les dates sont isolees par sentier', () async {
@@ -347,8 +368,9 @@ void main() {
   // --- Navigation depuis le HUB -------------------------------------------
 
   group('navigation', () {
-    testWidgets('la carte HUB « Calendrier » ouvre l\'ecran, retour sans crash',
-        (tester) async {
+    testWidgets('la carte HUB « Calendrier » ouvre l\'ecran, retour sans crash', (
+      tester,
+    ) async {
       final start = DateTime.now().add(const Duration(days: 30));
       // Routeur minimal reproduisant l'entree HUB : une carte
       // `Icons.calendar_month` (comme le HUB) qui `push` vers le Calendrier.
@@ -368,22 +390,23 @@ void main() {
           ),
           GoRoute(
             path: '/trail/:id/calendar',
-            builder: (context, state) => CalendarScreen(
-              trailId: state.pathParameters['id'] ?? '',
-            ),
+            builder: (context, state) =>
+                CalendarScreen(trailId: state.pathParameters['id'] ?? ''),
           ),
         ],
       );
 
-      await tester.pumpWidget(ProviderScope(
-        overrides: overrides(
-          days: [walkDay(1, 1), walkDay(2, 2)],
-          startDate: start,
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides(
+            days: [walkDay(1, 1), walkDay(2, 2)],
+            startDate: start,
+          ),
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
         ),
-        child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      ));
+      );
       await settle(tester);
 
       // Aller : taper la carte HUB (icone calendar_month) ouvre le Calendrier.
@@ -402,6 +425,63 @@ void main() {
       expect(find.text(t.calendar.title), findsNothing);
       // La carte HUB est de nouveau la (retour propre, pile preservee).
       expect(find.byIcon(Icons.calendar_month), findsOneWidget);
+    });
+
+    testWidgets('retour #10 : « Valider les dates » retourne au cockpit, JAMAIS au '
+        'Programme (fin de la boucle)', (tester) async {
+      final start = DateTime.now().add(const Duration(days: 30));
+      // Routeur avec un cockpit `/home` (repere) ET une route Programme
+      // `/trail/:id/planning` (repere du piege circulaire). Si « Valider les
+      // dates » ouvrait le Programme (ancien comportement), on verrait le stub
+      // Programme ; le fix impose un retour au cockpit `/home`.
+      final router = GoRouter(
+        initialLocation: '/trail/$trailId/calendar',
+        routes: [
+          GoRoute(
+            path: '/home',
+            builder: (context, state) =>
+                const Scaffold(body: Text('COCKPIT_HOME')),
+          ),
+          GoRoute(
+            path: '/trail/:id/calendar',
+            builder: (context, state) =>
+                CalendarScreen(trailId: state.pathParameters['id'] ?? ''),
+          ),
+          GoRoute(
+            path: '/trail/:id/planning',
+            builder: (context, state) =>
+                const Scaffold(body: Text('PROGRAMME_STUB')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: overrides(
+            days: [walkDay(1, 1), walkDay(2, 2)],
+            startDate: start,
+          ),
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        ),
+      );
+      await settle(tester);
+      await pumpUntil(tester, find.text(t.calendar.validate));
+
+      // Taper « VALIDER LES DATES ».
+      await tester.tap(find.text(t.calendar.validate));
+      await settle(tester);
+      // Laisse la transition GoRouter (go) se terminer et le Calendrier se
+      // demonter avant d'assener les assertions (evite un flake de transition).
+      await pumpUntil(tester, find.text('COCKPIT_HOME'));
+      await pumpUntilGone(tester, find.text(t.calendar.title));
+
+      // Fin de la boucle (retour #10) : on atterrit sur le COCKPIT, et le
+      // Programme n'est PAS ouvert (plus de renvoi circulaire Dates -> Programme).
+      expect(find.text('COCKPIT_HOME'), findsOneWidget);
+      expect(find.text('PROGRAMME_STUB'), findsNothing);
+      expect(find.text(t.calendar.title), findsNothing);
     });
   });
 }

@@ -1271,6 +1271,7 @@ class _Translations$programme$de extends Translations$programme$fr {
 	@override String get replanButton => 'NEU PLANEN';
 	@override late final _Translations$programme$replanDialog$de replanDialog = _Translations$programme$replanDialog$de._(_root);
 	@override String get validate => 'PROGRAMM BESTÄTIGEN';
+	@override String get validateNext => 'Bestätigen und Daten wählen';
 	@override late final _Translations$programme$empty$de empty = _Translations$programme$empty$de._(_root);
 	@override late final _Translations$programme$info$de info = _Translations$programme$info$de._(_root);
 	@override late final _Translations$programme$splitBlocked$de splitBlocked = _Translations$programme$splitBlocked$de._(_root);
@@ -4913,6 +4914,7 @@ extension on TranslationsDe {
 			'programme.replanDialog.cancel' => 'Abbrechen',
 			'programme.replanDialog.confirm' => 'Neu planen',
 			'programme.validate' => 'PROGRAMM BESTÄTIGEN',
+			'programme.validateNext' => 'Bestätigen und Daten wählen',
 			'programme.empty.title' => 'Richten Sie zuerst Ihre Route ein',
 			'programme.empty.message' => 'Wählen Sie Route und Dauer, um Ihr Programm zu erstellen.',
 			'programme.empty.action' => 'ROUTE EINRICHTEN',
@@ -5224,9 +5226,9 @@ extension on TranslationsDe {
 			'walkTest.levels.moderate' => 'Mittel',
 			'walkTest.levels.good' => 'Gut',
 			'walkTest.levels.excellent' => 'Ausgezeichnet',
-			'pastHikes.title' => 'Ihre letzten 5 Touren',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.title' => 'Ihre letzten 5 Touren',
 			'pastHikes.intro' => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.',
 			'pastHikes.addHike' => 'Tour hinzufugen',
 			'pastHikes.empty' => 'Noch keine Tour erfasst.',

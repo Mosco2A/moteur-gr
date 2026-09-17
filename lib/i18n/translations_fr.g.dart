@@ -2547,6 +2547,9 @@ class Translations$programme$fr {
 	/// fr: 'VALIDER MON PROGRAMME'
 	String get validate => 'VALIDER MON PROGRAMME';
 
+	/// fr: 'Valider et choisir les dates'
+	String get validateNext => 'Valider et choisir les dates';
+
 	late final Translations$programme$empty$fr empty = Translations$programme$empty$fr.internal(_root);
 	late final Translations$programme$info$fr info = Translations$programme$info$fr.internal(_root);
 	late final Translations$programme$splitBlocked$fr splitBlocked = Translations$programme$splitBlocked$fr.internal(_root);
@@ -8183,6 +8186,7 @@ extension on Translations {
 			'programme.replanDialog.cancel' => 'Annuler',
 			'programme.replanDialog.confirm' => 'Replanifier',
 			'programme.validate' => 'VALIDER MON PROGRAMME',
+			'programme.validateNext' => 'Valider et choisir les dates',
 			'programme.empty.title' => 'Configurez d\'abord votre itinéraire',
 			'programme.empty.message' => 'Choisissez votre parcours et la durée pour générer votre programme.',
 			'programme.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
@@ -8494,9 +8498,9 @@ extension on Translations {
 			'walkTest.levels.moderate' => 'Moyen',
 			'walkTest.levels.good' => 'Bon',
 			'walkTest.levels.excellent' => 'Excellent',
-			'pastHikes.title' => 'Vos 5 dernieres randos',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.title' => 'Vos 5 dernieres randos',
 			'pastHikes.intro' => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.',
 			'pastHikes.addHike' => 'Ajouter une rando',
 			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',

@@ -1510,6 +1510,7 @@
       "confirm": "Neu planen"
     },
     "validate": "PROGRAMM BESTÄTIGEN",
+    "validateNext": "Bestätigen und Daten wählen",
     "empty": {
       "title": "Richten Sie zuerst Ihre Route ein",
       "message": "Wählen Sie Route und Dauer, um Ihr Programm zu erstellen.",

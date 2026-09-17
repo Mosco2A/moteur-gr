@@ -153,8 +153,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
+                  // Retour Chris #10 (LOT 2) : FIN DE LA BOUCLE Dates<->Programme.
+                  // Le calendrier est la DERNIERE etape du sous-flux ordonne
+                  // (Programme -> Dates -> cockpit). « Valider les dates » clot
+                  // donc le flux en retournant AU COCKPIT du trek (`/home`), et ne
+                  // pousse PLUS le Programme (ce qui, combine au « Valider » du
+                  // Programme, creait la boucle circulaire). `go` (pas push) : on
+                  // ne rempile pas, on revient a la racine du cockpit -> pas de
+                  // retour circulaire possible quel que soit le chemin d'entree.
                   onPressed: startDate != null
-                      ? () => context.push('/trail/${widget.trailId}/planning')
+                      ? () => context.go('/home')
                       : null,
                   child: Text(t.calendar.validate),
                 ),
@@ -180,8 +188,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     // ici — parite comportement, pas parite couleur : « hors peau »).
     final picked = await showDatePicker(
       context: context,
-      initialDate:
-          reminder.departureDate ?? now.add(const Duration(days: 30)),
+      initialDate: reminder.departureDate ?? now.add(const Duration(days: 30)),
       firstDate: now,
       lastDate: now.add(const Duration(days: 365)),
     );
@@ -251,10 +258,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
     List<PlannedDay> days,
   ) {
     final scheme = theme.colorScheme;
-    final firstDayOfMonth =
-        DateTime(_displayedMonth!.year, _displayedMonth!.month, 1);
-    final daysInMonth =
-        DateTime(_displayedMonth!.year, _displayedMonth!.month + 1, 0).day;
+    final firstDayOfMonth = DateTime(
+      _displayedMonth!.year,
+      _displayedMonth!.month,
+      1,
+    );
+    final daysInMonth = DateTime(
+      _displayedMonth!.year,
+      _displayedMonth!.month + 1,
+      0,
+    ).day;
     // Lundi = 1 (la semaine commence le lundi).
     final startWeekday = firstDayOfMonth.weekday; // 1=lun, 7=dim
 
@@ -321,7 +334,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                   _displayedMonth!.month,
                   dayNum,
                 );
-                final key = '${cellDate.year}-${cellDate.month}-${cellDate.day}';
+                final key =
+                    '${cellDate.year}-${cellDate.month}-${cellDate.day}';
                 final plannedDay = dayMap[key];
 
                 // Detecter les jours passes.
@@ -333,11 +347,13 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 Color? textColor;
                 BoxBorder? border;
 
-                final isStartDay = cellDate.year == startDay.year &&
+                final isStartDay =
+                    cellDate.year == startDay.year &&
                     cellDate.month == startDay.month &&
                     cellDate.day == startDay.day;
 
-                final isEndDay = cellDate.year == endDate.year &&
+                final isEndDay =
+                    cellDate.year == endDate.year &&
                     cellDate.month == endDate.month &&
                     cellDate.day == endDate.day;
 
@@ -351,7 +367,10 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                 } else if (isEndDay) {
                   bgColor = AppTheme.orangeDifficile;
                   textColor = Colors.white;
-                  border = Border.all(color: AppTheme.orangeDifficile, width: 2);
+                  border = Border.all(
+                    color: AppTheme.orangeDifficile,
+                    width: 2,
+                  );
                 } else if (plannedDay != null && plannedDay.isRestDay) {
                   bgColor = scheme.secondary.withAlpha(40);
                   textColor = scheme.secondary;
@@ -379,7 +398,8 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                             '$dayNum',
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: textColor,
-                              fontWeight: (!isPastDay &&
+                              fontWeight:
+                                  (!isPastDay &&
                                       (plannedDay != null ||
                                           isStartDay ||
                                           isEndDay))
@@ -397,7 +417,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
                               plannedDay.isRestDay
                                   ? t.calendar.restDayLabel
                                   : t.calendar.dayLabel.replaceAll(
-                                      '{n}', '${plannedDay.dayNumber}'),
+                                      '{n}',
+                                      '${plannedDay.dayNumber}',
+                                    ),
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontSize: 12,
                                 color: textColor?.withAlpha(180),
@@ -425,9 +447,16 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
       runSpacing: AppTheme.spacingXs,
       children: [
         _legendItem(theme, scheme.primary, t.calendar.legend.start),
-        _legendItem(theme, scheme.primary.withAlpha(60), t.calendar.legend.walk),
         _legendItem(
-            theme, scheme.secondary.withAlpha(80), t.calendar.legend.rest),
+          theme,
+          scheme.primary.withAlpha(60),
+          t.calendar.legend.walk,
+        ),
+        _legendItem(
+          theme,
+          scheme.secondary.withAlpha(80),
+          t.calendar.legend.rest,
+        ),
         _legendItem(theme, AppTheme.orangeDifficile, t.calendar.legend.arrival),
       ],
     );
@@ -446,10 +475,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           ),
         ),
         const SizedBox(width: 4),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
-        ),
+        Text(label, style: theme.textTheme.bodySmall?.copyWith(fontSize: 14)),
       ],
     );
   }
@@ -485,11 +511,14 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
           final day = days[index];
           // Numeros d'etape du jour (le modele StepWays porte la liste d'etapes,
           // pas une liste de numeros — on la derive, generique).
-          final stageNumbers =
-              day.stages.map((s) => s.stageNumber).toList(growable: false);
+          final stageNumbers = day.stages
+              .map((s) => s.stageNumber)
+              .toList(growable: false);
           final stageLabel = stageNumbers.length > 1
-              ? t.calendar.stagesPlural
-                  .replaceAll('{list}', stageNumbers.join(', '))
+              ? t.calendar.stagesPlural.replaceAll(
+                  '{list}',
+                  stageNumbers.join(', '),
+                )
               : t.calendar.stageSingular.replaceAll(
                   '{n}',
                   stageNumbers.isNotEmpty ? '${stageNumbers.first}' : '-',
@@ -579,8 +608,11 @@ class _DatePickerSection extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.flight_takeoff,
-                          size: 16, color: scheme.primary),
+                      Icon(
+                        Icons.flight_takeoff,
+                        size: 16,
+                        color: scheme.primary,
+                      ),
                       const SizedBox(width: 6),
                       Text(
                         t.calendar.departure,
@@ -594,9 +626,7 @@ class _DatePickerSection extends StatelessWidget {
                   ),
                   const SizedBox(height: AppTheme.spacingSm),
                   Text(
-                    startDate != null
-                        ? fmt(startDate!)
-                        : t.calendar.chooseDate,
+                    startDate != null ? fmt(startDate!) : t.calendar.chooseDate,
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                       color: startDate != null ? null : AppTheme.grisGranite,
@@ -609,8 +639,11 @@ class _DatePickerSection extends StatelessWidget {
         ),
         const Padding(
           padding: EdgeInsets.symmetric(horizontal: AppTheme.spacingSm),
-          child: Icon(Icons.arrow_forward,
-              size: 18, color: AppTheme.grisGranite),
+          child: Icon(
+            Icons.arrow_forward,
+            size: 18,
+            color: AppTheme.grisGranite,
+          ),
         ),
         // Date d'arrivee (calculee).
         Expanded(
@@ -626,8 +659,11 @@ class _DatePickerSection extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.flag,
-                        size: 16, color: AppTheme.orangeDifficile),
+                    const Icon(
+                      Icons.flag,
+                      size: 16,
+                      color: AppTheme.orangeDifficile,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       t.calendar.arrival,
@@ -683,18 +719,36 @@ class _TrekSummary extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Flexible(
-              child: _summaryItem(
-                  theme, '${stats.totalDays}', t.calendar.summary.totalDays)),
+            child: _summaryItem(
+              theme,
+              '${stats.totalDays}',
+              t.calendar.summary.totalDays,
+            ),
+          ),
           Container(
-              width: 1, height: 30, color: AppTheme.grisGranite.withAlpha(40)),
+            width: 1,
+            height: 30,
+            color: AppTheme.grisGranite.withAlpha(40),
+          ),
           Flexible(
-              child: _summaryItem(
-                  theme, '${stats.trekDays}', t.calendar.summary.walkDays)),
+            child: _summaryItem(
+              theme,
+              '${stats.trekDays}',
+              t.calendar.summary.walkDays,
+            ),
+          ),
           Container(
-              width: 1, height: 30, color: AppTheme.grisGranite.withAlpha(40)),
+            width: 1,
+            height: 30,
+            color: AppTheme.grisGranite.withAlpha(40),
+          ),
           Flexible(
-              child: _summaryItem(
-                  theme, '${stats.restDays}', t.calendar.summary.restDays)),
+            child: _summaryItem(
+              theme,
+              '${stats.restDays}',
+              t.calendar.summary.restDays,
+            ),
+          ),
         ],
       ),
     );
@@ -746,14 +800,16 @@ class _NoDateState extends StatelessWidget {
           const SizedBox(height: AppTheme.spacingBase),
           Text(
             t.calendar.noDate.title,
-            style: theme.textTheme.titleLarge
-                ?.copyWith(color: AppTheme.grisGranite),
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: AppTheme.grisGranite,
+            ),
           ),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
             t.calendar.noDate.message,
-            style:
-                theme.textTheme.bodyMedium?.copyWith(color: AppTheme.grisGranite),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: AppTheme.grisGranite,
+            ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: AppTheme.spacingLg),

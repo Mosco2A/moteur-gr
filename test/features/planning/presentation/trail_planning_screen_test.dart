@@ -132,8 +132,9 @@ void main() {
       expect(find.text('800 m D+'), findsOneWidget);
       expect(find.text('640 m D-'), findsOneWidget); // 800 * 0.8
 
-      // Bouton de validation (parite GR20).
-      expect(find.text(t.programme.validate), findsOneWidget);
+      // Bouton de validation. Retour Chris #10 : il AVANCE vers les dates
+      // (flux ordonne Programme -> Dates) -> libelle `validateNext`.
+      expect(find.text(t.programme.validateNext), findsOneWidget);
     });
 
     testWidgets('tap sur une carte jour ouvre le detail de l etape', (
@@ -245,6 +246,48 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text('HUB-HOME'), findsOneWidget);
         expect(tester.takeException(), isNull);
+      },
+    );
+
+    testWidgets(
+      'retour #10 : « Valider » avance vers les DATES (calendrier), pas de '
+      'boucle',
+      (tester) async {
+        // Flux ordonne Programme -> Dates : le bouton de validation du Programme
+        // AVANCE vers le calendrier (push), au lieu d'un pop qui pouvait renvoyer
+        // au calendrier d'origine (boucle). On repere le calendrier par un stub.
+        final router = GoRouter(
+          initialLocation: '/trail/test-trail/planning',
+          routes: [
+            GoRoute(
+              path: '/trail/:id/planning',
+              builder: (context, state) =>
+                  const TrailPlanningScreen(trailId: 'test-trail'),
+            ),
+            GoRoute(
+              path: '/trail/:id/calendar',
+              builder: (context, state) =>
+                  const Scaffold(body: Text('CALENDAR_STUB')),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: baseOverrides(),
+            child: MaterialApp.router(routerConfig: router),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Le bouton porte desormais le libelle « avancer vers les dates ».
+        expect(find.text(t.programme.validateNext), findsOneWidget);
+        await tester.tap(find.text(t.programme.validateNext));
+        await tester.pumpAndSettle();
+
+        // On a AVANCE vers le calendrier (Dates), preuve du flux ordonne.
+        expect(find.text('CALENDAR_STUB'), findsOneWidget);
+        expect(find.text(t.programme.title), findsNothing);
       },
     );
   });
