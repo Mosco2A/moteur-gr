@@ -29,6 +29,16 @@ class HikerProfileScreen extends ConsumerStatefulWidget {
       _HikerProfileScreenState();
 }
 
+// Bornes metier des champs morpho (LOT 1, retour Chris #4).
+// Ancrees sur BP_faisabilite_entrainement.md (profils randonneur) + valeurs du
+// mandat. Servent A LA FOIS a la validation (submit) et aux messages d'erreur.
+const int kAgeMin = 8;
+const int kAgeMax = 100;
+const int kHeightMinCm = 100;
+const int kHeightMaxCm = 250;
+const int kWeightMinKg = 30;
+const int kWeightMaxKg = 150;
+
 class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _ageController = TextEditingController();
@@ -145,36 +155,42 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     // Bandeau confidentialite (donnee sensible, local only).
                     _PrivacyBanner(text: tp.privacyBanner),
                     const SizedBox(height: AppTheme.spacingLg),
-                    // Age
+                    // Age — borne 8 a 100 ans (BP faisabilite), max 3 chiffres.
                     _NumberField(
                       controller: _ageController,
                       label: tp.fieldAge,
                       hint: tp.hintAge,
                       icon: Icons.cake_outlined,
-                      validator: (v) => _validateRange(v, 5, 120, tp.errorAge),
+                      maxLength: 3,
+                      validator: (v) =>
+                          _validateRange(v, kAgeMin, kAgeMax, tp.errorAge),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
-                    // Taille
+                    // Taille — borne 100 a 250 cm (BP), max 3 chiffres (empeche
+                    // physiquement 8000 / 600000 signales par Chris).
                     _NumberField(
                       controller: _heightController,
                       label: tp.fieldHeight,
                       hint: tp.hintHeight,
                       icon: Icons.height,
+                      maxLength: 3,
                       onChanged: (_) => setState(() {}),
-                      validator: (v) =>
-                          _validateRange(v, 80, 250, tp.errorHeight),
+                      validator: (v) => _validateRange(
+                          v, kHeightMinCm, kHeightMaxCm, tp.errorHeight),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
-                    // Poids
+                    // Poids — borne 30 a 150 kg (BP), max 5 caracteres (decimal :
+                    // ex. « 150.5 »). Empeche physiquement 3261 signale par Chris.
                     _NumberField(
                       controller: _weightController,
                       label: tp.fieldWeight,
                       hint: tp.hintWeight,
                       icon: Icons.monitor_weight_outlined,
                       allowDecimal: true,
+                      maxLength: 5,
                       onChanged: (_) => setState(() {}),
-                      validator: (v) =>
-                          _validateRange(v, 25, 300, tp.errorWeight),
+                      validator: (v) => _validateRange(
+                          v, kWeightMinKg, kWeightMaxKg, tp.errorWeight),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
                     // IMC calcule (live), affiche seulement si taille+poids.
@@ -382,12 +398,20 @@ class _MorphoConsentTile extends StatelessWidget {
 }
 
 /// Champ numerique reutilise (age/taille/poids).
+///
+/// LOT 1 (retour Chris #4) : DOUBLE BARRIERE de saisie.
+///  - A LA SAISIE : clavier numerique + `inputFormatters` (chiffres uniquement,
+///    ou decimal borne) + [maxLength] qui EMPECHE PHYSIQUEMENT de taper une
+///    valeur aberrante (ex. 8000 cm / 600000). Le compteur natif est masque
+///    (`counterText: ''`) pour ne pas alourdir le formulaire.
+///  - A LA VALIDATION : [validator] applique les bornes metier au submit.
 class _NumberField extends StatelessWidget {
   const _NumberField({
     required this.controller,
     required this.label,
     required this.hint,
     required this.icon,
+    required this.maxLength,
     this.validator,
     this.onChanged,
     this.allowDecimal = false,
@@ -396,6 +420,9 @@ class _NumberField extends StatelessWidget {
   final String label;
   final String hint;
   final IconData icon;
+
+  /// Nombre MAX de caracteres saisissables (barriere physique a la saisie).
+  final int maxLength;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
   final bool allowDecimal;
@@ -406,10 +433,12 @@ class _NumberField extends StatelessWidget {
     return TextFormField(
       controller: controller,
       keyboardType: TextInputType.numberWithOptions(decimal: allowDecimal),
+      maxLength: maxLength,
       inputFormatters: [
         allowDecimal
             ? FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))
             : FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(maxLength),
       ],
       onChanged: onChanged,
       validator: validator,
@@ -417,6 +446,8 @@ class _NumberField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        // Compteur masque : la borne est deja portee par maxLength (physique).
+        counterText: '',
         prefixIcon: Icon(icon, color: colors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),

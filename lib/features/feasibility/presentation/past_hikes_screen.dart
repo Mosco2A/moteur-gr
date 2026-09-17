@@ -354,11 +354,26 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
                 if (picked != null) setState(() => _date = picked);
               },
             ),
-            _num(_daysCtrl, ph.fieldDays, Icons.event, decimal: false),
-            _num(_hoursCtrl, ph.fieldAvgHours, Icons.schedule),
+            // LOT 1 (retour Chris #4) : chaque champ est desormais borne A LA
+            // SAISIE (maxLength) ET A LA VALIDATION (min/max metier + message
+            // clair). Bornes = mandat : jours 1-60, marche 0-24 h/j,
+            // denivele 0-5000 m, distance 0-100 km.
+            _num(_daysCtrl, ph.fieldDays, Icons.event,
+                decimal: false,
+                min: 1,
+                max: 60,
+                maxLength: 2,
+                error: ph.errorDays),
+            _num(_hoursCtrl, ph.fieldAvgHours, Icons.schedule,
+                min: 0, max: 24, maxLength: 4, error: ph.errorHours),
             _num(_elevCtrl, ph.fieldElevation, Icons.trending_up,
-                decimal: false),
-            _num(_distCtrl, ph.fieldDistance, Icons.straighten),
+                decimal: false,
+                min: 0,
+                max: 5000,
+                maxLength: 4,
+                error: ph.errorElevation),
+            _num(_distCtrl, ph.fieldDistance, Icons.straighten,
+                min: 0, max: 100, maxLength: 5, error: ph.errorDistance),
             const SizedBox(height: AppTheme.spacingLg),
             AppButton(icon: Icons.check, label: ph.save, onPressed: _submit),
           ],
@@ -367,10 +382,23 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
     );
   }
 
+  /// Champ numerique borne (LOT 1, retour Chris #4).
+  ///
+  /// DOUBLE BARRIERE :
+  ///  - A LA SAISIE : clavier numerique + `inputFormatters` (chiffres/decimal)
+  ///    + [maxLength] qui empeche PHYSIQUEMENT une valeur aberrante.
+  ///  - A LA VALIDATION : borne [min]/[max] au submit avec un message clair
+  ///    ([error]). Le champ reste optionnel (vide = non renseigne), mais toute
+  ///    valeur saisie DOIT etre dans l'intervalle (fini « aucun chiffre
+  ///    controle » : 8000 m de D+ ou 999 km sont rejetes).
   Widget _num(
     TextEditingController c,
     String label,
     IconData icon, {
+    required num min,
+    required num max,
+    required int maxLength,
+    required String error,
     bool decimal = true,
   }) {
     return Padding(
@@ -378,20 +406,24 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
       child: TextFormField(
         controller: c,
         keyboardType: TextInputType.numberWithOptions(decimal: decimal),
+        maxLength: maxLength,
         inputFormatters: [
           decimal
               ? FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))
               : FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(maxLength),
         ],
         validator: (v) {
           final s = v?.trim() ?? '';
           if (s.isEmpty) return null; // champ non requis
           final n = double.tryParse(s.replaceAll(',', '.'));
-          if (n == null || n < 0) return label;
+          if (n == null || n < min || n > max) return error;
           return null;
         },
         decoration: InputDecoration(
           labelText: label,
+          // Compteur masque : la borne est deja portee par maxLength (physique).
+          counterText: '',
           prefixIcon: Icon(icon),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(AppTheme.radiusInput),

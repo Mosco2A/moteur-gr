@@ -3033,8 +3033,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'En annees'
 	String get hintAge => 'En annees';
 
-	/// fr: 'Age invalide (5 a 120)'
-	String get errorAge => 'Age invalide (5 a 120)';
+	/// fr: 'Age invalide (8 a 100 ans)'
+	String get errorAge => 'Age invalide (8 a 100 ans)';
 
 	/// fr: 'Taille'
 	String get fieldHeight => 'Taille';
@@ -3042,8 +3042,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'En centimetres'
 	String get hintHeight => 'En centimetres';
 
-	/// fr: 'Taille invalide (80 a 250 cm)'
-	String get errorHeight => 'Taille invalide (80 a 250 cm)';
+	/// fr: 'Taille invalide (100 a 250 cm)'
+	String get errorHeight => 'Taille invalide (100 a 250 cm)';
 
 	/// fr: 'Poids'
 	String get fieldWeight => 'Poids';
@@ -3051,8 +3051,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'En kilogrammes'
 	String get hintWeight => 'En kilogrammes';
 
-	/// fr: 'Poids invalide (25 a 300 kg)'
-	String get errorWeight => 'Poids invalide (25 a 300 kg)';
+	/// fr: 'Poids invalide (30 a 150 kg)'
+	String get errorWeight => 'Poids invalide (30 a 150 kg)';
 
 	/// fr: 'Sexe (optionnel)'
 	String get fieldSex => 'Sexe (optionnel)';
@@ -3210,6 +3210,18 @@ class Translations$pastHikes$fr {
 
 	/// fr: 'Distance totale (km)'
 	String get fieldDistance => 'Distance totale (km)';
+
+	/// fr: 'Nombre de jours invalide (1 a 60)'
+	String get errorDays => 'Nombre de jours invalide (1 a 60)';
+
+	/// fr: 'Duree invalide (0 a 24 h)'
+	String get errorHours => 'Duree invalide (0 a 24 h)';
+
+	/// fr: 'Denivele invalide (0 a 5000 m)'
+	String get errorElevation => 'Denivele invalide (0 a 5000 m)';
+
+	/// fr: 'Distance invalide (0 a 100 km)'
+	String get errorDistance => 'Distance invalide (0 a 100 km)';
 
 	/// fr: 'par jour'
 	String get perDay => 'par jour';
@@ -8419,13 +8431,13 @@ extension on Translations {
 			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnee sensible. Elle reste sur votre appareil (et une sauvegarde chiffree, sans votre nom) pour calculer votre faisabilite.',
 			'hikerProfile.fieldAge' => 'Age',
 			'hikerProfile.hintAge' => 'En annees',
-			'hikerProfile.errorAge' => 'Age invalide (5 a 120)',
+			'hikerProfile.errorAge' => 'Age invalide (8 a 100 ans)',
 			'hikerProfile.fieldHeight' => 'Taille',
 			'hikerProfile.hintHeight' => 'En centimetres',
-			'hikerProfile.errorHeight' => 'Taille invalide (80 a 250 cm)',
+			'hikerProfile.errorHeight' => 'Taille invalide (100 a 250 cm)',
 			'hikerProfile.fieldWeight' => 'Poids',
 			'hikerProfile.hintWeight' => 'En kilogrammes',
-			'hikerProfile.errorWeight' => 'Poids invalide (25 a 300 kg)',
+			'hikerProfile.errorWeight' => 'Poids invalide (30 a 150 kg)',
 			'hikerProfile.fieldSex' => 'Sexe (optionnel)',
 			'hikerProfile.sexFemale' => 'Femme',
 			'hikerProfile.sexMale' => 'Homme',
@@ -8481,6 +8493,10 @@ extension on Translations {
 			'pastHikes.fieldAvgHours' => 'Marche moyenne par jour (h)',
 			'pastHikes.fieldElevation' => 'Denivele + total (m)',
 			'pastHikes.fieldDistance' => 'Distance totale (km)',
+			'pastHikes.errorDays' => 'Nombre de jours invalide (1 a 60)',
+			'pastHikes.errorHours' => 'Duree invalide (0 a 24 h)',
+			'pastHikes.errorElevation' => 'Denivele invalide (0 a 5000 m)',
+			'pastHikes.errorDistance' => 'Distance invalide (0 a 100 km)',
 			'pastHikes.perDay' => 'par jour',
 			'pastHikes.editHike' => 'Modifier la rando',
 			'pastHikes.deleteHike' => 'Supprimer',
