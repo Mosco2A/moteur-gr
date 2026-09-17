@@ -47,12 +47,45 @@ class AdsConsentService {
   /// Vrai une fois `MobileAds.initialize()` appelé avec succès.
   bool get adsInitialized => _adsInitialized;
 
+  /// Délai maximum GLOBAL de la résolution consentement + init AdMob au boot.
+  ///
+  /// OFFLINE-FIRST (garde-fou boot) : les appels UMP
+  /// (`requestConsentInfoUpdate`) et l'init native `MobileAds.initialize()`
+  /// contactent les serveurs Google. HORS-LIGNE, l'API UMP à callbacks peut ne
+  /// JAMAIS rappeler (ni succès, ni erreur) et l'init AdMob peut PENDRE — un
+  /// `try/catch` ne rattrape pas un HANG. Sans borne, le `Future` d'amorce pub
+  /// resterait pendant indéfiniment (fuite de ressource au boot, et risque de
+  /// stalle si un jour ce provider était attendu). On borne donc TOUTE la
+  /// séquence : au-delà du délai, on abandonne proprement (aucune pub, jamais de
+  /// crash) — l'app est déjà rendue, la pub n'est pas critique offline.
+  static const Duration _bootTimeout = Duration(seconds: 6);
+
   /// Résout le consentement pub (UMP/CMP) PUIS initialise le SDK si autorisé.
   ///
   /// Retourne `true` si les pubs peuvent être demandées ([canRequestAds]).
   /// Best-effort : une panne UMP ne bloque pas le démarrage de l'app — on
   /// n'initialise simplement pas les pubs (aucune pub affichée, jamais de crash).
+  ///
+  /// BORNÉ ([_bootTimeout], offline-first) : un UMP/AdMob qui pend hors-ligne ne
+  /// laisse pas ce `Future` pendant — au-delà du délai on retourne `false`
+  /// (pubs désactivées) sans crash.
   Future<bool> ensureConsentAndInit() async {
+    try {
+      return await _ensureConsentAndInitUnbounded().timeout(_bootTimeout);
+    } on Object catch (e, st) {
+      // TimeoutException (UMP/AdMob pendu hors-ligne) OU toute autre erreur :
+      // best-effort, on n'affiche pas de pub et on ne casse jamais le boot.
+      ErrorHandler.log(
+        e,
+        stackTrace: st,
+        context: 'AdsConsentService.ensureConsentAndInit',
+      );
+      return false;
+    }
+  }
+
+  /// Cœur non borné de la résolution consentement + init (cf. wrapper borné).
+  Future<bool> _ensureConsentAndInitUnbounded() async {
     try {
       await _requestConsentInfoUpdate();
       await _loadFormIfRequired();
