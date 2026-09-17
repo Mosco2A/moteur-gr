@@ -6,6 +6,7 @@ import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
 import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
+import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 
 /// Tests du PROGRAMME editable (regrouper / separer, parite GR20).
 ///
@@ -137,6 +138,68 @@ void main() {
       final after = container.read(plannedDaysProvider('test-trail'));
       // Le jour multi-etapes eclate en N jours mono-etape.
       expect(after.length, before - 1 + splitCount);
+
+      container.dispose();
+    });
+  });
+
+  // Retour QA polish (P3) : coherence Itineraire<->Programme. Le programme doit
+  // honorer selectedDirectionProvider comme l'itineraire -> sens inverse =>
+  // ordre des etapes du Programme inverse (Jour 1 = etape de depart du sens
+  // choisi). testTrailConfig.directions = ['NS', 'SN'] (NS = sens de reference).
+  group('PROGRAMME — honore le sens de marche (parite itineraire)', () {
+    test('sens de reference (defaut) : Jour 1 = 1re etape (ordre croissant)',
+        () async {
+      final container = makeContainer();
+      await container.read(stagesProvider('test-trail').future);
+      container.read(selectedDurationProvider.notifier).set(5);
+
+      final days = container.read(plannedDaysProvider('test-trail'));
+      // 5 jours mono-etape, ordre croissant : J1=E1 ... J5=E5.
+      expect(days.first.stages.single.stageNumber, 1);
+      expect(days.last.stages.single.stageNumber, 5);
+
+      container.dispose();
+    });
+
+    test('sens INVERSE (SN) : Jour 1 = derniere etape (ordre inverse)',
+        () async {
+      final container = ProviderContainer(
+        overrides: [
+          trailConfigProvider.overrideWithValue(testTrailConfig),
+          stagesProvider('test-trail')
+              .overrideWith((ref) => Future.value(testStages)),
+        ],
+      );
+      await container.read(stagesProvider('test-trail').future);
+      container.read(selectedDurationProvider.notifier).set(5);
+      // Inverser le sens (sens != 1er sens declare) comme le fait l'itineraire.
+      container.read(selectedDirectionProvider.notifier).state = 'SN';
+
+      final days = container.read(plannedDaysProvider('test-trail'));
+      // Ordre inverse : J1=E5 ... J5=E1 (coherent avec l'itineraire inverse).
+      expect(days.first.stages.single.stageNumber, 5);
+      expect(days.last.stages.single.stageNumber, 1);
+
+      container.dispose();
+    });
+
+    test('selection explicite du sens de reference (NS) : ordre croissant',
+        () async {
+      final container = ProviderContainer(
+        overrides: [
+          trailConfigProvider.overrideWithValue(testTrailConfig),
+          stagesProvider('test-trail')
+              .overrideWith((ref) => Future.value(testStages)),
+        ],
+      );
+      await container.read(stagesProvider('test-trail').future);
+      container.read(selectedDurationProvider.notifier).set(5);
+      container.read(selectedDirectionProvider.notifier).state = 'NS';
+
+      final days = container.read(plannedDaysProvider('test-trail'));
+      expect(days.first.stages.single.stageNumber, 1);
+      expect(days.last.stages.single.stageNumber, 5);
 
       container.dispose();
     });

@@ -1,8 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage.dart';
 import '../../trail/providers/stages_provider.dart';
+import '../../trek/providers/gps_providers.dart';
 import '../domain/planning_calculator.dart';
 import '../models/day_plan.dart';
 import '../models/planned_day.dart';
@@ -17,9 +19,17 @@ import 'planning_provider.dart';
 /// l'utilisateur EDITE : reorganiser, regrouper / separer des etapes, ajouter /
 /// supprimer des jours de repos, replanifier. Aucune localite en dur.
 ///
-/// Famille indexee par `trailId` (multi-sentiers). Recree quand les etapes ou la
-/// duree changent (via `ref.watch`), en preservant les jours de repos manuels
-/// (cache externe [_restDayCacheProvider], meme strategie que GR20).
+/// Famille indexee par `trailId` (multi-sentiers). Recree quand les etapes, la
+/// duree OU LE SENS de marche changent (via `ref.watch`), en preservant les
+/// jours de repos manuels (cache externe [_restDayCacheProvider], meme strategie
+/// que GR20).
+///
+/// SENS de marche (retour QA polish, coherence Itineraire<->Programme) : le
+/// programme honore [selectedDirectionProvider] a l'identique de l'itineraire
+/// (itinerary_providers.dart). Quand l'utilisateur inverse le sens, l'ORDRE des
+/// etapes est inverse AVANT la repartition en jours -> Jour 1 = etape de depart
+/// du sens choisi. Sens de reference (ordre croissant) = 1er code de
+/// `TrailConfig.directions` (fourni par le sentier, jamais devine).
 final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier,
     List<PlannedDay>, String>((ref, trailId) {
   // Etapes du sentier courant (asynchrones). Tant qu'elles ne sont pas la, on
@@ -27,11 +37,20 @@ final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier,
   // provider est recree avec les etapes reelles (ref.watch).
   final stagesAsync = ref.watch(stagesProvider(trailId));
   final duration = ref.watch(selectedDurationProvider);
-  final stages = stagesAsync.maybeWhen(
+  final sorted = stagesAsync.maybeWhen(
     data: (list) => List<StageModel>.of(list)
       ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
     orElse: () => const <StageModel>[],
   );
+
+  // Sens de marche : inverse l'ordre des etapes si le sens choisi n'est pas le
+  // sens de reference (parite avec itineraryProvider #12b). Direction-aware,
+  // sans nombre en dur ; le sens de reference est le 1er declare par le sentier.
+  final directions = ref.watch(trailConfigProvider.select((c) => c.directions));
+  final forward = directions.isNotEmpty ? directions.first : null;
+  final selected = ref.watch(selectedDirectionProvider);
+  final reversed = forward != null && selected != null && selected != forward;
+  final stages = reversed ? sorted.reversed.toList() : sorted;
 
   final cachedRestDays = ref.read(_restDayCacheProvider);
   final notifier = PlannedDaysNotifier(stages, duration, ref);

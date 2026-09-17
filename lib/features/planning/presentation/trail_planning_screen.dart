@@ -27,11 +27,17 @@ import '../widgets/duration_selector.dart';
 /// Material du Scaffold, couleurs semantiques d'AppTheme et du colorScheme).
 /// Tout libelle passe par Slang (t.programme.* / t.stage.*).
 ///
+/// SENS de marche (retour QA polish) : le programme honore desormais le sens
+/// choisi ([selectedDirectionProvider]) a l'identique de l'itineraire — quand le
+/// sens est inverse, l'ordre des jours suit (Jour 1 = etape de depart du sens
+/// choisi). La logique est portee par [plannedDaysProvider] (aucun flag invente,
+/// meme donnee de sens que l'itineraire).
+///
 /// NOTE (ecart de modele assume, cf. rapport) : le modele de donnees StepWays
-/// ([StageModel]) ne porte ni date de depart, ni mode de confort / hebergement,
-/// ni sens de marche NS/SN. Les elements GR20 qui en dependent (chip
-/// hebergement, date sous chaque jour, inversion NS/SN) n'ont donc pas
-/// d'equivalent tant que le socle sentier ne fournit pas ces donnees.
+/// ([StageModel]) ne porte ni date de depart, ni mode de confort / hebergement.
+/// Les elements GR20 qui en dependent (chip hebergement, date sous chaque jour)
+/// n'ont donc pas d'equivalent tant que le socle sentier ne fournit pas ces
+/// donnees.
 class TrailPlanningScreen extends ConsumerWidget {
   const TrailPlanningScreen({super.key, required this.trailId});
 
