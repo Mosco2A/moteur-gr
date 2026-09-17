@@ -291,7 +291,7 @@ void main() {
       expect(find.text(t.hub.sections.after), findsNWidgets(2));
     });
 
-    testWidgets('rend la tuile meteo reelle (LOT-B) et la salutation',
+    testWidgets('rend la tuile meteo reelle (LOT-B), sans salutation redondante',
         (tester) async {
       await pumpTallHub(tester);
 
@@ -299,7 +299,10 @@ void main() {
       // Sans donnees (DB de test vide), elle affiche l'etat indisponible.
       expect(find.text(t.hub.weather.title), findsOneWidget);
       expect(find.text(t.hub.weather.stub), findsNothing);
-      expect(find.text(t.hub.greeting(name: 'Alex')), findsOneWidget);
+      // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
+      // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
+      // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
+      expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
     });
 
     testWidgets('barre contextuelle §4 : Préparer / Randonner / Après',

@@ -10,7 +10,6 @@ import '../../../shared/widgets/contextual_action_bar.dart';
 import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../safety/presentation/sos_button.dart';
 import 'widgets/finish_trek_button.dart';
-import 'widgets/hub_header.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_trek_card.dart';
 import 'widgets/hub_weather_card.dart';
@@ -147,11 +146,11 @@ class _HubScreenState extends ConsumerState<HubScreen>
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),
           children: [
-            // Salutation (RF-3) — SW-SKIN-L5 : en-tete a degrade d'accent
-            // (AppGradientHeader). L'espacement bas, jadis porte par HubHeader,
-            // est ici explicite (le header est desormais un bandeau plein).
-            const HubHeader(),
-            const SizedBox(height: AppTheme.spacingLg),
+            // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour,
+            // randonneur » + nom du sentier (HubHeader) a ete RETIRE : il faisait
+            // DOUBLON avec le titre du sentier deja affiche dans l'AppBar juste
+            // au-dessus. On demarre directement sur la tuile meteo ; l'espace est
+            // recupere proprement (plus de bandeau + son SizedBox associe).
             // Tuile meteo reelle (AM-3, LOT-B) : ConsumerWidget (const OK).
             const HubWeatherCard(),
             const SizedBox(height: AppTheme.spacingBase),
