@@ -383,6 +383,7 @@ class _Translations$itinerary$it extends Translations$itinerary$fr {
 	// Translations
 	@override String get title => 'Itinerario';
 	@override String get subtitle => 'Le tue tappe, giorno per giorno';
+	@override late final _Translations$itinerary$direction$it direction = _Translations$itinerary$direction$it._(_root);
 	@override String get empty => 'Nessuna tappa disponibile';
 	@override String get emptyHint => 'I dati del sentiero non sono caricati.';
 	@override String get loading => 'Caricamento itinerario...';
@@ -1869,6 +1870,19 @@ class _Translations$accommodation$types$it extends Translations$accommodation$ty
 	@override String get hotel => 'Hotel';
 	@override String get camping => 'Campeggio';
 	@override String get bivouac => 'Bivacco';
+}
+
+// Path: itinerary.direction
+class _Translations$itinerary$direction$it extends Translations$itinerary$direction$fr {
+	_Translations$itinerary$direction$it._(TranslationsIt root) : this._root = root, super.internal(root);
+
+	final TranslationsIt _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Senso della camminata';
+	@override String get from => 'Partenza';
+	@override String get to => 'Arrivo';
+	@override String get reverse => 'Inverti il senso';
 }
 
 // Path: checklist.categories
@@ -3916,6 +3930,10 @@ extension on TranslationsIt {
 			'planning.plan' => 'Pianificare',
 			'itinerary.title' => 'Itinerario',
 			'itinerary.subtitle' => 'Le tue tappe, giorno per giorno',
+			'itinerary.direction.title' => 'Senso della camminata',
+			'itinerary.direction.from' => 'Partenza',
+			'itinerary.direction.to' => 'Arrivo',
+			'itinerary.direction.reverse' => 'Inverti il senso',
 			'itinerary.empty' => 'Nessuna tappa disponibile',
 			'itinerary.emptyHint' => 'I dati del sentiero non sono caricati.',
 			'itinerary.loading' => 'Caricamento itinerario...',
@@ -4194,12 +4212,12 @@ extension on TranslationsIt {
 			'weather.today' => 'Oggi',
 			'weather.tomorrow' => 'Domani',
 			'weather.dayPlus2' => 'Dopodomani',
+			_ => null,
+		} ?? switch (path) {
 			'weather.allStages' => 'Tutte le tappe',
 			'weather.noForecast' => 'Nessuna previsione disponibile.',
 			'weather.stageLabel' => ({required Object number}) => 'Tappa ${number}',
 			'weather.stormAlertsTitle' => 'Allerte temporali',
-			_ => null,
-		} ?? switch (path) {
 			'weather.stormAlertsToggleOn' => 'Allerte temporali attive',
 			'weather.stormAlertsToggleOff' => 'Allerte temporali disattivate',
 			'weather.lastUpdate' => ({required Object date}) => 'Aggiornato ${date}',
@@ -4708,12 +4726,12 @@ extension on TranslationsIt {
 			'packs.actions.buy' => 'Acquista questo pacchetto',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acquista questo pacchetto — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Scaricamento… ${done}/${total}',
+			_ => null,
+		} ?? switch (path) {
 			'packs.progress.verifying' => 'Verifica integrità…',
 			'packs.progress.completed' => 'Pacchetto pronto offline',
 			'packs.progress.error' => 'Scaricamento non riuscito',
 			'packs.delete.confirmTitle' => 'Eliminare questo pacchetto?',
-			_ => null,
-		} ?? switch (path) {
 			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
 			'packs.delete.cancel' => 'Annulla',
 			'packs.delete.confirm' => 'Elimina',
@@ -5222,12 +5240,12 @@ extension on TranslationsIt {
 			'walkTest.monthlyReminderBody' => 'Ogni mese ti verra proposto un promemoria del test per seguire la tua forma.',
 			'walkTest.notDoneYet' => 'Test non eseguito',
 			'walkTest.fallbackNotice' => 'In attesa del test, il tuo livello e stimato dal questionario.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.levels.low' => 'Basso',
 			'walkTest.levels.moderate' => 'Medio',
 			'walkTest.levels.good' => 'Buono',
 			'walkTest.levels.excellent' => 'Eccellente',
-			_ => null,
-		} ?? switch (path) {
 			'pastHikes.title' => 'Le tue ultime 5 escursioni',
 			'pastHikes.intro' => 'Aggiungi fino a 5 escursioni notevoli. Deduciamo il tuo livello reale (ritmo, resistenza, abitudine al dislivello) invece di un\'etichetta.',
 			'pastHikes.addHike' => 'Aggiungi escursione',

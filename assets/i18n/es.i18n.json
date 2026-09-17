@@ -278,6 +278,12 @@
   "itinerary": {
     "title": "Itinerario",
     "subtitle": "Tus etapas, dia a dia",
+    "direction": {
+      "title": "Sentido de la ruta",
+      "from": "Salida",
+      "to": "Llegada",
+      "reverse": "Invertir el sentido"
+    },
     "empty": "Ninguna etapa disponible",
     "emptyHint": "Los datos del sendero no estan cargados.",
     "loading": "Cargando itinerario...",

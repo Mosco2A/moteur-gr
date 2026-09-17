@@ -383,6 +383,7 @@ class _Translations$itinerary$es extends Translations$itinerary$fr {
 	// Translations
 	@override String get title => 'Itinerario';
 	@override String get subtitle => 'Tus etapas, dia a dia';
+	@override late final _Translations$itinerary$direction$es direction = _Translations$itinerary$direction$es._(_root);
 	@override String get empty => 'Ninguna etapa disponible';
 	@override String get emptyHint => 'Los datos del sendero no estan cargados.';
 	@override String get loading => 'Cargando itinerario...';
@@ -1869,6 +1870,19 @@ class _Translations$accommodation$types$es extends Translations$accommodation$ty
 	@override String get hotel => 'Hotel';
 	@override String get camping => 'Camping';
 	@override String get bivouac => 'Vivac';
+}
+
+// Path: itinerary.direction
+class _Translations$itinerary$direction$es extends Translations$itinerary$direction$fr {
+	_Translations$itinerary$direction$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Sentido de la ruta';
+	@override String get from => 'Salida';
+	@override String get to => 'Llegada';
+	@override String get reverse => 'Invertir el sentido';
 }
 
 // Path: checklist.categories
@@ -3916,6 +3930,10 @@ extension on TranslationsEs {
 			'planning.plan' => 'Planificar',
 			'itinerary.title' => 'Itinerario',
 			'itinerary.subtitle' => 'Tus etapas, dia a dia',
+			'itinerary.direction.title' => 'Sentido de la ruta',
+			'itinerary.direction.from' => 'Salida',
+			'itinerary.direction.to' => 'Llegada',
+			'itinerary.direction.reverse' => 'Invertir el sentido',
 			'itinerary.empty' => 'Ninguna etapa disponible',
 			'itinerary.emptyHint' => 'Los datos del sendero no estan cargados.',
 			'itinerary.loading' => 'Cargando itinerario...',
@@ -4194,12 +4212,12 @@ extension on TranslationsEs {
 			'weather.today' => 'Hoy',
 			'weather.tomorrow' => 'Mañana',
 			'weather.dayPlus2' => 'Pasado mañana',
+			_ => null,
+		} ?? switch (path) {
 			'weather.allStages' => 'Todas las etapas',
 			'weather.noForecast' => 'No hay previsión disponible.',
 			'weather.stageLabel' => ({required Object number}) => 'Etapa ${number}',
 			'weather.stormAlertsTitle' => 'Alertas de tormenta',
-			_ => null,
-		} ?? switch (path) {
 			'weather.stormAlertsToggleOn' => 'Alertas de tormenta activadas',
 			'weather.stormAlertsToggleOff' => 'Alertas de tormenta desactivadas',
 			'weather.lastUpdate' => ({required Object date}) => 'Actualizado ${date}',
@@ -4708,12 +4726,12 @@ extension on TranslationsEs {
 			'packs.actions.buy' => 'Comprar este pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Comprar este pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Descargando… ${done}/${total}',
+			_ => null,
+		} ?? switch (path) {
 			'packs.progress.verifying' => 'Verificando integridad…',
 			'packs.progress.completed' => 'Pack listo sin conexión',
 			'packs.progress.error' => 'Error de descarga',
 			'packs.delete.confirmTitle' => '¿Eliminar este pack?',
-			_ => null,
-		} ?? switch (path) {
 			'packs.delete.confirmBody' => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.',
 			'packs.delete.cancel' => 'Cancelar',
 			'packs.delete.confirm' => 'Eliminar',
@@ -5222,12 +5240,12 @@ extension on TranslationsEs {
 			'walkTest.monthlyReminderBody' => 'Cada mes se te propondra un recordatorio de la prueba para seguir tu forma.',
 			'walkTest.notDoneYet' => 'Prueba no realizada',
 			'walkTest.fallbackNotice' => 'Hasta que hagas la prueba, tu nivel se estima a partir del cuestionario.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.levels.low' => 'Bajo',
 			'walkTest.levels.moderate' => 'Medio',
 			'walkTest.levels.good' => 'Bueno',
 			'walkTest.levels.excellent' => 'Excelente',
-			_ => null,
-		} ?? switch (path) {
 			'pastHikes.title' => 'Tus ultimas 5 rutas',
 			'pastHikes.intro' => 'Anade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, habito de desnivel) en lugar de una etiqueta.',
 			'pastHikes.addHike' => 'Anadir ruta',

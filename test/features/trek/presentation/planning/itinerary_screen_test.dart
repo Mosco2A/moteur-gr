@@ -4,9 +4,13 @@ import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:moteur_gr/core/config/test_trail_config.dart';
+import 'package:moteur_gr/core/config/trail_config.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trek/domain/models/itinerary_day.dart';
 import 'package:moteur_gr/features/trek/presentation/planning/itinerary_screen.dart';
+import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -66,21 +70,22 @@ void main() {
   /// AppHeader (Ph5/L6b) utilise GoRouter (canPop/go) -> on heberge l'ecran dans
   /// un GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
   Widget wrap(String trailId) => MaterialApp.router(
-        routerConfig: GoRouter(
-          initialLocation: '/itinerary',
-          routes: [
-            GoRoute(
-              path: '/itinerary',
-              builder: (_, __) => ItineraryScreen(trailId: trailId),
-            ),
-            GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
-          ],
+    routerConfig: GoRouter(
+      initialLocation: '/itinerary',
+      routes: [
+        GoRoute(
+          path: '/itinerary',
+          builder: (_, __) => ItineraryScreen(trailId: trailId),
         ),
-      );
+        GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+      ],
+    ),
+  );
 
   group('ItineraryScreen — deroule des etapes (parite GR20)', () {
-    testWidgets('affiche le deroule des etapes avec infos par etape',
-        (tester) async {
+    testWidgets('affiche le deroule des etapes avec infos par etape', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [daysOverride(mockDays)],
@@ -89,10 +94,25 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Jour deroule (jour 1 ouvert par defaut) -> etapes visibles.
+      // Jour deroule (jour 1 ouvert par defaut) -> etapes visibles dans la
+      // carte du jour (ExpansionTile). NB retour Chris #12b : les noms des
+      // extremites apparaissent AUSSI dans le controle de sens (Depart/Arrivee)
+      // -> on cible la carte du jour pour rester sans ambiguite.
       expect(find.text('${t.itinerary.day} 1'), findsOneWidget);
-      expect(find.text('Depart - Refuge B'), findsOneWidget);
-      expect(find.text('Refuge B - Refuge C'), findsOneWidget);
+      expect(
+        find.descendant(
+          of: find.byType(ExpansionTile),
+          matching: find.text('Depart - Refuge B'),
+        ),
+        findsOneWidget,
+      );
+      expect(
+        find.descendant(
+          of: find.byType(ExpansionTile),
+          matching: find.text('Refuge B - Refuge C'),
+        ),
+        findsOneWidget,
+      );
 
       // Infos par etape : distance + D+ + D- (parite GR20).
       expect(find.text('14.5 km'), findsOneWidget);
@@ -110,8 +130,9 @@ void main() {
       expect(find.text('4h30'), findsOneWidget);
     });
 
-    testWidgets('affiche la duree RICHE du sentier quand elle est fournie',
-        (tester) async {
+    testWidgets('affiche la duree RICHE du sentier quand elle est fournie', (
+      tester,
+    ) async {
       // Etape avec duree fournie (donnee du sentier) DIFFERENTE de l estimation
       // (l estimation donnerait 5h45) : c est la DONNEE (6h30) qui s affiche.
       const stageRiche = StageModel(
@@ -150,8 +171,9 @@ void main() {
       expect(find.text('5h45'), findsNothing); // pas l estimation
     });
 
-    testWidgets('affiche l en-tete de totaux (distance, D+, jours, etapes)',
-        (tester) async {
+    testWidgets('affiche l en-tete de totaux (distance, D+, jours, etapes)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         ProviderScope(
           overrides: [daysOverride(mockDays)],
@@ -179,9 +201,9 @@ void main() {
   });
 
   group('PART A — bug nav : retour depuis Itineraire (non-regression)', () {
-    testWidgets(
-        'push Itineraire puis retour revient au HUB sans exception',
-        (tester) async {
+    testWidgets('push Itineraire puis retour revient au HUB sans exception', (
+      tester,
+    ) async {
       // Router minimal : /home (stub HUB avec la carte Itineraire) +
       // /trail/:id/itinerary (l ecran reel). Reproduit le chemin du HUB :
       // le tap fait `context.push` (et NON `context.go('/map')`).
@@ -194,8 +216,7 @@ void main() {
               appBar: AppBar(title: const Text('HUB-HOME')),
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () =>
-                      context.push('/trail/test-trail/itinerary'),
+                  onPressed: () => context.push('/trail/test-trail/itinerary'),
                   child: const Text('Itineraire'),
                 ),
               ),
@@ -229,7 +250,15 @@ void main() {
       await tester.tap(find.text('Itineraire'));
       await tester.pumpAndSettle();
       expect(find.text(t.itinerary.title), findsOneWidget);
-      expect(find.text('Depart - Refuge B'), findsOneWidget);
+      // Nom d'etape cible dans la carte du jour (le controle de sens #12b montre
+      // aussi les extremites -> on scope a l'ExpansionTile).
+      expect(
+        find.descendant(
+          of: find.byType(ExpansionTile),
+          matching: find.text('Depart - Refuge B'),
+        ),
+        findsOneWidget,
+      );
 
       // RETOUR : bouton back de l'AppHeader (Ph5/L6b — tooltip Slang `nav.back`,
       // remplace le back Material que ciblait `tester.pageBack()`). Ne doit PAS
@@ -241,6 +270,115 @@ void main() {
       expect(find.text('HUB-HOME'), findsOneWidget);
       expect(find.text('MAP'), findsNothing);
       expect(tester.takeException(), isNull);
+    });
+  });
+
+  group('SENS DE LA RANDO — controle #12b (retour Chris)', () {
+    testWidgets(
+      'le controle de sens est visible (Depart -> Arrivee + Inverser) quand '
+      'le sentier a 2 sens',
+      (tester) async {
+        // testTrailConfig declare directions ['NS','SN'] -> le controle apparait.
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              trailConfigProvider.overrideWithValue(testTrailConfig),
+              daysOverride(mockDays),
+            ],
+            child: wrap('test-trail'),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Le controle de sens est present : titre + bouton inverser.
+        expect(find.text(t.itinerary.direction.title), findsOneWidget);
+        expect(find.text(t.itinerary.direction.reverse), findsOneWidget);
+        // Extremites affichees (Depart = 1re etape, Arrivee = derniere etape).
+        expect(find.text(t.itinerary.direction.from), findsOneWidget);
+        expect(find.text(t.itinerary.direction.to), findsOneWidget);
+        // Le controle montre le nom de depart et d'arrivee du sens courant.
+        expect(
+          find.descendant(
+            of: find.byType(OutlinedButton),
+            matching: find.byIcon(Icons.swap_horiz),
+          ),
+          findsOneWidget,
+        );
+      },
+    );
+
+    testWidgets(
+      'taper « Inverser le sens » bascule selectedDirectionProvider vers '
+      'l\'autre sens',
+      (tester) async {
+        late final ProviderContainer container;
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              trailConfigProvider.overrideWithValue(testTrailConfig),
+              daysOverride(mockDays),
+            ],
+            child: Builder(
+              builder: (context) {
+                container = ProviderScope.containerOf(context);
+                return wrap('test-trail');
+              },
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        // Au depart : aucun sens force -> null (le pipeline retombe sur le 1er
+        // sens du sentier, 'NS').
+        expect(container.read(selectedDirectionProvider), isNull);
+
+        // Inverser -> bascule vers l'AUTRE sens declare ('SN').
+        await tester.tap(find.text(t.itinerary.direction.reverse));
+        await tester.pumpAndSettle();
+        expect(container.read(selectedDirectionProvider), 'SN');
+
+        // Re-inverser -> revient au 1er sens ('NS').
+        await tester.tap(find.text(t.itinerary.direction.reverse));
+        await tester.pumpAndSettle();
+        expect(container.read(selectedDirectionProvider), 'NS');
+      },
+    );
+
+    testWidgets('sentier MONO-sens : aucun controle de sens', (tester) async {
+      // Config a un seul sens -> le controle ne doit PAS apparaitre.
+      const monoConfig = TrailConfig(
+        id: 'mono-trail',
+        name: 'Sentier mono-sens',
+        displayName: 'Mono Trail',
+        tagline: 'Un seul sens',
+        totalStages: 5,
+        totalDistanceKm: 72.0,
+        totalElevationGain: 2420,
+        region: 'Auvergne',
+        country: 'France',
+        primaryColorValue: 0xFF8B4513,
+        secondaryColorValue: 0xFFD2691E,
+        gpxAssetPath: 'assets/gpx/test_trail.gpx',
+        directions: ['NS'],
+        availableDurations: [3, 5, 7],
+        defaultDuration: 5,
+        offlineFirst: true,
+        hasPremium: false,
+        privacyPolicyUrl: 'https://example.org/mono-trail/privacy',
+      );
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            trailConfigProvider.overrideWithValue(monoConfig),
+            daysOverride(mockDays),
+          ],
+          child: wrap('test-trail'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text(t.itinerary.direction.title), findsNothing);
+      expect(find.text(t.itinerary.direction.reverse), findsNothing);
     });
   });
 }

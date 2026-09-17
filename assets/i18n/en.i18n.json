@@ -278,6 +278,12 @@
   "itinerary": {
     "title": "Itinerary",
     "subtitle": "Your stages, day by day",
+    "direction": {
+      "title": "Hike direction",
+      "from": "Start",
+      "to": "Finish",
+      "reverse": "Reverse direction"
+    },
     "empty": "No stage available",
     "emptyHint": "Trail data is not loaded.",
     "loading": "Loading itinerary...",

@@ -6,6 +6,7 @@ import 'package:moteur_gr/core/geo/track_point.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/trek/domain/models/stage_accommodation.dart';
 import 'package:moteur_gr/features/trail/domain/trail_data_provider.dart';
+import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/itinerary_providers.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/features/trail/providers/trail_providers.dart';
@@ -27,8 +28,7 @@ class FakeTrailDataProvider implements TrailDataProvider {
   Future<List<StageAccommodation>> getAccommodations(
     String trailId, {
     int? stageNumber,
-  }) async =>
-      [];
+  }) async => [];
 
   @override
   TrailConfig getTrailConfig() => config;
@@ -142,6 +142,40 @@ void main() {
       expect(result[0].stages.length, 1);
       expect(result[0].totalDistance, 12.0);
       expect(result[0].stages[0].name, 'Depart - Refuge A');
+    });
+
+    test('retour #12b : inverser le sens inverse l\'ORDRE des etapes '
+        '(direction-aware)', () async {
+      final fakeDataProvider = FakeTrailDataProvider(
+        stages: [stage1, stage2, stage3],
+        config: testConfig,
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          trailDataProvider.overrideWithValue(fakeDataProvider),
+          trailConfigProvider.overrideWithValue(testConfig),
+          currentTrailIdProvider.overrideWith((ref) => 'test-trail'),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // Sens de reference ('NS', 1er code) : Jour 1 commence a l'etape 1
+      // (« Depart - Refuge A ») — la 1re etape du sentier dans l'ordre croissant.
+      final forward = await container.read(itineraryProvider.future);
+      expect(forward.first.stages.first.name, 'Depart - Refuge A');
+
+      // Inverser le sens (retour #12b) : selectedDirectionProvider = 'SN'.
+      container.read(selectedDirectionProvider.notifier).state = 'SN';
+
+      // L'itineraire se recalcule INVERSE : Jour 1 commence desormais par la
+      // DERNIERE etape (« Refuge B - Arrivee ») — preuve de l'effet du controle.
+      final reversed = await container.read(itineraryProvider.future);
+      expect(reversed.first.stages.first.name, 'Refuge B - Arrivee');
+      // La distance TOTALE est conservee (meme parcours, sens oppose).
+      double totalOf(List days) =>
+          days.fold<double>(0, (s, d) => s + (d.totalDistance as double));
+      expect(totalOf(reversed), closeTo(totalOf(forward), 0.001));
     });
   });
 }

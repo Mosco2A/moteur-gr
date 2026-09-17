@@ -383,6 +383,7 @@ class _Translations$itinerary$de extends Translations$itinerary$fr {
 	// Translations
 	@override String get title => 'Route';
 	@override String get subtitle => 'Ihre Etappen, Tag fuer Tag';
+	@override late final _Translations$itinerary$direction$de direction = _Translations$itinerary$direction$de._(_root);
 	@override String get empty => 'Keine Etappe verfuegbar';
 	@override String get emptyHint => 'Wegdaten sind nicht geladen.';
 	@override String get loading => 'Route wird geladen...';
@@ -1869,6 +1870,19 @@ class _Translations$accommodation$types$de extends Translations$accommodation$ty
 	@override String get hotel => 'Hotel';
 	@override String get camping => 'Campingplatz';
 	@override String get bivouac => 'Biwak';
+}
+
+// Path: itinerary.direction
+class _Translations$itinerary$direction$de extends Translations$itinerary$direction$fr {
+	_Translations$itinerary$direction$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Wanderrichtung';
+	@override String get from => 'Start';
+	@override String get to => 'Ziel';
+	@override String get reverse => 'Richtung umkehren';
 }
 
 // Path: checklist.categories
@@ -3916,6 +3930,10 @@ extension on TranslationsDe {
 			'planning.plan' => 'Planen',
 			'itinerary.title' => 'Route',
 			'itinerary.subtitle' => 'Ihre Etappen, Tag fuer Tag',
+			'itinerary.direction.title' => 'Wanderrichtung',
+			'itinerary.direction.from' => 'Start',
+			'itinerary.direction.to' => 'Ziel',
+			'itinerary.direction.reverse' => 'Richtung umkehren',
 			'itinerary.empty' => 'Keine Etappe verfuegbar',
 			'itinerary.emptyHint' => 'Wegdaten sind nicht geladen.',
 			'itinerary.loading' => 'Route wird geladen...',
@@ -4194,12 +4212,12 @@ extension on TranslationsDe {
 			'weather.today' => 'Heute',
 			'weather.tomorrow' => 'Morgen',
 			'weather.dayPlus2' => 'Übermorgen',
+			_ => null,
+		} ?? switch (path) {
 			'weather.allStages' => 'Alle Etappen',
 			'weather.noForecast' => 'Keine Vorhersage verfügbar.',
 			'weather.stageLabel' => ({required Object number}) => 'Etappe ${number}',
 			'weather.stormAlertsTitle' => 'Gewitterwarnungen',
-			_ => null,
-		} ?? switch (path) {
 			'weather.stormAlertsToggleOn' => 'Gewitterwarnungen aktiviert',
 			'weather.stormAlertsToggleOff' => 'Gewitterwarnungen deaktiviert',
 			'weather.lastUpdate' => ({required Object date}) => 'Aktualisiert ${date}',
@@ -4708,12 +4726,12 @@ extension on TranslationsDe {
 			'packs.actions.buy' => 'Dieses Paket kaufen',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Dieses Paket kaufen — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Wird heruntergeladen… ${done}/${total}',
+			_ => null,
+		} ?? switch (path) {
 			'packs.progress.verifying' => 'Integrität wird geprüft…',
 			'packs.progress.completed' => 'Paket offline bereit',
 			'packs.progress.error' => 'Download fehlgeschlagen',
 			'packs.delete.confirmTitle' => 'Dieses Paket löschen?',
-			_ => null,
-		} ?? switch (path) {
 			'packs.delete.confirmBody' => 'Das Paket wird vom Gerät entfernt, um Speicher freizugeben. Du kannst es später erneut herunterladen.',
 			'packs.delete.cancel' => 'Abbrechen',
 			'packs.delete.confirm' => 'Löschen',
@@ -5222,12 +5240,12 @@ extension on TranslationsDe {
 			'walkTest.monthlyReminderBody' => 'Jeden Monat wird eine Test-Erinnerung angeboten, um Ihre Form zu verfolgen.',
 			'walkTest.notDoneYet' => 'Test nicht durchgefuhrt',
 			'walkTest.fallbackNotice' => 'Bis zum Test wird Ihr Niveau aus Ihrem Fragebogen geschatzt.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.levels.low' => 'Niedrig',
 			'walkTest.levels.moderate' => 'Mittel',
 			'walkTest.levels.good' => 'Gut',
 			'walkTest.levels.excellent' => 'Ausgezeichnet',
-			_ => null,
-		} ?? switch (path) {
 			'pastHikes.title' => 'Ihre letzten 5 Touren',
 			'pastHikes.intro' => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.',
 			'pastHikes.addHike' => 'Tour hinzufugen',

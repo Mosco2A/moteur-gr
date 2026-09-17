@@ -278,6 +278,12 @@
   "itinerary": {
     "title": "Itineraire",
     "subtitle": "Le deroule de vos etapes",
+    "direction": {
+      "title": "Sens de la rando",
+      "from": "Départ",
+      "to": "Arrivée",
+      "reverse": "Inverser le sens"
+    },
     "empty": "Aucune etape disponible",
     "emptyHint": "Les donnees du sentier ne sont pas chargees.",
     "loading": "Chargement de l'itineraire...",

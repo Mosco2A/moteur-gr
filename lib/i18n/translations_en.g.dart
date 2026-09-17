@@ -383,6 +383,7 @@ class _Translations$itinerary$en extends Translations$itinerary$fr {
 	// Translations
 	@override String get title => 'Itinerary';
 	@override String get subtitle => 'Your stages, day by day';
+	@override late final _Translations$itinerary$direction$en direction = _Translations$itinerary$direction$en._(_root);
 	@override String get empty => 'No stage available';
 	@override String get emptyHint => 'Trail data is not loaded.';
 	@override String get loading => 'Loading itinerary...';
@@ -1869,6 +1870,19 @@ class _Translations$accommodation$types$en extends Translations$accommodation$ty
 	@override String get hotel => 'Hotel';
 	@override String get camping => 'Campsite';
 	@override String get bivouac => 'Bivouac';
+}
+
+// Path: itinerary.direction
+class _Translations$itinerary$direction$en extends Translations$itinerary$direction$fr {
+	_Translations$itinerary$direction$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Hike direction';
+	@override String get from => 'Start';
+	@override String get to => 'Finish';
+	@override String get reverse => 'Reverse direction';
 }
 
 // Path: checklist.categories
@@ -3916,6 +3930,10 @@ extension on TranslationsEn {
 			'planning.plan' => 'Plan',
 			'itinerary.title' => 'Itinerary',
 			'itinerary.subtitle' => 'Your stages, day by day',
+			'itinerary.direction.title' => 'Hike direction',
+			'itinerary.direction.from' => 'Start',
+			'itinerary.direction.to' => 'Finish',
+			'itinerary.direction.reverse' => 'Reverse direction',
 			'itinerary.empty' => 'No stage available',
 			'itinerary.emptyHint' => 'Trail data is not loaded.',
 			'itinerary.loading' => 'Loading itinerary...',
@@ -4194,12 +4212,12 @@ extension on TranslationsEn {
 			'weather.today' => 'Today',
 			'weather.tomorrow' => 'Tomorrow',
 			'weather.dayPlus2' => 'In two days',
+			_ => null,
+		} ?? switch (path) {
 			'weather.allStages' => 'All stages',
 			'weather.noForecast' => 'No forecast available.',
 			'weather.stageLabel' => ({required Object number}) => 'Stage ${number}',
 			'weather.stormAlertsTitle' => 'Storm alerts',
-			_ => null,
-		} ?? switch (path) {
 			'weather.stormAlertsToggleOn' => 'Storm alerts on',
 			'weather.stormAlertsToggleOff' => 'Storm alerts off',
 			'weather.lastUpdate' => ({required Object date}) => 'Updated ${date}',
@@ -4708,12 +4726,12 @@ extension on TranslationsEn {
 			'packs.actions.buy' => 'Buy this pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Buy this pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Downloading… ${done}/${total}',
+			_ => null,
+		} ?? switch (path) {
 			'packs.progress.verifying' => 'Verifying integrity…',
 			'packs.progress.completed' => 'Pack ready offline',
 			'packs.progress.error' => 'Download failed',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
-			_ => null,
-		} ?? switch (path) {
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
 			'packs.delete.cancel' => 'Cancel',
 			'packs.delete.confirm' => 'Delete',
@@ -5222,12 +5240,12 @@ extension on TranslationsEn {
 			'walkTest.monthlyReminderBody' => 'A test reminder will be offered every month to track your fitness.',
 			'walkTest.notDoneYet' => 'Test not taken',
 			'walkTest.fallbackNotice' => 'Until you take the test, your level is estimated from your questionnaire.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.levels.low' => 'Low',
 			'walkTest.levels.moderate' => 'Moderate',
 			'walkTest.levels.good' => 'Good',
 			'walkTest.levels.excellent' => 'Excellent',
-			_ => null,
-		} ?? switch (path) {
 			'pastHikes.title' => 'Your last 5 hikes',
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',

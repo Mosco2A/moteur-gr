@@ -665,6 +665,8 @@ class Translations$itinerary$fr {
 	/// fr: 'Le deroule de vos etapes'
 	String get subtitle => 'Le deroule de vos etapes';
 
+	late final Translations$itinerary$direction$fr direction = Translations$itinerary$direction$fr.internal(_root);
+
 	/// fr: 'Aucune etape disponible'
 	String get empty => 'Aucune etape disponible';
 
@@ -3796,6 +3798,27 @@ class Translations$accommodation$types$fr {
 
 	/// fr: 'Bivouac'
 	String get bivouac => 'Bivouac';
+}
+
+// Path: itinerary.direction
+class Translations$itinerary$direction$fr {
+	Translations$itinerary$direction$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Sens de la rando'
+	String get title => 'Sens de la rando';
+
+	/// fr: 'Départ'
+	String get from => 'Départ';
+
+	/// fr: 'Arrivée'
+	String get to => 'Arrivée';
+
+	/// fr: 'Inverser le sens'
+	String get reverse => 'Inverser le sens';
 }
 
 // Path: checklist.categories
@@ -7188,6 +7211,10 @@ extension on Translations {
 			'planning.plan' => 'Planifier',
 			'itinerary.title' => 'Itineraire',
 			'itinerary.subtitle' => 'Le deroule de vos etapes',
+			'itinerary.direction.title' => 'Sens de la rando',
+			'itinerary.direction.from' => 'Départ',
+			'itinerary.direction.to' => 'Arrivée',
+			'itinerary.direction.reverse' => 'Inverser le sens',
 			'itinerary.empty' => 'Aucune etape disponible',
 			'itinerary.emptyHint' => 'Les donnees du sentier ne sont pas chargees.',
 			'itinerary.loading' => 'Chargement de l\'itineraire...',
@@ -7466,12 +7493,12 @@ extension on Translations {
 			'weather.today' => 'Aujourd\'hui',
 			'weather.tomorrow' => 'Demain',
 			'weather.dayPlus2' => 'Après-demain',
+			_ => null,
+		} ?? switch (path) {
 			'weather.allStages' => 'Toutes les étapes',
 			'weather.noForecast' => 'Aucune prévision disponible.',
 			'weather.stageLabel' => ({required Object number}) => 'Étape ${number}',
 			'weather.stormAlertsTitle' => 'Alertes orage',
-			_ => null,
-		} ?? switch (path) {
 			'weather.stormAlertsToggleOn' => 'Alertes orage activées',
 			'weather.stormAlertsToggleOff' => 'Alertes orage désactivées',
 			'weather.lastUpdate' => ({required Object date}) => 'Mis à jour ${date}',
@@ -7980,12 +8007,12 @@ extension on Translations {
 			'packs.actions.buy' => 'Acheter ce pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acheter ce pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}',
+			_ => null,
+		} ?? switch (path) {
 			'packs.progress.verifying' => 'Vérification de l\'intégrité…',
 			'packs.progress.completed' => 'Pack prêt hors-ligne',
 			'packs.progress.error' => 'Échec du téléchargement',
 			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
-			_ => null,
-		} ?? switch (path) {
 			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
 			'packs.delete.cancel' => 'Annuler',
 			'packs.delete.confirm' => 'Supprimer',
@@ -8494,12 +8521,12 @@ extension on Translations {
 			'walkTest.monthlyReminderBody' => 'Un rappel de test vous sera propose chaque mois pour suivre votre forme.',
 			'walkTest.notDoneYet' => 'Test non realise',
 			'walkTest.fallbackNotice' => 'En attendant le test, votre niveau est estime a partir de votre questionnaire.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.levels.low' => 'Faible',
 			'walkTest.levels.moderate' => 'Moyen',
 			'walkTest.levels.good' => 'Bon',
 			'walkTest.levels.excellent' => 'Excellent',
-			_ => null,
-		} ?? switch (path) {
 			'pastHikes.title' => 'Vos 5 dernieres randos',
 			'pastHikes.intro' => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.',
 			'pastHikes.addHike' => 'Ajouter une rando',

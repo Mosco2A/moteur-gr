@@ -278,6 +278,12 @@
   "itinerary": {
     "title": "Itinerario",
     "subtitle": "Le tue tappe, giorno per giorno",
+    "direction": {
+      "title": "Senso della camminata",
+      "from": "Partenza",
+      "to": "Arrivo",
+      "reverse": "Inverti il senso"
+    },
     "empty": "Nessuna tappa disponibile",
     "emptyHint": "I dati del sentiero non sono caricati.",
     "loading": "Caricamento itinerario...",

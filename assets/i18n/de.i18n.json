@@ -278,6 +278,12 @@
   "itinerary": {
     "title": "Route",
     "subtitle": "Ihre Etappen, Tag fuer Tag",
+    "direction": {
+      "title": "Wanderrichtung",
+      "from": "Start",
+      "to": "Ziel",
+      "reverse": "Richtung umkehren"
+    },
     "empty": "Keine Etappe verfuegbar",
     "emptyHint": "Wegdaten sind nicht geladen.",
     "loading": "Route wird geladen...",
