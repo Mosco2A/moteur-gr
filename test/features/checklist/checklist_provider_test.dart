@@ -126,6 +126,50 @@ void main() {
       final items = await dao.getByTrailId(testTrailConfig.id);
       expect(items.length, defaultChecklistTemplate.length);
     });
+
+    // LOT 1 (retour Chris #12) : le poids du sac DERIVE du poids de la fiche
+    // profil. On teste la mecanique d'injection au niveau du provider.
+    test('seedBodyWeightFromProfile injecte le poids morpho (defaut 70 -> 82)',
+        () async {
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+
+      // Defaut de reference GR20 tant qu'aucune source.
+      expect(container.read(checklistProvider).bodyWeightKg,
+          kDefaultBodyWeightKg);
+
+      container.read(checklistProvider.notifier).seedBodyWeightFromProfile(82);
+
+      final state = container.read(checklistProvider);
+      expect(state.bodyWeightKg, 82);
+      expect(state.bodyWeightEdited, false);
+      // Le ratio sac/corps utilise bien la nouvelle source de verite.
+      expect(state.backpackRatio, closeTo(state.checkedWeightKg / 82, 0.0001));
+    });
+
+    test('seedBodyWeightFromProfile n ecrase PAS une saisie manuelle',
+        () async {
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+
+      final notifier = container.read(checklistProvider.notifier);
+      // L'utilisateur saisit un poids a la main dans l'ecran Sac (override).
+      notifier.setBodyWeight(95);
+      expect(container.read(checklistProvider).bodyWeightEdited, true);
+
+      // Une injection ulterieure depuis le profil ne doit PAS l'ecraser.
+      notifier.seedBodyWeightFromProfile(70);
+      expect(container.read(checklistProvider).bodyWeightKg, 95);
+    });
+
+    test('seedBodyWeightFromProfile ignore les valeurs <= 0', () async {
+      container.read(checklistProvider);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+
+      container.read(checklistProvider.notifier).seedBodyWeightFromProfile(0);
+      expect(container.read(checklistProvider).bodyWeightKg,
+          kDefaultBodyWeightKg);
+    });
   });
 
   group('ChecklistState', () {

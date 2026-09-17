@@ -155,6 +155,7 @@ class ChecklistBodyWeightRow extends StatefulWidget {
 
 class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
   late final TextEditingController _controller;
+  final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -164,8 +165,22 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
   }
 
   @override
+  void didUpdateWidget(ChecklistBodyWeightRow oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // LOT 1 (retour Chris #12) : quand le poids corporel change en amont (ex.
+    // injection depuis la fiche profil), on synchronise le champ affiche — SAUF
+    // si l'utilisateur est en train d'y saisir (focus) pour ne pas lui couper
+    // la frappe. Le poids affiche colle ainsi a la source de verite (profil).
+    if (widget.bodyWeightKg != oldWidget.bodyWeightKg && !_focusNode.hasFocus) {
+      final next = widget.bodyWeightKg.toStringAsFixed(0);
+      if (_controller.text != next) _controller.text = next;
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -197,6 +212,7 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
             width: 120,
             child: TextField(
               controller: _controller,
+              focusNode: _focusNode,
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyMedium

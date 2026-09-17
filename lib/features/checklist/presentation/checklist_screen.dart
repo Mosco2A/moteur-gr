@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../feasibility/domain/hiker_profile.dart';
+import '../../feasibility/providers/hiker_profile_provider.dart';
 import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import '../widgets/checklist_bottom_actions.dart';
@@ -37,6 +39,24 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
   Widget build(BuildContext context) {
     final checklistT = t.checklist;
     final isLoading = ref.watch(checklistProvider.select((s) => s.isLoading));
+
+    // LOT 1 (retour Chris #12) : le poids du sac DERIVE du poids de la fiche
+    // profil (source de verite unique). On injecte le poids morpho dans la
+    // jauge Sac des qu'il est disponible, et on reste reactif si l'utilisateur
+    // met a jour sa fiche. `seedBodyWeightFromProfile` n'ecrase pas une saisie
+    // manuelle de session (override local). Fait ICI (dans build) via un watch
+    // + un post-frame : on ne mute pas le provider Sac pendant la construction.
+    final profileWeight =
+        ref.watch(hikerProfileProvider).value?.weightKg ??
+            HikerProfile.empty.weightKg;
+    if (profileWeight > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ref
+            .read(checklistProvider.notifier)
+            .seedBodyWeightFromProfile(profileWeight);
+      });
+    }
 
     if (isLoading) {
       return Scaffold(

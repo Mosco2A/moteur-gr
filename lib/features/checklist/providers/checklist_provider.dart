@@ -25,6 +25,7 @@ class ChecklistState {
     this.bodyWeightKg = kDefaultBodyWeightKg,
     this.isLoading = false,
     this.bagValidated = false,
+    this.bodyWeightEdited = false,
   });
 
   /// Liste des items avec leur etat coche/decoche
@@ -37,6 +38,12 @@ class ChecklistState {
   final int totalCount;
 
   /// Poids corporel de l'utilisateur en kg (jauge sac/corps, parite GR20).
+  ///
+  /// LOT 1 (retour Chris #12) : SOURCE DE VERITE = le poids de la fiche profil
+  /// (`hikerProfileProvider`). Il est injecte au chargement de l'ecran Sac
+  /// ([seedBodyWeightFromProfile]) pour que « le poids du sac corresponde au
+  /// poids defini dans les infos utilisateur ». La saisie manuelle du champ Sac
+  /// reste possible (override de session) et prime alors ([bodyWeightEdited]).
   final double bodyWeightKg;
 
   /// Chargement en cours
@@ -44,6 +51,11 @@ class ChecklistState {
 
   /// Sac valide par l'utilisateur (« SAC OK », parite GR20). Session courante.
   final bool bagValidated;
+
+  /// Vrai si l'utilisateur a EDITE manuellement le poids corporel dans l'ecran
+  /// Sac (LOT 1 #12). Empeche l'auto-injection du poids profil d'ecraser une
+  /// saisie manuelle en cours de session.
+  final bool bodyWeightEdited;
 
   /// Progression en pourcentage (0.0 a 1.0)
   double get progress => totalCount > 0 ? checkedCount / totalCount : 0.0;
@@ -230,6 +242,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       totalCount: itemStates.length,
       bodyWeightKg: state.bodyWeightKg,
       bagValidated: state.bagValidated,
+      bodyWeightEdited: state.bodyWeightEdited,
     );
   }
 
@@ -305,6 +318,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       totalCount: items.length,
       bodyWeightKg: state.bodyWeightKg,
       bagValidated: state.bagValidated,
+      bodyWeightEdited: state.bodyWeightEdited,
     );
   }
 
@@ -471,8 +485,10 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
   /// Met a jour le poids corporel (kg) pour la jauge sac/corps (parite GR20).
   ///
-  /// Session courante uniquement (comme GR20 : non persiste). Ignore les
-  /// valeurs <= 0 (garde-fou).
+  /// Saisie MANUELLE dans l'ecran Sac : marque [ChecklistState.bodyWeightEdited]
+  /// pour que l'auto-injection du poids profil (LOT 1 #12) ne l'ecrase plus
+  /// ensuite. Session courante uniquement (comme GR20 : non persiste). Ignore
+  /// les valeurs <= 0 (garde-fou).
   void setBodyWeight(double kg) {
     if (kg <= 0) return;
     state = ChecklistState(
@@ -481,6 +497,29 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       totalCount: state.totalCount,
       bodyWeightKg: kg,
       bagValidated: state.bagValidated,
+      bodyWeightEdited: true,
+    );
+  }
+
+  /// Injecte le poids corporel depuis la FICHE PROFIL (LOT 1, retour Chris #12).
+  ///
+  /// Rend le poids du sac coherent avec « le poids defini dans les infos
+  /// utilisateur » : une seule source de verite (la morpho). Appelee par l'ecran
+  /// Sac quand la fiche profil expose un poids valide. N'ECRASE PAS une saisie
+  /// manuelle de session ([ChecklistState.bodyWeightEdited]) ni une valeur
+  /// identique (evite un rebuild inutile). Session courante (non persiste, comme
+  /// GR20) : le champ profil reste la source durable.
+  void seedBodyWeightFromProfile(double kg) {
+    if (kg <= 0) return;
+    if (state.bodyWeightEdited) return;
+    if (state.bodyWeightKg == kg) return;
+    state = ChecklistState(
+      items: state.items,
+      checkedCount: state.checkedCount,
+      totalCount: state.totalCount,
+      bodyWeightKg: kg,
+      bagValidated: state.bagValidated,
+      bodyWeightEdited: false,
     );
   }
 
@@ -492,6 +531,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       totalCount: state.totalCount,
       bodyWeightKg: state.bodyWeightKg,
       bagValidated: true,
+      bodyWeightEdited: state.bodyWeightEdited,
     );
   }
 
@@ -503,6 +543,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       totalCount: state.totalCount,
       bodyWeightKg: state.bodyWeightKg,
       bagValidated: false,
+      bodyWeightEdited: state.bodyWeightEdited,
     );
   }
 
