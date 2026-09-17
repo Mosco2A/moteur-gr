@@ -2760,6 +2760,7 @@ class _Translations$programme$duration$de extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Anzahl der Tage';
 	@override String get days => '{count} T';
+	@override String get daysWithRest => '{total} T (davon {rest} Ruhe)';
 	@override late final _Translations$programme$duration$difficulty$de difficulty = _Translations$programme$duration$difficulty$de._(_root);
 }
 
@@ -4882,6 +4883,7 @@ extension on TranslationsDe {
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
 			'programme.duration.days' => '{count} T',
+			'programme.duration.daysWithRest' => '{total} T (davon {rest} Ruhe)',
 			'programme.duration.difficulty.comfortable' => 'Gemütlich',
 			'programme.duration.difficulty.standard' => 'Standard',
 			'programme.duration.difficulty.sporty' => 'Sportlich',
@@ -5223,9 +5225,9 @@ extension on TranslationsDe {
 			'walkTest.levels.good' => 'Gut',
 			'walkTest.levels.excellent' => 'Ausgezeichnet',
 			'pastHikes.title' => 'Ihre letzten 5 Touren',
-			'pastHikes.intro' => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.intro' => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.',
 			'pastHikes.addHike' => 'Tour hinzufugen',
 			'pastHikes.empty' => 'Noch keine Tour erfasst.',
 			'pastHikes.fieldDate' => 'Datum',

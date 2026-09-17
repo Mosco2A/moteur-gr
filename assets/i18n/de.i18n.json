@@ -1467,6 +1467,7 @@
     "duration": {
       "label": "Anzahl der Tage",
       "days": "{count} T",
+      "daysWithRest": "{total} T (davon {rest} Ruhe)",
       "difficulty": {
         "comfortable": "Gemütlich",
         "standard": "Standard",

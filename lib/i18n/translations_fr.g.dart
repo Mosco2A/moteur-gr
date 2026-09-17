@@ -5547,6 +5547,9 @@ class Translations$programme$duration$fr {
 	/// fr: '{count} j'
 	String get days => '{count} j';
 
+	/// fr: '{total} j (dont {rest} repos)'
+	String get daysWithRest => '{total} j (dont {rest} repos)';
+
 	late final Translations$programme$duration$difficulty$fr difficulty = Translations$programme$duration$difficulty$fr.internal(_root);
 }
 
@@ -8150,6 +8153,7 @@ extension on Translations {
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
 			'programme.duration.days' => '{count} j',
+			'programme.duration.daysWithRest' => '{total} j (dont {rest} repos)',
 			'programme.duration.difficulty.comfortable' => 'Confortable',
 			'programme.duration.difficulty.standard' => 'Standard',
 			'programme.duration.difficulty.sporty' => 'Sportif',
@@ -8491,9 +8495,9 @@ extension on Translations {
 			'walkTest.levels.good' => 'Bon',
 			'walkTest.levels.excellent' => 'Excellent',
 			'pastHikes.title' => 'Vos 5 dernieres randos',
-			'pastHikes.intro' => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.intro' => 'Ajoutez jusqu\'a 5 randos notables. On en deduit votre niveau reel (rythme, endurance, habitude du denivele) plutot qu\'une etiquette.',
 			'pastHikes.addHike' => 'Ajouter une rando',
 			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
 			'pastHikes.fieldDate' => 'Date',

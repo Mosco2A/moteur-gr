@@ -61,9 +61,17 @@ String durationDifficultyLabel(DurationDifficulty difficulty) {
 /// borne par le nombre d'etapes du sentier ([minDuration]..[maxDuration],
 /// divisions entieres), dont la piste active et le pouce prennent la COULEUR de
 /// la DIFFICULTE = ratio etapes / jours de marche. Au-dessus, la valeur courante
-/// « {n} jours » est affichee en grand dans la meme couleur, avec un petit label
-/// de difficulte (Confortable / Standard / Sportif / Tres exigeant), exactement
-/// comme GR20. Sous le curseur, les bornes min / max encadrent la plage.
+/// est affichee en grand dans la meme couleur, avec un petit label de difficulte
+/// (Confortable / Standard / Sportif / Tres exigeant), exactement comme GR20.
+/// Sous le curseur, les bornes min / max encadrent la plage.
+///
+/// RETOUR CHRIS #9 (LOT 2) : le nombre de jours affiche en grand suit DESORMAIS
+/// le programme REEL, jours de repos inclus ([totalDays] = marche + repos), et
+/// non plus la seule duree de MARCHE ([selectedDuration]) pilotee par le slider.
+/// Ainsi, ajouter un jour de repos ou separer une etape (qui augmentent le total
+/// de jours) met a jour ce compteur immediatement. Le SLIDER, lui, continue de
+/// regler la repartition sur les jours de MARCHE (son role d'origine) ; quand des
+/// repos existent, le libelle detaille « {total} j (dont {rest} repos) ».
 ///
 /// Hors systeme de peaux : les couleurs vert / jaune / orange / rouge sont des
 /// couleurs SEMANTIQUES de difficulte (AppTheme), jamais la peau du sentier.
@@ -76,6 +84,8 @@ class DurationSelector extends StatelessWidget {
     required this.selectedDuration,
     required this.stageCount,
     required this.walkingDays,
+    required this.totalDays,
+    required this.restDays,
     required this.onDurationChanged,
   });
 
@@ -85,7 +95,7 @@ class DurationSelector extends StatelessWidget {
   /// Nombre maximal de jours (borne haute du sentier).
   final int maxDuration;
 
-  /// Duree actuellement selectionnee (en jours).
+  /// Duree de MARCHE actuellement selectionnee (en jours) — reglee par le slider.
   final int selectedDuration;
 
   /// Nombre total d'etapes du sentier (numerateur du ratio de difficulte).
@@ -94,6 +104,13 @@ class DurationSelector extends StatelessWidget {
   /// Nombre de jours de MARCHE du programme courant (repos exclus) : denominateur
   /// du ratio de difficulte, pour que la couleur reflete l'effort reel.
   final int walkingDays;
+
+  /// Nombre TOTAL de jours du programme reel (marche + repos), retour Chris #9 :
+  /// c'est LUI qui est affiche en grand (il suit les repos ajoutes / splits).
+  final int totalDays;
+
+  /// Nombre de jours de repos du programme courant (detail du libelle total).
+  final int restDays;
 
   /// Callback appele quand l'utilisateur change la duree.
   final ValueChanged<int> onDurationChanged;
@@ -112,8 +129,13 @@ class DurationSelector extends StatelessWidget {
     final clamped = selectedDuration.toDouble().clamp(min, max);
     final divisions = hasRange ? (max - min).round() : 1;
 
-    final daysLabel =
-        t.programme.duration.days.replaceAll('{count}', '$selectedDuration');
+    // Retour Chris #9 : le grand compteur = TOTAL de jours (marche + repos), qui
+    // suit les repos ajoutes / etapes separees. Avec repos -> libelle detaille.
+    final daysLabel = restDays > 0
+        ? t.programme.duration.daysWithRest
+              .replaceAll('{total}', '$totalDays')
+              .replaceAll('{rest}', '$restDays')
+        : t.programme.duration.days.replaceAll('{count}', '$totalDays');
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -167,8 +189,10 @@ class DurationSelector extends StatelessWidget {
             min: min,
             max: hasRange ? max : min + 1,
             divisions: divisions,
-            label: t.programme.duration.days
-                .replaceAll('{count}', '${clamped.round()}'),
+            label: t.programme.duration.days.replaceAll(
+              '{count}',
+              '${clamped.round()}',
+            ),
             activeColor: sliderColor,
             inactiveColor: AppTheme.grisGranite.withAlpha(40),
             onChanged: hasRange

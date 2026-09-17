@@ -24,8 +24,12 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///   - PART A : la carte HUB « Programme » ouvre bien CET ecran riche (et non
 ///     l'ancien ecran pauvre), via /trail/:id/planning, avec retour propre.
 void main() {
-  StageModel makeStage(int num, double km, int gain,
-      {String difficulty = 'moderate'}) {
+  StageModel makeStage(
+    int num,
+    double km,
+    int gain, {
+    String difficulty = 'moderate',
+  }) {
     return StageModel(
       trailId: 'test-trail',
       stageNumber: num,
@@ -50,55 +54,52 @@ void main() {
   ];
 
   List<Override> baseOverrides() => [
-        trailConfigProvider.overrideWithValue(testTrailConfig),
-        stagesProvider('test-trail')
-            .overrideWith((ref) => Future.value(testStages)),
-      ];
+    trailConfigProvider.overrideWithValue(testTrailConfig),
+    stagesProvider(
+      'test-trail',
+    ).overrideWith((ref) => Future.value(testStages)),
+  ];
 
   /// AppHeader (Ph5/L6b) utilise GoRouter (canPop/go) -> heberge l'ecran dans un
   /// GoRouter minimal (+ /my-treks pour l'accueil contextuel du bouton Accueil).
   Widget wrap() => MaterialApp.router(
-        routerConfig: GoRouter(
-          initialLocation: '/planning',
-          routes: [
-            GoRoute(
-              path: '/planning',
-              builder: (_, __) =>
-                  const TrailPlanningScreen(trailId: 'test-trail'),
-            ),
-            GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
-          ],
+    routerConfig: GoRouter(
+      initialLocation: '/planning',
+      routes: [
+        GoRoute(
+          path: '/planning',
+          builder: (_, __) => const TrailPlanningScreen(trailId: 'test-trail'),
         ),
-      );
+        GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+      ],
+    ),
+  );
 
   /// Pompe l'ecran PROGRAMME dans une surface HAUTE afin que la liste (lazy
   /// `ReorderableListView`) rende TOUTES les cartes de jour sans culling de
   /// viewport. Indispensable pour verifier les actions de CHAQUE jour et pour
   /// interagir avec des jours au-dela du premier ecran. La taille est remise a
   /// zero en fin de test.
-  Future<void> pumpProgramme(WidgetTester tester,
-      {Size size = const Size(500, 1600)}) async {
+  Future<void> pumpProgramme(
+    WidgetTester tester, {
+    Size size = const Size(500, 1600),
+  }) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
-      ProviderScope(
-        overrides: baseOverrides(),
-        child: wrap(),
-      ),
+      ProviderScope(overrides: baseOverrides(), child: wrap()),
     );
     await tester.pumpAndSettle();
   }
 
   group('PROGRAMME — parite GR20', () {
-    testWidgets('affiche le titre Programme et l en-tete de stats',
-        (tester) async {
+    testWidgets('affiche le titre Programme et l en-tete de stats', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: wrap(),
-        ),
+        ProviderScope(overrides: baseOverrides(), child: wrap()),
       );
       await tester.pumpAndSettle();
 
@@ -115,13 +116,11 @@ void main() {
       expect(find.text(t.programme.legend.extreme), findsOneWidget);
     });
 
-    testWidgets('affiche le contenu par etape (nom, distance, D+, D-)',
-        (tester) async {
+    testWidgets('affiche le contenu par etape (nom, distance, D+, D-)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: wrap(),
-        ),
+        ProviderScope(overrides: baseOverrides(), child: wrap()),
       );
       await tester.pumpAndSettle();
 
@@ -137,8 +136,9 @@ void main() {
       expect(find.text(t.programme.validate), findsOneWidget);
     });
 
-    testWidgets('tap sur une carte jour ouvre le detail de l etape',
-        (tester) async {
+    testWidgets('tap sur une carte jour ouvre le detail de l etape', (
+      tester,
+    ) async {
       final router = GoRouter(
         initialLocation: '/trail/test-trail/planning',
         routes: [
@@ -150,9 +150,8 @@ void main() {
           // Cible : detail d'etape (parite GR20 : acces au detail depuis le jour).
           GoRoute(
             path: '/stages/:num',
-            builder: (context, state) => Scaffold(
-              body: Text('DETAIL ${state.pathParameters['num']}'),
-            ),
+            builder: (context, state) =>
+                Scaffold(body: Text('DETAIL ${state.pathParameters['num']}')),
           ),
         ],
       );
@@ -173,8 +172,9 @@ void main() {
       expect(find.text('DETAIL 1'), findsOneWidget);
     });
 
-    testWidgets('edition : ajouter un jour de repos (parite GR20)',
-        (tester) async {
+    testWidgets('edition : ajouter un jour de repos (parite GR20)', (
+      tester,
+    ) async {
       // Surface haute : la liste (lazy) rend tous les jours, donc la carte de
       // repos ajoutee reste visible (pas de culling de viewport).
       await pumpProgramme(tester);
@@ -193,70 +193,68 @@ void main() {
 
   group('PART A — la carte HUB « Programme » ouvre l ecran riche', () {
     testWidgets(
-        'push /trail/:id/planning ouvre le PROGRAMME riche puis retour propre',
-        (tester) async {
-      // Router minimal reproduisant le chemin du HUB : la carte « Programme »
-      // fait `context.push('/trail/:id/planning')`.
-      final router = GoRouter(
-        initialLocation: '/home',
-        routes: [
-          GoRoute(
-            path: '/home',
-            builder: (context, state) => Scaffold(
-              appBar: AppBar(title: const Text('HUB-HOME')),
-              body: Center(
-                child: ElevatedButton(
-                  onPressed: () =>
-                      context.push('/trail/test-trail/planning'),
-                  child: Text(t.hub.cards.programme),
+      'push /trail/:id/planning ouvre le PROGRAMME riche puis retour propre',
+      (tester) async {
+        // Router minimal reproduisant le chemin du HUB : la carte « Programme »
+        // fait `context.push('/trail/:id/planning')`.
+        final router = GoRouter(
+          initialLocation: '/home',
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => Scaffold(
+                appBar: AppBar(title: const Text('HUB-HOME')),
+                body: Center(
+                  child: ElevatedButton(
+                    onPressed: () => context.push('/trail/test-trail/planning'),
+                    child: Text(t.hub.cards.programme),
+                  ),
                 ),
               ),
             ),
+            GoRoute(
+              path: '/trail/:id/planning',
+              builder: (context, state) =>
+                  const TrailPlanningScreen(trailId: 'test-trail'),
+            ),
+          ],
+        );
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: baseOverrides(),
+            child: MaterialApp.router(routerConfig: router),
           ),
-          GoRoute(
-            path: '/trail/:id/planning',
-            builder: (context, state) =>
-                const TrailPlanningScreen(trailId: 'test-trail'),
-          ),
-        ],
-      );
+        );
+        await tester.pumpAndSettle();
 
-      await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: MaterialApp.router(routerConfig: router),
-        ),
-      );
-      await tester.pumpAndSettle();
+        expect(find.text('HUB-HOME'), findsOneWidget);
 
-      expect(find.text('HUB-HOME'), findsOneWidget);
+        // Ouvrir le PROGRAMME depuis la carte HUB.
+        await tester.tap(find.text(t.hub.cards.programme));
+        await tester.pumpAndSettle();
 
-      // Ouvrir le PROGRAMME depuis la carte HUB.
-      await tester.tap(find.text(t.hub.cards.programme));
-      await tester.pumpAndSettle();
+        // On est bien sur l'ecran RICHE (titre Programme + stats + contenu etape),
+        // preuve que la carte n'ouvre plus l'ancien ecran pauvre « Planning ».
+        expect(find.text(t.programme.title), findsOneWidget);
+        expect(find.text('Etape 1 - Refuge 1'), findsOneWidget);
 
-      // On est bien sur l'ecran RICHE (titre Programme + stats + contenu etape),
-      // preuve que la carte n'ouvre plus l'ancien ecran pauvre « Planning ».
-      expect(find.text(t.programme.title), findsOneWidget);
-      expect(find.text('Etape 1 - Refuge 1'), findsOneWidget);
-
-      // Retour propre vers le HUB (pas d'exception) via le bouton back de
-      // l'AppHeader (Ph5/L6b — tooltip Slang `nav.back`, remplace pageBack()).
-      await tester.tap(find.byTooltip(t.nav.back));
-      await tester.pumpAndSettle();
-      expect(find.text('HUB-HOME'), findsOneWidget);
-      expect(tester.takeException(), isNull);
-    });
+        // Retour propre vers le HUB (pas d'exception) via le bouton back de
+        // l'AppHeader (Ph5/L6b — tooltip Slang `nav.back`, remplace pageBack()).
+        await tester.tap(find.byTooltip(t.nav.back));
+        await tester.pumpAndSettle();
+        expect(find.text('HUB-HOME'), findsOneWidget);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 
   group('CURSEUR DE DUREE — slider colore par difficulte (parite GR20)', () {
-    testWidgets('le selecteur est un Slider borne par le nombre d etapes',
-        (tester) async {
+    testWidgets('le selecteur est un Slider borne par le nombre d etapes', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: wrap(),
-        ),
+        ProviderScope(overrides: baseOverrides(), child: wrap()),
       );
       await tester.pumpAndSettle();
 
@@ -280,20 +278,21 @@ void main() {
       expect(find.text(label5), findsWidgets);
     });
 
-    testWidgets('la couleur du curseur suit la DIFFICULTE (ratio etapes/jours)',
-        (tester) async {
+    testWidgets('la couleur du curseur suit la DIFFICULTE (ratio etapes/jours)', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: wrap(),
-        ),
+        ProviderScope(overrides: baseOverrides(), child: wrap()),
       );
       await tester.pumpAndSettle();
 
       // 5 etapes / 5 jours de marche = ratio 1.0 -> « Standard » (jaune modere).
       var slider = tester.widget<Slider>(find.byType(Slider));
       expect(slider.activeColor, AppTheme.jauneModere);
-      expect(find.text(t.programme.duration.difficulty.standard), findsOneWidget);
+      expect(
+        find.text(t.programme.duration.difficulty.standard),
+        findsOneWidget,
+      );
 
       // Descendre a 3 jours -> 5 etapes / 3 jours = 1.67 -> « Tres exigeant »
       // (rouge). Le curseur DOIT changer de couleur (parite GR20).
@@ -302,16 +301,16 @@ void main() {
       slider = tester.widget<Slider>(find.byType(Slider));
       expect(slider.activeColor, AppTheme.rougeExtreme);
       expect(
-          find.text(t.programme.duration.difficulty.demanding), findsOneWidget);
+        find.text(t.programme.duration.difficulty.demanding),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('changer la duree via le curseur recalcule le programme',
-        (tester) async {
+    testWidgets('changer la duree via le curseur recalcule le programme', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        ProviderScope(
-          overrides: baseOverrides(),
-          child: wrap(),
-        ),
+        ProviderScope(overrides: baseOverrides(), child: wrap()),
       );
       await tester.pumpAndSettle();
 
@@ -327,17 +326,44 @@ void main() {
       await tester.pumpAndSettle();
 
       // En-tete « Jours » = « 7 (2 repos) » : preuve directe du recalcul.
-      final restCount =
-          t.programme.stats.restCount.replaceAll('{count}', '2');
+      final restCount = t.programme.stats.restCount.replaceAll('{count}', '2');
       expect(find.text('7 ($restCount)'), findsOneWidget);
       // Profil altimetrique : 2 barres de repos « R » apparues.
       expect(find.text(t.programme.restDayLabel), findsNWidgets(2));
     });
+
+    testWidgets(
+      'retour #9 : ajouter un jour de repos met a jour le compteur du curseur',
+      (tester) async {
+        await pumpProgramme(tester);
+
+        // Au depart : 5 jours de marche, aucun repos -> le grand compteur du
+        // curseur affiche « 5 j » (total = marche, restDays = 0).
+        final days5 = t.programme.duration.days.replaceAll('{count}', '5');
+        expect(find.text(days5), findsWidgets);
+
+        // Ajouter UN jour de repos via l'action « Repos » (pas le slider).
+        await tester.tap(find.text(t.programme.actions.rest).first);
+        await tester.pumpAndSettle();
+
+        // Retour Chris #9 : le compteur du curseur SUIT le repos ajoute -> il
+        // affiche desormais le TOTAL (6) avec le detail repos, et NON plus « 5 j ».
+        final daysWithRest = t.programme.duration.daysWithRest
+            .replaceAll('{total}', '6')
+            .replaceAll('{rest}', '1');
+        expect(find.text(daysWithRest), findsOneWidget);
+        // L'ancien libelle « 5 j » ne subsiste PAS pour le compteur (le curseur ne
+        // reste pas bloque sur les seuls jours de marche). NB : le slider a
+        // toujours 5 jours de MARCHE, mais son role de repartition est distinct du
+        // compteur affiche (qui, lui, reflete le programme reel).
+      },
+    );
   });
 
   group('JOUR DE REPOS EN BLEU (parite GR20)', () {
-    testWidgets('la carte de jour de repos est teintee en bleu semantique',
-        (tester) async {
+    testWidgets('la carte de jour de repos est teintee en bleu semantique', (
+      tester,
+    ) async {
       await pumpProgramme(tester);
 
       // Ajouter un jour de repos.
@@ -349,28 +375,34 @@ void main() {
           .widgetList<Text>(find.text(t.programme.restDay))
           .toList();
       expect(restTexts, isNotEmpty);
-      final hasBlue = restTexts.any((w) => w.style?.color == AppTheme.bleuRepos);
-      expect(hasBlue, isTrue,
-          reason: 'le jour de repos doit etre affiche en bleu, pas en vert');
+      final hasBlue = restTexts.any(
+        (w) => w.style?.color == AppTheme.bleuRepos,
+      );
+      expect(
+        hasBlue,
+        isTrue,
+        reason: 'le jour de repos doit etre affiche en bleu, pas en vert',
+      );
     });
   });
 
-  group('LISTE INTERACTIVE — Regrouper / Separer sur chaque jour (parite GR20)',
-      () {
+  group('LISTE INTERACTIVE — Regrouper / Separer sur chaque jour (parite GR20)', () {
     testWidgets(
-        'Regrouper ET Separer sont TOUJOURS visibles sur les jours de marche',
-        (tester) async {
-      await pumpProgramme(tester);
+      'Regrouper ET Separer sont TOUJOURS visibles sur les jours de marche',
+      (tester) async {
+        await pumpProgramme(tester);
 
-      // 5 jours de marche (1 etape/jour au depart) : chaque jour montre les
-      // DEUX actions, meme quand elles sont indisponibles (grisees). La liste
-      // n'est donc jamais « inerte ».
-      expect(find.text(t.programme.actions.merge), findsNWidgets(5));
-      expect(find.text(t.programme.actions.split), findsNWidgets(5));
-    });
+        // 5 jours de marche (1 etape/jour au depart) : chaque jour montre les
+        // DEUX actions, meme quand elles sont indisponibles (grisees). La liste
+        // n'est donc jamais « inerte ».
+        expect(find.text(t.programme.actions.merge), findsNWidgets(5));
+        expect(find.text(t.programme.actions.split), findsNWidgets(5));
+      },
+    );
 
-    testWidgets('Separer un jour indisponible (1 etape) explique pourquoi',
-        (tester) async {
+    testWidgets('Separer un jour indisponible (1 etape) explique pourquoi', (
+      tester,
+    ) async {
       await pumpProgramme(tester);
 
       // Chaque jour n'a qu'une etape -> Separer est grise. Un tap explique
@@ -380,8 +412,9 @@ void main() {
       expect(find.text(t.programme.splitBlocked.single), findsOneWidget);
     });
 
-    testWidgets('Regrouper puis Separer fonctionnent depuis la liste',
-        (tester) async {
+    testWidgets('Regrouper puis Separer fonctionnent depuis la liste', (
+      tester,
+    ) async {
       await pumpProgramme(tester);
 
       // Depart : 5 jours de marche (chaque jour = 1 etape). Regrouper le jour 1

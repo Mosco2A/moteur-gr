@@ -2760,6 +2760,7 @@ class _Translations$programme$duration$en extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Number of days';
 	@override String get days => '{count} d';
+	@override String get daysWithRest => '{total} d (incl. {rest} rest)';
 	@override late final _Translations$programme$duration$difficulty$en difficulty = _Translations$programme$duration$difficulty$en._(_root);
 }
 
@@ -4882,6 +4883,7 @@ extension on TranslationsEn {
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
 			'programme.duration.days' => '{count} d',
+			'programme.duration.daysWithRest' => '{total} d (incl. {rest} rest)',
 			'programme.duration.difficulty.comfortable' => 'Comfortable',
 			'programme.duration.difficulty.standard' => 'Standard',
 			'programme.duration.difficulty.sporty' => 'Sporty',
@@ -5223,9 +5225,9 @@ extension on TranslationsEn {
 			'walkTest.levels.good' => 'Good',
 			'walkTest.levels.excellent' => 'Excellent',
 			'pastHikes.title' => 'Your last 5 hikes',
-			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',
 			'pastHikes.empty' => 'No hike entered yet.',
 			'pastHikes.fieldDate' => 'Date',

@@ -113,21 +113,45 @@ class TrailPlanningScreen extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 16),
-            _richInfoItem(theme, Icons.view_list, t.programme.info.days.title,
-                t.programme.info.days.body, scheme.primary),
+            _richInfoItem(
+              theme,
+              Icons.view_list,
+              t.programme.info.days.title,
+              t.programme.info.days.body,
+              scheme.primary,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.drag_handle,
-                t.programme.info.reorder.title, t.programme.info.reorder.body,
-                AppTheme.vertFacile),
+            _richInfoItem(
+              theme,
+              Icons.drag_handle,
+              t.programme.info.reorder.title,
+              t.programme.info.reorder.body,
+              AppTheme.vertFacile,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.hotel, t.programme.info.rest.title,
-                t.programme.info.rest.body, AppTheme.orangeDifficile),
+            _richInfoItem(
+              theme,
+              Icons.hotel,
+              t.programme.info.rest.title,
+              t.programme.info.rest.body,
+              AppTheme.orangeDifficile,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.link, t.programme.info.mergeSplit.title,
-                t.programme.info.mergeSplit.body, scheme.primary),
+            _richInfoItem(
+              theme,
+              Icons.link,
+              t.programme.info.mergeSplit.title,
+              t.programme.info.mergeSplit.body,
+              scheme.primary,
+            ),
             const SizedBox(height: 12),
-            _richInfoItem(theme, Icons.circle, t.programme.info.colors.title,
-                t.programme.info.colors.body, AppTheme.vertFacile),
+            _richInfoItem(
+              theme,
+              Icons.circle,
+              t.programme.info.colors.title,
+              t.programme.info.colors.body,
+              AppTheme.vertFacile,
+            ),
             const SizedBox(height: 16),
             Container(
               padding: const EdgeInsets.all(12),
@@ -157,8 +181,10 @@ class TrailPlanningScreen extends ConsumerWidget {
             Center(
               child: TextButton(
                 onPressed: () => Navigator.of(ctx).pop(),
-                child: Text(t.programme.info.close,
-                    style: const TextStyle(fontSize: 16)),
+                child: Text(
+                  t.programme.info.close,
+                  style: const TextStyle(fontSize: 16),
+                ),
               ),
             ),
           ],
@@ -167,8 +193,13 @@ class TrailPlanningScreen extends ConsumerWidget {
     );
   }
 
-  static Widget _richInfoItem(ThemeData theme, IconData icon, String title,
-      String description, Color accentColor) {
+  static Widget _richInfoItem(
+    ThemeData theme,
+    IconData icon,
+    String title,
+    String description,
+    Color accentColor,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -244,6 +275,11 @@ class _PlanningContent extends ConsumerWidget {
             // on colore le curseur selon l'effort reel (repos exclus).
             stageCount: stats.stageCount,
             walkingDays: stats.trekDays,
+            // Retour Chris #9 : le compteur de jours affiche suit le programme
+            // REEL (marche + repos) -> il se met a jour quand on ajoute un repos
+            // ou qu'on separe une etape. Source unique = les stats du programme.
+            totalDays: stats.totalDays,
+            restDays: stats.restDays,
             onDurationChanged: (value) => ref
                 .read(selectedDurationProvider.notifier)
                 .set(bounds.clampDuration(value)),
@@ -265,12 +301,14 @@ class _PlanningContent extends ConsumerWidget {
                 trailId: trailId,
                 day: day,
                 onAddRestDay: () => notifier.addRestDay(index),
-                onRemoveRestDay:
-                    day.isRestDay ? () => notifier.removeRestDay(index) : null,
+                onRemoveRestDay: day.isRestDay
+                    ? () => notifier.removeRestDay(index)
+                    : null,
                 canSplit: notifier.canSplit(index),
                 canMerge: notifier.canMergeWithNext(index),
-                mergeBlockedReason:
-                    !day.isRestDay ? notifier.mergeBlockedReason(index) : null,
+                mergeBlockedReason: !day.isRestDay
+                    ? notifier.mergeBlockedReason(index)
+                    : null,
                 onSplit: () => notifier.splitDay(index),
                 onMerge: () => notifier.mergeWithNext(index),
               );
@@ -279,8 +317,7 @@ class _PlanningContent extends ConsumerWidget {
         ),
         if (notifier.hasManualRestDays)
           Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
+            padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingLg),
             child: OutlinedButton.icon(
               onPressed: () => _showReplanConfirmation(context, ref),
               icon: const Icon(Icons.refresh, size: 18),
@@ -361,10 +398,7 @@ class _StatsHeader extends StatelessWidget {
             ),
           ),
           Flexible(
-            child: _StatItem(
-              label: t.programme.stats.days,
-              value: joursLabel,
-            ),
+            child: _StatItem(label: t.programme.stats.days, value: joursLabel),
           ),
           Flexible(
             child: _StatItem(
@@ -428,13 +462,22 @@ class _DifficultyLegend extends StatelessWidget {
         spacing: AppTheme.spacingBase,
         runSpacing: AppTheme.spacingXs,
         children: [
-          _LegendItem(color: AppTheme.vertFacile, label: t.programme.legend.easy),
           _LegendItem(
-              color: AppTheme.jauneModere, label: t.programme.legend.moderate),
+            color: AppTheme.vertFacile,
+            label: t.programme.legend.easy,
+          ),
           _LegendItem(
-              color: AppTheme.orangeDifficile, label: t.programme.legend.hard),
+            color: AppTheme.jauneModere,
+            label: t.programme.legend.moderate,
+          ),
           _LegendItem(
-              color: AppTheme.rougeExtreme, label: t.programme.legend.extreme),
+            color: AppTheme.orangeDifficile,
+            label: t.programme.legend.hard,
+          ),
+          _LegendItem(
+            color: AppTheme.rougeExtreme,
+            label: t.programme.legend.extreme,
+          ),
         ],
       ),
     );
@@ -536,8 +579,9 @@ class _ElevationProfile extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: barColor,
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(2)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(2),
+                    ),
                   ),
                   child: isRestDay
                       ? Center(
@@ -604,7 +648,9 @@ class _DayCard extends ConsumerWidget {
         return t.programme.mergeBlocked.tooLong
             .replaceAll('{hours}', hours.toStringAsFixed(1))
             .replaceAll(
-                '{max}', PlannedDaysNotifier.maxManualHoursPerDay.toInt().toString());
+              '{max}',
+              PlannedDaysNotifier.maxManualHoursPerDay.toInt().toString(),
+            );
       default:
         return code ?? t.programme.mergeBlocked.noNext;
     }
@@ -614,10 +660,7 @@ class _DayCard extends ConsumerWidget {
   /// (snackbar bref, parite GR20) : la liste explique toujours pourquoi.
   void _showActionBlocked(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        duration: const Duration(seconds: 3),
-      ),
+      SnackBar(content: Text(message), duration: const Duration(seconds: 3)),
     );
   }
 
@@ -725,8 +768,11 @@ class _DayCard extends ConsumerWidget {
               // reste jamais « inerte ».
               Column(
                 children: [
-                  const Icon(Icons.drag_handle,
-                      color: AppTheme.grisGranite, size: 20),
+                  const Icon(
+                    Icons.drag_handle,
+                    color: AppTheme.grisGranite,
+                    size: 20,
+                  ),
                   const SizedBox(height: 4),
                   _ActionChip(
                     icon: Icons.compress,
@@ -736,7 +782,9 @@ class _DayCard extends ConsumerWidget {
                     onPressed: canMerge
                         ? onMerge!
                         : () => _showActionBlocked(
-                            context, _mergeBlockedLabel(mergeBlockedReason)),
+                            context,
+                            _mergeBlockedLabel(mergeBlockedReason),
+                          ),
                   ),
                   _ActionChip(
                     icon: Icons.call_split,
@@ -746,7 +794,9 @@ class _DayCard extends ConsumerWidget {
                     onPressed: canSplit
                         ? onSplit!
                         : () => _showActionBlocked(
-                            context, t.programme.splitBlocked.single),
+                            context,
+                            t.programme.splitBlocked.single,
+                          ),
                   ),
                   _ActionChip(
                     icon: Icons.self_improvement,
@@ -800,8 +850,11 @@ class _DayCard extends ConsumerWidget {
             Expanded(
               child: Row(
                 children: [
-                  const Icon(Icons.self_improvement,
-                      size: 20, color: restColor),
+                  const Icon(
+                    Icons.self_improvement,
+                    size: 20,
+                    color: restColor,
+                  ),
                   const SizedBox(width: AppTheme.spacingSm),
                   Flexible(
                     child: Text(
@@ -819,8 +872,11 @@ class _DayCard extends ConsumerWidget {
             ),
             Column(
               children: [
-                const Icon(Icons.drag_handle,
-                    color: AppTheme.grisGranite, size: 20),
+                const Icon(
+                  Icons.drag_handle,
+                  color: AppTheme.grisGranite,
+                  size: 20,
+                ),
                 if (onRemoveRestDay != null) ...[
                   const SizedBox(height: 4),
                   IconButton(
@@ -829,8 +885,10 @@ class _DayCard extends ConsumerWidget {
                     tooltip: t.programme.actions.removeRest,
                     onPressed: onRemoveRestDay,
                     padding: EdgeInsets.zero,
-                    constraints:
-                        const BoxConstraints(minWidth: 48, minHeight: 48),
+                    constraints: const BoxConstraints(
+                      minWidth: 48,
+                      minHeight: 48,
+                    ),
                   ),
                 ],
               ],
@@ -907,8 +965,9 @@ class _ActionChip extends StatelessWidget {
   Widget build(BuildContext context) {
     // Grise quand indisponible : couleur neutre, mais le chip reste visible et
     // tappable pour expliquer pourquoi l'action est bloquee.
-    final effectiveColor =
-        enabled ? color : AppTheme.grisGranite.withAlpha(120);
+    final effectiveColor = enabled
+        ? color
+        : AppTheme.grisGranite.withAlpha(120);
     return Padding(
       padding: const EdgeInsets.only(bottom: 2),
       child: Semantics(
@@ -963,20 +1022,25 @@ class _EmptyState extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.route,
-                size: 80, color: AppTheme.grisGranite.withAlpha(80)),
+            Icon(
+              Icons.route,
+              size: 80,
+              color: AppTheme.grisGranite.withAlpha(80),
+            ),
             const SizedBox(height: AppTheme.spacingLg),
             Text(
               t.programme.empty.title,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(color: AppTheme.grisGranite),
+              style: theme.textTheme.titleLarge?.copyWith(
+                color: AppTheme.grisGranite,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingSm),
             Text(
               t.programme.empty.message,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisGranite.withAlpha(180)),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: AppTheme.grisGranite.withAlpha(180),
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppTheme.spacingXl),

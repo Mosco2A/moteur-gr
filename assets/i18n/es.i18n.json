@@ -1467,6 +1467,7 @@
     "duration": {
       "label": "Número de días",
       "days": "{count} d",
+      "daysWithRest": "{total} d (incl. {rest} descanso)",
       "difficulty": {
         "comfortable": "Cómodo",
         "standard": "Estándar",

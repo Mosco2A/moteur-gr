@@ -2760,6 +2760,7 @@ class _Translations$programme$duration$es extends Translations$programme$duratio
 	// Translations
 	@override String get label => 'Número de días';
 	@override String get days => '{count} d';
+	@override String get daysWithRest => '{total} d (incl. {rest} descanso)';
 	@override late final _Translations$programme$duration$difficulty$es difficulty = _Translations$programme$duration$difficulty$es._(_root);
 }
 
@@ -4882,6 +4883,7 @@ extension on TranslationsEs {
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
 			'programme.duration.days' => '{count} d',
+			'programme.duration.daysWithRest' => '{total} d (incl. {rest} descanso)',
 			'programme.duration.difficulty.comfortable' => 'Cómodo',
 			'programme.duration.difficulty.standard' => 'Estándar',
 			'programme.duration.difficulty.sporty' => 'Deportivo',
@@ -5223,9 +5225,9 @@ extension on TranslationsEs {
 			'walkTest.levels.good' => 'Bueno',
 			'walkTest.levels.excellent' => 'Excelente',
 			'pastHikes.title' => 'Tus ultimas 5 rutas',
-			'pastHikes.intro' => 'Anade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, habito de desnivel) en lugar de una etiqueta.',
 			_ => null,
 		} ?? switch (path) {
+			'pastHikes.intro' => 'Anade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, habito de desnivel) en lugar de una etiqueta.',
 			'pastHikes.addHike' => 'Anadir ruta',
 			'pastHikes.empty' => 'Ninguna ruta introducida todavia.',
 			'pastHikes.fieldDate' => 'Fecha',
