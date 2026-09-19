@@ -174,7 +174,8 @@ class _ActiveTrekCard extends ConsumerWidget {
           Text(
             t.hub.trekCard.progressLabel(percent: percent),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurface.withValues(alpha: 0.7),
+              // R1 : contraste WCAG AA du sous-texte sur fond sombre (0.87).
+              color: scheme.onSurface.withValues(alpha: 0.87),
             ),
           ),
           const SizedBox(height: AppTheme.spacingBase),
@@ -241,7 +242,9 @@ class _StartTrekCard extends StatelessWidget {
           Text(
             t.hub.trekCard.noTrekBody,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: scheme.onSurface.withValues(alpha: 0.8),
+              // R1 : contraste WCAG AA du corps de la carte d'invite sur fond
+              // sombre — 2e encart de l'accueil (0.8 -> 0.87).
+              color: scheme.onSurface.withValues(alpha: 0.87),
             ),
           ),
           // Retour Chris #3 : plus de CTA « Démarrer » ici — il est en bas du
@@ -314,7 +317,8 @@ class _CompletedTrekCard extends ConsumerWidget {
           Text(
             t.hub.trekCard.progressLabel(percent: 100),
             style: theme.textTheme.bodySmall?.copyWith(
-              color: scheme.onSurface.withValues(alpha: 0.7),
+              // R1 : contraste WCAG AA du sous-texte sur fond sombre (0.87).
+              color: scheme.onSurface.withValues(alpha: 0.87),
             ),
           ),
         ],

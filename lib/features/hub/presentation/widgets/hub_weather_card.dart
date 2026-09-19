@@ -79,7 +79,13 @@ class HubWeatherCard extends ConsumerWidget {
                 Text(
                   _subtitle(context, today, state.isLoading, t),
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: scheme.onSurface.withValues(alpha: 0.7),
+                    // R1 (retour Chris) : le sous-titre meteo etait illisible
+                    // (gris sur fond sombre, ~0.7 d'opacite -> contraste < AA).
+                    // On remonte l'opacite a 0.87 : la couleur derive toujours
+                    // d'`onSurface` (contraste garanti dans les DEUX themes,
+                    // clair ET sombre), sans nouvelle couleur en dur ni changer
+                    // la typo/le layout. Vise WCAG AA (>= 4.5:1).
+                    color: scheme.onSurface.withValues(alpha: 0.87),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

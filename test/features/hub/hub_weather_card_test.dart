@@ -9,10 +9,13 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/stages_dao.dart';
+import 'package:moteur_gr/core/a11y/wcag_contrast.dart';
 import 'package:moteur_gr/core/data/daos/weather_cache_dao.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/theme/app_skin.dart';
+import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_weather_card.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -64,7 +67,7 @@ void main() {
     await db.close();
   });
 
-  Widget wrap() {
+  Widget wrap({ThemeData? theme}) {
     final router = GoRouter(
       initialLocation: '/home',
       routes: [
@@ -95,7 +98,10 @@ void main() {
         ),
       ],
       child: TranslationProvider(
-        child: MaterialApp.router(routerConfig: router),
+        child: MaterialApp.router(
+          theme: theme,
+          routerConfig: router,
+        ),
       ),
     );
   }
@@ -194,5 +200,49 @@ void main() {
         );
       });
     }
+  });
+
+  // --- R1 : contraste WCAG AA du sous-titre meteo sur fond sombre ---
+  // Retour Chris R1 : le sous-titre (temperature/condition) etait « gris
+  // illisible sur noir ». On verifie que la couleur RESOLUE du sous-titre,
+  // composee sur le fond REEL de la carte (surfaceContainerHighest du theme
+  // sombre de l'app), atteint le seuil AA texte normal (>= 4.5:1).
+  testWidgets('R1 : sous-titre meteo lisible (WCAG AA) en theme sombre',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+
+    // Theme sombre REEL de l'app (le defaut : main.dart themeMode dark).
+    final darkTheme = AppTheme.buildDarkTheme(
+      primaryColor: const Color(0xFF2E7D32),
+      secondaryColor: const Color(0xFF1565C0),
+      skin: AppSkin.sentierVivant,
+    );
+
+    await tester.pumpWidget(wrap(theme: darkTheme));
+    await tester.pumpAndSettle();
+
+    // Etat « indisponible » (sans cache) : le sous-titre porte notre couleur.
+    final subtitle = tester.widget<Text>(find.text(t.hub.weather.unavailable));
+    final resolvedColor = subtitle.style?.color;
+    expect(resolvedColor, isNotNull,
+        reason: 'le sous-titre meteo doit porter une couleur explicite');
+
+    // Fond reel de la carte (AppCard -> surfaceContainerHighest en sombre).
+    final cardBg = darkTheme.colorScheme.surfaceContainerHighest;
+
+    // Le sous-titre utilise onSurface avec opacite : on compose sur le fond
+    // (alpha compositing) avant de mesurer le contraste, comme a l'ecran.
+    final composed = Color.alphaBlend(resolvedColor!, cardBg);
+    final ratio = WcagContrast.ratio(composed, cardBg);
+
+    expect(
+      WcagContrast.meetsAA(composed, cardBg),
+      isTrue,
+      reason: 'sous-titre meteo sur fond sombre: ratio=${ratio.toStringAsFixed(2)} '
+          '(< 4.5:1 = echec AA, R1)',
+    );
   });
 }
