@@ -104,6 +104,8 @@
     },
     "startCta": "Iniciar el trek",
     "startGateHint": "Completa antes Itinerario, Fecha y Programa para empezar.",
+    "prepareExpand": "Ver la preparación",
+    "prepareCollapse": "Reducir",
     "sections": {
       "prepare": "Preparar",
       "hike": "Caminar",

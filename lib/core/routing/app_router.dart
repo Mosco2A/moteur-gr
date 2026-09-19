@@ -18,7 +18,6 @@ import '../../features/feasibility/presentation/trek_feasibility_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
 import '../../features/map/presentation/trail_map_screen.dart';
-import '../../features/more/presentation/more_screen.dart';
 import '../../features/planning/presentation/calendar_screen.dart';
 import '../../features/planning/presentation/plan_summary_screen.dart';
 import '../../features/planning/presentation/shop_screen.dart';
@@ -81,7 +80,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 ///   /stages                      - Onglet Etapes (liste)
 ///   /stages/:id                  - Detail d'une etape (trek)
 ///   /journal                     - Onglet Journal de trek
-///   /more                        - Onglet Plus (hub fonctions secondaires)
+///   (/more supprime : ecran MoreScreen orphelin retire, refonte nav hub-and-push)
 ///   --- Routes racine (hors shell) ---
 ///   /trails                      - Liste des sentiers
 ///   /trail/:id                   - Detail d'un sentier
@@ -206,12 +205,14 @@ final appRouter = GoRouter(
         );
       },
     ),
-    // --- Plus ---
-    GoRoute(
-      path: '/more',
-      name: 'more',
-      builder: (context, state) => const MoreScreen(),
-    ),
+    // --- « Plus » (MoreScreen) : ROUTE SUPPRIMEE (refonte nav hub-and-push pur).
+    // L'ancien onglet « Plus » a disparu au big-bang (shell retire) : plus AUCUNE
+    // navigation vivante n'atteignait /more (ecran orphelin). Toutes ses entrees
+    // sont deja accessibles ailleurs (checklist/faisabilite/conseils/urgence via
+    // le HUB ; catalogue/changer de sentier/profil/reglages via l'AppBar du
+    // cockpit et le bandeau « Mon compte » de l'accueil « maison »). La route ET
+    // l'ecran `MoreScreen` sont donc RETIRES (fin de la route morte, S8), pas
+    // seulement dormants : aucun deep-link ne les visait.
 
     // ===== Routes racine (hors shell, plein ecran) =====
     // /trails : ancien stub Phase 1 (TrailListScreen) SUPPRIME (cablage #88246).
@@ -749,7 +750,6 @@ const _coreTrailPaths = <String>[
   '/map',
   '/stages',
   '/journal',
-  '/more',
 ];
 
 /// Guard de redirection principal (cablage nav #88246).

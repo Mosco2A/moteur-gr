@@ -389,6 +389,12 @@ class Translations$hub$fr {
 	/// fr: 'Complète d'abord Itinéraire, Date et Programme pour démarrer.'
 	String get startGateHint => 'Complète d\'abord Itinéraire, Date et Programme pour démarrer.';
 
+	/// fr: 'Voir la préparation'
+	String get prepareExpand => 'Voir la préparation';
+
+	/// fr: 'Réduire'
+	String get prepareCollapse => 'Réduire';
+
 	late final Translations$hub$sections$fr sections = Translations$hub$sections$fr.internal(_root);
 	late final Translations$hub$cards$fr cards = Translations$hub$cards$fr.internal(_root);
 	late final Translations$hub$fab$fr fab = Translations$hub$fab$fr.internal(_root);
@@ -7272,6 +7278,8 @@ extension on Translations {
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Démarrer la randonnée',
 			'hub.startGateHint' => 'Complète d\'abord Itinéraire, Date et Programme pour démarrer.',
+			'hub.prepareExpand' => 'Voir la préparation',
+			'hub.prepareCollapse' => 'Réduire',
 			'hub.sections.prepare' => 'Préparer',
 			'hub.sections.hike' => 'Randonner',
 			'hub.sections.info' => 'Informations',
@@ -7690,10 +7698,10 @@ extension on Translations {
 			'weather.alertCount' => 'alerte',
 			'weather.alertCountPlural' => 'alertes',
 			'weather.today' => 'Aujourd\'hui',
-			'weather.tomorrow' => 'Demain',
-			'weather.dayPlus2' => 'Après-demain',
 			_ => null,
 		} ?? switch (path) {
+			'weather.tomorrow' => 'Demain',
+			'weather.dayPlus2' => 'Après-demain',
 			'weather.allStages' => 'Toutes les étapes',
 			'weather.noForecast' => 'Aucune prévision disponible.',
 			'weather.stageLabel' => ({required Object number}) => 'Étape ${number}',
@@ -8204,10 +8212,10 @@ extension on Translations {
 			'waypoints.types.ravitaillement' => 'Ravitaillement',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Bivouac',
-			'waypoints.types.connectivite' => 'Connectivité',
-			'waypoints.types.jonction' => 'Jonction',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.types.connectivite' => 'Connectivité',
+			'waypoints.types.jonction' => 'Jonction',
 			'waypoints.filters.title' => 'Filtrer les waypoints',
 			'waypoints.filters.showAll' => 'Tout afficher',
 			'waypoints.filters.hideAll' => 'Tout masquer',
@@ -8718,10 +8726,10 @@ extension on Translations {
 			'hikerProfile.title' => 'Fiche d\'info',
 			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.',
 			'hikerProfile.fieldAge' => 'Âge',
-			'hikerProfile.hintAge' => 'En années',
-			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.hintAge' => 'En années',
+			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
 			'hikerProfile.fieldHeight' => 'Taille',
 			'hikerProfile.hintHeight' => 'En centimètres',
 			'hikerProfile.errorHeight' => 'Taille invalide (100 à 250 cm)',

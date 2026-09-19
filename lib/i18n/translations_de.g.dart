@@ -232,6 +232,8 @@ class _Translations$hub$de extends Translations$hub$fr {
 	@override late final _Translations$hub$weather$de weather = _Translations$hub$weather$de._(_root);
 	@override String get startCta => 'Trek starten';
 	@override String get startGateHint => 'Schließe zuerst Route, Datum und Programm ab, um zu starten.';
+	@override String get prepareExpand => 'Vorbereitung anzeigen';
+	@override String get prepareCollapse => 'Einklappen';
 	@override late final _Translations$hub$sections$de sections = _Translations$hub$sections$de._(_root);
 	@override late final _Translations$hub$cards$de cards = _Translations$hub$cards$de._(_root);
 	@override late final _Translations$hub$fab$de fab = _Translations$hub$fab$de._(_root);
@@ -3898,6 +3900,8 @@ extension on TranslationsDe {
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Trek starten',
 			'hub.startGateHint' => 'Schließe zuerst Route, Datum und Programm ab, um zu starten.',
+			'hub.prepareExpand' => 'Vorbereitung anzeigen',
+			'hub.prepareCollapse' => 'Einklappen',
 			'hub.sections.prepare' => 'Vorbereiten',
 			'hub.sections.hike' => 'Wandern',
 			'hub.sections.info' => 'Informationen',
@@ -4316,10 +4320,10 @@ extension on TranslationsDe {
 			'weather.alertCount' => 'Warnung',
 			'weather.alertCountPlural' => 'Warnungen',
 			'weather.today' => 'Heute',
-			'weather.tomorrow' => 'Morgen',
-			'weather.dayPlus2' => 'Übermorgen',
 			_ => null,
 		} ?? switch (path) {
+			'weather.tomorrow' => 'Morgen',
+			'weather.dayPlus2' => 'Übermorgen',
 			'weather.allStages' => 'Alle Etappen',
 			'weather.noForecast' => 'Keine Vorhersage verfügbar.',
 			'weather.stageLabel' => ({required Object number}) => 'Etappe ${number}',
@@ -4830,10 +4834,10 @@ extension on TranslationsDe {
 			'waypoints.types.ravitaillement' => 'Nachschub',
 			'waypoints.types.danger' => 'Gefahr',
 			'waypoints.types.camp' => 'Zeltplatz',
-			'waypoints.types.connectivite' => 'Konnektivitat',
-			'waypoints.types.jonction' => 'Kreuzung',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.types.connectivite' => 'Konnektivitat',
+			'waypoints.types.jonction' => 'Kreuzung',
 			'waypoints.filters.title' => 'Wegpunkte filtern',
 			'waypoints.filters.showAll' => 'Alle anzeigen',
 			'waypoints.filters.hideAll' => 'Alle ausblenden',
@@ -5344,10 +5348,10 @@ extension on TranslationsDe {
 			'hikerProfile.title' => 'Ihre Angaben',
 			'hikerProfile.privacyBanner' => 'Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer verschlusselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
 			'hikerProfile.fieldAge' => 'Alter',
-			'hikerProfile.hintAge' => 'In Jahren',
-			'hikerProfile.errorAge' => 'Ungultiges Alter (8 bis 100 Jahre)',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.hintAge' => 'In Jahren',
+			'hikerProfile.errorAge' => 'Ungultiges Alter (8 bis 100 Jahre)',
 			'hikerProfile.fieldHeight' => 'Grosse',
 			'hikerProfile.hintHeight' => 'In Zentimetern',
 			'hikerProfile.errorHeight' => 'Ungultige Grosse (100 bis 250 cm)',

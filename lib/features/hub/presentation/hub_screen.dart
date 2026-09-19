@@ -3,15 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/routing/contextual_actions_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
-import '../../../shared/widgets/contextual_action_bar.dart';
-import '../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../safety/presentation/sos_button.dart';
 import '../../treks/providers/my_treks_provider.dart';
 import '../../trek/providers/tracking_providers.dart';
 import 'cockpit_phase.dart';
+import 'widgets/collapsible_prepare_section.dart';
 import 'widgets/finish_trek_button.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_start_trek_button.dart';
@@ -41,16 +39,22 @@ import 'widgets/quick_access_card.dart';
 /// Slang (`t.hub.*`, `t.nav.*`) — zero texte en dur, aucun libelle propre a un
 /// sentier particulier (cloisonnement moteur generique).
 ///
-/// ACCUEIL TERRAIN (StepWays LOT 3, Ph5 — SPEC §4) : c'est le cockpit « terrain »
-/// (`/home`, rando active). Il CONSERVE son `AppBar` (acces Informations / Profil
-/// / Mes treks, retours Chris) et reçoit en plus une BARRE CONTEXTUELLE (mecanisme
-/// L3, [ContextualActionsMixin] + [ContextualBottomBar]) : **Préparer / Randonner
-/// / Après** (§4). Comme le hub affiche les sections dans UN scroll, ces trois
-/// actions FONT DEFILER jusqu'a la section correspondante (ancres [GlobalKey] +
-/// [Scrollable.ensureVisible]) — c'est un raccourci de defilement, pas une
-/// bascule de phase (la progression sequentielle gatee reste portee par le cockpit
-/// par phases, cf. `nav_pilote_screen.dart`). Zero nouvelle decision UX (§4 telle
-/// quelle).
+/// ACCUEIL TERRAIN (StepWays refonte nav — hub-and-push PUR, parité GR20 modèle A)
+/// : c'est le cockpit « terrain » (`/home`, rando active). Il CONSERVE son
+/// `AppBar` (accès Informations / Profil / Mes treks / Réglages, retours Chris) et
+/// présente TOUTES ses sections dans UN seul scroll (parité GR20 `HomeScreen`),
+/// visibles SELON LA PHASE dérivée du cycle de vie du trek :
+///   * **Préparer** : toujours présente, en ACCORDÉON (dépliée en préparation,
+///     repliée une fois parti/rentré — D3, R8+R13) ;
+///   * **Randonner** : uniquement en rando active (phase hike) ;
+///   * **Informations** : toujours présente ;
+///   * **Après le trek** : uniquement une fois terminé (phase after).
+///
+/// PAS DE BOTTOM BAR (D1, parité GR20 pure) : le cockpit n'a plus de barre du bas
+/// contextuelle (l'ancien raccourci de défilement Préparer/Randonner/Après, dernier
+/// résidu du « cockpit par phases », est retiré). La navigation est hub-and-push :
+/// on POUSSE les écrans depuis les cartes, on revient par la pile. Le seul élément
+/// flottant est le FAB SOS (masqué hors trek).
 class HubScreen extends ConsumerStatefulWidget {
   const HubScreen({super.key});
 
@@ -58,47 +62,7 @@ class HubScreen extends ConsumerStatefulWidget {
   ConsumerState<HubScreen> createState() => _HubScreenState();
 }
 
-class _HubScreenState extends ConsumerState<HubScreen>
-    with ContextualActionsMixin {
-  // Ancres de section pour le defilement pilote par la barre contextuelle (§4).
-  final GlobalKey _prepareKey = GlobalKey();
-  final GlobalKey _hikeKey = GlobalKey();
-  final GlobalKey _afterKey = GlobalKey();
-
-  /// Fait defiler jusqu'a la section ancree par [key] (raccourci de la barre §4).
-  /// Sans effet si la section n'est pas montee (defensif).
-  void _scrollTo(GlobalKey key) {
-    final ctx = key.currentContext;
-    if (ctx == null) return;
-    Scrollable.ensureVisible(
-      ctx,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      alignment: 0.0, // amene la section en HAUT de la zone visible.
-    );
-  }
-
-  /// Barre contextuelle de l'accueil terrain (SPEC §4) : Préparer / Randonner /
-  /// Après. Chaque action fait defiler jusqu'a la section homonyme du hub.
-  @override
-  List<ContextualAction> buildContextualActions(BuildContext context) => [
-    ContextualAction(
-      icon: Icons.assignment_outlined,
-      label: t.hub.sections.prepare,
-      onPressed: () => _scrollTo(_prepareKey),
-    ),
-    ContextualAction(
-      icon: Icons.hiking,
-      label: t.hub.sections.hike,
-      onPressed: () => _scrollTo(_hikeKey),
-    ),
-    ContextualAction(
-      icon: Icons.emoji_events_outlined,
-      label: t.hub.sections.after,
-      onPressed: () => _scrollTo(_afterKey),
-    ),
-  ];
-
+class _HubScreenState extends ConsumerState<HubScreen> {
   @override
   Widget build(BuildContext context) {
     final trailTitle = ref.watch(
@@ -138,8 +102,8 @@ class _HubScreenState extends ConsumerState<HubScreen>
     final showAfter = phase == CockpitPhase.after;
 
     return Scaffold(
-      // Barre contextuelle declarative (L3) : Préparer / Randonner / Après (§4).
-      bottomNavigationBar: const ContextualBottomBar(),
+      // Parité GR20 pure (D1) : AUCUNE barre du bas sur le cockpit. Les sections
+      // vivent dans le scroll ; la navigation est hub-and-push (push/pop).
       appBar: AppBar(
         title: Text(trailTitle),
         actions: [
@@ -199,11 +163,14 @@ class _HubScreenState extends ConsumerState<HubScreen>
             const HubTrekCard(),
             const SizedBox(height: AppTheme.spacingLg),
 
-            // --- Section Preparer (RF-6) ---
-            HubSection(
-              key: _prepareKey,
-              title: t.hub.sections.prepare,
-              icon: Icons.assignment_outlined,
+            // --- Section Preparer (RF-6) — ACCORDÉON (D3, R8+R13) ---
+            // Parité GR20 modèle A : Préparer reste TOUJOURS présente dans le
+            // scroll, mais REPLIÉE une fois parti (phase hike) ou rentré (after)
+            // pour dégager le cockpit ; DÉPLIÉE en préparation (le cœur du moment).
+            // Jamais masquée : le randonneur la déplie d'un tap pour revoir un
+            // point (R13). L'état initial suit la phase (déplié si !hike && !after).
+            CollapsiblePrepareSection(
+              initiallyExpanded: !showHike && !showAfter,
               cards: [
                 QuickAccessCard(
                   icon: Icons.quiz_outlined,
@@ -328,7 +295,6 @@ class _HubScreenState extends ConsumerState<HubScreen>
             // ne servent qu'une fois parti). Rendue conditionnellement.
             if (showHike) ...[
               HubSection(
-                key: _hikeKey,
                 title: t.hub.sections.hike,
                 icon: Icons.hiking,
                 cards: [
@@ -410,7 +376,6 @@ class _HubScreenState extends ConsumerState<HubScreen>
             // apparaitre dans le menu. Rendue conditionnellement.
             if (showAfter) ...[
               HubSection(
-                key: _afterKey,
                 title: t.hub.sections.after,
                 icon: Icons.emoji_events_outlined,
                 cards: [

@@ -104,6 +104,8 @@
     },
     "startCta": "Trek starten",
     "startGateHint": "Schließe zuerst Route, Datum und Programm ab, um zu starten.",
+    "prepareExpand": "Vorbereitung anzeigen",
+    "prepareCollapse": "Einklappen",
     "sections": {
       "prepare": "Vorbereiten",
       "hike": "Wandern",

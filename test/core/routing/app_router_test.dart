@@ -34,22 +34,25 @@ void main() {
           reason: 'plus d onglets persistants (hub-and-push)');
       expect(routes.every((r) => r is GoRoute), isTrue,
           reason: 'toutes les routes de 1er niveau sont des GoRoute');
-      // 6 ex-shell (my-treks/home/map/stages/journal/more) + 19 racines = 25.
+      // Ex-shell (my-treks/home/map/stages/journal) + racines = 25.
       // StepWays L8 : la route de demo '/nav-pilote' a ete retiree (25 -> 24).
       // Finitions V1 (point 4) : ajout de '/recovery-code' (24 -> 25).
-      expect(routes.whereType<GoRoute>().length, 25);
+      // Refonte nav (hub-and-push pur) : la route '/more' (MoreScreen orphelin)
+      // est SUPPRIMEE (25 -> 24).
+      expect(routes.whereType<GoRoute>().length, 24);
     });
 
-    test('les 6 ex-onglets sont desormais des routes racine', () {
+    test('les 5 ex-onglets sont desormais des routes racine', () {
       final paths = appRouter.configuration.routes
           .whereType<GoRoute>()
           .map((r) => r.path)
           .toList();
-      // Les 6 ex-shell, EN TETE (ordre de declaration), puis les racines.
-      expect(paths.take(6).toList(),
-          ['/my-treks', '/home', '/map', '/stages', '/journal', '/more']);
+      // Les 5 ex-shell, EN TETE (ordre de declaration), puis les racines.
+      // '/more' retiree (refonte nav : MoreScreen orphelin supprime).
+      expect(paths.take(5).toList(),
+          ['/my-treks', '/home', '/map', '/stages', '/journal']);
       // Les racines historiques suivent, inchangees.
-      expect(paths.skip(6).toList(), [
+      expect(paths.skip(5).toList(), [
         '/trails',
         '/trail/:id',
         '/group/:id',
@@ -87,7 +90,6 @@ void main() {
         'map',
         'stages',
         'journal',
-        'more',
         'trails',
         'trail-detail',
         'group',
@@ -118,13 +120,22 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == path);
 
-    test('les 6 ex-onglets resolvent le bon ecran (nom de route)', () {
+    test('les 5 ex-onglets resolvent le bon ecran (nom de route)', () {
       expect(rootRoute('/my-treks').name, 'my-treks');
       expect(rootRoute('/home').name, 'home');
       expect(rootRoute('/map').name, 'map');
       expect(rootRoute('/stages').name, 'stages');
       expect(rootRoute('/journal').name, 'journal');
-      expect(rootRoute('/more').name, 'more');
+    });
+
+    test('la route /more (MoreScreen orphelin) a ete SUPPRIMEE (refonte nav)', () {
+      // Hub-and-push pur : plus aucune navigation vivante n'atteignait /more
+      // (onglet « Plus » disparu au big-bang). La route est retiree, l'ecran
+      // MoreScreen supprime — plus de route morte (S8).
+      final morePaths = appRouter.configuration.routes
+          .whereType<GoRoute>()
+          .where((r) => r.path == '/more');
+      expect(morePaths, isEmpty);
     });
 
     test('/stages conserve sa sous-route /stages/:id', () {
@@ -310,7 +321,6 @@ void main() {
         '/map',
         '/stages',
         '/journal',
-        '/more',
       ]) {
         expect(redirectForPath(tab), '/catalog',
             reason: '$tab (coeur) doit renvoyer au catalogue sans sentier');

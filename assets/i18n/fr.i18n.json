@@ -104,6 +104,8 @@
     },
     "startCta": "Démarrer la randonnée",
     "startGateHint": "Complète d'abord Itinéraire, Date et Programme pour démarrer.",
+    "prepareExpand": "Voir la préparation",
+    "prepareCollapse": "Réduire",
     "sections": {
       "prepare": "Préparer",
       "hike": "Randonner",

@@ -288,14 +288,14 @@ void main() {
 
       // Retour Chris #13 : tant qu'on n'est PAS en rando, les sections
       // « Randonner » et « Après-trek » ne s'affichent PAS dans le corps du menu.
-      // Elles subsistent UNIQUEMENT comme actions de defilement de la barre
-      // contextuelle (§4) -> une seule occurrence (la barre), pas deux.
-      // « Préparer » (corps + barre) = 2 ; « Informations » (corps, pas de barre)
-      // = 1.
-      expect(find.text(t.hub.sections.prepare), findsNWidgets(2));
+      // Refonte nav (hub-and-push pur, D1) : plus de barre du bas contextuelle ->
+      // ces sections n'apparaissent NULLE PART tant qu'on n'est pas dans la phase.
+      // « Préparer » = 1 (en-tete de l'accordeon, sa grille interne masque son
+      // propre titre) ; « Informations » = 1 (section du corps).
+      expect(find.text(t.hub.sections.prepare), findsOneWidget);
       expect(find.text(t.hub.sections.info), findsOneWidget);
-      expect(find.text(t.hub.sections.hike), findsOneWidget);
-      expect(find.text(t.hub.sections.after), findsOneWidget);
+      expect(find.text(t.hub.sections.hike), findsNothing);
+      expect(find.text(t.hub.sections.after), findsNothing);
       // Les cartes PROPRES a ces sections masquees sont absentes du corps :
       // Navigation (Randonner) et Diplôme (Après) ne sont pas rendues en prepa.
       expect(find.text(t.hub.cards.navigation), findsNothing);
@@ -305,14 +305,15 @@ void main() {
     testWidgets('menu CONTEXTUEL en rando : section Randonner VISIBLE dans le '
         'corps (retour #13)', (tester) async {
       // Session de tracking vivante -> phase « randonner » : la section Randonner
-      // (et ses cartes) apparait dans le corps EN PLUS de la barre contextuelle.
+      // (et ses cartes) apparait dans le corps. Refonte nav (D1) : plus de barre
+      // du bas -> une seule occurrence (le corps).
       await pumpTallHub(tester, status: TrackingSessionStatus.recording);
 
-      expect(find.text(t.hub.sections.hike), findsNWidgets(2));
+      expect(find.text(t.hub.sections.hike), findsOneWidget);
       // Carte propre a Randonner rendue dans le corps.
       expect(find.text(t.hub.cards.navigation), findsOneWidget);
-      // Après-trek (trek non termine) reste masque du corps -> barre seule.
-      expect(find.text(t.hub.sections.after), findsOneWidget);
+      // Après-trek (trek non termine) reste masque du corps (et plus de barre).
+      expect(find.text(t.hub.sections.after), findsNothing);
     });
 
     testWidgets(
@@ -331,45 +332,54 @@ void main() {
       },
     );
 
-    testWidgets('barre contextuelle §4 : Préparer / Randonner / Après', (
+    testWidgets('parité GR20 pure (D1) : AUCUNE barre du bas sur le cockpit', (
       tester,
     ) async {
       await pumpTallHub(tester);
 
-      // La barre contextuelle (mecanisme L3) est presente et porte les 3 actions
-      // de defilement §4 (Préparer / Randonner / Après). « Informations » n'y est
-      // pas (§4).
-      expect(find.byType(ContextualBottomBar), findsOneWidget);
-      expect(
-        find.descendant(
-          of: find.byType(ContextualActionBar),
-          matching: find.text(t.hub.sections.prepare),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: find.byType(ContextualActionBar),
-          matching: find.text(t.hub.sections.hike),
-        ),
-        findsOneWidget,
-      );
-      expect(
-        find.descendant(
-          of: find.byType(ContextualActionBar),
-          matching: find.text(t.hub.sections.after),
-        ),
-        findsOneWidget,
-      );
-      // Tap « Après » : ne plante pas (raccourci de defilement vers la section).
-      await tester.tap(
-        find.descendant(
-          of: find.byType(ContextualActionBar),
-          matching: find.text(t.hub.sections.after),
-        ),
-      );
+      // Refonte nav (hub-and-push pur) : le dernier residu du « cockpit par
+      // phases » (la barre contextuelle de defilement Préparer/Randonner/Après)
+      // est RETIRE du cockpit. Le Scaffold n'a plus de bottomNavigationBar.
+      expect(find.byType(ContextualBottomBar), findsNothing);
+      expect(find.byType(ContextualActionBar), findsNothing);
+      expect(find.byType(BottomAppBar), findsNothing);
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      expect(scaffold.bottomNavigationBar, isNull);
+    });
+
+    testWidgets('accordéon Préparer (D3) : DÉPLIÉ en préparation (cartes '
+        'visibles + action Réduire)', (tester) async {
+      // Phase préparation (lifecycle null par defaut) -> accordeon Préparer
+      // DÉPLIÉ d'emblee : les cartes de prépa sont montees et l'en-tete propose
+      // « Réduire ».
+      await pumpTallHub(tester);
+
+      expect(find.text(t.hub.sections.prepare), findsOneWidget);
+      // Deplié -> les cartes de prépa sont visibles + libelle « Réduire ».
+      expect(find.text(t.hub.cards.feasibility), findsOneWidget);
+      expect(find.text(t.hub.cards.programme), findsOneWidget);
+      expect(find.text(t.hub.prepareCollapse), findsOneWidget);
+      expect(find.text(t.hub.prepareExpand), findsNothing);
+    });
+
+    testWidgets('accordéon Préparer (D3, R13) : REPLIÉ en rando, dépliable au '
+        'tap', (tester) async {
+      // Phase rando active -> accordeon Préparer REPLIÉ par defaut (cartes de
+      // prépa masquees, en-tete propose « Voir la préparation »). R13 : jamais
+      // masqué -> un tap le déplie et révèle les cartes.
+      await pumpTallHub(tester, status: TrackingSessionStatus.recording);
+
+      // Replié : le titre reste (en-tete), mais les cartes de prépa sont absentes.
+      expect(find.text(t.hub.sections.prepare), findsOneWidget);
+      expect(find.text(t.hub.cards.feasibility), findsNothing);
+      expect(find.text(t.hub.prepareExpand), findsOneWidget);
+      expect(find.text(t.hub.prepareCollapse), findsNothing);
+
+      // R13 : tap sur l'en-tete -> deplie -> les cartes de prépa apparaissent.
+      await tester.tap(find.text(t.hub.prepareExpand));
       await tester.pumpAndSettle();
-      expect(tester.takeException(), isNull);
+      expect(find.text(t.hub.cards.feasibility), findsOneWidget);
+      expect(find.text(t.hub.prepareCollapse), findsOneWidget);
     });
 
     testWidgets('rend un echantillon de cartes cablees (S8)', (tester) async {

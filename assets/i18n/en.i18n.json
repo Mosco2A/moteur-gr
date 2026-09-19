@@ -104,6 +104,8 @@
     },
     "startCta": "Start the trek",
     "startGateHint": "Complete Itinerary, Date and Programme first to start.",
+    "prepareExpand": "Show preparation",
+    "prepareCollapse": "Collapse",
     "sections": {
       "prepare": "Prepare",
       "hike": "Hike",
