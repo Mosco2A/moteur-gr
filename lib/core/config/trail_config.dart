@@ -42,6 +42,7 @@ class TrailConfig {
     this.firebaseProjectId,
     this.emergencyNumbers = const [],
     this.seedAssetsBase,
+    this.accommodationsAssetPath,
     this.tipAssetPaths = const [],
     this.privacyPolicyUrl,
   });
@@ -122,6 +123,18 @@ class TrailConfig {
   /// Racine des assets de donnees du sentier pour le seed initial
   /// (ex: 'assets/data/mon_sentier'). Null = pas de seed embarque.
   final String? seedAssetsBase;
+
+  /// Fichier JSON MONOLITHIQUE (schema `trail_meta`/`itineraries`/`stages`/
+  /// `accommodations`/`pois`) charge au seed dans les tables relationnelles
+  /// riches (`trail_stages`/`trail_accommodations`...) via [TrailSeeder].
+  ///
+  /// R4 (retour Chris) : l'assistant Nuitees lit les hebergements par
+  /// `getAccommodations` (jointure itineraires -> etapes -> hebergements sur
+  /// ces tables riches). Le seed « dossier » ([seedAssetsBase]) ne peuple QUE
+  /// les tables simples (etapes/POI) — les hebergements n'etaient donc jamais
+  /// charges (noms manquants). Ce chemin optionnel branche le seed des
+  /// hebergements. Null = pas d'hebergements embarques (fallback gracieux).
+  final String? accommodationsAssetPath;
 
   /// Fichiers JSON de fiches conseils a charger au seed.
   final List<String> tipAssetPaths;

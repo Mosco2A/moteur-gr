@@ -11,6 +11,7 @@ import '../../../core/data/daos/pois_dao.dart';
 import '../../../core/data/daos/stages_dao.dart';
 import '../../../core/data/daos/trail_gpx_points_dao.dart';
 import '../../../core/data/daos/trail_gpx_tracks_dao.dart';
+import '../../../core/data/seed/trail_seeder.dart';
 import '../domain/models/track_point.dart' as trek;
 import 'gpx_parser.dart';
 import '../../../features/tips/domain/models/tip_card.dart';
@@ -180,6 +181,26 @@ class SeedDataLoader {
       }
     }
     _log.d('Fiches conseils chargees: ${allTips.length}');
+
+    // --- 9. Hebergements (R4) : tables relationnelles riches ---
+    // Le seed « dossier » ci-dessus peuple les tables SIMPLES (etapes/POI). Les
+    // HEBERGEMENTS, eux, sont lus par l'assistant Nuitees via `getAccommodations`
+    // (jointure itineraires -> etapes -> hebergements sur les tables RICHES).
+    // On charge donc le fichier monolithique du sentier (schema complet) dans
+    // ces tables via [TrailSeeder] : les noms de nuitee deviennent reels. Le
+    // fichier est autonome et coherent (ses etapes et hebergements s'alignent
+    // par numero d'etape) -> la jointure `getAccommodations` resout les noms.
+    // Fallback gracieux : sans chemin (ou fichier invalide), on ne fait rien
+    // (les nuitees retombent sur le libelle generique, comme avant).
+    final accommodationsPath = _trailConfig.accommodationsAssetPath;
+    if (accommodationsPath != null) {
+      try {
+        await TrailSeeder(_db).seedFromAsset(accommodationsPath);
+        _log.d('Hebergements charges depuis $accommodationsPath');
+      } catch (e) {
+        _log.w('Seed hebergements $accommodationsPath echoue: $e');
+      }
+    }
 
     // --- 7. Marquer comme seed ---
     await _prefs.setBool(kDataSeededPrefsKey, true);

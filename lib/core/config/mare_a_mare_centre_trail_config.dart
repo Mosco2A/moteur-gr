@@ -45,6 +45,11 @@ const mareAMareCentreTrailConfig = TrailConfig(
   ],
   // Declenche le chargement du DOSSIER de donnees (stages/pois/track) au seed.
   seedAssetsBase: 'assets/data/mare_a_mare_centre',
+  // R4 : fichier monolithique portant les HEBERGEMENTS (11 gites/campings/hotel
+  // reels, keyes par etape) charge dans les tables relationnelles riches lues
+  // par l'assistant Nuitees (getAccommodations). Sans cela, les noms de nuitee
+  // etaient absents (le dossier ci-dessus ne seede pas les hebergements).
+  accommodationsAssetPath: 'assets/data/mare_a_mare_centre.json',
   // Fiches conseils rattachees au sentier (chargees au seed).
   tipAssetPaths: ['assets/tips/mare_a_mare_tips.json'],
   privacyPolicyUrl: 'https://example.org/mare-a-mare-centre/privacy',

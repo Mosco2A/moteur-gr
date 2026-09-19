@@ -7,6 +7,7 @@ import 'package:moteur_gr/core/data/daos/stages_dao.dart';
 import 'package:moteur_gr/core/data/daos/pois_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_points_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_tracks_dao.dart';
+import 'package:moteur_gr/features/trail/data/drift_trail_data_provider.dart';
 import 'package:moteur_gr/features/trek/data/seed_data_loader.dart';
 
 /// Config sentier pour le test du seed.
@@ -30,6 +31,25 @@ const _seedTrailConfig = TrailConfig(
   secondaryColorValue: 0xFFD2691E,
   gpxAssetPath: 'assets/data/mare_a_mare_centre/track.gpx',
   seedAssetsBase: 'assets/data/mare_a_mare_centre',
+);
+
+/// Config identique mais AVEC le chemin des hebergements (R4) : le seed charge
+/// alors les hebergements dans les tables riches lues par l'assistant Nuitees.
+const _seedTrailConfigWithAccommodations = TrailConfig(
+  id: 'mare-a-mare-centre',
+  name: 'Mare a Mare Centre',
+  displayName: 'Mare a Mare Centre',
+  tagline: 'Seed de test',
+  totalStages: 7,
+  totalDistanceKm: 0,
+  totalElevationGain: 0,
+  region: 'Auvergne',
+  country: 'France',
+  primaryColorValue: 0xFF8B4513,
+  secondaryColorValue: 0xFFD2691E,
+  gpxAssetPath: 'assets/data/mare_a_mare_centre/track.gpx',
+  seedAssetsBase: 'assets/data/mare_a_mare_centre',
+  accommodationsAssetPath: 'assets/data/mare_a_mare_centre.json',
 );
 
 void main() {
@@ -152,6 +172,70 @@ void main() {
       expect(s1.arrivalName, 'Catastaghju');
 
       await db.close();
+    });
+  });
+
+  // --- R4 : hebergements charges et lisibles par getAccommodations ---
+  // Retour Chris R4 : l'assistant Nuitees n'affichait pas les noms
+  // d'hebergement. Cause : le seed « dossier » ne peuplait PAS les tables
+  // riches lues par `getAccommodations`. Avec `accommodationsAssetPath`, le
+  // seed charge le fichier monolithique -> les noms reels remontent.
+  group('SeedDataLoader — hebergements (R4)', () {
+    test('sans accommodationsAssetPath : aucun hebergement (comportement '
+        'inchange)', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+
+      await SeedDataLoader(db: db, prefs: prefs, trailConfig: _seedTrailConfig)
+          .seedIfNeeded();
+
+      final data =
+          DriftTrailDataProvider(db: db, trailConfig: _seedTrailConfig);
+      final accommodations =
+          await data.getAccommodations('mare-a-mare-centre');
+      expect(accommodations, isEmpty,
+          reason: 'sans chemin hebergements, la table riche reste vide');
+    });
+
+    test('avec accommodationsAssetPath : getAccommodations renvoie les noms '
+        'reels par etape', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+
+      await SeedDataLoader(
+        db: db,
+        prefs: prefs,
+        trailConfig: _seedTrailConfigWithAccommodations,
+      ).seedIfNeeded();
+
+      final data = DriftTrailDataProvider(
+        db: db,
+        trailConfig: _seedTrailConfigWithAccommodations,
+      );
+
+      // Total : 11 hebergements reels sur les 7 etapes (seed monolithique).
+      final all = await data.getAccommodations('mare-a-mare-centre');
+      expect(all.length, 11,
+          reason: '11 hebergements reels dans mare_a_mare_centre.json');
+      expect(all.every((a) => a.nameFr.isNotEmpty), isTrue,
+          reason: 'tous les hebergements portent un nom reel (nameFr)');
+
+      // Etape 1 : au moins un hebergement nomme (le cas du 1er retour Chris).
+      final stage1 = await data.getAccommodations(
+        'mare-a-mare-centre',
+        stageNumber: 1,
+      );
+      expect(stage1, isNotEmpty,
+          reason: 'l etape 1 a des hebergements (mam-ew-s1)');
+      expect(
+        stage1.any((a) => a.nameFr.contains('Serra di Fiumorbu')),
+        isTrue,
+        reason: 'nom reel attendu (ex. « Gite d etape de Serra di Fiumorbu »)',
+      );
     });
   });
 }
