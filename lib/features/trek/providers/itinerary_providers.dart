@@ -2,20 +2,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/models/stage.dart';
-import '../domain/itinerary_calculator.dart';
 import '../domain/models/feasibility_profile.dart';
 import '../domain/models/itinerary_config.dart';
 import '../domain/models/itinerary_day.dart';
-import '../../trail/domain/models/trail_feasibility_params.dart';
-import 'gps_providers.dart';
-import 'stage_providers.dart';
-import '../../trail/providers/trail_providers.dart';
+import '../../planning/models/planned_day.dart';
+import '../../planning/providers/planned_days_provider.dart';
 
-/// Configuration d'itineraire modifiable par l'utilisateur.
+/// Configuration d'itineraire (LEGACY — conservee pour l'ecran de configuration
+/// avance `ItineraryConfigScreen`).
 ///
-/// Valeurs par defaut raisonnables pour un randonneur moyen.
-/// Modifiable via ref.read(itineraryConfigProvider.notifier).state = ...
+/// R3 (#100122, source unique des jours = D2) : le NOMBRE de jours de
+/// l'itineraire n'est plus pilote par cette config (maxKm/maxHeures) mais par la
+/// SOURCE UNIQUE `selectedDurationProvider` / [plannedDaysProvider]. Cette config
+/// reste disponible pour d'eventuels reglages fins mais ne recompose plus les
+/// jours (fini les deux modeles desynchronises).
 final itineraryConfigProvider = StateProvider<ItineraryConfig>(
   (ref) => ItineraryConfig(
     maxKmPerDay: 20.0,
@@ -25,9 +25,8 @@ final itineraryConfigProvider = StateProvider<ItineraryConfig>(
   ),
 );
 
-/// Profil de faisabilite par defaut (solo, intermediaire).
-///
-/// Overridable pour supporter le mode groupe.
+/// Profil de faisabilite par defaut (solo, intermediaire) — LEGACY (voir
+/// [itineraryConfigProvider]). Overridable pour supporter le mode groupe.
 final feasibilityProfileProvider = StateProvider<FeasibilityProfile>(
   (ref) => const FeasibilityProfile(
     fitnessLevel: 'intermediate',
@@ -37,61 +36,42 @@ final feasibilityProfileProvider = StateProvider<FeasibilityProfile>(
   ),
 );
 
-/// Provider de l'itineraire calcule.
+/// Provider de l'itineraire affiche — DERIVE DE LA SOURCE UNIQUE DES JOURS (R3).
 ///
-/// Charge les etapes depuis stagesProvider, recupere les
-/// TrailFeasibilityParams depuis trailDataProvider, puis
-/// passe le tout a ItineraryCalculator.calculate().
-/// Utilise select() sur stagesProvider pour ne rebuilder
-/// que si la liste change.
+/// AVANT (bug R3, deux modeles desynchronises) : l'itineraire etait calcule par
+/// `ItineraryCalculator` a partir d'un plafond km/heures ([itineraryConfigProvider])
+/// TOTALEMENT independant du nombre de jours du Programme
+/// ([selectedDurationProvider] / [plannedDaysProvider]). Reduire les jours dans
+/// le Programme ne touchait donc PAS l'Itineraire.
+///
+/// APRES (decision Chris #100122 / D2) : l'itineraire DERIVE du PROGRAMME
+/// editable ([plannedDaysProvider]) du sentier actif — la SOURCE UNIQUE. Le
+/// Programme repartit deja les etapes sur `selectedDurationProvider` (et honore
+/// le sens de marche + les jours de repos). On se contente donc de PROJETER
+/// chaque [PlannedDay] en [ItineraryDay] : ainsi, reduire les jours (ou editer le
+/// Programme : regrouper / separer / repos / reordonner) recompose
+/// IMMEDIATEMENT l'itineraire. Le sens de marche est deja applique en amont par
+/// [plannedDaysProvider] : on ne le re-applique PAS ici (sinon double inversion).
+///
+/// Reste un [FutureProvider] (l'ecran Itineraire et `trekRequirementsProvider`
+/// consomment `.future` / `.when`) meme si la derivation est synchrone.
 final itineraryProvider = FutureProvider<List<ItineraryDay>>((ref) async {
-  // Charger les etapes du sentier actif
-  final stages = await ref.watch(stagesProvider.future);
-  if (stages.isEmpty) return [];
+  // Source unique : le PROGRAMME du sentier actif (jours + repartition + sens).
+  final trailId = ref.watch(trailIdProvider);
+  final plannedDays = ref.watch(plannedDaysProvider(trailId));
 
-  // Recuperer la config utilisateur (select pour precision)
-  final config = ref.watch(itineraryConfigProvider.select((c) => c));
-
-  // Recuperer le profil de faisabilite
-  final profile = ref.watch(feasibilityProfileProvider.select((p) => p));
-
-  // Charger les parametres de faisabilite du sentier
-  final trailParams = _buildTrailFeasibilityParams(ref);
-
-  // Trier les etapes par numero (sens de reference, ordre croissant).
-  final sorted = List<StageModel>.of(stages)
-    ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber));
-
-  // Retour Chris #12b (LOT 2) : l'itineraire suit le SENS DE MARCHE choisi
-  // ([selectedDirectionProvider]). Le sens de reference (ordre croissant) = 1er
-  // code de `TrailConfig.directions` (fourni par le sentier, jamais devine).
-  // Quand l'utilisateur inverse le sens, on inverse l'ORDRE des etapes AVANT le
-  // calcul des jours : le calculateur regroupe alors la sequence inversee
-  // (Jour 1 = ancienne derniere etape). Direction-aware, sans nombre en dur.
-  final directions = ref.watch(trailConfigProvider.select((c) => c.directions));
-  final forward = directions.isNotEmpty ? directions.first : null;
-  final selected = ref.watch(selectedDirectionProvider);
-  final reversed = forward != null && selected != null && selected != forward;
-  final ordered = reversed ? sorted.reversed.toList() : sorted;
-
-  // Calculer l'itineraire
-  return ItineraryCalculator.calculate(ordered, config, profile, trailParams);
+  // Projection PlannedDay -> ItineraryDay (memes totaux : distance / D+ / duree).
+  return [for (final day in plannedDays) _toItineraryDay(day)];
 });
 
-/// Construit les TrailFeasibilityParams depuis le trailDataProvider.
-///
-/// Retourne des parametres neutres si aucun n'est configure
-/// pour le sentier actif. Ajuste altitudeFactor si le sentier
-/// a un denivele total eleve.
-TrailFeasibilityParams _buildTrailFeasibilityParams(Ref ref) {
-  final dataProvider = ref.watch(trailDataProvider);
-  final trailConfig = dataProvider.getTrailConfig();
-
-  // Parametres neutres par defaut -- penalite altitude si D+ > 10 000 m
-  return TrailFeasibilityParams(
-    altitudeFactor: trailConfig.totalElevationGain > 10000 ? 1.5 : 1.0,
-    technicalFactor: 1.0,
-    heatFactor: 1.0,
-    snowFactor: 1.0,
-  );
-}
+/// Projette un jour de PROGRAMME ([PlannedDay]) en jour d'ITINERAIRE
+/// ([ItineraryDay]) — meme contenu, deux vues. Les totaux sont ceux deja portes
+/// par [PlannedDay] (source unique [stageDurationMinutes] pour la duree). Un jour
+/// de repos devient un [ItineraryDay] sans etape (l'ecran affiche « repos »).
+ItineraryDay _toItineraryDay(PlannedDay day) => ItineraryDay(
+      dayNumber: day.dayNumber,
+      stages: List.unmodifiable(day.stages),
+      totalDistance: day.totalDistanceKm,
+      totalElevation: day.totalElevationGainM,
+      estimatedHours: day.estimatedHours,
+    );

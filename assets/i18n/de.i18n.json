@@ -902,6 +902,8 @@
       "limitingLabel": "Begrenzender Faktor: ${factor}",
       "trainingReco": "Empfohlenes Training: ${weeks} Wochen vor dem Start",
       "adviceTitle": "Tipps für deinen Plan",
+      "generateProgram": "Meinen Plan erstellen (${days} Tage)",
+      "generateProgramDone": "Plan über ${days} Tage erstellt — passe ihn nach Wunsch an.",
       "noStages": "Noch keine Etappe zu bewerten.",
       "levels": {
         "beginner": "Anfänger",

@@ -902,6 +902,8 @@
       "limitingLabel": "Facteur limitant : ${factor}",
       "trainingReco": "Entraînement conseillé : ${weeks} semaines avant le départ",
       "adviceTitle": "Conseils pour ton programme",
+      "generateProgram": "Générer mon programme (${days} jours)",
+      "generateProgramDone": "Programme généré sur ${days} jours — à toi de l'ajuster.",
       "noStages": "Aucune étape à évaluer pour le moment.",
       "levels": {
         "beginner": "débutant",

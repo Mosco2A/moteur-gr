@@ -4816,6 +4816,12 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Conseils pour ton programme'
 	String get adviceTitle => 'Conseils pour ton programme';
 
+	/// fr: 'Générer mon programme (${days} jours)'
+	String generateProgram({required Object days}) => 'Générer mon programme (${days} jours)';
+
+	/// fr: 'Programme généré sur ${days} jours — à toi de l'ajuster.'
+	String generateProgramDone({required Object days}) => 'Programme généré sur ${days} jours — à toi de l\'ajuster.';
+
 	/// fr: 'Aucune étape à évaluer pour le moment.'
 	String get noStages => 'Aucune étape à évaluer pour le moment.';
 
@@ -7947,6 +7953,8 @@ extension on Translations {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Facteur limitant : ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Entraînement conseillé : ${weeks} semaines avant le départ',
 			'feasibility.formula.adviceTitle' => 'Conseils pour ton programme',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Générer mon programme (${days} jours)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Programme généré sur ${days} jours — à toi de l\'ajuster.',
 			'feasibility.formula.noStages' => 'Aucune étape à évaluer pour le moment.',
 			'feasibility.formula.levels.beginner' => 'débutant',
 			'feasibility.formula.levels.intermediate' => 'intermédiaire',
@@ -8198,10 +8206,10 @@ extension on Translations {
 			'waypoints.types.camp' => 'Bivouac',
 			'waypoints.types.connectivite' => 'Connectivité',
 			'waypoints.types.jonction' => 'Jonction',
-			'waypoints.filters.title' => 'Filtrer les waypoints',
-			'waypoints.filters.showAll' => 'Tout afficher',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.filters.title' => 'Filtrer les waypoints',
+			'waypoints.filters.showAll' => 'Tout afficher',
 			'waypoints.filters.hideAll' => 'Tout masquer',
 			'waypoints.filters.recentConditionOnly' => 'Condition récente uniquement',
 			'waypoints.detail.conditionsTitle' => 'Conditions terrain',
@@ -8712,10 +8720,10 @@ extension on Translations {
 			'hikerProfile.fieldAge' => 'Âge',
 			'hikerProfile.hintAge' => 'En années',
 			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
-			'hikerProfile.fieldHeight' => 'Taille',
-			'hikerProfile.hintHeight' => 'En centimètres',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.fieldHeight' => 'Taille',
+			'hikerProfile.hintHeight' => 'En centimètres',
 			'hikerProfile.errorHeight' => 'Taille invalide (100 à 250 cm)',
 			'hikerProfile.fieldWeight' => 'Poids',
 			'hikerProfile.hintWeight' => 'En kilogrammes',

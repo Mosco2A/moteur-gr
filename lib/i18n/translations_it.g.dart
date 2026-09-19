@@ -2313,6 +2313,8 @@ class _Translations$feasibility$formula$it extends Translations$feasibility$form
 	@override String limitingLabel({required Object factor}) => 'Fattore limitante: ${factor}';
 	@override String trainingReco({required Object weeks}) => 'Allenamento consigliato: ${weeks} settimane prima della partenza';
 	@override String get adviceTitle => 'Consigli per il tuo programma';
+	@override String generateProgram({required Object days}) => 'Genera il mio programma (${days} giorni)';
+	@override String generateProgramDone({required Object days}) => 'Programma generato su ${days} giorni — modificalo a piacere.';
 	@override String get noStages => 'Nessuna tappa da valutare per ora.';
 	@override late final _Translations$feasibility$formula$levels$it levels = _Translations$feasibility$formula$levels$it._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$it verdicts = _Translations$feasibility$formula$verdicts$it._(_root);
@@ -4577,6 +4579,8 @@ extension on TranslationsIt {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Fattore limitante: ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Allenamento consigliato: ${weeks} settimane prima della partenza',
 			'feasibility.formula.adviceTitle' => 'Consigli per il tuo programma',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Genera il mio programma (${days} giorni)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Programma generato su ${days} giorni — modificalo a piacere.',
 			'feasibility.formula.noStages' => 'Nessuna tappa da valutare per ora.',
 			'feasibility.formula.levels.beginner' => 'principiante',
 			'feasibility.formula.levels.intermediate' => 'intermedio',
@@ -4828,10 +4832,10 @@ extension on TranslationsIt {
 			'waypoints.types.camp' => 'Campeggio',
 			'waypoints.types.connectivite' => 'Connettivita',
 			'waypoints.types.jonction' => 'Bivio',
-			'waypoints.filters.title' => 'Filtra i waypoint',
-			'waypoints.filters.showAll' => 'Mostra tutto',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.filters.title' => 'Filtra i waypoint',
+			'waypoints.filters.showAll' => 'Mostra tutto',
 			'waypoints.filters.hideAll' => 'Nascondi tutto',
 			'waypoints.filters.recentConditionOnly' => 'Solo condizione recente',
 			'waypoints.detail.conditionsTitle' => 'Condizioni del terreno',
@@ -5342,10 +5346,10 @@ extension on TranslationsIt {
 			'hikerProfile.fieldAge' => 'Eta',
 			'hikerProfile.hintAge' => 'In anni',
 			'hikerProfile.errorAge' => 'Eta non valida (8 a 100 anni)',
-			'hikerProfile.fieldHeight' => 'Altezza',
-			'hikerProfile.hintHeight' => 'In centimetri',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.fieldHeight' => 'Altezza',
+			'hikerProfile.hintHeight' => 'In centimetri',
 			'hikerProfile.errorHeight' => 'Altezza non valida (100 a 250 cm)',
 			'hikerProfile.fieldWeight' => 'Peso',
 			'hikerProfile.hintWeight' => 'In chilogrammi',

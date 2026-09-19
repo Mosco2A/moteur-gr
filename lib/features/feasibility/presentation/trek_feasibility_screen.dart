@@ -8,6 +8,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
+import '../../planning/providers/planning_provider.dart';
 import '../domain/feasibility_formula.dart';
 import '../providers/hiker_profile_provider.dart';
 import '../providers/trek_feasibility_provider.dart';
@@ -383,9 +384,21 @@ class _VerdictView extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
+          // R2f (#100122 / parite GR20 `feasibility_result_screen` bouton
+          // CONTINUER) : l'appli PROPOSE le planning, elle ne le demande pas.
+          // Ce bouton APPLIQUE la reco de la formule (#100068 : nb de jours
+          // optimal) a la SOURCE UNIQUE des jours (selectedDurationProvider),
+          // puis mene au Programme deja pre-rempli et modifiable.
+          _GenerateProgramButton(
+            trailId: trailId,
+            suggestedDays: assessment.suggestedDays,
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // Pont « es-tu pret ? » -> « voila comment le devenir » : prepa
           // physique (payant), porte d'entree definie par la spec.
           AppButton(
+            variant: AppButtonVariant.outline,
             icon: Icons.fitness_center,
             label: t.hub.cards.training,
             onPressed: () => context.push('/training'),
@@ -414,6 +427,52 @@ class _VerdictView extends ConsumerWidget {
           _ProfileShortcuts(trailId: trailId, complete: hasProfile),
         ],
       ),
+    );
+  }
+}
+
+/// Bouton « Generer mon programme » (R2f, parite GR20 « CONTINUER »).
+///
+/// APPLIQUE la reco de la formule #100068 : fixe le nombre de jours de MARCHE
+/// optimal ([FeasibilityAssessment.suggestedDays]) sur la SOURCE UNIQUE
+/// ([selectedDurationProvider]) — borne aux durees possibles du sentier
+/// ([durationBoundsProvider]) — puis mene au Programme, deja pre-rempli et
+/// modifiable ([plannedDaysProvider] watch cette duree et se recompose seul, et
+/// l'Itineraire suit maintenant la meme source, R3). Un message confirme la
+/// duree appliquee. Le libelle indique la duree proposee pour etre explicite.
+class _GenerateProgramButton extends ConsumerWidget {
+  const _GenerateProgramButton({
+    required this.trailId,
+    required this.suggestedDays,
+  });
+
+  final String trailId;
+
+  /// Nombre de jours de MARCHE optimal propose par la formule (#100068).
+  final int suggestedDays;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final f = t.feasibility.formula;
+    // Borne la reco aux durees realistes du sentier (nb d'etapes) : jamais moins
+    // d'un regroupement raisonnable, jamais plus que le max de repos possible.
+    final bounds = ref.watch(durationBoundsProvider(trailId));
+    final target = bounds.clampDuration(suggestedDays);
+
+    return AppButton(
+      minHeight: 52,
+      icon: Icons.event_available,
+      label: f.generateProgram(days: target),
+      onPressed: () {
+        // Applique la reco a la source unique des jours (D2 / #100122).
+        ref.read(selectedDurationProvider.notifier).set(target);
+        // Confirmation breve (le Programme s'ouvre pre-rempli sur cette duree).
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(f.generateProgramDone(days: target))),
+        );
+        // Mene au Programme (parite GR20 : CONTINUER pousse vers la config).
+        context.push('/trail/$trailId/planning');
+      },
     );
   }
 }

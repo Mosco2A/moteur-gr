@@ -29,7 +29,14 @@ final trekRequirementsProvider = FutureProvider<TrekRequirements?>((ref) async {
 
   double maxGainPerDay = 0;
   double maxDistPerDay = 0;
+  var walkingDays = 0;
   for (final d in days) {
+    // R3 (#100122) : l'itineraire derive desormais du Programme (source unique)
+    // qui peut porter des JOURS DE REPOS (etapes vides). L'endurance multi-jours
+    // exigee = les jours de MARCHE consecutifs, PAS les repos -> on ignore les
+    // jours sans etape pour le compte (leur D+/distance = 0 de toute facon).
+    if (d.stageCount == 0) continue;
+    walkingDays++;
     if (d.totalElevation > maxGainPerDay) {
       maxGainPerDay = d.totalElevation.toDouble();
     }
@@ -41,7 +48,7 @@ final trekRequirementsProvider = FutureProvider<TrekRequirements?>((ref) async {
   return TrekRequirements(
     maxElevationGainPerDay: maxGainPerDay,
     maxDistancePerDayKm: maxDistPerDay,
-    totalDays: days.length,
+    totalDays: walkingDays,
   );
 });
 

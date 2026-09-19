@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/core/config/test_trail_config.dart';
+import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/presentation/trek_feasibility_screen.dart';
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';
+import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
+import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Test WIDGET de l'ecran de faisabilite FEU TRICOLORE (LOT 3a, #100068).
@@ -121,6 +126,111 @@ void main() {
     await pumpScreen(tester,null);
     // La vue de dépannage montre le raccourci « profil ».
     expect(find.text(t.feasibility.openProfile), findsOneWidget);
+  });
+
+  // R2f (#100122 / parite GR20 « CONTINUER ») : l'appli PROPOSE le planning. Le
+  // bouton « Generer mon programme » APPLIQUE la reco de la formule (nb de jours
+  // optimal) a la source unique des jours (selectedDurationProvider) puis mene
+  // au Programme. La reco de `mixedAssessment` (intermediaire) = 5 jours de
+  // marche (bornes du sentier test [3..7]).
+  group('R2f — Generer mon programme applique la reco', () {
+    /// Monte l'ecran avec la config sentier test (trailId + bornes de duree) et
+    /// une route /trail/:id/planning pour observer la navigation. Expose le
+    /// container pour lire selectedDurationProvider apres le tap.
+    Future<ProviderContainer> pumpWithPlanningRoute(
+      WidgetTester tester,
+      FeasibilityAssessment assessment,
+    ) async {
+      final router = GoRouter(
+        initialLocation: '/',
+        routes: [
+          GoRoute(
+            path: '/',
+            builder: (_, __) => const TrekFeasibilityScreen(),
+          ),
+          GoRoute(
+            path: '/trail/:id/planning',
+            builder: (_, state) => Scaffold(
+              body: Text('PLANNING ${state.pathParameters['id']}'),
+            ),
+          ),
+        ],
+      );
+      // 5 etapes seedees pour la SOURCE UNIQUE (bornes de duree du sentier =
+      // fromStageCount(5) -> [3..7]) : la reco (5) est ainsi dans les bornes.
+      StageModel st(int n) => StageModel(
+            trailId: 'test-trail',
+            stageNumber: n,
+            name: 'Etape $n',
+            distanceKm: 10,
+            elevationGainM: 400,
+            elevationLossM: 300,
+            startLat: 42.0,
+            startLng: 9.0,
+            endLat: 42.1,
+            endLng: 9.1,
+          );
+      late ProviderContainer container;
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            trailConfigProvider.overrideWithValue(testTrailConfig),
+            stagesProvider('test-trail').overrideWith(
+                (ref) => Future.value([for (var n = 1; n <= 5; n++) st(n)])),
+            feasibilityAssessmentProvider
+                .overrideWith((ref) async => assessment),
+            hasObjectiveProfileProvider.overrideWith((ref) async => true),
+          ],
+          child: Consumer(
+            builder: (context, ref, _) {
+              container = ProviderScope.containerOf(context);
+              return MaterialApp.router(
+                locale: const Locale('fr'),
+                routerConfig: router,
+              );
+            },
+          ),
+        ),
+      );
+      for (var i = 0; i < 6; i++) {
+        await tester.pump(const Duration(milliseconds: 20));
+      }
+      return container;
+    }
+
+    testWidgets('le bouton est present et affiche la duree recommandee',
+        (tester) async {
+      await pumpWithPlanningRoute(tester, mixedAssessment());
+      // Reco = 5 jours (bornee [3..7]).
+      expect(
+        find.text(t.feasibility.formula.generateProgram(days: 5)),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets(
+        'taper le bouton FIXE la duree (source unique) et mene au Programme',
+        (tester) async {
+      final container = await pumpWithPlanningRoute(tester, mixedAssessment());
+      // Duree de depart differente de la reco (3) pour prouver l'application.
+      container.read(selectedDurationProvider.notifier).set(3);
+      await tester.pump();
+      expect(container.read(selectedDurationProvider), 3);
+
+      // Le bouton est en bas de la vue scrollable -> le rendre visible avant tap.
+      final button = find.widgetWithText(
+        ElevatedButton,
+        t.feasibility.formula.generateProgram(days: 5),
+      );
+      await tester.ensureVisible(button);
+      await tester.tap(button);
+      await tester.pumpAndSettle();
+
+      // La SOURCE UNIQUE des jours est passee a la reco (5).
+      expect(container.read(selectedDurationProvider), 5);
+      // On a navigue vers le Programme du sentier (parite GR20 CONTINUER).
+      expect(find.text('PLANNING test-trail'), findsOneWidget);
+    });
   });
 }
 

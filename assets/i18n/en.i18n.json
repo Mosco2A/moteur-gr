@@ -902,6 +902,8 @@
       "limitingLabel": "Limiting factor: ${factor}",
       "trainingReco": "Recommended training: ${weeks} weeks before departure",
       "adviceTitle": "Tips for your plan",
+      "generateProgram": "Generate my plan (${days} days)",
+      "generateProgramDone": "Plan generated over ${days} days — tweak it as you like.",
       "noStages": "No stage to assess yet.",
       "levels": {
         "beginner": "beginner",

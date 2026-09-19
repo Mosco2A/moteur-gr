@@ -2313,6 +2313,8 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String limitingLabel({required Object factor}) => 'Limiting factor: ${factor}';
 	@override String trainingReco({required Object weeks}) => 'Recommended training: ${weeks} weeks before departure';
 	@override String get adviceTitle => 'Tips for your plan';
+	@override String generateProgram({required Object days}) => 'Generate my plan (${days} days)';
+	@override String generateProgramDone({required Object days}) => 'Plan generated over ${days} days — tweak it as you like.';
 	@override String get noStages => 'No stage to assess yet.';
 	@override late final _Translations$feasibility$formula$levels$en levels = _Translations$feasibility$formula$levels$en._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$en verdicts = _Translations$feasibility$formula$verdicts$en._(_root);
@@ -4577,6 +4579,8 @@ extension on TranslationsEn {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Limiting factor: ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Recommended training: ${weeks} weeks before departure',
 			'feasibility.formula.adviceTitle' => 'Tips for your plan',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Generate my plan (${days} days)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan generated over ${days} days — tweak it as you like.',
 			'feasibility.formula.noStages' => 'No stage to assess yet.',
 			'feasibility.formula.levels.beginner' => 'beginner',
 			'feasibility.formula.levels.intermediate' => 'intermediate',
@@ -4828,10 +4832,10 @@ extension on TranslationsEn {
 			'waypoints.types.camp' => 'Campsite',
 			'waypoints.types.connectivite' => 'Connectivity',
 			'waypoints.types.jonction' => 'Junction',
-			'waypoints.filters.title' => 'Filter waypoints',
-			'waypoints.filters.showAll' => 'Show all',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.filters.title' => 'Filter waypoints',
+			'waypoints.filters.showAll' => 'Show all',
 			'waypoints.filters.hideAll' => 'Hide all',
 			'waypoints.filters.recentConditionOnly' => 'Recent condition only',
 			'waypoints.detail.conditionsTitle' => 'Field conditions',
@@ -5342,10 +5346,10 @@ extension on TranslationsEn {
 			'hikerProfile.fieldAge' => 'Age',
 			'hikerProfile.hintAge' => 'In years',
 			'hikerProfile.errorAge' => 'Invalid age (8 to 100 years)',
-			'hikerProfile.fieldHeight' => 'Height',
-			'hikerProfile.hintHeight' => 'In centimetres',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.fieldHeight' => 'Height',
+			'hikerProfile.hintHeight' => 'In centimetres',
 			'hikerProfile.errorHeight' => 'Invalid height (100 to 250 cm)',
 			'hikerProfile.fieldWeight' => 'Weight',
 			'hikerProfile.hintWeight' => 'In kilograms',
