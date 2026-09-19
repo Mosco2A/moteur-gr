@@ -928,6 +928,22 @@
         "rest": "Prévois un jour de repos après l'étape ${stages}.",
         "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique)."
       }
+    },
+    "flow": {
+      "title": "Es-tu prêt pour ce trek ?",
+      "intro": "Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.",
+      "progress": "${done}/${total} étapes remplies",
+      "stepProfile": "Ta fiche d'info",
+      "stepProfileSub": "Âge, taille, poids (reste sur ton téléphone).",
+      "stepWalkTest": "Test de marche 6 minutes",
+      "stepWalkTestSub": "Mesure ta forme du moment — fait bouger ton résultat.",
+      "stepPastHikes": "Tes 5 dernières randos",
+      "stepPastHikesSub": "Ce que tu as déjà tenu : rythme, distance, dénivelé.",
+      "optionalTag": "(optionnel)",
+      "validate": "Valider et voir mon résultat",
+      "hintEmpty": "Tu peux voir un premier résultat, mais remplis au moins une étape pour qu'il soit fiable.",
+      "hintPartial": "Tu peux voir ton résultat dès maintenant ; complète les étapes pour l'affiner.",
+      "partialNotice": "Résultat provisoire : ton profil n'est pas complet. Renseigne ta fiche, le test ou tes randos pour un verdict fiable."
     }
   },
   "tips": {

@@ -928,6 +928,22 @@
         "rest": "Plan a rest day after stage ${stages}.",
         "training": "Train for ${weeks} weeks before departure (physical preparation)."
       }
+    },
+    "flow": {
+      "title": "Are you ready for this trek?",
+      "intro": "Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.",
+      "progress": "${done}/${total} steps done",
+      "stepProfile": "Your info sheet",
+      "stepProfileSub": "Age, height, weight (stays on your phone).",
+      "stepWalkTest": "6-minute walk test",
+      "stepWalkTestSub": "Measures your current fitness — changes your result.",
+      "stepPastHikes": "Your last 5 hikes",
+      "stepPastHikesSub": "What you have already handled: pace, distance, elevation.",
+      "optionalTag": "(optional)",
+      "validate": "Confirm and see my result",
+      "hintEmpty": "You can see a first result, but fill in at least one step to make it reliable.",
+      "hintPartial": "You can see your result now; complete the steps to refine it.",
+      "partialNotice": "Provisional result: your profile is incomplete. Fill in your sheet, the test or your hikes for a reliable verdict."
     }
   },
   "tips": {

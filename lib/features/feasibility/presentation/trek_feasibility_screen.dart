@@ -9,22 +9,62 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../domain/feasibility_formula.dart';
+import '../providers/hiker_profile_provider.dart';
 import '../providers/trek_feasibility_provider.dart';
+import '../providers/walk_test_provider.dart';
 
 /// Ecran de faisabilite profil x trek — FORMULE V1 FEU TRICOLORE (LOT 3a,
-/// decision Chris #100068).
+/// decision Chris #100068) ENVELOPPEE d'un FLUX GUIDE (LOT 4, retours R2a-d).
 ///
-/// Remplace le verdict binaire « Deconseille » par un feu tricolore : chaque
-/// etape est notee VERT / ORANGE / ROUGE selon le ratio effort (km-effort =
-/// distance + D+/100) sur le plafond journalier deduit du profil. Le verdict
-/// global nomme l'etape la plus dure, le nombre de jours au-dessus, le facteur
-/// limitant, et propose des conseils de programme (jours optimal, decoupe,
-/// repos). Le questionnaire reste un fallback de dépannage. Tous textes Slang.
-class TrekFeasibilityScreen extends ConsumerWidget {
+/// Parcours d'un VRAI 1er utilisateur (parite GR20 `FeasibilityQuestionnaire`) :
+///   1. au 1er acces (profil objectif absent -> `hasObjectiveProfileProvider`
+///      faux), on NE calcule PAS un verdict sur du vide : on presente un
+///      QUESTIONNAIRE GUIDE etape par etape (fiche morpho -> test 6 min ->
+///      5 randos) avec barre de progression et un bouton « Valider / Voir mon
+///      resultat » qui mene TOUJOURS au verdict (R2a/R2c/R2d) ;
+///   2. le TEST 6 min alimente le calcul : au retour d'une etape, on invalide
+///      l'evaluation pour la recalculer (R2b) ;
+///   3. la sortie reste le FEU TRICOLORE #100068 (verdict global + etapes +
+///      conseils), inchange. On garde « Recommencer » (re-repondre au flux).
+///
+/// La formule (#100068) n'est PAS modifiee ici : on la CABLE au flux.
+/// Tous les textes passent par Slang (accents FR garantis).
+class TrekFeasibilityScreen extends ConsumerStatefulWidget {
   const TrekFeasibilityScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TrekFeasibilityScreen> createState() =>
+      _TrekFeasibilityScreenState();
+}
+
+class _TrekFeasibilityScreenState
+    extends ConsumerState<TrekFeasibilityScreen> {
+  /// L'utilisateur a appuye sur « Valider / Voir mon resultat » : on force
+  /// l'affichage du verdict meme si le profil objectif reste partiel (le bouton
+  /// mene TOUJOURS a un resultat — R2c/R2d). « Recommencer » repasse a false.
+  bool _showResult = false;
+
+  /// Recalcule l'evaluation apres qu'une etape du flux a ete remplie (fiche,
+  /// test 6 min, randos) — garantit que le TEST change le verdict (R2b).
+  void _refreshAssessment() {
+    ref.invalidate(walkTestResultProvider);
+    ref.invalidate(pastHikesProvider);
+    ref.invalidate(hikerProfileProvider);
+    ref.invalidate(objectiveProfileProvider);
+    ref.invalidate(hikerLevelProvider);
+    ref.invalidate(hasObjectiveProfileProvider);
+    ref.invalidate(feasibilityAssessmentProvider);
+  }
+
+  /// Pousse un ecran de saisie puis, au retour, rafraichit l'evaluation.
+  Future<void> _openStep(String route) async {
+    await context.push(route);
+    if (!mounted) return;
+    _refreshAssessment();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final assessmentAsync = ref.watch(feasibilityAssessmentProvider);
     final f = t.feasibility;
 
@@ -38,16 +78,247 @@ class TrekFeasibilityScreen extends ConsumerWidget {
             // Pas d'etapes -> questionnaire de dépannage.
             return _FallbackToQuestionnaire(reason: f.sourceFallback);
           }
-          return _VerdictView(assessment: assessment);
+          final hasProfileAsync = ref.watch(hasObjectiveProfileProvider);
+          final hasProfile = hasProfileAsync.maybeWhen(
+            data: (has) => has,
+            orElse: () => false,
+          );
+          // FLUX GUIDE au 1er acces (profil objectif vide) tant que
+          // l'utilisateur n'a pas demande a voir son resultat (R2a/R2c/R2d).
+          if (!hasProfile && !_showResult) {
+            return _FeasibilityGuidedFlow(
+              onOpenStep: _openStep,
+              onValidate: () => setState(() => _showResult = true),
+            );
+          }
+          // Sinon : le verdict tricolore #100068 (avec « Recommencer »).
+          return _VerdictView(
+            assessment: assessment,
+            onRestart: () => setState(() => _showResult = false),
+          );
         },
       ),
     );
   }
 }
 
+/// FLUX GUIDE d'entree (parite GR20) : fiche -> test 6 min -> randos, barre de
+/// progression, puis bouton « Valider / Voir mon resultat » (mene TOUJOURS au
+/// verdict). Chaque etape ouvre l'ecran de saisie existant et se coche au
+/// retour (R2a/R2c/R2d). Le test 6 min alimente le calcul (R2b).
+class _FeasibilityGuidedFlow extends ConsumerWidget {
+  const _FeasibilityGuidedFlow({
+    required this.onOpenStep,
+    required this.onValidate,
+  });
+
+  /// Ouvre un ecran de saisie (route) puis rafraichit l'evaluation au retour.
+  final Future<void> Function(String route) onOpenStep;
+
+  /// L'utilisateur valide et demande a voir son resultat.
+  final VoidCallback onValidate;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final f = t.feasibility;
+    final trailId = ref.watch(trailConfigProvider).id;
+
+    // Etat de completion de chaque etape (pour cocher + la barre de progression).
+    final profileAsync = ref.watch(hikerProfileProvider);
+    final walkTestAsync = ref.watch(walkTestResultProvider);
+    final pastHikesAsync = ref.watch(pastHikesProvider);
+
+    final profileDone =
+        profileAsync.maybeWhen(data: (p) => !p.isEmpty, orElse: () => false);
+    final walkTestDone = walkTestAsync.maybeWhen(
+        data: (w) => w != null, orElse: () => false);
+    final hikesDone = pastHikesAsync.maybeWhen(
+        data: (h) => h.isNotEmpty, orElse: () => false);
+
+    // Progression : part des 3 etapes remplies (le test reste optionnel mais
+    // compte dans la barre pour encourager a le faire).
+    final doneCount =
+        (profileDone ? 1 : 0) + (walkTestDone ? 1 : 0) + (hikesDone ? 1 : 0);
+    final progress = doneCount / 3.0;
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.spacingLg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Barre de progression (parite GR20 questionnaire).
+          ClipRRect(
+            borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
+              backgroundColor: theme.colorScheme.onSurface.withAlpha(30),
+              valueColor:
+                  AlwaysStoppedAnimation(theme.colorScheme.primary),
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(
+            f.flow.progress(done: doneCount, total: 3),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(160),
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Intro du flux guide.
+          Text(f.flow.title, style: theme.textTheme.titleLarge),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(f.flow.intro, style: theme.textTheme.bodyMedium),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Etape 1 : fiche morpho (age/taille/poids).
+          _FlowStepCard(
+            step: 1,
+            icon: Icons.badge_outlined,
+            title: f.flow.stepProfile,
+            subtitle: f.flow.stepProfileSub,
+            done: profileDone,
+            onTap: () => onOpenStep('/trail/$trailId/hiker-profile'),
+          ),
+          // Etape 2 : test 6 minutes (optionnel mais alimente le calcul).
+          _FlowStepCard(
+            step: 2,
+            icon: Icons.directions_walk,
+            title: f.flow.stepWalkTest,
+            subtitle: f.flow.stepWalkTestSub,
+            done: walkTestDone,
+            optional: true,
+            onTap: () => onOpenStep('/trail/$trailId/walk-test'),
+          ),
+          // Etape 3 : 5 dernieres randos.
+          _FlowStepCard(
+            step: 3,
+            icon: Icons.history,
+            title: f.flow.stepPastHikes,
+            subtitle: f.flow.stepPastHikesSub,
+            done: hikesDone,
+            onTap: () => onOpenStep('/trail/$trailId/past-hikes'),
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // Bouton « Valider / Voir mon resultat » : mene TOUJOURS au verdict
+          // (R2c/R2d), meme si le profil reste partiel (on encourage juste a
+          // completer via le sous-titre d'aide).
+          AppButton(
+            minHeight: 52,
+            icon: Icons.check_circle_outline,
+            label: f.flow.validate,
+            onPressed: onValidate,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(
+            doneCount == 0 ? f.flow.hintEmpty : f.flow.hintPartial,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(150),
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Carte d'une etape du flux guide (numero, icone, titre, etat coche).
+class _FlowStepCard extends StatelessWidget {
+  const _FlowStepCard({
+    required this.step,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.done,
+    required this.onTap,
+    this.optional = false,
+  });
+  final int step;
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool done;
+  final bool optional;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final accent = done ? AppTheme.vertFacile : colors.primary;
+    return AppCard(
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+      onTap: onTap,
+      child: Row(
+        children: [
+          // Pastille numero -> coche verte quand l'etape est remplie.
+          Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: accent.withAlpha(30),
+              shape: BoxShape.circle,
+              border: Border.all(color: accent.withAlpha(120)),
+            ),
+            child: done
+                ? Icon(Icons.check, color: accent, size: 20)
+                : Text(
+                    '$step',
+                    style: theme.textTheme.titleMedium
+                        ?.copyWith(color: accent, fontWeight: FontWeight.bold),
+                  ),
+          ),
+          const SizedBox(width: AppTheme.spacingBase),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(icon, size: 18, color: colors.onSurface),
+                    const SizedBox(width: AppTheme.spacingXs),
+                    Flexible(
+                      child: Text(
+                        title,
+                        style: theme.textTheme.titleSmall
+                            ?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    if (optional) ...[
+                      const SizedBox(width: AppTheme.spacingXs),
+                      Text(
+                        t.feasibility.flow.optionalTag,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: colors.onSurface.withAlpha(140),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Text(subtitle, style: theme.textTheme.bodySmall),
+              ],
+            ),
+          ),
+          const Icon(Icons.chevron_right),
+        ],
+      ),
+    );
+  }
+}
+
 class _VerdictView extends ConsumerWidget {
-  const _VerdictView({required this.assessment});
+  const _VerdictView({required this.assessment, required this.onRestart});
   final FeasibilityAssessment assessment;
+
+  /// « Recommencer » : repasse au flux guide pour re-repondre.
+  final VoidCallback onRestart;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -55,6 +326,10 @@ class _VerdictView extends ConsumerWidget {
     final f = t.feasibility;
     final trailId = ref.watch(trailConfigProvider).id;
     final hasProfileAsync = ref.watch(hasObjectiveProfileProvider);
+    final hasProfile = hasProfileAsync.maybeWhen(
+      data: (has) => has,
+      orElse: () => false,
+    );
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.spacingLg),
@@ -63,6 +338,13 @@ class _VerdictView extends ConsumerWidget {
         children: [
           Text(f.formula.intro, style: theme.textTheme.bodyMedium),
           const SizedBox(height: AppTheme.spacingLg),
+
+          // Rappel si le verdict s'appuie sur un profil encore partiel : on
+          // invite a completer (le resultat reste affiche — R2d).
+          if (!hasProfile) ...[
+            _PartialProfileNotice(),
+            const SizedBox(height: AppTheme.spacingLg),
+          ],
 
           // Verdict global (feu tricolore).
           _VerdictBadge(verdict: assessment.globalVerdict),
@@ -110,6 +392,16 @@ class _VerdictView extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingLg),
 
+          // « Recommencer » : re-repondre au questionnaire guide (R2 : garder
+          // Recommencer pour refaire fiche/test/randos).
+          AppButton(
+            variant: AppButtonVariant.outline,
+            icon: Icons.refresh,
+            label: f.restart,
+            onPressed: onRestart,
+          ),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // LOT 1 (retour Chris #6) : acces permanent au questionnaire.
           _ShortcutCard(
             icon: Icons.quiz_outlined,
@@ -119,9 +411,33 @@ class _VerdictView extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingLg),
 
           // Acces rapides pour completer / affiner le profil objectif.
-          hasProfileAsync.maybeWhen(
-            data: (has) => _ProfileShortcuts(trailId: trailId, complete: has),
-            orElse: () => _ProfileShortcuts(trailId: trailId, complete: false),
+          _ProfileShortcuts(trailId: trailId, complete: hasProfile),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bandeau « profil partiel » affiche au-dessus du verdict quand le profil
+/// objectif n'est pas encore renseigne (le resultat reste montre — R2d).
+class _PartialProfileNotice extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    const color = AppTheme.orangeDifficile;
+    return AppCard(
+      backgroundColor: color.withAlpha(20),
+      borderColor: color.withAlpha(80),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.info_outline, size: 20, color: color),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(
+              t.feasibility.flow.partialNotice,
+              style: theme.textTheme.bodySmall,
+            ),
           ),
         ],
       ),

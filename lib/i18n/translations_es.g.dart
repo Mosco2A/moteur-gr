@@ -729,6 +729,7 @@ class _Translations$feasibility$es extends Translations$feasibility$fr {
 	@override String get gapTooHigh => 'Diferencia demasiado grande';
 	@override late final _Translations$feasibility$gaps$es gaps = _Translations$feasibility$gaps$es._(_root);
 	@override late final _Translations$feasibility$formula$es formula = _Translations$feasibility$formula$es._(_root);
+	@override late final _Translations$feasibility$flow$es flow = _Translations$feasibility$flow$es._(_root);
 }
 
 // Path: tips
@@ -2317,6 +2318,29 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$verdicts$es verdicts = _Translations$feasibility$formula$verdicts$es._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$es limitingFactors = _Translations$feasibility$formula$limitingFactors$es._(_root);
 	@override late final _Translations$feasibility$formula$advice$es advice = _Translations$feasibility$formula$advice$es._(_root);
+}
+
+// Path: feasibility.flow
+class _Translations$feasibility$flow$es extends Translations$feasibility$flow$fr {
+	_Translations$feasibility$flow$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => '¿Estás listo para este trek?';
+	@override String get intro => 'Responde 3 pasos rápidos: deducimos tu nivel real y luego te decimos si el trek es viable.';
+	@override String progress({required Object done, required Object total}) => '${done}/${total} pasos completados';
+	@override String get stepProfile => 'Tu ficha de datos';
+	@override String get stepProfileSub => 'Edad, altura, peso (permanece en tu teléfono).';
+	@override String get stepWalkTest => 'Prueba de marcha 6 minutos';
+	@override String get stepWalkTestSub => 'Mide tu forma actual — cambia tu resultado.';
+	@override String get stepPastHikes => 'Tus últimas 5 rutas';
+	@override String get stepPastHikesSub => 'Lo que ya has hecho: ritmo, distancia, desnivel.';
+	@override String get optionalTag => '(opcional)';
+	@override String get validate => 'Validar y ver mi resultado';
+	@override String get hintEmpty => 'Puedes ver un primer resultado, pero completa al menos un paso para que sea fiable.';
+	@override String get hintPartial => 'Puedes ver tu resultado ahora; completa los pasos para afinarlo.';
+	@override String get partialNotice => 'Resultado provisional: tu perfil está incompleto. Completa tu ficha, la prueba o tus rutas para un veredicto fiable.';
 }
 
 // Path: tips.themes
@@ -4571,6 +4595,20 @@ extension on TranslationsEs {
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Divide la etapa ${stage} en dos: supera claramente tu tope.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prevé un día de descanso tras la etapa ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir (preparación física).',
+			'feasibility.flow.title' => '¿Estás listo para este trek?',
+			'feasibility.flow.intro' => 'Responde 3 pasos rápidos: deducimos tu nivel real y luego te decimos si el trek es viable.',
+			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} pasos completados',
+			'feasibility.flow.stepProfile' => 'Tu ficha de datos',
+			'feasibility.flow.stepProfileSub' => 'Edad, altura, peso (permanece en tu teléfono).',
+			'feasibility.flow.stepWalkTest' => 'Prueba de marcha 6 minutos',
+			'feasibility.flow.stepWalkTestSub' => 'Mide tu forma actual — cambia tu resultado.',
+			'feasibility.flow.stepPastHikes' => 'Tus últimas 5 rutas',
+			'feasibility.flow.stepPastHikesSub' => 'Lo que ya has hecho: ritmo, distancia, desnivel.',
+			'feasibility.flow.optionalTag' => '(opcional)',
+			'feasibility.flow.validate' => 'Validar y ver mi resultado',
+			'feasibility.flow.hintEmpty' => 'Puedes ver un primer resultado, pero completa al menos un paso para que sea fiable.',
+			'feasibility.flow.hintPartial' => 'Puedes ver tu resultado ahora; completa los pasos para afinarlo.',
+			'feasibility.flow.partialNotice' => 'Resultado provisional: tu perfil está incompleto. Completa tu ficha, la prueba o tus rutas para un veredicto fiable.',
 			'tips.carouselTitle' => 'Consejos trek',
 			'tips.allCategories' => 'Todas',
 			'tips.swipeHint' => 'Desliza para ver mas',
@@ -4792,6 +4830,8 @@ extension on TranslationsEs {
 			'waypoints.types.jonction' => 'Cruce',
 			'waypoints.filters.title' => 'Filtrar waypoints',
 			'waypoints.filters.showAll' => 'Mostrar todo',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.filters.hideAll' => 'Ocultar todo',
 			'waypoints.filters.recentConditionOnly' => 'Solo condicion reciente',
 			'waypoints.detail.conditionsTitle' => 'Condiciones del terreno',
@@ -4806,8 +4846,6 @@ extension on TranslationsEs {
 			'waypoints.freshness.days' => ({required Object n}) => 'actualizado hace ${n} d',
 			'waypoints.contribution.titleWaypoint' => 'Anadir un punto',
 			'waypoints.contribution.titleComment' => 'Senalar una condicion',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.contribution.chooseType' => 'Tipo de punto',
 			'waypoints.contribution.titleField' => 'Titulo del punto',
 			'waypoints.contribution.conditionPrompt' => 'Describe la condicion observada',
@@ -5306,6 +5344,8 @@ extension on TranslationsEs {
 			'hikerProfile.errorAge' => 'Edad no valida (8 a 100 anos)',
 			'hikerProfile.fieldHeight' => 'Altura',
 			'hikerProfile.hintHeight' => 'En centimetros',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.errorHeight' => 'Altura no valida (100 a 250 cm)',
 			'hikerProfile.fieldWeight' => 'Peso',
 			'hikerProfile.hintWeight' => 'En kilogramos',
@@ -5320,8 +5360,6 @@ extension on TranslationsEs {
 			'hikerProfile.bmiCategories.underweight' => 'Bajo peso',
 			'hikerProfile.bmiCategories.normal' => 'Peso normal',
 			'hikerProfile.bmiCategories.overweight' => 'Sobrepeso',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.bmiCategories.obese' => 'Obesidad',
 			'hikerProfile.consentTitle' => 'Datos corporales (RGPD articulo 9)',
 			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',

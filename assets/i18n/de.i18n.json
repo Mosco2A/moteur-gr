@@ -928,6 +928,22 @@
         "rest": "Plane einen Ruhetag nach Etappe ${stages}.",
         "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung)."
       }
+    },
+    "flow": {
+      "title": "Bist du bereit für diese Tour?",
+      "intro": "Beantworte 3 kurze Schritte: Wir ermitteln dein echtes Niveau und sagen dir, ob die Tour machbar ist.",
+      "progress": "${done}/${total} Schritte erledigt",
+      "stepProfile": "Dein Infoblatt",
+      "stepProfileSub": "Alter, Größe, Gewicht (bleibt auf deinem Handy).",
+      "stepWalkTest": "6-Minuten-Gehtest",
+      "stepWalkTestSub": "Misst deine aktuelle Form — verändert dein Ergebnis.",
+      "stepPastHikes": "Deine letzten 5 Touren",
+      "stepPastHikesSub": "Was du schon geschafft hast: Tempo, Distanz, Höhenmeter.",
+      "optionalTag": "(optional)",
+      "validate": "Bestätigen und Ergebnis ansehen",
+      "hintEmpty": "Du kannst ein erstes Ergebnis sehen, fülle aber mindestens einen Schritt aus, damit es verlässlich ist.",
+      "hintPartial": "Du kannst dein Ergebnis jetzt sehen; vervollständige die Schritte, um es zu verfeinern.",
+      "partialNotice": "Vorläufiges Ergebnis: dein Profil ist unvollständig. Fülle dein Blatt, den Test oder deine Touren aus für ein verlässliches Urteil."
     }
   },
   "tips": {
