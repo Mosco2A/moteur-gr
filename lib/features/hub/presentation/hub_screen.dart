@@ -303,12 +303,15 @@ class _HubScreenState extends ConsumerState<HubScreen>
                   subtitle: t.hub.cards.trainingSub,
                   onTap: () => context.push('/training'),
                 ),
-                QuickAccessCard(
-                  icon: Icons.explore_outlined,
-                  title: t.hub.cards.offline,
-                  subtitle: t.hub.cards.offlineSub,
-                  onTap: () => context.push('/catalog'),
-                ),
+                // R6 (retour Chris) : la carte « Decouvrir des sentiers »
+                // (-> /catalog) a ete RETIREE de la section Preparer. Choisir un
+                // autre sentier est de l'AMONT (choix du trek), pas de la prepa
+                // d'un trek en cours. « Decouvrir » reste accessible depuis
+                // l'accueil « maison » (MyTreksScreen : barre contextuelle +
+                // bandeau « Decouvrir / Mon compte », cf. DECISIONS §5.2). NB :
+                // malgre le nom de cle `offline`, cette carte ne telechargeait
+                // AUCUNE carte hors-ligne du trek courant — elle ouvrait juste le
+                // catalogue (libelle « Decouvrir des sentiers ») : rien a separer.
                 // GROUPE — carte « Mon groupe » RETIREE en StepWays L8 (decision
                 // Chris #99615-2). Le suivi de groupe en direct (code mort/demo)
                 // sort du perimetre V1 : plus de porte d'entree vers /group/:id

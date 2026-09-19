@@ -418,6 +418,20 @@ void main() {
       },
     );
 
+    // R6 (retour Chris) — la carte « Decouvrir des sentiers » (-> /catalog) a
+    // ete SORTIE de la section Preparer : choisir un autre sentier est de
+    // l'amont, pas de la prepa. Elle reste accessible depuis l'accueil
+    // « maison » (MyTreksScreen, teste dans my_treks_screen_test.dart). Ce test
+    // verrouille son ABSENCE du cockpit (le libelle `hub.cards.offline` vaut
+    // « Decouvrir des sentiers »).
+    testWidgets(
+      'carte « Decouvrir des sentiers » ABSENTE de la section Preparer (R6)',
+      (tester) async {
+        await pumpTallHub(tester);
+        expect(find.text(t.hub.cards.offline), findsNothing);
+      },
+    );
+
     testWidgets('CTA « Demarrer » absent quand un trek reel est actif', (
       tester,
     ) async {
