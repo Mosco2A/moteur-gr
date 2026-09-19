@@ -78,6 +78,47 @@ void main() {
       expect(withTrail.length, greaterThan(socle.length));
       expect(withTrail.any((c) => c.id == 'mam-gestion-eau'), isTrue);
     });
+
+    test('le socle est riche (>= 20 fiches, R7) et i18n 5 langues complet',
+        () async {
+      final socle = await TipCardsLoader.load(trailTipAssetPaths: const []);
+      // R7 : catalogue restaure facon GR20 (seed enrichi depuis les fiches
+      // communes/generiques). Garde-fou contre une nouvelle regression de seed.
+      expect(socle.length, greaterThanOrEqualTo(20));
+      // Toutes les fiches du socle sont "communes" (scope=all).
+      expect(socle.every((c) => c.scope == 'all'), isTrue);
+      // Contenu i18n INLINE renseigne dans les 5 langues (aucune traduction
+      // vide -> le repli FR ne masque pas un trou de donnees).
+      for (final c in socle) {
+        expect(c.titleFr, isNotEmpty, reason: '${c.id} titleFr');
+        expect(c.titleEn, isNotEmpty, reason: '${c.id} titleEn');
+        expect(c.titleDe, isNotEmpty, reason: '${c.id} titleDe');
+        expect(c.titleIt, isNotEmpty, reason: '${c.id} titleIt');
+        expect(c.titleEs, isNotEmpty, reason: '${c.id} titleEs');
+        expect(c.contentFr, isNotEmpty, reason: '${c.id} contentFr');
+        expect(c.contentEn, isNotEmpty, reason: '${c.id} contentEn');
+        expect(c.contentDe, isNotEmpty, reason: '${c.id} contentDe');
+        expect(c.contentIt, isNotEmpty, reason: '${c.id} contentIt');
+        expect(c.contentEs, isNotEmpty, reason: '${c.id} contentEs');
+      }
+    });
+
+    test('le socle couvre les themes principaux du menu (R7)', () async {
+      final socle = await TipCardsLoader.load(trailTipAssetPaths: const []);
+      final themes = socle.map((c) => c.resolvedTheme).toSet();
+      // Menu par themes riche : materiel, securite, sante, meteo, vie du refuge,
+      // nature (parite catalogue GR20). "other" (Divers) est un repli tolere.
+      for (final expected in const [
+        TipTheme.gear,
+        TipTheme.safety,
+        TipTheme.health,
+        TipTheme.weather,
+        TipTheme.refuge,
+        TipTheme.nature,
+      ]) {
+        expect(themes, contains(expected), reason: 'theme manquant: $expected');
+      }
+    });
   });
 
   group('tipCardsByThemeProvider (regroupement)', () {
