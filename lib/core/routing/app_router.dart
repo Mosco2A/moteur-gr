@@ -10,7 +10,6 @@ import '../../features/after/presentation/adventure_recap_screen.dart';
 import '../../features/after/presentation/gpx_import_screen.dart';
 import '../../features/diploma/presentation/diploma_screen.dart';
 import '../../features/hub/presentation/hub_screen.dart';
-import '../../features/feasibility/presentation/feasibility_questionnaire_screen.dart';
 import '../../features/feasibility/presentation/hiker_profile_screen.dart';
 import '../../features/feasibility/presentation/walk_test_screen.dart';
 import '../../features/feasibility/presentation/past_hikes_screen.dart';
@@ -92,7 +91,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 ///   /trail/:id/transport         - TRANSPORT (aller/retour, data-driven)
 ///   /trail/:id/shop              - RAVITAILLEMENT (commerces par etape, data-driven)
 ///   /trail/:id/checklist         - Checklist materiel
-///   /trail/:id/feasibility       - Questionnaire faisabilite
+///   /trail/:id/feasibility       - Verdict de faisabilite (tricolore)
 ///   /trail/:id/tips              - Fiches conseils
 ///   /trail/:id/journal           - Journal de trek
 ///   /trail/:id/diploma           - Diplome de fin de trek (gate finisher)
@@ -374,23 +373,17 @@ final appRouter = GoRouter(
         ),
         // StepWays LOT 4 (Ph5) — FAISABILITE OBJECTIVE : croisement profil reel
         // (fiche + test 6 min + 5 randos) x exigences du trek -> verdict +
-        // points faibles POUR CE TREK (seuils). C'est desormais LE systeme de
-        // faisabilite (spec §4). Le questionnaire 8-questions devient un
-        // fallback leger de dépannage, deplace sous /feasibility-quiz (l'ecran
-        // objectif y renvoie quand le profil objectif manque). La carte HUB
-        // « Faisabilite » ouvre cet ecran via `context.push` (retour propre).
+        // points faibles POUR CE TREK (seuils). C'est LE seul et unique moteur
+        // de faisabilite de l'application (spec §4) : le verdict objectif
+        // tricolore, servi sous /trail/:id/feasibility. Le second moteur
+        // auto-declaratif et ses ecrans ont ete retires du code (correctif
+        // L1-1 du plan de mise en conformite cycle4, decision #100068).
+        // La carte HUB « Faisabilite » ouvre cet ecran via `context.push`
+        // (retour propre).
         GoRoute(
           path: 'feasibility',
           name: 'trail-feasibility',
           builder: (context, state) => const TrekFeasibilityScreen(),
-        ),
-        // Fallback de dépannage : questionnaire 8-questions auto-declaratif
-        // (version Slang `FeasibilityQuestionnaireScreen`). Conserve pour
-        // depanner quand le profil objectif n'est pas encore renseigne.
-        GoRoute(
-          path: 'feasibility-quiz',
-          name: 'trail-feasibility-quiz',
-          builder: (context, state) => const FeasibilityQuestionnaireScreen(),
         ),
         // StepWays LOT 4 — FICHE D'INFO : 1ere page de la faisabilite (profil
         // randonneur : age/taille/poids->IMC local, sexe optionnel, pays ISO).
