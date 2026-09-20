@@ -2246,6 +2246,7 @@ class Translations$health$fr {
 
 	late final Translations$health$field$fr field = Translations$health$field$fr.internal(_root);
 	late final Translations$health$hint$fr hint = Translations$health$hint$fr.internal(_root);
+	late final Translations$health$error$fr error = Translations$health$error$fr.internal(_root);
 
 	/// fr: 'Sauvegarder'
 	String get save => 'Sauvegarder';
@@ -3099,6 +3100,9 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Poids invalide (30 à 150 kg)'
 	String get errorWeight => 'Poids invalide (30 à 150 kg)';
 
+	/// fr: 'Code pays invalide (ex. FR)'
+	String get errorCountry => 'Code pays invalide (ex. FR)';
+
 	/// fr: 'Sexe (optionnel)'
 	String get fieldSex => 'Sexe (optionnel)';
 
@@ -3267,6 +3271,9 @@ class Translations$pastHikes$fr {
 
 	/// fr: 'Distance invalide (0 à 100 km)'
 	String get errorDistance => 'Distance invalide (0 à 100 km)';
+
+	/// fr: 'Renseignez au moins le dénivelé ou la distance'
+	String get errorEffort => 'Renseignez au moins le dénivelé ou la distance';
 
 	/// fr: 'par jour'
 	String get perDay => 'par jour';
@@ -4306,6 +4313,12 @@ class Translations$checklist$ui$fr {
 
 	/// fr: 'Poids (grammes)'
 	String get fieldWeightGrams => 'Poids (grammes)';
+
+	/// fr: 'Poids invalide (0 à 50 000 g)'
+	String get errorWeightGrams => 'Poids invalide (0 à 50 000 g)';
+
+	/// fr: 'Nom requis'
+	String get errorNameRequired => 'Nom requis';
 
 	/// fr: 'Ajouter'
 	String get add => 'Ajouter';
@@ -5509,6 +5522,18 @@ class Translations$health$hint$fr {
 
 	/// fr: 'Ex : carte européenne'
 	String get insurance => 'Ex : carte européenne';
+}
+
+// Path: health.error
+class Translations$health$error$fr {
+	Translations$health$error$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)'
+	String get bloodType => 'Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)';
 }
 
 // Path: health.a11y
@@ -7758,6 +7783,8 @@ extension on Translations {
 			'checklist.ui.addItemTitle' => 'Ajouter un item',
 			'checklist.ui.fieldName' => 'Nom',
 			'checklist.ui.fieldWeightGrams' => 'Poids (grammes)',
+			'checklist.ui.errorWeightGrams' => 'Poids invalide (0 à 50 000 g)',
+			'checklist.ui.errorNameRequired' => 'Nom requis',
 			'checklist.ui.add' => 'Ajouter',
 			'checklist.ui.editWeightTitle' => 'Modifier le poids',
 			'checklist.ui.editCustomTitle' => 'Modifier l\'item custom',
@@ -7855,10 +7882,10 @@ extension on Translations {
 			'weather.cached' => 'Données en cache',
 			'weather.alerts' => 'alertes météo',
 			'weather.refresh' => 'Actualiser',
-			'weather.temperature' => 'Température',
-			'weather.precipitation' => 'Précipitations',
 			_ => null,
 		} ?? switch (path) {
+			'weather.temperature' => 'Température',
+			'weather.precipitation' => 'Précipitations',
 			'weather.wind' => 'Vent',
 			'weather.uv' => 'Indice UV',
 			'weather.fireRisk' => 'Risque incendie',
@@ -8369,10 +8396,10 @@ extension on Translations {
 			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
 			'shareVisibility.leaderboard' => 'Apparaître dans les classements',
 			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
-			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
-			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
+			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
 			'shareVisibility.shareTitle' => 'Partager cette étape',
 			'shareVisibility.shareButton' => 'Partager',
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
@@ -8484,6 +8511,7 @@ extension on Translations {
 			'health.hint.treatments' => 'Ex : Lévothyrox 50 mg/j',
 			'health.hint.doctor' => 'Ex : Dr Dupont 04 95 xx xx xx',
 			'health.hint.insurance' => 'Ex : carte européenne',
+			'health.error.bloodType' => 'Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Sauvegarder',
 			'health.saving' => 'Sauvegarde…',
 			'health.saved' => 'Informations sauvegardées',
@@ -8882,11 +8910,11 @@ extension on Translations {
 			'import.errorUnreadable' => 'Impossible de lire le fichier.',
 			'import.errorParsing' => 'Le fichier GPX n\'a pas pu etre lu.',
 			'import.validateButton' => 'VALIDER L\'IMPORT',
+			_ => null,
+		} ?? switch (path) {
 			'import.confirmTitle' => 'Valider l\'import ?',
 			'import.confirmBody' => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes detectees\n- Direction : {direction}',
 			'import.cancel' => 'Annuler',
-			_ => null,
-		} ?? switch (path) {
 			'import.validate' => 'Valider',
 			'import.importedSnack' => 'Trace GPX importee !',
 			'myTreks.title' => 'Mes treks',
@@ -8927,6 +8955,7 @@ extension on Translations {
 			'hikerProfile.fieldWeight' => 'Poids',
 			'hikerProfile.hintWeight' => 'En kilogrammes',
 			'hikerProfile.errorWeight' => 'Poids invalide (30 à 150 kg)',
+			'hikerProfile.errorCountry' => 'Code pays invalide (ex. FR)',
 			'hikerProfile.fieldSex' => 'Sexe (optionnel)',
 			'hikerProfile.sexFemale' => 'Femme',
 			'hikerProfile.sexMale' => 'Homme',
@@ -8984,6 +9013,7 @@ extension on Translations {
 			'pastHikes.errorHours' => 'Durée invalide (0 à 24 h)',
 			'pastHikes.errorElevation' => 'Dénivelé invalide (0 à 5000 m)',
 			'pastHikes.errorDistance' => 'Distance invalide (0 à 100 km)',
+			'pastHikes.errorEffort' => 'Renseignez au moins le dénivelé ou la distance',
 			'pastHikes.perDay' => 'par jour',
 			'pastHikes.editHike' => 'Modifier la rando',
 			'pastHikes.deleteHike' => 'Supprimer',

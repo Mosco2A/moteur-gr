@@ -12,6 +12,7 @@
 // independante du sentier (AM-6 : pas de trailId, pas de trailConfigProvider).
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -22,6 +23,7 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/health_info_repository.dart';
+import '../domain/health_bounds.dart';
 import '../domain/models/health_info.dart';
 
 /// Provider du DAO sante (Drift).
@@ -106,13 +108,20 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
       _insuranceController.text.trim().isNotEmpty;
 
   /// Sauvegarde les donnees du formulaire en local.
+  ///
+  /// FIX-1 (finding M6) : `validate()` est ENFIN appele. Le `Form` n'est plus
+  /// decoratif — un groupe sanguin invente est refuse avec un message borne, et
+  /// rien n'est enregistre tant que la fiche n'est pas coherente.
   Future<void> _save() async {
     if (_isSaving) return;
+    if (!(_formKey.currentState?.validate() ?? false)) return;
 
     setState(() => _isSaving = true);
 
     final info = HealthInfo(
-      bloodType: _bloodTypeController.text.trim(),
+      // Forme canonique (majuscules, sans espaces) : « a+ » est enregistre
+      // « A+ », comme le lira le secouriste.
+      bloodType: normalizeBloodType(_bloodTypeController.text),
       allergies: _allergiesController.text.trim(),
       treatments: _treatmentsController.text.trim(),
       doctorContact: _doctorController.text.trim(),
@@ -259,20 +268,42 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         onManage: () => context.push('/consent'),
                       ),
                       const SizedBox(height: AppTheme.spacingLg),
+                      // Groupe sanguin : liste fermee (ABO + Rhesus). Saisie
+                      // limitee aux lettres A/B/O et aux signes +/-, valeur
+                      // verifiee au save (FIX-1 / M6).
                       _buildField(
+                        key: const ValueKey('health-blood-type-field'),
                         controller: _bloodTypeController,
                         label: t.health.field.bloodType,
                         hint: t.health.hint.bloodType,
                         icon: Icons.bloodtype,
                         maxLines: 1,
+                        maxLength: kBloodTypeMaxLength,
+                        showCounter: false,
+                        textCapitalization: TextCapitalization.characters,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'[ABOabo+\-]')),
+                        ],
+                        validator: (v) {
+                          final s = v?.trim() ?? '';
+                          if (s.isEmpty) return null; // champ optionnel
+                          return isValidBloodType(s)
+                              ? null
+                              : t.health.error.bloodType;
+                        },
                       ),
                       const SizedBox(height: AppTheme.spacingBase),
+                      // Texte libre medical : longueur BORNEE et VISIBLE
+                      // (compteur), plus de champ sans fond (2000 caracteres
+                      // illisibles en urgence).
                       _buildField(
                         controller: _allergiesController,
                         label: t.health.field.allergies,
                         hint: t.health.hint.allergies,
                         icon: Icons.warning_amber,
                         maxLines: 3,
+                        maxLength: kHealthFreeTextMaxLength,
                       ),
                       const SizedBox(height: AppTheme.spacingBase),
                       _buildField(
@@ -281,6 +312,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         hint: t.health.hint.treatments,
                         icon: Icons.medication,
                         maxLines: 3,
+                        maxLength: kHealthFreeTextMaxLength,
                       ),
                       const SizedBox(height: AppTheme.spacingBase),
                       _buildField(
@@ -289,6 +321,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         hint: t.health.hint.doctor,
                         icon: Icons.local_hospital,
                         maxLines: 2,
+                        maxLength: kHealthContactMaxLength,
                       ),
                       const SizedBox(height: AppTheme.spacingBase),
                       _buildField(
@@ -297,6 +330,7 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                         hint: t.health.hint.insurance,
                         icon: Icons.shield,
                         maxLines: 2,
+                        maxLength: kHealthContactMaxLength,
                       ),
                       const SizedBox(height: AppTheme.spacingXl),
                       // SW-SKIN-L3e : ElevatedButton.icon -> AppButton primary.
@@ -359,15 +393,32 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     required String hint,
     required IconData icon,
     int maxLines = 1,
+    Key? key,
+    int? maxLength,
+    bool showCounter = true,
+    List<TextInputFormatter>? inputFormatters,
+    TextCapitalization textCapitalization = TextCapitalization.none,
+    String? Function(String?)? validator,
   }) {
     final colors = Theme.of(context).colorScheme;
     return TextFormField(
+      key: key,
       controller: controller,
       maxLines: maxLines,
+      maxLength: maxLength,
+      inputFormatters: inputFormatters,
+      textCapitalization: textCapitalization,
+      validator: validator,
       style: TextStyle(color: colors.onSurface),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
+        // Compteur VISIBLE par defaut sur les champs bornes : la limite doit se
+        // voir, une coupe muette serait le meme mensonge qu'un clamp muet.
+        counterText: showCounter ? null : '',
+        // Le message liste les 8 groupes valides : il doit tenir en entier,
+        // sinon la reponse a « quoi saisir » se perd dans les points de suite.
+        errorMaxLines: 3,
         hintStyle: TextStyle(
           color: colors.onSurface.withAlpha(90),
           fontSize: 13,

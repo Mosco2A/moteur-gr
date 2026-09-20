@@ -474,6 +474,8 @@
       "addItemTitle": "Aggiungi un articolo",
       "fieldName": "Nome",
       "fieldWeightGrams": "Peso (grammi)",
+      "errorWeightGrams": "Peso non valido (0 a 50 000 g)",
+      "errorNameRequired": "Nome obbligatorio",
       "add": "Aggiungi",
       "editWeightTitle": "Modifica il peso",
       "editCustomTitle": "Modifica articolo personalizzato",
@@ -1391,6 +1393,9 @@
       "doctor": "Es. Dr. Rossi +39 06 xxxx xxxx",
       "insurance": "Es. tessera europea"
     },
+    "error": {
+      "bloodType": "Gruppo sanguigno non valido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
+    },
     "save": "Salva",
     "saving": "Salvataggio…",
     "saved": "Informazioni salvate",
@@ -1986,6 +1991,7 @@
     "fieldWeight": "Peso",
     "hintWeight": "In chilogrammi",
     "errorWeight": "Peso non valido (30 a 150 kg)",
+    "errorCountry": "Codice paese non valido (es. FR)",
     "fieldSex": "Sesso (opzionale)",
     "sexFemale": "Donna",
     "sexMale": "Uomo",
@@ -2051,6 +2057,7 @@
     "errorHours": "Durata non valida (0 a 24 h)",
     "errorElevation": "Dislivello non valido (0 a 5000 m)",
     "errorDistance": "Distanza non valida (0 a 100 km)",
+    "errorEffort": "Indica almeno il dislivello o la distanza",
     "perDay": "al giorno",
     "editHike": "Modifica escursione",
     "deleteHike": "Elimina",

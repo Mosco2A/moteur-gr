@@ -1130,6 +1130,7 @@ class _Translations$health$de extends Translations$health$fr {
 	@override String get privacyBanner => 'Diese Daten bleiben auf Ihrem Telefon. Sie werden niemals über das Internet gesendet.';
 	@override late final _Translations$health$field$de field = _Translations$health$field$de._(_root);
 	@override late final _Translations$health$hint$de hint = _Translations$health$hint$de._(_root);
+	@override late final _Translations$health$error$de error = _Translations$health$error$de._(_root);
 	@override String get save => 'Speichern';
 	@override String get saving => 'Speichern…';
 	@override String get saved => 'Informationen gespeichert';
@@ -1535,6 +1536,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get fieldWeight => 'Gewicht';
 	@override String get hintWeight => 'In Kilogramm';
 	@override String get errorWeight => 'Ungultiges Gewicht (30 bis 150 kg)';
+	@override String get errorCountry => 'Ungultiger Landercode (z. B. FR)';
 	@override String get fieldSex => 'Geschlecht (optional)';
 	@override String get sexFemale => 'Weiblich';
 	@override String get sexMale => 'Mannlich';
@@ -1604,6 +1606,7 @@ class _Translations$pastHikes$de extends Translations$pastHikes$fr {
 	@override String get errorHours => 'Ungultige Dauer (0 bis 24 h)';
 	@override String get errorElevation => 'Ungultiger Hohenunterschied (0 bis 5000 m)';
 	@override String get errorDistance => 'Ungultige Distanz (0 bis 100 km)';
+	@override String get errorEffort => 'Geben Sie mindestens Hohenmeter oder Distanz an';
 	@override String get perDay => 'pro Tag';
 	@override String get editHike => 'Tour bearbeiten';
 	@override String get deleteHike => 'Loschen';
@@ -2071,6 +2074,8 @@ class _Translations$checklist$ui$de extends Translations$checklist$ui$fr {
 	@override String get addItemTitle => 'Artikel hinzufugen';
 	@override String get fieldName => 'Name';
 	@override String get fieldWeightGrams => 'Gewicht (Gramm)';
+	@override String get errorWeightGrams => 'Ungultiges Gewicht (0 bis 50 000 g)';
+	@override String get errorNameRequired => 'Name erforderlich';
 	@override String get add => 'Hinzufugen';
 	@override String get editWeightTitle => 'Gewicht andern';
 	@override String get editCustomTitle => 'Eigenen Artikel bearbeiten';
@@ -2710,6 +2715,16 @@ class _Translations$health$hint$de extends Translations$health$hint$fr {
 	@override String get treatments => 'z. B. Levothyrox 50 mg/Tag';
 	@override String get doctor => 'z. B. Dr. Müller +49 30 xxxx xxxx';
 	@override String get insurance => 'z. B. Europäische Krankenversicherungskarte';
+}
+
+// Path: health.error
+class _Translations$health$error$de extends Translations$health$error$fr {
+	_Translations$health$error$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get bloodType => 'Ungultige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)';
 }
 
 // Path: health.a11y
@@ -4313,6 +4328,8 @@ extension on TranslationsDe {
 			'checklist.ui.addItemTitle' => 'Artikel hinzufugen',
 			'checklist.ui.fieldName' => 'Name',
 			'checklist.ui.fieldWeightGrams' => 'Gewicht (Gramm)',
+			'checklist.ui.errorWeightGrams' => 'Ungultiges Gewicht (0 bis 50 000 g)',
+			'checklist.ui.errorNameRequired' => 'Name erforderlich',
 			'checklist.ui.add' => 'Hinzufugen',
 			'checklist.ui.editWeightTitle' => 'Gewicht andern',
 			'checklist.ui.editCustomTitle' => 'Eigenen Artikel bearbeiten',
@@ -4410,10 +4427,10 @@ extension on TranslationsDe {
 			'weather.cached' => 'Zwischengespeicherte Daten',
 			'weather.alerts' => 'Wetterwarnungen',
 			'weather.refresh' => 'Aktualisieren',
-			'weather.temperature' => 'Temperatur',
-			'weather.precipitation' => 'Niederschlag',
 			_ => null,
 		} ?? switch (path) {
+			'weather.temperature' => 'Temperatur',
+			'weather.precipitation' => 'Niederschlag',
 			'weather.wind' => 'Wind',
 			'weather.uv' => 'UV-Index',
 			'weather.fireRisk' => 'Brandgefahr',
@@ -4924,10 +4941,10 @@ extension on TranslationsDe {
 			'shareVisibility.stageResultsDesc' => 'Eine pseudonyme Karte (keine direkten personenbezogenen Daten).',
 			'shareVisibility.leaderboard' => 'In Ranglisten erscheinen',
 			'shareVisibility.leaderboardDesc' => 'Rangliste nach Gruppe, mit einem Pseudonym.',
-			'shareVisibility.activityFeed' => 'Im Aktivitätsverlauf posten',
-			'shareVisibility.activityFeedDesc' => 'Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.activityFeed' => 'Im Aktivitätsverlauf posten',
+			'shareVisibility.activityFeedDesc' => 'Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.',
 			'shareVisibility.shareTitle' => 'Diese Etappe teilen',
 			'shareVisibility.shareButton' => 'Teilen',
 			'shareVisibility.privateNotice' => 'Teilen ist aus. Aktiviere es unter Teilen und Sichtbarkeit.',
@@ -5039,6 +5056,7 @@ extension on TranslationsDe {
 			'health.hint.treatments' => 'z. B. Levothyrox 50 mg/Tag',
 			'health.hint.doctor' => 'z. B. Dr. Müller +49 30 xxxx xxxx',
 			'health.hint.insurance' => 'z. B. Europäische Krankenversicherungskarte',
+			'health.error.bloodType' => 'Ungultige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Speichern',
 			'health.saving' => 'Speichern…',
 			'health.saved' => 'Informationen gespeichert',
@@ -5437,11 +5455,11 @@ extension on TranslationsDe {
 			'import.errorUnreadable' => 'Datei kann nicht gelesen werden.',
 			'import.errorParsing' => 'Die GPX-Datei konnte nicht gelesen werden.',
 			'import.validateButton' => 'IMPORT BESTÄTIGEN',
+			_ => null,
+		} ?? switch (path) {
 			'import.confirmTitle' => 'Import bestätigen?',
 			'import.confirmBody' => 'Dieser Track wird als Ihre Route importiert:\n\n- {points} GPS-Punkte\n- {km} km\n- {stages} erkannte Etappen\n- Richtung: {direction}',
 			'import.cancel' => 'Abbrechen',
-			_ => null,
-		} ?? switch (path) {
 			'import.validate' => 'Bestätigen',
 			'import.importedSnack' => 'GPX-Track importiert!',
 			'myTreks.title' => 'Meine Touren',
@@ -5482,6 +5500,7 @@ extension on TranslationsDe {
 			'hikerProfile.fieldWeight' => 'Gewicht',
 			'hikerProfile.hintWeight' => 'In Kilogramm',
 			'hikerProfile.errorWeight' => 'Ungultiges Gewicht (30 bis 150 kg)',
+			'hikerProfile.errorCountry' => 'Ungultiger Landercode (z. B. FR)',
 			'hikerProfile.fieldSex' => 'Geschlecht (optional)',
 			'hikerProfile.sexFemale' => 'Weiblich',
 			'hikerProfile.sexMale' => 'Mannlich',
@@ -5539,6 +5558,7 @@ extension on TranslationsDe {
 			'pastHikes.errorHours' => 'Ungultige Dauer (0 bis 24 h)',
 			'pastHikes.errorElevation' => 'Ungultiger Hohenunterschied (0 bis 5000 m)',
 			'pastHikes.errorDistance' => 'Ungultige Distanz (0 bis 100 km)',
+			'pastHikes.errorEffort' => 'Geben Sie mindestens Hohenmeter oder Distanz an',
 			'pastHikes.perDay' => 'pro Tag',
 			'pastHikes.editHike' => 'Tour bearbeiten',
 			'pastHikes.deleteHike' => 'Loschen',

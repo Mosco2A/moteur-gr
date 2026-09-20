@@ -474,6 +474,8 @@
       "addItemTitle": "Ajouter un item",
       "fieldName": "Nom",
       "fieldWeightGrams": "Poids (grammes)",
+      "errorWeightGrams": "Poids invalide (0 à 50 000 g)",
+      "errorNameRequired": "Nom requis",
       "add": "Ajouter",
       "editWeightTitle": "Modifier le poids",
       "editCustomTitle": "Modifier l'item custom",
@@ -1391,6 +1393,9 @@
       "doctor": "Ex : Dr Dupont 04 95 xx xx xx",
       "insurance": "Ex : carte européenne"
     },
+    "error": {
+      "bloodType": "Groupe sanguin invalide (A+, A-, B+, B-, AB+, AB-, O+, O-)"
+    },
     "save": "Sauvegarder",
     "saving": "Sauvegarde…",
     "saved": "Informations sauvegardées",
@@ -1986,6 +1991,7 @@
     "fieldWeight": "Poids",
     "hintWeight": "En kilogrammes",
     "errorWeight": "Poids invalide (30 à 150 kg)",
+    "errorCountry": "Code pays invalide (ex. FR)",
     "fieldSex": "Sexe (optionnel)",
     "sexFemale": "Femme",
     "sexMale": "Homme",
@@ -2051,6 +2057,7 @@
     "errorHours": "Durée invalide (0 à 24 h)",
     "errorElevation": "Dénivelé invalide (0 à 5000 m)",
     "errorDistance": "Distance invalide (0 à 100 km)",
+    "errorEffort": "Renseignez au moins le dénivelé ou la distance",
     "perDay": "par jour",
     "editHike": "Modifier la rando",
     "deleteHike": "Supprimer",

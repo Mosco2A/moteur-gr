@@ -474,6 +474,8 @@
       "addItemTitle": "Anadir un articulo",
       "fieldName": "Nombre",
       "fieldWeightGrams": "Peso (gramos)",
+      "errorWeightGrams": "Peso no valido (0 a 50 000 g)",
+      "errorNameRequired": "Nombre obligatorio",
       "add": "Anadir",
       "editWeightTitle": "Editar el peso",
       "editCustomTitle": "Editar articulo personalizado",
@@ -1391,6 +1393,9 @@
       "doctor": "Ej.: Dr. García +34 91 xxx xx xx",
       "insurance": "Ej.: tarjeta sanitaria europea"
     },
+    "error": {
+      "bloodType": "Grupo sanguineo no valido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
+    },
     "save": "Guardar",
     "saving": "Guardando…",
     "saved": "Información guardada",
@@ -1986,6 +1991,7 @@
     "fieldWeight": "Peso",
     "hintWeight": "En kilogramos",
     "errorWeight": "Peso no valido (30 a 150 kg)",
+    "errorCountry": "Codigo de pais no valido (ej. FR)",
     "fieldSex": "Sexo (opcional)",
     "sexFemale": "Mujer",
     "sexMale": "Hombre",
@@ -2051,6 +2057,7 @@
     "errorHours": "Duracion no valida (0 a 24 h)",
     "errorElevation": "Desnivel no valido (0 a 5000 m)",
     "errorDistance": "Distancia no valida (0 a 100 km)",
+    "errorEffort": "Indica al menos el desnivel o la distancia",
     "perDay": "por dia",
     "editHike": "Editar ruta",
     "deleteHike": "Eliminar",

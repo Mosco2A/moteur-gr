@@ -298,13 +298,34 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
   double _parse(TextEditingController c) =>
       double.tryParse(c.text.trim().replaceAll(',', '.')) ?? 0;
 
+  /// Message de refus global (regle inter-champs), null si aucun.
+  String? _formError;
+
+  /// FIX-1 (finding M5) : « Ajouter une rando » avec TOUS LES CHAMPS VIDES
+  /// creait une rando 1 jour / 0 km / 0 D+ — sans un mot — alors que l'ecran
+  /// annonce « On en deduit votre niveau ». Une rando vide PESAIT donc sur la
+  /// deduction (et pouvait consommer une des 5 places).
+  ///
+  /// Une rando doit desormais APPORTER ce que le calculateur utilise vraiment
+  /// ([ObjectiveProfile.from] ne lit que les jours, le D+ par jour et la
+  /// distance par jour) : le nombre de jours est REQUIS, et il faut au moins un
+  /// denivele OU une distance. Sinon : refus avec message, rien n'est
+  /// enregistre.
   void _submit() {
-    if (!(_formKey.currentState?.validate() ?? false)) return;
+    final fieldsOk = _formKey.currentState?.validate() ?? false;
+    final hasEffort = _elevCtrl.text.trim().isNotEmpty ||
+        _distCtrl.text.trim().isNotEmpty;
+    if (!fieldsOk || !hasEffort) {
+      setState(() => _formError = hasEffort ? null : t.pastHikes.errorEffort);
+      return;
+    }
+    setState(() => _formError = null);
     Navigator.of(context).pop(
       PastHike(
         id: widget.existing?.id ?? 0,
         date: _date,
-        days: int.tryParse(_daysCtrl.text.trim()) ?? 1,
+        // Champ requis et borne 1-60 par le validator : plus de repli muet.
+        days: int.parse(_daysCtrl.text.trim()),
         avgWalkHoursPerDay: _parse(_hoursCtrl),
         totalElevationGain: int.tryParse(_elevCtrl.text.trim()) ?? 0,
         totalDistanceKm: _parse(_distCtrl),
@@ -363,6 +384,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
                 min: 1,
                 max: 60,
                 maxLength: 2,
+                required: true,
                 error: ph.errorDays),
             _num(_hoursCtrl, ph.fieldAvgHours, Icons.schedule,
                 min: 0, max: 24, maxLength: 4, error: ph.errorHours),
@@ -374,6 +396,25 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
                 error: ph.errorElevation),
             _num(_distCtrl, ph.fieldDistance, Icons.straighten,
                 min: 0, max: 100, maxLength: 5, error: ph.errorDistance),
+            if (_formError case final message?)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+                child: Row(
+                  children: [
+                    Icon(Icons.error_outline,
+                        size: 18, color: theme.colorScheme.error),
+                    const SizedBox(width: AppTheme.spacingXs),
+                    Expanded(
+                      child: Text(
+                        message,
+                        key: const ValueKey('past-hike-form-error'),
+                        style: theme.textTheme.bodySmall
+                            ?.copyWith(color: theme.colorScheme.error),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             const SizedBox(height: AppTheme.spacingLg),
             AppButton(icon: Icons.check, label: ph.save, onPressed: _submit),
           ],
@@ -400,6 +441,7 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
     required int maxLength,
     required String error,
     bool decimal = true,
+    bool required = false,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -415,7 +457,9 @@ class _HikeEditorSheetState extends State<_HikeEditorSheet> {
         ],
         validator: (v) {
           final s = v?.trim() ?? '';
-          if (s.isEmpty) return null; // champ non requis
+          // FIX-1 (M5) : un champ REQUIS vide est refuse avec sa borne, au lieu
+          // d'etre remplace en silence par une valeur de repli.
+          if (s.isEmpty) return required ? error : null;
           final n = double.tryParse(s.replaceAll(',', '.'));
           if (n == null || n < min || n > max) return error;
           return null;

@@ -474,6 +474,8 @@
       "addItemTitle": "Add an item",
       "fieldName": "Name",
       "fieldWeightGrams": "Weight (grams)",
+      "errorWeightGrams": "Invalid weight (0 to 50,000 g)",
+      "errorNameRequired": "Name required",
       "add": "Add",
       "editWeightTitle": "Edit weight",
       "editCustomTitle": "Edit custom item",
@@ -1391,6 +1393,9 @@
       "doctor": "e.g. Dr Smith +44 20 xxxx xxxx",
       "insurance": "e.g. European health card"
     },
+    "error": {
+      "bloodType": "Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)"
+    },
     "save": "Save",
     "saving": "Saving…",
     "saved": "Information saved",
@@ -1986,6 +1991,7 @@
     "fieldWeight": "Weight",
     "hintWeight": "In kilograms",
     "errorWeight": "Invalid weight (30 to 150 kg)",
+    "errorCountry": "Invalid country code (e.g. FR)",
     "fieldSex": "Sex (optional)",
     "sexFemale": "Female",
     "sexMale": "Male",
@@ -2051,6 +2057,7 @@
     "errorHours": "Invalid duration (0 to 24 h)",
     "errorElevation": "Invalid elevation (0 to 5000 m)",
     "errorDistance": "Invalid distance (0 to 100 km)",
+    "errorEffort": "Enter at least the elevation gain or the distance",
     "perDay": "per day",
     "editHike": "Edit hike",
     "deleteHike": "Delete",

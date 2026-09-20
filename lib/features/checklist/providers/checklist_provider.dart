@@ -5,6 +5,7 @@ import '../../../core/data/database.dart';
 import '../../../core/data/daos/checklist_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../feasibility/domain/hiker_input_bounds.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../data/checklist_seasonal_adapter.dart';
 import '../data/checklist_template.dart';
@@ -15,6 +16,33 @@ import '../domain/season.dart';
 /// Sert de denominateur au ratio sac/corps tant que l'utilisateur ne l'a pas
 /// personnalise. Valeur neutre, non liee a un sentier (moteur generique).
 const double kDefaultBodyWeightKg = 70.0;
+
+/// Poids unitaire minimum d'un article (grammes).
+const int kItemWeightMinGrams = 0;
+
+/// Poids unitaire maximum d'un article (grammes) — 50 kg, au-dela ca ne tient
+/// pas dans un sac a dos.
+///
+/// FIX-1 (finding M3) : cette borne existait deja mais s'appliquait en CLAMP
+/// SILENCIEUX (99999999 g devenait 50000 g sans un mot). Elle est desormais
+/// publique pour que l'ECRAN refuse la saisie avec un message borne AVANT
+/// d'appeler le provider ; le clamp reste en dernier rempart.
+const int kItemWeightMaxGrams = 50000;
+
+/// Nombre max de chiffres saisissables pour un poids d'article (50000 g = 5
+/// chiffres) : barriere PHYSIQUE a la saisie, qui rend impossible le
+/// « 999999999999999999999 » du rapport personas (depassement 64 bits).
+const int kItemWeightFieldMaxLength = 5;
+
+/// Quantite minimum d'un article.
+const int kItemQuantityMin = 1;
+
+/// Quantite maximum d'un article.
+///
+/// FIX-1 (finding m4) : la quantite de session n'etait PAS bornee (40 appuis sur
+/// « + » affichaient 40) alors que le rechargement depuis la DB clampait a 999 —
+/// l'ecran et l'etat recharge divergeaient. Meme borne des deux cotes.
+const int kItemQuantityMax = 999;
 
 /// Etat de la checklist pour un sentier donne.
 class ChecklistState {
@@ -352,9 +380,12 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
 
   /// Met a jour le poids unitaire d'un item (grammes) et persiste (parite GR20).
   ///
-  /// Borne a [0, 50000] g. Recalcule le total via l'etat derive.
+  /// Borne a [kItemWeightMinGrams, kItemWeightMaxGrams] g — DERNIER REMPART :
+  /// depuis FIX-1 (M3), l'ecran refuse la saisie hors bornes avec un message
+  /// avant d'arriver ici, donc ce clamp ne doit plus jamais mentir a personne.
   Future<void> setItemWeight(String itemId, int weightGrams) async {
-    final clamped = weightGrams.clamp(0, 50000);
+    final clamped =
+        weightGrams.clamp(kItemWeightMinGrams, kItemWeightMaxGrams);
     final dao = ChecklistDao(_db);
     await dao.setWeight(_trailId, itemId, clamped);
     _emit(_mapItem(itemId, (i) => i.copyWith(weightGrams: clamped)));
@@ -367,21 +398,23 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   ///    (B-06a) ;
   ///  - article non coche et on augmente -> selectionner a quantite 1 sans
   ///    incrementer (B143) ;
-  ///  - sinon -> appliquer la nouvelle quantite.
+  ///  - sinon -> appliquer la nouvelle quantite, BORNEE a [kItemQuantityMax]
+  ///    (FIX-1 / m4 : meme borne qu'au rechargement, l'affichage ne peut plus
+  ///    diverger de l'etat recharge).
   Future<void> setItemQuantity(String itemId, int newQuantity) async {
     final item = state.items.firstWhere((i) => i.template.id == itemId);
 
     int quantity;
     bool isChecked;
-    if (newQuantity < 1) {
+    if (newQuantity < kItemQuantityMin) {
       isChecked = false;
-      quantity = 1;
+      quantity = kItemQuantityMin;
     } else if (!item.isChecked) {
       isChecked = true;
-      quantity = 1;
+      quantity = kItemQuantityMin;
     } else {
       isChecked = true;
-      quantity = newQuantity;
+      quantity = newQuantity.clamp(kItemQuantityMin, kItemQuantityMax);
     }
 
     final dao = ChecklistDao(_db);
@@ -409,7 +442,10 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   ) async {
     final trimmed = name.trim();
     if (trimmed.isEmpty) return;
-    final clampedWeight = weightGrams.clamp(0, 50000);
+    // Dernier rempart (voir [setItemWeight]) : l'ecran valide et refuse avec un
+    // message avant d'en arriver la (FIX-1 / M3).
+    final clampedWeight =
+        weightGrams.clamp(kItemWeightMinGrams, kItemWeightMaxGrams);
     final customId = 'custom_${DateTime.now().microsecondsSinceEpoch}';
 
     final dao = ChecklistDao(_db);
@@ -487,10 +523,15 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   ///
   /// Saisie MANUELLE dans l'ecran Sac : marque [ChecklistState.bodyWeightEdited]
   /// pour que l'auto-injection du poids profil (LOT 1 #12) ne l'ecrase plus
-  /// ensuite. Session courante uniquement (comme GR20 : non persiste). Ignore
-  /// les valeurs <= 0 (garde-fou).
+  /// ensuite. Session courante uniquement (comme GR20 : non persiste).
+  ///
+  /// FIX-1 (finding B1, BLOQUANT) : le seul garde-fou etait `kg <= 0`, ce qui
+  /// laissait passer 1e9 et surtout `Infinity` (`double.tryParse('Infinity')`),
+  /// affiche tel quel dans le bandeau. Toute valeur non finie ou hors
+  /// [kWeightMinKg]..[kWeightMaxKg] est desormais IGNOREE : la jauge conserve le
+  /// dernier poids valide (l'ecran, lui, affiche le message borne).
   void setBodyWeight(double kg) {
-    if (kg <= 0) return;
+    if (!isValidBodyWeightKg(kg)) return;
     state = ChecklistState(
       items: state.items,
       checkedCount: state.checkedCount,
@@ -510,7 +551,10 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   /// identique (evite un rebuild inutile). Session courante (non persiste, comme
   /// GR20) : le champ profil reste la source durable.
   void seedBodyWeightFromProfile(double kg) {
-    if (kg <= 0) return;
+    // Meme regle que la saisie manuelle (FIX-1 / B1) : la source profil est deja
+    // bornee 30-150, ce garde-fou empeche toute valeur absurde d'entrer par une
+    // autre porte (donnee migree, miroir cloud corrompu).
+    if (!isValidBodyWeightKg(kg)) return;
     if (state.bodyWeightEdited) return;
     if (state.bodyWeightKg == kg) return;
     state = ChecklistState(

@@ -432,10 +432,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         child: Column(
           children: [
+            // FIX-1 (finding m2) : aucun `trim` n'etait applique — un pseudo de
+            // 3 espaces passait tel quel et s'affichait comme un nom vide. Le
+            // pseudo est desormais trimme a l'enregistrement, et le bouton
+            // reste DESACTIVE tant qu'il est vide une fois les espaces retires
+            // (etat visible, plutot qu'un enregistrement muet de rien).
             TextField(
+              key: const ValueKey('profile-pseudo-field'),
               controller: _pseudoController,
               autofocus: true,
               maxLength: 30,
+              onChanged: (_) => setState(() {}),
               decoration: InputDecoration(
                 labelText: i18n.auth.pseudonym,
                 hintText: i18n.auth.pseudonymHint,
@@ -445,8 +452,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
             const SizedBox(height: AppTheme.spacingSm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+            // DEBORDEMENT constate pendant FIX-1 (hors findings, corrige au
+            // passage) : en 390 px de large, cette rangee d'actions debordait de
+            // 7,8 px (bandes jaunes et noires a l'ecran). `Wrap` la fait passer
+            // a la ligne au lieu de deborder, sans changer le rendu au large.
+            Wrap(
+              alignment: WrapAlignment.end,
+              spacing: AppTheme.spacingSm,
+              runSpacing: AppTheme.spacingXs,
               children: [
                 TextButton(
                   onPressed: () {
@@ -454,19 +467,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   },
                   child: Text(i18n.auth.cancel),
                 ),
-                const SizedBox(width: AppTheme.spacingSm),
                 // SW-SKIN-L3e : ElevatedButton -> AppButton primary.
                 // isFullWidth:false pour rester dans la rangee d'actions
                 // alignee a droite (iso-rendu du CTA d'edition).
                 AppButton(
+                  key: const ValueKey('profile-pseudo-save'),
                   isFullWidth: false,
                   label: i18n.auth.save,
-                  onPressed: () {
-                    ref
-                        .read(authServiceProvider)
-                        .updateDisplayName(_pseudoController.text);
-                    setState(() => _isEditingPseudo = false);
-                  },
+                  onPressed: _pseudoController.text.trim().isEmpty
+                      ? null
+                      : () {
+                          ref
+                              .read(authServiceProvider)
+                              .updateDisplayName(
+                                  _pseudoController.text.trim());
+                          setState(() => _isEditingPseudo = false);
+                        },
                 ),
               ],
             ),

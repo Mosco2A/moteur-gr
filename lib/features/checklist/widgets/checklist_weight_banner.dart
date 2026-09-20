@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
+import '../../feasibility/domain/hiker_input_bounds.dart';
 
 /// Formate un poids en grammes avec separateur de milliers (parite GR20).
 /// Ex: 1600 -> "1 600 g", 350 -> "350 g".
@@ -137,6 +140,19 @@ class ChecklistWeightBanner extends StatelessWidget {
 }
 
 /// Ligne de saisie du poids corporel + chip ratio (parite GR20).
+///
+/// FIX-1 (finding B1, BLOQUANT) : ce champ n'avait NI filtre de saisie, NI
+/// longueur max, NI borne haute — il etait hors `Form`, donc sans validator.
+/// L'app affichait « Poids du sac : Infinity kg » et « 150000000.0 kg » sans le
+/// moindre message, et une fois `Infinity` pose, plus rien ne le reinitialisait.
+/// Le champ applique desormais EXACTEMENT le modele de la fiche morpho :
+///  - a la saisie : chiffres et separateur decimal uniquement (le signe moins et
+///    les lettres — donc « Infinity » et « abc » — n'entrent plus), 5 caracteres
+///    max, depassement SIGNALE (pas de troncature muette) ;
+///  - a la validation : bornes [kWeightMinKg]..[kWeightMaxKg] avec le MEME
+///    message borne que la morpho, affiche sous la ligne ;
+///  - une valeur refusee n'est JAMAIS propagee : la jauge garde le dernier poids
+///    valide au lieu d'afficher un verdict absurde.
 class ChecklistBodyWeightRow extends StatefulWidget {
   const ChecklistBodyWeightRow({
     super.key,
@@ -153,15 +169,67 @@ class ChecklistBodyWeightRow extends StatefulWidget {
   State<ChecklistBodyWeightRow> createState() => _ChecklistBodyWeightRowState();
 }
 
+/// Longueur max du champ poids corporel (« 150.5 » = 5 caracteres), identique a
+/// la fiche morpho.
+const int kBodyWeightFieldMaxLength = 5;
+
 class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
   late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
+
+  /// Message borne affiche sous la ligne quand la saisie est refusee (null =
+  /// aucune erreur). Meme texte que la fiche morpho : une seule regle, un seul
+  /// message pour la meme donnee.
+  String? _error;
+
+  /// Vrai si la frappe en cours a ete tronquee faute de place : empeche le
+  /// `onChanged` du meme evenement d'effacer le message qui vient de s'afficher
+  /// (sinon une decimale mangee redeviendrait invisible).
+  bool _truncatedThisEdit = false;
 
   @override
   void initState() {
     super.initState();
     _controller =
         TextEditingController(text: widget.bodyWeightKg.toStringAsFixed(0));
+    // Sortie du champ : on reaffiche TOUJOURS le poids reellement utilise par la
+    // jauge. Le texte a l'ecran ne peut donc pas rester sur une valeur refusee.
+    _focusNode.addListener(_onFocusChange);
+  }
+
+  void _onFocusChange() {
+    if (_focusNode.hasFocus) return;
+    final effective = widget.bodyWeightKg.toStringAsFixed(0);
+    if (_controller.text != effective || _error != null) {
+      setState(() {
+        _controller.text = effective;
+        _error = null;
+      });
+    }
+  }
+
+  /// Applique une saisie : refus motive (message borne) ou propagation.
+  ///
+  /// Champ vide = « non renseigne » (meme convention que la morpho) : pas de
+  /// message, pas de propagation — la jauge garde le dernier poids valide.
+  void _onChanged(String raw) {
+    final truncated = _truncatedThisEdit;
+    _truncatedThisEdit = false;
+    final text = raw.trim();
+    if (text.isEmpty) {
+      if (_error != null && !truncated) setState(() => _error = null);
+      return;
+    }
+    final kg = double.tryParse(text.replaceAll(',', '.'));
+    if (kg == null || !isValidBodyWeightKg(kg)) {
+      final message = t.hikerProfile.errorWeight;
+      if (_error != message) setState(() => _error = message);
+      return;
+    }
+    // Saisie valide MAIS tronquee : on propage la valeur (elle est correcte) et
+    // on garde le message, sinon la coupe passerait inapercue.
+    if (_error != null && !truncated) setState(() => _error = null);
+    widget.onBodyWeightChanged(kg);
   }
 
   @override
@@ -179,6 +247,7 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
 
   @override
   void dispose() {
+    _focusNode.removeListener(_onFocusChange);
     _controller.dispose();
     _focusNode.dispose();
     super.dispose();
@@ -194,53 +263,99 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
         horizontal: AppTheme.spacingBase,
         vertical: AppTheme.spacingSm,
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.monitor_weight_outlined,
-              size: 18, color: theme.colorScheme.primary),
-          const SizedBox(width: AppTheme.spacingSm),
-          Flexible(
-            child: Text(
-              weightT.bodyWeight,
-              style: theme.textTheme.bodyMedium,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: AppTheme.spacingSm),
-          SizedBox(
-            width: 120,
-            child: TextField(
-              controller: _controller,
-              focusNode: _focusNode,
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(fontWeight: FontWeight.w700),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 6,
+          Row(
+            children: [
+              Icon(Icons.monitor_weight_outlined,
+                  size: 18, color: theme.colorScheme.primary),
+              const SizedBox(width: AppTheme.spacingSm),
+              Flexible(
+                child: Text(
+                  weightT.bodyWeight,
+                  style: theme.textTheme.bodyMedium,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-                isDense: true,
-                suffixText: weightT.kilograms,
               ),
-              onTap: () {
-                _controller.selection = TextSelection(
-                  baseOffset: 0,
-                  extentOffset: _controller.text.length,
-                );
-              },
-              onChanged: (val) {
-                final kg = double.tryParse(val);
-                if (kg != null && kg > 0) {
-                  widget.onBodyWeightChanged(kg);
-                }
-              },
-            ),
+              const SizedBox(width: AppTheme.spacingSm),
+              SizedBox(
+                width: 120,
+                child: TextField(
+                  key: const ValueKey('checklist-body-weight-field'),
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  keyboardType:
+                      const TextInputType.numberWithOptions(decimal: true),
+                  textAlign: TextAlign.center,
+                  maxLength: kBodyWeightFieldMaxLength,
+                  // BARRIERE DE SAISIE (modele morpho) : chiffres + separateur
+                  // decimal uniquement. Le signe moins et les lettres ne sont plus
+                  // saisissables, donc « -50 », « abc » et « Infinity » n'arrivent
+                  // jamais jusqu'au parse.
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
+                    NotifyingLengthLimitingTextInputFormatter(
+                      kBodyWeightFieldMaxLength,
+                      onLimitReached: () {
+                        _truncatedThisEdit = true;
+                        final message = t.hikerProfile.errorWeight;
+                        if (_error != message) {
+                          setState(() => _error = message);
+                        }
+                      },
+                    ),
+                  ],
+                  style: theme.textTheme.bodyMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
+                  decoration: InputDecoration(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 6,
+                    ),
+                    isDense: true,
+                    // Compteur masque : la borne est portee par maxLength (barriere
+                    // physique) et par le message borne sous la ligne.
+                    counterText: '',
+                    suffixText: weightT.kilograms,
+                    errorText: _error != null ? '' : null,
+                    errorStyle: const TextStyle(height: 0, fontSize: 0),
+                  ),
+                  onTap: () {
+                    _controller.selection = TextSelection(
+                      baseOffset: 0,
+                      extentOffset: _controller.text.length,
+                    );
+                  },
+                  onChanged: _onChanged,
+                ),
+              ),
+              const SizedBox(width: AppTheme.spacingSm),
+              Flexible(child: _RatioChip(ratio: widget.backpackRatio)),
+            ],
           ),
-          const SizedBox(width: AppTheme.spacingSm),
-          Flexible(child: _RatioChip(ratio: widget.backpackRatio)),
+          // Message de refus BORNE, pleine largeur (lisible, contrairement a un
+          // errorText coince dans un champ de 120 px).
+          if (_error case final message?)
+            Padding(
+              padding: const EdgeInsets.only(top: AppTheme.spacingXs),
+              child: Row(
+                children: [
+                  Icon(Icons.error_outline,
+                      size: 16, color: theme.colorScheme.error),
+                  const SizedBox(width: AppTheme.spacingXs),
+                  Expanded(
+                    child: Text(
+                      message,
+                      key: const ValueKey('checklist-body-weight-error'),
+                      style: theme.textTheme.bodySmall
+                          ?.copyWith(color: theme.colorScheme.error),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

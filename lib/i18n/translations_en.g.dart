@@ -1130,6 +1130,7 @@ class _Translations$health$en extends Translations$health$fr {
 	@override String get privacyBanner => 'This data stays on your phone. It is never sent over the internet.';
 	@override late final _Translations$health$field$en field = _Translations$health$field$en._(_root);
 	@override late final _Translations$health$hint$en hint = _Translations$health$hint$en._(_root);
+	@override late final _Translations$health$error$en error = _Translations$health$error$en._(_root);
 	@override String get save => 'Save';
 	@override String get saving => 'Saving…';
 	@override String get saved => 'Information saved';
@@ -1535,6 +1536,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get fieldWeight => 'Weight';
 	@override String get hintWeight => 'In kilograms';
 	@override String get errorWeight => 'Invalid weight (30 to 150 kg)';
+	@override String get errorCountry => 'Invalid country code (e.g. FR)';
 	@override String get fieldSex => 'Sex (optional)';
 	@override String get sexFemale => 'Female';
 	@override String get sexMale => 'Male';
@@ -1604,6 +1606,7 @@ class _Translations$pastHikes$en extends Translations$pastHikes$fr {
 	@override String get errorHours => 'Invalid duration (0 to 24 h)';
 	@override String get errorElevation => 'Invalid elevation (0 to 5000 m)';
 	@override String get errorDistance => 'Invalid distance (0 to 100 km)';
+	@override String get errorEffort => 'Enter at least the elevation gain or the distance';
 	@override String get perDay => 'per day';
 	@override String get editHike => 'Edit hike';
 	@override String get deleteHike => 'Delete';
@@ -2071,6 +2074,8 @@ class _Translations$checklist$ui$en extends Translations$checklist$ui$fr {
 	@override String get addItemTitle => 'Add an item';
 	@override String get fieldName => 'Name';
 	@override String get fieldWeightGrams => 'Weight (grams)';
+	@override String get errorWeightGrams => 'Invalid weight (0 to 50,000 g)';
+	@override String get errorNameRequired => 'Name required';
 	@override String get add => 'Add';
 	@override String get editWeightTitle => 'Edit weight';
 	@override String get editCustomTitle => 'Edit custom item';
@@ -2710,6 +2715,16 @@ class _Translations$health$hint$en extends Translations$health$hint$fr {
 	@override String get treatments => 'e.g. Levothyrox 50 mg/day';
 	@override String get doctor => 'e.g. Dr Smith +44 20 xxxx xxxx';
 	@override String get insurance => 'e.g. European health card';
+}
+
+// Path: health.error
+class _Translations$health$error$en extends Translations$health$error$fr {
+	_Translations$health$error$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get bloodType => 'Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)';
 }
 
 // Path: health.a11y
@@ -4313,6 +4328,8 @@ extension on TranslationsEn {
 			'checklist.ui.addItemTitle' => 'Add an item',
 			'checklist.ui.fieldName' => 'Name',
 			'checklist.ui.fieldWeightGrams' => 'Weight (grams)',
+			'checklist.ui.errorWeightGrams' => 'Invalid weight (0 to 50,000 g)',
+			'checklist.ui.errorNameRequired' => 'Name required',
 			'checklist.ui.add' => 'Add',
 			'checklist.ui.editWeightTitle' => 'Edit weight',
 			'checklist.ui.editCustomTitle' => 'Edit custom item',
@@ -4410,10 +4427,10 @@ extension on TranslationsEn {
 			'weather.cached' => 'Cached data',
 			'weather.alerts' => 'weather alerts',
 			'weather.refresh' => 'Refresh',
-			'weather.temperature' => 'Temperature',
-			'weather.precipitation' => 'Precipitation',
 			_ => null,
 		} ?? switch (path) {
+			'weather.temperature' => 'Temperature',
+			'weather.precipitation' => 'Precipitation',
 			'weather.wind' => 'Wind',
 			'weather.uv' => 'UV index',
 			'weather.fireRisk' => 'Fire risk',
@@ -4924,10 +4941,10 @@ extension on TranslationsEn {
 			'shareVisibility.stageResultsDesc' => 'A pseudonymous card (no direct personal data).',
 			'shareVisibility.leaderboard' => 'Appear in leaderboards',
 			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
-			'shareVisibility.activityFeed' => 'Post to the activity feed',
-			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.activityFeed' => 'Post to the activity feed',
+			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
 			'shareVisibility.shareTitle' => 'Share this stage',
 			'shareVisibility.shareButton' => 'Share',
 			'shareVisibility.privateNotice' => 'Sharing is off. Turn it on in Sharing and visibility.',
@@ -5039,6 +5056,7 @@ extension on TranslationsEn {
 			'health.hint.treatments' => 'e.g. Levothyrox 50 mg/day',
 			'health.hint.doctor' => 'e.g. Dr Smith +44 20 xxxx xxxx',
 			'health.hint.insurance' => 'e.g. European health card',
+			'health.error.bloodType' => 'Invalid blood type (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Save',
 			'health.saving' => 'Saving…',
 			'health.saved' => 'Information saved',
@@ -5437,11 +5455,11 @@ extension on TranslationsEn {
 			'import.errorUnreadable' => 'Unable to read the file.',
 			'import.errorParsing' => 'The GPX file could not be read.',
 			'import.validateButton' => 'CONFIRM IMPORT',
+			_ => null,
+		} ?? switch (path) {
 			'import.confirmTitle' => 'Confirm import?',
 			'import.confirmBody' => 'This track will be imported as your route:\n\n- {points} GPS points\n- {km} km\n- {stages} detected stages\n- Direction: {direction}',
 			'import.cancel' => 'Cancel',
-			_ => null,
-		} ?? switch (path) {
 			'import.validate' => 'Confirm',
 			'import.importedSnack' => 'GPX track imported!',
 			'myTreks.title' => 'My treks',
@@ -5482,6 +5500,7 @@ extension on TranslationsEn {
 			'hikerProfile.fieldWeight' => 'Weight',
 			'hikerProfile.hintWeight' => 'In kilograms',
 			'hikerProfile.errorWeight' => 'Invalid weight (30 to 150 kg)',
+			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
 			'hikerProfile.sexFemale' => 'Female',
 			'hikerProfile.sexMale' => 'Male',
@@ -5539,6 +5558,7 @@ extension on TranslationsEn {
 			'pastHikes.errorHours' => 'Invalid duration (0 to 24 h)',
 			'pastHikes.errorElevation' => 'Invalid elevation (0 to 5000 m)',
 			'pastHikes.errorDistance' => 'Invalid distance (0 to 100 km)',
+			'pastHikes.errorEffort' => 'Enter at least the elevation gain or the distance',
 			'pastHikes.perDay' => 'per day',
 			'pastHikes.editHike' => 'Edit hike',
 			'pastHikes.deleteHike' => 'Delete',

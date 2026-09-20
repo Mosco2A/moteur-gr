@@ -5,12 +5,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/input_formatters.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
 import '../data/hiker_profile_repository.dart';
+import '../domain/hiker_input_bounds.dart';
 import '../domain/hiker_profile.dart';
 import '../providers/hiker_profile_provider.dart';
+
+export '../domain/hiker_input_bounds.dart'
+    show kAgeMin, kAgeMax, kHeightMinCm, kHeightMaxCm, kWeightMinKg, kWeightMaxKg;
 
 /// Ecran « Fiche d'info » — 1ere page de la faisabilite (StepWays LOT 4, Ph1).
 ///
@@ -29,15 +34,10 @@ class HikerProfileScreen extends ConsumerStatefulWidget {
       _HikerProfileScreenState();
 }
 
-// Bornes metier des champs morpho (LOT 1, retour Chris #4).
-// Ancrees sur BP_faisabilite_entrainement.md (profils randonneur) + valeurs du
-// mandat. Servent A LA FOIS a la validation (submit) et aux messages d'erreur.
-const int kAgeMin = 8;
-const int kAgeMax = 100;
-const int kHeightMinCm = 100;
-const int kHeightMaxCm = 250;
-const int kWeightMinKg = 30;
-const int kWeightMaxKg = 150;
+// Bornes metier des champs morpho (LOT 1, retour Chris #4) : elles vivent
+// desormais dans `domain/hiker_input_bounds.dart` (FIX-1 / B1) pour que le
+// bandeau « Materiel & Sac » applique EXACTEMENT la meme regle a la meme donnee.
+// Re-exportees ci-dessus : les appelants existants ne changent pas.
 
 /// IMC live borne — logique pure et testable du retour QA polish.
 ///
@@ -178,6 +178,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       hint: tp.hintAge,
                       icon: Icons.cake_outlined,
                       maxLength: 3,
+                      limitMessage: tp.errorAge,
                       validator: (v) =>
                           _validateRange(v, kAgeMin, kAgeMax, tp.errorAge),
                     ),
@@ -190,6 +191,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       hint: tp.hintHeight,
                       icon: Icons.height,
                       maxLength: 3,
+                      limitMessage: tp.errorHeight,
                       onChanged: (_) => setState(() {}),
                       validator: (v) => _validateRange(
                           v, kHeightMinCm, kHeightMaxCm, tp.errorHeight),
@@ -204,6 +206,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       icon: Icons.monitor_weight_outlined,
                       allowDecimal: true,
                       maxLength: 5,
+                      limitMessage: tp.errorWeight,
                       onChanged: (_) => setState(() {}),
                       validator: (v) => _validateRange(
                           v, kWeightMinKg, kWeightMaxKg, tp.errorWeight),
@@ -423,13 +426,18 @@ class _MorphoConsentTile extends StatelessWidget {
 ///    valeur aberrante (ex. 8000 cm / 600000). Le compteur natif est masque
 ///    (`counterText: ''`) pour ne pas alourdir le formulaire.
 ///  - A LA VALIDATION : [validator] applique les bornes metier au submit.
-class _NumberField extends StatelessWidget {
+///
+/// FIX-1 (finding m1) : la barriere physique tronquait EN SILENCE (« 1280 »
+/// devenait « 128 »). Elle reste — mais elle PARLE : toute frappe refusee
+/// affiche [limitMessage], le meme message borne que le validator.
+class _NumberField extends StatefulWidget {
   const _NumberField({
     required this.controller,
     required this.label,
     required this.hint,
     required this.icon,
     required this.maxLength,
+    required this.limitMessage,
     this.validator,
     this.onChanged,
     this.allowDecimal = false,
@@ -441,32 +449,65 @@ class _NumberField extends StatelessWidget {
 
   /// Nombre MAX de caracteres saisissables (barriere physique a la saisie).
   final int maxLength;
+
+  /// Message affiche quand une frappe est refusee faute de place.
+  final String limitMessage;
   final String? Function(String?)? validator;
   final ValueChanged<String>? onChanged;
   final bool allowDecimal;
 
   @override
+  State<_NumberField> createState() => _NumberFieldState();
+}
+
+class _NumberFieldState extends State<_NumberField> {
+  /// Message transitoire « ta frappe a ete refusee » (null = rien a signaler).
+  String? _limitError;
+
+  /// Vrai si la frappe en cours a ete tronquee (evite d'effacer le message
+  /// aussitot affiche quand la troncature modifie quand meme le texte).
+  bool _truncatedThisEdit = false;
+
+  @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return TextFormField(
-      controller: controller,
-      keyboardType: TextInputType.numberWithOptions(decimal: allowDecimal),
-      maxLength: maxLength,
+      controller: widget.controller,
+      keyboardType:
+          TextInputType.numberWithOptions(decimal: widget.allowDecimal),
+      maxLength: widget.maxLength,
       inputFormatters: [
-        allowDecimal
+        widget.allowDecimal
             ? FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]'))
             : FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(maxLength),
+        NotifyingLengthLimitingTextInputFormatter(
+          widget.maxLength,
+          onLimitReached: () {
+            _truncatedThisEdit = true;
+            if (_limitError != widget.limitMessage) {
+              setState(() => _limitError = widget.limitMessage);
+            }
+          },
+        ),
       ],
-      onChanged: onChanged,
-      validator: validator,
+      onChanged: (value) {
+        if (!_truncatedThisEdit && _limitError != null) {
+          setState(() => _limitError = null);
+        }
+        _truncatedThisEdit = false;
+        widget.onChanged?.call(value);
+      },
+      validator: widget.validator,
       style: TextStyle(color: colors.onSurface),
       decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        // Compteur masque : la borne est deja portee par maxLength (physique).
+        labelText: widget.label,
+        hintText: widget.hint,
+        // Compteur masque : la borne est deja portee par maxLength (physique)
+        // et signalee par [limitMessage] des qu'elle mord.
         counterText: '',
-        prefixIcon: Icon(icon, color: colors.primary),
+        errorText: _limitError,
+        errorMaxLines: 2,
+        prefixIcon: Icon(widget.icon, color: colors.primary),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
         ),
@@ -475,7 +516,12 @@ class _NumberField extends StatelessWidget {
   }
 }
 
-/// Champ pays (code ISO 2 lettres).
+/// Champ pays (code ISO 3166-1 alpha-2).
+///
+/// FIX-1 (finding m3) : « ZZ », code inexistant, etait accepte sans le moindre
+/// controle. Le code est desormais verifie contre la liste officielle
+/// ([kIsoCountryCodes]) au submit, avec un message clair. Champ optionnel :
+/// vide = non renseigne.
 class _CountryField extends StatelessWidget {
   const _CountryField({
     required this.controller,
@@ -490,6 +536,7 @@ class _CountryField extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return TextFormField(
+      key: const ValueKey('hiker-profile-country-field'),
       controller: controller,
       textCapitalization: TextCapitalization.characters,
       maxLength: 2,
@@ -497,6 +544,11 @@ class _CountryField extends StatelessWidget {
         FilteringTextInputFormatter.allow(RegExp(r'[A-Za-z]')),
         LengthLimitingTextInputFormatter(2),
       ],
+      validator: (v) {
+        final s = v?.trim() ?? '';
+        if (s.isEmpty) return null; // champ optionnel : vide = non renseigne
+        return isValidIsoCountryCode(s) ? null : t.hikerProfile.errorCountry;
+      },
       style: TextStyle(color: colors.onSurface),
       decoration: InputDecoration(
         labelText: label,

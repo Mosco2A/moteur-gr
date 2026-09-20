@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
+import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../feasibility/domain/hiker_profile.dart';
@@ -236,50 +237,123 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
 
   // -------------------------------------------------------------- add / edit
 
+  /// Valide un poids d'article saisi (grammes).
+  ///
+  /// FIX-1 (finding M3) : avant, « 99999999 » devenait 50 000 g et
+  /// « 999999999999999999999 » devenait 100 g (depassement 64 bits ->
+  /// `int.tryParse` null -> valeur par defaut), SANS AUCUN MESSAGE. Un clamp
+  /// silencieux est un mensonge : on refuse desormais avec un message borne, et
+  /// la saisie est physiquement limitee a [kItemWeightFieldMaxLength] chiffres.
+  /// Retourne le message d'erreur, ou null si la valeur est acceptable.
+  String? _validateItemWeight(String raw) {
+    final grams = int.tryParse(raw.trim());
+    if (grams == null ||
+        grams < kItemWeightMinGrams ||
+        grams > kItemWeightMaxGrams) {
+      return t.checklist.ui.errorWeightGrams;
+    }
+    return null;
+  }
+
   Future<void> _showAddItemDialog(String category) async {
     final ui = t.checklist.ui;
     final nameCtrl = TextEditingController();
     final weightCtrl = TextEditingController(text: '100');
+    String? nameError;
+    String? weightError;
+    // Vrai si la frappe en cours a ete tronquee : evite que le onChanged du
+    // meme evenement efface le message qui vient d'etre affiche.
+    var weightTruncated = false;
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(ui.addItemTitle),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameCtrl,
-              decoration: InputDecoration(labelText: ui.fieldName),
-              autofocus: true,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocalState) => AlertDialog(
+          title: Text(ui.addItemTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameCtrl,
+                decoration: InputDecoration(
+                  labelText: ui.fieldName,
+                  errorText: nameError,
+                  errorMaxLines: 2,
+                ),
+                autofocus: true,
+                onChanged: (_) {
+                  if (nameError != null) {
+                    setLocalState(() => nameError = null);
+                  }
+                },
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              TextField(
+                key: const ValueKey('checklist-add-weight-field'),
+                controller: weightCtrl,
+                decoration: InputDecoration(
+                  labelText: ui.fieldWeightGrams,
+                  counterText: '',
+                  errorText: weightError,
+                  // Le message borne est plus large que le dialogue : sans ca
+                  // il s'affiche tronque (« Poids invalide (0 a 50 … ») et la
+                  // borne, qui est tout l'interet du message, disparait.
+                  errorMaxLines: 2,
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: kItemWeightFieldMaxLength,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  NotifyingLengthLimitingTextInputFormatter(
+                    kItemWeightFieldMaxLength,
+                    onLimitReached: () {
+                      weightTruncated = true;
+                      setLocalState(() => weightError = ui.errorWeightGrams);
+                    },
+                  ),
+                ],
+                onChanged: (_) {
+                  if (!weightTruncated && weightError != null) {
+                    setLocalState(() => weightError = null);
+                  }
+                  weightTruncated = false;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(t.checklist.weight.cancel),
             ),
-            const SizedBox(height: AppTheme.spacingSm),
-            TextField(
-              controller: weightCtrl,
-              decoration: InputDecoration(labelText: ui.fieldWeightGrams),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            ElevatedButton(
+              onPressed: () {
+                final nextName =
+                    nameCtrl.text.trim().isEmpty ? ui.errorNameRequired : null;
+                final nextWeight = _validateItemWeight(weightCtrl.text);
+                if (nextName != null || nextWeight != null) {
+                  // Le dialogue RESTE ouvert : rien n'est invente dans le dos
+                  // de l'utilisateur, il voit ce qui cloche et corrige.
+                  setLocalState(() {
+                    nameError = nextName;
+                    weightError = nextWeight;
+                  });
+                  return;
+                }
+                Navigator.of(ctx).pop(true);
+              },
+              child: Text(ui.add),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(t.checklist.weight.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(ui.add),
-          ),
-        ],
       ),
     );
 
-    if (result == true && nameCtrl.text.trim().isNotEmpty) {
+    if (result == true) {
       await ref.read(checklistProvider.notifier).addCustomItem(
             category,
             nameCtrl.text.trim(),
-            int.tryParse(weightCtrl.text) ?? 100,
+            int.parse(weightCtrl.text.trim()),
           );
     }
   }
@@ -295,55 +369,99 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     final name = checklistItemDisplayName(item);
     final nameCtrl = TextEditingController(text: name);
     final weightCtrl = TextEditingController(text: item.weightGrams.toString());
+    String? nameError;
+    String? weightError;
+    var weightTruncated = false;
 
     final result = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(item.isCustom ? ui.editCustomTitle : ui.editWeightTitle),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameCtrl,
-              decoration: InputDecoration(
-                labelText: ui.fieldName,
-                suffixIcon: item.isCustom
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setLocalState) => AlertDialog(
+          title: Text(item.isCustom ? ui.editCustomTitle : ui.editWeightTitle),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameCtrl,
+                decoration: InputDecoration(
+                  labelText: ui.fieldName,
+                  errorText: nameError,
+                  suffixIcon: item.isCustom
+                      ? null
+                      : const Icon(Icons.lock_outline, size: 16),
+                ),
+                enabled: item.isCustom,
+                style: item.isCustom
                     ? null
-                    : const Icon(Icons.lock_outline, size: 16),
+                    : const TextStyle(color: AppTheme.grisGranite),
+                onChanged: (_) {
+                  if (nameError != null) {
+                    setLocalState(() => nameError = null);
+                  }
+                },
               ),
-              enabled: item.isCustom,
-              style: item.isCustom
-                  ? null
-                  : const TextStyle(color: AppTheme.grisGranite),
+              const SizedBox(height: AppTheme.spacingSm),
+              TextField(
+                key: const ValueKey('checklist-edit-weight-field'),
+                controller: weightCtrl,
+                decoration: InputDecoration(
+                  labelText: weightT.itemWeight,
+                  suffixText: weightT.grams,
+                  counterText: '',
+                  errorText: weightError,
+                  errorMaxLines: 2,
+                ),
+                keyboardType: TextInputType.number,
+                maxLength: kItemWeightFieldMaxLength,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                  NotifyingLengthLimitingTextInputFormatter(
+                    kItemWeightFieldMaxLength,
+                    onLimitReached: () {
+                      weightTruncated = true;
+                      setLocalState(() => weightError = ui.errorWeightGrams);
+                    },
+                  ),
+                ],
+                autofocus: true,
+                onChanged: (_) {
+                  if (!weightTruncated && weightError != null) {
+                    setLocalState(() => weightError = null);
+                  }
+                  weightTruncated = false;
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: Text(weightT.cancel),
             ),
-            const SizedBox(height: AppTheme.spacingSm),
-            TextField(
-              controller: weightCtrl,
-              decoration: InputDecoration(
-                labelText: weightT.itemWeight,
-                suffixText: weightT.grams,
-              ),
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              autofocus: true,
+            ElevatedButton(
+              onPressed: () {
+                final nextName = item.isCustom && nameCtrl.text.trim().isEmpty
+                    ? ui.errorNameRequired
+                    : null;
+                final nextWeight = _validateItemWeight(weightCtrl.text);
+                if (nextName != null || nextWeight != null) {
+                  setLocalState(() {
+                    nameError = nextName;
+                    weightError = nextWeight;
+                  });
+                  return;
+                }
+                Navigator.of(ctx).pop(true);
+              },
+              child: Text(weightT.save),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: Text(weightT.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: Text(weightT.save),
-          ),
-        ],
       ),
     );
 
     if (result == true) {
-      final newWeight = int.tryParse(weightCtrl.text) ?? item.weightGrams;
+      final newWeight = int.parse(weightCtrl.text.trim());
       final newName = nameCtrl.text.trim();
       final notifier = ref.read(checklistProvider.notifier);
 

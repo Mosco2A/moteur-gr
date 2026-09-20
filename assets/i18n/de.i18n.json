@@ -474,6 +474,8 @@
       "addItemTitle": "Artikel hinzufugen",
       "fieldName": "Name",
       "fieldWeightGrams": "Gewicht (Gramm)",
+      "errorWeightGrams": "Ungultiges Gewicht (0 bis 50 000 g)",
+      "errorNameRequired": "Name erforderlich",
       "add": "Hinzufugen",
       "editWeightTitle": "Gewicht andern",
       "editCustomTitle": "Eigenen Artikel bearbeiten",
@@ -1391,6 +1393,9 @@
       "doctor": "z. B. Dr. Müller +49 30 xxxx xxxx",
       "insurance": "z. B. Europäische Krankenversicherungskarte"
     },
+    "error": {
+      "bloodType": "Ungultige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)"
+    },
     "save": "Speichern",
     "saving": "Speichern…",
     "saved": "Informationen gespeichert",
@@ -1986,6 +1991,7 @@
     "fieldWeight": "Gewicht",
     "hintWeight": "In Kilogramm",
     "errorWeight": "Ungultiges Gewicht (30 bis 150 kg)",
+    "errorCountry": "Ungultiger Landercode (z. B. FR)",
     "fieldSex": "Geschlecht (optional)",
     "sexFemale": "Weiblich",
     "sexMale": "Mannlich",
@@ -2051,6 +2057,7 @@
     "errorHours": "Ungultige Dauer (0 bis 24 h)",
     "errorElevation": "Ungultiger Hohenunterschied (0 bis 5000 m)",
     "errorDistance": "Ungultige Distanz (0 bis 100 km)",
+    "errorEffort": "Geben Sie mindestens Hohenmeter oder Distanz an",
     "perDay": "pro Tag",
     "editHike": "Tour bearbeiten",
     "deleteHike": "Loschen",

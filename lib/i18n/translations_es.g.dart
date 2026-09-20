@@ -1130,6 +1130,7 @@ class _Translations$health$es extends Translations$health$fr {
 	@override String get privacyBanner => 'Estos datos permanecen en tu teléfono. Nunca se envían por internet.';
 	@override late final _Translations$health$field$es field = _Translations$health$field$es._(_root);
 	@override late final _Translations$health$hint$es hint = _Translations$health$hint$es._(_root);
+	@override late final _Translations$health$error$es error = _Translations$health$error$es._(_root);
 	@override String get save => 'Guardar';
 	@override String get saving => 'Guardando…';
 	@override String get saved => 'Información guardada';
@@ -1535,6 +1536,7 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get fieldWeight => 'Peso';
 	@override String get hintWeight => 'En kilogramos';
 	@override String get errorWeight => 'Peso no valido (30 a 150 kg)';
+	@override String get errorCountry => 'Codigo de pais no valido (ej. FR)';
 	@override String get fieldSex => 'Sexo (opcional)';
 	@override String get sexFemale => 'Mujer';
 	@override String get sexMale => 'Hombre';
@@ -1604,6 +1606,7 @@ class _Translations$pastHikes$es extends Translations$pastHikes$fr {
 	@override String get errorHours => 'Duracion no valida (0 a 24 h)';
 	@override String get errorElevation => 'Desnivel no valido (0 a 5000 m)';
 	@override String get errorDistance => 'Distancia no valida (0 a 100 km)';
+	@override String get errorEffort => 'Indica al menos el desnivel o la distancia';
 	@override String get perDay => 'por dia';
 	@override String get editHike => 'Editar ruta';
 	@override String get deleteHike => 'Eliminar';
@@ -2071,6 +2074,8 @@ class _Translations$checklist$ui$es extends Translations$checklist$ui$fr {
 	@override String get addItemTitle => 'Anadir un articulo';
 	@override String get fieldName => 'Nombre';
 	@override String get fieldWeightGrams => 'Peso (gramos)';
+	@override String get errorWeightGrams => 'Peso no valido (0 a 50 000 g)';
+	@override String get errorNameRequired => 'Nombre obligatorio';
 	@override String get add => 'Anadir';
 	@override String get editWeightTitle => 'Editar el peso';
 	@override String get editCustomTitle => 'Editar articulo personalizado';
@@ -2710,6 +2715,16 @@ class _Translations$health$hint$es extends Translations$health$hint$fr {
 	@override String get treatments => 'Ej.: Levothyrox 50 mg/día';
 	@override String get doctor => 'Ej.: Dr. García +34 91 xxx xx xx';
 	@override String get insurance => 'Ej.: tarjeta sanitaria europea';
+}
+
+// Path: health.error
+class _Translations$health$error$es extends Translations$health$error$fr {
+	_Translations$health$error$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get bloodType => 'Grupo sanguineo no valido (A+, A-, B+, B-, AB+, AB-, O+, O-)';
 }
 
 // Path: health.a11y
@@ -4313,6 +4328,8 @@ extension on TranslationsEs {
 			'checklist.ui.addItemTitle' => 'Anadir un articulo',
 			'checklist.ui.fieldName' => 'Nombre',
 			'checklist.ui.fieldWeightGrams' => 'Peso (gramos)',
+			'checklist.ui.errorWeightGrams' => 'Peso no valido (0 a 50 000 g)',
+			'checklist.ui.errorNameRequired' => 'Nombre obligatorio',
 			'checklist.ui.add' => 'Anadir',
 			'checklist.ui.editWeightTitle' => 'Editar el peso',
 			'checklist.ui.editCustomTitle' => 'Editar articulo personalizado',
@@ -4410,10 +4427,10 @@ extension on TranslationsEs {
 			'weather.cached' => 'Datos en caché',
 			'weather.alerts' => 'alertas meteorológicas',
 			'weather.refresh' => 'Actualizar',
-			'weather.temperature' => 'Temperatura',
-			'weather.precipitation' => 'Precipitación',
 			_ => null,
 		} ?? switch (path) {
+			'weather.temperature' => 'Temperatura',
+			'weather.precipitation' => 'Precipitación',
 			'weather.wind' => 'Viento',
 			'weather.uv' => 'Índice UV',
 			'weather.fireRisk' => 'Riesgo de incendio',
@@ -4924,10 +4941,10 @@ extension on TranslationsEs {
 			'shareVisibility.stageResultsDesc' => 'Una tarjeta con seudónimo (sin datos personales directos).',
 			'shareVisibility.leaderboard' => 'Aparecer en las clasificaciones',
 			'shareVisibility.leaderboardDesc' => 'Clasificación por grupo, con un seudónimo.',
-			'shareVisibility.activityFeed' => 'Publicar en el registro de actividad',
-			'shareVisibility.activityFeedDesc' => 'Tus actividades aparecen en el registro, con un seudónimo.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.activityFeed' => 'Publicar en el registro de actividad',
+			'shareVisibility.activityFeedDesc' => 'Tus actividades aparecen en el registro, con un seudónimo.',
 			'shareVisibility.shareTitle' => 'Compartir esta etapa',
 			'shareVisibility.shareButton' => 'Compartir',
 			'shareVisibility.privateNotice' => 'Compartir está desactivado. Actívalo en Compartir y visibilidad.',
@@ -5039,6 +5056,7 @@ extension on TranslationsEs {
 			'health.hint.treatments' => 'Ej.: Levothyrox 50 mg/día',
 			'health.hint.doctor' => 'Ej.: Dr. García +34 91 xxx xx xx',
 			'health.hint.insurance' => 'Ej.: tarjeta sanitaria europea',
+			'health.error.bloodType' => 'Grupo sanguineo no valido (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Guardar',
 			'health.saving' => 'Guardando…',
 			'health.saved' => 'Información guardada',
@@ -5437,11 +5455,11 @@ extension on TranslationsEs {
 			'import.errorUnreadable' => 'No se puede leer el archivo.',
 			'import.errorParsing' => 'No se pudo leer el archivo GPX.',
 			'import.validateButton' => 'CONFIRMAR IMPORTACIÓN',
+			_ => null,
+		} ?? switch (path) {
 			'import.confirmTitle' => '¿Confirmar la importación?',
 			'import.confirmBody' => 'Esta traza se importará como tu recorrido:\n\n- {points} puntos GPS\n- {km} km\n- {stages} etapas detectadas\n- Dirección: {direction}',
 			'import.cancel' => 'Cancelar',
-			_ => null,
-		} ?? switch (path) {
 			'import.validate' => 'Confirmar',
 			'import.importedSnack' => '¡Traza GPX importada!',
 			'myTreks.title' => 'Mis rutas',
@@ -5482,6 +5500,7 @@ extension on TranslationsEs {
 			'hikerProfile.fieldWeight' => 'Peso',
 			'hikerProfile.hintWeight' => 'En kilogramos',
 			'hikerProfile.errorWeight' => 'Peso no valido (30 a 150 kg)',
+			'hikerProfile.errorCountry' => 'Codigo de pais no valido (ej. FR)',
 			'hikerProfile.fieldSex' => 'Sexo (opcional)',
 			'hikerProfile.sexFemale' => 'Mujer',
 			'hikerProfile.sexMale' => 'Hombre',
@@ -5539,6 +5558,7 @@ extension on TranslationsEs {
 			'pastHikes.errorHours' => 'Duracion no valida (0 a 24 h)',
 			'pastHikes.errorElevation' => 'Desnivel no valido (0 a 5000 m)',
 			'pastHikes.errorDistance' => 'Distancia no valida (0 a 100 km)',
+			'pastHikes.errorEffort' => 'Indica al menos el desnivel o la distancia',
 			'pastHikes.perDay' => 'por dia',
 			'pastHikes.editHike' => 'Editar ruta',
 			'pastHikes.deleteHike' => 'Eliminar',
