@@ -270,12 +270,12 @@ class _SectionLabel extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: AppTheme.grisGranite),
+          Icon(icon, size: 18, color: dayNeutralColor(context)),
           const SizedBox(width: AppTheme.spacingSm),
           Text(
             label,
             style: theme.textTheme.titleSmall?.copyWith(
-              color: AppTheme.grisGranite,
+              color: dayNeutralColor(context),
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -407,7 +407,7 @@ class _AdjustDayCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isRest = day.isRestDay;
     final accent = locked
-        ? AppTheme.grisGranite
+        ? dayNeutralColor(context)
         : isRest
             ? AppTheme.bleuRepos
             : _difficultyColor(day.maxDifficulty);
@@ -501,13 +501,13 @@ class _AdjustDayCard extends StatelessWidget {
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.lock_outline,
-                              size: 16, color: AppTheme.grisGranite),
+                          Icon(Icons.lock_outline,
+                              size: 16, color: dayNeutralColor(context)),
                           const SizedBox(width: 4),
                           Text(
                             t.programme.inTrek.doneBadge,
                             style: theme.textTheme.labelSmall?.copyWith(
-                              color: AppTheme.grisGranite,
+                              color: dayNeutralColor(context),
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -527,7 +527,7 @@ class _AdjustDayCard extends StatelessWidget {
                       DayActionChip(
                         icon: Icons.compress,
                         label: t.programme.actions.merge,
-                        color: AppTheme.bleuRepos,
+                        tone: DayActionTone.principal,
                         enabled: canMerge,
                         onPressed: canMerge
                             ? onMerge!
@@ -536,7 +536,7 @@ class _AdjustDayCard extends StatelessWidget {
                       DayActionChip(
                         icon: Icons.call_split,
                         label: t.programme.actions.split,
-                        color: AppTheme.orangeDifficile,
+                        tone: DayActionTone.secondaire,
                         enabled: canSplit,
                         onPressed: canSplit
                             ? onSplit!
@@ -547,7 +547,7 @@ class _AdjustDayCard extends StatelessWidget {
                       DayActionChip(
                         icon: Icons.self_improvement,
                         label: t.programme.actions.rest,
-                        color: AppTheme.bleuRepos,
+                        tone: DayActionTone.principal,
                         onPressed: onAddRestDay!,
                       ),
                     if (onRemoveRestDay != null)
@@ -563,8 +563,8 @@ class _AdjustDayCard extends StatelessWidget {
                   ],
                 )
               else
-                const Icon(Icons.lock_outline,
-                    size: 20, color: AppTheme.grisGranite),
+                Icon(Icons.lock_outline,
+                    size: 20, color: dayNeutralColor(context)),
             ],
           ),
         ),
@@ -589,8 +589,8 @@ class _EmptyAdjustState extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.event_busy,
-                size: 48, color: AppTheme.grisGranite),
+            Icon(Icons.event_busy,
+                size: 48, color: dayNeutralColor(context)),
             const SizedBox(height: AppTheme.spacingMd),
             Text(title,
                 style: theme.textTheme.titleMedium,

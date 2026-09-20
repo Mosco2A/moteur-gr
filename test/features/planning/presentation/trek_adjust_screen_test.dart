@@ -6,6 +6,8 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/theme/app_skin.dart';
+import 'package:moteur_gr/core/theme/app_theme.dart';
 import 'package:moteur_gr/features/planning/domain/trek_edit_lock.dart';
 import 'package:moteur_gr/features/planning/presentation/trek_adjust_screen.dart';
 import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
@@ -45,7 +47,8 @@ void main() {
         trekEditLockProvider.overrideWithValue(lock),
       ];
 
-  Widget wrap() => MaterialApp.router(
+  Widget wrap({ThemeData? theme}) => MaterialApp.router(
+        theme: theme,
         routerConfig: GoRouter(
           initialLocation: '/adjust',
           routes: [
@@ -62,6 +65,7 @@ void main() {
   Future<ProviderContainer> pumpScreen(
     WidgetTester tester, {
     required TrekEditLock lock,
+    ThemeData? theme,
   }) async {
     tester.view.physicalSize = const Size(1200, 4000);
     tester.view.devicePixelRatio = 1.0;
@@ -74,7 +78,10 @@ void main() {
     container.read(selectedDurationProvider.notifier).set(5);
 
     await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: wrap()),
+      UncontrolledProviderScope(
+        container: container,
+        child: wrap(theme: theme),
+      ),
     );
     await tester.pumpAndSettle();
     return container;
@@ -136,6 +143,48 @@ void main() {
     expect(days[1].stages.single.stageNumber, 2);
     // Le jour regroupe porte bien les etapes 3 et 4, dans l'ordre.
     expect(days[2].stages.map((s) => s.stageNumber).toList(), [3, 4]);
+  });
+
+  testWidgets(
+      'les chips s habillent du THEME du sentier et restent lisibles en sombre',
+      (tester) async {
+    // Theme du sentier actif, construit comme l'app (`lib/main.dart`) : brun
+    // volcanique + orange terre, en mode SOMBRE (defaut produit).
+    const trailPrimary = Color(0xFF8B4513);
+    const trailSecondary = Color(0xFFD2691E);
+    final darkTheme = AppTheme.buildDarkTheme(
+      primaryColor: trailPrimary,
+      secondaryColor: trailSecondary,
+      skin: AppSkin.sentierVivant,
+    );
+
+    await pumpScreen(
+      tester,
+      lock: const TrekEditLock(trekStarted: true, doneStageIds: {'1'}),
+      theme: darkTheme,
+    );
+
+    // 1) Chip ACTIF (« Regrouper ») = couleur PRIMAIRE du sentier telle que le
+    //    theme la resout. Aucune valeur en dur : sur un sentier vert, ce test
+    //    suivrait le vert. Le bleu Material d'avant echouait ici.
+    final merge =
+        tester.widget<Text>(find.text(t.programme.actions.merge).first);
+    expect(merge.style?.color, darkTheme.colorScheme.primary);
+    expect(merge.style?.color, isNot(AppTheme.bleuRepos),
+        reason: 'le chip ne doit plus porter un bleu etranger au sentier');
+
+    // 2) Chip INDISPONIBLE (« Separer » sur un jour mono-etape) = gris LISIBLE
+    //    sur fond sombre. Regression R1 : `grisGranite` (~2.6:1 en sombre),
+    //    qui plus est a 47 % d'opacite, etait illisible.
+    final split =
+        tester.widget<Text>(find.text(t.programme.actions.split).first);
+    expect(split.style?.color, AppTheme.grisTexteSecondaire);
+    expect(split.style?.color, isNot(AppTheme.grisGranite));
+    expect(split.style?.color?.a, 1.0,
+        reason: 'un chip desactive s aplatit, il ne devient pas transparent');
+
+    // 3) ... et il reste bien DISTINCT du chip actif : l'etat se lit.
+    expect(split.style?.color, isNot(merge.style?.color));
   });
 
   testWidgets('tout marche : plus rien a adapter, message explicite',

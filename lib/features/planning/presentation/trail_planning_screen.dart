@@ -820,7 +820,7 @@ class _DayCard extends ConsumerWidget {
                   DayActionChip(
                     icon: Icons.compress,
                     label: t.programme.actions.merge,
-                    color: AppTheme.bleuRepos,
+                    tone: DayActionTone.principal,
                     enabled: canMerge,
                     onPressed: canMerge
                         ? onMerge!
@@ -832,7 +832,7 @@ class _DayCard extends ConsumerWidget {
                   DayActionChip(
                     icon: Icons.call_split,
                     label: t.programme.actions.split,
-                    color: AppTheme.orangeDifficile,
+                    tone: DayActionTone.secondaire,
                     enabled: canSplit,
                     onPressed: canSplit
                         ? onSplit!
@@ -844,7 +844,7 @@ class _DayCard extends ConsumerWidget {
                   DayActionChip(
                     icon: Icons.self_improvement,
                     label: t.programme.actions.rest,
-                    color: AppTheme.bleuRepos,
+                    tone: DayActionTone.principal,
                     onPressed: onAddRestDay,
                   ),
                 ],
