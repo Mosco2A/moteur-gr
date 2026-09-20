@@ -156,7 +156,9 @@
       "weather": "Meteo",
       "weatherSub": "Previsioni per tappa",
       "fire": "Incendio",
-      "fireSub": "Rischi e allerte"
+      "fireSub": "Rischi e allerte",
+      "adjust": "Adattare l'itinerario",
+      "adjustSub": "Modificare i giorni a venire"
     },
     "fab": {
       "feedback": "Lascia un feedback",
@@ -1572,7 +1574,8 @@
     "mergeBlocked": {
       "noNext": "Nessun giorno successivo",
       "rest": "Impossibile raggruppare con un giorno di riposo",
-      "tooLong": "Troppo lungo: {hours}h (max {max}h/giorno)"
+      "tooLong": "Troppo lungo: {hours}h (max {max}h/giorno)",
+      "locked": "Giorno già percorso: non è più modificabile"
     },
     "replan": "Ripianifica",
     "replanButton": "RIPIANIFICA",
@@ -1615,7 +1618,41 @@
       "close": "Capito!"
     },
     "splitBlocked": {
-      "single": "Impossibile dividere: questa giornata ha una sola tappa"
+      "single": "Impossibile dividere: questa giornata ha una sola tappa",
+      "locked": "Giorno già percorso: non è più modificabile"
+    },
+    "reorderBlocked": "Trek avviato: l'ordine delle tappe non cambia più",
+    "inTrek": {
+      "title": "Adattare l'itinerario",
+      "intro": "Riorganizza il seguito del tuo trek. Ciò che hai già percorso è bloccato e l'ordine delle tappe non cambia.",
+      "doneSection": "Già percorso",
+      "upcomingSection": "A venire",
+      "doneBadge": "Fatto",
+      "lockedDay": "Giorno già percorso, bloccato",
+      "allDone": "Hai percorso tutti i tuoi giorni: non c'è più nulla da adattare.",
+      "notStarted": "Questa schermata serve in cammino: avvia il trek per adattare il seguito.",
+      "validate": "Salvare le modifiche",
+      "saved": "Programma aggiornato",
+      "info": {
+        "title": "Adattare l'itinerario",
+        "done": {
+          "title": "Giorni già percorsi",
+          "body": "Sono in grigio e bloccati: ciò che è fatto è fatto."
+        },
+        "upcoming": {
+          "title": "Giorni a venire",
+          "body": "Raggruppa, separa o aggiungi un giorno di riposo nel seguito del percorso."
+        },
+        "order": {
+          "title": "Ordine delle tappe",
+          "body": "L'ordine non cambia mai una volta partiti: le tappe già avviate non si invertono."
+        },
+        "close": "Capito"
+      },
+      "empty": {
+        "title": "Nessun programma da adattare",
+        "message": "Crea prima il tuo programma nella preparazione."
+      }
     }
   },
   "calendar": {

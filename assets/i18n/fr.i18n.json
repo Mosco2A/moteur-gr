@@ -156,7 +156,9 @@
       "weather": "Météo",
       "weatherSub": "Prévisions par étape",
       "fire": "Incendie",
-      "fireSub": "Risques & alertes"
+      "fireSub": "Risques & alertes",
+      "adjust": "Adapter l'itinéraire",
+      "adjustSub": "Modifier mes jours à venir"
     },
     "fab": {
       "feedback": "Donner mon avis",
@@ -1572,7 +1574,8 @@
     "mergeBlocked": {
       "noNext": "Pas de jour suivant",
       "rest": "Impossible de grouper avec un jour de repos",
-      "tooLong": "Trop long : {hours}h (max {max}h/jour)"
+      "tooLong": "Trop long : {hours}h (max {max}h/jour)",
+      "locked": "Jour déjà marché : il ne peut plus être modifié"
     },
     "replan": "Replanifier",
     "replanButton": "REPLANIFIER",
@@ -1615,7 +1618,41 @@
       "close": "Compris !"
     },
     "splitBlocked": {
-      "single": "Séparer impossible : un seul jour a une étape"
+      "single": "Séparer impossible : un seul jour a une étape",
+      "locked": "Jour déjà marché : il ne peut plus être modifié"
+    },
+    "reorderBlocked": "Rando démarrée : l'ordre des étapes ne change plus",
+    "inTrek": {
+      "title": "Adapter l'itinéraire",
+      "intro": "Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l'ordre des étapes ne change pas.",
+      "doneSection": "Déjà marché",
+      "upcomingSection": "À venir",
+      "doneBadge": "Fait",
+      "lockedDay": "Jour déjà marché, non modifiable",
+      "allDone": "Vous avez marché tous vos jours : il n'y a plus rien à adapter.",
+      "notStarted": "Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.",
+      "validate": "Valider mes changements",
+      "saved": "Programme mis à jour",
+      "info": {
+        "title": "Adapter l'itinéraire",
+        "done": {
+          "title": "Jours déjà marchés",
+          "body": "Ils sont grisés et verrouillés : ce qui est fait est fait."
+        },
+        "upcoming": {
+          "title": "Jours à venir",
+          "body": "Regroupez, séparez ou ajoutez un jour de repos sur la suite de votre parcours."
+        },
+        "order": {
+          "title": "Ordre des étapes",
+          "body": "L'ordre ne change jamais une fois parti : on n'inverse pas des étapes déjà engagées."
+        },
+        "close": "Compris !"
+      },
+      "empty": {
+        "title": "Aucun programme à adapter",
+        "message": "Construisez d'abord votre programme depuis la préparation."
+      }
     }
   },
   "calendar": {

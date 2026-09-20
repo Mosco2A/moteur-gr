@@ -156,7 +156,9 @@
       "weather": "Meteo",
       "weatherSub": "Pronóstico por etapa",
       "fire": "Incendio",
-      "fireSub": "Riesgos y alertas"
+      "fireSub": "Riesgos y alertas",
+      "adjust": "Adaptar el itinerario",
+      "adjustSub": "Cambiar mis días por venir"
     },
     "fab": {
       "feedback": "Dar mi opinión",
@@ -1572,7 +1574,8 @@
     "mergeBlocked": {
       "noNext": "No hay día siguiente",
       "rest": "No se puede agrupar con un día de descanso",
-      "tooLong": "Demasiado largo: {hours}h (máx {max}h/día)"
+      "tooLong": "Demasiado largo: {hours}h (máx {max}h/día)",
+      "locked": "Día ya caminado: ya no se puede modificar"
     },
     "replan": "Replanificar",
     "replanButton": "REPLANIFICAR",
@@ -1615,7 +1618,41 @@
       "close": "¡Entendido!"
     },
     "splitBlocked": {
-      "single": "No se puede dividir: este día tiene una sola etapa"
+      "single": "No se puede dividir: este día tiene una sola etapa",
+      "locked": "Día ya caminado: ya no se puede modificar"
+    },
+    "reorderBlocked": "Ruta iniciada: el orden de las etapas ya no cambia",
+    "inTrek": {
+      "title": "Adaptar el itinerario",
+      "intro": "Reorganiza el resto de tu ruta. Lo ya caminado queda fijado y el orden de las etapas no cambia.",
+      "doneSection": "Ya caminado",
+      "upcomingSection": "Por venir",
+      "doneBadge": "Hecho",
+      "lockedDay": "Día ya caminado, bloqueado",
+      "allDone": "Has caminado todos tus días: ya no queda nada que adaptar.",
+      "notStarted": "Esta pantalla es para la ruta: inicia tu travesía para adaptar lo que viene.",
+      "validate": "Guardar mis cambios",
+      "saved": "Programa actualizado",
+      "info": {
+        "title": "Adaptar el itinerario",
+        "done": {
+          "title": "Días ya caminados",
+          "body": "Aparecen en gris y bloqueados: lo hecho, hecho está."
+        },
+        "upcoming": {
+          "title": "Días por venir",
+          "body": "Agrupa, separa o añade un día de descanso en el resto del recorrido."
+        },
+        "order": {
+          "title": "Orden de las etapas",
+          "body": "El orden nunca cambia una vez en marcha: no se invierten etapas ya iniciadas."
+        },
+        "close": "Entendido"
+      },
+      "empty": {
+        "title": "Ningún programa que adaptar",
+        "message": "Crea antes tu programa desde la preparación."
+      }
     }
   },
   "calendar": {

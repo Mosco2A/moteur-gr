@@ -6,9 +6,11 @@ import '../../../core/models/stage.dart';
 import '../../trail/providers/stages_provider.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../domain/planning_calculator.dart';
+import '../domain/trek_edit_lock.dart';
 import '../models/day_plan.dart';
 import '../models/planned_day.dart';
 import 'planning_provider.dart';
+import 'trek_edit_lock_provider.dart';
 
 /// PROGRAMME editable (parite GR20 `plannedDaysProvider`).
 ///
@@ -57,6 +59,19 @@ final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier,
   if (cachedRestDays.isNotEmpty) {
     notifier.restoreRestDaysFromCache(cachedRestDays);
   }
+
+  // R12 (LOT L9) — VERROU « rando en cours ». Le verrou est INJECTE par
+  // `ref.listen` et NON par `ref.watch` : c'est volontaire. Un `watch`
+  // RECREERAIT le notifier a chaque etape terminee, effacant les modifications
+  // que le randonneur vient justement de faire sur ses jours a venir. Avec
+  // `listen`, le notifier vit, et seul son verrou se met a jour (fireImmediately
+  // pose l'etat initial des la creation, avant tout affichage).
+  ref.listen<TrekEditLock>(
+    trekEditLockProvider,
+    (_, next) => notifier.applyEditLock(next),
+    fireImmediately: true,
+  );
+
   return notifier;
 });
 
@@ -82,8 +97,56 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
 
   bool _hasManualEdits;
 
+  /// Verrou « rando en cours » (R12). [TrekEditLock.none] en preparation.
+  TrekEditLock _editLock = TrekEditLock.none;
+
   /// Limite de temps de marche pour un regroupement manuel (parite GR20 : 16 h).
   static const double maxManualHoursPerDay = 16.0;
+
+  // --- R12 : garde « on ne modifie que ce qui n'est pas encore fait » ---
+
+  /// Injecte l'etat de rando observe (appele par le provider via `ref.listen`).
+  ///
+  /// Ne touche PAS a `state` : le verrou ne reecrit jamais le programme, il ne
+  /// fait qu'interdire certaines mutations. Un changement de verrou ne provoque
+  /// donc aucun rebuild inutile ni aucune perte d'edition.
+  void applyEditLock(TrekEditLock lock) => _editLock = lock;
+
+  /// Verrou courant (expose pour l'UI : libelles, badges « fait »).
+  TrekEditLock get editLock => _editLock;
+
+  /// L'etape [stageNumber] est-elle deja MARCHEE ?
+  bool isStageDone(int stageNumber) => _editLock.isStageDone(stageNumber);
+
+  /// Nombre de jours FIGES en tete de programme (R12).
+  ///
+  /// Un jour est fige des qu'il contient au moins une etape deja marchee ; tous
+  /// les jours qui le PRECEDENT le sont aussi — un jour de repos deja passe est
+  /// passe, meme s'il ne porte aucune etape. On calcule donc l'index du DERNIER
+  /// jour contenant une etape faite, et tout ce qui est avant (inclus) est fige.
+  /// Vaut 0 en preparation (aucune etape faite) : programme entierement libre.
+  int get lockedDayCount {
+    if (_editLock.doneStageIds.isEmpty) return 0;
+    var last = -1;
+    for (var i = 0; i < state.length; i++) {
+      final day = state[i];
+      if (day.stages.any((s) => _editLock.isStageDone(s.stageNumber))) {
+        last = i;
+      }
+    }
+    return last + 1;
+  }
+
+  /// Le jour [index] est-il fige (deja fait) ?
+  bool isDayLocked(int index) => index < lockedDayCount;
+
+  /// L'ordre des jours peut-il encore etre change ?
+  ///
+  /// NON des que le trek est demarre : regle metier « AUCUNE inversion de
+  /// l'ordre des etapes » (on ne peut pas marcher l'etape 6 avant la 5 apres
+  /// coup). Vaut aussi pour l'ecran Programme de la preparation, qui reste
+  /// joignable pendant la rando via l'accordeon « Preparer ».
+  bool get canReorder => !_editLock.trekStarted;
 
   /// Genere le programme initial : repartition des etapes sur la duree via le
   /// meme calculateur que l'ecran de repartition, converti en jours editables.
@@ -119,7 +182,12 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
 
   /// Reordonne les jours (drag & drop). Corrige l'index cible comme le
   /// `ReorderableListView` de Material (parite GR20).
+  ///
+  /// R12 : REFUSE des que le trek est demarre (aucune inversion possible) —
+  /// la garde est ici, au niveau du domaine, pour qu'aucune porte d'entree
+  /// (ecran Programme de la prepa comprise) ne puisse la contourner.
   void reorder(int oldIndex, int newIndex) {
+    if (!canReorder) return;
     final days = List<PlannedDay>.of(state);
     if (newIndex > oldIndex) newIndex--;
     final item = days.removeAt(oldIndex);
@@ -131,8 +199,17 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
 
   // --- Edition : jours de repos ---
 
+  /// Le repos peut-il etre insere apres le jour [afterIndex] ?
+  ///
+  /// R12 : oui seulement si le repos atterrit dans le FUTUR. Inserer apres un
+  /// jour fige qui n'est pas le dernier fige decalerait des jours deja faits.
+  bool canAddRestDayAfter(int afterIndex) => afterIndex + 1 >= lockedDayCount;
+
   /// Ajoute un jour de repos apres [afterIndex] (parite GR20).
+  ///
+  /// R12 : refuse si l'insertion tomberait dans la partie deja faite.
   void addRestDay(int afterIndex) {
+    if (!canAddRestDayAfter(afterIndex)) return;
     final days = List<PlannedDay>.of(state);
     days.insert(
       afterIndex + 1,
@@ -144,9 +221,13 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   }
 
   /// Supprime le jour de repos a [index] (parite GR20).
+  ///
+  /// R12 : un jour de repos DEJA PASSE (dans le prefixe fige) ne se supprime
+  /// pas — il a eu lieu.
   void removeRestDay(int index) {
     if (index < 0 || index >= state.length) return;
     if (!state[index].isRestDay) return;
+    if (isDayLocked(index)) return;
     final days = List<PlannedDay>.of(state)..removeAt(index);
     _hasManualEdits = true;
     state = _renumber(days);
@@ -163,6 +244,10 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   /// libelles i18n a l'appelant : ici on ne renvoie qu'un code semantique).
   String? mergeBlockedReason(int dayIndex) {
     if (dayIndex < 0 || dayIndex + 1 >= state.length) return 'no-next';
+    // R12 : un jour deja fait ne se regroupe pas (le prefixe fige est un bloc,
+    // donc verrouiller le jour courant suffit : son suivant est libre des que
+    // lui l'est).
+    if (isDayLocked(dayIndex)) return 'locked';
     final a = state[dayIndex];
     final b = state[dayIndex + 1];
     if (a.isRestDay || b.isRestDay) return 'rest';
@@ -188,13 +273,24 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   }
 
   /// Vrai si le jour [dayIndex] (multi-etapes, hors repos) peut etre separe.
-  bool canSplit(int dayIndex) {
-    if (dayIndex < 0 || dayIndex >= state.length) return false;
+  bool canSplit(int dayIndex) => splitBlockedReason(dayIndex) == null;
+
+  /// Message explicatif si la separation est impossible (`null` si possible).
+  ///
+  /// Codes semantiques (libelles i18n a l'appelant, comme
+  /// [mergeBlockedReason]) : `locked` (jour deja fait, R12), `single` (un seul
+  /// jour a une etape -> rien a separer).
+  String? splitBlockedReason(int dayIndex) {
+    if (dayIndex < 0 || dayIndex >= state.length) return 'single';
+    if (isDayLocked(dayIndex)) return 'locked';
     final day = state[dayIndex];
-    return !day.isRestDay && day.stages.length > 1;
+    if (day.isRestDay || day.stages.length <= 1) return 'single';
+    return null;
   }
 
   /// Separe un jour multi-etapes en N jours d'une etape (parite GR20).
+  ///
+  /// R12 : refuse sur un jour deja fait (via [canSplit]).
   void splitDay(int dayIndex) {
     if (!canSplit(dayIndex)) return;
     final days = List<PlannedDay>.of(state);
@@ -212,22 +308,45 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
   // --- Replanification (parite GR20) ---
 
   /// Replanifie en preservant les jours de repos manuels a leurs positions.
+  ///
+  /// R12 : en rando, la replanification ne porte QUE sur la partie a venir. Le
+  /// prefixe fige (jours deja faits) est recopie tel quel et ses etapes sont
+  /// retirees de la redistribution — sans cette garde, « Replanifier » aurait
+  /// ete la porte derobee qui reecrit un passe deja marche.
   void regeneratePreservingRestDays() {
+    final locked = lockedDayCount;
+    final head = state.take(locked).toList(growable: false);
+
+    // Etapes deja engagees dans le prefixe fige : elles ne repassent pas dans
+    // le calcul (sinon elles seraient replanifiees dans le futur).
+    final consumed = <int>{
+      for (final day in head)
+        for (final stage in day.stages) stage.stageNumber,
+    };
+    final remainingStages = _stages
+        .where((s) => !consumed.contains(s.stageNumber))
+        .toList(growable: false);
+
+    // Jours de repos manuels a reinjecter : seulement ceux de la partie libre,
+    // exprimes en index RELATIF a cette partie.
     final restIndices = <int>[];
-    for (var i = 0; i < state.length; i++) {
-      if (state[i].isRestDay) restIndices.add(i);
+    for (var i = locked; i < state.length; i++) {
+      if (state[i].isRestDay) restIndices.add(i - locked);
     }
-    var days = _generate(_stages, _duration);
+
+    final remainingDays = (_duration - locked) < 1 ? 1 : _duration - locked;
+    var tail = _generate(remainingStages, remainingDays);
     var offset = 0;
     for (final restIndex in restIndices) {
-      final insertAt = (restIndex + offset).clamp(0, days.length);
-      days = List<PlannedDay>.of(days)
+      final insertAt = (restIndex + offset).clamp(0, tail.length);
+      tail = List<PlannedDay>.of(tail)
         ..insert(insertAt,
             const PlannedDay(dayNumber: 0, stages: [], isRestDay: true));
       offset++;
     }
-    _hasManualEdits = restIndices.isNotEmpty;
-    state = _renumber(days);
+
+    _hasManualEdits = restIndices.isNotEmpty || locked > 0;
+    state = _renumber([...head, ...tail]);
     _updateRestDayCache();
   }
 

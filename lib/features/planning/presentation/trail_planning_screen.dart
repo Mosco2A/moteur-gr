@@ -10,6 +10,7 @@ import '../../hub/providers/cockpit_start_providers.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
 import '../providers/planning_provider.dart';
+import '../widgets/day_action_chip.dart';
 import '../widgets/duration_selector.dart';
 
 /// Ecran PROGRAMME (parite GR20 `PlanningScreen`).
@@ -299,7 +300,24 @@ class _PlanningContent extends ConsumerWidget {
               vertical: AppTheme.spacingSm,
             ),
             itemCount: days.length,
-            onReorder: notifier.reorder,
+            // R12 (LOT L9) : l'ordre des jours est GELE des que le trek est
+            // demarre (regle metier « aucune inversion des etapes »). Le REFUS
+            // vit dans le notifier — infranchissable ; ici on l'EXPLIQUE, sinon
+            // le jour glisse et revient a sa place sans un mot. Cet ecran de
+            // preparation reste joignable en rando (accordeon « Preparer »),
+            // c'est donc bien la 2e porte qu'il faut tenir.
+            onReorder: (oldIndex, newIndex) {
+              if (!notifier.canReorder) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(t.programme.reorderBlocked),
+                    duration: const Duration(seconds: 3),
+                  ),
+                );
+                return;
+              }
+              notifier.reorder(oldIndex, newIndex);
+            },
             itemBuilder: (context, index) {
               final day = days[index];
               return _DayCard(
@@ -315,6 +333,7 @@ class _PlanningContent extends ConsumerWidget {
                 mergeBlockedReason: !day.isRestDay
                     ? notifier.mergeBlockedReason(index)
                     : null,
+                splitBlockedReason: notifier.splitBlockedReason(index),
                 onSplit: () => notifier.splitDay(index),
                 onMerge: () => notifier.mergeWithNext(index),
               );
@@ -630,6 +649,7 @@ class _DayCard extends ConsumerWidget {
     this.canSplit = false,
     this.canMerge = false,
     this.mergeBlockedReason,
+    this.splitBlockedReason,
     this.onSplit,
     this.onMerge,
   });
@@ -641,6 +661,7 @@ class _DayCard extends ConsumerWidget {
   final bool canSplit;
   final bool canMerge;
   final String? mergeBlockedReason;
+  final String? splitBlockedReason;
   final VoidCallback? onSplit;
   final VoidCallback? onMerge;
 
@@ -651,6 +672,9 @@ class _DayCard extends ConsumerWidget {
         return t.programme.mergeBlocked.noNext;
       case 'rest':
         return t.programme.mergeBlocked.rest;
+      case 'locked':
+        // R12 : jour deja marche — fige.
+        return t.programme.mergeBlocked.locked;
       case 'too-long':
         // Recalcul du nombre d'heures pour le message (comme GR20).
         final hours = day.estimatedHours;
@@ -662,6 +686,16 @@ class _DayCard extends ConsumerWidget {
             );
       default:
         return code ?? t.programme.mergeBlocked.noNext;
+    }
+  }
+
+  /// Traduit le code de blocage de SEPARER en libelle i18n (R12, LOT L9).
+  String _splitBlockedLabel(String? code) {
+    switch (code) {
+      case 'locked':
+        return t.programme.splitBlocked.locked;
+      default:
+        return t.programme.splitBlocked.single;
     }
   }
 
@@ -746,16 +780,16 @@ class _DayCard extends ConsumerWidget {
                       spacing: AppTheme.spacingMd,
                       runSpacing: AppTheme.spacingXs,
                       children: [
-                        _MiniStat(
+                        DayMiniStat(
                           icon: Icons.straighten,
                           value: '${day.totalDistanceKm.toStringAsFixed(1)} km',
                         ),
-                        _MiniStat(
+                        DayMiniStat(
                           icon: Icons.arrow_upward,
                           value: '${day.totalElevationGainM} m D+',
                           color: AppTheme.rougeExtreme,
                         ),
-                        _MiniStat(
+                        DayMiniStat(
                           icon: Icons.arrow_downward,
                           value: '${day.totalElevationLossM} m D-',
                           color: theme.colorScheme.primary,
@@ -764,7 +798,7 @@ class _DayCard extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppTheme.spacingXs),
                     // Duree.
-                    _MiniStat(icon: Icons.schedule, value: durationStr),
+                    DayMiniStat(icon: Icons.schedule, value: durationStr),
                   ],
                 ),
               ),
@@ -783,7 +817,7 @@ class _DayCard extends ConsumerWidget {
                     size: 20,
                   ),
                   const SizedBox(height: 4),
-                  _ActionChip(
+                  DayActionChip(
                     icon: Icons.compress,
                     label: t.programme.actions.merge,
                     color: AppTheme.bleuRepos,
@@ -795,7 +829,7 @@ class _DayCard extends ConsumerWidget {
                             _mergeBlockedLabel(mergeBlockedReason),
                           ),
                   ),
-                  _ActionChip(
+                  DayActionChip(
                     icon: Icons.call_split,
                     label: t.programme.actions.split,
                     color: AppTheme.orangeDifficile,
@@ -804,10 +838,10 @@ class _DayCard extends ConsumerWidget {
                         ? onSplit!
                         : () => _showActionBlocked(
                             context,
-                            t.programme.splitBlocked.single,
+                            _splitBlockedLabel(splitBlockedReason),
                           ),
                   ),
-                  _ActionChip(
+                  DayActionChip(
                     icon: Icons.self_improvement,
                     label: t.programme.actions.rest,
                     color: AppTheme.bleuRepos,
@@ -915,103 +949,6 @@ class _DayCard extends ConsumerWidget {
     return minutes == 0
         ? '${hours}h'
         : '${hours}h${minutes.toString().padLeft(2, '0')}';
-  }
-}
-
-/// Mini statistique (icone + valeur) (parite GR20 `_MiniStat`).
-class _MiniStat extends StatelessWidget {
-  const _MiniStat({required this.icon, required this.value, this.color});
-
-  final IconData icon;
-  final String value;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 20, color: color ?? AppTheme.grisGranite),
-        const SizedBox(width: 2),
-        Flexible(
-          child: Text(
-            value,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontSize: 14,
-              color: color,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Petit bouton compact icone + label pour les actions jour (parite GR20
-/// `_ActionChip`).
-class _ActionChip extends StatelessWidget {
-  const _ActionChip({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onPressed,
-    this.enabled = true,
-  });
-
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onPressed;
-
-  /// Action disponible : quand `false`, le chip est grise (mais reste tappable
-  /// pour afficher la raison via un snackbar) — parite GR20.
-  final bool enabled;
-
-  @override
-  Widget build(BuildContext context) {
-    // Grise quand indisponible : couleur neutre, mais le chip reste visible et
-    // tappable pour expliquer pourquoi l'action est bloquee.
-    final effectiveColor = enabled
-        ? color
-        : AppTheme.grisGranite.withAlpha(120);
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 2),
-      child: Semantics(
-        button: true,
-        enabled: enabled,
-        label: label,
-        child: InkWell(
-          onTap: onPressed,
-          borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-            decoration: BoxDecoration(
-              color: effectiveColor.withAlpha(20),
-              borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-              border: Border.all(color: effectiveColor.withAlpha(60)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(icon, size: 16, color: effectiveColor),
-                const SizedBox(width: 4),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: effectiveColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 

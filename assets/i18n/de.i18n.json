@@ -156,7 +156,9 @@
       "weather": "Wetter",
       "weatherSub": "Vorhersage pro Etappe",
       "fire": "Brand",
-      "fireSub": "Risiken & Warnungen"
+      "fireSub": "Risiken & Warnungen",
+      "adjust": "Route anpassen",
+      "adjustSub": "Meine kommenden Tage ändern"
     },
     "fab": {
       "feedback": "Feedback geben",
@@ -1572,7 +1574,8 @@
     "mergeBlocked": {
       "noNext": "Kein Folgetag",
       "rest": "Zusammenlegen mit Ruhetag nicht möglich",
-      "tooLong": "Zu lang: {hours}h (max. {max}h/Tag)"
+      "tooLong": "Zu lang: {hours}h (max. {max}h/Tag)",
+      "locked": "Tag bereits gelaufen: nicht mehr änderbar"
     },
     "replan": "Neu planen",
     "replanButton": "NEU PLANEN",
@@ -1615,7 +1618,41 @@
       "close": "Verstanden!"
     },
     "splitBlocked": {
-      "single": "Teilen nicht möglich: nur eine Etappe an diesem Tag"
+      "single": "Teilen nicht möglich: nur eine Etappe an diesem Tag",
+      "locked": "Tag bereits gelaufen: nicht mehr änderbar"
+    },
+    "reorderBlocked": "Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr",
+    "inTrek": {
+      "title": "Route anpassen",
+      "intro": "Gestalte den Rest deiner Tour neu. Bereits Gelaufenes ist fixiert, und die Reihenfolge der Etappen bleibt.",
+      "doneSection": "Bereits gelaufen",
+      "upcomingSection": "Noch vor dir",
+      "doneBadge": "Erledigt",
+      "lockedDay": "Tag bereits gelaufen, gesperrt",
+      "allDone": "Du hast alle Tage gelaufen: es gibt nichts mehr anzupassen.",
+      "notStarted": "Dieser Bildschirm ist für unterwegs: starte deine Tour, um den weiteren Verlauf anzupassen.",
+      "validate": "Änderungen speichern",
+      "saved": "Programm aktualisiert",
+      "info": {
+        "title": "Route anpassen",
+        "done": {
+          "title": "Bereits gelaufene Tage",
+          "body": "Sie sind ausgegraut und gesperrt: was gelaufen ist, bleibt."
+        },
+        "upcoming": {
+          "title": "Kommende Tage",
+          "body": "Fasse zusammen, teile auf oder füge einen Ruhetag im weiteren Verlauf ein."
+        },
+        "order": {
+          "title": "Reihenfolge der Etappen",
+          "body": "Unterwegs ändert sich die Reihenfolge nie: bereits begonnene Etappen werden nicht getauscht."
+        },
+        "close": "Verstanden"
+      },
+      "empty": {
+        "title": "Kein Programm zum Anpassen",
+        "message": "Erstelle zuerst dein Programm in der Vorbereitung."
+      }
     }
   },
   "calendar": {

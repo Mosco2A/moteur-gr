@@ -1287,6 +1287,8 @@ class _Translations$programme$en extends Translations$programme$fr {
 	@override late final _Translations$programme$empty$en empty = _Translations$programme$empty$en._(_root);
 	@override late final _Translations$programme$info$en info = _Translations$programme$info$en._(_root);
 	@override late final _Translations$programme$splitBlocked$en splitBlocked = _Translations$programme$splitBlocked$en._(_root);
+	@override String get reorderBlocked => 'Trek started: the order of stages can no longer change';
+	@override late final _Translations$programme$inTrek$en inTrek = _Translations$programme$inTrek$en._(_root);
 }
 
 // Path: calendar
@@ -1789,6 +1791,8 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get weatherSub => 'Forecast by stage';
 	@override String get fire => 'Fire';
 	@override String get fireSub => 'Risks & alerts';
+	@override String get adjust => 'Adjust the route';
+	@override String get adjustSub => 'Change my upcoming days';
 }
 
 // Path: hub.fab
@@ -2891,6 +2895,7 @@ class _Translations$programme$mergeBlocked$en extends Translations$programme$mer
 	@override String get noNext => 'No next day';
 	@override String get rest => 'Cannot merge with a rest day';
 	@override String get tooLong => 'Too long: {hours}h (max {max}h/day)';
+	@override String get locked => 'Day already walked: it can no longer be changed';
 }
 
 // Path: programme.replanDialog
@@ -2943,6 +2948,28 @@ class _Translations$programme$splitBlocked$en extends Translations$programme$spl
 
 	// Translations
 	@override String get single => 'Cannot split: this day has a single stage';
+	@override String get locked => 'Day already walked: it can no longer be changed';
+}
+
+// Path: programme.inTrek
+class _Translations$programme$inTrek$en extends Translations$programme$inTrek$fr {
+	_Translations$programme$inTrek$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Adjust the route';
+	@override String get intro => 'Reshape the rest of your trek. What you have already walked is locked, and the order of stages never changes.';
+	@override String get doneSection => 'Already walked';
+	@override String get upcomingSection => 'Upcoming';
+	@override String get doneBadge => 'Done';
+	@override String get lockedDay => 'Day already walked, locked';
+	@override String get allDone => 'You have walked every day: there is nothing left to adjust.';
+	@override String get notStarted => 'This screen is for the trail: start your trek to adjust what is coming.';
+	@override String get validate => 'Save my changes';
+	@override String get saved => 'Plan updated';
+	@override late final _Translations$programme$inTrek$info$en info = _Translations$programme$inTrek$info$en._(_root);
+	@override late final _Translations$programme$inTrek$empty$en empty = _Translations$programme$inTrek$empty$en._(_root);
 }
 
 // Path: calendar.weekdays
@@ -3759,6 +3786,31 @@ class _Translations$programme$info$colors$en extends Translations$programme$info
 	@override String get body => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).';
 }
 
+// Path: programme.inTrek.info
+class _Translations$programme$inTrek$info$en extends Translations$programme$inTrek$info$fr {
+	_Translations$programme$inTrek$info$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Adjust the route';
+	@override late final _Translations$programme$inTrek$info$done$en done = _Translations$programme$inTrek$info$done$en._(_root);
+	@override late final _Translations$programme$inTrek$info$upcoming$en upcoming = _Translations$programme$inTrek$info$upcoming$en._(_root);
+	@override late final _Translations$programme$inTrek$info$order$en order = _Translations$programme$inTrek$info$order$en._(_root);
+	@override String get close => 'Got it!';
+}
+
+// Path: programme.inTrek.empty
+class _Translations$programme$inTrek$empty$en extends Translations$programme$inTrek$empty$fr {
+	_Translations$programme$inTrek$empty$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'No plan to adjust';
+	@override String get message => 'Build your plan first from the preparation screens.';
+}
+
 // Path: feasibility.recommendations.danger.tips
 class _Translations$feasibility$recommendations$danger$tips$en extends Translations$feasibility$recommendations$danger$tips$fr {
 	_Translations$feasibility$recommendations$danger$tips$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3805,6 +3857,39 @@ class _Translations$feasibility$recommendations$excellent$tips$en extends Transl
 	@override String get tip1 => 'Listen to your body during the trek';
 	@override String get tip2 => 'Share your experience with fellow hikers';
 	@override String get tip3 => 'Consider documenting your adventure in the journal';
+}
+
+// Path: programme.inTrek.info.done
+class _Translations$programme$inTrek$info$done$en extends Translations$programme$inTrek$info$done$fr {
+	_Translations$programme$inTrek$info$done$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Days already walked';
+	@override String get body => 'They are greyed out and locked: what is done is done.';
+}
+
+// Path: programme.inTrek.info.upcoming
+class _Translations$programme$inTrek$info$upcoming$en extends Translations$programme$inTrek$info$upcoming$fr {
+	_Translations$programme$inTrek$info$upcoming$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Upcoming days';
+	@override String get body => 'Merge, split or add a rest day on the rest of your route.';
+}
+
+// Path: programme.inTrek.info.order
+class _Translations$programme$inTrek$info$order$en extends Translations$programme$inTrek$info$order$fr {
+	_Translations$programme$inTrek$info$order$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Stage order';
+	@override String get body => 'The order never changes once you are on the trail: stages already under way are not swapped.';
 }
 
 /// The flat map containing all translations for locale <en>.
@@ -3957,6 +4042,8 @@ extension on TranslationsEn {
 			'hub.cards.weatherSub' => 'Forecast by stage',
 			'hub.cards.fire' => 'Fire',
 			'hub.cards.fireSub' => 'Risks & alerts',
+			'hub.cards.adjust' => 'Adjust the route',
+			'hub.cards.adjustSub' => 'Change my upcoming days',
 			'hub.fab.feedback' => 'Give feedback',
 			'hub.fab.sos' => 'SOS',
 			'hub.finishTrek.action' => 'Finish trek',
@@ -4325,10 +4412,10 @@ extension on TranslationsEn {
 			'weather.refresh' => 'Refresh',
 			'weather.temperature' => 'Temperature',
 			'weather.precipitation' => 'Precipitation',
-			'weather.wind' => 'Wind',
-			'weather.uv' => 'UV index',
 			_ => null,
 		} ?? switch (path) {
+			'weather.wind' => 'Wind',
+			'weather.uv' => 'UV index',
 			'weather.fireRisk' => 'Fire risk',
 			'weather.fireRiskDesc' => 'High fire risk. Check safety instructions.',
 			'weather.fireSafetyTips' => 'Fire safety tips',
@@ -4839,10 +4926,10 @@ extension on TranslationsEn {
 			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
 			'shareVisibility.activityFeed' => 'Post to the activity feed',
 			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
-			'shareVisibility.shareTitle' => 'Share this stage',
-			'shareVisibility.shareButton' => 'Share',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.shareTitle' => 'Share this stage',
+			'shareVisibility.shareButton' => 'Share',
 			'shareVisibility.privateNotice' => 'Sharing is off. Turn it on in Sharing and visibility.',
 			'shareVisibility.shared' => 'Card ready to share.',
 			'waypoints.types.eau' => 'Water',
@@ -5095,6 +5182,7 @@ extension on TranslationsEn {
 			'programme.mergeBlocked.noNext' => 'No next day',
 			'programme.mergeBlocked.rest' => 'Cannot merge with a rest day',
 			'programme.mergeBlocked.tooLong' => 'Too long: {hours}h (max {max}h/day)',
+			'programme.mergeBlocked.locked' => 'Day already walked: it can no longer be changed',
 			'programme.replan' => 'Replan',
 			'programme.replanButton' => 'REPLAN',
 			'programme.replanDialog.title' => 'Replan',
@@ -5120,6 +5208,28 @@ extension on TranslationsEn {
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
 			'programme.splitBlocked.single' => 'Cannot split: this day has a single stage',
+			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',
+			'programme.reorderBlocked' => 'Trek started: the order of stages can no longer change',
+			'programme.inTrek.title' => 'Adjust the route',
+			'programme.inTrek.intro' => 'Reshape the rest of your trek. What you have already walked is locked, and the order of stages never changes.',
+			'programme.inTrek.doneSection' => 'Already walked',
+			'programme.inTrek.upcomingSection' => 'Upcoming',
+			'programme.inTrek.doneBadge' => 'Done',
+			'programme.inTrek.lockedDay' => 'Day already walked, locked',
+			'programme.inTrek.allDone' => 'You have walked every day: there is nothing left to adjust.',
+			'programme.inTrek.notStarted' => 'This screen is for the trail: start your trek to adjust what is coming.',
+			'programme.inTrek.validate' => 'Save my changes',
+			'programme.inTrek.saved' => 'Plan updated',
+			'programme.inTrek.info.title' => 'Adjust the route',
+			'programme.inTrek.info.done.title' => 'Days already walked',
+			'programme.inTrek.info.done.body' => 'They are greyed out and locked: what is done is done.',
+			'programme.inTrek.info.upcoming.title' => 'Upcoming days',
+			'programme.inTrek.info.upcoming.body' => 'Merge, split or add a rest day on the rest of your route.',
+			'programme.inTrek.info.order.title' => 'Stage order',
+			'programme.inTrek.info.order.body' => 'The order never changes once you are on the trail: stages already under way are not swapped.',
+			'programme.inTrek.info.close' => 'Got it!',
+			'programme.inTrek.empty.title' => 'No plan to adjust',
+			'programme.inTrek.empty.message' => 'Build your plan first from the preparation screens.',
 			'calendar.title' => 'Calendar',
 			'calendar.validate' => 'CONFIRM DATES',
 			'calendar.departure' => 'DEPARTURE',
@@ -5330,6 +5440,8 @@ extension on TranslationsEn {
 			'import.confirmTitle' => 'Confirm import?',
 			'import.confirmBody' => 'This track will be imported as your route:\n\n- {points} GPS points\n- {km} km\n- {stages} detected stages\n- Direction: {direction}',
 			'import.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'import.validate' => 'Confirm',
 			'import.importedSnack' => 'GPX track imported!',
 			'myTreks.title' => 'My treks',
@@ -5355,8 +5467,6 @@ extension on TranslationsEn {
 			'trekState.abandonDialog.finish' => 'Finish',
 			'trekState.abandonDialog.abandon' => 'Give up',
 			'trekState.abandonDialog.cancel' => 'Cancel',
-			_ => null,
-		} ?? switch (path) {
 			'trekState.resumeOrphanDialog.title' => 'Resume your hike?',
 			'trekState.resumeOrphanDialog.message' => 'A hike was still in progress when the app last closed. Would you like to resume it or give it up?',
 			'trekState.resumeOrphanDialog.resume' => 'Resume',

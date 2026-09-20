@@ -22,6 +22,7 @@ import '../../features/planning/presentation/calendar_screen.dart';
 import '../../features/planning/presentation/plan_summary_screen.dart';
 import '../../features/planning/presentation/shop_screen.dart';
 import '../../features/planning/presentation/trail_planning_screen.dart';
+import '../../features/planning/presentation/trek_adjust_screen.dart';
 import '../../features/planning/presentation/transport_screen.dart';
 import '../../features/settings/presentation/recovery_code_screen.dart';
 import '../../features/settings/presentation/settings_screen.dart';
@@ -256,6 +257,19 @@ final appRouter = GoRouter(
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
             return TrailPlanningScreen(trailId: trailId);
+          },
+        ),
+        // R12 (LOT L9) — ADAPTER L'ITINERAIRE : modifier la rando EN COURS.
+        // Ecran de la phase « Randonner » (carte du cockpit visible seulement en
+        // rando active), atteint via `context.push` -> retour propre par la pile.
+        // Meme geste d'edition que le Programme (regrouper / separer / repos),
+        // mais borne aux jours NON FAITS et sans aucune reorganisation.
+        GoRoute(
+          path: 'adjust',
+          name: 'trail-adjust',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return TrekAdjustScreen(trailId: trailId);
           },
         ),
         // PARITE GR20 (#99460) — CALENDRIER : outil de DATES (clone GR20

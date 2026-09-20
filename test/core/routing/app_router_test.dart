@@ -158,7 +158,7 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 24 sous-routes (+ faisabilite L4)',
+    test('la route /trail/:id conserve ses 25 sous-routes (+ faisabilite L4)',
         () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
@@ -182,13 +182,17 @@ void main() {
       //      questionnaire, l'ancien /feasibility), 'hiker-profile' (fiche
       //      info), 'walk-test' (test 6 min), 'past-hikes' (5 dernieres randos).
       //      Placees apres 'feasibility' (desormais le verdict objectif).
+      // +1 : 'adjust' (R12 LOT L9, « Adapter l'itineraire » : modifier la
+      //      rando EN COURS sur les seuls jours/etapes non faits). Placee
+      //      juste apres 'planning' (meme programme, autre moment de vie).
       final trail = trailRoute();
-      expect(trail.routes.length, 24);
+      expect(trail.routes.length, 25);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
         'map',
         'planning',
+        'adjust',
         'calendar',
         'transport',
         'shop',
@@ -220,6 +224,7 @@ void main() {
         'stage-detail',
         'trail-map',
         'trail-planning',
+        'trail-adjust',
         'trail-calendar',
         'trail-transport',
         'trail-shop',

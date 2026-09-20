@@ -156,7 +156,9 @@
       "weather": "Weather",
       "weatherSub": "Forecast by stage",
       "fire": "Fire",
-      "fireSub": "Risks & alerts"
+      "fireSub": "Risks & alerts",
+      "adjust": "Adjust the route",
+      "adjustSub": "Change my upcoming days"
     },
     "fab": {
       "feedback": "Give feedback",
@@ -1572,7 +1574,8 @@
     "mergeBlocked": {
       "noNext": "No next day",
       "rest": "Cannot merge with a rest day",
-      "tooLong": "Too long: {hours}h (max {max}h/day)"
+      "tooLong": "Too long: {hours}h (max {max}h/day)",
+      "locked": "Day already walked: it can no longer be changed"
     },
     "replan": "Replan",
     "replanButton": "REPLAN",
@@ -1615,7 +1618,41 @@
       "close": "Got it!"
     },
     "splitBlocked": {
-      "single": "Cannot split: this day has a single stage"
+      "single": "Cannot split: this day has a single stage",
+      "locked": "Day already walked: it can no longer be changed"
+    },
+    "reorderBlocked": "Trek started: the order of stages can no longer change",
+    "inTrek": {
+      "title": "Adjust the route",
+      "intro": "Reshape the rest of your trek. What you have already walked is locked, and the order of stages never changes.",
+      "doneSection": "Already walked",
+      "upcomingSection": "Upcoming",
+      "doneBadge": "Done",
+      "lockedDay": "Day already walked, locked",
+      "allDone": "You have walked every day: there is nothing left to adjust.",
+      "notStarted": "This screen is for the trail: start your trek to adjust what is coming.",
+      "validate": "Save my changes",
+      "saved": "Plan updated",
+      "info": {
+        "title": "Adjust the route",
+        "done": {
+          "title": "Days already walked",
+          "body": "They are greyed out and locked: what is done is done."
+        },
+        "upcoming": {
+          "title": "Upcoming days",
+          "body": "Merge, split or add a rest day on the rest of your route."
+        },
+        "order": {
+          "title": "Stage order",
+          "body": "The order never changes once you are on the trail: stages already under way are not swapped."
+        },
+        "close": "Got it!"
+      },
+      "empty": {
+        "title": "No plan to adjust",
+        "message": "Build your plan first from the preparation screens."
+      }
     }
   },
   "calendar": {

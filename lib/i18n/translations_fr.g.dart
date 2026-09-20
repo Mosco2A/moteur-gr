@@ -2584,6 +2584,11 @@ class Translations$programme$fr {
 	late final Translations$programme$empty$fr empty = Translations$programme$empty$fr.internal(_root);
 	late final Translations$programme$info$fr info = Translations$programme$info$fr.internal(_root);
 	late final Translations$programme$splitBlocked$fr splitBlocked = Translations$programme$splitBlocked$fr.internal(_root);
+
+	/// fr: 'Rando démarrée : l'ordre des étapes ne change plus'
+	String get reorderBlocked => 'Rando démarrée : l\'ordre des étapes ne change plus';
+
+	late final Translations$programme$inTrek$fr inTrek = Translations$programme$inTrek$fr.internal(_root);
 }
 
 // Path: calendar
@@ -3677,6 +3682,12 @@ class Translations$hub$cards$fr {
 
 	/// fr: 'Risques & alertes'
 	String get fireSub => 'Risques & alertes';
+
+	/// fr: 'Adapter l'itinéraire'
+	String get adjust => 'Adapter l\'itinéraire';
+
+	/// fr: 'Modifier mes jours à venir'
+	String get adjustSub => 'Modifier mes jours à venir';
 }
 
 // Path: hub.fab
@@ -5800,6 +5811,9 @@ class Translations$programme$mergeBlocked$fr {
 
 	/// fr: 'Trop long : {hours}h (max {max}h/jour)'
 	String get tooLong => 'Trop long : {hours}h (max {max}h/jour)';
+
+	/// fr: 'Jour déjà marché : il ne peut plus être modifié'
+	String get locked => 'Jour déjà marché : il ne peut plus être modifié';
 }
 
 // Path: programme.replanDialog
@@ -5875,6 +5889,51 @@ class Translations$programme$splitBlocked$fr {
 
 	/// fr: 'Séparer impossible : un seul jour a une étape'
 	String get single => 'Séparer impossible : un seul jour a une étape';
+
+	/// fr: 'Jour déjà marché : il ne peut plus être modifié'
+	String get locked => 'Jour déjà marché : il ne peut plus être modifié';
+}
+
+// Path: programme.inTrek
+class Translations$programme$inTrek$fr {
+	Translations$programme$inTrek$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Adapter l'itinéraire'
+	String get title => 'Adapter l\'itinéraire';
+
+	/// fr: 'Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l'ordre des étapes ne change pas.'
+	String get intro => 'Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l\'ordre des étapes ne change pas.';
+
+	/// fr: 'Déjà marché'
+	String get doneSection => 'Déjà marché';
+
+	/// fr: 'À venir'
+	String get upcomingSection => 'À venir';
+
+	/// fr: 'Fait'
+	String get doneBadge => 'Fait';
+
+	/// fr: 'Jour déjà marché, non modifiable'
+	String get lockedDay => 'Jour déjà marché, non modifiable';
+
+	/// fr: 'Vous avez marché tous vos jours : il n'y a plus rien à adapter.'
+	String get allDone => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.';
+
+	/// fr: 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.'
+	String get notStarted => 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.';
+
+	/// fr: 'Valider mes changements'
+	String get validate => 'Valider mes changements';
+
+	/// fr: 'Programme mis à jour'
+	String get saved => 'Programme mis à jour';
+
+	late final Translations$programme$inTrek$info$fr info = Translations$programme$inTrek$info$fr.internal(_root);
+	late final Translations$programme$inTrek$empty$fr empty = Translations$programme$inTrek$empty$fr.internal(_root);
 }
 
 // Path: calendar.weekdays
@@ -7127,6 +7186,40 @@ class Translations$programme$info$colors$fr {
 	String get body => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).';
 }
 
+// Path: programme.inTrek.info
+class Translations$programme$inTrek$info$fr {
+	Translations$programme$inTrek$info$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Adapter l'itinéraire'
+	String get title => 'Adapter l\'itinéraire';
+
+	late final Translations$programme$inTrek$info$done$fr done = Translations$programme$inTrek$info$done$fr.internal(_root);
+	late final Translations$programme$inTrek$info$upcoming$fr upcoming = Translations$programme$inTrek$info$upcoming$fr.internal(_root);
+	late final Translations$programme$inTrek$info$order$fr order = Translations$programme$inTrek$info$order$fr.internal(_root);
+
+	/// fr: 'Compris !'
+	String get close => 'Compris !';
+}
+
+// Path: programme.inTrek.empty
+class Translations$programme$inTrek$empty$fr {
+	Translations$programme$inTrek$empty$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Aucun programme à adapter'
+	String get title => 'Aucun programme à adapter';
+
+	/// fr: 'Construisez d'abord votre programme depuis la préparation.'
+	String get message => 'Construisez d\'abord votre programme depuis la préparation.';
+}
+
 // Path: feasibility.recommendations.danger.tips
 class Translations$feasibility$recommendations$danger$tips$fr {
 	Translations$feasibility$recommendations$danger$tips$fr.internal(this._root);
@@ -7197,6 +7290,51 @@ class Translations$feasibility$recommendations$excellent$tips$fr {
 
 	/// fr: 'Documentez votre aventure dans le journal'
 	String get tip3 => 'Documentez votre aventure dans le journal';
+}
+
+// Path: programme.inTrek.info.done
+class Translations$programme$inTrek$info$done$fr {
+	Translations$programme$inTrek$info$done$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Jours déjà marchés'
+	String get title => 'Jours déjà marchés';
+
+	/// fr: 'Ils sont grisés et verrouillés : ce qui est fait est fait.'
+	String get body => 'Ils sont grisés et verrouillés : ce qui est fait est fait.';
+}
+
+// Path: programme.inTrek.info.upcoming
+class Translations$programme$inTrek$info$upcoming$fr {
+	Translations$programme$inTrek$info$upcoming$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Jours à venir'
+	String get title => 'Jours à venir';
+
+	/// fr: 'Regroupez, séparez ou ajoutez un jour de repos sur la suite de votre parcours.'
+	String get body => 'Regroupez, séparez ou ajoutez un jour de repos sur la suite de votre parcours.';
+}
+
+// Path: programme.inTrek.info.order
+class Translations$programme$inTrek$info$order$fr {
+	Translations$programme$inTrek$info$order$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Ordre des étapes'
+	String get title => 'Ordre des étapes';
+
+	/// fr: 'L'ordre ne change jamais une fois parti : on n'inverse pas des étapes déjà engagées.'
+	String get body => 'L\'ordre ne change jamais une fois parti : on n\'inverse pas des étapes déjà engagées.';
 }
 
 /// The flat map containing all translations for locale <fr>.
@@ -7349,6 +7487,8 @@ extension on Translations {
 			'hub.cards.weatherSub' => 'Prévisions par étape',
 			'hub.cards.fire' => 'Incendie',
 			'hub.cards.fireSub' => 'Risques & alertes',
+			'hub.cards.adjust' => 'Adapter l\'itinéraire',
+			'hub.cards.adjustSub' => 'Modifier mes jours à venir',
 			'hub.fab.feedback' => 'Donner mon avis',
 			'hub.fab.sos' => 'SOS',
 			'hub.finishTrek.action' => 'Terminer le trek',
@@ -7717,10 +7857,10 @@ extension on Translations {
 			'weather.refresh' => 'Actualiser',
 			'weather.temperature' => 'Température',
 			'weather.precipitation' => 'Précipitations',
-			'weather.wind' => 'Vent',
-			'weather.uv' => 'Indice UV',
 			_ => null,
 		} ?? switch (path) {
+			'weather.wind' => 'Vent',
+			'weather.uv' => 'Indice UV',
 			'weather.fireRisk' => 'Risque incendie',
 			'weather.fireRiskDesc' => 'Risque incendie élevé. Consultez les consignes de sécurité.',
 			'weather.fireSafetyTips' => 'Consignes incendie',
@@ -8231,10 +8371,10 @@ extension on Translations {
 			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
-			'shareVisibility.shareTitle' => 'Partager cette étape',
-			'shareVisibility.shareButton' => 'Partager',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.shareTitle' => 'Partager cette étape',
+			'shareVisibility.shareButton' => 'Partager',
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
 			'shareVisibility.shared' => 'Carte prête à partager.',
 			'waypoints.types.eau' => 'Eau',
@@ -8487,6 +8627,7 @@ extension on Translations {
 			'programme.mergeBlocked.noNext' => 'Pas de jour suivant',
 			'programme.mergeBlocked.rest' => 'Impossible de grouper avec un jour de repos',
 			'programme.mergeBlocked.tooLong' => 'Trop long : {hours}h (max {max}h/jour)',
+			'programme.mergeBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
 			'programme.replan' => 'Replanifier',
 			'programme.replanButton' => 'REPLANIFIER',
 			'programme.replanDialog.title' => 'Replanifier',
@@ -8512,6 +8653,28 @@ extension on Translations {
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
 			'programme.splitBlocked.single' => 'Séparer impossible : un seul jour a une étape',
+			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
+			'programme.reorderBlocked' => 'Rando démarrée : l\'ordre des étapes ne change plus',
+			'programme.inTrek.title' => 'Adapter l\'itinéraire',
+			'programme.inTrek.intro' => 'Réorganisez la suite de votre rando. Ce que vous avez déjà marché est figé, et l\'ordre des étapes ne change pas.',
+			'programme.inTrek.doneSection' => 'Déjà marché',
+			'programme.inTrek.upcomingSection' => 'À venir',
+			'programme.inTrek.doneBadge' => 'Fait',
+			'programme.inTrek.lockedDay' => 'Jour déjà marché, non modifiable',
+			'programme.inTrek.allDone' => 'Vous avez marché tous vos jours : il n\'y a plus rien à adapter.',
+			'programme.inTrek.notStarted' => 'Cet écran sert pendant la rando : démarrez votre trek pour adapter la suite.',
+			'programme.inTrek.validate' => 'Valider mes changements',
+			'programme.inTrek.saved' => 'Programme mis à jour',
+			'programme.inTrek.info.title' => 'Adapter l\'itinéraire',
+			'programme.inTrek.info.done.title' => 'Jours déjà marchés',
+			'programme.inTrek.info.done.body' => 'Ils sont grisés et verrouillés : ce qui est fait est fait.',
+			'programme.inTrek.info.upcoming.title' => 'Jours à venir',
+			'programme.inTrek.info.upcoming.body' => 'Regroupez, séparez ou ajoutez un jour de repos sur la suite de votre parcours.',
+			'programme.inTrek.info.order.title' => 'Ordre des étapes',
+			'programme.inTrek.info.order.body' => 'L\'ordre ne change jamais une fois parti : on n\'inverse pas des étapes déjà engagées.',
+			'programme.inTrek.info.close' => 'Compris !',
+			'programme.inTrek.empty.title' => 'Aucun programme à adapter',
+			'programme.inTrek.empty.message' => 'Construisez d\'abord votre programme depuis la préparation.',
 			'calendar.title' => 'Calendrier',
 			'calendar.validate' => 'VALIDER LES DATES',
 			'calendar.departure' => 'DÉPART',
@@ -8722,6 +8885,8 @@ extension on Translations {
 			'import.confirmTitle' => 'Valider l\'import ?',
 			'import.confirmBody' => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes detectees\n- Direction : {direction}',
 			'import.cancel' => 'Annuler',
+			_ => null,
+		} ?? switch (path) {
 			'import.validate' => 'Valider',
 			'import.importedSnack' => 'Trace GPX importee !',
 			'myTreks.title' => 'Mes treks',
@@ -8747,8 +8912,6 @@ extension on Translations {
 			'trekState.abandonDialog.finish' => 'Terminer',
 			'trekState.abandonDialog.abandon' => 'Abandonner',
 			'trekState.abandonDialog.cancel' => 'Annuler',
-			_ => null,
-		} ?? switch (path) {
 			'trekState.resumeOrphanDialog.title' => 'Reprendre votre randonnée ?',
 			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?',
 			'trekState.resumeOrphanDialog.resume' => 'Reprendre',

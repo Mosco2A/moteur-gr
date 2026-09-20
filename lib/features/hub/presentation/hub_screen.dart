@@ -349,6 +349,24 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   // atteinte via `context.push` (retour propre, pile préservée —
                   // jamais context.go qui viderait la pile). Libellés Slang
                   // existants (`t.hub.cards.weather`/`weatherSub`, 5 langues).
+                  // R12 (retour Chris, LOT L9) — ADAPTER L'ITINERAIRE. La rando
+                  // ne se passe jamais comme prevu : le randonneur doit pouvoir
+                  // MODIFIER la repartition de ses jours et de ses etapes sans
+                  // sortir de la phase terrain. Place GR20 : ce geste y est
+                  // offert depuis l'ecran de l'etape en cours (bouton « Adapter
+                  // itineraire », icone `edit_road`) — on garde l'icone et le
+                  // vocabulaire, en le posant sur la carte de la section
+                  // Randonner (qui n'existe qu'en rando active, R8/#13). La
+                  // regle metier est portee par l'ecran cible : seuls les jours
+                  // et etapes NON FAITS sont modifiables, et l'ordre des etapes
+                  // ne s'inverse jamais. Route hors-shell via `context.push`
+                  // (retour propre, pile preservee).
+                  QuickAccessCard(
+                    icon: Icons.edit_road,
+                    title: t.hub.cards.adjust,
+                    subtitle: t.hub.cards.adjustSub,
+                    onTap: () => context.push('/trail/$trailId/adjust'),
+                  ),
                   QuickAccessCard(
                     icon: Icons.wb_sunny_outlined,
                     title: t.hub.cards.weather,
