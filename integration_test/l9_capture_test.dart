@@ -6,6 +6,8 @@ import 'package:integration_test/integration_test.dart';
 import 'package:moteur_gr/core/config/test_trail_config.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
+import 'package:moteur_gr/core/theme/app_theme.dart';
+import 'package:moteur_gr/core/theme/skin_provider.dart';
 import 'package:moteur_gr/features/hub/presentation/hub_screen.dart';
 import 'package:moteur_gr/features/planning/presentation/trek_adjust_screen.dart';
 import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
@@ -46,12 +48,17 @@ void main() {
         endLng: 9.1,
       );
 
+  // Etapes du sentier FICTIF de test ([testTrailConfig] — « Sentier des
+  // Volcans », 5 etapes en Auvergne). CLOISONNEMENT (#326) : aucun toponyme
+  // GR20 ni corse ici, meme dans un fichier de test — StepWays est un moteur
+  // independant et ses jeux de donnees ne doivent jamais emprunter a l'app de
+  // reference. Noms inventes, sans correspondance reelle, comme la config.
   final stages = [
-    makeStage(1, 'Col de Verghio - Refuge de Ciottulu'),
-    makeStage(2, 'Refuge de Ciottulu - Castel di Vergio'),
-    makeStage(3, 'Castel di Vergio - Bergeries de Radule'),
-    makeStage(4, 'Bergeries de Radule - Refuge de Manganu'),
-    makeStage(5, 'Refuge de Manganu - Petra Piana'),
+    makeStage(1, 'Col des Cheires - Refuge de Vaubrune'),
+    makeStage(2, 'Refuge de Vaubrune - Burons de Montgarel'),
+    makeStage(3, 'Burons de Montgarel - Cratere de Sauvagnac'),
+    makeStage(4, 'Cratere de Sauvagnac - Refuge de Pierre-Laire'),
+    makeStage(5, 'Refuge de Pierre-Laire - Plateau de Chandelac'),
   ];
 
   testWidgets('R12 — captures Randonner + ecran d adaptation', (tester) async {
@@ -135,11 +142,34 @@ void main() {
       ],
     );
 
+    // THEME REEL DE L'APP (meme recette que `lib/main.dart`) : sans cela, la
+    // `MaterialApp` du harnais retombe sur la palette Material 3 par defaut
+    // (violet clair) et la capture ne montrerait PAS les couleurs de
+    // l'application — ni la peau, ni la couleur du sentier, ni le mode sombre
+    // qui est le defaut produit. Les couleurs viennent de la config du sentier
+    // ([TrailConfig.primaryColorValue]), la peau du provider qui l'applique.
+    final skin = container.read(effectiveSkinProvider);
+
     await tester.pumpWidget(
       UncontrolledProviderScope(
         container: container,
         child: TranslationProvider(
-          child: MaterialApp.router(routerConfig: router),
+          child: MaterialApp.router(
+            routerConfig: router,
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.buildLightTheme(
+              primaryColor: Color(testTrailConfig.primaryColorValue),
+              secondaryColor: Color(testTrailConfig.secondaryColorValue),
+              skin: skin,
+            ),
+            darkTheme: AppTheme.buildDarkTheme(
+              primaryColor: Color(testTrailConfig.primaryColorValue),
+              secondaryColor: Color(testTrailConfig.secondaryColorValue),
+              skin: skin,
+            ),
+            // Defaut produit (design trek), comme `lib/main.dart`.
+            themeMode: ThemeMode.dark,
+          ),
         ),
       ),
     );
