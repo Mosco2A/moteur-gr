@@ -198,6 +198,10 @@ class _JournalDayList extends StatelessWidget {
   }
 }
 
+/// Hauteur de la miniature photo d'une entree de journal, en points.
+/// Valeur de PARITE GR20 (`trek_journal_screen.dart`).
+const double _entryPhotoHeight = 120;
+
 /// Tuile d une entree de journal (note ou photo).
 ///
 /// Affiche l heure, l etape, le contenu, et la photo si presente.
@@ -260,28 +264,41 @@ class _JournalEntryTile extends ConsumerWidget {
               ),
             ],
           ),
+          // ORDRE : le TEXTE d'abord, la PHOTO en dernier — parite GR20
+          // (`trek_journal_screen.dart` : le texte de l'entree est rendu juste
+          // sous l'en-tete, la miniature ferme la carte). L'ordre inverse
+          // (photo puis texte) rejetait la note tout en bas de la carte, collee
+          // au bord sous une image trop haute : illisible (QA Skynet, L10).
+          if (entry.text.isNotEmpty) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            Text(entry.text, style: theme.textTheme.bodyMedium),
+          ],
+          // MINIATURE PHOTO — parite GR20 stricte : 120 px de haut (et non
+          // 200, qui mangeait la carte et coupait brutalement l'image), le
+          // cadrage etant porte par un [SizedBox] et non par l'`Image` (sinon
+          // l'image impose sa propre hauteur avant le clip). `cacheWidth`
+          // limite la memoire : une photo d'appareil est decodee en version
+          // reduite, pas en pleine resolution, pour une bande de 120 px.
           if (entry.photoPath != null) ...[
             const SizedBox(height: AppTheme.spacingSm),
             ClipRRect(
               borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-              child: Image.file(
-                File(entry.photoPath!),
-                height: 200,
+              child: SizedBox(
+                height: _entryPhotoHeight,
                 width: double.infinity,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  height: 200,
-                  color: theme.colorScheme.surfaceContainerHighest,
-                  child: const Center(
-                    child: Icon(Icons.broken_image, size: 48),
+                child: Image.file(
+                  File(entry.photoPath!),
+                  fit: BoxFit.cover,
+                  cacheWidth: 480,
+                  errorBuilder: (_, __, ___) => Container(
+                    color: theme.colorScheme.surfaceContainerHighest,
+                    child: const Center(
+                      child: Icon(Icons.broken_image, size: 32),
+                    ),
                   ),
                 ),
               ),
             ),
-          ],
-          if (entry.text.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(entry.text, style: theme.textTheme.bodyMedium),
           ],
         ],
       ),

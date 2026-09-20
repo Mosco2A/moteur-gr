@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:moteur_gr/core/data/daos/journal_dao.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/features/journal/data/journal_repository.dart';
 import 'package:moteur_gr/features/journal/presentation/journal_screen.dart';
 import 'package:moteur_gr/features/journal/providers/journal_providers.dart';
 import 'package:moteur_gr/features/trail/providers/stages_provider.dart';
@@ -162,6 +164,104 @@ void main() {
       // ... et AUCUNE etape fantome au-dela (le `16` en dur est parti).
       expect(find.text('$stageLabel 8'), findsNothing);
       expect(find.text('$stageLabel 16'), findsNothing);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // QA Skynet (LOT L10) — RENDU D'UNE ENTREE AVEC PHOTO DANS LA LISTE
+  //
+  // Le rendu initial empilait la photo AVANT le texte, sur 200 px de haut :
+  // l'image mangeait la carte, se coupait brutalement en bas et rejetait la
+  // note tout en bas, collee au bord. PARITE GR20 (`trek_journal_screen.dart`)
+  // : le TEXTE vient d'abord, la miniature FERME la carte, sur 120 px cadres
+  // par un SizedBox.
+  // -------------------------------------------------------------------------
+  group('QA L10 — rendu d\'une entree de journal avec photo', () {
+    const trailId = 'sentier-bleu';
+    const longNote =
+        'Montee raide des le depart puis bascule sur le versant nord, '
+        'brouillard jusqu au col et eclaircie magnifique a l arrivee.';
+
+    /// Hauteur de la miniature (parite GR20) — doit rester bornee.
+    const photoHeight = 120.0;
+
+    Finder photoFrame() => find.byWidgetPredicate(
+          (w) => w is SizedBox && w.height == photoHeight,
+        );
+
+    Future<void> pumpJournal(WidgetTester tester, AppDatabase db) async {
+      LocaleSettings.setLocaleRaw('fr');
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            trailIdProvider.overrideWithValue(trailId),
+            stagesProvider(trailId).overrideWith((ref) async => <StageModel>[]),
+          ],
+          child: TranslationProvider(
+            child: MaterialApp.router(
+              routerConfig: GoRouter(
+                initialLocation: '/journal',
+                routes: [
+                  GoRoute(
+                    path: '/journal',
+                    builder: (_, __) => const JournalScreen(trailId: trailId),
+                  ),
+                  GoRoute(
+                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+    }
+
+    testWidgets('le TEXTE est AU-DESSUS de la photo, dans un cadre borne',
+        (tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      await JournalRepository(JournalDao(db)).addPhotoNote(
+        trailId: trailId,
+        stageNumber: 2,
+        text: longNote,
+        photoPath: '/inexistant/photo.jpg',
+        photoSizeBytes: 4096,
+      );
+
+      await pumpJournal(tester, db);
+
+      // La note est lisible...
+      expect(find.text(longNote), findsOneWidget);
+      // ... et la photo vit dans un cadre de hauteur BORNEE (jamais 200, et
+      // jamais la hauteur intrinseque de l'image).
+      expect(photoFrame(), findsOneWidget);
+      expect(tester.getSize(photoFrame()).height, photoHeight);
+
+      // L'ORDRE est le point du retour Skynet : le texte AVANT la photo.
+      expect(
+        tester.getTopLeft(find.text(longNote)).dy,
+        lessThan(tester.getTopLeft(photoFrame()).dy),
+        reason: 'La note doit se lire au-dessus de la miniature, pas sous elle',
+      );
+    });
+
+    testWidgets('une entree SANS photo garde son rendu (aucun cadre image)',
+        (tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      await JournalRepository(JournalDao(db)).addNote(
+        trailId: trailId,
+        stageNumber: 1,
+        text: 'Note simple sans photo',
+      );
+
+      await pumpJournal(tester, db);
+
+      expect(find.text('Note simple sans photo'), findsOneWidget);
+      // Non-regression : aucun cadre photo ne s'invite sur une note texte.
+      expect(photoFrame(), findsNothing);
     });
   });
 }
