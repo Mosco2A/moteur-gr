@@ -2035,6 +2035,7 @@ class _Translations$checklist$weight$de extends Translations$checklist$weight$fr
 
 	// Translations
 	@override String get title => 'Rucksackgewicht';
+	@override String get recommended => 'Empfohlenes Gewicht';
 	@override String get total => 'Gesamtgewicht';
 	@override String get bodyWeight => 'Korpergewicht:';
 	@override String get ratio => 'Rucksack / Korper';
@@ -4298,6 +4299,7 @@ extension on TranslationsDe {
 			'checklist.items.seasonalMamExtraWater' => 'Verstarkter Wasservorrat (trockene Zonen)',
 			'checklist.essential' => 'Wesentlich',
 			'checklist.weight.title' => 'Rucksackgewicht',
+			'checklist.weight.recommended' => 'Empfohlenes Gewicht',
 			'checklist.weight.total' => 'Gesamtgewicht',
 			'checklist.weight.bodyWeight' => 'Korpergewicht:',
 			'checklist.weight.ratio' => 'Rucksack / Korper',
@@ -4426,9 +4428,9 @@ extension on TranslationsDe {
 			'weather.error' => 'Wetter konnte nicht geladen werden.',
 			'weather.cached' => 'Zwischengespeicherte Daten',
 			'weather.alerts' => 'Wetterwarnungen',
-			'weather.refresh' => 'Aktualisieren',
 			_ => null,
 		} ?? switch (path) {
+			'weather.refresh' => 'Aktualisieren',
 			'weather.temperature' => 'Temperatur',
 			'weather.precipitation' => 'Niederschlag',
 			'weather.wind' => 'Wind',
@@ -4940,9 +4942,9 @@ extension on TranslationsDe {
 			'shareVisibility.stageResults' => 'Meine Etappenergebnisse teilen',
 			'shareVisibility.stageResultsDesc' => 'Eine pseudonyme Karte (keine direkten personenbezogenen Daten).',
 			'shareVisibility.leaderboard' => 'In Ranglisten erscheinen',
-			'shareVisibility.leaderboardDesc' => 'Rangliste nach Gruppe, mit einem Pseudonym.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.leaderboardDesc' => 'Rangliste nach Gruppe, mit einem Pseudonym.',
 			'shareVisibility.activityFeed' => 'Im Aktivitätsverlauf posten',
 			'shareVisibility.activityFeedDesc' => 'Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.',
 			'shareVisibility.shareTitle' => 'Diese Etappe teilen',
@@ -5454,9 +5456,9 @@ extension on TranslationsDe {
 			'import.invalidOutOfBounds' => 'Der Track passt nicht zum Gebiet dieses Weges.',
 			'import.errorUnreadable' => 'Datei kann nicht gelesen werden.',
 			'import.errorParsing' => 'Die GPX-Datei konnte nicht gelesen werden.',
-			'import.validateButton' => 'IMPORT BESTÄTIGEN',
 			_ => null,
 		} ?? switch (path) {
+			'import.validateButton' => 'IMPORT BESTÄTIGEN',
 			'import.confirmTitle' => 'Import bestätigen?',
 			'import.confirmBody' => 'Dieser Track wird als Ihre Route importiert:\n\n- {points} GPS-Punkte\n- {km} km\n- {stages} erkannte Etappen\n- Richtung: {direction}',
 			'import.cancel' => 'Abbrechen',

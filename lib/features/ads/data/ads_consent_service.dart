@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:logger/logger.dart';
 
 import '../../../core/error/error_handler.dart';
+
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Service de CONSENTEMENT publicitaire (UMP/CMP) + init du SDK AdMob (A6).
 ///
@@ -24,7 +27,9 @@ class AdsConsentService {
     Future<InitializationStatus> Function()? initializeAds,
     Future<void> Function(RequestConfiguration)? updateRequestConfiguration,
     List<String> testDeviceIds = const <String>[],
-  }) : _consentInformation = consentInformation ?? ConsentInformation.instance,
+    Duration bootTimeout = _bootTimeout,
+  }) : _bootBudget = bootTimeout,
+       _consentInformation = consentInformation ?? ConsentInformation.instance,
        _loadAndShowIfRequired =
            loadAndShowIfRequired ??
            ConsentForm.loadAndShowConsentFormIfRequired,
@@ -41,6 +46,11 @@ class AdsConsentService {
   final Future<InitializationStatus> Function() _initializeAds;
   final Future<void> Function(RequestConfiguration) _updateRequestConfiguration;
   final List<String> _testDeviceIds;
+
+  /// Délai réellement appliqué (cf. [_bootTimeout]). Injectable pour que le
+  /// comportement d'un UMP/AdMob qui répond APRÈS l'échéance soit testable sans
+  /// faire durer un test six secondes (FIX-2, finding M2).
+  final Duration _bootBudget;
 
   bool _adsInitialized = false;
 
@@ -69,12 +79,39 @@ class AdsConsentService {
   /// BORNÉ ([_bootTimeout], offline-first) : un UMP/AdMob qui pend hors-ligne ne
   /// laisse pas ce `Future` pendant — au-delà du délai on retourne `false`
   /// (pubs désactivées) sans crash.
+  ///
+  /// FIX-2 (finding M2) — AUCUNE ERREUR ASYNCHRONE NON GÉRÉE. `Future.timeout`
+  /// ne « débranche » pas le `Future` source : quand celui-ci échoue APRÈS que
+  /// le délai a expiré (cas normal en réseau lent — l'init AdMob finit par
+  /// rendre une erreur alors que le timeout a déjà rendu la main), le résultat
+  /// est déjà complété, et Dart signale cette erreur tardive à la zone comme
+  /// erreur NON CAPTURÉE. Le `try/catch` ci-dessous ne la voyait pas : il
+  /// n'attrapait que la `TimeoutException`. Résultat observé : une erreur
+  /// silencieuse à chaque démarrage en réseau lent (remontée via Riverpod).
+  /// On NEUTRALISE donc les erreurs du cœur AVANT de poser le délai
+  /// ([_ensureConsentAndInitGuarded] ne se termine JAMAIS en erreur, qu'elle
+  /// arrive avant ou après l'échéance) : il ne reste plus qu'une seule erreur
+  /// possible, la `TimeoutException` du wrapper, et elle est attrapée ici.
   Future<bool> ensureConsentAndInit() async {
     try {
-      return await _ensureConsentAndInitUnbounded().timeout(_bootTimeout);
+      return await _ensureConsentAndInitGuarded().timeout(_bootBudget);
+    } on TimeoutException {
+      // ISSUE NORMALE ET PRÉVUE, PAS UNE PANNE (FIX-2, finding M2). Hors-ligne
+      // ou en réseau lent, dépasser le budget d'amorce est le comportement
+      // VOULU : on abandonne la pub et l'app démarre. La journaliser comme une
+      // ERREUR réseau, pile d'appel comprise, faisait apparaître à CHAQUE
+      // démarrage lent un pavé rouge indiscernable d'un plantage — c'est ce
+      // pavé qui a été relevé comme « erreur silencieuse au boot ». On en fait
+      // donc une ligne d'information explicite, sans pile.
+      _log.i(
+        '[AdsConsentService] Amorce pub abandonnée : budget de démarrage '
+        '(${_bootBudget.inSeconds} s) dépassé — aucune publicité, démarrage '
+        'normal. Cas attendu hors-ligne ou en réseau lent.',
+      );
+      return false;
     } on Object catch (e, st) {
-      // TimeoutException (UMP/AdMob pendu hors-ligne) OU toute autre erreur :
-      // best-effort, on n'affiche pas de pub et on ne casse jamais le boot.
+      // Tout le reste = réellement inattendu : best-effort, on n'affiche pas de
+      // pub et on ne casse jamais le boot, mais on le trace comme une erreur.
       ErrorHandler.log(
         e,
         stackTrace: st,
@@ -82,6 +119,23 @@ class AdsConsentService {
       );
       return false;
     }
+  }
+
+  /// Cœur non borné, RENDU INFAILLIBLE : logue et retourne `false` au lieu de
+  /// se terminer en erreur — y compris quand l'échec survient après l'échéance
+  /// du délai posé par [ensureConsentAndInit] (sinon : erreur asynchrone non
+  /// gérée, finding M2).
+  Future<bool> _ensureConsentAndInitGuarded() {
+    return _ensureConsentAndInitUnbounded().catchError(
+      (Object e, StackTrace st) {
+        ErrorHandler.log(
+          e,
+          stackTrace: st,
+          context: 'AdsConsentService.ensureConsentAndInit',
+        );
+        return false;
+      },
+    );
   }
 
   /// Cœur non borné de la résolution consentement + init (cf. wrapper borné).
@@ -100,7 +154,21 @@ class AdsConsentService {
 
     final canRequest = await canRequestAds();
     if (canRequest && !_adsInitialized) {
-      await _initialize();
+      // L'init native AdMob peut échouer (réseau) : best-effort, jamais de pub
+      // plutôt qu'une erreur remontée au boot. Sans ce garde, un échec survenu
+      // APRÈS l'échéance du budget était purement PERDU (`Future.timeout`
+      // abandonne l'erreur tardive du `Future` source, sans la signaler à
+      // personne) : une panne réelle d'AdMob ne laissait aucune trace.
+      try {
+        await _initialize();
+      } on Object catch (e, st) {
+        ErrorHandler.log(
+          e,
+          stackTrace: st,
+          context: 'AdsConsentService.initialize',
+        );
+        return false;
+      }
     }
     return canRequest;
   }

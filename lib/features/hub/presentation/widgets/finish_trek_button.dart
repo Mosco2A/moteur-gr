@@ -30,6 +30,16 @@ import '../../../trek/providers/tracking_providers.dart';
 /// session recréée : on réutilise la machine de session existante.
 ///
 /// Zéro texte en dur (Slang `hub.finishTrek.*`).
+///
+/// Clés stables du parcours de fin de trek (FIX-2, finding M4) : le bouton du
+/// cockpit et les deux actions de la confirmation sont désignables SANS passer
+/// par leur libellé, que « Terminer le trek » / « Terminer le trek ? » /
+/// « Terminer » rendent ambigu.
+const String kFinishTrekButtonKey = 'finish-trek-button';
+const String kFinishTrekDialogKey = 'finish-trek-dialog';
+const String kFinishTrekConfirmKey = 'finish-trek-confirm';
+const String kFinishTrekCancelKey = 'finish-trek-cancel';
+
 class FinishTrekButton extends ConsumerStatefulWidget {
   const FinishTrekButton({super.key});
 
@@ -65,6 +75,7 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
         width: double.infinity,
         height: 52,
         child: FilledButton.icon(
+          key: const ValueKey(kFinishTrekButtonKey),
           onPressed: _finishing ? null : () => _onFinishPressed(context),
           icon: const Icon(Icons.flag_outlined, size: 22),
           label: Text(t.hub.finishTrek.action),
@@ -78,18 +89,30 @@ class _FinishTrekButtonState extends ConsumerState<FinishTrekButton> {
   }
 
   /// Confirmation puis fin manuelle du trek (jamais sans confirmer).
+  ///
+  /// FIX-2 (finding M4) — ACTIONS IDENTIFIABLES. Le bouton du cockpit
+  /// (« Terminer le trek »), le titre du dialogue (« Terminer le trek ? ») et
+  /// l'action de confirmation (« Terminer ») partagent le meme mot. Designer
+  /// l'action par son libelle est donc ambigu : on peut viser le bouton RESTE
+  /// SOUS la barriere modale au lieu de la confirmation, et le dialogue ne se
+  /// referme jamais — plus rien n'est atteignable derriere. Chaque action porte
+  /// donc une cle stable, seul point d'entree non ambigu (meme demarche que
+  /// l'accessibilite du Journal en L10).
   Future<void> _onFinishPressed(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
+        key: const ValueKey(kFinishTrekDialogKey),
         title: Text(t.hub.finishTrek.confirmTitle),
         content: Text(t.hub.finishTrek.confirmBody),
         actions: [
           TextButton(
+            key: const ValueKey(kFinishTrekCancelKey),
             onPressed: () => Navigator.of(ctx).pop(false),
             child: Text(t.hub.finishTrek.cancel),
           ),
           FilledButton(
+            key: const ValueKey(kFinishTrekConfirmKey),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: Text(t.hub.finishTrek.confirm),
           ),

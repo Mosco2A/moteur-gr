@@ -442,6 +442,7 @@
     "essential": "Essential",
     "weight": {
       "title": "Backpack weight",
+      "recommended": "Recommended weight",
       "total": "Total weight",
       "bodyWeight": "Body weight:",
       "ratio": "Pack / body ratio",

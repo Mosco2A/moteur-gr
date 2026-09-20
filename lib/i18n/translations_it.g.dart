@@ -2035,6 +2035,7 @@ class _Translations$checklist$weight$it extends Translations$checklist$weight$fr
 
 	// Translations
 	@override String get title => 'Peso dello zaino';
+	@override String get recommended => 'Peso consigliato';
 	@override String get total => 'Peso totale';
 	@override String get bodyWeight => 'Peso corporeo:';
 	@override String get ratio => 'Rapporto zaino / corpo';
@@ -4298,6 +4299,7 @@ extension on TranslationsIt {
 			'checklist.items.seasonalMamExtraWater' => 'Scorta d\'acqua rinforzata (zone aride)',
 			'checklist.essential' => 'Essenziale',
 			'checklist.weight.title' => 'Peso dello zaino',
+			'checklist.weight.recommended' => 'Peso consigliato',
 			'checklist.weight.total' => 'Peso totale',
 			'checklist.weight.bodyWeight' => 'Peso corporeo:',
 			'checklist.weight.ratio' => 'Rapporto zaino / corpo',
@@ -4426,9 +4428,9 @@ extension on TranslationsIt {
 			'weather.error' => 'Impossibile caricare il meteo.',
 			'weather.cached' => 'Dati nella cache',
 			'weather.alerts' => 'allerte meteo',
-			'weather.refresh' => 'Aggiorna',
 			_ => null,
 		} ?? switch (path) {
+			'weather.refresh' => 'Aggiorna',
 			'weather.temperature' => 'Temperatura',
 			'weather.precipitation' => 'Precipitazioni',
 			'weather.wind' => 'Vento',
@@ -4940,9 +4942,9 @@ extension on TranslationsIt {
 			'shareVisibility.stageResults' => 'Condividi i miei risultati di tappa',
 			'shareVisibility.stageResultsDesc' => 'Una scheda con pseudonimo (senza dati personali diretti).',
 			'shareVisibility.leaderboard' => 'Apparire nelle classifiche',
-			'shareVisibility.leaderboardDesc' => 'Classifica per fascia, con uno pseudonimo.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.leaderboardDesc' => 'Classifica per fascia, con uno pseudonimo.',
 			'shareVisibility.activityFeed' => 'Pubblica nel diario attività',
 			'shareVisibility.activityFeedDesc' => 'Le tue attività appaiono nel diario, con uno pseudonimo.',
 			'shareVisibility.shareTitle' => 'Condividi questa tappa',
@@ -5454,9 +5456,9 @@ extension on TranslationsIt {
 			'import.invalidOutOfBounds' => 'La traccia non corrisponde alla zona di questo sentiero.',
 			'import.errorUnreadable' => 'Impossibile leggere il file.',
 			'import.errorParsing' => 'Impossibile leggere il file GPX.',
-			'import.validateButton' => 'CONFERMA IMPORTAZIONE',
 			_ => null,
 		} ?? switch (path) {
+			'import.validateButton' => 'CONFERMA IMPORTAZIONE',
 			'import.confirmTitle' => 'Confermare l\'importazione?',
 			'import.confirmBody' => 'Questa traccia sarà importata come il tuo percorso:\n\n- {points} punti GPS\n- {km} km\n- {stages} tappe rilevate\n- Direzione: {direction}',
 			'import.cancel' => 'Annulla',

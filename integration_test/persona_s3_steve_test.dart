@@ -28,6 +28,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+// QA cycle4 : lecture DIRECTE du gate de demarrage pour prouver factuellement
+// si « Démarrer » est activable ou non (pas de supposition).
+import 'package:moteur_gr/features/hub/presentation/widgets/finish_trek_button.dart';
+import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
@@ -68,6 +72,18 @@ void main() {
     await settleAndShoot(tester, P, '03_cockpit');
     _logLocation(tester, P, 'cockpit');
 
+    // --- QA cycle4 : SATISFAIRE LE GATE DE DEMARRAGE ---------------------
+    // CONSTAT cycle4 : le CTA « Démarrer la randonnée » est DESACTIVE tant que
+    // `prepareCoreDoneProvider(trailId)` est faux, c'est-a-dire tant que les 3
+    // etapes coeur ne sont pas faites (cockpit_start_providers.dart:113) :
+    //   * Itineraire  -> markSeen a l'ouverture de /trail/<id>/itinerary
+    //   * Programme   -> markSeen a l'ouverture de /trail/<id>/planning
+    //   * Date        -> departureDate posee via /trail/<id>/calendar
+    // Sans ca le tap sur le CTA ne fait RIEN (bouton inerte) et tout le parcours
+    // TERRAIN de Steve (carte, suivi, SOS, terminer, journal) reste intestable.
+    // On passe donc par les 3 ecrans, comme un vrai utilisateur le ferait.
+    await _satisfaireGateDemarrage(tester, P);
+
     // --- Demarrer le trek (CTA en tete du cockpit) ---
     await _scrollToTop(tester, P);
     final startCta = textFrEn('Démarrer la randonnée', 'Start the trek');
@@ -84,6 +100,23 @@ void main() {
           'demarrer', 'Reprendre la navigation (trek deja actif)',
           warnIfMissing: false);
     }
+    // CONSTAT cycle4 : meme gate ouvert, le tap sur le CTA n'ouvre PAS le trek
+    // directement — l'app pose d'abord une CONFIRMATION « Démarrer le trek /
+    // Position indisponible (ou : tu ne sembles pas au point de départ).
+    // Démarrer quand même ? » (startAwayTitle / startAwayBody). Sans ce
+    // deuxieme tap, le trek ne demarre JAMAIS et tout le terrain (carte, suivi,
+    // SOS, Terminer, diplome, journal) reste intestable. On confirme donc.
+    final confirmeDepart = await tapIfPresent(
+        tester,
+        textFrEn('Démarrer quand même', 'Start anyway'),
+        P,
+        'demarrer',
+        'confirmer « Démarrer quand même » (position indisponible/hors depart)',
+        warnIfMissing: false);
+    logStep(P, 'demarrer',
+        'Dialog de confirmation de depart traite = $confirmeDepart');
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+
     // Un dialog de conflit (C4) peut s interposer si un AUTRE trek tourne.
     await tapIfPresent(tester, find.textContaining('Terminer'), P, 'demarrer',
         'resoudre conflit trek (Terminer l autre)', warnIfMissing: false);
@@ -157,12 +190,25 @@ void main() {
     // `sos_e515`, bas-gauche), a l'identique de GR20 (SosFloatingButton dans le
     // Stack). L'ancien doublon en barre contextuelle a ete RETIRE. On VERIFIE
     // donc qu'il n'y a plus qu'un seul FAB SOS et qu'il ouvre bien la confirmation.
+    //
+    // COMMENT ON LE MESURE (corrige en FIX-2, finding M1) : l'ancien controle
+    // cherchait `Icons.emergency` et attendait FAUX. Il ne pouvait JAMAIS etre
+    // satisfait : la pastille SOS legitime — l'unique acces — porte justement
+    // cette icone, donc le harnais signalait un « doublon » a chaque run, sans
+    // qu'aucun doublon existe. On COMPTE donc les points d'entree : un seul FAB
+    // SOS, et aucune icone d'urgence EN DEHORS de lui.
     final sos = find.byWidgetPredicate((w) =>
         w is FloatingActionButton && (w.heroTag == 'sos_e515'));
-    logStep(P, 'sos',
-        'VERIF acces unique : FAB SOS overlay present = ${present(sos)} ; '
-        'action SOS en barre contextuelle (icone emergency) = '
-        '${present(find.byIcon(Icons.emergency))} (ATTENDU false — doublon retire cycle 3).');
+    final nbAccesSos = tester.widgetList(sos).length;
+    final nbIconesUrgence =
+        tester.widgetList(find.byIcon(Icons.emergency)).length;
+    logStep(
+        P,
+        'sos',
+        'VERIF acces unique : points d entree SOS = $nbAccesSos (ATTENDU 1) ; '
+            'icones d urgence a l ecran = $nbIconesUrgence (ATTENDU 1 = celle '
+            'du bouton lui-meme ; toute icone SUPPLEMENTAIRE signalerait un '
+            'retour du doublon en barre contextuelle).');
     var sosTapped = false;
     if (present(sos)) {
       await tester.tap(sos.first, warnIfMissed: false);
@@ -195,14 +241,33 @@ void main() {
     // Retour cockpit puis bouton « Terminer le trek » (orange, fin de scroll).
     _goHome(tester, P);
     await settleAndShoot(tester, P, '10_cockpit_fin');
-    final finished = await scrollUntil(tester, find.textContaining('Terminer'),
-        P, 'terminer', 'bouton Terminer le trek (fin de scroll)');
+    // DESIGNATION PAR CLE (corrige en FIX-2, finding M4) : « Terminer le trek »
+    // (bouton du cockpit), « Terminer le trek ? » (titre) et « Terminer »
+    // (action) commencent par le meme mot. Viser par le libelle tapait le
+    // bouton RESTE SOUS la barriere modale : le dialogue ne se fermait JAMAIS,
+    // sa barriere avalait tous les appuis suivants, et tout le post-trek
+    // (Diplome, Journal, Recapitulatif, champ de note) devenait inatteignable
+    // — c'est l'origine des 6 coincements post-trek du round 1.
+    final boutonFin = find.byKey(const ValueKey(kFinishTrekButtonKey));
+    final finished = await scrollUntil(tester, boutonFin, P, 'terminer',
+        'bouton Terminer le trek (fin de scroll)');
     if (finished) {
-      await tapIfPresent(tester, find.textContaining('Terminer'), P, 'terminer',
-          'Terminer le trek');
-      // Confirmer si une boite de dialogue de confirmation apparait.
-      await tapIfPresent(tester, find.textContaining('Terminer'), P, 'terminer',
-          'confirmer fin de trek', warnIfMissing: false);
+      await tapIfPresent(
+          tester, boutonFin, P, 'terminer', 'Terminer le trek');
+      await tapIfPresent(
+          tester,
+          find.byKey(const ValueKey(kFinishTrekConfirmKey)),
+          P,
+          'terminer',
+          'confirmer la fin du trek (action du dialogue, designee par cle)');
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+      logStep(
+          P,
+          'terminer',
+          'Dialogue de confirmation encore ouvert = '
+              '${present(find.byKey(const ValueKey(kFinishTrekDialogKey)))} '
+              '(ATTENDU false : une barriere restee en place bloque TOUT le '
+              'post-trek).');
     }
     await settleAndShoot(tester, P, '11_apres_terminer');
 
@@ -308,6 +373,103 @@ void main() {
 }
 
 /// Observation « live » : compose des frames pendant [d] sans exiger le repos.
+/// Lit l'etat REEL du gate de demarrage (`prepareCoreDoneProvider`).
+///
+/// Retourne null si le conteneur Riverpod n'est pas lisible. C'est une lecture
+/// NON INVASIVE : on observe la meme valeur que celle qui pilote l'`enabled` du
+/// bouton « Démarrer » (hub_start_trek_button.dart:57).
+bool? _gateDemarrageOuvert(WidgetTester tester, String trailId) {
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final container = ProviderScope.containerOf(element, listen: false);
+    return container.read(prepareCoreDoneProvider(trailId));
+  } catch (_) {
+    return null;
+  }
+}
+
+/// Ouvre les 3 ecrans coeur pour rendre le CTA « Démarrer » actif.
+///
+/// Itineraire et Programme se marquent a l'OUVERTURE de l'ecran (`markSeen`),
+/// la date se pose dans le calendrier. On LOGue l'etat du gate AVANT et APRES
+/// pour que le rapport dise factuellement si le gate s'ouvre vraiment.
+Future<void> _satisfaireGateDemarrage(
+    WidgetTester tester, String persona) async {
+  final id = _activeTrailId(tester);
+  if (id == null) {
+    logStep(persona, 'gate',
+        'COINCE : trailId introuvable — gate de demarrage non satisfait');
+    return;
+  }
+  logStep(persona, 'gate',
+      'Gate AVANT = ${_gateDemarrageOuvert(tester, id)} (sentier $id)');
+
+  // 1) ITINERAIRE — l'ouverture de l'ecran marque l'etape coeur.
+  _push(tester, '/trail/$id/itinerary', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+  await settleAndShoot(tester, persona, '03a_gate_itineraire');
+  _goHome(tester, persona);
+  await pumpAndSettleTolerant(tester);
+
+  // 2) PROGRAMME — idem, markSeen a l'ouverture.
+  _push(tester, '/trail/$id/planning', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+  await settleAndShoot(tester, persona, '03b_gate_programme');
+  _goHome(tester, persona);
+  await pumpAndSettleTolerant(tester);
+
+  // 3) DATE DE DEPART — poser une date dans le calendrier.
+  _push(tester, '/trail/$id/calendar', persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+  // La carte « DÉPART » ouvre un showDatePicker Material : choisir le jour NE
+  // SUFFIT PAS, il faut CONFIRMER par « OK » — c'est `picked != null` qui
+  // declenche `setDepartureDate` (calendar_screen.dart:196). Sans le OK, la
+  // date reste nulle et le gate ne s'ouvre jamais.
+  await tapIfPresent(tester, textFrEn('DÉPART', 'DEPARTURE'), persona, 'gate',
+      'ouvrir le selecteur de date de depart', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester);
+  var pose = false;
+  for (final jour in ['15', '16', '17', '18', '20', '22']) {
+    if (await tapIfPresent(tester, find.text(jour), persona, 'gate',
+        'choisir le jour $jour', warnIfMissing: false)) {
+      pose = true;
+      break;
+    }
+  }
+  // CONFIRMATION du picker (indispensable).
+  final confirme = await tapIfPresent(tester, find.text('OK'), persona, 'gate',
+      'confirmer la date (OK du date picker)', warnIfMissing: false);
+  logStep(persona, 'gate',
+      'Date : jour choisi=$pose, OK du picker=$confirme');
+  if (!pose || !confirme) {
+    logStep(persona, 'gate',
+        'COINCE : date de depart NON posee (jour=$pose, OK=$confirme)');
+  }
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
+  await settleAndShoot(tester, persona, '03c_gate_date');
+  _goHome(tester, persona);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+
+  // Le notifier recharge ses etapes depuis SharedPreferences de maniere ASYNC
+  // (`_loadFromPrefs`, cockpit_start_providers.dart:69). Une lecture immediate
+  // peut donc voir un ensemble encore VIDE : on laisse le temps au rechargement
+  // avant de conclure, sinon on rapporterait un faux « gate ferme ».
+  for (var i = 0; i < 25; i++) {
+    await tester.pump(const Duration(milliseconds: 200));
+    if (_gateDemarrageOuvert(tester, id) == true) break;
+  }
+  final apres = _gateDemarrageOuvert(tester, id);
+  String etapes = '?';
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final container = ProviderScope.containerOf(element, listen: false);
+    etapes = container.read(prepareCoreStepsProvider(id)).toString();
+  } catch (_) {}
+  logStep(persona, 'gate',
+      'Gate APRES = $apres | etapes coeur persistees = $etapes '
+      '${apres == true ? "-> CTA Démarrer ACTIVABLE" : "-> CTA TOUJOURS INERTE (signal QA)"}');
+}
+
 Future<void> _observe(WidgetTester tester, Duration d) async {
   final end = DateTime.now().add(d);
   while (DateTime.now().isBefore(end)) {

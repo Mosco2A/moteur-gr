@@ -12,6 +12,16 @@ import '../../../i18n/translations.g.dart';
 /// 15% du poids corporel)), exactement comme GR20 le fait quand aucune nuitee
 /// n'est configuree. Le detail par type de nuitee est un ecart residuel
 /// documente (couplage planning GR20 absent du modele generique).
+///
+/// FIX-2 (finding M3bis) — LE LIBELLE DISAIT LE CONTRAIRE DE LA VALEUR. Ce
+/// bandeau reutilisait `checklist.weight.title` (« Poids du sac ») devant une
+/// valeur qui n'est PAS le poids du sac mais la RECOMMANDATION. Sac vide
+/// (0 g, 0 article coche) il annoncait quand meme « Poids du sac : 13.3 kg »,
+/// et avec le poids corporel non borne d'avant FIX-1 il allait jusqu'a
+/// « Poids du sac : 133.5 kg ». Le libelle est desormais
+/// `checklist.weight.recommended` (« Poids recommande », wording GR20
+/// `backpack_screen.dart` : « Poids recommande : X kg ») : le bandeau dit ce
+/// qu'il montre. Le poids REEL du sac reste celui de [ChecklistWeightBanner].
 class ChecklistRecommendationBanner extends StatelessWidget {
   const ChecklistRecommendationBanner({super.key, required this.bodyWeightKg});
 
@@ -51,8 +61,10 @@ class ChecklistRecommendationBanner extends StatelessWidget {
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
-              // Reutilise le libelle « X kg » (unite kg via Slang).
-              '${w.title} : ${recommendedKg.toStringAsFixed(1)} ${w.kilograms}',
+              // Libelle DEDIE a la recommandation (jamais « Poids du sac » :
+              // cette valeur ne depend pas du contenu du sac, M3bis).
+              '${w.recommended} : '
+              '${recommendedKg.toStringAsFixed(1)} ${w.kilograms}',
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w700,
                 color: color,

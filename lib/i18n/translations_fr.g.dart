@@ -4215,6 +4215,9 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Poids du sac'
 	String get title => 'Poids du sac';
 
+	/// fr: 'Poids recommandé'
+	String get recommended => 'Poids recommandé';
+
 	/// fr: 'Poids total'
 	String get total => 'Poids total';
 
@@ -7753,6 +7756,7 @@ extension on Translations {
 			'checklist.items.seasonalMamExtraWater' => 'Reserve d\'eau renforcee (zones seches)',
 			'checklist.essential' => 'Essentiel',
 			'checklist.weight.title' => 'Poids du sac',
+			'checklist.weight.recommended' => 'Poids recommandé',
 			'checklist.weight.total' => 'Poids total',
 			'checklist.weight.bodyWeight' => 'Poids corporel :',
 			'checklist.weight.ratio' => 'Ratio sac / corps',
@@ -7881,9 +7885,9 @@ extension on Translations {
 			'weather.error' => 'Impossible de charger la météo.',
 			'weather.cached' => 'Données en cache',
 			'weather.alerts' => 'alertes météo',
-			'weather.refresh' => 'Actualiser',
 			_ => null,
 		} ?? switch (path) {
+			'weather.refresh' => 'Actualiser',
 			'weather.temperature' => 'Température',
 			'weather.precipitation' => 'Précipitations',
 			'weather.wind' => 'Vent',
@@ -8395,9 +8399,9 @@ extension on Translations {
 			'shareVisibility.stageResults' => 'Partager mes résultats d\'étape',
 			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
 			'shareVisibility.leaderboard' => 'Apparaître dans les classements',
-			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
 			'shareVisibility.shareTitle' => 'Partager cette étape',
@@ -8909,9 +8913,9 @@ extension on Translations {
 			'import.invalidOutOfBounds' => 'La trace ne correspond pas a la zone de ce sentier.',
 			'import.errorUnreadable' => 'Impossible de lire le fichier.',
 			'import.errorParsing' => 'Le fichier GPX n\'a pas pu etre lu.',
-			'import.validateButton' => 'VALIDER L\'IMPORT',
 			_ => null,
 		} ?? switch (path) {
+			'import.validateButton' => 'VALIDER L\'IMPORT',
 			'import.confirmTitle' => 'Valider l\'import ?',
 			'import.confirmBody' => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes detectees\n- Direction : {direction}',
 			'import.cancel' => 'Annuler',

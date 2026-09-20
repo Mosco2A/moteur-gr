@@ -442,6 +442,7 @@
     "essential": "Essentiel",
     "weight": {
       "title": "Poids du sac",
+      "recommended": "Poids recommandé",
       "total": "Poids total",
       "bodyWeight": "Poids corporel :",
       "ratio": "Ratio sac / corps",

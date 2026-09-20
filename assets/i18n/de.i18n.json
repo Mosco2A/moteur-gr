@@ -442,6 +442,7 @@
     "essential": "Wesentlich",
     "weight": {
       "title": "Rucksackgewicht",
+      "recommended": "Empfohlenes Gewicht",
       "total": "Gesamtgewicht",
       "bodyWeight": "Korpergewicht:",
       "ratio": "Rucksack / Korper",

@@ -7,6 +7,10 @@ import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../../shared/services/location_permission_service.dart';
 import '../../map/providers/track_position_provider.dart';
+// FIX-2 (M4) : invalidation des vues derivees du cycle de vie apres une
+// finalisation de session (cf. `_finalize`). Sens unique : `my_treks_provider`
+// n'importe pas ce fichier, aucun cycle d'import.
+import '../../treks/providers/my_treks_provider.dart';
 import '../data/background_gps_service.dart';
 import '../data/trek_recorder.dart';
 import '../domain/models/trek_session.dart';
@@ -538,6 +542,23 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
       avgSpeedKmh: stats.avgSpeedKmh,
     );
     state = finalState;
+
+    // FIX-2 (finding M4) — RAFRAICHIR L'ETAT DERIVE DU TREK. Le cycle de vie
+    // affiche par le cockpit ne vient PAS de ce notifier mais de
+    // [currentTrailSummaryProvider] / [myTreksProvider], des FutureProvider qui
+    // lisent la base UNE fois et ne s'invalident sur rien d'ecrit ici. Apres
+    // « Terminer le trek », la session passait bien a `completed` en base, mais
+    // le cockpit continuait de lire `inProgress` : il restait en phase
+    // « Randonner » -> la section « Apres la randonnee » (Diplome, Recapitulatif)
+    // n'etait JAMAIS construite, la carte Journal de la section Informations
+    // restait masquee, et le bouton « Terminer le trek » restait propose alors
+    // qu'il n'y avait plus rien a terminer. Les DONNEES etaient bien conservees,
+    // c'est l'ACCES qui etait coince — exactement le finding M4. On invalide donc
+    // les trois vues derivees a la fin de CHAQUE finalisation (fin manuelle,
+    // abandon et arrivee GPS passent toutes par ici).
+    ref.invalidate(currentTrailSummaryProvider);
+    ref.invalidate(myTreksProvider);
+    ref.invalidate(activeTrekIdProvider);
   }
 
   /// GO-85 inc2 (persistance ALPHA, porte du finisher) — enregistre l'etape

@@ -442,6 +442,7 @@
     "essential": "Essenziale",
     "weight": {
       "title": "Peso dello zaino",
+      "recommended": "Peso consigliato",
       "total": "Peso totale",
       "bodyWeight": "Peso corporeo:",
       "ratio": "Rapporto zaino / corpo",

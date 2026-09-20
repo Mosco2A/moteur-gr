@@ -141,7 +141,23 @@ class _HubScreenState extends ConsumerState<HubScreen> {
       // FAB : SOS uniquement (si trek actif, gere par SosButton qui se masque
       // lui-meme hors trek). RM-3. Le FAB « Donner mon avis » (feedback) a ete
       // retire du hub (jamais decide, retour Chris LOT 3).
+      //
+      // ACCES SOS UNIQUE (FIX-2, finding M1) : c'est le SEUL acces SOS du
+      // cockpit — il n'y a NI action SOS en barre contextuelle (la barre du
+      // cockpit n'existe pas, D1) NI carte SOS dans le scroll. Sur la carte,
+      // l'unique acces est l'overlay [SosButton] du Stack ; le doublon en barre
+      // contextuelle retire en cycle 3 n'est PAS revenu (map_screen
+      // `buildContextualActions` = Etape en cours + Journal, rien d'autre).
+      // Verrouille par `test/features/safety/sos_acces_unique_test.dart`.
       floatingActionButton: const SosButton(),
+      // PARITE GR20 (`home_screen.dart` : FloatingActionButtonLocation
+      // .startFloat) + fix d'un vrai defaut d'acces : au coin BAS-DROIT par
+      // defaut, la pastille SOS se posait SUR le bouton pleine largeur
+      // « Terminer le trek » en fin de scroll et en masquait la fin (constate
+      // sur la capture S3_Steve_11_apres_terminer du round 1). Bas-GAUCHE :
+      // plus aucun recouvrement, et le SOS se trouve au MEME endroit que sur la
+      // carte -> une seule position a memoriser pour un geste d'urgence.
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),

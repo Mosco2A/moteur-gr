@@ -2035,6 +2035,7 @@ class _Translations$checklist$weight$en extends Translations$checklist$weight$fr
 
 	// Translations
 	@override String get title => 'Backpack weight';
+	@override String get recommended => 'Recommended weight';
 	@override String get total => 'Total weight';
 	@override String get bodyWeight => 'Body weight:';
 	@override String get ratio => 'Pack / body ratio';
@@ -4298,6 +4299,7 @@ extension on TranslationsEn {
 			'checklist.items.seasonalMamExtraWater' => 'Reinforced water supply (dry zones)',
 			'checklist.essential' => 'Essential',
 			'checklist.weight.title' => 'Backpack weight',
+			'checklist.weight.recommended' => 'Recommended weight',
 			'checklist.weight.total' => 'Total weight',
 			'checklist.weight.bodyWeight' => 'Body weight:',
 			'checklist.weight.ratio' => 'Pack / body ratio',
@@ -4426,9 +4428,9 @@ extension on TranslationsEn {
 			'weather.error' => 'Unable to load weather.',
 			'weather.cached' => 'Cached data',
 			'weather.alerts' => 'weather alerts',
-			'weather.refresh' => 'Refresh',
 			_ => null,
 		} ?? switch (path) {
+			'weather.refresh' => 'Refresh',
 			'weather.temperature' => 'Temperature',
 			'weather.precipitation' => 'Precipitation',
 			'weather.wind' => 'Wind',
@@ -4940,9 +4942,9 @@ extension on TranslationsEn {
 			'shareVisibility.stageResults' => 'Share my stage results',
 			'shareVisibility.stageResultsDesc' => 'A pseudonymous card (no direct personal data).',
 			'shareVisibility.leaderboard' => 'Appear in leaderboards',
-			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
 			_ => null,
 		} ?? switch (path) {
+			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
 			'shareVisibility.activityFeed' => 'Post to the activity feed',
 			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
 			'shareVisibility.shareTitle' => 'Share this stage',
@@ -5454,9 +5456,9 @@ extension on TranslationsEn {
 			'import.invalidOutOfBounds' => 'The track does not match this trail\'s area.',
 			'import.errorUnreadable' => 'Unable to read the file.',
 			'import.errorParsing' => 'The GPX file could not be read.',
-			'import.validateButton' => 'CONFIRM IMPORT',
 			_ => null,
 		} ?? switch (path) {
+			'import.validateButton' => 'CONFIRM IMPORT',
 			'import.confirmTitle' => 'Confirm import?',
 			'import.confirmBody' => 'This track will be imported as your route:\n\n- {points} GPS points\n- {km} km\n- {stages} detected stages\n- Direction: {direction}',
 			'import.cancel' => 'Cancel',

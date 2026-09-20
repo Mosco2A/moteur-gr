@@ -442,6 +442,7 @@
     "essential": "Esencial",
     "weight": {
       "title": "Peso de la mochila",
+      "recommended": "Peso recomendado",
       "total": "Peso total",
       "bodyWeight": "Peso corporal:",
       "ratio": "Ratio mochila / cuerpo",
