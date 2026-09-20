@@ -31,6 +31,12 @@ dependencies:
   # StepWays (l'ecran d'import GR20 etait orphelin) — ajoute pour cabler l'import.
   file_picker: ^8.1.6
 
+  # PHOTOS DU JOURNAL (R10, LOT L10) — appareil photo + galerie. Parite GR20
+  # (`image_picker: ^1.0.0`) : sans ce plugin, une entree de journal ne peut
+  # porter que du texte et la galerie du Diplome (qui filtre les entrees
+  # possedant une photo) reste structurellement vide.
+  image_picker: ^1.0.0
+
   # --- Capteurs (Phase 6) ---
   sensors_plus: ^6.0.0
   pedometer: ^4.0.0

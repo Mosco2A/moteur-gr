@@ -472,6 +472,12 @@ class _Translations$journal$es extends Translations$journal$fr {
 	@override String get delete => 'Eliminar';
 	@override String get photoLimit => 'Límite de 3 fotos por día alcanzado';
 	@override String get photoTooBig => 'Foto demasiado grande (máx 500 KB)';
+	@override String get addPhoto => 'Añadir una foto';
+	@override String get photoSource => 'Origen de la foto';
+	@override String get camera => 'Cámara';
+	@override String get gallery => 'Galería';
+	@override String get removePhoto => 'Quitar la foto';
+	@override String get photoError => 'No se ha podido añadir la foto';
 }
 
 // Path: weather
@@ -1253,6 +1259,7 @@ class _Translations$recap$es extends Translations$recap$fr {
 	@override String get duration => '{days} dias';
 	@override String get dates => 'Del {start} al {end}';
 	@override String get viewDiploma => 'Ver mi diploma';
+	@override String get viewJournal => 'Ver mi diario';
 	@override String get noData => 'Aun no hay datos de ruta para mostrar.';
 }
 
@@ -4303,6 +4310,12 @@ extension on TranslationsEs {
 			'journal.delete' => 'Eliminar',
 			'journal.photoLimit' => 'Límite de 3 fotos por día alcanzado',
 			'journal.photoTooBig' => 'Foto demasiado grande (máx 500 KB)',
+			'journal.addPhoto' => 'Añadir una foto',
+			'journal.photoSource' => 'Origen de la foto',
+			'journal.camera' => 'Cámara',
+			'journal.gallery' => 'Galería',
+			'journal.removePhoto' => 'Quitar la foto',
+			'journal.photoError' => 'No se ha podido añadir la foto',
 			'weather.title' => 'Meteorología',
 			'weather.loading' => 'Cargando meteorología...',
 			'weather.offline' => 'Sin conexión. Datos meteorológicos no disponibles.',
@@ -4314,14 +4327,14 @@ extension on TranslationsEs {
 			'weather.precipitation' => 'Precipitación',
 			'weather.wind' => 'Viento',
 			'weather.uv' => 'Índice UV',
+			_ => null,
+		} ?? switch (path) {
 			'weather.fireRisk' => 'Riesgo de incendio',
 			'weather.fireRiskDesc' => 'Alto riesgo de incendio. Consulte las instrucciones de seguridad.',
 			'weather.fireSafetyTips' => 'Instrucciones contra incendios',
 			'weather.alertCount' => 'alerta',
 			'weather.alertCountPlural' => 'alertas',
 			'weather.today' => 'Hoy',
-			_ => null,
-		} ?? switch (path) {
 			'weather.tomorrow' => 'Mañana',
 			'weather.dayPlus2' => 'Pasado mañana',
 			'weather.allStages' => 'Todas las etapas',
@@ -4828,14 +4841,14 @@ extension on TranslationsEs {
 			'shareVisibility.activityFeedDesc' => 'Tus actividades aparecen en el registro, con un seudónimo.',
 			'shareVisibility.shareTitle' => 'Compartir esta etapa',
 			'shareVisibility.shareButton' => 'Compartir',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.privateNotice' => 'Compartir está desactivado. Actívalo en Compartir y visibilidad.',
 			'shareVisibility.shared' => 'Tarjeta lista para compartir.',
 			'waypoints.types.eau' => 'Agua',
 			'waypoints.types.ravitaillement' => 'Avituallamiento',
 			'waypoints.types.danger' => 'Peligro',
 			'waypoints.types.camp' => 'Acampada',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Conectividad',
 			'waypoints.types.jonction' => 'Cruce',
 			'waypoints.filters.title' => 'Filtrar waypoints',
@@ -5053,6 +5066,7 @@ extension on TranslationsEs {
 			'recap.duration' => '{days} dias',
 			'recap.dates' => 'Del {start} al {end}',
 			'recap.viewDiploma' => 'Ver mi diploma',
+			'recap.viewJournal' => 'Ver mi diario',
 			'recap.noData' => 'Aun no hay datos de ruta para mostrar.',
 			'programme.title' => 'Programa',
 			'programme.helpTooltip' => 'Ayuda',
@@ -5341,6 +5355,8 @@ extension on TranslationsEs {
 			'trekState.abandonDialog.finish' => 'Terminar',
 			'trekState.abandonDialog.abandon' => 'Abandonar',
 			'trekState.abandonDialog.cancel' => 'Cancelar',
+			_ => null,
+		} ?? switch (path) {
 			'trekState.resumeOrphanDialog.title' => '¿Reanudar tu excursión?',
 			'trekState.resumeOrphanDialog.message' => 'Había una excursión en curso al cerrar la aplicación por última vez. ¿Quieres reanudarla o abandonarla?',
 			'trekState.resumeOrphanDialog.resume' => 'Reanudar',
@@ -5348,8 +5364,6 @@ extension on TranslationsEs {
 			'hikerProfile.title' => 'Tus datos',
 			'hikerProfile.privacyBanner' => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia cifrada, sin tu nombre) para calcular tu viabilidad.',
 			'hikerProfile.fieldAge' => 'Edad',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintAge' => 'En anos',
 			'hikerProfile.errorAge' => 'Edad no valida (8 a 100 anos)',
 			'hikerProfile.fieldHeight' => 'Altura',

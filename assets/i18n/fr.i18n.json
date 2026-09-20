@@ -560,7 +560,13 @@
     "cancel": "Annuler",
     "delete": "Supprimer",
     "photoLimit": "Limite de 3 photos par jour atteinte",
-    "photoTooBig": "Photo trop volumineuse (max 500 Ko)"
+    "photoTooBig": "Photo trop volumineuse (max 500 Ko)",
+    "addPhoto": "Ajouter une photo",
+    "photoSource": "Source de la photo",
+    "camera": "Appareil photo",
+    "gallery": "Galerie",
+    "removePhoto": "Retirer la photo",
+    "photoError": "Impossible d'ajouter la photo"
   },
   "weather": {
     "title": "Météo",
@@ -1525,6 +1531,7 @@
     "duration": "{days} jours",
     "dates": "Du {start} au {end}",
     "viewDiploma": "Voir mon diplôme",
+    "viewJournal": "Voir mon journal",
     "noData": "Aucune donnée de parcours à afficher pour le moment."
   },
   "programme": {

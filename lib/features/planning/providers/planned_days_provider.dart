@@ -264,9 +264,26 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
 /// Statistiques agregees du PROGRAMME courant (parite GR20 `planningStatsProvider`).
 ///
 /// Refletent les editions manuelles (recalcul depuis l'etat des jours).
+///
+/// SENS DE MARCHE (R5, LOT L10) : les totaux D+/D- honorent desormais
+/// [selectedDirectionProvider], comme le font deja les lignes JOUR PAR JOUR de
+/// l'ecran Resume (`directionalDayStats`). Avant ce correctif, le meme ecran
+/// affichait un D+ global issu des valeurs BRUTES du seed pendant que ses lignes
+/// jour par jour permutaient montee et descente : incoherence interne, et
+/// rupture de parite GR20 (`itinerary_provider` y construit les etapes
+/// orientees AVANT de sommer, donc applique le sens au global ET au jour).
+/// En sens INVERSE, la montee et la descente s'echangent (le D+ devient le D-
+/// officiel) ; distance, duree et nombre d'etapes sont invariants au sens.
 final planningStatsProvider =
     Provider.family<PlanningStats, String>((ref, trailId) {
   final days = ref.watch(plannedDaysProvider(trailId));
+
+  // Sens de reference = 1er sens declare par le sentier (jamais devine). Sans
+  // sens declare ou sans choix utilisateur, on reste dans le sens de reference.
+  final directions = ref.watch(trailConfigProvider.select((c) => c.directions));
+  final forward = directions.isNotEmpty ? directions.first : null;
+  final selected = ref.watch(selectedDirectionProvider);
+  final isForward = forward == null || selected == null || selected == forward;
 
   var totalDistance = 0.0;
   var totalGain = 0;
@@ -276,8 +293,8 @@ final planningStatsProvider =
   for (final day in days) {
     if (day.isRestDay) continue;
     totalDistance += day.totalDistanceKm;
-    totalGain += day.totalElevationGainM;
-    totalLoss += day.totalElevationLossM;
+    totalGain += isForward ? day.totalElevationGainM : day.totalElevationLossM;
+    totalLoss += isForward ? day.totalElevationLossM : day.totalElevationGainM;
     totalHours += day.estimatedHours;
     stageCount += day.stages.length;
   }

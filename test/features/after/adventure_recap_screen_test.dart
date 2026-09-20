@@ -98,6 +98,11 @@ void main() {
                   path: '/recap',
                   builder: (_, __) => const AdventureRecapScreen()),
               GoRoute(path: '/my-treks', builder: (_, __) => const SizedBox()),
+              // R10 (LOT L10) : cible du nouveau bouton « Voir mon journal ».
+              GoRoute(
+                path: '/journal',
+                builder: (_, __) => const Text('ECRAN JOURNAL'),
+              ),
             ],
           ),
         ),
@@ -205,5 +210,67 @@ void main() {
     // Accessible (demo) : pas d'etat verrouille.
     expect(find.byIcon(Icons.lock_outline), findsNothing);
     expect(find.text(t.recap.statsSection), findsOneWidget);
+  });
+
+  // -------------------------------------------------------------------------
+  // R10 (retour Chris, LOT L10) — 2e PORTE D'ENTREE DU JOURNAL
+  //
+  // GR20 pousse vers le journal depuis « Mon aventure ». Cote StepWays cette
+  // entree etait absente : une fois le trek termine, relire ses notes imposait
+  // de repasser par le cockpit. Contrairement au diplome, elle n'est PAS
+  // gardee : le journal appartient au randonneur, fini ou abandonne.
+  // -------------------------------------------------------------------------
+  group('R10 — entree JOURNAL depuis l\'ecran apres-trek', () {
+    testWidgets('FINISHER : le bouton Journal est propose', (tester) async {
+      await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
+      await db.trekSessionsDao.upsertSession(sess(
+        status: 'completed',
+        completed: const ['1', '2', '3', '4'],
+        fullyWalked: true,
+        finishedAt: DateTime.utc(2026, 6, 18, 18),
+      ));
+
+      await pumpRecap(tester);
+
+      expect(find.text(t.recap.viewJournal), findsOneWidget);
+    });
+
+    testWidgets('ABANDON : le Journal reste propose MEME sans diplome',
+        (tester) async {
+      await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
+      await db.trekSessionsDao.upsertSession(sess(
+        status: 'abandoned',
+        completed: const ['1', '2'],
+        fullyWalked: false,
+        finishedAt: DateTime.utc(2026, 6, 16, 12),
+      ));
+
+      await pumpRecap(tester);
+
+      // Le diplome, lui, reste verrouille : les deux boutons sont independants.
+      expect(find.text(t.recap.viewDiploma), findsNothing);
+      expect(find.text(t.recap.viewJournal), findsOneWidget);
+    });
+
+    testWidgets('le bouton Journal OUVRE bien l\'ecran journal', (tester) async {
+      await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
+      await db.trekSessionsDao.upsertSession(sess(
+        status: 'completed',
+        completed: const ['1', '2', '3', '4'],
+        fullyWalked: true,
+        finishedAt: DateTime.utc(2026, 6, 18, 18),
+      ));
+
+      await pumpRecap(tester);
+
+      // Le bouton vit en BAS du scroll (sous la ligne de flottaison de la
+      // surface de test 800x600) : on l'amene a l'ecran avant de taper.
+      await tester.ensureVisible(find.text(t.recap.viewJournal));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(t.recap.viewJournal));
+      await tester.pumpAndSettle();
+
+      expect(find.text('ECRAN JOURNAL'), findsOneWidget);
+    });
   });
 }

@@ -472,6 +472,12 @@ class _Translations$journal$en extends Translations$journal$fr {
 	@override String get delete => 'Delete';
 	@override String get photoLimit => '3 photos per day limit reached';
 	@override String get photoTooBig => 'Photo too large (max 500 KB)';
+	@override String get addPhoto => 'Add a photo';
+	@override String get photoSource => 'Photo source';
+	@override String get camera => 'Camera';
+	@override String get gallery => 'Gallery';
+	@override String get removePhoto => 'Remove photo';
+	@override String get photoError => 'Could not add the photo';
 }
 
 // Path: weather
@@ -1253,6 +1259,7 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String get duration => '{days} days';
 	@override String get dates => 'From {start} to {end}';
 	@override String get viewDiploma => 'View my diploma';
+	@override String get viewJournal => 'View my journal';
 	@override String get noData => 'No route data to display yet.';
 }
 
@@ -4303,6 +4310,12 @@ extension on TranslationsEn {
 			'journal.delete' => 'Delete',
 			'journal.photoLimit' => '3 photos per day limit reached',
 			'journal.photoTooBig' => 'Photo too large (max 500 KB)',
+			'journal.addPhoto' => 'Add a photo',
+			'journal.photoSource' => 'Photo source',
+			'journal.camera' => 'Camera',
+			'journal.gallery' => 'Gallery',
+			'journal.removePhoto' => 'Remove photo',
+			'journal.photoError' => 'Could not add the photo',
 			'weather.title' => 'Weather',
 			'weather.loading' => 'Loading weather...',
 			'weather.offline' => 'No connection. Weather data unavailable.',
@@ -4314,14 +4327,14 @@ extension on TranslationsEn {
 			'weather.precipitation' => 'Precipitation',
 			'weather.wind' => 'Wind',
 			'weather.uv' => 'UV index',
+			_ => null,
+		} ?? switch (path) {
 			'weather.fireRisk' => 'Fire risk',
 			'weather.fireRiskDesc' => 'High fire risk. Check safety instructions.',
 			'weather.fireSafetyTips' => 'Fire safety tips',
 			'weather.alertCount' => 'alert',
 			'weather.alertCountPlural' => 'alerts',
 			'weather.today' => 'Today',
-			_ => null,
-		} ?? switch (path) {
 			'weather.tomorrow' => 'Tomorrow',
 			'weather.dayPlus2' => 'In two days',
 			'weather.allStages' => 'All stages',
@@ -4828,14 +4841,14 @@ extension on TranslationsEn {
 			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
 			'shareVisibility.shareTitle' => 'Share this stage',
 			'shareVisibility.shareButton' => 'Share',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.privateNotice' => 'Sharing is off. Turn it on in Sharing and visibility.',
 			'shareVisibility.shared' => 'Card ready to share.',
 			'waypoints.types.eau' => 'Water',
 			'waypoints.types.ravitaillement' => 'Resupply',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Campsite',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Connectivity',
 			'waypoints.types.jonction' => 'Junction',
 			'waypoints.filters.title' => 'Filter waypoints',
@@ -5053,6 +5066,7 @@ extension on TranslationsEn {
 			'recap.duration' => '{days} days',
 			'recap.dates' => 'From {start} to {end}',
 			'recap.viewDiploma' => 'View my diploma',
+			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Help',
@@ -5341,6 +5355,8 @@ extension on TranslationsEn {
 			'trekState.abandonDialog.finish' => 'Finish',
 			'trekState.abandonDialog.abandon' => 'Give up',
 			'trekState.abandonDialog.cancel' => 'Cancel',
+			_ => null,
+		} ?? switch (path) {
 			'trekState.resumeOrphanDialog.title' => 'Resume your hike?',
 			'trekState.resumeOrphanDialog.message' => 'A hike was still in progress when the app last closed. Would you like to resume it or give it up?',
 			'trekState.resumeOrphanDialog.resume' => 'Resume',
@@ -5348,8 +5364,6 @@ extension on TranslationsEn {
 			'hikerProfile.title' => 'Your details',
 			'hikerProfile.privacyBanner' => 'Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.',
 			'hikerProfile.fieldAge' => 'Age',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintAge' => 'In years',
 			'hikerProfile.errorAge' => 'Invalid age (8 to 100 years)',
 			'hikerProfile.fieldHeight' => 'Height',

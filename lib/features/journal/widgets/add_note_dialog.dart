@@ -7,8 +7,21 @@ import '../../../shared/widgets/app_button.dart';
 /// Dialogue d'ajout d'une note au journal.
 ///
 /// Permet de saisir le numéro d'étape et le contenu de la note.
+///
+/// R10 (LOT L10) : le nombre d'étapes proposées est désormais FOURNI par
+/// l'appelant ([stageCount]) au lieu d'un `16` en dur (le compte du GR20, qui
+/// laissait choisir des étapes inexistantes sur un sentier à 7, 12 ou 5
+/// étapes). Le moteur étant générique, aucun compte d'étapes ne doit vivre en
+/// dur dans un widget.
 class AddNoteDialog extends StatefulWidget {
-  const AddNoteDialog({super.key, required this.onSave});
+  const AddNoteDialog({
+    super.key,
+    required this.stageCount,
+    required this.onSave,
+  });
+
+  /// Nombre d'étapes réelles du sentier courant (>= 1).
+  final int stageCount;
 
   final void Function(int stageNumber, String content) onSave;
 
@@ -41,7 +54,7 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
             const SizedBox(height: AppTheme.spacingSm),
             DropdownButtonFormField<int>(
               initialValue: _stageNumber,
-              items: List.generate(16, (i) => i + 1)
+              items: List.generate(widget.stageCount, (i) => i + 1)
                   .map(
                     (n) => DropdownMenuItem(
                       value: n,

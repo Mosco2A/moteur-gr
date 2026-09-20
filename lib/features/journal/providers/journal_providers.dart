@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/data/daos/journal_dao.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../trail/providers/stages_provider.dart';
 import '../data/journal_repository.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
@@ -132,6 +133,39 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
     await _loadEntries();
   }
 
+  /// Ajoute une entree de journal AVEC une photo (R10, LOT L10).
+  ///
+  /// [sourcePath] est le fichier choisi par l'utilisateur (appareil photo ou
+  /// galerie). Il est compresse et recopie dans le stockage local du journal par
+  /// [PhotoService] (<= 500 Ko, 3 photos/jour), PUIS seulement l'entree est
+  /// inseree : jamais de ligne en base pointant vers un fichier absent.
+  /// [content] peut etre vide (photo seule).
+  ///
+  /// Retourne `null` en cas de succes, sinon le [PhotoError] a presenter a
+  /// l'utilisateur (quota du jour atteint, photo trop lourde, fichier
+  /// introuvable, erreur disque).
+  Future<PhotoError?> addPhotoNote({
+    required int stageNumber,
+    required String content,
+    required String sourcePath,
+  }) async {
+    final saved = await _photoService.savePhotoFromFile(
+      trailId: _trailId,
+      sourcePath: sourcePath,
+    );
+    if (!saved.isSuccess) return saved.error ?? PhotoError.ioError;
+
+    await _repo.addPhotoNote(
+      trailId: _trailId,
+      stageNumber: stageNumber,
+      text: content,
+      photoPath: saved.path!,
+      photoSizeBytes: saved.sizeBytes ?? 0,
+    );
+    await _loadEntries();
+    return null;
+  }
+
   /// Met a jour le texte d'une entree existante.
   Future<void> updateNote(int entryId, String content) async {
     await _repo.updateNote(entryId, content);
@@ -168,3 +202,26 @@ final journalScreenProvider =
     NotifierProvider<JournalScreenNotifier, JournalScreenState>(
   JournalScreenNotifier.new,
 );
+
+/// Nombre d'etapes REELLES du sentier, pour le selecteur d'etape du journal
+/// (R10, LOT L10).
+///
+/// Remplace le `16` EN DUR du menu deroulant « Etape » : 16 est le compte du
+/// GR20, alors que les sentiers StepWays en ont 7, 12 ou 5. Sur un sentier a
+/// 7 etapes, l'utilisateur pouvait rattacher une note aux etapes 8 a 16, qui
+/// n'existent pas — le moteur cessait d'etre generique.
+///
+/// Source de verite : les etapes reellement chargees du sentier
+/// ([stagesProvider]). Repli sur `TrailConfig.totalStages` tant que la base n'a
+/// pas repondu (ou si aucune etape n'est seedee), et PLANCHER A 1 pour ne
+/// jamais rendre un menu deroulant vide (un `DropdownButtonFormField` sans item
+/// mais avec une valeur initiale leve une assertion Flutter).
+final journalStageCountProvider = Provider.family<int, String>((ref, trailId) {
+  final loaded = ref.watch(stagesProvider(trailId)).maybeWhen(
+        data: (stages) => stages.length,
+        orElse: () => 0,
+      );
+  if (loaded > 0) return loaded;
+  final declared = ref.watch(trailConfigProvider.select((c) => c.totalStages));
+  return declared > 0 ? declared : 1;
+});

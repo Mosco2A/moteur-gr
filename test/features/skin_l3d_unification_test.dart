@@ -124,6 +124,9 @@ void main() {
         MaterialApp(
           home: Scaffold(
             body: AddNoteDialog(
+              // R10 (LOT L10) : le nombre d'etapes vient de l'appelant (plus
+              // de `16` en dur, qui etait le compte du GR20).
+              stageCount: 7,
               onSave: (stage, content) {
                 savedStage = stage;
                 savedContent = content;

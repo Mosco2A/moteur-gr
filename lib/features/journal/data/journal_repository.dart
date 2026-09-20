@@ -50,6 +50,42 @@ class JournalRepository {
     );
   }
 
+  /// Ajoute une entree de journal PORTANT UNE PHOTO (R10, LOT L10).
+  ///
+  /// La table et le modele savaient deja stocker `photoPath` / `photoSizeBytes`
+  /// (et [JournalScreen] savait deja les AFFICHER), mais aucun chemin de code
+  /// n'inserait jamais ces champs : toute entree naissait sans photo. Effet en
+  /// cascade constate : la galerie du Diplome, qui filtre les entrees possedant
+  /// une photo, restait STRUCTURELLEMENT vide. [text] peut etre vide (photo
+  /// seule). Le fichier est deja compresse et copie en local par `PhotoService`
+  /// AVANT cet appel : on ne stocke ici que le chemin et la taille finale.
+  Future<JournalEntryModel> addPhotoNote({
+    required String trailId,
+    required int stageNumber,
+    required String text,
+    required String photoPath,
+    required int photoSizeBytes,
+  }) async {
+    final now = DateTime.now();
+    final id = await _dao.insertEntry(JournalEntriesCompanion(
+      trailId: Value(trailId),
+      stageNumber: Value(stageNumber),
+      content: Value(text),
+      photoPath: Value(photoPath),
+      photoSizeBytes: Value(photoSizeBytes),
+      createdAt: Value(now),
+    ));
+    return JournalEntryModel(
+      id: id,
+      trailId: trailId,
+      stageNumber: stageNumber,
+      text: text,
+      photoPath: photoPath,
+      photoSizeBytes: photoSizeBytes,
+      createdAt: now,
+    );
+  }
+
   /// Met a jour le texte d'une entree existante
   Future<void> updateNote(int entryId, String text) async {
     await _dao.updateEntry(

@@ -560,7 +560,13 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "photoLimit": "3 photos per day limit reached",
-    "photoTooBig": "Photo too large (max 500 KB)"
+    "photoTooBig": "Photo too large (max 500 KB)",
+    "addPhoto": "Add a photo",
+    "photoSource": "Photo source",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "removePhoto": "Remove photo",
+    "photoError": "Could not add the photo"
   },
   "weather": {
     "title": "Weather",
@@ -1525,6 +1531,7 @@
     "duration": "{days} days",
     "dates": "From {start} to {end}",
     "viewDiploma": "View my diploma",
+    "viewJournal": "View my journal",
     "noData": "No route data to display yet."
   },
   "programme": {

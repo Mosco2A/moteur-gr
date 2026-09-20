@@ -316,6 +316,87 @@ void main() {
       expect(find.text(t.hub.sections.after), findsNothing);
     });
 
+    // -----------------------------------------------------------------------
+    // R10 (retour Chris, LOT L10) — REGRESSION D'ACCES AU JOURNAL
+    //
+    // La carte « Journal » ne vivait que dans la section Randonner, elle-meme
+    // masquee hors rando active (#13) : en PREPARATION (etat d'une install
+    // fraiche) comme en APRES-TREK, le journal etait INATTEIGNABLE alors que la
+    // feature est entiere. PARITE GR20 : le HUB GR20 affiche la carte Journal
+    // sans aucune garde, quel que soit l'etat du trek.
+    // Ces tests verrouillent l'acces dans les 3 phases — ET l'absence de
+    // doublon a l'ecran.
+    // -----------------------------------------------------------------------
+    group('R10 — le Journal est atteignable dans TOUTES les phases', () {
+      Override summaryWith(TrekLifecycleState state) {
+        return currentTrailSummaryProvider.overrideWith(
+          (ref) async =>
+              TrekSummary(config: ref.watch(trailConfigProvider), state: state),
+        );
+      }
+
+      Future<void> pumpPhase(
+        WidgetTester tester, {
+        TrackingSessionStatus status = TrackingSessionStatus.idle,
+        TrekLifecycleState? lifecycle,
+      }) async {
+        tester.view.physicalSize = const Size(1200, 4000);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        await tester.pumpWidget(wrap(
+          child: const HubScreen(),
+          overrides: [
+            userWith('Alex'),
+            trekWith(TrackingSessionState(status: status)),
+            if (lifecycle != null) summaryWith(lifecycle),
+          ],
+        ));
+        await tester.pumpAndSettle();
+      }
+
+      testWidgets('EN PREPARATION : carte Journal rendue, section Randonner '
+          'toujours masquee (#13 intact)', (tester) async {
+        await pumpPhase(tester);
+
+        // La decision Chris #13 n'est PAS annulee : la section reste masquee.
+        expect(find.text(t.hub.sections.hike), findsNothing);
+        expect(find.text(t.hub.cards.navigation), findsNothing);
+        // Mais le Journal n'est plus enferme dans ce bloc masque.
+        expect(find.text(t.hub.cards.journal), findsOneWidget);
+      });
+
+      testWidgets('APRES LE TREK : carte Journal rendue', (tester) async {
+        await pumpPhase(tester, lifecycle: TrekLifecycleState.completed);
+
+        expect(find.text(t.hub.sections.after), findsOneWidget);
+        expect(find.text(t.hub.cards.journal), findsOneWidget);
+      });
+
+      testWidgets('EN RANDO : Journal a sa place GR20, sans DOUBLON',
+          (tester) async {
+        await pumpPhase(tester, status: TrackingSessionStatus.recording);
+
+        expect(find.text(t.hub.sections.hike), findsOneWidget);
+        // Exactement UNE carte Journal a l'ecran (jamais deux sections a la
+        // fois : en rando elle est dans Randonner, sinon dans Informations).
+        expect(find.text(t.hub.cards.journal), findsOneWidget);
+      });
+
+      testWidgets('EN PREPARATION : la carte Journal OUVRE l\'ecran journal',
+          (tester) async {
+        await pumpPhase(tester);
+
+        await tester.tap(find.text(t.hub.cards.journal));
+        await tester.pumpAndSettle();
+
+        // On a quitte le HUB pour la route /journal (stub du routeur de test) :
+        // la preuve que la carte n'est pas seulement VISIBLE mais CLIQUABLE.
+        expect(find.text(t.hub.cards.journal), findsNothing);
+        expect(find.text(t.hub.sections.info), findsNothing);
+      });
+    });
+
     testWidgets(
       'R2e : AUCUNE meteo en PREPARATION, sans salutation redondante',
       (tester) async {

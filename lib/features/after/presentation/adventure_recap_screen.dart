@@ -93,12 +93,26 @@ class _RecapBody extends ConsumerWidget {
 
           // Le diplome n'est propose QUE s'il est deverrouille (finisher reel ou
           // vitrine) — parite GR20 (bouton diplome reserve au finisher).
-          if (diplomaUnlocked)
+          if (diplomaUnlocked) ...[
             AppButton(
               label: recapT.viewDiploma,
               icon: Icons.emoji_events,
               onPressed: () => context.push('/trail/$trailId/diploma'),
             ),
+            const SizedBox(height: AppTheme.spacingMd),
+          ],
+
+          // R10 (retour Chris, LOT L10) — DEUXIEME PORTE D'ENTREE DU JOURNAL.
+          // Parite GR20 : `adventure_recap_screen.dart` de GR20 pousse vers le
+          // journal depuis l'ecran « Mon aventure ». Cote StepWays cette entree
+          // etait absente : une fois le trek termine, relire ses notes imposait
+          // de repasser par le cockpit. SANS GARDE (contrairement au diplome) :
+          // le journal appartient au randonneur, qu'il ait fini ou abandonne.
+          AppButton(
+            label: recapT.viewJournal,
+            icon: Icons.menu_book_outlined,
+            onPressed: () => context.push('/journal'),
+          ),
         ],
       ),
     );

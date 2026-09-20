@@ -204,4 +204,76 @@ void main() {
       container.dispose();
     });
   });
+
+  // -------------------------------------------------------------------------
+  // R5 (retour Chris, LOT L10) — LE SENS DE MARCHE S'APPLIQUE AUX TOTAUX
+  //
+  // Les lignes JOUR PAR JOUR de l'ecran Resume honoraient deja le sens
+  // (`directionalDayStats` echange D+ et D-), mais les TOTAUX du MEME ecran
+  // sommaient les valeurs brutes du seed : incoherence interne, et rupture de
+  // parite GR20 (qui oriente les etapes AVANT de sommer).
+  //
+  // Le defaut est INVISIBLE sur le seed actuel du Mare a Mare, ou D+ total et
+  // D- total valent 3750 m tous les deux par hasard. D'ou ce jeu d'etapes ou
+  // les deux totaux DIFFERENT : c'est la seule facon de prouver le correctif.
+  // -------------------------------------------------------------------------
+  group('R5 — planningStatsProvider honore le SENS DE MARCHE', () {
+    // Sommes du jeu d'etapes ci-dessus : D+ = 400+500+450+350+550 = 2250 m ;
+    // D- = 320+400+360+280+440 = 1800 m (chaque etape perd 80 % de son D+).
+    const gainForward = 2250;
+    const lossForward = 1800;
+
+    Future<ProviderContainer> containerWith({String? direction}) async {
+      final container = makeContainer();
+      await container.read(stagesProvider('test-trail').future);
+      container.read(selectedDurationProvider.notifier).set(5);
+      if (direction != null) {
+        container.read(selectedDirectionProvider.notifier).state = direction;
+      }
+      return container;
+    }
+
+    test('aucun sens choisi : totaux dans le sens de REFERENCE', () async {
+      final container = await containerWith();
+      addTearDown(container.dispose);
+
+      final stats = container.read(planningStatsProvider('test-trail'));
+      expect(stats.totalElevationGain, gainForward);
+      expect(stats.totalElevationLoss, lossForward);
+    });
+
+    test('sens de reference (NS) explicite : totaux inchanges', () async {
+      final container = await containerWith(direction: 'NS');
+      addTearDown(container.dispose);
+
+      final stats = container.read(planningStatsProvider('test-trail'));
+      expect(stats.totalElevationGain, gainForward);
+      expect(stats.totalElevationLoss, lossForward);
+    });
+
+    test('sens INVERSE (SN) : les D+/D- GLOBAUX s\'echangent', () async {
+      final container = await containerWith(direction: 'SN');
+      addTearDown(container.dispose);
+
+      final stats = container.read(planningStatsProvider('test-trail'));
+      // Ce qu'on monte a l'aller se descend au retour, et reciproquement.
+      expect(stats.totalElevationGain, lossForward);
+      expect(stats.totalElevationLoss, gainForward);
+    });
+
+    test('distance, duree et etapes restent INVARIANTES au sens', () async {
+      final ns = await containerWith(direction: 'NS');
+      addTearDown(ns.dispose);
+      final sn = await containerWith(direction: 'SN');
+      addTearDown(sn.dispose);
+
+      final forward = ns.read(planningStatsProvider('test-trail'));
+      final backward = sn.read(planningStatsProvider('test-trail'));
+
+      expect(backward.totalDistance, forward.totalDistance);
+      expect(backward.totalHours, forward.totalHours);
+      expect(backward.stageCount, forward.stageCount);
+      expect(backward.trekDays, forward.trekDays);
+    });
+  });
 }

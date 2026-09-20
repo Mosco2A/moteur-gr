@@ -560,7 +560,13 @@
     "cancel": "Cancelar",
     "delete": "Eliminar",
     "photoLimit": "Límite de 3 fotos por día alcanzado",
-    "photoTooBig": "Foto demasiado grande (máx 500 KB)"
+    "photoTooBig": "Foto demasiado grande (máx 500 KB)",
+    "addPhoto": "Añadir una foto",
+    "photoSource": "Origen de la foto",
+    "camera": "Cámara",
+    "gallery": "Galería",
+    "removePhoto": "Quitar la foto",
+    "photoError": "No se ha podido añadir la foto"
   },
   "weather": {
     "title": "Meteorología",
@@ -1525,6 +1531,7 @@
     "duration": "{days} dias",
     "dates": "Del {start} al {end}",
     "viewDiploma": "Ver mi diploma",
+    "viewJournal": "Ver mi diario",
     "noData": "Aun no hay datos de ruta para mostrar."
   },
   "programme": {

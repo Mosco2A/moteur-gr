@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
@@ -9,6 +10,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
 import '../providers/journal_providers.dart';
 
@@ -38,6 +40,11 @@ class JournalScreen extends ConsumerWidget {
       journalScreenProvider.select((s) => s.entriesByDay),
     );
 
+    // R10 (LOT L10) : nombre d'etapes REEL du sentier courant — remplace le
+    // `16` en dur (compte du GR20) du selecteur d'etape. Cf.
+    // [journalStageCountProvider].
+    final stageCount = ref.watch(journalStageCountProvider(trailId));
+
     final theme = Theme.of(context);
     final journalT = t.journal;
 
@@ -66,25 +73,59 @@ class JournalScreen extends ConsumerWidget {
           ? _EmptyJournalView(journalT: journalT)
           : _JournalDayList(entriesByDay: entriesByDay),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddNoteDialog(context, ref),
+        onPressed: () => _showAddNoteDialog(context, ref, stageCount),
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  void _showAddNoteDialog(BuildContext context, WidgetRef ref) {
+  void _showAddNoteDialog(BuildContext context, WidgetRef ref, int stageCount) {
     final journalT = t.journal;
+    // Capture AVANT tout await : le dialogue se referme avant la fin de la
+    // sauvegarde, son `context` ne doit donc pas servir a afficher l'erreur.
+    final messenger = ScaffoldMessenger.of(context);
     showDialog<void>(
       context: context,
       builder: (ctx) => _AddNoteDialogSlang(
         journalT: journalT,
-        onSave: (stageNumber, content) {
-          ref
-              .read(journalScreenProvider.notifier)
-              .addNote(stageNumber: stageNumber, content: content);
+        stageCount: stageCount,
+        onSave: (stageNumber, content, photoPath) async {
+          final notifier = ref.read(journalScreenProvider.notifier);
+          if (photoPath == null) {
+            await notifier.addNote(stageNumber: stageNumber, content: content);
+            return;
+          }
+          // R10 (LOT L10) : entree AVEC photo. L'erreur eventuelle (quota du
+          // jour, photo trop lourde, disque) est REMONTEE a l'utilisateur —
+          // jamais avalee en silence.
+          final error = await notifier.addPhotoNote(
+            stageNumber: stageNumber,
+            content: content,
+            sourcePath: photoPath,
+          );
+          if (error == null) return;
+          messenger.showSnackBar(
+            SnackBar(content: Text(_photoErrorLabel(journalT, error))),
+          );
         },
       ),
     );
+  }
+
+  /// Libelle Slang correspondant a un echec d'ajout de photo.
+  static String _photoErrorLabel(
+    Translations$journal$fr journalT,
+    PhotoError error,
+  ) {
+    switch (error) {
+      case PhotoError.dailyLimitReached:
+        return journalT.photoLimit;
+      case PhotoError.tooLarge:
+        return journalT.photoTooBig;
+      case PhotoError.fileNotFound:
+      case PhotoError.ioError:
+        return journalT.photoError;
+    }
   }
 }
 
@@ -249,24 +290,92 @@ class _JournalEntryTile extends ConsumerWidget {
 }
 
 /// Dialogue d ajout de note avec textes Slang.
+///
+/// R10 (LOT L10) : le dialogue sait desormais porter une PHOTO (appareil photo
+/// ou galerie, parite GR20) et son selecteur d'etape suit le nombre REEL
+/// d'etapes du sentier ([stageCount]) au lieu d'un 16 en dur.
 class _AddNoteDialogSlang extends StatefulWidget {
-  const _AddNoteDialogSlang({required this.journalT, required this.onSave});
+  const _AddNoteDialogSlang({
+    required this.journalT,
+    required this.stageCount,
+    required this.onSave,
+  });
 
   final Translations$journal$fr journalT;
-  final void Function(int stageNumber, String content) onSave;
+
+  /// Nombre d'etapes proposees dans le selecteur (>= 1).
+  final int stageCount;
+
+  /// [photoPath] : fichier source choisi, `null` pour une note sans photo.
+  final void Function(int stageNumber, String content, String? photoPath)
+      onSave;
 
   @override
   State<_AddNoteDialogSlang> createState() => _AddNoteDialogSlangState();
 }
 
+/// Cote (en points) de la vignette d'apercu de la photo dans le dialogue.
+/// Valeur FINIE volontairement (cf. commentaire de l'apercu).
+const double _photoPreviewSize = 96;
+
 class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
   final _contentController = TextEditingController();
   int _stageNumber = 1;
+
+  /// Fichier choisi par l'utilisateur, pas encore compresse ni copie en local
+  /// (c'est `PhotoService` qui le fera a l'enregistrement).
+  String? _photoPath;
 
   @override
   void dispose() {
     _contentController.dispose();
     super.dispose();
+  }
+
+  /// Demande la SOURCE (appareil photo / galerie), parite GR20
+  /// (`_showPhotoSourceDialog`), puis ouvre le selecteur correspondant.
+  Future<void> _choosePhotoSource() async {
+    final journalT = widget.journalT;
+    final source = await showModalBottomSheet<ImageSource>(
+      context: context,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(AppTheme.spacingBase),
+              child: Text(
+                journalT.photoSource,
+                style: Theme.of(ctx).textTheme.titleMedium,
+              ),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: Text(journalT.camera),
+              onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(journalT.gallery),
+              onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (source == null) return;
+
+    // Pre-redimensionnement a la prise : evite de trimballer un original de
+    // plusieurs Mo jusqu'a la compression (limite finale 500 Ko cote
+    // PhotoService, qui reste la seule autorite sur la taille stockee).
+    final picked = await ImagePicker().pickImage(
+      source: source,
+      maxWidth: 1920,
+      maxHeight: 1920,
+      imageQuality: 85,
+    );
+    if (picked == null || !mounted) return;
+    setState(() => _photoPath = picked.path);
   }
 
   @override
@@ -283,9 +392,12 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
           children: [
             Text(journalT.stage, style: theme.textTheme.labelLarge),
             const SizedBox(height: AppTheme.spacingSm),
+            // R10 (LOT L10) : le selecteur suit le sentier COURANT. Le `16` en
+            // dur (compte du GR20) laissait choisir des etapes inexistantes sur
+            // un sentier a 7, 12 ou 5 etapes.
             DropdownButtonFormField<int>(
               initialValue: _stageNumber,
-              items: List.generate(16, (i) => i + 1)
+              items: List.generate(widget.stageCount, (i) => i + 1)
                   .map(
                     (n) => DropdownMenuItem(
                       value: n,
@@ -307,6 +419,63 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
               maxLines: 5,
               decoration: InputDecoration(hintText: journalT.placeholder),
             ),
+            const SizedBox(height: AppTheme.spacingBase),
+            // R10 (LOT L10) — AJOUT DE PHOTO (parite GR20). Sans ce bloc, une
+            // entree ne pouvait porter que du texte, et la galerie du Diplome
+            // (qui filtre les entrees avec photo) restait toujours vide.
+            if (_photoPath == null)
+              OutlinedButton.icon(
+                onPressed: _choosePhotoSource,
+                icon: const Icon(Icons.add_a_photo_outlined),
+                label: Text(journalT.addPhoto),
+              )
+            else
+              // APERCU EN VIGNETTE DE TAILLE FIXE — ET SURTOUT PAS de largeur
+              // `double.infinity` ici : `AlertDialog` enveloppe sa colonne dans
+              // un `IntrinsicWidth`, et une largeur infinie remontee par la
+              // passe d'intrinseques fait degenerer la mesure — le dialogue se
+              // dessine alors COMPLETEMENT VIDE (titre compris), sans la
+              // moindre exception Dart. Constate sur emulateur au LOT L10.
+              // Toutes les dimensions de ce bloc restent donc FINIES.
+              // [Wrap] et non [Row] : selon la langue, « Retirer la photo » et
+              // la vignette peuvent depasser la largeur du dialogue (constate :
+              // debordement de 5,9 px en francais). Le Wrap fait passer le
+              // bouton a la ligne au lieu de deborder — zero bandeau jaune et
+              // noir, quelle que soit la traduction ou la taille de police.
+              Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: AppTheme.spacingMd,
+                runSpacing: AppTheme.spacingSm,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                    child: Image.file(
+                      File(_photoPath!),
+                      width: _photoPreviewSize,
+                      height: _photoPreviewSize,
+                      fit: BoxFit.cover,
+                      // Decode a la taille d'affichage : une photo d'appareil
+                      // fait plusieurs milliers de pixels de cote, inutile de
+                      // la monter en memoire en pleine resolution pour une
+                      // vignette.
+                      cacheWidth: (_photoPreviewSize * 3).round(),
+                      errorBuilder: (_, __, ___) => Container(
+                        width: _photoPreviewSize,
+                        height: _photoPreviewSize,
+                        color: theme.colorScheme.surfaceContainerHighest,
+                        child: const Center(
+                          child: Icon(Icons.broken_image, size: 32),
+                        ),
+                      ),
+                    ),
+                  ),
+                  TextButton.icon(
+                    onPressed: () => setState(() => _photoPath = null),
+                    icon: const Icon(Icons.close),
+                    label: Text(journalT.removePhoto),
+                  ),
+                ],
+              ),
           ],
         ),
       ),
@@ -320,10 +489,11 @@ class _AddNoteDialogSlangState extends State<_AddNoteDialogSlang> {
           isFullWidth: false,
           onPressed: () {
             final content = _contentController.text.trim();
-            if (content.isNotEmpty) {
-              widget.onSave(_stageNumber, content);
-              Navigator.of(context).pop();
-            }
+            // Une PHOTO SEULE est une entree valide (parite GR20) : on
+            // n'exige plus du texte des lors qu'une photo est jointe.
+            if (content.isEmpty && _photoPath == null) return;
+            widget.onSave(_stageNumber, content, _photoPath);
+            Navigator.of(context).pop();
           },
         ),
       ],

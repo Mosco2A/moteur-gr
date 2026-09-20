@@ -356,7 +356,12 @@ void main() {
       expect(find.text(t.nuitees.empty.action), findsOneWidget);
     });
 
-    testWidgets('les jours de repos ne comptent pas comme des nuits',
+    // R5 (retour Chris, LOT L10) — INVERSION ASSUMEE DE L'ATTENTE PRECEDENTE.
+    // Ce test verrouillait « les jours de repos ne comptent pas comme des
+    // nuits » : c'etait le BUG. Un jour de repos, on dort quand meme — GR20 le
+    // comptabilise (jour precedent a `nightCount` 2). L'ancien filtre faisait
+    // donc perdre une nuit au randonneur sur son planning de reservation.
+    testWidgets('la nuit du JOUR DE REPOS est comptee (parite GR20)',
         (tester) async {
       await tester.pumpWidget(wrap(
         db: db,
@@ -370,10 +375,45 @@ void main() {
       await settle(tester);
       await pumpUntil(tester, find.text('J1'));
 
-      // Seules les 2 nuits de marche apparaissent (J1, J3) — pas J2 (repos).
+      // Les 3 nuits apparaissent, J2 (repos) COMPRISE.
       expect(find.text('J1'), findsWidgets);
+      expect(find.text('J2'), findsWidgets,
+          reason: 'La nuit du jour de repos ne doit plus disparaitre');
       expect(find.text('J3'), findsWidgets);
-      expect(find.text('J2'), findsNothing);
+
+      // Et elle est explicitement identifiee comme un jour de repos (sinon deux
+      // lignes afficheraient le meme hebergement sans explication).
+      expect(find.text(t.programme.restDay), findsWidgets);
+    });
+
+    test('buildNuiteeSlots : un repos herite du lieu du dernier jour marche',
+        () {
+      final slots = buildNuiteeSlots([
+        walkDay(1, 1),
+        const PlannedDay(dayNumber: 2, stages: [], isRestDay: true),
+        walkDay(3, 2),
+      ]);
+
+      // 3 jours -> 3 nuits (et non 2 : la nuit du repos est comptee).
+      expect(slots.length, 3);
+      expect(slots[0].stageNumber, 1);
+      // Le repos dort au MEME endroit que la veille : etape d'arrivee du J1.
+      expect(slots[1].day.isRestDay, isTrue);
+      expect(slots[1].stageNumber, 1);
+      expect(slots[2].stageNumber, 2);
+    });
+
+    test('buildNuiteeSlots : un repos en tete de programme ne plante pas', () {
+      final slots = buildNuiteeSlots([
+        const PlannedDay(dayNumber: 1, stages: [], isRestDay: true),
+        walkDay(2, 1),
+      ]);
+
+      expect(slots.length, 2);
+      // Aucun jour marche avant -> pas d'etape connue, repli gracieux sur 0
+      // (l'ecran affichera le libelle generique d'hebergement).
+      expect(slots[0].stageNumber, 0);
+      expect(slots[1].stageNumber, 1);
     });
   });
 

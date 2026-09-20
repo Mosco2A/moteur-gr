@@ -329,6 +329,11 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                     // (heritage shell/onglets, supprime).
                     onTap: () => context.push('/map'),
                   ),
+                  // R10 (LOT L10) — JOURNAL EN RANDO. La carte reste ICI tant
+                  // qu'on marche (place GR20 : le journal est un outil de
+                  // terrain). Hors rando, elle est rendue dans « Informations »
+                  // ci-dessous : le journal n'est JAMAIS enferme dans un bloc
+                  // masque (cf. commentaire de la section Informations).
                   QuickAccessCard(
                     icon: Icons.menu_book_outlined,
                     title: t.hub.cards.journal,
@@ -371,10 +376,32 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             ],
 
             // --- Section Informations (RF-9) ---
+            // TOUJOURS rendue (aucune garde de phase) : c'est elle qui porte la
+            // porte d'entree du JOURNAL hors rando (R10, LOT L10).
             HubSection(
               title: t.hub.sections.info,
               icon: Icons.info_outline,
               cards: [
+                // R10 (retour Chris, LOT L10) — REGRESSION D'ACCES CORRIGEE.
+                // La carte « Journal » ne vivait que dans la section Randonner,
+                // elle-meme masquee hors rando active (R8/#13) : en PREPARATION
+                // (etat d'une install fraiche) comme en APRES-TREK, le journal
+                // etait invisible et INATTEIGNABLE, alors que la feature est
+                // entiere (route, ecran, base, tests). PARITE GR20 : le HUB GR20
+                // affiche la carte Journal SANS AUCUNE GARDE, quel que soit
+                // l'etat du trek (seule la Navigation est protegee).
+                // On ne remet pas la section Randonner en preparation (decision
+                // Chris #13 conservee) : on sort la CARTE du bloc masque. Elle
+                // est rendue ici des qu'on n'est pas en rando -> le journal est
+                // atteignable dans les 3 phases, et une seule fois a l'ecran
+                // (en rando, il est rendu dans « Randonner », a sa place GR20).
+                if (!showHike)
+                  QuickAccessCard(
+                    icon: Icons.menu_book_outlined,
+                    title: t.hub.cards.journal,
+                    subtitle: t.hub.cards.journalSub,
+                    onTap: () => context.push('/journal'),
+                  ),
                 QuickAccessCard(
                   icon: Icons.hotel_outlined,
                   title: t.hub.cards.accommodations,

@@ -869,6 +869,24 @@ class Translations$journal$fr {
 
 	/// fr: 'Photo trop volumineuse (max 500 Ko)'
 	String get photoTooBig => 'Photo trop volumineuse (max 500 Ko)';
+
+	/// fr: 'Ajouter une photo'
+	String get addPhoto => 'Ajouter une photo';
+
+	/// fr: 'Source de la photo'
+	String get photoSource => 'Source de la photo';
+
+	/// fr: 'Appareil photo'
+	String get camera => 'Appareil photo';
+
+	/// fr: 'Galerie'
+	String get gallery => 'Galerie';
+
+	/// fr: 'Retirer la photo'
+	String get removePhoto => 'Retirer la photo';
+
+	/// fr: 'Impossible d'ajouter la photo'
+	String get photoError => 'Impossible d\'ajouter la photo';
 }
 
 // Path: weather
@@ -2514,6 +2532,9 @@ class Translations$recap$fr {
 
 	/// fr: 'Voir mon diplôme'
 	String get viewDiploma => 'Voir mon diplôme';
+
+	/// fr: 'Voir mon journal'
+	String get viewJournal => 'Voir mon journal';
 
 	/// fr: 'Aucune donnée de parcours à afficher pour le moment.'
 	String get noData => 'Aucune donnée de parcours à afficher pour le moment.';
@@ -7681,6 +7702,12 @@ extension on Translations {
 			'journal.delete' => 'Supprimer',
 			'journal.photoLimit' => 'Limite de 3 photos par jour atteinte',
 			'journal.photoTooBig' => 'Photo trop volumineuse (max 500 Ko)',
+			'journal.addPhoto' => 'Ajouter une photo',
+			'journal.photoSource' => 'Source de la photo',
+			'journal.camera' => 'Appareil photo',
+			'journal.gallery' => 'Galerie',
+			'journal.removePhoto' => 'Retirer la photo',
+			'journal.photoError' => 'Impossible d\'ajouter la photo',
 			'weather.title' => 'Météo',
 			'weather.loading' => 'Chargement de la météo...',
 			'weather.offline' => 'Pas de connexion. Données météo indisponibles.',
@@ -7692,14 +7719,14 @@ extension on Translations {
 			'weather.precipitation' => 'Précipitations',
 			'weather.wind' => 'Vent',
 			'weather.uv' => 'Indice UV',
+			_ => null,
+		} ?? switch (path) {
 			'weather.fireRisk' => 'Risque incendie',
 			'weather.fireRiskDesc' => 'Risque incendie élevé. Consultez les consignes de sécurité.',
 			'weather.fireSafetyTips' => 'Consignes incendie',
 			'weather.alertCount' => 'alerte',
 			'weather.alertCountPlural' => 'alertes',
 			'weather.today' => 'Aujourd\'hui',
-			_ => null,
-		} ?? switch (path) {
 			'weather.tomorrow' => 'Demain',
 			'weather.dayPlus2' => 'Après-demain',
 			'weather.allStages' => 'Toutes les étapes',
@@ -8206,14 +8233,14 @@ extension on Translations {
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
 			'shareVisibility.shareTitle' => 'Partager cette étape',
 			'shareVisibility.shareButton' => 'Partager',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.privateNotice' => 'Le partage est désactivé. Active-le dans Partage et visibilité.',
 			'shareVisibility.shared' => 'Carte prête à partager.',
 			'waypoints.types.eau' => 'Eau',
 			'waypoints.types.ravitaillement' => 'Ravitaillement',
 			'waypoints.types.danger' => 'Danger',
 			'waypoints.types.camp' => 'Bivouac',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.types.connectivite' => 'Connectivité',
 			'waypoints.types.jonction' => 'Jonction',
 			'waypoints.filters.title' => 'Filtrer les waypoints',
@@ -8431,6 +8458,7 @@ extension on Translations {
 			'recap.duration' => '{days} jours',
 			'recap.dates' => 'Du {start} au {end}',
 			'recap.viewDiploma' => 'Voir mon diplôme',
+			'recap.viewJournal' => 'Voir mon journal',
 			'recap.noData' => 'Aucune donnée de parcours à afficher pour le moment.',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Aide',
@@ -8719,6 +8747,8 @@ extension on Translations {
 			'trekState.abandonDialog.finish' => 'Terminer',
 			'trekState.abandonDialog.abandon' => 'Abandonner',
 			'trekState.abandonDialog.cancel' => 'Annuler',
+			_ => null,
+		} ?? switch (path) {
 			'trekState.resumeOrphanDialog.title' => 'Reprendre votre randonnée ?',
 			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?',
 			'trekState.resumeOrphanDialog.resume' => 'Reprendre',
@@ -8726,8 +8756,6 @@ extension on Translations {
 			'hikerProfile.title' => 'Fiche d\'info',
 			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.',
 			'hikerProfile.fieldAge' => 'Âge',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintAge' => 'En années',
 			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
 			'hikerProfile.fieldHeight' => 'Taille',

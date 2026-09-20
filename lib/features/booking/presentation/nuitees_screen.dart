@@ -32,6 +32,45 @@ import '../providers/nuitee_selections_provider.dart';
 /// Generique multi-sentiers : ZERO hardcode de localite ; hors systeme de peaux
 /// (couleurs semantiques d'AppTheme + colorScheme). Tout libelle passe par Slang
 /// (`t.nuitees.*`).
+/// Une NUIT du programme : le jour concerne + le numero d'etape dont depend le
+/// LIEU de couchage.
+///
+/// Pour un jour de MARCHE, c'est son etape d'arrivee. Pour un jour de REPOS,
+/// c'est l'etape d'arrivee du dernier jour marche : on dort au meme endroit que
+/// la veille (R5, LOT L10).
+class NuiteeSlot {
+  const NuiteeSlot({required this.day, required this.stageNumber});
+
+  final PlannedDay day;
+
+  /// Etape dont on tire l'hebergement (0 si le programme commence par un repos).
+  final int stageNumber;
+}
+
+/// Construit la liste des NUITS a reserver a partir du programme.
+///
+/// R5 (LOT L10) — PARITE GR20 : les jours de REPOS comptent, eux aussi, pour
+/// une nuit. L'ancien filtre `!isRestDay` en faisait disparaitre une : sur un
+/// programme de 7 jours dont 1 repos, seules 6 nuits etaient proposees et le
+/// randonneur se retrouvait sans toit une nuit. GR20 ne supprime pas la nuit,
+/// il met le jour precedent a `nightCount` 2 ; faute de `nightCount` sur
+/// [PlannedDay], StepWays lui donne sa propre ligne, rattachee au lieu
+/// d'arrivee du dernier jour marche.
+///
+/// Fonction PURE (testable sans widget).
+List<NuiteeSlot> buildNuiteeSlots(List<PlannedDay> days) {
+  final slots = <NuiteeSlot>[];
+  // Dernier lieu d'arrivee connu : un repos herite du jour marche precedent.
+  var lastStageNumber = 0;
+  for (final day in days) {
+    if (!day.isRestDay && day.stages.isNotEmpty) {
+      lastStageNumber = day.stages.last.stageNumber;
+    }
+    slots.add(NuiteeSlot(day: day, stageNumber: lastStageNumber));
+  }
+  return slots;
+}
+
 class NuiteesScreen extends ConsumerWidget {
   const NuiteesScreen({super.key, required this.trailId});
 
@@ -43,12 +82,22 @@ class NuiteesScreen extends ConsumerWidget {
     final days = ref.watch(plannedDaysProvider(trailId));
     final selections = ref.watch(nuiteeSelectionsProvider);
 
-    // Une nuit par jour de MARCHE (les jours de repos n'engendrent pas de nuit
-    // a reserver differente : parite fonctionnelle GR20 qui exclut les repos).
-    final nuiteesDays = days.where((d) => !d.isRestDay).toList();
-    final totalNuitees = nuiteesDays.length;
-    final bookedCount = nuiteesDays
-        .where((d) => selections.isBooked(d.dayNumber))
+    // R5 (retour Chris, LOT L10) — LA NUIT DU JOUR DE REPOS EST COMPTEE.
+    // Le filtre `!d.isRestDay` faisait DISPARAITRE une nuit reelle : un jour de
+    // repos, on dort quand meme, au meme endroit que la veille. Un programme de
+    // 7 jours dont 1 repos ne proposait que 6 nuits a reserver -> le randonneur
+    // se retrouvait sans toit une nuit sur son planning. PARITE GR20 : GR20 ne
+    // supprime pas la nuit, il met le jour PRECEDENT a `nightCount` 2 (deux
+    // nuits au meme endroit) — la nuit est donc bien comptabilisee.
+    // StepWays n'a pas de `nightCount` sur [PlannedDay] : on materialise la
+    // nuit du repos par sa PROPRE ligne, rattachee au lieu d'arrivee du dernier
+    // jour marche ([buildNuiteeSlots]), ce qui donne le meme total de nuits que
+    // GR20 sans toucher au modele.
+    final nuitees = buildNuiteeSlots(days);
+    final nuiteesDays = nuitees.map((n) => n.day).toList();
+    final totalNuitees = nuitees.length;
+    final bookedCount = nuitees
+        .where((n) => selections.isBooked(n.day.dayNumber))
         .length;
     final progress = totalNuitees > 0 ? bookedCount / totalNuitees : 0.0;
 
@@ -80,12 +129,14 @@ class NuiteesScreen extends ConsumerWidget {
                         horizontal: AppTheme.spacingBase,
                         vertical: AppTheme.spacingSm,
                       ),
-                      itemCount: nuiteesDays.length,
+                      itemCount: nuitees.length,
                       itemBuilder: (context, index) {
-                        final day = nuiteesDays[index];
+                        final slot = nuitees[index];
+                        final day = slot.day;
                         return _NuiteeCard(
                           trailId: trailId,
                           day: day,
+                          stageNumber: slot.stageNumber,
                           isBooked: selections.isBooked(day.dayNumber),
                           nuiteeType: selections.typeFor(day.dayNumber),
                           onToggle: () => ref
@@ -303,6 +354,7 @@ class _NuiteeCard extends ConsumerWidget {
   const _NuiteeCard({
     required this.trailId,
     required this.day,
+    required this.stageNumber,
     required this.isBooked,
     required this.nuiteeType,
     required this.onToggle,
@@ -311,14 +363,17 @@ class _NuiteeCard extends ConsumerWidget {
 
   final String trailId;
   final PlannedDay day;
+
+  /// Etape dont on tire l'hebergement du lieu de nuit. Fournie par
+  /// [buildNuiteeSlots] : pour un jour de REPOS c'est l'etape d'arrivee du
+  /// dernier jour marche (on dort au meme endroit que la veille), un jour de
+  /// repos n'ayant par construction aucune etape a lui.
+  final int stageNumber;
+
   final bool isBooked;
   final NuiteeType nuiteeType;
   final VoidCallback onToggle;
   final void Function(NuiteeType) onNuiteeTypeChanged;
-
-  /// Etape d'arrivee du jour (sert a retrouver l'hebergement du lieu de nuit).
-  int get _stageNumber =>
-      day.stages.isNotEmpty ? day.stages.last.stageNumber : 0;
 
   Future<void> _callPhone(String phoneNumber) async {
     try {
@@ -334,7 +389,7 @@ class _NuiteeCard extends ConsumerWidget {
     final scheme = theme.colorScheme;
     final accommodationsAsync = ref.watch(
       nuiteeStageAccommodationsProvider(
-        (trailId: trailId, stageNumber: _stageNumber),
+        (trailId: trailId, stageNumber: stageNumber),
       ),
     );
     final accommodations = accommodationsAsync.maybeWhen(
@@ -421,6 +476,32 @@ class _NuiteeCard extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 2),
+                        // R5 (LOT L10) : la nuit d'un jour de REPOS est bien
+                        // comptee, au MEME endroit que la veille. On le dit
+                        // explicitement, sinon deux lignes consecutives
+                        // affichent le meme hebergement sans explication.
+                        // Libelle Slang existant (`t.programme.restDay`,
+                        // 5 langues) — aucune cle nouvelle.
+                        if (day.isRestDay) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppTheme.grisGranite.withAlpha(30),
+                              borderRadius:
+                                  BorderRadius.circular(AppTheme.radiusChip),
+                            ),
+                            child: Text(
+                              t.programme.restDay,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.grisGranite,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                        ],
                         // Badge type courant.
                         Container(
                           padding: const EdgeInsets.symmetric(
