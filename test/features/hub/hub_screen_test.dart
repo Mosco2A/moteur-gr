@@ -317,18 +317,42 @@ void main() {
     });
 
     testWidgets(
-      'rend la tuile meteo reelle (LOT-B), sans salutation redondante',
+      'R2e : AUCUNE meteo en PREPARATION, sans salutation redondante',
       (tester) async {
         await pumpTallHub(tester);
 
-        // La tuile meteo est desormais reelle (titre present, plus de stub).
-        // Sans donnees (DB de test vide), elle affiche l'etat indisponible.
-        expect(find.text(t.hub.weather.title), findsOneWidget);
+        // R2e (retour Chris, LOT L8) : la tuile meteo du jour qui ouvrait le
+        // cockpit a ete RETIREE. En preparation, la meteo n'a aucun sens (on
+        // prepare un trek des mois a l'avance) — parite GR20, dont le HUB n'a
+        // aucune meteo dans « Preparer ». On verrouille son ABSENCE TOTALE :
+        // ni la tuile, ni le bandeau rando, ni la carte « Meteo ».
+        expect(find.text(t.hub.weather.title), findsNothing);
         expect(find.text(t.hub.weather.stub), findsNothing);
+        expect(find.text(t.navPilote.weatherBannerTitle), findsNothing);
+        expect(find.text(t.hub.cards.weather), findsNothing);
         // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete
         // RETIRE du HUB (doublon avec le titre du sentier dans l'AppBar). On
         // verrouille donc son ABSENCE (le widget HubHeader reste teste a part).
         expect(find.text(t.hub.greeting(name: 'Alex')), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'R11 : la meteo du JOUR est affichee PENDANT la rando (section Randonner)',
+      (tester) async {
+        // Session de tracking vivante -> phase « randonner ». C'est LA le bon
+        // endroit pour la meteo (parite GR20 : meteo joignable en terrain
+        // uniquement).
+        await pumpTallHub(tester, status: TrackingSessionStatus.recording);
+
+        // Bandeau « ici et maintenant » : meteo du jour de l'etape COURANTE
+        // detectee par le GPS (et non l'etape de reference D-3). Sans donnees
+        // (DB de test vide), il se degrade proprement mais reste monte.
+        expect(find.text(t.navPilote.weatherBannerTitle), findsOneWidget);
+        // Carte « Meteo » -> detail par etape, cote a cote avec « Incendie »
+        // (parite GR20, section Randonner).
+        expect(find.text(t.hub.cards.weather), findsOneWidget);
+        expect(find.text(t.hub.cards.fire), findsOneWidget);
       },
     );
 

@@ -14,7 +14,7 @@ import 'widgets/finish_trek_button.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_start_trek_button.dart';
 import 'widgets/hub_trek_card.dart';
-import 'widgets/hub_weather_card.dart';
+import 'widgets/localized_conditions_banner.dart';
 import 'widgets/quick_access_card.dart';
 
 /// Ecran d'accueil — HUB E07 (LOT-A, socle structurel).
@@ -29,7 +29,8 @@ import 'widgets/quick_access_card.dart';
 ///     [HubTrekCard]) ;
 ///   * D2 — cartes « Preparer » SIMPLES : pas d'indicateur de statut ni appui
 ///     long ([QuickAccessCard]) ;
-///   * D3 — tuile meteo = STUB ([HubWeatherCard]) ;
+///   * D3 — tuile meteo : RETIREE du cockpit (R2e, LOT L8) — la meteo ne vit
+///     plus qu'en rando (section Randonner, [LocalizedConditionsBanner]) ;
 ///   * D4 — aucune section Communaute/social ;
 ///   * D5 — cartes sans ecran cible (Ravitaillement / Transport / Recap)
 ///     DIFFEREES.
@@ -148,11 +149,22 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour,
             // randonneur » + nom du sentier (HubHeader) a ete RETIRE : il faisait
             // DOUBLON avec le titre du sentier deja affiche dans l'AppBar juste
-            // au-dessus. On demarre directement sur la tuile meteo ; l'espace est
-            // recupere proprement (plus de bandeau + son SizedBox associe).
-            // Tuile meteo reelle (AM-3, LOT-B) : ConsumerWidget (const OK).
-            const HubWeatherCard(),
-            const SizedBox(height: AppTheme.spacingBase),
+            // au-dessus.
+            //
+            // R2e (retour Chris, LOT L8) — AUCUNE MÉTÉO EN PRÉPARATION. La tuile
+            // météo du jour ([HubWeatherCard]) qui ouvrait ce cockpit a été
+            // RETIRÉE : elle s'affichait AVANT tout le reste, donc pendant la
+            // PRÉPARATION, où la météo n'a aucun sens (on prépare un trek des
+            // mois à l'avance, les prévisions ne portent que sur 7 jours). Elle
+            // était en plus indexée sur l'étape de RÉFÉRENCE (D-3, étape 1 par
+            // défaut), pas sur l'étape réellement parcourue.
+            // PARITÉ GR20 : le HUB GR20 n'a aucune météo dans « Préparer » — la
+            // météo vit en TERRAIN, dans la section « Randonner ». La météo est
+            // donc déplacée telle quelle dans la section Randonner ci-dessous
+            // ([LocalizedConditionsBanner], R11), qui n'est rendue qu'en rando
+            // active. Le widget [HubWeatherCard] et son écran cible restent en
+            // place (route `/trail/:id/weather` toujours vivante, atteinte par le
+            // bandeau et la carte « Météo » de la section Randonner).
             // Carte principale trek (RF-4), enrichie du cycle de vie multi-trek
             // (StepWays LOT 2, Phase 5) : elle porte desormais elle-meme le CTA
             // « Démarrer » (owned/prepared, via la garde d'unicite C4), la carte
@@ -294,6 +306,16 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             // lieu d'etre (les outils terrain — navigation, journal, incendie —
             // ne servent qu'une fois parti). Rendue conditionnellement.
             if (showHike) ...[
+              // R11 (retour Chris, LOT L8) — LA MÉTÉO EST ICI, PENDANT LA RANDO.
+              // Bandeau « ici et maintenant » EN TÊTE de la section Randonner :
+              // météo du JOUR + risque incendie de l'étape COURANTE détectée par
+              // le GPS ([localizedStageNumberProvider]), et non l'étape de
+              // référence D-3 qu'utilisait la tuile de préparation retirée (R2e).
+              // Parité GR20 : la météo n'est joignable qu'en terrain, jamais en
+              // prépa. Comme toute la section, il n'est rendu qu'en phase `hike`
+              // -> invisible en préparation, par construction.
+              LocalizedConditionsBanner(trailId: trailId),
+              const SizedBox(height: AppTheme.spacingBase),
               HubSection(
                 title: t.hub.sections.hike,
                 icon: Icons.hiking,
@@ -312,6 +334,21 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                     title: t.hub.cards.journal,
                     subtitle: t.hub.cards.journalSub,
                     onTap: () => context.push('/journal'),
+                  ),
+                  // R11 (retour Chris, LOT L8) — MÉTÉO : carte « Prévisions par
+                  // étape » -> écran météo E31 (`/trail/:id/weather`). PARITÉ
+                  // GR20 : le HUB GR20 expose « Météo » et « Incendie » COTE A
+                  // COTE dans sa section « Randonner » (jamais dans
+                  // « Préparer »). Le bandeau ci-dessus donne le jour J localisé ;
+                  // cette carte ouvre le détail étape par étape. Route hors-shell
+                  // atteinte via `context.push` (retour propre, pile préservée —
+                  // jamais context.go qui viderait la pile). Libellés Slang
+                  // existants (`t.hub.cards.weather`/`weatherSub`, 5 langues).
+                  QuickAccessCard(
+                    icon: Icons.wb_sunny_outlined,
+                    title: t.hub.cards.weather,
+                    subtitle: t.hub.cards.weatherSub,
+                    onTap: () => context.push('/trail/$trailId/weather'),
                   ),
                   // PARITE GR20 (#99460) — INCENDIE : carte « Risques & alertes »
                   // (clone GR20 `FireRiskScreen`, data-driven). Niveaux de risque
