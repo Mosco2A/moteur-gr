@@ -1,12 +1,20 @@
 // SW-SKIN-L3d — Tests de l'unification des composants (Card -> AppCard,
-// *Button -> AppButton) sur les domaines journal + guides + diploma.
+// *Button -> AppButton) sur les domaines guides + diploma.
 //
-// Objectif : prouver que les ecrans/widgets de ces trois domaines utilisent
+// Objectif : prouver que les ecrans/widgets de ces domaines utilisent
 // desormais la grammaire unifiee (AppCard / AppButton) et PLUS aucune Card
 // Material brute, tout en gardant les taps fonctionnels (iso-fonction).
 // L'iso-rendu visuel (padding, contenu, semantique) est preserve par
 // construction dans les ecrans ; ces tests verrouillent la substitution
 // structurelle et le comportement (tap, ouverture de lien, cible tactile).
+//
+// 20/09/2026 — correctif L0-2 : le groupe « journal » de ce fichier (2 tests)
+// a ete retire. Il portait sur les deux widgets du dossier journal/widgets/,
+// qui etaient du code mort : aucun fichier de lib/ ne les importait, l'ecran
+// du journal ayant ecrit ses propres classes privees a la place. Ces 2 tests
+// etaient leur SEUL consommateur et les maintenaient artificiellement en vie.
+// Les groupes guides et diploma sont CONSERVES : ils portent sur des ecrans
+// bien vivants et verrouillent la meme regle de grammaire unifiee.
 
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
@@ -29,8 +37,6 @@ import 'package:moteur_gr/features/guides/domain/town_guide_catalog.dart';
 import 'package:moteur_gr/features/guides/presentation/town_guide_detail_screen.dart';
 import 'package:moteur_gr/features/guides/presentation/town_guides_screen.dart';
 import 'package:moteur_gr/features/guides/providers/guide_providers.dart';
-import 'package:moteur_gr/features/journal/widgets/add_note_dialog.dart';
-import 'package:moteur_gr/features/journal/widgets/journal_entry_card.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:moteur_gr/shared/widgets/app_card.dart';
@@ -78,77 +84,6 @@ void main() {
 
   setUpAll(() async {
     await initializeDateFormatting('fr_FR');
-  });
-
-  // -------------------------------------------------------------------------
-  // JOURNAL
-  // -------------------------------------------------------------------------
-  group('SW-SKIN-L3d — journal', () {
-    testWidgets('JournalEntryCard rend un AppCard (plus de Card brute) '
-        'et conserve son contenu', (tester) async {
-      final entry = JournalEntry(
-        id: 1,
-        trailId: 'sentier-bleu',
-        stageNumber: 4,
-        content: 'Belle etape sous le soleil.',
-        createdAt: DateTime(2026, 6, 1, 9, 30),
-      );
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: JournalEntryCard(
-              entry: entry,
-              onDelete: () {},
-              onEdit: (_) {},
-            ),
-          ),
-        ),
-      );
-
-      // Grammaire unifiee : AppCard, aucune Card Material brute.
-      expect(find.byType(AppCard), findsOneWidget);
-      expect(find.byType(Card), findsNothing);
-
-      // Iso-rendu du contenu (etape + texte toujours la).
-      expect(find.text('Étape 4'), findsOneWidget);
-      expect(find.text('Belle etape sous le soleil.'), findsOneWidget);
-    });
-
-    testWidgets('AddNoteDialog : validation = AppButton + tap fonctionnel',
-        (tester) async {
-      int? savedStage;
-      String? savedContent;
-
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: AddNoteDialog(
-              // R10 (LOT L10) : le nombre d'etapes vient de l'appelant (plus
-              // de `16` en dur, qui etait le compte du GR20).
-              stageCount: 7,
-              onSave: (stage, content) {
-                savedStage = stage;
-                savedContent = content;
-              },
-            ),
-          ),
-        ),
-      );
-      await tester.pumpAndSettle();
-
-      // La validation est desormais un AppButton (plus d'ElevatedButton brut) ;
-      // le bouton "Annuler" reste un TextButton plat (hors scope L3d).
-      expect(find.byType(AppButton), findsOneWidget);
-
-      // Saisie puis tap sur "Enregistrer" -> onSave recoit les valeurs.
-      await tester.enterText(find.byType(TextField), 'Ma note du jour');
-      await tester.tap(find.text('Enregistrer'));
-      await tester.pumpAndSettle();
-
-      expect(savedStage, 1);
-      expect(savedContent, 'Ma note du jour');
-    });
   });
 
   // -------------------------------------------------------------------------
