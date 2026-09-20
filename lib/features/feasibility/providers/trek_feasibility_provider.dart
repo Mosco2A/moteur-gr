@@ -57,7 +57,6 @@ final trekRequirementsProvider = FutureProvider<TrekRequirements?>((ref) async {
 /// Lit le dernier resultat SharedPreferences du questionnaire (0-24) et le
 /// projette sur 0..3. Absent -> 1 (dépannage prudent, ni haut ni bas).
 final _fallbackFitnessRankProvider = FutureProvider<int>((ref) async {
-  // Le questionnaire persiste son resultat via feasibility_result (prefs).
   // On reste tolerant : toute absence -> rang median bas (1).
   final result = await ref.watch(walkTestResultProvider.future);
   if (result != null) return 0; // ignore (le test prime, gere ailleurs)

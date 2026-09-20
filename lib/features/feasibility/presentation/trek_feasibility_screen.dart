@@ -415,14 +415,6 @@ class _VerdictView extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // LOT 1 (retour Chris #6) : acces permanent au questionnaire.
-          _ShortcutCard(
-            icon: Icons.quiz_outlined,
-            label: t.feasibility.openQuestionnaire,
-            onTap: () => context.push('/trail/$trailId/feasibility-quiz'),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-
           // Acces rapides pour completer / affiner le profil objectif.
           _ProfileShortcuts(trailId: trailId, complete: hasProfile),
         ],
@@ -801,13 +793,6 @@ class _FallbackToQuestionnaire extends ConsumerWidget {
             icon: Icons.history,
             label: f.openPastHikes,
             onTap: () => context.push('/trail/$trailId/past-hikes'),
-          ),
-          const SizedBox(height: AppTheme.spacingLg),
-          AppButton(
-            variant: AppButtonVariant.outline,
-            icon: Icons.quiz_outlined,
-            label: f.sourceFallback,
-            onPressed: () => context.push('/trail/$trailId/feasibility-quiz'),
           ),
         ],
       ),
