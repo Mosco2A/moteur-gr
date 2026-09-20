@@ -66,31 +66,59 @@ class PrepareCoreStepsNotifier extends Notifier<Set<PrepCoreStep>> {
     return const <PrepCoreStep>{};
   }
 
+  /// Décode la liste persistée (noms d'enum) en étapes, en ignorant l'inconnu.
+  Set<PrepCoreStep> _decode(List<String> names) => names
+      .map(
+        (name) => PrepCoreStep.values
+            .where((s) => s.name == name)
+            .cast<PrepCoreStep?>()
+            .firstWhere((s) => s != null, orElse: () => null),
+      )
+      .whereType<PrepCoreStep>()
+      .toSet();
+
+  /// Lit les étapes persistées et les FUSIONNE dans l'état courant.
+  ///
+  /// FUSION, jamais écrasement (FIX-3) : `build()` lance cette relecture SANS
+  /// l'attendre, et chaque écran cœur appelle [markSeen] dès son ouverture. Si
+  /// l'écran marque son étape pendant que la relecture est en vol, un
+  /// `state = stored` écraserait le marquage avec l'état d'AVANT — l'étape
+  /// serait perdue et la gate de démarrage resterait fermée alors que la
+  /// préparation est complète. Il n'existe aucune opération de « démarquage » :
+  /// l'union est donc toujours la valeur correcte.
   Future<void> _loadFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     if (!ref.mounted) return;
-    final stored = prefs.getStringList('$_prefix$_trailId') ?? const [];
-    state = stored
-        .map(
-          (name) => PrepCoreStep.values
-              .where((s) => s.name == name)
-              .cast<PrepCoreStep?>()
-              .firstWhere((s) => s != null, orElse: () => null),
-        )
-        .whereType<PrepCoreStep>()
-        .toSet();
+    final stored = _decode(prefs.getStringList('$_prefix$_trailId') ?? const []);
+    state = {...state, ...stored};
   }
 
   /// Marque une étape cœur comme faite (persistant). Idempotent.
+  ///
+  /// ÉCRITURE SANS MISE À JOUR PERDUE (FIX-3) : la clé porte la liste ENTIÈRE
+  /// des étapes. La liste à écrire est donc recalculée APRÈS l'attente, à
+  /// partir de ce qui est réellement persisté À CET INSTANT, uni à l'état
+  /// courant et à l'étape marquée. Sans cette relecture, un marquage concurrent
+  /// de la relecture initiale réécrivait la clé à partir d'un état périmé et
+  /// DÉTRUISAIT en préférences une étape déjà acquise (mesuré : « programme »
+  /// disparaissait du disque) — la gate ne se rouvrait alors plus, même après
+  /// redémarrage de l'application.
   Future<void> markSeen(PrepCoreStep step) async {
     if (state.contains(step)) return;
-    final next = {...state, step};
-    state = next;
+    // Réactivité immédiate : l'UI ne doit pas attendre l'écriture disque.
+    state = {...state, step};
     final prefs = await SharedPreferences.getInstance();
+    final merged = {
+      ..._decode(prefs.getStringList('$_prefix$_trailId') ?? const []),
+      ...state,
+      step,
+    };
     await prefs.setStringList(
       '$_prefix$_trailId',
-      next.map((s) => s.name).toList(),
+      merged.map((s) => s.name).toList(),
     );
+    if (!ref.mounted) return;
+    state = merged;
   }
 }
 
