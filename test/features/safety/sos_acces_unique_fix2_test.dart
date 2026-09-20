@@ -25,10 +25,14 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///  - un SEUL point d'entree SOS, le bouton flottant [SosButton], masque hors
 ///    trek ;
 ///  - AUCUNE action SOS en barre contextuelle nulle part dans l'app ;
-///  - l'ecran de demonstration dormant qui porte la SECONDE pastille SOS
-///    (`nav_pilote_screen.dart`, conserve pour ses decisions de design) reste
-///    injoignable : aucune route ne le reference. S'il etait rebranche, le
-///    doublon reviendrait pour de bon — le garde le signalerait.
+///  - l'ecran de demonstration qui portait la SECONDE pastille SOS
+///    (`nav_pilote_screen.dart`) n'est plus dormant : il a ete SUPPRIME le
+///    20/09/2026 par le correctif L0-1 (cycle4), avec sa suite de 28 tests et la
+///    banniere publicitaire devenue orpheline. C'est d'ailleurs lui qui avait
+///    produit le faux positif M1 ci-dessus. Le garde ci-dessous devient donc
+///    PLUS STRICT : le filtre qui epargnait son propre fichier du balayage est
+///    tombe avec lui, et plus AUCUN fichier de `lib/` ne doit porter son nom de
+///    classe. S'il revenait, le doublon SOS reviendrait avec — le garde rougit.
 void main() {
   /// Lit un fichier source du paquet (cwd = racine du paquet sous `flutter test`).
   String source(String chemin) => File(chemin).readAsStringSync();
@@ -79,26 +83,28 @@ void main() {
       expect(corps.toLowerCase(), isNot(contains('emergency')));
     });
 
-    test('l ecran de demo dormant (2e pastille SOS) n est cable sur AUCUNE '
-        'route', () {
+    test('l ecran de demo supprime (2e pastille SOS) n est cable sur AUCUNE '
+        'route et ne revient nulle part dans lib/', () {
       final routeur = source('lib/core/routing/app_router.dart');
       // Ni import REEL du fichier (le routeur en garde une trace en
-      // commentaire, qui documente pourquoi l'ecran est dormant), ni
-      // instanciation de l'ecran.
+      // commentaire, qui documente quand et pourquoi l'ecran a ete supprime),
+      // ni instanciation de l'ecran.
       expect(
         RegExp(r"^\s*import\s+.*nav_pilote_screen\.dart", multiLine: true)
             .hasMatch(routeur),
         isFalse,
-        reason: 'le routeur ne doit pas importer l ecran de demo dormant',
+        reason: 'le routeur ne doit pas importer l ecran de demo supprime',
       );
       expect(routeur.contains('NavPiloteScreen('), isFalse);
 
-      // Et personne d'autre ne l'instancie dans l'app.
+      // Et personne ne le reintroduit dans l'app. Le filtre qui excluait
+      // `nav_pilote_screen.dart` du balayage est RETIRE (L0-1, 20/09/2026) :
+      // le fichier n'existe plus, donc plus AUCUN fichier de lib/ n'a le droit
+      // de porter ce nom de classe. Le garde est volontairement absolu.
       final instanciations = Directory('lib')
           .listSync(recursive: true)
           .whereType<File>()
           .where((f) => f.path.endsWith('.dart'))
-          .where((f) => !f.path.endsWith('nav_pilote_screen.dart'))
           .where((f) => f.readAsStringSync().contains('NavPiloteScreen'))
           .map((f) => f.path)
           .toList();
@@ -106,8 +112,8 @@ void main() {
       expect(
         instanciations,
         isEmpty,
-        reason: 'cet ecran porte une SECONDE pastille SOS ; le rebrancher '
-            'recreerait le double acces (finding M1)',
+        reason: 'cet ecran portait une SECONDE pastille SOS a l origine du faux '
+            'positif M1 ; le reintroduire recreerait le double acces',
       );
     });
 

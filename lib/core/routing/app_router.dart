@@ -673,13 +673,32 @@ final appRouter = GoRouter(
       name: 'profile',
       builder: (context, state) => const ProfileScreen(),
     ),
-    // StepWays L8 (RELEASE V1, nettoyage conservateur) : la route de DEMO/pilote
-    // '/nav-pilote' (demonstrateur visuel JETABLE de la refonte navigation,
-    // methode D2) est RETIREE du routeur. C'etait une porte d'entree temporaire
-    // pour la revue Chris du cockpit-par-phases (nav V2), jamais destinee a la
-    // prod. Le FICHIER `nav_pilote_screen.dart` est CONSERVE (dormant) : il porte
-    // les decisions de design nav V2 (R3-R19) reutilisables ; il n'est plus
-    // reference par aucune route ni aucun ecran (cf. INVENTAIRE_ORPHELINS_L8.md).
+    // StepWays L8 (RELEASE V1) : la route de DEMO/pilote '/nav-pilote'
+    // (demonstrateur visuel JETABLE de la refonte navigation, methode D2) a
+    // d'abord ete RETIREE du routeur. C'etait une porte d'entree temporaire pour
+    // la revue Chris du cockpit-par-phases (nav V2), jamais destinee a la prod.
+    //
+    // StepWays cycle4, correctif L0-1 du 20/09/2026 : le FICHIER
+    // `lib/features/hub/presentation/nav_pilote_screen.dart` (1514 lignes) est
+    // desormais SUPPRIME, il n'est plus "conserve (dormant)". Trois raisons :
+    //   1. Code mort : plus aucune route ni aucun ecran ne le referencait.
+    //   2. Il portait sa PROPRE barre du bas et sa PROPRE pastille SOS, a
+    //      l'origine d'un FAUX POSITIF QA (finding "double acces SOS", rapport
+    //      personas #100175) qui a coute du temps pour rien.
+    //   3. Il trainait 28 tests (test/shared/widgets/nav_pilote_test.dart, dont
+    //      21 rouges) repayes a chaque campagne QA.
+    // Le widget de banniere publicitaire de `lib/features/ads/presentation/`
+    // (95 lignes), devenu orphelin avec lui — cet ecran etait son unique
+    // consommateur — a ete supprime dans le meme correctif ; le dossier, vide,
+    // a disparu avec. Les services `ads/data/` et `ads/providers/` restent.
+    // Les decisions de design nav V2 (R3-R19) restent tracees en base memoire et
+    // dans lib/docs/ ; le code est recuperable via git (tag conf-L0-avant).
+    //
+    // GARDE : test/features/safety/sos_acces_unique_fix2_test.dart interdit
+    // desormais le nom de classe de cet ecran dans TOUT fichier de lib/ (le
+    // filtre d'exception qui epargnait son propre fichier est tombe avec lui).
+    // C'est pourquoi ce commentaire cite le fichier et jamais la classe : si le
+    // nom de classe reapparait quelque part dans lib/, le garde vire au rouge.
   ],
   errorBuilder: (context, state) => Scaffold(
     appBar: AppBar(title: Text(t.common.error)),
