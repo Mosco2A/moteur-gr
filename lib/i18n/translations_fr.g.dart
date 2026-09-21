@@ -811,16 +811,16 @@ class Translations$checklist$fr {
 	late final Translations$checklist$weight$fr weight = Translations$checklist$weight$fr.internal(_root);
 	late final Translations$checklist$ui$fr ui = Translations$checklist$ui$fr.internal(_root);
 
-	/// fr: 'Sac adapte a la saison ($season) et a votre sentier.'
-	String seasonalBanner({required Object season}) => 'Sac adapte a la saison (${season}) et a votre sentier.';
+	/// fr: 'Sac adapté à la saison ($season) et à votre sentier.'
+	String seasonalBanner({required Object season}) => 'Sac adapté à la saison (${season}) et à votre sentier.';
 
 	late final Translations$checklist$seasons$fr seasons = Translations$checklist$seasons$fr.internal(_root);
 
 	/// fr: 'Ajouter'
 	String get seasonalAdd => 'Ajouter';
 
-	/// fr: 'Ajoute'
-	String get seasonalAdded => 'Ajoute';
+	/// fr: 'Ajouté'
+	String get seasonalAdded => 'Ajouté';
 
 	/// fr: '$g g'
 	String seasonalWeight({required Object g}) => '${g} g';
@@ -4394,8 +4394,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Vérifier la météo des prochains jours'
 	String get preDep1 => 'Vérifier la météo des prochains jours';
 
-	/// fr: 'Charger telephone + batterie externe'
-	String get preDep2 => 'Charger telephone + batterie externe';
+	/// fr: 'Charger téléphone + batterie externe'
+	String get preDep2 => 'Charger téléphone + batterie externe';
 
 	/// fr: 'Prévenir un proche de votre itinéraire'
 	String get preDep3 => 'Prévenir un proche de votre itinéraire';
@@ -4409,14 +4409,14 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Appliquer crème solaire et anti-frottements'
 	String get preDep6 => 'Appliquer crème solaire et anti-frottements';
 
-	/// fr: 'Verifier les lacets et le serrage des chaussures'
-	String get preDep7 => 'Verifier les lacets et le serrage des chaussures';
+	/// fr: 'Vérifier les lacets et le serrage des chaussures'
+	String get preDep7 => 'Vérifier les lacets et le serrage des chaussures';
 
-	/// fr: 'Telecharger les cartes offline'
-	String get preDep8 => 'Telecharger les cartes offline';
+	/// fr: 'Télécharger les cartes offline'
+	String get preDep8 => 'Télécharger les cartes offline';
 
-	/// fr: 'SAC OK — PRET A PARTIR'
-	String get bagOk => 'SAC OK — PRET A PARTIR';
+	/// fr: 'SAC OK — PRÊT À PARTIR'
+	String get bagOk => 'SAC OK — PRÊT À PARTIR';
 
 	/// fr: 'VALIDER MON SAC'
 	String get validateBag => 'VALIDER MON SAC';
@@ -4436,11 +4436,11 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Sac valide'
 	String get bagValidTitle => 'Sac valide';
 
-	/// fr: 'Tous les {total} equipements obligatoires sont dans votre sac. Poids total : {weight} kg ({pct}% du poids corporel) Etes-vous certain que votre sac est pret ?'
-	String get bagValidBody => 'Tous les {total} equipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids corporel)\n\nEtes-vous certain que votre sac est pret ?';
+	/// fr: 'Tous les {total} équipements obligatoires sont dans votre sac. Poids total : {weight} kg ({pct}% du poids corporel) Êtes-vous certain que votre sac est prêt ?'
+	String get bagValidBody => 'Tous les {total} équipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids corporel)\n\nÊtes-vous certain que votre sac est prêt ?';
 
-	/// fr: 'Verifier encore'
-	String get checkAgain => 'Verifier encore';
+	/// fr: 'Vérifier encore'
+	String get checkAgain => 'Vérifier encore';
 
 	/// fr: 'Oui, sac OK'
 	String get yesBagOk => 'Oui, sac OK';
@@ -4454,8 +4454,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Équipement manquant'
 	String get missingTitle => 'Équipement manquant';
 
-	/// fr: '{checked}/{total} equipements obligatoires coches.'
-	String get missingBody => '{checked}/{total} equipements obligatoires coches.';
+	/// fr: '{checked}/{total} équipements obligatoires cochés.'
+	String get missingBody => '{checked}/{total} équipements obligatoires cochés.';
 
 	/// fr: 'Il manque :'
 	String get missingList => 'Il manque :';
@@ -4463,8 +4463,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Compris'
 	String get understood => 'Compris';
 
-	/// fr: 'Valider quand meme'
-	String get validateAnyway => 'Valider quand meme';
+	/// fr: 'Valider quand même'
+	String get validateAnyway => 'Valider quand même';
 
 	/// fr: 'Sac valide (avec items manquants) !'
 	String get bagValidatedMissingSnack => 'Sac valide (avec items manquants) !';
@@ -4487,8 +4487,8 @@ class Translations$checklist$seasons$fr {
 	/// fr: 'printemps'
 	String get spring => 'printemps';
 
-	/// fr: 'ete'
-	String get summer => 'ete';
+	/// fr: 'été'
+	String get summer => 'été';
 
 	/// fr: 'automne'
 	String get autumn => 'automne';
@@ -7438,39 +7438,39 @@ extension on Translations {
 			'checklist.ui.preDepartureTitle' => 'Checklist avant départ',
 			'checklist.ui.preDepartureCounter' => '{checked}/{total} vérifiés',
 			'checklist.ui.preDep1' => 'Vérifier la météo des prochains jours',
-			'checklist.ui.preDep2' => 'Charger telephone + batterie externe',
+			'checklist.ui.preDep2' => 'Charger téléphone + batterie externe',
 			'checklist.ui.preDep3' => 'Prévenir un proche de votre itinéraire',
 			'checklist.ui.preDep4' => 'Vérifier que le sac est bien fermé et étanche',
 			'checklist.ui.preDep5' => 'Remplir les gourdes (minimum 2L)',
 			'checklist.ui.preDep6' => 'Appliquer crème solaire et anti-frottements',
-			'checklist.ui.preDep7' => 'Verifier les lacets et le serrage des chaussures',
-			'checklist.ui.preDep8' => 'Telecharger les cartes offline',
-			'checklist.ui.bagOk' => 'SAC OK — PRET A PARTIR',
+			'checklist.ui.preDep7' => 'Vérifier les lacets et le serrage des chaussures',
+			'checklist.ui.preDep8' => 'Télécharger les cartes offline',
+			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
 			'checklist.ui.validateBag' => 'VALIDER MON SAC',
 			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
 			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
 			'checklist.ui.shareGroup' => 'PARTAGER AVEC LE GROUPE',
 			'checklist.ui.exportList' => 'EXPORTER LA LISTE',
 			'checklist.ui.bagValidTitle' => 'Sac valide',
-			'checklist.ui.bagValidBody' => 'Tous les {total} equipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids corporel)\n\nEtes-vous certain que votre sac est pret ?',
-			'checklist.ui.checkAgain' => 'Verifier encore',
+			'checklist.ui.bagValidBody' => 'Tous les {total} équipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids corporel)\n\nÊtes-vous certain que votre sac est prêt ?',
+			'checklist.ui.checkAgain' => 'Vérifier encore',
 			'checklist.ui.yesBagOk' => 'Oui, sac OK',
 			'checklist.ui.bagValidatedSnack' => 'Sac valide !',
 			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — vous pouvez modifier votre matériel.',
 			'checklist.ui.missingTitle' => 'Équipement manquant',
-			'checklist.ui.missingBody' => '{checked}/{total} equipements obligatoires coches.',
+			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			'checklist.ui.missingList' => 'Il manque :',
 			'checklist.ui.understood' => 'Compris',
-			'checklist.ui.validateAnyway' => 'Valider quand meme',
+			'checklist.ui.validateAnyway' => 'Valider quand même',
 			'checklist.ui.bagValidatedMissingSnack' => 'Sac valide (avec items manquants) !',
 			'checklist.ui.shareGroupHint' => 'Rejoignez un groupe pour partager votre checklist.',
-			'checklist.seasonalBanner' => ({required Object season}) => 'Sac adapte a la saison (${season}) et a votre sentier.',
+			'checklist.seasonalBanner' => ({required Object season}) => 'Sac adapté à la saison (${season}) et à votre sentier.',
 			'checklist.seasons.winter' => 'hiver',
 			'checklist.seasons.spring' => 'printemps',
-			'checklist.seasons.summer' => 'ete',
+			'checklist.seasons.summer' => 'été',
 			'checklist.seasons.autumn' => 'automne',
 			'checklist.seasonalAdd' => 'Ajouter',
-			'checklist.seasonalAdded' => 'Ajoute',
+			'checklist.seasonalAdded' => 'Ajouté',
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'journal.title' => 'Journal de randonnée',
 			'journal.empty' => 'Votre journal est vide',
