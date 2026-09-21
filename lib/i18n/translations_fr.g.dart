@@ -587,11 +587,11 @@ class Translations$gps$fr {
 	/// fr: 'Autorisation GPS requise'
 	String get permission => 'Autorisation GPS requise';
 
-	/// fr: 'Acces a la localisation refuse'
-	String get denied => 'Acces a la localisation refuse';
+	/// fr: 'Accès à la localisation refusé'
+	String get denied => 'Accès à la localisation refusé';
 
-	/// fr: 'Service de localisation desactive'
-	String get disabled => 'Service de localisation desactive';
+	/// fr: 'Service de localisation désactivé'
+	String get disabled => 'Service de localisation désactivé';
 
 	/// fr: 'Hors trace'
 	String get offTrack => 'Hors trace';
@@ -608,14 +608,14 @@ class Translations$navAlert$fr {
 
 	// Translations
 
-	/// fr: 'Vous vous eloignez du sentier — $meters m. Verifiez votre position.'
-	String offTrackBanner({required Object meters}) => 'Vous vous eloignez du sentier — ${meters} m. Verifiez votre position.';
+	/// fr: 'Vous vous éloignez du sentier — $meters m. Vérifiez votre position.'
+	String offTrackBanner({required Object meters}) => 'Vous vous éloignez du sentier — ${meters} m. Vérifiez votre position.';
 
 	/// fr: 'Vous quittez le sentier'
 	String get offTrackNotifTitle => 'Vous quittez le sentier';
 
-	/// fr: 'Vous vous eloignez du sentier ($meters m). Verifiez votre position.'
-	String offTrackNotifBody({required Object meters}) => 'Vous vous eloignez du sentier (${meters} m). Verifiez votre position.';
+	/// fr: 'Vous vous éloignez du sentier ($meters m). Vérifiez votre position.'
+	String offTrackNotifBody({required Object meters}) => 'Vous vous éloignez du sentier (${meters} m). Vérifiez votre position.';
 }
 
 // Path: planning
@@ -1120,8 +1120,8 @@ class Translations$diploma$fr {
 	/// fr: 'Terminez l'intégralité de votre parcours pour débloquer votre diplôme de finisher.'
 	String get lockedMessage => 'Terminez l\'intégralité de votre parcours pour débloquer votre diplôme de finisher.';
 
-	/// fr: 'Parcours integral'
-	String get labelIntegral => 'Parcours integral';
+	/// fr: 'Parcours intégral'
+	String get labelIntegral => 'Parcours intégral';
 
 	/// fr: 'Parcours partiel'
 	String get labelPartial => 'Parcours partiel';
@@ -2449,17 +2449,17 @@ class Translations$recap$fr {
 	/// fr: 'Mon aventure'
 	String get title => 'Mon aventure';
 
-	/// fr: 'Disponible a la fin du trek'
-	String get lockedTitle => 'Disponible a la fin du trek';
+	/// fr: 'Disponible à la fin du trek'
+	String get lockedTitle => 'Disponible à la fin du trek';
 
 	/// fr: 'Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.'
 	String get lockedMessage => 'Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.';
 
-	/// fr: 'Felicitations !'
-	String get finisherTitle => 'Felicitations !';
+	/// fr: 'Félicitations !'
+	String get finisherTitle => 'Félicitations !';
 
-	/// fr: 'Vous avez termine votre parcours'
-	String get finisherSubtitle => 'Vous avez termine votre parcours';
+	/// fr: 'Vous avez terminé votre parcours'
+	String get finisherSubtitle => 'Vous avez terminé votre parcours';
 
 	/// fr: 'Votre parcours partiel'
 	String get partialTitle => 'Votre parcours partiel';
@@ -2880,8 +2880,8 @@ class Translations$import$fr {
 	/// fr: 'CHOISIR UN FICHIER GPX'
 	String get pickButton => 'CHOISIR UN FICHIER GPX';
 
-	/// fr: 'Trace importee'
-	String get traceSection => 'Trace importee';
+	/// fr: 'Trace importée'
+	String get traceSection => 'Trace importée';
 
 	/// fr: 'Statistiques'
 	String get statsSection => 'Statistiques';
@@ -2910,8 +2910,8 @@ class Translations$import$fr {
 	/// fr: 'Sud-Nord'
 	String get directionSN => 'Sud-Nord';
 
-	/// fr: 'Étapes detectees'
-	String get stagesSection => 'Étapes detectees';
+	/// fr: 'Étapes détectées'
+	String get stagesSection => 'Étapes détectées';
 
 	/// fr: '{done}/{total}'
 	String get stagesCount => '{done}/{total}';
@@ -2922,23 +2922,23 @@ class Translations$import$fr {
 	/// fr: 'Avertissements'
 	String get warningsSection => 'Avertissements';
 
-	/// fr: '{count} point(s) hors zone ignores.'
-	String get warningOutOfBounds => '{count} point(s) hors zone ignores.';
+	/// fr: '{count} point(s) hors zone ignorés.'
+	String get warningOutOfBounds => '{count} point(s) hors zone ignorés.';
 
-	/// fr: '{percent}% des points sont eloignes de la trace du sentier.'
-	String get warningOffTrail => '{percent}% des points sont eloignes de la trace du sentier.';
+	/// fr: '{percent}% des points sont éloignés de la trace du sentier.'
+	String get warningOffTrail => '{percent}% des points sont éloignés de la trace du sentier.';
 
 	/// fr: 'Fichier GPX insuffisant : {count} points (minimum 10).'
 	String get invalidTooFewPoints => 'Fichier GPX insuffisant : {count} points (minimum 10).';
 
-	/// fr: 'La trace ne correspond pas a la zone de ce sentier.'
-	String get invalidOutOfBounds => 'La trace ne correspond pas a la zone de ce sentier.';
+	/// fr: 'La trace ne correspond pas à la zone de ce sentier.'
+	String get invalidOutOfBounds => 'La trace ne correspond pas à la zone de ce sentier.';
 
 	/// fr: 'Impossible de lire le fichier.'
 	String get errorUnreadable => 'Impossible de lire le fichier.';
 
-	/// fr: 'Le fichier GPX n'a pas pu etre lu.'
-	String get errorParsing => 'Le fichier GPX n\'a pas pu etre lu.';
+	/// fr: 'Le fichier GPX n'a pas pu être lu.'
+	String get errorParsing => 'Le fichier GPX n\'a pas pu être lu.';
 
 	/// fr: 'VALIDER L'IMPORT'
 	String get validateButton => 'VALIDER L\'IMPORT';
@@ -2946,8 +2946,8 @@ class Translations$import$fr {
 	/// fr: 'Valider l'import ?'
 	String get confirmTitle => 'Valider l\'import ?';
 
-	/// fr: 'Cette trace sera importee comme votre parcours : - {points} points GPS - {km} km - {stages} étapes detectees - Direction : {direction}'
-	String get confirmBody => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes detectees\n- Direction : {direction}';
+	/// fr: 'Cette trace sera importée comme votre parcours : - {points} points GPS - {km} km - {stages} étapes détectées - Direction : {direction}'
+	String get confirmBody => 'Cette trace sera importée comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}';
 
 	/// fr: 'Annuler'
 	String get cancel => 'Annuler';
@@ -2955,8 +2955,8 @@ class Translations$import$fr {
 	/// fr: 'Valider'
 	String get validate => 'Valider';
 
-	/// fr: 'Trace GPX importee !'
-	String get importedSnack => 'Trace GPX importee !';
+	/// fr: 'Trace GPX importée !'
+	String get importedSnack => 'Trace GPX importée !';
 }
 
 // Path: myTreks
@@ -7200,13 +7200,13 @@ extension on Translations {
 			'accommodation.types.camping' => 'Camping',
 			'accommodation.types.bivouac' => 'Bivouac',
 			'gps.permission' => 'Autorisation GPS requise',
-			'gps.denied' => 'Acces a la localisation refuse',
-			'gps.disabled' => 'Service de localisation desactive',
+			'gps.denied' => 'Accès à la localisation refusé',
+			'gps.disabled' => 'Service de localisation désactivé',
 			'gps.offTrack' => 'Hors trace',
 			'gps.centerOnMe' => 'Centrer sur ma position',
-			'navAlert.offTrackBanner' => ({required Object meters}) => 'Vous vous eloignez du sentier — ${meters} m. Verifiez votre position.',
+			'navAlert.offTrackBanner' => ({required Object meters}) => 'Vous vous éloignez du sentier — ${meters} m. Vérifiez votre position.',
 			'navAlert.offTrackNotifTitle' => 'Vous quittez le sentier',
-			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Vous vous eloignez du sentier (${meters} m). Verifiez votre position.',
+			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Vous vous éloignez du sentier (${meters} m). Vérifiez votre position.',
 			'planning.title' => 'Planning',
 			'planning.duration' => 'Durée',
 			'planning.days' => 'jours',
@@ -7578,7 +7578,7 @@ extension on Translations {
 			'diploma.downloadPdf' => 'Télécharger le diplôme PDF',
 			'diploma.lockedTitle' => 'Diplôme verrouillé',
 			'diploma.lockedMessage' => 'Terminez l\'intégralité de votre parcours pour débloquer votre diplôme de finisher.',
-			'diploma.labelIntegral' => 'Parcours integral',
+			'diploma.labelIntegral' => 'Parcours intégral',
 			'diploma.labelPartial' => 'Parcours partiel',
 			'notifications.morningReminder' => 'Rappel du matin',
 			'notifications.weatherAlerts' => 'Alertes météo',
@@ -8143,10 +8143,10 @@ extension on Translations {
 			'moderation.a11y.complaintForm' => 'Formulaire de contestation d\'une décision',
 			'bootstrap.loading' => 'Préparation de votre randonnée…',
 			'recap.title' => 'Mon aventure',
-			'recap.lockedTitle' => 'Disponible a la fin du trek',
+			'recap.lockedTitle' => 'Disponible à la fin du trek',
 			'recap.lockedMessage' => 'Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.',
-			'recap.finisherTitle' => 'Felicitations !',
-			'recap.finisherSubtitle' => 'Vous avez termine votre parcours',
+			'recap.finisherTitle' => 'Félicitations !',
+			'recap.finisherSubtitle' => 'Vous avez terminé votre parcours',
 			'recap.partialTitle' => 'Votre parcours partiel',
 			'recap.partialSubtitle' => 'Votre aventure reste enregistrée',
 			'recap.statsSection' => 'Statistiques',
@@ -8421,7 +8421,7 @@ extension on Translations {
 			'import.headerTitle' => 'Importer un fichier GPX',
 			'import.headerBody' => 'Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.',
 			'import.pickButton' => 'CHOISIR UN FICHIER GPX',
-			'import.traceSection' => 'Trace importee',
+			'import.traceSection' => 'Trace importée',
 			'import.statsSection' => 'Statistiques',
 			'import.statDistance' => 'Distance',
 			'import.statElevationGain' => 'D+',
@@ -8431,22 +8431,22 @@ extension on Translations {
 			'import.statPoints' => 'Points GPS',
 			'import.directionNS' => 'Nord-Sud',
 			'import.directionSN' => 'Sud-Nord',
-			'import.stagesSection' => 'Étapes detectees',
+			'import.stagesSection' => 'Étapes détectées',
 			'import.stagesCount' => '{done}/{total}',
 			'import.stageBadge' => 'E{number}',
 			'import.warningsSection' => 'Avertissements',
-			'import.warningOutOfBounds' => '{count} point(s) hors zone ignores.',
-			'import.warningOffTrail' => '{percent}% des points sont eloignes de la trace du sentier.',
+			'import.warningOutOfBounds' => '{count} point(s) hors zone ignorés.',
+			'import.warningOffTrail' => '{percent}% des points sont éloignés de la trace du sentier.',
 			'import.invalidTooFewPoints' => 'Fichier GPX insuffisant : {count} points (minimum 10).',
-			'import.invalidOutOfBounds' => 'La trace ne correspond pas a la zone de ce sentier.',
+			'import.invalidOutOfBounds' => 'La trace ne correspond pas à la zone de ce sentier.',
 			'import.errorUnreadable' => 'Impossible de lire le fichier.',
-			'import.errorParsing' => 'Le fichier GPX n\'a pas pu etre lu.',
+			'import.errorParsing' => 'Le fichier GPX n\'a pas pu être lu.',
 			'import.validateButton' => 'VALIDER L\'IMPORT',
 			'import.confirmTitle' => 'Valider l\'import ?',
-			'import.confirmBody' => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes detectees\n- Direction : {direction}',
+			'import.confirmBody' => 'Cette trace sera importée comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}',
 			'import.cancel' => 'Annuler',
 			'import.validate' => 'Valider',
-			'import.importedSnack' => 'Trace GPX importee !',
+			'import.importedSnack' => 'Trace GPX importée !',
 			'myTreks.title' => 'Mes treks',
 			'myTreks.sectionInProgress' => 'En cours',
 			'myTreks.sectionPrepared' => 'Préparés',

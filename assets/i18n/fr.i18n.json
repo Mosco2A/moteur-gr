@@ -257,15 +257,15 @@
   },
   "gps": {
     "permission": "Autorisation GPS requise",
-    "denied": "Acces a la localisation refuse",
-    "disabled": "Service de localisation desactive",
+    "denied": "Accès à la localisation refusé",
+    "disabled": "Service de localisation désactivé",
     "offTrack": "Hors trace",
     "centerOnMe": "Centrer sur ma position"
   },
   "navAlert": {
-    "offTrackBanner": "Vous vous eloignez du sentier — $meters m. Verifiez votre position.",
+    "offTrackBanner": "Vous vous éloignez du sentier — $meters m. Vérifiez votre position.",
     "offTrackNotifTitle": "Vous quittez le sentier",
-    "offTrackNotifBody": "Vous vous eloignez du sentier ($meters m). Verifiez votre position."
+    "offTrackNotifBody": "Vous vous éloignez du sentier ($meters m). Vérifiez votre position."
   },
   "planning": {
     "title": "Planning",
@@ -681,7 +681,7 @@
     "downloadPdf": "Télécharger le diplôme PDF",
     "lockedTitle": "Diplôme verrouillé",
     "lockedMessage": "Terminez l'intégralité de votre parcours pour débloquer votre diplôme de finisher.",
-    "labelIntegral": "Parcours integral",
+    "labelIntegral": "Parcours intégral",
     "labelPartial": "Parcours partiel"
   },
   "notifications": {
@@ -1414,10 +1414,10 @@
   },
   "recap": {
     "title": "Mon aventure",
-    "lockedTitle": "Disponible a la fin du trek",
+    "lockedTitle": "Disponible à la fin du trek",
     "lockedMessage": "Terminez ou abandonnez votre parcours pour retrouver le récapitulatif de votre aventure.",
-    "finisherTitle": "Felicitations !",
-    "finisherSubtitle": "Vous avez termine votre parcours",
+    "finisherTitle": "Félicitations !",
+    "finisherSubtitle": "Vous avez terminé votre parcours",
     "partialTitle": "Votre parcours partiel",
     "partialSubtitle": "Votre aventure reste enregistrée",
     "statsSection": "Statistiques",
@@ -1804,7 +1804,7 @@
     "headerTitle": "Importer un fichier GPX",
     "headerBody": "Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.",
     "pickButton": "CHOISIR UN FICHIER GPX",
-    "traceSection": "Trace importee",
+    "traceSection": "Trace importée",
     "statsSection": "Statistiques",
     "statDistance": "Distance",
     "statElevationGain": "D+",
@@ -1814,22 +1814,22 @@
     "statPoints": "Points GPS",
     "directionNS": "Nord-Sud",
     "directionSN": "Sud-Nord",
-    "stagesSection": "Étapes detectees",
+    "stagesSection": "Étapes détectées",
     "stagesCount": "{done}/{total}",
     "stageBadge": "E{number}",
     "warningsSection": "Avertissements",
-    "warningOutOfBounds": "{count} point(s) hors zone ignores.",
-    "warningOffTrail": "{percent}% des points sont eloignes de la trace du sentier.",
+    "warningOutOfBounds": "{count} point(s) hors zone ignorés.",
+    "warningOffTrail": "{percent}% des points sont éloignés de la trace du sentier.",
     "invalidTooFewPoints": "Fichier GPX insuffisant : {count} points (minimum 10).",
-    "invalidOutOfBounds": "La trace ne correspond pas a la zone de ce sentier.",
+    "invalidOutOfBounds": "La trace ne correspond pas à la zone de ce sentier.",
     "errorUnreadable": "Impossible de lire le fichier.",
-    "errorParsing": "Le fichier GPX n'a pas pu etre lu.",
+    "errorParsing": "Le fichier GPX n'a pas pu être lu.",
     "validateButton": "VALIDER L'IMPORT",
     "confirmTitle": "Valider l'import ?",
-    "confirmBody": "Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes detectees\n- Direction : {direction}",
+    "confirmBody": "Cette trace sera importée comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes détectées\n- Direction : {direction}",
     "cancel": "Annuler",
     "validate": "Valider",
-    "importedSnack": "Trace GPX importee !"
+    "importedSnack": "Trace GPX importée !"
   },
   "myTreks": {
     "title": "Mes treks",
