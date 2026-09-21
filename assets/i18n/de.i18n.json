@@ -870,19 +870,19 @@
     "season": "Saison",
     "altitude": "Min. Hoehe",
     "screenTitle": "Ratgeber",
-    "screenIntro": "Alles fur eine gelungene Wanderung",
+    "screenIntro": "Alles für eine gelungene Wanderung",
     "followUs": "Folgen Sie uns:",
     "viewOnFacebook": "Auf Facebook ansehen",
     "viewOnInstagram": "Instagram",
-    "linkOffline": "Link offline nicht verfugbar",
-    "emptyThemed": "Kein Ratgeber fur diesen Weg verfugbar.",
+    "linkOffline": "Link offline nicht verfügbar",
+    "emptyThemed": "Kein Ratgeber für diesen Weg verfügbar.",
     "moreTips": "+ $n Tipps",
     "themes": {
-      "gear": "Ausrustung",
+      "gear": "Ausrüstung",
       "safety": "Sicherheit",
       "health": "Gesundheit",
       "weather": "Wetter",
-      "refuge": "Huttenleben",
+      "refuge": "Hüttenleben",
       "nature": "Natur",
       "other": "Sonstiges"
     }
@@ -1024,17 +1024,17 @@
     "paywallIncludedIn": "Im Paket « $trail » enthalten.",
     "paywallSubtitle": "Plan angepasst an Ihr Profil und Ihr Abreisedatum.",
     "unlock": "Freischalten",
-    "effortIntro": "Ein progressiver $weeks-Wochen-Plan fur die $km km und rund $elevation m Hohenmeter.",
+    "effortIntro": "Ein progressiver $weeks-Wochen-Plan für die $km km und rund $elevation m Höhenmeter.",
     "countdown": "Abreise in $days Tagen",
-    "planOverWeeks": "Plan uber $n Wochen",
+    "planOverWeeks": "Plan über $n Wochen",
     "phaseWeeks": "Wochen $start-$end · $title",
-    "objectiveTitle": "Schlusselziel",
+    "objectiveTitle": "Schlüsselziel",
     "inviteSetDate": "Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.",
-    "inviteFillProfile": "Fullen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.",
-    "genericPlanNotice": "Generischer Plan: ein eigener Plan fur diesen Weg kommt bald.",
+    "inviteFillProfile": "Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.",
+    "genericPlanNotice": "Generischer Plan: ein eigener Plan für diesen Weg kommt bald.",
     "cautionVerdictNotice": "Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.",
-    "departureTooClose": "Noch $days Tage: Plan auf die verfugbare Zeit verdichtet.",
-    "noPlan": "Trainingsplan fur diesen Weg bald verfugbar."
+    "departureTooClose": "Noch $days Tage: Plan auf die verfügbare Zeit verdichtet.",
+    "noPlan": "Trainingsplan für diesen Weg bald verfügbar."
   },
   "eta": {
     "title": "Geschätzte Zeit",
@@ -1136,7 +1136,7 @@
       "ravitaillement": "Nachschub",
       "danger": "Gefahr",
       "camp": "Zeltplatz",
-      "connectivite": "Konnektivitat",
+      "connectivite": "Konnektivität",
       "jonction": "Kreuzung"
     },
     "filters": {
@@ -1146,11 +1146,11 @@
       "recentConditionOnly": "Nur aktueller Zustand"
     },
     "detail": {
-      "conditionsTitle": "Gelandezustand",
+      "conditionsTitle": "Geländezustand",
       "noComments": "Noch kein Zustand gemeldet.",
-      "commentsError": "Zustand nicht verfugbar.",
+      "commentsError": "Zustand nicht verfügbar.",
       "report": "Melden",
-      "reportAck": "Meldung gespeichert. Sie wird nach der Synchronisierung gepruft.",
+      "reportAck": "Meldung gespeichert. Sie wird nach der Synchronisierung geprüft.",
       "pendingSync": "Warten auf Synchronisierung"
     },
     "freshness": {
@@ -1160,7 +1160,7 @@
       "days": "vor $n T aktualisiert"
     },
     "contribution": {
-      "titleWaypoint": "Wegpunkt hinzufugen",
+      "titleWaypoint": "Wegpunkt hinzufügen",
       "titleComment": "Zustand melden",
       "chooseType": "Wegpunkttyp",
       "titleField": "Titel des Wegpunkts",
@@ -1168,16 +1168,16 @@
       "commentField": "Ihre Beobachtung",
       "conditionField": "Zustand (optional)",
       "conditionHelper": "z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle",
-      "latencyBanner": "Wird bei der nachsten Synchronisierung veroffentlicht.",
+      "latencyBanner": "Wird bei der nächsten Synchronisierung veröffentlicht.",
       "submit": "Speichern",
       "savedTitle": "Beitrag gespeichert",
-      "savedPendingSync": "Er wird veroffentlicht, sobald das Netz wieder da ist.",
+      "savedPendingSync": "Er wird veröffentlicht, sobald das Netz wieder da ist.",
       "pendingCount": "$n warten auf Synchronisierung",
       "close": "Schliessen",
-      "emptyTitle": "Bitte einen Titel fur den Wegpunkt angeben.",
+      "emptyTitle": "Bitte einen Titel für den Wegpunkt angeben.",
       "emptyComment": "Bitte Ihre Beobachtung eingeben.",
-      "noLocation": "GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.",
-      "error": "Speichern derzeit nicht moglich."
+      "noLocation": "GPS-Position nicht verfügbar. Unter freiem Himmel erneut versuchen.",
+      "error": "Speichern derzeit nicht möglich."
     }
   },
   "packs": {
@@ -1414,18 +1414,18 @@
   },
   "recap": {
     "title": "Mein Abenteuer",
-    "lockedTitle": "Verfugbar am Ende der Tour",
+    "lockedTitle": "Verfügbar am Ende der Tour",
     "lockedMessage": "Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.",
-    "finisherTitle": "Gluckwunsch!",
+    "finisherTitle": "Glückwunsch!",
     "finisherSubtitle": "Du hast deine Route abgeschlossen",
     "partialTitle": "Deine Teilroute",
     "partialSubtitle": "Dein Abenteuer bleibt gespeichert",
     "statsSection": "Statistiken",
     "traceSection": "Deine Spur",
-    "noTrace": "Keine GPS-Spur verfugbar",
+    "noTrace": "Keine GPS-Spur verfügbar",
     "stages": "{done} / {total} Etappen gelaufen",
-    "distance": "{km} km zuruckgelegt",
-    "elevation": "{meters} m Hohenmeter",
+    "distance": "{km} km zurückgelegt",
+    "elevation": "{meters} m Höhenmeter",
     "duration": "{days} Tage",
     "dates": "Vom {start} bis {end}",
     "viewDiploma": "Mein Diplom ansehen",

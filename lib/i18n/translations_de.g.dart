@@ -749,12 +749,12 @@ class _Translations$tips$de extends Translations$tips$fr {
 	@override String get season => 'Saison';
 	@override String get altitude => 'Min. Hoehe';
 	@override String get screenTitle => 'Ratgeber';
-	@override String get screenIntro => 'Alles fur eine gelungene Wanderung';
+	@override String get screenIntro => 'Alles für eine gelungene Wanderung';
 	@override String get followUs => 'Folgen Sie uns:';
 	@override String get viewOnFacebook => 'Auf Facebook ansehen';
 	@override String get viewOnInstagram => 'Instagram';
-	@override String get linkOffline => 'Link offline nicht verfugbar';
-	@override String get emptyThemed => 'Kein Ratgeber fur diesen Weg verfugbar.';
+	@override String get linkOffline => 'Link offline nicht verfügbar';
+	@override String get emptyThemed => 'Kein Ratgeber für diesen Weg verfügbar.';
 	@override String moreTips({required Object n}) => '+ ${n} Tipps';
 	@override late final _Translations$tips$themes$de themes = _Translations$tips$themes$de._(_root);
 }
@@ -940,17 +940,17 @@ class _Translations$training$de extends Translations$training$fr {
 	@override String paywallIncludedIn({required Object trail}) => 'Im Paket « ${trail} » enthalten.';
 	@override String get paywallSubtitle => 'Plan angepasst an Ihr Profil und Ihr Abreisedatum.';
 	@override String get unlock => 'Freischalten';
-	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Ein progressiver ${weeks}-Wochen-Plan fur die ${km} km und rund ${elevation} m Hohenmeter.';
+	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Ein progressiver ${weeks}-Wochen-Plan für die ${km} km und rund ${elevation} m Höhenmeter.';
 	@override String countdown({required Object days}) => 'Abreise in ${days} Tagen';
-	@override String planOverWeeks({required Object n}) => 'Plan uber ${n} Wochen';
+	@override String planOverWeeks({required Object n}) => 'Plan über ${n} Wochen';
 	@override String phaseWeeks({required Object start, required Object end, required Object title}) => 'Wochen ${start}-${end} · ${title}';
-	@override String get objectiveTitle => 'Schlusselziel';
+	@override String get objectiveTitle => 'Schlüsselziel';
 	@override String get inviteSetDate => 'Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.';
-	@override String get inviteFillProfile => 'Fullen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.';
-	@override String get genericPlanNotice => 'Generischer Plan: ein eigener Plan fur diesen Weg kommt bald.';
+	@override String get inviteFillProfile => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.';
+	@override String get genericPlanNotice => 'Generischer Plan: ein eigener Plan für diesen Weg kommt bald.';
 	@override String get cautionVerdictNotice => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.';
-	@override String departureTooClose({required Object days}) => 'Noch ${days} Tage: Plan auf die verfugbare Zeit verdichtet.';
-	@override String get noPlan => 'Trainingsplan fur diesen Weg bald verfugbar.';
+	@override String departureTooClose({required Object days}) => 'Noch ${days} Tage: Plan auf die verfügbare Zeit verdichtet.';
+	@override String get noPlan => 'Trainingsplan für diesen Weg bald verfügbar.';
 }
 
 // Path: eta
@@ -1229,18 +1229,18 @@ class _Translations$recap$de extends Translations$recap$fr {
 
 	// Translations
 	@override String get title => 'Mein Abenteuer';
-	@override String get lockedTitle => 'Verfugbar am Ende der Tour';
+	@override String get lockedTitle => 'Verfügbar am Ende der Tour';
 	@override String get lockedMessage => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.';
-	@override String get finisherTitle => 'Gluckwunsch!';
+	@override String get finisherTitle => 'Glückwunsch!';
 	@override String get finisherSubtitle => 'Du hast deine Route abgeschlossen';
 	@override String get partialTitle => 'Deine Teilroute';
 	@override String get partialSubtitle => 'Dein Abenteuer bleibt gespeichert';
 	@override String get statsSection => 'Statistiken';
 	@override String get traceSection => 'Deine Spur';
-	@override String get noTrace => 'Keine GPS-Spur verfugbar';
+	@override String get noTrace => 'Keine GPS-Spur verfügbar';
 	@override String get stages => '{done} / {total} Etappen gelaufen';
-	@override String get distance => '{km} km zuruckgelegt';
-	@override String get elevation => '{meters} m Hohenmeter';
+	@override String get distance => '{km} km zurückgelegt';
+	@override String get elevation => '{meters} m Höhenmeter';
 	@override String get duration => '{days} Tage';
 	@override String get dates => 'Vom {start} bis {end}';
 	@override String get viewDiploma => 'Mein Diplom ansehen';
@@ -2253,11 +2253,11 @@ class _Translations$tips$themes$de extends Translations$tips$themes$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get gear => 'Ausrustung';
+	@override String get gear => 'Ausrüstung';
 	@override String get safety => 'Sicherheit';
 	@override String get health => 'Gesundheit';
 	@override String get weather => 'Wetter';
-	@override String get refuge => 'Huttenleben';
+	@override String get refuge => 'Hüttenleben';
 	@override String get nature => 'Natur';
 	@override String get other => 'Sonstiges';
 }
@@ -2379,7 +2379,7 @@ class _Translations$waypoints$types$de extends Translations$waypoints$types$fr {
 	@override String get ravitaillement => 'Nachschub';
 	@override String get danger => 'Gefahr';
 	@override String get camp => 'Zeltplatz';
-	@override String get connectivite => 'Konnektivitat';
+	@override String get connectivite => 'Konnektivität';
 	@override String get jonction => 'Kreuzung';
 }
 
@@ -2403,11 +2403,11 @@ class _Translations$waypoints$detail$de extends Translations$waypoints$detail$fr
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get conditionsTitle => 'Gelandezustand';
+	@override String get conditionsTitle => 'Geländezustand';
 	@override String get noComments => 'Noch kein Zustand gemeldet.';
-	@override String get commentsError => 'Zustand nicht verfugbar.';
+	@override String get commentsError => 'Zustand nicht verfügbar.';
 	@override String get report => 'Melden';
-	@override String get reportAck => 'Meldung gespeichert. Sie wird nach der Synchronisierung gepruft.';
+	@override String get reportAck => 'Meldung gespeichert. Sie wird nach der Synchronisierung geprüft.';
 	@override String get pendingSync => 'Warten auf Synchronisierung';
 }
 
@@ -2431,7 +2431,7 @@ class _Translations$waypoints$contribution$de extends Translations$waypoints$con
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get titleWaypoint => 'Wegpunkt hinzufugen';
+	@override String get titleWaypoint => 'Wegpunkt hinzufügen';
 	@override String get titleComment => 'Zustand melden';
 	@override String get chooseType => 'Wegpunkttyp';
 	@override String get titleField => 'Titel des Wegpunkts';
@@ -2439,16 +2439,16 @@ class _Translations$waypoints$contribution$de extends Translations$waypoints$con
 	@override String get commentField => 'Ihre Beobachtung';
 	@override String get conditionField => 'Zustand (optional)';
 	@override String get conditionHelper => 'z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle';
-	@override String get latencyBanner => 'Wird bei der nachsten Synchronisierung veroffentlicht.';
+	@override String get latencyBanner => 'Wird bei der nächsten Synchronisierung veröffentlicht.';
 	@override String get submit => 'Speichern';
 	@override String get savedTitle => 'Beitrag gespeichert';
-	@override String get savedPendingSync => 'Er wird veroffentlicht, sobald das Netz wieder da ist.';
+	@override String get savedPendingSync => 'Er wird veröffentlicht, sobald das Netz wieder da ist.';
 	@override String pendingCount({required Object n}) => '${n} warten auf Synchronisierung';
 	@override String get close => 'Schliessen';
-	@override String get emptyTitle => 'Bitte einen Titel fur den Wegpunkt angeben.';
+	@override String get emptyTitle => 'Bitte einen Titel für den Wegpunkt angeben.';
 	@override String get emptyComment => 'Bitte Ihre Beobachtung eingeben.';
-	@override String get noLocation => 'GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.';
-	@override String get error => 'Speichern derzeit nicht moglich.';
+	@override String get noLocation => 'GPS-Position nicht verfügbar. Unter freiem Himmel erneut versuchen.';
+	@override String get error => 'Speichern derzeit nicht möglich.';
 }
 
 // Path: packs.states
@@ -4456,18 +4456,18 @@ extension on TranslationsDe {
 			'tips.season' => 'Saison',
 			'tips.altitude' => 'Min. Hoehe',
 			'tips.screenTitle' => 'Ratgeber',
-			'tips.screenIntro' => 'Alles fur eine gelungene Wanderung',
+			'tips.screenIntro' => 'Alles für eine gelungene Wanderung',
 			'tips.followUs' => 'Folgen Sie uns:',
 			'tips.viewOnFacebook' => 'Auf Facebook ansehen',
 			'tips.viewOnInstagram' => 'Instagram',
-			'tips.linkOffline' => 'Link offline nicht verfugbar',
-			'tips.emptyThemed' => 'Kein Ratgeber fur diesen Weg verfugbar.',
+			'tips.linkOffline' => 'Link offline nicht verfügbar',
+			'tips.emptyThemed' => 'Kein Ratgeber für diesen Weg verfügbar.',
 			'tips.moreTips' => ({required Object n}) => '+ ${n} Tipps',
-			'tips.themes.gear' => 'Ausrustung',
+			'tips.themes.gear' => 'Ausrüstung',
 			'tips.themes.safety' => 'Sicherheit',
 			'tips.themes.health' => 'Gesundheit',
 			'tips.themes.weather' => 'Wetter',
-			'tips.themes.refuge' => 'Huttenleben',
+			'tips.themes.refuge' => 'Hüttenleben',
 			'tips.themes.nature' => 'Natur',
 			'tips.themes.other' => 'Sonstiges',
 			'goodies.title' => 'Goodies-Shop',
@@ -4572,17 +4572,17 @@ extension on TranslationsDe {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Im Paket « ${trail} » enthalten.',
 			'training.paywallSubtitle' => 'Plan angepasst an Ihr Profil und Ihr Abreisedatum.',
 			'training.unlock' => 'Freischalten',
-			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Ein progressiver ${weeks}-Wochen-Plan fur die ${km} km und rund ${elevation} m Hohenmeter.',
+			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Ein progressiver ${weeks}-Wochen-Plan für die ${km} km und rund ${elevation} m Höhenmeter.',
 			'training.countdown' => ({required Object days}) => 'Abreise in ${days} Tagen',
-			'training.planOverWeeks' => ({required Object n}) => 'Plan uber ${n} Wochen',
+			'training.planOverWeeks' => ({required Object n}) => 'Plan über ${n} Wochen',
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Wochen ${start}-${end} · ${title}',
-			'training.objectiveTitle' => 'Schlusselziel',
+			'training.objectiveTitle' => 'Schlüsselziel',
 			'training.inviteSetDate' => 'Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.',
-			'training.inviteFillProfile' => 'Fullen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.',
-			'training.genericPlanNotice' => 'Generischer Plan: ein eigener Plan fur diesen Weg kommt bald.',
+			'training.inviteFillProfile' => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.',
+			'training.genericPlanNotice' => 'Generischer Plan: ein eigener Plan für diesen Weg kommt bald.',
 			'training.cautionVerdictNotice' => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.',
-			'training.departureTooClose' => ({required Object days}) => 'Noch ${days} Tage: Plan auf die verfugbare Zeit verdichtet.',
-			'training.noPlan' => 'Trainingsplan fur diesen Weg bald verfugbar.',
+			'training.departureTooClose' => ({required Object days}) => 'Noch ${days} Tage: Plan auf die verfügbare Zeit verdichtet.',
+			'training.noPlan' => 'Trainingsplan für diesen Weg bald verfügbar.',
 			'eta.title' => 'Geschätzte Zeit',
 			'eta.toNextWaypoint' => 'Nächster Punkt',
 			'eta.toStageEnd' => 'Etappenende',
@@ -4655,23 +4655,23 @@ extension on TranslationsDe {
 			'waypoints.types.ravitaillement' => 'Nachschub',
 			'waypoints.types.danger' => 'Gefahr',
 			'waypoints.types.camp' => 'Zeltplatz',
-			'waypoints.types.connectivite' => 'Konnektivitat',
+			'waypoints.types.connectivite' => 'Konnektivität',
 			'waypoints.types.jonction' => 'Kreuzung',
 			'waypoints.filters.title' => 'Wegpunkte filtern',
 			'waypoints.filters.showAll' => 'Alle anzeigen',
 			'waypoints.filters.hideAll' => 'Alle ausblenden',
 			'waypoints.filters.recentConditionOnly' => 'Nur aktueller Zustand',
-			'waypoints.detail.conditionsTitle' => 'Gelandezustand',
+			'waypoints.detail.conditionsTitle' => 'Geländezustand',
 			'waypoints.detail.noComments' => 'Noch kein Zustand gemeldet.',
-			'waypoints.detail.commentsError' => 'Zustand nicht verfugbar.',
+			'waypoints.detail.commentsError' => 'Zustand nicht verfügbar.',
 			'waypoints.detail.report' => 'Melden',
-			'waypoints.detail.reportAck' => 'Meldung gespeichert. Sie wird nach der Synchronisierung gepruft.',
+			'waypoints.detail.reportAck' => 'Meldung gespeichert. Sie wird nach der Synchronisierung geprüft.',
 			'waypoints.detail.pendingSync' => 'Warten auf Synchronisierung',
 			'waypoints.freshness.justNow' => 'gerade aktualisiert',
 			'waypoints.freshness.minutes' => ({required Object n}) => 'vor ${n} Min aktualisiert',
 			'waypoints.freshness.hours' => ({required Object n}) => 'vor ${n} Std aktualisiert',
 			'waypoints.freshness.days' => ({required Object n}) => 'vor ${n} T aktualisiert',
-			'waypoints.contribution.titleWaypoint' => 'Wegpunkt hinzufugen',
+			'waypoints.contribution.titleWaypoint' => 'Wegpunkt hinzufügen',
 			'waypoints.contribution.titleComment' => 'Zustand melden',
 			'waypoints.contribution.chooseType' => 'Wegpunkttyp',
 			'waypoints.contribution.titleField' => 'Titel des Wegpunkts',
@@ -4679,16 +4679,16 @@ extension on TranslationsDe {
 			'waypoints.contribution.commentField' => 'Ihre Beobachtung',
 			'waypoints.contribution.conditionField' => 'Zustand (optional)',
 			'waypoints.contribution.conditionHelper' => 'z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle',
-			'waypoints.contribution.latencyBanner' => 'Wird bei der nachsten Synchronisierung veroffentlicht.',
+			'waypoints.contribution.latencyBanner' => 'Wird bei der nächsten Synchronisierung veröffentlicht.',
 			'waypoints.contribution.submit' => 'Speichern',
 			'waypoints.contribution.savedTitle' => 'Beitrag gespeichert',
-			'waypoints.contribution.savedPendingSync' => 'Er wird veroffentlicht, sobald das Netz wieder da ist.',
+			'waypoints.contribution.savedPendingSync' => 'Er wird veröffentlicht, sobald das Netz wieder da ist.',
 			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} warten auf Synchronisierung',
 			'waypoints.contribution.close' => 'Schliessen',
-			'waypoints.contribution.emptyTitle' => 'Bitte einen Titel fur den Wegpunkt angeben.',
+			'waypoints.contribution.emptyTitle' => 'Bitte einen Titel für den Wegpunkt angeben.',
 			'waypoints.contribution.emptyComment' => 'Bitte Ihre Beobachtung eingeben.',
-			'waypoints.contribution.noLocation' => 'GPS-Position nicht verfugbar. Unter freiem Himmel erneut versuchen.',
-			'waypoints.contribution.error' => 'Speichern derzeit nicht moglich.',
+			'waypoints.contribution.noLocation' => 'GPS-Position nicht verfügbar. Unter freiem Himmel erneut versuchen.',
+			'waypoints.contribution.error' => 'Speichern derzeit nicht möglich.',
 			'packs.title' => 'Wegpakete',
 			'packs.subtitle' => 'Lade ein Paket herunter, um 100% offline zu wandern.',
 			'packs.alaCarteNote' => 'A la carte: Kaufe nur das Paket, das du brauchst, kein Abo.',
@@ -4860,18 +4860,18 @@ extension on TranslationsDe {
 			'moderation.a11y.complaintForm' => 'Formular zur Anfechtung der Entscheidung',
 			'bootstrap.loading' => 'Ihre Wanderung wird vorbereitet…',
 			'recap.title' => 'Mein Abenteuer',
-			'recap.lockedTitle' => 'Verfugbar am Ende der Tour',
+			'recap.lockedTitle' => 'Verfügbar am Ende der Tour',
 			'recap.lockedMessage' => 'Beende oder brich deine Route ab, um die Zusammenfassung deines Abenteuers zu sehen.',
-			'recap.finisherTitle' => 'Gluckwunsch!',
+			'recap.finisherTitle' => 'Glückwunsch!',
 			'recap.finisherSubtitle' => 'Du hast deine Route abgeschlossen',
 			'recap.partialTitle' => 'Deine Teilroute',
 			'recap.partialSubtitle' => 'Dein Abenteuer bleibt gespeichert',
 			'recap.statsSection' => 'Statistiken',
 			'recap.traceSection' => 'Deine Spur',
-			'recap.noTrace' => 'Keine GPS-Spur verfugbar',
+			'recap.noTrace' => 'Keine GPS-Spur verfügbar',
 			'recap.stages' => '{done} / {total} Etappen gelaufen',
-			'recap.distance' => '{km} km zuruckgelegt',
-			'recap.elevation' => '{meters} m Hohenmeter',
+			'recap.distance' => '{km} km zurückgelegt',
+			'recap.elevation' => '{meters} m Höhenmeter',
 			'recap.duration' => '{days} Tage',
 			'recap.dates' => 'Vom {start} bis {end}',
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
