@@ -14,6 +14,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../journal/domain/models/journal_entry.dart';
 import '../../journal/providers/journal_providers.dart';
+import '../../trek/domain/models/trek_session.dart';
 import '../../trek/domain/trek_completion.dart';
 import '../domain/diploma_generator.dart';
 import '../domain/diploma_pdf_service.dart';
@@ -113,6 +114,11 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     // la demonstration reste parlante — parite avec la demo GR20.
     final realStats = ref.watch(adventureStatsProvider).value;
 
+    // CORRECTIF L5-7 : la session est OBSERVEE ici, pas lue a la volee plus
+    // bas. Un `read` sur un FutureProvider rend `AsyncLoading` tant que rien
+    // ne l'observe : le numero de finisher restait alors invisible a l'ecran.
+    final session = ref.watch(latestTrekSessionProvider).value;
+
     // PARITE GR20, LOT 3 (#99433), point 3.B(3) — LIBELLE Integral/partiel,
     // branche sur [TrekCongratulations] du parcours reel.
     final congrats = ref.watch(adventureCongratulationsProvider);
@@ -166,7 +172,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             const SizedBox(height: AppTheme.spacingLg),
 
             // Apercu du diplome
-            if (_diplomaData != null) _buildDiplomaPreview(Theme.of(context)),
+            if (_diplomaData != null)
+              _buildDiplomaPreview(Theme.of(context), session, realStats),
             const SizedBox(height: AppTheme.spacingLg),
 
             // Bouton PDF
@@ -174,7 +181,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
               label: diplomaT.downloadPdf,
               icon: Icons.picture_as_pdf,
               onPressed: _diplomaData != null && !_isGeneratingPdf
-                  ? () => _generatePdf(config, realStats)
+                  ? () => _generatePdf(config, realStats, session: session)
                   : null,
             ),
             const SizedBox(height: AppTheme.spacingMd),
@@ -185,7 +192,8 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
               label: diplomaT.shareDiploma,
               icon: Icons.share_outlined,
               onPressed: _diplomaData != null && !_isGeneratingPdf
-                  ? () => _generatePdf(config, realStats, share: true)
+                  ? () => _generatePdf(config, realStats,
+                      session: session, share: true)
                   : null,
             ),
           ],
@@ -198,8 +206,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   ///
   /// `null` tant qu'aucune session n'est lisible : on prefere un diplome
   /// sans numero a un numero invente.
-  String? _finisherNumber(AdventureStats? stats) {
-    final session = ref.read(latestTrekSessionProvider).value;
+  String? _finisherNumber(TrekSession? session, AdventureStats? stats) {
     if (session == null) return null;
     final number = buildFinisherNumber(
       sessionId: session.id,
@@ -235,7 +242,11 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
     });
   }
 
-  Widget _buildDiplomaPreview(ThemeData theme) {
+  Widget _buildDiplomaPreview(
+    ThemeData theme,
+    TrekSession? session,
+    AdventureStats? stats,
+  ) {
     final data = _diplomaData!;
 
     return AppCard(
@@ -279,8 +290,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
             // CORRECTIF L5-7 : le numero de finisher, visible a l'ecran comme
             // sur le PDF. Absent quand aucune session n'est lisible : un
             // diplome sans numero vaut mieux qu'un numero invente.
-            if (_finisherNumber(ref.watch(adventureStatsProvider).value)
-                case final number?) ...[
+            if (_finisherNumber(session, stats) case final number?) ...[
               const SizedBox(height: AppTheme.spacingSm),
               Text(
                 number,
@@ -300,6 +310,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   Future<void> _generatePdf(
     TrailConfig config,
     AdventureStats? stats, {
+    TrekSession? session,
     bool share = false,
   }) async {
     if (_diplomaData == null) return;
@@ -346,7 +357,7 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         // CORRECTIF L5-7 : le numero de finisher est imprime SUR le
         // document. Un numero visible a l'ecran mais absent du PDF ne
         // certifierait rien — c'est le fichier qui circule.
-        finisherNumber: _finisherNumber(stats),
+        finisherNumber: _finisherNumber(session, stats),
       );
 
       // CORRECTIF L5-1 : le retour de generatePdf est AFFECTE, puis ECRIT.
