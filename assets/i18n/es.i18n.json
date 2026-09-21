@@ -323,7 +323,14 @@
     "avgSpeed": "Vel. media",
     "altitude": "Altitud",
     "total": "Total",
-    "covered": "Recorrido"
+    "covered": "Recorrido",
+    "backgroundRationale": {
+      "title": "Registrar tu recorrido con la pantalla apagada",
+      "body": "Durante la ruta, StepWays registra tu recorrido de forma continua, incluso con el móvil en el bolsillo. Android te pedirá permitir la ubicación «Siempre»: es solo para eso, y únicamente mientras haya una ruta en curso.",
+      "ifRefused": "Si lo rechazas, la ruta empieza igualmente: tu recorrido se registra mientras la aplicación siga en pantalla.",
+      "allow": "Ver la solicitud",
+      "later": "Más tarde"
+    }
   },
   "checklist": {
     "title": "Equipo & Mochila",

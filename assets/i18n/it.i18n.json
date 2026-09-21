@@ -323,7 +323,14 @@
     "avgSpeed": "Vel. media",
     "altitude": "Altitudine",
     "total": "Totale",
-    "covered": "Percorso"
+    "covered": "Percorso",
+    "backgroundRationale": {
+      "title": "Registrare la tua traccia anche a schermo spento",
+      "body": "Durante l'escursione StepWays registra la tua traccia senza interruzioni, anche con il telefono in tasca. Android ti chiederà di consentire la posizione « Sempre »: serve solo a questo, e soltanto durante un'escursione in corso.",
+      "ifRefused": "Se rifiuti, l'escursione parte comunque: la traccia viene registrata finché l'app resta sullo schermo.",
+      "allow": "Mostra la richiesta",
+      "later": "Più tardi"
+    }
   },
   "checklist": {
     "title": "Attrezzatura & Zaino",

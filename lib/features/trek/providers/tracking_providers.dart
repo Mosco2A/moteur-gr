@@ -6,7 +6,6 @@ import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
-import '../../../shared/services/location_permission_service.dart';
 import '../../map/providers/track_position_provider.dart';
 // FIX-2 (M4) : invalidation des vues derivees du cycle de vie apres une
 // finalisation de session (cf. `_finalize`). Sens unique : `my_treks_provider`
@@ -403,14 +402,17 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
 
   /// Demarre la capture de fond + branche la persistance des points. Isole du
   /// chemin de demarrage principal (fire-and-forget) : ne jette jamais.
+  ///
+  /// NE DEMANDE AUCUNE PERMISSION (campagne personas 21/09, MAJEUR-1). Cette
+  /// methode part en fire-and-forget pendant que la carte s'ouvre : l'escalade
+  /// « Toujours autoriser » qu'elle lancait ici faisait surgir un ecran SYSTEME
+  /// PAR-DESSUS la carte, sans explication, des la toute premiere rando — et
+  /// entrait en collision avec la demande du bouton de demarrage. Les demandes
+  /// se font maintenant AVANT, une seule fois, expliquees
+  /// (`ensureBackgroundTrackingExplained`). Ici on se contente de ce qui est
+  /// deja accorde : sans permission de fond la capture premier plan continue.
   Future<void> _startBackgroundCapture(String sessionId, String trailId) async {
     try {
-      // Escalade permissions de fond (Toujours) + notifications + exemption
-      // batterie (cas Samsung), demandee AU LANCEMENT du trek.
-      await ref
-          .read(locationPermissionServiceProvider)
-          .ensureBackgroundTracking();
-
       final service = ref.read(backgroundGpsServiceProvider);
 
       // Brancher la persistance AVANT le start pour ne perdre aucun point.

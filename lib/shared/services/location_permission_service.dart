@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/error/error_handler.dart';
 
@@ -43,9 +46,59 @@ enum BackgroundLocationStatus {
 class LocationPermissionService {
   LocationPermissionService();
 
+  /// Demande d'escalade EN COURS, partagee par tous les appelants.
+  ///
+  /// Campagne personas 21/09 (MAJEUR-1) : deux chemins lancaient l'escalade au
+  /// meme instant au demarrage d'une rando. Android n'accepte qu'UNE demande a
+  /// la fois -> `PlatformException: A request for permissions is already
+  /// running`, et l'application est restee SEPT MINUTES derriere l'ecran
+  /// systeme des permissions. Un appel concurrent attend desormais le resultat
+  /// du premier au lieu d'en ouvrir un second.
+  Future<BackgroundLocationStatus>? _inFlight;
+
+  /// Cle SharedPreferences : l'utilisateur a decline l'explication de fond.
+  static const String kBackgroundRationaleDeclinedKey =
+      'tracking.backgroundRationaleDeclined';
+
   /// Vrai si « Autoriser tout le temps » (background) est deja accorde.
   Future<bool> hasBackgroundPermission() async {
     return Permission.locationAlways.isGranted;
+  }
+
+  /// Faut-il EXPLIQUER puis demander le suivi de fond ?
+  ///
+  /// Faux quand il n'y a plus rien a demander (fond ET notifications deja
+  /// accordes) ou quand l'utilisateur a deja dit non a l'explication : on ne
+  /// relance jamais un ecran systeme qu'il a refuse. Best-effort — en cas de
+  /// doute on renvoie false (ne jamais deranger sans certitude).
+  Future<bool> shouldAskBackgroundRationale() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (prefs.getBool(kBackgroundRationaleDeclinedKey) ?? false) return false;
+      if (await Permission.locationAlways.isGranted &&
+          await Permission.notification.isGranted) {
+        return false;
+      }
+      return true;
+    } on Exception catch (e, st) {
+      ErrorHandler.log(e,
+          stackTrace: st,
+          context: 'LocationPermissionService.shouldAskBackgroundRationale');
+      return false;
+    }
+  }
+
+  /// Memorise le refus de l'explication : on ne redemandera plus tout seul.
+  Future<void> rememberBackgroundRationaleDeclined() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(kBackgroundRationaleDeclinedKey, true);
+    } on Exception catch (e, st) {
+      ErrorHandler.log(e,
+          stackTrace: st,
+          context:
+              'LocationPermissionService.rememberBackgroundRationaleDeclined');
+    }
   }
 
   /// Escalade la permission de localisation vers « Autoriser tout le temps ».
@@ -172,14 +225,30 @@ class LocationPermissionService {
     return openAppSettings();
   }
 
-  /// Orchestrateur haut-niveau appele au demarrage du suivi.
+  /// Orchestrateur haut-niveau des DEMANDES systeme de suivi de fond.
   ///
   /// Enchaine : (1) POST_NOTIFICATIONS (prerequis du vrai foreground service),
   /// (2) escalade vers la localisation de fond, (3) exemption batterie si la
   /// capture de fond est envisageable. Best-effort et NON bloquant pour le
-  /// premier plan : renvoie le statut de fond pour que l'UI decide d'afficher
-  /// (ou non) la rationale.
-  Future<BackgroundLocationStatus> ensureBackgroundTracking() async {
+  /// premier plan : renvoie le statut de fond pour que l'UI decide de la suite.
+  ///
+  /// POINT D'APPEL UNIQUE (campagne personas 21/09, MAJEUR-1) : cette methode
+  /// ouvre des ecrans SYSTEME, elle n'est donc appelee QUE depuis le pre-vol
+  /// explique du demarrage de rando (`ensureBackgroundTrackingExplained`),
+  /// AVANT la carte — jamais depuis la capture de fond, qui se contente de ce
+  /// qui est deja accorde. Un appel concurrent partage la demande en cours au
+  /// lieu d'en ouvrir une seconde.
+  Future<BackgroundLocationStatus> ensureBackgroundTracking() {
+    final pending = _inFlight;
+    if (pending != null) return pending;
+    final started = _runEnsureBackgroundTracking();
+    _inFlight = started;
+    return started.whenComplete(() {
+      if (identical(_inFlight, started)) _inFlight = null;
+    });
+  }
+
+  Future<BackgroundLocationStatus> _runEnsureBackgroundTracking() async {
     await requestNotificationPermission();
 
     final status = await requestBackgroundPermission();

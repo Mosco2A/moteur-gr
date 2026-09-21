@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/category_icon_colors.dart';
 import '../../../../i18n/translations.g.dart';
-import '../../../../shared/services/location_permission_service.dart';
+import '../../../../shared/widgets/background_tracking_rationale_dialog.dart';
 import '../../../treks/presentation/widgets/active_trek_conflict_dialog.dart';
 import '../../../trek/providers/tracking_providers.dart';
 import '../../providers/cockpit_start_providers.dart';
@@ -113,19 +111,21 @@ class _HubStartTrekButtonState extends ConsumerState<HubStartTrekButton> {
   /// Demarrage effectif via la garde d'unicite C4 (parite `hub_trek_card.dart`
   /// d'origine), puis navigation vers la carte au succes.
   ///
-  /// PERMISSIONS DE SUIVI — escalade NON BLOQUANTE (parite GR20, fix deadlock) :
-  /// l'escalade « localisation Toujours + notifications + exemption batterie »
-  /// est lancee en FIRE-AND-FORGET (`unawaited`), AVANT de demarrer mais SANS
-  /// l'attendre — le suivi PREMIER PLAN (`whileInUse`, pre-accorde) suffit a
-  /// demarrer, donc l'escalade de fond ne conditionne pas le demarrage
-  /// (« jamais de cul-de-sac »).
+  /// PERMISSIONS DE SUIVI — PRE-VOL EXPLIQUE (campagne personas 21/09,
+  /// MAJEUR-1). L'escalade partait en fire-and-forget juste avant la carte, et
+  /// un deuxieme chemin la relancait en parallele : l'ecran systeme « Toujours
+  /// autoriser en arrière-plan ? » recouvrait la carte a la toute premiere
+  /// rando, sans explication. Desormais on explique DANS l'application, on
+  /// attend la reponse systeme ICI (avant la carte), et on demarre quoi qu'il
+  /// arrive : le suivi premier plan n'a pas besoin de la permission de fond.
   Future<void> _start(BuildContext context) async {
     final notifier = ref.read(trekSessionManagerProvider.notifier);
+    // Avant tout : la permission de fond, expliquee puis demandee une seule
+    // fois. Ne jette jamais, ne bloque jamais le demarrage.
+    await ensureBackgroundTrackingExplained(context, ref);
+    if (!context.mounted || !mounted) return;
     setState(() => _starting = true);
     try {
-      unawaited(
-        ref.read(locationPermissionServiceProvider).ensureBackgroundTracking(),
-      );
       final outcome = await notifier.ensureSingleActiveThenStart(
         widget.trailId,
         resolve: (ongoingTrailId) =>

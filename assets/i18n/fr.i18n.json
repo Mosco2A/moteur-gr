@@ -323,7 +323,14 @@
     "avgSpeed": "Vit. moy.",
     "altitude": "Altitude",
     "total": "Total",
-    "covered": "Parcouru"
+    "covered": "Parcouru",
+    "backgroundRationale": {
+      "title": "Suivre ta trace même écran éteint",
+      "body": "Pendant la randonnée, StepWays enregistre ta trace en continu, y compris téléphone en poche. Android va te demander d'autoriser la localisation « Toujours » : c'est uniquement pour ça, et seulement pendant une rando en cours.",
+      "ifRefused": "Si tu refuses, la randonnée démarre quand même : la trace est enregistrée tant que l'application reste à l'écran.",
+      "allow": "Voir la demande",
+      "later": "Plus tard"
+    }
   },
   "checklist": {
     "title": "Matériel & Sac",

@@ -323,7 +323,14 @@
     "avgSpeed": "Avg speed",
     "altitude": "Altitude",
     "total": "Total",
-    "covered": "Covered"
+    "covered": "Covered",
+    "backgroundRationale": {
+      "title": "Recording your track with the screen off",
+      "body": "While you hike, StepWays records your track continuously, even with the phone in your pocket. Android will ask you to allow location “All the time”: that is what it is for, and only during an ongoing hike.",
+      "ifRefused": "If you decline, the hike still starts: your track is recorded as long as the app stays on screen.",
+      "allow": "Show the request",
+      "later": "Later"
+    }
   },
   "checklist": {
     "title": "Gear & Pack",

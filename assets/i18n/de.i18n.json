@@ -323,7 +323,14 @@
     "avgSpeed": "Ø Geschw.",
     "altitude": "Höhe",
     "total": "Gesamt",
-    "covered": "Zurückgelegt"
+    "covered": "Zurückgelegt",
+    "backgroundRationale": {
+      "title": "Deine Route auch bei ausgeschaltetem Bildschirm aufzeichnen",
+      "body": "Während der Wanderung zeichnet StepWays deine Route durchgehend auf, auch wenn das Telefon in der Tasche steckt. Android fragt dich, ob du den Standort „Immer“ zulassen willst: genau dafür ist das, und nur während einer laufenden Wanderung.",
+      "ifRefused": "Wenn du ablehnst, startet die Wanderung trotzdem: die Route wird aufgezeichnet, solange die App auf dem Bildschirm bleibt.",
+      "allow": "Anfrage anzeigen",
+      "later": "Später"
+    }
   },
   "checklist": {
     "title": "Ausrüstung & Rucksack",
