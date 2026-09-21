@@ -2028,7 +2028,6 @@ class _Translations$checklist$weight$it extends Translations$checklist$weight$fr
 	@override String get grams => 'g';
 	@override String get kilograms => 'kg';
 	@override String get adviceUltraLight => 'Zaino ultraleggero — ideale per il trekking';
-	@override String get adviceLight => 'Zaino ultraleggero — ideale per il trekking';
 	@override String get adviceOk => 'Zaino ben bilanciato';
 	@override String get adviceHeavy => 'Discreto ma pesante — valuta di alleggerire';
 	@override String get adviceTooHeavy => 'Attenzione ginocchia! Alleggerisci lo zaino';
@@ -4095,7 +4094,6 @@ extension on TranslationsIt {
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
 			'checklist.weight.adviceUltraLight' => 'Zaino ultraleggero — ideale per il trekking',
-			'checklist.weight.adviceLight' => 'Zaino ultraleggero — ideale per il trekking',
 			'checklist.weight.adviceOk' => 'Zaino ben bilanciato',
 			'checklist.weight.adviceHeavy' => 'Discreto ma pesante — valuta di alleggerire',
 			'checklist.weight.adviceTooHeavy' => 'Attenzione ginocchia! Alleggerisci lo zaino',
@@ -4215,9 +4213,9 @@ extension on TranslationsIt {
 			'weather.error' => 'Impossibile caricare il meteo.',
 			'weather.cached' => 'Dati nella cache',
 			'weather.alerts' => 'allerte meteo',
+			'weather.refresh' => 'Aggiorna',
 			_ => null,
 		} ?? switch (path) {
-			'weather.refresh' => 'Aggiorna',
 			'weather.temperature' => 'Temperatura',
 			'weather.precipitation' => 'Precipitazioni',
 			'weather.wind' => 'Vento',
@@ -4729,9 +4727,9 @@ extension on TranslationsIt {
 			'guides.subtitle' => 'Info pratiche su città e paesi, consultabili offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} sezioni pratiche',
 			'guides.empty' => 'Nessuna guida disponibile per questo sentiero.',
+			'guides.noItems' => 'Ancora nessuna informazione in questa sezione.',
 			_ => null,
 		} ?? switch (path) {
-			'guides.noItems' => 'Ancora nessuna informazione in questa sezione.',
 			'guides.facilitatorNote' => 'StepWays ti indirizza ai fornitori. Prenotazione e pagamento avvengono sul loro sito: niente nell\'app.',
 			'guides.openSite' => 'Apri il sito',
 			'guides.cannotOpen' => 'Impossibile aprire questo link su questo dispositivo.',
@@ -5243,9 +5241,9 @@ extension on TranslationsIt {
 			'walkTest.gpsDenied' => 'Consenti la posizione per avviare il test.',
 			'walkTest.monthlyReminderOn' => 'Promemoria mensile attivo',
 			'walkTest.monthlyReminderBody' => 'Ogni mese ti verra proposto un promemoria del test per seguire la tua forma.',
+			'walkTest.notDoneYet' => 'Test non eseguito',
 			_ => null,
 		} ?? switch (path) {
-			'walkTest.notDoneYet' => 'Test non eseguito',
 			'walkTest.fallbackNotice' => 'In attesa del test, il tuo livello e stimato dal questionario.',
 			'walkTest.levels.low' => 'Basso',
 			'walkTest.levels.moderate' => 'Medio',

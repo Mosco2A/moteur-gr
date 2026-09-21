@@ -2028,7 +2028,6 @@ class _Translations$checklist$weight$en extends Translations$checklist$weight$fr
 	@override String get grams => 'g';
 	@override String get kilograms => 'kg';
 	@override String get adviceUltraLight => 'Ultra-light pack — ideal for trekking';
-	@override String get adviceLight => 'Ultra-light pack — ideal for trekking';
 	@override String get adviceOk => 'Well-balanced pack';
 	@override String get adviceHeavy => 'OK but heavy — consider lightening';
 	@override String get adviceTooHeavy => 'Mind your knees! Lighten the pack';
@@ -4095,7 +4094,6 @@ extension on TranslationsEn {
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
 			'checklist.weight.adviceUltraLight' => 'Ultra-light pack — ideal for trekking',
-			'checklist.weight.adviceLight' => 'Ultra-light pack — ideal for trekking',
 			'checklist.weight.adviceOk' => 'Well-balanced pack',
 			'checklist.weight.adviceHeavy' => 'OK but heavy — consider lightening',
 			'checklist.weight.adviceTooHeavy' => 'Mind your knees! Lighten the pack',
@@ -4215,9 +4213,9 @@ extension on TranslationsEn {
 			'weather.error' => 'Unable to load weather.',
 			'weather.cached' => 'Cached data',
 			'weather.alerts' => 'weather alerts',
+			'weather.refresh' => 'Refresh',
 			_ => null,
 		} ?? switch (path) {
-			'weather.refresh' => 'Refresh',
 			'weather.temperature' => 'Temperature',
 			'weather.precipitation' => 'Precipitation',
 			'weather.wind' => 'Wind',
@@ -4729,9 +4727,9 @@ extension on TranslationsEn {
 			'guides.subtitle' => 'Practical info for towns and villages, available offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} practical sections',
 			'guides.empty' => 'No guide available for this trail.',
+			'guides.noItems' => 'No information in this section yet.',
 			_ => null,
 		} ?? switch (path) {
-			'guides.noItems' => 'No information in this section yet.',
 			'guides.facilitatorNote' => 'StepWays points you to providers. Booking and payment happen on their site: nothing in the app.',
 			'guides.openSite' => 'Open website',
 			'guides.cannotOpen' => 'Can\'t open this link on this device.',
@@ -5243,9 +5241,9 @@ extension on TranslationsEn {
 			'walkTest.gpsDenied' => 'Allow location to start the test.',
 			'walkTest.monthlyReminderOn' => 'Monthly reminder on',
 			'walkTest.monthlyReminderBody' => 'A test reminder will be offered every month to track your fitness.',
+			'walkTest.notDoneYet' => 'Test not taken',
 			_ => null,
 		} ?? switch (path) {
-			'walkTest.notDoneYet' => 'Test not taken',
 			'walkTest.fallbackNotice' => 'Until you take the test, your level is estimated from your questionnaire.',
 			'walkTest.levels.low' => 'Low',
 			'walkTest.levels.moderate' => 'Moderate',

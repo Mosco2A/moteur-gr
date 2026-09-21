@@ -4202,9 +4202,6 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Sac ultra-leger — ideal pour le trek'
 	String get adviceUltraLight => 'Sac ultra-leger — ideal pour le trek';
 
-	/// fr: 'Sac ultra-leger — ideal pour le trek'
-	String get adviceLight => 'Sac ultra-leger — ideal pour le trek';
-
 	/// fr: 'Sac bien equilibre'
 	String get adviceOk => 'Sac bien equilibre';
 
@@ -7380,7 +7377,6 @@ extension on Translations {
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
 			'checklist.weight.adviceUltraLight' => 'Sac ultra-leger — ideal pour le trek',
-			'checklist.weight.adviceLight' => 'Sac ultra-leger — ideal pour le trek',
 			'checklist.weight.adviceOk' => 'Sac bien equilibre',
 			'checklist.weight.adviceHeavy' => 'Correct mais lourd — envisagez d\'alleger',
 			'checklist.weight.adviceTooHeavy' => 'Attention genoux ! Allegez le sac',
@@ -7500,9 +7496,9 @@ extension on Translations {
 			'weather.error' => 'Impossible de charger la météo.',
 			'weather.cached' => 'Données en cache',
 			'weather.alerts' => 'alertes météo',
+			'weather.refresh' => 'Actualiser',
 			_ => null,
 		} ?? switch (path) {
-			'weather.refresh' => 'Actualiser',
 			'weather.temperature' => 'Température',
 			'weather.precipitation' => 'Précipitations',
 			'weather.wind' => 'Vent',
@@ -8014,9 +8010,9 @@ extension on Translations {
 			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
 			'guides.empty' => 'Aucun guide disponible pour ce sentier.',
+			'guides.noItems' => 'Aucune information dans cette section pour le moment.',
 			_ => null,
 		} ?? switch (path) {
-			'guides.noItems' => 'Aucune information dans cette section pour le moment.',
 			'guides.facilitatorNote' => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.',
 			'guides.openSite' => 'Voir le site',
 			'guides.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
@@ -8528,9 +8524,9 @@ extension on Translations {
 			'walkTest.gpsDenied' => 'Autorisez la localisation pour lancer le test.',
 			'walkTest.monthlyReminderOn' => 'Rappel mensuel activé',
 			'walkTest.monthlyReminderBody' => 'Un rappel de test vous sera proposé chaque mois pour suivre votre forme.',
+			'walkTest.notDoneYet' => 'Test non réalisé',
 			_ => null,
 		} ?? switch (path) {
-			'walkTest.notDoneYet' => 'Test non réalisé',
 			'walkTest.fallbackNotice' => 'En attendant le test, votre niveau est estimé à partir de votre questionnaire.',
 			'walkTest.levels.low' => 'Faible',
 			'walkTest.levels.moderate' => 'Moyen',

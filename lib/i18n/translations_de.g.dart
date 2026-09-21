@@ -2028,7 +2028,6 @@ class _Translations$checklist$weight$de extends Translations$checklist$weight$fr
 	@override String get grams => 'g';
 	@override String get kilograms => 'kg';
 	@override String get adviceUltraLight => 'Ultraleichter Rucksack — ideal furs Trekking';
-	@override String get adviceLight => 'Ultraleichter Rucksack — ideal furs Trekking';
 	@override String get adviceOk => 'Gut ausbalancierter Rucksack';
 	@override String get adviceHeavy => 'OK aber schwer — erwage zu erleichtern';
 	@override String get adviceTooHeavy => 'Achtung Knie! Rucksack erleichtern';
@@ -4095,7 +4094,6 @@ extension on TranslationsDe {
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
 			'checklist.weight.adviceUltraLight' => 'Ultraleichter Rucksack — ideal furs Trekking',
-			'checklist.weight.adviceLight' => 'Ultraleichter Rucksack — ideal furs Trekking',
 			'checklist.weight.adviceOk' => 'Gut ausbalancierter Rucksack',
 			'checklist.weight.adviceHeavy' => 'OK aber schwer — erwage zu erleichtern',
 			'checklist.weight.adviceTooHeavy' => 'Achtung Knie! Rucksack erleichtern',
@@ -4215,9 +4213,9 @@ extension on TranslationsDe {
 			'weather.error' => 'Wetter konnte nicht geladen werden.',
 			'weather.cached' => 'Zwischengespeicherte Daten',
 			'weather.alerts' => 'Wetterwarnungen',
+			'weather.refresh' => 'Aktualisieren',
 			_ => null,
 		} ?? switch (path) {
-			'weather.refresh' => 'Aktualisieren',
 			'weather.temperature' => 'Temperatur',
 			'weather.precipitation' => 'Niederschlag',
 			'weather.wind' => 'Wind',
@@ -4729,9 +4727,9 @@ extension on TranslationsDe {
 			'guides.subtitle' => 'Praktische Infos zu Städten und Dörfern, offline verfügbar.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} praktische Rubriken',
 			'guides.empty' => 'Kein Führer für diesen Weg verfügbar.',
+			'guides.noItems' => 'Noch keine Informationen in diesem Abschnitt.',
 			_ => null,
 		} ?? switch (path) {
-			'guides.noItems' => 'Noch keine Informationen in diesem Abschnitt.',
 			'guides.facilitatorNote' => 'StepWays verweist Sie an Anbieter. Buchung und Zahlung erfolgen auf deren Website: nichts in der App.',
 			'guides.openSite' => 'Website öffnen',
 			'guides.cannotOpen' => 'Dieser Link kann auf diesem Gerät nicht geöffnet werden.',
@@ -5243,9 +5241,9 @@ extension on TranslationsDe {
 			'walkTest.gpsDenied' => 'Erlauben Sie den Standort, um den Test zu starten.',
 			'walkTest.monthlyReminderOn' => 'Monatliche Erinnerung aktiv',
 			'walkTest.monthlyReminderBody' => 'Jeden Monat wird eine Test-Erinnerung angeboten, um Ihre Form zu verfolgen.',
+			'walkTest.notDoneYet' => 'Test nicht durchgefuhrt',
 			_ => null,
 		} ?? switch (path) {
-			'walkTest.notDoneYet' => 'Test nicht durchgefuhrt',
 			'walkTest.fallbackNotice' => 'Bis zum Test wird Ihr Niveau aus Ihrem Fragebogen geschatzt.',
 			'walkTest.levels.low' => 'Niedrig',
 			'walkTest.levels.moderate' => 'Mittel',

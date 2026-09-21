@@ -2028,7 +2028,6 @@ class _Translations$checklist$weight$es extends Translations$checklist$weight$fr
 	@override String get grams => 'g';
 	@override String get kilograms => 'kg';
 	@override String get adviceUltraLight => 'Mochila ultraligera — ideal para el trekking';
-	@override String get adviceLight => 'Mochila ultraligera — ideal para el trekking';
 	@override String get adviceOk => 'Mochila bien equilibrada';
 	@override String get adviceHeavy => 'Correcto pero pesado — considera aligerar';
 	@override String get adviceTooHeavy => 'Cuidado rodillas! Aligera la mochila';
@@ -4095,7 +4094,6 @@ extension on TranslationsEs {
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
 			'checklist.weight.adviceUltraLight' => 'Mochila ultraligera — ideal para el trekking',
-			'checklist.weight.adviceLight' => 'Mochila ultraligera — ideal para el trekking',
 			'checklist.weight.adviceOk' => 'Mochila bien equilibrada',
 			'checklist.weight.adviceHeavy' => 'Correcto pero pesado — considera aligerar',
 			'checklist.weight.adviceTooHeavy' => 'Cuidado rodillas! Aligera la mochila',
@@ -4215,9 +4213,9 @@ extension on TranslationsEs {
 			'weather.error' => 'No se pudo cargar la meteorología.',
 			'weather.cached' => 'Datos en caché',
 			'weather.alerts' => 'alertas meteorológicas',
+			'weather.refresh' => 'Actualizar',
 			_ => null,
 		} ?? switch (path) {
-			'weather.refresh' => 'Actualizar',
 			'weather.temperature' => 'Temperatura',
 			'weather.precipitation' => 'Precipitación',
 			'weather.wind' => 'Viento',
@@ -4729,9 +4727,9 @@ extension on TranslationsEs {
 			'guides.subtitle' => 'Información práctica de pueblos y aldeas, disponible sin conexión.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones practicas',
 			'guides.empty' => 'No hay guía disponible para este sendero.',
+			'guides.noItems' => 'Aún no hay información en esta sección.',
 			_ => null,
 		} ?? switch (path) {
-			'guides.noItems' => 'Aún no hay información en esta sección.',
 			'guides.facilitatorNote' => 'StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.',
 			'guides.openSite' => 'Abrir el sitio',
 			'guides.cannotOpen' => 'No se puede abrir este enlace en este dispositivo.',
@@ -5243,9 +5241,9 @@ extension on TranslationsEs {
 			'walkTest.gpsDenied' => 'Permite la ubicacion para iniciar la prueba.',
 			'walkTest.monthlyReminderOn' => 'Recordatorio mensual activo',
 			'walkTest.monthlyReminderBody' => 'Cada mes se te propondra un recordatorio de la prueba para seguir tu forma.',
+			'walkTest.notDoneYet' => 'Prueba no realizada',
 			_ => null,
 		} ?? switch (path) {
-			'walkTest.notDoneYet' => 'Prueba no realizada',
 			'walkTest.fallbackNotice' => 'Hasta que hagas la prueba, tu nivel se estima a partir del cuestionario.',
 			'walkTest.levels.low' => 'Bajo',
 			'walkTest.levels.moderate' => 'Medio',
