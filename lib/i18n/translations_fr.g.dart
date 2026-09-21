@@ -3842,8 +3842,8 @@ class Translations$checklist$categories$fr {
 	/// fr: 'Couchage'
 	String get sleeping => 'Couchage';
 
-	/// fr: 'Vetements'
-	String get clothing => 'Vetements';
+	/// fr: 'Vêtements'
+	String get clothing => 'Vêtements';
 
 	/// fr: 'Cuisine'
 	String get cooking => 'Cuisine';
@@ -3851,14 +3851,14 @@ class Translations$checklist$categories$fr {
 	/// fr: 'Nourriture & Eau'
 	String get foodWater => 'Nourriture & Eau';
 
-	/// fr: 'Hygiene'
-	String get hygiene => 'Hygiene';
+	/// fr: 'Hygiène'
+	String get hygiene => 'Hygiène';
 
 	/// fr: 'Trousse de secours'
 	String get firstAid => 'Trousse de secours';
 
-	/// fr: 'Electronique'
-	String get electronics => 'Electronique';
+	/// fr: 'Électronique'
+	String get electronics => 'Électronique';
 
 	/// fr: 'Femme'
 	String get women => 'Femme';
@@ -3881,14 +3881,14 @@ class Translations$checklist$items$fr {
 
 	// Translations
 
-	/// fr: 'Sac a dos 35-45L'
-	String get backpack => 'Sac a dos 35-45L';
+	/// fr: 'Sac à dos 35-45L'
+	String get backpack => 'Sac à dos 35-45L';
 
 	/// fr: 'Housse de pluie sac'
 	String get rainCover => 'Housse de pluie sac';
 
-	/// fr: 'Sacs etanches (dry bags)'
-	String get dryBags => 'Sacs etanches (dry bags)';
+	/// fr: 'Sacs étanches (dry bags)'
+	String get dryBags => 'Sacs étanches (dry bags)';
 
 	/// fr: 'Sac de couchage (0-5C)'
 	String get sleepingBag => 'Sac de couchage (0-5C)';
@@ -3896,8 +3896,8 @@ class Translations$checklist$items$fr {
 	/// fr: 'Matelas / tapis de sol'
 	String get sleepingPad => 'Matelas / tapis de sol';
 
-	/// fr: 'Drap de sac / sac a viande'
-	String get sleepingLiner => 'Drap de sac / sac a viande';
+	/// fr: 'Drap de sac / sac à viande'
+	String get sleepingLiner => 'Drap de sac / sac à viande';
 
 	/// fr: 'Oreiller gonflable'
 	String get pillow => 'Oreiller gonflable';
@@ -3914,20 +3914,20 @@ class Translations$checklist$items$fr {
 	/// fr: 'T-shirt technique'
 	String get techTshirt => 'T-shirt technique';
 
-	/// fr: 'Polaire / doudoune legere'
-	String get fleece => 'Polaire / doudoune legere';
+	/// fr: 'Polaire / doudoune légère'
+	String get fleece => 'Polaire / doudoune légère';
 
-	/// fr: 'Veste impermeable Gore-Tex'
-	String get rainJacket => 'Veste impermeable Gore-Tex';
+	/// fr: 'Veste imperméable Gore-Tex'
+	String get rainJacket => 'Veste imperméable Gore-Tex';
 
-	/// fr: 'Sous-vetement'
-	String get underwear => 'Sous-vetement';
+	/// fr: 'Sous-vêtement'
+	String get underwear => 'Sous-vêtement';
 
 	/// fr: 'Chaussettes de rando'
 	String get hikingSocks => 'Chaussettes de rando';
 
-	/// fr: 'Guetres'
-	String get gaiters => 'Guetres';
+	/// fr: 'Guêtres'
+	String get gaiters => 'Guêtres';
 
 	/// fr: 'Chapeau / casquette'
 	String get hat => 'Chapeau / casquette';
@@ -3938,17 +3938,17 @@ class Translations$checklist$items$fr {
 	/// fr: 'Buff / tour de cou'
 	String get buff => 'Buff / tour de cou';
 
-	/// fr: 'Gants legers'
-	String get lightGloves => 'Gants legers';
+	/// fr: 'Gants légers'
+	String get lightGloves => 'Gants légers';
 
-	/// fr: 'Chaussures de rando (portees)'
-	String get hikingBoots => 'Chaussures de rando (portees)';
+	/// fr: 'Chaussures de rando (portées)'
+	String get hikingBoots => 'Chaussures de rando (portées)';
 
 	/// fr: 'Sandales de bivouac'
 	String get campSandals => 'Sandales de bivouac';
 
-	/// fr: 'Rechaud (PocketRocket)'
-	String get stove => 'Rechaud (PocketRocket)';
+	/// fr: 'Réchaud (PocketRocket)'
+	String get stove => 'Réchaud (PocketRocket)';
 
 	/// fr: 'Cartouche gaz'
 	String get gasCanister => 'Cartouche gaz';
@@ -3956,11 +3956,11 @@ class Translations$checklist$items$fr {
 	/// fr: 'Popote / gamelle'
 	String get cookpot => 'Popote / gamelle';
 
-	/// fr: 'Couverts (cuillere, couteau)'
-	String get cutlery => 'Couverts (cuillere, couteau)';
+	/// fr: 'Couverts (cuillère, couteau)'
+	String get cutlery => 'Couverts (cuillère, couteau)';
 
-	/// fr: 'Gourde / poche a eau 2L'
-	String get waterBottle => 'Gourde / poche a eau 2L';
+	/// fr: 'Gourde / poche à eau 2L'
+	String get waterBottle => 'Gourde / poche à eau 2L';
 
 	/// fr: 'Couteau pliant'
 	String get knife => 'Couteau pliant';
@@ -3968,29 +3968,29 @@ class Translations$checklist$items$fr {
 	/// fr: 'Briquet'
 	String get lighter => 'Briquet';
 
-	/// fr: 'Barre energetique'
-	String get energyBars => 'Barre energetique';
+	/// fr: 'Barre énergétique'
+	String get energyBars => 'Barre énergétique';
 
 	/// fr: 'Fruits secs'
 	String get driedFruits => 'Fruits secs';
 
-	/// fr: 'Repas lyophilise'
-	String get freezeDriedMeal => 'Repas lyophilise';
+	/// fr: 'Repas lyophilisé'
+	String get freezeDriedMeal => 'Repas lyophilisé';
 
 	/// fr: 'Pastilles purification eau'
 	String get waterPurification => 'Pastilles purification eau';
 
-	/// fr: 'Electrolytes'
-	String get electrolytes => 'Electrolytes';
+	/// fr: 'Électrolytes'
+	String get electrolytes => 'Électrolytes';
 
-	/// fr: 'Eau transportee (1L = 1000g)'
-	String get carriedWater => 'Eau transportee (1L = 1000g)';
+	/// fr: 'Eau transportée (1L = 1000g)'
+	String get carriedWater => 'Eau transportée (1L = 1000g)';
 
-	/// fr: 'Savon biodegradable'
-	String get soap => 'Savon biodegradable';
+	/// fr: 'Savon biodégradable'
+	String get soap => 'Savon biodégradable';
 
-	/// fr: 'Brosse a dents'
-	String get toothbrush => 'Brosse a dents';
+	/// fr: 'Brosse à dents'
+	String get toothbrush => 'Brosse à dents';
 
 	/// fr: 'Dentifrice'
 	String get toothpaste => 'Dentifrice';
@@ -4013,23 +4013,23 @@ class Translations$checklist$items$fr {
 	/// fr: 'Pansements assortis'
 	String get bandages => 'Pansements assortis';
 
-	/// fr: 'Compresses steriles'
-	String get sterileCompresses => 'Compresses steriles';
+	/// fr: 'Compresses stériles'
+	String get sterileCompresses => 'Compresses stériles';
 
-	/// fr: 'Bande elastique'
-	String get elasticBandage => 'Bande elastique';
+	/// fr: 'Bande élastique'
+	String get elasticBandage => 'Bande élastique';
 
-	/// fr: 'Desinfectant (50ml)'
-	String get disinfectant => 'Desinfectant (50ml)';
+	/// fr: 'Désinfectant (50ml)'
+	String get disinfectant => 'Désinfectant (50ml)';
 
-	/// fr: 'Doliprane / Ibuprofene'
-	String get painkillers => 'Doliprane / Ibuprofene';
+	/// fr: 'Doliprane / Ibuprofène'
+	String get painkillers => 'Doliprane / Ibuprofène';
 
 	/// fr: 'Crème solaire SPF50'
 	String get sunscreen => 'Crème solaire SPF50';
 
-	/// fr: 'Stick a levres SPF30'
-	String get lipBalm => 'Stick a levres SPF30';
+	/// fr: 'Stick à lèvres SPF30'
+	String get lipBalm => 'Stick à lèvres SPF30';
 
 	/// fr: 'Couverture de survie'
 	String get emergencyBlanket => 'Couverture de survie';
@@ -4040,14 +4040,14 @@ class Translations$checklist$items$fr {
 	/// fr: 'Sifflet de secours'
 	String get whistle => 'Sifflet de secours';
 
-	/// fr: 'Elastoplaste / strapping'
-	String get strapping => 'Elastoplaste / strapping';
+	/// fr: 'Élastoplaste / strapping'
+	String get strapping => 'Élastoplaste / strapping';
 
 	/// fr: 'Collyre'
 	String get eyeDrops => 'Collyre';
 
-	/// fr: 'Anti-diarrheique'
-	String get antiDiarrheal => 'Anti-diarrheique';
+	/// fr: 'Anti-diarrhéique'
+	String get antiDiarrheal => 'Anti-diarrhéique';
 
 	/// fr: 'Antihistaminique'
 	String get antihistamine => 'Antihistaminique';
@@ -4055,14 +4055,14 @@ class Translations$checklist$items$fr {
 	/// fr: 'Tape genoux'
 	String get kneeTape => 'Tape genoux';
 
-	/// fr: 'Telephone'
-	String get phone => 'Telephone';
+	/// fr: 'Téléphone'
+	String get phone => 'Téléphone';
 
 	/// fr: 'Batterie externe 20000mAh'
 	String get powerBank => 'Batterie externe 20000mAh';
 
-	/// fr: 'Cable USB'
-	String get usbCable => 'Cable USB';
+	/// fr: 'Câble USB'
+	String get usbCable => 'Câble USB';
 
 	/// fr: 'Lampe frontale'
 	String get headlamp => 'Lampe frontale';
@@ -4070,11 +4070,11 @@ class Translations$checklist$items$fr {
 	/// fr: 'Piles de rechange'
 	String get spareBatteries => 'Piles de rechange';
 
-	/// fr: 'Protections periodiques'
-	String get periodProtection => 'Protections periodiques';
+	/// fr: 'Protections périodiques'
+	String get periodProtection => 'Protections périodiques';
 
-	/// fr: 'Brassiere sport'
-	String get sportsBra => 'Brassiere sport';
+	/// fr: 'Brassière sport'
+	String get sportsBra => 'Brassière sport';
 
 	/// fr: 'Lingettes intimes'
 	String get intimateWipes => 'Lingettes intimes';
@@ -4085,11 +4085,11 @@ class Translations$checklist$items$fr {
 	/// fr: 'Rasoir'
 	String get razor => 'Rasoir';
 
-	/// fr: 'Calecons tech'
-	String get techBoxers => 'Calecons tech';
+	/// fr: 'Caleçons tech'
+	String get techBoxers => 'Caleçons tech';
 
-	/// fr: 'Batons de marche (portes)'
-	String get hikingPoles => 'Batons de marche (portes)';
+	/// fr: 'Bâtons de marche (portés)'
+	String get hikingPoles => 'Bâtons de marche (portés)';
 
 	/// fr: 'Lunettes de soleil'
 	String get sunglasses => 'Lunettes de soleil';
@@ -4103,8 +4103,8 @@ class Translations$checklist$items$fr {
 	/// fr: 'Fil + aiguille'
 	String get needleThread => 'Fil + aiguille';
 
-	/// fr: 'Ruban adhesif'
-	String get ductTape => 'Ruban adhesif';
+	/// fr: 'Ruban adhésif'
+	String get ductTape => 'Ruban adhésif';
 
 	/// fr: 'Sacs ziploc'
 	String get ziplocBags => 'Sacs ziploc';
@@ -4130,14 +4130,14 @@ class Translations$checklist$items$fr {
 	/// fr: 'Carnet de vaccins'
 	String get dogVaccineBook => 'Carnet de vaccins';
 
-	/// fr: 'Sacs a dejections'
-	String get dogPoopBags => 'Sacs a dejections';
+	/// fr: 'Sacs à déjections'
+	String get dogPoopBags => 'Sacs à déjections';
 
 	/// fr: 'Maillot de bain'
 	String get swimsuit => 'Maillot de bain';
 
-	/// fr: 'Crampons legers (microspikes)'
-	String get seasonalMicrospikes => 'Crampons legers (microspikes)';
+	/// fr: 'Crampons légers (microspikes)'
+	String get seasonalMicrospikes => 'Crampons légers (microspikes)';
 
 	/// fr: 'Gants chauds'
 	String get seasonalWarmGloves => 'Gants chauds';
@@ -4145,23 +4145,23 @@ class Translations$checklist$items$fr {
 	/// fr: 'Sous-couche thermique'
 	String get seasonalThermalBase => 'Sous-couche thermique';
 
-	/// fr: 'Eau supplementaire'
-	String get seasonalExtraWater => 'Eau supplementaire';
+	/// fr: 'Eau supplémentaire'
+	String get seasonalExtraWater => 'Eau supplémentaire';
 
 	/// fr: 'Chapeau de soleil'
 	String get seasonalSunHat => 'Chapeau de soleil';
 
-	/// fr: 'Electrolytes (chaleur)'
-	String get seasonalElectrolytesPlus => 'Electrolytes (chaleur)';
+	/// fr: 'Électrolytes (chaleur)'
+	String get seasonalElectrolytesPlus => 'Électrolytes (chaleur)';
 
-	/// fr: 'Guetres (boue de printemps)'
-	String get seasonalGaitersMud => 'Guetres (boue de printemps)';
+	/// fr: 'Guêtres (boue de printemps)'
+	String get seasonalGaitersMud => 'Guêtres (boue de printemps)';
 
 	/// fr: 'Lampe frontale d'appoint (jours courts)'
 	String get seasonalHeadlampSpare => 'Lampe frontale d\'appoint (jours courts)';
 
-	/// fr: 'Reserve d'eau renforcee (zones seches)'
-	String get seasonalMamExtraWater => 'Reserve d\'eau renforcee (zones seches)';
+	/// fr: 'Réserve d'eau renforcée (zones sèches)'
+	String get seasonalMamExtraWater => 'Réserve d\'eau renforcée (zones sèches)';
 }
 
 // Path: checklist.weight
@@ -7262,53 +7262,53 @@ extension on Translations {
 			'checklist.confirm' => 'Confirmer',
 			'checklist.categories.carrying' => 'Sac & portage',
 			'checklist.categories.sleeping' => 'Couchage',
-			'checklist.categories.clothing' => 'Vetements',
+			'checklist.categories.clothing' => 'Vêtements',
 			'checklist.categories.cooking' => 'Cuisine',
 			'checklist.categories.foodWater' => 'Nourriture & Eau',
-			'checklist.categories.hygiene' => 'Hygiene',
+			'checklist.categories.hygiene' => 'Hygiène',
 			'checklist.categories.firstAid' => 'Trousse de secours',
-			'checklist.categories.electronics' => 'Electronique',
+			'checklist.categories.electronics' => 'Électronique',
 			'checklist.categories.women' => 'Femme',
 			'checklist.categories.men' => 'Homme',
 			'checklist.categories.misc' => 'Divers',
 			'checklist.categories.dog' => 'Chien',
-			'checklist.items.backpack' => 'Sac a dos 35-45L',
+			'checklist.items.backpack' => 'Sac à dos 35-45L',
 			'checklist.items.rainCover' => 'Housse de pluie sac',
-			'checklist.items.dryBags' => 'Sacs etanches (dry bags)',
+			'checklist.items.dryBags' => 'Sacs étanches (dry bags)',
 			'checklist.items.sleepingBag' => 'Sac de couchage (0-5C)',
 			'checklist.items.sleepingPad' => 'Matelas / tapis de sol',
-			'checklist.items.sleepingLiner' => 'Drap de sac / sac a viande',
+			'checklist.items.sleepingLiner' => 'Drap de sac / sac à viande',
 			'checklist.items.pillow' => 'Oreiller gonflable',
 			'checklist.items.hikingPants' => 'Pantalon de rando',
 			'checklist.items.rainPants' => 'Pantalon de pluie',
 			'checklist.items.shorts' => 'Short',
 			'checklist.items.techTshirt' => 'T-shirt technique',
-			'checklist.items.fleece' => 'Polaire / doudoune legere',
-			'checklist.items.rainJacket' => 'Veste impermeable Gore-Tex',
-			'checklist.items.underwear' => 'Sous-vetement',
+			'checklist.items.fleece' => 'Polaire / doudoune légère',
+			'checklist.items.rainJacket' => 'Veste imperméable Gore-Tex',
+			'checklist.items.underwear' => 'Sous-vêtement',
 			'checklist.items.hikingSocks' => 'Chaussettes de rando',
-			'checklist.items.gaiters' => 'Guetres',
+			'checklist.items.gaiters' => 'Guêtres',
 			'checklist.items.hat' => 'Chapeau / casquette',
 			'checklist.items.beanie' => 'Bonnet',
 			'checklist.items.buff' => 'Buff / tour de cou',
-			'checklist.items.lightGloves' => 'Gants legers',
-			'checklist.items.hikingBoots' => 'Chaussures de rando (portees)',
+			'checklist.items.lightGloves' => 'Gants légers',
+			'checklist.items.hikingBoots' => 'Chaussures de rando (portées)',
 			'checklist.items.campSandals' => 'Sandales de bivouac',
-			'checklist.items.stove' => 'Rechaud (PocketRocket)',
+			'checklist.items.stove' => 'Réchaud (PocketRocket)',
 			'checklist.items.gasCanister' => 'Cartouche gaz',
 			'checklist.items.cookpot' => 'Popote / gamelle',
-			'checklist.items.cutlery' => 'Couverts (cuillere, couteau)',
-			'checklist.items.waterBottle' => 'Gourde / poche a eau 2L',
+			'checklist.items.cutlery' => 'Couverts (cuillère, couteau)',
+			'checklist.items.waterBottle' => 'Gourde / poche à eau 2L',
 			'checklist.items.knife' => 'Couteau pliant',
 			'checklist.items.lighter' => 'Briquet',
-			'checklist.items.energyBars' => 'Barre energetique',
+			'checklist.items.energyBars' => 'Barre énergétique',
 			'checklist.items.driedFruits' => 'Fruits secs',
-			'checklist.items.freezeDriedMeal' => 'Repas lyophilise',
+			'checklist.items.freezeDriedMeal' => 'Repas lyophilisé',
 			'checklist.items.waterPurification' => 'Pastilles purification eau',
-			'checklist.items.electrolytes' => 'Electrolytes',
-			'checklist.items.carriedWater' => 'Eau transportee (1L = 1000g)',
-			'checklist.items.soap' => 'Savon biodegradable',
-			'checklist.items.toothbrush' => 'Brosse a dents',
+			'checklist.items.electrolytes' => 'Électrolytes',
+			'checklist.items.carriedWater' => 'Eau transportée (1L = 1000g)',
+			'checklist.items.soap' => 'Savon biodégradable',
+			'checklist.items.toothbrush' => 'Brosse à dents',
 			'checklist.items.toothpaste' => 'Dentifrice',
 			'checklist.items.microfiberTowel' => 'Serviette microfibre',
 			'checklist.items.toiletPaper' => 'Papier toilette',
@@ -7316,37 +7316,37 @@ extension on Translations {
 			'checklist.items.antiChafingCream' => 'Crème anti-frottements',
 			'checklist.items.earplugs' => 'Boules Quies',
 			'checklist.items.bandages' => 'Pansements assortis',
-			'checklist.items.sterileCompresses' => 'Compresses steriles',
-			'checklist.items.elasticBandage' => 'Bande elastique',
-			'checklist.items.disinfectant' => 'Desinfectant (50ml)',
-			'checklist.items.painkillers' => 'Doliprane / Ibuprofene',
+			'checklist.items.sterileCompresses' => 'Compresses stériles',
+			'checklist.items.elasticBandage' => 'Bande élastique',
+			'checklist.items.disinfectant' => 'Désinfectant (50ml)',
+			'checklist.items.painkillers' => 'Doliprane / Ibuprofène',
 			'checklist.items.sunscreen' => 'Crème solaire SPF50',
-			'checklist.items.lipBalm' => 'Stick a levres SPF30',
+			'checklist.items.lipBalm' => 'Stick à lèvres SPF30',
 			'checklist.items.emergencyBlanket' => 'Couverture de survie',
 			'checklist.items.tickRemover' => 'Tire-tiques',
 			'checklist.items.whistle' => 'Sifflet de secours',
-			'checklist.items.strapping' => 'Elastoplaste / strapping',
+			'checklist.items.strapping' => 'Élastoplaste / strapping',
 			'checklist.items.eyeDrops' => 'Collyre',
-			'checklist.items.antiDiarrheal' => 'Anti-diarrheique',
+			'checklist.items.antiDiarrheal' => 'Anti-diarrhéique',
 			'checklist.items.antihistamine' => 'Antihistaminique',
 			'checklist.items.kneeTape' => 'Tape genoux',
-			'checklist.items.phone' => 'Telephone',
+			'checklist.items.phone' => 'Téléphone',
 			'checklist.items.powerBank' => 'Batterie externe 20000mAh',
-			'checklist.items.usbCable' => 'Cable USB',
+			'checklist.items.usbCable' => 'Câble USB',
 			'checklist.items.headlamp' => 'Lampe frontale',
 			'checklist.items.spareBatteries' => 'Piles de rechange',
-			'checklist.items.periodProtection' => 'Protections periodiques',
-			'checklist.items.sportsBra' => 'Brassiere sport',
+			'checklist.items.periodProtection' => 'Protections périodiques',
+			'checklist.items.sportsBra' => 'Brassière sport',
 			'checklist.items.intimateWipes' => 'Lingettes intimes',
 			'checklist.items.peeCloth' => 'Pee-cloth',
 			'checklist.items.razor' => 'Rasoir',
-			'checklist.items.techBoxers' => 'Calecons tech',
-			'checklist.items.hikingPoles' => 'Batons de marche (portes)',
+			'checklist.items.techBoxers' => 'Caleçons tech',
+			'checklist.items.hikingPoles' => 'Bâtons de marche (portés)',
 			'checklist.items.sunglasses' => 'Lunettes de soleil',
 			'checklist.items.trailMap' => 'Carte IGN / topo',
 			'checklist.items.spareLaces' => 'Lacets de rechange',
 			'checklist.items.needleThread' => 'Fil + aiguille',
-			'checklist.items.ductTape' => 'Ruban adhesif',
+			'checklist.items.ductTape' => 'Ruban adhésif',
 			'checklist.items.ziplocBags' => 'Sacs ziploc',
 			'checklist.items.cord' => 'Cordelle',
 			'checklist.items.cash' => 'Argent liquide',
@@ -7355,17 +7355,17 @@ extension on Translations {
 			'checklist.items.dogKibble' => 'Croquettes (ration/jour)',
 			'checklist.items.dogBooties' => 'Bottines protection',
 			'checklist.items.dogVaccineBook' => 'Carnet de vaccins',
-			'checklist.items.dogPoopBags' => 'Sacs a dejections',
+			'checklist.items.dogPoopBags' => 'Sacs à déjections',
 			'checklist.items.swimsuit' => 'Maillot de bain',
-			'checklist.items.seasonalMicrospikes' => 'Crampons legers (microspikes)',
+			'checklist.items.seasonalMicrospikes' => 'Crampons légers (microspikes)',
 			'checklist.items.seasonalWarmGloves' => 'Gants chauds',
 			'checklist.items.seasonalThermalBase' => 'Sous-couche thermique',
-			'checklist.items.seasonalExtraWater' => 'Eau supplementaire',
+			'checklist.items.seasonalExtraWater' => 'Eau supplémentaire',
 			'checklist.items.seasonalSunHat' => 'Chapeau de soleil',
-			'checklist.items.seasonalElectrolytesPlus' => 'Electrolytes (chaleur)',
-			'checklist.items.seasonalGaitersMud' => 'Guetres (boue de printemps)',
+			'checklist.items.seasonalElectrolytesPlus' => 'Électrolytes (chaleur)',
+			'checklist.items.seasonalGaitersMud' => 'Guêtres (boue de printemps)',
 			'checklist.items.seasonalHeadlampSpare' => 'Lampe frontale d\'appoint (jours courts)',
-			'checklist.items.seasonalMamExtraWater' => 'Reserve d\'eau renforcee (zones seches)',
+			'checklist.items.seasonalMamExtraWater' => 'Réserve d\'eau renforcée (zones sèches)',
 			'checklist.essential' => 'Essentiel',
 			'checklist.weight.title' => 'Poids du sac',
 			'checklist.weight.recommended' => 'Poids recommandé',
