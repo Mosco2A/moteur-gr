@@ -149,7 +149,7 @@ class _Translations$nav$de extends Translations$nav$fr {
 	@override String get planning => 'Planung';
 	@override String get journal => 'Tagebuch';
 	@override String get more => 'Mehr';
-	@override String get checklist => 'Ausrustung & Rucksack';
+	@override String get checklist => 'Ausrüstung & Rucksack';
 	@override String get feasibility => 'Machbarkeit';
 	@override String get tips => 'Trek-Tipps';
 	@override String get emergency => 'Notfallkontakte';
@@ -1903,7 +1903,7 @@ class _Translations$checklist$categories$de extends Translations$checklist$categ
 	@override String get firstAid => 'Erste-Hilfe-Set';
 	@override String get electronics => 'Elektronik';
 	@override String get women => 'Frauen';
-	@override String get men => 'Manner';
+	@override String get men => 'Männer';
 	@override String get misc => 'Sonstiges';
 	@override String get dog => 'Hund';
 }
@@ -1916,11 +1916,11 @@ class _Translations$checklist$items$de extends Translations$checklist$items$fr {
 
 	// Translations
 	@override String get backpack => 'Rucksack 35-45L';
-	@override String get rainCover => 'Rucksack-Regenhulle';
-	@override String get dryBags => 'Packsacke (dry bags)';
+	@override String get rainCover => 'Rucksack-Regenhülle';
+	@override String get dryBags => 'Packsäcke (dry bags)';
 	@override String get sleepingBag => 'Schlafsack (0-5C)';
 	@override String get sleepingPad => 'Isomatte / Unterlage';
-	@override String get sleepingLiner => 'Huttenschlafsack / Inlett';
+	@override String get sleepingLiner => 'Hüttenschlafsack / Inlett';
 	@override String get pillow => 'Aufblasbares Kissen';
 	@override String get hikingPants => 'Wanderhose';
 	@override String get rainPants => 'Regenhose';
@@ -1928,11 +1928,11 @@ class _Translations$checklist$items$de extends Translations$checklist$items$fr {
 	@override String get techTshirt => 'Funktions-T-Shirt';
 	@override String get fleece => 'Fleece / leichte Daune';
 	@override String get rainJacket => 'Regenjacke Gore-Tex';
-	@override String get underwear => 'Unterwasche';
+	@override String get underwear => 'Unterwäsche';
 	@override String get hikingSocks => 'Wandersocken';
 	@override String get gaiters => 'Gamaschen';
 	@override String get hat => 'Hut / Kappe';
-	@override String get beanie => 'Mutze';
+	@override String get beanie => 'Mütze';
 	@override String get buff => 'Buff / Halstuch';
 	@override String get lightGloves => 'Leichte Handschuhe';
 	@override String get hikingBoots => 'Wanderschuhe (getragen)';
@@ -1940,24 +1940,24 @@ class _Translations$checklist$items$de extends Translations$checklist$items$fr {
 	@override String get stove => 'Kocher (PocketRocket)';
 	@override String get gasCanister => 'Gaskartusche';
 	@override String get cookpot => 'Kochtopf / Geschirr';
-	@override String get cutlery => 'Besteck (Loffel, Messer)';
+	@override String get cutlery => 'Besteck (Löffel, Messer)';
 	@override String get waterBottle => 'Trinkflasche / Blase 2L';
 	@override String get knife => 'Klappmesser';
 	@override String get lighter => 'Feuerzeug';
 	@override String get energyBars => 'Energieriegel';
-	@override String get driedFruits => 'Trockenfruchte';
+	@override String get driedFruits => 'Trockenfrüchte';
 	@override String get freezeDriedMeal => 'Gefriergetrocknete Mahlzeit';
 	@override String get waterPurification => 'Wasser-Entkeimungstabletten';
 	@override String get electrolytes => 'Elektrolyte';
 	@override String get carriedWater => 'Getragenes Wasser (1L = 1000g)';
 	@override String get soap => 'Biologisch abbaubare Seife';
-	@override String get toothbrush => 'Zahnburste';
+	@override String get toothbrush => 'Zahnbürste';
 	@override String get toothpaste => 'Zahnpasta';
 	@override String get microfiberTowel => 'Mikrofaser-Handtuch';
 	@override String get toiletPaper => 'Toilettenpapier';
-	@override String get trashBag => 'Mullbeutel';
+	@override String get trashBag => 'Müllbeutel';
 	@override String get antiChafingCream => 'Anti-Scheuer-Creme';
-	@override String get earplugs => 'Ohrstopsel';
+	@override String get earplugs => 'Ohrstöpsel';
 	@override String get bandages => 'Sortierte Pflaster';
 	@override String get sterileCompresses => 'Sterile Kompressen';
 	@override String get elasticBandage => 'Elastische Binde';
@@ -1980,14 +1980,14 @@ class _Translations$checklist$items$de extends Translations$checklist$items$fr {
 	@override String get spareBatteries => 'Ersatzbatterien';
 	@override String get periodProtection => 'Periodenschutz';
 	@override String get sportsBra => 'Sport-BH';
-	@override String get intimateWipes => 'Intimtucher';
+	@override String get intimateWipes => 'Intimtücher';
 	@override String get peeCloth => 'Pee-Cloth';
 	@override String get razor => 'Rasierer';
 	@override String get techBoxers => 'Funktions-Boxershorts';
-	@override String get hikingPoles => 'Wanderstocke (getragen)';
+	@override String get hikingPoles => 'Wanderstöcke (getragen)';
 	@override String get sunglasses => 'Sonnenbrille';
 	@override String get trailMap => 'Karte / Topo-Guide';
-	@override String get spareLaces => 'Ersatzschnursenkel';
+	@override String get spareLaces => 'Ersatzschnürsenkel';
 	@override String get needleThread => 'Nadel + Faden';
 	@override String get ductTape => 'Klebeband';
 	@override String get ziplocBags => 'Ziploc-Beutel';
@@ -2003,12 +2003,12 @@ class _Translations$checklist$items$de extends Translations$checklist$items$fr {
 	@override String get seasonalMicrospikes => 'Leichte Steigeisen (Microspikes)';
 	@override String get seasonalWarmGloves => 'Warme Handschuhe';
 	@override String get seasonalThermalBase => 'Thermo-Unterschicht';
-	@override String get seasonalExtraWater => 'Zusatzliches Wasser';
+	@override String get seasonalExtraWater => 'Zusätzliches Wasser';
 	@override String get seasonalSunHat => 'Sonnenhut';
 	@override String get seasonalElectrolytesPlus => 'Elektrolyte (Hitze)';
-	@override String get seasonalGaitersMud => 'Gamaschen (Fruhjahrsmatsch)';
+	@override String get seasonalGaitersMud => 'Gamaschen (Frühjahrsmatsch)';
 	@override String get seasonalHeadlampSpare => 'Ersatz-Stirnlampe (kurze Tage)';
-	@override String get seasonalMamExtraWater => 'Verstarkter Wasservorrat (trockene Zonen)';
+	@override String get seasonalMamExtraWater => 'Verstärkter Wasservorrat (trockene Zonen)';
 }
 
 // Path: checklist.weight
@@ -3725,7 +3725,7 @@ extension on TranslationsDe {
 			'nav.planning' => 'Planung',
 			'nav.journal' => 'Tagebuch',
 			'nav.more' => 'Mehr',
-			'nav.checklist' => 'Ausrustung & Rucksack',
+			'nav.checklist' => 'Ausrüstung & Rucksack',
 			'nav.feasibility' => 'Machbarkeit',
 			'nav.tips' => 'Trek-Tipps',
 			'nav.emergency' => 'Notfallkontakte',
@@ -3986,15 +3986,15 @@ extension on TranslationsDe {
 			'checklist.categories.firstAid' => 'Erste-Hilfe-Set',
 			'checklist.categories.electronics' => 'Elektronik',
 			'checklist.categories.women' => 'Frauen',
-			'checklist.categories.men' => 'Manner',
+			'checklist.categories.men' => 'Männer',
 			'checklist.categories.misc' => 'Sonstiges',
 			'checklist.categories.dog' => 'Hund',
 			'checklist.items.backpack' => 'Rucksack 35-45L',
-			'checklist.items.rainCover' => 'Rucksack-Regenhulle',
-			'checklist.items.dryBags' => 'Packsacke (dry bags)',
+			'checklist.items.rainCover' => 'Rucksack-Regenhülle',
+			'checklist.items.dryBags' => 'Packsäcke (dry bags)',
 			'checklist.items.sleepingBag' => 'Schlafsack (0-5C)',
 			'checklist.items.sleepingPad' => 'Isomatte / Unterlage',
-			'checklist.items.sleepingLiner' => 'Huttenschlafsack / Inlett',
+			'checklist.items.sleepingLiner' => 'Hüttenschlafsack / Inlett',
 			'checklist.items.pillow' => 'Aufblasbares Kissen',
 			'checklist.items.hikingPants' => 'Wanderhose',
 			'checklist.items.rainPants' => 'Regenhose',
@@ -4002,11 +4002,11 @@ extension on TranslationsDe {
 			'checklist.items.techTshirt' => 'Funktions-T-Shirt',
 			'checklist.items.fleece' => 'Fleece / leichte Daune',
 			'checklist.items.rainJacket' => 'Regenjacke Gore-Tex',
-			'checklist.items.underwear' => 'Unterwasche',
+			'checklist.items.underwear' => 'Unterwäsche',
 			'checklist.items.hikingSocks' => 'Wandersocken',
 			'checklist.items.gaiters' => 'Gamaschen',
 			'checklist.items.hat' => 'Hut / Kappe',
-			'checklist.items.beanie' => 'Mutze',
+			'checklist.items.beanie' => 'Mütze',
 			'checklist.items.buff' => 'Buff / Halstuch',
 			'checklist.items.lightGloves' => 'Leichte Handschuhe',
 			'checklist.items.hikingBoots' => 'Wanderschuhe (getragen)',
@@ -4014,24 +4014,24 @@ extension on TranslationsDe {
 			'checklist.items.stove' => 'Kocher (PocketRocket)',
 			'checklist.items.gasCanister' => 'Gaskartusche',
 			'checklist.items.cookpot' => 'Kochtopf / Geschirr',
-			'checklist.items.cutlery' => 'Besteck (Loffel, Messer)',
+			'checklist.items.cutlery' => 'Besteck (Löffel, Messer)',
 			'checklist.items.waterBottle' => 'Trinkflasche / Blase 2L',
 			'checklist.items.knife' => 'Klappmesser',
 			'checklist.items.lighter' => 'Feuerzeug',
 			'checklist.items.energyBars' => 'Energieriegel',
-			'checklist.items.driedFruits' => 'Trockenfruchte',
+			'checklist.items.driedFruits' => 'Trockenfrüchte',
 			'checklist.items.freezeDriedMeal' => 'Gefriergetrocknete Mahlzeit',
 			'checklist.items.waterPurification' => 'Wasser-Entkeimungstabletten',
 			'checklist.items.electrolytes' => 'Elektrolyte',
 			'checklist.items.carriedWater' => 'Getragenes Wasser (1L = 1000g)',
 			'checklist.items.soap' => 'Biologisch abbaubare Seife',
-			'checklist.items.toothbrush' => 'Zahnburste',
+			'checklist.items.toothbrush' => 'Zahnbürste',
 			'checklist.items.toothpaste' => 'Zahnpasta',
 			'checklist.items.microfiberTowel' => 'Mikrofaser-Handtuch',
 			'checklist.items.toiletPaper' => 'Toilettenpapier',
-			'checklist.items.trashBag' => 'Mullbeutel',
+			'checklist.items.trashBag' => 'Müllbeutel',
 			'checklist.items.antiChafingCream' => 'Anti-Scheuer-Creme',
-			'checklist.items.earplugs' => 'Ohrstopsel',
+			'checklist.items.earplugs' => 'Ohrstöpsel',
 			'checklist.items.bandages' => 'Sortierte Pflaster',
 			'checklist.items.sterileCompresses' => 'Sterile Kompressen',
 			'checklist.items.elasticBandage' => 'Elastische Binde',
@@ -4054,14 +4054,14 @@ extension on TranslationsDe {
 			'checklist.items.spareBatteries' => 'Ersatzbatterien',
 			'checklist.items.periodProtection' => 'Periodenschutz',
 			'checklist.items.sportsBra' => 'Sport-BH',
-			'checklist.items.intimateWipes' => 'Intimtucher',
+			'checklist.items.intimateWipes' => 'Intimtücher',
 			'checklist.items.peeCloth' => 'Pee-Cloth',
 			'checklist.items.razor' => 'Rasierer',
 			'checklist.items.techBoxers' => 'Funktions-Boxershorts',
-			'checklist.items.hikingPoles' => 'Wanderstocke (getragen)',
+			'checklist.items.hikingPoles' => 'Wanderstöcke (getragen)',
 			'checklist.items.sunglasses' => 'Sonnenbrille',
 			'checklist.items.trailMap' => 'Karte / Topo-Guide',
-			'checklist.items.spareLaces' => 'Ersatzschnursenkel',
+			'checklist.items.spareLaces' => 'Ersatzschnürsenkel',
 			'checklist.items.needleThread' => 'Nadel + Faden',
 			'checklist.items.ductTape' => 'Klebeband',
 			'checklist.items.ziplocBags' => 'Ziploc-Beutel',
@@ -4077,12 +4077,12 @@ extension on TranslationsDe {
 			'checklist.items.seasonalMicrospikes' => 'Leichte Steigeisen (Microspikes)',
 			'checklist.items.seasonalWarmGloves' => 'Warme Handschuhe',
 			'checklist.items.seasonalThermalBase' => 'Thermo-Unterschicht',
-			'checklist.items.seasonalExtraWater' => 'Zusatzliches Wasser',
+			'checklist.items.seasonalExtraWater' => 'Zusätzliches Wasser',
 			'checklist.items.seasonalSunHat' => 'Sonnenhut',
 			'checklist.items.seasonalElectrolytesPlus' => 'Elektrolyte (Hitze)',
-			'checklist.items.seasonalGaitersMud' => 'Gamaschen (Fruhjahrsmatsch)',
+			'checklist.items.seasonalGaitersMud' => 'Gamaschen (Frühjahrsmatsch)',
 			'checklist.items.seasonalHeadlampSpare' => 'Ersatz-Stirnlampe (kurze Tage)',
-			'checklist.items.seasonalMamExtraWater' => 'Verstarkter Wasservorrat (trockene Zonen)',
+			'checklist.items.seasonalMamExtraWater' => 'Verstärkter Wasservorrat (trockene Zonen)',
 			'checklist.essential' => 'Wesentlich',
 			'checklist.weight.title' => 'Rucksackgewicht',
 			'checklist.weight.recommended' => 'Empfohlenes Gewicht',
