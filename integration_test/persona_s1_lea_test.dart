@@ -20,6 +20,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/features/hub/presentation/widgets/finish_trek_button.dart';
+import 'package:moteur_gr/features/hub/presentation/widgets/hub_start_trek_button.dart';
+import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
@@ -154,7 +157,12 @@ void main() {
         warnIfMissing: false)) {
       await settleAndShoot(tester, P, '10_test_6min');
       // Demarrer pour rendre le mecanisme OBSERVABLE (compte a rebours 3-2-1).
-      await tapIfPresent(tester, textFrEn('Demarrer', 'Start'), P, 'test_6min',
+      // QA cycle4 : le libelle REEL est `t.walkTest.start` = « Démarrer le test »
+      // (FR, avec accent) / « Start the test » (EN). L'ancien finder cherchait
+      // « Demarrer »/« Start » — introuvable -> le chrono n'etait JAMAIS lance et
+      // le coincement etait un FAUX POSITIF du test, pas un defaut de l'appli.
+      await tapIfPresent(tester, textFrEn('Démarrer le test', 'Start the test'),
+          P, 'test_6min',
           'demarrer le test 6 min (observation du chrono)', warnIfMissing: false);
       await settleAndShoot(tester, P, '10b_test_6min_demarre');
       logStep(P, 'test_6min',
@@ -244,25 +252,41 @@ void main() {
     }
     await settleAndShoot(tester, P, '15_entrainement_seance');
 
-    // --- Etape 6 : calendrier (pose une date) ---
+    // --- Etape 5bis : ITINERAIRE (3e signal du gate de demarrage) ---
+    // QA cycle4 : le gate `prepareCoreDoneProvider` exige TROIS signaux —
+    // Itineraire + Programme + date de depart. Le round 1 n'ouvrait JAMAIS
+    // l'Itineraire cote Lea (seul le Programme etait visite, via le tour de
+    // prepa) : le gate ne pouvait donc pas s'ouvrir, quoi qu'il arrive ensuite.
+    // L'ouverture de l'ecran suffit (markSeen a l'ouverture).
+    await _openHubCard(tester, P, 'itineraire', 'Itinéraire', 'Itinéraire',
+        shot: '15b_itineraire', fallbackPath: (id) => '/trail/$id/itinerary');
+    await _goHome(tester, P);
+
+    // --- Etape 6 : calendrier (POSE REELLEMENT une date de depart) ---
     await _goHome(tester, P);
     final calCard = textFrEn('Calendrier', 'Calendar');
     await scrollUntil(tester, calCard, P, 'calendrier',
         'carte Calendrier (section Preparer)');
     await tapIfPresent(tester, calCard, P, 'calendrier', 'ouvrir Calendrier');
     await settleAndShoot(tester, P, '16_calendrier');
-    // Poser une date : tenter un tap sur un jour du calendrier (nombre) — best
-    // effort, on documente si le selecteur differe.
-    logStep(P, 'calendrier',
-        'Selection de date : depend du widget calendrier (voir capture). '
-        'Tentative de tap sur un jour.');
-    await tapIfPresent(tester, find.text('15'), P, 'calendrier',
-        'poser une date (jour 15)', warnIfMissing: false);
+    // QA cycle4 — PORT DU CORRECTIF H5, jusqu'ici applique a persona_s3 SEUL.
+    // Taper un jour de la GRILLE du calendrier ne pose AUCUNE date : la grille
+    // est un affichage. La date de depart passe par la carte « DÉPART » qui
+    // ouvre un showDatePicker Material, et c'est « OK » qui declenche
+    // `setDepartureDate` (calendar_screen.dart:196, `if (picked != null)`).
+    // Sans ce OK la date reste nulle, le gate reste FERME et le CTA
+    // « Démarrer » reste grise : c'est l'origine des 4 coincements de Lea au
+    // round 1, qui n'etaient PAS des defauts applicatifs.
+    await _poserDateDepart(tester, P);
     await settleAndShoot(tester, P, '17_calendrier_date');
 
     // --- Etape 7 : checklist / sac ---
     await _goHome(tester, P);
-    final checklistCard = textFrEn('Materiel & Sac', 'Gear & Pack');
+    // QA cycle4 : le libelle REEL est `t.hub.cards.checklist` = « Matériel & Sac »
+    // (FR, avec accent aigu). L'ancien finder sans accent ne matchait JAMAIS :
+    // les deux coincements « carte Materiel & Sac introuvable » etaient des FAUX
+    // POSITIFS du harnais. La carte EXISTE bien (hub_screen.dart:277).
+    final checklistCard = textFrEn('Matériel & Sac', 'Gear & Pack');
     await scrollUntil(tester, checklistCard, P, 'checklist',
         'carte Materiel & Sac (section Preparer)');
     await tapIfPresent(tester, checklistCard, P, 'checklist',
@@ -308,13 +332,23 @@ void main() {
 
     // --- Etape 8 : DEMARRER le trek ---
     await _goHome(tester, P);
-    // Le CTA « Demarrer la randonnee » est porte par la HubTrekCard, EN HAUT du
-    // cockpit : on remonte en tete de la liste avant de le chercher (la liste
-    // lazy ne construit pas les widgets hors ecran).
+    // QA cycle4 — COMMENTAIRE PRECEDENT PERIME, CORRIGE. Le CTA « Démarrer la
+    // randonnée » n'est PLUS porte par la HubTrekCard en haut du cockpit : il a
+    // ete DEPLACE EN BAS au lot L7 (hub_screen.dart:512, apres les sections
+    // Preparer et Informations, soit une douzaine de cartes de defilement).
+    // L'ancien `_scrollToTop` + recherche immediate cherchait donc le bouton la
+    // ou il n'est plus : faux positif garanti. On repart du haut (etat connu,
+    // la liste est virtualisee) PUIS on DESCEND jusqu'au bouton.
     await _scrollToTop(tester, P);
+    _logGateDemarrage(tester, P, 'avant_demarrage');
     final startCta = textFrEn('Démarrer la randonnée', 'Start the trek');
     await scrollUntil(tester, startCta, P, 'demarrer',
-        'CTA Demarrer la randonnee (haut du cockpit)');
+        'CTA Demarrer la randonnee (BAS du cockpit, apres ~12 cartes)',
+        maxScrolls: 25);
+    await settleAndShoot(tester, P, '19b_cta_demarrer');
+    // Le CTA est GRISE (onPressed null) tant que le gate est ferme : on LIT son
+    // etat reel pour distinguer « bouton introuvable » de « bouton inactif ».
+    _logCtaActif(tester, P);
     final started = await tapIfPresent(
         tester, startCta, P, 'demarrer', 'CTA Demarrer la randonnee');
     if (!started) {
@@ -326,6 +360,15 @@ void main() {
           'demarrer', 'Reprendre la navigation (trek deja actif)',
           warnIfMissing: false);
     }
+    // QA cycle4 (port du correctif H6, lui aussi applique a persona_s3 SEUL) :
+    // sur emulateur la position est indisponible, l'app ouvre un dialogue
+    // « Position indisponible. Démarrer quand même ? ». Sans cette confirmation
+    // le trek ne demarre JAMAIS et toute la suite du parcours (carte, SOS,
+    // terminer, diplome) tombe a vide.
+    await pumpAndSettleTolerant(tester);
+    await tapIfPresent(tester, textFrEn('Démarrer quand même', 'Start anyway'),
+        P, 'demarrer', 'confirmer « Démarrer quand même » (position indispo)',
+        warnIfMissing: false);
     // Conflit trek (C4) : un autre trek tourne -> resoudre (Terminer l'autre).
     await tapIfPresent(tester, find.textContaining('Terminer'), P, 'demarrer',
         'resoudre conflit trek (Terminer l autre)', warnIfMissing: false);
@@ -407,25 +450,70 @@ void main() {
     // plus d'isolate vivant au teardown -> le run se cloture proprement.
     await _goHome(tester, P);
     await settleAndShoot(tester, P, '26_cockpit_fin');
-    final finished = await scrollUntil(tester, find.textContaining('Terminer'),
-        P, 'terminer', 'bouton Terminer le trek (fin de scroll)');
+    // DESIGNATION PAR CLE (parite S3, cles stables de FIX-2). AVANT, S1
+    // confirmait avec find.textContaining('Terminer'), qui matche AUSSI le
+    // TITRE du dialogue « Terminer le trek ? » : le tap tombait sur un titre
+    // (donc sur rien), la barriere modale restait en place et TOUT le
+    // post-trek devenait « present mais hit-test vide ». C'etait un defaut du
+    // HARNAIS S1, pas une regression de l'app (S3, qui utilise deja les cles,
+    // passe le meme parcours sur la meme build).
+    final finished = await scrollUntil(
+        tester,
+        find.byKey(const ValueKey(kFinishTrekButtonKey)),
+        P,
+        'terminer',
+        'bouton Terminer le trek (fin de scroll)');
     if (finished) {
-      await tapIfPresent(tester, find.textContaining('Terminer'), P, 'terminer',
-          'Terminer le trek');
-      // Confirmer si une boite de dialogue de confirmation apparait.
-      await tapIfPresent(tester, find.textContaining('Terminer'), P, 'terminer',
-          'confirmer fin de trek', warnIfMissing: false);
+      await tapIfPresent(tester, find.byKey(const ValueKey(kFinishTrekButtonKey)),
+          P, 'terminer', 'Terminer le trek');
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+      await tapIfPresent(
+          tester,
+          find.byKey(const ValueKey(kFinishTrekConfirmKey)),
+          P,
+          'terminer',
+          'confirmer la fin du trek (action du dialogue, designee par cle)');
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+      // SONDE DECISIVE : si le dialogue est encore la, la barriere bloque tout
+      // le post-trek et les « hit-test vide » qui suivent en decoulent.
+      logStep(
+          P,
+          'terminer',
+          'Dialogue de confirmation encore ouvert = '
+              '${present(find.byKey(const ValueKey(kFinishTrekDialogKey)))} '
+              '(ATTENDU false)');
     }
     await settleAndShoot(tester, P, '27_apres_terminer');
 
     // --- Etape 12 : DIPLOME ---
     await _goHome(tester, P);
+    // CORRECTIF L5-8 : le cockpit n'a plus qu'UNE porte apres le trek,
+    // « Mon aventure ». Le diplome s'ouvre DEPUIS le recapitulatif, ou son
+    // bouton porte la cle stable `recap-diploma`. L'ancien chemin direct
+    // (bouton Diplome sur la carte de trek termine, carte Diplome de la
+    // section Apres) est garde en repli : il ne doit plus exister, mais un
+    // repli ne coute rien et evite un faux rouge sur une version anterieure.
+    // Meme detour que persona_s3_steve_test.dart, pour que les deux personas
+    // empruntent exactement le meme chemin.
     var diploma = await tapIfPresent(
         tester, find.byKey(const ValueKey('completed-diploma')),
         P, 'diplome', 'bouton Diplome (carte trek termine)', warnIfMissing: false);
     if (!diploma) {
+      final recap = await tapIfPresent(
+          tester, find.byKey(const ValueKey('completed-review')),
+          P, 'diplome', 'ouvrir Mon aventure (porte unique apres-trek)',
+          warnIfMissing: false);
+      if (recap) {
+        await scrollUntil(tester, find.byKey(const ValueKey('recap-diploma')),
+            P, 'diplome', 'bouton Diplome du recapitulatif');
+        diploma = await tapIfPresent(
+            tester, find.byKey(const ValueKey('recap-diploma')),
+            P, 'diplome', 'ouvrir Diplome depuis Mon aventure');
+      }
+    }
+    if (!diploma) {
       await scrollUntil(tester, find.text('Diplôme'), P, 'diplome',
-          'carte Diplome (section Apres)');
+          'carte Diplome (section Apres, repli)');
       diploma = await tapIfPresent(
           tester, find.text('Diplôme'), P, 'diplome', 'ouvrir Diplome');
     }
@@ -593,6 +681,95 @@ Future<void> _scrollToTop(WidgetTester tester, String persona) async {
     await pumpAndSettleTolerant(tester);
   }
   logStep(persona, 'nav', 'Remontee en tete du cockpit');
+}
+
+/// Pose REELLEMENT la date de depart via la carte « DÉPART » du calendrier.
+///
+/// Port du correctif H5 (jusqu'ici present sur persona_s3 uniquement). Le
+/// showDatePicker est une route MODALE : on restreint les finders a
+/// [DatePickerDialog] pour ne pas taper un « 15 » de la grille du calendrier
+/// situee DERRIERE la barriere modale (tap avale, date jamais posee).
+Future<void> _poserDateDepart(WidgetTester tester, String persona) async {
+  final ouvert = await tapIfPresent(
+      tester, textFrEn('DÉPART', 'DEPARTURE'), persona, 'calendrier',
+      'ouvrir le selecteur de date de depart (carte DÉPART)',
+      warnIfMissing: false);
+  await pumpAndSettleTolerant(tester);
+  final dialog = find.byType(DatePickerDialog);
+  final dansPicker = dialog.evaluate().isNotEmpty;
+  logStep(persona, 'calendrier',
+      'Carte DÉPART tapee = $ouvert ; DatePickerDialog ouvert = $dansPicker');
+
+  Finder cible(String txt) => dansPicker
+      ? find.descendant(of: dialog, matching: find.text(txt))
+      : find.text(txt);
+
+  // `initialDate` = aujourd'hui + 30 j, `firstDate` = aujourd'hui : on vise des
+  // jours forcement selectionnables dans le mois affiche.
+  var pose = false;
+  for (final jour in ['15', '16', '17', '18', '20', '22']) {
+    if (await tapIfPresent(tester, cible(jour), persona, 'calendrier',
+        'choisir le jour $jour', warnIfMissing: false)) {
+      pose = true;
+      break;
+    }
+  }
+  // CONFIRMATION : c'est `picked != null` qui ecrit la date. Indispensable.
+  final confirme = await tapIfPresent(tester, cible('OK'), persona, 'calendrier',
+      'confirmer la date (OK du date picker)', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
+  logStep(persona, 'calendrier',
+      'Date de depart : jour choisi=$pose, OK du picker=$confirme');
+  if (!pose || !confirme) {
+    logStep(persona, 'calendrier',
+        'COINCE : date de depart NON posee (jour=$pose, OK=$confirme) — '
+        'le gate de demarrage restera ferme');
+  }
+}
+
+/// LIT l'etat REEL du gate de demarrage et le journalise (preuve factuelle).
+///
+/// Meme valeur que celle qui pilote l'`enabled` du CTA
+/// (hub_start_trek_button.dart:57). Lecture non invasive.
+void _logGateDemarrage(WidgetTester tester, String persona, String etape) {
+  final id = _activeTrailId(tester);
+  if (id == null) {
+    logStep(persona, etape, 'Gate de demarrage : trailId illisible');
+    return;
+  }
+  bool? ouvert;
+  String etapes = '?';
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final container = ProviderScope.containerOf(element, listen: false);
+    ouvert = container.read(prepareCoreDoneProvider(id));
+    etapes = container.read(prepareCoreStepsProvider(id)).toString();
+  } catch (e) {
+    logStep(persona, etape, 'Gate de demarrage illisible : $e');
+    return;
+  }
+  logStep(persona, etape,
+      'GATE DEMARRAGE = $ouvert | etapes coeur persistees = $etapes '
+      '(sentier $id)');
+}
+
+/// LIT si le CTA « Démarrer » est ACTIF (onPressed non nul) ou grise.
+///
+/// Distingue les trois cas que le round 1 confondait : bouton absent de l'arbre,
+/// bouton present mais grise (gate ferme), bouton actif.
+void _logCtaActif(WidgetTester tester, String persona) {
+  final bouton = find.descendant(
+      of: find.byType(HubStartTrekButton),
+      matching: find.byType(FilledButton));
+  if (bouton.evaluate().isEmpty) {
+    logStep(persona, 'demarrer',
+        'CTA : HubStartTrekButton/FilledButton ABSENT de l arbre construit '
+        '(hors phase de preparation, ou pas encore atteint par le defilement)');
+    return;
+  }
+  final w = tester.widget<FilledButton>(bouton.first);
+  logStep(persona, 'demarrer',
+      'CTA « Démarrer la randonnée » : present=true, ACTIF=${w.onPressed != null}');
 }
 
 /// Trace la localisation courante du routeur (signal QA precis).
