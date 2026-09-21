@@ -432,7 +432,7 @@ class _Translations$checklist$de extends Translations$checklist$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Ausrustung & Rucksack';
+	@override String get title => 'Ausrüstung & Rucksack';
 	@override String get subtitle => 'Packen Sie Ihren Rucksack';
 	@override String get progress => '{checked}/{total} gepackt';
 	@override String get complete => 'Checkliste vollständig!';
@@ -448,8 +448,8 @@ class _Translations$checklist$de extends Translations$checklist$fr {
 	@override late final _Translations$checklist$ui$de ui = _Translations$checklist$ui$de._(_root);
 	@override String seasonalBanner({required Object season}) => 'Rucksack an die Saison (${season}) und Ihren Weg angepasst.';
 	@override late final _Translations$checklist$seasons$de seasons = _Translations$checklist$seasons$de._(_root);
-	@override String get seasonalAdd => 'Hinzufugen';
-	@override String get seasonalAdded => 'Hinzugefugt';
+	@override String get seasonalAdd => 'Hinzufügen';
+	@override String get seasonalAdded => 'Hinzugefügt';
 	@override String seasonalWeight({required Object g}) => '${g} g';
 }
 
@@ -1746,7 +1746,7 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get transportSub => 'Hin & zurück';
 	@override String get nuitees => 'Übernachtungen';
 	@override String get nuiteesSub => 'Buchen Sie Ihre Nächte';
-	@override String get checklist => 'Ausrustung & Rucksack';
+	@override String get checklist => 'Ausrüstung & Rucksack';
 	@override String get checklistSub => 'Bereite deinen Rucksack vor';
 	@override String get training => 'Körperliche Vorbereitung';
 	@override String get trainingSub => 'Ihr Trainingsprogramm';
@@ -2021,15 +2021,15 @@ class _Translations$checklist$weight$de extends Translations$checklist$weight$fr
 	@override String get title => 'Rucksackgewicht';
 	@override String get recommended => 'Empfohlenes Gewicht';
 	@override String get total => 'Gesamtgewicht';
-	@override String get bodyWeight => 'Korpergewicht:';
-	@override String get ratio => 'Rucksack / Korper';
+	@override String get bodyWeight => 'Körpergewicht:';
+	@override String get ratio => 'Rucksack / Körper';
 	@override String get perItem => 'Gewicht pro Artikel';
-	@override String get edit => 'Gewicht andern';
+	@override String get edit => 'Gewicht ändern';
 	@override String get grams => 'g';
 	@override String get kilograms => 'kg';
-	@override String get adviceUltraLight => 'Ultraleichter Rucksack — ideal furs Trekking';
+	@override String get adviceUltraLight => 'Ultraleichter Rucksack — ideal fürs Trekking';
 	@override String get adviceOk => 'Gut ausbalancierter Rucksack';
-	@override String get adviceHeavy => 'OK aber schwer — erwage zu erleichtern';
+	@override String get adviceHeavy => 'OK aber schwer — erwäge zu erleichtern';
 	@override String get adviceTooHeavy => 'Achtung Knie! Rucksack erleichtern';
 	@override String get adviceDanger => 'Verletzungsgefahr — jetzt erleichtern!';
 	@override String get itemWeight => 'Artikelgewicht';
@@ -2040,8 +2040,8 @@ class _Translations$checklist$weight$de extends Translations$checklist$weight$fr
 	@override String get gaugeHeavy => 'OK aber schwer';
 	@override String get gaugeWarn => 'Achtung Knie!';
 	@override String get gaugeDanger => 'Verletzungsgefahr!';
-	@override String get percentOfWeight => '{pct}% des Korpergewichts';
-	@override String get gaugeObjective => 'Max. Ziel: < 15% in Hutten, < 20% autark';
+	@override String get percentOfWeight => '{pct}% des Körpergewichts';
+	@override String get gaugeObjective => 'Max. Ziel: < 15% in Hütten, < 20% autark';
 	@override String get itemsChecked => '{checked} / {total} Artikel angehakt';
 }
 
@@ -2054,30 +2054,30 @@ class _Translations$checklist$ui$de extends Translations$checklist$ui$fr {
 	// Translations
 	@override String get title => 'Ausrustung & Rucksack';
 	@override String get requirementRequired => 'Pflicht';
-	@override String get addItem => 'Artikel hinzufugen';
-	@override String get addItemTitle => 'Artikel hinzufugen';
+	@override String get addItem => 'Artikel hinzufügen';
+	@override String get addItemTitle => 'Artikel hinzufügen';
 	@override String get fieldName => 'Name';
 	@override String get fieldWeightGrams => 'Gewicht (Gramm)';
-	@override String get errorWeightGrams => 'Ungultiges Gewicht (0 bis 50 000 g)';
+	@override String get errorWeightGrams => 'Ungültiges Gewicht (0 bis 50 000 g)';
 	@override String get errorNameRequired => 'Name erforderlich';
-	@override String get add => 'Hinzufugen';
-	@override String get editWeightTitle => 'Gewicht andern';
+	@override String get add => 'Hinzufügen';
+	@override String get editWeightTitle => 'Gewicht ändern';
 	@override String get editCustomTitle => 'Eigenen Artikel bearbeiten';
 	@override String get modify => 'Bearbeiten';
-	@override String get delete => 'Loschen';
-	@override String get deleteItemTitle => 'Diesen Artikel loschen?';
-	@override String get deleteItemBody => 'Der Artikel "{name}" wird endgultig geloscht.';
-	@override String get requiredWarnTitle => 'Pflichtausrustung';
-	@override String get requiredWarnBody => 'Diese Ausrustung ist aus Sicherheitsgrunden Pflicht (angelehnt an UTMB-Regeln). Wirklich entfernen?';
+	@override String get delete => 'Löschen';
+	@override String get deleteItemTitle => 'Diesen Artikel löschen?';
+	@override String get deleteItemBody => 'Der Artikel "{name}" wird endgültig gelöscht.';
+	@override String get requiredWarnTitle => 'Pflichtausrüstung';
+	@override String get requiredWarnBody => 'Diese Ausrüstung ist aus Sicherheitsgründen Pflicht (angelehnt an UTMB-Regeln). Wirklich entfernen?';
 	@override String get keep => 'Behalten';
 	@override String get removeAnyway => 'Trotzdem entfernen';
 	@override String get reduceQuantity => 'Menge verringern';
 	@override String get increaseQuantity => 'Menge erhohen';
-	@override String get addToShoppingList => 'Zur Einkaufsliste hinzufugen';
+	@override String get addToShoppingList => 'Zur Einkaufsliste hinzufügen';
 	@override String get removeFromShoppingList => 'Von der Liste entfernen';
 	@override String get help => 'Hilfe';
 	@override String get shoppingListTitle => 'Einkaufsliste';
-	@override String get shoppingListEmpty => 'Deine Einkaufsliste ist leer. Fuge Artikel mit dem Warenkorb-Button hinzu.';
+	@override String get shoppingListEmpty => 'Deine Einkaufsliste ist leer. Füge Artikel mit dem Warenkorb-Button hinzu.';
 	@override String get shoppingToBuy => 'Zu kaufen';
 	@override String get shoppingPurchased => 'Bereits gekauft';
 	@override String get share => 'TEILEN';
@@ -2087,42 +2087,42 @@ class _Translations$checklist$ui$de extends Translations$checklist$ui$fr {
 	@override String get infoRequiredTitle => 'Pflicht';
 	@override String get infoRequiredBody => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).';
 	@override String get infoGaugeTitle => 'Gewichtsanzeige';
-	@override String get infoGaugeBody => 'Ziel: Rucksack < 15% deines Gewichts. Grun = OK, Orange = Achtung, Rot = zu schwer.';
-	@override String get infoAddTitle => 'Hinzufugen';
-	@override String get infoAddBody => 'Der +-Button unten in jeder Kategorie fur eigene Artikel.';
-	@override String get infoValidateBody => 'Bestatige, wenn dein Rucksack fertig ist — ein Haken erscheint auf der Startseite.';
+	@override String get infoGaugeBody => 'Ziel: Rucksack < 15% deines Gewichts. Grün = OK, Orange = Achtung, Rot = zu schwer.';
+	@override String get infoAddTitle => 'Hinzufügen';
+	@override String get infoAddBody => 'Der +-Button unten in jeder Kategorie für eigene Artikel.';
+	@override String get infoValidateBody => 'Bestätige, wenn dein Rucksack fertig ist — ein Haken erscheint auf der Startseite.';
 	@override String get infoUnderstood => 'Verstanden!';
 	@override String get prepTitle => 'Rucksack packen';
 	@override String get prepCounter => '{prepared} / {total} Artikel gepackt';
 	@override String get prepAllReady => 'Alles bereit! Gute Tour';
 	@override String get preDepartureTitle => 'Checkliste vor dem Start';
-	@override String get preDepartureCounter => '{checked}/{total} gepruft';
-	@override String get preDep1 => 'Wetter der nachsten Tage prufen';
+	@override String get preDepartureCounter => '{checked}/{total} geprüft';
+	@override String get preDep1 => 'Wetter der nächsten Tage prüfen';
 	@override String get preDep2 => 'Telefon + Powerbank laden';
-	@override String get preDep3 => 'Eine nahestehende Person uber die Route informieren';
-	@override String get preDep4 => 'Prufen, dass der Rucksack gut geschlossen und wasserdicht ist';
-	@override String get preDep5 => 'Trinkflaschen fullen (mindestens 2L)';
+	@override String get preDep3 => 'Eine nahestehende Person über die Route informieren';
+	@override String get preDep4 => 'Prüfen, dass der Rucksack gut geschlossen und wasserdicht ist';
+	@override String get preDep5 => 'Trinkflaschen füllen (mindestens 2L)';
 	@override String get preDep6 => 'Sonnencreme und Anti-Scheuer-Creme auftragen';
-	@override String get preDep7 => 'Schnursenkel und Schuhsitz prufen';
+	@override String get preDep7 => 'Schnürsenkel und Schuhsitz prüfen';
 	@override String get preDep8 => 'Offline-Karten herunterladen';
 	@override String get bagOk => 'RUCKSACK OK — STARTBEREIT';
-	@override String get validateBag => 'RUCKSACK BESTATIGEN';
-	@override String get cancelValidation => 'BESTATIGUNG AUFHEBEN';
+	@override String get validateBag => 'RUCKSACK BESTÄTIGEN';
+	@override String get cancelValidation => 'BESTÄTIGUNG AUFHEBEN';
 	@override String get shoppingListButton => 'EINKAUFSLISTE';
 	@override String get shareGroup => 'MIT DER GRUPPE TEILEN';
 	@override String get exportList => 'LISTE EXPORTIEREN';
-	@override String get bagValidTitle => 'Rucksack bestatigt';
-	@override String get bagValidBody => 'Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Korpergewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?';
-	@override String get checkAgain => 'Nochmal prufen';
+	@override String get bagValidTitle => 'Rucksack bestätigt';
+	@override String get bagValidBody => 'Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Körpergewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?';
+	@override String get checkAgain => 'Nochmal prüfen';
 	@override String get yesBagOk => 'Ja, Rucksack OK';
-	@override String get bagValidatedSnack => 'Rucksack bestatigt!';
-	@override String get validationCancelledSnack => 'Bestatigung aufgehoben — du kannst deine Ausrustung andern.';
-	@override String get missingTitle => 'Fehlende Ausrustung';
+	@override String get bagValidatedSnack => 'Rucksack bestätigt!';
+	@override String get validationCancelledSnack => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.';
+	@override String get missingTitle => 'Fehlende Ausrüstung';
 	@override String get missingBody => '{checked}/{total} Pflichtartikel angehakt.';
 	@override String get missingList => 'Es fehlt:';
 	@override String get understood => 'Verstanden';
-	@override String get validateAnyway => 'Trotzdem bestatigen';
-	@override String get bagValidatedMissingSnack => 'Rucksack bestatigt (mit fehlenden Artikeln)!';
+	@override String get validateAnyway => 'Trotzdem bestätigen';
+	@override String get bagValidatedMissingSnack => 'Rucksack bestätigt (mit fehlenden Artikeln)!';
 	@override String get shareGroupHint => 'Tritt einer Gruppe bei, um deine Checkliste zu teilen.';
 }
 
@@ -2134,7 +2134,7 @@ class _Translations$checklist$seasons$de extends Translations$checklist$seasons$
 
 	// Translations
 	@override String get winter => 'Winter';
-	@override String get spring => 'Fruhling';
+	@override String get spring => 'Frühling';
 	@override String get summer => 'Sommer';
 	@override String get autumn => 'Herbst';
 }
@@ -3812,7 +3812,7 @@ extension on TranslationsDe {
 			'hub.cards.transportSub' => 'Hin & zurück',
 			'hub.cards.nuitees' => 'Übernachtungen',
 			'hub.cards.nuiteesSub' => 'Buchen Sie Ihre Nächte',
-			'hub.cards.checklist' => 'Ausrustung & Rucksack',
+			'hub.cards.checklist' => 'Ausrüstung & Rucksack',
 			'hub.cards.checklistSub' => 'Bereite deinen Rucksack vor',
 			'hub.cards.training' => 'Körperliche Vorbereitung',
 			'hub.cards.trainingSub' => 'Ihr Trainingsprogramm',
@@ -3968,7 +3968,7 @@ extension on TranslationsDe {
 			'tracking.stopButton' => 'Stopp',
 			'tracking.stopTitle' => 'Aufzeichnung beenden?',
 			'tracking.stopBody' => 'Dein Fortschritt wird gespeichert.',
-			'checklist.title' => 'Ausrustung & Rucksack',
+			'checklist.title' => 'Ausrüstung & Rucksack',
 			'checklist.subtitle' => 'Packen Sie Ihren Rucksack',
 			'checklist.progress' => '{checked}/{total} gepackt',
 			'checklist.complete' => 'Checkliste vollständig!',
@@ -4087,15 +4087,15 @@ extension on TranslationsDe {
 			'checklist.weight.title' => 'Rucksackgewicht',
 			'checklist.weight.recommended' => 'Empfohlenes Gewicht',
 			'checklist.weight.total' => 'Gesamtgewicht',
-			'checklist.weight.bodyWeight' => 'Korpergewicht:',
-			'checklist.weight.ratio' => 'Rucksack / Korper',
+			'checklist.weight.bodyWeight' => 'Körpergewicht:',
+			'checklist.weight.ratio' => 'Rucksack / Körper',
 			'checklist.weight.perItem' => 'Gewicht pro Artikel',
-			'checklist.weight.edit' => 'Gewicht andern',
+			'checklist.weight.edit' => 'Gewicht ändern',
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
-			'checklist.weight.adviceUltraLight' => 'Ultraleichter Rucksack — ideal furs Trekking',
+			'checklist.weight.adviceUltraLight' => 'Ultraleichter Rucksack — ideal fürs Trekking',
 			'checklist.weight.adviceOk' => 'Gut ausbalancierter Rucksack',
-			'checklist.weight.adviceHeavy' => 'OK aber schwer — erwage zu erleichtern',
+			'checklist.weight.adviceHeavy' => 'OK aber schwer — erwäge zu erleichtern',
 			'checklist.weight.adviceTooHeavy' => 'Achtung Knie! Rucksack erleichtern',
 			'checklist.weight.adviceDanger' => 'Verletzungsgefahr — jetzt erleichtern!',
 			'checklist.weight.itemWeight' => 'Artikelgewicht',
@@ -4106,35 +4106,35 @@ extension on TranslationsDe {
 			'checklist.weight.gaugeHeavy' => 'OK aber schwer',
 			'checklist.weight.gaugeWarn' => 'Achtung Knie!',
 			'checklist.weight.gaugeDanger' => 'Verletzungsgefahr!',
-			'checklist.weight.percentOfWeight' => '{pct}% des Korpergewichts',
-			'checklist.weight.gaugeObjective' => 'Max. Ziel: < 15% in Hutten, < 20% autark',
+			'checklist.weight.percentOfWeight' => '{pct}% des Körpergewichts',
+			'checklist.weight.gaugeObjective' => 'Max. Ziel: < 15% in Hütten, < 20% autark',
 			'checklist.weight.itemsChecked' => '{checked} / {total} Artikel angehakt',
 			'checklist.ui.title' => 'Ausrustung & Rucksack',
 			'checklist.ui.requirementRequired' => 'Pflicht',
-			'checklist.ui.addItem' => 'Artikel hinzufugen',
-			'checklist.ui.addItemTitle' => 'Artikel hinzufugen',
+			'checklist.ui.addItem' => 'Artikel hinzufügen',
+			'checklist.ui.addItemTitle' => 'Artikel hinzufügen',
 			'checklist.ui.fieldName' => 'Name',
 			'checklist.ui.fieldWeightGrams' => 'Gewicht (Gramm)',
-			'checklist.ui.errorWeightGrams' => 'Ungultiges Gewicht (0 bis 50 000 g)',
+			'checklist.ui.errorWeightGrams' => 'Ungültiges Gewicht (0 bis 50 000 g)',
 			'checklist.ui.errorNameRequired' => 'Name erforderlich',
-			'checklist.ui.add' => 'Hinzufugen',
-			'checklist.ui.editWeightTitle' => 'Gewicht andern',
+			'checklist.ui.add' => 'Hinzufügen',
+			'checklist.ui.editWeightTitle' => 'Gewicht ändern',
 			'checklist.ui.editCustomTitle' => 'Eigenen Artikel bearbeiten',
 			'checklist.ui.modify' => 'Bearbeiten',
-			'checklist.ui.delete' => 'Loschen',
-			'checklist.ui.deleteItemTitle' => 'Diesen Artikel loschen?',
-			'checklist.ui.deleteItemBody' => 'Der Artikel "{name}" wird endgultig geloscht.',
-			'checklist.ui.requiredWarnTitle' => 'Pflichtausrustung',
-			'checklist.ui.requiredWarnBody' => 'Diese Ausrustung ist aus Sicherheitsgrunden Pflicht (angelehnt an UTMB-Regeln). Wirklich entfernen?',
+			'checklist.ui.delete' => 'Löschen',
+			'checklist.ui.deleteItemTitle' => 'Diesen Artikel löschen?',
+			'checklist.ui.deleteItemBody' => 'Der Artikel "{name}" wird endgültig gelöscht.',
+			'checklist.ui.requiredWarnTitle' => 'Pflichtausrüstung',
+			'checklist.ui.requiredWarnBody' => 'Diese Ausrüstung ist aus Sicherheitsgründen Pflicht (angelehnt an UTMB-Regeln). Wirklich entfernen?',
 			'checklist.ui.keep' => 'Behalten',
 			'checklist.ui.removeAnyway' => 'Trotzdem entfernen',
 			'checklist.ui.reduceQuantity' => 'Menge verringern',
 			'checklist.ui.increaseQuantity' => 'Menge erhohen',
-			'checklist.ui.addToShoppingList' => 'Zur Einkaufsliste hinzufugen',
+			'checklist.ui.addToShoppingList' => 'Zur Einkaufsliste hinzufügen',
 			'checklist.ui.removeFromShoppingList' => 'Von der Liste entfernen',
 			'checklist.ui.help' => 'Hilfe',
 			'checklist.ui.shoppingListTitle' => 'Einkaufsliste',
-			'checklist.ui.shoppingListEmpty' => 'Deine Einkaufsliste ist leer. Fuge Artikel mit dem Warenkorb-Button hinzu.',
+			'checklist.ui.shoppingListEmpty' => 'Deine Einkaufsliste ist leer. Füge Artikel mit dem Warenkorb-Button hinzu.',
 			'checklist.ui.shoppingToBuy' => 'Zu kaufen',
 			'checklist.ui.shoppingPurchased' => 'Bereits gekauft',
 			'checklist.ui.share' => 'TEILEN',
@@ -4144,50 +4144,50 @@ extension on TranslationsDe {
 			'checklist.ui.infoRequiredTitle' => 'Pflicht',
 			'checklist.ui.infoRequiredBody' => 'Artikel mit Schloss = Vorschrift (Pfeife, Lampe, Rettungsdecke).',
 			'checklist.ui.infoGaugeTitle' => 'Gewichtsanzeige',
-			'checklist.ui.infoGaugeBody' => 'Ziel: Rucksack < 15% deines Gewichts. Grun = OK, Orange = Achtung, Rot = zu schwer.',
-			'checklist.ui.infoAddTitle' => 'Hinzufugen',
-			'checklist.ui.infoAddBody' => 'Der +-Button unten in jeder Kategorie fur eigene Artikel.',
-			'checklist.ui.infoValidateBody' => 'Bestatige, wenn dein Rucksack fertig ist — ein Haken erscheint auf der Startseite.',
+			'checklist.ui.infoGaugeBody' => 'Ziel: Rucksack < 15% deines Gewichts. Grün = OK, Orange = Achtung, Rot = zu schwer.',
+			'checklist.ui.infoAddTitle' => 'Hinzufügen',
+			'checklist.ui.infoAddBody' => 'Der +-Button unten in jeder Kategorie für eigene Artikel.',
+			'checklist.ui.infoValidateBody' => 'Bestätige, wenn dein Rucksack fertig ist — ein Haken erscheint auf der Startseite.',
 			'checklist.ui.infoUnderstood' => 'Verstanden!',
 			'checklist.ui.prepTitle' => 'Rucksack packen',
 			'checklist.ui.prepCounter' => '{prepared} / {total} Artikel gepackt',
 			'checklist.ui.prepAllReady' => 'Alles bereit! Gute Tour',
 			'checklist.ui.preDepartureTitle' => 'Checkliste vor dem Start',
-			'checklist.ui.preDepartureCounter' => '{checked}/{total} gepruft',
-			'checklist.ui.preDep1' => 'Wetter der nachsten Tage prufen',
+			'checklist.ui.preDepartureCounter' => '{checked}/{total} geprüft',
+			'checklist.ui.preDep1' => 'Wetter der nächsten Tage prüfen',
 			'checklist.ui.preDep2' => 'Telefon + Powerbank laden',
-			'checklist.ui.preDep3' => 'Eine nahestehende Person uber die Route informieren',
-			'checklist.ui.preDep4' => 'Prufen, dass der Rucksack gut geschlossen und wasserdicht ist',
-			'checklist.ui.preDep5' => 'Trinkflaschen fullen (mindestens 2L)',
+			'checklist.ui.preDep3' => 'Eine nahestehende Person über die Route informieren',
+			'checklist.ui.preDep4' => 'Prüfen, dass der Rucksack gut geschlossen und wasserdicht ist',
+			'checklist.ui.preDep5' => 'Trinkflaschen füllen (mindestens 2L)',
 			'checklist.ui.preDep6' => 'Sonnencreme und Anti-Scheuer-Creme auftragen',
-			'checklist.ui.preDep7' => 'Schnursenkel und Schuhsitz prufen',
+			'checklist.ui.preDep7' => 'Schnürsenkel und Schuhsitz prüfen',
 			'checklist.ui.preDep8' => 'Offline-Karten herunterladen',
 			'checklist.ui.bagOk' => 'RUCKSACK OK — STARTBEREIT',
-			'checklist.ui.validateBag' => 'RUCKSACK BESTATIGEN',
-			'checklist.ui.cancelValidation' => 'BESTATIGUNG AUFHEBEN',
+			'checklist.ui.validateBag' => 'RUCKSACK BESTÄTIGEN',
+			'checklist.ui.cancelValidation' => 'BESTÄTIGUNG AUFHEBEN',
 			'checklist.ui.shoppingListButton' => 'EINKAUFSLISTE',
 			'checklist.ui.shareGroup' => 'MIT DER GRUPPE TEILEN',
 			'checklist.ui.exportList' => 'LISTE EXPORTIEREN',
-			'checklist.ui.bagValidTitle' => 'Rucksack bestatigt',
-			'checklist.ui.bagValidBody' => 'Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Korpergewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?',
-			'checklist.ui.checkAgain' => 'Nochmal prufen',
+			'checklist.ui.bagValidTitle' => 'Rucksack bestätigt',
+			'checklist.ui.bagValidBody' => 'Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Körpergewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?',
+			'checklist.ui.checkAgain' => 'Nochmal prüfen',
 			'checklist.ui.yesBagOk' => 'Ja, Rucksack OK',
-			'checklist.ui.bagValidatedSnack' => 'Rucksack bestatigt!',
-			'checklist.ui.validationCancelledSnack' => 'Bestatigung aufgehoben — du kannst deine Ausrustung andern.',
-			'checklist.ui.missingTitle' => 'Fehlende Ausrustung',
+			'checklist.ui.bagValidatedSnack' => 'Rucksack bestätigt!',
+			'checklist.ui.validationCancelledSnack' => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.',
+			'checklist.ui.missingTitle' => 'Fehlende Ausrüstung',
 			'checklist.ui.missingBody' => '{checked}/{total} Pflichtartikel angehakt.',
 			'checklist.ui.missingList' => 'Es fehlt:',
 			'checklist.ui.understood' => 'Verstanden',
-			'checklist.ui.validateAnyway' => 'Trotzdem bestatigen',
-			'checklist.ui.bagValidatedMissingSnack' => 'Rucksack bestatigt (mit fehlenden Artikeln)!',
+			'checklist.ui.validateAnyway' => 'Trotzdem bestätigen',
+			'checklist.ui.bagValidatedMissingSnack' => 'Rucksack bestätigt (mit fehlenden Artikeln)!',
 			'checklist.ui.shareGroupHint' => 'Tritt einer Gruppe bei, um deine Checkliste zu teilen.',
 			'checklist.seasonalBanner' => ({required Object season}) => 'Rucksack an die Saison (${season}) und Ihren Weg angepasst.',
 			'checklist.seasons.winter' => 'Winter',
-			'checklist.seasons.spring' => 'Fruhling',
+			'checklist.seasons.spring' => 'Frühling',
 			'checklist.seasons.summer' => 'Sommer',
 			'checklist.seasons.autumn' => 'Herbst',
-			'checklist.seasonalAdd' => 'Hinzufugen',
-			'checklist.seasonalAdded' => 'Hinzugefugt',
+			'checklist.seasonalAdd' => 'Hinzufügen',
+			'checklist.seasonalAdded' => 'Hinzugefügt',
 			'checklist.seasonalWeight' => ({required Object g}) => '${g} g',
 			'journal.title' => 'Wandertagebuch',
 			'journal.empty' => 'Ihr Tagebuch ist leer',
