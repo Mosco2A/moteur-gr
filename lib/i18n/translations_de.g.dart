@@ -117,8 +117,8 @@ class _Translations$a11y$de extends Translations$a11y$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get back => 'Zuruck';
-	@override String get zoomIn => 'Vergrossern';
+	@override String get back => 'Zurück';
+	@override String get zoomIn => 'Vergrössern';
 	@override String get zoomOut => 'Verkleinern';
 	@override String get centerOnMe => 'Auf meine Position zentrieren';
 	@override String get mapRegion => 'Wanderkarte';
@@ -158,7 +158,7 @@ class _Translations$nav$de extends Translations$nav$fr {
 	@override String get settings => 'Einstellungen';
 	@override String get trailSelection => 'Weg wechseln';
 	@override String get myTreks => 'Meine Touren';
-	@override String get back => 'Zuruck';
+	@override String get back => 'Zurück';
 	@override String get home => 'Start';
 }
 
@@ -178,7 +178,7 @@ class _Translations$navPilote$de extends Translations$navPilote$fr {
 	@override String get demoLockedBody => 'Im Demomodus ist nur die Vorbereitung verfügbar. Schalten Sie diesen Trek frei, um zu wandern und Ihr Abenteuer zu erleben.';
 	@override String get demoTrekMode => 'Trek-Modus simulieren (Demo)';
 	@override String get exitTitle => 'App beenden?';
-	@override String get exitMessage => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?';
+	@override String get exitMessage => 'Sie sind auf dem Startbildschirm. Möchten Sie die App schliessen?';
 	@override String get exitConfirm => 'Beenden';
 	@override String get exitCancel => 'Bleiben';
 	@override String get startTrek => 'Trek starten';
@@ -253,7 +253,7 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get viewMap => 'Karte anzeigen';
 	@override String get layers => 'Ebenen';
 	@override String get layersTitle => 'Kartenebenen';
-	@override String get layersSubtitle => 'Wahlen Sie, was auf der Karte angezeigt wird';
+	@override String get layersSubtitle => 'Wählen Sie, was auf der Karte angezeigt wird';
 	@override String stageRemaining({required Object km}) => 'Noch ${km} km';
 	@override String get offTrackChip => 'Abseits';
 }
@@ -276,7 +276,7 @@ class _Translations$stage$de extends Translations$stage$fr {
 	@override late final _Translations$stage$difficulty$de difficulty = _Translations$stage$difficulty$de._(_root);
 	@override String get remaining => '{distance} km verbleibend';
 	@override String get arrived => 'Sie sind angekommen!';
-	@override String get altitudeProfile => 'Hohenprofil';
+	@override String get altitudeProfile => 'Höhenprofil';
 	@override String get statistics => 'Statistiken';
 	@override String get departureArrival => 'Von {from} nach {to}';
 	@override String get loading => 'Laden...';
@@ -352,9 +352,9 @@ class _Translations$navAlert$de extends Translations$navAlert$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String offTrackBanner({required Object meters}) => 'Sie entfernen sich vom Weg — ${meters} m. Uberprufen Sie Ihre Position.';
+	@override String offTrackBanner({required Object meters}) => 'Sie entfernen sich vom Weg — ${meters} m. Überprüfen Sie Ihre Position.';
 	@override String get offTrackNotifTitle => 'Sie verlassen den Weg';
-	@override String offTrackNotifBody({required Object meters}) => 'Sie entfernen sich vom Weg (${meters} m). Uberprufen Sie Ihre Position.';
+	@override String offTrackNotifBody({required Object meters}) => 'Sie entfernen sich vom Weg (${meters} m). Überprüfen Sie Ihre Position.';
 }
 
 // Path: planning
@@ -384,9 +384,9 @@ class _Translations$itinerary$de extends Translations$itinerary$fr {
 
 	// Translations
 	@override String get title => 'Route';
-	@override String get subtitle => 'Ihre Etappen, Tag fuer Tag';
+	@override String get subtitle => 'Ihre Etappen, Tag für Tag';
 	@override late final _Translations$itinerary$direction$de direction = _Translations$itinerary$direction$de._(_root);
-	@override String get empty => 'Keine Etappe verfuegbar';
+	@override String get empty => 'Keine Etappe verfügbar';
 	@override String get emptyHint => 'Wegdaten sind nicht geladen.';
 	@override String get loading => 'Route wird geladen...';
 	@override String get error => 'Route kann nicht geladen werden';
@@ -413,7 +413,7 @@ class _Translations$tracking$de extends Translations$tracking$fr {
 	@override String get resume => 'Fortsetzen';
 	@override String get stop => 'Stoppen';
 	@override String get distance => 'Entfernung';
-	@override String get elevation => 'Hohenmeter';
+	@override String get elevation => 'Höhenmeter';
 	@override String get speed => 'Geschwindigkeit';
 	@override String get time => 'Zeit';
 	@override String get confirmStop => 'Tracking stoppen?';
@@ -566,12 +566,12 @@ class _Translations$diploma$de extends Translations$diploma$fr {
 	@override String get recapNoPhotos => 'Keine Fotos im Tagebuch';
 	@override String get recapStats => 'Statistiken';
 	@override String get recapStages => '{count} Etappen absolviert';
-	@override String get recapDistance => '{km} km zurueckgelegt';
-	@override String get recapElevation => '{meters} m Hoehenunterschied';
+	@override String get recapDistance => '{km} km zurückgelegt';
+	@override String get recapElevation => '{meters} m Höhenunterschied';
 	@override String get recapDuration => '{days} Tage Wanderung';
 	@override String get recapMapTrace => 'Routenverlauf';
-	@override String get recapNoMap => 'Verlauf nicht verfuegbar';
-	@override String get recapJournalEntries => '{count} Tagebucheintraege';
+	@override String get recapNoMap => 'Verlauf nicht verfügbar';
+	@override String get recapJournalEntries => '{count} Tagebucheinträge';
 	@override String get downloadPdf => 'Diplom-PDF herunterladen';
 	@override String get lockedTitle => 'Diplom gesperrt';
 	@override String get lockedMessage => 'Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.';
@@ -591,9 +591,9 @@ class _Translations$notifications$de extends Translations$notifications$fr {
 	@override String get countdown => 'Erinnerung 2 Tage vorher';
 	@override String get countdownDesc => 'Benachrichtigung 2 Tage vor Abreise';
 	@override String get schedulerCountdownTitle => 'Ihr Trek steht bevor!';
-	@override String get schedulerCountdownBody => 'Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.';
+	@override String get schedulerCountdownBody => 'Abreise in 2 Tagen. Prüfen Sie Ihre Checkliste und das Wetter.';
 	@override String get schedulerDailyTitle => 'Guten Trek-Tag!';
-	@override String get schedulerDailyBody => 'Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.';
+	@override String get schedulerDailyBody => 'Prüfen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.';
 }
 
 // Path: settings
@@ -733,21 +733,21 @@ class _Translations$tips$de extends Translations$tips$fr {
 	// Translations
 	@override String get carouselTitle => 'Trek-Tipps';
 	@override String get allCategories => 'Alle';
-	@override String get swipeHint => 'Wischen fuer mehr';
+	@override String get swipeHint => 'Wischen für mehr';
 	@override String get detailTitle => 'Tipp-Detail';
 	@override String get readMore => 'Mehr lesen';
-	@override String get noTips => 'Keine Tipps verfuegbar';
+	@override String get noTips => 'Keine Tipps verfügbar';
 	@override String get categoryPreparation => 'Vorbereitung';
-	@override String get categoryEquipment => 'Ausruestung';
-	@override String get categoryNutrition => 'Ernaehrung';
+	@override String get categoryEquipment => 'Ausrüstung';
+	@override String get categoryNutrition => 'Ernährung';
 	@override String get categorySafety => 'Sicherheit';
 	@override String get categoryNature => 'Natur';
 	@override String get categoryRecovery => 'Erholung';
 	@override String get categoryGeneral => 'Allgemein';
-	@override String get priorityHigh => 'Hohe Prioritaet';
+	@override String get priorityHigh => 'Hohe Priorität';
 	@override String get scope => 'Wanderweg';
 	@override String get season => 'Saison';
-	@override String get altitude => 'Min. Hoehe';
+	@override String get altitude => 'Min. Höhe';
 	@override String get screenTitle => 'Ratgeber';
 	@override String get screenIntro => 'Alles für eine gelungene Wanderung';
 	@override String get followUs => 'Folgen Sie uns:';
@@ -1134,10 +1134,10 @@ class _Translations$trailSelection$de extends Translations$trailSelection$fr {
 
 	// Translations
 	@override String get title => 'Weg wechseln';
-	@override String get subtitle => 'Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.';
+	@override String get subtitle => 'Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Pakete, Reiseführer) folgt deiner Auswahl.';
 	@override String get current => 'Aktiver Weg';
-	@override String get select => 'Diesen Weg waehlen';
-	@override String get selected => 'Ausgewaehlter Weg';
+	@override String get select => 'Diesen Weg wählen';
+	@override String get selected => 'Ausgewählter Weg';
 	@override String stagesDistance({required Object stages, required Object km}) => '${stages} Etappen - ${km} km';
 	@override late final _Translations$trailSelection$a11y$de a11y = _Translations$trailSelection$a11y$de._(_root);
 }
@@ -1170,7 +1170,7 @@ class _Translations$consent$de extends Translations$consent$fr {
 	@override String get privacyPolicyLink => 'Datenschutzerklärung lesen';
 	@override String get reviewNeeded => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.';
 	@override late final _Translations$consent$a11y$de a11y = _Translations$consent$a11y$de._(_root);
-	@override String get healthDataMorphoNote => 'Umfasst Ihre Korperdaten (Alter, Grosse, Gewicht) fur die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerat gehalten.';
+	@override String get healthDataMorphoNote => 'Umfasst Ihre Körperdaten (Alter, Grosse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.';
 }
 
 // Path: moderation
@@ -1830,7 +1830,7 @@ class _Translations$stage$waterSources$de extends Translations$stage$waterSource
 	// Translations
 	@override String get title => 'Wasserstellen';
 	@override String get count => '{n} Quelle(n)';
-	@override String get none => 'Keine Wasserstelle fuer diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit.';
+	@override String get none => 'Keine Wasserstelle für diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit.';
 }
 
 // Path: stage.accommodation
@@ -1840,8 +1840,8 @@ class _Translations$stage$accommodation$de extends Translations$stage$accommodat
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Unterkuenfte';
-	@override String get none => 'Keine Unterkunft fuer diese Etappe verzeichnet.';
+	@override String get title => 'Unterkünfte';
+	@override String get none => 'Keine Unterkunft für diese Etappe verzeichnet.';
 }
 
 // Path: stage.advice
@@ -1853,10 +1853,10 @@ class _Translations$stage$advice$de extends Translations$stage$advice$fr {
 	// Translations
 	@override String get title => 'Tipps';
 	@override String get waterScarce => 'Wenige Wasserstellen: Starten Sie mit mindestens 2,5 L.';
-	@override String get waterAmple => 'Fuellen Sie Ihre Flaschen an jeder Wasserstelle auf.';
-	@override String get hardStage => 'Anspruchsvolle Etappe: Brechen Sie frueh auf, um Hitze und Nachmittagsgewitter zu vermeiden.';
-	@override String get earlyStart => 'Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kuehle zu nutzen.';
-	@override String get bigClimb => 'Grosser Aufstieg: Teilen Sie sich Ihre Kraefte ein und machen Sie regelmaessige Pausen.';
+	@override String get waterAmple => 'Füllen Sie Ihre Flaschen an jeder Wasserstelle auf.';
+	@override String get hardStage => 'Anspruchsvolle Etappe: Brechen Sie früh auf, um Hitze und Nachmittagsgewitter zu vermeiden.';
+	@override String get earlyStart => 'Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kühle zu nutzen.';
+	@override String get bigClimb => 'Grosser Aufstieg: Teilen Sie sich Ihre Kräfte ein und machen Sie regelmässige Pausen.';
 }
 
 // Path: accommodation.types
@@ -2052,7 +2052,7 @@ class _Translations$checklist$ui$de extends Translations$checklist$ui$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Ausrustung & Rucksack';
+	@override String get title => 'Ausrüstung & Rucksack';
 	@override String get requirementRequired => 'Pflicht';
 	@override String get addItem => 'Artikel hinzufügen';
 	@override String get addItemTitle => 'Artikel hinzufügen';
@@ -2081,7 +2081,7 @@ class _Translations$checklist$ui$de extends Translations$checklist$ui$fr {
 	@override String get shoppingToBuy => 'Zu kaufen';
 	@override String get shoppingPurchased => 'Bereits gekauft';
 	@override String get share => 'TEILEN';
-	@override String get infoTitle => 'Ausrustung & Rucksack';
+	@override String get infoTitle => 'Ausrüstung & Rucksack';
 	@override String get infoCheckTitle => 'Artikel anhaken';
 	@override String get infoCheckBody => 'Hake an, was du mitnimmst — das Gewicht wird oben neu berechnet.';
 	@override String get infoRequiredTitle => 'Pflicht';
@@ -2607,7 +2607,7 @@ class _Translations$health$error$de extends Translations$health$error$fr {
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get bloodType => 'Ungultige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)';
+	@override String get bloodType => 'Ungültige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)';
 }
 
 // Path: health.a11y
@@ -3702,8 +3702,8 @@ class _Translations$programme$inTrek$info$order$de extends Translations$programm
 extension on TranslationsDe {
 	dynamic _flatMapFunction(String path) {
 		return switch (path) {
-			'a11y.back' => 'Zuruck',
-			'a11y.zoomIn' => 'Vergrossern',
+			'a11y.back' => 'Zurück',
+			'a11y.zoomIn' => 'Vergrössern',
 			'a11y.zoomOut' => 'Verkleinern',
 			'a11y.centerOnMe' => 'Auf meine Position zentrieren',
 			'a11y.mapRegion' => 'Wanderkarte',
@@ -3734,7 +3734,7 @@ extension on TranslationsDe {
 			'nav.settings' => 'Einstellungen',
 			'nav.trailSelection' => 'Weg wechseln',
 			'nav.myTreks' => 'Meine Touren',
-			'nav.back' => 'Zuruck',
+			'nav.back' => 'Zurück',
 			'nav.home' => 'Start',
 			'navPilote.appTitle' => 'StepWays',
 			'navPilote.prepare' => 'Vorbereiten',
@@ -3745,7 +3745,7 @@ extension on TranslationsDe {
 			'navPilote.demoLockedBody' => 'Im Demomodus ist nur die Vorbereitung verfügbar. Schalten Sie diesen Trek frei, um zu wandern und Ihr Abenteuer zu erleben.',
 			'navPilote.demoTrekMode' => 'Trek-Modus simulieren (Demo)',
 			'navPilote.exitTitle' => 'App beenden?',
-			'navPilote.exitMessage' => 'Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?',
+			'navPilote.exitMessage' => 'Sie sind auf dem Startbildschirm. Möchten Sie die App schliessen?',
 			'navPilote.exitConfirm' => 'Beenden',
 			'navPilote.exitCancel' => 'Bleiben',
 			'navPilote.startTrek' => 'Trek starten',
@@ -3859,7 +3859,7 @@ extension on TranslationsDe {
 			'map.viewMap' => 'Karte anzeigen',
 			'map.layers' => 'Ebenen',
 			'map.layersTitle' => 'Kartenebenen',
-			'map.layersSubtitle' => 'Wahlen Sie, was auf der Karte angezeigt wird',
+			'map.layersSubtitle' => 'Wählen Sie, was auf der Karte angezeigt wird',
 			'map.stageRemaining' => ({required Object km}) => 'Noch ${km} km',
 			'map.offTrackChip' => 'Abseits',
 			'stage.distance' => 'Entfernung',
@@ -3877,7 +3877,7 @@ extension on TranslationsDe {
 			'stage.difficulty.extreme' => 'Extrem',
 			'stage.remaining' => '{distance} km verbleibend',
 			'stage.arrived' => 'Sie sind angekommen!',
-			'stage.altitudeProfile' => 'Hohenprofil',
+			'stage.altitudeProfile' => 'Höhenprofil',
 			'stage.statistics' => 'Statistiken',
 			'stage.departureArrival' => 'Von {from} nach {to}',
 			'stage.loading' => 'Laden...',
@@ -3887,15 +3887,15 @@ extension on TranslationsDe {
 			'stage.difficultyLabel' => 'Schwierigkeit',
 			'stage.waterSources.title' => 'Wasserstellen',
 			'stage.waterSources.count' => '{n} Quelle(n)',
-			'stage.waterSources.none' => 'Keine Wasserstelle fuer diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit.',
-			'stage.accommodation.title' => 'Unterkuenfte',
-			'stage.accommodation.none' => 'Keine Unterkunft fuer diese Etappe verzeichnet.',
+			'stage.waterSources.none' => 'Keine Wasserstelle für diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit.',
+			'stage.accommodation.title' => 'Unterkünfte',
+			'stage.accommodation.none' => 'Keine Unterkunft für diese Etappe verzeichnet.',
 			'stage.advice.title' => 'Tipps',
 			'stage.advice.waterScarce' => 'Wenige Wasserstellen: Starten Sie mit mindestens 2,5 L.',
-			'stage.advice.waterAmple' => 'Fuellen Sie Ihre Flaschen an jeder Wasserstelle auf.',
-			'stage.advice.hardStage' => 'Anspruchsvolle Etappe: Brechen Sie frueh auf, um Hitze und Nachmittagsgewitter zu vermeiden.',
-			'stage.advice.earlyStart' => 'Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kuehle zu nutzen.',
-			'stage.advice.bigClimb' => 'Grosser Aufstieg: Teilen Sie sich Ihre Kraefte ein und machen Sie regelmaessige Pausen.',
+			'stage.advice.waterAmple' => 'Füllen Sie Ihre Flaschen an jeder Wasserstelle auf.',
+			'stage.advice.hardStage' => 'Anspruchsvolle Etappe: Brechen Sie früh auf, um Hitze und Nachmittagsgewitter zu vermeiden.',
+			'stage.advice.earlyStart' => 'Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kühle zu nutzen.',
+			'stage.advice.bigClimb' => 'Grosser Aufstieg: Teilen Sie sich Ihre Kräfte ein und machen Sie regelmässige Pausen.',
 			'trail.stages' => 'Etappen',
 			'trail.totalDistance' => 'Gesamtstrecke',
 			'trail.totalElevation' => 'Gesamthöhenmeter',
@@ -3921,9 +3921,9 @@ extension on TranslationsDe {
 			'gps.disabled' => 'Standortdienst deaktiviert',
 			'gps.offTrack' => 'Abseits der Strecke',
 			'gps.centerOnMe' => 'Auf meine Position zentrieren',
-			'navAlert.offTrackBanner' => ({required Object meters}) => 'Sie entfernen sich vom Weg — ${meters} m. Uberprufen Sie Ihre Position.',
+			'navAlert.offTrackBanner' => ({required Object meters}) => 'Sie entfernen sich vom Weg — ${meters} m. Überprüfen Sie Ihre Position.',
 			'navAlert.offTrackNotifTitle' => 'Sie verlassen den Weg',
-			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Sie entfernen sich vom Weg (${meters} m). Uberprufen Sie Ihre Position.',
+			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Sie entfernen sich vom Weg (${meters} m). Überprüfen Sie Ihre Position.',
 			'planning.title' => 'Planung',
 			'planning.duration' => 'Dauer',
 			'planning.days' => 'Tage',
@@ -3935,12 +3935,12 @@ extension on TranslationsDe {
 			'planning.stages' => 'Etappen',
 			'planning.plan' => 'Planen',
 			'itinerary.title' => 'Route',
-			'itinerary.subtitle' => 'Ihre Etappen, Tag fuer Tag',
+			'itinerary.subtitle' => 'Ihre Etappen, Tag für Tag',
 			'itinerary.direction.title' => 'Wanderrichtung',
 			'itinerary.direction.from' => 'Start',
 			'itinerary.direction.to' => 'Ziel',
 			'itinerary.direction.reverse' => 'Richtung umkehren',
-			'itinerary.empty' => 'Keine Etappe verfuegbar',
+			'itinerary.empty' => 'Keine Etappe verfügbar',
 			'itinerary.emptyHint' => 'Wegdaten sind nicht geladen.',
 			'itinerary.loading' => 'Route wird geladen...',
 			'itinerary.error' => 'Route kann nicht geladen werden',
@@ -3958,7 +3958,7 @@ extension on TranslationsDe {
 			'tracking.resume' => 'Fortsetzen',
 			'tracking.stop' => 'Stoppen',
 			'tracking.distance' => 'Entfernung',
-			'tracking.elevation' => 'Hohenmeter',
+			'tracking.elevation' => 'Höhenmeter',
 			'tracking.speed' => 'Geschwindigkeit',
 			'tracking.time' => 'Zeit',
 			'tracking.confirmStop' => 'Tracking stoppen?',
@@ -4109,7 +4109,7 @@ extension on TranslationsDe {
 			'checklist.weight.percentOfWeight' => '{pct}% des Körpergewichts',
 			'checklist.weight.gaugeObjective' => 'Max. Ziel: < 15% in Hütten, < 20% autark',
 			'checklist.weight.itemsChecked' => '{checked} / {total} Artikel angehakt',
-			'checklist.ui.title' => 'Ausrustung & Rucksack',
+			'checklist.ui.title' => 'Ausrüstung & Rucksack',
 			'checklist.ui.requirementRequired' => 'Pflicht',
 			'checklist.ui.addItem' => 'Artikel hinzufügen',
 			'checklist.ui.addItemTitle' => 'Artikel hinzufügen',
@@ -4138,7 +4138,7 @@ extension on TranslationsDe {
 			'checklist.ui.shoppingToBuy' => 'Zu kaufen',
 			'checklist.ui.shoppingPurchased' => 'Bereits gekauft',
 			'checklist.ui.share' => 'TEILEN',
-			'checklist.ui.infoTitle' => 'Ausrustung & Rucksack',
+			'checklist.ui.infoTitle' => 'Ausrüstung & Rucksack',
 			'checklist.ui.infoCheckTitle' => 'Artikel anhaken',
 			'checklist.ui.infoCheckBody' => 'Hake an, was du mitnimmst — das Gewicht wird oben neu berechnet.',
 			'checklist.ui.infoRequiredTitle' => 'Pflicht',
@@ -4286,12 +4286,12 @@ extension on TranslationsDe {
 			'diploma.recapNoPhotos' => 'Keine Fotos im Tagebuch',
 			'diploma.recapStats' => 'Statistiken',
 			'diploma.recapStages' => '{count} Etappen absolviert',
-			'diploma.recapDistance' => '{km} km zurueckgelegt',
-			'diploma.recapElevation' => '{meters} m Hoehenunterschied',
+			'diploma.recapDistance' => '{km} km zurückgelegt',
+			'diploma.recapElevation' => '{meters} m Höhenunterschied',
 			'diploma.recapDuration' => '{days} Tage Wanderung',
 			'diploma.recapMapTrace' => 'Routenverlauf',
-			'diploma.recapNoMap' => 'Verlauf nicht verfuegbar',
-			'diploma.recapJournalEntries' => '{count} Tagebucheintraege',
+			'diploma.recapNoMap' => 'Verlauf nicht verfügbar',
+			'diploma.recapJournalEntries' => '{count} Tagebucheinträge',
 			'diploma.downloadPdf' => 'Diplom-PDF herunterladen',
 			'diploma.lockedTitle' => 'Diplom gesperrt',
 			'diploma.lockedMessage' => 'Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.',
@@ -4302,9 +4302,9 @@ extension on TranslationsDe {
 			'notifications.countdown' => 'Erinnerung 2 Tage vorher',
 			'notifications.countdownDesc' => 'Benachrichtigung 2 Tage vor Abreise',
 			'notifications.schedulerCountdownTitle' => 'Ihr Trek steht bevor!',
-			'notifications.schedulerCountdownBody' => 'Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.',
+			'notifications.schedulerCountdownBody' => 'Abreise in 2 Tagen. Prüfen Sie Ihre Checkliste und das Wetter.',
 			'notifications.schedulerDailyTitle' => 'Guten Trek-Tag!',
-			'notifications.schedulerDailyBody' => 'Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.',
+			'notifications.schedulerDailyBody' => 'Prüfen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.',
 			'settings.title' => 'Einstellungen',
 			'settings.language' => 'Sprache',
 			'settings.units' => 'Einheiten',
@@ -4440,21 +4440,21 @@ extension on TranslationsDe {
 			'feasibility.flow.partialNotice' => 'Vorläufiges Ergebnis: dein Profil ist unvollständig. Fülle dein Blatt, den Test oder deine Touren aus für ein verlässliches Urteil.',
 			'tips.carouselTitle' => 'Trek-Tipps',
 			'tips.allCategories' => 'Alle',
-			'tips.swipeHint' => 'Wischen fuer mehr',
+			'tips.swipeHint' => 'Wischen für mehr',
 			'tips.detailTitle' => 'Tipp-Detail',
 			'tips.readMore' => 'Mehr lesen',
-			'tips.noTips' => 'Keine Tipps verfuegbar',
+			'tips.noTips' => 'Keine Tipps verfügbar',
 			'tips.categoryPreparation' => 'Vorbereitung',
-			'tips.categoryEquipment' => 'Ausruestung',
-			'tips.categoryNutrition' => 'Ernaehrung',
+			'tips.categoryEquipment' => 'Ausrüstung',
+			'tips.categoryNutrition' => 'Ernährung',
 			'tips.categorySafety' => 'Sicherheit',
 			'tips.categoryNature' => 'Natur',
 			'tips.categoryRecovery' => 'Erholung',
 			'tips.categoryGeneral' => 'Allgemein',
-			'tips.priorityHigh' => 'Hohe Prioritaet',
+			'tips.priorityHigh' => 'Hohe Priorität',
 			'tips.scope' => 'Wanderweg',
 			'tips.season' => 'Saison',
-			'tips.altitude' => 'Min. Hoehe',
+			'tips.altitude' => 'Min. Höhe',
 			'tips.screenTitle' => 'Ratgeber',
 			'tips.screenIntro' => 'Alles für eine gelungene Wanderung',
 			'tips.followUs' => 'Folgen Sie uns:',
@@ -4760,7 +4760,7 @@ extension on TranslationsDe {
 			'health.hint.treatments' => 'z. B. Levothyrox 50 mg/Tag',
 			'health.hint.doctor' => 'z. B. Dr. Müller +49 30 xxxx xxxx',
 			'health.hint.insurance' => 'z. B. Europäische Krankenversicherungskarte',
-			'health.error.bloodType' => 'Ungultige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)',
+			'health.error.bloodType' => 'Ungültige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)',
 			'health.save' => 'Speichern',
 			'health.saving' => 'Speichern…',
 			'health.saved' => 'Informationen gespeichert',
@@ -4779,10 +4779,10 @@ extension on TranslationsDe {
 			'health.consent.purpose' => 'Diese Infos helfen den Rettungskräften. Sie bleiben auf deinem Telefon, werden nie ins Internet gesendet.',
 			'health.consent.manage' => 'Meine Gesundheits-Einwilligung verwalten',
 			'trailSelection.title' => 'Weg wechseln',
-			'trailSelection.subtitle' => 'Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.',
+			'trailSelection.subtitle' => 'Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Pakete, Reiseführer) folgt deiner Auswahl.',
 			'trailSelection.current' => 'Aktiver Weg',
-			'trailSelection.select' => 'Diesen Weg waehlen',
-			'trailSelection.selected' => 'Ausgewaehlter Weg',
+			'trailSelection.select' => 'Diesen Weg wählen',
+			'trailSelection.selected' => 'Ausgewählter Weg',
 			'trailSelection.stagesDistance' => ({required Object stages, required Object km}) => '${stages} Etappen - ${km} km',
 			'trailSelection.a11y.trailCard' => ({required Object nom, required Object region}) => 'Weg ${nom}, ${region}',
 			'trailSelection.a11y.currentBadge' => 'Aktuell aktiver Weg',
@@ -4817,7 +4817,7 @@ extension on TranslationsDe {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
 			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
-			'consent.healthDataMorphoNote' => 'Umfasst Ihre Korperdaten (Alter, Grosse, Gewicht) fur die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerat gehalten.',
+			'consent.healthDataMorphoNote' => 'Umfasst Ihre Körperdaten (Alter, Grosse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.',
 			'moderation.reportTitle' => 'Diesen Inhalt melden',
 			'moderation.reportIntro' => 'Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.',
 			'moderation.reasonLabel' => 'Grund der Meldung',

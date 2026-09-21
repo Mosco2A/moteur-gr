@@ -1,7 +1,7 @@
 {
   "a11y": {
-    "back": "Zuruck",
-    "zoomIn": "Vergrossern",
+    "back": "Zurück",
+    "zoomIn": "Vergrössern",
     "zoomOut": "Verkleinern",
     "centerOnMe": "Auf meine Position zentrieren",
     "mapRegion": "Wanderkarte",
@@ -34,7 +34,7 @@
     "settings": "Einstellungen",
     "trailSelection": "Weg wechseln",
     "myTreks": "Meine Touren",
-    "back": "Zuruck",
+    "back": "Zurück",
     "home": "Start"
   },
   "navPilote": {
@@ -47,7 +47,7 @@
     "demoLockedBody": "Im Demomodus ist nur die Vorbereitung verfügbar. Schalten Sie diesen Trek frei, um zu wandern und Ihr Abenteuer zu erleben.",
     "demoTrekMode": "Trek-Modus simulieren (Demo)",
     "exitTitle": "App beenden?",
-    "exitMessage": "Sie sind auf dem Startbildschirm. Mochten Sie die App schliessen?",
+    "exitMessage": "Sie sind auf dem Startbildschirm. Möchten Sie die App schliessen?",
     "exitConfirm": "Beenden",
     "exitCancel": "Bleiben",
     "startTrek": "Trek starten",
@@ -179,7 +179,7 @@
     "viewMap": "Karte anzeigen",
     "layers": "Ebenen",
     "layersTitle": "Kartenebenen",
-    "layersSubtitle": "Wahlen Sie, was auf der Karte angezeigt wird",
+    "layersSubtitle": "Wählen Sie, was auf der Karte angezeigt wird",
     "stageRemaining": "Noch $km km",
     "offTrackChip": "Abseits"
   },
@@ -201,7 +201,7 @@
     },
     "remaining": "{distance} km verbleibend",
     "arrived": "Sie sind angekommen!",
-    "altitudeProfile": "Hohenprofil",
+    "altitudeProfile": "Höhenprofil",
     "statistics": "Statistiken",
     "departureArrival": "Von {from} nach {to}",
     "loading": "Laden...",
@@ -212,19 +212,19 @@
     "waterSources": {
       "title": "Wasserstellen",
       "count": "{n} Quelle(n)",
-      "none": "Keine Wasserstelle fuer diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit."
+      "none": "Keine Wasserstelle für diese Etappe verzeichnet. Nehmen Sie mindestens 3 L pro Person mit."
     },
     "accommodation": {
-      "title": "Unterkuenfte",
-      "none": "Keine Unterkunft fuer diese Etappe verzeichnet."
+      "title": "Unterkünfte",
+      "none": "Keine Unterkunft für diese Etappe verzeichnet."
     },
     "advice": {
       "title": "Tipps",
       "waterScarce": "Wenige Wasserstellen: Starten Sie mit mindestens 2,5 L.",
-      "waterAmple": "Fuellen Sie Ihre Flaschen an jeder Wasserstelle auf.",
-      "hardStage": "Anspruchsvolle Etappe: Brechen Sie frueh auf, um Hitze und Nachmittagsgewitter zu vermeiden.",
-      "earlyStart": "Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kuehle zu nutzen.",
-      "bigClimb": "Grosser Aufstieg: Teilen Sie sich Ihre Kraefte ein und machen Sie regelmaessige Pausen."
+      "waterAmple": "Füllen Sie Ihre Flaschen an jeder Wasserstelle auf.",
+      "hardStage": "Anspruchsvolle Etappe: Brechen Sie früh auf, um Hitze und Nachmittagsgewitter zu vermeiden.",
+      "earlyStart": "Aufbruch vor 8 Uhr empfohlen, um die morgendliche Kühle zu nutzen.",
+      "bigClimb": "Grosser Aufstieg: Teilen Sie sich Ihre Kräfte ein und machen Sie regelmässige Pausen."
     }
   },
   "trail": {
@@ -263,9 +263,9 @@
     "centerOnMe": "Auf meine Position zentrieren"
   },
   "navAlert": {
-    "offTrackBanner": "Sie entfernen sich vom Weg — $meters m. Uberprufen Sie Ihre Position.",
+    "offTrackBanner": "Sie entfernen sich vom Weg — $meters m. Überprüfen Sie Ihre Position.",
     "offTrackNotifTitle": "Sie verlassen den Weg",
-    "offTrackNotifBody": "Sie entfernen sich vom Weg ($meters m). Uberprufen Sie Ihre Position."
+    "offTrackNotifBody": "Sie entfernen sich vom Weg ($meters m). Überprüfen Sie Ihre Position."
   },
   "planning": {
     "title": "Planung",
@@ -281,14 +281,14 @@
   },
   "itinerary": {
     "title": "Route",
-    "subtitle": "Ihre Etappen, Tag fuer Tag",
+    "subtitle": "Ihre Etappen, Tag für Tag",
     "direction": {
       "title": "Wanderrichtung",
       "from": "Start",
       "to": "Ziel",
       "reverse": "Richtung umkehren"
     },
-    "empty": "Keine Etappe verfuegbar",
+    "empty": "Keine Etappe verfügbar",
     "emptyHint": "Wegdaten sind nicht geladen.",
     "loading": "Route wird geladen...",
     "error": "Route kann nicht geladen werden",
@@ -308,7 +308,7 @@
     "resume": "Fortsetzen",
     "stop": "Stoppen",
     "distance": "Entfernung",
-    "elevation": "Hohenmeter",
+    "elevation": "Höhenmeter",
     "speed": "Geschwindigkeit",
     "time": "Zeit",
     "confirmStop": "Tracking stoppen?",
@@ -468,7 +468,7 @@
       "itemsChecked": "{checked} / {total} Artikel angehakt"
     },
     "ui": {
-      "title": "Ausrustung & Rucksack",
+      "title": "Ausrüstung & Rucksack",
       "requirementRequired": "Pflicht",
       "addItem": "Artikel hinzufügen",
       "addItemTitle": "Artikel hinzufügen",
@@ -497,7 +497,7 @@
       "shoppingToBuy": "Zu kaufen",
       "shoppingPurchased": "Bereits gekauft",
       "share": "TEILEN",
-      "infoTitle": "Ausrustung & Rucksack",
+      "infoTitle": "Ausrüstung & Rucksack",
       "infoCheckTitle": "Artikel anhaken",
       "infoCheckBody": "Hake an, was du mitnimmst — das Gewicht wird oben neu berechnet.",
       "infoRequiredTitle": "Pflicht",
@@ -672,12 +672,12 @@
     "recapNoPhotos": "Keine Fotos im Tagebuch",
     "recapStats": "Statistiken",
     "recapStages": "{count} Etappen absolviert",
-    "recapDistance": "{km} km zurueckgelegt",
-    "recapElevation": "{meters} m Hoehenunterschied",
+    "recapDistance": "{km} km zurückgelegt",
+    "recapElevation": "{meters} m Höhenunterschied",
     "recapDuration": "{days} Tage Wanderung",
     "recapMapTrace": "Routenverlauf",
-    "recapNoMap": "Verlauf nicht verfuegbar",
-    "recapJournalEntries": "{count} Tagebucheintraege",
+    "recapNoMap": "Verlauf nicht verfügbar",
+    "recapJournalEntries": "{count} Tagebucheinträge",
     "downloadPdf": "Diplom-PDF herunterladen",
     "lockedTitle": "Diplom gesperrt",
     "lockedMessage": "Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.",
@@ -690,9 +690,9 @@
     "countdown": "Erinnerung 2 Tage vorher",
     "countdownDesc": "Benachrichtigung 2 Tage vor Abreise",
     "schedulerCountdownTitle": "Ihr Trek steht bevor!",
-    "schedulerCountdownBody": "Abreise in 2 Tagen. Pruefen Sie Ihre Checkliste und das Wetter.",
+    "schedulerCountdownBody": "Abreise in 2 Tagen. Prüfen Sie Ihre Checkliste und das Wetter.",
     "schedulerDailyTitle": "Guten Trek-Tag!",
-    "schedulerDailyBody": "Pruefen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor."
+    "schedulerDailyBody": "Prüfen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor."
   },
   "settings": {
     "title": "Einstellungen",
@@ -854,21 +854,21 @@
   "tips": {
     "carouselTitle": "Trek-Tipps",
     "allCategories": "Alle",
-    "swipeHint": "Wischen fuer mehr",
+    "swipeHint": "Wischen für mehr",
     "detailTitle": "Tipp-Detail",
     "readMore": "Mehr lesen",
-    "noTips": "Keine Tipps verfuegbar",
+    "noTips": "Keine Tipps verfügbar",
     "categoryPreparation": "Vorbereitung",
-    "categoryEquipment": "Ausruestung",
-    "categoryNutrition": "Ernaehrung",
+    "categoryEquipment": "Ausrüstung",
+    "categoryNutrition": "Ernährung",
     "categorySafety": "Sicherheit",
     "categoryNature": "Natur",
     "categoryRecovery": "Erholung",
     "categoryGeneral": "Allgemein",
-    "priorityHigh": "Hohe Prioritaet",
+    "priorityHigh": "Hohe Priorität",
     "scope": "Wanderweg",
     "season": "Saison",
-    "altitude": "Min. Hoehe",
+    "altitude": "Min. Höhe",
     "screenTitle": "Ratgeber",
     "screenIntro": "Alles für eine gelungene Wanderung",
     "followUs": "Folgen Sie uns:",
@@ -1285,7 +1285,7 @@
       "insurance": "z. B. Europäische Krankenversicherungskarte"
     },
     "error": {
-      "bloodType": "Ungultige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)"
+      "bloodType": "Ungültige Blutgruppe (A+, A-, B+, B-, AB+, AB-, O+, O-)"
     },
     "save": "Speichern",
     "saving": "Speichern…",
@@ -1313,10 +1313,10 @@
   },
   "trailSelection": {
     "title": "Weg wechseln",
-    "subtitle": "Waehle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswuerdigkeiten, Pakete, Reisefuehrer) folgt deiner Auswahl.",
+    "subtitle": "Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Pakete, Reiseführer) folgt deiner Auswahl.",
     "current": "Aktiver Weg",
-    "select": "Diesen Weg waehlen",
-    "selected": "Ausgewaehlter Weg",
+    "select": "Diesen Weg wählen",
+    "selected": "Ausgewählter Weg",
     "stagesDistance": "$stages Etappen - $km km",
     "a11y": {
       "trailCard": "Weg $nom, $region",
@@ -1359,7 +1359,7 @@
       "healthSection": "Bereich Gesundheitsdaten, verstärkte Einwilligung",
       "policyButton": "Datenschutzerklärung öffnen"
     },
-    "healthDataMorphoNote": "Umfasst Ihre Korperdaten (Alter, Grosse, Gewicht) fur die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerat gehalten."
+    "healthDataMorphoNote": "Umfasst Ihre Körperdaten (Alter, Grosse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten."
   },
   "moderation": {
     "reportTitle": "Diesen Inhalt melden",
