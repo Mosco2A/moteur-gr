@@ -65,7 +65,7 @@ void main() {
     });
 
     test('sans dates de session, le texte reste coherent', () {
-      final s = AdventureStats(
+      const s = AdventureStats(
         stagesWalked: 0,
         totalStages: 7,
         distanceKm: 0,
@@ -75,7 +75,7 @@ void main() {
         endDate: null,
         durationDays: 0,
         fullyWalked: false,
-        tracePoints: const [],
+        tracePoints: [],
       );
 
       final text = buildAdventureShareText(
