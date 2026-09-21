@@ -195,8 +195,13 @@ String buildAdventureShareText({
   required String trailName,
   required AdventureStats stats,
   required Translations$recap$fr recapT,
+  double? averageSpeedKmh,
 }) {
-  final lines = adventureRecapRows(stats, recapT).map((r) => '- ${r.label}');
+  final lines = adventureRecapRows(
+    stats,
+    recapT,
+    averageSpeedKmh: averageSpeedKmh,
+  ).map((r) => '- ${r.label}');
   return [recapT.shareHeadline(trail: trailName), ...lines].join('\n');
 }
 
@@ -213,6 +218,7 @@ class _ShareAdventureButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final recapT = t.recap;
     final trailName = ref.watch(trailConfigProvider.select((c) => c.displayName));
+    final speed = ref.watch(adventureAverageSpeedProvider).value;
 
     return AppButton(
       label: recapT.shareAdventure,
@@ -227,6 +233,7 @@ class _ShareAdventureButton extends ConsumerWidget {
               trailName: trailName,
               stats: stats,
               recapT: recapT,
+              averageSpeedKmh: speed,
             ),
             subject: recapT.shareHeadline(trail: trailName),
           );
@@ -446,8 +453,9 @@ typedef RecapRow = ({IconData icon, String label});
 /// qu'il a sous les yeux.
 List<RecapRow> adventureRecapRows(
   AdventureStats stats,
-  Translations$recap$fr recapT,
-) {
+  Translations$recap$fr recapT, {
+  double? averageSpeedKmh,
+}) {
   final rows = <RecapRow>[
     (
       icon: Icons.flag,
@@ -475,6 +483,15 @@ List<RecapRow> adventureRecapRows(
       icon: Icons.timer,
       label: recapT.duration.replaceAll('{days}', '${stats.durationDays}'),
     ),
+    // CORRECTIF L5-6 : la vitesse moyenne n'apparait QUE si elle est
+    // MESUREE (cf. adventureAverageSpeedProvider). Diviser la distance
+    // nominale des etapes par un temps reel donnerait un chiffre faux qui
+    // aurait l'air vrai — dans ce cas on n'affiche rien du tout.
+    if (averageSpeedKmh != null)
+      (
+        icon: Icons.speed,
+        label: recapT.averageSpeed(kmh: averageSpeedKmh.toStringAsFixed(1)),
+      ),
   ];
 
   // Dates reelles (si la session porte un debut et une fin). Le formatage
@@ -506,13 +523,14 @@ List<RecapRow> adventureRecapRows(
 
 /// Carte des statistiques reelles (etapes marchees, distance, D+, D-, duree,
 /// dates).
-class _StatsCard extends StatelessWidget {
+class _StatsCard extends ConsumerWidget {
   const _StatsCard({required this.stats});
   final AdventureStats stats;
 
   @override
-  Widget build(BuildContext context) {
-    final rows = adventureRecapRows(stats, t.recap);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final speed = ref.watch(adventureAverageSpeedProvider).value;
+    final rows = adventureRecapRows(stats, t.recap, averageSpeedKmh: speed);
     return AppCard(
       child: Column(
         children: [

@@ -289,3 +289,36 @@ final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
   days.sort((a, b) => a.date.compareTo(b.date));
   return days;
 });
+
+/// Vitesse moyenne REELLE de l'aventure (CORRECTIF L5-6), ou `null`.
+///
+/// LE PIEGE, evite ici : [AdventureStats.distanceKm] est une somme NOMINALE
+/// des distances d'etapes completees, pas une distance MESUREE au GPS. La
+/// diviser par un temps reel ne donne pas une vitesse de marche, elle donne
+/// un chiffre faux qui aura l'air vrai. Cette vitesse-ci se calcule sur les
+/// MEMES points GPS que la duree, journee par journee.
+///
+/// Journee par journee et non sur la trace entiere : additionner les
+/// journees evite de compter la nuit (et le trajet qui relie le dernier
+/// point du soir au premier du lendemain) dans le temps de marche.
+///
+/// `null` quand elle n'aurait aucun sens : aucune trace, duree nulle, ou
+/// valeur hors de ce qu'un randonneur peut marcher. Mieux vaut ne rien
+/// montrer qu'un chiffre absurde.
+final adventureAverageSpeedProvider = FutureProvider<double?>((ref) async {
+  final days = await ref.watch(adventureDaysProvider.future);
+  var km = 0.0;
+  var millis = 0;
+  var points = 0;
+  for (final d in days) {
+    if (!d.stats.hasData) continue;
+    km += d.stats.distanceKm;
+    millis += d.stats.duration.inMilliseconds;
+    points += d.stats.pointCount;
+  }
+  return TrackSegmentStats(
+    distanceKm: km,
+    duration: Duration(milliseconds: millis),
+    pointCount: points,
+  ).averageSpeedKmh;
+});
