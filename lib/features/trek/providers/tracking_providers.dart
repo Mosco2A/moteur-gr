@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
@@ -213,13 +214,35 @@ class TrekSessionManagerNotifier extends Notifier<TrackingSessionState> {
     final trailId = p.trailId.isNotEmpty ? p.trailId : _activeTrailId;
     if (trailId == null || trailId.isEmpty) return;
     final dao = ref.read(databaseProvider).sessionTrackPointsDao;
+    // L3-1 : chaque point porte sa session, son jour de marche et l'etape
+    // en cours. Sans ces trois reperes, la trace n'etait qu'un tas de
+    // points et le trace du jour 3 restait inaccessible.
+    final session = state.session;
     await dao.insertPoint(
       trailId: trailId,
       lat: p.latitude,
       lng: p.longitude,
       altitude: p.altitude,
       recordedAt: p.timestamp,
+      sessionId: session?.id,
+      dayIndex: session == null
+          ? null
+          : SessionTrackPointsDao.dayIndexFor(session.startedAt, p.timestamp),
+      stageId: _currentStageId,
     );
+  }
+
+  /// Etape detectee sous les pieds du randonneur, notee par l'ecran carte
+  /// (cf. `_ArrivalPipelineMount`) pour etiqueter les points de trace.
+  ///
+  /// Passe par un setter plutot que par un `ref.watch` de
+  /// `currentStageIdProvider` : ce fichier est importe PAR `gps_providers`,
+  /// l'importer en retour creerait une dependance croisee.
+  String? _currentStageId;
+
+  /// Note l'etape courante (L3-1). Sans effet sur l'etat expose a l'UI.
+  void noteCurrentStage(String? stageId) {
+    _currentStageId = (stageId != null && stageId.isNotEmpty) ? stageId : null;
   }
 
   /// Draine le tampon de points captes ecran eteint (rempli par l'isolate de

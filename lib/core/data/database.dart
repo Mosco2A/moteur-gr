@@ -78,7 +78,8 @@ part 'database.g.dart';
 /// + 1 Phase 5 E5.17 (ReviewRequests)
 /// + 1 Phase 5 E5.16 (HealthInfoEntries)
 /// + 2 Phase 4 E4.10 (FollowSessions, FollowerSlots)
-/// + 1 finitions V8 F3 (SessionTrackPoints)
+/// + 1 finitions V8 F3 (SessionTrackPoints ; granularite session/jour/etape
+///   ajoutee par StepWays LOT L3-1, migration v26)
 /// + 1 Phase 6 F6C-01 (ReportLocal, signalements offline-first)
 /// + 2 Phase 7 F7A-01 (Segments, SegmentEffortLocal, social offline-first)
 /// + 2 Phase 7 F7B-01 (KudosLocal, ActivityFeedCache, kudos + fil offline)
@@ -164,7 +165,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
   @override
-  int get schemaVersion => 25;
+  int get schemaVersion => 26;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -336,6 +337,27 @@ class AppDatabase extends _$AppDatabase {
             await migrator.createTable(hikerProfile);
             await migrator.createTable(pastHikeEntries);
             await migrator.createTable(hikerExperienceNote);
+          }
+          // Migration v25 -> v26 : socle de la trace GPS StepWays (LOT L3-1).
+          // STRICTEMENT ADDITIF (addColumn only, 3 colonnes NULLABLES sur
+          // session_track_points) : sessionId, dayIndex, stageId. Donne au
+          // trace la granularite par session, par jour de marche et par
+          // etape ; les points anterieurs restent lisibles (colonnes nulles).
+          // C'est ce qui permet d'arreter d'EFFACER le trace precedent au
+          // demarrage d'une nouvelle randonnee.
+          if (from < 26) {
+            await migrator.addColumn(
+              sessionTrackPoints,
+              sessionTrackPoints.sessionId,
+            );
+            await migrator.addColumn(
+              sessionTrackPoints,
+              sessionTrackPoints.dayIndex,
+            );
+            await migrator.addColumn(
+              sessionTrackPoints,
+              sessionTrackPoints.stageId,
+            );
           }
         },
       );

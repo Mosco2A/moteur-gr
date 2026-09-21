@@ -11592,6 +11592,39 @@ class $SessionTrackPointsTable extends SessionTrackPoints
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _sessionIdMeta = const VerificationMeta(
+    'sessionId',
+  );
+  @override
+  late final GeneratedColumn<String> sessionId = GeneratedColumn<String>(
+    'session_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dayIndexMeta = const VerificationMeta(
+    'dayIndex',
+  );
+  @override
+  late final GeneratedColumn<int> dayIndex = GeneratedColumn<int>(
+    'day_index',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stageIdMeta = const VerificationMeta(
+    'stageId',
+  );
+  @override
+  late final GeneratedColumn<String> stageId = GeneratedColumn<String>(
+    'stage_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _latMeta = const VerificationMeta('lat');
   @override
   late final GeneratedColumn<double> lat = GeneratedColumn<double>(
@@ -11636,6 +11669,9 @@ class $SessionTrackPointsTable extends SessionTrackPoints
   List<GeneratedColumn> get $columns => [
     id,
     trailId,
+    sessionId,
+    dayIndex,
+    stageId,
     lat,
     lng,
     altitude,
@@ -11663,6 +11699,24 @@ class $SessionTrackPointsTable extends SessionTrackPoints
       );
     } else if (isInserting) {
       context.missing(_trailIdMeta);
+    }
+    if (data.containsKey('session_id')) {
+      context.handle(
+        _sessionIdMeta,
+        sessionId.isAcceptableOrUnknown(data['session_id']!, _sessionIdMeta),
+      );
+    }
+    if (data.containsKey('day_index')) {
+      context.handle(
+        _dayIndexMeta,
+        dayIndex.isAcceptableOrUnknown(data['day_index']!, _dayIndexMeta),
+      );
+    }
+    if (data.containsKey('stage_id')) {
+      context.handle(
+        _stageIdMeta,
+        stageId.isAcceptableOrUnknown(data['stage_id']!, _stageIdMeta),
+      );
     }
     if (data.containsKey('lat')) {
       context.handle(
@@ -11713,6 +11767,18 @@ class $SessionTrackPointsTable extends SessionTrackPoints
         DriftSqlType.string,
         data['${effectivePrefix}trail_id'],
       )!,
+      sessionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}session_id'],
+      ),
+      dayIndex: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}day_index'],
+      ),
+      stageId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}stage_id'],
+      ),
       lat: attachedDatabase.typeMapping.read(
         DriftSqlType.double,
         data['${effectivePrefix}lat'],
@@ -11746,6 +11812,22 @@ class SessionTrackPoint extends DataClass
   /// Identifiant du sentier (TrailConfig.id)
   final String trailId;
 
+  /// Identifiant de la session de randonnée (TrekSession.id).
+  ///
+  /// Null pour les points antérieurs à la migration v26.
+  final String? sessionId;
+
+  /// Numéro du jour de marche, 1 pour le jour du départ.
+  ///
+  /// Calculé en jours calendaires depuis `TrekSession.startedAt`
+  /// (cf. `SessionTrackPointsDao.dayIndexFor`). Null si inconnu.
+  final int? dayIndex;
+
+  /// Identifiant de l'étape parcourue au moment du point (Stage.id).
+  ///
+  /// Null hors étape connue (détection d'étape non encore établie).
+  final String? stageId;
+
   /// Latitude WGS84
   final double lat;
 
@@ -11760,6 +11842,9 @@ class SessionTrackPoint extends DataClass
   const SessionTrackPoint({
     required this.id,
     required this.trailId,
+    this.sessionId,
+    this.dayIndex,
+    this.stageId,
     required this.lat,
     required this.lng,
     required this.altitude,
@@ -11770,6 +11855,15 @@ class SessionTrackPoint extends DataClass
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['trail_id'] = Variable<String>(trailId);
+    if (!nullToAbsent || sessionId != null) {
+      map['session_id'] = Variable<String>(sessionId);
+    }
+    if (!nullToAbsent || dayIndex != null) {
+      map['day_index'] = Variable<int>(dayIndex);
+    }
+    if (!nullToAbsent || stageId != null) {
+      map['stage_id'] = Variable<String>(stageId);
+    }
     map['lat'] = Variable<double>(lat);
     map['lng'] = Variable<double>(lng);
     map['altitude'] = Variable<double>(altitude);
@@ -11781,6 +11875,15 @@ class SessionTrackPoint extends DataClass
     return SessionTrackPointsCompanion(
       id: Value(id),
       trailId: Value(trailId),
+      sessionId: sessionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sessionId),
+      dayIndex: dayIndex == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dayIndex),
+      stageId: stageId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(stageId),
       lat: Value(lat),
       lng: Value(lng),
       altitude: Value(altitude),
@@ -11796,6 +11899,9 @@ class SessionTrackPoint extends DataClass
     return SessionTrackPoint(
       id: serializer.fromJson<int>(json['id']),
       trailId: serializer.fromJson<String>(json['trailId']),
+      sessionId: serializer.fromJson<String?>(json['sessionId']),
+      dayIndex: serializer.fromJson<int?>(json['dayIndex']),
+      stageId: serializer.fromJson<String?>(json['stageId']),
       lat: serializer.fromJson<double>(json['lat']),
       lng: serializer.fromJson<double>(json['lng']),
       altitude: serializer.fromJson<double>(json['altitude']),
@@ -11808,6 +11914,9 @@ class SessionTrackPoint extends DataClass
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'trailId': serializer.toJson<String>(trailId),
+      'sessionId': serializer.toJson<String?>(sessionId),
+      'dayIndex': serializer.toJson<int?>(dayIndex),
+      'stageId': serializer.toJson<String?>(stageId),
       'lat': serializer.toJson<double>(lat),
       'lng': serializer.toJson<double>(lng),
       'altitude': serializer.toJson<double>(altitude),
@@ -11818,6 +11927,9 @@ class SessionTrackPoint extends DataClass
   SessionTrackPoint copyWith({
     int? id,
     String? trailId,
+    Value<String?> sessionId = const Value.absent(),
+    Value<int?> dayIndex = const Value.absent(),
+    Value<String?> stageId = const Value.absent(),
     double? lat,
     double? lng,
     double? altitude,
@@ -11825,6 +11937,9 @@ class SessionTrackPoint extends DataClass
   }) => SessionTrackPoint(
     id: id ?? this.id,
     trailId: trailId ?? this.trailId,
+    sessionId: sessionId.present ? sessionId.value : this.sessionId,
+    dayIndex: dayIndex.present ? dayIndex.value : this.dayIndex,
+    stageId: stageId.present ? stageId.value : this.stageId,
     lat: lat ?? this.lat,
     lng: lng ?? this.lng,
     altitude: altitude ?? this.altitude,
@@ -11834,6 +11949,9 @@ class SessionTrackPoint extends DataClass
     return SessionTrackPoint(
       id: data.id.present ? data.id.value : this.id,
       trailId: data.trailId.present ? data.trailId.value : this.trailId,
+      sessionId: data.sessionId.present ? data.sessionId.value : this.sessionId,
+      dayIndex: data.dayIndex.present ? data.dayIndex.value : this.dayIndex,
+      stageId: data.stageId.present ? data.stageId.value : this.stageId,
       lat: data.lat.present ? data.lat.value : this.lat,
       lng: data.lng.present ? data.lng.value : this.lng,
       altitude: data.altitude.present ? data.altitude.value : this.altitude,
@@ -11848,6 +11966,9 @@ class SessionTrackPoint extends DataClass
     return (StringBuffer('SessionTrackPoint(')
           ..write('id: $id, ')
           ..write('trailId: $trailId, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('dayIndex: $dayIndex, ')
+          ..write('stageId: $stageId, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitude: $altitude, ')
@@ -11857,13 +11978,26 @@ class SessionTrackPoint extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, trailId, lat, lng, altitude, recordedAt);
+  int get hashCode => Object.hash(
+    id,
+    trailId,
+    sessionId,
+    dayIndex,
+    stageId,
+    lat,
+    lng,
+    altitude,
+    recordedAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       (other is SessionTrackPoint &&
           other.id == this.id &&
           other.trailId == this.trailId &&
+          other.sessionId == this.sessionId &&
+          other.dayIndex == this.dayIndex &&
+          other.stageId == this.stageId &&
           other.lat == this.lat &&
           other.lng == this.lng &&
           other.altitude == this.altitude &&
@@ -11873,6 +12007,9 @@ class SessionTrackPoint extends DataClass
 class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   final Value<int> id;
   final Value<String> trailId;
+  final Value<String?> sessionId;
+  final Value<int?> dayIndex;
+  final Value<String?> stageId;
   final Value<double> lat;
   final Value<double> lng;
   final Value<double> altitude;
@@ -11880,6 +12017,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   const SessionTrackPointsCompanion({
     this.id = const Value.absent(),
     this.trailId = const Value.absent(),
+    this.sessionId = const Value.absent(),
+    this.dayIndex = const Value.absent(),
+    this.stageId = const Value.absent(),
     this.lat = const Value.absent(),
     this.lng = const Value.absent(),
     this.altitude = const Value.absent(),
@@ -11888,6 +12028,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   SessionTrackPointsCompanion.insert({
     this.id = const Value.absent(),
     required String trailId,
+    this.sessionId = const Value.absent(),
+    this.dayIndex = const Value.absent(),
+    this.stageId = const Value.absent(),
     required double lat,
     required double lng,
     required double altitude,
@@ -11900,6 +12043,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   static Insertable<SessionTrackPoint> custom({
     Expression<int>? id,
     Expression<String>? trailId,
+    Expression<String>? sessionId,
+    Expression<int>? dayIndex,
+    Expression<String>? stageId,
     Expression<double>? lat,
     Expression<double>? lng,
     Expression<double>? altitude,
@@ -11908,6 +12054,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (trailId != null) 'trail_id': trailId,
+      if (sessionId != null) 'session_id': sessionId,
+      if (dayIndex != null) 'day_index': dayIndex,
+      if (stageId != null) 'stage_id': stageId,
       if (lat != null) 'lat': lat,
       if (lng != null) 'lng': lng,
       if (altitude != null) 'altitude': altitude,
@@ -11918,6 +12067,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
   SessionTrackPointsCompanion copyWith({
     Value<int>? id,
     Value<String>? trailId,
+    Value<String?>? sessionId,
+    Value<int?>? dayIndex,
+    Value<String?>? stageId,
     Value<double>? lat,
     Value<double>? lng,
     Value<double>? altitude,
@@ -11926,6 +12078,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     return SessionTrackPointsCompanion(
       id: id ?? this.id,
       trailId: trailId ?? this.trailId,
+      sessionId: sessionId ?? this.sessionId,
+      dayIndex: dayIndex ?? this.dayIndex,
+      stageId: stageId ?? this.stageId,
       lat: lat ?? this.lat,
       lng: lng ?? this.lng,
       altitude: altitude ?? this.altitude,
@@ -11941,6 +12096,15 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     }
     if (trailId.present) {
       map['trail_id'] = Variable<String>(trailId.value);
+    }
+    if (sessionId.present) {
+      map['session_id'] = Variable<String>(sessionId.value);
+    }
+    if (dayIndex.present) {
+      map['day_index'] = Variable<int>(dayIndex.value);
+    }
+    if (stageId.present) {
+      map['stage_id'] = Variable<String>(stageId.value);
     }
     if (lat.present) {
       map['lat'] = Variable<double>(lat.value);
@@ -11962,6 +12126,9 @@ class SessionTrackPointsCompanion extends UpdateCompanion<SessionTrackPoint> {
     return (StringBuffer('SessionTrackPointsCompanion(')
           ..write('id: $id, ')
           ..write('trailId: $trailId, ')
+          ..write('sessionId: $sessionId, ')
+          ..write('dayIndex: $dayIndex, ')
+          ..write('stageId: $stageId, ')
           ..write('lat: $lat, ')
           ..write('lng: $lng, ')
           ..write('altitude: $altitude, ')
@@ -24856,6 +25023,9 @@ typedef $$SessionTrackPointsTableCreateCompanionBuilder =
     SessionTrackPointsCompanion Function({
       Value<int> id,
       required String trailId,
+      Value<String?> sessionId,
+      Value<int?> dayIndex,
+      Value<String?> stageId,
       required double lat,
       required double lng,
       required double altitude,
@@ -24865,6 +25035,9 @@ typedef $$SessionTrackPointsTableUpdateCompanionBuilder =
     SessionTrackPointsCompanion Function({
       Value<int> id,
       Value<String> trailId,
+      Value<String?> sessionId,
+      Value<int?> dayIndex,
+      Value<String?> stageId,
       Value<double> lat,
       Value<double> lng,
       Value<double> altitude,
@@ -24887,6 +25060,21 @@ class $$SessionTrackPointsTableFilterComposer
 
   ColumnFilters<String> get trailId => $composableBuilder(
     column: $table.trailId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dayIndex => $composableBuilder(
+    column: $table.dayIndex,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get stageId => $composableBuilder(
+    column: $table.stageId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -24930,6 +25118,21 @@ class $$SessionTrackPointsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get sessionId => $composableBuilder(
+    column: $table.sessionId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dayIndex => $composableBuilder(
+    column: $table.dayIndex,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get stageId => $composableBuilder(
+    column: $table.stageId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<double> get lat => $composableBuilder(
     column: $table.lat,
     builder: (column) => ColumnOrderings(column),
@@ -24965,6 +25168,15 @@ class $$SessionTrackPointsTableAnnotationComposer
 
   GeneratedColumn<String> get trailId =>
       $composableBuilder(column: $table.trailId, builder: (column) => column);
+
+  GeneratedColumn<String> get sessionId =>
+      $composableBuilder(column: $table.sessionId, builder: (column) => column);
+
+  GeneratedColumn<int> get dayIndex =>
+      $composableBuilder(column: $table.dayIndex, builder: (column) => column);
+
+  GeneratedColumn<String> get stageId =>
+      $composableBuilder(column: $table.stageId, builder: (column) => column);
 
   GeneratedColumn<double> get lat =>
       $composableBuilder(column: $table.lat, builder: (column) => column);
@@ -25023,6 +25235,9 @@ class $$SessionTrackPointsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 Value<String> trailId = const Value.absent(),
+                Value<String?> sessionId = const Value.absent(),
+                Value<int?> dayIndex = const Value.absent(),
+                Value<String?> stageId = const Value.absent(),
                 Value<double> lat = const Value.absent(),
                 Value<double> lng = const Value.absent(),
                 Value<double> altitude = const Value.absent(),
@@ -25030,6 +25245,9 @@ class $$SessionTrackPointsTableTableManager
               }) => SessionTrackPointsCompanion(
                 id: id,
                 trailId: trailId,
+                sessionId: sessionId,
+                dayIndex: dayIndex,
+                stageId: stageId,
                 lat: lat,
                 lng: lng,
                 altitude: altitude,
@@ -25039,6 +25257,9 @@ class $$SessionTrackPointsTableTableManager
               ({
                 Value<int> id = const Value.absent(),
                 required String trailId,
+                Value<String?> sessionId = const Value.absent(),
+                Value<int?> dayIndex = const Value.absent(),
+                Value<String?> stageId = const Value.absent(),
                 required double lat,
                 required double lng,
                 required double altitude,
@@ -25046,6 +25267,9 @@ class $$SessionTrackPointsTableTableManager
               }) => SessionTrackPointsCompanion.insert(
                 id: id,
                 trailId: trailId,
+                sessionId: sessionId,
+                dayIndex: dayIndex,
+                stageId: stageId,
                 lat: lat,
                 lng: lng,
                 altitude: altitude,

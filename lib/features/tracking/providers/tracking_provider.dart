@@ -5,6 +5,7 @@ import 'package:drift/drift.dart' show Value;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/daos/progress_dao.dart';
+import '../../../core/data/daos/session_track_points_dao.dart';
 import '../../../core/data/database.dart';
 import '../../../core/providers/database_provider.dart';
 import '../domain/tracking_engine.dart';
@@ -50,6 +51,14 @@ class TrackingNotifier extends Notifier<TrackingState> {
   Timer? _ticker;
   String _trailId = '';
 
+  /// L3-1 — identifiant du segment de trace en cours (une valeur par
+  /// [start]), pour que deux randonnees successives ne se melangent pas.
+  String? _sessionId;
+
+  /// L3-1 — depart de la randonnee en cours, origine de la numerotation
+  /// des jours de marche (jour 1 = jour du depart).
+  DateTime? _startedAt;
+
   @override
   TrackingState build() {
     ref.onDispose(() {
@@ -66,10 +75,13 @@ class TrackingNotifier extends Notifier<TrackingState> {
     }
     _trailId = trailId;
     _engine.reset();
-    // F3 : nouvelle session -> le trace persiste de la session
-    // precedente est remplace.
+    // L3-1 : le trace de la randonnee PRECEDENTE n'est PLUS efface. Chaque
+    // session ouvre son propre segment (identifie par [_sessionId]) et les
+    // jours de marche sont numerotes a partir de [_startedAt]. Effacer ici
+    // rendait impossible de relire le jour 3 apres avoir marche le jour 5.
     final traceDao = ref.read(databaseProvider).sessionTrackPointsDao;
-    unawaited(traceDao.clearTrail(trailId));
+    _startedAt = DateTime.now();
+    _sessionId = 'local-${_startedAt!.millisecondsSinceEpoch}';
     state = state.copyWith(
       status: TrackingStatusValues.recording,
       distanceM: 0.0,
@@ -93,11 +105,18 @@ class TrackingNotifier extends Notifier<TrackingState> {
       );
       // F3 : persistence au fil de l'eau du trace de session
       // (lu par le recap diplome) — robuste a un arret brutal.
+      // L3-1 : chaque point porte sa session et son jour de marche.
+      final now = DateTime.now();
       unawaited(traceDao.insertPoint(
         trailId: trailId,
         lat: position.latitude,
         lng: position.longitude,
         altitude: position.altitude,
+        recordedAt: now,
+        sessionId: _sessionId,
+        dayIndex: _startedAt == null
+            ? null
+            : SessionTrackPointsDao.dayIndexFor(_startedAt!, now),
       ));
       _updateState();
     });

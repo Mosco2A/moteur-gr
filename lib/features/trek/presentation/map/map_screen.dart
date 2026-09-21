@@ -650,7 +650,11 @@ class _ArrivalPipelineMount extends ConsumerWidget {
       ref.watch(arrivalCompletionListenerProvider);
       // Alimente aussi la detection d'etape courante pendant la nav (parite
       // GR20) : etape affichee coherente avec la position.
-      ref.watch(currentStageIdProvider);
+      // L3-1 : l'etape detectee est notee au gestionnaire de session, qui
+      // l'inscrit sur chaque point de trace — c'est ce qui permet de rendre
+      // le trace ETAPE PAR ETAPE dans le recap.
+      final stageId = ref.watch(currentStageIdProvider).value;
+      ref.read(trekSessionManagerProvider.notifier).noteCurrentStage(stageId);
     }
 
     return const SizedBox.shrink();
