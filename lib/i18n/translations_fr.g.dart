@@ -1420,8 +1420,8 @@ class Translations$feasibility$fr {
 	/// fr: 'Recommencer'
 	String get restart => 'Recommencer';
 
-	/// fr: 'Faisabilite pour ce trek'
-	String get objectiveTitle => 'Faisabilite pour ce trek';
+	/// fr: 'Faisabilité pour ce trek'
+	String get objectiveTitle => 'Faisabilité pour ce trek';
 
 	/// fr: 'Verdict basé sur votre profil réel croisé avec les exigences du trek.'
 	String get objectiveIntro => 'Verdict basé sur votre profil réel croisé avec les exigences du trek.';
@@ -1432,17 +1432,17 @@ class Translations$feasibility$fr {
 	/// fr: 'Test 6 minutes'
 	String get openWalkTest => 'Test 6 minutes';
 
-	/// fr: 'Mes 5 dernieres randos'
-	String get openPastHikes => 'Mes 5 dernieres randos';
+	/// fr: 'Mes 5 dernières randos'
+	String get openPastHikes => 'Mes 5 dernières randos';
 
-	/// fr: 'Base sur votre profil objectif'
-	String get sourceObjective => 'Base sur votre profil objectif';
+	/// fr: 'Basé sur votre profil objectif'
+	String get sourceObjective => 'Basé sur votre profil objectif';
 
-	/// fr: 'Base sur le questionnaire (en attendant votre profil)'
-	String get sourceFallback => 'Base sur le questionnaire (en attendant votre profil)';
+	/// fr: 'Basé sur le questionnaire (en attendant votre profil)'
+	String get sourceFallback => 'Basé sur le questionnaire (en attendant votre profil)';
 
-	/// fr: 'Ecart trop important'
-	String get gapTooHigh => 'Ecart trop important';
+	/// fr: 'Écart trop important'
+	String get gapTooHigh => 'Écart trop important';
 
 	late final Translations$feasibility$gaps$fr gaps = Translations$feasibility$gaps$fr.internal(_root);
 	late final Translations$feasibility$formula$fr formula = Translations$feasibility$formula$fr.internal(_root);
@@ -1860,29 +1860,29 @@ class Translations$training$fr {
 	/// fr: '$n min'
 	String minutes({required Object n}) => '${n} min';
 
-	/// fr: '$done seances sur $total faites'
-	String progress({required Object done, required Object total}) => '${done} seances sur ${total} faites';
+	/// fr: '$done séances sur $total faites'
+	String progress({required Object done, required Object total}) => '${done} séances sur ${total} faites';
 
 	late final Translations$training$types$fr types = Translations$training$types$fr.internal(_root);
 	late final Translations$training$intensity$fr intensity = Translations$training$intensity$fr.internal(_root);
 
-	/// fr: 'Programme d'entrainement personnalise'
-	String get paywallTitle => 'Programme d\'entrainement personnalise';
+	/// fr: 'Programme d'entraînement personnalisé'
+	String get paywallTitle => 'Programme d\'entraînement personnalisé';
 
 	/// fr: 'Inclus dans le pack « $trail ».'
 	String paywallIncludedIn({required Object trail}) => 'Inclus dans le pack « ${trail} ».';
 
-	/// fr: 'Plan adapte a votre profil et a votre date de depart.'
-	String get paywallSubtitle => 'Plan adapte a votre profil et a votre date de depart.';
+	/// fr: 'Plan adapté à votre profil et à votre date de départ.'
+	String get paywallSubtitle => 'Plan adapté à votre profil et à votre date de départ.';
 
-	/// fr: 'Debloquer'
-	String get unlock => 'Debloquer';
+	/// fr: 'Débloquer'
+	String get unlock => 'Débloquer';
 
 	/// fr: 'Un plan progressif sur $weeks semaines pour aborder les $km km et environ $elevation m de dénivelé.'
 	String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Un plan progressif sur ${weeks} semaines pour aborder les ${km} km et environ ${elevation} m de dénivelé.';
 
-	/// fr: 'Depart dans $days jours'
-	String countdown({required Object days}) => 'Depart dans ${days} jours';
+	/// fr: 'Départ dans $days jours'
+	String countdown({required Object days}) => 'Départ dans ${days} jours';
 
 	/// fr: 'Plan sur $n semaines'
 	String planOverWeeks({required Object n}) => 'Plan sur ${n} semaines';
@@ -1890,14 +1890,14 @@ class Translations$training$fr {
 	/// fr: 'Semaines $start-$end · $title'
 	String phaseWeeks({required Object start, required Object end, required Object title}) => 'Semaines ${start}-${end} · ${title}';
 
-	/// fr: 'Objectif cle'
-	String get objectiveTitle => 'Objectif cle';
+	/// fr: 'Objectif clé'
+	String get objectiveTitle => 'Objectif clé';
 
-	/// fr: 'Posez votre date de depart dans le Calendrier pour caler le compte a rebours.'
-	String get inviteSetDate => 'Posez votre date de depart dans le Calendrier pour caler le compte a rebours.';
+	/// fr: 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.'
+	String get inviteSetDate => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.';
 
-	/// fr: 'Remplissez votre fiche de renseignement pour adapter le plan a votre profil.'
-	String get inviteFillProfile => 'Remplissez votre fiche de renseignement pour adapter le plan a votre profil.';
+	/// fr: 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.'
+	String get inviteFillProfile => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.';
 
 	/// fr: 'Plan générique : un plan dédié à ce sentier arrive bientôt.'
 	String get genericPlanNotice => 'Plan générique : un plan dédié à ce sentier arrive bientôt.';
@@ -1905,8 +1905,8 @@ class Translations$training$fr {
 	/// fr: 'Votre faisabilité invite à la prudence : respectez la progression et n'écourtez pas la préparation.'
 	String get cautionVerdictNotice => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.';
 
-	/// fr: 'Il reste $days jours : plan condense sur le temps disponible.'
-	String departureTooClose({required Object days}) => 'Il reste ${days} jours : plan condense sur le temps disponible.';
+	/// fr: 'Il reste $days jours : plan condensé sur le temps disponible.'
+	String departureTooClose({required Object days}) => 'Il reste ${days} jours : plan condensé sur le temps disponible.';
 
 	/// fr: 'Programme d'entraînement bientôt disponible pour ce sentier.'
 	String get noPlan => 'Programme d\'entraînement bientôt disponible pour ce sentier.';
@@ -4559,11 +4559,11 @@ class Translations$feasibility$gaps$fr {
 	/// fr: 'Dénivelé par jour trop élevé vs votre habitude'
 	String get elevationPerDay => 'Dénivelé par jour trop élevé vs votre habitude';
 
-	/// fr: 'Distance par jour superieure a votre experience'
-	String get distancePerDay => 'Distance par jour superieure a votre experience';
+	/// fr: 'Distance par jour supérieure à votre expérience'
+	String get distancePerDay => 'Distance par jour supérieure à votre expérience';
 
-	/// fr: 'Nombre de jours consecutifs jamais atteint'
-	String get consecutiveDays => 'Nombre de jours consecutifs jamais atteint';
+	/// fr: 'Nombre de jours consécutifs jamais atteint'
+	String get consecutiveDays => 'Nombre de jours consécutifs jamais atteint';
 
 	/// fr: 'Technicité du terrain au-dessus de votre niveau'
 	String get technicity => 'Technicité du terrain au-dessus de votre niveau';
@@ -4574,8 +4574,8 @@ class Translations$feasibility$gaps$fr {
 	/// fr: 'Forme insuffisante au test 6 minutes'
 	String get fitness => 'Forme insuffisante au test 6 minutes';
 
-	/// fr: 'Effort global (IBP) superieur a votre experience'
-	String get effort => 'Effort global (IBP) superieur a votre experience';
+	/// fr: 'Effort global (IBP) supérieur à votre expérience'
+	String get effort => 'Effort global (IBP) supérieur à votre expérience';
 }
 
 // Path: feasibility.formula
@@ -7660,21 +7660,21 @@ extension on Translations {
 			'auth.errorLoading' => 'Erreur de chargement',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
 			'feasibility.restart' => 'Recommencer',
-			'feasibility.objectiveTitle' => 'Faisabilite pour ce trek',
+			'feasibility.objectiveTitle' => 'Faisabilité pour ce trek',
 			'feasibility.objectiveIntro' => 'Verdict basé sur votre profil réel croisé avec les exigences du trek.',
 			'feasibility.openProfile' => 'Ma fiche d\'info',
 			'feasibility.openWalkTest' => 'Test 6 minutes',
-			'feasibility.openPastHikes' => 'Mes 5 dernieres randos',
-			'feasibility.sourceObjective' => 'Base sur votre profil objectif',
-			'feasibility.sourceFallback' => 'Base sur le questionnaire (en attendant votre profil)',
-			'feasibility.gapTooHigh' => 'Ecart trop important',
+			'feasibility.openPastHikes' => 'Mes 5 dernières randos',
+			'feasibility.sourceObjective' => 'Basé sur votre profil objectif',
+			'feasibility.sourceFallback' => 'Basé sur le questionnaire (en attendant votre profil)',
+			'feasibility.gapTooHigh' => 'Écart trop important',
 			'feasibility.gaps.elevationPerDay' => 'Dénivelé par jour trop élevé vs votre habitude',
-			'feasibility.gaps.distancePerDay' => 'Distance par jour superieure a votre experience',
-			'feasibility.gaps.consecutiveDays' => 'Nombre de jours consecutifs jamais atteint',
+			'feasibility.gaps.distancePerDay' => 'Distance par jour supérieure à votre expérience',
+			'feasibility.gaps.consecutiveDays' => 'Nombre de jours consécutifs jamais atteint',
 			'feasibility.gaps.technicity' => 'Technicité du terrain au-dessus de votre niveau',
 			'feasibility.gaps.risk' => 'Niveau de risque élevé pour ce trek',
 			'feasibility.gaps.fitness' => 'Forme insuffisante au test 6 minutes',
-			'feasibility.gaps.effort' => 'Effort global (IBP) superieur a votre experience',
+			'feasibility.gaps.effort' => 'Effort global (IBP) supérieur à votre expérience',
 			'feasibility.formula.title' => 'Faisabilité pour ce trek',
 			'feasibility.formula.intro' => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-effort/jour (${level})',
@@ -7844,27 +7844,27 @@ extension on Translations {
 			'training.remindersScheduled' => ({required Object n}) => '${n} rappel(s) programmé(s)',
 			'training.week' => ({required Object n}) => 'Semaine ${n}',
 			'training.minutes' => ({required Object n}) => '${n} min',
-			'training.progress' => ({required Object done, required Object total}) => '${done} seances sur ${total} faites',
+			'training.progress' => ({required Object done, required Object total}) => '${done} séances sur ${total} faites',
 			'training.types.marche' => 'Marche',
 			'training.types.cardio' => 'Cardio',
 			'training.types.renforcement' => 'Renforcement',
 			'training.intensity.faible' => 'Faible',
 			'training.intensity.moderee' => 'Modérée',
 			'training.intensity.elevee' => 'Élevée',
-			'training.paywallTitle' => 'Programme d\'entrainement personnalise',
+			'training.paywallTitle' => 'Programme d\'entraînement personnalisé',
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Inclus dans le pack « ${trail} ».',
-			'training.paywallSubtitle' => 'Plan adapte a votre profil et a votre date de depart.',
-			'training.unlock' => 'Debloquer',
+			'training.paywallSubtitle' => 'Plan adapté à votre profil et à votre date de départ.',
+			'training.unlock' => 'Débloquer',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un plan progressif sur ${weeks} semaines pour aborder les ${km} km et environ ${elevation} m de dénivelé.',
-			'training.countdown' => ({required Object days}) => 'Depart dans ${days} jours',
+			'training.countdown' => ({required Object days}) => 'Départ dans ${days} jours',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan sur ${n} semaines',
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semaines ${start}-${end} · ${title}',
-			'training.objectiveTitle' => 'Objectif cle',
-			'training.inviteSetDate' => 'Posez votre date de depart dans le Calendrier pour caler le compte a rebours.',
-			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan a votre profil.',
+			'training.objectiveTitle' => 'Objectif clé',
+			'training.inviteSetDate' => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.',
+			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
 			'training.genericPlanNotice' => 'Plan générique : un plan dédié à ce sentier arrive bientôt.',
 			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
-			'training.departureTooClose' => ({required Object days}) => 'Il reste ${days} jours : plan condense sur le temps disponible.',
+			'training.departureTooClose' => ({required Object days}) => 'Il reste ${days} jours : plan condensé sur le temps disponible.',
 			'training.noPlan' => 'Programme d\'entraînement bientôt disponible pour ce sentier.',
 			'eta.title' => 'Temps estimé',
 			'eta.toNextWaypoint' => 'Prochain point',
