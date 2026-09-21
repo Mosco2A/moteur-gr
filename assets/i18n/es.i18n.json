@@ -3,11 +3,11 @@
     "back": "Volver",
     "zoomIn": "Acercar",
     "zoomOut": "Alejar",
-    "centerOnMe": "Centrar en mi posicion",
+    "centerOnMe": "Centrar en mi posición",
     "mapRegion": "Mapa del sendero",
-    "userPosition": "Tu posicion",
+    "userPosition": "Tu posición",
     "stageMarker": "Etapa $number",
-    "poiMarker": "Punto de interes: $name",
+    "poiMarker": "Punto de interés: $name",
     "markerCluster": "$count puntos agrupados",
     "trailCard": "Sendero $name",
     "startTracking": "Iniciar seguimiento",
@@ -257,15 +257,15 @@
   },
   "gps": {
     "permission": "Permiso GPS requerido",
-    "denied": "Acceso a la ubicacion denegado",
-    "disabled": "Servicio de ubicacion desactivado",
+    "denied": "Acceso a la ubicación denegado",
+    "disabled": "Servicio de ubicación desactivado",
     "offTrack": "Fuera del sendero",
-    "centerOnMe": "Centrar en mi posicion"
+    "centerOnMe": "Centrar en mi posición"
   },
   "navAlert": {
-    "offTrackBanner": "Te estas alejando del sendero — $meters m. Comprueba tu posicion.",
+    "offTrackBanner": "Te estas alejando del sendero — $meters m. Comprueba tu posición.",
     "offTrackNotifTitle": "Estas saliendo del sendero",
-    "offTrackNotifBody": "Te estas alejando del sendero ($meters m). Comprueba tu posicion."
+    "offTrackNotifBody": "Te estas alejando del sendero ($meters m). Comprueba tu posición."
   },
   "planning": {
     "title": "Planificación",
@@ -313,7 +313,7 @@
     "time": "Tiempo",
     "confirmStop": "Detener el seguimiento?",
     "dPlus": "D+",
-    "stopSaveProgress": "Tu progreso se guardara.",
+    "stopSaveProgress": "Tu progreso se guardará.",
     "cancel": "Cancelar",
     "stopButton": "Detener",
     "stopTitle": "¿Detener el seguimiento?",
@@ -670,11 +670,11 @@
     "recapTitle": "Tu aventura",
     "recapJournalPhotos": "Fotos del diario",
     "recapNoPhotos": "Sin fotos en el diario",
-    "recapStats": "Estadisticas",
+    "recapStats": "Estadísticas",
     "recapStages": "{count} etapas completadas",
     "recapDistance": "{km} km recorridos",
     "recapElevation": "{meters} m de desnivel",
-    "recapDuration": "{days} dias de trekking",
+    "recapDuration": "{days} días de trekking",
     "recapMapTrace": "Trazado del recorrido",
     "recapNoMap": "Trazado no disponible",
     "recapJournalEntries": "{count} notas del diario",
@@ -690,9 +690,9 @@
     "countdown": "Recordatorio D-2",
     "countdownDesc": "Notificación 2 días antes de la salida",
     "schedulerCountdownTitle": "Tu trek se acerca!",
-    "schedulerCountdownBody": "Salida en 2 dias. Revisa tu checklist y el tiempo.",
-    "schedulerDailyTitle": "Buen dia de trek!",
-    "schedulerDailyBody": "Consulta el tiempo y prepara la etapa del dia."
+    "schedulerCountdownBody": "Salida en 2 días. Revisa tu checklist y el tiempo.",
+    "schedulerDailyTitle": "Buen día de trek!",
+    "schedulerDailyBody": "Consulta el tiempo y prepara la etapa del día."
   },
   "settings": {
     "title": "Ajustes",
@@ -779,14 +779,14 @@
     "objectiveIntro": "Veredicto basado en tu perfil real cruzado con las exigencias del trek.",
     "openProfile": "Mis datos",
     "openWalkTest": "Prueba de 6 minutos",
-    "openPastHikes": "Mis ultimas 5 rutas",
+    "openPastHikes": "Mis últimas 5 rutas",
     "sourceObjective": "Basado en tu perfil objetivo",
     "sourceFallback": "Basado en el cuestionario (mientras defines tu perfil)",
     "gapTooHigh": "Diferencia demasiado grande",
     "gaps": {
-      "elevationPerDay": "Desnivel diario demasiado alto vs tu habito",
+      "elevationPerDay": "Desnivel diario demasiado alto vs tu hábito",
       "distancePerDay": "Distancia diaria por encima de tu experiencia",
-      "consecutiveDays": "Mas dias consecutivos de los realizados",
+      "consecutiveDays": "Más días consecutivos de los realizados",
       "technicity": "Tecnicidad del terreno por encima de tu nivel",
       "risk": "Nivel de riesgo alto para este trek",
       "fitness": "Forma insuficiente en la prueba de 6 minutos",
@@ -889,7 +889,7 @@
   },
   "goodies": {
     "title": "Tienda de Goodies",
-    "comingSoon": "Este modulo llegara pronto. Mantente atento!"
+    "comingSoon": "Este módulo llegará pronto. Mantente atento!"
   },
   "noData": {
     "title": "Ningún sendero descargado",
@@ -1239,7 +1239,7 @@
   "guides": {
     "title": "Guías de los pueblos",
     "subtitle": "Información práctica de pueblos y aldeas, disponible sin conexión.",
-    "sectionsCount": "$n secciones practicas",
+    "sectionsCount": "$n secciones prácticas",
     "empty": "No hay guía disponible para este sendero.",
     "noItems": "Aún no hay información en esta sección.",
     "facilitatorNote": "StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.",
@@ -1285,7 +1285,7 @@
       "insurance": "Ej.: tarjeta sanitaria europea"
     },
     "error": {
-      "bloodType": "Grupo sanguineo no valido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
+      "bloodType": "Grupo sanguíneo no válido (A+, A-, B+, B-, AB+, AB-, O+, O-)"
     },
     "save": "Guardar",
     "saving": "Guardando…",
@@ -1313,7 +1313,7 @@
   },
   "trailSelection": {
     "title": "Cambiar de sendero",
-    "subtitle": "Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interes, packs, guias) sigue tu seleccion.",
+    "subtitle": "Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, packs, guías) sigue tu selección.",
     "current": "Sendero activo",
     "select": "Elegir este sendero",
     "selected": "Sendero seleccionado",
@@ -1359,7 +1359,7 @@
       "healthSection": "Sección de datos de salud, consentimiento reforzado",
       "policyButton": "Abrir la política de privacidad"
     },
-    "healthDataMorphoNote": "Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD articulo 9, guardados en el dispositivo."
+    "healthDataMorphoNote": "Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo."
   },
   "moderation": {
     "reportTitle": "Denunciar este contenido",
@@ -1420,17 +1420,17 @@
     "finisherSubtitle": "Has completado tu ruta",
     "partialTitle": "Tu ruta parcial",
     "partialSubtitle": "Tu aventura queda registrada",
-    "statsSection": "Estadisticas",
+    "statsSection": "Estadísticas",
     "traceSection": "Tu trazado",
     "noTrace": "No hay trazado GPS disponible",
     "stages": "{done} / {total} etapas recorridas",
     "distance": "{km} km recorridos",
     "elevation": "{meters} m de desnivel positivo",
-    "duration": "{days} dias",
+    "duration": "{days} días",
     "dates": "Del {start} al {end}",
     "viewDiploma": "Ver mi diploma",
     "viewJournal": "Ver mi diario",
-    "noData": "Aun no hay datos de ruta para mostrar."
+    "noData": "Aún no hay datos de ruta para mostrar."
   },
   "programme": {
     "title": "Programa",
@@ -1692,7 +1692,7 @@
     "dayLevel": "Niv. $level",
     "day": {
       "today": "Hoy",
-      "tomorrow": "Man.",
+      "tomorrow": "Mañ.",
       "plus": "D+$n"
     },
     "noRisk": "Ningún riesgo de incendio señalado actualmente",
@@ -1836,7 +1836,7 @@
     "sectionInProgress": "En curso",
     "sectionPrepared": "Preparadas",
     "sectionCompleted": "Terminadas",
-    "emptyTitle": "Aun no hay rutas",
+    "emptyTitle": "Aún no hay rutas",
     "empty": "Aún no hay rutas. Descubre un sendero para empezar.",
     "discoverTitle": "Descubrir senderos",
     "discoverSubtitle": "Explora el catálogo",
@@ -1906,12 +1906,12 @@
   },
   "walkTest": {
     "title": "Prueba de marcha de 6 minutos",
-    "intro": "Camina lo mas lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.",
+    "intro": "Camina lo más lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.",
     "safetyWarning": "Evita este esfuerzo si tienes un problema cardiaco no verificado. Detente si te sientes mal.",
     "start": "Iniciar la prueba",
     "stop": "Detener",
     "cancel": "Cancelar",
-    "countdown": "Preparate...",
+    "countdown": "Prepárate...",
     "running": "En curso",
     "liveDistance": "Distancia",
     "timeLeft": "Tiempo restante",
@@ -1922,9 +1922,9 @@
     "resultDate": "Realizada el $date",
     "doneAgain": "Repetir la prueba",
     "gpsNeeded": "El GPS es necesario para medir la distancia.",
-    "gpsDenied": "Permite la ubicacion para iniciar la prueba.",
+    "gpsDenied": "Permite la ubicación para iniciar la prueba.",
     "monthlyReminderOn": "Recordatorio mensual activo",
-    "monthlyReminderBody": "Cada mes se te propondra un recordatorio de la prueba para seguir tu forma.",
+    "monthlyReminderBody": "Cada mes se te propondrá un recordatorio de la prueba para seguir tu forma.",
     "notDoneYet": "Prueba no realizada",
     "fallbackNotice": "Hasta que hagas la prueba, tu nivel se estima a partir del cuestionario.",
     "levels": {
