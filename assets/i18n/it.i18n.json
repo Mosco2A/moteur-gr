@@ -1941,6 +1941,7 @@
     "hintWeight": "In chilogrammi",
     "errorWeight": "Peso non valido (30 a 150 kg)",
     "errorCountry": "Codice paese non valido (es. FR)",
+    "errorEmpty": "Scheda vuota: inserisca almeno l'età, l'altezza o il peso.",
     "fieldSex": "Sesso (opzionale)",
     "sexFemale": "Donna",
     "sexMale": "Uomo",

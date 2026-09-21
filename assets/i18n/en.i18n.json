@@ -1941,6 +1941,7 @@
     "hintWeight": "In kilograms",
     "errorWeight": "Invalid weight (30 to 150 kg)",
     "errorCountry": "Invalid country code (e.g. FR)",
+    "errorEmpty": "Empty profile: enter at least your age, height or weight.",
     "fieldSex": "Sex (optional)",
     "sexFemale": "Female",
     "sexMale": "Male",

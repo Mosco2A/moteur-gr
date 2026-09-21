@@ -65,6 +65,15 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   bool _saving = false;
   bool _morphoConsent = false;
 
+  /// Message « fiche vide » (null = rien a signaler).
+  ///
+  /// Campagne personas 21/09 (MAJEUR-3) : une fiche SANS age, SANS taille et
+  /// SANS poids etait acceptee et persistee EN SILENCE — l'ecran se fermait,
+  /// rien n'etait dit, et ce 0/0/0 alimentait ensuite la faisabilite. Les
+  /// autres saisies invalides, elles, sont deja refusees proprement. La fiche
+  /// vide recoit desormais le meme traitement.
+  String? _emptyError;
+
   @override
   void initState() {
     super.initState();
@@ -114,7 +123,18 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
       countryIso: _countryController.text.trim().toUpperCase(),
     );
 
-    setState(() => _saving = true);
+    // FICHE VIDE : ni age, ni taille, ni poids. Ce n'est pas une fiche, et ce
+    // 0/0/0 fausserait la faisabilite. Meme traitement que les autres saisies
+    // invalides : on refuse, on le DIT, on ne quitte pas l'ecran.
+    if (profile.isEmpty) {
+      setState(() => _emptyError = t.hikerProfile.errorEmpty);
+      return;
+    }
+
+    setState(() {
+      _emptyError = null;
+      _saving = true;
+    });
 
     // Consentement morpho (art. 9) : si la morpho est renseignee, exiger le
     // consentement healthData (finalite morpho). Sinon, on n'enregistre pas.
@@ -179,6 +199,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       icon: Icons.cake_outlined,
                       maxLength: 3,
                       limitMessage: tp.errorAge,
+                      onChanged: (_) => _clearEmptyError(),
                       validator: (v) =>
                           _validateRange(v, kAgeMin, kAgeMax, tp.errorAge),
                     ),
@@ -192,7 +213,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       icon: Icons.height,
                       maxLength: 3,
                       limitMessage: tp.errorHeight,
-                      onChanged: (_) => setState(() {}),
+                      onChanged: (_) => _clearEmptyError(),
                       validator: (v) => _validateRange(
                           v, kHeightMinCm, kHeightMaxCm, tp.errorHeight),
                     ),
@@ -207,7 +228,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       allowDecimal: true,
                       maxLength: 5,
                       limitMessage: tp.errorWeight,
-                      onChanged: (_) => setState(() {}),
+                      onChanged: (_) => _clearEmptyError(),
                       validator: (v) => _validateRange(
                           v, kWeightMinKg, kWeightMaxKg, tp.errorWeight),
                     ),
@@ -255,6 +276,12 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       onChanged: (v) => setState(() => _morphoConsent = v),
                     ),
                     const SizedBox(height: AppTheme.spacingLg),
+                    // Refus « fiche vide », juste au-dessus du bouton : la ou
+                    // l'oeil se trouve au moment ou l'on appuie.
+                    if (_emptyError case final message?) ...[
+                      _FormError(message: message),
+                      const SizedBox(height: AppTheme.spacingSm),
+                    ],
                     AppButton(
                       isLoading: _saving,
                       minHeight: 52,
@@ -276,6 +303,12 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
               ),
             ),
     );
+  }
+
+  /// Efface le refus « fiche vide » des que l'utilisateur saisit quelque chose
+  /// (et relance le calcul d'IMC live, porte par le meme `setState`).
+  void _clearEmptyError() {
+    setState(() => _emptyError = null);
   }
 
   String? _validateRange(String? value, int min, int max, String error) {
@@ -314,6 +347,34 @@ class _PrivacyBanner extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Refus de formulaire, meme registre visuel que l'erreur d'un champ : icone
+/// d'alerte + texte dans la couleur d'erreur du theme.
+class _FormError extends StatelessWidget {
+  const _FormError({required this.message});
+  final String message;
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Row(
+      key: const ValueKey('hiker-profile-empty-error'),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.error_outline, color: colors.error, size: 20),
+        const SizedBox(width: AppTheme.spacingSm),
+        Expanded(
+          child: Text(
+            message,
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: colors.error),
+          ),
+        ),
+      ],
     );
   }
 }

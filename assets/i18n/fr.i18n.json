@@ -1941,6 +1941,7 @@
     "hintWeight": "En kilogrammes",
     "errorWeight": "Poids invalide (30 à 150 kg)",
     "errorCountry": "Code pays invalide (ex. FR)",
+    "errorEmpty": "Fiche vide : renseignez au moins l'âge, la taille ou le poids.",
     "fieldSex": "Sexe (optionnel)",
     "sexFemale": "Femme",
     "sexMale": "Homme",
