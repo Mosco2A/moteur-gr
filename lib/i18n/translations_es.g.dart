@@ -352,9 +352,9 @@ class _Translations$navAlert$es extends Translations$navAlert$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String offTrackBanner({required Object meters}) => 'Te estas alejando del sendero — ${meters} m. Comprueba tu posición.';
-	@override String get offTrackNotifTitle => 'Estas saliendo del sendero';
-	@override String offTrackNotifBody({required Object meters}) => 'Te estas alejando del sendero (${meters} m). Comprueba tu posición.';
+	@override String offTrackBanner({required Object meters}) => 'Te estás alejando del sendero — ${meters} m. Comprueba tu posición.';
+	@override String get offTrackNotifTitle => 'Estás saliendo del sendero';
+	@override String offTrackNotifBody({required Object meters}) => 'Te estás alejando del sendero (${meters} m). Comprueba tu posición.';
 }
 
 // Path: planning
@@ -2114,7 +2114,7 @@ class _Translations$checklist$ui$es extends Translations$checklist$ui$fr {
 	@override String get removeFromShoppingList => 'Quitar de la lista';
 	@override String get help => 'Ayuda';
 	@override String get shoppingListTitle => 'Lista de la compra';
-	@override String get shoppingListEmpty => 'Tu lista de la compra esta vacía. Añade artículos con el botón del carrito.';
+	@override String get shoppingListEmpty => 'Tu lista de la compra está vacía. Añade artículos con el botón del carrito.';
 	@override String get shoppingToBuy => 'Por comprar';
 	@override String get shoppingPurchased => 'Ya comprado';
 	@override String get share => 'COMPARTIR';
@@ -2127,7 +2127,7 @@ class _Translations$checklist$ui$es extends Translations$checklist$ui$fr {
 	@override String get infoGaugeBody => 'Objetivo: mochila < 15% de tu peso. Verde = OK, Naranja = cuidado, Rojo = demasiado pesado.';
 	@override String get infoAddTitle => 'Añadir';
 	@override String get infoAddBody => 'El botón + al final de cada categoría para tus propios artículos.';
-	@override String get infoValidateBody => 'Valida cuando tu mochila este lista — aparecerá una marca en el inicio.';
+	@override String get infoValidateBody => 'Valida cuando tu mochila esté lista — aparecerá una marca en el inicio.';
 	@override String get infoUnderstood => 'Entendido!';
 	@override String get prepTitle => 'Preparación de la mochila';
 	@override String get prepCounter => '{prepared} / {total} artículos preparados';
@@ -2137,7 +2137,7 @@ class _Translations$checklist$ui$es extends Translations$checklist$ui$fr {
 	@override String get preDep1 => 'Comprobar el tiempo de los próximos días';
 	@override String get preDep2 => 'Cargar teléfono + batería externa';
 	@override String get preDep3 => 'Avisar a un allegado de tu itinerario';
-	@override String get preDep4 => 'Comprobar que la mochila este bien cerrada y estanca';
+	@override String get preDep4 => 'Comprobar que la mochila esté bien cerrada y estanca';
 	@override String get preDep5 => 'Llenar las cantimploras (mínimo 2L)';
 	@override String get preDep6 => 'Aplicar crema solar y antirozaduras';
 	@override String get preDep7 => 'Comprobar los cordones y el ajuste de las botas';
@@ -2149,7 +2149,7 @@ class _Translations$checklist$ui$es extends Translations$checklist$ui$fr {
 	@override String get shareGroup => 'COMPARTIR CON EL GRUPO';
 	@override String get exportList => 'EXPORTAR LA LISTA';
 	@override String get bagValidTitle => 'Mochila validada';
-	@override String get bagValidBody => 'Los {total} artículos obligatorios estan en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila esta lista?';
+	@override String get bagValidBody => 'Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila está lista?';
 	@override String get checkAgain => 'Comprobar de nuevo';
 	@override String get yesBagOk => 'Si, mochila OK';
 	@override String get bagValidatedSnack => 'Mochila validada!';
@@ -3958,9 +3958,9 @@ extension on TranslationsEs {
 			'gps.disabled' => 'Servicio de ubicación desactivado',
 			'gps.offTrack' => 'Fuera del sendero',
 			'gps.centerOnMe' => 'Centrar en mi posición',
-			'navAlert.offTrackBanner' => ({required Object meters}) => 'Te estas alejando del sendero — ${meters} m. Comprueba tu posición.',
-			'navAlert.offTrackNotifTitle' => 'Estas saliendo del sendero',
-			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Te estas alejando del sendero (${meters} m). Comprueba tu posición.',
+			'navAlert.offTrackBanner' => ({required Object meters}) => 'Te estás alejando del sendero — ${meters} m. Comprueba tu posición.',
+			'navAlert.offTrackNotifTitle' => 'Estás saliendo del sendero',
+			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Te estás alejando del sendero (${meters} m). Comprueba tu posición.',
 			'planning.title' => 'Planificación',
 			'planning.duration' => 'Duración',
 			'planning.days' => 'días',
@@ -4171,7 +4171,7 @@ extension on TranslationsEs {
 			'checklist.ui.removeFromShoppingList' => 'Quitar de la lista',
 			'checklist.ui.help' => 'Ayuda',
 			'checklist.ui.shoppingListTitle' => 'Lista de la compra',
-			'checklist.ui.shoppingListEmpty' => 'Tu lista de la compra esta vacía. Añade artículos con el botón del carrito.',
+			'checklist.ui.shoppingListEmpty' => 'Tu lista de la compra está vacía. Añade artículos con el botón del carrito.',
 			'checklist.ui.shoppingToBuy' => 'Por comprar',
 			'checklist.ui.shoppingPurchased' => 'Ya comprado',
 			'checklist.ui.share' => 'COMPARTIR',
@@ -4184,7 +4184,7 @@ extension on TranslationsEs {
 			'checklist.ui.infoGaugeBody' => 'Objetivo: mochila < 15% de tu peso. Verde = OK, Naranja = cuidado, Rojo = demasiado pesado.',
 			'checklist.ui.infoAddTitle' => 'Añadir',
 			'checklist.ui.infoAddBody' => 'El botón + al final de cada categoría para tus propios artículos.',
-			'checklist.ui.infoValidateBody' => 'Valida cuando tu mochila este lista — aparecerá una marca en el inicio.',
+			'checklist.ui.infoValidateBody' => 'Valida cuando tu mochila esté lista — aparecerá una marca en el inicio.',
 			'checklist.ui.infoUnderstood' => 'Entendido!',
 			'checklist.ui.prepTitle' => 'Preparación de la mochila',
 			'checklist.ui.prepCounter' => '{prepared} / {total} artículos preparados',
@@ -4194,7 +4194,7 @@ extension on TranslationsEs {
 			'checklist.ui.preDep1' => 'Comprobar el tiempo de los próximos días',
 			'checklist.ui.preDep2' => 'Cargar teléfono + batería externa',
 			'checklist.ui.preDep3' => 'Avisar a un allegado de tu itinerario',
-			'checklist.ui.preDep4' => 'Comprobar que la mochila este bien cerrada y estanca',
+			'checklist.ui.preDep4' => 'Comprobar que la mochila esté bien cerrada y estanca',
 			'checklist.ui.preDep5' => 'Llenar las cantimploras (mínimo 2L)',
 			'checklist.ui.preDep6' => 'Aplicar crema solar y antirozaduras',
 			'checklist.ui.preDep7' => 'Comprobar los cordones y el ajuste de las botas',
@@ -4206,7 +4206,7 @@ extension on TranslationsEs {
 			'checklist.ui.shareGroup' => 'COMPARTIR CON EL GRUPO',
 			'checklist.ui.exportList' => 'EXPORTAR LA LISTA',
 			'checklist.ui.bagValidTitle' => 'Mochila validada',
-			'checklist.ui.bagValidBody' => 'Los {total} artículos obligatorios estan en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila esta lista?',
+			'checklist.ui.bagValidBody' => 'Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila está lista?',
 			'checklist.ui.checkAgain' => 'Comprobar de nuevo',
 			'checklist.ui.yesBagOk' => 'Si, mochila OK',
 			'checklist.ui.bagValidatedSnack' => 'Mochila validada!',

@@ -263,9 +263,9 @@
     "centerOnMe": "Centrar en mi posición"
   },
   "navAlert": {
-    "offTrackBanner": "Te estas alejando del sendero — $meters m. Comprueba tu posición.",
-    "offTrackNotifTitle": "Estas saliendo del sendero",
-    "offTrackNotifBody": "Te estas alejando del sendero ($meters m). Comprueba tu posición."
+    "offTrackBanner": "Te estás alejando del sendero — $meters m. Comprueba tu posición.",
+    "offTrackNotifTitle": "Estás saliendo del sendero",
+    "offTrackNotifBody": "Te estás alejando del sendero ($meters m). Comprueba tu posición."
   },
   "planning": {
     "title": "Planificación",
@@ -493,7 +493,7 @@
       "removeFromShoppingList": "Quitar de la lista",
       "help": "Ayuda",
       "shoppingListTitle": "Lista de la compra",
-      "shoppingListEmpty": "Tu lista de la compra esta vacía. Añade artículos con el botón del carrito.",
+      "shoppingListEmpty": "Tu lista de la compra está vacía. Añade artículos con el botón del carrito.",
       "shoppingToBuy": "Por comprar",
       "shoppingPurchased": "Ya comprado",
       "share": "COMPARTIR",
@@ -506,7 +506,7 @@
       "infoGaugeBody": "Objetivo: mochila < 15% de tu peso. Verde = OK, Naranja = cuidado, Rojo = demasiado pesado.",
       "infoAddTitle": "Añadir",
       "infoAddBody": "El botón + al final de cada categoría para tus propios artículos.",
-      "infoValidateBody": "Valida cuando tu mochila este lista — aparecerá una marca en el inicio.",
+      "infoValidateBody": "Valida cuando tu mochila esté lista — aparecerá una marca en el inicio.",
       "infoUnderstood": "Entendido!",
       "prepTitle": "Preparación de la mochila",
       "prepCounter": "{prepared} / {total} artículos preparados",
@@ -516,7 +516,7 @@
       "preDep1": "Comprobar el tiempo de los próximos días",
       "preDep2": "Cargar teléfono + batería externa",
       "preDep3": "Avisar a un allegado de tu itinerario",
-      "preDep4": "Comprobar que la mochila este bien cerrada y estanca",
+      "preDep4": "Comprobar que la mochila esté bien cerrada y estanca",
       "preDep5": "Llenar las cantimploras (mínimo 2L)",
       "preDep6": "Aplicar crema solar y antirozaduras",
       "preDep7": "Comprobar los cordones y el ajuste de las botas",
@@ -528,7 +528,7 @@
       "shareGroup": "COMPARTIR CON EL GRUPO",
       "exportList": "EXPORTAR LA LISTA",
       "bagValidTitle": "Mochila validada",
-      "bagValidBody": "Los {total} artículos obligatorios estan en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila esta lista?",
+      "bagValidBody": "Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila está lista?",
       "checkAgain": "Comprobar de nuevo",
       "yesBagOk": "Si, mochila OK",
       "bagValidatedSnack": "Mochila validada!",
