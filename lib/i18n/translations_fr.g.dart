@@ -4199,20 +4199,20 @@ class Translations$checklist$weight$fr {
 	/// fr: 'kg'
 	String get kilograms => 'kg';
 
-	/// fr: 'Sac ultra-leger — ideal pour le trek'
-	String get adviceUltraLight => 'Sac ultra-leger — ideal pour le trek';
+	/// fr: 'Sac ultra-léger — idéal pour le trek'
+	String get adviceUltraLight => 'Sac ultra-léger — idéal pour le trek';
 
-	/// fr: 'Sac bien equilibre'
-	String get adviceOk => 'Sac bien equilibre';
+	/// fr: 'Sac bien équilibré'
+	String get adviceOk => 'Sac bien équilibré';
 
-	/// fr: 'Correct mais lourd — envisagez d'alleger'
-	String get adviceHeavy => 'Correct mais lourd — envisagez d\'alleger';
+	/// fr: 'Correct mais lourd — envisagez d'alléger'
+	String get adviceHeavy => 'Correct mais lourd — envisagez d\'alléger';
 
-	/// fr: 'Attention genoux ! Allegez le sac'
-	String get adviceTooHeavy => 'Attention genoux ! Allegez le sac';
+	/// fr: 'Attention genoux ! Allégez le sac'
+	String get adviceTooHeavy => 'Attention genoux ! Allégez le sac';
 
-	/// fr: 'Danger blessure — allegez absolument !'
-	String get adviceDanger => 'Danger blessure — allegez absolument !';
+	/// fr: 'Danger blessure — allégez absolument !'
+	String get adviceDanger => 'Danger blessure — allégez absolument !';
 
 	/// fr: 'Poids de l'article'
 	String get itemWeight => 'Poids de l\'article';
@@ -4223,11 +4223,11 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Enregistrer'
 	String get save => 'Enregistrer';
 
-	/// fr: 'Ultra-leger, parfait !'
-	String get gaugeUltraLight => 'Ultra-leger, parfait !';
+	/// fr: 'Ultra-léger, parfait !'
+	String get gaugeUltraLight => 'Ultra-léger, parfait !';
 
-	/// fr: 'Bien, sac equilibre'
-	String get gaugeOk => 'Bien, sac equilibre';
+	/// fr: 'Bien, sac équilibré'
+	String get gaugeOk => 'Bien, sac équilibré';
 
 	/// fr: 'Correct mais lourd'
 	String get gaugeHeavy => 'Correct mais lourd';
@@ -4244,8 +4244,8 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Objectif max : < 15% en refuge, < 20% en autonomie'
 	String get gaugeObjective => 'Objectif max : < 15% en refuge, < 20% en autonomie';
 
-	/// fr: '{checked} / {total} articles coches'
-	String get itemsChecked => '{checked} / {total} articles coches';
+	/// fr: '{checked} / {total} articles cochés'
+	String get itemsChecked => '{checked} / {total} articles cochés';
 }
 
 // Path: checklist.ui
@@ -4298,8 +4298,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Supprimer cet article ?'
 	String get deleteItemTitle => 'Supprimer cet article ?';
 
-	/// fr: 'L'article "{name}" sera definitivement supprime.'
-	String get deleteItemBody => 'L\'article "{name}" sera definitivement supprime.';
+	/// fr: 'L'article "{name}" sera définitivement supprimé.'
+	String get deleteItemBody => 'L\'article "{name}" sera définitivement supprimé.';
 
 	/// fr: 'Équipement obligatoire'
 	String get requiredWarnTitle => 'Équipement obligatoire';
@@ -4310,17 +4310,17 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Garder'
 	String get keep => 'Garder';
 
-	/// fr: 'Retirer quand meme'
-	String get removeAnyway => 'Retirer quand meme';
+	/// fr: 'Retirer quand même'
+	String get removeAnyway => 'Retirer quand même';
 
-	/// fr: 'Reduire quantite'
-	String get reduceQuantity => 'Reduire quantite';
+	/// fr: 'Réduire quantité'
+	String get reduceQuantity => 'Réduire quantité';
 
-	/// fr: 'Augmenter quantite'
-	String get increaseQuantity => 'Augmenter quantite';
+	/// fr: 'Augmenter quantité'
+	String get increaseQuantity => 'Augmenter quantité';
 
-	/// fr: 'Ajouter a la liste de courses'
-	String get addToShoppingList => 'Ajouter a la liste de courses';
+	/// fr: 'Ajouter à la liste de courses'
+	String get addToShoppingList => 'Ajouter à la liste de courses';
 
 	/// fr: 'Retirer de la liste'
 	String get removeFromShoppingList => 'Retirer de la liste';
@@ -4334,8 +4334,8 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.'
 	String get shoppingListEmpty => 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.';
 
-	/// fr: 'A acheter'
-	String get shoppingToBuy => 'A acheter';
+	/// fr: 'À acheter'
+	String get shoppingToBuy => 'À acheter';
 
 	/// fr: 'Déjà acheté'
 	String get shoppingPurchased => 'Déjà acheté';
@@ -4367,11 +4367,11 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Ajouter'
 	String get infoAddTitle => 'Ajouter';
 
-	/// fr: 'Bouton + en bas de chaque categorie pour vos propres items.'
-	String get infoAddBody => 'Bouton + en bas de chaque categorie pour vos propres items.';
+	/// fr: 'Bouton + en bas de chaque catégorie pour vos propres items.'
+	String get infoAddBody => 'Bouton + en bas de chaque catégorie pour vos propres items.';
 
-	/// fr: 'Validez quand votre sac est pret — un check apparaitra sur l'accueil.'
-	String get infoValidateBody => 'Validez quand votre sac est pret — un check apparaitra sur l\'accueil.';
+	/// fr: 'Validez quand votre sac est prêt — un check apparaîtra sur l'accueil.'
+	String get infoValidateBody => 'Validez quand votre sac est prêt — un check apparaîtra sur l\'accueil.';
 
 	/// fr: 'Compris !'
 	String get infoUnderstood => 'Compris !';
@@ -4379,17 +4379,17 @@ class Translations$checklist$ui$fr {
 	/// fr: 'Préparation du sac'
 	String get prepTitle => 'Préparation du sac';
 
-	/// fr: '{prepared} / {total} items prepares'
-	String get prepCounter => '{prepared} / {total} items prepares';
+	/// fr: '{prepared} / {total} items préparés'
+	String get prepCounter => '{prepared} / {total} items préparés';
 
-	/// fr: 'Tout est pret ! Bon trek'
-	String get prepAllReady => 'Tout est pret ! Bon trek';
+	/// fr: 'Tout est prêt ! Bon trek'
+	String get prepAllReady => 'Tout est prêt ! Bon trek';
 
-	/// fr: 'Checklist avant depart'
-	String get preDepartureTitle => 'Checklist avant depart';
+	/// fr: 'Checklist avant départ'
+	String get preDepartureTitle => 'Checklist avant départ';
 
-	/// fr: '{checked}/{total} verifies'
-	String get preDepartureCounter => '{checked}/{total} verifies';
+	/// fr: '{checked}/{total} vérifiés'
+	String get preDepartureCounter => '{checked}/{total} vérifiés';
 
 	/// fr: 'Vérifier la météo des prochains jours'
 	String get preDep1 => 'Vérifier la météo des prochains jours';
@@ -7376,22 +7376,22 @@ extension on Translations {
 			'checklist.weight.edit' => 'Modifier le poids',
 			'checklist.weight.grams' => 'g',
 			'checklist.weight.kilograms' => 'kg',
-			'checklist.weight.adviceUltraLight' => 'Sac ultra-leger — ideal pour le trek',
-			'checklist.weight.adviceOk' => 'Sac bien equilibre',
-			'checklist.weight.adviceHeavy' => 'Correct mais lourd — envisagez d\'alleger',
-			'checklist.weight.adviceTooHeavy' => 'Attention genoux ! Allegez le sac',
-			'checklist.weight.adviceDanger' => 'Danger blessure — allegez absolument !',
+			'checklist.weight.adviceUltraLight' => 'Sac ultra-léger — idéal pour le trek',
+			'checklist.weight.adviceOk' => 'Sac bien équilibré',
+			'checklist.weight.adviceHeavy' => 'Correct mais lourd — envisagez d\'alléger',
+			'checklist.weight.adviceTooHeavy' => 'Attention genoux ! Allégez le sac',
+			'checklist.weight.adviceDanger' => 'Danger blessure — allégez absolument !',
 			'checklist.weight.itemWeight' => 'Poids de l\'article',
 			'checklist.weight.cancel' => 'Annuler',
 			'checklist.weight.save' => 'Enregistrer',
-			'checklist.weight.gaugeUltraLight' => 'Ultra-leger, parfait !',
-			'checklist.weight.gaugeOk' => 'Bien, sac equilibre',
+			'checklist.weight.gaugeUltraLight' => 'Ultra-léger, parfait !',
+			'checklist.weight.gaugeOk' => 'Bien, sac équilibré',
 			'checklist.weight.gaugeHeavy' => 'Correct mais lourd',
 			'checklist.weight.gaugeWarn' => 'Attention genoux !',
 			'checklist.weight.gaugeDanger' => 'Danger blessure !',
 			'checklist.weight.percentOfWeight' => '{pct}% du poids',
 			'checklist.weight.gaugeObjective' => 'Objectif max : < 15% en refuge, < 20% en autonomie',
-			'checklist.weight.itemsChecked' => '{checked} / {total} articles coches',
+			'checklist.weight.itemsChecked' => '{checked} / {total} articles cochés',
 			'checklist.ui.title' => 'Matériel & Sac',
 			'checklist.ui.requirementRequired' => 'Obligatoire',
 			'checklist.ui.addItem' => 'Ajouter un item',
@@ -7406,19 +7406,19 @@ extension on Translations {
 			'checklist.ui.modify' => 'Modifier',
 			'checklist.ui.delete' => 'Supprimer',
 			'checklist.ui.deleteItemTitle' => 'Supprimer cet article ?',
-			'checklist.ui.deleteItemBody' => 'L\'article "{name}" sera definitivement supprime.',
+			'checklist.ui.deleteItemBody' => 'L\'article "{name}" sera définitivement supprimé.',
 			'checklist.ui.requiredWarnTitle' => 'Équipement obligatoire',
 			'checklist.ui.requiredWarnBody' => 'Cet équipement est obligatoire pour la sécurité (inspiré réglementation UTMB). Voulez-vous vraiment le retirer ?',
 			'checklist.ui.keep' => 'Garder',
-			'checklist.ui.removeAnyway' => 'Retirer quand meme',
-			'checklist.ui.reduceQuantity' => 'Reduire quantite',
-			'checklist.ui.increaseQuantity' => 'Augmenter quantite',
-			'checklist.ui.addToShoppingList' => 'Ajouter a la liste de courses',
+			'checklist.ui.removeAnyway' => 'Retirer quand même',
+			'checklist.ui.reduceQuantity' => 'Réduire quantité',
+			'checklist.ui.increaseQuantity' => 'Augmenter quantité',
+			'checklist.ui.addToShoppingList' => 'Ajouter à la liste de courses',
 			'checklist.ui.removeFromShoppingList' => 'Retirer de la liste',
 			'checklist.ui.help' => 'Aide',
 			'checklist.ui.shoppingListTitle' => 'Liste de courses',
 			'checklist.ui.shoppingListEmpty' => 'Votre liste de courses est vide. Ajoutez des items avec le bouton panier.',
-			'checklist.ui.shoppingToBuy' => 'A acheter',
+			'checklist.ui.shoppingToBuy' => 'À acheter',
 			'checklist.ui.shoppingPurchased' => 'Déjà acheté',
 			'checklist.ui.share' => 'PARTAGER',
 			'checklist.ui.infoTitle' => 'Matériel & Sac',
@@ -7429,14 +7429,14 @@ extension on Translations {
 			'checklist.ui.infoGaugeTitle' => 'Jauge poids',
 			'checklist.ui.infoGaugeBody' => 'Objectif : sac < 15% de votre poids. Vert = OK, Orange = attention, Rouge = trop lourd.',
 			'checklist.ui.infoAddTitle' => 'Ajouter',
-			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque categorie pour vos propres items.',
-			'checklist.ui.infoValidateBody' => 'Validez quand votre sac est pret — un check apparaitra sur l\'accueil.',
+			'checklist.ui.infoAddBody' => 'Bouton + en bas de chaque catégorie pour vos propres items.',
+			'checklist.ui.infoValidateBody' => 'Validez quand votre sac est prêt — un check apparaîtra sur l\'accueil.',
 			'checklist.ui.infoUnderstood' => 'Compris !',
 			'checklist.ui.prepTitle' => 'Préparation du sac',
-			'checklist.ui.prepCounter' => '{prepared} / {total} items prepares',
-			'checklist.ui.prepAllReady' => 'Tout est pret ! Bon trek',
-			'checklist.ui.preDepartureTitle' => 'Checklist avant depart',
-			'checklist.ui.preDepartureCounter' => '{checked}/{total} verifies',
+			'checklist.ui.prepCounter' => '{prepared} / {total} items préparés',
+			'checklist.ui.prepAllReady' => 'Tout est prêt ! Bon trek',
+			'checklist.ui.preDepartureTitle' => 'Checklist avant départ',
+			'checklist.ui.preDepartureCounter' => '{checked}/{total} vérifiés',
 			'checklist.ui.preDep1' => 'Vérifier la météo des prochains jours',
 			'checklist.ui.preDep2' => 'Charger telephone + batterie externe',
 			'checklist.ui.preDep3' => 'Prévenir un proche de votre itinéraire',
