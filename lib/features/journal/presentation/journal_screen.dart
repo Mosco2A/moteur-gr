@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/map/test_inert_tile_provider.dart';
 import '../../../core/theme/app_theme.dart';
@@ -528,6 +529,53 @@ class _DayNavigator extends ConsumerWidget {
 /// Valeur de PARITE GR20 (`trek_journal_screen.dart`).
 const double _entryPhotoHeight = 120;
 
+/// Texte partage pour une entree de journal (CORRECTIF L4-4).
+///
+/// Fonction PURE, donc testable sans toucher a la feuille de partage du
+/// systeme : date lisible, etape, puis la note. Une entree photo sans
+/// texte donne un en-tete seul — jamais une chaine vide, qui ferait
+/// apparaitre un partage muet.
+String journalShareText(JournalEntryModel entry, Translations$journal$fr journalT) {
+  final dateFormat = DateFormat(
+    'EEEE d MMMM yyyy',
+    LocaleSettings.currentLocale.languageCode,
+  );
+  final header = [
+    dateFormat.format(entry.createdAt),
+    [journalT.stage, entry.stageNumber.toString()].join(' '),
+  ].join(' — ');
+  if (entry.text.trim().isEmpty) return header;
+  return [header, entry.text.trim()].join('\n\n');
+}
+
+/// Ouvre la feuille de partage du systeme pour une entree de journal.
+///
+/// La photo part AVEC le texte quand elle existe vraiment sur le disque :
+/// une entree dont le fichier a disparu se partage en texte seul plutot
+/// que d'echouer. share_plus est deja en production ailleurs dans l'app
+/// (carte de partage, resume de plan) — aucune dependance ajoutee.
+Future<void> _shareEntry(
+  JournalEntryModel entry,
+  Translations$journal$fr journalT,
+  ScaffoldMessengerState messenger,
+) async {
+  final text = journalShareText(entry, journalT);
+  try {
+    final path = entry.photoPath;
+    if (path != null && File(path).existsSync()) {
+      await Share.shareXFiles(
+        [XFile(path)],
+        text: text,
+        subject: journalT.shareSubject,
+      );
+      return;
+    }
+    await Share.share(text, subject: journalT.shareSubject);
+  } catch (_) {
+    messenger.showSnackBar(SnackBar(content: Text(journalT.shareError)));
+  }
+}
+
 /// Tuile d une entree de journal (note ou photo).
 ///
 /// Affiche l heure, l etape, le contenu, et la photo si presente.
@@ -573,9 +621,30 @@ class _JournalEntryTile extends ConsumerWidget {
                     ref
                         .read(journalScreenProvider.notifier)
                         .deleteEntry(entry.id);
+                    return;
+                  }
+                  if (value == 'share') {
+                    // CORRECTIF L4-4 : le messenger est capture AVANT tout
+                    // await — la feuille de partage ferme le menu, son
+                    // `context` ne peut plus servir a afficher l'erreur.
+                    _shareEntry(
+                      entry,
+                      journalT,
+                      ScaffoldMessenger.of(context),
+                    );
                   }
                 },
                 itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'share',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.share_outlined, size: 20),
+                        const SizedBox(width: 8),
+                        Text(journalT.share),
+                      ],
+                    ),
+                  ),
                   PopupMenuItem(
                     value: 'delete',
                     child: Row(
