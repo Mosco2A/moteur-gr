@@ -1205,7 +1205,7 @@ class _Translations$consent$de extends Translations$consent$fr {
 	@override String get privacyPolicyLink => 'Datenschutzerklärung lesen';
 	@override String get reviewNeeded => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.';
 	@override late final _Translations$consent$a11y$de a11y = _Translations$consent$a11y$de._(_root);
-	@override String get healthDataMorphoNote => 'Umfasst Ihre Körperdaten (Alter, Grosse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.';
+	@override String get healthDataMorphoNote => 'Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.';
 }
 
 // Path: moderation
@@ -1563,9 +1563,9 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get fieldAge => 'Alter';
 	@override String get hintAge => 'In Jahren';
 	@override String get errorAge => 'Ungültiges Alter (8 bis 100 Jahre)';
-	@override String get fieldHeight => 'Grosse';
+	@override String get fieldHeight => 'Grösse';
 	@override String get hintHeight => 'In Zentimetern';
-	@override String get errorHeight => 'Ungültige Grosse (100 bis 250 cm)';
+	@override String get errorHeight => 'Ungültige Grösse (100 bis 250 cm)';
 	@override String get fieldWeight => 'Gewicht';
 	@override String get hintWeight => 'In Kilogramm';
 	@override String get errorWeight => 'Ungültiges Gewicht (30 bis 150 kg)';
@@ -1579,7 +1579,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get bmiLabel => 'BMI';
 	@override late final _Translations$hikerProfile$bmiCategories$de bmiCategories = _Translations$hikerProfile$bmiCategories$de._(_root);
 	@override String get consentTitle => 'Körperdaten (DSGVO Artikel 9)';
-	@override String get consentBody => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
+	@override String get consentBody => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
 	@override String get consentToggle => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit';
 	@override String get save => 'Speichern';
 	@override String get saved => 'Angaben gespeichert';
@@ -4903,7 +4903,7 @@ extension on TranslationsDe {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}',
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
 			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
-			'consent.healthDataMorphoNote' => 'Umfasst Ihre Körperdaten (Alter, Grosse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.',
+			'consent.healthDataMorphoNote' => 'Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.',
 			'moderation.reportTitle' => 'Diesen Inhalt melden',
 			'moderation.reportIntro' => 'Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.',
 			'moderation.reasonLabel' => 'Grund der Meldung',
@@ -5300,9 +5300,9 @@ extension on TranslationsDe {
 			'hikerProfile.fieldAge' => 'Alter',
 			'hikerProfile.hintAge' => 'In Jahren',
 			'hikerProfile.errorAge' => 'Ungültiges Alter (8 bis 100 Jahre)',
-			'hikerProfile.fieldHeight' => 'Grosse',
+			'hikerProfile.fieldHeight' => 'Grösse',
 			'hikerProfile.hintHeight' => 'In Zentimetern',
-			'hikerProfile.errorHeight' => 'Ungültige Grosse (100 bis 250 cm)',
+			'hikerProfile.errorHeight' => 'Ungültige Grösse (100 bis 250 cm)',
 			'hikerProfile.fieldWeight' => 'Gewicht',
 			'hikerProfile.hintWeight' => 'In Kilogramm',
 			'hikerProfile.errorWeight' => 'Ungültiges Gewicht (30 bis 150 kg)',
@@ -5319,7 +5319,7 @@ extension on TranslationsDe {
 			'hikerProfile.bmiCategories.overweight' => 'Übergewicht',
 			'hikerProfile.bmiCategories.obese' => 'Adipositas',
 			'hikerProfile.consentTitle' => 'Körperdaten (DSGVO Artikel 9)',
-			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
+			'hikerProfile.consentBody' => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
 			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit',
 			'hikerProfile.save' => 'Speichern',
 			'hikerProfile.saved' => 'Angaben gespeichert',

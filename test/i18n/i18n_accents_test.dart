@@ -27,10 +27,20 @@ import 'package:flutter_test/flutter_test.dart';
 /// test MOJIBAKE.
 ///
 /// FAUX POSITIFS NOMMES, ET POURQUOI :
-///  - allemand Grosse, Grosser, grosse : le ss a la place de l eszett est
-///    une convention typographique admise (c est la regle en Suisse). Les
-///    corriger serait un CHOIX EDITORIAL et non une mise en conformite.
-///    Arbitrage a rendre par Christophe.
+///  - allemand Grosser, grosse AU SENS DE GRAND (stage.advice.bigClimb,
+///    feasibility.gapTooHigh) et Vergrossern / regelmassige : le ss a la
+///    place de l eszett est une convention typographique admise (c est la
+///    regle en Suisse). Les corriger serait un CHOIX EDITORIAL et non une
+///    mise en conformite. Arbitrage a rendre par Christophe.
+///
+///    ATTENTION, LA DISTINCTION A DEJA COUTE UN TOUR D AUDIT : quatre autres
+///    occurrences de « Grosse » ne relevaient PAS de cet arbitrage. Elles
+///    disaient TAILLE (hikerProfile.fieldHeight, hikerProfile.errorHeight,
+///    hikerProfile.consentBody, consent.healthDataMorphoNote), or taille se
+///    dit Groesse : il y manquait le TREMA, pas l eszett. Un randonneur
+///    allemand lisait « Alter, Grande und Gewicht » dans un ecran de donnees
+///    de sante. Corrigees en « Grösse » (trema + ss) : le trema est mis, la
+///    convention ss est conservee, l arbitrage reste entier.
 ///  - allemand Hohe et Hohes : adjectif (Hohe Prioritaet) et non le nom
 ///    Hoehe. Warme, Starke, Grate, Wahl, Plane, schon, konnte, getauscht,
 ///    Erlasse, Busse : memes homographes legitimes.

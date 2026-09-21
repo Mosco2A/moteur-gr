@@ -1394,7 +1394,7 @@
       "healthSection": "Bereich Gesundheitsdaten, verstärkte Einwilligung",
       "policyButton": "Datenschutzerklärung öffnen"
     },
-    "healthDataMorphoNote": "Umfasst Ihre Körperdaten (Alter, Grosse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten."
+    "healthDataMorphoNote": "Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten."
   },
   "moderation": {
     "reportTitle": "Diesen Inhalt melden",
@@ -1927,9 +1927,9 @@
     "fieldAge": "Alter",
     "hintAge": "In Jahren",
     "errorAge": "Ungültiges Alter (8 bis 100 Jahre)",
-    "fieldHeight": "Grosse",
+    "fieldHeight": "Grösse",
     "hintHeight": "In Zentimetern",
-    "errorHeight": "Ungültige Grosse (100 bis 250 cm)",
+    "errorHeight": "Ungültige Grösse (100 bis 250 cm)",
     "fieldWeight": "Gewicht",
     "hintWeight": "In Kilogramm",
     "errorWeight": "Ungültiges Gewicht (30 bis 150 kg)",
@@ -1948,7 +1948,7 @@
       "obese": "Adipositas"
     },
     "consentTitle": "Körperdaten (DSGVO Artikel 9)",
-    "consentBody": "Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
+    "consentBody": "Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
     "consentToggle": "Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit",
     "save": "Speichern",
     "saved": "Angaben gespeichert",
