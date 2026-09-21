@@ -887,6 +887,60 @@ class Translations$journal$fr {
 
 	/// fr: 'Impossible d'ajouter la photo'
 	String get photoError => 'Impossible d\'ajouter la photo';
+
+	/// fr: 'Jour précédent'
+	String get dayNavPrevious => 'Jour précédent';
+
+	/// fr: 'Jour suivant'
+	String get dayNavNext => 'Jour suivant';
+
+	/// fr: 'Jour $day'
+	String dayOfTrek({required Object day}) => 'Jour ${day}';
+
+	/// fr: '$index / $total'
+	String dayCounter({required Object index, required Object total}) => '${index} / ${total}';
+
+	/// fr: 'Aucune note pour cette journée'
+	String get dayEmpty => 'Aucune note pour cette journée';
+
+	/// fr: 'Notes de la journée'
+	String get entriesOfDay => 'Notes de la journée';
+
+	/// fr: 'Tracé du jour'
+	String get dayTrace => 'Tracé du jour';
+
+	/// fr: 'Aucun tracé GPS enregistré ce jour-là'
+	String get dayTraceEmpty => 'Aucun tracé GPS enregistré ce jour-là';
+
+	/// fr: 'Résumé du jour'
+	String get daySummary => 'Résumé du jour';
+
+	/// fr: 'Depuis le départ'
+	String get sinceStart => 'Depuis le départ';
+
+	/// fr: 'Distance'
+	String get distance => 'Distance';
+
+	/// fr: 'Dénivelé positif'
+	String get elevationGain => 'Dénivelé positif';
+
+	/// fr: 'Dénivelé négatif'
+	String get elevationLoss => 'Dénivelé négatif';
+
+	/// fr: 'Durée'
+	String get duration => 'Durée';
+
+	/// fr: 'Altitude maximale'
+	String get maxAltitude => 'Altitude maximale';
+
+	/// fr: 'Partager'
+	String get share => 'Partager';
+
+	/// fr: 'Mon carnet de randonnée'
+	String get shareSubject => 'Mon carnet de randonnée';
+
+	/// fr: 'Partage impossible'
+	String get shareError => 'Partage impossible';
 }
 
 // Path: weather
@@ -7490,6 +7544,26 @@ extension on Translations {
 			'journal.gallery' => 'Galerie',
 			'journal.removePhoto' => 'Retirer la photo',
 			'journal.photoError' => 'Impossible d\'ajouter la photo',
+			'journal.dayNavPrevious' => 'Jour précédent',
+			'journal.dayNavNext' => 'Jour suivant',
+			'journal.dayOfTrek' => ({required Object day}) => 'Jour ${day}',
+			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
+			'journal.dayEmpty' => 'Aucune note pour cette journée',
+			'journal.entriesOfDay' => 'Notes de la journée',
+			'journal.dayTrace' => 'Tracé du jour',
+			_ => null,
+		} ?? switch (path) {
+			'journal.dayTraceEmpty' => 'Aucun tracé GPS enregistré ce jour-là',
+			'journal.daySummary' => 'Résumé du jour',
+			'journal.sinceStart' => 'Depuis le départ',
+			'journal.distance' => 'Distance',
+			'journal.elevationGain' => 'Dénivelé positif',
+			'journal.elevationLoss' => 'Dénivelé négatif',
+			'journal.duration' => 'Durée',
+			'journal.maxAltitude' => 'Altitude maximale',
+			'journal.share' => 'Partager',
+			'journal.shareSubject' => 'Mon carnet de randonnée',
+			'journal.shareError' => 'Partage impossible',
 			'weather.title' => 'Météo',
 			'weather.loading' => 'Chargement de la météo...',
 			'weather.offline' => 'Pas de connexion. Données météo indisponibles.',
@@ -7497,8 +7571,6 @@ extension on Translations {
 			'weather.cached' => 'Données en cache',
 			'weather.alerts' => 'alertes météo',
 			'weather.refresh' => 'Actualiser',
-			_ => null,
-		} ?? switch (path) {
 			'weather.temperature' => 'Température',
 			'weather.precipitation' => 'Précipitations',
 			'weather.wind' => 'Vent',
@@ -7993,6 +8065,8 @@ extension on Translations {
 			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
 			'packs.delete.cancel' => 'Annuler',
 			'packs.delete.confirm' => 'Supprimer',
+			_ => null,
+		} ?? switch (path) {
 			'packs.delete.freed' => 'Espace libéré.',
 			'packs.empty' => 'Aucun pack disponible pour ce sentier.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
@@ -8011,8 +8085,6 @@ extension on Translations {
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
 			'guides.empty' => 'Aucun guide disponible pour ce sentier.',
 			'guides.noItems' => 'Aucune information dans cette section pour le moment.',
-			_ => null,
-		} ?? switch (path) {
 			'guides.facilitatorNote' => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.',
 			'guides.openSite' => 'Voir le site',
 			'guides.cannotOpen' => 'Impossible d\'ouvrir ce lien sur cet appareil.',
@@ -8507,6 +8579,8 @@ extension on Translations {
 			'walkTest.title' => 'Test de marche 6 minutes',
 			'walkTest.intro' => 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre âge et sexe.',
 			'walkTest.safetyWarning' => 'Effort à éviter en cas de souci cardiaque non vérifié. Arrêtez-vous en cas de gêne.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.start' => 'Démarrer le test',
 			'walkTest.stop' => 'Arrêter',
 			'walkTest.cancel' => 'Annuler',
@@ -8525,8 +8599,6 @@ extension on Translations {
 			'walkTest.monthlyReminderOn' => 'Rappel mensuel activé',
 			'walkTest.monthlyReminderBody' => 'Un rappel de test vous sera proposé chaque mois pour suivre votre forme.',
 			'walkTest.notDoneYet' => 'Test non réalisé',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.fallbackNotice' => 'En attendant le test, votre niveau est estimé à partir de votre questionnaire.',
 			'walkTest.levels.low' => 'Faible',
 			'walkTest.levels.moderate' => 'Moyen',

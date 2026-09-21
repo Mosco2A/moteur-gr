@@ -478,6 +478,24 @@ class _Translations$journal$es extends Translations$journal$fr {
 	@override String get gallery => 'Galería';
 	@override String get removePhoto => 'Quitar la foto';
 	@override String get photoError => 'No se ha podido añadir la foto';
+	@override String get dayNavPrevious => 'Día anterior';
+	@override String get dayNavNext => 'Día siguiente';
+	@override String dayOfTrek({required Object day}) => 'Día ${day}';
+	@override String dayCounter({required Object index, required Object total}) => '${index} / ${total}';
+	@override String get dayEmpty => 'Ninguna nota para este día';
+	@override String get entriesOfDay => 'Notas del día';
+	@override String get dayTrace => 'Traza del día';
+	@override String get dayTraceEmpty => 'No se registró ninguna traza GPS ese día';
+	@override String get daySummary => 'Resumen del día';
+	@override String get sinceStart => 'Desde el inicio';
+	@override String get distance => 'Distancia';
+	@override String get elevationGain => 'Desnivel positivo';
+	@override String get elevationLoss => 'Desnivel negativo';
+	@override String get duration => 'Duración';
+	@override String get maxAltitude => 'Altitud máxima';
+	@override String get share => 'Compartir';
+	@override String get shareSubject => 'Mi diario de senderismo';
+	@override String get shareError => 'No se ha podido compartir';
 }
 
 // Path: weather
@@ -4207,6 +4225,26 @@ extension on TranslationsEs {
 			'journal.gallery' => 'Galería',
 			'journal.removePhoto' => 'Quitar la foto',
 			'journal.photoError' => 'No se ha podido añadir la foto',
+			'journal.dayNavPrevious' => 'Día anterior',
+			'journal.dayNavNext' => 'Día siguiente',
+			'journal.dayOfTrek' => ({required Object day}) => 'Día ${day}',
+			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
+			'journal.dayEmpty' => 'Ninguna nota para este día',
+			'journal.entriesOfDay' => 'Notas del día',
+			'journal.dayTrace' => 'Traza del día',
+			_ => null,
+		} ?? switch (path) {
+			'journal.dayTraceEmpty' => 'No se registró ninguna traza GPS ese día',
+			'journal.daySummary' => 'Resumen del día',
+			'journal.sinceStart' => 'Desde el inicio',
+			'journal.distance' => 'Distancia',
+			'journal.elevationGain' => 'Desnivel positivo',
+			'journal.elevationLoss' => 'Desnivel negativo',
+			'journal.duration' => 'Duración',
+			'journal.maxAltitude' => 'Altitud máxima',
+			'journal.share' => 'Compartir',
+			'journal.shareSubject' => 'Mi diario de senderismo',
+			'journal.shareError' => 'No se ha podido compartir',
 			'weather.title' => 'Meteorología',
 			'weather.loading' => 'Cargando meteorología...',
 			'weather.offline' => 'Sin conexión. Datos meteorológicos no disponibles.',
@@ -4214,8 +4252,6 @@ extension on TranslationsEs {
 			'weather.cached' => 'Datos en caché',
 			'weather.alerts' => 'alertas meteorológicas',
 			'weather.refresh' => 'Actualizar',
-			_ => null,
-		} ?? switch (path) {
 			'weather.temperature' => 'Temperatura',
 			'weather.precipitation' => 'Precipitación',
 			'weather.wind' => 'Viento',
@@ -4710,6 +4746,8 @@ extension on TranslationsEs {
 			'packs.delete.confirmBody' => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.',
 			'packs.delete.cancel' => 'Cancelar',
 			'packs.delete.confirm' => 'Eliminar',
+			_ => null,
+		} ?? switch (path) {
 			'packs.delete.freed' => 'Espacio liberado.',
 			'packs.empty' => 'No hay pack disponible para este sendero.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
@@ -4728,8 +4766,6 @@ extension on TranslationsEs {
 			'guides.sectionsCount' => ({required Object n}) => '${n} secciones prácticas',
 			'guides.empty' => 'No hay guía disponible para este sendero.',
 			'guides.noItems' => 'Aún no hay información en esta sección.',
-			_ => null,
-		} ?? switch (path) {
 			'guides.facilitatorNote' => 'StepWays te orienta hacia los proveedores. La reserva y el pago se hacen en su sitio: nada en la aplicación.',
 			'guides.openSite' => 'Abrir el sitio',
 			'guides.cannotOpen' => 'No se puede abrir este enlace en este dispositivo.',
@@ -5224,6 +5260,8 @@ extension on TranslationsEs {
 			'walkTest.title' => 'Prueba de marcha de 6 minutos',
 			'walkTest.intro' => 'Camina lo más lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.',
 			'walkTest.safetyWarning' => 'Evita este esfuerzo si tienes un problema cardiaco no verificado. Detente si te sientes mal.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.start' => 'Iniciar la prueba',
 			'walkTest.stop' => 'Detener',
 			'walkTest.cancel' => 'Cancelar',
@@ -5242,8 +5280,6 @@ extension on TranslationsEs {
 			'walkTest.monthlyReminderOn' => 'Recordatorio mensual activo',
 			'walkTest.monthlyReminderBody' => 'Cada mes se te propondrá un recordatorio de la prueba para seguir tu forma.',
 			'walkTest.notDoneYet' => 'Prueba no realizada',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.fallbackNotice' => 'Hasta que hagas la prueba, tu nivel se estima a partir del cuestionario.',
 			'walkTest.levels.low' => 'Bajo',
 			'walkTest.levels.moderate' => 'Medio',
