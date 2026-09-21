@@ -1,5 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/data/database.dart';
+import '../../../core/engine/trail_engine.dart';
+import '../../../core/providers/database_provider.dart';
 import '../domain/models/journal_entry.dart';
 import 'journal_providers.dart';
 
@@ -83,4 +86,18 @@ final journalEntriesOfDayProvider = Provider<List<JournalEntryModel>>((ref) {
       .toList()
     ..sort((a, b) => a.createdAt.compareTo(b.createdAt));
   return ofDay;
+});
+
+/// Trace GPS de la journee affichee (correctif L4-2).
+///
+/// Depend du socle L3-1 : avant lui, la table de trace n'etait indexee que
+/// par sentier et etait EFFACEE a chaque nouvelle randonnee — la trace
+/// d'une journee passee n'existait tout simplement plus.
+final journalDayTraceProvider =
+    FutureProvider<List<SessionTrackPoint>>((ref) async {
+  final day = ref.watch(journalSelectedDayProvider);
+  if (day == null) return const <SessionTrackPoint>[];
+  final trailId = ref.watch(trailIdProvider);
+  final db = ref.watch(databaseProvider);
+  return db.sessionTrackPointsDao.getByCalendarDay(trailId, day);
 });

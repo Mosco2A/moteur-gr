@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:latlong2/latlong.dart';
 
+import '../../../core/map/test_inert_tile_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -174,28 +177,143 @@ class _JournalDayView extends ConsumerWidget {
       children: [
         _DayNavigator(days: days, index: index, journalT: journalT),
         const Divider(height: 1),
+        // Une SEULE liste defilante pour la journee : la carte et les notes
+        // defilent ensemble. Deux zones de defilement imbriquees sur un
+        // ecran de telephone rendent le geste illisible.
         Expanded(
-          child: entries.isEmpty
-              ? Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(AppTheme.spacingLg),
-                    child: Text(
-                      journalT.dayEmpty,
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      textAlign: TextAlign.center,
-                    ),
+          child: ListView(
+            padding: const EdgeInsets.all(AppTheme.spacingBase),
+            children: [
+              const _DayTraceCard(),
+              const SizedBox(height: AppTheme.spacingBase),
+              if (entries.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(AppTheme.spacingLg),
+                  child: Text(
+                    journalT.dayEmpty,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                    textAlign: TextAlign.center,
                   ),
                 )
-              : ListView.builder(
-                  padding: const EdgeInsets.all(AppTheme.spacingBase),
-                  itemCount: entries.length,
-                  itemBuilder: (context, i) =>
-                      _JournalEntryTile(entry: entries[i]),
-                ),
+              else
+                ...entries.map((e) => _JournalEntryTile(entry: e)),
+            ],
+          ),
         ),
       ],
     );
   }
+}
+
+/// Hauteur de la carte du trace du jour, en points (valeur de parite).
+const double _dayTraceMapHeight = 200;
+
+/// Trace GPS de la journee affichee (CORRECTIF L4-2).
+///
+/// Ne devient visible que si la journee porte VRAIMENT des points : une
+/// carte vide au-dessus des notes ferait croire a une panne. Depend du
+/// socle L3-1 — avant lui, la trace d'une journee passee n'existait plus
+/// en base, elle etait effacee au demarrage de la randonnee suivante.
+class _DayTraceCard extends ConsumerWidget {
+  const _DayTraceCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final journalT = t.journal;
+    final traceAsync = ref.watch(journalDayTraceProvider);
+
+    return traceAsync.maybeWhen(
+      orElse: () => const SizedBox.shrink(),
+      data: (points) {
+        if (points.length < 2) return const SizedBox.shrink();
+        final latLngs =
+            points.map((p) => LatLng(p.lat, p.lng)).toList(growable: false);
+        return AppCard(
+          padding: const EdgeInsets.all(AppTheme.spacingMd),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.route_outlined,
+                      size: 18, color: theme.colorScheme.primary),
+                  const SizedBox(width: AppTheme.spacingXs),
+                  Text(
+                    journalT.dayTrace,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+                child: SizedBox(
+                  height: _dayTraceMapHeight,
+                  child: FlutterMap(
+                    options: MapOptions(
+                      initialCameraFit: CameraFit.bounds(
+                        bounds: LatLngBounds.fromPoints(latLngs),
+                        padding: const EdgeInsets.all(24),
+                      ),
+                      // Vignette de lecture, pas un ecran de navigation :
+                      // aucun geste, pour ne pas voler le defilement de la
+                      // liste des notes sous le doigt.
+                      interactionOptions: const InteractionOptions(
+                        flags: InteractiveFlag.none,
+                      ),
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.moteur-gr.app',
+                        // En test, fournisseur inerte : aucune requete
+                        // reseau. En production, `null` -> fournisseur par
+                        // defaut, comportement inchange.
+                        tileProvider: inertTileProviderOrNull(),
+                      ),
+                      PolylineLayer(
+                        polylines: [
+                          Polyline(
+                            points: latLngs,
+                            strokeWidth: 3,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ],
+                      ),
+                      MarkerLayer(
+                        markers: [
+                          _traceDot(latLngs.first, theme.colorScheme.primary),
+                          _traceDot(latLngs.last, theme.colorScheme.tertiary),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  /// Pastille de depart / d'arrivee du trace.
+  static Marker _traceDot(LatLng at, Color color) => Marker(
+        point: at,
+        width: 16,
+        height: 16,
+        child: Container(
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+            border: Border.all(color: Colors.white, width: 2),
+          ),
+        ),
+      );
 }
 
 /// Navigateur de journee : jour precedent, date en clair, jour suivant.
