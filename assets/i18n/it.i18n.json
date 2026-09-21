@@ -1450,7 +1450,8 @@
     "dates": "Dal {start} al {end}",
     "viewDiploma": "Vedi il mio diploma",
     "viewJournal": "Vedi il mio diario",
-    "noData": "Nessun dato di percorso da mostrare al momento."
+    "noData": "Nessun dato di percorso da mostrare al momento.",
+    "elevationLoss": "$meters m di dislivello negativo"
   },
   "programme": {
     "title": "Programma",

@@ -1450,7 +1450,8 @@
     "dates": "Del {start} al {end}",
     "viewDiploma": "Ver mi diploma",
     "viewJournal": "Ver mi diario",
-    "noData": "Aún no hay datos de ruta para mostrar."
+    "noData": "Aún no hay datos de ruta para mostrar.",
+    "elevationLoss": "$meters m de desnivel negativo"
   },
   "programme": {
     "title": "Programa",

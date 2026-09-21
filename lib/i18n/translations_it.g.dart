@@ -1266,6 +1266,7 @@ class _Translations$recap$it extends Translations$recap$fr {
 	@override String get viewDiploma => 'Vedi il mio diploma';
 	@override String get viewJournal => 'Vedi il mio diario';
 	@override String get noData => 'Nessun dato di percorso da mostrare al momento.';
+	@override String elevationLoss({required Object meters}) => '${meters} m di dislivello negativo';
 }
 
 // Path: programme
@@ -4917,6 +4918,7 @@ extension on TranslationsIt {
 			'recap.viewDiploma' => 'Vedi il mio diploma',
 			'recap.viewJournal' => 'Vedi il mio diario',
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',
+			'recap.elevationLoss' => ({required Object meters}) => '${meters} m di dislivello negativo',
 			'programme.title' => 'Programma',
 			'programme.helpTooltip' => 'Aiuto',
 			'programme.duration.label' => 'Numero di giorni',
@@ -5261,9 +5263,9 @@ extension on TranslationsIt {
 			'hikerProfile.saved' => 'Dati salvati',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nulla è precompilato: inserisci i tuoi dati reali, è per la tua sicurezza.',
 			'hikerProfile.seniorReminder' => 'Dai 65 anni, si consiglia una visita medica prima di un trek impegnativo.',
-			'walkTest.title' => 'Test del cammino di 6 minuti',
 			_ => null,
 		} ?? switch (path) {
+			'walkTest.title' => 'Test del cammino di 6 minuti',
 			'walkTest.intro' => 'Cammina il più lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per età e sesso.',
 			'walkTest.safetyWarning' => 'Evita questo sforzo in caso di problemi cardiaci non verificati. Fermati se ti senti male.',
 			'walkTest.start' => 'Avvia il test',

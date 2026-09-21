@@ -216,6 +216,29 @@ void main() {
       expect(stats.hasWalkedStages, isFalse);
       expect(stats.distanceKm, 0.0);
       expect(stats.elevationGainM, 0);
+      expect(stats.elevationLossM, 0);
+    });
+
+    // CORRECTIF L5-2 — le D- cumule. Stage.elevationLoss existait deja et la
+    // carte des etapes marchees etait deja construite : seul le D+ etait
+    // somme. Une descente de plusieurs milliers de metres se lit dans les
+    // genoux du randonneur, elle n'apparaissait nulle part dans son recap.
+    test('L5-2 : le D- se cumule comme le D+, sur les memes etapes', () async {
+      await seedStages();
+      await persistSession(sess(
+        status: 'abandoned',
+        completed: const ['1', '2', '3'],
+        finishedAt: DateTime.utc(2026, 6, 17, 18),
+      ));
+
+      final c = makeContainer(showcase: false);
+      addTearDown(c.dispose);
+      final stats = await c.read(adventureStatsProvider.future);
+
+      // 3 etapes marchees a 400 m de descente chacune.
+      expect(stats.elevationLossM, 1200);
+      // Et il ne recopie pas le D+ : les deux chiffres sont distincts.
+      expect(stats.elevationLossM, isNot(equals(stats.elevationGainM)));
     });
   });
 

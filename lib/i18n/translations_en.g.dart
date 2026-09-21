@@ -1266,6 +1266,7 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String get viewDiploma => 'View my diploma';
 	@override String get viewJournal => 'View my journal';
 	@override String get noData => 'No route data to display yet.';
+	@override String elevationLoss({required Object meters}) => '${meters} m of descent';
 }
 
 // Path: programme
@@ -4917,6 +4918,7 @@ extension on TranslationsEn {
 			'recap.viewDiploma' => 'View my diploma',
 			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',
+			'recap.elevationLoss' => ({required Object meters}) => '${meters} m of descent',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
@@ -5261,9 +5263,9 @@ extension on TranslationsEn {
 			'hikerProfile.saved' => 'Details saved',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nothing is pre-filled: enter your real data, it is for your safety.',
 			'hikerProfile.seniorReminder' => 'From age 65, a medical check-up is advised before a demanding trek.',
-			'walkTest.title' => '6-minute walk test',
 			_ => null,
 		} ?? switch (path) {
+			'walkTest.title' => '6-minute walk test',
 			'walkTest.intro' => 'Walk as far as you can in 6 minutes on flat ground. GPS measures the distance; we compare it to norms for your age and sex.',
 			'walkTest.safetyWarning' => 'Avoid this effort if you have an unchecked heart condition. Stop if you feel unwell.',
 			'walkTest.start' => 'Start the test',

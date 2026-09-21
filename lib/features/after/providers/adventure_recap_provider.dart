@@ -90,8 +90,9 @@ final isRecapAvailableProvider = Provider<bool>((ref) {
 /// - `stagesWalked` : nombre d'etapes REELLEMENT marchees
 ///   ([TrekSession.completedStages]).
 /// - `totalStages` : nombre d'etapes du parcours (pour l'affichage « n/total »).
-/// - `distanceKm` / `elevationGainM` : somme des etapes REELLEMENT marchees
-///   (mappees sur les etapes du sentier). Fait foi sur les totaux statiques.
+/// - `distanceKm` / `elevationGainM` / `elevationLossM` : somme des etapes
+///   REELLEMENT marchees (mappees sur les etapes du sentier). Fait foi sur les
+///   totaux statiques.
 /// - `startDate` / `endDate` / `durationDays` : horodatage reel de la session.
 /// - `fullyWalked` : le parcours a-t-il ete fini (finisher legitime) ?
 /// - `tracePoints` : trace GPS reelle de la session (peut etre vide).
@@ -101,6 +102,7 @@ class AdventureStats {
     required this.totalStages,
     required this.distanceKm,
     required this.elevationGainM,
+    required this.elevationLossM,
     required this.startDate,
     required this.endDate,
     required this.durationDays,
@@ -112,6 +114,12 @@ class AdventureStats {
   final int totalStages;
   final double distanceKm;
   final int elevationGainM;
+
+  /// CORRECTIF L5-2 — denivele NEGATIF cumule. `Stage.elevationLoss` existait
+  /// deja et la carte des etapes marchees etait deja construite : seul le D+
+  /// etait somme. Une descente de 3 700 m sur un Mare a Mare se lit dans les
+  /// genoux du randonneur, elle n'apparaissait nulle part dans son recap.
+  final int elevationLossM;
   final DateTime? startDate;
   final DateTime? endDate;
   final int durationDays;
@@ -153,11 +161,14 @@ final adventureStatsProvider = FutureProvider<AdventureStats>((ref) async {
   final Map<String, Stage> byId = {for (final s in stages) s.id: s};
   double distanceKm = 0;
   int elevationGainM = 0;
+  int elevationLossM = 0;
   for (final id in completedSet) {
     final s = byId[id];
     if (s == null) continue;
     distanceKm += s.distance;
     elevationGainM += s.elevationGain;
+    // L5-2 : le D- se somme exactement comme le D+, sur la MEME carte.
+    elevationLossM += s.elevationLoss;
   }
 
   // Duree reelle : de startedAt a finishedAt (jours entames, minimum 1 des qu'au
@@ -177,6 +188,7 @@ final adventureStatsProvider = FutureProvider<AdventureStats>((ref) async {
     totalStages: totalStages,
     distanceKm: distanceKm,
     elevationGainM: elevationGainM,
+    elevationLossM: elevationLossM,
     startDate: start,
     endDate: end,
     durationDays: durationDays,

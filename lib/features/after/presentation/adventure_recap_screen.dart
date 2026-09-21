@@ -186,6 +186,11 @@ class _StatsCard extends StatelessWidget {
         recapT.distance.replaceAll('{km}', stats.distanceKm.toStringAsFixed(0));
     final elevationLabel =
         recapT.elevation.replaceAll('{meters}', '${stats.elevationGainM}');
+    // CORRECTIF L5-2 : le D- cumule. Il manquait alors que Stage.elevationLoss
+    // existait deja — une descente de plusieurs milliers de metres se lit dans
+    // les genoux du randonneur, elle n'apparaissait nulle part dans son recap.
+    final elevationLossLabel =
+        recapT.elevationLoss(meters: stats.elevationLossM);
     final durationLabel =
         recapT.duration.replaceAll('{days}', '${stats.durationDays}');
 
@@ -193,6 +198,7 @@ class _StatsCard extends StatelessWidget {
       _StatRow(icon: Icons.flag, label: stagesLabel),
       _StatRow(icon: Icons.straighten, label: distanceLabel),
       _StatRow(icon: Icons.trending_up, label: elevationLabel),
+      _StatRow(icon: Icons.trending_down, label: elevationLossLabel),
       _StatRow(icon: Icons.timer, label: durationLabel),
     ];
 

@@ -1266,6 +1266,7 @@ class _Translations$recap$de extends Translations$recap$fr {
 	@override String get viewDiploma => 'Mein Diplom ansehen';
 	@override String get viewJournal => 'Mein Tagebuch ansehen';
 	@override String get noData => 'Noch keine Routendaten zum Anzeigen.';
+	@override String elevationLoss({required Object meters}) => '${meters} m Abstieg';
 }
 
 // Path: programme
@@ -4917,6 +4918,7 @@ extension on TranslationsDe {
 			'recap.viewDiploma' => 'Mein Diplom ansehen',
 			'recap.viewJournal' => 'Mein Tagebuch ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
+			'recap.elevationLoss' => ({required Object meters}) => '${meters} m Abstieg',
 			'programme.title' => 'Programm',
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
@@ -5261,9 +5263,9 @@ extension on TranslationsDe {
 			'hikerProfile.saved' => 'Angaben gespeichert',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.',
 			'hikerProfile.seniorReminder' => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine ärztliche Untersuchung empfohlen.',
-			'walkTest.title' => '6-Minuten-Gehtest',
 			_ => null,
 		} ?? switch (path) {
+			'walkTest.title' => '6-Minuten-Gehtest',
 			'walkTest.intro' => 'Gehen Sie in 6 Minuten so weit wie möglich auf ebenem Gelände. Das GPS misst die Distanz; wir vergleichen sie mit Normen für Alter und Geschlecht.',
 			'walkTest.safetyWarning' => 'Vermeiden Sie diese Anstrengung bei ungeklärten Herzproblemen. Hören Sie bei Unwohlsein auf.',
 			'walkTest.start' => 'Test starten',

@@ -1450,7 +1450,8 @@
     "dates": "Du {start} au {end}",
     "viewDiploma": "Voir mon diplôme",
     "viewJournal": "Voir mon journal",
-    "noData": "Aucune donnée de parcours à afficher pour le moment."
+    "noData": "Aucune donnée de parcours à afficher pour le moment.",
+    "elevationLoss": "$meters m de dénivelé négatif"
   },
   "programme": {
     "title": "Programme",

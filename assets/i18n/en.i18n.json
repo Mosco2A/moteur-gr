@@ -1450,7 +1450,8 @@
     "dates": "From {start} to {end}",
     "viewDiploma": "View my diploma",
     "viewJournal": "View my journal",
-    "noData": "No route data to display yet."
+    "noData": "No route data to display yet.",
+    "elevationLoss": "$meters m of descent"
   },
   "programme": {
     "title": "Programme",
