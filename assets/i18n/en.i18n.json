@@ -594,7 +594,10 @@
     "maxAltitude": "Highest altitude",
     "share": "Share",
     "shareSubject": "My hiking journal",
-    "shareError": "Sharing failed"
+    "shareError": "Sharing failed",
+    "lockedTitle": "The journal is part of the pack",
+    "lockedBody": "Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.",
+    "lockedUnlock": "Unlock"
   },
   "weather": {
     "title": "Weather",

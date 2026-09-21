@@ -959,6 +959,15 @@ class Translations$journal$fr {
 
 	/// fr: 'Partage impossible'
 	String get shareError => 'Partage impossible';
+
+	/// fr: 'Le journal fait partie du pack'
+	String get lockedTitle => 'Le journal fait partie du pack';
+
+	/// fr: 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.'
+	String get lockedBody => 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.';
+
+	/// fr: 'Débloquer'
+	String get lockedUnlock => 'Débloquer';
 }
 
 // Path: weather
@@ -7660,6 +7669,9 @@ extension on Translations {
 			'journal.share' => 'Partager',
 			'journal.shareSubject' => 'Mon carnet de randonnée',
 			'journal.shareError' => 'Partage impossible',
+			'journal.lockedTitle' => 'Le journal fait partie du pack',
+			'journal.lockedBody' => 'Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.',
+			'journal.lockedUnlock' => 'Débloquer',
 			'weather.title' => 'Météo',
 			'weather.loading' => 'Chargement de la météo...',
 			'weather.offline' => 'Pas de connexion. Données météo indisponibles.',
@@ -8152,11 +8164,11 @@ extension on Translations {
 			'packs.subtitle' => 'Téléchargez un pack pour randonner 100% hors-ligne.',
 			'packs.alaCarteNote' => 'À la carte : achetez seulement le pack qu\'il vous faut, pas d\'abonnement.',
 			'packs.size' => ({required Object mo}) => '${mo} Mo',
+			_ => null,
+		} ?? switch (path) {
 			'packs.states.notDownloaded' => 'Non téléchargé',
 			'packs.states.downloaded' => 'Téléchargé',
 			'packs.states.updateAvailable' => 'Mise à jour disponible',
-			_ => null,
-		} ?? switch (path) {
 			'packs.actions.download' => 'Télécharger',
 			'packs.actions.update' => 'Mettre à jour',
 			'packs.actions.delete' => 'Supprimer',
@@ -8666,11 +8678,11 @@ extension on Translations {
 			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?',
 			'trekState.resumeOrphanDialog.resume' => 'Reprendre',
 			'trekState.resumeOrphanDialog.abandon' => 'Abandonner',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.title' => 'Fiche d\'info',
 			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.',
 			'hikerProfile.fieldAge' => 'Âge',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintAge' => 'En années',
 			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
 			'hikerProfile.fieldHeight' => 'Taille',

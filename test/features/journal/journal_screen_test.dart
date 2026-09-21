@@ -8,6 +8,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/models/stage.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/journal/data/journal_repository.dart';
 import 'package:moteur_gr/features/journal/presentation/journal_screen.dart';
 import 'package:moteur_gr/features/journal/providers/journal_providers.dart';
@@ -23,6 +24,10 @@ void main() {
       ProviderScope(
         overrides: [
           databaseProvider.overrideWithValue(db),
+          // L7-3 : le journal est verrouille en mode demo ; ces tests
+          // regardent le journal OUVERT, on le declare deverrouille.
+          isDemoModeProvider('sentier-bleu')
+              .overrideWith((ref) async => false),
           trailIdProvider.overrideWithValue('sentier-bleu'),
         ],
         // AppHeader (Ph5/L6a) utilise GoRouter -> on heberge l'ecran dans un
@@ -129,6 +134,9 @@ void main() {
         ProviderScope(
           overrides: [
             databaseProvider.overrideWithValue(db),
+            // L7-3 : le journal est verrouille en mode demo ; ces tests
+            // regardent le journal OUVERT, on le declare deverrouille.
+            isDemoModeProvider(trailId).overrideWith((ref) async => false),
             trailIdProvider.overrideWithValue(trailId),
             stagesProvider(trailId).overrideWith((ref) async => sevenStages),
           ],
@@ -195,6 +203,9 @@ void main() {
         ProviderScope(
           overrides: [
             databaseProvider.overrideWithValue(db),
+            // L7-3 : le journal est verrouille en mode demo ; ces tests
+            // regardent le journal OUVERT, on le declare deverrouille.
+            isDemoModeProvider(trailId).overrideWith((ref) async => false),
             trailIdProvider.overrideWithValue(trailId),
             stagesProvider(trailId).overrideWith((ref) async => <StageModel>[]),
           ],

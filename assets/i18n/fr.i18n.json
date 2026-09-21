@@ -594,7 +594,10 @@
     "maxAltitude": "Altitude maximale",
     "share": "Partager",
     "shareSubject": "Mon carnet de randonnée",
-    "shareError": "Partage impossible"
+    "shareError": "Partage impossible",
+    "lockedTitle": "Le journal fait partie du pack",
+    "lockedBody": "Notez vos impressions, ajoutez vos photos et relisez chaque journée de marche. Le journal se débloque avec le sentier.",
+    "lockedUnlock": "Débloquer"
   },
   "weather": {
     "title": "Météo",

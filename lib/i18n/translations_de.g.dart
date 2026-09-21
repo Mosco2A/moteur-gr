@@ -502,6 +502,9 @@ class _Translations$journal$de extends Translations$journal$fr {
 	@override String get share => 'Teilen';
 	@override String get shareSubject => 'Mein Wandertagebuch';
 	@override String get shareError => 'Teilen nicht möglich';
+	@override String get lockedTitle => 'Das Tagebuch gehört zum Paket';
+	@override String get lockedBody => 'Halten Sie Ihre Eindrücke fest, fügen Sie Fotos hinzu und lesen Sie jeden Wandertag nach. Das Tagebuch wird mit dem Weg freigeschaltet.';
+	@override String get lockedUnlock => 'Freischalten';
 }
 
 // Path: weather
@@ -4281,6 +4284,9 @@ extension on TranslationsDe {
 			'journal.share' => 'Teilen',
 			'journal.shareSubject' => 'Mein Wandertagebuch',
 			'journal.shareError' => 'Teilen nicht möglich',
+			'journal.lockedTitle' => 'Das Tagebuch gehört zum Paket',
+			'journal.lockedBody' => 'Halten Sie Ihre Eindrücke fest, fügen Sie Fotos hinzu und lesen Sie jeden Wandertag nach. Das Tagebuch wird mit dem Weg freigeschaltet.',
+			'journal.lockedUnlock' => 'Freischalten',
 			'weather.title' => 'Wetter',
 			'weather.loading' => 'Wetter wird geladen...',
 			'weather.offline' => 'Keine Verbindung. Wetterdaten nicht verfügbar.',
@@ -4773,11 +4779,11 @@ extension on TranslationsDe {
 			'packs.subtitle' => 'Lade ein Paket herunter, um 100% offline zu wandern.',
 			'packs.alaCarteNote' => 'A la carte: Kaufe nur das Paket, das du brauchst, kein Abo.',
 			'packs.size' => ({required Object mo}) => '${mo} MB',
+			_ => null,
+		} ?? switch (path) {
 			'packs.states.notDownloaded' => 'Nicht heruntergeladen',
 			'packs.states.downloaded' => 'Heruntergeladen',
 			'packs.states.updateAvailable' => 'Update verfügbar',
-			_ => null,
-		} ?? switch (path) {
 			'packs.actions.download' => 'Herunterladen',
 			'packs.actions.update' => 'Aktualisieren',
 			'packs.actions.delete' => 'Löschen',
@@ -5287,11 +5293,11 @@ extension on TranslationsDe {
 			'trekState.resumeOrphanDialog.message' => 'Beim letzten Schließen der App lief noch eine Wanderung. Möchtest du sie fortsetzen oder abbrechen?',
 			'trekState.resumeOrphanDialog.resume' => 'Fortsetzen',
 			'trekState.resumeOrphanDialog.abandon' => 'Abbrechen',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.title' => 'Ihre Angaben',
 			'hikerProfile.privacyBanner' => 'Ihre Körperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerät (und einer verschlüsselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
 			'hikerProfile.fieldAge' => 'Alter',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintAge' => 'In Jahren',
 			'hikerProfile.errorAge' => 'Ungültiges Alter (8 bis 100 Jahre)',
 			'hikerProfile.fieldHeight' => 'Grosse',

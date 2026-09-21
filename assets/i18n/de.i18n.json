@@ -594,7 +594,10 @@
     "maxAltitude": "Höchste Höhe",
     "share": "Teilen",
     "shareSubject": "Mein Wandertagebuch",
-    "shareError": "Teilen nicht möglich"
+    "shareError": "Teilen nicht möglich",
+    "lockedTitle": "Das Tagebuch gehört zum Paket",
+    "lockedBody": "Halten Sie Ihre Eindrücke fest, fügen Sie Fotos hinzu und lesen Sie jeden Wandertag nach. Das Tagebuch wird mit dem Weg freigeschaltet.",
+    "lockedUnlock": "Freischalten"
   },
   "weather": {
     "title": "Wetter",

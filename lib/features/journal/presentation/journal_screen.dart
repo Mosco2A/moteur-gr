@@ -8,12 +8,15 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/map/test_inert_tile_provider.dart';
+import '../../../core/services/monetization_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../../shared/widgets/paywall_sheet.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
 import '../providers/journal_day_providers.dart';
@@ -25,8 +28,122 @@ import '../providers/journal_providers.dart';
 /// groupees par jour (date decroissante).
 /// Utilise select() partout -- zero ref.watch brut dans build.
 /// Tout texte via Slang (t.journal.*).
+///
+/// PAYANT (correctif L7-3) : le journal fait partie du pack du sentier. Le
+/// verrou passe par la SOURCE UNIQUE d'acces, [isDemoModeProvider] — la meme
+/// que l'entrainement, la seule qui soit reellement branchee en production.
+///
+/// DEUX PIEGES EVITES ICI, et ils valent d'etre ecrits :
+///  1. NE PAS COPIER LA REFERENCE. Son `PremiumGate` pose sur le journal ne
+///     bloque rien : la route ne lui passe pas de contexte, le defaut est pris,
+///     et la resolution d'acces rend systematiquement l'acces complet. Le
+///     recopier aurait produit un paywall DECORATIF.
+///  2. NE PAS S'APPUYER SUR `hasJournal`. Le drapeau existe dans
+///     [TrailFeatures], mais toute cette structure (et `featuresForTrail`) n'est
+///     appelee NULLE PART dans l'application : c'est un cul-de-sac. S'y brancher
+///     aurait verrouille sur une valeur que personne ne calcule.
+///
+/// FAIL-CLOSED : tant que l'acces est indetermine (chargement) ou en erreur,
+/// l'ecran ne montre PAS le contenu. Un journal qui s'ouvre une demi-seconde
+/// avant de se verrouiller, c'est un verrou qui ne verrouille pas.
+///
+/// HORS-LIGNE : [isDemoModeProvider] derive des droits Drift LOCAUX, sans aucun
+/// appel reseau — un payeur n'est jamais bloque faute de reseau.
 class JournalScreen extends ConsumerWidget {
   const JournalScreen({super.key, required this.trailId});
+
+  final String trailId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Acces REACTIF (L7-3) : il se reevalue des qu'un achat pose le droit.
+    final accesAsync = ref.watch(isDemoModeProvider(trailId));
+    return accesAsync.when(
+      loading: () => const _JournalShell(
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (_, __) => _JournalShell(
+        child: _LockedJournalView(trailId: trailId),
+      ),
+      data: (isDemo) => isDemo
+          ? _JournalShell(child: _LockedJournalView(trailId: trailId))
+          : _UnlockedJournal(trailId: trailId),
+    );
+  }
+}
+
+/// Coque commune des etats non deverrouilles : meme en-tete que le journal
+/// ouvert, aucun bouton d'ajout (on n'ecrit pas dans un journal verrouille).
+class _JournalShell extends StatelessWidget {
+  const _JournalShell({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppHeader(title: t.journal.title),
+      body: SafeArea(child: child),
+    );
+  }
+}
+
+/// Vue VERROUILLEE (L7-3) : on dit ce que le journal apporte et on propose de
+/// le debloquer. Aucune entree du journal n'est lue ni affichee ici.
+class _LockedJournalView extends ConsumerWidget {
+  const _LockedJournalView({required this.trailId});
+
+  final String trailId;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final trail = ref.watch(trailConfigProvider);
+    return ListView(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      children: [
+        AppCard(
+          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(Icons.lock, color: theme.colorScheme.primary, size: 22),
+                  const SizedBox(width: AppTheme.spacingSm),
+                  Expanded(
+                    child: Text(
+                      t.journal.lockedTitle,
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(t.journal.lockedBody, style: theme.textTheme.bodyMedium),
+              const SizedBox(height: AppTheme.spacingBase),
+              AppButton(
+                icon: Icons.lock_open,
+                label: t.journal.lockedUnlock,
+                onPressed: () => showPaywallSheet(
+                  context,
+                  trailId: trailId,
+                  totalStages: trail.totalStages,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Journal DEVERROUILLE : le contenu d'origine, inchange.
+class _UnlockedJournal extends ConsumerWidget {
+  const _UnlockedJournal({required this.trailId});
 
   final String trailId;
 

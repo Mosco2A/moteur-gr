@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/journal/presentation/journal_screen.dart';
 import 'package:moteur_gr/features/journal/providers/journal_day_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -50,6 +51,9 @@ void main() {
       ProviderScope(
         overrides: [
           databaseProvider.overrideWithValue(db),
+          // L7-3 : le journal est verrouille en mode demo ; ces tests
+          // regardent le journal OUVERT, on le declare deverrouille.
+          isDemoModeProvider(trailId).overrideWith((ref) async => false),
           trailIdProvider.overrideWithValue(trailId),
         ],
         child: TranslationProvider(
@@ -84,6 +88,9 @@ void main() {
 
       final container = ProviderContainer(overrides: [
         databaseProvider.overrideWithValue(db),
+        // L7-3 : le journal est verrouille en mode demo ; ces tests
+        // regardent le journal OUVERT, on le declare deverrouille.
+        isDemoModeProvider(trailId).overrideWith((ref) async => false),
         trailIdProvider.overrideWithValue(trailId),
       ]);
       addTearDown(container.dispose);

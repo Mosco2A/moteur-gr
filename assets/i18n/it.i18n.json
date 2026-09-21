@@ -594,7 +594,10 @@
     "maxAltitude": "Altitudine massima",
     "share": "Condividi",
     "shareSubject": "Il mio diario di trekking",
-    "shareError": "Condivisione non riuscita"
+    "shareError": "Condivisione non riuscita",
+    "lockedTitle": "Il diario fa parte del pacchetto",
+    "lockedBody": "Annota le tue impressioni, aggiungi le foto e rileggi ogni giornata di cammino. Il diario si sblocca con il sentiero.",
+    "lockedUnlock": "Sblocca"
   },
   "weather": {
     "title": "Meteo",

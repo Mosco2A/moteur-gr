@@ -502,6 +502,9 @@ class _Translations$journal$en extends Translations$journal$fr {
 	@override String get share => 'Share';
 	@override String get shareSubject => 'My hiking journal';
 	@override String get shareError => 'Sharing failed';
+	@override String get lockedTitle => 'The journal is part of the pack';
+	@override String get lockedBody => 'Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.';
+	@override String get lockedUnlock => 'Unlock';
 }
 
 // Path: weather
@@ -4281,6 +4284,9 @@ extension on TranslationsEn {
 			'journal.share' => 'Share',
 			'journal.shareSubject' => 'My hiking journal',
 			'journal.shareError' => 'Sharing failed',
+			'journal.lockedTitle' => 'The journal is part of the pack',
+			'journal.lockedBody' => 'Write down your impressions, add your photos and reread every day of walking. The journal unlocks with the trail.',
+			'journal.lockedUnlock' => 'Unlock',
 			'weather.title' => 'Weather',
 			'weather.loading' => 'Loading weather...',
 			'weather.offline' => 'No connection. Weather data unavailable.',
@@ -4773,11 +4779,11 @@ extension on TranslationsEn {
 			'packs.subtitle' => 'Download a pack to hike 100% offline.',
 			'packs.alaCarteNote' => 'A la carte: buy only the pack you need, no subscription.',
 			'packs.size' => ({required Object mo}) => '${mo} MB',
+			_ => null,
+		} ?? switch (path) {
 			'packs.states.notDownloaded' => 'Not downloaded',
 			'packs.states.downloaded' => 'Downloaded',
 			'packs.states.updateAvailable' => 'Update available',
-			_ => null,
-		} ?? switch (path) {
 			'packs.actions.download' => 'Download',
 			'packs.actions.update' => 'Update',
 			'packs.actions.delete' => 'Delete',
@@ -5287,11 +5293,11 @@ extension on TranslationsEn {
 			'trekState.resumeOrphanDialog.message' => 'A hike was still in progress when the app last closed. Would you like to resume it or give it up?',
 			'trekState.resumeOrphanDialog.resume' => 'Resume',
 			'trekState.resumeOrphanDialog.abandon' => 'Give up',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.title' => 'Your details',
 			'hikerProfile.privacyBanner' => 'Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.',
 			'hikerProfile.fieldAge' => 'Age',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintAge' => 'In years',
 			'hikerProfile.errorAge' => 'Invalid age (8 to 100 years)',
 			'hikerProfile.fieldHeight' => 'Height',
