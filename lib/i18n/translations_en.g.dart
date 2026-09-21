@@ -597,6 +597,9 @@ class _Translations$diploma$en extends Translations$diploma$fr {
 	@override String get labelPartial => 'Partial route';
 	@override String pdfSaved({required Object file}) => 'Diploma saved: ${file}';
 	@override String get pdfError => 'The diploma could not be saved';
+	@override String finisherNumber({required Object number}) => 'Diploma no. ${number}';
+	@override String get shareDiploma => 'Share my diploma';
+	@override String get shareError => 'Sharing failed';
 }
 
 // Path: notifications
@@ -4351,6 +4354,9 @@ extension on TranslationsEn {
 			'diploma.labelPartial' => 'Partial route',
 			'diploma.pdfSaved' => ({required Object file}) => 'Diploma saved: ${file}',
 			'diploma.pdfError' => 'The diploma could not be saved',
+			'diploma.finisherNumber' => ({required Object number}) => 'Diploma no. ${number}',
+			'diploma.shareDiploma' => 'Share my diploma',
+			'diploma.shareError' => 'Sharing failed',
 			'notifications.morningReminder' => 'Morning reminder',
 			'notifications.weatherAlerts' => 'Weather alerts',
 			'notifications.countdown' => 'D-2 reminder',
@@ -4759,11 +4765,11 @@ extension on TranslationsEn {
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Downloading… ${done}/${total}',
 			'packs.progress.verifying' => 'Verifying integrity…',
 			'packs.progress.completed' => 'Pack ready offline',
+			_ => null,
+		} ?? switch (path) {
 			'packs.progress.error' => 'Download failed',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
-			_ => null,
-		} ?? switch (path) {
 			'packs.delete.cancel' => 'Cancel',
 			'packs.delete.confirm' => 'Delete',
 			'packs.delete.freed' => 'Space freed.',
@@ -5273,11 +5279,11 @@ extension on TranslationsEn {
 			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
 			'hikerProfile.sexFemale' => 'Female',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.sexMale' => 'Male',
 			'hikerProfile.sexUnspecified' => 'Unspecified',
 			'hikerProfile.fieldCountry' => 'Country',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintCountry' => 'Code (e.g. FR)',
 			'hikerProfile.bmiLabel' => 'BMI',
 			'hikerProfile.bmiCategories.underweight' => 'Underweight',

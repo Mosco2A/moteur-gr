@@ -702,7 +702,10 @@
     "labelIntegral": "Ruta integral",
     "labelPartial": "Ruta parcial",
     "pdfSaved": "Diploma guardado: $file",
-    "pdfError": "No se ha podido guardar el diploma"
+    "pdfError": "No se ha podido guardar el diploma",
+    "finisherNumber": "Diploma n.º $number",
+    "shareDiploma": "Compartir mi diploma",
+    "shareError": "No se ha podido compartir"
   },
   "notifications": {
     "morningReminder": "Recordatorio matutino",

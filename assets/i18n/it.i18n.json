@@ -702,7 +702,10 @@
     "labelIntegral": "Percorso integrale",
     "labelPartial": "Percorso parziale",
     "pdfSaved": "Diploma salvato: $file",
-    "pdfError": "Impossibile salvare il diploma"
+    "pdfError": "Impossibile salvare il diploma",
+    "finisherNumber": "Diploma n. $number",
+    "shareDiploma": "Condividi il mio diploma",
+    "shareError": "Condivisione non riuscita"
   },
   "notifications": {
     "morningReminder": "Promemoria mattutino",

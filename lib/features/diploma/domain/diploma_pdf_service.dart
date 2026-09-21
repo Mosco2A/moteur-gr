@@ -74,7 +74,13 @@ class DiplomaPdfLabels {
     required this.from,
     required this.to,
     required this.issuedOn,
+    this.finisherNumber,
   });
+
+  /// Numero de finisher (correctif L5-7), `null` si aucun.
+  ///
+  /// Deja formate par l'appelant : le service PDF ne connait aucun libelle.
+  final String? finisherNumber;
 
   /// Titre du diplome
   final String title;
@@ -410,6 +416,20 @@ class DiplomaPdfService {
             fontStyle: pw.FontStyle.italic,
           ),
         ),
+        // CORRECTIF L5-7 : le numero de finisher, imprime SUR le document.
+        // Un numero affiche a l'ecran mais absent du PDF ne certifierait
+        // rien : c'est le fichier qui circule.
+        if (labels.finisherNumber != null) ...[
+          pw.SizedBox(height: 6),
+          pw.Text(
+            labels.finisherNumber!,
+            style: pw.TextStyle(
+              fontSize: 11,
+              color: subtitleColor,
+              letterSpacing: 1.5,
+            ),
+          ),
+        ],
       ],
     );
   }

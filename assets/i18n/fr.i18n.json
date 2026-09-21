@@ -702,7 +702,10 @@
     "labelIntegral": "Parcours intégral",
     "labelPartial": "Parcours partiel",
     "pdfSaved": "Diplôme enregistré : $file",
-    "pdfError": "Impossible d'enregistrer le diplôme"
+    "pdfError": "Impossible d'enregistrer le diplôme",
+    "finisherNumber": "Diplôme n° $number",
+    "shareDiploma": "Partager mon diplôme",
+    "shareError": "Partage impossible"
   },
   "notifications": {
     "morningReminder": "Rappel du matin",

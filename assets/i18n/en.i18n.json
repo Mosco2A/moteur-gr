@@ -702,7 +702,10 @@
     "labelIntegral": "Full route",
     "labelPartial": "Partial route",
     "pdfSaved": "Diploma saved: $file",
-    "pdfError": "The diploma could not be saved"
+    "pdfError": "The diploma could not be saved",
+    "finisherNumber": "Diploma no. $number",
+    "shareDiploma": "Share my diploma",
+    "shareError": "Sharing failed"
   },
   "notifications": {
     "morningReminder": "Morning reminder",

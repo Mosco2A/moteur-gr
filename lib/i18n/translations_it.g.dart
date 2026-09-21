@@ -597,6 +597,9 @@ class _Translations$diploma$it extends Translations$diploma$fr {
 	@override String get labelPartial => 'Percorso parziale';
 	@override String pdfSaved({required Object file}) => 'Diploma salvato: ${file}';
 	@override String get pdfError => 'Impossibile salvare il diploma';
+	@override String finisherNumber({required Object number}) => 'Diploma n. ${number}';
+	@override String get shareDiploma => 'Condividi il mio diploma';
+	@override String get shareError => 'Condivisione non riuscita';
 }
 
 // Path: notifications
@@ -4351,6 +4354,9 @@ extension on TranslationsIt {
 			'diploma.labelPartial' => 'Percorso parziale',
 			'diploma.pdfSaved' => ({required Object file}) => 'Diploma salvato: ${file}',
 			'diploma.pdfError' => 'Impossibile salvare il diploma',
+			'diploma.finisherNumber' => ({required Object number}) => 'Diploma n. ${number}',
+			'diploma.shareDiploma' => 'Condividi il mio diploma',
+			'diploma.shareError' => 'Condivisione non riuscita',
 			'notifications.morningReminder' => 'Promemoria mattutino',
 			'notifications.weatherAlerts' => 'Allerte meteo',
 			'notifications.countdown' => 'Promemoria G-2',
@@ -4759,11 +4765,11 @@ extension on TranslationsIt {
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Scaricamento… ${done}/${total}',
 			'packs.progress.verifying' => 'Verifica integrità…',
 			'packs.progress.completed' => 'Pacchetto pronto offline',
+			_ => null,
+		} ?? switch (path) {
 			'packs.progress.error' => 'Scaricamento non riuscito',
 			'packs.delete.confirmTitle' => 'Eliminare questo pacchetto?',
 			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
-			_ => null,
-		} ?? switch (path) {
 			'packs.delete.cancel' => 'Annulla',
 			'packs.delete.confirm' => 'Elimina',
 			'packs.delete.freed' => 'Spazio liberato.',
@@ -5273,11 +5279,11 @@ extension on TranslationsIt {
 			'hikerProfile.errorCountry' => 'Codice paese non valido (es. FR)',
 			'hikerProfile.fieldSex' => 'Sesso (opzionale)',
 			'hikerProfile.sexFemale' => 'Donna',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.sexMale' => 'Uomo',
 			'hikerProfile.sexUnspecified' => 'Non specificato',
 			'hikerProfile.fieldCountry' => 'Paese',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.hintCountry' => 'Codice (es. FR)',
 			'hikerProfile.bmiLabel' => 'IMC',
 			'hikerProfile.bmiCategories.underweight' => 'Sottopeso',

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/config/trail_config.dart';
 import '../../../core/engine/trail_engine.dart';
@@ -16,6 +17,7 @@ import '../../journal/providers/journal_providers.dart';
 import '../../trek/domain/trek_completion.dart';
 import '../domain/diploma_generator.dart';
 import '../domain/diploma_pdf_service.dart';
+import '../domain/finisher_number.dart';
 import '../providers/session_trace_provider.dart';
 import 'widgets/session_trace_painter.dart';
 import '../../after/providers/adventure_recap_provider.dart';
@@ -175,10 +177,35 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
                   ? () => _generatePdf(config, realStats)
                   : null,
             ),
+            const SizedBox(height: AppTheme.spacingMd),
+
+            // CORRECTIF L5-7 : le partage du diplome, absent cote StepWays —
+            // l'ecran n'avait aucun bouton de partage, ni reel ni decoratif.
+            AppButton(
+              label: diplomaT.shareDiploma,
+              icon: Icons.share_outlined,
+              onPressed: _diplomaData != null && !_isGeneratingPdf
+                  ? () => _generatePdf(config, realStats, share: true)
+                  : null,
+            ),
           ],
         ),
       ),
     );
+  }
+
+  /// Numero de finisher de la session en cours (CORRECTIF L5-7).
+  ///
+  /// `null` tant qu'aucune session n'est lisible : on prefere un diplome
+  /// sans numero a un numero invente.
+  String? _finisherNumber(AdventureStats? stats) {
+    final session = ref.read(latestTrekSessionProvider).value;
+    if (session == null) return null;
+    final number = buildFinisherNumber(
+      sessionId: session.id,
+      finishedAt: session.finishedAt ?? stats?.endDate ?? DateTime.now(),
+    );
+    return t.diploma.finisherNumber(number: number);
   }
 
   void _generateDiploma(TrailConfig config, AdventureStats? stats) {
@@ -249,6 +276,20 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
                 fontStyle: FontStyle.italic,
               ),
             ),
+            // CORRECTIF L5-7 : le numero de finisher, visible a l'ecran comme
+            // sur le PDF. Absent quand aucune session n'est lisible : un
+            // diplome sans numero vaut mieux qu'un numero invente.
+            if (_finisherNumber(ref.watch(adventureStatsProvider).value)
+                case final number?) ...[
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                number,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  letterSpacing: 1.5,
+                  color: theme.colorScheme.onSurface.withAlpha(150),
+                ),
+              ),
+            ],
           ],
         ),
       ),
@@ -256,7 +297,11 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
   }
 
   /// Genere le PDF via DiplomaPdfService.
-  Future<void> _generatePdf(TrailConfig config, AdventureStats? stats) async {
+  Future<void> _generatePdf(
+    TrailConfig config,
+    AdventureStats? stats, {
+    bool share = false,
+  }) async {
     if (_diplomaData == null) return;
     // E5.5a : retour haptique moyen a la generation du diplome.
     AppHaptics.medium();
@@ -298,6 +343,10 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         from: diplomaT.pdfFrom,
         to: diplomaT.pdfTo,
         issuedOn: diplomaT.pdfIssuedOn,
+        // CORRECTIF L5-7 : le numero de finisher est imprime SUR le
+        // document. Un numero visible a l'ecran mais absent du PDF ne
+        // certifierait rien — c'est le fichier qui circule.
+        finisherNumber: _finisherNumber(stats),
       );
 
       // CORRECTIF L5-1 : le retour de generatePdf est AFFECTE, puis ECRIT.
@@ -313,6 +362,16 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         trailId: config.id,
       );
 
+      // Le partage vient APRES l'ecriture : on ne propose jamais un fichier
+      // qui n'existe pas encore.
+      if (share) {
+        await Share.shareXFiles(
+          [XFile(file.path)],
+          subject: diplomaT.title,
+        );
+        return;
+      }
+
       if (mounted) {
         // On nomme le FICHIER REELLEMENT ecrit : un message qui reprend le
         // libelle du bouton ne prouve rien.
@@ -325,12 +384,14 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         );
       }
     } catch (_) {
-      // Un echec d'ecriture (disque plein, permission) doit se VOIR :
+      // Un echec d'ecriture (support plein, permission) doit se VOIR :
       // le silence rejouerait exactement le defaut corrige ici.
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(t.diploma.pdfError)));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(share ? t.diploma.shareError : t.diploma.pdfError),
+          ),
+        );
       }
     } finally {
       if (mounted) setState(() => _isGeneratingPdf = false);
