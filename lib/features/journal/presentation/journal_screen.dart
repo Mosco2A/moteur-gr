@@ -185,6 +185,7 @@ class _JournalDayView extends ConsumerWidget {
             padding: const EdgeInsets.all(AppTheme.spacingBase),
             children: [
               const _DayTraceCard(),
+              const _DaySummaryCard(),
               const SizedBox(height: AppTheme.spacingBase),
               if (entries.isEmpty)
                 Padding(
@@ -314,6 +315,135 @@ class _DayTraceCard extends ConsumerWidget {
           ),
         ),
       );
+}
+
+/// Resume chiffre de la journee affichee + cumul depuis le depart
+/// (CORRECTIF L4-3).
+///
+/// Les chiffres sont MESURES sur la trace GPS du jour, jamais deduits d'une
+/// somme d'etapes nominale : une etape entamee et non finie, un aller-retour
+/// a la source, un detour par un refuge, rien de tout cela n'apparait dans
+/// un total theorique. Sans trace, la carte disparait au lieu d'afficher
+/// des zeros qui auraient l'air vrais.
+class _DaySummaryCard extends ConsumerWidget {
+  const _DaySummaryCard();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final journalT = t.journal;
+    final dayAsync = ref.watch(journalDayStatsProvider);
+    final cumulativeAsync = ref.watch(journalCumulativeStatsProvider);
+
+    return dayAsync.maybeWhen(
+      orElse: () => const SizedBox.shrink(),
+      data: (day) {
+        if (!day.hasData) return const SizedBox.shrink();
+        final cumulative = cumulativeAsync.value;
+        return Padding(
+          padding: const EdgeInsets.only(top: AppTheme.spacingBase),
+          child: AppCard(
+            padding: const EdgeInsets.all(AppTheme.spacingMd),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(Icons.insights_outlined,
+                        size: 18, color: theme.colorScheme.primary),
+                    const SizedBox(width: AppTheme.spacingXs),
+                    Text(
+                      journalT.daySummary,
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: AppTheme.spacingSm),
+                _StatsRow(stats: day, journalT: journalT),
+                if (cumulative != null && cumulative.hasData) ...[
+                  const Divider(height: AppTheme.spacingLg),
+                  Text(
+                    journalT.sinceStart,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      color: theme.colorScheme.onSurface.withAlpha(180),
+                    ),
+                  ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  _StatsRow(stats: cumulative, journalT: journalT),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Une ligne de quatre chiffres : distance, D+, D-, duree.
+class _StatsRow extends StatelessWidget {
+  const _StatsRow({required this.stats, required this.journalT});
+
+  final JournalDayStats stats;
+  final Translations$journal$fr journalT;
+
+  @override
+  Widget build(BuildContext context) {
+    final h = stats.duration.inHours;
+    final m = stats.duration.inMinutes.remainder(60);
+    // [Wrap] et non [Row] : en allemand et en espagnol, quatre libelles
+    // cote a cote debordent la largeur d'un telephone.
+    return Wrap(
+      spacing: AppTheme.spacingLg,
+      runSpacing: AppTheme.spacingSm,
+      children: [
+        _StatTile(
+          label: journalT.distance,
+          value: '${stats.distanceKm.toStringAsFixed(1)} km',
+        ),
+        _StatTile(
+          label: journalT.elevationGain,
+          value: '${stats.elevationGainM} m',
+        ),
+        _StatTile(
+          label: journalT.elevationLoss,
+          value: '${stats.elevationLossM} m',
+        ),
+        _StatTile(
+          label: journalT.duration,
+          value: h > 0 ? '$h h $m' : '$m min',
+        ),
+      ],
+    );
+  }
+}
+
+/// Un chiffre et son libelle.
+class _StatTile extends StatelessWidget {
+  const _StatTile({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(value, style: theme.textTheme.titleMedium),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withAlpha(150),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 /// Navigateur de journee : jour precedent, date en clair, jour suivant.

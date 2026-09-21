@@ -2,7 +2,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/geo/geo_utils.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../trek/domain/trek_stats.dart';
 import '../domain/models/journal_entry.dart';
 import 'journal_providers.dart';
 
@@ -100,4 +102,120 @@ final journalDayTraceProvider =
   final trailId = ref.watch(trailIdProvider);
   final db = ref.watch(databaseProvider);
   return db.sessionTrackPointsDao.getByCalendarDay(trailId, day);
+});
+
+/// Chiffres d'une journee de marche, mesures sur la trace GPS.
+class JournalDayStats {
+  const JournalDayStats({
+    this.distanceKm = 0,
+    this.elevationGainM = 0,
+    this.elevationLossM = 0,
+    this.duration = Duration.zero,
+    this.maxAltitudeM,
+    this.pointCount = 0,
+  });
+
+  /// Distance MESUREE au GPS (et non une somme d'etapes nominale).
+  final double distanceKm;
+  final int elevationGainM;
+  final int elevationLossM;
+
+  /// Ecart entre le premier et le dernier point de la journee.
+  final Duration duration;
+
+  /// Point le plus haut de la journee, `null` sans trace.
+  final double? maxAltitudeM;
+
+  /// Nombre de points GPS derriere ces chiffres (0 = rien a afficher).
+  final int pointCount;
+
+  bool get hasData => pointCount > 1;
+
+  /// Somme de deux journees (pour le cumul depuis le depart).
+  JournalDayStats plus(JournalDayStats other) => JournalDayStats(
+        distanceKm: distanceKm + other.distanceKm,
+        elevationGainM: elevationGainM + other.elevationGainM,
+        elevationLossM: elevationLossM + other.elevationLossM,
+        duration: duration + other.duration,
+        maxAltitudeM: switch ((maxAltitudeM, other.maxAltitudeM)) {
+          (null, final b) => b,
+          (final a, null) => a,
+          (final a?, final b?) => a > b ? a : b,
+        },
+        pointCount: pointCount + other.pointCount,
+      );
+}
+
+/// Calcule les chiffres d'une suite de points GPS.
+///
+/// Reutilise [GeoUtils.haversineDistance] et le SEUIL DE BRUIT de
+/// [TrekStats] (3 m) : sans ce seuil, le tremblement de l'altimetre
+/// fabrique plusieurs centaines de metres de denivele sur une journee
+/// plate. Aucun moteur de stats n'est reconstruit ici.
+JournalDayStats computeDayStats(List<SessionTrackPoint> points) {
+  if (points.length < 2) {
+    return JournalDayStats(
+      pointCount: points.length,
+      maxAltitudeM: points.isEmpty ? null : points.first.altitude,
+    );
+  }
+  var meters = 0.0;
+  var gain = 0.0;
+  var loss = 0.0;
+  var maxAlt = points.first.altitude;
+  for (var i = 1; i < points.length; i++) {
+    final prev = points[i - 1];
+    final cur = points[i];
+    meters += GeoUtils.haversineDistance(prev.lat, prev.lng, cur.lat, cur.lng);
+    final d = cur.altitude - prev.altitude;
+    if (d.abs() >= TrekStats.elevationNoiseThresholdM) {
+      if (d > 0) {
+        gain += d;
+      } else {
+        loss += -d;
+      }
+    }
+    if (cur.altitude > maxAlt) maxAlt = cur.altitude;
+  }
+  return JournalDayStats(
+    distanceKm: meters / 1000.0,
+    elevationGainM: gain.round(),
+    elevationLossM: loss.round(),
+    duration: points.last.recordedAt.difference(points.first.recordedAt),
+    maxAltitudeM: maxAlt,
+    pointCount: points.length,
+  );
+}
+
+/// Chiffres de la journee affichee (correctif L4-3).
+final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
+  final points = await ref.watch(journalDayTraceProvider.future);
+  return computeDayStats(points);
+});
+
+/// Cumul depuis le depart, jusqu'a la journee affichee INCLUSE (L4-3).
+///
+/// Se calcule journee par journee et non sur la trace entiere : additionner
+/// des journees distinctes evite de compter le trajet qui relie le dernier
+/// point d'un soir au premier point du lendemain matin (souvent un transfert
+/// en voiture, parfois des dizaines de kilometres).
+final journalCumulativeStatsProvider =
+    FutureProvider<JournalDayStats>((ref) async {
+  final day = ref.watch(journalSelectedDayProvider);
+  if (day == null) return const JournalDayStats();
+  final trailId = ref.watch(trailIdProvider);
+  final db = ref.watch(databaseProvider);
+  final all = await db.sessionTrackPointsDao.getByTrailId(trailId);
+
+  final byDay = <DateTime, List<SessionTrackPoint>>{};
+  for (final p in all) {
+    final k = journalDayOf(p.recordedAt);
+    if (k.isAfter(day)) continue;
+    byDay.putIfAbsent(k, () => <SessionTrackPoint>[]).add(p);
+  }
+  var total = const JournalDayStats();
+  for (final points in byDay.values) {
+    total = total.plus(computeDayStats(points));
+  }
+  return total;
 });
