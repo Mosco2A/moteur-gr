@@ -247,9 +247,13 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text(t.hub.trekCard.completedTitle), findsOneWidget);
-      // Acces Revoir (recap) + Diplôme.
+      // CORRECTIF L5-8 : UNE SEULE commande apres le trek. La carte portait
+      // « Mon aventure » ET « Diplome » alors que la section « Apres le
+      // trek » du menu, sur le meme ecran en meme temps, portait les deux
+      // memes : quatre commandes pour deux destinations. Le diplome n'est
+      // pas perdu, « Mon aventure » l'ouvre.
       expect(find.byKey(const ValueKey('completed-review')), findsOneWidget);
-      expect(find.byKey(const ValueKey('completed-diploma')), findsOneWidget);
+      expect(find.byKey(const ValueKey('completed-diploma')), findsNothing);
       // Pas de CTA « Démarrer ».
       expect(find.text(t.hub.startCta), findsNothing);
     });
@@ -369,7 +373,11 @@ void main() {
       testWidgets('APRES LE TREK : carte Journal rendue', (tester) async {
         await pumpPhase(tester, lifecycle: TrekLifecycleState.completed);
 
-        expect(find.text(t.hub.sections.after), findsOneWidget);
+        // CORRECTIF L5-8 : la section « Apres le trek » est retiree, elle ne
+        // faisait que dupliquer les commandes de la carte de trek termine.
+        // Le Journal n'a JAMAIS appartenu a ce bloc — il vit dans
+        // « Informations » — et reste donc rendu dans les trois phases.
+        expect(find.text(t.hub.sections.after), findsNothing);
         expect(find.text(t.hub.cards.journal), findsOneWidget);
       });
 

@@ -290,13 +290,32 @@ void main() {
 
     // --- Diplome ---
     _goHome(tester, P);
-    // Carte « Diplome » de la section Apres la randonnee, ou bouton dedie de la
-    // carte trek terminee.
-    var diploma = await tapIfPresent(tester, find.byKey(const ValueKey('completed-diploma')),
-        P, 'diplome', 'bouton Diplome (carte trek termine)', warnIfMissing: false);
+    // CORRECTIF L5-8 : le cockpit n'a plus qu'UNE porte apres le trek,
+    // « Mon aventure ». Le diplome s'ouvre DEPUIS le recapitulatif, ou son
+    // bouton porte la cle stable `recap-diploma`. L'ancien chemin direct
+    // (bouton Diplome sur la carte de trek termine, carte Diplome de la
+    // section Apres) est garde en repli : il ne doit plus exister, mais un
+    // repli ne coute rien et evite un faux rouge sur une version anterieure.
+    var diploma = await tapIfPresent(
+        tester, find.byKey(const ValueKey('completed-diploma')),
+        P, 'diplome', 'bouton Diplome (carte trek termine)',
+        warnIfMissing: false);
+    if (!diploma) {
+      final recap = await tapIfPresent(
+          tester, find.byKey(const ValueKey('completed-review')),
+          P, 'diplome', 'ouvrir Mon aventure (porte unique apres-trek)',
+          warnIfMissing: false);
+      if (recap) {
+        await scrollUntil(tester, find.byKey(const ValueKey('recap-diploma')),
+            P, 'diplome', 'bouton Diplome du recapitulatif');
+        diploma = await tapIfPresent(
+            tester, find.byKey(const ValueKey('recap-diploma')),
+            P, 'diplome', 'ouvrir Diplome depuis Mon aventure');
+      }
+    }
     if (!diploma) {
       await scrollUntil(tester, find.text('Diplôme'), P, 'diplome',
-          'carte Diplome (section Apres)');
+          'carte Diplome (repli)');
       diploma = await tapIfPresent(
           tester, find.text('Diplôme'), P, 'diplome', 'ouvrir Diplome');
     }

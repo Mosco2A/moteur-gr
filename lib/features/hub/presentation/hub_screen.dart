@@ -460,44 +460,21 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             ),
             const SizedBox(height: AppTheme.spacingLg),
 
-            // --- Section Apres le trek (RF-10) ---
-            // PARITE GR20, LOT 3 (#99433) : la section « Apres le trek » expose
-            // desormais la carte « Mon aventure » (recap des stats de la session
-            // reelle) EN PLUS du Diplome, comme le HUB GR20 (#U04). Les deux
-            // routes existent toujours (regle S8 « zero route morte ») ; la garde
-            // (recap accessible si termine/abandonne/vitrine ; diplome verrouille
-            // hors finisher, deverrouille en vitrine) est portee par les ecrans.
+            // --- Section Apres le trek : RETIREE (CORRECTIF L5-8) ---
             //
-            // Retour Chris #13 : MASQUEE tant que le trek n'est pas TERMINE
-            // (phase after / lifecycle completed). Recap + diplome n'ont de sens
-            // qu'apres l'arrivee ; avant, la section « Après-trek » ne doit pas
-            // apparaitre dans le menu. Rendue conditionnellement.
-            if (showAfter) ...[
-              HubSection(
-                title: t.hub.sections.after,
-                icon: Icons.emoji_events_outlined,
-                cards: [
-                  QuickAccessCard(
-                    icon: Icons.landscape_outlined,
-                    title: t.hub.cards.recap,
-                    subtitle: t.hub.cards.recapSub,
-                    onTap: () => context.push('/trail/$trailId/recap'),
-                  ),
-                  // IMPORT-GPX — carte « Import GPX » RETIREE en StepWays L8
-                  // (decision Chris #99615-1, Option A). L'import de trace sort du
-                  // perimetre V1 (idee future gelee) : plus de porte d'entree vers
-                  // /trail/:id/import-gpx. Route + code (clone data-driven i18n)
-                  // CONSERVES dormants (cf. app_router.dart et
-                  // INVENTAIRE_ORPHELINS_L8.md). Ne PAS remettre sans decision Chris.
-                  QuickAccessCard(
-                    icon: Icons.workspace_premium_outlined,
-                    title: t.hub.cards.diploma,
-                    subtitle: t.hub.cards.diplomaSub,
-                    onTap: () => context.push('/trail/$trailId/diploma'),
-                  ),
-                ],
-              ),
-            ],
+            // Elle exposait « Mon aventure » et « Diplome » alors que la carte
+            // de trek termine, juste au-dessus, portait DEJA les deux memes
+            // commandes vers les deux memes destinations, memes libelles, sur
+            // le meme ecran en meme temps : quatre commandes pour deux
+            // destinations. Cette duplication est une invention de StepWays,
+            // le cockpit de reference n'en a aucune.
+            //
+            // ZERO ROUTE MORTE (regle S8) : les deux routes existent toujours
+            // et restent atteignables. « Mon aventure » est la porte unique
+            // (carte de trek termine) et ouvre le diplome, le journal, le
+            // partage et l'export GPX. La carte Journal, elle, n'a jamais
+            // appartenu a ce bloc : elle vit dans « Informations » et reste
+            // rendue dans les trois phases.
 
             // --- « Démarrer la randonnée » (retour Chris #3, LOT 2) ---
             // Le bouton de demarrage est ICI, EN BAS du cockpit (apres les

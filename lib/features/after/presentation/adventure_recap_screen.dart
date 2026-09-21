@@ -102,6 +102,10 @@ class _RecapBody extends ConsumerWidget {
           // vitrine) — parite GR20 (bouton diplome reserve au finisher).
           if (diplomaUnlocked) ...[
             AppButton(
+              // CORRECTIF L5-8 : depuis la fusion des quatre entrees du
+              // cockpit vers une, CE bouton est la porte du diplome. Sa cle
+              // est stable pour que les parcours de test la suivent.
+              key: const ValueKey('recap-diploma'),
               label: recapT.viewDiploma,
               icon: Icons.emoji_events,
               onPressed: () => context.push('/trail/$trailId/diploma'),

@@ -291,7 +291,17 @@ class _CompletedTrekCard extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: AppTheme.spacingBase),
-          // Revoir « Mon aventure » (recap des stats de la session terminee).
+          // CORRECTIF L5-8 — UNE SEULE PORTE D'ENTREE APRES LE TREK.
+          //
+          // Sur un trek termine, le cockpit affichait QUATRE commandes pour
+          // DEUX destinations : « Mon aventure » et « Diplome » ici, et les
+          // MEMES deux, memes libelles, dans la section « Apres le trek » du
+          // menu, sur le meme ecran en meme temps. Cette duplication est une
+          // invention de StepWays, le cockpit de reference n'en a aucune.
+          //
+          // Il reste CETTE commande, et une seule. Le diplome n'est pas perdu :
+          // « Mon aventure » l'ouvre (bouton en tete du recapitulatif, sous sa
+          // garde de finisher), avec le journal, le partage et l'export GPX.
           SizedBox(
             width: double.infinity,
             child: AppButton(
@@ -299,18 +309,6 @@ class _CompletedTrekCard extends ConsumerWidget {
               icon: Icons.landscape_outlined,
               label: t.hub.cards.recap,
               onPressed: () => context.push('/trail/$trailId/recap'),
-            ),
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          // Diplôme de fin de trek.
-          SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              key: const ValueKey('completed-diploma'),
-              variant: AppButtonVariant.outline,
-              icon: Icons.workspace_premium_outlined,
-              label: t.hub.cards.diploma,
-              onPressed: () => context.push('/trail/$trailId/diploma'),
             ),
           ),
           const SizedBox(height: AppTheme.spacingXs),
