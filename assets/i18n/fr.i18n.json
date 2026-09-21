@@ -834,6 +834,7 @@
     "formula": {
       "title": "Faisabilité pour ce trek",
       "intro": "On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.",
+      "outOfScopeNotice": "Ce feu ne regarde que deux choses : ton profil et l'effort de chaque étape. Le poids de ton sac et la saison n'entrent pas dans le calcul — un sac lourd, la neige ou la chaleur rendront la journée plus dure que ce qui est affiché ici. À toi d'en tenir compte.",
       "ceilingLabel": "Plafond conseillé : ${value} km-effort/jour (${level})",
       "stagesTitle": "Étape par étape",
       "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-effort",

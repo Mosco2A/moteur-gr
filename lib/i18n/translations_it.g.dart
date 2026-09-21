@@ -2269,6 +2269,7 @@ class _Translations$feasibility$formula$it extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Fattibilità per questo trek';
 	@override String get intro => 'Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.';
+	@override String get outOfScopeNotice => 'Questa valutazione guarda solo due cose: il tuo profilo e lo sforzo di ogni tappa. Il peso del tuo zaino e la stagione non entrano nel calcolo — uno zaino pesante, la neve o il caldo renderanno la giornata più dura di quanto mostrato qui. Tienine conto tu.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Soglia consigliata: ${value} km-sforzo/giorno (${level})';
 	@override String get stagesTitle => 'Tappa per tappa';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m dislivello = ${effort} km-sforzo';
@@ -4498,6 +4499,7 @@ extension on TranslationsIt {
 			'feasibility.gaps.effort' => 'Sforzo globale (IBP) oltre la tua esperienza',
 			'feasibility.formula.title' => 'Fattibilità per questo trek',
 			'feasibility.formula.intro' => 'Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.',
+			'feasibility.formula.outOfScopeNotice' => 'Questa valutazione guarda solo due cose: il tuo profilo e lo sforzo di ogni tappa. Il peso del tuo zaino e la stagione non entrano nel calcolo — uno zaino pesante, la neve o il caldo renderanno la giornata più dura di quanto mostrato qui. Tienine conto tu.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Soglia consigliata: ${value} km-sforzo/giorno (${level})',
 			'feasibility.formula.stagesTitle' => 'Tappa per tappa',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m dislivello = ${effort} km-sforzo',
@@ -4794,9 +4796,9 @@ extension on TranslationsIt {
 			'waypoints.contribution.close' => 'Chiudi',
 			'waypoints.contribution.emptyTitle' => 'Inserisci un titolo per il punto.',
 			'waypoints.contribution.emptyComment' => 'Inserisci la tua osservazione.',
-			'waypoints.contribution.noLocation' => 'Posizione GPS non disponibile. Riprova sotto cielo aperto.',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.contribution.noLocation' => 'Posizione GPS non disponibile. Riprova sotto cielo aperto.',
 			'waypoints.contribution.error' => 'Impossibile salvare in questo momento.',
 			'packs.title' => 'Pacchetti sentiero',
 			'packs.subtitle' => 'Scarica un pacchetto per camminare 100% offline.',
@@ -5308,9 +5310,9 @@ extension on TranslationsIt {
 			'trekState.abandonDialog.title' => 'Un trek è già in corso',
 			'trekState.abandonDialog.message' => 'Hai un\'escursione in corso. Terminala o abbandonala prima di iniziarne un\'altra.',
 			'trekState.abandonDialog.finish' => 'Termina',
-			'trekState.abandonDialog.abandon' => 'Abbandona',
 			_ => null,
 		} ?? switch (path) {
+			'trekState.abandonDialog.abandon' => 'Abbandona',
 			'trekState.abandonDialog.cancel' => 'Annulla',
 			'trekState.resumeOrphanDialog.title' => 'Riprendere l\'escursione?',
 			'trekState.resumeOrphanDialog.message' => 'Un\'escursione era ancora in corso all\'ultima chiusura dell\'app. Vuoi riprenderla o abbandonarla?',

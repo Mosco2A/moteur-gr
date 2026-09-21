@@ -2269,6 +2269,7 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Machbarkeit für diese Tour';
 	@override String get intro => 'Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.';
+	@override String get outOfScopeNotice => 'Diese Bewertung schaut nur auf zwei Dinge: dein Profil und den Aufwand jeder Etappe. Das Gewicht deines Rucksacks und die Jahreszeit fließen nicht in die Berechnung ein — ein schwerer Rucksack, Schnee oder Hitze machen den Tag härter als hier angezeigt. Rechne das selbst dazu.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Aufwand-km/Tag (${level})';
 	@override String get stagesTitle => 'Etappe für Etappe';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m Aufstieg = ${effort} Aufwand-km';
@@ -4498,6 +4499,7 @@ extension on TranslationsDe {
 			'feasibility.gaps.effort' => 'Gesamtanstrengung (IBP) über Ihrer Erfahrung',
 			'feasibility.formula.title' => 'Machbarkeit für diese Tour',
 			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.',
+			'feasibility.formula.outOfScopeNotice' => 'Diese Bewertung schaut nur auf zwei Dinge: dein Profil und den Aufwand jeder Etappe. Das Gewicht deines Rucksacks und die Jahreszeit fließen nicht in die Berechnung ein — ein schwerer Rucksack, Schnee oder Hitze machen den Tag härter als hier angezeigt. Rechne das selbst dazu.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Aufwand-km/Tag (${level})',
 			'feasibility.formula.stagesTitle' => 'Etappe für Etappe',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m Aufstieg = ${effort} Aufwand-km',
@@ -4794,9 +4796,9 @@ extension on TranslationsDe {
 			'waypoints.contribution.close' => 'Schliessen',
 			'waypoints.contribution.emptyTitle' => 'Bitte einen Titel für den Wegpunkt angeben.',
 			'waypoints.contribution.emptyComment' => 'Bitte Ihre Beobachtung eingeben.',
-			'waypoints.contribution.noLocation' => 'GPS-Position nicht verfügbar. Unter freiem Himmel erneut versuchen.',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.contribution.noLocation' => 'GPS-Position nicht verfügbar. Unter freiem Himmel erneut versuchen.',
 			'waypoints.contribution.error' => 'Speichern derzeit nicht möglich.',
 			'packs.title' => 'Wegpakete',
 			'packs.subtitle' => 'Lade ein Paket herunter, um 100% offline zu wandern.',
@@ -5308,9 +5310,9 @@ extension on TranslationsDe {
 			'trekState.abandonDialog.title' => 'Eine Tour läuft bereits',
 			'trekState.abandonDialog.message' => 'Du hast eine laufende Wanderung. Beende oder brich sie ab, bevor du eine neue startest.',
 			'trekState.abandonDialog.finish' => 'Beenden',
-			'trekState.abandonDialog.abandon' => 'Abbrechen',
 			_ => null,
 		} ?? switch (path) {
+			'trekState.abandonDialog.abandon' => 'Abbrechen',
 			'trekState.abandonDialog.cancel' => 'Zurück',
 			'trekState.resumeOrphanDialog.title' => 'Wanderung fortsetzen?',
 			'trekState.resumeOrphanDialog.message' => 'Beim letzten Schließen der App lief noch eine Wanderung. Möchtest du sie fortsetzen oder abbrechen?',

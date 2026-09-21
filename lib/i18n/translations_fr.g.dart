@@ -4768,6 +4768,9 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.'
 	String get intro => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.';
 
+	/// fr: 'Ce feu ne regarde que deux choses : ton profil et l'effort de chaque étape. Le poids de ton sac et la saison n'entrent pas dans le calcul — un sac lourd, la neige ou la chaleur rendront la journée plus dure que ce qui est affiché ici. À toi d'en tenir compte.'
+	String get outOfScopeNotice => 'Ce feu ne regarde que deux choses : ton profil et l\'effort de chaque étape. Le poids de ton sac et la saison n\'entrent pas dans le calcul — un sac lourd, la neige ou la chaleur rendront la journée plus dure que ce qui est affiché ici. À toi d\'en tenir compte.';
+
 	/// fr: 'Plafond conseillé : ${value} km-effort/jour (${level})'
 	String ceilingLabel({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-effort/jour (${level})';
 
@@ -7896,6 +7899,7 @@ extension on Translations {
 			'feasibility.gaps.effort' => 'Effort global (IBP) supérieur à votre expérience',
 			'feasibility.formula.title' => 'Faisabilité pour ce trek',
 			'feasibility.formula.intro' => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.',
+			'feasibility.formula.outOfScopeNotice' => 'Ce feu ne regarde que deux choses : ton profil et l\'effort de chaque étape. Le poids de ton sac et la saison n\'entrent pas dans le calcul — un sac lourd, la neige ou la chaleur rendront la journée plus dure que ce qui est affiché ici. À toi d\'en tenir compte.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-effort/jour (${level})',
 			'feasibility.formula.stagesTitle' => 'Étape par étape',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-effort',
@@ -8192,9 +8196,9 @@ extension on Translations {
 			'waypoints.contribution.close' => 'Fermer',
 			'waypoints.contribution.emptyTitle' => 'Indiquez un titre pour le point.',
 			'waypoints.contribution.emptyComment' => 'Saisissez votre observation.',
-			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
 			'waypoints.contribution.error' => 'Enregistrement impossible pour le moment.',
 			'packs.title' => 'Packs sentier',
 			'packs.subtitle' => 'Téléchargez un pack pour randonner 100% hors-ligne.',
@@ -8706,9 +8710,9 @@ extension on Translations {
 			'trekState.abandonDialog.title' => 'Un trek est déjà en cours',
 			'trekState.abandonDialog.message' => 'Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d\'en démarrer une autre.',
 			'trekState.abandonDialog.finish' => 'Terminer',
-			'trekState.abandonDialog.abandon' => 'Abandonner',
 			_ => null,
 		} ?? switch (path) {
+			'trekState.abandonDialog.abandon' => 'Abandonner',
 			'trekState.abandonDialog.cancel' => 'Annuler',
 			'trekState.resumeOrphanDialog.title' => 'Reprendre votre randonnée ?',
 			'trekState.resumeOrphanDialog.message' => 'Une randonnée était en cours lors de la dernière fermeture de l\'application. Voulez-vous la reprendre ou l\'abandonner ?',

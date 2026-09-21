@@ -2269,6 +2269,7 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Viabilidad para este trek';
 	@override String get intro => 'Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.';
+	@override String get outOfScopeNotice => 'Esta valoración solo mira dos cosas: tu perfil y el esfuerzo de cada etapa. El peso de tu mochila y la estación no entran en el cálculo — una mochila pesada, la nieve o el calor harán la jornada más dura de lo que se muestra aquí. Ténlo en cuenta tú.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Tope recomendado: ${value} km-esfuerzo/día (${level})';
 	@override String get stagesTitle => 'Etapa por etapa';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m desnivel = ${effort} km-esfuerzo';
@@ -4498,6 +4499,7 @@ extension on TranslationsEs {
 			'feasibility.gaps.effort' => 'Esfuerzo global (IBP) por encima de tu experiencia',
 			'feasibility.formula.title' => 'Viabilidad para este trek',
 			'feasibility.formula.intro' => 'Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.',
+			'feasibility.formula.outOfScopeNotice' => 'Esta valoración solo mira dos cosas: tu perfil y el esfuerzo de cada etapa. El peso de tu mochila y la estación no entran en el cálculo — una mochila pesada, la nieve o el calor harán la jornada más dura de lo que se muestra aquí. Ténlo en cuenta tú.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Tope recomendado: ${value} km-esfuerzo/día (${level})',
 			'feasibility.formula.stagesTitle' => 'Etapa por etapa',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m desnivel = ${effort} km-esfuerzo',
@@ -4794,9 +4796,9 @@ extension on TranslationsEs {
 			'waypoints.contribution.close' => 'Cerrar',
 			'waypoints.contribution.emptyTitle' => 'Indica un título para el punto.',
 			'waypoints.contribution.emptyComment' => 'Escribe tu observación.',
-			'waypoints.contribution.noLocation' => 'Posición GPS no disponible. Inténtalo de nuevo a cielo abierto.',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.contribution.noLocation' => 'Posición GPS no disponible. Inténtalo de nuevo a cielo abierto.',
 			'waypoints.contribution.error' => 'No se puede guardar ahora mismo.',
 			'packs.title' => 'Packs de sendero',
 			'packs.subtitle' => 'Descarga un pack para caminar 100% sin conexión.',
@@ -5308,9 +5310,9 @@ extension on TranslationsEs {
 			'trekState.abandonDialog.title' => 'Ya hay una ruta en curso',
 			'trekState.abandonDialog.message' => 'Tienes una excursión en curso. Termínala o abandónala antes de empezar otra.',
 			'trekState.abandonDialog.finish' => 'Terminar',
-			'trekState.abandonDialog.abandon' => 'Abandonar',
 			_ => null,
 		} ?? switch (path) {
+			'trekState.abandonDialog.abandon' => 'Abandonar',
 			'trekState.abandonDialog.cancel' => 'Cancelar',
 			'trekState.resumeOrphanDialog.title' => '¿Reanudar tu excursión?',
 			'trekState.resumeOrphanDialog.message' => 'Había una excursión en curso al cerrar la aplicación por última vez. ¿Quieres reanudarla o abandonarla?',

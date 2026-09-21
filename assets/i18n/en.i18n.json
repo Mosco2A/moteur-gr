@@ -834,6 +834,7 @@
     "formula": {
       "title": "Feasibility for this trek",
       "intro": "We compare each stage's effort to what your profile can handle in a day. Green, orange or red light.",
+      "outOfScopeNotice": "This rating looks at two things only: your profile and the effort of each stage. Your pack weight and the season are not part of the calculation — a heavy pack, snow or heat will make the day harder than shown here. Factor them in yourself.",
       "ceilingLabel": "Recommended ceiling: ${value} effort-km/day (${level})",
       "stagesTitle": "Stage by stage",
       "stageEffort": "${distance} km + ${elevation} m ascent = ${effort} effort-km",

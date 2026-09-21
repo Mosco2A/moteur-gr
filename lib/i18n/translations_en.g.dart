@@ -2269,6 +2269,7 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Feasibility for this trek';
 	@override String get intro => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.';
+	@override String get outOfScopeNotice => 'This rating looks at two things only: your profile and the effort of each stage. Your pack weight and the season are not part of the calculation — a heavy pack, snow or heat will make the day harder than shown here. Factor them in yourself.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Recommended ceiling: ${value} effort-km/day (${level})';
 	@override String get stagesTitle => 'Stage by stage';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} effort-km';
@@ -4498,6 +4499,7 @@ extension on TranslationsEn {
 			'feasibility.gaps.effort' => 'Overall effort (IBP) above your experience',
 			'feasibility.formula.title' => 'Feasibility for this trek',
 			'feasibility.formula.intro' => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.',
+			'feasibility.formula.outOfScopeNotice' => 'This rating looks at two things only: your profile and the effort of each stage. Your pack weight and the season are not part of the calculation — a heavy pack, snow or heat will make the day harder than shown here. Factor them in yourself.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Recommended ceiling: ${value} effort-km/day (${level})',
 			'feasibility.formula.stagesTitle' => 'Stage by stage',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} effort-km',
@@ -4794,9 +4796,9 @@ extension on TranslationsEn {
 			'waypoints.contribution.close' => 'Close',
 			'waypoints.contribution.emptyTitle' => 'Please enter a title for the waypoint.',
 			'waypoints.contribution.emptyComment' => 'Please enter your observation.',
-			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
 			_ => null,
 		} ?? switch (path) {
+			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
 			'waypoints.contribution.error' => 'Cannot save right now.',
 			'packs.title' => 'Trail packs',
 			'packs.subtitle' => 'Download a pack to hike 100% offline.',
@@ -5308,9 +5310,9 @@ extension on TranslationsEn {
 			'trekState.abandonDialog.title' => 'A trek is already in progress',
 			'trekState.abandonDialog.message' => 'You have an ongoing hike. Finish it or give it up before starting another one.',
 			'trekState.abandonDialog.finish' => 'Finish',
-			'trekState.abandonDialog.abandon' => 'Give up',
 			_ => null,
 		} ?? switch (path) {
+			'trekState.abandonDialog.abandon' => 'Give up',
 			'trekState.abandonDialog.cancel' => 'Cancel',
 			'trekState.resumeOrphanDialog.title' => 'Resume your hike?',
 			'trekState.resumeOrphanDialog.message' => 'A hike was still in progress when the app last closed. Would you like to resume it or give it up?',

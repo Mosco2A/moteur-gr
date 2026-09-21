@@ -834,6 +834,7 @@
     "formula": {
       "title": "Viabilidad para este trek",
       "intro": "Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.",
+      "outOfScopeNotice": "Esta valoración solo mira dos cosas: tu perfil y el esfuerzo de cada etapa. El peso de tu mochila y la estación no entran en el cálculo — una mochila pesada, la nieve o el calor harán la jornada más dura de lo que se muestra aquí. Ténlo en cuenta tú.",
       "ceilingLabel": "Tope recomendado: ${value} km-esfuerzo/día (${level})",
       "stagesTitle": "Etapa por etapa",
       "stageEffort": "${distance} km + ${elevation} m desnivel = ${effort} km-esfuerzo",

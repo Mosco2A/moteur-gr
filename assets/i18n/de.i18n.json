@@ -834,6 +834,7 @@
     "formula": {
       "title": "Machbarkeit für diese Tour",
       "intro": "Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.",
+      "outOfScopeNotice": "Diese Bewertung schaut nur auf zwei Dinge: dein Profil und den Aufwand jeder Etappe. Das Gewicht deines Rucksacks und die Jahreszeit fließen nicht in die Berechnung ein — ein schwerer Rucksack, Schnee oder Hitze machen den Tag härter als hier angezeigt. Rechne das selbst dazu.",
       "ceilingLabel": "Empfohlene Obergrenze: ${value} Aufwand-km/Tag (${level})",
       "stagesTitle": "Etappe für Etappe",
       "stageEffort": "${distance} km + ${elevation} m Aufstieg = ${effort} Aufwand-km",

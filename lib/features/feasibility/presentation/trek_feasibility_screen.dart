@@ -363,6 +363,16 @@ class _VerdictView extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
+          const SizedBox(height: AppTheme.spacingBase),
+
+          // CE QUE LE FEU NE REGARDE PAS (decision Chris #100279, 21/09).
+          // Mesure de la campagne personas : de 0 a 45 kg de sac, ni le verdict
+          // ni le plafond ne bougent — la saison non plus. Tant que ces deux
+          // dimensions ne sont pas cablees avec des coefficients SOURCES, on le
+          // DIT. StepWays est une application de securite en montagne : croire
+          // qu'un sac de 20 kg a ete pris en compte dans un feu vert est un
+          // risque reel.
+          const _OutOfScopeNotice(),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Synthese du verdict global : etape la plus dure, jours au-dessus,
@@ -471,6 +481,45 @@ class _GenerateProgramButton extends ConsumerWidget {
 
 /// Bandeau « profil partiel » affiche au-dessus du verdict quand le profil
 /// objectif n'est pas encore renseigne (le resultat reste montre — R2d).
+/// CE QUE LE VERDICT NE REGARDE PAS — decision Chris #100279 (21/09).
+///
+/// Le poids du sac et la saison n'entrent PAS dans le calcul : mesure faite sur
+/// l'appareil pendant la campagne personas, de 0 a 45 kg de charge (58 % du
+/// poids du corps) ni le verdict ni le plafond ne bougent. Ils seront cables
+/// dans une version dediee, avec des coefficients SOURCES — on n'invente pas un
+/// coefficient d'effort au juge sur un sujet de securite en montagne.
+///
+/// En attendant, l'ecran le DIT. Laisser un randonneur croire que son sac de
+/// 20 kg a ete pris en compte dans un feu vert, c'est lui faire courir un risque
+/// reel. Place juste sous le feu tricolore : c'est la que la mention compte.
+class _OutOfScopeNotice extends StatelessWidget {
+  const _OutOfScopeNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color = theme.colorScheme.onSurface;
+    return AppCard(
+      backgroundColor: color.withAlpha(14),
+      borderColor: color.withAlpha(60),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.visibility_off_outlined,
+              size: 20, color: color.withAlpha(180)),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(
+              t.feasibility.formula.outOfScopeNotice,
+              style: theme.textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _PartialProfileNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

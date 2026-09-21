@@ -834,6 +834,7 @@
     "formula": {
       "title": "Fattibilità per questo trek",
       "intro": "Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.",
+      "outOfScopeNotice": "Questa valutazione guarda solo due cose: il tuo profilo e lo sforzo di ogni tappa. Il peso del tuo zaino e la stagione non entrano nel calcolo — uno zaino pesante, la neve o il caldo renderanno la giornata più dura di quanto mostrato qui. Tienine conto tu.",
       "ceilingLabel": "Soglia consigliata: ${value} km-sforzo/giorno (${level})",
       "stagesTitle": "Tappa per tappa",
       "stageEffort": "${distance} km + ${elevation} m dislivello = ${effort} km-sforzo",
