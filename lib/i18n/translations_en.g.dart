@@ -595,6 +595,8 @@ class _Translations$diploma$en extends Translations$diploma$fr {
 	@override String get lockedMessage => 'Complete your entire route to unlock your finisher diploma.';
 	@override String get labelIntegral => 'Full route';
 	@override String get labelPartial => 'Partial route';
+	@override String pdfSaved({required Object file}) => 'Diploma saved: ${file}';
+	@override String get pdfError => 'The diploma could not be saved';
 }
 
 // Path: notifications
@@ -4333,6 +4335,8 @@ extension on TranslationsEn {
 			'diploma.lockedMessage' => 'Complete your entire route to unlock your finisher diploma.',
 			'diploma.labelIntegral' => 'Full route',
 			'diploma.labelPartial' => 'Partial route',
+			'diploma.pdfSaved' => ({required Object file}) => 'Diploma saved: ${file}',
+			'diploma.pdfError' => 'The diploma could not be saved',
 			'notifications.morningReminder' => 'Morning reminder',
 			'notifications.weatherAlerts' => 'Weather alerts',
 			'notifications.countdown' => 'D-2 reminder',
@@ -4744,10 +4748,10 @@ extension on TranslationsEn {
 			'packs.progress.error' => 'Download failed',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
-			'packs.delete.cancel' => 'Cancel',
-			'packs.delete.confirm' => 'Delete',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Cancel',
+			'packs.delete.confirm' => 'Delete',
 			'packs.delete.freed' => 'Space freed.',
 			'packs.empty' => 'No pack available for this trail.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
@@ -5258,10 +5262,10 @@ extension on TranslationsEn {
 			'hikerProfile.morphoNotPrefilledHint' => 'Nothing is pre-filled: enter your real data, it is for your safety.',
 			'hikerProfile.seniorReminder' => 'From age 65, a medical check-up is advised before a demanding trek.',
 			'walkTest.title' => '6-minute walk test',
-			'walkTest.intro' => 'Walk as far as you can in 6 minutes on flat ground. GPS measures the distance; we compare it to norms for your age and sex.',
-			'walkTest.safetyWarning' => 'Avoid this effort if you have an unchecked heart condition. Stop if you feel unwell.',
 			_ => null,
 		} ?? switch (path) {
+			'walkTest.intro' => 'Walk as far as you can in 6 minutes on flat ground. GPS measures the distance; we compare it to norms for your age and sex.',
+			'walkTest.safetyWarning' => 'Avoid this effort if you have an unchecked heart condition. Stop if you feel unwell.',
 			'walkTest.start' => 'Start the test',
 			'walkTest.stop' => 'Stop',
 			'walkTest.cancel' => 'Cancel',

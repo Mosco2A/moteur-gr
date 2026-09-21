@@ -595,6 +595,8 @@ class _Translations$diploma$de extends Translations$diploma$fr {
 	@override String get lockedMessage => 'Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.';
 	@override String get labelIntegral => 'Gesamte Route';
 	@override String get labelPartial => 'Teilroute';
+	@override String pdfSaved({required Object file}) => 'Diplom gespeichert: ${file}';
+	@override String get pdfError => 'Das Diplom konnte nicht gespeichert werden';
 }
 
 // Path: notifications
@@ -4333,6 +4335,8 @@ extension on TranslationsDe {
 			'diploma.lockedMessage' => 'Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.',
 			'diploma.labelIntegral' => 'Gesamte Route',
 			'diploma.labelPartial' => 'Teilroute',
+			'diploma.pdfSaved' => ({required Object file}) => 'Diplom gespeichert: ${file}',
+			'diploma.pdfError' => 'Das Diplom konnte nicht gespeichert werden',
 			'notifications.morningReminder' => 'Morgenerinnerung',
 			'notifications.weatherAlerts' => 'Wetterwarnungen',
 			'notifications.countdown' => 'Erinnerung 2 Tage vorher',
@@ -4744,10 +4748,10 @@ extension on TranslationsDe {
 			'packs.progress.error' => 'Download fehlgeschlagen',
 			'packs.delete.confirmTitle' => 'Dieses Paket löschen?',
 			'packs.delete.confirmBody' => 'Das Paket wird vom Gerät entfernt, um Speicher freizugeben. Du kannst es später erneut herunterladen.',
-			'packs.delete.cancel' => 'Abbrechen',
-			'packs.delete.confirm' => 'Löschen',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Abbrechen',
+			'packs.delete.confirm' => 'Löschen',
 			'packs.delete.freed' => 'Speicher freigegeben.',
 			'packs.empty' => 'Kein Paket für diesen Weg verfügbar.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Paket ${nom}, ${state}',
@@ -5258,10 +5262,10 @@ extension on TranslationsDe {
 			'hikerProfile.morphoNotPrefilledHint' => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.',
 			'hikerProfile.seniorReminder' => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine ärztliche Untersuchung empfohlen.',
 			'walkTest.title' => '6-Minuten-Gehtest',
-			'walkTest.intro' => 'Gehen Sie in 6 Minuten so weit wie möglich auf ebenem Gelände. Das GPS misst die Distanz; wir vergleichen sie mit Normen für Alter und Geschlecht.',
-			'walkTest.safetyWarning' => 'Vermeiden Sie diese Anstrengung bei ungeklärten Herzproblemen. Hören Sie bei Unwohlsein auf.',
 			_ => null,
 		} ?? switch (path) {
+			'walkTest.intro' => 'Gehen Sie in 6 Minuten so weit wie möglich auf ebenem Gelände. Das GPS misst die Distanz; wir vergleichen sie mit Normen für Alter und Geschlecht.',
+			'walkTest.safetyWarning' => 'Vermeiden Sie diese Anstrengung bei ungeklärten Herzproblemen. Hören Sie bei Unwohlsein auf.',
 			'walkTest.start' => 'Test starten',
 			'walkTest.stop' => 'Stoppen',
 			'walkTest.cancel' => 'Abbrechen',

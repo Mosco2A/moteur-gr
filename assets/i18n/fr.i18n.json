@@ -700,7 +700,9 @@
     "lockedTitle": "Diplôme verrouillé",
     "lockedMessage": "Terminez l'intégralité de votre parcours pour débloquer votre diplôme de finisher.",
     "labelIntegral": "Parcours intégral",
-    "labelPartial": "Parcours partiel"
+    "labelPartial": "Parcours partiel",
+    "pdfSaved": "Diplôme enregistré : $file",
+    "pdfError": "Impossible d'enregistrer le diplôme"
   },
   "notifications": {
     "morningReminder": "Rappel du matin",

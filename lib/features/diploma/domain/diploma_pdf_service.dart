@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -182,6 +184,53 @@ class DiplomaPdfService {
     );
 
     return pdf.save();
+  }
+
+  /// ECRIT le diplome sur le disque et retourne le fichier obtenu.
+  ///
+  /// CORRECTIF L5-1 — LE BUG LE PLUS GRAVE DU PLAN. [generatePdf] rendait
+  /// bien les octets du document, mais l'ecran appelait la methode SANS
+  /// affecter son retour : les octets etaient calcules puis jetes, et le
+  /// message affiche ensuite reprenait le LIBELLE DU BOUTON, ce qui
+  /// ressemblait a une confirmation de telechargement. Le randonneur
+  /// croyait avoir son diplome, il n'avait rien. Il n'existait, dans tout
+  /// ce service, ni File, ni Share, ni la moindre ecriture.
+  ///
+  /// [directory] n'existe que pour les tests : en production le fichier va
+  /// dans le dossier de documents de l'app, qui SURVIT a la fermeture (le
+  /// dossier temporaire, lui, peut etre vide par le systeme a tout moment
+  /// — inacceptable pour un diplome).
+  static Future<File> savePdf({
+    required Uint8List bytes,
+    required String trailId,
+    DateTime? at,
+    Directory? directory,
+  }) async {
+    final dir = directory ?? await getApplicationDocumentsDirectory();
+    final target = Directory('${dir.path}/diplomas');
+    if (!target.existsSync()) {
+      await target.create(recursive: true);
+    }
+    final file = File('${target.path}/${diplomaFileName(trailId, at: at)}');
+    await file.writeAsBytes(bytes, flush: true);
+    return file;
+  }
+
+  /// Nom de fichier du diplome : lisible, horodate, sans caractere piege.
+  ///
+  /// L'horodatage evite d'ecraser un diplome precedent, et les caracteres
+  /// hors `[a-z0-9-]` sont remplaces : un identifiant de sentier venu d'un
+  /// catalogue distant n'a aucune raison d'etre un nom de fichier valide.
+  static String diplomaFileName(String trailId, {DateTime? at}) {
+    final when = at ?? DateTime.now();
+    final safeTrail = trailId.toLowerCase().replaceAll(
+          RegExp(r'[^a-z0-9-]'),
+          '-',
+        );
+    String two(int v) => v.toString().padLeft(2, '0');
+    final stamp = '${when.year}${two(when.month)}${two(when.day)}'
+        '-${two(when.hour)}${two(when.minute)}${two(when.second)}';
+    return 'diplome-$safeTrail-$stamp.pdf';
   }
 
   /// En-tete : titre + sous-titre + separateur

@@ -595,6 +595,8 @@ class _Translations$diploma$es extends Translations$diploma$fr {
 	@override String get lockedMessage => 'Completa toda tu ruta para desbloquear tu diploma de finisher.';
 	@override String get labelIntegral => 'Ruta integral';
 	@override String get labelPartial => 'Ruta parcial';
+	@override String pdfSaved({required Object file}) => 'Diploma guardado: ${file}';
+	@override String get pdfError => 'No se ha podido guardar el diploma';
 }
 
 // Path: notifications
@@ -4333,6 +4335,8 @@ extension on TranslationsEs {
 			'diploma.lockedMessage' => 'Completa toda tu ruta para desbloquear tu diploma de finisher.',
 			'diploma.labelIntegral' => 'Ruta integral',
 			'diploma.labelPartial' => 'Ruta parcial',
+			'diploma.pdfSaved' => ({required Object file}) => 'Diploma guardado: ${file}',
+			'diploma.pdfError' => 'No se ha podido guardar el diploma',
 			'notifications.morningReminder' => 'Recordatorio matutino',
 			'notifications.weatherAlerts' => 'Alertas meteorológicas',
 			'notifications.countdown' => 'Recordatorio D-2',
@@ -4744,10 +4748,10 @@ extension on TranslationsEs {
 			'packs.progress.error' => 'Error de descarga',
 			'packs.delete.confirmTitle' => '¿Eliminar este pack?',
 			'packs.delete.confirmBody' => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.',
-			'packs.delete.cancel' => 'Cancelar',
-			'packs.delete.confirm' => 'Eliminar',
 			_ => null,
 		} ?? switch (path) {
+			'packs.delete.cancel' => 'Cancelar',
+			'packs.delete.confirm' => 'Eliminar',
 			'packs.delete.freed' => 'Espacio liberado.',
 			'packs.empty' => 'No hay pack disponible para este sendero.',
 			'packs.a11y.packCard' => ({required Object nom, required Object state}) => 'Pack ${nom}, ${state}',
@@ -5258,10 +5262,10 @@ extension on TranslationsEs {
 			'hikerProfile.morphoNotPrefilledHint' => 'Nada está rellenado: introduce tus datos reales, es por tu seguridad.',
 			'hikerProfile.seniorReminder' => 'A partir de los 65 años, se aconseja una revisión médica antes de un trek exigente.',
 			'walkTest.title' => 'Prueba de marcha de 6 minutos',
-			'walkTest.intro' => 'Camina lo más lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.',
-			'walkTest.safetyWarning' => 'Evita este esfuerzo si tienes un problema cardiaco no verificado. Detente si te sientes mal.',
 			_ => null,
 		} ?? switch (path) {
+			'walkTest.intro' => 'Camina lo más lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.',
+			'walkTest.safetyWarning' => 'Evita este esfuerzo si tienes un problema cardiaco no verificado. Detente si te sientes mal.',
 			'walkTest.start' => 'Iniciar la prueba',
 			'walkTest.stop' => 'Detener',
 			'walkTest.cancel' => 'Cancelar',

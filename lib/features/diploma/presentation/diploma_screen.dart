@@ -300,12 +300,37 @@ class _DiplomaScreenState extends ConsumerState<DiplomaScreen> {
         issuedOn: diplomaT.pdfIssuedOn,
       );
 
-      await DiplomaPdfService.generatePdf(data: data, labels: labels);
+      // CORRECTIF L5-1 : le retour de generatePdf est AFFECTE, puis ECRIT.
+      // Avant, les octets etaient calcules puis jetes, et le message qui
+      // suivait reprenait le LIBELLE DU BOUTON — le randonneur croyait
+      // avoir telecharge son diplome alors qu'aucun fichier n'existait.
+      final bytes = await DiplomaPdfService.generatePdf(
+        data: data,
+        labels: labels,
+      );
+      final file = await DiplomaPdfService.savePdf(
+        bytes: bytes,
+        trailId: config.id,
+      );
 
+      if (mounted) {
+        // On nomme le FICHIER REELLEMENT ecrit : un message qui reprend le
+        // libelle du bouton ne prouve rien.
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              diplomaT.pdfSaved(file: file.uri.pathSegments.last),
+            ),
+          ),
+        );
+      }
+    } catch (_) {
+      // Un echec d'ecriture (disque plein, permission) doit se VOIR :
+      // le silence rejouerait exactement le defaut corrige ici.
       if (mounted) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text(diplomaT.generatePdf)));
+        ).showSnackBar(SnackBar(content: Text(t.diploma.pdfError)));
       }
     } finally {
       if (mounted) setState(() => _isGeneratingPdf = false);

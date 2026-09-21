@@ -700,7 +700,9 @@
     "lockedTitle": "Diploma locked",
     "lockedMessage": "Complete your entire route to unlock your finisher diploma.",
     "labelIntegral": "Full route",
-    "labelPartial": "Partial route"
+    "labelPartial": "Partial route",
+    "pdfSaved": "Diploma saved: $file",
+    "pdfError": "The diploma could not be saved"
   },
   "notifications": {
     "morningReminder": "Morning reminder",

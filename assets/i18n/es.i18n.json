@@ -700,7 +700,9 @@
     "lockedTitle": "Diploma bloqueado",
     "lockedMessage": "Completa toda tu ruta para desbloquear tu diploma de finisher.",
     "labelIntegral": "Ruta integral",
-    "labelPartial": "Ruta parcial"
+    "labelPartial": "Ruta parcial",
+    "pdfSaved": "Diploma guardado: $file",
+    "pdfError": "No se ha podido guardar el diploma"
   },
   "notifications": {
     "morningReminder": "Recordatorio matutino",

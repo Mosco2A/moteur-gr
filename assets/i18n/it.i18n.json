@@ -700,7 +700,9 @@
     "lockedTitle": "Diploma bloccato",
     "lockedMessage": "Completa l intero percorso per sbloccare il tuo diploma da finisher.",
     "labelIntegral": "Percorso integrale",
-    "labelPartial": "Percorso parziale"
+    "labelPartial": "Percorso parziale",
+    "pdfSaved": "Diploma salvato: $file",
+    "pdfError": "Impossibile salvare il diploma"
   },
   "notifications": {
     "morningReminder": "Promemoria mattutino",

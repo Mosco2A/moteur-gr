@@ -700,7 +700,9 @@
     "lockedTitle": "Diplom gesperrt",
     "lockedMessage": "Absolviere deine gesamte Route, um dein Finisher-Diplom freizuschalten.",
     "labelIntegral": "Gesamte Route",
-    "labelPartial": "Teilroute"
+    "labelPartial": "Teilroute",
+    "pdfSaved": "Diplom gespeichert: $file",
+    "pdfError": "Das Diplom konnte nicht gespeichert werden"
   },
   "notifications": {
     "morningReminder": "Morgenerinnerung",
