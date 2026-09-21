@@ -70,6 +70,22 @@ void main() {
       await seedDb.customStatement('DROP TABLE IF EXISTS no_ads_state');
       await seedDb.customStatement('DROP TABLE IF EXISTS trek_entitlements');
       await seedDb.customStatement('DROP TABLE IF EXISTS wallet_balance');
+
+      // REMBOBINAGE COMPLEMENTAIRE (socle L3-1, migration v26). Le schema
+      // fabrique ici est le schema COURANT : session_track_points y porte
+      // deja session_id, day_index et stage_id, et l'addColumn de la v26
+      // echouerait sur une colonne existante. On recree donc la table dans sa
+      // forme d'origine (v13), celle qu'une vraie base ancienne aurait.
+      await seedDb.customStatement('DROP TABLE IF EXISTS session_track_points');
+      await seedDb.customStatement(
+        'CREATE TABLE session_track_points ('
+        'id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, '
+        'trail_id TEXT NOT NULL, '
+        'lat REAL NOT NULL, '
+        'lng REAL NOT NULL, '
+        'altitude REAL NOT NULL, '
+        'recorded_at INTEGER NOT NULL)',
+      );
       await seedDb.customStatement('PRAGMA user_version = 23');
       await seedDb.close();
 
