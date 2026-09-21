@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/stage_detector.dart';
 import '../../../core/geo/track_projection.dart';
 import '../../../core/models/stage.dart';
@@ -99,10 +100,17 @@ AsyncValue<TrackPositionState> _computeProjection(
   Ref ref,
   Position position,
 ) {
-  // Recuperer le trailId depuis la config
-  final trailId = ref.watch(
-    gpxTrackProvider('default').select((_) => 'default'),
-  );
+  // Sentier ACTIF (correctif L6-2 suite, 21/09/2026).
+  //
+  // Cette ligne lisait un identifiant 'default' ECRIT EN DUR. Or
+  // [gpxTrackProvider] refuse tout identifiant qui ne soit pas celui de la
+  // config active : il levait donc une erreur a chaque appel, la projection
+  // restait en erreur EN PERMANENCE, et tout ce qui en depend disparaissait
+  // de l'ecran — barre d'etape, distance restante, progression, detection
+  // d'etape, et avec le lot L6 l'alerte ravitaillement et la ligne de
+  // chiffres mesures. Le defaut etait invisible en test (les suites
+  // surchargeaient `gpxTrackProvider('default')`) et total sur l'appareil.
+  final trailId = ref.watch(trailIdProvider);
 
   // Recuperer le trace GPX
   final trackAsync = ref.watch(gpxTrackProvider(trailId));
