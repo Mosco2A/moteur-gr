@@ -493,6 +493,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     // Mode affichage
     final displayName = user.displayName ?? i18n.auth.anonymous;
+    // MINEUR-1 (campagne personas N2) : le pseudo etait pose dans une `Row`
+    // sans contrainte de largeur. Un pseudo a la longueur MAXIMALE que la
+    // saisie autorise elle-meme (`maxLength: 30` ci-dessus) debordait l'ecran
+    // de 126 px, bandes jaunes et noires a l'appui.
+    // POURQUOI `Flexible` et pas une troncature : l'application accepte 30
+    // caracteres, elle doit donc savoir les AFFICHER. `Flexible` borne le texte
+    // a la largeur disponible et le laisse passer a la ligne — le pseudo reste
+    // lisible en entier, et la rangee reste centree sur les pseudos courts
+    // grace a `MainAxisSize.min`.
+    // Les deux autres points d'affichage du meme pseudo (l'en-tete du HUB via
+    // AppGradientHeader, la carte de membre de groupe) placent deja leur texte
+    // dans un `Expanded` : ils sont bornes, rien a corriger la-bas.
     return Center(
       child: GestureDetector(
         onTap: () {
@@ -502,7 +514,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(displayName, style: theme.textTheme.headlineMedium),
+            Flexible(
+              child: Text(
+                displayName,
+                style: theme.textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
+            ),
             const SizedBox(width: AppTheme.spacingXs),
             Icon(Icons.edit, size: 18, color: theme.colorScheme.primary),
           ],
