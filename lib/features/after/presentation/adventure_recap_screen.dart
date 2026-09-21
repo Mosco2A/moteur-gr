@@ -12,6 +12,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../shared/widgets/section_header.dart';
 import '../../diploma/presentation/widgets/session_trace_painter.dart';
+import '../data/gpx_export_service.dart';
 import '../providers/adventure_recap_provider.dart';
 
 /// PARITE GR20, LOT 3 (#99433), point 3.A — Recapitulatif « Mon aventure ».
@@ -118,6 +119,10 @@ class _RecapBody extends ConsumerWidget {
 
           // CORRECTIF L5-3 : le recapitulatif n'offrait AUCUN partage.
           _ShareAdventureButton(stats: stats),
+          const SizedBox(height: AppTheme.spacingMd),
+
+          // CORRECTIF L5-4 : l'export GPX, qui n'existait pas.
+          _ExportGpxButton(stats: stats),
         ],
       ),
     );
@@ -224,6 +229,58 @@ class _ShareAdventureButton extends ConsumerWidget {
           messenger.showSnackBar(
             SnackBar(content: Text(recapT.shareError)),
           );
+        }
+      },
+    );
+  }
+}
+
+/// Bouton « Exporter la trace en GPX » (CORRECTIF L5-4).
+///
+/// StepWays ne savait que LIRE du GPX ; l'export etait un TODO. Le fichier
+/// est ECRIT puis propose au partage : sans ecriture, l'utilisateur n'aurait
+/// aucun moyen de recuperer sa trace — c'est exactement le defaut corrige
+/// au diplome par L5-1, on ne le rejoue pas ici.
+class _ExportGpxButton extends ConsumerWidget {
+  const _ExportGpxButton({required this.stats});
+  final AdventureStats stats;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recapT = t.recap;
+    final config = ref.watch(trailConfigProvider);
+
+    return AppButton(
+      label: recapT.exportGpx,
+      icon: Icons.download_outlined,
+      onPressed: () async {
+        final messenger = ScaffoldMessenger.of(context);
+        // Sans point, on le DIT au lieu d'ecrire un fichier vide qui
+        // n'ouvrirait nulle part.
+        if (stats.tracePoints.isEmpty) {
+          messenger.showSnackBar(SnackBar(content: Text(recapT.gpxEmpty)));
+          return;
+        }
+        try {
+          final content = GpxExportService.buildGpx(
+            points: stats.tracePoints,
+            trackName: config.displayName,
+            description: recapT.shareHeadline(trail: config.displayName),
+          );
+          final file = await GpxExportService.saveGpx(
+            content: content,
+            trailId: config.id,
+          );
+          messenger.showSnackBar(
+            SnackBar(
+              content: Text(
+                recapT.gpxExported(file: file.uri.pathSegments.last),
+              ),
+            ),
+          );
+          await Share.shareXFiles([XFile(file.path)]);
+        } catch (_) {
+          messenger.showSnackBar(SnackBar(content: Text(recapT.gpxError)));
         }
       },
     );

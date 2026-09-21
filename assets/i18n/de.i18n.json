@@ -1454,7 +1454,11 @@
     "elevationLoss": "$meters m Abstieg",
     "shareAdventure": "Mein Abenteuer teilen",
     "shareHeadline": "Mein Abenteuer auf dem $trail",
-    "shareError": "Teilen nicht möglich"
+    "shareError": "Teilen nicht möglich",
+    "exportGpx": "Strecke als GPX exportieren",
+    "gpxExported": "Strecke exportiert: $file",
+    "gpxEmpty": "Kein GPS-Punkt zum Exportieren",
+    "gpxError": "Export nicht möglich"
   },
   "programme": {
     "title": "Programm",

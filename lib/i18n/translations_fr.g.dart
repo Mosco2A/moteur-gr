@@ -2571,6 +2571,18 @@ class Translations$recap$fr {
 
 	/// fr: 'Partage impossible'
 	String get shareError => 'Partage impossible';
+
+	/// fr: 'Exporter la trace en GPX'
+	String get exportGpx => 'Exporter la trace en GPX';
+
+	/// fr: 'Trace exportée : $file'
+	String gpxExported({required Object file}) => 'Trace exportée : ${file}';
+
+	/// fr: 'Aucun point GPS à exporter'
+	String get gpxEmpty => 'Aucun point GPS à exporter';
+
+	/// fr: 'Export impossible'
+	String get gpxError => 'Export impossible';
 }
 
 // Path: programme
@@ -8256,6 +8268,10 @@ extension on Translations {
 			'recap.shareAdventure' => 'Partager mon aventure',
 			'recap.shareHeadline' => ({required Object trail}) => 'Mon aventure sur ${trail}',
 			'recap.shareError' => 'Partage impossible',
+			'recap.exportGpx' => 'Exporter la trace en GPX',
+			'recap.gpxExported' => ({required Object file}) => 'Trace exportée : ${file}',
+			'recap.gpxEmpty' => 'Aucun point GPS à exporter',
+			'recap.gpxError' => 'Export impossible',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
@@ -8593,12 +8609,12 @@ extension on Translations {
 			'hikerProfile.bmiCategories.normal' => 'Corpulence normale',
 			'hikerProfile.bmiCategories.overweight' => 'Surpoids',
 			'hikerProfile.bmiCategories.obese' => 'Obésité',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Données de morphologie (article 9 RGPD)',
 			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilité',
 			'hikerProfile.save' => 'Enregistrer',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.saved' => 'Fiche enregistrée',
 			'hikerProfile.morphoNotPrefilledHint' => 'Rien n\'est pré-rempli : renseignez vos vraies données, c\'est pour votre sécurité.',
 			'hikerProfile.seniorReminder' => 'À partir de 65 ans, une consultation médicale est conseillée avant un trek exigeant.',

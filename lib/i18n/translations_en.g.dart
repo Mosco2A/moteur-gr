@@ -1270,6 +1270,10 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String get shareAdventure => 'Share my adventure';
 	@override String shareHeadline({required Object trail}) => 'My adventure on the ${trail}';
 	@override String get shareError => 'Sharing failed';
+	@override String get exportGpx => 'Export the track as GPX';
+	@override String gpxExported({required Object file}) => 'Track exported: ${file}';
+	@override String get gpxEmpty => 'No GPS point to export';
+	@override String get gpxError => 'Export failed';
 }
 
 // Path: programme
@@ -4925,6 +4929,10 @@ extension on TranslationsEn {
 			'recap.shareAdventure' => 'Share my adventure',
 			'recap.shareHeadline' => ({required Object trail}) => 'My adventure on the ${trail}',
 			'recap.shareError' => 'Sharing failed',
+			'recap.exportGpx' => 'Export the track as GPX',
+			'recap.gpxExported' => ({required Object file}) => 'Track exported: ${file}',
+			'recap.gpxEmpty' => 'No GPS point to export',
+			'recap.gpxError' => 'Export failed',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
@@ -5262,12 +5270,12 @@ extension on TranslationsEn {
 			'hikerProfile.bmiCategories.normal' => 'Normal weight',
 			'hikerProfile.bmiCategories.overweight' => 'Overweight',
 			'hikerProfile.bmiCategories.obese' => 'Obesity',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Body metrics (GDPR article 9)',
 			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.',
 			'hikerProfile.consentToggle' => 'I allow my body metrics to be used for feasibility',
 			'hikerProfile.save' => 'Save',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.saved' => 'Details saved',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nothing is pre-filled: enter your real data, it is for your safety.',
 			'hikerProfile.seniorReminder' => 'From age 65, a medical check-up is advised before a demanding trek.',

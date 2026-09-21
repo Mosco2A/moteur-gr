@@ -1270,6 +1270,10 @@ class _Translations$recap$es extends Translations$recap$fr {
 	@override String get shareAdventure => 'Compartir mi aventura';
 	@override String shareHeadline({required Object trail}) => 'Mi aventura en el ${trail}';
 	@override String get shareError => 'No se ha podido compartir';
+	@override String get exportGpx => 'Exportar la traza en GPX';
+	@override String gpxExported({required Object file}) => 'Traza exportada: ${file}';
+	@override String get gpxEmpty => 'Ningún punto GPS que exportar';
+	@override String get gpxError => 'No se ha podido exportar';
 }
 
 // Path: programme
@@ -4925,6 +4929,10 @@ extension on TranslationsEs {
 			'recap.shareAdventure' => 'Compartir mi aventura',
 			'recap.shareHeadline' => ({required Object trail}) => 'Mi aventura en el ${trail}',
 			'recap.shareError' => 'No se ha podido compartir',
+			'recap.exportGpx' => 'Exportar la traza en GPX',
+			'recap.gpxExported' => ({required Object file}) => 'Traza exportada: ${file}',
+			'recap.gpxEmpty' => 'Ningún punto GPS que exportar',
+			'recap.gpxError' => 'No se ha podido exportar',
 			'programme.title' => 'Programa',
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
@@ -5262,12 +5270,12 @@ extension on TranslationsEs {
 			'hikerProfile.bmiCategories.normal' => 'Peso normal',
 			'hikerProfile.bmiCategories.overweight' => 'Sobrepeso',
 			'hikerProfile.bmiCategories.obese' => 'Obesidad',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Datos corporales (RGPD artículo 9)',
 			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',
 			'hikerProfile.consentToggle' => 'Autorizo el uso de mis datos corporales para la viabilidad',
 			'hikerProfile.save' => 'Guardar',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.saved' => 'Datos guardados',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nada está rellenado: introduce tus datos reales, es por tu seguridad.',
 			'hikerProfile.seniorReminder' => 'A partir de los 65 años, se aconseja una revisión médica antes de un trek exigente.',

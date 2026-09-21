@@ -1270,6 +1270,10 @@ class _Translations$recap$de extends Translations$recap$fr {
 	@override String get shareAdventure => 'Mein Abenteuer teilen';
 	@override String shareHeadline({required Object trail}) => 'Mein Abenteuer auf dem ${trail}';
 	@override String get shareError => 'Teilen nicht möglich';
+	@override String get exportGpx => 'Strecke als GPX exportieren';
+	@override String gpxExported({required Object file}) => 'Strecke exportiert: ${file}';
+	@override String get gpxEmpty => 'Kein GPS-Punkt zum Exportieren';
+	@override String get gpxError => 'Export nicht möglich';
 }
 
 // Path: programme
@@ -4925,6 +4929,10 @@ extension on TranslationsDe {
 			'recap.shareAdventure' => 'Mein Abenteuer teilen',
 			'recap.shareHeadline' => ({required Object trail}) => 'Mein Abenteuer auf dem ${trail}',
 			'recap.shareError' => 'Teilen nicht möglich',
+			'recap.exportGpx' => 'Strecke als GPX exportieren',
+			'recap.gpxExported' => ({required Object file}) => 'Strecke exportiert: ${file}',
+			'recap.gpxEmpty' => 'Kein GPS-Punkt zum Exportieren',
+			'recap.gpxError' => 'Export nicht möglich',
 			'programme.title' => 'Programm',
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
@@ -5262,12 +5270,12 @@ extension on TranslationsDe {
 			'hikerProfile.bmiCategories.normal' => 'Normalgewicht',
 			'hikerProfile.bmiCategories.overweight' => 'Übergewicht',
 			'hikerProfile.bmiCategories.obese' => 'Adipositas',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Körperdaten (DSGVO Artikel 9)',
 			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
 			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit',
 			'hikerProfile.save' => 'Speichern',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.saved' => 'Angaben gespeichert',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.',
 			'hikerProfile.seniorReminder' => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine ärztliche Untersuchung empfohlen.',

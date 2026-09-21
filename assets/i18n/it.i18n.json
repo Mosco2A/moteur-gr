@@ -1454,7 +1454,11 @@
     "elevationLoss": "$meters m di dislivello negativo",
     "shareAdventure": "Condividi la mia avventura",
     "shareHeadline": "La mia avventura sul $trail",
-    "shareError": "Condivisione non riuscita"
+    "shareError": "Condivisione non riuscita",
+    "exportGpx": "Esporta la traccia in GPX",
+    "gpxExported": "Traccia esportata: $file",
+    "gpxEmpty": "Nessun punto GPS da esportare",
+    "gpxError": "Esportazione non riuscita"
   },
   "programme": {
     "title": "Programma",

@@ -1270,6 +1270,10 @@ class _Translations$recap$it extends Translations$recap$fr {
 	@override String get shareAdventure => 'Condividi la mia avventura';
 	@override String shareHeadline({required Object trail}) => 'La mia avventura sul ${trail}';
 	@override String get shareError => 'Condivisione non riuscita';
+	@override String get exportGpx => 'Esporta la traccia in GPX';
+	@override String gpxExported({required Object file}) => 'Traccia esportata: ${file}';
+	@override String get gpxEmpty => 'Nessun punto GPS da esportare';
+	@override String get gpxError => 'Esportazione non riuscita';
 }
 
 // Path: programme
@@ -4925,6 +4929,10 @@ extension on TranslationsIt {
 			'recap.shareAdventure' => 'Condividi la mia avventura',
 			'recap.shareHeadline' => ({required Object trail}) => 'La mia avventura sul ${trail}',
 			'recap.shareError' => 'Condivisione non riuscita',
+			'recap.exportGpx' => 'Esporta la traccia in GPX',
+			'recap.gpxExported' => ({required Object file}) => 'Traccia esportata: ${file}',
+			'recap.gpxEmpty' => 'Nessun punto GPS da esportare',
+			'recap.gpxError' => 'Esportazione non riuscita',
 			'programme.title' => 'Programma',
 			'programme.helpTooltip' => 'Aiuto',
 			'programme.duration.label' => 'Numero di giorni',
@@ -5262,12 +5270,12 @@ extension on TranslationsIt {
 			'hikerProfile.bmiCategories.normal' => 'Normopeso',
 			'hikerProfile.bmiCategories.overweight' => 'Sovrappeso',
 			'hikerProfile.bmiCategories.obese' => 'Obesità',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Dati corporei (GDPR articolo 9)',
 			'hikerProfile.consentBody' => 'Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.',
 			'hikerProfile.consentToggle' => 'Autorizzo l\'uso dei miei dati corporei per la fattibilità',
 			'hikerProfile.save' => 'Salva',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.saved' => 'Dati salvati',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nulla è precompilato: inserisci i tuoi dati reali, è per la tua sicurezza.',
 			'hikerProfile.seniorReminder' => 'Dai 65 anni, si consiglia una visita medica prima di un trek impegnativo.',
