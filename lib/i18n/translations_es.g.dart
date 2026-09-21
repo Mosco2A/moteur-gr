@@ -276,8 +276,8 @@ class _Translations$stage$es extends Translations$stage$fr {
 	@override late final _Translations$stage$difficulty$es difficulty = _Translations$stage$difficulty$es._(_root);
 	@override String get remaining => '{distance} km restantes';
 	@override String get arrived => 'Has llegado!';
-	@override String get altitudeProfile => 'Perfil altimetrico';
-	@override String get statistics => 'Estadisticas';
+	@override String get altitudeProfile => 'Perfil altimétrico';
+	@override String get statistics => 'Estadísticas';
 	@override String get departureArrival => 'De {from} a {to}';
 	@override String get loading => 'Cargando...';
 	@override String get loadingList => 'Cargando las etapas...';
@@ -384,18 +384,18 @@ class _Translations$itinerary$es extends Translations$itinerary$fr {
 
 	// Translations
 	@override String get title => 'Itinerario';
-	@override String get subtitle => 'Tus etapas, dia a dia';
+	@override String get subtitle => 'Tus etapas, día a día';
 	@override late final _Translations$itinerary$direction$es direction = _Translations$itinerary$direction$es._(_root);
 	@override String get empty => 'Ninguna etapa disponible';
 	@override String get emptyHint => 'Los datos del sendero no estan cargados.';
 	@override String get loading => 'Cargando itinerario...';
 	@override String get error => 'No se puede cargar el itinerario';
-	@override String get day => 'Dia';
+	@override String get day => 'Día';
 	@override String get stage => 'Etapa';
 	@override String get stages => 'Etapas';
 	@override String get totalDistance => 'Distancia';
 	@override String get totalElevation => 'D+';
-	@override String get restDay => 'Dia de descanso';
+	@override String get restDay => 'Día de descanso';
 	@override String get viewStage => 'Ver etapa';
 	@override String get openMap => 'Ver en el mapa';
 	@override String get stageCount => '{count} etapas';
@@ -733,27 +733,27 @@ class _Translations$tips$es extends Translations$tips$fr {
 	// Translations
 	@override String get carouselTitle => 'Consejos trek';
 	@override String get allCategories => 'Todas';
-	@override String get swipeHint => 'Desliza para ver mas';
+	@override String get swipeHint => 'Desliza para ver más';
 	@override String get detailTitle => 'Detalle del consejo';
-	@override String get readMore => 'Leer mas';
+	@override String get readMore => 'Leer más';
 	@override String get noTips => 'No hay consejos disponibles';
-	@override String get categoryPreparation => 'Preparacion';
+	@override String get categoryPreparation => 'Preparación';
 	@override String get categoryEquipment => 'Equipamiento';
-	@override String get categoryNutrition => 'Nutricion';
+	@override String get categoryNutrition => 'Nutrición';
 	@override String get categorySafety => 'Seguridad';
 	@override String get categoryNature => 'Naturaleza';
-	@override String get categoryRecovery => 'Recuperacion';
+	@override String get categoryRecovery => 'Recuperación';
 	@override String get categoryGeneral => 'General';
 	@override String get priorityHigh => 'Prioridad alta';
 	@override String get scope => 'Sendero';
 	@override String get season => 'Temporada';
 	@override String get altitude => 'Altitud min.';
 	@override String get screenTitle => 'Fichas de consejos';
-	@override String get screenIntro => 'Todo para que tu ruta sea un exito';
-	@override String get followUs => 'Siguenos:';
+	@override String get screenIntro => 'Todo para que tu ruta sea un éxito';
+	@override String get followUs => 'Síguenos:';
 	@override String get viewOnFacebook => 'Ver en Facebook';
 	@override String get viewOnInstagram => 'Instagram';
-	@override String get linkOffline => 'Enlace no disponible sin conexion';
+	@override String get linkOffline => 'Enlace no disponible sin conexión';
 	@override String get emptyThemed => 'No hay fichas de consejos para este sendero.';
 	@override String moreTips({required Object n}) => '+ ${n} consejos';
 	@override late final _Translations$tips$themes$es themes = _Translations$tips$themes$es._(_root);
@@ -941,15 +941,15 @@ class _Translations$training$es extends Translations$training$fr {
 	@override String get paywallSubtitle => 'Plan adaptado a tu perfil y a tu fecha de salida.';
 	@override String get unlock => 'Desbloquear';
 	@override String effortIntro({required Object weeks, required Object km, required Object elevation}) => 'Un plan progresivo de ${weeks} semanas para afrontar los ${km} km y unos ${elevation} m de desnivel.';
-	@override String countdown({required Object days}) => 'Salida en ${days} dias';
+	@override String countdown({required Object days}) => 'Salida en ${days} días';
 	@override String planOverWeeks({required Object n}) => 'Plan de ${n} semanas';
 	@override String phaseWeeks({required Object start, required Object end, required Object title}) => 'Semanas ${start}-${end} · ${title}';
 	@override String get objectiveTitle => 'Objetivo clave';
 	@override String get inviteSetDate => 'Fija tu fecha de salida en el Calendario para activar la cuenta atras.';
 	@override String get inviteFillProfile => 'Rellena tu ficha para adaptar el plan a tu perfil.';
-	@override String get genericPlanNotice => 'Plan generico: pronto habra un plan dedicado a este sendero.';
-	@override String get cautionVerdictNotice => 'Tu viabilidad invita a la prudencia: respeta la progresion y no acortes la preparacion.';
-	@override String departureTooClose({required Object days}) => 'Quedan ${days} dias: plan condensado al tiempo disponible.';
+	@override String get genericPlanNotice => 'Plan genérico: pronto habrá un plan dedicado a este sendero.';
+	@override String get cautionVerdictNotice => 'Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.';
+	@override String departureTooClose({required Object days}) => 'Quedan ${days} días: plan condensado al tiempo disponible.';
 	@override String get noPlan => 'Programa de entrenamiento disponible pronto para este sendero.';
 }
 
@@ -1609,11 +1609,11 @@ class _Translations$ffrando$es extends Translations$ffrando$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get cotationTitle => 'Clasificacion FFRandonnee';
+	@override String get cotationTitle => 'Clasificación FFRandonnee';
 	@override String get effort => 'Esfuerzo';
 	@override String get technicite => 'Tecnicidad';
 	@override String get risque => 'Riesgo';
-	@override String get ibpLabel => 'Indice IBP';
+	@override String get ibpLabel => 'Índice IBP';
 	@override String get effortScale => 'Esfuerzo (1 a 5)';
 	@override String get techniciteScale => 'Tecnicidad (1 a 5)';
 	@override String get risqueScale => 'Riesgo (1 a 5)';
@@ -1830,7 +1830,7 @@ class _Translations$stage$waterSources$es extends Translations$stage$waterSource
 	// Translations
 	@override String get title => 'Puntos de agua';
 	@override String get count => '{n} fuente(s)';
-	@override String get none => 'No hay ningun punto de agua indicado en esta etapa. Lleve al menos 3 L por persona.';
+	@override String get none => 'No hay ningún punto de agua indicado en esta etapa. Lleve al menos 3 L por persona.';
 }
 
 // Path: stage.accommodation
@@ -1841,7 +1841,7 @@ class _Translations$stage$accommodation$es extends Translations$stage$accommodat
 
 	// Translations
 	@override String get title => 'Alojamientos';
-	@override String get none => 'No hay ningun alojamiento indicado en esta etapa.';
+	@override String get none => 'No hay ningún alojamiento indicado en esta etapa.';
 }
 
 // Path: stage.advice
@@ -1854,7 +1854,7 @@ class _Translations$stage$advice$es extends Translations$stage$advice$fr {
 	@override String get title => 'Consejos';
 	@override String get waterScarce => 'Pocos puntos de agua: salga con al menos 2,5 L.';
 	@override String get waterAmple => 'Rellene las cantimploras en cada punto de agua que encuentre.';
-	@override String get hardStage => 'Etapa tecnica: salga temprano para evitar el calor y las tormentas de la tarde.';
+	@override String get hardStage => 'Etapa técnica: salga temprano para evitar el calor y las tormentas de la tarde.';
 	@override String get earlyStart => 'Se recomienda salir antes de las 8 h para aprovechar el fresco matinal.';
 	@override String get bigClimb => 'Fuerte desnivel positivo: dosifique el esfuerzo y haga pausas regulares.';
 }
@@ -3307,11 +3307,11 @@ class _Translations$ffrando$effortLevels$es extends Translations$ffrando$effortL
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get k1 => 'Muy facil';
-	@override String get k2 => 'Facil';
+	@override String get k1 => 'Muy fácil';
+	@override String get k2 => 'Fácil';
 	@override String get k3 => 'Medio';
-	@override String get k4 => 'Dificil';
-	@override String get k5 => 'Muy dificil';
+	@override String get k4 => 'Difícil';
+	@override String get k5 => 'Muy difícil';
 }
 
 // Path: sos.medicalId
@@ -3877,8 +3877,8 @@ extension on TranslationsEs {
 			'stage.difficulty.extreme' => 'Extremo',
 			'stage.remaining' => '{distance} km restantes',
 			'stage.arrived' => 'Has llegado!',
-			'stage.altitudeProfile' => 'Perfil altimetrico',
-			'stage.statistics' => 'Estadisticas',
+			'stage.altitudeProfile' => 'Perfil altimétrico',
+			'stage.statistics' => 'Estadísticas',
 			'stage.departureArrival' => 'De {from} a {to}',
 			'stage.loading' => 'Cargando...',
 			'stage.loadingList' => 'Cargando las etapas...',
@@ -3887,13 +3887,13 @@ extension on TranslationsEs {
 			'stage.difficultyLabel' => 'Dificultad',
 			'stage.waterSources.title' => 'Puntos de agua',
 			'stage.waterSources.count' => '{n} fuente(s)',
-			'stage.waterSources.none' => 'No hay ningun punto de agua indicado en esta etapa. Lleve al menos 3 L por persona.',
+			'stage.waterSources.none' => 'No hay ningún punto de agua indicado en esta etapa. Lleve al menos 3 L por persona.',
 			'stage.accommodation.title' => 'Alojamientos',
-			'stage.accommodation.none' => 'No hay ningun alojamiento indicado en esta etapa.',
+			'stage.accommodation.none' => 'No hay ningún alojamiento indicado en esta etapa.',
 			'stage.advice.title' => 'Consejos',
 			'stage.advice.waterScarce' => 'Pocos puntos de agua: salga con al menos 2,5 L.',
 			'stage.advice.waterAmple' => 'Rellene las cantimploras en cada punto de agua que encuentre.',
-			'stage.advice.hardStage' => 'Etapa tecnica: salga temprano para evitar el calor y las tormentas de la tarde.',
+			'stage.advice.hardStage' => 'Etapa técnica: salga temprano para evitar el calor y las tormentas de la tarde.',
 			'stage.advice.earlyStart' => 'Se recomienda salir antes de las 8 h para aprovechar el fresco matinal.',
 			'stage.advice.bigClimb' => 'Fuerte desnivel positivo: dosifique el esfuerzo y haga pausas regulares.',
 			'trail.stages' => 'Etapas',
@@ -3935,7 +3935,7 @@ extension on TranslationsEs {
 			'planning.stages' => 'Etapas',
 			'planning.plan' => 'Planificar',
 			'itinerary.title' => 'Itinerario',
-			'itinerary.subtitle' => 'Tus etapas, dia a dia',
+			'itinerary.subtitle' => 'Tus etapas, día a día',
 			'itinerary.direction.title' => 'Sentido de la ruta',
 			'itinerary.direction.from' => 'Salida',
 			'itinerary.direction.to' => 'Llegada',
@@ -3944,12 +3944,12 @@ extension on TranslationsEs {
 			'itinerary.emptyHint' => 'Los datos del sendero no estan cargados.',
 			'itinerary.loading' => 'Cargando itinerario...',
 			'itinerary.error' => 'No se puede cargar el itinerario',
-			'itinerary.day' => 'Dia',
+			'itinerary.day' => 'Día',
 			'itinerary.stage' => 'Etapa',
 			'itinerary.stages' => 'Etapas',
 			'itinerary.totalDistance' => 'Distancia',
 			'itinerary.totalElevation' => 'D+',
-			'itinerary.restDay' => 'Dia de descanso',
+			'itinerary.restDay' => 'Día de descanso',
 			'itinerary.viewStage' => 'Ver etapa',
 			'itinerary.openMap' => 'Ver en el mapa',
 			'itinerary.stageCount' => '{count} etapas',
@@ -4440,27 +4440,27 @@ extension on TranslationsEs {
 			'feasibility.flow.partialNotice' => 'Resultado provisional: tu perfil está incompleto. Completa tu ficha, la prueba o tus rutas para un veredicto fiable.',
 			'tips.carouselTitle' => 'Consejos trek',
 			'tips.allCategories' => 'Todas',
-			'tips.swipeHint' => 'Desliza para ver mas',
+			'tips.swipeHint' => 'Desliza para ver más',
 			'tips.detailTitle' => 'Detalle del consejo',
-			'tips.readMore' => 'Leer mas',
+			'tips.readMore' => 'Leer más',
 			'tips.noTips' => 'No hay consejos disponibles',
-			'tips.categoryPreparation' => 'Preparacion',
+			'tips.categoryPreparation' => 'Preparación',
 			'tips.categoryEquipment' => 'Equipamiento',
-			'tips.categoryNutrition' => 'Nutricion',
+			'tips.categoryNutrition' => 'Nutrición',
 			'tips.categorySafety' => 'Seguridad',
 			'tips.categoryNature' => 'Naturaleza',
-			'tips.categoryRecovery' => 'Recuperacion',
+			'tips.categoryRecovery' => 'Recuperación',
 			'tips.categoryGeneral' => 'General',
 			'tips.priorityHigh' => 'Prioridad alta',
 			'tips.scope' => 'Sendero',
 			'tips.season' => 'Temporada',
 			'tips.altitude' => 'Altitud min.',
 			'tips.screenTitle' => 'Fichas de consejos',
-			'tips.screenIntro' => 'Todo para que tu ruta sea un exito',
-			'tips.followUs' => 'Siguenos:',
+			'tips.screenIntro' => 'Todo para que tu ruta sea un éxito',
+			'tips.followUs' => 'Síguenos:',
 			'tips.viewOnFacebook' => 'Ver en Facebook',
 			'tips.viewOnInstagram' => 'Instagram',
-			'tips.linkOffline' => 'Enlace no disponible sin conexion',
+			'tips.linkOffline' => 'Enlace no disponible sin conexión',
 			'tips.emptyThemed' => 'No hay fichas de consejos para este sendero.',
 			'tips.moreTips' => ({required Object n}) => '+ ${n} consejos',
 			'tips.themes.gear' => 'Material',
@@ -4573,15 +4573,15 @@ extension on TranslationsEs {
 			'training.paywallSubtitle' => 'Plan adaptado a tu perfil y a tu fecha de salida.',
 			'training.unlock' => 'Desbloquear',
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un plan progresivo de ${weeks} semanas para afrontar los ${km} km y unos ${elevation} m de desnivel.',
-			'training.countdown' => ({required Object days}) => 'Salida en ${days} dias',
+			'training.countdown' => ({required Object days}) => 'Salida en ${days} días',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan de ${n} semanas',
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semanas ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Objetivo clave',
 			'training.inviteSetDate' => 'Fija tu fecha de salida en el Calendario para activar la cuenta atras.',
 			'training.inviteFillProfile' => 'Rellena tu ficha para adaptar el plan a tu perfil.',
-			'training.genericPlanNotice' => 'Plan generico: pronto habra un plan dedicado a este sendero.',
-			'training.cautionVerdictNotice' => 'Tu viabilidad invita a la prudencia: respeta la progresion y no acortes la preparacion.',
-			'training.departureTooClose' => ({required Object days}) => 'Quedan ${days} dias: plan condensado al tiempo disponible.',
+			'training.genericPlanNotice' => 'Plan genérico: pronto habrá un plan dedicado a este sendero.',
+			'training.cautionVerdictNotice' => 'Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.',
+			'training.departureTooClose' => ({required Object days}) => 'Quedan ${days} días: plan condensado al tiempo disponible.',
 			'training.noPlan' => 'Programa de entrenamiento disponible pronto para este sendero.',
 			'eta.title' => 'Tiempo estimado',
 			'eta.toNextWaypoint' => 'Próximo punto',
@@ -5272,20 +5272,20 @@ extension on TranslationsEs {
 			'pastHikes.difficultiesTitle' => 'Dificultades encontradas',
 			'pastHikes.difficultiesHint' => 'Un solo texto para todas estas rutas: ampollas, rodillas en bajada, ahogo en altitud, golpe de calor...',
 			'pastHikes.difficultiesSaved' => 'Nota guardada',
-			'ffrando.cotationTitle' => 'Clasificacion FFRandonnee',
+			'ffrando.cotationTitle' => 'Clasificación FFRandonnee',
 			'ffrando.effort' => 'Esfuerzo',
 			'ffrando.technicite' => 'Tecnicidad',
 			'ffrando.risque' => 'Riesgo',
-			'ffrando.ibpLabel' => 'Indice IBP',
+			'ffrando.ibpLabel' => 'Índice IBP',
 			'ffrando.effortScale' => 'Esfuerzo (1 a 5)',
 			'ffrando.techniciteScale' => 'Tecnicidad (1 a 5)',
 			'ffrando.risqueScale' => 'Riesgo (1 a 5)',
 			'ffrando.notRated' => 'Sin clasificar',
-			'ffrando.effortLevels.k1' => 'Muy facil',
-			'ffrando.effortLevels.k2' => 'Facil',
+			'ffrando.effortLevels.k1' => 'Muy fácil',
+			'ffrando.effortLevels.k2' => 'Fácil',
 			'ffrando.effortLevels.k3' => 'Medio',
-			'ffrando.effortLevels.k4' => 'Dificil',
-			'ffrando.effortLevels.k5' => 'Muy dificil',
+			'ffrando.effortLevels.k4' => 'Difícil',
+			'ffrando.effortLevels.k5' => 'Muy difícil',
 			'sos.title' => '¿Llamar a emergencias?',
 			'sos.body' => 'Está a punto de llamar al 112 (emergencias europeas).',
 			'sos.positionTitle' => 'Su posición actual',

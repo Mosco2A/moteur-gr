@@ -201,8 +201,8 @@
     },
     "remaining": "{distance} km restantes",
     "arrived": "Has llegado!",
-    "altitudeProfile": "Perfil altimetrico",
-    "statistics": "Estadisticas",
+    "altitudeProfile": "Perfil altimétrico",
+    "statistics": "Estadísticas",
     "departureArrival": "De {from} a {to}",
     "loading": "Cargando...",
     "loadingList": "Cargando las etapas...",
@@ -212,17 +212,17 @@
     "waterSources": {
       "title": "Puntos de agua",
       "count": "{n} fuente(s)",
-      "none": "No hay ningun punto de agua indicado en esta etapa. Lleve al menos 3 L por persona."
+      "none": "No hay ningún punto de agua indicado en esta etapa. Lleve al menos 3 L por persona."
     },
     "accommodation": {
       "title": "Alojamientos",
-      "none": "No hay ningun alojamiento indicado en esta etapa."
+      "none": "No hay ningún alojamiento indicado en esta etapa."
     },
     "advice": {
       "title": "Consejos",
       "waterScarce": "Pocos puntos de agua: salga con al menos 2,5 L.",
       "waterAmple": "Rellene las cantimploras en cada punto de agua que encuentre.",
-      "hardStage": "Etapa tecnica: salga temprano para evitar el calor y las tormentas de la tarde.",
+      "hardStage": "Etapa técnica: salga temprano para evitar el calor y las tormentas de la tarde.",
       "earlyStart": "Se recomienda salir antes de las 8 h para aprovechar el fresco matinal.",
       "bigClimb": "Fuerte desnivel positivo: dosifique el esfuerzo y haga pausas regulares."
     }
@@ -281,7 +281,7 @@
   },
   "itinerary": {
     "title": "Itinerario",
-    "subtitle": "Tus etapas, dia a dia",
+    "subtitle": "Tus etapas, día a día",
     "direction": {
       "title": "Sentido de la ruta",
       "from": "Salida",
@@ -292,12 +292,12 @@
     "emptyHint": "Los datos del sendero no estan cargados.",
     "loading": "Cargando itinerario...",
     "error": "No se puede cargar el itinerario",
-    "day": "Dia",
+    "day": "Día",
     "stage": "Etapa",
     "stages": "Etapas",
     "totalDistance": "Distancia",
     "totalElevation": "D+",
-    "restDay": "Dia de descanso",
+    "restDay": "Día de descanso",
     "viewStage": "Ver etapa",
     "openMap": "Ver en el mapa",
     "stageCount": "{count} etapas"
@@ -854,27 +854,27 @@
   "tips": {
     "carouselTitle": "Consejos trek",
     "allCategories": "Todas",
-    "swipeHint": "Desliza para ver mas",
+    "swipeHint": "Desliza para ver más",
     "detailTitle": "Detalle del consejo",
-    "readMore": "Leer mas",
+    "readMore": "Leer más",
     "noTips": "No hay consejos disponibles",
-    "categoryPreparation": "Preparacion",
+    "categoryPreparation": "Preparación",
     "categoryEquipment": "Equipamiento",
-    "categoryNutrition": "Nutricion",
+    "categoryNutrition": "Nutrición",
     "categorySafety": "Seguridad",
     "categoryNature": "Naturaleza",
-    "categoryRecovery": "Recuperacion",
+    "categoryRecovery": "Recuperación",
     "categoryGeneral": "General",
     "priorityHigh": "Prioridad alta",
     "scope": "Sendero",
     "season": "Temporada",
     "altitude": "Altitud min.",
     "screenTitle": "Fichas de consejos",
-    "screenIntro": "Todo para que tu ruta sea un exito",
-    "followUs": "Siguenos:",
+    "screenIntro": "Todo para que tu ruta sea un éxito",
+    "followUs": "Síguenos:",
     "viewOnFacebook": "Ver en Facebook",
     "viewOnInstagram": "Instagram",
-    "linkOffline": "Enlace no disponible sin conexion",
+    "linkOffline": "Enlace no disponible sin conexión",
     "emptyThemed": "No hay fichas de consejos para este sendero.",
     "moreTips": "+ $n consejos",
     "themes": {
@@ -1025,15 +1025,15 @@
     "paywallSubtitle": "Plan adaptado a tu perfil y a tu fecha de salida.",
     "unlock": "Desbloquear",
     "effortIntro": "Un plan progresivo de $weeks semanas para afrontar los $km km y unos $elevation m de desnivel.",
-    "countdown": "Salida en $days dias",
+    "countdown": "Salida en $days días",
     "planOverWeeks": "Plan de $n semanas",
     "phaseWeeks": "Semanas $start-$end · $title",
     "objectiveTitle": "Objetivo clave",
     "inviteSetDate": "Fija tu fecha de salida en el Calendario para activar la cuenta atras.",
     "inviteFillProfile": "Rellena tu ficha para adaptar el plan a tu perfil.",
-    "genericPlanNotice": "Plan generico: pronto habra un plan dedicado a este sendero.",
-    "cautionVerdictNotice": "Tu viabilidad invita a la prudencia: respeta la progresion y no acortes la preparacion.",
-    "departureTooClose": "Quedan $days dias: plan condensado al tiempo disponible.",
+    "genericPlanNotice": "Plan genérico: pronto habrá un plan dedicado a este sendero.",
+    "cautionVerdictNotice": "Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.",
+    "departureTooClose": "Quedan $days días: plan condensado al tiempo disponible.",
     "noPlan": "Programa de entrenamiento disponible pronto para este sendero."
   },
   "eta": {
@@ -1960,21 +1960,21 @@
     "difficultiesSaved": "Nota guardada"
   },
   "ffrando": {
-    "cotationTitle": "Clasificacion FFRandonnee",
+    "cotationTitle": "Clasificación FFRandonnee",
     "effort": "Esfuerzo",
     "technicite": "Tecnicidad",
     "risque": "Riesgo",
-    "ibpLabel": "Indice IBP",
+    "ibpLabel": "Índice IBP",
     "effortScale": "Esfuerzo (1 a 5)",
     "techniciteScale": "Tecnicidad (1 a 5)",
     "risqueScale": "Riesgo (1 a 5)",
     "notRated": "Sin clasificar",
     "effortLevels": {
-      "1": "Muy facil",
-      "2": "Facil",
+      "1": "Muy fácil",
+      "2": "Fácil",
       "3": "Medio",
-      "4": "Dificil",
-      "5": "Muy dificil"
+      "4": "Difícil",
+      "5": "Muy difícil"
     }
   },
   "sos": {
