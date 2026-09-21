@@ -283,7 +283,7 @@ class _Translations$stage$it extends Translations$stage$fr {
 	@override String get loadingList => 'Caricamento delle tappe...';
 	@override String get dPlus => 'D+';
 	@override String get dMinus => 'D-';
-	@override String get difficultyLabel => 'Difficolta';
+	@override String get difficultyLabel => 'Difficoltà';
 	@override late final _Translations$stage$waterSources$it waterSources = _Translations$stage$waterSources$it._(_root);
 	@override late final _Translations$stage$accommodation$it accommodation = _Translations$stage$accommodation$it._(_root);
 	@override late final _Translations$stage$advice$it advice = _Translations$stage$advice$it._(_root);
@@ -414,7 +414,7 @@ class _Translations$tracking$it extends Translations$tracking$fr {
 	@override String get stop => 'Ferma';
 	@override String get distance => 'Distanza';
 	@override String get elevation => 'Dislivello';
-	@override String get speed => 'Velocita';
+	@override String get speed => 'Velocità';
 	@override String get time => 'Tempo';
 	@override String get confirmStop => 'Fermare il tracciamento?';
 	@override String get dPlus => 'D+';
@@ -711,7 +711,7 @@ class _Translations$feasibility$it extends Translations$feasibility$fr {
 
 	// Translations
 	@override String get restart => 'Start over';
-	@override String get objectiveTitle => 'Fattibilita per questo trek';
+	@override String get objectiveTitle => 'Fattibilità per questo trek';
 	@override String get objectiveIntro => 'Verdetto basato sul tuo profilo reale incrociato con i requisiti del trek.';
 	@override String get openProfile => 'I miei dati';
 	@override String get openWalkTest => 'Test di 6 minuti';
@@ -735,7 +735,7 @@ class _Translations$tips$it extends Translations$tips$fr {
 	@override String get allCategories => 'Tutte';
 	@override String get swipeHint => 'Scorri per vedere altro';
 	@override String get detailTitle => 'Dettaglio consiglio';
-	@override String get readMore => 'Leggi di piu';
+	@override String get readMore => 'Leggi di più';
 	@override String get noTips => 'Nessun consiglio disponibile';
 	@override String get categoryPreparation => 'Preparazione';
 	@override String get categoryEquipment => 'Attrezzatura';
@@ -744,7 +744,7 @@ class _Translations$tips$it extends Translations$tips$fr {
 	@override String get categoryNature => 'Natura';
 	@override String get categoryRecovery => 'Recupero';
 	@override String get categoryGeneral => 'Generale';
-	@override String get priorityHigh => 'Priorita alta';
+	@override String get priorityHigh => 'Priorità alta';
 	@override String get scope => 'Sentiero';
 	@override String get season => 'Stagione';
 	@override String get altitude => 'Altitudine min.';
@@ -767,7 +767,7 @@ class _Translations$goodies$it extends Translations$goodies$fr {
 
 	// Translations
 	@override String get title => 'Negozio Goodies';
-	@override String get comingSoon => 'Questo modulo arrivera presto. Resta connesso!';
+	@override String get comingSoon => 'Questo modulo arriverà presto. Resta connesso!';
 }
 
 // Path: noData
@@ -947,8 +947,8 @@ class _Translations$training$it extends Translations$training$fr {
 	@override String get objectiveTitle => 'Obiettivo chiave';
 	@override String get inviteSetDate => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.';
 	@override String get inviteFillProfile => 'Compila la tua scheda per adattare il piano al tuo profilo.';
-	@override String get genericPlanNotice => 'Piano generico: un piano dedicato a questo sentiero arrivera presto.';
-	@override String get cautionVerdictNotice => 'La tua fattibilita invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.';
+	@override String get genericPlanNotice => 'Piano generico: un piano dedicato a questo sentiero arriverà presto.';
+	@override String get cautionVerdictNotice => 'La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.';
 	@override String departureTooClose({required Object days}) => 'Restano ${days} giorni: piano condensato sul tempo disponibile.';
 	@override String get noPlan => 'Programma di allenamento presto disponibile per questo sentiero.';
 }
@@ -1170,7 +1170,7 @@ class _Translations$consent$it extends Translations$consent$fr {
 	@override String get privacyPolicyLink => 'Leggi l\'informativa sulla privacy';
 	@override String get reviewNeeded => 'La nostra politica è cambiata: rivedi le tue scelte.';
 	@override late final _Translations$consent$a11y$it a11y = _Translations$consent$a11y$it._(_root);
-	@override String get healthDataMorphoNote => 'Include i tuoi dati corporei (eta, altezza, peso) per la fattibilita del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.';
+	@override String get healthDataMorphoNote => 'Include i tuoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.';
 }
 
 // Path: moderation
@@ -1510,10 +1510,10 @@ class _Translations$hikerProfile$it extends Translations$hikerProfile$fr {
 
 	// Translations
 	@override String get title => 'I tuoi dati';
-	@override String get privacyBanner => 'I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup cifrato, senza il tuo nome) per calcolare la fattibilita.';
-	@override String get fieldAge => 'Eta';
+	@override String get privacyBanner => 'I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup cifrato, senza il tuo nome) per calcolare la fattibilità.';
+	@override String get fieldAge => 'Età';
 	@override String get hintAge => 'In anni';
-	@override String get errorAge => 'Eta non valida (8 a 100 anni)';
+	@override String get errorAge => 'Età non valida (8 a 100 anni)';
 	@override String get fieldHeight => 'Altezza';
 	@override String get hintHeight => 'In centimetri';
 	@override String get errorHeight => 'Altezza non valida (100 a 250 cm)';
@@ -1530,8 +1530,8 @@ class _Translations$hikerProfile$it extends Translations$hikerProfile$fr {
 	@override String get bmiLabel => 'IMC';
 	@override late final _Translations$hikerProfile$bmiCategories$it bmiCategories = _Translations$hikerProfile$bmiCategories$it._(_root);
 	@override String get consentTitle => 'Dati corporei (GDPR articolo 9)';
-	@override String get consentBody => 'Eta, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome ne email, mai inviati in chiaro. Questo consenso e richiesto separatamente.';
-	@override String get consentToggle => 'Autorizzo l\'uso dei miei dati corporei per la fattibilita';
+	@override String get consentBody => 'Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.';
+	@override String get consentToggle => 'Autorizzo l\'uso dei miei dati corporei per la fattibilità';
 	@override String get save => 'Salva';
 	@override String get saved => 'Dati salvati';
 	@override String get morphoNotPrefilledHint => 'Nulla è precompilato: inserisci i tuoi dati reali, è per la tua sicurezza.';
@@ -1546,7 +1546,7 @@ class _Translations$walkTest$it extends Translations$walkTest$fr {
 
 	// Translations
 	@override String get title => 'Test del cammino di 6 minuti';
-	@override String get intro => 'Cammina il piu lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per eta e sesso.';
+	@override String get intro => 'Cammina il più lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per età e sesso.';
 	@override String get safetyWarning => 'Evita questo sforzo in caso di problemi cardiaci non verificati. Fermati se ti senti male.';
 	@override String get start => 'Avvia il test';
 	@override String get stop => 'Ferma';
@@ -1561,12 +1561,12 @@ class _Translations$walkTest$it extends Translations$walkTest$fr {
 	@override String get resultLevel => 'Livello stimato';
 	@override String resultDate({required Object date}) => 'Eseguito il ${date}';
 	@override String get doneAgain => 'Rifai il test';
-	@override String get gpsNeeded => 'Il GPS e necessario per misurare la distanza.';
+	@override String get gpsNeeded => 'Il GPS è necessario per misurare la distanza.';
 	@override String get gpsDenied => 'Consenti la posizione per avviare il test.';
 	@override String get monthlyReminderOn => 'Promemoria mensile attivo';
-	@override String get monthlyReminderBody => 'Ogni mese ti verra proposto un promemoria del test per seguire la tua forma.';
+	@override String get monthlyReminderBody => 'Ogni mese ti verrà proposto un promemoria del test per seguire la tua forma.';
 	@override String get notDoneYet => 'Test non eseguito';
-	@override String get fallbackNotice => 'In attesa del test, il tuo livello e stimato dal questionario.';
+	@override String get fallbackNotice => 'In attesa del test, il tuo livello è stimato dal questionario.';
 	@override late final _Translations$walkTest$levels$it levels = _Translations$walkTest$levels$it._(_root);
 }
 
@@ -1597,7 +1597,7 @@ class _Translations$pastHikes$it extends Translations$pastHikes$fr {
 	@override String get save => 'Salva';
 	@override String get saved => 'Escursioni salvate';
 	@override String get maxReached => 'Massimo di 5 escursioni raggiunto.';
-	@override String get difficultiesTitle => 'Difficolta incontrate';
+	@override String get difficultiesTitle => 'Difficoltà incontrate';
 	@override String get difficultiesHint => 'Un solo testo per tutte queste escursioni: vesciche, ginocchia in discesa, affanno in quota, colpo di calore...';
 	@override String get difficultiesSaved => 'Nota salvata';
 }
@@ -1611,11 +1611,11 @@ class _Translations$ffrando$it extends Translations$ffrando$fr {
 	// Translations
 	@override String get cotationTitle => 'Valutazione FFRandonnee';
 	@override String get effort => 'Sforzo';
-	@override String get technicite => 'Tecnicita';
+	@override String get technicite => 'Tecnicità';
 	@override String get risque => 'Rischio';
 	@override String get ibpLabel => 'Indice IBP';
 	@override String get effortScale => 'Sforzo (1 a 5)';
-	@override String get techniciteScale => 'Tecnicita (1 a 5)';
+	@override String get techniciteScale => 'Tecnicità (1 a 5)';
 	@override String get risqueScale => 'Rischio (1 a 5)';
 	@override String get notRated => 'Non valutato';
 	@override late final _Translations$ffrando$effortLevels$it effortLevels = _Translations$ffrando$effortLevels$it._(_root);
@@ -2066,31 +2066,31 @@ class _Translations$checklist$ui$it extends Translations$checklist$ui$fr {
 	@override String get modify => 'Modifica';
 	@override String get delete => 'Elimina';
 	@override String get deleteItemTitle => 'Eliminare questo articolo?';
-	@override String get deleteItemBody => 'L\'articolo "{name}" sara eliminato definitivamente.';
+	@override String get deleteItemBody => 'L\'articolo "{name}" sarà eliminato definitivamente.';
 	@override String get requiredWarnTitle => 'Attrezzatura obbligatoria';
-	@override String get requiredWarnBody => 'Questa attrezzatura e obbligatoria per la sicurezza (ispirata al regolamento UTMB). Vuoi davvero rimuoverla?';
+	@override String get requiredWarnBody => 'Questa attrezzatura è obbligatoria per la sicurezza (ispirata al regolamento UTMB). Vuoi davvero rimuoverla?';
 	@override String get keep => 'Mantieni';
 	@override String get removeAnyway => 'Rimuovi comunque';
-	@override String get reduceQuantity => 'Riduci quantita';
-	@override String get increaseQuantity => 'Aumenta quantita';
+	@override String get reduceQuantity => 'Riduci quantità';
+	@override String get increaseQuantity => 'Aumenta quantità';
 	@override String get addToShoppingList => 'Aggiungi alla lista della spesa';
 	@override String get removeFromShoppingList => 'Rimuovi dalla lista';
 	@override String get help => 'Aiuto';
 	@override String get shoppingListTitle => 'Lista della spesa';
-	@override String get shoppingListEmpty => 'La tua lista della spesa e vuota. Aggiungi articoli con il pulsante carrello.';
+	@override String get shoppingListEmpty => 'La tua lista della spesa è vuota. Aggiungi articoli con il pulsante carrello.';
 	@override String get shoppingToBuy => 'Da comprare';
-	@override String get shoppingPurchased => 'Gia comprato';
+	@override String get shoppingPurchased => 'Già comprato';
 	@override String get share => 'CONDIVIDI';
 	@override String get infoTitle => 'Attrezzatura & Zaino';
 	@override String get infoCheckTitle => 'Spunta gli articoli';
-	@override String get infoCheckBody => 'Spunta cio che porti — il peso si ricalcola in alto.';
+	@override String get infoCheckBody => 'Spunta ciò che porti — il peso si ricalcola in alto.';
 	@override String get infoRequiredTitle => 'Obbligatori';
 	@override String get infoRequiredBody => 'Articoli con lucchetto = regolamento (fischietto, lampada, coperta di sopravvivenza).';
 	@override String get infoGaugeTitle => 'Indicatore peso';
 	@override String get infoGaugeBody => 'Obiettivo: zaino < 15% del tuo peso. Verde = OK, Arancione = attenzione, Rosso = troppo pesante.';
 	@override String get infoAddTitle => 'Aggiungi';
 	@override String get infoAddBody => 'Il pulsante + in fondo a ogni categoria per i tuoi articoli.';
-	@override String get infoValidateBody => 'Conferma quando lo zaino e pronto — un segno di spunta appare sulla home.';
+	@override String get infoValidateBody => 'Conferma quando lo zaino è pronto — un segno di spunta appare sulla home.';
 	@override String get infoUnderstood => 'Capito!';
 	@override String get prepTitle => 'Preparazione dello zaino';
 	@override String get prepCounter => '{prepared} / {total} articoli preparati';
@@ -2188,8 +2188,8 @@ class _Translations$feasibility$gaps$it extends Translations$feasibility$gaps$fr
 	// Translations
 	@override String get elevationPerDay => 'Dislivello giornaliero troppo alto rispetto alla tua abitudine';
 	@override String get distancePerDay => 'Distanza giornaliera oltre la tua esperienza';
-	@override String get consecutiveDays => 'Piu giorni consecutivi di quanti mai fatti';
-	@override String get technicity => 'Tecnicita del terreno oltre il tuo livello';
+	@override String get consecutiveDays => 'Più giorni consecutivi di quanti mai fatti';
+	@override String get technicity => 'Tecnicità del terreno oltre il tuo livello';
 	@override String get risk => 'Livello di rischio alto per questo trek';
 	@override String get fitness => 'Forma insufficiente al test di 6 minuti';
 	@override String get effort => 'Sforzo globale (IBP) oltre la tua esperienza';
@@ -2379,7 +2379,7 @@ class _Translations$waypoints$types$it extends Translations$waypoints$types$fr {
 	@override String get ravitaillement => 'Rifornimento';
 	@override String get danger => 'Pericolo';
 	@override String get camp => 'Campeggio';
-	@override String get connectivite => 'Connettivita';
+	@override String get connectivite => 'Connettività';
 	@override String get jonction => 'Bivio';
 }
 
@@ -2407,7 +2407,7 @@ class _Translations$waypoints$detail$it extends Translations$waypoints$detail$fr
 	@override String get noComments => 'Nessuna condizione segnalata per ora.';
 	@override String get commentsError => 'Condizioni non disponibili.';
 	@override String get report => 'Segnala';
-	@override String get reportAck => 'Segnalazione salvata. Sara esaminata dopo la sincronizzazione.';
+	@override String get reportAck => 'Segnalazione salvata. Sarà esaminata dopo la sincronizzazione.';
 	@override String get pendingSync => 'In attesa di sincronizzazione';
 }
 
@@ -2439,10 +2439,10 @@ class _Translations$waypoints$contribution$it extends Translations$waypoints$con
 	@override String get commentField => 'La tua osservazione';
 	@override String get conditionField => 'Stato (facoltativo)';
 	@override String get conditionHelper => 'es. acqua esaurita, acqua scorre, passaggio scivoloso';
-	@override String get latencyBanner => 'Sara pubblicato alla prossima sincronizzazione di rete.';
+	@override String get latencyBanner => 'Sarà pubblicato alla prossima sincronizzazione di rete.';
 	@override String get submit => 'Salva';
 	@override String get savedTitle => 'Contributo salvato';
-	@override String get savedPendingSync => 'Sara pubblicato al ritorno della rete.';
+	@override String get savedPendingSync => 'Sarà pubblicato al ritorno della rete.';
 	@override String pendingCount({required Object n}) => '${n} in attesa di sincronizzazione';
 	@override String get close => 'Chiudi';
 	@override String get emptyTitle => 'Inserisci un titolo per il punto.';
@@ -3284,7 +3284,7 @@ class _Translations$hikerProfile$bmiCategories$it extends Translations$hikerProf
 	@override String get underweight => 'Sottopeso';
 	@override String get normal => 'Normopeso';
 	@override String get overweight => 'Sovrappeso';
-	@override String get obese => 'Obesita';
+	@override String get obese => 'Obesità';
 }
 
 // Path: walkTest.levels
@@ -3884,7 +3884,7 @@ extension on TranslationsIt {
 			'stage.loadingList' => 'Caricamento delle tappe...',
 			'stage.dPlus' => 'D+',
 			'stage.dMinus' => 'D-',
-			'stage.difficultyLabel' => 'Difficolta',
+			'stage.difficultyLabel' => 'Difficoltà',
 			'stage.waterSources.title' => 'Punti d\'acqua',
 			'stage.waterSources.count' => '{n} sorgente/i',
 			'stage.waterSources.none' => 'Nessun punto d\'acqua segnalato su questa tappa. Portate almeno 3 L a persona.',
@@ -3959,7 +3959,7 @@ extension on TranslationsIt {
 			'tracking.stop' => 'Ferma',
 			'tracking.distance' => 'Distanza',
 			'tracking.elevation' => 'Dislivello',
-			'tracking.speed' => 'Velocita',
+			'tracking.speed' => 'Velocità',
 			'tracking.time' => 'Tempo',
 			'tracking.confirmStop' => 'Fermare il tracciamento?',
 			'tracking.dPlus' => 'D+',
@@ -4123,31 +4123,31 @@ extension on TranslationsIt {
 			'checklist.ui.modify' => 'Modifica',
 			'checklist.ui.delete' => 'Elimina',
 			'checklist.ui.deleteItemTitle' => 'Eliminare questo articolo?',
-			'checklist.ui.deleteItemBody' => 'L\'articolo "{name}" sara eliminato definitivamente.',
+			'checklist.ui.deleteItemBody' => 'L\'articolo "{name}" sarà eliminato definitivamente.',
 			'checklist.ui.requiredWarnTitle' => 'Attrezzatura obbligatoria',
-			'checklist.ui.requiredWarnBody' => 'Questa attrezzatura e obbligatoria per la sicurezza (ispirata al regolamento UTMB). Vuoi davvero rimuoverla?',
+			'checklist.ui.requiredWarnBody' => 'Questa attrezzatura è obbligatoria per la sicurezza (ispirata al regolamento UTMB). Vuoi davvero rimuoverla?',
 			'checklist.ui.keep' => 'Mantieni',
 			'checklist.ui.removeAnyway' => 'Rimuovi comunque',
-			'checklist.ui.reduceQuantity' => 'Riduci quantita',
-			'checklist.ui.increaseQuantity' => 'Aumenta quantita',
+			'checklist.ui.reduceQuantity' => 'Riduci quantità',
+			'checklist.ui.increaseQuantity' => 'Aumenta quantità',
 			'checklist.ui.addToShoppingList' => 'Aggiungi alla lista della spesa',
 			'checklist.ui.removeFromShoppingList' => 'Rimuovi dalla lista',
 			'checklist.ui.help' => 'Aiuto',
 			'checklist.ui.shoppingListTitle' => 'Lista della spesa',
-			'checklist.ui.shoppingListEmpty' => 'La tua lista della spesa e vuota. Aggiungi articoli con il pulsante carrello.',
+			'checklist.ui.shoppingListEmpty' => 'La tua lista della spesa è vuota. Aggiungi articoli con il pulsante carrello.',
 			'checklist.ui.shoppingToBuy' => 'Da comprare',
-			'checklist.ui.shoppingPurchased' => 'Gia comprato',
+			'checklist.ui.shoppingPurchased' => 'Già comprato',
 			'checklist.ui.share' => 'CONDIVIDI',
 			'checklist.ui.infoTitle' => 'Attrezzatura & Zaino',
 			'checklist.ui.infoCheckTitle' => 'Spunta gli articoli',
-			'checklist.ui.infoCheckBody' => 'Spunta cio che porti — il peso si ricalcola in alto.',
+			'checklist.ui.infoCheckBody' => 'Spunta ciò che porti — il peso si ricalcola in alto.',
 			'checklist.ui.infoRequiredTitle' => 'Obbligatori',
 			'checklist.ui.infoRequiredBody' => 'Articoli con lucchetto = regolamento (fischietto, lampada, coperta di sopravvivenza).',
 			'checklist.ui.infoGaugeTitle' => 'Indicatore peso',
 			'checklist.ui.infoGaugeBody' => 'Obiettivo: zaino < 15% del tuo peso. Verde = OK, Arancione = attenzione, Rosso = troppo pesante.',
 			'checklist.ui.infoAddTitle' => 'Aggiungi',
 			'checklist.ui.infoAddBody' => 'Il pulsante + in fondo a ogni categoria per i tuoi articoli.',
-			'checklist.ui.infoValidateBody' => 'Conferma quando lo zaino e pronto — un segno di spunta appare sulla home.',
+			'checklist.ui.infoValidateBody' => 'Conferma quando lo zaino è pronto — un segno di spunta appare sulla home.',
 			'checklist.ui.infoUnderstood' => 'Capito!',
 			'checklist.ui.prepTitle' => 'Preparazione dello zaino',
 			'checklist.ui.prepCounter' => '{prepared} / {total} articoli preparati',
@@ -4377,7 +4377,7 @@ extension on TranslationsIt {
 			'auth.errorLoading' => 'Errore di caricamento',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
 			'feasibility.restart' => 'Start over',
-			'feasibility.objectiveTitle' => 'Fattibilita per questo trek',
+			'feasibility.objectiveTitle' => 'Fattibilità per questo trek',
 			'feasibility.objectiveIntro' => 'Verdetto basato sul tuo profilo reale incrociato con i requisiti del trek.',
 			'feasibility.openProfile' => 'I miei dati',
 			'feasibility.openWalkTest' => 'Test di 6 minuti',
@@ -4387,8 +4387,8 @@ extension on TranslationsIt {
 			'feasibility.gapTooHigh' => 'Scarto troppo grande',
 			'feasibility.gaps.elevationPerDay' => 'Dislivello giornaliero troppo alto rispetto alla tua abitudine',
 			'feasibility.gaps.distancePerDay' => 'Distanza giornaliera oltre la tua esperienza',
-			'feasibility.gaps.consecutiveDays' => 'Piu giorni consecutivi di quanti mai fatti',
-			'feasibility.gaps.technicity' => 'Tecnicita del terreno oltre il tuo livello',
+			'feasibility.gaps.consecutiveDays' => 'Più giorni consecutivi di quanti mai fatti',
+			'feasibility.gaps.technicity' => 'Tecnicità del terreno oltre il tuo livello',
 			'feasibility.gaps.risk' => 'Livello di rischio alto per questo trek',
 			'feasibility.gaps.fitness' => 'Forma insufficiente al test di 6 minuti',
 			'feasibility.gaps.effort' => 'Sforzo globale (IBP) oltre la tua esperienza',
@@ -4442,7 +4442,7 @@ extension on TranslationsIt {
 			'tips.allCategories' => 'Tutte',
 			'tips.swipeHint' => 'Scorri per vedere altro',
 			'tips.detailTitle' => 'Dettaglio consiglio',
-			'tips.readMore' => 'Leggi di piu',
+			'tips.readMore' => 'Leggi di più',
 			'tips.noTips' => 'Nessun consiglio disponibile',
 			'tips.categoryPreparation' => 'Preparazione',
 			'tips.categoryEquipment' => 'Attrezzatura',
@@ -4451,7 +4451,7 @@ extension on TranslationsIt {
 			'tips.categoryNature' => 'Natura',
 			'tips.categoryRecovery' => 'Recupero',
 			'tips.categoryGeneral' => 'Generale',
-			'tips.priorityHigh' => 'Priorita alta',
+			'tips.priorityHigh' => 'Priorità alta',
 			'tips.scope' => 'Sentiero',
 			'tips.season' => 'Stagione',
 			'tips.altitude' => 'Altitudine min.',
@@ -4471,7 +4471,7 @@ extension on TranslationsIt {
 			'tips.themes.nature' => 'Natura',
 			'tips.themes.other' => 'Varie',
 			'goodies.title' => 'Negozio Goodies',
-			'goodies.comingSoon' => 'Questo modulo arrivera presto. Resta connesso!',
+			'goodies.comingSoon' => 'Questo modulo arriverà presto. Resta connesso!',
 			'noData.title' => 'Nessun sentiero scaricato',
 			'noData.subtitle' => 'Scarica un sentiero per iniziare',
 			'noData.offlineHint' => 'I dati saranno disponibili offline per la tua escursione.',
@@ -4579,8 +4579,8 @@ extension on TranslationsIt {
 			'training.objectiveTitle' => 'Obiettivo chiave',
 			'training.inviteSetDate' => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.',
 			'training.inviteFillProfile' => 'Compila la tua scheda per adattare il piano al tuo profilo.',
-			'training.genericPlanNotice' => 'Piano generico: un piano dedicato a questo sentiero arrivera presto.',
-			'training.cautionVerdictNotice' => 'La tua fattibilita invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.',
+			'training.genericPlanNotice' => 'Piano generico: un piano dedicato a questo sentiero arriverà presto.',
+			'training.cautionVerdictNotice' => 'La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.',
 			'training.departureTooClose' => ({required Object days}) => 'Restano ${days} giorni: piano condensato sul tempo disponibile.',
 			'training.noPlan' => 'Programma di allenamento presto disponibile per questo sentiero.',
 			'eta.title' => 'Tempo stimato',
@@ -4655,7 +4655,7 @@ extension on TranslationsIt {
 			'waypoints.types.ravitaillement' => 'Rifornimento',
 			'waypoints.types.danger' => 'Pericolo',
 			'waypoints.types.camp' => 'Campeggio',
-			'waypoints.types.connectivite' => 'Connettivita',
+			'waypoints.types.connectivite' => 'Connettività',
 			'waypoints.types.jonction' => 'Bivio',
 			'waypoints.filters.title' => 'Filtra i waypoint',
 			'waypoints.filters.showAll' => 'Mostra tutto',
@@ -4665,7 +4665,7 @@ extension on TranslationsIt {
 			'waypoints.detail.noComments' => 'Nessuna condizione segnalata per ora.',
 			'waypoints.detail.commentsError' => 'Condizioni non disponibili.',
 			'waypoints.detail.report' => 'Segnala',
-			'waypoints.detail.reportAck' => 'Segnalazione salvata. Sara esaminata dopo la sincronizzazione.',
+			'waypoints.detail.reportAck' => 'Segnalazione salvata. Sarà esaminata dopo la sincronizzazione.',
 			'waypoints.detail.pendingSync' => 'In attesa di sincronizzazione',
 			'waypoints.freshness.justNow' => 'aggiornato proprio ora',
 			'waypoints.freshness.minutes' => ({required Object n}) => 'aggiornato ${n} min fa',
@@ -4679,10 +4679,10 @@ extension on TranslationsIt {
 			'waypoints.contribution.commentField' => 'La tua osservazione',
 			'waypoints.contribution.conditionField' => 'Stato (facoltativo)',
 			'waypoints.contribution.conditionHelper' => 'es. acqua esaurita, acqua scorre, passaggio scivoloso',
-			'waypoints.contribution.latencyBanner' => 'Sara pubblicato alla prossima sincronizzazione di rete.',
+			'waypoints.contribution.latencyBanner' => 'Sarà pubblicato alla prossima sincronizzazione di rete.',
 			'waypoints.contribution.submit' => 'Salva',
 			'waypoints.contribution.savedTitle' => 'Contributo salvato',
-			'waypoints.contribution.savedPendingSync' => 'Sara pubblicato al ritorno della rete.',
+			'waypoints.contribution.savedPendingSync' => 'Sarà pubblicato al ritorno della rete.',
 			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
 			'waypoints.contribution.close' => 'Chiudi',
 			'waypoints.contribution.emptyTitle' => 'Inserisci un titolo per il punto.',
@@ -4817,7 +4817,7 @@ extension on TranslationsIt {
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, attualmente ${state}',
 			'consent.a11y.healthSection' => 'Sezione dati sulla salute, consenso rafforzato',
 			'consent.a11y.policyButton' => 'Apri l\'informativa sulla privacy',
-			'consent.healthDataMorphoNote' => 'Include i tuoi dati corporei (eta, altezza, peso) per la fattibilita del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.',
+			'consent.healthDataMorphoNote' => 'Include i tuoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.',
 			'moderation.reportTitle' => 'Segnala questo contenuto',
 			'moderation.reportIntro' => 'Aiutaci a mantenere sana la community. Indica perché questo contenuto ti sembra illecito. La tua segnalazione sarà esaminata da un moderatore.',
 			'moderation.reasonLabel' => 'Motivo della segnalazione',
@@ -5192,10 +5192,10 @@ extension on TranslationsIt {
 			'trekState.resumeOrphanDialog.resume' => 'Riprendi',
 			'trekState.resumeOrphanDialog.abandon' => 'Abbandona',
 			'hikerProfile.title' => 'I tuoi dati',
-			'hikerProfile.privacyBanner' => 'I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup cifrato, senza il tuo nome) per calcolare la fattibilita.',
-			'hikerProfile.fieldAge' => 'Eta',
+			'hikerProfile.privacyBanner' => 'I tuoi dati corporei sono dati sensibili. Restano sul tuo dispositivo (e un backup cifrato, senza il tuo nome) per calcolare la fattibilità.',
+			'hikerProfile.fieldAge' => 'Età',
 			'hikerProfile.hintAge' => 'In anni',
-			'hikerProfile.errorAge' => 'Eta non valida (8 a 100 anni)',
+			'hikerProfile.errorAge' => 'Età non valida (8 a 100 anni)',
 			'hikerProfile.fieldHeight' => 'Altezza',
 			'hikerProfile.hintHeight' => 'In centimetri',
 			'hikerProfile.errorHeight' => 'Altezza non valida (100 a 250 cm)',
@@ -5213,16 +5213,16 @@ extension on TranslationsIt {
 			'hikerProfile.bmiCategories.underweight' => 'Sottopeso',
 			'hikerProfile.bmiCategories.normal' => 'Normopeso',
 			'hikerProfile.bmiCategories.overweight' => 'Sovrappeso',
-			'hikerProfile.bmiCategories.obese' => 'Obesita',
+			'hikerProfile.bmiCategories.obese' => 'Obesità',
 			'hikerProfile.consentTitle' => 'Dati corporei (GDPR articolo 9)',
-			'hikerProfile.consentBody' => 'Eta, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome ne email, mai inviati in chiaro. Questo consenso e richiesto separatamente.',
-			'hikerProfile.consentToggle' => 'Autorizzo l\'uso dei miei dati corporei per la fattibilita',
+			'hikerProfile.consentBody' => 'Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.',
+			'hikerProfile.consentToggle' => 'Autorizzo l\'uso dei miei dati corporei per la fattibilità',
 			'hikerProfile.save' => 'Salva',
 			'hikerProfile.saved' => 'Dati salvati',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nulla è precompilato: inserisci i tuoi dati reali, è per la tua sicurezza.',
 			'hikerProfile.seniorReminder' => 'Dai 65 anni, si consiglia una visita medica prima di un trek impegnativo.',
 			'walkTest.title' => 'Test del cammino di 6 minuti',
-			'walkTest.intro' => 'Cammina il piu lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per eta e sesso.',
+			'walkTest.intro' => 'Cammina il più lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per età e sesso.',
 			'walkTest.safetyWarning' => 'Evita questo sforzo in caso di problemi cardiaci non verificati. Fermati se ti senti male.',
 			'walkTest.start' => 'Avvia il test',
 			'walkTest.stop' => 'Ferma',
@@ -5237,14 +5237,14 @@ extension on TranslationsIt {
 			'walkTest.resultLevel' => 'Livello stimato',
 			'walkTest.resultDate' => ({required Object date}) => 'Eseguito il ${date}',
 			'walkTest.doneAgain' => 'Rifai il test',
-			'walkTest.gpsNeeded' => 'Il GPS e necessario per misurare la distanza.',
+			'walkTest.gpsNeeded' => 'Il GPS è necessario per misurare la distanza.',
 			'walkTest.gpsDenied' => 'Consenti la posizione per avviare il test.',
 			'walkTest.monthlyReminderOn' => 'Promemoria mensile attivo',
-			'walkTest.monthlyReminderBody' => 'Ogni mese ti verra proposto un promemoria del test per seguire la tua forma.',
+			'walkTest.monthlyReminderBody' => 'Ogni mese ti verrà proposto un promemoria del test per seguire la tua forma.',
 			'walkTest.notDoneYet' => 'Test non eseguito',
 			_ => null,
 		} ?? switch (path) {
-			'walkTest.fallbackNotice' => 'In attesa del test, il tuo livello e stimato dal questionario.',
+			'walkTest.fallbackNotice' => 'In attesa del test, il tuo livello è stimato dal questionario.',
 			'walkTest.levels.low' => 'Basso',
 			'walkTest.levels.moderate' => 'Medio',
 			'walkTest.levels.good' => 'Buono',
@@ -5269,16 +5269,16 @@ extension on TranslationsIt {
 			'pastHikes.save' => 'Salva',
 			'pastHikes.saved' => 'Escursioni salvate',
 			'pastHikes.maxReached' => 'Massimo di 5 escursioni raggiunto.',
-			'pastHikes.difficultiesTitle' => 'Difficolta incontrate',
+			'pastHikes.difficultiesTitle' => 'Difficoltà incontrate',
 			'pastHikes.difficultiesHint' => 'Un solo testo per tutte queste escursioni: vesciche, ginocchia in discesa, affanno in quota, colpo di calore...',
 			'pastHikes.difficultiesSaved' => 'Nota salvata',
 			'ffrando.cotationTitle' => 'Valutazione FFRandonnee',
 			'ffrando.effort' => 'Sforzo',
-			'ffrando.technicite' => 'Tecnicita',
+			'ffrando.technicite' => 'Tecnicità',
 			'ffrando.risque' => 'Rischio',
 			'ffrando.ibpLabel' => 'Indice IBP',
 			'ffrando.effortScale' => 'Sforzo (1 a 5)',
-			'ffrando.techniciteScale' => 'Tecnicita (1 a 5)',
+			'ffrando.techniciteScale' => 'Tecnicità (1 a 5)',
 			'ffrando.risqueScale' => 'Rischio (1 a 5)',
 			'ffrando.notRated' => 'Non valutato',
 			'ffrando.effortLevels.k1' => 'Molto facile',
