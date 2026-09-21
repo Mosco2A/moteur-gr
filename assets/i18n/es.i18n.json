@@ -1666,7 +1666,9 @@
       "noPlace": "Alojamiento",
       "available": "{count} alojamientos disponibles",
       "call": "Llamar {phone}",
-      "lockedHint": "Desmarca la noche para cambiar el tipo"
+      "lockedHint": "Desmarca la noche para cambiar el tipo",
+      "eveBadge": "D-1",
+      "eveOfDeparture": "Víspera de la salida"
     },
     "summary": {
       "remaining": "{count} noche(s) restante(s)",

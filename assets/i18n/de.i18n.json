@@ -1666,7 +1666,9 @@
       "noPlace": "Unterkunft",
       "available": "{count} Unterkünfte verfügbar",
       "call": "{phone} anrufen",
-      "lockedHint": "Nacht abwählen, um den Typ zu ändern"
+      "lockedHint": "Nacht abwählen, um den Typ zu ändern",
+      "eveBadge": "T-1",
+      "eveOfDeparture": "Nacht vor dem Aufbruch"
     },
     "summary": {
       "remaining": "Noch {count} Nacht/Nächte",

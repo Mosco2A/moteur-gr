@@ -22,12 +22,14 @@ import '../providers/nuitee_selections_provider.dart';
 /// donnees du sentier (module `booking` -> [StageAccommodation] via Drift),
 /// avec fallback gracieux si le sentier n'a pas d'hebergement reference.
 ///
-/// Ecarts de modele assumes vs GR20 (cf. rapport) : le [PlannedDay] StepWays ne
-/// porte ni nuit N0 (veille du depart) ni `nightCount` multiple ; chaque jour de
-/// marche = une nuit. StepWays n'a pas non plus de compteur de progression
-/// « planning » (pas d'equivalent `planningProgressProvider`) : le bandeau
-/// affiche la progression locale (reserve / total) mais ne coche pas d'etape de
-/// preparation globale.
+/// Ecarts de modele vs GR20 : le [PlannedDay] StepWays ne porte pas de
+/// `nightCount` multiple ; chaque jour de marche = une nuit. StepWays n'a pas
+/// non plus de compteur de progression « planning » (pas d'equivalent
+/// `planningProgressProvider`) : le bandeau affiche la progression locale
+/// (reserve / total) mais ne coche pas d'etape de preparation globale.
+///
+/// La NUIT N0 (veille du depart), qui figurait encore dans cette liste
+/// d'ecarts, est RATTRAPEE par le correctif L7-2 (cf. [buildNuiteeSlots]).
 ///
 /// Generique multi-sentiers : ZERO hardcode de localite ; hors systeme de peaux
 /// (couleurs semantiques d'AppTheme + colorScheme). Tout libelle passe par Slang
@@ -39,13 +41,29 @@ import '../providers/nuitee_selections_provider.dart';
 /// c'est l'etape d'arrivee du dernier jour marche : on dort au meme endroit que
 /// la veille (R5, LOT L10).
 class NuiteeSlot {
-  const NuiteeSlot({required this.day, required this.stageNumber});
+  const NuiteeSlot({
+    required this.day,
+    required this.stageNumber,
+    this.isEveOfDeparture = false,
+  });
 
   final PlannedDay day;
 
-  /// Etape dont on tire l'hebergement (0 si le programme commence par un repos).
+  /// Etape dont on tire l'hebergement (0 si le programme commence par un repos,
+  /// et 0 pour la nuit N0 : on ne dort encore au bout d'aucune etape).
   final int stageNumber;
+
+  /// Nuit N0, la veille du depart (correctif L7-2). Elle n'appartient a aucun
+  /// jour de marche : son [day] est un jour synthetique numerote 0.
+  final bool isEveOfDeparture;
 }
+
+/// Numero de jour reserve a la nuit N0 (veille du depart, correctif L7-2).
+///
+/// Les jours du programme sont numerotes a partir de 1 : le 0 est donc libre
+/// et sert de cle de reservation propre pour cette nuit, sans toucher au
+/// modele [PlannedDay] ni au stockage des selections.
+const int kEveOfDepartureDayNumber = 0;
 
 /// Construit la liste des NUITS a reserver a partir du programme.
 ///
@@ -57,9 +75,37 @@ class NuiteeSlot {
 /// [PlannedDay], StepWays lui donne sa propre ligne, rattachee au lieu
 /// d'arrivee du dernier jour marche.
 ///
+/// L7-2 — LA NUIT N0, VEILLE DU DEPART, EST COMPTEE ELLE AUSSI.
+///
+/// On n'arrive pas au depart d'un sentier le matin de la premiere etape : on
+/// arrive la veille et on dort sur place. L'assistant de reference ouvre donc
+/// sa liste par cette nuit-la ; StepWays l'omettait, et son propre en-tete
+/// documentait l'oubli. Resultat concret : une nuit a reserver invisible dans
+/// l'assistant, exactement le meme defaut que la nuit de repos rattrapee en
+/// R5 — a ceci pres que celle-ci tombe la veille du grand jour.
+///
+/// Elle ne se rattache a AUCUNE etape ([stageNumber] = 0) : on dort au point
+/// de DEPART de la premiere etape, pas a son arrivee. Proposer l'hebergement
+/// de l'arrivee serait proposer le mauvais village — la carte affiche donc son
+/// libelle generique et laisse le randonneur choisir son type de nuitee.
+///
 /// Fonction PURE (testable sans widget).
 List<NuiteeSlot> buildNuiteeSlots(List<PlannedDay> days) {
   final slots = <NuiteeSlot>[];
+  if (days.isEmpty) return slots;
+
+  // Nuit N0 : jour synthetique numerote 0, en tete de liste.
+  slots.add(
+    const NuiteeSlot(
+      day: PlannedDay(
+        dayNumber: kEveOfDepartureDayNumber,
+        stages: [],
+      ),
+      stageNumber: 0,
+      isEveOfDeparture: true,
+    ),
+  );
+
   // Dernier lieu d'arrivee connu : un repos herite du jour marche precedent.
   var lastStageNumber = 0;
   for (final day in days) {
@@ -137,6 +183,7 @@ class NuiteesScreen extends ConsumerWidget {
                           trailId: trailId,
                           day: day,
                           stageNumber: slot.stageNumber,
+                          isEveOfDeparture: slot.isEveOfDeparture,
                           isBooked: selections.isBooked(day.dayNumber),
                           nuiteeType: selections.typeFor(day.dayNumber),
                           onToggle: () => ref
@@ -359,10 +406,14 @@ class _NuiteeCard extends ConsumerWidget {
     required this.nuiteeType,
     required this.onToggle,
     required this.onNuiteeTypeChanged,
+    this.isEveOfDeparture = false,
   });
 
   final String trailId;
   final PlannedDay day;
+
+  /// Nuit N0, la veille du depart (correctif L7-2) : badge et libelle propres.
+  final bool isEveOfDeparture;
 
   /// Etape dont on tire l'hebergement du lieu de nuit. Fournie par
   /// [buildNuiteeSlots] : pour un jour de REPOS c'est l'etape d'arrivee du
@@ -410,8 +461,11 @@ class _NuiteeCard extends ConsumerWidget {
     // + bivouac en repli s'il ne reste qu'un choix (parite GR20).
     final availableTypes = _availableTypes(accommodations);
 
-    final dayLabel = t.nuitees.card.dayLabel
-        .replaceAll('{n}', day.dayNumber.toString());
+    // L7-2 : la nuit N0 n'est pas le « jour 0 », c'est la veille. Elle porte
+    // son propre badge plutot qu'un « J0 » qui ne veut rien dire.
+    final dayLabel = isEveOfDeparture
+        ? t.nuitees.card.eveBadge
+        : t.nuitees.card.dayLabel.replaceAll('{n}', day.dayNumber.toString());
 
     return Card(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingSm),
@@ -493,6 +547,30 @@ class _NuiteeCard extends ConsumerWidget {
                             ),
                             child: Text(
                               t.programme.restDay,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.grisGranite,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                        ],
+                        // L7-2 : on dit explicitement que cette nuit-la est
+                        // celle de l'ARRIVEE sur place, pas une etape. Sans ce
+                        // libelle, la premiere ligne ressemblerait a une nuit
+                        // de marche sans hebergement renseigne.
+                        if (isEveOfDeparture) ...[
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: AppTheme.grisGranite.withAlpha(30),
+                              borderRadius:
+                                  BorderRadius.circular(AppTheme.radiusChip),
+                            ),
+                            child: Text(
+                              t.nuitees.card.eveOfDeparture,
                               style: theme.textTheme.bodySmall?.copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -806,8 +884,11 @@ class _CompactSummary extends StatelessWidget {
                       Border.all(color: AppTheme.orangeDifficile.withAlpha(60)),
                 ),
                 child: Text(
-                  t.nuitees.card.dayLabel
-                      .replaceAll('{n}', day.dayNumber.toString()),
+                  // L7-2 : la nuit de la veille porte son badge, pas un « J0 ».
+                  day.dayNumber == kEveOfDepartureDayNumber
+                      ? t.nuitees.card.eveBadge
+                      : t.nuitees.card.dayLabel
+                          .replaceAll('{n}', day.dayNumber.toString()),
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,

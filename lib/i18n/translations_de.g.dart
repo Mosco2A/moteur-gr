@@ -3020,6 +3020,8 @@ class _Translations$nuitees$card$de extends Translations$nuitees$card$fr {
 	@override String get available => '{count} Unterkünfte verfügbar';
 	@override String get call => '{phone} anrufen';
 	@override String get lockedHint => 'Nacht abwählen, um den Typ zu ändern';
+	@override String get eveBadge => 'T-1';
+	@override String get eveOfDeparture => 'Nacht vor dem Aufbruch';
 }
 
 // Path: nuitees.summary
@@ -5096,6 +5098,8 @@ extension on TranslationsDe {
 			'nuitees.card.available' => '{count} Unterkünfte verfügbar',
 			'nuitees.card.call' => '{phone} anrufen',
 			'nuitees.card.lockedHint' => 'Nacht abwählen, um den Typ zu ändern',
+			'nuitees.card.eveBadge' => 'T-1',
+			'nuitees.card.eveOfDeparture' => 'Nacht vor dem Aufbruch',
 			'nuitees.summary.remaining' => 'Noch {count} Nacht/Nächte',
 			'nuitees.summary.done' => '{count} erledigt',
 			'nuitees.summary.allBooked' => 'ALLE NÄCHTE GEBUCHT',
@@ -5286,10 +5290,10 @@ extension on TranslationsDe {
 			'hikerProfile.title' => 'Ihre Angaben',
 			'hikerProfile.privacyBanner' => 'Ihre Körperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerät (und einer verschlüsselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
 			'hikerProfile.fieldAge' => 'Alter',
-			'hikerProfile.hintAge' => 'In Jahren',
-			'hikerProfile.errorAge' => 'Ungültiges Alter (8 bis 100 Jahre)',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.hintAge' => 'In Jahren',
+			'hikerProfile.errorAge' => 'Ungültiges Alter (8 bis 100 Jahre)',
 			'hikerProfile.fieldHeight' => 'Grosse',
 			'hikerProfile.hintHeight' => 'In Zentimetern',
 			'hikerProfile.errorHeight' => 'Ungültige Grosse (100 bis 250 cm)',

@@ -386,6 +386,31 @@ void main() {
       expect(find.text(t.programme.restDay), findsWidgets);
     });
 
+    // L7-2 — LA NUIT DE LA VEILLE DU DEPART EXISTE A L ECRAN.
+    // Elle manquait a l assistant : on arrive la veille au point de depart et
+    // on y dort, mais cette nuit-la n apparaissait nulle part dans la liste
+    // des nuits a reserver.
+    testWidgets('la nuit N0 (veille du depart) ouvre la liste et se dit',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        db: db,
+        days: [walkDay(1, 1), walkDay(2, 2)],
+        accommodations: const [],
+      ));
+      await settle(tester);
+      await pumpUntil(tester, find.text('J1'));
+
+      // Badge propre : pas un « J0 », qui ne voudrait rien dire.
+      expect(find.text(t.nuitees.card.eveBadge), findsWidgets);
+      expect(find.text('J0'), findsNothing);
+      // Et elle est nommee, sinon la premiere ligne ressemblerait a une nuit
+      // de marche sans hebergement renseigne.
+      expect(find.text(t.nuitees.card.eveOfDeparture), findsWidgets);
+      // Les nuits des jours de marche restent la.
+      expect(find.text('J1'), findsWidgets);
+      expect(find.text('J2'), findsWidgets);
+    });
+
     test('buildNuiteeSlots : un repos herite du lieu du dernier jour marche',
         () {
       final slots = buildNuiteeSlots([
@@ -394,13 +419,15 @@ void main() {
         walkDay(3, 2),
       ]);
 
-      // 3 jours -> 3 nuits (et non 2 : la nuit du repos est comptee).
-      expect(slots.length, 3);
-      expect(slots[0].stageNumber, 1);
-      // Le repos dort au MEME endroit que la veille : etape d'arrivee du J1.
-      expect(slots[1].day.isRestDay, isTrue);
+      // L7-2 : la liste ouvre sur la nuit N0 (veille du depart), puis les
+      // 3 jours -> 3 nuits, la nuit du repos comprise. Total 4.
+      expect(slots.length, 4);
+      expect(slots[0].isEveOfDeparture, isTrue);
       expect(slots[1].stageNumber, 1);
-      expect(slots[2].stageNumber, 2);
+      // Le repos dort au MEME endroit que la veille : etape d'arrivee du J1.
+      expect(slots[2].day.isRestDay, isTrue);
+      expect(slots[2].stageNumber, 1);
+      expect(slots[3].stageNumber, 2);
     });
 
     test('buildNuiteeSlots : un repos en tete de programme ne plante pas', () {
@@ -409,11 +436,38 @@ void main() {
         walkDay(2, 1),
       ]);
 
-      expect(slots.length, 2);
+      // Nuit N0 en tete (L7-2), puis les deux jours du programme.
+      expect(slots.length, 3);
+      expect(slots[0].isEveOfDeparture, isTrue);
       // Aucun jour marche avant -> pas d'etape connue, repli gracieux sur 0
       // (l'ecran affichera le libelle generique d'hebergement).
-      expect(slots[0].stageNumber, 0);
+      expect(slots[1].stageNumber, 0);
+      expect(slots[2].stageNumber, 1);
+    });
+
+    // --- Correctif L7-2 : la nuit de la veille du depart ------------------
+    test('buildNuiteeSlots : la nuit N0 ouvre la liste et ne depend d aucune '
+        'etape', () {
+      final slots = buildNuiteeSlots([walkDay(1, 1), walkDay(2, 2)]);
+
+      expect(slots.length, 3, reason: '2 jours de marche + la veille');
+      final n0 = slots.first;
+      expect(n0.isEveOfDeparture, isTrue);
+      expect(n0.day.dayNumber, kEveOfDepartureDayNumber);
+      expect(n0.day.isRestDay, isFalse);
+      // On dort au DEPART de la premiere etape, pas a son arrivee : aucune
+      // etape n est rattachee, l ecran affiche son libelle generique plutot
+      // que de proposer le mauvais village.
+      expect(n0.stageNumber, 0);
+      // Les nuits suivantes restent celles des jours de marche.
+      expect(slots[1].isEveOfDeparture, isFalse);
       expect(slots[1].stageNumber, 1);
+      expect(slots[2].stageNumber, 2);
+    });
+
+    test('buildNuiteeSlots : aucun programme, aucune nuit — pas meme la N0',
+        () {
+      expect(buildNuiteeSlots(const []), isEmpty);
     });
   });
 

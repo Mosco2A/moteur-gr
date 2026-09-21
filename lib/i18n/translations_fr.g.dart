@@ -6026,6 +6026,12 @@ class Translations$nuitees$card$fr {
 
 	/// fr: 'Décochez la nuit pour changer le type'
 	String get lockedHint => 'Décochez la nuit pour changer le type';
+
+	/// fr: 'J-1'
+	String get eveBadge => 'J-1';
+
+	/// fr: 'Veille du départ'
+	String get eveOfDeparture => 'Veille du départ';
 }
 
 // Path: nuitees.summary
@@ -8471,6 +8477,8 @@ extension on Translations {
 			'nuitees.card.available' => '{count} hébergements disponibles',
 			'nuitees.card.call' => 'Appeler {phone}',
 			'nuitees.card.lockedHint' => 'Décochez la nuit pour changer le type',
+			'nuitees.card.eveBadge' => 'J-1',
+			'nuitees.card.eveOfDeparture' => 'Veille du départ',
 			'nuitees.summary.remaining' => '{count} nuit(s) restante(s)',
 			'nuitees.summary.done' => '{count} OK',
 			'nuitees.summary.allBooked' => 'TOUTES LES NUITS RÉSERVÉES',
@@ -8661,10 +8669,10 @@ extension on Translations {
 			'hikerProfile.title' => 'Fiche d\'info',
 			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.',
 			'hikerProfile.fieldAge' => 'Âge',
-			'hikerProfile.hintAge' => 'En années',
-			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.hintAge' => 'En années',
+			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
 			'hikerProfile.fieldHeight' => 'Taille',
 			'hikerProfile.hintHeight' => 'En centimètres',
 			'hikerProfile.errorHeight' => 'Taille invalide (100 à 250 cm)',

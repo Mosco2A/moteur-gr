@@ -3020,6 +3020,8 @@ class _Translations$nuitees$card$en extends Translations$nuitees$card$fr {
 	@override String get available => '{count} lodgings available';
 	@override String get call => 'Call {phone}';
 	@override String get lockedHint => 'Uncheck the night to change the type';
+	@override String get eveBadge => 'D-1';
+	@override String get eveOfDeparture => 'Night before departure';
 }
 
 // Path: nuitees.summary
@@ -5096,6 +5098,8 @@ extension on TranslationsEn {
 			'nuitees.card.available' => '{count} lodgings available',
 			'nuitees.card.call' => 'Call {phone}',
 			'nuitees.card.lockedHint' => 'Uncheck the night to change the type',
+			'nuitees.card.eveBadge' => 'D-1',
+			'nuitees.card.eveOfDeparture' => 'Night before departure',
 			'nuitees.summary.remaining' => '{count} night(s) left',
 			'nuitees.summary.done' => '{count} done',
 			'nuitees.summary.allBooked' => 'ALL NIGHTS BOOKED',
@@ -5286,10 +5290,10 @@ extension on TranslationsEn {
 			'hikerProfile.title' => 'Your details',
 			'hikerProfile.privacyBanner' => 'Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.',
 			'hikerProfile.fieldAge' => 'Age',
-			'hikerProfile.hintAge' => 'In years',
-			'hikerProfile.errorAge' => 'Invalid age (8 to 100 years)',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.hintAge' => 'In years',
+			'hikerProfile.errorAge' => 'Invalid age (8 to 100 years)',
 			'hikerProfile.fieldHeight' => 'Height',
 			'hikerProfile.hintHeight' => 'In centimetres',
 			'hikerProfile.errorHeight' => 'Invalid height (100 to 250 cm)',
