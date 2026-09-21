@@ -231,9 +231,13 @@ void main() {
       expect(find.byType(AppCard), findsWidgets);
       expect(find.byType(Card), findsNothing);
 
-      // Le bouton de telechargement PDF est desormais un AppButton.
-      expect(find.byType(AppButton), findsOneWidget);
+      // Les boutons de l'ecran sont desormais des AppButton. Il y en a DEUX
+      // depuis le correctif L5-7 : telecharger le PDF, et le PARTAGER —
+      // l'ecran n'avait auparavant aucun bouton de partage, ni reel ni
+      // decoratif. La grammaire de composant reste la meme pour les deux.
+      expect(find.byType(AppButton), findsNWidgets(2));
       expect(find.text(tr.diploma.downloadPdf), findsOneWidget);
+      expect(find.text(tr.diploma.shareDiploma), findsOneWidget);
     });
   });
 }
