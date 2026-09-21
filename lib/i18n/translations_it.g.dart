@@ -1274,6 +1274,12 @@ class _Translations$recap$it extends Translations$recap$fr {
 	@override String gpxExported({required Object file}) => 'Traccia esportata: ${file}';
 	@override String get gpxEmpty => 'Nessun punto GPS da esportare';
 	@override String get gpxError => 'Esportazione non riuscita';
+	@override String get daysSection => 'Giorno per giorno';
+	@override String dayLabel({required Object day}) => 'Giorno ${day}';
+	@override String dayStages({required Object count}) => '${count} tappa/e';
+	@override String get dayRest => 'Nessuna tappa conclusa quel giorno';
+	@override String get noDays => 'Nessuna giornata registrata dal GPS';
+	@override String averageSpeed({required Object kmh}) => '${kmh} km/h di media';
 }
 
 // Path: programme
@@ -4933,6 +4939,12 @@ extension on TranslationsIt {
 			'recap.gpxExported' => ({required Object file}) => 'Traccia esportata: ${file}',
 			'recap.gpxEmpty' => 'Nessun punto GPS da esportare',
 			'recap.gpxError' => 'Esportazione non riuscita',
+			'recap.daysSection' => 'Giorno per giorno',
+			'recap.dayLabel' => ({required Object day}) => 'Giorno ${day}',
+			'recap.dayStages' => ({required Object count}) => '${count} tappa/e',
+			'recap.dayRest' => 'Nessuna tappa conclusa quel giorno',
+			'recap.noDays' => 'Nessuna giornata registrata dal GPS',
+			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h di media',
 			'programme.title' => 'Programma',
 			'programme.helpTooltip' => 'Aiuto',
 			'programme.duration.label' => 'Numero di giorni',
@@ -5264,14 +5276,14 @@ extension on TranslationsIt {
 			'hikerProfile.sexMale' => 'Uomo',
 			'hikerProfile.sexUnspecified' => 'Non specificato',
 			'hikerProfile.fieldCountry' => 'Paese',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.hintCountry' => 'Codice (es. FR)',
 			'hikerProfile.bmiLabel' => 'IMC',
 			'hikerProfile.bmiCategories.underweight' => 'Sottopeso',
 			'hikerProfile.bmiCategories.normal' => 'Normopeso',
 			'hikerProfile.bmiCategories.overweight' => 'Sovrappeso',
 			'hikerProfile.bmiCategories.obese' => 'Obesità',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Dati corporei (GDPR articolo 9)',
 			'hikerProfile.consentBody' => 'Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.',
 			'hikerProfile.consentToggle' => 'Autorizzo l\'uso dei miei dati corporei per la fattibilità',

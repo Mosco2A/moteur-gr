@@ -93,6 +93,11 @@ class _RecapBody extends ConsumerWidget {
           _TraceCard(stats: stats),
           const SizedBox(height: AppTheme.spacingLg),
 
+          // CORRECTIF L5-5 : le detail jour par jour, qui n'existait pas.
+          SectionHeader(title: recapT.daysSection, icon: Icons.calendar_month),
+          const _DayByDaySection(),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // Le diplome n'est propose QUE s'il est deverrouille (finisher reel ou
           // vitrine) — parite GR20 (bouton diplome reserve au finisher).
           if (diplomaUnlocked) ...[
@@ -231,6 +236,149 @@ class _ShareAdventureButton extends ConsumerWidget {
           );
         }
       },
+    );
+  }
+}
+
+/// Detail JOUR PAR JOUR de l'aventure (CORRECTIF L5-5).
+///
+/// Rien de tel n'existait cote StepWays. Les journees sortent de la TRACE
+/// GPS, pas d'un decoupage theorique du sentier : une journee de repos, une
+/// double etape ou une etape a cheval sur deux jours s'affichent telles
+/// qu'elles ont ete marchees.
+class _DayByDaySection extends ConsumerWidget {
+  const _DayByDaySection();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recapT = t.recap;
+    final daysAsync = ref.watch(adventureDaysProvider);
+
+    return daysAsync.maybeWhen(
+      orElse: () => const SizedBox.shrink(),
+      data: (days) {
+        if (days.isEmpty) {
+          return AppCard(
+            child: Text(
+              recapT.noDays,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.grisTexteSecondaire,
+                  ),
+            ),
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var i = 0; i < days.length; i++) ...[
+              if (i > 0) const SizedBox(height: AppTheme.spacingSm),
+              // Le numero affiche retombe sur la position dans la liste quand
+              // la trace est anterieure a la migration v26 et ne porte pas de
+              // jour de marche : on ne laisse jamais un « Jour null ».
+              _DayCard(day: days[i], fallbackNumber: i + 1),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// Une journee du detail jour par jour.
+class _DayCard extends StatelessWidget {
+  const _DayCard({required this.day, required this.fallbackNumber});
+
+  final AdventureDay day;
+  final int fallbackNumber;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final recapT = t.recap;
+    final stats = day.stats;
+
+    String fmtDate(DateTime d) {
+      try {
+        return DateFormat.yMMMd(LocaleSettings.currentLocale.languageCode)
+            .format(d);
+      } catch (_) {
+        return '${d.year}-${d.month.toString().padLeft(2, '0')}-'
+            '${d.day.toString().padLeft(2, '0')}';
+      }
+    }
+
+    final h = stats.duration.inHours;
+    final m = stats.duration.inMinutes.remainder(60);
+    final speed = stats.averageSpeedKmh;
+
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                recapT.dayLabel(day: day.dayIndex ?? fallbackNumber),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                fmtDate(day.date),
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppTheme.grisTexteSecondaire,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            // Une journee sans etape terminee n'est PAS une anomalie : repos,
+            // demi-journee, etape a cheval sur deux jours.
+            day.stageIds.isEmpty
+                ? recapT.dayRest
+                : recapT.dayStages(count: day.stageIds.length),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: AppTheme.grisTexteSecondaire,
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // Wrap : en allemand et en espagnol, ces libelles cote a cote
+          // debordent la largeur d'un telephone.
+          Wrap(
+            spacing: AppTheme.spacingLg,
+            runSpacing: AppTheme.spacingXs,
+            children: [
+              Text(
+                recapT.distance
+                    .replaceAll('{km}', stats.distanceKm.toStringAsFixed(1)),
+                style: theme.textTheme.bodyMedium,
+              ),
+              Text(
+                recapT.elevation
+                    .replaceAll('{meters}', '${stats.elevationGainM}'),
+                style: theme.textTheme.bodyMedium,
+              ),
+              Text(
+                recapT.elevationLoss(meters: stats.elevationLossM),
+                style: theme.textTheme.bodyMedium,
+              ),
+              Text(
+                h > 0 ? '$h h $m' : '$m min',
+                style: theme.textTheme.bodyMedium,
+              ),
+              // CORRECTIF L5-6 : la vitesse moyenne n'est affichee QUE
+              // lorsqu'elle a un sens (cf. TrackSegmentStats).
+              if (speed != null)
+                Text(
+                  recapT.averageSpeed(kmh: speed.toStringAsFixed(1)),
+                  style: theme.textTheme.bodyMedium,
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

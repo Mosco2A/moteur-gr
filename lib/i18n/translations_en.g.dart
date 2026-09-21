@@ -1274,6 +1274,12 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String gpxExported({required Object file}) => 'Track exported: ${file}';
 	@override String get gpxEmpty => 'No GPS point to export';
 	@override String get gpxError => 'Export failed';
+	@override String get daysSection => 'Day by day';
+	@override String dayLabel({required Object day}) => 'Day ${day}';
+	@override String dayStages({required Object count}) => '${count} stage(s)';
+	@override String get dayRest => 'No stage completed that day';
+	@override String get noDays => 'No day recorded by GPS';
+	@override String averageSpeed({required Object kmh}) => '${kmh} km/h on average';
 }
 
 // Path: programme
@@ -4933,6 +4939,12 @@ extension on TranslationsEn {
 			'recap.gpxExported' => ({required Object file}) => 'Track exported: ${file}',
 			'recap.gpxEmpty' => 'No GPS point to export',
 			'recap.gpxError' => 'Export failed',
+			'recap.daysSection' => 'Day by day',
+			'recap.dayLabel' => ({required Object day}) => 'Day ${day}',
+			'recap.dayStages' => ({required Object count}) => '${count} stage(s)',
+			'recap.dayRest' => 'No stage completed that day',
+			'recap.noDays' => 'No day recorded by GPS',
+			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h on average',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
@@ -5264,14 +5276,14 @@ extension on TranslationsEn {
 			'hikerProfile.sexMale' => 'Male',
 			'hikerProfile.sexUnspecified' => 'Unspecified',
 			'hikerProfile.fieldCountry' => 'Country',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.hintCountry' => 'Code (e.g. FR)',
 			'hikerProfile.bmiLabel' => 'BMI',
 			'hikerProfile.bmiCategories.underweight' => 'Underweight',
 			'hikerProfile.bmiCategories.normal' => 'Normal weight',
 			'hikerProfile.bmiCategories.overweight' => 'Overweight',
 			'hikerProfile.bmiCategories.obese' => 'Obesity',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Body metrics (GDPR article 9)',
 			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.',
 			'hikerProfile.consentToggle' => 'I allow my body metrics to be used for feasibility',

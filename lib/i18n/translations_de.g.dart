@@ -1274,6 +1274,12 @@ class _Translations$recap$de extends Translations$recap$fr {
 	@override String gpxExported({required Object file}) => 'Strecke exportiert: ${file}';
 	@override String get gpxEmpty => 'Kein GPS-Punkt zum Exportieren';
 	@override String get gpxError => 'Export nicht möglich';
+	@override String get daysSection => 'Tag für Tag';
+	@override String dayLabel({required Object day}) => 'Tag ${day}';
+	@override String dayStages({required Object count}) => '${count} Etappe(n)';
+	@override String get dayRest => 'An diesem Tag keine Etappe beendet';
+	@override String get noDays => 'Kein per GPS aufgezeichneter Tag';
+	@override String averageSpeed({required Object kmh}) => '${kmh} km/h im Durchschnitt';
 }
 
 // Path: programme
@@ -4933,6 +4939,12 @@ extension on TranslationsDe {
 			'recap.gpxExported' => ({required Object file}) => 'Strecke exportiert: ${file}',
 			'recap.gpxEmpty' => 'Kein GPS-Punkt zum Exportieren',
 			'recap.gpxError' => 'Export nicht möglich',
+			'recap.daysSection' => 'Tag für Tag',
+			'recap.dayLabel' => ({required Object day}) => 'Tag ${day}',
+			'recap.dayStages' => ({required Object count}) => '${count} Etappe(n)',
+			'recap.dayRest' => 'An diesem Tag keine Etappe beendet',
+			'recap.noDays' => 'Kein per GPS aufgezeichneter Tag',
+			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h im Durchschnitt',
 			'programme.title' => 'Programm',
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
@@ -5264,14 +5276,14 @@ extension on TranslationsDe {
 			'hikerProfile.sexMale' => 'Männlich',
 			'hikerProfile.sexUnspecified' => 'Keine Angabe',
 			'hikerProfile.fieldCountry' => 'Land',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.hintCountry' => 'Code (z. B. FR)',
 			'hikerProfile.bmiLabel' => 'BMI',
 			'hikerProfile.bmiCategories.underweight' => 'Untergewicht',
 			'hikerProfile.bmiCategories.normal' => 'Normalgewicht',
 			'hikerProfile.bmiCategories.overweight' => 'Übergewicht',
 			'hikerProfile.bmiCategories.obese' => 'Adipositas',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Körperdaten (DSGVO Artikel 9)',
 			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
 			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit',

@@ -1458,7 +1458,13 @@
     "exportGpx": "Export the track as GPX",
     "gpxExported": "Track exported: $file",
     "gpxEmpty": "No GPS point to export",
-    "gpxError": "Export failed"
+    "gpxError": "Export failed",
+    "daysSection": "Day by day",
+    "dayLabel": "Day $day",
+    "dayStages": "$count stage(s)",
+    "dayRest": "No stage completed that day",
+    "noDays": "No day recorded by GPS",
+    "averageSpeed": "$kmh km/h on average"
   },
   "programme": {
     "title": "Programme",

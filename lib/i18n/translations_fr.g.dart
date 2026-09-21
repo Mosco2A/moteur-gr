@@ -2583,6 +2583,24 @@ class Translations$recap$fr {
 
 	/// fr: 'Export impossible'
 	String get gpxError => 'Export impossible';
+
+	/// fr: 'Jour par jour'
+	String get daysSection => 'Jour par jour';
+
+	/// fr: 'Jour $day'
+	String dayLabel({required Object day}) => 'Jour ${day}';
+
+	/// fr: '$count étape(s)'
+	String dayStages({required Object count}) => '${count} étape(s)';
+
+	/// fr: 'Journée sans étape terminée'
+	String get dayRest => 'Journée sans étape terminée';
+
+	/// fr: 'Aucune journée enregistrée au GPS'
+	String get noDays => 'Aucune journée enregistrée au GPS';
+
+	/// fr: '$kmh km/h de moyenne'
+	String averageSpeed({required Object kmh}) => '${kmh} km/h de moyenne';
 }
 
 // Path: programme
@@ -8272,6 +8290,12 @@ extension on Translations {
 			'recap.gpxExported' => ({required Object file}) => 'Trace exportée : ${file}',
 			'recap.gpxEmpty' => 'Aucun point GPS à exporter',
 			'recap.gpxError' => 'Export impossible',
+			'recap.daysSection' => 'Jour par jour',
+			'recap.dayLabel' => ({required Object day}) => 'Jour ${day}',
+			'recap.dayStages' => ({required Object count}) => '${count} étape(s)',
+			'recap.dayRest' => 'Journée sans étape terminée',
+			'recap.noDays' => 'Aucune journée enregistrée au GPS',
+			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h de moyenne',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
@@ -8603,14 +8627,14 @@ extension on Translations {
 			'hikerProfile.sexMale' => 'Homme',
 			'hikerProfile.sexUnspecified' => 'Non précisé',
 			'hikerProfile.fieldCountry' => 'Pays',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.hintCountry' => 'Code (ex. FR)',
 			'hikerProfile.bmiLabel' => 'IMC',
 			'hikerProfile.bmiCategories.underweight' => 'Maigreur',
 			'hikerProfile.bmiCategories.normal' => 'Corpulence normale',
 			'hikerProfile.bmiCategories.overweight' => 'Surpoids',
 			'hikerProfile.bmiCategories.obese' => 'Obésité',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Données de morphologie (article 9 RGPD)',
 			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilité',

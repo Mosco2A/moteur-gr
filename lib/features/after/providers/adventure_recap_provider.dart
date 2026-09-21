@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // `SessionTrackPoint` (trace GPS de session).
 import '../../../core/data/database.dart' hide Stage;
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
 import '../../../core/providers/service_providers.dart';
 import '../../trek/domain/models/stage.dart';
@@ -211,4 +212,80 @@ final adventureCongratulationsProvider = Provider<TrekCongratulations?>((ref) {
   final plan = ref.watch(currentTrekPlanProvider);
   if (plan == null) return null;
   return TrekCongratulations.forPlan(plan);
+});
+
+
+/// Une journee de marche du recapitulatif (CORRECTIF L5-5).
+class AdventureDay {
+  const AdventureDay({
+    required this.dayIndex,
+    required this.date,
+    required this.stats,
+    required this.stageIds,
+  });
+
+  /// Numero du jour de marche, 1 pour le jour du depart. `null` pour une
+  /// trace anterieure a la migration v26, qui ne portait pas ce repere.
+  final int? dayIndex;
+
+  /// Journee calendaire du premier point de la journee.
+  final DateTime date;
+
+  /// Chiffres MESURES sur les points GPS de cette journee-la.
+  final TrackSegmentStats stats;
+
+  /// Etapes traversees dans la journee, dans l'ordre de passage.
+  ///
+  /// UNE JOURNEE N'EST PAS UNE ETAPE, et c'est tout l'ecart de modele avec
+  /// le journal de reference : celui-ci pose un jour = une etape en jours
+  /// calendaires. Un sentier generique connait les journees de repos, les
+  /// doubles etapes et les etapes a cheval sur deux jours ; recopier cet
+  /// algorithme casserait le modele StepWays, qui raisonne par ETAPE
+  /// completee. La journee porte donc une LISTE d'etapes, parfois vide
+  /// (journee de repos), parfois plusieurs (double etape).
+  final List<String> stageIds;
+}
+
+/// Detail JOUR PAR JOUR de l'aventure (CORRECTIF L5-5).
+///
+/// Rien de tel n'existait cote StepWays. La source est la trace GPS, qui
+/// porte depuis le socle L3-1 le jour de marche et l'etape de chaque point :
+/// les journees sortent donc du terrain, et non d'un decoupage theorique du
+/// sentier. Une trace sans jour connu (anterieure a la migration v26) est
+/// regroupee par journee CALENDAIRE, ce qui reste juste.
+final adventureDaysProvider = FutureProvider<List<AdventureDay>>((ref) async {
+  final stats = await ref.watch(adventureStatsProvider.future);
+  final points = stats.tracePoints;
+  if (points.isEmpty) return const <AdventureDay>[];
+
+  DateTime dayOf(DateTime dt) => DateTime(dt.year, dt.month, dt.day);
+
+  // Cle de regroupement : le jour de marche quand il est connu, sinon la
+  // journee calendaire (retro-compat des traces d'avant la migration v26).
+  final groups = <Object, List<SessionTrackPoint>>{};
+  for (final p in points) {
+    final key = p.dayIndex ?? dayOf(p.recordedAt);
+    groups.putIfAbsent(key, () => <SessionTrackPoint>[]).add(p);
+  }
+
+  final days = <AdventureDay>[];
+  for (final entry in groups.entries) {
+    final dayPoints = entry.value;
+    final stageIds = <String>[];
+    for (final p in dayPoints) {
+      final id = p.stageId;
+      if (id != null && id.isNotEmpty && !stageIds.contains(id)) {
+        stageIds.add(id);
+      }
+    }
+    days.add(AdventureDay(
+      dayIndex: entry.key is int ? entry.key as int : null,
+      date: dayOf(dayPoints.first.recordedAt),
+      stats: computeTrackStats(dayPoints),
+      stageIds: stageIds,
+    ));
+  }
+
+  days.sort((a, b) => a.date.compareTo(b.date));
+  return days;
 });

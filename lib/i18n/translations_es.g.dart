@@ -1274,6 +1274,12 @@ class _Translations$recap$es extends Translations$recap$fr {
 	@override String gpxExported({required Object file}) => 'Traza exportada: ${file}';
 	@override String get gpxEmpty => 'Ningún punto GPS que exportar';
 	@override String get gpxError => 'No se ha podido exportar';
+	@override String get daysSection => 'Día a día';
+	@override String dayLabel({required Object day}) => 'Día ${day}';
+	@override String dayStages({required Object count}) => '${count} etapa(s)';
+	@override String get dayRest => 'Ninguna etapa terminada ese día';
+	@override String get noDays => 'Ningún día registrado por GPS';
+	@override String averageSpeed({required Object kmh}) => '${kmh} km/h de media';
 }
 
 // Path: programme
@@ -4933,6 +4939,12 @@ extension on TranslationsEs {
 			'recap.gpxExported' => ({required Object file}) => 'Traza exportada: ${file}',
 			'recap.gpxEmpty' => 'Ningún punto GPS que exportar',
 			'recap.gpxError' => 'No se ha podido exportar',
+			'recap.daysSection' => 'Día a día',
+			'recap.dayLabel' => ({required Object day}) => 'Día ${day}',
+			'recap.dayStages' => ({required Object count}) => '${count} etapa(s)',
+			'recap.dayRest' => 'Ninguna etapa terminada ese día',
+			'recap.noDays' => 'Ningún día registrado por GPS',
+			'recap.averageSpeed' => ({required Object kmh}) => '${kmh} km/h de media',
 			'programme.title' => 'Programa',
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
@@ -5264,14 +5276,14 @@ extension on TranslationsEs {
 			'hikerProfile.sexMale' => 'Hombre',
 			'hikerProfile.sexUnspecified' => 'Sin especificar',
 			'hikerProfile.fieldCountry' => 'País',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.hintCountry' => 'Código (p. ej. FR)',
 			'hikerProfile.bmiLabel' => 'IMC',
 			'hikerProfile.bmiCategories.underweight' => 'Bajo peso',
 			'hikerProfile.bmiCategories.normal' => 'Peso normal',
 			'hikerProfile.bmiCategories.overweight' => 'Sobrepeso',
 			'hikerProfile.bmiCategories.obese' => 'Obesidad',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.consentTitle' => 'Datos corporales (RGPD artículo 9)',
 			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',
 			'hikerProfile.consentToggle' => 'Autorizo el uso de mis datos corporales para la viabilidad',

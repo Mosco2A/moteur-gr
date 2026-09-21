@@ -2,9 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/data/database.dart';
 import '../../../core/engine/trail_engine.dart';
-import '../../../core/geo/geo_utils.dart';
+import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../trek/domain/trek_stats.dart';
 import '../domain/models/journal_entry.dart';
 import 'journal_providers.dart';
 
@@ -105,87 +104,16 @@ final journalDayTraceProvider =
 });
 
 /// Chiffres d'une journee de marche, mesures sur la trace GPS.
-class JournalDayStats {
-  const JournalDayStats({
-    this.distanceKm = 0,
-    this.elevationGainM = 0,
-    this.elevationLossM = 0,
-    this.duration = Duration.zero,
-    this.maxAltitudeM,
-    this.pointCount = 0,
-  });
-
-  /// Distance MESUREE au GPS (et non une somme d'etapes nominale).
-  final double distanceKm;
-  final int elevationGainM;
-  final int elevationLossM;
-
-  /// Ecart entre le premier et le dernier point de la journee.
-  final Duration duration;
-
-  /// Point le plus haut de la journee, `null` sans trace.
-  final double? maxAltitudeM;
-
-  /// Nombre de points GPS derriere ces chiffres (0 = rien a afficher).
-  final int pointCount;
-
-  bool get hasData => pointCount > 1;
-
-  /// Somme de deux journees (pour le cumul depuis le depart).
-  JournalDayStats plus(JournalDayStats other) => JournalDayStats(
-        distanceKm: distanceKm + other.distanceKm,
-        elevationGainM: elevationGainM + other.elevationGainM,
-        elevationLossM: elevationLossM + other.elevationLossM,
-        duration: duration + other.duration,
-        maxAltitudeM: switch ((maxAltitudeM, other.maxAltitudeM)) {
-          (null, final b) => b,
-          (final a, null) => a,
-          (final a?, final b?) => a > b ? a : b,
-        },
-        pointCount: pointCount + other.pointCount,
-      );
-}
-
-/// Calcule les chiffres d'une suite de points GPS.
 ///
-/// Reutilise [GeoUtils.haversineDistance] et le SEUIL DE BRUIT de
-/// [TrekStats] (3 m) : sans ce seuil, le tremblement de l'altimetre
-/// fabrique plusieurs centaines de metres de denivele sur une journee
-/// plate. Aucun moteur de stats n'est reconstruit ici.
-JournalDayStats computeDayStats(List<SessionTrackPoint> points) {
-  if (points.length < 2) {
-    return JournalDayStats(
-      pointCount: points.length,
-      maxAltitudeM: points.isEmpty ? null : points.first.altitude,
-    );
-  }
-  var meters = 0.0;
-  var gain = 0.0;
-  var loss = 0.0;
-  var maxAlt = points.first.altitude;
-  for (var i = 1; i < points.length; i++) {
-    final prev = points[i - 1];
-    final cur = points[i];
-    meters += GeoUtils.haversineDistance(prev.lat, prev.lng, cur.lat, cur.lng);
-    final d = cur.altitude - prev.altitude;
-    if (d.abs() >= TrekStats.elevationNoiseThresholdM) {
-      if (d > 0) {
-        gain += d;
-      } else {
-        loss += -d;
-      }
-    }
-    if (cur.altitude > maxAlt) maxAlt = cur.altitude;
-  }
-  return JournalDayStats(
-    distanceKm: meters / 1000.0,
-    elevationGainM: gain.round(),
-    elevationLossM: loss.round(),
-    duration: points.last.recordedAt.difference(points.first.recordedAt),
-    maxAltitudeM: maxAlt,
-    pointCount: points.length,
-  );
-}
+/// Le calcul a ete FACTORISE au lot L5-5, quand le recapitulatif d'aventure
+/// a eu besoin exactement des memes chiffres : deux implantations auraient
+/// fini par donner deux valeurs differentes pour la meme journee. Le journal
+/// garde ses noms d'origine, le socle vit dans [TrackSegmentStats].
+typedef JournalDayStats = TrackSegmentStats;
+
+/// Calcule les chiffres d'une suite de points GPS (cf. [computeTrackStats]).
+JournalDayStats computeDayStats(List<SessionTrackPoint> points) =>
+    computeTrackStats(points);
 
 /// Chiffres de la journee affichee (correctif L4-3).
 final journalDayStatsProvider = FutureProvider<JournalDayStats>((ref) async {
