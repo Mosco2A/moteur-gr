@@ -256,6 +256,7 @@ class _Translations$map$es extends Translations$map$fr {
 	@override String get layersSubtitle => 'Elige que mostrar en el mapa';
 	@override String stageRemaining({required Object km}) => '${km} km restantes';
 	@override String get offTrackChip => 'Fuera de ruta';
+	@override String get supplyDismiss => 'Ocultar el aviso';
 }
 
 // Path: stage
@@ -3899,6 +3900,7 @@ extension on TranslationsEs {
 			'map.layersSubtitle' => 'Elige que mostrar en el mapa',
 			'map.stageRemaining' => ({required Object km}) => '${km} km restantes',
 			'map.offTrackChip' => 'Fuera de ruta',
+			'map.supplyDismiss' => 'Ocultar el aviso',
 			'stage.distance' => 'Distancia',
 			'stage.elevation' => 'Desnivel',
 			'stage.elevationGain' => 'Desnivel positivo',
@@ -4250,9 +4252,9 @@ extension on TranslationsEs {
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
 			'journal.dayEmpty' => 'Ninguna nota para este día',
 			'journal.entriesOfDay' => 'Notas del día',
-			'journal.dayTrace' => 'Traza del día',
 			_ => null,
 		} ?? switch (path) {
+			'journal.dayTrace' => 'Traza del día',
 			'journal.dayTraceEmpty' => 'No se registró ninguna traza GPS ese día',
 			'journal.daySummary' => 'Resumen del día',
 			'journal.sinceStart' => 'Desde el inicio',
@@ -4764,9 +4766,9 @@ extension on TranslationsEs {
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Comprar este pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Descargando… ${done}/${total}',
 			'packs.progress.verifying' => 'Verificando integridad…',
-			'packs.progress.completed' => 'Pack listo sin conexión',
 			_ => null,
 		} ?? switch (path) {
+			'packs.progress.completed' => 'Pack listo sin conexión',
 			'packs.progress.error' => 'Error de descarga',
 			'packs.delete.confirmTitle' => '¿Eliminar este pack?',
 			'packs.delete.confirmBody' => 'El pack se eliminará del dispositivo para liberar espacio. Podrás volver a descargarlo más tarde.',
@@ -5278,9 +5280,9 @@ extension on TranslationsEs {
 			'hikerProfile.errorWeight' => 'Peso no válido (30 a 150 kg)',
 			'hikerProfile.errorCountry' => 'Código de país no válido (ej. FR)',
 			'hikerProfile.fieldSex' => 'Sexo (opcional)',
-			'hikerProfile.sexFemale' => 'Mujer',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.sexFemale' => 'Mujer',
 			'hikerProfile.sexMale' => 'Hombre',
 			'hikerProfile.sexUnspecified' => 'Sin especificar',
 			'hikerProfile.fieldCountry' => 'País',

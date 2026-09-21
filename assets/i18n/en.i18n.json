@@ -181,7 +181,8 @@
     "layersTitle": "Map layers",
     "layersSubtitle": "Choose what to show on the map",
     "stageRemaining": "$km km left",
-    "offTrackChip": "Off track"
+    "offTrackChip": "Off track",
+    "supplyDismiss": "Dismiss alert"
   },
   "stage": {
     "distance": "Distance",

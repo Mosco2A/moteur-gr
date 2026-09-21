@@ -256,6 +256,7 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get layersSubtitle => 'Choose what to show on the map';
 	@override String stageRemaining({required Object km}) => '${km} km left';
 	@override String get offTrackChip => 'Off track';
+	@override String get supplyDismiss => 'Dismiss alert';
 }
 
 // Path: stage
@@ -3899,6 +3900,7 @@ extension on TranslationsEn {
 			'map.layersSubtitle' => 'Choose what to show on the map',
 			'map.stageRemaining' => ({required Object km}) => '${km} km left',
 			'map.offTrackChip' => 'Off track',
+			'map.supplyDismiss' => 'Dismiss alert',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Elevation',
 			'stage.elevationGain' => 'Elevation gain',
@@ -4250,9 +4252,9 @@ extension on TranslationsEn {
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
 			'journal.dayEmpty' => 'No entry for this day',
 			'journal.entriesOfDay' => 'Entries of the day',
-			'journal.dayTrace' => 'Track of the day',
 			_ => null,
 		} ?? switch (path) {
+			'journal.dayTrace' => 'Track of the day',
 			'journal.dayTraceEmpty' => 'No GPS track recorded on that day',
 			'journal.daySummary' => 'Day summary',
 			'journal.sinceStart' => 'Since the start',
@@ -4764,9 +4766,9 @@ extension on TranslationsEn {
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Buy this pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Downloading… ${done}/${total}',
 			'packs.progress.verifying' => 'Verifying integrity…',
-			'packs.progress.completed' => 'Pack ready offline',
 			_ => null,
 		} ?? switch (path) {
+			'packs.progress.completed' => 'Pack ready offline',
 			'packs.progress.error' => 'Download failed',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
@@ -5278,9 +5280,9 @@ extension on TranslationsEn {
 			'hikerProfile.errorWeight' => 'Invalid weight (30 to 150 kg)',
 			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
-			'hikerProfile.sexFemale' => 'Female',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.sexFemale' => 'Female',
 			'hikerProfile.sexMale' => 'Male',
 			'hikerProfile.sexUnspecified' => 'Unspecified',
 			'hikerProfile.fieldCountry' => 'Country',

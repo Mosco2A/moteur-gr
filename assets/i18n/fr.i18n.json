@@ -181,7 +181,8 @@
     "layersTitle": "Calques de la carte",
     "layersSubtitle": "Choisissez les points affiches sur la carte",
     "stageRemaining": "$km km restants",
-    "offTrackChip": "Hors trace"
+    "offTrackChip": "Hors trace",
+    "supplyDismiss": "Masquer l'alerte"
   },
   "stage": {
     "distance": "Distance",

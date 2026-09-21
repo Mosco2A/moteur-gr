@@ -435,6 +435,9 @@ class Translations$map$fr {
 
 	/// fr: 'Hors trace'
 	String get offTrackChip => 'Hors trace';
+
+	/// fr: 'Masquer l'alerte'
+	String get supplyDismiss => 'Masquer l\'alerte';
 }
 
 // Path: stage
@@ -7256,6 +7259,7 @@ extension on Translations {
 			'map.layersSubtitle' => 'Choisissez les points affiches sur la carte',
 			'map.stageRemaining' => ({required Object km}) => '${km} km restants',
 			'map.offTrackChip' => 'Hors trace',
+			'map.supplyDismiss' => 'Masquer l\'alerte',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Dénivelé',
 			'stage.elevationGain' => 'Dénivelé positif',
@@ -7607,9 +7611,9 @@ extension on Translations {
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
 			'journal.dayEmpty' => 'Aucune note pour cette journée',
 			'journal.entriesOfDay' => 'Notes de la journée',
-			'journal.dayTrace' => 'Tracé du jour',
 			_ => null,
 		} ?? switch (path) {
+			'journal.dayTrace' => 'Tracé du jour',
 			'journal.dayTraceEmpty' => 'Aucun tracé GPS enregistré ce jour-là',
 			'journal.daySummary' => 'Résumé du jour',
 			'journal.sinceStart' => 'Depuis le départ',
@@ -8121,9 +8125,9 @@ extension on Translations {
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acheter ce pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}',
 			'packs.progress.verifying' => 'Vérification de l\'intégrité…',
-			'packs.progress.completed' => 'Pack prêt hors-ligne',
 			_ => null,
 		} ?? switch (path) {
+			'packs.progress.completed' => 'Pack prêt hors-ligne',
 			'packs.progress.error' => 'Échec du téléchargement',
 			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
 			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
@@ -8635,9 +8639,9 @@ extension on Translations {
 			'hikerProfile.errorWeight' => 'Poids invalide (30 à 150 kg)',
 			'hikerProfile.errorCountry' => 'Code pays invalide (ex. FR)',
 			'hikerProfile.fieldSex' => 'Sexe (optionnel)',
-			'hikerProfile.sexFemale' => 'Femme',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.sexFemale' => 'Femme',
 			'hikerProfile.sexMale' => 'Homme',
 			'hikerProfile.sexUnspecified' => 'Non précisé',
 			'hikerProfile.fieldCountry' => 'Pays',

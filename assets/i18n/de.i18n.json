@@ -181,7 +181,8 @@
     "layersTitle": "Kartenebenen",
     "layersSubtitle": "Wählen Sie, was auf der Karte angezeigt wird",
     "stageRemaining": "Noch $km km",
-    "offTrackChip": "Abseits"
+    "offTrackChip": "Abseits",
+    "supplyDismiss": "Hinweis ausblenden"
   },
   "stage": {
     "distance": "Entfernung",

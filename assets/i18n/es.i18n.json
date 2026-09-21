@@ -181,7 +181,8 @@
     "layersTitle": "Capas del mapa",
     "layersSubtitle": "Elige que mostrar en el mapa",
     "stageRemaining": "$km km restantes",
-    "offTrackChip": "Fuera de ruta"
+    "offTrackChip": "Fuera de ruta",
+    "supplyDismiss": "Ocultar el aviso"
   },
   "stage": {
     "distance": "Distancia",

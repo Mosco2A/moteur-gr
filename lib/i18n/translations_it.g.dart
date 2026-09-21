@@ -256,6 +256,7 @@ class _Translations$map$it extends Translations$map$fr {
 	@override String get layersSubtitle => 'Scegli cosa mostrare sulla mappa';
 	@override String stageRemaining({required Object km}) => '${km} km rimanenti';
 	@override String get offTrackChip => 'Fuori traccia';
+	@override String get supplyDismiss => 'Nascondi l\'avviso';
 }
 
 // Path: stage
@@ -3899,6 +3900,7 @@ extension on TranslationsIt {
 			'map.layersSubtitle' => 'Scegli cosa mostrare sulla mappa',
 			'map.stageRemaining' => ({required Object km}) => '${km} km rimanenti',
 			'map.offTrackChip' => 'Fuori traccia',
+			'map.supplyDismiss' => 'Nascondi l\'avviso',
 			'stage.distance' => 'Distanza',
 			'stage.elevation' => 'Dislivello',
 			'stage.elevationGain' => 'Dislivello positivo',
@@ -4250,9 +4252,9 @@ extension on TranslationsIt {
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
 			'journal.dayEmpty' => 'Nessuna nota per questa giornata',
 			'journal.entriesOfDay' => 'Note della giornata',
-			'journal.dayTrace' => 'Traccia del giorno',
 			_ => null,
 		} ?? switch (path) {
+			'journal.dayTrace' => 'Traccia del giorno',
 			'journal.dayTraceEmpty' => 'Nessuna traccia GPS registrata quel giorno',
 			'journal.daySummary' => 'Riepilogo del giorno',
 			'journal.sinceStart' => 'Dall\'inizio',
@@ -4764,9 +4766,9 @@ extension on TranslationsIt {
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acquista questo pacchetto — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Scaricamento… ${done}/${total}',
 			'packs.progress.verifying' => 'Verifica integrità…',
-			'packs.progress.completed' => 'Pacchetto pronto offline',
 			_ => null,
 		} ?? switch (path) {
+			'packs.progress.completed' => 'Pacchetto pronto offline',
 			'packs.progress.error' => 'Scaricamento non riuscito',
 			'packs.delete.confirmTitle' => 'Eliminare questo pacchetto?',
 			'packs.delete.confirmBody' => 'Il pacchetto verrà rimosso dal dispositivo per liberare spazio. Potrai riscaricarlo in seguito.',
@@ -5278,9 +5280,9 @@ extension on TranslationsIt {
 			'hikerProfile.errorWeight' => 'Peso non valido (30 a 150 kg)',
 			'hikerProfile.errorCountry' => 'Codice paese non valido (es. FR)',
 			'hikerProfile.fieldSex' => 'Sesso (opzionale)',
-			'hikerProfile.sexFemale' => 'Donna',
 			_ => null,
 		} ?? switch (path) {
+			'hikerProfile.sexFemale' => 'Donna',
 			'hikerProfile.sexMale' => 'Uomo',
 			'hikerProfile.sexUnspecified' => 'Non specificato',
 			'hikerProfile.fieldCountry' => 'Paese',

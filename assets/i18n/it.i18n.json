@@ -181,7 +181,8 @@
     "layersTitle": "Livelli della mappa",
     "layersSubtitle": "Scegli cosa mostrare sulla mappa",
     "stageRemaining": "$km km rimanenti",
-    "offTrackChip": "Fuori traccia"
+    "offTrackChip": "Fuori traccia",
+    "supplyDismiss": "Nascondi l'avviso"
   },
   "stage": {
     "distance": "Distanza",
