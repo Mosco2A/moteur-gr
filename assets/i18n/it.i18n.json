@@ -318,7 +318,12 @@
     "cancel": "Annulla",
     "stopButton": "Stop",
     "stopTitle": "Interrompere l'acquisizione?",
-    "stopBody": "I tuoi progressi saranno salvati."
+    "stopBody": "I tuoi progressi saranno salvati.",
+    "dMinus": "D-",
+    "avgSpeed": "Vel. media",
+    "altitude": "Altitudine",
+    "total": "Totale",
+    "covered": "Percorso"
   },
   "checklist": {
     "title": "Attrezzatura & Zaino",

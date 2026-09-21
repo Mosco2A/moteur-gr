@@ -318,7 +318,12 @@
     "cancel": "Abbrechen",
     "stopButton": "Stopp",
     "stopTitle": "Aufzeichnung beenden?",
-    "stopBody": "Dein Fortschritt wird gespeichert."
+    "stopBody": "Dein Fortschritt wird gespeichert.",
+    "dMinus": "D-",
+    "avgSpeed": "Ø Geschw.",
+    "altitude": "Höhe",
+    "total": "Gesamt",
+    "covered": "Zurückgelegt"
   },
   "checklist": {
     "title": "Ausrüstung & Rucksack",

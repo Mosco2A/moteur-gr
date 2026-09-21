@@ -318,7 +318,12 @@
     "cancel": "Annuler",
     "stopButton": "Stop",
     "stopTitle": "Arrêter le suivi ?",
-    "stopBody": "La progression sera sauvegardée."
+    "stopBody": "La progression sera sauvegardée.",
+    "dMinus": "D-",
+    "avgSpeed": "Vit. moy.",
+    "altitude": "Altitude",
+    "total": "Total",
+    "covered": "Parcouru"
   },
   "checklist": {
     "title": "Matériel & Sac",

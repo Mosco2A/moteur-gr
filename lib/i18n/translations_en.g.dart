@@ -424,6 +424,11 @@ class _Translations$tracking$en extends Translations$tracking$fr {
 	@override String get stopButton => 'Stop';
 	@override String get stopTitle => 'Stop tracking?';
 	@override String get stopBody => 'Your progress will be saved.';
+	@override String get dMinus => 'D-';
+	@override String get avgSpeed => 'Avg speed';
+	@override String get altitude => 'Altitude';
+	@override String get total => 'Total';
+	@override String get covered => 'Covered';
 }
 
 // Path: checklist
@@ -4007,6 +4012,11 @@ extension on TranslationsEn {
 			'tracking.stopButton' => 'Stop',
 			'tracking.stopTitle' => 'Stop tracking?',
 			'tracking.stopBody' => 'Your progress will be saved.',
+			'tracking.dMinus' => 'D-',
+			'tracking.avgSpeed' => 'Avg speed',
+			'tracking.altitude' => 'Altitude',
+			'tracking.total' => 'Total',
+			'tracking.covered' => 'Covered',
 			'checklist.title' => 'Gear & Pack',
 			'checklist.subtitle' => 'Pack your backpack',
 			'checklist.progress' => '{checked}/{total} packed',
@@ -4247,13 +4257,13 @@ extension on TranslationsEn {
 			'journal.removePhoto' => 'Remove photo',
 			'journal.photoError' => 'Could not add the photo',
 			'journal.dayNavPrevious' => 'Previous day',
+			_ => null,
+		} ?? switch (path) {
 			'journal.dayNavNext' => 'Next day',
 			'journal.dayOfTrek' => ({required Object day}) => 'Day ${day}',
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
 			'journal.dayEmpty' => 'No entry for this day',
 			'journal.entriesOfDay' => 'Entries of the day',
-			_ => null,
-		} ?? switch (path) {
 			'journal.dayTrace' => 'Track of the day',
 			'journal.dayTraceEmpty' => 'No GPS track recorded on that day',
 			'journal.daySummary' => 'Day summary',
@@ -4761,13 +4771,13 @@ extension on TranslationsEn {
 			'packs.actions.download' => 'Download',
 			'packs.actions.update' => 'Update',
 			'packs.actions.delete' => 'Delete',
+			_ => null,
+		} ?? switch (path) {
 			'packs.actions.retry' => 'Retry',
 			'packs.actions.buy' => 'Buy this pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Buy this pack — ${price}',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Downloading… ${done}/${total}',
 			'packs.progress.verifying' => 'Verifying integrity…',
-			_ => null,
-		} ?? switch (path) {
 			'packs.progress.completed' => 'Pack ready offline',
 			'packs.progress.error' => 'Download failed',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
@@ -5275,13 +5285,13 @@ extension on TranslationsEn {
 			'hikerProfile.fieldHeight' => 'Height',
 			'hikerProfile.hintHeight' => 'In centimetres',
 			'hikerProfile.errorHeight' => 'Invalid height (100 to 250 cm)',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.fieldWeight' => 'Weight',
 			'hikerProfile.hintWeight' => 'In kilograms',
 			'hikerProfile.errorWeight' => 'Invalid weight (30 to 150 kg)',
 			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.sexFemale' => 'Female',
 			'hikerProfile.sexMale' => 'Male',
 			'hikerProfile.sexUnspecified' => 'Unspecified',

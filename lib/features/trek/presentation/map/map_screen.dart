@@ -33,6 +33,7 @@ import '../../../safety/presentation/sos_button.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
 import '../../providers/gps_providers.dart';
+import '../../providers/live_trek_stats_provider.dart';
 import '../../providers/tracking_providers.dart';
 import 'controls/map_controls.dart';
 import 'layers/stage_markers_layer.dart';
@@ -767,6 +768,14 @@ class _SupplyAlertBannerState extends ConsumerState<_SupplyAlertBanner> {
 /// [trackPositionProvider] et [stagesProvider] (source unique projetee, aucune
 /// donnee en dur, generique multi-sentiers). Hors trek ou sans fix GPS : rendu
 /// nul (SizedBox.shrink), la carte reste degagee.
+///
+/// CORRECTIF L6-2 : la barre portait QUATRE informations la ou la navigation
+/// de reference en affiche SIX sur deux lignes. Les manquantes — denivele,
+/// vitesse moyenne, altitude, plus le couple total/parcouru — sont ajoutees
+/// ici, MESUREES sur la trace de la session ([liveTrekStatsProvider]) et non
+/// deduites d'une somme nominale d'etapes. Chaque valeur indisponible est
+/// MASQUEE plutot qu'affichee a zero (meme regle que le correctif L5-6 : une
+/// vitesse mesuree, ou rien).
 class _ActiveStageBar extends ConsumerWidget {
   const _ActiveStageBar();
 
@@ -797,11 +806,32 @@ class _ActiveStageBar extends ConsumerWidget {
                 ? t.a11y.stageMarker(number: stageNumber)
                 : t.map.title);
 
+        // Chiffres mesures sur la trace de la session en cours (L6-2).
+        // Tant que la trace n'a pas deux points, il n'y a rien de mesurable :
+        // `hasData` est faux et toutes les valeurs restent masquees.
+        final mesures = ref.watch(liveTrekStatsProvider).value;
+        final mesurable = mesures != null && mesures.hasData;
+        final totalKm = ref.watch(
+          trailConfigProvider.select((c) => c.totalDistanceKm),
+        );
+        // Parcouru = distance PROJETEE sur le trace, la meme source unique que
+        // le HUB, l'accueil et le widget — jamais le cumul GPS brut, qui
+        // gonfle sur un aller-retour.
+        final parcouruKm = ref.watch(stageDistanceCoveredProvider) / 1000.0;
+
         return StageProgressBar(
           stageName: stageName,
           distanceRemainingKm: state.distanceRemainingKm,
           progressRatio: state.progressRatio,
           isOffTrack: state.isOffTrack,
+          totalDistanceKm: totalKm > 0 ? totalKm : null,
+          distanceCoveredKm: parcouruKm,
+          elevationGainM: mesurable ? mesures.elevationGainM : null,
+          elevationLossM: mesurable ? mesures.elevationLossM : null,
+          // `averageSpeedKmh` vaut deja null quand le chiffre n'aurait aucun
+          // sens (duree nulle, vitesse non marchable) : on le laisse decider.
+          avgSpeedKmh: mesurable ? mesures.averageSpeedKmh : null,
+          altitudeM: ref.watch(currentAltitudeProvider),
         );
       },
       orElse: () => const SizedBox.shrink(),

@@ -318,7 +318,12 @@
     "cancel": "Cancel",
     "stopButton": "Stop",
     "stopTitle": "Stop tracking?",
-    "stopBody": "Your progress will be saved."
+    "stopBody": "Your progress will be saved.",
+    "dMinus": "D-",
+    "avgSpeed": "Avg speed",
+    "altitude": "Altitude",
+    "total": "Total",
+    "covered": "Covered"
   },
   "checklist": {
     "title": "Gear & Pack",

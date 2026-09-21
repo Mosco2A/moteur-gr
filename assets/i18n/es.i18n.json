@@ -318,7 +318,12 @@
     "cancel": "Cancelar",
     "stopButton": "Detener",
     "stopTitle": "¿Detener el seguimiento?",
-    "stopBody": "Tu progreso se guardará."
+    "stopBody": "Tu progreso se guardará.",
+    "dMinus": "D-",
+    "avgSpeed": "Vel. media",
+    "altitude": "Altitud",
+    "total": "Total",
+    "covered": "Recorrido"
   },
   "checklist": {
     "title": "Equipo & Mochila",
