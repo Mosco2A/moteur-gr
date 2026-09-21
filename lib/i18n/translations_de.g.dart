@@ -711,7 +711,7 @@ class _Translations$feasibility$de extends Translations$feasibility$fr {
 
 	// Translations
 	@override String get restart => 'Start over';
-	@override String get objectiveTitle => 'Machbarkeit fur diesen Trek';
+	@override String get objectiveTitle => 'Machbarkeit für diesen Trek';
 	@override String get objectiveIntro => 'Urteil auf Basis Ihres echten Profils, gekreuzt mit den Anforderungen des Treks.';
 	@override String get openProfile => 'Meine Angaben';
 	@override String get openWalkTest => '6-Minuten-Test';
@@ -1510,32 +1510,32 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 
 	// Translations
 	@override String get title => 'Ihre Angaben';
-	@override String get privacyBanner => 'Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer verschlusselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.';
+	@override String get privacyBanner => 'Ihre Körperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerät (und einer verschlüsselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.';
 	@override String get fieldAge => 'Alter';
 	@override String get hintAge => 'In Jahren';
-	@override String get errorAge => 'Ungultiges Alter (8 bis 100 Jahre)';
+	@override String get errorAge => 'Ungültiges Alter (8 bis 100 Jahre)';
 	@override String get fieldHeight => 'Grosse';
 	@override String get hintHeight => 'In Zentimetern';
-	@override String get errorHeight => 'Ungultige Grosse (100 bis 250 cm)';
+	@override String get errorHeight => 'Ungültige Grosse (100 bis 250 cm)';
 	@override String get fieldWeight => 'Gewicht';
 	@override String get hintWeight => 'In Kilogramm';
-	@override String get errorWeight => 'Ungultiges Gewicht (30 bis 150 kg)';
-	@override String get errorCountry => 'Ungultiger Landercode (z. B. FR)';
+	@override String get errorWeight => 'Ungültiges Gewicht (30 bis 150 kg)';
+	@override String get errorCountry => 'Ungültiger Ländercode (z. B. FR)';
 	@override String get fieldSex => 'Geschlecht (optional)';
 	@override String get sexFemale => 'Weiblich';
-	@override String get sexMale => 'Mannlich';
+	@override String get sexMale => 'Männlich';
 	@override String get sexUnspecified => 'Keine Angabe';
 	@override String get fieldCountry => 'Land';
 	@override String get hintCountry => 'Code (z. B. FR)';
 	@override String get bmiLabel => 'BMI';
 	@override late final _Translations$hikerProfile$bmiCategories$de bmiCategories = _Translations$hikerProfile$bmiCategories$de._(_root);
-	@override String get consentTitle => 'Korperdaten (DSGVO Artikel 9)';
-	@override String get consentBody => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
-	@override String get consentToggle => 'Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit';
+	@override String get consentTitle => 'Körperdaten (DSGVO Artikel 9)';
+	@override String get consentBody => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
+	@override String get consentToggle => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit';
 	@override String get save => 'Speichern';
 	@override String get saved => 'Angaben gespeichert';
 	@override String get morphoNotPrefilledHint => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.';
-	@override String get seniorReminder => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine arztliche Untersuchung empfohlen.';
+	@override String get seniorReminder => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine ärztliche Untersuchung empfohlen.';
 }
 
 // Path: walkTest
@@ -1546,27 +1546,27 @@ class _Translations$walkTest$de extends Translations$walkTest$fr {
 
 	// Translations
 	@override String get title => '6-Minuten-Gehtest';
-	@override String get intro => 'Gehen Sie in 6 Minuten so weit wie moglich auf ebenem Gelande. Das GPS misst die Distanz; wir vergleichen sie mit Normen fur Alter und Geschlecht.';
-	@override String get safetyWarning => 'Vermeiden Sie diese Anstrengung bei ungeklarten Herzproblemen. Horen Sie bei Unwohlsein auf.';
+	@override String get intro => 'Gehen Sie in 6 Minuten so weit wie möglich auf ebenem Gelände. Das GPS misst die Distanz; wir vergleichen sie mit Normen für Alter und Geschlecht.';
+	@override String get safetyWarning => 'Vermeiden Sie diese Anstrengung bei ungeklärten Herzproblemen. Hören Sie bei Unwohlsein auf.';
 	@override String get start => 'Test starten';
 	@override String get stop => 'Stoppen';
 	@override String get cancel => 'Abbrechen';
 	@override String get countdown => 'Machen Sie sich bereit...';
-	@override String get running => 'Lauft';
+	@override String get running => 'Läuft';
 	@override String get liveDistance => 'Distanz';
 	@override String get timeLeft => 'Verbleibende Zeit';
 	@override String get meters => 'm';
 	@override String get resultTitle => 'Testergebnis';
-	@override String get resultDistance => 'Zuruckgelegte Distanz';
-	@override String get resultLevel => 'Geschatztes Niveau';
-	@override String resultDate({required Object date}) => 'Durchgefuhrt am ${date}';
+	@override String get resultDistance => 'Zurückgelegte Distanz';
+	@override String get resultLevel => 'Geschätztes Niveau';
+	@override String resultDate({required Object date}) => 'Durchgeführt am ${date}';
 	@override String get doneAgain => 'Test wiederholen';
-	@override String get gpsNeeded => 'GPS wird benotigt, um die Distanz zu messen.';
+	@override String get gpsNeeded => 'GPS wird benötigt, um die Distanz zu messen.';
 	@override String get gpsDenied => 'Erlauben Sie den Standort, um den Test zu starten.';
 	@override String get monthlyReminderOn => 'Monatliche Erinnerung aktiv';
 	@override String get monthlyReminderBody => 'Jeden Monat wird eine Test-Erinnerung angeboten, um Ihre Form zu verfolgen.';
-	@override String get notDoneYet => 'Test nicht durchgefuhrt';
-	@override String get fallbackNotice => 'Bis zum Test wird Ihr Niveau aus Ihrem Fragebogen geschatzt.';
+	@override String get notDoneYet => 'Test nicht durchgeführt';
+	@override String get fallbackNotice => 'Bis zum Test wird Ihr Niveau aus Ihrem Fragebogen geschätzt.';
 	@override late final _Translations$walkTest$levels$de levels = _Translations$walkTest$levels$de._(_root);
 }
 
@@ -1578,27 +1578,27 @@ class _Translations$pastHikes$de extends Translations$pastHikes$fr {
 
 	// Translations
 	@override String get title => 'Ihre letzten 5 Touren';
-	@override String get intro => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.';
-	@override String get addHike => 'Tour hinzufugen';
+	@override String get intro => 'Fügen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Höhengewöhnung) statt eines Etiketts.';
+	@override String get addHike => 'Tour hinzufügen';
 	@override String get empty => 'Noch keine Tour erfasst.';
 	@override String get fieldDate => 'Datum';
 	@override String get fieldDays => 'Anzahl Tage';
 	@override String get fieldAvgHours => 'Durchschnittliches Gehen pro Tag (Std.)';
 	@override String get fieldElevation => 'Gesamtanstieg (m)';
 	@override String get fieldDistance => 'Gesamtdistanz (km)';
-	@override String get errorDays => 'Ungultige Tageszahl (1 bis 60)';
-	@override String get errorHours => 'Ungultige Dauer (0 bis 24 h)';
-	@override String get errorElevation => 'Ungultiger Hohenunterschied (0 bis 5000 m)';
-	@override String get errorDistance => 'Ungultige Distanz (0 bis 100 km)';
-	@override String get errorEffort => 'Geben Sie mindestens Hohenmeter oder Distanz an';
+	@override String get errorDays => 'Ungültige Tageszahl (1 bis 60)';
+	@override String get errorHours => 'Ungültige Dauer (0 bis 24 h)';
+	@override String get errorElevation => 'Ungültiger Höhenunterschied (0 bis 5000 m)';
+	@override String get errorDistance => 'Ungültige Distanz (0 bis 100 km)';
+	@override String get errorEffort => 'Geben Sie mindestens Höhenmeter oder Distanz an';
 	@override String get perDay => 'pro Tag';
 	@override String get editHike => 'Tour bearbeiten';
-	@override String get deleteHike => 'Loschen';
+	@override String get deleteHike => 'Löschen';
 	@override String get save => 'Speichern';
 	@override String get saved => 'Touren gespeichert';
 	@override String get maxReached => 'Maximum von 5 Touren erreicht.';
 	@override String get difficultiesTitle => 'Aufgetretene Schwierigkeiten';
-	@override String get difficultiesHint => 'Ein Text fur alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Hohe, Hitzestress...';
+	@override String get difficultiesHint => 'Ein Text für alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Höhe, Hitzestress...';
 	@override String get difficultiesSaved => 'Notiz gespeichert';
 }
 
@@ -2186,13 +2186,13 @@ class _Translations$feasibility$gaps$de extends Translations$feasibility$gaps$fr
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get elevationPerDay => 'Taglicher Anstieg zu hoch gegenuber Ihrer Gewohnheit';
-	@override String get distancePerDay => 'Tagliche Distanz uber Ihrer Erfahrung';
+	@override String get elevationPerDay => 'Täglicher Anstieg zu hoch gegenüber Ihrer Gewohnheit';
+	@override String get distancePerDay => 'Tägliche Distanz über Ihrer Erfahrung';
 	@override String get consecutiveDays => 'Mehr aufeinanderfolgende Tage als je gemacht';
-	@override String get technicity => 'Gelandetechnik uber Ihrem Niveau';
-	@override String get risk => 'Hohes Risikoniveau fur diesen Trek';
+	@override String get technicity => 'Geländetechnik über Ihrem Niveau';
+	@override String get risk => 'Hohes Risikoniveau für diesen Trek';
 	@override String get fitness => 'Form beim 6-Minuten-Test unzureichend';
-	@override String get effort => 'Gesamtanstrengung (IBP) uber Ihrer Erfahrung';
+	@override String get effort => 'Gesamtanstrengung (IBP) über Ihrer Erfahrung';
 }
 
 // Path: feasibility.formula
@@ -3283,7 +3283,7 @@ class _Translations$hikerProfile$bmiCategories$de extends Translations$hikerProf
 	// Translations
 	@override String get underweight => 'Untergewicht';
 	@override String get normal => 'Normalgewicht';
-	@override String get overweight => 'Ubergewicht';
+	@override String get overweight => 'Übergewicht';
 	@override String get obese => 'Adipositas';
 }
 
@@ -4377,7 +4377,7 @@ extension on TranslationsDe {
 			'auth.errorLoading' => 'Ladefehler',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
 			'feasibility.restart' => 'Start over',
-			'feasibility.objectiveTitle' => 'Machbarkeit fur diesen Trek',
+			'feasibility.objectiveTitle' => 'Machbarkeit für diesen Trek',
 			'feasibility.objectiveIntro' => 'Urteil auf Basis Ihres echten Profils, gekreuzt mit den Anforderungen des Treks.',
 			'feasibility.openProfile' => 'Meine Angaben',
 			'feasibility.openWalkTest' => '6-Minuten-Test',
@@ -4385,13 +4385,13 @@ extension on TranslationsDe {
 			'feasibility.sourceObjective' => 'Basierend auf Ihrem objektiven Profil',
 			'feasibility.sourceFallback' => 'Basierend auf dem Fragebogen (bis Ihr Profil gesetzt ist)',
 			'feasibility.gapTooHigh' => 'Zu grosse Abweichung',
-			'feasibility.gaps.elevationPerDay' => 'Taglicher Anstieg zu hoch gegenuber Ihrer Gewohnheit',
-			'feasibility.gaps.distancePerDay' => 'Tagliche Distanz uber Ihrer Erfahrung',
+			'feasibility.gaps.elevationPerDay' => 'Täglicher Anstieg zu hoch gegenüber Ihrer Gewohnheit',
+			'feasibility.gaps.distancePerDay' => 'Tägliche Distanz über Ihrer Erfahrung',
 			'feasibility.gaps.consecutiveDays' => 'Mehr aufeinanderfolgende Tage als je gemacht',
-			'feasibility.gaps.technicity' => 'Gelandetechnik uber Ihrem Niveau',
-			'feasibility.gaps.risk' => 'Hohes Risikoniveau fur diesen Trek',
+			'feasibility.gaps.technicity' => 'Geländetechnik über Ihrem Niveau',
+			'feasibility.gaps.risk' => 'Hohes Risikoniveau für diesen Trek',
 			'feasibility.gaps.fitness' => 'Form beim 6-Minuten-Test unzureichend',
-			'feasibility.gaps.effort' => 'Gesamtanstrengung (IBP) uber Ihrer Erfahrung',
+			'feasibility.gaps.effort' => 'Gesamtanstrengung (IBP) über Ihrer Erfahrung',
 			'feasibility.formula.title' => 'Machbarkeit für diese Tour',
 			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Aufwand-km/Tag (${level})',
@@ -5192,85 +5192,85 @@ extension on TranslationsDe {
 			'trekState.resumeOrphanDialog.resume' => 'Fortsetzen',
 			'trekState.resumeOrphanDialog.abandon' => 'Abbrechen',
 			'hikerProfile.title' => 'Ihre Angaben',
-			'hikerProfile.privacyBanner' => 'Ihre Korperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerat (und einer verschlusselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
+			'hikerProfile.privacyBanner' => 'Ihre Körperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerät (und einer verschlüsselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
 			'hikerProfile.fieldAge' => 'Alter',
 			'hikerProfile.hintAge' => 'In Jahren',
-			'hikerProfile.errorAge' => 'Ungultiges Alter (8 bis 100 Jahre)',
+			'hikerProfile.errorAge' => 'Ungültiges Alter (8 bis 100 Jahre)',
 			'hikerProfile.fieldHeight' => 'Grosse',
 			'hikerProfile.hintHeight' => 'In Zentimetern',
-			'hikerProfile.errorHeight' => 'Ungultige Grosse (100 bis 250 cm)',
+			'hikerProfile.errorHeight' => 'Ungültige Grosse (100 bis 250 cm)',
 			'hikerProfile.fieldWeight' => 'Gewicht',
 			'hikerProfile.hintWeight' => 'In Kilogramm',
-			'hikerProfile.errorWeight' => 'Ungultiges Gewicht (30 bis 150 kg)',
-			'hikerProfile.errorCountry' => 'Ungultiger Landercode (z. B. FR)',
+			'hikerProfile.errorWeight' => 'Ungültiges Gewicht (30 bis 150 kg)',
+			'hikerProfile.errorCountry' => 'Ungültiger Ländercode (z. B. FR)',
 			'hikerProfile.fieldSex' => 'Geschlecht (optional)',
 			'hikerProfile.sexFemale' => 'Weiblich',
-			'hikerProfile.sexMale' => 'Mannlich',
+			'hikerProfile.sexMale' => 'Männlich',
 			'hikerProfile.sexUnspecified' => 'Keine Angabe',
 			'hikerProfile.fieldCountry' => 'Land',
 			'hikerProfile.hintCountry' => 'Code (z. B. FR)',
 			'hikerProfile.bmiLabel' => 'BMI',
 			'hikerProfile.bmiCategories.underweight' => 'Untergewicht',
 			'hikerProfile.bmiCategories.normal' => 'Normalgewicht',
-			'hikerProfile.bmiCategories.overweight' => 'Ubergewicht',
+			'hikerProfile.bmiCategories.overweight' => 'Übergewicht',
 			'hikerProfile.bmiCategories.obese' => 'Adipositas',
-			'hikerProfile.consentTitle' => 'Korperdaten (DSGVO Artikel 9)',
-			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerat und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
-			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Korperdaten fur die Machbarkeit',
+			'hikerProfile.consentTitle' => 'Körperdaten (DSGVO Artikel 9)',
+			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
+			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit',
 			'hikerProfile.save' => 'Speichern',
 			'hikerProfile.saved' => 'Angaben gespeichert',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.',
-			'hikerProfile.seniorReminder' => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine arztliche Untersuchung empfohlen.',
+			'hikerProfile.seniorReminder' => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine ärztliche Untersuchung empfohlen.',
 			'walkTest.title' => '6-Minuten-Gehtest',
-			'walkTest.intro' => 'Gehen Sie in 6 Minuten so weit wie moglich auf ebenem Gelande. Das GPS misst die Distanz; wir vergleichen sie mit Normen fur Alter und Geschlecht.',
-			'walkTest.safetyWarning' => 'Vermeiden Sie diese Anstrengung bei ungeklarten Herzproblemen. Horen Sie bei Unwohlsein auf.',
+			'walkTest.intro' => 'Gehen Sie in 6 Minuten so weit wie möglich auf ebenem Gelände. Das GPS misst die Distanz; wir vergleichen sie mit Normen für Alter und Geschlecht.',
+			'walkTest.safetyWarning' => 'Vermeiden Sie diese Anstrengung bei ungeklärten Herzproblemen. Hören Sie bei Unwohlsein auf.',
 			'walkTest.start' => 'Test starten',
 			'walkTest.stop' => 'Stoppen',
 			'walkTest.cancel' => 'Abbrechen',
 			'walkTest.countdown' => 'Machen Sie sich bereit...',
-			'walkTest.running' => 'Lauft',
+			'walkTest.running' => 'Läuft',
 			'walkTest.liveDistance' => 'Distanz',
 			'walkTest.timeLeft' => 'Verbleibende Zeit',
 			'walkTest.meters' => 'm',
 			'walkTest.resultTitle' => 'Testergebnis',
-			'walkTest.resultDistance' => 'Zuruckgelegte Distanz',
-			'walkTest.resultLevel' => 'Geschatztes Niveau',
-			'walkTest.resultDate' => ({required Object date}) => 'Durchgefuhrt am ${date}',
+			'walkTest.resultDistance' => 'Zurückgelegte Distanz',
+			'walkTest.resultLevel' => 'Geschätztes Niveau',
+			'walkTest.resultDate' => ({required Object date}) => 'Durchgeführt am ${date}',
 			'walkTest.doneAgain' => 'Test wiederholen',
-			'walkTest.gpsNeeded' => 'GPS wird benotigt, um die Distanz zu messen.',
+			'walkTest.gpsNeeded' => 'GPS wird benötigt, um die Distanz zu messen.',
 			'walkTest.gpsDenied' => 'Erlauben Sie den Standort, um den Test zu starten.',
 			'walkTest.monthlyReminderOn' => 'Monatliche Erinnerung aktiv',
 			'walkTest.monthlyReminderBody' => 'Jeden Monat wird eine Test-Erinnerung angeboten, um Ihre Form zu verfolgen.',
-			'walkTest.notDoneYet' => 'Test nicht durchgefuhrt',
+			'walkTest.notDoneYet' => 'Test nicht durchgeführt',
 			_ => null,
 		} ?? switch (path) {
-			'walkTest.fallbackNotice' => 'Bis zum Test wird Ihr Niveau aus Ihrem Fragebogen geschatzt.',
+			'walkTest.fallbackNotice' => 'Bis zum Test wird Ihr Niveau aus Ihrem Fragebogen geschätzt.',
 			'walkTest.levels.low' => 'Niedrig',
 			'walkTest.levels.moderate' => 'Mittel',
 			'walkTest.levels.good' => 'Gut',
 			'walkTest.levels.excellent' => 'Ausgezeichnet',
 			'pastHikes.title' => 'Ihre letzten 5 Touren',
-			'pastHikes.intro' => 'Fugen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Hohengewohnung) statt eines Etiketts.',
-			'pastHikes.addHike' => 'Tour hinzufugen',
+			'pastHikes.intro' => 'Fügen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Höhengewöhnung) statt eines Etiketts.',
+			'pastHikes.addHike' => 'Tour hinzufügen',
 			'pastHikes.empty' => 'Noch keine Tour erfasst.',
 			'pastHikes.fieldDate' => 'Datum',
 			'pastHikes.fieldDays' => 'Anzahl Tage',
 			'pastHikes.fieldAvgHours' => 'Durchschnittliches Gehen pro Tag (Std.)',
 			'pastHikes.fieldElevation' => 'Gesamtanstieg (m)',
 			'pastHikes.fieldDistance' => 'Gesamtdistanz (km)',
-			'pastHikes.errorDays' => 'Ungultige Tageszahl (1 bis 60)',
-			'pastHikes.errorHours' => 'Ungultige Dauer (0 bis 24 h)',
-			'pastHikes.errorElevation' => 'Ungultiger Hohenunterschied (0 bis 5000 m)',
-			'pastHikes.errorDistance' => 'Ungultige Distanz (0 bis 100 km)',
-			'pastHikes.errorEffort' => 'Geben Sie mindestens Hohenmeter oder Distanz an',
+			'pastHikes.errorDays' => 'Ungültige Tageszahl (1 bis 60)',
+			'pastHikes.errorHours' => 'Ungültige Dauer (0 bis 24 h)',
+			'pastHikes.errorElevation' => 'Ungültiger Höhenunterschied (0 bis 5000 m)',
+			'pastHikes.errorDistance' => 'Ungültige Distanz (0 bis 100 km)',
+			'pastHikes.errorEffort' => 'Geben Sie mindestens Höhenmeter oder Distanz an',
 			'pastHikes.perDay' => 'pro Tag',
 			'pastHikes.editHike' => 'Tour bearbeiten',
-			'pastHikes.deleteHike' => 'Loschen',
+			'pastHikes.deleteHike' => 'Löschen',
 			'pastHikes.save' => 'Speichern',
 			'pastHikes.saved' => 'Touren gespeichert',
 			'pastHikes.maxReached' => 'Maximum von 5 Touren erreicht.',
 			'pastHikes.difficultiesTitle' => 'Aufgetretene Schwierigkeiten',
-			'pastHikes.difficultiesHint' => 'Ein Text fur alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Hohe, Hitzestress...',
+			'pastHikes.difficultiesHint' => 'Ein Text für alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Höhe, Hitzestress...',
 			'pastHikes.difficultiesSaved' => 'Notiz gespeichert',
 			'ffrando.cotationTitle' => 'FFRandonnee-Bewertung',
 			'ffrando.effort' => 'Anstrengung',
