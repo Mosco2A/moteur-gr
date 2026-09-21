@@ -1267,6 +1267,9 @@ class _Translations$recap$es extends Translations$recap$fr {
 	@override String get viewJournal => 'Ver mi diario';
 	@override String get noData => 'Aún no hay datos de ruta para mostrar.';
 	@override String elevationLoss({required Object meters}) => '${meters} m de desnivel negativo';
+	@override String get shareAdventure => 'Compartir mi aventura';
+	@override String shareHeadline({required Object trail}) => 'Mi aventura en el ${trail}';
+	@override String get shareError => 'No se ha podido compartir';
 }
 
 // Path: programme
@@ -4919,6 +4922,9 @@ extension on TranslationsEs {
 			'recap.viewJournal' => 'Ver mi diario',
 			'recap.noData' => 'Aún no hay datos de ruta para mostrar.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m de desnivel negativo',
+			'recap.shareAdventure' => 'Compartir mi aventura',
+			'recap.shareHeadline' => ({required Object trail}) => 'Mi aventura en el ${trail}',
+			'recap.shareError' => 'No se ha podido compartir',
 			'programme.title' => 'Programa',
 			'programme.helpTooltip' => 'Ayuda',
 			'programme.duration.label' => 'Número de días',
@@ -5260,11 +5266,11 @@ extension on TranslationsEs {
 			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',
 			'hikerProfile.consentToggle' => 'Autorizo el uso de mis datos corporales para la viabilidad',
 			'hikerProfile.save' => 'Guardar',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.saved' => 'Datos guardados',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nada está rellenado: introduce tus datos reales, es por tu seguridad.',
 			'hikerProfile.seniorReminder' => 'A partir de los 65 años, se aconseja una revisión médica antes de un trek exigente.',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.title' => 'Prueba de marcha de 6 minutos',
 			'walkTest.intro' => 'Camina lo más lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.',
 			'walkTest.safetyWarning' => 'Evita este esfuerzo si tienes un problema cardiaco no verificado. Detente si te sientes mal.',

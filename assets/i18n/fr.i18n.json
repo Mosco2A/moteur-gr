@@ -1451,7 +1451,10 @@
     "viewDiploma": "Voir mon diplôme",
     "viewJournal": "Voir mon journal",
     "noData": "Aucune donnée de parcours à afficher pour le moment.",
-    "elevationLoss": "$meters m de dénivelé négatif"
+    "elevationLoss": "$meters m de dénivelé négatif",
+    "shareAdventure": "Partager mon aventure",
+    "shareHeadline": "Mon aventure sur $trail",
+    "shareError": "Partage impossible"
   },
   "programme": {
     "title": "Programme",

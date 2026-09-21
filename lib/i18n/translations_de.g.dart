@@ -1267,6 +1267,9 @@ class _Translations$recap$de extends Translations$recap$fr {
 	@override String get viewJournal => 'Mein Tagebuch ansehen';
 	@override String get noData => 'Noch keine Routendaten zum Anzeigen.';
 	@override String elevationLoss({required Object meters}) => '${meters} m Abstieg';
+	@override String get shareAdventure => 'Mein Abenteuer teilen';
+	@override String shareHeadline({required Object trail}) => 'Mein Abenteuer auf dem ${trail}';
+	@override String get shareError => 'Teilen nicht möglich';
 }
 
 // Path: programme
@@ -4919,6 +4922,9 @@ extension on TranslationsDe {
 			'recap.viewJournal' => 'Mein Tagebuch ansehen',
 			'recap.noData' => 'Noch keine Routendaten zum Anzeigen.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m Abstieg',
+			'recap.shareAdventure' => 'Mein Abenteuer teilen',
+			'recap.shareHeadline' => ({required Object trail}) => 'Mein Abenteuer auf dem ${trail}',
+			'recap.shareError' => 'Teilen nicht möglich',
 			'programme.title' => 'Programm',
 			'programme.helpTooltip' => 'Hilfe',
 			'programme.duration.label' => 'Anzahl der Tage',
@@ -5260,11 +5266,11 @@ extension on TranslationsDe {
 			'hikerProfile.consentBody' => 'Alter, Grosse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
 			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit',
 			'hikerProfile.save' => 'Speichern',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.saved' => 'Angaben gespeichert',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nichts ist vorausgefüllt: Geben Sie Ihre echten Daten ein, es geht um Ihre Sicherheit.',
 			'hikerProfile.seniorReminder' => 'Ab 65 Jahren wird vor einem anspruchsvollen Trek eine ärztliche Untersuchung empfohlen.',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.title' => '6-Minuten-Gehtest',
 			'walkTest.intro' => 'Gehen Sie in 6 Minuten so weit wie möglich auf ebenem Gelände. Das GPS misst die Distanz; wir vergleichen sie mit Normen für Alter und Geschlecht.',
 			'walkTest.safetyWarning' => 'Vermeiden Sie diese Anstrengung bei ungeklärten Herzproblemen. Hören Sie bei Unwohlsein auf.',

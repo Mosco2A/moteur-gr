@@ -1451,7 +1451,10 @@
     "viewDiploma": "View my diploma",
     "viewJournal": "View my journal",
     "noData": "No route data to display yet.",
-    "elevationLoss": "$meters m of descent"
+    "elevationLoss": "$meters m of descent",
+    "shareAdventure": "Share my adventure",
+    "shareHeadline": "My adventure on the $trail",
+    "shareError": "Sharing failed"
   },
   "programme": {
     "title": "Programme",

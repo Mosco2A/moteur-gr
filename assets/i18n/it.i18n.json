@@ -1451,7 +1451,10 @@
     "viewDiploma": "Vedi il mio diploma",
     "viewJournal": "Vedi il mio diario",
     "noData": "Nessun dato di percorso da mostrare al momento.",
-    "elevationLoss": "$meters m di dislivello negativo"
+    "elevationLoss": "$meters m di dislivello negativo",
+    "shareAdventure": "Condividi la mia avventura",
+    "shareHeadline": "La mia avventura sul $trail",
+    "shareError": "Condivisione non riuscita"
   },
   "programme": {
     "title": "Programma",

@@ -1451,7 +1451,10 @@
     "viewDiploma": "Mein Diplom ansehen",
     "viewJournal": "Mein Tagebuch ansehen",
     "noData": "Noch keine Routendaten zum Anzeigen.",
-    "elevationLoss": "$meters m Abstieg"
+    "elevationLoss": "$meters m Abstieg",
+    "shareAdventure": "Mein Abenteuer teilen",
+    "shareHeadline": "Mein Abenteuer auf dem $trail",
+    "shareError": "Teilen nicht möglich"
   },
   "programme": {
     "title": "Programm",

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
@@ -113,6 +114,10 @@ class _RecapBody extends ConsumerWidget {
             icon: Icons.menu_book_outlined,
             onPressed: () => context.push('/journal'),
           ),
+          const SizedBox(height: AppTheme.spacingMd),
+
+          // CORRECTIF L5-3 : le recapitulatif n'offrait AUCUN partage.
+          _ShareAdventureButton(stats: stats),
         ],
       ),
     );
@@ -170,67 +175,145 @@ class _CongratsBanner extends StatelessWidget {
   }
 }
 
-/// Carte des statistiques reelles (etapes marchees, distance, D+, duree, dates).
+/// Texte de partage du recapitulatif d'aventure (CORRECTIF L5-3).
+///
+/// Fonction PURE, donc testable sans toucher a la feuille de partage du
+/// systeme. Elle reprend EXACTEMENT les lignes affichees a l'ecran : le
+/// randonneur partage les chiffres qu'il a sous les yeux, pas un second
+/// formatage qui finirait par diverger.
+String buildAdventureShareText({
+  required String trailName,
+  required AdventureStats stats,
+  required Translations$recap$fr recapT,
+}) {
+  final lines = adventureRecapRows(stats, recapT).map((r) => '- ${r.label}');
+  return [recapT.shareHeadline(trail: trailName), ...lines].join('\n');
+}
+
+/// Bouton « Partager mon aventure » (CORRECTIF L5-3).
+///
+/// Le recapitulatif n'offrait AUCUN partage. share_plus est deja en
+/// production ailleurs dans l'app (carte de partage, resume de plan) :
+/// aucune dependance ajoutee, aucun nouveau motif introduit.
+class _ShareAdventureButton extends ConsumerWidget {
+  const _ShareAdventureButton({required this.stats});
+  final AdventureStats stats;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final recapT = t.recap;
+    final trailName = ref.watch(trailConfigProvider.select((c) => c.displayName));
+
+    return AppButton(
+      label: recapT.shareAdventure,
+      icon: Icons.share_outlined,
+      onPressed: () async {
+        // Capture AVANT tout await : la feuille de partage prend la main,
+        // le `context` ne doit plus servir a afficher l'erreur.
+        final messenger = ScaffoldMessenger.of(context);
+        try {
+          await Share.share(
+            buildAdventureShareText(
+              trailName: trailName,
+              stats: stats,
+              recapT: recapT,
+            ),
+            subject: recapT.shareHeadline(trail: trailName),
+          );
+        } catch (_) {
+          messenger.showSnackBar(
+            SnackBar(content: Text(recapT.shareError)),
+          );
+        }
+      },
+    );
+  }
+}
+
+/// Une ligne du recapitulatif : une icone et un libelle deja localise.
+typedef RecapRow = ({IconData icon, String label});
+
+/// Lignes chiffrees du recapitulatif, dans l'ordre d'affichage.
+///
+/// Fonction unique, partagee par la carte a l'ecran et par le TEXTE DE
+/// PARTAGE (correctif L5-3) : deux formatages separes finiraient par
+/// diverger, et le randonneur partagerait des chiffres differents de ceux
+/// qu'il a sous les yeux.
+List<RecapRow> adventureRecapRows(
+  AdventureStats stats,
+  Translations$recap$fr recapT,
+) {
+  final rows = <RecapRow>[
+    (
+      icon: Icons.flag,
+      label: recapT.stages
+          .replaceAll('{done}', '${stats.stagesWalked}')
+          .replaceAll('{total}', '${stats.totalStages}'),
+    ),
+    (
+      icon: Icons.straighten,
+      label:
+          recapT.distance.replaceAll('{km}', stats.distanceKm.toStringAsFixed(0)),
+    ),
+    (
+      icon: Icons.trending_up,
+      label: recapT.elevation.replaceAll('{meters}', '${stats.elevationGainM}'),
+    ),
+    // CORRECTIF L5-2 : le D- cumule. Il manquait alors que
+    // Stage.elevationLoss existait deja — une descente de plusieurs milliers
+    // de metres se lit dans les genoux du randonneur.
+    (
+      icon: Icons.trending_down,
+      label: recapT.elevationLoss(meters: stats.elevationLossM),
+    ),
+    (
+      icon: Icons.timer,
+      label: recapT.duration.replaceAll('{days}', '${stats.durationDays}'),
+    ),
+  ];
+
+  // Dates reelles (si la session porte un debut et une fin). Le formatage
+  // localise est tolerant : si les donnees de locale intl ne sont pas encore
+  // initialisees (edge case hors app), on retombe sur un format ISO plutot que
+  // de faire echouer toute la carte de stats.
+  final start = stats.startDate;
+  final end = stats.endDate;
+  if (start != null && end != null) {
+    String fmtDate(DateTime d) {
+      try {
+        return DateFormat.yMMMd(LocaleSettings.currentLocale.languageCode)
+            .format(d);
+      } catch (_) {
+        return '${d.year}-${d.month.toString().padLeft(2, '0')}-'
+            '${d.day.toString().padLeft(2, '0')}';
+      }
+    }
+
+    rows.add((
+      icon: Icons.date_range,
+      label: recapT.dates
+          .replaceAll('{start}', fmtDate(start))
+          .replaceAll('{end}', fmtDate(end)),
+    ));
+  }
+  return rows;
+}
+
+/// Carte des statistiques reelles (etapes marchees, distance, D+, D-, duree,
+/// dates).
 class _StatsCard extends StatelessWidget {
   const _StatsCard({required this.stats});
   final AdventureStats stats;
 
   @override
   Widget build(BuildContext context) {
-    final recapT = t.recap;
-
-    final stagesLabel = recapT.stages
-        .replaceAll('{done}', '${stats.stagesWalked}')
-        .replaceAll('{total}', '${stats.totalStages}');
-    final distanceLabel =
-        recapT.distance.replaceAll('{km}', stats.distanceKm.toStringAsFixed(0));
-    final elevationLabel =
-        recapT.elevation.replaceAll('{meters}', '${stats.elevationGainM}');
-    // CORRECTIF L5-2 : le D- cumule. Il manquait alors que Stage.elevationLoss
-    // existait deja — une descente de plusieurs milliers de metres se lit dans
-    // les genoux du randonneur, elle n'apparaissait nulle part dans son recap.
-    final elevationLossLabel =
-        recapT.elevationLoss(meters: stats.elevationLossM);
-    final durationLabel =
-        recapT.duration.replaceAll('{days}', '${stats.durationDays}');
-
-    final rows = <Widget>[
-      _StatRow(icon: Icons.flag, label: stagesLabel),
-      _StatRow(icon: Icons.straighten, label: distanceLabel),
-      _StatRow(icon: Icons.trending_up, label: elevationLabel),
-      _StatRow(icon: Icons.trending_down, label: elevationLossLabel),
-      _StatRow(icon: Icons.timer, label: durationLabel),
-    ];
-
-    // Dates reelles (si la session porte un debut et une fin). Le formatage
-    // localise est tolerant : si les donnees de locale intl ne sont pas encore
-    // initialisees (edge case hors app), on retombe sur un format ISO plutot que
-    // de faire echouer toute la carte de stats.
-    final start = stats.startDate;
-    final end = stats.endDate;
-    if (start != null && end != null) {
-      String fmtDate(DateTime d) {
-        try {
-          return DateFormat.yMMMd(LocaleSettings.currentLocale.languageCode)
-              .format(d);
-        } catch (_) {
-          return '${d.year}-${d.month.toString().padLeft(2, '0')}-'
-              '${d.day.toString().padLeft(2, '0')}';
-        }
-      }
-
-      final datesLabel = recapT.dates
-          .replaceAll('{start}', fmtDate(start))
-          .replaceAll('{end}', fmtDate(end));
-      rows.add(_StatRow(icon: Icons.date_range, label: datesLabel));
-    }
-
+    final rows = adventureRecapRows(stats, t.recap);
     return AppCard(
       child: Column(
         children: [
           for (var i = 0; i < rows.length; i++) ...[
             if (i > 0) const Divider(height: AppTheme.spacingBase),
-            rows[i],
+            _StatRow(icon: rows[i].icon, label: rows[i].label),
           ],
         ],
       ),

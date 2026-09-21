@@ -1267,6 +1267,9 @@ class _Translations$recap$it extends Translations$recap$fr {
 	@override String get viewJournal => 'Vedi il mio diario';
 	@override String get noData => 'Nessun dato di percorso da mostrare al momento.';
 	@override String elevationLoss({required Object meters}) => '${meters} m di dislivello negativo';
+	@override String get shareAdventure => 'Condividi la mia avventura';
+	@override String shareHeadline({required Object trail}) => 'La mia avventura sul ${trail}';
+	@override String get shareError => 'Condivisione non riuscita';
 }
 
 // Path: programme
@@ -4919,6 +4922,9 @@ extension on TranslationsIt {
 			'recap.viewJournal' => 'Vedi il mio diario',
 			'recap.noData' => 'Nessun dato di percorso da mostrare al momento.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m di dislivello negativo',
+			'recap.shareAdventure' => 'Condividi la mia avventura',
+			'recap.shareHeadline' => ({required Object trail}) => 'La mia avventura sul ${trail}',
+			'recap.shareError' => 'Condivisione non riuscita',
 			'programme.title' => 'Programma',
 			'programme.helpTooltip' => 'Aiuto',
 			'programme.duration.label' => 'Numero di giorni',
@@ -5260,11 +5266,11 @@ extension on TranslationsIt {
 			'hikerProfile.consentBody' => 'Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.',
 			'hikerProfile.consentToggle' => 'Autorizzo l\'uso dei miei dati corporei per la fattibilità',
 			'hikerProfile.save' => 'Salva',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.saved' => 'Dati salvati',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nulla è precompilato: inserisci i tuoi dati reali, è per la tua sicurezza.',
 			'hikerProfile.seniorReminder' => 'Dai 65 anni, si consiglia una visita medica prima di un trek impegnativo.',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.title' => 'Test del cammino di 6 minuti',
 			'walkTest.intro' => 'Cammina il più lontano possibile in 6 minuti su terreno piano. Il GPS misura la distanza; la confrontiamo con le norme per età e sesso.',
 			'walkTest.safetyWarning' => 'Evita questo sforzo in caso di problemi cardiaci non verificati. Fermati se ti senti male.',

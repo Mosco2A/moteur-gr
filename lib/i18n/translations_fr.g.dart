@@ -2562,6 +2562,15 @@ class Translations$recap$fr {
 
 	/// fr: '$meters m de dénivelé négatif'
 	String elevationLoss({required Object meters}) => '${meters} m de dénivelé négatif';
+
+	/// fr: 'Partager mon aventure'
+	String get shareAdventure => 'Partager mon aventure';
+
+	/// fr: 'Mon aventure sur $trail'
+	String shareHeadline({required Object trail}) => 'Mon aventure sur ${trail}';
+
+	/// fr: 'Partage impossible'
+	String get shareError => 'Partage impossible';
 }
 
 // Path: programme
@@ -8244,6 +8253,9 @@ extension on Translations {
 			'recap.viewJournal' => 'Voir mon journal',
 			'recap.noData' => 'Aucune donnée de parcours à afficher pour le moment.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m de dénivelé négatif',
+			'recap.shareAdventure' => 'Partager mon aventure',
+			'recap.shareHeadline' => ({required Object trail}) => 'Mon aventure sur ${trail}',
+			'recap.shareError' => 'Partage impossible',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
@@ -8585,11 +8597,11 @@ extension on Translations {
 			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilité',
 			'hikerProfile.save' => 'Enregistrer',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.saved' => 'Fiche enregistrée',
 			'hikerProfile.morphoNotPrefilledHint' => 'Rien n\'est pré-rempli : renseignez vos vraies données, c\'est pour votre sécurité.',
 			'hikerProfile.seniorReminder' => 'À partir de 65 ans, une consultation médicale est conseillée avant un trek exigeant.',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.title' => 'Test de marche 6 minutes',
 			'walkTest.intro' => 'Marchez le plus loin possible en 6 minutes, sur terrain plat. Le GPS mesure la distance ; on la compare aux normes de votre âge et sexe.',
 			'walkTest.safetyWarning' => 'Effort à éviter en cas de souci cardiaque non vérifié. Arrêtez-vous en cas de gêne.',

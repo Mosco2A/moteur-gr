@@ -1267,6 +1267,9 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String get viewJournal => 'View my journal';
 	@override String get noData => 'No route data to display yet.';
 	@override String elevationLoss({required Object meters}) => '${meters} m of descent';
+	@override String get shareAdventure => 'Share my adventure';
+	@override String shareHeadline({required Object trail}) => 'My adventure on the ${trail}';
+	@override String get shareError => 'Sharing failed';
 }
 
 // Path: programme
@@ -4919,6 +4922,9 @@ extension on TranslationsEn {
 			'recap.viewJournal' => 'View my journal',
 			'recap.noData' => 'No route data to display yet.',
 			'recap.elevationLoss' => ({required Object meters}) => '${meters} m of descent',
+			'recap.shareAdventure' => 'Share my adventure',
+			'recap.shareHeadline' => ({required Object trail}) => 'My adventure on the ${trail}',
+			'recap.shareError' => 'Sharing failed',
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Help',
 			'programme.duration.label' => 'Number of days',
@@ -5260,11 +5266,11 @@ extension on TranslationsEn {
 			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.',
 			'hikerProfile.consentToggle' => 'I allow my body metrics to be used for feasibility',
 			'hikerProfile.save' => 'Save',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.saved' => 'Details saved',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nothing is pre-filled: enter your real data, it is for your safety.',
 			'hikerProfile.seniorReminder' => 'From age 65, a medical check-up is advised before a demanding trek.',
-			_ => null,
-		} ?? switch (path) {
 			'walkTest.title' => '6-minute walk test',
 			'walkTest.intro' => 'Walk as far as you can in 6 minutes on flat ground. GPS measures the distance; we compare it to norms for your age and sex.',
 			'walkTest.safetyWarning' => 'Avoid this effort if you have an unchecked heart condition. Stop if you feel unwell.',
