@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
+import 'package:moteur_gr/features/feasibility/domain/objective_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
-import 'package:moteur_gr/features/feasibility/domain/trek_feasibility_calculator.dart';
 import 'package:moteur_gr/features/feasibility/domain/walk_test_norms.dart';
 import 'package:moteur_gr/features/feasibility/domain/walk_test_result.dart';
 

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/config/trail_selection.dart';
+import '../../feasibility/domain/feasibility_formula.dart';
 import '../../feasibility/providers/hiker_profile_provider.dart';
 import '../../feasibility/providers/trek_feasibility_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
@@ -12,7 +13,7 @@ import '../models/training_plan.dart';
 ///
 /// Le plan est EXTERNALISE (JSON, [TrainingPlanLoader]) et PERSONNALISE + DATE :
 /// - personnalise : la fiche de renseignement L4 ([hikerProfileProvider]) + le
-///   verdict de faisabilite L4 ([trekFeasibilityResultProvider]) ;
+///   verdict du MOTEUR UNIQUE ([feasibilityAssessmentProvider]) ;
 /// - date : la date de depart du Calendrier ([downloadReminderProvider]) donne
 ///   le compte a rebours (« X jours avant ») et l'etat « depart trop proche ».
 ///
@@ -75,8 +76,13 @@ final trainingDepartureTooCloseProvider = Provider<bool>((ref) {
 ///
 /// - [hasProfile] : la fiche morpho est-elle renseignee ? (sinon invite non
 ///   bloquante « remplir la fiche pour adapter », spec etat « sans fiche ») ;
-/// - [verdict] : verdict de faisabilite (go/caution/danger/null) -> l'UI adapte
-///   le message de cadrage (un profil prudent recoit un rappel de prudence).
+/// - [verdict] : verdict de faisabilite du MOTEUR UNIQUE ([FeasibilityVerdict],
+///   null si indisponible) -> l'UI adapte le message de cadrage.
+///
+/// UN SEUL MOTEUR FAIT FOI (campagne personas 21/09, MAJEUR-4) : ce verdict est
+/// EXACTEMENT celui qu'affiche l'ecran Faisabilite. Un second calcul (seuils
+/// 1.3/1.8) vivait ici et contredisait l'ecran pour 3 profils sur 6 — il a ete
+/// supprime, pas ajuste.
 class TrainingPersonalization {
   const TrainingPersonalization({
     required this.hasProfile,
@@ -86,22 +92,30 @@ class TrainingPersonalization {
   /// Fiche de renseignement remplie (morpho minimale presente).
   final bool hasProfile;
 
-  /// Verdict de faisabilite L4 (cle stable : go/caution/danger), null si absent.
-  final String? verdict;
+  /// Verdict du moteur unique (vert/orange/rouge), null si indisponible.
+  final FeasibilityVerdict? verdict;
 
   /// Aucune personnalisation exploitable (ni fiche, ni verdict).
   bool get isGeneric => !hasProfile && verdict == null;
+
+  /// Vrai si le verdict appelle un rappel de prudence (tout sauf le vert).
+  ///
+  /// Meme lecture que le feu tricolore de l'ecran Faisabilite : vert = rien a
+  /// signaler, orange = faisable AVEC preparation, rouge = au-dessus des
+  /// capacites. Les deux ecrans disent donc la meme chose, par construction.
+  bool get needsCaution =>
+      verdict != null && verdict != FeasibilityVerdict.green;
 }
 
-/// Personnalisation courante (fiche L4 + verdict L4), pour adapter le plan.
+/// Personnalisation courante (fiche L4 + verdict du moteur unique).
 final trainingPersonalizationProvider =
     FutureProvider<TrainingPersonalization>((ref) async {
   final profile = await ref.watch(hikerProfileProvider.future);
   // Le verdict peut etre indisponible (pas d'etapes) -> null tolere.
-  final feas = await ref.watch(trekFeasibilityResultProvider.future);
+  final assessment = await ref.watch(feasibilityAssessmentProvider.future);
   return TrainingPersonalization(
     hasProfile: profile.hasMorphology,
-    verdict: feas?.verdict,
+    verdict: assessment?.globalVerdict,
   );
 });
 

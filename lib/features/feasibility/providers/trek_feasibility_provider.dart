@@ -2,55 +2,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage.dart';
-import '../../trek/domain/models/itinerary_day.dart';
 import '../../trek/providers/gps_providers.dart';
-import '../../trek/providers/itinerary_providers.dart';
 import '../../trek/providers/stage_providers.dart';
 import '../domain/feasibility_formula.dart';
 import '../domain/hiker_profile.dart';
-import '../domain/trek_feasibility_calculator.dart';
+import '../domain/objective_profile.dart';
 import '../domain/walk_test_result.dart';
 import 'hiker_profile_provider.dart';
 import 'walk_test_provider.dart';
 
-/// Exigences chiffrees du trek actif, derivees des donnees reelles.
+/// UN SEUL MOTEUR DE VERDICT (campagne personas 21/09, MAJEUR-4).
 ///
-/// Reutilise l'itineraire calcule ([itineraryProvider], via
-/// `ItineraryCalculator`) : la journee la plus dure donne le D+/jour et la
-/// distance/jour maximaux ; le nombre de jours = endurance multi-jours exigee.
-/// Les notes FFRando (technicite/risque/effort) proviennent du modele sentier
-/// (non cablees ici tant que la donnee sentier ne les fournit pas -> null).
-final trekRequirementsProvider = FutureProvider<TrekRequirements?>((ref) async {
-  final stages = await ref.watch(stagesProvider.future);
-  if (stages.isEmpty) return null;
-
-  final List<ItineraryDay> days = await ref.watch(itineraryProvider.future);
-  if (days.isEmpty) return null;
-
-  double maxGainPerDay = 0;
-  double maxDistPerDay = 0;
-  var walkingDays = 0;
-  for (final d in days) {
-    // R3 (#100122) : l'itineraire derive desormais du Programme (source unique)
-    // qui peut porter des JOURS DE REPOS (etapes vides). L'endurance multi-jours
-    // exigee = les jours de MARCHE consecutifs, PAS les repos -> on ignore les
-    // jours sans etape pour le compte (leur D+/distance = 0 de toute facon).
-    if (d.stageCount == 0) continue;
-    walkingDays++;
-    if (d.totalElevation > maxGainPerDay) {
-      maxGainPerDay = d.totalElevation.toDouble();
-    }
-    if (d.totalDistance > maxDistPerDay) maxDistPerDay = d.totalDistance;
-  }
-
-  // Effort IBP : derive du barème itineraire si dispo (approche prudente :
-  // on laisse null si non calcule cote sentier, la garde reste sur D+/km/jours).
-  return TrekRequirements(
-    maxElevationGainPerDay: maxGainPerDay,
-    maxDistancePerDayKm: maxDistPerDay,
-    totalDays: walkingDays,
-  );
-});
+/// Il n'existe plus qu'une source de verdict dans l'application :
+/// [feasibilityAssessmentProvider] (formule V1 #100068, feu tricolore). Le
+/// croisement par seuils qui vivait ici (`trekRequirementsProvider` +
+/// `trekFeasibilityResultProvider` + `TrekFeasibilityCalculator`) rendait, pour
+/// LE MEME randonneur et LE MEME trek, un verdict OPPOSE a celui affiche par
+/// l'ecran Faisabilite sur 3 profils sur 6 : il a ete SUPPRIME. Tout ecran qui
+/// a besoin d'un verdict lit desormais [feasibilityAssessmentProvider].
 
 /// Rang de forme de dépannage (questionnaire) quand le test 6 min manque.
 ///
@@ -75,18 +44,6 @@ final objectiveProfileProvider =
     walkTest: walkTest,
     fallbackFitnessRank: fallbackRank,
   );
-});
-
-/// Verdict de faisabilite profil x trek (croisement par seuils).
-///
-/// Null si les exigences du trek ne sont pas disponibles (pas d'etapes) ->
-/// l'UI retombe alors sur le questionnaire de dépannage.
-final trekFeasibilityResultProvider =
-    FutureProvider<TrekFeasibilityResult?>((ref) async {
-  final trek = await ref.watch(trekRequirementsProvider.future);
-  if (trek == null) return null;
-  final profile = await ref.watch(objectiveProfileProvider.future);
-  return TrekFeasibilityCalculator.evaluate(profile: profile, trek: trek);
 });
 
 /// Vrai si le randonneur a saisi assez de donnees objectives pour un verdict

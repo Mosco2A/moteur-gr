@@ -326,7 +326,9 @@ class _PlanContent extends ConsumerWidget {
         ],
 
         // --- Rappel de prudence adapte au verdict (personnalisation) ---
-        if (perso?.verdict == 'caution' || perso?.verdict == 'danger') ...[
+        // Le verdict vient du MOTEUR UNIQUE, celui de l'ecran Faisabilite : les
+        // deux ecrans ne peuvent plus se contredire (campagne personas 21/09).
+        if (perso?.needsCaution ?? false) ...[
           _WarningBanner(message: tr.cautionVerdictNotice),
           const SizedBox(height: AppTheme.spacingBase),
         ],
