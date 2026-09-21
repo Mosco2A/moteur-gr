@@ -12,6 +12,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../data/photo_service.dart';
 import '../domain/models/journal_entry.dart';
+import '../providers/journal_day_providers.dart';
 import '../providers/journal_providers.dart';
 
 /// Ecran principal du journal de trek (E3.1c).
@@ -34,10 +35,6 @@ class JournalScreen extends ConsumerWidget {
     // select() pour ne reconstruire que sur changement du nombre d entrees
     final entryCount = ref.watch(
       journalScreenProvider.select((s) => s.entries.length),
-    );
-    // select() pour les entrees groupees par jour
-    final entriesByDay = ref.watch(
-      journalScreenProvider.select((s) => s.entriesByDay),
     );
 
     // R10 (LOT L10) : nombre d'etapes REEL du sentier courant — remplace le
@@ -71,7 +68,7 @@ class JournalScreen extends ConsumerWidget {
           ? const Center(child: CircularProgressIndicator())
           : entryCount == 0
           ? _EmptyJournalView(journalT: journalT)
-          : _JournalDayList(entriesByDay: entriesByDay),
+          : const _JournalDayView(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddNoteDialog(context, ref, stageCount),
         child: const Icon(Icons.add),
@@ -153,14 +150,71 @@ class _EmptyJournalView extends StatelessWidget {
   }
 }
 
-/// Liste des entrees groupees par jour.
-class _JournalDayList extends StatelessWidget {
-  const _JournalDayList({required this.entriesByDay});
-
-  final Map<String, List<JournalEntryModel>> entriesByDay;
+/// Vue d'UNE journee de journal : navigateur de jour + entrees du jour.
+///
+/// CORRECTIF L4-1 — changement structurel du journal. L'ecran deroulait
+/// auparavant toutes les journees dans une seule liste : il n'avait AUCUNE
+/// notion de jour selectionne. Sans elle, ni la trace du jour (L4-2) ni le
+/// resume chiffre du jour (L4-3) n'ont de sens. Le journal se lit desormais
+/// une journee a la fois, comme un carnet qu'on feuillette.
+class _JournalDayView extends ConsumerWidget {
+  const _JournalDayView();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final days = ref.watch(journalDaysProvider);
+    final index = ref.watch(journalSelectedDayIndexProvider);
+    final entries = ref.watch(journalEntriesOfDayProvider);
+    final journalT = t.journal;
+
+    if (days.isEmpty) return _EmptyJournalView(journalT: journalT);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _DayNavigator(days: days, index: index, journalT: journalT),
+        const Divider(height: 1),
+        Expanded(
+          child: entries.isEmpty
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(AppTheme.spacingLg),
+                    child: Text(
+                      journalT.dayEmpty,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.all(AppTheme.spacingBase),
+                  itemCount: entries.length,
+                  itemBuilder: (context, i) =>
+                      _JournalEntryTile(entry: entries[i]),
+                ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Navigateur de journee : jour precedent, date en clair, jour suivant.
+///
+/// Les fleches sont DESACTIVEES aux extremites plutot que masquees : un
+/// bouton qui disparait deplace la date sous le doigt du randonneur.
+class _DayNavigator extends ConsumerWidget {
+  const _DayNavigator({
+    required this.days,
+    required this.index,
+    required this.journalT,
+  });
+
+  final List<DateTime> days;
+  final int index;
+  final Translations$journal$fr journalT;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     // StepWays L7 (A) : date localisee sur la langue de l'app (au lieu de
     // 'fr_FR' fige). `initializeDateFormatting` (main) charge les 5 locales.
@@ -168,32 +222,56 @@ class _JournalDayList extends StatelessWidget {
       'EEEE d MMMM yyyy',
       LocaleSettings.currentLocale.languageCode,
     );
-    final dayKeys = entriesByDay.keys.toList();
+    final notifier = ref.read(journalSelectedDayRawProvider.notifier);
+    final hasPrevious = index > 0;
+    final hasNext = index < days.length - 1;
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(AppTheme.spacingBase),
-      itemCount: dayKeys.length,
-      itemBuilder: (context, index) {
-        final dayKey = dayKeys[index];
-        final dayEntries = entriesByDay[dayKey]!;
-        final dt = DateTime.tryParse(dayKey) ?? DateTime.now();
-        final dateLabel = dateFormat.format(dt);
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (index > 0) const SizedBox(height: AppTheme.spacingLg),
-            Text(
-              dateLabel,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: theme.colorScheme.primary,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingSm,
+        vertical: AppTheme.spacingSm,
+      ),
+      child: Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            tooltip: journalT.dayNavPrevious,
+            onPressed: hasPrevious ? () => notifier.select(days[index - 1]) : null,
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Text(
+                  dateFormat.format(days[index]),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  [
+                    journalT.dayOfTrek(day: index + 1),
+                    journalT.dayCounter(
+                      index: index + 1,
+                      total: days.length,
+                    ),
+                  ].join(' · '),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurface.withAlpha(150),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: AppTheme.spacingSm),
-            ...dayEntries.map((entry) => _JournalEntryTile(entry: entry)),
-          ],
-        );
-      },
+          ),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            tooltip: journalT.dayNavNext,
+            onPressed: hasNext ? () => notifier.select(days[index + 1]) : null,
+          ),
+        ],
+      ),
     );
   }
 }
