@@ -540,7 +540,6 @@ void main() {
             'Accents manquants - chaque ligne donne fichier, cle, chaine et '
             'le mot a corriger :\n${trouvailles.join('\n')}',
       );
-    },
-        skip: 'EN VEILLE - a activer par le correctif L2-19 du plan de conformite cycle4.');
+    });
   });
 }
