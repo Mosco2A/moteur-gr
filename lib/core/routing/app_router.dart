@@ -16,7 +16,6 @@ import '../../features/feasibility/presentation/past_hikes_screen.dart';
 import '../../features/feasibility/presentation/trek_feasibility_screen.dart';
 import '../../features/feedback/presentation/feedback_screen.dart';
 import '../../features/journal/presentation/journal_screen.dart';
-import '../../features/map/presentation/trail_map_screen.dart';
 import '../../features/planning/presentation/calendar_screen.dart';
 import '../../features/planning/presentation/plan_summary_screen.dart';
 import '../../features/planning/presentation/shop_screen.dart';
@@ -247,7 +246,13 @@ final appRouter = GoRouter(
           name: 'trail-map',
           builder: (context, state) {
             final trailId = state.pathParameters['id'] ?? '';
-            return TrailMapScreen(trailId: trailId);
+            // L6-4 : la migration vers [MapScreen] est TERMINEE. Cette route
+            // etait la derniere a instancier l ancien ecran de transition
+            // `TrailMapScreen`, dont l en-tete annonçait lui-meme sa
+            // disparition depuis la Phase 2. Les deux ecrans lisaient deja la
+            // meme config de sentier et la meme trace ; MapScreen apporte en
+            // plus les calques, l alerte ravitaillement et la barre mesuree.
+            return MapScreen(trailId: trailId);
           },
         ),
         GoRoute(
