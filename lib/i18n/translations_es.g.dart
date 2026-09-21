@@ -1512,30 +1512,30 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get title => 'Tus datos';
 	@override String get privacyBanner => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia cifrada, sin tu nombre) para calcular tu viabilidad.';
 	@override String get fieldAge => 'Edad';
-	@override String get hintAge => 'En anos';
-	@override String get errorAge => 'Edad no valida (8 a 100 anos)';
+	@override String get hintAge => 'En años';
+	@override String get errorAge => 'Edad no válida (8 a 100 años)';
 	@override String get fieldHeight => 'Altura';
-	@override String get hintHeight => 'En centimetros';
-	@override String get errorHeight => 'Altura no valida (100 a 250 cm)';
+	@override String get hintHeight => 'En centímetros';
+	@override String get errorHeight => 'Altura no válida (100 a 250 cm)';
 	@override String get fieldWeight => 'Peso';
 	@override String get hintWeight => 'En kilogramos';
-	@override String get errorWeight => 'Peso no valido (30 a 150 kg)';
-	@override String get errorCountry => 'Codigo de pais no valido (ej. FR)';
+	@override String get errorWeight => 'Peso no válido (30 a 150 kg)';
+	@override String get errorCountry => 'Código de país no válido (ej. FR)';
 	@override String get fieldSex => 'Sexo (opcional)';
 	@override String get sexFemale => 'Mujer';
 	@override String get sexMale => 'Hombre';
 	@override String get sexUnspecified => 'Sin especificar';
-	@override String get fieldCountry => 'Pais';
-	@override String get hintCountry => 'Codigo (p. ej. FR)';
+	@override String get fieldCountry => 'País';
+	@override String get hintCountry => 'Código (p. ej. FR)';
 	@override String get bmiLabel => 'IMC';
 	@override late final _Translations$hikerProfile$bmiCategories$es bmiCategories = _Translations$hikerProfile$bmiCategories$es._(_root);
-	@override String get consentTitle => 'Datos corporales (RGPD articulo 9)';
+	@override String get consentTitle => 'Datos corporales (RGPD artículo 9)';
 	@override String get consentBody => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.';
 	@override String get consentToggle => 'Autorizo el uso de mis datos corporales para la viabilidad';
 	@override String get save => 'Guardar';
 	@override String get saved => 'Datos guardados';
 	@override String get morphoNotPrefilledHint => 'Nada está rellenado: introduce tus datos reales, es por tu seguridad.';
-	@override String get seniorReminder => 'A partir de los 65 anos, se aconseja una revision medica antes de un trek exigente.';
+	@override String get seniorReminder => 'A partir de los 65 años, se aconseja una revisión médica antes de un trek exigente.';
 }
 
 // Path: walkTest
@@ -1577,26 +1577,26 @@ class _Translations$pastHikes$es extends Translations$pastHikes$fr {
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Tus ultimas 5 rutas';
-	@override String get intro => 'Anade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, habito de desnivel) en lugar de una etiqueta.';
-	@override String get addHike => 'Anadir ruta';
-	@override String get empty => 'Ninguna ruta introducida todavia.';
+	@override String get title => 'Tus últimas 5 rutas';
+	@override String get intro => 'Añade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, hábito de desnivel) en lugar de una etiqueta.';
+	@override String get addHike => 'Añadir ruta';
+	@override String get empty => 'Ninguna ruta introducida todavía.';
 	@override String get fieldDate => 'Fecha';
-	@override String get fieldDays => 'Numero de dias';
-	@override String get fieldAvgHours => 'Marcha media por dia (h)';
+	@override String get fieldDays => 'Número de días';
+	@override String get fieldAvgHours => 'Marcha media por día (h)';
 	@override String get fieldElevation => 'Desnivel + total (m)';
 	@override String get fieldDistance => 'Distancia total (km)';
-	@override String get errorDays => 'Numero de dias no valido (1 a 60)';
-	@override String get errorHours => 'Duracion no valida (0 a 24 h)';
-	@override String get errorElevation => 'Desnivel no valido (0 a 5000 m)';
-	@override String get errorDistance => 'Distancia no valida (0 a 100 km)';
+	@override String get errorDays => 'Número de días no válido (1 a 60)';
+	@override String get errorHours => 'Duración no válida (0 a 24 h)';
+	@override String get errorElevation => 'Desnivel no válido (0 a 5000 m)';
+	@override String get errorDistance => 'Distancia no válida (0 a 100 km)';
 	@override String get errorEffort => 'Indica al menos el desnivel o la distancia';
-	@override String get perDay => 'por dia';
+	@override String get perDay => 'por día';
 	@override String get editHike => 'Editar ruta';
 	@override String get deleteHike => 'Eliminar';
 	@override String get save => 'Guardar';
 	@override String get saved => 'Rutas guardadas';
-	@override String get maxReached => 'Maximo de 5 rutas alcanzado.';
+	@override String get maxReached => 'Máximo de 5 rutas alcanzado.';
 	@override String get difficultiesTitle => 'Dificultades encontradas';
 	@override String get difficultiesHint => 'Un solo texto para todas estas rutas: ampollas, rodillas en bajada, ahogo en altitud, golpe de calor...';
 	@override String get difficultiesSaved => 'Nota guardada';
@@ -2393,7 +2393,7 @@ class _Translations$waypoints$filters$es extends Translations$waypoints$filters$
 	@override String get title => 'Filtrar waypoints';
 	@override String get showAll => 'Mostrar todo';
 	@override String get hideAll => 'Ocultar todo';
-	@override String get recentConditionOnly => 'Solo condicion reciente';
+	@override String get recentConditionOnly => 'Solo condición reciente';
 }
 
 // Path: waypoints.detail
@@ -2404,11 +2404,11 @@ class _Translations$waypoints$detail$es extends Translations$waypoints$detail$fr
 
 	// Translations
 	@override String get conditionsTitle => 'Condiciones del terreno';
-	@override String get noComments => 'Aun no se ha senalado ninguna condicion.';
+	@override String get noComments => 'Aún no se ha señalado ninguna condición.';
 	@override String get commentsError => 'Condiciones no disponibles.';
-	@override String get report => 'Senalar';
-	@override String get reportAck => 'Senalamiento guardado. Se revisara tras la sincronizacion.';
-	@override String get pendingSync => 'Pendiente de sincronizacion';
+	@override String get report => 'Señalar';
+	@override String get reportAck => 'Señalamiento guardado. Se revisará tras la sincronización.';
+	@override String get pendingSync => 'Pendiente de sincronización';
 }
 
 // Path: waypoints.freshness
@@ -2431,23 +2431,23 @@ class _Translations$waypoints$contribution$es extends Translations$waypoints$con
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get titleWaypoint => 'Anadir un punto';
-	@override String get titleComment => 'Senalar una condicion';
+	@override String get titleWaypoint => 'Añadir un punto';
+	@override String get titleComment => 'Señalar una condición';
 	@override String get chooseType => 'Tipo de punto';
-	@override String get titleField => 'Titulo del punto';
-	@override String get conditionPrompt => 'Describe la condicion observada';
-	@override String get commentField => 'Tu observacion';
+	@override String get titleField => 'Título del punto';
+	@override String get conditionPrompt => 'Describe la condición observada';
+	@override String get commentField => 'Tu observación';
 	@override String get conditionField => 'Estado (opcional)';
 	@override String get conditionHelper => 'p. ej. agua agotada, agua corre, paso resbaladizo';
-	@override String get latencyBanner => 'Se publicara en la proxima sincronizacion de red.';
+	@override String get latencyBanner => 'Se publicará en la próxima sincronización de red.';
 	@override String get submit => 'Guardar';
-	@override String get savedTitle => 'Contribucion guardada';
-	@override String get savedPendingSync => 'Se publicara cuando vuelva la red.';
-	@override String pendingCount({required Object n}) => '${n} pendientes de sincronizacion';
+	@override String get savedTitle => 'Contribución guardada';
+	@override String get savedPendingSync => 'Se publicará cuando vuelva la red.';
+	@override String pendingCount({required Object n}) => '${n} pendientes de sincronización';
 	@override String get close => 'Cerrar';
-	@override String get emptyTitle => 'Indica un titulo para el punto.';
-	@override String get emptyComment => 'Escribe tu observacion.';
-	@override String get noLocation => 'Posicion GPS no disponible. Intentalo de nuevo a cielo abierto.';
+	@override String get emptyTitle => 'Indica un título para el punto.';
+	@override String get emptyComment => 'Escribe tu observación.';
+	@override String get noLocation => 'Posición GPS no disponible. Inténtalo de nuevo a cielo abierto.';
 	@override String get error => 'No se puede guardar ahora mismo.';
 }
 
@@ -4660,34 +4660,34 @@ extension on TranslationsEs {
 			'waypoints.filters.title' => 'Filtrar waypoints',
 			'waypoints.filters.showAll' => 'Mostrar todo',
 			'waypoints.filters.hideAll' => 'Ocultar todo',
-			'waypoints.filters.recentConditionOnly' => 'Solo condicion reciente',
+			'waypoints.filters.recentConditionOnly' => 'Solo condición reciente',
 			'waypoints.detail.conditionsTitle' => 'Condiciones del terreno',
-			'waypoints.detail.noComments' => 'Aun no se ha senalado ninguna condicion.',
+			'waypoints.detail.noComments' => 'Aún no se ha señalado ninguna condición.',
 			'waypoints.detail.commentsError' => 'Condiciones no disponibles.',
-			'waypoints.detail.report' => 'Senalar',
-			'waypoints.detail.reportAck' => 'Senalamiento guardado. Se revisara tras la sincronizacion.',
-			'waypoints.detail.pendingSync' => 'Pendiente de sincronizacion',
+			'waypoints.detail.report' => 'Señalar',
+			'waypoints.detail.reportAck' => 'Señalamiento guardado. Se revisará tras la sincronización.',
+			'waypoints.detail.pendingSync' => 'Pendiente de sincronización',
 			'waypoints.freshness.justNow' => 'actualizado ahora mismo',
 			'waypoints.freshness.minutes' => ({required Object n}) => 'actualizado hace ${n} min',
 			'waypoints.freshness.hours' => ({required Object n}) => 'actualizado hace ${n} h',
 			'waypoints.freshness.days' => ({required Object n}) => 'actualizado hace ${n} d',
-			'waypoints.contribution.titleWaypoint' => 'Anadir un punto',
-			'waypoints.contribution.titleComment' => 'Senalar una condicion',
+			'waypoints.contribution.titleWaypoint' => 'Añadir un punto',
+			'waypoints.contribution.titleComment' => 'Señalar una condición',
 			'waypoints.contribution.chooseType' => 'Tipo de punto',
-			'waypoints.contribution.titleField' => 'Titulo del punto',
-			'waypoints.contribution.conditionPrompt' => 'Describe la condicion observada',
-			'waypoints.contribution.commentField' => 'Tu observacion',
+			'waypoints.contribution.titleField' => 'Título del punto',
+			'waypoints.contribution.conditionPrompt' => 'Describe la condición observada',
+			'waypoints.contribution.commentField' => 'Tu observación',
 			'waypoints.contribution.conditionField' => 'Estado (opcional)',
 			'waypoints.contribution.conditionHelper' => 'p. ej. agua agotada, agua corre, paso resbaladizo',
-			'waypoints.contribution.latencyBanner' => 'Se publicara en la proxima sincronizacion de red.',
+			'waypoints.contribution.latencyBanner' => 'Se publicará en la próxima sincronización de red.',
 			'waypoints.contribution.submit' => 'Guardar',
-			'waypoints.contribution.savedTitle' => 'Contribucion guardada',
-			'waypoints.contribution.savedPendingSync' => 'Se publicara cuando vuelva la red.',
-			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} pendientes de sincronizacion',
+			'waypoints.contribution.savedTitle' => 'Contribución guardada',
+			'waypoints.contribution.savedPendingSync' => 'Se publicará cuando vuelva la red.',
+			'waypoints.contribution.pendingCount' => ({required Object n}) => '${n} pendientes de sincronización',
 			'waypoints.contribution.close' => 'Cerrar',
-			'waypoints.contribution.emptyTitle' => 'Indica un titulo para el punto.',
-			'waypoints.contribution.emptyComment' => 'Escribe tu observacion.',
-			'waypoints.contribution.noLocation' => 'Posicion GPS no disponible. Intentalo de nuevo a cielo abierto.',
+			'waypoints.contribution.emptyTitle' => 'Indica un título para el punto.',
+			'waypoints.contribution.emptyComment' => 'Escribe tu observación.',
+			'waypoints.contribution.noLocation' => 'Posición GPS no disponible. Inténtalo de nuevo a cielo abierto.',
 			'waypoints.contribution.error' => 'No se puede guardar ahora mismo.',
 			'packs.title' => 'Packs de sendero',
 			'packs.subtitle' => 'Descarga un pack para caminar 100% sin conexión.',
@@ -5194,33 +5194,33 @@ extension on TranslationsEs {
 			'hikerProfile.title' => 'Tus datos',
 			'hikerProfile.privacyBanner' => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia cifrada, sin tu nombre) para calcular tu viabilidad.',
 			'hikerProfile.fieldAge' => 'Edad',
-			'hikerProfile.hintAge' => 'En anos',
-			'hikerProfile.errorAge' => 'Edad no valida (8 a 100 anos)',
+			'hikerProfile.hintAge' => 'En años',
+			'hikerProfile.errorAge' => 'Edad no válida (8 a 100 años)',
 			'hikerProfile.fieldHeight' => 'Altura',
-			'hikerProfile.hintHeight' => 'En centimetros',
-			'hikerProfile.errorHeight' => 'Altura no valida (100 a 250 cm)',
+			'hikerProfile.hintHeight' => 'En centímetros',
+			'hikerProfile.errorHeight' => 'Altura no válida (100 a 250 cm)',
 			'hikerProfile.fieldWeight' => 'Peso',
 			'hikerProfile.hintWeight' => 'En kilogramos',
-			'hikerProfile.errorWeight' => 'Peso no valido (30 a 150 kg)',
-			'hikerProfile.errorCountry' => 'Codigo de pais no valido (ej. FR)',
+			'hikerProfile.errorWeight' => 'Peso no válido (30 a 150 kg)',
+			'hikerProfile.errorCountry' => 'Código de país no válido (ej. FR)',
 			'hikerProfile.fieldSex' => 'Sexo (opcional)',
 			'hikerProfile.sexFemale' => 'Mujer',
 			'hikerProfile.sexMale' => 'Hombre',
 			'hikerProfile.sexUnspecified' => 'Sin especificar',
-			'hikerProfile.fieldCountry' => 'Pais',
-			'hikerProfile.hintCountry' => 'Codigo (p. ej. FR)',
+			'hikerProfile.fieldCountry' => 'País',
+			'hikerProfile.hintCountry' => 'Código (p. ej. FR)',
 			'hikerProfile.bmiLabel' => 'IMC',
 			'hikerProfile.bmiCategories.underweight' => 'Bajo peso',
 			'hikerProfile.bmiCategories.normal' => 'Peso normal',
 			'hikerProfile.bmiCategories.overweight' => 'Sobrepeso',
 			'hikerProfile.bmiCategories.obese' => 'Obesidad',
-			'hikerProfile.consentTitle' => 'Datos corporales (RGPD articulo 9)',
+			'hikerProfile.consentTitle' => 'Datos corporales (RGPD artículo 9)',
 			'hikerProfile.consentBody' => 'Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.',
 			'hikerProfile.consentToggle' => 'Autorizo el uso de mis datos corporales para la viabilidad',
 			'hikerProfile.save' => 'Guardar',
 			'hikerProfile.saved' => 'Datos guardados',
 			'hikerProfile.morphoNotPrefilledHint' => 'Nada está rellenado: introduce tus datos reales, es por tu seguridad.',
-			'hikerProfile.seniorReminder' => 'A partir de los 65 anos, se aconseja una revision medica antes de un trek exigente.',
+			'hikerProfile.seniorReminder' => 'A partir de los 65 años, se aconseja una revisión médica antes de un trek exigente.',
 			'walkTest.title' => 'Prueba de marcha de 6 minutos',
 			'walkTest.intro' => 'Camina lo mas lejos posible en 6 minutos sobre terreno llano. El GPS mide la distancia; la comparamos con las normas para tu edad y sexo.',
 			'walkTest.safetyWarning' => 'Evita este esfuerzo si tienes un problema cardiaco no verificado. Detente si te sientes mal.',
@@ -5249,26 +5249,26 @@ extension on TranslationsEs {
 			'walkTest.levels.moderate' => 'Medio',
 			'walkTest.levels.good' => 'Bueno',
 			'walkTest.levels.excellent' => 'Excelente',
-			'pastHikes.title' => 'Tus ultimas 5 rutas',
-			'pastHikes.intro' => 'Anade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, habito de desnivel) en lugar de una etiqueta.',
-			'pastHikes.addHike' => 'Anadir ruta',
-			'pastHikes.empty' => 'Ninguna ruta introducida todavia.',
+			'pastHikes.title' => 'Tus últimas 5 rutas',
+			'pastHikes.intro' => 'Añade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, hábito de desnivel) en lugar de una etiqueta.',
+			'pastHikes.addHike' => 'Añadir ruta',
+			'pastHikes.empty' => 'Ninguna ruta introducida todavía.',
 			'pastHikes.fieldDate' => 'Fecha',
-			'pastHikes.fieldDays' => 'Numero de dias',
-			'pastHikes.fieldAvgHours' => 'Marcha media por dia (h)',
+			'pastHikes.fieldDays' => 'Número de días',
+			'pastHikes.fieldAvgHours' => 'Marcha media por día (h)',
 			'pastHikes.fieldElevation' => 'Desnivel + total (m)',
 			'pastHikes.fieldDistance' => 'Distancia total (km)',
-			'pastHikes.errorDays' => 'Numero de dias no valido (1 a 60)',
-			'pastHikes.errorHours' => 'Duracion no valida (0 a 24 h)',
-			'pastHikes.errorElevation' => 'Desnivel no valido (0 a 5000 m)',
-			'pastHikes.errorDistance' => 'Distancia no valida (0 a 100 km)',
+			'pastHikes.errorDays' => 'Número de días no válido (1 a 60)',
+			'pastHikes.errorHours' => 'Duración no válida (0 a 24 h)',
+			'pastHikes.errorElevation' => 'Desnivel no válido (0 a 5000 m)',
+			'pastHikes.errorDistance' => 'Distancia no válida (0 a 100 km)',
 			'pastHikes.errorEffort' => 'Indica al menos el desnivel o la distancia',
-			'pastHikes.perDay' => 'por dia',
+			'pastHikes.perDay' => 'por día',
 			'pastHikes.editHike' => 'Editar ruta',
 			'pastHikes.deleteHike' => 'Eliminar',
 			'pastHikes.save' => 'Guardar',
 			'pastHikes.saved' => 'Rutas guardadas',
-			'pastHikes.maxReached' => 'Maximo de 5 rutas alcanzado.',
+			'pastHikes.maxReached' => 'Máximo de 5 rutas alcanzado.',
 			'pastHikes.difficultiesTitle' => 'Dificultades encontradas',
 			'pastHikes.difficultiesHint' => 'Un solo texto para todas estas rutas: ampollas, rodillas en bajada, ahogo en altitud, golpe de calor...',
 			'pastHikes.difficultiesSaved' => 'Nota guardada',
