@@ -10,13 +10,10 @@ import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
 import '../../../../core/map/test_inert_tile_provider.dart';
 import '../../../../core/models/poi.dart';
-import '../../../../core/routing/contextual_actions_provider.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
-import '../../../../shared/widgets/contextual_action_bar.dart';
-import '../../../../shared/widgets/contextual_bottom_bar.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/map_pois_provider.dart';
@@ -77,19 +74,26 @@ final mapControllerProvider =
 /// ZERO ref.watch() dans build() -- chaque donnee passe par Consumer
 /// avec select() pour un rebuild minimal et chirurgical.
 ///
-/// CARTE TERRAIN (StepWays LOT 3, Ph5 — SPEC §4) : reçoit une BARRE CONTEXTUELLE
-/// (mecanisme L3, [ContextualActionsMixin] + [ContextualBottomBar]) : **Étape en
-/// cours / Journal** (§4).
+/// CARTE TERRAIN — PLUS AUCUNE BARRE DU BAS (correctif L6-3, 21/09/2026).
+///
+/// L'ecran portait une barre contextuelle heritee du LOT 3 (« Étape en cours »
+/// / « Journal »). La navigation de reference n'a AUCUNE barre du bas sur sa
+/// carte — sa seule definition de barre est un theme jamais consomme. Sur un
+/// ecran de terrain, cette barre prenait de la hauteur utile a la carte et
+/// proposait deux navigations deja accessibles depuis le cockpit, ou l'on
+/// revient par le bouton retour. Elle est donc RETIREE.
+///
+/// NUANCE EXPLICITE, pour qu'elle ne soit pas « corrigee » par erreur plus
+/// tard : l'accueil maison (`my_treks_screen.dart`) GARDE sa barre. C'est un
+/// ecran multi-sentiers qui n'existe pas dans la reference — la comparaison ne
+/// tient pas pour lui. Seule la barre de la CARTE etait un vrai ecart.
 ///
 /// SOS — ACCES UNIQUE ALIGNE GR20 (decision Chris 12/09, cycle 3) : le SOS n'a
 /// qu'UN SEUL point d'entree — le bouton flottant en overlay (colonne bas-gauche,
-/// [SosButton], visible en trek actif). C'est EXACTEMENT le placement GR20 (cf.
-/// `GR20/app/lib/features/trek/presentation/map_navigation_screen.dart` →
-/// `SosFloatingButton` positionne dans le Stack, bas-gauche ; GR20 n'a AUCUNE
-/// barre contextuelle ni SOS en barre). Le doublon d'acces SOS de la barre §4
-/// (herite du LOT 3) est donc RETIRE ici : la barre ne porte plus que « Étape en
-/// cours » et « Journal ». La FONCTION SOS reste pleinement joignable via
-/// l'overlay — seul le doublon d'UI disparait.
+/// [SosButton], visible en trek actif). C'est EXACTEMENT le placement GR20
+/// (`SosFloatingButton` positionne dans le Stack, bas-gauche ; GR20 n'a AUCUNE
+/// barre contextuelle ni SOS en barre). Le retrait de la barre rend ce point
+/// definitif : il n'existe plus de barre ou un second SOS pourrait reapparaitre.
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key, required this.trailId});
 
@@ -100,41 +104,13 @@ class MapScreen extends ConsumerStatefulWidget {
   ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends ConsumerState<MapScreen>
-    with ContextualActionsMixin {
-  /// Barre contextuelle de la carte (SPEC §4) : Étape en cours / Journal.
-  ///
-  /// - Étape en cours -> pousse la liste des etapes (`/stages`, l'etape courante
-  ///   y est mise en avant) ;
-  /// - Journal -> pousse le journal de trek (`/journal`).
-  ///
-  /// SOS — RETIRE de la barre (cycle 3, parite GR20) : l'appel d'urgence n'a
-  /// qu'UN acces, l'overlay flottant [SosButton] (voir docstring de [MapScreen]).
-  /// GR20 ne place aucun SOS en barre ; on ne garde donc que les deux actions
-  /// de navigation contextuelle. La fonction SOS reste joignable par l'overlay.
-  @override
-  List<ContextualAction> buildContextualActions(BuildContext context) => [
-        ContextualAction(
-          icon: Icons.timeline_outlined,
-          label: t.nav.currentStage,
-          onPressed: () => context.push('/stages'),
-        ),
-        ContextualAction(
-          icon: Icons.menu_book_outlined,
-          label: t.nav.journal,
-          onPressed: () => context.push('/journal'),
-        ),
-      ];
-
+class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final trailId = widget.trailId;
     return Scaffold(
-      // Barre contextuelle declarative (L3) : Étape en cours / Journal (§4).
-      // SOS RETIRE de la barre (cycle 3, parite GR20) : l'unique acces SOS est
-      // l'overlay flottant [SosButton] du corps ([_MapContent]), a l'identique
-      // du placement GR20 (SosFloatingButton dans le Stack de la carte).
-      bottomNavigationBar: const ContextualBottomBar(),
+      // AUCUN bottomNavigationBar (correctif L6-3) : la carte occupe toute la
+      // hauteur, comme sur la navigation de reference.
       appBar: AppBar(
         title: Consumer(
           builder: (context, ref, _) {

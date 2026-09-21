@@ -65,22 +65,37 @@ void main() {
       );
     });
 
-    test('la barre contextuelle de la carte = Etape en cours + Journal, '
-        'rien d autre', () {
+    test('la carte n a plus AUCUNE barre du bas — donc plus aucun endroit ou '
+        'un second SOS pourrait reapparaitre (L6-3)', () {
       final carte =
           source('lib/features/trek/presentation/map/map_screen.dart');
-      final debut = carte.indexOf('buildContextualActions');
-      expect(debut, greaterThan(-1));
-      // Corps de la methode jusqu'au `@override` suivant.
-      final fin = carte.indexOf('@override', debut);
-      final corps = carte.substring(debut, fin > debut ? fin : carte.length);
 
+      // Le correctif L6-3 a retire la barre contextuelle de la carte : la
+      // navigation de reference n en a aucune sur son ecran terrain. Ce test
+      // ne verifie donc plus le CONTENU de la barre (il n y en a plus), il
+      // verifie son ABSENCE — garantie plus forte pour le finding M1.
       expect(
-        'ContextualAction('.allMatches(corps).length,
-        2,
-        reason: 'exactement deux actions de navigation contextuelle',
+        carte.contains('bottomNavigationBar:'),
+        isFalse,
+        reason: 'la carte terrain n a pas de barre du bas (L6-3)',
       );
-      expect(corps.toLowerCase(), isNot(contains('emergency')));
+      expect(
+        carte.contains('buildContextualActions'),
+        isFalse,
+        reason: 'plus d actions contextuelles declarees par la carte (L6-3)',
+      );
+      expect(carte.contains('ContextualAction('), isFalse);
+    });
+
+    test('l accueil maison GARDE sa barre : ce n est PAS le meme cas que la '
+        'carte (nuance du correctif L6-3)', () {
+      // Ecran multi-sentiers, sans equivalent dans la reference : la
+      // comparaison qui a fait retirer la barre de la carte ne tient pas pour
+      // lui. Ce test existe pour qu un futur passage ne retire pas cette
+      // barre-la « par coherence ».
+      final maison =
+          source('lib/features/treks/presentation/my_treks_screen.dart');
+      expect(maison.contains('bottomNavigationBar:'), isTrue);
     });
 
     test('l ecran de demo supprime (2e pastille SOS) n est cable sur AUCUNE '
