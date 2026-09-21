@@ -710,28 +710,12 @@ class _Translations$feasibility$en extends Translations$feasibility$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get title => 'Feasibility';
-	@override String get subtitle => 'Assess your preparation';
-	@override String get previous => 'Previous';
 	@override String get restart => 'Start over';
-	@override String get resultTitle => 'Your result';
-	@override String get weakPointsTitle => 'Areas to improve';
-	@override String get strongPointsTitle => 'Strong points';
-	@override String get progress => '{current}/{total}';
-	@override late final _Translations$feasibility$levels$en levels = _Translations$feasibility$levels$en._(_root);
-	@override late final _Translations$feasibility$categories$en categories = _Translations$feasibility$categories$en._(_root);
-	@override late final _Translations$feasibility$questions$en questions = _Translations$feasibility$questions$en._(_root);
-	@override late final _Translations$feasibility$answers$en answers = _Translations$feasibility$answers$en._(_root);
-	@override String get seeRecommendations => 'See recommendations';
-	@override String get yourProfile => 'Your profile';
-	@override String get tipsTitle => 'Our tips';
-	@override late final _Translations$feasibility$recommendations$en recommendations = _Translations$feasibility$recommendations$en._(_root);
 	@override String get objectiveTitle => 'Feasibility for this trek';
 	@override String get objectiveIntro => 'Verdict based on your real profile crossed with the trek requirements.';
 	@override String get openProfile => 'My details';
 	@override String get openWalkTest => '6-minute test';
 	@override String get openPastHikes => 'My last 5 hikes';
-	@override String get openQuestionnaire => 'Feasibility questions';
 	@override String get sourceObjective => 'Based on your objective profile';
 	@override String get sourceFallback => 'Based on the questionnaire (until your profile is set)';
 	@override String get gapTooHigh => 'Gap too large';
@@ -2196,107 +2180,6 @@ class _Translations$weather$alert$en extends Translations$weather$alert$fr {
 	@override late final _Translations$weather$alert$fire$en fire = _Translations$weather$alert$fire$en._(_root);
 }
 
-// Path: feasibility.levels
-class _Translations$feasibility$levels$en extends Translations$feasibility$levels$fr {
-	_Translations$feasibility$levels$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get danger => 'Not recommended';
-	@override String get caution => 'Preparation needed';
-	@override String get good => 'Feasible';
-	@override String get excellent => 'Excellent';
-}
-
-// Path: feasibility.categories
-class _Translations$feasibility$categories$en extends Translations$feasibility$categories$fr {
-	_Translations$feasibility$categories$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get fitness => 'Physical fitness';
-	@override String get experience => 'Experience';
-	@override String get gear => 'Equipment';
-	@override String get weather => 'Weather';
-	@override String get duration => 'Duration';
-	@override String get companion => 'Companions';
-	@override String get health => 'Health';
-	@override String get motivation => 'Motivation';
-}
-
-// Path: feasibility.questions
-class _Translations$feasibility$questions$en extends Translations$feasibility$questions$fr {
-	_Translations$feasibility$questions$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get fitnessQuestion => 'What is your physical fitness level?';
-	@override String get experienceQuestion => 'What is your hiking experience?';
-	@override String get gearQuestion => 'What is the state of your equipment?';
-	@override String get weatherQuestion => 'Have you checked weather conditions?';
-	@override String get durationQuestion => 'How many days do you plan?';
-	@override String get companionQuestion => 'Are you hiking with others?';
-	@override String get healthQuestion => 'Do you have any health concerns?';
-	@override String get motivationQuestion => 'What is your motivation level?';
-}
-
-// Path: feasibility.answers
-class _Translations$feasibility$answers$en extends Translations$feasibility$answers$fr {
-	_Translations$feasibility$answers$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get fitnessA => 'Sedentary, no training';
-	@override String get fitnessB => 'Occasional physical activity';
-	@override String get fitnessC => 'Regular exercise (2-3x/week)';
-	@override String get fitnessD => 'Seasoned athlete, specifically trained';
-	@override String get experienceA => 'No hiking experience';
-	@override String get experienceB => 'A few day hikes';
-	@override String get experienceC => 'Multi-day hikes completed';
-	@override String get experienceD => 'Experienced trekker, long trails done';
-	@override String get gearA => 'Incomplete or unsuitable gear';
-	@override String get gearB => 'Basic gear, some items missing';
-	@override String get gearC => 'Complete gear, good condition';
-	@override String get gearD => 'Technical gear, tested and proven';
-	@override String get weatherA => 'Not checked, no idea';
-	@override String get weatherB => 'Briefly checked, uncertain conditions';
-	@override String get weatherC => 'Checked, fair conditions expected';
-	@override String get weatherD => 'Thoroughly checked, favorable window';
-	@override String get durationA => 'No idea of the duration';
-	@override String get durationB => 'Underestimated or too ambitious';
-	@override String get durationC => 'Realistic plan with margins';
-	@override String get durationD => 'Detailed plan, rest days included';
-	@override String get companionA => 'Solo, no solo experience';
-	@override String get companionB => 'Solo, but experienced';
-	@override String get companionC => 'In a group, mixed levels';
-	@override String get companionD => 'In a group, all experienced';
-	@override String get healthA => 'Untreated health issues';
-	@override String get healthB => 'Minor issues, under control';
-	@override String get healthC => 'Generally good health';
-	@override String get healthD => 'Excellent health, recent checkup';
-	@override String get motivationA => 'Low motivation, hesitant';
-	@override String get motivationB => 'Motivated but anxious';
-	@override String get motivationC => 'Motivated and determined';
-	@override String get motivationD => 'Absolute passion, long-time dream';
-}
-
-// Path: feasibility.recommendations
-class _Translations$feasibility$recommendations$en extends Translations$feasibility$recommendations$fr {
-	_Translations$feasibility$recommendations$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override late final _Translations$feasibility$recommendations$danger$en danger = _Translations$feasibility$recommendations$danger$en._(_root);
-	@override late final _Translations$feasibility$recommendations$caution$en caution = _Translations$feasibility$recommendations$caution$en._(_root);
-	@override late final _Translations$feasibility$recommendations$good$en good = _Translations$feasibility$recommendations$good$en._(_root);
-	@override late final _Translations$feasibility$recommendations$excellent$en excellent = _Translations$feasibility$recommendations$excellent$en._(_root);
-}
-
 // Path: feasibility.gaps
 class _Translations$feasibility$gaps$en extends Translations$feasibility$gaps$fr {
 	_Translations$feasibility$gaps$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3510,54 +3393,6 @@ class _Translations$weather$alert$fire$en extends Translations$weather$alert$fir
 	@override String desc({required Object value}) => '${value}°C expected. High fire risk.';
 }
 
-// Path: feasibility.recommendations.danger
-class _Translations$feasibility$recommendations$danger$en extends Translations$feasibility$recommendations$danger$fr {
-	_Translations$feasibility$recommendations$danger$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Insufficient preparation';
-	@override String get summary => 'Your profile shows significant gaps. We do not recommend starting in this state.';
-	@override late final _Translations$feasibility$recommendations$danger$tips$en tips = _Translations$feasibility$recommendations$danger$tips$en._(_root);
-}
-
-// Path: feasibility.recommendations.caution
-class _Translations$feasibility$recommendations$caution$en extends Translations$feasibility$recommendations$caution$fr {
-	_Translations$feasibility$recommendations$caution$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Preparation needs work';
-	@override String get summary => 'You have a foundation, but some areas need attention before departure.';
-	@override late final _Translations$feasibility$recommendations$caution$tips$en tips = _Translations$feasibility$recommendations$caution$tips$en._(_root);
-}
-
-// Path: feasibility.recommendations.good
-class _Translations$feasibility$recommendations$good$en extends Translations$feasibility$recommendations$good$fr {
-	_Translations$feasibility$recommendations$good$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Good preparation';
-	@override String get summary => 'Your profile is solid. A few adjustments and you will be ready.';
-	@override late final _Translations$feasibility$recommendations$good$tips$en tips = _Translations$feasibility$recommendations$good$tips$en._(_root);
-}
-
-// Path: feasibility.recommendations.excellent
-class _Translations$feasibility$recommendations$excellent$en extends Translations$feasibility$recommendations$excellent$fr {
-	_Translations$feasibility$recommendations$excellent$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Optimal preparation';
-	@override String get summary => 'You are perfectly prepared. Enjoy the trek with peace of mind!';
-	@override late final _Translations$feasibility$recommendations$excellent$tips$en tips = _Translations$feasibility$recommendations$excellent$tips$en._(_root);
-}
-
 // Path: feasibility.formula.levels
 class _Translations$feasibility$formula$levels$en extends Translations$feasibility$formula$levels$fr {
 	_Translations$feasibility$formula$levels$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3825,54 +3660,6 @@ class _Translations$programme$inTrek$empty$en extends Translations$programme$inT
 	// Translations
 	@override String get title => 'No plan to adjust';
 	@override String get message => 'Build your plan first from the preparation screens.';
-}
-
-// Path: feasibility.recommendations.danger.tips
-class _Translations$feasibility$recommendations$danger$tips$en extends Translations$feasibility$recommendations$danger$tips$fr {
-	_Translations$feasibility$recommendations$danger$tips$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get tip1 => 'Start with short hikes to assess your fitness level';
-	@override String get tip2 => 'Consult a healthcare professional before prolonged effort';
-	@override String get tip3 => 'Invest in proper equipment and test it beforehand';
-}
-
-// Path: feasibility.recommendations.caution.tips
-class _Translations$feasibility$recommendations$caution$tips$en extends Translations$feasibility$recommendations$caution$tips$fr {
-	_Translations$feasibility$recommendations$caution$tips$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get tip1 => 'Strengthen your physical training 6 to 8 weeks ahead';
-	@override String get tip2 => 'Check and complete your equipment';
-	@override String get tip3 => 'Plan stages suited to your level';
-}
-
-// Path: feasibility.recommendations.good.tips
-class _Translations$feasibility$recommendations$good$tips$en extends Translations$feasibility$recommendations$good$tips$fr {
-	_Translations$feasibility$recommendations$good$tips$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get tip1 => 'Maintain your training pace until departure';
-	@override String get tip2 => 'Include margins in your planning';
-	@override String get tip3 => 'Check the weather regularly before departure';
-}
-
-// Path: feasibility.recommendations.excellent.tips
-class _Translations$feasibility$recommendations$excellent$tips$en extends Translations$feasibility$recommendations$excellent$tips$fr {
-	_Translations$feasibility$recommendations$excellent$tips$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get tip1 => 'Listen to your body during the trek';
-	@override String get tip2 => 'Share your experience with fellow hikers';
-	@override String get tip3 => 'Consider documenting your adventure in the journal';
 }
 
 // Path: programme.inTrek.info.done
@@ -4591,95 +4378,12 @@ extension on TranslationsEn {
 			'auth.chooseAvatar' => 'Choose an avatar',
 			'auth.errorLoading' => 'Loading error',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
-			'feasibility.title' => 'Feasibility',
-			'feasibility.subtitle' => 'Assess your preparation',
-			'feasibility.previous' => 'Previous',
 			'feasibility.restart' => 'Start over',
-			'feasibility.resultTitle' => 'Your result',
-			'feasibility.weakPointsTitle' => 'Areas to improve',
-			'feasibility.strongPointsTitle' => 'Strong points',
-			'feasibility.progress' => '{current}/{total}',
-			'feasibility.levels.danger' => 'Not recommended',
-			'feasibility.levels.caution' => 'Preparation needed',
-			'feasibility.levels.good' => 'Feasible',
-			'feasibility.levels.excellent' => 'Excellent',
-			'feasibility.categories.fitness' => 'Physical fitness',
-			'feasibility.categories.experience' => 'Experience',
-			'feasibility.categories.gear' => 'Equipment',
-			'feasibility.categories.weather' => 'Weather',
-			'feasibility.categories.duration' => 'Duration',
-			'feasibility.categories.companion' => 'Companions',
-			'feasibility.categories.health' => 'Health',
-			'feasibility.categories.motivation' => 'Motivation',
-			'feasibility.questions.fitnessQuestion' => 'What is your physical fitness level?',
-			'feasibility.questions.experienceQuestion' => 'What is your hiking experience?',
-			'feasibility.questions.gearQuestion' => 'What is the state of your equipment?',
-			'feasibility.questions.weatherQuestion' => 'Have you checked weather conditions?',
-			'feasibility.questions.durationQuestion' => 'How many days do you plan?',
-			'feasibility.questions.companionQuestion' => 'Are you hiking with others?',
-			'feasibility.questions.healthQuestion' => 'Do you have any health concerns?',
-			'feasibility.questions.motivationQuestion' => 'What is your motivation level?',
-			'feasibility.answers.fitnessA' => 'Sedentary, no training',
-			'feasibility.answers.fitnessB' => 'Occasional physical activity',
-			'feasibility.answers.fitnessC' => 'Regular exercise (2-3x/week)',
-			'feasibility.answers.fitnessD' => 'Seasoned athlete, specifically trained',
-			'feasibility.answers.experienceA' => 'No hiking experience',
-			'feasibility.answers.experienceB' => 'A few day hikes',
-			'feasibility.answers.experienceC' => 'Multi-day hikes completed',
-			'feasibility.answers.experienceD' => 'Experienced trekker, long trails done',
-			'feasibility.answers.gearA' => 'Incomplete or unsuitable gear',
-			'feasibility.answers.gearB' => 'Basic gear, some items missing',
-			'feasibility.answers.gearC' => 'Complete gear, good condition',
-			'feasibility.answers.gearD' => 'Technical gear, tested and proven',
-			'feasibility.answers.weatherA' => 'Not checked, no idea',
-			'feasibility.answers.weatherB' => 'Briefly checked, uncertain conditions',
-			'feasibility.answers.weatherC' => 'Checked, fair conditions expected',
-			'feasibility.answers.weatherD' => 'Thoroughly checked, favorable window',
-			'feasibility.answers.durationA' => 'No idea of the duration',
-			'feasibility.answers.durationB' => 'Underestimated or too ambitious',
-			'feasibility.answers.durationC' => 'Realistic plan with margins',
-			'feasibility.answers.durationD' => 'Detailed plan, rest days included',
-			'feasibility.answers.companionA' => 'Solo, no solo experience',
-			'feasibility.answers.companionB' => 'Solo, but experienced',
-			'feasibility.answers.companionC' => 'In a group, mixed levels',
-			'feasibility.answers.companionD' => 'In a group, all experienced',
-			'feasibility.answers.healthA' => 'Untreated health issues',
-			'feasibility.answers.healthB' => 'Minor issues, under control',
-			'feasibility.answers.healthC' => 'Generally good health',
-			'feasibility.answers.healthD' => 'Excellent health, recent checkup',
-			'feasibility.answers.motivationA' => 'Low motivation, hesitant',
-			'feasibility.answers.motivationB' => 'Motivated but anxious',
-			'feasibility.answers.motivationC' => 'Motivated and determined',
-			'feasibility.answers.motivationD' => 'Absolute passion, long-time dream',
-			'feasibility.seeRecommendations' => 'See recommendations',
-			'feasibility.yourProfile' => 'Your profile',
-			'feasibility.tipsTitle' => 'Our tips',
-			'feasibility.recommendations.danger.title' => 'Insufficient preparation',
-			'feasibility.recommendations.danger.summary' => 'Your profile shows significant gaps. We do not recommend starting in this state.',
-			'feasibility.recommendations.danger.tips.tip1' => 'Start with short hikes to assess your fitness level',
-			'feasibility.recommendations.danger.tips.tip2' => 'Consult a healthcare professional before prolonged effort',
-			'feasibility.recommendations.danger.tips.tip3' => 'Invest in proper equipment and test it beforehand',
-			'feasibility.recommendations.caution.title' => 'Preparation needs work',
-			'feasibility.recommendations.caution.summary' => 'You have a foundation, but some areas need attention before departure.',
-			'feasibility.recommendations.caution.tips.tip1' => 'Strengthen your physical training 6 to 8 weeks ahead',
-			'feasibility.recommendations.caution.tips.tip2' => 'Check and complete your equipment',
-			'feasibility.recommendations.caution.tips.tip3' => 'Plan stages suited to your level',
-			'feasibility.recommendations.good.title' => 'Good preparation',
-			'feasibility.recommendations.good.summary' => 'Your profile is solid. A few adjustments and you will be ready.',
-			'feasibility.recommendations.good.tips.tip1' => 'Maintain your training pace until departure',
-			'feasibility.recommendations.good.tips.tip2' => 'Include margins in your planning',
-			'feasibility.recommendations.good.tips.tip3' => 'Check the weather regularly before departure',
-			'feasibility.recommendations.excellent.title' => 'Optimal preparation',
-			'feasibility.recommendations.excellent.summary' => 'You are perfectly prepared. Enjoy the trek with peace of mind!',
-			'feasibility.recommendations.excellent.tips.tip1' => 'Listen to your body during the trek',
-			'feasibility.recommendations.excellent.tips.tip2' => 'Share your experience with fellow hikers',
-			'feasibility.recommendations.excellent.tips.tip3' => 'Consider documenting your adventure in the journal',
 			'feasibility.objectiveTitle' => 'Feasibility for this trek',
 			'feasibility.objectiveIntro' => 'Verdict based on your real profile crossed with the trek requirements.',
 			'feasibility.openProfile' => 'My details',
 			'feasibility.openWalkTest' => '6-minute test',
 			'feasibility.openPastHikes' => 'My last 5 hikes',
-			'feasibility.openQuestionnaire' => 'Feasibility questions',
 			'feasibility.sourceObjective' => 'Based on your objective profile',
 			'feasibility.sourceFallback' => 'Based on the questionnaire (until your profile is set)',
 			'feasibility.gapTooHigh' => 'Gap too large',
@@ -4942,8 +4646,6 @@ extension on TranslationsEn {
 			'shareVisibility.stageResults' => 'Share my stage results',
 			'shareVisibility.stageResultsDesc' => 'A pseudonymous card (no direct personal data).',
 			'shareVisibility.leaderboard' => 'Appear in leaderboards',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
 			'shareVisibility.activityFeed' => 'Post to the activity feed',
 			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
@@ -5027,6 +4729,8 @@ extension on TranslationsEn {
 			'guides.subtitle' => 'Practical info for towns and villages, available offline.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} practical sections',
 			'guides.empty' => 'No guide available for this trail.',
+			_ => null,
+		} ?? switch (path) {
 			'guides.noItems' => 'No information in this section yet.',
 			'guides.facilitatorNote' => 'StepWays points you to providers. Booking and payment happen on their site: nothing in the app.',
 			'guides.openSite' => 'Open website',
@@ -5456,8 +5160,6 @@ extension on TranslationsEn {
 			'import.invalidOutOfBounds' => 'The track does not match this trail\'s area.',
 			'import.errorUnreadable' => 'Unable to read the file.',
 			'import.errorParsing' => 'The GPX file could not be read.',
-			_ => null,
-		} ?? switch (path) {
 			'import.validateButton' => 'CONFIRM IMPORT',
 			'import.confirmTitle' => 'Confirm import?',
 			'import.confirmBody' => 'This track will be imported as your route:\n\n- {points} GPS points\n- {km} km\n- {stages} detected stages\n- Direction: {direction}',
@@ -5541,6 +5243,8 @@ extension on TranslationsEn {
 			'walkTest.gpsDenied' => 'Allow location to start the test.',
 			'walkTest.monthlyReminderOn' => 'Monthly reminder on',
 			'walkTest.monthlyReminderBody' => 'A test reminder will be offered every month to track your fitness.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.notDoneYet' => 'Test not taken',
 			'walkTest.fallbackNotice' => 'Until you take the test, your level is estimated from your questionnaire.',
 			'walkTest.levels.low' => 'Low',

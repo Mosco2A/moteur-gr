@@ -1417,45 +1417,8 @@ class Translations$feasibility$fr {
 
 	// Translations
 
-	/// fr: 'Faisabilité'
-	String get title => 'Faisabilité';
-
-	/// fr: 'Évaluez votre préparation'
-	String get subtitle => 'Évaluez votre préparation';
-
-	/// fr: 'Précédent'
-	String get previous => 'Précédent';
-
 	/// fr: 'Recommencer'
 	String get restart => 'Recommencer';
-
-	/// fr: 'Votre résultat'
-	String get resultTitle => 'Votre résultat';
-
-	/// fr: 'Points à améliorer'
-	String get weakPointsTitle => 'Points à améliorer';
-
-	/// fr: 'Points forts'
-	String get strongPointsTitle => 'Points forts';
-
-	/// fr: '{current}/{total}'
-	String get progress => '{current}/{total}';
-
-	late final Translations$feasibility$levels$fr levels = Translations$feasibility$levels$fr.internal(_root);
-	late final Translations$feasibility$categories$fr categories = Translations$feasibility$categories$fr.internal(_root);
-	late final Translations$feasibility$questions$fr questions = Translations$feasibility$questions$fr.internal(_root);
-	late final Translations$feasibility$answers$fr answers = Translations$feasibility$answers$fr.internal(_root);
-
-	/// fr: 'Voir les recommandations'
-	String get seeRecommendations => 'Voir les recommandations';
-
-	/// fr: 'Votre profil'
-	String get yourProfile => 'Votre profil';
-
-	/// fr: 'Nos conseils'
-	String get tipsTitle => 'Nos conseils';
-
-	late final Translations$feasibility$recommendations$fr recommendations = Translations$feasibility$recommendations$fr.internal(_root);
 
 	/// fr: 'Faisabilite pour ce trek'
 	String get objectiveTitle => 'Faisabilite pour ce trek';
@@ -1471,9 +1434,6 @@ class Translations$feasibility$fr {
 
 	/// fr: 'Mes 5 dernieres randos'
 	String get openPastHikes => 'Mes 5 dernieres randos';
-
-	/// fr: 'Questions de faisabilité'
-	String get openQuestionnaire => 'Questions de faisabilité';
 
 	/// fr: 'Base sur votre profil objectif'
 	String get sourceObjective => 'Base sur votre profil objectif';
@@ -4591,211 +4551,6 @@ class Translations$weather$alert$fr {
 	late final Translations$weather$alert$fire$fr fire = Translations$weather$alert$fire$fr.internal(_root);
 }
 
-// Path: feasibility.levels
-class Translations$feasibility$levels$fr {
-	Translations$feasibility$levels$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Déconseillé'
-	String get danger => 'Déconseillé';
-
-	/// fr: 'Préparation nécessaire'
-	String get caution => 'Préparation nécessaire';
-
-	/// fr: 'Faisable'
-	String get good => 'Faisable';
-
-	/// fr: 'Excellent'
-	String get excellent => 'Excellent';
-}
-
-// Path: feasibility.categories
-class Translations$feasibility$categories$fr {
-	Translations$feasibility$categories$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Condition physique'
-	String get fitness => 'Condition physique';
-
-	/// fr: 'Expérience'
-	String get experience => 'Expérience';
-
-	/// fr: 'Équipement'
-	String get gear => 'Équipement';
-
-	/// fr: 'Météo'
-	String get weather => 'Météo';
-
-	/// fr: 'Durée'
-	String get duration => 'Durée';
-
-	/// fr: 'Accompagnement'
-	String get companion => 'Accompagnement';
-
-	/// fr: 'Santé'
-	String get health => 'Santé';
-
-	/// fr: 'Motivation'
-	String get motivation => 'Motivation';
-}
-
-// Path: feasibility.questions
-class Translations$feasibility$questions$fr {
-	Translations$feasibility$questions$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Quel est votre niveau de condition physique ?'
-	String get fitnessQuestion => 'Quel est votre niveau de condition physique ?';
-
-	/// fr: 'Quelle est votre expérience en randonnée ?'
-	String get experienceQuestion => 'Quelle est votre expérience en randonnée ?';
-
-	/// fr: 'Quel est l’état de votre équipement ?'
-	String get gearQuestion => 'Quel est l’état de votre équipement ?';
-
-	/// fr: 'Avez-vous vérifié les conditions météo ?'
-	String get weatherQuestion => 'Avez-vous vérifié les conditions météo ?';
-
-	/// fr: 'Combien de jours prévoyez-vous ?'
-	String get durationQuestion => 'Combien de jours prévoyez-vous ?';
-
-	/// fr: 'Êtes-vous accompagné(e) ?'
-	String get companionQuestion => 'Êtes-vous accompagné(e) ?';
-
-	/// fr: 'Avez-vous des problèmes de santé ?'
-	String get healthQuestion => 'Avez-vous des problèmes de santé ?';
-
-	/// fr: 'Quel est votre niveau de motivation ?'
-	String get motivationQuestion => 'Quel est votre niveau de motivation ?';
-}
-
-// Path: feasibility.answers
-class Translations$feasibility$answers$fr {
-	Translations$feasibility$answers$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Sédentaire, aucun entraînement'
-	String get fitnessA => 'Sédentaire, aucun entraînement';
-
-	/// fr: 'Activité physique occasionnelle'
-	String get fitnessB => 'Activité physique occasionnelle';
-
-	/// fr: 'Sport régulier (2-3x/semaine)'
-	String get fitnessC => 'Sport régulier (2-3x/semaine)';
-
-	/// fr: 'Sportif aguerri, entraîné spécifiquement'
-	String get fitnessD => 'Sportif aguerri, entraîné spécifiquement';
-
-	/// fr: 'Aucune expérience de randonnée'
-	String get experienceA => 'Aucune expérience de randonnée';
-
-	/// fr: 'Quelques randonnées à la journée'
-	String get experienceB => 'Quelques randonnées à la journée';
-
-	/// fr: 'Randonnées multi-jours déjà réalisées'
-	String get experienceC => 'Randonnées multi-jours déjà réalisées';
-
-	/// fr: 'Randonneur expérimenté, GR déjà réalisés'
-	String get experienceD => 'Randonneur expérimenté, GR déjà réalisés';
-
-	/// fr: 'Équipement incomplet ou inadapté'
-	String get gearA => 'Équipement incomplet ou inadapté';
-
-	/// fr: 'Équipement basique, quelques manques'
-	String get gearB => 'Équipement basique, quelques manques';
-
-	/// fr: 'Équipement complet, bon état'
-	String get gearC => 'Équipement complet, bon état';
-
-	/// fr: 'Équipement technique, rodé et testé'
-	String get gearD => 'Équipement technique, rodé et testé';
-
-	/// fr: 'Pas vérifié, aucune idée'
-	String get weatherA => 'Pas vérifié, aucune idée';
-
-	/// fr: 'Consulté vaguement, conditions incertaines'
-	String get weatherB => 'Consulté vaguement, conditions incertaines';
-
-	/// fr: 'Vérifié, conditions correctes prévues'
-	String get weatherC => 'Vérifié, conditions correctes prévues';
-
-	/// fr: 'Vérifié en détail, créneau favorable'
-	String get weatherD => 'Vérifié en détail, créneau favorable';
-
-	/// fr: 'Aucune idée de la durée'
-	String get durationA => 'Aucune idée de la durée';
-
-	/// fr: 'Durée sous-estimée ou trop ambitieuse'
-	String get durationB => 'Durée sous-estimée ou trop ambitieuse';
-
-	/// fr: 'Planning réaliste avec marges'
-	String get durationC => 'Planning réaliste avec marges';
-
-	/// fr: 'Planning détaillé, jours de repos prévus'
-	String get durationD => 'Planning détaillé, jours de repos prévus';
-
-	/// fr: 'Seul(e), sans expérience solo'
-	String get companionA => 'Seul(e), sans expérience solo';
-
-	/// fr: 'Seul(e), mais expérimenté(e)'
-	String get companionB => 'Seul(e), mais expérimenté(e)';
-
-	/// fr: 'En groupe, niveaux mixtes'
-	String get companionC => 'En groupe, niveaux mixtes';
-
-	/// fr: 'En groupe, tous expérimentés'
-	String get companionD => 'En groupe, tous expérimentés';
-
-	/// fr: 'Problèmes de santé non traités'
-	String get healthA => 'Problèmes de santé non traités';
-
-	/// fr: 'Problèmes mineurs, sous contrôle'
-	String get healthB => 'Problèmes mineurs, sous contrôle';
-
-	/// fr: 'Bonne santé générale'
-	String get healthC => 'Bonne santé générale';
-
-	/// fr: 'Excellent état de santé, bilan récent'
-	String get healthD => 'Excellent état de santé, bilan récent';
-
-	/// fr: 'Peu motivé(e), hésitant(e)'
-	String get motivationA => 'Peu motivé(e), hésitant(e)';
-
-	/// fr: 'Motivé(e) mais anxieux(se)'
-	String get motivationB => 'Motivé(e) mais anxieux(se)';
-
-	/// fr: 'Motivé(e) et déterminé(e)'
-	String get motivationC => 'Motivé(e) et déterminé(e)';
-
-	/// fr: 'Passion absolue, rêve de longue date'
-	String get motivationD => 'Passion absolue, rêve de longue date';
-}
-
-// Path: feasibility.recommendations
-class Translations$feasibility$recommendations$fr {
-	Translations$feasibility$recommendations$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-	late final Translations$feasibility$recommendations$danger$fr danger = Translations$feasibility$recommendations$danger$fr.internal(_root);
-	late final Translations$feasibility$recommendations$caution$fr caution = Translations$feasibility$recommendations$caution$fr.internal(_root);
-	late final Translations$feasibility$recommendations$good$fr good = Translations$feasibility$recommendations$good$fr.internal(_root);
-	late final Translations$feasibility$recommendations$excellent$fr excellent = Translations$feasibility$recommendations$excellent$fr.internal(_root);
-}
-
 // Path: feasibility.gaps
 class Translations$feasibility$gaps$fr {
 	Translations$feasibility$gaps$fr.internal(this._root);
@@ -6792,74 +6547,6 @@ class Translations$weather$alert$fire$fr {
 	String desc({required Object value}) => '${value}°C prévus. Risque incendie élevé.';
 }
 
-// Path: feasibility.recommendations.danger
-class Translations$feasibility$recommendations$danger$fr {
-	Translations$feasibility$recommendations$danger$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Préparation insuffisante'
-	String get title => 'Préparation insuffisante';
-
-	/// fr: 'Votre profil indique des lacunes importantes. Nous vous déconseillons de partir en l’état.'
-	String get summary => 'Votre profil indique des lacunes importantes. Nous vous déconseillons de partir en l’état.';
-
-	late final Translations$feasibility$recommendations$danger$tips$fr tips = Translations$feasibility$recommendations$danger$tips$fr.internal(_root);
-}
-
-// Path: feasibility.recommendations.caution
-class Translations$feasibility$recommendations$caution$fr {
-	Translations$feasibility$recommendations$caution$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Préparation à renforcer'
-	String get title => 'Préparation à renforcer';
-
-	/// fr: 'Vous avez des bases, mais certains points méritent une attention particulière.'
-	String get summary => 'Vous avez des bases, mais certains points méritent une attention particulière.';
-
-	late final Translations$feasibility$recommendations$caution$tips$fr tips = Translations$feasibility$recommendations$caution$tips$fr.internal(_root);
-}
-
-// Path: feasibility.recommendations.good
-class Translations$feasibility$recommendations$good$fr {
-	Translations$feasibility$recommendations$good$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Bonne préparation'
-	String get title => 'Bonne préparation';
-
-	/// fr: 'Votre profil est solide. Quelques ajustements et vous serez prêt(e).'
-	String get summary => 'Votre profil est solide. Quelques ajustements et vous serez prêt(e).';
-
-	late final Translations$feasibility$recommendations$good$tips$fr tips = Translations$feasibility$recommendations$good$tips$fr.internal(_root);
-}
-
-// Path: feasibility.recommendations.excellent
-class Translations$feasibility$recommendations$excellent$fr {
-	Translations$feasibility$recommendations$excellent$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Préparation optimale'
-	String get title => 'Préparation optimale';
-
-	/// fr: 'Vous êtes parfaitement préparé(e). Profitez de la randonnée !'
-	String get summary => 'Vous êtes parfaitement préparé(e). Profitez de la randonnée !';
-
-	late final Translations$feasibility$recommendations$excellent$tips$fr tips = Translations$feasibility$recommendations$excellent$tips$fr.internal(_root);
-}
-
 // Path: feasibility.formula.levels
 class Translations$feasibility$formula$levels$fr {
 	Translations$feasibility$formula$levels$fr.internal(this._root);
@@ -7246,78 +6933,6 @@ class Translations$programme$inTrek$empty$fr {
 
 	/// fr: 'Construisez d'abord votre programme depuis la préparation.'
 	String get message => 'Construisez d\'abord votre programme depuis la préparation.';
-}
-
-// Path: feasibility.recommendations.danger.tips
-class Translations$feasibility$recommendations$danger$tips$fr {
-	Translations$feasibility$recommendations$danger$tips$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Commencez par des randonnées courtes pour évaluer votre condition'
-	String get tip1 => 'Commencez par des randonnées courtes pour évaluer votre condition';
-
-	/// fr: 'Consultez un professionnel de santé avant un effort prolongé'
-	String get tip2 => 'Consultez un professionnel de santé avant un effort prolongé';
-
-	/// fr: 'Investissez dans un équipement adapté et testez-le'
-	String get tip3 => 'Investissez dans un équipement adapté et testez-le';
-}
-
-// Path: feasibility.recommendations.caution.tips
-class Translations$feasibility$recommendations$caution$tips$fr {
-	Translations$feasibility$recommendations$caution$tips$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Renforcez votre entraînement physique 6 à 8 semaines avant'
-	String get tip1 => 'Renforcez votre entraînement physique 6 à 8 semaines avant';
-
-	/// fr: 'Vérifiez et complétez votre équipement'
-	String get tip2 => 'Vérifiez et complétez votre équipement';
-
-	/// fr: 'Planifiez des étapes adaptées à votre niveau'
-	String get tip3 => 'Planifiez des étapes adaptées à votre niveau';
-}
-
-// Path: feasibility.recommendations.good.tips
-class Translations$feasibility$recommendations$good$tips$fr {
-	Translations$feasibility$recommendations$good$tips$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Maintenez votre rythme d’entraînement'
-	String get tip1 => 'Maintenez votre rythme d’entraînement';
-
-	/// fr: 'Prévoyez des marges dans votre planning'
-	String get tip2 => 'Prévoyez des marges dans votre planning';
-
-	/// fr: 'Consultez la météo régulièrement'
-	String get tip3 => 'Consultez la météo régulièrement';
-}
-
-// Path: feasibility.recommendations.excellent.tips
-class Translations$feasibility$recommendations$excellent$tips$fr {
-	Translations$feasibility$recommendations$excellent$tips$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Restez à l’écoute de votre corps'
-	String get tip1 => 'Restez à l’écoute de votre corps';
-
-	/// fr: 'Partagez votre expérience avec les randonneurs'
-	String get tip2 => 'Partagez votre expérience avec les randonneurs';
-
-	/// fr: 'Documentez votre aventure dans le journal'
-	String get tip3 => 'Documentez votre aventure dans le journal';
 }
 
 // Path: programme.inTrek.info.done
@@ -8048,95 +7663,12 @@ extension on Translations {
 			'auth.chooseAvatar' => 'Choisir un avatar',
 			'auth.errorLoading' => 'Erreur de chargement',
 			'auth.appVersion' => ({required Object version, required Object build}) => 'StepWays v${version} (build ${build})',
-			'feasibility.title' => 'Faisabilité',
-			'feasibility.subtitle' => 'Évaluez votre préparation',
-			'feasibility.previous' => 'Précédent',
 			'feasibility.restart' => 'Recommencer',
-			'feasibility.resultTitle' => 'Votre résultat',
-			'feasibility.weakPointsTitle' => 'Points à améliorer',
-			'feasibility.strongPointsTitle' => 'Points forts',
-			'feasibility.progress' => '{current}/{total}',
-			'feasibility.levels.danger' => 'Déconseillé',
-			'feasibility.levels.caution' => 'Préparation nécessaire',
-			'feasibility.levels.good' => 'Faisable',
-			'feasibility.levels.excellent' => 'Excellent',
-			'feasibility.categories.fitness' => 'Condition physique',
-			'feasibility.categories.experience' => 'Expérience',
-			'feasibility.categories.gear' => 'Équipement',
-			'feasibility.categories.weather' => 'Météo',
-			'feasibility.categories.duration' => 'Durée',
-			'feasibility.categories.companion' => 'Accompagnement',
-			'feasibility.categories.health' => 'Santé',
-			'feasibility.categories.motivation' => 'Motivation',
-			'feasibility.questions.fitnessQuestion' => 'Quel est votre niveau de condition physique ?',
-			'feasibility.questions.experienceQuestion' => 'Quelle est votre expérience en randonnée ?',
-			'feasibility.questions.gearQuestion' => 'Quel est l’état de votre équipement ?',
-			'feasibility.questions.weatherQuestion' => 'Avez-vous vérifié les conditions météo ?',
-			'feasibility.questions.durationQuestion' => 'Combien de jours prévoyez-vous ?',
-			'feasibility.questions.companionQuestion' => 'Êtes-vous accompagné(e) ?',
-			'feasibility.questions.healthQuestion' => 'Avez-vous des problèmes de santé ?',
-			'feasibility.questions.motivationQuestion' => 'Quel est votre niveau de motivation ?',
-			'feasibility.answers.fitnessA' => 'Sédentaire, aucun entraînement',
-			'feasibility.answers.fitnessB' => 'Activité physique occasionnelle',
-			'feasibility.answers.fitnessC' => 'Sport régulier (2-3x/semaine)',
-			'feasibility.answers.fitnessD' => 'Sportif aguerri, entraîné spécifiquement',
-			'feasibility.answers.experienceA' => 'Aucune expérience de randonnée',
-			'feasibility.answers.experienceB' => 'Quelques randonnées à la journée',
-			'feasibility.answers.experienceC' => 'Randonnées multi-jours déjà réalisées',
-			'feasibility.answers.experienceD' => 'Randonneur expérimenté, GR déjà réalisés',
-			'feasibility.answers.gearA' => 'Équipement incomplet ou inadapté',
-			'feasibility.answers.gearB' => 'Équipement basique, quelques manques',
-			'feasibility.answers.gearC' => 'Équipement complet, bon état',
-			'feasibility.answers.gearD' => 'Équipement technique, rodé et testé',
-			'feasibility.answers.weatherA' => 'Pas vérifié, aucune idée',
-			'feasibility.answers.weatherB' => 'Consulté vaguement, conditions incertaines',
-			'feasibility.answers.weatherC' => 'Vérifié, conditions correctes prévues',
-			'feasibility.answers.weatherD' => 'Vérifié en détail, créneau favorable',
-			'feasibility.answers.durationA' => 'Aucune idée de la durée',
-			'feasibility.answers.durationB' => 'Durée sous-estimée ou trop ambitieuse',
-			'feasibility.answers.durationC' => 'Planning réaliste avec marges',
-			'feasibility.answers.durationD' => 'Planning détaillé, jours de repos prévus',
-			'feasibility.answers.companionA' => 'Seul(e), sans expérience solo',
-			'feasibility.answers.companionB' => 'Seul(e), mais expérimenté(e)',
-			'feasibility.answers.companionC' => 'En groupe, niveaux mixtes',
-			'feasibility.answers.companionD' => 'En groupe, tous expérimentés',
-			'feasibility.answers.healthA' => 'Problèmes de santé non traités',
-			'feasibility.answers.healthB' => 'Problèmes mineurs, sous contrôle',
-			'feasibility.answers.healthC' => 'Bonne santé générale',
-			'feasibility.answers.healthD' => 'Excellent état de santé, bilan récent',
-			'feasibility.answers.motivationA' => 'Peu motivé(e), hésitant(e)',
-			'feasibility.answers.motivationB' => 'Motivé(e) mais anxieux(se)',
-			'feasibility.answers.motivationC' => 'Motivé(e) et déterminé(e)',
-			'feasibility.answers.motivationD' => 'Passion absolue, rêve de longue date',
-			'feasibility.seeRecommendations' => 'Voir les recommandations',
-			'feasibility.yourProfile' => 'Votre profil',
-			'feasibility.tipsTitle' => 'Nos conseils',
-			'feasibility.recommendations.danger.title' => 'Préparation insuffisante',
-			'feasibility.recommendations.danger.summary' => 'Votre profil indique des lacunes importantes. Nous vous déconseillons de partir en l’état.',
-			'feasibility.recommendations.danger.tips.tip1' => 'Commencez par des randonnées courtes pour évaluer votre condition',
-			'feasibility.recommendations.danger.tips.tip2' => 'Consultez un professionnel de santé avant un effort prolongé',
-			'feasibility.recommendations.danger.tips.tip3' => 'Investissez dans un équipement adapté et testez-le',
-			'feasibility.recommendations.caution.title' => 'Préparation à renforcer',
-			'feasibility.recommendations.caution.summary' => 'Vous avez des bases, mais certains points méritent une attention particulière.',
-			'feasibility.recommendations.caution.tips.tip1' => 'Renforcez votre entraînement physique 6 à 8 semaines avant',
-			'feasibility.recommendations.caution.tips.tip2' => 'Vérifiez et complétez votre équipement',
-			'feasibility.recommendations.caution.tips.tip3' => 'Planifiez des étapes adaptées à votre niveau',
-			'feasibility.recommendations.good.title' => 'Bonne préparation',
-			'feasibility.recommendations.good.summary' => 'Votre profil est solide. Quelques ajustements et vous serez prêt(e).',
-			'feasibility.recommendations.good.tips.tip1' => 'Maintenez votre rythme d’entraînement',
-			'feasibility.recommendations.good.tips.tip2' => 'Prévoyez des marges dans votre planning',
-			'feasibility.recommendations.good.tips.tip3' => 'Consultez la météo régulièrement',
-			'feasibility.recommendations.excellent.title' => 'Préparation optimale',
-			'feasibility.recommendations.excellent.summary' => 'Vous êtes parfaitement préparé(e). Profitez de la randonnée !',
-			'feasibility.recommendations.excellent.tips.tip1' => 'Restez à l’écoute de votre corps',
-			'feasibility.recommendations.excellent.tips.tip2' => 'Partagez votre expérience avec les randonneurs',
-			'feasibility.recommendations.excellent.tips.tip3' => 'Documentez votre aventure dans le journal',
 			'feasibility.objectiveTitle' => 'Faisabilite pour ce trek',
 			'feasibility.objectiveIntro' => 'Verdict basé sur votre profil réel croisé avec les exigences du trek.',
 			'feasibility.openProfile' => 'Ma fiche d\'info',
 			'feasibility.openWalkTest' => 'Test 6 minutes',
 			'feasibility.openPastHikes' => 'Mes 5 dernieres randos',
-			'feasibility.openQuestionnaire' => 'Questions de faisabilité',
 			'feasibility.sourceObjective' => 'Base sur votre profil objectif',
 			'feasibility.sourceFallback' => 'Base sur le questionnaire (en attendant votre profil)',
 			'feasibility.gapTooHigh' => 'Ecart trop important',
@@ -8399,8 +7931,6 @@ extension on Translations {
 			'shareVisibility.stageResults' => 'Partager mes résultats d\'étape',
 			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
 			'shareVisibility.leaderboard' => 'Apparaître dans les classements',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
@@ -8484,6 +8014,8 @@ extension on Translations {
 			'guides.subtitle' => 'Infos pratiques des villes et villages, consultables hors-ligne.',
 			'guides.sectionsCount' => ({required Object n}) => '${n} rubriques pratiques',
 			'guides.empty' => 'Aucun guide disponible pour ce sentier.',
+			_ => null,
+		} ?? switch (path) {
 			'guides.noItems' => 'Aucune information dans cette section pour le moment.',
 			'guides.facilitatorNote' => 'StepWays vous oriente vers les prestataires. Réservation et paiement se font sur leur site : rien dans l\'application.',
 			'guides.openSite' => 'Voir le site',
@@ -8913,8 +8445,6 @@ extension on Translations {
 			'import.invalidOutOfBounds' => 'La trace ne correspond pas a la zone de ce sentier.',
 			'import.errorUnreadable' => 'Impossible de lire le fichier.',
 			'import.errorParsing' => 'Le fichier GPX n\'a pas pu etre lu.',
-			_ => null,
-		} ?? switch (path) {
 			'import.validateButton' => 'VALIDER L\'IMPORT',
 			'import.confirmTitle' => 'Valider l\'import ?',
 			'import.confirmBody' => 'Cette trace sera importee comme votre parcours :\n\n- {points} points GPS\n- {km} km\n- {stages} étapes detectees\n- Direction : {direction}',
@@ -8998,6 +8528,8 @@ extension on Translations {
 			'walkTest.gpsDenied' => 'Autorisez la localisation pour lancer le test.',
 			'walkTest.monthlyReminderOn' => 'Rappel mensuel activé',
 			'walkTest.monthlyReminderBody' => 'Un rappel de test vous sera proposé chaque mois pour suivre votre forme.',
+			_ => null,
+		} ?? switch (path) {
 			'walkTest.notDoneYet' => 'Test non réalisé',
 			'walkTest.fallbackNotice' => 'En attendant le test, votre niveau est estimé à partir de votre questionnaire.',
 			'walkTest.levels.low' => 'Faible',

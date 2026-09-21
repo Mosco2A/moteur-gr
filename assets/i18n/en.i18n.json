@@ -775,121 +775,12 @@
     "appVersion": "StepWays v$version (build $build)"
   },
   "feasibility": {
-    "title": "Feasibility",
-    "subtitle": "Assess your preparation",
-    "previous": "Previous",
     "restart": "Start over",
-    "resultTitle": "Your result",
-    "weakPointsTitle": "Areas to improve",
-    "strongPointsTitle": "Strong points",
-    "progress": "{current}/{total}",
-    "levels": {
-      "danger": "Not recommended",
-      "caution": "Preparation needed",
-      "good": "Feasible",
-      "excellent": "Excellent"
-    },
-    "categories": {
-      "fitness": "Physical fitness",
-      "experience": "Experience",
-      "gear": "Equipment",
-      "weather": "Weather",
-      "duration": "Duration",
-      "companion": "Companions",
-      "health": "Health",
-      "motivation": "Motivation"
-    },
-    "questions": {
-      "fitnessQuestion": "What is your physical fitness level?",
-      "experienceQuestion": "What is your hiking experience?",
-      "gearQuestion": "What is the state of your equipment?",
-      "weatherQuestion": "Have you checked weather conditions?",
-      "durationQuestion": "How many days do you plan?",
-      "companionQuestion": "Are you hiking with others?",
-      "healthQuestion": "Do you have any health concerns?",
-      "motivationQuestion": "What is your motivation level?"
-    },
-    "answers": {
-      "fitnessA": "Sedentary, no training",
-      "fitnessB": "Occasional physical activity",
-      "fitnessC": "Regular exercise (2-3x/week)",
-      "fitnessD": "Seasoned athlete, specifically trained",
-      "experienceA": "No hiking experience",
-      "experienceB": "A few day hikes",
-      "experienceC": "Multi-day hikes completed",
-      "experienceD": "Experienced trekker, long trails done",
-      "gearA": "Incomplete or unsuitable gear",
-      "gearB": "Basic gear, some items missing",
-      "gearC": "Complete gear, good condition",
-      "gearD": "Technical gear, tested and proven",
-      "weatherA": "Not checked, no idea",
-      "weatherB": "Briefly checked, uncertain conditions",
-      "weatherC": "Checked, fair conditions expected",
-      "weatherD": "Thoroughly checked, favorable window",
-      "durationA": "No idea of the duration",
-      "durationB": "Underestimated or too ambitious",
-      "durationC": "Realistic plan with margins",
-      "durationD": "Detailed plan, rest days included",
-      "companionA": "Solo, no solo experience",
-      "companionB": "Solo, but experienced",
-      "companionC": "In a group, mixed levels",
-      "companionD": "In a group, all experienced",
-      "healthA": "Untreated health issues",
-      "healthB": "Minor issues, under control",
-      "healthC": "Generally good health",
-      "healthD": "Excellent health, recent checkup",
-      "motivationA": "Low motivation, hesitant",
-      "motivationB": "Motivated but anxious",
-      "motivationC": "Motivated and determined",
-      "motivationD": "Absolute passion, long-time dream"
-    },
-    "seeRecommendations": "See recommendations",
-    "yourProfile": "Your profile",
-    "tipsTitle": "Our tips",
-    "recommendations": {
-      "danger": {
-        "title": "Insufficient preparation",
-        "summary": "Your profile shows significant gaps. We do not recommend starting in this state.",
-        "tips": {
-          "tip1": "Start with short hikes to assess your fitness level",
-          "tip2": "Consult a healthcare professional before prolonged effort",
-          "tip3": "Invest in proper equipment and test it beforehand"
-        }
-      },
-      "caution": {
-        "title": "Preparation needs work",
-        "summary": "You have a foundation, but some areas need attention before departure.",
-        "tips": {
-          "tip1": "Strengthen your physical training 6 to 8 weeks ahead",
-          "tip2": "Check and complete your equipment",
-          "tip3": "Plan stages suited to your level"
-        }
-      },
-      "good": {
-        "title": "Good preparation",
-        "summary": "Your profile is solid. A few adjustments and you will be ready.",
-        "tips": {
-          "tip1": "Maintain your training pace until departure",
-          "tip2": "Include margins in your planning",
-          "tip3": "Check the weather regularly before departure"
-        }
-      },
-      "excellent": {
-        "title": "Optimal preparation",
-        "summary": "You are perfectly prepared. Enjoy the trek with peace of mind!",
-        "tips": {
-          "tip1": "Listen to your body during the trek",
-          "tip2": "Share your experience with fellow hikers",
-          "tip3": "Consider documenting your adventure in the journal"
-        }
-      }
-    },
     "objectiveTitle": "Feasibility for this trek",
     "objectiveIntro": "Verdict based on your real profile crossed with the trek requirements.",
     "openProfile": "My details",
     "openWalkTest": "6-minute test",
     "openPastHikes": "My last 5 hikes",
-    "openQuestionnaire": "Feasibility questions",
     "sourceObjective": "Based on your objective profile",
     "sourceFallback": "Based on the questionnaire (until your profile is set)",
     "gapTooHigh": "Gap too large",
