@@ -158,7 +158,7 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 25 sous-routes (+ faisabilite L4)',
+    test('la route /trail/:id conserve ses 24 sous-routes (+ faisabilite L4)',
         () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
@@ -178,15 +178,15 @@ void main() {
       // +1 : 'import-gpx' (PARITE GR20 Import GPX, decision Skynet : clone GR20
       //      generalise data-driven de l'ecran ORPHELIN cote GR20 + point
       //      d'entree HUB). Place apres 'recap' (meme section « Apres »).
-      // +4 : StepWays LOT 4 (faisabilite) — 'feasibility-quiz' (fallback
-      //      questionnaire, l'ancien /feasibility), 'hiker-profile' (fiche
-      //      info), 'walk-test' (test 6 min), 'past-hikes' (5 dernieres randos).
-      //      Placees apres 'feasibility' (desormais le verdict objectif).
+      // +3 : StepWays LOT 4 (faisabilite) — 'hiker-profile' (fiche info),
+      //      'walk-test' (test 6 min), 'past-hikes' (5 dernieres randos).
+      //      Placees apres 'feasibility' (le verdict objectif tricolore, seul
+      //      moteur de faisabilite depuis le correctif L1-1).
       // +1 : 'adjust' (R12 LOT L9, « Adapter l'itineraire » : modifier la
       //      rando EN COURS sur les seuls jours/etapes non faits). Placee
       //      juste apres 'planning' (meme programme, autre moment de vie).
       final trail = trailRoute();
-      expect(trail.routes.length, 25);
+      expect(trail.routes.length, 24);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -201,7 +201,6 @@ void main() {
         'checklist',
         'nuitees',
         'feasibility',
-        'feasibility-quiz',
         'hiker-profile',
         'walk-test',
         'past-hikes',
@@ -233,7 +232,6 @@ void main() {
         'trail-checklist',
         'trail-nuitees',
         'trail-feasibility',
-        'trail-feasibility-quiz',
         'trail-hiker-profile',
         'trail-walk-test',
         'trail-past-hikes',
@@ -259,6 +257,42 @@ void main() {
       final detail = guides.routes.first as GoRoute;
       expect(detail.path, ':guideId');
       expect(detail.name, 'trail-guide-detail');
+    });
+
+    // NON-REGRESSION L1-1/L1-3 (ecart G1-1 de l'audit #100189).
+    // Le questionnaire de faisabilite de 8 questions a ete SUPPRIME : il
+    // rendait un second verdict, sans rapport avec le tricolore #100068 que
+    // Chris a ordonne de conserver. Ce test interdit sa resurrection, par
+    // exemple par un clone d'ecran repris de GR20.
+    test('la route du quiz de faisabilite a disparu et ne peut pas revenir',
+        () {
+      // 1) aucune sous-route de /trail/:id ne porte le chemin du quiz
+      final trail = trailRoute();
+      final subPaths =
+          trail.routes.whereType<GoRoute>().map((r) => r.path).toList();
+      expect(subPaths, isNot(contains('feasibility-quiz')));
+
+      // 2) aucune route de l'application, a n'importe quelle profondeur,
+      //    ne porte le nom du quiz — on parcourt l'arbre entier.
+      final noms = <String>[];
+      final chemins = <String>[];
+      void parcourir(List<RouteBase> routes) {
+        for (final route in routes) {
+          if (route is GoRoute) {
+            chemins.add(route.path);
+            if (route.name != null) noms.add(route.name!);
+          }
+          parcourir(route.routes);
+        }
+      }
+
+      parcourir(appRouter.configuration.routes);
+      expect(noms, isNot(contains('trail-feasibility-quiz')));
+      expect(chemins, isNot(contains('feasibility-quiz')));
+
+      // 3) le moteur conserve, lui, est toujours atteignable
+      expect(noms, contains('trail-feasibility'));
+      expect(subPaths, contains('feasibility'));
     });
   });
 
