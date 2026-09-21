@@ -429,6 +429,7 @@ class _Translations$tracking$en extends Translations$tracking$fr {
 	@override String get altitude => 'Altitude';
 	@override String get total => 'Total';
 	@override String get covered => 'Covered';
+	@override late final _Translations$tracking$backgroundRationale$en backgroundRationale = _Translations$tracking$backgroundRationale$en._(_root);
 }
 
 // Path: checklist
@@ -1570,6 +1571,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get hintWeight => 'In kilograms';
 	@override String get errorWeight => 'Invalid weight (30 to 150 kg)';
 	@override String get errorCountry => 'Invalid country code (e.g. FR)';
+	@override String get errorEmpty => 'Empty profile: enter at least your age, height or weight.';
 	@override String get fieldSex => 'Sex (optional)';
 	@override String get sexFemale => 'Female';
 	@override String get sexMale => 'Male';
@@ -1934,6 +1936,20 @@ class _Translations$itinerary$direction$en extends Translations$itinerary$direct
 	@override String get from => 'Start';
 	@override String get to => 'Finish';
 	@override String get reverse => 'Reverse direction';
+}
+
+// Path: tracking.backgroundRationale
+class _Translations$tracking$backgroundRationale$en extends Translations$tracking$backgroundRationale$fr {
+	_Translations$tracking$backgroundRationale$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Recording your track with the screen off';
+	@override String get body => 'While you hike, StepWays records your track continuously, even with the phone in your pocket. Android will ask you to allow location “All the time”: that is what it is for, and only during an ongoing hike.';
+	@override String get ifRefused => 'If you decline, the hike still starts: your track is recorded as long as the app stays on screen.';
+	@override String get allow => 'Show the request';
+	@override String get later => 'Later';
 }
 
 // Path: checklist.categories
@@ -4025,6 +4041,11 @@ extension on TranslationsEn {
 			'tracking.altitude' => 'Altitude',
 			'tracking.total' => 'Total',
 			'tracking.covered' => 'Covered',
+			'tracking.backgroundRationale.title' => 'Recording your track with the screen off',
+			'tracking.backgroundRationale.body' => 'While you hike, StepWays records your track continuously, even with the phone in your pocket. Android will ask you to allow location “All the time”: that is what it is for, and only during an ongoing hike.',
+			'tracking.backgroundRationale.ifRefused' => 'If you decline, the hike still starts: your track is recorded as long as the app stays on screen.',
+			'tracking.backgroundRationale.allow' => 'Show the request',
+			'tracking.backgroundRationale.later' => 'Later',
 			'checklist.title' => 'Gear & Pack',
 			'checklist.subtitle' => 'Pack your backpack',
 			'checklist.progress' => '{checked}/{total} packed',
@@ -4260,13 +4281,13 @@ extension on TranslationsEn {
 			'journal.photoTooBig' => 'Photo too large (max 500 KB)',
 			'journal.addPhoto' => 'Add a photo',
 			'journal.photoSource' => 'Photo source',
+			_ => null,
+		} ?? switch (path) {
 			'journal.camera' => 'Camera',
 			'journal.gallery' => 'Gallery',
 			'journal.removePhoto' => 'Remove photo',
 			'journal.photoError' => 'Could not add the photo',
 			'journal.dayNavPrevious' => 'Previous day',
-			_ => null,
-		} ?? switch (path) {
 			'journal.dayNavNext' => 'Next day',
 			'journal.dayOfTrek' => ({required Object day}) => 'Day ${day}',
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
@@ -4774,13 +4795,13 @@ extension on TranslationsEn {
 			'waypoints.contribution.emptyTitle' => 'Please enter a title for the waypoint.',
 			'waypoints.contribution.emptyComment' => 'Please enter your observation.',
 			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.contribution.error' => 'Cannot save right now.',
 			'packs.title' => 'Trail packs',
 			'packs.subtitle' => 'Download a pack to hike 100% offline.',
 			'packs.alaCarteNote' => 'A la carte: buy only the pack you need, no subscription.',
 			'packs.size' => ({required Object mo}) => '${mo} MB',
-			_ => null,
-		} ?? switch (path) {
 			'packs.states.notDownloaded' => 'Not downloaded',
 			'packs.states.downloaded' => 'Downloaded',
 			'packs.states.updateAvailable' => 'Update available',
@@ -5288,13 +5309,13 @@ extension on TranslationsEn {
 			'trekState.abandonDialog.message' => 'You have an ongoing hike. Finish it or give it up before starting another one.',
 			'trekState.abandonDialog.finish' => 'Finish',
 			'trekState.abandonDialog.abandon' => 'Give up',
+			_ => null,
+		} ?? switch (path) {
 			'trekState.abandonDialog.cancel' => 'Cancel',
 			'trekState.resumeOrphanDialog.title' => 'Resume your hike?',
 			'trekState.resumeOrphanDialog.message' => 'A hike was still in progress when the app last closed. Would you like to resume it or give it up?',
 			'trekState.resumeOrphanDialog.resume' => 'Resume',
 			'trekState.resumeOrphanDialog.abandon' => 'Give up',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.title' => 'Your details',
 			'hikerProfile.privacyBanner' => 'Your body metrics are sensitive data. They stay on your device (and an encrypted backup, without your name) to compute your feasibility.',
 			'hikerProfile.fieldAge' => 'Age',
@@ -5307,6 +5328,7 @@ extension on TranslationsEn {
 			'hikerProfile.hintWeight' => 'In kilograms',
 			'hikerProfile.errorWeight' => 'Invalid weight (30 to 150 kg)',
 			'hikerProfile.errorCountry' => 'Invalid country code (e.g. FR)',
+			'hikerProfile.errorEmpty' => 'Empty profile: enter at least your age, height or weight.',
 			'hikerProfile.fieldSex' => 'Sex (optional)',
 			'hikerProfile.sexFemale' => 'Female',
 			'hikerProfile.sexMale' => 'Male',

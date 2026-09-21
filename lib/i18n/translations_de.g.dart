@@ -429,6 +429,7 @@ class _Translations$tracking$de extends Translations$tracking$fr {
 	@override String get altitude => 'Höhe';
 	@override String get total => 'Gesamt';
 	@override String get covered => 'Zurückgelegt';
+	@override late final _Translations$tracking$backgroundRationale$de backgroundRationale = _Translations$tracking$backgroundRationale$de._(_root);
 }
 
 // Path: checklist
@@ -1570,6 +1571,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get hintWeight => 'In Kilogramm';
 	@override String get errorWeight => 'Ungültiges Gewicht (30 bis 150 kg)';
 	@override String get errorCountry => 'Ungültiger Ländercode (z. B. FR)';
+	@override String get errorEmpty => 'Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.';
 	@override String get fieldSex => 'Geschlecht (optional)';
 	@override String get sexFemale => 'Weiblich';
 	@override String get sexMale => 'Männlich';
@@ -1934,6 +1936,20 @@ class _Translations$itinerary$direction$de extends Translations$itinerary$direct
 	@override String get from => 'Start';
 	@override String get to => 'Ziel';
 	@override String get reverse => 'Richtung umkehren';
+}
+
+// Path: tracking.backgroundRationale
+class _Translations$tracking$backgroundRationale$de extends Translations$tracking$backgroundRationale$fr {
+	_Translations$tracking$backgroundRationale$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Deine Route auch bei ausgeschaltetem Bildschirm aufzeichnen';
+	@override String get body => 'Während der Wanderung zeichnet StepWays deine Route durchgehend auf, auch wenn das Telefon in der Tasche steckt. Android fragt dich, ob du den Standort „Immer“ zulassen willst: genau dafür ist das, und nur während einer laufenden Wanderung.';
+	@override String get ifRefused => 'Wenn du ablehnst, startet die Wanderung trotzdem: die Route wird aufgezeichnet, solange die App auf dem Bildschirm bleibt.';
+	@override String get allow => 'Anfrage anzeigen';
+	@override String get later => 'Später';
 }
 
 // Path: checklist.categories
@@ -4025,6 +4041,11 @@ extension on TranslationsDe {
 			'tracking.altitude' => 'Höhe',
 			'tracking.total' => 'Gesamt',
 			'tracking.covered' => 'Zurückgelegt',
+			'tracking.backgroundRationale.title' => 'Deine Route auch bei ausgeschaltetem Bildschirm aufzeichnen',
+			'tracking.backgroundRationale.body' => 'Während der Wanderung zeichnet StepWays deine Route durchgehend auf, auch wenn das Telefon in der Tasche steckt. Android fragt dich, ob du den Standort „Immer“ zulassen willst: genau dafür ist das, und nur während einer laufenden Wanderung.',
+			'tracking.backgroundRationale.ifRefused' => 'Wenn du ablehnst, startet die Wanderung trotzdem: die Route wird aufgezeichnet, solange die App auf dem Bildschirm bleibt.',
+			'tracking.backgroundRationale.allow' => 'Anfrage anzeigen',
+			'tracking.backgroundRationale.later' => 'Später',
 			'checklist.title' => 'Ausrüstung & Rucksack',
 			'checklist.subtitle' => 'Packen Sie Ihren Rucksack',
 			'checklist.progress' => '{checked}/{total} gepackt',
@@ -4260,13 +4281,13 @@ extension on TranslationsDe {
 			'journal.photoTooBig' => 'Foto zu groß (max 500 KB)',
 			'journal.addPhoto' => 'Foto hinzufügen',
 			'journal.photoSource' => 'Fotoquelle',
+			_ => null,
+		} ?? switch (path) {
 			'journal.camera' => 'Kamera',
 			'journal.gallery' => 'Galerie',
 			'journal.removePhoto' => 'Foto entfernen',
 			'journal.photoError' => 'Foto konnte nicht hinzugefügt werden',
 			'journal.dayNavPrevious' => 'Vorheriger Tag',
-			_ => null,
-		} ?? switch (path) {
 			'journal.dayNavNext' => 'Nächster Tag',
 			'journal.dayOfTrek' => ({required Object day}) => 'Tag ${day}',
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
@@ -4774,13 +4795,13 @@ extension on TranslationsDe {
 			'waypoints.contribution.emptyTitle' => 'Bitte einen Titel für den Wegpunkt angeben.',
 			'waypoints.contribution.emptyComment' => 'Bitte Ihre Beobachtung eingeben.',
 			'waypoints.contribution.noLocation' => 'GPS-Position nicht verfügbar. Unter freiem Himmel erneut versuchen.',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.contribution.error' => 'Speichern derzeit nicht möglich.',
 			'packs.title' => 'Wegpakete',
 			'packs.subtitle' => 'Lade ein Paket herunter, um 100% offline zu wandern.',
 			'packs.alaCarteNote' => 'A la carte: Kaufe nur das Paket, das du brauchst, kein Abo.',
 			'packs.size' => ({required Object mo}) => '${mo} MB',
-			_ => null,
-		} ?? switch (path) {
 			'packs.states.notDownloaded' => 'Nicht heruntergeladen',
 			'packs.states.downloaded' => 'Heruntergeladen',
 			'packs.states.updateAvailable' => 'Update verfügbar',
@@ -5288,13 +5309,13 @@ extension on TranslationsDe {
 			'trekState.abandonDialog.message' => 'Du hast eine laufende Wanderung. Beende oder brich sie ab, bevor du eine neue startest.',
 			'trekState.abandonDialog.finish' => 'Beenden',
 			'trekState.abandonDialog.abandon' => 'Abbrechen',
+			_ => null,
+		} ?? switch (path) {
 			'trekState.abandonDialog.cancel' => 'Zurück',
 			'trekState.resumeOrphanDialog.title' => 'Wanderung fortsetzen?',
 			'trekState.resumeOrphanDialog.message' => 'Beim letzten Schließen der App lief noch eine Wanderung. Möchtest du sie fortsetzen oder abbrechen?',
 			'trekState.resumeOrphanDialog.resume' => 'Fortsetzen',
 			'trekState.resumeOrphanDialog.abandon' => 'Abbrechen',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.title' => 'Ihre Angaben',
 			'hikerProfile.privacyBanner' => 'Ihre Körperdaten sind sensible Daten. Sie bleiben auf Ihrem Gerät (und einer verschlüsselten Sicherung ohne Ihren Namen), um Ihre Machbarkeit zu berechnen.',
 			'hikerProfile.fieldAge' => 'Alter',
@@ -5307,6 +5328,7 @@ extension on TranslationsDe {
 			'hikerProfile.hintWeight' => 'In Kilogramm',
 			'hikerProfile.errorWeight' => 'Ungültiges Gewicht (30 bis 150 kg)',
 			'hikerProfile.errorCountry' => 'Ungültiger Ländercode (z. B. FR)',
+			'hikerProfile.errorEmpty' => 'Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.',
 			'hikerProfile.fieldSex' => 'Geschlecht (optional)',
 			'hikerProfile.sexFemale' => 'Weiblich',
 			'hikerProfile.sexMale' => 'Männlich',

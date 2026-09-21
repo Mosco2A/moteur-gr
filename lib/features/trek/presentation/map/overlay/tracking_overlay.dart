@@ -5,6 +5,7 @@ import '../../../../../core/theme/app_theme.dart';
 import '../../../../../i18n/translations.g.dart';
 import '../../../../../shared/widgets/app_button.dart';
 import '../../../../../shared/widgets/app_data_stat.dart';
+import '../../../../../shared/widgets/background_tracking_rationale_dialog.dart';
 import '../../../../map/providers/track_position_provider.dart';
 import '../../../providers/tracking_providers.dart';
 
@@ -180,7 +181,13 @@ class _ButtonsRow extends StatelessWidget {
               icon: Icons.play_arrow,
               color: AppTheme.actionStart,
               semanticLabel: t.a11y.startTracking,
-              onPressed: () => notifier.start(trailId),
+              // Meme pre-vol explique que le bouton du cockpit : une demande
+              // systeme ne doit JAMAIS surgir sur la carte sans avoir ete
+              // annoncee (campagne personas 21/09, MAJEUR-1).
+              onPressed: () async {
+                await ensureBackgroundTrackingExplained(context, ref);
+                await notifier.start(trailId);
+              },
             );
           case TrackingSessionStatus.recording:
             return Row(

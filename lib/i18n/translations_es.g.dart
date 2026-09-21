@@ -429,6 +429,7 @@ class _Translations$tracking$es extends Translations$tracking$fr {
 	@override String get altitude => 'Altitud';
 	@override String get total => 'Total';
 	@override String get covered => 'Recorrido';
+	@override late final _Translations$tracking$backgroundRationale$es backgroundRationale = _Translations$tracking$backgroundRationale$es._(_root);
 }
 
 // Path: checklist
@@ -1570,6 +1571,7 @@ class _Translations$hikerProfile$es extends Translations$hikerProfile$fr {
 	@override String get hintWeight => 'En kilogramos';
 	@override String get errorWeight => 'Peso no válido (30 a 150 kg)';
 	@override String get errorCountry => 'Código de país no válido (ej. FR)';
+	@override String get errorEmpty => 'Ficha vacía: indique al menos la edad, la altura o el peso.';
 	@override String get fieldSex => 'Sexo (opcional)';
 	@override String get sexFemale => 'Mujer';
 	@override String get sexMale => 'Hombre';
@@ -1934,6 +1936,20 @@ class _Translations$itinerary$direction$es extends Translations$itinerary$direct
 	@override String get from => 'Salida';
 	@override String get to => 'Llegada';
 	@override String get reverse => 'Invertir el sentido';
+}
+
+// Path: tracking.backgroundRationale
+class _Translations$tracking$backgroundRationale$es extends Translations$tracking$backgroundRationale$fr {
+	_Translations$tracking$backgroundRationale$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Registrar tu recorrido con la pantalla apagada';
+	@override String get body => 'Durante la ruta, StepWays registra tu recorrido de forma continua, incluso con el móvil en el bolsillo. Android te pedirá permitir la ubicación «Siempre»: es solo para eso, y únicamente mientras haya una ruta en curso.';
+	@override String get ifRefused => 'Si lo rechazas, la ruta empieza igualmente: tu recorrido se registra mientras la aplicación siga en pantalla.';
+	@override String get allow => 'Ver la solicitud';
+	@override String get later => 'Más tarde';
 }
 
 // Path: checklist.categories
@@ -4025,6 +4041,11 @@ extension on TranslationsEs {
 			'tracking.altitude' => 'Altitud',
 			'tracking.total' => 'Total',
 			'tracking.covered' => 'Recorrido',
+			'tracking.backgroundRationale.title' => 'Registrar tu recorrido con la pantalla apagada',
+			'tracking.backgroundRationale.body' => 'Durante la ruta, StepWays registra tu recorrido de forma continua, incluso con el móvil en el bolsillo. Android te pedirá permitir la ubicación «Siempre»: es solo para eso, y únicamente mientras haya una ruta en curso.',
+			'tracking.backgroundRationale.ifRefused' => 'Si lo rechazas, la ruta empieza igualmente: tu recorrido se registra mientras la aplicación siga en pantalla.',
+			'tracking.backgroundRationale.allow' => 'Ver la solicitud',
+			'tracking.backgroundRationale.later' => 'Más tarde',
 			'checklist.title' => 'Equipo & Mochila',
 			'checklist.subtitle' => 'Prepara tu mochila',
 			'checklist.progress' => '{checked}/{total} preparados',
@@ -4260,13 +4281,13 @@ extension on TranslationsEs {
 			'journal.photoTooBig' => 'Foto demasiado grande (máx 500 KB)',
 			'journal.addPhoto' => 'Añadir una foto',
 			'journal.photoSource' => 'Origen de la foto',
+			_ => null,
+		} ?? switch (path) {
 			'journal.camera' => 'Cámara',
 			'journal.gallery' => 'Galería',
 			'journal.removePhoto' => 'Quitar la foto',
 			'journal.photoError' => 'No se ha podido añadir la foto',
 			'journal.dayNavPrevious' => 'Día anterior',
-			_ => null,
-		} ?? switch (path) {
 			'journal.dayNavNext' => 'Día siguiente',
 			'journal.dayOfTrek' => ({required Object day}) => 'Día ${day}',
 			'journal.dayCounter' => ({required Object index, required Object total}) => '${index} / ${total}',
@@ -4774,13 +4795,13 @@ extension on TranslationsEs {
 			'waypoints.contribution.emptyTitle' => 'Indica un título para el punto.',
 			'waypoints.contribution.emptyComment' => 'Escribe tu observación.',
 			'waypoints.contribution.noLocation' => 'Posición GPS no disponible. Inténtalo de nuevo a cielo abierto.',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.contribution.error' => 'No se puede guardar ahora mismo.',
 			'packs.title' => 'Packs de sendero',
 			'packs.subtitle' => 'Descarga un pack para caminar 100% sin conexión.',
 			'packs.alaCarteNote' => 'A la carte: compra solo el pack que necesitas, sin suscripción.',
 			'packs.size' => ({required Object mo}) => '${mo} MB',
-			_ => null,
-		} ?? switch (path) {
 			'packs.states.notDownloaded' => 'No descargado',
 			'packs.states.downloaded' => 'Descargado',
 			'packs.states.updateAvailable' => 'Actualización disponible',
@@ -5288,13 +5309,13 @@ extension on TranslationsEs {
 			'trekState.abandonDialog.message' => 'Tienes una excursión en curso. Termínala o abandónala antes de empezar otra.',
 			'trekState.abandonDialog.finish' => 'Terminar',
 			'trekState.abandonDialog.abandon' => 'Abandonar',
+			_ => null,
+		} ?? switch (path) {
 			'trekState.abandonDialog.cancel' => 'Cancelar',
 			'trekState.resumeOrphanDialog.title' => '¿Reanudar tu excursión?',
 			'trekState.resumeOrphanDialog.message' => 'Había una excursión en curso al cerrar la aplicación por última vez. ¿Quieres reanudarla o abandonarla?',
 			'trekState.resumeOrphanDialog.resume' => 'Reanudar',
 			'trekState.resumeOrphanDialog.abandon' => 'Abandonar',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.title' => 'Tus datos',
 			'hikerProfile.privacyBanner' => 'Tus datos corporales son datos sensibles. Permanecen en tu dispositivo (y una copia cifrada, sin tu nombre) para calcular tu viabilidad.',
 			'hikerProfile.fieldAge' => 'Edad',
@@ -5307,6 +5328,7 @@ extension on TranslationsEs {
 			'hikerProfile.hintWeight' => 'En kilogramos',
 			'hikerProfile.errorWeight' => 'Peso no válido (30 a 150 kg)',
 			'hikerProfile.errorCountry' => 'Código de país no válido (ej. FR)',
+			'hikerProfile.errorEmpty' => 'Ficha vacía: indique al menos la edad, la altura o el peso.',
 			'hikerProfile.fieldSex' => 'Sexo (opcional)',
 			'hikerProfile.sexFemale' => 'Mujer',
 			'hikerProfile.sexMale' => 'Hombre',
