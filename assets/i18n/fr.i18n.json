@@ -984,7 +984,10 @@
     "buyCtaWithPrice": "Débloquer cette randonnée — $price €",
     "rewardedCta": "Regarder une pub (sans pub 24 h)",
     "rewardedEarned": "Merci ! Sans publicité pendant 24 h.",
-    "rewardedUnavailable": "Aucune vidéo disponible pour le moment."
+    "rewardedUnavailable": "Aucune vidéo disponible pour le moment.",
+    "walletTitle": "Compte-étapes",
+    "walletSubtitle": "Vos étapes servent à débloquer les randonnées",
+    "walletUnit": "étapes"
   },
   "signalement": {
     "title": "Signaler",

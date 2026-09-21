@@ -984,7 +984,10 @@
     "buyCtaWithPrice": "Sblocca questo trek — $price €",
     "rewardedCta": "Guarda una pub (24 h senza pubblicità)",
     "rewardedEarned": "Grazie! Senza pubblicità per 24 h.",
-    "rewardedUnavailable": "Nessun video disponibile al momento."
+    "rewardedUnavailable": "Nessun video disponibile al momento.",
+    "walletTitle": "Conto tappe",
+    "walletSubtitle": "Le tue tappe servono a sbloccare le escursioni",
+    "walletUnit": "tappe"
   },
   "signalement": {
     "title": "Segnala",

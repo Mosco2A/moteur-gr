@@ -984,7 +984,10 @@
     "buyCtaWithPrice": "Desbloquear este trek — $price €",
     "rewardedCta": "Ver un anuncio (24 h sin anuncios)",
     "rewardedEarned": "¡Gracias! Sin publicidad durante 24 h.",
-    "rewardedUnavailable": "No hay vídeo disponible ahora mismo."
+    "rewardedUnavailable": "No hay vídeo disponible ahora mismo.",
+    "walletTitle": "Cuenta de etapas",
+    "walletSubtitle": "Tus etapas sirven para desbloquear las rutas",
+    "walletUnit": "etapas"
   },
   "signalement": {
     "title": "Notificar",

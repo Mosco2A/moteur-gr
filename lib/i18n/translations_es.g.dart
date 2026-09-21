@@ -910,6 +910,9 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get rewardedCta => 'Ver un anuncio (24 h sin anuncios)';
 	@override String get rewardedEarned => '¡Gracias! Sin publicidad durante 24 h.';
 	@override String get rewardedUnavailable => 'No hay vídeo disponible ahora mismo.';
+	@override String get walletTitle => 'Cuenta de etapas';
+	@override String get walletSubtitle => 'Tus etapas sirven para desbloquear las rutas';
+	@override String get walletUnit => 'etapas';
 }
 
 // Path: signalement
@@ -4594,6 +4597,9 @@ extension on TranslationsEs {
 			'monetization.rewardedCta' => 'Ver un anuncio (24 h sin anuncios)',
 			'monetization.rewardedEarned' => '¡Gracias! Sin publicidad durante 24 h.',
 			'monetization.rewardedUnavailable' => 'No hay vídeo disponible ahora mismo.',
+			'monetization.walletTitle' => 'Cuenta de etapas',
+			'monetization.walletSubtitle' => 'Tus etapas sirven para desbloquear las rutas',
+			'monetization.walletUnit' => 'etapas',
 			'signalement.title' => 'Notificar',
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
@@ -4768,11 +4774,11 @@ extension on TranslationsEs {
 			'packs.states.notDownloaded' => 'No descargado',
 			'packs.states.downloaded' => 'Descargado',
 			'packs.states.updateAvailable' => 'Actualización disponible',
+			_ => null,
+		} ?? switch (path) {
 			'packs.actions.download' => 'Descargar',
 			'packs.actions.update' => 'Actualizar',
 			'packs.actions.delete' => 'Eliminar',
-			_ => null,
-		} ?? switch (path) {
 			'packs.actions.retry' => 'Reintentar',
 			'packs.actions.buy' => 'Comprar este pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Comprar este pack — ${price}',
@@ -5282,11 +5288,11 @@ extension on TranslationsEs {
 			'hikerProfile.fieldAge' => 'Edad',
 			'hikerProfile.hintAge' => 'En años',
 			'hikerProfile.errorAge' => 'Edad no válida (8 a 100 años)',
+			_ => null,
+		} ?? switch (path) {
 			'hikerProfile.fieldHeight' => 'Altura',
 			'hikerProfile.hintHeight' => 'En centímetros',
 			'hikerProfile.errorHeight' => 'Altura no válida (100 a 250 cm)',
-			_ => null,
-		} ?? switch (path) {
 			'hikerProfile.fieldWeight' => 'Peso',
 			'hikerProfile.hintWeight' => 'En kilogramos',
 			'hikerProfile.errorWeight' => 'Peso no válido (30 a 150 kg)',

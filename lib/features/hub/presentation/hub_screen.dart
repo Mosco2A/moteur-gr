@@ -14,6 +14,7 @@ import 'widgets/finish_trek_button.dart';
 import 'widgets/hub_section.dart';
 import 'widgets/hub_start_trek_button.dart';
 import 'widgets/hub_trek_card.dart';
+import 'widgets/hub_wallet_card.dart';
 import 'widgets/localized_conditions_banner.dart';
 import 'widgets/quick_access_card.dart';
 
@@ -145,9 +146,9 @@ class _HubScreenState extends ConsumerState<HubScreen> {
       // ACCES SOS UNIQUE (FIX-2, finding M1) : c'est le SEUL acces SOS du
       // cockpit — il n'y a NI action SOS en barre contextuelle (la barre du
       // cockpit n'existe pas, D1) NI carte SOS dans le scroll. Sur la carte,
-      // l'unique acces est l'overlay [SosButton] du Stack ; le doublon en barre
-      // contextuelle retire en cycle 3 n'est PAS revenu (map_screen
-      // `buildContextualActions` = Etape en cours + Journal, rien d'autre).
+      // l'unique acces est l'overlay [SosButton] du Stack ; depuis le correctif
+      // L6-3 la carte n'a PLUS DU TOUT de barre du bas, donc plus aucun endroit
+      // ou un second SOS pourrait reapparaitre.
       // Verrouille par `test/features/safety/sos_acces_unique_test.dart`.
       floatingActionButton: const SosButton(),
       // PARITE GR20 (`home_screen.dart` : FloatingActionButtonLocation
@@ -188,6 +189,14 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             // « Démarrer » plein largeur au niveau de l'ecran (qui poussait vers
             // la planification) est retire : la carte est la source unique du
             // demarrage, garde C4 comprise (plus de double bouton).
+            // COMPTE-ÉTAPES en tête du cockpit (correctif L7-1). Le
+            // portefeuille existait en entier — table, DAO, recharge, débit —
+            // mais son solde n'apparaissait sur AUCUN écran. Il se rend juste
+            // au-dessus de la carte du trek, et reste invisible tant que le
+            // solde n'est pas connu (jamais de « 0 » de chargement).
+            const HubWalletCard(),
+            const SizedBox(height: AppTheme.spacingBase),
+
             const HubTrekCard(),
             const SizedBox(height: AppTheme.spacingLg),
 

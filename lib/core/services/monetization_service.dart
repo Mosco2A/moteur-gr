@@ -866,3 +866,20 @@ final isDemoModeProvider = FutureProvider.family<bool, String>((ref, trailId) as
   ref.watch(_entitlementProvider(trailId)); // relance au flip owned
   return service.isDemoMode(trailId);
 });
+
+/// Solde du COMPTE-ÉTAPES, en étapes (correctif L7-1).
+///
+/// Le portefeuille existait entièrement — table Drift, DAO, `WalletStore`,
+/// recharge et débit dans ce service — mais son solde n'était affiché NULLE
+/// PART : le randonneur dépensait des étapes sans jamais voir ce qu'il lui en
+/// restait. Ce provider n'ajoute aucune règle métier, il expose la source
+/// existante ([MonetizationService.watchWalletSteps]) en la faisant précéder du
+/// chargement ([monetizationReadyProvider]) — sans quoi le premier rendu
+/// afficherait un solde de zéro avant l'hydratation des préférences.
+final walletStepsProvider = StreamProvider<int>((ref) async* {
+  final service = await ref.watch(monetizationReadyProvider.future);
+  // Valeur d'ouverture : le solde déjà hydraté, pour ne pas attendre le
+  // premier mouvement du portefeuille avant d'afficher quelque chose.
+  yield service.walletSteps;
+  yield* service.watchWalletSteps();
+});

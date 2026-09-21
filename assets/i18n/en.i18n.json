@@ -984,7 +984,10 @@
     "buyCtaWithPrice": "Unlock this trek — €$price",
     "rewardedCta": "Watch an ad (24 h ad-free)",
     "rewardedEarned": "Thanks! Ad-free for 24 h.",
-    "rewardedUnavailable": "No video available right now."
+    "rewardedUnavailable": "No video available right now.",
+    "walletTitle": "Step account",
+    "walletSubtitle": "Your steps unlock hikes",
+    "walletUnit": "steps"
   },
   "signalement": {
     "title": "Report",

@@ -984,7 +984,10 @@
     "buyCtaWithPrice": "Diesen Trek freischalten — $price €",
     "rewardedCta": "Werbung ansehen (24 h werbefrei)",
     "rewardedEarned": "Danke! 24 h werbefrei.",
-    "rewardedUnavailable": "Derzeit kein Video verfügbar."
+    "rewardedUnavailable": "Derzeit kein Video verfügbar.",
+    "walletTitle": "Etappenkonto",
+    "walletSubtitle": "Mit Ihren Etappen schalten Sie Wanderungen frei",
+    "walletUnit": "Etappen"
   },
   "signalement": {
     "title": "Melden",
