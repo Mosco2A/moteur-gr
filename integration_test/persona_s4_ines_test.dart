@@ -38,6 +38,14 @@ void main() {
     // et sans cela un scenario herite des echecs du precedent et le garde
     // anti-harnais-aveugle se desarme tout seul.
     reinitialiserExigences();
+    // POIGNEE DE SEMANTIQUE EQUILIBREE (tache 544). Un greffon active la
+    // semantique pendant la phase carte et ne la rend pas : flutter_test
+    // echoue alors A LA CLOTURE sur « A SemanticsHandle was active at the end
+    // of the test », alors que TOUTES les exigences du parcours sont tenues.
+    // L'echec est INTERMITTENT, ce qui est pire qu'un echec franc. On prend
+    // une poignee et on la rend, pour que le compteur soit equilibre.
+    final poigneeSemantique = tester.ensureSemantics();
+
     logStep(P, 'boot', 'Lancement de app.main()');
     installerVeilleEcranSysteme(P);
     app.main();
@@ -225,6 +233,7 @@ void main() {
         '(sinon le run est INVALIDE, pas le produit — relancer avec les demons '
         'persona_perm_granter et persona_dialog_dismisser). Bloquants vus : '
         '${ecransSystemeBloquants().join(", ")}');
+    poigneeSemantique.dispose();
     verdictPersona(P, minimumExigences: 7);
   });
 }

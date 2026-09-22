@@ -46,6 +46,14 @@ void main() {
 
   testWidgets('S5 — Thomas essaie tout ce qui n est pas prevu', (tester) async {
     reinitialiserExigences();
+    // POIGNEE DE SEMANTIQUE EQUILIBREE (tache 544). Un greffon active la
+    // semantique pendant la phase carte et ne la rend pas : flutter_test
+    // echoue alors A LA CLOTURE sur « A SemanticsHandle was active at the end
+    // of the test », alors que TOUTES les exigences du parcours sont tenues.
+    // L'echec est INTERMITTENT, ce qui est pire qu'un echec franc. On prend
+    // une poignee et on la rend, pour que le compteur soit equilibre.
+    final poigneeSemantique = tester.ensureSemantics();
+
     logStep(P, 'boot', 'Lancement de app.main()');
     installerVeilleEcranSysteme(P);
     app.main();
@@ -197,6 +205,7 @@ void main() {
         'aucune fenetre systeme n a recouvert l application '
         '(bloquants : ${ecransSystemeBloquants().join(", ")} ; '
         'journal complet : ${kEcransSystemeDetectes.length} evenement(s))');
+    poigneeSemantique.dispose();
     retirerVeilleEcranSysteme();
     verdictPersona(P, minimumExigences: 40);
     await finalizeScenario(tester, P);

@@ -58,6 +58,14 @@ void main() {
     // et sans cela un scenario herite des echecs du precedent et le garde
     // anti-harnais-aveugle se desarme tout seul.
     reinitialiserExigences();
+    // POIGNEE DE SEMANTIQUE EQUILIBREE (tache 544). Un greffon active la
+    // semantique pendant la phase carte et ne la rend pas : flutter_test
+    // echoue alors A LA CLOTURE sur « A SemanticsHandle was active at the end
+    // of the test », alors que TOUTES les exigences du parcours sont tenues.
+    // L'echec est INTERMITTENT, ce qui est pire qu'un echec franc. On prend
+    // une poignee et on la rend, pour que le compteur soit equilibre.
+    final poigneeSemantique = tester.ensureSemantics();
+
     // --- Lancement de la VRAIE app ---
     logStep(P, 'boot', 'Lancement de app.main() sur emulateur');
     // MAJEUR-2 de la campagne N1 : le harnais etait AVEUGLE aux dialogues
@@ -924,6 +932,7 @@ void main() {
     logStep(P, 'fin',
         'Scenario S1 termine — CIRCUIT COMPLET (preparer -> randonner -> apres).');
     // Cloture propre : draine les artefacts de teardown (trek deja termine).
+    poigneeSemantique.dispose();
     retirerVeilleEcranSysteme();
     await finalizeScenario(tester, P);
     await flushJournal(P);
