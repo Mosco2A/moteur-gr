@@ -872,7 +872,9 @@
         "split": "Split stage ${stage} in two: it clearly exceeds your ceiling.",
         "rest": "Plan a rest day after stage ${stages}.",
         "training": "Train for ${weeks} weeks before departure (physical preparation)."
-      }
+      },
+      "retainedPlan": "Retained split: ${days} walking days.",
+      "retainedPlanNone": "No split retained: the trail stays on its default ${days} days."
     },
     "flow": {
       "title": "Are you ready for this trek?",
@@ -886,9 +888,14 @@
       "stepPastHikesSub": "What you have already handled: pace, distance, elevation.",
       "optionalTag": "(optional)",
       "validate": "Confirm and see my result",
-      "hintEmpty": "You can see a first result, but fill in at least one step to make it reliable.",
-      "hintPartial": "You can see your result now; complete the steps to refine it.",
-      "partialNotice": "Provisional result: your profile is incomplete. Fill in your sheet, the test or your hikes for a reliable verdict."
+      "partialNotice": "Provisional result: the 6-minute walk test has not been done. Your level is estimated by default; take the test to refine the verdict.",
+      "missingTitle": "Some information is still missing",
+      "missingIntro": "The verdict only appears once every required criterion is filled in. Still to complete:",
+      "missingProfile": "Your full info sheet: age, height and weight",
+      "missingPastHikes": "At least one of your 5 latest hikes",
+      "missingWalkTestNote": "The 6-minute test stays optional: without it, your result is shown as provisional.",
+      "hintBlocked": "Complete the criteria above: that is what decides your verdict.",
+      "hintReady": "All set: you can see your result."
     }
   },
   "tips": {

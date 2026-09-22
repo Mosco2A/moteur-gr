@@ -57,6 +57,14 @@ abstract class HikerProfile with _$HikerProfile {
   /// Vrai si la morpho minimale (taille + poids) est renseignee.
   bool get hasMorphology => heightCm > 0 && weightKg > 0;
 
+  /// Vrai si la fiche est COMPLETE : age ET taille ET poids renseignes.
+  ///
+  /// A ne pas confondre avec `!isEmpty`, qui n'exige qu'UN seul des trois.
+  /// C'est cette completude — et pas la simple presence d'un champ — qui
+  /// conditionne le verdict de faisabilite (correctif N2 / D1, #100293) : une
+  /// fiche a moitie remplie est une fiche a moitie fausse.
+  bool get isComplete => age > 0 && heightCm > 0 && weightKg > 0;
+
   /// IMC calcule LOCALEMENT (kg / m^2), ou null si taille/poids manquants.
   ///
   /// Jamais stocke : recalcule a la volee depuis la source (honnetete =

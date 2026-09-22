@@ -2287,6 +2287,8 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$verdicts$en verdicts = _Translations$feasibility$formula$verdicts$en._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$en limitingFactors = _Translations$feasibility$formula$limitingFactors$en._(_root);
 	@override late final _Translations$feasibility$formula$advice$en advice = _Translations$feasibility$formula$advice$en._(_root);
+	@override String retainedPlan({required Object days}) => 'Retained split: ${days} walking days.';
+	@override String retainedPlanNone({required Object days}) => 'No split retained: the trail stays on its default ${days} days.';
 }
 
 // Path: feasibility.flow
@@ -2307,9 +2309,14 @@ class _Translations$feasibility$flow$en extends Translations$feasibility$flow$fr
 	@override String get stepPastHikesSub => 'What you have already handled: pace, distance, elevation.';
 	@override String get optionalTag => '(optional)';
 	@override String get validate => 'Confirm and see my result';
-	@override String get hintEmpty => 'You can see a first result, but fill in at least one step to make it reliable.';
-	@override String get hintPartial => 'You can see your result now; complete the steps to refine it.';
-	@override String get partialNotice => 'Provisional result: your profile is incomplete. Fill in your sheet, the test or your hikes for a reliable verdict.';
+	@override String get partialNotice => 'Provisional result: the 6-minute walk test has not been done. Your level is estimated by default; take the test to refine the verdict.';
+	@override String get missingTitle => 'Some information is still missing';
+	@override String get missingIntro => 'The verdict only appears once every required criterion is filled in. Still to complete:';
+	@override String get missingProfile => 'Your full info sheet: age, height and weight';
+	@override String get missingPastHikes => 'At least one of your 5 latest hikes';
+	@override String get missingWalkTestNote => 'The 6-minute test stays optional: without it, your result is shown as provisional.';
+	@override String get hintBlocked => 'Complete the criteria above: that is what decides your verdict.';
+	@override String get hintReady => 'All set: you can see your result.';
 }
 
 // Path: tips.themes
@@ -4530,6 +4537,8 @@ extension on TranslationsEn {
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Split stage ${stage} in two: it clearly exceeds your ceiling.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after stage ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained split: ${days} walking days.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No split retained: the trail stays on its default ${days} days.',
 			'feasibility.flow.title' => 'Are you ready for this trek?',
 			'feasibility.flow.intro' => 'Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} steps done',
@@ -4541,9 +4550,14 @@ extension on TranslationsEn {
 			'feasibility.flow.stepPastHikesSub' => 'What you have already handled: pace, distance, elevation.',
 			'feasibility.flow.optionalTag' => '(optional)',
 			'feasibility.flow.validate' => 'Confirm and see my result',
-			'feasibility.flow.hintEmpty' => 'You can see a first result, but fill in at least one step to make it reliable.',
-			'feasibility.flow.hintPartial' => 'You can see your result now; complete the steps to refine it.',
-			'feasibility.flow.partialNotice' => 'Provisional result: your profile is incomplete. Fill in your sheet, the test or your hikes for a reliable verdict.',
+			'feasibility.flow.partialNotice' => 'Provisional result: the 6-minute walk test has not been done. Your level is estimated by default; take the test to refine the verdict.',
+			'feasibility.flow.missingTitle' => 'Some information is still missing',
+			'feasibility.flow.missingIntro' => 'The verdict only appears once every required criterion is filled in. Still to complete:',
+			'feasibility.flow.missingProfile' => 'Your full info sheet: age, height and weight',
+			'feasibility.flow.missingPastHikes' => 'At least one of your 5 latest hikes',
+			'feasibility.flow.missingWalkTestNote' => 'The 6-minute test stays optional: without it, your result is shown as provisional.',
+			'feasibility.flow.hintBlocked' => 'Complete the criteria above: that is what decides your verdict.',
+			'feasibility.flow.hintReady' => 'All set: you can see your result.',
 			'tips.carouselTitle' => 'Trek tips',
 			'tips.allCategories' => 'All',
 			'tips.swipeHint' => 'Swipe for more',
@@ -4789,6 +4803,8 @@ extension on TranslationsEn {
 			'waypoints.contribution.conditionField' => 'State (optional)',
 			'waypoints.contribution.conditionHelper' => 'e.g. water dried up, water flowing, slippery section',
 			'waypoints.contribution.latencyBanner' => 'Will be published at the next network sync.',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.contribution.submit' => 'Save',
 			'waypoints.contribution.savedTitle' => 'Contribution saved',
 			'waypoints.contribution.savedPendingSync' => 'It will be published when the network is back.',
@@ -4796,8 +4812,6 @@ extension on TranslationsEn {
 			'waypoints.contribution.close' => 'Close',
 			'waypoints.contribution.emptyTitle' => 'Please enter a title for the waypoint.',
 			'waypoints.contribution.emptyComment' => 'Please enter your observation.',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.contribution.noLocation' => 'GPS position unavailable. Try again under open sky.',
 			'waypoints.contribution.error' => 'Cannot save right now.',
 			'packs.title' => 'Trail packs',
@@ -5303,6 +5317,8 @@ extension on TranslationsEn {
 			'myTreks.badge.prepared' => 'Prepared',
 			'myTreks.badge.inProgress' => 'In progress',
 			'myTreks.badge.completed' => 'Completed',
+			_ => null,
+		} ?? switch (path) {
 			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % of the trail',
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Open trek ${nom}',
@@ -5310,8 +5326,6 @@ extension on TranslationsEn {
 			'trekState.abandonDialog.title' => 'A trek is already in progress',
 			'trekState.abandonDialog.message' => 'You have an ongoing hike. Finish it or give it up before starting another one.',
 			'trekState.abandonDialog.finish' => 'Finish',
-			_ => null,
-		} ?? switch (path) {
 			'trekState.abandonDialog.abandon' => 'Give up',
 			'trekState.abandonDialog.cancel' => 'Cancel',
 			'trekState.resumeOrphanDialog.title' => 'Resume your hike?',

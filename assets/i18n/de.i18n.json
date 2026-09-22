@@ -872,7 +872,9 @@
         "split": "Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.",
         "rest": "Plane einen Ruhetag nach Etappe ${stages}.",
         "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung)."
-      }
+      },
+      "retainedPlan": "Gewählte Aufteilung: ${days} Wandertage.",
+      "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen."
     },
     "flow": {
       "title": "Bist du bereit für diese Tour?",
@@ -886,9 +888,14 @@
       "stepPastHikesSub": "Was du schon geschafft hast: Tempo, Distanz, Höhenmeter.",
       "optionalTag": "(optional)",
       "validate": "Bestätigen und Ergebnis ansehen",
-      "hintEmpty": "Du kannst ein erstes Ergebnis sehen, fülle aber mindestens einen Schritt aus, damit es verlässlich ist.",
-      "hintPartial": "Du kannst dein Ergebnis jetzt sehen; vervollständige die Schritte, um es zu verfeinern.",
-      "partialNotice": "Vorläufiges Ergebnis: dein Profil ist unvollständig. Fülle dein Blatt, den Test oder deine Touren aus für ein verlässliches Urteil."
+      "partialNotice": "Vorläufiges Ergebnis: der 6-Minuten-Gehtest wurde nicht gemacht. Dein Niveau wird standardmäßig geschätzt; mach den Test für ein genaueres Urteil.",
+      "missingTitle": "Es fehlen noch Angaben",
+      "missingIntro": "Das Urteil erscheint erst, wenn alle nötigen Kriterien ausgefüllt sind. Es fehlt noch:",
+      "missingProfile": "Dein vollständiges Infoblatt: Alter, Größe und Gewicht",
+      "missingPastHikes": "Mindestens eine deiner 5 letzten Touren",
+      "missingWalkTestNote": "Der 6-Minuten-Test bleibt optional: ohne ihn wird dein Ergebnis als vorläufig angezeigt.",
+      "hintBlocked": "Vervollständige die Kriterien oben: dort entscheidet sich dein Urteil.",
+      "hintReady": "Alles da: du kannst dein Ergebnis ansehen."
     }
   },
   "tips": {

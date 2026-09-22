@@ -2287,6 +2287,8 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$verdicts$de verdicts = _Translations$feasibility$formula$verdicts$de._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$de limitingFactors = _Translations$feasibility$formula$limitingFactors$de._(_root);
 	@override late final _Translations$feasibility$formula$advice$de advice = _Translations$feasibility$formula$advice$de._(_root);
+	@override String retainedPlan({required Object days}) => 'Gewählte Aufteilung: ${days} Wandertage.';
+	@override String retainedPlanNone({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen.';
 }
 
 // Path: feasibility.flow
@@ -2307,9 +2309,14 @@ class _Translations$feasibility$flow$de extends Translations$feasibility$flow$fr
 	@override String get stepPastHikesSub => 'Was du schon geschafft hast: Tempo, Distanz, Höhenmeter.';
 	@override String get optionalTag => '(optional)';
 	@override String get validate => 'Bestätigen und Ergebnis ansehen';
-	@override String get hintEmpty => 'Du kannst ein erstes Ergebnis sehen, fülle aber mindestens einen Schritt aus, damit es verlässlich ist.';
-	@override String get hintPartial => 'Du kannst dein Ergebnis jetzt sehen; vervollständige die Schritte, um es zu verfeinern.';
-	@override String get partialNotice => 'Vorläufiges Ergebnis: dein Profil ist unvollständig. Fülle dein Blatt, den Test oder deine Touren aus für ein verlässliches Urteil.';
+	@override String get partialNotice => 'Vorläufiges Ergebnis: der 6-Minuten-Gehtest wurde nicht gemacht. Dein Niveau wird standardmäßig geschätzt; mach den Test für ein genaueres Urteil.';
+	@override String get missingTitle => 'Es fehlen noch Angaben';
+	@override String get missingIntro => 'Das Urteil erscheint erst, wenn alle nötigen Kriterien ausgefüllt sind. Es fehlt noch:';
+	@override String get missingProfile => 'Dein vollständiges Infoblatt: Alter, Größe und Gewicht';
+	@override String get missingPastHikes => 'Mindestens eine deiner 5 letzten Touren';
+	@override String get missingWalkTestNote => 'Der 6-Minuten-Test bleibt optional: ohne ihn wird dein Ergebnis als vorläufig angezeigt.';
+	@override String get hintBlocked => 'Vervollständige die Kriterien oben: dort entscheidet sich dein Urteil.';
+	@override String get hintReady => 'Alles da: du kannst dein Ergebnis ansehen.';
 }
 
 // Path: tips.themes
@@ -4530,6 +4537,8 @@ extension on TranslationsDe {
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Etappe ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Gewählte Aufteilung: ${days} Wandertage.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen.',
 			'feasibility.flow.title' => 'Bist du bereit für diese Tour?',
 			'feasibility.flow.intro' => 'Beantworte 3 kurze Schritte: Wir ermitteln dein echtes Niveau und sagen dir, ob die Tour machbar ist.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} Schritte erledigt',
@@ -4541,9 +4550,14 @@ extension on TranslationsDe {
 			'feasibility.flow.stepPastHikesSub' => 'Was du schon geschafft hast: Tempo, Distanz, Höhenmeter.',
 			'feasibility.flow.optionalTag' => '(optional)',
 			'feasibility.flow.validate' => 'Bestätigen und Ergebnis ansehen',
-			'feasibility.flow.hintEmpty' => 'Du kannst ein erstes Ergebnis sehen, fülle aber mindestens einen Schritt aus, damit es verlässlich ist.',
-			'feasibility.flow.hintPartial' => 'Du kannst dein Ergebnis jetzt sehen; vervollständige die Schritte, um es zu verfeinern.',
-			'feasibility.flow.partialNotice' => 'Vorläufiges Ergebnis: dein Profil ist unvollständig. Fülle dein Blatt, den Test oder deine Touren aus für ein verlässliches Urteil.',
+			'feasibility.flow.partialNotice' => 'Vorläufiges Ergebnis: der 6-Minuten-Gehtest wurde nicht gemacht. Dein Niveau wird standardmäßig geschätzt; mach den Test für ein genaueres Urteil.',
+			'feasibility.flow.missingTitle' => 'Es fehlen noch Angaben',
+			'feasibility.flow.missingIntro' => 'Das Urteil erscheint erst, wenn alle nötigen Kriterien ausgefüllt sind. Es fehlt noch:',
+			'feasibility.flow.missingProfile' => 'Dein vollständiges Infoblatt: Alter, Größe und Gewicht',
+			'feasibility.flow.missingPastHikes' => 'Mindestens eine deiner 5 letzten Touren',
+			'feasibility.flow.missingWalkTestNote' => 'Der 6-Minuten-Test bleibt optional: ohne ihn wird dein Ergebnis als vorläufig angezeigt.',
+			'feasibility.flow.hintBlocked' => 'Vervollständige die Kriterien oben: dort entscheidet sich dein Urteil.',
+			'feasibility.flow.hintReady' => 'Alles da: du kannst dein Ergebnis ansehen.',
 			'tips.carouselTitle' => 'Trek-Tipps',
 			'tips.allCategories' => 'Alle',
 			'tips.swipeHint' => 'Wischen für mehr',
@@ -4789,6 +4803,8 @@ extension on TranslationsDe {
 			'waypoints.contribution.conditionField' => 'Zustand (optional)',
 			'waypoints.contribution.conditionHelper' => 'z. B. Wasser versiegt, Wasser fliesst, rutschige Stelle',
 			'waypoints.contribution.latencyBanner' => 'Wird bei der nächsten Synchronisierung veröffentlicht.',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.contribution.submit' => 'Speichern',
 			'waypoints.contribution.savedTitle' => 'Beitrag gespeichert',
 			'waypoints.contribution.savedPendingSync' => 'Er wird veröffentlicht, sobald das Netz wieder da ist.',
@@ -4796,8 +4812,6 @@ extension on TranslationsDe {
 			'waypoints.contribution.close' => 'Schliessen',
 			'waypoints.contribution.emptyTitle' => 'Bitte einen Titel für den Wegpunkt angeben.',
 			'waypoints.contribution.emptyComment' => 'Bitte Ihre Beobachtung eingeben.',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.contribution.noLocation' => 'GPS-Position nicht verfügbar. Unter freiem Himmel erneut versuchen.',
 			'waypoints.contribution.error' => 'Speichern derzeit nicht möglich.',
 			'packs.title' => 'Wegpakete',
@@ -5303,6 +5317,8 @@ extension on TranslationsDe {
 			'myTreks.badge.prepared' => 'Vorbereitet',
 			'myTreks.badge.inProgress' => 'Laufend',
 			'myTreks.badge.completed' => 'Abgeschlossen',
+			_ => null,
+		} ?? switch (path) {
 			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % des Weges',
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Tour ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Tour ${nom} öffnen',
@@ -5310,8 +5326,6 @@ extension on TranslationsDe {
 			'trekState.abandonDialog.title' => 'Eine Tour läuft bereits',
 			'trekState.abandonDialog.message' => 'Du hast eine laufende Wanderung. Beende oder brich sie ab, bevor du eine neue startest.',
 			'trekState.abandonDialog.finish' => 'Beenden',
-			_ => null,
-		} ?? switch (path) {
 			'trekState.abandonDialog.abandon' => 'Abbrechen',
 			'trekState.abandonDialog.cancel' => 'Zurück',
 			'trekState.resumeOrphanDialog.title' => 'Wanderung fortsetzen?',

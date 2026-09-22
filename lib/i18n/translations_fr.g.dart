@@ -4814,6 +4814,12 @@ class Translations$feasibility$formula$fr {
 	late final Translations$feasibility$formula$verdicts$fr verdicts = Translations$feasibility$formula$verdicts$fr.internal(_root);
 	late final Translations$feasibility$formula$limitingFactors$fr limitingFactors = Translations$feasibility$formula$limitingFactors$fr.internal(_root);
 	late final Translations$feasibility$formula$advice$fr advice = Translations$feasibility$formula$advice$fr.internal(_root);
+
+	/// fr: 'Découpage retenu : ${days} jours de marche.'
+	String retainedPlan({required Object days}) => 'Découpage retenu : ${days} jours de marche.';
+
+	/// fr: 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.'
+	String retainedPlanNone({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.';
 }
 
 // Path: feasibility.flow
@@ -4857,14 +4863,29 @@ class Translations$feasibility$flow$fr {
 	/// fr: 'Valider et voir mon résultat'
 	String get validate => 'Valider et voir mon résultat';
 
-	/// fr: 'Tu peux voir un premier résultat, mais remplis au moins une étape pour qu'il soit fiable.'
-	String get hintEmpty => 'Tu peux voir un premier résultat, mais remplis au moins une étape pour qu\'il soit fiable.';
+	/// fr: 'Résultat provisoire : le test de marche 6 minutes n'est pas fait. Ton niveau est estimé par défaut ; fais le test pour affiner le verdict.'
+	String get partialNotice => 'Résultat provisoire : le test de marche 6 minutes n\'est pas fait. Ton niveau est estimé par défaut ; fais le test pour affiner le verdict.';
 
-	/// fr: 'Tu peux voir ton résultat dès maintenant ; complète les étapes pour l'affiner.'
-	String get hintPartial => 'Tu peux voir ton résultat dès maintenant ; complète les étapes pour l\'affiner.';
+	/// fr: 'Il manque des informations pour te répondre'
+	String get missingTitle => 'Il manque des informations pour te répondre';
 
-	/// fr: 'Résultat provisoire : ton profil n'est pas complet. Renseigne ta fiche, le test ou tes randos pour un verdict fiable.'
-	String get partialNotice => 'Résultat provisoire : ton profil n\'est pas complet. Renseigne ta fiche, le test ou tes randos pour un verdict fiable.';
+	/// fr: 'Le verdict n'apparaît qu'une fois tous les critères nécessaires renseignés. Il te reste à remplir :'
+	String get missingIntro => 'Le verdict n\'apparaît qu\'une fois tous les critères nécessaires renseignés. Il te reste à remplir :';
+
+	/// fr: 'Ta fiche d'info complète : âge, taille et poids'
+	String get missingProfile => 'Ta fiche d\'info complète : âge, taille et poids';
+
+	/// fr: 'Au moins une de tes 5 dernières randos'
+	String get missingPastHikes => 'Au moins une de tes 5 dernières randos';
+
+	/// fr: 'Le test de 6 minutes reste optionnel : sans lui, ton résultat sera affiché comme provisoire.'
+	String get missingWalkTestNote => 'Le test de 6 minutes reste optionnel : sans lui, ton résultat sera affiché comme provisoire.';
+
+	/// fr: 'Complète les critères ci-dessus : c'est là que se décide ton verdict.'
+	String get hintBlocked => 'Complète les critères ci-dessus : c\'est là que se décide ton verdict.';
+
+	/// fr: 'Tout y est : tu peux voir ton résultat.'
+	String get hintReady => 'Tout y est : tu peux voir ton résultat.';
 }
 
 // Path: tips.themes
@@ -7930,6 +7951,8 @@ extension on Translations {
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Découpe l\'étape ${stage} en deux : elle dépasse nettement ton plafond.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après l\'étape ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Découpage retenu : ${days} jours de marche.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.',
 			'feasibility.flow.title' => 'Es-tu prêt pour ce trek ?',
 			'feasibility.flow.intro' => 'Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} étapes remplies',
@@ -7941,9 +7964,14 @@ extension on Translations {
 			'feasibility.flow.stepPastHikesSub' => 'Ce que tu as déjà tenu : rythme, distance, dénivelé.',
 			'feasibility.flow.optionalTag' => '(optionnel)',
 			'feasibility.flow.validate' => 'Valider et voir mon résultat',
-			'feasibility.flow.hintEmpty' => 'Tu peux voir un premier résultat, mais remplis au moins une étape pour qu\'il soit fiable.',
-			'feasibility.flow.hintPartial' => 'Tu peux voir ton résultat dès maintenant ; complète les étapes pour l\'affiner.',
-			'feasibility.flow.partialNotice' => 'Résultat provisoire : ton profil n\'est pas complet. Renseigne ta fiche, le test ou tes randos pour un verdict fiable.',
+			'feasibility.flow.partialNotice' => 'Résultat provisoire : le test de marche 6 minutes n\'est pas fait. Ton niveau est estimé par défaut ; fais le test pour affiner le verdict.',
+			'feasibility.flow.missingTitle' => 'Il manque des informations pour te répondre',
+			'feasibility.flow.missingIntro' => 'Le verdict n\'apparaît qu\'une fois tous les critères nécessaires renseignés. Il te reste à remplir :',
+			'feasibility.flow.missingProfile' => 'Ta fiche d\'info complète : âge, taille et poids',
+			'feasibility.flow.missingPastHikes' => 'Au moins une de tes 5 dernières randos',
+			'feasibility.flow.missingWalkTestNote' => 'Le test de 6 minutes reste optionnel : sans lui, ton résultat sera affiché comme provisoire.',
+			'feasibility.flow.hintBlocked' => 'Complète les critères ci-dessus : c\'est là que se décide ton verdict.',
+			'feasibility.flow.hintReady' => 'Tout y est : tu peux voir ton résultat.',
 			'tips.carouselTitle' => 'Conseils randonnée',
 			'tips.allCategories' => 'Toutes',
 			'tips.swipeHint' => 'Glissez pour voir plus',
@@ -8189,6 +8217,8 @@ extension on Translations {
 			'waypoints.contribution.conditionField' => 'État (optionnel)',
 			'waypoints.contribution.conditionHelper' => 'ex : eau à sec, eau coule bien, passage glissant',
 			'waypoints.contribution.latencyBanner' => 'Sera publié à la prochaine synchronisation réseau.',
+			_ => null,
+		} ?? switch (path) {
 			'waypoints.contribution.submit' => 'Enregistrer',
 			'waypoints.contribution.savedTitle' => 'Contribution enregistrée',
 			'waypoints.contribution.savedPendingSync' => 'Elle sera publiée dès le retour du réseau.',
@@ -8196,8 +8226,6 @@ extension on Translations {
 			'waypoints.contribution.close' => 'Fermer',
 			'waypoints.contribution.emptyTitle' => 'Indiquez un titre pour le point.',
 			'waypoints.contribution.emptyComment' => 'Saisissez votre observation.',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.contribution.noLocation' => 'Position GPS indisponible. Réessayez sous le ciel ouvert.',
 			'waypoints.contribution.error' => 'Enregistrement impossible pour le moment.',
 			'packs.title' => 'Packs sentier',
@@ -8703,6 +8731,8 @@ extension on Translations {
 			'myTreks.badge.prepared' => 'Préparé',
 			'myTreks.badge.inProgress' => 'En cours',
 			'myTreks.badge.completed' => 'Terminé',
+			_ => null,
+		} ?? switch (path) {
 			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % du sentier',
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Ouvrir le trek ${nom}',
@@ -8710,8 +8740,6 @@ extension on Translations {
 			'trekState.abandonDialog.title' => 'Un trek est déjà en cours',
 			'trekState.abandonDialog.message' => 'Vous avez une randonnée en cours. Terminez-la ou abandonnez-la avant d\'en démarrer une autre.',
 			'trekState.abandonDialog.finish' => 'Terminer',
-			_ => null,
-		} ?? switch (path) {
 			'trekState.abandonDialog.abandon' => 'Abandonner',
 			'trekState.abandonDialog.cancel' => 'Annuler',
 			'trekState.resumeOrphanDialog.title' => 'Reprendre votre randonnée ?',

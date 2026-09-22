@@ -56,6 +56,15 @@ void main() {
       ProviderScope(
         overrides: [
           feasibilityAssessmentProvider.overrideWith((ref) async => evaluation),
+          // Correctif N2 / D1 : le verdict n'est atteint qu'avec les criteres
+          // au complet. Ce test porte sur la MENTION hors-perimetre, pas sur
+          // la regle de declenchement (testee dans
+          // faisabilite_correction_n2_test.dart) : on se place donc au complet.
+          feasibilityCriteriaProvider.overrideWith((ref) async =>
+              const FeasibilityCriteria(
+                  profileComplete: true,
+                  hasPastHike: true,
+                  hasWalkTest: true)),
           hasObjectiveProfileProvider.overrideWith((ref) async => true),
         ],
         child: MaterialApp.router(

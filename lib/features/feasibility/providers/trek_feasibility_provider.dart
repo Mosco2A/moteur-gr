@@ -46,14 +46,83 @@ final objectiveProfileProvider =
   );
 });
 
-/// Vrai si le randonneur a saisi assez de donnees objectives pour un verdict
-/// fiable (au moins une rando passee OU le test 6 min fait). Sinon l'UI
-/// propose de completer le profil (et le questionnaire reste en dépannage).
-final hasObjectiveProfileProvider = FutureProvider<bool>((ref) async {
+// ===========================================================================
+// LES CRITERES QUI CONDITIONNENT LE VERDICT (correctif N2 / D1, #100293).
+//
+// CE QUI N'ALLAIT PAS. L'ecran rendait un verdict des que l'UNE des trois
+// saisies existait — la morphologie suffisait. Or la morphologie n'entre PAS
+// dans le niveau : `deriveLevel` part du D+/jour et des km/jour DEJA REALISES
+// (les randos passees), corrige par la forme (test 6 min) puis par l'age. Sans
+// rando saisie, ces deux maxima valent zero et le niveau retombe
+// mecaniquement sur « debutant », quel que soit le randonneur : c'etait un
+// verdict rendu sur du vide, et Chris l'a vu en deux minutes.
+//
+// CE QU'ON REPRODUIT. GR20 ne propose rien tant que le questionnaire n'est pas
+// complet (`feasibility_questionnaire_screen.dart` : `_submitQuestionnaire`
+// n'ouvre le resultat que `if (answers.isComplete)`, et la preview live n'est
+// affichee que dans ce meme cas). On fait pareil, en le DISANT : tant qu'un
+// critere obligatoire manque, aucun verdict, et l'ecran nomme ce qui manque.
+// ===========================================================================
+
+/// Etat de completude des criteres qui alimentent le verdict.
+class FeasibilityCriteria {
+  const FeasibilityCriteria({
+    required this.profileComplete,
+    required this.hasPastHike,
+    required this.hasWalkTest,
+  });
+
+  /// Fiche d'info COMPLETE : age + taille + poids (l'age corrige le niveau).
+  final bool profileComplete;
+
+  /// Au moins une des 5 dernieres randos saisie (source unique des maxima
+  /// realises, donc du niveau : critere OBLIGATOIRE).
+  final bool hasPastHike;
+
+  /// Test de marche 6 minutes realise (rang de forme 0..3).
+  ///
+  /// OPTIONNEL et assume comme tel : il exige une vraie marche GPS de six
+  /// minutes. Son absence n'empeche pas le verdict — elle le rend PROVISOIRE,
+  /// et l'ecran le dit (bandeau « profil partiel »).
+  final bool hasWalkTest;
+
+  /// Tous les criteres OBLIGATOIRES sont fournis -> le verdict peut tomber.
+  bool get isComplete => profileComplete && hasPastHike;
+
+  /// Verdict fonde sur un profil entier (test 6 min inclus).
+  bool get isFullyInformed => isComplete && hasWalkTest;
+
+  /// Nombre d'etapes du parcours guide remplies (barre de progression, /3).
+  int get doneCount =>
+      (profileComplete ? 1 : 0) + (hasWalkTest ? 1 : 0) + (hasPastHike ? 1 : 0);
+}
+
+/// Completude des criteres du verdict (fiche, randos, test 6 min).
+final feasibilityCriteriaProvider =
+    FutureProvider<FeasibilityCriteria>((ref) async {
+  final profile = await ref.watch(hikerProfileProvider.future);
   final pastHikes = await ref.watch(pastHikesProvider.future);
   final walkTest = await ref.watch(walkTestResultProvider.future);
-  final profile = await ref.watch(hikerProfileProvider.future);
-  return pastHikes.isNotEmpty || walkTest != null || !profile.isEmpty;
+  return FeasibilityCriteria(
+    profileComplete: profile.isComplete,
+    hasPastHike: pastHikes.isNotEmpty,
+    hasWalkTest: walkTest != null,
+  );
+});
+
+/// Vrai si le verdict s'appuie sur un profil ENTIER (criteres obligatoires
+/// remplis ET test 6 min fait).
+///
+/// Avant le correctif N2, ce provider repondait « oui » des qu'UNE saisie
+/// existait (`randos OU test OU fiche`) : c'est ce OU qui laissait la seule
+/// morphologie declencher le verdict. Il ne sert plus de porte d'entree — la
+/// porte, c'est [feasibilityCriteriaProvider] — mais de drapeau d'honnetete :
+/// il pilote le bandeau « resultat provisoire » (critere #10 de la fiche
+/// `data/boites/ia/faisabilite.md` : un profil incomplet rend quand meme un
+/// verdict, mais l'ecran le signale).
+final hasObjectiveProfileProvider = FutureProvider<bool>((ref) async {
+  final criteria = await ref.watch(feasibilityCriteriaProvider.future);
+  return criteria.isFullyInformed;
 });
 
 // ===========================================================================

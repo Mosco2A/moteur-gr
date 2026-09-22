@@ -15,20 +15,28 @@ import '../providers/trek_feasibility_provider.dart';
 import '../providers/walk_test_provider.dart';
 
 /// Ecran de faisabilite profil x trek — FORMULE V1 FEU TRICOLORE (LOT 3a,
-/// decision Chris #100068) ENVELOPPEE d'un FLUX GUIDE (LOT 4, retours R2a-d).
+/// decision Chris #100068) ENVELOPPEE d'un PARCOURS GUIDE (LOT 4, retours
+/// R2a-d), dont la regle de declenchement a ete corrigee par le correctif N2
+/// (D1, mandat #100293).
 ///
 /// Parcours d'un VRAI 1er utilisateur (parite GR20 `FeasibilityQuestionnaire`) :
-///   1. au 1er acces (profil objectif absent -> `hasObjectiveProfileProvider`
-///      faux), on NE calcule PAS un verdict sur du vide : on presente un
-///      QUESTIONNAIRE GUIDE etape par etape (fiche morpho -> test 6 min ->
-///      5 randos) avec barre de progression et un bouton « Valider / Voir mon
-///      resultat » qui mene TOUJOURS au verdict (R2a/R2c/R2d) ;
+///   1. tant que les criteres OBLIGATOIRES ne sont pas tous fournis
+///      ([feasibilityCriteriaProvider]), l'ecran ne rend AUCUN verdict : il
+///      presente le parcours guide (fiche morpho -> test 6 min -> 5 randos) et
+///      NOMME ce qui manque encore. C'est le comportement GR20, ou
+///      `_submitQuestionnaire` n'ouvre le resultat que `if (answers.isComplete)` ;
 ///   2. le TEST 6 min alimente le calcul : au retour d'une etape, on invalide
 ///      l'evaluation pour la recalculer (R2b) ;
-///   3. la sortie reste le FEU TRICOLORE #100068 (verdict global + etapes +
-///      conseils), inchange. On garde « Recommencer » (re-repondre au flux).
+///   3. au complet : le FEU TRICOLORE #100068 (verdict global + etapes +
+///      conseils), inchange. « Recommencer » ramene au parcours guide.
 ///
-/// La formule (#100068) n'est PAS modifiee ici : on la CABLE au flux.
+/// AVANT LE CORRECTIF N2, l'ecran rendait un verdict des qu'une seule saisie
+/// existait — la morphologie suffisait, alors qu'elle n'entre pas dans le
+/// niveau. Le retour R2d (« Valider mene TOUJOURS a un resultat ») est
+/// explicitement REMPLACE par la regle de Chris du 22/09 : pas de verdict tant
+/// que les criteres necessaires ne sont pas tous la.
+///
+/// La formule (#100068) n'est PAS modifiee ici : on la CABLE au parcours.
 /// Tous les textes passent par Slang (accents FR garantis).
 class TrekFeasibilityScreen extends ConsumerStatefulWidget {
   const TrekFeasibilityScreen({super.key});
@@ -40,19 +48,22 @@ class TrekFeasibilityScreen extends ConsumerStatefulWidget {
 
 class _TrekFeasibilityScreenState
     extends ConsumerState<TrekFeasibilityScreen> {
-  /// L'utilisateur a appuye sur « Valider / Voir mon resultat » : on force
-  /// l'affichage du verdict meme si le profil objectif reste partiel (le bouton
-  /// mene TOUJOURS a un resultat — R2c/R2d). « Recommencer » repasse a false.
-  bool _showResult = false;
+  /// « Recommencer » : l'utilisateur veut re-repondre au parcours guide alors
+  /// que ses criteres sont deja complets. Le bouton « Valider » du parcours le
+  /// ramene au verdict. Ce drapeau ne permet JAMAIS de contourner la regle : un
+  /// profil incomplet reste bloque sur le parcours, quoi qu'il vaille.
+  bool _replayFlow = false;
 
-  /// Recalcule l'evaluation apres qu'une etape du flux a ete remplie (fiche,
-  /// test 6 min, randos) — garantit que le TEST change le verdict (R2b).
+  /// Recalcule l'evaluation apres qu'une etape du parcours a ete remplie
+  /// (fiche, test 6 min, randos) — garantit que le TEST change le verdict (R2b)
+  /// et que les criteres remplis sont vus immediatement (D1).
   void _refreshAssessment() {
     ref.invalidate(walkTestResultProvider);
     ref.invalidate(pastHikesProvider);
     ref.invalidate(hikerProfileProvider);
     ref.invalidate(objectiveProfileProvider);
     ref.invalidate(hikerLevelProvider);
+    ref.invalidate(feasibilityCriteriaProvider);
     ref.invalidate(hasObjectiveProfileProvider);
     ref.invalidate(feasibilityAssessmentProvider);
   }
@@ -79,23 +90,30 @@ class _TrekFeasibilityScreenState
             // Pas d'etapes -> questionnaire de dépannage.
             return _FallbackToQuestionnaire(reason: f.sourceFallback);
           }
-          final hasProfileAsync = ref.watch(hasObjectiveProfileProvider);
-          final hasProfile = hasProfileAsync.maybeWhen(
-            data: (has) => has,
-            orElse: () => false,
+          final criteriaAsync = ref.watch(feasibilityCriteriaProvider);
+          final criteria = criteriaAsync.maybeWhen(
+            data: (c) => c,
+            orElse: () => const FeasibilityCriteria(
+              profileComplete: false,
+              hasPastHike: false,
+              hasWalkTest: false,
+            ),
           );
-          // FLUX GUIDE au 1er acces (profil objectif vide) tant que
-          // l'utilisateur n'a pas demande a voir son resultat (R2a/R2c/R2d).
-          if (!hasProfile && !_showResult) {
+          // D1 — AUCUN VERDICT tant que les criteres obligatoires manquent.
+          if (!criteria.isComplete || _replayFlow) {
             return _FeasibilityGuidedFlow(
+              criteria: criteria,
               onOpenStep: _openStep,
-              onValidate: () => setState(() => _showResult = true),
+              // Le bouton n'est actif QUE si les criteres sont complets.
+              onValidate: criteria.isComplete
+                  ? () => setState(() => _replayFlow = false)
+                  : null,
             );
           }
           // Sinon : le verdict tricolore #100068 (avec « Recommencer »).
           return _VerdictView(
             assessment: assessment,
-            onRestart: () => setState(() => _showResult = false),
+            onRestart: () => setState(() => _replayFlow = true),
           );
         },
       ),
@@ -103,21 +121,30 @@ class _TrekFeasibilityScreenState
   }
 }
 
-/// FLUX GUIDE d'entree (parite GR20) : fiche -> test 6 min -> randos, barre de
-/// progression, puis bouton « Valider / Voir mon resultat » (mene TOUJOURS au
-/// verdict). Chaque etape ouvre l'ecran de saisie existant et se coche au
-/// retour (R2a/R2c/R2d). Le test 6 min alimente le calcul (R2b).
+/// PARCOURS GUIDE d'entree (parite GR20) : fiche -> test 6 min -> randos,
+/// barre de progression, puis bouton « Valider / Voir mon resultat ».
+///
+/// D1 (#100293) : ce bouton ne mene au verdict QUE si les criteres
+/// obligatoires sont tous fournis. Sinon il est DESACTIVE et un encart nomme
+/// ce qui manque — l'ecran ne rend aucun verdict et ne laisse pas croire
+/// qu'il pourrait en rendre un. Chaque etape ouvre l'ecran de saisie existant
+/// et se coche au retour. Le test 6 min alimente le calcul (R2b).
 class _FeasibilityGuidedFlow extends ConsumerWidget {
   const _FeasibilityGuidedFlow({
+    required this.criteria,
     required this.onOpenStep,
     required this.onValidate,
   });
 
+  /// Completude des criteres qui conditionnent le verdict.
+  final FeasibilityCriteria criteria;
+
   /// Ouvre un ecran de saisie (route) puis rafraichit l'evaluation au retour.
   final Future<void> Function(String route) onOpenStep;
 
-  /// L'utilisateur valide et demande a voir son resultat.
-  final VoidCallback onValidate;
+  /// Voir le resultat — `null` tant que les criteres ne sont pas complets
+  /// (bouton desactive : aucune porte vers un verdict pose sur du vide).
+  final VoidCallback? onValidate;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -125,22 +152,9 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
     final f = t.feasibility;
     final trailId = ref.watch(trailConfigProvider).id;
 
-    // Etat de completion de chaque etape (pour cocher + la barre de progression).
-    final profileAsync = ref.watch(hikerProfileProvider);
-    final walkTestAsync = ref.watch(walkTestResultProvider);
-    final pastHikesAsync = ref.watch(pastHikesProvider);
-
-    final profileDone =
-        profileAsync.maybeWhen(data: (p) => !p.isEmpty, orElse: () => false);
-    final walkTestDone = walkTestAsync.maybeWhen(
-        data: (w) => w != null, orElse: () => false);
-    final hikesDone = pastHikesAsync.maybeWhen(
-        data: (h) => h.isNotEmpty, orElse: () => false);
-
-    // Progression : part des 3 etapes remplies (le test reste optionnel mais
+    // Progression : les 3 etapes du parcours (le test reste optionnel mais
     // compte dans la barre pour encourager a le faire).
-    final doneCount =
-        (profileDone ? 1 : 0) + (walkTestDone ? 1 : 0) + (hikesDone ? 1 : 0);
+    final doneCount = criteria.doneCount;
     final progress = doneCount / 3.0;
 
     return SingleChildScrollView(
@@ -168,11 +182,18 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // Intro du flux guide.
+          // Intro du parcours guide.
           Text(f.flow.title, style: theme.textTheme.titleLarge),
           const SizedBox(height: AppTheme.spacingSm),
           Text(f.flow.intro, style: theme.textTheme.bodyMedium),
           const SizedBox(height: AppTheme.spacingLg),
+
+          // CE QUI MANQUE ENCORE (D1) : tant qu'un critere obligatoire n'est
+          // pas la, on ne rend pas de verdict — on dit lequel manque.
+          if (!criteria.isComplete) ...[
+            _MissingCriteriaNotice(criteria: criteria),
+            const SizedBox(height: AppTheme.spacingLg),
+          ],
 
           // Etape 1 : fiche morpho (age/taille/poids).
           _FlowStepCard(
@@ -180,7 +201,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
             icon: Icons.badge_outlined,
             title: f.flow.stepProfile,
             subtitle: f.flow.stepProfileSub,
-            done: profileDone,
+            done: criteria.profileComplete,
             onTap: () => onOpenStep('/trail/$trailId/hiker-profile'),
           ),
           // Etape 2 : test 6 minutes (optionnel mais alimente le calcul).
@@ -189,7 +210,7 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
             icon: Icons.directions_walk,
             title: f.flow.stepWalkTest,
             subtitle: f.flow.stepWalkTestSub,
-            done: walkTestDone,
+            done: criteria.hasWalkTest,
             optional: true,
             onTap: () => onOpenStep('/trail/$trailId/walk-test'),
           ),
@@ -199,14 +220,12 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
             icon: Icons.history,
             title: f.flow.stepPastHikes,
             subtitle: f.flow.stepPastHikesSub,
-            done: hikesDone,
+            done: criteria.hasPastHike,
             onTap: () => onOpenStep('/trail/$trailId/past-hikes'),
           ),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // Bouton « Valider / Voir mon resultat » : mene TOUJOURS au verdict
-          // (R2c/R2d), meme si le profil reste partiel (on encourage juste a
-          // completer via le sous-titre d'aide).
+          // « Valider / Voir mon resultat » — actif SEULEMENT au complet (D1).
           AppButton(
             minHeight: 52,
             icon: Icons.check_circle_outline,
@@ -215,13 +234,89 @@ class _FeasibilityGuidedFlow extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingSm),
           Text(
-            doneCount == 0 ? f.flow.hintEmpty : f.flow.hintPartial,
+            criteria.isComplete ? f.flow.hintReady : f.flow.hintBlocked,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurface.withAlpha(150),
               fontStyle: FontStyle.italic,
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Encart « il manque encore ceci » (D1, mandat #100293).
+///
+/// Remplace le verdict tant qu'un critere OBLIGATOIRE manque. GR20 se
+/// contentait de ne rien faire quand le questionnaire etait incomplet ; ici on
+/// nomme ce qui bloque, et on rappelle que le test 6 min, lui, reste optionnel
+/// — sans quoi le randonneur ne saurait pas pourquoi il n'obtient rien.
+class _MissingCriteriaNotice extends StatelessWidget {
+  const _MissingCriteriaNotice({required this.criteria});
+
+  final FeasibilityCriteria criteria;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final f = t.feasibility.flow;
+    const color = AppTheme.orangeDifficile;
+
+    final missing = <String>[
+      if (!criteria.profileComplete) f.missingProfile,
+      if (!criteria.hasPastHike) f.missingPastHikes,
+    ];
+
+    return AppCard(
+      backgroundColor: color.withAlpha(20),
+      borderColor: color.withAlpha(80),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.pending_actions, size: 20, color: color),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  f.missingTitle,
+                  style: theme.textTheme.titleSmall
+                      ?.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(f.missingIntro, style: theme.textTheme.bodySmall),
+          const SizedBox(height: AppTheme.spacingSm),
+          for (final item in missing)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(Icons.radio_button_unchecked,
+                      size: 14, color: color),
+                  const SizedBox(width: AppTheme.spacingSm),
+                  Expanded(
+                    child: Text(item, style: theme.textTheme.bodyMedium),
+                  ),
+                ],
+              ),
+            ),
+          if (!criteria.hasWalkTest) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            Text(
+              f.missingWalkTestNote,
+              style: theme.textTheme.bodySmall?.copyWith(
+                fontStyle: FontStyle.italic,
+                color: theme.colorScheme.onSurface.withAlpha(160),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -403,6 +498,11 @@ class _VerdictView extends ConsumerWidget {
             trailId: trailId,
             suggestedDays: assessment.suggestedDays,
           ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // D2 (#100293) — CE QUI A ETE RETENU, ECRIT NOIR SUR BLANC. Sans
+          // cette ligne, choisir un decoupage ne laissait aucune trace a
+          // l'ecran : le bouton etait indistinguable d'un bouton mort.
+          const _RetainedPlanLine(),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Pont « es-tu pret ? » -> « voila comment le devenir » : prepa
@@ -433,6 +533,54 @@ class _VerdictView extends ConsumerWidget {
   }
 }
 
+/// Ligne « decoupage retenu » (D2, mandat #100293).
+///
+/// Dit ce que le randonneur a RETENU : soit le nombre de jours qu'il a choisi
+/// (et qui est desormais le plan de toute sa preparation — Programme,
+/// Itineraire, Calendrier, Resume), soit, s'il n'a rien choisi, que le sentier
+/// en reste a sa duree par defaut. C'est la trace visible qui manquait : avant,
+/// appuyer sur « Generer mon programme » ne changeait rien de visible sur
+/// l'ecran d'ou l'on venait, et le choix s'evaporait a la relance.
+class _RetainedPlanLine extends ConsumerWidget {
+  const _RetainedPlanLine();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+    final retained = ref.watch(retainedDurationProvider);
+    final fallback =
+        ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
+    final retainedPlan = retained != null;
+    final color = retainedPlan
+        ? AppTheme.vertFacile
+        : theme.colorScheme.onSurface.withAlpha(160);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(
+          retainedPlan ? Icons.task_alt : Icons.radio_button_unchecked,
+          size: 18,
+          color: color,
+        ),
+        const SizedBox(width: AppTheme.spacingSm),
+        Expanded(
+          child: Text(
+            retainedPlan
+                ? f.retainedPlan(days: retained)
+                : f.retainedPlanNone(days: fallback),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: retainedPlan ? color : null,
+              fontWeight: retainedPlan ? FontWeight.w600 : null,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// Bouton « Generer mon programme » (R2f, parite GR20 « CONTINUER »).
 ///
 /// APPLIQUE la reco de la formule #100068 : fixe le nombre de jours de MARCHE
@@ -442,6 +590,11 @@ class _VerdictView extends ConsumerWidget {
 /// modifiable ([plannedDaysProvider] watch cette duree et se recompose seul, et
 /// l'Itineraire suit maintenant la meme source, R3). Un message confirme la
 /// duree appliquee. Le libelle indique la duree proposee pour etre explicite.
+///
+/// D2 (#100293) : le choix est desormais RETENU DURABLEMENT
+/// ([retainedDurationProvider] -> SharedPreferences). Avant, il ne vivait
+/// qu'en memoire : la relance de l'application le perdait, et rien a l'ecran
+/// ne disait qu'un decoupage avait ete choisi.
 class _GenerateProgramButton extends ConsumerWidget {
   const _GenerateProgramButton({
     required this.trailId,

@@ -60,6 +60,15 @@ void main() {
       ProviderScope(
         overrides: [
           feasibilityAssessmentProvider.overrideWith((ref) async => assessment),
+          // Correctif N2 / D1 : le verdict n'apparait qu'avec les criteres au
+          // complet. Ces tests portent sur le CONTENU du verdict, pas sur sa
+          // regle de declenchement (couverte par
+          // faisabilite_correction_n2_test.dart) : on part donc au complet.
+          feasibilityCriteriaProvider.overrideWith((ref) async =>
+              const FeasibilityCriteria(
+                  profileComplete: true,
+                  hasPastHike: true,
+                  hasWalkTest: true)),
           hasObjectiveProfileProvider.overrideWith((ref) async => true),
         ],
         child: MaterialApp.router(
@@ -179,6 +188,13 @@ void main() {
                 (ref) => Future.value([for (var n = 1; n <= 5; n++) st(n)])),
             feasibilityAssessmentProvider
                 .overrideWith((ref) async => assessment),
+            // Criteres au complet (correctif N2 / D1) : ce groupe teste le
+            // bouton « Generer mon programme », pas la porte d'entree.
+            feasibilityCriteriaProvider.overrideWith((ref) async =>
+                const FeasibilityCriteria(
+                    profileComplete: true,
+                    hasPastHike: true,
+                    hasWalkTest: true)),
             hasObjectiveProfileProvider.overrideWith((ref) async => true),
           ],
           child: Consumer(

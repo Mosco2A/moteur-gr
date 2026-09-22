@@ -2,20 +2,85 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
 import '../../../features/trail/providers/stages_provider.dart';
+import '../data/retained_plan_store.dart';
 import '../domain/planning_calculator.dart';
 import '../models/day_plan.dart';
 
-/// Notifier pour la duree selectionnee par l'utilisateur (en jours).
+/// Acces au stockage durable du decoupage retenu (surchargeable en test).
+final retainedPlanStoreProvider =
+    Provider<RetainedPlanStore>((ref) => const RetainedPlanStore());
+
+/// DECOUPAGE RETENU par le randonneur pour le sentier courant — `null` tant
+/// qu'il n'a rien choisi (correctif N2 / D2, mandat #100293).
 ///
-/// Initialise avec la valeur par defaut de la configuration du sentier.
-/// Mis a jour quand l'utilisateur change la duree dans le selecteur.
+/// C'est la DECISION, pas l'etat d'ecran : appliquer la reco de la faisabilite
+/// ou bouger le curseur du Programme ecrit ici, et ce qui est ecrit ici
+/// SURVIT au redemarrage (cf. [RetainedPlanStore]). Avant ce correctif, le
+/// choix ne vivait qu'en memoire : choisir « 8 jours » ne laissait aucune
+/// trace, ce qui rendait le bouton indistinguable d'un bouton mort.
+///
+/// Une valeur PAR SENTIER : changer de sentier recharge le plan de ce sentier.
+class RetainedDurationNotifier extends Notifier<int?> {
+  /// Sentier dont on porte le decoupage (re-lu a chaque bascule de sentier).
+  String _trailId = '';
+
+  @override
+  int? build() {
+    _trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+    // Hydratation depuis le stockage durable. Asynchrone par nature : on rend
+    // d'abord « aucun choix » (le sentier garde sa duree par defaut), puis on
+    // pose la valeur retenue des qu'elle arrive. Meme patron que
+    // `DownloadReminderNotifier` — `ref.mounted` protege du « Ref used after
+    // dispose » si le provider est recycle pendant l'attente.
+    _restore(_trailId);
+    return null;
+  }
+
+  Future<void> _restore(String trailId) async {
+    final days = await ref.read(retainedPlanStoreProvider).read(trailId);
+    if (!ref.mounted || days == null) return;
+    // Un changement de sentier pendant l'attente rendrait la valeur caduque.
+    if (trailId != _trailId) return;
+    state = days;
+  }
+
+  /// RETIENT [days] jours pour le sentier courant : effet immediat a l'ecran
+  /// (le Programme, l'Itineraire et le Calendrier suivent) ET ecriture durable.
+  Future<void> retain(int days) async {
+    if (days <= 0) return;
+    state = days;
+    await ref.read(retainedPlanStoreProvider).write(_trailId, days);
+  }
+
+  /// Oublie le decoupage retenu : le sentier revient a sa duree par defaut.
+  Future<void> forget() async {
+    state = null;
+    await ref.read(retainedPlanStoreProvider).clear(_trailId);
+  }
+}
+
+final retainedDurationProvider =
+    NotifierProvider<RetainedDurationNotifier, int?>(
+        RetainedDurationNotifier.new);
+
+/// Duree EFFECTIVE du programme, en jours — source unique lue par le
+/// Programme, l'Itineraire, le Calendrier et le Resume.
+///
+/// = le decoupage RETENU par le randonneur s'il en a choisi un
+/// ([retainedDurationProvider]), sinon la duree par defaut du sentier.
 class SelectedDurationNotifier extends Notifier<int> {
   @override
   int build() {
-    return ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
+    final fallback =
+        ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
+    return ref.watch(retainedDurationProvider) ?? fallback;
   }
 
-  void set(int duration) => state = duration;
+  /// Change la duree ET la retient durablement (D2) : toute duree choisie par
+  /// le randonneur est une decision, d'ou qu'elle vienne — reco de la
+  /// faisabilite ou curseur du Programme.
+  void set(int duration) =>
+      ref.read(retainedDurationProvider.notifier).retain(duration);
 }
 
 final selectedDurationProvider =

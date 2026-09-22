@@ -872,7 +872,9 @@
         "split": "Découpe l'étape ${stage} en deux : elle dépasse nettement ton plafond.",
         "rest": "Prévois un jour de repos après l'étape ${stages}.",
         "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique)."
-      }
+      },
+      "retainedPlan": "Découpage retenu : ${days} jours de marche.",
+      "retainedPlanNone": "Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut."
     },
     "flow": {
       "title": "Es-tu prêt pour ce trek ?",
@@ -886,9 +888,14 @@
       "stepPastHikesSub": "Ce que tu as déjà tenu : rythme, distance, dénivelé.",
       "optionalTag": "(optionnel)",
       "validate": "Valider et voir mon résultat",
-      "hintEmpty": "Tu peux voir un premier résultat, mais remplis au moins une étape pour qu'il soit fiable.",
-      "hintPartial": "Tu peux voir ton résultat dès maintenant ; complète les étapes pour l'affiner.",
-      "partialNotice": "Résultat provisoire : ton profil n'est pas complet. Renseigne ta fiche, le test ou tes randos pour un verdict fiable."
+      "partialNotice": "Résultat provisoire : le test de marche 6 minutes n'est pas fait. Ton niveau est estimé par défaut ; fais le test pour affiner le verdict.",
+      "missingTitle": "Il manque des informations pour te répondre",
+      "missingIntro": "Le verdict n'apparaît qu'une fois tous les critères nécessaires renseignés. Il te reste à remplir :",
+      "missingProfile": "Ta fiche d'info complète : âge, taille et poids",
+      "missingPastHikes": "Au moins une de tes 5 dernières randos",
+      "missingWalkTestNote": "Le test de 6 minutes reste optionnel : sans lui, ton résultat sera affiché comme provisoire.",
+      "hintBlocked": "Complète les critères ci-dessus : c'est là que se décide ton verdict.",
+      "hintReady": "Tout y est : tu peux voir ton résultat."
     }
   },
   "tips": {

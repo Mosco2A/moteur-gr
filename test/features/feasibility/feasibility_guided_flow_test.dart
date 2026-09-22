@@ -88,25 +88,37 @@ void main() {
     expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
   });
 
-  testWidgets('Valider -> mene TOUJOURS a un resultat tricolore (R2d)',
+  // R2d EST REMPLACE par la regle de Chris du 22/09 (mandat #100293, D1).
+  //
+  // R2d disait « Valider mene TOUJOURS a un resultat », profil vide compris.
+  // Chris a constate a l'ecran ou cela menait : saisir age / taille / poids
+  // suffisait a obtenir un feu tricolore, alors que le niveau se deduit des
+  // randos deja faites — un verdict rendu sur du vide. La regle en vigueur est
+  // celle de GR20 : aucun verdict tant que les criteres necessaires ne sont
+  // pas tous fournis. Ce test verifie donc l'INVERSE de l'ancien, exprès.
+  testWidgets('profil VIDE -> Valider est inerte, aucun verdict (D1)',
       (tester) async {
     await pumpEmptyProfile(tester);
 
-    // Appuyer sur « Valider / Voir mon resultat ».
-    await tester.ensureVisible(find.text(t.feasibility.flow.validate));
-    await tester.tap(find.text(t.feasibility.flow.validate));
+    // Le bouton existe mais ne mene nulle part tant que rien n'est rempli.
+    final bouton =
+        find.widgetWithText(ElevatedButton, t.feasibility.flow.validate);
+    expect(bouton, findsOneWidget);
+    expect(tester.widget<ElevatedButton>(bouton).onPressed, isNull);
+
+    await tester.ensureVisible(bouton);
+    await tester.tap(bouton, warnIfMissed: false);
     for (var i = 0; i < 6; i++) {
       await tester.pump(const Duration(milliseconds: 20));
     }
 
-    // Le verdict tricolore s'affiche : titre « Etape par etape » + un verdict.
-    expect(find.text(t.feasibility.formula.stagesTitle), findsOneWidget);
-    expect(find.text(t.feasibility.formula.verdicts.red), findsWidgets);
-    // Bandeau « profil partiel » present (le profil reste vide -> R2d : on
-    // montre le resultat quand meme, avec invitation a completer).
-    expect(find.text(t.feasibility.flow.partialNotice), findsOneWidget);
-    // « Recommencer » disponible pour re-repondre au flux.
-    expect(find.text(t.feasibility.restart), findsOneWidget);
+    // AUCUN verdict : pas de tableau etape par etape, pas de feu.
+    expect(find.text(t.feasibility.formula.stagesTitle), findsNothing);
+    expect(find.text(t.feasibility.formula.verdicts.red), findsNothing);
+    // A la place, l'ecran NOMME ce qui manque.
+    expect(find.text(t.feasibility.flow.missingTitle), findsOneWidget);
+    expect(find.text(t.feasibility.flow.missingProfile), findsOneWidget);
+    expect(find.text(t.feasibility.flow.missingPastHikes), findsOneWidget);
   });
 }
 
