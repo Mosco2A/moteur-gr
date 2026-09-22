@@ -478,7 +478,14 @@
       "gaugeDanger": "Verletzungsgefahr!",
       "percentOfWeight": "{pct}% des Körpergewichts",
       "gaugeObjective": "Max. Ziel: < 15% in Hütten, < 20% autark",
-      "itemsChecked": "{checked} / {total} Artikel angehakt"
+      "itemsChecked": "{checked} / {total} Artikel angehakt",
+      "percentOfReference": "{pct}% des Referenzgewichts",
+      "gaugeObjectiveReference": "Maximalziel: < 15% in Hütten, < 20% autark — vom Referenzgewicht",
+      "referenceExplainer": "Referenzgewicht für deine Größe: {kg} kg. Die Rucksack-Obergrenze wird darauf berechnet, nicht auf deinem tatsächlichen Gewicht.",
+      "referenceFallbackHeight": "Die Obergrenze deines Rucksacks wird auf deinem tatsächlichen Gewicht berechnet: für deine Größe gibt es kein veröffentlichtes Referenzgewicht, auf das man sich stützen könnte. Wir sagen es dir lieber, als dir eine falsche Zahl zu zeigen.",
+      "descentAlertTitle": "Abstiege: was du trägst",
+      "descentAlertBody": "Du steigst mit {kg} kg über dem Referenzgewicht ab, Rucksack inbegriffen. Im Abstieg nimmt jeder Schritt ein Mehrfaches dieses Gewichts auf: das ist Mechanik, keine Prognose. Die Etappen mit dem größten Abstieg stehen unten.",
+      "descentStage": "{stage}: {loss} m Abstieg"
     },
     "ui": {
       "title": "Ausrüstung & Rucksack",
@@ -541,7 +548,7 @@
       "shareGroup": "MIT DER GRUPPE TEILEN",
       "exportList": "LISTE EXPORTIEREN",
       "bagValidTitle": "Rucksack bestätigt",
-      "bagValidBody": "Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Körpergewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?",
+      "bagValidBody": "Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Referenzgewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?",
       "checkAgain": "Nochmal prüfen",
       "yesBagOk": "Ja, Rucksack OK",
       "bagValidatedSnack": "Rucksack bestätigt!",
@@ -834,10 +841,10 @@
     "formula": {
       "title": "Machbarkeit für diese Tour",
       "intro": "Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.",
-      "outOfScopeNotice": "Diese Bewertung schaut nur auf zwei Dinge: dein Profil und den Aufwand jeder Etappe. Das Gewicht deines Rucksacks und die Jahreszeit fließen nicht in die Berechnung ein — ein schwerer Rucksack, Schnee oder Hitze machen den Tag härter als hier angezeigt. Rechne das selbst dazu.",
-      "ceilingLabel": "Empfohlene Obergrenze: ${value} Aufwand-km/Tag (${level})",
+      "outOfScopeNotice": "Das Gewicht deines Rucksacks fließt nicht in diese Bewertung ein, und das ist gemessen: von 0 bis 45 kg Last bewegt sich das Urteil um keine Stufe. Diese Bewertung vergleicht, was du bereits durchgehalten hast, mit dem Aufwand jeder Etappe; die Last, die du trägst, wird separat behandelt, in deinem Rucksack.",
+      "ceilingLabel": "Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})",
       "stagesTitle": "Etappe für Etappe",
-      "stageEffort": "${distance} km + ${elevation} m Aufstieg = ${effort} Aufwand-km",
+      "stageEffort": "${distance} km + ${elevation} m Aufstieg = ${effort} Energie-km",
       "globalTitle": "Gesamturteil",
       "hardestStage": "Anspruchsvollste Etappe: ${stage}",
       "daysOver": "${count} Tag(e) über deiner Obergrenze",
@@ -863,7 +870,9 @@
         "distance": "die Etappenlänge",
         "elevation": "der Höhenunterschied",
         "chaining": "die Abfolge der Tage",
-        "none": "keiner"
+        "none": "keiner",
+        "altitude": "die Höhe",
+        "heat": "die Hitze der Jahreszeit"
       },
       "advice": {
         "balancedOk": "Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.",
@@ -871,10 +880,48 @@
         "optimalDays": "Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.",
         "split": "Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.",
         "rest": "Plane einen Ruhetag nach Etappe ${stages}.",
-        "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung)."
+        "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).",
+        "restDominant": "Es ist keine Etappe, die geteilt werden muss, es sind Ruhetage, die eingelegt werden müssen: deine Tage gleichen sich zu sehr."
       },
       "retainedPlan": "Gewählte Aufteilung: ${days} Wandertage.",
-      "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen."
+      "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen.",
+      "energyUnitNotice": "1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.",
+      "circuitTitle": "Urteil zur Runde",
+      "circuitScore": "Wert der Runde: ${value}",
+      "circuitDominant": "Was zubeißt: ${constraint}.",
+      "circuitHarsherIntro": "Die Runde ist härter als jede einzelne ihrer Etappen, und das ist kein Fehler: einzeln genommen übersteigt dich kein Tag; ihre Verkettung tut es.",
+      "circuitHarsherByRest": "Hier fehlt die Ruhe: deine Tage gleichen sich zu sehr, als dass sich der Körper dazwischen erholen könnte.",
+      "circuitHarsherByAverage": "Hier ist es die mittlere Last: Tag für Tag übersteigt die Summe, was du durchhalten kannst.",
+      "restWindowWhole": "Ruhe über den ganzen Trek gemessen (${days} Tage).",
+      "restWindowSlice": "Ruhe über die schlechteste Woche gemessen: Tage ${start} bis ${end}.",
+      "restNotApplicable": "Auf einem Weg von einem einzigen Tag lässt sich die Ruhe nicht berechnen: es gibt keine Verkettung zu messen. Die Bedingung wird als nicht anwendbar erklärt, sie wird nicht durch eine Zahl ersetzt.",
+      "restExtrapolation": "Die Ruhe-Schwelle stammt aus einer Messung an Sportlern und wurde auf das Weitwandern übertragen. Es ist eine Übertragung, und sie wird als solche genannt.",
+      "restTwoDays": "Bei gleich großen Etappen reicht ein Ruhetag pro Woche nicht: es braucht zwei.",
+      "habitGap": "Abstand zu deiner Gewohnheit: ${value} (Richtwert 0,8 bis 1,3).",
+      "habitGapNotDecisive": "Dieser Abstand wird angezeigt, ist aber nie entscheidend: keine Studie belegt, dass er irgendetwas verursacht.",
+      "conditionsTitle": "Was in dieses Urteil eingeflossen ist",
+      "floorActive": "Dein bester bereits durchgehaltener Tag (${value} Energie-km) liegt über der Obergrenze deiner Stufe: er dient als Basis. Dir wird nie gesagt, du könntest nicht, was du schon getan hast.",
+      "altitudeApplied": "Höhe: ${value} m am höchsten Punkt, deine Tageskapazität sinkt um ${pct} %.",
+      "altitudeBelowThreshold": "Höhe: ${value} m am höchsten Punkt, unter den 1 500 m, ab denen sie zählt. Sie ändert hier nichts.",
+      "altitudeMissing": "Höhe: die Spur dieses Weges trägt keine. Sie ändert hier nichts mangels Daten — und nicht, weil sie ohne Wirkung wäre.",
+      "heatApplied": "Aufbruch im Sommer: die aerobe Kapazität sinkt um 7 %, das ist gemessen.",
+      "seasonNoSource": "Aufbruch im Frühling oder Herbst: keine veröffentlichte Messung erlaubt es, eine Wirkung zu beziffern. Die Jahreszeit ändert hier nichts, mangels Quelle.",
+      "seasonMissing": "Kein Aufbruchsdatum gesetzt: die Jahreszeit ändert hier nichts, mangels Daten.",
+      "massNotCounted": "Weder dein Gewicht noch das deines Rucksacks fließt in dieses Urteil ein, und das ist gewollt: es misst, was du nachweislich durchhältst. Mit 65 oder mit 95 kg erhält derselbe Mann dasselbe Urteil.",
+      "winterInvalid": "Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.",
+      "circuitConstraints": {
+        "worstStage": "die härteste Etappe",
+        "averageLoad": "die mittlere Tageslast",
+        "rest": "die Ruhe",
+        "habitGap": "der Abstand zu deiner Gewohnheit"
+      },
+      "restDaysCounted": "In diesem Urteil gezählte Ruhetage: ${count}.",
+      "restDaysNone": "In deinem Programm ist kein Ruhetag gesetzt. Das Urteil sieht es, und es wiegt hier am schwersten: setze Ruhetage in dein Programm, und diese Zahl bewegt sich.",
+      "averageLoad": "Mittlere Tageslast: ${value} (die härteste Etappe liegt bei ${worst}).",
+      "averageLoadInfo": "Diese beiden Zahlen liest man zusammen: weit auseinander hat der Trek einen harten Tag; nahe beieinander ist er jeden Tag hart. Das wird angezeigt, es entscheidet nicht.",
+      "durationStatement": "Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Tage.",
+      "durationStatementInfo": "Das wird angezeigt, es entscheidet nicht: keine veröffentlichte Messung sagt, ab wie vielen zusammenhängenden Tagen ein Wanderer einbricht. Beurteile es selbst.",
+      "stageDominantFactor": "Was auf dieser Etappe am schwersten wiegt: ${factor}"
     },
     "flow": {
       "title": "Bist du bereit für diese Tour?",
@@ -1999,7 +2046,9 @@
       "moderate": "Mittel",
       "good": "Gut",
       "excellent": "Ausgezeichnet"
-    }
+    },
+    "absoluteScaleNotice": "Dein Niveau wird auf der reinen Distanzskala gelesen: der Vergleich mit einem Referenzwert wurde für deinen Körperbau nicht erstellt, also wenden wir ihn nicht an. Dein Test selbst bleibt voll gültig.",
+    "ageClampNotice": "Über 80 Jahre endet der Referenzwert des Tests: er wird wie mit 80 berechnet, und wir sagen es dir."
   },
   "pastHikes": {
     "title": "Ihre letzten 5 Touren",

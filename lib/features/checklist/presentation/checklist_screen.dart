@@ -12,6 +12,7 @@ import '../data/checklist_template.dart';
 import '../providers/checklist_provider.dart';
 import '../widgets/checklist_bottom_actions.dart';
 import '../widgets/checklist_category_section.dart';
+import '../widgets/checklist_descent_alert.dart';
 import '../widgets/checklist_preparation_section.dart';
 import '../widgets/checklist_recommendation_banner.dart';
 import '../widgets/checklist_seasonal_section.dart';
@@ -50,12 +51,23 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
     final profileWeight =
         ref.watch(hikerProfileProvider).value?.weightKg ??
             HikerProfile.empty.weightKg;
-    if (profileWeight > 0) {
+    // La TAILLE suit la meme porte depuis le 22/09 : le plafond du sac n'est
+    // plus un pourcentage du poids reel mais de la base de charge
+    // `min(poids ; 25 × taille²)` (#4-b). Sans taille, la base retombe sur le
+    // poids reel et le bandeau le DIT (#5-h).
+    final profileHeight =
+        ref.watch(hikerProfileProvider).value?.heightCm ??
+            HikerProfile.empty.heightCm;
+    if (profileWeight > 0 || profileHeight > 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        ref
-            .read(checklistProvider.notifier)
-            .seedBodyWeightFromProfile(profileWeight);
+        final notifier = ref.read(checklistProvider.notifier);
+        if (profileWeight > 0) {
+          notifier.seedBodyWeightFromProfile(profileWeight);
+        }
+        if (profileHeight > 0) {
+          notifier.seedBodyHeightFromProfile(profileHeight);
+        }
       });
     }
 
@@ -137,7 +149,10 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               totalCount: state.totalCount,
             ),
             // --- Bandeau poids recommande ---
-            ChecklistRecommendationBanner(bodyWeightKg: state.bodyWeightKg),
+            ChecklistRecommendationBanner(
+              bodyWeightKg: state.bodyWeightKg,
+              bodyHeightCm: state.bodyHeightCm,
+            ),
             // --- Poids corporel + ratio ---
             ChecklistBodyWeightRow(
               bodyWeightKg: state.bodyWeightKg,
@@ -145,8 +160,14 @@ class _ChecklistScreenState extends ConsumerState<ChecklistScreen> {
               onBodyWeightChanged: (kg) =>
                   ref.read(checklistProvider.notifier).setBodyWeight(kg),
             ),
-            // --- Jauge poids relatif ---
-            ChecklistWeightGauge(backpackRatio: state.backpackRatio),
+            // --- Jauge poids relatif (base de charge, pas poids reel) ---
+            ChecklistWeightGauge(
+              backpackRatio: state.backpackRatio,
+              loadBaseKg: state.loadBaseKg,
+              referenceFallback: state.weightReferenceFallback,
+            ),
+            // --- Alerte descente du dispositif poids (#4-c, #4-l) ---
+            const ChecklistDescentAlert(),
             const SizedBox(height: AppTheme.spacingSm),
             // --- Categories + sections, avec padding horizontal (GR20) ---
             Padding(

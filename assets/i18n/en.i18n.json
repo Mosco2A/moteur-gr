@@ -478,7 +478,14 @@
       "gaugeDanger": "Injury risk!",
       "percentOfWeight": "{pct}% of body weight",
       "gaugeObjective": "Max target: < 15% in huts, < 20% self-supported",
-      "itemsChecked": "{checked} / {total} items checked"
+      "itemsChecked": "{checked} / {total} items checked",
+      "percentOfReference": "{pct}% of the reference weight",
+      "gaugeObjectiveReference": "Max target: < 15% in huts, < 20% self-supported — of the reference weight",
+      "referenceExplainer": "Reference weight for your height: {kg} kg. The pack ceiling is computed on it, not on your actual weight.",
+      "referenceFallbackHeight": "Your pack ceiling is computed on your actual weight: for your height there is no published reference weight to lean on. We would rather tell you than show you a wrong number.",
+      "descentAlertTitle": "Descents: what you carry",
+      "descentAlertBody": "You will go down with {kg} kg beyond the reference weight, pack included. On a descent each step takes several times that weight: that is mechanics, not a forecast. The stages that descend the most are listed below.",
+      "descentStage": "{stage}: {loss} m of descent"
     },
     "ui": {
       "title": "Gear & Pack",
@@ -541,7 +548,7 @@
       "shareGroup": "SHARE WITH THE GROUP",
       "exportList": "EXPORT THE LIST",
       "bagValidTitle": "Pack validated",
-      "bagValidBody": "All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of body weight)\n\nAre you sure your pack is ready?",
+      "bagValidBody": "All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of the reference weight)\n\nAre you sure your pack is ready?",
       "checkAgain": "Check again",
       "yesBagOk": "Yes, pack OK",
       "bagValidatedSnack": "Pack validated!",
@@ -834,10 +841,10 @@
     "formula": {
       "title": "Feasibility for this trek",
       "intro": "We compare each stage's effort to what your profile can handle in a day. Green, orange or red light.",
-      "outOfScopeNotice": "This rating looks at two things only: your profile and the effort of each stage. Your pack weight and the season are not part of the calculation — a heavy pack, snow or heat will make the day harder than shown here. Factor them in yourself.",
-      "ceilingLabel": "Recommended ceiling: ${value} effort-km/day (${level})",
+      "outOfScopeNotice": "Your pack weight is not part of this rating, and that has been measured: from 0 to 45 kg of load, the verdict does not move by a single step. This rating compares what you have already held to the effort of each stage; the load you carry is handled separately, in your pack.",
+      "ceilingLabel": "Recommended ceiling: ${value} energy-km/day (${level})",
       "stagesTitle": "Stage by stage",
-      "stageEffort": "${distance} km + ${elevation} m ascent = ${effort} effort-km",
+      "stageEffort": "${distance} km + ${elevation} m ascent = ${effort} energy-km",
       "globalTitle": "Overall verdict",
       "hardestStage": "Toughest stage: ${stage}",
       "daysOver": "${count} day(s) above your ceiling",
@@ -863,7 +870,9 @@
         "distance": "the stage distances",
         "elevation": "the elevation gain",
         "chaining": "the day-to-day chaining",
-        "none": "none"
+        "none": "none",
+        "altitude": "altitude",
+        "heat": "the heat of the season"
       },
       "advice": {
         "balancedOk": "Your plan is balanced: keep a margin and listen to your body.",
@@ -871,10 +880,48 @@
         "optimalDays": "Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.",
         "split": "Split stage ${stage} in two: it clearly exceeds your ceiling.",
         "rest": "Plan a rest day after stage ${stages}.",
-        "training": "Train for ${weeks} weeks before departure (physical preparation)."
+        "training": "Train for ${weeks} weeks before departure (physical preparation).",
+        "restDominant": "It is not a stage that needs splitting, it is rest days that need adding: your days look too much alike."
       },
       "retainedPlan": "Retained split: ${days} walking days.",
-      "retainedPlanNone": "No split retained: the trail stays on its default ${days} days."
+      "retainedPlanNone": "No split retained: the trail stays on its default ${days} days.",
+      "energyUnitNotice": "1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.",
+      "circuitTitle": "Circuit verdict",
+      "circuitScore": "Circuit score: ${value}",
+      "circuitDominant": "What bites: ${constraint}.",
+      "circuitHarsherIntro": "The circuit is harsher than every one of its stages, and that is not a bug: taken one by one, no single day is beyond you; it is their chaining that is.",
+      "circuitHarsherByRest": "Here it is rest that is missing: your days look too much alike for the body to recover between them.",
+      "circuitHarsherByAverage": "Here it is the average load: day after day, the total goes beyond what you can hold.",
+      "restWindowWhole": "Rest measured over the whole trek (${days} days).",
+      "restWindowSlice": "Rest measured over the worst week: days ${start} to ${end}.",
+      "restNotApplicable": "Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.",
+      "restExtrapolation": "The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.",
+      "restTwoDays": "On stages of equal size, one rest day a week is not enough: it takes two.",
+      "habitGap": "Gap to your habit: ${value} (reference 0.8 to 1.3).",
+      "habitGapNotDecisive": "This gap is shown, never decisive: no study demonstrates that it causes anything.",
+      "conditionsTitle": "What went into this verdict",
+      "floorActive": "Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base. You will never be told you cannot do what you have already done.",
+      "altitudeApplied": "Altitude: ${value} m at the highest point, your daily capacity drops by ${pct} %.",
+      "altitudeBelowThreshold": "Altitude: ${value} m at the highest point, below the 1,500 m from which it counts. It changes nothing here.",
+      "altitudeMissing": "Altitude: this trail's track does not carry any. It changes nothing here for lack of data — not because it would have no effect.",
+      "heatApplied": "Summer departure: aerobic capacity drops by 7 %, that is measured.",
+      "seasonNoSource": "Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.",
+      "seasonMissing": "No departure date is set: the season changes nothing here, for lack of data.",
+      "massNotCounted": "Neither your weight nor your pack's enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.",
+      "winterInvalid": "Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.",
+      "circuitConstraints": {
+        "worstStage": "the hardest stage",
+        "averageLoad": "the average daily load",
+        "rest": "rest",
+        "habitGap": "the gap to your habit"
+      },
+      "restDaysCounted": "Rest days counted in this verdict: ${count}.",
+      "restDaysNone": "No rest day is set in your plan. The verdict sees that, and it is what weighs most here: add rest days to your plan and this figure moves.",
+      "averageLoad": "Average daily load: ${value} (the hardest stage is at ${worst}).",
+      "averageLoadInfo": "These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.",
+      "durationStatement": "This trek lasts ${days} walking days; your longest chained outing is ${done} days.",
+      "durationStatementInfo": "This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.",
+      "stageDominantFactor": "What weighs most on this stage: ${factor}"
     },
     "flow": {
       "title": "Are you ready for this trek?",
@@ -1999,7 +2046,9 @@
       "moderate": "Moderate",
       "good": "Good",
       "excellent": "Excellent"
-    }
+    },
+    "absoluteScaleNotice": "Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.",
+    "ageClampNotice": "Beyond 80 the test reference stops: it is computed as at 80, and we say so."
   },
   "pastHikes": {
     "title": "Your last 5 hikes",

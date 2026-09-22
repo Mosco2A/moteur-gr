@@ -5,6 +5,7 @@ import '../../../core/data/database.dart';
 import '../../../core/data/daos/checklist_dao.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/providers/database_provider.dart';
+import '../../feasibility/domain/body_weight_reference.dart';
 import '../../feasibility/domain/hiker_input_bounds.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
 import '../data/checklist_seasonal_adapter.dart';
@@ -51,6 +52,7 @@ class ChecklistState {
     required this.checkedCount,
     required this.totalCount,
     this.bodyWeightKg = kDefaultBodyWeightKg,
+    this.bodyHeightCm = 0,
     this.isLoading = false,
     this.bagValidated = false,
     this.bodyWeightEdited = false,
@@ -73,6 +75,17 @@ class ChecklistState {
   /// poids defini dans les infos utilisateur ». La saisie manuelle du champ Sac
   /// reste possible (override de session) et prime alors ([bodyWeightEdited]).
   final double bodyWeightKg;
+
+  /// Taille de l'utilisateur en cm (0 = non renseignee), injectee depuis la
+  /// fiche profil comme [bodyWeightKg].
+  ///
+  /// POURQUOI LA TAILLE EST ARRIVEE DANS L'ECRAN SAC. Le plafond du sac n'est
+  /// plus un pourcentage du poids reel : c'est un pourcentage de la BASE DE
+  /// CHARGE, `min(poids ; 25 × taille²)` (#4-b de la spec finale). Sans la
+  /// taille, cette base n'existe pas — et la regle des 20 % conseillait a un
+  /// randonneur de 120 kg de porter 24 kg, c'est-a-dire d'autant plus qu'il
+  /// portait deja plus.
+  final int bodyHeightCm;
 
   /// Chargement en cours
   final bool isLoading;
@@ -100,9 +113,39 @@ class ChecklistState {
   /// Poids total du sac en kg.
   double get checkedWeightKg => checkedWeightGrams / 1000.0;
 
-  /// Ratio poids du sac / poids corporel (0 si poids corporel invalide).
-  double get backpackRatio =>
-      bodyWeightKg > 0 ? checkedWeightKg / bodyWeightKg : 0.0;
+  /// BASE DE CHARGE du dispositif poids : `min(poids reel ; 25 × taille²)`
+  /// (#4-b). Sans taille exploitable, elle retombe sur le poids reel (#5-h).
+  ///
+  /// UNE SEULE DEFINITION DANS TOUTE L'APPLICATION (#4-e) : le plafond
+  /// conseille, le plancher « refuge » et le pourcentage affiche partagent ce
+  /// denominateur. Deux definitions concurrentes du meme concept, c'est
+  /// exactement le defaut qui avait produit deux moteurs de verdict (ecart
+  /// G1-1, audit #100189) ; on ne le refait pas sur le poids.
+  double get loadBaseKg => BodyWeightReference.loadBaseKg(
+        heightCm: bodyHeightCm,
+        bodyWeightKg: bodyWeightKg,
+      );
+
+  /// Ratio poids du sac / BASE DE CHARGE (0 si base invalide).
+  ///
+  /// Le denominateur a change : le libelle qui l'accompagne a change aussi
+  /// (#7-e), sans quoi l'ecran mentirait.
+  double get backpackRatio => BodyWeightReference.backpackRatio(
+        heightCm: bodyHeightCm,
+        bodyWeightKg: bodyWeightKg,
+        backpackKg: checkedWeightKg,
+      );
+
+  /// Sac conseille (kg) = 20 % de la base de charge (#4-b, regle publiee #S13-a).
+  double get recommendedBackpackKg => BodyWeightReference.recommendedBackpackKg(
+        heightCm: bodyHeightCm,
+        bodyWeightKg: bodyWeightKg,
+      );
+
+  /// Pourquoi la reference de taille n'a pas pu etre calculee, `null` si elle
+  /// l'a ete. L'ecran DOIT le dire quand elle ne l'est pas (#5-h).
+  WeightReferenceFallback? get weightReferenceFallback =>
+      BodyWeightReference.fallbackFor(bodyHeightCm);
 
   /// Nombre d'articles dans la liste de courses (parite GR20).
   int get shoppingListCount =>
@@ -269,6 +312,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       checkedCount: checked,
       totalCount: itemStates.length,
       bodyWeightKg: state.bodyWeightKg,
+      bodyHeightCm: state.bodyHeightCm,
       bagValidated: state.bagValidated,
       bodyWeightEdited: state.bodyWeightEdited,
     );
@@ -345,6 +389,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       checkedCount: checked,
       totalCount: items.length,
       bodyWeightKg: state.bodyWeightKg,
+      bodyHeightCm: state.bodyHeightCm,
       bagValidated: state.bagValidated,
       bodyWeightEdited: state.bodyWeightEdited,
     );
@@ -537,6 +582,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       checkedCount: state.checkedCount,
       totalCount: state.totalCount,
       bodyWeightKg: kg,
+      bodyHeightCm: state.bodyHeightCm,
       bagValidated: state.bagValidated,
       bodyWeightEdited: true,
     );
@@ -563,8 +609,30 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       checkedCount: state.checkedCount,
       totalCount: state.totalCount,
       bodyWeightKg: kg,
+      bodyHeightCm: state.bodyHeightCm,
       bagValidated: state.bagValidated,
       bodyWeightEdited: false,
+    );
+  }
+
+  /// Injecte la TAILLE depuis la fiche profil — meme porte que le poids.
+  ///
+  /// Elle ne sert qu'a une chose : calculer la base de charge du sac
+  /// (`min(poids ; 25 × taille²)`, #4-b). Elle n'est jamais affichee comme une
+  /// mesure du randonneur, et la fiche profil reste la seule source durable.
+  /// Bornee comme a la saisie : une taille hors [kHeightMinCm]..[kHeightMaxCm]
+  /// est ignoree, la base retombe alors sur le poids reel.
+  void seedBodyHeightFromProfile(int cm) {
+    if (cm < kHeightMinCm || cm > kHeightMaxCm) return;
+    if (state.bodyHeightCm == cm) return;
+    state = ChecklistState(
+      items: state.items,
+      checkedCount: state.checkedCount,
+      totalCount: state.totalCount,
+      bodyWeightKg: state.bodyWeightKg,
+      bodyHeightCm: cm,
+      bagValidated: state.bagValidated,
+      bodyWeightEdited: state.bodyWeightEdited,
     );
   }
 
@@ -575,6 +643,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       checkedCount: state.checkedCount,
       totalCount: state.totalCount,
       bodyWeightKg: state.bodyWeightKg,
+      bodyHeightCm: state.bodyHeightCm,
       bagValidated: true,
       bodyWeightEdited: state.bodyWeightEdited,
     );
@@ -587,6 +656,7 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
       checkedCount: state.checkedCount,
       totalCount: state.totalCount,
       bodyWeightKg: state.bodyWeightKg,
+      bodyHeightCm: state.bodyHeightCm,
       bagValidated: false,
       bodyWeightEdited: state.bodyWeightEdited,
     );

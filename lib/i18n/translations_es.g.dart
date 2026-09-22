@@ -1619,6 +1619,8 @@ class _Translations$walkTest$es extends Translations$walkTest$fr {
 	@override String get notDoneYet => 'Prueba no realizada';
 	@override String get fallbackNotice => 'Hasta que hagas la prueba, tu nivel se estima a partir del cuestionario.';
 	@override late final _Translations$walkTest$levels$es levels = _Translations$walkTest$levels$es._(_root);
+	@override String get absoluteScaleNotice => 'Tu nivel se lee en la escala de distancia bruta: la comparación con una referencia no se estableció para tu constitución, así que no la aplicamos. Tu test sigue siendo perfectamente válido.';
+	@override String get ageClampNotice => 'Más allá de los 80 años la referencia del test se detiene: se calcula como a los 80, y te lo decimos.';
 }
 
 // Path: pastHikes
@@ -2108,6 +2110,13 @@ class _Translations$checklist$weight$es extends Translations$checklist$weight$fr
 	@override String get percentOfWeight => '{pct}% del peso corporal';
 	@override String get gaugeObjective => 'Objetivo máx: < 15% en refugio, < 20% en autonomía';
 	@override String get itemsChecked => '{checked} / {total} artículos marcados';
+	@override String get percentOfReference => '{pct}% del peso de referencia';
+	@override String get gaugeObjectiveReference => 'Objetivo máx: < 15% en refugio, < 20% en autonomía — del peso de referencia';
+	@override String get referenceExplainer => 'Peso de referencia para tu estatura: {kg} kg. El tope de la mochila se calcula sobre él, no sobre tu peso real.';
+	@override String get referenceFallbackHeight => 'El tope de tu mochila se calcula sobre tu peso real: para tu estatura no existe un peso de referencia publicado en el que apoyarse. Preferimos decírtelo antes que mostrarte una cifra falsa.';
+	@override String get descentAlertTitle => 'Bajadas: lo que llevas';
+	@override String get descentAlertBody => 'Bajarás con {kg} kg por encima del peso de referencia, mochila incluida. En bajada cada apoyo encaja varias veces ese peso: es mecánica, no un pronóstico. Las etapas que más bajan están listadas abajo.';
+	@override String get descentStage => '{stage}: {loss} m de bajada';
 }
 
 // Path: checklist.ui
@@ -2177,7 +2186,7 @@ class _Translations$checklist$ui$es extends Translations$checklist$ui$fr {
 	@override String get shareGroup => 'COMPARTIR CON EL GRUPO';
 	@override String get exportList => 'EXPORTAR LA LISTA';
 	@override String get bagValidTitle => 'Mochila validada';
-	@override String get bagValidBody => 'Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila está lista?';
+	@override String get bagValidBody => 'Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso de referencia)\n\nSeguro que tu mochila está lista?';
 	@override String get checkAgain => 'Comprobar de nuevo';
 	@override String get yesBagOk => 'Si, mochila OK';
 	@override String get bagValidatedSnack => 'Mochila validada!';
@@ -2269,10 +2278,10 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Viabilidad para este trek';
 	@override String get intro => 'Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.';
-	@override String get outOfScopeNotice => 'Esta valoración solo mira dos cosas: tu perfil y el esfuerzo de cada etapa. El peso de tu mochila y la estación no entran en el cálculo — una mochila pesada, la nieve o el calor harán la jornada más dura de lo que se muestra aquí. Ténlo en cuenta tú.';
-	@override String ceilingLabel({required Object value, required Object level}) => 'Tope recomendado: ${value} km-esfuerzo/día (${level})';
+	@override String get outOfScopeNotice => 'El peso de tu mochila no entra en esta valoración, y está medido: de 0 a 45 kg de carga el veredicto no se mueve ni un escalón. Esta valoración compara lo que ya has aguantado con el esfuerzo de cada etapa; la carga que llevas se trata aparte, en tu mochila.';
+	@override String ceilingLabel({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})';
 	@override String get stagesTitle => 'Etapa por etapa';
-	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m desnivel = ${effort} km-esfuerzo';
+	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-energía';
 	@override String get globalTitle => 'Veredicto global';
 	@override String hardestStage({required Object stage}) => 'Etapa más exigente: ${stage}';
 	@override String daysOver({required Object count}) => '${count} día(s) por encima de tu tope';
@@ -2289,6 +2298,38 @@ class _Translations$feasibility$formula$es extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$advice$es advice = _Translations$feasibility$formula$advice$es._(_root);
 	@override String retainedPlan({required Object days}) => 'División elegida: ${days} días de marcha.';
 	@override String retainedPlanNone({required Object days}) => 'Ninguna división elegida: el sendero se queda en sus ${days} días por defecto.';
+	@override String get energyUnitNotice => '1 km de llano equivale a 42 m de desnivel: es el coste medido de caminar en cuesta, no una regla de la casa.';
+	@override String get circuitTitle => 'Veredicto del circuito';
+	@override String circuitScore({required Object value}) => 'Puntuación del circuito: ${value}';
+	@override String circuitDominant({required Object constraint}) => 'Lo que muerde: ${constraint}.';
+	@override String get circuitHarsherIntro => 'El circuito es más severo que cada una de sus etapas, y no es un fallo: tomadas una a una, ninguna jornada te supera; lo que te supera es su encadenamiento.';
+	@override String get circuitHarsherByRest => 'Aquí es el descanso lo que falta: tus jornadas se parecen demasiado para que el cuerpo se recupere entre ellas.';
+	@override String get circuitHarsherByAverage => 'Aquí es la carga media: día tras día, la suma supera lo que puedes aguantar.';
+	@override String restWindowWhole({required Object days}) => 'Descanso medido sobre el trek entero (${days} días).';
+	@override String restWindowSlice({required Object start, required Object end}) => 'Descanso medido sobre la peor semana: días ${start} a ${end}.';
+	@override String get restNotApplicable => 'El descanso no se calcula en un sendero de una sola jornada: no hay encadenamiento que medir. La restricción se declara no aplicable, no se sustituye por una cifra.';
+	@override String get restExtrapolation => 'El umbral de descanso viene de una medida hecha sobre deportistas, trasladada al senderismo itinerante. Es un traslado, y se dice.';
+	@override String get restTwoDays => 'En etapas de igual tamaño, un día de descanso por semana no basta: hacen falta dos.';
+	@override String habitGap({required Object value}) => 'Diferencia con tu costumbre: ${value} (referencia 0,8 a 1,3).';
+	@override String get habitGapNotDecisive => 'Esta diferencia se muestra, nunca decide: ningún estudio demuestra que cause nada.';
+	@override String get conditionsTitle => 'Lo que ha entrado en este veredicto';
+	@override String floorActive({required Object value}) => 'Tu mejor jornada ya aguantada (${value} km-energía) supera el tope de tu nivel: es ella la que sirve de base. Nunca se te dirá que no puedes hacer lo que ya has hecho.';
+	@override String altitudeApplied({required Object value, required Object pct}) => 'Altitud: ${value} m en el punto más alto, tu capacidad diaria baja un ${pct} %.';
+	@override String altitudeBelowThreshold({required Object value}) => 'Altitud: ${value} m en el punto más alto, por debajo de los 1 500 m a partir de los cuales cuenta. Aquí no cambia nada.';
+	@override String get altitudeMissing => 'Altitud: la traza de este sendero no la lleva. Aquí no cambia nada por falta de dato — y no porque no tuviera efecto.';
+	@override String get heatApplied => 'Salida en verano: la capacidad aeróbica baja un 7 %, está medido.';
+	@override String get seasonNoSource => 'Salida en primavera o en otoño: ninguna medida publicada permite cifrar un efecto. La estación no cambia nada aquí, por falta de fuente.';
+	@override String get seasonMissing => 'No hay fecha de salida fijada: la estación no cambia nada aquí, por falta de dato.';
+	@override String get massNotCounted => 'Ni tu peso ni el de tu mochila entran en este veredicto, y es a propósito: mide lo que has demostrado aguantar. A 65 o a 95 kg, el mismo hombre obtiene el mismo veredicto.';
+	@override String get winterInvalid => 'Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo, terreno seco y nieve adecuada. No endurecemos la cifra, te decimos que no se aplica.';
+	@override late final _Translations$feasibility$formula$circuitConstraints$es circuitConstraints = _Translations$feasibility$formula$circuitConstraints$es._(_root);
+	@override String restDaysCounted({required Object count}) => 'Días de descanso contados en este veredicto: ${count}.';
+	@override String get restDaysNone => 'No hay ningún día de descanso en tu programa. El veredicto lo ve, y es lo que más pesa aquí: pon descansos en tu programa y esta cifra se mueve.';
+	@override String averageLoad({required Object value, required Object worst}) => 'Carga media diaria: ${value} (la peor etapa está en ${worst}).';
+	@override String get averageLoadInfo => 'Estas dos cifras se leen juntas: lejos una de otra, el trek tiene una jornada dura; cerca, es duro todos los días. Esto se muestra, no decide.';
+	@override String durationStatement({required Object days, required Object done}) => 'Este trek dura ${days} días de marcha; tu salida encadenada más larga es de ${done} días.';
+	@override String get durationStatementInfo => 'Esto se muestra, no decide: ninguna medida publicada dice a partir de cuántos días encadenados un senderista se descuelga. Júzgalo tú.';
+	@override String stageDominantFactor({required Object factor}) => 'Lo que más pesa en esta etapa: ${factor}';
 }
 
 // Path: feasibility.flow
@@ -3503,6 +3544,8 @@ class _Translations$feasibility$formula$limitingFactors$es extends Translations$
 	@override String get elevation => 'el desnivel';
 	@override String get chaining => 'el encadenamiento de los días';
 	@override String get none => 'ninguno';
+	@override String get altitude => 'la altitud';
+	@override String get heat => 'el calor de la estación';
 }
 
 // Path: feasibility.formula.advice
@@ -3518,6 +3561,20 @@ class _Translations$feasibility$formula$advice$es extends Translations$feasibili
 	@override String split({required Object stage}) => 'Divide la etapa ${stage} en dos: supera claramente tu tope.';
 	@override String rest({required Object stages}) => 'Prevé un día de descanso tras la etapa ${stages}.';
 	@override String training({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir (preparación física).';
+	@override String get restDominant => 'No es una etapa lo que hay que partir, son días de descanso lo que hay que poner: tus jornadas se parecen demasiado.';
+}
+
+// Path: feasibility.formula.circuitConstraints
+class _Translations$feasibility$formula$circuitConstraints$es extends Translations$feasibility$formula$circuitConstraints$fr {
+	_Translations$feasibility$formula$circuitConstraints$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get worstStage => 'la etapa más dura';
+	@override String get averageLoad => 'la carga media diaria';
+	@override String get rest => 'el descanso';
+	@override String get habitGap => 'la diferencia con tu costumbre';
 }
 
 // Path: signalement.water.states
@@ -4195,6 +4252,13 @@ extension on TranslationsEs {
 			'checklist.weight.percentOfWeight' => '{pct}% del peso corporal',
 			'checklist.weight.gaugeObjective' => 'Objetivo máx: < 15% en refugio, < 20% en autonomía',
 			'checklist.weight.itemsChecked' => '{checked} / {total} artículos marcados',
+			'checklist.weight.percentOfReference' => '{pct}% del peso de referencia',
+			'checklist.weight.gaugeObjectiveReference' => 'Objetivo máx: < 15% en refugio, < 20% en autonomía — del peso de referencia',
+			'checklist.weight.referenceExplainer' => 'Peso de referencia para tu estatura: {kg} kg. El tope de la mochila se calcula sobre él, no sobre tu peso real.',
+			'checklist.weight.referenceFallbackHeight' => 'El tope de tu mochila se calcula sobre tu peso real: para tu estatura no existe un peso de referencia publicado en el que apoyarse. Preferimos decírtelo antes que mostrarte una cifra falsa.',
+			'checklist.weight.descentAlertTitle' => 'Bajadas: lo que llevas',
+			'checklist.weight.descentAlertBody' => 'Bajarás con {kg} kg por encima del peso de referencia, mochila incluida. En bajada cada apoyo encaja varias veces ese peso: es mecánica, no un pronóstico. Las etapas que más bajan están listadas abajo.',
+			'checklist.weight.descentStage' => '{stage}: {loss} m de bajada',
 			'checklist.ui.title' => 'Equipo & Mochila',
 			'checklist.ui.requirementRequired' => 'Obligatorio',
 			'checklist.ui.addItem' => 'Añadir un artículo',
@@ -4255,7 +4319,7 @@ extension on TranslationsEs {
 			'checklist.ui.shareGroup' => 'COMPARTIR CON EL GRUPO',
 			'checklist.ui.exportList' => 'EXPORTAR LA LISTA',
 			'checklist.ui.bagValidTitle' => 'Mochila validada',
-			'checklist.ui.bagValidBody' => 'Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso corporal)\n\nSeguro que tu mochila está lista?',
+			'checklist.ui.bagValidBody' => 'Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso de referencia)\n\nSeguro que tu mochila está lista?',
 			'checklist.ui.checkAgain' => 'Comprobar de nuevo',
 			'checklist.ui.yesBagOk' => 'Si, mochila OK',
 			'checklist.ui.bagValidatedSnack' => 'Mochila validada!',
@@ -4282,6 +4346,8 @@ extension on TranslationsEs {
 			'journal.stage' => 'Etapa',
 			'journal.yourNote' => 'Tu nota',
 			'journal.placeholder' => 'Describe tu día de senderismo...',
+			_ => null,
+		} ?? switch (path) {
 			'journal.save' => 'Guardar',
 			'journal.cancel' => 'Cancelar',
 			'journal.delete' => 'Eliminar',
@@ -4289,8 +4355,6 @@ extension on TranslationsEs {
 			'journal.photoTooBig' => 'Foto demasiado grande (máx 500 KB)',
 			'journal.addPhoto' => 'Añadir una foto',
 			'journal.photoSource' => 'Origen de la foto',
-			_ => null,
-		} ?? switch (path) {
 			'journal.camera' => 'Cámara',
 			'journal.gallery' => 'Galería',
 			'journal.removePhoto' => 'Quitar la foto',
@@ -4506,10 +4570,10 @@ extension on TranslationsEs {
 			'feasibility.gaps.effort' => 'Esfuerzo global (IBP) por encima de tu experiencia',
 			'feasibility.formula.title' => 'Viabilidad para este trek',
 			'feasibility.formula.intro' => 'Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.',
-			'feasibility.formula.outOfScopeNotice' => 'Esta valoración solo mira dos cosas: tu perfil y el esfuerzo de cada etapa. El peso de tu mochila y la estación no entran en el cálculo — una mochila pesada, la nieve o el calor harán la jornada más dura de lo que se muestra aquí. Ténlo en cuenta tú.',
-			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Tope recomendado: ${value} km-esfuerzo/día (${level})',
+			'feasibility.formula.outOfScopeNotice' => 'El peso de tu mochila no entra en esta valoración, y está medido: de 0 a 45 kg de carga el veredicto no se mueve ni un escalón. Esta valoración compara lo que ya has aguantado con el esfuerzo de cada etapa; la carga que llevas se trata aparte, en tu mochila.',
+			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Tope recomendado: ${value} km-energía/día (${level})',
 			'feasibility.formula.stagesTitle' => 'Etapa por etapa',
-			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m desnivel = ${effort} km-esfuerzo',
+			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-energía',
 			'feasibility.formula.globalTitle' => 'Veredicto global',
 			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Etapa más exigente: ${stage}',
 			'feasibility.formula.daysOver' => ({required Object count}) => '${count} día(s) por encima de tu tope',
@@ -4531,14 +4595,52 @@ extension on TranslationsEs {
 			'feasibility.formula.limitingFactors.elevation' => 'el desnivel',
 			'feasibility.formula.limitingFactors.chaining' => 'el encadenamiento de los días',
 			'feasibility.formula.limitingFactors.none' => 'ninguno',
+			'feasibility.formula.limitingFactors.altitude' => 'la altitud',
+			'feasibility.formula.limitingFactors.heat' => 'el calor de la estación',
 			'feasibility.formula.advice.balancedOk' => 'Tu programa está equilibrado: guarda un margen y escucha a tu cuerpo.',
 			'feasibility.formula.advice.balanced' => 'Reparte las etapas para suavizar el esfuerzo a lo largo de los días.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Apunta a ${days} días de marcha (en vez de ${current}) para no pasar tu tope.',
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Divide la etapa ${stage} en dos: supera claramente tu tope.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prevé un día de descanso tras la etapa ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir (preparación física).',
+			'feasibility.formula.advice.restDominant' => 'No es una etapa lo que hay que partir, son días de descanso lo que hay que poner: tus jornadas se parecen demasiado.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'División elegida: ${days} días de marcha.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Ninguna división elegida: el sendero se queda en sus ${days} días por defecto.',
+			'feasibility.formula.energyUnitNotice' => '1 km de llano equivale a 42 m de desnivel: es el coste medido de caminar en cuesta, no una regla de la casa.',
+			'feasibility.formula.circuitTitle' => 'Veredicto del circuito',
+			'feasibility.formula.circuitScore' => ({required Object value}) => 'Puntuación del circuito: ${value}',
+			'feasibility.formula.circuitDominant' => ({required Object constraint}) => 'Lo que muerde: ${constraint}.',
+			'feasibility.formula.circuitHarsherIntro' => 'El circuito es más severo que cada una de sus etapas, y no es un fallo: tomadas una a una, ninguna jornada te supera; lo que te supera es su encadenamiento.',
+			'feasibility.formula.circuitHarsherByRest' => 'Aquí es el descanso lo que falta: tus jornadas se parecen demasiado para que el cuerpo se recupere entre ellas.',
+			'feasibility.formula.circuitHarsherByAverage' => 'Aquí es la carga media: día tras día, la suma supera lo que puedes aguantar.',
+			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Descanso medido sobre el trek entero (${days} días).',
+			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Descanso medido sobre la peor semana: días ${start} a ${end}.',
+			'feasibility.formula.restNotApplicable' => 'El descanso no se calcula en un sendero de una sola jornada: no hay encadenamiento que medir. La restricción se declara no aplicable, no se sustituye por una cifra.',
+			'feasibility.formula.restExtrapolation' => 'El umbral de descanso viene de una medida hecha sobre deportistas, trasladada al senderismo itinerante. Es un traslado, y se dice.',
+			'feasibility.formula.restTwoDays' => 'En etapas de igual tamaño, un día de descanso por semana no basta: hacen falta dos.',
+			'feasibility.formula.habitGap' => ({required Object value}) => 'Diferencia con tu costumbre: ${value} (referencia 0,8 a 1,3).',
+			'feasibility.formula.habitGapNotDecisive' => 'Esta diferencia se muestra, nunca decide: ningún estudio demuestra que cause nada.',
+			'feasibility.formula.conditionsTitle' => 'Lo que ha entrado en este veredicto',
+			'feasibility.formula.floorActive' => ({required Object value}) => 'Tu mejor jornada ya aguantada (${value} km-energía) supera el tope de tu nivel: es ella la que sirve de base. Nunca se te dirá que no puedes hacer lo que ya has hecho.',
+			'feasibility.formula.altitudeApplied' => ({required Object value, required Object pct}) => 'Altitud: ${value} m en el punto más alto, tu capacidad diaria baja un ${pct} %.',
+			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitud: ${value} m en el punto más alto, por debajo de los 1 500 m a partir de los cuales cuenta. Aquí no cambia nada.',
+			'feasibility.formula.altitudeMissing' => 'Altitud: la traza de este sendero no la lleva. Aquí no cambia nada por falta de dato — y no porque no tuviera efecto.',
+			'feasibility.formula.heatApplied' => 'Salida en verano: la capacidad aeróbica baja un 7 %, está medido.',
+			'feasibility.formula.seasonNoSource' => 'Salida en primavera o en otoño: ninguna medida publicada permite cifrar un efecto. La estación no cambia nada aquí, por falta de fuente.',
+			'feasibility.formula.seasonMissing' => 'No hay fecha de salida fijada: la estación no cambia nada aquí, por falta de dato.',
+			'feasibility.formula.massNotCounted' => 'Ni tu peso ni el de tu mochila entran en este veredicto, y es a propósito: mide lo que has demostrado aguantar. A 65 o a 95 kg, el mismo hombre obtiene el mismo veredicto.',
+			'feasibility.formula.winterInvalid' => 'Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo, terreno seco y nieve adecuada. No endurecemos la cifra, te decimos que no se aplica.',
+			'feasibility.formula.circuitConstraints.worstStage' => 'la etapa más dura',
+			'feasibility.formula.circuitConstraints.averageLoad' => 'la carga media diaria',
+			'feasibility.formula.circuitConstraints.rest' => 'el descanso',
+			'feasibility.formula.circuitConstraints.habitGap' => 'la diferencia con tu costumbre',
+			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Días de descanso contados en este veredicto: ${count}.',
+			'feasibility.formula.restDaysNone' => 'No hay ningún día de descanso en tu programa. El veredicto lo ve, y es lo que más pesa aquí: pon descansos en tu programa y esta cifra se mueve.',
+			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Carga media diaria: ${value} (la peor etapa está en ${worst}).',
+			'feasibility.formula.averageLoadInfo' => 'Estas dos cifras se leen juntas: lejos una de otra, el trek tiene una jornada dura; cerca, es duro todos los días. Esto se muestra, no decide.',
+			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Este trek dura ${days} días de marcha; tu salida encadenada más larga es de ${done} días.',
+			'feasibility.formula.durationStatementInfo' => 'Esto se muestra, no decide: ninguna medida publicada dice a partir de cuántos días encadenados un senderista se descuelga. Júzgalo tú.',
+			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Lo que más pesa en esta etapa: ${factor}',
 			'feasibility.flow.title' => '¿Estás listo para este trek?',
 			'feasibility.flow.intro' => 'Responde 3 pasos rápidos: deducimos tu nivel real y luego te decimos si el trek es viable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} pasos completados',
@@ -4758,6 +4860,8 @@ extension on TranslationsEs {
 			'gamification.defi.inProgress' => 'En curso',
 			'gamification.defi.progressLabel' => ({required Object current, required Object target}) => 'Progreso: ${current} / ${target}',
 			'gamification.defi.rankingTitle' => 'Clasificación del reto',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.defi.pseudonymNotice' => 'Clasificación por grupo, con seudónimos. No se muestra ningún dato personal directo.',
 			'gamification.defi.notEnoughParticipants' => 'No hay suficientes participantes para publicar esta clasificación.',
 			'gamification.defi.noDefi' => 'Ningún reto en curso por ahora.',
@@ -4803,8 +4907,6 @@ extension on TranslationsEs {
 			'waypoints.contribution.conditionField' => 'Estado (opcional)',
 			'waypoints.contribution.conditionHelper' => 'p. ej. agua agotada, agua corre, paso resbaladizo',
 			'waypoints.contribution.latencyBanner' => 'Se publicará en la próxima sincronización de red.',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.contribution.submit' => 'Guardar',
 			'waypoints.contribution.savedTitle' => 'Contribución guardada',
 			'waypoints.contribution.savedPendingSync' => 'Se publicará cuando vuelva la red.',
@@ -5272,6 +5374,8 @@ extension on TranslationsEs {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Detalles del día de descanso ${day}',
 			'summary.a11y.export' => 'Exportar el plan a PDF',
 			'summary.a11y.download' => 'Descargar mapas sin conexión',
+			_ => null,
+		} ?? switch (path) {
 			'summary.a11y.share' => 'Compartir mi plan',
 			'import.title' => 'Importar un GPX',
 			'import.headerTitle' => 'Importar un archivo GPX',
@@ -5317,8 +5421,6 @@ extension on TranslationsEs {
 			'myTreks.badge.prepared' => 'Preparada',
 			'myTreks.badge.inProgress' => 'En curso',
 			'myTreks.badge.completed' => 'Terminada',
-			_ => null,
-		} ?? switch (path) {
 			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % del sendero',
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Ruta ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Abrir la ruta ${nom}',
@@ -5389,6 +5491,8 @@ extension on TranslationsEs {
 			'walkTest.levels.moderate' => 'Medio',
 			'walkTest.levels.good' => 'Bueno',
 			'walkTest.levels.excellent' => 'Excelente',
+			'walkTest.absoluteScaleNotice' => 'Tu nivel se lee en la escala de distancia bruta: la comparación con una referencia no se estableció para tu constitución, así que no la aplicamos. Tu test sigue siendo perfectamente válido.',
+			'walkTest.ageClampNotice' => 'Más allá de los 80 años la referencia del test se detiene: se calcula como a los 80, y te lo decimos.',
 			'pastHikes.title' => 'Tus últimas 5 rutas',
 			'pastHikes.intro' => 'Añade hasta 5 rutas notables. Deducimos tu nivel real (ritmo, resistencia, hábito de desnivel) en lugar de una etiqueta.',
 			'pastHikes.addHike' => 'Añadir ruta',

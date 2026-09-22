@@ -33,14 +33,41 @@ abstract class WalkTestLevel {
 /// (0..) : < 0.70 faible ; 0.70-0.90 moyen ; 0.90-1.10 bon ; >= 1.10 excellent.
 /// Ces seuils calent le barème BP (non public) — externalisables si besoin.
 ///
+/// LES COEFFICIENTS D'ENRIGHT SONT INTOUCHABLES (#3-a, ARB-007 REJETE).
+/// Le rapport mesure/predit est conserve TEL QUEL, terme de poids compris.
+/// Chris : « le test est le test, c'est la capacite a faire l'exercice point. »
+/// Les equations repondent a la question « est-ce que je marche bien pour
+/// quelqu'un comme moi » — une question clinique legitime, et c'est exactement
+/// pour cela que la taille, l'age et le poids figurent dans la prediction. Un
+/// test qu'on triture pour lui faire dire autre chose n'est plus un test.
+///
+/// RESPECTER LE DOMAINE DE VALIDITE N'EST PAS TRITURER LE TEST (#3-k).
+/// Modifier les coefficients serait le manipuler. REFUSER DE L'APPLIQUER HORS
+/// DE L'ECHANTILLON SUR LEQUEL IL A ETE DERIVE, C'EST LE RESPECTER — et c'est
+/// ce que fait [isWithinDerivationDomain], en appliquant les criteres
+/// d'exclusion publies par Enright & Sherrill EUX-MEMES.
+///
 /// Classe PURE (zero dependance Flutter), directement testable.
 class WalkTestNorms {
   const WalkTestNorms._();
 
   /// Bornes d'age couvertes par les equations (etalon 40-80 ; on extrapole
   /// prudemment hors bornes en clampant l'age effectif).
+  ///
+  /// A 120 ans (nouvelle borne de saisie), l'age est donc CLAMPE a 80 : c'est
+  /// le comportement existant, il est desormais DECLARE a l'ecran plutot que
+  /// subi (#5-j).
   static const int minAge = 40;
   static const int maxAge = 80;
+
+  /// IMC maximal du domaine de derivation — CRITERE D'EXCLUSION PUBLIE par
+  /// Enright & Sherrill (#3-l).
+  static const double maxBmi = 35.0;
+
+  /// Taille adulte minimale du domaine (cm). Meme borne que le dispositif
+  /// poids : un adulte de 120 cm est hors de tout echantillon de stature
+  /// normale (#3-n, #5-h).
+  static const int minHeightCm = 147;
 
   /// Seuils de ratio (distance / prediction) -> niveau.
   static const double ratioModerate = 0.70;
@@ -67,13 +94,39 @@ class WalkTestNorms {
     return 2.11 * heightCm - 2.29 * weightKg - 5.78 * a + 667;
   }
 
+  /// Vrai si le profil tombe DANS le domaine sur lequel les equations ont ete
+  /// derivees (#3-n) — IMC <= 35 et taille adulte >= 147 cm.
+  ///
+  /// POURQUOI CE GARDE-FOU EST DEVENU NECESSAIRE. Enright & Sherrill ont derive
+  /// leurs equations sur 117 hommes et 173 femmes de 40 a 80 ans, avec des
+  /// criteres d'exclusion EXPLICITES : age > 80 ans, IMC > 35, antecedent
+  /// d'AVC. Le code bornait bien l'age (clamp 40-80) mais PAS l'IMC, et le seul
+  /// garde-fou existant — `predicted <= 0` — ne rattrape qu'une prediction
+  /// NEGATIVE. L'absurdite est reelle et les nouvelles bornes de saisie la
+  /// rendent atteignable : a 130 cm, 200 kg, 50 ans, la prediction masculine
+  /// vaut 72,1 m, positive et minuscule ; une marche mesuree a 300 m donnerait
+  /// un rapport de 4,16, donc « excellent », donc UN CRAN DE NIVEAU NON MERITE
+  /// (#3-m).
+  ///
+  /// ARB-007 aurait supprime ce cas ; il a ete rejete, le garde-fou prend sa
+  /// place — et il n'invente rien, il applique les criteres d'Enright.
+  static bool isWithinDerivationDomain(HikerProfile profile) {
+    if (profile.heightCm < minHeightCm) return false;
+    final bmi = profile.bmi;
+    if (bmi == null || !bmi.isFinite) return false;
+    return bmi <= maxBmi;
+  }
+
   /// Distance PREDITE (m) selon le profil. Si le sexe n'est pas renseigne, on
   /// prend la MOYENNE des deux equations (approche neutre, honnete).
   ///
-  /// Retourne null si la morpho minimale (age/taille/poids) manque : sans
-  /// reference, le test ne peut pas etre normalise.
+  /// Retourne null si la morpho minimale (age/taille/poids) manque, OU si le
+  /// profil sort du domaine de derivation ([isWithinDerivationDomain]) : sans
+  /// reference valable, le test ne peut pas etre normalise — le test, lui,
+  /// reste parfaitement valable (#3-o).
   static double? predictedFor(HikerProfile profile) {
     if (profile.age <= 0 || !profile.hasMorphology) return null;
+    if (!isWithinDerivationDomain(profile)) return null;
     final male = predictedMale(
       age: profile.age,
       heightCm: profile.heightCm,
@@ -111,10 +164,16 @@ class WalkTestNorms {
 
   /// Niveau objectif a partir du profil + distance mesuree.
   ///
-  /// Si la morpho manque (pas de reference), on retombe sur des seuils de
-  /// distance ABSOLUE (repere grand public) : < 400 m faible ; 400-500 moyen ;
-  /// 500-600 bon ; >= 600 excellent — coherents avec l'ordre de grandeur du
-  /// 6MWT chez l'adulte.
+  /// Si la morpho manque, OU si le profil sort du domaine de derivation
+  /// (#3-n), on retombe sur des seuils de distance ABSOLUE (repere grand
+  /// public) : < 400 m faible ; 400-500 moyen ; 500-600 bon ; >= 600 excellent
+  /// — coherents avec l'ordre de grandeur du 6MWT chez l'adulte. C'est
+  /// EXACTEMENT le mecanisme de repli qui existait deja ; le garde-fou de
+  /// domaine ne fait que l'atteindre dans un cas de plus.
+  ///
+  /// QUAND LE REPLI S'APPLIQUE, LE TEST RESTE VALABLE : c'est sa NORMALISATION
+  /// qui ne l'est pas. Le niveau est lu sur l'echelle absolue, ET L'ECRAN LE
+  /// DIT (#3-o) — voir [isNormalized].
   static String levelFor(HikerProfile profile, double measuredMeters) {
     final ratio = ratioFor(profile, measuredMeters);
     if (ratio != null) return levelFromRatio(ratio);
@@ -122,5 +181,15 @@ class WalkTestNorms {
     if (measuredMeters < 500) return WalkTestLevel.moderate;
     if (measuredMeters < 600) return WalkTestLevel.good;
     return WalkTestLevel.excellent;
+  }
+
+  /// Vrai si le niveau rendu par [levelFor] a ete NORMALISE par les equations
+  /// d'Enright ; faux s'il a ete lu sur l'echelle de distance absolue.
+  ///
+  /// L'ecran s'en sert pour dire lequel des deux il montre : un niveau lu sur
+  /// l'echelle absolue et presente comme normalise serait un ecran qui ment.
+  static bool isNormalized(HikerProfile profile) {
+    final predicted = predictedFor(profile);
+    return predicted != null && predicted > 0;
   }
 }

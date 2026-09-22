@@ -32,6 +32,7 @@ import 'package:moteur_gr/core/engine/trail_engine.dart';
 // si « Démarrer » est activable ou non (pas de supposition).
 import 'package:moteur_gr/features/hub/presentation/widgets/finish_trek_button.dart';
 import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
@@ -43,6 +44,13 @@ void main() {
 
   testWidgets('S3 — Steve marche le trek (GPS injecte)', (tester) async {
     logStep(P, 'boot', 'Lancement de app.main()');
+    // ===================== MAJEUR-2 DE LA CAMPAGNE N1 =====================
+    // C'est CE scenario qui a logue « dialog permission par-dessus = false »
+    // pendant qu'une boite Android recouvrait la carte : il ne cherchait qu'un
+    // widget FLUTTER, et un dialogue SYSTEME n'est pas dans l'arbre Flutter.
+    // On installe desormais une sonde qui voit les fenetres systeme : le cycle
+    // de vie de l'activite (perte du premier plan).
+    installerVeilleEcranSysteme(P);
     app.main();
     await settleAndShoot(tester, P, '01_boot', timeout: const Duration(seconds: 12));
 
@@ -67,7 +75,7 @@ void main() {
           P,
           'entree',
           'Entrer dans la vitrine');
-      _goHome(tester, P);
+      await _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '03_cockpit');
     _logLocation(tester, P, 'cockpit');
@@ -89,6 +97,9 @@ void main() {
     final startCta = textFrEn('Démarrer la randonnée', 'Start the trek');
     await scrollUntil(tester, startCta, P, 'demarrer',
         'CTA Demarrer (haut cockpit)');
+    // Marque le journal des ecrans systeme AVANT le demarrage : tout ce qui
+    // sera capte apres appartient a la sequence de demarrage.
+    final marqueDemarrage = marqueEcranSysteme();
     final started =
         await tapIfPresent(tester, startCta, P, 'demarrer', 'CTA Demarrer la randonnee');
     if (!started) {
@@ -146,9 +157,36 @@ void main() {
         P,
         'carte',
         'Sur la carte = ${_onMap(tester)} ; '
-            'FlutterMap present = ${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))} ; '
-            'dialog permission par-dessus = ${present(find.textContaining('otification')) || present(find.textContaining('Autoriser'))} '
-            '(ATTENDU false apres pre-grant adb — issue 2).');
+            'FlutterMap present = ${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))}.');
+    exige(
+        P,
+        'carte',
+        present(find.byWidgetPredicate(
+            (w) => w.runtimeType.toString() == 'FlutterMap')),
+        'le moteur de carte est monte apres le demarrage de la rando');
+
+    // ============ C2 — LA CONTRE-PREUVE LA PLUS DURE ============
+    // CONDITION EXACTE DU DEFAUT N1 : ce run est lance avec les permissions de
+    // localisation DEJA ACCORDEES par adb — et pourtant, en N1, l'ecran systeme
+    // « Toujours autoriser en arrière-plan ? » surgissait QUAND MEME par-dessus
+    // la carte (preuve photo s3_carte_pendant_gps.png), parce que DEUX chemins
+    // lancaient l'escalade en meme temps. Deux exigences en decoulent :
+    //   1. tout etant deja accorde, le pre-vol ne doit RIEN ouvrir ;
+    //   2. AUCUN ecran systeme ne doit apparaitre, ni au demarrage ni sur la
+    //      carte. La sonde est le cycle de vie, pas l'arbre Flutter.
+    exigeAbsent(find.byKey(const ValueKey('background-tracking-rationale-dialog')),
+        P, 'carte',
+        'le pre-vol de permission, alors que TOUT est deja accorde par adb '
+        '(il ne doit rien ouvrir dans ce cas)');
+    final systemeDemarrage = ecransSystemeDepuis(marqueDemarrage);
+    exige(
+        P,
+        'carte',
+        systemeDemarrage.isEmpty,
+        'AUCUN ecran systeme entre le tap « Démarrer » et l arrivee sur la '
+            'carte, permissions deja accordees '
+            '(detecte : ${systemeDemarrage.isEmpty ? "aucun" : systemeDemarrage.join(", ")})');
+    final marqueCarte = marqueEcranSysteme();
 
     // --- FENETRE D INJECTION GPS ---
     // Le script host-side pousse les points du trace PENDANT cette boucle. On
@@ -173,6 +211,23 @@ void main() {
     }
     logStep(P, 'gps', 'FIN fenetre injection GPS');
     await settleAndShoot(tester, P, '07_apres_gps');
+    // EXIGENCE — rien de systeme n'a recouvert la carte pendant toute la rando.
+    final systemeSurCarte = ecransSystemeDepuis(marqueCarte);
+    exige(
+        P,
+        'carte',
+        systemeSurCarte.isEmpty,
+        'AUCUN ecran systeme ne recouvre la CARTE pendant la rando '
+            '(detecte : ${systemeSurCarte.isEmpty ? "aucun" : systemeSurCarte.join(", ")})');
+
+    // ============ C2 — LE DEUXIEME CHEMIN DE DEMARRAGE ============
+    // Le mandat demande de verifier LES DEUX chemins. Le premier (CTA du
+    // cockpit) vient d'etre joue. Le second est le bouton « Démarrer » de
+    // l'OVERLAY DE CARTE (tracking_overlay.dart) : il n'apparait que lorsque la
+    // session est a l'arret. On ARRETE donc le suivi depuis l'overlay, puis on
+    // le RELANCE par ce second bouton, et on exige la meme chose : aucun ecran
+    // systeme ne doit surgir sur la carte.
+    await _verifierSecondCheminDemarrage(tester, P);
 
     // ================================================================
     // EXTENSION COUVERTURE (GO-46, COUVERTURE.md 3.3) — CONSULTATIONS TERRAIN :
@@ -210,6 +265,13 @@ void main() {
             'du bouton lui-meme ; toute icone SUPPLEMENTAIRE signalerait un '
             'retour du doublon en barre contextuelle).');
     var sosTapped = false;
+    // EXIGENCE — ACCES UNIQUE au SOS (regle produit alignee GR20) : exactement
+    // UN point d'entree, et aucune icone d'urgence en dehors de lui. Jusqu'ici
+    // ce comptage etait seulement LOGue.
+    exige(P, 'sos', nbAccesSos == 1,
+        'il existe EXACTEMENT un point d entree SOS sur la carte (compte : $nbAccesSos)');
+    exige(P, 'sos', nbIconesUrgence == 1,
+        'aucune icone d urgence EN DEHORS du bouton SOS (compte : $nbIconesUrgence)');
     if (present(sos)) {
       await tester.tap(sos.first, warnIfMissed: false);
       await pumpAndSettleTolerant(tester);
@@ -221,6 +283,12 @@ void main() {
     }
     await settleAndShoot(tester, P, '08_sos_dialog');
     if (sosTapped) {
+      // EXIGENCE — le SOS ne doit JAMAIS appeler sans confirmation.
+      exige(
+          P,
+          'sos',
+          present(find.byType(Dialog)) || present(find.byType(AlertDialog)),
+          'le SOS ouvre une CONFIRMATION avant tout appel des secours');
       logStep(
           P,
           'sos',
@@ -239,7 +307,7 @@ void main() {
 
     // --- Terminer le trek ---
     // Retour cockpit puis bouton « Terminer le trek » (orange, fin de scroll).
-    _goHome(tester, P);
+    await _goHome(tester, P);
     await settleAndShoot(tester, P, '10_cockpit_fin');
     // DESIGNATION PAR CLE (corrige en FIX-2, finding M4) : « Terminer le trek »
     // (bouton du cockpit), « Terminer le trek ? » (titre) et « Terminer »
@@ -251,23 +319,23 @@ void main() {
     final boutonFin = find.byKey(const ValueKey(kFinishTrekButtonKey));
     final finished = await scrollUntil(tester, boutonFin, P, 'terminer',
         'bouton Terminer le trek (fin de scroll)');
+    exige(P, 'terminer', finished,
+        'le bouton « Terminer le trek » est atteignable en fin de rando');
     if (finished) {
-      await tapIfPresent(
-          tester, boutonFin, P, 'terminer', 'Terminer le trek');
-      await tapIfPresent(
+      await exigeTap(
+          tester, boutonFin, P, 'terminer', 'bouton Terminer le trek');
+      await exigeTap(
           tester,
           find.byKey(const ValueKey(kFinishTrekConfirmKey)),
           P,
           'terminer',
-          'confirmer la fin du trek (action du dialogue, designee par cle)');
+          'action de confirmation du dialogue de fin de trek');
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
-      logStep(
-          P,
+      // EXIGENCE — le dialogue doit etre REFERME : une barriere restee en place
+      // rend TOUT le post-trek inatteignable (origine des 6 coincements N1).
+      exigeAbsent(find.byKey(const ValueKey(kFinishTrekDialogKey)), P,
           'terminer',
-          'Dialogue de confirmation encore ouvert = '
-              '${present(find.byKey(const ValueKey(kFinishTrekDialogKey)))} '
-              '(ATTENDU false : une barriere restee en place bloque TOUT le '
-              'post-trek).');
+          'le dialogue de confirmation, qui doit etre referme apres validation');
     }
     await settleAndShoot(tester, P, '11_apres_terminer');
 
@@ -289,13 +357,21 @@ void main() {
             'pas un defaut). #D10 couvert cote UI (conservation) + note purge.');
 
     // --- Diplome ---
-    _goHome(tester, P);
+    await _goHome(tester, P);
     // CORRECTIF L5-8 : le cockpit n'a plus qu'UNE porte apres le trek,
     // « Mon aventure ». Le diplome s'ouvre DEPUIS le recapitulatif, ou son
     // bouton porte la cle stable `recap-diploma`. L'ancien chemin direct
     // (bouton Diplome sur la carte de trek termine, carte Diplome de la
     // section Apres) est garde en repli : il ne doit plus exister, mais un
     // repli ne coute rien et evite un faux rouge sur une version anterieure.
+    //
+    // DEFAUT DE HARNAIS CORRIGE (campagne N2) : la carte « trek termine » qui
+    // porte cette porte unique est EN TETE du cockpit, et le cockpit est une
+    // longue liste VIRTUALISEE. En arrivant du bouton « Terminer » (tout en
+    // bas), la tete de liste n'est PAS dans l'arbre construit : la cle etait
+    // donc introuvable et le post-trek declare inaccessible. Un vrai
+    // utilisateur remonte ; le test aussi.
+    await _scrollToTop(tester, P);
     var diploma = await tapIfPresent(
         tester, find.byKey(const ValueKey('completed-diploma')),
         P, 'diplome', 'bouton Diplome (carte trek termine)',
@@ -321,6 +397,8 @@ void main() {
     }
     await settleAndShoot(tester, P, '12_diplome');
     _logLocation(tester, P, 'diplome');
+    exige(P, 'diplome', diploma,
+        'le diplome s ouvre apres un trek termine (porte « Mon aventure »)');
 
     // --- APRES-TREK (CYCLE 3) : Journal « Vos notes et souvenirs » + Recap ---
     // Le trek est TERMINE (diplome obtenu) -> on couvre l'apres-trek reel de la
@@ -329,7 +407,7 @@ void main() {
     // seul le diplome etait couvert (constat mission).
 
     // 1) Journal : ouvrir, AJOUTER une note/souvenir (vraie saisie), capturer.
-    _goHome(tester, P);
+    await _goHome(tester, P);
     final journalCard = textFrEn('Journal', 'Journal');
     await scrollUntil(tester, journalCard, P, 'apres_journal',
         'carte Journal (Vos notes et souvenirs)');
@@ -345,13 +423,11 @@ void main() {
     final noteField = find.byType(TextField);
     const souvenir =
         'Arrivee au sommet, vue magnifique sur la vallee. Quelle aventure !';
-    if (present(noteField)) {
+    if (exige(P, 'apres_journal', present(noteField),
+        'le journal propose un champ de saisie pour un souvenir')) {
       await tester.enterText(noteField.first, souvenir);
       await pumpAndSettleTolerant(tester);
       logStep(P, 'apres_journal', 'SAISIE souvenir : "$souvenir"');
-    } else {
-      logStep(P, 'apres_journal',
-          'COINCE : champ de saisie de note introuvable dans le dialog');
     }
     await settleAndShoot(tester, P, '15_journal_note_saisie');
     // Enregistrer la note (bouton « Enregistrer »/« Save » du dialog).
@@ -365,29 +441,52 @@ void main() {
         'Souvenir enregistre = $noteSaved ; visible dans le journal = '
         '$noteVisible (le journal n\'est plus vide -> apres-trek couvert).');
 
-    // 2) Recap « Récapitulatif » (Votre aventure) : bilan post-trek (stats
-    // session), carte de la section « Apres la randonnee » du hub.
-    _goHome(tester, P);
-    final recapCard = textFrEn('Récapitulatif', 'Recap');
-    await scrollUntil(tester, recapCard, P, 'apres_recap',
-        'carte Recapitulatif (Votre aventure en resume)');
-    final recapOpened = await tapIfPresent(tester, recapCard, P, 'apres_recap',
-        'ouvrir le recap post-trek', warnIfMissing: false);
+    // EXIGENCE — le souvenir de Steve doit etre conserve et relu.
+    exige(P, 'apres_journal', noteSaved && noteVisible,
+        'le souvenir saisi est enregistre ET relu dans le journal '
+        '(enregistre=$noteSaved, relu=$noteVisible)');
+
+    // 2) Recap « Mon aventure » : bilan post-trek (stats session), carte de la
+    // section « Apres la randonnee » du hub.
+    // LIBELLE PERIME CORRIGE (campagne N2) : « Récapitulatif » n'existe pas
+    // dans l'i18n d'aujourd'hui ; la porte unique s'appelle « Mon aventure »
+    // (`t.recap.title`, cle stable `completed-review`).
+    await _goHome(tester, P);
+    // Meme raison qu'au diplome : la porte unique est en TETE du cockpit.
+    await _scrollToTop(tester, P);
+    final recapCard = find.text(t.recap.title);
+    var recapOpened = await tapIfPresent(
+        tester, find.byKey(const ValueKey('completed-review')), P, 'apres_recap',
+        'ouvrir « Mon aventure » (cle completed-review)',
+        warnIfMissing: false);
+    if (!recapOpened) {
+      await scrollUntil(tester, recapCard, P, 'apres_recap',
+          'carte « Mon aventure » (section Apres)');
+      recapOpened = await tapIfPresent(tester, recapCard, P, 'apres_recap',
+          'ouvrir le recap post-trek', warnIfMissing: false);
+    }
     await settleAndShoot(tester, P, '17_recap_apres_trek');
     _logLocation(tester, P, 'apres_recap');
     // Indice de contenu : titre « Votre aventure » ou une stat (etapes/km).
-    final recapContent = present(find.text('Votre aventure')) ||
-        present(find.text('Your adventure')) ||
-        present(find.textContaining('Statistiques')) ||
-        present(find.textContaining('Statistics'));
+    final recapContent = present(find.text(t.diploma.recapTitle)) ||
+        present(find.text(t.recap.finisherTitle)) ||
+        present(find.text(t.recap.title)) ||
+        present(find.textContaining('Statistiques'));
     logStep(P, 'apres_recap',
         'Recap post-trek ouvert = $recapOpened ; contenu bilan visible = '
-        '$recapContent (« Votre aventure », stats session — en plus du diplome '
-        'et du journal).');
+        '$recapContent.');
+    exige(P, 'apres_recap', recapOpened && recapContent,
+        'le recapitulatif post-trek s ouvre et affiche un bilan '
+        '(ouvert=$recapOpened, contenu=$recapContent)');
 
     logStep(P, 'fin', 'Scenario S3 termine (realiser + apres-trek complet)');
+    retirerVeilleEcranSysteme();
     await finalizeScenario(tester, P);
     await flushJournal(P);
+    // LE VERDICT (campagne N2). S3 est le scenario qui, en N1, a logue « dialog
+    // permission par-dessus = false » pendant qu'une boite Android recouvrait
+    // la carte. Il ne peut plus rendre un faux vert.
+    verdictPersona(P, minimumExigences: 14);
   });
 }
 
@@ -427,14 +526,14 @@ Future<void> _satisfaireGateDemarrage(
   _push(tester, '/trail/$id/itinerary', persona);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
   await settleAndShoot(tester, persona, '03a_gate_itineraire');
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await pumpAndSettleTolerant(tester);
 
   // 2) PROGRAMME — idem, markSeen a l'ouverture.
   _push(tester, '/trail/$id/planning', persona);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
   await settleAndShoot(tester, persona, '03b_gate_programme');
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await pumpAndSettleTolerant(tester);
 
   // 3) DATE DE DEPART — poser une date dans le calendrier.
@@ -466,7 +565,7 @@ Future<void> _satisfaireGateDemarrage(
   }
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
   await settleAndShoot(tester, persona, '03c_gate_date');
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 
   // Le notifier recharge ses etapes depuis SharedPreferences de maniere ASYNC
@@ -487,6 +586,13 @@ Future<void> _satisfaireGateDemarrage(
   logStep(persona, 'gate',
       'Gate APRES = $apres | etapes coeur persistees = $etapes '
       '${apres == true ? "-> CTA Démarrer ACTIVABLE" : "-> CTA TOUJOURS INERTE (signal QA)"}');
+  // EXIGENCE — Steve a fait les TROIS etapes coeur (Itineraire, Programme,
+  // date) : le gate DOIT etre ouvert. Un gate ferme ici rendrait tout le
+  // terrain (carte, SOS, fin, diplome) hors d'atteinte, et c'etait jusqu'ici
+  // un simple commentaire « signal QA » dans un log.
+  exige(persona, 'gate', apres == true,
+      'le gate de demarrage s ouvre apres Itineraire + Programme + date '
+      '(lu = ${apres?.toString() ?? "illisible"}, etapes = $etapes)');
 }
 
 Future<void> _observe(WidgetTester tester, Duration d) async {
@@ -504,6 +610,73 @@ bool _onMap(WidgetTester tester) {
       present(find.text('Étape en cours'));
 }
 
+/// C2 — LE SECOND CHEMIN DE DEMARRAGE : le bouton « Démarrer » de l'overlay de
+/// la carte (`tracking_overlay.dart`), distinct du CTA du cockpit.
+///
+/// POURQUOI CE TEST EXISTE : en N1, DEUX endroits lancaient l'escalade de
+/// permission au meme instant — d'ou le `PlatformException « A request for
+/// permissions is already running »` et les sept minutes passees derriere
+/// l'ecran systeme. Corriger un seul chemin ne suffisait donc pas. On exige ici
+/// que le SECOND chemin soit aussi propre que le premier.
+///
+/// MECANIQUE : le bouton « Démarrer » de l'overlay n'existe que lorsque la
+/// session est a l'arret. On arrete donc le suivi depuis l'overlay, puis on le
+/// relance par ce bouton.
+Future<void> _verifierSecondCheminDemarrage(
+    WidgetTester tester, String persona) async {
+  if (!_onMap(tester)) {
+    _goMap(tester, persona);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  }
+  // 1) Arreter le suivi depuis l'overlay (« Arrêter »).
+  final arreter = find.text(t.tracking.stop);
+  final arrete = await tapIfPresent(tester, arreter, persona, 'chemin2',
+      'bouton « Arrêter » de l overlay de carte', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  // Une confirmation peut s'interposer : on la valide si elle existe.
+  await tapIfPresent(tester, find.text(t.tracking.stop), persona, 'chemin2',
+      'confirmer l arret du suivi', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  await settleAndShoot(tester, persona, '07b_overlay_arrete');
+
+  // 2) Le bouton « Démarrer » de l'overlay doit reapparaitre.
+  final demarrerOverlay = find.text(t.tracking.start);
+  final boutonPresent = present(demarrerOverlay);
+  logStep(
+      persona,
+      'chemin2',
+      'Suivi arrete depuis l overlay = $arrete ; bouton « Démarrer » de '
+          'l overlay present = $boutonPresent');
+  if (!boutonPresent) {
+    // On ne transforme pas une limite de sequencement en faux defaut produit :
+    // on le DIT, et le chemin 1 reste prouve par ailleurs.
+    logStep(
+        persona,
+        'chemin2',
+        'SECOND CHEMIN NON JOUE : le bouton « Démarrer » de l overlay n est '
+            'pas revenu apres l arret (session non repassee a l etat arrete). '
+            'Limite de sequencement du test, pas un defaut constate.');
+    return;
+  }
+
+  // 3) Relancer par CE bouton et exiger qu'aucun ecran systeme ne surgisse.
+  final marque = marqueEcranSysteme();
+  await exigeTap(tester, demarrerOverlay, persona, 'chemin2',
+      'bouton « Démarrer » de l overlay de carte (SECOND chemin de demarrage)');
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+  await settleAndShoot(tester, persona, '07c_overlay_redemarre');
+  final systeme = ecransSystemeDepuis(marque);
+  exige(
+      persona,
+      'chemin2',
+      systeme.isEmpty,
+      'AUCUN ecran systeme ne surgit sur la carte par le SECOND chemin de '
+          'demarrage (detecte : ${systeme.isEmpty ? "aucun" : systeme.join(", ")})');
+  // Et l'application reste utilisable : la carte est toujours la.
+  exige(persona, 'chemin2', _onMap(tester),
+      'apres le second demarrage, la carte reste affichee et utilisable');
+}
+
 /// Force l ouverture de la carte via le routeur.
 void _goMap(WidgetTester tester, String persona) {
   try {
@@ -518,7 +691,15 @@ void _goMap(WidgetTester tester, String persona) {
   }
 }
 
-void _goHome(WidgetTester tester, String persona) {
+/// Retour au cockpit.
+///
+/// DEFAUT CORRIGE (campagne N2) : cette fonction demandait la navigation SANS
+/// composer une seule frame, et ses appelants ne l'attendaient pas. Les
+/// recherches qui suivaient immediatement (« Mon aventure », « Diplôme ») se
+/// faisaient donc sur l'ECRAN PRECEDENT, encore monte — d'ou des « cible
+/// introuvable » systematiques sur tout le post-trek de S3, mis au compte du
+/// produit alors que c'etait le harnais qui regardait trop tot.
+Future<void> _goHome(WidgetTester tester, String persona) async {
   try {
     final ctx = tester.element(find.byType(Navigator).first);
     final router = GoRouter.maybeOf(ctx);
@@ -529,6 +710,7 @@ void _goHome(WidgetTester tester, String persona) {
   } catch (e) {
     logStep(persona, 'nav', 'Retour /home impossible : $e');
   }
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 }
 
 Future<void> _goMyTreks(WidgetTester tester, String persona) async {
@@ -631,7 +813,7 @@ Future<bool> _openHubCard(
   String? shot,
   String Function(String trailId)? fallbackPath,
 }) async {
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await pumpAndSettleTolerant(tester);
   final card = find.text(cardLabel);
   final scrollables = find.byType(Scrollable);
@@ -778,6 +960,6 @@ Future<void> _terrainConsultations(WidgetTester tester, String persona) async {
       '#D31 + #D32 couverts (geste terrain joue).');
 
   // Retour cockpit propre avant la suite (SOS / terminer).
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await settleAndShoot(tester, persona, 'S3E_zz_retour_cockpit');
 }

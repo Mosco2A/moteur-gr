@@ -35,6 +35,7 @@ void main() {
 
   testWidgets('S4 — Ines accede a son premium hors-ligne', (tester) async {
     logStep(P, 'boot', 'Lancement de app.main()');
+    installerVeilleEcranSysteme(P);
     app.main();
     await settleAndShoot(tester, P, '01_boot', timeout: const Duration(seconds: 12));
 
@@ -59,7 +60,7 @@ void main() {
           P,
           'entree',
           'Entrer dans la vitrine');
-      _goHome(tester, P);
+      await _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '03_cockpit');
     _logLocation(tester, P, 'cockpit');
@@ -80,17 +81,19 @@ void main() {
     await tapIfPresent(tester, trainingCard, P,
         'entrainement_online', 'ouvrir Preparation physique (ONLINE)');
     await settleAndShoot(tester, P, '04_entrainement_online');
-    final unlockOnline = present(find.text('Debloquer')) ||
-        present(find.textContaining('Débloquer'));
+    final unlockOnline = present(find.textContaining('Débloquer'));
+    final sessionsOnline = present(find.byWidgetPredicate(
+        (w) => w.key.toString().contains('training-session-')));
     logStep(P, 'entrainement_online',
-        'Paywall « Debloquer » visible ONLINE = $unlockOnline ; '
-        'seances presentes = ${present(find.byWidgetPredicate((w) => w.key.toString().contains('training-session-')))}');
-    if (unlockOnline) {
-      // Geste d achat demo (debloque le pack).
-      await tapIfPresent(tester, find.textContaining('Débloquer'), P, 'achat',
-          'Debloquer le pack (achat demo)', warnIfMissing: false);
-      await settleAndShoot(tester, P, '05_apres_achat');
-    }
+        'Paywall « Débloquer » visible ONLINE = $unlockOnline ; '
+        'seances presentes ONLINE = $sessionsOnline');
+    // EXIGENCE — l'ecran doit dire quelque chose de LISIBLE en ligne : soit le
+    // plan (debloque), soit le teaser d'achat. C'est l'etat de REFERENCE auquel
+    // on comparera l'etat hors-ligne : sans reference, « rien n'a change » ne
+    // veut rien dire.
+    exige(P, 'entrainement_online', unlockOnline || sessionsOnline,
+        'EN LIGNE, l Entrainement affiche un etat lisible (plan debloque ou '
+        'teaser d achat)');
     await _back(tester, P, 'entrainement_online');
 
     // Carte offline (contenu premium terrain).
@@ -113,23 +116,35 @@ void main() {
 
     // --- Re-verifier l acces PENDANT la coupure (LE point sensible) ---
     // 1) Entrainement doit rester accessible (contenu premium local).
-    _goHome(tester, P);
+    await _goHome(tester, P);
     await _scrollToTop(tester, P);
     await scrollUntil(tester, trainingCard, P,
         'entrainement_offline', 'carte Preparation physique (OFFLINE)');
     await tapIfPresent(tester, trainingCard, P,
         'entrainement_offline', 'ouvrir Preparation physique (OFFLINE)');
     await settleAndShoot(tester, P, '08_entrainement_offline');
-    final blockedOffline = present(find.textContaining('Débloquer')) ||
-        present(find.text('Debloquer'));
+    final blockedOffline = present(find.textContaining('Débloquer'));
     final sessionsOffline = present(find
         .byWidgetPredicate((w) => w.key.toString().contains('training-session-')));
     logStep(
         P,
         'entrainement_offline',
-        'PAYWALL reapparait hors-ligne = $blockedOffline (DOIT etre false) ; '
-            'seances toujours presentes = $sessionsOffline (DOIT etre true si achete). '
-            'C EST LE POINT SENSIBLE : le payeur ne doit JAMAIS etre bloque hors-ligne.');
+        'PAYWALL hors-ligne = $blockedOffline ; seances presentes hors-ligne = '
+            '$sessionsOffline. C EST LE POINT SENSIBLE : le payeur ne doit '
+            'JAMAIS etre bloque hors-ligne.');
+    // ============== LE POINT SENSIBLE, DEVENU UNE EXIGENCE ==============
+    // La bonne formulation n'est pas « aucun paywall hors-ligne » (en demo la
+    // vitrine affiche legitimement le teaser MEME EN LIGNE) mais : couper le
+    // reseau NE DOIT RIEN CHANGER. Le droit d'acces est local (Drift), il ne
+    // depend pas du reseau. On compare donc a l'etat de reference mesure juste
+    // avant la coupure.
+    exige(
+        P,
+        'entrainement_offline',
+        sessionsOffline == sessionsOnline && blockedOffline == unlockOnline,
+        'couper le reseau NE CHANGE RIEN a l acces a l Entrainement '
+            '(en ligne : seances=$sessionsOnline paywall=$unlockOnline ; '
+            'hors ligne : seances=$sessionsOffline paywall=$blockedOffline)');
     await _back(tester, P, 'entrainement_offline');
 
     // 2) Carte offline : le fond OSM (reseau) peut ne pas charger, mais l ecran
@@ -139,20 +154,34 @@ void main() {
     final mapErrorOffline = present(find.textContaining('impossible')) ||
         present(find.textContaining('Impossible')) ||
         present(find.textContaining('introuvable'));
+    final carteRendueOffline = present(find.byWidgetPredicate(
+        (w) => w.runtimeType.toString() == 'FlutterMap'));
     logStep(
         P,
         'carte_offline',
         'Carte OFFLINE : ecran d erreur bloquant visible = $mapErrorOffline ; '
-            'FlutterMap present = ${present(find.byWidgetPredicate((w) => w.runtimeType.toString() == 'FlutterMap'))} '
+            'FlutterMap present = $carteRendueOffline '
             '(le fond OSM en ligne peut manquer, mais l ecran ne doit pas etre bloque).');
+    // EXIGENCE — hors-ligne, la carte reste RENDUE et sans ecran d'erreur
+    // bloquant. Une randonneuse qui a paye et qui est sans reseau en montagne
+    // doit garder sa carte.
+    exige(P, 'carte_offline', carteRendueOffline,
+        'la carte reste RENDUE hors-ligne (moteur de carte monte)');
+    exige(P, 'carte_offline', !mapErrorOffline,
+        'aucun ecran d erreur bloquant ne remplace la carte hors-ligne');
     await _back(tester, P, 'carte_offline');
 
     // 3) Cockpit toujours navigable hors-ligne ?
-    _goHome(tester, P);
+    await _goHome(tester, P);
     await settleAndShoot(tester, P, '10_cockpit_offline');
+    final cockpitOffline = present(find.byType(Scaffold));
+    final preparerVisible = present(textFrEn('Préparer', 'Prepare'));
     logStep(P, 'cockpit_offline',
-        'Cockpit accessible hors-ligne = ${present(find.byType(Scaffold))} ; '
-        'sections Preparer visibles = ${present(textFrEn('Préparer', 'Prepare'))}');
+        'Cockpit accessible hors-ligne = $cockpitOffline ; '
+        'sections Preparer visibles = $preparerVisible');
+    exige(P, 'cockpit_offline', cockpitOffline && preparerVisible,
+        'le cockpit reste navigable hors-ligne, sections comprises '
+        '(cockpit=$cockpitOffline, Preparer=$preparerVisible)');
 
     // ================================================================
     // EXTENSION COUVERTURE (GO-46, COUVERTURE.md 3.3) — ACHAT + TRACE OFFLINE :
@@ -173,8 +202,12 @@ void main() {
         'Scenario S4 termine (offline + trace locale + flux achat trek non '
             'possede). L hote peut retablir le reseau. Verdicts consignes dans '
             'les logs entrainement_offline/carte_offline/trace_offline/achat.');
+    retirerVeilleEcranSysteme();
     await finalizeScenario(tester, P);
     await flushJournal(P);
+    // LE VERDICT (campagne N2). S4 est le POINT SENSIBLE : un payeur bloque
+    // hors-ligne doit rendre ce scenario ROUGE, plus seulement bavard.
+    verdictPersona(P, minimumExigences: 7);
   });
 }
 
@@ -219,7 +252,12 @@ void _goMap(WidgetTester tester, String persona) {
   }
 }
 
-void _goHome(WidgetTester tester, String persona) {
+/// Retour au cockpit.
+///
+/// DEFAUT CORRIGE (campagne N2) : cette fonction demandait la navigation SANS
+/// composer une seule frame, et ses appelants ne l'attendaient pas : les
+/// recherches qui suivaient se faisaient sur l'ECRAN PRECEDENT, encore monte.
+Future<void> _goHome(WidgetTester tester, String persona) async {
   try {
     final ctx = tester.element(find.byType(Navigator).first);
     final router = GoRouter.maybeOf(ctx);
@@ -230,6 +268,7 @@ void _goHome(WidgetTester tester, String persona) {
   } catch (e) {
     logStep(persona, 'nav', 'Retour /home impossible : $e');
   }
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 }
 
 Future<void> _goMyTreks(WidgetTester tester, String persona) async {
@@ -319,9 +358,13 @@ Future<void> _paymentAndOfflineTrace(WidgetTester tester, String persona) async 
       persona,
       'trace_offline',
       'Carte offline : FlutterMap present = $hasMap ; CALQUE DE TRACE local '
-          '(TraceLayer/PolylineLayer) present = $hasTrace (DOIT etre true : le '
-          'trace embarque s\'affiche meme sans fond OSM en ligne). #D36 couvert '
-          '(presence du trace local verifiee, pas seulement non-erreur).');
+          '(TraceLayer/PolylineLayer) present = $hasTrace. #D36.');
+  // EXIGENCE #D36 — la preuve du contenu OFFLINE n'est pas « pas d'erreur »
+  // mais « le trace embarque s'affiche ». Sans reseau, c'est ce calque local
+  // qui garde Ines sur le sentier.
+  exige(persona, 'trace_offline', hasMap && hasTrace,
+      'le CALQUE DE TRACE local est affiche hors-ligne, sans fond OSM '
+      '(carte=$hasMap, trace=$hasTrace)');
   await _back(tester, persona, 'trace_offline');
 
   // --- #P45 BASCULE MULTI-SENTIERS + #D02/#D03 FLUX D'ACHAT (trek non possede) ---
@@ -349,17 +392,22 @@ Future<void> _paymentAndOfflineTrace(WidgetTester tester, String persona) async 
     _push(tester, '/training', persona);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, persona, 'S4E_02_entrainement_verrouille');
-    final unlockCta = present(find.text('Debloquer')) ||
-        present(find.textContaining('Débloquer'));
+    final unlockCta = present(find.textContaining('Débloquer'));
     final blurredLock = present(find.byIcon(Icons.lock_outline)) ||
         present(find.byIcon(Icons.lock));
     logStep(
         persona,
         'achat',
-        'Entrainement (trek NON possede) : CTA « Debloquer » visible = '
+        'Entrainement (trek NON possede) : CTA « Débloquer » visible = '
             '$unlockCta ; apercu verrouille (cadenas) = $blurredLock '
             '(ATTENDU true — trek a la carte non achete). #D02/#D03 : la prepa '
             'premium exige l\'achat pour un trek non possede.');
+    // EXIGENCE (contre-preuve du point sensible) : le verrou DOIT exister sur
+    // un trek NON possede. Sans cela, « rien n'est bloque hors-ligne » serait
+    // vrai pour la mauvaise raison — tout serait ouvert a tout le monde.
+    exige(persona, 'achat', unlockCta,
+        'un trek NON POSSEDE presente bien son verrou d achat '
+        '(contre-preuve : l acces premium n est pas ouvert a tous)');
 
     // Ouvrir le PAYWALL (wallet d'abord, complement store) et VERIFIER son
     // contenu (bouton d'achat + avantages). #D06/#D07 : le CTA rewarded
@@ -421,6 +469,6 @@ Future<void> _paymentAndOfflineTrace(WidgetTester tester, String persona) async 
   logStep(persona, 'restore',
       'Vitrine mare-a-mare-centre restauree comme sentier actif '
       '(loc=${_currentLocation(tester)}). Etat propre pour la suite.');
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await settleAndShoot(tester, persona, 'S4E_zz_retour_cockpit');
 }

@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
-import 'package:moteur_gr/features/feasibility/domain/walk_test_result.dart';
 import 'package:moteur_gr/features/feasibility/presentation/trek_feasibility_screen.dart';
 import 'package:moteur_gr/features/feasibility/providers/hiker_profile_provider.dart';
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';

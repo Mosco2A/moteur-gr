@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/feasibility/domain/feasibility_formula.dart';
-import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/objective_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
 import 'package:moteur_gr/features/feasibility/domain/walk_test_norms.dart';
@@ -68,14 +67,17 @@ void main() {
   });
 
   test('le VERDICT change quand le test 6 min change (meme etapes)', () {
-    // Etape unique calee pour etre ORANGE en intermediaire (plafond 29
-    // km-effort) et VERTE en confirme (plafond 39). effort = 20 + 800/100 = 28.
+    // Etape unique calee pour etre ORANGE en intermediaire (capacite 38,67
+    // km-energie) et VERTE en confirme (55,57). Energie V2 = 25 + 500/42 = 36,9.
+    // UNE SEULE etape : la contrainte repos (C3) est alors declaree non
+    // applicable, donc le verdict de circuit vaut C1 et le test porte bien sur
+    // le seul effet du test 6 min.
     final stages = [
       const StageEffort(
         index: 0,
         name: 'Etape test',
-        distanceKm: 20,
-        elevationGainM: 800,
+        distanceKm: 25,
+        elevationGainM: 500,
       ),
     ];
 
@@ -89,11 +91,11 @@ void main() {
     final withExcellent =
         evalWith(testOfLevel(WalkTestLevel.excellent)); // confirme
 
-    // Le plafond journalier augmente avec un excellent test -> le ratio baisse.
-    expect(withExcellent.dailyCeilingKmEffort,
-        greaterThan(withoutTest.dailyCeilingKmEffort));
-    // Concretement : orange (28/29 ~ 0.97) sans test -> vert (28/39 ~ 0.72)
-    // avec un excellent test. Le verdict global DOIT changer.
+    // La capacite journaliere augmente avec un excellent test -> le score baisse.
+    expect(withExcellent.dailyCapacityEnergyKm,
+        greaterThan(withoutTest.dailyCapacityEnergyKm));
+    // Concretement : orange (36,9/38,67 ~ 0,95) sans test -> vert
+    // (36,9/55,57 ~ 0,66) avec un excellent test. Le verdict DOIT changer.
     expect(withoutTest.globalVerdict, FeasibilityVerdict.orange);
     expect(withExcellent.globalVerdict, FeasibilityVerdict.green);
     expect(withExcellent.globalVerdict,

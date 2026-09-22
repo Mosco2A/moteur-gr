@@ -448,7 +448,7 @@ class _VerdictView extends ConsumerWidget {
           Center(
             child: Text(
               f.formula.ceilingLabel(
-                value: _fmt(assessment.dailyCeilingKmEffort),
+                value: _fmt(assessment.dailyCapacityEnergyKm),
                 level: _levelLabel(assessment.level),
               ),
               style: theme.textTheme.bodySmall?.copyWith(
@@ -460,19 +460,38 @@ class _VerdictView extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingBase),
 
-          // CE QUE LE FEU NE REGARDE PAS (decision Chris #100279, 21/09).
-          // Mesure de la campagne personas : de 0 a 45 kg de sac, ni le verdict
-          // ni le plafond ne bougent — la saison non plus. Tant que ces deux
-          // dimensions ne sont pas cablees avec des coefficients SOURCES, on le
-          // DIT. StepWays est une application de securite en montagne : croire
-          // qu'un sac de 20 kg a ete pris en compte dans un feu vert est un
-          // risque reel.
+          // HIVER : LE VERDICT EST DECLARE NON VALIDE (#1-e, #8-d). Place
+          // AVANT tout le reste — une declaration de non-validite lue apres le
+          // detail arrive trop tard. On ne durcit pas le chiffre, on dit qu'il
+          // ne s'applique pas.
+          if (!assessment.isVerdictValid) ...[
+            const _WinterInvalidNotice(),
+            const SizedBox(height: AppTheme.spacingLg),
+          ],
+
+          // CE QUE LE FEU NE REGARDE PAS (#8-a). La mention s'est COUPEE EN
+          // DEUX le 22/09 : la moitie « saison » est partie, puisque la saison
+          // entre desormais dans le calcul ; la moitie « sac » est devenue
+          // PERMANENTE, avec la mesure qui la fonde — de 0 a 45 kg de charge,
+          // le verdict ne bouge pas d'un cran. Croire qu'un sac de 20 kg a ete
+          // pris en compte dans un feu vert est un risque reel.
           const _OutOfScopeNotice(),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Synthese du verdict global : etape la plus dure, jours au-dessus,
           // facteur limitant, reco entrainement.
           _GlobalSummary(assessment: assessment),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // SCORE DE CIRCUIT (#2-m a #2-t) + explication OBLIGATOIRE quand le
+          // circuit est plus severe que toutes ses etapes (#2-s).
+          _CircuitSection(assessment: assessment),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // CE QUI EST ENTRE DANS CE VERDICT, ET CE QUI N'Y EST PAS ENTRE —
+          // AVEC LA RAISON (#8-b). Une dimension neutre faute de DONNEE n'a
+          // pas le meme statut qu'une dimension neutre faute de SOURCE.
+          _ConditionsSection(assessment: assessment),
           const SizedBox(height: AppTheme.spacingLg),
 
           // Feu tricolore etape par etape.
@@ -673,6 +692,322 @@ class _OutOfScopeNotice extends StatelessWidget {
   }
 }
 
+/// HIVER — LE VERDICT EST DECLARE NON VALIDE (#1-e, #2-j, #8-d).
+///
+/// POURQUOI UNE DECLARATION ET NON UN COEFFICIENT. Les cotations officielles de
+/// sentier ne valent qu'« par bon temps, terrain sec et enneigement adapte »
+/// (#S11-a). Hors de ces conditions, il n'existe aucune mesure publiee pour
+/// durcir un verdict d'un montant justifiable : inventer un coefficient
+/// d'hiver, ce serait produire un chiffre qui a l'air d'une mesure et n'en est
+/// pas. On dit donc que le verdict ne tient plus — ce qui est vrai, verifiable,
+/// et bien plus utile qu'un faux chiffre.
+class _WinterInvalidNotice extends StatelessWidget {
+  const _WinterInvalidNotice();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    const color = AppTheme.rougeUrgence;
+    return AppCard(
+      key: const ValueKey('feasibility-winter-invalid'),
+      backgroundColor: color.withAlpha(20),
+      borderColor: color.withAlpha(90),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Icon(Icons.ac_unit, size: 20, color: color),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(
+              t.feasibility.formula.winterInvalid,
+              style: theme.textTheme.bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// LE SCORE DE CIRCUIT (#2-m a #2-t) — les quatre contraintes, celle qui mord,
+/// et l'explication OBLIGATOIRE d'ARB-004.
+///
+/// CE QUE CETTE SECTION EVITE. Le verdict global n'est plus la pire etape : il
+/// est le maximum de trois contraintes normalisees, dont deux ne se voient dans
+/// AUCUNE etape prise isolement. Sans cette section, un randonneur verrait sept
+/// etapes vertes surmontees d'un circuit rouge et conclurait a un bug — c'est
+/// exactement pour cela que la spec rend l'explication obligatoire.
+class _CircuitSection extends StatelessWidget {
+  const _CircuitSection({required this.assessment});
+  final FeasibilityAssessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    final circuit = assessment.circuit;
+    if (circuit == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+    final color = _verdictColor(circuit.verdict);
+
+    final lines = <Widget>[];
+
+    lines.add(Text(
+      f.circuitScore(value: _fmt2(circuit.score)),
+      style: theme.textTheme.bodyMedium?.copyWith(
+        fontWeight: FontWeight.w700,
+        color: color,
+      ),
+    ));
+    lines.add(const SizedBox(height: AppTheme.spacingXs));
+    lines.add(Text(
+      f.circuitDominant(constraint: _constraintLabel(circuit.dominant)),
+      style: theme.textTheme.bodySmall,
+    ));
+
+    // ARB-004 : OBLIGATION d'expliquer quand le circuit est plus severe que
+    // toutes ses etapes. Le texte nomme la contrainte responsable.
+    if (assessment.isCircuitHarsherThanStages) {
+      lines.add(const SizedBox(height: AppTheme.spacingSm));
+      lines.add(Text(
+        f.circuitHarsherIntro,
+        key: const ValueKey('feasibility-circuit-harsher'),
+        style: theme.textTheme.bodySmall
+            ?.copyWith(fontWeight: FontWeight.w600, color: color),
+      ));
+      final why = switch (circuit.dominant) {
+        CircuitConstraint.rest => f.circuitHarsherByRest,
+        CircuitConstraint.averageLoad => f.circuitHarsherByAverage,
+        _ => null,
+      };
+      if (why != null) {
+        lines.add(const SizedBox(height: 2));
+        lines.add(Text(why, style: theme.textTheme.bodySmall));
+      }
+    }
+
+    // C3, le repos : sa fenetre, ou sa NON-APPLICABILITE declaree (#10-e).
+    lines.add(const SizedBox(height: AppTheme.spacingSm));
+    if (!circuit.isRestApplicable) {
+      lines.add(Text(
+        f.restNotApplicable,
+        key: const ValueKey('feasibility-rest-not-applicable'),
+        style: theme.textTheme.bodySmall,
+      ));
+    } else {
+      lines.add(Text(
+        circuit.monotonyCoversWholeTrek
+            ? f.restWindowWhole(days: circuit.totalDays)
+            : f.restWindowSlice(
+                start: circuit.monotonyWindowStartDay ?? 1,
+                end: circuit.monotonyWindowEndDay ?? circuit.totalDays,
+              ),
+        style: theme.textTheme.bodySmall,
+      ));
+      // LE LIEN ENTRE LE PROGRAMME ET LE VERDICT, ECRIT. Sans cette ligne, un
+      // circuit rouge par manque de repos est illisible : le randonneur ne
+      // voit pas que c'est SON decoupage qui le produit, ni que changer le
+      // decoupage change le chiffre.
+      lines.add(const SizedBox(height: 2));
+      lines.add(Text(
+        assessment.restDaysPlanned > 0
+            ? f.restDaysCounted(count: assessment.restDaysPlanned)
+            : f.restDaysNone,
+        key: const ValueKey('feasibility-rest-days-counted'),
+        style: theme.textTheme.bodySmall?.copyWith(
+          fontWeight: assessment.restDaysPlanned > 0
+              ? FontWeight.normal
+              : FontWeight.w600,
+        ),
+      ));
+      if (circuit.dominant == CircuitConstraint.rest) {
+        lines.add(const SizedBox(height: 2));
+        lines.add(Text(f.restTwoDays, style: theme.textTheme.bodySmall));
+      }
+      // Le transfert du seuil de Foster des athletes aux randonneurs est une
+      // extrapolation DECLAREE (#M08). On la dit la ou le chiffre est montre.
+      lines.add(const SizedBox(height: 2));
+      lines.add(Text(
+        f.restExtrapolation,
+        style: theme.textTheme.bodySmall?.copyWith(
+          fontStyle: FontStyle.italic,
+          color: theme.colorScheme.onSurface.withAlpha(150),
+        ),
+      ));
+    }
+
+    // --- CE QUI S'AFFICHE ET NE DECIDE PAS ---------------------------------
+    final infoStyle = theme.textTheme.bodySmall?.copyWith(
+      fontStyle: FontStyle.italic,
+      color: theme.colorScheme.onSurface.withAlpha(150),
+    );
+
+    // C2, la charge moyenne : sortie du maximum (elle est la moyenne d'une
+    // serie dont C1 est le maximum, donc elle ne pouvait rien decider), mais
+    // elle informe reellement — lue AVEC C1, elle distingue « une journee
+    // dure » de « dur tous les jours ».
+    if (circuit.averageLoad.isFinite) {
+      lines.add(const SizedBox(height: AppTheme.spacingSm));
+      lines.add(Text(
+        f.averageLoad(
+          value: _fmt2(circuit.averageLoad),
+          worst: _fmt2(circuit.worstStage),
+        ),
+        key: const ValueKey('feasibility-average-load'),
+        style: theme.textTheme.bodySmall,
+      ));
+      lines.add(const SizedBox(height: 2));
+      lines.add(Text(f.averageLoadInfo, style: infoStyle));
+    }
+
+    // C4, l'ecart a l'habitude : AFFICHE, JAMAIS DECISIF (#2-q).
+    final habit = circuit.habitGap;
+    if (habit != null && habit.isFinite) {
+      lines.add(const SizedBox(height: AppTheme.spacingSm));
+      lines.add(Text(
+        f.habitGap(value: _fmt2(habit)),
+        style: theme.textTheme.bodySmall,
+      ));
+      lines.add(const SizedBox(height: 2));
+      lines.add(Text(f.habitGapNotDecisive, style: infoStyle));
+    }
+
+    // LA DUREE, ENONCEE. Le modele ne la capte nulle part : C3 mesure une
+    // REGULARITE, pas une LONGUEUR, et rend le meme chiffre pour trois jours et
+    // pour dix-sept. Aucun seuil publie n'existe pour la scorer, donc on
+    // n'invente rien — on dit le fait et le randonneur juge.
+    if (assessment.hasDurationStatement) {
+      lines.add(const SizedBox(height: AppTheme.spacingSm));
+      lines.add(Text(
+        f.durationStatement(
+          days: assessment.walkingDays,
+          done: assessment.longestConsecutiveDaysDone,
+        ),
+        key: const ValueKey('feasibility-duration-statement'),
+        style: theme.textTheme.bodySmall,
+      ));
+      lines.add(const SizedBox(height: 2));
+      lines.add(Text(f.durationStatementInfo, style: infoStyle));
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(f.circuitTitle, style: theme.textTheme.titleMedium),
+        const SizedBox(height: AppTheme.spacingSm),
+        AppCard(
+          backgroundColor: color.withAlpha(14),
+          borderColor: color.withAlpha(60),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: lines,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// CE QUI EST ENTRE DANS CE VERDICT, ET CE QUI N'Y EST PAS ENTRE (#8-b).
+///
+/// LA DISTINCTION QUE CETTE SECTION PORTE. « L'altitude ne change rien ici »
+/// peut vouloir dire deux choses opposees : que le sentier culmine sous le
+/// seuil ou QUE LA TRACE N'EN PORTE PAS. Dans le premier cas le verdict est
+/// complet, dans le second il est aveugle sur une dimension. Une application de
+/// securite en montagne doit dire laquelle des deux.
+class _ConditionsSection extends StatelessWidget {
+  const _ConditionsSection({required this.assessment});
+  final FeasibilityAssessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+    final conditions = assessment.conditions;
+    final lines = <String>[];
+
+    // 1. L'unite d'energie, dite une fois : le chiffre affiche partout en
+    // decoule, et 42 n'est pas un nombre qu'on devine.
+    lines.add(f.energyUnitNotice);
+
+    // 2. Le plancher demontre, quand il a REELLEMENT releve la capacite.
+    if (assessment.isDemonstratedFloorActive) {
+      lines.add(f.floorActive(
+        value: _fmt(assessment.demonstratedFloorEnergyKm),
+      ));
+    }
+
+    // 3. L'altitude : appliquee, sous le seuil, ou absente de la trace.
+    final altitude = conditions.maxAltitudeM;
+    switch (conditions.altitudeNeutralReason) {
+      case NeutralReason.missingData:
+        lines.add(f.altitudeMissing);
+        break;
+      case NeutralReason.belowThreshold:
+        lines.add(f.altitudeBelowThreshold(value: altitude!.round()));
+        break;
+      default:
+        lines.add(f.altitudeApplied(
+          value: (altitude ?? 0).round(),
+          pct: _fmt((1 - conditions.altitudeFactor) * 100),
+        ));
+    }
+
+    // 4. La saison : ete chiffre, printemps/automne sans source, ou pas de
+    // date de depart posee. L'hiver est deja declare plus haut.
+    if (!conditions.isWinterDeparture) {
+      switch (conditions.seasonNeutralReason) {
+        case NeutralReason.missingData:
+          lines.add(f.seasonMissing);
+          break;
+        case NeutralReason.noPublishedSource:
+          lines.add(f.seasonNoSource);
+          break;
+        default:
+          lines.add(f.heatApplied);
+      }
+    }
+
+    // 5. La masse : hors du verdict, ET C'EST UNE PROPRIETE ASSUMEE (#3-d).
+    lines.add(f.massNotCounted);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(f.conditionsTitle, style: theme.textTheme.titleMedium),
+        const SizedBox(height: AppTheme.spacingSm),
+        AppCard(
+          key: const ValueKey('feasibility-conditions'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final line in lines) ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Icon(Icons.circle,
+                          size: 6,
+                          color: theme.colorScheme.onSurface.withAlpha(120)),
+                    ),
+                    const SizedBox(width: AppTheme.spacingSm),
+                    Expanded(
+                      child: Text(line, style: theme.textTheme.bodySmall),
+                    ),
+                  ],
+                ),
+                if (line != lines.last)
+                  const SizedBox(height: AppTheme.spacingXs),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _PartialProfileNotice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -861,10 +1196,29 @@ class _StageTile extends StatelessWidget {
                   f.stageEffort(
                     distance: _fmt(s.distanceKm),
                     elevation: s.elevationGainM,
-                    effort: _fmt(s.effortKm),
+                    effort: _fmt(verdict.energyKm),
                   ),
                   style: theme.textTheme.bodySmall,
                 ),
+                // #2-l : l'etape NOMME son facteur dominant. Sans cela, un
+                // randonneur qui voit deux etapes oranges ne sait pas laquelle
+                // est orange a cause de l'altitude et laquelle l'est a cause
+                // du denivele — donc ne sait pas quoi changer.
+                if (verdict.isOverCapacity) ...[
+                  const SizedBox(height: 2),
+                  Text(
+                    // Libelle DISTINCT de celui du verdict global : deux
+                    // phrases identiques a deux niveaux de lecture differents
+                    // laisseraient croire a la meme affirmation.
+                    f.stageDominantFactor(
+                      factor: _limitingLabel(verdict.dominantFactor),
+                    ),
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: color,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -1004,10 +1358,19 @@ class _FallbackToQuestionnaire extends ConsumerWidget {
 
 // --- Helpers de resolution enum -> i18n / couleur / icone -------------------
 
-/// Formatte un km-effort : entier si rond, sinon une decimale.
+/// Formatte un km-energie : entier si rond, sinon une decimale.
 String _fmt(double value) {
+  if (!value.isFinite) return '—';
   if (value == value.roundToDouble()) return value.round().toString();
   return value.toStringAsFixed(1);
+}
+
+/// Formatte un SCORE (sans unite) a deux decimales : a une seule, 1,04 et 1,10
+/// s'afficheraient tous deux « 1,1 » alors qu'ils tombent de part et d'autre du
+/// seuil rouge.
+String _fmt2(double value) {
+  if (!value.isFinite) return '—';
+  return value.toStringAsFixed(2);
 }
 
 String _verdictLabel(FeasibilityVerdict verdict) {
@@ -1043,10 +1406,28 @@ String _limitingLabel(LimitingFactor factor) {
       return lf.distance;
     case LimitingFactor.elevation:
       return lf.elevation;
+    case LimitingFactor.altitude:
+      return lf.altitude;
+    case LimitingFactor.heat:
+      return lf.heat;
     case LimitingFactor.chaining:
       return lf.chaining;
     case LimitingFactor.none:
       return lf.none;
+  }
+}
+
+String _constraintLabel(CircuitConstraint constraint) {
+  final c = t.feasibility.formula.circuitConstraints;
+  switch (constraint) {
+    case CircuitConstraint.worstStage:
+      return c.worstStage;
+    case CircuitConstraint.averageLoad:
+      return c.averageLoad;
+    case CircuitConstraint.rest:
+      return c.rest;
+    case CircuitConstraint.habitGap:
+      return c.habitGap;
   }
 }
 
@@ -1066,6 +1447,8 @@ String _adviceText(ProgramAdvice advice) {
       return a.split(stage: advice.params['stage'] ?? '');
     case 'rest':
       return a.rest(stages: advice.params['stages'] ?? '');
+    case 'restDominant':
+      return a.restDominant;
     case 'training':
       return a.training(weeks: advice.params['weeks'] ?? '');
     default:

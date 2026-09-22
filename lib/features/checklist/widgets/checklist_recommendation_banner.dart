@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../feasibility/domain/body_weight_reference.dart';
 
 /// Bandeau « Poids recommande » — CLONE GR20 (BackpackRecommendationBanner).
 ///
@@ -22,10 +23,22 @@ import '../../../i18n/translations.g.dart';
 /// `checklist.weight.recommended` (« Poids recommande », wording GR20
 /// `backpack_screen.dart` : « Poids recommande : X kg ») : le bandeau dit ce
 /// qu'il montre. Le poids REEL du sac reste celui de [ChecklistWeightBanner].
+/// LE DENOMINATEUR A CHANGE LE 22/09 (#7-f). Ce bandeau calculait son plancher
+/// sur `bodyWeightKg * 0.15` alors que la jauge de la meme page calcule
+/// desormais son plafond sur la BASE DE CHARGE `min(poids ; 25 × taille²)`.
+/// Laisser les deux cote a cote aurait fait se contredire la meme page ; les
+/// deux lisent donc le meme [BodyWeightReference].
 class ChecklistRecommendationBanner extends StatelessWidget {
-  const ChecklistRecommendationBanner({super.key, required this.bodyWeightKg});
+  const ChecklistRecommendationBanner({
+    super.key,
+    required this.bodyWeightKg,
+    this.bodyHeightCm = 0,
+  });
 
   final double bodyWeightKg;
+
+  /// Taille (cm), 0 = non renseignee -> la base retombe sur le poids reel.
+  final int bodyHeightCm;
 
   /// Poids de reference « refuge » (parite GR20 BackpackReferenceWeights.refuge).
   static const double _refugeReferenceKg = 8.0;
@@ -35,8 +48,12 @@ class ChecklistRecommendationBanner extends StatelessWidget {
     final theme = Theme.of(context);
     final w = t.checklist.weight;
 
-    // Parite GR20 (branche isEmpty) : max(reference refuge, 15% du corps).
-    final minByBody = bodyWeightKg * 0.15;
+    // Parite GR20 (branche isEmpty) : max(reference refuge, 15% de la BASE DE
+    // CHARGE). Meme denominateur que la jauge de la page (#7-f).
+    final minByBody = BodyWeightReference.refugeBackpackKg(
+      heightCm: bodyHeightCm,
+      bodyWeightKg: bodyWeightKg,
+    );
     final recommendedKg =
         _refugeReferenceKg > minByBody ? _refugeReferenceKg : minByBody;
     const color = AppTheme.orangeDifficile;

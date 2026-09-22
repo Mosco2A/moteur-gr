@@ -16,17 +16,23 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
 
 const String P = 'S2_Marc';
 
+/// Version attendue dans les reglages, lue dans le PUBSPEC du projet (0.1.2+3).
+/// On garde la partie « 0.1.2 » : le build number bouge, pas la version.
+const String kVersionAttendue = '0.1.2';
+
 void main() {
   initHarness();
 
   testWidgets('S2 — Marc evalue vite un trek dur et se lance', (tester) async {
     logStep(P, 'boot', 'Lancement de app.main()');
+    installerVeilleEcranSysteme(P);
     app.main();
     await settleAndShoot(tester, P, '01_boot', timeout: const Duration(seconds: 12));
 
@@ -69,7 +75,7 @@ void main() {
       // FIX CYCLE 2 (issue 1) : « Entrer » ouvre desormais le COCKPIT /home
       // (prepa), plus la carte live. `_goHome` reste un filet idempotent (etat
       // connu) au cas ou l'entree serait detournee.
-      _goHome(tester, P);
+      await _goHome(tester, P);
     }
     await settleAndShoot(tester, P, '04_cockpit');
     _logLocation(tester, P, 'cockpit');
@@ -77,61 +83,118 @@ void main() {
     // --- Faisabilite « go » rapide ---
     final feasCard = textFrEn('Faisabilité', 'Feasibility');
     await scrollUntil(tester, feasCard, P, 'faisabilite', 'carte Faisabilite');
-    await tapIfPresent(tester, feasCard, P, 'faisabilite', 'ouvrir Faisabilite');
+    await exigeTap(tester, feasCard, P, 'faisabilite', 'carte Faisabilite');
     await settleAndShoot(tester, P, '05_faisabilite');
+    // Marc arrive sans profil renseigne : l'ecran ouvre le FLUX GUIDE. Il est
+    // PRESSE — il valide pour voir tout de suite son resultat, exactement comme
+    // un vrai utilisateur qui veut un « go / no go » immediat.
+    if (present(find.text(t.feasibility.flow.validate))) {
+      await exigeTap(tester, find.text(t.feasibility.flow.validate), P,
+          'faisabilite', '« Valider et voir mon résultat » du flux guide');
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+      await settleAndShoot(tester, P, '05b_faisabilite_verdict');
+    }
     // Verdict visible ?
-    _logVisibleVerdict(tester, P);
+    final verdictMarc = _logVisibleVerdict(tester, P);
+    // ============ LE DEFAUT N1 CORRIGE ICI AUSSI ============
+    // S2 cherchait « Déconseillé » et « Préparation nécessaire » (lignes 226-227
+    // d'origine) : DEUX LIBELLES DISPARUS. Le verdict n'etait donc jamais lu et
+    // le run restait vert. Il est desormais EXIGE, avec les libelles de l'app.
+    exige(
+        P,
+        'faisabilite',
+        verdictMarc != null,
+        'Marc obtient un verdict REEL et lisible ("${t.feasibility.formula.verdicts.green}" / '
+            '"${t.feasibility.formula.verdicts.orange}" / '
+            '"${t.feasibility.formula.verdicts.red}") — c est TOUT ce qu il '
+            'vient chercher');
+    // EXIGENCE C4 — la mention « le sac et la saison ne comptent pas » doit
+    // accompagner le feu, y compris pour un utilisateur presse.
+    await exigeVisible(
+        tester,
+        find.text(t.feasibility.formula.outOfScopeNotice),
+        P,
+        'faisabilite',
+        'la mention hors-perimetre (sac, saison) sous le feu tricolore (C4)');
     // Retour cockpit par le routeur (etat connu).
-    _goHome(tester, P);
+    await _goHome(tester, P);
 
-    // --- Cockpit : verifier presence du CTA principal (en tete) ---
+    // --- Cockpit : verifier presence du CTA principal ---
+    // QA cycle4 : le CTA « Démarrer la randonnée » est EN BAS du cockpit depuis
+    // le lot L7 (hub_screen.dart:512), plus en tete. Constater sa presence en
+    // haut de liste ne pouvait donner que « false » : on remonte pour un etat
+    // connu, puis on DESCEND jusqu'a lui avant de conclure.
     await _scrollToTop(tester, P);
     await settleAndShoot(tester, P, '06_retour_cockpit');
+    final ctaMarc = textFrEn('Démarrer la randonnée', 'Start the trek');
+    await scrollUntil(tester, ctaMarc, P, 'cockpit',
+        'CTA Demarrer la randonnee (BAS du cockpit)', maxScrolls: 25);
     logStep(
         P,
         'cockpit',
-        'CTA Demarrer present = ${present(textFrEn('Démarrer la randonnée', 'Start the trek'))} ; '
+        'CTA Demarrer present = ${present(ctaMarc)} ; '
             'Reprendre present = ${present(textFrEn('Reprendre la navigation', 'Resume navigation'))}');
+    // EXIGENCE — Marc veut SE LANCER : le cockpit doit lui offrir une porte de
+    // depart (« Démarrer la randonnée » ou « Reprendre la navigation »).
+    exige(
+        P,
+        'cockpit',
+        present(ctaMarc) ||
+            present(textFrEn('Reprendre la navigation', 'Resume navigation')),
+        'le cockpit propose une porte de depart (Démarrer ou Reprendre)');
 
     // --- Reglages : changer la langue + voir la version ---
     // Acces reglages via l icone parametres du header du cockpit.
     final gearBtn = find.byIcon(Icons.settings_outlined);
-    await tapIfPresent(
-        tester, gearBtn, P, 'reglages', 'ouvrir Reglages (icone parametres)');
+    await exigeTap(
+        tester, gearBtn, P, 'reglages', 'icone Reglages du header du cockpit');
     await settleAndShoot(tester, P, '07_reglages');
 
     // Changer la langue : taper « English » (ListTile de la section langue).
-    final langOk = await tapIfPresent(
-        tester, find.text('English'), P, 'reglages', 'choisir la langue English');
+    // LIBELLES REELS : les noms de langue sont des ENDONYMES non traduits
+    // (`AppLanguageValues.labels`), « English » et « Français ». Ils ne sont pas
+    // dans l'i18n : c'est normal, et c'est la raison du faux positif N1.
+    final langOk = await exigeTap(tester, find.text('English'), P, 'reglages',
+        'entree de langue « English » dans les reglages');
     await settleAndShoot(tester, P, '08_langue_en');
     if (langOk) {
-      // Verifier la bascule : le titre « Settings » (EN) devrait apparaitre.
+      // EXIGENCE — la bascule doit etre REELLE : l'interface passe en anglais.
+      // On lit les libelles ANGLAIS de l'app (pas une devinette).
       final switched = present(find.text('Settings')) ||
           present(find.text('Language')) ||
           present(find.text('Version'));
-      logStep(P, 'reglages',
-          'Bascule EN detectee (Settings/Language visible) = $switched');
+      exige(P, 'reglages', switched,
+          'le changement de langue bascule REELLEMENT l interface en anglais');
       // Remettre le francais pour ne pas perturber les autres scenarios.
-      await tapIfPresent(tester, find.text('French'), P, 'reglages',
-          'remettre Francais', warnIfMissing: false);
       await tapIfPresent(tester, find.text('Français'), P, 'reglages',
-          'remettre Francais (accent)', warnIfMissing: false);
+          'remettre Francais (endonyme)', warnIfMissing: false);
+      await pumpAndSettleTolerant(tester);
+      // EXIGENCE — et le retour au francais doit marcher aussi (aller-retour).
+      exige(
+          P,
+          'reglages',
+          present(find.text('Paramètres')) || present(find.text('Langue')),
+          'le retour au francais bascule l interface dans l autre sens');
     }
 
     // Voir la version : defiler jusqu a la section version et lire « 0.1.2 »
-    // (version courante, bump cycle 3 — pubspec 0.1.2+3, lue via PackageInfo).
-    await scrollUntil(tester, find.textContaining('0.1.2'), P, 'version',
-        'numero de version (0.1.2)');
-    final versionShown = present(find.textContaining('0.1.2'));
+    // (version courante — pubspec 0.1.2+3, lue via PackageInfo).
+    await scrollUntil(tester, find.textContaining(kVersionAttendue), P, 'version',
+        'numero de version ($kVersionAttendue)');
+    final versionShown = present(find.textContaining(kVersionAttendue));
     logStep(P, 'version',
-        'Version 0.1.2 visible dans les reglages = $versionShown');
+        'Version $kVersionAttendue visible dans les reglages = $versionShown');
+    // EXIGENCE — la version affichee est celle du pubspec. C'est ce qui permet
+    // a Chris de savoir QUELLE version il tient en main.
+    exige(P, 'version', versionShown,
+        'la version $kVersionAttendue est affichee dans les reglages');
     await settleAndShoot(tester, P, '09_version');
 
     // --- Profil ---
     await _back(tester, P, 'profil');
     // Icone profil du header du cockpit.
-    await tapIfPresent(tester, find.byIcon(Icons.person_outline), P, 'profil',
-        'ouvrir Profil (icone personne)');
+    await exigeTap(tester, find.byIcon(Icons.person_outline), P, 'profil',
+        'icone Profil du header du cockpit');
     await settleAndShoot(tester, P, '10_profil');
     _logLocation(tester, P, 'profil');
 
@@ -149,13 +212,22 @@ void main() {
     await _logisticsAndAccountTour(tester, P);
 
     logStep(P, 'fin', 'Scenario S2 termine (logistique + compte etendus)');
+    retirerVeilleEcranSysteme();
     await finalizeScenario(tester, P);
     await flushJournal(P);
+    // LE VERDICT (campagne N2). Avant, S2 n'avait AUCUNE assertion : il ne
+    // pouvait pas echouer, et il cherchait en plus des libelles disparus.
+    verdictPersona(P, minimumExigences: 12);
   });
 }
 
 /// Retour cockpit /home (etat connu via routeur).
-void _goHome(WidgetTester tester, String persona) {
+/// Retour au cockpit.
+///
+/// DEFAUT CORRIGE (campagne N2) : cette fonction demandait la navigation SANS
+/// composer une seule frame, et ses appelants ne l'attendaient pas : les
+/// recherches qui suivaient se faisaient sur l'ECRAN PRECEDENT, encore monte.
+Future<void> _goHome(WidgetTester tester, String persona) async {
   try {
     final ctx = tester.element(find.byType(Navigator).first);
     final router = GoRouter.maybeOf(ctx);
@@ -166,6 +238,7 @@ void _goHome(WidgetTester tester, String persona) {
   } catch (e) {
     logStep(persona, 'nav', 'Retour /home impossible : $e');
   }
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
 }
 
 /// Remonte en tete de la 1re liste defilante.
@@ -214,20 +287,21 @@ void _logLocation(WidgetTester tester, String persona, String etape) {
   }
 }
 
-void _logVisibleVerdict(WidgetTester tester, String persona) {
-  const verdicts = <String>[
-    'Déconseillé',
-    'Préparation nécessaire',
-    'Faisable',
-    'Excellent',
-  ];
-  for (final v in verdicts) {
-    if (present(find.text(v))) {
-      logStep(persona, 'verdict', 'VERDICT visible = "$v"');
-      return;
+/// REPARATION N2 — c'etaient les lignes 226-227 du defaut : ce finder cherchait
+/// « Déconseillé » et « Préparation nécessaire », DES LIBELLES DISPARUS. Il ne
+/// trouvait rien, le loguait, et le scenario continuait au vert. Les libelles
+/// sont desormais lus DANS L'APPLICATION.
+String? _logVisibleVerdict(WidgetTester tester, String persona) {
+  final v = t.feasibility.formula.verdicts;
+  for (final libelle in <String>[v.red, v.orange, v.green]) {
+    if (present(find.text(libelle))) {
+      logStep(persona, 'verdict', 'VERDICT visible = "$libelle"');
+      return libelle;
     }
   }
-  logStep(persona, 'verdict', 'Aucun verdict standard visible — voir capture');
+  logStep(persona, 'verdict',
+      'Aucun des TROIS verdicts reels visible — voir capture');
+  return null;
 }
 
 /// Localisation courante du routeur (chemin uri), ou chaine vide si illisible.
@@ -289,7 +363,7 @@ Future<bool> _openHubCard(
   String? shot,
   String Function(String trailId)? fallbackPath,
 }) async {
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await pumpAndSettleTolerant(tester);
   final card = find.text(cardLabel);
   // Tentative navigation par carte : remonter en tete puis descendre pas a pas.
@@ -329,7 +403,7 @@ Future<bool> _openHubCard(
 
 /// Ouvre les REGLAGES depuis le cockpit (icone parametres du header), best effort.
 Future<void> _openSettings(WidgetTester tester, String persona) async {
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
   await tapIfPresent(tester, find.byIcon(Icons.settings_outlined), persona,
       'reglages', 'ouvrir Reglages (icone parametres)');
@@ -343,15 +417,21 @@ Future<void> _logisticsAndAccountTour(
   // --- #P19 ITINERAIRE (carte HUB « Itinéraire » -> /trail/:id/itinerary) ---
   // Decision : deroule des etapes du sentier (parite GR20). Element metier : un
   // en-tete de totaux (« km ») ou l'etat vide (aucune etape chargee).
-  if (await _openHubCard(
-      tester, persona, 'itineraire', 'Itinéraire', 'Itineraire',
+  // LIBELLE PERIME CORRIGE (campagne N2) : le titre ATTENDU etait ecrit
+  // « Itineraire » SANS ACCENT alors que l'ecran s'intitule « Itinéraire ».
+  // `reached` ne pouvait donc JAMAIS etre vrai : le bloc entier etait mort, et
+  // son echec silencieux. On lit desormais le titre dans l'i18n de l'app.
+  final atteintItineraire = await _openHubCard(
+      tester, persona, 'itineraire', t.itinerary.title, t.itinerary.title,
       shot: 'S2E_19_itineraire',
-      fallbackPath: (id) => '/trail/$id/itinerary')) {
+      fallbackPath: (id) => '/trail/$id/itinerary');
+  exige(persona, 'itineraire', atteintItineraire,
+      'l ecran Itineraire est atteint (carte du hub ou route du hub)');
+  if (atteintItineraire) {
     final hasContent = present(find.textContaining('km')) ||
-        present(find.textContaining('Aucune etape'));
-    logStep(persona, 'itineraire',
-        'Itineraire (deroule des etapes) : contenu visible = $hasContent. '
-        '#P19 couvert.');
+        present(find.text(t.itinerary.empty));
+    exige(persona, 'itineraire', hasContent,
+        'l Itineraire affiche un contenu (totaux en km, ou etat vide explicite)');
   }
 
   // --- #P23 TRANSPORT (carte HUB « Transport » -> /trail/:id/transport) ---
@@ -435,24 +515,21 @@ Future<void> _logisticsAndAccountTour(
   // Decision : afficher le code (cle du coffre chiffre) pour le NOTER. On verifie
   // le titre + le label « Votre code » + un bouton copier.
   await _openSettings(tester, persona);
-  await scrollUntil(tester, find.text('Mon code de reconnexion'), persona,
+  await scrollUntil(tester, find.text(t.recovery.title), persona,
       'recovery', 'tuile Mon code de reconnexion (Reglages)');
-  if (await tapIfPresent(
-      tester, find.text('Mon code de reconnexion'), persona, 'recovery',
-      'ouvrir le code de reconnexion', warnIfMissing: false)) {
+  if (await exigeTap(tester, find.text(t.recovery.title), persona,
+      'recovery', 'tuile « Mon code de reconnexion » des Reglages')) {
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, persona, 'S2E_39_recovery_code');
-    final onRecovery = present(find.text('Votre code')) ||
+    final onRecovery = present(find.text(t.recovery.codeLabel)) ||
         present(find.textContaining('code de reconnexion'));
-    final hasCopy = present(find.text('Copier le code'));
     logStep(persona, 'recovery',
-        'Ecran /recovery-code atteint = $onRecovery ; bouton copier = $hasCopy. '
-        '#P39 + #D20 couverts.');
+        'Ecran /recovery-code atteint = $onRecovery. #P39 + #D20 couverts.');
+    // EXIGENCE — ce code est la SEULE cle de reconnexion du coffre : il doit
+    // etre reellement affiche, sinon l'utilisateur perd son compte.
+    exige(persona, 'recovery', onRecovery,
+        'le code de reconnexion est REELLEMENT affiche (cle du coffre chiffre)');
     await _back(tester, persona, 'recovery');
-  } else {
-    logStep(persona, 'recovery',
-        'COINCE : tuile « Mon code de reconnexion » introuvable dans les '
-        'Reglages. #P39/#D20 non joues. Signal QA.');
   }
 
   // --- #D01 WALLET « Mon compte » (deux poches / solde) : CONSTAT QA ---
@@ -461,7 +538,7 @@ Future<void> _logisticsAndAccountTour(
   // sur profile_screen.dart : avatar, pseudo, compte connexion, main dominante,
   // suppression, version — pas de solde). On DOCUMENTE ce trou plutot que de
   // simuler. On ouvre le Profil et on consigne l'absence.
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await _scrollToTop(tester, persona);
   await tapIfPresent(tester, find.byIcon(Icons.person_outline), persona,
       'wallet', 'ouvrir Profil (Mon compte)', warnIfMissing: false);
@@ -477,6 +554,6 @@ Future<void> _logisticsAndAccountTour(
       'exposant les deux poches (wallet fongible + etapes acquises).');
 
   // Retour cockpit propre.
-  _goHome(tester, persona);
+  await _goHome(tester, persona);
   await settleAndShoot(tester, persona, 'S2E_zz_retour_cockpit');
 }

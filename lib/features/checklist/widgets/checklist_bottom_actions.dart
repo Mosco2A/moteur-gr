@@ -307,8 +307,12 @@ class ChecklistBottomActions extends ConsumerWidget {
     final buffer = StringBuffer('${t.checklist.title}\n');
     buffer.writeln(
         '${t.checklist.weight.total} : ${state.checkedWeightKg.toStringAsFixed(1)} ${t.checklist.weight.kilograms}');
+    // DIRE DE QUOI LE POURCENTAGE EST LE POURCENTAGE (#7-e). Le partage
+    // sortait un « 17% » nu : sans denominateur nomme ce chiffre ne veut rien
+    // dire, et depuis le 22/09 il ne porte plus sur le poids corporel mais sur
+    // la base de charge.
     buffer.writeln(
-        '${(state.backpackRatio * 100).toStringAsFixed(0)}%\n');
+        '${t.checklist.weight.percentOfReference.replaceAll('{pct}', (state.backpackRatio * 100).toStringAsFixed(0))}\n');
 
     // Grouper par categorie (ordre du template).
     for (final category in checklistCategories) {

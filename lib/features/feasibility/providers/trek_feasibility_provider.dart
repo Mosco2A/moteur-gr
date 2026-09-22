@@ -1,7 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/geo/track_point.dart';
 import '../../../core/models/stage.dart';
+import '../../checklist/domain/season.dart';
+import '../../map/providers/gpx_track_provider.dart';
+import '../../notifications/providers/download_reminder_provider.dart';
+import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/stage_providers.dart';
 import '../domain/feasibility_formula.dart';
@@ -126,10 +131,65 @@ final hasObjectiveProfileProvider = FutureProvider<bool>((ref) async {
 });
 
 // ===========================================================================
-// FORMULE DE FAISABILITE V1 (LOT 3a) — decision Chris #100068.
-// Croise l'effort km-effort de chaque etape (distance + D+/100) au plafond
-// journalier deduit du profil -> verdict FEU TRICOLORE + conseils programme.
+// MOTEUR DE FAISABILITE V2 — spec finale #SW-FINAL
+// (`data/apport_stepways/SPEC_FINALE_faisabilite_et_poids.md`), arbitrages
+// Chris du 22/09/2026. Croise l'ENERGIE de chaque etape (distance + D+/42) a la
+// capacite journaliere -> verdict d'etape + SCORE DE CIRCUIT + conseils.
 // ===========================================================================
+
+/// Altitude maximale (m) du sentier actif, DERIVEE DE LA TRACE GPX (#2-h, #N1).
+///
+/// `null` quand la trace est indisponible ou ne porte aucune altitude : le
+/// facteur d'altitude vaut alors 1,00 ET L'ECRAN LE DIT. On ne devine jamais
+/// une altitude — une dimension neutre faute de donnee n'a pas le meme statut
+/// qu'une dimension neutre faute de source (#8-b).
+final trailMaxAltitudeProvider = FutureProvider<double?>((ref) async {
+  final trailId = ref.watch(trailIdProvider);
+  try {
+    final points = await ref.watch(gpxTrackProvider(trailId).future);
+    return _maxAltitudeOf(points);
+  } catch (_) {
+    // Trace absente ou illisible : aucune altitude, et on le dira.
+    return null;
+  }
+});
+
+/// Altitude maximale d'une liste de points, `null` si aucune altitude utile.
+double? _maxAltitudeOf(List<TrackPoint> points) {
+  double? best;
+  for (final p in points) {
+    final a = p.altitude;
+    if (!a.isFinite || a == 0) continue;
+    if (best == null || a > best) best = a;
+  }
+  return best;
+}
+
+/// CONDITIONS du trek appliquees a la capacite journaliere (#2-h a #2-j).
+///
+/// La saison est celle du DEPART pose au Calendrier — la meme source que le Sac
+/// adaptatif ([checklistSeasonFromDepartureProvider]), pour qu'une seule date
+/// de depart pilote toute l'application. Aucun depart pose -> saison inconnue,
+/// et le moteur le declare au lieu de supposer la date du jour : le trek n'est
+/// pas forcement pour aujourd'hui.
+final trekConditionsProvider = FutureProvider<TrekConditions>((ref) async {
+  final trailId = ref.watch(trailIdProvider);
+  // Une date de depart illisible (prefs indisponibles) ne doit PAS emporter le
+  // verdict avec elle : elle rend la saison inconnue, et l'ecran le declare.
+  // Perdre la saison coute une ligne d'explication ; perdre le verdict coute
+  // l'ecran entier.
+  DateTime? departure;
+  try {
+    departure = ref.watch(downloadReminderProvider(trailId)).departureDate;
+  } catch (_) {
+    departure = null;
+  }
+  final altitude = await ref.watch(trailMaxAltitudeProvider.future);
+  return TrekConditions(
+    maxAltitudeM: altitude,
+    season: departure == null ? null : Season.fromDate(departure),
+  );
+});
 
 /// Etapes du sentier actif dans le SENS DE MARCHE choisi, converties en
 /// [StageEffort] (une par jour de marche de reference).
@@ -157,6 +217,9 @@ final stageEffortsProvider = FutureProvider<List<StageEffort>>((ref) async {
         name: ordered[i].name,
         distanceKm: ordered[i].distanceKm,
         elevationGainM: ordered[i].elevationGainM,
+        // Le D− n'entre PAS dans le score (#1-d) : il classe les etapes de
+        // l'alerte descente du dispositif poids (#4-l).
+        elevationLossM: ordered[i].elevationLossM,
       ),
   ];
 });
@@ -176,7 +239,43 @@ final hikerLevelProvider = FutureProvider<HikerLevel>((ref) async {
   );
 });
 
-/// Evaluation complete de faisabilite (feu tricolore + conseils) — formule V1.
+/// JOURS DE REPOS DU PROGRAMME, traduits en index d'etapes (#2-p).
+///
+/// SANS CETTE ALIMENTATION, LA MONOTONIE DE FOSTER N'A AUCUN SENS. La monotonie
+/// vaut moyenne ÷ ecart-type des charges journalieres, jours de repos comptes
+/// comme CHARGE NULLE. Si le moteur ne voit jamais un jour de repos, toutes les
+/// charges sont non nulles, l'ecart-type s'effondre et la monotonie explose :
+/// mesure sur le sentier de production, 4,04 — donc C3 a 2,02, donc circuit
+/// ROUGE sur les 24 cellules, y compris pour un profil expert dont la pire
+/// etape est a 0,54, c'est-a-dire vert franc. La contre-preuve a ete faite sur
+/// le moteur reel : en posant deux jours de repos, l'expert repasse au vert.
+/// Le calcul etait juste, c'est l'alimentation qui manquait.
+///
+/// LA SOURCE EST LE PROGRAMME, PAS UNE SUPPOSITION. [plannedDaysProvider] porte
+/// le decoupage reel choisi par le randonneur — jours de marche et jours de
+/// repos, dans l'ordre. On le parcourt en comptant les etapes consommees : un
+/// jour de repos est enregistre APRES la derniere etape marchee avant lui. Un
+/// jour qui regroupe deux etapes en consomme deux, donc l'index suit.
+///
+/// Les repos poses APRES la derniere etape sont ignores : ils n'aident aucune
+/// recuperation a l'interieur du trek (le moteur les ecarte lui aussi).
+final restDaysAfterStageProvider = Provider<Set<int>>((ref) {
+  final trailId = ref.watch(trailIdProvider);
+  final days = ref.watch(plannedDaysProvider(trailId));
+  final result = <int>{};
+  var stagesConsumed = 0;
+  for (final day in days) {
+    if (day.isRestDay || day.stages.isEmpty) {
+      // Aucun repos « avant la premiere etape » : il ne repose de rien.
+      if (stagesConsumed > 0) result.add(stagesConsumed - 1);
+      continue;
+    }
+    stagesConsumed += day.stages.length;
+  }
+  return result;
+});
+
+/// Evaluation complete de faisabilite (etapes + circuit + conseils) — V2.
 ///
 /// Null si aucune etape (pas de sentier charge) -> l'UI retombe sur le
 /// questionnaire de dépannage, comme le verdict objectif.
@@ -185,10 +284,22 @@ final feasibilityAssessmentProvider =
   final stages = await ref.watch(stageEffortsProvider.future);
   if (stages.isEmpty) return null;
   final level = await ref.watch(hikerLevelProvider.future);
-  final profile = await ref.watch(hikerProfileProvider.future);
+  final objective = await ref.watch(objectiveProfileProvider.future);
+  final conditions = await ref.watch(trekConditionsProvider.future);
+  final restDays = ref.watch(restDaysAfterStageProvider);
   return FeasibilityFormula.evaluate(
     stages: stages,
     level: level,
-    age: profile.age,
+    // Plancher demontre (#2-g) : on ne dit jamais a quelqu'un qu'il ne peut
+    // pas faire ce qu'il a deja demontre faire.
+    demonstratedFloorEnergyKm: objective.maxDailyEnergyKmDone,
+    // C4, l'ecart a l'habitude : AFFICHE, JAMAIS DECISIF (#2-q).
+    habitualDailyEnergyKm: objective.habitualDailyEnergyKm,
+    // Constat de DUREE : le modele ne capte la duree cumulee nulle part, et
+    // aucun seuil publie ne permet de la scorer. On enonce le fait.
+    longestConsecutiveDaysDone: objective.maxConsecutiveDaysDone,
+    // C3, le repos : les jours de repos du PROGRAMME, charge nulle (#2-p).
+    restAfterStageIndex: restDays,
+    conditions: conditions,
   );
 });

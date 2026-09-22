@@ -415,3 +415,197 @@ Future<void> flushJournal(String persona) async {
   };
   print('PERSONA_END|$persona|${kJournal.length} lignes');
 }
+
+// ===========================================================================
+// COUCHE D'EXIGENCES — LA REPARATION DU HARNAIS (campagne personas N2).
+// ===========================================================================
+//
+// DEFAUT CORRIGE ICI. La campagne N1 a mesure que les suites S1 a S5 ne
+// contenaient AUCUN `expect()` : elles LOGUAIENT « COINCE » et CONTINUAIENT,
+// puis concluaient « All tests passed ». ELLES NE POUVAIENT PAS ECHOUER sur un
+// defaut produit. Un run vert ne prouvait donc rien — c'est la version harnais
+// du piege du lot L6 (un test qui ne peut pas voir le defaut).
+//
+// PRINCIPE RETENU. On GARDE la resilience du parcours (s'arreter au premier
+// accroc ne dirait rien du reste du circuit), MAIS toute verification declaree
+// OBLIGATOIRE — une EXIGENCE — est enregistree, et le test ECHOUE A LA FIN avec
+// la liste complete des exigences non tenues. Le scenario joue tout, puis rend
+// un verdict binaire.
+//
+// REGLE DE BON USAGE (anti-piege L6, version harnais) :
+//   * une EXIGENCE porte sur ce que le PRODUIT REEL affiche ou fait ;
+//   * elle ne repose JAMAIS sur une surcharge de provider (`overrideWith`) ;
+//   * un simple `logStep` reste possible pour l'exploration — mais ce qui n'est
+//     pas une exigence n'est PAS une preuve, et ne doit pas etre presente
+//     comme telle dans un rapport.
+//
+// Lignes machine produites (agregees host-side) :
+//   PERSONA_EXIGENCE|<persona>|<etape>|OK|<quoi>
+//   PERSONA_EXIGENCE|<persona>|<etape>|ECHEC|<quoi>
+//   PERSONA_VERDICT|<persona>|<tenues>|<echouees>
+
+/// Exigences NON TENUES (chacune fera echouer le scenario a la cloture).
+final List<String> kExigencesEchouees = <String>[];
+
+/// Nombre d'exigences tenues (sert aussi a prouver que le harnais a VRAIMENT
+/// verifie quelque chose : une suite qui n'evalue rien est desormais ROUGE).
+int kExigencesTenues = 0;
+
+/// Enregistre une EXIGENCE et son resultat. Retourne [ok] pour chainer.
+///
+/// Ne leve pas : le scenario continue (observabilite), mais [verdictPersona]
+/// fera echouer le test si au moins une exigence n'est pas tenue.
+bool exige(String persona, String etape, bool ok, String quoi) {
+  if (ok) {
+    kExigencesTenues++;
+    print('PERSONA_EXIGENCE|$persona|$etape|OK|$quoi');
+    logStep(persona, etape, 'EXIGENCE TENUE : $quoi');
+  } else {
+    kExigencesEchouees.add('[$persona/$etape] $quoi');
+    print('PERSONA_EXIGENCE|$persona|$etape|ECHEC|$quoi');
+    logStep(persona, etape, 'EXIGENCE NON TENUE : $quoi');
+  }
+  return ok;
+}
+
+/// EXIGENCE : [finder] doit etre present a l'ecran (attente jusqu'a [timeout]).
+Future<bool> exigeVisible(
+  WidgetTester tester,
+  Finder finder,
+  String persona,
+  String etape,
+  String quoi, {
+  Duration timeout = const Duration(seconds: 6),
+}) async {
+  final vu = await waitFor(tester, finder, timeout: timeout);
+  return exige(persona, etape, vu, 'doit etre AFFICHE : $quoi');
+}
+
+/// EXIGENCE : [finder] doit etre ABSENT de l'ecran (verification de non-regression,
+/// p. ex. « aucun bandeau de prudence sur un profil vert »).
+bool exigeAbsent(
+  Finder finder,
+  String persona,
+  String etape,
+  String quoi,
+) =>
+    exige(persona, etape, finder.evaluate().isEmpty,
+        'ne doit PAS etre affiche : $quoi');
+
+/// EXIGENCE : la cible doit etre reellement TAPABLE (presente ET hit-testable).
+///
+/// C'est la version exigeante de [tapIfPresent] : une cible presente mais
+/// recouverte (hit-test vide) est un DEFAUT, pas une curiosite a loguer.
+Future<bool> exigeTap(
+  WidgetTester tester,
+  Finder finder,
+  String persona,
+  String etape,
+  String quoi,
+) async {
+  final ok = await tapIfPresent(tester, finder, persona, etape, quoi,
+      warnIfMissing: false);
+  return exige(persona, etape, ok, 'doit etre ATTEIGNABLE et tapable : $quoi');
+}
+
+/// EXIGENCE : le champ doit exister et accepter la saisie.
+Future<bool> exigeSaisie(
+  WidgetTester tester,
+  Finder finder,
+  String text,
+  String persona,
+  String etape,
+  String quoi,
+) async {
+  final ok = await enterIfPresent(tester, finder, text, persona, etape, quoi);
+  return exige(persona, etape, ok, 'champ saisissable : $quoi (valeur "$text")');
+}
+
+/// CLOTURE DU SCENARIO : fait ECHOUER le test si une exigence n'est pas tenue.
+///
+/// [minimumExigences] garde contre le retour du defaut d'origine : une suite
+/// qui n'evalue AUCUNE exigence est desormais ROUGE, pas verte.
+void verdictPersona(String persona, {int minimumExigences = 1}) {
+  final total = kExigencesTenues + kExigencesEchouees.length;
+  print('PERSONA_VERDICT|$persona|$kExigencesTenues|'
+      '${kExigencesEchouees.length}');
+  logStep(persona, 'verdict',
+      'BILAN EXIGENCES : $kExigencesTenues tenue(s), '
+      '${kExigencesEchouees.length} non tenue(s) sur $total evaluee(s).');
+  expect(total >= minimumExigences, isTrue,
+      reason: 'HARNAIS AVEUGLE : $persona n a evalue que $total exigence(s) '
+          '(minimum attendu $minimumExigences). Un scenario qui ne verifie '
+          'rien ne peut pas etre vert.');
+  expect(kExigencesEchouees, isEmpty,
+      reason: 'Exigences NON TENUES par le produit :\n'
+          '${kExigencesEchouees.join('\n')}');
+}
+
+// ===========================================================================
+// DETECTION DES ECRANS SYSTEME (Android) — MAJEUR-2 de la campagne N1.
+// ===========================================================================
+//
+// DEFAUT CORRIGE ICI. En N1, S3 a logue « dialog permission par-dessus =
+// false » alors qu'une boite Android recouvrait la carte : un dialogue SYSTEME
+// n'est PAS dans l'arbre Flutter, aucun `find.byType(Dialog)` ne peut le voir.
+// Le harnais etait donc structurellement aveugle a la premiere chose que voit
+// un nouvel utilisateur.
+//
+// PARADE : quand une fenetre systeme prend le premier plan, Android met
+// l'activite en pause et le moteur Flutter notifie un changement de cycle de
+// vie (`inactive` / `paused` / `hidden`). On ECOUTE ce signal : toute sortie de
+// `resumed` pendant un pas ou l'application est censee etre au premier plan est
+// la trace d'un ecran systeme par-dessus l'app.
+
+/// Evenements de perte de premier plan captes depuis l'installation du veilleur.
+final List<String> kEcransSystemeDetectes = <String>[];
+
+class _VeilleEcranSysteme with WidgetsBindingObserver {
+  _VeilleEcranSysteme(this.persona);
+
+  final String persona;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      logStep(persona, 'ecran_systeme',
+          'Retour au premier plan (resumed) : l ecran systeme est referme.');
+      return;
+    }
+    final trace = '${state.name} @ ${DateTime.now().toIso8601String()}';
+    kEcransSystemeDetectes.add(trace);
+    print('PERSONA_ECRAN_SYSTEME|$persona|${state.name}');
+    logStep(
+        persona,
+        'ecran_systeme',
+        'ECRAN SYSTEME DETECTE : l application a PERDU le premier plan '
+            '(${state.name}). Une fenetre Android (dialogue de permission, '
+            'par exemple) recouvre l app — INVISIBLE dans l arbre Flutter.');
+  }
+}
+
+_VeilleEcranSysteme? _veilleur;
+
+/// Installe le veilleur d'ecrans systeme. A appeler une fois, au boot.
+void installerVeilleEcranSysteme(String persona) {
+  if (_veilleur != null) return;
+  _veilleur = _VeilleEcranSysteme(persona);
+  WidgetsBinding.instance.addObserver(_veilleur!);
+  logStep(persona, 'ecran_systeme',
+      'Veille des ecrans SYSTEME installee (cycle de vie de l activite).');
+}
+
+/// Retire le veilleur (a appeler avant la cloture pour ne rien laisser vivant).
+void retirerVeilleEcranSysteme() {
+  if (_veilleur == null) return;
+  WidgetsBinding.instance.removeObserver(_veilleur!);
+  _veilleur = null;
+}
+
+/// Marque courante du journal d'ecrans systeme (pour delimiter un pas precis).
+int marqueEcranSysteme() => kEcransSystemeDetectes.length;
+
+/// Evenements systeme survenus DEPUIS [marque].
+List<String> ecransSystemeDepuis(int marque) =>
+    kEcransSystemeDetectes.sublist(
+        marque.clamp(0, kEcransSystemeDetectes.length));

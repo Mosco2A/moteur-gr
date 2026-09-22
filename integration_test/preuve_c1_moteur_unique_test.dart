@@ -380,8 +380,11 @@ Future<void> _ouvrirFaisabilite(WidgetTester tester, String trailId) async {
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 10));
 
   // Flux guide : « Valider et voir mon résultat » mene TOUJOURS au verdict.
-  final valider =
-      textFrEn('Valider et voir mon résultat', 'Validate and see my result');
+  // LIBELLE LU DANS L'APP (campagne N2, reparation du harnais) : la traduction
+  // anglaise codee en dur ici n'existe pas (l'app dit « Confirm and see my
+  // result »). Sans effet en francais, mais un libelle fige finit toujours par
+  // rendre un test aveugle : on lit desormais l'i18n.
+  final valider = find.text(t.feasibility.flow.validate);
   if (present(valider)) {
     await tapIfPresent(tester, valider, P, 'nav', 'valider le flux guide',
         warnIfMissing: false);

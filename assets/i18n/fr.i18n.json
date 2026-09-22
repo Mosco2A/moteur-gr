@@ -478,7 +478,14 @@
       "gaugeDanger": "Danger blessure !",
       "percentOfWeight": "{pct}% du poids",
       "gaugeObjective": "Objectif max : < 15% en refuge, < 20% en autonomie",
-      "itemsChecked": "{checked} / {total} articles cochés"
+      "itemsChecked": "{checked} / {total} articles cochés",
+      "percentOfReference": "{pct}% du poids de référence",
+      "gaugeObjectiveReference": "Objectif max : < 15% en refuge, < 20% en autonomie — du poids de référence",
+      "referenceExplainer": "Poids de référence pour ta taille : {kg} kg. Le plafond du sac est calculé sur lui, pas sur ton poids réel.",
+      "referenceFallbackHeight": "Le plafond de ton sac est calculé sur ton poids réel : pour ta taille, il n'existe pas de poids de référence publié sur lequel s'appuyer. On préfère te le dire plutôt que t'afficher un chiffre faux.",
+      "descentAlertTitle": "Descentes : le poids de ton sac",
+      "descentAlertBody": "Tu descendras avec {kg} kg au-delà du poids de référence, sac compris. En descente, chaque appui encaisse plusieurs fois ce poids : c'est de la mécanique, pas un pronostic. Les étapes qui descendent le plus sont listées ci-dessous.",
+      "descentStage": "{stage} : {loss} m de descente"
     },
     "ui": {
       "title": "Matériel & Sac",
@@ -541,7 +548,7 @@
       "shareGroup": "PARTAGER AVEC LE GROUPE",
       "exportList": "EXPORTER LA LISTE",
       "bagValidTitle": "Sac valide",
-      "bagValidBody": "Tous les {total} équipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids corporel)\n\nÊtes-vous certain que votre sac est prêt ?",
+      "bagValidBody": "Tous les {total} équipements obligatoires sont dans votre sac.\n\nPoids total : {weight} kg ({pct}% du poids de référence)\n\nÊtes-vous certain que votre sac est prêt ?",
       "checkAgain": "Vérifier encore",
       "yesBagOk": "Oui, sac OK",
       "bagValidatedSnack": "Sac valide !",
@@ -834,10 +841,10 @@
     "formula": {
       "title": "Faisabilité pour ce trek",
       "intro": "On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.",
-      "outOfScopeNotice": "Ce feu ne regarde que deux choses : ton profil et l'effort de chaque étape. Le poids de ton sac et la saison n'entrent pas dans le calcul — un sac lourd, la neige ou la chaleur rendront la journée plus dure que ce qui est affiché ici. À toi d'en tenir compte.",
-      "ceilingLabel": "Plafond conseillé : ${value} km-effort/jour (${level})",
+      "outOfScopeNotice": "Le poids de ton sac n'entre pas dans ce feu, et c'est mesuré : de 0 à 45 kg de charge, le verdict ne bouge pas d'un cran. Ce feu compare ce que tu as déjà tenu à l'effort de chaque étape ; la charge de ton sac est traitée à part, dans ton sac.",
+      "ceilingLabel": "Plafond conseillé : ${value} km-énergie/jour (${level})",
       "stagesTitle": "Étape par étape",
-      "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-effort",
+      "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-énergie",
       "globalTitle": "Verdict global",
       "hardestStage": "Étape la plus exigeante : ${stage}",
       "daysOver": "${count} jour(s) au-dessus de ton plafond",
@@ -863,7 +870,9 @@
         "distance": "la distance des étapes",
         "elevation": "le dénivelé",
         "chaining": "l'enchaînement des journées",
-        "none": "aucun"
+        "none": "aucun",
+        "altitude": "l'altitude",
+        "heat": "la chaleur de la saison"
       },
       "advice": {
         "balancedOk": "Ton programme est équilibré : garde une marge et écoute ton corps.",
@@ -871,10 +880,48 @@
         "optimalDays": "Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.",
         "split": "Découpe l'étape ${stage} en deux : elle dépasse nettement ton plafond.",
         "rest": "Prévois un jour de repos après l'étape ${stages}.",
-        "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique)."
+        "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique).",
+        "restDominant": "Ce n'est pas une étape qu'il faut couper, ce sont des jours de repos qu'il faut poser : tes journées se ressemblent trop."
       },
       "retainedPlan": "Découpage retenu : ${days} jours de marche.",
-      "retainedPlanNone": "Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut."
+      "retainedPlanNone": "Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.",
+      "energyUnitNotice": "1 km de plat vaut 42 m de dénivelé : c'est le coût mesuré de la marche en pente, pas une règle maison.",
+      "circuitTitle": "Verdict du circuit",
+      "circuitScore": "Score du circuit : ${value}",
+      "circuitDominant": "Ce qui mord : ${constraint}.",
+      "circuitHarsherIntro": "Le circuit est plus sévère que chacune de ses étapes, et ce n'est pas un bug : prise une par une, aucune journée ne te dépasse ; c'est leur enchaînement qui te dépasse.",
+      "circuitHarsherByRest": "Ici c'est le repos qui manque : tes journées se ressemblent trop pour que le corps récupère entre elles.",
+      "circuitHarsherByAverage": "Ici c'est la charge moyenne : jour après jour, la somme dépasse ce que tu peux tenir.",
+      "restWindowWhole": "Repos mesuré sur le trek entier (${days} jours).",
+      "restWindowSlice": "Repos mesuré sur la pire semaine : jours ${start} à ${end}.",
+      "restNotApplicable": "Le repos ne se calcule pas sur un sentier d'une seule journée : il n'y a pas d'enchaînement à mesurer. La contrainte est déclarée non applicable, elle n'est pas remplacée par un chiffre.",
+      "restExtrapolation": "Le seuil de repos vient d'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C'est une transposition, et elle est dite.",
+      "restTwoDays": "Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.",
+      "habitGap": "Écart à ton habitude : ${value} (repère 0,8 à 1,3).",
+      "habitGapNotDecisive": "Cet écart est affiché, jamais décisif : aucune étude ne démontre qu'il cause quoi que ce soit.",
+      "conditionsTitle": "Ce qui est entré dans ce verdict",
+      "floorActive": "Ton meilleur jour déjà tenu (${value} km-énergie) dépasse le plafond de ton niveau : c'est lui qui sert de base. On ne te dira jamais que tu ne peux pas faire ce que tu as déjà fait.",
+      "altitudeApplied": "Altitude : ${value} m au point le plus haut, ta capacité du jour baisse de ${pct} %.",
+      "altitudeBelowThreshold": "Altitude : ${value} m au plus haut, sous les 1 500 m à partir desquels elle compte. Elle ne change rien ici.",
+      "altitudeMissing": "Altitude : la trace de ce sentier n'en porte pas. Elle ne change rien ici faute de donnée — et non parce qu'elle serait sans effet.",
+      "heatApplied": "Départ en été : la capacité aérobie baisse de 7 %, c'est mesuré.",
+      "seasonNoSource": "Départ au printemps ou en automne : aucune mesure publiée ne permet de chiffrer un effet. La saison ne change rien ici, faute de source.",
+      "seasonMissing": "Aucune date de départ n'est posée : la saison ne change rien ici, faute de donnée.",
+      "massNotCounted": "Ni ton poids ni celui de ton sac n'entrent dans ce verdict, et c'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.",
+      "winterInvalid": "Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu'il ne s'applique pas.",
+      "circuitConstraints": {
+        "worstStage": "l'étape la plus dure",
+        "averageLoad": "la charge moyenne des journées",
+        "rest": "le repos",
+        "habitGap": "l'écart à ton habitude"
+      },
+      "restDaysCounted": "Jours de repos comptés dans ce verdict : ${count}.",
+      "restDaysNone": "Aucun jour de repos n'est posé dans ton programme. Le verdict le voit, et c'est ce qui pèse le plus ici : pose des repos dans ton programme et ce chiffre bouge.",
+      "averageLoad": "Charge moyenne des journées : ${value} (la pire étape est à ${worst}).",
+      "averageLoadInfo": "Ces deux chiffres se lisent ensemble : loin l'un de l'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s'affiche, il ne décide pas.",
+      "durationStatement": "Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.",
+      "durationStatementInfo": "Ce constat s'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d'en juger.",
+      "stageDominantFactor": "Ce qui pèse le plus sur cette étape : ${factor}"
     },
     "flow": {
       "title": "Es-tu prêt pour ce trek ?",
@@ -1999,7 +2046,9 @@
       "moderate": "Moyen",
       "good": "Bon",
       "excellent": "Excellent"
-    }
+    },
+    "absoluteScaleNotice": "Ton niveau est lu sur l'échelle de distance brute : la comparaison à une référence n'a pas été établie pour ta morphologie, on ne l'applique donc pas. Ton test, lui, reste parfaitement valable.",
+    "ageClampNotice": "Au-delà de 80 ans la référence du test s'arrête : elle est calculée comme à 80 ans, et on te le dit."
   },
   "pastHikes": {
     "title": "Vos 5 dernières randos",

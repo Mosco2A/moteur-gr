@@ -1,17 +1,52 @@
-/// FORMULE DE FAISABILITE V1 (StepWays LOT 3a) — decision Chris #100068.
+/// MOTEUR DE FAISABILITE V2 (StepWays) — spec finale
+/// `data/apport_stepways/SPEC_FINALE_faisabilite_et_poids.md` (#SW-FINAL),
+/// qui PRIME sur tout autre document. Arbitrages tranches par Chris le
+/// 22/09/2026 (#100303 a #100320), synthese #100332.
 ///
 /// Moteur PUR (zero dependance Flutter), entierement testable a l'unite. Il
-/// croise l'EFFORT de chaque etape a la CAPACITE journaliere du randonneur et
-/// rend un verdict FEU TRICOLORE + un verdict global + des conseils de programme.
+/// croise l'ENERGIE de chaque etape a la CAPACITE journaliere du randonneur et
+/// rend un verdict FEU TRICOLORE par etape, un SCORE DE CIRCUIT, et des
+/// conseils de programme.
 ///
-/// PERIMETRE V1 (arbitrage Chris) : distance + D+ SEULEMENT. La technicite
-/// (T1-T6), l'altitude et l'IMC/VO2max fin sont explicitement reportes en V2
-/// (BP `BP_faisabilite_entrainement.md` : aucune formule altitude fiable, ne
-/// pas surpromettre). Des hooks TODO(V2) marquent les points d'extension SANS
-/// les activer.
+/// CE QUI CHANGE PAR RAPPORT A LA V1, ET POURQUOI.
 ///
-/// Sources BP : FFRandonnee, SAC/CAS, IBP Index, methode Karvonen
-/// (`data/apport_stepways/BP_faisabilite_entrainement.md`).
+///  1. L'UNITE (#1-a, #2-a). La V1 convertissait 100 m de D+ en 1 km de plat.
+///     La mesure de Minetti 2002 (cout metabolique de la marche en pente, en
+///     joules par kilo et par metre) donne 42 m, contre-verifiee par deux voies
+///     convergentes (39-42). Les plafonds sont RE-DERIVES sur les memes reperes
+///     BP, ils ne sont pas re-choisis : 25,1 / 38,7 / 55,6 / 65,7 au lieu de
+///     21 / 29 / 39 / 45.
+///
+///  2. AUCUN TERME DE MASSE (#1-b, #3-d). Ni le sac, ni le poids du corps
+///     n'entrent dans le score. Ce n'est pas un trou, c'est une propriete
+///     assumee : le cout d'une etape vaut pente x distance x masse, la capacite
+///     est deduite d'une performance geometrique passee du MEME corps, la masse
+///     se simplifie exactement. Le meme homme a 65 ou 95 kg obtient le meme
+///     verdict au chiffre pres. Le poids a sa place ailleurs, dans le dispositif
+///     de charge ([BodyWeightReference]).
+///
+///  3. LE PLANCHER DEMONTRE (#2-g). On ne dit jamais a quelqu'un qu'il ne peut
+///     pas faire ce qu'il a deja demontre faire : la capacite de base est le
+///     MAXIMUM entre le plafond de son niveau et sa meilleure journee reelle.
+///     L'ORDRE COMPTE (#2-e) : le plancher s'applique a la BASE, les conditions
+///     ENSUITE — l'ordre inverse effacerait silencieusement l'altitude et la
+///     chaleur pour tout randonneur dont le maximum demontre depasse son cran.
+///
+///  4. LES CONDITIONS (#2-h, #2-i, #2-j). Altitude (MOVE 2026) et chaleur
+///     (Linsell 2020) multiplient la capacite. Printemps et automne : AUCUNE
+///     source, donc neutres, et on le dit. Hiver : AUCUN coefficient, le verdict
+///     est DECLARE NON VALIDE (les cotations du Club Alpin Suisse ne valent que
+///     par bon temps et terrain sec).
+///
+///  5. LE SCORE DE CIRCUIT (#2-m a #2-t). On ne pondere rien : chaque contrainte
+///     est normalisee par son propre seuil publie — elle vaut 1,0 a sa limite —
+///     et le score est la contrainte qui mord. Aucun poids a choisir.
+///
+/// CE QUI N'EST PAS DANS LE MOTEUR, ET POURQUOI (trous declares, non combles) :
+/// pas de terme de descente (#1-d, #M05 : aucun coefficient energetique publie —
+/// l'alerte est portee par le dispositif poids) ; pas de terme de terrain
+/// (#M02/#M03 : la conversion cotation -> facteur n'est pas publiee) ; pas de
+/// coefficient de fatigue cumulative par jour (#M06).
 library;
 
 import 'dart:math' as math;
@@ -28,27 +63,38 @@ enum HikerLevel {
   expert,
 }
 
-/// Verdict FEU TRICOLORE d'une etape ou du trek (cles i18n stables
+/// Verdict FEU TRICOLORE d'une etape ou du circuit (cles i18n stables
 /// `t.feasibility.formula.verdicts.*`).
 enum FeasibilityVerdict {
-  /// Vert : ratio <= [FeasibilityThresholds.green]. Faisable confortablement.
+  /// Vert : score <= [FeasibilityThresholds.green]. Faisable confortablement.
   green,
 
   /// Orange : entre les deux seuils. Faisable AVEC entrainement.
   orange,
 
-  /// Rouge : ratio > [FeasibilityThresholds.orange]. Au-dessus des capacites.
+  /// Rouge : score > [FeasibilityThresholds.orange]. Au-dessus des capacites.
   red,
 }
 
-/// Facteur limitant nomme du verdict global (cle i18n
-/// `t.feasibility.formula.limitingFactors.*`).
+/// Facteur DOMINANT nomme d'une etape ou du verdict global (#2-l) — cle i18n
+/// `t.feasibility.formula.limitingFactors.*`.
+///
+/// Les quatre premiers sont les quatre termes de la decomposition EXACTE du
+/// score d'etape (voir [StageVerdict.dominantFactor]) ; [chaining] reste le
+/// facteur du verdict global quand plusieurs journees consecutives passent
+/// au-dessus.
 enum LimitingFactor {
-  /// La distance des etapes est le principal contributeur a l'effort.
+  /// La distance de l'etape est le premier contributeur au score.
   distance,
 
-  /// Le denivele positif est le principal contributeur a l'effort.
+  /// Le denivele positif est le premier contributeur au score.
   elevation,
+
+  /// L'altitude rabote la capacite du jour plus que tout le reste.
+  altitude,
+
+  /// La chaleur de la saison de depart rabote la capacite du jour.
+  heat,
 
   /// L'enchainement (plusieurs jours consecutifs au-dessus du plafond).
   chaining,
@@ -57,21 +103,62 @@ enum LimitingFactor {
   none,
 }
 
-/// Seuils du feu tricolore — CONSTANTES PARAMETRABLES (reglage median valide
-/// par Chris, ni prudent ni permissif). ratio = effort_etape / plafond_jour.
+/// Les quatre contraintes du score de circuit (#2-n a #2-q), cles i18n
+/// `t.feasibility.formula.circuit.constraints.*`.
+enum CircuitConstraint {
+  /// C1 — la pire etape.
+  worstStage,
+
+  /// C2 — la charge moyenne du circuit.
+  averageLoad,
+
+  /// C3 — le repos (monotonie de Foster).
+  rest,
+
+  /// C4 — l'ecart a l'habitude. AFFICHE, JAMAIS DECISIF (#2-q).
+  habitGap,
+}
+
+/// Raison pour laquelle une dimension n'entre PAS dans le verdict (#8-b).
 ///
-/// Externalises dans un objet pour pouvoir les surcharger (tests, futur reglage
-/// utilisateur) sans toucher a la logique.
+/// Une dimension neutre FAUTE DE DONNEE n'a pas le meme statut qu'une dimension
+/// neutre FAUTE DE SOURCE : l'ecran doit pouvoir dire laquelle des deux.
+enum NeutralReason {
+  /// La donnee manque (ex. altitude absente de la trace).
+  missingData,
+
+  /// Aucune source publiee ne permet de chiffrer (ex. printemps, automne).
+  noPublishedSource,
+
+  /// La donnee est la, mais le seuil publie n'est pas atteint (ex. un trek qui
+  /// culmine sous 1 500 m).
+  belowThreshold,
+
+  /// Par construction du modele (ex. la masse se simplifie exactement, #3-e).
+  byDesign,
+}
+
+/// Saisons de depart reconnues par le moteur — memes cles stables que
+/// `Season` cote Sac (`winter`/`spring`/`summer`/`autumn`).
+abstract class FeasibilitySeason {
+  static const String winter = 'winter';
+  static const String spring = 'spring';
+  static const String summer = 'summer';
+  static const String autumn = 'autumn';
+}
+
+/// Seuils du feu tricolore — CONSTANTES PARAMETRABLES (reglage median valide
+/// par Chris #100068, INCHANGES en V2). score = energie / capacite du jour.
 class FeasibilityThresholds {
   const FeasibilityThresholds({
     this.green = defaultGreen,
     this.orange = defaultOrange,
   });
 
-  /// ratio <= green  -> VERT.
+  /// score <= green  -> VERT.
   static const double defaultGreen = 0.85;
 
-  /// green < ratio <= orange -> ORANGE ; ratio > orange -> ROUGE.
+  /// green < score <= orange -> ORANGE ; score > orange -> ROUGE.
   static const double defaultOrange = 1.10;
 
   /// Seuil haut du vert (median valide Chris).
@@ -83,49 +170,171 @@ class FeasibilityThresholds {
   /// Reglage median par defaut.
   static const FeasibilityThresholds median = FeasibilityThresholds();
 
-  /// Classe un ratio effort/capacite en verdict tricolore.
-  FeasibilityVerdict verdictFor(double ratio) {
-    if (ratio <= green) return FeasibilityVerdict.green;
-    if (ratio <= orange) return FeasibilityVerdict.orange;
+  /// Classe un score energie/capacite en verdict tricolore.
+  FeasibilityVerdict verdictFor(double score) {
+    if (score <= green) return FeasibilityVerdict.green;
+    if (score <= orange) return FeasibilityVerdict.orange;
     return FeasibilityVerdict.red;
   }
 }
 
-/// Plafonds journaliers de reference par niveau (km-effort/jour).
+/// BAREME du moteur : l'unite d'energie ET les plafonds qui en decoulent.
 ///
-/// Le km-effort = distance_km + D+_m/100 (equivalence BP 100 m D+ = 1 km plat).
-/// On derive un plafond km-effort COHERENT par niveau a partir des reperes BP :
-///   - D+/jour de reference : 300 / 700 / 1200 / 1500 m
-///   - distance/jour de reference : 18 / 22 / 27 / 30 km
-///   - plafond km-effort = distance_ref + D+_ref/100
-/// -> 21 / 29 / 39 / 45 km-effort. Ces valeurs sont le PLAFOND « soutenable au
-/// quotidien » (le seuil vert 0.85 laisse la marge de confort en dessous).
-class DailyCapacity {
-  const DailyCapacity._();
+/// POURQUOI LES DEUX ENSEMBLE, ET JAMAIS SEPAREMENT. Un plafond n'a de sens que
+/// dans l'unite qui l'a produit : melanger l'unite de 42 m avec les plafonds
+/// derives a 100 m donnerait des verdicts faux sans lever aucune erreur. Les
+/// deux voyagent donc dans le meme objet, et [v1] existe pour une seule raison
+/// legitime : permettre a la campagne personas de RECALCULER la colonne
+/// « AVANT » de chaque bascule avec le moteur reel, au lieu de la recopier a la
+/// main depuis un tableau que personne ne pourrait verifier (#10-f).
+class FeasibilityScale {
+  const FeasibilityScale({
+    required this.metersOfGainPerFlatKm,
+    required this.referenceDailyDistanceKm,
+    required this.referenceDailyGainM,
+  });
 
-  /// Plafond km-effort/jour de BASE pour un niveau (avant corrections).
-  static double baseCeilingFor(HikerLevel level) {
-    switch (level) {
-      case HikerLevel.beginner:
-        return 18 + 300 / 100; // 21
-      case HikerLevel.intermediate:
-        return 22 + 700 / 100; // 29
-      case HikerLevel.confirmed:
-        return 27 + 1200 / 100; // 39
-      case HikerLevel.expert:
-        return 30 + 1500 / 100; // 45
-    }
+  /// BAREME V2 EN VIGUEUR (#1-a, #2-f). 1 km de plat vaut 42 m de D+.
+  ///
+  /// Plafonds re-derives sur les MEMES reperes BP que la V1 :
+  /// debutant 18 km + 300 m -> 25,14 · intermediaire 22 + 700 -> 38,67 ·
+  /// confirme 27 + 1200 -> 55,57 · expert 30 + 1500 -> 65,71.
+  static const FeasibilityScale v2 = FeasibilityScale(
+    metersOfGainPerFlatKm: 42,
+    referenceDailyDistanceKm: {
+      HikerLevel.beginner: 18,
+      HikerLevel.intermediate: 22,
+      HikerLevel.confirmed: 27,
+      HikerLevel.expert: 30,
+    },
+    referenceDailyGainM: {
+      HikerLevel.beginner: 300,
+      HikerLevel.intermediate: 700,
+      HikerLevel.confirmed: 1200,
+      HikerLevel.expert: 1500,
+    },
+  );
+
+  /// BAREME HISTORIQUE V1 (#100068) — 100 m de D+ pour 1 km, plafonds
+  /// 21 / 29 / 39 / 45. N'est PLUS le bareme de l'application : il ne sert qu'a
+  /// reconstituer la colonne « AVANT » des bascules de la campagne personas.
+  static const FeasibilityScale v1 = FeasibilityScale(
+    metersOfGainPerFlatKm: 100,
+    referenceDailyDistanceKm: {
+      HikerLevel.beginner: 18,
+      HikerLevel.intermediate: 22,
+      HikerLevel.confirmed: 27,
+      HikerLevel.expert: 30,
+    },
+    referenceDailyGainM: {
+      HikerLevel.beginner: 300,
+      HikerLevel.intermediate: 700,
+      HikerLevel.confirmed: 1200,
+      HikerLevel.expert: 1500,
+    },
+  );
+
+  /// Metres de D+ equivalents a 1 km de plat (42 en V2, source Minetti 2002).
+  final double metersOfGainPerFlatKm;
+
+  /// Distance/jour de reference par niveau (repere BP), en km.
+  final Map<HikerLevel, double> referenceDailyDistanceKm;
+
+  /// D+/jour de reference par niveau (repere BP), en metres.
+  final Map<HikerLevel, double> referenceDailyGainM;
+
+  /// Energie (km-energie) d'une geometrie : distance + D+ / unite.
+  double energyOf({required double distanceKm, required num elevationGainM}) =>
+      distanceKm + elevationGainM / metersOfGainPerFlatKm;
+
+  /// Energie (km-energie) d'une etape.
+  double energyOfStage(StageEffort stage) => energyOf(
+        distanceKm: stage.distanceKm,
+        elevationGainM: stage.elevationGainM,
+      );
+
+  /// Part du D+ dans l'energie d'une etape, en km-energie.
+  double elevationEnergyOf(StageEffort stage) =>
+      stage.elevationGainM / metersOfGainPerFlatKm;
+
+  /// Plafond journalier de BASE du niveau (km-energie), avant plancher demontre
+  /// et avant conditions.
+  double levelCeilingFor(HikerLevel level) =>
+      referenceDailyDistanceKm[level]! +
+      referenceDailyGainM[level]! / metersOfGainPerFlatKm;
+}
+
+/// CONDITIONS du trek qui rabotent la capacite journaliere (#2-h a #2-j).
+///
+/// Aucun coefficient invente : chaque facteur cite sa source, et l'absence de
+/// source produit un facteur NEUTRE qui est DIT, pas un facteur devine.
+class TrekConditions {
+  const TrekConditions({this.maxAltitudeM, this.season});
+
+  /// Rien de connu : altitude absente, saison inconnue. Tout est neutre, et
+  /// l'ecran le declare (#2-h, #8-b).
+  static const TrekConditions unknown = TrekConditions();
+
+  /// Altitude MAXIMALE du trek (m), derivee de la trace GPX. `null` quand la
+  /// trace ne porte pas d'altitude : le facteur vaut alors 1,00 ET ON LE DIT
+  /// (#2-h) — on ne devine pas une altitude.
+  final double? maxAltitudeM;
+
+  /// Saison du DEPART (cles [FeasibilitySeason]). `null` = pas de date de
+  /// depart posee.
+  final String? season;
+
+  /// k_altitude = 1 − 0,01 × max(0 ; A_max − 1500) ÷ 100 (#2-h).
+  ///
+  /// Source #S8-e (MOVE, *Eur Heart J Digit Health* 2026) : 1 % de capacite en
+  /// moins par tranche de 100 m au-dessus de 1 500 m. Altitude absente -> 1,00.
+  double get altitudeFactor {
+    final a = maxAltitudeM;
+    if (a == null) return 1.0;
+    return 1 - 0.01 * math.max(0.0, a - 1500) / 100;
+  }
+
+  /// k_chaleur = 0,93 si le depart tombe en ETE, 1,00 sinon (#2-i).
+  ///
+  /// Source #S10-d (Linsell 2020, −7 % de capacite aerobie). AUCUNE source pour
+  /// le printemps et l'automne : neutres, et on le dit.
+  double get heatFactor =>
+      season == FeasibilitySeason.summer ? 0.93 : 1.0;
+
+  /// Vrai si le depart tombe en HIVER (#2-j) : le verdict est DECLARE NON
+  /// VALIDE, sans aucun coefficient de durcissement.
+  bool get isWinterDeparture => season == FeasibilitySeason.winter;
+
+  /// Pourquoi l'altitude n'a rien change, quand elle n'a rien change.
+  NeutralReason? get altitudeNeutralReason {
+    if (maxAltitudeM == null) return NeutralReason.missingData;
+    if (altitudeFactor >= 1.0) return NeutralReason.belowThreshold;
+    return null;
+  }
+
+  /// Pourquoi la saison n'a rien change, quand elle n'a rien change.
+  NeutralReason? get seasonNeutralReason {
+    if (season == null) return NeutralReason.missingData;
+    if (season == FeasibilitySeason.summer) return null;
+    if (season == FeasibilitySeason.winter) return null;
+    // Printemps et automne : aucune source publiee (#2-i).
+    return NeutralReason.noPublishedSource;
   }
 }
 
-/// Effort d'une etape (km-effort) + sa decomposition, pour nommer le facteur
-/// limitant sans recalculer.
+/// Geometrie d'une etape — DONNEE BRUTE, sans unite d'energie.
+///
+/// L'energie n'est PAS un attribut de l'etape : elle depend du bareme
+/// ([FeasibilityScale]). Mettre `effortKm` ici, comme le faisait la V1, revenait
+/// a graver l'unite dans la donnee et rendait toute comparaison AVANT/APRES
+/// impossible.
 class StageEffort {
   const StageEffort({
     required this.index,
     required this.name,
     required this.distanceKm,
     required this.elevationGainM,
+    this.elevationLossM = 0,
   });
 
   /// Index 0-based de l'etape dans la sequence.
@@ -140,32 +349,170 @@ class StageEffort {
   /// Denivele positif de l'etape (m).
   final int elevationGainM;
 
-  /// Contribution du D+ en equivalent km plat (D+_m / 100).
-  double get elevationEffortKm => elevationGainM / 100.0;
-
-  /// EFFORT total en km-effort = distance + D+/100 (formule Chris #100068).
-  double get effortKm => distanceKm + elevationEffortKm;
+  /// Denivele NEGATIF de l'etape (m). N'entre PAS dans le score (#1-d, #M05) :
+  /// il sert au classement des etapes de l'alerte descente du dispositif poids
+  /// (#4-l), qui n'invente aucun seuil.
+  final int elevationLossM;
 }
 
-/// Verdict tricolore d'une etape (etape + ratio + couleur).
+/// Verdict d'une etape : son energie, son score, sa couleur, son facteur
+/// dominant.
 class StageVerdict {
   const StageVerdict({
     required this.stage,
-    required this.ratio,
+    required this.energyKm,
+    required this.capacityKm,
+    required this.score,
     required this.verdict,
+    required this.distanceShare,
+    required this.elevationShare,
+    required this.altitudeShare,
+    required this.heatShare,
   });
 
-  /// L'etape evaluee (effort + decomposition).
+  /// L'etape evaluee (geometrie brute).
   final StageEffort stage;
 
-  /// ratio = effort_etape / plafond_jour (>= 0).
-  final double ratio;
+  /// Energie de l'etape dans le bareme applique (km-energie).
+  final double energyKm;
+
+  /// Capacite du jour appliquee a cette etape (km-energie).
+  final double capacityKm;
+
+  /// score = energie_etape / capacite_jour (>= 0).
+  final double score;
 
   /// Verdict tricolore de l'etape.
   final FeasibilityVerdict verdict;
 
+  /// DECOMPOSITION EXACTE DU SCORE en quatre parts additives (#2-l).
+  ///
+  /// distance + denivele + chaleur + altitude = score, a l'exactitude machine
+  /// pres. Demonstration : score = E/(B·ka·kh) avec E = d + g/u et B la base ;
+  /// la part distance vaut d/B, la part denivele (g/u)/B, la part chaleur
+  /// E/B·(1/kh − 1), la part altitude E/B·(1/(ka·kh) − 1/kh). Leur somme se
+  /// telescope exactement en E/(B·ka·kh).
+  final double distanceShare;
+
+  /// Part du denivele positif dans le score (voir [distanceShare]).
+  final double elevationShare;
+
+  /// Part de l'altitude dans le score (voir [distanceShare]).
+  final double altitudeShare;
+
+  /// Part de la chaleur dans le score (voir [distanceShare]).
+  final double heatShare;
+
   /// Vrai si l'etape depasse le plafond (orange ou rouge -> « au-dessus »).
   bool get isOverCapacity => verdict != FeasibilityVerdict.green;
+
+  /// Facteur DOMINANT de l'etape : la plus grosse des quatre parts (#2-l).
+  LimitingFactor get dominantFactor {
+    var best = LimitingFactor.distance;
+    var bestShare = distanceShare;
+    if (elevationShare > bestShare) {
+      best = LimitingFactor.elevation;
+      bestShare = elevationShare;
+    }
+    if (altitudeShare > bestShare) {
+      best = LimitingFactor.altitude;
+      bestShare = altitudeShare;
+    }
+    if (heatShare > bestShare) {
+      best = LimitingFactor.heat;
+      bestShare = heatShare;
+    }
+    return best;
+  }
+}
+
+/// SCORE DE CIRCUIT (#2-m a #2-t).
+///
+/// Chaque contrainte est normalisee par son PROPRE seuil publie et vaut 1,0 a
+/// sa limite ; le score du circuit est la contrainte qui mord. Aucun poids
+/// n'est choisi, donc aucun poids n'est a justifier.
+class CircuitScore {
+  const CircuitScore({
+    required this.worstStage,
+    required this.averageLoad,
+    required this.rest,
+    required this.habitGap,
+    required this.monotony,
+    required this.monotonyWindowStartDay,
+    required this.monotonyWindowEndDay,
+    required this.totalDays,
+    required this.score,
+    required this.dominant,
+    required this.verdict,
+  });
+
+  /// C1 — le score de la pire etape (#2-n).
+  final double worstStage;
+
+  /// C2 — (Σ energie) ÷ (jours de marche × capacite du jour) (#2-o).
+  ///
+  /// AFFICHEE, JAMAIS DECISIVE — et ce n'est pas un choix de confort, c'est une
+  /// demonstration. C2 est une MOYENNE et C1 le MAXIMUM de la meme serie
+  /// normalisee par le meme plafond : `C2 <= C1` par construction, toujours.
+  /// `max(C1 ; C2 ; C3)` valait donc identiquement `max(C1 ; C3)` ; C2 a ete
+  /// sortie du maximum pour que l'ecriture soit honnete, sans que la sortie du
+  /// moteur change d'un chiffre.
+  ///
+  /// ELLE RESTE CALCULEE PARCE QU'ELLE INFORME REELLEMENT : un trek a maximum
+  /// 1,05 et moyenne 0,50 a UNE journee dure ; un trek a maximum 1,05 et
+  /// moyenne 1,00 est dur TOUS LES JOURS. Aucune autre grandeur du modele ne
+  /// porte cette distinction.
+  final double averageLoad;
+
+  /// C3 — monotonie ÷ 2,0 (#2-p). `null` quand elle N'EST PAS CALCULABLE : sur
+  /// un sentier d'UNE etape, l'ecart-type d'une seule charge vaut zero et la
+  /// monotonie diverge. Une contrainte non calculable est DECLAREE non
+  /// applicable, elle n'est jamais remplacee par un chiffre (#10-e).
+  final double? rest;
+
+  /// C4 — charge journaliere du trek ÷ charge journaliere deja realisee
+  /// (#2-q). AFFICHE, JAMAIS DECISIF (#S16-b Impellizzeri 2020 : aucune preuve
+  /// causale). `null` si aucune habitude chiffree n'est connue.
+  final double? habitGap;
+
+  /// Monotonie de Foster brute (moyenne ÷ ecart-type de population) de la PIRE
+  /// fenetre. `null` si non calculable.
+  final double? monotony;
+
+  /// Premier jour (1-based) de la fenetre de monotonie retenue, `null` si non
+  /// calculable.
+  final int? monotonyWindowStartDay;
+
+  /// Dernier jour (1-based) de la fenetre de monotonie retenue.
+  final int? monotonyWindowEndDay;
+
+  /// Nombre TOTAL de jours du programme (marche + repos) : c'est lui qui dit si
+  /// la fenetre retenue couvre le trek entier ou seulement une de ses semaines.
+  final int totalDays;
+
+  /// S_circuit = max(C1 ; C3). C2 et C4 sont en INFORMATION (#2-r, corrige).
+  ///
+  /// CONSEQUENCE A CONNAITRE : apres le retrait de C2, le SEUL mecanisme qui
+  /// peut rendre un circuit plus severe que toutes ses etapes est C3, le repos.
+  /// C'est exactement le comportement qu'ARB-004 autorisait — et cela rend
+  /// l'alimentation des jours de repos critique : sans elle, C3 est le seul
+  /// decideur et il decide sur une donnee fausse.
+  final double score;
+
+  /// La contrainte qui MORD (celle qui porte [score]) : [worstStage] ou [rest],
+  /// jamais [averageLoad] ni [habitGap].
+  final CircuitConstraint dominant;
+
+  /// Verdict tricolore du circuit (memes seuils que les etapes).
+  final FeasibilityVerdict verdict;
+
+  /// Vrai si la contrainte repos n'a pas pu etre calculee (#10-e).
+  bool get isRestApplicable => rest != null;
+
+  /// Vrai si la fenetre de monotonie couvre le trek ENTIER (programme de 7 jours
+  /// ou moins) — et non une semaine choisie parmi d'autres.
+  bool get monotonyCoversWholeTrek =>
+      monotonyWindowStartDay == 1 && monotonyWindowEndDay == totalDays;
 }
 
 /// Un conseil de programme (cle i18n + parametres nommes pour l'affichage).
@@ -182,12 +529,18 @@ class ProgramAdvice {
   final Map<String, Object> params;
 }
 
-/// Resultat complet de la formule de faisabilite V1.
+/// Resultat complet du moteur de faisabilite V2.
 class FeasibilityAssessment {
   const FeasibilityAssessment({
+    required this.scale,
     required this.level,
-    required this.dailyCeilingKmEffort,
+    required this.levelCeilingEnergyKm,
+    required this.demonstratedFloorEnergyKm,
+    required this.baseCapacityEnergyKm,
+    required this.dailyCapacityEnergyKm,
+    required this.conditions,
     required this.stageVerdicts,
+    required this.circuit,
     required this.globalVerdict,
     required this.hardestStageIndex,
     required this.daysOverCapacity,
@@ -195,21 +548,42 @@ class FeasibilityAssessment {
     required this.recommendedTrainingWeeks,
     required this.advice,
     required this.suggestedDays,
+    required this.restDaysPlanned,
+    required this.walkingDays,
+    required this.longestConsecutiveDaysDone,
   });
+
+  /// Bareme applique (V2 en production, V1 pour la colonne AVANT).
+  final FeasibilityScale scale;
 
   /// Niveau retenu (corrige age + condition).
   final HikerLevel level;
 
-  /// Plafond journalier applique (km-effort), apres corrections.
-  final double dailyCeilingKmEffort;
+  /// Plafond journalier du NIVEAU seul (km-energie), avant plancher demontre.
+  final double levelCeilingEnergyKm;
 
-  /// Verdict tricolore par etape (meme ordre que l'entree).
+  /// E_max_realise : meilleure journee DEMONTREE (km-energie), 0 si inconnue.
+  final double demonstratedFloorEnergyKm;
+
+  /// Capacite de BASE = max(plafond du niveau ; plancher demontre) (#2-d).
+  final double baseCapacityEnergyKm;
+
+  /// Capacite du jour de REFERENCE = base × k_altitude × k_chaleur (#2-d/#2-e).
+  final double dailyCapacityEnergyKm;
+
+  /// Conditions appliquees (altitude, saison) — l'ecran doit pouvoir les dire.
+  final TrekConditions conditions;
+
+  /// Verdict par etape (meme ordre que l'entree).
   final List<StageVerdict> stageVerdicts;
 
-  /// Verdict global = pire etape (feu tricolore agrege).
+  /// Score de circuit (C1 a C4) — `null` si aucune etape.
+  final CircuitScore? circuit;
+
+  /// Verdict global = verdict du CIRCUIT (et non plus la seule pire etape).
   final FeasibilityVerdict globalVerdict;
 
-  /// Index 0-based de l'etape la plus contraignante (ratio max), -1 si aucune.
+  /// Index 0-based de l'etape la plus contraignante (score max), -1 si aucune.
   final int hardestStageIndex;
 
   /// Nombre de jours (etapes) au-dessus du plafond (orange + rouge).
@@ -224,18 +598,95 @@ class FeasibilityAssessment {
   /// Conseils de programme (nb de jours optimal, decoupe, repos).
   final List<ProgramAdvice> advice;
 
-  /// Nombre de jours de MARCHE optimal propose (hors repos) pour rester sous le
-  /// plafond. >= au nombre d'etapes d'entree.
+  /// Nombre de jours de MARCHE optimal propose (hors repos).
   final int suggestedDays;
+
+  /// Nombre de jours de REPOS pris en compte dans la contrainte C3.
+  final int restDaysPlanned;
+
+  /// Nombre de jours de MARCHE du trek (= nombre d'etapes evaluees).
+  ///
+  /// ENONCE, JAMAIS SCORE. Voir [longestConsecutiveDaysDone].
+  final int walkingDays;
+
+  /// Plus longue sortie ENCHAINEE deja realisee, en jours. 0 = inconnue.
+  ///
+  /// POURQUOI CE CONSTAT EXISTE, ET POURQUOI IL N'EST PAS UNE COULEUR.
+  /// Le modele ne capte la DUREE CUMULEE nulle part. C3 mesure l'absence de
+  /// recuperation, c'est-a-dire une forme de REGULARITE, pas une LONGUEUR : sur
+  /// des etapes regulieres sans repos, C3 rend exactement le meme chiffre pour
+  /// trois jours et pour dix-sept. Aucun seuil publie n'existe pour combler ce
+  /// trou (#M06), donc on ne l'invente pas : on ENONCE LE FAIT — « ce trek dure
+  /// dix-sept jours de marche, ta plus longue sortie enchainee est de trois
+  /// jours » — et le randonneur juge. Un constat, pas un verdict.
+  final int longestConsecutiveDaysDone;
+
+  /// Vrai si le constat de duree peut etre enonce (les deux chiffres existent).
+  bool get hasDurationStatement =>
+      walkingDays > 0 && longestConsecutiveDaysDone > 0;
 
   /// Etape la plus contraignante (null si aucune etape).
   StageVerdict? get hardestStage =>
       hardestStageIndex >= 0 ? stageVerdicts[hardestStageIndex] : null;
+
+  /// LE VERDICT EST-IL VALIDE (#1-e / #2-j).
+  ///
+  /// En hiver, on ne durcit pas le verdict : ON DIT QU'IL NE TIENT PLUS. Les
+  /// chiffres restent calcules et visibles — les masquer reviendrait a cacher
+  /// ce sur quoi la declaration porte — mais l'ecran DOIT afficher la
+  /// non-validite (#8-d).
+  bool get isVerdictValid => !conditions.isWinterDeparture;
+
+  /// ARB-004 (#2-s) : le circuit est-il PLUS SEVERE que toutes ses etapes ?
+  ///
+  /// Quand c'est vrai, l'ecran a l'OBLIGATION d'expliquer pourquoi, sinon
+  /// l'utilisateur croira a un bug (il verra des etapes vertes et un circuit
+  /// rouge).
+  bool get isCircuitHarsherThanStages {
+    final c = circuit;
+    if (c == null || stageVerdicts.isEmpty) return false;
+    return c.verdict.index > worstStageVerdict.index;
+  }
+
+  /// Verdict de la PIRE etape (C1 seule), pour l'explication d'ARB-004.
+  FeasibilityVerdict get worstStageVerdict => hardestStageIndex >= 0
+      ? stageVerdicts[hardestStageIndex].verdict
+      : FeasibilityVerdict.green;
+
+  /// Vrai si le plancher demontre a REELLEMENT releve la capacite (#2-g) :
+  /// le randonneur a deja fait mieux que le plafond de son cran.
+  bool get isDemonstratedFloorActive =>
+      demonstratedFloorEnergyKm > levelCeilingEnergyKm;
+
+  /// Etapes triees par denivele NEGATIF decroissant (#4-l) : le dispositif
+  /// poids enonce sa charge excedentaire sur les premieres, sans inventer de
+  /// seuil de declenchement.
+  List<StageVerdict> get stagesByDescentDesc {
+    final sorted = List<StageVerdict>.of(stageVerdicts)
+      ..sort((a, b) => b.stage.elevationLossM.compareTo(a.stage.elevationLossM));
+    return sorted;
+  }
 }
 
-/// Moteur de la formule de faisabilite V1 (fonction PURE) — decision #100068.
+/// Moteur de la formule de faisabilite V2 (fonctions PURES).
 class FeasibilityFormula {
   const FeasibilityFormula._();
+
+  /// Seuil de monotonie de Foster (#S15, Foster 1998) : au-dela de 2,0, le
+  /// profil de charge est trop monotone et la recuperation insuffisante.
+  ///
+  /// EXTRAPOLATION DECLAREE #M08 : ce seuil a ete etabli sur des athletes et
+  /// transfere a l'itinerance. Il n'est pas invente — il est DEPLACE, et l'ecart
+  /// est dit.
+  static const double monotonyThreshold = 2.0;
+
+  /// Largeur de la fenetre glissante de monotonie, en jours (#2-p).
+  static const int monotonyWindowDays = 7;
+
+  /// Zone de reference de l'ecart a l'habitude (#S16-a, Gabbett 2016) : 0,8-1,3.
+  /// AFFICHEE, JAMAIS DECISIVE (#2-q).
+  static const double habitGapLow = 0.8;
+  static const double habitGapHigh = 1.3;
 
   /// Bornes d'entrainement recommandees (BP : sedentaire 12, actif 8-12,
   /// repris 6). On borne toute reco entre ces deux valeurs.
@@ -245,6 +696,10 @@ class FeasibilityFormula {
   /// Deduit le niveau de randonneur a partir des reperes chiffres DEJA REALISES
   /// (D+/jour et distance/jour max des randos passees), CORRIGE par l'age et la
   /// condition declaree/testee.
+  ///
+  /// INCHANGE EN V2 : c'est de la classification de l'experience passee, elle ne
+  /// depend d'aucune unite d'energie. Les bascules de verdict de la campagne
+  /// viennent de l'unite, des plafonds et des conditions — pas d'ici (#9-f).
   ///
   /// - [maxElevationGainPerDayDone] / [maxDistancePerDayDone] : maxima deja
   ///   realises (0 = jamais rien fait de comparable).
@@ -304,14 +759,27 @@ class FeasibilityFormula {
     return HikerLevel.values[rank];
   }
 
-  /// Plafond journalier (km-effort) applique au niveau, apres corrections fines.
+  /// Capacite journaliere de REFERENCE (#2-d, #2-e) — L'ORDRE COMPTE.
   ///
-  /// Le niveau porte deja les corrections age/condition (via [deriveLevel]) ;
-  /// on renvoie donc directement le plafond de base du niveau. Isole pour
-  /// pouvoir affiner en V2 (moduler finement selon l'IMC/VO2max).
-  static double dailyCeilingFor(HikerLevel level) {
-    // TODO(V2): moduler par IMC/VO2max fin quand la donnee sera fiable.
-    return DailyCapacity.baseCeilingFor(level);
+  /// `C_jour = max(C_niveau ; E_max_realise) × k_altitude × k_chaleur`.
+  ///
+  /// Le plancher demontre s'applique a la BASE, les conditions ENSUITE.
+  /// L'ordre inverse effacerait silencieusement l'altitude et la chaleur pour
+  /// tout randonneur dont le maximum demontre depasse le plafond de son cran :
+  /// c'etait l'erreur de la premiere spec, elle est corrigee ici.
+  static double dailyCapacityFor({
+    required HikerLevel level,
+    double demonstratedFloorEnergyKm = 0,
+    TrekConditions conditions = TrekConditions.unknown,
+    FeasibilityScale scale = FeasibilityScale.v2,
+  }) {
+    final base = math.max(
+      scale.levelCeilingFor(level),
+      demonstratedFloorEnergyKm.isFinite && demonstratedFloorEnergyKm > 0
+          ? demonstratedFloorEnergyKm
+          : 0.0,
+    );
+    return base * conditions.altitudeFactor * conditions.heatFactor;
   }
 
   /// Reco d'entrainement (semaines) selon le niveau et la severite du verdict.
@@ -346,56 +814,108 @@ class FeasibilityFormula {
   ///
   /// [stages] : etapes DANS L'ORDRE de marche (une par « jour de marche »).
   /// [level] : niveau du randonneur (via [deriveLevel]).
-  /// [thresholds] : seuils tricolores (median par defaut, parametrable).
+  /// [demonstratedFloorEnergyKm] : E_max_realise (#2-g), 0 si inconnu.
+  /// [habitualDailyEnergyKm] : charge journaliere deja realisee (C4), 0/null si
+  ///   inconnue — C4 est alors non calculable et n'est pas affiche.
+  /// [longestConsecutiveDaysDone] : plus longue sortie enchainee deja faite, en
+  ///   jours. ENONCEE, jamais scoree — voir
+  ///   [FeasibilityAssessment.longestConsecutiveDaysDone].
+  /// [restAfterStageIndex] : index 0-based des etapes APRES lesquelles un jour
+  ///   de repos est pose. Les jours de repos comptent comme CHARGE NULLE dans
+  ///   la monotonie de Foster (#2-p).
+  /// [conditions] : altitude et saison du depart.
+  /// [scale] : bareme applique. V2 par defaut ; V1 uniquement pour reconstituer
+  ///   la colonne « AVANT » des bascules de la campagne personas.
   static FeasibilityAssessment evaluate({
     required List<StageEffort> stages,
     required HikerLevel level,
-    int age = 0,
+    double demonstratedFloorEnergyKm = 0,
+    double? habitualDailyEnergyKm,
+    int longestConsecutiveDaysDone = 0,
+    Set<int> restAfterStageIndex = const {},
+    TrekConditions conditions = TrekConditions.unknown,
     FeasibilityThresholds thresholds = FeasibilityThresholds.median,
+    FeasibilityScale scale = FeasibilityScale.v2,
   }) {
-    final ceiling = dailyCeilingFor(level);
+    final levelCeiling = scale.levelCeilingFor(level);
+    final floor =
+        demonstratedFloorEnergyKm.isFinite && demonstratedFloorEnergyKm > 0
+            ? demonstratedFloorEnergyKm
+            : 0.0;
+    final base = math.max(levelCeiling, floor);
+    final ka = conditions.altitudeFactor;
+    final kh = conditions.heatFactor;
+    final capacity = base * ka * kh;
 
-    // 1. Verdict tricolore de chaque etape (ratio = effort / plafond).
+    // 1. Verdict de chaque etape + decomposition exacte du score (#2-l).
+    //
+    // LA CAPACITE DU JOUR EST LA MEME POUR TOUTES LES ETAPES, et c'est voulu.
+    // La spec definit UN C_jour (#2-d), derive de l'altitude MAXIMALE du trek :
+    // une capacite qui changerait d'une etape a l'autre ferait varier le
+    // denominateur sous les pieds du randonneur, et deux etapes de meme effort
+    // recevraient deux couleurs differentes sans que l'ecran puisse l'expliquer
+    // simplement.
     final verdicts = <StageVerdict>[];
     for (final s in stages) {
-      final ratio = ceiling > 0 ? s.effortKm / ceiling : double.infinity;
+      final energy = scale.energyOfStage(s);
+      final score = capacity > 0 ? energy / capacity : double.infinity;
+      // Parts additives : distance + denivele + chaleur + altitude = score.
+      final perBase = base > 0 ? energy / base : double.infinity;
       verdicts.add(StageVerdict(
         stage: s,
-        ratio: ratio,
-        verdict: thresholds.verdictFor(ratio),
+        energyKm: energy,
+        capacityKm: capacity,
+        score: score,
+        verdict: thresholds.verdictFor(score),
+        distanceShare: base > 0 ? s.distanceKm / base : double.infinity,
+        elevationShare:
+            base > 0 ? scale.elevationEnergyOf(s) / base : double.infinity,
+        heatShare: perBase * (1 / kh - 1),
+        altitudeShare: perBase * (1 / (ka * kh) - 1 / kh),
       ));
     }
 
-    // 2. Etape la plus contraignante (ratio max) + verdict global = sa couleur.
+    // 2. Etape la plus contraignante (score max).
     var hardestIndex = -1;
-    var hardestRatio = -1.0;
+    var hardestScore = -1.0;
     for (var i = 0; i < verdicts.length; i++) {
-      if (verdicts[i].ratio > hardestRatio) {
-        hardestRatio = verdicts[i].ratio;
+      if (verdicts[i].score > hardestScore) {
+        hardestScore = verdicts[i].score;
         hardestIndex = i;
       }
     }
-    final globalVerdict = hardestIndex >= 0
-        ? verdicts[hardestIndex].verdict
-        : FeasibilityVerdict.green;
 
-    // 3. Nombre de jours au-dessus du plafond (orange + rouge).
+    // 3. Score de circuit (C1 a C4).
+    final circuit = verdicts.isEmpty
+        ? null
+        : _circuitScore(
+            verdicts: verdicts,
+            capacity: capacity,
+            restAfterStageIndex: restAfterStageIndex,
+            habitualDailyEnergyKm: habitualDailyEnergyKm,
+            thresholds: thresholds,
+          );
+
+    // 4. Verdict global = verdict du CIRCUIT (#2-r), et non plus la pire etape.
+    final globalVerdict = circuit?.verdict ?? FeasibilityVerdict.green;
+
+    // 5. Nombre de jours au-dessus du plafond (orange + rouge).
     final daysOver = verdicts.where((v) => v.isOverCapacity).length;
 
-    // 4. Facteur limitant nomme.
+    // 6. Facteur limitant nomme du verdict global.
     final limiting = _computeLimitingFactor(
       verdicts: verdicts,
       daysOver: daysOver,
       hardestIndex: hardestIndex,
+      globalVerdict: globalVerdict,
     );
 
-    // 5. Reco entrainement.
+    // 7. Reco entrainement + conseils de programme.
     final trainingWeeks = trainingWeeksFor(level, globalVerdict);
-
-    // 6. Conseils de programme (nb de jours optimal + decoupe + repos).
-    final suggestedDays = _suggestedWalkingDays(stages, ceiling);
+    final suggestedDays = _suggestedWalkingDays(verdicts, capacity);
     final advice = _buildAdvice(
       verdicts: verdicts,
+      circuit: circuit,
       globalVerdict: globalVerdict,
       hardestIndex: hardestIndex,
       suggestedDays: suggestedDays,
@@ -404,9 +924,15 @@ class FeasibilityFormula {
     );
 
     return FeasibilityAssessment(
+      scale: scale,
       level: level,
-      dailyCeilingKmEffort: ceiling,
+      levelCeilingEnergyKm: levelCeiling,
+      demonstratedFloorEnergyKm: floor,
+      baseCapacityEnergyKm: base,
+      dailyCapacityEnergyKm: capacity,
+      conditions: conditions,
       stageVerdicts: verdicts,
+      circuit: circuit,
       globalVerdict: globalVerdict,
       hardestStageIndex: hardestIndex,
       daysOverCapacity: daysOver,
@@ -414,32 +940,147 @@ class FeasibilityFormula {
       recommendedTrainingWeeks: trainingWeeks,
       advice: advice,
       suggestedDays: suggestedDays,
+      restDaysPlanned: restAfterStageIndex.length,
+      walkingDays: stages.length,
+      longestConsecutiveDaysDone: longestConsecutiveDaysDone,
     );
   }
 
-  /// Determine le facteur limitant : d'abord l'ENCHAINEMENT (>=2 jours au-dessus
-  /// du plafond), sinon, sur l'etape la plus dure, le plus gros contributeur
-  /// entre la distance et le D+.
+  /// Construit la sequence des charges JOURNALIERES : l'energie de chaque etape
+  /// dans l'ordre de marche, plus un 0 apres chaque etape suivie d'un repos.
+  ///
+  /// Les jours de repos comptent comme CHARGE NULLE (#2-p) : c'est precisement
+  /// ce qui fait chuter la monotonie, puisqu'ils creusent l'ecart-type.
+  static List<double> dailyLoads({
+    required List<double> stageEnergies,
+    Set<int> restAfterStageIndex = const {},
+  }) {
+    final loads = <double>[];
+    for (var i = 0; i < stageEnergies.length; i++) {
+      loads.add(stageEnergies[i]);
+      if (restAfterStageIndex.contains(i) && i < stageEnergies.length - 1) {
+        loads.add(0);
+      }
+    }
+    return loads;
+  }
+
+  /// Monotonie de Foster d'une serie de charges : moyenne ÷ ecart-type (#S15).
+  ///
+  /// ECART-TYPE DE POPULATION (diviseur n), pas d'echantillon : la serie n'est
+  /// pas un tirage dans une population plus large, c'est la semaine ELLE-MEME.
+  /// Le choix est robuste — sur les jeux de la campagne, l'estimateur
+  /// d'echantillon donne 3,74 au lieu de 4,04, meme cote du seuil.
+  ///
+  /// `null` quand la monotonie DIVERGE : moins de deux jours, ou ecart-type nul
+  /// (toutes les charges identiques). Une contrainte non calculable est
+  /// DECLAREE non applicable, jamais remplacee par un chiffre (#10-e).
+  static double? monotonyOf(List<double> loads) {
+    if (loads.length < 2) return null;
+    final mean = loads.reduce((a, b) => a + b) / loads.length;
+    final variance =
+        loads.map((x) => (x - mean) * (x - mean)).reduce((a, b) => a + b) /
+            loads.length;
+    final sd = math.sqrt(variance);
+    if (sd <= 0) return null;
+    return mean / sd;
+  }
+
+  /// Calcule C1 a C4 et le score de circuit.
+  static CircuitScore _circuitScore({
+    required List<StageVerdict> verdicts,
+    required double capacity,
+    required Set<int> restAfterStageIndex,
+    required double? habitualDailyEnergyKm,
+    required FeasibilityThresholds thresholds,
+  }) {
+    // C1 — la pire etape (#2-n).
+    final c1 = verdicts.map((v) => v.score).reduce(math.max);
+
+    // C2 — la charge moyenne (#2-o).
+    final totalEnergy =
+        verdicts.map((v) => v.energyKm).reduce((a, b) => a + b);
+    final c2 = capacity > 0
+        ? totalEnergy / (verdicts.length * capacity)
+        : double.infinity;
+
+    // C3 — le repos (#2-p) : PIRE fenetre glissante de 7 jours, jours de repos
+    // comptes comme charge nulle.
+    final loads = dailyLoads(
+      stageEnergies: verdicts.map((v) => v.energyKm).toList(),
+      restAfterStageIndex: restAfterStageIndex,
+    );
+    double? monotony;
+    int? windowStart;
+    int? windowEnd;
+    if (loads.length <= monotonyWindowDays) {
+      monotony = monotonyOf(loads);
+      if (monotony != null) {
+        windowStart = 1;
+        windowEnd = loads.length;
+      }
+    } else {
+      for (var i = 0; i + monotonyWindowDays <= loads.length; i++) {
+        final m = monotonyOf(loads.sublist(i, i + monotonyWindowDays));
+        if (m == null) continue;
+        if (monotony == null || m > monotony) {
+          monotony = m;
+          windowStart = i + 1;
+          windowEnd = i + monotonyWindowDays;
+        }
+      }
+    }
+    final c3 = monotony == null ? null : monotony / monotonyThreshold;
+
+    // C4 — l'ecart a l'habitude (#2-q). AFFICHE, JAMAIS DECISIF.
+    final habitual = habitualDailyEnergyKm;
+    final c4 = (habitual == null || !habitual.isFinite || habitual <= 0)
+        ? null
+        : (totalEnergy / verdicts.length) / habitual;
+
+    // S_circuit = max(C1 ; C3). C2 et C4 restent en INFORMATION (#2-r corrige).
+    // C2 n'entre PAS dans le maximum : etant la moyenne d'une serie dont C1 est
+    // le maximum, elle lui est inferieure ou egale par construction et ne
+    // pouvait donc jamais decider. L'ecrire ainsi ne change aucune sortie, cela
+    // rend seulement la formule honnete.
+    var score = c1;
+    var dominant = CircuitConstraint.worstStage;
+    if (c3 != null && c3 > score) {
+      score = c3;
+      dominant = CircuitConstraint.rest;
+    }
+
+    return CircuitScore(
+      worstStage: c1,
+      averageLoad: c2,
+      rest: c3,
+      habitGap: c4,
+      monotony: monotony,
+      monotonyWindowStartDay: windowStart,
+      monotonyWindowEndDay: windowEnd,
+      totalDays: loads.length,
+      score: score,
+      dominant: dominant,
+      verdict: thresholds.verdictFor(score),
+    );
+  }
+
+  /// Determine le facteur limitant du verdict global : d'abord l'ENCHAINEMENT
+  /// (>=2 jours consecutifs au-dessus du plafond), sinon le facteur dominant de
+  /// l'etape la plus dure (distance, denivele, altitude ou chaleur).
   static LimitingFactor _computeLimitingFactor({
     required List<StageVerdict> verdicts,
     required int daysOver,
     required int hardestIndex,
+    required FeasibilityVerdict globalVerdict,
   }) {
     if (hardestIndex < 0) return LimitingFactor.none;
-    final hardest = verdicts[hardestIndex];
-    if (hardest.verdict == FeasibilityVerdict.green) {
-      // Meme la pire etape est verte -> rien ne limite.
-      return LimitingFactor.none;
-    }
+    if (globalVerdict == FeasibilityVerdict.green) return LimitingFactor.none;
     // Enchainement : plusieurs jours consecutifs au-dessus = c'est LA contrainte.
     if (daysOver >= 2 && _hasConsecutiveOver(verdicts)) {
       return LimitingFactor.chaining;
     }
-    // Sinon : sur l'etape la plus dure, distance vs D+ (part dominante).
-    final s = hardest.stage;
-    return s.elevationEffortKm >= s.distanceKm
-        ? LimitingFactor.elevation
-        : LimitingFactor.distance;
+    return verdicts[hardestIndex].dominantFactor;
   }
 
   /// Vrai s'il existe au moins DEUX etapes consecutives au-dessus du plafond.
@@ -452,24 +1093,28 @@ class FeasibilityFormula {
     return false;
   }
 
-  /// Nombre de jours de MARCHE optimal pour que la charge moyenne tienne sous le
-  /// plafond, en lissant les pics : max(nb d'etapes, ceil(effort_total /
-  /// plafond), nb d'etapes rouges * 2 pour permettre le decoupage des pires).
-  static int _suggestedWalkingDays(List<StageEffort> stages, double ceiling) {
-    if (stages.isEmpty) return 0;
-    final totalEffort = stages.fold<double>(0, (sum, s) => sum + s.effortKm);
-    final byLoad = ceiling > 0 ? (totalEffort / ceiling).ceil() : stages.length;
-    // Chaque etape ROUGE (> plafond large) merite au moins d'etre coupee en 2.
-    final redCount =
-        stages.where((s) => ceiling > 0 && s.effortKm > ceiling).length;
-    final byRed = stages.length + redCount;
-    return math.max(stages.length, math.max(byLoad, byRed));
+  /// Nombre de jours de MARCHE optimal pour que la charge moyenne tienne sous la
+  /// capacite, en lissant les pics : max(nb d'etapes, ceil(energie totale /
+  /// capacite), nb d'etapes au-dessus de la capacite * 2 pour permettre le
+  /// decoupage des pires).
+  static int _suggestedWalkingDays(
+      List<StageVerdict> verdicts, double capacity) {
+    if (verdicts.isEmpty) return 0;
+    final total = verdicts.map((v) => v.energyKm).reduce((a, b) => a + b);
+    final byLoad =
+        capacity > 0 ? (total / capacity).ceil() : verdicts.length;
+    // Chaque etape au-dessus de la capacite merite au moins d'etre coupee en 2.
+    final overCount =
+        verdicts.where((v) => capacity > 0 && v.energyKm > capacity).length;
+    final byOver = verdicts.length + overCount;
+    return math.max(verdicts.length, math.max(byLoad, byOver));
   }
 
   /// Construit les conseils de programme (cles i18n + parametres). Coherent avec
   /// l'ecran Programme (LOT 2) : jours + repos + decoupe.
   static List<ProgramAdvice> _buildAdvice({
     required List<StageVerdict> verdicts,
+    required CircuitScore? circuit,
     required FeasibilityVerdict globalVerdict,
     required int hardestIndex,
     required int suggestedDays,
@@ -482,6 +1127,13 @@ class FeasibilityFormula {
     if (globalVerdict == FeasibilityVerdict.green) {
       advice.add(const ProgramAdvice(key: 'balancedOk'));
       return advice;
+    }
+
+    // 0. C3 dominante : c'est le REPOS qui mord, pas une etape. Le dire en
+    // premier, sinon le conseil « decoupe l'etape N » envoie dans le mur —
+    // lisser les pics et poser des repos sont deux leviers OPPOSES (#2-t).
+    if (circuit != null && circuit.dominant == CircuitConstraint.rest) {
+      advice.add(const ProgramAdvice(key: 'restDominant'));
     }
 
     // 1. Nombre de jours optimal (si plus que le decoupage actuel).

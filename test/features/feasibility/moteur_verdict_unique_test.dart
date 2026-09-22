@@ -23,10 +23,15 @@ import 'package:moteur_gr/features/training/providers/training_plan_providers.da
 /// rejoue les 6 profils de la campagne et on exige l'egalite stricte des deux
 /// lectures, profil par profil.
 void main() {
-  /// Trek de reference : 3 etapes, la plus dure a 24 km-effort (14 km + 1000
-  /// D+). Ce chiffre est choisi pour reproduire EXACTEMENT la table de la
-  /// campagne : rouge sous le plafond debutant (21), vert des le plafond
-  /// intermediaire (29).
+  /// Trek de reference : 3 etapes, la plus dure a 37,8 km-energie (14 km +
+  /// 1000 m de D+, unite V2). Rouge sous la capacite debutant (25,14), vert des
+  /// la capacite confirme (55,57).
+  ///
+  /// RE-ANCRAGE DU 22/09 : les verdicts attendus ci-dessous ont ete remesures
+  /// sur le moteur V2. Deux profils passent de VERT a ORANGE — l occasionnel et
+  /// le senior — parce que l unite d energie de 42 m alourdit une etape a
+  /// 71 m de D+ par kilometre, bien au-dessus du point de bascule de leur cran.
+  /// Ce sont des bascules ATTENDUES, listees par la campagne (#9-c).
   const stages = <StageEffort>[
     StageEffort(index: 0, name: 'Depart -> Col', distanceKm: 14, elevationGainM: 1000),
     StageEffort(index: 1, name: 'Col -> Refuge', distanceKm: 12, elevationGainM: 600),
@@ -35,8 +40,7 @@ void main() {
 
   /// Un profil de la campagne : ce qu'il a deja fait + son age.
   ///
-  /// [attendu] est le verdict mesure sur l'appareil par l'ecran Faisabilite le
-  /// 21/09 — il ancre le test sur la realite constatee, pas sur le code.
+  /// [attendu] est le verdict du CIRCUIT, remesure sur le moteur V2.
   ({
     String cle,
     ObjectiveProfile objectif,
@@ -56,6 +60,14 @@ void main() {
         maxElevationGainPerDayDone: dPlusParJour,
         maxDistancePerDayDone: kmParJour,
         maxConsecutiveDaysDone: joursConsecutifs,
+        // E_max_realise et charge habituelle, dans l unite d energie V2 : la
+        // MEME journee sert aux deux, sinon on fabriquerait une journee que
+        // personne n a faite (#2-g).
+        maxDailyEnergyKmDone:
+            FeasibilityScale.v2.energyOf(distanceKm: kmParJour, elevationGainM: dPlusParJour),
+        habitualDailyEnergyKm: kmParJour <= 0 && dPlusParJour <= 0
+            ? null
+            : FeasibilityScale.v2.energyOf(distanceKm: kmParJour, elevationGainM: dPlusParJour),
         // Rang de forme median (aucun test 6 min) : le fallback de prod.
         fitnessLevelRank: 1,
         hasWalkTest: false,
@@ -80,24 +92,27 @@ void main() {
         attendu: FeasibilityVerdict.red),
     // Les 3 profils qui se contredisaient : ecran « Faisable », entrainement
     // « prudence ». C'est LE coeur de la non-regression.
+    // Bascule V2 assumee : 0,68 (vert) en V1 -> 0,98 (orange) en V2.
     profil('occasionnel',
         dPlusParJour: 500,
         kmParJour: 16,
         joursConsecutifs: 2,
         age: 38,
-        attendu: FeasibilityVerdict.green),
+        attendu: FeasibilityVerdict.orange),
     profil('confirme',
         dPlusParJour: 900,
         kmParJour: 23,
         joursConsecutifs: 5,
         age: 45,
         attendu: FeasibilityVerdict.green),
+    // Bascule V2 assumee : l age lui coute un cran, et son plancher demontre
+    // (44,4) devient sa base -> 0,85 franchi d un cheveu.
     profil('senior',
         dPlusParJour: 900,
         kmParJour: 23,
         joursConsecutifs: 5,
         age: 68,
-        attendu: FeasibilityVerdict.green),
+        attendu: FeasibilityVerdict.orange),
     profil('expert',
         dPlusParJour: 1300,
         kmParJour: 28,
@@ -117,6 +132,17 @@ void main() {
         objectiveProfileProvider.overrideWith((ref) async => objectif),
         hikerProfileProvider
             .overrideWith(() => _FicheFigee(fiche)),
+        // PROGRAMME AVEC DEUX JOURS DE REPOS. Sans repos, la monotonie de
+        // Foster rend C3 dominante pour TOUT LE MONDE et les six profils
+        // deviennent rouges : le test ne discriminerait plus rien, et ce
+        // serait un artefact de fixture, pas une propriete du moteur. On pose
+        // donc un programme realiste, et C1 redevient la contrainte qui mord.
+        restDaysAfterStageProvider.overrideWithValue(const {0, 1}),
+        // Conditions NEUTRES : ce test porte sur l unicite du moteur, pas sur
+        // l altitude ni sur la saison. Les figer evite aussi d aller chercher
+        // la trace GPX et les prefs, absentes d un test pur.
+        trekConditionsProvider
+            .overrideWith((ref) async => TrekConditions.unknown),
       ],
     );
     addTearDown(container.dispose);
@@ -138,7 +164,7 @@ void main() {
       expect(assessment, isNotNull,
           reason: '${p.cle} : l ecran Faisabilite doit rendre un verdict');
       expect(assessment!.globalVerdict, p.attendu,
-          reason: '${p.cle} : verdict mesure sur l appareil le 21/09');
+          reason: '${p.cle} : verdict remesure sur le moteur V2');
       // L'EGALITE STRICTE : un seul moteur, donc une seule reponse.
       expect(perso.verdict, assessment.globalVerdict,
           reason: '${p.cle} : les deux ecrans doivent dire la meme chose');
@@ -161,6 +187,9 @@ void main() {
         ),
         hikerProfileProvider
             .overrideWith(() => _FicheFigee(HikerProfile.empty)),
+        restDaysAfterStageProvider.overrideWithValue(const <int>{}),
+        trekConditionsProvider
+            .overrideWith((ref) async => TrekConditions.unknown),
       ],
     );
     addTearDown(container.dispose);

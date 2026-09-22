@@ -1619,6 +1619,8 @@ class _Translations$walkTest$en extends Translations$walkTest$fr {
 	@override String get notDoneYet => 'Test not taken';
 	@override String get fallbackNotice => 'Until you take the test, your level is estimated from your questionnaire.';
 	@override late final _Translations$walkTest$levels$en levels = _Translations$walkTest$levels$en._(_root);
+	@override String get absoluteScaleNotice => 'Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.';
+	@override String get ageClampNotice => 'Beyond 80 the test reference stops: it is computed as at 80, and we say so.';
 }
 
 // Path: pastHikes
@@ -2108,6 +2110,13 @@ class _Translations$checklist$weight$en extends Translations$checklist$weight$fr
 	@override String get percentOfWeight => '{pct}% of body weight';
 	@override String get gaugeObjective => 'Max target: < 15% in huts, < 20% self-supported';
 	@override String get itemsChecked => '{checked} / {total} items checked';
+	@override String get percentOfReference => '{pct}% of the reference weight';
+	@override String get gaugeObjectiveReference => 'Max target: < 15% in huts, < 20% self-supported — of the reference weight';
+	@override String get referenceExplainer => 'Reference weight for your height: {kg} kg. The pack ceiling is computed on it, not on your actual weight.';
+	@override String get referenceFallbackHeight => 'Your pack ceiling is computed on your actual weight: for your height there is no published reference weight to lean on. We would rather tell you than show you a wrong number.';
+	@override String get descentAlertTitle => 'Descents: what you carry';
+	@override String get descentAlertBody => 'You will go down with {kg} kg beyond the reference weight, pack included. On a descent each step takes several times that weight: that is mechanics, not a forecast. The stages that descend the most are listed below.';
+	@override String get descentStage => '{stage}: {loss} m of descent';
 }
 
 // Path: checklist.ui
@@ -2177,7 +2186,7 @@ class _Translations$checklist$ui$en extends Translations$checklist$ui$fr {
 	@override String get shareGroup => 'SHARE WITH THE GROUP';
 	@override String get exportList => 'EXPORT THE LIST';
 	@override String get bagValidTitle => 'Pack validated';
-	@override String get bagValidBody => 'All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of body weight)\n\nAre you sure your pack is ready?';
+	@override String get bagValidBody => 'All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of the reference weight)\n\nAre you sure your pack is ready?';
 	@override String get checkAgain => 'Check again';
 	@override String get yesBagOk => 'Yes, pack OK';
 	@override String get bagValidatedSnack => 'Pack validated!';
@@ -2269,10 +2278,10 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Feasibility for this trek';
 	@override String get intro => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.';
-	@override String get outOfScopeNotice => 'This rating looks at two things only: your profile and the effort of each stage. Your pack weight and the season are not part of the calculation — a heavy pack, snow or heat will make the day harder than shown here. Factor them in yourself.';
-	@override String ceilingLabel({required Object value, required Object level}) => 'Recommended ceiling: ${value} effort-km/day (${level})';
+	@override String get outOfScopeNotice => 'Your pack weight is not part of this rating, and that has been measured: from 0 to 45 kg of load, the verdict does not move by a single step. This rating compares what you have already held to the effort of each stage; the load you carry is handled separately, in your pack.';
+	@override String ceilingLabel({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})';
 	@override String get stagesTitle => 'Stage by stage';
-	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} effort-km';
+	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km';
 	@override String get globalTitle => 'Overall verdict';
 	@override String hardestStage({required Object stage}) => 'Toughest stage: ${stage}';
 	@override String daysOver({required Object count}) => '${count} day(s) above your ceiling';
@@ -2289,6 +2298,38 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override late final _Translations$feasibility$formula$advice$en advice = _Translations$feasibility$formula$advice$en._(_root);
 	@override String retainedPlan({required Object days}) => 'Retained split: ${days} walking days.';
 	@override String retainedPlanNone({required Object days}) => 'No split retained: the trail stays on its default ${days} days.';
+	@override String get energyUnitNotice => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.';
+	@override String get circuitTitle => 'Circuit verdict';
+	@override String circuitScore({required Object value}) => 'Circuit score: ${value}';
+	@override String circuitDominant({required Object constraint}) => 'What bites: ${constraint}.';
+	@override String get circuitHarsherIntro => 'The circuit is harsher than every one of its stages, and that is not a bug: taken one by one, no single day is beyond you; it is their chaining that is.';
+	@override String get circuitHarsherByRest => 'Here it is rest that is missing: your days look too much alike for the body to recover between them.';
+	@override String get circuitHarsherByAverage => 'Here it is the average load: day after day, the total goes beyond what you can hold.';
+	@override String restWindowWhole({required Object days}) => 'Rest measured over the whole trek (${days} days).';
+	@override String restWindowSlice({required Object start, required Object end}) => 'Rest measured over the worst week: days ${start} to ${end}.';
+	@override String get restNotApplicable => 'Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.';
+	@override String get restExtrapolation => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.';
+	@override String get restTwoDays => 'On stages of equal size, one rest day a week is not enough: it takes two.';
+	@override String habitGap({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).';
+	@override String get habitGapNotDecisive => 'This gap is shown, never decisive: no study demonstrates that it causes anything.';
+	@override String get conditionsTitle => 'What went into this verdict';
+	@override String floorActive({required Object value}) => 'Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base. You will never be told you cannot do what you have already done.';
+	@override String altitudeApplied({required Object value, required Object pct}) => 'Altitude: ${value} m at the highest point, your daily capacity drops by ${pct} %.';
+	@override String altitudeBelowThreshold({required Object value}) => 'Altitude: ${value} m at the highest point, below the 1,500 m from which it counts. It changes nothing here.';
+	@override String get altitudeMissing => 'Altitude: this trail\'s track does not carry any. It changes nothing here for lack of data — not because it would have no effect.';
+	@override String get heatApplied => 'Summer departure: aerobic capacity drops by 7 %, that is measured.';
+	@override String get seasonNoSource => 'Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.';
+	@override String get seasonMissing => 'No departure date is set: the season changes nothing here, for lack of data.';
+	@override String get massNotCounted => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.';
+	@override String get winterInvalid => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.';
+	@override late final _Translations$feasibility$formula$circuitConstraints$en circuitConstraints = _Translations$feasibility$formula$circuitConstraints$en._(_root);
+	@override String restDaysCounted({required Object count}) => 'Rest days counted in this verdict: ${count}.';
+	@override String get restDaysNone => 'No rest day is set in your plan. The verdict sees that, and it is what weighs most here: add rest days to your plan and this figure moves.';
+	@override String averageLoad({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest stage is at ${worst}).';
+	@override String get averageLoadInfo => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.';
+	@override String durationStatement({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.';
+	@override String get durationStatementInfo => 'This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.';
+	@override String stageDominantFactor({required Object factor}) => 'What weighs most on this stage: ${factor}';
 }
 
 // Path: feasibility.flow
@@ -3503,6 +3544,8 @@ class _Translations$feasibility$formula$limitingFactors$en extends Translations$
 	@override String get elevation => 'the elevation gain';
 	@override String get chaining => 'the day-to-day chaining';
 	@override String get none => 'none';
+	@override String get altitude => 'altitude';
+	@override String get heat => 'the heat of the season';
 }
 
 // Path: feasibility.formula.advice
@@ -3518,6 +3561,20 @@ class _Translations$feasibility$formula$advice$en extends Translations$feasibili
 	@override String split({required Object stage}) => 'Split stage ${stage} in two: it clearly exceeds your ceiling.';
 	@override String rest({required Object stages}) => 'Plan a rest day after stage ${stages}.';
 	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).';
+	@override String get restDominant => 'It is not a stage that needs splitting, it is rest days that need adding: your days look too much alike.';
+}
+
+// Path: feasibility.formula.circuitConstraints
+class _Translations$feasibility$formula$circuitConstraints$en extends Translations$feasibility$formula$circuitConstraints$fr {
+	_Translations$feasibility$formula$circuitConstraints$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get worstStage => 'the hardest stage';
+	@override String get averageLoad => 'the average daily load';
+	@override String get rest => 'rest';
+	@override String get habitGap => 'the gap to your habit';
 }
 
 // Path: signalement.water.states
@@ -4195,6 +4252,13 @@ extension on TranslationsEn {
 			'checklist.weight.percentOfWeight' => '{pct}% of body weight',
 			'checklist.weight.gaugeObjective' => 'Max target: < 15% in huts, < 20% self-supported',
 			'checklist.weight.itemsChecked' => '{checked} / {total} items checked',
+			'checklist.weight.percentOfReference' => '{pct}% of the reference weight',
+			'checklist.weight.gaugeObjectiveReference' => 'Max target: < 15% in huts, < 20% self-supported — of the reference weight',
+			'checklist.weight.referenceExplainer' => 'Reference weight for your height: {kg} kg. The pack ceiling is computed on it, not on your actual weight.',
+			'checklist.weight.referenceFallbackHeight' => 'Your pack ceiling is computed on your actual weight: for your height there is no published reference weight to lean on. We would rather tell you than show you a wrong number.',
+			'checklist.weight.descentAlertTitle' => 'Descents: what you carry',
+			'checklist.weight.descentAlertBody' => 'You will go down with {kg} kg beyond the reference weight, pack included. On a descent each step takes several times that weight: that is mechanics, not a forecast. The stages that descend the most are listed below.',
+			'checklist.weight.descentStage' => '{stage}: {loss} m of descent',
 			'checklist.ui.title' => 'Gear & Pack',
 			'checklist.ui.requirementRequired' => 'Required',
 			'checklist.ui.addItem' => 'Add an item',
@@ -4255,7 +4319,7 @@ extension on TranslationsEn {
 			'checklist.ui.shareGroup' => 'SHARE WITH THE GROUP',
 			'checklist.ui.exportList' => 'EXPORT THE LIST',
 			'checklist.ui.bagValidTitle' => 'Pack validated',
-			'checklist.ui.bagValidBody' => 'All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of body weight)\n\nAre you sure your pack is ready?',
+			'checklist.ui.bagValidBody' => 'All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of the reference weight)\n\nAre you sure your pack is ready?',
 			'checklist.ui.checkAgain' => 'Check again',
 			'checklist.ui.yesBagOk' => 'Yes, pack OK',
 			'checklist.ui.bagValidatedSnack' => 'Pack validated!',
@@ -4282,6 +4346,8 @@ extension on TranslationsEn {
 			'journal.stage' => 'Stage',
 			'journal.yourNote' => 'Your note',
 			'journal.placeholder' => 'Describe your hiking day...',
+			_ => null,
+		} ?? switch (path) {
 			'journal.save' => 'Save',
 			'journal.cancel' => 'Cancel',
 			'journal.delete' => 'Delete',
@@ -4289,8 +4355,6 @@ extension on TranslationsEn {
 			'journal.photoTooBig' => 'Photo too large (max 500 KB)',
 			'journal.addPhoto' => 'Add a photo',
 			'journal.photoSource' => 'Photo source',
-			_ => null,
-		} ?? switch (path) {
 			'journal.camera' => 'Camera',
 			'journal.gallery' => 'Gallery',
 			'journal.removePhoto' => 'Remove photo',
@@ -4506,10 +4570,10 @@ extension on TranslationsEn {
 			'feasibility.gaps.effort' => 'Overall effort (IBP) above your experience',
 			'feasibility.formula.title' => 'Feasibility for this trek',
 			'feasibility.formula.intro' => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.',
-			'feasibility.formula.outOfScopeNotice' => 'This rating looks at two things only: your profile and the effort of each stage. Your pack weight and the season are not part of the calculation — a heavy pack, snow or heat will make the day harder than shown here. Factor them in yourself.',
-			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Recommended ceiling: ${value} effort-km/day (${level})',
+			'feasibility.formula.outOfScopeNotice' => 'Your pack weight is not part of this rating, and that has been measured: from 0 to 45 kg of load, the verdict does not move by a single step. This rating compares what you have already held to the effort of each stage; the load you carry is handled separately, in your pack.',
+			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})',
 			'feasibility.formula.stagesTitle' => 'Stage by stage',
-			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} effort-km',
+			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km',
 			'feasibility.formula.globalTitle' => 'Overall verdict',
 			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Toughest stage: ${stage}',
 			'feasibility.formula.daysOver' => ({required Object count}) => '${count} day(s) above your ceiling',
@@ -4531,14 +4595,52 @@ extension on TranslationsEn {
 			'feasibility.formula.limitingFactors.elevation' => 'the elevation gain',
 			'feasibility.formula.limitingFactors.chaining' => 'the day-to-day chaining',
 			'feasibility.formula.limitingFactors.none' => 'none',
+			'feasibility.formula.limitingFactors.altitude' => 'altitude',
+			'feasibility.formula.limitingFactors.heat' => 'the heat of the season',
 			'feasibility.formula.advice.balancedOk' => 'Your plan is balanced: keep a margin and listen to your body.',
 			'feasibility.formula.advice.balanced' => 'Spread the stages out to smooth the effort across the days.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.',
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Split stage ${stage} in two: it clearly exceeds your ceiling.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after stage ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
+			'feasibility.formula.advice.restDominant' => 'It is not a stage that needs splitting, it is rest days that need adding: your days look too much alike.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained split: ${days} walking days.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No split retained: the trail stays on its default ${days} days.',
+			'feasibility.formula.energyUnitNotice' => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.',
+			'feasibility.formula.circuitTitle' => 'Circuit verdict',
+			'feasibility.formula.circuitScore' => ({required Object value}) => 'Circuit score: ${value}',
+			'feasibility.formula.circuitDominant' => ({required Object constraint}) => 'What bites: ${constraint}.',
+			'feasibility.formula.circuitHarsherIntro' => 'The circuit is harsher than every one of its stages, and that is not a bug: taken one by one, no single day is beyond you; it is their chaining that is.',
+			'feasibility.formula.circuitHarsherByRest' => 'Here it is rest that is missing: your days look too much alike for the body to recover between them.',
+			'feasibility.formula.circuitHarsherByAverage' => 'Here it is the average load: day after day, the total goes beyond what you can hold.',
+			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Rest measured over the whole trek (${days} days).',
+			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Rest measured over the worst week: days ${start} to ${end}.',
+			'feasibility.formula.restNotApplicable' => 'Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.',
+			'feasibility.formula.restExtrapolation' => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.',
+			'feasibility.formula.restTwoDays' => 'On stages of equal size, one rest day a week is not enough: it takes two.',
+			'feasibility.formula.habitGap' => ({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).',
+			'feasibility.formula.habitGapNotDecisive' => 'This gap is shown, never decisive: no study demonstrates that it causes anything.',
+			'feasibility.formula.conditionsTitle' => 'What went into this verdict',
+			'feasibility.formula.floorActive' => ({required Object value}) => 'Your best day already held (${value} energy-km) is above your level ceiling: it is what serves as the base. You will never be told you cannot do what you have already done.',
+			'feasibility.formula.altitudeApplied' => ({required Object value, required Object pct}) => 'Altitude: ${value} m at the highest point, your daily capacity drops by ${pct} %.',
+			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitude: ${value} m at the highest point, below the 1,500 m from which it counts. It changes nothing here.',
+			'feasibility.formula.altitudeMissing' => 'Altitude: this trail\'s track does not carry any. It changes nothing here for lack of data — not because it would have no effect.',
+			'feasibility.formula.heatApplied' => 'Summer departure: aerobic capacity drops by 7 %, that is measured.',
+			'feasibility.formula.seasonNoSource' => 'Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.',
+			'feasibility.formula.seasonMissing' => 'No departure date is set: the season changes nothing here, for lack of data.',
+			'feasibility.formula.massNotCounted' => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.',
+			'feasibility.formula.winterInvalid' => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.',
+			'feasibility.formula.circuitConstraints.worstStage' => 'the hardest stage',
+			'feasibility.formula.circuitConstraints.averageLoad' => 'the average daily load',
+			'feasibility.formula.circuitConstraints.rest' => 'rest',
+			'feasibility.formula.circuitConstraints.habitGap' => 'the gap to your habit',
+			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Rest days counted in this verdict: ${count}.',
+			'feasibility.formula.restDaysNone' => 'No rest day is set in your plan. The verdict sees that, and it is what weighs most here: add rest days to your plan and this figure moves.',
+			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest stage is at ${worst}).',
+			'feasibility.formula.averageLoadInfo' => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.',
+			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.',
+			'feasibility.formula.durationStatementInfo' => 'This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.',
+			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'What weighs most on this stage: ${factor}',
 			'feasibility.flow.title' => 'Are you ready for this trek?',
 			'feasibility.flow.intro' => 'Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} steps done',
@@ -4758,6 +4860,8 @@ extension on TranslationsEn {
 			'gamification.defi.inProgress' => 'In progress',
 			'gamification.defi.progressLabel' => ({required Object current, required Object target}) => 'Progress: ${current} / ${target}',
 			'gamification.defi.rankingTitle' => 'Challenge ranking',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.defi.pseudonymNotice' => 'Ranking by group, using pseudonyms. No direct personal data is shown.',
 			'gamification.defi.notEnoughParticipants' => 'Not enough participants to publish this ranking.',
 			'gamification.defi.noDefi' => 'No challenge in progress right now.',
@@ -4803,8 +4907,6 @@ extension on TranslationsEn {
 			'waypoints.contribution.conditionField' => 'State (optional)',
 			'waypoints.contribution.conditionHelper' => 'e.g. water dried up, water flowing, slippery section',
 			'waypoints.contribution.latencyBanner' => 'Will be published at the next network sync.',
-			_ => null,
-		} ?? switch (path) {
 			'waypoints.contribution.submit' => 'Save',
 			'waypoints.contribution.savedTitle' => 'Contribution saved',
 			'waypoints.contribution.savedPendingSync' => 'It will be published when the network is back.',
@@ -5272,6 +5374,8 @@ extension on TranslationsEn {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Rest day ${day} details',
 			'summary.a11y.export' => 'Export plan as PDF',
 			'summary.a11y.download' => 'Download offline maps',
+			_ => null,
+		} ?? switch (path) {
 			'summary.a11y.share' => 'Share my plan',
 			'import.title' => 'Import a GPX',
 			'import.headerTitle' => 'Import a GPX file',
@@ -5317,8 +5421,6 @@ extension on TranslationsEn {
 			'myTreks.badge.prepared' => 'Prepared',
 			'myTreks.badge.inProgress' => 'In progress',
 			'myTreks.badge.completed' => 'Completed',
-			_ => null,
-		} ?? switch (path) {
 			'myTreks.progressLabel' => ({required Object percent}) => '${percent} % of the trail',
 			'myTreks.a11y.trekCard' => ({required Object nom, required Object state}) => 'Trek ${nom}, ${state}',
 			'myTreks.a11y.openTrek' => ({required Object nom}) => 'Open trek ${nom}',
@@ -5389,6 +5491,8 @@ extension on TranslationsEn {
 			'walkTest.levels.moderate' => 'Moderate',
 			'walkTest.levels.good' => 'Good',
 			'walkTest.levels.excellent' => 'Excellent',
+			'walkTest.absoluteScaleNotice' => 'Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.',
+			'walkTest.ageClampNotice' => 'Beyond 80 the test reference stops: it is computed as at 80, and we say so.',
 			'pastHikes.title' => 'Your last 5 hikes',
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',

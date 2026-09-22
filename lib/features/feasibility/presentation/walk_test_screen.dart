@@ -6,7 +6,9 @@ import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../../i18n/translations.g.dart';
+import '../domain/walk_test_norms.dart';
 import '../domain/walk_test_result.dart';
+import '../providers/hiker_profile_provider.dart';
 import '../providers/walk_test_provider.dart';
 
 /// Ecran du test de marche 6 minutes (StepWays LOT 4, Ph2).
@@ -262,6 +264,16 @@ class _ResultView extends ConsumerWidget {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
     final wt = t.walkTest;
+    // QUAND LE REPLI S'APPLIQUE, L'ECRAN LE DIT (#3-o). Le niveau peut avoir ete
+    // lu sur l'echelle de distance ABSOLUE au lieu d'etre normalise par les
+    // equations d'Enright — soit faute de morphologie saisie, soit parce que le
+    // profil sort du domaine sur lequel elles ont ete derivees (#3-n). Afficher
+    // le meme libelle dans les deux cas ferait passer une lecture brute pour une
+    // comparaison a une reference.
+    final profile = ref.watch(hikerProfileProvider).value;
+    final normalized =
+        profile != null && WalkTestNorms.isNormalized(profile);
+    final ageClamped = profile != null && profile.age > WalkTestNorms.maxAge;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.spacingLg),
       child: Column(
@@ -297,6 +309,44 @@ class _ResultView extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppTheme.spacingBase),
+          // Repli sur l'echelle absolue : le test reste valable, c'est sa
+          // NORMALISATION qui ne l'est pas (#3-o).
+          if (!normalized) ...[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.straighten, size: 18, color: colors.primary),
+                const SizedBox(width: AppTheme.spacingSm),
+                Expanded(
+                  child: Text(
+                    wt.absoluteScaleNotice,
+                    key: const ValueKey('walk-test-absolute-scale'),
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+          ],
+          // Age clampe a 80 ans : comportement existant, DECLARE plutot que
+          // subi (#5-j) — les bornes de saisie vont desormais jusqu'a 120 ans.
+          if (ageClamped) ...[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.info_outline, size: 18, color: colors.primary),
+                const SizedBox(width: AppTheme.spacingSm),
+                Expanded(
+                  child: Text(
+                    wt.ageClampNotice,
+                    key: const ValueKey('walk-test-age-clamp'),
+                    style: theme.textTheme.bodySmall,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppTheme.spacingSm),
+          ],
           // Info rappel mensuel (planifie a la fin du test).
           Row(
             children: [

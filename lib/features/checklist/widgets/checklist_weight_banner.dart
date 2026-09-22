@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/ui/input_formatters.dart';
 import '../../../i18n/translations.g.dart';
+import '../../feasibility/domain/body_weight_reference.dart';
 import '../../feasibility/domain/hiker_input_bounds.dart';
 
 /// Formate un poids en grammes avec separateur de milliers (parite GR20).
@@ -395,13 +396,31 @@ class _RatioChip extends StatelessWidget {
   }
 }
 
-/// Jauge visuelle du poids relatif (% poids corporel) — parite GR20
-/// (_WeightGauge). Seuils 12 / 15 / 20 / 25 %, marqueurs 15 / 20 / 25 %,
-/// texte d'objectif.
+/// Jauge visuelle du poids relatif — parite GR20 (_WeightGauge). Seuils
+/// 12 / 15 / 20 / 25 %, marqueurs 15 / 20 / 25 %, texte d'objectif.
+///
+/// LE DENOMINATEUR A CHANGE LE 22/09, LE LIBELLE AUSSI (#7-e). Le pourcentage
+/// n'est plus celui du POIDS CORPOREL mais celui de la BASE DE CHARGE,
+/// `min(poids ; 25 × taille²)`. Changer le denominateur sans changer le libelle
+/// aurait fait mentir l'ecran : a 1,78 m et 120 kg, « 16,7 % du poids » serait
+/// devenu « 25,2 % » sans que rien ne dise de quoi.
 class ChecklistWeightGauge extends StatelessWidget {
-  const ChecklistWeightGauge({super.key, required this.backpackRatio});
+  const ChecklistWeightGauge({
+    super.key,
+    required this.backpackRatio,
+    this.loadBaseKg = 0,
+    this.referenceFallback,
+  });
 
   final double backpackRatio;
+
+  /// Base de charge (kg) sur laquelle le pourcentage est calcule — affichee,
+  /// parce qu'un pourcentage dont on ignore la base ne veut rien dire.
+  final double loadBaseKg;
+
+  /// Pourquoi la reference de taille n'a pas pu etre calculee, `null` sinon.
+  /// Quand elle manque, l'ecran DIT que le plafond porte sur le poids reel.
+  final WeightReferenceFallback? referenceFallback;
 
   @override
   Widget build(BuildContext context) {
@@ -428,7 +447,7 @@ class ChecklistWeightGauge extends StatelessWidget {
       gaugeLabel = w.gaugeDanger;
     }
 
-    final pctLabel = w.percentOfWeight
+    final pctLabel = w.percentOfReference
         .replaceAll('{pct}', pct.toStringAsFixed(1));
 
     return Padding(
@@ -512,10 +531,33 @@ class ChecklistWeightGauge extends StatelessWidget {
           ),
           const SizedBox(height: 2),
           Text(
-            w.gaugeObjective,
+            w.gaugeObjectiveReference,
             style: theme.textTheme.bodySmall
                 ?.copyWith(fontSize: 14, fontStyle: FontStyle.italic),
           ),
+          // DIRE DE QUOI LE POURCENTAGE EST LE POURCENTAGE (#7-e).
+          if (referenceFallback == null && loadBaseKg > 0) ...[
+            const SizedBox(height: 2),
+            Text(
+              w.referenceExplainer
+                  .replaceAll('{kg}', loadBaseKg.toStringAsFixed(1)),
+              key: const ValueKey('checklist-reference-explainer'),
+              style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+            ),
+          ],
+          // REPLI TRES PETITE TAILLE (#5-h) : on ne bloque personne, on dit
+          // qu'on ne sait pas calculer. Aucune pathologie n'est nommee, aucun
+          // diagnostic n'est pose — le message parle de l'application, pas de
+          // la personne.
+          if (referenceFallback ==
+              WeightReferenceFallback.heightBelowReferenceDomain) ...[
+            const SizedBox(height: 2),
+            Text(
+              w.referenceFallbackHeight,
+              key: const ValueKey('checklist-reference-fallback'),
+              style: theme.textTheme.bodySmall?.copyWith(fontSize: 14),
+            ),
+          ],
         ],
       ),
     );

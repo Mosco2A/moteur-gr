@@ -7,17 +7,21 @@ import 'package:moteur_gr/features/feasibility/presentation/trek_feasibility_scr
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
-/// CE QUE LE VERDICT NE REGARDE PAS — decision Chris #100279 (21/09).
+/// CE QUE LE VERDICT NE REGARDE PAS — decision Chris #100279 (21/09),
+/// MENTION COUPEE EN DEUX LE 22/09 (#8-a de la spec finale).
 ///
 /// La campagne personas a mesure sur l'appareil que le poids du sac (de 0 a
-/// 45 kg, soit 58 % du poids du corps) et la saison n'ont AUCUN effet sur le
-/// verdict ni sur le plafond d'effort. Chris a tranche : ces deux dimensions
-/// restent hors du calcul pour cette version, mais l'ecran doit le DIRE.
-/// StepWays est une application de securite en montagne — croire qu'un sac de
-/// 20 kg a ete pris en compte dans un feu vert est un risque reel.
+/// 45 kg, soit 58 % du poids du corps) n'a AUCUN effet sur le verdict ni sur le
+/// plafond d'effort. StepWays est une application de securite en montagne —
+/// croire qu'un sac de 20 kg a ete pris en compte dans un feu vert est un
+/// risque reel : la mention reste, et elle est devenue PERMANENTE.
 ///
-/// Ces tests verrouillent : la mention est presente sur le verdict, QUEL QUE
-/// SOIT le feu, et elle existe dans les cinq langues.
+/// LA MOITIE « SAISON » EST PARTIE, ET C'EST LE POINT DU JOUR. La saison entre
+/// desormais dans le calcul : l'ete rabote la capacite de 7 % (source mesuree),
+/// l'hiver rend le verdict NON VALIDE. Continuer a ecrire que « la saison
+/// n'entre pas dans le calcul » ferait mentir l'ecran dans l'autre sens. Ces
+/// tests verrouillent donc que la mention parle du SAC, ne parle PLUS de la
+/// saison, et existe dans les cinq langues.
 void main() {
   setUpAll(() => LocaleSettings.setLocaleRaw('fr'));
 
@@ -28,7 +32,7 @@ void main() {
         elevationGainM: elev,
       );
 
-  /// Trek exigeant : 40 km-effort sur la pire journee -> rouge pour un debutant.
+  /// Trek exigeant : la pire journee depasse largement le plafond debutant.
   FeasibilityAssessment evaluationDure(HikerLevel niveau) =>
       FeasibilityFormula.evaluate(
         stages: [
@@ -38,7 +42,7 @@ void main() {
         level: niveau,
       );
 
-  /// Trek facile : 13 km-effort au pire -> vert meme loin du plafond.
+  /// Trek facile : toutes les etapes sont vertes, meme loin du plafond.
   FeasibilityAssessment evaluationFacile(HikerLevel niveau) =>
       FeasibilityFormula.evaluate(
         stages: [
@@ -85,7 +89,7 @@ void main() {
 
   testWidgets('la mention est affichee sous un feu ROUGE', (tester) async {
     final rouge = evaluationDure(HikerLevel.beginner);
-    expect(rouge.globalVerdict, FeasibilityVerdict.red);
+    expect(rouge.worstStageVerdict, FeasibilityVerdict.red);
     await pumpEcran(tester, rouge);
     expect(find.text(t.feasibility.formula.outOfScopeNotice), findsOneWidget);
   });
@@ -94,31 +98,59 @@ void main() {
     // C'est le cas dangereux : un feu vert rassure, et c'est precisement la
     // qu'il faut dire que le sac n'a pas ete compte.
     final verte = evaluationFacile(HikerLevel.expert);
-    expect(verte.globalVerdict, FeasibilityVerdict.green);
+    expect(verte.worstStageVerdict, FeasibilityVerdict.green);
     await pumpEcran(tester, verte);
     expect(find.text(t.feasibility.formula.outOfScopeNotice), findsOneWidget);
   });
 
-  test('la mention existe dans les cinq langues et nomme sac et saison', () {
-    // Mots temoins par langue : la mention doit reellement parler du SAC et de
-    // la SAISON, pas se contenter d'exister.
-    const temoins = <AppLocale, List<String>>{
-      AppLocale.fr: ['sac', 'saison'],
-      AppLocale.en: ['pack', 'season'],
-      AppLocale.de: ['Rucksack', 'Jahreszeit'],
-      AppLocale.it: ['zaino', 'stagione'],
-      AppLocale.es: ['mochila', 'estaci'],
+  test('la mention nomme le SAC dans les cinq langues', () {
+    // Mots temoins par langue : la mention doit reellement parler du SAC, pas
+    // se contenter d'exister.
+    const temoins = <AppLocale, String>{
+      AppLocale.fr: 'sac',
+      AppLocale.en: 'pack',
+      AppLocale.de: 'Rucksack',
+      AppLocale.it: 'zaino',
+      AppLocale.es: 'mochila',
     };
     for (final entree in temoins.entries) {
       final texte =
           entree.key.buildSync().feasibility.formula.outOfScopeNotice;
       expect(texte.trim(), isNotEmpty,
           reason: '${entree.key.languageCode} : mention vide');
-      for (final mot in entree.value) {
-        expect(texte.toLowerCase(), contains(mot.toLowerCase()),
-            reason: '${entree.key.languageCode} : la mention ne parle pas de '
-                '« $mot »');
-      }
+      expect(texte.toLowerCase(), contains(entree.value.toLowerCase()),
+          reason: '${entree.key.languageCode} : la mention ne parle pas du '
+              'sac');
     }
+  });
+
+  test('la mention NE PARLE PLUS de la saison : elle entre dans le calcul',
+      () {
+    // Garde-fou de non-retour (#8-a). La saison est cablee depuis le 22/09 :
+    // ete 0,93 (mesure), hiver verdict declare non valide. Reintroduire
+    // « la saison n'entre pas dans le calcul » ferait mentir l'ecran.
+    const interdits = <AppLocale, String>{
+      AppLocale.fr: 'saison',
+      AppLocale.en: 'season',
+      AppLocale.de: 'Jahreszeit',
+      AppLocale.it: 'stagione',
+      AppLocale.es: 'estaci',
+    };
+    for (final entree in interdits.entries) {
+      final texte =
+          entree.key.buildSync().feasibility.formula.outOfScopeNotice;
+      expect(texte.toLowerCase(), isNot(contains(entree.value.toLowerCase())),
+          reason: '${entree.key.languageCode} : la mention parle encore de la '
+              'saison alors que la saison entre dans le calcul');
+    }
+    // Et la saison est bien cablee, des deux cotes.
+    expect(
+      const TrekConditions(season: FeasibilitySeason.summer).heatFactor,
+      closeTo(0.93, 1e-9),
+    );
+    expect(
+      const TrekConditions(season: FeasibilitySeason.winter).isWinterDeparture,
+      isTrue,
+    );
   });
 }
