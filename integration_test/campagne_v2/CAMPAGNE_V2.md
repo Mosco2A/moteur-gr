@@ -6,7 +6,8 @@
 > #100331. Source unique du moteur cible : `data/apport_stepways/SPEC_FINALE_faisabilite_et_poids.md`
 > section 10 (#100332). Personnages : #100295 et #100296. Grille de lecture : #100297.
 >
-> **Le moteur v2 a ete ecrit PENDANT cette preparation** (tache 540, branche
+> **Le moteur v2 a ete ecrit PENDANT cette preparation, et il a bouge deux fois sous mes pieds**
+> (tache 540, branche
 > `claude/feat/540-moteur-faisabilite-v2`, meme copie de travail). Les attendus ci-dessous ont donc
 > ete calcules **independamment** a partir de la spec, **puis confrontes** au moteur livre :
 > **les deux colonnes concordent, cellule par cellule et chiffre par chiffre.** Ce dossier fige les
@@ -19,7 +20,7 @@
 - **`matrice_96.json`** — les 96 combinaisons, entrees completes, colonne AVANT (moteur reel
   d'aujourd'hui) et colonne APRES (formule de la spec), plus la liste des bascules une par une.
 - **`../../test/features/feasibility/campagne_v2_matrice_test.dart`** — le test qui **verrouille les
-  deux colonnes sur le moteur reel**. **23 verts au 22/09.**
+  deux colonnes sur le moteur reel**. **28 verts au 22/09.**
 - Ce document — les scenarios, les attendus, et les blocages a lever avant de lancer.
 
 **Pourquoi les deux colonnes sont testees et pas seulement ecrites.** Une bascule est un couple :
@@ -53,7 +54,13 @@ preparation en portent zero**, verifie. Meme cause pour les fichiers qui ne se c
 
 ---
 
-## 2. LA PORTE EST FERMEE — QUATRE POINTS A LEVER AVANT DE LANCER
+## 2. QUATRE POINTS — DEUX SONT TRANCHES, DEUX RESTENT OUVERTS
+
+> **Etat au 22/09 en fin de preparation.** **B2 est tranche** (`S_circuit = max(C1 ; C3)`, C2 en
+> affichage). **B3 est cable** (les jours de repos remontent au moteur) — mais **la colonne C3 de la
+> matrice, calculee avant ce cablage, est un artefact a RE-MESURER : la campagne ne part pas
+> dessus.** **B1 reste ouvert** et devient la tache 543. **B4 est traite** par le banc des niveaux
+> et un scenario d'hiver dedie.
 
 ### B1 — LE HARNAIS DE LA CAMPAGNE N'EST PLUS DANS LE DEPOT (bloquant, recuperable)
 
@@ -77,26 +84,61 @@ preparation en portent zero**, verifie. Meme cause pour les fichiers qui ne se c
 - **Action** : recuperer `04437e8`, le **committer** (il n'a jamais ete verse), rejouer S1-S4 contre
   le produit corrige, puis ecrire S5 et S6.
 
-### B2 — C2 NE PEUT JAMAIS MORDRE : L'EXIGENCE #10-b N'EST PAS SATISFIABLE (bloquant, spec ET code)
+### B2 — C2 NE PEUT JAMAIS MORDRE — **TRANCHE LE 22/09, CORRECTION ACTEE**
 
-- **Le fait, demontre.** `C2 = (somme des E) / (nb de jours de marche x C_jour)` est la **moyenne**
-  des charges divisee par `C_jour`. `C1 = max(E) / C_jour` est le **maximum**. Une moyenne n'est
-  jamais superieure a un maximum : **C2 <= C1 toujours**, egalite seulement si toutes les etapes sont
-  strictement identiques.
-- **Mesure** : sur les 96 cellules, C2 n'est dominante **aucune fois**. Verifie par test
-  (`TROU 1`), pas suppose. **Le code livre reproduit la formule a la lettre** —
-  `c2 = totalEnergy / (verdicts.length * capacity)`, soit exactement la moyenne : le trou est donc
-  dans la spec, pas dans l'implementation.
-- **Ce que ca invalide.** La phrase #2-o (« un circuit dont la moyenne depasse le plafond est
-  intenable meme si aucune etape ne depasse ») decrit un **cas impossible** : si la moyenne depasse
-  le plafond, le maximum le depasse deja. Et #10-b exige « C1, C2 et C3 dominants **tour a tour** » :
-  la campagne ne peut pas produire cette preuve, quel que soit le jeu d'etapes choisi.
-- **A trancher avant l'implementation** : soit C2 sort du `max()` (elle reste une information
-  affichee, comme C4), soit son denominateur change pour devenir autre chose qu'une moyenne
-  (par exemple la charge rapportee aux jours **de sejour**, repos compris — ce qui la rend alors
-  comparable a autre chose que C1). **La campagne ne peut pas trancher cela : c'est un arbitrage.**
+- **La correction.** **`S_circuit = max(C1 ; C3)`.** C2 sort du maximum et passe en **affichage**,
+  meme statut que C4. **L'exigence #10-b est corrigee en consequence : DEUX contraintes dominantes,
+  pas trois.** La matrice, le test et la section 4 de ce document appliquent la correction.
+- **Le fait qui l'a motivee.** `C2 = (somme des E) / (nb de jours de marche x C_jour)` est la
+  **moyenne** des charges ; `C1 = max(E) / C_jour` est le **maximum** de la meme serie, normalise par
+  le meme plafond. Une moyenne n'est jamais superieure a un maximum : **C2 <= C1 par construction**,
+  egalite seulement si toutes les etapes sont egales. La phrase #2-o (« un circuit dont la moyenne
+  depasse le plafond est intenable meme si aucune etape ne depasse ») decrivait donc un **cas
+  impossible**. Le code reproduisait la spec a la lettre : le trou etait dans la spec.
+- **Ce que le test verifie desormais, et pourquoi c'est mieux.** La preuve de dominance (« C2 n'a
+  mordu aucune fois sur mes 96 cellules ») est remplacee par un **TEST D'INVARIANT** : `C2 <= C1` sur
+  toutes les combinaisons, sur la matrice **et** sur le moteur, tous jeux x tous niveaux, avec et
+  sans jours de repos. Un constat ne vaut que pour son echantillon ; **l'invariant dit que c'est
+  impossible**, et il rougira le jour ou quelqu'un changera le normalisateur de C2 sans revoir la
+  redondance. C'est la protection qui a de la valeur, pas la mesure.
+- **La piste de la contrainte de Foster (charge x monotonie) est fermee.** Normalisee par nos deux
+  seuils elle vaut exactement `C2 x C3`. **Une precision que je dois apporter, parce que l'argument
+  avance pour la fermer n'est pas exact.** Un produit de deux positifs ne depasse leur maximum que si
+  **les deux depassent 1** — et 1 n'est pas « deja rouge », il tombe dans la bande **orange**
+  (0,85 a 1,10). Surtout, cette contrainte **peut** changer une couleur, **dans les deux sens**.
+  Contre-exemples arithmetiques : `C2 = 1,05` et `C3 = 1,05` donnent `max = 1,05` **orange** mais
+  `produit = 1,1025` **rouge** ; `C2 = 0,90` et `C3 = 1,20` donnent `max = 1,20` **rouge** mais
+  `produit = 1,08` **orange**. **La conclusion tient quand meme, et elle en sort renforcee** : une
+  contrainte qui peut aussi bien durcir qu'**alleger** par rapport au maximum n'a rien a faire dans
+  un `max()`. Fermee pour cette raison-la, pas pour son inertie.
 
-### B3 — C3 NE DEPEND PAS DU RANDONNEUR, ET REND LE CIRCUIT ROUGE POUR TOUT LE MONDE (bloquant, spec)
+### B3 — C3 NE DEPEND PAS DU RANDONNEUR — **CABLAGE LIVRE, MAIS LA COLONNE C3 DE LA MATRICE EST A RE-MESURER**
+
+> **AVERTISSEMENT QUI PRIME SUR TOUT CE QUI SUIT.** Le cablage a ete livre pendant la redaction de
+> ce document : `trek_feasibility_provider.dart` passe desormais `restAfterStageIndex: restDays`,
+> alimente par `restDaysAfterStageProvider` qui lit les jours de repos du programme. **Les valeurs de
+> C3, la contrainte dominante et le verdict de circuit de la colonne APRES ont ete calcules AVANT ce
+> cablage, sur une serie sans aucun jour de charge nulle : ce sont des ARTEFACTS.**
+> **NE PAS LANCER LA CAMPAGNE DESSUS — on enregistrerait un faux.** Le JSON porte le drapeau
+> `meta.C3_PROVISOIRE`, et le test le verifie.
+> **Ce qui reste valable sans re-mesure** : toute la colonne AVANT, les scores et verdicts
+> d'**etape** de la colonne APRES, **C1**, **C2**, et l'invariant `C2 <= C1` — ils ne dependent
+> d'aucun jour de repos.
+> **Pour la re-mesure, rien a recalculer** : `jeuxEtapes[*].c3ParNombreDeRepos` donne d'avance la
+> valeur de C3 pour 0 a 12 jours de repos, avec le placement exact retenu
+> (`reposPosesApresLesEtapes`), **verifie sur le moteur** par le test `TABLE DE RE-MESURE`.
+
+**UNE PRECISION SUR LE MECANISME, parce que la raison avancee n'est pas la bonne.** Il a ete dit que
+« tant que le repos ne remonte pas au moteur, l'ecart-type vaut zero partout et la monotonie sature
+partout ». **Mesure : l'ecart-type n'est pas nul** — J1 6,129, J2 5,128, J4 5,627 — et la monotonie
+ne sature pas : elle vaut 4,04, 5,06 et 4,53. L'ecart-type n'est nul que si toutes les charges sont
+**strictement egales**, ce qu'aucun de nos jeux n'est ; et la monotonie n'est **non calculable** que
+sur J3, qui n'a qu'une etape. **Le vrai mecanisme est plus simple et tout aussi bloquant** : sans
+jours de repos, il manque a la serie les jours de **charge nulle**, qui sont precisement ce qui
+creuse l'ecart-type et fait chuter la monotonie. On mesure donc la bonne formule **sur la mauvaise
+serie**. **La conclusion ne change pas d'un iota : la colonne C3 est a re-mesurer.**
+
+### B3-bis — CE QUE LE DEFAUT ETAIT, POUR MEMOIRE ET POUR LA NON-REGRESSION
 
 - **Le fait, demontre.** `monotonie = moyenne / ecart-type` des **memes** charges journalieres.
   `C_jour` est un facteur commun au numerateur et au denominateur : il se simplifie exactement.
@@ -115,25 +157,35 @@ preparation en portent zero**, verifie. Meme cause pour les fichiers qui ne se c
     recoit quand meme un **circuit ROUGE**. Le debutant aussi. **Le verdict de circuit ne discrimine
     plus rien.**
   - Sur les 96 cellules : **42 circuits rouges en v1 -> 78 en v2**.
-- **Ou est la vraie cause, et elle est localisee au cordeau dans le code livre.** Le moteur v2
-  **sait** recevoir des jours de repos : `FeasibilityFormula.evaluate` prend un
-  `restAfterStageIndex`, et `dailyLoads` insere bien une charge nulle apres chaque etape suivie d'un
-  repos. **Mais `trek_feasibility_provider.dart` ne le passe pas** : il transmet le plancher
-  demontre, l'habitude et les conditions, et laisse `restAfterStageIndex` a sa valeur par defaut,
-  l'ensemble vide. Le moteur ne voit donc **jamais** un jour de repos, alors que
-  `PlanningCalculator` sait en poser (`_computeRestPositions`). **Correctif : brancher le PLAN sur
-  le moteur**, une ligne de cablage, pas une refonte.
-- **Contre-preuve faite sur le moteur reel** : avec deux jours de repos poses
-  (`restAfterStageIndex: {1, 4}`), le circuit de l'expert sur J1 **repasse au VERT**. Le mecanisme
-  est bon, c'est le cablage qui manque.
-- **Chiffres pour l'arbitrage** — nombre minimal de jours de repos pour ramener C3 sous le seuil,
-  par jeu d'etapes :
+- **La cause, corrigee depuis.** `FeasibilityFormula.evaluate` a toujours su recevoir des jours de
+  repos, mais `trek_feasibility_provider.dart` ne les passait pas. **C'est fait** :
+  `restAfterStageIndex: restDays`, alimente par `restDaysAfterStageProvider`, qui traduit les
+  `DayPlan` du programme en indices d'etapes. **A prouver a l'ecran pendant la campagne**, pas
+  seulement en lecture de code.
+- **Contre-preuve faite sur le moteur reel, et c'est le point a retenir.** Sur J1 avec deux jours de
+  repos (`restAfterStageIndex: {1, 4}`) : la monotonie tombe de **4,04 a 1,53**, donc C3 de **2,02 a
+  0,77**, sous le seuil du vert. **Et la discrimination revient** : l'expert est **VERT**, le
+  debutant reste **ROUGE** par sa pire etape (C1 = 1,40) — la contrainte qui decide redevient
+  dependante du randonneur, ce que C3 seule ne pouvait pas faire.
+- **Chiffres operationnels** — nombre minimal de jours de repos pour ramener C3 sous le seuil,
+  par jeu d'etapes (table complete dans le JSON) :
   - J1, 7 etapes : **1 repos** pour passer sous l'orange, **2 repos** pour le vert.
   - J2, 5 etapes : **1 repos** pour l'orange, **2** pour le vert.
-  - J4, 30 etapes : **4 repos** pour l'orange, **12** pour le vert.
+  - J4, 30 etapes : **5 repos** pour l'orange, **12** pour le vert. **Et attention** : avec la
+    fenetre glissante, **1 a 3 jours de repos ne changent strictement rien** (C3 reste a 2,52), parce
+    que la **pire** fenetre de 7 jours n'en contient toujours aucun. C'est contre-intuitif et l'ecran
+    devra savoir l'expliquer.
   - J3, 1 etape : **sans objet** (voir cas limite n°4).
   Ces chiffres confirment la lecture de la spec (#2-t, « un jour de repos par semaine ne suffit pas,
   il en faut deux ») et la rendent operationnelle.
+- **ECART A CORRIGER OU A DECLARER, trouve en construisant la table.** `PlanningCalculator` pose un
+  jour de repos **AVANT** une etape (`_computeRestPositions`) ; `FeasibilityFormula.dailyLoads` le
+  pose **APRES**, et **ignore** un repos demande apres la derniere etape. Les deux ne produisent donc
+  pas la meme serie de charges. Sur un sentier d'**une** etape elles ne disent meme pas la meme
+  chose : cote planning la serie devient `[0, E]` et la monotonie vaut 1 ; cote moteur elle reste
+  `[E]` et la monotonie est **non applicable**. **C'est la semantique du moteur qui fait foi**,
+  puisque c'est elle qui rend le verdict — mais le cablage doit **traduire**, pas recopier. Verifie
+  par le test `ECART PLANIFICATEUR / MOTEUR`.
 
 ### B4 — DEUX TROUS DE COUVERTURE QUE LA MATRICE 6x4x4 NE PEUT PAS COMBLER (non bloquant, traite)
 
@@ -254,8 +306,10 @@ facteur dominant est **nomme a l'ecran**.
   creux** pour Lea, Jean-Pierre, Ines et Sabine : **aucun coefficient de saison**, et l'ecran dit
   que le printemps et l'automne sont **neutres faute de source** (#2-i). Une dimension neutre faute
   de **donnee** et une dimension neutre faute de **source** ne se disent pas pareil (#8-b).
-- **F1-6 — Les trois contraintes, tour a tour.** **NON SATISFIABLE EN L'ETAT** pour C2 : voir B2.
-  A rejouer une fois l'arbitrage rendu.
+- **F1-6 — Les DEUX contraintes, tour a tour** (exigence #10-b corrigee le 22/09). `S_circuit =
+  max(C1 ; C3)` : il faut donc des cellules ou **C1** decide et des cellules ou **C3** decide, et
+  l'ecran doit **nommer laquelle**. C2 et C4 sont **affichees, jamais decisives** — et cela aussi se
+  verifie : faire varier C2 sans toucher C1 ni C3 ne doit **pas** changer la couleur.
 - **F1-7 — Les six buts de la grille #100297, ligne L1.** Les personnages jouent le produit reel,
   pas la matrice. Un seul **NON** en L1 = campagne rouge, quel que soit le reste.
 
@@ -340,6 +394,23 @@ Aux nouvelles bornes (`hiker_input_bounds.dart`, deja livre en tache 539 — age
 - **F3-11 — Les 5 langues.** Chaque texte nouveau existe en fr, en, de, es, it. Sabine ne lit que
   l'allemand : **toute phrase restee en francais est un point de sa ligne « ce qu'elle n'a pas
   compris »**, et si elle la bloque, c'est « ce qui l'a arretee ».
+- **F3-12 — LE CONSTAT DE DUREE CUMULEE : factuel, jamais un verdict.** Le moteur enonce « ce trek
+  dure N jours de marche, ta plus longue sortie enchainee est de M jours »
+  (`walkingDays`, `longestConsecutiveDaysDone`, `hasDurationStatement`). **Pourquoi c'est un constat
+  et pas une couleur** : le modele ne capte la duree cumulee nulle part — C3 mesure une
+  **regularite**, pas une **longueur**, et sur des etapes regulieres sans repos elle rend le meme
+  chiffre pour trois jours et pour dix-sept. Aucun seuil publie n'existe (#M06), on ne l'invente pas.
+  **VERIFIE AU NIVEAU DU MOTEUR, deja vert** : faire varier M de 0 a 40 ne change **aucune** sortie
+  decisionnelle — ni le verdict global, ni le score de circuit, ni la contrainte dominante, ni le
+  facteur limitant, ni la capacite du jour, ni les semaines d'entrainement, ni les jours suggeres,
+  ni un seul verdict d'etape. Et M = 0 ne produit **pas** un zero parlant : le constat n'est
+  simplement **pas enonce**.
+  **CE QUI RESTE A PROUVER A L'ECRAN, et c'est la que ca se joue** : (a) la phrase est affichee telle
+  quelle, dans les 5 langues ; (b) elle **ne porte aucune couleur, aucune icone d'alerte, aucun verbe
+  de jugement** — pas de « insuffisant », pas de « tu n'es pas pret », pas de rouge ; (c) elle
+  n'apparait pas **a cote** d'un feu tricolore d'une facon qui la fasse lire comme un verdict.
+  **Lea est le bon personnage pour ce point** : elle veut savoir sur quoi repose ce qu'on lui dit, et
+  un chiffre pose sans statut l'inquietera plus qu'il ne l'informera.
 
 ---
 
@@ -429,6 +500,13 @@ l'application embarque.**
 
 ## 9. CONDUITE DE LA CAMPAGNE
 
+- **REGLE POSEE LE 22/09, ET ELLE PASSE AVANT TOUTES LES AUTRES : AVANT DE FAIRE CONFIANCE A UN
+  HARNAIS, ON PROUVE QU'IL SAIT DIRE NON.** On lui fait passer un cas **volontairement faux** et on
+  verifie qu'il **rougit**. Un harnais qui ne peut pas echouer nous a deja fait croire a une campagne
+  verte qui ne testait rien (#100283, mission 1). **Concretement, avant chaque campagne** : au moins
+  une exigence dont on sait qu'elle est fausse (un libelle qui n'existe pas, une valeur attendue
+  volontairement decalee), un run, et un **rouge constate**. Tant que ce rouge n'a pas ete vu, **les
+  verts qui suivent ne valent rien** et la campagne n'est pas lancee.
 - **Les personnages sont des personnages, jamais des scripts** (#10-a). Le prompt se donne **tel
   quel**. On n'y ajoute rien, surtout pas un nom d'ecran, un libelle ou un ordre d'etapes. Un indice
   souffle pendant le run = **ECHEC ASSISTE**, consigne mot pour mot avec l'instant.
@@ -457,28 +535,30 @@ l'application embarque.**
 
 ## 10. ORDRE D'EXECUTION PROPOSE
 
-1. **Lever B1** : recuperer `04437e8`, committer le harnais N2, rejouer S1-S4 contre le produit
-   corrige.
-2. **Brancher le PLAN sur le moteur** (B3) : passer `restAfterStageIndex` depuis
-   `PlanningCalculator` dans `trek_feasibility_provider.dart`. Sans cela, le premier ecran que verra
-   Christophe donnera un circuit **rouge a l'expert** sur un sentier dont **aucune etape** ne
-   depasse ses capacites. C'est un cablage, pas un arbitrage : a faire tout de suite.
-3. **Faire trancher B2** (C2 qui ne mord jamais) : arbitrage, pas bug. Soit C2 sort du `max()` et
-   devient une information affichee comme C4, soit son denominateur change.
-4. **Reprendre les tests de l'ancienne API** laisses en plan par la tache 540 (15 erreurs
+1. **Lever B1 — tache 543** : recuperer `04437e8`, committer le harnais N2, **lui faire passer un
+   cas volontairement faux et constater le rouge**, puis rejouer S1-S4 contre le produit corrige.
+2. ~~Brancher le PLAN sur le moteur~~ — **FAIT** pendant cette preparation
+   (`restAfterStageIndex: restDays`). **Reste a prouver a l'ecran**, et a verifier le sens de pose
+   des jours de repos (AVANT cote planning, APRES cote moteur).
+3. ~~Faire trancher B2~~ — **FAIT** : `S_circuit = max(C1 ; C3)`, C2 en affichage, #10-b corrigee a
+   deux contraintes dominantes. Le test de dominance est devenu un **invariant** `C2 <= C1`.
+4. **RE-MESURER LA COLONNE C3** de la matrice apres le cablage, avant toute campagne. La table
+   `c3ParNombreDeRepos` est deja verifiee sur le moteur : il s'agit de choisir la ligne qui
+   correspond au programme reellement retenu par chaque personnage, pas de recalculer.
+5. **Reprendre les tests de l'ancienne API** laisses en plan par la tache 540 (15 erreurs
    `flutter analyze`, une dizaine de fichiers qui ne se chargent plus).
-5. **Reecrire S5 (famille 2) et S6 (famille 1 + matrice)**, plus un **S7** pour la famille 3
-   (F3-1 a F3-11) — l'ancien S6 ne couvrait pas F3-2, F3-4, F3-7 ni F3-8, qui naissent des decisions
-   du 22/09.
-6. **Rejouer la matrice a l'ecran** (elle est deja verte au niveau du moteur) : ce qui reste a
+6. **Reecrire S5 (famille 2) et S6 (famille 1 + matrice)**, plus un **S7** pour la famille 3
+   (F3-1 a F3-12) — l'ancien S6 ne couvrait pas F3-2, F3-4, F3-7, F3-8 ni F3-12, qui naissent des
+   decisions du 22/09.
+7. **Rejouer la matrice a l'ecran** (elle est deja verte au niveau du moteur) : ce qui reste a
    prouver, c'est que **l'ecran dit** ce que le moteur calcule — facteur dominant nomme, replis
    declares, explication d'ARB-004.
-7. **Jouer les six personnages** sur le produit reel, grille #100297 comme seule feuille de lecture.
-8. **Rendre la liste des bascules**, une par une, et le verdict de porte.
+8. **Jouer les six personnages** sur le produit reel, grille #100297 comme seule feuille de lecture.
+9. **Rendre la liste des bascules**, une par une, et le verdict de porte.
 
 ---
 
 *Preparation tache 541 — Artemis, 22/09/2026. Aucun fichier applicatif touche.
-Les deux colonnes de la matrice sont verrouillees sur le moteur reel par **23 tests verts**, et
+Les deux colonnes de la matrice sont verrouillees sur le moteur reel par **28 tests verts**, et
 elles concordent avec le moteur v2 livre pendant la preparation, cellule par cellule.
 Quatre points nommes, dont un cablage a faire tout de suite et un arbitrage a rendre.*

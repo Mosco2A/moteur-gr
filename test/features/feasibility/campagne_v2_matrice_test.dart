@@ -322,25 +322,62 @@ void main() {
   });
 
   group('Proprietes du score de circuit — mesurees, pas supposees', () {
-    test('TROU 1 : C2 est domine par C1 sur les 96 cellules, il ne mord jamais',
-        () {
-      // C2 = moyenne(E) / C_jour et C1 = max(E) / C_jour : une moyenne n est
-      // jamais superieure a un maximum. La phrase de la spec (#2-o) « un circuit
-      // dont la moyenne depasse le plafond est intenable meme si aucune etape ne
-      // depasse » decrit donc un cas IMPOSSIBLE, et l exigence #10-b « C1, C2 et
-      // C3 dominants tour a tour » n est pas satisfiable en l etat.
+    test('INVARIANT DE STRUCTURE : C2 <= C1 sur toutes les combinaisons', () {
+      // CE N EST PAS UN ECHANTILLON, C EST UNE DEMONSTRATION. C2 est la MOYENNE
+      // des energies, C1 leur MAXIMUM, normalises par le MEME plafond : une
+      // moyenne n est jamais superieure a un maximum, donc C2 <= C1 par
+      // construction, avec egalite seulement si toutes les etapes sont egales.
+      // C2 est donc REDONDANTE dans un maximum.
+      //
+      // CORRECTION ACTEE LE 22/09 : S_circuit = max(C1 ; C3). C2 sort du
+      // maximum et passe en AFFICHAGE, meme statut que C4 ; l exigence #10-b
+      // porte desormais sur DEUX contraintes dominantes, pas trois.
+      //
+      // POURQUOI UN INVARIANT ET NON UN CONSTAT DE DOMINANCE : un constat dit
+      // « C2 n a pas mordu sur mes 96 cellules », ce qui ne vaut que pour cet
+      // echantillon. L invariant dit « C2 NE PEUT PAS mordre », et il rougira
+      // le jour ou quelqu un changera le normalisateur de C2 sans revoir la
+      // redondance. C est la protection, pas la mesure, qui a de la valeur.
       final fautifs = <String>[];
       for (final c in cellules) {
         final v2 = c['v2'] as Map<String, dynamic>;
         if ((v2['C2'] as num) > (v2['C1'] as num) + kEps) {
           fautifs.add('${c['id']} C2=${v2['C2']} > C1=${v2['C1']}');
         }
-        if (v2['contrainteDominante'] == 'C2') {
-          fautifs.add('${c['id']} : C2 dominante — la matrice se contredit');
-        }
       }
       expect(fautifs, isEmpty, reason: fautifs.join('\n'));
-      expect(matrice['constats']['C2neDomineJamais'], isTrue);
+      expect(matrice['constats']['invariantC2infOuEgalC1'], isTrue);
+
+      // Meme invariant sur le MOTEUR, tous jeux x tous niveaux, avec et sans
+      // jours de repos — c est la ou un normalisateur change se verrait.
+      for (final jeu in jeux.values.cast<Map<String, dynamic>>()) {
+        for (final level in HikerLevel.values) {
+          for (final repos in <Set<int>>[const {}, const {1}, const {0, 2}]) {
+            final a = FeasibilityFormula.evaluate(
+              stages: _stagesOf(jeu),
+              level: level,
+              restAfterStageIndex: repos,
+            );
+            expect(a.circuit!.averageLoad,
+                lessThanOrEqualTo(a.circuit!.worstStage + kEps),
+                reason: 'moteur : C2 > C1 sur ${jeu['nom']} / ${level.name}');
+            expect(a.circuit!.dominant, isNot(CircuitConstraint.averageLoad),
+                reason: 'C2 ne doit jamais etre la contrainte retenue');
+          }
+        }
+      }
+    });
+
+    test('la contrainte dominante ne peut etre que C1 ou C3', () {
+      expect(
+          (matrice['constats']['contraintesDominantesPossibles'] as List)
+              .cast<String>()
+              .toSet(),
+          {'C1', 'C3'});
+      for (final c in cellules) {
+        expect(c['v2']['contrainteDominante'], anyOf('C1', 'C3'),
+            reason: c['id'] as String);
+      }
     });
 
     test('TROU 2 : C3 ne depend pas du randonneur — une valeur par jeu d etapes',
@@ -356,29 +393,175 @@ void main() {
       }
     });
 
-    test('TROU 2, consequence : sans jour de repos, l EXPERT recoit un circuit '
-        'ROUGE sur le sentier de production', () {
-      // Le provider n envoie AUCUN jour de repos a `evaluate` : la suite des
-      // etapes est donc monotone par construction. Sur Mare a Mare Centre la
-      // monotonie vaut 4,04, donc C3 = 2,02, donc ROUGE — pour tout le monde.
-      final a = FeasibilityFormula.evaluate(
+    test('LA COLONNE C3 DE LA MATRICE EST UN ARTEFACT DECLARE, A RE-MESURER',
+        () {
+      // La matrice a ete calculee AVANT que les jours de repos ne remontent au
+      // moteur : sa colonne C3 porte donc la monotonie d une serie SANS aucun
+      // jour de charge nulle, c est-a-dire la mauvaise serie. Les valeurs de
+      // C3, la contrainte dominante et le verdict de circuit sont des
+      // ARTEFACTS. LA CAMPAGNE NE DOIT PAS PARTIR DESSUS : elle enregistrerait
+      // un faux. Ce drapeau est la pour que personne ne l oublie.
+      expect(matrice['meta']['C3_PROVISOIRE'], isTrue);
+      expect(matrice['meta']['C3_pourquoi_provisoire'], isNotEmpty);
+      // Ce qui reste VALABLE sans re-mesure, et qui est teste ailleurs dans ce
+      // fichier : toute la colonne AVANT, les scores et verdicts d ETAPE de la
+      // colonne APRES, C1, C2, et l invariant C2 <= C1.
+    });
+
+    test('SANS repos le circuit rougit pour tout le monde, AVEC repos il '
+        'redevient discriminant', () {
+      // Demonstration de l artefact, et de sa sortie. Sur Mare a Mare Centre,
+      // 7 etapes sans repos : monotonie 4,04, C3 = 2,02, ROUGE — et l expert a
+      // pourtant une pire etape a 0,54, VERT FRANC. Avec les jours de repos du
+      // programme, C3 retombe et le verdict redevient celui du randonneur.
+      final sansRepos = FeasibilityFormula.evaluate(
         stages: _stagesOf(jeux['J1'] as Map<String, dynamic>),
         level: HikerLevel.expert,
       );
-      final circuit = a.circuit!;
-      expect(_verdictName(FeasibilityThresholds.median.verdictFor(circuit.worstStage)),
+      expect(
+          _verdictName(FeasibilityThresholds.median
+              .verdictFor(sansRepos.circuit!.worstStage)),
           'green',
-          reason: 'la pire etape de l expert est pourtant verte franche');
-      expect(circuit.monotony, closeTo(4.04, 0.01));
-      expect(circuit.dominant, CircuitConstraint.rest);
-      expect(_verdictName(circuit.verdict), 'red');
-      // Et la contre-preuve : deux jours de repos suffisent a la ramener au vert.
+          reason: 'la pire etape de l expert est verte franche');
+      expect(sansRepos.circuit!.monotony, closeTo(4.04, 0.01));
+      expect(sansRepos.circuit!.dominant, CircuitConstraint.rest);
+      expect(_verdictName(sansRepos.circuit!.verdict), 'red');
+
       final avecRepos = FeasibilityFormula.evaluate(
         stages: _stagesOf(jeux['J1'] as Map<String, dynamic>),
         level: HikerLevel.expert,
         restAfterStageIndex: const {1, 4},
       );
       expect(_verdictName(avecRepos.circuit!.verdict), 'green');
+      expect(avecRepos.restDaysPlanned, 2);
+      // La monotonie tombe de 4,04 a 1,53, donc C3 de 2,02 a 0,77 : sous le
+      // seuil du vert. Elle reste la plus grande des deux contraintes pour
+      // l expert (0,77 > 0,54), mais elle ne decide plus de la COULEUR.
+      expect(avecRepos.circuit!.monotony, closeTo(1.535, 0.01));
+      expect(avecRepos.circuit!.rest, closeTo(0.7675, kEps));
+
+      // ET LA DISCRIMINATION REVIENT, c est le point. Meme sentier, meme
+      // programme : le debutant est ROUGE par sa pire etape (C1 = 1,40) la ou
+      // l expert est VERT. La contrainte qui decide redevient dependante du
+      // randonneur, ce que C3 seule ne pouvait pas faire.
+      final debutant = FeasibilityFormula.evaluate(
+        stages: _stagesOf(jeux['J1'] as Map<String, dynamic>),
+        level: HikerLevel.beginner,
+        restAfterStageIndex: const {1, 4},
+      );
+      expect(_verdictName(debutant.circuit!.verdict), 'red');
+      expect(debutant.circuit!.dominant, CircuitConstraint.worstStage);
+      expect(debutant.circuit!.worstStage, closeTo(1.4015, kEps));
+    });
+
+    test('TABLE DE RE-MESURE : C3 par nombre de jours de repos, verifiee sur le '
+        'moteur', () {
+      // C est cette table que la campagne lira apres le cablage, au lieu de
+      // recalculer. Elle doit donc etre exacte au chiffre pres, sur le moteur.
+      final ecarts = <String>[];
+      for (final entree in jeux.entries) {
+        final jeu = entree.value as Map<String, dynamic>;
+        final table = jeu['c3ParNombreDeRepos'] as Map<String, dynamic>;
+        final placements = jeu['reposPosesApresLesEtapes'] as Map<String, dynamic>;
+        for (final r in table.keys) {
+          final apres = (placements[r] as List)
+              .cast<num>()
+              .map((n) => n.toInt() - 1)
+              .toSet();
+          final a = FeasibilityFormula.evaluate(
+            stages: _stagesOf(jeu),
+            level: HikerLevel.intermediate,
+            restAfterStageIndex: apres,
+          );
+          final attendu = table[r] as num?;
+          final obtenu = a.circuit!.rest;
+          if (attendu == null) {
+            if (obtenu != null) {
+              ecarts.add('${entree.key} $r repos : attendu NON APPLICABLE, '
+                  'moteur $obtenu');
+            }
+          } else if (obtenu == null || (obtenu - attendu).abs() > kEps) {
+            ecarts.add('${entree.key} $r repos : attendu $attendu, '
+                'moteur $obtenu');
+          }
+        }
+      }
+      expect(ecarts, isEmpty, reason: ecarts.take(20).join('\n'));
+    });
+
+    test('ECART PLANIFICATEUR / MOTEUR : le repos se pose AVANT chez l un, '
+        'APRES chez l autre', () {
+      // PlanningCalculator._computeRestPositions pose un repos AVANT une etape ;
+      // FeasibilityFormula.dailyLoads le pose APRES, et IGNORE un repos demande
+      // apres la derniere etape. Les deux ne produisent donc pas la meme serie.
+      // Sur un sentier d UNE etape elles divergent meme totalement : cote
+      // planning la serie devient [0, E] et la monotonie vaut 1 ; cote moteur
+      // elle reste [E] et la monotonie est NON APPLICABLE.
+      // C est la semantique du MOTEUR qui fait foi, puisque c est elle qui rend
+      // le verdict — mais le cablage doit traduire, pas recopier.
+      final uneEtape = _stagesOf(jeux['J3'] as Map<String, dynamic>);
+      for (final repos in <Set<int>>[const {}, const {0}, const {0, 1}]) {
+        final a = FeasibilityFormula.evaluate(
+          stages: uneEtape,
+          level: HikerLevel.intermediate,
+          restAfterStageIndex: repos,
+        );
+        expect(a.circuit!.rest, isNull,
+            reason: 'un sentier d une etape ne peut pas recevoir de jour de '
+                'repos cote moteur, quoi qu on lui demande');
+      }
+      // Et la preuve que le moteur ignore bien le repos apres la DERNIERE etape.
+      final j1 = _stagesOf(jeux['J1'] as Map<String, dynamic>);
+      final apresDerniere = FeasibilityFormula.evaluate(
+        stages: j1,
+        level: HikerLevel.intermediate,
+        restAfterStageIndex: {j1.length - 1},
+      );
+      final sansRien = FeasibilityFormula.evaluate(
+        stages: j1,
+        level: HikerLevel.intermediate,
+      );
+      expect(apresDerniere.circuit!.rest, sansRien.circuit!.rest);
+    });
+
+    test('CONSTAT DE DUREE : enonce factuel, JAMAIS un verdict', () {
+      // Le moteur affiche « ce trek dure N jours de marche, ta plus longue
+      // sortie enchainee est de M jours ». C est un CONSTAT, parce qu aucun
+      // seuil publie ne permet de scorer la duree cumulee (#M06).
+      // CE QUI EST VERIFIE ICI : faire varier M de 0 a 40 ne doit changer AUCUNE
+      // sortie decisionnelle. Si un jour la duree se met a peser, ce test rougit.
+      final stages = _stagesOf(jeux['J1'] as Map<String, dynamic>);
+      FeasibilityAssessment evaluerAvec(int jours) =>
+          FeasibilityFormula.evaluate(
+            stages: stages,
+            level: HikerLevel.intermediate,
+            longestConsecutiveDaysDone: jours,
+            restAfterStageIndex: const {1, 4},
+          );
+
+      final reference = evaluerAvec(0);
+      for (final m in <int>[1, 2, 3, 7, 12, 17, 40]) {
+        final a = evaluerAvec(m);
+        expect(_verdictName(a.globalVerdict), _verdictName(reference.globalVerdict),
+            reason: 'le verdict global bouge avec la duree deja realisee ($m)');
+        expect(a.circuit!.score, closeTo(reference.circuit!.score, 1e-12),
+            reason: 'le score de circuit bouge avec la duree ($m)');
+        expect(a.circuit!.dominant, reference.circuit!.dominant);
+        expect(a.limitingFactor, reference.limitingFactor);
+        expect(a.recommendedTrainingWeeks, reference.recommendedTrainingWeeks);
+        expect(a.dailyCapacityEnergyKm,
+            closeTo(reference.dailyCapacityEnergyKm, 1e-12));
+        expect(a.suggestedDays, reference.suggestedDays);
+        expect(a.stageVerdicts.map((v) => _verdictName(v.verdict)).toList(),
+            reference.stageVerdicts.map((v) => _verdictName(v.verdict)).toList());
+        // Et le constat lui-meme reste disponible et honnete.
+        expect(a.longestConsecutiveDaysDone, m);
+        expect(a.walkingDays, stages.length);
+        expect(a.hasDurationStatement, isTrue);
+      }
+      // Duree inconnue : on ne l enonce pas, on n invente pas un zero parlant.
+      expect(reference.hasDurationStatement, isFalse,
+          reason: 'sans donnee, le constat ne doit pas etre enonce');
     });
 
     test('CAS LIMITE #10-e : sur un sentier d UNE etape, C3 est NON APPLICABLE',
