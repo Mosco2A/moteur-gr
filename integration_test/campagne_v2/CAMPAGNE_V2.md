@@ -604,6 +604,48 @@ randonneur lira un jugement sur lui-meme la ou il y a un jugement sur son planni
 
 ---
 
+## 12. LA RECETTE DE LANCEMENT — A SUIVRE A LA LETTRE
+
+**Sans elle, un run est INVALIDE et ses echecs ne veulent rien dire.** Le 22/09, un premier rejeu de
+S1 a rendu quatre echecs qui ressemblaient a des defauts produit : c'etait un dialogue Android et le
+formulaire de consentement publicitaire Google qui recouvraient l'ecran. **La capture l'a montre en
+dix secondes.** Sans image, quatre faux defauts partaient au rapport.
+
+**1. Lancer les trois demons hote AVANT le run, DEPUIS POWERSHELL.**
+
+- `tool/persona_shot_daemon.py <serial> <dossier_captures> --logfile <log>` — sans lui, **aucune
+  capture**, donc rien a montrer.
+- `tool/persona_dialog_dismisser.py <serial> <duree>` — ferme le consentement publicitaire et les
+  dialogues systeme.
+- `tool/persona_perm_granter.py <serial> <package> <duree> [--avant-plan]` — voir le point 3.
+
+**PIEGE QUI COUTE UN RUN : lancer les demons depuis Git Bash ne marche pas.** MSYS convertit
+`/sdcard/...` en `C:/Program Files/Git/sdcard/...`, le dump d'ecran echoue **en silence**, et le
+dismisser ne ferme plus rien sans le dire.
+
+**2. Creer le fichier de log AVANT de lancer le demon de captures, et rediriger le test en AJOUT
+(`>>`), jamais en ecrasement (`>`).** Le demon se place a la fin du fichier a l'ouverture : si le
+test recree le fichier, le demon garde l'ancien descripteur et ne voit plus rien.
+
+**3. Le jeu de permissions depend du scenario, et se tromper fausse le test.**
+
+- **S1** : `--avant-plan`. Le premier plan est accorde (sinon le dialogue de localisation recouvre
+  l'ecran Faisabilite), **le fond ne l'est PAS** — c'est ce qui permet a S1 de voir le pre-vol
+  explique. Accorder le fond rendrait le test faux-vert.
+- **S3** : permissions **completes**. S3 teste precisement le chemin « permissions deja accordees »,
+  celui ou le pre-vol ne doit rien ouvrir.
+- **Les autres** : `--avant-plan` convient.
+
+**4. Verifier que le run s'est declare VALIDE.** Chaque scenario porte desormais une exigence
+`run_valide` : si une fenetre systeme a recouvert l'application, **le run se declare invalide au
+lieu de se faire passer pour un rapport de defauts**.
+
+**5. Etat de reference au 22/09** — a comparer apres chaque campagne :
+S1 **49** exigences · S2 **15** · S3 **17** · S4 **8** · S5 **95** · S6 **246** · S7 **62**.
+**492 au total, zero echouee**, 159 captures.
+
+---
+
 *Preparation tache 541 et harnais tache 543 — Artemis, 22/09/2026. Aucun fichier applicatif touche.
 Les deux colonnes de la matrice sont verrouillees sur le moteur reel par **29 tests verts**, le
 harnais est prouve capable d'echouer par **7 tests verts**, et S5 et S6 sont **verts sur
