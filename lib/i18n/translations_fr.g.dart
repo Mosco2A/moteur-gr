@@ -3188,8 +3188,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'En années'
 	String get hintAge => 'En années';
 
-	/// fr: 'Âge invalide (8 à 100 ans)'
-	String get errorAge => 'Âge invalide (8 à 100 ans)';
+	/// fr: 'Âge invalide (18 à 120 ans)'
+	String get errorAge => 'Âge invalide (18 à 120 ans)';
 
 	/// fr: 'Taille'
 	String get fieldHeight => 'Taille';
@@ -3197,8 +3197,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'En centimètres'
 	String get hintHeight => 'En centimètres';
 
-	/// fr: 'Taille invalide (100 à 250 cm)'
-	String get errorHeight => 'Taille invalide (100 à 250 cm)';
+	/// fr: 'Taille invalide (60 à 255 cm)'
+	String get errorHeight => 'Taille invalide (60 à 255 cm)';
 
 	/// fr: 'Poids'
 	String get fieldWeight => 'Poids';
@@ -3206,8 +3206,8 @@ class Translations$hikerProfile$fr {
 	/// fr: 'En kilogrammes'
 	String get hintWeight => 'En kilogrammes';
 
-	/// fr: 'Poids invalide (30 à 150 kg)'
-	String get errorWeight => 'Poids invalide (30 à 150 kg)';
+	/// fr: 'Poids invalide (25 à 200 kg)'
+	String get errorWeight => 'Poids invalide (25 à 200 kg)';
 
 	/// fr: 'Code pays invalide (ex. FR)'
 	String get errorCountry => 'Code pays invalide (ex. FR)';
@@ -8750,13 +8750,13 @@ extension on Translations {
 			'hikerProfile.privacyBanner' => 'Votre morphologie est une donnée sensible. Elle reste sur votre appareil (et une sauvegarde chiffrée, sans votre nom) pour calculer votre faisabilité.',
 			'hikerProfile.fieldAge' => 'Âge',
 			'hikerProfile.hintAge' => 'En années',
-			'hikerProfile.errorAge' => 'Âge invalide (8 à 100 ans)',
+			'hikerProfile.errorAge' => 'Âge invalide (18 à 120 ans)',
 			'hikerProfile.fieldHeight' => 'Taille',
 			'hikerProfile.hintHeight' => 'En centimètres',
-			'hikerProfile.errorHeight' => 'Taille invalide (100 à 250 cm)',
+			'hikerProfile.errorHeight' => 'Taille invalide (60 à 255 cm)',
 			'hikerProfile.fieldWeight' => 'Poids',
 			'hikerProfile.hintWeight' => 'En kilogrammes',
-			'hikerProfile.errorWeight' => 'Poids invalide (30 à 150 kg)',
+			'hikerProfile.errorWeight' => 'Poids invalide (25 à 200 kg)',
 			'hikerProfile.errorCountry' => 'Code pays invalide (ex. FR)',
 			'hikerProfile.errorEmpty' => 'Fiche vide : renseignez au moins l\'âge, la taille ou le poids.',
 			'hikerProfile.fieldSex' => 'Sexe (optionnel)',

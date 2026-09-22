@@ -169,7 +169,7 @@ class ChecklistBodyWeightRow extends StatefulWidget {
   State<ChecklistBodyWeightRow> createState() => _ChecklistBodyWeightRowState();
 }
 
-/// Longueur max du champ poids corporel (« 150.5 » = 5 caracteres), identique a
+/// Longueur max du champ poids corporel (« 200.5 » = 5 caracteres), identique a
 /// la fiche morpho.
 const int kBodyWeightFieldMaxLength = 5;
 

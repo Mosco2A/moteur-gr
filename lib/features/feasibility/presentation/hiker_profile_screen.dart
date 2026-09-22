@@ -191,7 +191,7 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     // Bandeau confidentialite (donnee sensible, local only).
                     _PrivacyBanner(text: tp.privacyBanner),
                     const SizedBox(height: AppTheme.spacingLg),
-                    // Age — borne 8 a 100 ans (BP faisabilite), max 3 chiffres.
+                    // Age — borne [kAgeMin..kAgeMax] ans, max 3 chiffres.
                     _NumberField(
                       controller: _ageController,
                       label: tp.fieldAge,
@@ -204,8 +204,9 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                           _validateRange(v, kAgeMin, kAgeMax, tp.errorAge),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
-                    // Taille — borne 100 a 250 cm (BP), max 3 chiffres (empeche
-                    // physiquement 8000 / 600000 signales par Chris).
+                    // Taille — borne [kHeightMinCm..kHeightMaxCm] cm, max 3
+                    // chiffres (empeche physiquement 8000 / 600000 signales
+                    // par Chris).
                     _NumberField(
                       controller: _heightController,
                       label: tp.fieldHeight,
@@ -218,8 +219,9 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                           v, kHeightMinCm, kHeightMaxCm, tp.errorHeight),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
-                    // Poids — borne 30 a 150 kg (BP), max 5 caracteres (decimal :
-                    // ex. « 150.5 »). Empeche physiquement 3261 signale par Chris.
+                    // Poids — borne [kWeightMinKg..kWeightMaxKg] kg, max 5
+                    // caracteres (decimal : ex. « 200.5 »). Empeche
+                    // physiquement 3261 signale par Chris.
                     _NumberField(
                       controller: _weightController,
                       label: tp.fieldWeight,

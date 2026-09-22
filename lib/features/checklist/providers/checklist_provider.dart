@@ -551,9 +551,10 @@ class ChecklistNotifier extends Notifier<ChecklistState> {
   /// identique (evite un rebuild inutile). Session courante (non persiste, comme
   /// GR20) : le champ profil reste la source durable.
   void seedBodyWeightFromProfile(double kg) {
-    // Meme regle que la saisie manuelle (FIX-1 / B1) : la source profil est deja
-    // bornee 30-150, ce garde-fou empeche toute valeur absurde d'entrer par une
-    // autre porte (donnee migree, miroir cloud corrompu).
+    // Meme regle que la saisie manuelle (FIX-1 / B1) : la source profil est
+    // deja bornee [kWeightMinKg..kWeightMaxKg], ce garde-fou empeche toute
+    // valeur absurde d'entrer par une autre porte (donnee migree, miroir cloud
+    // corrompu).
     if (!isValidBodyWeightKg(kg)) return;
     if (state.bodyWeightEdited) return;
     if (state.bodyWeightKg == kg) return;

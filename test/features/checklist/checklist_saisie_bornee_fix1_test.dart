@@ -11,6 +11,7 @@ import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/checklist/presentation/checklist_screen.dart';
 import 'package:moteur_gr/features/checklist/providers/checklist_provider.dart';
+import 'package:moteur_gr/features/feasibility/domain/hiker_input_bounds.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// NON-REGRESSION FIX-1 — « ce qu'on accepte et ce qu'on dit » cote Sac.
@@ -113,19 +114,31 @@ void main() {
       expect(state.backpackRatio.isFinite, isTrue);
     });
 
-    test('les bornes 30-150 kg sont celles de la fiche morpho', () async {
+    test('les bornes poids sont celles de la fiche morpho', () async {
       final notifier = container.read(checklistProvider.notifier);
       await Future<void>.delayed(const Duration(milliseconds: 200));
 
-      notifier.setBodyWeight(30);
-      expect(container.read(checklistProvider).bodyWeightKg, 30);
-      notifier.setBodyWeight(150);
-      expect(container.read(checklistProvider).bodyWeightKg, 150);
+      notifier.setBodyWeight(kWeightMinKg.toDouble());
+      expect(container.read(checklistProvider).bodyWeightKg, kWeightMinKg);
+      notifier.setBodyWeight(kWeightMaxKg.toDouble());
+      expect(container.read(checklistProvider).bodyWeightKg, kWeightMaxKg);
 
-      notifier.setBodyWeight(29.9);
-      notifier.setBodyWeight(150.1);
-      expect(container.read(checklistProvider).bodyWeightKg, 150,
+      notifier.setBodyWeight(kWeightMinKg - 0.1);
+      notifier.setBodyWeight(kWeightMaxKg + 0.1);
+      expect(container.read(checklistProvider).bodyWeightKg, kWeightMaxKg,
           reason: 'hors bornes = refus, on garde la derniere valeur valide');
+    });
+
+    test('un randonneur de 160 kg pilote la jauge comme les autres', () async {
+      // Decision Chris #100328 : l ancien plafond de 150 kg excluait a la porte
+      // d entree exactement les randonneurs pour qui le dispositif de charge du
+      // sac a le plus de valeur. Le bandeau doit les accepter.
+      final notifier = container.read(checklistProvider.notifier);
+      await Future<void>.delayed(const Duration(milliseconds: 200));
+
+      notifier.setBodyWeight(160);
+      expect(container.read(checklistProvider).bodyWeightKg, 160);
+      expect(container.read(checklistProvider).backpackRatio.isFinite, isTrue);
     });
 
     test('l injection depuis le profil applique la meme regle', () async {

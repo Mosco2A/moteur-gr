@@ -1,7 +1,7 @@
 /// Bornes metier de la saisie randonneur — SOURCE DE VERITE UNIQUE.
 ///
 /// FIX-1 (rapport personas cycle4, finding B1) : le poids corporel etait borne
-/// 30-150 kg avec un message clair sur la fiche morpho, et TOTALEMENT LIBRE sur
+/// avec un message clair sur la fiche morpho, et TOTALEMENT LIBRE sur
 /// le bandeau « Materiel & Sac » (l'app affichait « Poids du sac : Infinity kg »).
 /// La meme donnee doit porter la meme regle partout : ces constantes sont donc
 /// sorties de l'ecran morpho pour etre partagees par TOUS les points de saisie
@@ -10,25 +10,50 @@
 /// Ancrees sur BP_faisabilite_entrainement.md (profils randonneur) + mandat
 /// LOT 1 (retour Chris #4). Elles servent A LA FOIS a la validation (submit),
 /// aux garde-fous des providers et aux messages d'erreur bornes.
+///
+/// PRINCIPE POSE PAR CHRIS LE 22/09 (decisions #100327 puis #100328). IL PRIME
+/// SUR TOUT LE RESTE ET S'APPLIQUE PARTOUT DANS L'APPLICATION :
+/// UNE BORNE DE SAISIE ATTRAPE UNE FAUTE DE FRAPPE. Elle ne decide pas qui a le
+/// droit d'exister ni qui a le droit de randonner. Elle n'ecarte QUE
+/// l'impossible.
+///
+/// Les bornes precedentes (8-100 ans, 100-250 cm, 30-150 kg) jugeaient des
+/// morphologies humaines REELLES : une personne de petite taille par
+/// achondroplasie, ou un randonneur de 160 kg, ne pouvaient simplement pas
+/// creer leur fiche. Ce n'etait pas un garde-fou, c'etait une exclusion a la
+/// porte d'entree — et elle frappait exactement les randonneurs pour qui le
+/// dispositif de charge du sac a le plus de valeur.
+///
+/// Les valeurs ci-dessous sont donc calees sur des REPERES D'USAGE, et non sur
+/// des limites theoriques de l'espece :
+///  - 120 ans : le record humain documente est de 122 ans ;
+///  - 255 cm : le plus grand homme vivant mesure 251 cm — l'ancienne borne de
+///    250 le ratait d'un centimetre ;
+///  - 200 kg : au-dela on ne marche plus un sentier ; en dessous des gens
+///    marchent vraiment, notamment ceux qui s'y mettent pour perdre du poids.
+///
+/// Toute modification de ces six constantes doit repercuter les messages
+/// `hikerProfile.errorAge` / `errorHeight` / `errorWeight` des 5 fichiers
+/// `assets/i18n/*.i18n.json`, qui citent les bornes en toutes lettres.
 library;
 
-/// Age minimum accepte (annees).
-const int kAgeMin = 8;
+/// Age minimum accepte (annees). L'application s'adresse a des adultes.
+const int kAgeMin = 18;
 
-/// Age maximum accepte (annees).
-const int kAgeMax = 100;
+/// Age maximum accepte (annees). Record humain documente : 122 ans.
+const int kAgeMax = 120;
 
 /// Taille minimum acceptee (cm).
-const int kHeightMinCm = 100;
+const int kHeightMinCm = 60;
 
-/// Taille maximum acceptee (cm).
-const int kHeightMaxCm = 250;
+/// Taille maximum acceptee (cm). Plus grand homme vivant : 251 cm.
+const int kHeightMaxCm = 255;
 
 /// Poids corporel minimum accepte (kg). Voir [isValidBodyWeightKg].
-const int kWeightMinKg = 30;
+const int kWeightMinKg = 25;
 
 /// Poids corporel maximum accepte (kg). Voir [isValidBodyWeightKg].
-const int kWeightMaxKg = 150;
+const int kWeightMaxKg = 200;
 
 /// Vrai si [kg] est un poids corporel ACCEPTABLE (fini et dans les bornes).
 ///
