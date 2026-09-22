@@ -570,7 +570,13 @@ l'application embarque.**
    preuve de dominance.
 5. ~~Re-mesurer la colonne C3~~ — **FAIT**, avec le couple de chiffres du repos par defaut.
 6. ~~Reecrire S5~~ — **FAIT ET VERT SUR L'APPAREIL** : 95 exigences evaluees, 0 echouee.
-7. ~~Reecrire S6~~ — **FAIT**, 24 cellules du sentier de production sur le produit reel.
+7. ~~Reecrire S6~~ — **FAIT ET VERT SUR L'APPAREIL** : 246 exigences evaluees, 0 echouee, les 24
+   cellules du sentier de production jouees par les vrais notifiers. **Deux pieges a connaitre pour
+   la campagne** : attendre un `FutureProvider` se fait sous `tester.runAsync`, et **seulement apres
+   avoir OUVERT le sentier** — depuis le catalogue, la trace GPX n'est pas chargee, donc
+   `trailMaxAltitudeProvider` n'aboutit jamais et tout le moteur reste bloque. Toute attente de
+   provider est desormais **bornee a 20 s** : un test qui se fige ne dit rien, un test qui echoue
+   dit ou.
 8. **Rejouer S1 a S4** contre le produit corrige : ils viennent d'un stash anterieur au correctif
    N2 et attendent encore un verdict qui tombe des la morphologie. **C'est le dernier verrou avant
    la campagne.**
@@ -600,5 +606,13 @@ randonneur lira un jugement sur lui-meme la ou il y a un jugement sur son planni
 
 *Preparation tache 541 et harnais tache 543 — Artemis, 22/09/2026. Aucun fichier applicatif touche.
 Les deux colonnes de la matrice sont verrouillees sur le moteur reel par **29 tests verts**, le
-harnais est prouve capable d'echouer par **7 tests verts**, et S5 est **vert sur l'appareil** avec
-95 exigences evaluees.*
+harnais est prouve capable d'echouer par **7 tests verts**, et S5 et S6 sont **verts sur
+l'appareil** avec 95 et 246 exigences evaluees.
+
+**Preuve directe de l'arbitrage, relevee sur l'appareil** : les 24 lignes `PERSONA_MATRICE_C3` du
+run de S6 disent toutes `repos=0`, `C3=2,0197`, `dominante=rest`, `circuit=red`. Vingt-quatre sur
+vingt-quatre, **niveau confirme compris, dont la pire etape est a 0,68 — vert franc**.
+
+**Point operationnel a ne pas oublier** : S5 et S6 sont verts mais **aucune capture PNG** n'a ete
+produite, le demon `tool/persona_shot_daemon.py` n'etait pas lance. A demarrer avec `--logfile`
+avant la campagne, sinon il n'y aura rien a montrer a l'ecran.*
