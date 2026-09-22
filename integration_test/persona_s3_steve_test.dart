@@ -47,6 +47,15 @@ void main() {
     // et sans cela un scenario herite des echecs du precedent et le garde
     // anti-harnais-aveugle se desarme tout seul.
     reinitialiserExigences();
+    // POIGNEE DE SEMANTIQUE (tache 544). Le run de S3 echouait a la CLOTURE
+    // sur « A SemanticsHandle was active at the end of the test », alors que
+    // les 17 exigences du parcours etaient TENUES. Personne ne demande la
+    // semantique, ni l'application ni le harnais : elle est activee par un
+    // greffon pendant la phase carte. On en prend donc une nous-memes et on la
+    // rend en fin de scenario, pour que le compteur soit equilibre a la
+    // cloture. Si l'echec persiste, c'est que la poignee appartient au greffon
+    // et l'echec est un ARTEFACT D'ENVIRONNEMENT, pas un defaut produit.
+    final poigneeSemantique = tester.ensureSemantics();
     logStep(P, 'boot', 'Lancement de app.main()');
     // ===================== MAJEUR-2 DE LA CAMPAGNE N1 =====================
     // C'est CE scenario qui a logue « dialog permission par-dessus = false »
@@ -484,6 +493,7 @@ void main() {
         '(ouvert=$recapOpened, contenu=$recapContent)');
 
     logStep(P, 'fin', 'Scenario S3 termine (realiser + apres-trek complet)');
+    poigneeSemantique.dispose();
     retirerVeilleEcranSysteme();
     await finalizeScenario(tester, P);
     await flushJournal(P);

@@ -17,6 +17,10 @@ import 'package:go_router/go_router.dart';
 
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+
+import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
+import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
+import 'package:moteur_gr/features/feasibility/providers/hiker_profile_provider.dart';
 import 'package:moteur_gr/main.dart' as app;
 
 import 'persona_harness.dart';
@@ -26,6 +30,37 @@ const String P = 'S2_Marc';
 /// Version attendue dans les reglages, lue dans le PUBSPEC du projet (0.1.2+3).
 /// On garde la partie « 0.1.2 » : le build number bouge, pas la version.
 const String kVersionAttendue = '0.1.2';
+
+/// Ecrit la fiche et la rando de Marc par le chemin de production.
+Future<void> _poserLeProfilDeMarc(WidgetTester tester) async {
+  try {
+    final element = tester.element(find.byType(Navigator).first);
+    final c = ProviderScope.containerOf(element, listen: false);
+    await tester.runAsync(() async {
+      await c.read(hikerProfileProvider.notifier).save(const HikerProfile(
+            age: 28,
+            heightCm: 178,
+            weightKg: 72,
+            sex: HikerSex.male,
+          ));
+      await c.read(pastHikesProvider.notifier).saveAll(<PastHike>[
+        PastHike(
+          date: DateTime(2024, 7, 1),
+          days: 12,
+          avgWalkHoursPerDay: 7,
+          totalDistanceKm: 180,
+          totalElevationGain: 10000,
+        ),
+      ]);
+    });
+    c.invalidate(hikerProfileProvider);
+    c.invalidate(pastHikesProvider);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
+    logStep(P, 'profil', 'fiche et rando de Marc ecrites par les notifiers');
+  } catch (e) {
+    logStep(P, 'profil', 'COINCE : impossible de poser le profil de Marc : \$e');
+  }
+}
 
 void main() {
   initHarness();
@@ -83,6 +118,20 @@ void main() {
     }
     await settleAndShoot(tester, P, '04_cockpit');
     _logLocation(tester, P, 'cockpit');
+
+    // --- LE PROFIL DE MARC, POSE AVANT D'OUVRIR LA FAISABILITE (tache 544) ---
+    //
+    // POURQUOI ICI ET PAS PAR L'ECRAN. Depuis le correctif N2 (D1), le verdict
+    // n'apparait QU'UNE FOIS tous les criteres renseignes — et c'est ce qu'on
+    // veut. Mais S2 ne teste PAS la saisie : la saisie complete par l'interface
+    // est prouvee par S1, pas a pas et exigence par exigence. Ce que S2 prouve,
+    // c'est le PARCOURS RAPIDE d'un randonneur qui a deja ses donnees : verdict
+    // immediat, depart, reglages, code de reconnexion. Refaire ici la saisie
+    // n'apporterait rien et allongerait le run de plusieurs minutes.
+    // Les valeurs sont celles du prompt de Marc : 28 ans, 1,78 m, 72 kg, et le
+    // GR20 en douze jours. Ecriture par les VRAIS notifiers, jamais par un
+    // `overrideWith` : c'est le meme chemin que le formulaire.
+    await _poserLeProfilDeMarc(tester);
 
     // --- Faisabilite « go » rapide ---
     final feasCard = textFrEn('Faisabilité', 'Feasibility');
