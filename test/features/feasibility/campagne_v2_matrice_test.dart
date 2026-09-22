@@ -393,19 +393,96 @@ void main() {
       }
     });
 
-    test('LA COLONNE C3 DE LA MATRICE EST UN ARTEFACT DECLARE, A RE-MESURER',
+    test('ARTEFACT C3 LEVE : la colonne decrit l ETAT PAR DEFAUT du produit',
         () {
-      // La matrice a ete calculee AVANT que les jours de repos ne remontent au
-      // moteur : sa colonne C3 porte donc la monotonie d une serie SANS aucun
-      // jour de charge nulle, c est-a-dire la mauvaise serie. Les valeurs de
-      // C3, la contrainte dominante et le verdict de circuit sont des
-      // ARTEFACTS. LA CAMPAGNE NE DOIT PAS PARTIR DESSUS : elle enregistrerait
-      // un faux. Ce drapeau est la pour que personne ne l oublie.
-      expect(matrice['meta']['C3_PROVISOIRE'], isTrue);
-      expect(matrice['meta']['C3_pourquoi_provisoire'], isNotEmpty);
-      // Ce qui reste VALABLE sans re-mesure, et qui est teste ailleurs dans ce
-      // fichier : toute la colonne AVANT, les scores et verdicts d ETAPE de la
-      // colonne APRES, C1, C2, et l invariant C2 <= C1.
+      // Le cablage des jours de repos est livre (commit 5154813) : le provider
+      // traduit le vrai programme en index d etapes. La colonne C3 n est donc
+      // plus un artefact — elle decrit l etat PAR DEFAUT, celui ou aucun jour
+      // de repos n est pose dans le programme, qui est exactement ce que le
+      // produit rend a l ouverture.
+      expect(matrice['meta']['C3_PROVISOIRE'], isFalse);
+      expect(matrice['meta']['C3_statut'], contains('ARTEFACT LEVE'));
+      for (final c in cellules) {
+        expect(c['v2']['joursDeRepos'], 0,
+            reason: '${c['id']} : la colonne de base est l etat sans repos');
+        expect(c['v2']['avecDeuxRepos'], isNotNull,
+            reason: '${c['id']} : le contrefactuel a deux repos doit exister');
+      }
+    });
+
+    test('LE COUPLE DE CHIFFRES DU REPOS PAR DEFAUT, verifie sur le moteur',
+        () {
+      // LA QUESTION POSEE : combien de cellules sont ROUGES par le SEUL fait
+      // qu aucun jour de repos n est pose, et combien le restent avec deux ?
+      // C est ce couple qui permet d arbitrer s il faut proposer les repos par
+      // defaut. On ne le lit pas dans la matrice : on le RECALCULE sur le
+      // moteur, cellule par cellule.
+      var rougesSansRepos = 0;
+      var rougesAvecDeuxRepos = 0;
+      final ecarts = <String>[];
+      for (final c in cellules) {
+        final jeu = jeux[c['jeu']] as Map<String, dynamic>;
+        final p = personas[c['profil']] as Map<String, dynamic>;
+        final stages = _stagesOf(jeu);
+        final level = _levelFromName(c['v2']['niveau'] as String);
+        final conditions = TrekConditions(
+          maxAltitudeM: (jeu['aMaxM'] as num).toDouble(),
+          season: p['saison'] as String,
+        );
+        final floor = (p['eMaxRealise'] as num).toDouble();
+
+        final sansRepos = FeasibilityFormula.evaluate(
+          stages: stages,
+          level: level,
+          demonstratedFloorEnergyKm: floor,
+          conditions: conditions,
+        );
+        // Deux repos, repartis comme la matrice les pose (semantique moteur :
+        // APRES une etape, jamais apres la derniere).
+        final apres = ((c['v2']['avecDeuxRepos'] as Map)['reposPosesApres']
+                as List)
+            .cast<num>()
+            .map((n) => n.toInt() - 1)
+            .toSet();
+        final avecRepos = FeasibilityFormula.evaluate(
+          stages: stages,
+          level: level,
+          demonstratedFloorEnergyKm: floor,
+          conditions: conditions,
+          restAfterStageIndex: apres,
+        );
+
+        if (_verdictName(sansRepos.circuit!.verdict) != c['v2']['verdictCircuit']) {
+          ecarts.add('${c['id']} sans repos : matrice '
+              '${c['v2']['verdictCircuit']}, moteur '
+              '${_verdictName(sansRepos.circuit!.verdict)}');
+        }
+        final attenduR2 = (c['v2']['avecDeuxRepos'] as Map)['verdictCircuit'];
+        if (_verdictName(avecRepos.circuit!.verdict) != attenduR2) {
+          ecarts.add('${c['id']} avec 2 repos : matrice $attenduR2, moteur '
+              '${_verdictName(avecRepos.circuit!.verdict)}');
+        }
+        if (sansRepos.circuit!.verdict == FeasibilityVerdict.red) {
+          rougesSansRepos++;
+        }
+        if (avecRepos.circuit!.verdict == FeasibilityVerdict.red) {
+          rougesAvecDeuxRepos++;
+        }
+      }
+      expect(ecarts, isEmpty, reason: ecarts.take(20).join(' | '));
+
+      // LES DEUX CHIFFRES, MESURES SUR LE MOTEUR.
+      expect(rougesSansRepos, 78, reason: 'rouges sans aucun jour de repos');
+      expect(rougesAvecDeuxRepos, 42, reason: 'rouges avec deux jours de repos');
+      // Donc 36 cellules — pres d une rouge sur deux — le sont UNIQUEMENT
+      // parce qu aucun repos n est pose, pas parce que le randonneur ne tient
+      // pas le sentier.
+      expect(rougesSansRepos - rougesAvecDeuxRepos, 36);
+
+      final constat = matrice['constats']['REPOS_PAR_DEFAUT'] as Map;
+      expect(constat['rougesSansAucunRepos'], rougesSansRepos);
+      expect(constat['rougesAvecDeuxRepos'], rougesAvecDeuxRepos);
+      expect(constat['rougesUNIQUEMENT_faute_de_repos'], 36);
     });
 
     test('SANS repos le circuit rougit pour tout le monde, AVEC repos il '

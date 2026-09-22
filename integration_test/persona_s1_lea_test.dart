@@ -54,6 +54,10 @@ void main() {
   initHarness();
 
   testWidgets('S1 — Lea prepare sa premiere rando', (tester) async {
+    // Compteurs d'exigences remis a zero (tache 543) : ils sont GLOBAUX,
+    // et sans cela un scenario herite des echecs du precedent et le garde
+    // anti-harnais-aveugle se desarme tout seul.
+    reinitialiserExigences();
     // --- Lancement de la VRAIE app ---
     logStep(P, 'boot', 'Lancement de app.main() sur emulateur');
     // MAJEUR-2 de la campagne N1 : le harnais etait AVEUGLE aux dialogues

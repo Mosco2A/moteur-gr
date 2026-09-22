@@ -43,6 +43,10 @@ void main() {
   initHarness();
 
   testWidgets('S3 — Steve marche le trek (GPS injecte)', (tester) async {
+    // Compteurs d'exigences remis a zero (tache 543) : ils sont GLOBAUX,
+    // et sans cela un scenario herite des echecs du precedent et le garde
+    // anti-harnais-aveugle se desarme tout seul.
+    reinitialiserExigences();
     logStep(P, 'boot', 'Lancement de app.main()');
     // ===================== MAJEUR-2 DE LA CAMPAGNE N1 =====================
     // C'est CE scenario qui a logue « dialog permission par-dessus = false »

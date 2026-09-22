@@ -20,7 +20,7 @@
 - **`matrice_96.json`** — les 96 combinaisons, entrees completes, colonne AVANT (moteur reel
   d'aujourd'hui) et colonne APRES (formule de la spec), plus la liste des bascules une par une.
 - **`../../test/features/feasibility/campagne_v2_matrice_test.dart`** — le test qui **verrouille les
-  deux colonnes sur le moteur reel**. **28 verts au 22/09.**
+  deux colonnes sur le moteur reel**. **29 verts au 22/09.**
 - Ce document — les scenarios, les attendus, et les blocages a lever avant de lancer.
 
 **Pourquoi les deux colonnes sont testees et pas seulement ecrites.** Une bascule est un couple :
@@ -56,33 +56,43 @@ preparation en portent zero**, verifie. Meme cause pour les fichiers qui ne se c
 
 ## 2. QUATRE POINTS — DEUX SONT TRANCHES, DEUX RESTENT OUVERTS
 
-> **Etat au 22/09 en fin de preparation.** **B2 est tranche** (`S_circuit = max(C1 ; C3)`, C2 en
-> affichage). **B3 est cable** (les jours de repos remontent au moteur) — mais **la colonne C3 de la
-> matrice, calculee avant ce cablage, est un artefact a RE-MESURER : la campagne ne part pas
-> dessus.** **B1 reste ouvert** et devient la tache 543. **B4 est traite** par le banc des niveaux
-> et un scenario d'hiver dedie.
+> **Etat au 22/09 en fin de journee.** **B2 est tranche** (`S_circuit = max(C1 ; C3)`, C2 en
+> affichage, exigence #10-b ramenee a deux contraintes dominantes). **B3 est cable et la colonne C3
+> re-mesuree** — l'artefact est leve, et le couple de chiffres du repos par defaut est mesure.
+> **B1 est traite par la tache 543** : harnais recupere, prouve capable de dire non, S5 et S6
+> reecrits. **B4 est traite** par le banc des niveaux et un scenario d'hiver dedie.
 
-### B1 — LE HARNAIS DE LA CAMPAGNE N'EST PLUS DANS LE DEPOT (bloquant, recuperable)
+### B1 — LE HARNAIS — **TRAITE PAR LA TACHE 543**
 
-- **Ce qui manque.** `integration_test/persona_harness.dart` sur la branche courante est la version
-  **d'AVANT la reparation N2** : aucune fonction `exige`, `exigeVisible`, `exigeAbsent`, `exigeTap`,
-  `exigeSaisie`, aucun `verdictPersona`, aucune detection d'ecran systeme. C'est la version qui
-  « loguait COINCE et concluait All tests passed » — celle qui ne peut pas echouer (#100283,
-  mission 1, decrite comme « la partie la plus importante »).
-- **Ou elle est.** Dans le **stash**, commit `04437e8` (`stash@{0}`,
-  « On claude/fix/stepways-pseudo-long: wip-personas-avant-correction-n2 », Vulcain 22/09 08:18).
-  Il porte +194 lignes sur le harnais (les six helpers ci-dessus sont a partir de la ligne 456) et
-  les versions N2 de S1, S2, S3, S4 et `preuve_c1_moteur_unique_test.dart`.
-- **Ce qui est PERDU, et qui n'est nulle part.** `persona_s5_limites_test.dart` (famille 2) et
-  `persona_s6_matrice_test.dart` (famille 3, les 96 combinaisons) : **absents du depot, absents de
-  toutes les branches, absents du stash, absents du disque**. Seules restent leurs 47 captures dans
-  `data/captures_personas_n2/`. Ils sont a **reecrire entierement**.
-- **Piege a la reprise du stash** : il a ete pose **avant** le correctif N2 (`4d4efc1`, D1 le verdict
-  attend tous les criteres, D2 le decoupage retenu persiste). Les scenarios S1 a S4 du stash
-  attendent donc un verdict qui tombe des la morphologie. Ils doivent etre **rejoues et corriges**
-  apres reprise, pas repris tels quels.
-- **Action** : recuperer `04437e8`, le **committer** (il n'a jamais ete verse), rejouer S1-S4 contre
-  le produit corrige, puis ecrire S5 et S6.
+- **Ce qui manquait.** `persona_harness.dart` etait la version **d'AVANT la reparation N2** : aucun
+  `exige`, aucun `verdictPersona`, aucune detection d'ecran systeme. **Celle qui ne peut pas
+  echouer** (#100283, mission 1).
+- **Recupere** du stash `04437e8` et **verse** : la couche d'exigences, la detection d'ecrans
+  systeme et les versions N2 de S1 a S4 sont de nouveau dans le depot.
+- **DEUX DEFAUTS TROUVES DANS LE HARNAIS LUI-MEME, et corriges.**
+  1. **Les compteurs d'exigences sont GLOBAUX et n'etaient jamais remis a zero.** Deux scenarios
+     joues dans le meme processus se les partagent : le second heritait des echecs du premier, et
+     surtout **le garde anti-harnais-aveugle se desarmait tout seul** — les 40 exigences du scenario
+     precedent suffisaient a franchir le minimum du suivant, qui pouvait donc ne rien verifier et
+     passer vert. Le garde cense empecher le retour du defaut d'origine etait neutralise par le
+     defaut d'origine. Corrige par `reinitialiserExigences()`, appele en tete de chaque scenario.
+  2. **La detection d'ecran systeme produisait un faux positif garanti sur tout scenario de
+     saisie.** Elle signalait toute sortie de `resumed`, or `inactive` est aussi emis a l'ouverture
+     du clavier. Corrige par `ecransSystemeBloquants()`, qui ne retient que `paused` et `hidden` —
+     les seuls qui prouvent qu'une fenetre a pris le premier plan. Les `inactive` restent
+     journalises.
+- **LE HARNAIS SAIT DIRE NON, ET C'EST PROUVE.**
+  `test/integration_harness/persona_harness_sait_dire_non_test.dart`, **7 verts**, tourne en
+  `flutter test` donc a chaque fois et pas seulement les jours de campagne. Il verifie qu'une
+  exigence fausse fait rougir la cloture **et est nommee** dans l'echec ; qu'une exigence tenue ne
+  fait rougir personne (sans quoi un harnais qui echouerait toujours passerait) ; **qu'un scenario
+  qui ne verifie rien est ROUGE** ; que le plancher d'exigences mord ; qu'**une seule exigence
+  fausse noyee dans vingt vraies** suffit a faire rougir ; et que la remise a zero re-arme bien le
+  garde.
+- **S5 et S6 sont reecrits** (les originaux etaient perdus, voir plus bas).
+- **Reste a faire** : rejouer S1 a S4 contre le produit corrige. Le stash a ete pose **avant** le
+  correctif N2 (`4d4efc1`), donc leurs scenarios attendent encore un verdict qui tombe des la
+  morphologie.
 
 ### B2 — C2 NE PEUT JAMAIS MORDRE — **TRANCHE LE 22/09, CORRECTION ACTEE**
 
@@ -112,31 +122,48 @@ preparation en portent zero**, verifie. Meme cause pour les fichiers qui ne se c
   contrainte qui peut aussi bien durcir qu'**alleger** par rapport au maximum n'a rien a faire dans
   un `max()`. Fermee pour cette raison-la, pas pour son inertie.
 
-### B3 — C3 NE DEPEND PAS DU RANDONNEUR — **CABLAGE LIVRE, MAIS LA COLONNE C3 DE LA MATRICE EST A RE-MESURER**
+### B3 — C3 NE DEPEND PAS DU RANDONNEUR — **CABLAGE LIVRE, ARTEFACT LEVE, COLONNE RE-MESUREE**
 
-> **AVERTISSEMENT QUI PRIME SUR TOUT CE QUI SUIT.** Le cablage a ete livre pendant la redaction de
-> ce document : `trek_feasibility_provider.dart` passe desormais `restAfterStageIndex: restDays`,
-> alimente par `restDaysAfterStageProvider` qui lit les jours de repos du programme. **Les valeurs de
-> C3, la contrainte dominante et le verdict de circuit de la colonne APRES ont ete calcules AVANT ce
-> cablage, sur une serie sans aucun jour de charge nulle : ce sont des ARTEFACTS.**
-> **NE PAS LANCER LA CAMPAGNE DESSUS — on enregistrerait un faux.** Le JSON porte le drapeau
-> `meta.C3_PROVISOIRE`, et le test le verifie.
-> **Ce qui reste valable sans re-mesure** : toute la colonne AVANT, les scores et verdicts
-> d'**etape** de la colonne APRES, **C1**, **C2**, et l'invariant `C2 <= C1` — ils ne dependent
-> d'aucun jour de repos.
-> **Pour la re-mesure, rien a recalculer** : `jeuxEtapes[*].c3ParNombreDeRepos` donne d'avance la
-> valeur de C3 pour 0 a 12 jours de repos, avec le placement exact retenu
-> (`reposPosesApresLesEtapes`), **verifie sur le moteur** par le test `TABLE DE RE-MESURE`.
+> **RESOLU.** Le cablage des jours de repos est livre (commit `5154813`) : un provider lit le vrai
+> programme du randonneur et traduit chaque jour de repos en index d'etape, y compris pour les jours
+> qui regroupent deux etapes. **La colonne C3 de la matrice a ete re-mesuree** : elle n'est plus un
+> artefact, elle decrit desormais **l'etat PAR DEFAUT du produit**, celui ou aucun jour de repos
+> n'est pose dans le programme — ce que l'application rend a l'ouverture. Le contrefactuel a deux
+> jours de repos vit a cote, dans `cellules[*].v2.avecDeuxRepos`, et la table complete de 0 a 12
+> repos dans `jeuxEtapes[*].c3ParNombreDeRepos`. **Les deux sont verifies sur le moteur reel.**
 
-**UNE PRECISION SUR LE MECANISME, parce que la raison avancee n'est pas la bonne.** Il a ete dit que
-« tant que le repos ne remonte pas au moteur, l'ecart-type vaut zero partout et la monotonie sature
-partout ». **Mesure : l'ecart-type n'est pas nul** — J1 6,129, J2 5,128, J4 5,627 — et la monotonie
-ne sature pas : elle vaut 4,04, 5,06 et 4,53. L'ecart-type n'est nul que si toutes les charges sont
-**strictement egales**, ce qu'aucun de nos jeux n'est ; et la monotonie n'est **non calculable** que
-sur J3, qui n'a qu'une etape. **Le vrai mecanisme est plus simple et tout aussi bloquant** : sans
-jours de repos, il manque a la serie les jours de **charge nulle**, qui sont precisement ce qui
-creuse l'ecart-type et fait chuter la monotonie. On mesure donc la bonne formule **sur la mauvaise
-serie**. **La conclusion ne change pas d'un iota : la colonne C3 est a re-mesurer.**
+**LE COUPLE DE CHIFFRES DEMANDE, MESURE SUR LE MOTEUR ET NON SUR LA MATRICE.** C'est lui qui permet
+d'arbitrer s'il faut proposer les jours de repos par defaut.
+
+- **78 cellules sur 96 sont ROUGES** quand aucun jour de repos n'est pose. C'est l'etat par defaut.
+- **42 cellules sur 96 restent ROUGES** avec **deux** jours de repos poses.
+- **Donc 36 cellules — pres d'une rouge sur deux — sont rouges UNIQUEMENT parce qu'aucun repos n'est
+  pose**, pas parce que le randonneur ne tient pas le sentier.
+- Et les **42** qui resistent sont exactement le nombre de cellules deja rouges **en v1** : ce qui
+  reste apres les repos, c'est la severite reelle du sentier, pas un effet de la monotonie.
+
+**Le detail par jeu d'etapes, parce que la moyenne cache l'essentiel** :
+
+- **J1, Mare a Mare Centre, le sentier de production — 24 rouges sans repos, 6 avec deux repos.**
+  **18 des 24 cellules du sentier que Christophe ouvrira sont rouges faute d'un programme.** Les 6
+  qui restent sont Lea et Thomas aux rangs 0 a 2, rouges par leur **pire etape** — un vrai verdict.
+- **J2, 5 etapes — 24 rouges sans repos, 6 avec deux repos.** Meme profil.
+- **J3, sentier d'UNE etape — 6 rouges, et 6 avec repos : inchange.** C'est normal et c'est la
+  preuve que le cas limite tient : sur une seule etape la monotonie n'est **pas calculable**, aucun
+  repos ne peut y etre insere, et le verdict vient donc de C1 seul. Le repos n'y change rien parce
+  qu'il n'y a rien a reposer.
+- **J4, 30 etapes — 24 rouges sans repos, 24 avec deux repos : deux repos ne suffisent pas.** Avec
+  la fenetre glissante, il en faut **5** pour l'orange et **12** pour le vert, et **1 a 3 repos ne
+  changent strictement rien** parce que la pire fenetre de sept jours n'en contient toujours aucun.
+
+**CE QUE J'EN DIS, ET C'EST UN ARBITRAGE, PAS UN BUG.** Le comportement est conforme a la spec, et
+il correspond meme a l'intention sur un trek long. Mais un randonneur qui ouvre l'application voit
+un sentier **rouge** alors qu'**aucune de ses etapes ne depasse ses capacites** — c'est le cas de
+l'expert, dont la pire etape est a 0,54, vert franc. **Deux lectures, et le chiffre de 36 permet de
+choisir** : soit le programme par defaut pose des repos et le rouge redevient un signal rare, soit
+il n'en pose pas et l'ecran doit dire, en toutes lettres, que **c'est l'absence de repos qui
+decide** — sinon l'utilisateur lira un jugement sur lui-meme la ou il y a un jugement sur son
+planning.
 
 ### B3-bis — CE QUE LE DEFAUT ETAIT, POUR MEMOIRE ET POUR LA NON-REGRESSION
 
@@ -533,32 +560,45 @@ l'application embarque.**
 
 ---
 
-## 10. ORDRE D'EXECUTION PROPOSE
+## 10. ORDRE D'EXECUTION — ETAT AU 22/09 EN FIN DE JOURNEE
 
-1. **Lever B1 — tache 543** : recuperer `04437e8`, committer le harnais N2, **lui faire passer un
-   cas volontairement faux et constater le rouge**, puis rejouer S1-S4 contre le produit corrige.
-2. ~~Brancher le PLAN sur le moteur~~ — **FAIT** pendant cette preparation
-   (`restAfterStageIndex: restDays`). **Reste a prouver a l'ecran**, et a verifier le sens de pose
-   des jours de repos (AVANT cote planning, APRES cote moteur).
-3. ~~Faire trancher B2~~ — **FAIT** : `S_circuit = max(C1 ; C3)`, C2 en affichage, #10-b corrigee a
-   deux contraintes dominantes. Le test de dominance est devenu un **invariant** `C2 <= C1`.
-4. **RE-MESURER LA COLONNE C3** de la matrice apres le cablage, avant toute campagne. La table
-   `c3ParNombreDeRepos` est deja verifiee sur le moteur : il s'agit de choisir la ligne qui
-   correspond au programme reellement retenu par chaque personnage, pas de recalculer.
-5. **Reprendre les tests de l'ancienne API** laisses en plan par la tache 540 (15 erreurs
-   `flutter analyze`, une dizaine de fichiers qui ne se chargent plus).
-6. **Reecrire S5 (famille 2) et S6 (famille 1 + matrice)**, plus un **S7** pour la famille 3
-   (F3-1 a F3-12) — l'ancien S6 ne couvrait pas F3-2, F3-4, F3-7, F3-8 ni F3-12, qui naissent des
-   decisions du 22/09.
-7. **Rejouer la matrice a l'ecran** (elle est deja verte au niveau du moteur) : ce qui reste a
-   prouver, c'est que **l'ecran dit** ce que le moteur calcule — facteur dominant nomme, replis
-   declares, explication d'ARB-004.
-8. **Jouer les six personnages** sur le produit reel, grille #100297 comme seule feuille de lecture.
-9. **Rendre la liste des bascules**, une par une, et le verdict de porte.
+1. ~~Recuperer le harnais N2~~ — **FAIT** (tache 543). Verse, plus deux defauts du harnais lui-meme
+   corriges : remise a zero des compteurs, et detection d'ecran systeme qui ne crie plus au loup.
+2. ~~Prouver que le harnais sait dire non~~ — **FAIT**, 7 verts, en `flutter test`.
+3. ~~Brancher le PLAN sur le moteur~~ — **FAIT** (commit `5154813`).
+4. ~~Trancher C2~~ — **FAIT** : `S_circuit = max(C1 ; C3)`, invariant `C2 <= C1` a la place de la
+   preuve de dominance.
+5. ~~Re-mesurer la colonne C3~~ — **FAIT**, avec le couple de chiffres du repos par defaut.
+6. ~~Reecrire S5~~ — **FAIT ET VERT SUR L'APPAREIL** : 95 exigences evaluees, 0 echouee.
+7. ~~Reecrire S6~~ — **FAIT**, 24 cellules du sentier de production sur le produit reel.
+8. **Rejouer S1 a S4** contre le produit corrige : ils viennent d'un stash anterieur au correctif
+   N2 et attendent encore un verdict qui tombe des la morphologie. **C'est le dernier verrou avant
+   la campagne.**
+9. **Ecrire S7, la famille 3** (F3-1 a F3-12) : l'hiver declare non valide, l'altitude absente et
+   dite, la morphologie qui ne pese pas, le dispositif poids, et le constat de duree qui ne doit
+   jamais devenir un verdict. Aucun de ces cinq n'etait couvert par l'ancien S6.
+10. **Jouer les six personnages** sur le produit reel, grille #100297 comme seule feuille de
+    lecture.
+11. **Rendre la liste des bascules**, une par une, et le verdict de porte.
 
 ---
 
-*Preparation tache 541 — Artemis, 22/09/2026. Aucun fichier applicatif touche.
-Les deux colonnes de la matrice sont verrouillees sur le moteur reel par **28 tests verts**, et
-elles concordent avec le moteur v2 livre pendant la preparation, cellule par cellule.
-Quatre points nommes, dont un cablage a faire tout de suite et un arbitrage a rendre.*
+## 11. ARBITRAGE A REMONTER A CHRISTOPHE
+
+**Un seul, et il tient en deux chiffres.** Par defaut, aucun jour de repos n'est pose dans un
+programme : **78 cellules sur 96 sont rouges**. Avec deux jours de repos, **42**. Donc **36
+cellules, pres d'une rouge sur deux, sont rouges uniquement parce qu'aucun repos n'est pose** — et
+sur le sentier de production, c'est **18 des 24**. L'expert y recoit un circuit rouge alors que sa
+pire etape est a 0,54, vert franc.
+
+**Deux voies, et ce n'est pas a la campagne de choisir.** Soit le programme par defaut pose des
+jours de repos, et le rouge redevient un signal rare qui veut dire quelque chose. Soit il n'en pose
+pas, et l'ecran doit dire en toutes lettres que **c'est l'absence de repos qui decide**, sinon le
+randonneur lira un jugement sur lui-meme la ou il y a un jugement sur son planning.
+
+---
+
+*Preparation tache 541 et harnais tache 543 — Artemis, 22/09/2026. Aucun fichier applicatif touche.
+Les deux colonnes de la matrice sont verrouillees sur le moteur reel par **29 tests verts**, le
+harnais est prouve capable d'echouer par **7 tests verts**, et S5 est **vert sur l'appareil** avec
+95 exigences evaluees.*

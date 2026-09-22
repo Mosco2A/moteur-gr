@@ -451,6 +451,22 @@ final List<String> kExigencesEchouees = <String>[];
 /// verifie quelque chose : une suite qui n'evalue rien est desormais ROUGE).
 int kExigencesTenues = 0;
 
+/// REMET LE COMPTEUR D'EXIGENCES A ZERO (tache 543).
+///
+/// POURQUOI C'EST NECESSAIRE, ET POURQUOI C'EST UN DEFAUT REEL SANS CA.
+/// [kExigencesTenues] et [kExigencesEchouees] sont des variables GLOBALES :
+/// deux scenarios joues dans le MEME processus se les partagent. Sans remise a
+/// zero, (a) le second scenario herite des echecs du premier et echoue pour une
+/// raison qui ne le concerne pas, et (b) le garde anti-harnais-aveugle de
+/// [verdictPersona] devient INOPERANT, puisque le compteur du scenario
+/// precedent suffit a lui seul a franchir le minimum — c'est-a-dire que le
+/// garde cense empecher le retour du defaut d'origine se desarme tout seul.
+/// A appeler en tete de CHAQUE scenario, avant le premier [exige].
+void reinitialiserExigences() {
+  kExigencesTenues = 0;
+  kExigencesEchouees.clear();
+}
+
 /// Enregistre une EXIGENCE et son resultat. Retourne [ok] pour chainer.
 ///
 /// Ne leve pas : le scenario continue (observabilite), mais [verdictPersona]
@@ -601,6 +617,22 @@ void retirerVeilleEcranSysteme() {
   WidgetsBinding.instance.removeObserver(_veilleur!);
   _veilleur = null;
 }
+
+/// Evenements de cycle de vie qui prouvent REELLEMENT qu'une fenetre a pris le
+/// premier plan (tache 543).
+///
+/// NUANCE APPRISE EN REJOUANT S5, ET ELLE COMPTE. Le veilleur enregistre TOUTE
+/// sortie de `resumed`, ce qui est bien pour l'observabilite — mais `inactive`
+/// est aussi emis sans aucune fenetre systeme : ouverture du clavier, changement
+/// de focus, transition d'animation. Sur un scenario de SAISIE comme S5, qui
+/// ouvre le clavier des dizaines de fois, exiger zero evenement produit un FAUX
+/// POSITIF garanti.
+/// Seuls `paused` et `hidden` signifient que l'activite est reellement passee a
+/// l'arriere-plan, donc qu'une fenetre la recouvre. C'est sur eux que porte une
+/// EXIGENCE ; `inactive` reste journalise, et se lit.
+List<String> ecransSystemeBloquants() => kEcransSystemeDetectes
+    .where((e) => e.startsWith('paused') || e.startsWith('hidden'))
+    .toList();
 
 /// Marque courante du journal d'ecrans systeme (pour delimiter un pas precis).
 int marqueEcranSysteme() => kEcransSystemeDetectes.length;
