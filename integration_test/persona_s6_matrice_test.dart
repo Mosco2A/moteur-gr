@@ -34,6 +34,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
@@ -52,6 +53,13 @@ import 'package:moteur_gr/main.dart' as app;
 import 'persona_harness.dart';
 
 const String P = 'S6_Matrice';
+
+/// Sentier de production : celui que l'application embarque vraiment.
+const String kTrailId = 'mare-a-mare-centre';
+
+/// Plafond d'attente d'un provider. Au-dela, on ECHOUE avec un message clair
+/// plutot que de laisser le scenario se figer sans rien dire.
+const Duration kAttenteProvider = Duration(seconds: 20);
 
 /// Tolerance de comparaison (la matrice est arrondie a 1e-4).
 const double kEps = 5e-4;
@@ -135,6 +143,18 @@ void main() {
     await completeOnboardingIfPresent(tester, P);
     await settleAndShoot(tester, P, '02_apres_onboarding');
 
+    // OUVRIR LE SENTIER AVANT DE LIRE QUOI QUE CE SOIT.
+    // Trouve en jouant S6 : depuis le catalogue, `trailMaxAltitudeProvider`
+    // attend une trace GPX qui n'est pas chargee tant qu'aucun sentier n'est
+    // ouvert, et le scenario se fige (9 minutes sans une seule cellule jouee).
+    // Le moteur a besoin d'un sentier actif, pas seulement d'un conteneur.
+    {
+      final ctx = tester.element(find.byType(Navigator).first);
+      GoRouter.of(ctx).go('/trail/$kTrailId/feasibility');
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 10));
+    }
+    await settleAndShoot(tester, P, '03_faisabilite');
+
     final container = _container(tester);
     exige(P, 'container', container != null,
         'le conteneur de providers de PRODUCTION est accessible');
@@ -150,16 +170,24 @@ void main() {
     // mais il doit etre DECLARE, pas subi. On le verifie avant tout le reste,
     // sinon les 24 cellules tourneraient en silence avec la mauvaise saison.
     {
-      final conditionsSansDate =
-          await container.read(trekConditionsProvider.future);
-      exige(P, 'saison_absente', conditionsSansDate.season == null,
+      // ATTENDRE UN FutureProvider DANS UN TEST D'INTEGRATION SE FAIT SOUS
+      // `runAsync`. Sans lui, le corps du test bloque sur le future pendant que
+      // la pompe de frames est arretee : le chargement d'asset dont depend
+      // `trailMaxAltitudeProvider` ne progresse jamais et le scenario se fige
+      // (constate : 8 min 56 sans une seule cellule jouee).
+      final conditionsSansDate = await tester.runAsync(() => container
+          .read(trekConditionsProvider.future)
+          .timeout(kAttenteProvider, onTimeout: () => throw StateError(
+              'trekConditionsProvider ne repond pas en '
+              '${kAttenteProvider.inSeconds} s : le sentier n est pas charge')));
+      exige(P, 'saison_absente', conditionsSansDate?.season == null,
           'sans date de depart, la saison est INCONNUE (et non devinee)');
-      exige(P, 'saison_absente', conditionsSansDate.heatFactor == 1.0,
+      exige(P, 'saison_absente', conditionsSansDate?.heatFactor == 1.0,
           'sans date de depart, k_chaleur vaut 1,00');
       exige(
           P,
           'saison_absente',
-          conditionsSansDate.seasonNeutralReason == NeutralReason.missingData,
+          conditionsSansDate?.seasonNeutralReason == NeutralReason.missingData,
           'et la raison est DECLAREE : donnee manquante, pas absence de source');
     }
 
@@ -200,7 +228,9 @@ Future<bool> _jouerCellule(
   await _ecrireProfil(tester, c, cellule);
 
   final FeasibilityAssessment? a =
-      await c.read(feasibilityAssessmentProvider.future);
+      await tester.runAsync<FeasibilityAssessment?>(() async => c
+          .read(feasibilityAssessmentProvider.future)
+          .timeout(kAttenteProvider, onTimeout: () => null));
   if (a == null) {
     exige(P, cellule.id, false,
         'le produit rend une evaluation pour ${cellule.id} '
@@ -283,24 +313,25 @@ Future<void> _ecrireProfil(
     totalDistanceKm: cellule.randoKm,
     totalElevationGain: cellule.randoDplus,
   );
-  await c.read(hikerProfileProvider.notifier).save(profil);
-  await c.read(pastHikesProvider.notifier).saveAll(<PastHike>[rando]);
+  await tester.runAsync(() async {
+    await c.read(hikerProfileProvider.notifier).save(profil);
+    await c.read(pastHikesProvider.notifier).saveAll(<PastHike>[rando]);
+  });
   // Le RANG DE FORME vient du test de marche : on ecrit un resultat DATE par le
   // meme depot que le controleur du test 6 minutes (aucune surcharge).
-  await c.read(hikerProfileRepositoryProvider).saveWalkTestResult(
-        WalkTestResult(
-          distanceMeters: 500,
-          level: WalkTestLevel.ordered[cellule.rangForme],
-          takenAt: DateTime.now(),
-        ),
-      );
+  await tester.runAsync(() => c.read(hikerProfileRepositoryProvider)
+      .saveWalkTestResult(WalkTestResult(
+        distanceMeters: 500,
+        level: WalkTestLevel.ordered[cellule.rangForme],
+        takenAt: DateTime.now(),
+      )));
   // LA DATE DE DEPART — c'est elle, et elle seule, qui porte la SAISON
   // (`trekConditionsProvider` la lit dans `downloadReminderProvider`). Sans
   // elle, `k_chaleur` vaut 1,00 et les cellules d'ete seraient fausses.
   final trailId = c.read(trailIdProvider);
-  await c
+  await tester.runAsync(() => c
       .read(downloadReminderProvider(trailId).notifier)
-      .setDepartureDate(DateTime(2027, cellule.moisDepart, 8));
+      .setDepartureDate(DateTime(2027, cellule.moisDepart, 8)));
   // Delais courts et assumes : ce scenario ne rend AUCUN ecran, il ecrit par
   // les notifiers et lit un provider. Attendre 4 s par cellule couterait
   // 3 minutes pour rien et ferait deborder le run.
