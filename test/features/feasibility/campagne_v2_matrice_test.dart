@@ -368,15 +368,36 @@ void main() {
       }
     });
 
-    test('la contrainte dominante ne peut etre que C1 ou C3', () {
+    test('GO-61 : la contrainte dominante ne peut plus etre que C1', () {
+      // S_circuit = C1. C2 etait deja sortie du maximum (une moyenne ne depasse
+      // pas le maximum de sa serie) ; C3 en est sortie a son tour, parce qu elle
+      // etait la seule grandeur EXTRAPOLEE du modele (#M08) a garder le droit de
+      // mettre au rouge. Il ne reste donc qu une contrainte decisive.
       expect(
           (matrice['constats']['contraintesDominantesPossibles'] as List)
               .cast<String>()
               .toSet(),
-          {'C1', 'C3'});
+          {'C1'});
       for (final c in cellules) {
-        expect(c['v2']['contrainteDominante'], anyOf('C1', 'C3'),
-            reason: c['id'] as String);
+        expect(c['v2']['contrainteDominante'], 'C1', reason: c['id'] as String);
+      }
+      // Et sur le MOTEUR, tous jeux x tous niveaux x plusieurs programmes de
+      // repos : aucune autre contrainte ne peut prendre la main.
+      for (final jeu in jeux.values.cast<Map<String, dynamic>>()) {
+        for (final level in HikerLevel.values) {
+          for (final repos in <Set<int>>[const {}, const {1}, const {0, 2}]) {
+            final a = FeasibilityFormula.evaluate(
+              stages: _stagesOf(jeu),
+              level: level,
+              restAfterStageIndex: repos,
+            );
+            expect(a.circuit!.dominant, CircuitConstraint.worstStage,
+                reason: 'moteur : ${jeu['nom']} / ${level.name} / $repos');
+            expect(a.circuit!.score, closeTo(a.circuit!.worstStage, 1e-12));
+            expect(a.isCircuitHarsherThanStages, isFalse,
+                reason: 'plus aucun mecanisme ne durcit un circuit');
+          }
+        }
       }
     });
 
@@ -471,26 +492,29 @@ void main() {
       }
       expect(ecarts, isEmpty, reason: ecarts.take(20).join(' | '));
 
-      // LES DEUX CHIFFRES, MESURES SUR LE MOTEUR.
-      expect(rougesSansRepos, 78, reason: 'rouges sans aucun jour de repos');
-      expect(rougesAvecDeuxRepos, 42, reason: 'rouges avec deux jours de repos');
-      // Donc 36 cellules — pres d une rouge sur deux — le sont UNIQUEMENT
-      // parce qu aucun repos n est pose, pas parce que le randonneur ne tient
-      // pas le sentier.
-      expect(rougesSansRepos - rougesAvecDeuxRepos, 36);
+      // CE QUE LE COUPLE DE CHIFFRES EST DEVENU (GO-61). Il avait une fonction
+      // precise : montrer combien de cellules etaient rouges par le SEUL manque
+      // de repos. Il l a remplie — 36 sur 96, dont un profil confirme a 0,68 de
+      // pire etape — et c est cette mesure qui a fait sortir C3 du verdict.
+      // Desormais le nombre de repos poses ne change AUCUN verdict : les deux
+      // comptes sont donc EGAUX, et cette egalite est la propriete a verrouiller.
+      expect(rougesSansRepos, rougesAvecDeuxRepos,
+          reason: 'le repos ne doit plus faire basculer une seule couleur');
+      expect(rougesSansRepos, 25,
+          reason: 'rouges par la pire etape, repos ou pas');
 
       final constat = matrice['constats']['REPOS_PAR_DEFAUT'] as Map;
-      expect(constat['rougesSansAucunRepos'], rougesSansRepos);
-      expect(constat['rougesAvecDeuxRepos'], rougesAvecDeuxRepos);
-      expect(constat['rougesUNIQUEMENT_faute_de_repos'], 36);
+      expect(constat['rougesSousLaRegleEnVigueur'], rougesSansRepos);
+      expect(constat['rougesUNIQUEMENT_faute_de_repos_ancienneRegle'], 36,
+          reason: 'la mesure historique est conservee, elle a fonde GO-61');
     });
 
-    test('SANS repos le circuit rougit pour tout le monde, AVEC repos il '
-        'redevient discriminant', () {
-      // Demonstration de l artefact, et de sa sortie. Sur Mare a Mare Centre,
-      // 7 etapes sans repos : monotonie 4,04, C3 = 2,02, ROUGE — et l expert a
-      // pourtant une pire etape a 0,54, VERT FRANC. Avec les jours de repos du
-      // programme, C3 retombe et le verdict redevient celui du randonneur.
+    test('LE REPOS NE DECIDE PLUS, ET LE VERDICT DISCRIMINE (GO-61)', () {
+      // LE CAS QUI A TOUT DECLENCHE. Sur Mare a Mare Centre, 7 etapes sans
+      // repos : monotonie 4,04, C3 = 2,02. L expert, dont la pire etape est a
+      // 0,54 — VERT FRANC — recevait un circuit ROUGE. Il recoit desormais le
+      // verdict de ses etapes, et le chiffre du repos reste affiche, au-dessus
+      // de son seuil, en CONSEIL.
       final sansRepos = FeasibilityFormula.evaluate(
         stages: _stagesOf(jeux['J1'] as Map<String, dynamic>),
         level: HikerLevel.expert,
@@ -501,8 +525,12 @@ void main() {
           'green',
           reason: 'la pire etape de l expert est verte franche');
       expect(sansRepos.circuit!.monotony, closeTo(4.04, 0.01));
-      expect(sansRepos.circuit!.dominant, CircuitConstraint.rest);
-      expect(_verdictName(sansRepos.circuit!.verdict), 'red');
+      expect(sansRepos.circuit!.rest, closeTo(2.0197, kEps));
+      expect(sansRepos.circuit!.dominant, CircuitConstraint.worstStage);
+      expect(_verdictName(sansRepos.circuit!.verdict), 'green');
+      // ET IL CONSEILLE : deux jours de repos, apres les etapes 2 et 5.
+      expect(sansRepos.isRestAdvised, isTrue);
+      expect(sansRepos.recommendedRestAfterStageIndex, {1, 4});
 
       final avecRepos = FeasibilityFormula.evaluate(
         stages: _stagesOf(jeux['J1'] as Map<String, dynamic>),
@@ -511,11 +539,13 @@ void main() {
       );
       expect(_verdictName(avecRepos.circuit!.verdict), 'green');
       expect(avecRepos.restDaysPlanned, 2);
-      // La monotonie tombe de 4,04 a 1,53, donc C3 de 2,02 a 0,77 : sous le
-      // seuil du vert. Elle reste la plus grande des deux contraintes pour
-      // l expert (0,77 > 0,54), mais elle ne decide plus de la COULEUR.
+      // La monotonie tombe de 4,04 a 1,53, donc C3 de 2,02 a 0,77 : sous son
+      // seuil. Le VERDICT, lui, n a pas bouge d un chiffre — c est exactement
+      // ce que GO-61 demande.
       expect(avecRepos.circuit!.monotony, closeTo(1.535, 0.01));
       expect(avecRepos.circuit!.rest, closeTo(0.7675, kEps));
+      expect(avecRepos.circuit!.score, closeTo(sansRepos.circuit!.score, 1e-12));
+      expect(avecRepos.isRestAdvised, isFalse);
 
       // ET LA DISCRIMINATION REVIENT, c est le point. Meme sentier, meme
       // programme : le debutant est ROUGE par sa pire etape (C1 = 1,40) la ou
@@ -680,20 +710,33 @@ void main() {
           7);
     });
 
-    test('CONSEQUENCE CHIFFREE : le circuit passe de 42 a 78 cellules ROUGES',
-        () {
+    test('CONSEQUENCE CHIFFREE DE GO-61 : de 78 cellules rouges a 25', () {
+      // TROIS CHIFFRES A NE PAS CONFONDRE. 42 rouges en v1 ; 78 sous la regle
+      // max(C1 ; C3), dont 24 sur 24 sur le sentier de PRODUCTION, expert
+      // compris — c est ce qui a fait dire a Chris « le Mare a Mare est rouge
+      // pour tout le monde » ; 25 sous la regle en vigueur, ou seul C1 decide.
       expect(matrice['constats']['cellulesCircuitRougeV1'], 42);
-      expect(matrice['constats']['cellulesCircuitRouge'], 78);
-      // Et sur le sentier de production, c est 24 sur 24 — l expert compris.
+      expect(matrice['constats']['cellulesCircuitRouge'], 25);
+      expect(
+          (matrice['constats']['REPOS_PAR_DEFAUT']
+              as Map)['rougesSansAucunRepos_ancienneRegle'],
+          78);
+      // Et sur le sentier de production, le verdict DISCRIMINE de nouveau : ni
+      // tout rouge, ni tout vert.
       final j1 = cellules.where((c) => c['jeu'] == 'J1').toList();
       expect(j1.length, 24);
-      expect(j1.every((c) => c['v2']['verdictCircuit'] == 'red'), isTrue);
+      final rougesJ1 =
+          j1.where((c) => c['v2']['verdictCircuit'] == 'red').length;
+      expect(rougesJ1, greaterThan(0));
+      expect(rougesJ1, lessThan(24));
     });
 
     test('TOUT allegement vient du plancher demontre, aucun d ailleurs', () {
-      // 192 allegements sur 449 bascules. Pas un seul ne survient dans une
-      // cellule ou le plancher #2-g est inactif : sur ces quatre jeux d etapes,
-      // l unite d energie et les plafonds re-derives ne font que DURCIR.
+      // 214 allegements sur 452 bascules (389 d etape et 63 de circuit, ces
+      // dernieres recalculees apres GO-61 : le verdict du circuit est celui de
+      // sa pire etape). Pas un seul allegement ne survient dans une cellule ou
+      // le plancher #2-g est inactif : sur ces quatre jeux d etapes, l unite
+      // d energie et les plafonds re-derives ne font que DURCIR.
       final cellulesParId = {for (final c in cellules) c['id'] as String: c};
       final bascules = (matrice['bascules'] as List).cast<Map<String, dynamic>>();
       final orphelins = bascules
@@ -703,7 +746,9 @@ void main() {
           .toList();
       expect(orphelins, isEmpty,
           reason: 'allegement sans plancher actif : ${orphelins.take(10)}');
-      expect(bascules.where((f) => f['sens'] == 'ALLEGE').length, 192);
+      expect(bascules.where((f) => f['sens'] == 'ALLEGE').length, 214);
+      expect(bascules.length, 452);
+      expect(bascules.where((f) => f['portee'] == 'circuit').length, 63);
     });
 
     test('COUVERTURE : les 96 n atteignent jamais le niveau EXPERT', () {

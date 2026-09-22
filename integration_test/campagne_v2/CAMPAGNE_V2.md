@@ -1,5 +1,27 @@
 # CAMPAGNE PERSONAS V2 — SCENARIOS ET ATTENDUS
 
+> ## ⚠ LIRE D'ABORD — GO-61 DU 22/09 : LE REPOS EST SORTI DU VERDICT (tache 545)
+>
+> **La regle du score de circuit a change APRES la redaction de ce dossier.** `S_circuit = C1`,
+> la pire etape, et elle seule. C2, C3 et C4 sont calculees et **affichees**, jamais decisives ;
+> C3, le repos, est en outre **conseillee** (combien de jours de repos poser, et ou). Et le
+> **programme par defaut pose desormais ces repos conseilles**.
+>
+> **Ce qui reste vrai dans ce dossier :** les entrees, les personnages, les jeux d'etapes, les
+> scenarios, et **toutes les grandeurs mesurees** — C1, C2, C3, monotonie, ratios et verdicts
+> d'etape. Elles n'ont pas bouge d'un chiffre.
+>
+> **Ce qui est PERIME, et remplace dans `matrice_96.json` (voir son `meta.GO_61`) :** tout enonce
+> de ce document sur le **verdict de circuit** et la **contrainte dominante**. En particulier :
+> « 42 rouges en v1 → **78** en v2 » decrivait l'ancienne regle ; sous la regle en vigueur, c'est
+> **25**. Les 78/42/36 restent cites comme **la mesure qui a fonde GO-61** — 36 cellules rouges par
+> le seul manque de repos, dont un profil confirme a 0,68 de pire etape, vert franc — et non comme
+> l'etat du produit.
+>
+> **A RE-MESURER PAR LA CAMPAGNE :** la colonne v2 decrit un programme **sans aucun jour de repos**.
+> Le programme par defaut en pose maintenant ; sur les jeux a sept etapes, les chiffres de C3 vus a
+> l'ecran seront ceux de `avecDeuxRepos`.
+
 > **Tache 541. PREPARATION SEULE : aucun fichier applicatif n'est touche, aucune campagne n'est
 > lancee.** Artemis, 22/09/2026.
 > Cadre : mandat #100251, exigence de Christophe #100329 (« test persona refaits »), autonomie

@@ -22,9 +22,12 @@ import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart
 /// etape est a 0,54, c'est-a-dire vert franc. Le calcul etait juste ; c'est
 /// l'ALIMENTATION qui manquait.
 ///
-/// Et depuis le retrait de C2 du maximum, C3 est le SEUL mecanisme capable de
-/// rendre un circuit plus severe que toutes ses etapes : une C3 alimentee par
-/// une donnee fausse serait un decideur unique qui decide faux.
+/// CE QUI A CHANGE AVEC GO-61, ET CE QUI N A PAS CHANGE. C3 ne DECIDE plus
+/// (S_circuit = C1), donc une C3 mal alimentee ne condamne plus personne. Mais
+/// elle reste AFFICHEE et surtout CONSEILLEE : c est elle qui dit combien de
+/// jours de repos poser, et c est elle que le programme par defaut applique.
+/// Un cablage casse rendrait donc un conseil faux au lieu d un verdict faux —
+/// ce fichier reste la garde de cette alimentation.
 void main() {
   const trailId = 'test-trail';
 
@@ -144,30 +147,40 @@ void main() {
       return container.read(feasibilityAssessmentProvider.future);
     }
 
-    test('EXPERT sans repos : circuit ROUGE alors que ses etapes sont VERTES',
-        () async {
+    test('EXPERT sans repos : circuit VERT comme ses etapes (GO-61)', () async {
+      // C ETAIT LE DEFAUT : ce meme expert, dont chaque etape est tres en
+      // dessous de sa capacite, recevait un circuit ROUGE parce qu il n avait
+      // pose aucun jour de repos. Le chiffre du repos est toujours la, toujours
+      // au-dessus de son seuil — mais il ne decide plus.
       final a = await evaluerAvec(programme([1, 2, 3]));
       expect(a!.level, HikerLevel.expert);
       expect(a.stageVerdicts.every((v) => !v.isOverCapacity), isTrue,
           reason: 'chaque etape est tres en dessous de sa capacite');
       expect(a.worstStageVerdict, FeasibilityVerdict.green);
-      expect(a.globalVerdict, FeasibilityVerdict.red);
-      expect(a.circuit!.dominant, CircuitConstraint.rest);
+      expect(a.globalVerdict, FeasibilityVerdict.green);
+      expect(a.circuit!.dominant, CircuitConstraint.worstStage);
       expect(a.restDaysPlanned, 0);
+      expect(a.circuit!.rest, greaterThan(1.0));
+      // ET IL CONSEILLE : le randonneur est invite a poser des repos.
+      expect(a.isRestAdvised, isTrue);
+      expect(a.advice.map((c) => c.key), contains('restAdvised'));
     });
 
-    test('LE MEME EXPERT avec deux repos : circuit VERT', () async {
+    test('LE MEME EXPERT avec deux repos : le CHIFFRE du repos redescend',
+        () async {
       final sans = await evaluerAvec(programme([1, 2, 3]));
       final avec = await evaluerAvec(programme([1, null, 2, null, 3]));
       expect(avec!.restDaysPlanned, 2);
-      expect(avec.globalVerdict, FeasibilityVerdict.green);
-      // La contrainte repos reste la plus haute des trois — c'est normal, elle
-      // mesure une regularite et non un depassement — mais elle est redescendue
-      // SOUS SON SEUIL, donc elle ne condamne plus le circuit.
+      // Ce que les jours de repos changent : le chiffre du repos, qui repasse
+      // SOUS son seuil — et le conseil, qui disparait puisqu il est applique.
       expect(avec.circuit!.rest, lessThan(1.0));
       expect(avec.circuit!.rest, lessThan(sans!.circuit!.rest!));
-      // Le verdict, lui, a bien change de couleur.
-      expect(sans.globalVerdict, FeasibilityVerdict.red);
+      expect(avec.isRestAdvised, isFalse);
+      expect(avec.advice.map((c) => c.key), isNot(contains('restAdvised')));
+      // Ce qu ils ne changent PAS : le verdict. Il etait vert, il le reste.
+      expect(sans.globalVerdict, FeasibilityVerdict.green);
+      expect(avec.globalVerdict, FeasibilityVerdict.green);
+      expect(avec.circuit!.score, closeTo(sans.circuit!.score, 1e-12));
     });
   });
 }

@@ -2301,14 +2301,13 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get energyUnitNotice => '1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.';
 	@override String get circuitTitle => 'Urteil zur Runde';
 	@override String circuitScore({required Object value}) => 'Wert der Runde: ${value}';
-	@override String circuitDominant({required Object constraint}) => 'Was zubeißt: ${constraint}.';
-	@override String get circuitHarsherIntro => 'Die Runde ist härter als jede einzelne ihrer Etappen, und das ist kein Fehler: einzeln genommen übersteigt dich kein Tag; ihre Verkettung tut es.';
-	@override String get circuitHarsherByRest => 'Hier fehlt die Ruhe: deine Tage gleichen sich zu sehr, als dass sich der Körper dazwischen erholen könnte.';
-	@override String get circuitHarsherByAverage => 'Hier ist es die mittlere Last: Tag für Tag übersteigt die Summe, was du durchhalten kannst.';
+	@override String get circuitIsWorstStage => 'Das Urteil zur Runde ist das deines härtesten Tages: nichts anderes macht es härter.';
 	@override String restWindowWhole({required Object days}) => 'Ruhe über den ganzen Trek gemessen (${days} Tage).';
 	@override String restWindowSlice({required Object start, required Object end}) => 'Ruhe über die schlechteste Woche gemessen: Tage ${start} bis ${end}.';
 	@override String get restNotApplicable => 'Auf einem Weg von einem einzigen Tag lässt sich die Ruhe nicht berechnen: es gibt keine Verkettung zu messen. Die Bedingung wird als nicht anwendbar erklärt, sie wird nicht durch eine Zahl ersetzt.';
 	@override String get restExtrapolation => 'Die Ruhe-Schwelle stammt aus einer Messung an Sportlern und wurde auf das Weitwandern übertragen. Es ist eine Übertragung, und sie wird als solche genannt.';
+	@override String get restNotDecisive => 'Diese Zahl wird angezeigt und berät, sie entscheidet nie: dein Urteil bleibt das deines härtesten Tages.';
+	@override String restAdvisedLine({required Object days}) => 'Empfehlung: ${days} über dein Programm verteilte Ruhetage bringen diese Zahl wieder unter ihre Schwelle.';
 	@override String get restTwoDays => 'Bei gleich großen Etappen reicht ein Ruhetag pro Woche nicht: es braucht zwei.';
 	@override String habitGap({required Object value}) => 'Abstand zu deiner Gewohnheit: ${value} (Richtwert 0,8 bis 1,3).';
 	@override String get habitGapNotDecisive => 'Dieser Abstand wird angezeigt, ist aber nie entscheidend: keine Studie belegt, dass er irgendetwas verursacht.';
@@ -2322,9 +2321,8 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get seasonMissing => 'Kein Aufbruchsdatum gesetzt: die Jahreszeit ändert hier nichts, mangels Daten.';
 	@override String get massNotCounted => 'Weder dein Gewicht noch das deines Rucksacks fließt in dieses Urteil ein, und das ist gewollt: es misst, was du nachweislich durchhältst. Mit 65 oder mit 95 kg erhält derselbe Mann dasselbe Urteil.';
 	@override String get winterInvalid => 'Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.';
-	@override late final _Translations$feasibility$formula$circuitConstraints$de circuitConstraints = _Translations$feasibility$formula$circuitConstraints$de._(_root);
 	@override String restDaysCounted({required Object count}) => 'In diesem Urteil gezählte Ruhetage: ${count}.';
-	@override String get restDaysNone => 'In deinem Programm ist kein Ruhetag gesetzt. Das Urteil sieht es, und es wiegt hier am schwersten: setze Ruhetage in dein Programm, und diese Zahl bewegt sich.';
+	@override String get restDaysNone => 'In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.';
 	@override String averageLoad({required Object value, required Object worst}) => 'Mittlere Tageslast: ${value} (die härteste Etappe liegt bei ${worst}).';
 	@override String get averageLoadInfo => 'Diese beiden Zahlen liest man zusammen: weit auseinander hat der Trek einen harten Tag; nahe beieinander ist er jeden Tag hart. Das wird angezeigt, es entscheidet nicht.';
 	@override String durationStatement({required Object days, required Object done}) => 'Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Tage.';
@@ -3561,20 +3559,7 @@ class _Translations$feasibility$formula$advice$de extends Translations$feasibili
 	@override String split({required Object stage}) => 'Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.';
 	@override String rest({required Object stages}) => 'Plane einen Ruhetag nach Etappe ${stages}.';
 	@override String training({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).';
-	@override String get restDominant => 'Es ist keine Etappe, die geteilt werden muss, es sind Ruhetage, die eingelegt werden müssen: deine Tage gleichen sich zu sehr.';
-}
-
-// Path: feasibility.formula.circuitConstraints
-class _Translations$feasibility$formula$circuitConstraints$de extends Translations$feasibility$formula$circuitConstraints$fr {
-	_Translations$feasibility$formula$circuitConstraints$de._(TranslationsDe root) : this._root = root, super.internal(root);
-
-	final TranslationsDe _root; // ignore: unused_field
-
-	// Translations
-	@override String get worstStage => 'die härteste Etappe';
-	@override String get averageLoad => 'die mittlere Tageslast';
-	@override String get rest => 'die Ruhe';
-	@override String get habitGap => 'der Abstand zu deiner Gewohnheit';
+	@override String restAdvised({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Etappen ${stages}: deine Tage gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
 }
 
 // Path: signalement.water.states
@@ -4603,20 +4588,19 @@ extension on TranslationsDe {
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Etappe ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).',
-			'feasibility.formula.advice.restDominant' => 'Es ist keine Etappe, die geteilt werden muss, es sind Ruhetage, die eingelegt werden müssen: deine Tage gleichen sich zu sehr.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Etappen ${stages}: deine Tage gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Gewählte Aufteilung: ${days} Wandertage.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen.',
 			'feasibility.formula.energyUnitNotice' => '1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.',
 			'feasibility.formula.circuitTitle' => 'Urteil zur Runde',
 			'feasibility.formula.circuitScore' => ({required Object value}) => 'Wert der Runde: ${value}',
-			'feasibility.formula.circuitDominant' => ({required Object constraint}) => 'Was zubeißt: ${constraint}.',
-			'feasibility.formula.circuitHarsherIntro' => 'Die Runde ist härter als jede einzelne ihrer Etappen, und das ist kein Fehler: einzeln genommen übersteigt dich kein Tag; ihre Verkettung tut es.',
-			'feasibility.formula.circuitHarsherByRest' => 'Hier fehlt die Ruhe: deine Tage gleichen sich zu sehr, als dass sich der Körper dazwischen erholen könnte.',
-			'feasibility.formula.circuitHarsherByAverage' => 'Hier ist es die mittlere Last: Tag für Tag übersteigt die Summe, was du durchhalten kannst.',
+			'feasibility.formula.circuitIsWorstStage' => 'Das Urteil zur Runde ist das deines härtesten Tages: nichts anderes macht es härter.',
 			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Ruhe über den ganzen Trek gemessen (${days} Tage).',
 			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Ruhe über die schlechteste Woche gemessen: Tage ${start} bis ${end}.',
 			'feasibility.formula.restNotApplicable' => 'Auf einem Weg von einem einzigen Tag lässt sich die Ruhe nicht berechnen: es gibt keine Verkettung zu messen. Die Bedingung wird als nicht anwendbar erklärt, sie wird nicht durch eine Zahl ersetzt.',
 			'feasibility.formula.restExtrapolation' => 'Die Ruhe-Schwelle stammt aus einer Messung an Sportlern und wurde auf das Weitwandern übertragen. Es ist eine Übertragung, und sie wird als solche genannt.',
+			'feasibility.formula.restNotDecisive' => 'Diese Zahl wird angezeigt und berät, sie entscheidet nie: dein Urteil bleibt das deines härtesten Tages.',
+			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Empfehlung: ${days} über dein Programm verteilte Ruhetage bringen diese Zahl wieder unter ihre Schwelle.',
 			'feasibility.formula.restTwoDays' => 'Bei gleich großen Etappen reicht ein Ruhetag pro Woche nicht: es braucht zwei.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Abstand zu deiner Gewohnheit: ${value} (Richtwert 0,8 bis 1,3).',
 			'feasibility.formula.habitGapNotDecisive' => 'Dieser Abstand wird angezeigt, ist aber nie entscheidend: keine Studie belegt, dass er irgendetwas verursacht.',
@@ -4630,12 +4614,8 @@ extension on TranslationsDe {
 			'feasibility.formula.seasonMissing' => 'Kein Aufbruchsdatum gesetzt: die Jahreszeit ändert hier nichts, mangels Daten.',
 			'feasibility.formula.massNotCounted' => 'Weder dein Gewicht noch das deines Rucksacks fließt in dieses Urteil ein, und das ist gewollt: es misst, was du nachweislich durchhältst. Mit 65 oder mit 95 kg erhält derselbe Mann dasselbe Urteil.',
 			'feasibility.formula.winterInvalid' => 'Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.',
-			'feasibility.formula.circuitConstraints.worstStage' => 'die härteste Etappe',
-			'feasibility.formula.circuitConstraints.averageLoad' => 'die mittlere Tageslast',
-			'feasibility.formula.circuitConstraints.rest' => 'die Ruhe',
-			'feasibility.formula.circuitConstraints.habitGap' => 'der Abstand zu deiner Gewohnheit',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'In diesem Urteil gezählte Ruhetage: ${count}.',
-			'feasibility.formula.restDaysNone' => 'In deinem Programm ist kein Ruhetag gesetzt. Das Urteil sieht es, und es wiegt hier am schwersten: setze Ruhetage in dein Programm, und diese Zahl bewegt sich.',
+			'feasibility.formula.restDaysNone' => 'In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.',
 			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Mittlere Tageslast: ${value} (die härteste Etappe liegt bei ${worst}).',
 			'feasibility.formula.averageLoadInfo' => 'Diese beiden Zahlen liest man zusammen: weit auseinander hat der Trek einen harten Tag; nahe beieinander ist er jeden Tag hart. Das wird angezeigt, es entscheidet nicht.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Tage.',
@@ -4860,13 +4840,13 @@ extension on TranslationsDe {
 			'gamification.defi.inProgress' => 'Laufend',
 			'gamification.defi.progressLabel' => ({required Object current, required Object target}) => 'Fortschritt: ${current} / ${target}',
 			'gamification.defi.rankingTitle' => 'Challenge-Rangliste',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.defi.pseudonymNotice' => 'Rangliste nach Gruppe, mit Pseudonymen. Es werden keine direkten personenbezogenen Daten angezeigt.',
 			'gamification.defi.notEnoughParticipants' => 'Nicht genug Teilnehmer, um diese Rangliste zu veröffentlichen.',
 			'gamification.defi.noDefi' => 'Derzeit keine laufende Challenge.',
 			'shareVisibility.title' => 'Teilen und Sichtbarkeit',
 			'shareVisibility.intro' => 'Standardmäßig wird nichts geteilt. Aktiviere unten zweckweise, was du sichtbar machen möchtest.',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.consentLink' => 'Meine Einwilligung verwalten (Datenschutz)',
 			'shareVisibility.stageResults' => 'Meine Etappenergebnisse teilen',
 			'shareVisibility.stageResultsDesc' => 'Eine pseudonyme Karte (keine direkten personenbezogenen Daten).',
@@ -5374,13 +5354,13 @@ extension on TranslationsDe {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Details zum Ruhetag ${day}',
 			'summary.a11y.export' => 'Plan als PDF exportieren',
 			'summary.a11y.download' => 'Offline-Karten herunterladen',
-			_ => null,
-		} ?? switch (path) {
 			'summary.a11y.share' => 'Meinen Plan teilen',
 			'import.title' => 'GPX importieren',
 			'import.headerTitle' => 'Eine GPX-Datei importieren',
 			'import.headerBody' => 'Importieren Sie einen mit einer anderen App (Strava, Garmin usw.) aufgezeichneten GPS-Track, um Ihre Zusammenfassung zu erstellen.',
 			'import.pickButton' => 'GPX-DATEI AUSWÄHLEN',
+			_ => null,
+		} ?? switch (path) {
 			'import.traceSection' => 'Importierter Track',
 			'import.statsSection' => 'Statistiken',
 			'import.statDistance' => 'Distanz',

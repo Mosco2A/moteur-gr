@@ -516,6 +516,7 @@ class _VerdictView extends ConsumerWidget {
           _GenerateProgramButton(
             trailId: trailId,
             suggestedDays: assessment.suggestedDays,
+            recommendedRestDays: assessment.recommendedRestDays,
           ),
           const SizedBox(height: AppTheme.spacingSm),
           // D2 (#100293) — CE QUI A ETE RETENU, ECRIT NOIR SUR BLANC. Sans
@@ -568,8 +569,12 @@ class _RetainedPlanLine extends ConsumerWidget {
     final theme = Theme.of(context);
     final f = t.feasibility.formula;
     final retained = ref.watch(retainedDurationProvider);
-    final fallback =
-        ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
+    // La duree par defaut annoncee est celle qui S'APPLIQUE REELLEMENT : celle
+    // du sentier, REPOS CONSEILLES COMPRIS (GO-61). Annoncer la duree nue
+    // pendant que le programme en pose une autre serait un troisieme chiffre
+    // qui ment.
+    final fallback = ref.watch(
+        defaultDurationWithRestProvider(ref.watch(trailIdProvider)));
     final retainedPlan = retained != null;
     final color = retainedPlan
         ? AppTheme.vertFacile
@@ -618,6 +623,7 @@ class _GenerateProgramButton extends ConsumerWidget {
   const _GenerateProgramButton({
     required this.trailId,
     required this.suggestedDays,
+    required this.recommendedRestDays,
   });
 
   final String trailId;
@@ -625,13 +631,20 @@ class _GenerateProgramButton extends ConsumerWidget {
   /// Nombre de jours de MARCHE optimal propose par la formule (#100068).
   final int suggestedDays;
 
+  /// Jours de REPOS conseilles par le moteur (GO-61) — voir [build].
+  final int recommendedRestDays;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final f = t.feasibility.formula;
     // Borne la reco aux durees realistes du sentier (nb d'etapes) : jamais moins
     // d'un regroupement raisonnable, jamais plus que le max de repos possible.
     final bounds = ref.watch(durationBoundsProvider(trailId));
-    final target = bounds.clampDuration(suggestedDays);
+    // LES REPOS CONSEILLES SONT DANS LA DUREE PROPOSEE (GO-61). Sans eux, ce
+    // bouton REPRENAIT au randonneur les repos que le programme par defaut
+    // venait de lui poser : il appliquait le nombre de jours de MARCHE, donc un
+    // programme sans un seul jour de repos.
+    final target = bounds.clampDuration(suggestedDays + recommendedRestDays);
 
     return AppButton(
       minHeight: 52,
@@ -760,33 +773,28 @@ class _CircuitSection extends StatelessWidget {
       ),
     ));
     lines.add(const SizedBox(height: AppTheme.spacingXs));
+    // CE QUI DECIDE, DIT EN CLAIR. Le verdict du circuit est celui de sa pire
+    // journee, et rien d'autre ne peut le durcir : la phrase le dit, pour que
+    // le randonneur sache ou regarder quand il veut le faire bouger.
     lines.add(Text(
-      f.circuitDominant(constraint: _constraintLabel(circuit.dominant)),
+      f.circuitIsWorstStage,
+      key: const ValueKey('feasibility-circuit-is-worst-stage'),
       style: theme.textTheme.bodySmall,
     ));
 
-    // ARB-004 : OBLIGATION d'expliquer quand le circuit est plus severe que
-    // toutes ses etapes. Le texte nomme la contrainte responsable.
-    if (assessment.isCircuitHarsherThanStages) {
-      lines.add(const SizedBox(height: AppTheme.spacingSm));
-      lines.add(Text(
-        f.circuitHarsherIntro,
-        key: const ValueKey('feasibility-circuit-harsher'),
-        style: theme.textTheme.bodySmall
-            ?.copyWith(fontWeight: FontWeight.w600, color: color),
-      ));
-      final why = switch (circuit.dominant) {
-        CircuitConstraint.rest => f.circuitHarsherByRest,
-        CircuitConstraint.averageLoad => f.circuitHarsherByAverage,
-        _ => null,
-      };
-      if (why != null) {
-        lines.add(const SizedBox(height: 2));
-        lines.add(Text(why, style: theme.textTheme.bodySmall));
-      }
-    }
+    // --- CE QUI S'AFFICHE ET NE DECIDE PAS ---------------------------------
+    final infoStyle = theme.textTheme.bodySmall?.copyWith(
+      fontStyle: FontStyle.italic,
+      color: theme.colorScheme.onSurface.withAlpha(150),
+    );
 
-    // C3, le repos : sa fenetre, ou sa NON-APPLICABILITE declaree (#10-e).
+    // C3, LE REPOS : sa fenetre, son chiffre, le conseil qui va avec — ou sa
+    // NON-APPLICABILITE declaree (#10-e).
+    //
+    // IL A CHANGE DE STATUT (GO-61) : il etait la seule grandeur extrapolee du
+    // modele autorisee a mettre au rouge, il rejoint C2 et C4 dans ce qui
+    // s'affiche et ne decide pas. Ce qui reste — et qui compte — c'est le
+    // CONSEIL : combien de jours de repos, et apres quelles etapes.
     lines.add(const SizedBox(height: AppTheme.spacingSm));
     if (!circuit.isRestApplicable) {
       lines.add(Text(
@@ -804,43 +812,36 @@ class _CircuitSection extends StatelessWidget {
               ),
         style: theme.textTheme.bodySmall,
       ));
-      // LE LIEN ENTRE LE PROGRAMME ET LE VERDICT, ECRIT. Sans cette ligne, un
-      // circuit rouge par manque de repos est illisible : le randonneur ne
-      // voit pas que c'est SON decoupage qui le produit, ni que changer le
-      // decoupage change le chiffre.
+      // LE LIEN ENTRE LE PROGRAMME ET CE CHIFFRE, ECRIT. Sans cette ligne, le
+      // randonneur ne voit pas que c'est SON decoupage qui le produit, ni que
+      // changer le decoupage le fait bouger.
       lines.add(const SizedBox(height: 2));
       lines.add(Text(
         assessment.restDaysPlanned > 0
             ? f.restDaysCounted(count: assessment.restDaysPlanned)
             : f.restDaysNone,
         key: const ValueKey('feasibility-rest-days-counted'),
-        style: theme.textTheme.bodySmall?.copyWith(
-          fontWeight: assessment.restDaysPlanned > 0
-              ? FontWeight.normal
-              : FontWeight.w600,
-        ),
+        style: theme.textTheme.bodySmall,
       ));
-      if (circuit.dominant == CircuitConstraint.rest) {
+      if (assessment.isRestAdvised) {
+        lines.add(const SizedBox(height: 2));
+        lines.add(Text(
+          f.restAdvisedLine(days: assessment.recommendedRestDays),
+          key: const ValueKey('feasibility-rest-advised'),
+          style: theme.textTheme.bodySmall
+              ?.copyWith(fontWeight: FontWeight.w600),
+        ));
         lines.add(const SizedBox(height: 2));
         lines.add(Text(f.restTwoDays, style: theme.textTheme.bodySmall));
       }
       // Le transfert du seuil de Foster des athletes aux randonneurs est une
-      // extrapolation DECLAREE (#M08). On la dit la ou le chiffre est montre.
+      // extrapolation DECLAREE (#M08), et c'est elle qui lui a coute le droit
+      // de decider. On la dit la ou le chiffre est montre.
       lines.add(const SizedBox(height: 2));
-      lines.add(Text(
-        f.restExtrapolation,
-        style: theme.textTheme.bodySmall?.copyWith(
-          fontStyle: FontStyle.italic,
-          color: theme.colorScheme.onSurface.withAlpha(150),
-        ),
-      ));
+      lines.add(Text(f.restNotDecisive, style: infoStyle));
+      lines.add(const SizedBox(height: 2));
+      lines.add(Text(f.restExtrapolation, style: infoStyle));
     }
-
-    // --- CE QUI S'AFFICHE ET NE DECIDE PAS ---------------------------------
-    final infoStyle = theme.textTheme.bodySmall?.copyWith(
-      fontStyle: FontStyle.italic,
-      color: theme.colorScheme.onSurface.withAlpha(150),
-    );
 
     // C2, la charge moyenne : sortie du maximum (elle est la moyenne d'une
     // serie dont C1 est le maximum, donc elle ne pouvait rien decider), mais
@@ -1417,20 +1418,6 @@ String _limitingLabel(LimitingFactor factor) {
   }
 }
 
-String _constraintLabel(CircuitConstraint constraint) {
-  final c = t.feasibility.formula.circuitConstraints;
-  switch (constraint) {
-    case CircuitConstraint.worstStage:
-      return c.worstStage;
-    case CircuitConstraint.averageLoad:
-      return c.averageLoad;
-    case CircuitConstraint.rest:
-      return c.rest;
-    case CircuitConstraint.habitGap:
-      return c.habitGap;
-  }
-}
-
 String _adviceText(ProgramAdvice advice) {
   final a = t.feasibility.formula.advice;
   switch (advice.key) {
@@ -1447,8 +1434,11 @@ String _adviceText(ProgramAdvice advice) {
       return a.split(stage: advice.params['stage'] ?? '');
     case 'rest':
       return a.rest(stages: advice.params['stages'] ?? '');
-    case 'restDominant':
-      return a.restDominant;
+    case 'restAdvised':
+      return a.restAdvised(
+        days: advice.params['days'] ?? '',
+        stages: advice.params['stages'] ?? '',
+      );
     case 'training':
       return a.training(weeks: advice.params['weeks'] ?? '');
     default:

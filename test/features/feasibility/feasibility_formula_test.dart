@@ -314,10 +314,10 @@ void main() {
 
     test('LES JOURS DE REPOS ENTRENT DANS LA MONOTONIE, charge NULLE (#2-p)',
         () {
-      // SANS repos, des journees qui se ressemblent font exploser la monotonie
-      // et le circuit part au rouge alors que chaque etape est verte. AVEC un
-      // repos, l ecart-type se creuse et le circuit redescend. C est tout
-      // l objet de la contrainte, et c est le cablage qui manquait.
+      // Le CHIFFRE du repos bouge avec les jours de repos — c est l objet meme
+      // de la contrainte, et c est le cablage qui manquait. Ce qui a change
+      // avec GO-61, c est qu il ne DECIDE plus : les deux etapes sont vertes,
+      // les deux verdicts le restent.
       final stages = [
         stage(index: 0, distanceKm: 10, elevationGainM: 200),
         stage(index: 1, distanceKm: 12, elevationGainM: 300),
@@ -334,13 +334,21 @@ void main() {
       expect(sans.stageVerdicts.every((v) => !v.isOverCapacity), isTrue,
           reason: 'les deux etapes sont vertes dans les deux cas');
       expect(sans.circuit!.rest, greaterThan(avec.circuit!.rest!));
-      expect(sans.globalVerdict, FeasibilityVerdict.red);
-      expect(avec.globalVerdict, FeasibilityVerdict.green);
+      expect(sans.circuit!.rest, greaterThan(1.0),
+          reason: 'sans repos, la monotonie depasse son seuil');
       expect(avec.restDaysPlanned, 1);
+      // ET POURTANT : aucun des deux verdicts ne bouge (GO-61).
+      expect(sans.globalVerdict, FeasibilityVerdict.green);
+      expect(avec.globalVerdict, FeasibilityVerdict.green);
     });
 
-    test('ARB-004 : le circuit PEUT etre plus severe que toutes ses etapes',
-        () {
+    test(
+        'GO-61 : ARB-004 n a plus rien pour le porter — le circuit ne peut PLUS '
+        'etre plus severe que ses etapes', () {
+      // LE CAS HISTORIQUE, celui qui a fait rougir 24 cellules sur 24 : deux
+      // journees vertes qui se ressemblent trop. Il rendait un circuit ROUGE
+      // devant des etapes VERTES ; il rend desormais le verdict de sa pire
+      // etape, et la monotonie reste affichee au-dessus de son seuil.
       final r = FeasibilityFormula.evaluate(
         stages: [
           stage(index: 0, distanceKm: 10, elevationGainM: 200),
@@ -349,10 +357,12 @@ void main() {
         level: HikerLevel.confirmed,
       );
       expect(r.worstStageVerdict, FeasibilityVerdict.green);
-      expect(r.globalVerdict, FeasibilityVerdict.red);
-      // L ecran a alors l OBLIGATION d expliquer pourquoi (#2-s).
-      expect(r.isCircuitHarsherThanStages, isTrue);
-      expect(r.circuit!.dominant, CircuitConstraint.rest);
+      expect(r.globalVerdict, FeasibilityVerdict.green);
+      expect(r.circuit!.rest, greaterThan(1.0),
+          reason: 'le chiffre du repos est toujours calcule et toujours haut');
+      expect(r.isCircuitHarsherThanStages, isFalse);
+      expect(r.circuit!.dominant, CircuitConstraint.worstStage);
+      expect(r.circuit!.score, closeTo(r.circuit!.worstStage, 1e-12));
     });
 
     test('les chiffres de repos de la spec sont reproduits (#2-t)', () {
@@ -484,10 +494,11 @@ void main() {
       expect(r.advice.map((a) => a.key), ['balancedOk']);
     });
 
-    test('C3 dominante -> on conseille des REPOS, pas une decoupe', () {
-      // Lisser les pics et poser des repos sont deux leviers OPPOSES (#2-t) :
-      // conseiller « decoupe l etape N » quand c est le repos qui manque
-      // enverrait le randonneur exactement dans le mauvais sens.
+    test('monotonie au-dessus du seuil -> le repos est CONSEILLE, meme en vert',
+        () {
+      // GO-61 : le repos ne decide plus, donc le conseil ne depend plus de la
+      // couleur. Un programme entierement vert peut n offrir aucune
+      // recuperation — et c est meme la qu on n y pense pas.
       final r = FeasibilityFormula.evaluate(
         stages: [
           stage(index: 0, distanceKm: 10, elevationGainM: 200),
@@ -495,8 +506,14 @@ void main() {
         ],
         level: HikerLevel.confirmed,
       );
-      expect(r.advice.first.key, 'restDominant');
-      expect(r.advice.map((a) => a.key), isNot(contains('split')));
+      expect(r.globalVerdict, FeasibilityVerdict.green);
+      final keys = r.advice.map((a) => a.key).toList();
+      expect(keys, contains('restAdvised'));
+      expect(keys, isNot(contains('split')));
+      final conseil = r.advice.firstWhere((a) => a.key == 'restAdvised');
+      expect(conseil.params['days'], r.recommendedRestDays);
+      expect(r.recommendedRestDays, greaterThan(0));
+      expect(r.isRestAdvised, isTrue);
     });
 
     test('etape rouge -> conseil de decoupe (split) + jours optimal', () {
@@ -523,9 +540,38 @@ void main() {
         ],
         level: HikerLevel.intermediate,
       );
-      final rest = r.advice.where((a) => a.key == 'rest');
+      // Ici la monotonie depasse aussi son seuil : c est le conseil de RYTHME
+      // qui parle (il dit combien ET ou), et les deux leviers tombent d accord
+      // sur la meme etape — le repos se pose apres l etape 2.
+      final rest = r.advice.where((a) => a.key == 'restAdvised');
       expect(rest, isNotEmpty);
       expect(rest.first.params['stages'], '2');
+      expect(rest.first.params['days'], 1);
+    });
+
+    test(
+        'rythme sain mais bloc trop dur -> le conseil « repos apres l etape N » '
+        'reste vivant', () {
+      // GARDE ANTI-CLE MORTE. Le conseil de rythme masque le conseil de bloc
+      // quand les deux parlent ; il faut donc prouver que le second est encore
+      // ATTEIGNABLE, sinon sa cle i18n serait morte sans que personne le voie.
+      // Ici les charges alternent fort : la monotonie est basse, aucun repos
+      // n est conseille par le rythme — mais la premiere etape explose le
+      // plafond et merite qu on souffle derriere.
+      final r = FeasibilityFormula.evaluate(
+        stages: [
+          stage(index: 0, distanceKm: 30, elevationGainM: 1000), // tres au-dessus
+          stage(index: 1, distanceKm: 5, elevationGainM: 100), // minuscule
+          stage(index: 2, distanceKm: 30, elevationGainM: 1000),
+          stage(index: 3, distanceKm: 5, elevationGainM: 100),
+        ],
+        level: HikerLevel.beginner,
+      );
+      expect(r.isRestAdvised, isFalse,
+          reason: 'des charges tres inegales ne demandent pas de repos');
+      final keys = r.advice.map((a) => a.key).toList();
+      expect(keys, isNot(contains('restAdvised')));
+      expect(keys, contains('rest'));
     });
 
     test('jours optimal >= nb d etapes et couvre la charge totale', () {

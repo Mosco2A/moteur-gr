@@ -4857,17 +4857,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Score du circuit : ${value}'
 	String circuitScore({required Object value}) => 'Score du circuit : ${value}';
 
-	/// fr: 'Ce qui mord : ${constraint}.'
-	String circuitDominant({required Object constraint}) => 'Ce qui mord : ${constraint}.';
-
-	/// fr: 'Le circuit est plus sévère que chacune de ses étapes, et ce n'est pas un bug : prise une par une, aucune journée ne te dépasse ; c'est leur enchaînement qui te dépasse.'
-	String get circuitHarsherIntro => 'Le circuit est plus sévère que chacune de ses étapes, et ce n\'est pas un bug : prise une par une, aucune journée ne te dépasse ; c\'est leur enchaînement qui te dépasse.';
-
-	/// fr: 'Ici c'est le repos qui manque : tes journées se ressemblent trop pour que le corps récupère entre elles.'
-	String get circuitHarsherByRest => 'Ici c\'est le repos qui manque : tes journées se ressemblent trop pour que le corps récupère entre elles.';
-
-	/// fr: 'Ici c'est la charge moyenne : jour après jour, la somme dépasse ce que tu peux tenir.'
-	String get circuitHarsherByAverage => 'Ici c\'est la charge moyenne : jour après jour, la somme dépasse ce que tu peux tenir.';
+	/// fr: 'Le verdict du circuit est celui de ta journée la plus dure : rien d'autre ne le durcit.'
+	String get circuitIsWorstStage => 'Le verdict du circuit est celui de ta journée la plus dure : rien d\'autre ne le durcit.';
 
 	/// fr: 'Repos mesuré sur le trek entier (${days} jours).'
 	String restWindowWhole({required Object days}) => 'Repos mesuré sur le trek entier (${days} jours).';
@@ -4880,6 +4871,12 @@ class Translations$feasibility$formula$fr {
 
 	/// fr: 'Le seuil de repos vient d'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C'est une transposition, et elle est dite.'
 	String get restExtrapolation => 'Le seuil de repos vient d\'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C\'est une transposition, et elle est dite.';
+
+	/// fr: 'Ce chiffre s'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.'
+	String get restNotDecisive => 'Ce chiffre s\'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.';
+
+	/// fr: 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.'
+	String restAdvisedLine({required Object days}) => 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.';
 
 	/// fr: 'Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.'
 	String get restTwoDays => 'Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.';
@@ -4920,13 +4917,11 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu'il ne s'applique pas.'
 	String get winterInvalid => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.';
 
-	late final Translations$feasibility$formula$circuitConstraints$fr circuitConstraints = Translations$feasibility$formula$circuitConstraints$fr.internal(_root);
-
 	/// fr: 'Jours de repos comptés dans ce verdict : ${count}.'
 	String restDaysCounted({required Object count}) => 'Jours de repos comptés dans ce verdict : ${count}.';
 
-	/// fr: 'Aucun jour de repos n'est posé dans ton programme. Le verdict le voit, et c'est ce qui pèse le plus ici : pose des repos dans ton programme et ce chiffre bouge.'
-	String get restDaysNone => 'Aucun jour de repos n\'est posé dans ton programme. Le verdict le voit, et c\'est ce qui pèse le plus ici : pose des repos dans ton programme et ce chiffre bouge.';
+	/// fr: 'Aucun jour de repos n'est posé dans ton programme : poses-en et ce chiffre bouge.'
+	String get restDaysNone => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.';
 
 	/// fr: 'Charge moyenne des journées : ${value} (la pire étape est à ${worst}).'
 	String averageLoad({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire étape est à ${worst}).';
@@ -6964,29 +6959,8 @@ class Translations$feasibility$formula$advice$fr {
 	/// fr: 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).'
 	String training({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).';
 
-	/// fr: 'Ce n'est pas une étape qu'il faut couper, ce sont des jours de repos qu'il faut poser : tes journées se ressemblent trop.'
-	String get restDominant => 'Ce n\'est pas une étape qu\'il faut couper, ce sont des jours de repos qu\'il faut poser : tes journées se ressemblent trop.';
-}
-
-// Path: feasibility.formula.circuitConstraints
-class Translations$feasibility$formula$circuitConstraints$fr {
-	Translations$feasibility$formula$circuitConstraints$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'l'étape la plus dure'
-	String get worstStage => 'l\'étape la plus dure';
-
-	/// fr: 'la charge moyenne des journées'
-	String get averageLoad => 'la charge moyenne des journées';
-
-	/// fr: 'le repos'
-	String get rest => 'le repos';
-
-	/// fr: 'l'écart à ton habitude'
-	String get habitGap => 'l\'écart à ton habitude';
+	/// fr: 'Pose ${days} jour(s) de repos, après les étapes ${stages} : tes journées se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
+	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les étapes ${stages} : tes journées se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
 }
 
 // Path: signalement.water.states
@@ -8112,20 +8086,19 @@ extension on Translations {
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Découpe l\'étape ${stage} en deux : elle dépasse nettement ton plafond.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après l\'étape ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
-			'feasibility.formula.advice.restDominant' => 'Ce n\'est pas une étape qu\'il faut couper, ce sont des jours de repos qu\'il faut poser : tes journées se ressemblent trop.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les étapes ${stages} : tes journées se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Découpage retenu : ${days} jours de marche.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.',
 			'feasibility.formula.energyUnitNotice' => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.',
 			'feasibility.formula.circuitTitle' => 'Verdict du circuit',
 			'feasibility.formula.circuitScore' => ({required Object value}) => 'Score du circuit : ${value}',
-			'feasibility.formula.circuitDominant' => ({required Object constraint}) => 'Ce qui mord : ${constraint}.',
-			'feasibility.formula.circuitHarsherIntro' => 'Le circuit est plus sévère que chacune de ses étapes, et ce n\'est pas un bug : prise une par une, aucune journée ne te dépasse ; c\'est leur enchaînement qui te dépasse.',
-			'feasibility.formula.circuitHarsherByRest' => 'Ici c\'est le repos qui manque : tes journées se ressemblent trop pour que le corps récupère entre elles.',
-			'feasibility.formula.circuitHarsherByAverage' => 'Ici c\'est la charge moyenne : jour après jour, la somme dépasse ce que tu peux tenir.',
+			'feasibility.formula.circuitIsWorstStage' => 'Le verdict du circuit est celui de ta journée la plus dure : rien d\'autre ne le durcit.',
 			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Repos mesuré sur le trek entier (${days} jours).',
 			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Repos mesuré sur la pire semaine : jours ${start} à ${end}.',
 			'feasibility.formula.restNotApplicable' => 'Le repos ne se calcule pas sur un sentier d\'une seule journée : il n\'y a pas d\'enchaînement à mesurer. La contrainte est déclarée non applicable, elle n\'est pas remplacée par un chiffre.',
 			'feasibility.formula.restExtrapolation' => 'Le seuil de repos vient d\'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C\'est une transposition, et elle est dite.',
+			'feasibility.formula.restNotDecisive' => 'Ce chiffre s\'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.',
+			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.',
 			'feasibility.formula.restTwoDays' => 'Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Écart à ton habitude : ${value} (repère 0,8 à 1,3).',
 			'feasibility.formula.habitGapNotDecisive' => 'Cet écart est affiché, jamais décisif : aucune étude ne démontre qu\'il cause quoi que ce soit.',
@@ -8139,12 +8112,8 @@ extension on Translations {
 			'feasibility.formula.seasonMissing' => 'Aucune date de départ n\'est posée : la saison ne change rien ici, faute de donnée.',
 			'feasibility.formula.massNotCounted' => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict, et c\'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.',
 			'feasibility.formula.winterInvalid' => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.',
-			'feasibility.formula.circuitConstraints.worstStage' => 'l\'étape la plus dure',
-			'feasibility.formula.circuitConstraints.averageLoad' => 'la charge moyenne des journées',
-			'feasibility.formula.circuitConstraints.rest' => 'le repos',
-			'feasibility.formula.circuitConstraints.habitGap' => 'l\'écart à ton habitude',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Jours de repos comptés dans ce verdict : ${count}.',
-			'feasibility.formula.restDaysNone' => 'Aucun jour de repos n\'est posé dans ton programme. Le verdict le voit, et c\'est ce qui pèse le plus ici : pose des repos dans ton programme et ce chiffre bouge.',
+			'feasibility.formula.restDaysNone' => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.',
 			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire étape est à ${worst}).',
 			'feasibility.formula.averageLoadInfo' => 'Ces deux chiffres se lisent ensemble : loin l\'un de l\'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s\'affiche, il ne décide pas.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.',
@@ -8369,13 +8338,13 @@ extension on Translations {
 			'gamification.defi.inProgress' => 'En cours',
 			'gamification.defi.progressLabel' => ({required Object current, required Object target}) => 'Progression : ${current} / ${target}',
 			'gamification.defi.rankingTitle' => 'Classement du défi',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.defi.pseudonymNotice' => 'Classement par tranche, avec des pseudonymes. Aucune donnée personnelle directe n\'est affichée.',
 			'gamification.defi.notEnoughParticipants' => 'Pas assez de participants pour publier ce classement.',
 			'gamification.defi.noDefi' => 'Aucun défi en cours pour le moment.',
 			'shareVisibility.title' => 'Partage et visibilité',
 			'shareVisibility.intro' => 'Par défaut, rien n\'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.consentLink' => 'Gérer mon consentement (confidentialité)',
 			'shareVisibility.stageResults' => 'Partager mes résultats d\'étape',
 			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
@@ -8883,13 +8852,13 @@ extension on Translations {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Détails du jour de repos ${day}',
 			'summary.a11y.export' => 'Exporter le plan en PDF',
 			'summary.a11y.download' => 'Télécharger les cartes hors ligne',
-			_ => null,
-		} ?? switch (path) {
 			'summary.a11y.share' => 'Partager mon plan',
 			'import.title' => 'Importer un GPX',
 			'import.headerTitle' => 'Importer un fichier GPX',
 			'import.headerBody' => 'Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.',
 			'import.pickButton' => 'CHOISIR UN FICHIER GPX',
+			_ => null,
+		} ?? switch (path) {
 			'import.traceSection' => 'Trace importée',
 			'import.statsSection' => 'Statistiques',
 			'import.statDistance' => 'Distance',

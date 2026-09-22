@@ -2301,14 +2301,13 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String get energyUnitNotice => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.';
 	@override String get circuitTitle => 'Circuit verdict';
 	@override String circuitScore({required Object value}) => 'Circuit score: ${value}';
-	@override String circuitDominant({required Object constraint}) => 'What bites: ${constraint}.';
-	@override String get circuitHarsherIntro => 'The circuit is harsher than every one of its stages, and that is not a bug: taken one by one, no single day is beyond you; it is their chaining that is.';
-	@override String get circuitHarsherByRest => 'Here it is rest that is missing: your days look too much alike for the body to recover between them.';
-	@override String get circuitHarsherByAverage => 'Here it is the average load: day after day, the total goes beyond what you can hold.';
+	@override String get circuitIsWorstStage => 'The circuit verdict is the verdict of your hardest day: nothing else makes it harsher.';
 	@override String restWindowWhole({required Object days}) => 'Rest measured over the whole trek (${days} days).';
 	@override String restWindowSlice({required Object start, required Object end}) => 'Rest measured over the worst week: days ${start} to ${end}.';
 	@override String get restNotApplicable => 'Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.';
 	@override String get restExtrapolation => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.';
+	@override String get restNotDecisive => 'This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.';
+	@override String restAdvisedLine({required Object days}) => 'Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.';
 	@override String get restTwoDays => 'On stages of equal size, one rest day a week is not enough: it takes two.';
 	@override String habitGap({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).';
 	@override String get habitGapNotDecisive => 'This gap is shown, never decisive: no study demonstrates that it causes anything.';
@@ -2322,9 +2321,8 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String get seasonMissing => 'No departure date is set: the season changes nothing here, for lack of data.';
 	@override String get massNotCounted => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.';
 	@override String get winterInvalid => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.';
-	@override late final _Translations$feasibility$formula$circuitConstraints$en circuitConstraints = _Translations$feasibility$formula$circuitConstraints$en._(_root);
 	@override String restDaysCounted({required Object count}) => 'Rest days counted in this verdict: ${count}.';
-	@override String get restDaysNone => 'No rest day is set in your plan. The verdict sees that, and it is what weighs most here: add rest days to your plan and this figure moves.';
+	@override String get restDaysNone => 'No rest day is set in your plan: add some and this figure moves.';
 	@override String averageLoad({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest stage is at ${worst}).';
 	@override String get averageLoadInfo => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.';
 	@override String durationStatement({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.';
@@ -3561,20 +3559,7 @@ class _Translations$feasibility$formula$advice$en extends Translations$feasibili
 	@override String split({required Object stage}) => 'Split stage ${stage} in two: it clearly exceeds your ceiling.';
 	@override String rest({required Object stages}) => 'Plan a rest day after stage ${stages}.';
 	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).';
-	@override String get restDominant => 'It is not a stage that needs splitting, it is rest days that need adding: your days look too much alike.';
-}
-
-// Path: feasibility.formula.circuitConstraints
-class _Translations$feasibility$formula$circuitConstraints$en extends Translations$feasibility$formula$circuitConstraints$fr {
-	_Translations$feasibility$formula$circuitConstraints$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get worstStage => 'the hardest stage';
-	@override String get averageLoad => 'the average daily load';
-	@override String get rest => 'rest';
-	@override String get habitGap => 'the gap to your habit';
+	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s), after stages ${stages}: your days look too much alike for the body to recover. It is advice, it does not change your verdict.';
 }
 
 // Path: signalement.water.states
@@ -4603,20 +4588,19 @@ extension on TranslationsEn {
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Split stage ${stage} in two: it clearly exceeds your ceiling.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after stage ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
-			'feasibility.formula.advice.restDominant' => 'It is not a stage that needs splitting, it is rest days that need adding: your days look too much alike.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s), after stages ${stages}: your days look too much alike for the body to recover. It is advice, it does not change your verdict.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained split: ${days} walking days.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No split retained: the trail stays on its default ${days} days.',
 			'feasibility.formula.energyUnitNotice' => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.',
 			'feasibility.formula.circuitTitle' => 'Circuit verdict',
 			'feasibility.formula.circuitScore' => ({required Object value}) => 'Circuit score: ${value}',
-			'feasibility.formula.circuitDominant' => ({required Object constraint}) => 'What bites: ${constraint}.',
-			'feasibility.formula.circuitHarsherIntro' => 'The circuit is harsher than every one of its stages, and that is not a bug: taken one by one, no single day is beyond you; it is their chaining that is.',
-			'feasibility.formula.circuitHarsherByRest' => 'Here it is rest that is missing: your days look too much alike for the body to recover between them.',
-			'feasibility.formula.circuitHarsherByAverage' => 'Here it is the average load: day after day, the total goes beyond what you can hold.',
+			'feasibility.formula.circuitIsWorstStage' => 'The circuit verdict is the verdict of your hardest day: nothing else makes it harsher.',
 			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Rest measured over the whole trek (${days} days).',
 			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Rest measured over the worst week: days ${start} to ${end}.',
 			'feasibility.formula.restNotApplicable' => 'Rest cannot be computed on a one-day trail: there is no chaining to measure. The constraint is declared not applicable, it is not replaced by a number.',
 			'feasibility.formula.restExtrapolation' => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.',
+			'feasibility.formula.restNotDecisive' => 'This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.',
+			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.',
 			'feasibility.formula.restTwoDays' => 'On stages of equal size, one rest day a week is not enough: it takes two.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).',
 			'feasibility.formula.habitGapNotDecisive' => 'This gap is shown, never decisive: no study demonstrates that it causes anything.',
@@ -4630,12 +4614,8 @@ extension on TranslationsEn {
 			'feasibility.formula.seasonMissing' => 'No departure date is set: the season changes nothing here, for lack of data.',
 			'feasibility.formula.massNotCounted' => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.',
 			'feasibility.formula.winterInvalid' => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.',
-			'feasibility.formula.circuitConstraints.worstStage' => 'the hardest stage',
-			'feasibility.formula.circuitConstraints.averageLoad' => 'the average daily load',
-			'feasibility.formula.circuitConstraints.rest' => 'rest',
-			'feasibility.formula.circuitConstraints.habitGap' => 'the gap to your habit',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Rest days counted in this verdict: ${count}.',
-			'feasibility.formula.restDaysNone' => 'No rest day is set in your plan. The verdict sees that, and it is what weighs most here: add rest days to your plan and this figure moves.',
+			'feasibility.formula.restDaysNone' => 'No rest day is set in your plan: add some and this figure moves.',
 			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest stage is at ${worst}).',
 			'feasibility.formula.averageLoadInfo' => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.',
@@ -4860,13 +4840,13 @@ extension on TranslationsEn {
 			'gamification.defi.inProgress' => 'In progress',
 			'gamification.defi.progressLabel' => ({required Object current, required Object target}) => 'Progress: ${current} / ${target}',
 			'gamification.defi.rankingTitle' => 'Challenge ranking',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.defi.pseudonymNotice' => 'Ranking by group, using pseudonyms. No direct personal data is shown.',
 			'gamification.defi.notEnoughParticipants' => 'Not enough participants to publish this ranking.',
 			'gamification.defi.noDefi' => 'No challenge in progress right now.',
 			'shareVisibility.title' => 'Sharing and visibility',
 			'shareVisibility.intro' => 'By default, nothing is shared. Turn on below, purpose by purpose, what you want to make visible.',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.consentLink' => 'Manage my consent (privacy)',
 			'shareVisibility.stageResults' => 'Share my stage results',
 			'shareVisibility.stageResultsDesc' => 'A pseudonymous card (no direct personal data).',
@@ -5374,13 +5354,13 @@ extension on TranslationsEn {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Rest day ${day} details',
 			'summary.a11y.export' => 'Export plan as PDF',
 			'summary.a11y.download' => 'Download offline maps',
-			_ => null,
-		} ?? switch (path) {
 			'summary.a11y.share' => 'Share my plan',
 			'import.title' => 'Import a GPX',
 			'import.headerTitle' => 'Import a GPX file',
 			'import.headerBody' => 'Import a GPS track recorded with another app (Strava, Garmin, etc.) to generate your summary.',
 			'import.pickButton' => 'CHOOSE A GPX FILE',
+			_ => null,
+		} ?? switch (path) {
 			'import.traceSection' => 'Imported track',
 			'import.statsSection' => 'Statistics',
 			'import.statDistance' => 'Distance',

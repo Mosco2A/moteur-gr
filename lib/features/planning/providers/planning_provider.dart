@@ -1,7 +1,11 @@
+import 'dart:math' as math;
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/models/stage.dart';
 import '../../../features/trail/providers/stages_provider.dart';
+import '../../feasibility/domain/feasibility_formula.dart';
 import '../data/retained_plan_store.dart';
 import '../domain/planning_calculator.dart';
 import '../models/day_plan.dart';
@@ -63,16 +67,69 @@ final retainedDurationProvider =
     NotifierProvider<RetainedDurationNotifier, int?>(
         RetainedDurationNotifier.new);
 
+/// REPOS CONSEILLES pour le sentier courant : COMBIEN de jours de repos
+/// ramenent la monotonie de la pire semaine sous son seuil publie.
+///
+/// POURQUOI CE PROVIDER EXISTE (GO-61 du 22/09). Le programme par defaut ne
+/// portait AUCUN jour de repos : le randonneur partait d'un itineraire qu'il
+/// devait reparer sans savoir comment, et le chiffre du repos criait au rouge
+/// pour tout le monde, expert compris. Il pose desormais les repos CONSEILLES.
+/// Le repos ne decide plus du verdict — il conseille, et le conseil est
+/// applique par defaut plutot que laisse a la charge du randonneur.
+///
+/// LE CALCUL N'EST PAS ICI, ET C'EST VOULU : il est dans le moteur
+/// ([FeasibilityFormula.recommendedRestAfterStageIndex]), sur le meme seuil et
+/// la meme fenetre que la contrainte C3 affichee. Deux calculs separes
+/// finiraient par diverger, et l'ecran afficherait un chiffre pendant que le
+/// programme en appliquerait un autre.
+///
+/// SENS DE MARCHE : le compte est fait sur l'ordre des etapes du sentier.
+/// Inverser le sens ne change ni l'ensemble des energies ni, par symetrie de la
+/// fenetre glissante, la pire d'entre elles — seul le placement arrondi des
+/// repos pourrait, dans un cas limite, deplacer le compte d'une unite. C'est
+/// une valeur PAR DEFAUT, que le randonneur reste libre de changer.
+final recommendedRestDaysProvider =
+    Provider.family<int, String>((ref, trailId) {
+  final stages = ref.watch(stagesProvider(trailId)).maybeWhen(
+        data: (list) => List<StageModel>.of(list)
+          ..sort((a, b) => a.stageNumber.compareTo(b.stageNumber)),
+        orElse: () => const <StageModel>[],
+      );
+  if (stages.length < 2) return 0;
+  final energies = [
+    for (final s in stages)
+      FeasibilityScale.v2.energyOf(
+        distanceKm: s.distanceKm,
+        elevationGainM: s.elevationGainM,
+      ),
+  ];
+  return FeasibilityFormula.recommendedRestAfterStageIndex(energies).length;
+});
+
+/// DUREE PAR DEFAUT DU SENTIER, REPOS CONSEILLES COMPRIS (GO-61).
+///
+/// C'est la duree qu'applique l'application tant que le randonneur n'a RETENU
+/// aucun decoupage : les jours de marche du sentier, plus les jours de repos
+/// que le moteur conseille. Bornee aux durees possibles du sentier, pour que la
+/// valeur par defaut reste toujours atteignable par le selecteur.
+final defaultDurationWithRestProvider =
+    Provider.family<int, String>((ref, trailId) {
+  final base = ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
+  final rest = ref.watch(recommendedRestDaysProvider(trailId));
+  return ref.watch(durationBoundsProvider(trailId)).clampDuration(base + rest);
+});
+
 /// Duree EFFECTIVE du programme, en jours — source unique lue par le
 /// Programme, l'Itineraire, le Calendrier et le Resume.
 ///
 /// = le decoupage RETENU par le randonneur s'il en a choisi un
-/// ([retainedDurationProvider]), sinon la duree par defaut du sentier.
+/// ([retainedDurationProvider]), sinon la duree par defaut du sentier REPOS
+/// CONSEILLES COMPRIS ([defaultDurationWithRestProvider], GO-61).
 class SelectedDurationNotifier extends Notifier<int> {
   @override
   int build() {
-    final fallback =
-        ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
+    final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+    final fallback = ref.watch(defaultDurationWithRestProvider(trailId));
     return ref.watch(retainedDurationProvider) ?? fallback;
   }
 
@@ -123,13 +180,19 @@ class DurationBounds {
   final int max;
 
   /// Calcule les bornes a partir du nombre d'etapes.
-  factory DurationBounds.fromStageCount(int stageCount) {
+  ///
+  /// [recommendedRestDays] : repos CONSEILLES par le moteur (GO-61). La borne
+  /// haute ne peut pas etre PLUS BASSE que le conseil, sinon l'application
+  /// proposerait un programme que son propre selecteur refuserait d'atteindre —
+  /// et le randonneur verrait un conseil qu'il ne peut pas appliquer.
+  factory DurationBounds.fromStageCount(int stageCount,
+      {int recommendedRestDays = 0}) {
     if (stageCount <= 0) return const DurationBounds(min: 1, max: 1);
     if (stageCount == 1) return const DurationBounds(min: 1, max: 1);
-    final min = (stageCount / 2).ceil().clamp(1, stageCount);
-    final restMargin = (stageCount / 3).round().clamp(1, stageCount);
-    final max = stageCount + restMargin;
-    return DurationBounds(min: min, max: max);
+    final int min = (stageCount / 2).ceil().clamp(1, stageCount);
+    final int restMargin = (stageCount / 3).round().clamp(1, stageCount);
+    final int rest = math.max(restMargin, recommendedRestDays);
+    return DurationBounds(min: min, max: stageCount + rest);
   }
 
   /// Liste discrete des durees proposees (min..max inclus), pour le selecteur.
@@ -148,8 +211,12 @@ class DurationBounds {
 final durationBoundsProvider =
     Provider.family<DurationBounds, String>((ref, trailId) {
   final stagesAsync = ref.watch(stagesProvider(trailId));
+  final recommendedRest = ref.watch(recommendedRestDaysProvider(trailId));
   return stagesAsync.maybeWhen(
-    data: (stages) => DurationBounds.fromStageCount(stages.length),
+    data: (stages) => DurationBounds.fromStageCount(
+      stages.length,
+      recommendedRestDays: recommendedRest,
+    ),
     orElse: () {
       final config = ref.watch(trailConfigProvider);
       final durations = config.availableDurations;

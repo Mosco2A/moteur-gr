@@ -33,7 +33,8 @@ void main() {
   ];
 
   group('planningProvider', () {
-    test('retourne un planning avec le bon nombre de jours',
+    test(
+        'le programme par defaut porte les REPOS CONSEILLES (GO-61)',
         () async {
       final container = ProviderContainer(
         overrides: [
@@ -44,11 +45,23 @@ void main() {
         ],
       );
 
+      // defaultDuration = 5 dans testTrailConfig (5 etapes, une par jour). Le
+      // moteur conseille 2 jours de repos sur ces cinq etapes : le programme
+      // PAR DEFAUT les pose, au lieu de laisser le randonneur partir sans une
+      // seule journee de recuperation et reparer lui-meme.
+      //
+      // Le plan est lu EN PREMIER : tant que les etapes ne sont pas arrivees,
+      // on ne conseille rien (on ne devine pas un repos sur un sentier qu on
+      // n a pas encore lu), et les deux providers derives valent leur valeur
+      // neutre.
       final plan = await container
           .read(planningProvider('test-trail').future);
 
-      // defaultDuration = 5 dans testTrailConfig
-      expect(plan.length, 5);
+      expect(container.read(recommendedRestDaysProvider('test-trail')), 2);
+      expect(container.read(defaultDurationWithRestProvider('test-trail')), 7);
+      expect(plan.length, 7);
+      expect(plan.where((d) => d.isRestDay).length, 2);
+      expect(plan.where((d) => !d.isRestDay).length, 5);
 
       container.dispose();
     });
@@ -63,10 +76,10 @@ void main() {
         ],
       );
 
-      // Plan initial avec durée par défaut (5 jours)
+      // Plan initial : 5 jours de marche + 2 repos conseilles (GO-61).
       var plan = await container
           .read(planningProvider('test-trail').future);
-      expect(plan.length, 5);
+      expect(plan.length, 7);
 
       // Changer la durée à 3 jours
       container.read(selectedDurationProvider.notifier).state = 3;
@@ -106,14 +119,19 @@ void main() {
       container.dispose();
     });
 
-    test('selectedDurationProvider initialisé avec defaultDuration',
-        () {
+    test(
+        'sans etapes chargees, aucun repos n est conseille : la duree par '
+        'defaut reste celle du sentier', () {
+      // On ne conseille rien sur des etapes qu on n a pas : tant que le sentier
+      // n est pas charge, le repos conseille vaut zero et la duree par defaut
+      // est celle declaree par le sentier — pas un chiffre devine.
       final container = ProviderContainer(
         overrides: [
           trailConfigProvider.overrideWithValue(testTrailConfig),
         ],
       );
 
+      expect(container.read(recommendedRestDaysProvider('test-trail')), 0);
       final duration = container.read(selectedDurationProvider);
       expect(duration, testTrailConfig.defaultDuration);
 
@@ -129,6 +147,19 @@ void main() {
       expect(b.min, 3);
       expect(b.max, 7);
       expect(b.options, [3, 4, 5, 6, 7]);
+    });
+
+    test('la borne haute ne peut pas etre sous le repos CONSEILLE (GO-61)', () {
+      // 5 etapes : la marge de repos « maison » vaut 2. Si le moteur en
+      // conseille 4, la borne suit — sinon l application proposerait un
+      // programme que son propre curseur refuserait d atteindre.
+      final b = DurationBounds.fromStageCount(5, recommendedRestDays: 4);
+      expect(b.min, 3);
+      expect(b.max, 9);
+      // Et elle ne RETRECIT jamais : un conseil plus petit que la marge laisse
+      // la marge en place.
+      final c = DurationBounds.fromStageCount(5, recommendedRestDays: 1);
+      expect(c.max, 7);
     });
 
     test('un sentier a 1 etape n a pas de choix de duree', () {

@@ -180,15 +180,16 @@ void main() {
       // repos ajoutee reste visible (pas de culling de viewport).
       await pumpProgramme(tester);
 
-      // Pas de jour de repos au depart (5 jours = 5 etapes).
-      expect(find.text(t.programme.restDay), findsNothing);
+      // GO-61 : le programme par defaut porte deja les 2 repos CONSEILLES par
+      // le moteur sur ces cinq etapes.
+      expect(find.text(t.programme.restDay), findsNWidgets(2));
 
       // Ajouter un jour de repos via la 1re action « Repos » visible.
       await tester.tap(find.text(t.programme.actions.rest).first);
       await tester.pumpAndSettle();
 
-      // Un jour de repos est apparu (carte dediee).
-      expect(find.text(t.programme.restDay), findsWidgets);
+      // Un jour de repos de PLUS est apparu (carte dediee).
+      expect(find.text(t.programme.restDay), findsNWidgets(3));
     });
   });
 
@@ -314,11 +315,14 @@ void main() {
       expect(slider.min, 3.0);
       expect(slider.max, 7.0);
       expect(slider.divisions, 4); // 7 - 3
-      expect(slider.value, 5.0); // duree defaut
+      // GO-61 : duree par defaut = 5 jours de marche + 2 repos conseilles.
+      expect(slider.value, 7.0);
 
-      // La valeur courante « 5 j » est affichee en grand au-dessus du curseur.
-      final label5 = t.programme.duration.days.replaceAll('{count}', '5');
-      expect(find.text(label5), findsWidgets);
+      // Le compteur affiche le total ET le detail des repos.
+      final labelAvecRepos = t.programme.duration.daysWithRest
+          .replaceAll('{total}', '7')
+          .replaceAll('{rest}', '2');
+      expect(find.text(labelAvecRepos), findsWidgets);
     });
 
     testWidgets('la couleur du curseur suit la DIFFICULTE (ratio etapes/jours)', (
@@ -357,22 +361,22 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      // Au depart : 5 jours = 5 etapes, aucun repos.
-      expect(find.text('5'), findsWidgets); // valeur « Jours » (et « Etapes »)
-      expect(find.text(t.programme.restDayLabel), findsNothing);
+      // Au depart (GO-61) : 7 jours = 5 etapes + 2 repos conseilles.
+      final restCount2 = t.programme.stats.restCount.replaceAll('{count}', '2');
+      expect(find.text('7 ($restCount2)'), findsOneWidget);
+      expect(find.text(t.programme.restDayLabel), findsNWidgets(2));
 
-      // Glisser le curseur a 7 jours -> 5 etapes + 2 jours de repos. Le
+      // Glisser le curseur a 5 jours -> 5 etapes, plus aucun repos. Le
       // programme recalcule via selectedDurationProvider (watch par
-      // plannedDaysProvider).
+      // plannedDaysProvider), et le randonneur REPREND la main : c est bien
+      // une valeur par defaut, pas une contrainte.
       final slider = tester.widget<Slider>(find.byType(Slider));
-      slider.onChanged!(7);
+      slider.onChanged!(5);
       await tester.pumpAndSettle();
 
-      // En-tete « Jours » = « 7 (2 repos) » : preuve directe du recalcul.
-      final restCount = t.programme.stats.restCount.replaceAll('{count}', '2');
-      expect(find.text('7 ($restCount)'), findsOneWidget);
-      // Profil altimetrique : 2 barres de repos « R » apparues.
-      expect(find.text(t.programme.restDayLabel), findsNWidgets(2));
+      // En-tete « Jours » = « 5 » sans mention de repos : preuve du recalcul.
+      expect(find.text('5'), findsWidgets);
+      expect(find.text(t.programme.restDayLabel), findsNothing);
     });
 
     testWidgets(
@@ -380,20 +384,23 @@ void main() {
       (tester) async {
         await pumpProgramme(tester);
 
-        // Au depart : 5 jours de marche, aucun repos -> le grand compteur du
-        // curseur affiche « 5 j » (total = marche, restDays = 0).
-        final days5 = t.programme.duration.days.replaceAll('{count}', '5');
-        expect(find.text(days5), findsWidgets);
+        // Au depart (GO-61) : 5 jours de marche + 2 repos conseilles -> le
+        // grand compteur du curseur affiche deja le total et son detail.
+        final avant = t.programme.duration.daysWithRest
+            .replaceAll('{total}', '7')
+            .replaceAll('{rest}', '2');
+        expect(find.text(avant), findsOneWidget);
 
-        // Ajouter UN jour de repos via l'action « Repos » (pas le slider).
+        // Ajouter UN jour de repos de plus via l'action « Repos » (pas le
+        // slider).
         await tester.tap(find.text(t.programme.actions.rest).first);
         await tester.pumpAndSettle();
 
         // Retour Chris #9 : le compteur du curseur SUIT le repos ajoute -> il
-        // affiche desormais le TOTAL (6) avec le detail repos, et NON plus « 5 j ».
+        // affiche desormais le TOTAL (8) avec le detail repos (3).
         final daysWithRest = t.programme.duration.daysWithRest
-            .replaceAll('{total}', '6')
-            .replaceAll('{rest}', '1');
+            .replaceAll('{total}', '8')
+            .replaceAll('{rest}', '3');
         expect(find.text(daysWithRest), findsOneWidget);
         // L'ancien libelle « 5 j » ne subsiste PAS pour le compteur (le curseur ne
         // reste pas bloque sur les seuls jours de marche). NB : le slider a

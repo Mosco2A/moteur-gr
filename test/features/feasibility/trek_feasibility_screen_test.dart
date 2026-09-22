@@ -217,9 +217,11 @@ void main() {
     testWidgets('le bouton est present et affiche la duree recommandee',
         (tester) async {
       await pumpWithPlanningRoute(tester, mixedAssessment());
-      // Reco = 5 jours (bornee [3..7]).
+      // Reco = 5 jours de MARCHE + 1 jour de REPOS conseille = 6 (bornee
+      // [3..7]). GO-61 : le bouton ne reprend pas au randonneur les repos que
+      // le programme par defaut vient de lui poser.
       expect(
-        find.text(t.feasibility.formula.generateProgram(days: 5)),
+        find.text(t.feasibility.formula.generateProgram(days: 6)),
         findsOneWidget,
       );
     });
@@ -236,16 +238,79 @@ void main() {
       // Le bouton est en bas de la vue scrollable -> le rendre visible avant tap.
       final button = find.widgetWithText(
         ElevatedButton,
-        t.feasibility.formula.generateProgram(days: 5),
+        t.feasibility.formula.generateProgram(days: 6),
       );
       await tester.ensureVisible(button);
       await tester.tap(button);
       await tester.pumpAndSettle();
 
-      // La SOURCE UNIQUE des jours est passee a la reco (5).
-      expect(container.read(selectedDurationProvider), 5);
+      // La SOURCE UNIQUE des jours est passee a la reco, REPOS COMPRIS (6).
+      expect(container.read(selectedDurationProvider), 6);
       // On a navigue vers le Programme du sentier (parite GR20 CONTINUER).
       expect(find.text('PLANNING test-trail'), findsOneWidget);
+    });
+  });
+
+  group('GO-61 — le repos s affiche et conseille, il ne decide pas', () {
+    /// Sentier de production (7 etapes) pour un profil CONFIRME : toutes les
+    /// etapes sont vertes, et la monotonie depasse pourtant son seuil. C est le
+    /// cas exact qui rendait un circuit ROUGE devant des etapes vertes.
+    FeasibilityAssessment reposConseille() => FeasibilityFormula.evaluate(
+          stages: [
+            stage(0, 'E1', 15, 850),
+            stage(1, 'E2', 12, 600),
+            stage(2, 'E3', 10, 400),
+            stage(3, 'E4', 11, 550),
+            stage(4, 'E5', 14, 650),
+            stage(5, 'E6', 12, 500),
+            stage(6, 'E7', 10, 200),
+          ],
+          level: HikerLevel.confirmed,
+        );
+
+    testWidgets('l ecran dit ce qui decide : la pire journee', (tester) async {
+      await pumpScreen(tester, reposConseille());
+      expect(find.text(t.feasibility.formula.circuitIsWorstStage),
+          findsOneWidget);
+      // Le verdict du circuit EST celui des etapes : toutes vertes.
+      final a = reposConseille();
+      expect(a.globalVerdict, FeasibilityVerdict.green);
+      expect(a.circuit!.rest, greaterThan(1.0));
+    });
+
+    testWidgets('le chiffre du repos est montre, avec sa non-decision',
+        (tester) async {
+      await pumpScreen(tester, reposConseille());
+      expect(find.byKey(const ValueKey('feasibility-rest-days-counted')),
+          findsOneWidget);
+      expect(find.text(t.feasibility.formula.restDaysNone), findsOneWidget);
+      expect(find.text(t.feasibility.formula.restNotDecisive), findsOneWidget);
+      // L extrapolation declaree reste dite la ou le chiffre est montre.
+      expect(
+          find.text(t.feasibility.formula.restExtrapolation), findsOneWidget);
+    });
+
+    testWidgets('le CONSEIL est affiche : combien de repos, et ou',
+        (tester) async {
+      final a = reposConseille();
+      await pumpScreen(tester, a);
+      expect(find.byKey(const ValueKey('feasibility-rest-advised')),
+          findsOneWidget);
+      expect(
+        find.text(t.feasibility.formula
+            .restAdvisedLine(days: a.recommendedRestDays)),
+        findsOneWidget,
+      );
+      // Et le meme conseil, en toutes lettres, dans les conseils de programme.
+      expect(
+        find.text(t.feasibility.formula.advice.restAdvised(
+          days: a.recommendedRestDays,
+          stages: (a.recommendedRestAfterStageIndex.toList()..sort())
+              .map((i) => i + 1)
+              .join(', '),
+        )),
+        findsOneWidget,
+      );
     });
   });
 }

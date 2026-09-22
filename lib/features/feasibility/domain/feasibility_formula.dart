@@ -112,7 +112,8 @@ enum CircuitConstraint {
   /// C2 — la charge moyenne du circuit.
   averageLoad,
 
-  /// C3 — le repos (monotonie de Foster).
+  /// C3 — le repos (monotonie de Foster). AFFICHE ET CONSEILLE, JAMAIS DECISIF
+  /// depuis GO-61 — voir [CircuitScore.score].
   rest,
 
   /// C4 — l'ecart a l'habitude. AFFICHE, JAMAIS DECISIF (#2-q).
@@ -468,6 +469,12 @@ class CircuitScore {
   /// un sentier d'UNE etape, l'ecart-type d'une seule charge vaut zero et la
   /// monotonie diverge. Une contrainte non calculable est DECLAREE non
   /// applicable, elle n'est jamais remplacee par un chiffre (#10-e).
+  ///
+  /// AFFICHEE ET CONSEILLEE, JAMAIS DECISIVE depuis GO-61 (22/09). Elle rejoint
+  /// C2 et C4 dans les grandeurs informatives : le seuil de 2,0 est une
+  /// EXTRAPOLATION declaree (#M08, athletes en entrainement), et la regle du
+  /// projet est que ce qui n'est pas source s'affiche mais ne decide pas. Voir
+  /// [score] pour la demonstration complete.
   final double? rest;
 
   /// C4 — charge journaliere du trek ÷ charge journaliere deja realisee
@@ -490,17 +497,40 @@ class CircuitScore {
   /// la fenetre retenue couvre le trek entier ou seulement une de ses semaines.
   final int totalDays;
 
-  /// S_circuit = max(C1 ; C3). C2 et C4 sont en INFORMATION (#2-r, corrige).
+  /// S_circuit = C1, LA PIRE ETAPE, ET ELLE SEULE (GO-61 du 22/09).
   ///
-  /// CONSEQUENCE A CONNAITRE : apres le retrait de C2, le SEUL mecanisme qui
-  /// peut rendre un circuit plus severe que toutes ses etapes est C3, le repos.
-  /// C'est exactement le comportement qu'ARB-004 autorisait — et cela rend
-  /// l'alimentation des jours de repos critique : sans elle, C3 est le seul
-  /// decideur et il decide sur une donnee fausse.
+  /// C2, C3 et C4 sont TOUTES EN INFORMATION. Le chemin jusque-la, en deux
+  /// temps : C2 est sortie du maximum parce qu'une moyenne ne peut pas depasser
+  /// le maximum de la meme serie (elle ne decidait donc jamais) ; C3 en est
+  /// sortie a son tour parce qu'elle etait la SEULE contrainte EXTRAPOLEE du
+  /// modele (#M08 : seuil de Foster etabli sur des athletes EN ENTRAINEMENT,
+  /// transfere a l'itinerance) et la seule a laquelle on avait laisse le droit
+  /// de mettre au rouge — en contradiction avec la regle du projet, ce qui
+  /// n'est pas source s'affiche mais ne decide pas.
+  ///
+  /// CE QUI A EMPORTE LA DECISION, MESURE SUR LE PRODUIT REEL : 24 cellules sur
+  /// 24 au rouge par le seul fait qu'aucun jour de repos n'etait pose, DONT un
+  /// profil confirme dont la pire etape est a 0,68 — vert franc. Et un defaut
+  /// mathematique par-dessus : la monotonie vaut moyenne ÷ ecart-type, donc
+  /// PLUS LES ETAPES SONT REGULIERES PLUS ELLE GRIMPE ; un randonneur qui
+  /// enchaine sept jours bien calibres etait puni PARCE QUE son itineraire
+  /// etait regulier.
+  ///
+  /// CONTREPARTIE ASSUMEE, ET ELLE EST REELLE : plus aucun mecanisme ne rend un
+  /// circuit plus severe que sa pire etape. ARB-004 (#2-s) n'a plus rien pour
+  /// le porter, et l'exemple des dix-sept jours d'affilee est DIT a l'ecran
+  /// (constat de duree) et non JUGE. C'est le prix de n'inventer aucun chiffre
+  /// sur un sujet de securite en montagne : aucune source publiee ne chiffre la
+  /// fatigue cumulee en randonnee itinerante (trou #M15).
   final double score;
 
-  /// La contrainte qui MORD (celle qui porte [score]) : [worstStage] ou [rest],
-  /// jamais [averageLoad] ni [habitGap].
+  /// La contrainte qui porte [score].
+  ///
+  /// VAUT DESORMAIS TOUJOURS [worstStage] : depuis GO-61, S_circuit = C1 et
+  /// aucune autre contrainte n'entre dans le maximum. Le champ est CONSERVE
+  /// parce qu'il rend la propriete VERIFIABLE — la campagne et les tests
+  /// verrouillent « la dominante ne peut etre que C1 », ce qui casserait au
+  /// premier recablage d'une contrainte informative dans le verdict.
   final CircuitConstraint dominant;
 
   /// Verdict tricolore du circuit (memes seuils que les etapes).
@@ -549,6 +579,7 @@ class FeasibilityAssessment {
     required this.advice,
     required this.suggestedDays,
     required this.restDaysPlanned,
+    required this.recommendedRestAfterStageIndex,
     required this.walkingDays,
     required this.longestConsecutiveDaysDone,
   });
@@ -604,6 +635,30 @@ class FeasibilityAssessment {
   /// Nombre de jours de REPOS pris en compte dans la contrainte C3.
   final int restDaysPlanned;
 
+  /// REPOS CONSEILLES : index 0-based des etapes APRES lesquelles poser un jour
+  /// de repos pour que la monotonie repasse sous son seuil.
+  ///
+  /// UN CONSEIL, PLUS UN VERDICT (GO-61). C'est aussi ce que le programme par
+  /// defaut POSE : le randonneur part d'un itineraire tenable et voit le
+  /// chiffre du repos bouger s'il les retire, au lieu de partir d'un itineraire
+  /// qu'il devrait reparer sans savoir comment.
+  final Set<int> recommendedRestAfterStageIndex;
+
+  /// Nombre de jours de repos conseilles (= taille de
+  /// [recommendedRestAfterStageIndex]).
+  int get recommendedRestDays => recommendedRestAfterStageIndex.length;
+
+  /// Vrai si le repos merite d'etre CONSEILLE : la monotonie depasse son seuil
+  /// (C3 > 1) et le programme courant ne porte pas encore ce qu'il faudrait.
+  ///
+  /// Ne conditionne AUCUNE couleur : c'est le declencheur d'une phrase, pas
+  /// d'un verdict.
+  bool get isRestAdvised {
+    final c = circuit;
+    final r = c?.rest;
+    return r != null && r > 1 && recommendedRestAfterStageIndex.isNotEmpty;
+  }
+
   /// Nombre de jours de MARCHE du trek (= nombre d'etapes evaluees).
   ///
   /// ENONCE, JAMAIS SCORE. Voir [longestConsecutiveDaysDone].
@@ -639,9 +694,13 @@ class FeasibilityAssessment {
 
   /// ARB-004 (#2-s) : le circuit est-il PLUS SEVERE que toutes ses etapes ?
   ///
-  /// Quand c'est vrai, l'ecran a l'OBLIGATION d'expliquer pourquoi, sinon
-  /// l'utilisateur croira a un bug (il verra des etapes vertes et un circuit
-  /// rouge).
+  /// STRUCTURELLEMENT FAUX DEPUIS GO-61, et c'est exactement pour cela que ce
+  /// getter reste : S_circuit vaut C1, donc le verdict du circuit EST celui de
+  /// sa pire etape, et cette propriete doit pouvoir etre VERIFIEE plutot que
+  /// supposee. Un test la verrouille ; le jour ou une contrainte informative
+  /// rentrerait a nouveau dans le verdict, il rougirait au lieu de laisser
+  /// passer un randonneur devant des etapes vertes surmontees d'un circuit
+  /// rouge, sans explication.
   bool get isCircuitHarsherThanStages {
     final c = circuit;
     if (c == null || stageVerdicts.isEmpty) return false;
@@ -913,6 +972,11 @@ class FeasibilityFormula {
     // 7. Reco entrainement + conseils de programme.
     final trainingWeeks = trainingWeeksFor(level, globalVerdict);
     final suggestedDays = _suggestedWalkingDays(verdicts, capacity);
+    // Le repos CONSEILLE (GO-61) : calcule sur les memes energies que C3, donc
+    // sur le meme chiffre que celui affiche.
+    final recommendedRest = recommendedRestAfterStageIndex(
+      verdicts.map((v) => v.energyKm).toList(),
+    );
     final advice = _buildAdvice(
       verdicts: verdicts,
       circuit: circuit,
@@ -921,6 +985,7 @@ class FeasibilityFormula {
       suggestedDays: suggestedDays,
       currentDays: stages.length,
       trainingWeeks: trainingWeeks,
+      recommendedRest: recommendedRest,
     );
 
     return FeasibilityAssessment(
@@ -941,6 +1006,7 @@ class FeasibilityFormula {
       advice: advice,
       suggestedDays: suggestedDays,
       restDaysPlanned: restAfterStageIndex.length,
+      recommendedRestAfterStageIndex: recommendedRest,
       walkingDays: stages.length,
       longestConsecutiveDaysDone: longestConsecutiveDaysDone,
     );
@@ -986,6 +1052,107 @@ class FeasibilityFormula {
     return mean / sd;
   }
 
+  /// Monotonie RETENUE par C3 : celle de la PIRE fenetre de [monotonyWindowDays]
+  /// jours, ou celle du trek entier s'il est plus court, avec les bornes de la
+  /// fenetre retenue (1-based).
+  ///
+  /// Extraite pour une raison precise : le calcul du repos CONSEILLE
+  /// ([recommendedRestAfterStageIndex]) doit mesurer EXACTEMENT ce que mesure
+  /// C3, sinon le conseil viserait un autre chiffre que celui affiche.
+  static ({double? monotony, int? startDay, int? endDay}) worstMonotonyWindow(
+      List<double> loads) {
+    if (loads.length <= monotonyWindowDays) {
+      final m = monotonyOf(loads);
+      if (m == null) return (monotony: null, startDay: null, endDay: null);
+      return (monotony: m, startDay: 1, endDay: loads.length);
+    }
+    double? worst;
+    int? start;
+    int? end;
+    for (var i = 0; i + monotonyWindowDays <= loads.length; i++) {
+      final m = monotonyOf(loads.sublist(i, i + monotonyWindowDays));
+      if (m == null) continue;
+      if (worst == null || m > worst) {
+        worst = m;
+        start = i + 1;
+        end = i + monotonyWindowDays;
+      }
+    }
+    return (monotony: worst, startDay: start, endDay: end);
+  }
+
+  /// Index 0-based des etapes APRES lesquelles le PLANIFICATEUR pose ses repos
+  /// quand il doit en repartir [restDays] sur [stageCount] etapes.
+  ///
+  /// MIROIR EXACT de `PlanningCalculator._computeRestPositions`, et la
+  /// traduction d'une convention a l'autre est ecrite ICI, une seule fois : le
+  /// planificateur raisonne en « repos AVANT l'etape i », le moteur en « repos
+  /// APRES l'etape i-1 ». Les deux decrivent le meme jour de repos. Sans cette
+  /// traduction commune, le programme genere porterait ses repos ailleurs que
+  /// la ou le moteur les compte, et l'ecran afficherait deux chiffres qui se
+  /// contredisent.
+  ///
+  /// Un repos AVANT la premiere etape ne repose de rien : il est ignore, comme
+  /// le fait deja le moteur.
+  static Set<int> restAfterStageIndexFor({
+    required int stageCount,
+    required int restDays,
+  }) {
+    final result = <int>{};
+    if (restDays <= 0 || stageCount <= 1) return result;
+    final interval = stageCount / (restDays + 1);
+    for (var r = 0; r < restDays; r++) {
+      final pos = ((r + 1) * interval).round().clamp(0, stageCount - 1);
+      if (pos >= 1) result.add(pos - 1);
+    }
+    return result;
+  }
+
+  /// REPOS CONSEILLES : le plus PETIT nombre de jours de repos qui ramene la
+  /// monotonie de la pire fenetre SOUS son seuil, et ou les poser.
+  ///
+  /// C'EST UN CONSEIL, PLUS UN VERDICT (GO-61). Depuis que S_circuit vaut C1
+  /// seul, le repos ne condamne plus rien : il est calcule, affiche, et il sert
+  /// a POSER LE PROGRAMME PAR DEFAUT. Le randonneur part alors d'un itineraire
+  /// tenable et voit le chiffre du repos remonter s'il les retire, au lieu de
+  /// partir d'un itineraire intenable qu'il devrait reparer sans savoir
+  /// comment.
+  ///
+  /// COMMENT LE NOMBRE EST TROUVE, SANS RIEN INVENTER : on essaie 0, 1, 2 …
+  /// jours de repos, places comme le planificateur les placerait, et on garde
+  /// le PREMIER qui ramene la monotonie sous le seuil deja publie (#S15). Aucun
+  /// nouveau seuil n'est cree ; le seul seuil du dispositif est celui qui vient
+  /// de perdre le droit de decider, et qui garde celui de conseiller.
+  ///
+  /// Rend un ensemble VIDE quand aucun repos n'est necessaire, ou quand la
+  /// contrainte n'est pas calculable : on ne conseille rien sur un chiffre qui
+  /// n'existe pas.
+  ///
+  /// TROU CONNU ET DECLARE, plutot que corrige en douce. Des charges
+  /// STRICTEMENT egales donnent un ecart-type nul : la monotonie diverge, la
+  /// contrainte est declaree non applicable (#10-e) et aucun repos n'est donc
+  /// conseille — alors que c'est mathematiquement le cas le plus monotone qui
+  /// soit. Deux etapes reelles n'ont jamais exactement la meme energie, c'est
+  /// donc un cas de laboratoire ; le combler demanderait de decider ce que vaut
+  /// une division par zero, ce qui serait un chiffre invente.
+  static Set<int> recommendedRestAfterStageIndex(List<double> stageEnergies) {
+    final n = stageEnergies.length;
+    if (n < 2) return const {};
+    for (var restDays = 0; restDays < n; restDays++) {
+      final rest =
+          restAfterStageIndexFor(stageCount: n, restDays: restDays);
+      // Un repos demande mais non placable (avant la premiere etape, ou apres
+      // la derniere) ne compte pas : on passe au nombre suivant.
+      if (restDays > 0 && rest.length < restDays) continue;
+      final m = worstMonotonyWindow(dailyLoads(
+        stageEnergies: stageEnergies,
+        restAfterStageIndex: rest,
+      )).monotony;
+      if (m == null || m <= monotonyThreshold) return rest;
+    }
+    return const {};
+  }
+
   /// Calcule C1 a C4 et le score de circuit.
   static CircuitScore _circuitScore({
     required List<StageVerdict> verdicts,
@@ -1010,26 +1177,10 @@ class FeasibilityFormula {
       stageEnergies: verdicts.map((v) => v.energyKm).toList(),
       restAfterStageIndex: restAfterStageIndex,
     );
-    double? monotony;
-    int? windowStart;
-    int? windowEnd;
-    if (loads.length <= monotonyWindowDays) {
-      monotony = monotonyOf(loads);
-      if (monotony != null) {
-        windowStart = 1;
-        windowEnd = loads.length;
-      }
-    } else {
-      for (var i = 0; i + monotonyWindowDays <= loads.length; i++) {
-        final m = monotonyOf(loads.sublist(i, i + monotonyWindowDays));
-        if (m == null) continue;
-        if (monotony == null || m > monotony) {
-          monotony = m;
-          windowStart = i + 1;
-          windowEnd = i + monotonyWindowDays;
-        }
-      }
-    }
+    final window = worstMonotonyWindow(loads);
+    final monotony = window.monotony;
+    final windowStart = window.startDay;
+    final windowEnd = window.endDay;
     final c3 = monotony == null ? null : monotony / monotonyThreshold;
 
     // C4 — l'ecart a l'habitude (#2-q). AFFICHE, JAMAIS DECISIF.
@@ -1038,17 +1189,13 @@ class FeasibilityFormula {
         ? null
         : (totalEnergy / verdicts.length) / habitual;
 
-    // S_circuit = max(C1 ; C3). C2 et C4 restent en INFORMATION (#2-r corrige).
-    // C2 n'entre PAS dans le maximum : etant la moyenne d'une serie dont C1 est
-    // le maximum, elle lui est inferieure ou egale par construction et ne
-    // pouvait donc jamais decider. L'ecrire ainsi ne change aucune sortie, cela
-    // rend seulement la formule honnete.
-    var score = c1;
-    var dominant = CircuitConstraint.worstStage;
-    if (c3 != null && c3 > score) {
-      score = c3;
-      dominant = CircuitConstraint.rest;
-    }
+    // S_circuit = C1, ET RIEN D'AUTRE (GO-61). C2, C3 et C4 sont calculees,
+    // affichees, et pour C3 conseillee — aucune n'entre dans le verdict. La
+    // demonstration complete est portee par [CircuitScore.score] : elle tient
+    // en une phrase, ce qui n'est pas source s'affiche mais ne decide pas, et
+    // C3 etait la derniere contrainte extrapolee a avoir garde ce droit.
+    final score = c1;
+    const dominant = CircuitConstraint.worstStage;
 
     return CircuitScore(
       worstStage: c1,
@@ -1120,21 +1267,39 @@ class FeasibilityFormula {
     required int suggestedDays,
     required int currentDays,
     required int trainingWeeks,
+    required Set<int> recommendedRest,
   }) {
     final advice = <ProgramAdvice>[];
 
+    // 0. LE REPOS, EN CONSEIL (GO-61). Il ne decide plus rien, donc il ne
+    // depend plus de la couleur : un programme dont toutes les etapes sont
+    // vertes peut parfaitement n'offrir aucune recuperation, et c'est encore
+    // plus vrai quand il est vert — personne ne pensera a souffler. La phrase
+    // dit COMBIEN et OU, parce qu'un conseil qu'on ne peut pas appliquer n'en
+    // est pas un.
+    final c3 = circuit?.rest;
+    final restAdvised = c3 != null && c3 > 1 && recommendedRest.isNotEmpty;
+    final restAdvice = ProgramAdvice(
+      key: 'restAdvised',
+      params: {
+        'days': recommendedRest.length,
+        'stages':
+            (recommendedRest.toList()..sort()).map((i) => i + 1).join(', '),
+      },
+    );
+
     // Tout vert : le programme actuel tient, on encourage a garder des marges.
+    // Le conseil de repos vient APRES — il nuance, il ne contredit pas.
     if (globalVerdict == FeasibilityVerdict.green) {
       advice.add(const ProgramAdvice(key: 'balancedOk'));
+      if (restAdvised) advice.add(restAdvice);
       return advice;
     }
 
-    // 0. C3 dominante : c'est le REPOS qui mord, pas une etape. Le dire en
-    // premier, sinon le conseil « decoupe l'etape N » envoie dans le mur —
-    // lisser les pics et poser des repos sont deux leviers OPPOSES (#2-t).
-    if (circuit != null && circuit.dominant == CircuitConstraint.rest) {
-      advice.add(const ProgramAdvice(key: 'restDominant'));
-    }
+    // Hors du vert, le repos passe DEVANT : conseiller « decoupe l'etape N »
+    // quand c'est la recuperation qui manque enverrait dans le mur, lisser les
+    // pics et poser des repos etant deux leviers OPPOSES (#2-t).
+    if (restAdvised) advice.add(restAdvice);
 
     // 1. Nombre de jours optimal (si plus que le decoupage actuel).
     if (suggestedDays > currentDays) {
@@ -1156,7 +1321,14 @@ class FeasibilityFormula {
     }
 
     // 3. Ou poser les repos : apres chaque bloc d'etapes au-dessus du plafond.
-    final restAfter = _restDaySuggestions(verdicts);
+    //
+    // SAUTE si le conseil de rythme a deja parle : deux phrases de repos qui
+    // designent des etapes differentes — l'une sur les blocs durs, l'autre sur
+    // la regularite — se contrediraient a l'ecran. Le conseil de rythme est
+    // alors le plus complet des deux (il dit combien ET ou).
+    final restAfter = restAdvised
+        ? const <int>[]
+        : _restDaySuggestions(verdicts);
     if (restAfter.isNotEmpty) {
       advice.add(ProgramAdvice(
         key: 'rest',
