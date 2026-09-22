@@ -257,28 +257,65 @@ void main() {
     if (await exigeTap(
         tester, cinqRandos, P, 'faisabilite', 'acces aux 5 dernieres randos')) {
       await settleAndShoot(tester, P, '11_past_hikes');
-      // Ouvrir le formulaire d ajout (bouton « Ajouter une rando »).
-      await tapIfPresent(tester,
-          textFrEn('Ajouter une rando', 'Add a hike'), P, 'past_hikes',
-          'ajouter une rando', warnIfMissing: false);
+      // === SAISIE D'UNE RANDO — REECRIT EN EXIGENCES (tache 544) ===
+      //
+      // CE QUI N'ALLAIT PAS, ET C'ETAIT LE MEME DEFAUT QU'ON VENAIT DE
+      // CORRIGER AILLEURS. Ce bloc n'etait fait que de `tapIfPresent` et
+      // `enterText` sur `find.byType(TextFormField).at(i)` : il NE POUVAIT PAS
+      // ECHOUER. Deux consequences mesurees le 22/09 :
+      //   * les champs etaient cherches par INDEX dans TOUT l'arbre, sheet et
+      //     page de fond confondues, et les valeurs « 1, 8, 8, 300, 1 »
+      //     atterrissaient dans le desordre (jours, heures, D+, distance) ;
+      //   * quand rien n'etait saisi, le scenario continuait en silence, la
+      //     rando n'existait pas, et l'echec ne se voyait que DIX pas plus loin
+      //     sous la forme « aucun verdict affiche » — qui ressemblait a un
+      //     defaut produit alors que l'application avait raison : elle disait
+      //     exactement ce qui lui manquait (capture 12c).
+      // CE QU'ON FAIT : on vise les champs par LEUR LIBELLE, chaque pas
+      // porteur devient une EXIGENCE, et on prouve l'EFFET — la rando doit
+      // exister APRES, et AILLEURS que la ou on l'a saisie.
+      final tph = t.pastHikes;
+      exige(P, 'past_hikes', present(find.text(tph.empty)),
+          'avant saisie, la liste declare qu aucune rando n est enregistree');
+      await exigeTap(tester, find.text(tph.addHike), P, 'past_hikes',
+          'ouvrir le formulaire « ${tph.addHike} »');
       await settleAndShoot(tester, P, '12_past_hikes_form');
-      // Renseigner les champs numeriques presents (valeurs modestes).
-      final formFields = find.byType(TextFormField);
-      final n = formFields.evaluate().length;
-      logStep(P, 'past_hikes', 'Formulaire rando : $n champs TextFormField');
-      // Valeurs debutante : rando courte (1 jour, ~8 km/j, ~300 m D+...).
-      const values = ['1', '8', '8', '300', '1'];
-      for (var i = 0; i < n && i < values.length; i++) {
-        await tester.enterText(formFields.at(i), values[i]);
-        await pumpAndSettleTolerant(tester);
+
+      // Les valeurs de Lea, telles que son prompt les donne : des sorties du
+      // dimanche de deux a trois heures, sans difficulte.
+      const saisies = <(String, String)>[
+        ('jours', '1'),
+        ('heures', '3'),
+        ('denivele', '200'),
+        ('distance', '9'),
+      ];
+      final libelles = <String, String>{
+        'jours': tph.fieldDays,
+        'heures': tph.fieldAvgHours,
+        'denivele': tph.fieldElevation,
+        'distance': tph.fieldDistance,
+      };
+      for (final (cle, valeur) in saisies) {
+        final champ = find.ancestor(
+          of: find.text(libelles[cle]!),
+          matching: find.byType(TextFormField),
+        );
+        await exigeSaisie(tester, champ, valeur, P, 'past_hikes',
+            'champ « ${libelles[cle]} »');
       }
-      if (n > 0) {
-        logStep(P, 'past_hikes', 'SAISIE valeurs modestes dans le formulaire');
-      }
-      // Valider le formulaire (« Enregistrer »).
-      await tapIfPresent(tester, textFrEn('Enregistrer', 'Save'), P, 'past_hikes',
-          'enregistrer la rando', warnIfMissing: false);
+      await settleAndShoot(tester, P, '12a_past_hikes_rempli');
+
+      await exigeTap(tester, find.text(tph.save), P, 'past_hikes',
+          'enregistrer la rando');
       await settleAndShoot(tester, P, '12b_past_hikes_saved');
+
+      // PREUVE D'EFFET, pas preuve d'affichage : la liste ne doit plus dire
+      // qu'elle est vide. C'est constate APRES l'action et AILLEURS que dans
+      // le formulaire (ligne L5 de la grille #100297).
+      exige(P, 'past_hikes', !present(find.text(tph.empty)),
+          'APRES enregistrement, la liste ne declare plus etre vide — '
+          'la rando existe vraiment');
+
       // Revenir sur la faisabilite pour la reouvrir proprement.
       if (!present(feasCard)) {
         await _back(tester, P, 'faisabilite');
@@ -764,6 +801,16 @@ void main() {
 
     // --- Etape 12 : DIPLOME ---
     await _goHome(tester, P);
+    // REMONTER EN HAUT DU COCKPIT AVANT DE CHERCHER LA PORTE POST-TREK.
+    // Correctif N2 retrouve et remis (tache 544) : la carte « trek termine »
+    // qui porte `completed-review` et `completed-diploma` est EN TETE d'une
+    // liste VIRTUALISEE. Apres le parcours, le cockpit est reste defile en bas
+    // (capture 28 : on voit Materiel & Sac et Informations, pas la tete de
+    // liste). `tapIfPresent` ne defile pas : il cherchait donc une carte qui
+    // n'etait pas construite, ne la trouvait jamais, et le diplome comptait
+    // pour perdu alors que l'ecran « Mon aventure » fonctionne parfaitement
+    // (capture 27 a l'appui).
+    await _remonterEnHaut(tester, P, 'diplome');
     // CORRECTIF L5-8 : le cockpit n'a plus qu'UNE porte apres le trek,
     // « Mon aventure ». Le diplome s'ouvre DEPUIS le recapitulatif, ou son
     // bouton porte la cle stable `recap-diploma`. L'ancien chemin direct
@@ -845,6 +892,9 @@ void main() {
     // porte unique apres-trek s'appelle « Mon aventure » (`t.recap.title`) et
     // porte la cle stable `completed-review`.
     await _goHome(tester, P);
+    // Remonter APRES le retour au cockpit, pas avant : c'est la liste du
+    // cockpit qu'il faut ramener en tete, pas celle de l'ecran precedent.
+    await _remonterEnHaut(tester, P, 'apres_recap');
     final recapCard = find.text(t.recap.title);
     var recapOpened = await tapIfPresent(
         tester, find.byKey(const ValueKey('completed-review')), P, 'apres_recap',
@@ -880,11 +930,54 @@ void main() {
     // LE VERDICT. Avant la campagne N2, ce scenario n'avait AUCUNE assertion :
     // il ne pouvait pas echouer. Desormais toute exigence non tenue le rend
     // ROUGE, et un scenario qui n'evaluerait rien serait rouge aussi.
+    // RUN VALIDE OU RUN COUVERT ? (tache 544)
+    // Une fenetre systeme Android — dialogue de permission, formulaire de
+    // consentement publicitaire — n'est PAS dans l'arbre Flutter : aucun finder
+    // ne la voit. Un run qu'elle recouvre produit des echecs qui ressemblent a
+    // des defauts produit mais n'en sont pas : c'est ce qui vient d'arriver
+    // (4 echecs S1 dus a un dialogue de localisation par-dessus l'ecran
+    // Faisabilite, capture 12c a l'appui). On EXIGE donc que le run n'ait pas
+    // ete couvert : ainsi un run invalide se declare invalide, au lieu de se
+    // faire passer pour un rapport de defauts.
+    exige(P, 'run_valide', ecransSystemeBloquants().isEmpty,
+        'aucune fenetre systeme n a recouvert l application pendant le run '
+        '(sinon le run est INVALIDE, pas le produit — relancer avec les demons '
+        'persona_perm_granter et persona_dialog_dismisser). Bloquants vus : '
+        '${ecransSystemeBloquants().join(", ")}');
     verdictPersona(P, minimumExigences: 20);
   });
 }
 
 /// Retour arriere (bouton back de l AppBar ou pop du routeur).
+/// Remonte en HAUT de la liste defilante courante (tache 544).
+///
+/// POURQUOI C'EST NECESSAIRE. Le cockpit est une liste VIRTUALISEE : ce qui
+/// n'est pas a l'ecran n'est pas construit, donc pas trouvable. Apres un
+/// parcours complet la liste est restee defilee vers le bas, et toutes les
+/// portes situees en TETE — la carte du trek termine, « Mon aventure » —
+/// deviennent introuvables. Un `tapIfPresent` rend alors `false` sans rien
+/// dire, et le scenario conclut a un defaut produit qui n'existe pas : c'est
+/// exactement ce qui s'est passe le 22/09 sur le diplome et le recapitulatif,
+/// alors que l'ecran « Mon aventure » fonctionne (capture 27 a l'appui).
+Future<void> _remonterEnHaut(
+  WidgetTester tester,
+  String persona,
+  String etape, {
+  int coups = 6,
+}) async {
+  final scrollable = find.byType(Scrollable);
+  if (scrollable.evaluate().isEmpty) return;
+  for (var i = 0; i < coups; i++) {
+    try {
+      await tester.drag(scrollable.first, const Offset(0, 900));
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 3));
+    } catch (_) {
+      break;
+    }
+  }
+  logStep(persona, etape, 'remonte en tete de liste ($coups coups)');
+}
+
 Future<void> _back(WidgetTester tester, String persona, String etape) async {
   final backBtn = find.byTooltip('Retour');
   if (present(backBtn)) {

@@ -221,6 +221,20 @@ void main() {
     await flushJournal(P);
     // LE VERDICT (campagne N2). Avant, S2 n'avait AUCUNE assertion : il ne
     // pouvait pas echouer, et il cherchait en plus des libelles disparus.
+    // RUN VALIDE OU RUN COUVERT ? (tache 544)
+    // Une fenetre systeme Android — dialogue de permission, formulaire de
+    // consentement publicitaire — n'est PAS dans l'arbre Flutter : aucun finder
+    // ne la voit. Un run qu'elle recouvre produit des echecs qui ressemblent a
+    // des defauts produit mais n'en sont pas : c'est ce qui vient d'arriver
+    // (4 echecs S1 dus a un dialogue de localisation par-dessus l'ecran
+    // Faisabilite, capture 12c a l'appui). On EXIGE donc que le run n'ait pas
+    // ete couvert : ainsi un run invalide se declare invalide, au lieu de se
+    // faire passer pour un rapport de defauts.
+    exige(P, 'run_valide', ecransSystemeBloquants().isEmpty,
+        'aucune fenetre systeme n a recouvert l application pendant le run '
+        '(sinon le run est INVALIDE, pas le produit — relancer avec les demons '
+        'persona_perm_granter et persona_dialog_dismisser). Bloquants vus : '
+        '${ecransSystemeBloquants().join(", ")}');
     verdictPersona(P, minimumExigences: 12);
   });
 }
