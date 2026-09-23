@@ -18,9 +18,10 @@
 > le seul manque de repos, dont un profil confirme a 0,68 de pire etape, vert franc — et non comme
 > l'etat du produit.
 >
-> **A RE-MESURER PAR LA CAMPAGNE :** la colonne v2 decrit un programme **sans aucun jour de repos**.
-> Le programme par defaut en pose maintenant ; sur les jeux a sept etapes, les chiffres de C3 vus a
-> l'ecran seront ceux de `avecDeuxRepos`.
+> **RE-MESURE FAITE LE 23/09 (tache 547), voir la section 13 :** la colonne v2 decrit un programme
+> **sans aucun jour de repos**. Le programme par defaut en pose maintenant, et l'appareil le
+> confirme : sur le sentier de production, les 24 cellules rendent `repos=2` et le C3 de
+> `avecDeuxRepos`, soit **0,7675**, avec la pire etape pour seule contrainte dominante.
 
 > **Tache 541. PREPARATION SEULE : aucun fichier applicatif n'est touche, aucune campagne n'est
 > lancee.** Artemis, 22/09/2026.
@@ -502,16 +503,25 @@ Aux nouvelles bornes (`hiker_input_bounds.dart`, deja livre en tache 539 — age
 la portee (etape ou circuit), l'etape concernee, l'ancien verdict, le nouveau, le sens, les deux
 ratios, et **la cause**. Le format est deja celui de `matrice_96.json`, tableau `bascules`.
 
-**Etat attendu, calcule d'avance sur les entrees figees** — a confronter au moteur reel une fois la
-tache 540 livree :
+**Etat MESURE sur le moteur final** (campagne complete, tache 547 du 23/09, branche
+`claude/feat/540-moteur-faisabilite-v2` a `56faa89`). Les chiffres ci-dessous ne sont pas recopies :
+ils sont la **difference terme a terme des deux colonnes**, et les deux colonnes sont verrouillees
+sur le moteur reel par `campagne_v2_matrice_test.dart` — recalcul de controle fait, les 452 bascules
+declarees sont exactement les 452 ecarts entre colonnes, sans une de plus ni une de moins.
 
-- **449 bascules** au total : **389 d'etape** et **60 de circuit**.
-- **257 durcissent**, **192 allegent**. Les durcissements viennent de l'unite d'energie et des
+- **452 bascules** au total : **389 d'etape** et **63 de circuit**.
+- **238 durcissent**, **214 allegent**. Les durcissements viennent de l'unite d'energie et des
   plafonds re-derives ; **la totalite des allegements vient du plancher demontre** (#2-g).
-- Par jeu : **J1 62**, **J2 77**, **J3 32**, **J4 278**. J4 en concentre le plus : 30 verdicts
+- Par jeu : **J1 68**, **J2 69**, **J3 32**, **J4 283**. J4 en concentre le plus : 30 verdicts
   d'etape par cellule.
-- Verdict de circuit : **42 cellules rouges en v1 -> 78 en v2**, dont **24 sur 24** sur le sentier
-  de production. **Ce chiffre est le symptome de B3, pas un resultat a livrer tel quel.**
+- Verdict de circuit : **42 cellules rouges en v1 -> 25 en v2**, et sur le sentier de production
+  **6 sur 24**. Les 78 d'avant GO-61 sont l'ancienne regle, citee comme la mesure qui a fonde la
+  decision, jamais comme l'etat du produit.
+- **Ou tombe le rouge, maintenant qu'il veut dire quelque chose** : les 25 cellules rouges sont
+  **toutes debutantes**, et elles ne concernent que **deux personnages sur six** — Lea (12 cellules,
+  rangs 0 a 2 sur les quatre jeux) et Thomas (12 cellules, memes rangs), plus **Marc rang 0 sur le
+  sentier de trente etapes**. Ce sont exactement les deux dont le **plancher demontre est inactif**.
+  Aucun profil confirme ni expert n'est rouge nulle part.
 
 **Les bascules du sentier de production, une par une** (ce que Christophe verra) :
 
@@ -531,10 +541,13 @@ tache 540 livree :
 - **Marc R1, Marc R2, Sabine R1, Sabine R2, Ines R3, Jean-Pierre R3, Lea R3, Thomas R3 —
   intermediaires** — E1 vert -> orange. C'est la bascule de reference de la spec (#9-e),
   **0,8103 -> 0,9113**.
-- **Circuit, les 10 cellules qui etaient vertes** — Marc R1, R2, R3 ; Lea R3 ; Jean-Pierre R3 ;
-  Ines R3 ; Thomas R3 ; Sabine R1, R2, R3 : **vert -> ROUGE**, cause **C3, monotonie 4,04 / 2,0**.
-  **Les 14 autres cellules de J1 etaient deja rouges et le restent.** Voir B3 : ce n'est pas un
-  resultat, c'est un symptome.
+- **Circuit, les 16 bascules du sentier de production, mesurees sous la regle en vigueur** —
+  **huit allegent**, toutes de **rouge a orange** : Marc R0, Jean-Pierre R0/R1/R2, Ines R0/R1/R2,
+  Sabine R0. **Huit durcissent**, toutes de **vert a orange** : Marc R1/R2, Lea R3, Jean-Pierre R3,
+  Ines R3, Thomas R3, Sabine R1/R2. **Aucune cellule de J1 ne bascule vers le rouge.** Les six
+  rouges de J1 (Lea et Thomas, rangs 0 a 2) l'etaient deja en v1 et le restent — par leur pire
+  etape, jamais par le repos. L'ancien « 10 cellules vertes -> ROUGE par C3, monotonie 4,04 / 2,0 »
+  decrivait la regle d'avant GO-61 ; il est **mort avec elle**.
 
 **Ecart annonce avec la spec, a dire plutot qu'a taire.** #9-c annonce « 4 bascules sur 28 cellules,
 14 %, toutes vers la severite ». Ce chiffre porte sur les **donnees sourcees** du sentier reel, en ne
@@ -599,19 +612,25 @@ l'application embarque.**
    `trailMaxAltitudeProvider` n'aboutit jamais et tout le moteur reste bloque. Toute attente de
    provider est desormais **bornee a 20 s** : un test qui se fige ne dit rien, un test qui echoue
    dit ou.
-8. **Rejouer S1 a S4** contre le produit corrige : ils viennent d'un stash anterieur au correctif
-   N2 et attendent encore un verdict qui tombe des la morphologie. **C'est le dernier verrou avant
-   la campagne.**
-9. **Ecrire S7, la famille 3** (F3-1 a F3-12) : l'hiver declare non valide, l'altitude absente et
-   dite, la morphologie qui ne pese pas, le dispositif poids, et le constat de duree qui ne doit
-   jamais devenir un verdict. Aucun de ces cinq n'etait couvert par l'ancien S6.
-10. **Jouer les six personnages** sur le produit reel, grille #100297 comme seule feuille de
-    lecture.
-11. **Rendre la liste des bascules**, une par une, et le verdict de porte.
+8. ~~Rejouer S1 a S4~~ — **FAIT** (tache 544), et **rejoues une fois de plus sur le moteur final**
+   (tache 547).
+9. ~~Ecrire S7, la famille 3~~ — **FAIT** (tache 544) : l'hiver declare non valide, l'altitude
+   absente et dite, la morphologie qui ne pese pas, le dispositif poids, et le constat de duree qui
+   ne doit jamais devenir un verdict.
+10. ~~Jouer les six personnages sur le produit reel~~ — **FAIT le 23/09 (tache 547)**, sept
+    scenarios sur le moteur final, **492 exigences tenues, zero echouee, 159 captures**.
+11. ~~Rendre la liste des bascules et le verdict de porte~~ — **FAIT** : section 8 pour la liste,
+    section 13 pour le verdict.
 
 ---
 
-## 11. ARBITRAGE A REMONTER A CHRISTOPHE
+## 11. ARBITRAGE A REMONTER A CHRISTOPHE — **TRANCHE LE 22/09 (GO-61), ET LES DEUX VOIES ONT ETE PRISES**
+
+> **Christophe a tranche, et il a pris les deux voies a la fois.** Le repos **sort du verdict**
+> (`S_circuit = C1`) **et** le programme par defaut **pose desormais des repos**. La campagne du
+> 23/09 l'a re-mesure sur l'appareil, 24 cellules sur 24 du sentier de production : `repos=2`,
+> `C3=0,7675`, `dominante=worstStage`. Ce qui suit est le texte d'origine de l'arbitrage, garde
+> pour memoire de ce qui a ete decide et sur quels chiffres.
 
 **Un seul, et il tient en deux chiffres.** Par defaut, aucun jour de repos n'est pose dans un
 programme : **78 cellules sur 96 sont rouges**. Avec deux jours de repos, **42**. Donc **36
@@ -662,9 +681,69 @@ test recree le fichier, le demon garde l'ancien descripteur et ne voit plus rien
 `run_valide` : si une fenetre systeme a recouvert l'application, **le run se declare invalide au
 lieu de se faire passer pour un rapport de defauts**.
 
-**5. Etat de reference au 22/09** — a comparer apres chaque campagne :
+**5. Etat de reference au 22/09, RECONDUIT A L'IDENTIQUE LE 23/09 SUR LE MOTEUR FINAL** — a
+comparer apres chaque campagne :
 S1 **49** exigences · S2 **15** · S3 **17** · S4 **8** · S5 **95** · S6 **246** · S7 **62**.
-**492 au total, zero echouee**, 159 captures.
+**492 au total, zero echouee**, **159 captures** (S1 63 · S2 20 · S3 43 · S4 16 · S5 9 · S6 4 · S7 4).
+Le changement de moteur du 22/09 au soir (GO-61) n'a **deplace aucun de ces sept chiffres**.
+
+**6. Le lanceur est ecrit, il n'est plus a retenir.** `tool/run_persona.ps1` applique les points 1
+a 3 de cette recette : log cree avant le demon, sortie du test en ajout, trois demons hote lances
+depuis PowerShell, jeu de permissions passe en parametre. Un run se lance par
+`powershell -File tool/run_persona.ps1 -Scenario integration_test/persona_s1_lea_test.dart -Tag S1
+-Perm avant-plan` (S3 prend `-Perm complet`), et il rend en fin de course le compte des exigences
+tenues, des exigences echouees et des captures.
+
+---
+
+## 13. VERDICT DE LA PORTE — CAMPAGNE COMPLETE SUR LE MOTEUR FINAL (tache 547, 23/09)
+
+**Cadre.** Branche `claude/feat/540-moteur-faisabilite-v2` a `56faa89`, celle qui porte GO-61.
+Emulateur `emulator-5554`, Android 14. Recette de lancement suivie a la lettre pour les sept runs.
+
+**LA PORTE DIT OUI, avec une reserve nommee et deux constats hors moteur.**
+
+**Ce qui est vert, et prouve.**
+- **Gate 0, avant tout le reste** : le harnais est prouve capable de dire non — 7 tests verts.
+  Tant que ce rouge n'a pas ete vu, les verts qui suivent ne valent rien ; il a ete vu.
+- **Les trois familles sont jouees** : passants (S1 a S4, S6), non passants (S5, 95 exigences aux
+  bornes et hors bornes), cas metiers a reponses multiples (S7, 62 exigences).
+- **492 exigences tenues, zero echouee, 159 captures** — sept scenarios sur sept.
+- **Les deux colonnes de la matrice des 96 tiennent sur le moteur final**, et avec elles les
+  **452 bascules** de la section 8. Suite complete : **2 517 verts**. `flutter analyze lib test
+  integration_test` : **2 informations**, aucune erreur, aucun avertissement.
+
+**La re-mesure demandee, faite sur l'appareil et non sur le papier.** Les 24 lignes
+`PERSONA_MATRICE_C3` du run S6 disaient toutes, le 22/09 : `repos=0`, `C3=2,0197`,
+`dominante=rest`, `circuit=red`. Elles disent maintenant, 24 sur 24 : **`repos=2`, `C3=0,7675`,
+`dominante=worstStage`**, et le verdict de circuit **suit la pire etape** : **6 rouges, 16 oranges,
+2 verts**. Marc rang 3 et Sabine rang 3, dont la pire etape est a 0,68 et 0,63, sont **verts** la
+ou ils etaient rouges faute de repos. Ces 24 verdicts sont **identiques a la colonne v2 de la
+matrice** : le moteur sur l'appareil et la matrice tombent sur les memes chiffres.
+
+**La preuve a l'ecran que le programme par defaut pose les repos** :
+`data/campagne_547/captures/S1/S1_Lea_S1E_20_programme.png` — « **9 j (dont 2 repos)** », 7 etapes,
+84 km, 3 750 m de D+.
+
+**LA RESERVE, et elle n'est pas dans le moteur.** Pendant le parcours de S3 — celui qui marche,
+declenche un SOS et termine son trek — l'application leve **deux assertions Riverpod
+`setState() called during build`**, toujours les memes : `currentStageIdProvider` ->
+`localizedStageNumberProvider` -> `LocalizedConditionsBanner.build`, et `AppHeader.build`. Elles
+sont **systematiques** (vues dans les deux runs de S3) mais leur consequence est **intermittente** :
+au premier run le test s'est declare rouge a la cloture, au second il est passe vert **avec les
+memes deux exceptions et les memes 17 exigences tenues**. Les quatre fichiers en cause
+(`gps_providers.dart`, `current_stage_provider.dart`, `localized_conditions_banner.dart`,
+`app_header.dart`) n'ont **pas ete touches par les taches 540 et 545** : ce n'est pas une regression
+du moteur. Un troisieme foyer, du meme genre, est visible dans S7 sur
+`trek_feasibility_screen.dart:93` (`ref.watch` d'un provider a l'interieur du `data:` d'un autre) —
+introduit par le correctif N2 `4d4efc1`, pas par GO-61. **Aucune de ces exceptions ne fait perdre
+une exigence ; toutes polluent les runs et peuvent en masquer une vraie.** A corriger cote produit,
+pas cote test.
+
+**Le constat hors perimetre, pour memoire** : `test/shared/widgets/purchase_gate_widget_test.dart`
+est rouge (timer de 6 s d'`AdsConsentService.ensureConsentAndInit` encore pendant a la fin du test).
+**Verifie a la main** : il est **deja rouge au commit `5cf8974`**, avant la tache 540. Defaut de
+base, sans rapport avec le moteur de faisabilite.
 
 ---
 
@@ -673,10 +752,16 @@ Les deux colonnes de la matrice sont verrouillees sur le moteur reel par **29 te
 harnais est prouve capable d'echouer par **7 tests verts**, et S5 et S6 sont **verts sur
 l'appareil** avec 95 et 246 exigences evaluees.
 
-**Preuve directe de l'arbitrage, relevee sur l'appareil** : les 24 lignes `PERSONA_MATRICE_C3` du
-run de S6 disent toutes `repos=0`, `C3=2,0197`, `dominante=rest`, `circuit=red`. Vingt-quatre sur
-vingt-quatre, **niveau confirme compris, dont la pire etape est a 0,68 — vert franc**.
+**Preuve directe de l'arbitrage, relevee sur l'appareil le 22/09 — etat HISTORIQUE, corrige depuis
+par GO-61** : les 24 lignes `PERSONA_MATRICE_C3` du run de S6 disaient alors toutes `repos=0`,
+`C3=2,0197`, `dominante=rest`, `circuit=red`. Vingt-quatre sur vingt-quatre, **niveau confirme
+compris, dont la pire etape est a 0,68 — vert franc**. Le meme run du 23/09 dit desormais `repos=2`,
+`C3=0,7675`, `dominante=worstStage` : voir la section 13.
 
 **Point operationnel a ne pas oublier** : S5 et S6 sont verts mais **aucune capture PNG** n'a ete
 produite, le demon `tool/persona_shot_daemon.py` n'etait pas lance. A demarrer avec `--logfile`
-avant la campagne, sinon il n'y aura rien a montrer a l'ecran.*
+avant la campagne, sinon il n'y aura rien a montrer a l'ecran. **Regle le 23/09** : le demon est
+lance par `tool/run_persona.ps1`, S5 et S6 ont desormais leurs captures.*
+
+*Campagne complete tache 547 — Artemis, 23/09/2026. Aucun fichier applicatif touche : un lanceur de
+run et ce document. Logs et captures : `data/campagne_547/` (non versionne).*
