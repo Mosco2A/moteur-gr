@@ -392,9 +392,15 @@ Future<void> finalizeScenario(WidgetTester tester, String persona) async {
     if (ex == null) break;
     drained++;
     final msg = ex.toString().replaceAll('\n', ' ');
+    // TACHE 548 — on logue assez long pour que la ligne soit DIAGNOSTICABLE.
+    // A 160 caracteres, une exception drainee etait illisible : impossible de
+    // dire si c'etait l'artefact de disposal connu ou un vrai defaut qui
+    // passait par la meme porte. Le message d'une `FlutterError` porte le
+    // widget en cause (« The widget which was currently being built... ») bien
+    // au-dela de 160 caracteres.
     logStep(persona, 'teardown',
         'Exception NON FATALE drainee (artefact de disposal, parcours deja '
-        'termine) : ${msg.length > 160 ? msg.substring(0, 160) : msg}');
+        'termine) : ${msg.length > 900 ? msg.substring(0, 900) : msg}');
     await tester.pump(const Duration(milliseconds: 80));
   }
   if (drained == 0) {

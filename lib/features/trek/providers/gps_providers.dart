@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart' show immutable, listEquals;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/models/stage.dart' show StageModel;
 import '../data/arrival_detection_service.dart';
 import '../data/gps_service.dart';
 import '../data/stage_detection_service.dart';
@@ -30,14 +32,55 @@ final positionStreamProvider = StreamProvider<Position>((ref) {
   return gpsService.getPositionStream();
 });
 
+/// Projection COMPARABLE PAR CONTENU de la liste d'etapes chargee (tache 548).
+///
+/// `select()` decide de re-executer le provider consommateur avec `==`. Or
+/// `List` n'a que l'egalite d'IDENTITE : chaque re-execution de
+/// [stagesProvider] rend une nouvelle liste (`List.of(...)..sort()`), donc une
+/// nouvelle identite, donc une invalidation de [domainStagesProvider] MEME
+/// QUAND LES ETAPES SONT RIGOUREUSEMENT LES MEMES. Cette enveloppe compare le
+/// CONTENU (`StageModel` est un modele Freezed, egalite par valeur) : la chaine
+/// GPS n'est invalidee que si les etapes changent reellement.
+@immutable
+class _StageModelsByValue {
+  const _StageModelsByValue(this.value);
+
+  final List<StageModel>? value;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is _StageModelsByValue && listEquals(value, other.value));
+
+  @override
+  int get hashCode => value == null ? 0 : Object.hashAll(value!);
+}
+
 /// Convertit les StageModel (core/DB) en Stage (domain trek).
 ///
 /// Utilise select() sur stagesProvider pour ne rebuilder que si la liste change.
 /// Retourne [] si le chargement n'est pas termine.
+///
+/// TACHE 548 — POURQUOI LA COMPARAISON PAR CONTENU EST ICI UNE CORRECTION ET
+/// PAS UNE OPTIMISATION. Toute la chaine du trek derive de ce provider
+/// ([currentTrekPlanProvider], [currentStageIdProvider], [arrivalEventsProvider]).
+/// Avec une comparaison par identite, une simple re-execution de
+/// [stagesProvider] la marquait « a recalculer ». Tant qu'aucun ecran actif ne
+/// l'ecoutait (abonnements MIS EN PAUSE par Riverpod 3 quand l'ecran n'est plus
+/// a l'avant-plan), l'ordonnanceur la laissait en l'etat : elle etait alors
+/// recalculee PARESSEUSEMENT, au premier `ref.watch` venu — c'est-a-dire en
+/// pleine phase de build du premier widget qui remontait la chaine
+/// ([LocalizedConditionsBanner] -> `localizedStageNumberProvider` ->
+/// [currentStageIdProvider]). Ce recalcul notifiait les autres derives, qui se
+/// re-invalidaient et reclamaient un rafraichissement du `ProviderScope` : un
+/// `setState()` pendant le build, refuse par Flutter (assertion relevee par la
+/// campagne 547). Des lors que des etapes identiques ne declenchent plus
+/// d'invalidation, ce recalcul parasite — et l'assertion qu'il provoquait —
+/// n'ont plus lieu d'etre.
 final domainStagesProvider = Provider<List<Stage>>((ref) {
   final stagesAsync = ref.watch(
-    stagesProvider.select((async) => async.value),
-  );
+    stagesProvider.select((async) => _StageModelsByValue(async.value)),
+  ).value;
   final stages = stagesAsync ?? [];
 
   return stages

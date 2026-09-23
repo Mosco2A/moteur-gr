@@ -13,6 +13,7 @@ import 'core/engine/trail_engine.dart';
 import 'core/providers/app_bootstrap_provider.dart';
 import 'core/providers/database_provider.dart';
 import 'core/routing/app_router.dart';
+import 'core/routing/home_location_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/skin_provider.dart';
 import 'features/ads/providers/ads_providers.dart';
@@ -227,6 +228,28 @@ class _BootstrapGate extends ConsumerWidget {
     // (le provider d'amorce watch deja la config ; cette lecture rend la
     // dependance explicite et documente l'invalidation au niveau de la garde).
     ref.watch(trailConfigProvider.select((c) => c.id));
+
+    // ACCUEIL CONTEXTUEL TENU A JOUR AU NIVEAU DE L'APPLICATION (tache 548).
+    //
+    // La destination d'accueil (maison / terrain) est un etat GLOBAL : elle
+    // depend de la rando active, pas de l'ecran affiche. Elle etait pourtant
+    // (re)decouverte par chaque `AppHeader`, au moment ou il se montait.
+    // Riverpod 3 met en PAUSE les abonnements d'un ecran qui n'est plus a
+    // l'avant-plan : entre la fin d'une rando (qui invalide
+    // `activeTrekIdProvider`) et le montage de l'en-tete de l'ecran suivant,
+    // le selecteur n'avait plus aucun auditeur actif — l'ordonnanceur le
+    // laissait donc « a recalculer » au lieu de le rafraichir. Le premier
+    // `AppHeader` a se monter declenchait ce recalcul EN PLEINE PHASE DE BUILD,
+    // le selecteur se re-invalidait et reclamait un rafraichissement du
+    // `ProviderScope` : un `setState()` pendant le build, refuse par Flutter
+    // (assertion relevee par la campagne 547 sur `AppHeader.build`).
+    //
+    // Cette garde ne se demonte jamais et n'est jamais mise en pause (elle est
+    // au-dessus du `Navigator`) : l'accueil contextuel garde ici un auditeur
+    // actif en permanence, donc il est rafraichi par l'ordonnanceur AVANT la
+    // phase de build, jamais pendant. Aucun effet visuel : la garde rend le
+    // meme arbre route.
+    ref.watch(homeLocationProvider);
 
     // StepWays L6/A6 : amorce PUB NON bloquante — resout le consentement UMP/CMP
     // puis initialise le SDK AdMob en tache de fond. On `watch` sans gater le

@@ -75,9 +75,37 @@ class _TrekFeasibilityScreenState
     _refreshAssessment();
   }
 
+  /// ABONNEMENTS INCONDITIONNELS, DEPENDANCES D'ABORD (tache 548).
+  ///
+  /// [feasibilityCriteriaProvider] etait observe A L'INTERIEUR du `data:` de
+  /// [feasibilityAssessmentProvider]. Un `ref.watch` sous condition est un
+  /// abonnement INTERMITTENT : Riverpod le ferme des que le build ne le
+  /// traverse plus (branche `loading` apres chaque `_refreshAssessment`), le
+  /// provider — auto-dispose par defaut en Riverpod 3 — est detruit, puis
+  /// REMONTE en pleine phase de build au retour de la branche `data:`. Ce
+  /// remontage flushe la chaine des criteres pendant le build ; la valeur
+  /// change, les providers qui en derivent (dont [hasObjectiveProfileProvider])
+  /// se re-invalident et reclament un rafraichissement du `ProviderScope` —
+  /// un `setState()` pendant le build, que Flutter refuse (les trois
+  /// assertions relevees par la campagne 547 sur `TrekFeasibilityScreen`).
+  ///
+  /// Les deux observations sont donc remontees en tete de build, DEPENDANCE
+  /// D'ABORD : les criteres (dont derive l'evaluation) avant l'evaluation. Les
+  /// abonnements sont des lors permanents pour toute la vie de l'ecran et les
+  /// invalidations de `_refreshAssessment` sont traitees par l'ordonnanceur
+  /// AVANT la phase de build, jamais pendant. Aucun changement d'affichage.
   @override
   Widget build(BuildContext context) {
+    final criteriaAsync = ref.watch(feasibilityCriteriaProvider);
     final assessmentAsync = ref.watch(feasibilityAssessmentProvider);
+    final criteria = criteriaAsync.maybeWhen(
+      data: (c) => c,
+      orElse: () => const FeasibilityCriteria(
+        profileComplete: false,
+        hasPastHike: false,
+        hasWalkTest: false,
+      ),
+    );
     final f = t.feasibility;
 
     return Scaffold(
@@ -90,15 +118,6 @@ class _TrekFeasibilityScreenState
             // Pas d'etapes -> questionnaire de dépannage.
             return _FallbackToQuestionnaire(reason: f.sourceFallback);
           }
-          final criteriaAsync = ref.watch(feasibilityCriteriaProvider);
-          final criteria = criteriaAsync.maybeWhen(
-            data: (c) => c,
-            orElse: () => const FeasibilityCriteria(
-              profileComplete: false,
-              hasPastHike: false,
-              hasWalkTest: false,
-            ),
-          );
           // D1 — AUCUN VERDICT tant que les criteres obligatoires manquent.
           if (!criteria.isComplete || _replayFlow) {
             return _FeasibilityGuidedFlow(

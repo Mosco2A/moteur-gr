@@ -740,6 +740,31 @@ introduit par le correctif N2 `4d4efc1`, pas par GO-61. **Aucune de ces exceptio
 une exigence ; toutes polluent les runs et peuvent en masquer une vraie.** A corriger cote produit,
 pas cote test.
 
+**LA RESERVE EST LEVEE — tache 548 (Hephaistos, 23/09/2026).** Les trois foyers avaient la meme
+cause, verifiee dans le paquet Riverpod 3.3.2 et pas supposee : un provider n'est rafraichi par
+l'ordonnanceur que s'il est ACTIF (`element.dart` : `isActive => listenerCount -
+pausedActiveSubscriptionCount > 0`). Riverpod 3 met en PAUSE les abonnements d'un ecran qui n'est
+plus a l'avant-plan : un provider dont tous les auditeurs sont en pause reste « a recalculer », et
+ce recalcul se fait alors au premier `ref.watch` venu — c'est-a-dire en pleine phase de build du
+premier widget qui le remonte. Le recalcul notifie les derives, l'un d'eux s'invalide et reclame un
+rafraichissement du `ProviderScope` : un `setState()` pendant le build, que Flutter refuse. Les
+trois correctifs suppriment chacun une facon d'amener ce premier `ref.watch` dans la phase de
+build : abonnement rendu INCONDITIONNEL et dependance observee d'abord
+(`trek_feasibility_screen.dart`), auditeur PERMANENT de l'accueil contextuel au niveau de
+l'application (`main.dart`, la garde d'amorce ne se demonte jamais et n'est jamais mise en pause),
+et comparaison PAR CONTENU des etapes chargees (`gps_providers.dart`), pour que des etapes
+identiques cessent d'invalider toute la chaine du trek.
+
+**Mesure sur l'appareil, pas sur parole** (`emulator-5554`, meme recette, logs `data/campagne_548/`) :
+S7 passe de **3 assertions a 0**, sans aucune exception a drainer a la cloture (« cloture propre »),
+`exit=0`, 62 exigences tenues ; S3 passe de **2 exceptions Riverpod a 0** en plein parcours, 17
+exigences tenues, sur **trois runs**. Il subsiste en S3 UNE seule ligne, a la finalisation et sur un
+element deja demonte (`ConsumerStatefulElement(DEFUNCT)`) : c'est l'artefact de disposal deja decrit
+par `finalizeScenario` depuis le cycle 3, present a l'identique avant les correctifs, draine comme
+non fatal. L'echec de cloture `SemanticsHandle` reste lui aussi INTERMITTENT et d'environnement (la
+poignee prise par le scenario est bien rendue) : sur les trois runs, deux rouges et un vert
+`All tests passed!`, exactement ce que la tache 544 avait diagnostique.
+
 **Le constat hors perimetre, pour memoire** : `test/shared/widgets/purchase_gate_widget_test.dart`
 est rouge (timer de 6 s d'`AdsConsentService.ensureConsentAndInit` encore pendant a la fin du test).
 **Verifie a la main** : il est **deja rouge au commit `5cf8974`**, avant la tache 540. Defaut de
