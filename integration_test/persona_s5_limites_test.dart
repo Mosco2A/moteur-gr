@@ -145,18 +145,35 @@ void main() {
     await settleAndShoot(tester, P, '12_fiche_vide');
 
     // === BLOC 4 — LE PAYS =================================================
-    // Finding m3 du cycle 4 : le champ pays acceptait « ZZ », code inexistant.
+    //
+    // CE BLOC A ETE REECRIT LE 25/09 (tache 559) PARCE QUE LE PRODUIT A CHANGE,
+    // ET LE DIRE FAIT PARTIE DE LA MESURE. Jusqu'a la tache 553, le pays etait
+    // un champ de SAISIE LIBRE : on pouvait y taper « ZZ », code inexistant, et
+    // c'etait le finding m3 du cycle 4. Depuis, c'est un SELECTEUR (247 pays,
+    // noms localises) : le code invalide n'est plus ATTEIGNABLE PAR LE GESTE,
+    // donc le cas « ZZ » ne se joue plus — la classe de defaut est fermee a la
+    // source, pas masquee. L'ancien `_saisirPays` tapait du texte dans un
+    // `InkWell` : il faisait TOMBER le scenario en plein vol (constate a 15:28,
+    // « Bad state: No element »), donc tout ce qui suivait n'etait plus mesure.
+    // On joue desormais ce qu'un humain peut faire : ouvrir, chercher, choisir.
     await _assurerFicheInfo(tester);
-    await _saisirPays(tester, 'ZZ');
-    await _enregistrer(tester);
-    await exigeVisible(tester, find.text(tp.errorCountry), P, 'pays_zz',
-        'un code pays inexistant est refuse AVEC son message');
-    await _saisirPays(tester, 'FR');
+    exige(P, 'pays_selecteur',
+        find.byKey(const ValueKey('hiker-profile-country-field'))
+            .evaluate().isNotEmpty,
+        'le pays se choisit dans un SELECTEUR (saisie libre supprimee : un code '
+        'inexistant n est plus atteignable par le geste)');
+    final paysChoisi = await _choisirPays(tester, 'France');
+    exige(P, 'pays_selecteur', paysChoisi,
+        'le selecteur de pays s ouvre, se cherche et se choisit au doigt');
+    if (paysChoisi) {
+      exige(P, 'pays_selecteur', find.text('France').evaluate().isNotEmpty,
+          'le pays choisi s affiche PAR SON NOM localise (« France »), pas par '
+          'son code ISO');
+    }
     await _saisir(tester, kChampAge, '40');
     await _enregistrer(tester);
     exige(P, 'pays_fr', find.text(tp.errorCountry).evaluate().isEmpty,
-        'un code pays valide n est PAS refuse, et le message de refus '
-        'DISPARAIT une fois la valeur corrigee (contre-preuve)');
+        'un pays choisi dans le selecteur n est JAMAIS refuse');
     await settleAndShoot(tester, P, '13_pays');
 
     // === BLOC 5 — LES CROISEMENTS QUE LES NOUVELLES BORNES OUVRENT ========
@@ -245,10 +262,36 @@ Future<void> _saisir(WidgetTester tester, int index, String valeur) async {
   await pumpAndSettleTolerant(tester);
 }
 
-Future<void> _saisirPays(WidgetTester tester, String code) async {
-  await tester.enterText(
-      find.byKey(const ValueKey('hiker-profile-country-field')), code);
+/// Choisit un pays DANS LE SELECTEUR, au doigt, comme un humain : on touche la
+/// ligne « Pays », on cherche le nom, on touche le resultat.
+///
+/// Retourne false (sans faire tomber le scenario) si l'une des trois etapes
+/// n'aboutit pas — c'est alors un signal QA, pas un crash.
+Future<bool> _choisirPays(WidgetTester tester, String nom) async {
+  final ouvert = await tapIfPresent(
+      tester,
+      find.byKey(const ValueKey('hiker-profile-country-field')),
+      P,
+      'pays',
+      'ligne Pays (ouvre le selecteur)');
+  if (!ouvert) return false;
   await pumpAndSettleTolerant(tester);
+  // La feuille de selection porte un champ de recherche (247 pays : personne ne
+  // defile jusqu'a « Nouvelle-Zelande »).
+  final recherche = find.byType(TextField);
+  if (recherche.evaluate().isNotEmpty) {
+    await tester.enterText(recherche.last, nom);
+    await pumpAndSettleTolerant(tester);
+  }
+  final resultat = find.text(nom).hitTestable();
+  if (resultat.evaluate().isEmpty) {
+    logStep(P, 'pays',
+        'COINCE : « $nom » introuvable dans le selecteur apres recherche');
+    return false;
+  }
+  await tester.tap(resultat.first, warnIfMissed: false);
+  await pumpAndSettleTolerant(tester);
+  return true;
 }
 
 Future<void> _enregistrer(WidgetTester tester) async {
