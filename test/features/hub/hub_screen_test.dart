@@ -503,8 +503,82 @@ void main() {
       expect(find.text(t.hub.cards.feasibility), findsOneWidget);
       expect(find.text(t.hub.cards.programme), findsOneWidget);
       expect(find.text(t.hub.cards.accommodations), findsOneWidget);
-      // E33/E34 (LOT D/D2) : carte « Guides des villes » cablee (section Infos).
-      expect(find.text(t.hub.cards.townGuides), findsOneWidget);
+      // RETOUR CHRIS #13 (tache 553) — « Guides des villes » est MASQUEE. Mot
+      // pour mot : « on en a pas assez parle voire pas du tout tu cache pour
+      // l'instant ». Ce test verrouillait sa PRESENCE ; il verrouille desormais
+      // son ABSENCE, pour qu'elle ne revienne pas par accident.
+      expect(find.text(t.hub.cards.townGuides), findsNothing);
+      // CE QUI N'EST PAS SUPPRIME : la route existe toujours (elle est declaree
+      // dans le routeur de test ci-dessus, comme dans l'application). Seule la
+      // porte du cockpit disparait — la feature reste entiere.
+    });
+
+    // -----------------------------------------------------------------------
+    // RETOUR CHRIS #6 (tache 553) — « preparation physique doit aller en
+    // dessous de calendrier ». La carte fermait la section (10e et derniere) ;
+    // elle se lit maintenant juste apres « Calendrier », parce que
+    // l'entrainement se decide avec les dates.
+    // -----------------------------------------------------------------------
+    testWidgets('#6 : « Preparation physique » est JUSTE APRES « Calendrier »',
+        (tester) async {
+      await pumpTallHub(tester);
+
+      final calendar = tester.getTopLeft(find.text(t.hub.cards.calendar));
+      final training = tester.getTopLeft(find.text(t.hub.cards.training));
+      final nuitees = tester.getTopLeft(find.text(t.hub.cards.nuitees));
+      final checklist = tester.getTopLeft(find.text(t.hub.cards.checklist));
+
+      // La grille de prepa est a deux colonnes : « juste apres » se lit donc
+      // comme « dans la meme foulee que le calendrier », pas comme « sur la
+      // ligne du dessous ». Ce qui compte et se verifie : l'entrainement n'est
+      // plus APRES les nuitees ni APRES la checklist — il est avant les deux.
+      expect(training.dy, greaterThanOrEqualTo(calendar.dy),
+          reason: 'l entrainement ne remonte pas au-dessus du calendrier');
+      expect(training.dy, lessThanOrEqualTo(nuitees.dy),
+          reason: 'l entrainement passe AVANT les nuitees');
+      expect(training.dy, lessThan(checklist.dy),
+          reason: 'l entrainement n est plus la derniere carte de la prepa');
+    });
+
+    // -----------------------------------------------------------------------
+    // RETOUR CHRIS #11 (tache 553) — « journal est dans information dans
+    // preparation??? ». La carte demenageait selon la phase ; elle est devenue
+    // une carte AUTONOME du cockpit, au meme endroit dans les trois phases.
+    // L'acces repare en R10 / LOT L10 est conserve (tests du groupe R10
+    // ci-dessus : le Journal est rendu, une seule fois, dans les 3 phases).
+    // -----------------------------------------------------------------------
+    testWidgets('#11 : le Journal n est PLUS dans « Informations » et se pose '
+        'AVANT « Preparer »', (tester) async {
+      await pumpTallHub(tester);
+
+      final journal = tester.getTopLeft(find.text(t.hub.cards.journal));
+      final prepare = tester.getTopLeft(find.text(t.hub.sections.prepare));
+      final info = tester.getTopLeft(find.text(t.hub.sections.info));
+
+      // Carte autonome posee sous la carte du trek : elle precede les DEUX
+      // sections, donc elle n'appartient a aucune des deux.
+      expect(journal.dy, lessThan(prepare.dy));
+      expect(journal.dy, lessThan(info.dy));
+    });
+
+    testWidgets('#11 : EN RANDO AUSSI, le Journal reste AVANT toutes les '
+        'sections (il ne redescend pas dans « Randonner »)', (tester) async {
+      await pumpTallHub(tester, status: TrackingSessionStatus.recording);
+
+      final journal = tester.getTopLeft(find.text(t.hub.cards.journal));
+
+      // La section « Randonner » existe maintenant : c'est la que la carte
+      // vivait avant. Elle n'y est plus, elle est restee en tete, au meme rang
+      // qu'en preparation — avant CHACUNE des sections.
+      expect(journal.dy,
+          lessThan(tester.getTopLeft(find.text(t.hub.sections.hike)).dy));
+      expect(journal.dy,
+          lessThan(tester.getTopLeft(find.text(t.hub.sections.prepare)).dy));
+      expect(journal.dy,
+          lessThan(tester.getTopLeft(find.text(t.hub.sections.info)).dy));
+      // Et toujours une seule fois a l'ecran (aucun doublon possible : il n'y a
+      // plus qu'un seul endroit ou la carte est ecrite).
+      expect(find.text(t.hub.cards.journal), findsOneWidget);
     });
 
     testWidgets('bouton « Démarrer » EN BAS et GRISE tant que le minimum manque '

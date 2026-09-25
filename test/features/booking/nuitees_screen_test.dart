@@ -277,6 +277,102 @@ void main() {
     });
   });
 
+  // --- Retour Chris #7 (tache 553) : la coche ne verrouille plus rien --------
+  //
+  // Mot pour mot : « reservation nuitee, on ne peut pas revenir a gite », puis,
+  // interroge sur la coche : « NON OK = c'est bon ! ».
+  //
+  // Les puces de type etaient DESACTIVEES des que la nuit etait cochee, et la
+  // seule explication tenait dans un `Tooltip` qui ne s'affiche pas sur mobile.
+  // La coche dit « cette nuit est reglee », pas « cette nuit est verrouillee » :
+  // le refuge se remplit, il faut passer en gite, et c'est precisement la que le
+  // verrou tombait. Il n'y a plus de verrou — et la coche SURVIT au changement.
+  group('retour Chris #7 — une nuit COCHEE reste modifiable', () {
+    late AppDatabase db;
+
+    setUp(() => db = AppDatabase(NativeDatabase.memory()));
+    tearDown(() async => db.close());
+
+    testWidgets('on revient a « gite » sans decocher, et la nuit reste cochee',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        db: db,
+        days: [walkDay(1, 1)],
+        accommodations: [
+          accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
+          accom(1, nameFr: 'Gite du Col', type: 'gite'),
+        ],
+      ));
+      await settle(tester);
+      await pumpUntil(tester, find.text('J1'));
+
+      final refugeChip = find.text(t.nuitees.types.refuge);
+      final giteChip = find.text(t.nuitees.types.gite);
+      expect(refugeChip, findsWidgets);
+      expect(giteChip, findsWidgets);
+
+      final dao = NuiteeSelectionsDao(db);
+
+      // 1. On coche la nuit (« c'est bon »). Le tap sur la carte bascule l'etat.
+      await tester.tap(find.text('J1').first);
+      await settle(tester);
+      var rows = await dao.getByTrailId(trailId);
+      expect(rows.single.isBooked, isTrue,
+          reason: 'la nuit est cochee — c est l etat de depart du probleme');
+
+      // 2. LE GESTE QUI ETAIT IMPOSSIBLE : changer le type alors que la nuit est
+      //    cochee. Avant, la puce etait grisee et `onTap` valait null : ce tap ne
+      //    faisait RIEN.
+      await tester.tap(giteChip.last);
+      await settle(tester);
+
+      rows = await dao.getByTrailId(trailId);
+      expect(rows.single.nuiteeType, NuiteeType.gite.storageKey,
+          reason: 'on doit pouvoir revenir a gite sans rien decocher');
+
+      // 3. ET LA COCHE SURVIT : changer le type n'annule pas la reservation
+      //    (`setNuiteeType` et `toggleBooking` ecrivent deux champs distincts).
+      expect(rows.single.isBooked, isTrue,
+          reason: 'changer le type ne doit pas decocher la nuit');
+
+      // 4. Le retour en arriere marche dans les deux sens.
+      await tester.tap(refugeChip.last);
+      await settle(tester);
+      rows = await dao.getByTrailId(trailId);
+      expect(rows.single.nuiteeType, NuiteeType.refuge.storageKey);
+      expect(rows.single.isBooked, isTrue);
+    });
+
+    testWidgets('plus aucune puce grisee ni indice invisible sur une nuit cochee',
+        (tester) async {
+      await tester.pumpWidget(wrap(
+        db: db,
+        days: [walkDay(1, 1)],
+        accommodations: [
+          accom(1, nameFr: 'Refuge de Test', type: 'refuge'),
+          accom(1, nameFr: 'Gite du Col', type: 'gite'),
+        ],
+      ));
+      await settle(tester);
+      await pumpUntil(tester, find.text('J1'));
+
+      await tester.tap(find.text('J1').first);
+      await settle(tester);
+
+      // L'attenuation a 35 % des puces non selectionnees a disparu : plus rien
+      // dans la carte ne fait croire a un verrou.
+      final opacites = tester
+          .widgetList<Opacity>(find.byType(Opacity))
+          .where((o) => o.opacity < 1.0);
+      expect(opacites, isEmpty,
+          reason: 'aucune puce de type ne doit plus etre grisee');
+
+      // Et le `Tooltip` « decochez pour changer le type » — qui ne s'affichait
+      // jamais sur mobile — n'est plus monte nulle part.
+      expect(find.byTooltip(t.nuitees.card.lockedHint), findsNothing);
+    });
+  });
+
   // --- Donnees par sentier -------------------------------------------------
 
   group('donnees par sentier', () {

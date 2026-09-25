@@ -272,11 +272,17 @@ class _ChecklistBodyWeightRowState extends State<ChecklistBodyWeightRow> {
               Icon(Icons.monitor_weight_outlined,
                   size: 18, color: theme.colorScheme.primary),
               const SizedBox(width: AppTheme.spacingSm),
+              // LIBELLE « Poids du corps » — PLUS DE COUPE (retour Chris #10,
+              // tache 553). Il partage sa ligne avec un champ de saisie de
+              // 120 px et la pastille de ratio : sur un telephone etroit ou avec
+              // une police grossie, il ne restait pas de quoi l'ecrire en
+              // entier, et l'ellipse mangeait le mot qui dit DE QUOI on parle.
+              // Deux lignes, et il se lit.
               Flexible(
                 child: Text(
                   weightT.bodyWeight,
                   style: theme.textTheme.bodyMedium,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -458,76 +464,95 @@ class ChecklistWeightGauge extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Flexible(
-                flex: 2,
-                child: Text(
-                  pctLabel,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    color: gaugeColor,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Flexible(
-                flex: 3,
-                child: Text(
-                  gaugeLabel,
-                  style: theme.textTheme.bodySmall?.copyWith(color: gaugeColor),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.end,
-                ),
-              ),
-            ],
+          // LE POURCENTAGE, SEUL SUR SA LIGNE (retour Chris #10, tache 553).
+          // Il partageait cette ligne avec le CONSEIL (« Attention genoux !
+          // Allegez le sac »), en `Flexible` flex 2 contre flex 3 : le conseil
+          // n'avait donc que trois cinquiemes de la largeur pour une phrase
+          // entiere, sur UNE ligne, avec ellipse — il etait coupe a TOUS les
+          // coups. C'est tres probablement ce texte-la que Chris ne comprenait
+          // pas : un conseil ampute n'est plus un conseil, c'est un debut de
+          // phrase. Le pourcentage prend la ligne, le conseil descend sous la
+          // jauge en pleine largeur (ci-dessous).
+          Text(
+            pctLabel,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: gaugeColor,
+            ),
           ),
           const SizedBox(height: 6),
-          Stack(
-            children: [
-              Container(
-                height: 12,
-                decoration: BoxDecoration(
-                  color: AppTheme.grisGranite.withAlpha(40),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-              FractionallySizedBox(
-                widthFactor: (pct / 30).clamp(0.0, 1.0),
-                child: Container(
+          // HAUTEUR RESERVEE A LA JAUGE *ET* A SES REPERES (tache 553). La barre
+          // ne fait que 12 px, mais les reperes 15/20/25 % sont poses en
+          // `Positioned(top: 14)`, donc SOUS elle : un `Stack` se dimensionne sur
+          // ses enfants NON positionnes (la barre, 12 px) et rogne par defaut ce
+          // qui depasse (`Clip.hardEdge`) — les trois reperes etaient donc
+          // decoupes. On reserve 34 px (14 px de decalage + la hauteur d'une
+          // ligne de 14 px) : les reperes s'affichent, et le conseil qui vient
+          // juste apres ne leur passe pas dessus.
+          SizedBox(
+            height: 34,
+            child: Stack(
+              children: [
+                Container(
                   height: 12,
                   decoration: BoxDecoration(
-                    color: gaugeColor,
+                    color: AppTheme.grisGranite.withAlpha(40),
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-              ),
-              Positioned(
-                left: MediaQuery.of(context).size.width * 0.5 * (15 / 30) - 16,
-                top: 14,
-                child: Text('15%',
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(fontSize: 14, color: AppTheme.grisGranite)),
-              ),
-              Positioned(
-                left: MediaQuery.of(context).size.width * 0.5 * (20 / 30) - 16,
-                top: 14,
-                child: Text('20%',
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(fontSize: 14, color: AppTheme.grisGranite)),
-              ),
-              Positioned(
-                left: MediaQuery.of(context).size.width * 0.5 * (25 / 30) - 16,
-                top: 14,
-                child: Text('25%',
-                    style: theme.textTheme.bodySmall
-                        ?.copyWith(fontSize: 14, color: AppTheme.grisGranite)),
-              ),
-            ],
+                FractionallySizedBox(
+                  widthFactor: (pct / 30).clamp(0.0, 1.0),
+                  child: Container(
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: gaugeColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left:
+                      MediaQuery.of(context).size.width * 0.5 * (15 / 30) - 16,
+                  top: 14,
+                  child: Text('15%',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14, color: AppTheme.grisGranite)),
+                ),
+                Positioned(
+                  left:
+                      MediaQuery.of(context).size.width * 0.5 * (20 / 30) - 16,
+                  top: 14,
+                  child: Text('20%',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14, color: AppTheme.grisGranite)),
+                ),
+                Positioned(
+                  left:
+                      MediaQuery.of(context).size.width * 0.5 * (25 / 30) - 16,
+                  top: 14,
+                  child: Text('25%',
+                      style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 14, color: AppTheme.grisGranite)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          // LE CONSEIL, SOUS LA JAUGE, EN PLEINE LARGEUR (retour Chris #10,
+          // tache 553). C'est la phrase qui DIT QUOI FAIRE — « Attention
+          // genoux ! Allegez le sac » — et c'est celle qui etait systematiquement
+          // coupee : coincee a droite du pourcentage sur trois cinquiemes de
+          // ligne, avec `maxLines: 1` et une ellipse. Elle a desormais toute la
+          // largeur et autant de lignes qu'il lui en faut : aucune ellipse, rien
+          // a deviner. Elle est juste sous la jauge, a l'endroit ou l'oeil arrive
+          // apres avoir lu la couleur de la barre.
+          Text(
+            gaugeLabel,
+            key: const ValueKey('checklist-gauge-advice'),
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: gaugeColor,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 2),
           Text(

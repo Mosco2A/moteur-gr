@@ -93,9 +93,38 @@ const Set<String> kIsoCountryCodes = {
   'VN', 'VU', 'WF', 'WS', 'YE', 'YT', 'ZA', 'ZM', 'ZW',
 };
 
-/// Vrai si [code] est un code pays ISO 3166-1 alpha-2 attribue.
+/// Codes pays que LE SELECTEUR PROPOSE sans que l'ISO les ait officiellement
+/// attribues (tache 553).
+///
+/// Depuis que le pays se CHOISIT dans une liste (package `country_picker`) au
+/// lieu de se taper, la liste proposee fait foi : tout ce qu'on peut choisir doit
+/// pouvoir etre enregistre. Or le selecteur offre deux codes absents de
+/// [kIsoCountryCodes] :
+///  - `XK` — le Kosovo, qui n'a pas de code ISO officiel mais que l'Union
+///    europeenne, le FMI et la Banque mondiale designent ainsi ;
+///  - `AC` — l'ile de l'Ascension, code reserve a titre exceptionnel par l'ISO.
+///
+/// Sans eux, un randonneur qui choisissait « Kosovo » dans la liste se faisait
+/// repondre « Code pays invalide » : l'application lui refusait le pays d'ou il
+/// vient, sur un champ OPTIONNEL, alors qu'elle le lui avait propose elle-meme.
+/// C'est exactement l'exclusion a la porte d'entree que le principe pose par
+/// Chris (#100327, #100328, en tete de ce fichier) interdit : une borne de saisie
+/// attrape une faute de frappe, elle ne decide pas qui a le droit d'exister.
+const Set<String> kSelectableNonIsoCountryCodes = {'AC', 'XK'};
+
+/// Vrai si [code] est un code pays ACCEPTABLE : code ISO 3166-1 alpha-2 attribue
+/// ([kIsoCountryCodes]) ou code propose par le selecteur sans l'etre
+/// ([kSelectableNonIsoCountryCodes]).
 ///
 /// La casse est ignoree ; les espaces sont ignores. Le champ pays restant
 /// OPTIONNEL, la chaine vide est geree par l'appelant (vide = non renseigne).
-bool isValidIsoCountryCode(String code) =>
-    kIsoCountryCodes.contains(code.trim().toUpperCase());
+///
+/// Cette validation reste NECESSAIRE meme avec un selecteur : elle garde les
+/// portes par lesquelles une valeur arrive sans passer par l'ecran — restauration
+/// d'une sauvegarde ([RestoreService]) et miroir cloud — et les fiches deja
+/// enregistrees du temps de la saisie libre.
+bool isValidIsoCountryCode(String code) {
+  final normalized = code.trim().toUpperCase();
+  return kIsoCountryCodes.contains(normalized) ||
+      kSelectableNonIsoCountryCodes.contains(normalized);
+}
