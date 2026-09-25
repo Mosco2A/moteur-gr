@@ -18,11 +18,22 @@ import '../../booking/providers/nuitee_selections_provider.dart';
 import '../../diploma/providers/session_trace_provider.dart';
 import '../../consent/providers/consent_ui_providers.dart';
 import '../../feasibility/data/hiker_profile_repository.dart';
+import '../../hub/providers/cockpit_start_providers.dart'
+    show prepareCoreStepsProvider;
 import '../../journal/providers/journal_day_providers.dart';
 import '../../journal/providers/journal_providers.dart';
+import '../../map/providers/stage_poi_check_provider.dart';
+import '../../notifications/providers/download_reminder_provider.dart';
+import '../../planning/providers/planned_days_provider.dart'
+    show manualRestDayCacheProvider, plannedDaysProvider;
+import '../../planning/providers/planning_provider.dart'
+    show planningProvider, retainedDurationProvider;
 import '../../safety/presentation/health_info_screen.dart'
     show healthInfoRepositoryProvider;
+import '../../share/providers/visibility_settings_provider.dart';
 import '../../trail/providers/progress_provider.dart';
+import '../../training/providers/training_plan_providers.dart'
+    show trainingProgressProvider;
 import '../../treks/providers/my_treks_provider.dart' show myTreksProvider;
 
 /// Service de retention / droit a l'effacement, branche sur la base REELLE de
@@ -164,6 +175,66 @@ void oublierLesDonneesPersonnellesEnMemoire(Ref ref) {
   // que jeter la valeur gardee ; un nouveau code ne naitra que si un ecran en
   // redemande un, et c'est alors legitime.
   ref.invalidate(recoveryCodeProvider);
+
+  // -------------------------------------------------------------------------
+  // LE TRAVAIL DE PREPARATION (tache 565, LOT N, N1)
+  // -------------------------------------------------------------------------
+  //
+  // CE QUE LE LOT M AVAIT TROUVE SANS LE TRANCHER. Ces six familles partaient
+  // deja du STOCKAGE — leurs cles de prefs sont derivees du store reel, donc
+  // emportees sans avoir a etre enumerees — mais elles restaient SERVIES EN
+  // MEMOIRE, et surtout la promesse « Ce qui part » NE LES NOMMAIT PAS.
+  //
+  // ARBITRAGE DE SKYNET (tache 565), ET SA RAISON : ce que le randonneur perd
+  // ici n'est pas une donnee technique, c'est du TRAVAIL — son programme, sa
+  // date de depart, sa progression d'entrainement. Perdre cela sans avoir ete
+  // averti est plus grave que perdre une trace GPS dont on se doute. On les
+  // NOMME donc dans le dialogue, et on les INVALIDE — les deux, jamais l'un
+  // sans l'autre : nommer sans invalider ferait mentir la promesse, invalider
+  // sans nommer laisserait le randonneur decouvrir la perte apres coup.
+  //
+  // Chacune a son test ecrit ROUGE avant, dans `account_erasure_memory_test`.
+
+  // FEUILLE — LE DECOUPAGE RETENU, c'est-a-dire le programme du randonneur.
+  // Sa duree est une DECISION durable (`RetainedPlanStore`) ; le Programme,
+  // l'Itineraire, le Calendrier et le Resume la lisent tous par
+  // `selectedDurationProvider`, qui la `watch` — invalider la racine les
+  // emporte donc tous.
+  ref.invalidate(retainedDurationProvider);
+  ref.invalidate(planningProvider);
+  ref.invalidate(plannedDaysProvider);
+  // ... ET LE CACHE QUI SURVIT AU PROGRAMME LUI-MEME. Les jours de repos
+  // ajoutes A LA MAIN sont gardes HORS du notifier, precisement pour survivre a
+  // ses recreations (parite GR20). Invalider le programme sans lui, c'etait le
+  // voir se reconstruire avec les repos du randonneur effac... et revenus.
+  ref.invalidate(manualRestDayCacheProvider);
+
+  // FEUILLE — LA DATE DE DEPART (et le rappel qui en decoule). Famille par
+  // sentier : l'invalider vide toutes ses instances.
+  ref.invalidate(downloadReminderProvider);
+
+  // FEUILLE — LA PROGRESSION DE PREPARATION PHYSIQUE : les seances cochees.
+  // C'est un suivi d'activite physique, et c'est surtout des semaines de
+  // travail.
+  ref.invalidate(trainingProgressProvider);
+
+  // FEUILLE — CE QUI A DEJA ETE VALIDE DANS « PREPARER » (Itineraire,
+  // Programme). Ce signal ouvre le bouton « Demarrer » : le laisser en place
+  // apres un effacement ferait croire a une preparation qui n'existe plus.
+  ref.invalidate(prepareCoreStepsProvider);
+
+  // FEUILLE — LES REGLAGES DE PARTAGE ET DE VISIBILITE. Ce sont des opt-in
+  // sociaux, donc des decisions de la personne sur ce qu'elle expose : ils
+  // repartent a PRIVE PAR DEFAUT, comme un compte neuf.
+  ref.invalidate(visibilitySettingsProvider);
+
+  // FEUILLE — LES POINTS D'ETAPE COCHES. SEUL DE CETTE LISTE A N'AVOIR AUCUN
+  // STOCKAGE : ces coches vivent en memoire vive le temps de la session (choix
+  // ecrit dans `stage_poi_check_provider.dart`). L'effacement du disque ne
+  // pouvait donc rien pour elles ; sans cette ligne, le pense-bete du marcheur
+  // — « source prise », « refuge depasse » — restait a l'ecran apres qu'il a
+  // demande l'effacement de ses donnees.
+  ref.invalidate(stagePoiChecksProvider);
 
   // VOLONTAIREMENT HORS PERIMETRE, ET DIT : L'ENREGISTREMENT EN COURS
   // (`trackingProvider`, `trekSessionManagerProvider`). Ces deux notifiers portent

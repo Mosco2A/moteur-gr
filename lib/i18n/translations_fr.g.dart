@@ -2477,8 +2477,8 @@ class Translations$erasure$fr {
 	/// fr: 'Ce qui part'
 	String get goesTitle => 'Ce qui part';
 
-	/// fr: 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion.'
-	String get goes => 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion.';
+	/// fr: 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion. Et tout votre travail de préparation : votre Programme et le découpage que vous avez retenu, votre date de départ, votre progression de préparation physique, ce que vous avez déjà validé dans Préparer, vos réglages de partage et de visibilité, et les points d'étape que vous avez cochés.'
+	String get goes => 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion. Et tout votre travail de préparation : votre Programme et le découpage que vous avez retenu, votre date de départ, votre progression de préparation physique, ce que vous avez déjà validé dans Préparer, vos réglages de partage et de visibilité, et les points d\'étape que vous avez cochés.';
 
 	/// fr: 'Ce qui reste'
 	String get staysTitle => 'Ce qui reste';
@@ -8661,7 +8661,7 @@ extension on Translations {
 			'erasure.entryDesc' => 'Supprimer définitivement ce que l\'application garde sur vous',
 			'erasure.dialogTitle' => 'Effacer mes données ?',
 			'erasure.goesTitle' => 'Ce qui part',
-			'erasure.goes' => 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion.',
+			'erasure.goes' => 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion. Et tout votre travail de préparation : votre Programme et le découpage que vous avez retenu, votre date de départ, votre progression de préparation physique, ce que vous avez déjà validé dans Préparer, vos réglages de partage et de visibilité, et les points d\'étape que vous avez cochés.',
 			'erasure.staysTitle' => 'Ce qui reste',
 			'erasure.stays' => 'Vos achats : étapes payées, sentiers débloqués, période sans publicité — nous ne vous reprenons pas ce que vous avez payé. Et vos réglages d\'affichage (langue, thème, unités), qui ne disent rien de vous.',
 			'erasure.finalWarning' => 'C\'est définitif : ni vous ni nous ne pourrons récupérer ces données.',

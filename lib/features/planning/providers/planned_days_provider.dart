@@ -23,8 +23,8 @@ import 'trek_edit_lock_provider.dart';
 ///
 /// Famille indexee par `trailId` (multi-sentiers). Recree quand les etapes, la
 /// duree OU LE SENS de marche changent (via `ref.watch`), en preservant les
-/// jours de repos manuels (cache externe [_restDayCacheProvider], meme strategie
-/// que GR20).
+/// jours de repos manuels (cache externe [manualRestDayCacheProvider], meme
+/// strategie que GR20).
 ///
 /// SENS de marche (retour QA polish, coherence Itineraire<->Programme) : le
 /// programme honore [selectedDirectionProvider] a l'identique de l'itineraire
@@ -61,7 +61,7 @@ final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier,
   // qui allege la pire journee, donc le seul qui peut changer le verdict.
   final maxRest = ref.watch(durationBoundsProvider(trailId)).restAllowance;
 
-  final cachedRestDays = ref.read(_restDayCacheProvider);
+  final cachedRestDays = ref.read(manualRestDayCacheProvider);
   final notifier =
       PlannedDaysNotifier(stages, duration, ref, maxRestDays: maxRest);
   if (cachedRestDays.isNotEmpty) {
@@ -87,7 +87,14 @@ final plannedDaysProvider = StateNotifierProvider.family<PlannedDaysNotifier,
 ///
 /// Survit aux recreations du notifier par `ref.watch` (parite GR20 : les repos
 /// ajoutes a la main ne doivent pas disparaitre a chaque changement de duree).
-final _restDayCacheProvider = StateProvider<List<int>>((ref) => const []);
+///
+/// PUBLIC DEPUIS LA TACHE 565 (LOT N, N1), ET POUR UNE SEULE RAISON : c'est la
+/// SEULE trace du programme edite a la main qui echappe a l'invalidation du
+/// notifier — elle est faite pour lui survivre. Le droit a l'effacement doit
+/// donc pouvoir la nommer (`account_erasure_provider.dart`), et un test doit
+/// pouvoir prouver qu'elle est bien partie. Le rendre prive rendait
+/// l'effacement de ce point aveugle.
+final manualRestDayCacheProvider = StateProvider<List<int>>((ref) => const []);
 
 /// Notifier du PROGRAMME editable (drag & drop, regrouper / separer, repos).
 ///
@@ -442,7 +449,7 @@ class PlannedDaysNotifier extends StateNotifier<List<PlannedDay>> {
     for (var i = 0; i < state.length; i++) {
       if (state[i].isRestDay) indices.add(i);
     }
-    _ref.read(_restDayCacheProvider.notifier).state = indices;
+    _ref.read(manualRestDayCacheProvider.notifier).state = indices;
   }
 
   /// Renumerote les jours (1-indexed) apres toute mutation.

@@ -54,6 +54,46 @@ import '../data/database.dart';
 import 'consent_service.dart';
 import 'secure_keystore_eraser.dart';
 
+/// CLE DU MARQUEUR D'EFFACEMENT LOCAL (tache 565, LOT N, N2).
+///
+/// Porte la DATE, en ISO-8601, du dernier effacement art. 17 joue sur cet
+/// appareil. Ce n'est pas un residu de donnee personnelle : c'est la trace
+/// MINIMALE qu'un droit a ete exerce — sans elle, aucune garde ne peut savoir
+/// qu'une restauration s'appreterait a defaire cet effacement (voir
+/// [RestoreService]). Une date plutot qu'un simple drapeau, pour qu'on puisse
+/// toujours dire QUAND.
+///
+/// ELLE N'EST DANS AUCUNE LISTE D'EXCEPTION, ET C'EST VOULU : un effacement
+/// suivant la balaye comme les autres cles, puis la reecrit a la fin. Le
+/// resultat est identique et la classification des cles reste intacte (les
+/// cles conservees sont des reglages d'affichage, rien d'autre).
+const String kLocalErasureMarkerPrefsKey = 'privacy.localErasureAt';
+
+/// Signature d'une verification « ce telephone a-t-il exerce son droit a
+/// l'effacement ? », injectable pour les tests.
+typedef LocalErasureCheck = Future<bool> Function();
+
+/// Lecture REELLE du marqueur d'effacement local ([kLocalErasureMarkerPrefsKey]).
+///
+/// C'est l'implementation branchee par defaut dans les services qui pourraient
+/// faire REVENIR de la donnee effacee. Elle relit les prefs a CHAQUE appel,
+/// comme [consentFromLocalStore] et pour la meme raison : la reponse ne doit pas
+/// dependre d'une instance mise en cache au demarrage.
+///
+/// FERMEE PAR DEFAUT, ET DANS CE SENS-CI : si l'etat est illisible, la fonction
+/// retourne `true` — « on considere qu'il y a eu effacement », donc REFUS. Le
+/// doute se tranche du cote de la personne, jamais du cote de la donnee : rendre
+/// des donnees a quelqu'un qui a peut-etre demande leur effacement est la faute
+/// la plus grave des deux.
+Future<bool> localErasureFromStore() async {
+  try {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(kLocalErasureMarkerPrefsKey) != null;
+  } catch (_) {
+    return true;
+  }
+}
+
 /// Categorie de donnee soumise a une duree de conservation (retention).
 ///
 /// Chaque categorie porte sa propre duree, documentee et reprise dans le
@@ -453,6 +493,19 @@ class DataRetentionService {
     //    backup de sa fiche sante. Les laisser en place apres un effacement,
     //    c'etait laisser la cle sur la porte.
     final secureKeysDeleted = await _secureKeystoreErasure();
+
+    // 6. MARQUEUR D'EFFACEMENT LOCAL (tache 565, LOT N, N2), ECRIT EN DERNIER —
+    //    apres la purge des prefs, sinon il serait emporte par son propre
+    //    effacement. Il ne conserve rien de la personne : il dit seulement
+    //    qu'un droit a ete exerce ici, et quand. Sans lui, une restauration
+    //    depuis le miroir cloud (`RestoreService`) ramenerait tout ce qui vient
+    //    d'etre efface, et la fusion « dernier ecrit gagne » ne pourrait pas
+    //    s'y opposer : apres un effacement, le local est vide, donc le distant
+    //    gagne toujours.
+    await _prefs.setString(
+      kLocalErasureMarkerPrefsKey,
+      _now().toIso8601String(),
+    );
 
     return DeletionReport(
       localRowsDeleted: localRows,

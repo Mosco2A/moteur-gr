@@ -1491,7 +1491,7 @@
     "entryDesc": "Eliminar definitivamente lo que la aplicación guarda sobre ti",
     "dialogTitle": "¿Borrar mis datos?",
     "goesTitle": "Lo que se borra",
-    "goes": "Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación.",
+    "goes": "Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación. Y todo tu trabajo de preparación: tu Programa y el reparto de etapas que has elegido, tu fecha de salida, tu progreso de preparación física, lo que ya has completado en Preparar, tus ajustes de compartir y visibilidad, y los puntos de etapa que has marcado.",
     "staysTitle": "Lo que se queda",
     "stays": "Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.",
     "finalWarning": "Es definitivo: ni tú ni nosotros podremos recuperar estos datos.",

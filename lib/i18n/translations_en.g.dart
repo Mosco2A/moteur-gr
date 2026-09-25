@@ -1229,7 +1229,7 @@ class _Translations$erasure$en extends Translations$erasure$fr {
 	@override String get entryDesc => 'Permanently delete what the app keeps about you';
 	@override String get dialogTitle => 'Erase my data?';
 	@override String get goesTitle => 'What goes';
-	@override String get goes => 'Your hiker profile (age, height, weight, walk test), your medical information sheet, your past hikes and your journal, the stages you walked, your overnight stays, your GPS tracks, your permissions and your recovery code.';
+	@override String get goes => 'Your hiker profile (age, height, weight, walk test), your medical information sheet, your past hikes and your journal, the stages you walked, your overnight stays, your GPS tracks, your permissions and your recovery code. And all your preparation work: your Programme and the schedule you chose, your departure date, your physical preparation progress, what you have already completed in Prepare, your sharing and visibility settings, and the stage points you ticked.';
 	@override String get staysTitle => 'What stays';
 	@override String get stays => 'Your purchases: paid stages, unlocked trails, ad-free period — we do not take back what you paid for. And your display settings (language, theme, units), which say nothing about you.';
 	@override String get finalWarning => 'This is permanent: neither you nor we will be able to recover this data.';
@@ -5104,7 +5104,7 @@ extension on TranslationsEn {
 			'erasure.entryDesc' => 'Permanently delete what the app keeps about you',
 			'erasure.dialogTitle' => 'Erase my data?',
 			'erasure.goesTitle' => 'What goes',
-			'erasure.goes' => 'Your hiker profile (age, height, weight, walk test), your medical information sheet, your past hikes and your journal, the stages you walked, your overnight stays, your GPS tracks, your permissions and your recovery code.',
+			'erasure.goes' => 'Your hiker profile (age, height, weight, walk test), your medical information sheet, your past hikes and your journal, the stages you walked, your overnight stays, your GPS tracks, your permissions and your recovery code. And all your preparation work: your Programme and the schedule you chose, your departure date, your physical preparation progress, what you have already completed in Prepare, your sharing and visibility settings, and the stage points you ticked.',
 			'erasure.staysTitle' => 'What stays',
 			'erasure.stays' => 'Your purchases: paid stages, unlocked trails, ad-free period — we do not take back what you paid for. And your display settings (language, theme, units), which say nothing about you.',
 			'erasure.finalWarning' => 'This is permanent: neither you nor we will be able to recover this data.',

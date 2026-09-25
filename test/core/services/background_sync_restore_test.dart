@@ -1,5 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/checklist_dao.dart';
 import 'package:moteur_gr/core/data/daos/journal_dao.dart';
@@ -22,6 +23,15 @@ class FakeConnectivityMonitor extends ConnectivityMonitor {
 /// Tests E4.16 — sync auto background + restore nouveau telephone.
 /// Fixtures neutres (sentier fictif volcans).
 void main() {
+  // TACHE 565 (LOT N, N2) : `RestoreService` consulte desormais le MARQUEUR
+  // D'EFFACEMENT LOCAL avant toute restauration, et ce marqueur vit dans les
+  // SharedPreferences. Sans store simule, la lecture leve — et la garde, FERMEE
+  // PAR DEFAUT, refuserait la restauration. Ces tests-ci portent sur le
+  // hors-ligne et sur Firebase indisponible : ils doivent donc partir d'un
+  // appareil ou AUCUN effacement n'a eu lieu, sinon ils mesureraient le refus
+  // d'effacement en croyant mesurer le leur.
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   late AppDatabase db;
   late ProgressDao progressDao;
   late JournalDao journalDao;
@@ -30,6 +40,7 @@ void main() {
   late FakeConnectivityMonitor connectivity;
 
   setUp(() {
+    SharedPreferences.setMockInitialValues(<String, Object>{});
     db = AppDatabase(NativeDatabase.memory());
     progressDao = ProgressDao(db);
     journalDao = JournalDao(db);

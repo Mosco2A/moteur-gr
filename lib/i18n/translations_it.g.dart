@@ -1229,7 +1229,7 @@ class _Translations$erasure$it extends Translations$erasure$fr {
 	@override String get entryDesc => 'Eliminare definitivamente ciò che l\'app conserva su di te';
 	@override String get dialogTitle => 'Cancellare i miei dati?';
 	@override String get goesTitle => 'Cosa viene cancellato';
-	@override String get goes => 'La tua scheda escursionista (età, altezza, peso, test del cammino), la tua scheda di informazioni mediche, le tue escursioni passate e il tuo diario, le tappe percorse, i tuoi pernottamenti, le tue tracce GPS, i tuoi consensi e il tuo codice di recupero.';
+	@override String get goes => 'La tua scheda escursionista (età, altezza, peso, test del cammino), la tua scheda di informazioni mediche, le tue escursioni passate e il tuo diario, le tappe percorse, i tuoi pernottamenti, le tue tracce GPS, i tuoi consensi e il tuo codice di recupero. E tutto il tuo lavoro di preparazione: il tuo Programma e la suddivisione delle tappe che hai scelto, la tua data di partenza, i tuoi progressi di preparazione fisica, ciò che hai già completato in Preparare, le tue impostazioni di condivisione e visibilità, e i punti tappa che hai spuntato.';
 	@override String get staysTitle => 'Cosa resta';
 	@override String get stays => 'I tuoi acquisti: tappe pagate, sentieri sbloccati, periodo senza pubblicità — non ti riprendiamo ciò che hai pagato. E le tue impostazioni di visualizzazione (lingua, tema, unità), che non dicono nulla di te.';
 	@override String get finalWarning => 'È definitivo: né tu né noi potremo recuperare questi dati.';
@@ -5104,7 +5104,7 @@ extension on TranslationsIt {
 			'erasure.entryDesc' => 'Eliminare definitivamente ciò che l\'app conserva su di te',
 			'erasure.dialogTitle' => 'Cancellare i miei dati?',
 			'erasure.goesTitle' => 'Cosa viene cancellato',
-			'erasure.goes' => 'La tua scheda escursionista (età, altezza, peso, test del cammino), la tua scheda di informazioni mediche, le tue escursioni passate e il tuo diario, le tappe percorse, i tuoi pernottamenti, le tue tracce GPS, i tuoi consensi e il tuo codice di recupero.',
+			'erasure.goes' => 'La tua scheda escursionista (età, altezza, peso, test del cammino), la tua scheda di informazioni mediche, le tue escursioni passate e il tuo diario, le tappe percorse, i tuoi pernottamenti, le tue tracce GPS, i tuoi consensi e il tuo codice di recupero. E tutto il tuo lavoro di preparazione: il tuo Programma e la suddivisione delle tappe che hai scelto, la tua data di partenza, i tuoi progressi di preparazione fisica, ciò che hai già completato in Preparare, le tue impostazioni di condivisione e visibilità, e i punti tappa che hai spuntato.',
 			'erasure.staysTitle' => 'Cosa resta',
 			'erasure.stays' => 'I tuoi acquisti: tappe pagate, sentieri sbloccati, periodo senza pubblicità — non ti riprendiamo ciò che hai pagato. E le tue impostazioni di visualizzazione (lingua, tema, unità), che non dicono nulla di te.',
 			'erasure.finalWarning' => 'È definitivo: né tu né noi potremo recuperare questi dati.',

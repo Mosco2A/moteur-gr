@@ -1229,7 +1229,7 @@ class _Translations$erasure$de extends Translations$erasure$fr {
 	@override String get entryDesc => 'Endgültig löschen, was die App über Sie speichert';
 	@override String get dialogTitle => 'Meine Daten löschen?';
 	@override String get goesTitle => 'Was gelöscht wird';
-	@override String get goes => 'Ihr Wanderprofil (Alter, Grösse, Gewicht, Gehtest), Ihr medizinisches Informationsblatt, Ihre vergangenen Wanderungen und Ihr Tagebuch, Ihre gegangenen Etappen, Ihre Übernachtungen, Ihre GPS-Aufzeichnungen, Ihre Einwilligungen und Ihr Wiederherstellungscode.';
+	@override String get goes => 'Ihr Wanderprofil (Alter, Grösse, Gewicht, Gehtest), Ihr medizinisches Informationsblatt, Ihre vergangenen Wanderungen und Ihr Tagebuch, Ihre gegangenen Etappen, Ihre Übernachtungen, Ihre GPS-Aufzeichnungen, Ihre Einwilligungen und Ihr Wiederherstellungscode. Und Ihre gesamte Vorbereitungsarbeit: Ihr Programm und die von Ihnen gewählte Etappeneinteilung, Ihr Abreisedatum, Ihr Fortschritt der körperlichen Vorbereitung, was Sie unter Vorbereiten bereits abgeschlossen haben, Ihre Einstellungen für Teilen und Sichtbarkeit sowie die von Ihnen abgehakten Etappenpunkte.';
 	@override String get staysTitle => 'Was bleibt';
 	@override String get stays => 'Ihre Käufe: bezahlte Etappen, freigeschaltete Wege, werbefreier Zeitraum — wir nehmen Ihnen nicht zurück, was Sie bezahlt haben. Und Ihre Anzeigeeinstellungen (Sprache, Design, Einheiten), die nichts über Sie aussagen.';
 	@override String get finalWarning => 'Das ist endgültig: weder Sie noch wir können diese Daten wiederherstellen.';
@@ -5104,7 +5104,7 @@ extension on TranslationsDe {
 			'erasure.entryDesc' => 'Endgültig löschen, was die App über Sie speichert',
 			'erasure.dialogTitle' => 'Meine Daten löschen?',
 			'erasure.goesTitle' => 'Was gelöscht wird',
-			'erasure.goes' => 'Ihr Wanderprofil (Alter, Grösse, Gewicht, Gehtest), Ihr medizinisches Informationsblatt, Ihre vergangenen Wanderungen und Ihr Tagebuch, Ihre gegangenen Etappen, Ihre Übernachtungen, Ihre GPS-Aufzeichnungen, Ihre Einwilligungen und Ihr Wiederherstellungscode.',
+			'erasure.goes' => 'Ihr Wanderprofil (Alter, Grösse, Gewicht, Gehtest), Ihr medizinisches Informationsblatt, Ihre vergangenen Wanderungen und Ihr Tagebuch, Ihre gegangenen Etappen, Ihre Übernachtungen, Ihre GPS-Aufzeichnungen, Ihre Einwilligungen und Ihr Wiederherstellungscode. Und Ihre gesamte Vorbereitungsarbeit: Ihr Programm und die von Ihnen gewählte Etappeneinteilung, Ihr Abreisedatum, Ihr Fortschritt der körperlichen Vorbereitung, was Sie unter Vorbereiten bereits abgeschlossen haben, Ihre Einstellungen für Teilen und Sichtbarkeit sowie die von Ihnen abgehakten Etappenpunkte.',
 			'erasure.staysTitle' => 'Was bleibt',
 			'erasure.stays' => 'Ihre Käufe: bezahlte Etappen, freigeschaltete Wege, werbefreier Zeitraum — wir nehmen Ihnen nicht zurück, was Sie bezahlt haben. Und Ihre Anzeigeeinstellungen (Sprache, Design, Einheiten), die nichts über Sie aussagen.',
 			'erasure.finalWarning' => 'Das ist endgültig: weder Sie noch wir können diese Daten wiederherstellen.',

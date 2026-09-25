@@ -1229,7 +1229,7 @@ class _Translations$erasure$es extends Translations$erasure$fr {
 	@override String get entryDesc => 'Eliminar definitivamente lo que la aplicación guarda sobre ti';
 	@override String get dialogTitle => '¿Borrar mis datos?';
 	@override String get goesTitle => 'Lo que se borra';
-	@override String get goes => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación.';
+	@override String get goes => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación. Y todo tu trabajo de preparación: tu Programa y el reparto de etapas que has elegido, tu fecha de salida, tu progreso de preparación física, lo que ya has completado en Preparar, tus ajustes de compartir y visibilidad, y los puntos de etapa que has marcado.';
 	@override String get staysTitle => 'Lo que se queda';
 	@override String get stays => 'Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.';
 	@override String get finalWarning => 'Es definitivo: ni tú ni nosotros podremos recuperar estos datos.';
@@ -5104,7 +5104,7 @@ extension on TranslationsEs {
 			'erasure.entryDesc' => 'Eliminar definitivamente lo que la aplicación guarda sobre ti',
 			'erasure.dialogTitle' => '¿Borrar mis datos?',
 			'erasure.goesTitle' => 'Lo que se borra',
-			'erasure.goes' => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación.',
+			'erasure.goes' => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación. Y todo tu trabajo de preparación: tu Programa y el reparto de etapas que has elegido, tu fecha de salida, tu progreso de preparación física, lo que ya has completado en Preparar, tus ajustes de compartir y visibilidad, y los puntos de etapa que has marcado.',
 			'erasure.staysTitle' => 'Lo que se queda',
 			'erasure.stays' => 'Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.',
 			'erasure.finalWarning' => 'Es definitivo: ni tú ni nosotros podremos recuperar estos datos.',

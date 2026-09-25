@@ -15,6 +15,7 @@ import '../firebase/firebase_service.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
 import 'consent_service.dart';
+import 'data_retention_service.dart';
 
 final _log = Logger(
   printer: PrettyPrinter(methodCount: 0),
@@ -32,16 +33,30 @@ const kRestoreErrorFirebaseUnavailable = 'firebase_unavailable';
 /// consentement effectif, elle est refusee (tache 561, J2).
 const kRestoreErrorHealthConsentMissing = 'health_consent_missing';
 
+/// Code d erreur : le randonneur a exerce son droit a l'effacement SUR CET
+/// APPAREIL (tache 565, LOT N, N2).
+///
+/// Ce n'est pas une panne, c'est un REFUS — et il est NOMME pour qu'aucun
+/// appelant ne le confonde avec un hors-ligne, un Firebase indisponible ou une
+/// absence de sauvegarde cloud.
+const kRestoreErrorErasedLocally = 'erased_locally';
+
 /// Resultat de la verification de restauration.
 class RestoreCheck {
   const RestoreCheck({
     required this.hasCloudData,
     this.cloudItemCount = 0,
     this.lastCloudSync,
+    this.erasedLocally = false,
   });
   final bool hasCloudData;
   final int cloudItemCount;
   final DateTime? lastCloudSync;
+
+  /// Vrai quand il n'y a rien a proposer PARCE QUE le randonneur a efface ses
+  /// donnees ici (tache 565, N2). Un « rien a restaurer » muet serait un autre
+  /// mensonge : l'ecran qui posera la question doit pouvoir dire pourquoi.
+  final bool erasedLocally;
 }
 
 /// Resultat d une operation de restauration.
@@ -78,8 +93,10 @@ class RestoreService {
     this.hikerProfileDao,
     this.pastHikesDao,
     ConsentCheck? consentCheck,
+    LocalErasureCheck? localErasureCheck,
     FirebaseFirestore? firestore,
   })  : consentCheck = consentCheck ?? consentFromLocalStore,
+        localErasureCheck = localErasureCheck ?? localErasureFromStore,
         _firestore = firestore;
 
   final ProgressDao progressDao;
@@ -98,13 +115,48 @@ class RestoreService {
   /// nulle : a defaut d'injection, lit l'etat REEL du stockage local.
   final ConsentCheck consentCheck;
 
+  /// Verification « ce telephone a-t-il exerce son droit a l'effacement ? »
+  /// (tache 565, N2). JAMAIS nulle non plus : a defaut d'injection, lit le
+  /// marqueur REEL pose par [DataRetentionService.deleteAccountData].
+  final LocalErasureCheck localErasureCheck;
+
   FirebaseFirestore? _firestore;
 
   /// Accesseur Firestore (lazy init pour les tests).
   FirebaseFirestore get firestore => _firestore ??= FirebaseFirestore.instance;
 
+  /// LE DROIT A L'EFFACEMENT A-T-IL ETE EXERCE SUR CET APPAREIL ? (tache 565,
+  /// LOT N, N2.)
+  ///
+  /// Une restauration REECRIT en local ce que le miroir cloud detient encore.
+  /// Apres un effacement art. 17, la faire, c'est defaire le droit que le
+  /// randonneur vient d'exercer — et la fusion « dernier ecrit gagne » ne peut
+  /// rien y faire : le local etant vide, le distant gagne toujours.
+  ///
+  /// PROTEGEE PAR SA PROPRE ERREUR : si la verification elle-meme echoue, on
+  /// considere qu'il Y A EU effacement. Un doute se tranche du cote de la
+  /// personne. L'echec est journalise — ce n'est pas un catch silencieux, la
+  /// decision prise est explicite.
+  Future<bool> _aExerceSonDroitALEffacement() async {
+    try {
+      return await localErasureCheck();
+    } catch (e) {
+      _log.e('[Restore] Marqueur d effacement illisible ($e) -> REFUS');
+      return true;
+    }
+  }
+
   /// Verifie si des donnees cloud existent pour cet utilisateur.
+  ///
+  /// GARDE D'EFFACEMENT EN PREMIER (N2) : apres un effacement local, on ne
+  /// PROPOSE pas de restaurer — et la RAISON est portee par [RestoreCheck],
+  /// jamais tue. Un « rien a restaurer » muet ferait croire a une absence de
+  /// sauvegarde, alors que la vraie raison est un droit exerce.
   Future<RestoreCheck> checkAndRestore(String userId) async {
+    if (await _aExerceSonDroitALEffacement()) {
+      _log.w('[Restore] Effacement local -> aucune restauration proposee');
+      return const RestoreCheck(hasCloudData: false, erasedLocally: true);
+    }
     if (!firebaseService.isAvailable) {
       _log.d('[Restore] Firebase indisponible');
       return const RestoreCheck(hasCloudData: false);
@@ -158,7 +210,19 @@ class RestoreService {
 
   /// Restaure les donnees depuis Firestore vers la base locale.
   /// Strategie LWW : pour chaque element, compare updated_at.
+  ///
+  /// GARDE D'EFFACEMENT (tache 565, N2), EN PREMIER ET DANS LA METHODE : il
+  /// n'existe encore aucun appelant en production, et c'est precisement pour
+  /// cela qu'elle ne peut pas dependre de lui. Le refus est NOMME
+  /// ([kRestoreErrorErasedLocally]), jamais confondu avec un hors-ligne.
   Future<RestoreResult> restoreFromCloud(String userId) async {
+    if (await _aExerceSonDroitALEffacement()) {
+      _log.w('[Restore] Effacement local -> restauration REFUSEE');
+      return const RestoreResult(
+        success: false,
+        error: kRestoreErrorErasedLocally,
+      );
+    }
     if (!firebaseService.isAvailable) {
       return const RestoreResult(
         success: false,
@@ -215,7 +279,23 @@ class RestoreService {
   /// aucune donnee de sante ne redescend sur l'appareil. La garde est DANS la
   /// methode — il n'existe encore aucun appelant en production, et c'est
   /// precisement pour cela qu'elle ne peut pas dependre de lui.
+  ///
+  /// GARDE D'EFFACEMENT (tache 565, N2), ET ELLE PASSE DEVANT L'ARTICLE 9. Le
+  /// consentement sante NE SUFFISAIT PAS : il ferme bien cette porte tant que
+  /// l'effacement vient de retirer tous les consentements, mais un consentement
+  /// SE RE-ACCORDE. Le randonneur qui continue d'utiliser l'application et
+  /// ré-accorde la sante rouvrait la porte sur des donnees qu'il avait fait
+  /// effacer. Un consentement dit « j'accepte ce traitement » ; il ne dit pas
+  /// « rendez-moi ce que j'ai efface ». Le refus le plus fort est donc pose en
+  /// premier, et c'est lui qui est nomme.
   Future<RestoreResult> restoreHikerProfile(String userId) async {
+    if (await _aExerceSonDroitALEffacement()) {
+      _log.w('[Restore] Effacement local -> profil NON restaure');
+      return const RestoreResult(
+        success: false,
+        error: kRestoreErrorErasedLocally,
+      );
+    }
     if (!await consentCheck(ConsentPurpose.healthData)) {
       _log.w('[Restore] Consentement sante absent -> restauration REFUSEE');
       return const RestoreResult(

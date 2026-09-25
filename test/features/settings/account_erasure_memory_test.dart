@@ -45,9 +45,17 @@ import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/core/providers/service_providers.dart';
 import 'package:moteur_gr/features/booking/providers/nuitee_selections_provider.dart';
 import 'package:moteur_gr/features/consent/providers/consent_ui_providers.dart';
+import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/features/journal/providers/journal_day_providers.dart';
 import 'package:moteur_gr/features/journal/providers/journal_providers.dart';
+import 'package:moteur_gr/features/map/providers/stage_poi_check_provider.dart';
+import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
+import 'package:moteur_gr/features/planning/data/retained_plan_store.dart';
+import 'package:moteur_gr/features/planning/providers/planned_days_provider.dart';
+import 'package:moteur_gr/features/planning/providers/planning_provider.dart';
+import 'package:moteur_gr/features/share/providers/visibility_settings_provider.dart';
 import 'package:moteur_gr/features/trail/providers/progress_provider.dart';
+import 'package:moteur_gr/features/training/providers/training_plan_providers.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
 import 'package:moteur_gr/features/feasibility/domain/past_hike.dart';
@@ -367,20 +375,194 @@ void main() {
   });
 
   // -------------------------------------------------------------------------
+  // TACHE 565 (LOT N, N1) — LE TRAVAIL DE PREPARATION
+  // -------------------------------------------------------------------------
+  //
+  // CE QUE LE LOT M A TROUVE SANS LE TRANCHER. Six familles de donnees
+  // personnelles partent bien du STOCKAGE (les cles de prefs sont derivees du
+  // store reel, cf. `data_retention_completeness_test`) — mais elles restaient
+  // SERVIES EN MEMOIRE apres l'effacement, et surtout la promesse « Ce qui
+  // part » NE LES NOMMAIT PAS. Le randonneur perdait son programme, sa date de
+  // depart et sa progression d'entrainement sans en avoir ete averti.
+  //
+  // ARBITRAGE DE SKYNET (tache 565) : LES DEUX. Les NOMMER, parce que ce qui se
+  // perd la n'est pas une donnee technique, c'est du TRAVAIL — perdre son
+  // programme sans avertissement est plus grave que perdre une trace GPS dont on
+  // se doute. Et les INVALIDER, chacune avec son test ecrit ROUGE avant, sinon on
+  // reproduit exactement le defaut de la journee : un texte qui promet ce que le
+  // code ne tient pas.
+  group('N1 — le travail de preparation ne survit pas non plus', () {
+    test('le decoupage retenu n est plus servi', () async {
+      final container = chauffer();
+      final trailId = container.read(trailIdProvider);
+      // Le geste reel : « Generer mon programme (9 jours) », ou le curseur du
+      // Programme. Les deux passent par `retain`.
+      await container.read(retainedDurationProvider.notifier).retain(9);
+      expect(container.read(retainedDurationProvider), 9,
+          reason: 'le test ne prouve rien si aucun decoupage n etait retenu');
+      expect(container.read(selectedDurationProvider), 9,
+          reason: 'c est cette duree que lisent le Programme et le Calendrier');
+
+      await container.read(accountErasureProvider)();
+      await pumpEventQueue();
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getInt(retainedDurationPrefsKey(trailId)), isNull,
+          reason: 'la source durable du decoupage doit etre vide');
+      expect(container.read(retainedDurationProvider), isNull,
+          reason: 'le dialogue promet le decoupage retenu');
+    });
+
+    test('les jours de repos ajoutes A LA MAIN au programme ne survivent pas',
+        () async {
+      final container = chauffer();
+      // Le cache est pose par le notifier lui-meme a chaque edition
+      // (`_updateRestDayCache`). On le pose ici comme il le fait : c'est LA
+      // trace qui echappe a l'invalidation du notifier, puisqu'elle est faite
+      // pour lui survivre.
+      container.read(manualRestDayCacheProvider.notifier).state = const [2, 5];
+
+      await container.read(accountErasureProvider)();
+      await pumpEventQueue();
+
+      expect(container.read(manualRestDayCacheProvider), isEmpty,
+          reason: 'le programme edite a la main revenait apres l effacement, '
+              'jusque dans un programme reconstruit');
+    });
+
+    test('la date de depart n est plus servie', () async {
+      final container = chauffer();
+      final trailId = container.read(trailIdProvider);
+      final sub = container.listen(downloadReminderProvider(trailId), (_, __) {});
+      addTearDown(sub.close);
+      await container
+          .read(downloadReminderProvider(trailId).notifier)
+          .setDepartureDate(DateTime.utc(2026, 7, 1));
+      expect(container.read(downloadReminderProvider(trailId)).departureDate,
+          isNotNull,
+          reason: 'le test ne prouve rien sans date de depart choisie');
+
+      await container.read(accountErasureProvider)();
+      await pumpEventQueue();
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getString('departure_date_$trailId'), isNull);
+      expect(container.read(downloadReminderProvider(trailId)).departureDate,
+          isNull,
+          reason: 'le dialogue promet la date de depart');
+    });
+
+    test('la progression de preparation physique n est plus servie', () async {
+      final container = chauffer();
+      final trailId = container.read(trailIdProvider);
+      final sub =
+          container.listen(trainingProgressProvider(trailId), (_, __) {});
+      addTearDown(sub.close);
+      await container
+          .read(trainingProgressProvider(trailId).notifier)
+          .toggle('semaine3-sortie-longue');
+      expect(
+          container.read(trainingProgressProvider(trailId)).doneSessionIds,
+          contains('semaine3-sortie-longue'),
+          reason: 'le test ne prouve rien sans seance cochee');
+
+      await container.read(accountErasureProvider)();
+      await pumpEventQueue();
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getStringList(trainingDoneKey(trailId)), isNull);
+      expect(container.read(trainingProgressProvider(trailId)).doneSessionIds,
+          isEmpty,
+          reason: 'le dialogue promet la progression d entrainement');
+    });
+
+    test('les etapes de preparation deja validees ne sont plus servies',
+        () async {
+      final container = chauffer();
+      final trailId = container.read(trailIdProvider);
+      final sub =
+          container.listen(prepareCoreStepsProvider(trailId), (_, __) {});
+      addTearDown(sub.close);
+      await container
+          .read(prepareCoreStepsProvider(trailId).notifier)
+          .markSeen(PrepCoreStep.itinerary);
+      await container
+          .read(prepareCoreStepsProvider(trailId).notifier)
+          .markSeen(PrepCoreStep.programme);
+      expect(container.read(prepareCoreStepsProvider(trailId)), hasLength(2),
+          reason: 'le test ne prouve rien sans etape de preparation validee');
+
+      await container.read(accountErasureProvider)();
+      await pumpEventQueue();
+
+      expect(container.read(prepareCoreStepsProvider(trailId)), isEmpty,
+          reason: 'le dialogue promet ce qui a ete valide dans Preparer');
+    });
+
+    test('les reglages de partage et de visibilite ne sont plus servis',
+        () async {
+      final container = chauffer();
+      final sub = container.listen(visibilitySettingsProvider, (_, __) {});
+      addTearDown(sub.close);
+      // L'ecran a fini de charger ses prefs : sans cela le notifier n'a pas
+      // encore sa reference au store et n'ecrirait rien de durable.
+      await pumpEventQueue();
+      container.read(visibilitySettingsProvider.notifier)
+        ..setShareLeaderboard(true)
+        ..setShareActivityFeed(true);
+      expect(container.read(visibilitySettingsProvider).shareLeaderboard, isTrue,
+          reason: 'le test ne prouve rien sans opt-in de partage');
+
+      await container.read(accountErasureProvider)();
+      await pumpEventQueue();
+
+      final prefs = await SharedPreferences.getInstance();
+      expect(prefs.getBool(VisibilityKeys.shareLeaderboard), isNull);
+      final apres = container.read(visibilitySettingsProvider);
+      expect(apres.shareLeaderboard, isFalse,
+          reason: 'le dialogue promet les reglages de partage et visibilite');
+      expect(apres.shareActivityFeed, isFalse);
+      expect(apres.shareStageResults, isFalse,
+          reason: 'prive par defaut : c est l etat d un compte qui repart a zero');
+    });
+
+    test('les points d etape coches ne sont plus servis', () async {
+      final container = chauffer();
+      // CELUI-LA N'A AUCUN STOCKAGE : les coches vivent en memoire vive le temps
+      // de la session (choix ecrit dans `stage_poi_check_provider.dart`). Il ne
+      // pouvait donc PAS etre emporte par l'effacement du disque — seule
+      // l'invalidation le fait partir, et c'est bien une donnee personnelle : le
+      // pense-bete du marcheur sur son etape.
+      container.read(stagePoiChecksProvider.notifier).toggle(1408);
+      expect(container.read(stagePoiChecksProvider), contains(1408),
+          reason: 'le test ne prouve rien sans point coche');
+
+      await container.read(accountErasureProvider)();
+      await pumpEventQueue();
+
+      expect(container.read(stagePoiChecksProvider), isEmpty,
+          reason: 'le dialogue promet les points d etape coches');
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // LA PROMESSE NE PEUT PLUS CHANGER SANS QUE LA PREUVE SUIVE
   // -------------------------------------------------------------------------
   //
-  // Le groupe precedent prouve NEUF lignes, une par une. Rien n'empechait
-  // jusqu'ici d'AJOUTER une dixieme ligne au dialogue — « et vos contacts
-  // d'urgence », « et vos reservations » — sans ecrire la preuve qui va avec. Le
-  // defaut de la journee est exactement celui-la : un texte qui promet plus que
-  // le code ne tient. Ce test prend donc la promesse affichee au randonneur pour
-  // CONTRAT : elle doit nommer ces neuf elements, dans les cinq langues, et
-  // seulement eux. Toucher au texte fait echouer ce test, et le prochain
-  // developpeur doit alors etendre la preuve avant de pouvoir livrer.
+  // Le groupe precedent prouve QUINZE lignes, une par une (neuf au LOT M, six
+  // de plus au LOT N). Rien n'empechait jusqu'ici d'AJOUTER une ligne au
+  // dialogue — « et vos contacts d'urgence », « et vos reservations » — sans
+  // ecrire la preuve qui va avec. Le defaut de la journee est exactement
+  // celui-la : un texte qui promet plus que le code ne tient. Ce test prend donc
+  // la promesse affichee au randonneur pour CONTRAT : elle doit nommer ces
+  // elements, dans les cinq langues, et seulement eux. Toucher au texte fait
+  // echouer ce test, et le prochain developpeur doit alors etendre la preuve
+  // avant de pouvoir livrer.
   group('la promesse affichee est le contrat, dans les cinq langues', () {
-    /// Les neuf elements promis, et le mot par lequel chaque langue les nomme.
-    /// L'ordre suit le texte ; l'index suit le groupe de tests ci-dessus.
+    /// Les elements promis, et le mot par lequel chaque langue les nomme.
+    /// L'ordre suit le texte ; l'index suit les groupes de tests ci-dessus —
+    /// les dix premiers sont du LOT M, les sept derniers du LOT N (le
+    /// decoupage retenu est nomme deux fois : le Programme, et le decoupage).
     const promesse = <String, List<String>>{
       'fr': [
         'fiche randonneur',
@@ -393,6 +575,13 @@ void main() {
         'traces GPS',
         'autorisations',
         'code de reconnexion',
+        'Programme',
+        'découpage',
+        'date de départ',
+        'préparation physique',
+        'validé dans Préparer',
+        'partage et de visibilité',
+        "points d'étape",
       ],
       'en': [
         'hiker profile',
@@ -405,6 +594,13 @@ void main() {
         'GPS tracks',
         'permissions',
         'recovery code',
+        'Programme',
+        'schedule you chose',
+        'departure date',
+        'physical preparation progress',
+        'completed in Prepare',
+        'sharing and visibility settings',
+        'stage points',
       ],
       'de': [
         'Wanderprofil',
@@ -417,6 +613,13 @@ void main() {
         'GPS-Aufzeichnungen',
         'Einwilligungen',
         'Wiederherstellungscode',
+        'Programm',
+        'Etappeneinteilung',
+        'Abreisedatum',
+        'körperlichen Vorbereitung',
+        'Vorbereiten bereits abgeschlossen',
+        'Teilen und Sichtbarkeit',
+        'Etappenpunkte',
       ],
       'es': [
         'ficha de senderista',
@@ -429,6 +632,13 @@ void main() {
         'trazas GPS',
         'consentimientos',
         'código de recuperación',
+        'Programa',
+        'reparto de etapas',
+        'fecha de salida',
+        'preparación física',
+        'completado en Preparar',
+        'compartir y visibilidad',
+        'puntos de etapa',
       ],
       'it': [
         'scheda escursionista',
@@ -441,6 +651,13 @@ void main() {
         'tracce GPS',
         'consensi',
         'codice di recupero',
+        'Programma',
+        'suddivisione delle tappe',
+        'data di partenza',
+        'preparazione fisica',
+        'completato in Preparare',
+        'condivisione e visibilità',
+        'punti tappa',
       ],
     };
 
@@ -470,7 +687,11 @@ void main() {
         'Votre fiche randonneur (âge, taille, poids, test de marche), votre '
         'fiche de renseignement médical, vos randonnées passées et votre '
         'journal, vos étapes marchées, vos nuitées, vos traces GPS, vos '
-        'autorisations et votre code de reconnexion.',
+        'autorisations et votre code de reconnexion. Et tout votre travail de '
+        'préparation : votre Programme et le découpage que vous avez retenu, '
+        'votre date de départ, votre progression de préparation physique, ce '
+        'que vous avez déjà validé dans Préparer, vos réglages de partage et '
+        "de visibilité, et les points d'étape que vous avez cochés.",
         reason: 'LA PROMESSE A CHANGE. Si un element a ete AJOUTE : ecrire sa '
             'preuve dans le groupe « ligne a ligne » ci-dessus, l ajouter aux '
             'mots-cles des cinq langues, puis mettre ce texte a jour. Si un '
