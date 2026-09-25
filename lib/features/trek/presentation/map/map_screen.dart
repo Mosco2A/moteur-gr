@@ -4,16 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../../../core/engine/trail_engine.dart';
 import '../../../../core/geo/track_point.dart';
 import '../../../../core/map/test_inert_tile_provider.dart';
 import '../../../../core/models/poi.dart';
+import '../../../../core/services/monetization_service.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/ui/error_view.dart';
 import '../../../../core/ui/loading_view.dart';
 import '../../../../i18n/translations.g.dart';
+import '../../../../shared/widgets/paywall_sheet.dart';
+import '../../../journal/data/photo_service.dart';
+import '../../../journal/providers/journal_providers.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/map_pois_provider.dart';
@@ -21,10 +26,12 @@ import '../../../map/providers/off_track_provider.dart';
 import '../../../map/providers/simplified_track_provider.dart';
 import '../../../map/providers/supply_alert_provider.dart';
 import '../../../map/providers/track_position_provider.dart';
+import '../../../map/widgets/map_guide_sheet.dart';
 import '../../../map/widgets/off_track_banner.dart';
 import '../../../map/widgets/poi_filter_bar.dart';
 import '../../../map/widgets/poi_marker.dart';
 import '../../../map/widgets/poi_popup.dart';
+import '../../../map/widgets/stage_poi_checklist.dart';
 import '../../../map/widgets/stage_progress_bar.dart';
 import '../../../safety/presentation/sos_button.dart';
 import '../../../trail/providers/stages_provider.dart';
@@ -88,6 +95,26 @@ final mapControllerProvider =
 /// ecran multi-sentiers qui n'existe pas dans la reference — la comparaison ne
 /// tient pas pour lui. Seule la barre de la CARTE etait un vrai ecart.
 ///
+/// LOT D (tache 554) — « 14 navigation ne ressemble en rien a GR20 !!!!! »,
+/// retour de Chris mot pour mot. Trois choses changent ici, et une seule etait
+/// un vrai manque de fonction :
+///
+///  1. PLUS JAMAIS D'ECRAN NU. La barre d'etape ne se rendait QUE pendant un
+///     trek avec fix GPS : un utilisateur neuf n'avait qu'une carte et des
+///     boutons. Elle se rend desormais TOUJOURS — en trek avec les chiffres
+///     mesures, avant le depart avec les chiffres DU PROGRAMME (distance de
+///     l'etape, D+, D-) et un tiret sur ce qui demande le GPS. Cf.
+///     [_PlannedStageBar].
+///  2. LE BOUTON PHOTO VERS LE JOURNAL DU JOUR, present sur la carte de
+///     reference (`_takePhoto`), qui n'existait nulle part cote StepWays. Cf.
+///     [_MapPhotoButton] — et il respecte le verrou du journal (#99410) : sans
+///     achat, il ouvre la vitrine au lieu d'ecrire.
+///  3. LE GUIDE DES ICONES (reference l.1087-1284) : action (i) de l'en-tete,
+///     cf. [showMapGuideSheet] ; et la LISTE DES POINTS DE L'ETAPE qu'on coche
+///     au passage, ajoutee au panneau Calques (cf. [StagePoiChecklist]) — le
+///     panneau ne savait qu'afficher et masquer des couches, ce qui est une
+///     autre fonction.
+///
 /// SOS — ACCES UNIQUE ALIGNE GR20 (decision Chris 12/09, cycle 3) : le SOS n'a
 /// qu'UN SEUL point d'entree — le bouton flottant en overlay (colonne bas-gauche,
 /// [SosButton], visible en trek actif). C'est EXACTEMENT le placement GR20
@@ -137,6 +164,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
             }
           },
         ),
+        // GUIDE DES ICONES (LOT D, manque reel n°2). Place en action (i) de
+        // l'en-tete : c'est le geste maison pour un guide d'ecran (cf. le (i)
+        // du Programme), et cela n'ajoute pas un huitieme bouton flottant sur
+        // une carte de terrain.
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: t.map.title,
+            onPressed: () => showMapGuideSheet(context, trailId),
+          ),
+        ],
       ),
       body: Consumer(
         builder: (context, ref, _) {
@@ -206,18 +244,32 @@ class _MapContentState extends State<_MapContent> {
   /// Ouvre le panneau « Calques » (toggle des types de POI) — parite GR20
   /// (bouton calques de la Navigation). Reutilise [PoiFilterBar] : aucun
   /// nouveau modele, la selection persiste dans [activePoiTypesProvider].
+  ///
+  /// LOT D (tache 554) : le panneau porte DESORMAIS AUSSI la liste des points
+  /// d'eau et des hebergements DE L'ETAPE EN COURS, qu'on coche au passage
+  /// ([StagePoiChecklist]). C'est la troisieme fonction manquante de la carte :
+  /// le panneau de calques savait montrer et masquer des couches, il ne disait
+  /// pas « voila ce que tu vas croiser aujourd'hui ». La feuille de reference
+  /// fait exactement cela : elle est titree par l'etape et compte ses points.
+  ///
+  /// Feuille DEFILANTE et haute : la liste des points peut etre longue, et une
+  /// feuille a hauteur naturelle deborderait sur les etapes bien pourvues.
   void _showLayersSheet(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
+      isScrollControlled: true,
       builder: (ctx) {
         final theme = Theme.of(ctx);
         return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+          child: DraggableScrollableSheet(
+            initialChildSize: 0.6,
+            minChildSize: 0.3,
+            maxChildSize: 0.9,
+            expand: false,
+            builder: (innerCtx, scrollController) => ListView(
+              controller: scrollController,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -225,7 +277,12 @@ class _MapContentState extends State<_MapContent> {
                     children: [
                       const Icon(Icons.layers),
                       const SizedBox(width: 8),
-                      Text(t.map.layersTitle, style: theme.textTheme.titleLarge),
+                      Expanded(
+                        child: Text(
+                          t.map.layersTitle,
+                          style: theme.textTheme.titleLarge,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -241,6 +298,9 @@ class _MapContentState extends State<_MapContent> {
                 ),
                 const SizedBox(height: 8),
                 PoiFilterBar(trailId: widget.trailId),
+                const Divider(height: AppTheme.spacingLg),
+                // Les points de l'etape en cours, coches au passage (LOT D).
+                StagePoiChecklist(trailId: widget.trailId),
               ],
             ),
           ),
@@ -460,12 +520,18 @@ class _MapContentState extends State<_MapContent> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    // Colonne gauche : SOS (visible en trek) + Calques.
+                    // Colonne gauche : SOS (visible en trek) + Photo + Calques.
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SosButton(),
+                        const SizedBox(height: 8),
+                        // PHOTO VERS LE JOURNAL DU JOUR (LOT D, manque reel
+                        // n°1) : present sur la carte de reference, absent de
+                        // StepWays. Cote gauche avec le SOS, pour ne pas
+                        // allonger la colonne des controles de carte.
+                        const _MapPhotoButton(),
                         const SizedBox(height: 8),
                         FloatingActionButton.small(
                           heroTag: 'mapLayers',
@@ -752,6 +818,13 @@ class _SupplyAlertBannerState extends ConsumerState<_SupplyAlertBanner> {
 /// deduites d'une somme nominale d'etapes. Chaque valeur indisponible est
 /// MASQUEE plutot qu'affichee a zero (meme regle que le correctif L5-6 : une
 /// vitesse mesuree, ou rien).
+///
+/// LOT D (tache 554) — CETTE BARRE NE DISPARAIT PLUS JAMAIS. Elle se rendait en
+/// `SizedBox.shrink()` hors trek et sans fix GPS : c'est EXACTEMENT l'ecran nu
+/// que Chris a vu (« 14 navigation ne ressemble en rien a GR20 !!!!! »). La
+/// navigation de reference, elle, affiche sa barre de chiffres EN PERMANENCE et
+/// met un tiret dans les cases qu'elle ne sait pas encore remplir. Hors trek, la
+/// barre passe donc la main a [_PlannedStageBar] au lieu de s'effacer.
 class _ActiveStageBar extends ConsumerWidget {
   const _ActiveStageBar();
 
@@ -762,7 +835,7 @@ class _ActiveStageBar extends ConsumerWidget {
     );
     final trekActive = status == TrackingSessionStatus.recording ||
         status == TrackingSessionStatus.paused;
-    if (!trekActive) return const SizedBox.shrink();
+    if (!trekActive) return const _PlannedStageBar();
 
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
     final trackPos = ref.watch(trackPositionProvider);
@@ -810,8 +883,247 @@ class _ActiveStageBar extends ConsumerWidget {
           altitudeM: ref.watch(currentAltitudeProvider),
         );
       },
-      orElse: () => const SizedBox.shrink(),
+      // En trek mais sans projection encore disponible (le fix GPS met une
+      // seconde a arriver) : barre du PROGRAMME plutot qu'ecran nu.
+      orElse: () => const _PlannedStageBar(),
     );
+  }
+}
+
+/// Barre d'etape AVANT le depart (LOT D, tache 554) — l'etat garni qui manquait.
+///
+/// CE QU'ELLE MONTRE, ET POURQUOI CHAQUE CHIFFRE EST LEGITIME :
+///  * le nom et les chiffres de la PREMIERE etape du programme — distance, D+,
+///    D- : ce sont des donnees du sentier, connues sans le moindre GPS ;
+///  * la distance totale du sentier, qui vient de la configuration ;
+///  * un TIRET sur les trois chiffres qui exigent la marche (parcouru, vitesse
+///    moyenne) — jamais un zero, qui se lirait comme une mesure ;
+///  * l'altitude REELLE des qu'un fix existe (le marcheur est peut-etre deja au
+///    depart), un tiret sinon.
+///
+/// CE QU'ELLE NE PRETEND PAS : elle ne dit pas ou se trouve le marcheur. Elle
+/// nomme la premiere etape parce que c'est le point de depart connu du
+/// programme ; des que la projection GPS repond, l'etape DETECTEE prend le
+/// relais ([_ActiveStageBar]). Il n'existe a ce jour aucune source persistee de
+/// l'etape courante hors trek (la colonne `currentStage` de la table de
+/// progression n'est lue par aucun provider) : la brancher serait un travail de
+/// couche de donnees, hors de ce lot d'ecrans.
+class _PlannedStageBar extends ConsumerWidget {
+  const _PlannedStageBar();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+    final stages = ref.watch(
+      stagesProvider(trailId).select((async) => async.value),
+    );
+    final stage = (stages == null || stages.isEmpty) ? null : stages.first;
+    final totalKm = ref.watch(
+      trailConfigProvider.select((c) => c.totalDistanceKm),
+    );
+
+    // Repli de titre : le nom du sentier. Toujours vrai, meme quand la base
+    // n'a pas encore rendu les etapes.
+    final String trailName = ref.watch(
+      trailConfigProvider.select((c) => c.displayName),
+    );
+    final String stageName = stage?.name ?? trailName;
+
+    // « Restant » avant le depart = toute l'etape (rien n'est marche). Sans
+    // etape connue, on retombe sur le sentier entier.
+    final remainingKm = stage?.distanceKm ?? (totalKm > 0 ? totalKm : 0.0);
+
+    return StageProgressBar(
+      stageName: stageName,
+      distanceRemainingKm: remainingKm,
+      progressRatio: 0,
+      isOffTrack: false,
+      totalDistanceKm: totalKm > 0 ? totalKm : null,
+      // Rien de marche : tiret, jamais « 0.0 km ».
+      distanceCoveredKm: null,
+      elevationGainM: stage?.elevationGainM,
+      elevationLossM: stage?.elevationLossM,
+      avgSpeedKmh: null,
+      altitudeM: ref.watch(currentAltitudeProvider),
+      showPendingValues: true,
+      footer: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Icone de MARCHE et non un (i) : le (i) de l'en-tete ouvre le guide
+          // de la carte, deux sens differents ne partagent pas un signe.
+          Icon(
+            Icons.hiking,
+            size: 16,
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(width: AppTheme.spacingXs),
+          Expanded(
+            child: Text(
+              // Phrase MAISON de l'etat « aucune rando en cours », deja
+              // traduite dans les cinq langues (carte d'accueil du HUB) : elle
+              // dit ce qui demarrera, sans inventer un texte en dur.
+              t.hub.trekCard.noTrekBody,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Bouton PHOTO de la carte -> journal du jour (LOT D, manque reel n°1).
+///
+/// LA REFERENCE L'A SUR SA CARTE (`_takePhoto`), STEPWAYS NE L'AVAIT NULLE PART :
+/// zero occurrence de `photo_camera` dans `lib/features/trek/` et
+/// `lib/features/map/`. Le marcheur devait quitter la navigation, ouvrir le
+/// journal, creer une note, choisir la galerie… pour garder une image du col.
+///
+/// DEUX REGLES MAISON RESPECTEES, ET ELLES COMPTENT :
+///  1. LE VERROU DU JOURNAL TIENT (decision Chris du 02/09, memoire #99410) :
+///     le journal fait partie du pack. Sans achat, ce bouton n'ecrit RIEN — il
+///     ouvre la vitrine ([showPaywallSheet]). On ne remplit pas un carnet
+///     verrouille, et on ne masque pas la fonction pour autant : le marcheur
+///     voit ce qu'il gagne en achetant.
+///  2. L'ERREUR EST DITE, jamais avalee : quota du jour atteint, photo trop
+///     lourde, disque en echec -> message traduit ([PhotoError]), la meme
+///     table de libelles que le journal.
+class _MapPhotoButton extends ConsumerStatefulWidget {
+  const _MapPhotoButton();
+
+  @override
+  ConsumerState<_MapPhotoButton> createState() => _MapPhotoButtonState();
+}
+
+class _MapPhotoButtonState extends ConsumerState<_MapPhotoButton> {
+  /// Vrai pendant la prise et l'enregistrement : le bouton ne se redeclenche
+  /// pas (un double tap en marchant est la norme, pas l'exception).
+  bool _busy = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
+    // Le droit d'acces est OBSERVE ici, pas seulement lu au moment du tap : un
+    // `ref.read` sur un provider jamais observe declenche son chargement et
+    // rend `AsyncLoading` -> un payeur se serait vu proposer la vitrine au
+    // premier appui. En l'observant, il est resolu avant que le doigt arrive.
+    ref.watch(isDemoModeProvider(trailId));
+    return FloatingActionButton.small(
+      heroTag: 'mapTakePhoto',
+      tooltip: t.journal.addPhoto,
+      onPressed: _busy ? null : () => _onPressed(trailId),
+      child: _busy
+          ? const SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
+          : const Icon(Icons.photo_camera),
+    );
+  }
+
+  Future<void> _onPressed(String trailId) async {
+    // Acces au journal = SOURCE UNIQUE [isDemoModeProvider] (correctif L7-3).
+    // FAIL-CLOSED : tant que le droit est indetermine ou en erreur, on n'ecrit
+    // pas — on propose l'achat, exactement comme l'ecran du journal.
+    final acces = ref.read(isDemoModeProvider(trailId));
+    final verrouille = acces.value ?? true;
+    if (verrouille) {
+      final totalStages = ref.read(
+        trailConfigProvider.select((c) => c.totalStages),
+      );
+      if (!mounted) return;
+      await showPaywallSheet(
+        context,
+        trailId: trailId,
+        totalStages: totalStages,
+      );
+      return;
+    }
+
+    // Capture AVANT tout await : la feuille systeme de l'appareil photo peut
+    // demonter ce contexte, il ne doit pas servir a afficher le message.
+    final messenger = ScaffoldMessenger.of(context);
+
+    setState(() => _busy = true);
+    try {
+      final picked = await ImagePicker().pickImage(
+        source: ImageSource.camera,
+        // Memes bornes que le dialogue du journal : la compression finale
+        // reste l'affaire de PhotoService (500 Ko max).
+        maxWidth: 1920,
+        maxHeight: 1920,
+        imageQuality: 85,
+      );
+      if (picked == null) return;
+
+      final error = await ref
+          .read(journalScreenProvider.notifier)
+          .addPhotoNote(
+            stageNumber: _currentStageNumber(),
+            content: '',
+            sourcePath: picked.path,
+          );
+
+      if (error != null) {
+        messenger.showSnackBar(
+          SnackBar(content: Text(_photoErrorLabel(error))),
+        );
+        return;
+      }
+      messenger.showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              const Icon(Icons.check_circle_outline, size: 18),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(child: Text(t.journal.entriesOfDay)),
+            ],
+          ),
+          action: SnackBarAction(
+            label: t.nav.journal,
+            // Resolution du routeur DIFFEREE au tap : la carte est alors
+            // encore montee (le message s'efface avec elle), et un harnais de
+            // test sans routeur ne paye pas ce branchement.
+            onPressed: () {
+              if (mounted) context.push('/journal');
+            },
+          ),
+        ),
+      );
+    } catch (_) {
+      // Appareil photo indisponible / permission refusee : on le DIT.
+      messenger.showSnackBar(SnackBar(content: Text(t.journal.photoError)));
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  /// Etape a laquelle rattacher la photo : l'etape DETECTEE si la projection
+  /// repond, sinon la premiere du programme (plancher a 1 — une entree de
+  /// journal doit porter un numero d'etape valide).
+  int _currentStageNumber() {
+    final detected = ref
+        .read(trackPositionProvider)
+        .whenOrNull(data: (s) => s.stageDetection.stageNumber);
+    if (detected != null && detected > 0) return detected;
+    return 1;
+  }
+
+  /// Libelle Slang d'un echec d'ajout de photo (meme table que le journal).
+  String _photoErrorLabel(PhotoError error) {
+    switch (error) {
+      case PhotoError.dailyLimitReached:
+        return t.journal.photoLimit;
+      case PhotoError.tooLarge:
+        return t.journal.photoTooBig;
+      case PhotoError.fileNotFound:
+      case PhotoError.ioError:
+        return t.journal.photoError;
+    }
   }
 }
 

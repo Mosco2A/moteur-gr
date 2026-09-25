@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -71,6 +72,79 @@ void main() {
     // Et on n y lit rien non plus : meme l etat vide du journal ouvert est
     // absent, sinon le verrou laisserait deviner le contenu.
     expect(find.text(t.journal.empty), findsNothing);
+  });
+
+  // -------------------------------------------------------------------------
+  // LOT D (tache 554) — « Journal non plus », deuxieme retour de Chris sur la
+  // parite. Le verrou RESTE (decision du 02/09, memoire #99410). Ce qui change :
+  // il ne ressemble plus a un ecran vide ou casse, et il ne prend pas en otage
+  // les pages deja ecrites.
+  // -------------------------------------------------------------------------
+  group('LOT D — le verrou n est plus un ecran nu', () {
+    testWidgets('verrouille et vide : l ecran ANNONCE ce que le journal '
+        'contiendra', (tester) async {
+      await tester.pumpWidget(ecran(acces: const AsyncData(true)));
+      await tester.pump();
+      await tester.pump();
+
+      // Les quatre blocs du journal sont nommes, avec leurs propres libelles
+      // traduits : trace du jour, resume chiffre, notes, photos.
+      expect(find.text(t.journal.dayTrace), findsOneWidget);
+      expect(find.text(t.journal.daySummary), findsOneWidget);
+      expect(find.text(t.journal.entriesOfDay), findsOneWidget);
+      expect(find.text(t.journal.addPhoto), findsOneWidget);
+
+      // Et le verrou reste un verrou : rien pour ecrire.
+      expect(find.byType(FloatingActionButton), findsNothing);
+    });
+
+    testWidgets('verrouille AVEC des pages deja ecrites : elles restent '
+        'LISIBLES, mais non modifiables', (tester) async {
+      // Une note ecrite du temps ou le sentier etait debloque (on ne peut pas
+      // en ecrire autrement : le journal verrouille n a aucun bouton d ajout).
+      await db.journalDao.insertEntry(
+        JournalEntriesCompanion.insert(
+          trailId: trailId,
+          stageNumber: 2,
+          content: const Value('Le col au lever du jour'),
+          createdAt: DateTime(2026, 9, 20, 7, 30),
+        ),
+      );
+
+      await tester.pumpWidget(ecran(acces: const AsyncData(true)));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      // CE QUI EST ECRIT SE RELIT : la page du marcheur lui appartient.
+      expect(find.text('Le col au lever du jour'), findsOneWidget);
+      // Le verrou est toujours annonce, avec son bouton d achat.
+      expect(find.text(t.journal.lockedTitle), findsOneWidget);
+      expect(find.text(t.journal.lockedUnlock), findsOneWidget);
+      // MAIS AUCUNE ECRITURE : ni ajout...
+      expect(find.byType(FloatingActionButton), findsNothing);
+      // ... ni suppression dans le menu de l entree.
+      await tester.tap(find.byType(PopupMenuButton<String>).first);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text(t.journal.delete), findsNothing);
+      // Le partage, lui, reste : partager sa propre page est de la lecture.
+      expect(find.text(t.journal.share), findsOneWidget);
+    });
+
+    testWidgets('debloque mais encore vierge : l ecran annonce aussi ses blocs',
+        (tester) async {
+      await tester.pumpWidget(ecran(acces: const AsyncData(false)));
+      await tester.pump();
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.text(t.journal.empty), findsOneWidget);
+      expect(find.text(t.journal.dayTrace), findsOneWidget);
+      expect(find.text(t.journal.daySummary), findsOneWidget);
+      // Et le journal ouvert garde son bouton d ajout.
+      expect(find.byType(FloatingActionButton), findsOneWidget);
+    });
   });
 
   testWidgets('sentier debloque : le journal s ouvre normalement',

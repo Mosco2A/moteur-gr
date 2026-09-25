@@ -107,4 +107,26 @@ class PoiTypeConfig {
 
   /// Liste de tous les types connus
   static Set<String> get knownTypes => _styles.keys.toSet();
+
+  /// Types de POI qui constituent un HEBERGEMENT d'etape.
+  ///
+  /// Remontee ici au LOT D (tache 554) : la fiche d'etape en avait une copie
+  /// PRIVEE, et la liste des points de l'etape sur la carte en aurait fait une
+  /// seconde. Deux definitions du mot « hebergement » finissent toujours par
+  /// divergent — un refuge compte ici, pas la. Une seule, donc.
+  ///
+  /// Generique multi-sentiers : couvre le libelle du socle donnees (`shelter`)
+  /// et ses synonymes du registre (`refuge`, `accommodation`, `campsite`).
+  static const Set<String> accommodationTypes = {
+    'shelter',
+    'refuge',
+    'accommodation',
+    'campsite',
+  };
+
+  /// Types de POI qui designent un POINT D'EAU.
+  ///
+  /// Un seul type a ce jour, mais nomme pour la meme raison que
+  /// [accommodationTypes] : la carte et la fiche d'etape lisent la meme regle.
+  static const Set<String> waterTypes = {'water'};
 }

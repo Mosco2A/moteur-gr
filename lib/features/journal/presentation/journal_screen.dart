@@ -44,8 +44,14 @@ import '../providers/journal_providers.dart';
 ///     aurait verrouille sur une valeur que personne ne calcule.
 ///
 /// FAIL-CLOSED : tant que l'acces est indetermine (chargement) ou en erreur,
-/// l'ecran ne montre PAS le contenu. Un journal qui s'ouvre une demi-seconde
-/// avant de se verrouiller, c'est un verrou qui ne verrouille pas.
+/// l'ecran ne s'OUVRE PAS. Un journal qui s'ouvre une demi-seconde avant de se
+/// verrouiller, c'est un verrou qui ne verrouille pas.
+///
+/// LOT D (tache 554) — CE QUE LE VERROU FERME, ET CE QU'IL NE FERME PLUS. Il
+/// ferme l'ECRITURE : aucun bouton d'ajout, aucune suppression, quel que soit
+/// l'etat d'acces. Il ne ferme PAS la RELECTURE des pages deja ecrites — elles
+/// n'ont pu naitre que sentier debloque, elles appartiennent au marcheur, et les
+/// lui cacher serait prendre ses souvenirs en otage. Cf. [_LockedJournalView].
 ///
 /// HORS-LIGNE : [isDemoModeProvider] derive des droits Drift LOCAUX, sans aucun
 /// appel reseau — un payeur n'est jamais bloque faute de reseau.
@@ -89,7 +95,22 @@ class _JournalShell extends StatelessWidget {
 }
 
 /// Vue VERROUILLEE (L7-3) : on dit ce que le journal apporte et on propose de
-/// le debloquer. Aucune entree du journal n'est lue ni affichee ici.
+/// le debloquer.
+///
+/// LOT D (tache 554) — « Journal non plus », deuxieme retour de Chris sur la
+/// parite. Le verrou RESTE (decision de Chris du 02/09, memoire #99410 : le mode
+/// trek s'active a l'achat du trek) ; ce qui change, c'est qu'il ne ressemble
+/// plus a un ecran vide ou casse. DEUX CORRECTIONS, et leurs raisons :
+///
+///  1. IL MONTRE CE QUE LE JOURNAL CONTIENDRA (trace du jour, resume chiffre,
+///     notes, photos) au lieu d'un cadenas seul au milieu du vide. Un verrou
+///     doit donner envie, pas faire croire a une panne.
+///  2. IL NE VERROUILLE JAMAIS LA CONSULTATION DE CE QUI EST DEJA ECRIT. Et ce
+///     n'est pas une entorse au verrou : on n'ecrit PAS dans un journal
+///     verrouille, donc toute entree presente a ete ecrite quand le sentier
+///     etait debloque. Ces pages appartiennent au marcheur. Les lui cacher
+///     serait prendre ses souvenirs en otage — pas vendre un pack. L'ecriture,
+///     elle, reste fermee : aucun bouton d'ajout, aucune suppression.
 class _LockedJournalView extends ConsumerWidget {
   const _LockedJournalView({required this.trailId});
 
@@ -97,46 +118,151 @@ class _LockedJournalView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Entrees DEJA ECRITES (forcement du temps ou le sentier etait debloque).
+    final entryCount = ref.watch(
+      journalScreenProvider.select((s) => s.entries.length),
+    );
+    final carte = _LockedJournalCard(
+      trailId: trailId,
+      // L'aperçu de ce que contient le journal n'a de sens que tant qu'il n'y a
+      // rien a lire : des qu'il y a des pages, elles parlent mieux que lui.
+      withPreview: entryCount == 0,
+    );
+
+    if (entryCount == 0) {
+      return ListView(
+        padding: const EdgeInsets.all(AppTheme.spacingBase),
+        children: [carte],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          child: carte,
+        ),
+        const Divider(height: 1),
+        // CONSULTATION SEULE : navigateur de jour, trace, resume et notes, sans
+        // aucun geste d'ecriture (cf. [_JournalDayView.readOnly]).
+        const Expanded(child: _JournalDayView(readOnly: true)),
+      ],
+    );
+  }
+}
+
+/// Le bandeau du verrou : ce qu'apporte le journal, et le bouton d'achat.
+class _LockedJournalCard extends ConsumerWidget {
+  const _LockedJournalCard({required this.trailId, required this.withPreview});
+
+  final String trailId;
+
+  /// Ajoute la liste de ce que le journal contiendra (etat sans aucune page).
+  final bool withPreview;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final trail = ref.watch(trailConfigProvider);
-    return ListView(
+    return AppCard(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
-      children: [
-        AppCard(
-          padding: const EdgeInsets.all(AppTheme.spacingBase),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  Icon(Icons.lock, color: theme.colorScheme.primary, size: 22),
-                  const SizedBox(width: AppTheme.spacingSm),
-                  Expanded(
-                    child: Text(
-                      t.journal.lockedTitle,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
+              Icon(Icons.lock, color: theme.colorScheme.primary, size: 22),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  t.journal.lockedTitle,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
-              ),
-              const SizedBox(height: AppTheme.spacingSm),
-              Text(t.journal.lockedBody, style: theme.textTheme.bodyMedium),
-              const SizedBox(height: AppTheme.spacingBase),
-              AppButton(
-                icon: Icons.lock_open,
-                label: t.journal.lockedUnlock,
-                onPressed: () => showPaywallSheet(
-                  context,
-                  trailId: trailId,
-                  totalStages: trail.totalStages,
                 ),
               ),
             ],
           ),
+          const SizedBox(height: AppTheme.spacingSm),
+          Text(t.journal.lockedBody, style: theme.textTheme.bodyMedium),
+          if (withPreview) ...[
+            const SizedBox(height: AppTheme.spacingBase),
+            const _JournalContentPreview(),
+          ],
+          const SizedBox(height: AppTheme.spacingBase),
+          AppButton(
+            icon: Icons.lock_open,
+            label: t.journal.lockedUnlock,
+            onPressed: () => showPaywallSheet(
+              context,
+              trailId: trailId,
+              totalStages: trail.totalStages,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// CE QUE LE JOURNAL CONTIENDRA (LOT D, tache 554).
+///
+/// Employe par les DEUX etats nus du journal — verrouille sans page, et ouvert
+/// mais encore vide. Les quatre lignes nomment exactement les quatre blocs que
+/// l'ecran affichera une fois la premiere journee marchee ; tous les libelles
+/// existent deja dans les cinq langues (ce sont les titres de ces blocs).
+class _JournalContentPreview extends StatelessWidget {
+  const _JournalContentPreview();
+
+  @override
+  Widget build(BuildContext context) {
+    final journalT = t.journal;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _JournalPreviewRow(
+          icon: Icons.route_outlined,
+          label: journalT.dayTrace,
+        ),
+        _JournalPreviewRow(
+          icon: Icons.insights_outlined,
+          label: journalT.daySummary,
+        ),
+        _JournalPreviewRow(
+          icon: Icons.edit_note,
+          label: journalT.entriesOfDay,
+        ),
+        _JournalPreviewRow(
+          icon: Icons.photo_camera_outlined,
+          label: journalT.addPhoto,
         ),
       ],
+    );
+  }
+}
+
+/// Une ligne de l'apercu : icone du bloc + son titre.
+class _JournalPreviewRow extends StatelessWidget {
+  const _JournalPreviewRow({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingXs),
+      child: Row(
+        children: [
+          Icon(icon, size: 18, color: theme.colorScheme.primary),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(label, style: theme.textTheme.bodyMedium),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -248,6 +374,11 @@ class _UnlockedJournal extends ConsumerWidget {
 }
 
 /// Vue etat vide -- aucune note dans le journal.
+///
+/// LOT D (tache 554) : elle ne se resume plus a une icone et deux phrases au
+/// milieu du vide. Le journal ouvert mais encore vierge annonce desormais ses
+/// quatre blocs ([_JournalContentPreview]) — meme regle que la carte : on
+/// montre ce qui viendra, on ne laisse jamais un ecran nu.
 class _EmptyJournalView extends StatelessWidget {
   const _EmptyJournalView({required this.journalT});
 
@@ -256,17 +387,29 @@ class _EmptyJournalView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.book_outlined, size: 80, color: theme.colorScheme.primary),
-          const SizedBox(height: AppTheme.spacingLg),
-          Text(journalT.empty, style: theme.textTheme.headlineMedium),
-          const SizedBox(height: AppTheme.spacingSm),
-          Text(journalT.emptySubtitle, style: theme.textTheme.bodyLarge),
-        ],
-      ),
+    return ListView(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      children: [
+        const SizedBox(height: AppTheme.spacingLg),
+        Icon(Icons.book_outlined, size: 80, color: theme.colorScheme.primary),
+        const SizedBox(height: AppTheme.spacingLg),
+        Text(
+          journalT.empty,
+          style: theme.textTheme.headlineMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        Text(
+          journalT.emptySubtitle,
+          style: theme.textTheme.bodyLarge,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: AppTheme.spacingLg),
+        const AppCard(
+          padding: EdgeInsets.all(AppTheme.spacingBase),
+          child: _JournalContentPreview(),
+        ),
+      ],
     );
   }
 }
@@ -279,7 +422,12 @@ class _EmptyJournalView extends StatelessWidget {
 /// resume chiffre du jour (L4-3) n'ont de sens. Le journal se lit desormais
 /// une journee a la fois, comme un carnet qu'on feuillette.
 class _JournalDayView extends ConsumerWidget {
-  const _JournalDayView();
+  const _JournalDayView({this.readOnly = false});
+
+  /// Consultation seule (LOT D) : aucun geste d'ecriture sur les entrees.
+  /// Employe par le journal VERROUILLE, qui laisse relire les pages deja
+  /// ecrites mais n'en laisse ni ajouter ni supprimer.
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -315,7 +463,9 @@ class _JournalDayView extends ConsumerWidget {
                   ),
                 )
               else
-                ...entries.map((e) => _JournalEntryTile(entry: e)),
+                ...entries.map(
+                  (e) => _JournalEntryTile(entry: e, readOnly: readOnly),
+                ),
             ],
           ),
         ),
@@ -698,9 +848,13 @@ Future<void> _shareEntry(
 /// Affiche l heure, l etape, le contenu, et la photo si presente.
 /// Actions : supprimer via le menu contextuel.
 class _JournalEntryTile extends ConsumerWidget {
-  const _JournalEntryTile({required this.entry});
+  const _JournalEntryTile({required this.entry, this.readOnly = false});
 
   final JournalEntryModel entry;
+
+  /// Consultation seule (LOT D) : la suppression disparait. Le PARTAGE reste —
+  /// partager sa propre page est de la lecture, pas de l'ecriture.
+  final bool readOnly;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -734,7 +888,10 @@ class _JournalEntryTile extends ConsumerWidget {
               ),
               PopupMenuButton<String>(
                 onSelected: (value) {
+                  // Double verrou : l'entree du menu n'existe pas en lecture
+                  // seule, et l'action refuse quand meme d'agir.
                   if (value == 'delete') {
+                    if (readOnly) return;
                     ref
                         .read(journalScreenProvider.notifier)
                         .deleteEntry(entry.id);
@@ -762,16 +919,17 @@ class _JournalEntryTile extends ConsumerWidget {
                       ],
                     ),
                   ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.delete_outline, size: 20),
-                        const SizedBox(width: 8),
-                        Text(journalT.delete),
-                      ],
+                  if (!readOnly)
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.delete_outline, size: 20),
+                          const SizedBox(width: 8),
+                          Text(journalT.delete),
+                        ],
+                      ),
                     ),
-                  ),
                 ],
               ),
             ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../poi/domain/poi_type_config.dart';
+import '../../poi/domain/poi_type_label.dart';
 import '../providers/map_pois_provider.dart';
 
 /// Barre horizontale de chips togglables pour filtrer les POIs par type.
@@ -56,7 +57,10 @@ class PoiFilterBar extends ConsumerWidget {
                   size: 16,
                   color: isActive ? Colors.white : color,
                 ),
-                label: Text(style.labelKey),
+                // LOT D (554) : libelle TRADUIT. `style.labelKey` porte un mot
+                // ecrit en francais dans le registre — invisible en francais,
+                // faux dans les quatre autres langues.
+                label: Text(poiTypeLabel(type)),
                 selected: isActive,
                 selectedColor: color,
                 checkmarkColor: Colors.white,

@@ -18,6 +18,20 @@ import '../../../i18n/translations.g.dart';
 ///
 /// Cette seconde ligne est purement informative : elle est enveloppée dans un
 /// [IgnorePointer] pour ne jamais voler un geste à la carte.
+///
+/// LOT D (tâche 554) — JAMAIS D'ÉCRAN NU. Retour de Chris, mot pour mot :
+/// « 14 navigation ne ressemble en rien a GR20 !!!!! ». La cause n'était pas un
+/// manque de fonctions : c'est que, sans randonnée démarrée, TOUTES les valeurs
+/// valent `null`, les six disparaissent d'un coup et il ne reste qu'une carte
+/// nue — là où la navigation de référence montre TOUJOURS ses six cases, avec
+/// un tiret quand la valeur n'est pas encore connue (`'--'` pour l'altitude
+/// sans fix GPS).
+///
+/// D'où [showPendingValues] : quand il est vrai, une valeur absente s'affiche
+/// en attente ([pendingValueLabel]) au lieu de disparaître. La règle du
+/// correctif L5-6 est INTACTE — on n'affiche jamais un zéro qui aurait l'air
+/// mesuré ; un tiret dit « pas encore », ce qui est la vérité. Le défaut reste
+/// `false` : en randonnée réelle, la barre garde son comportement d'origine.
 class StageProgressBar extends StatelessWidget {
   const StageProgressBar({
     super.key,
@@ -31,7 +45,15 @@ class StageProgressBar extends StatelessWidget {
     this.elevationLossM,
     this.avgSpeedKmh,
     this.altitudeM,
+    this.showPendingValues = false,
+    this.footer,
   });
+
+  /// Marque d'une valeur qui n'est pas encore mesurable (parite GR20 : `'--'`).
+  ///
+  /// Volontairement un SIGNE et non un mot : il ne demande aucune traduction et
+  /// se lit dans les cinq langues.
+  static const String pendingValueLabel = '--';
 
   /// Nom de l'étape courante
   final String stageName;
@@ -63,14 +85,34 @@ class StageProgressBar extends StatelessWidget {
   /// Altitude courante en mètres (L6-2). `null` = masquée.
   final double? altitudeM;
 
+  /// Affiche les valeurs absentes en attente au lieu de les masquer (LOT D).
+  ///
+  /// Employé par l'état AVANT randonnée de la carte : les chiffres connus du
+  /// programme sont réels, les chiffres qui demandent le GPS portent un tiret.
+  final bool showPendingValues;
+
+  /// Ligne d'explication optionnelle sous les chiffres (LOT D).
+  ///
+  /// Sert à dire ce qui démarrera avec la randonnée, plutôt que de laisser
+  /// deviner pourquoi trois cases portent un tiret.
+  final Widget? footer;
+
   /// Vrai dès qu'au moins une valeur de la seconde ligne est disponible.
   bool get _hasMeasuredLine =>
+      showPendingValues ||
       totalDistanceKm != null ||
       distanceCoveredKm != null ||
       elevationGainM != null ||
       elevationLossM != null ||
       avgSpeedKmh != null ||
       altitudeM != null;
+
+  /// Libellé d'un chiffre : sa valeur si elle existe, sinon le tiret d'attente.
+  String _valueOrPending(String? formatted) =>
+      formatted ?? pendingValueLabel;
+
+  /// Vrai si la case doit être rendue : valeur connue, ou mode « en attente ».
+  bool _shows(Object? value) => value != null || showPendingValues;
 
   @override
   Widget build(BuildContext context) {
@@ -197,45 +239,70 @@ class StageProgressBar extends StatelessWidget {
                 runSpacing: AppTheme.spacingXs,
                 alignment: WrapAlignment.spaceBetween,
                 children: [
-                  if (totalDistanceKm != null)
+                  if (_shows(totalDistanceKm))
                     _MeasuredStat(
                       icon: Icons.straighten,
                       label: t.tracking.total,
-                      value: '${totalDistanceKm!.toStringAsFixed(1)} km',
+                      value: _valueOrPending(
+                        totalDistanceKm == null
+                            ? null
+                            : '${totalDistanceKm!.toStringAsFixed(1)} km',
+                      ),
                     ),
-                  if (distanceCoveredKm != null)
+                  if (_shows(distanceCoveredKm))
                     _MeasuredStat(
                       icon: Icons.directions_walk,
                       label: t.tracking.covered,
-                      value: '${distanceCoveredKm!.toStringAsFixed(1)} km',
+                      value: _valueOrPending(
+                        distanceCoveredKm == null
+                            ? null
+                            : '${distanceCoveredKm!.toStringAsFixed(1)} km',
+                      ),
                     ),
-                  if (elevationGainM != null)
+                  if (_shows(elevationGainM))
                     _MeasuredStat(
                       icon: Icons.trending_up,
                       label: t.tracking.dPlus,
-                      value: '$elevationGainM m',
+                      value: _valueOrPending(
+                        elevationGainM == null ? null : '$elevationGainM m',
+                      ),
                     ),
-                  if (elevationLossM != null)
+                  if (_shows(elevationLossM))
                     _MeasuredStat(
                       icon: Icons.trending_down,
                       label: t.tracking.dMinus,
-                      value: '$elevationLossM m',
+                      value: _valueOrPending(
+                        elevationLossM == null ? null : '$elevationLossM m',
+                      ),
                     ),
-                  if (avgSpeedKmh != null)
+                  if (_shows(avgSpeedKmh))
                     _MeasuredStat(
                       icon: Icons.speed,
                       label: t.tracking.avgSpeed,
-                      value: '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
+                      value: _valueOrPending(
+                        avgSpeedKmh == null
+                            ? null
+                            : '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
+                      ),
                     ),
-                  if (altitudeM != null)
+                  if (_shows(altitudeM))
                     _MeasuredStat(
                       icon: Icons.terrain,
                       label: t.tracking.altitude,
-                      value: '${altitudeM!.round()} m',
+                      value: _valueOrPending(
+                        altitudeM == null ? null : '${altitudeM!.round()} m',
+                      ),
                     ),
                 ],
               ),
             ),
+          ],
+
+          // Ligne d'explication (LOT D) : ce qui démarrera avec la randonnée.
+          // Hors [IgnorePointer] — elle peut porter un bouton d'action.
+          if (footer != null) ...[
+            const SizedBox(height: AppTheme.spacingSm),
+            footer!,
           ],
         ],
       ),

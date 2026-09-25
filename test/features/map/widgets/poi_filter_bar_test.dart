@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/models/poi.dart';
 import 'package:moteur_gr/features/map/widgets/poi_filter_bar.dart';
 import 'package:moteur_gr/features/trail/providers/pois_provider.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// Tests du widget PoiFilterBar.
 ///
@@ -66,9 +67,12 @@ void main() {
       await tester.pumpWidget(buildFilterBar());
       await tester.pumpAndSettle();
 
-      expect(find.text('Eau'), findsOneWidget);
-      expect(find.text('Refuge'), findsOneWidget);
-      expect(find.text('Point de vue'), findsOneWidget);
+      // LOT D (554) : libelles TRADUITS (`t.poi.*`) et non plus le mot
+      // francais ecrit en dur dans le registre des types. Le test lit les
+      // memes cles que l'ecran : il reste vrai dans les cinq langues.
+      expect(find.text(t.poi.water), findsOneWidget);
+      expect(find.text(t.poi.shelter), findsOneWidget);
+      expect(find.text(t.poi.viewpoint), findsOneWidget);
     });
 
     testWidgets('les chips sont tous activés par défaut', (tester) async {
@@ -85,14 +89,14 @@ void main() {
       await tester.pumpWidget(buildFilterBar());
       await tester.pumpAndSettle();
 
-      // Taper sur le chip "Eau" pour le désactiver
-      await tester.tap(find.text('Eau'));
+      // Taper sur le chip du point d'eau pour le désactiver
+      await tester.tap(find.text(t.poi.water));
       await tester.pumpAndSettle();
 
-      // Vérifier que le chip "Eau" est maintenant désactivé
+      // Vérifier que le chip du point d'eau est maintenant désactivé
       final chips = tester.widgetList<FilterChip>(find.byType(FilterChip));
       final waterChip = chips.firstWhere(
-        (c) => (c.label as Text).data == 'Eau',
+        (c) => (c.label as Text).data == t.poi.water,
       );
       expect(waterChip.selected, isFalse);
     });
@@ -102,16 +106,16 @@ void main() {
       await tester.pumpAndSettle();
 
       // Désactiver
-      await tester.tap(find.text('Eau'));
+      await tester.tap(find.text(t.poi.water));
       await tester.pumpAndSettle();
 
       // Réactiver
-      await tester.tap(find.text('Eau'));
+      await tester.tap(find.text(t.poi.water));
       await tester.pumpAndSettle();
 
       final chips = tester.widgetList<FilterChip>(find.byType(FilterChip));
       final waterChip = chips.firstWhere(
-        (c) => (c.label as Text).data == 'Eau',
+        (c) => (c.label as Text).data == t.poi.water,
       );
       expect(waterChip.selected, isTrue);
     });
