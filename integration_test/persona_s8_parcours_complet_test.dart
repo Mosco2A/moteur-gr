@@ -112,7 +112,10 @@ void main() {
       exige(P, 'fiche_info', present(find.text('France')),
           'le pays choisi s affiche par son NOM (« France »), pas par un code');
     }
-    await _accepterConsentementMorpho(tester);
+    final accord = await _accepterConsentementMorpho(tester);
+    exige(P, 'fiche_info', accord,
+        'l accord morphologie est REELLEMENT coche avant d enregistrer — sans '
+        'lui rien ne s enregistre, et tout le reste du parcours est fausse');
     await settleAndShoot(tester, P, '06_fiche_remplie');
     exigeAucuneAbsurdite(P, 'fiche_info');
 
@@ -489,28 +492,53 @@ Future<bool> _choisirPays(WidgetTester tester, String nom) async {
   // fiche devient present mais INATTEIGNABLE — on croit alors a un defaut de
   // l ecran alors que c est la feuille de selection qui n est pas refermee.
   // On le constate, on le dit, et on referme au besoin.
+  // LE REPLI QUI FAISAIT PLUS DE MAL QUE DE BIEN, ET C EST L ECART DE HARNAIS
+  // QUE JE CHERCHAIS DEPUIS DEUX PASSES. Quand la feuille de selection semblait
+  // rester ouverte, on faisait un `maybePop()` — mais si elle s etait en
+  // realite deja refermee, ce pop refermait LA FICHE. Le scenario continuait
+  // alors a taper « Enregistrer » sur un ecran quitte : la fiche n etait pas
+  // enregistree, et DIX PAS PLUS LOIN l ecran de faisabilite disait « 1/3
+  // etapes remplies — ta fiche d info complete ». J ai failli rendre cela
+  // comme un defaut du moteur de faisabilite. On ne referme plus rien : on
+  // CONSTATE, on le dit, et on laisse le rouge « France » isole plutot que de
+  // le laisser contaminer la suite du parcours.
   if (find.byType(TextField).evaluate().length > champsAvant) {
     logStep(P, 'pays',
-        'Le selecteur de pays est TOUJOURS ouvert apres le choix — on le '
-        'referme a la main pour pouvoir continuer.');
-    final ctx = tester.element(find.byType(Navigator).first);
-    Navigator.of(ctx).maybePop();
-    await pumpAndSettleTolerant(tester);
+        'CONSTAT : le selecteur de pays semble encore ouvert apres le choix '
+        '(${find.byType(TextField).evaluate().length} champs contre '
+        '$champsAvant avant ouverture). On NE referme rien : un pop de repli '
+        'refermerait la fiche et fausserait tout ce qui suit.');
   }
   return true;
 }
 
-Future<void> _accepterConsentementMorpho(WidgetTester tester) async {
-  final consent = find.byType(SwitchListTile);
-  if (consent.evaluate().isEmpty) {
-    logStep(P, 'fiche_info', 'COINCE : consentement morphologie introuvable');
-    return;
+/// Coche l accord morphologie, et VERIFIE qu il a bascule.
+///
+/// LE PIEGE, MESURE LE 25/09 : un `tap` brut sur une bascule que le clavier ou
+/// un message d aide a poussee hors de portee part dans le vide, en silence.
+/// Le consentement restait donc refuse, la fiche n etait pas enregistree, et
+/// dix pas plus loin le scenario concluait « aucun verdict » — en accusant le
+/// moteur de faisabilite d un defaut qui n etait pas le sien. On rend la
+/// bascule visible, on la tape, et ON RELIT son etat.
+Future<bool> _accepterConsentementMorpho(WidgetTester tester) async {
+  for (var essai = 0; essai < 2; essai++) {
+    final consent = find.byType(SwitchListTile);
+    if (consent.evaluate().isEmpty) {
+      logStep(P, 'fiche_info', 'COINCE : consentement morphologie introuvable');
+      return false;
+    }
+    if (tester.widget<SwitchListTile>(consent.first).value == true) return true;
+    await tapIfPresent(tester, consent.first, P, 'fiche_info',
+        'cocher l accord morphologie (essai ${essai + 1})',
+        warnIfMissing: false);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 3));
   }
-  final tuile = tester.widget<SwitchListTile>(consent.first);
-  if (tuile.value != true) {
-    await tester.tap(consent.first, warnIfMissed: false);
-    await pumpAndSettleTolerant(tester);
-  }
+  final reste = find.byType(SwitchListTile);
+  final valeur = reste.evaluate().isEmpty
+      ? null
+      : tester.widget<SwitchListTile>(reste.first).value;
+  logStep(P, 'fiche_info', 'Accord morphologie apres deux essais = $valeur');
+  return valeur == true;
 }
 
 Future<bool> _ajouterRando(

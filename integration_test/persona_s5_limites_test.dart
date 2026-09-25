@@ -295,6 +295,22 @@ Future<bool> _choisirPays(WidgetTester tester, String nom) async {
 }
 
 Future<void> _enregistrer(WidgetTester tester) async {
+  // LE CONSENTEMENT MORPHOLOGIE EST DESORMAIS OBLIGATOIRE POUR ENREGISTRER
+  // (lot I, article 9). Ce scenario a ete ecrit quand la fiche s enregistrait
+  // sans lui : ses six exigences « l ecran est bien QUITTE apres un
+  // enregistrement valide » sont alors devenues rouges — non parce que les
+  // bornes avaient regresse, mais parce qu une saisie sans accord n est plus
+  // un enregistrement valide. On coche donc l accord AVANT d enregistrer, ce
+  // qui est ce qu un randonneur fait, et les bornes redeviennent la seule
+  // chose que ce scenario mesure.
+  final consent = find.byType(SwitchListTile);
+  if (consent.evaluate().isNotEmpty &&
+      tester.widget<SwitchListTile>(consent.first).value != true) {
+    await tapIfPresent(tester, consent.first, P, 'consentement',
+        'cocher l accord morphologie (requis pour enregistrer)',
+        warnIfMissing: false);
+    await pumpAndSettleTolerant(tester);
+  }
   await tapIfPresent(tester, find.text(t.hikerProfile.save), P, 'enregistrer',
       'bouton Enregistrer', warnIfMissing: false);
   await pumpAndSettleTolerant(tester);
