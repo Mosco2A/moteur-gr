@@ -178,9 +178,32 @@
     "viewMap": "Voir la carte",
     "layers": "Calques",
     "layersTitle": "Calques de la carte",
-    "layersSubtitle": "Choisissez les points affiches sur la carte",
+    "layersSubtitle": "Choisissez les points affichés sur la carte",
     "stageRemaining": "$km km restants",
     "offTrackChip": "Hors trace",
+    "statsPendingNote": "Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.",
+    "guide": {
+      "buttonsTitle": "Boutons",
+      "position": "Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l'application.",
+      "track": "Le tracé du sentier, dans sa couleur. C'est lui qui sert de référence à l'alerte hors trace.",
+      "centerOnMe": "Ramène la carte sur votre position après l'avoir déplacée du doigt.",
+      "photo": "Prend une photo pour le journal du jour, sans quitter la carte.",
+      "sos": "Ouvre l'appel d'urgence avec vos coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.",
+      "currentStage": "Ce qu'il reste à marcher sur l'étape en cours. Un tiret signifie que la randonnée n'a pas encore démarré.",
+      "offTrack": "S'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l'éteindre.",
+      "poi": {
+        "water": "Source ou fontaine signalée sur le sentier. Une source peut être à sec en été : ne comptez pas dessus sans l'avoir vérifiée.",
+        "shelter": "Refuge ou abri sur le parcours. Touchez le repère pour voir ce qui est connu : altitude, services, contact.",
+        "accommodation": "Hébergement autre qu'un refuge : gîte, chambre, hôtel. La réservation se fait auprès de l'établissement.",
+        "campsite": "Emplacement de camping ou de bivouac. Les règles de bivouac dépendent du territoire traversé : renseignez-vous avant de planter la tente.",
+        "shop": "Commerce où vous ravitailler. Les horaires ne sont pas garantis hors saison : prévoyez une marge.",
+        "restaurant": "Restaurant ou table d'hôtes sur le parcours ou tout près.",
+        "viewpoint": "Point de vue remarquable. Repère pour la halte, pas pour l'orientation.",
+        "danger": "Passage signalé comme délicat. Ralentissez et regardez le terrain avant de vous engager.",
+        "emergency": "Point de secours : poste, héliport ou borne d'appel d'urgence.",
+        "info": "Panneau ou point d'information du sentier."
+      }
+    },
     "supplyDismiss": "Masquer l'alerte"
   },
   "stage": {
@@ -241,6 +264,8 @@
     "emergency": "Urgence",
     "danger": "Danger",
     "shop": "Commerce",
+    "accommodation": "Hébergement",
+    "info": "Information",
     "filter": "Filtrer les points d'intérêt",
     "altitude": "Altitude",
     "hours": "Horaires"
@@ -482,7 +507,7 @@
       "gaugeObjectiveReference": "Objectif max : < 15% en refuge, < 20% en autonomie — du poids de référence",
       "referenceExplainer": "Poids de référence pour ta taille : {kg} kg. Le plafond du sac est calculé sur lui, pas sur ton poids réel.",
       "referenceFallbackHeight": "Le plafond de ton sac est calculé sur ton poids réel : pour ta taille, il n'existe pas de poids de référence publié sur lequel s'appuyer. On préfère te le dire plutôt que t'afficher un chiffre faux.",
-      "descentAlertTitle": "Descentes : le poids de ton sac",
+      "descentAlertTitle": "Descentes : ce que tu transportes",
       "descentAlertBody": "Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd'hui : allège-le, et c'est autant de moins à chaque appui.",
       "descentAlertBodyPackOnly": "Tu descends avec {pack} kg de sac. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat : allège le sac, et c'est autant de moins à chaque appui.",
       "descentStage": "{stage} : {loss} m de descente"
@@ -586,6 +611,7 @@
     "photoLimit": "Limite de 3 photos par jour atteinte",
     "photoTooBig": "Photo trop volumineuse (max 500 Ko)",
     "addPhoto": "Ajouter une photo",
+    "photoAdded": "Photo ajoutée au journal",
     "photoSource": "Source de la photo",
     "camera": "Appareil photo",
     "gallery": "Galerie",
@@ -840,12 +866,12 @@
     },
     "formula": {
       "title": "Faisabilité pour ce trek",
-      "intro": "On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.",
+      "intro": "On compare l'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.",
       "ceilingLabel": "Plafond conseillé : ${value} km-énergie/jour (${level})",
-      "stagesTitle": "Étape par étape",
+      "stagesTitle": "Jour par jour",
       "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-énergie",
       "globalTitle": "Verdict global",
-      "hardestStage": "Étape la plus exigeante : ${stage}",
+      "hardestStage": "Journée la plus exigeante : ${stage}",
       "daysOver": "${count} jour(s) au-dessus de ton plafond",
       "daysOverNone": "Aucune journée au-dessus de ton plafond",
       "limitingLabel": "Facteur limitant : ${factor}",
@@ -853,7 +879,7 @@
       "adviceTitle": "Conseils pour ton programme",
       "generateProgram": "Générer mon programme (${days} jours)",
       "generateProgramDone": "Programme généré sur ${days} jours — à toi de l'ajuster.",
-      "noStages": "Aucune étape à évaluer pour le moment.",
+      "noStages": "Aucune journée à évaluer pour le moment.",
       "levels": {
         "beginner": "débutant",
         "intermediate": "intermédiaire",
@@ -861,12 +887,12 @@
         "expert": "expert"
       },
       "verdicts": {
-        "green": "Faisable",
-        "orange": "Faisable avec préparation",
-        "red": "Au-dessus de tes capacités"
+        "green": "Découpage faisable",
+        "orange": "Découpage exigeant",
+        "red": "Découpage trop serré"
       },
       "limitingFactors": {
-        "distance": "la distance des étapes",
+        "distance": "la distance par jour",
         "elevation": "le dénivelé",
         "chaining": "l'enchaînement des journées",
         "none": "aucun",
@@ -877,10 +903,10 @@
         "balancedOk": "Ton programme est équilibré : garde une marge et écoute ton corps.",
         "balanced": "Répartis les étapes pour lisser l'effort au fil des jours.",
         "optimalDays": "Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.",
-        "split": "Découpe l'étape ${stage} en deux : elle dépasse nettement ton plafond.",
-        "rest": "Prévois un jour de repos après l'étape ${stages}.",
+        "split": "Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.",
+        "rest": "Prévois un jour de repos après la journée ${stages}.",
         "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique).",
-        "restAdvised": "Pose ${days} jour(s) de repos, après les étapes ${stages} : tes journées se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict."
+        "restAdvised": "Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict."
       },
       "retainedPlan": "Découpage retenu : ${days} jours de marche.",
       "retainedPlanNone": "Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.",
@@ -894,7 +920,7 @@
       "restExtrapolation": "Le seuil de repos vient d'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C'est une transposition, et elle est dite.",
       "restNotDecisive": "Ce chiffre s'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.",
       "restAdvisedLine": "Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.",
-      "restTwoDays": "Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.",
+      "restTwoDays": "Sur des journées de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.",
       "habitGap": "Écart à ton habitude : ${value} (repère 0,8 à 1,3).",
       "habitGapNotDecisive": "Cet écart est affiché, jamais décisif : aucune étude ne démontre qu'il cause quoi que ce soit.",
       "conditionsTitle": "Ce qui est entré dans ce verdict",
@@ -909,11 +935,11 @@
       "winterInvalid": "Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu'il ne s'applique pas.",
       "restDaysCounted": "Jours de repos comptés dans ce verdict : ${count}.",
       "restDaysNone": "Aucun jour de repos n'est posé dans ton programme : poses-en et ce chiffre bouge.",
-      "averageLoad": "Charge moyenne des journées : ${value} (la pire étape est à ${worst}).",
+      "averageLoad": "Charge moyenne des journées : ${value} (la pire est à ${worst}).",
       "averageLoadInfo": "Ces deux chiffres se lisent ensemble : loin l'un de l'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s'affiche, il ne décide pas.",
       "durationStatement": "Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.",
       "durationStatementInfo": "Ce constat s'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d'en juger.",
-      "stageDominantFactor": "Ce qui pèse le plus sur cette étape : ${factor}"
+      "stageDominantFactor": "Ce qui pèse le plus sur cette journée : ${factor}"
     },
     "flow": {
       "title": "Es-tu prêt pour ce trek ?",
@@ -1975,6 +2001,7 @@
     "sexMale": "Homme",
     "sexUnspecified": "Non précisé",
     "fieldCountry": "Pays",
+    "countryUnspecified": "Non précisé",
     "hintCountry": "Code (ex. FR)",
     "bmiLabel": "IMC",
     "bmiCategories": {

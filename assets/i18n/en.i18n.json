@@ -181,6 +181,29 @@
     "layersSubtitle": "Choose what to show on the map",
     "stageRemaining": "$km km left",
     "offTrackChip": "Off track",
+    "statsPendingNote": "The dashes fill in as soon as you start the hike: these figures are measured while walking.",
+    "guide": {
+      "buttonsTitle": "Buttons",
+      "position": "Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.",
+      "track": "The trail line, in its own colour. It is the reference the off-track alert uses.",
+      "centerOnMe": "Brings the map back to your position after you have dragged it.",
+      "photo": "Takes a photo and adds it to the day's journal, without leaving the map.",
+      "sos": "Opens the emergency call with your GPS coordinates. To be used only in a real emergency.",
+      "currentStage": "What is left to walk on the current stage. A dash means the hike has not started yet.",
+      "offTrack": "Lights up when you move away from the line. Come back to the trail to clear it.",
+      "poi": {
+        "water": "A spring or fountain marked along the trail. A spring can run dry in summer: do not rely on it without checking.",
+        "shelter": "A refuge or shelter on the route. Tap the marker to see what is known: altitude, services, contact.",
+        "accommodation": "Lodging other than a refuge: guesthouse, room, hotel. Booking is made with the establishment itself.",
+        "campsite": "A campsite or bivouac spot. Bivouac rules depend on the land you cross: check before pitching a tent.",
+        "shop": "A shop where you can resupply. Opening hours are not guaranteed off season: keep a margin.",
+        "restaurant": "A restaurant or guest table on or very near the route.",
+        "viewpoint": "A notable viewpoint. A landmark for a break, not for navigation.",
+        "danger": "A passage flagged as tricky. Slow down and look at the ground before committing.",
+        "emergency": "An emergency point: post, helipad or emergency call point.",
+        "info": "A trail information sign or point."
+      }
+    },
     "supplyDismiss": "Dismiss alert"
   },
   "stage": {
@@ -241,6 +264,8 @@
     "emergency": "Emergency",
     "danger": "Danger",
     "shop": "Shop",
+    "accommodation": "Accommodation",
+    "info": "Information",
     "filter": "Filter points of interest",
     "altitude": "Altitude",
     "hours": "Opening hours"
@@ -586,6 +611,7 @@
     "photoLimit": "3 photos per day limit reached",
     "photoTooBig": "Photo too large (max 500 KB)",
     "addPhoto": "Add a photo",
+    "photoAdded": "Photo added to the journal",
     "photoSource": "Photo source",
     "camera": "Camera",
     "gallery": "Gallery",
@@ -840,12 +866,12 @@
     },
     "formula": {
       "title": "Feasibility for this trek",
-      "intro": "We compare each stage's effort to what your profile can handle in a day. Green, orange or red light.",
+      "intro": "We compare each walking day's effort to what your profile can handle. Green, orange or red light.",
       "ceilingLabel": "Recommended ceiling: ${value} energy-km/day (${level})",
-      "stagesTitle": "Stage by stage",
+      "stagesTitle": "Day by day",
       "stageEffort": "${distance} km + ${elevation} m ascent = ${effort} energy-km",
       "globalTitle": "Overall verdict",
-      "hardestStage": "Toughest stage: ${stage}",
+      "hardestStage": "Toughest day: ${stage}",
       "daysOver": "${count} day(s) above your ceiling",
       "daysOverNone": "No day above your ceiling",
       "limitingLabel": "Limiting factor: ${factor}",
@@ -853,7 +879,7 @@
       "adviceTitle": "Tips for your plan",
       "generateProgram": "Generate my plan (${days} days)",
       "generateProgramDone": "Plan generated over ${days} days — tweak it as you like.",
-      "noStages": "No stage to assess yet.",
+      "noStages": "No day to assess yet.",
       "levels": {
         "beginner": "beginner",
         "intermediate": "intermediate",
@@ -861,12 +887,12 @@
         "expert": "expert"
       },
       "verdicts": {
-        "green": "Feasible",
-        "orange": "Feasible with preparation",
-        "red": "Beyond your ability"
+        "green": "Feasible split",
+        "orange": "Demanding split",
+        "red": "Split too tight"
       },
       "limitingFactors": {
-        "distance": "the stage distances",
+        "distance": "the daily distance",
         "elevation": "the elevation gain",
         "chaining": "the day-to-day chaining",
         "none": "none",
@@ -877,10 +903,10 @@
         "balancedOk": "Your plan is balanced: keep a margin and listen to your body.",
         "balanced": "Spread the stages out to smooth the effort across the days.",
         "optimalDays": "Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.",
-        "split": "Split stage ${stage} in two: it clearly exceeds your ceiling.",
-        "rest": "Plan a rest day after stage ${stages}.",
+        "split": "Split day ${stage} in two: it clearly exceeds your ceiling.",
+        "rest": "Plan a rest day after day ${stages}.",
         "training": "Train for ${weeks} weeks before departure (physical preparation).",
-        "restAdvised": "Add ${days} rest day(s), after stages ${stages}: your days look too much alike for the body to recover. It is advice, it does not change your verdict."
+        "restAdvised": "Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict."
       },
       "retainedPlan": "Retained split: ${days} walking days.",
       "retainedPlanNone": "No split retained: the trail stays on its default ${days} days.",
@@ -894,7 +920,7 @@
       "restExtrapolation": "The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.",
       "restNotDecisive": "This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.",
       "restAdvisedLine": "Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.",
-      "restTwoDays": "On stages of equal size, one rest day a week is not enough: it takes two.",
+      "restTwoDays": "On days of equal size, one rest day a week is not enough: it takes two.",
       "habitGap": "Gap to your habit: ${value} (reference 0.8 to 1.3).",
       "habitGapNotDecisive": "This gap is shown, never decisive: no study demonstrates that it causes anything.",
       "conditionsTitle": "What went into this verdict",
@@ -909,11 +935,11 @@
       "winterInvalid": "Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.",
       "restDaysCounted": "Rest days counted in this verdict: ${count}.",
       "restDaysNone": "No rest day is set in your plan: add some and this figure moves.",
-      "averageLoad": "Average daily load: ${value} (the hardest stage is at ${worst}).",
+      "averageLoad": "Average daily load: ${value} (the hardest is at ${worst}).",
       "averageLoadInfo": "These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.",
       "durationStatement": "This trek lasts ${days} walking days; your longest chained outing is ${done} days.",
       "durationStatementInfo": "This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.",
-      "stageDominantFactor": "What weighs most on this stage: ${factor}"
+      "stageDominantFactor": "What weighs most on this day: ${factor}"
     },
     "flow": {
       "title": "Are you ready for this trek?",
@@ -1975,6 +2001,7 @@
     "sexMale": "Male",
     "sexUnspecified": "Unspecified",
     "fieldCountry": "Country",
+    "countryUnspecified": "Unspecified",
     "hintCountry": "Code (e.g. FR)",
     "bmiLabel": "BMI",
     "bmiCategories": {

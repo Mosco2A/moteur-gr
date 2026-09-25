@@ -178,9 +178,32 @@
     "viewMap": "Ver el mapa",
     "layers": "Capas",
     "layersTitle": "Capas del mapa",
-    "layersSubtitle": "Elige que mostrar en el mapa",
+    "layersSubtitle": "Elige qué mostrar en el mapa",
     "stageRemaining": "$km km restantes",
     "offTrackChip": "Fuera de ruta",
+    "statsPendingNote": "Los guiones se rellenarán en cuanto empiece la ruta: estas cifras se miden caminando.",
+    "guide": {
+      "buttonsTitle": "Botones",
+      "position": "Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe que la localización esté permitida para la aplicación.",
+      "track": "El trazado del sendero, en su color. Es la referencia que usa el aviso de salida de ruta.",
+      "centerOnMe": "Devuelve el mapa a su posición después de haberlo movido con el dedo.",
+      "photo": "Hace una foto y la añade al diario del día, sin salir del mapa.",
+      "sos": "Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.",
+      "currentStage": "Lo que queda por andar en la etapa en curso. Un guión significa que la ruta aún no ha empezado.",
+      "offTrack": "Se enciende cuando se aleja del trazado. Vuelva a la línea del sendero para apagarlo.",
+      "poi": {
+        "water": "Manantial o fuente señalada en el sendero. Un manantial puede estar seco en verano: no cuente con él sin comprobarlo.",
+        "shelter": "Refugio o abrigo en el recorrido. Toque la marca para ver lo que se sabe: altitud, servicios, contacto.",
+        "accommodation": "Alojamiento distinto de un refugio: casa rural, habitación, hotel. La reserva se hace en el propio establecimiento.",
+        "campsite": "Zona de camping o de bivac. Las normas de bivac dependen del territorio: infórmese antes de plantar la tienda.",
+        "shop": "Comercio donde abastecerse. Los horarios no están garantizados fuera de temporada: deje margen.",
+        "restaurant": "Restaurante o mesa de huéspedes en el recorrido o muy cerca.",
+        "viewpoint": "Mirador destacado. Referencia para la parada, no para orientarse.",
+        "danger": "Paso señalado como delicado. Reduzca el ritmo y observe el terreno antes de entrar.",
+        "emergency": "Punto de socorro: puesto, helipuerto o poste de llamada de emergencia.",
+        "info": "Panel o punto de información del sendero."
+      }
+    },
     "supplyDismiss": "Ocultar el aviso"
   },
   "stage": {
@@ -241,6 +264,8 @@
     "emergency": "Emergencia",
     "danger": "Peligro",
     "shop": "Tienda",
+    "accommodation": "Alojamiento",
+    "info": "Información",
     "filter": "Filtrar puntos de interés",
     "altitude": "Altitud",
     "hours": "Horarios"
@@ -586,6 +611,7 @@
     "photoLimit": "Límite de 3 fotos por día alcanzado",
     "photoTooBig": "Foto demasiado grande (máx 500 KB)",
     "addPhoto": "Añadir una foto",
+    "photoAdded": "Foto añadida al diario",
     "photoSource": "Origen de la foto",
     "camera": "Cámara",
     "gallery": "Galería",
@@ -840,12 +866,12 @@
     },
     "formula": {
       "title": "Viabilidad para este trek",
-      "intro": "Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.",
+      "intro": "Comparamos el esfuerzo de cada jornada de marcha con lo que tu perfil puede aguantar. Luz verde, naranja o roja.",
       "ceilingLabel": "Tope recomendado: ${value} km-energía/día (${level})",
-      "stagesTitle": "Etapa por etapa",
+      "stagesTitle": "Día por día",
       "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-energía",
       "globalTitle": "Veredicto global",
-      "hardestStage": "Etapa más exigente: ${stage}",
+      "hardestStage": "Jornada más exigente: ${stage}",
       "daysOver": "${count} día(s) por encima de tu tope",
       "daysOverNone": "Ningún día por encima de tu tope",
       "limitingLabel": "Factor limitante: ${factor}",
@@ -853,7 +879,7 @@
       "adviceTitle": "Consejos para tu programa",
       "generateProgram": "Generar mi programa (${days} días)",
       "generateProgramDone": "Programa generado en ${days} días — ajústalo a tu gusto.",
-      "noStages": "Aún no hay ninguna etapa que evaluar.",
+      "noStages": "Aún no hay ninguna jornada que evaluar.",
       "levels": {
         "beginner": "principiante",
         "intermediate": "intermedio",
@@ -861,12 +887,12 @@
         "expert": "experto"
       },
       "verdicts": {
-        "green": "Viable",
-        "orange": "Viable con preparación",
-        "red": "Por encima de tus capacidades"
+        "green": "Reparto viable",
+        "orange": "Reparto exigente",
+        "red": "Reparto muy apretado"
       },
       "limitingFactors": {
-        "distance": "la distancia de las etapas",
+        "distance": "la distancia por día",
         "elevation": "el desnivel",
         "chaining": "el encadenamiento de los días",
         "none": "ninguno",
@@ -877,10 +903,10 @@
         "balancedOk": "Tu programa está equilibrado: guarda un margen y escucha a tu cuerpo.",
         "balanced": "Reparte las etapas para suavizar el esfuerzo a lo largo de los días.",
         "optimalDays": "Apunta a ${days} días de marcha (en vez de ${current}) para no pasar tu tope.",
-        "split": "Divide la etapa ${stage} en dos: supera claramente tu tope.",
-        "rest": "Prevé un día de descanso tras la etapa ${stages}.",
+        "split": "Divide la jornada ${stage} en dos: supera claramente tu tope.",
+        "rest": "Prevé un día de descanso tras la jornada ${stages}.",
         "training": "Entrena ${weeks} semanas antes de salir (preparación física).",
-        "restAdvised": "Pon ${days} día(s) de descanso, tras las etapas ${stages}: tus jornadas se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto."
+        "restAdvised": "Pon ${days} día(s) de descanso, tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto."
       },
       "retainedPlan": "División elegida: ${days} días de marcha.",
       "retainedPlanNone": "Ninguna división elegida: el sendero se queda en sus ${days} días por defecto.",
@@ -894,7 +920,7 @@
       "restExtrapolation": "El umbral de descanso viene de una medida hecha sobre deportistas, trasladada al senderismo itinerante. Es un traslado, y se dice.",
       "restNotDecisive": "Esta cifra se muestra y aconseja, nunca decide: tu veredicto sigue siendo el de tu jornada más dura.",
       "restAdvisedLine": "Consejo: ${days} día(s) de descanso repartidos en tu programa devuelven esta cifra por debajo de su umbral.",
-      "restTwoDays": "En etapas de igual tamaño, un día de descanso por semana no basta: hacen falta dos.",
+      "restTwoDays": "En jornadas de igual tamaño, un día de descanso por semana no basta: hacen falta dos.",
       "habitGap": "Diferencia con tu costumbre: ${value} (referencia 0,8 a 1,3).",
       "habitGapNotDecisive": "Esta diferencia se muestra, nunca decide: ningún estudio demuestra que cause nada.",
       "conditionsTitle": "Lo que ha entrado en este veredicto",
@@ -909,11 +935,11 @@
       "winterInvalid": "Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo, terreno seco y nieve adecuada. No endurecemos la cifra, te decimos que no se aplica.",
       "restDaysCounted": "Días de descanso contados en este veredicto: ${count}.",
       "restDaysNone": "No hay ningún día de descanso en tu programa: pon alguno y esta cifra se mueve.",
-      "averageLoad": "Carga media diaria: ${value} (la peor etapa está en ${worst}).",
+      "averageLoad": "Carga media diaria: ${value} (la peor está en ${worst}).",
       "averageLoadInfo": "Estas dos cifras se leen juntas: lejos una de otra, el trek tiene una jornada dura; cerca, es duro todos los días. Esto se muestra, no decide.",
       "durationStatement": "Este trek dura ${days} días de marcha; tu salida encadenada más larga es de ${done} días.",
       "durationStatementInfo": "Esto se muestra, no decide: ninguna medida publicada dice a partir de cuántos días encadenados un senderista se descuelga. Júzgalo tú.",
-      "stageDominantFactor": "Lo que más pesa en esta etapa: ${factor}"
+      "stageDominantFactor": "Lo que más pesa en esta jornada: ${factor}"
     },
     "flow": {
       "title": "¿Estás listo para este trek?",
@@ -1975,6 +2001,7 @@
     "sexMale": "Hombre",
     "sexUnspecified": "Sin especificar",
     "fieldCountry": "País",
+    "countryUnspecified": "Sin especificar",
     "hintCountry": "Código (p. ej. FR)",
     "bmiLabel": "IMC",
     "bmiCategories": {

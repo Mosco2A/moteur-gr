@@ -256,6 +256,8 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get layersSubtitle => 'Wählen Sie, was auf der Karte angezeigt wird';
 	@override String stageRemaining({required Object km}) => 'Noch ${km} km';
 	@override String get offTrackChip => 'Abseits';
+	@override String get statsPendingNote => 'Die Striche füllen sich, sobald Sie die Wanderung starten: diese Werte werden im Gehen gemessen.';
+	@override late final _Translations$map$guide$de guide = _Translations$map$guide$de._(_root);
 	@override String get supplyDismiss => 'Hinweis ausblenden';
 }
 
@@ -317,6 +319,8 @@ class _Translations$poi$de extends Translations$poi$fr {
 	@override String get emergency => 'Notfall';
 	@override String get danger => 'Gefahr';
 	@override String get shop => 'Geschäft';
+	@override String get accommodation => 'Unterkunft';
+	@override String get info => 'Information';
 	@override String get filter => 'Sehenswürdigkeiten filtern';
 	@override String get altitude => 'Höhe';
 	@override String get hours => 'Öffnungszeiten';
@@ -480,6 +484,7 @@ class _Translations$journal$de extends Translations$journal$fr {
 	@override String get photoLimit => 'Limit von 3 Fotos pro Tag erreicht';
 	@override String get photoTooBig => 'Foto zu groß (max 500 KB)';
 	@override String get addPhoto => 'Foto hinzufügen';
+	@override String get photoAdded => 'Foto zum Tagebuch hinzugefügt';
 	@override String get photoSource => 'Fotoquelle';
 	@override String get camera => 'Kamera';
 	@override String get gallery => 'Galerie';
@@ -1572,6 +1577,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get sexMale => 'Männlich';
 	@override String get sexUnspecified => 'Keine Angabe';
 	@override String get fieldCountry => 'Land';
+	@override String get countryUnspecified => 'Keine Angabe';
 	@override String get hintCountry => 'Code (z. B. FR)';
 	@override String get bmiLabel => 'BMI';
 	@override late final _Translations$hikerProfile$bmiCategories$de bmiCategories = _Translations$hikerProfile$bmiCategories$de._(_root);
@@ -1852,6 +1858,24 @@ class _Translations$hub$finishTrek$de extends Translations$hub$finishTrek$fr {
 	@override String get confirmBody => 'Die Tour wird als beendet markiert. Nicht gegangene Etappen werden nicht bestätigt. Du kannst dein Abenteuer weiterhin ansehen.';
 	@override String get confirm => 'Beenden';
 	@override String get cancel => 'Abbrechen';
+}
+
+// Path: map.guide
+class _Translations$map$guide$de extends Translations$map$guide$fr {
+	_Translations$map$guide$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get buttonsTitle => 'Schaltflächen';
+	@override String get position => 'Ihre GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfen Sie, ob die Ortung für die App erlaubt ist.';
+	@override String get track => 'Die Linie des Wegs, in seiner Farbe. Sie ist die Referenz für die Warnung bei Abweichung.';
+	@override String get centerOnMe => 'Holt die Karte zu Ihrer Position zurück, nachdem Sie sie verschoben haben.';
+	@override String get photo => 'Macht ein Foto und legt es ins Tagebuch des Tages, ohne die Karte zu verlassen.';
+	@override String get sos => 'Öffnet den Notruf mit Ihren GPS-Koordinaten. Nur im echten Notfall zu benutzen.';
+	@override String get currentStage => 'Was auf der laufenden Etappe noch zu gehen ist. Ein Strich bedeutet, dass die Wanderung noch nicht begonnen hat.';
+	@override String get offTrack => 'Leuchtet auf, wenn Sie sich von der Linie entfernen. Kehren Sie zum Weg zurück, damit sie verschwindet.';
+	@override late final _Translations$map$guide$poi$de poi = _Translations$map$guide$poi$de._(_root);
 }
 
 // Path: stage.difficulty
@@ -2272,12 +2296,12 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Machbarkeit für diese Tour';
-	@override String get intro => 'Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.';
+	@override String get intro => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})';
-	@override String get stagesTitle => 'Etappe für Etappe';
+	@override String get stagesTitle => 'Tag für Tag';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m Aufstieg = ${effort} Energie-km';
 	@override String get globalTitle => 'Gesamturteil';
-	@override String hardestStage({required Object stage}) => 'Anspruchsvollste Etappe: ${stage}';
+	@override String hardestStage({required Object stage}) => 'Anspruchsvollster Tag: ${stage}';
 	@override String daysOver({required Object count}) => '${count} Tag(e) über deiner Obergrenze';
 	@override String get daysOverNone => 'Kein Tag über deiner Obergrenze';
 	@override String limitingLabel({required Object factor}) => 'Begrenzender Faktor: ${factor}';
@@ -2285,7 +2309,7 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get adviceTitle => 'Tipps für deinen Plan';
 	@override String generateProgram({required Object days}) => 'Meinen Plan erstellen (${days} Tage)';
 	@override String generateProgramDone({required Object days}) => 'Plan über ${days} Tage erstellt — passe ihn nach Wunsch an.';
-	@override String get noStages => 'Noch keine Etappe zu bewerten.';
+	@override String get noStages => 'Noch kein Tag zu bewerten.';
 	@override late final _Translations$feasibility$formula$levels$de levels = _Translations$feasibility$formula$levels$de._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$de verdicts = _Translations$feasibility$formula$verdicts$de._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$de limitingFactors = _Translations$feasibility$formula$limitingFactors$de._(_root);
@@ -2302,7 +2326,7 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get restExtrapolation => 'Die Ruhe-Schwelle stammt aus einer Messung an Sportlern und wurde auf das Weitwandern übertragen. Es ist eine Übertragung, und sie wird als solche genannt.';
 	@override String get restNotDecisive => 'Diese Zahl wird angezeigt und berät, sie entscheidet nie: dein Urteil bleibt das deines härtesten Tages.';
 	@override String restAdvisedLine({required Object days}) => 'Empfehlung: ${days} über dein Programm verteilte Ruhetage bringen diese Zahl wieder unter ihre Schwelle.';
-	@override String get restTwoDays => 'Bei gleich großen Etappen reicht ein Ruhetag pro Woche nicht: es braucht zwei.';
+	@override String get restTwoDays => 'Bei gleich großen Tagen reicht ein Ruhetag pro Woche nicht: es braucht zwei.';
 	@override String habitGap({required Object value}) => 'Abstand zu deiner Gewohnheit: ${value} (Richtwert 0,8 bis 1,3).';
 	@override String get habitGapNotDecisive => 'Dieser Abstand wird angezeigt, ist aber nie entscheidend: keine Studie belegt, dass er irgendetwas verursacht.';
 	@override String get conditionsTitle => 'Was in dieses Urteil eingeflossen ist';
@@ -2317,11 +2341,11 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get winterInvalid => 'Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.';
 	@override String restDaysCounted({required Object count}) => 'In diesem Urteil gezählte Ruhetage: ${count}.';
 	@override String get restDaysNone => 'In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.';
-	@override String averageLoad({required Object value, required Object worst}) => 'Mittlere Tageslast: ${value} (die härteste Etappe liegt bei ${worst}).';
+	@override String averageLoad({required Object value, required Object worst}) => 'Mittlere Tageslast: ${value} (die härteste liegt bei ${worst}).';
 	@override String get averageLoadInfo => 'Diese beiden Zahlen liest man zusammen: weit auseinander hat der Trek einen harten Tag; nahe beieinander ist er jeden Tag hart. Das wird angezeigt, es entscheidet nicht.';
 	@override String durationStatement({required Object days, required Object done}) => 'Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Tage.';
 	@override String get durationStatementInfo => 'Das wird angezeigt, es entscheidet nicht: keine veröffentlichte Messung sagt, ab wie vielen zusammenhängenden Tagen ein Wanderer einbricht. Beurteile es selbst.';
-	@override String stageDominantFactor({required Object factor}) => 'Was auf dieser Etappe am schwersten wiegt: ${factor}';
+	@override String stageDominantFactor({required Object factor}) => 'Was an diesem Tag am schwersten wiegt: ${factor}';
 }
 
 // Path: feasibility.flow
@@ -3404,6 +3428,25 @@ class _Translations$sos$medicalId$de extends Translations$sos$medicalId$fr {
 	@override String get unavailable => 'Öffnen Sie den Notfallpass in den Gesundheitseinstellungen Ihres Telefons.';
 }
 
+// Path: map.guide.poi
+class _Translations$map$guide$poi$de extends Translations$map$guide$poi$fr {
+	_Translations$map$guide$poi$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get water => 'Quelle oder Brunnen am Weg. Eine Quelle kann im Sommer trocken sein: verlassen Sie sich nicht ungeprüft darauf.';
+	@override String get shelter => 'Hütte oder Schutzhütte auf der Route. Tippen Sie auf die Markierung für das Bekannte: Höhe, Leistungen, Kontakt.';
+	@override String get accommodation => 'Unterkunft außer einer Hütte: Pension, Zimmer, Hotel. Die Buchung läuft über den Betrieb selbst.';
+	@override String get campsite => 'Camping- oder Biwakplatz. Die Biwakregeln hängen vom Gebiet ab: erkundigen Sie sich, bevor Sie das Zelt aufstellen.';
+	@override String get shop => 'Geschäft zum Auffüllen der Vorräte. Öffnungszeiten sind außerhalb der Saison nicht garantiert: planen Sie Reserve ein.';
+	@override String get restaurant => 'Restaurant oder Gasttisch an oder nahe der Route.';
+	@override String get viewpoint => 'Bemerkenswerter Aussichtspunkt. Ein Halt, keine Orientierungshilfe.';
+	@override String get danger => 'Als heikel gemeldete Stelle. Werden Sie langsamer und schauen Sie sich das Gelände an, bevor Sie hineingehen.';
+	@override String get emergency => 'Notfallpunkt: Station, Landeplatz oder Notrufsäule.';
+	@override String get info => 'Informationstafel oder Infopunkt am Weg.';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$de extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -3490,9 +3533,9 @@ class _Translations$feasibility$formula$verdicts$de extends Translations$feasibi
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get green => 'Machbar';
-	@override String get orange => 'Machbar mit Vorbereitung';
-	@override String get red => 'Über deinem Niveau';
+	@override String get green => 'Aufteilung machbar';
+	@override String get orange => 'Aufteilung fordernd';
+	@override String get red => 'Aufteilung zu knapp';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -3502,7 +3545,7 @@ class _Translations$feasibility$formula$limitingFactors$de extends Translations$
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get distance => 'die Etappenlänge';
+	@override String get distance => 'die Tagesdistanz';
 	@override String get elevation => 'der Höhenunterschied';
 	@override String get chaining => 'die Abfolge der Tage';
 	@override String get none => 'keiner';
@@ -3520,10 +3563,10 @@ class _Translations$feasibility$formula$advice$de extends Translations$feasibili
 	@override String get balancedOk => 'Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.';
 	@override String get balanced => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.';
 	@override String optimalDays({required Object days, required Object current}) => 'Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.';
-	@override String split({required Object stage}) => 'Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.';
-	@override String rest({required Object stages}) => 'Plane einen Ruhetag nach Etappe ${stages}.';
+	@override String split({required Object stage}) => 'Teile Tag ${stage} in zwei: Er überschreitet deutlich deine Obergrenze.';
+	@override String rest({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages}.';
 	@override String training({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).';
-	@override String restAdvised({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Etappen ${stages}: deine Tage gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
+	@override String restAdvised({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
 }
 
 // Path: signalement.water.states
@@ -3942,6 +3985,25 @@ extension on TranslationsDe {
 			'map.layersSubtitle' => 'Wählen Sie, was auf der Karte angezeigt wird',
 			'map.stageRemaining' => ({required Object km}) => 'Noch ${km} km',
 			'map.offTrackChip' => 'Abseits',
+			'map.statsPendingNote' => 'Die Striche füllen sich, sobald Sie die Wanderung starten: diese Werte werden im Gehen gemessen.',
+			'map.guide.buttonsTitle' => 'Schaltflächen',
+			'map.guide.position' => 'Ihre GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfen Sie, ob die Ortung für die App erlaubt ist.',
+			'map.guide.track' => 'Die Linie des Wegs, in seiner Farbe. Sie ist die Referenz für die Warnung bei Abweichung.',
+			'map.guide.centerOnMe' => 'Holt die Karte zu Ihrer Position zurück, nachdem Sie sie verschoben haben.',
+			'map.guide.photo' => 'Macht ein Foto und legt es ins Tagebuch des Tages, ohne die Karte zu verlassen.',
+			'map.guide.sos' => 'Öffnet den Notruf mit Ihren GPS-Koordinaten. Nur im echten Notfall zu benutzen.',
+			'map.guide.currentStage' => 'Was auf der laufenden Etappe noch zu gehen ist. Ein Strich bedeutet, dass die Wanderung noch nicht begonnen hat.',
+			'map.guide.offTrack' => 'Leuchtet auf, wenn Sie sich von der Linie entfernen. Kehren Sie zum Weg zurück, damit sie verschwindet.',
+			'map.guide.poi.water' => 'Quelle oder Brunnen am Weg. Eine Quelle kann im Sommer trocken sein: verlassen Sie sich nicht ungeprüft darauf.',
+			'map.guide.poi.shelter' => 'Hütte oder Schutzhütte auf der Route. Tippen Sie auf die Markierung für das Bekannte: Höhe, Leistungen, Kontakt.',
+			'map.guide.poi.accommodation' => 'Unterkunft außer einer Hütte: Pension, Zimmer, Hotel. Die Buchung läuft über den Betrieb selbst.',
+			'map.guide.poi.campsite' => 'Camping- oder Biwakplatz. Die Biwakregeln hängen vom Gebiet ab: erkundigen Sie sich, bevor Sie das Zelt aufstellen.',
+			'map.guide.poi.shop' => 'Geschäft zum Auffüllen der Vorräte. Öffnungszeiten sind außerhalb der Saison nicht garantiert: planen Sie Reserve ein.',
+			'map.guide.poi.restaurant' => 'Restaurant oder Gasttisch an oder nahe der Route.',
+			'map.guide.poi.viewpoint' => 'Bemerkenswerter Aussichtspunkt. Ein Halt, keine Orientierungshilfe.',
+			'map.guide.poi.danger' => 'Als heikel gemeldete Stelle. Werden Sie langsamer und schauen Sie sich das Gelände an, bevor Sie hineingehen.',
+			'map.guide.poi.emergency' => 'Notfallpunkt: Station, Landeplatz oder Notrufsäule.',
+			'map.guide.poi.info' => 'Informationstafel oder Infopunkt am Weg.',
 			'map.supplyDismiss' => 'Hinweis ausblenden',
 			'stage.distance' => 'Entfernung',
 			'stage.elevation' => 'Höhenunterschied',
@@ -3988,6 +4050,8 @@ extension on TranslationsDe {
 			'poi.emergency' => 'Notfall',
 			'poi.danger' => 'Gefahr',
 			'poi.shop' => 'Geschäft',
+			'poi.accommodation' => 'Unterkunft',
+			'poi.info' => 'Information',
 			'poi.filter' => 'Sehenswürdigkeiten filtern',
 			'poi.altitude' => 'Höhe',
 			'poi.hours' => 'Öffnungszeiten',
@@ -4274,6 +4338,8 @@ extension on TranslationsDe {
 			'checklist.ui.bagValidatedSnack' => 'Rucksack bestätigt!',
 			'checklist.ui.validationCancelledSnack' => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.',
 			'checklist.ui.missingTitle' => 'Fehlende Ausrüstung',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.missingBody' => '{checked}/{total} Pflichtartikel angehakt.',
 			'checklist.ui.missingList' => 'Es fehlt:',
 			'checklist.ui.understood' => 'Verstanden',
@@ -4295,14 +4361,13 @@ extension on TranslationsDe {
 			'journal.stage' => 'Etappe',
 			'journal.yourNote' => 'Ihre Notiz',
 			'journal.placeholder' => 'Beschreiben Sie Ihren Wandertag...',
-			_ => null,
-		} ?? switch (path) {
 			'journal.save' => 'Speichern',
 			'journal.cancel' => 'Abbrechen',
 			'journal.delete' => 'Löschen',
 			'journal.photoLimit' => 'Limit von 3 Fotos pro Tag erreicht',
 			'journal.photoTooBig' => 'Foto zu groß (max 500 KB)',
 			'journal.addPhoto' => 'Foto hinzufügen',
+			'journal.photoAdded' => 'Foto zum Tagebuch hinzugefügt',
 			'journal.photoSource' => 'Fotoquelle',
 			'journal.camera' => 'Kamera',
 			'journal.gallery' => 'Galerie',
@@ -4518,12 +4583,12 @@ extension on TranslationsDe {
 			'feasibility.gaps.fitness' => 'Form beim 6-Minuten-Test unzureichend',
 			'feasibility.gaps.effort' => 'Gesamtanstrengung (IBP) über Ihrer Erfahrung',
 			'feasibility.formula.title' => 'Machbarkeit für diese Tour',
-			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.',
+			'feasibility.formula.intro' => 'Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})',
-			'feasibility.formula.stagesTitle' => 'Etappe für Etappe',
+			'feasibility.formula.stagesTitle' => 'Tag für Tag',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m Aufstieg = ${effort} Energie-km',
 			'feasibility.formula.globalTitle' => 'Gesamturteil',
-			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Anspruchsvollste Etappe: ${stage}',
+			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Anspruchsvollster Tag: ${stage}',
 			'feasibility.formula.daysOver' => ({required Object count}) => '${count} Tag(e) über deiner Obergrenze',
 			'feasibility.formula.daysOverNone' => 'Kein Tag über deiner Obergrenze',
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Begrenzender Faktor: ${factor}',
@@ -4531,15 +4596,15 @@ extension on TranslationsDe {
 			'feasibility.formula.adviceTitle' => 'Tipps für deinen Plan',
 			'feasibility.formula.generateProgram' => ({required Object days}) => 'Meinen Plan erstellen (${days} Tage)',
 			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan über ${days} Tage erstellt — passe ihn nach Wunsch an.',
-			'feasibility.formula.noStages' => 'Noch keine Etappe zu bewerten.',
+			'feasibility.formula.noStages' => 'Noch kein Tag zu bewerten.',
 			'feasibility.formula.levels.beginner' => 'Anfänger',
 			'feasibility.formula.levels.intermediate' => 'Fortgeschritten',
 			'feasibility.formula.levels.confirmed' => 'Erfahren',
 			'feasibility.formula.levels.expert' => 'Experte',
-			'feasibility.formula.verdicts.green' => 'Machbar',
-			'feasibility.formula.verdicts.orange' => 'Machbar mit Vorbereitung',
-			'feasibility.formula.verdicts.red' => 'Über deinem Niveau',
-			'feasibility.formula.limitingFactors.distance' => 'die Etappenlänge',
+			'feasibility.formula.verdicts.green' => 'Aufteilung machbar',
+			'feasibility.formula.verdicts.orange' => 'Aufteilung fordernd',
+			'feasibility.formula.verdicts.red' => 'Aufteilung zu knapp',
+			'feasibility.formula.limitingFactors.distance' => 'die Tagesdistanz',
 			'feasibility.formula.limitingFactors.elevation' => 'der Höhenunterschied',
 			'feasibility.formula.limitingFactors.chaining' => 'die Abfolge der Tage',
 			'feasibility.formula.limitingFactors.none' => 'keiner',
@@ -4548,10 +4613,10 @@ extension on TranslationsDe {
 			'feasibility.formula.advice.balancedOk' => 'Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.',
 			'feasibility.formula.advice.balanced' => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.',
-			'feasibility.formula.advice.split' => ({required Object stage}) => 'Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.',
-			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Etappe ${stages}.',
+			'feasibility.formula.advice.split' => ({required Object stage}) => 'Teile Tag ${stage} in zwei: Er überschreitet deutlich deine Obergrenze.',
+			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).',
-			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Etappen ${stages}: deine Tage gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Gewählte Aufteilung: ${days} Wandertage.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen.',
 			'feasibility.formula.energyUnitNotice' => '1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.',
@@ -4564,7 +4629,7 @@ extension on TranslationsDe {
 			'feasibility.formula.restExtrapolation' => 'Die Ruhe-Schwelle stammt aus einer Messung an Sportlern und wurde auf das Weitwandern übertragen. Es ist eine Übertragung, und sie wird als solche genannt.',
 			'feasibility.formula.restNotDecisive' => 'Diese Zahl wird angezeigt und berät, sie entscheidet nie: dein Urteil bleibt das deines härtesten Tages.',
 			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Empfehlung: ${days} über dein Programm verteilte Ruhetage bringen diese Zahl wieder unter ihre Schwelle.',
-			'feasibility.formula.restTwoDays' => 'Bei gleich großen Etappen reicht ein Ruhetag pro Woche nicht: es braucht zwei.',
+			'feasibility.formula.restTwoDays' => 'Bei gleich großen Tagen reicht ein Ruhetag pro Woche nicht: es braucht zwei.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Abstand zu deiner Gewohnheit: ${value} (Richtwert 0,8 bis 1,3).',
 			'feasibility.formula.habitGapNotDecisive' => 'Dieser Abstand wird angezeigt, ist aber nie entscheidend: keine Studie belegt, dass er irgendetwas verursacht.',
 			'feasibility.formula.conditionsTitle' => 'Was in dieses Urteil eingeflossen ist',
@@ -4579,11 +4644,11 @@ extension on TranslationsDe {
 			'feasibility.formula.winterInvalid' => 'Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'In diesem Urteil gezählte Ruhetage: ${count}.',
 			'feasibility.formula.restDaysNone' => 'In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.',
-			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Mittlere Tageslast: ${value} (die härteste Etappe liegt bei ${worst}).',
+			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Mittlere Tageslast: ${value} (die härteste liegt bei ${worst}).',
 			'feasibility.formula.averageLoadInfo' => 'Diese beiden Zahlen liest man zusammen: weit auseinander hat der Trek einen harten Tag; nahe beieinander ist er jeden Tag hart. Das wird angezeigt, es entscheidet nicht.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Tage.',
 			'feasibility.formula.durationStatementInfo' => 'Das wird angezeigt, es entscheidet nicht: keine veröffentlichte Messung sagt, ab wie vielen zusammenhängenden Tagen ein Wanderer einbricht. Beurteile es selbst.',
-			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Was auf dieser Etappe am schwersten wiegt: ${factor}',
+			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Was an diesem Tag am schwersten wiegt: ${factor}',
 			'feasibility.flow.title' => 'Bist du bereit für diese Tour?',
 			'feasibility.flow.intro' => 'Beantworte 3 kurze Schritte: Wir ermitteln dein echtes Niveau und sagen dir, ob die Tour machbar ist.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} Schritte erledigt',
@@ -4787,6 +4852,8 @@ extension on TranslationsDe {
 			'gamification.badge.firstStage.titre' => 'Erste Etappe',
 			'gamification.badge.firstStage.description' => 'Du hast deine erste Etappe abgeschlossen.',
 			'gamification.badge.firstTrek.titre' => 'Erster Trek',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.badge.firstTrek.description' => 'Du hast deinen ersten vollständigen Trek beendet.',
 			'gamification.badge.firstSegment.titre' => 'Erstes Segment',
 			'gamification.badge.firstSegment.description' => 'Du hast dein erstes Segment absolviert.',
@@ -4809,8 +4876,6 @@ extension on TranslationsDe {
 			'shareVisibility.stageResults' => 'Meine Etappenergebnisse teilen',
 			'shareVisibility.stageResultsDesc' => 'Eine pseudonyme Karte (keine direkten personenbezogenen Daten).',
 			'shareVisibility.leaderboard' => 'In Ranglisten erscheinen',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Rangliste nach Gruppe, mit einem Pseudonym.',
 			'shareVisibility.activityFeed' => 'Im Aktivitätsverlauf posten',
 			'shareVisibility.activityFeedDesc' => 'Deine Aktivitäten erscheinen im Verlauf, unter einem Pseudonym.',
@@ -5301,6 +5366,8 @@ extension on TranslationsDe {
 			'summary.empty.message' => 'Wählen Sie Ihre Route und Dauer, um die Planübersicht zu sehen.',
 			'summary.empty.action' => 'ROUTE EINRICHTEN',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Details für Tag ${day} anzeigen',
+			_ => null,
+		} ?? switch (path) {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Details zum Ruhetag ${day}',
 			'summary.a11y.share' => 'Meinen Plan teilen',
 			'import.title' => 'GPX importieren',
@@ -5323,8 +5390,6 @@ extension on TranslationsDe {
 			'import.warningsSection' => 'Warnungen',
 			'import.warningOutOfBounds' => '{count} Punkt(e) außerhalb des Gebiets ignoriert.',
 			'import.warningOffTrail' => '{percent}% der Punkte sind weit vom Weg entfernt.',
-			_ => null,
-		} ?? switch (path) {
 			'import.invalidTooFewPoints' => 'GPX-Datei zu klein: {count} Punkte (mindestens 10).',
 			'import.invalidOutOfBounds' => 'Der Track passt nicht zum Gebiet dieses Weges.',
 			'import.errorUnreadable' => 'Datei kann nicht gelesen werden.',
@@ -5380,6 +5445,7 @@ extension on TranslationsDe {
 			'hikerProfile.sexMale' => 'Männlich',
 			'hikerProfile.sexUnspecified' => 'Keine Angabe',
 			'hikerProfile.fieldCountry' => 'Land',
+			'hikerProfile.countryUnspecified' => 'Keine Angabe',
 			'hikerProfile.hintCountry' => 'Code (z. B. FR)',
 			'hikerProfile.bmiLabel' => 'BMI',
 			'hikerProfile.bmiCategories.underweight' => 'Untergewicht',

@@ -181,6 +181,29 @@
     "layersSubtitle": "Scegli cosa mostrare sulla mappa",
     "stageRemaining": "$km km rimanenti",
     "offTrackChip": "Fuori traccia",
+    "statsPendingNote": "I trattini si riempiranno appena avvierai l'escursione: questi numeri si misurano camminando.",
+    "guide": {
+      "buttonsTitle": "Pulsanti",
+      "position": "La tua posizione GPS, aggiornata camminando. Se il punto scompare, verifica che la localizzazione sia consentita all'app.",
+      "track": "Il tracciato del sentiero, nel suo colore. È il riferimento usato dall'avviso fuori traccia.",
+      "centerOnMe": "Riporta la mappa sulla tua posizione dopo averla spostata con il dito.",
+      "photo": "Scatta una foto e la aggiunge al diario del giorno, senza lasciare la mappa.",
+      "sos": "Apre la chiamata di emergenza con le tue coordinate GPS. Da usare solo in caso di vera emergenza.",
+      "currentStage": "Quanto resta da percorrere nella tappa in corso. Un trattino significa che l'escursione non è ancora iniziata.",
+      "offTrack": "Si accende quando ti allontani dal tracciato. Torna sulla linea del sentiero per spegnerlo.",
+      "poi": {
+        "water": "Sorgente o fontana segnalata sul sentiero. Una sorgente può essere secca d'estate: non contarci senza averla verificata.",
+        "shelter": "Rifugio o ricovero sul percorso. Tocca il segnaposto per vedere ciò che si sa: quota, servizi, contatto.",
+        "accommodation": "Alloggio diverso da un rifugio: pensione, camera, hotel. La prenotazione si fa presso la struttura.",
+        "campsite": "Area di campeggio o di bivacco. Le regole del bivacco dipendono dal territorio: informati prima di piantare la tenda.",
+        "shop": "Negozio per rifornirsi. Gli orari non sono garantiti fuori stagione: tieni un margine.",
+        "restaurant": "Ristorante o tavola ospite sul percorso o nelle vicinanze.",
+        "viewpoint": "Punto panoramico notevole. Riferimento per la sosta, non per orientarsi.",
+        "danger": "Passaggio segnalato come delicato. Rallenta e guarda il terreno prima di impegnarti.",
+        "emergency": "Punto di soccorso: presidio, elisuperficie o colonnina di chiamata d'emergenza.",
+        "info": "Pannello o punto informativo del sentiero."
+      }
+    },
     "supplyDismiss": "Nascondi l'avviso"
   },
   "stage": {
@@ -241,6 +264,8 @@
     "emergency": "Emergenza",
     "danger": "Pericolo",
     "shop": "Negozio",
+    "accommodation": "Alloggio",
+    "info": "Informazione",
     "filter": "Filtra i punti di interesse",
     "altitude": "Altitudine",
     "hours": "Orari"
@@ -586,6 +611,7 @@
     "photoLimit": "Limite di 3 foto al giorno raggiunto",
     "photoTooBig": "Foto troppo grande (max 500 KB)",
     "addPhoto": "Aggiungi una foto",
+    "photoAdded": "Foto aggiunta al diario",
     "photoSource": "Origine della foto",
     "camera": "Fotocamera",
     "gallery": "Galleria",
@@ -840,12 +866,12 @@
     },
     "formula": {
       "title": "Fattibilità per questo trek",
-      "intro": "Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.",
+      "intro": "Confrontiamo lo sforzo di ogni giornata di cammino con ciò che il tuo profilo può reggere. Verde, arancione o rosso.",
       "ceilingLabel": "Soglia consigliata: ${value} km-energia/giorno (${level})",
-      "stagesTitle": "Tappa per tappa",
+      "stagesTitle": "Giorno per giorno",
       "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-energia",
       "globalTitle": "Verdetto globale",
-      "hardestStage": "Tappa più impegnativa: ${stage}",
+      "hardestStage": "Giornata più impegnativa: ${stage}",
       "daysOver": "${count} giorno/i oltre la tua soglia",
       "daysOverNone": "Nessun giorno oltre la tua soglia",
       "limitingLabel": "Fattore limitante: ${factor}",
@@ -853,7 +879,7 @@
       "adviceTitle": "Consigli per il tuo programma",
       "generateProgram": "Genera il mio programma (${days} giorni)",
       "generateProgramDone": "Programma generato su ${days} giorni — modificalo a piacere.",
-      "noStages": "Nessuna tappa da valutare per ora.",
+      "noStages": "Nessuna giornata da valutare per ora.",
       "levels": {
         "beginner": "principiante",
         "intermediate": "intermedio",
@@ -861,12 +887,12 @@
         "expert": "avanzato"
       },
       "verdicts": {
-        "green": "Fattibile",
-        "orange": "Fattibile con preparazione",
-        "red": "Oltre le tue capacità"
+        "green": "Divisione fattibile",
+        "orange": "Divisione impegnativa",
+        "red": "Divisione troppo stretta"
       },
       "limitingFactors": {
-        "distance": "la distanza delle tappe",
+        "distance": "la distanza giornaliera",
         "elevation": "il dislivello",
         "chaining": "la successione dei giorni",
         "none": "nessuno",
@@ -877,10 +903,10 @@
         "balancedOk": "Il tuo programma è equilibrato: mantieni un margine e ascolta il corpo.",
         "balanced": "Distribuisci le tappe per uniformare lo sforzo nei giorni.",
         "optimalDays": "Punta a ${days} giorni di cammino (invece di ${current}) per restare sotto la soglia.",
-        "split": "Dividi la tappa ${stage} in due: supera nettamente la tua soglia.",
-        "rest": "Prevedi un giorno di riposo dopo la tappa ${stages}.",
+        "split": "Dividi la giornata ${stage} in due: supera nettamente la tua soglia.",
+        "rest": "Prevedi un giorno di riposo dopo la giornata ${stages}.",
         "training": "Allénati ${weeks} settimane prima della partenza (preparazione fisica).",
-        "restAdvised": "Inserisci ${days} giorno/i di riposo, dopo le tappe ${stages}: le tue giornate si somigliano troppo perché il corpo recuperi. È un consiglio, non cambia il tuo verdetto."
+        "restAdvised": "Inserisci ${days} giorno/i di riposo, dopo le giornate ${stages}: si somigliano troppo perché il corpo recuperi. È un consiglio, non cambia il tuo verdetto."
       },
       "retainedPlan": "Suddivisione scelta: ${days} giorni di cammino.",
       "retainedPlanNone": "Nessuna suddivisione scelta: il sentiero resta sui suoi ${days} giorni predefiniti.",
@@ -894,7 +920,7 @@
       "restExtrapolation": "La soglia di riposo viene da una misura fatta su sportivi, trasposta all'escursionismo itinerante. È una trasposizione, e viene detta.",
       "restNotDecisive": "Questa cifra è mostrata e consiglia, non decide mai: il tuo verdetto resta quello della tua giornata più dura.",
       "restAdvisedLine": "Consiglio: ${days} giorno/i di riposo distribuiti nel tuo programma riportano questa cifra sotto la sua soglia.",
-      "restTwoDays": "Su tappe di uguale misura, un giorno di riposo a settimana non basta: servono due giorni.",
+      "restTwoDays": "Su giornate di uguale misura, un giorno di riposo a settimana non basta: servono due giorni.",
       "habitGap": "Scarto rispetto alla tua abitudine: ${value} (riferimento da 0,8 a 1,3).",
       "habitGapNotDecisive": "Questo scarto è mostrato, mai decisivo: nessuno studio dimostra che causi qualcosa.",
       "conditionsTitle": "Ciò che è entrato in questo verdetto",
@@ -909,11 +935,11 @@
       "winterInvalid": "Partenza in inverno: questo verdetto non tiene più. Le classificazioni dei sentieri valgono solo con bel tempo, terreno asciutto e innevamento adeguato. Non induriamo il numero, ti diciamo che non si applica.",
       "restDaysCounted": "Giorni di riposo contati in questo verdetto: ${count}.",
       "restDaysNone": "Nessun giorno di riposo è previsto nel tuo programma: inseriscine e questa cifra si muove.",
-      "averageLoad": "Carico medio giornaliero: ${value} (la tappa peggiore è a ${worst}).",
+      "averageLoad": "Carico medio giornaliero: ${value} (la peggiore è a ${worst}).",
       "averageLoadInfo": "Queste due cifre si leggono insieme: lontane tra loro, il trek ha una giornata dura; vicine, è duro tutti i giorni. Questo si mostra, non decide.",
       "durationStatement": "Questo trek dura ${days} giorni di cammino; la tua uscita concatenata più lunga è di ${done} giorni.",
       "durationStatementInfo": "Questo si mostra, non decide: nessuna misura pubblicata dice dopo quanti giorni concatenati un escursionista cede. Giudica tu.",
-      "stageDominantFactor": "Ciò che pesa di più su questa tappa: ${factor}"
+      "stageDominantFactor": "Ciò che pesa di più in questa giornata: ${factor}"
     },
     "flow": {
       "title": "Sei pronto per questo trek?",
@@ -1975,6 +2001,7 @@
     "sexMale": "Uomo",
     "sexUnspecified": "Non specificato",
     "fieldCountry": "Paese",
+    "countryUnspecified": "Non specificato",
     "hintCountry": "Codice (es. FR)",
     "bmiLabel": "IMC",
     "bmiCategories": {
