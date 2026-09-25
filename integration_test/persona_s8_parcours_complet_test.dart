@@ -334,6 +334,21 @@ void main() {
     }
     exigeAucuneAbsurdite(P, 'depart_apres');
 
+    // LE JOURNAL EN RANDO (regle revue par la tache 558). Il doit etre ABSENT
+    // de la preparation — c est verifie par S12 — et PRESENT une fois partie,
+    // UNE SEULE FOIS. Un carnet qu on ecrit ne se cherche pas, et il ne doit
+    // pas non plus apparaitre deux fois sur le meme ecran.
+    await _aller(tester, '/home');
+    await _remonterEnHaut(tester);
+    await settleAndShoot(tester, P, '21b_journal_en_rando');
+    final journauxEnRando = find.text(t.hub.cards.journal).evaluate().length;
+    logStep(P, 'journal',
+        'EN RANDO — cartes « ${t.hub.cards.journal} » comptees a l ecran = '
+        '$journauxEnRando');
+    exige(P, 'journal', journauxEnRando == 1,
+        'une fois la rando commencee, la carte « ${t.hub.cards.journal} » est '
+        'presente UNE SEULE FOIS (comptee $journauxEnRando)');
+
     // =====================================================================
     // CLOTURE — on termine le trek (sinon le service de fond reste vivant)
     // =====================================================================
@@ -347,6 +362,14 @@ void main() {
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
     }
     await settleAndShoot(tester, P, '22_trek_termine');
+    await _remonterEnHaut(tester);
+    final journauxApres = find.text(t.hub.cards.journal).evaluate().length;
+    logStep(P, 'journal',
+        'APRES LE TREK — cartes « ${t.hub.cards.journal} » comptees a l ecran '
+        '= $journauxApres');
+    exige(P, 'journal', journauxApres == 1,
+        'le trek termine, la carte « ${t.hub.cards.journal} » est toujours la, '
+        'UNE SEULE FOIS (comptee $journauxApres)');
 
     exige(P, 'ecran_systeme', ecransSystemeBloquants().isEmpty,
         'aucune fenetre systeme n a recouvert l application '
@@ -368,6 +391,16 @@ Future<void> _aller(WidgetTester tester, String route) async {
   GoRouter.of(ctx).go(route);
   await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
   await dismissAdsConsentIfPresent(tester, P);
+}
+
+/// Remonte en haut de la page courante (le cockpit defile).
+Future<void> _remonterEnHaut(WidgetTester tester) async {
+  final scroll = find.byType(Scrollable);
+  if (scroll.evaluate().isEmpty) return;
+  for (var i = 0; i < 8; i++) {
+    await tester.drag(scroll.first, const Offset(0, 400));
+    await pumpAndSettleTolerant(tester);
+  }
 }
 
 Finder _champ(String libelle) => find.widgetWithText(TextFormField, libelle);
