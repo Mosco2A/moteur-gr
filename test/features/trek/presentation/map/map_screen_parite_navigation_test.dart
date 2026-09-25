@@ -20,6 +20,7 @@ import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
 import 'package:moteur_gr/features/trek/presentation/map/map_screen.dart';
 import 'package:moteur_gr/features/trek/providers/gps_providers.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// PARITE GR20 (#99460) — l'onglet Carte StepWays clone l'ecran Navigation GR20.
 ///
@@ -205,14 +206,87 @@ void main() {
       expect(find.byType(StageProgressBar), findsOneWidget);
     });
 
-    testWidgets('barre d etape masquee hors trek', (tester) async {
+    // -----------------------------------------------------------------------
+    // LOT D (tache 554) — CONTRAT RETOURNE, ET C'EST VOULU.
+    //
+    // Ce test exigeait AUPARAVANT que la barre d'etape soit ABSENTE hors trek.
+    // Chris a tranche l'inverse, mot pour mot : « 14 navigation ne ressemble en
+    // rien a GR20 !!!!! ». La cause etait precisement cette absence : sans
+    // randonnee demarree, l'ecran n'avait plus qu'une carte et des boutons,
+    // alors que la navigation de reference affiche sa barre de chiffres EN
+    // PERMANENCE. La barre est donc desormais TOUJOURS presente ; hors trek elle
+    // porte les chiffres du PROGRAMME et un tiret sur ce qui exige le GPS.
+    // -----------------------------------------------------------------------
+    testWidgets('barre d etape TOUJOURS presente, meme hors trek (LOT D)',
+        (tester) async {
       await tester.pumpWidget(
         harness(status: TrackingSessionStatus.idle, withGps: true),
       );
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 200));
 
-      expect(find.byType(StageProgressBar), findsNothing);
+      expect(find.byType(StageProgressBar), findsOneWidget);
+
+      // Les chiffres montres sont ceux du PROGRAMME de l'etape (mockStages) :
+      // 12 km, D+ 450 m, D- 200 m. Aucun GPS n'est necessaire pour les
+      // connaitre.
+      expect(find.text('Puy de Dome'), findsOneWidget);
+      expect(find.text('450 m'), findsOneWidget);
+      expect(find.text('200 m'), findsOneWidget);
+
+      // Et les chiffres qui exigent la marche portent un tiret — jamais un
+      // zero, qui se lirait comme une mesure.
+      expect(
+        find.text(StageProgressBar.pendingValueLabel),
+        findsWidgets,
+        reason: 'parcouru et vitesse moyenne ne sont pas encore mesurables',
+      );
+    });
+
+    testWidgets('bouton photo vers le journal present sur la carte (LOT D)',
+        (tester) async {
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // Manque reel n°1 : la carte de reference porte ce bouton, StepWays
+      // n'en avait aucune occurrence.
+      expect(find.byIcon(Icons.photo_camera), findsOneWidget);
+    });
+
+    testWidgets('guide des icones accessible depuis l en-tete (LOT D)',
+        (tester) async {
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      // Manque reel n°2 : action (i) de l'en-tete -> guide de la carte.
+      expect(find.byIcon(Icons.info_outline), findsOneWidget);
+      await tester.tap(find.byIcon(Icons.info_outline));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+
+      // La legende nomme les types de points REELLEMENT presents sur le
+      // sentier charge (ici un point d'eau), avec le libelle traduit.
+      expect(find.text(t.poi.water), findsWidgets);
+      expect(find.text(t.map.layers), findsWidgets);
+    });
+
+    testWidgets('le panneau Calques porte la LISTE DES POINTS DE L ETAPE '
+        '(LOT D)', (tester) async {
+      await tester.pumpWidget(harness(status: TrackingSessionStatus.idle));
+      await tester.pump(const Duration(milliseconds: 100));
+
+      await tester.tap(find.byIcon(Icons.layers));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 400));
+
+      // Les calques (fonction d'origine) sont toujours la...
+      expect(find.text(t.map.layersTitle), findsOneWidget);
+      // ... et la liste des points de l'etape en cours s'y ajoute : titres des
+      // deux familles, et le point d'eau de l'etape 1 du sentier de test.
+      expect(find.text(t.stage.waterSources.title), findsOneWidget);
+      expect(find.text(t.stage.accommodation.title), findsOneWidget);
+      expect(find.text('Source du col'), findsOneWidget);
+      expect(find.byType(Checkbox), findsOneWidget);
     });
   });
 

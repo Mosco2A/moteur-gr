@@ -6,6 +6,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/lazy_network_image.dart';
 import '../domain/poi_type_config.dart';
+import '../domain/poi_type_label.dart';
 
 /// Bottom sheet affichant le detail d'un POI.
 ///
@@ -39,39 +40,13 @@ class PoiInfoSheet extends StatelessWidget {
     );
   }
 
-  /// Retourne le nom i18n du type de POI selon la locale courante.
-  ///
-  /// Utilise les cles de traduction Slang (t.poi.<type>).
-  /// Fallback: le labelKey du [PoiTypeConfig] si le type n'a pas de cle i18n.
-  String _localizedTypeName(PoiTypeStyle style) {
-    final poiT = t.poi;
-    switch (poi.type) {
-      case 'water':
-        return poiT.water;
-      case 'refuge':
-      case 'shelter':
-        return poiT.shelter;
-      case 'shop':
-        return poiT.shop;
-      case 'danger':
-        return poiT.danger;
-      case 'viewpoint':
-        return poiT.viewpoint;
-      case 'campsite':
-        return poiT.campsite;
-      case 'restaurant':
-        return poiT.restaurant;
-      case 'emergency':
-        return poiT.emergency;
-      default:
-        return style.labelKey;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final style = PoiTypeConfig.getStyle(poi.type);
-    final typeName = _localizedTypeName(style);
+    // LOT D (554) : la table de correspondance type -> libelle traduit etait
+    // PRIVEE ici. Elle est desormais partagee ([poiTypeLabel]) avec la legende
+    // de la carte — un seul nom par type, partout.
+    final typeName = poiTypeLabel(poi.type);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),

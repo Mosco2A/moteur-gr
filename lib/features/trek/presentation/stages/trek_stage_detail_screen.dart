@@ -22,12 +22,11 @@ import '../../domain/models/stage.dart';
 /// « Hebergements »). Generique multi-sentiers : couvre les libelles du socle
 /// donnees (`shelter`) et les synonymes du registre [PoiTypeConfig] (`refuge`,
 /// `accommodation`, `campsite`). Aucune localite en dur.
-const Set<String> _kAccommodationPoiTypes = {
-  'shelter',
-  'refuge',
-  'accommodation',
-  'campsite',
-};
+///
+/// LOT D (tache 554) : la definition a ete remontee dans [PoiTypeConfig] pour
+/// que la liste des points de l'etape sur la carte lise la MEME regle. Cet alias
+/// garde les usages locaux inchanges.
+const Set<String> _kAccommodationPoiTypes = PoiTypeConfig.accommodationTypes;
 
 /// Provider qui charge une etape par son ID (stageNumber) dans un sentier.
 ///

@@ -15,6 +15,8 @@ void main() {
     int? elevationLossM,
     double? avgSpeedKmh,
     double? altitudeM,
+    bool showPendingValues = false,
+    Widget? footer,
   }) {
     return MaterialApp(
       home: Scaffold(
@@ -29,6 +31,8 @@ void main() {
           elevationLossM: elevationLossM,
           avgSpeedKmh: avgSpeedKmh,
           altitudeM: altitudeM,
+          showPendingValues: showPendingValues,
+          footer: footer,
         ),
       ),
     );
@@ -148,6 +152,87 @@ void main() {
         isTrue,
         reason: 'la ligne de chiffres est informative, elle ne prend aucun tap',
       );
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // LOT D (tache 554) — JAMAIS D'ECRAN NU : le mode « valeur en attente ».
+  //
+  // Retour de Chris : « 14 navigation ne ressemble en rien a GR20 !!!!! ». Sans
+  // randonnee demarree, les six chiffres valaient `null` et s'effacaient tous
+  // ensemble. La navigation de reference, elle, garde ses cases et met un tiret
+  // dans celles qu'elle ne sait pas remplir.
+  // -------------------------------------------------------------------------
+  group('StageProgressBar — valeurs en attente (LOT D)', () {
+    testWidgets('AUCUNE valeur connue : les SIX cases restent, avec un tiret',
+        (tester) async {
+      await tester.pumpWidget(buildBar(showPendingValues: true));
+
+      // Les six libelles sont la...
+      expect(find.text(t.tracking.total), findsOneWidget);
+      expect(find.text(t.tracking.covered), findsOneWidget);
+      expect(find.text(t.tracking.dPlus), findsOneWidget);
+      expect(find.text(t.tracking.dMinus), findsOneWidget);
+      expect(find.text(t.tracking.avgSpeed), findsOneWidget);
+      expect(find.text(t.tracking.altitude), findsOneWidget);
+      // ... et chaque valeur porte le tiret d'attente.
+      expect(
+        find.text(StageProgressBar.pendingValueLabel),
+        findsNWidgets(6),
+      );
+    });
+
+    testWidgets('un ZERO n est jamais affiche a la place du tiret',
+        (tester) async {
+      await tester.pumpWidget(buildBar(showPendingValues: true));
+
+      expect(find.text('0.0 km'), findsNothing);
+      expect(find.text('0 m'), findsNothing);
+      expect(find.text('0.0 km/h'), findsNothing);
+    });
+
+    testWidgets('les chiffres du PROGRAMME sont reels, seuls les mesures '
+        'attendent', (tester) async {
+      // Cas de l'utilisateur neuf : l etape est connue (12 km, D+ 450, D- 200)
+      // et la distance totale du sentier aussi ; parcouru et vitesse non.
+      await tester.pumpWidget(buildBar(
+        distanceRemainingKm: 12.0,
+        progressRatio: 0,
+        totalDistanceKm: 96.4,
+        elevationGainM: 450,
+        elevationLossM: 200,
+        showPendingValues: true,
+      ));
+
+      expect(find.text('96.4 km'), findsOneWidget);
+      expect(find.text('450 m'), findsOneWidget);
+      expect(find.text('200 m'), findsOneWidget);
+      expect(find.text(t.map.stageRemaining(km: '12.0')), findsOneWidget);
+      expect(find.text('0%'), findsOneWidget);
+      // Restent en attente : parcouru, vitesse moyenne, altitude.
+      expect(
+        find.text(StageProgressBar.pendingValueLabel),
+        findsNWidgets(3),
+      );
+    });
+
+    testWidgets('le mode par defaut est INCHANGE : une valeur absente reste '
+        'masquee', (tester) async {
+      await tester.pumpWidget(buildBar(elevationGainM: 120));
+
+      expect(find.text('120 m'), findsOneWidget);
+      expect(find.text(t.tracking.avgSpeed), findsNothing);
+      expect(find.text(StageProgressBar.pendingValueLabel), findsNothing);
+    });
+
+    testWidgets('la ligne d explication s affiche quand elle est fournie',
+        (tester) async {
+      await tester.pumpWidget(buildBar(
+        showPendingValues: true,
+        footer: const Text('ce qui demarrera avec la rando'),
+      ));
+
+      expect(find.text('ce qui demarrera avec la rando'), findsOneWidget);
     });
   });
 }
