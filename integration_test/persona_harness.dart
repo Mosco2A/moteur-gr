@@ -21,6 +21,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:integration_test/integration_test.dart';
 
@@ -789,17 +790,31 @@ double? hauteurDe(WidgetTester tester, Finder finder) {
 /// REDEMARRAGE A CHAUD de l'application, depuis le test.
 ///
 /// CE QUE C'EST, ET CE QUE CE N'EST PAS — a lire avant d'interpreter un
-/// resultat. On rappelle le `main()` de l'application : l'arbre de widgets, le
-/// `ProviderScope` et tout l'etat en memoire sont reconstruits a neuf, comme au
-/// lancement. Ce qui est ECRIT sur l'appareil (SharedPreferences) survit ; ce
-/// qui vit en memoire (base Drift en memoire, etat Riverpod) ne survit pas.
-/// Ce n'est PAS un kill de processus : le processus Android, lui, reste vivant.
-/// Toute conclusion tiree d'ici doit le dire.
+/// resultat. On rappelle le `main()` de l'application. Ce qui est ECRIT sur
+/// l'appareil (SharedPreferences) survit ; ce qui vit en memoire (base Drift en
+/// memoire) ne survit pas. Ce n'est PAS un kill de processus : le processus
+/// Android reste vivant. Toute conclusion tiree d'ici doit le dire.
+///
+/// LE PIEGE, MESURE LE 25/09, ET IL A FAILLI ME FAIRE ACCUSER LE PRODUIT A
+/// TORT. `runApp` appele une seconde fois ne DETRUIT PAS l'arbre : le nouveau
+/// widget racine a le meme type que l'ancien, alors Flutter REUTILISE les
+/// elements et se contente d'une mise a jour. L'ecran affiche garde donc son
+/// `State` — et ses `TextEditingController`. Un champ de saisie relu juste
+/// apres rend ce qu'on venait d'y TAPER, pas ce que l'appareil a GARDE.
+/// Concretement : une fiche refusee, donc jamais enregistree, se relisait
+/// pleine, et j'ai d'abord cru que le refus du consentement n'etait pas
+/// applique. Il l'etait.
+///
+/// PARADE : apres le rappel de `main()`, on QUITTE l'ecran courant vers une
+/// route neutre. Tout ecran ouvert ensuite est reconstruit, donc relu depuis
+/// le stockage — ce qui est la seule chose que ce test veut mesurer.
+/// [routeNeutre] laisse le scenario choisir sa destination de transit.
 Future<void> redemarrageAChaud(
   WidgetTester tester,
   String persona,
   void Function() lancerApp, {
   Duration attente = const Duration(seconds: 12),
+  String routeNeutre = '/home',
 }) async {
   logStep(persona, 'redemarrage',
       'REDEMARRAGE A CHAUD : rappel de main() (les donnees ecrites sur le '
@@ -808,4 +823,16 @@ Future<void> redemarrageAChaud(
   await pumpAndSettleTolerant(tester, timeout: attente);
   await dismissAdsConsentIfPresent(tester, persona);
   await pumpAndSettleTolerant(tester);
+  // On quitte l'ecran courant pour que le suivant soit REELLEMENT reconstruit.
+  final navigateurs = find.byType(Navigator);
+  if (navigateurs.evaluate().isNotEmpty) {
+    final routeur = GoRouter.maybeOf(tester.element(navigateurs.first));
+    if (routeur != null) {
+      routeur.go(routeNeutre);
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+      logStep(persona, 'redemarrage',
+          'Transit par $routeNeutre : l ecran suivant sera relu depuis le '
+          'stockage, pas herite de l arbre precedent.');
+    }
+  }
 }
