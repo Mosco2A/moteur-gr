@@ -1482,7 +1482,27 @@
       "healthSection": "Sezione dati sulla salute, consenso rafforzato",
       "policyButton": "Apri l'informativa sulla privacy"
     },
-    "healthDataMorphoNote": "Include i tuoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo."
+    "healthDataMorphoNote": "Include i tuoi dati corporei (età, altezza, peso) per la fattibilità del trek. Dati sanitari, GDPR articolo 9, tenuti sul dispositivo.",
+    "healthBackupNote": "Senza questo consenso la tua scheda di informazioni mediche non viene salvata: non potrai recuperarla su un altro telefono, né mostrarla ai soccorsi da un dispositivo nuovo."
+  },
+  "erasure": {
+    "section": "I miei dati",
+    "entry": "Cancella i miei dati",
+    "entryDesc": "Eliminare definitivamente ciò che l'app conserva su di te",
+    "dialogTitle": "Cancellare i miei dati?",
+    "goesTitle": "Cosa viene cancellato",
+    "goes": "La tua scheda escursionista (età, altezza, peso, test del cammino), la tua scheda di informazioni mediche, le tue escursioni passate e il tuo diario, le tappe percorse, i tuoi pernottamenti, le tue tracce GPS, i tuoi consensi e il tuo codice di recupero.",
+    "staysTitle": "Cosa resta",
+    "stays": "I tuoi acquisti: tappe pagate, sentieri sbloccati, periodo senza pubblicità — non ti riprendiamo ciò che hai pagato. E le tue impostazioni di visualizzazione (lingua, tema, unità), che non dicono nulla di te.",
+    "finalWarning": "È definitivo: né tu né noi potremo recuperare questi dati.",
+    "confirmCheckbox": "Ho letto e voglio cancellare i miei dati",
+    "confirm": "Cancella definitivamente",
+    "cancel": "Annulla",
+    "done": "I tuoi dati sono stati cancellati.",
+    "error": "La cancellazione non è stata completata. Riprova — ciò che è già stato cancellato non torna.",
+    "a11y": {
+      "entry": "Cancella i miei dati, apre una richiesta di conferma"
+    }
   },
   "moderation": {
     "reportTitle": "Segnala questo contenuto",

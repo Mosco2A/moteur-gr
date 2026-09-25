@@ -1482,7 +1482,27 @@
       "healthSection": "Bereich Gesundheitsdaten, verstärkte Einwilligung",
       "policyButton": "Datenschutzerklärung öffnen"
     },
-    "healthDataMorphoNote": "Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten."
+    "healthDataMorphoNote": "Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.",
+    "healthBackupNote": "Ohne diese Einwilligung wird Ihr medizinisches Informationsblatt nicht gesichert: Sie können es auf einem anderen Telefon nicht wiederherstellen und den Rettungskräften von einem neuen Gerät nicht zeigen."
+  },
+  "erasure": {
+    "section": "Meine Daten",
+    "entry": "Meine Daten löschen",
+    "entryDesc": "Endgültig löschen, was die App über Sie speichert",
+    "dialogTitle": "Meine Daten löschen?",
+    "goesTitle": "Was gelöscht wird",
+    "goes": "Ihr Wanderprofil (Alter, Grösse, Gewicht, Gehtest), Ihr medizinisches Informationsblatt, Ihre vergangenen Wanderungen und Ihr Tagebuch, Ihre gegangenen Etappen, Ihre Übernachtungen, Ihre GPS-Aufzeichnungen, Ihre Einwilligungen und Ihr Wiederherstellungscode.",
+    "staysTitle": "Was bleibt",
+    "stays": "Ihre Käufe: bezahlte Etappen, freigeschaltete Wege, werbefreier Zeitraum — wir nehmen Ihnen nicht zurück, was Sie bezahlt haben. Und Ihre Anzeigeeinstellungen (Sprache, Design, Einheiten), die nichts über Sie aussagen.",
+    "finalWarning": "Das ist endgültig: weder Sie noch wir können diese Daten wiederherstellen.",
+    "confirmCheckbox": "Ich habe das gelesen und möchte meine Daten löschen",
+    "confirm": "Endgültig löschen",
+    "cancel": "Abbrechen",
+    "done": "Ihre Daten wurden gelöscht.",
+    "error": "Die Löschung wurde nicht abgeschlossen. Versuchen Sie es erneut — was schon gelöscht ist, kommt nicht zurück.",
+    "a11y": {
+      "entry": "Meine Daten löschen, öffnet eine Bestätigungsabfrage"
+    }
   },
   "moderation": {
     "reportTitle": "Diesen Inhalt melden",

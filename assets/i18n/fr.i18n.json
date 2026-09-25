@@ -1482,7 +1482,27 @@
       "healthSection": "Section données de santé, consentement renforcé",
       "policyButton": "Ouvrir la politique de confidentialité"
     },
-    "healthDataMorphoNote": "Inclut votre morphologie (âge, taille, poids) pour la faisabilité d'un trek. Donnée de santé, article 9 RGPD, gardée sur l'appareil."
+    "healthDataMorphoNote": "Inclut votre morphologie (âge, taille, poids) pour la faisabilité d'un trek. Donnée de santé, article 9 RGPD, gardée sur l'appareil.",
+    "healthBackupNote": "Sans cette autorisation, votre fiche de renseignement médical n'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf."
+  },
+  "erasure": {
+    "section": "Mes données",
+    "entry": "Effacer mes données",
+    "entryDesc": "Supprimer définitivement ce que l'application garde sur vous",
+    "dialogTitle": "Effacer mes données ?",
+    "goesTitle": "Ce qui part",
+    "goes": "Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion.",
+    "staysTitle": "Ce qui reste",
+    "stays": "Vos achats : étapes payées, sentiers débloqués, période sans publicité — nous ne vous reprenons pas ce que vous avez payé. Et vos réglages d'affichage (langue, thème, unités), qui ne disent rien de vous.",
+    "finalWarning": "C'est définitif : ni vous ni nous ne pourrons récupérer ces données.",
+    "confirmCheckbox": "J'ai lu, et je veux effacer mes données",
+    "confirm": "Effacer définitivement",
+    "cancel": "Annuler",
+    "done": "Vos données ont été effacées.",
+    "error": "L'effacement ne s'est pas terminé. Réessayez — ce qui est déjà parti ne revient pas.",
+    "a11y": {
+      "entry": "Effacer mes données, ouvre une demande de confirmation"
+    }
   },
   "moderation": {
     "reportTitle": "Signaler ce contenu",

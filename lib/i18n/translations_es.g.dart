@@ -88,6 +88,7 @@ class TranslationsEs extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$health$es health = _Translations$health$es._(_root);
 	@override late final _Translations$trailSelection$es trailSelection = _Translations$trailSelection$es._(_root);
 	@override late final _Translations$consent$es consent = _Translations$consent$es._(_root);
+	@override late final _Translations$erasure$es erasure = _Translations$erasure$es._(_root);
 	@override late final _Translations$moderation$es moderation = _Translations$moderation$es._(_root);
 	@override late final _Translations$bootstrap$es bootstrap = _Translations$bootstrap$es._(_root);
 	@override late final _Translations$recap$es recap = _Translations$recap$es._(_root);
@@ -1214,6 +1215,31 @@ class _Translations$consent$es extends Translations$consent$fr {
 	@override String get reviewNeeded => 'Nuestra política ha cambiado: revisa tus elecciones.';
 	@override late final _Translations$consent$a11y$es a11y = _Translations$consent$a11y$es._(_root);
 	@override String get healthDataMorphoNote => 'Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.';
+	@override String get healthBackupNote => 'Sin este consentimiento, tu ficha de información médica no se guarda: no podrás recuperarla en otro teléfono ni mostrarla a los servicios de rescate desde un dispositivo nuevo.';
+}
+
+// Path: erasure
+class _Translations$erasure$es extends Translations$erasure$fr {
+	_Translations$erasure$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get section => 'Mis datos';
+	@override String get entry => 'Borrar mis datos';
+	@override String get entryDesc => 'Eliminar definitivamente lo que la aplicación guarda sobre ti';
+	@override String get dialogTitle => '¿Borrar mis datos?';
+	@override String get goesTitle => 'Lo que se borra';
+	@override String get goes => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación.';
+	@override String get staysTitle => 'Lo que se queda';
+	@override String get stays => 'Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.';
+	@override String get finalWarning => 'Es definitivo: ni tú ni nosotros podremos recuperar estos datos.';
+	@override String get confirmCheckbox => 'Lo he leído y quiero borrar mis datos';
+	@override String get confirm => 'Borrar definitivamente';
+	@override String get cancel => 'Cancelar';
+	@override String get done => 'Tus datos se han borrado.';
+	@override String get error => 'El borrado no se completó. Vuelve a intentarlo — lo que ya se ha borrado no vuelve.';
+	@override late final _Translations$erasure$a11y$es a11y = _Translations$erasure$a11y$es._(_root);
 }
 
 // Path: moderation
@@ -2835,6 +2861,16 @@ class _Translations$consent$a11y$es extends Translations$consent$a11y$fr {
 	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, actualmente ${state}';
 	@override String get healthSection => 'Sección de datos de salud, consentimiento reforzado';
 	@override String get policyButton => 'Abrir la política de privacidad';
+}
+
+// Path: erasure.a11y
+class _Translations$erasure$a11y$es extends Translations$erasure$a11y$fr {
+	_Translations$erasure$a11y$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get entry => 'Borrar mis datos, abre una solicitud de confirmación';
 }
 
 // Path: moderation.reasons
@@ -5059,6 +5095,22 @@ extension on TranslationsEs {
 			'consent.a11y.healthSection' => 'Sección de datos de salud, consentimiento reforzado',
 			'consent.a11y.policyButton' => 'Abrir la política de privacidad',
 			'consent.healthDataMorphoNote' => 'Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.',
+			'consent.healthBackupNote' => 'Sin este consentimiento, tu ficha de información médica no se guarda: no podrás recuperarla en otro teléfono ni mostrarla a los servicios de rescate desde un dispositivo nuevo.',
+			'erasure.section' => 'Mis datos',
+			'erasure.entry' => 'Borrar mis datos',
+			'erasure.entryDesc' => 'Eliminar definitivamente lo que la aplicación guarda sobre ti',
+			'erasure.dialogTitle' => '¿Borrar mis datos?',
+			'erasure.goesTitle' => 'Lo que se borra',
+			'erasure.goes' => 'Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación.',
+			'erasure.staysTitle' => 'Lo que se queda',
+			'erasure.stays' => 'Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.',
+			'erasure.finalWarning' => 'Es definitivo: ni tú ni nosotros podremos recuperar estos datos.',
+			'erasure.confirmCheckbox' => 'Lo he leído y quiero borrar mis datos',
+			'erasure.confirm' => 'Borrar definitivamente',
+			'erasure.cancel' => 'Cancelar',
+			'erasure.done' => 'Tus datos se han borrado.',
+			'erasure.error' => 'El borrado no se completó. Vuelve a intentarlo — lo que ya se ha borrado no vuelve.',
+			'erasure.a11y.entry' => 'Borrar mis datos, abre una solicitud de confirmación',
 			'moderation.reportTitle' => 'Denunciar este contenido',
 			'moderation.reportIntro' => 'Ayúdanos a mantener una comunidad sana. Indica por qué este contenido te parece ilícito. Tu denuncia será examinada por un moderador.',
 			'moderation.reasonLabel' => 'Motivo de la denuncia',
@@ -5355,6 +5407,8 @@ extension on TranslationsEs {
 			'summary.stats.stages' => 'Etapas',
 			'summary.stats.restDays' => 'Días de descanso',
 			'summary.dayByDay' => 'Día a día',
+			_ => null,
+		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'D${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Etapa ${n}',
 			'summary.restDay' => 'Día de descanso',
@@ -5371,8 +5425,6 @@ extension on TranslationsEs {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Del ${start} al ${end}',
 			'summary.share.planning' => '--- Plan día a día ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Descanso',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'D${n}: ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planificado con ${name}',
 			'summary.empty.title' => 'Configura primero tu itinerario',

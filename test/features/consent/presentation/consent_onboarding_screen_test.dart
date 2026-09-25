@@ -83,6 +83,12 @@ void main() {
       expect(find.text(tr.consent.healthWarning), findsOneWidget);
       // Badge "donnee sensible".
       expect(find.text(tr.consent.healthBadge), findsOneWidget);
+      // TACHE 562 (K3) : le PREMIER refus se joue ici. Ce que l'autorisation
+      // couvre et ce que le refus coute doivent etre lus au moment du choix.
+      expect(find.text(tr.consent.healthDataMorphoNote), findsOneWidget);
+      expect(find.text(tr.consent.healthBackupNote), findsOneWidget,
+          reason: 'refuser ici prive le randonneur de la sauvegarde de sa '
+              'fiche medicale : il doit le savoir avant de refuser');
     });
 
     testWidgets('acte positif : cocher la navigation ne coche pas les autres', (

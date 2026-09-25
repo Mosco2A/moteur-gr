@@ -89,6 +89,7 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$health$fr health = Translations$health$fr.internal(_root);
 	late final Translations$trailSelection$fr trailSelection = Translations$trailSelection$fr.internal(_root);
 	late final Translations$consent$fr consent = Translations$consent$fr.internal(_root);
+	late final Translations$erasure$fr erasure = Translations$erasure$fr.internal(_root);
 	late final Translations$moderation$fr moderation = Translations$moderation$fr.internal(_root);
 	late final Translations$bootstrap$fr bootstrap = Translations$bootstrap$fr.internal(_root);
 	late final Translations$recap$fr recap = Translations$recap$fr.internal(_root);
@@ -2451,6 +2452,62 @@ class Translations$consent$fr {
 
 	/// fr: 'Inclut votre morphologie (âge, taille, poids) pour la faisabilité d'un trek. Donnée de santé, article 9 RGPD, gardée sur l'appareil.'
 	String get healthDataMorphoNote => 'Inclut votre morphologie (âge, taille, poids) pour la faisabilité d\'un trek. Donnée de santé, article 9 RGPD, gardée sur l\'appareil.';
+
+	/// fr: 'Sans cette autorisation, votre fiche de renseignement médical n'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf.'
+	String get healthBackupNote => 'Sans cette autorisation, votre fiche de renseignement médical n\'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf.';
+}
+
+// Path: erasure
+class Translations$erasure$fr {
+	Translations$erasure$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Mes données'
+	String get section => 'Mes données';
+
+	/// fr: 'Effacer mes données'
+	String get entry => 'Effacer mes données';
+
+	/// fr: 'Supprimer définitivement ce que l'application garde sur vous'
+	String get entryDesc => 'Supprimer définitivement ce que l\'application garde sur vous';
+
+	/// fr: 'Effacer mes données ?'
+	String get dialogTitle => 'Effacer mes données ?';
+
+	/// fr: 'Ce qui part'
+	String get goesTitle => 'Ce qui part';
+
+	/// fr: 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion.'
+	String get goes => 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion.';
+
+	/// fr: 'Ce qui reste'
+	String get staysTitle => 'Ce qui reste';
+
+	/// fr: 'Vos achats : étapes payées, sentiers débloqués, période sans publicité — nous ne vous reprenons pas ce que vous avez payé. Et vos réglages d'affichage (langue, thème, unités), qui ne disent rien de vous.'
+	String get stays => 'Vos achats : étapes payées, sentiers débloqués, période sans publicité — nous ne vous reprenons pas ce que vous avez payé. Et vos réglages d\'affichage (langue, thème, unités), qui ne disent rien de vous.';
+
+	/// fr: 'C'est définitif : ni vous ni nous ne pourrons récupérer ces données.'
+	String get finalWarning => 'C\'est définitif : ni vous ni nous ne pourrons récupérer ces données.';
+
+	/// fr: 'J'ai lu, et je veux effacer mes données'
+	String get confirmCheckbox => 'J\'ai lu, et je veux effacer mes données';
+
+	/// fr: 'Effacer définitivement'
+	String get confirm => 'Effacer définitivement';
+
+	/// fr: 'Annuler'
+	String get cancel => 'Annuler';
+
+	/// fr: 'Vos données ont été effacées.'
+	String get done => 'Vos données ont été effacées.';
+
+	/// fr: 'L'effacement ne s'est pas terminé. Réessayez — ce qui est déjà parti ne revient pas.'
+	String get error => 'L\'effacement ne s\'est pas terminé. Réessayez — ce qui est déjà parti ne revient pas.';
+
+	late final Translations$erasure$a11y$fr a11y = Translations$erasure$a11y$fr.internal(_root);
 }
 
 // Path: moderation
@@ -5805,6 +5862,18 @@ class Translations$consent$a11y$fr {
 	String get policyButton => 'Ouvrir la politique de confidentialité';
 }
 
+// Path: erasure.a11y
+class Translations$erasure$a11y$fr {
+	Translations$erasure$a11y$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Effacer mes données, ouvre une demande de confirmation'
+	String get entry => 'Effacer mes données, ouvre une demande de confirmation';
+}
+
 // Path: moderation.reasons
 class Translations$moderation$reasons$fr {
 	Translations$moderation$reasons$fr.internal(this._root);
@@ -8577,6 +8646,22 @@ extension on Translations {
 			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
 			'consent.a11y.policyButton' => 'Ouvrir la politique de confidentialité',
 			'consent.healthDataMorphoNote' => 'Inclut votre morphologie (âge, taille, poids) pour la faisabilité d\'un trek. Donnée de santé, article 9 RGPD, gardée sur l\'appareil.',
+			'consent.healthBackupNote' => 'Sans cette autorisation, votre fiche de renseignement médical n\'est pas sauvegardée : vous ne pourrez pas la retrouver sur un autre téléphone, ni la montrer aux secours depuis un appareil neuf.',
+			'erasure.section' => 'Mes données',
+			'erasure.entry' => 'Effacer mes données',
+			'erasure.entryDesc' => 'Supprimer définitivement ce que l\'application garde sur vous',
+			'erasure.dialogTitle' => 'Effacer mes données ?',
+			'erasure.goesTitle' => 'Ce qui part',
+			'erasure.goes' => 'Votre fiche randonneur (âge, taille, poids, test de marche), votre fiche de renseignement médical, vos randonnées passées et votre journal, vos étapes marchées, vos nuitées, vos traces GPS, vos autorisations et votre code de reconnexion.',
+			'erasure.staysTitle' => 'Ce qui reste',
+			'erasure.stays' => 'Vos achats : étapes payées, sentiers débloqués, période sans publicité — nous ne vous reprenons pas ce que vous avez payé. Et vos réglages d\'affichage (langue, thème, unités), qui ne disent rien de vous.',
+			'erasure.finalWarning' => 'C\'est définitif : ni vous ni nous ne pourrons récupérer ces données.',
+			'erasure.confirmCheckbox' => 'J\'ai lu, et je veux effacer mes données',
+			'erasure.confirm' => 'Effacer définitivement',
+			'erasure.cancel' => 'Annuler',
+			'erasure.done' => 'Vos données ont été effacées.',
+			'erasure.error' => 'L\'effacement ne s\'est pas terminé. Réessayez — ce qui est déjà parti ne revient pas.',
+			'erasure.a11y.entry' => 'Effacer mes données, ouvre une demande de confirmation',
 			'moderation.reportTitle' => 'Signaler ce contenu',
 			'moderation.reportIntro' => 'Aidez-nous à garder la communauté saine. Indiquez pourquoi ce contenu vous semble illicite. Votre signalement sera examiné par un modérateur.',
 			'moderation.reasonLabel' => 'Motif du signalement',
@@ -8873,6 +8958,8 @@ extension on Translations {
 			'summary.stats.stages' => 'Étapes',
 			'summary.stats.restDays' => 'Jours de repos',
 			'summary.dayByDay' => 'Jour par jour',
+			_ => null,
+		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'J${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Étape ${n}',
 			'summary.restDay' => 'Jour de repos',
@@ -8889,8 +8976,6 @@ extension on Translations {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Du ${start} au ${end}',
 			'summary.share.planning' => '--- Planning jour par jour ---',
 			'summary.share.dayRest' => ({required Object n}) => 'J${n} : Repos',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'J${n} : ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planifié avec ${name}',
 			'summary.empty.title' => 'Configurez d\'abord votre itinéraire',

@@ -88,6 +88,7 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$health$de health = _Translations$health$de._(_root);
 	@override late final _Translations$trailSelection$de trailSelection = _Translations$trailSelection$de._(_root);
 	@override late final _Translations$consent$de consent = _Translations$consent$de._(_root);
+	@override late final _Translations$erasure$de erasure = _Translations$erasure$de._(_root);
 	@override late final _Translations$moderation$de moderation = _Translations$moderation$de._(_root);
 	@override late final _Translations$bootstrap$de bootstrap = _Translations$bootstrap$de._(_root);
 	@override late final _Translations$recap$de recap = _Translations$recap$de._(_root);
@@ -1214,6 +1215,31 @@ class _Translations$consent$de extends Translations$consent$fr {
 	@override String get reviewNeeded => 'Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.';
 	@override late final _Translations$consent$a11y$de a11y = _Translations$consent$a11y$de._(_root);
 	@override String get healthDataMorphoNote => 'Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.';
+	@override String get healthBackupNote => 'Ohne diese Einwilligung wird Ihr medizinisches Informationsblatt nicht gesichert: Sie können es auf einem anderen Telefon nicht wiederherstellen und den Rettungskräften von einem neuen Gerät nicht zeigen.';
+}
+
+// Path: erasure
+class _Translations$erasure$de extends Translations$erasure$fr {
+	_Translations$erasure$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get section => 'Meine Daten';
+	@override String get entry => 'Meine Daten löschen';
+	@override String get entryDesc => 'Endgültig löschen, was die App über Sie speichert';
+	@override String get dialogTitle => 'Meine Daten löschen?';
+	@override String get goesTitle => 'Was gelöscht wird';
+	@override String get goes => 'Ihr Wanderprofil (Alter, Grösse, Gewicht, Gehtest), Ihr medizinisches Informationsblatt, Ihre vergangenen Wanderungen und Ihr Tagebuch, Ihre gegangenen Etappen, Ihre Übernachtungen, Ihre GPS-Aufzeichnungen, Ihre Einwilligungen und Ihr Wiederherstellungscode.';
+	@override String get staysTitle => 'Was bleibt';
+	@override String get stays => 'Ihre Käufe: bezahlte Etappen, freigeschaltete Wege, werbefreier Zeitraum — wir nehmen Ihnen nicht zurück, was Sie bezahlt haben. Und Ihre Anzeigeeinstellungen (Sprache, Design, Einheiten), die nichts über Sie aussagen.';
+	@override String get finalWarning => 'Das ist endgültig: weder Sie noch wir können diese Daten wiederherstellen.';
+	@override String get confirmCheckbox => 'Ich habe das gelesen und möchte meine Daten löschen';
+	@override String get confirm => 'Endgültig löschen';
+	@override String get cancel => 'Abbrechen';
+	@override String get done => 'Ihre Daten wurden gelöscht.';
+	@override String get error => 'Die Löschung wurde nicht abgeschlossen. Versuchen Sie es erneut — was schon gelöscht ist, kommt nicht zurück.';
+	@override late final _Translations$erasure$a11y$de a11y = _Translations$erasure$a11y$de._(_root);
 }
 
 // Path: moderation
@@ -2835,6 +2861,16 @@ class _Translations$consent$a11y$de extends Translations$consent$a11y$fr {
 	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, aktuell ${state}';
 	@override String get healthSection => 'Bereich Gesundheitsdaten, verstärkte Einwilligung';
 	@override String get policyButton => 'Datenschutzerklärung öffnen';
+}
+
+// Path: erasure.a11y
+class _Translations$erasure$a11y$de extends Translations$erasure$a11y$fr {
+	_Translations$erasure$a11y$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get entry => 'Meine Daten löschen, öffnet eine Bestätigungsabfrage';
 }
 
 // Path: moderation.reasons
@@ -5059,6 +5095,22 @@ extension on TranslationsDe {
 			'consent.a11y.healthSection' => 'Bereich Gesundheitsdaten, verstärkte Einwilligung',
 			'consent.a11y.policyButton' => 'Datenschutzerklärung öffnen',
 			'consent.healthDataMorphoNote' => 'Umfasst Ihre Körperdaten (Alter, Grösse, Gewicht) für die Trek-Machbarkeit. Gesundheitsdaten, DSGVO Artikel 9, auf dem Gerät gehalten.',
+			'consent.healthBackupNote' => 'Ohne diese Einwilligung wird Ihr medizinisches Informationsblatt nicht gesichert: Sie können es auf einem anderen Telefon nicht wiederherstellen und den Rettungskräften von einem neuen Gerät nicht zeigen.',
+			'erasure.section' => 'Meine Daten',
+			'erasure.entry' => 'Meine Daten löschen',
+			'erasure.entryDesc' => 'Endgültig löschen, was die App über Sie speichert',
+			'erasure.dialogTitle' => 'Meine Daten löschen?',
+			'erasure.goesTitle' => 'Was gelöscht wird',
+			'erasure.goes' => 'Ihr Wanderprofil (Alter, Grösse, Gewicht, Gehtest), Ihr medizinisches Informationsblatt, Ihre vergangenen Wanderungen und Ihr Tagebuch, Ihre gegangenen Etappen, Ihre Übernachtungen, Ihre GPS-Aufzeichnungen, Ihre Einwilligungen und Ihr Wiederherstellungscode.',
+			'erasure.staysTitle' => 'Was bleibt',
+			'erasure.stays' => 'Ihre Käufe: bezahlte Etappen, freigeschaltete Wege, werbefreier Zeitraum — wir nehmen Ihnen nicht zurück, was Sie bezahlt haben. Und Ihre Anzeigeeinstellungen (Sprache, Design, Einheiten), die nichts über Sie aussagen.',
+			'erasure.finalWarning' => 'Das ist endgültig: weder Sie noch wir können diese Daten wiederherstellen.',
+			'erasure.confirmCheckbox' => 'Ich habe das gelesen und möchte meine Daten löschen',
+			'erasure.confirm' => 'Endgültig löschen',
+			'erasure.cancel' => 'Abbrechen',
+			'erasure.done' => 'Ihre Daten wurden gelöscht.',
+			'erasure.error' => 'Die Löschung wurde nicht abgeschlossen. Versuchen Sie es erneut — was schon gelöscht ist, kommt nicht zurück.',
+			'erasure.a11y.entry' => 'Meine Daten löschen, öffnet eine Bestätigungsabfrage',
 			'moderation.reportTitle' => 'Diesen Inhalt melden',
 			'moderation.reportIntro' => 'Helfen Sie uns, die Community gesund zu halten. Geben Sie an, warum dieser Inhalt rechtswidrig erscheint. Ihre Meldung wird von einem Moderator geprüft.',
 			'moderation.reasonLabel' => 'Grund der Meldung',
@@ -5355,6 +5407,8 @@ extension on TranslationsDe {
 			'summary.stats.stages' => 'Etappen',
 			'summary.stats.restDays' => 'Ruhetage',
 			'summary.dayByDay' => 'Tag für Tag',
+			_ => null,
+		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'T${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Etappe ${n}',
 			'summary.restDay' => 'Ruhetag',
@@ -5371,8 +5425,6 @@ extension on TranslationsDe {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Vom ${start} bis ${end}',
 			'summary.share.planning' => '--- Tagesplan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'T${n}: Ruhetag',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'T${n}: ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Geplant mit ${name}',
 			'summary.empty.title' => 'Richten Sie zuerst Ihre Route ein',

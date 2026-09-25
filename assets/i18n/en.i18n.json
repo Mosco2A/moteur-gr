@@ -1482,7 +1482,27 @@
       "healthSection": "Health data section, reinforced consent",
       "policyButton": "Open the privacy policy"
     },
-    "healthDataMorphoNote": "Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device."
+    "healthDataMorphoNote": "Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.",
+    "healthBackupNote": "Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device."
+  },
+  "erasure": {
+    "section": "My data",
+    "entry": "Erase my data",
+    "entryDesc": "Permanently delete what the app keeps about you",
+    "dialogTitle": "Erase my data?",
+    "goesTitle": "What goes",
+    "goes": "Your hiker profile (age, height, weight, walk test), your medical information sheet, your past hikes and your journal, the stages you walked, your overnight stays, your GPS tracks, your permissions and your recovery code.",
+    "staysTitle": "What stays",
+    "stays": "Your purchases: paid stages, unlocked trails, ad-free period — we do not take back what you paid for. And your display settings (language, theme, units), which say nothing about you.",
+    "finalWarning": "This is permanent: neither you nor we will be able to recover this data.",
+    "confirmCheckbox": "I have read this, and I want to erase my data",
+    "confirm": "Erase permanently",
+    "cancel": "Cancel",
+    "done": "Your data has been erased.",
+    "error": "The erasure did not complete. Try again — what is already gone does not come back.",
+    "a11y": {
+      "entry": "Erase my data, opens a confirmation request"
+    }
   },
   "moderation": {
     "reportTitle": "Report this content",

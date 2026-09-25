@@ -184,6 +184,20 @@ class _HealthSection extends StatelessWidget {
               tr.consent.healthWarning,
               style: theme.textTheme.bodySmall,
             ),
+            const SizedBox(height: AppTheme.spacingXs),
+            // Le PREMIER refus se joue ici : ce que l'autorisation couvre
+            // (morphologie) et ce que le refus coute (la fiche medicale ne sera
+            // pas retrouvable sur un autre telephone) doivent etre lus au
+            // moment du choix, pas decouverts plus tard (tache 562, K3).
+            Text(
+              tr.consent.healthDataMorphoNote,
+              style: theme.textTheme.bodySmall,
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            Text(
+              tr.consent.healthBackupNote,
+              style: theme.textTheme.bodySmall,
+            ),
             const SizedBox(height: AppTheme.spacingSm),
             ConsentPurposeTile(
               purpose: ConsentPurpose.healthData,

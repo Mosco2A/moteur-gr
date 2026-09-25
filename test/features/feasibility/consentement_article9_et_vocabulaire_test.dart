@@ -14,6 +14,7 @@ import 'package:moteur_gr/core/services/consent_service.dart';
 import 'package:moteur_gr/features/consent/providers/consent_ui_providers.dart';
 import 'package:moteur_gr/features/feasibility/data/hiker_profile_repository.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_profile.dart';
+import 'package:moteur_gr/features/feasibility/domain/walk_test_result.dart';
 import 'package:moteur_gr/features/feasibility/presentation/hiker_profile_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
@@ -256,6 +257,54 @@ void main() {
       expect(persiste.countryIso, 'IT');
       expect((await consentement()).hasConsent(ConsentPurpose.healthData),
           isFalse);
+    });
+
+    // TACHE 562 (LOT K, K2a) — LA QUATRIEME MESURE DE SANTE.
+    //
+    // Le LOT I a defini le perimetre de l'effacement sur le texte que
+    // l'application MONTRE au randonneur : « Age, taille et poids sont des
+    // donnees de sante ». Le test de marche 6 minutes n'y figure pas, et il est
+    // reste sur l'appareil apres un refus. Or une distance parcourue en six
+    // minutes est une MESURE DE CAPACITE PHYSIQUE : c'est de la donnee de sante
+    // au meme titre que le poids, et elle est plus revelatrice que lui. Le
+    // perimetre suit la nature de la donnee, pas la liste des trois champs du
+    // formulaire.
+    test('LE TEST DE MARCHE 6 MIN PART AUSSI : une mesure de capacite physique '
+        'ne survit pas au refus du consentement', () async {
+      await depot().saveProfile(const HikerProfile(
+        age: 72,
+        heightCm: 172,
+        weightKg: 88,
+        countryIso: 'FR',
+      ));
+      await depot().saveWalkTestResult(WalkTestResult(
+        distanceMeters: 420,
+        level: 'slow',
+        takenAt: DateTime(2026, 9, 1),
+      ));
+      final consent = await consentement();
+      await consent.grant(ConsentPurpose.healthData);
+      // La mesure existe AVANT : sans cela le test ne prouverait rien.
+      expect(await depot().getWalkTestResult(), isNotNull);
+
+      final container = ProviderContainer(overrides: [
+        databaseProvider.overrideWithValue(db),
+        hikerProfileRepositoryProvider.overrideWithValue(depot()),
+      ]);
+      addTearDown(container.dispose);
+
+      await container
+          .read(consentControllerProvider)
+          .revoke(ConsentPurpose.healthData);
+
+      expect(await depot().getWalkTestResult(), isNull,
+          reason: 'la distance parcourue en 6 minutes est une mesure de '
+              'capacite physique : elle releve de l article 9 comme le poids');
+      // Et la morphologie part toujours, evidemment.
+      final persiste = await depot().getProfile();
+      expect(persiste.age, 0);
+      expect(persiste.heightCm, 0);
+      expect(persiste.weightKg, 0);
     });
 
     test('une autre finalite retiree ne touche PAS a la morphologie', () async {

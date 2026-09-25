@@ -34,6 +34,12 @@ void main() {
     serviceA = HealthBackupService(
       vault: SecureVaultService(),
       healthRepository: repoA,
+      // Consentement art. 9 ACCORDE explicitement (tache 562, K3). Sans cette
+      // injection, la garde de consentement refuserait AVANT tout : ces tests
+      // deviendraient verts pour la mauvaise raison — ils cesseraient de
+      // prouver le chiffrement et la restauration qu'ils annoncent. La garde a
+      // ses propres tests (`core/services/health_data_consent_guard_test.dart`).
+      consentCheck: (_) async => true,
     );
   });
 
@@ -61,6 +67,7 @@ void main() {
         final serviceB = HealthBackupService(
           vault: SecureVaultService(),
           healthRepository: repoB,
+          consentCheck: (_) async => true,
         );
 
         // Avant restauration : le tél B n'a rien.
@@ -84,6 +91,7 @@ void main() {
       final serviceB = HealthBackupService(
         vault: SecureVaultService(),
         healthRepository: repoB,
+        consentCheck: (_) async => true,
       );
 
       await expectLater(

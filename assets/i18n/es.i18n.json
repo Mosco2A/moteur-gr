@@ -1482,7 +1482,27 @@
       "healthSection": "Sección de datos de salud, consentimiento reforzado",
       "policyButton": "Abrir la política de privacidad"
     },
-    "healthDataMorphoNote": "Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo."
+    "healthDataMorphoNote": "Incluye tus datos corporales (edad, altura, peso) para la viabilidad del trek. Datos de salud, RGPD artículo 9, guardados en el dispositivo.",
+    "healthBackupNote": "Sin este consentimiento, tu ficha de información médica no se guarda: no podrás recuperarla en otro teléfono ni mostrarla a los servicios de rescate desde un dispositivo nuevo."
+  },
+  "erasure": {
+    "section": "Mis datos",
+    "entry": "Borrar mis datos",
+    "entryDesc": "Eliminar definitivamente lo que la aplicación guarda sobre ti",
+    "dialogTitle": "¿Borrar mis datos?",
+    "goesTitle": "Lo que se borra",
+    "goes": "Tu ficha de senderista (edad, altura, peso, test de marcha), tu ficha de información médica, tus rutas pasadas y tu diario, las etapas que has caminado, tus pernoctaciones, tus trazas GPS, tus consentimientos y tu código de recuperación.",
+    "staysTitle": "Lo que se queda",
+    "stays": "Tus compras: etapas pagadas, senderos desbloqueados, periodo sin publicidad — no te quitamos lo que has pagado. Y tus ajustes de visualización (idioma, tema, unidades), que no dicen nada de ti.",
+    "finalWarning": "Es definitivo: ni tú ni nosotros podremos recuperar estos datos.",
+    "confirmCheckbox": "Lo he leído y quiero borrar mis datos",
+    "confirm": "Borrar definitivamente",
+    "cancel": "Cancelar",
+    "done": "Tus datos se han borrado.",
+    "error": "El borrado no se completó. Vuelve a intentarlo — lo que ya se ha borrado no vuelve.",
+    "a11y": {
+      "entry": "Borrar mis datos, abre una solicitud de confirmación"
+    }
   },
   "moderation": {
     "reportTitle": "Denunciar este contenido",

@@ -88,6 +88,7 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$health$en health = _Translations$health$en._(_root);
 	@override late final _Translations$trailSelection$en trailSelection = _Translations$trailSelection$en._(_root);
 	@override late final _Translations$consent$en consent = _Translations$consent$en._(_root);
+	@override late final _Translations$erasure$en erasure = _Translations$erasure$en._(_root);
 	@override late final _Translations$moderation$en moderation = _Translations$moderation$en._(_root);
 	@override late final _Translations$bootstrap$en bootstrap = _Translations$bootstrap$en._(_root);
 	@override late final _Translations$recap$en recap = _Translations$recap$en._(_root);
@@ -1214,6 +1215,31 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override String get reviewNeeded => 'Our policy has changed: please review your choices.';
 	@override late final _Translations$consent$a11y$en a11y = _Translations$consent$a11y$en._(_root);
 	@override String get healthDataMorphoNote => 'Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.';
+	@override String get healthBackupNote => 'Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device.';
+}
+
+// Path: erasure
+class _Translations$erasure$en extends Translations$erasure$fr {
+	_Translations$erasure$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get section => 'My data';
+	@override String get entry => 'Erase my data';
+	@override String get entryDesc => 'Permanently delete what the app keeps about you';
+	@override String get dialogTitle => 'Erase my data?';
+	@override String get goesTitle => 'What goes';
+	@override String get goes => 'Your hiker profile (age, height, weight, walk test), your medical information sheet, your past hikes and your journal, the stages you walked, your overnight stays, your GPS tracks, your permissions and your recovery code.';
+	@override String get staysTitle => 'What stays';
+	@override String get stays => 'Your purchases: paid stages, unlocked trails, ad-free period — we do not take back what you paid for. And your display settings (language, theme, units), which say nothing about you.';
+	@override String get finalWarning => 'This is permanent: neither you nor we will be able to recover this data.';
+	@override String get confirmCheckbox => 'I have read this, and I want to erase my data';
+	@override String get confirm => 'Erase permanently';
+	@override String get cancel => 'Cancel';
+	@override String get done => 'Your data has been erased.';
+	@override String get error => 'The erasure did not complete. Try again — what is already gone does not come back.';
+	@override late final _Translations$erasure$a11y$en a11y = _Translations$erasure$a11y$en._(_root);
 }
 
 // Path: moderation
@@ -2835,6 +2861,16 @@ class _Translations$consent$a11y$en extends Translations$consent$a11y$fr {
 	@override String purposeToggle({required Object purpose, required Object state}) => '${purpose}, currently ${state}';
 	@override String get healthSection => 'Health data section, reinforced consent';
 	@override String get policyButton => 'Open the privacy policy';
+}
+
+// Path: erasure.a11y
+class _Translations$erasure$a11y$en extends Translations$erasure$a11y$fr {
+	_Translations$erasure$a11y$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get entry => 'Erase my data, opens a confirmation request';
 }
 
 // Path: moderation.reasons
@@ -5059,6 +5095,22 @@ extension on TranslationsEn {
 			'consent.a11y.healthSection' => 'Health data section, reinforced consent',
 			'consent.a11y.policyButton' => 'Open the privacy policy',
 			'consent.healthDataMorphoNote' => 'Includes your body metrics (age, height, weight) for trek feasibility. Health data, GDPR article 9, kept on device.',
+			'consent.healthBackupNote' => 'Without this permission, your medical information sheet is not backed up: you will not be able to retrieve it on another phone, nor show it to rescuers from a new device.',
+			'erasure.section' => 'My data',
+			'erasure.entry' => 'Erase my data',
+			'erasure.entryDesc' => 'Permanently delete what the app keeps about you',
+			'erasure.dialogTitle' => 'Erase my data?',
+			'erasure.goesTitle' => 'What goes',
+			'erasure.goes' => 'Your hiker profile (age, height, weight, walk test), your medical information sheet, your past hikes and your journal, the stages you walked, your overnight stays, your GPS tracks, your permissions and your recovery code.',
+			'erasure.staysTitle' => 'What stays',
+			'erasure.stays' => 'Your purchases: paid stages, unlocked trails, ad-free period — we do not take back what you paid for. And your display settings (language, theme, units), which say nothing about you.',
+			'erasure.finalWarning' => 'This is permanent: neither you nor we will be able to recover this data.',
+			'erasure.confirmCheckbox' => 'I have read this, and I want to erase my data',
+			'erasure.confirm' => 'Erase permanently',
+			'erasure.cancel' => 'Cancel',
+			'erasure.done' => 'Your data has been erased.',
+			'erasure.error' => 'The erasure did not complete. Try again — what is already gone does not come back.',
+			'erasure.a11y.entry' => 'Erase my data, opens a confirmation request',
 			'moderation.reportTitle' => 'Report this content',
 			'moderation.reportIntro' => 'Help us keep the community healthy. Tell us why this content seems unlawful. Your report will be reviewed by a moderator.',
 			'moderation.reasonLabel' => 'Reason for reporting',
@@ -5355,6 +5407,8 @@ extension on TranslationsEn {
 			'summary.stats.stages' => 'Stages',
 			'summary.stats.restDays' => 'Rest days',
 			'summary.dayByDay' => 'Day by day',
+			_ => null,
+		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'D${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Stage ${n}',
 			'summary.restDay' => 'Rest day',
@@ -5371,8 +5425,6 @@ extension on TranslationsEn {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'From ${start} to ${end}',
 			'summary.share.planning' => '--- Day-by-day plan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Rest',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'D${n}: ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planned with ${name}',
 			'summary.empty.title' => 'Set up your itinerary first',

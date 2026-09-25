@@ -112,6 +112,37 @@ void main() {
       expect(find.text(tr.consent.healthBadge), findsOneWidget);
     });
 
+    // TACHE 562 (LOT K, K3) — CE QU'ON PERD EN REFUSANT DOIT ETRE LU, PAS
+    // DEVINE.
+    //
+    // La garde de l'article 9 posee sur `HealthBackupService` refuse de
+    // sauvegarder la fiche de renseignement medical sans accord. Une garde qui
+    // refuse en silence n'est pas une information : le randonneur doit
+    // apprendre, LA OU IL REFUSE, qu'il ne pourra pas retrouver cette fiche sur
+    // un autre telephone — c'est celle qu'il montrera aux secours.
+    //
+    // AU PASSAGE, UN TEXTE ORPHELIN. `consent.healthDataMorphoNote` existait
+    // dans les cinq langues depuis le LOT 4 et n'etait AFFICHE NULLE PART : le
+    // consentement sante ne disait donc pas qu'il couvre aussi la morphologie.
+    // Meme defaut de famille qu'un commentaire annoncant une protection absente,
+    // dans l'autre sens : un texte ecrit et jamais montre.
+    testWidgets('la section sante DIT ce que le refus coute, et ce que le '
+        'consentement couvre', (tester) async {
+      SharedPreferences.setMockInitialValues(<String, Object>{});
+      await tester.pumpWidget(buildApp());
+      await tester.pumpAndSettle();
+
+      final note = find.text(tr.consent.healthBackupNote);
+      await tester.scrollUntilVisible(note, 120);
+      expect(note, findsOneWidget,
+          reason: 'le randonneur doit lire ce qu il perd en refusant');
+
+      final morpho = find.text(tr.consent.healthDataMorphoNote);
+      await tester.scrollUntilVisible(morpho, 120);
+      expect(morpho, findsOneWidget,
+          reason: 'le texte existait en cinq langues et n etait jamais affiche');
+    });
+
     testWidgets('lien politique de confidentialite present', (tester) async {
       SharedPreferences.setMockInitialValues(<String, Object>{});
       var opened = false;

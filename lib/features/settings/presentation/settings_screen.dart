@@ -10,6 +10,7 @@ import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/settings_provider.dart';
+import 'data_erasure_section.dart';
 import 'skin_selector.dart';
 
 /// Ecran des parametres complets.
@@ -61,6 +62,13 @@ class SettingsScreen extends ConsumerWidget {
 
           // --- Confidentialite et consentement (D4A-02, RGPD) ---
           _buildPrivacySection(context, theme, tr),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // --- Mes donnees : droit a l'effacement (art. 17, tache 562 K1) ---
+          // Pose JUSTE APRES la vie privee et les consentements : c'est la que
+          // le randonneur cherche ce qui touche a ses donnees. Avant cette
+          // tache, l'effacement etait implemente, prouve, et introuvable.
+          const DataErasureSection(),
           const SizedBox(height: AppTheme.spacingLg),
 
           // --- Compte & reconnexion (Finitions V1, point 4) ---

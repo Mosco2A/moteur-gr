@@ -31,6 +31,12 @@
 //      et ne portent plus que des EXCEPTIONS nommees et justifiees. Une table
 //      ou une cle nouvelle est donc effacee par defaut, jamais oubliee.
 //
+//      TACHE 562 (LOT K) — LE TROISIEME ETAGE. Deux etages ne suffisaient pas :
+//      le KEYSTORE DE L'OS portait le code de reconnexion (qui ouvre le coffre
+//      du randonneur sur un autre telephone) et la cle du coffre chiffre, tous
+//      deux hors de portee de l'effacement. Meme inversion que pour les tables
+//      et les prefs, voir [SecureKeystoreEraser].
+//
 // Aucun catch silencieux : une erreur de purge ou de suppression remonte
 // (une suppression RGPD qui echoue en silence serait une non-conformite).
 //
@@ -46,6 +52,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../features/feasibility/data/hiker_profile_repository.dart';
 import '../data/database.dart';
 import 'consent_service.dart';
+import 'secure_keystore_eraser.dart';
 
 /// Categorie de donnee soumise a une duree de conservation (retention).
 ///
@@ -147,6 +154,7 @@ class DeletionReport {
     required this.serverDeletionRequested,
     this.prefsKeysDeleted = 0,
     this.tablesWiped = 0,
+    this.secureKeysDeleted = 0,
   });
 
   /// Nombre total de lignes locales (toutes tables utilisateur) supprimees.
@@ -166,6 +174,11 @@ class DeletionReport {
   /// Nombre de tables Drift videes (derive du schema, pas d'une liste ecrite
   /// a la main).
   final int tablesWiped;
+
+  /// Nombre de cles effacees du KEYSTORE DE L'OS (tache 562, K2). Ce troisieme
+  /// etage de stockage n'etait pas touche : le code de reconnexion, qui ouvre le
+  /// coffre du randonneur sur un autre telephone, survivait a l'effacement.
+  final int secureKeysDeleted;
 }
 
 /// Signature de l'effacement de la FICHE RANDONNEUR (donnee de sante, art. 9).
@@ -192,6 +205,7 @@ class DataRetentionService {
     ServerDeletionRequest? serverDeletion,
     RetentionPolicy policy = const RetentionPolicy(),
     HikerFileEraser? hikerFileEraser,
+    SecureKeystoreErasure? secureKeystoreErasure,
     DateTime Function()? now,
   })  : _db = database,
         _prefs = prefs,
@@ -200,6 +214,8 @@ class DataRetentionService {
         _hikerFileEraser = hikerFileEraser ??
             HikerProfileRepository(db: database, prefs: prefs)
                 .eraseAllPersonalData,
+        _secureKeystoreErasure =
+            secureKeystoreErasure ?? SecureKeystoreEraser().eraseAll,
         _now = now ?? DateTime.now;
 
   final AppDatabase _db;
@@ -207,6 +223,11 @@ class DataRetentionService {
   final ServerDeletionRequest? _serverDeletion;
   final RetentionPolicy _policy;
   final HikerFileEraser _hikerFileEraser;
+
+  /// Effacement du keystore OS (tache 562, K2). JAMAIS nul : a defaut
+  /// d'injection, il est branche sur le keystore REEL. Une etape d'effacement
+  /// qu'on desactive en oubliant un parametre n'efface rien.
+  final SecureKeystoreErasure _secureKeystoreErasure;
   final DateTime Function() _now;
 
   // ---------------------------------------------------------------------------
@@ -398,6 +419,8 @@ class DataRetentionService {
   ///      schema (voir [userTables]).
   ///   4. Purge des cles SharedPreferences personnelles, DERIVEE du store reel
   ///      (consentements compris).
+  ///   5. Purge du KEYSTORE DE L'OS (tache 562, K2) : le code de reconnexion et
+  ///      la cle du coffre chiffre y vivaient hors de portee de l'effacement.
   ///
   /// Retourne un [DeletionReport] (lignes, tables, cles, statut serveur).
   ///
@@ -425,12 +448,19 @@ class DataRetentionService {
     //    consentement est un acte positif, il doit etre re-demande).
     final prefsKeysDeleted = await _wipeAllPersonalPrefs();
 
+    // 5. KEYSTORE DE L'OS : le code de reconnexion ouvre le coffre du
+    //    randonneur DEPUIS UN AUTRE TELEPHONE, et la cle du coffre dechiffre le
+    //    backup de sa fiche sante. Les laisser en place apres un effacement,
+    //    c'etait laisser la cle sur la porte.
+    final secureKeysDeleted = await _secureKeystoreErasure();
+
     return DeletionReport(
       localRowsDeleted: localRows,
       consentsCleared: true,
       serverDeletionRequested: serverRequested,
       prefsKeysDeleted: prefsKeysDeleted,
       tablesWiped: userTables.length,
+      secureKeysDeleted: secureKeysDeleted,
     );
   }
 

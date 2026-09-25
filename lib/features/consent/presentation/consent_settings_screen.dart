@@ -122,6 +122,23 @@ class ConsentSettingsScreen extends ConsumerWidget {
                         tr.consent.healthWarning,
                         style: theme.textTheme.bodySmall,
                       ),
+                      const SizedBox(height: AppTheme.spacingXs),
+                      // CE QUE LE CONSENTEMENT COUVRE (tache 562, K3). Ce texte
+                      // existait dans les cinq langues depuis le LOT 4 et
+                      // n'etait affiche nulle part : le randonneur ignorait que
+                      // l'autorisation sante porte aussi sa morphologie.
+                      Text(
+                        tr.consent.healthDataMorphoNote,
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: AppTheme.spacingXs),
+                      // CE QUE LE REFUS COUTE (tache 562, K3). La garde art. 9
+                      // posee sur le backup de la fiche medicale refuse sans
+                      // accord ; refuser en silence ne renseigne personne.
+                      Text(
+                        tr.consent.healthBackupNote,
+                        style: theme.textTheme.bodySmall,
+                      ),
                       ConsentPurposeTile(
                         purpose: ConsentPurpose.healthData,
                         granted: states[ConsentPurpose.healthData]?.granted ??

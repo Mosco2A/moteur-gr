@@ -13,6 +13,7 @@
 
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +31,10 @@ void main() {
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
     SharedPreferences.setMockInitialValues(<String, Object>{});
+    // TACHE 562 (LOT K) : l'effacement atteint desormais le KEYSTORE DE L'OS.
+    // Sans ce mock, `deleteAccountData` leve MissingPluginException — la preuve
+    // que cette etape est bien branchee, et pas seulement annoncee.
+    FlutterSecureStorage.setMockInitialValues(<String, String>{});
   });
 
   tearDown(() async {

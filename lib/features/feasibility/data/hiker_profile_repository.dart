@@ -178,6 +178,14 @@ class HikerProfileRepository {
   /// faisabilite retombe donc proprement sur son fallback, comme si rien
   /// n'avait jamais ete saisi.
   ///
+  /// LA QUATRIEME MESURE (tache 562, K2a). Le RESULTAT DU TEST DE MARCHE 6 MIN
+  /// part aussi, et il ne figure pourtant pas dans le texte affiche. Une
+  /// distance parcourue en six minutes est une MESURE DE CAPACITE PHYSIQUE : elle
+  /// releve de l'article 9 au meme titre que le poids, et elle en dit davantage.
+  /// Le perimetre suit donc la NATURE de la donnee, pas la liste des trois
+  /// champs du formulaire de saisie — sinon la prochaine mesure ajoutee a la
+  /// fiche survivra elle aussi au refus, exactement comme celle-ci l'a fait.
+  ///
   /// A ne pas confondre avec [deleteProfile] (effacement TOTAL, droit a
   /// l'effacement) : ici on retire une CATEGORIE de donnees, pas la fiche.
   Future<HikerProfile> eraseMorphology() async {
@@ -190,9 +198,12 @@ class HikerProfileRepository {
     );
     final prefs = await _preferences;
     await prefs.setString(kHikerProfilePrefsKey, json.encode(erased.toJson()));
+    // La mesure du test de marche 6 min est une donnee de sante a part entiere
+    // (capacite physique) : elle part avec la morphologie, pas apres.
+    await prefs.remove(kWalkTestResultPrefsKey);
     await _mirrorProfileToDrift(erased);
-    _log.d('[HikerProfileRepository] Morphologie effacee (consentement art. 9 '
-        'refuse ou retire)');
+    _log.d('[HikerProfileRepository] Morphologie ET test de marche effaces '
+        '(consentement art. 9 refuse ou retire)');
     return erased;
   }
 
