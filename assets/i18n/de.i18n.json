@@ -97,7 +97,6 @@
     },
     "weather": {
       "title": "Wetter heute",
-      "stub": "Das Wetter Ihrer Etappe kommt bald.",
       "unavailable": "Wetter derzeit nicht verfügbar.",
       "alertStorm": "Gewitterwarnung",
       "tempRange": "$min° / $max°"
@@ -484,7 +483,8 @@
       "referenceExplainer": "Referenzgewicht für deine Größe: {kg} kg. Die Rucksack-Obergrenze wird darauf berechnet, nicht auf deinem tatsächlichen Gewicht.",
       "referenceFallbackHeight": "Die Obergrenze deines Rucksacks wird auf deinem tatsächlichen Gewicht berechnet: für deine Größe gibt es kein veröffentlichtes Referenzgewicht, auf das man sich stützen könnte. Wir sagen es dir lieber, als dir eine falsche Zahl zu zeigen.",
       "descentAlertTitle": "Abstiege: was du trägst",
-      "descentAlertBody": "Du steigst mit {kg} kg über dem Referenzgewicht ab, Rucksack inbegriffen. Im Abstieg nimmt jeder Schritt ein Mehrfaches dieses Gewichts auf: das ist Mechanik, keine Prognose. Die Etappen mit dem größten Abstieg stehen unten.",
+      "descentAlertBody": "Zwei Gewichte gehen mit dir bergab: {pack} kg Rucksack und {above} kg über deinem Wohlfühlgewicht. Im Abstieg wirken bei jedem Schritt 3,46 mal das mitgehende Gewicht im Knie, gegenüber 2,61 in der Ebene. Nur der Rucksack lässt sich heute ändern: mach ihn leichter, das ist bei jedem Schritt weniger.",
+      "descentAlertBodyPackOnly": "Du steigst mit {pack} kg Rucksack ab. Im Abstieg wirken bei jedem Schritt 3,46 mal das mitgehende Gewicht im Knie, gegenüber 2,61 in der Ebene: mach den Rucksack leichter, das ist bei jedem Schritt weniger.",
       "descentStage": "{stage}: {loss} m Abstieg"
     },
     "ui": {
@@ -841,7 +841,6 @@
     "formula": {
       "title": "Machbarkeit für diese Tour",
       "intro": "Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.",
-      "outOfScopeNotice": "Das Gewicht deines Rucksacks fließt nicht in diese Bewertung ein, und das ist gemessen: von 0 bis 45 kg Last bewegt sich das Urteil um keine Stufe. Diese Bewertung vergleicht, was du bereits durchgehalten hast, mit dem Aufwand jeder Etappe; die Last, die du trägst, wird separat behandelt, in deinem Rucksack.",
       "ceilingLabel": "Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})",
       "stagesTitle": "Etappe für Etappe",
       "stageEffort": "${distance} km + ${elevation} m Aufstieg = ${effort} Energie-km",
@@ -975,8 +974,7 @@
     }
   },
   "goodies": {
-    "title": "Goodies-Shop",
-    "comingSoon": "Dieses Modul kommt bald. Bleiben Sie dran!"
+    "title": "Goodies-Shop"
   },
   "noData": {
     "title": "Kein Weg heruntergeladen",
@@ -1121,10 +1119,8 @@
     "objectiveTitle": "Schlüsselziel",
     "inviteSetDate": "Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.",
     "inviteFillProfile": "Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.",
-    "genericPlanNotice": "Generischer Plan: ein eigener Plan für diesen Weg kommt bald.",
     "cautionVerdictNotice": "Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.",
-    "departureTooClose": "Noch $days Tage: Plan auf die verfügbare Zeit verdichtet.",
-    "noPlan": "Trainingsplan für diesen Weg bald verfügbar."
+    "departureTooClose": "Noch $days Tage: Plan auf die verfügbare Zeit verdichtet."
   },
   "eta": {
     "title": "Geschätzte Zeit",
@@ -1752,12 +1748,6 @@
     "a11y": {
       "call": "$label anrufen",
       "website": "Website öffnen"
-    },
-    "empty": {
-      "title": "Anreise bald verfügbar",
-      "messageJoin": "Informationen zur Anreise nach $name folgen in Kürze.",
-      "messageLeave": "Informationen zur Abreise ab $name folgen in Kürze.",
-      "messageGeneric": "Anreiseinformationen für diesen Weg folgen in Kürze."
     }
   },
   "fireRisk": {
@@ -1841,10 +1831,6 @@
       "openDetail": "Details zu $name anzeigen",
       "call": "$label anrufen",
       "website": "Website öffnen"
-    },
-    "empty": {
-      "title": "Verpflegung bald verfügbar",
-      "message": "Geschäfte und Versorgungspunkte für diesen Weg folgen in Kürze."
     }
   },
   "summary": {
@@ -1872,10 +1858,6 @@
     "restDayTitle": "Ruhetag — T$n",
     "restDayPlace": "Ort: $place",
     "actions": {
-      "exportPdf": "ALS PDF EXPORTIEREN",
-      "exportPdfSoon": "PDF-Export bald verfügbar! Diese Funktion wird noch entwickelt.",
-      "downloadMaps": "OFFLINE-KARTEN HERUNTERLADEN",
-      "downloadMapsSoon": "Offline-Karten-Download bald verfügbar! Diese Funktion wird Teil des Wandermoduls.",
       "share": "MEINEN PLAN TEILEN"
     },
     "share": {
@@ -1900,8 +1882,6 @@
     "a11y": {
       "dayTile": "Details für Tag $day anzeigen",
       "restDayTile": "Details zum Ruhetag $day",
-      "export": "Plan als PDF exportieren",
-      "download": "Offline-Karten herunterladen",
       "share": "Meinen Plan teilen"
     }
   },
@@ -2001,7 +1981,7 @@
       "underweight": "Untergewicht",
       "normal": "Normalgewicht",
       "overweight": "Übergewicht",
-      "obese": "Adipositas"
+      "obese": "Starkes Übergewicht"
     },
     "consentTitle": "Körperdaten (DSGVO Artikel 9)",
     "consentBody": "Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
@@ -2050,7 +2030,7 @@
     "empty": "Noch keine Tour erfasst.",
     "fieldDate": "Datum",
     "fieldDays": "Anzahl Tage",
-    "fieldAvgHours": "Durchschnittliches Gehen pro Tag (Std.)",
+    "fieldAvgHours": "Gehzeit pro Tag (Std.)",
     "fieldElevation": "Gesamtanstieg (m)",
     "fieldDistance": "Gesamtdistanz (km)",
     "errorDays": "Ungültige Tageszahl (1 bis 60)",

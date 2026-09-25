@@ -106,8 +106,13 @@ class TransportScreen extends ConsumerWidget {
 /// Contenu d'un onglet transport (parite GR20 `_build*Tab`), alimente par les
 /// DONNEES ([EndpointTransport]) au lieu d'un widget hardcode par localite.
 ///
-/// Si [info] est null (sentier sans donnees pour cet endpoint/sens), affiche un
-/// fallback informatif propre (parite « ecran informatif », pas de crash).
+/// SI [info] EST NULL, L'ONGLET EST VIDE — ET IL NE PROMET RIEN (tache 552).
+/// Il portait « Transport bientot disponible » + « les informations seront
+/// ajoutees prochainement » : trois phrases qui annoncent une date que rien ne
+/// tient. Retour Chris 25/09, mot pour mot : « Tu les as, tu les a pas, si tu ne
+/// les a pas tu ne met rien ». Une donnee transport absente ne modifie aucun
+/// resultat calcule ailleurs : elle disparait, sans commentaire. Les onglets et
+/// l'AppBar restent en place (aucune exception, aucun layout casse).
 class _TransportTabView extends StatelessWidget {
   const _TransportTabView({
     super.key,
@@ -125,9 +130,9 @@ class _TransportTabView extends StatelessWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    // Fallback gracieux : aucune donnee transport disponible.
+    // Aucune donnee transport disponible : on n'affiche RIEN (tache 552).
     if (info == null || !info!.hasContent) {
-      return _TransportEmptyState(endpointName: endpointName, role: role);
+      return const SizedBox.shrink();
     }
     final data = info!;
 
@@ -461,57 +466,10 @@ class _AdviceCard extends StatelessWidget {
   }
 }
 
-/// Etat informatif quand aucune donnee transport n'est disponible (fallback
-/// gracieux — parite « ecran informatif propre », pas de crash).
-class _TransportEmptyState extends StatelessWidget {
-  const _TransportEmptyState({required this.endpointName, required this.role});
-
-  final String endpointName;
-  final TransportRole role;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Translations.of(context);
-    final theme = Theme.of(context);
-
-    final message = endpointName.isNotEmpty
-        ? (role == TransportRole.arrival
-            ? t.transport.empty.messageJoin(name: endpointName)
-            : t.transport.empty.messageLeave(name: endpointName))
-        : t.transport.empty.messageGeneric;
-
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingXl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.directions_bus_outlined,
-              size: 72,
-              color: AppTheme.grisGranite.withAlpha(80),
-            ),
-            const SizedBox(height: AppTheme.spacingLg),
-            Text(
-              t.transport.empty.title,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(color: AppTheme.grisGranite),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              message,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: AppTheme.grisGranite.withAlpha(180),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// L'ancien `_TransportEmptyState` a ete SUPPRIME (tache 552) : il n'existait que
+// pour porter « Transport bientot disponible » et ses trois variantes
+// « ... seront ajoutees prochainement ». Sans promesse a afficher, il n'a plus
+// d'objet — l'onglet rend `SizedBox.shrink()`.
 
 /// Icone Material pour une famille de mode (le domaine ne connait pas Material).
 IconData _iconFor(TransportModeKind mode) {

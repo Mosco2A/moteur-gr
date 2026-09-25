@@ -22,9 +22,20 @@
 /// LE GARDE-FOU DE REDACTION EST NON NEGOCIABLE (#7).
 /// L'IMC sert ici de REGLE GRADUEE pour convertir une taille en kilos. JAMAIS
 /// de predicteur de risque, jamais de diagnostic. Vocabulaire proscrit a
-/// l'ecran : surpoids, obesite, exces, IMC, corpulence, nanisme, pathologie.
+/// l'ecran : obesite, adipositas, exces, IMC, nanisme, pathologie.
 /// L'alerte descente parle de masse TRANSPORTEE et de charge mecanique au
 /// genou ; elle ne doit pas glisser vers « tu risques de te blesser ».
+///
+/// UN MOT A ETE TRANCHE PAR CHRIS LE 25/09 (tache 552), ET LA LISTE EN TIENT
+/// COMPTE. « Obesite » est SORTI de l'ecran : la categorie d'IMC la plus haute
+/// s'affiche « Fort surpoids » dans les cinq langues — mot pour mot : « on est
+/// pas medecin et on insulte pas les clients ». « Surpoids » n'est donc plus
+/// proscrit : c'est le mot retenu, gradue (« Surpoids » puis « Fort surpoids »),
+/// pour dire une borne de calcul sans poser de diagnostic. Le reste de la liste
+/// est intact, et l'alerte descente ne nomme toujours NI l'IMC NI le corps :
+/// elle enonce les kilos de sac et les kilos au-dessus du poids de forme, puis
+/// la charge au genou (#S23-a). NON TRANCHES, donc laisses tels quels et
+/// signales : « Maigreur » et « Corpulence normale », meme famille de libelles.
 library;
 
 import 'dart:math' as math;

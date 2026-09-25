@@ -372,31 +372,37 @@ void main() {
     });
   });
 
-  // --- Boutons d'action : stubs + partage ---------------------------------
+  // --- Boutons d'action : un seul bouton, et il marche --------------------
 
   group('boutons d\'action', () {
-    testWidgets('le stub Export PDF affiche une SnackBar « bientot »',
+    // RETOURNES PAR LA TACHE 552. Ces deux tests verrouillaient les SnackBars
+    // « Export PDF bientot disponible ! La fonctionnalite est en cours de
+    // developpement » et « Telechargement des cartes offline bientot
+    // disponible ! ». Un bouton qui n'ouvre qu'une promesse EST la promesse la
+    // plus trompeuse : il a l'air d'une fonction. Retour Chris du 25/09 : « si
+    // tu ne les a pas tu ne met rien ». Les deux boutons sont retires avec leurs
+    // libelles et leurs annonces ; on verrouille leur ABSENCE, et le fait que
+    // « Partager » — le seul qui fait vraiment quelque chose — reste la.
+    testWidgets('aucun bouton stub : ni Export PDF ni Cartes offline',
         (tester) async {
       useTallSurface(tester);
       await tester.pumpWidget(wrap(days: [walkDay(1, 1)]));
       await settle(tester);
 
-      await tester.tap(find.text(t.summary.actions.exportPdf));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
-      expect(find.text(t.summary.actions.exportPdfSoon), findsOneWidget);
-    });
-
-    testWidgets('le stub Cartes offline affiche une SnackBar « bientot »',
-        (tester) async {
-      useTallSurface(tester);
-      await tester.pumpWidget(wrap(days: [walkDay(1, 1)]));
-      await settle(tester);
-
-      await tester.tap(find.text(t.summary.actions.downloadMaps));
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 50));
-      expect(find.text(t.summary.actions.downloadMapsSoon), findsOneWidget);
+      expect(find.byIcon(Icons.picture_as_pdf), findsNothing);
+      expect(find.byIcon(Icons.download), findsNothing);
+      for (final promesse in <String>[
+        'bientôt',
+        'bientot',
+        'en cours de développement',
+        'EXPORTER EN PDF',
+        'TÉLÉCHARGER LES CARTES OFFLINE',
+      ]) {
+        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
+            reason: 'le resume promet encore « $promesse »');
+      }
+      // Le bouton qui MARCHE, lui, est toujours la.
+      expect(find.text(t.summary.actions.share), findsOneWidget);
     });
 
     testWidgets('le bouton Partager appelle share_plus avec le texte du plan',

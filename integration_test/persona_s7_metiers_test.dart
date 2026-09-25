@@ -253,16 +253,28 @@ void main() {
     // bouge PAS le verdict, ce qui est la contre-preuve de #8-a.
     exige(P, 'poids', base.stageVerdicts.isNotEmpty,
         'le verdict de reference est disponible pour la contre-preuve du sac');
-    _exigeCinqLangues('poids', (tr) => tr.feasibility.formula.outOfScopeNotice,
-        'la mention permanente « le sac n entre pas dans ce feu »');
-    exige(P, 'poids', tf.outOfScopeNotice.isNotEmpty,
-        'la mention hors-perimetre est PERMANENTE, pas conditionnelle');
-    // La moitie « saison » a disparu de la mention (#8-a) : la saison entre
-    // desormais dans le calcul, la laisser dans la phrase ferait mentir
-    // l'ecran (loi L3).
-    exige(P, 'poids', !tf.outOfScopeNotice.toLowerCase().contains('saison'),
-        'la mention ne parle PLUS de la saison : la saison entre desormais '
-        'dans le calcul, l y laisser ferait mentir l ecran');
+    // LA MENTION HORS-PERIMETRE A ETE SUPPRIMEE (tache 552). Elle disait que le
+    // sac n entre pas dans le feu : une absence qui ne change RIEN au resultat,
+    // donc du jargon interne. Ce qui est exige desormais, c est que le sac parle
+    // LA OU IL SERT — l alerte descente du Sac — et qu il y parle juste.
+    _exigeCinqLangues('poids', (tr) => tr.checklist.weight.descentAlertBody,
+        'l alerte descente qui porte desormais le poids du sac');
+    _exigeCinqLangues(
+        'poids',
+        (tr) => tr.checklist.weight.descentAlertBodyPackOnly,
+        'la variante sac seul de l alerte descente');
+    // Locale figee : le chiffre s ecrit « 3,46 » en fr/de/es/it et « 3.46 » en
+    // anglais. On lit donc la langue de base, pas la langue courante du run.
+    final alerte = AppLocale.fr.buildSync().checklist.weight.descentAlertBody;
+    exige(
+        P,
+        'poids',
+        alerte.contains('{pack}') && alerte.contains('{above}'),
+        'l alerte descente enonce les DEUX nombres SEPAREMENT (kilos de sac et '
+        'kilos au-dessus du poids de forme), plus jamais un total');
+    exige(P, 'poids', alerte.contains('3,46') && alerte.contains('2,61'),
+        'l alerte descente porte UN SEUL chiffre mecanique, et c est le chiffre '
+        'source #S23-a Kutzner 2010 (3,46 en descente contre 2,61 a plat)');
 
     // ===================================================================
     // CLOTURE

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,21 +10,27 @@ import 'package:moteur_gr/features/feasibility/presentation/trek_feasibility_scr
 import 'package:moteur_gr/features/feasibility/providers/trek_feasibility_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
-/// CE QUE LE VERDICT NE REGARDE PAS — decision Chris #100279 (21/09),
-/// MENTION COUPEE EN DEUX LE 22/09 (#8-a de la spec finale).
+/// CE QUE LE VERDICT NE REGARDE PAS — LA MENTION A ETE SUPPRIMEE (tache 552).
 ///
-/// La campagne personas a mesure sur l'appareil que le poids du sac (de 0 a
-/// 45 kg, soit 58 % du poids du corps) n'a AUCUN effet sur le verdict ni sur le
-/// plafond d'effort. StepWays est une application de securite en montagne —
-/// croire qu'un sac de 20 kg a ete pris en compte dans un feu vert est un
-/// risque reel : la mention reste, et elle est devenue PERMANENTE.
+/// CE TEST A ETE RETOURNE, PAS SUPPRIME. Il verrouillait la PRESENCE de la
+/// mention hors-perimetre sous le feu tricolore (« le poids de ton sac n'entre
+/// pas dans ce feu, et c'est mesure : de 0 a 45 kg de charge, le verdict ne
+/// bouge pas d'un cran »). Il verrouille desormais son ABSENCE — a l'ecran ET
+/// dans les cinq fichiers de traduction, pour qu'elle ne puisse pas revenir par
+/// la porte de l'i18n.
 ///
-/// LA MOITIE « SAISON » EST PARTIE, ET C'EST LE POINT DU JOUR. La saison entre
-/// desormais dans le calcul : l'ete rabote la capacite de 7 % (source mesuree),
-/// l'hiver rend le verdict NON VALIDE. Continuer a ecrire que « la saison
-/// n'entre pas dans le calcul » ferait mentir l'ecran dans l'autre sens. Ces
-/// tests verrouillent donc que la mention parle du SAC, ne parle PLUS de la
-/// saison, et existe dans les cinq langues.
+/// POURQUOI ELLE PART. Retour Chris du 25/09 : la phrase EXPLIQUE UNE ABSENCE
+/// SANS RIEN CHANGER AU RESULTAT AFFICHE. C'est le compte rendu d'un test de
+/// sensibilite interne (de 0 a 45 kg, verdict stable), pas une information de
+/// randonneur — et elle ouvrait l'ecran sur du jargon. La regle posee, qui vaut
+/// pour toute l'application : ON SE TAIT SUR CE QU'ON N'A PAS, ON PARLE DE CE
+/// QUE CA CHANGE. Une absence qui MODIFIE un resultat reste affichee — c'est le
+/// cas du bandeau hiver, qui declare le verdict non valide, et il est toujours
+/// la, verifie ci-dessous. Une simple information absente disparait.
+///
+/// LE SAC N'A PAS DISPARU POUR AUTANT : il vit la ou il sert, dans le Sac (sac
+/// conseille + alerte descente `ChecklistDescentAlert`), la ou le randonneur
+/// peut agir dessus.
 void main() {
   setUpAll(() => LocaleSettings.setLocaleRaw('fr'));
 
@@ -87,70 +96,60 @@ void main() {
     }
   }
 
-  testWidgets('la mention est affichee sous un feu ROUGE', (tester) async {
+  /// Temoin d'ecran de la mention supprimee : son icone, unique dans l'ecran
+  /// Faisabilite (`Icons.visibility_off_outlined` n'y servait qu'a elle).
+  final temoinMention = find.byIcon(Icons.visibility_off_outlined);
+
+  testWidgets('AUCUNE mention hors-perimetre sous un feu ROUGE',
+      (tester) async {
     final rouge = evaluationDure(HikerLevel.beginner);
     expect(rouge.worstStageVerdict, FeasibilityVerdict.red);
     await pumpEcran(tester, rouge);
-    expect(find.text(t.feasibility.formula.outOfScopeNotice), findsOneWidget);
+    expect(temoinMention, findsNothing);
+    // Et rien n'est venu la remplacer par une autre formulation : aucun texte
+    // de l'ecran ne parle plus de la charge mesuree hors perimetre.
+    expect(find.textContaining('45 kg'), findsNothing);
   });
 
-  testWidgets('la mention est affichee AUSSI sous un feu VERT', (tester) async {
-    // C'est le cas dangereux : un feu vert rassure, et c'est precisement la
-    // qu'il faut dire que le sac n'a pas ete compte.
+  testWidgets('AUCUNE mention hors-perimetre sous un feu VERT non plus',
+      (tester) async {
+    // C'etait le cas qu'on croyait dangereux : on pensait qu'un feu vert
+    // obligeait a dire que le sac n'avait pas ete compte. Mesure faite, cette
+    // phrase ne changeait AUCUN resultat — elle n'informait pas, elle se
+    // couvrait. Elle part aussi d'ici.
     final verte = evaluationFacile(HikerLevel.expert);
     expect(verte.worstStageVerdict, FeasibilityVerdict.green);
     await pumpEcran(tester, verte);
-    expect(find.text(t.feasibility.formula.outOfScopeNotice), findsOneWidget);
+    expect(temoinMention, findsNothing);
+    expect(find.textContaining('45 kg'), findsNothing);
   });
 
-  test('la mention nomme le SAC dans les cinq langues', () {
-    // Mots temoins par langue : la mention doit reellement parler du SAC, pas
-    // se contenter d'exister.
-    const temoins = <AppLocale, String>{
-      AppLocale.fr: 'sac',
-      AppLocale.en: 'pack',
-      AppLocale.de: 'Rucksack',
-      AppLocale.it: 'zaino',
-      AppLocale.es: 'mochila',
-    };
-    for (final entree in temoins.entries) {
-      final texte =
-          entree.key.buildSync().feasibility.formula.outOfScopeNotice;
-      expect(texte.trim(), isNotEmpty,
-          reason: '${entree.key.languageCode} : mention vide');
-      expect(texte.toLowerCase(), contains(entree.value.toLowerCase()),
-          reason: '${entree.key.languageCode} : la mention ne parle pas du '
-              'sac');
-    }
-  });
-
-  test('la mention NE PARLE PLUS de la saison : elle entre dans le calcul',
-      () {
-    // Garde-fou de non-retour (#8-a). La saison est cablee depuis le 22/09 :
-    // ete 0,93 (mesure), hiver verdict declare non valide. Reintroduire
-    // « la saison n'entre pas dans le calcul » ferait mentir l'ecran.
-    const interdits = <AppLocale, String>{
-      AppLocale.fr: 'saison',
-      AppLocale.en: 'season',
-      AppLocale.de: 'Jahreszeit',
-      AppLocale.it: 'stagione',
-      AppLocale.es: 'estaci',
-    };
-    for (final entree in interdits.entries) {
-      final texte =
-          entree.key.buildSync().feasibility.formula.outOfScopeNotice;
-      expect(texte.toLowerCase(), isNot(contains(entree.value.toLowerCase())),
-          reason: '${entree.key.languageCode} : la mention parle encore de la '
-              'saison alors que la saison entre dans le calcul');
-    }
-    // Et la saison est bien cablee, des deux cotes.
-    expect(
-      const TrekConditions(season: FeasibilitySeason.summer).heatFactor,
-      closeTo(0.93, 1e-9),
-    );
+  testWidgets('CE QUI MODIFIE un resultat, LUI, reste affiche : l hiver',
+      (tester) async {
+    // La contre-epreuve de la regle. « On se tait sur ce qu'on n'a pas, on
+    // parle de ce que ca change » n'autorise pas a tout retirer : le depart en
+    // hiver INVALIDE le verdict, donc il continue de s'afficher. Si ce test
+    // tombe en meme temps que les deux precedents, c'est qu'on a confondu
+    // « supprimer une promesse creuse » et « se taire sur un resultat ».
     expect(
       const TrekConditions(season: FeasibilitySeason.winter).isWinterDeparture,
       isTrue,
     );
+    expect(t.feasibility.formula.winterInvalid.trim(), isNotEmpty);
+  });
+
+  test('la mention a quitte les CINQ fichiers de traduction', () {
+    // GARDE-FOU DE NON-RETOUR. La cle `feasibility.formula.outOfScopeNotice`
+    // est supprimee des cinq langues : ce test lit les fichiers eux-memes, donc
+    // il tombe si quelqu'un la remet, meme sans la rebrancher a l'ecran.
+    for (final langue in <String>['fr', 'en', 'de', 'es', 'it']) {
+      final brut = File('assets/i18n/$langue.i18n.json').readAsStringSync();
+      final racine = jsonDecode(brut) as Map<String, dynamic>;
+      final formula = (racine['feasibility'] as Map<String, dynamic>)['formula']
+          as Map<String, dynamic>;
+      expect(formula.containsKey('outOfScopeNotice'), isFalse,
+          reason: '$langue : la mention hors-perimetre est revenue dans '
+              'assets/i18n/$langue.i18n.json');
+    }
   });
 }

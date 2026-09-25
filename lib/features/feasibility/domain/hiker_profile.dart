@@ -79,6 +79,13 @@ abstract class HikerProfile with _$HikerProfile {
   ///
   /// Seuils OMS : < 18.5 maigreur ; 18.5-25 normal ; 25-30 surpoids ;
   /// >= 30 obesite. Cle destinee a `t.hikerProfile.bmiCategories.*`.
+  ///
+  /// LES SEUILS SONT OMS, LES MOTS A L'ECRAN NE LE SONT PAS (tache 552). La cle
+  /// `obese` garde son nom technique — c'est une borne de calcul — mais elle
+  /// s'affiche « Fort surpoids » dans les cinq langues. Arbitrage Chris du
+  /// 25/09, mot pour mot : « tu peux mettre fort surpoids au lieu d'obesite ...
+  /// on est pas medecin et on insulte pas les clients ». Ne jamais recabler le
+  /// libelle sur le vocabulaire clinique.
   String? get bmiCategory {
     final value = bmi;
     if (value == null) return null;

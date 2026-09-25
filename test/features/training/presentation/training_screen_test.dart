@@ -117,7 +117,14 @@ void main() {
   });
 
   group('TrainingScreen — etat sans plan', () {
-    testWidgets('plan vide (aucune phase) -> message neutre', (tester) async {
+    // RETOURNE PAR LA TACHE 552. Ce test exigeait le message « Programme
+    // d'entrainement bientot disponible pour ce sentier » — une date qu'aucune
+    // ligne de code ne porte. Retour Chris du 25/09 : « si tu ne les a pas tu ne
+    // met rien ». La cle est supprimee des cinq langues, l'ecran ne promet plus
+    // rien, et ce test verrouille qu'il reste DEBOUT et MUET : aucune exception,
+    // aucune seance fantome, et aucune promesse revenue par une autre porte.
+    testWidgets('plan vide (aucune phase) -> aucune promesse, aucun crash',
+        (tester) async {
       await tester.pumpWidget(
         wrap(
           isDemo: false,
@@ -126,8 +133,17 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.text(t.training.noPlan), findsOneWidget);
       expect(find.byType(CheckboxListTile), findsNothing);
+      expect(tester.takeException(), isNull);
+      for (final promesse in <String>[
+        'bientôt',
+        'bientot',
+        'prochainement',
+        'en cours de développement',
+      ]) {
+        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
+            reason: 'l ecran sans plan promet encore « $promesse »');
+      }
     });
   });
 }

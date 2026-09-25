@@ -1643,9 +1643,6 @@ class Translations$goodies$fr {
 
 	/// fr: 'Boutique Goodies'
 	String get title => 'Boutique Goodies';
-
-	/// fr: 'Ce module arrive bientôt. Restez connecté !'
-	String get comingSoon => 'Ce module arrive bientôt. Restez connecté !';
 }
 
 // Path: noData
@@ -2006,17 +2003,11 @@ class Translations$training$fr {
 	/// fr: 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.'
 	String get inviteFillProfile => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.';
 
-	/// fr: 'Plan générique : un plan dédié à ce sentier arrive bientôt.'
-	String get genericPlanNotice => 'Plan générique : un plan dédié à ce sentier arrive bientôt.';
-
 	/// fr: 'Votre faisabilité invite à la prudence : respectez la progression et n'écourtez pas la préparation.'
 	String get cautionVerdictNotice => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.';
 
 	/// fr: 'Il reste $days jours : plan condensé sur le temps disponible.'
 	String departureTooClose({required Object days}) => 'Il reste ${days} jours : plan condensé sur le temps disponible.';
-
-	/// fr: 'Programme d'entraînement bientôt disponible pour ce sentier.'
-	String get noPlan => 'Programme d\'entraînement bientôt disponible pour ce sentier.';
 }
 
 // Path: eta
@@ -2821,7 +2812,6 @@ class Translations$transport$fr {
 	String get website => 'Site web';
 
 	late final Translations$transport$a11y$fr a11y = Translations$transport$a11y$fr.internal(_root);
-	late final Translations$transport$empty$fr empty = Translations$transport$empty$fr.internal(_root);
 }
 
 // Path: fireRisk
@@ -2948,7 +2938,6 @@ class Translations$shop$fr {
 	String get filterEmpty => 'Aucun commerce pour ce filtre.';
 
 	late final Translations$shop$a11y$fr a11y = Translations$shop$a11y$fr.internal(_root);
-	late final Translations$shop$empty$fr empty = Translations$shop$empty$fr.internal(_root);
 }
 
 // Path: summary
@@ -3369,8 +3358,8 @@ class Translations$pastHikes$fr {
 	/// fr: 'Nombre de jours'
 	String get fieldDays => 'Nombre de jours';
 
-	/// fr: 'Marche moyenne par jour (h)'
-	String get fieldAvgHours => 'Marche moyenne par jour (h)';
+	/// fr: 'Temps de marche par jour (h)'
+	String get fieldAvgHours => 'Temps de marche par jour (h)';
 
 	/// fr: 'Dénivelé + total (m)'
 	String get fieldElevation => 'Dénivelé + total (m)';
@@ -3633,9 +3622,6 @@ class Translations$hub$weather$fr {
 
 	/// fr: 'Météo du jour'
 	String get title => 'Météo du jour';
-
-	/// fr: 'La météo de votre étape arrive bientôt.'
-	String get stub => 'La météo de votre étape arrive bientôt.';
 
 	/// fr: 'Météo indisponible pour le moment.'
 	String get unavailable => 'Météo indisponible pour le moment.';
@@ -4444,8 +4430,11 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Descentes : le poids de ton sac'
 	String get descentAlertTitle => 'Descentes : le poids de ton sac';
 
-	/// fr: 'Tu descendras avec {kg} kg au-delà du poids de référence, sac compris. En descente, chaque appui encaisse plusieurs fois ce poids : c'est de la mécanique, pas un pronostic. Les étapes qui descendent le plus sont listées ci-dessous.'
-	String get descentAlertBody => 'Tu descendras avec {kg} kg au-delà du poids de référence, sac compris. En descente, chaque appui encaisse plusieurs fois ce poids : c\'est de la mécanique, pas un pronostic. Les étapes qui descendent le plus sont listées ci-dessous.';
+	/// fr: 'Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd'hui : allège-le, et c'est autant de moins à chaque appui.'
+	String get descentAlertBody => 'Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd\'hui : allège-le, et c\'est autant de moins à chaque appui.';
+
+	/// fr: 'Tu descends avec {pack} kg de sac. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat : allège le sac, et c'est autant de moins à chaque appui.'
+	String get descentAlertBodyPackOnly => 'Tu descends avec {pack} kg de sac. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat : allège le sac, et c\'est autant de moins à chaque appui.';
 
 	/// fr: '{stage} : {loss} m de descente'
 	String get descentStage => '{stage} : {loss} m de descente';
@@ -4794,9 +4783,6 @@ class Translations$feasibility$formula$fr {
 
 	/// fr: 'On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.'
 	String get intro => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.';
-
-	/// fr: 'Le poids de ton sac n'entre pas dans ce feu, et c'est mesuré : de 0 à 45 kg de charge, le verdict ne bouge pas d'un cran. Ce feu compare ce que tu as déjà tenu à l'effort de chaque étape ; la charge de ton sac est traitée à part, dans ton sac.'
-	String get outOfScopeNotice => 'Le poids de ton sac n\'entre pas dans ce feu, et c\'est mesuré : de 0 à 45 kg de charge, le verdict ne bouge pas d\'un cran. Ce feu compare ce que tu as déjà tenu à l\'effort de chaque étape ; la charge de ton sac est traitée à part, dans ton sac.';
 
 	/// fr: 'Plafond conseillé : ${value} km-énergie/jour (${level})'
 	String ceilingLabel({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})';
@@ -6264,27 +6250,6 @@ class Translations$transport$a11y$fr {
 	String get website => 'Ouvrir le site web';
 }
 
-// Path: transport.empty
-class Translations$transport$empty$fr {
-	Translations$transport$empty$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Transport bientôt disponible'
-	String get title => 'Transport bientôt disponible';
-
-	/// fr: 'Les informations pour rejoindre $name seront ajoutées prochainement.'
-	String messageJoin({required Object name}) => 'Les informations pour rejoindre ${name} seront ajoutées prochainement.';
-
-	/// fr: 'Les informations pour repartir de $name seront ajoutées prochainement.'
-	String messageLeave({required Object name}) => 'Les informations pour repartir de ${name} seront ajoutées prochainement.';
-
-	/// fr: 'Les informations de transport de ce sentier seront ajoutées prochainement.'
-	String get messageGeneric => 'Les informations de transport de ce sentier seront ajoutées prochainement.';
-}
-
 // Path: fireRisk.update
 class Translations$fireRisk$update$fr {
 	Translations$fireRisk$update$fr.internal(this._root);
@@ -6456,21 +6421,6 @@ class Translations$shop$a11y$fr {
 	String get website => 'Ouvrir le site web';
 }
 
-// Path: shop.empty
-class Translations$shop$empty$fr {
-	Translations$shop$empty$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Ravitaillement bientôt disponible'
-	String get title => 'Ravitaillement bientôt disponible';
-
-	/// fr: 'Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement.'
-	String get message => 'Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement.';
-}
-
 // Path: summary.stats
 class Translations$summary$stats$fr {
 	Translations$summary$stats$fr.internal(this._root);
@@ -6508,18 +6458,6 @@ class Translations$summary$actions$fr {
 	final Translations _root; // ignore: unused_field
 
 	// Translations
-
-	/// fr: 'EXPORTER EN PDF'
-	String get exportPdf => 'EXPORTER EN PDF';
-
-	/// fr: 'Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.'
-	String get exportPdfSoon => 'Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.';
-
-	/// fr: 'TÉLÉCHARGER LES CARTES OFFLINE'
-	String get downloadMaps => 'TÉLÉCHARGER LES CARTES OFFLINE';
-
-	/// fr: 'Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.'
-	String get downloadMapsSoon => 'Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.';
 
 	/// fr: 'PARTAGER MON PLAN'
 	String get share => 'PARTAGER MON PLAN';
@@ -6601,12 +6539,6 @@ class Translations$summary$a11y$fr {
 
 	/// fr: 'Détails du jour de repos $day'
 	String restDayTile({required Object day}) => 'Détails du jour de repos ${day}';
-
-	/// fr: 'Exporter le plan en PDF'
-	String get export => 'Exporter le plan en PDF';
-
-	/// fr: 'Télécharger les cartes hors ligne'
-	String get download => 'Télécharger les cartes hors ligne';
 
 	/// fr: 'Partager mon plan'
 	String get share => 'Partager mon plan';
@@ -6710,8 +6642,8 @@ class Translations$hikerProfile$bmiCategories$fr {
 	/// fr: 'Surpoids'
 	String get overweight => 'Surpoids';
 
-	/// fr: 'Obésité'
-	String get obese => 'Obésité';
+	/// fr: 'Fort surpoids'
+	String get obese => 'Fort surpoids';
 }
 
 // Path: walkTest.levels
@@ -7403,7 +7335,6 @@ extension on Translations {
 			'hub.trekCard.plan' => 'Planifier ma randonnée',
 			'hub.trekCard.completedTitle' => 'Trek terminé',
 			'hub.weather.title' => 'Météo du jour',
-			'hub.weather.stub' => 'La météo de votre étape arrive bientôt.',
 			'hub.weather.unavailable' => 'Météo indisponible pour le moment.',
 			'hub.weather.alertStorm' => 'Alerte orage',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
@@ -7740,7 +7671,8 @@ extension on Translations {
 			'checklist.weight.referenceExplainer' => 'Poids de référence pour ta taille : {kg} kg. Le plafond du sac est calculé sur lui, pas sur ton poids réel.',
 			'checklist.weight.referenceFallbackHeight' => 'Le plafond de ton sac est calculé sur ton poids réel : pour ta taille, il n\'existe pas de poids de référence publié sur lequel s\'appuyer. On préfère te le dire plutôt que t\'afficher un chiffre faux.',
 			'checklist.weight.descentAlertTitle' => 'Descentes : le poids de ton sac',
-			'checklist.weight.descentAlertBody' => 'Tu descendras avec {kg} kg au-delà du poids de référence, sac compris. En descente, chaque appui encaisse plusieurs fois ce poids : c\'est de la mécanique, pas un pronostic. Les étapes qui descendent le plus sont listées ci-dessous.',
+			'checklist.weight.descentAlertBody' => 'Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd\'hui : allège-le, et c\'est autant de moins à chaque appui.',
+			'checklist.weight.descentAlertBodyPackOnly' => 'Tu descends avec {pack} kg de sac. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat : allège le sac, et c\'est autant de moins à chaque appui.',
 			'checklist.weight.descentStage' => '{stage} : {loss} m de descente',
 			'checklist.ui.title' => 'Matériel & Sac',
 			'checklist.ui.requirementRequired' => 'Obligatoire',
@@ -8053,7 +7985,6 @@ extension on Translations {
 			'feasibility.gaps.effort' => 'Effort global (IBP) supérieur à votre expérience',
 			'feasibility.formula.title' => 'Faisabilité pour ce trek',
 			'feasibility.formula.intro' => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.',
-			'feasibility.formula.outOfScopeNotice' => 'Le poids de ton sac n\'entre pas dans ce feu, et c\'est mesuré : de 0 à 45 kg de charge, le verdict ne bouge pas d\'un cran. Ce feu compare ce que tu as déjà tenu à l\'effort de chaque étape ; la charge de ton sac est traitée à part, dans ton sac.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})',
 			'feasibility.formula.stagesTitle' => 'Étape par étape',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-énergie',
@@ -8171,7 +8102,6 @@ extension on Translations {
 			'tips.themes.nature' => 'Nature',
 			'tips.themes.other' => 'Divers',
 			'goodies.title' => 'Boutique Goodies',
-			'goodies.comingSoon' => 'Ce module arrive bientôt. Restez connecté !',
 			'noData.title' => 'Aucun sentier téléchargé',
 			'noData.subtitle' => 'Téléchargez un sentier pour commencer',
 			'noData.offlineHint' => 'Les données seront disponibles hors ligne pour votre randonnée.',
@@ -8282,10 +8212,8 @@ extension on Translations {
 			'training.objectiveTitle' => 'Objectif clé',
 			'training.inviteSetDate' => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.',
 			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
-			'training.genericPlanNotice' => 'Plan générique : un plan dédié à ce sentier arrive bientôt.',
 			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
 			'training.departureTooClose' => ({required Object days}) => 'Il reste ${days} jours : plan condensé sur le temps disponible.',
-			'training.noPlan' => 'Programme d\'entraînement bientôt disponible pour ce sentier.',
 			'eta.title' => 'Temps estimé',
 			'eta.toNextWaypoint' => 'Prochain point',
 			'eta.toStageEnd' => 'Fin d\'étape',
@@ -8343,12 +8271,12 @@ extension on Translations {
 			'gamification.defi.noDefi' => 'Aucun défi en cours pour le moment.',
 			'shareVisibility.title' => 'Partage et visibilité',
 			'shareVisibility.intro' => 'Par défaut, rien n\'est partagé. Active ci-dessous, finalité par finalité, ce que tu veux rendre visible.',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.consentLink' => 'Gérer mon consentement (confidentialité)',
 			'shareVisibility.stageResults' => 'Partager mes résultats d\'étape',
 			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
 			'shareVisibility.leaderboard' => 'Apparaître dans les classements',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
@@ -8740,10 +8668,6 @@ extension on Translations {
 			'transport.website' => 'Site web',
 			'transport.a11y.call' => ({required Object label}) => 'Appeler ${label}',
 			'transport.a11y.website' => 'Ouvrir le site web',
-			'transport.empty.title' => 'Transport bientôt disponible',
-			'transport.empty.messageJoin' => ({required Object name}) => 'Les informations pour rejoindre ${name} seront ajoutées prochainement.',
-			'transport.empty.messageLeave' => ({required Object name}) => 'Les informations pour repartir de ${name} seront ajoutées prochainement.',
-			'transport.empty.messageGeneric' => 'Les informations de transport de ce sentier seront ajoutées prochainement.',
 			'fireRisk.title' => 'Risque incendie',
 			'fireRisk.refresh' => 'Actualiser',
 			'fireRisk.refreshed' => 'Données mises à jour',
@@ -8805,8 +8729,6 @@ extension on Translations {
 			'shop.a11y.openDetail' => ({required Object name}) => 'Voir le détail de ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Appeler ${label}',
 			'shop.a11y.website' => 'Ouvrir le site web',
-			'shop.empty.title' => 'Ravitaillement bientôt disponible',
-			'shop.empty.message' => 'Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement.',
 			'summary.title' => 'Résumé du plan',
 			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
 			'summary.direction' => 'Direction',
@@ -8828,10 +8750,6 @@ extension on Translations {
 			'summary.restDay' => 'Jour de repos',
 			'summary.restDayTitle' => ({required Object n}) => 'Jour de repos — J${n}',
 			'summary.restDayPlace' => ({required Object place}) => 'Lieu : ${place}',
-			'summary.actions.exportPdf' => 'EXPORTER EN PDF',
-			'summary.actions.exportPdfSoon' => 'Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.',
-			'summary.actions.downloadMaps' => 'TÉLÉCHARGER LES CARTES OFFLINE',
-			'summary.actions.downloadMapsSoon' => 'Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.',
 			'summary.actions.share' => 'PARTAGER MON PLAN',
 			'summary.share.titleLine' => ({required Object name}) => 'Mon ${name}',
 			'summary.share.walkDays' => ({required Object days}) => '${days} jours de marche',
@@ -8850,15 +8768,11 @@ extension on Translations {
 			'summary.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Voir le détail du jour ${day}',
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Détails du jour de repos ${day}',
-			'summary.a11y.export' => 'Exporter le plan en PDF',
-			'summary.a11y.download' => 'Télécharger les cartes hors ligne',
 			'summary.a11y.share' => 'Partager mon plan',
 			'import.title' => 'Importer un GPX',
 			'import.headerTitle' => 'Importer un fichier GPX',
 			'import.headerBody' => 'Importez une trace GPS enregistrée avec une autre application (Strava, Garmin, etc.) pour générer votre récapitulatif.',
 			'import.pickButton' => 'CHOISIR UN FICHIER GPX',
-			_ => null,
-		} ?? switch (path) {
 			'import.traceSection' => 'Trace importée',
 			'import.statsSection' => 'Statistiques',
 			'import.statDistance' => 'Distance',
@@ -8875,6 +8789,8 @@ extension on Translations {
 			'import.warningsSection' => 'Avertissements',
 			'import.warningOutOfBounds' => '{count} point(s) hors zone ignorés.',
 			'import.warningOffTrail' => '{percent}% des points sont éloignés de la trace du sentier.',
+			_ => null,
+		} ?? switch (path) {
 			'import.invalidTooFewPoints' => 'Fichier GPX insuffisant : {count} points (minimum 10).',
 			'import.invalidOutOfBounds' => 'La trace ne correspond pas à la zone de ce sentier.',
 			'import.errorUnreadable' => 'Impossible de lire le fichier.',
@@ -8935,7 +8851,7 @@ extension on Translations {
 			'hikerProfile.bmiCategories.underweight' => 'Maigreur',
 			'hikerProfile.bmiCategories.normal' => 'Corpulence normale',
 			'hikerProfile.bmiCategories.overweight' => 'Surpoids',
-			'hikerProfile.bmiCategories.obese' => 'Obésité',
+			'hikerProfile.bmiCategories.obese' => 'Fort surpoids',
 			'hikerProfile.consentTitle' => 'Données de morphologie (article 9 RGPD)',
 			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilité',
@@ -8977,7 +8893,7 @@ extension on Translations {
 			'pastHikes.empty' => 'Aucune rando saisie pour l\'instant.',
 			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Nombre de jours',
-			'pastHikes.fieldAvgHours' => 'Marche moyenne par jour (h)',
+			'pastHikes.fieldAvgHours' => 'Temps de marche par jour (h)',
 			'pastHikes.fieldElevation' => 'Dénivelé + total (m)',
 			'pastHikes.fieldDistance' => 'Distance totale (km)',
 			'pastHikes.errorDays' => 'Nombre de jours invalide (1 à 60)',

@@ -52,9 +52,14 @@ class ShopScreen extends ConsumerWidget {
       // Ph5 (L6b) : AppHeader universel (back centralise pop/accueil + Android).
       // Le back custom est retire (comportement repris a l'identique).
       appBar: AppHeader(title: t.shop.title),
-      // Fallback gracieux : aucune donnee ravitaillement pour ce sentier.
+      // Aucune donnee ravitaillement pour ce sentier : on n'affiche RIEN
+      // (tache 552). L'ecran portait « Ravitaillement bientot disponible » et
+      // « les commerces ... seront ajoutes prochainement » — une date que rien
+      // ne tient. Retour Chris 25/09 : « si tu ne les a pas tu ne met rien ».
+      // Un commerce absent ne modifie aucun resultat calcule ailleurs, donc il
+      // ne se commente pas. L'AppBar reste (retour possible, pas de crash).
       body: (data == null || !data.hasShops)
-          ? const _ShopEmptyState()
+          ? const SizedBox.shrink()
           : _ShopBody(data: data, typeFilter: typeFilter, theme: theme),
     );
   }
@@ -690,43 +695,10 @@ class _ShopFilterEmpty extends StatelessWidget {
   }
 }
 
-/// Etat informatif quand aucune donnee ravitaillement n'est disponible pour le
-/// sentier (fallback gracieux — parite « ecran informatif propre », pas de crash).
-class _ShopEmptyState extends StatelessWidget {
-  const _ShopEmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final t = Translations.of(context);
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingXl),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.shopping_cart_outlined,
-                size: 72, color: AppTheme.grisGranite.withAlpha(80)),
-            const SizedBox(height: AppTheme.spacingLg),
-            Text(
-              t.shop.empty.title,
-              style: theme.textTheme.titleLarge
-                  ?.copyWith(color: AppTheme.grisGranite),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: AppTheme.spacingSm),
-            Text(
-              t.shop.empty.message,
-              style: theme.textTheme.bodyMedium
-                  ?.copyWith(color: AppTheme.grisGranite.withAlpha(180)),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// L'ancien `_ShopEmptyState` a ete SUPPRIME (tache 552) : il n'existait que pour
+// porter « Ravitaillement bientot disponible » et « ... seront ajoutes
+// prochainement ». Sans promesse a afficher, il n'a plus d'objet — le corps de
+// l'ecran rend `SizedBox.shrink()`.
 
 // --- Helpers (le domaine ne connait pas Material) ---------------------------
 

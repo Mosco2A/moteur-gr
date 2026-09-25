@@ -369,7 +369,13 @@ void main() {
   // --- Fallback sans donnees -----------------------------------------------
 
   group('fallback sans donnees transport', () {
-    testWidgets('sentier sans donnees : etat informatif propre, pas de crash',
+    // RETOURNE PAR LA TACHE 552. Ce test exigeait l'etat vide « Transport
+    // bientot disponible » + « les informations seront ajoutees
+    // prochainement ». Retour Chris du 25/09 : « Tu les as, tu les a pas, si tu
+    // ne les a pas tu ne met rien ». Les quatre cles sont supprimees des cinq
+    // langues. Ce qui reste exige : l'ecran tient debout, les onglets sont la,
+    // et AUCUNE promesse ne s'affiche.
+    testWidgets('sentier sans donnees : rien de promis, pas de crash',
         (tester) async {
       // Endpoints resolus (etapes presentes) mais AUCUNE donnee transport.
       await tester.pumpWidget(
@@ -379,8 +385,15 @@ void main() {
 
       // Les onglets restent presents (titres d'endpoints resolus).
       expect(find.text(t.transport.tabJoinNamed(name: 'Alpha')), findsOneWidget);
-      // Le corps affiche l'etat vide (titre generique « bientot disponible »).
-      expect(find.text(t.transport.empty.title), findsWidgets);
+      // Le corps ne dit RIEN — ni titre d'attente, ni date promise.
+      for (final promesse in <String>[
+        'bientôt',
+        'bientot',
+        'prochainement',
+      ]) {
+        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
+            reason: 'l onglet transport vide promet encore « $promesse »');
+      }
       // Aucune exception de layout/plugin n'a ete levee.
       expect(tester.takeException(), isNull);
     });
