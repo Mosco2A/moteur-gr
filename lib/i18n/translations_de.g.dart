@@ -785,6 +785,8 @@ class _Translations$tips$de extends Translations$tips$fr {
 	@override String get priorityHigh => 'Hohe Priorität';
 	@override String get scope => 'Wanderweg';
 	@override String get season => 'Saison';
+	@override String get scopeAll => 'Alle Wege';
+	@override late final _Translations$tips$seasons$de seasons = _Translations$tips$seasons$de._(_root);
 	@override String get altitude => 'Min. Höhe';
 	@override String get screenTitle => 'Ratgeber';
 	@override String get screenIntro => 'Alles für eine gelungene Wanderung';
@@ -2374,6 +2376,20 @@ class _Translations$feasibility$flow$de extends Translations$feasibility$flow$fr
 	@override String get missingWalkTestNote => 'Der 6-Minuten-Test bleibt optional: ohne ihn wird dein Ergebnis als vorläufig angezeigt.';
 	@override String get hintBlocked => 'Vervollständige die Kriterien oben: dort entscheidet sich dein Urteil.';
 	@override String get hintReady => 'Alles da: du kannst dein Ergebnis ansehen.';
+}
+
+// Path: tips.seasons
+class _Translations$tips$seasons$de extends Translations$tips$seasons$fr {
+	_Translations$tips$seasons$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get all => 'Ganzjährig';
+	@override String get winter => 'Winter';
+	@override String get spring => 'Frühling';
+	@override String get summer => 'Sommer';
+	@override String get autumn => 'Herbst';
 }
 
 // Path: tips.themes
@@ -4684,6 +4700,12 @@ extension on TranslationsDe {
 			'tips.priorityHigh' => 'Hohe Priorität',
 			'tips.scope' => 'Wanderweg',
 			'tips.season' => 'Saison',
+			'tips.scopeAll' => 'Alle Wege',
+			'tips.seasons.all' => 'Ganzjährig',
+			'tips.seasons.winter' => 'Winter',
+			'tips.seasons.spring' => 'Frühling',
+			'tips.seasons.summer' => 'Sommer',
+			'tips.seasons.autumn' => 'Herbst',
 			'tips.altitude' => 'Min. Höhe',
 			'tips.screenTitle' => 'Ratgeber',
 			'tips.screenIntro' => 'Alles für eine gelungene Wanderung',
@@ -4846,14 +4868,14 @@ extension on TranslationsDe {
 			'social.activityDefi' => 'hat bei einer Challenge Fortschritte gemacht',
 			'gamification.galleryTitle' => 'Meine Abzeichen',
 			'gamification.obtained' => 'Erhalten',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.locked' => 'Gesperrt',
 			'gamification.tierDebutant' => 'Anfänger',
 			'gamification.tierExpert' => 'Experte',
 			'gamification.badge.firstStage.titre' => 'Erste Etappe',
 			'gamification.badge.firstStage.description' => 'Du hast deine erste Etappe abgeschlossen.',
 			'gamification.badge.firstTrek.titre' => 'Erster Trek',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.badge.firstTrek.description' => 'Du hast deinen ersten vollständigen Trek beendet.',
 			'gamification.badge.firstSegment.titre' => 'Erstes Segment',
 			'gamification.badge.firstSegment.description' => 'Du hast dein erstes Segment absolviert.',
@@ -5360,14 +5382,14 @@ extension on TranslationsDe {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Vom ${start} bis ${end}',
 			'summary.share.planning' => '--- Tagesplan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'T${n}: Ruhetag',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'T${n}: ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Geplant mit ${name}',
 			'summary.empty.title' => 'Richten Sie zuerst Ihre Route ein',
 			'summary.empty.message' => 'Wählen Sie Ihre Route und Dauer, um die Planübersicht zu sehen.',
 			'summary.empty.action' => 'ROUTE EINRICHTEN',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Details für Tag ${day} anzeigen',
-			_ => null,
-		} ?? switch (path) {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Details zum Ruhetag ${day}',
 			'summary.a11y.share' => 'Meinen Plan teilen',
 			'import.title' => 'GPX importieren',

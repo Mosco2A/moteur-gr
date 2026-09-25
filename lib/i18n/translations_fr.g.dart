@@ -1617,6 +1617,11 @@ class Translations$tips$fr {
 	/// fr: 'Saison'
 	String get season => 'Saison';
 
+	/// fr: 'Tous les sentiers'
+	String get scopeAll => 'Tous les sentiers';
+
+	late final Translations$tips$seasons$fr seasons = Translations$tips$seasons$fr.internal(_root);
+
 	/// fr: 'Altitude min.'
 	String get altitude => 'Altitude min.';
 
@@ -5043,6 +5048,30 @@ class Translations$feasibility$flow$fr {
 	String get hintReady => 'Tout y est : tu peux voir ton résultat.';
 }
 
+// Path: tips.seasons
+class Translations$tips$seasons$fr {
+	Translations$tips$seasons$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Toute l'année'
+	String get all => 'Toute l\'année';
+
+	/// fr: 'Hiver'
+	String get winter => 'Hiver';
+
+	/// fr: 'Printemps'
+	String get spring => 'Printemps';
+
+	/// fr: 'Été'
+	String get summer => 'Été';
+
+	/// fr: 'Automne'
+	String get autumn => 'Automne';
+}
+
 // Path: tips.themes
 class Translations$tips$themes$fr {
 	Translations$tips$themes$fr.internal(this._root);
@@ -8198,6 +8227,12 @@ extension on Translations {
 			'tips.priorityHigh' => 'Priorité haute',
 			'tips.scope' => 'Sentier',
 			'tips.season' => 'Saison',
+			'tips.scopeAll' => 'Tous les sentiers',
+			'tips.seasons.all' => 'Toute l\'année',
+			'tips.seasons.winter' => 'Hiver',
+			'tips.seasons.spring' => 'Printemps',
+			'tips.seasons.summer' => 'Été',
+			'tips.seasons.autumn' => 'Automne',
 			'tips.altitude' => 'Altitude min.',
 			'tips.screenTitle' => 'Fiches conseils',
 			'tips.screenIntro' => 'Tout savoir pour réussir votre randonnée',
@@ -8360,14 +8395,14 @@ extension on Translations {
 			'social.activityDefi' => 'a progressé dans un défi',
 			'gamification.galleryTitle' => 'Mes badges',
 			'gamification.obtained' => 'Obtenu',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.locked' => 'Verrouillé',
 			'gamification.tierDebutant' => 'Débutant',
 			'gamification.tierExpert' => 'Expert',
 			'gamification.badge.firstStage.titre' => 'Première étape',
 			'gamification.badge.firstStage.description' => 'Tu as terminé ta première étape.',
 			'gamification.badge.firstTrek.titre' => 'Première randonnée',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.badge.firstTrek.description' => 'Tu as bouclé ta première randonnée complète.',
 			'gamification.badge.firstSegment.titre' => 'Premier segment',
 			'gamification.badge.firstSegment.description' => 'Tu as parcouru ton premier segment.',
@@ -8874,14 +8909,14 @@ extension on Translations {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Du ${start} au ${end}',
 			'summary.share.planning' => '--- Planning jour par jour ---',
 			'summary.share.dayRest' => ({required Object n}) => 'J${n} : Repos',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'J${n} : ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planifié avec ${name}',
 			'summary.empty.title' => 'Configurez d\'abord votre itinéraire',
 			'summary.empty.message' => 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.',
 			'summary.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Voir le détail du jour ${day}',
-			_ => null,
-		} ?? switch (path) {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Détails du jour de repos ${day}',
 			'summary.a11y.share' => 'Partager mon plan',
 			'import.title' => 'Importer un GPX',

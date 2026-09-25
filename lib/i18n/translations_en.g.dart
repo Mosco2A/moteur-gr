@@ -785,6 +785,8 @@ class _Translations$tips$en extends Translations$tips$fr {
 	@override String get priorityHigh => 'High priority';
 	@override String get scope => 'Trail';
 	@override String get season => 'Season';
+	@override String get scopeAll => 'All trails';
+	@override late final _Translations$tips$seasons$en seasons = _Translations$tips$seasons$en._(_root);
 	@override String get altitude => 'Min. altitude';
 	@override String get screenTitle => 'Advice sheets';
 	@override String get screenIntro => 'Everything to make your hike a success';
@@ -2374,6 +2376,20 @@ class _Translations$feasibility$flow$en extends Translations$feasibility$flow$fr
 	@override String get missingWalkTestNote => 'The 6-minute test stays optional: without it, your result is shown as provisional.';
 	@override String get hintBlocked => 'Complete the criteria above: that is what decides your verdict.';
 	@override String get hintReady => 'All set: you can see your result.';
+}
+
+// Path: tips.seasons
+class _Translations$tips$seasons$en extends Translations$tips$seasons$fr {
+	_Translations$tips$seasons$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get all => 'All year';
+	@override String get winter => 'Winter';
+	@override String get spring => 'Spring';
+	@override String get summer => 'Summer';
+	@override String get autumn => 'Autumn';
 }
 
 // Path: tips.themes
@@ -4684,6 +4700,12 @@ extension on TranslationsEn {
 			'tips.priorityHigh' => 'High priority',
 			'tips.scope' => 'Trail',
 			'tips.season' => 'Season',
+			'tips.scopeAll' => 'All trails',
+			'tips.seasons.all' => 'All year',
+			'tips.seasons.winter' => 'Winter',
+			'tips.seasons.spring' => 'Spring',
+			'tips.seasons.summer' => 'Summer',
+			'tips.seasons.autumn' => 'Autumn',
 			'tips.altitude' => 'Min. altitude',
 			'tips.screenTitle' => 'Advice sheets',
 			'tips.screenIntro' => 'Everything to make your hike a success',
@@ -4846,14 +4868,14 @@ extension on TranslationsEn {
 			'social.activityDefi' => 'made progress on a challenge',
 			'gamification.galleryTitle' => 'My badges',
 			'gamification.obtained' => 'Earned',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.locked' => 'Locked',
 			'gamification.tierDebutant' => 'Beginner',
 			'gamification.tierExpert' => 'Expert',
 			'gamification.badge.firstStage.titre' => 'First stage',
 			'gamification.badge.firstStage.description' => 'You completed your first stage.',
 			'gamification.badge.firstTrek.titre' => 'First trek',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.badge.firstTrek.description' => 'You finished your first full trek.',
 			'gamification.badge.firstSegment.titre' => 'First segment',
 			'gamification.badge.firstSegment.description' => 'You ran your first segment.',
@@ -5360,14 +5382,14 @@ extension on TranslationsEn {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'From ${start} to ${end}',
 			'summary.share.planning' => '--- Day-by-day plan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Rest',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'D${n}: ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planned with ${name}',
 			'summary.empty.title' => 'Set up your itinerary first',
 			'summary.empty.message' => 'Choose your route and duration to see your plan summary.',
 			'summary.empty.action' => 'SET UP ITINERARY',
 			'summary.a11y.dayTile' => ({required Object day}) => 'View details for day ${day}',
-			_ => null,
-		} ?? switch (path) {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Rest day ${day} details',
 			'summary.a11y.share' => 'Share my plan',
 			'import.title' => 'Import a GPX',
