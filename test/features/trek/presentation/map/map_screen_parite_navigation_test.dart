@@ -267,6 +267,38 @@ void main() {
       // La legende nomme les types de points REELLEMENT presents sur le
       // sentier charge (ici un point d'eau), avec le libelle traduit.
       expect(find.text(t.poi.water), findsWidgets);
+
+      // TACHE 557 — CHAQUE SIGNE PORTE MAINTENANT SON EXPLICATION. A la
+      // livraison du LOT D, le guide n'affichait que des NOMS : les textes
+      // n'existaient pas encore dans les cinq langues. Ils existent (cles
+      // `map.guide.*`, tache 552) et sont branches : la ligne du point d'eau
+      // dit desormais ce sur quoi on peut compter, pas seulement « Eau ».
+      expect(
+        find.text(t.map.guide.poi.water),
+        findsOneWidget,
+        reason: 'le guide explique chaque type de point, il ne le nomme plus '
+            'seulement',
+      );
+      expect(find.text(t.map.guide.position), findsOneWidget);
+
+      // ... ET LE GUIDE EST DONC PLUS LONG QU'UN ECRAN. Les boutons vivent
+      // sous la legende des points : il faut faire defiler pour les atteindre.
+      // Sans ce defilement, la [ListView] ne CONSTRUIT pas ces lignes et le
+      // finder ne trouve rien — ce n'est pas une absence, c'est une paresse de
+      // rendu.
+      // On fait defiler jusqu'au TITRE de la section des boutons : le
+      // selecteur de calques est la ligne juste en dessous, donc les deux
+      // arrivent ensemble a l'ecran.
+      await tester.dragUntilVisible(
+        find.text(t.map.guide.buttonsTitle),
+        find.byType(ListView),
+        const Offset(0, -80),
+      );
+      await tester.pump();
+
+      // Le titre de la section est celui des BOUTONS (`map.guide.buttonsTitle`)
+      // et non plus celui du selecteur de calques, qui n'en est que le premier.
+      expect(find.text(t.map.guide.buttonsTitle), findsOneWidget);
       expect(find.text(t.map.layers), findsWidgets);
     });
 

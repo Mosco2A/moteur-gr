@@ -635,14 +635,13 @@ String localizedCountryName(BuildContext context, String code) {
 /// n'est ecrit a la main — 249 pays x 5 langues, ce sont 1245 libelles a saisir
 /// puis a maintenir, pour une donnee de reference qui ne nous appartient pas.
 ///
-/// AUCUNE CLE i18n NOUVELLE (le LOT B, tache 552, est seul proprietaire des
-/// fichiers de traduction en ce moment) : l'intitule reste
-/// `t.hikerProfile.fieldCountry` (« Pays »), et l'etat « aucun pays choisi »
-/// reutilise `t.hikerProfile.sexUnspecified` — « Non precise »,
-/// « Keine Angabe », « Sin especificar », « Non specificato », « Unspecified ».
-/// La phrase est generique et dit exactement la bonne chose ; une cle dediee
-/// serait plus propre et pourra etre introduite quand les traductions seront
-/// rendues.
+/// LA CLE DEDIEE EST BRANCHEE (tache 557). L'intitule reste
+/// `t.hikerProfile.fieldCountry` (« Pays ») ; l'etat « aucun pays choisi » lit
+/// desormais `t.hikerProfile.countryUnspecified`, la cle que le LOT B
+/// (tache 552) a creee dans les cinq langues. Elle remplace l'emprunt
+/// temporaire a `sexUnspecified` — la cle du champ SEXE : le texte affiche
+/// etait juste par hasard, mais un ecran qui lit la cle d'un autre champ finit
+/// par afficher la formulation de cet autre champ le jour ou il evolue.
 ///
 /// Le champ reste OPTIONNEL : on peut ne rien choisir, et effacer son choix.
 class _CountryField extends StatelessWidget {
@@ -720,7 +719,7 @@ class _CountryField extends StatelessWidget {
             child: Text(
               chosen
                   ? localizedCountryName(context, code)
-                  : t.hikerProfile.sexUnspecified,
+                  : t.hikerProfile.countryUnspecified,
               style: theme.textTheme.bodyLarge?.copyWith(
                 color: chosen
                     ? colors.onSurface

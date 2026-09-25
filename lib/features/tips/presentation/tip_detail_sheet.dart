@@ -1,10 +1,56 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/config/trail_catalog.dart';
 import '../../../core/theme/app_theme.dart';
+import '../../../i18n/translations.g.dart';
 import '../data/tip_category_config.dart';
 import '../domain/models/tip_card.dart';
 import 'tip_carousel.dart';
 import 'tip_points_list.dart';
+
+/// Nom LISIBLE du sentier couvert par une fiche conseil (tâche 557).
+///
+/// CE QUI S'AFFICHAIT AVANT : la valeur brute du champ — « all », puis
+/// « mare_a_mare ». Un identifiant technique, sous un intitulé « Sentier »,
+/// dans une langue quelconque.
+///
+/// CE QUI S'AFFICHE MAINTENANT : « Tous les sentiers » (`t.tips.scopeAll`,
+/// traduite par la tâche 552) quand la fiche vaut pour tout le monde, et sinon
+/// LE NOM DU SENTIER que l'application connaît déjà — [TrailCatalog] porte le
+/// `displayName` de chaque sentier du catalogue, aucun nom n'est réécrit ici.
+///
+/// Repli assumé sur la valeur brute pour un sentier hors catalogue : mieux vaut
+/// l'identifiant que le nom d'un AUTRE sentier ou une case vide.
+String tipScopeLabel(String scope) {
+  final normalized = scope.trim();
+  if (normalized.isEmpty || normalized == 'all') return t.tips.scopeAll;
+  return TrailCatalog.byId(normalized)?.displayName ?? normalized;
+}
+
+/// Saison couverte par une fiche conseil, dans la langue de l'application.
+///
+/// Même défaut que le scope : « summer » s'affichait tel quel. Les cinq valeurs
+/// du champ ont leur clé depuis la tâche 552 (`t.tips.seasons.*`). Repli sur la
+/// valeur brute pour une saison inconnue du modèle — extensible par
+/// construction ([TipCard] garde des `String`, jamais des enums).
+String tipSeasonLabel(String season) {
+  final seasons = t.tips.seasons;
+  switch (season.trim()) {
+    case '':
+    case 'all':
+      return seasons.all;
+    case 'winter':
+      return seasons.winter;
+    case 'spring':
+      return seasons.spring;
+    case 'summer':
+      return seasons.summer;
+    case 'autumn':
+      return seasons.autumn;
+    default:
+      return season;
+  }
+}
 
 /// Bottom sheet affichant le detail complet d une fiche conseil.
 ///
@@ -149,20 +195,25 @@ class TipDetailSheet extends StatelessWidget {
                 // Metadonnees (scope, season, altitude)
                 const Divider(),
                 const SizedBox(height: AppTheme.spacingSm),
+                // LES TROIS INTITULES ETAIENT ECRITS EN DUR EN FRANCAIS
+                // (« Sentier », « Saison », « Altitude min. ») : un Allemand
+                // lisait une fiche allemande sous des intitules francais. Les
+                // cles existent (`t.tips.scope`, `t.tips.season`,
+                // `t.tips.altitude`) et sont branchees ici (tache 557).
                 _MetadataRow(
                   icon: Icons.hiking,
-                  label: "Sentier",
-                  value: card.scope,
+                  label: t.tips.scope,
+                  value: tipScopeLabel(card.scope),
                 ),
                 _MetadataRow(
                   icon: Icons.calendar_today,
-                  label: "Saison",
-                  value: card.season,
+                  label: t.tips.season,
+                  value: tipSeasonLabel(card.season),
                 ),
                 if (card.minAltitudeM != null)
                   _MetadataRow(
                     icon: Icons.terrain,
-                    label: "Altitude min.",
+                    label: t.tips.altitude,
                     value: "${card.minAltitudeM} m",
                   ),
                 const SizedBox(height: AppTheme.spacingLg),

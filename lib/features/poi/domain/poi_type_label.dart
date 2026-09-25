@@ -32,7 +32,56 @@ String poiTypeLabel(String type) {
       return poiT.restaurant;
     case 'emergency':
       return poiT.emergency;
+    case 'accommodation':
+      return poiT.accommodation;
+    case 'info':
+      return poiT.info;
     default:
       return PoiTypeConfig.getStyle(type).labelKey;
+  }
+}
+
+/// EXPLICATION d'un type de POI pour le guide de la carte (tâche 557).
+///
+/// POURQUOI ELLE EST SÉPARÉE DU LIBELLÉ : le nom (« Source ») sert partout —
+/// légende, filtres, fiche. L'explication (« une source peut être à sec en
+/// été : ne comptez pas dessus sans l'avoir vérifiée ») ne sert QUE dans le
+/// guide, et elle dit ce que le nom ne dit pas : ce sur quoi on peut compter.
+/// C'est le manque que la tâche 554 avait nommé et laissé ouvert — le guide
+/// listait des noms sans explications, faute de clés traduites. Les clés
+/// existent depuis la tâche 552 (`map.guide.poi.*`, cinq langues) : les voici
+/// branchées.
+///
+/// Retourne `null` pour un type inconnu du guide : la ligne garde son nom et
+/// perd son paragraphe, plutôt que d'afficher un texte emprunté à un autre type.
+String? poiTypeGuide(String type) {
+  final guide = t.map.guide.poi;
+  switch (type) {
+    case 'water':
+      return guide.water;
+    // `refuge` et `shelter` partagent une explication : ce sont deux noms du
+    // même abri selon les sentiers, et le registre les distingue seulement par
+    // l'icône.
+    case 'refuge':
+    case 'shelter':
+      return guide.shelter;
+    case 'accommodation':
+      return guide.accommodation;
+    case 'campsite':
+      return guide.campsite;
+    case 'shop':
+      return guide.shop;
+    case 'restaurant':
+      return guide.restaurant;
+    case 'viewpoint':
+      return guide.viewpoint;
+    case 'danger':
+      return guide.danger;
+    case 'emergency':
+      return guide.emergency;
+    case 'info':
+      return guide.info;
+    default:
+      return null;
   }
 }

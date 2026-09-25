@@ -28,6 +28,37 @@ import '../../domain/models/stage.dart';
 /// garde les usages locaux inchanges.
 const Set<String> _kAccommodationPoiTypes = PoiTypeConfig.accommodationTypes;
 
+/// Nom de l'etape DANS LA LANGUE DE L'ECRAN, avec repli sur le francais.
+///
+/// POURQUOI CETTE FONCTION EST REMONTEE AU NIVEAU DU FICHIER (tache 557). La
+/// regle de localisation vivait dans une methode privee du CONTENU de l'ecran.
+/// Deux autres endroits avaient donc besoin du nom traduit sans pouvoir
+/// l'appeler, et lisaient `nameFr` sans condition :
+///
+///  1. LE TITRE DE L'APPBAR. Un Allemand lisait le nom FRANCAIS dans la barre
+///     et le nom allemand dans le corps du meme ecran, a quelques pixels les
+///     uns des autres.
+///  2. LA SOUS-LIGNE « DEPART -> ARRIVEE », quand elle est derivee du nom de
+///     l'etape faute de noms riches : les deux moities venaient du francais,
+///     donc deux localites francaises sous un titre allemand.
+///
+/// Une seule fonction, un seul repli, trois appelants : la divergence n'est
+/// plus possible par construction.
+String localizedStageName(BuildContext context, Stage stage) {
+  switch (Localizations.localeOf(context).languageCode) {
+    case 'en':
+      return stage.nameEn.isNotEmpty ? stage.nameEn : stage.nameFr;
+    case 'de':
+      return stage.nameDe.isNotEmpty ? stage.nameDe : stage.nameFr;
+    case 'it':
+      return stage.nameIt.isNotEmpty ? stage.nameIt : stage.nameFr;
+    case 'es':
+      return stage.nameEs.isNotEmpty ? stage.nameEs : stage.nameFr;
+    default:
+      return stage.nameFr;
+  }
+}
+
 /// Provider qui charge une etape par son ID (stageNumber) dans un sentier.
 ///
 /// Parametre : record (trailId, stageId) ou stageId = stageNumber.
@@ -107,7 +138,14 @@ class TrekStageDetailScreen extends ConsumerWidget {
 
     // Ph5 (L6a) : titre = nom de l'etape (fallback numero) resolu depuis le
     // provider deja observe -> plus besoin d'un Consumer imbrique pour l'AppBar.
-    final title = stageAsync.value?.nameFr ?? '${t.nav.stages} $stageId';
+    //
+    // Tache 557 : le titre lisait `nameFr` SANS CONDITION, alors que le corps
+    // du meme ecran localise ce meme nom. Il passe par [localizedStageName],
+    // le mecanisme unique.
+    final stageForTitle = stageAsync.value;
+    final title = stageForTitle == null
+        ? '${t.nav.stages} $stageId'
+        : localizedStageName(context, stageForTitle);
 
     return Scaffold(
       // Ph5 (L6a) : AppHeader universel. Ecran cœur -> barre absente (§4).
@@ -139,21 +177,12 @@ class _StageDetailContent extends ConsumerWidget {
 
   /// Retourne le nom de l'etape selon la locale courante.
   /// Fallback : nameFr si la traduction est vide.
-  String _localizedName(BuildContext context) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    switch (languageCode) {
-      case 'en':
-        return stage.nameEn.isNotEmpty ? stage.nameEn : stage.nameFr;
-      case 'de':
-        return stage.nameDe.isNotEmpty ? stage.nameDe : stage.nameFr;
-      case 'it':
-        return stage.nameIt.isNotEmpty ? stage.nameIt : stage.nameFr;
-      case 'es':
-        return stage.nameEs.isNotEmpty ? stage.nameEs : stage.nameFr;
-      default:
-        return stage.nameFr;
-    }
-  }
+  ///
+  /// Delegue a [localizedStageName] depuis la tache 557 : la regle est remontee
+  /// au fichier pour que l'AppBar et la sous-ligne « Depart -> Arrivee » la
+  /// partagent au lieu de lire `nameFr` en dur.
+  String _localizedName(BuildContext context) =>
+      localizedStageName(context, stage);
 
   /// Couple (depart, arrivee) a afficher sur la sous-ligne « Depart -> Arrivee »
   /// (parite GR20). Retourne `null` quand aucune donnee exploitable n'est
@@ -163,7 +192,7 @@ class _StageDetailContent extends ConsumerWidget {
   /// quand ils sont fournis ; (2) a defaut, on derive les deux extremites du
   /// NOM de l'etape lui-meme (convention socle « Depart — Arrivee », separateur
   /// tiret demi-cadratin ou trait d'union). Aucune localite codee en dur.
-  ({String departure, String arrival})? _departureArrival() {
+  ({String departure, String arrival})? _departureArrival(BuildContext context) {
     final dep = stage.departureName.trim();
     final arr = stage.arrivalName.trim();
     if (dep.isNotEmpty && arr.isNotEmpty) {
@@ -173,7 +202,12 @@ class _StageDetailContent extends ConsumerWidget {
     // Fallback : decouper le nom « Depart — Arrivee » (em-dash ou trait d'union
     // entoure d'espaces, pour ne pas casser un nom compose type « Guitera-les-
     // Bains »).
-    final name = stage.nameFr.trim();
+    //
+    // Tache 557 : le decoupage partait de `nameFr`, donc les deux moities
+    // etaient francaises meme en allemand. Il part desormais du nom LOCALISE —
+    // la convention « Depart — Arrivee » et le separateur sont les memes dans
+    // les cinq langues du socle de donnees.
+    final name = localizedStageName(context, stage).trim();
     final match = RegExp(r'\s+[—–-]\s+').firstMatch(name);
     if (match != null) {
       final left = name.substring(0, match.start).trim();
@@ -329,7 +363,7 @@ class _StageDetailContent extends ConsumerWidget {
                 // sentier ou derivation du nom d'etape) ; masquee proprement
                 // sinon. Icone + « Depart  ->  Arrivee » en gris (parite GR20
                 // `_StageHeader`).
-                if (_departureArrival() case final route?) ...[
+                if (_departureArrival(context) case final route?) ...[
                   const SizedBox(height: AppTheme.spacingSm),
                   _DepartureArrivalLine(
                     departure: route.departure,

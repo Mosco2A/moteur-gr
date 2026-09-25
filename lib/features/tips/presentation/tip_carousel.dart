@@ -98,7 +98,10 @@ class _CategoryChips extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: AppTheme.spacingSm),
             child: FilterChip(
-              label: const Text("Toutes"),
+              // « Toutes » etait ecrit en dur en francais alors que
+              // `t.tips.allCategories` porte le mot dans les cinq langues
+              // (tache 557, meme famille de defaut que les intitules du detail).
+              label: Text(t.tips.allCategories),
               selected: selectedCategory == null,
               onSelected: (_) => onCategorySelected(null),
               selectedColor: theme.colorScheme.primary.withAlpha(50),

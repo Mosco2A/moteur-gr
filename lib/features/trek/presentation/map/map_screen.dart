@@ -960,10 +960,16 @@ class _PlannedStageBar extends ConsumerWidget {
           const SizedBox(width: AppTheme.spacingXs),
           Expanded(
             child: Text(
-              // Phrase MAISON de l'etat « aucune rando en cours », deja
-              // traduite dans les cinq langues (carte d'accueil du HUB) : elle
-              // dit ce qui demarrera, sans inventer un texte en dur.
-              t.hub.trekCard.noTrekBody,
+              // PHRASE DEDIEE A LA BARRE D'ATTENTE (branchee tache 557). Elle
+              // lisait `t.hub.trekCard.noTrekBody` — la phrase de la carte
+              // d'accueil du HUB, ecrite pour un cockpit qui propose de
+              // DEMARRER une randonnee. Ici la question n'est pas « que
+              // faire » mais « pourquoi trois cases portent un tiret ».
+              // `t.map.statsPendingNote` (creee par la tache 552, cinq
+              // langues) repond exactement a celle-la : les tirets se
+              // rempliront des que la randonnee sera lancee, ces chiffres se
+              // mesurent en marchant.
+              t.map.statsPendingNote,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: theme.colorScheme.onSurfaceVariant,
               ),
@@ -1080,7 +1086,13 @@ class _MapPhotoButtonState extends ConsumerState<_MapPhotoButton> {
             children: [
               const Icon(Icons.check_circle_outline, size: 18),
               const SizedBox(width: AppTheme.spacingSm),
-              Expanded(child: Text(t.journal.entriesOfDay)),
+              // CONFIRMATION DEDIEE (branchee tache 557) : le message lisait
+              // `t.journal.entriesOfDay` — « Entrees du jour », un TITRE de
+              // section du journal. Il servait de confirmation faute de mieux,
+              // et ne disait pas ce qui venait de se passer.
+              // `t.journal.photoAdded` (tache 552, cinq langues) le dit :
+              // « Photo ajoutee au journal ».
+              Expanded(child: Text(t.journal.photoAdded)),
             ],
           ),
           action: SnackBarAction(

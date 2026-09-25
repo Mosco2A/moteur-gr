@@ -23,12 +23,21 @@ import '../providers/map_pois_provider.dart';
 ///     ([availablePoiTypesProvider]), avec l'icône et la couleur du registre
 ///     ([PoiTypeConfig]) — donc toujours exactement ce que la carte dessine.
 ///
-///  2. ELLE DIT CE QU'EST CHAQUE SIGNE, PAS UN PARAGRAPHE PAR SIGNE. Le guide
-///     de référence accompagne chaque icône d'un texte d'explication. Ces textes
-///     n'existent pas encore dans les cinq langues de StepWays, et un texte en
-///     dur est interdit ici. La légende emploie donc les libellés déjà traduits
-///     (`t.poi.*`, `t.a11y.*`, `t.map.*`) : elle est juste dans les cinq
-///     langues, et prête à recevoir les paragraphes quand les clés existeront.
+///  2. CHAQUE SIGNE A MAINTENANT SON EXPLICATION (branchée tâche 557). À la
+///     livraison de la tâche 554, le guide n'affichait que des NOMS : les textes
+///     d'explication n'existaient pas encore dans les cinq langues, et un texte
+///     en dur est interdit ici. La tâche 552 a créé les clés — `map.guide.*`
+///     pour les signes et les boutons, `map.guide.poi.*` pour les dix types de
+///     points — et elles sont lues ici. Chaque ligne dit donc ce qu'est le
+///     signe ET ce sur quoi on peut compter (« une source peut être à sec en
+///     été »), ce qu'un nom seul ne disait pas.
+///
+///     Les descriptions EMPRUNTÉES à d'autres écrans ont disparu avec ce
+///     branchement : la ligne photo ne lit plus le sous-titre de la carte
+///     Journal du hub, la ligne SOS ne lit plus le corps de l'écran d'urgence,
+///     la ligne « étape en cours » ne lit plus une phrase de distance avec un
+///     tiret en guise de chiffre, et la ligne hors-trace ne lit plus le titre
+///     d'une notification.
 Future<void> showMapGuideSheet(BuildContext context, String trailId) {
   return showModalBottomSheet<void>(
     context: context,
@@ -96,6 +105,7 @@ class _MapGuideSheet extends ConsumerWidget {
                     icon: Icons.my_location,
                     color: scheme.primary,
                     label: t.a11y.userPosition,
+                    description: t.map.guide.position,
                   ),
                   // Le tracé du sentier : c'est l'itinéraire, dessiné dans la
                   // couleur du sentier courant (jamais un rouge en dur comme
@@ -104,6 +114,7 @@ class _MapGuideSheet extends ConsumerWidget {
                     icon: Icons.timeline,
                     color: scheme.primary,
                     label: t.itinerary.title,
+                    description: t.map.guide.track,
                   ),
                   if (sortedTypes.isNotEmpty) ...[
                     const SizedBox(height: AppTheme.spacingSm),
@@ -113,12 +124,19 @@ class _MapGuideSheet extends ConsumerWidget {
                         icon: PoiTypeConfig.getStyle(type).icon,
                         color: PoiTypeConfig.getStyle(type).color,
                         label: poiTypeLabel(type),
+                        description: poiTypeGuide(type),
                       ),
                   ],
 
                   // --- Les boutons de la carte ---
+                  //
+                  // TITRE DÉDIÉ (tâche 557) : la section s'intitulait
+                  // `t.map.layersTitle` — « Fonds de carte » —, le titre du
+                  // sélecteur de calques. Elle énumère les BOUTONS, dont le
+                  // sélecteur de calques n'est que le premier. Elle lit
+                  // maintenant `t.map.guide.buttonsTitle` (« Boutons »).
                   const SizedBox(height: AppTheme.spacingSm),
-                  _GuideSection(title: t.map.layersTitle),
+                  _GuideSection(title: t.map.guide.buttonsTitle),
                   _GuideRow(
                     icon: Icons.layers,
                     color: scheme.primary,
@@ -129,18 +147,19 @@ class _MapGuideSheet extends ConsumerWidget {
                     icon: Icons.photo_camera,
                     color: AppTheme.orangeDifficile,
                     label: t.journal.addPhoto,
-                    description: t.hub.cards.journalSub,
+                    description: t.map.guide.photo,
                   ),
                   _GuideRow(
                     icon: Icons.emergency,
                     color: AppTheme.rougeUrgence,
                     label: t.a11y.sos,
-                    description: t.sos.body,
+                    description: t.map.guide.sos,
                   ),
                   _GuideRow(
                     icon: Icons.my_location,
                     color: scheme.primary,
                     label: t.a11y.centerOnMe,
+                    description: t.map.guide.centerOnMe,
                   ),
                   _GuideRow(
                     icon: Icons.add,
@@ -160,13 +179,13 @@ class _MapGuideSheet extends ConsumerWidget {
                     icon: Icons.linear_scale,
                     color: scheme.primary,
                     label: t.nav.currentStage,
-                    description: t.map.stageRemaining(km: '—'),
+                    description: t.map.guide.currentStage,
                   ),
                   _GuideRow(
                     icon: Icons.warning_amber_rounded,
                     color: AppTheme.rougeUrgence,
                     label: t.map.offTrackChip,
-                    description: t.navAlert.offTrackNotifTitle,
+                    description: t.map.guide.offTrack,
                   ),
                   const SizedBox(height: AppTheme.spacingBase),
                   Center(
