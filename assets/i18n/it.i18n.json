@@ -181,7 +181,6 @@
     "layersSubtitle": "Scegli cosa mostrare sulla mappa",
     "stageRemaining": "$km km rimanenti",
     "offTrackChip": "Fuori traccia",
-    "statsPendingNote": "I trattini si riempiranno appena avvierai l'escursione: questi numeri si misurano camminando.",
     "guide": {
       "buttonsTitle": "Pulsanti",
       "position": "La tua posizione GPS, aggiornata camminando. Se il punto scompare, verifica che la localizzazione sia consentita all'app.",
@@ -907,6 +906,7 @@
         "balanced": "Distribuisci le tappe per uniformare lo sforzo nei giorni.",
         "optimalDays": "Punta a ${days} giorni di cammino (invece di ${current}) per restare sotto la soglia.",
         "split": "Dividi la giornata ${stage} in due: supera nettamente la tua soglia.",
+        "splitImpossible": "La giornata ${stage} resta oltre le tue capacità anche divisa in due, e non si può dividere più corta: non è più una questione di programma. Allenati, aspetta condizioni più miti o scegli un sentiero meno impegnativo.",
         "rest": "Prevedi un giorno di riposo dopo la giornata ${stages}.",
         "training": "Allénati ${weeks} settimane prima della partenza (preparazione fisica).",
         "restAdvised": "Inserisci ${days} giorno/i di riposo, dopo le giornate ${stages}: si somigliano troppo perché il corpo recuperi. È un consiglio, non cambia il tuo verdetto."
@@ -1596,6 +1596,8 @@
       "label": "Numero di giorni",
       "days": "{count} g",
       "daysWithRest": "{total} g (di cui {rest} riposo)",
+      "splitNote": "Più giorni = le giornate più dure vengono divise in due, la peggiore per prima. Il riposo non cambia la durezza di una giornata.",
+      "splitExhausted": "Tutte le giornate sono già divise al minimo: il cursore non alleggerirà più il verdetto.",
       "difficulty": {
         "comfortable": "Comodo",
         "standard": "Standard",
@@ -1661,7 +1663,7 @@
       },
       "mergeSplit": {
         "title": "Raggruppa / Dividi",
-        "body": "Unisci o dividi le tappe secondo il tuo ritmo."
+        "body": "Raggruppa unisce due giorni in uno; Dividi taglia un giorno in due — le sue tappe se erano unite, altrimenti la tappa stessa in due metà di pari sforzo. Il verdetto è fissato dalla giornata più dura: dividerla è il solo modo per alleggerirla, un giorno di riposo non cambia nulla. Una tappa divisa presuppone una sosta a metà percorso: verificate che ci sia dove dormire."
       },
       "colors": {
         "title": "Colori",
@@ -1671,7 +1673,8 @@
       "close": "Capito!"
     },
     "splitBlocked": {
-      "single": "Impossibile dividere: questa giornata ha una sola tappa",
+      "single": "Impossibile dividere: questa giornata non ha nulla da tagliare.",
+      "portion": "Impossibile dividere: questa tappa è già divisa in due.",
       "locked": "Giorno già percorso: non è più modificabile"
     },
     "reorderBlocked": "Trek avviato: l'ordine delle tappe non cambia più",

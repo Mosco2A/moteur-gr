@@ -257,7 +257,6 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get layersSubtitle => 'Choose what to show on the map';
 	@override String stageRemaining({required Object km}) => '${km} km left';
 	@override String get offTrackChip => 'Off track';
-	@override String get statsPendingNote => 'The dashes fill in as soon as you start the hike: these figures are measured while walking.';
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
 }
@@ -2924,6 +2923,8 @@ class _Translations$programme$duration$en extends Translations$programme$duratio
 	@override String get label => 'Number of days';
 	@override String get days => '{count} d';
 	@override String get daysWithRest => '{total} d (incl. {rest} rest)';
+	@override String get splitNote => 'More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.';
+	@override String get splitExhausted => 'Every day is already cut as short as it goes: the slider will not ease the verdict any further.';
 	@override late final _Translations$programme$duration$difficulty$en difficulty = _Translations$programme$duration$difficulty$en._(_root);
 }
 
@@ -3029,7 +3030,8 @@ class _Translations$programme$splitBlocked$en extends Translations$programme$spl
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Cannot split: this day has a single stage';
+	@override String get single => 'Cannot split: there is nothing to cut on this day.';
+	@override String get portion => 'Cannot split: this stage is already cut in two.';
 	@override String get locked => 'Day already walked: it can no longer be changed';
 }
 
@@ -3605,6 +3607,7 @@ class _Translations$feasibility$formula$advice$en extends Translations$feasibili
 	@override String get balanced => 'Spread the stages out to smooth the effort across the days.';
 	@override String optimalDays({required Object days, required Object current}) => 'Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.';
 	@override String split({required Object stage}) => 'Split day ${stage} in two: it clearly exceeds your ceiling.';
+	@override String splitImpossible({required Object stage}) => 'Day ${stage} stays above your capacity even cut in two, and it cannot be cut shorter: this is no longer a matter of scheduling. Train, wait for milder conditions, or pick a less demanding trail.';
 	@override String rest({required Object stages}) => 'Plan a rest day after day ${stages}.';
 	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.';
@@ -3787,7 +3790,7 @@ class _Translations$programme$info$mergeSplit$en extends Translations$programme$
 
 	// Translations
 	@override String get title => 'Merge / Split';
-	@override String get body => 'Combine or split stages to match your pace.';
+	@override String get body => 'Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep.';
 }
 
 // Path: programme.info.colors
@@ -4026,7 +4029,6 @@ extension on TranslationsEn {
 			'map.layersSubtitle' => 'Choose what to show on the map',
 			'map.stageRemaining' => ({required Object km}) => '${km} km left',
 			'map.offTrackChip' => 'Off track',
-			'map.statsPendingNote' => 'The dashes fill in as soon as you start the hike: these figures are measured while walking.',
 			'map.guide.buttonsTitle' => 'Buttons',
 			'map.guide.position' => 'Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.',
 			'map.guide.track' => 'The trail line, in its own colour. It is the reference the off-track alert uses.',
@@ -4379,9 +4381,9 @@ extension on TranslationsEn {
 			'checklist.ui.bagValidatedSnack' => 'Pack validated!',
 			'checklist.ui.validationCancelledSnack' => 'Pack validation cancelled — you can edit your gear.',
 			'checklist.ui.missingTitle' => 'Missing gear',
+			'checklist.ui.missingBody' => '{checked}/{total} required items checked.',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.missingBody' => '{checked}/{total} required items checked.',
 			'checklist.ui.missingList' => 'Missing:',
 			'checklist.ui.understood' => 'Got it',
 			'checklist.ui.validateAnyway' => 'Validate anyway',
@@ -4655,6 +4657,7 @@ extension on TranslationsEn {
 			'feasibility.formula.advice.balanced' => 'Spread the stages out to smooth the effort across the days.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.',
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Split day ${stage} in two: it clearly exceeds your ceiling.',
+			'feasibility.formula.advice.splitImpossible' => ({required Object stage}) => 'Day ${stage} stays above your capacity even cut in two, and it cannot be cut shorter: this is no longer a matter of scheduling. Train, wait for milder conditions, or pick a less demanding trail.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after day ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.',
@@ -5189,6 +5192,8 @@ extension on TranslationsEn {
 			'programme.duration.label' => 'Number of days',
 			'programme.duration.days' => '{count} d',
 			'programme.duration.daysWithRest' => '{total} d (incl. {rest} rest)',
+			'programme.duration.splitNote' => 'More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.',
+			'programme.duration.splitExhausted' => 'Every day is already cut as short as it goes: the slider will not ease the verdict any further.',
 			'programme.duration.difficulty.comfortable' => 'Comfortable',
 			'programme.duration.difficulty.standard' => 'Standard',
 			'programme.duration.difficulty.sporty' => 'Sporty',
@@ -5231,12 +5236,13 @@ extension on TranslationsEn {
 			'programme.info.rest.title' => 'Rest day',
 			'programme.info.rest.body' => 'Insert a recovery day between two stages.',
 			'programme.info.mergeSplit.title' => 'Merge / Split',
-			'programme.info.mergeSplit.body' => 'Combine or split stages to match your pace.',
+			'programme.info.mergeSplit.body' => 'Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep.',
 			'programme.info.colors.title' => 'Colours',
 			'programme.info.colors.body' => 'Green = easy, Orange = moderate, Red = hard (distance + ascent).',
 			'programme.info.note' => 'The elevation profile at the bottom shows each day\'s ascent.',
 			'programme.info.close' => 'Got it!',
-			'programme.splitBlocked.single' => 'Cannot split: this day has a single stage',
+			'programme.splitBlocked.single' => 'Cannot split: there is nothing to cut on this day.',
+			'programme.splitBlocked.portion' => 'Cannot split: this stage is already cut in two.',
 			'programme.splitBlocked.locked' => 'Day already walked: it can no longer be changed',
 			'programme.reorderBlocked' => 'Trek started: the order of stages can no longer change',
 			'programme.inTrek.title' => 'Adjust the route',
@@ -5422,6 +5428,8 @@ extension on TranslationsEn {
 			'summary.share.elevationGain' => ({required Object m}) => 'Total ascent: ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'Total descent: ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Estimated time: ~${h} h',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'From ${start} to ${end}',
 			'summary.share.planning' => '--- Day-by-day plan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Rest',

@@ -310,6 +310,41 @@ class _PlanningContent extends ConsumerWidget {
         const _DifficultyLegend(),
         Expanded(
           child: ReorderableListView.builder(
+            // TACHE 558 — CE QUE LE CURSEUR FAIT, ET CE QUE LE REPOS NE FAIT
+            // PAS, en tete de la liste des jours.
+            //
+            // Retour de Chris, mot pour mot : « si je passe a 20 jours en
+            // mettant des jours de repos ca reste rouge ». Il avait raison de
+            // s'etonner, et le silence de l'ecran etait le vrai defaut : depuis
+            // GO-61 le verdict vaut la PIRE JOURNEE et elle seule, donc ajouter
+            // du repos ne pouvait MATHEMATIQUEMENT rien y changer. Ces phrases
+            // disent quel levier agit (couper une journee) et quel levier n'agit
+            // pas (le repos), pour qu'on ne pousse plus un curseur en esperant
+            // l'effet d'un autre.
+            //
+            // DANS LE `header` DE LA LISTE, ET C'EST VOULU : pose au-dessus, en
+            // hauteur fixe, ce paragraphe faisait deborder la colonne sur un
+            // petit ecran (31 px de trop, constate en test widget). Ici il
+            // DEFILE avec les jours — aucune hauteur volee a la liste, et il
+            // reste la premiere chose qu'on lit sous le curseur.
+            header: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const _DurationNote(
+                  icon: Icons.call_split,
+                  textKey: _DurationNoteKind.split,
+                ),
+                // ET QUAND IL N'Y A PLUS RIEN A COUPER, ON LE DIT. Sans cela,
+                // le randonneur pousserait encore un curseur qui ne peut plus
+                // rien pour lui — la situation exacte ou Chris s'est retrouve.
+                if (!stats.canSplitFurther)
+                  const _DurationNote(
+                    icon: Icons.report_problem_outlined,
+                    textKey: _DurationNoteKind.exhausted,
+                    emphasis: true,
+                  ),
+              ],
+            ),
             padding: const EdgeInsets.symmetric(
               horizontal: AppTheme.spacingBase,
               vertical: AppTheme.spacingSm,
@@ -401,6 +436,62 @@ class _PlanningContent extends ConsumerWidget {
                   .regeneratePreservingRestDays();
             },
             child: Text(t.programme.replanDialog.confirm),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Les deux phrases qui expliquent le curseur (tache 558).
+enum _DurationNoteKind { split, exhausted }
+
+/// Phrase explicative posee sous le curseur de duree (tache 558).
+///
+/// Elle ne decore pas : elle repond a la question que Chris a posee en testant
+/// l'application — pourquoi le curseur ne change rien. Icone + texte, pleine
+/// largeur, jamais tronquee (le texte se replie autant qu'il le faut : un
+/// conseil qu'on ne peut pas lire en entier n'est pas un conseil).
+class _DurationNote extends StatelessWidget {
+  const _DurationNote({
+    required this.icon,
+    required this.textKey,
+    this.emphasis = false,
+  });
+
+  final IconData icon;
+  final _DurationNoteKind textKey;
+
+  /// Vrai pour l'impasse (plus rien a couper) : la phrase passe en orange
+  /// d'alerte, parce qu'elle annonce une limite et non un mode d'emploi.
+  final bool emphasis;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final color =
+        emphasis ? AppTheme.orangeDifficile : theme.colorScheme.onSurfaceVariant;
+    final text = switch (textKey) {
+      _DurationNoteKind.split => t.programme.duration.splitNote,
+      _DurationNoteKind.exhausted => t.programme.duration.splitExhausted,
+    };
+    return Padding(
+      // Aucune marge laterale : la liste qui l'accueille est deja en retrait.
+      padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 16, color: color),
+          const SizedBox(width: AppTheme.spacingXs),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: color,
+                fontWeight: emphasis ? FontWeight.w600 : null,
+                height: 1.35,
+              ),
+            ),
           ),
         ],
       ),
@@ -705,10 +796,15 @@ class _DayCard extends ConsumerWidget {
   }
 
   /// Traduit le code de blocage de SEPARER en libelle i18n (R12, LOT L9).
+  ///
+  /// `portion` est arrive avec la tache 558 : une etape deja coupee en deux ne
+  /// se recoupe pas, et il faut le DIRE — c'est different de « rien a couper ».
   String _splitBlockedLabel(String? code) {
     switch (code) {
       case 'locked':
         return t.programme.splitBlocked.locked;
+      case 'portion':
+        return t.programme.splitBlocked.portion;
       default:
         return t.programme.splitBlocked.single;
     }

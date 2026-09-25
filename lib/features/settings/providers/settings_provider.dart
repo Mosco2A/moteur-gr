@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../i18n/translations.g.dart';
@@ -87,6 +88,25 @@ abstract class AppThemeModeValues {
   static String labelFor(String mode) => labels[mode] ?? mode;
   static AppThemeMode fromString(String value) =>
       values.contains(value) ? value : fallback;
+
+  /// LE REGLAGE, TRADUIT EN [ThemeMode] FLUTTER (tache 558).
+  ///
+  /// Retour de Chris, mot pour mot : « sombrer clair ca ne fonctionne pas ».
+  /// Tout etait pourtant la — les trois choix a l'ecran, la persistance, le
+  /// theme clair construit et passe a `MaterialApp` — sauf le dernier fil :
+  /// `main.dart` ecrivait `themeMode: ThemeMode.dark` EN DUR. Le reglage
+  /// s'enregistrait, survivait au redemarrage, et n'avait aucun effet. Cette
+  /// fonction est le seul endroit ou la traduction se fait, pour qu'il n'y ait
+  /// jamais deux tables de correspondance qui divergent.
+  ///
+  /// `system` suit le telephone. Une valeur inconnue retombe sur le defaut du
+  /// produit ([fallback] = sombre), jamais sur une supposition.
+  static ThemeMode toThemeMode(AppThemeMode mode) => switch (mode) {
+        light => ThemeMode.light,
+        system => ThemeMode.system,
+        dark => ThemeMode.dark,
+        _ => ThemeMode.dark,
+      };
 }
 
 /// Main dominante (lateralite) — ergonomie thumb zone (nav V2, R9/R10).

@@ -181,7 +181,6 @@
     "layersSubtitle": "Choose what to show on the map",
     "stageRemaining": "$km km left",
     "offTrackChip": "Off track",
-    "statsPendingNote": "The dashes fill in as soon as you start the hike: these figures are measured while walking.",
     "guide": {
       "buttonsTitle": "Buttons",
       "position": "Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.",
@@ -907,6 +906,7 @@
         "balanced": "Spread the stages out to smooth the effort across the days.",
         "optimalDays": "Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.",
         "split": "Split day ${stage} in two: it clearly exceeds your ceiling.",
+        "splitImpossible": "Day ${stage} stays above your capacity even cut in two, and it cannot be cut shorter: this is no longer a matter of scheduling. Train, wait for milder conditions, or pick a less demanding trail.",
         "rest": "Plan a rest day after day ${stages}.",
         "training": "Train for ${weeks} weeks before departure (physical preparation).",
         "restAdvised": "Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict."
@@ -1596,6 +1596,8 @@
       "label": "Number of days",
       "days": "{count} d",
       "daysWithRest": "{total} d (incl. {rest} rest)",
+      "splitNote": "More days = the hardest days get cut in two, the worst one first. Rest does not change how hard a single day is.",
+      "splitExhausted": "Every day is already cut as short as it goes: the slider will not ease the verdict any further.",
       "difficulty": {
         "comfortable": "Comfortable",
         "standard": "Standard",
@@ -1661,7 +1663,7 @@
       },
       "mergeSplit": {
         "title": "Merge / Split",
-        "body": "Combine or split stages to match your pace."
+        "body": "Merge joins two days into one; Split cuts a day in two — its stages if they were joined, otherwise the stage itself into two halves of equal effort. The verdict is set by your hardest day: cutting it is the only way to ease it, a rest day changes nothing. A split stage assumes a stop halfway: check that there is somewhere to sleep."
       },
       "colors": {
         "title": "Colours",
@@ -1671,7 +1673,8 @@
       "close": "Got it!"
     },
     "splitBlocked": {
-      "single": "Cannot split: this day has a single stage",
+      "single": "Cannot split: there is nothing to cut on this day.",
+      "portion": "Cannot split: this stage is already cut in two.",
       "locked": "Day already walked: it can no longer be changed"
     },
     "reorderBlocked": "Trek started: the order of stages can no longer change",

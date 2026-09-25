@@ -181,7 +181,6 @@
     "layersSubtitle": "Wählen Sie, was auf der Karte angezeigt wird",
     "stageRemaining": "Noch $km km",
     "offTrackChip": "Abseits",
-    "statsPendingNote": "Die Striche füllen sich, sobald Sie die Wanderung starten: diese Werte werden im Gehen gemessen.",
     "guide": {
       "buttonsTitle": "Schaltflächen",
       "position": "Ihre GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfen Sie, ob die Ortung für die App erlaubt ist.",
@@ -907,6 +906,7 @@
         "balanced": "Verteile die Etappen, um den Aufwand über die Tage zu glätten.",
         "optimalDays": "Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.",
         "split": "Teile Tag ${stage} in zwei: Er überschreitet deutlich deine Obergrenze.",
+        "splitImpossible": "Tag ${stage} liegt auch zweigeteilt über Ihren Möglichkeiten, und kürzer lässt er sich nicht teilen: Das ist keine Frage der Planung mehr. Trainieren Sie, warten Sie auf mildere Bedingungen, oder wählen Sie einen leichteren Weg.",
         "rest": "Plane einen Ruhetag nach Tag ${stages}.",
         "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).",
         "restAdvised": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
@@ -1596,6 +1596,8 @@
       "label": "Anzahl der Tage",
       "days": "{count} T",
       "daysWithRest": "{total} T (davon {rest} Ruhe)",
+      "splitNote": "Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.",
+      "splitExhausted": "Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.",
       "difficulty": {
         "comfortable": "Gemütlich",
         "standard": "Standard",
@@ -1661,7 +1663,7 @@
       },
       "mergeSplit": {
         "title": "Zusammenlegen / Aufteilen",
-        "body": "Fassen Sie Etappen zusammen oder teilen Sie sie nach Ihrem Tempo."
+        "body": "Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt."
       },
       "colors": {
         "title": "Farben",
@@ -1671,7 +1673,8 @@
       "close": "Verstanden!"
     },
     "splitBlocked": {
-      "single": "Teilen nicht möglich: nur eine Etappe an diesem Tag",
+      "single": "Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.",
+      "portion": "Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.",
       "locked": "Tag bereits gelaufen: nicht mehr änderbar"
     },
     "reorderBlocked": "Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr",

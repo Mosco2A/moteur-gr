@@ -310,12 +310,19 @@ void main() {
       // Libelle du selecteur present.
       expect(find.text(t.programme.duration.label), findsOneWidget);
 
-      // 5 etapes -> bornes min 3 / max 7 : le slider porte ces bornes.
+      // 5 etapes -> min 3 ; borne haute 12 (tache 558 : deux journees par etape
+      // + 2 repos). L'ancienne borne, 7, s'arretait pile la ou le curseur
+      // aurait commence a servir : au-dela de 5 jours de marche, les seuls jours
+      // disponibles etaient du repos, et le repos ne change rien a la pire
+      // journee — donc rien au verdict (GO-61). Retour de Chris, mot pour mot :
+      // « ca me propose 9jours, je peux pas augmenter et ca met tout en rouge ».
       final slider = tester.widget<Slider>(find.byType(Slider));
       expect(slider.min, 3.0);
-      expect(slider.max, 7.0);
-      expect(slider.divisions, 4); // 7 - 3
-      // GO-61 : duree par defaut = 5 jours de marche + 2 repos conseilles.
+      expect(slider.max, 12.0);
+      expect(slider.divisions, 9); // 12 - 3
+      // GO-61 : duree par defaut = 5 jours de marche + 2 repos conseilles. Le
+      // DEFAUT reste pose sur la duree NATURELLE : aucun sentier ne s'ouvre sur
+      // des etapes deja coupees en deux.
       expect(slider.value, 7.0);
 
       // Le compteur affiche le total ET le detail des repos.
@@ -450,16 +457,27 @@ void main() {
       },
     );
 
-    testWidgets('Separer un jour indisponible (1 etape) explique pourquoi', (
+    // TACHE 558 — LE CAS TESTE A CHANGE, PAS LA REGLE : « une action
+    // indisponible explique pourquoi ». Un jour a UNE etape se separe desormais
+    // (l'etape se coupe en deux portions de meme energie) ; ce qui reste
+    // indisponible, c'est de recouper une PORTION. C'est ce refus-la, et son
+    // explication, qu'on verrouille ici.
+    testWidgets('Separer une PORTION deja coupee explique pourquoi', (
       tester,
     ) async {
       await pumpProgramme(tester);
 
-      // Chaque jour n'a qu'une etape -> Separer est grise. Un tap explique
-      // pourquoi via un snackbar (feedback, parite GR20).
+      // 1er tap : le jour 1 porte une etape ENTIERE -> elle est coupee en deux.
       await tester.tap(find.text(t.programme.actions.split).first);
       await tester.pumpAndSettle();
-      expect(find.text(t.programme.splitBlocked.single), findsOneWidget);
+      expect(find.text(t.programme.splitBlocked.portion), findsNothing,
+          reason: 'la premiere coupe est legitime, aucun refus a expliquer');
+
+      // 2e tap sur la MEME journee : c'est desormais une demi-etape, on ne la
+      // recoupe pas — et un snackbar dit pourquoi (feedback, parite GR20).
+      await tester.tap(find.text(t.programme.actions.split).first);
+      await tester.pumpAndSettle();
+      expect(find.text(t.programme.splitBlocked.portion), findsOneWidget);
     });
 
     testWidgets('Regrouper puis Separer fonctionnent depuis la liste', (

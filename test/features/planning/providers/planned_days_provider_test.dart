@@ -95,7 +95,20 @@ void main() {
   });
 
   group('PROGRAMME editable — separer (split)', () {
-    test('SEPARER est INDISPONIBLE sur un jour mono-etape', () async {
+    // TACHE 558 — CE TEST EST RETOURNE, PAS SUPPRIME.
+    //
+    // Il verrouillait « SEPARER est INDISPONIBLE sur un jour mono-etape ». La
+    // campagne personas a mesure ce que cela coutait sur l'emulateur : la
+    // journee la plus dure du sentier de reference (Ghisonaccia-Catastaghju,
+    // 35,2 km-energie) ne porte QU'UNE etape, l'application conseillait
+    // « Decoupe la journee 1 en deux » — la seule action capable de detendre le
+    // verdict — et « Separer » n'y faisait rien. Un conseil que l'application
+    // n'offre pas est pire que pas de conseil.
+    //
+    // « Separer » coupe donc desormais une etape ENTIERE en deux portions de
+    // meme energie. Ce qui reste indisponible est nomme plus bas : un jour de
+    // repos, un jour deja marche, et une etape DEJA coupee.
+    test('SEPARER coupe un jour mono-etape en deux demi-journees', () async {
       final container = makeContainer();
       await container.read(stagesProvider('test-trail').future);
       container.read(selectedDurationProvider.notifier).set(5);
@@ -103,14 +116,30 @@ void main() {
       final notifier =
           container.read(plannedDaysProvider('test-trail').notifier);
       final days = container.read(plannedDaysProvider('test-trail'));
-      // Chaque jour ne porte qu'une etape -> aucun split possible.
+      // Chaque jour porte une etape ENTIERE -> chacun est coupable.
       for (var i = 0; i < days.length; i++) {
-        expect(notifier.canSplit(i), isFalse,
-            reason: 'jour $i mono-etape ne doit pas etre separable');
+        expect(notifier.canSplit(i), isTrue,
+            reason: 'jour $i porte une etape entiere, donc coupable');
       }
-      // splitDay est un no-op sur un mono-etape (pas de dedoublement).
+
+      final avant = days.first;
       notifier.splitDay(0);
-      expect(container.read(plannedDaysProvider('test-trail')).length, 5);
+      final apres = container.read(plannedDaysProvider('test-trail'));
+      expect(apres.length, 6, reason: 'un jour de plus : l etape est en deux');
+
+      // Les deux portions somment EXACTEMENT l etape d origine : aucun
+      // kilometre ni metre de denivele ne se perd dans un arrondi.
+      expect(apres[0].totalDistanceKm + apres[1].totalDistanceKm,
+          closeTo(avant.totalDistanceKm, 0.0001));
+      expect(apres[0].totalElevationGainM + apres[1].totalElevationGainM,
+          avant.totalElevationGainM);
+      // Et chacune est plus legere que l etape entiere : c est tout l interet.
+      expect(apres[0].totalDistanceKm, lessThan(avant.totalDistanceKm));
+      expect(apres[1].totalDistanceKm, lessThan(avant.totalDistanceKm));
+
+      // UNE SEULE FOIS : une portion ne se recoupe pas, et on le DIT.
+      expect(notifier.canSplit(0), isFalse);
+      expect(notifier.splitBlockedReason(0), 'portion');
 
       container.dispose();
     });

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/trail_catalog.dart';
@@ -109,10 +111,32 @@ void main() {
       expect(t.hikerProfile.sexUnspecified, isNotEmpty);
     });
 
-    test('la barre d attente de la carte a sa phrase, pas celle du cockpit',
+    // TACHE 558 — CE TEST EST RETOURNE, PAS SUPPRIME.
+    //
+    // Il verrouillait la PRESENCE de `map.statsPendingNote` : la phrase qui
+    // expliquait pourquoi certaines cases de la barre d'etape portent un tiret.
+    // Chris l'a fait retirer, mot pour mot : « enleve dans randonnee le laius
+    // sur les tiret ». La cle part donc des cinq langues avec son usage — un
+    // tiret se comprend seul, et la navigation de reference n'explique pas les
+    // siens.
+    //
+    // Il verrouille desormais son ABSENCE dans les CINQ fichiers, pour qu'elle
+    // ne revienne pas par la porte de l'i18n. Ce que le test protegeait par
+    // ailleurs tient toujours : la barre ne doit pas se remettre a emprunter la
+    // phrase du cockpit, qui est ecrite pour un tout autre ecran.
+    test('le laius sur les tirets a quitte les CINQ fichiers de traduction',
         () {
-      expect(t.map.statsPendingNote, isNotEmpty);
-      expect(t.map.statsPendingNote, isNot(t.hub.trekCard.noTrekBody));
+      for (final langue in ['fr', 'en', 'de', 'es', 'it']) {
+        final brut = File('assets/i18n/$langue.i18n.json').readAsStringSync();
+        expect(
+          brut.contains('statsPendingNote'),
+          isFalse,
+          reason: 'la cle map.statsPendingNote est revenue dans '
+              'assets/i18n/$langue.i18n.json',
+        );
+      }
+      // La phrase du cockpit, elle, reste : c'est son ecran a elle.
+      expect(t.hub.trekCard.noTrekBody, isNotEmpty);
     });
 
     test('la photo prise depuis la carte est confirmee, pas titree', () {

@@ -257,7 +257,6 @@ class _Translations$map$es extends Translations$map$fr {
 	@override String get layersSubtitle => 'Elige qué mostrar en el mapa';
 	@override String stageRemaining({required Object km}) => '${km} km restantes';
 	@override String get offTrackChip => 'Fuera de ruta';
-	@override String get statsPendingNote => 'Los guiones se rellenarán en cuanto empiece la ruta: estas cifras se miden caminando.';
 	@override late final _Translations$map$guide$es guide = _Translations$map$guide$es._(_root);
 	@override String get supplyDismiss => 'Ocultar el aviso';
 }
@@ -2924,6 +2923,8 @@ class _Translations$programme$duration$es extends Translations$programme$duratio
 	@override String get label => 'Número de días';
 	@override String get days => '{count} d';
 	@override String get daysWithRest => '{total} d (incl. {rest} descanso)';
+	@override String get splitNote => 'Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.';
+	@override String get splitExhausted => 'Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.';
 	@override late final _Translations$programme$duration$difficulty$es difficulty = _Translations$programme$duration$difficulty$es._(_root);
 }
 
@@ -3029,7 +3030,8 @@ class _Translations$programme$splitBlocked$es extends Translations$programme$spl
 	final TranslationsEs _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'No se puede dividir: este día tiene una sola etapa';
+	@override String get single => 'No se puede partir: este día no tiene nada que cortar.';
+	@override String get portion => 'No se puede partir: esta etapa ya está partida en dos.';
 	@override String get locked => 'Día ya caminado: ya no se puede modificar';
 }
 
@@ -3605,6 +3607,7 @@ class _Translations$feasibility$formula$advice$es extends Translations$feasibili
 	@override String get balanced => 'Reparte las etapas para suavizar el esfuerzo a lo largo de los días.';
 	@override String optimalDays({required Object days, required Object current}) => 'Apunta a ${days} días de marcha (en vez de ${current}) para no pasar tu tope.';
 	@override String split({required Object stage}) => 'Divide la jornada ${stage} en dos: supera claramente tu tope.';
+	@override String splitImpossible({required Object stage}) => 'La jornada ${stage} sigue por encima de tus capacidades incluso partida en dos, y no se puede partir más: ya no es una cuestión de programa. Entrena, espera condiciones más benignas o elige un sendero menos exigente.';
 	@override String rest({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages}.';
 	@override String training({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir (preparación física).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso, tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto.';
@@ -3787,7 +3790,7 @@ class _Translations$programme$info$mergeSplit$es extends Translations$programme$
 
 	// Translations
 	@override String get title => 'Agrupar / Separar';
-	@override String get body => 'Combina o divide etapas según tu ritmo.';
+	@override String get body => 'Agrupar une dos días en uno; Separar corta un día en dos — sus etapas si estaban unidas, y si no la etapa misma en dos mitades de igual esfuerzo. El veredicto lo fija tu jornada más dura: partirla es la única forma de aliviarla, un día de descanso no cambia nada. Una etapa partida supone una parada a mitad de camino: compruebe que haya dónde dormir.';
 }
 
 // Path: programme.info.colors
@@ -4026,7 +4029,6 @@ extension on TranslationsEs {
 			'map.layersSubtitle' => 'Elige qué mostrar en el mapa',
 			'map.stageRemaining' => ({required Object km}) => '${km} km restantes',
 			'map.offTrackChip' => 'Fuera de ruta',
-			'map.statsPendingNote' => 'Los guiones se rellenarán en cuanto empiece la ruta: estas cifras se miden caminando.',
 			'map.guide.buttonsTitle' => 'Botones',
 			'map.guide.position' => 'Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe que la localización esté permitida para la aplicación.',
 			'map.guide.track' => 'El trazado del sendero, en su color. Es la referencia que usa el aviso de salida de ruta.',
@@ -4379,9 +4381,9 @@ extension on TranslationsEs {
 			'checklist.ui.bagValidatedSnack' => 'Mochila validada!',
 			'checklist.ui.validationCancelledSnack' => 'Validación anulada — puedes modificar tu equipo.',
 			'checklist.ui.missingTitle' => 'Equipo faltante',
+			'checklist.ui.missingBody' => '{checked}/{total} artículos obligatorios marcados.',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.missingBody' => '{checked}/{total} artículos obligatorios marcados.',
 			'checklist.ui.missingList' => 'Falta:',
 			'checklist.ui.understood' => 'Entendido',
 			'checklist.ui.validateAnyway' => 'Validar de todos modos',
@@ -4655,6 +4657,7 @@ extension on TranslationsEs {
 			'feasibility.formula.advice.balanced' => 'Reparte las etapas para suavizar el esfuerzo a lo largo de los días.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Apunta a ${days} días de marcha (en vez de ${current}) para no pasar tu tope.',
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Divide la jornada ${stage} en dos: supera claramente tu tope.',
+			'feasibility.formula.advice.splitImpossible' => ({required Object stage}) => 'La jornada ${stage} sigue por encima de tus capacidades incluso partida en dos, y no se puede partir más: ya no es una cuestión de programa. Entrena, espera condiciones más benignas o elige un sendero menos exigente.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prevé un día de descanso tras la jornada ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Entrena ${weeks} semanas antes de salir (preparación física).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pon ${days} día(s) de descanso, tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto.',
@@ -5189,6 +5192,8 @@ extension on TranslationsEs {
 			'programme.duration.label' => 'Número de días',
 			'programme.duration.days' => '{count} d',
 			'programme.duration.daysWithRest' => '{total} d (incl. {rest} descanso)',
+			'programme.duration.splitNote' => 'Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.',
+			'programme.duration.splitExhausted' => 'Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.',
 			'programme.duration.difficulty.comfortable' => 'Cómodo',
 			'programme.duration.difficulty.standard' => 'Estándar',
 			'programme.duration.difficulty.sporty' => 'Deportivo',
@@ -5231,12 +5236,13 @@ extension on TranslationsEs {
 			'programme.info.rest.title' => 'Día de descanso',
 			'programme.info.rest.body' => 'Inserta un día de recuperación entre dos etapas.',
 			'programme.info.mergeSplit.title' => 'Agrupar / Separar',
-			'programme.info.mergeSplit.body' => 'Combina o divide etapas según tu ritmo.',
+			'programme.info.mergeSplit.body' => 'Agrupar une dos días en uno; Separar corta un día en dos — sus etapas si estaban unidas, y si no la etapa misma en dos mitades de igual esfuerzo. El veredicto lo fija tu jornada más dura: partirla es la única forma de aliviarla, un día de descanso no cambia nada. Una etapa partida supone una parada a mitad de camino: compruebe que haya dónde dormir.',
 			'programme.info.colors.title' => 'Colores',
 			'programme.info.colors.body' => 'Verde = fácil, Naranja = medio, Rojo = difícil (distancia + desnivel).',
 			'programme.info.note' => 'El perfil altimétrico de abajo muestra el desnivel de cada día.',
 			'programme.info.close' => '¡Entendido!',
-			'programme.splitBlocked.single' => 'No se puede dividir: este día tiene una sola etapa',
+			'programme.splitBlocked.single' => 'No se puede partir: este día no tiene nada que cortar.',
+			'programme.splitBlocked.portion' => 'No se puede partir: esta etapa ya está partida en dos.',
 			'programme.splitBlocked.locked' => 'Día ya caminado: ya no se puede modificar',
 			'programme.reorderBlocked' => 'Ruta iniciada: el orden de las etapas ya no cambia',
 			'programme.inTrek.title' => 'Adaptar el itinerario',
@@ -5422,6 +5428,8 @@ extension on TranslationsEs {
 			'summary.share.elevationGain' => ({required Object m}) => 'Desnivel positivo: ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'Desnivel negativo: ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Tiempo estimado: ~${h} h',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Del ${start} al ${end}',
 			'summary.share.planning' => '--- Plan día a día ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Descanso',

@@ -260,12 +260,22 @@ void main() {
   });
 
   group('HubScreen (socle structurel)', () {
-    Widget hub({TrackingSessionStatus status = TrackingSessionStatus.idle}) =>
+    Widget hub({
+      TrackingSessionStatus status = TrackingSessionStatus.idle,
+      // Cycle de vie du trek (tache 558) : indispensable pour atteindre la
+      // phase APRES, ou le Journal doit se trouver.
+      TrekLifecycleState? lifecycle,
+    }) =>
         wrap(
           child: const HubScreen(),
           overrides: [
             userWith('Alex'),
             trekWith(TrackingSessionState(status: status)),
+            if (lifecycle != null)
+              currentTrailSummaryProvider.overrideWith((ref) async =>
+                  TrekSummary(
+                      config: ref.watch(trailConfigProvider),
+                      state: lifecycle)),
           ],
         );
 
@@ -275,12 +285,13 @@ void main() {
     Future<void> pumpTallHub(
       WidgetTester tester, {
       TrackingSessionStatus status = TrackingSessionStatus.idle,
+      TrekLifecycleState? lifecycle,
     }) async {
       tester.view.physicalSize = const Size(1200, 4000);
       tester.view.devicePixelRatio = 1.0;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      await tester.pumpWidget(hub(status: status));
+      await tester.pumpWidget(hub(status: status, lifecycle: lifecycle));
       await tester.pumpAndSettle();
     }
 
@@ -321,17 +332,26 @@ void main() {
     });
 
     // -----------------------------------------------------------------------
-    // R10 (retour Chris, LOT L10) — REGRESSION D'ACCES AU JOURNAL
+    // R10 (LOT L10) PUIS TACHE 558 — LE JOURNAL EST LA OU ON L'ECRIT.
     //
-    // La carte « Journal » ne vivait que dans la section Randonner, elle-meme
-    // masquee hors rando active (#13) : en PREPARATION (etat d'une install
-    // fraiche) comme en APRES-TREK, le journal etait INATTEIGNABLE alors que la
-    // feature est entiere. PARITE GR20 : le HUB GR20 affiche la carte Journal
-    // sans aucune garde, quel que soit l'etat du trek.
-    // Ces tests verrouillent l'acces dans les 3 phases — ET l'absence de
-    // doublon a l'ecran.
+    // CE QUE R10 AVAIT REPARE, ET QUI RESTE VRAI : la carte « Journal » ne
+    // vivait que dans la section Randonner, elle-meme masquee hors rando active
+    // (#13). En APRES-TREK, le journal etait donc INATTEIGNABLE alors que la
+    // fonction est entiere — un carnet qu'on ne peut plus relire une fois rentre.
+    //
+    // CE QUE LA TACHE 558 CORRIGE : R10 avait sur-corrige, et la tache 553 a
+    // aggrave en posant la carte tout en haut du cockpit, au-dessus de
+    // « Preparer ». Decision de Chris, mot pour mot : « MAIS JOURNAL CE N'est
+    // JUSTE PAS DU TOUT EN PHASE PREPARER. En rando pour le rempli, en postrando
+    // pour le remplir et le lire ». Un carnet de randonnee vide avant le depart
+    // ne sert a rien, et « atteignable dans les trois phases » n'etait pas une
+    // vertu en soi.
+    //
+    // CES TESTS SONT DONC RETOURNES POUR LA PREPARATION (ils verrouillaient une
+    // erreur) et CONSERVES pour la rando et l'apres-trek, qui etaient le vrai
+    // trou d'acces. Ils verrouillent aussi l'absence de doublon.
     // -----------------------------------------------------------------------
-    group('R10 — le Journal est atteignable dans TOUTES les phases', () {
+    group('R10 / 558 — le Journal vit en rando et apres, jamais en prepa', () {
       Override summaryWith(TrekLifecycleState state) {
         return currentTrailSummaryProvider.overrideWith(
           (ref) async =>
@@ -359,15 +379,19 @@ void main() {
         await tester.pumpAndSettle();
       }
 
-      testWidgets('EN PREPARATION : carte Journal rendue, section Randonner '
+      // TACHE 558 — CE TEST EST RETOURNE : il verrouillait la PRESENCE de la
+      // carte en preparation, c'est-a-dire une erreur de conception. Un carnet
+      // de randonnee vide avant le depart n'a rien a dire.
+      testWidgets('EN PREPARATION : AUCUNE carte Journal, section Randonner '
           'toujours masquee (#13 intact)', (tester) async {
         await pumpPhase(tester);
 
         // La decision Chris #13 n'est PAS annulee : la section reste masquee.
         expect(find.text(t.hub.sections.hike), findsNothing);
         expect(find.text(t.hub.cards.navigation), findsNothing);
-        // Mais le Journal n'est plus enferme dans ce bloc masque.
-        expect(find.text(t.hub.cards.journal), findsOneWidget);
+        // Et le Journal n'existe PAS DU TOUT a ce moment-la (decision Chris,
+        // tache 558) : ni carte autonome, ni entree dans une section.
+        expect(find.text(t.hub.cards.journal), findsNothing);
       });
 
       testWidgets('APRES LE TREK : carte Journal rendue', (tester) async {
@@ -375,8 +399,9 @@ void main() {
 
         // CORRECTIF L5-8 : la section « Apres le trek » est retiree, elle ne
         // faisait que dupliquer les commandes de la carte de trek termine.
-        // Le Journal n'a JAMAIS appartenu a ce bloc — il vit dans
-        // « Informations » — et reste donc rendu dans les trois phases.
+        // Le Journal, lui, est ICI : c'est le moment ou on le relit et ou on le
+        // complete (« en postrando pour le remplir et le lire », Chris). C'etait
+        // le VRAI trou d'acces repere par R10 / LOT L10, et il reste bouche.
         expect(find.text(t.hub.sections.after), findsNothing);
         expect(find.text(t.hub.cards.journal), findsOneWidget);
       });
@@ -386,20 +411,32 @@ void main() {
         await pumpPhase(tester, status: TrackingSessionStatus.recording);
 
         expect(find.text(t.hub.sections.hike), findsOneWidget);
-        // Exactement UNE carte Journal a l'ecran (jamais deux sections a la
-        // fois : en rando elle est dans Randonner, sinon dans Informations).
+        // Exactement UNE carte Journal a l'ecran : les deux emplacements
+        // (section Randonner en rando, carte autonome apres le trek) s'excluent
+        // par construction, aucun doublon n'est possible.
         expect(find.text(t.hub.cards.journal), findsOneWidget);
       });
 
-      testWidgets('EN PREPARATION : la carte Journal OUVRE l\'ecran journal',
+      testWidgets('EN RANDO : la carte Journal OUVRE l\'ecran journal',
           (tester) async {
-        await pumpPhase(tester);
+        await pumpPhase(tester, status: TrackingSessionStatus.recording);
 
         await tester.tap(find.text(t.hub.cards.journal));
         await tester.pumpAndSettle();
 
         // On a quitte le HUB pour la route /journal (stub du routeur de test) :
         // la preuve que la carte n'est pas seulement VISIBLE mais CLIQUABLE.
+        expect(find.text(t.hub.cards.journal), findsNothing);
+        expect(find.text(t.hub.sections.info), findsNothing);
+      });
+
+      testWidgets('APRES LE TREK : la carte Journal OUVRE l\'ecran journal',
+          (tester) async {
+        await pumpPhase(tester, lifecycle: TrekLifecycleState.completed);
+
+        await tester.tap(find.text(t.hub.cards.journal));
+        await tester.pumpAndSettle();
+
         expect(find.text(t.hub.cards.journal), findsNothing);
         expect(find.text(t.hub.sections.info), findsNothing);
       });
@@ -544,43 +581,64 @@ void main() {
     });
 
     // -----------------------------------------------------------------------
-    // RETOUR CHRIS #11 (tache 553) — « journal est dans information dans
-    // preparation??? ». La carte demenageait selon la phase ; elle est devenue
-    // une carte AUTONOME du cockpit, au meme endroit dans les trois phases.
-    // L'acces repare en R10 / LOT L10 est conserve (tests du groupe R10
-    // ci-dessus : le Journal est rendu, une seule fois, dans les 3 phases).
+    // RETOUR CHRIS #11 (tache 553) PUIS DECISION 558 — OU SE POSE LE JOURNAL.
+    //
+    // #11 disait, mot pour mot : « journal est dans information dans
+    // preparation??? ». La tache 553 en a fait une carte AUTONOME au meme
+    // endroit dans les trois phases — et l'a posee AU-DESSUS de « Preparer ».
+    // Chris a tranche depuis, mot pour mot : « pourquoi journe est en haut de
+    // preparer ??????? » puis « MAIS JOURNAL CE N'est JUSTE PAS DU TOUT EN PHASE
+    // PREPARER ». La reponse n'etait donc pas de la descendre, mais de la faire
+    // DISPARAITRE en preparation.
+    //
+    // CE QUI RESTE DE #11, ET QUI COMPTE : le journal n'est PLUS dans
+    // « Informations », rubrique qu'on LIT, alors qu'un carnet s'ECRIT.
     // -----------------------------------------------------------------------
-    testWidgets('#11 : le Journal n est PLUS dans « Informations » et se pose '
-        'AVANT « Preparer »', (tester) async {
+    testWidgets('558 : en PREPARATION, aucun Journal — ni en tete, ni dans '
+        '« Informations »', (tester) async {
       await pumpTallHub(tester);
+
+      // Les deux sections sont bien rendues (on est sur le bon ecran)...
+      expect(find.text(t.hub.sections.prepare), findsOneWidget);
+      expect(find.text(t.hub.sections.info), findsOneWidget);
+      // ... et le journal n'est nulle part : il n'a rien a dire avant le depart.
+      expect(find.text(t.hub.cards.journal), findsNothing);
+    });
+
+    testWidgets('558 : EN RANDO, le Journal est DANS « Randonner » et APRES '
+        '« Preparer »', (tester) async {
+      await pumpTallHub(tester, status: TrackingSessionStatus.recording);
+
+      final journal = tester.getTopLeft(find.text(t.hub.cards.journal));
+      final hike = tester.getTopLeft(find.text(t.hub.sections.hike));
+      final prepare = tester.getTopLeft(find.text(t.hub.sections.prepare));
+      final info = tester.getTopLeft(find.text(t.hub.sections.info));
+
+      // Place de la reference : dans la section terrain, donc APRES son titre.
+      expect(journal.dy, greaterThan(hike.dy));
+      // Et plus jamais au-dessus de la preparation (retour Chris : « pourquoi
+      // journe est en haut de preparer ??????? »).
+      expect(journal.dy, greaterThan(prepare.dy));
+      // Toujours au-dessus d'« Informations » : ce n'est pas une rubrique de
+      // lecture, c'est un carnet qu'on ecrit.
+      expect(journal.dy, lessThan(info.dy));
+      // Et une seule fois a l'ecran.
+      expect(find.text(t.hub.cards.journal), findsOneWidget);
+    });
+
+    testWidgets('558 : APRES LE TREK, le Journal est entre « Preparer » et '
+        '« Informations » — la meme hauteur qu en rando', (tester) async {
+      await pumpTallHub(tester, lifecycle: TrekLifecycleState.completed);
 
       final journal = tester.getTopLeft(find.text(t.hub.cards.journal));
       final prepare = tester.getTopLeft(find.text(t.hub.sections.prepare));
       final info = tester.getTopLeft(find.text(t.hub.sections.info));
 
-      // Carte autonome posee sous la carte du trek : elle precede les DEUX
-      // sections, donc elle n'appartient a aucune des deux.
-      expect(journal.dy, lessThan(prepare.dy));
+      // La section « Randonner » n'existe plus une fois rentre : la carte prend
+      // sa place dans le scroll, pour qu'on la retrouve au meme endroit.
+      expect(find.text(t.hub.sections.hike), findsNothing);
+      expect(journal.dy, greaterThan(prepare.dy));
       expect(journal.dy, lessThan(info.dy));
-    });
-
-    testWidgets('#11 : EN RANDO AUSSI, le Journal reste AVANT toutes les '
-        'sections (il ne redescend pas dans « Randonner »)', (tester) async {
-      await pumpTallHub(tester, status: TrackingSessionStatus.recording);
-
-      final journal = tester.getTopLeft(find.text(t.hub.cards.journal));
-
-      // La section « Randonner » existe maintenant : c'est la que la carte
-      // vivait avant. Elle n'y est plus, elle est restee en tete, au meme rang
-      // qu'en preparation — avant CHACUNE des sections.
-      expect(journal.dy,
-          lessThan(tester.getTopLeft(find.text(t.hub.sections.hike)).dy));
-      expect(journal.dy,
-          lessThan(tester.getTopLeft(find.text(t.hub.sections.prepare)).dy));
-      expect(journal.dy,
-          lessThan(tester.getTopLeft(find.text(t.hub.sections.info)).dy));
-      // Et toujours une seule fois a l'ecran (aucun doublon possible : il n'y a
-      // plus qu'un seul endroit ou la carte est ecrite).
       expect(find.text(t.hub.cards.journal), findsOneWidget);
     });
 

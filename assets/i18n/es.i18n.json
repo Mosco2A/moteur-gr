@@ -181,7 +181,6 @@
     "layersSubtitle": "Elige qué mostrar en el mapa",
     "stageRemaining": "$km km restantes",
     "offTrackChip": "Fuera de ruta",
-    "statsPendingNote": "Los guiones se rellenarán en cuanto empiece la ruta: estas cifras se miden caminando.",
     "guide": {
       "buttonsTitle": "Botones",
       "position": "Su posición GPS, actualizada al caminar. Si el punto desaparece, compruebe que la localización esté permitida para la aplicación.",
@@ -907,6 +906,7 @@
         "balanced": "Reparte las etapas para suavizar el esfuerzo a lo largo de los días.",
         "optimalDays": "Apunta a ${days} días de marcha (en vez de ${current}) para no pasar tu tope.",
         "split": "Divide la jornada ${stage} en dos: supera claramente tu tope.",
+        "splitImpossible": "La jornada ${stage} sigue por encima de tus capacidades incluso partida en dos, y no se puede partir más: ya no es una cuestión de programa. Entrena, espera condiciones más benignas o elige un sendero menos exigente.",
         "rest": "Prevé un día de descanso tras la jornada ${stages}.",
         "training": "Entrena ${weeks} semanas antes de salir (preparación física).",
         "restAdvised": "Pon ${days} día(s) de descanso, tras las jornadas ${stages}: se parecen demasiado para que el cuerpo se recupere. Es un consejo, no cambia tu veredicto."
@@ -1596,6 +1596,8 @@
       "label": "Número de días",
       "days": "{count} d",
       "daysWithRest": "{total} d (incl. {rest} descanso)",
+      "splitNote": "Más días = las jornadas más duras se parten en dos, la peor primero. El descanso no cambia la dureza de una jornada.",
+      "splitExhausted": "Todas las jornadas ya están partidas al máximo: el cursor no aliviará más el veredicto.",
       "difficulty": {
         "comfortable": "Cómodo",
         "standard": "Estándar",
@@ -1661,7 +1663,7 @@
       },
       "mergeSplit": {
         "title": "Agrupar / Separar",
-        "body": "Combina o divide etapas según tu ritmo."
+        "body": "Agrupar une dos días en uno; Separar corta un día en dos — sus etapas si estaban unidas, y si no la etapa misma en dos mitades de igual esfuerzo. El veredicto lo fija tu jornada más dura: partirla es la única forma de aliviarla, un día de descanso no cambia nada. Una etapa partida supone una parada a mitad de camino: compruebe que haya dónde dormir."
       },
       "colors": {
         "title": "Colores",
@@ -1671,7 +1673,8 @@
       "close": "¡Entendido!"
     },
     "splitBlocked": {
-      "single": "No se puede dividir: este día tiene una sola etapa",
+      "single": "No se puede partir: este día no tiene nada que cortar.",
+      "portion": "No se puede partir: esta etapa ya está partida en dos.",
       "locked": "Día ya caminado: ya no se puede modificar"
     },
     "reorderBlocked": "Ruta iniciada: el orden de las etapas ya no cambia",
