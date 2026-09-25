@@ -181,6 +181,22 @@ void main() {
     exigeAucuneAbsurdite(P, 'faisabilite');
 
     // =====================================================================
+    // 7bis — L'ITINERAIRE : le deroule des etapes et le sens de marche
+    // =====================================================================
+    // Il fait partie du parcours de Claire (carte « Itineraire » de la section
+    // Preparer) ET il conditionne le depart : la porte du cockpit exige
+    // Itineraire + Date + Programme.
+    await _aller(tester, '/trail/$kTrailId/itinerary');
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+    await settleAndShoot(tester, P, '12b_itineraire');
+    logEcran(P, 'itineraire', max: 40);
+    exige(P, 'itineraire', present(find.text(t.itinerary.direction.title)),
+        'l itineraire dit dans quel SENS la rando se marche');
+    exige(P, 'itineraire', !present(find.text(t.itinerary.empty)),
+        'l itineraire n est PAS vide (il ne dit pas « ${t.itinerary.empty} »)');
+    exigeAucuneAbsurdite(P, 'itineraire');
+
+    // =====================================================================
     // 8 — LE NOMBRE DE JOURS ET LE PROGRAMME
     // =====================================================================
     await _aller(tester, '/trail/$kTrailId/planning');
@@ -199,7 +215,15 @@ void main() {
         'le programme liste des journees');
     exigeAucuneAbsurdite(P, 'programme');
 
-    await exigeTap(tester, find.text(t.programme.validate), P, 'programme',
+    // Le bouton de validation porte DEUX libelles selon l'etat de l'ecran
+    // (« ${t.programme.validate} » ou « ${t.programme.validateNext} ») : on
+    // cherche les deux, sinon on accuse l appli d un bouton absent qui est la.
+    final validerProgramme = find.byWidgetPredicate((w) =>
+        w is Text &&
+        (w.data == t.programme.validate || w.data == t.programme.validateNext));
+    await scrollUntil(tester, validerProgramme, P, 'programme',
+        'bouton de validation du programme');
+    await exigeTap(tester, validerProgramme, P, 'programme',
         'valider le programme');
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, P, '14_programme_valide');
@@ -241,16 +265,19 @@ void main() {
     exige(P, 'sac', present(find.text(t.checklist.categories.carrying)),
         'le sac est organise par categories (« '
         '${t.checklist.categories.carrying} »)');
-    final avancementAvant = texteContenant('préparés');
+    // LIBELLE REEL DE L ECRAN, releve le 25/09 : « 0 / 84 articles cochés »
+    // (et non le « préparés » de la cle i18n `checklist.progress`). On lit ce
+    // que l ecran ecrit, pas ce que la cle laisse croire.
+    final avancementAvant = texteContenant('articles cochés');
     logStep(P, 'sac',
         'AVANCEMENT DU SAC lu avant de cocher = '
         '"${avancementAvant ?? "(aucun)"}"');
     exige(P, 'sac', avancementAvant != null,
-        'l avancement du sac est LISIBLE (ex. « 0/54 preparés ») — lu : '
+        'l avancement du sac est LISIBLE (ex. « 0 / 84 articles cochés ») — lu : '
         '"${avancementAvant ?? "(aucun)"}"');
     final coche = await _cocherUnObjet(tester);
     await settleAndShoot(tester, P, '19_sac_coche');
-    final avancementApres = texteContenant('préparés');
+    final avancementApres = texteContenant('articles cochés');
     logStep(P, 'sac',
         'AVANCEMENT DU SAC lu apres avoir coche = '
         '"${avancementApres ?? "(aucun)"}"');
@@ -281,6 +308,21 @@ void main() {
 
     final parti = await exigeTap(
         tester, cta, P, 'depart', 'demarrer la randonnee');
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+    // DERNIERE PORTE AVANT LE DEPART, RELEVEE LE 25/09 : sans position GPS,
+    // l'appli demande confirmation (« Position indisponible. Demarrer quand
+    // meme ? »). C'est le cas de l'emulateur sans fix GPS, et c'est aussi le
+    // cas d'un randonneur sous couvert forestier : la question est legitime,
+    // on y repond comme un humain plutot que de la contourner.
+    final confirmation = texteContenant('Position indisponible');
+    if (confirmation != null) {
+      logStep(P, 'depart',
+          'CONFIRMATION DEMANDEE AVANT LE DEPART, lue a l ecran : '
+          '"$confirmation" — on confirme.');
+      await tapIfPresent(tester, textFrEn('Démarrer quand même', 'Start anyway'),
+          P, 'depart', 'confirmer le depart sans position GPS',
+          warnIfMissing: false);
+    }
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 10));
     await settleAndShoot(tester, P, '21_apres_depart',
         timeout: const Duration(seconds: 12));
@@ -349,6 +391,12 @@ String? _compteurJours() {
 }
 
 Future<bool> _choisirPays(WidgetTester tester, String nom) async {
+  // Nombre de champs de saisie AVANT d'ouvrir le selecteur. La fiche en porte
+  // deja (age, taille, poids) : compter « un TextField existe » ne dit donc
+  // rien. C'est l'AUGMENTATION du nombre qui trahit la feuille de selection
+  // ouverte — sans cette nuance, on referme la fiche elle-meme et on croit
+  // ensuite que le pays ne s'affiche pas.
+  final champsAvant = find.byType(TextField).evaluate().length;
   if (!await tapIfPresent(
       tester,
       find.byKey(const ValueKey('hiker-profile-country-field')),
@@ -368,6 +416,19 @@ Future<bool> _choisirPays(WidgetTester tester, String nom) async {
   if (resultat.evaluate().isEmpty) return false;
   await tester.tap(resultat.first, warnIfMissed: false);
   await pumpAndSettleTolerant(tester);
+  // LE SELECTEUR DOIT AVOIR DISPARU. Mesure du 25/09 : tant qu'il reste
+  // monte, sa barriere avale les taps et le bouton « Enregistrer » de la
+  // fiche devient present mais INATTEIGNABLE — on croit alors a un defaut de
+  // l ecran alors que c est la feuille de selection qui n est pas refermee.
+  // On le constate, on le dit, et on referme au besoin.
+  if (find.byType(TextField).evaluate().length > champsAvant) {
+    logStep(P, 'pays',
+        'Le selecteur de pays est TOUJOURS ouvert apres le choix — on le '
+        'referme a la main pour pouvoir continuer.');
+    final ctx = tester.element(find.byType(Navigator).first);
+    Navigator.of(ctx).maybePop();
+    await pumpAndSettleTolerant(tester);
+  }
   return true;
 }
 
@@ -420,28 +481,54 @@ Future<bool> _ajouterRando(
   return sauve;
 }
 
-/// Choisit une date dans le calendrier : on touche un jour a venir.
+/// Choisit une date de depart, en suivant le vrai chemin de l'ecran :
+/// « ${t.calendar.chooseDateAction} » -> selection d'un jour -> OK ->
+/// « ${t.calendar.validate} ».
 Future<bool> _choisirUneDate(WidgetTester tester) async {
-  // Les cases de jour portent leur numero. On vise un jour du milieu de mois,
-  // qui existe dans tous les mois.
-  for (final jour in <String>['15', '16', '17', '18']) {
+  await tapIfPresent(tester, find.text(t.calendar.chooseDateAction), P,
+      'calendrier', 'ouvrir le choix de la date de depart',
+      warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+
+  // Selecteur Material : on vise un jour du milieu de mois, present partout.
+  var choisi = false;
+  for (final jour in <String>['15', '16', '17', '18', '20']) {
     final case_ = find.text(jour).hitTestable();
-    if (case_.evaluate().isNotEmpty) {
-      await tester.tap(case_.first, warnIfMissed: false);
-      await pumpAndSettleTolerant(tester);
-      logStep(P, 'calendrier', 'Date choisie au doigt : le $jour');
-      // Certains calendriers demandent une confirmation.
-      await tapIfPresent(tester, textFrEn('Valider', 'Confirm'), P, 'calendrier',
-          'confirmer la date', warnIfMissing: false);
-      return true;
-    }
+    if (case_.evaluate().isEmpty) continue;
+    await tester.tap(case_.first, warnIfMissed: false);
+    await pumpAndSettleTolerant(tester);
+    logStep(P, 'calendrier', 'Jour touche dans le selecteur : le $jour');
+    choisi = true;
+    break;
   }
-  logStep(P, 'calendrier', 'COINCE : aucune case de jour touchable trouvee');
-  return false;
+  // Le selecteur Material se ferme par OK.
+  await tapIfPresent(tester, textFrEn('OK', 'OK'), P, 'calendrier',
+      'confirmer la date dans le selecteur', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+
+  // Puis la page elle-meme se valide.
+  final valide = await tapIfPresent(tester, find.text(t.calendar.validate), P,
+      'calendrier', 'valider les dates', warnIfMissing: false);
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
+  logStep(P, 'calendrier',
+      'Date choisie = $choisi ; dates validees = $valide');
+  return choisi || valide;
 }
 
 /// Coche le premier objet du sac atteignable.
+///
+/// LE SAC S'OUVRE FERME, ET C'EST NORMAL : les categories (« Sac & portage »,
+/// « Couchage »...) sont des panneaux replies ; aucun objet n'est visible tant
+/// qu'on n'en a pas ouvert un. Mesure du 25/09 : sans ce depliage, le scenario
+/// concluait « aucun objet cochable » — un faux defaut produit par le test.
 Future<bool> _cocherUnObjet(WidgetTester tester) async {
+  if (find.byType(Checkbox).hitTestable().evaluate().isEmpty &&
+      find.byType(CheckboxListTile).hitTestable().evaluate().isEmpty) {
+    await tapIfPresent(tester, find.text(t.checklist.categories.carrying), P,
+        'sac', 'deplier la categorie « ${t.checklist.categories.carrying} »',
+        warnIfMissing: false);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
+  }
   final cases = find.byType(Checkbox).hitTestable();
   if (cases.evaluate().isNotEmpty) {
     await tester.tap(cases.first, warnIfMissed: false);
