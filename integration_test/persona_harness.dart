@@ -647,3 +647,165 @@ int marqueEcranSysteme() => kEcransSystemeDetectes.length;
 List<String> ecransSystemeDepuis(int marque) =>
     kEcransSystemeDetectes.sublist(
         marque.clamp(0, kEcransSystemeDetectes.length));
+
+// ===========================================================================
+// CE QU'UN HUMAIN LIT — extension tache 559.
+// ===========================================================================
+//
+// POURQUOI CETTE COUCHE EXISTE, ET CE QU'ELLE CORRIGE. Le 25/09, un apk est
+// parti chez Chris sur la foi de 2604 tests unitaires verts. Il a trouve cinq
+// defauts en six minutes. AUCUN de ces cinq defauts n'etait invisible : ils
+// etaient tous ECRITS A L'ECRAN. Ce que les tests verifiaient, c'est qu'un
+// widget EXISTE ; ce que Chris regardait, c'est ce que le widget DIT.
+//
+// Les outils ci-dessous ne cherchent donc plus un widget : ils LISENT l'ecran
+// comme un humain, et rendent le texte lu dans le journal (preuve citable) ou
+// le refusent quand il n'a aucun sens (cle de traduction brute, `null`, `NaN`,
+// gabarit `{count}` non remplace...).
+
+/// Tous les textes REELLEMENT construits dans l'arbre a cet instant.
+///
+/// Couvre `Text` (data) et les `Text.rich` / `RichText` (via `toPlainText`), ce
+/// qui compte : la moitie des libelles de l'appli sont des spans enrichis, et un
+/// `find.text` classique passe a cote.
+List<String> textesAlEcran() {
+  final vus = <String>[];
+  for (final e in find.byType(Text).evaluate()) {
+    final w = e.widget as Text;
+    final d = w.data ?? w.textSpan?.toPlainText();
+    if (d != null && d.trim().isNotEmpty) vus.add(d.trim());
+  }
+  return vus;
+}
+
+/// Ecrit dans le journal ce que l'ecran affiche — la PREUVE citable d'un pas.
+///
+/// [max] borne la sortie (un ecran de catalogue porte 200 libelles) ; le nombre
+/// total est toujours annonce, donc une troncature se voit.
+void logEcran(String persona, String etape, {int max = 40}) {
+  final textes = textesAlEcran();
+  final extrait = textes.length > max ? textes.sublist(0, max) : textes;
+  logStep(persona, etape,
+      'ECRAN LU (${textes.length} libelle(s)) : ${extrait.join(" | ")}'
+      '${textes.length > max ? " | ...(${textes.length - max} de plus)" : ""}');
+}
+
+/// Motifs qu'un humain ne doit JAMAIS lire dans une application livree.
+///
+/// Chacun vient d'un defaut deja constate quelque part : une cle Slang brute
+/// (`hub.cards.journal` affiche tel quel quand la traduction manque), un
+/// gabarit non substitue (`{count} j`), un `null` / `NaN` / `Infinity` sorti
+/// d'un calcul sans donnee, un `Instance of 'X'` sorti d'un `toString()` oublie.
+final List<RegExp> kMotifsAbsurdes = <RegExp>[
+  RegExp(r'\bnull\b'),
+  RegExp(r'\bNaN\b'),
+  RegExp(r'Infinity'),
+  RegExp(r"Instance of '"),
+  RegExp(r'\{[a-zA-Z_][a-zA-Z0-9_]*\}'),
+  RegExp(r'\$\{'),
+  RegExp(r'\bTODO\b'),
+  RegExp(r'\bFIXME\b'),
+  // Cle de traduction brute : « mot.mot(.mot) » sans espace ni accent, typique
+  // d'un `t.xxx.yyy` non resolu tombe dans un `Text`.
+  RegExp(r'^[a-z][a-zA-Z0-9]*(\.[a-zA-Z0-9]+)+$'),
+];
+
+/// EXIGENCE : rien d'absurde n'est lisible a l'ecran a cet instant.
+///
+/// [tolere] laisse passer un libelle dont on a VERIFIE qu'il est legitime (a
+/// documenter sur place) — jamais un fourre-tout.
+bool exigeAucuneAbsurdite(
+  String persona,
+  String etape, {
+  List<String> tolere = const <String>[],
+}) {
+  final coupables = <String>[];
+  for (final texte in textesAlEcran()) {
+    if (tolere.contains(texte)) continue;
+    for (final motif in kMotifsAbsurdes) {
+      if (motif.hasMatch(texte)) {
+        coupables.add('"$texte" (motif ${motif.pattern})');
+        break;
+      }
+    }
+  }
+  return exige(persona, etape, coupables.isEmpty,
+      'aucun texte absurde lisible a l ecran'
+      '${coupables.isEmpty ? "" : " — LU : ${coupables.join(" ; ")}"}');
+}
+
+/// EXIGENCE : au moins un des [attendus] est lisible a l'ecran.
+///
+/// Sert quand plusieurs redactions sont acceptables (verdict vert OU orange,
+/// par exemple) : on nomme la liste, et le journal dit ce qui a ete lu.
+bool exigeUnDeCesTextes(
+  String persona,
+  String etape,
+  List<String> attendus,
+  String quoi,
+) {
+  final lus = textesAlEcran();
+  final trouve = attendus.any((a) => lus.any((l) => l.contains(a)));
+  return exige(persona, etape, trouve,
+      '$quoi (attendu l un de : ${attendus.join(" / ")})');
+}
+
+/// Le premier texte a l'ecran qui contient [fragment], ou null.
+///
+/// C'est l'outil de LECTURE : il rend ce que l'ecran dit, pour que le rapport
+/// cite la phrase vue plutot que de resumer ce que le code devrait produire.
+String? texteContenant(String fragment) {
+  for (final t in textesAlEcran()) {
+    if (t.contains(fragment)) return t;
+  }
+  return null;
+}
+
+/// Luminosite du theme REELLEMENT applique a l'ecran (clair / sombre).
+///
+/// On ne lit pas `themeMode` dans le code : on lit le theme herite par le
+/// premier `Scaffold` monte, c'est-a-dire la couleur que l'oeil recoit.
+/// Retourne null si aucun `Scaffold` n'est monte (ecran de chargement nu).
+Brightness? luminositeAlEcran(WidgetTester tester) {
+  final scaffolds = find.byType(Scaffold).evaluate();
+  if (scaffolds.isEmpty) return null;
+  return Theme.of(scaffolds.first).brightness;
+}
+
+/// Position verticale (haut du widget) du premier [finder] a l'ecran, ou null.
+///
+/// Sert a exiger un ORDRE DE LECTURE : « Preparer doit venir avant Journal »
+/// n'est pas une question de presence, c'est une question de position — et
+/// c'est exactement le defaut que Chris a vu en six secondes.
+double? hauteurDe(WidgetTester tester, Finder finder) {
+  if (finder.evaluate().isEmpty) return null;
+  try {
+    return tester.getTopLeft(finder.first).dy;
+  } catch (_) {
+    return null;
+  }
+}
+
+/// REDEMARRAGE A CHAUD de l'application, depuis le test.
+///
+/// CE QUE C'EST, ET CE QUE CE N'EST PAS — a lire avant d'interpreter un
+/// resultat. On rappelle le `main()` de l'application : l'arbre de widgets, le
+/// `ProviderScope` et tout l'etat en memoire sont reconstruits a neuf, comme au
+/// lancement. Ce qui est ECRIT sur l'appareil (SharedPreferences) survit ; ce
+/// qui vit en memoire (base Drift en memoire, etat Riverpod) ne survit pas.
+/// Ce n'est PAS un kill de processus : le processus Android, lui, reste vivant.
+/// Toute conclusion tiree d'ici doit le dire.
+Future<void> redemarrageAChaud(
+  WidgetTester tester,
+  String persona,
+  void Function() lancerApp, {
+  Duration attente = const Duration(seconds: 12),
+}) async {
+  logStep(persona, 'redemarrage',
+      'REDEMARRAGE A CHAUD : rappel de main() (les donnees ecrites sur le '
+      'telephone survivent, l etat en memoire non ; le processus n est PAS tue)');
+  lancerApp();
+  await pumpAndSettleTolerant(tester, timeout: attente);
+  await dismissAdsConsentIfPresent(tester, persona);
+  await pumpAndSettleTolerant(tester);
+}
