@@ -323,7 +323,23 @@ void main() {
           P, 'depart', 'confirmer le depart sans position GPS',
           warnIfMissing: false);
     }
-    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 10));
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+    // DEUXIEME PORTE, RELEVEE LE 25/09 SUR LA BRANCHE CORRIGEE : une fois la
+    // position confirmee, l appli explique pourquoi elle va demander la
+    // localisation « Toujours » (« Suivre ta trace meme ecran eteint ») et
+    // laisse le choix « Plus tard » / « Voir la demande ». Tant qu on n y
+    // repond pas, LA RANDO NE DEMARRE PAS — le cockpit reste en preparation.
+    // Claire n a pas envie d une permission de fond : elle repousse.
+    final prevol = texteContenant('Suivre ta trace');
+    if (prevol != null) {
+      logStep(P, 'depart',
+          'EXPLICATION DE PERMISSION LUE AVANT LE DEPART : "$prevol" — on '
+          'repond « Plus tard », comme une randonneuse pressee.');
+      await tapIfPresent(tester, textFrEn('Plus tard', 'Later'), P, 'depart',
+          'repousser la permission de localisation de fond',
+          warnIfMissing: false);
+      await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
+    }
     await settleAndShoot(tester, P, '21_apres_depart',
         timeout: const Duration(seconds: 12));
     logEcran(P, 'depart_apres', max: 60);
@@ -340,7 +356,14 @@ void main() {
     // pas non plus apparaitre deux fois sur le meme ecran.
     await _aller(tester, '/home');
     await _remonterEnHaut(tester);
+    // ON DESCEND LE CHERCHER, ET C EST INDISPENSABLE : le cockpit est une liste
+    // paresseuse. Compter les cartes sans defiler ne mesure que ce que Flutter
+    // a bien voulu construire — on conclurait « absente » sur une carte qui est
+    // simplement plus bas. On defile donc jusqu a elle avant de compter.
+    await scrollUntil(tester, find.text(t.hub.cards.journal), P, 'journal',
+        'carte « ${t.hub.cards.journal} » en phase rando');
     await settleAndShoot(tester, P, '21b_journal_en_rando');
+    logEcran(P, 'journal_rando', max: 60);
     final journauxEnRando = find.text(t.hub.cards.journal).evaluate().length;
     logStep(P, 'journal',
         'EN RANDO — cartes « ${t.hub.cards.journal} » comptees a l ecran = '
@@ -362,7 +385,19 @@ void main() {
       await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 8));
     }
     await settleAndShoot(tester, P, '22_trek_termine');
+    // L APPLI PREND LA MAIN A LA FIN DU TREK, ET C EST NORMAL : elle ouvre
+    // d elle-meme le recapitulatif (« Mon aventure », « Voir mon journal »).
+    // Mesure du 25/09 : compter les cartes du cockpit sans revenir dessus
+    // revenait a mesurer un AUTRE ecran et a conclure « Journal absent » sur
+    // un ecran qui, justement, propose le journal. On revient donc au cockpit
+    // avant de compter.
+    logEcran(P, 'ecran_fin_trek', max: 40);
+    await _aller(tester, '/home');
     await _remonterEnHaut(tester);
+    await scrollUntil(tester, find.text(t.hub.cards.journal), P, 'journal',
+        'carte « ${t.hub.cards.journal} » apres le trek');
+    await settleAndShoot(tester, P, '22b_journal_apres_trek');
+    logEcran(P, 'journal_apres', max: 60);
     final journauxApres = find.text(t.hub.cards.journal).evaluate().length;
     logStep(P, 'journal',
         'APRES LE TREK — cartes « ${t.hub.cards.journal} » comptees a l ecran '
