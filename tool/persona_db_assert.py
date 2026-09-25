@@ -54,6 +54,14 @@ ATTENDUS = {
         "absentes": ["flutter.hiker.profile"],
         "table_vides": ["hiker_profile", "health_info"],
     },
+    # LE CAS VOISIN. Le pays n est pas une donnee de sante : la cle du profil
+    # doit SURVIVRE au refus, amputee de la morphologie et pays intact. Exiger
+    # sa disparition partout effacerait une donnee jamais refusee.
+    "apres-refus-avec-pays": {
+        "absentes": [],
+        "table_vides": [],
+        "profil_ampute": True,
+    },
 }
 
 
@@ -110,6 +118,31 @@ def main():
             n == 0,
             f"[{moment}] la table « {table} » est VIDE sur le disque "
             f"(lignes lues : {n})")
+
+    if regles.get("profil_ampute"):
+        brut = cles.get("flutter.hiker.profile")
+        if brut is None:
+            exigence(False,
+                     f"[{moment}] la cle du profil a DISPARU alors qu elle "
+                     f"porte un pays, qui n est pas une donnee de sante")
+            ok_total = False
+        else:
+            try:
+                fiche = json.loads(brut)
+            except Exception:
+                fiche = {}
+            pays = str(fiche.get("countryIso") or "")
+            morpho = [fiche.get("age"), fiche.get("heightCm"),
+                      fiche.get("weightKg")]
+            vide = all(not v for v in morpho)
+            ok_total &= exigence(
+                pays != "",
+                f"[{moment}] le PAYS est conserve (lu : « {pays} ») — il n a "
+                f"jamais ete refuse")
+            ok_total &= exigence(
+                vide,
+                f"[{moment}] la MORPHOLOGIE est partie de la fiche conservee "
+                f"(age/taille/poids lus : {morpho})")
 
     if moment == "apres-effacement":
         # CE QUI DOIT RESTER. Un effacement qui emporte les achats et les

@@ -804,9 +804,11 @@ Future<void> sonderLeStockage(String persona, String libelle) async {
       'LECTURE DU STOCKAGE REEL demandee au demon hote : « $libelle » '
       '(preferences + fichiers du moteur de stockage). Verdict rendu '
       'host-side, pas par cet ecran.');
-  // Le sondage copie plusieurs fichiers via run-as : on lui laisse le temps
-  // de finir avant que le scenario ne change l etat de l application.
-  await Future<void>.delayed(const Duration(seconds: 6));
+  // Le sondage passe par adb et run-as : sur un emulateur occupe par un test
+  // d integration, chaque appel se paie. Six secondes ne suffisaient pas — le
+  // demon restait sur le premier sondage et manquait les six suivants. On lui
+  // laisse de quoi finir AVANT que le scenario ne change l etat mesure.
+  await Future<void>.delayed(const Duration(seconds: 20));
 }
 
 /// REDEMARRAGE A CHAUD de l'application, depuis le test.

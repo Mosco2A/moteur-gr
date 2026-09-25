@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """SONDE DU STOCKAGE REEL DE L APPLICATION (tache 559, passe 4).
 
 POURQUOI ELLE EXISTE. Retour de Chris, mot pour mot : « Tu verifie aussi ce
@@ -131,8 +131,14 @@ def main():
             "inventaire": {}}
 
     # 1. Preferences — la source durable.
+    # SEUL LE FICHIER DE L APPLICATION EST COPIE, ET C EST UNE CORRECTION.
+    # Copier les cinq XML (Google, WebView, mesure) coutait une dizaine
+    # d appels adb : sur un emulateur occupe par un test, la sonde depassait la
+    # fenetre que le scenario lui laisse, et le demon manquait les marqueurs
+    # suivants — un seul sondage sur sept. On ne copie plus que ce qui porte
+    # les donnees de l application.
     for nom in lister(serial, f"{BASE}/shared_prefs"):
-        if not nom.endswith(".xml"):
+        if nom != "FlutterSharedPreferences.xml":
             continue
         local = os.path.join(dossier, nom)
         taille = copier(serial, f"{BASE}/shared_prefs/{nom}", local)

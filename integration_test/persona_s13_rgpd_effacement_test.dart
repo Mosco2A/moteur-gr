@@ -72,6 +72,10 @@ void main() {
     exige(P, 'art9', refuse,
         'le consentement morphologie est bien laisse REFUSE avant d enregistrer');
 
+    // ETAT DU STOCKAGE AVANT LE REFUS : sans lui, on ne peut pas dire ce que
+    // le refus AJOUTE. Le correctif ferme la cle que j avais mesuree ; rien ne
+    // garantit qu aucune autre ecriture n a lieu. On compare, on ne suppose pas.
+    await sonderLeStockage(P, 'avant-refus-art9');
     await tapIfPresent(tester, find.text(t.hikerProfile.save), P, 'art9',
         'toucher Enregistrer SANS avoir consenti', warnIfMissing: false);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
@@ -177,6 +181,14 @@ void main() {
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
     await settleAndShoot(tester, P, '07_ecran_consentements');
     logEcran(P, 'revocation', max: 40);
+    await sonderLeStockage(P, 'avant-revocation');
+    // CARTOGRAPHIE DE L ECRAN, AVANT DE TOUCHER QUOI QUE CE SOIT. Trois passes
+    // de suite, mon geste de retrait a ACCORDE au lieu de retirer. Deux causes
+    // possibles, et elles s excluent : soit l ecran n affiche pas l etat reel,
+    // soit MA visee tombe sur la mauvaise finalite. On releve donc, pour
+    // CHAQUE finalite, son titre et l etat de la bascule que je lui associe —
+    // et on comparera au stockage, qui ne ment pas.
+    _cartographierLesConsentements(tester);
     final avantBascule = _etatConsentementSante(tester);
     final revoque = await _basculerConsentementSante(tester);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 6));
@@ -191,6 +203,10 @@ void main() {
     // ON LIT LA BASCULE, ON NE SUPPOSE PAS. Sans cela, « l appli n efface pas »
     // et « mon tap n a pas porte » se ressemblent — et l un accuse le produit
     // quand l autre accuse le test.
+    exige(P, 'revocation', avantBascule == true,
+        'le consentement accorde depuis la fiche est VU comme accorde sur '
+        'l ecran Confidentialite (lu : $avantBascule) — c est ce qui manquait '
+        'aux passes precedentes et rendait le retrait injouable');
     exige(P, 'revocation', apresBascule == false,
         'la bascule est REELLEMENT retiree apres le tap (lue : $apresBascule)');
 
@@ -211,6 +227,33 @@ void main() {
         '"$tailleApresRevoc" / "$poidsApresRevoc")');
 
     await sonderLeStockage(P, 'apres-revocation');
+
+    // =====================================================================
+    // 1ter — LE CAS VOISIN : UNE FICHE QUI PORTE AUSSI LE PAYS
+    // =====================================================================
+    // Le pays n est PAS une donnee de sante : il n a aucune raison de partir
+    // avec la morphologie. Ici la cle du profil doit donc SURVIVRE au refus —
+    // amputee de l age, de la taille et du poids, mais avec son pays intact.
+    // C est la contre-partie du cas precedent : exiger la disparition de la
+    // cle PARTOUT effacerait une donnee que l utilisateur n a jamais refusee.
+    await _aller(tester, '/trail/$kTrailId/hiker-profile');
+    await _saisirMorpho(tester, age: '44', taille: '168', poids: '70');
+    final paysPose = await _choisirPays(tester, 'France');
+    logStep(P, 'pays', 'Pays choisi sur la fiche = $paysPose');
+    await _accepterConsentement(tester);
+    await tapIfPresent(tester, find.text(t.hikerProfile.save), P, 'pays',
+        'enregistrer la fiche avec le pays', warnIfMissing: false);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 5));
+    await sonderLeStockage(P, 'avant-refus-avec-pays');
+
+    await _aller(tester, '/trail/$kTrailId/hiker-profile');
+    await _retirerConsentement(tester);
+    await tapIfPresent(tester, find.text(t.hikerProfile.save), P, 'pays',
+        'enregistrer apres avoir RETIRE l accord, fiche avec pays',
+        warnIfMissing: false);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 5));
+    await settleAndShoot(tester, P, '09b_refus_avec_pays');
+    await sonderLeStockage(P, 'apres-refus-avec-pays');
 
     // =====================================================================
     // 2 — LE VOCABULAIRE PROSCRIT, DANS LES CINQ LANGUES, PENDANT LA SAISIE
@@ -525,66 +568,127 @@ Future<bool> _accepterConsentement(WidgetTester tester) async {
 }
 
 
-/// Etat REEL de la bascule « donnees de sante » sur l ecran des consentements.
+/// La bascule « donnees de sante » de l ecran Confidentialite, visee par LA
+/// CLE QUE LE PRODUIT LUI DONNE.
+///
+/// POURQUOI CE CHANGEMENT, ET IL EXPLIQUE TROIS PASSES D ECHECS. Je visais
+/// jusqu ici « la bascule la plus proche verticalement du titre ». La
+/// cartographie de l ecran a montre que cette heuristique tombe juste pour les
+/// trois premieres finalites (ecart 47 a 62 px) et FAUX pour la quatrieme :
+/// « Donnees de sante » se voyait attribuer la bascule de « Signalement
+/// public », a 160 px — sa carte est plus haute, car elle porte un badge et un
+/// avertissement. Je lisais donc l etat d une autre finalite, et mon geste de
+/// retrait ACCORDAIT le signalement public. La sonde l avait montre sans que
+/// j en comprenne la cause ; la cartographie l a nommee. Le produit, lui,
+/// posait depuis le debut une cle sur chaque bascule.
+Finder _basculeSante() =>
+    find.byKey(const ValueKey('consent-toggle-healthData'));
+
 bool? _etatConsentementSante(WidgetTester tester) {
-  final titre = find.text(t.consent.purposes.healthData);
-  if (titre.evaluate().isEmpty) return null;
-  final y = hauteurDe(tester, titre);
-  if (y == null) return null;
-  final bascules = find.byType(Switch);
-  if (bascules.evaluate().isEmpty) return null;
-  var meilleure = 0;
-  var ecartMin = double.infinity;
-  for (var i = 0; i < bascules.evaluate().length; i++) {
-    final ecart = (tester.getTopLeft(bascules.at(i)).dy - y).abs();
-    if (ecart < ecartMin) {
-      ecartMin = ecart;
-      meilleure = i;
-    }
-  }
-  return tester.widget<Switch>(bascules.at(meilleure)).value;
+  final f = _basculeSante();
+  if (f.evaluate().isEmpty) return null;
+  return tester.widget<SwitchListTile>(f.first).value;
 }
 
-/// Bascule la finalite « donnees de sante » sur l ecran des consentements.
+/// Bascule la finalite « donnees de sante », et verifie qu elle a bouge.
 Future<bool> _basculerConsentementSante(WidgetTester tester) async {
-  final titre = find.text(t.consent.purposes.healthData);
-  if (titre.evaluate().isEmpty) {
-    await scrollUntil(tester, titre, P, 'revocation',
-        'finalite « ${t.consent.purposes.healthData} »');
+  final avant = _etatConsentementSante(tester);
+  if (avant == null) {
+    await scrollUntil(tester, _basculeSante(), P, 'revocation',
+        'bascule « ${t.consent.purposes.healthData} »');
   }
-  if (titre.evaluate().isEmpty) return false;
-  final bascules = find.byType(Switch).hitTestable();
-  if (bascules.evaluate().isEmpty) {
-    // Certaines mises en page portent la bascule dans un SwitchListTile.
-    final tuiles = find.byType(SwitchListTile).hitTestable();
-    if (tuiles.evaluate().isEmpty) return false;
-    final y = hauteurDe(tester, titre) ?? 0;
-    var meilleure = 0;
-    var ecartMin = double.infinity;
-    for (var i = 0; i < tuiles.evaluate().length; i++) {
-      final ecart = (tester.getTopLeft(tuiles.at(i)).dy - y).abs();
-      if (ecart < ecartMin) {
-        ecartMin = ecart;
-        meilleure = i;
-      }
-    }
-    await tester.tap(tuiles.at(meilleure), warnIfMissed: false);
+  if (_basculeSante().evaluate().isEmpty) {
+    logStep(P, 'revocation',
+        'COINCE : bascule « ${t.consent.purposes.healthData} » introuvable');
+    return false;
+  }
+  final depart = _etatConsentementSante(tester);
+  for (var essai = 0; essai < 2; essai++) {
+    await tapIfPresent(tester, _basculeSante(), P, 'revocation',
+        'basculer « ${t.consent.purposes.healthData} » (essai ${essai + 1})',
+        warnIfMissing: false);
     await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
-    return true;
+    if (_etatConsentementSante(tester) != depart) return true;
   }
-  final y = hauteurDe(tester, titre) ?? 0;
-  var meilleure = 0;
-  var ecartMin = double.infinity;
-  for (var i = 0; i < bascules.evaluate().length; i++) {
-    final ecart = (tester.getTopLeft(bascules.at(i)).dy - y).abs();
-    if (ecart < ecartMin) {
-      ecartMin = ecart;
-      meilleure = i;
+  logStep(P, 'revocation',
+      'La bascule n a pas bouge : lue $depart avant et apres deux essais');
+  return false;
+}
+
+/// Releve, pour chaque finalite affichee, l etat de SA bascule (par sa cle).
+void _cartographierLesConsentements(WidgetTester tester) {
+  const noms = <String, String>{
+    'locationNavigation': 'Navigation personnelle',
+    'socialSharing': 'Partage social',
+    'publicReporting': 'Signalement public',
+    'healthData': 'Donnees de sante',
+  };
+  final lignes = <String>[];
+  for (final entree in noms.entries) {
+    final f = find.byKey(ValueKey('consent-toggle-${entree.key}'));
+    if (f.evaluate().isEmpty) {
+      lignes.add('${entree.value} : bascule ABSENTE de l arbre');
+      continue;
     }
+    lignes.add('${entree.value} = '
+        '${tester.widget<SwitchListTile>(f.first).value}');
   }
-  await tester.tap(bascules.at(meilleure), warnIfMissed: false);
-  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 4));
+  logStep(P, 'revocation',
+      'ETAT DES CONSENTEMENTS LU PAR LEUR CLE : ${lignes.join(" | ")}');
+}
+
+/// Choisit un pays dans le selecteur, au doigt.
+Future<bool> _choisirPays(WidgetTester tester, String nom) async {
+  final champsAvant = find.byType(TextField).evaluate().length;
+  if (!await tapIfPresent(
+      tester,
+      find.byKey(const ValueKey('hiker-profile-country-field')),
+      P,
+      'pays',
+      'ligne Pays (ouvre le selecteur)',
+      warnIfMissing: false)) {
+    return false;
+  }
+  await pumpAndSettleTolerant(tester);
+  final recherche = find.byType(TextField);
+  if (recherche.evaluate().isNotEmpty) {
+    await tester.enterText(recherche.last, nom);
+    await pumpAndSettleTolerant(tester);
+  }
+  final resultat = find.text(nom).hitTestable();
+  if (resultat.evaluate().isEmpty) {
+    logStep(P, 'pays', 'COINCE : « $nom » introuvable dans le selecteur');
+    return false;
+  }
+  await tester.tap(resultat.first, warnIfMissed: false);
+  await pumpAndSettleTolerant(tester);
+  // On ne referme RIEN si la feuille semble encore ouverte : un pop de repli
+  // refermerait la fiche et fausserait tout ce qui suit (ecart trouve en
+  // passe 3).
+  if (find.byType(TextField).evaluate().length > champsAvant) {
+    logStep(P, 'pays',
+        'CONSTAT : le selecteur semble encore ouvert apres le choix. On ne '
+        'referme rien.');
+  }
   return true;
+}
+
+/// Retire l accord morphologie s il est donne, et verifie qu il est bien tombe.
+Future<bool> _retirerConsentement(WidgetTester tester) async {
+  for (var essai = 0; essai < 2; essai++) {
+    final consent = find.byType(SwitchListTile);
+    if (consent.evaluate().isEmpty) return false;
+    if (tester.widget<SwitchListTile>(consent.first).value == false) {
+      return true;
+    }
+    await tapIfPresent(tester, consent.first, P, 'consentement',
+        'retirer l accord morphologie (essai ${essai + 1})',
+        warnIfMissing: false);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 3));
+  }
+  final reste = find.byType(SwitchListTile);
+  return reste.evaluate().isNotEmpty &&
+      tester.widget<SwitchListTile>(reste.first).value == false;
 }
 
 Future<void> _choisirLangue(WidgetTester tester, String libelle) async {
