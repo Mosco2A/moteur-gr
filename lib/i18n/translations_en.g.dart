@@ -5410,11 +5410,11 @@ extension on TranslationsEn {
 			'summary.stats.elevationGain' => 'Total ascent',
 			'summary.stats.elevationLoss' => 'Total descent',
 			'summary.stats.duration' => 'Estimated time',
+			_ => null,
+		} ?? switch (path) {
 			'summary.stats.stages' => 'Stages',
 			'summary.stats.restDays' => 'Rest days',
 			'summary.dayByDay' => 'Day by day',
-			_ => null,
-		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'D${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Stage ${n}',
 			'summary.restDay' => 'Rest day',
@@ -5428,8 +5428,6 @@ extension on TranslationsEn {
 			'summary.share.elevationGain' => ({required Object m}) => 'Total ascent: ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'Total descent: ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Estimated time: ~${h} h',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'From ${start} to ${end}',
 			'summary.share.planning' => '--- Day-by-day plan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Rest',

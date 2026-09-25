@@ -5410,11 +5410,11 @@ extension on TranslationsEs {
 			'summary.stats.elevationGain' => 'Desnivel positivo',
 			'summary.stats.elevationLoss' => 'Desnivel negativo',
 			'summary.stats.duration' => 'Tiempo estimado',
+			_ => null,
+		} ?? switch (path) {
 			'summary.stats.stages' => 'Etapas',
 			'summary.stats.restDays' => 'Días de descanso',
 			'summary.dayByDay' => 'Día a día',
-			_ => null,
-		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'D${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Etapa ${n}',
 			'summary.restDay' => 'Día de descanso',
@@ -5428,8 +5428,6 @@ extension on TranslationsEs {
 			'summary.share.elevationGain' => ({required Object m}) => 'Desnivel positivo: ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'Desnivel negativo: ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Tiempo estimado: ~${h} h',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Del ${start} al ${end}',
 			'summary.share.planning' => '--- Plan día a día ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Descanso',

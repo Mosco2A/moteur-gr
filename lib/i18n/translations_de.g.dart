@@ -5410,11 +5410,11 @@ extension on TranslationsDe {
 			'summary.stats.elevationGain' => 'Aufstieg gesamt',
 			'summary.stats.elevationLoss' => 'Abstieg gesamt',
 			'summary.stats.duration' => 'Geschätzte Zeit',
+			_ => null,
+		} ?? switch (path) {
 			'summary.stats.stages' => 'Etappen',
 			'summary.stats.restDays' => 'Ruhetage',
 			'summary.dayByDay' => 'Tag für Tag',
-			_ => null,
-		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'T${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Etappe ${n}',
 			'summary.restDay' => 'Ruhetag',
@@ -5428,8 +5428,6 @@ extension on TranslationsDe {
 			'summary.share.elevationGain' => ({required Object m}) => 'Aufstieg gesamt: ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'Abstieg gesamt: ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Geschätzte Zeit: ~${h} h',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Vom ${start} bis ${end}',
 			'summary.share.planning' => '--- Tagesplan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'T${n}: Ruhetag',

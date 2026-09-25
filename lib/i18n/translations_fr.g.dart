@@ -8967,11 +8967,11 @@ extension on Translations {
 			'summary.stats.elevationGain' => 'D+ total',
 			'summary.stats.elevationLoss' => 'D- total',
 			'summary.stats.duration' => 'Durée estimée',
+			_ => null,
+		} ?? switch (path) {
 			'summary.stats.stages' => 'Étapes',
 			'summary.stats.restDays' => 'Jours de repos',
 			'summary.dayByDay' => 'Jour par jour',
-			_ => null,
-		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'J${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Étape ${n}',
 			'summary.restDay' => 'Jour de repos',
@@ -8985,8 +8985,6 @@ extension on Translations {
 			'summary.share.elevationGain' => ({required Object m}) => 'D+ total : ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'D- total : ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Durée estimée : ~${h} h',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Du ${start} au ${end}',
 			'summary.share.planning' => '--- Planning jour par jour ---',
 			'summary.share.dayRest' => ({required Object n}) => 'J${n} : Repos',

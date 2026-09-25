@@ -5410,11 +5410,11 @@ extension on TranslationsIt {
 			'summary.stats.elevationGain' => 'Dislivello positivo',
 			'summary.stats.elevationLoss' => 'Dislivello negativo',
 			'summary.stats.duration' => 'Tempo stimato',
+			_ => null,
+		} ?? switch (path) {
 			'summary.stats.stages' => 'Tappe',
 			'summary.stats.restDays' => 'Giorni di riposo',
 			'summary.dayByDay' => 'Giorno per giorno',
-			_ => null,
-		} ?? switch (path) {
 			'summary.dayLabel' => ({required Object n}) => 'G${n}',
 			'summary.stageLabel' => ({required Object n}) => 'Tappa ${n}',
 			'summary.restDay' => 'Giorno di riposo',
@@ -5428,8 +5428,6 @@ extension on TranslationsIt {
 			'summary.share.elevationGain' => ({required Object m}) => 'Dislivello positivo: ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'Dislivello negativo: ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Tempo stimato: ~${h} h',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Dal ${start} al ${end}',
 			'summary.share.planning' => '--- Programma giorno per giorno ---',
 			'summary.share.dayRest' => ({required Object n}) => 'G${n}: Riposo',
