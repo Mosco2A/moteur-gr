@@ -785,7 +785,9 @@ class _Translations$tips$es extends Translations$tips$fr {
 	@override String get priorityHigh => 'Prioridad alta';
 	@override String get scope => 'Sendero';
 	@override String get season => 'Temporada';
-	@override String get altitude => 'Altitud min.';
+	@override String get scopeAll => 'Todos los senderos';
+	@override late final _Translations$tips$seasons$es seasons = _Translations$tips$seasons$es._(_root);
+	@override String get altitude => 'Altitud mín.';
 	@override String get screenTitle => 'Fichas de consejos';
 	@override String get screenIntro => 'Todo para que tu ruta sea un éxito';
 	@override String get followUs => 'Síguenos:';
@@ -2374,6 +2376,20 @@ class _Translations$feasibility$flow$es extends Translations$feasibility$flow$fr
 	@override String get missingWalkTestNote => 'La prueba de 6 minutos sigue siendo opcional: sin ella, tu resultado se muestra como provisional.';
 	@override String get hintBlocked => 'Completa los criterios de arriba: ahí se decide tu veredicto.';
 	@override String get hintReady => 'Todo listo: puedes ver tu resultado.';
+}
+
+// Path: tips.seasons
+class _Translations$tips$seasons$es extends Translations$tips$seasons$fr {
+	_Translations$tips$seasons$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get all => 'Todo el año';
+	@override String get winter => 'Invierno';
+	@override String get spring => 'Primavera';
+	@override String get summer => 'Verano';
+	@override String get autumn => 'Otoño';
 }
 
 // Path: tips.themes
@@ -4684,7 +4700,13 @@ extension on TranslationsEs {
 			'tips.priorityHigh' => 'Prioridad alta',
 			'tips.scope' => 'Sendero',
 			'tips.season' => 'Temporada',
-			'tips.altitude' => 'Altitud min.',
+			'tips.scopeAll' => 'Todos los senderos',
+			'tips.seasons.all' => 'Todo el año',
+			'tips.seasons.winter' => 'Invierno',
+			'tips.seasons.spring' => 'Primavera',
+			'tips.seasons.summer' => 'Verano',
+			'tips.seasons.autumn' => 'Otoño',
+			'tips.altitude' => 'Altitud mín.',
 			'tips.screenTitle' => 'Fichas de consejos',
 			'tips.screenIntro' => 'Todo para que tu ruta sea un éxito',
 			'tips.followUs' => 'Síguenos:',
@@ -4846,14 +4868,14 @@ extension on TranslationsEs {
 			'social.activityDefi' => 'avanzó en un reto',
 			'gamification.galleryTitle' => 'Mis insignias',
 			'gamification.obtained' => 'Obtenida',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.locked' => 'Bloqueada',
 			'gamification.tierDebutant' => 'Principiante',
 			'gamification.tierExpert' => 'Experto',
 			'gamification.badge.firstStage.titre' => 'Primera etapa',
 			'gamification.badge.firstStage.description' => 'Has completado tu primera etapa.',
 			'gamification.badge.firstTrek.titre' => 'Primer trek',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.badge.firstTrek.description' => 'Has terminado tu primer trek completo.',
 			'gamification.badge.firstSegment.titre' => 'Primer segmento',
 			'gamification.badge.firstSegment.description' => 'Has recorrido tu primer segmento.',
@@ -5360,14 +5382,14 @@ extension on TranslationsEs {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Del ${start} al ${end}',
 			'summary.share.planning' => '--- Plan día a día ---',
 			'summary.share.dayRest' => ({required Object n}) => 'D${n}: Descanso',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'D${n}: ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planificado con ${name}',
 			'summary.empty.title' => 'Configura primero tu itinerario',
 			'summary.empty.message' => 'Elige tu ruta y la duración para ver la síntesis de tu plan.',
 			'summary.empty.action' => 'CONFIGURAR EL ITINERARIO',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Ver los detalles del día ${day}',
-			_ => null,
-		} ?? switch (path) {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Detalles del día de descanso ${day}',
 			'summary.a11y.share' => 'Compartir mi plan',
 			'import.title' => 'Importar un GPX',

@@ -980,7 +980,15 @@
     "priorityHigh": "Prioridad alta",
     "scope": "Sendero",
     "season": "Temporada",
-    "altitude": "Altitud min.",
+    "scopeAll": "Todos los senderos",
+    "seasons": {
+      "all": "Todo el año",
+      "winter": "Invierno",
+      "spring": "Primavera",
+      "summer": "Verano",
+      "autumn": "Otoño"
+    },
+    "altitude": "Altitud mín.",
     "screenTitle": "Fichas de consejos",
     "screenIntro": "Todo para que tu ruta sea un éxito",
     "followUs": "Síguenos:",

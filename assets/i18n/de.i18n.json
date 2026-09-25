@@ -980,6 +980,14 @@
     "priorityHigh": "Hohe Priorität",
     "scope": "Wanderweg",
     "season": "Saison",
+    "scopeAll": "Alle Wege",
+    "seasons": {
+      "all": "Ganzjährig",
+      "winter": "Winter",
+      "spring": "Frühling",
+      "summer": "Sommer",
+      "autumn": "Herbst"
+    },
     "altitude": "Min. Höhe",
     "screenTitle": "Ratgeber",
     "screenIntro": "Alles für eine gelungene Wanderung",

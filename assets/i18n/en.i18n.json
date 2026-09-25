@@ -980,6 +980,14 @@
     "priorityHigh": "High priority",
     "scope": "Trail",
     "season": "Season",
+    "scopeAll": "All trails",
+    "seasons": {
+      "all": "All year",
+      "winter": "Winter",
+      "spring": "Spring",
+      "summer": "Summer",
+      "autumn": "Autumn"
+    },
     "altitude": "Min. altitude",
     "screenTitle": "Advice sheets",
     "screenIntro": "Everything to make your hike a success",

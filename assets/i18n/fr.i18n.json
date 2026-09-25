@@ -980,6 +980,14 @@
     "priorityHigh": "Priorité haute",
     "scope": "Sentier",
     "season": "Saison",
+    "scopeAll": "Tous les sentiers",
+    "seasons": {
+      "all": "Toute l'année",
+      "winter": "Hiver",
+      "spring": "Printemps",
+      "summer": "Été",
+      "autumn": "Automne"
+    },
     "altitude": "Altitude min.",
     "screenTitle": "Fiches conseils",
     "screenIntro": "Tout savoir pour réussir votre randonnée",
