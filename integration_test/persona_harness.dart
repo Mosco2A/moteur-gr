@@ -787,6 +787,28 @@ double? hauteurDe(WidgetTester tester, Finder finder) {
   }
 }
 
+/// DEMANDE UNE LECTURE DU STOCKAGE REEL DE L APPAREIL (tache 559, passe 4).
+///
+/// POURQUOI CE DETOUR. Retour de Chris : il demande si l on verifie aussi ce
+/// qui s ecrit cote stockage. Le scenario s execute SUR L APPAREIL : il ne
+/// peut ni ouvrir le dossier prive de l application, ni lancer adb. Il peut en
+/// revanche NOMMER l instant ou la lecture a du sens. On imprime donc un
+/// marqueur ; un demon hote copie alors les preferences et les fichiers du
+/// moteur de stockage, et un verificateur dit host-side ce qui y reste.
+///
+/// Le verdict de cette lecture n est PAS rendu ici, et c est voulu : on ne
+/// demande pas a l ecran de temoigner de ce que l appareil conserve.
+Future<void> sonderLeStockage(String persona, String libelle) async {
+  print('PERSONA_DB_PROBE|$libelle');
+  logStep(persona, 'stockage',
+      'LECTURE DU STOCKAGE REEL demandee au demon hote : « $libelle » '
+      '(preferences + fichiers du moteur de stockage). Verdict rendu '
+      'host-side, pas par cet ecran.');
+  // Le sondage copie plusieurs fichiers via run-as : on lui laisse le temps
+  // de finir avant que le scenario ne change l etat de l application.
+  await Future<void>.delayed(const Duration(seconds: 6));
+}
+
 /// REDEMARRAGE A CHAUD de l'application, depuis le test.
 ///
 /// CE QUE C'EST, ET CE QUE CE N'EST PAS — a lire avant d'interpreter un

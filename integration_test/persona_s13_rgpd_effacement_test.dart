@@ -125,6 +125,9 @@ void main() {
         'morphologie refusee ne survit pas au redemarrage (relu : '
         '"$ageApresRefus" / "$tailleApresRefus" / "$poidsApresRefus")');
 
+    // LE STOCKAGE DOIT LE CONFIRMER, PAS SEULEMENT L ECRAN.
+    await sonderLeStockage(P, 'apres-refus-art9');
+
     // LE SECOND TAP, APRES AVOIR COCHE, DOIT ENREGISTRER NORMALEMENT.
     await _saisirMorpho(tester, age: '72', taille: '172', poids: '88');
     await _accepterConsentement(tester);
@@ -206,6 +209,8 @@ void main() {
         'retirer le consentement EFFACE ce qui etait deja la — l appli ne se '
         'contente pas de cesser d ecrire (relu : "$ageApresRevoc" / '
         '"$tailleApresRevoc" / "$poidsApresRevoc")');
+
+    await sonderLeStockage(P, 'apres-revocation');
 
     // =====================================================================
     // 2 — LE VOCABULAIRE PROSCRIT, DANS LES CINQ LANGUES, PENDANT LA SAISIE
@@ -335,6 +340,10 @@ void main() {
     await redemarrageAChaud(tester, P, app.main);
     await settleAndShoot(tester, P, '15_apres_redemarrage_efface');
     logEcran(P, 'apres_effacement', max: 30);
+    // LA MESURE LA PLUS DURE : ce que l appareil GARDE apres un effacement
+    // qui se dit complet. L ecran a deja repondu ; le stockage n avait jamais
+    // ete lu.
+    await sonderLeStockage(P, 'apres-effacement');
     // L EFFACEMENT REND L APPLI A SON PREMIER LANCEMENT — c est la preuve la
     // plus forte qu il a porte, et c est aussi un piege de mesure : tant que
     // l onboarding n est pas repasse, sa garde ramene TOUTES les routes vers
