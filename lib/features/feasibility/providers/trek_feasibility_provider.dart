@@ -6,6 +6,7 @@ import '../../../core/models/stage.dart';
 import '../../checklist/domain/season.dart';
 import '../../map/providers/gpx_track_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
+import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/stage_providers.dart';
@@ -275,21 +276,161 @@ final restDaysAfterStageProvider = Provider<Set<int>>((ref) {
   return result;
 });
 
+// ===========================================================================
+// LE DECOUPAGE SUR LEQUEL LE VERDICT PORTE (retour Chris 5 du 25/09, #100417).
+//
+// CE QUI N'ALLAIT PAS. Mot pour mot : « la faisabilite ne tient pas compte du
+// nombre de jours choisi et des repos. » Verifie ligne par ligne :
+// [stageEffortsProvider] lit [stagesProvider], LES ETAPES BRUTES DU SENTIER. Le
+// nombre de jours choisi, les regroupements et les separations d'etapes
+// n'etaient JAMAIS lus. Les jours de repos, EUX, l'etaient
+// ([restDaysAfterStageProvider]) : un demi-cablage, pire qu'aucun, parce qu'il
+// donnait l'illusion que l'ecran suivait les choix du randonneur.
+//
+// CE QUI CHANGE. Le verdict porte desormais sur LE PROGRAMME REEL : une charge
+// par JOUR DE MARCHE de [plannedDaysProvider]. Un jour qui regroupe deux etapes
+// pese la SOMME des deux — c'est la journee qui se marche, pas la ligne du topo
+// — et les jours de repos sont a leur place dans la sequence. Bouger le curseur
+// des jours change le decoupage, donc les charges, donc le verdict : a la baisse
+// (regroupement -> journees plus lourdes) comme a la hausse (separation ->
+// journees plus legeres). C'est la boucle demandee au retour 6.
+//
+// LE REPLI EST EXPLICITE, ET IL NE REND JAMAIS UN VERDICT SUR DU VIDE. Tant
+// qu'aucun programme n'existe (etapes pas encore chargees, container de test
+// sans programme), on retombe sur les etapes brutes — une etape par jour — qui
+// sont exactement le decoupage de reference du sentier. [fromProgram] dit
+// laquelle des deux sources a parle, pour que ce soit verifiable et non suppose.
+// ===========================================================================
+
+/// Le decoupage REEL evalue : une charge par jour de marche + les repos.
+class FeasibilityProgram {
+  const FeasibilityProgram({
+    required this.dayEfforts,
+    required this.restAfterDayIndex,
+    required this.stageCount,
+    required this.fromProgram,
+  });
+
+  /// Aucun decoupage evaluable (ni programme, ni etape brute).
+  static const empty = FeasibilityProgram(
+    dayEfforts: [],
+    restAfterDayIndex: {},
+    stageCount: 0,
+    fromProgram: false,
+  );
+
+  /// Une entree par JOUR DE MARCHE, dans l'ordre de marche. Les etapes d'un
+  /// jour regroupe y sont deja sommees (distance, D+, D−).
+  final List<StageEffort> dayEfforts;
+
+  /// Index 0-based des JOURS DE MARCHE apres lesquels un repos est pose.
+  ///
+  /// Exprime en JOURS, et non plus en etapes : c'est la sequence des charges
+  /// journalieres que la monotonie de Foster consomme (#2-p), et un jour
+  /// regroupe n'y compte que pour une charge.
+  final Set<int> restAfterDayIndex;
+
+  /// Nombre d'etapes portees par ce decoupage — PLAFOND du nombre de jours de
+  /// marche atteignable : une etape ne se coupe pas en deux dans le programme,
+  /// donc on ne conseille jamais plus de jours de marche que d'etapes.
+  final int stageCount;
+
+  /// Vrai si la source est le PROGRAMME du randonneur, faux si c'est le repli
+  /// sur les etapes brutes du sentier.
+  final bool fromProgram;
+
+  /// Nombre de jours de MARCHE du decoupage.
+  int get walkingDays => dayEfforts.length;
+
+  /// Vrai quand il n'y a rien a evaluer (aucun jour de marche).
+  bool get isEmpty => dayEfforts.isEmpty;
+}
+
+/// LE DECOUPAGE COURANT, source unique du verdict (retour Chris 5).
+///
+/// Lit le PROGRAMME du randonneur ([plannedDaysProvider] : jours reellement
+/// choisis, etapes regroupees, jours de repos) et le traduit en charges
+/// journalieres. Repli sur les etapes brutes quand aucun programme n'existe.
+final feasibilityProgramProvider =
+    FutureProvider<FeasibilityProgram>((ref) async {
+  // Le sentier courant peut etre indisponible (container de test minimal) : une
+  // lecture de config ne doit pas emporter l'evaluation avec elle.
+  List<PlannedDay> days;
+  try {
+    final trailId = ref.watch(trailIdProvider);
+    days = ref.watch(plannedDaysProvider(trailId));
+  } catch (_) {
+    days = const [];
+  }
+
+  final efforts = <StageEffort>[];
+  final restAfterDay = <int>{};
+  var stageCount = 0;
+  for (final day in days) {
+    if (day.isRestDay || day.stages.isEmpty) {
+      // Aucun repos « avant la premiere journee » : il ne repose de rien.
+      if (efforts.isNotEmpty) restAfterDay.add(efforts.length - 1);
+      continue;
+    }
+    stageCount += day.stages.length;
+    efforts.add(StageEffort(
+      index: efforts.length,
+      // Le nom de la JOURNEE : celui de son etape, ou les deux noms quand elle
+      // en regroupe deux. C'est ce que le randonneur marche ce jour-la.
+      name: day.stages.map((s) => s.name).join(' + '),
+      distanceKm: day.totalDistanceKm,
+      elevationGainM: day.totalElevationGainM,
+      // Le D− n'entre PAS dans le score (#1-d) : il classe les journees de
+      // l'alerte descente du dispositif poids (#4-l).
+      elevationLossM: day.totalElevationLossM,
+    ));
+  }
+
+  if (efforts.isNotEmpty) {
+    return FeasibilityProgram(
+      dayEfforts: efforts,
+      restAfterDayIndex: restAfterDay,
+      stageCount: stageCount,
+      fromProgram: true,
+    );
+  }
+
+  // REPLI : le decoupage de reference du sentier, une etape par jour.
+  final rawStages = await ref.watch(stageEffortsProvider.future);
+  if (rawStages.isEmpty) return FeasibilityProgram.empty;
+  Set<int> rawRest;
+  try {
+    rawRest = ref.watch(restDaysAfterStageProvider);
+  } catch (_) {
+    rawRest = const {};
+  }
+  return FeasibilityProgram(
+    dayEfforts: rawStages,
+    restAfterDayIndex: rawRest,
+    stageCount: rawStages.length,
+    fromProgram: false,
+  );
+});
+
 /// Evaluation complete de faisabilite (etapes + circuit + conseils) — V2.
 ///
 /// Null si aucune etape (pas de sentier charge) -> l'UI retombe sur le
 /// questionnaire de dépannage, comme le verdict objectif.
 final feasibilityAssessmentProvider =
     FutureProvider<FeasibilityAssessment?>((ref) async {
-  final stages = await ref.watch(stageEffortsProvider.future);
-  if (stages.isEmpty) return null;
+  final program = await ref.watch(feasibilityProgramProvider.future);
+  if (program.isEmpty) return null;
   final level = await ref.watch(hikerLevelProvider.future);
   final objective = await ref.watch(objectiveProfileProvider.future);
   final conditions = await ref.watch(trekConditionsProvider.future);
-  final restDays = ref.watch(restDaysAfterStageProvider);
+  final restDays = program.restAfterDayIndex;
   return FeasibilityFormula.evaluate(
-    stages: stages,
+    stages: program.dayEfforts,
     level: level,
+    // PLAFOND DU CONSEIL : jamais plus de jours de marche qu'il n'y a d'etapes.
+    // Sans cette borne, l'ecran pouvait conseiller un nombre de jours que le
+    // curseur du Programme ne sait pas atteindre — un conseil inapplicable.
+    maxWalkingDays: program.stageCount,
     // Plancher demontre (#2-g) : on ne dit jamais a quelqu'un qu'il ne peut
     // pas faire ce qu'il a deja demontre faire.
     demonstratedFloorEnergyKm: objective.maxDailyEnergyKmDone,
@@ -299,6 +440,8 @@ final feasibilityAssessmentProvider =
     // aucun seuil publie ne permet de la scorer. On enonce le fait.
     longestConsecutiveDaysDone: objective.maxConsecutiveDaysDone,
     // C3, le repos : les jours de repos du PROGRAMME, charge nulle (#2-p).
+    // Reperes en index de JOURNEES DE MARCHE depuis la tache 551 — c'est la
+    // sequence des charges journalieres que la monotonie consomme.
     restAfterStageIndex: restDays,
     conditions: conditions,
   );

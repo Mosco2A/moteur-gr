@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../feasibility/domain/feasibility_formula.dart';
 
 /// Niveau de difficulte derive du ratio etapes / jours de marche (parite GR20).
 ///
@@ -37,6 +38,36 @@ Color durationDifficultyColor(DurationDifficulty difficulty) {
       return AppTheme.orangeDifficile;
     case DurationDifficulty.demanding:
       return AppTheme.rougeExtreme;
+  }
+}
+
+/// COULEUR DU VERDICT DE FAISABILITE (retour Chris 6c du 25/09, spec #100417).
+///
+/// Mot pour mot : « le curseur jour change de couleur dans programme ». Ce sont
+/// les MEMES couleurs que le feu tricolore de l'ecran Faisabilite, et c'est
+/// obligatoire : deux palettes pour un seul verdict, ce sont deux verdicts pour
+/// le randonneur.
+Color durationVerdictColor(FeasibilityVerdict verdict) {
+  switch (verdict) {
+    case FeasibilityVerdict.green:
+      return AppTheme.vertFacile;
+    case FeasibilityVerdict.orange:
+      return AppTheme.orangeDifficile;
+    case FeasibilityVerdict.red:
+      return AppTheme.rougeUrgence;
+  }
+}
+
+/// Libelle i18n du verdict (memes textes que le feu tricolore).
+String durationVerdictLabel(FeasibilityVerdict verdict) {
+  final v = t.feasibility.formula.verdicts;
+  switch (verdict) {
+    case FeasibilityVerdict.green:
+      return v.green;
+    case FeasibilityVerdict.orange:
+      return v.orange;
+    case FeasibilityVerdict.red:
+      return v.red;
   }
 }
 
@@ -87,6 +118,7 @@ class DurationSelector extends StatelessWidget {
     required this.totalDays,
     required this.restDays,
     required this.onDurationChanged,
+    this.verdict,
   });
 
   /// Nombre minimal de jours (borne basse du sentier).
@@ -115,12 +147,28 @@ class DurationSelector extends StatelessWidget {
   /// Callback appele quand l'utilisateur change la duree.
   final ValueChanged<int> onDurationChanged;
 
+  /// VERDICT DE FAISABILITE DU DECOUPAGE COURANT (retour Chris 6c).
+  ///
+  /// Quand il est fourni, c'est LUI qui colore le curseur et nomme la pastille :
+  /// le randonneur bouge le curseur et voit le vert arriver. `null` tant que le
+  /// verdict n'est pas calculable (profil incomplet, etapes pas encore
+  /// chargees) — on retombe alors sur le ratio etapes/jour d'origine, qui ne
+  /// depend d'aucun profil. On n'invente jamais un verdict pour colorer.
+  final FeasibilityVerdict? verdict;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // Le verdict prime sur le ratio : il tient compte du profil du randonneur
+    // ET du decoupage reel, la ou le ratio ne voit que des etapes par jour.
+    final v = verdict;
     final difficulty = durationDifficultyFor(stageCount, walkingDays);
-    final sliderColor = durationDifficultyColor(difficulty);
+    final sliderColor = v == null
+        ? durationDifficultyColor(difficulty)
+        : durationVerdictColor(v);
+    final badgeLabel =
+        v == null ? durationDifficultyLabel(difficulty) : durationVerdictLabel(v);
 
     // Bornes securisees : un slider exige min < max et au moins 1 division.
     final min = minDuration.toDouble();
@@ -157,18 +205,31 @@ class DurationSelector extends StatelessWidget {
               ),
               const Spacer(),
               // Pastille de difficulte (couleur semantique + libelle i18n).
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: sliderColor.withAlpha(30),
-                  borderRadius: BorderRadius.circular(AppTheme.radiusChip),
-                  border: Border.all(color: sliderColor.withAlpha(90)),
-                ),
-                child: Text(
-                  durationDifficultyLabel(difficulty),
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: sliderColor,
-                    fontWeight: FontWeight.w700,
+              //
+              // FLEXIBLE, ET C'EST OBLIGATOIRE : depuis que la pastille peut
+              // porter un libelle de VERDICT (« Au-dessus de tes capacites »,
+              // trois fois plus long que « Tres exigeant »), une pastille rigide
+              // faisait deborder la ligne sur un ecran de telephone — constate
+              // en test widget a 468 px de large. Elle se replie desormais sur
+              // deux lignes plutot que de deborder.
+              Flexible(
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: sliderColor.withAlpha(30),
+                    borderRadius: BorderRadius.circular(AppTheme.radiusChip),
+                    border: Border.all(color: sliderColor.withAlpha(90)),
+                  ),
+                  child: Text(
+                    badgeLabel,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: sliderColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
