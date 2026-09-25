@@ -105,13 +105,6 @@ void main() {
     await exigeSaisie(
         tester, _champ('Taille'), '168', P, 'fiche_info', 'taille');
     await exigeSaisie(tester, _champ('Poids'), '61', P, 'fiche_info', 'poids');
-    final pays = await _choisirPays(tester, 'France');
-    exige(P, 'fiche_info', pays,
-        'le pays se choisit au doigt dans le selecteur');
-    if (pays) {
-      exige(P, 'fiche_info', present(find.text('France')),
-          'le pays choisi s affiche par son NOM (« France »), pas par un code');
-    }
     final accord = await _accepterConsentementMorpho(tester);
     exige(P, 'fiche_info', accord,
         'l accord morphologie est REELLEMENT coche avant d enregistrer — sans '
@@ -125,6 +118,26 @@ void main() {
     exige(P, 'fiche_info', !present(find.text(t.hikerProfile.errorEmpty)),
         'une fiche CORRECTEMENT renseignee n est pas refusee');
     await settleAndShoot(tester, P, '07_fiche_enregistree');
+
+    // LE PAYS SE CHOISIT MAINTENANT, ET C EST UN DEPLACEMENT VOLONTAIRE.
+    // Le rouge « France » — la feuille de selection qui ne se referme pas —
+    // ne se contente pas de rater son exigence : tant qu elle reste montee,
+    // elle COUVRE la bascule de consentement et le bouton Enregistrer, qui
+    // deviennent inatteignables. Mesure du 26/09 : l accord ne pouvait plus
+    // etre coche, la fiche ne partait pas, et le scenario concluait « aucun
+    // verdict » dix pas plus loin. En choisissant le pays APRES l
+    // enregistrement, le rouge reste mesure mais il ne fait plus tomber le
+    // reste du parcours. On ne masque rien : on empeche une defaillance
+    // connue du harnais d en fabriquer d autres.
+    await _aller(tester, '/trail/$kTrailId/hiker-profile');
+    final pays = await _choisirPays(tester, 'France');
+    exige(P, 'fiche_info', pays,
+        'le pays se choisit au doigt dans le selecteur');
+    if (pays) {
+      exige(P, 'fiche_info', present(find.text('France')),
+          'le pays choisi s affiche par son NOM (« France »), pas par un code');
+    }
+    await settleAndShoot(tester, P, '07b_pays_choisi');
 
     // =====================================================================
     // 5 — LE TEST DE MARCHE : on l'ouvre et on le demarre (pas 6 minutes)
@@ -521,6 +534,16 @@ Future<bool> _choisirPays(WidgetTester tester, String nom) async {
 /// moteur de faisabilite d un defaut qui n etait pas le sien. On rend la
 /// bascule visible, on la tape, et ON RELIT son etat.
 Future<bool> _accepterConsentementMorpho(WidgetTester tester) async {
+  // ON FERME LE CLAVIER D ABORD, ET C EST LA DIFFERENCE AVEC S13. Ici trois
+  // champs viennent d etre saisis : le clavier reel de l appareil est encore
+  // leve et recouvre le bas de la fiche, ou vit justement la bascule. Sans ce
+  // geste, le tap tombe sur le clavier, la bascule reste a refuse, la fiche ne
+  // part pas — et le scenario accuse le moteur de faisabilite dix pas plus
+  // loin. Un humain, lui, referme le clavier sans y penser.
+  FocusManager.instance.primaryFocus?.unfocus();
+  await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 3));
+  await scrollUntil(tester, find.byType(SwitchListTile), P, 'fiche_info',
+      'bascule de consentement morphologie');
   for (var essai = 0; essai < 2; essai++) {
     final consent = find.byType(SwitchListTile);
     if (consent.evaluate().isEmpty) {

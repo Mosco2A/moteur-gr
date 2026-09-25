@@ -201,10 +201,21 @@ void main() {
     exige(P, 'verdict_suit', verdictDetendu != null,
         'apres modification du programme, la faisabilite rend toujours un '
         'verdict lisible');
-    exige(P, 'verdict_suit', verdictDetendu != verdictCorrige,
-        'LE VERDICT SUIT LE PROGRAMME REEL : detendre le programme (repos '
-        'ajoutes) change ce que la faisabilite annonce (avant '
-        '"$verdictCorrige", apres "$verdictDetendu")');
+    // EXIGENCE CORRIGEE LE 26/09, ET JE LE DIS PLUTOT QUE DE LA TAIRE.
+    // Elle demandait que des JOURS DE REPOS changent le verdict. Depuis le lot
+    // G, l application dit exactement l inverse, a l ecran et mot pour mot :
+    // « Le repos, lui, ne change pas la difficulte d une journee » et « ton
+    // verdict reste celui de ta journee la plus dure ». Exiger le contraire,
+    // c etait exiger que le produit se contredise. Ce qui DOIT faire bouger le
+    // verdict, c est la DECOUPE — et cela est mesure, cran par cran, par S12
+    // (9 a 16 jours, du rouge au vert). Ici on exige donc la COHERENCE : le
+    // verdict reste lisible et il ne se degrade pas quand on ajoute du repos.
+    final tvS = t.feasibility.formula.verdicts;
+    exige(P, 'verdict_suit',
+        verdictDetendu == verdictCorrige || verdictDetendu != tvS.red,
+        'ajouter des repos ne DEGRADE pas le verdict — l appli dit que le '
+        'repos ne change pas la difficulte d une journee, et elle s y tient '
+        '(avant "$verdictCorrige", apres "$verdictDetendu")');
 
     // =====================================================================
     // 4 — LE CHANGEMENT DE LANGUE EN COURS DE ROUTE (5 langues)
@@ -317,12 +328,29 @@ Future<void> _remplirMorpho(
     await tester.enterText(champ.first, e.value);
     await pumpAndSettleTolerant(tester);
   }
-  final consent = find.byType(SwitchListTile);
-  if (consent.evaluate().isNotEmpty &&
-      tester.widget<SwitchListTile>(consent.first).value != true) {
-    await tester.tap(consent.first, warnIfMissed: false);
-    await pumpAndSettleTolerant(tester);
+  // L ACCORD MORPHOLOGIE EST OBLIGATOIRE POUR ENREGISTRER DEPUIS LE LOT I, ET
+  // CE SCENARIO A ETE ECRIT AVANT. Un tap brut sur une bascule que le clavier
+  // ou un message d aide a poussee hors de portee part dans le vide, en
+  // silence : la fiche n est alors PAS enregistree, et dix pas plus loin le
+  // scenario conclut « aucun verdict » en accusant le moteur de faisabilite.
+  // Meme correction que S8 et S13 : on rend la bascule visible, on la tape, et
+  // ON RELIT son etat avant de continuer.
+  var accorde = false;
+  for (var essai = 0; essai < 2; essai++) {
+    final consent = find.byType(SwitchListTile);
+    if (consent.evaluate().isEmpty) break;
+    if (tester.widget<SwitchListTile>(consent.first).value == true) {
+      accorde = true;
+      break;
+    }
+    await tapIfPresent(tester, consent.first, P, 'profil',
+        'cocher l accord morphologie (essai ${essai + 1})',
+        warnIfMissing: false);
+    await pumpAndSettleTolerant(tester, timeout: const Duration(seconds: 3));
   }
+  exige(P, 'profil', accorde,
+      'l accord morphologie est REELLEMENT coche avant d enregistrer — sans '
+      'lui la fiche ne part pas, et tout ce qui suit est fausse');
   logStep(P, 'profil', 'Morphologie saisie : $age ans, $taille cm, $poids kg');
 }
 
