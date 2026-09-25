@@ -12,11 +12,24 @@
 //      (D4D-01).
 //
 //   2. DROIT A L'EFFACEMENT (art 17 RGPD) : [deleteAccountData] efface
-//      TOUTES les donnees personnelles locales (tables Drift utilisateur,
-//      caches, consentements) ET emet une demande de suppression cote serveur
-//      (suppression des documents lies a l'UID hache). L'app etant
-//      anonyme-by-design (UID hache SHA-256, zero PII directe #85383),
-//      l'effacement est simple — mais il doit etre COMPLET et TRACABLE.
+//      TOUTES les donnees personnelles locales (tables Drift utilisateur, fiche
+//      randonneur, caches, cles SharedPreferences, consentements) ET emet une
+//      demande de suppression cote serveur (suppression des documents lies a
+//      l'UID hache). L'app etant anonyme-by-design (UID hache SHA-256, zero PII
+//      directe #85383), l'effacement est simple — mais il doit etre COMPLET et
+//      TRACABLE.
+//
+//      TACHE 561 (LOT J) — CE QUI A CHANGE, ET POURQUOI. Cet en-tete annoncait
+//      deja un effacement complet alors qu'il ne l'etait pas : la liste des
+//      tables etait RECOPIEE A LA MAIN (seize sur trente-six) et la fiche
+//      randonneur n'y figurait pas — age, taille et poids, que l'application
+//      declare elle-meme au randonneur comme des donnees de sante (art. 9), en
+//      cinq langues. Cote SharedPreferences, seules les quatre cles de
+//      consentement partaient : cinquante-cinq autres restaient, dont le
+//      pseudo, les reservations et le tampon de points GPS bruts.
+//      Les deux listes sont desormais DERIVEES (schema Drift / store de prefs)
+//      et ne portent plus que des EXCEPTIONS nommees et justifiees. Une table
+//      ou une cle nouvelle est donc effacee par defaut, jamais oubliee.
 //
 // Aucun catch silencieux : une erreur de purge ou de suppression remonte
 // (une suppression RGPD qui echoue en silence serait une non-conformite).
@@ -30,6 +43,7 @@ import 'dart:async';
 import 'package:drift/drift.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../features/feasibility/data/hiker_profile_repository.dart';
 import '../data/database.dart';
 import 'consent_service.dart';
 
@@ -131,6 +145,8 @@ class DeletionReport {
     required this.localRowsDeleted,
     required this.consentsCleared,
     required this.serverDeletionRequested,
+    this.prefsKeysDeleted = 0,
+    this.tablesWiped = 0,
   });
 
   /// Nombre total de lignes locales (toutes tables utilisateur) supprimees.
@@ -141,7 +157,23 @@ class DeletionReport {
 
   /// Vrai si la demande de suppression serveur a ete emise avec succes.
   final bool serverDeletionRequested;
+
+  /// Nombre de cles SharedPreferences personnelles supprimees (consentements
+  /// compris). La retention de la SEULE base Drift laissait 55 cles derriere
+  /// elle (tache 561, J1) : ce compte rend l'etage prefs verifiable.
+  final int prefsKeysDeleted;
+
+  /// Nombre de tables Drift videes (derive du schema, pas d'une liste ecrite
+  /// a la main).
+  final int tablesWiped;
 }
+
+/// Signature de l'effacement de la FICHE RANDONNEUR (donnee de sante, art. 9).
+///
+/// Injectable pour les tests ; par defaut branchee sur
+/// `HikerProfileRepository.eraseAllPersonalData`, seule couche qui connaisse
+/// les DEUX etages de stockage de cette fiche (prefs durables + miroir Drift).
+typedef HikerFileEraser = Future<void> Function();
 
 /// Signature de l'appel de suppression cote serveur.
 ///
@@ -159,21 +191,127 @@ class DataRetentionService {
     required SharedPreferences prefs,
     ServerDeletionRequest? serverDeletion,
     RetentionPolicy policy = const RetentionPolicy(),
+    HikerFileEraser? hikerFileEraser,
     DateTime Function()? now,
   })  : _db = database,
         _prefs = prefs,
         _serverDeletion = serverDeletion,
         _policy = policy,
+        _hikerFileEraser = hikerFileEraser ??
+            HikerProfileRepository(db: database, prefs: prefs)
+                .eraseAllPersonalData,
         _now = now ?? DateTime.now;
 
   final AppDatabase _db;
   final SharedPreferences _prefs;
   final ServerDeletionRequest? _serverDeletion;
   final RetentionPolicy _policy;
+  final HikerFileEraser _hikerFileEraser;
   final DateTime Function() _now;
+
+  // ---------------------------------------------------------------------------
+  // CLASSIFICATION DES TABLES — pourquoi elle est DERIVEE et non recopiee
+  // ---------------------------------------------------------------------------
+  //
+  // Avant la tache 561, la liste des tables a vider etait ecrite a la main :
+  // seize tables sur trente-six. Huit tables a donnee personnelle n'y etaient
+  // pas, dont `hiker_profile` — l'age, la taille et le poids, que l'application
+  // declare elle-meme comme des donnees de sante (art. 9) au randonneur. Le
+  // defaut n'etait pas l'oubli d'une table : c'etait une liste recopiee, qu'on
+  // oublie fatalement de tenir a jour.
+  //
+  // Le sens est donc INVERSE. On n'enumere plus ce qu'on efface : on enumere les
+  // DEUX exceptions, et tout le reste du schema est efface. Consequence voulue :
+  // une table ajoutee demain et oubliee par son auteur est EFFACEE, pas
+  // conservee. Le defaut protege la personne, pas la donnee. Le test de
+  // classification (`data_retention_classification_test.dart`) exige en plus
+  // que chaque table du schema soit nommee dans une categorie.
+
+  /// EXCEPTION 1 — tables de REFERENCE : contenu telecharge du sentier, aucune
+  /// donnee personnelle. Les vider ferait perdre le sentier a un utilisateur qui
+  /// demande l'effacement de SES donnees, sans rien proteger.
+  static const Set<String> referenceTableNames = <String>{
+    'stages',
+    'pois',
+    'segments',
+    'waypoint',
+    'trail_meta',
+    'trail_itineraries',
+    'trail_stages',
+    'trail_accommodations',
+    'trail_pois',
+    'trail_gpx_tracks',
+    'trail_gpx_points',
+    'trail_manifests',
+  };
+
+  /// EXCEPTION 2 — donnees personnelles VOLONTAIREMENT conservees, chacune avec
+  /// sa raison. Toute entree ici est une decision assumee, pas un oubli.
+  ///
+  ///   - `wallet_balance`   : solde d'etapes ACHETEES. L'effacer ferait perdre
+  ///     au randonneur ce qu'il a paye ; la donnee est un miroir local du recu
+  ///     du store, qui reste detenu par Google/Apple.
+  ///   - `trek_entitlements`: droits d'acces par sentier, meme raison. Trace de
+  ///     transaction (art 17.3.b/e : obligation comptable, defense de droits).
+  ///   - `no_ads_state`     : periode sans-pub derivee d'un achat ou d'une
+  ///     recompense ; l'effacer re-afficherait des pubs a un abonne.
+  ///
+  /// A ARBITRER PAR CHRIS : si l'effacement doit emporter l'etage monetaire,
+  /// retirer les trois noms d'ici suffit — et le test de classification dira
+  /// aussitot ce qui change.
+  static const Set<String> retainedOnErasureTableNames = <String>{
+    'wallet_balance',
+    'trek_entitlements',
+    'no_ads_state',
+  };
+
+  /// CLES SharedPreferences conservees par l'effacement : reglages d'affichage
+  /// de l'appareil, sans rattachement a la personne. Meme inversion que pour les
+  /// tables : la liste des cles a effacer est DERIVEE de `prefs.getKeys()` (le
+  /// store reel), jamais recopiee — c'est la seule facon d'atteindre les cles
+  /// construites dynamiquement par sentier (`departure_date_<trailId>`,
+  /// `planning.retainedDuration.<trailId>`, `training_done_sessions_<trailId>`...)
+  /// qu'aucune liste ecrite a la main ne peut enumerer.
+  static const Set<String> preservedPrefsKeys = <String>{
+    'settings_language',
+    'settings_distance_unit',
+    'settings_theme_mode',
+    'settings_cache_enabled',
+    'settings_cache_size_mb',
+    'settings_skin',
+    'settings_dominant_hand',
+  };
+
+  /// Cles de prefs conservees en plus des reglages : etage monetaire, meme
+  /// arbitrage que [retainedOnErasureTableNames].
+  ///
+  /// `wallet.deliveredPurchaseIds` porte en outre une garantie d'IDEMPOTENCE :
+  /// l'effacer exposerait a crediter deux fois un achat rejoue par le store.
+  static const Set<String> retainedOnErasurePrefsKeys = <String>{
+    'wallet.balanceSteps',
+    'wallet.lifetimeEarned',
+    'wallet.lifetimeSpent',
+    'wallet.deliveredPurchaseIds',
+    'monetization.purchasedTrails',
+    'purchased_trail_ids',
+  };
 
   /// Politique de retention appliquee (durees par categorie).
   RetentionPolicy get policy => _policy;
+
+  /// Tables Drift effacees par le droit a l'effacement — DERIVEES du schema.
+  ///
+  /// `allTables` moins les deux exceptions. Une table ajoutee au schema sans
+  /// etre classee tombe automatiquement ici (et sera donc effacee).
+  List<TableInfo> get userTables => _db.allTables
+      .where((t) =>
+          !referenceTableNames.contains(t.actualTableName) &&
+          !retainedOnErasureTableNames.contains(t.actualTableName))
+      .toList(growable: false);
+
+  /// Noms SQL des tables effacees (lecture, tracabilite et tests).
+  List<String> get userTableNames =>
+      userTables.map((t) => t.actualTableName).toList(growable: false);
 
   // -------------------------------------------------------------------------
   // RETENTION — purge des donnees locales EXPIREES
@@ -254,11 +392,14 @@ class DataRetentionService {
   ///      [uidHash] non vide) — emise EN PREMIER : si elle echoue, on ne veut
   ///      pas avoir deja efface le local sans avoir prevenu le serveur. Une
   ///      erreur remonte (pas d'effacement partiel silencieux).
-  ///   2. Purge de toutes les tables Drift contenant des donnees utilisateur
-  ///      (contributions, caches, progression, sante, trace, journal...).
-  ///   3. Effacement de tous les consentements locaux.
+  ///   2. Effacement de la FICHE RANDONNEUR par la couche qui la possede
+  ///      (donnee de sante art. 9, stockee sur DEUX etages).
+  ///   3. Purge de toutes les tables Drift a donnee utilisateur, DERIVEE du
+  ///      schema (voir [userTables]).
+  ///   4. Purge des cles SharedPreferences personnelles, DERIVEE du store reel
+  ///      (consentements compris).
   ///
-  /// Retourne un [DeletionReport] (nb de lignes locales supprimees, statut).
+  /// Retourne un [DeletionReport] (lignes, tables, cles, statut serveur).
   ///
   /// [uidHash] : UID hache du compte (anonyme-by-design). Si vide/null, la
   /// suppression serveur est ignoree (compte purement local) mais l'effacement
@@ -272,62 +413,68 @@ class DataRetentionService {
       serverRequested = true;
     }
 
-    // 2. Purge locale COMPLETE de toutes les tables a donnees utilisateur.
+    // 2. FICHE RANDONNEUR (art. 9) par sa propre couche : elle seule connait
+    //    les deux etages. Vider le miroir Drift sans les prefs ne servirait a
+    //    rien — le boot suivant le re-hydrate depuis les prefs.
+    await _hikerFileEraser();
+
+    // 3. Purge locale de toutes les tables a donnees utilisateur (derivee).
     final localRows = await _wipeAllUserTables();
 
-    // 3. Effacement de tous les consentements (acte positif a re-demander).
-    final consentsCleared = await _clearAllConsents();
+    // 4. Purge des cles de prefs personnelles (dont les consentements : un
+    //    consentement est un acte positif, il doit etre re-demande).
+    final prefsKeysDeleted = await _wipeAllPersonalPrefs();
 
     return DeletionReport(
       localRowsDeleted: localRows,
-      consentsCleared: consentsCleared,
+      consentsCleared: true,
       serverDeletionRequested: serverRequested,
+      prefsKeysDeleted: prefsKeysDeleted,
+      tablesWiped: userTables.length,
     );
   }
 
-  /// Supprime toutes les lignes des tables Drift contenant des donnees
-  /// utilisateur. Retourne le nombre total de lignes supprimees.
+  /// Supprime toutes les lignes des tables Drift a donnees utilisateur.
+  /// Retourne le nombre total de lignes supprimees.
   ///
-  /// Couvre : contributions sociales (signalements, efforts, kudos, fil,
-  /// waypoints + commentaires), trace GPS de session, progression, journal,
-  /// checklist, infos sante, suivi de groupe, demandes d'avis, caches
-  /// (meteo, file de synchro). NE touche PAS aux tables de REFERENCE
-  /// (catalogue de sentiers TrailMeta/TrailStages/etc.) qui ne contiennent
-  /// aucune donnee personnelle — seulement le contenu telecharge du sentier.
+  /// La liste n'est PLUS ecrite a la main : elle est derivee du schema
+  /// ([userTables] = `allTables` moins [referenceTableNames] et
+  /// [retainedOnErasureTableNames]). Couvre donc, sans avoir a les enumerer :
+  /// contributions sociales, trace GPS de session, progression, journal,
+  /// checklist, infos sante, fiche randonneur et randos passees, sessions de
+  /// trek, nuitees choisies, suivi de groupe, demandes d'avis et caches.
   Future<int> _wipeAllUserTables() async {
     var total = 0;
-    // Liste explicite des tables a donnees utilisateur (revue ligne a ligne).
-    final userTables = <TableInfo>[
-      _db.reportLocal,
-      _db.segmentEffortLocal,
-      _db.kudosLocal,
-      _db.activityFeedCache,
-      _db.waypointComment,
-      _db.sessionTrackPoints,
-      _db.userProgressEntries,
-      _db.journalEntries,
-      _db.checklistItems,
-      _db.healthInfoEntries,
-      _db.followSessions,
-      _db.followerSlots,
-      _db.reviewRequests,
-      _db.feedbackQueue,
-      _db.weatherCache,
-      _db.syncQueue,
-    ];
     for (final table in userTables) {
       total += await _db.delete(table).go();
     }
     return total;
   }
 
-  /// Efface tous les consentements stockes localement (une cle par finalite).
+  /// Supprime toutes les cles SharedPreferences personnelles. Retourne le
+  /// nombre de cles supprimees.
   ///
-  /// Retourne vrai si l'operation s'est deroulee (meme si rien n'etait stocke).
-  Future<bool> _clearAllConsents() async {
-    for (final purpose in ConsentPurpose.values) {
-      await _prefs.remove(purpose.storageKey);
+  /// DERIVEE DU STORE REEL (`prefs.getKeys()`) moins [preservedPrefsKeys] et
+  /// [retainedOnErasurePrefsKeys]. C'est la seule facon d'emporter les cles
+  /// construites dynamiquement (une par sentier), qu'aucune liste recopiee ne
+  /// peut connaitre — et la seule qui n'oublie pas une cle ajoutee demain.
+  ///
+  /// Les quatre cles de consentement tombent d'elles-memes (elles ne sont dans
+  /// aucune exception) : un consentement est un acte positif, il doit etre
+  /// re-demande apres un effacement. On les retire tout de meme nommement, pour
+  /// que l'effacement du consentement ne depende pas d'une liste d'exceptions.
+  Future<int> _wipeAllPersonalPrefs() async {
+    var deleted = 0;
+    // Copie defensive : on modifie le store en iterant.
+    for (final key in _prefs.getKeys().toList(growable: false)) {
+      if (preservedPrefsKeys.contains(key)) continue;
+      if (retainedOnErasurePrefsKeys.contains(key)) continue;
+      await _prefs.remove(key);
+      deleted++;
     }
-    return true;
+    for (final purpose in ConsentPurpose.values) {
+      if (await _prefs.remove(purpose.storageKey)) deleted++;
+    }
+    return deleted;
   }
 }

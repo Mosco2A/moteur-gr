@@ -18,8 +18,16 @@ import "../firebase/firebase_service.dart";
 import "../models/sync_config.dart";
 import "../network/connectivity_monitor.dart";
 import "../providers/database_provider.dart";
+import "consent_service.dart";
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
+
+/// Raison de refus : consentement art. 9 (donnee de sante) absent ou revoque.
+///
+/// Porte par [CloudSyncResult.error] avec un statut `idle` : ce n'est pas une
+/// panne, c'est un REFUS assume — et il doit rester distinguable d'un
+/// hors-ligne (tache 561, J2).
+const String kSyncErrorHealthConsentMissing = 'health_consent_missing';
 
 /// Statut d une operation de sync cloud.
 /// Utilise String pour extensibilite (valeurs inconnues gerees par fallback).
@@ -69,8 +77,10 @@ class CloudSyncService {
     this.entitlementsDao,
     this.hikerProfileDao,
     this.pastHikesDao,
+    ConsentCheck? consentCheck,
     FirebaseFirestore? firestore,
-  }) : _firestore = firestore;
+  })  : consentCheck = consentCheck ?? consentFromLocalStore,
+        _firestore = firestore;
 
   final ProgressDao progressDao;
   final JournalDao journalDao;
@@ -92,6 +102,12 @@ class CloudSyncService {
 
   /// DAO des randos passees + note d'experience (miroir cloud ANONYME, LOT 4).
   final PastHikesDao? pastHikesDao;
+
+  /// Verification de consentement utilisee par les gardes de ce service
+  /// (tache 561, J2). JAMAIS nulle : a defaut d'injection, elle lit l'etat REEL
+  /// du stockage local ([consentFromLocalStore]). Une garde qu'on peut
+  /// desactiver en oubliant un parametre n'est pas une garde.
+  final ConsentCheck consentCheck;
 
   FirebaseFirestore? _firestore;
 
@@ -463,10 +479,15 @@ class CloudSyncService {
   // restauration du profil au changement de telephone. Le local reste la
   // source durable (last-write-wins via `updated_at`).
   //
-  // GARDE-FOU consentement : l'appelant DOIT verifier
-  // `ConsentPurpose.healthData` avant d'invoquer [syncHikerProfile] (l'IMC
-  // n'est jamais pousse — donnee derivee recalculable, on ne stocke que la
-  // source : age/taille/poids).
+  // GARDE-FOU consentement (tache 561, J2) : [syncHikerProfile] verifie
+  // ELLE-MEME `ConsentPurpose.healthData` avant de pousser quoi que ce soit.
+  //
+  // Ce commentaire disait auparavant « l'appelant DOIT verifier » — et aucune
+  // verification n'existait, ni ici ni chez un appelant (il n'y en a encore
+  // aucun en production). Une protection confiee a la discipline d'un appelant
+  // futur n'est pas une protection : la garde est donc DANS la methode, fermee
+  // par defaut. L'IMC n'est de toute facon jamais pousse (donnee derivee
+  // recalculable ; on ne stocke que la source : age/taille/poids).
 
   /// Payload ANONYME du profil (`users/{uid}/profile/hiker`).
   ///
@@ -512,9 +533,24 @@ class CloudSyncService {
   /// `users/{uid}/profile/experience_note` (texte libre global), en
   /// last-write-wins ([_setWithLastWriteWins]).
   ///
+  /// GARDE ART. 9 : sans consentement `healthData` EFFECTIF, la methode refuse
+  /// et ne lit meme pas la donnee locale ([kSyncErrorHealthConsentMissing]).
+  ///
   /// GRACEFUL NO-OP si Firebase indisponible, hors-ligne, ou DAOs profil non
   /// injectes (retourne `idle` sans rien ecrire). Retro-compat assuree.
   Future<CloudSyncResult> syncHikerProfile(String userId) async {
+    // GARDE ART. 9, EN PREMIER : avant les DAOs, avant le reseau, avant toute
+    // lecture de la donnee de sante. Un refus n'est pas une panne -> statut
+    // `idle`, mais avec une RAISON nommee (sinon il se confond avec un
+    // hors-ligne et devient indebuggable).
+    if (!await consentCheck(ConsentPurpose.healthData)) {
+      _log.w("[CloudSync] Consentement sante absent -> miroir profil REFUSE");
+      return CloudSyncResult(
+        status: CloudSyncStatusValues.idle,
+        syncedAt: DateTime.now(),
+        error: kSyncErrorHealthConsentMissing,
+      );
+    }
     if (hikerProfileDao == null || pastHikesDao == null) {
       _log.d("[CloudSync] DAOs profil non injectes, sync profil ignoree");
       return CloudSyncResult(

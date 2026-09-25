@@ -111,10 +111,52 @@ class HikerProfileRepository {
   }
 
   /// Supprime le profil (droit a l'effacement RGPD) : prefs ET Drift.
+  ///
+  /// PERIMETRE : la seule fiche d'info. Pour l'effacement TOTAL au titre de
+  /// l'article 17 (randos, note d'experience et test de marche compris), c'est
+  /// [eraseAllPersonalData] qu'il faut appeler.
   Future<void> deleteProfile() async {
     final prefs = await _preferences;
     await prefs.remove(kHikerProfilePrefsKey);
     await _profileDao.deleteByUserId(_userId);
+  }
+
+  /// EFFACE TOUTE LA FICHE RANDONNEUR — droit a l'effacement, article 17.
+  ///
+  /// POURQUOI CETTE METHODE EXISTE (tache 561, J1). `DataRetentionService` se
+  /// presente comme un effacement COMPLET, mais sa liste de tables etait
+  /// recopiee a la main et la fiche randonneur n'y figurait pas : un effacement
+  /// au titre du droit a l'oubli laissait l'age, la taille et le poids sur
+  /// l'appareil — la donnee que l'application declare elle-meme au randonneur
+  /// comme relevant de la sante, dans les cinq langues.
+  ///
+  /// POURQUOI ICI, ET PAS DANS LE SERVICE DE RETENTION. Cette fiche est stockee
+  /// sur DEUX etages (prefs durables + miroir Drift) et cette couche est la
+  /// seule a connaitre les deux. Vider le seul miroir Drift n'effacerait rien
+  /// durablement : [load] le re-hydrate depuis les prefs au demarrage suivant.
+  /// Un second chemin d'effacement ecrit ailleurs divergerait le jour ou une
+  /// cle s'ajoute — il n'y a donc qu'un chemin, et c'est celui-ci.
+  ///
+  /// CE QUI PART : les quatre cles de prefs (fiche, randos passees, note
+  /// d'experience, resultat du test de marche 6 min) ET les trois tables Drift
+  /// correspondantes pour cet utilisateur.
+  ///
+  /// A ne pas confondre avec [eraseMorphology] (retrait d'une CATEGORIE de
+  /// donnees apres refus du consentement art. 9 : la fiche survit, videe de sa
+  /// morphologie). Ici, plus rien ne survit.
+  Future<void> eraseAllPersonalData() async {
+    final prefs = await _preferences;
+    // Etage 1 — source durable.
+    await prefs.remove(kHikerProfilePrefsKey);
+    await prefs.remove(kHikerPastHikesPrefsKey);
+    await prefs.remove(kHikerExperienceNotePrefsKey);
+    await prefs.remove(kWalkTestResultPrefsKey);
+    // Etage 2 — miroir Drift.
+    await _profileDao.deleteByUserId(_userId);
+    await _pastHikesDao.deleteAllForUser(_userId);
+    await _pastHikesDao.deleteNote(_userId);
+    _log.d('[HikerProfileRepository] Fiche randonneur effacee (art. 17) : '
+        'prefs ET miroir Drift');
   }
 
   /// EFFACE LA MORPHOLOGIE — age, taille, poids — des deux etages de stockage

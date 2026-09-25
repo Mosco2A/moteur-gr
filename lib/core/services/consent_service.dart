@@ -32,7 +32,10 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Finalites de traitement soumises a consentement granulaire (CNIL).
 ///
@@ -254,5 +257,41 @@ class ConsentService {
   /// Libere le StreamController. A appeler quand le service est detruit.
   void dispose() {
     _controller.close();
+  }
+}
+
+/// Signature d'une verification de consentement UTILISABLE DEPUIS UN SERVICE.
+///
+/// POURQUOI CE TYPE EXISTE (tache 561, J2). Un service qui traite de la donnee
+/// sensible ne peut pas se contenter d'un commentaire demandant a l'appelant de
+/// verifier le consentement : il doit pouvoir le verifier LUI-MEME. Ce type
+/// permet de poser la garde DANS la methode tout en restant testable (on injecte
+/// une verification deterministe en test, jamais un faux stockage).
+typedef ConsentCheck = Future<bool> Function(ConsentPurpose purpose);
+
+/// Verification de consentement PAR DEFAUT : lit l'etat REEL du stockage local.
+///
+/// C'est l'implementation branchee par defaut dans les services qui traitent de
+/// la donnee sensible ([ConsentCheck]). Elle relit les prefs a CHAQUE appel,
+/// volontairement : un consentement retire doit produire un refus tout de suite,
+/// sans dependre d'une instance mise en cache au demarrage (#100482, LOT I : un
+/// consentement revoque puis ignore est exactement le defaut qu'on repare ici).
+///
+/// FERMEE PAR DEFAUT : si l'etat est illisible (prefs indisponibles, JSON
+/// corrompu), la fonction retourne `false` — refus. Un doute sur le
+/// consentement se tranche par le refus, jamais par le traitement. L'echec est
+/// journalise pour rester visible (ce n'est pas un catch silencieux : la
+/// decision prise est explicite et tracee).
+Future<bool> consentFromLocalStore(ConsentPurpose purpose) async {
+  ConsentService? service;
+  try {
+    service = ConsentService();
+    await service.initialize();
+    return service.hasConsent(purpose);
+  } catch (e) {
+    _log.e('[Consent] Etat de "${purpose.name}" illisible ($e) -> REFUS');
+    return false;
+  } finally {
+    service?.dispose();
   }
 }

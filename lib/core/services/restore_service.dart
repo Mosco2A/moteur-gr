@@ -14,6 +14,7 @@ import '../data/daos/past_hikes_dao.dart';
 import '../firebase/firebase_service.dart';
 import '../network/connectivity_monitor.dart';
 import '../providers/database_provider.dart';
+import 'consent_service.dart';
 
 final _log = Logger(
   printer: PrettyPrinter(methodCount: 0),
@@ -24,6 +25,12 @@ const kRestoreErrorOffline = 'offline';
 
 /// Code d erreur : Firebase indisponible.
 const kRestoreErrorFirebaseUnavailable = 'firebase_unavailable';
+
+/// Code d erreur : consentement art. 9 (donnee de sante) absent ou revoque.
+///
+/// Une restauration FAIT DESCENDRE de la donnee de sante sur l'appareil : sans
+/// consentement effectif, elle est refusee (tache 561, J2).
+const kRestoreErrorHealthConsentMissing = 'health_consent_missing';
 
 /// Resultat de la verification de restauration.
 class RestoreCheck {
@@ -70,8 +77,10 @@ class RestoreService {
     required this.firebaseService,
     this.hikerProfileDao,
     this.pastHikesDao,
+    ConsentCheck? consentCheck,
     FirebaseFirestore? firestore,
-  }) : _firestore = firestore;
+  })  : consentCheck = consentCheck ?? consentFromLocalStore,
+        _firestore = firestore;
 
   final ProgressDao progressDao;
   final JournalDao journalDao;
@@ -84,6 +93,10 @@ class RestoreService {
 
   /// DAO des randos passees + note (restauration au changement de tel, LOT 4).
   final PastHikesDao? pastHikesDao;
+
+  /// Verification de consentement de la garde art. 9 (tache 561, J2). JAMAIS
+  /// nulle : a defaut d'injection, lit l'etat REEL du stockage local.
+  final ConsentCheck consentCheck;
 
   FirebaseFirestore? _firestore;
 
@@ -197,7 +210,19 @@ class RestoreService {
   /// hydrate le miroir Drift local. Donnee SENSIBLE : rien de nominatif cote
   /// serveur (hash seul). GRACEFUL NO-OP si DAOs non injectes / hors-ligne /
   /// Firebase indisponible.
+  ///
+  /// GARDE ART. 9 (tache 561, J2) : sans consentement `healthData` EFFECTIF,
+  /// aucune donnee de sante ne redescend sur l'appareil. La garde est DANS la
+  /// methode — il n'existe encore aucun appelant en production, et c'est
+  /// precisement pour cela qu'elle ne peut pas dependre de lui.
   Future<RestoreResult> restoreHikerProfile(String userId) async {
+    if (!await consentCheck(ConsentPurpose.healthData)) {
+      _log.w('[Restore] Consentement sante absent -> restauration REFUSEE');
+      return const RestoreResult(
+        success: false,
+        error: kRestoreErrorHealthConsentMissing,
+      );
+    }
     if (hikerProfileDao == null || pastHikesDao == null) {
       return const RestoreResult(success: false, error: 'daos_absent');
     }

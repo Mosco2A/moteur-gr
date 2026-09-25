@@ -29,9 +29,30 @@ class LocalAuthService implements AuthService {
   @override
   Stream<AuthUser?> get authStateChanges => _authController.stream;
 
-  /// Initialise depuis les préférences sauvegardées
+  /// Emet un etat SI le service est encore vivant.
+  ///
+  /// POURQUOI CE GARDE-FOU (tache 561, J3). `authServiceProvider` lance
+  /// `initialize()` en fire-and-forget (`unawaited`), puis ferme ce controller
+  /// au dispose du provider. Quand le dispose arrive pendant que
+  /// l'initialisation est ENCORE EN VOL — ce qui depend de la charge machine,
+  /// donc « une fois sur trois » —, l'emission tombait sur un controller ferme
+  /// et levait `Bad state: Cannot add new events after calling close`. Une
+  /// erreur asynchrone sans porteur : en test elle etait imputee au test
+  /// suivant (suite rouge par intermittence), en production elle remontait en
+  /// erreur non geree. Emettre dans le vide est ici le comportement correct :
+  /// plus personne n'ecoute.
+  void _emit(AuthUser? user) {
+    if (_authController.isClosed) return;
+    _authController.add(user);
+  }
+
+  /// Initialise depuis les préférences sauvegardées.
+  ///
+  /// Appelee en fire-and-forget par `authServiceProvider` : elle doit donc
+  /// tolerer un dispose survenu pendant son attente, sans rien emettre.
   Future<void> initialize() async {
     final prefs = await SharedPreferences.getInstance();
+    if (_authController.isClosed) return;
     final uid = prefs.getString(_keyUid);
 
     if (uid != null) {
@@ -46,7 +67,7 @@ class LocalAuthService implements AuthService {
         avatarIndex: avatarIdx,
         isAnonymous: methodStr == AuthMethodValues.anonymous,
       );
-      _authController.add(_currentUser);
+      _emit(_currentUser);
     } else {
       // Auto-connexion anonyme au premier lancement
       await signInAnonymously();
@@ -67,7 +88,7 @@ class LocalAuthService implements AuthService {
     await prefs.setString(_keyUid, uid);
     await prefs.setString(_keyMethod, AuthMethodValues.anonymous);
 
-    _authController.add(_currentUser);
+    _emit(_currentUser);
     return _currentUser!;
   }
 
@@ -100,7 +121,7 @@ class LocalAuthService implements AuthService {
     await prefs.setString(_keyMethod, AuthMethodValues.anonymous);
     await prefs.remove(_keyAvatarIndex);
 
-    _authController.add(_currentUser);
+    _emit(_currentUser);
   }
 
   @override
@@ -112,7 +133,7 @@ class LocalAuthService implements AuthService {
     await prefs.remove(_keyAvatarIndex);
 
     _currentUser = null;
-    _authController.add(null);
+    _emit(null);
 
     // Recréer un compte anonyme immédiatement
     await signInAnonymously();
@@ -139,7 +160,7 @@ class LocalAuthService implements AuthService {
       await prefs.setString(_keyName, trimmed);
     }
 
-    _authController.add(_currentUser);
+    _emit(_currentUser);
   }
 
   @override
@@ -158,7 +179,7 @@ class LocalAuthService implements AuthService {
     );
 
     await prefs.setInt(_keyAvatarIndex, clampedIndex);
-    _authController.add(_currentUser);
+    _emit(_currentUser);
   }
 
   /// Libère les ressources

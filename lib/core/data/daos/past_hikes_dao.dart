@@ -72,4 +72,14 @@ class PastHikesDao extends DatabaseAccessor<AppDatabase>
   Future<void> upsertNote(HikerExperienceNoteCompanion entry) async {
     await into(hikerExperienceNote).insertOnConflictUpdate(entry);
   }
+
+  /// Supprime la note d'experience globale de [userId] (droit a l'effacement).
+  ///
+  /// Ce texte libre (« difficultes rencontrees ») peut contenir des mentions de
+  /// sante — genoux, essoufflement, coup de chaud : il doit disparaitre avec le
+  /// reste de la fiche (tache 561, J1).
+  Future<int> deleteNote(String userId) {
+    return (delete(hikerExperienceNote)..where((t) => t.userId.equals(userId)))
+        .go();
+  }
 }

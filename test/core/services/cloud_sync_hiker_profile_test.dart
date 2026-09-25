@@ -54,6 +54,12 @@ void main() {
           FirebaseService.testOnly(isAvailable: firebaseAvailable),
       hikerProfileDao: profileDao,
       pastHikesDao: pastHikesDao,
+      // Consentement art. 9 ACCORDE (tache 561, J2). Sans cette injection, la
+      // garde de consentement refuserait AVANT les verifications Firebase /
+      // hors-ligne : les tests de graceful no-op ci-dessous passeraient pour la
+      // mauvaise raison — vert sans rien prouver. La garde a son propre fichier
+      // de tests (`health_data_consent_guard_test.dart`).
+      consentCheck: (_) async => true,
     );
   }
 
@@ -156,6 +162,7 @@ void main() {
         syncQueueDao: SyncQueueDao(db),
         connectivityMonitor: connectivity,
         firebaseService: FirebaseService.testOnly(isAvailable: true),
+        consentCheck: (_) async => true,
         // hikerProfileDao / pastHikesDao omis volontairement.
       );
       final result = await svc.syncHikerProfile("hash-anon");
