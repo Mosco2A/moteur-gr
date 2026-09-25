@@ -5,6 +5,8 @@ import 'package:logger/logger.dart';
 
 import '../../../core/services/cloud_sync_service.dart';
 import '../../../core/services/consent_service.dart';
+import '../../../core/services/data_retention_service.dart';
+import '../../../core/services/restore_service.dart';
 import '../../../core/services/secure_vault_service.dart';
 import '../domain/models/health_info.dart';
 import '../presentation/health_info_screen.dart'
@@ -45,16 +47,34 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// [ConsentPurpose.healthData], fermée par défaut, et le randonneur lit ce
 /// qu'il perd en refusant (`t.consent.healthBackupNote`, cinq langues, affiché
 /// sur l'écran même où il refuse).
+///
+/// GARDE D'EFFACEMENT (tâche 566, LOT O) — ET ELLE N'EST PAS LA MÊME CHOSE QUE
+/// LA PRÉCÉDENTE. Le consentement art. 9 ne protège PAS d'une résurrection :
+/// un consentement se RE-ACCORDE, un droit à l'effacement s'exerce une fois.
+/// Les trois chemins qui font REDESCENDRE la fiche ([restoreWithCode],
+/// [restoreFromCloud], [restoreWithLocalKey]) refusent donc d'abord sur le
+/// marqueur d'effacement local ([kLocalErasureMarkerPrefsKey]), avec la raison
+/// déjà nommée par [RestoreService] ([kRestoreErrorErasedLocally]) : un seul
+/// mot pour un seul fait, pas un second chemin parallèle.
+///
+/// LES CHEMINS QUI FONT MONTER NE SONT PAS GARDÉS, ET C'EST DÉLIBÉRÉ.
+/// [exportWithCode], [exportWithLocalKey] et [backupToCloud] lisent la fiche
+/// LOCALE — que l'effacement a supprimée. Après un effacement, il n'y a donc
+/// rien à exporter ; et si le randonneur ressaisit une fiche neuve, elle est à
+/// lui : la sauvegarder n'est pas ressusciter. Le bloquer punirait quelqu'un
+/// d'avoir exercé un droit. Un test tient cette limite.
 class HealthBackupService {
   HealthBackupService({
     required SecureVaultService vault,
     required HealthInfoRepository healthRepository,
     CloudSyncService? cloudSync,
     ConsentCheck? consentCheck,
+    LocalErasureCheck? localErasureCheck,
   }) : _vault = vault,
        _health = healthRepository,
        _cloudSync = cloudSync,
-       consentCheck = consentCheck ?? consentFromLocalStore;
+       consentCheck = consentCheck ?? consentFromLocalStore,
+       localErasureCheck = localErasureCheck ?? localErasureFromStore;
 
   final SecureVaultService _vault;
   final HealthInfoRepository _health;
@@ -65,6 +85,12 @@ class HealthBackupService {
   /// retiré produit donc un refus immédiat. Une garde qu'on désactive en
   /// oubliant un paramètre n'est pas une garde (tâche 561, J2).
   final ConsentCheck consentCheck;
+
+  /// Vérification « ce téléphone a-t-il exercé son droit à l'effacement ? »
+  /// (tâche 566, LOT O). JAMAIS nulle non plus : à défaut d'injection, elle lit
+  /// le marqueur RÉEL posé par [DataRetentionService.deleteAccountData], relu à
+  /// CHAQUE appel — pour la même raison que [consentCheck].
+  final LocalErasureCheck localErasureCheck;
 
   /// Transport du blob chiffré vers le miroir anonyme (optionnel : sans lui, on
   /// reste en mode blob « à déposer soi-même », p.ex. cloud OS). Ciphertext only.
@@ -88,6 +114,36 @@ class HealthBackupService {
     if (await consentCheck(ConsentPurpose.healthData)) return;
     _log.w('[HealthBackup] Consentement santé absent -> $operation REFUSÉ');
     throw const HealthConsentMissingException();
+  }
+
+  /// GARDE D'EFFACEMENT (tâche 566, LOT O) — à appeler AVANT
+  /// [_requireHealthConsent] dans toute méthode qui fait REDESCENDRE la fiche.
+  ///
+  /// POURQUOI ELLE PASSE DEVANT L'ARTICLE 9. Le consentement santé fermait déjà
+  /// ces portes tant que l'effacement venait de retirer tous les consentements.
+  /// Mais un consentement SE RE-ACCORDE : le randonneur qui continue d'utiliser
+  /// l'application et ré-accorde la santé rouvrait la porte sur la donnée la
+  /// plus sensible qu'il avait fait effacer. Un consentement dit « j'accepte ce
+  /// traitement » ; il ne dit pas « rendez-moi ce que j'ai effacé ». Le refus le
+  /// plus fort doit donc être posé en premier, et c'est lui qui est nommé
+  /// (même raisonnement, même forme et même mot que [RestoreService], tâche 565).
+  ///
+  /// FERMÉE PAR DÉFAUT, ET DANS CE SENS-CI : si la vérification elle-même
+  /// échoue, on considère qu'il Y A EU effacement. Rendre une fiche médicale à
+  /// quelqu'un qui a peut-être demandé son effacement est la faute la plus grave
+  /// des deux. L'échec est journalisé — la décision prise est explicite, ce
+  /// n'est pas un catch silencieux.
+  Future<void> _requireNoLocalErasure(String operation) async {
+    bool efface;
+    try {
+      efface = await localErasureCheck();
+    } catch (e) {
+      _log.e('[HealthBackup] Marqueur d effacement illisible ($e) -> REFUS');
+      efface = true;
+    }
+    if (!efface) return;
+    _log.w('[HealthBackup] Effacement local -> $operation REFUSÉ');
+    throw const HealthErasedLocallyException();
   }
 
   // --- Backup cross-device via le CODE de reconnexion (mode principal) -----
@@ -123,7 +179,13 @@ class HealthBackupService {
   /// C'est un traitement de la même finalité que le backup — même consentement,
   /// même symétrie que `CloudSyncService.syncHikerProfile` /
   /// `RestoreService.restoreHikerProfile` (tâche 561, J2).
+  ///
+  /// GARDE D'EFFACEMENT (tâche 566, LOT O), ET ELLE PASSE DEVANT L'ARTICLE 9.
+  /// La clé est dérivée du CODE, pas du keystore : ce chemin SURVIT à
+  /// l'effacement, qui vide pourtant le keystore. Le randonneur qui a recopié
+  /// son code et ré-accordé la santé ressuscitait sa fiche médicale.
   Future<HealthInfo> restoreWithCode(String code, String blob) async {
+    await _requireNoLocalErasure('restauration par code');
     await _requireHealthConsent('restauration par code');
     final salt = _vault.saltOf(blob);
     if (salt == null) {
@@ -166,10 +228,16 @@ class HealthBackupService {
   /// Récupère le blob chiffré depuis le miroir anonyme et RESTAURE la fiche en
   /// local avec le [code]. Retourne la fiche restaurée, ou `null` si aucun
   /// backup cloud. Lève [VaultDecryptException] si le code est faux.
+  ///
+  /// GARDE D'EFFACEMENT EN PREMIER (tâche 566, LOT O) : avant le réseau, avant
+  /// même la lecture du blob dans le miroir. Le miroir serveur n'est pas
+  /// supprimé par un effacement LOCAL — il continue donc de détenir la fiche, et
+  /// c'est précisément pourquoi la descente doit être refusée ici.
   Future<HealthInfo?> restoreFromCloud(
     String anonymousUserId,
     String code,
   ) async {
+    await _requireNoLocalErasure('restauration depuis le miroir');
     await _requireHealthConsent('restauration depuis le miroir');
     final cloud = _cloudSync;
     if (cloud == null) return null;
@@ -200,7 +268,15 @@ class HealthBackupService {
   ///
   /// GARDE ART. 9 : même raison que [restoreWithCode] — restaurer, c'est écrire
   /// de la donnée de santé sur l'appareil.
+  ///
+  /// GARDE D'EFFACEMENT (tâche 566, LOT O). Ce chemin-là est déjà cassé de fait
+  /// après un effacement — le keystore est vidé, donc la clé a changé et le blob
+  /// devient illisible. Mais il échouerait en disant « blob illisible », ce qui
+  /// enverrait l'écran qui posera la question sur la mauvaise piste (« votre
+  /// code est faux, réessayez ») au lieu de « vous avez effacé vos données
+  /// ici ». Un refus doit porter le NOM de sa cause, jamais celui d'une panne.
   Future<HealthInfo> restoreWithLocalKey(String blob) async {
+    await _requireNoLocalErasure('restauration par clé locale');
     await _requireHealthConsent('restauration par clé locale');
     final key = await _vault.getOrCreateLocalDataKey();
     final info = _unwrap(await _vault.decryptJson(blob, key: key));
@@ -239,6 +315,25 @@ class HealthConsentMissingException implements Exception {
 
   @override
   String toString() => 'HealthConsentMissingException: $reason';
+}
+
+/// REFUS de faire REDESCENDRE la fiche santé sur un téléphone où le randonneur
+/// a exercé son droit à l'effacement (art. 17 RGPD, tâche 566 LOT O).
+///
+/// Ce n'est pas une panne, et ce n'est pas non plus un refus de consentement :
+/// c'est un droit déjà exercé. La raison portée est celle qui EXISTE DÉJÀ pour
+/// la même décision côté [RestoreService] ([kRestoreErrorErasedLocally], tâche
+/// 565 N2) — volontairement la même : les deux refus ont la même cause, ils
+/// doivent se diagnostiquer avec le même mot. Inventer un second code aurait
+/// fabriqué deux vocabulaires pour un seul fait.
+class HealthErasedLocallyException implements Exception {
+  const HealthErasedLocallyException();
+
+  /// Raison nommée, à journaliser ou à mapper vers un message d'écran.
+  String get reason => kRestoreErrorErasedLocally;
+
+  @override
+  String toString() => 'HealthErasedLocallyException: $reason';
 }
 
 /// Provider Riverpod du service de backup chiffré de la fiche santé.

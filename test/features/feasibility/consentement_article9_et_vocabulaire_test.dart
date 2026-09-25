@@ -334,6 +334,129 @@ void main() {
     });
   });
 
+  // TACHE 566 (LOT O) — LE REFUS LAISSAIT UNE TRACE DE PASSAGE.
+  //
+  // CE QUE PERSONNE NE LISAIT. Les tests ci-dessus interrogent le repository et
+  // lui demandent des VALEURS : age 0, taille 0, poids 0. La campagne, elle,
+  // lisait l'ecran. Ni l'un ni l'autre ne regardait le FICHIER DE PREFERENCES de
+  // l'appareil. Une lecture directe du stockage reel, le 25/09, y a trouve ceci
+  // apres un refus de consentement article 9 :
+  //
+  //   flutter.hiker.profile = {"age":0,"heightCm":0,"weightKg":0.0,
+  //                            "updatedAt":"2026-09-25T21:12:48"}
+  //
+  // AUCUNE DONNEE DE SANTE N'Y SURVIT, et c'est l'essentiel : la correction du
+  // LOT I tient, les trois valeurs sont bien a zero. Mais LA CLE EST CREEE ET
+  // HORODATEE a l'endroit exact ou l'ecran vient de promettre « Sans votre
+  // accord, rien n'est enregistre ». `eraseMorphology` ECRIVAIT un profil a zero
+  // au lieu de SUPPRIMER la cle — y compris quand il n'y avait jamais eu de
+  // fiche a effacer.
+  //
+  // DECISION : la promesse est juste, c'est au code de la tenir. Un refus doit
+  // laisser le stockage dans l'etat ou il etait, pas y deposer un horodatage.
+  //
+  // ET LE CAS VOISIN, TESTE LUI AUSSI. Le sexe declare et le pays ne relevent
+  // PAS de l'article 9 et le LOT I les laisse survivre a dessein. La regle a
+  // donc deux faces : si la fiche ne contenait QUE de la morphologie, il ne doit
+  // rester AUCUNE cle ; s'il y reste du non-article 9, la cle demeure, privee de
+  // sa morphologie.
+  //
+  // CES TESTS LISENT LE STOCKAGE, PAS LE REPOSITORY : `prefs.getString`, la ou
+  // la mesure a ete faite. Un `getProfile()` a zero ne les aurait pas vus.
+  group('LOT O — un refus ne laisse AUCUNE trace dans le stockage', () {
+    testWidgets('saisie refusee sans fiche prealable : la cle du profil n est '
+        'meme pas CREEE', (tester) async {
+      await ouvrir(tester);
+      await saisirGerard(tester);
+      // La bascule reste sur « refuse », comme dans la campagne.
+
+      await tester.tap(find.text(tp.save));
+      await tester.pumpAndSettle();
+
+      expect(prefs.getString(kHikerProfilePrefsKey), isNull,
+          reason: 'l ecran promet « rien n est enregistre » : une cle creee et '
+              'horodatee est une trace de passage, meme vide de sante');
+    });
+
+    test('meme regle depuis les Reglages : une fiche qui ne contenait que de la '
+        'morphologie ne laisse AUCUNE cle', () async {
+      await depot().saveProfile(const HikerProfile(
+        age: 72,
+        heightCm: 172,
+        weightKg: 88,
+      ));
+      expect(prefs.getString(kHikerProfilePrefsKey), isNotNull,
+          reason: 'le test ne prouve rien si la cle n existait pas avant');
+      final consent = await consentement();
+      await consent.grant(ConsentPurpose.healthData);
+
+      final container = ProviderContainer(overrides: [
+        databaseProvider.overrideWithValue(db),
+        hikerProfileRepositoryProvider.overrideWithValue(depot()),
+      ]);
+      addTearDown(container.dispose);
+
+      await container
+          .read(consentControllerProvider)
+          .revoke(ConsentPurpose.healthData);
+
+      expect(prefs.getString(kHikerProfilePrefsKey), isNull,
+          reason: 'il ne restait que de l article 9 : la cle doit partir, pas '
+              'etre reecrite a zero');
+    });
+
+    test('le MIROIR Drift ne garde pas non plus une ligne a zero', () async {
+      await depot().saveProfile(const HikerProfile(
+        age: 72,
+        heightCm: 172,
+        weightKg: 88,
+      ));
+      expect(await db.select(db.hikerProfile).get(), isNotEmpty,
+          reason: 'le test ne prouve rien si le miroir etait deja vide');
+
+      await depot().eraseMorphology();
+
+      expect(await db.select(db.hikerProfile).get(), isEmpty,
+          reason: 'une ligne a zero dans le miroir est la meme trace de '
+              'passage, a un autre etage');
+    });
+
+    test('LE CAS VOISIN : le pays survit, donc la cle reste — mais sans la '
+        'morphologie', () async {
+      await depot().saveProfile(const HikerProfile(
+        age: 72,
+        heightCm: 172,
+        weightKg: 88,
+        sex: HikerSex.male,
+        countryIso: 'FR',
+      ));
+
+      await depot().eraseMorphology();
+
+      final brut = prefs.getString(kHikerProfilePrefsKey);
+      expect(brut, isNotNull,
+          reason: 'le sexe et le pays ne relevent pas de l article 9 : les '
+              'supprimer depasserait le refus que le randonneur a exprime');
+      final stocke = json.decode(brut!) as Map<String, dynamic>;
+      expect(stocke['countryIso'], 'FR');
+      expect(stocke['sex'], HikerSex.male);
+      expect(stocke['age'], 0);
+      expect(stocke['heightCm'], 0);
+      expect(stocke['weightKg'], 0);
+    });
+
+    test('un pays seul, sans morphologie, garde sa cle intacte apres un refus',
+        () async {
+      await depot().saveProfile(const HikerProfile(countryIso: 'IT'));
+
+      await depot().eraseMorphology();
+
+      final brut = prefs.getString(kHikerProfilePrefsKey);
+      expect(brut, isNotNull);
+      expect((json.decode(brut!) as Map<String, dynamic>)['countryIso'], 'IT');
+    });
+  });
+
   group('N2 — aucun jugement sur le corps, dans aucune langue', () {
     /// Ce que la fiche d'info ne doit plus jamais nommer, langue par langue.
     /// Liste ECRITE, comme celle du garde-fou de l'alerte descente : une forme

@@ -186,6 +186,17 @@ class HikerProfileRepository {
   /// champs du formulaire de saisie — sinon la prochaine mesure ajoutee a la
   /// fiche survivra elle aussi au refus, exactement comme celle-ci l'a fait.
   ///
+  /// UN REFUS NE LAISSE AUCUNE TRACE DE PASSAGE (tache 566, LOT O). Cette
+  /// methode ECRIVAIT un profil a zero, horodate, meme quand il n'y avait rien a
+  /// effacer. Une lecture directe du fichier de preferences de l'appareil l'a
+  /// mesure : apres un refus, `hiker.profile` existait, avec
+  /// `{"age":0,"heightCm":0,"weightKg":0.0,...,"updatedAt":"..."}` — a l'endroit
+  /// exact ou l'ecran venait de promettre « Sans votre accord, rien n'est
+  /// enregistre ». Aucune donnee de sante n'y survivait, mais une cle creee et
+  /// horodatee reste une trace du geste. La promesse est juste : c'est au code de
+  /// la tenir. S'il ne reste rien qui echappe a l'article 9, la cle est
+  /// SUPPRIMEE — des deux etages — au lieu d'etre reecrite a zero.
+  ///
   /// A ne pas confondre avec [deleteProfile] (effacement TOTAL, droit a
   /// l'effacement) : ici on retire une CATEGORIE de donnees, pas la fiche.
   Future<HikerProfile> eraseMorphology() async {
@@ -197,14 +208,30 @@ class HikerProfileRepository {
       updatedAt: DateTime.now(),
     );
     final prefs = await _preferences;
-    await prefs.setString(kHikerProfilePrefsKey, json.encode(erased.toJson()));
+
+    // RESTE-T-IL QUELQUE CHOSE QUI N'EST PAS DE L'ARTICLE 9 ? Le sexe declare et
+    // le pays n'en relevent pas et le randonneur ne les a pas refuses : les
+    // emporter depasserait ce qu'il a exprime. La fiche reste donc, privee de sa
+    // morphologie. S'il n'y a rien d'autre, il n'y a plus de fiche du tout.
+    final resteDuNonArticle9 =
+        (erased.sex?.isNotEmpty ?? false) || erased.countryIso.isNotEmpty;
+
+    if (resteDuNonArticle9) {
+      await prefs.setString(kHikerProfilePrefsKey, json.encode(erased.toJson()));
+      await _mirrorProfileToDrift(erased);
+    } else {
+      await prefs.remove(kHikerProfilePrefsKey);
+      // Le miroir Drift part avec la source : une ligne a zero y serait la meme
+      // trace de passage, a un autre etage — et [load] la re-ecrirait au boot.
+      await _profileDao.deleteByUserId(_userId);
+    }
     // La mesure du test de marche 6 min est une donnee de sante a part entiere
     // (capacite physique) : elle part avec la morphologie, pas apres.
     await prefs.remove(kWalkTestResultPrefsKey);
-    await _mirrorProfileToDrift(erased);
     _log.d('[HikerProfileRepository] Morphologie ET test de marche effaces '
-        '(consentement art. 9 refuse ou retire)');
-    return erased;
+        '(consentement art. 9 refuse ou retire) — fiche '
+        '${resteDuNonArticle9 ? "conservee sans morphologie" : "supprimee"}');
+    return resteDuNonArticle9 ? erased : HikerProfile.empty;
   }
 
   Future<void> _mirrorProfileToDrift(HikerProfile profile) async {

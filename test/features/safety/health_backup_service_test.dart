@@ -1,6 +1,7 @@
 import 'package:drift/native.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/data/daos/health_info_dao.dart';
 import 'package:moteur_gr/core/services/secure_vault_service.dart';
@@ -29,6 +30,13 @@ void main() {
 
   setUp(() {
     FlutterSecureStorage.setMockInitialValues({});
+    // Appareil où AUCUN effacement n'a eu lieu (tâche 566, LOT O). La garde
+    // d'effacement lit un store de préférences et elle est FERMÉE PAR DÉFAUT :
+    // sans store initialisé, la lecture échoue et elle refuse tout. Ces tests
+    // mesureraient alors le refus d'effacement en croyant mesurer le
+    // chiffrement et le changement de téléphone. La garde a ses propres tests
+    // (`features/safety/restauration_sante_apres_effacement_test.dart`).
+    SharedPreferences.setMockInitialValues(<String, Object>{});
     dbA = AppDatabase(NativeDatabase.memory());
     repoA = HealthInfoRepository(dao: HealthInfoDao(dbA));
     serviceA = HealthBackupService(
