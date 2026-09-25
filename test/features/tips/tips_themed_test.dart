@@ -88,18 +88,19 @@ void main() {
       // Toutes les fiches du socle sont "communes" (scope=all).
       expect(socle.every((c) => c.scope == 'all'), isTrue);
       // Contenu i18n INLINE renseigne dans les 5 langues (aucune traduction
-      // vide -> le repli FR ne masque pas un trou de donnees).
+      // vide -> le repli FR ne masque pas un trou de donnees). Depuis la tache
+      // 555 le contenu est une LISTE DE POINTS, plus un paragraphe unique.
       for (final c in socle) {
         expect(c.titleFr, isNotEmpty, reason: '${c.id} titleFr');
         expect(c.titleEn, isNotEmpty, reason: '${c.id} titleEn');
         expect(c.titleDe, isNotEmpty, reason: '${c.id} titleDe');
         expect(c.titleIt, isNotEmpty, reason: '${c.id} titleIt');
         expect(c.titleEs, isNotEmpty, reason: '${c.id} titleEs');
-        expect(c.contentFr, isNotEmpty, reason: '${c.id} contentFr');
-        expect(c.contentEn, isNotEmpty, reason: '${c.id} contentEn');
-        expect(c.contentDe, isNotEmpty, reason: '${c.id} contentDe');
-        expect(c.contentIt, isNotEmpty, reason: '${c.id} contentIt');
-        expect(c.contentEs, isNotEmpty, reason: '${c.id} contentEs');
+        expect(c.pointsFr, isNotEmpty, reason: '${c.id} pointsFr');
+        expect(c.pointsEn, isNotEmpty, reason: '${c.id} pointsEn');
+        expect(c.pointsDe, isNotEmpty, reason: '${c.id} pointsDe');
+        expect(c.pointsIt, isNotEmpty, reason: '${c.id} pointsIt');
+        expect(c.pointsEs, isNotEmpty, reason: '${c.id} pointsEs');
       }
     });
 

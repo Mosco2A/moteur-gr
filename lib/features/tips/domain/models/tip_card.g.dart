@@ -13,7 +13,22 @@ _TipCard _$TipCardFromJson(Map<String, dynamic> json) => _TipCard(
   titleDe: json['titleDe'] as String? ?? '',
   titleIt: json['titleIt'] as String? ?? '',
   titleEs: json['titleEs'] as String? ?? '',
-  contentFr: json['contentFr'] as String,
+  pointsFr:
+      (json['pointsFr'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
+  pointsEn:
+      (json['pointsEn'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
+  pointsDe:
+      (json['pointsDe'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
+  pointsIt:
+      (json['pointsIt'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
+  pointsEs:
+      (json['pointsEs'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
+  contentFr: json['contentFr'] as String? ?? '',
   contentEn: json['contentEn'] as String? ?? '',
   contentDe: json['contentDe'] as String? ?? '',
   contentIt: json['contentIt'] as String? ?? '',
@@ -39,6 +54,11 @@ Map<String, dynamic> _$TipCardToJson(_TipCard instance) => <String, dynamic>{
   'titleDe': instance.titleDe,
   'titleIt': instance.titleIt,
   'titleEs': instance.titleEs,
+  'pointsFr': instance.pointsFr,
+  'pointsEn': instance.pointsEn,
+  'pointsDe': instance.pointsDe,
+  'pointsIt': instance.pointsIt,
+  'pointsEs': instance.pointsEs,
   'contentFr': instance.contentFr,
   'contentEn': instance.contentEn,
   'contentDe': instance.contentDe,
