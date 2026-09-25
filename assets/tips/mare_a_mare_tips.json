@@ -6,22 +6,52 @@
     "titleDe": "Wassermanagement auf dem Mare a Mare",
     "titleIt": "Gestione dell'acqua sul Mare a Mare",
     "titleEs": "Gestion del agua en el Mare a Mare",
-    "contentFr": "Le Mare a Mare Centre traverse des zones arides entre 500 et 1000 m. Les fontaines de village sont espacees de 4 a 6 heures. Emportez 2 litres minimum par etape. En ete, prevoyez 3 litres.",
-    "contentEn": "The Mare a Mare Centre crosses arid zones 500-1000 m. Village fountains spaced 4-6 hours apart. Carry 2+ litres per stage. In summer, plan 3 litres.",
-    "contentDe": "Mare a Mare Centre: trockene Gebiete 500-1000 m. Dorfbrunnen alle 4-6 Stunden. 2+ Liter pro Etappe. Im Sommer 3 Liter.",
-    "contentIt": "Il Mare a Mare Centre attraversa zone aride tra 500 e 1000 m. Fontane dei villaggi ogni 4-6 ore. Almeno 2 litri per tappa. In estate 3 litri.",
-    "contentEs": "El Mare a Mare Centre cruza zonas aridas entre 500 y 1000 m. Fuentes cada 4-6 horas. 2+ litros por etapa. En verano 3 litros.",
+    "pointsFr": [
+      "Le Mare a Mare Centre relie Ghisonaccia a Porticcio en 87 km et 7 etapes : l eau se trouve dans les villages d etape, pas sur les hauteurs.",
+      "Remplis a chaque village. Entre deux villages, une fontaine tarie en aout n est pas une hypothese, c est la regle.",
+      "Le parcours traverse des zones pacagees : en aval d un troupeau, l eau se traite. Filtre 0,2 micron ou 1 comprime de Micropur Forte par litre.",
+      "Compte 3 litres pour une journee de marche, et jusqu a 5 a 6 litres par forte chaleur, par fractions toutes les 20 a 30 minutes.",
+      "L etape Catastaghju - Cozzano fait 6 h 30 pour 650 metres de montee : pars avec la totalite de l eau de la journee."
+    ],
+    "pointsEn": [
+      "The Mare a Mare Centre links Ghisonaccia to Porticcio over 87 km and 7 stages: water is found in the stage villages, not on the heights.",
+      "Fill up in every village. Between two villages a dry fountain in August is not a hypothesis, it is the rule.",
+      "The route crosses grazed land: downstream of a herd, treat the water. A 0.2 micron filter or 1 Micropur Forte tablet per litre.",
+      "Plan 3 litres for a walking day, up to 5 or 6 litres in strong heat, taken in small amounts every 20 to 30 minutes.",
+      "The Catastaghju to Cozzano stage takes 6 h 30 for 650 metres of climb: leave with the whole day's water."
+    ],
+    "pointsDe": [
+      "Der Mare a Mare Centre verbindet Ghisonaccia und Porticcio auf 87 km und 7 Etappen: Wasser gibt es in den Etappendoerfern, nicht in der Hoehe.",
+      "Fuelle in jedem Dorf auf. Zwischen zwei Doerfern ist ein versiegter Brunnen im August keine Annahme, sondern die Regel.",
+      "Die Route fuehrt durch Weidegebiete: unterhalb einer Herde wird das Wasser behandelt. Filter 0,2 Mikron oder 1 Tablette Micropur Forte pro Liter.",
+      "Rechne mit 3 Litern pro Wandertag, bei starker Hitze bis 5 bis 6 Liter, in kleinen Portionen alle 20 bis 30 Minuten.",
+      "Die Etappe Catastaghju - Cozzano dauert 6 h 30 bei 650 Metern Aufstieg: mit dem ganzen Tageswasser starten."
+    ],
+    "pointsIt": [
+      "Il Mare a Mare Centre collega Ghisonaccia a Porticcio in 87 km e 7 tappe: l acqua si trova nei paesi tappa, non in quota.",
+      "Riempi in ogni paese. Tra due paesi una fontana secca in agosto non e un ipotesi, e la regola.",
+      "Il percorso attraversa zone pascolate: a valle di una mandria l acqua si tratta. Filtro 0,2 micron o 1 compressa di Micropur Forte per litro.",
+      "Conta 3 litri per una giornata di cammino, fino a 5-6 litri con caldo forte, a piccole dosi ogni 20-30 minuti.",
+      "La tappa Catastaghju - Cozzano dura 6 h 30 per 650 metri di salita: parti con tutta l acqua della giornata."
+    ],
+    "pointsEs": [
+      "El Mare a Mare Centre une Ghisonaccia con Porticcio en 87 km y 7 etapas: el agua esta en los pueblos de etapa, no en las alturas.",
+      "Rellena en cada pueblo. Entre dos pueblos, una fuente seca en agosto no es una hipotesis, es la regla.",
+      "El recorrido cruza zonas de pastoreo: aguas abajo de un rebano, el agua se trata. Filtro de 0,2 micras o 1 pastilla de Micropur Forte por litro.",
+      "Cuenta 3 litros para una jornada de marcha, hasta 5 o 6 litros con mucho calor, en pequenas dosis cada 20 a 30 minutos.",
+      "La etapa Catastaghju - Cozzano son 6 h 30 para 650 metros de subida: sal con toda el agua del dia."
+    ],
     "scope": "mare_a_mare",
     "season": "all",
     "category": "nutrition",
+    "theme": "health",
     "tags": [
       "eau",
       "hydratation",
       "fontaine",
       "mare_a_mare"
     ],
-    "priority": 9,
-    "theme": "health"
+    "priority": 9
   },
   {
     "id": "mam-hebergement",
@@ -30,22 +60,52 @@
     "titleDe": "Etappenunterkuenfte auf dem Mare a Mare",
     "titleIt": "Rifugi tappa del Mare a Mare",
     "titleEs": "Albergues de etapa del Mare a Mare",
-    "contentFr": "Les gites communaux jalonnent chaque etape (15 a 25 euros la nuit). Reservez en juillet-aout, surtout Cozzano et Guitera-les-Bains. Drap de couchage obligatoire.",
-    "contentEn": "Municipal lodges each stage (15-25 euros/night). Book July-August, especially Cozzano and Guitera-les-Bains. Sleeping sheet required.",
-    "contentDe": "Kommunale Unterkuenfte pro Etappe (15-25 Euro). Juli-August buchen, besonders Cozzano und Guitera-les-Bains. Huettenschlafsack Pflicht.",
-    "contentIt": "Rifugi comunali su ogni tappa (15-25 euro/notte). Prenotate luglio-agosto, soprattutto Cozzano e Guitera-les-Bains. Lenzuolo-sacco obbligatorio.",
-    "contentEs": "Albergues comunales cada etapa (15-25 euros/noche). Reserve julio-agosto, sobre todo Cozzano y Guitera-les-Bains. Sabana-saco obligatoria.",
+    "pointsFr": [
+      "Sur le Mare a Mare on dort en gite d etape et dans les villages : il n y a pas de refuge de haute montagne sur ce sentier.",
+      "Tarifs 2025 releves sur le sentier : 30 a 40 euros la nuit seule, 52 a 55 euros en demi-pension, 9 euros le panier repas.",
+      "Draps et serviettes se louent souvent a part, environ 5 euros, et la taxe de sejour s ajoute (0,88 euro releve en 2025).",
+      "Reserve a l avance : les gites sont petits et la plupart n ouvrent que d avril a octobre.",
+      "Especes indispensables : les villages de l interieur n ont ni distributeur a chaque etape, ni reseau fiable pour payer par carte."
+    ],
+    "pointsEn": [
+      "On the Mare a Mare you sleep in stage lodges and in the villages: there is no high-mountain hut on this trail.",
+      "2025 rates recorded on the trail: 30 to 40 euros room only, 52 to 55 euros half board, 9 euros for a packed lunch.",
+      "Sheets and towels are often rented separately, about 5 euros, and the tourist tax is added (0.88 euro recorded in 2025).",
+      "Book ahead: the lodges are small and most only open from April to October.",
+      "Cash is essential: inland villages have neither a cash machine at every stage nor reliable network to pay by card."
+    ],
+    "pointsDe": [
+      "Auf dem Mare a Mare schlaeft man in Etappenunterkuenften und in den Doerfern: auf diesem Weg gibt es keine Hochgebirgshuette.",
+      "Auf dem Weg erhobene Preise 2025: 30 bis 40 Euro nur Uebernachtung, 52 bis 55 Euro mit Halbpension, 9 Euro fuer das Lunchpaket.",
+      "Bettwaesche und Handtuecher werden oft separat vermietet, etwa 5 Euro, dazu die Kurtaxe (0,88 Euro erhoben 2025).",
+      "Reserviere im Voraus: die Haeuser sind klein und die meisten oeffnen nur von April bis Oktober.",
+      "Bargeld ist unverzichtbar: die Doerfer im Inneren haben nicht an jeder Etappe einen Geldautomaten und kein verlaessliches Netz fuer Kartenzahlung."
+    ],
+    "pointsIt": [
+      "Sul Mare a Mare si dorme in gite d etape e nei paesi: su questo sentiero non ci sono rifugi di alta montagna.",
+      "Tariffe 2025 rilevate sul sentiero: 30-40 euro la sola notte, 52-55 euro in mezza pensione, 9 euro il cestino pranzo.",
+      "Lenzuola e asciugamani si affittano spesso a parte, circa 5 euro, e la tassa di soggiorno si aggiunge (0,88 euro rilevato nel 2025).",
+      "Prenota in anticipo: le strutture sono piccole e la maggior parte apre solo da aprile a ottobre.",
+      "Contanti indispensabili: i paesi dell interno non hanno un bancomat a ogni tappa, ne rete affidabile per pagare con carta."
+    ],
+    "pointsEs": [
+      "En el Mare a Mare se duerme en albergues de etapa y en los pueblos: en este sendero no hay refugios de alta montana.",
+      "Tarifas 2025 tomadas en el sendero: 30 a 40 euros solo alojamiento, 52 a 55 euros en media pension, 9 euros la bolsa de comida.",
+      "Sabanas y toallas se alquilan a menudo aparte, unos 5 euros, y la tasa turistica se suma (0,88 euros registrado en 2025).",
+      "Reserva con antelacion: los albergues son pequenos y la mayoria solo abren de abril a octubre.",
+      "Efectivo imprescindible: los pueblos del interior no tienen cajero en cada etapa ni red fiable para pagar con tarjeta."
+    ],
     "scope": "mare_a_mare",
     "season": "all",
     "category": "preparation",
+    "theme": "refuge",
     "tags": [
       "gite",
       "hebergement",
       "reservation",
       "mare_a_mare"
     ],
-    "priority": 8,
-    "theme": "refuge"
+    "priority": 8
   },
   {
     "id": "mam-difficulte",
@@ -54,22 +114,52 @@
     "titleDe": "Maessige aber gleichmaessige Schwierigkeit",
     "titleIt": "Difficolta moderata ma costante",
     "titleEs": "Dificultad moderada pero constante",
-    "contentFr": "Le Mare a Mare Centre: etapes de 12 a 18 km avec 500 a 900 m de denivele. Prevoyez 5 a 7 heures de marche par jour. Terrain souvent pierreux.",
-    "contentEn": "Mare a Mare Centre: stages 12-18 km, 500-900 m elevation. Plan 5-7 hours walking/day. Often stony terrain.",
-    "contentDe": "Mare a Mare Centre: Etappen 12-18 km, 500-900 m Hoehenunterschied. 5-7 Stunden Gehzeit pro Tag. Oft steinig.",
-    "contentIt": "Mare a Mare Centre: tappe 12-18 km, 500-900 m dislivello. 5-7 ore di cammino/giorno. Terreno spesso sassoso.",
-    "contentEs": "Mare a Mare Centre: etapas 12-18 km, 500-900 m desnivel. 5-7 horas/dia. Terreno a menudo pedregoso.",
+    "pointsFr": [
+      "87 km, 7 etapes, aucune difficulte technique particuliere : le Mare a Mare Centre se marche, il ne s escalade pas.",
+      "Ce qui fatigue, c est la regularite : 650 metres de montee et 740 de descente sur la seule etape Catastaghju - Cozzano, 6 h 30 de marche.",
+      "Le point haut est la Bocca Laparo, a 1 550 metres. C est ce col qui commande la saison praticable.",
+      "Ouvert de mi-avril a novembre a cause de ce passage a 1 500 metres : avant, la neige peut encore tenir.",
+      "L etape Guitera - Quasquara cumule 1 055 metres de montee et 860 de descente : c est la plus exigeante du parcours."
+    ],
+    "pointsEn": [
+      "87 km, 7 stages, no particular technical difficulty: the Mare a Mare Centre is walked, not climbed.",
+      "What tires you is the consistency: 650 metres up and 740 down on the Catastaghju to Cozzano stage alone, 6 h 30 of walking.",
+      "The high point is the Bocca Laparo at 1,550 metres. That pass is what sets the walkable season.",
+      "Open from mid-April to November because of that crossing at 1,500 metres: earlier, snow can still be lying.",
+      "The Guitera to Quasquara stage adds up to 1,055 metres of climb and 860 of descent: the hardest of the route."
+    ],
+    "pointsDe": [
+      "87 km, 7 Etappen, keine besondere technische Schwierigkeit: der Mare a Mare Centre wird gegangen, nicht geklettert.",
+      "Was ermuedet, ist die Gleichmaessigkeit: 650 Meter hinauf und 740 hinunter allein auf der Etappe Catastaghju - Cozzano, 6 h 30 Gehzeit.",
+      "Hoechster Punkt ist die Bocca Laparo mit 1 550 Metern. Dieser Pass bestimmt die begehbare Saison.",
+      "Offen von Mitte April bis November wegen dieses Uebergangs auf 1 500 Metern: frueher kann noch Schnee liegen.",
+      "Die Etappe Guitera - Quasquara summiert 1 055 Meter Aufstieg und 860 Meter Abstieg: die anspruchsvollste der Route."
+    ],
+    "pointsIt": [
+      "87 km, 7 tappe, nessuna difficolta tecnica particolare: il Mare a Mare Centre si cammina, non si arrampica.",
+      "Cio che stanca e la regolarita: 650 metri di salita e 740 di discesa solo nella tappa Catastaghju - Cozzano, 6 h 30 di cammino.",
+      "Il punto piu alto e la Bocca Laparo, a 1 550 metri. E questo colle a decidere la stagione percorribile.",
+      "Aperto da meta aprile a novembre per quel passaggio a 1 500 metri: prima, la neve puo ancora resistere.",
+      "La tappa Guitera - Quasquara somma 1 055 metri di salita e 860 di discesa: la piu impegnativa del percorso."
+    ],
+    "pointsEs": [
+      "87 km, 7 etapas, ninguna dificultad tecnica particular: el Mare a Mare Centre se camina, no se escala.",
+      "Lo que cansa es la regularidad: 650 metros de subida y 740 de bajada solo en la etapa Catastaghju - Cozzano, 6 h 30 de marcha.",
+      "El punto alto es la Bocca Laparo, a 1 550 metros. Ese collado manda sobre la temporada practicable.",
+      "Abierto de mediados de abril a noviembre por ese paso a 1 500 metros: antes, la nieve puede seguir ahi.",
+      "La etapa Guitera - Quasquara suma 1 055 metros de subida y 860 de bajada: la mas exigente del recorrido."
+    ],
     "scope": "mare_a_mare",
     "season": "all",
     "category": "preparation",
+    "theme": "safety",
     "tags": [
       "difficulte",
       "denivele",
       "etape",
       "mare_a_mare"
     ],
-    "priority": 7,
-    "theme": "safety"
+    "priority": 7
   },
   {
     "id": "mam-chaleur",
@@ -78,22 +168,52 @@
     "titleDe": "Sommerhitze auf dem Mare a Mare",
     "titleIt": "Caldo estivo sul Mare a Mare",
     "titleEs": "Calor estival en el Mare a Mare",
-    "contentFr": "Le Mare a Mare traverse des zones de maquis bas entre 300 et 800 m sans ombre. En ete, partez avant 7 h et faites une pause longue entre 12 h et 15 h. Jusqu'a 35 degres en juillet-aout.",
-    "contentEn": "Low maquis zones (300-800 m) with no shade. In summer, start before 7 am, break 12-3 pm. Up to 35 degrees in July-August.",
-    "contentDe": "Niedrige Macchia-Zonen (300-800 m) ohne Schatten. Im Sommer vor 7 Uhr starten, Pause 12-15 Uhr. Bis 35 Grad Juli-August.",
-    "contentIt": "Zone di macchia bassa (300-800 m) senza ombra. In estate partite prima delle 7, pausa 12-15. Fino a 35 gradi luglio-agosto.",
-    "contentEs": "Zonas de maquis bajo (300-800 m) sin sombra. En verano, salga antes de las 7, pausa 12-15. Hasta 35 grados julio-agosto.",
+    "pointsFr": [
+      "En Corse, l interieur monte tres haut : jusqu a 42,8 degres releves a Castirla, en Haute-Corse, au mois de juillet.",
+      "Meteo-France parle de vague de chaleur des que trois jours d affilee depassent les seuils locaux, et declenche la vigilance orange sur un pic intense de 24 a 48 heures.",
+      "Ete 2025 : 3e ete le plus chaud depuis 1900 en France, juin a +3,3 degres de la normale, vigilance orange canicule en Haute-Corse.",
+      "Par forte chaleur, un effort prolonge demande 5 a 6 litres d eau, a absorber par fractions toutes les 20 a 30 minutes.",
+      "Pars a l aube et arrive avant les heures chaudes : sur le maquis, il n y a aucune ombre entre deux villages."
+    ],
+    "pointsEn": [
+      "In Corsica the interior gets very hot: up to 42.8 degrees recorded at Castirla, in Haute-Corse, in July.",
+      "Meteo-France calls it a heatwave once three consecutive days pass the local thresholds, and raises orange alert on an intense 24 to 48 hour peak.",
+      "Summer 2025: third hottest summer in France since 1900, June at +3.3 degrees above normal, orange heatwave alert in Haute-Corse.",
+      "In strong heat a sustained effort calls for 5 to 6 litres of water, taken in small amounts every 20 to 30 minutes.",
+      "Leave at dawn and arrive before the hot hours: on the maquis there is no shade at all between two villages."
+    ],
+    "pointsDe": [
+      "Auf Korsika wird es im Inneren sehr heiss: bis zu 42,8 Grad in Castirla, Haute-Corse, im Juli gemessen.",
+      "Meteo-France spricht von einer Hitzewelle, sobald drei Tage in Folge die lokalen Schwellen ueberschreiten, und loest bei einem intensiven Gipfel von 24 bis 48 Stunden Orange-Warnung aus.",
+      "Sommer 2025: dritter heissester Sommer in Frankreich seit 1900, Juni +3,3 Grad ueber der Norm, Orange-Hitzewarnung in Haute-Corse.",
+      "Bei starker Hitze verlangt eine lange Belastung 5 bis 6 Liter Wasser, in kleinen Portionen alle 20 bis 30 Minuten.",
+      "Starte im Morgengrauen und komm vor den heissen Stunden an: in der Macchia gibt es zwischen zwei Doerfern keinen Schatten."
+    ],
+    "pointsIt": [
+      "In Corsica l interno sale molto: fino a 42,8 gradi rilevati a Castirla, in Alta Corsica, nel mese di luglio.",
+      "Meteo-France parla di ondata di calore quando tre giorni consecutivi superano le soglie locali, e attiva l allerta arancione su un picco intenso di 24-48 ore.",
+      "Estate 2025: terza estate piu calda in Francia dal 1900, giugno a +3,3 gradi sopra la norma, allerta arancione caldo in Alta Corsica.",
+      "Con caldo forte uno sforzo prolungato richiede 5-6 litri d acqua, a piccole dosi ogni 20-30 minuti.",
+      "Parti all alba e arriva prima delle ore calde: nella macchia non c e ombra tra due paesi."
+    ],
+    "pointsEs": [
+      "En Corcega el interior sube mucho: hasta 42,8 grados registrados en Castirla, en Alta Corcega, en julio.",
+      "Meteo-France habla de ola de calor cuando tres dias seguidos superan los umbrales locales, y activa el aviso naranja en un pico intenso de 24 a 48 horas.",
+      "Verano 2025: tercer verano mas calido en Francia desde 1900, junio a +3,3 grados sobre la normal, aviso naranja de calor en Alta Corcega.",
+      "Con mucho calor un esfuerzo prolongado exige 5 a 6 litros de agua, en pequenas dosis cada 20 a 30 minutos.",
+      "Sal al amanecer y llega antes de las horas calidas: en el maquis no hay ninguna sombra entre dos pueblos."
+    ],
     "scope": "mare_a_mare",
     "season": "summer",
     "category": "safety",
+    "theme": "weather",
     "tags": [
       "chaleur",
       "canicule",
       "maquis",
       "mare_a_mare"
     ],
-    "priority": 8,
-    "theme": "weather"
+    "priority": 8
   },
   {
     "id": "mam-patrimoine",
@@ -102,21 +222,161 @@
     "titleDe": "Doerfer und Kulturerbe entlang der Strecke",
     "titleIt": "Villaggi e patrimonio lungo il percorso",
     "titleEs": "Pueblos y patrimonio a lo largo del recorrido",
-    "contentFr": "Villages de montagne authentiques (Cozzano, Guitera, Quasquara). Eglises romanes et charcuterie locale. Les epiceries ferment souvent entre 12 h et 16 h.",
-    "contentEn": "Authentic mountain villages (Cozzano, Guitera, Quasquara). Romanesque churches and local charcuterie. Village stores often close 12-4 pm.",
-    "contentDe": "Authentische Bergdoerfer (Cozzano, Guitera, Quasquara). Romanische Kirchen und lokale Wurstwaren. Dorfladen oft 12-16 Uhr geschlossen.",
-    "contentIt": "Villaggi autentici (Cozzano, Guitera, Quasquara). Chiese romaniche e salumeria locale. Botteghe spesso chiuse 12-16.",
-    "contentEs": "Pueblos autenticos (Cozzano, Guitera, Quasquara). Iglesias romanicas y charcuteria local. Tiendas cierran 12-16.",
+    "pointsFr": [
+      "Le sentier traverse le Parc naturel regional de Corse : 440 200 hectares, environ 51 % du territoire de l ile.",
+      "Le parc abrite plus de 1 000 especes vegetales dont 127 protegees : on regarde, on photographie, on ne cueille pas.",
+      "Il n y a AUCUNE vipere en Corse. Les couleuvres presentes, dont la couleuvre verte et jaune, peuvent mordre mais leur morsure est totalement inoffensive.",
+      "Sur le parcours tu croises les produits sous label : brocciu AOP depuis 1998, miel de Corse AOP depuis 1998, prisuttu AOP depuis 2012.",
+      "Douze produits corses au moins portent une AOC/AOP, et Salsiccia, Figatellu, Panzetta et Bulagna sont en IGP depuis le 27 juillet 2023."
+    ],
+    "pointsEn": [
+      "The trail crosses the Corsica Regional Nature Park: 440,200 hectares, about 51% of the island.",
+      "The park holds more than 1,000 plant species, 127 of them protected: look, photograph, do not pick.",
+      "There is NO viper in Corsica. The grass snakes present, including the green whip snake, can bite but the bite is completely harmless.",
+      "Along the way you meet the labelled produce: brocciu AOP since 1998, Corsican honey AOP since 1998, prisuttu AOP since 2012.",
+      "At least twelve Corsican products carry an AOC/AOP, and Salsiccia, Figatellu, Panzetta and Bulagna have held IGP status since 27 July 2023."
+    ],
+    "pointsDe": [
+      "Der Weg fuehrt durch den Regionalen Naturpark Korsika: 440 200 Hektar, rund 51 % der Inselflaeche.",
+      "Der Park beherbergt mehr als 1 000 Pflanzenarten, davon 127 geschuetzte: anschauen, fotografieren, nicht pfluecken.",
+      "Es gibt KEINE Viper auf Korsika. Die vorhandenen Nattern, darunter die Gelbgruene Zornnatter, koennen beissen, doch der Biss ist voellig harmlos.",
+      "Unterwegs begegnest du den Herkunftsprodukten: Brocciu AOP seit 1998, korsischer Honig AOP seit 1998, Prisuttu AOP seit 2012.",
+      "Mindestens zwoelf korsische Erzeugnisse tragen eine AOC/AOP, und Salsiccia, Figatellu, Panzetta und Bulagna sind seit dem 27. Juli 2023 IGP."
+    ],
+    "pointsIt": [
+      "Il sentiero attraversa il Parco naturale regionale della Corsica: 440 200 ettari, circa il 51 % del territorio dell isola.",
+      "Il parco ospita oltre 1 000 specie vegetali, di cui 127 protette: si guarda, si fotografa, non si raccoglie.",
+      "In Corsica NON esiste alcuna vipera. I colubri presenti, tra cui il biacco, possono mordere ma il morso e del tutto innocuo.",
+      "Lungo il percorso incontri i prodotti a marchio: brocciu AOP dal 1998, miele di Corsica AOP dal 1998, prisuttu AOP dal 2012.",
+      "Almeno dodici prodotti corsi portano una AOC/AOP, e Salsiccia, Figatellu, Panzetta e Bulagna sono IGP dal 27 luglio 2023."
+    ],
+    "pointsEs": [
+      "El sendero cruza el Parque Natural Regional de Corcega: 440 200 hectareas, cerca del 51 % del territorio de la isla.",
+      "El parque alberga mas de 1 000 especies vegetales, 127 de ellas protegidas: se mira, se fotografia, no se recoge.",
+      "En Corcega NO hay ninguna vibora. Las culebras presentes, entre ellas la culebra verdiamarilla, pueden morder pero su mordedura es totalmente inofensiva.",
+      "En el recorrido te cruzas con los productos con sello: brocciu AOP desde 1998, miel de Corcega AOP desde 1998, prisuttu AOP desde 2012.",
+      "Al menos doce productos corsos llevan una AOC/AOP, y Salsiccia, Figatellu, Panzetta y Bulagna son IGP desde el 27 de julio de 2023."
+    ],
     "scope": "mare_a_mare",
     "season": "all",
     "category": "nature",
+    "theme": "nature",
     "tags": [
       "village",
       "patrimoine",
       "culture",
       "mare_a_mare"
     ],
-    "priority": 5,
-    "theme": "nature"
+    "priority": 5
+  },
+  {
+    "id": "mam-reseau-secours",
+    "titleFr": "Reseau et secours en Corse",
+    "titleEn": "Network and rescue in Corsica",
+    "titleDe": "Netz und Rettung auf Korsika",
+    "titleIt": "Rete e soccorsi in Corsica",
+    "titleEs": "Red y rescate en Corcega",
+    "pointsFr": [
+      "95 % de la Corse est couverte en 4G, mais les zones blanches se concentrent dans l interieur montagneux : exactement la ou passe le sentier.",
+      "Ne compte pas sur le reseau : le GPS lit des satellites et fonctionne sans couverture. Carte et trace se telechargent AVANT le depart.",
+      "Le 112 passe sur n importe quel operateur et meme sans carte SIM : la ou ton reseau ne capte pas, un autre peut prendre l appel.",
+      "Secours en montagne : le PGHM de Corse a sa base principale a Ajaccio et un detachement de Haute-Corse base a Corte.",
+      "En saison, tous services confondus, la montagne corse compte 6 a 7 interventions de secours par jour, 450 a 500 par an."
+    ],
+    "pointsEn": [
+      "95% of Corsica has 4G coverage, but the dead zones are concentrated in the mountainous interior: exactly where the trail runs.",
+      "Do not count on the network: GPS reads satellites and works with no coverage. Map and track are downloaded BEFORE you leave.",
+      "112 goes through on any operator and even without a SIM card: where your network fails, another can take the call.",
+      "Mountain rescue: the Corsica PGHM has its main base in Ajaccio and a Haute-Corse detachment based in Corte.",
+      "In season, across all services, the Corsican mountains see 6 to 7 rescue call-outs a day, 450 to 500 a year."
+    ],
+    "pointsDe": [
+      "95 % Korsikas sind mit 4G versorgt, doch die Funkloecher liegen im gebirgigen Inneren: genau dort, wo der Weg verlaeuft.",
+      "Verlass dich nicht aufs Netz: GPS liest Satelliten und funktioniert ohne Abdeckung. Karte und Track VOR dem Start herunterladen.",
+      "Die 112 geht ueber jeden Betreiber und sogar ohne SIM-Karte: wo dein Netz fehlt, kann ein anderes den Anruf annehmen.",
+      "Bergrettung: die PGHM Korsika hat ihre Hauptbasis in Ajaccio und ein Detachement Haute-Corse mit Sitz in Corte.",
+      "In der Saison zaehlt das korsische Gebirge ueber alle Dienste hinweg 6 bis 7 Rettungseinsaetze pro Tag, 450 bis 500 pro Jahr."
+    ],
+    "pointsIt": [
+      "Il 95 % della Corsica e coperto in 4G, ma le zone senza segnale si concentrano nell interno montuoso: esattamente dove passa il sentiero.",
+      "Non contare sulla rete: il GPS legge i satelliti e funziona senza copertura. Mappa e traccia si scaricano PRIMA di partire.",
+      "Il 112 passa su qualsiasi operatore e anche senza SIM: dove la tua rete non prende, un altra puo ricevere la chiamata.",
+      "Soccorso in montagna: il PGHM della Corsica ha la base principale ad Ajaccio e un distaccamento dell Alta Corsica a Corte.",
+      "In stagione, tutti i servizi insieme, la montagna corsa conta 6-7 interventi di soccorso al giorno, 450-500 all anno."
+    ],
+    "pointsEs": [
+      "El 95 % de Corcega tiene cobertura 4G, pero las zonas blancas se concentran en el interior montanoso: justo donde pasa el sendero.",
+      "No cuentes con la red: el GPS lee satelites y funciona sin cobertura. Mapa y traza se descargan ANTES de salir.",
+      "El 112 entra por cualquier operador e incluso sin tarjeta SIM: donde tu red no llega, otra puede tomar la llamada.",
+      "Rescate en montana: el PGHM de Corcega tiene su base principal en Ajaccio y un destacamento de Alta Corcega en Corte.",
+      "En temporada, sumando todos los servicios, la montana corsa registra 6 a 7 intervenciones de rescate al dia, 450 a 500 al ano."
+    ],
+    "scope": "mare_a_mare",
+    "season": "all",
+    "category": "safety",
+    "theme": "safety",
+    "tags": [
+      "reseau",
+      "gps",
+      "secours",
+      "pghm",
+      "mare_a_mare"
+    ],
+    "priority": 9
+  },
+  {
+    "id": "mam-feu-incendie",
+    "titleFr": "Feu interdit et risque d incendie",
+    "titleEn": "Fire ban and wildfire risk",
+    "titleDe": "Feuerverbot und Waldbrandgefahr",
+    "titleIt": "Divieto di fuoco e rischio incendi",
+    "titleEs": "Prohibicion de fuego y riesgo de incendio",
+    "pointsFr": [
+      "Du 15 juin au 30 septembre, les deux prefets interdisent TOTALEMENT l emploi du feu sur tout le territoire corse, avec prolongation possible en octobre ou novembre.",
+      "L interdiction couvre le rechaud en milieu naturel, le feu de camp, le barbecue des qu il y a du vent, et la cigarette dans les bois, forets, landes et maquis.",
+      "Les sanctions vont jusqu a 100 000 euros d amende et des peines de prison. Violation manifestement deliberee : 3 ans de prison et 45 000 euros.",
+      "Le maquis brule vite et le feu remonte la pente : on s eloigne par le bas et par une zone degagee, jamais vers le haut.",
+      "Appelle le 112 des le premier depart de feu apercu, meme s il te semble minuscule, et donne ta position exacte."
+    ],
+    "pointsEn": [
+      "From 15 June to 30 September the two prefects ban the use of fire ENTIRELY across all of Corsica, with possible extension into October or November.",
+      "The ban covers stoves in the open, campfires, barbecues as soon as there is wind, and smoking in woods, forests, heath and maquis.",
+      "Penalties run up to 100,000 euros in fines plus prison terms. A manifestly deliberate breach: 3 years in prison and 45,000 euros.",
+      "Maquis burns fast and fire runs uphill: move away downhill and through open ground, never upwards.",
+      "Call 112 at the very first outbreak you see, even one that looks tiny, and give your exact position."
+    ],
+    "pointsDe": [
+      "Vom 15. Juni bis 30. September verbieten die beiden Praefekten den Gebrauch von Feuer VOLLSTAENDIG auf ganz Korsika, mit moeglicher Verlaengerung bis Oktober oder November.",
+      "Das Verbot umfasst den Kocher in der Natur, das Lagerfeuer, den Grill sobald Wind aufkommt, und das Rauchen in Waeldern, Heide und Macchia.",
+      "Die Strafen reichen bis 100 000 Euro Geldbusse und Haftstrafen. Bei offensichtlich vorsaetzlichem Verstoss: 3 Jahre Haft und 45 000 Euro.",
+      "Macchia brennt schnell und Feuer laeuft den Hang hinauf: man entfernt sich nach unten und ueber offenes Gelaende, nie nach oben.",
+      "Ruf die 112 beim ersten gesehenen Brandausbruch, auch wenn er dir winzig erscheint, und gib deine genaue Position an."
+    ],
+    "pointsIt": [
+      "Dal 15 giugno al 30 settembre i due prefetti vietano TOTALMENTE l uso del fuoco su tutto il territorio corso, con possibile proroga a ottobre o novembre.",
+      "Il divieto copre il fornello in ambiente naturale, il fuoco da campo, il barbecue appena c e vento, e la sigaretta in boschi, foreste, brughiere e macchia.",
+      "Le sanzioni arrivano a 100 000 euro di multa e a pene detentive. Violazione manifestamente deliberata: 3 anni di carcere e 45 000 euro.",
+      "La macchia brucia in fretta e il fuoco risale il pendio: ci si allontana verso il basso e su terreno aperto, mai verso l alto.",
+      "Chiama il 112 al primo focolaio avvistato, anche se ti sembra minuscolo, e dai la tua posizione esatta."
+    ],
+    "pointsEs": [
+      "Del 15 de junio al 30 de septiembre los dos prefectos prohiben TOTALMENTE el uso del fuego en todo el territorio corso, con posible prorroga en octubre o noviembre.",
+      "La prohibicion cubre el hornillo en el medio natural, el fuego de campamento, la barbacoa en cuanto hay viento, y fumar en bosques, montes, landas y maquis.",
+      "Las sanciones llegan a 100 000 euros de multa y penas de carcel. Violacion manifiestamente deliberada: 3 anos de prision y 45 000 euros.",
+      "El maquis arde rapido y el fuego sube la pendiente: uno se aleja hacia abajo y por zona despejada, nunca hacia arriba.",
+      "Llama al 112 al primer foco que veas, aunque te parezca minusculo, y da tu posicion exacta."
+    ],
+    "scope": "mare_a_mare",
+    "season": "summer",
+    "category": "safety",
+    "theme": "safety",
+    "tags": [
+      "incendie",
+      "feu",
+      "interdiction",
+      "maquis",
+      "mare_a_mare"
+    ],
+    "priority": 10
   }
 ]

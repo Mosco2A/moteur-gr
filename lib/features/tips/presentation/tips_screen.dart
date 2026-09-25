@@ -9,6 +9,7 @@ import '../../../shared/widgets/app_header.dart';
 import '../domain/models/tip_card.dart';
 import '../domain/models/tip_theme.dart';
 import '../providers/tip_cards_provider.dart';
+import 'tip_points_list.dart';
 
 /// Ecran FICHES CONSEILS — refonte StepWays LOT 5 (sous-ensemble C).
 ///
@@ -24,8 +25,13 @@ import '../providers/tip_cards_provider.dart';
 /// seuls les liens reseau requierent internet -> DEGRADATION PROPRE (bouton
 /// present ; si l'ouverture echoue, message neutre, la fiche reste lisible).
 ///
-/// Contenu i18n INLINE (5 langues, [TipCard.localizedTitle/Content]) ; libelles
-/// d'interface via Slang. Look GR20 conserve ([AppCard], [ExpansionTile]).
+/// Contenu i18n INLINE (5 langues, [TipCard.localizedTitle] et
+/// [TipCard.localizedPoints]) ; libelles d'interface via Slang. Look GR20
+/// conserve ([AppCard], [ExpansionTile]).
+///
+/// CALIBRE (tache 555) : chaque fiche depliee rend une LISTE DE PUCES — cinq
+/// points autonomes et chiffres, parite avec les fiches FC01-FC25 du GR20 — et
+/// non plus un paragraphe unique.
 class TipsScreen extends ConsumerWidget {
   const TipsScreen({super.key});
 
@@ -121,12 +127,11 @@ class _TipCardTile extends StatelessWidget {
           AppTheme.spacingBase,
         ),
         children: [
+          // CONTENU AU CALIBRE (tache 555) : les points de la fiche en PUCES,
+          // pas un paragraphe. Cinq points chiffres par fiche, en 5 langues.
           Align(
             alignment: Alignment.centerLeft,
-            child: Text(
-              card.localizedContent,
-              style: theme.textTheme.bodyMedium,
-            ),
+            child: TipPointsList.fromCard(card: card),
           ),
           // Boutons reseau (uniquement si un lien est renseigne, spec C).
           if (card.hasSocialLinks) ...[

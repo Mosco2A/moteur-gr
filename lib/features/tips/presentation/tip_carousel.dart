@@ -9,6 +9,7 @@ import '../data/tip_card_repository.dart';
 import '../data/tip_category_config.dart';
 import '../domain/models/tip_card.dart';
 import 'tip_detail_sheet.dart';
+import 'tip_points_list.dart';
 
 /// Provider des fiches conseil filtrees par categorie.
 ///
@@ -210,20 +211,25 @@ class _CarouselView extends StatelessWidget {
                     ),
                     const SizedBox(height: AppTheme.spacingMd),
                     Text(
-                      card.titleFr,
+                      card.localizedTitle,
                       style: theme.textTheme.titleMedium,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: AppTheme.spacingSm),
+                    // APERCU : les deux premiers points de la fiche (calibre
+                    // 555). Le detail complet ouvre les cinq points.
                     Expanded(
-                      child: Text(
-                        card.contentFr,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurface.withAlpha(180),
+                      child: SingleChildScrollView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        child: TipPointsList.fromCard(
+                          card: card,
+                          maxPoints: 2,
+                          bulletColor: color,
+                          textStyle: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withAlpha(180),
+                          ),
                         ),
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Align(

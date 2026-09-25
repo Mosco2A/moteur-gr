@@ -6,21 +6,51 @@
     "titleDe": "Fluessigkeitszufuhr beim Wandern",
     "titleIt": "Idratazione in escursione",
     "titleEs": "Hidratacion en senderismo",
-    "contentFr": "Buvez au minimum 1 litre par 2 heures. N'attendez pas la soif : la deshydratation est deja installee. Par forte chaleur, comptez 0,75 a 1 litre par heure. Remplissez a chaque source fiable.",
-    "contentEn": "Drink at least 1 litre per 2 hours. Do not wait until thirsty: dehydration is already there. In hot weather, count 0.75 to 1 litre per hour. Refill at every reliable source.",
-    "contentDe": "Mindestens 1 Liter pro 2 Stunden. Nicht auf den Durst warten: die Dehydrierung ist schon da. Bei Hitze 0,75 bis 1 Liter pro Stunde. An jeder zuverlaessigen Quelle auffuellen.",
-    "contentIt": "Almeno 1 litro ogni 2 ore. Non aspettate la sete: la disidratazione e gia iniziata. Con il caldo, 0,75-1 litro all'ora. Riempite a ogni sorgente affidabile.",
-    "contentEs": "Al menos 1 litro cada 2 horas. No espere a tener sed: la deshidratacion ya esta ahi. Con calor, 0,75 a 1 litro por hora. Rellene en cada fuente fiable.",
+    "pointsFr": [
+      "Tu perds 0,5 a 1 litre par heure en transpirant, et jusqu a 3 litres par heure par forte chaleur avec un effort intense (FFRandonnee).",
+      "Rythme conseille : 200 ml toutes les 20 minutes, soit 600 ml par heure. N attends pas la soif, elle arrive APRES la deshydratation.",
+      "Compte 3 litres pour une journee de marche, besoins de base et effort additionnes. Minimum raisonnable : 1,5 litre sur une sortie de quelques heures.",
+      "Par forte chaleur, un effort prolonge peut demander 5 a 6 litres, a absorber par fractions toutes les 20 a 30 minutes.",
+      "Eau de source douteuse : 1 comprime de Micropur Forte par litre, 30 minutes d attente contre bacteries et virus, 2 heures contre giardia et amibes."
+    ],
+    "pointsEn": [
+      "You lose 0.5 to 1 litre per hour through sweat, and up to 3 litres per hour in hot weather with hard effort (French Hiking Federation).",
+      "Target pace: 200 ml every 20 minutes, so 600 ml per hour. Do not wait for thirst, it comes AFTER dehydration has set in.",
+      "Plan 3 litres for a full walking day, baseline needs plus effort. Sensible minimum: 1.5 litres on a few hours out.",
+      "In hot weather a sustained effort can call for 5 to 6 litres, taken in small amounts every 20 to 30 minutes.",
+      "Doubtful spring water: 1 Micropur Forte tablet per litre, 30 minutes against bacteria and viruses, 2 hours against giardia and amoebas."
+    ],
+    "pointsDe": [
+      "Durch Schweiss verlierst du 0,5 bis 1 Liter pro Stunde, bei Hitze und hartem Einsatz bis zu 3 Liter pro Stunde (franzoesischer Wanderverband).",
+      "Empfohlener Rhythmus: 200 ml alle 20 Minuten, also 600 ml pro Stunde. Nicht auf den Durst warten, er kommt NACH der Dehydrierung.",
+      "Rechne mit 3 Litern fuer einen Wandertag, Grundbedarf plus Belastung. Sinnvolles Minimum: 1,5 Liter auf einer Tour von einigen Stunden.",
+      "Bei grosser Hitze kann eine lange Belastung 5 bis 6 Liter verlangen, in kleinen Portionen alle 20 bis 30 Minuten.",
+      "Zweifelhaftes Quellwasser: 1 Tablette Micropur Forte pro Liter, 30 Minuten gegen Bakterien und Viren, 2 Stunden gegen Giardien und Amoeben."
+    ],
+    "pointsIt": [
+      "Sudando perdi 0,5-1 litro all ora, e fino a 3 litri all ora con caldo forte e sforzo intenso (Federazione francese di escursionismo).",
+      "Ritmo consigliato: 200 ml ogni 20 minuti, cioe 600 ml all ora. Non aspettare la sete: arriva DOPO la disidratazione.",
+      "Conta 3 litri per una giornata di cammino, fabbisogno di base piu sforzo. Minimo ragionevole: 1,5 litri su un uscita di alcune ore.",
+      "Con caldo forte uno sforzo prolungato puo richiedere 5-6 litri, da assumere a piccole dosi ogni 20-30 minuti.",
+      "Acqua di sorgente dubbia: 1 compressa di Micropur Forte per litro, 30 minuti contro batteri e virus, 2 ore contro giardia e amebe."
+    ],
+    "pointsEs": [
+      "Sudando pierdes 0,5 a 1 litro por hora, y hasta 3 litros por hora con mucho calor y esfuerzo intenso (Federacion Francesa de Senderismo).",
+      "Ritmo aconsejado: 200 ml cada 20 minutos, es decir 600 ml por hora. No esperes la sed: llega DESPUES de la deshidratacion.",
+      "Cuenta 3 litros para una jornada de marcha, necesidades basicas mas esfuerzo. Minimo razonable: 1,5 litros en una salida de unas horas.",
+      "Con mucho calor, un esfuerzo prolongado puede exigir 5 a 6 litros, a tomar en pequenas dosis cada 20 a 30 minutos.",
+      "Agua de manantial dudosa: 1 pastilla de Micropur Forte por litro, 30 minutos contra bacterias y virus, 2 horas contra giardia y amebas."
+    ],
     "scope": "all",
     "season": "all",
     "category": "nutrition",
+    "theme": "health",
     "tags": [
       "eau",
       "hydratation",
       "sante"
     ],
-    "priority": 9,
-    "theme": "health"
+    "priority": 9
   },
   {
     "id": "general-vetements",
@@ -29,21 +59,51 @@
     "titleDe": "3-Schichten-System",
     "titleIt": "Sistema a 3 strati",
     "titleEs": "Sistema de 3 capas",
-    "contentFr": "Couche 1: sous-vetement respirant (merinos ou synthetique), jamais de coton. Couche 2: polaire isolante. Couche 3: veste impermeable et coupe-vent. Il peut faire 3 a 5 degres la nuit en altitude, meme l'ete.",
-    "contentEn": "Layer 1: breathable base layer (merino or synthetic), never cotton. Layer 2: insulating fleece. Layer 3: waterproof windproof jacket. It can drop to 3-5 degrees at night at altitude, even in summer.",
-    "contentDe": "Schicht 1: atmungsaktive Unterwaesche (Merino oder Synthetik), nie Baumwolle. Schicht 2: isolierendes Fleece. Schicht 3: wasser- und winddichte Jacke. Nachts in der Hoehe 3-5 Grad, auch im Sommer.",
-    "contentIt": "Strato 1: intimo traspirante (merino o sintetico), mai cotone. Strato 2: pile isolante. Strato 3: giacca impermeabile e antivento. Di notte in quota 3-5 gradi, anche d'estate.",
-    "contentEs": "Capa 1: ropa interior transpirable (merino o sintetico), nunca algodon. Capa 2: forro polar aislante. Capa 3: chaqueta impermeable y cortavientos. De noche en altura 3-5 grados, incluso en verano.",
+    "pointsFr": [
+      "Couche 1, contre la peau : merinos ou synthetique. JAMAIS de coton, il absorbe jusqu a 27 fois son poids en eau.",
+      "Coton mouille : les pertes de chaleur par contact passent de 2 % a 10-15 % de ta chaleur corporelle. D ou la formule des secouristes, cotton kills.",
+      "Couche 2, l isolation : polaire ou doudoune synthetique. En montant, la temperature perd 0,6 degre tous les 100 metres.",
+      "Couche 3, la protection : veste a 10 000 mm Schmerber minimum (norme ISO 811), respirabilite au-dessus de 8 000 g/m2/24h.",
+      "Sous 8 000 mm Schmerber, l impermeabilite ne tient pas une grosse averse. Deux tenues de marche suffisent : tu laves et tu seches le soir."
+    ],
+    "pointsEn": [
+      "Layer 1, against the skin: merino or synthetic. NEVER cotton, it can soak up 27 times its own weight in water.",
+      "Wet cotton: heat loss through contact rises from 2% to 10-15% of your body heat. Hence the rescuers' phrase, cotton kills.",
+      "Layer 2, insulation: fleece or synthetic jacket. As you climb, temperature drops 0.6 degrees every 100 metres.",
+      "Layer 3, protection: a shell rated at least 10,000 mm Schmerber (ISO 811 standard), breathability above 8,000 g/m2/24h.",
+      "Below 8,000 mm Schmerber a shell will not hold a heavy downpour. Two walking outfits are enough: wash and dry in the evening."
+    ],
+    "pointsDe": [
+      "Schicht 1, direkt auf der Haut: Merino oder Synthetik. NIE Baumwolle, sie saugt bis zu 27-mal ihr eigenes Gewicht an Wasser.",
+      "Nasse Baumwolle: der Waermeverlust durch Kontakt steigt von 2 % auf 10-15 % deiner Koerperwaerme. Daher der Satz der Retter, cotton kills.",
+      "Schicht 2, die Isolation: Fleece oder Synthetikjacke. Beim Aufstieg sinkt die Temperatur um 0,6 Grad je 100 Meter.",
+      "Schicht 3, der Schutz: Jacke mit mindestens 10 000 mm Schmerber (Norm ISO 811), Atmungsaktivitaet ueber 8 000 g/m2/24h.",
+      "Unter 8 000 mm Schmerber haelt die Jacke keinen starken Regen. Zwei Wandergarnituren genuegen: abends waschen und trocknen."
+    ],
+    "pointsIt": [
+      "Strato 1, sulla pelle: merino o sintetico. MAI cotone: assorbe fino a 27 volte il proprio peso in acqua.",
+      "Cotone bagnato: la perdita di calore per contatto passa dal 2 % al 10-15 % del calore corporeo. Da qui la frase dei soccorritori, cotton kills.",
+      "Strato 2, l isolamento: pile o giacca sintetica. Salendo, la temperatura perde 0,6 gradi ogni 100 metri.",
+      "Strato 3, la protezione: giacca da almeno 10 000 mm Schmerber (norma ISO 811), traspirabilita sopra 8 000 g/m2/24h.",
+      "Sotto 8 000 mm Schmerber la giacca non tiene un acquazzone. Due completi da cammino bastano: lavi e asciughi la sera."
+    ],
+    "pointsEs": [
+      "Capa 1, sobre la piel: merino o sintetico. NUNCA algodon: absorbe hasta 27 veces su propio peso en agua.",
+      "Algodon mojado: la perdida de calor por contacto pasa del 2 % al 10-15 % de tu calor corporal. De ahi la frase de los rescatadores, cotton kills.",
+      "Capa 2, el aislamiento: forro polar o chaqueta sintetica. Al subir, la temperatura baja 0,6 grados cada 100 metros.",
+      "Capa 3, la proteccion: chaqueta de 10 000 mm Schmerber minimo (norma ISO 811), transpirabilidad por encima de 8 000 g/m2/24h.",
+      "Por debajo de 8 000 mm Schmerber la chaqueta no aguanta un chaparron. Dos equipos de marcha bastan: lavas y secas por la noche."
+    ],
     "scope": "all",
     "season": "all",
     "category": "equipment",
+    "theme": "gear",
     "tags": [
       "vetements",
       "couches",
       "montagne"
     ],
-    "priority": 8,
-    "theme": "gear"
+    "priority": 8
   },
   {
     "id": "general-chaussures",
@@ -52,21 +112,51 @@
     "titleDe": "Schuhe einlaufen",
     "titleIt": "Scarpe rodate",
     "titleEs": "Calzado amoldado",
-    "contentFr": "JAMAIS de chaussures neuves. 50 km avant le trek minimum. Ampoules = cause n1 d'abandon. Inspectez vos pieds chaque soir et traitez tout point chaud immediatement.",
-    "contentEn": "NEVER brand new boots. 50 km minimum before trek. Blisters = #1 cause of abandonment. Inspect your feet every evening and treat any hot spot immediately.",
-    "contentDe": "NIE neue Schuhe. 50 km vorher tragen. Blasen = haeufigste Abbruchursache. Fuesse jeden Abend kontrollieren und jede Druckstelle sofort behandeln.",
-    "contentIt": "MAI scarpe nuove. 50 km prima del trek. Vesciche = causa n.1 di abbandono. Controllate i piedi ogni sera e trattate subito ogni punto caldo.",
-    "contentEs": "NUNCA botas nuevas. 50 km antes del trek. Ampollas = causa n.1 de abandono. Revise sus pies cada noche y trate de inmediato cualquier zona de roce.",
+    "pointsFr": [
+      "Jamais de chaussures neuves au depart : porte-les plusieurs fois sur de courtes randonnees avant l itineraire.",
+      "Une paire de chaussettes adaptee reduit d environ 30 % le risque d ampoule (American Academy of Dermatology).",
+      "Dans 30 % des cas d ampoule, c est la chaussette qui etait en cause. Synthetique ou merinos, jamais de coton.",
+      "Traite le point chaud AVANT l ampoule : des que ca chauffe, tu t arretes et tu poses un pansement hydrocolloide.",
+      "Inspection des pieds chaque soir : lavage, sechage complet, ongles coupes courts. Cinq minutes qui sauvent une semaine de marche."
+    ],
+    "pointsEn": [
+      "Never start in brand new boots: wear them on several short hikes before the trip.",
+      "A properly matched pair of socks cuts blister risk by about 30% (American Academy of Dermatology).",
+      "In 30% of blister cases the sock was the culprit. Synthetic or merino, never cotton.",
+      "Treat the hot spot BEFORE the blister: the moment it burns, stop and apply a hydrocolloid dressing.",
+      "Check your feet every evening: wash, dry fully, keep nails short. Five minutes that save a week of walking."
+    ],
+    "pointsDe": [
+      "Nie mit neuen Schuhen starten: trage sie vorher auf mehreren kurzen Wanderungen ein.",
+      "Ein passendes Sockenpaar senkt das Blasenrisiko um rund 30 % (American Academy of Dermatology).",
+      "In 30 % der Blasenfaelle war die Socke die Ursache. Synthetik oder Merino, nie Baumwolle.",
+      "Behandle die Druckstelle VOR der Blase: sobald es brennt, anhalten und ein Hydrokolloidpflaster aufkleben.",
+      "Fusskontrolle jeden Abend: waschen, vollstaendig trocknen, Naegel kurz. Fuenf Minuten, die eine Wanderwoche retten."
+    ],
+    "pointsIt": [
+      "Mai scarpe nuove alla partenza: indossale piu volte su escursioni brevi prima dell itinerario.",
+      "Un paio di calze adatto riduce di circa il 30 % il rischio di vesciche (American Academy of Dermatology).",
+      "Nel 30 % dei casi di vescica la colpa era della calza. Sintetico o merino, mai cotone.",
+      "Tratta il punto caldo PRIMA della vescica: appena scalda, ti fermi e applichi un cerotto idrocolloidale.",
+      "Controllo dei piedi ogni sera: lavaggio, asciugatura completa, unghie corte. Cinque minuti che salvano una settimana di cammino."
+    ],
+    "pointsEs": [
+      "Nunca botas nuevas al salir: llevalas varias veces en rutas cortas antes del itinerario.",
+      "Un par de calcetines adecuado reduce cerca del 30 % el riesgo de ampollas (American Academy of Dermatology).",
+      "En el 30 % de los casos de ampolla la culpa era del calcetin. Sintetico o merino, nunca algodon.",
+      "Trata el punto caliente ANTES de la ampolla: en cuanto roza, te paras y pones un aposito hidrocoloide.",
+      "Revision de pies cada noche: lavado, secado completo, unas cortas. Cinco minutos que salvan una semana de marcha."
+    ],
     "scope": "all",
     "season": "all",
     "category": "preparation",
+    "theme": "gear",
     "tags": [
       "chaussures",
       "ampoules",
       "preparation"
     ],
-    "priority": 9,
-    "theme": "gear"
+    "priority": 9
   },
   {
     "id": "general-secours",
@@ -75,21 +165,51 @@
     "titleDe": "Erste-Hilfe-Ausruestung",
     "titleIt": "Kit di pronto soccorso",
     "titleEs": "Botiquin de primeros auxilios",
-    "contentFr": "Pansements ampoules, bande elastique cohesive, desinfectant, antidouleur, couverture de survie, sifflet. 300 g max. Le 112 fonctionne avec tous les operateurs. Signal helicoptere : deux bras leves en Y = besoin d'aide.",
-    "contentEn": "Blister plasters, cohesive bandage, disinfectant, painkillers, survival blanket, whistle. 300 g max. 112 works on all networks. Helicopter signal: both arms raised in a Y = need help.",
-    "contentDe": "Blasenpflaster, Kohaesivbinde, Desinfektionsmittel, Schmerzmittel, Rettungsdecke, Pfeife. 300 g. 112 funktioniert in allen Netzen. Hubschrauber-Signal: beide Arme im Y = Hilfe noetig.",
-    "contentIt": "Cerotti, benda coesiva, disinfettante, antidolorifico, coperta termica, fischietto. 300 g. Il 112 funziona con tutti gli operatori. Segnale elicottero: due braccia a Y = serve aiuto.",
-    "contentEs": "Apositos, venda cohesiva, desinfectante, analgesico, manta termica, silbato. 300 g. El 112 funciona con todos los operadores. Senal al helicoptero: dos brazos en Y = necesito ayuda.",
+    "pointsFr": [
+      "112 : numero d urgence europeen, gratuit, valable dans toute l Union plus Suisse, Liechtenstein, Islande et Norvege. Il passe MEME sans carte SIM.",
+      "114 en France pour les personnes sourdes, malentendantes ou aphasiques : SMS, tchat et visio en langue des signes, 24 heures sur 24.",
+      "Signal de detresse international : 6 signaux par minute, un toutes les 10 secondes, puis une minute de silence. La reponse des secours, c est 3 signaux par minute.",
+      "En France, le secours en montagne reste gratuit en detresse vitale. Une intervention coute en moyenne 10 780 euros a la collectivite (2024) : on n appelle pas pour du confort.",
+      "Trousse minimale : pansements hydrocolloides, bande cohesive, compresses steriles, antiseptique, antalgique, couverture de survie et un sifflet."
+    ],
+    "pointsEn": [
+      "112: the European emergency number, free, valid across the EU plus Switzerland, Liechtenstein, Iceland and Norway. It works EVEN without a SIM card.",
+      "114 in France for deaf, hard-of-hearing or speech-impaired people: SMS, chat and sign-language video, 24 hours a day.",
+      "International distress signal: 6 signals per minute, one every 10 seconds, then a minute of silence. Rescuers answer with 3 signals per minute.",
+      "In France mountain rescue stays free in life-threatening distress. One call-out costs the public purse 10,780 euros on average (2024): you do not call for comfort.",
+      "Minimum kit: hydrocolloid dressings, cohesive bandage, sterile compresses, antiseptic, painkiller, survival blanket and a whistle."
+    ],
+    "pointsDe": [
+      "112: europaeischer Notruf, kostenlos, gueltig in der ganzen EU plus Schweiz, Liechtenstein, Island und Norwegen. Er funktioniert SOGAR ohne SIM-Karte.",
+      "114 in Frankreich fuer gehoerlose, schwerhoerige oder sprachbehinderte Menschen: SMS, Chat und Video in Gebaerdensprache, rund um die Uhr.",
+      "Internationales Notsignal: 6 Signale pro Minute, eines alle 10 Sekunden, dann eine Minute Stille. Die Retter antworten mit 3 Signalen pro Minute.",
+      "In Frankreich bleibt die Bergrettung bei Lebensgefahr kostenlos. Ein Einsatz kostet die Allgemeinheit im Schnitt 10 780 Euro (2024): man ruft nicht aus Bequemlichkeit.",
+      "Minimalset: Hydrokolloidpflaster, Kohaesivbinde, sterile Kompressen, Antiseptikum, Schmerzmittel, Rettungsdecke und eine Trillerpfeife."
+    ],
+    "pointsIt": [
+      "112: numero di emergenza europeo, gratuito, valido in tutta l Unione piu Svizzera, Liechtenstein, Islanda e Norvegia. Funziona ANCHE senza SIM.",
+      "114 in Francia per persone sorde, ipoudenti o afasiche: SMS, chat e video in lingua dei segni, 24 ore su 24.",
+      "Segnale di soccorso internazionale: 6 segnali al minuto, uno ogni 10 secondi, poi un minuto di silenzio. I soccorsi rispondono con 3 segnali al minuto.",
+      "In Francia il soccorso in montagna resta gratuito in caso di pericolo di vita. Un intervento costa in media 10 780 euro alla collettivita (2024): non si chiama per comodita.",
+      "Kit minimo: cerotti idrocolloidali, benda coesiva, garze sterili, antisettico, antidolorifico, telo termico e un fischietto."
+    ],
+    "pointsEs": [
+      "112: numero de emergencia europeo, gratuito, valido en toda la Union mas Suiza, Liechtenstein, Islandia y Noruega. Funciona INCLUSO sin tarjeta SIM.",
+      "114 en Francia para personas sordas, con hipoacusia o afasia: SMS, chat y video en lengua de signos, 24 horas al dia.",
+      "Senal de socorro internacional: 6 senales por minuto, una cada 10 segundos, luego un minuto de silencio. El rescate responde con 3 senales por minuto.",
+      "En Francia el rescate en montana sigue siendo gratuito en peligro vital. Una intervencion cuesta de media 10 780 euros a la colectividad (2024): no se llama por comodidad.",
+      "Botiquin minimo: apositos hidrocoloides, venda cohesiva, compresas esteriles, antiseptico, analgesico, manta de supervivencia y un silbato."
+    ],
     "scope": "all",
     "season": "all",
     "category": "safety",
+    "theme": "safety",
     "tags": [
       "secours",
       "trousse",
       "urgence"
     ],
-    "priority": 8,
-    "theme": "safety"
+    "priority": 8
   },
   {
     "id": "general-solaire",
@@ -98,23 +218,53 @@
     "titleDe": "Sonnenschutz",
     "titleIt": "Protezione solare",
     "titleEs": "Proteccion solar",
-    "contentFr": "UV +10%/1000 m. SPF 50+ toutes les 2h. Chapeau + lunettes cat. 3-4.",
-    "contentEn": "UV +10%/1000 m. SPF 50+ every 2h. Hat + cat 3-4 sunglasses.",
-    "contentDe": "UV +10%/1000 m. SPF 50+ alle 2h. Hut + Brille Kat. 3-4.",
-    "contentIt": "UV +10%/1000 m. SPF 50+ ogni 2h. Cappello + occhiali cat. 3-4.",
-    "contentEs": "UV +10%/1000 m. SPF 50+ cada 2h. Sombrero + gafas cat. 3-4.",
+    "pointsFr": [
+      "Le rayonnement UV augmente d environ 10 % tous les 1 000 metres de denivele (Organisation mondiale de la sante).",
+      "La neige renvoie 80 % des UV, l eau 25 %, le sable 15 % : sur un neve tu prends le soleil deux fois.",
+      "Creme indice 50 sur tout ce qui est decouvert, oreilles et dessous du menton compris, a renouveler toutes les 2 heures et apres chaque suee.",
+      "Lunettes de categorie 3 minimum en montagne, categorie 4 sur glacier et au-dessus de 3 000 metres (norme EN ISO 12312-1).",
+      "Le ciel couvert ne filtre pas les UV. Chapeau a pans, stick a levres et manches longues legeres valent mieux qu une creme oubliee au fond du sac."
+    ],
+    "pointsEn": [
+      "UV radiation rises by about 10% for every 1,000 metres of altitude gained (World Health Organization).",
+      "Snow reflects 80% of UV, water 25%, sand 15%: on a snowfield you take the sun twice.",
+      "Factor 50 cream on every exposed area, ears and under the chin included, reapplied every 2 hours and after every sweat.",
+      "Category 3 glasses minimum in the mountains, category 4 on glaciers and above 3,000 metres (EN ISO 12312-1 standard).",
+      "Cloud cover does not filter UV. A brimmed hat, lip balm and light long sleeves beat a cream left at the bottom of the pack."
+    ],
+    "pointsDe": [
+      "Die UV-Strahlung steigt um etwa 10 % je 1 000 Meter Hoehengewinn (Weltgesundheitsorganisation).",
+      "Schnee reflektiert 80 % der UV-Strahlen, Wasser 25 %, Sand 15 %: im Altschneefeld bekommst du die Sonne doppelt.",
+      "Lichtschutzfaktor 50 auf alle freien Stellen, Ohren und Kinnunterseite inklusive, alle 2 Stunden und nach jedem Schweissausbruch erneuern.",
+      "Brille mindestens Kategorie 3 im Gebirge, Kategorie 4 auf Gletschern und ueber 3 000 Metern (Norm EN ISO 12312-1).",
+      "Bewoelkter Himmel filtert keine UV-Strahlen. Hut mit Krempe, Lippenstift und leichte lange Aermel sind besser als eine Creme im Rucksackboden."
+    ],
+    "pointsIt": [
+      "La radiazione UV aumenta di circa il 10 % ogni 1 000 metri di dislivello (Organizzazione mondiale della sanita).",
+      "La neve riflette l 80 % degli UV, l acqua il 25 %, la sabbia il 15 %: su un nevaio prendi il sole due volte.",
+      "Crema fattore 50 su tutto cio che e scoperto, orecchie e sotto il mento compresi, da rinnovare ogni 2 ore e dopo ogni sudata.",
+      "Occhiali di categoria 3 minimo in montagna, categoria 4 su ghiacciaio e oltre i 3 000 metri (norma EN ISO 12312-1).",
+      "Il cielo coperto non filtra gli UV. Cappello a falda, stick per labbra e maniche lunghe leggere valgono piu di una crema dimenticata in fondo allo zaino."
+    ],
+    "pointsEs": [
+      "La radiacion UV aumenta cerca del 10 % cada 1 000 metros de desnivel (Organizacion Mundial de la Salud).",
+      "La nieve refleja el 80 % de los UV, el agua el 25 %, la arena el 15 %: en un nevero tomas el sol dos veces.",
+      "Crema factor 50 en todo lo descubierto, orejas y bajo el menton incluidos, renovada cada 2 horas y tras cada sudada.",
+      "Gafas de categoria 3 como minimo en montana, categoria 4 en glaciar y por encima de 3 000 metros (norma EN ISO 12312-1).",
+      "El cielo cubierto no filtra los UV. Sombrero de ala, barra labial y manga larga ligera valen mas que una crema olvidada en el fondo de la mochila."
+    ],
     "scope": "all",
     "season": "summer",
     "category": "safety",
+    "theme": "health",
     "tags": [
       "soleil",
       "UV",
       "creme",
       "altitude"
     ],
-    "minAltitudeM": 800,
     "priority": 7,
-    "theme": "health"
+    "minAltitudeM": 800
   },
   {
     "id": "general-alimentation",
@@ -123,21 +273,51 @@
     "titleDe": "Ernaehrung waehrend der Belastung",
     "titleIt": "Alimentazione durante lo sforzo",
     "titleEs": "Alimentacion durante el esfuerzo",
-    "contentFr": "Mangez peu mais souvent : collation toutes les 90 minutes (fruits secs, barres energetiques). 2500-3500 kcal par jour. Visez 60% de glucides, 25% de proteines, 15% de lipides.",
-    "contentEn": "Eat little but often: snack every 90 min (dried fruit, energy bars). 2500-3500 kcal per day. Aim for 60% carbs, 25% protein, 15% fat.",
-    "contentDe": "Wenig aber oft: Snack alle 90 Min (Trockenfruechte, Riegel). 2500-3500 kcal/Tag. Ziel: 60% Kohlenhydrate, 25% Eiweiss, 15% Fett.",
-    "contentIt": "Poco ma spesso: spuntino ogni 90 min (frutta secca, barrette). 2500-3500 kcal/giorno. Obiettivo: 60% carboidrati, 25% proteine, 15% grassi.",
-    "contentEs": "Poco pero a menudo: tentempie cada 90 min (frutos secos, barritas). 2500-3500 kcal/dia. Busque 60% carbohidratos, 25% proteinas, 15% grasas.",
+    "pointsFr": [
+      "Une journee de marche avec sac brule 3 000 a 4 500 kcal (Appalachian Mountain Club). Une etude d Innsbruck a mesure 4 870 kcal sur une journee a 1 200 metres de denivele.",
+      "En marche, tu depenses 400 a 600 kcal par heure : deux a trois fois une journee de bureau.",
+      "Mange AVANT d avoir faim : une prise toutes les 45 minutes a 1 heure, en petites quantites, plutot qu un gros repas a midi.",
+      "Base de glucides pour l energie immediate, proteines pour reparer le muscle, lipides pour la duree. C est l ordre des priorites, pas une religion.",
+      "Ajoute du sel : avec 0,5 a 1 litre de sueur par heure, tu perds des electrolytes que l eau seule ne remplace pas."
+    ],
+    "pointsEn": [
+      "A walking day with a pack burns 3,000 to 4,500 kcal (Appalachian Mountain Club). An Innsbruck study measured 4,870 kcal on a day with 1,200 metres of climb.",
+      "While walking you spend 400 to 600 kcal per hour: two to three times an office day.",
+      "Eat BEFORE you are hungry: a small intake every 45 minutes to an hour beats one big lunch.",
+      "Carbohydrate base for immediate energy, protein to repair muscle, fat for endurance. That is the order of priority, not a dogma.",
+      "Add salt: at 0.5 to 1 litre of sweat per hour you lose electrolytes that water alone will not replace."
+    ],
+    "pointsDe": [
+      "Ein Wandertag mit Rucksack verbrennt 3 000 bis 4 500 kcal (Appalachian Mountain Club). Eine Innsbrucker Studie misst 4 870 kcal an einem Tag mit 1 200 Metern Aufstieg.",
+      "Beim Gehen verbrauchst du 400 bis 600 kcal pro Stunde: zwei- bis dreimal so viel wie an einem Buerotag.",
+      "Iss BEVOR du Hunger hast: eine kleine Portion alle 45 bis 60 Minuten ist besser als ein grosses Mittagessen.",
+      "Kohlenhydrate als Basis fuer die sofortige Energie, Eiweiss zur Muskelreparatur, Fett fuer die Dauer. Das ist die Reihenfolge, kein Dogma.",
+      "Salze nach: bei 0,5 bis 1 Liter Schweiss pro Stunde verlierst du Elektrolyte, die Wasser allein nicht ersetzt."
+    ],
+    "pointsIt": [
+      "Una giornata di cammino con zaino brucia 3 000-4 500 kcal (Appalachian Mountain Club). Uno studio di Innsbruck ha misurato 4 870 kcal in una giornata con 1 200 metri di dislivello.",
+      "Camminando spendi 400-600 kcal all ora: due o tre volte una giornata d ufficio.",
+      "Mangia PRIMA di avere fame: una piccola dose ogni 45-60 minuti rende piu di un pranzo abbondante.",
+      "Base di carboidrati per l energia immediata, proteine per riparare il muscolo, grassi per la durata. E un ordine di priorita, non un dogma.",
+      "Aggiungi sale: con 0,5-1 litro di sudore all ora perdi elettroliti che l acqua da sola non rimpiazza."
+    ],
+    "pointsEs": [
+      "Una jornada de marcha con mochila quema 3 000 a 4 500 kcal (Appalachian Mountain Club). Un estudio de Innsbruck midio 4 870 kcal en un dia con 1 200 metros de desnivel.",
+      "Caminando gastas 400 a 600 kcal por hora: dos o tres veces una jornada de oficina.",
+      "Come ANTES de tener hambre: una toma pequena cada 45 a 60 minutos rinde mas que una comida copiosa.",
+      "Base de hidratos para la energia inmediata, proteinas para reparar el musculo, grasas para la duracion. Es un orden de prioridad, no un dogma.",
+      "Anade sal: con 0,5 a 1 litro de sudor por hora pierdes electrolitos que el agua sola no reemplaza."
+    ],
     "scope": "all",
     "season": "all",
     "category": "nutrition",
+    "theme": "health",
     "tags": [
       "alimentation",
       "energie",
       "calories"
     ],
-    "priority": 7,
-    "theme": "health"
+    "priority": 7
   },
   {
     "id": "general-nature",
@@ -146,22 +326,52 @@
     "titleDe": "Die natuerliche Umgebung respektieren",
     "titleIt": "Rispettare l'ambiente naturale",
     "titleEs": "Respetar el medio natural",
-    "contentFr": "Ne laissez aucune trace : ramenez vos dechets, restez sur les sentiers balises. De nombreux massifs abritent des especes endemiques protegees.",
-    "contentEn": "Leave no trace: bring back waste, stay on marked trails. Many mountain areas: protected endemic species.",
-    "contentDe": "Keine Spuren: Abfall mitnehmen, auf markierten Wegen bleiben. Viele Gebirge: geschuetzte endemische Arten.",
-    "contentIt": "Non lasciate tracce: riportate i rifiuti, restate sui sentieri segnati. Molti massicci: specie endemiche protette.",
-    "contentEs": "No deje rastro: lleve los residuos, permanezca en los senderos marcados. Muchos macizos: especies endemicas protegidas.",
+    "pointsFr": [
+      "Reste sur le sentier balise. Les pelouses et tourbieres d altitude mettent des decennies a se reformer apres un pietinement.",
+      "Emporte TOUS tes dechets, y compris les organiques (Leave No Trace, principe 3). Une peau d orange ne disparait pas en montagne.",
+      "Observe la faune de loin, sans l approcher : chaque fuite provoquee lui coute l energie qui lui sert a passer l hiver.",
+      "Ne cueille rien. Dans un parc naturel, des centaines d especes vegetales sont protegees par arrete et la cueillette est sanctionnee.",
+      "Chien en laisse pres des troupeaux. Le chien de protection ne t attaque pas, il s interpose : tu contournes largement, sans courir."
+    ],
+    "pointsEn": [
+      "Stay on the marked path. High-altitude grassland and peat bogs take decades to recover from trampling.",
+      "Pack out ALL your waste, food scraps included (Leave No Trace, principle 3). An orange peel does not vanish in the mountains.",
+      "Watch wildlife from a distance, without approaching: every flight you cause costs the animal the energy it needs to survive winter.",
+      "Pick nothing. In a nature park hundreds of plant species are protected by order and picking is punishable.",
+      "Dog on a lead near livestock. A guardian dog does not attack you, it interposes itself: go wide around, and do not run."
+    ],
+    "pointsDe": [
+      "Bleib auf dem markierten Weg. Hochlagenrasen und Hochmoore brauchen Jahrzehnte, um sich von Trittschaeden zu erholen.",
+      "Nimm ALLE Abfaelle mit, auch organische (Leave No Trace, Prinzip 3). Eine Orangenschale verschwindet im Gebirge nicht.",
+      "Beobachte Wildtiere aus der Ferne, ohne sie anzugehen: jede ausgeloeste Flucht kostet das Tier die Energie fuer den Winter.",
+      "Pfluecke nichts. In einem Naturpark sind hunderte Pflanzenarten per Verordnung geschuetzt, Pfluecken ist strafbar.",
+      "Hund an der Leine in Herdennaehe. Der Herdenschutzhund greift dich nicht an, er stellt sich dazwischen: weit umgehen, nicht rennen."
+    ],
+    "pointsIt": [
+      "Resta sul sentiero segnato. Praterie e torbiere d altitudine hanno bisogno di decenni per riprendersi dal calpestio.",
+      "Porta via TUTTI i rifiuti, anche organici (Leave No Trace, principio 3). Una buccia d arancia in montagna non sparisce.",
+      "Osserva la fauna da lontano, senza avvicinarti: ogni fuga provocata le costa l energia che le serve per passare l inverno.",
+      "Non raccogliere nulla. In un parco naturale centinaia di specie vegetali sono protette per decreto e la raccolta e sanzionata.",
+      "Cane al guinzaglio vicino alle mandrie. Il cane da protezione non ti attacca, si frappone: gira largo e non correre."
+    ],
+    "pointsEs": [
+      "Quedate en el sendero balizado. Los pastos y turberas de altura tardan decenios en recuperarse del pisoteo.",
+      "Llevate TODOS tus residuos, tambien los organicos (Leave No Trace, principio 3). Una piel de naranja no desaparece en la montana.",
+      "Observa la fauna de lejos, sin acercarte: cada huida provocada le cuesta la energia que necesita para pasar el invierno.",
+      "No recojas nada. En un parque natural cientos de especies vegetales estan protegidas por decreto y la recoleccion se sanciona.",
+      "Perro con correa cerca de los rebanos. El perro de proteccion no te ataca, se interpone: rodea de lejos y no corras."
+    ],
     "scope": "all",
     "season": "all",
     "category": "nature",
+    "theme": "nature",
     "tags": [
       "ecologie",
       "dechets",
       "faune",
       "flore"
     ],
-    "priority": 7,
-    "theme": "nature"
+    "priority": 7
   },
   {
     "id": "general-recup",
@@ -170,21 +380,51 @@
     "titleDe": "Dehnung und Erholung nach jeder Etappe",
     "titleIt": "Stretching e recupero dopo ogni tappa",
     "titleEs": "Estiramientos y recuperacion",
-    "contentFr": "Etirez-vous 10 minutes : mollets, quadriceps, ischio-jambiers, hanches. Jambes surelevees 15 min. Dormir 7 h minimum. Proteines et glucides dans les 30 min apres l'arrivee.",
-    "contentEn": "Stretch 10 min: calves, quadriceps, hamstrings, hips. Elevate legs 15 min. Sleep 7+ hours. Protein and carbs within 30 min of arrival.",
-    "contentDe": "10 Min dehnen: Waden, Quadrizeps, Oberschenkel, Hueften. Beine 15 Min hoch. 7+ Stunden schlafen. Eiweiss und Kohlenhydrate binnen 30 Min nach Ankunft.",
-    "contentIt": "Stretching 10 min: polpacci, quadricipiti, femorali, anche. Gambe sollevate 15 min. 7+ ore di sonno. Proteine e carboidrati entro 30 min dall'arrivo.",
-    "contentEs": "Estirese 10 min: pantorrillas, cuadriceps, isquiotibiales, caderas. Piernas en alto 15 min. Duerma 7+ horas. Proteinas y carbohidratos en los 30 min tras llegar.",
+    "pointsFr": [
+      "A l arrivee : sac a terre, 5 minutes de marche a plat pour faire redescendre le coeur, puis jambes surelevees 10 minutes.",
+      "Recharge glucides et proteines dans l heure qui suit : le pic d absorption est a 30 minutes et l efficacite tient jusqu a 2 heures.",
+      "Reperes courants : 1 a 1,2 g de glucides par kilo de poids de corps dans l heure, avec 20 a 25 g de proteines.",
+      "Etirements doux 1 a 2 heures apres l arrivee, jamais sur un muscle encore chaud et fatigue : 20 a 30 secondes par posture, sans a-coups.",
+      "Le sommeil repare plus que tout le reste : une journee a 3 000-4 500 kcal ne se rattrape pas en cinq heures de nuit."
+    ],
+    "pointsEn": [
+      "On arrival: pack off, 5 minutes walking on the flat to bring the heart rate down, then legs up for 10 minutes.",
+      "Reload carbohydrate and protein within the hour: absorption peaks at 30 minutes and stays effective up to 2 hours.",
+      "Common benchmarks: 1 to 1.2 g of carbohydrate per kilo of body weight within the hour, with 20 to 25 g of protein.",
+      "Gentle stretching 1 to 2 hours after arrival, never on a muscle still hot and tired: 20 to 30 seconds per position, no bouncing.",
+      "Sleep repairs more than anything else: a 3,000-4,500 kcal day is not made up in five hours of night."
+    ],
+    "pointsDe": [
+      "Bei der Ankunft: Rucksack ab, 5 Minuten in der Ebene gehen, damit der Puls sinkt, dann 10 Minuten die Beine hoch.",
+      "Kohlenhydrate und Eiweiss innerhalb der ersten Stunde nachladen: der Aufnahmegipfel liegt bei 30 Minuten und wirkt bis 2 Stunden.",
+      "Gaengige Richtwerte: 1 bis 1,2 g Kohlenhydrate pro Kilo Koerpergewicht in der ersten Stunde, dazu 20 bis 25 g Eiweiss.",
+      "Sanftes Dehnen 1 bis 2 Stunden nach der Ankunft, nie am noch warmen, muedem Muskel: 20 bis 30 Sekunden je Position, ohne Wippen.",
+      "Schlaf repariert mehr als alles andere: ein Tag mit 3 000-4 500 kcal holt sich in fuenf Stunden Nacht nicht zurueck."
+    ],
+    "pointsIt": [
+      "All arrivo: zaino a terra, 5 minuti di cammino in piano per far scendere il cuore, poi gambe in alto per 10 minuti.",
+      "Ricarica carboidrati e proteine entro l ora: il picco di assorbimento e a 30 minuti e l efficacia dura fino a 2 ore.",
+      "Riferimenti comuni: 1-1,2 g di carboidrati per chilo di peso corporeo entro l ora, con 20-25 g di proteine.",
+      "Stretching dolce 1-2 ore dopo l arrivo, mai su un muscolo ancora caldo e stanco: 20-30 secondi per posizione, senza strappi.",
+      "Il sonno ripara piu di tutto il resto: una giornata da 3 000-4 500 kcal non si recupera in cinque ore di notte."
+    ],
+    "pointsEs": [
+      "Al llegar: mochila al suelo, 5 minutos de marcha en llano para bajar el pulso, luego piernas en alto 10 minutos.",
+      "Recarga hidratos y proteinas en la hora siguiente: el pico de absorcion esta a los 30 minutos y la eficacia dura hasta 2 horas.",
+      "Referencias habituales: 1 a 1,2 g de hidratos por kilo de peso corporal en la primera hora, con 20 a 25 g de proteinas.",
+      "Estiramientos suaves 1 a 2 horas despues de llegar, nunca sobre un musculo aun caliente y cansado: 20 a 30 segundos por postura, sin tirones.",
+      "El sueno repara mas que todo lo demas: una jornada de 3 000-4 500 kcal no se recupera en cinco horas de noche."
+    ],
     "scope": "all",
     "season": "all",
     "category": "recovery",
+    "theme": "health",
     "tags": [
       "etirements",
       "recuperation",
       "sommeil"
     ],
-    "priority": 6,
-    "theme": "health"
+    "priority": 6
   },
   {
     "id": "general-orage",
@@ -193,23 +433,53 @@
     "titleDe": "Verhalten bei Gewitter",
     "titleIt": "Comportamento in caso di temporale",
     "titleEs": "Comportamiento en caso de tormenta",
-    "contentFr": "Les orages eclatent souvent l'apres-midi : visez le refuge avant 14 h. Descendez sous la ligne de crete. Eloignez-vous des arbres isoles et points metalliques. Accroupissez-vous pieds joints.",
-    "contentEn": "Storms often break in the afternoon: reach the hut before 2 pm. Descend below the ridge. Move away from isolated trees and metal. Crouch with feet together.",
-    "contentDe": "Gewitter oft am Nachmittag: vor 14 Uhr die Huette erreichen. Unter die Gratlinie. Von einzelnen Baeumen und Metall entfernen. In die Hocke, Fuesse zusammen.",
-    "contentIt": "I temporali scoppiano spesso il pomeriggio: raggiungete il rifugio prima delle 14. Scendete sotto la cresta. Allontanatevi da alberi isolati e metalli. Accucciatevi a piedi uniti.",
-    "contentEs": "Las tormentas estallan a menudo por la tarde: llegue al refugio antes de las 14 h. Baje de la cresta. Alejese de arboles aislados y metales. Agachese con los pies juntos.",
+    "pointsFr": [
+      "Regle 30/30 : si le tonnerre suit l eclair en 30 secondes ou moins, l orage est a 10 km au plus. Tu es a portee de foudre.",
+      "Apres le dernier eclair, attends 30 minutes avant de repartir (NOAA). Le message actuel est plus simple encore : tu entends le tonnerre, tu es deja a portee.",
+      "Sur une crete ou un sommet, tu es le point haut : tu descends immediatement, sans attendre la pluie ni le premier eclair proche.",
+      "Eloigne-toi des arbres isoles, des pylones et des parois ruisselantes. Pose les batons metalliques a plusieurs metres de toi.",
+      "En dernier recours : accroupi, pieds serres, assis sur ton sac pour t isoler du sol, et le groupe espace de plusieurs metres."
+    ],
+    "pointsEn": [
+      "The 30/30 rule: if thunder follows the flash within 30 seconds or less, the storm is 10 km away at most. You are within striking range.",
+      "After the last flash, wait 30 minutes before moving on (NOAA). The current message is simpler still: if you hear thunder, you are already in range.",
+      "On a ridge or a summit you are the high point: go down immediately, without waiting for rain or a close strike.",
+      "Move away from lone trees, pylons and streaming rock faces. Put metal poles down several metres away from you.",
+      "As a last resort: crouch, feet together, sitting on your pack to insulate yourself from the ground, with the group spread several metres apart."
+    ],
+    "pointsDe": [
+      "30/30-Regel: folgt der Donner dem Blitz in 30 Sekunden oder weniger, ist das Gewitter hoechstens 10 km entfernt. Du bist in Einschlagweite.",
+      "Nach dem letzten Blitz 30 Minuten warten, bevor du weitergehst (NOAA). Die heutige Botschaft ist noch einfacher: hoerst du Donner, bist du schon in Reichweite.",
+      "Auf einem Grat oder Gipfel bist du der hoechste Punkt: sofort absteigen, ohne auf Regen oder einen nahen Blitz zu warten.",
+      "Halte Abstand von Einzelbaeumen, Masten und nassen Felswaenden. Lege Metallstoecke mehrere Meter von dir weg.",
+      "Als letztes Mittel: in die Hocke, Fuesse zusammen, auf dem Rucksack sitzend zur Isolierung vom Boden, die Gruppe mehrere Meter auseinander."
+    ],
+    "pointsIt": [
+      "Regola 30/30: se il tuono segue il lampo entro 30 secondi, il temporale e a 10 km al massimo. Sei a portata di fulmine.",
+      "Dopo l ultimo lampo attendi 30 minuti prima di ripartire (NOAA). Il messaggio attuale e ancora piu semplice: se senti il tuono, sei gia a portata.",
+      "Su una cresta o una cima sei il punto piu alto: scendi immediatamente, senza aspettare la pioggia ne il primo fulmine vicino.",
+      "Allontanati da alberi isolati, tralicci e pareti bagnate. Appoggia i bastoncini metallici a diversi metri da te.",
+      "Come ultima risorsa: accovacciato, piedi uniti, seduto sullo zaino per isolarti dal suolo, e il gruppo distanziato di diversi metri."
+    ],
+    "pointsEs": [
+      "Regla 30/30: si el trueno sigue al relampago en 30 segundos o menos, la tormenta esta a 10 km como maximo. Estas a distancia de rayo.",
+      "Tras el ultimo relampago espera 30 minutos antes de reanudar (NOAA). El mensaje actual es aun mas simple: si oyes el trueno, ya estas a distancia.",
+      "En una cresta o una cima eres el punto alto: baja de inmediato, sin esperar la lluvia ni el primer rayo cercano.",
+      "Alejate de arboles aislados, torres y paredes chorreando agua. Deja los bastones metalicos a varios metros de ti.",
+      "Como ultimo recurso: en cuclillas, pies juntos, sentado sobre la mochila para aislarte del suelo, y el grupo separado varios metros."
+    ],
     "scope": "all",
     "season": "summer",
     "category": "safety",
+    "theme": "weather",
     "tags": [
       "orage",
       "foudre",
       "meteo",
       "urgence"
     ],
-    "minAltitudeM": 1000,
     "priority": 10,
-    "theme": "weather"
+    "minAltitudeM": 1000
   },
   {
     "id": "general-batons",
@@ -218,21 +488,51 @@
     "titleDe": "Wanderstoecke in technischem Gelaende",
     "titleIt": "Bastoncini da trekking su terreno tecnico",
     "titleEs": "Bastones de senderismo en terreno tecnico",
-    "contentFr": "Les batons reduisent de 25 % la charge sur les genoux en descente. Batons pliables avec pointes carbure pour le granit.",
-    "contentEn": "Poles reduce knee strain by 25% on descents. Foldable poles with carbide tips for granite.",
-    "contentDe": "Stoecke reduzieren Kniebelastung um 25 %. Faltbare Stoecke mit Hartmetallspitzen.",
-    "contentIt": "Bastoncini riducono 25 % il carico sulle ginocchia in discesa. Pieghevoli con punte in carburo.",
-    "contentEs": "Bastones reducen 25 % la carga en rodillas en bajada. Plegables con puntas de carburo.",
+    "pointsFr": [
+      "En descente prolongee, les batons retirent 20 a 25 % de la charge sur les genoux (etude publiee dans le Journal of Sports Sciences).",
+      "Ton poids et celui du sac se repartissent sur quatre appuis au lieu de deux : c est la que se gagne la fin d etape.",
+      "Regle la longueur pour avoir le coude a 90 degres sur terrain plat : plus court en montee, plus long en descente.",
+      "En devers, raccourcis le baton amont et rallonge le baton aval. Tu marches droit au lieu de te pencher.",
+      "En terrain tres technique ou sur une main courante, range les batons : il te faut les deux mains libres."
+    ],
+    "pointsEn": [
+      "On long descents poles take 20 to 25% of the load off your knees (study published in the Journal of Sports Sciences).",
+      "Your weight and the pack's spread over four points of contact instead of two: that is where the end of the stage is won.",
+      "Set the length so your elbow sits at 90 degrees on the flat: shorter uphill, longer downhill.",
+      "On a traverse, shorten the uphill pole and lengthen the downhill one. You walk upright instead of leaning.",
+      "On very technical ground or on a fixed cable, stow the poles: you need both hands free."
+    ],
+    "pointsDe": [
+      "Bei langen Abstiegen nehmen Stoecke 20 bis 25 % der Last von den Knien (Studie im Journal of Sports Sciences).",
+      "Dein Gewicht und das des Rucksacks verteilen sich auf vier statt zwei Auflagepunkte: da gewinnt man das Etappenende.",
+      "Laenge so einstellen, dass der Ellbogen in der Ebene 90 Grad hat: kuerzer im Aufstieg, laenger im Abstieg.",
+      "Im Quergang den bergseitigen Stock kuerzen und den talseitigen verlaengern. So gehst du aufrecht statt schief.",
+      "In sehr technischem Gelaende oder am Drahtseil die Stoecke wegpacken: du brauchst beide Haende frei."
+    ],
+    "pointsIt": [
+      "In discesa prolungata i bastoncini togliono il 20-25 % del carico dalle ginocchia (studio pubblicato sul Journal of Sports Sciences).",
+      "Il tuo peso e quello dello zaino si distribuiscono su quattro appoggi invece di due: e li che si vince il finale di tappa.",
+      "Regola la lunghezza per avere il gomito a 90 gradi in piano: piu corti in salita, piu lunghi in discesa.",
+      "In traverso accorcia il bastoncino a monte e allunga quello a valle. Cammini dritto invece di piegarti.",
+      "Su terreno molto tecnico o su una fune fissa riponi i bastoncini: ti servono entrambe le mani libere."
+    ],
+    "pointsEs": [
+      "En bajada prolongada los bastones quitan del 20 al 25 % de la carga de las rodillas (estudio publicado en el Journal of Sports Sciences).",
+      "Tu peso y el de la mochila se reparten en cuatro apoyos en vez de dos: ahi se gana el final de etapa.",
+      "Ajusta la longitud para tener el codo a 90 grados en llano: mas cortos en subida, mas largos en bajada.",
+      "En travesia acorta el baston del lado de arriba y alarga el de abajo. Caminas recto en vez de inclinarte.",
+      "En terreno muy tecnico o en un cable fijo guarda los bastones: necesitas las dos manos libres."
+    ],
     "scope": "all",
     "season": "all",
     "category": "equipment",
+    "theme": "gear",
     "tags": [
       "batons",
       "genoux",
       "descente"
     ],
-    "priority": 6,
-    "theme": "gear"
+    "priority": 6
   },
   {
     "id": "general-poids-sac",
@@ -241,22 +541,52 @@
     "titleDe": "Rucksackgewicht und Packen",
     "titleIt": "Peso e organizzazione dello zaino",
     "titleEs": "Peso y organizacion de la mochila",
-    "contentFr": "Le sac trop lourd est la premiere cause d'abandon. Visez 8 a 10 kg en gite, 10 a 13 kg en autonomie, jamais plus de 20% de votre poids. Rangement : couchage et vetements au fond, nourriture et eau au centre pres du dos, coupe-vent et snacks en haut. Pesez chaque objet, eliminez tout ce qui depasse 200 g et n'est pas vital.",
-    "contentEn": "An overloaded pack is the top cause of abandonment. Aim for 8-10 kg in lodges, 10-13 kg self-supported, never over 20% of your body weight. Packing: sleep gear and clothes at the bottom, food and water in the centre near your back, windproof and snacks on top. Weigh each item, drop anything over 200 g that isn't vital.",
-    "contentDe": "Ein zu schwerer Rucksack ist die haeufigste Abbruchursache. Ziel: 8-10 kg in Unterkuenften, 10-13 kg autark, nie ueber 20% des Koerpergewichts. Packen: Schlafausruestung und Kleidung nach unten, Essen und Wasser mittig ruckennah, Windjacke und Snacks nach oben. Jedes Teil wiegen, alles ueber 200 g Nicht-Lebensnotwendige weglassen.",
-    "contentIt": "Lo zaino troppo pesante e la prima causa di abbandono. Obiettivo: 8-10 kg in rifugio, 10-13 kg in autonomia, mai oltre il 20% del peso corporeo. Sistemazione: sacco a pelo e vestiti sul fondo, cibo e acqua al centro vicino alla schiena, antivento e snack in alto. Pesate ogni oggetto, eliminate tutto cio che supera 200 g e non e vitale.",
-    "contentEs": "La mochila demasiado pesada es la primera causa de abandono. Busque 8-10 kg en albergue, 10-13 kg en autonomia, nunca mas del 20% de su peso. Colocacion: saco y ropa al fondo, comida y agua en el centro cerca de la espalda, cortavientos y snacks arriba. Pese cada objeto, elimine todo lo que supere 200 g y no sea vital.",
+    "pointsFr": [
+      "Sur plusieurs jours, vise 20 % de ton poids de corps et ne depasse jamais 25 % (REI, American Hiking Society).",
+      "70 kg de randonneur : 14 kg de sac en cible, 17,5 kg en plafond absolu, eau comprise.",
+      "Le surpoids de sac frappe d abord les genoux, les chevilles et le bas du dos : c est le renoncement le plus evitable qui existe.",
+      "Un pourcentage reste un repere : condition physique, age et habitude du port de charge comptent davantage que le chiffre.",
+      "Rangement : couchage et vetements au fond, eau et nourriture au centre contre le dos, coupe-vent, carte et encas en haut."
+    ],
+    "pointsEn": [
+      "Over several days aim for 20% of your body weight and never go past 25% (REI, American Hiking Society).",
+      "A 70 kg hiker: 14 kg target pack, 17.5 kg absolute ceiling, water included.",
+      "Excess pack weight hits the knees, ankles and lower back first: it is the most avoidable reason for giving up there is.",
+      "A percentage is only a guide: fitness, age and habit of carrying load matter more than the number.",
+      "Packing: sleep gear and clothes at the bottom, water and food in the middle against your back, shell, map and snacks on top."
+    ],
+    "pointsDe": [
+      "Ueber mehrere Tage 20 % des Koerpergewichts anstreben und nie ueber 25 % gehen (REI, American Hiking Society).",
+      "Wanderer mit 70 kg: 14 kg Zielgewicht, 17,5 kg absolute Obergrenze, Wasser inklusive.",
+      "Zu viel Rucksackgewicht trifft zuerst Knie, Knoechel und den unteren Ruecken: das ist der vermeidbarste Abbruchgrund ueberhaupt.",
+      "Ein Prozentwert bleibt ein Richtwert: Fitness, Alter und Gewohnheit im Lasttragen zaehlen mehr als die Zahl.",
+      "Packen: Schlafsachen und Kleidung nach unten, Wasser und Nahrung mittig an den Ruecken, Jacke, Karte und Snacks nach oben."
+    ],
+    "pointsIt": [
+      "Su piu giorni mira al 20 % del tuo peso corporeo e non superare mai il 25 % (REI, American Hiking Society).",
+      "Escursionista di 70 kg: 14 kg di zaino come obiettivo, 17,5 kg come tetto assoluto, acqua compresa.",
+      "Il sovrappeso dello zaino colpisce prima ginocchia, caviglie e zona lombare: e la rinuncia piu evitabile che esista.",
+      "Una percentuale resta un riferimento: forma fisica, eta e abitudine a portare carichi contano piu del numero.",
+      "Sistemazione: sacco a pelo e vestiti sul fondo, acqua e cibo al centro contro la schiena, giacca, mappa e spuntini in alto."
+    ],
+    "pointsEs": [
+      "En varios dias apunta al 20 % de tu peso corporal y no pases nunca del 25 % (REI, American Hiking Society).",
+      "Senderista de 70 kg: 14 kg de mochila como objetivo, 17,5 kg como techo absoluto, agua incluida.",
+      "El exceso de peso golpea primero rodillas, tobillos y zona lumbar: es el abandono mas evitable que existe.",
+      "Un porcentaje es solo una referencia: forma fisica, edad y costumbre de cargar peso cuentan mas que la cifra.",
+      "Colocacion: saco y ropa al fondo, agua y comida en el centro contra la espalda, cortavientos, mapa y tentempies arriba."
+    ],
     "scope": "all",
     "season": "all",
     "category": "equipment",
+    "theme": "gear",
     "tags": [
       "sac",
       "poids",
       "organisation",
       "preparation"
     ],
-    "priority": 9,
-    "theme": "gear"
+    "priority": 9
   },
   {
     "id": "general-entrainement",
@@ -265,22 +595,52 @@
     "titleDe": "Koerperliche Vorbereitung vor dem Trek",
     "titleIt": "Preparazione fisica prima del trek",
     "titleEs": "Preparacion fisica antes del trek",
-    "contentFr": "Comptez 3 mois de preparation minimum. Mois 1 : 3 a 4 sorties par semaine, randos de 2 a 3 h, renforcement des jambes. Mois 2 : randos longues de 5 a 6 h le week-end avec sac charge, travail des montees ET des descentes. Mois 3 : terrain de montagne, deux jours enchaines, test complet du materiel. Erreur classique : negliger la descente, premiere cause de blessure aux genoux.",
-    "contentEn": "Allow at least 3 months of training. Month 1: 3-4 outings a week, 2-3 h hikes, leg strengthening. Month 2: long 5-6 h weekend hikes with a loaded pack, work uphill AND downhill. Month 3: mountain terrain, two consecutive days, full gear test. Classic mistake: neglecting descents, the leading cause of knee injury.",
-    "contentDe": "Mindestens 3 Monate Vorbereitung. Monat 1: 3-4 Ausfluege pro Woche, 2-3 h Wanderungen, Beinkraft. Monat 2: lange 5-6 h Wochenendtouren mit beladenem Rucksack, Auf- UND Abstieg trainieren. Monat 3: Berggelaende, zwei Tage hintereinander, kompletter Ausruestungstest. Klassischer Fehler: den Abstieg vernachlaessigen, Hauptursache fuer Knieverletzungen.",
-    "contentIt": "Prevedete almeno 3 mesi di preparazione. Mese 1: 3-4 uscite a settimana, escursioni di 2-3 h, rinforzo gambe. Mese 2: escursioni lunghe 5-6 h nel weekend con zaino carico, lavoro in salita E in discesa. Mese 3: terreno di montagna, due giorni consecutivi, test completo dell'attrezzatura. Errore classico: trascurare la discesa, prima causa di infortuni al ginocchio.",
-    "contentEs": "Cuente al menos 3 meses de preparacion. Mes 1: 3-4 salidas por semana, rutas de 2-3 h, refuerzo de piernas. Mes 2: rutas largas de 5-6 h el fin de semana con mochila cargada, trabaje subidas Y bajadas. Mes 3: terreno de montana, dos dias seguidos, prueba completa del material. Error clasico: descuidar la bajada, primera causa de lesion de rodilla.",
+    "pointsFr": [
+      "Compte 3 mois de preparation, 12 semaines idealement. 8 semaines suffisent si tu as deja une base d endurance solide.",
+      "Base : un sport d endurance 1 heure, 2 a 3 fois par semaine, plus du renforcement cuisses, mollets et gainage.",
+      "Progression du denivele : garde un kilometrage fixe, par exemple 15 km, et ajoute 200 a 300 metres de denivele chaque mois.",
+      "Le mois qui precede : des sorties de 4 a 5 heures avec le sac charge au poids REEL du depart, pas un sac vide.",
+      "Travaille la DESCENTE autant que la montee : c est elle qui casse les genoux, et les batons n en retirent que 20 a 25 %."
+    ],
+    "pointsEn": [
+      "Plan 3 months of preparation, 12 weeks ideally. 8 weeks is enough if you already have a solid endurance base.",
+      "Base work: one hour of endurance sport, 2 to 3 times a week, plus strength work for thighs, calves and core.",
+      "Elevation progression: keep the distance fixed, say 15 km, and add 200 to 300 metres of climb every month.",
+      "The final month: outings of 4 to 5 hours with the pack loaded to its REAL departure weight, not an empty shell.",
+      "Train the DESCENT as much as the climb: it is what wrecks knees, and poles only take 20 to 25% off."
+    ],
+    "pointsDe": [
+      "Rechne mit 3 Monaten Vorbereitung, idealerweise 12 Wochen. 8 Wochen genuegen, wenn du schon eine solide Ausdauerbasis hast.",
+      "Grundarbeit: eine Stunde Ausdauersport, 2 bis 3 Mal pro Woche, dazu Kraft fuer Oberschenkel, Waden und Rumpf.",
+      "Hoehenmeter-Progression: Distanz konstant halten, etwa 15 km, und jeden Monat 200 bis 300 Hoehenmeter dazulegen.",
+      "Im letzten Monat: Touren von 4 bis 5 Stunden mit dem Rucksack im ECHTEN Startgewicht, nicht leer.",
+      "Trainiere den ABSTIEG so viel wie den Aufstieg: er zerstoert die Knie, und Stoecke nehmen nur 20 bis 25 % ab."
+    ],
+    "pointsIt": [
+      "Conta 3 mesi di preparazione, 12 settimane idealmente. 8 settimane bastano se hai gia una base di resistenza solida.",
+      "Base: uno sport di resistenza per 1 ora, 2-3 volte a settimana, piu rinforzo di cosce, polpacci e core.",
+      "Progressione del dislivello: tieni il chilometraggio fisso, per esempio 15 km, e aggiungi 200-300 metri di dislivello ogni mese.",
+      "Il mese che precede: uscite di 4-5 ore con lo zaino caricato al peso REALE di partenza, non vuoto.",
+      "Allena la DISCESA quanto la salita: e lei che rovina le ginocchia, e i bastoncini ne togliono solo il 20-25 %."
+    ],
+    "pointsEs": [
+      "Cuenta 3 meses de preparacion, 12 semanas idealmente. 8 semanas bastan si ya tienes una base de resistencia solida.",
+      "Base: un deporte de resistencia 1 hora, 2 a 3 veces por semana, mas refuerzo de muslos, gemelos y core.",
+      "Progresion del desnivel: manten el kilometraje fijo, por ejemplo 15 km, y anade 200 a 300 metros de desnivel cada mes.",
+      "El mes previo: salidas de 4 a 5 horas con la mochila cargada al peso REAL de salida, no vacia.",
+      "Entrena la BAJADA tanto como la subida: es la que rompe las rodillas, y los bastones solo quitan del 20 al 25 %."
+    ],
     "scope": "all",
     "season": "all",
     "category": "preparation",
+    "theme": "gear",
     "tags": [
       "entrainement",
       "preparation",
       "condition",
       "descente"
     ],
-    "priority": 7,
-    "theme": "gear"
+    "priority": 7
   },
   {
     "id": "general-passages-exposes",
@@ -289,22 +649,52 @@
     "titleDe": "Ausgesetzte Passagen und technisches Gelaende",
     "titleIt": "Passaggi esposti e terreno tecnico",
     "titleEs": "Pasos expuestos y terreno tecnico",
-    "contentFr": "Reperez les passages exposes de votre etape AVANT de partir (chaines, cables, dalles en devers, aretes aeriennes). Franchissez-les un par un, jamais dans la precipitation. Par temps humide ou de vent fort, la roche devient glissante : envisagez un itineraire de repli. Connaitre le passage, c'est deja reduire le risque.",
-    "contentEn": "Identify the exposed sections of your stage BEFORE setting off (chains, cables, sloping slabs, airy ridges). Cross them one at a time, never in a rush. In wet or windy weather the rock turns slippery: consider an alternative route. Knowing the passage already lowers the risk.",
-    "contentDe": "Erkunden Sie die ausgesetzten Stellen Ihrer Etappe VOR dem Start (Ketten, Seile, schraege Platten, luftige Grate). Ueberqueren Sie sie einzeln, nie in Eile. Bei Naesse oder starkem Wind wird der Fels rutschig: eine Ausweichroute erwaegen. Die Passage zu kennen senkt bereits das Risiko.",
-    "contentIt": "Individuate i tratti esposti della vostra tappa PRIMA di partire (catene, cavi, lastre inclinate, creste aeree). Attraversateli uno alla volta, mai di fretta. Con pioggia o vento forte la roccia diventa scivolosa: valutate un percorso alternativo. Conoscere il passaggio riduce gia il rischio.",
-    "contentEs": "Localice los tramos expuestos de su etapa ANTES de salir (cadenas, cables, losas inclinadas, aristas aereas). Pase de uno en uno, nunca con prisa. Con lluvia o viento fuerte la roca resbala: considere una ruta alternativa. Conocer el paso ya reduce el riesgo.",
+    "pointsFr": [
+      "Un passage expose se franchit UN PAR UN : la personne suivante attend que la precedente soit sortie, jamais deux sur la meme main courante.",
+      "Trois points d appui en permanence sur un cable ou une echelle, et le regard sur la prise, pas sur le vide.",
+      "Roche mouillee, plaque de neige dure, pierrier instable : ce sont les trois etats qui transforment un passage facile en passage mortel.",
+      "Batons ranges, sac serre aux hanches et a la poitrine, capuche baissee : rien qui pende, rien qui gene les bras.",
+      "Si le passage te depasse, tu fais demi-tour. La marche arriere est une decision technique, pas un echec."
+    ],
+    "pointsEn": [
+      "An exposed section is crossed ONE AT A TIME: the next person waits until the previous one is out, never two on the same cable.",
+      "Three points of contact at all times on a cable or a ladder, eyes on the hold, not on the drop.",
+      "Wet rock, hard snow patch, unstable scree: those are the three states that turn an easy section into a deadly one.",
+      "Poles stowed, pack cinched at hips and chest, hood down: nothing dangling, nothing in the way of your arms.",
+      "If the section is beyond you, turn back. Turning back is a technical decision, not a failure."
+    ],
+    "pointsDe": [
+      "Eine ausgesetzte Stelle wird EINZELN begangen: der Naechste wartet, bis der Vorherige heraus ist, nie zwei am selben Drahtseil.",
+      "Immer drei Auflagepunkte am Seil oder an der Leiter, den Blick auf den Griff, nicht in die Tiefe.",
+      "Nasser Fels, harte Schneeflecke, rutschiges Geroell: das sind die drei Zustaende, die eine leichte Stelle toedlich machen.",
+      "Stoecke weggepackt, Rucksack an Huefte und Brust fest, Kapuze runter: nichts haengt, nichts behindert die Arme.",
+      "Wenn die Stelle dich ueberfordert, kehrst du um. Umkehren ist eine technische Entscheidung, kein Scheitern."
+    ],
+    "pointsIt": [
+      "Un passaggio esposto si affronta UNO ALLA VOLTA: chi segue aspetta che il precedente sia uscito, mai due sulla stessa fune.",
+      "Tre punti di appoggio sempre, su fune o scala, e lo sguardo sulla presa, non sul vuoto.",
+      "Roccia bagnata, placca di neve dura, ghiaione instabile: sono i tre stati che rendono mortale un passaggio facile.",
+      "Bastoncini riposti, zaino stretto ai fianchi e al petto, cappuccio abbassato: niente che penda, niente che ostacoli le braccia.",
+      "Se il passaggio ti supera, torni indietro. Tornare indietro e una decisione tecnica, non un fallimento."
+    ],
+    "pointsEs": [
+      "Un paso expuesto se cruza DE UNO EN UNO: el siguiente espera a que el anterior haya salido, nunca dos en el mismo cable.",
+      "Tres puntos de apoyo en todo momento en un cable o una escala, y la vista en el agarre, no en el vacio.",
+      "Roca mojada, placa de nieve dura, pedrera inestable: son los tres estados que convierten un paso facil en mortal.",
+      "Bastones guardados, mochila ajustada a caderas y pecho, capucha bajada: nada colgando, nada que estorbe los brazos.",
+      "Si el paso te supera, das la vuelta. Dar la vuelta es una decision tecnica, no un fracaso."
+    ],
     "scope": "all",
     "season": "all",
     "category": "safety",
+    "theme": "safety",
     "tags": [
       "danger",
       "passages",
       "technique",
       "securite"
     ],
-    "priority": 9,
-    "theme": "safety"
+    "priority": 9
   },
   {
     "id": "general-premiers-jours",
@@ -313,22 +703,52 @@
     "titleDe": "Tempo und Kopf in den ersten Tagen",
     "titleIt": "Ritmo e mentalita dei primi giorni",
     "titleEs": "Ritmo y mentalidad de los primeros dias",
-    "contentFr": "La plupart des abandons arrivent avant le milieu du parcours. Marchez a 70% de vos moyens les trois premiers jours, le temps que le corps s'adapte. Ne doublez pas une etape trop tot. Decoupez l'objectif en micro-etapes et prevoyez un a deux jours tampon dans votre planning : le mental fait la difference.",
-    "contentEn": "Most people quit before the halfway point. Walk at 70% of your ability for the first three days while your body adapts. Do not double a stage too early. Break the goal into micro-stages and keep one or two buffer days in your plan: mindset makes the difference.",
-    "contentDe": "Die meisten geben vor der Haelfte auf. Gehen Sie die ersten drei Tage mit 70% Ihrer Kraft, bis sich der Koerper anpasst. Verdoppeln Sie eine Etappe nicht zu frueh. Teilen Sie das Ziel in Mikro-Etappen und planen Sie ein bis zwei Pufftertage ein: der Kopf entscheidet.",
-    "contentIt": "La maggior parte degli abbandoni avviene prima di meta percorso. Camminate al 70% delle vostre capacita nei primi tre giorni, il tempo che il corpo si adatti. Non raddoppiate una tappa troppo presto. Suddividete l'obiettivo in micro-tappe e tenete uno o due giorni cuscinetto: la mentalita fa la differenza.",
-    "contentEs": "La mayoria de los abandonos ocurren antes de la mitad. Camine al 70% de sus posibilidades los tres primeros dias, mientras el cuerpo se adapta. No doble una etapa demasiado pronto. Divida el objetivo en micro-etapas y reserve uno o dos dias de margen: la mentalidad marca la diferencia.",
+    "pointsFr": [
+      "Les trois premiers jours, marche a 70 % de ce que tu peux : le corps s adapte, il ne se force pas.",
+      "Ne double jamais une etape avant le 4e jour, meme si tu te sens fort. La fatigue d itinerance arrive en differe.",
+      "Prevois 1 a 2 jours tampon dans le planning : une meteo, une ampoule, un hebergement complet, et le calendrier casse.",
+      "Decoupe l etape en micro-objectifs : le prochain col, la prochaine source. Le mental tient sur des cibles courtes.",
+      "Chaque soir, verifie trois choses : tes pieds, l eau du lendemain, la meteo du lendemain. Dans cet ordre."
+    ],
+    "pointsEn": [
+      "For the first three days walk at 70% of what you can do: the body adapts, it does not get forced.",
+      "Never double up a stage before day 4, even if you feel strong. Multi-day fatigue arrives on a delay.",
+      "Build 1 or 2 spare days into the plan: one weather day, one blister, one full lodge, and the schedule breaks.",
+      "Cut the stage into micro-goals: the next pass, the next spring. Morale holds on short targets.",
+      "Every evening check three things: your feet, tomorrow's water, tomorrow's weather. In that order."
+    ],
+    "pointsDe": [
+      "Die ersten drei Tage gehst du auf 70 % deiner Moeglichkeiten: der Koerper passt sich an, er laesst sich nicht zwingen.",
+      "Verdopple nie eine Etappe vor dem 4. Tag, auch wenn du dich stark fuehlst. Die Mehrtagesmuedigkeit kommt verzoegert.",
+      "Plane 1 bis 2 Reservetage ein: ein Wettertag, eine Blase, eine ausgebuchte Unterkunft, und der Plan bricht.",
+      "Teile die Etappe in Mikroziele: der naechste Pass, die naechste Quelle. Der Kopf haelt an kurzen Zielen.",
+      "Pruefe jeden Abend drei Dinge: deine Fuesse, das Wasser fuer morgen, das Wetter fuer morgen. In dieser Reihenfolge."
+    ],
+    "pointsIt": [
+      "I primi tre giorni cammina al 70 % di quello che puoi: il corpo si adatta, non si forza.",
+      "Non raddoppiare mai una tappa prima del 4o giorno, anche se ti senti forte. La fatica dell itinerario arriva in differita.",
+      "Prevedi 1-2 giorni di margine nel programma: un giorno di maltempo, una vescica, un alloggio pieno, e il calendario salta.",
+      "Dividi la tappa in micro-obiettivi: il prossimo colle, la prossima sorgente. La testa tiene su bersagli brevi.",
+      "Ogni sera controlla tre cose: i piedi, l acqua per domani, il meteo di domani. In quest ordine."
+    ],
+    "pointsEs": [
+      "Los tres primeros dias camina al 70 % de lo que puedes: el cuerpo se adapta, no se fuerza.",
+      "No dobles nunca una etapa antes del 4o dia, aunque te sientas fuerte. La fatiga de itinerancia llega con retraso.",
+      "Deja 1 o 2 dias de margen en el plan: un dia de mal tiempo, una ampolla, un alojamiento lleno, y el calendario se rompe.",
+      "Divide la etapa en microobjetivos: el proximo collado, la proxima fuente. La cabeza aguanta con metas cortas.",
+      "Cada noche comprueba tres cosas: los pies, el agua de manana, el tiempo de manana. En ese orden."
+    ],
     "scope": "all",
     "season": "all",
     "category": "safety",
+    "theme": "safety",
     "tags": [
       "mental",
       "rythme",
       "abandon",
       "planning"
     ],
-    "priority": 6,
-    "theme": "safety"
+    "priority": 6
   },
   {
     "id": "general-brouillard-vent",
@@ -337,23 +757,53 @@
     "titleDe": "Nebel, Wind und Kaelte",
     "titleIt": "Nebbia, vento e freddo",
     "titleEs": "Niebla, viento y frio",
-    "contentFr": "Un brouillard soudain reduit la visibilite a quelques metres : ne quittez jamais le sentier balise, gardez la trace GPX chargee a l'avance. En crete, les rafales peuvent depasser 100 km/h ; vent plus pluie egale hypothermie rapide, coupe-vent obligatoire meme l'ete. Consultez la meteo la veille et sachez renoncer.",
-    "contentEn": "Sudden fog cuts visibility to a few metres: never leave the marked trail, keep the GPX track loaded in advance. On ridges, gusts can top 100 km/h; wind plus rain means fast hypothermia, a windproof is mandatory even in summer. Check the forecast the day before and know when to turn back.",
-    "contentDe": "Ploetzlicher Nebel senkt die Sicht auf wenige Meter: verlassen Sie nie den markierten Weg, halten Sie den GPX-Track vorab geladen. Am Grat koennen Boeen ueber 100 km/h erreichen; Wind plus Regen bedeutet schnelle Unterkuehlung, Windjacke auch im Sommer Pflicht. Wetter am Vortag pruefen und umkehren koennen.",
-    "contentIt": "Una nebbia improvvisa riduce la visibilita a pochi metri: non lasciate mai il sentiero segnato, tenete la traccia GPX caricata in anticipo. In cresta le raffiche possono superare i 100 km/h; vento piu pioggia significa ipotermia rapida, antivento obbligatorio anche d'estate. Controllate il meteo il giorno prima e sappiate rinunciare.",
-    "contentEs": "Una niebla repentina reduce la visibilidad a pocos metros: no abandone nunca el sendero marcado, lleve la traza GPX cargada de antemano. En cresta las rachas pueden superar los 100 km/h; viento mas lluvia es hipotermia rapida, cortavientos obligatorio incluso en verano. Consulte el pronostico la vispera y sepa renunciar.",
+    "pointsFr": [
+      "Brouillard dense : tu t arretes, tu restes calme, et tu ne quittes JAMAIS le balisage pour couper.",
+      "Sans repere visuel, la marche a l azimut est la seule methode fiable : azimut releve sur la carte, declinaison corrigee, cible proche dans l axe.",
+      "Le vent froid et les vetements humides suffisent a faire tomber la temperature interne sous 35 degres : c est la definition de l hypothermie.",
+      "Premiers signes : chair de poule, frissons, doigts engourdis et maladroits, puis confusion et difficulte a parler.",
+      "A l abri du vent immediatement, vetements humides changes, couverture de survie, TETE COUVERTE, boisson chaude et sucree."
+    ],
+    "pointsEn": [
+      "Dense fog: stop, stay calm, and NEVER leave the waymarked path to cut a corner.",
+      "With no visual reference, bearing navigation is the only reliable method: bearing read off the map, declination corrected, a near target on the line.",
+      "Cold wind and damp clothing are enough to drop your core temperature below 35 degrees: that is the definition of hypothermia.",
+      "First signs: goose bumps, shivering, numb clumsy fingers, then confusion and difficulty speaking.",
+      "Out of the wind immediately, damp clothes changed, survival blanket, HEAD COVERED, a warm sweet drink."
+    ],
+    "pointsDe": [
+      "Dichter Nebel: anhalten, ruhig bleiben, und NIE die Markierung verlassen, um abzukuerzen.",
+      "Ohne Sichtbezug ist das Gehen nach Azimut die einzig verlaessliche Methode: Azimut von der Karte, Deklination korrigiert, ein nahes Ziel in der Achse.",
+      "Kalter Wind und feuchte Kleidung genuegen, um die Koerperkerntemperatur unter 35 Grad zu druecken: das ist die Definition der Hypothermie.",
+      "Erste Zeichen: Gaensehaut, Zittern, taube und ungeschickte Finger, dann Verwirrtheit und Sprechschwierigkeiten.",
+      "Sofort aus dem Wind, feuchte Kleidung wechseln, Rettungsdecke, KOPF BEDECKEN, warmes gesuesstes Getraenk."
+    ],
+    "pointsIt": [
+      "Nebbia densa: ti fermi, resti calmo e non lasci MAI la segnaletica per tagliare.",
+      "Senza riferimenti visivi la marcia ad azimut e il solo metodo affidabile: azimut rilevato sulla carta, declinazione corretta, bersaglio vicino sull asse.",
+      "Vento freddo e vestiti umidi bastano a far scendere la temperatura interna sotto i 35 gradi: e la definizione di ipotermia.",
+      "Primi segni: pelle d oca, brividi, dita intorpidite e maldestre, poi confusione e difficolta a parlare.",
+      "Subito al riparo dal vento, vestiti umidi cambiati, telo termico, TESTA COPERTA, bevanda calda e zuccherata."
+    ],
+    "pointsEs": [
+      "Niebla densa: te paras, mantienes la calma y no dejas NUNCA el balizado para atajar.",
+      "Sin referencia visual, la marcha por azimut es el unico metodo fiable: azimut tomado en el mapa, declinacion corregida, objetivo cercano en el eje.",
+      "El viento frio y la ropa humeda bastan para bajar la temperatura interna por debajo de 35 grados: esa es la definicion de hipotermia.",
+      "Primeros signos: piel de gallina, escalofrios, dedos entumecidos y torpes, luego confusion y dificultad para hablar.",
+      "Al abrigo del viento de inmediato, ropa humeda cambiada, manta de supervivencia, CABEZA CUBIERTA, bebida caliente y azucarada."
+    ],
     "scope": "all",
     "season": "all",
     "category": "safety",
+    "theme": "weather",
     "tags": [
       "brouillard",
       "vent",
       "froid",
       "meteo"
     ],
-    "minAltitudeM": 1000,
     "priority": 8,
-    "theme": "weather"
+    "minAltitudeM": 1000
   },
   {
     "id": "general-neige-debut-saison",
@@ -362,23 +812,53 @@
     "titleDe": "Schnee zu Saisonbeginn",
     "titleIt": "Neve di inizio stagione",
     "titleEs": "Nieve de principio de temporada",
-    "contentFr": "En debut de saison, des neveres peuvent persister sur les cols et versants nord au-dessus de 2000 m. Renseignez-vous sur l'enneigement avant de partir ; crampons legers et piolet si necessaire. Une pente de neige gelee au petit matin est bien plus dangereuse qu'elle n'en a l'air.",
-    "contentEn": "Early in the season, snow patches can linger on passes and north-facing slopes above 2000 m. Check snow conditions before setting off; light crampons and an ice axe if needed. A frozen snow slope in the early morning is far more dangerous than it looks.",
-    "contentDe": "Zu Saisonbeginn koennen Schneefelder an Paessen und Nordhaengen ueber 2000 m liegen. Informieren Sie sich vorab ueber die Schneelage; leichte Steigeisen und Pickel bei Bedarf. Ein gefrorener Schneehang am fruehen Morgen ist weit gefaehrlicher als er aussieht.",
-    "contentIt": "A inizio stagione i nevai possono persistere su valichi e versanti nord oltre i 2000 m. Informatevi sull'innevamento prima di partire; ramponi leggeri e piccozza se necessario. Un pendio di neve gelata al mattino presto e molto piu pericoloso di quanto sembri.",
-    "contentEs": "A principio de temporada, los neveros pueden persistir en collados y laderas norte por encima de 2000 m. Infórmese del estado de la nieve antes de salir; crampones ligeros y piolet si es necesario. Una pendiente de nieve helada a primera hora es mucho mas peligrosa de lo que parece.",
+    "pointsFr": [
+      "En debut de saison, la neige tient dans les combes nord et sur les cols bien apres la fonte des versants sud.",
+      "La temperature perd 0,6 degre tous les 100 metres : un col 800 metres au-dessus de la vallee est environ 5 degres plus froid.",
+      "Neige dure du matin : sans crampons legers ni piolet, une traversee en devers ne se rattrape pas si tu glisses.",
+      "La neige renvoie 80 % des UV : lunettes de categorie 3 minimum et creme indice 50, meme par ciel gris.",
+      "Renseigne-toi sur l enneigement AVANT de partir, aupres du gardien ou de l office de tourisme. Un topoguide ne dit pas la neige de l annee."
+    ],
+    "pointsEn": [
+      "Early in the season snow holds in north-facing bowls and on passes long after the south slopes have cleared.",
+      "Temperature drops 0.6 degrees every 100 metres: a pass 800 metres above the valley is about 5 degrees colder.",
+      "Hard morning snow: without light crampons and an axe, a traverse on a slope gives you nothing to stop a slide.",
+      "Snow reflects 80% of UV: category 3 glasses minimum and factor 50 cream, even under a grey sky.",
+      "Check snow conditions BEFORE you leave, with the warden or the tourist office. A guidebook cannot tell you this year's snow."
+    ],
+    "pointsDe": [
+      "Zu Saisonbeginn haelt sich Schnee in Nordmulden und auf Paessen lange, nachdem die Suedhaenge frei sind.",
+      "Die Temperatur sinkt um 0,6 Grad je 100 Meter: ein Pass 800 Meter ueber dem Tal ist etwa 5 Grad kaelter.",
+      "Harter Morgenschnee: ohne leichte Steigeisen und Pickel laesst sich ein Quergang nicht halten, wenn du rutschst.",
+      "Schnee reflektiert 80 % der UV-Strahlen: Brille mindestens Kategorie 3 und Lichtschutzfaktor 50, auch bei grauem Himmel.",
+      "Erkundige dich VOR dem Start nach der Schneelage, beim Huettenwart oder im Tourismusbuero. Ein Fuehrer kennt den Schnee dieses Jahres nicht."
+    ],
+    "pointsIt": [
+      "A inizio stagione la neve resiste nei valloni nord e sui colli molto dopo che i versanti sud si sono liberati.",
+      "La temperatura perde 0,6 gradi ogni 100 metri: un colle 800 metri sopra la valle e circa 5 gradi piu freddo.",
+      "Neve dura del mattino: senza ramponcini e piccozza un traverso non si recupera piu se scivoli.",
+      "La neve riflette l 80 % degli UV: occhiali di categoria 3 minimo e crema fattore 50, anche con cielo grigio.",
+      "Informati sull innevamento PRIMA di partire, dal gestore o dall ufficio turistico. Una guida cartacea non conosce la neve dell anno."
+    ],
+    "pointsEs": [
+      "A principio de temporada la nieve aguanta en las vaguadas norte y en los collados mucho despues de que las laderas sur se limpien.",
+      "La temperatura baja 0,6 grados cada 100 metros: un collado 800 metros por encima del valle esta unos 5 grados mas frio.",
+      "Nieve dura de la manana: sin crampones ligeros ni piolet, una travesia en ladera no se recupera si resbalas.",
+      "La nieve refleja el 80 % de los UV: gafas de categoria 3 minimo y crema factor 50, incluso con cielo gris.",
+      "Informate del estado de la nieve ANTES de salir, con el guarda o la oficina de turismo. Una guia impresa no conoce la nieve de este ano."
+    ],
     "scope": "all",
     "season": "spring",
     "category": "safety",
+    "theme": "weather",
     "tags": [
       "neige",
       "col",
       "altitude",
       "meteo"
     ],
-    "minAltitudeM": 2000,
     "priority": 7,
-    "theme": "weather"
+    "minAltitudeM": 2000
   },
   {
     "id": "general-vie-refuge",
@@ -387,22 +867,52 @@
     "titleDe": "Leben in Huetten und Unterkuenften",
     "titleIt": "Vita in rifugio e in ostello",
     "titleEs": "Vida en refugios y albergues",
-    "contentFr": "Reservez a l'avance en haute saison, les places sont limitees. Prevoyez un drap de couchage (souvent obligatoire) et des especes : beaucoup de refuges n'ont pas de terminal de paiement. Respectez le silence apres 22 h et les consignes du gardien. Laissez les lieux plus propres que vous ne les avez trouves.",
-    "contentEn": "Book ahead in high season, beds are limited. Bring a sleeping-bag liner (often mandatory) and cash: many huts have no card terminal. Respect quiet hours after 10 pm and the warden's instructions. Leave the place cleaner than you found it.",
-    "contentDe": "In der Hochsaison vorbuchen, die Plaetze sind begrenzt. Huettenschlafsack (oft Pflicht) und Bargeld mitbringen: viele Huetten haben kein Kartenterminal. Nachtruhe nach 22 Uhr und Anweisungen des Huettenwarts beachten. Hinterlassen Sie den Ort sauberer als vorgefunden.",
-    "contentIt": "Prenotate in anticipo in alta stagione, i posti sono limitati. Portate un sacco lenzuolo (spesso obbligatorio) e contanti: molti rifugi non hanno il POS. Rispettate il silenzio dopo le 22 e le indicazioni del gestore. Lasciate il luogo piu pulito di come lo avete trovato.",
-    "contentEs": "Reserve con antelacion en temporada alta, las plazas son limitadas. Lleve saco-sabana (a menudo obligatorio) y efectivo: muchos refugios no tienen datafono. Respete el silencio despues de las 22 h y las indicaciones del guarda. Deje el lugar mas limpio de como lo encontro.",
+    "pointsFr": [
+      "Reserve : en pleine saison les places partent des semaines a l avance, et un refuge complet ne t ouvrira pas la porte.",
+      "Arrive avant 18 heures, chaussures a l entree, drap-sac ou duvet selon la maison, silence apres 22 heures.",
+      "Prevois des especes : beaucoup de refuges et de gites n ont ni terminal de paiement ni reseau pour le faire fonctionner.",
+      "L eau du robinet n est pas toujours potable en altitude : demande, et traite si la reponse est non.",
+      "Le gardien est la reference locale sur la meteo, l etat du sentier et l eau. Sa consigne passe avant ton topoguide."
+    ],
+    "pointsEn": [
+      "Book ahead: in high season beds go weeks in advance, and a full hut will not open its door for you.",
+      "Arrive before 6 pm, boots at the entrance, sheet liner or sleeping bag depending on the house, silence after 10 pm.",
+      "Bring cash: many huts and lodges have neither a card terminal nor the network to run one.",
+      "Tap water is not always drinkable at altitude: ask, and treat it if the answer is no.",
+      "The warden is the local authority on weather, trail condition and water. Their instruction beats your guidebook."
+    ],
+    "pointsDe": [
+      "Reserviere: in der Hochsaison sind Plaetze Wochen im Voraus weg, und eine ausgebuchte Huette oeffnet dir nicht.",
+      "Ankunft vor 18 Uhr, Schuhe am Eingang, Huettenschlafsack oder Schlafsack je nach Haus, Ruhe nach 22 Uhr.",
+      "Bargeld einplanen: viele Huetten und Unterkuenfte haben weder Kartenterminal noch Netz dafuer.",
+      "Leitungswasser ist in der Hoehe nicht immer trinkbar: frag nach, und behandle es, wenn die Antwort nein ist.",
+      "Der Huettenwart ist die lokale Referenz fuer Wetter, Wegzustand und Wasser. Seine Anweisung gilt vor deinem Fuehrer."
+    ],
+    "pointsIt": [
+      "Prenota: in alta stagione i posti finiscono settimane prima, e un rifugio pieno non ti aprira la porta.",
+      "Arriva prima delle 18, scarpe all ingresso, sacco lenzuolo o sacco a pelo secondo la casa, silenzio dopo le 22.",
+      "Prevedi contanti: molti rifugi e ostelli non hanno ne POS ne rete per farlo funzionare.",
+      "L acqua del rubinetto non e sempre potabile in quota: chiedi, e trattala se la risposta e no.",
+      "Il gestore e il riferimento locale su meteo, stato del sentiero e acqua. La sua indicazione viene prima della tua guida."
+    ],
+    "pointsEs": [
+      "Reserva: en plena temporada las plazas se van con semanas de antelacion, y un refugio lleno no te abrira la puerta.",
+      "Llega antes de las 18 h, botas en la entrada, saco sabana o saco de dormir segun la casa, silencio despues de las 22 h.",
+      "Lleva efectivo: muchos refugios y albergues no tienen terminal de pago ni red para hacerlo funcionar.",
+      "El agua del grifo no siempre es potable en altura: pregunta, y tratala si la respuesta es no.",
+      "El guarda es la referencia local sobre tiempo, estado del sendero y agua. Su indicacion va antes que tu guia."
+    ],
     "scope": "all",
     "season": "all",
     "category": "preparation",
+    "theme": "refuge",
     "tags": [
       "refuge",
       "gite",
       "reservation",
       "etiquette"
     ],
-    "priority": 7,
-    "theme": "refuge"
+    "priority": 7
   },
   {
     "id": "general-budget",
@@ -411,22 +921,52 @@
     "titleDe": "Budget und Bargeld",
     "titleIt": "Budget e contanti",
     "titleEs": "Presupuesto y efectivo",
-    "contentFr": "Anticipez les postes principaux : transport aller-retour, nuitees, repas ou ravitaillement, location eventuelle de materiel. Le mode autonome coute nettement moins cher que la demi-pension chaque soir. Emportez toujours des especes : sur de nombreux itineraires, refuges et epiceries de village n'acceptent pas la carte.",
-    "contentEn": "Plan the main items: return travel, nights, meals or resupply, possible gear rental. Going self-supported costs far less than half-board every night. Always carry cash: on many routes, huts and village shops do not take cards.",
-    "contentDe": "Planen Sie die Hauptposten: An- und Abreise, Uebernachtungen, Mahlzeiten oder Nachschub, eventuelle Ausruestungsmiete. Autark ist deutlich guenstiger als jeden Abend Halbpension. Immer Bargeld mitnehmen: auf vielen Routen nehmen Huetten und Dorflaeden keine Karte.",
-    "contentIt": "Pianificate le voci principali: viaggio andata e ritorno, pernottamenti, pasti o rifornimenti, eventuale noleggio attrezzatura. L'autonomia costa molto meno della mezza pensione ogni sera. Portate sempre contanti: su molti itinerari rifugi e botteghe di paese non accettano carte.",
-    "contentEs": "Anticipe las partidas principales: viaje de ida y vuelta, pernoctaciones, comidas o avituallamiento, posible alquiler de material. La autonomia cuesta bastante menos que la media pension cada noche. Lleve siempre efectivo: en muchas rutas, refugios y tiendas de pueblo no aceptan tarjeta.",
+    "pointsFr": [
+      "Chiffre trois postes separement : transport aller-retour, nuits, nourriture. C est le transport qui varie le plus.",
+      "Nuit en gite d etape en France : compte 30 a 40 euros la nuit seule et 52 a 55 euros en demi-pension (tarifs 2025 releves sur sentier).",
+      "Draps et serviettes se louent souvent a part, environ 5 euros, et la taxe de sejour s ajoute a la note.",
+      "En autonomie le budget nourriture tombe mais le poids du sac monte : c est un arbitrage, pas une economie gratuite.",
+      "Emporte des especes et garde une reserve : une nuit de repli, un taxi d echappatoire ou un train se paient sur place."
+    ],
+    "pointsEn": [
+      "Cost three lines separately: return travel, nights, food. Travel is the one that swings the most.",
+      "A night in a stage lodge in France: reckon 30 to 40 euros room only and 52 to 55 euros half board (2025 rates recorded on the trail).",
+      "Sheets and towels are often rented separately, about 5 euros, and the local tourist tax is added to the bill.",
+      "Going self-sufficient cuts the food budget but raises pack weight: it is a trade-off, not a free saving.",
+      "Carry cash and keep a reserve: a fallback night, a taxi off the trail or a train ticket are all paid on the spot."
+    ],
+    "pointsDe": [
+      "Rechne drei Posten getrennt: Hin- und Rueckreise, Naechte, Verpflegung. Die Reise schwankt am meisten.",
+      "Nacht in einer Etappenunterkunft in Frankreich: 30 bis 40 Euro nur Uebernachtung, 52 bis 55 Euro mit Halbpension (auf dem Weg erhobene Preise 2025).",
+      "Bettwaesche und Handtuecher werden oft separat vermietet, etwa 5 Euro, dazu kommt die Kurtaxe.",
+      "In Eigenversorgung sinkt das Essensbudget, aber das Rucksackgewicht steigt: ein Tauschgeschaeft, keine Gratisersparnis.",
+      "Nimm Bargeld mit und halte eine Reserve: eine Ausweichnacht, ein Taxi vom Weg weg oder ein Zug werden vor Ort bezahlt."
+    ],
+    "pointsIt": [
+      "Calcola tre voci separate: viaggio andata e ritorno, notti, cibo. E il viaggio a variare di piu.",
+      "Notte in gite d etape in Francia: conta 30-40 euro la sola notte e 52-55 euro in mezza pensione (tariffe 2025 rilevate sul sentiero).",
+      "Lenzuola e asciugamani si affittano spesso a parte, circa 5 euro, e la tassa di soggiorno si aggiunge al conto.",
+      "In autonomia il budget cibo scende ma il peso dello zaino sale: e un compromesso, non un risparmio gratuito.",
+      "Porta contanti e tieni una riserva: una notte di ripiego, un taxi per uscire o un treno si pagano sul posto."
+    ],
+    "pointsEs": [
+      "Calcula tres partidas por separado: viaje de ida y vuelta, noches, comida. El viaje es el que mas varia.",
+      "Noche en albergue de etapa en Francia: cuenta 30 a 40 euros solo alojamiento y 52 a 55 euros en media pension (tarifas 2025 tomadas en el sendero).",
+      "Sabanas y toallas se alquilan a menudo aparte, unos 5 euros, y la tasa turistica se suma a la cuenta.",
+      "En autonomia el presupuesto de comida baja pero el peso de la mochila sube: es un compromiso, no un ahorro gratis.",
+      "Lleva efectivo y guarda una reserva: una noche de repliegue, un taxi para salir o un tren se pagan en el sitio."
+    ],
     "scope": "all",
     "season": "all",
     "category": "preparation",
+    "theme": "refuge",
     "tags": [
       "budget",
       "argent",
       "especes",
       "planning"
     ],
-    "priority": 5,
-    "theme": "refuge"
+    "priority": 5
   },
   {
     "id": "general-solo-groupe",
@@ -435,22 +975,52 @@
     "titleDe": "Allein, in der Gruppe oder mit Guide",
     "titleIt": "Da soli, in gruppo o con guida",
     "titleEs": "Solo, en grupo o con guia",
-    "contentFr": "En solo, vous avancez a votre rythme mais devez tout porter et gerer seul. En groupe, tente, rechaud et pharmacie se partagent : sac plus leger et securite accrue en cas de blessure. Avec un guide, sac allege et savoir-faire meteo et itineraire. Pour une premiere grande randonnee, un accompagnement est rassurant. Dans tous les cas, prevenez un proche et emportez une trace hors-ligne.",
-    "contentEn": "Solo, you move at your own pace but carry and manage everything alone. In a group, tent, stove and first-aid kit are shared: lighter pack and more safety if someone is hurt. With a guide, a lighter pack plus weather and route expertise. For a first big hike, support is reassuring. Either way, tell a relative and carry an offline track.",
-    "contentDe": "Allein gehen Sie im eigenen Tempo, muessen aber alles selbst tragen und regeln. In der Gruppe teilt man Zelt, Kocher und Apotheke: leichterer Rucksack und mehr Sicherheit bei Verletzung. Mit Guide leichterer Rucksack plus Wetter- und Routenwissen. Fuer die erste grosse Tour ist Begleitung beruhigend. In jedem Fall Angehoerige informieren und Offline-Track mitnehmen.",
-    "contentIt": "Da soli andate al vostro ritmo ma dovete portare e gestire tutto. In gruppo si condividono tenda, fornello e kit medico: zaino piu leggero e piu sicurezza in caso di infortunio. Con una guida zaino alleggerito piu competenze meteo e percorso. Per una prima grande escursione un accompagnamento rassicura. In ogni caso avvisate un familiare e portate una traccia offline.",
-    "contentEs": "Solo, avanza a su ritmo pero debe cargar y gestionar todo. En grupo, tienda, hornillo y botiquin se comparten: mochila mas ligera y mas seguridad si hay lesion. Con guia, mochila aligerada mas experiencia en meteo y ruta. Para una primera gran ruta, el acompanamiento tranquiliza. En cualquier caso, avise a un allegado y lleve una traza sin conexion.",
+    "pointsFr": [
+      "Seul, tu decides de tout : rythme, pauses, demi-tour. Tu assumes aussi seul la moindre entorse, loin de tout.",
+      "En groupe de 2 a 4 personnes de meme niveau, tente, rechaud et pharmacie se partagent : chaque sac s allege d autant.",
+      "En groupe, la prise en charge d une blessure est immediate : quelqu un reste, quelqu un alerte. C est le vrai gain.",
+      "Avec un guide diplome, tu delegues la meteo, l itineraire et la decision de renoncer. Utile pour une premiere itinerance.",
+      "Quelle que soit la formule : laisse ton itineraire et ton heure de retour a un proche, et emporte la trace hors ligne."
+    ],
+    "pointsEn": [
+      "Alone you decide everything: pace, breaks, turning back. You also carry the smallest sprain alone, far from anywhere.",
+      "In a group of 2 to 4 people of similar level, tent, stove and first-aid kit are shared: every pack gets lighter.",
+      "In a group, an injury is handled immediately: one stays, one raises the alarm. That is the real gain.",
+      "With a qualified guide you delegate weather, route and the decision to turn back. Useful for a first multi-day trip.",
+      "Whichever option: leave your route and expected return time with someone, and carry the track offline."
+    ],
+    "pointsDe": [
+      "Allein entscheidest du alles: Tempo, Pausen, Umkehren. Du traegst auch die kleinste Verstauchung allein, weit weg von allem.",
+      "In einer Gruppe von 2 bis 4 Personen aehnlichen Niveaus werden Zelt, Kocher und Apotheke geteilt: jeder Rucksack wird leichter.",
+      "In der Gruppe wird eine Verletzung sofort versorgt: einer bleibt, einer alarmiert. Das ist der echte Gewinn.",
+      "Mit einem Bergfuehrer delegierst du Wetter, Route und die Entscheidung zum Umkehren. Hilfreich bei der ersten Mehrtagestour.",
+      "Bei jeder Variante: hinterlasse Route und geplante Rueckkehrzeit bei einer Person und nimm den Track offline mit."
+    ],
+    "pointsIt": [
+      "Da solo decidi tutto: ritmo, pause, dietrofront. Ma ti prendi da solo anche la piu piccola distorsione, lontano da tutto.",
+      "In gruppo di 2-4 persone dello stesso livello tenda, fornello e farmacia si dividono: ogni zaino si alleggerisce.",
+      "In gruppo un infortunio si gestisce subito: uno resta, uno chiama. E il guadagno vero.",
+      "Con una guida abilitata deleghi meteo, itinerario e decisione di rinunciare. Utile per una prima itineranza.",
+      "Qualunque formula: lascia itinerario e ora di ritorno a una persona, e porta la traccia offline."
+    ],
+    "pointsEs": [
+      "Solo, decides todo: ritmo, pausas, dar la vuelta. Tambien asumes solo el menor esguince, lejos de todo.",
+      "En grupo de 2 a 4 personas del mismo nivel, tienda, hornillo y botiquin se reparten: cada mochila se aligera.",
+      "En grupo, una lesion se atiende de inmediato: uno se queda, otro avisa. Ese es el beneficio real.",
+      "Con un guia titulado delegas el tiempo, el itinerario y la decision de renunciar. Util para una primera itinerancia.",
+      "Sea cual sea la formula: deja tu itinerario y hora de regreso a alguien, y lleva la traza sin conexion."
+    ],
     "scope": "all",
     "season": "all",
     "category": "preparation",
+    "theme": "other",
     "tags": [
       "solo",
       "groupe",
       "guide",
       "securite"
     ],
-    "priority": 5,
-    "theme": "other"
+    "priority": 5
   },
   {
     "id": "general-toilettes-hygiene",
@@ -459,21 +1029,375 @@
     "titleDe": "Toilette und Hygiene in der Natur",
     "titleIt": "Bisogni e igiene in natura",
     "titleEs": "Necesidades e higiene en plena naturaleza",
-    "contentFr": "Eloignez-vous d'au moins 60 m de tout cours d'eau. Creusez un trou de 15 a 20 cm et rebouchez. Emportez votre papier toilette dans un sac dedie, ne l'enterrez pas. Savon biodegradable uniquement, rincage au sol et jamais dans la riviere. Ce geste protege l'eau que d'autres boiront apres vous.",
-    "contentEn": "Move at least 60 m away from any watercourse. Dig a 15-20 cm hole and fill it back. Pack out your toilet paper in a dedicated bag, do not bury it. Biodegradable soap only, rinse on the ground and never in the river. This protects the water others will drink after you.",
-    "contentDe": "Mindestens 60 m von jedem Gewaesser entfernen. Ein 15-20 cm Loch graben und wieder zuschuetten. Toilettenpapier im eigenen Beutel mitnehmen, nicht vergraben. Nur biologisch abbaubare Seife, am Boden abspuelen, nie im Fluss. Das schuetzt das Wasser, das andere nach Ihnen trinken.",
-    "contentIt": "Allontanatevi almeno 60 m da ogni corso d'acqua. Scavate una buca di 15-20 cm e richiudetela. Portate via la carta igienica in un sacchetto dedicato, non seppellitela. Solo sapone biodegradabile, risciacquo a terra e mai nel fiume. Questo protegge l'acqua che altri berranno dopo di voi.",
-    "contentEs": "Alejese al menos 60 m de cualquier curso de agua. Cave un hoyo de 15-20 cm y tapelo. Llevese el papel higienico en una bolsa dedicada, no lo entierre. Solo jabon biodegradable, aclarado en el suelo y nunca en el rio. Esto protege el agua que otros beberan despues de usted.",
+    "pointsFr": [
+      "Trou a 60 metres minimum de tout cours d eau, sentier ou campement, soit environ 70 pas d adulte (Leave No Trace).",
+      "Profondeur 15 a 20 centimetres, puis tu rebouches et tu camoufles avec terre, pierres et aiguilles.",
+      "Le papier toilette se REMPORTE : il ne se decompose pas en altitude et il ne se brule pas en montagne.",
+      "Savon, dentifrice et vaisselle a 60 metres de l eau aussi. L eau sale se verse au sol, jamais dans le ruisseau.",
+      "Gel hydroalcoolique avant chaque repas : c est la mesure la plus efficace contre la gastro qui vide un groupe en deux jours."
+    ],
+    "pointsEn": [
+      "Dig at least 60 metres from any watercourse, path or campsite, roughly 70 adult paces (Leave No Trace).",
+      "Depth 15 to 20 centimetres, then fill it in and disguise it with soil, stones and needles.",
+      "Toilet paper is PACKED OUT: it does not break down at altitude and it is not burned in the mountains.",
+      "Soap, toothpaste and washing up also 60 metres from water. Dirty water goes on the ground, never into the stream.",
+      "Hand gel before every meal: it is the single most effective step against the stomach bug that empties a group in two days."
+    ],
+    "pointsDe": [
+      "Loch mindestens 60 Meter von jedem Gewaesser, Weg oder Lagerplatz entfernt, etwa 70 Erwachsenenschritte (Leave No Trace).",
+      "Tiefe 15 bis 20 Zentimeter, danach zuschuetten und mit Erde, Steinen und Nadeln tarnen.",
+      "Toilettenpapier wird MITGENOMMEN: es zersetzt sich in der Hoehe nicht und wird im Gebirge nicht verbrannt.",
+      "Seife, Zahnpasta und Geschirrspuelen ebenfalls 60 Meter vom Wasser entfernt. Schmutzwasser auf den Boden, nie in den Bach.",
+      "Handdesinfektion vor jeder Mahlzeit: die wirksamste Massnahme gegen den Magen-Darm-Infekt, der eine Gruppe in zwei Tagen leert."
+    ],
+    "pointsIt": [
+      "Buca ad almeno 60 metri da qualsiasi corso d acqua, sentiero o campeggio, circa 70 passi d adulto (Leave No Trace).",
+      "Profondita 15-20 centimetri, poi richiudi e mimetizzi con terra, pietre e aghi.",
+      "La carta igienica si PORTA VIA: non si decompone in quota e in montagna non si brucia.",
+      "Sapone, dentifricio e lavaggio piatti anche a 60 metri dall acqua. L acqua sporca va sul terreno, mai nel ruscello.",
+      "Gel idroalcolico prima di ogni pasto: e la misura piu efficace contro la gastroenterite che svuota un gruppo in due giorni."
+    ],
+    "pointsEs": [
+      "Hoyo a 60 metros minimo de cualquier curso de agua, sendero o campamento, unos 70 pasos de adulto (Leave No Trace).",
+      "Profundidad 15 a 20 centimetros, luego tapas y camuflas con tierra, piedras y agujas.",
+      "El papel higienico SE LLEVA: no se descompone en altura y en montana no se quema.",
+      "Jabon, pasta de dientes y fregado tambien a 60 metros del agua. El agua sucia va al suelo, nunca al arroyo.",
+      "Gel hidroalcoholico antes de cada comida: es la medida mas eficaz contra la gastroenteritis que vacia un grupo en dos dias."
+    ],
     "scope": "all",
     "season": "all",
     "category": "nature",
+    "theme": "nature",
     "tags": [
       "hygiene",
       "toilettes",
       "eau",
       "ecologie"
     ],
-    "priority": 6,
-    "theme": "nature"
+    "priority": 6
+  },
+  {
+    "id": "general-reseau-batterie",
+    "titleFr": "Reseau, GPS et batterie",
+    "titleEn": "Network, GPS and battery",
+    "titleDe": "Netz, GPS und Akku",
+    "titleIt": "Rete, GPS e batteria",
+    "titleEs": "Red, GPS y bateria",
+    "pointsFr": [
+      "Le GPS de ton telephone lit des satellites : il fonctionne SANS reseau mobile et reste actif en mode avion.",
+      "Consequence directe : la carte et la trace se telechargent AVANT le depart. Sans telechargement, pas de fond de carte hors couverture.",
+      "Mode avion des que tu n as pas besoin du reseau : c est le levier d economie de batterie le plus efficace, et le GPS continue de fonctionner.",
+      "Le froid fait chuter l autonomie : la nuit, telephone et batterie externe dorment au fond du duvet, pas dans la poche exterieure du sac.",
+      "Le 112 passe sur N IMPORTE QUEL operateur et meme sans carte SIM : la ou ton reseau ne capte pas, un autre peut prendre l appel."
+    ],
+    "pointsEn": [
+      "Your phone's GPS reads satellites: it works WITHOUT a mobile network and stays active in airplane mode.",
+      "Direct consequence: maps and track are downloaded BEFORE you leave. No download, no base map outside coverage.",
+      "Airplane mode as soon as you do not need the network: it is the most effective battery saver, and GPS keeps working.",
+      "Cold kills battery life: at night, phone and power bank sleep inside the sleeping bag, not in an outside pocket.",
+      "112 goes through on ANY operator and even without a SIM card: where your network fails, another can take the call."
+    ],
+    "pointsDe": [
+      "Das GPS deines Telefons liest Satelliten: es funktioniert OHNE Mobilfunknetz und bleibt im Flugmodus aktiv.",
+      "Direkte Folge: Karte und Track werden VOR dem Start heruntergeladen. Ohne Download keine Grundkarte ausserhalb der Abdeckung.",
+      "Flugmodus, sobald du das Netz nicht brauchst: der wirksamste Akkusparhebel, und das GPS laeuft weiter.",
+      "Kaelte senkt die Laufzeit: nachts schlafen Telefon und Powerbank im Schlafsack, nicht in der Aussentasche.",
+      "Die 112 geht ueber JEDEN Betreiber und sogar ohne SIM-Karte: wo dein Netz fehlt, kann ein anderes den Anruf annehmen."
+    ],
+    "pointsIt": [
+      "Il GPS del telefono legge i satelliti: funziona SENZA rete mobile e resta attivo in modalita aereo.",
+      "Conseguenza diretta: mappa e traccia si scaricano PRIMA di partire. Senza download, nessuna mappa base fuori copertura.",
+      "Modalita aereo appena non ti serve la rete: e la leva di risparmio batteria piu efficace, e il GPS continua a funzionare.",
+      "Il freddo fa crollare l autonomia: di notte telefono e power bank dormono dentro il sacco a pelo, non nella tasca esterna.",
+      "Il 112 passa su QUALSIASI operatore e anche senza SIM: dove la tua rete non prende, un altra puo ricevere la chiamata."
+    ],
+    "pointsEs": [
+      "El GPS de tu telefono lee satelites: funciona SIN red movil y sigue activo en modo avion.",
+      "Consecuencia directa: el mapa y la traza se descargan ANTES de salir. Sin descarga, no hay mapa base fuera de cobertura.",
+      "Modo avion en cuanto no necesites la red: es la palanca de ahorro de bateria mas eficaz, y el GPS sigue funcionando.",
+      "El frio hunde la autonomia: de noche, telefono y bateria externa duermen dentro del saco, no en el bolsillo exterior.",
+      "El 112 entra por CUALQUIER operador e incluso sin tarjeta SIM: donde tu red no llega, otra puede tomar la llamada."
+    ],
+    "scope": "all",
+    "season": "all",
+    "category": "equipment",
+    "theme": "gear",
+    "tags": [
+      "gps",
+      "reseau",
+      "batterie",
+      "hors-ligne"
+    ],
+    "priority": 8
+  },
+  {
+    "id": "general-ravitaillement",
+    "titleFr": "Ravitaillement en route",
+    "titleEn": "Resupply along the way",
+    "titleDe": "Nachschub auf der Strecke",
+    "titleIt": "Rifornimenti lungo il percorso",
+    "titleEs": "Reabastecimiento en ruta",
+    "pointsFr": [
+      "Repere tes points de ravitaillement sur la carte AVANT de partir, avec leurs jours et horaires d ouverture.",
+      "Garde toujours une journee de nourriture d avance : un commerce ferme, un village desert, et le jour suivant tu es a sec.",
+      "Une journee de marche demande 3 000 a 4 500 kcal : c est cette valeur, pas le volume du sac, qui dit combien tu emportes.",
+      "Le lyophilise gagne au ratio poids/calories, mais il exige de l eau chaude et du combustible : compte les deux dans le sac.",
+      "Encas accessibles sans ouvrir le sac : une prise toutes les 45 minutes a 1 heure tient mieux qu un gros repas a midi."
+    ],
+    "pointsEn": [
+      "Mark your resupply points on the map BEFORE you leave, with their opening days and hours.",
+      "Always keep one day of food ahead: a closed shop, an empty village, and the next day you are out.",
+      "A walking day needs 3,000 to 4,500 kcal: that figure, not pack volume, tells you how much to carry.",
+      "Freeze-dried food wins on weight-to-calorie ratio, but it needs hot water and fuel: count both in the pack.",
+      "Snacks reachable without opening the pack: a small intake every 45 minutes to an hour holds better than a big lunch."
+    ],
+    "pointsDe": [
+      "Markiere deine Nachschubpunkte VOR dem Start auf der Karte, mit Oeffnungstagen und -zeiten.",
+      "Halte immer einen Tag Essen im Vorrat: ein geschlossener Laden, ein leeres Dorf, und am naechsten Tag bist du blank.",
+      "Ein Wandertag verlangt 3 000 bis 4 500 kcal: diese Zahl, nicht das Rucksackvolumen, sagt dir, wie viel du mitnimmst.",
+      "Gefriergetrocknetes gewinnt beim Gewicht-Kalorien-Verhaeltnis, braucht aber heisses Wasser und Brennstoff: beides mitrechnen.",
+      "Snacks erreichbar, ohne den Rucksack zu oeffnen: eine kleine Portion alle 45 bis 60 Minuten haelt besser als ein grosses Mittagessen."
+    ],
+    "pointsIt": [
+      "Individua i punti di rifornimento sulla carta PRIMA di partire, con giorni e orari di apertura.",
+      "Tieni sempre una giornata di cibo di scorta: un negozio chiuso, un paese deserto, e il giorno dopo sei a secco.",
+      "Una giornata di cammino richiede 3 000-4 500 kcal: e questo valore, non il volume dello zaino, a dirti quanto portare.",
+      "Il liofilizzato vince nel rapporto peso/calorie, ma chiede acqua calda e combustibile: conta entrambi nello zaino.",
+      "Spuntini raggiungibili senza aprire lo zaino: una piccola dose ogni 45-60 minuti rende piu di un pranzo abbondante."
+    ],
+    "pointsEs": [
+      "Marca tus puntos de reabastecimiento en el mapa ANTES de salir, con sus dias y horarios de apertura.",
+      "Manten siempre una jornada de comida de adelanto: una tienda cerrada, un pueblo desierto, y al dia siguiente estas seco.",
+      "Una jornada de marcha exige 3 000 a 4 500 kcal: esa cifra, no el volumen de la mochila, dice cuanto llevas.",
+      "El liofilizado gana en relacion peso/calorias, pero exige agua caliente y combustible: cuenta los dos en la mochila.",
+      "Tentempies accesibles sin abrir la mochila: una toma cada 45 a 60 minutos aguanta mejor que una comida copiosa."
+    ],
+    "scope": "all",
+    "season": "all",
+    "category": "nutrition",
+    "theme": "health",
+    "tags": [
+      "ravitaillement",
+      "nourriture",
+      "autonomie",
+      "planning"
+    ],
+    "priority": 7
+  },
+  {
+    "id": "general-echappatoires",
+    "titleFr": "Echappatoires et plan de repli",
+    "titleEn": "Bail-out points and fallback plan",
+    "titleDe": "Ausstiegspunkte und Rueckfallplan",
+    "titleIt": "Vie di fuga e piano di ripiego",
+    "titleEs": "Salidas de escape y plan de repliegue",
+    "pointsFr": [
+      "Avant de partir, note pour CHAQUE etape l echappatoire la plus proche : village, route, gare, remontee.",
+      "Une echappatoire ne sert que si tu connais son temps de marche et son denivele : releve-les, ne les devine pas.",
+      "Trois motifs de bascule sur l echappatoire : la meteo, une blessure, un retard qui te ferait finir de nuit.",
+      "Sur un itineraire lineaire, le retour se prepare autant que l aller : le point d arrivee n est pas le point de depart.",
+      "Previens le gite ou le refuge que tu quittes l itineraire : une place reservee et non annulee declenche une recherche."
+    ],
+    "pointsEn": [
+      "Before leaving, note for EVERY stage the nearest bail-out: village, road, station, lift.",
+      "A bail-out is only useful if you know its walking time and its height loss: look them up, do not guess.",
+      "Three reasons to switch to the bail-out: the weather, an injury, a delay that would have you finishing in the dark.",
+      "On a linear route the way home takes as much planning as the way out: the finish is not the start.",
+      "Tell the lodge or hut that you are leaving the route: a booked bed left uncancelled triggers a search."
+    ],
+    "pointsDe": [
+      "Notiere vor dem Start fuer JEDE Etappe den naechsten Ausstieg: Dorf, Strasse, Bahnhof, Bergbahn.",
+      "Ein Ausstieg hilft nur, wenn du Gehzeit und Hoehenunterschied kennst: nachlesen, nicht schaetzen.",
+      "Drei Gruende, auf den Ausstieg zu wechseln: das Wetter, eine Verletzung, ein Rueckstand, der dich im Dunkeln enden liesse.",
+      "Bei einer linearen Route braucht der Rueckweg so viel Planung wie der Hinweg: das Ziel ist nicht der Start.",
+      "Sag der Unterkunft, dass du die Route verlaesst: ein reservierter, nicht abgesagter Platz loest eine Suche aus."
+    ],
+    "pointsIt": [
+      "Prima di partire annota per OGNI tappa la via di fuga piu vicina: paese, strada, stazione, impianto.",
+      "Una via di fuga serve solo se ne conosci tempo di cammino e dislivello: rilevali, non indovinarli.",
+      "Tre motivi per passare alla via di fuga: il meteo, un infortunio, un ritardo che ti farebbe finire di notte.",
+      "Su un itinerario lineare il rientro si prepara come l andata: il punto d arrivo non e il punto di partenza.",
+      "Avvisa il rifugio o il gite che lasci l itinerario: un posto prenotato e non disdetto fa scattare una ricerca."
+    ],
+    "pointsEs": [
+      "Antes de salir anota para CADA etapa la salida de escape mas cercana: pueblo, carretera, estacion, remonte.",
+      "Una salida de escape solo sirve si conoces su tiempo de marcha y su desnivel: consultalos, no los adivines.",
+      "Tres motivos para pasar a la salida de escape: el tiempo, una lesion, un retraso que te haria acabar de noche.",
+      "En un itinerario lineal el regreso se prepara igual que la ida: el punto de llegada no es el de salida.",
+      "Avisa al albergue o refugio de que dejas el itinerario: una plaza reservada sin anular desencadena una busqueda."
+    ],
+    "scope": "all",
+    "season": "all",
+    "category": "safety",
+    "theme": "safety",
+    "tags": [
+      "echappatoire",
+      "repli",
+      "planning",
+      "securite"
+    ],
+    "priority": 8
+  },
+  {
+    "id": "general-sens-parcours",
+    "titleFr": "Choisir son sens de parcours",
+    "titleEn": "Choosing your direction of travel",
+    "titleDe": "Die Laufrichtung waehlen",
+    "titleIt": "Scegliere il senso di percorrenza",
+    "titleEs": "Elegir el sentido del recorrido",
+    "pointsFr": [
+      "Le sens de parcours change tout : la difficulte est dans l ORDRE des etapes, pas seulement dans leur longueur.",
+      "Attaquer par le troncon le plus dur exige d etre pret des le premier jour, sans aucune acclimatation.",
+      "Le sens inverse donne une montee en difficulte progressive : c est le choix raisonnable pour une premiere itinerance.",
+      "En debut de saison, choisis le sens qui te fait franchir les cols enneiges le plus TARD possible dans le parcours.",
+      "Un demi-parcours coupe a un point desservi par le train ou le car vaut mieux qu une totalite bouclee dans l urgence."
+    ],
+    "pointsEn": [
+      "Direction of travel changes everything: difficulty lies in the ORDER of the stages, not only in their length.",
+      "Starting with the hardest section demands you be ready on day one, with no acclimatisation at all.",
+      "The reverse direction gives a progressive build-up: that is the sensible choice for a first multi-day route.",
+      "Early in the season, pick the direction that has you crossing snowy passes as LATE as possible in the route.",
+      "Half the route, cut at a point served by train or bus, beats the whole thing rushed to the finish."
+    ],
+    "pointsDe": [
+      "Die Laufrichtung aendert alles: die Schwierigkeit liegt in der REIHENFOLGE der Etappen, nicht nur in ihrer Laenge.",
+      "Mit dem haertesten Abschnitt zu beginnen heisst, vom ersten Tag an bereit zu sein, ganz ohne Akklimatisation.",
+      "Die Gegenrichtung ergibt einen progressiven Aufbau: die vernuenftige Wahl fuer eine erste Mehrtagestour.",
+      "Zu Saisonbeginn waehle die Richtung, in der du die verschneiten Paesse so SPAET wie moeglich ueberschreitest.",
+      "Eine halbe Route, geteilt an einem Bahn- oder Buspunkt, ist besser als die ganze, die ins Ziel gehetzt wird."
+    ],
+    "pointsIt": [
+      "Il senso di percorrenza cambia tutto: la difficolta sta nell ORDINE delle tappe, non solo nella loro lunghezza.",
+      "Attaccare dal tratto piu duro impone di essere pronti dal primo giorno, senza alcun adattamento.",
+      "Il senso inverso da una progressione graduale: e la scelta ragionevole per una prima itineranza.",
+      "A inizio stagione scegli il senso che ti fa valicare i colli innevati il piu TARDI possibile nel percorso.",
+      "Mezzo percorso, tagliato in un punto servito da treno o autobus, vale piu del tutto chiuso di corsa."
+    ],
+    "pointsEs": [
+      "El sentido del recorrido cambia todo: la dificultad esta en el ORDEN de las etapas, no solo en su longitud.",
+      "Atacar por el tramo mas duro exige estar listo desde el primer dia, sin ninguna aclimatacion.",
+      "El sentido inverso da una progresion gradual: es la eleccion razonable para una primera itinerancia.",
+      "A principio de temporada elige el sentido que te haga cruzar los collados nevados lo MAS TARDE posible del recorrido.",
+      "Medio recorrido, cortado en un punto con tren o autobus, vale mas que el total cerrado con prisas."
+    ],
+    "scope": "all",
+    "season": "all",
+    "category": "preparation",
+    "theme": "other",
+    "tags": [
+      "sens",
+      "itineraire",
+      "planning",
+      "difficulte"
+    ],
+    "priority": 6
+  },
+  {
+    "id": "general-louer-acheter",
+    "titleFr": "Louer ou acheter son materiel",
+    "titleEn": "Renting or buying your gear",
+    "titleDe": "Ausruestung mieten oder kaufen",
+    "titleIt": "Noleggiare o comprare l attrezzatura",
+    "titleEs": "Alquilar o comprar el material",
+    "pointsFr": [
+      "Loue ce qui ne touche pas ton corps : tente, matelas, sac de couchage, rechaud. Tu paies l usage, pas le placard.",
+      "Achete ce qui epouse ta morphologie : chaussures et sac a dos. Un sac mal adapte, c est le dos ruine des le 2e jour.",
+      "Les chaussures se rodent : les louer ou les acheter la veille donne le meme resultat, des ampoules.",
+      "Sac de couchage : la norme EN 13537 donne trois temperatures. Choisis sur la temperature CONFORT, pas sur l affiche.",
+      "La temperature EXTREME de la norme n est pas une temperature d usage : c est une survie de 6 heures avec risque d hypothermie."
+    ],
+    "pointsEn": [
+      "Rent what does not touch your body: tent, mat, sleeping bag, stove. You pay for the use, not for the cupboard.",
+      "Buy what fits your body: boots and backpack. A badly fitted pack means a ruined back from day two.",
+      "Boots need breaking in: renting them or buying them the day before gives the same result, blisters.",
+      "Sleeping bag: the EN 13537 standard gives three temperatures. Choose on the COMFORT figure, not the headline.",
+      "The standard's EXTREME temperature is not a use temperature: it is 6 hours of survival with a hypothermia risk."
+    ],
+    "pointsDe": [
+      "Miete, was deinen Koerper nicht beruehrt: Zelt, Matte, Schlafsack, Kocher. Du zahlst die Nutzung, nicht den Schrank.",
+      "Kaufe, was sich deinem Koerper anpasst: Schuhe und Rucksack. Ein schlecht sitzender Rucksack heisst ab Tag zwei ruinierter Ruecken.",
+      "Schuhe muessen eingelaufen werden: sie zu mieten oder am Vortag zu kaufen ergibt dasselbe Ergebnis, Blasen.",
+      "Schlafsack: die Norm EN 13537 nennt drei Temperaturen. Waehle nach der KOMFORT-Temperatur, nicht nach der Werbung.",
+      "Die EXTREM-Temperatur der Norm ist keine Gebrauchstemperatur: sie bedeutet 6 Stunden Ueberleben mit Hypothermierisiko."
+    ],
+    "pointsIt": [
+      "Noleggia cio che non tocca il corpo: tenda, materassino, sacco a pelo, fornello. Paghi l uso, non l armadio.",
+      "Compra cio che si adatta al tuo corpo: scarpe e zaino. Uno zaino mal calzato significa schiena rovinata dal secondo giorno.",
+      "Le scarpe vanno rodate: noleggiarle o comprarle il giorno prima da lo stesso risultato, vesciche.",
+      "Sacco a pelo: la norma EN 13537 indica tre temperature. Scegli sulla temperatura COMFORT, non sul cartellino.",
+      "La temperatura ESTREMA della norma non e una temperatura d uso: e una sopravvivenza di 6 ore con rischio di ipotermia."
+    ],
+    "pointsEs": [
+      "Alquila lo que no toca tu cuerpo: tienda, esterilla, saco de dormir, hornillo. Pagas el uso, no el armario.",
+      "Compra lo que se ajusta a tu cuerpo: botas y mochila. Una mochila mal ajustada es la espalda arruinada desde el segundo dia.",
+      "Las botas hay que amoldarlas: alquilarlas o comprarlas el dia antes da el mismo resultado, ampollas.",
+      "Saco de dormir: la norma EN 13537 da tres temperaturas. Elige por la temperatura CONFORT, no por el cartel.",
+      "La temperatura EXTREMA de la norma no es una temperatura de uso: son 6 horas de supervivencia con riesgo de hipotermia."
+    ],
+    "scope": "all",
+    "season": "all",
+    "category": "equipment",
+    "theme": "gear",
+    "tags": [
+      "location",
+      "materiel",
+      "achat",
+      "budget"
+    ],
+    "priority": 6
+  },
+  {
+    "id": "general-respect-locaux",
+    "titleFr": "Respect des habitants et des troupeaux",
+    "titleEn": "Respect for locals and livestock",
+    "titleDe": "Respekt fuer Einheimische und Herden",
+    "titleIt": "Rispetto per abitanti e mandrie",
+    "titleEs": "Respeto a los habitantes y los rebanos",
+    "pointsFr": [
+      "Une bergerie, une grange, un pre cloture sont des lieux de TRAVAIL prives : on demande avant d entrer et avant de photographier.",
+      "Referme chaque barriere derriere toi, exactement comme tu l as trouvee. Une barriere ouverte, c est un troupeau perdu.",
+      "Achete sur place quand tu peux : c est ce qui fait vivre les points d etape dont tu dependras l annee prochaine.",
+      "Especes : les commerces de village et les gites n ont pas toujours de terminal, ni le reseau pour le faire fonctionner.",
+      "Dis bonjour dans la langue du lieu. Trois mots appris valent mieux qu une phrase parfaite en anglais."
+    ],
+    "pointsEn": [
+      "A shepherd's hut, a barn, a fenced meadow are private WORKPLACES: ask before entering and before taking photos.",
+      "Close every gate behind you, exactly as you found it. An open gate means a lost herd.",
+      "Buy locally when you can: that is what keeps alive the stage points you will depend on next year.",
+      "Cash: village shops and lodges do not always have a card terminal, nor the network to run one.",
+      "Say hello in the local language. Three words learned beat a perfect sentence in English."
+    ],
+    "pointsDe": [
+      "Eine Schaeferhuette, eine Scheune, eine eingezaeunte Wiese sind private ARBEITSORTE: vor dem Betreten und vor dem Fotografieren fragen.",
+      "Schliesse jedes Tor hinter dir, genau so, wie du es vorgefunden hast. Ein offenes Tor bedeutet eine verlorene Herde.",
+      "Kauf vor Ort, wo du kannst: davon leben die Etappenorte, von denen du naechstes Jahr abhaengst.",
+      "Bargeld: Dorflaeden und Unterkuenfte haben nicht immer ein Kartenterminal, und nicht immer das Netz dafuer.",
+      "Gruesse in der Sprache des Ortes. Drei gelernte Woerter sind besser als ein perfekter Satz auf Englisch."
+    ],
+    "pointsIt": [
+      "Un ovile, un fienile, un prato recintato sono LUOGHI DI LAVORO privati: si chiede prima di entrare e prima di fotografare.",
+      "Richiudi ogni cancello dietro di te, esattamente come l hai trovato. Un cancello aperto e una mandria perduta.",
+      "Compra sul posto quando puoi: e cio che fa vivere i punti tappa da cui dipenderai l anno prossimo.",
+      "Contanti: i negozi di paese e i gite non hanno sempre il POS, ne la rete per farlo funzionare.",
+      "Saluta nella lingua del luogo. Tre parole imparate valgono piu di una frase perfetta in inglese."
+    ],
+    "pointsEs": [
+      "Una borda, un pajar, un prado cercado son LUGARES DE TRABAJO privados: se pide antes de entrar y antes de fotografiar.",
+      "Cierra cada puerta de campo detras de ti, exactamente como la encontraste. Una puerta abierta es un rebano perdido.",
+      "Compra en el sitio cuando puedas: es lo que mantiene vivos los puntos de etapa de los que dependeras el ano que viene.",
+      "Efectivo: las tiendas de pueblo y los albergues no siempre tienen terminal, ni la red para hacerlo funcionar.",
+      "Saluda en la lengua del lugar. Tres palabras aprendidas valen mas que una frase perfecta en ingles."
+    ],
+    "scope": "all",
+    "season": "all",
+    "category": "preparation",
+    "theme": "other",
+    "tags": [
+      "respect",
+      "locaux",
+      "bergerie",
+      "especes"
+    ],
+    "priority": 5
   }
 ]

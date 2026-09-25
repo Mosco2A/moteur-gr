@@ -4,11 +4,13 @@ import '../../../core/theme/app_theme.dart';
 import '../data/tip_category_config.dart';
 import '../domain/models/tip_card.dart';
 import 'tip_carousel.dart';
+import 'tip_points_list.dart';
 
 /// Bottom sheet affichant le detail complet d une fiche conseil.
 ///
-/// Affiche le titre, le contenu integral, la categorie, les tags,
-/// et les metadonnees (scope, season, altitude). Couleur par categorie.
+/// Affiche le titre, le contenu integral EN PUCES (calibre GR20, tache 555), la
+/// categorie, les tags et les metadonnees (scope, season, altitude). Couleur par
+/// categorie. Titre et points localises (5 langues, repli FR).
 class TipDetailSheet extends StatelessWidget {
   const TipDetailSheet({super.key, required this.card});
 
@@ -116,12 +118,13 @@ class TipDetailSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: AppTheme.spacingLg),
                 // Titre
-                Text(card.titleFr, style: theme.textTheme.headlineSmall),
+                Text(card.localizedTitle, style: theme.textTheme.headlineSmall),
                 const SizedBox(height: AppTheme.spacingBase),
-                // Contenu integral
-                Text(
-                  card.contentFr,
-                  style: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
+                // Contenu integral EN PUCES (calibre, tache 555)
+                TipPointsList.fromCard(
+                  card: card,
+                  bulletColor: color,
+                  textStyle: theme.textTheme.bodyMedium?.copyWith(height: 1.6),
                 ),
                 const SizedBox(height: AppTheme.spacingLg),
                 // Tags
