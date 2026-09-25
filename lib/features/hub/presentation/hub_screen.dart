@@ -213,33 +213,30 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             const HubTrekCard(),
             const SizedBox(height: AppTheme.spacingLg),
 
-            // --- JOURNAL — CARTE AUTONOME DU COCKPIT (retour Chris #11,
-            // tache 553) ---
-            // Mot pour mot : « journal est dans information dans
-            // preparation??? ». La carte DEMENAGEAIT selon la phase : dans
-            // « Randonner » en rando (place GR20), dans « Informations » sinon
-            // (correctif d'acces R10 / LOT L10). Deux endroits pour une meme
-            // porte, donc une porte qu'on ne retrouve pas : en preparation on
-            // allait la chercher sous « Informations », rubrique de lecture, ce
-            // qui n'a aucun sens pour un carnet qu'on ECRIT.
+            // --- LE JOURNAL N'EXISTE PAS EN PHASE PREPARATION (tache 558) ---
             //
-            // Elle est desormais UNE CARTE A ELLE SEULE, posee juste sous la
-            // carte du trek — le carnet appartient au trek, pas a une rubrique
-            // — et rendue SANS AUCUNE GARDE : meme place, meme hauteur de
-            // scroll, dans les TROIS phases (preparation, rando, apres).
+            // Decision de Chris, mot pour mot : « MAIS JOURNAL CE N'est JUSTE
+            // PAS DU TOUT EN PHASE PREPARER. En rando pour le rempli, en
+            // postrando pour le remplir et le lire ». La carte etait ICI, en
+            // tete du cockpit, AU-DESSUS de « Preparer ».
             //
-            // L'ACCES REPARE EN R10 / LOT L10 EST CONSERVE, ET RENFORCE : le
-            // journal n'est plus enferme dans aucun bloc conditionnel, donc
-            // plus aucune phase ne peut le faire disparaitre. Il reste rendu
-            // UNE SEULE FOIS a l'ecran (plus de doublon possible : il n'y a
-            // plus qu'un seul endroit ou il est ecrit).
-            QuickAccessCard(
-              icon: Icons.menu_book_outlined,
-              title: t.hub.cards.journal,
-              subtitle: t.hub.cards.journalSub,
-              onTap: () => context.push('/journal'),
-            ),
-            const SizedBox(height: AppTheme.spacingLg),
+            // DEUX ERREURS EMPILEES, corrigees ensemble. La premiere : montrer
+            // le journal en PREPARATION, ou un carnet de randonnee n'a rien a
+            // dire — il est vide, et il le restera jusqu'au depart. La seconde,
+            // qui aggravait la premiere : le poser tout en haut, donc avant la
+            // preparation, qui est le seul travail du moment. « Atteignable
+            // dans les trois phases » n'etait pas une vertu en soi.
+            //
+            // CE QUE DEVIENT L'ACCES REPARE EN R10 / LOT L10 : son intention
+            // reste tenue — le journal n'est jamais inatteignable alors que la
+            // fonction est entiere — mais le vrai trou de R10 etait
+            // l'APRES-TREK, pas la preparation. Le journal vit donc la ou on
+            // l'ECRIT et la ou on le RELIT : dans la section « Randonner »
+            // pendant la rando (place de la reference), et en carte autonome
+            // apres le trek, la ou cette section n'existe plus. UNE SEULE carte
+            // a l'ecran a tout instant : les deux emplacements s'excluent par
+            // construction (`showHike` et `showAfter` ne sont jamais vrais
+            // ensemble).
 
             // --- Section Preparer (RF-6) — ACCORDÉON (D3, R8+R13) ---
             // Parité GR20 modèle A : Préparer reste TOUJOURS présente dans le
@@ -407,12 +404,19 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                     // (heritage shell/onglets, supprime).
                     onTap: () => context.push('/map'),
                   ),
-                  // JOURNAL : PLUS ICI (retour Chris #11, tache 553). La carte
-                  // vivait dans cette section en rando et dans
-                  // « Informations » hors rando — elle DEMENAGEAIT donc d'un
-                  // moment a l'autre. Elle est desormais une carte autonome du
-                  // cockpit, posee sous la carte du trek, rendue au MEME
-                  // endroit dans les trois phases (voir plus haut).
+                  // JOURNAL — ICI PENDANT LA RANDO (tache 558, decision Chris
+                  // « En rando pour le rempli »). C'est la place de la
+                  // reference, et c'est un outil de TERRAIN : on ecrit son
+                  // carnet le soir a l'etape, pas des mois avant le depart.
+                  // Cette section n'est rendue qu'en rando active, donc la
+                  // carte disparait d'elle-meme en preparation — aucune garde
+                  // supplementaire n'est necessaire ici.
+                  QuickAccessCard(
+                    icon: Icons.menu_book_outlined,
+                    title: t.hub.cards.journal,
+                    subtitle: t.hub.cards.journalSub,
+                    onTap: () => context.push('/journal'),
+                  ),
                   // R11 (retour Chris, LOT L8) — MÉTÉO : carte « Prévisions par
                   // étape » -> écran météo E31 (`/trail/:id/weather`). PARITÉ
                   // GR20 : le HUB GR20 expose « Météo » et « Incendie » COTE A
@@ -466,6 +470,24 @@ class _HubScreenState extends ConsumerState<HubScreen> {
               const SizedBox(height: AppTheme.spacingLg),
             ],
 
+            // --- JOURNAL APRES LE TREK (tache 558) ---
+            //
+            // Decision de Chris : « en postrando pour le remplir et le lire ».
+            // La section « Randonner » n'existe plus une fois rentre : la carte
+            // se pose ici, a la MEME hauteur de scroll qu'en rando (entre
+            // « Preparer » et « Informations »), pour qu'on la retrouve au meme
+            // endroit d'une phase a l'autre. C'etait le VRAI trou d'acces que
+            // R10 / LOT L10 avait repere — il reste bouche.
+            if (showAfter) ...[
+              QuickAccessCard(
+                icon: Icons.menu_book_outlined,
+                title: t.hub.cards.journal,
+                subtitle: t.hub.cards.journalSub,
+                onTap: () => context.push('/journal'),
+              ),
+              const SizedBox(height: AppTheme.spacingLg),
+            ],
+
             // --- Section Informations (RF-9) ---
             // TOUJOURS rendue (aucune garde de phase).
             HubSection(
@@ -478,11 +500,10 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                 // LOT L10) et dans « Randonner » en rando : elle changeait de
                 // place selon le moment, et « Informations » est une rubrique
                 // qu'on LIT, pas ou l'on ECRIT son carnet.
-                // L'acces repare en R10 n'est PAS perdu — il est renforce : la
-                // carte est devenue AUTONOME, posee sous la carte du trek, sans
-                // aucune garde de phase (voir plus haut). Le journal reste donc
-                // atteignable en preparation, en rando et apres, et une seule
-                // fois a l'ecran.
+                // Depuis la tache 558 elle n'existe PLUS DU TOUT en phase de
+                // preparation (decision Chris) : elle vit dans « Randonner »
+                // pendant la rando, et juste au-dessus de cette section une
+                // fois le trek termine.
                 QuickAccessCard(
                   icon: Icons.hotel_outlined,
                   title: t.hub.cards.accommodations,

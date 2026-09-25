@@ -139,49 +139,85 @@ void main() {
     });
   });
 
+  // ---------------------------------------------------------------------------
+  // TACHE 558 — LA BORNE HAUTE A ETE ELARGIE, ET CES TESTS LE DISENT.
+  //
+  // Elle valait « nombre d'etapes + marge de repos ». Chris s'y est cogne, mot
+  // pour mot : « ca me propose 9jours, je peux pas augmenter et ca met tout en
+  // rouge !!! ». Entre le nombre d'etapes et cette borne, les seuls jours
+  // disponibles etaient du REPOS — et le repos ne change rien a la pire journee,
+  // donc rien au verdict (GO-61) : le curseur butait exactement la ou il aurait
+  // commence a servir.
+  //
+  // La borne haute couvre desormais le DECOUPAGE (deux journees par etape) plus
+  // le repos. La borne NATURELLE — une etape par jour plus le repos, l'ancienne
+  // borne haute — est conservee a part : c'est elle qui plafonne le programme
+  // PAR DEFAUT, pour qu'aucun sentier ne s'ouvre sur des etapes deja coupees.
+  // ---------------------------------------------------------------------------
   group('DurationBounds — bornes derivees du nombre d etapes', () {
     test('bornes generiques centrees sur le nombre d etapes', () {
       // 5 etapes : min = ceil(5/2) = 3 ; marge repos = round(5/3) = 2 ;
-      // max = 5 + 2 = 7. Les bornes suivent le sentier, jamais « 16 » en dur.
+      // borne NATURELLE = 5 + 2 = 7 ; borne HAUTE = 5 x 2 + 2 = 12.
+      // Les bornes suivent le sentier, jamais « 16 » en dur.
       final b = DurationBounds.fromStageCount(5);
       expect(b.min, 3);
-      expect(b.max, 7);
-      expect(b.options, [3, 4, 5, 6, 7]);
+      expect(b.naturalMax, 7);
+      expect(b.restAllowance, 2);
+      expect(b.max, 12);
+      expect(b.options.first, 3);
+      expect(b.options.last, 12);
     });
 
     test('la borne haute ne peut pas etre sous le repos CONSEILLE (GO-61)', () {
       // 5 etapes : la marge de repos « maison » vaut 2. Si le moteur en
-      // conseille 4, la borne suit — sinon l application proposerait un
-      // programme que son propre curseur refuserait d atteindre.
+      // conseille 4, le budget de repos suit — sinon l application proposerait
+      // un programme que son propre curseur refuserait d atteindre.
       final b = DurationBounds.fromStageCount(5, recommendedRestDays: 4);
       expect(b.min, 3);
-      expect(b.max, 9);
-      // Et elle ne RETRECIT jamais : un conseil plus petit que la marge laisse
-      // la marge en place.
+      expect(b.restAllowance, 4);
+      expect(b.naturalMax, 9);
+      expect(b.max, 14);
+      // Et le budget ne RETRECIT jamais : un conseil plus petit que la marge
+      // laisse la marge en place.
       final c = DurationBounds.fromStageCount(5, recommendedRestDays: 1);
-      expect(c.max, 7);
+      expect(c.restAllowance, 2);
+      expect(c.naturalMax, 7);
+      expect(c.max, 12);
     });
 
-    test('un sentier a 1 etape n a pas de choix de duree', () {
+    test('un sentier a 1 etape garde un curseur : son etape se COUPE', () {
+      // Avant la tache 558, ce sentier n'avait AUCUN choix de duree (min = max
+      // = 1) : une seule etape, rien a regrouper. Il n'avait donc aucun moyen
+      // d'alleger sa seule journee. Elle se coupe desormais en deux.
       final b = DurationBounds.fromStageCount(1);
       expect(b.min, 1);
-      expect(b.max, 1);
-      expect(b.options, [1]);
+      expect(b.naturalMax, 1, reason: 'par defaut, l etape reste entiere');
+      expect(b.max, 2, reason: 'mais on peut la couper en deux journees');
+      expect(b.options, [1, 2]);
     });
 
     test('cas vide (etapes non chargees) : borne neutre', () {
       final b = DurationBounds.fromStageCount(0);
       expect(b.min, 1);
       expect(b.max, 1);
+      expect(b.naturalMax, 1);
     });
 
     test('clampDuration ramene une valeur hors bornes', () {
-      final b = DurationBounds.fromStageCount(10); // min 5, max 10 + 3 = 13
+      // 10 etapes : min 5 ; marge repos = round(10/3) = 3 ;
+      // naturalMax = 13 ; max = 20 + 3 = 23.
+      final b = DurationBounds.fromStageCount(10);
       expect(b.min, 5);
-      expect(b.max, 13);
+      expect(b.naturalMax, 13);
+      expect(b.max, 23);
       expect(b.clampDuration(2), 5);
-      expect(b.clampDuration(99), 13);
+      expect(b.clampDuration(99), 23);
       expect(b.clampDuration(8), 8);
+      // Le DEFAUT, lui, ne depasse jamais la duree naturelle : le decoupage se
+      // demande, il ne s impose pas au premier ecran.
+      expect(b.clampDefaultDuration(99), 13);
+      expect(b.clampDefaultDuration(2), 5);
+      expect(b.clampDefaultDuration(11), 11);
     });
 
     test('les bornes ne sont PAS hardcodees : varient avec le sentier', () {
@@ -203,7 +239,9 @@ void main() {
       await container.read(stagesProvider('test-trail').future);
       final bounds = container.read(durationBoundsProvider('test-trail'));
       expect(bounds.min, 3);
-      expect(bounds.max, 7);
+      // 5 etapes : duree naturelle 7, borne haute 12 (decoupage compris).
+      expect(bounds.naturalMax, 7);
+      expect(bounds.max, 12);
       expect(bounds.options.contains(5), isTrue);
 
       container.dispose();

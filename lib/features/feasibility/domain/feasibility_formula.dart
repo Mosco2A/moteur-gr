@@ -884,10 +884,12 @@ class FeasibilityFormula {
   ///   la monotonie de Foster (#2-p).
   /// [conditions] : altitude et saison du depart.
   /// [maxWalkingDays] : nombre MAXIMAL de jours de marche atteignable par le
-  ///   programme (= nombre d'etapes a repartir). Plafonne le nombre de jours
-  ///   CONSEILLE : une etape ne se coupe pas en deux, donc conseiller plus de
-  ///   jours qu'il n'y a d'etapes serait un conseil inapplicable. 0 = inconnu,
-  ///   aucun plafond.
+  ///   programme. Plafonne le nombre de jours CONSEILLE, et decide si le conseil
+  ///   « decoupe cette journee » a encore un sens : un conseil que l'application
+  ///   n'est pas capable d'executer est PIRE que pas de conseil. Depuis la tache
+  ///   558 une etape se coupe en deux portions de meme energie, donc ce plafond
+  ///   vaut deux journees par etape et non plus une seule. 0 = inconnu, aucun
+  ///   plafond — et alors le decoupage est suppose possible, comme avant.
   /// [scale] : bareme applique. V2 par defaut ; V1 uniquement pour reconstituer
   ///   la colonne « AVANT » des bascules de la campagne personas.
   static FeasibilityAssessment evaluate({
@@ -996,6 +998,9 @@ class FeasibilityFormula {
       currentDays: stages.length,
       trainingWeeks: trainingWeeks,
       recommendedRest: recommendedRest,
+      // TACHE 558 : le conseil de decoupage n'est emis que si le programme sait
+      // encore couper. Voir [_buildAdvice].
+      splitStillPossible: maxWalkingDays <= 0 || maxWalkingDays > stages.length,
     );
 
     return FeasibilityAssessment(
@@ -1289,6 +1294,7 @@ class FeasibilityFormula {
     required int currentDays,
     required int trainingWeeks,
     required Set<int> recommendedRest,
+    bool splitStillPossible = true,
   }) {
     final advice = <ProgramAdvice>[];
 
@@ -1332,11 +1338,28 @@ class FeasibilityFormula {
       advice.add(const ProgramAdvice(key: 'balanced'));
     }
 
-    // 2. Ou decouper : l'etape la plus dure (1-based pour l'affichage).
+    // 2. OU DECOUPER — ET SEULEMENT SI LE DECOUPAGE EXISTE (tache 558).
+    //
+    // CE QUI N'ALLAIT PAS, et la campagne personas l'a mesure sur l'emulateur :
+    // l'ecran conseillait « Decoupe la journee 1 en deux » sur la journee la
+    // plus dure du sentier — Ghisonaccia-Catastaghju, 35,2 km-energie — et
+    // « Separer » n'y faisait RIEN, parce que cette journee ne porte qu'UNE
+    // etape et que « Separer » ne savait que degrouper des etapes deja
+    // groupees. L'application conseillait donc la seule action capable de
+    // detendre le verdict, et ne l'offrait pas. Un conseil impossible est pire
+    // que pas de conseil : il fait chercher un bouton qui n'existe pas.
+    //
+    // DEUX CHANGEMENTS, dans cet ordre. D'abord « Separer » coupe desormais une
+    // etape entiere en deux portions de meme energie
+    // ([PlanningCalculator.splitStage]), donc le conseil est devenu VRAI.
+    // Ensuite, quand il n'y a plus rien a couper — chaque etape occupe deja
+    // deux journees — on ne conseille plus un decoupage : on DIT la verite, a
+    // savoir que cette journee-la depasse les capacites du randonneur meme
+    // coupee au plus court, et que ce n'est plus une question de programme.
     if (hardestIndex >= 0 &&
         verdicts[hardestIndex].verdict == FeasibilityVerdict.red) {
       advice.add(ProgramAdvice(
-        key: 'split',
+        key: splitStillPossible ? 'split' : 'splitImpossible',
         params: {'stage': hardestIndex + 1},
       ));
     }

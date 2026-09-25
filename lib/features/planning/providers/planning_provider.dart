@@ -116,7 +116,13 @@ final defaultDurationWithRestProvider =
     Provider.family<int, String>((ref, trailId) {
   final base = ref.watch(trailConfigProvider.select((c) => c.defaultDuration));
   final rest = ref.watch(recommendedRestDaysProvider(trailId));
-  return ref.watch(durationBoundsProvider(trailId)).clampDuration(base + rest);
+  // Borne a la duree NATURELLE (tache 558) et non a la borne haute du curseur :
+  // depuis que le curseur permet de COUPER les etapes, s'aligner sur son
+  // maximum ferait s'ouvrir le sentier sur des etapes deja coupees en deux —
+  // un decoupage que personne n'a demande.
+  return ref
+      .watch(durationBoundsProvider(trailId))
+      .clampDefaultDuration(base + rest);
 });
 
 /// Duree EFFECTIVE du programme, en jours — source unique lue par le
@@ -154,7 +160,12 @@ final planningProvider =
   final stages = await ref.watch(stagesProvider(trailId).future);
   final duration = ref.watch(selectedDurationProvider);
 
-  return PlanningCalculator.distribute(stages, duration);
+  // Tache 558 : meme regle que le PROGRAMME editable — au-dela du budget de
+  // repos du sentier, un jour de plus COUPE la journee la plus lourde au lieu
+  // d'ajouter un repos de plus. Sans ce parametre, cette repartition et le
+  // programme affiche finiraient par decrire deux itineraires differents.
+  final maxRest = ref.watch(durationBoundsProvider(trailId)).restAllowance;
+  return PlanningCalculator.distribute(stages, duration, maxRestDays: maxRest);
 });
 
 /// Bornes de duree (en jours) DERIVEES du nombre d'etapes du sentier.
@@ -171,13 +182,47 @@ final planningProvider =
 /// Bornes :
 ///  - min = moitie du nombre d'etapes (arrondi au superieur, plancher 1) :
 ///    borne basse raisonnable de regroupement (~2 etapes/jour au plus dense) ;
-///  - max = nombre d'etapes + une marge de repos (~1/3 des etapes, plancher +1) :
-///    laisse ajouter des jours de repos sans exploser la liste.
+///  - max = tous les jours de marche atteignables (une etape peut occuper
+///    jusqu'a [PlanningCalculator.maxDaysPerStage] journees) + la marge de
+///    repos. Voir ci-dessous.
+///
+/// TACHE 558 — POURQUOI LA BORNE HAUTE A ETE ELARGIE. Elle valait « nombre
+/// d'etapes + un tiers » : pour les 7 etapes du sentier de reference, 9 jours,
+/// et Chris s'y est cogne — mot pour mot, « ca me propose 9jours, je peux pas
+/// augmenter et ca met tout en rouge !!! ». Or entre 7 et 9, les deux seuls
+/// jours disponibles ne pouvaient etre que du REPOS, et le repos ne change
+/// RIEN a la pire journee, donc rien au verdict (GO-61). Le curseur butait
+/// exactement la ou il aurait commence a servir. La borne haute couvre
+/// desormais le DECOUPAGE : jusqu'a deux journees par etape, plus les repos.
 class DurationBounds {
-  const DurationBounds({required this.min, required this.max});
+  const DurationBounds({
+    required this.min,
+    required this.max,
+    int? naturalMax,
+    int? restAllowance,
+  })  : _naturalMax = naturalMax,
+        _restAllowance = restAllowance;
 
   final int min;
   final int max;
+
+  final int? _naturalMax;
+  final int? _restAllowance;
+
+  /// JOURS DE REPOS QUE LE PROGRAMME POSE TOUT SEUL (tache 558).
+  ///
+  /// C'est le budget de repos AUTOMATIQUE : au-dela, un jour de plus n'est plus
+  /// un repos mais un DECOUPAGE de la journee la plus dure. Sans ce plafond, le
+  /// curseur ne saurait toujours qu'empiler des jours de repos — et le repos ne
+  /// change rien a la pire journee, donc rien au verdict (GO-61).
+  int get restAllowance => _restAllowance ?? (max - min).clamp(0, max);
+
+  /// DUREE NATURELLE MAXIMALE : une etape par jour de marche, plus le repos.
+  ///
+  /// C'est l'ancienne borne haute, et elle reste celle du programme PAR DEFAUT
+  /// — au-dela, on ne repartit plus, on COUPE, et une coupe est une decision du
+  /// randonneur, jamais un defaut qu'on lui impose.
+  int get naturalMax => _naturalMax ?? max;
 
   /// Calcule les bornes a partir du nombre d'etapes.
   ///
@@ -187,12 +232,31 @@ class DurationBounds {
   /// et le randonneur verrait un conseil qu'il ne peut pas appliquer.
   factory DurationBounds.fromStageCount(int stageCount,
       {int recommendedRestDays = 0}) {
-    if (stageCount <= 0) return const DurationBounds(min: 1, max: 1);
-    if (stageCount == 1) return const DurationBounds(min: 1, max: 1);
+    if (stageCount <= 0) {
+      return const DurationBounds(
+          min: 1, max: 1, naturalMax: 1, restAllowance: 0);
+    }
+    if (stageCount == 1) {
+      // Une seule etape : rien a regrouper, mais elle se COUPE comme les
+      // autres — sinon un sentier d'une etape n'aurait aucun curseur du tout,
+      // et aucun moyen d'alleger sa seule journee.
+      return DurationBounds(
+        min: 1,
+        max: PlanningCalculator.maxWalkingDaysFor(1) + recommendedRestDays,
+        naturalMax: 1 + recommendedRestDays,
+        restAllowance: recommendedRestDays,
+      );
+    }
     final int min = (stageCount / 2).ceil().clamp(1, stageCount);
     final int restMargin = (stageCount / 3).round().clamp(1, stageCount);
     final int rest = math.max(restMargin, recommendedRestDays);
-    return DurationBounds(min: min, max: stageCount + rest);
+    // Tous les jours de MARCHE atteignables (decoupage compris) + le repos.
+    return DurationBounds(
+      min: min,
+      max: PlanningCalculator.maxWalkingDaysFor(stageCount) + rest,
+      naturalMax: stageCount + rest,
+      restAllowance: rest,
+    );
   }
 
   /// Liste discrete des durees proposees (min..max inclus), pour le selecteur.
@@ -201,6 +265,11 @@ class DurationBounds {
 
   /// Ramene une duree dans les bornes.
   int clampDuration(int duration) => duration.clamp(min, max);
+
+  /// Ramene une duree dans les bornes du programme PAR DEFAUT (tache 558) :
+  /// jamais au-dela de [naturalMax], pour qu'aucun sentier ne s'ouvre sur des
+  /// etapes deja coupees en deux. Le decoupage se demande, il ne s'impose pas.
+  int clampDefaultDuration(int duration) => duration.clamp(min, naturalMax);
 }
 
 /// Bornes de duree du sentier courant (derivees du nombre d'etapes charge).

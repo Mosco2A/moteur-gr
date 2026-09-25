@@ -1476,6 +1476,11 @@ String _adviceText(ProgramAdvice advice) {
       );
     case 'split':
       return a.split(stage: advice.params['stage'] ?? '');
+    // TACHE 558 : la journee la plus dure est deja coupee au plus court et
+    // reste rouge. On ne conseille plus un decoupage que l'application ne sait
+    // pas faire — on dit ce qu'il en est, et ce que ca implique.
+    case 'splitImpossible':
+      return a.splitImpossible(stage: advice.params['stage'] ?? '');
     case 'rest':
       return a.rest(stages: advice.params['stages'] ?? '');
     case 'restAdvised':

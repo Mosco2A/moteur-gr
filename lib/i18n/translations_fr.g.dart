@@ -436,9 +436,6 @@ class Translations$map$fr {
 	/// fr: 'Hors trace'
 	String get offTrackChip => 'Hors trace';
 
-	/// fr: 'Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.'
-	String get statsPendingNote => 'Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.';
-
 	late final Translations$map$guide$fr guide = Translations$map$guide$fr.internal(_root);
 
 	/// fr: 'Masquer l'alerte'
@@ -5890,6 +5887,12 @@ class Translations$programme$duration$fr {
 	/// fr: '{total} j (dont {rest} repos)'
 	String get daysWithRest => '{total} j (dont {rest} repos)';
 
+	/// fr: 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d'abord. Le repos, lui, ne change pas la difficulté d'une journée.'
+	String get splitNote => 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d\'abord. Le repos, lui, ne change pas la difficulté d\'une journée.';
+
+	/// fr: 'Toutes les journées sont déjà coupées au plus court : le curseur n'allègera plus le verdict.'
+	String get splitExhausted => 'Toutes les journées sont déjà coupées au plus court : le curseur n\'allègera plus le verdict.';
+
 	late final Translations$programme$duration$difficulty$fr difficulty = Translations$programme$duration$difficulty$fr.internal(_root);
 }
 
@@ -6051,8 +6054,11 @@ class Translations$programme$splitBlocked$fr {
 
 	// Translations
 
-	/// fr: 'Séparer impossible : un seul jour a une étape'
-	String get single => 'Séparer impossible : un seul jour a une étape';
+	/// fr: 'Séparer impossible : ce jour n'a rien à couper.'
+	String get single => 'Séparer impossible : ce jour n\'a rien à couper.';
+
+	/// fr: 'Séparer impossible : cette étape est déjà coupée en deux.'
+	String get portion => 'Séparer impossible : cette étape est déjà coupée en deux.';
 
 	/// fr: 'Jour déjà marché : il ne peut plus être modifié'
 	String get locked => 'Jour déjà marché : il ne peut plus être modifié';
@@ -7005,6 +7011,9 @@ class Translations$feasibility$formula$advice$fr {
 	/// fr: 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.'
 	String split({required Object stage}) => 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.';
 
+	/// fr: 'La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.'
+	String splitImpossible({required Object stage}) => 'La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n\'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.';
+
 	/// fr: 'Prévois un jour de repos après la journée ${stages}.'
 	String rest({required Object stages}) => 'Prévois un jour de repos après la journée ${stages}.';
 
@@ -7263,8 +7272,8 @@ class Translations$programme$info$mergeSplit$fr {
 	/// fr: 'Regrouper / Séparer'
 	String get title => 'Regrouper / Séparer';
 
-	/// fr: 'Fusionnez ou découpez des étapes selon votre rythme.'
-	String get body => 'Fusionnez ou découpez des étapes selon votre rythme.';
+	/// fr: 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l'alléger, un jour de repos n'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu'il y a de quoi dormir.'
+	String get body => 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l\'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l\'alléger, un jour de repos n\'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu\'il y a de quoi dormir.';
 }
 
 // Path: programme.info.colors
@@ -7528,7 +7537,6 @@ extension on Translations {
 			'map.layersSubtitle' => 'Choisissez les points affichés sur la carte',
 			'map.stageRemaining' => ({required Object km}) => '${km} km restants',
 			'map.offTrackChip' => 'Hors trace',
-			'map.statsPendingNote' => 'Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.',
 			'map.guide.buttonsTitle' => 'Boutons',
 			'map.guide.position' => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l\'application.',
 			'map.guide.track' => 'Le tracé du sentier, dans sa couleur. C\'est lui qui sert de référence à l\'alerte hors trace.',
@@ -7881,9 +7889,9 @@ extension on Translations {
 			'checklist.ui.bagValidatedSnack' => 'Sac valide !',
 			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — vous pouvez modifier votre matériel.',
 			'checklist.ui.missingTitle' => 'Équipement manquant',
+			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			'checklist.ui.missingList' => 'Il manque :',
 			'checklist.ui.understood' => 'Compris',
 			'checklist.ui.validateAnyway' => 'Valider quand même',
@@ -8157,6 +8165,7 @@ extension on Translations {
 			'feasibility.formula.advice.balanced' => 'Répartis les étapes pour lisser l\'effort au fil des jours.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.',
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.',
+			'feasibility.formula.advice.splitImpossible' => ({required Object stage}) => 'La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n\'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
@@ -8675,6 +8684,8 @@ extension on Translations {
 			'programme.duration.label' => 'Nombre de jours',
 			'programme.duration.days' => '{count} j',
 			'programme.duration.daysWithRest' => '{total} j (dont {rest} repos)',
+			'programme.duration.splitNote' => 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d\'abord. Le repos, lui, ne change pas la difficulté d\'une journée.',
+			'programme.duration.splitExhausted' => 'Toutes les journées sont déjà coupées au plus court : le curseur n\'allègera plus le verdict.',
 			'programme.duration.difficulty.comfortable' => 'Confortable',
 			'programme.duration.difficulty.standard' => 'Standard',
 			'programme.duration.difficulty.sporty' => 'Sportif',
@@ -8717,12 +8728,13 @@ extension on Translations {
 			'programme.info.rest.title' => 'Jour de repos',
 			'programme.info.rest.body' => 'Insérez un jour de récupération entre deux étapes.',
 			'programme.info.mergeSplit.title' => 'Regrouper / Séparer',
-			'programme.info.mergeSplit.body' => 'Fusionnez ou découpez des étapes selon votre rythme.',
+			'programme.info.mergeSplit.body' => 'Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l\'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l\'alléger, un jour de repos n\'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu\'il y a de quoi dormir.',
 			'programme.info.colors.title' => 'Couleurs',
 			'programme.info.colors.body' => 'Vert = facile, Orange = moyen, Rouge = difficile (distance + dénivelé).',
 			'programme.info.note' => 'Le profil altimétrique en bas visualise le dénivelé de chaque jour.',
 			'programme.info.close' => 'Compris !',
-			'programme.splitBlocked.single' => 'Séparer impossible : un seul jour a une étape',
+			'programme.splitBlocked.single' => 'Séparer impossible : ce jour n\'a rien à couper.',
+			'programme.splitBlocked.portion' => 'Séparer impossible : cette étape est déjà coupée en deux.',
 			'programme.splitBlocked.locked' => 'Jour déjà marché : il ne peut plus être modifié',
 			'programme.reorderBlocked' => 'Rando démarrée : l\'ordre des étapes ne change plus',
 			'programme.inTrek.title' => 'Adapter l\'itinéraire',
@@ -8906,11 +8918,11 @@ extension on Translations {
 			'summary.share.elevationGain' => ({required Object m}) => 'D+ total : ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'D- total : ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Durée estimée : ~${h} h',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Du ${start} au ${end}',
 			'summary.share.planning' => '--- Planning jour par jour ---',
 			'summary.share.dayRest' => ({required Object n}) => 'J${n} : Repos',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'J${n} : ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Planifié avec ${name}',
 			'summary.empty.title' => 'Configurez d\'abord votre itinéraire',

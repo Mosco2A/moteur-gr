@@ -256,7 +256,6 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get layersSubtitle => 'Wählen Sie, was auf der Karte angezeigt wird';
 	@override String stageRemaining({required Object km}) => 'Noch ${km} km';
 	@override String get offTrackChip => 'Abseits';
-	@override String get statsPendingNote => 'Die Striche füllen sich, sobald Sie die Wanderung starten: diese Werte werden im Gehen gemessen.';
 	@override late final _Translations$map$guide$de guide = _Translations$map$guide$de._(_root);
 	@override String get supplyDismiss => 'Hinweis ausblenden';
 }
@@ -2886,6 +2885,8 @@ class _Translations$programme$duration$de extends Translations$programme$duratio
 	@override String get label => 'Anzahl der Tage';
 	@override String get days => '{count} T';
 	@override String get daysWithRest => '{total} T (davon {rest} Ruhe)';
+	@override String get splitNote => 'Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.';
+	@override String get splitExhausted => 'Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.';
 	@override late final _Translations$programme$duration$difficulty$de difficulty = _Translations$programme$duration$difficulty$de._(_root);
 }
 
@@ -2991,7 +2992,8 @@ class _Translations$programme$splitBlocked$de extends Translations$programme$spl
 	final TranslationsDe _root; // ignore: unused_field
 
 	// Translations
-	@override String get single => 'Teilen nicht möglich: nur eine Etappe an diesem Tag';
+	@override String get single => 'Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.';
+	@override String get portion => 'Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.';
 	@override String get locked => 'Tag bereits gelaufen: nicht mehr änderbar';
 }
 
@@ -3580,6 +3582,7 @@ class _Translations$feasibility$formula$advice$de extends Translations$feasibili
 	@override String get balanced => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.';
 	@override String optimalDays({required Object days, required Object current}) => 'Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.';
 	@override String split({required Object stage}) => 'Teile Tag ${stage} in zwei: Er überschreitet deutlich deine Obergrenze.';
+	@override String splitImpossible({required Object stage}) => 'Tag ${stage} liegt auch zweigeteilt über Ihren Möglichkeiten, und kürzer lässt er sich nicht teilen: Das ist keine Frage der Planung mehr. Trainieren Sie, warten Sie auf mildere Bedingungen, oder wählen Sie einen leichteren Weg.';
 	@override String rest({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages}.';
 	@override String training({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).';
 	@override String restAdvised({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.';
@@ -3762,7 +3765,7 @@ class _Translations$programme$info$mergeSplit$de extends Translations$programme$
 
 	// Translations
 	@override String get title => 'Zusammenlegen / Aufteilen';
-	@override String get body => 'Fassen Sie Etappen zusammen oder teilen Sie sie nach Ihrem Tempo.';
+	@override String get body => 'Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt.';
 }
 
 // Path: programme.info.colors
@@ -4001,7 +4004,6 @@ extension on TranslationsDe {
 			'map.layersSubtitle' => 'Wählen Sie, was auf der Karte angezeigt wird',
 			'map.stageRemaining' => ({required Object km}) => 'Noch ${km} km',
 			'map.offTrackChip' => 'Abseits',
-			'map.statsPendingNote' => 'Die Striche füllen sich, sobald Sie die Wanderung starten: diese Werte werden im Gehen gemessen.',
 			'map.guide.buttonsTitle' => 'Schaltflächen',
 			'map.guide.position' => 'Ihre GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfen Sie, ob die Ortung für die App erlaubt ist.',
 			'map.guide.track' => 'Die Linie des Wegs, in seiner Farbe. Sie ist die Referenz für die Warnung bei Abweichung.',
@@ -4354,9 +4356,9 @@ extension on TranslationsDe {
 			'checklist.ui.bagValidatedSnack' => 'Rucksack bestätigt!',
 			'checklist.ui.validationCancelledSnack' => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.',
 			'checklist.ui.missingTitle' => 'Fehlende Ausrüstung',
+			'checklist.ui.missingBody' => '{checked}/{total} Pflichtartikel angehakt.',
 			_ => null,
 		} ?? switch (path) {
-			'checklist.ui.missingBody' => '{checked}/{total} Pflichtartikel angehakt.',
 			'checklist.ui.missingList' => 'Es fehlt:',
 			'checklist.ui.understood' => 'Verstanden',
 			'checklist.ui.validateAnyway' => 'Trotzdem bestätigen',
@@ -4630,6 +4632,7 @@ extension on TranslationsDe {
 			'feasibility.formula.advice.balanced' => 'Verteile die Etappen, um den Aufwand über die Tage zu glätten.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.',
 			'feasibility.formula.advice.split' => ({required Object stage}) => 'Teile Tag ${stage} in zwei: Er überschreitet deutlich deine Obergrenze.',
+			'feasibility.formula.advice.splitImpossible' => ({required Object stage}) => 'Tag ${stage} liegt auch zweigeteilt über Ihren Möglichkeiten, und kürzer lässt er sich nicht teilen: Das ist keine Frage der Planung mehr. Trainieren Sie, warten Sie auf mildere Bedingungen, oder wählen Sie einen leichteren Weg.',
 			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plane einen Ruhetag nach Tag ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).',
 			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.',
@@ -5148,6 +5151,8 @@ extension on TranslationsDe {
 			'programme.duration.label' => 'Anzahl der Tage',
 			'programme.duration.days' => '{count} T',
 			'programme.duration.daysWithRest' => '{total} T (davon {rest} Ruhe)',
+			'programme.duration.splitNote' => 'Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.',
+			'programme.duration.splitExhausted' => 'Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.',
 			'programme.duration.difficulty.comfortable' => 'Gemütlich',
 			'programme.duration.difficulty.standard' => 'Standard',
 			'programme.duration.difficulty.sporty' => 'Sportlich',
@@ -5190,12 +5195,13 @@ extension on TranslationsDe {
 			'programme.info.rest.title' => 'Ruhetag',
 			'programme.info.rest.body' => 'Fügen Sie einen Erholungstag zwischen zwei Etappen ein.',
 			'programme.info.mergeSplit.title' => 'Zusammenlegen / Aufteilen',
-			'programme.info.mergeSplit.body' => 'Fassen Sie Etappen zusammen oder teilen Sie sie nach Ihrem Tempo.',
+			'programme.info.mergeSplit.body' => 'Zusammenlegen verbindet zwei Tage zu einem; Teilen schneidet einen Tag in zwei — seine Etappen, wenn sie zusammengelegt waren, sonst die Etappe selbst in zwei Hälften gleicher Anstrengung. Das Urteil richtet sich nach Ihrem härtesten Tag: ihn zu teilen ist der einzige Weg, ihn zu entlasten, ein Ruhetag ändert daran nichts. Eine geteilte Etappe setzt einen Halt auf halber Strecke voraus: prüfen Sie, ob es dort eine Schlafmöglichkeit gibt.',
 			'programme.info.colors.title' => 'Farben',
 			'programme.info.colors.body' => 'Grün = leicht, Orange = mittel, Rot = schwer (Distanz + Aufstieg).',
 			'programme.info.note' => 'Das Höhenprofil unten zeigt den Aufstieg jedes Tages.',
 			'programme.info.close' => 'Verstanden!',
-			'programme.splitBlocked.single' => 'Teilen nicht möglich: nur eine Etappe an diesem Tag',
+			'programme.splitBlocked.single' => 'Teilen nicht möglich: An diesem Tag gibt es nichts zu teilen.',
+			'programme.splitBlocked.portion' => 'Teilen nicht möglich: Diese Etappe ist bereits zweigeteilt.',
 			'programme.splitBlocked.locked' => 'Tag bereits gelaufen: nicht mehr änderbar',
 			'programme.reorderBlocked' => 'Tour gestartet: die Reihenfolge der Etappen ändert sich nicht mehr',
 			'programme.inTrek.title' => 'Route anpassen',
@@ -5379,11 +5385,11 @@ extension on TranslationsDe {
 			'summary.share.elevationGain' => ({required Object m}) => 'Aufstieg gesamt: ${m} m',
 			'summary.share.elevationLoss' => ({required Object m}) => 'Abstieg gesamt: ${m} m',
 			'summary.share.duration' => ({required Object h}) => 'Geschätzte Zeit: ~${h} h',
+			_ => null,
+		} ?? switch (path) {
 			'summary.share.dates' => ({required Object start, required Object end}) => 'Vom ${start} bis ${end}',
 			'summary.share.planning' => '--- Tagesplan ---',
 			'summary.share.dayRest' => ({required Object n}) => 'T${n}: Ruhetag',
-			_ => null,
-		} ?? switch (path) {
 			'summary.share.dayStages' => ({required Object n, required Object stages}) => 'T${n}: ${stages}',
 			'summary.share.footer' => ({required Object name}) => 'Geplant mit ${name}',
 			'summary.empty.title' => 'Richten Sie zuerst Ihre Route ein',

@@ -87,7 +87,14 @@ void main() {
       expect(notifier.lockedDayCount, 0, reason: 'rien de fait, rien de fige');
       expect(notifier.canReorder, isTrue,
           reason: 'en preparation on peut encore tout reorganiser');
-      expect(notifier.canSplit(0), isFalse, reason: 'jour mono-etape');
+      // TACHE 558 : un jour mono-etape SE SEPARE desormais — l'etape entiere se
+      // coupe en deux portions de meme energie. C'etait le defaut mesure par la
+      // campagne personas : « Separer » etait mort sur la journee la plus dure
+      // du sentier, celle qui ne porte qu'UNE etape, alors que l'application
+      // conseillait precisement de la couper. « Entierement editable » veut donc
+      // dire un cran de plus qu'avant.
+      expect(notifier.canSplit(0), isTrue,
+          reason: 'un jour mono-etape se coupe en deux demi-journees');
       expect(notifier.canMergeWithNext(0), isTrue);
 
       // Non-regression du flux amont : la reorganisation fonctionne toujours.

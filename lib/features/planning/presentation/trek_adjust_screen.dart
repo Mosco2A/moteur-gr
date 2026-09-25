@@ -384,9 +384,13 @@ class _AdjustDayCard extends StatelessWidget {
     }
   }
 
-  String _splitLabel() => splitBlockedReason == 'locked'
-      ? t.programme.splitBlocked.locked
-      : t.programme.splitBlocked.single;
+  /// `portion` : tache 558 — une etape deja coupee en deux ne se recoupe pas,
+  /// et ce n'est pas la meme chose que « rien a couper ».
+  String _splitLabel() => switch (splitBlockedReason) {
+        'locked' => t.programme.splitBlocked.locked,
+        'portion' => t.programme.splitBlocked.portion,
+        _ => t.programme.splitBlocked.single,
+      };
 
   void _blocked(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(

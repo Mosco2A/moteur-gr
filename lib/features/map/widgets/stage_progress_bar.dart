@@ -32,6 +32,18 @@ import '../../../i18n/translations.g.dart';
 /// correctif L5-6 est INTACTE — on n'affiche jamais un zéro qui aurait l'air
 /// mesuré ; un tiret dit « pas encore », ce qui est la vérité. Le défaut reste
 /// `false` : en randonnée réelle, la barre garde son comportement d'origine.
+///
+/// TÂCHE 558 — LA FORME GR20. Chris tranche l'aspect, mot pour mot : « respecte
+/// la FORME GR20 pour cet ecran! ». Les six chiffres étaient posés à plat dans
+/// un [Wrap], icône et texte alignés sur une ligne, en petit. Ils occupent
+/// désormais SIX CASES SUR DEUX LIGNES centrées, grosses icônes, valeur en gras
+/// puis libellé — la disposition de `_buildBottomInfoBar` de la navigation de
+/// référence. Rien n'est ajouté ni retiré : ce sont les mêmes six chiffres,
+/// avec les mêmes règles d'absence.
+///
+/// La phrase qui expliquait les tirets a été SUPPRIMÉE avec sa clé i18n (retour
+/// Chris : « enleve dans randonnee le laius sur les tiret »). [footer] reste,
+/// pour une ligne d'action, mais plus personne ne s'en sert pour commenter.
 class StageProgressBar extends StatelessWidget {
   const StageProgressBar({
     super.key,
@@ -228,71 +240,75 @@ class StageProgressBar extends StatelessWidget {
             ],
           ),
 
-          // Seconde ligne : chiffres MESURÉS (L6-2). Informative uniquement.
+          // Les SIX chiffres, FORME GR20 (tache 558). Informatifs uniquement.
           if (_hasMeasuredLine) ...[
             const SizedBox(height: AppTheme.spacingSm),
             const Divider(height: 1),
             const SizedBox(height: AppTheme.spacingSm),
             IgnorePointer(
-              child: Wrap(
-                spacing: AppTheme.spacingBase,
-                runSpacing: AppTheme.spacingXs,
-                alignment: WrapAlignment.spaceBetween,
+              child: Column(
                 children: [
-                  if (_shows(totalDistanceKm))
-                    _MeasuredStat(
-                      icon: Icons.straighten,
-                      label: t.tracking.total,
-                      value: _valueOrPending(
-                        totalDistanceKm == null
-                            ? null
-                            : '${totalDistanceKm!.toStringAsFixed(1)} km',
+                  // Ligne 1 — CE QUI AVANCE : total du sentier, parcouru,
+                  // vitesse moyenne.
+                  _StatRow(children: [
+                    if (_shows(totalDistanceKm))
+                      _MeasuredStat(
+                        icon: Icons.straighten,
+                        label: t.tracking.total,
+                        value: _valueOrPending(
+                          totalDistanceKm == null
+                              ? null
+                              : '${totalDistanceKm!.toStringAsFixed(1)} km',
+                        ),
                       ),
-                    ),
-                  if (_shows(distanceCoveredKm))
-                    _MeasuredStat(
-                      icon: Icons.directions_walk,
-                      label: t.tracking.covered,
-                      value: _valueOrPending(
-                        distanceCoveredKm == null
-                            ? null
-                            : '${distanceCoveredKm!.toStringAsFixed(1)} km',
+                    if (_shows(distanceCoveredKm))
+                      _MeasuredStat(
+                        icon: Icons.directions_walk,
+                        label: t.tracking.covered,
+                        value: _valueOrPending(
+                          distanceCoveredKm == null
+                              ? null
+                              : '${distanceCoveredKm!.toStringAsFixed(1)} km',
+                        ),
                       ),
-                    ),
-                  if (_shows(elevationGainM))
-                    _MeasuredStat(
-                      icon: Icons.trending_up,
-                      label: t.tracking.dPlus,
-                      value: _valueOrPending(
-                        elevationGainM == null ? null : '$elevationGainM m',
+                    if (_shows(avgSpeedKmh))
+                      _MeasuredStat(
+                        icon: Icons.speed,
+                        label: t.tracking.avgSpeed,
+                        value: _valueOrPending(
+                          avgSpeedKmh == null
+                              ? null
+                              : '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
+                        ),
                       ),
-                    ),
-                  if (_shows(elevationLossM))
-                    _MeasuredStat(
-                      icon: Icons.trending_down,
-                      label: t.tracking.dMinus,
-                      value: _valueOrPending(
-                        elevationLossM == null ? null : '$elevationLossM m',
+                  ]),
+                  // Ligne 2 — LE RELIEF : D+, D-, altitude.
+                  _StatRow(children: [
+                    if (_shows(elevationGainM))
+                      _MeasuredStat(
+                        icon: Icons.trending_up,
+                        label: t.tracking.dPlus,
+                        value: _valueOrPending(
+                          elevationGainM == null ? null : '$elevationGainM m',
+                        ),
                       ),
-                    ),
-                  if (_shows(avgSpeedKmh))
-                    _MeasuredStat(
-                      icon: Icons.speed,
-                      label: t.tracking.avgSpeed,
-                      value: _valueOrPending(
-                        avgSpeedKmh == null
-                            ? null
-                            : '${avgSpeedKmh!.toStringAsFixed(1)} km/h',
+                    if (_shows(elevationLossM))
+                      _MeasuredStat(
+                        icon: Icons.trending_down,
+                        label: t.tracking.dMinus,
+                        value: _valueOrPending(
+                          elevationLossM == null ? null : '$elevationLossM m',
+                        ),
                       ),
-                    ),
-                  if (_shows(altitudeM))
-                    _MeasuredStat(
-                      icon: Icons.terrain,
-                      label: t.tracking.altitude,
-                      value: _valueOrPending(
-                        altitudeM == null ? null : '${altitudeM!.round()} m',
+                    if (_shows(altitudeM))
+                      _MeasuredStat(
+                        icon: Icons.terrain,
+                        label: t.tracking.altitude,
+                        value: _valueOrPending(
+                          altitudeM == null ? null : '${altitudeM!.round()} m',
+                        ),
                       ),
-                    ),
+                  ]),
                 ],
               ),
             ),
@@ -310,7 +326,42 @@ class StageProgressBar extends StatelessWidget {
   }
 }
 
-/// Une valeur mesurée de la seconde ligne : icône, chiffre, libellé (L6-2).
+/// Une LIGNE de trois chiffres, repartis a egalite (tache 558).
+///
+/// Ne se rend PAS quand elle n'a rien a montrer : une ligne vide laisserait un
+/// blanc au milieu de la barre. Chaque case occupe le tiers de la largeur — le
+/// libelle se replie donc sur deux lignes au lieu de deborder ou d'etre coupe,
+/// ce qui compte d'autant plus que les cinq langues n'ont pas la meme longueur
+/// de mots (« Vitesse moy. » / « Durchschn. Geschw. »).
+class _StatRow extends StatelessWidget {
+  const _StatRow({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    if (children.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppTheme.spacingXs),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (final child in children) Expanded(child: child),
+        ],
+      ),
+    );
+  }
+}
+
+/// Une valeur mesurée : icône, chiffre, libellé — FORME GR20 (tâche 558).
+///
+/// Retour de Chris, mot pour mot : « respecte la FORME GR20 pour cet ecran! ».
+/// Les six chiffres tenaient dans un [Wrap] a plat, icône et texte sur la même
+/// ligne, en petit — la navigation de référence les pose en SIX CASES SUR DEUX
+/// LIGNES centrées (`_buildStatItem` : colonne, grosse icône 28 px, valeur en
+/// gras dessous, libellé plus discret en dernier). On reprend cette forme :
+/// c'est la disposition que Chris a tranchée, et elle se lit d'un coup d'œil en
+/// marchant, ce qu'une ligne de six petites mentions ne permet pas.
 class _MeasuredStat extends StatelessWidget {
   const _MeasuredStat({
     required this.icon,
@@ -328,21 +379,25 @@ class _MeasuredStat extends StatelessWidget {
     return Semantics(
       label: '$label $value',
       excludeSemantics: true,
-      child: Row(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: AppTheme.grisTexteSecondaire),
-          const SizedBox(width: 4),
+          // Grosse icône (parité GR20 : 28 px), dans la couleur d'accent du
+          // sentier plutôt qu'en gris : c'est le repère qu'on attrape en
+          // premier sur un écran de terrain.
+          Icon(icon, size: 28, color: theme.colorScheme.primary),
+          const SizedBox(height: 2),
           Text(
             value,
-            style: theme.textTheme.labelMedium?.copyWith(
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(width: 4),
           Text(
             label,
-            style: theme.textTheme.labelSmall?.copyWith(
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
               color: AppTheme.grisTexteSecondaire,
             ),
           ),

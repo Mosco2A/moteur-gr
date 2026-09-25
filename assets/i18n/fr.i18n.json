@@ -181,7 +181,6 @@
     "layersSubtitle": "Choisissez les points affichés sur la carte",
     "stageRemaining": "$km km restants",
     "offTrackChip": "Hors trace",
-    "statsPendingNote": "Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.",
     "guide": {
       "buttonsTitle": "Boutons",
       "position": "Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l'application.",
@@ -904,6 +903,7 @@
         "balanced": "Répartis les étapes pour lisser l'effort au fil des jours.",
         "optimalDays": "Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.",
         "split": "Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.",
+        "splitImpossible": "La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.",
         "rest": "Prévois un jour de repos après la journée ${stages}.",
         "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique).",
         "restAdvised": "Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict."
@@ -1573,6 +1573,8 @@
       "label": "Nombre de jours",
       "days": "{count} j",
       "daysWithRest": "{total} j (dont {rest} repos)",
+      "splitNote": "Plus de jours = les journées les plus dures sont coupées en deux, la pire d'abord. Le repos, lui, ne change pas la difficulté d'une journée.",
+      "splitExhausted": "Toutes les journées sont déjà coupées au plus court : le curseur n'allègera plus le verdict.",
       "difficulty": {
         "comfortable": "Confortable",
         "standard": "Standard",
@@ -1638,7 +1640,7 @@
       },
       "mergeSplit": {
         "title": "Regrouper / Séparer",
-        "body": "Fusionnez ou découpez des étapes selon votre rythme."
+        "body": "Regrouper réunit deux jours en un ; Séparer coupe un jour en deux — ses étapes si elles étaient réunies, sinon l'étape elle-même en deux moitiés de même effort. Le verdict se règle sur votre journée la plus dure : la couper est le seul moyen de l'alléger, un jour de repos n'y change rien. Une étape coupée suppose un arrêt à mi-parcours : vérifiez qu'il y a de quoi dormir."
       },
       "colors": {
         "title": "Couleurs",
@@ -1648,7 +1650,8 @@
       "close": "Compris !"
     },
     "splitBlocked": {
-      "single": "Séparer impossible : un seul jour a une étape",
+      "single": "Séparer impossible : ce jour n'a rien à couper.",
+      "portion": "Séparer impossible : cette étape est déjà coupée en deux.",
       "locked": "Jour déjà marché : il ne peut plus être modifié"
     },
     "reorderBlocked": "Rando démarrée : l'ordre des étapes ne change plus",

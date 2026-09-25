@@ -194,7 +194,21 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
         secondaryColor: Color(config.secondaryColorValue),
         skin: skin,
       ),
-      themeMode: ThemeMode.dark,
+      // LE MODE SOMBRE / CLAIR SUIT ENFIN LE REGLAGE (tache 558).
+      //
+      // Retour de Chris, mot pour mot : « sombrer clair ca ne fonctionne pas ».
+      // Cette ligne valait `ThemeMode.dark` EN DUR. Tout le reste du chemin
+      // existait pourtant en entier : les trois choix dans les Reglages, la
+      // persistance du choix, le theme clair construit et passe juste au-dessus.
+      // Le randonneur choisissait « Clair », le choix etait enregistre, survivait
+      // au redemarrage — et l'ecran restait sombre. Un seul fil manquait.
+      //
+      // `select` sur le seul champ `themeMode` : changer de langue ou d'unite ne
+      // reconstruit pas la MaterialApp pour autant. `system` suit le telephone,
+      // et le defaut du produit reste sombre.
+      themeMode: AppThemeModeValues.toThemeMode(
+        ref.watch(settingsProvider.select((s) => s.themeMode)),
+      ),
       routerConfig: appRouter,
       // PARITE GR20 — LOT 1 (#99423 §4.1) : porte d'amorce. Le `builder` de
       // MaterialApp.router enveloppe TOUT ecran route -> le seed du sentier

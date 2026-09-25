@@ -173,18 +173,26 @@ void main() {
     expect(merge.style?.color, isNot(AppTheme.bleuRepos),
         reason: 'le chip ne doit plus porter un bleu etranger au sentier');
 
-    // 2) Chip INDISPONIBLE (« Separer » sur un jour mono-etape) = gris LISIBLE
-    //    sur fond sombre. Regression R1 : `grisGranite` (~2.6:1 en sombre),
-    //    qui plus est a 47 % d'opacite, etait illisible.
-    final split =
-        tester.widget<Text>(find.text(t.programme.actions.split).first);
-    expect(split.style?.color, AppTheme.grisTexteSecondaire);
-    expect(split.style?.color, isNot(AppTheme.grisGranite));
-    expect(split.style?.color?.a, 1.0,
+    // 2) Chip INDISPONIBLE = gris LISIBLE sur fond sombre. Regression R1 :
+    //    `grisGranite` (~2,6:1 en sombre), qui plus est a 47 % d'opacite,
+    //    etait illisible.
+    //
+    //    LE CHIP TEMOIN A CHANGE (tache 558), pas la regle testee. Ce test
+    //    lisait « Separer » sur un jour mono-etape : c'etait alors le cas
+    //    d'indisponibilite le plus simple a produire. Depuis la tache 558, un
+    //    jour mono-etape SE SEPARE (l'etape se coupe en deux portions de meme
+    //    energie), donc ce chip est desormais ACTIF. On prend donc l'autre cas
+    //    d'indisponibilite structurelle, aussi stable que le precedent :
+    //    « Regrouper » sur le DERNIER jour, qui n'a aucun jour suivant.
+    final mergeLast =
+        tester.widget<Text>(find.text(t.programme.actions.merge).last);
+    expect(mergeLast.style?.color, AppTheme.grisTexteSecondaire);
+    expect(mergeLast.style?.color, isNot(AppTheme.grisGranite));
+    expect(mergeLast.style?.color?.a, 1.0,
         reason: 'un chip desactive s aplatit, il ne devient pas transparent');
 
     // 3) ... et il reste bien DISTINCT du chip actif : l'etat se lit.
-    expect(split.style?.color, isNot(merge.style?.color));
+    expect(mergeLast.style?.color, isNot(merge.style?.color));
   });
 
   testWidgets('tout marche : plus rien a adapter, message explicite',

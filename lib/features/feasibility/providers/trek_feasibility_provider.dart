@@ -6,6 +6,7 @@ import '../../../core/models/stage.dart';
 import '../../checklist/domain/season.dart';
 import '../../map/providers/gpx_track_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
+import '../../planning/domain/planning_calculator.dart';
 import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/providers/gps_providers.dart';
@@ -330,10 +331,23 @@ class FeasibilityProgram {
   /// regroupe n'y compte que pour une charge.
   final Set<int> restAfterDayIndex;
 
-  /// Nombre d'etapes portees par ce decoupage — PLAFOND du nombre de jours de
-  /// marche atteignable : une etape ne se coupe pas en deux dans le programme,
-  /// donc on ne conseille jamais plus de jours de marche que d'etapes.
+  /// Nombre d'etapes DISTINCTES portees par ce decoupage.
+  ///
+  /// TACHE 558 : une etape PEUT desormais se couper en deux demi-journees, donc
+  /// elle peut apparaitre sur deux jours de marche — elle ne compte ici qu'une
+  /// fois. Le plafond du conseil n'est plus ce nombre mais [maxWalkingDays].
   final int stageCount;
+
+  /// PLAFOND du nombre de jours de marche REELLEMENT atteignable (tache 558).
+  ///
+  /// Avant : le nombre d'etapes, parce qu'« une etape ne se coupe pas en deux
+  /// dans le programme ». Elle se coupe desormais, jusqu'a
+  /// [PlanningCalculator.maxDaysPerStage] journees — le conseil peut donc
+  /// proposer d'etaler au-dela du nombre d'etapes, et le curseur du Programme
+  /// sait l'atteindre. Un conseil inapplicable reste interdit : le plafond ne
+  /// depasse jamais ce que le decoupage permet.
+  int get maxWalkingDays =>
+      PlanningCalculator.maxWalkingDaysFor(stageCount);
 
   /// Vrai si la source est le PROGRAMME du randonneur, faux si c'est le repli
   /// sur les etapes brutes du sentier.
@@ -365,14 +379,16 @@ final feasibilityProgramProvider =
 
   final efforts = <StageEffort>[];
   final restAfterDay = <int>{};
-  var stageCount = 0;
+  // Etapes DISTINCTES : une etape coupee en deux demi-journees compte pour UNE
+  // (tache 558). Sinon le plafond du conseil doublerait a chaque decoupage.
+  final stageNumbers = <int>{};
   for (final day in days) {
     if (day.isRestDay || day.stages.isEmpty) {
       // Aucun repos « avant la premiere journee » : il ne repose de rien.
       if (efforts.isNotEmpty) restAfterDay.add(efforts.length - 1);
       continue;
     }
-    stageCount += day.stages.length;
+    stageNumbers.addAll(day.stages.map((s) => s.stageNumber));
     efforts.add(StageEffort(
       index: efforts.length,
       // Le nom de la JOURNEE : celui de son etape, ou les deux noms quand elle
@@ -390,7 +406,7 @@ final feasibilityProgramProvider =
     return FeasibilityProgram(
       dayEfforts: efforts,
       restAfterDayIndex: restAfterDay,
-      stageCount: stageCount,
+      stageCount: stageNumbers.length,
       fromProgram: true,
     );
   }
@@ -427,10 +443,11 @@ final feasibilityAssessmentProvider =
   return FeasibilityFormula.evaluate(
     stages: program.dayEfforts,
     level: level,
-    // PLAFOND DU CONSEIL : jamais plus de jours de marche qu'il n'y a d'etapes.
-    // Sans cette borne, l'ecran pouvait conseiller un nombre de jours que le
-    // curseur du Programme ne sait pas atteindre — un conseil inapplicable.
-    maxWalkingDays: program.stageCount,
+    // PLAFOND DU CONSEIL : jamais plus de jours de marche que le decoupage
+    // n'en permet — deux journees par etape depuis la tache 558. Sans cette
+    // borne, l'ecran pouvait conseiller un nombre de jours que le curseur du
+    // Programme ne sait pas atteindre — un conseil inapplicable.
+    maxWalkingDays: program.maxWalkingDays,
     // Plancher demontre (#2-g) : on ne dit jamais a quelqu'un qu'il ne peut
     // pas faire ce qu'il a deja demontre faire.
     demonstratedFloorEnergyKm: objective.maxDailyEnergyKmDone,

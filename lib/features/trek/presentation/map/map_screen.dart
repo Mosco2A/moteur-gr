@@ -19,6 +19,7 @@ import '../../../../i18n/translations.g.dart';
 import '../../../../shared/widgets/paywall_sheet.dart';
 import '../../../journal/data/photo_service.dart';
 import '../../../journal/providers/journal_providers.dart';
+import '../../../map/domain/stage_focus.dart';
 import '../../../map/providers/gpx_track_provider.dart';
 import '../../../map/providers/location_provider.dart';
 import '../../../map/providers/map_pois_provider.dart';
@@ -34,6 +35,7 @@ import '../../../map/widgets/poi_popup.dart';
 import '../../../map/widgets/stage_poi_checklist.dart';
 import '../../../map/widgets/stage_progress_bar.dart';
 import '../../../safety/presentation/sos_button.dart';
+import '../../../trail/providers/progress_provider.dart';
 import '../../../trail/providers/stages_provider.dart';
 import '../../domain/models/stage.dart';
 import '../../providers/gps_providers.dart';
@@ -221,6 +223,14 @@ class _MapContent extends StatefulWidget {
 class _MapContentState extends State<_MapContent> {
   int _currentZoom = 10;
 
+  /// Vrai une fois la carte cadree sur l'etape (tache 558).
+  ///
+  /// UNE SEULE FOIS, et c'est le point important : les etapes arrivent en
+  /// asynchrone, donc le cadrage peut devoir attendre un tour. Passe ce
+  /// premier cadrage, la carte appartient au randonneur — un recadrage
+  /// automatique lui arracherait la carte des mains pendant qu'il la deplace.
+  bool _stageFramed = false;
+
   /// Calcule la bounding box englobant tous les points du trace.
   LatLngBounds _boundsFromPoints(List<TrackPoint> points) {
     var minLat = points.first.lat;
@@ -354,12 +364,54 @@ class _MapContentState extends State<_MapContent> {
                 .map((tp) => LatLng(tp.lat, tp.lng))
                 .toList(growable: false);
 
+            // --- CADRAGE D'OUVERTURE (tache 558) ---
+            //
+            // Chris, mot pour mot : « Je veux etre a la premiere etape et voir
+            // le sentier !!! ». La carte s'ouvrait sur le sentier ENTIER : a
+            // cette echelle le trace tient dans un fil de quelques pixels et on
+            // n'est nulle part. Elle s'ouvre desormais sur l'etape COURANTE
+            // quand la base en connait une (`currentStage`, enfin lue), sur la
+            // PREMIERE sinon — et sur son TRONCON DE TRACE, donc le sentier est
+            // visible, pas devine.
+            //
+            // REPLI EXPLICITE : sans etape chargee ou sans troncon exploitable,
+            // on garde le cadrage sur le sentier entier. Jamais de cadrage sur
+            // une donnee absente.
+            final stages = ref.watch(
+              stagesProvider(widget.trailId).select((async) => async.value),
+            );
+            final focusStage = mapFocusStage(
+              stages,
+              ref.watch(currentStageNumberProvider(widget.trailId)),
+            );
+            final segment = focusStage == null
+                ? const <TrackPoint>[]
+                : stageTrackSegment(widget.rawPoints, focusStage);
+            final focusBounds =
+                segment.isEmpty ? null : _boundsFromPoints(segment);
+
+            // Les etapes arrivent apres le trace : si le cadrage d'etape n'est
+            // connu qu'au deuxieme build, `initialCameraFit` est deja passe. On
+            // le rejoue UNE fois, hors phase de build.
+            if (focusBounds != null && !_stageFramed) {
+              _stageFramed = true;
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (!mounted) return;
+                mapController.fitCamera(
+                  CameraFit.bounds(
+                    bounds: focusBounds,
+                    padding: const EdgeInsets.all(48),
+                  ),
+                );
+              });
+            }
+
             return FlutterMap(
               mapController: mapController,
               options: MapOptions(
                 initialCameraFit: CameraFit.bounds(
-                  bounds: bounds,
-                  padding: const EdgeInsets.all(32),
+                  bounds: focusBounds ?? bounds,
+                  padding: EdgeInsets.all(focusBounds == null ? 32 : 48),
                 ),
                 onPositionChanged: (camera, hasGesture) {
                   final newZoom = camera.zoom.round();
@@ -902,23 +954,23 @@ class _ActiveStageBar extends ConsumerWidget {
 ///    depart), un tiret sinon.
 ///
 /// CE QU'ELLE NE PRETEND PAS : elle ne dit pas ou se trouve le marcheur. Elle
-/// nomme la premiere etape parce que c'est le point de depart connu du
-/// programme ; des que la projection GPS repond, l'etape DETECTEE prend le
-/// relais ([_ActiveStageBar]). Il n'existe a ce jour aucune source persistee de
-/// l'etape courante hors trek (la colonne `currentStage` de la table de
-/// progression n'est lue par aucun provider) : la brancher serait un travail de
-/// couche de donnees, hors de ce lot d'ecrans.
+/// nomme l'etape COURANTE quand la base en connait une (tache 558 : la colonne
+/// `currentStage`, ecrite depuis toujours par le suivi de trek, est enfin LUE —
+/// cf. [currentStageNumberProvider]), et la PREMIERE sinon, parce que c'est le
+/// point de depart connu du programme. Des que la projection GPS repond,
+/// l'etape DETECTEE prend le relais ([_ActiveStageBar]).
 class _PlannedStageBar extends ConsumerWidget {
   const _PlannedStageBar();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
     final stages = ref.watch(
       stagesProvider(trailId).select((async) => async.value),
     );
-    final stage = (stages == null || stages.isEmpty) ? null : stages.first;
+    // ETAPE COURANTE SI LA BASE EN CONNAIT UNE, PREMIERE ETAPE SINON.
+    final currentNumber = ref.watch(currentStageNumberProvider(trailId));
+    final stage = mapFocusStage(stages, currentNumber);
     final totalKm = ref.watch(
       trailConfigProvider.select((c) => c.totalDistanceKm),
     );
@@ -947,36 +999,13 @@ class _PlannedStageBar extends ConsumerWidget {
       avgSpeedKmh: null,
       altitudeM: ref.watch(currentAltitudeProvider),
       showPendingValues: true,
-      footer: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icone de MARCHE et non un (i) : le (i) de l'en-tete ouvre le guide
-          // de la carte, deux sens differents ne partagent pas un signe.
-          Icon(
-            Icons.hiking,
-            size: 16,
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
-          const SizedBox(width: AppTheme.spacingXs),
-          Expanded(
-            child: Text(
-              // PHRASE DEDIEE A LA BARRE D'ATTENTE (branchee tache 557). Elle
-              // lisait `t.hub.trekCard.noTrekBody` — la phrase de la carte
-              // d'accueil du HUB, ecrite pour un cockpit qui propose de
-              // DEMARRER une randonnee. Ici la question n'est pas « que
-              // faire » mais « pourquoi trois cases portent un tiret ».
-              // `t.map.statsPendingNote` (creee par la tache 552, cinq
-              // langues) repond exactement a celle-la : les tirets se
-              // rempliront des que la randonnee sera lancee, ces chiffres se
-              // mesurent en marchant.
-              t.map.statsPendingNote,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ),
-        ],
-      ),
+      // LE LAIUS SUR LES TIRETS EST SUPPRIME (tache 558). Retour de Chris, mot
+      // pour mot : « enleve dans randonnee le laius sur les tiret ». La phrase
+      // `map.statsPendingNote` expliquait pourquoi certaines cases portent un
+      // tiret — elle part AVEC SA CLE dans les cinq langues. Un tiret se
+      // comprend seul, et la navigation de reference n'explique pas les siens.
+      // L'acquis du lot 554 reste entier : les six cases sont toujours la, avec
+      // un tiret et jamais un zero sur ce qui exige la marche.
     );
   }
 }
