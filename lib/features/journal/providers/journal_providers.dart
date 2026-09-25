@@ -100,7 +100,14 @@ class JournalScreenNotifier extends Notifier<JournalScreenState> {
 
   @override
   JournalScreenState build() {
-    _repo = ref.read(journalRepositoryProvider);
+    // `watch` SUR LE REPOSITORY (tache 564, LOT M, M1). Avec `read`, ce notifier
+    // ne declarait AUCUNE dependance : invalider le repository — ce que fait
+    // l'effacement art. 17 pour vider la memoire vive — ne le reconstruisait pas,
+    // et le journal restait affiche apres avoir ete efface, alors que le dialogue
+    // d'effacement promet « votre journal » noir sur blanc. Les deux autres
+    // lectures restent en `read` : elles ne portent pas de donnee personnelle et
+    // un `watch` y changerait le comportement de l'ecran.
+    _repo = ref.watch(journalRepositoryProvider);
     _photoService = ref.read(photoServiceProvider);
     _trailId = ref.read(trailIdProvider);
     _loadEntries();

@@ -15,11 +15,18 @@ final hikerProfileProvider =
 
 /// Notifier du profil randonneur.
 class HikerProfileNotifier extends AsyncNotifier<HikerProfile> {
+  /// Repository pour les ECRITURES (hors `build`, ou `watch` est interdit).
   HikerProfileRepository get _repo => ref.read(hikerProfileRepositoryProvider);
 
   @override
   Future<HikerProfile> build() async {
-    return _repo.load();
+    // `watch` ET PAS `read` — TACHE 564 (LOT M, M1). Avec `read`, ce notifier ne
+    // declarait AUCUNE dependance au repository : invalider le repository (ce que
+    // fait l'effacement art. 17 pour vider la memoire vive) ne le reconstruisait
+    // pas, et l'ecran continuait de servir l'instantane d'avant l'effacement.
+    // `watch` dans `build` rend la dependance reelle, donc la cascade
+    // d'invalidation reelle — pour cet ecran et pour tous ceux qui viendront.
+    return ref.watch(hikerProfileRepositoryProvider).load();
   }
 
   /// Enregistre la fiche profil (morpho SENSIBLE, IMC calcule local).
@@ -52,11 +59,15 @@ final pastHikesProvider =
 
 /// Notifier des randos passees.
 class PastHikesNotifier extends AsyncNotifier<List<PastHike>> {
+  /// Repository pour les ECRITURES (hors `build`, ou `watch` est interdit).
   HikerProfileRepository get _repo => ref.read(hikerProfileRepositoryProvider);
 
   @override
   Future<List<PastHike>> build() async {
-    return _repo.loadPastHikes();
+    // `watch` ET PAS `read` : voir [HikerProfileNotifier.build]. C'est
+    // PRECISEMENT ce provider que la campagne personas a vu ressusciter une
+    // randonnee effacee — « Vos 5 dernieres randos » resservait son cache.
+    return ref.watch(hikerProfileRepositoryProvider).loadPastHikes();
   }
 
   /// Remplace la liste complete des randos (plafonnee a 5, la plus recente
@@ -76,11 +87,13 @@ final experienceNoteProvider =
 
 /// Notifier de la note d'experience globale.
 class ExperienceNoteNotifier extends AsyncNotifier<String> {
+  /// Repository pour les ECRITURES (hors `build`, ou `watch` est interdit).
   HikerProfileRepository get _repo => ref.read(hikerProfileRepositoryProvider);
 
   @override
   Future<String> build() async {
-    return _repo.getExperienceNote();
+    // `watch` ET PAS `read` : voir [HikerProfileNotifier.build].
+    return ref.watch(hikerProfileRepositoryProvider).getExperienceNote();
   }
 
   /// Sauvegarde le texte libre global.

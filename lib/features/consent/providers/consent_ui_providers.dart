@@ -15,20 +15,50 @@ import '../../feasibility/providers/hiker_profile_provider.dart';
 /// Etat de consentement de TOUTES les finalites (lecture reactive).
 ///
 /// S'initialise via [consentServiceReadyProvider] (chargement
-/// SharedPreferences), puis lit l'etat courant de chaque finalite. A invalider
-/// apres chaque grant/revoke (fait par [ConsentController]).
+/// SharedPreferences), puis suit le FLUX DES DECISIONS du service.
+///
+/// TACHE 564 (LOT M, M2) — LE CONSENTEMENT SANTE AVAIT DEUX VISAGES, ET UN SEUL
+/// ETAIT A JOUR. Ce provider etait un `FutureProvider` mis en cache que SEUL
+/// [ConsentController] invalidait. Or la fiche randonneur n'appelle pas le
+/// controleur : elle appelle `ConsentService.grant/revoke` DIRECTEMENT. Le
+/// disque etait donc a jour et l'ecran Confidentialite resservait son instantane
+/// d'avant : la campagne personas y a lu « non accorde » sur une morphologie
+/// qu'elle venait d'accorder et d'enregistrer. Et comme un interrupteur envoie
+/// l'INVERSE de ce qu'il affiche, le seul geste possible depuis cet ecran etait
+/// d'ACCORDER — la revocation, et l'effacement qu'elle declenche (LOT J), etaient
+/// litteralement hors d'atteinte.
+///
+/// POURQUOI UN FLUX ET PAS UNE INVALIDATION DE PLUS. Faire passer la fiche par le
+/// controleur aurait repare CE cas et laisse le suivant : le prochain ecran qui
+/// ecrit en direct re-creerait le meme ecart. Le service DIFFUSE deja chaque
+/// decision sur [ConsentService.changes] — et personne ne l'ecoutait. C'est ce
+/// flux qui rafraichit desormais l'etat affiche : d'ou que vienne la decision,
+/// tous les ecrans la lisent. UNE source (la cle de prefs), UN chemin de
+/// rafraichissement.
+///
+/// Reste invalidable (l'effacement art. 17 retire les cles SANS prendre de
+/// decision, donc sans evenement sur le flux : voir `accountErasureProvider`).
 final consentStatesProvider =
-    FutureProvider<Map<ConsentPurpose, ConsentState>>((ref) async {
+    StreamProvider<Map<ConsentPurpose, ConsentState>>((ref) async* {
   final service = await ref.watch(consentServiceReadyProvider.future);
-  return service.allStates();
+  yield service.allStates();
+  await for (final _ in service.changes) {
+    yield service.allStates();
+  }
 });
 
 /// Vrai si au moins une finalite necessite une (re)demande de consentement.
 ///
 /// Sert au routeur / a l'onboarding pour decider d'afficher l'ecran de
-/// consentement au premier lancement (ou apres une evolution de politique).
+/// consentement au premier lancement (ou apres une evolution de politique), et
+/// porte la banniere « Notre politique a evolue » de l'ecran Confidentialite.
+///
+/// TACHE 564 (LOT M, M2) : il observe [consentStatesProvider], donc il suit le
+/// meme flux de decisions. Sans cela la banniere pouvait inviter a revoir un
+/// choix deja fait ailleurs — le doute que la campagne n'a pas pu lever.
 final consentPromptNeededProvider = FutureProvider<bool>((ref) async {
   final service = await ref.watch(consentServiceReadyProvider.future);
+  await ref.watch(consentStatesProvider.future);
   return ConsentPurpose.values.any(service.needsPrompt);
 });
 

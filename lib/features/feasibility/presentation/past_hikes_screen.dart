@@ -45,7 +45,16 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
       builder: (_) => _HikeEditorSheet(existing: existing),
     );
     if (result == null) return;
-    final current = ref.read(pastHikesProvider).value ?? const <PastHike>[];
+    // ON REPART DE LA LISTE COURANTE, JAMAIS D'UN INSTANTANE (tache 564, LOT M).
+    //
+    // `ref.read(pastHikesProvider).value` rendait la DERNIERE valeur connue —
+    // Riverpod conserve volontairement la valeur precedente pendant un
+    // rechargement (`AsyncLoading` porte encore l'ancienne donnee). Apres un
+    // effacement art. 17, cette ancienne donnee etait la liste EFFACEE : cet
+    // ecran persistant ensuite la liste ENTIERE, ajouter une randonnee
+    // REECRIVAIT sur le disque les randonnees effacees. `await ... .future`
+    // attend la valeur A JOUR, donc la liste vide.
+    final current = await ref.read(pastHikesProvider.future);
     final updated = [...current];
     if (existing != null) {
       final idx = updated.indexOf(existing);
@@ -66,7 +75,8 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
   }
 
   Future<void> _delete(PastHike hike) async {
-    final current = ref.read(pastHikesProvider).value ?? const <PastHike>[];
+    // Meme raison qu'au-dessus : la liste courante, pas le dernier instantane.
+    final current = await ref.read(pastHikesProvider.future);
     final updated = current.where((h) => h != hike).toList();
     await ref.read(pastHikesProvider.notifier).saveAll(updated);
   }
