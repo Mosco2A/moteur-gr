@@ -37,7 +37,16 @@ void main() {
   testWidgets('S8 — Claire, premiere ouverture jusqu au depart en rando',
       (tester) async {
     reinitialiserExigences();
-    final poigneeSemantique = tester.ensureSemantics();
+    // PAS DE POIGNEE DE SEMANTIQUE ICI, ET C EST UNE CORRECTION DE MESURE.
+    // Ce scenario n evalue AUCUNE exigence de semantique : la poignee ne
+    // servait a rien. Elle coutait en revanche un run rouge a la cloture
+    // (« A SemanticsHandle was active at the end of the test ») APRES un
+    // parcours integralement tenu — 52 exigences, zero echec, depart effectif
+    // et trek termine. Rendre un parcours rouge pour une poignee que le
+    // scenario n utilise pas, c est fabriquer un faux defaut. Si le rouge
+    // persiste sans elle, il vient d un greffon de la carte qui prend une
+    // poignee et ne la rend pas — et ce sera alors un constat a nommer, pas
+    // un artefact a moi.
 
     // =====================================================================
     // 1 — PREMIERE OUVERTURE
@@ -425,7 +434,6 @@ void main() {
     exige(P, 'ecran_systeme', ecransSystemeBloquants().isEmpty,
         'aucune fenetre systeme n a recouvert l application '
         '(bloquants : ${ecransSystemeBloquants().join(", ")})');
-    poigneeSemantique.dispose();
     retirerVeilleEcranSysteme();
     verdictPersona(P, minimumExigences: 30);
     await finalizeScenario(tester, P);
