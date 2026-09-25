@@ -488,14 +488,17 @@ class _VerdictView extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
-          // CE QUE LE FEU NE REGARDE PAS (#8-a). La mention s'est COUPEE EN
-          // DEUX le 22/09 : la moitie « saison » est partie, puisque la saison
-          // entre desormais dans le calcul ; la moitie « sac » est devenue
-          // PERMANENTE, avec la mesure qui la fonde — de 0 a 45 kg de charge,
-          // le verdict ne bouge pas d'un cran. Croire qu'un sac de 20 kg a ete
-          // pris en compte dans un feu vert est un risque reel.
-          const _OutOfScopeNotice(),
-          const SizedBox(height: AppTheme.spacingLg),
+          // CE QUE LE FEU NE REGARDE PAS : PLUS AUCUNE MENTION (tache 552).
+          // La mention « le poids de ton sac n'entre pas dans ce feu, de 0 a
+          // 45 kg de charge le verdict ne bouge pas d'un cran » est RETIREE.
+          // Elle expliquait une absence SANS RIEN CHANGER au resultat affiche :
+          // c'est le resultat d'un test de sensibilite interne, pas une
+          // information de randonneur. Regle posee avec Chris le 25/09 : on se
+          // tait sur ce qu'on n'a pas, on parle de ce que ca change — une
+          // absence qui MODIFIE un resultat reste a l'ecran (c'est le cas du
+          // bandeau hiver juste au-dessus, qui invalide le verdict), une simple
+          // information absente disparait. Le poids du sac continue de vivre la
+          // ou il sert : dans le Sac (sac conseille + alerte descente).
 
           // Synthese du verdict global : etape la plus dure, jours au-dessus,
           // facteur limitant, reco entrainement.
@@ -683,46 +686,13 @@ class _GenerateProgramButton extends ConsumerWidget {
   }
 }
 
-/// Bandeau « profil partiel » affiche au-dessus du verdict quand le profil
-/// objectif n'est pas encore renseigne (le resultat reste montre — R2d).
-/// CE QUE LE VERDICT NE REGARDE PAS — decision Chris #100279 (21/09).
-///
-/// Le poids du sac et la saison n'entrent PAS dans le calcul : mesure faite sur
-/// l'appareil pendant la campagne personas, de 0 a 45 kg de charge (58 % du
-/// poids du corps) ni le verdict ni le plafond ne bougent. Ils seront cables
-/// dans une version dediee, avec des coefficients SOURCES — on n'invente pas un
-/// coefficient d'effort au juge sur un sujet de securite en montagne.
-///
-/// En attendant, l'ecran le DIT. Laisser un randonneur croire que son sac de
-/// 20 kg a ete pris en compte dans un feu vert, c'est lui faire courir un risque
-/// reel. Place juste sous le feu tricolore : c'est la que la mention compte.
-class _OutOfScopeNotice extends StatelessWidget {
-  const _OutOfScopeNotice();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = theme.colorScheme.onSurface;
-    return AppCard(
-      backgroundColor: color.withAlpha(14),
-      borderColor: color.withAlpha(60),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.visibility_off_outlined,
-              size: 20, color: color.withAlpha(180)),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Text(
-              t.feasibility.formula.outOfScopeNotice,
-              style: theme.textTheme.bodySmall,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// L'ancien `_OutOfScopeNotice` a ete SUPPRIME (tache 552), avec sa cle
+// `feasibility.formula.outOfScopeNotice` dans les cinq langues. Il disait que le
+// poids du sac n'entrait pas dans le feu — une absence qui ne change RIEN au
+// resultat affiche, donc du jargon interne a l'ecran. La regle qui l'emporte
+// (Chris, 25/09) : on se tait sur ce qu'on n'a pas, on parle de ce que ca change.
+// Le test `test/features/feasibility/feasibilite_hors_perimetre_test.dart`, qui
+// verrouillait sa PRESENCE, verrouille desormais son ABSENCE.
 
 /// HIVER — LE VERDICT EST DECLARE NON VALIDE (#1-e, #2-j, #8-d).
 ///

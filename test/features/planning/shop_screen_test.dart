@@ -402,23 +402,39 @@ void main() {
   // --- Fallback sans donnees -----------------------------------------------
 
   group('fallback sans donnees ravitaillement', () {
-    testWidgets('sentier sans donnees : etat informatif propre, pas de crash',
+    // RETOURNE PAR LA TACHE 552. Ces deux tests exigeaient « Ravitaillement
+    // bientot disponible » + « les commerces ... seront ajoutes
+    // prochainement ». Retour Chris du 25/09 : « si tu ne les a pas tu ne met
+    // rien ». Les deux cles sont supprimees des cinq langues. Ce qui reste
+    // exige : l'AppBar (donc le retour) tient, et rien n'est promis.
+    void exigeAucunePromesse() {
+      for (final promesse in <String>[
+        'bientôt',
+        'bientot',
+        'prochainement',
+      ]) {
+        expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
+            reason: 'l ecran ravitaillement vide promet encore « $promesse »');
+      }
+    }
+
+    testWidgets('sentier sans donnees : rien de promis, pas de crash',
         (tester) async {
       await tester.pumpWidget(wrap(overrides: overridesWith(null)));
       await settle(tester);
 
-      expect(find.text(t.shop.empty.title), findsOneWidget);
+      exigeAucunePromesse();
       expect(find.text(t.shop.title), findsOneWidget); // AppBar reste
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('sentier avec liste vide : meme fallback propre',
-        (tester) async {
+    testWidgets('sentier avec liste vide : meme silence', (tester) async {
       await tester.pumpWidget(
         wrap(overrides: overridesWith(const TrailShops(trailId: trailId))),
       );
       await settle(tester);
-      expect(find.text(t.shop.empty.title), findsOneWidget);
+      exigeAucunePromesse();
+      expect(find.text(t.shop.title), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   });

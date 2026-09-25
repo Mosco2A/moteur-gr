@@ -97,7 +97,6 @@
     },
     "weather": {
       "title": "El tiempo de hoy",
-      "stub": "El tiempo de tu etapa llega pronto.",
       "unavailable": "El tiempo no está disponible ahora.",
       "alertStorm": "Alerta de tormenta",
       "tempRange": "$min° / $max°"
@@ -484,7 +483,8 @@
       "referenceExplainer": "Peso de referencia para tu estatura: {kg} kg. El tope de la mochila se calcula sobre él, no sobre tu peso real.",
       "referenceFallbackHeight": "El tope de tu mochila se calcula sobre tu peso real: para tu estatura no existe un peso de referencia publicado en el que apoyarse. Preferimos decírtelo antes que mostrarte una cifra falsa.",
       "descentAlertTitle": "Bajadas: lo que llevas",
-      "descentAlertBody": "Bajarás con {kg} kg por encima del peso de referencia, mochila incluida. En bajada cada apoyo encaja varias veces ese peso: es mecánica, no un pronóstico. Las etapas que más bajan están listadas abajo.",
+      "descentAlertBody": "Dos pesos bajan contigo: {pack} kg de mochila y {above} kg por encima de tu peso de forma. En bajada, cada paso hace pasar por la rodilla 3,46 veces el peso que baja contigo, frente a 2,61 en llano. Solo la mochila se puede cambiar hoy: aligérala, y es menos en cada paso.",
+      "descentAlertBodyPackOnly": "Bajas con {pack} kg de mochila. En bajada, cada paso hace pasar por la rodilla 3,46 veces el peso que baja contigo, frente a 2,61 en llano: aligera la mochila, y es menos en cada paso.",
       "descentStage": "{stage}: {loss} m de bajada"
     },
     "ui": {
@@ -841,7 +841,6 @@
     "formula": {
       "title": "Viabilidad para este trek",
       "intro": "Comparamos el esfuerzo de cada etapa con lo que tu perfil puede aguantar en un día. Luz verde, naranja o roja.",
-      "outOfScopeNotice": "El peso de tu mochila no entra en esta valoración, y está medido: de 0 a 45 kg de carga el veredicto no se mueve ni un escalón. Esta valoración compara lo que ya has aguantado con el esfuerzo de cada etapa; la carga que llevas se trata aparte, en tu mochila.",
       "ceilingLabel": "Tope recomendado: ${value} km-energía/día (${level})",
       "stagesTitle": "Etapa por etapa",
       "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-energía",
@@ -975,8 +974,7 @@
     }
   },
   "goodies": {
-    "title": "Tienda de Goodies",
-    "comingSoon": "Este módulo llegará pronto. Mantente atento!"
+    "title": "Tienda de Goodies"
   },
   "noData": {
     "title": "Ningún sendero descargado",
@@ -1121,10 +1119,8 @@
     "objectiveTitle": "Objetivo clave",
     "inviteSetDate": "Fija tu fecha de salida en el Calendario para activar la cuenta atras.",
     "inviteFillProfile": "Rellena tu ficha para adaptar el plan a tu perfil.",
-    "genericPlanNotice": "Plan genérico: pronto habrá un plan dedicado a este sendero.",
     "cautionVerdictNotice": "Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.",
-    "departureTooClose": "Quedan $days días: plan condensado al tiempo disponible.",
-    "noPlan": "Programa de entrenamiento disponible pronto para este sendero."
+    "departureTooClose": "Quedan $days días: plan condensado al tiempo disponible."
   },
   "eta": {
     "title": "Tiempo estimado",
@@ -1752,12 +1748,6 @@
     "a11y": {
       "call": "Llamar a $label",
       "website": "Abrir el sitio web"
-    },
-    "empty": {
-      "title": "Transporte próximamente",
-      "messageJoin": "La información para llegar a $name se añadirá pronto.",
-      "messageLeave": "La información para salir de $name se añadirá pronto.",
-      "messageGeneric": "La información de transporte de este sendero se añadirá pronto."
     }
   },
   "fireRisk": {
@@ -1841,10 +1831,6 @@
       "openDetail": "Ver detalles de $name",
       "call": "Llamar a $label",
       "website": "Abrir el sitio web"
-    },
-    "empty": {
-      "title": "Avituallamiento próximamente",
-      "message": "Los comercios y puntos de avituallamiento de este sendero se añadirán pronto."
     }
   },
   "summary": {
@@ -1872,10 +1858,6 @@
     "restDayTitle": "Día de descanso — D$n",
     "restDayPlace": "Lugar: $place",
     "actions": {
-      "exportPdf": "EXPORTAR A PDF",
-      "exportPdfSoon": "¡Exportación a PDF próximamente! La función está en desarrollo.",
-      "downloadMaps": "DESCARGAR MAPAS SIN CONEXIÓN",
-      "downloadMapsSoon": "¡Descarga de mapas sin conexión próximamente! Esta función formará parte del módulo de senderismo.",
       "share": "COMPARTIR MI PLAN"
     },
     "share": {
@@ -1900,8 +1882,6 @@
     "a11y": {
       "dayTile": "Ver los detalles del día $day",
       "restDayTile": "Detalles del día de descanso $day",
-      "export": "Exportar el plan a PDF",
-      "download": "Descargar mapas sin conexión",
       "share": "Compartir mi plan"
     }
   },
@@ -2001,7 +1981,7 @@
       "underweight": "Bajo peso",
       "normal": "Peso normal",
       "overweight": "Sobrepeso",
-      "obese": "Obesidad"
+      "obese": "Sobrepeso elevado"
     },
     "consentTitle": "Datos corporales (RGPD artículo 9)",
     "consentBody": "Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.",
@@ -2050,7 +2030,7 @@
     "empty": "Ninguna ruta introducida todavía.",
     "fieldDate": "Fecha",
     "fieldDays": "Número de días",
-    "fieldAvgHours": "Marcha media por día (h)",
+    "fieldAvgHours": "Tiempo de marcha por día (h)",
     "fieldElevation": "Desnivel + total (m)",
     "fieldDistance": "Distancia total (km)",
     "errorDays": "Número de días no válido (1 a 60)",

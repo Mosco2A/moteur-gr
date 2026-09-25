@@ -266,8 +266,6 @@ class _PlanContent extends ConsumerWidget {
 
     final daysUntil = ref.watch(trainingDaysUntilDepartureProvider);
     final tooClose = ref.watch(trainingDepartureTooCloseProvider);
-    final hasSpecificPlan =
-        ref.watch(hasSpecificTrainingPlanProvider).value ?? true;
     final perso = ref.watch(trainingPersonalizationProvider).value;
     final progress = ref.watch(trainingProgressProvider(trail.id));
 
@@ -316,14 +314,11 @@ class _PlanContent extends ConsumerWidget {
           const SizedBox(height: AppTheme.spacingBase),
         ],
 
-        // --- Etat « plan generique » : aucun plan dedie a ce sentier ---
-        if (!hasSpecificPlan) ...[
-          _InviteBanner(
-            icon: Icons.info_outline,
-            message: tr.genericPlanNotice,
-          ),
-          const SizedBox(height: AppTheme.spacingBase),
-        ],
+        // --- Etat « plan generique » : PLUS AUCUN BANDEAU (tache 552) ---
+        // Le bandeau disait « un plan dedie a ce sentier arrive bientot » :
+        // une promesse que rien dans le code ne tient. Retour Chris 25/09, mot
+        // pour mot : « si tu ne les a pas tu ne met rien ». Supprime, pas
+        // reformule. Le plan generique s'affiche, lui, et c'est ce qui compte.
 
         // --- Rappel de prudence adapte au verdict (personnalisation) ---
         // Le verdict vient du MOTEUR UNIQUE, celui de l'ecran Faisabilite : les
@@ -591,31 +586,18 @@ class _ProgressCard extends StatelessWidget {
   }
 }
 
-/// Etat « sentier sans plan » (spec) : message neutre, jamais d'ecran casse.
+/// Etat « sentier sans plan » : ON N'AFFICHE RIEN (tache 552).
+///
+/// Il affichait « Programme d'entrainement bientot disponible pour ce sentier »
+/// — une date qu'aucune ligne de code ne porte. Retour Chris 25/09, mot pour
+/// mot : « Tu les as, tu les a pas, si tu ne les a pas tu ne met rien ». Le
+/// programme absent ne modifie aucun resultat ailleurs dans l'application : il
+/// disparait donc en silence au lieu d'etre promis. L'ecran reste debout (pas
+/// d'exception, pas de layout casse), il est simplement vide.
 class _NoPlanState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingLg),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.hourglass_empty,
-                size: 48, color: theme.colorScheme.onSurface.withAlpha(120)),
-            const SizedBox(height: AppTheme.spacingMd),
-            Text(
-              t.training.noPlan,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface.withAlpha(170),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return const SizedBox.shrink();
   }
 }
 

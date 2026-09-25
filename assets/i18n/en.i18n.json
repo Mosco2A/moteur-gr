@@ -97,7 +97,6 @@
     },
     "weather": {
       "title": "Today's weather",
-      "stub": "Your stage weather is coming soon.",
       "unavailable": "Weather unavailable right now.",
       "alertStorm": "Storm alert",
       "tempRange": "$min° / $max°"
@@ -484,7 +483,8 @@
       "referenceExplainer": "Reference weight for your height: {kg} kg. The pack ceiling is computed on it, not on your actual weight.",
       "referenceFallbackHeight": "Your pack ceiling is computed on your actual weight: for your height there is no published reference weight to lean on. We would rather tell you than show you a wrong number.",
       "descentAlertTitle": "Descents: what you carry",
-      "descentAlertBody": "You will go down with {kg} kg beyond the reference weight, pack included. On a descent each step takes several times that weight: that is mechanics, not a forecast. The stages that descend the most are listed below.",
+      "descentAlertBody": "Two weights go down with you: {pack} kg of pack, and {above} kg above your fit weight. On a descent every step sends through your knee 3.46 times the weight going down with you, against 2.61 on the flat. Only the pack can be changed today: lighten it, and that is less at every step.",
+      "descentAlertBodyPackOnly": "You go down with {pack} kg of pack. On a descent every step sends through your knee 3.46 times the weight going down with you, against 2.61 on the flat: lighten the pack, and that is less at every step.",
       "descentStage": "{stage}: {loss} m of descent"
     },
     "ui": {
@@ -841,7 +841,6 @@
     "formula": {
       "title": "Feasibility for this trek",
       "intro": "We compare each stage's effort to what your profile can handle in a day. Green, orange or red light.",
-      "outOfScopeNotice": "Your pack weight is not part of this rating, and that has been measured: from 0 to 45 kg of load, the verdict does not move by a single step. This rating compares what you have already held to the effort of each stage; the load you carry is handled separately, in your pack.",
       "ceilingLabel": "Recommended ceiling: ${value} energy-km/day (${level})",
       "stagesTitle": "Stage by stage",
       "stageEffort": "${distance} km + ${elevation} m ascent = ${effort} energy-km",
@@ -975,8 +974,7 @@
     }
   },
   "goodies": {
-    "title": "Goodies Shop",
-    "comingSoon": "This module is coming soon. Stay tuned!"
+    "title": "Goodies Shop"
   },
   "noData": {
     "title": "No trail downloaded",
@@ -1121,10 +1119,8 @@
     "objectiveTitle": "Key objective",
     "inviteSetDate": "Set your departure date in the Calendar to enable the countdown.",
     "inviteFillProfile": "Fill in your info sheet to tailor the plan to your profile.",
-    "genericPlanNotice": "Generic plan: a plan dedicated to this trail is coming soon.",
     "cautionVerdictNotice": "Your feasibility calls for caution: follow the progression and do not cut the preparation short.",
-    "departureTooClose": "$days days left: plan condensed to the available time.",
-    "noPlan": "Training plan coming soon for this trail."
+    "departureTooClose": "$days days left: plan condensed to the available time."
   },
   "eta": {
     "title": "Estimated time",
@@ -1752,12 +1748,6 @@
     "a11y": {
       "call": "Call $label",
       "website": "Open website"
-    },
-    "empty": {
-      "title": "Transport coming soon",
-      "messageJoin": "Information on getting to $name will be added soon.",
-      "messageLeave": "Information on leaving $name will be added soon.",
-      "messageGeneric": "Transport information for this trail will be added soon."
     }
   },
   "fireRisk": {
@@ -1841,10 +1831,6 @@
       "openDetail": "View details for $name",
       "call": "Call $label",
       "website": "Open website"
-    },
-    "empty": {
-      "title": "Supplies coming soon",
-      "message": "Shops and resupply points for this trail will be added soon."
     }
   },
   "summary": {
@@ -1872,10 +1858,6 @@
     "restDayTitle": "Rest day — D$n",
     "restDayPlace": "Place: $place",
     "actions": {
-      "exportPdf": "EXPORT AS PDF",
-      "exportPdfSoon": "PDF export coming soon! This feature is under development.",
-      "downloadMaps": "DOWNLOAD OFFLINE MAPS",
-      "downloadMapsSoon": "Offline map download coming soon! This feature will be part of the hiking module.",
       "share": "SHARE MY PLAN"
     },
     "share": {
@@ -1900,8 +1882,6 @@
     "a11y": {
       "dayTile": "View details for day $day",
       "restDayTile": "Rest day $day details",
-      "export": "Export plan as PDF",
-      "download": "Download offline maps",
       "share": "Share my plan"
     }
   },
@@ -2001,7 +1981,7 @@
       "underweight": "Underweight",
       "normal": "Normal weight",
       "overweight": "Overweight",
-      "obese": "Obesity"
+      "obese": "Significant overweight"
     },
     "consentTitle": "Body metrics (GDPR article 9)",
     "consentBody": "Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.",
@@ -2050,7 +2030,7 @@
     "empty": "No hike entered yet.",
     "fieldDate": "Date",
     "fieldDays": "Number of days",
-    "fieldAvgHours": "Average walking per day (h)",
+    "fieldAvgHours": "Walking time per day (h)",
     "fieldElevation": "Total elevation gain (m)",
     "fieldDistance": "Total distance (km)",
     "errorDays": "Invalid number of days (1 to 60)",

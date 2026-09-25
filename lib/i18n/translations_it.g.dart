@@ -800,7 +800,6 @@ class _Translations$goodies$it extends Translations$goodies$fr {
 
 	// Translations
 	@override String get title => 'Negozio Goodies';
-	@override String get comingSoon => 'Questo modulo arriverà presto. Resta connesso!';
 }
 
 // Path: noData
@@ -983,10 +982,8 @@ class _Translations$training$it extends Translations$training$fr {
 	@override String get objectiveTitle => 'Obiettivo chiave';
 	@override String get inviteSetDate => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.';
 	@override String get inviteFillProfile => 'Compila la tua scheda per adattare il piano al tuo profilo.';
-	@override String get genericPlanNotice => 'Piano generico: un piano dedicato a questo sentiero arriverà presto.';
 	@override String get cautionVerdictNotice => 'La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.';
 	@override String departureTooClose({required Object days}) => 'Restano ${days} giorni: piano condensato sul tempo disponibile.';
-	@override String get noPlan => 'Programma di allenamento presto disponibile per questo sentiero.';
 }
 
 // Path: eta
@@ -1389,7 +1386,6 @@ class _Translations$transport$it extends Translations$transport$fr {
 	@override String get adviceTitle => 'Consigli pratici';
 	@override String get website => 'Sito web';
 	@override late final _Translations$transport$a11y$it a11y = _Translations$transport$a11y$it._(_root);
-	@override late final _Translations$transport$empty$it empty = _Translations$transport$empty$it._(_root);
 }
 
 // Path: fireRisk
@@ -1448,7 +1444,6 @@ class _Translations$shop$it extends Translations$shop$fr {
 	@override String get website => 'Sito web';
 	@override String get filterEmpty => 'Nessun negozio per questo filtro.';
 	@override late final _Translations$shop$a11y$it a11y = _Translations$shop$a11y$it._(_root);
-	@override late final _Translations$shop$empty$it empty = _Translations$shop$empty$it._(_root);
 }
 
 // Path: summary
@@ -1636,7 +1631,7 @@ class _Translations$pastHikes$it extends Translations$pastHikes$fr {
 	@override String get empty => 'Nessuna escursione inserita.';
 	@override String get fieldDate => 'Data';
 	@override String get fieldDays => 'Numero di giorni';
-	@override String get fieldAvgHours => 'Cammino medio al giorno (h)';
+	@override String get fieldAvgHours => 'Tempo di cammino al giorno (h)';
 	@override String get fieldElevation => 'Dislivello + totale (m)';
 	@override String get fieldDistance => 'Distanza totale (km)';
 	@override String get errorDays => 'Numero di giorni non valido (1 a 60)';
@@ -1761,7 +1756,6 @@ class _Translations$hub$weather$it extends Translations$hub$weather$fr {
 
 	// Translations
 	@override String get title => 'Meteo di oggi';
-	@override String get stub => 'Il meteo della tua tappa arriva presto.';
 	@override String get unavailable => 'Meteo non disponibile al momento.';
 	@override String get alertStorm => 'Allerta temporale';
 	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
@@ -2115,7 +2109,8 @@ class _Translations$checklist$weight$it extends Translations$checklist$weight$fr
 	@override String get referenceExplainer => 'Peso di riferimento per la tua statura: {kg} kg. Il tetto dello zaino si calcola su quello, non sul tuo peso reale.';
 	@override String get referenceFallbackHeight => 'Il tetto del tuo zaino è calcolato sul tuo peso reale: per la tua statura non esiste un peso di riferimento pubblicato su cui appoggiarsi. Preferiamo dirtelo piuttosto che mostrarti una cifra falsa.';
 	@override String get descentAlertTitle => 'Discese: ciò che porti';
-	@override String get descentAlertBody => 'Scenderai con {kg} kg oltre il peso di riferimento, zaino compreso. In discesa ogni appoggio incassa più volte quel peso: è meccanica, non un pronostico. Le tappe che scendono di più sono elencate qui sotto.';
+	@override String get descentAlertBody => 'Due pesi scendono con te: {pack} kg di zaino e {above} kg sopra il tuo peso di forma. In discesa, ogni passo fa passare nel ginocchio 3,46 volte il peso che scende con te, contro 2,61 in piano. Solo lo zaino si può cambiare oggi: alleggeriscilo, ed è meno a ogni passo.';
+	@override String get descentAlertBodyPackOnly => 'Scendi con {pack} kg di zaino. In discesa, ogni passo fa passare nel ginocchio 3,46 volte il peso che scende con te, contro 2,61 in piano: alleggerisci lo zaino, ed è meno a ogni passo.';
 	@override String get descentStage => '{stage}: {loss} m di discesa';
 }
 
@@ -2278,7 +2273,6 @@ class _Translations$feasibility$formula$it extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Fattibilità per questo trek';
 	@override String get intro => 'Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.';
-	@override String get outOfScopeNotice => 'Il peso del tuo zaino non entra in questa valutazione, ed è misurato: da 0 a 45 kg di carico il verdetto non si sposta di un gradino. Questa valutazione confronta ciò che hai già tenuto con lo sforzo di ogni tappa; il carico che porti è trattato a parte, nel tuo zaino.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Soglia consigliata: ${value} km-energia/giorno (${level})';
 	@override String get stagesTitle => 'Tappa per tappa';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-energia';
@@ -3125,19 +3119,6 @@ class _Translations$transport$a11y$it extends Translations$transport$a11y$fr {
 	@override String get website => 'Apri il sito web';
 }
 
-// Path: transport.empty
-class _Translations$transport$empty$it extends Translations$transport$empty$fr {
-	_Translations$transport$empty$it._(TranslationsIt root) : this._root = root, super.internal(root);
-
-	final TranslationsIt _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Trasporti presto disponibili';
-	@override String messageJoin({required Object name}) => 'Le informazioni per raggiungere ${name} saranno aggiunte a breve.';
-	@override String messageLeave({required Object name}) => 'Le informazioni per ripartire da ${name} saranno aggiunte a breve.';
-	@override String get messageGeneric => 'Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve.';
-}
-
 // Path: fireRisk.update
 class _Translations$fireRisk$update$it extends Translations$fireRisk$update$fr {
 	_Translations$fireRisk$update$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -3249,17 +3230,6 @@ class _Translations$shop$a11y$it extends Translations$shop$a11y$fr {
 	@override String get website => 'Apri il sito web';
 }
 
-// Path: shop.empty
-class _Translations$shop$empty$it extends Translations$shop$empty$fr {
-	_Translations$shop$empty$it._(TranslationsIt root) : this._root = root, super.internal(root);
-
-	final TranslationsIt _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Rifornimenti presto disponibili';
-	@override String get message => 'I negozi e i punti di rifornimento di questo sentiero saranno aggiunti a breve.';
-}
-
 // Path: summary.stats
 class _Translations$summary$stats$it extends Translations$summary$stats$fr {
 	_Translations$summary$stats$it._(TranslationsIt root) : this._root = root, super.internal(root);
@@ -3283,10 +3253,6 @@ class _Translations$summary$actions$it extends Translations$summary$actions$fr {
 	final TranslationsIt _root; // ignore: unused_field
 
 	// Translations
-	@override String get exportPdf => 'ESPORTA IN PDF';
-	@override String get exportPdfSoon => 'Esportazione PDF presto disponibile! La funzione è in fase di sviluppo.';
-	@override String get downloadMaps => 'SCARICA LE MAPPE OFFLINE';
-	@override String get downloadMapsSoon => 'Download delle mappe offline presto disponibile! Questa funzione farà parte del modulo escursioni.';
 	@override String get share => 'CONDIVIDI IL MIO PIANO';
 }
 
@@ -3332,8 +3298,6 @@ class _Translations$summary$a11y$it extends Translations$summary$a11y$fr {
 	// Translations
 	@override String dayTile({required Object day}) => 'Vedi i dettagli del giorno ${day}';
 	@override String restDayTile({required Object day}) => 'Dettagli del giorno di riposo ${day}';
-	@override String get export => 'Esporta il piano in PDF';
-	@override String get download => 'Scarica le mappe offline';
 	@override String get share => 'Condividi il mio piano';
 }
 
@@ -3398,7 +3362,7 @@ class _Translations$hikerProfile$bmiCategories$it extends Translations$hikerProf
 	@override String get underweight => 'Sottopeso';
 	@override String get normal => 'Normopeso';
 	@override String get overweight => 'Sovrappeso';
-	@override String get obese => 'Obesità';
+	@override String get obese => 'Forte sovrappeso';
 }
 
 // Path: walkTest.levels
@@ -3905,7 +3869,6 @@ extension on TranslationsIt {
 			'hub.trekCard.plan' => 'Pianifica il mio trek',
 			'hub.trekCard.completedTitle' => 'Trek completato',
 			'hub.weather.title' => 'Meteo di oggi',
-			'hub.weather.stub' => 'Il meteo della tua tappa arriva presto.',
 			'hub.weather.unavailable' => 'Meteo non disponibile al momento.',
 			'hub.weather.alertStorm' => 'Allerta temporale',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
@@ -4242,7 +4205,8 @@ extension on TranslationsIt {
 			'checklist.weight.referenceExplainer' => 'Peso di riferimento per la tua statura: {kg} kg. Il tetto dello zaino si calcola su quello, non sul tuo peso reale.',
 			'checklist.weight.referenceFallbackHeight' => 'Il tetto del tuo zaino è calcolato sul tuo peso reale: per la tua statura non esiste un peso di riferimento pubblicato su cui appoggiarsi. Preferiamo dirtelo piuttosto che mostrarti una cifra falsa.',
 			'checklist.weight.descentAlertTitle' => 'Discese: ciò che porti',
-			'checklist.weight.descentAlertBody' => 'Scenderai con {kg} kg oltre il peso di riferimento, zaino compreso. In discesa ogni appoggio incassa più volte quel peso: è meccanica, non un pronostico. Le tappe che scendono di più sono elencate qui sotto.',
+			'checklist.weight.descentAlertBody' => 'Due pesi scendono con te: {pack} kg di zaino e {above} kg sopra il tuo peso di forma. In discesa, ogni passo fa passare nel ginocchio 3,46 volte il peso che scende con te, contro 2,61 in piano. Solo lo zaino si può cambiare oggi: alleggeriscilo, ed è meno a ogni passo.',
+			'checklist.weight.descentAlertBodyPackOnly' => 'Scendi con {pack} kg di zaino. In discesa, ogni passo fa passare nel ginocchio 3,46 volte il peso che scende con te, contro 2,61 in piano: alleggerisci lo zaino, ed è meno a ogni passo.',
 			'checklist.weight.descentStage' => '{stage}: {loss} m di discesa',
 			'checklist.ui.title' => 'Attrezzatura & Zaino',
 			'checklist.ui.requirementRequired' => 'Obbligatorio',
@@ -4555,7 +4519,6 @@ extension on TranslationsIt {
 			'feasibility.gaps.effort' => 'Sforzo globale (IBP) oltre la tua esperienza',
 			'feasibility.formula.title' => 'Fattibilità per questo trek',
 			'feasibility.formula.intro' => 'Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.',
-			'feasibility.formula.outOfScopeNotice' => 'Il peso del tuo zaino non entra in questa valutazione, ed è misurato: da 0 a 45 kg di carico il verdetto non si sposta di un gradino. Questa valutazione confronta ciò che hai già tenuto con lo sforzo di ogni tappa; il carico che porti è trattato a parte, nel tuo zaino.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Soglia consigliata: ${value} km-energia/giorno (${level})',
 			'feasibility.formula.stagesTitle' => 'Tappa per tappa',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-energia',
@@ -4673,7 +4636,6 @@ extension on TranslationsIt {
 			'tips.themes.nature' => 'Natura',
 			'tips.themes.other' => 'Varie',
 			'goodies.title' => 'Negozio Goodies',
-			'goodies.comingSoon' => 'Questo modulo arriverà presto. Resta connesso!',
 			'noData.title' => 'Nessun sentiero scaricato',
 			'noData.subtitle' => 'Scarica un sentiero per iniziare',
 			'noData.offlineHint' => 'I dati saranno disponibili offline per la tua escursione.',
@@ -4784,10 +4746,8 @@ extension on TranslationsIt {
 			'training.objectiveTitle' => 'Obiettivo chiave',
 			'training.inviteSetDate' => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.',
 			'training.inviteFillProfile' => 'Compila la tua scheda per adattare il piano al tuo profilo.',
-			'training.genericPlanNotice' => 'Piano generico: un piano dedicato a questo sentiero arriverà presto.',
 			'training.cautionVerdictNotice' => 'La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.',
 			'training.departureTooClose' => ({required Object days}) => 'Restano ${days} giorni: piano condensato sul tempo disponibile.',
-			'training.noPlan' => 'Programma di allenamento presto disponibile per questo sentiero.',
 			'eta.title' => 'Tempo stimato',
 			'eta.toNextWaypoint' => 'Prossimo punto',
 			'eta.toStageEnd' => 'Fine tappa',
@@ -4845,12 +4805,12 @@ extension on TranslationsIt {
 			'gamification.defi.noDefi' => 'Nessuna sfida in corso al momento.',
 			'shareVisibility.title' => 'Condivisione e visibilità',
 			'shareVisibility.intro' => 'Per impostazione predefinita, non viene condiviso nulla. Attiva qui sotto, finalità per finalità, ciò che vuoi rendere visibile.',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.consentLink' => 'Gestisci il mio consenso (privacy)',
 			'shareVisibility.stageResults' => 'Condividi i miei risultati di tappa',
 			'shareVisibility.stageResultsDesc' => 'Una scheda con pseudonimo (senza dati personali diretti).',
 			'shareVisibility.leaderboard' => 'Apparire nelle classifiche',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Classifica per fascia, con uno pseudonimo.',
 			'shareVisibility.activityFeed' => 'Pubblica nel diario attività',
 			'shareVisibility.activityFeedDesc' => 'Le tue attività appaiono nel diario, con uno pseudonimo.',
@@ -5242,10 +5202,6 @@ extension on TranslationsIt {
 			'transport.website' => 'Sito web',
 			'transport.a11y.call' => ({required Object label}) => 'Chiama ${label}',
 			'transport.a11y.website' => 'Apri il sito web',
-			'transport.empty.title' => 'Trasporti presto disponibili',
-			'transport.empty.messageJoin' => ({required Object name}) => 'Le informazioni per raggiungere ${name} saranno aggiunte a breve.',
-			'transport.empty.messageLeave' => ({required Object name}) => 'Le informazioni per ripartire da ${name} saranno aggiunte a breve.',
-			'transport.empty.messageGeneric' => 'Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve.',
 			'fireRisk.title' => 'Rischio incendio',
 			'fireRisk.refresh' => 'Aggiorna',
 			'fireRisk.refreshed' => 'Dati aggiornati',
@@ -5307,8 +5263,6 @@ extension on TranslationsIt {
 			'shop.a11y.openDetail' => ({required Object name}) => 'Vedi i dettagli di ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Chiama ${label}',
 			'shop.a11y.website' => 'Apri il sito web',
-			'shop.empty.title' => 'Rifornimenti presto disponibili',
-			'shop.empty.message' => 'I negozi e i punti di rifornimento di questo sentiero saranno aggiunti a breve.',
 			'summary.title' => 'Sintesi del piano',
 			'summary.configTitle' => ({required Object name}) => 'Il mio ${name}',
 			'summary.direction' => 'Direzione',
@@ -5330,10 +5284,6 @@ extension on TranslationsIt {
 			'summary.restDay' => 'Giorno di riposo',
 			'summary.restDayTitle' => ({required Object n}) => 'Giorno di riposo — G${n}',
 			'summary.restDayPlace' => ({required Object place}) => 'Luogo: ${place}',
-			'summary.actions.exportPdf' => 'ESPORTA IN PDF',
-			'summary.actions.exportPdfSoon' => 'Esportazione PDF presto disponibile! La funzione è in fase di sviluppo.',
-			'summary.actions.downloadMaps' => 'SCARICA LE MAPPE OFFLINE',
-			'summary.actions.downloadMapsSoon' => 'Download delle mappe offline presto disponibile! Questa funzione farà parte del modulo escursioni.',
 			'summary.actions.share' => 'CONDIVIDI IL MIO PIANO',
 			'summary.share.titleLine' => ({required Object name}) => 'Il mio ${name}',
 			'summary.share.walkDays' => ({required Object days}) => '${days} giorni di cammino',
@@ -5352,15 +5302,11 @@ extension on TranslationsIt {
 			'summary.empty.action' => 'CONFIGURA L\'ITINERARIO',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Vedi i dettagli del giorno ${day}',
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Dettagli del giorno di riposo ${day}',
-			'summary.a11y.export' => 'Esporta il piano in PDF',
-			'summary.a11y.download' => 'Scarica le mappe offline',
 			'summary.a11y.share' => 'Condividi il mio piano',
 			'import.title' => 'Importa un GPX',
 			'import.headerTitle' => 'Importa un file GPX',
 			'import.headerBody' => 'Importa una traccia GPS registrata con un\'altra app (Strava, Garmin, ecc.) per generare il tuo riepilogo.',
 			'import.pickButton' => 'SCEGLI UN FILE GPX',
-			_ => null,
-		} ?? switch (path) {
 			'import.traceSection' => 'Traccia importata',
 			'import.statsSection' => 'Statistiche',
 			'import.statDistance' => 'Distanza',
@@ -5377,6 +5323,8 @@ extension on TranslationsIt {
 			'import.warningsSection' => 'Avvisi',
 			'import.warningOutOfBounds' => '{count} punto/i fuori zona ignorati.',
 			'import.warningOffTrail' => 'Il {percent}% dei punti è lontano dal sentiero.',
+			_ => null,
+		} ?? switch (path) {
 			'import.invalidTooFewPoints' => 'File GPX insufficiente: {count} punti (minimo 10).',
 			'import.invalidOutOfBounds' => 'La traccia non corrisponde alla zona di questo sentiero.',
 			'import.errorUnreadable' => 'Impossibile leggere il file.',
@@ -5437,7 +5385,7 @@ extension on TranslationsIt {
 			'hikerProfile.bmiCategories.underweight' => 'Sottopeso',
 			'hikerProfile.bmiCategories.normal' => 'Normopeso',
 			'hikerProfile.bmiCategories.overweight' => 'Sovrappeso',
-			'hikerProfile.bmiCategories.obese' => 'Obesità',
+			'hikerProfile.bmiCategories.obese' => 'Forte sovrappeso',
 			'hikerProfile.consentTitle' => 'Dati corporei (GDPR articolo 9)',
 			'hikerProfile.consentBody' => 'Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.',
 			'hikerProfile.consentToggle' => 'Autorizzo l\'uso dei miei dati corporei per la fattibilità',
@@ -5479,7 +5427,7 @@ extension on TranslationsIt {
 			'pastHikes.empty' => 'Nessuna escursione inserita.',
 			'pastHikes.fieldDate' => 'Data',
 			'pastHikes.fieldDays' => 'Numero di giorni',
-			'pastHikes.fieldAvgHours' => 'Cammino medio al giorno (h)',
+			'pastHikes.fieldAvgHours' => 'Tempo di cammino al giorno (h)',
 			'pastHikes.fieldElevation' => 'Dislivello + totale (m)',
 			'pastHikes.fieldDistance' => 'Distanza totale (km)',
 			'pastHikes.errorDays' => 'Numero di giorni non valido (1 a 60)',

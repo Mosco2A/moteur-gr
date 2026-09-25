@@ -97,7 +97,6 @@
     },
     "weather": {
       "title": "Météo du jour",
-      "stub": "La météo de votre étape arrive bientôt.",
       "unavailable": "Météo indisponible pour le moment.",
       "alertStorm": "Alerte orage",
       "tempRange": "$min° / $max°"
@@ -484,7 +483,8 @@
       "referenceExplainer": "Poids de référence pour ta taille : {kg} kg. Le plafond du sac est calculé sur lui, pas sur ton poids réel.",
       "referenceFallbackHeight": "Le plafond de ton sac est calculé sur ton poids réel : pour ta taille, il n'existe pas de poids de référence publié sur lequel s'appuyer. On préfère te le dire plutôt que t'afficher un chiffre faux.",
       "descentAlertTitle": "Descentes : le poids de ton sac",
-      "descentAlertBody": "Tu descendras avec {kg} kg au-delà du poids de référence, sac compris. En descente, chaque appui encaisse plusieurs fois ce poids : c'est de la mécanique, pas un pronostic. Les étapes qui descendent le plus sont listées ci-dessous.",
+      "descentAlertBody": "Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd'hui : allège-le, et c'est autant de moins à chaque appui.",
+      "descentAlertBodyPackOnly": "Tu descends avec {pack} kg de sac. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat : allège le sac, et c'est autant de moins à chaque appui.",
       "descentStage": "{stage} : {loss} m de descente"
     },
     "ui": {
@@ -841,7 +841,6 @@
     "formula": {
       "title": "Faisabilité pour ce trek",
       "intro": "On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.",
-      "outOfScopeNotice": "Le poids de ton sac n'entre pas dans ce feu, et c'est mesuré : de 0 à 45 kg de charge, le verdict ne bouge pas d'un cran. Ce feu compare ce que tu as déjà tenu à l'effort de chaque étape ; la charge de ton sac est traitée à part, dans ton sac.",
       "ceilingLabel": "Plafond conseillé : ${value} km-énergie/jour (${level})",
       "stagesTitle": "Étape par étape",
       "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-énergie",
@@ -975,8 +974,7 @@
     }
   },
   "goodies": {
-    "title": "Boutique Goodies",
-    "comingSoon": "Ce module arrive bientôt. Restez connecté !"
+    "title": "Boutique Goodies"
   },
   "noData": {
     "title": "Aucun sentier téléchargé",
@@ -1121,10 +1119,8 @@
     "objectiveTitle": "Objectif clé",
     "inviteSetDate": "Posez votre date de départ dans le Calendrier pour caler le compte à rebours.",
     "inviteFillProfile": "Remplissez votre fiche de renseignement pour adapter le plan à votre profil.",
-    "genericPlanNotice": "Plan générique : un plan dédié à ce sentier arrive bientôt.",
     "cautionVerdictNotice": "Votre faisabilité invite à la prudence : respectez la progression et n'écourtez pas la préparation.",
-    "departureTooClose": "Il reste $days jours : plan condensé sur le temps disponible.",
-    "noPlan": "Programme d'entraînement bientôt disponible pour ce sentier."
+    "departureTooClose": "Il reste $days jours : plan condensé sur le temps disponible."
   },
   "eta": {
     "title": "Temps estimé",
@@ -1752,12 +1748,6 @@
     "a11y": {
       "call": "Appeler $label",
       "website": "Ouvrir le site web"
-    },
-    "empty": {
-      "title": "Transport bientôt disponible",
-      "messageJoin": "Les informations pour rejoindre $name seront ajoutées prochainement.",
-      "messageLeave": "Les informations pour repartir de $name seront ajoutées prochainement.",
-      "messageGeneric": "Les informations de transport de ce sentier seront ajoutées prochainement."
     }
   },
   "fireRisk": {
@@ -1841,10 +1831,6 @@
       "openDetail": "Voir le détail de $name",
       "call": "Appeler $label",
       "website": "Ouvrir le site web"
-    },
-    "empty": {
-      "title": "Ravitaillement bientôt disponible",
-      "message": "Les commerces et points de ravitaillement de ce sentier seront ajoutés prochainement."
     }
   },
   "summary": {
@@ -1872,10 +1858,6 @@
     "restDayTitle": "Jour de repos — J$n",
     "restDayPlace": "Lieu : $place",
     "actions": {
-      "exportPdf": "EXPORTER EN PDF",
-      "exportPdfSoon": "Export PDF bientôt disponible ! La fonctionnalité est en cours de développement.",
-      "downloadMaps": "TÉLÉCHARGER LES CARTES OFFLINE",
-      "downloadMapsSoon": "Téléchargement des cartes offline bientôt disponible ! Cette fonctionnalité fera partie du module de randonnée.",
       "share": "PARTAGER MON PLAN"
     },
     "share": {
@@ -1900,8 +1882,6 @@
     "a11y": {
       "dayTile": "Voir le détail du jour $day",
       "restDayTile": "Détails du jour de repos $day",
-      "export": "Exporter le plan en PDF",
-      "download": "Télécharger les cartes hors ligne",
       "share": "Partager mon plan"
     }
   },
@@ -2001,7 +1981,7 @@
       "underweight": "Maigreur",
       "normal": "Corpulence normale",
       "overweight": "Surpoids",
-      "obese": "Obésité"
+      "obese": "Fort surpoids"
     },
     "consentTitle": "Données de morphologie (article 9 RGPD)",
     "consentBody": "Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.",
@@ -2050,7 +2030,7 @@
     "empty": "Aucune rando saisie pour l'instant.",
     "fieldDate": "Date",
     "fieldDays": "Nombre de jours",
-    "fieldAvgHours": "Marche moyenne par jour (h)",
+    "fieldAvgHours": "Temps de marche par jour (h)",
     "fieldElevation": "Dénivelé + total (m)",
     "fieldDistance": "Distance totale (km)",
     "errorDays": "Nombre de jours invalide (1 à 60)",

@@ -800,7 +800,6 @@ class _Translations$goodies$en extends Translations$goodies$fr {
 
 	// Translations
 	@override String get title => 'Goodies Shop';
-	@override String get comingSoon => 'This module is coming soon. Stay tuned!';
 }
 
 // Path: noData
@@ -983,10 +982,8 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String get objectiveTitle => 'Key objective';
 	@override String get inviteSetDate => 'Set your departure date in the Calendar to enable the countdown.';
 	@override String get inviteFillProfile => 'Fill in your info sheet to tailor the plan to your profile.';
-	@override String get genericPlanNotice => 'Generic plan: a plan dedicated to this trail is coming soon.';
 	@override String get cautionVerdictNotice => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.';
 	@override String departureTooClose({required Object days}) => '${days} days left: plan condensed to the available time.';
-	@override String get noPlan => 'Training plan coming soon for this trail.';
 }
 
 // Path: eta
@@ -1389,7 +1386,6 @@ class _Translations$transport$en extends Translations$transport$fr {
 	@override String get adviceTitle => 'Practical tips';
 	@override String get website => 'Website';
 	@override late final _Translations$transport$a11y$en a11y = _Translations$transport$a11y$en._(_root);
-	@override late final _Translations$transport$empty$en empty = _Translations$transport$empty$en._(_root);
 }
 
 // Path: fireRisk
@@ -1448,7 +1444,6 @@ class _Translations$shop$en extends Translations$shop$fr {
 	@override String get website => 'Website';
 	@override String get filterEmpty => 'No shop for this filter.';
 	@override late final _Translations$shop$a11y$en a11y = _Translations$shop$a11y$en._(_root);
-	@override late final _Translations$shop$empty$en empty = _Translations$shop$empty$en._(_root);
 }
 
 // Path: summary
@@ -1636,7 +1631,7 @@ class _Translations$pastHikes$en extends Translations$pastHikes$fr {
 	@override String get empty => 'No hike entered yet.';
 	@override String get fieldDate => 'Date';
 	@override String get fieldDays => 'Number of days';
-	@override String get fieldAvgHours => 'Average walking per day (h)';
+	@override String get fieldAvgHours => 'Walking time per day (h)';
 	@override String get fieldElevation => 'Total elevation gain (m)';
 	@override String get fieldDistance => 'Total distance (km)';
 	@override String get errorDays => 'Invalid number of days (1 to 60)';
@@ -1761,7 +1756,6 @@ class _Translations$hub$weather$en extends Translations$hub$weather$fr {
 
 	// Translations
 	@override String get title => 'Today\'s weather';
-	@override String get stub => 'Your stage weather is coming soon.';
 	@override String get unavailable => 'Weather unavailable right now.';
 	@override String get alertStorm => 'Storm alert';
 	@override String tempRange({required Object min, required Object max}) => '${min}° / ${max}°';
@@ -2115,7 +2109,8 @@ class _Translations$checklist$weight$en extends Translations$checklist$weight$fr
 	@override String get referenceExplainer => 'Reference weight for your height: {kg} kg. The pack ceiling is computed on it, not on your actual weight.';
 	@override String get referenceFallbackHeight => 'Your pack ceiling is computed on your actual weight: for your height there is no published reference weight to lean on. We would rather tell you than show you a wrong number.';
 	@override String get descentAlertTitle => 'Descents: what you carry';
-	@override String get descentAlertBody => 'You will go down with {kg} kg beyond the reference weight, pack included. On a descent each step takes several times that weight: that is mechanics, not a forecast. The stages that descend the most are listed below.';
+	@override String get descentAlertBody => 'Two weights go down with you: {pack} kg of pack, and {above} kg above your fit weight. On a descent every step sends through your knee 3.46 times the weight going down with you, against 2.61 on the flat. Only the pack can be changed today: lighten it, and that is less at every step.';
+	@override String get descentAlertBodyPackOnly => 'You go down with {pack} kg of pack. On a descent every step sends through your knee 3.46 times the weight going down with you, against 2.61 on the flat: lighten the pack, and that is less at every step.';
 	@override String get descentStage => '{stage}: {loss} m of descent';
 }
 
@@ -2278,7 +2273,6 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	// Translations
 	@override String get title => 'Feasibility for this trek';
 	@override String get intro => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.';
-	@override String get outOfScopeNotice => 'Your pack weight is not part of this rating, and that has been measured: from 0 to 45 kg of load, the verdict does not move by a single step. This rating compares what you have already held to the effort of each stage; the load you carry is handled separately, in your pack.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})';
 	@override String get stagesTitle => 'Stage by stage';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km';
@@ -3125,19 +3119,6 @@ class _Translations$transport$a11y$en extends Translations$transport$a11y$fr {
 	@override String get website => 'Open website';
 }
 
-// Path: transport.empty
-class _Translations$transport$empty$en extends Translations$transport$empty$fr {
-	_Translations$transport$empty$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Transport coming soon';
-	@override String messageJoin({required Object name}) => 'Information on getting to ${name} will be added soon.';
-	@override String messageLeave({required Object name}) => 'Information on leaving ${name} will be added soon.';
-	@override String get messageGeneric => 'Transport information for this trail will be added soon.';
-}
-
 // Path: fireRisk.update
 class _Translations$fireRisk$update$en extends Translations$fireRisk$update$fr {
 	_Translations$fireRisk$update$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3249,17 +3230,6 @@ class _Translations$shop$a11y$en extends Translations$shop$a11y$fr {
 	@override String get website => 'Open website';
 }
 
-// Path: shop.empty
-class _Translations$shop$empty$en extends Translations$shop$empty$fr {
-	_Translations$shop$empty$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Supplies coming soon';
-	@override String get message => 'Shops and resupply points for this trail will be added soon.';
-}
-
 // Path: summary.stats
 class _Translations$summary$stats$en extends Translations$summary$stats$fr {
 	_Translations$summary$stats$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3283,10 +3253,6 @@ class _Translations$summary$actions$en extends Translations$summary$actions$fr {
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get exportPdf => 'EXPORT AS PDF';
-	@override String get exportPdfSoon => 'PDF export coming soon! This feature is under development.';
-	@override String get downloadMaps => 'DOWNLOAD OFFLINE MAPS';
-	@override String get downloadMapsSoon => 'Offline map download coming soon! This feature will be part of the hiking module.';
 	@override String get share => 'SHARE MY PLAN';
 }
 
@@ -3332,8 +3298,6 @@ class _Translations$summary$a11y$en extends Translations$summary$a11y$fr {
 	// Translations
 	@override String dayTile({required Object day}) => 'View details for day ${day}';
 	@override String restDayTile({required Object day}) => 'Rest day ${day} details';
-	@override String get export => 'Export plan as PDF';
-	@override String get download => 'Download offline maps';
 	@override String get share => 'Share my plan';
 }
 
@@ -3398,7 +3362,7 @@ class _Translations$hikerProfile$bmiCategories$en extends Translations$hikerProf
 	@override String get underweight => 'Underweight';
 	@override String get normal => 'Normal weight';
 	@override String get overweight => 'Overweight';
-	@override String get obese => 'Obesity';
+	@override String get obese => 'Significant overweight';
 }
 
 // Path: walkTest.levels
@@ -3905,7 +3869,6 @@ extension on TranslationsEn {
 			'hub.trekCard.plan' => 'Plan my trek',
 			'hub.trekCard.completedTitle' => 'Trek completed',
 			'hub.weather.title' => 'Today\'s weather',
-			'hub.weather.stub' => 'Your stage weather is coming soon.',
 			'hub.weather.unavailable' => 'Weather unavailable right now.',
 			'hub.weather.alertStorm' => 'Storm alert',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
@@ -4242,7 +4205,8 @@ extension on TranslationsEn {
 			'checklist.weight.referenceExplainer' => 'Reference weight for your height: {kg} kg. The pack ceiling is computed on it, not on your actual weight.',
 			'checklist.weight.referenceFallbackHeight' => 'Your pack ceiling is computed on your actual weight: for your height there is no published reference weight to lean on. We would rather tell you than show you a wrong number.',
 			'checklist.weight.descentAlertTitle' => 'Descents: what you carry',
-			'checklist.weight.descentAlertBody' => 'You will go down with {kg} kg beyond the reference weight, pack included. On a descent each step takes several times that weight: that is mechanics, not a forecast. The stages that descend the most are listed below.',
+			'checklist.weight.descentAlertBody' => 'Two weights go down with you: {pack} kg of pack, and {above} kg above your fit weight. On a descent every step sends through your knee 3.46 times the weight going down with you, against 2.61 on the flat. Only the pack can be changed today: lighten it, and that is less at every step.',
+			'checklist.weight.descentAlertBodyPackOnly' => 'You go down with {pack} kg of pack. On a descent every step sends through your knee 3.46 times the weight going down with you, against 2.61 on the flat: lighten the pack, and that is less at every step.',
 			'checklist.weight.descentStage' => '{stage}: {loss} m of descent',
 			'checklist.ui.title' => 'Gear & Pack',
 			'checklist.ui.requirementRequired' => 'Required',
@@ -4555,7 +4519,6 @@ extension on TranslationsEn {
 			'feasibility.gaps.effort' => 'Overall effort (IBP) above your experience',
 			'feasibility.formula.title' => 'Feasibility for this trek',
 			'feasibility.formula.intro' => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.',
-			'feasibility.formula.outOfScopeNotice' => 'Your pack weight is not part of this rating, and that has been measured: from 0 to 45 kg of load, the verdict does not move by a single step. This rating compares what you have already held to the effort of each stage; the load you carry is handled separately, in your pack.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})',
 			'feasibility.formula.stagesTitle' => 'Stage by stage',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km',
@@ -4673,7 +4636,6 @@ extension on TranslationsEn {
 			'tips.themes.nature' => 'Nature',
 			'tips.themes.other' => 'Misc',
 			'goodies.title' => 'Goodies Shop',
-			'goodies.comingSoon' => 'This module is coming soon. Stay tuned!',
 			'noData.title' => 'No trail downloaded',
 			'noData.subtitle' => 'Download a trail to get started',
 			'noData.offlineHint' => 'Data will be available offline for your hike.',
@@ -4784,10 +4746,8 @@ extension on TranslationsEn {
 			'training.objectiveTitle' => 'Key objective',
 			'training.inviteSetDate' => 'Set your departure date in the Calendar to enable the countdown.',
 			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
-			'training.genericPlanNotice' => 'Generic plan: a plan dedicated to this trail is coming soon.',
 			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
 			'training.departureTooClose' => ({required Object days}) => '${days} days left: plan condensed to the available time.',
-			'training.noPlan' => 'Training plan coming soon for this trail.',
 			'eta.title' => 'Estimated time',
 			'eta.toNextWaypoint' => 'Next point',
 			'eta.toStageEnd' => 'Stage end',
@@ -4845,12 +4805,12 @@ extension on TranslationsEn {
 			'gamification.defi.noDefi' => 'No challenge in progress right now.',
 			'shareVisibility.title' => 'Sharing and visibility',
 			'shareVisibility.intro' => 'By default, nothing is shared. Turn on below, purpose by purpose, what you want to make visible.',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.consentLink' => 'Manage my consent (privacy)',
 			'shareVisibility.stageResults' => 'Share my stage results',
 			'shareVisibility.stageResultsDesc' => 'A pseudonymous card (no direct personal data).',
 			'shareVisibility.leaderboard' => 'Appear in leaderboards',
+			_ => null,
+		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
 			'shareVisibility.activityFeed' => 'Post to the activity feed',
 			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
@@ -5242,10 +5202,6 @@ extension on TranslationsEn {
 			'transport.website' => 'Website',
 			'transport.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'transport.a11y.website' => 'Open website',
-			'transport.empty.title' => 'Transport coming soon',
-			'transport.empty.messageJoin' => ({required Object name}) => 'Information on getting to ${name} will be added soon.',
-			'transport.empty.messageLeave' => ({required Object name}) => 'Information on leaving ${name} will be added soon.',
-			'transport.empty.messageGeneric' => 'Transport information for this trail will be added soon.',
 			'fireRisk.title' => 'Fire risk',
 			'fireRisk.refresh' => 'Refresh',
 			'fireRisk.refreshed' => 'Data updated',
@@ -5307,8 +5263,6 @@ extension on TranslationsEn {
 			'shop.a11y.openDetail' => ({required Object name}) => 'View details for ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'shop.a11y.website' => 'Open website',
-			'shop.empty.title' => 'Supplies coming soon',
-			'shop.empty.message' => 'Shops and resupply points for this trail will be added soon.',
 			'summary.title' => 'Plan summary',
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			'summary.direction' => 'Direction',
@@ -5330,10 +5284,6 @@ extension on TranslationsEn {
 			'summary.restDay' => 'Rest day',
 			'summary.restDayTitle' => ({required Object n}) => 'Rest day — D${n}',
 			'summary.restDayPlace' => ({required Object place}) => 'Place: ${place}',
-			'summary.actions.exportPdf' => 'EXPORT AS PDF',
-			'summary.actions.exportPdfSoon' => 'PDF export coming soon! This feature is under development.',
-			'summary.actions.downloadMaps' => 'DOWNLOAD OFFLINE MAPS',
-			'summary.actions.downloadMapsSoon' => 'Offline map download coming soon! This feature will be part of the hiking module.',
 			'summary.actions.share' => 'SHARE MY PLAN',
 			'summary.share.titleLine' => ({required Object name}) => 'My ${name}',
 			'summary.share.walkDays' => ({required Object days}) => '${days} walking days',
@@ -5352,15 +5302,11 @@ extension on TranslationsEn {
 			'summary.empty.action' => 'SET UP ITINERARY',
 			'summary.a11y.dayTile' => ({required Object day}) => 'View details for day ${day}',
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Rest day ${day} details',
-			'summary.a11y.export' => 'Export plan as PDF',
-			'summary.a11y.download' => 'Download offline maps',
 			'summary.a11y.share' => 'Share my plan',
 			'import.title' => 'Import a GPX',
 			'import.headerTitle' => 'Import a GPX file',
 			'import.headerBody' => 'Import a GPS track recorded with another app (Strava, Garmin, etc.) to generate your summary.',
 			'import.pickButton' => 'CHOOSE A GPX FILE',
-			_ => null,
-		} ?? switch (path) {
 			'import.traceSection' => 'Imported track',
 			'import.statsSection' => 'Statistics',
 			'import.statDistance' => 'Distance',
@@ -5377,6 +5323,8 @@ extension on TranslationsEn {
 			'import.warningsSection' => 'Warnings',
 			'import.warningOutOfBounds' => '{count} point(s) out of area ignored.',
 			'import.warningOffTrail' => '{percent}% of points are far from the trail.',
+			_ => null,
+		} ?? switch (path) {
 			'import.invalidTooFewPoints' => 'GPX file too small: {count} points (minimum 10).',
 			'import.invalidOutOfBounds' => 'The track does not match this trail\'s area.',
 			'import.errorUnreadable' => 'Unable to read the file.',
@@ -5437,7 +5385,7 @@ extension on TranslationsEn {
 			'hikerProfile.bmiCategories.underweight' => 'Underweight',
 			'hikerProfile.bmiCategories.normal' => 'Normal weight',
 			'hikerProfile.bmiCategories.overweight' => 'Overweight',
-			'hikerProfile.bmiCategories.obese' => 'Obesity',
+			'hikerProfile.bmiCategories.obese' => 'Significant overweight',
 			'hikerProfile.consentTitle' => 'Body metrics (GDPR article 9)',
 			'hikerProfile.consentBody' => 'Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.',
 			'hikerProfile.consentToggle' => 'I allow my body metrics to be used for feasibility',
@@ -5479,7 +5427,7 @@ extension on TranslationsEn {
 			'pastHikes.empty' => 'No hike entered yet.',
 			'pastHikes.fieldDate' => 'Date',
 			'pastHikes.fieldDays' => 'Number of days',
-			'pastHikes.fieldAvgHours' => 'Average walking per day (h)',
+			'pastHikes.fieldAvgHours' => 'Walking time per day (h)',
 			'pastHikes.fieldElevation' => 'Total elevation gain (m)',
 			'pastHikes.fieldDistance' => 'Total distance (km)',
 			'pastHikes.errorDays' => 'Invalid number of days (1 to 60)',

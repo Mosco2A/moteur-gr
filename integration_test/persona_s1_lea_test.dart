@@ -364,13 +364,14 @@ void main() {
     // Lea a renseigne sa fiche et une rando, le moteur a de quoi trancher.
     exigeAbsent(find.text(t.feasibility.sourceFallback), P, 'verdict',
         'le repli « questionnaire » alors que le profil est renseigne');
-    // EXIGENCE — C4 (decision Chris #100279) : l'ecran DOIT dire ce que le
-    // verdict NE regarde PAS (le sac, la saison). C'est une mention produit
-    // exigee, pas un ornement : sans elle, un randonneur lit le feu comme une
-    // garantie.
-    await exigeVisible(tester, find.text(t.feasibility.formula.outOfScopeNotice),
-        P, 'verdict', 'la mention « le sac et la saison n entrent pas dans le '
-            'calcul » sous le feu tricolore (C4)');
+    // EXIGENCE RETOURNEE (tache 552) : l'ecran ne doit PLUS porter la mention
+    // hors-perimetre « le poids de ton sac n entre pas dans ce feu, de 0 a
+    // 45 kg... ». Elle expliquait une absence sans rien changer au resultat.
+    // Regle Chris du 25/09 : on se tait sur ce qu on n a pas, on parle de ce que
+    // ca change. Le sac parle desormais la ou il sert : dans le Sac.
+    exigeAbsent(find.byIcon(Icons.visibility_off_outlined), P, 'verdict',
+        'la mention hors-perimetre « le sac n entre pas dans ce feu » '
+        '(supprimee, tache 552)');
 
     // Retour au COCKPIT par le routeur (etat connu, evite le cumul de piles).
     await _goHome(tester, P);

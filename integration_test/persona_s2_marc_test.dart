@@ -169,14 +169,16 @@ void main() {
             '"${t.feasibility.formula.verdicts.orange}" / '
             '"${t.feasibility.formula.verdicts.red}") — c est TOUT ce qu il '
             'vient chercher');
-    // EXIGENCE C4 — la mention « le sac et la saison ne comptent pas » doit
-    // accompagner le feu, y compris pour un utilisateur presse.
-    await exigeVisible(
-        tester,
-        find.text(t.feasibility.formula.outOfScopeNotice),
+    // EXIGENCE RETOURNEE (tache 552) — la mention hors-perimetre « le poids de
+    // ton sac n entre pas dans ce feu » est SUPPRIMEE : elle expliquait une
+    // absence sans rien changer au resultat. Pour un utilisateur presse, c etait
+    // meme la premiere phrase a survoler. On verrouille son absence.
+    exigeAbsent(
+        find.byIcon(Icons.visibility_off_outlined),
         P,
         'faisabilite',
-        'la mention hors-perimetre (sac, saison) sous le feu tricolore (C4)');
+        'la mention hors-perimetre sous le feu tricolore (supprimee, '
+        'tache 552)');
     // Retour cockpit par le routeur (etat connu).
     await _goHome(tester, P);
 

@@ -416,7 +416,10 @@ void main() {
         // aucune meteo dans « Preparer ». On verrouille son ABSENCE TOTALE :
         // ni la tuile, ni le bandeau rando, ni la carte « Meteo ».
         expect(find.text(t.hub.weather.title), findsNothing);
-        expect(find.text(t.hub.weather.stub), findsNothing);
+        // La cle `hub.weather.stub` (« La meteo de votre etape arrive
+        // bientot. ») a ete SUPPRIMEE des cinq langues par la tache 552 : plus
+        // rien ne l'affichait depuis le retrait de la tuile, et c'etait une
+        // promesse creuse. Il n'y a donc plus de texte a chercher ici.
         expect(find.text(t.navPilote.weatherBannerTitle), findsNothing);
         expect(find.text(t.hub.cards.weather), findsNothing);
         // LOT 1 (retour Chris #2) : le bandeau de salutation « Bonjour, ... » a ete

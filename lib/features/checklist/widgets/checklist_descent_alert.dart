@@ -1,5 +1,8 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -34,6 +37,17 @@ import '../providers/checklist_provider.dart';
 /// charge mecanique. Il ne glisse pas vers « tu risques de te blesser » : #S14
 /// (Zwolinski 2025, 162 randonneurs, p = 0,708) ne montre AUCUNE relation entre
 /// categorie d'IMC et blessure en randonnee.
+///
+/// DEUX NOMBRES, PLUS JAMAIS UN TOTAL (retour Chris 25/09, tache 552). Mot pour
+/// mot : « Descente et poid du sac, je ne comprends pas le texte ». Le texte
+/// additionnait dans un seul chiffre les kilos du SAC et les kilos AU-DESSUS DU
+/// POIDS DE FORME — or l'utilisateur ne peut agir que sur le sac, et il ne
+/// savait pas ce qui venait de quoi. Les deux nombres sont desormais ENONCES
+/// SEPAREMENT, le chiffre mecanique est UNIQUE et source (#S23-a Kutzner 2010 :
+/// 3,46 fois le poids en descente contre 2,61 a plat), et l'action est UNIQUE :
+/// alleger le sac. Quand il n'y a rien au-dessus du poids de forme, on n'ecrit
+/// pas « 0,0 kg » : le texte bascule sur la variante SAC SEUL — on se tait sur
+/// ce qu'on n'a pas.
 class ChecklistDescentAlert extends ConsumerWidget {
   const ChecklistDescentAlert({super.key, this.maxStages = 3});
 
@@ -52,6 +66,25 @@ class ChecklistDescentAlert extends ConsumerWidget {
     // rien a dire, donc on ne dit rien. Une alerte qui se declenche toujours
     // n'alerte plus.
     if (excess == null || excess <= 0) return const SizedBox.shrink();
+
+    // LES DEUX PARTS, SEPAREES (tache 552). Meme arithmetique que
+    // `excessLoadKg` — dont elles sont exactement les deux termes — mais
+    // affichees une par une : le sac est la part sur laquelle l'utilisateur
+    // peut agir, l'autre ne se regle pas en bouclant un sac.
+    final packKg = math.max(0.0, state.checkedWeightKg);
+    final reference =
+        BodyWeightReference.referenceMassKg(state.bodyHeightCm) ?? 0.0;
+    final aboveReferenceKg = math.max(0.0, state.bodyWeightKg - reference);
+
+    // LE SEPARATEUR DECIMAL SUIT LA LANGUE. Sans ca, la phrase francaise
+    // melangeait « 10.0 kg » (point) et « 3,46 fois » (virgule) dans la meme
+    // ligne : deux conventions dans une phrase que Chris a justement dit ne pas
+    // comprendre. L'anglais garde le point, les quatre autres langues la
+    // virgule — c'est intl qui le sait, pas nous.
+    final nombre = NumberFormat.decimalPatternDigits(
+      locale: LocaleSettings.currentLocale.languageCode,
+      decimalDigits: 1,
+    );
 
     final assessment = ref.watch(feasibilityAssessmentProvider).value;
     final stages = assessment == null
@@ -100,7 +133,15 @@ class ChecklistDescentAlert extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingXs),
           Text(
-            w.descentAlertBody.replaceAll('{kg}', excess.toStringAsFixed(1)),
+            // Sous 0,05 kg l'arrondi afficherait « 0,0 kg au-dessus de ton
+            // poids de forme » : un nombre nul enonce comme un fait. On passe
+            // alors a la variante qui ne parle que du sac.
+            aboveReferenceKg >= 0.05
+                ? w.descentAlertBody
+                    .replaceAll('{pack}', nombre.format(packKg))
+                    .replaceAll('{above}', nombre.format(aboveReferenceKg))
+                : w.descentAlertBodyPackOnly
+                    .replaceAll('{pack}', nombre.format(packKg)),
             style: theme.textTheme.bodySmall,
           ),
           // Les etapes qui descendent le plus, nommees. Pas de seuil : un

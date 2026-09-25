@@ -97,7 +97,6 @@
     },
     "weather": {
       "title": "Meteo di oggi",
-      "stub": "Il meteo della tua tappa arriva presto.",
       "unavailable": "Meteo non disponibile al momento.",
       "alertStorm": "Allerta temporale",
       "tempRange": "$min° / $max°"
@@ -484,7 +483,8 @@
       "referenceExplainer": "Peso di riferimento per la tua statura: {kg} kg. Il tetto dello zaino si calcola su quello, non sul tuo peso reale.",
       "referenceFallbackHeight": "Il tetto del tuo zaino è calcolato sul tuo peso reale: per la tua statura non esiste un peso di riferimento pubblicato su cui appoggiarsi. Preferiamo dirtelo piuttosto che mostrarti una cifra falsa.",
       "descentAlertTitle": "Discese: ciò che porti",
-      "descentAlertBody": "Scenderai con {kg} kg oltre il peso di riferimento, zaino compreso. In discesa ogni appoggio incassa più volte quel peso: è meccanica, non un pronostico. Le tappe che scendono di più sono elencate qui sotto.",
+      "descentAlertBody": "Due pesi scendono con te: {pack} kg di zaino e {above} kg sopra il tuo peso di forma. In discesa, ogni passo fa passare nel ginocchio 3,46 volte il peso che scende con te, contro 2,61 in piano. Solo lo zaino si può cambiare oggi: alleggeriscilo, ed è meno a ogni passo.",
+      "descentAlertBodyPackOnly": "Scendi con {pack} kg di zaino. In discesa, ogni passo fa passare nel ginocchio 3,46 volte il peso che scende con te, contro 2,61 in piano: alleggerisci lo zaino, ed è meno a ogni passo.",
       "descentStage": "{stage}: {loss} m di discesa"
     },
     "ui": {
@@ -841,7 +841,6 @@
     "formula": {
       "title": "Fattibilità per questo trek",
       "intro": "Confrontiamo lo sforzo di ogni tappa con ciò che il tuo profilo può reggere in un giorno. Verde, arancione o rosso.",
-      "outOfScopeNotice": "Il peso del tuo zaino non entra in questa valutazione, ed è misurato: da 0 a 45 kg di carico il verdetto non si sposta di un gradino. Questa valutazione confronta ciò che hai già tenuto con lo sforzo di ogni tappa; il carico che porti è trattato a parte, nel tuo zaino.",
       "ceilingLabel": "Soglia consigliata: ${value} km-energia/giorno (${level})",
       "stagesTitle": "Tappa per tappa",
       "stageEffort": "${distance} km + ${elevation} m D+ = ${effort} km-energia",
@@ -975,8 +974,7 @@
     }
   },
   "goodies": {
-    "title": "Negozio Goodies",
-    "comingSoon": "Questo modulo arriverà presto. Resta connesso!"
+    "title": "Negozio Goodies"
   },
   "noData": {
     "title": "Nessun sentiero scaricato",
@@ -1121,10 +1119,8 @@
     "objectiveTitle": "Obiettivo chiave",
     "inviteSetDate": "Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.",
     "inviteFillProfile": "Compila la tua scheda per adattare il piano al tuo profilo.",
-    "genericPlanNotice": "Piano generico: un piano dedicato a questo sentiero arriverà presto.",
     "cautionVerdictNotice": "La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.",
-    "departureTooClose": "Restano $days giorni: piano condensato sul tempo disponibile.",
-    "noPlan": "Programma di allenamento presto disponibile per questo sentiero."
+    "departureTooClose": "Restano $days giorni: piano condensato sul tempo disponibile."
   },
   "eta": {
     "title": "Tempo stimato",
@@ -1752,12 +1748,6 @@
     "a11y": {
       "call": "Chiama $label",
       "website": "Apri il sito web"
-    },
-    "empty": {
-      "title": "Trasporti presto disponibili",
-      "messageJoin": "Le informazioni per raggiungere $name saranno aggiunte a breve.",
-      "messageLeave": "Le informazioni per ripartire da $name saranno aggiunte a breve.",
-      "messageGeneric": "Le informazioni sui trasporti di questo sentiero saranno aggiunte a breve."
     }
   },
   "fireRisk": {
@@ -1841,10 +1831,6 @@
       "openDetail": "Vedi i dettagli di $name",
       "call": "Chiama $label",
       "website": "Apri il sito web"
-    },
-    "empty": {
-      "title": "Rifornimenti presto disponibili",
-      "message": "I negozi e i punti di rifornimento di questo sentiero saranno aggiunti a breve."
     }
   },
   "summary": {
@@ -1872,10 +1858,6 @@
     "restDayTitle": "Giorno di riposo — G$n",
     "restDayPlace": "Luogo: $place",
     "actions": {
-      "exportPdf": "ESPORTA IN PDF",
-      "exportPdfSoon": "Esportazione PDF presto disponibile! La funzione è in fase di sviluppo.",
-      "downloadMaps": "SCARICA LE MAPPE OFFLINE",
-      "downloadMapsSoon": "Download delle mappe offline presto disponibile! Questa funzione farà parte del modulo escursioni.",
       "share": "CONDIVIDI IL MIO PIANO"
     },
     "share": {
@@ -1900,8 +1882,6 @@
     "a11y": {
       "dayTile": "Vedi i dettagli del giorno $day",
       "restDayTile": "Dettagli del giorno di riposo $day",
-      "export": "Esporta il piano in PDF",
-      "download": "Scarica le mappe offline",
       "share": "Condividi il mio piano"
     }
   },
@@ -2001,7 +1981,7 @@
       "underweight": "Sottopeso",
       "normal": "Normopeso",
       "overweight": "Sovrappeso",
-      "obese": "Obesità"
+      "obese": "Forte sovrappeso"
     },
     "consentTitle": "Dati corporei (GDPR articolo 9)",
     "consentBody": "Età, altezza e peso sono dati sanitari. Restano sul tuo dispositivo e in un backup senza il tuo nome né email, mai inviati in chiaro. Questo consenso è richiesto separatamente.",
@@ -2050,7 +2030,7 @@
     "empty": "Nessuna escursione inserita.",
     "fieldDate": "Data",
     "fieldDays": "Numero di giorni",
-    "fieldAvgHours": "Cammino medio al giorno (h)",
+    "fieldAvgHours": "Tempo di cammino al giorno (h)",
     "fieldElevation": "Dislivello + totale (m)",
     "fieldDistance": "Distanza totale (km)",
     "errorDays": "Numero di giorni non valido (1 a 60)",

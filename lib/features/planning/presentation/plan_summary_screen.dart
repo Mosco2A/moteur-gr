@@ -767,12 +767,17 @@ class _DaySummaryTile extends ConsumerWidget {
 
 /// Boutons d'action en bas du resume (parite GR20 `_ActionButtons`).
 ///
-/// « Exporter en PDF » et « Telecharger les cartes offline » = STUBS (SnackBar
-/// « bientot disponible », comme GR20 : StepWays ne porte pas encore l'offline
-/// reel ni l'export PDF). « Partager mon plan » = ACTIF via `share_plus`
-/// (`Share.share`, meme API que le reste du code StepWays), texte GENERIQUE par
-/// sentier (nom, config, stats, planning jour par jour) — aucun « GR20 » ni lieu
-/// en dur.
+/// UN SEUL BOUTON, ET IL MARCHE (tache 552). « Exporter en PDF » et
+/// « Telecharger les cartes offline » etaient deux STUBS : appuyer dessus
+/// n'ouvrait qu'une SnackBar « bientot disponible ! La fonctionnalite est en
+/// cours de developpement ». Un bouton qui ne fait rien EST une promesse creuse,
+/// et c'est la forme la plus trompeuse : elle se donne l'apparence d'une
+/// fonction. Retour Chris 25/09, mot pour mot : « Tu les as, tu les a pas, si tu
+/// ne les a pas tu ne met rien ». Les deux boutons sont donc RETIRES avec leurs
+/// libelles et leurs annonces — ils reviendront le jour ou l'export et l'offline
+/// existent. « Partager mon plan » = ACTIF via `share_plus` (`Share.share`, meme
+/// API que le reste du code StepWays), texte GENERIQUE par sentier (nom, config,
+/// stats, planning jour par jour) — aucun « GR20 » ni lieu en dur.
 class _ActionButtons extends ConsumerWidget {
   const _ActionButtons({
     required this.trailId,
@@ -790,38 +795,6 @@ class _ActionButtons extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // Exporter en PDF (stub).
-        Semantics(
-          button: true,
-          label: t.summary.a11y.export,
-          child: ElevatedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(t.summary.actions.exportPdfSoon)),
-              );
-            },
-            icon: const Icon(Icons.picture_as_pdf),
-            label: Text(t.summary.actions.exportPdf),
-          ),
-        ),
-        const SizedBox(height: AppTheme.spacingSm),
-
-        // Telecharger cartes offline (stub).
-        Semantics(
-          button: true,
-          label: t.summary.a11y.download,
-          child: OutlinedButton.icon(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(t.summary.actions.downloadMapsSoon)),
-              );
-            },
-            icon: const Icon(Icons.download),
-            label: Text(t.summary.actions.downloadMaps),
-          ),
-        ),
-        const SizedBox(height: AppTheme.spacingSm),
-
         // Partager (actif via share_plus).
         Semantics(
           button: true,
