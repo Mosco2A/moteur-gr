@@ -49,20 +49,55 @@ def _iter_logcat(serial):
 def _iter_logfile(path):
     """Tail -f d'un fichier de log (voie flutter test).
 
-    On attend l'apparition du fichier, puis on lit les nouvelles lignes en
-    continu. On se place a la FIN a l'ouverture pour ne pas rejouer d'anciens
-    marqueurs d'un run precedent.
+    CORRIGE LE 25/09 (tache 559) — ZERO CAPTURE SUR UN RUN COMPLET. Le run S11
+    a joue ses onze pas, imprime ses onze marqueurs dans le log, et le demon
+    n'a ecrit AUCUNE image : il gardait un descripteur ouvert en permanence et
+    se placait a la FIN a l'ouverture. Quand PowerShell (`Out-File -Append`)
+    reecrit le fichier au lieu de l'allonger, ce descripteur pointe sur un
+    fichier qui ne grandit plus — le demon ecoute un fichier mort, en silence,
+    et un run entier se termine sans la moindre preuve a montrer.
+
+    On lit desormais PAR CHEMIN, avec un offset d'octets : a chaque tour on
+    rouvre le fichier, on reprend ou on s'etait arrete, et si le fichier a
+    RETRECI (troncature ou remplacement) on repart de zero. Le runner garantit
+    un log VIERGE au demarrage (il archive le precedent), donc lire depuis le
+    debut ne rejoue jamais les marqueurs d'un run passe.
     """
     while not os.path.exists(path):
         time.sleep(0.2)
-    with open(path, "r", encoding="utf-8", errors="replace") as fh:
-        fh.seek(0, os.SEEK_END)
-        while True:
-            line = fh.readline()
-            if line:
-                yield line
-            else:
+    offset = 0
+    reste = ""
+    while True:
+        try:
+            taille = os.path.getsize(path)
+        except OSError:
+            time.sleep(0.2)
+            continue
+        if taille < offset:
+            # Fichier tronque ou remplace : on repart du debut.
+            offset = 0
+            reste = ""
+        if taille > offset:
+            try:
+                # Lecture BINAIRE : l'offset est un nombre d'OCTETS, comme
+                # `getsize`. En mode texte, `tell()` rend une position opaque
+                # qu'on ne peut pas comparer a une taille de fichier — c'est
+                # exactement le genre de decalage silencieux qui fait qu'un
+                # garde-fou echoue sans rien dire.
+                with open(path, "rb") as fh:
+                    fh.seek(offset)
+                    brut = fh.read()
+                    offset = fh.tell()
+            except OSError:
                 time.sleep(0.2)
+                continue
+            bloc = reste + brut.decode("utf-8", errors="replace")
+            lignes = bloc.split("\n")
+            reste = lignes.pop()
+            for ligne in lignes:
+                yield ligne
+        else:
+            time.sleep(0.2)
 
 
 def main() -> int:
