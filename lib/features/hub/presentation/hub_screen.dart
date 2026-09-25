@@ -41,6 +41,12 @@ import 'widgets/quick_access_card.dart';
 /// Slang (`t.hub.*`, `t.nav.*`) — zero texte en dur, aucun libelle propre a un
 /// sentier particulier (cloisonnement moteur generique).
 ///
+/// UNE SEULE EXCEPTION A S8, ARBITREE PAR CHRIS (retour #13, tache 553) : la
+/// carte « Guides des villes » est MASQUEE alors que sa route vit toujours. S8
+/// interdit une carte sans cible, pas une cible sans carte : c'est Chris qui
+/// decide de ce qu'il montre. Rien n'est supprime (routes, ecrans et tests de la
+/// feature guides restent en place), la carte est juste retiree du cockpit.
+///
 /// ACCUEIL TERRAIN (StepWays refonte nav — hub-and-push PUR, parité GR20 modèle A)
 /// : c'est le cockpit « terrain » (`/home`, rando active). Il CONSERVE son
 /// `AppBar` (accès Informations / Profil / Mes treks / Réglages, retours Chris) et
@@ -51,6 +57,13 @@ import 'widgets/quick_access_card.dart';
 ///   * **Randonner** : uniquement en rando active (phase hike) ;
 ///   * **Informations** : toujours présente ;
 ///   * **Après le trek** : uniquement une fois terminé (phase after).
+///
+/// Hors sections, une seule carte vit SEULE dans le scroll : le **Journal**
+/// (retour Chris #11, tache 553). Elle est posée juste sous la carte du trek,
+/// sans aucune garde de phase — donc au MÊME endroit en préparation, en rando et
+/// après. Avant, elle changeait de section selon la phase (« Randonner » en
+/// rando, « Informations » sinon) : une porte qui déménage est une porte qu'on ne
+/// retrouve pas.
 ///
 /// PAS DE BOTTOM BAR (D1, parité GR20 pure) : le cockpit n'a plus de barre du bas
 /// contextuelle (l'ancien raccourci de défilement Préparer/Randonner/Après, dernier
@@ -200,6 +213,34 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             const HubTrekCard(),
             const SizedBox(height: AppTheme.spacingLg),
 
+            // --- JOURNAL — CARTE AUTONOME DU COCKPIT (retour Chris #11,
+            // tache 553) ---
+            // Mot pour mot : « journal est dans information dans
+            // preparation??? ». La carte DEMENAGEAIT selon la phase : dans
+            // « Randonner » en rando (place GR20), dans « Informations » sinon
+            // (correctif d'acces R10 / LOT L10). Deux endroits pour une meme
+            // porte, donc une porte qu'on ne retrouve pas : en preparation on
+            // allait la chercher sous « Informations », rubrique de lecture, ce
+            // qui n'a aucun sens pour un carnet qu'on ECRIT.
+            //
+            // Elle est desormais UNE CARTE A ELLE SEULE, posee juste sous la
+            // carte du trek — le carnet appartient au trek, pas a une rubrique
+            // — et rendue SANS AUCUNE GARDE : meme place, meme hauteur de
+            // scroll, dans les TROIS phases (preparation, rando, apres).
+            //
+            // L'ACCES REPARE EN R10 / LOT L10 EST CONSERVE, ET RENFORCE : le
+            // journal n'est plus enferme dans aucun bloc conditionnel, donc
+            // plus aucune phase ne peut le faire disparaitre. Il reste rendu
+            // UNE SEULE FOIS a l'ecran (plus de doublon possible : il n'y a
+            // plus qu'un seul endroit ou il est ecrit).
+            QuickAccessCard(
+              icon: Icons.menu_book_outlined,
+              title: t.hub.cards.journal,
+              subtitle: t.hub.cards.journalSub,
+              onTap: () => context.push('/journal'),
+            ),
+            const SizedBox(height: AppTheme.spacingLg),
+
             // --- Section Preparer (RF-6) — ACCORDÉON (D3, R8+R13) ---
             // Parité GR20 modèle A : Préparer reste TOUJOURS présente dans le
             // scroll, mais REPLIÉE une fois parti (phase hike) ou rentré (after)
@@ -243,6 +284,19 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   title: t.hub.cards.calendar,
                   subtitle: t.hub.cards.calendarSub,
                   onTap: () => context.push('/trail/$trailId/calendar'),
+                ),
+                // RETOUR CHRIS #6 (tache 553) — « preparation physique doit
+                // aller en dessous de calendrier ». La carte « Preparation
+                // physique » fermait la section : c'etait la DERNIERE des dix
+                // cartes de prepa, alors qu'elle se decide avec les DATES (on
+                // s'entraine N semaines avant le depart, donc on la lit juste
+                // apres avoir pose le calendrier). Elle est donc ICI, juste
+                // sous « Calendrier », et plus en fin de liste.
+                QuickAccessCard(
+                  icon: Icons.fitness_center,
+                  title: t.hub.cards.training,
+                  subtitle: t.hub.cards.trainingSub,
+                  onTap: () => context.push('/training'),
                 ),
                 // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos
                 // nuits » (type de nuitee + reserve par nuit du programme).
@@ -301,12 +355,11 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   subtitle: t.hub.cards.checklistSub,
                   onTap: () => context.push('/trail/$trailId/checklist'),
                 ),
-                QuickAccessCard(
-                  icon: Icons.fitness_center,
-                  title: t.hub.cards.training,
-                  subtitle: t.hub.cards.trainingSub,
-                  onTap: () => context.push('/training'),
-                ),
+                // « Preparation physique » n'est PLUS ICI (retour Chris #6,
+                // tache 553) : elle etait la DERNIERE carte de la prepa, donc
+                // la derniere chose qu'on lit, alors que l'entrainement se
+                // decide en meme temps que les DATES. Elle est remontee juste
+                // apres « Calendrier », ci-dessus.
                 // R6 (retour Chris) : la carte « Decouvrir des sentiers »
                 // (-> /catalog) a ete RETIREE de la section Preparer. Choisir un
                 // autre sentier est de l'AMONT (choix du trek), pas de la prepa
@@ -354,17 +407,12 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                     // (heritage shell/onglets, supprime).
                     onTap: () => context.push('/map'),
                   ),
-                  // R10 (LOT L10) — JOURNAL EN RANDO. La carte reste ICI tant
-                  // qu'on marche (place GR20 : le journal est un outil de
-                  // terrain). Hors rando, elle est rendue dans « Informations »
-                  // ci-dessous : le journal n'est JAMAIS enferme dans un bloc
-                  // masque (cf. commentaire de la section Informations).
-                  QuickAccessCard(
-                    icon: Icons.menu_book_outlined,
-                    title: t.hub.cards.journal,
-                    subtitle: t.hub.cards.journalSub,
-                    onTap: () => context.push('/journal'),
-                  ),
+                  // JOURNAL : PLUS ICI (retour Chris #11, tache 553). La carte
+                  // vivait dans cette section en rando et dans
+                  // « Informations » hors rando — elle DEMENAGEAIT donc d'un
+                  // moment a l'autre. Elle est desormais une carte autonome du
+                  // cockpit, posee sous la carte du trek, rendue au MEME
+                  // endroit dans les trois phases (voir plus haut).
                   // R11 (retour Chris, LOT L8) — MÉTÉO : carte « Prévisions par
                   // étape » -> écran météo E31 (`/trail/:id/weather`). PARITÉ
                   // GR20 : le HUB GR20 expose « Météo » et « Incendie » COTE A
@@ -419,32 +467,22 @@ class _HubScreenState extends ConsumerState<HubScreen> {
             ],
 
             // --- Section Informations (RF-9) ---
-            // TOUJOURS rendue (aucune garde de phase) : c'est elle qui porte la
-            // porte d'entree du JOURNAL hors rando (R10, LOT L10).
+            // TOUJOURS rendue (aucune garde de phase).
             HubSection(
               title: t.hub.sections.info,
               icon: Icons.info_outline,
               cards: [
-                // R10 (retour Chris, LOT L10) — REGRESSION D'ACCES CORRIGEE.
-                // La carte « Journal » ne vivait que dans la section Randonner,
-                // elle-meme masquee hors rando active (R8/#13) : en PREPARATION
-                // (etat d'une install fraiche) comme en APRES-TREK, le journal
-                // etait invisible et INATTEIGNABLE, alors que la feature est
-                // entiere (route, ecran, base, tests). PARITE GR20 : le HUB GR20
-                // affiche la carte Journal SANS AUCUNE GARDE, quel que soit
-                // l'etat du trek (seule la Navigation est protegee).
-                // On ne remet pas la section Randonner en preparation (decision
-                // Chris #13 conservee) : on sort la CARTE du bloc masque. Elle
-                // est rendue ici des qu'on n'est pas en rando -> le journal est
-                // atteignable dans les 3 phases, et une seule fois a l'ecran
-                // (en rando, il est rendu dans « Randonner », a sa place GR20).
-                if (!showHike)
-                  QuickAccessCard(
-                    icon: Icons.menu_book_outlined,
-                    title: t.hub.cards.journal,
-                    subtitle: t.hub.cards.journalSub,
-                    onTap: () => context.push('/journal'),
-                  ),
+                // JOURNAL : PLUS ICI (retour Chris #11, tache 553). Mot pour
+                // mot : « journal est dans information dans preparation??? ».
+                // La carte etait rendue ici hors rando (correctif d'acces R10 /
+                // LOT L10) et dans « Randonner » en rando : elle changeait de
+                // place selon le moment, et « Informations » est une rubrique
+                // qu'on LIT, pas ou l'on ECRIT son carnet.
+                // L'acces repare en R10 n'est PAS perdu — il est renforce : la
+                // carte est devenue AUTONOME, posee sous la carte du trek, sans
+                // aucune garde de phase (voir plus haut). Le journal reste donc
+                // atteignable en preparation, en rando et apres, et une seule
+                // fois a l'ecran.
                 QuickAccessCard(
                   icon: Icons.hotel_outlined,
                   title: t.hub.cards.accommodations,
@@ -457,14 +495,22 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   subtitle: t.hub.cards.tipsSub,
                   onTap: () => context.push('/trail/$trailId/tips'),
                 ),
-                // E33/E34 (LOT D/D2) : cablage feature Guides villes (orpheline).
-                // Route existante -> carte autorisee (regle S8 zero route morte).
-                QuickAccessCard(
-                  icon: Icons.location_city,
-                  title: t.hub.cards.townGuides,
-                  subtitle: t.hub.cards.townGuidesSub,
-                  onTap: () => context.push('/trail/$trailId/guides'),
-                ),
+                // « GUIDES DES VILLES » — CARTE MASQUEE SUR DECISION DE CHRIS
+                // (retour #13, tache 553). Mot pour mot : « guide des villes, on
+                // en a pas assez parle voire pas du tout tu cache pour
+                // l'instant ». La feature a ete cablee en E33/E34 (LOT D/D2)
+                // sans jamais avoir ete discutee : on retire la PORTE du
+                // cockpit, le temps d'en parler.
+                //
+                // CE QUI RESTE EN PLACE, INTACT : les routes
+                // `/trail/:id/guides` et `/guides/:guideId`, les ecrans, les
+                // providers, les donnees et les tests de la feature. Rien n'est
+                // supprime — seule la carte du cockpit disparait. Remettre ces
+                // six lignes suffit a rouvrir la porte.
+                //
+                // CETTE DECISION SURCLASSE LA REGLE S8 « zero route morte » :
+                // S8 interdit une carte SANS cible, pas une cible sans carte, et
+                // c'est Chris qui arbitre ce qu'il montre de son application.
               ],
             ),
             const SizedBox(height: AppTheme.spacingLg),

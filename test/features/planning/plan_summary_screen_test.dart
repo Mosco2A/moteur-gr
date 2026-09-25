@@ -267,6 +267,42 @@ void main() {
       expect(find.text(t.summary.restDay), findsOneWidget);
     });
 
+    // RETOUR CHRIS #8 (tache 553) — « resume du plan: direction le mot est sur
+    // 2 lignes ». Le libelle vivait dans un `SizedBox(width: 80)` en dur :
+    // « Direction » ne tenait pas dedans et se coupait en deux. La largeur fixe
+    // est devenue une largeur PLANCHER (`minWidth`), qui garde l'alignement des
+    // valeurs sans jamais casser un mot.
+    testWidgets('#8 : « Direction » tient sur UNE SEULE LIGNE', (tester) async {
+      useTallSurface(tester);
+      await tester.pumpWidget(wrap(
+        days: [walkDay(1, 1)],
+        startDate: DateTime(2030, 6, 1),
+      ));
+      await settle(tester);
+
+      // « Duree » est court et n'a jamais debordé : il donne la hauteur d'UNE
+      // ligne dans ce meme style. Si « Direction » fait la meme hauteur, il est
+      // sur une ligne — une mesure qui ne depend ni de la police ni de l'ecran.
+      final hauteurUneLigne =
+          tester.getSize(find.text(t.summary.duration)).height;
+      final hauteurDirection =
+          tester.getSize(find.text(t.summary.direction)).height;
+
+      expect(hauteurDirection, hauteurUneLigne,
+          reason: '« Direction » ne doit plus se couper sur deux lignes');
+
+      // Et les libelles restent ALIGNES : c'etait la raison d'etre du 80 en dur,
+      // on ne l'a pas perdue en le remplacant par un plancher.
+      expect(
+        tester.getTopLeft(find.text(t.summary.direction)).dx,
+        tester.getTopLeft(find.text(t.summary.duration)).dx,
+      );
+      expect(
+        tester.getTopLeft(find.text(t.summary.startDate)).dx,
+        tester.getTopLeft(find.text(t.summary.duration)).dx,
+      );
+    });
+
     testWidgets('les stats agregees sont coherentes (distance / etapes / repos)',
         (tester) async {
       // 2 jours de marche (12 km chacun, D+ 600, D- 500) + 1 repos.

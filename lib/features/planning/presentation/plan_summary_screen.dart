@@ -329,8 +329,30 @@ class _ConfigRow extends StatelessWidget {
         children: [
           Icon(icon, size: 16, color: AppTheme.grisGranite),
           const SizedBox(width: AppTheme.spacingSm),
-          SizedBox(
-            width: 80,
+          // LARGEUR PLANCHER, PLUS LARGEUR FIXE (retour Chris #8, tache 553).
+          // Mot pour mot : « resume du plan: direction le mot est sur 2 lignes ».
+          // Le libelle vivait dans un `SizedBox(width: 80)` EN DUR : tout mot
+          // plus large que 80 px passait a la ligne, et « Direction » y passait.
+          // Le 80 servait a ALIGNER les valeurs d'une ligne a l'autre, ce qui
+          // reste souhaitable — mais un alignement ne vaut pas qu'on coupe un mot
+          // en deux.
+          //
+          // `ConstrainedBox(minWidth)` garde l'alignement pour les libelles
+          // courts (ils occupent au moins 104 px, les valeurs restent en colonne)
+          // et laisse les plus longs prendre la place qu'il leur faut : le
+          // libelle POUSSE la valeur au lieu de se replier sur lui-meme. Ce
+          // n'est pas un 80 remplace par un 104 — un libelle plus large que 104
+          // passe aussi, ce qui compte ici parce que les cinq langues n'ont pas
+          // la meme longueur de mots (« Direction », « Richtung », « Dirección »,
+          // « Direzione ») et qu'aucune largeur fixe ne les contient toutes.
+          // Le `maxWidth` n'est pas un second plafond de confort : c'est le
+          // filet qui garantit qu'il reste toujours de la place pour la VALEUR a
+          // droite (sur un ecran de 360 px : 16 d'icone + 8 + 200 + 8 laissent
+          // 128 px). Passe 200 px — grossissement de police extreme — le libelle
+          // se replie, ce qui reste le moins mauvais des deux maux quand tout
+          // l'ecran deborde deja.
+          ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 104, maxWidth: 200),
             child: Text(
               label,
               style: theme.textTheme.bodySmall?.copyWith(
@@ -338,6 +360,7 @@ class _ConfigRow extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(value, style: theme.textTheme.bodyMedium),
           ),

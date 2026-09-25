@@ -191,6 +191,11 @@ class _ChecklistPreparationSectionState
                           activeColor: AppTheme.vertFacile,
                         ),
                         const SizedBox(width: 4),
+                        // NOM DE L'OBJET — PLUS DE COUPE (retour Chris #10,
+                        // tache 553), meme correction que dans la liste
+                        // principale ([ChecklistItemWidget]) : la meme donnee
+                        // doit se lire pareil partout. Une ligne + ellipse
+                        // amputait les noms longs ; deux lignes les affichent.
                         Expanded(
                           child: Text(
                             item.quantity > 1
@@ -202,7 +207,7 @@ class _ChecklistPreparationSectionState
                                   : null,
                               color: isPrepared ? AppTheme.grisGranite : null,
                             ),
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),

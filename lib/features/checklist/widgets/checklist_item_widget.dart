@@ -109,6 +109,15 @@ class ChecklistItemWidget extends StatelessWidget {
                 const SizedBox(width: 6),
                 ChecklistRequirementDot(requirement: item.template.requirement),
                 const SizedBox(width: 6),
+                // NOM DE L'OBJET — PLUS DE COUPE (retour Chris #10, tache 553).
+                // Mot pour mot : « dans sac il y a plein de textes qu'on ne voit
+                // pas en entier ». Le nom tenait sur UNE ligne avec ellipse, en
+                // partageant sa ligne avec une case a cocher, une pastille et,
+                // pour les obligatoires, un badge « Obligatoire » : « Veste
+                // impermeable coupe-vent » finissait en « Veste imperm... ».
+                // Un objet dont on ne lit pas le nom ne se coche pas : on ne
+                // sait pas ce qu'on coche. Deux lignes suffisent a tout dire ici,
+                // et l'ellipse ne reste qu'en dernier recours.
                 Expanded(
                   child: Text(
                     item.quantity > 1 ? '$name (x${item.quantity})' : name,
@@ -117,7 +126,7 @@ class ChecklistItemWidget extends StatelessWidget {
                           item.isChecked ? TextDecoration.lineThrough : null,
                       color: item.isChecked ? AppTheme.grisGranite : null,
                     ),
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),

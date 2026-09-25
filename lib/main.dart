@@ -1,3 +1,4 @@
+import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -170,6 +171,15 @@ class _MoteurGrMaterialApp extends ConsumerWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
+        // NOMS DE PAYS LOCALISES (retour Chris #2, tache 553). Le selecteur de
+        // pays de la fiche randonneur affiche « France », « Deutschland »,
+        // « Italia »... dans la langue de l'application : ces noms viennent de ce
+        // delegue (package `country_picker`, 246 pays x 35 langues embarquees,
+        // zero reseau). SANS LUI, `CountryLocalizations.of(context)` rend `null`
+        // et toute la liste retombe en anglais — c'est la seule ligne qui fait la
+        // difference entre un selecteur localise et un selecteur anglais.
+        // Il couvre nos cinq langues (de, en, es, fr, it), verifie code par code.
+        CountryLocalizations.delegate,
       ],
       // Theme clair ET sombre injectes depuis TrailConfig (E5.5b).
       // L'app reste sombre par defaut (design trek), mais le pendant

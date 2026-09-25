@@ -599,69 +599,89 @@ class _NuiteeCard extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(height: 4),
-                        // Selecteur de type (desactive quand la nuit est cochee,
-                        // parite GR20 : decochez pour changer le type).
+                        // SELECTEUR DE TYPE — TOUJOURS MODIFIABLE (retour Chris
+                        // #7, tache 553). Mot pour mot : « reservation nuitee, on
+                        // ne peut pas revenir a gite », puis, sur la coche :
+                        // « NON OK = c'est bon ! ».
+                        //
+                        // CE QUI N'ALLAIT PAS. Les puces de type etaient
+                        // DESACTIVEES des que la nuit etait cochee : grisees a
+                        // 35 %, `onTap` a null, et la seule explication tenait
+                        // dans un `Tooltip` (« decochez pour changer le type »)
+                        // QUI NE S'AFFICHE PAS SUR MOBILE — un tooltip Material
+                        // demande un survol souris ou un appui long, deux gestes
+                        // que personne ne tente sur une puce grisee. Chris a donc
+                        // vu un ecran qui refusait un retour en arriere, sans un
+                        // mot pour dire pourquoi, ni comment en sortir.
+                        //
+                        // ET SURTOUT, LE VERROU REPOSAIT SUR UN CONTRESENS. La
+                        // coche ne veut pas dire « verrouille » : elle veut dire
+                        // « c'est bon, cette nuit est reglee ». Faire d'un signe
+                        // de CONFIRMATION un signe d'INTERDICTION, c'est punir
+                        // celui qui avance dans sa preparation : on coche ses
+                        // nuits au fur et a mesure, puis le refuge est complet et
+                        // il faut passer en gite. Le verrou tombait pile au
+                        // moment ou le changement devient utile.
+                        //
+                        // ON CHANGE DONC LE TYPE MEME QUAND LA NUIT EST COCHEE,
+                        // et la coche SURVIT au changement : `setNuiteeType` et
+                        // `toggleBooking` ecrivent deux champs distincts
+                        // (`nuiteeTypes` / `bookings`), changer l'un ne touche
+                        // pas l'autre. Plus de puce grisee, plus de tooltip
+                        // invisible : ce qu'on voit est ce qu'on peut faire.
                         Wrap(
                           spacing: 4,
                           runSpacing: 4,
                           children: availableTypes.map((type) {
                             final isSelected = type == nuiteeType;
-                            final isDisabled = isBooked && !isSelected;
                             return ConstrainedBox(
                               constraints: const BoxConstraints(
                                   minHeight: 48, minWidth: 48),
                               child: GestureDetector(
-                                onTap:
-                                    isBooked ? null : () => onNuiteeTypeChanged(type),
+                                onTap: () => onNuiteeTypeChanged(type),
                                 child: Tooltip(
-                                  message: isDisabled
-                                      ? t.nuitees.card.lockedHint
-                                      : type.label,
-                                  child: Opacity(
-                                    opacity: isDisabled ? 0.35 : 1.0,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 2),
-                                      decoration: BoxDecoration(
+                                  message: type.label,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 2),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? scheme.primary.withAlpha(40)
+                                          : AppTheme.grisGranite.withAlpha(15),
+                                      borderRadius: BorderRadius.circular(
+                                          AppTheme.radiusChip),
+                                      border: Border.all(
                                         color: isSelected
-                                            ? scheme.primary.withAlpha(40)
+                                            ? scheme.primary
                                             : AppTheme.grisGranite
-                                                .withAlpha(15),
-                                        borderRadius: BorderRadius.circular(
-                                            AppTheme.radiusChip),
-                                        border: Border.all(
+                                                .withAlpha(60),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          type.icon,
+                                          size: 16,
                                           color: isSelected
                                               ? scheme.primary
-                                              : AppTheme.grisGranite
-                                                  .withAlpha(60),
+                                              : AppTheme.grisGranite,
                                         ),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            type.icon,
-                                            size: 16,
+                                        const SizedBox(width: 3),
+                                        Text(
+                                          type.label,
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: isSelected
+                                                ? FontWeight.w700
+                                                : FontWeight.w400,
                                             color: isSelected
                                                 ? scheme.primary
                                                 : AppTheme.grisGranite,
                                           ),
-                                          const SizedBox(width: 3),
-                                          Text(
-                                            type.label,
-                                            style: theme.textTheme.bodySmall
-                                                ?.copyWith(
-                                              fontSize: 14,
-                                              fontWeight: isSelected
-                                                  ? FontWeight.w700
-                                                  : FontWeight.w400,
-                                              color: isSelected
-                                                  ? scheme.primary
-                                                  : AppTheme.grisGranite,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),

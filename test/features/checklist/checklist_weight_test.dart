@@ -1,5 +1,6 @@
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -167,6 +168,139 @@ void main() {
       // Au moins un chip poids par article (ex : "1.4 kg" pour le sac a dos).
       expect(find.textContaining(t.checklist.weight.kilograms),
           findsWidgets);
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // RETOUR CHRIS #10 (tache 553) — « dans sac il y a plein de textes qu'on ne
+  // voit pas en entier ».
+  //
+  // Le pire des cinq etait le CONSEIL de la jauge (« Attention genoux !
+  // Allegez le sac ») : il partageait sa ligne avec le pourcentage, en
+  // `Flexible` flex 2 contre flex 3, sur UNE ligne avec ellipse. Trois
+  // cinquiemes de largeur pour une phrase entiere : il etait coupe a tous les
+  // coups. C'est tres probablement ce texte que Chris disait ne pas comprendre
+  // — un conseil ampute n'est plus un conseil, c'est un debut de phrase.
+  // -------------------------------------------------------------------------
+  group('retour Chris #10 — les textes du Sac se lisent en entier', () {
+    /// Rend la jauge SEULE, sur une largeur de telephone etroit (360 px), avec
+    /// un ratio qui declenche le conseil le plus long.
+    Future<void> pumpGauge(WidgetTester tester, double ratio) async {
+      tester.view.physicalSize = const Size(360, 800);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+      await tester.pumpWidget(
+        TranslationProvider(
+          child: MaterialApp(
+            home: Scaffold(
+              body: ChecklistWeightGauge(
+                backpackRatio: ratio,
+                loadBaseKg: 70,
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+    }
+
+    testWidgets('le CONSEIL de la jauge n est plus coupe, et il est sous la '
+        'jauge en pleine largeur', (tester) async {
+      // 22 % de la base de charge -> conseil « Attention genoux ! ... ».
+      await pumpGauge(tester, 0.22);
+
+      final conseil = find.byKey(const ValueKey('checklist-gauge-advice'));
+      expect(conseil, findsOneWidget);
+
+      // 1. PLUS DE PLAFOND D'UNE LIGNE, PLUS D'ELLIPSE : structurellement, ce
+      //    texte ne peut plus etre ampute.
+      final widget = tester.widget<Text>(conseil);
+      expect(widget.maxLines, isNull,
+          reason: 'un conseil ne se limite pas a une ligne');
+      expect(widget.overflow, anyOf(isNull, TextOverflow.visible, TextOverflow.clip),
+          reason: 'plus aucune ellipse sur le conseil');
+
+      // 2. ET DANS LES FAITS, A 360 px, RIEN N'EST TRONQUE.
+      final paragraphe = tester.renderObject<RenderParagraph>(conseil);
+      expect(paragraphe.didExceedMaxLines, isFalse);
+
+      // 3. IL N'EST PLUS COINCE A DROITE DU POURCENTAGE : il commence au meme
+      //    bord gauche que lui (donc pleine largeur), et il est EN DESSOUS.
+      final pct = find.textContaining('%').first;
+      expect(tester.getTopLeft(conseil).dx,
+          tester.getTopLeft(find.byType(Text).first).dx,
+          reason: 'le conseil part du bord gauche, comme le pourcentage');
+      expect(tester.getTopLeft(conseil).dy,
+          greaterThan(tester.getTopLeft(pct).dy),
+          reason: 'le conseil est passe SOUS la jauge, plus a cote du chiffre');
+    });
+
+    testWidgets('les reperes 15/20/25 % de la jauge ne sont plus rognes',
+        (tester) async {
+      await pumpGauge(tester, 0.22);
+
+      // Les reperes sont poses en `Positioned(top: 14)` sous une barre de 12 px :
+      // un `Stack` se dimensionne sur ses enfants non positionnes et rogne ce qui
+      // depasse. La hauteur reservee (32 px) les contient desormais tous.
+      for (final repere in ['15%', '20%', '25%']) {
+        final f = find.text(repere);
+        expect(f, findsOneWidget);
+        final bas = tester.getBottomLeft(f).dy;
+        final basDuStack =
+            tester.getBottomLeft(find.byType(Stack).first).dy;
+        expect(bas, lessThanOrEqualTo(basDuStack),
+            reason: '$repere doit tenir dans la hauteur reservee a la jauge');
+      }
+    });
+
+    testWidgets('le libelle « poids du corps » peut passer sur deux lignes',
+        (tester) async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(() async => db.close());
+
+      tester.view.physicalSize = const Size(360, 2400);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() {
+        tester.view.resetPhysicalSize();
+        tester.view.resetDevicePixelRatio();
+      });
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            trailConfigProvider.overrideWithValue(testTrail),
+          ],
+          child: TranslationProvider(
+            child: MaterialApp.router(
+              routerConfig: GoRouter(
+                initialLocation: '/checklist',
+                routes: [
+                  GoRoute(
+                    path: '/checklist',
+                    builder: (_, __) => const ChecklistScreen(),
+                  ),
+                  GoRoute(
+                      path: '/my-treks', builder: (_, __) => const SizedBox()),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Il partage sa ligne avec un champ de 120 px et la pastille de ratio :
+      // sur 360 px il n'a pas toujours de quoi s'ecrire sur une ligne. Deux
+      // lignes lui sont desormais accordees, l'ellipse ne reste qu'en dernier
+      // recours.
+      final libelle = tester.widget<Text>(
+        find.text(t.checklist.weight.bodyWeight),
+      );
+      expect(libelle.maxLines, 2);
     });
   });
 }
