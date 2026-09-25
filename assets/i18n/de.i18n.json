@@ -181,6 +181,29 @@
     "layersSubtitle": "Wählen Sie, was auf der Karte angezeigt wird",
     "stageRemaining": "Noch $km km",
     "offTrackChip": "Abseits",
+    "statsPendingNote": "Die Striche füllen sich, sobald Sie die Wanderung starten: diese Werte werden im Gehen gemessen.",
+    "guide": {
+      "buttonsTitle": "Schaltflächen",
+      "position": "Ihre GPS-Position, beim Gehen aktualisiert. Verschwindet der Punkt, prüfen Sie, ob die Ortung für die App erlaubt ist.",
+      "track": "Die Linie des Wegs, in seiner Farbe. Sie ist die Referenz für die Warnung bei Abweichung.",
+      "centerOnMe": "Holt die Karte zu Ihrer Position zurück, nachdem Sie sie verschoben haben.",
+      "photo": "Macht ein Foto und legt es ins Tagebuch des Tages, ohne die Karte zu verlassen.",
+      "sos": "Öffnet den Notruf mit Ihren GPS-Koordinaten. Nur im echten Notfall zu benutzen.",
+      "currentStage": "Was auf der laufenden Etappe noch zu gehen ist. Ein Strich bedeutet, dass die Wanderung noch nicht begonnen hat.",
+      "offTrack": "Leuchtet auf, wenn Sie sich von der Linie entfernen. Kehren Sie zum Weg zurück, damit sie verschwindet.",
+      "poi": {
+        "water": "Quelle oder Brunnen am Weg. Eine Quelle kann im Sommer trocken sein: verlassen Sie sich nicht ungeprüft darauf.",
+        "shelter": "Hütte oder Schutzhütte auf der Route. Tippen Sie auf die Markierung für das Bekannte: Höhe, Leistungen, Kontakt.",
+        "accommodation": "Unterkunft außer einer Hütte: Pension, Zimmer, Hotel. Die Buchung läuft über den Betrieb selbst.",
+        "campsite": "Camping- oder Biwakplatz. Die Biwakregeln hängen vom Gebiet ab: erkundigen Sie sich, bevor Sie das Zelt aufstellen.",
+        "shop": "Geschäft zum Auffüllen der Vorräte. Öffnungszeiten sind außerhalb der Saison nicht garantiert: planen Sie Reserve ein.",
+        "restaurant": "Restaurant oder Gasttisch an oder nahe der Route.",
+        "viewpoint": "Bemerkenswerter Aussichtspunkt. Ein Halt, keine Orientierungshilfe.",
+        "danger": "Als heikel gemeldete Stelle. Werden Sie langsamer und schauen Sie sich das Gelände an, bevor Sie hineingehen.",
+        "emergency": "Notfallpunkt: Station, Landeplatz oder Notrufsäule.",
+        "info": "Informationstafel oder Infopunkt am Weg."
+      }
+    },
     "supplyDismiss": "Hinweis ausblenden"
   },
   "stage": {
@@ -241,6 +264,8 @@
     "emergency": "Notfall",
     "danger": "Gefahr",
     "shop": "Geschäft",
+    "accommodation": "Unterkunft",
+    "info": "Information",
     "filter": "Sehenswürdigkeiten filtern",
     "altitude": "Höhe",
     "hours": "Öffnungszeiten"
@@ -586,6 +611,7 @@
     "photoLimit": "Limit von 3 Fotos pro Tag erreicht",
     "photoTooBig": "Foto zu groß (max 500 KB)",
     "addPhoto": "Foto hinzufügen",
+    "photoAdded": "Foto zum Tagebuch hinzugefügt",
     "photoSource": "Fotoquelle",
     "camera": "Kamera",
     "gallery": "Galerie",
@@ -840,12 +866,12 @@
     },
     "formula": {
       "title": "Machbarkeit für diese Tour",
-      "intro": "Wir vergleichen den Aufwand jeder Etappe mit dem, was dein Profil an einem Tag schafft. Grün, Orange oder Rot.",
+      "intro": "Wir vergleichen den Aufwand jedes Wandertags mit dem, was dein Profil schafft. Grün, Orange oder Rot.",
       "ceilingLabel": "Empfohlene Obergrenze: ${value} Energie-km/Tag (${level})",
-      "stagesTitle": "Etappe für Etappe",
+      "stagesTitle": "Tag für Tag",
       "stageEffort": "${distance} km + ${elevation} m Aufstieg = ${effort} Energie-km",
       "globalTitle": "Gesamturteil",
-      "hardestStage": "Anspruchsvollste Etappe: ${stage}",
+      "hardestStage": "Anspruchsvollster Tag: ${stage}",
       "daysOver": "${count} Tag(e) über deiner Obergrenze",
       "daysOverNone": "Kein Tag über deiner Obergrenze",
       "limitingLabel": "Begrenzender Faktor: ${factor}",
@@ -853,7 +879,7 @@
       "adviceTitle": "Tipps für deinen Plan",
       "generateProgram": "Meinen Plan erstellen (${days} Tage)",
       "generateProgramDone": "Plan über ${days} Tage erstellt — passe ihn nach Wunsch an.",
-      "noStages": "Noch keine Etappe zu bewerten.",
+      "noStages": "Noch kein Tag zu bewerten.",
       "levels": {
         "beginner": "Anfänger",
         "intermediate": "Fortgeschritten",
@@ -861,12 +887,12 @@
         "expert": "Experte"
       },
       "verdicts": {
-        "green": "Machbar",
-        "orange": "Machbar mit Vorbereitung",
-        "red": "Über deinem Niveau"
+        "green": "Aufteilung machbar",
+        "orange": "Aufteilung fordernd",
+        "red": "Aufteilung zu knapp"
       },
       "limitingFactors": {
-        "distance": "die Etappenlänge",
+        "distance": "die Tagesdistanz",
         "elevation": "der Höhenunterschied",
         "chaining": "die Abfolge der Tage",
         "none": "keiner",
@@ -877,10 +903,10 @@
         "balancedOk": "Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.",
         "balanced": "Verteile die Etappen, um den Aufwand über die Tage zu glätten.",
         "optimalDays": "Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.",
-        "split": "Teile Etappe ${stage} in zwei: Sie überschreitet deutlich deine Obergrenze.",
-        "rest": "Plane einen Ruhetag nach Etappe ${stages}.",
+        "split": "Teile Tag ${stage} in zwei: Er überschreitet deutlich deine Obergrenze.",
+        "rest": "Plane einen Ruhetag nach Tag ${stages}.",
         "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).",
-        "restAdvised": "Setze ${days} Ruhetag(e) ein, nach den Etappen ${stages}: deine Tage gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
+        "restAdvised": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
       },
       "retainedPlan": "Gewählte Aufteilung: ${days} Wandertage.",
       "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen.",
@@ -894,7 +920,7 @@
       "restExtrapolation": "Die Ruhe-Schwelle stammt aus einer Messung an Sportlern und wurde auf das Weitwandern übertragen. Es ist eine Übertragung, und sie wird als solche genannt.",
       "restNotDecisive": "Diese Zahl wird angezeigt und berät, sie entscheidet nie: dein Urteil bleibt das deines härtesten Tages.",
       "restAdvisedLine": "Empfehlung: ${days} über dein Programm verteilte Ruhetage bringen diese Zahl wieder unter ihre Schwelle.",
-      "restTwoDays": "Bei gleich großen Etappen reicht ein Ruhetag pro Woche nicht: es braucht zwei.",
+      "restTwoDays": "Bei gleich großen Tagen reicht ein Ruhetag pro Woche nicht: es braucht zwei.",
       "habitGap": "Abstand zu deiner Gewohnheit: ${value} (Richtwert 0,8 bis 1,3).",
       "habitGapNotDecisive": "Dieser Abstand wird angezeigt, ist aber nie entscheidend: keine Studie belegt, dass er irgendetwas verursacht.",
       "conditionsTitle": "Was in dieses Urteil eingeflossen ist",
@@ -909,11 +935,11 @@
       "winterInvalid": "Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.",
       "restDaysCounted": "In diesem Urteil gezählte Ruhetage: ${count}.",
       "restDaysNone": "In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.",
-      "averageLoad": "Mittlere Tageslast: ${value} (die härteste Etappe liegt bei ${worst}).",
+      "averageLoad": "Mittlere Tageslast: ${value} (die härteste liegt bei ${worst}).",
       "averageLoadInfo": "Diese beiden Zahlen liest man zusammen: weit auseinander hat der Trek einen harten Tag; nahe beieinander ist er jeden Tag hart. Das wird angezeigt, es entscheidet nicht.",
       "durationStatement": "Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Tage.",
       "durationStatementInfo": "Das wird angezeigt, es entscheidet nicht: keine veröffentlichte Messung sagt, ab wie vielen zusammenhängenden Tagen ein Wanderer einbricht. Beurteile es selbst.",
-      "stageDominantFactor": "Was auf dieser Etappe am schwersten wiegt: ${factor}"
+      "stageDominantFactor": "Was an diesem Tag am schwersten wiegt: ${factor}"
     },
     "flow": {
       "title": "Bist du bereit für diese Tour?",
@@ -1975,6 +2001,7 @@
     "sexMale": "Männlich",
     "sexUnspecified": "Keine Angabe",
     "fieldCountry": "Land",
+    "countryUnspecified": "Keine Angabe",
     "hintCountry": "Code (z. B. FR)",
     "bmiLabel": "BMI",
     "bmiCategories": {

@@ -427,14 +427,19 @@ class Translations$map$fr {
 	/// fr: 'Calques de la carte'
 	String get layersTitle => 'Calques de la carte';
 
-	/// fr: 'Choisissez les points affiches sur la carte'
-	String get layersSubtitle => 'Choisissez les points affiches sur la carte';
+	/// fr: 'Choisissez les points affichés sur la carte'
+	String get layersSubtitle => 'Choisissez les points affichés sur la carte';
 
 	/// fr: '$km km restants'
 	String stageRemaining({required Object km}) => '${km} km restants';
 
 	/// fr: 'Hors trace'
 	String get offTrackChip => 'Hors trace';
+
+	/// fr: 'Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.'
+	String get statsPendingNote => 'Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.';
+
+	late final Translations$map$guide$fr guide = Translations$map$guide$fr.internal(_root);
 
 	/// fr: 'Masquer l'alerte'
 	String get supplyDismiss => 'Masquer l\'alerte';
@@ -558,6 +563,12 @@ class Translations$poi$fr {
 
 	/// fr: 'Commerce'
 	String get shop => 'Commerce';
+
+	/// fr: 'Hébergement'
+	String get accommodation => 'Hébergement';
+
+	/// fr: 'Information'
+	String get info => 'Information';
 
 	/// fr: 'Filtrer les points d'intérêt'
 	String get filter => 'Filtrer les points d\'intérêt';
@@ -892,6 +903,9 @@ class Translations$journal$fr {
 
 	/// fr: 'Ajouter une photo'
 	String get addPhoto => 'Ajouter une photo';
+
+	/// fr: 'Photo ajoutée au journal'
+	String get photoAdded => 'Photo ajoutée au journal';
 
 	/// fr: 'Source de la photo'
 	String get photoSource => 'Source de la photo';
@@ -3219,6 +3233,9 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Pays'
 	String get fieldCountry => 'Pays';
 
+	/// fr: 'Non précisé'
+	String get countryUnspecified => 'Non précisé';
+
 	/// fr: 'Code (ex. FR)'
 	String get hintCountry => 'Code (ex. FR)';
 
@@ -3840,6 +3857,41 @@ class Translations$hub$finishTrek$fr {
 	String get cancel => 'Annuler';
 }
 
+// Path: map.guide
+class Translations$map$guide$fr {
+	Translations$map$guide$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Boutons'
+	String get buttonsTitle => 'Boutons';
+
+	/// fr: 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l'application.'
+	String get position => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l\'application.';
+
+	/// fr: 'Le tracé du sentier, dans sa couleur. C'est lui qui sert de référence à l'alerte hors trace.'
+	String get track => 'Le tracé du sentier, dans sa couleur. C\'est lui qui sert de référence à l\'alerte hors trace.';
+
+	/// fr: 'Ramène la carte sur votre position après l'avoir déplacée du doigt.'
+	String get centerOnMe => 'Ramène la carte sur votre position après l\'avoir déplacée du doigt.';
+
+	/// fr: 'Prend une photo pour le journal du jour, sans quitter la carte.'
+	String get photo => 'Prend une photo pour le journal du jour, sans quitter la carte.';
+
+	/// fr: 'Ouvre l'appel d'urgence avec vos coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.'
+	String get sos => 'Ouvre l\'appel d\'urgence avec vos coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.';
+
+	/// fr: 'Ce qu'il reste à marcher sur l'étape en cours. Un tiret signifie que la randonnée n'a pas encore démarré.'
+	String get currentStage => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret signifie que la randonnée n\'a pas encore démarré.';
+
+	/// fr: 'S'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l'éteindre.'
+	String get offTrack => 'S\'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l\'éteindre.';
+
+	late final Translations$map$guide$poi$fr poi = Translations$map$guide$poi$fr.internal(_root);
+}
+
 // Path: stage.difficulty
 class Translations$stage$difficulty$fr {
 	Translations$stage$difficulty$fr.internal(this._root);
@@ -4427,8 +4479,8 @@ class Translations$checklist$weight$fr {
 	/// fr: 'Le plafond de ton sac est calculé sur ton poids réel : pour ta taille, il n'existe pas de poids de référence publié sur lequel s'appuyer. On préfère te le dire plutôt que t'afficher un chiffre faux.'
 	String get referenceFallbackHeight => 'Le plafond de ton sac est calculé sur ton poids réel : pour ta taille, il n\'existe pas de poids de référence publié sur lequel s\'appuyer. On préfère te le dire plutôt que t\'afficher un chiffre faux.';
 
-	/// fr: 'Descentes : le poids de ton sac'
-	String get descentAlertTitle => 'Descentes : le poids de ton sac';
+	/// fr: 'Descentes : ce que tu transportes'
+	String get descentAlertTitle => 'Descentes : ce que tu transportes';
 
 	/// fr: 'Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd'hui : allège-le, et c'est autant de moins à chaque appui.'
 	String get descentAlertBody => 'Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd\'hui : allège-le, et c\'est autant de moins à chaque appui.';
@@ -4781,14 +4833,14 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Faisabilité pour ce trek'
 	String get title => 'Faisabilité pour ce trek';
 
-	/// fr: 'On compare l'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.'
-	String get intro => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.';
+	/// fr: 'On compare l'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.'
+	String get intro => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.';
 
 	/// fr: 'Plafond conseillé : ${value} km-énergie/jour (${level})'
 	String ceilingLabel({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})';
 
-	/// fr: 'Étape par étape'
-	String get stagesTitle => 'Étape par étape';
+	/// fr: 'Jour par jour'
+	String get stagesTitle => 'Jour par jour';
 
 	/// fr: '${distance} km + ${elevation} m D+ = ${effort} km-énergie'
 	String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-énergie';
@@ -4796,8 +4848,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Verdict global'
 	String get globalTitle => 'Verdict global';
 
-	/// fr: 'Étape la plus exigeante : ${stage}'
-	String hardestStage({required Object stage}) => 'Étape la plus exigeante : ${stage}';
+	/// fr: 'Journée la plus exigeante : ${stage}'
+	String hardestStage({required Object stage}) => 'Journée la plus exigeante : ${stage}';
 
 	/// fr: '${count} jour(s) au-dessus de ton plafond'
 	String daysOver({required Object count}) => '${count} jour(s) au-dessus de ton plafond';
@@ -4820,8 +4872,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Programme généré sur ${days} jours — à toi de l'ajuster.'
 	String generateProgramDone({required Object days}) => 'Programme généré sur ${days} jours — à toi de l\'ajuster.';
 
-	/// fr: 'Aucune étape à évaluer pour le moment.'
-	String get noStages => 'Aucune étape à évaluer pour le moment.';
+	/// fr: 'Aucune journée à évaluer pour le moment.'
+	String get noStages => 'Aucune journée à évaluer pour le moment.';
 
 	late final Translations$feasibility$formula$levels$fr levels = Translations$feasibility$formula$levels$fr.internal(_root);
 	late final Translations$feasibility$formula$verdicts$fr verdicts = Translations$feasibility$formula$verdicts$fr.internal(_root);
@@ -4864,8 +4916,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.'
 	String restAdvisedLine({required Object days}) => 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.';
 
-	/// fr: 'Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.'
-	String get restTwoDays => 'Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.';
+	/// fr: 'Sur des journées de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.'
+	String get restTwoDays => 'Sur des journées de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.';
 
 	/// fr: 'Écart à ton habitude : ${value} (repère 0,8 à 1,3).'
 	String habitGap({required Object value}) => 'Écart à ton habitude : ${value} (repère 0,8 à 1,3).';
@@ -4909,8 +4961,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Aucun jour de repos n'est posé dans ton programme : poses-en et ce chiffre bouge.'
 	String get restDaysNone => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.';
 
-	/// fr: 'Charge moyenne des journées : ${value} (la pire étape est à ${worst}).'
-	String averageLoad({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire étape est à ${worst}).';
+	/// fr: 'Charge moyenne des journées : ${value} (la pire est à ${worst}).'
+	String averageLoad({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire est à ${worst}).';
 
 	/// fr: 'Ces deux chiffres se lisent ensemble : loin l'un de l'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s'affiche, il ne décide pas.'
 	String get averageLoadInfo => 'Ces deux chiffres se lisent ensemble : loin l\'un de l\'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s\'affiche, il ne décide pas.';
@@ -4921,8 +4973,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Ce constat s'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d'en juger.'
 	String get durationStatementInfo => 'Ce constat s\'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d\'en juger.';
 
-	/// fr: 'Ce qui pèse le plus sur cette étape : ${factor}'
-	String stageDominantFactor({required Object factor}) => 'Ce qui pèse le plus sur cette étape : ${factor}';
+	/// fr: 'Ce qui pèse le plus sur cette journée : ${factor}'
+	String stageDominantFactor({required Object factor}) => 'Ce qui pèse le plus sur cette journée : ${factor}';
 }
 
 // Path: feasibility.flow
@@ -6709,6 +6761,45 @@ class Translations$sos$medicalId$fr {
 	String get unavailable => 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.';
 }
 
+// Path: map.guide.poi
+class Translations$map$guide$poi$fr {
+	Translations$map$guide$poi$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Source ou fontaine signalée sur le sentier. Une source peut être à sec en été : ne comptez pas dessus sans l'avoir vérifiée.'
+	String get water => 'Source ou fontaine signalée sur le sentier. Une source peut être à sec en été : ne comptez pas dessus sans l\'avoir vérifiée.';
+
+	/// fr: 'Refuge ou abri sur le parcours. Touchez le repère pour voir ce qui est connu : altitude, services, contact.'
+	String get shelter => 'Refuge ou abri sur le parcours. Touchez le repère pour voir ce qui est connu : altitude, services, contact.';
+
+	/// fr: 'Hébergement autre qu'un refuge : gîte, chambre, hôtel. La réservation se fait auprès de l'établissement.'
+	String get accommodation => 'Hébergement autre qu\'un refuge : gîte, chambre, hôtel. La réservation se fait auprès de l\'établissement.';
+
+	/// fr: 'Emplacement de camping ou de bivouac. Les règles de bivouac dépendent du territoire traversé : renseignez-vous avant de planter la tente.'
+	String get campsite => 'Emplacement de camping ou de bivouac. Les règles de bivouac dépendent du territoire traversé : renseignez-vous avant de planter la tente.';
+
+	/// fr: 'Commerce où vous ravitailler. Les horaires ne sont pas garantis hors saison : prévoyez une marge.'
+	String get shop => 'Commerce où vous ravitailler. Les horaires ne sont pas garantis hors saison : prévoyez une marge.';
+
+	/// fr: 'Restaurant ou table d'hôtes sur le parcours ou tout près.'
+	String get restaurant => 'Restaurant ou table d\'hôtes sur le parcours ou tout près.';
+
+	/// fr: 'Point de vue remarquable. Repère pour la halte, pas pour l'orientation.'
+	String get viewpoint => 'Point de vue remarquable. Repère pour la halte, pas pour l\'orientation.';
+
+	/// fr: 'Passage signalé comme délicat. Ralentissez et regardez le terrain avant de vous engager.'
+	String get danger => 'Passage signalé comme délicat. Ralentissez et regardez le terrain avant de vous engager.';
+
+	/// fr: 'Point de secours : poste, héliport ou borne d'appel d'urgence.'
+	String get emergency => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.';
+
+	/// fr: 'Panneau ou point d'information du sentier.'
+	String get info => 'Panneau ou point d\'information du sentier.';
+}
+
 // Path: weather.alert.storm
 class Translations$weather$alert$storm$fr {
 	Translations$weather$alert$storm$fr.internal(this._root);
@@ -6828,14 +6919,14 @@ class Translations$feasibility$formula$verdicts$fr {
 
 	// Translations
 
-	/// fr: 'Faisable'
-	String get green => 'Faisable';
+	/// fr: 'Découpage faisable'
+	String get green => 'Découpage faisable';
 
-	/// fr: 'Faisable avec préparation'
-	String get orange => 'Faisable avec préparation';
+	/// fr: 'Découpage exigeant'
+	String get orange => 'Découpage exigeant';
 
-	/// fr: 'Au-dessus de tes capacités'
-	String get red => 'Au-dessus de tes capacités';
+	/// fr: 'Découpage trop serré'
+	String get red => 'Découpage trop serré';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -6846,8 +6937,8 @@ class Translations$feasibility$formula$limitingFactors$fr {
 
 	// Translations
 
-	/// fr: 'la distance des étapes'
-	String get distance => 'la distance des étapes';
+	/// fr: 'la distance par jour'
+	String get distance => 'la distance par jour';
 
 	/// fr: 'le dénivelé'
 	String get elevation => 'le dénivelé';
@@ -6882,17 +6973,17 @@ class Translations$feasibility$formula$advice$fr {
 	/// fr: 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.'
 	String optimalDays({required Object days, required Object current}) => 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.';
 
-	/// fr: 'Découpe l'étape ${stage} en deux : elle dépasse nettement ton plafond.'
-	String split({required Object stage}) => 'Découpe l\'étape ${stage} en deux : elle dépasse nettement ton plafond.';
+	/// fr: 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.'
+	String split({required Object stage}) => 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.';
 
-	/// fr: 'Prévois un jour de repos après l'étape ${stages}.'
-	String rest({required Object stages}) => 'Prévois un jour de repos après l\'étape ${stages}.';
+	/// fr: 'Prévois un jour de repos après la journée ${stages}.'
+	String rest({required Object stages}) => 'Prévois un jour de repos après la journée ${stages}.';
 
 	/// fr: 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).'
 	String training({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).';
 
-	/// fr: 'Pose ${days} jour(s) de repos, après les étapes ${stages} : tes journées se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
-	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les étapes ${stages} : tes journées se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
+	/// fr: 'Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
+	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
 }
 
 // Path: signalement.water.states
@@ -7405,9 +7496,28 @@ extension on Translations {
 			'map.viewMap' => 'Voir la carte',
 			'map.layers' => 'Calques',
 			'map.layersTitle' => 'Calques de la carte',
-			'map.layersSubtitle' => 'Choisissez les points affiches sur la carte',
+			'map.layersSubtitle' => 'Choisissez les points affichés sur la carte',
 			'map.stageRemaining' => ({required Object km}) => '${km} km restants',
 			'map.offTrackChip' => 'Hors trace',
+			'map.statsPendingNote' => 'Les tirets se rempliront dès que vous lancerez la randonnée : ces chiffres se mesurent en marchant.',
+			'map.guide.buttonsTitle' => 'Boutons',
+			'map.guide.position' => 'Votre position GPS, mise à jour en marchant. Si le point disparaît, vérifiez que la localisation est autorisée pour l\'application.',
+			'map.guide.track' => 'Le tracé du sentier, dans sa couleur. C\'est lui qui sert de référence à l\'alerte hors trace.',
+			'map.guide.centerOnMe' => 'Ramène la carte sur votre position après l\'avoir déplacée du doigt.',
+			'map.guide.photo' => 'Prend une photo pour le journal du jour, sans quitter la carte.',
+			'map.guide.sos' => 'Ouvre l\'appel d\'urgence avec vos coordonnées GPS. À n\'utiliser qu\'en cas de réelle urgence.',
+			'map.guide.currentStage' => 'Ce qu\'il reste à marcher sur l\'étape en cours. Un tiret signifie que la randonnée n\'a pas encore démarré.',
+			'map.guide.offTrack' => 'S\'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l\'éteindre.',
+			'map.guide.poi.water' => 'Source ou fontaine signalée sur le sentier. Une source peut être à sec en été : ne comptez pas dessus sans l\'avoir vérifiée.',
+			'map.guide.poi.shelter' => 'Refuge ou abri sur le parcours. Touchez le repère pour voir ce qui est connu : altitude, services, contact.',
+			'map.guide.poi.accommodation' => 'Hébergement autre qu\'un refuge : gîte, chambre, hôtel. La réservation se fait auprès de l\'établissement.',
+			'map.guide.poi.campsite' => 'Emplacement de camping ou de bivouac. Les règles de bivouac dépendent du territoire traversé : renseignez-vous avant de planter la tente.',
+			'map.guide.poi.shop' => 'Commerce où vous ravitailler. Les horaires ne sont pas garantis hors saison : prévoyez une marge.',
+			'map.guide.poi.restaurant' => 'Restaurant ou table d\'hôtes sur le parcours ou tout près.',
+			'map.guide.poi.viewpoint' => 'Point de vue remarquable. Repère pour la halte, pas pour l\'orientation.',
+			'map.guide.poi.danger' => 'Passage signalé comme délicat. Ralentissez et regardez le terrain avant de vous engager.',
+			'map.guide.poi.emergency' => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.',
+			'map.guide.poi.info' => 'Panneau ou point d\'information du sentier.',
 			'map.supplyDismiss' => 'Masquer l\'alerte',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Dénivelé',
@@ -7454,6 +7564,8 @@ extension on Translations {
 			'poi.emergency' => 'Urgence',
 			'poi.danger' => 'Danger',
 			'poi.shop' => 'Commerce',
+			'poi.accommodation' => 'Hébergement',
+			'poi.info' => 'Information',
 			'poi.filter' => 'Filtrer les points d\'intérêt',
 			'poi.altitude' => 'Altitude',
 			'poi.hours' => 'Horaires',
@@ -7670,7 +7782,7 @@ extension on Translations {
 			'checklist.weight.gaugeObjectiveReference' => 'Objectif max : < 15% en refuge, < 20% en autonomie — du poids de référence',
 			'checklist.weight.referenceExplainer' => 'Poids de référence pour ta taille : {kg} kg. Le plafond du sac est calculé sur lui, pas sur ton poids réel.',
 			'checklist.weight.referenceFallbackHeight' => 'Le plafond de ton sac est calculé sur ton poids réel : pour ta taille, il n\'existe pas de poids de référence publié sur lequel s\'appuyer. On préfère te le dire plutôt que t\'afficher un chiffre faux.',
-			'checklist.weight.descentAlertTitle' => 'Descentes : le poids de ton sac',
+			'checklist.weight.descentAlertTitle' => 'Descentes : ce que tu transportes',
 			'checklist.weight.descentAlertBody' => 'Deux poids descendent avec toi : {pack} kg de sac, et {above} kg au-dessus de ton poids de forme. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat. Seul le sac se règle aujourd\'hui : allège-le, et c\'est autant de moins à chaque appui.',
 			'checklist.weight.descentAlertBodyPackOnly' => 'Tu descends avec {pack} kg de sac. En descente, chaque pas fait passer dans le genou 3,46 fois le poids qui descend avec toi, contre 2,61 à plat : allège le sac, et c\'est autant de moins à chaque appui.',
 			'checklist.weight.descentStage' => '{stage} : {loss} m de descente',
@@ -7740,6 +7852,8 @@ extension on Translations {
 			'checklist.ui.bagValidatedSnack' => 'Sac valide !',
 			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — vous pouvez modifier votre matériel.',
 			'checklist.ui.missingTitle' => 'Équipement manquant',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			'checklist.ui.missingList' => 'Il manque :',
 			'checklist.ui.understood' => 'Compris',
@@ -7761,14 +7875,13 @@ extension on Translations {
 			'journal.stage' => 'Étape',
 			'journal.yourNote' => 'Votre note',
 			'journal.placeholder' => 'Décrivez votre journée de randonnée...',
-			_ => null,
-		} ?? switch (path) {
 			'journal.save' => 'Enregistrer',
 			'journal.cancel' => 'Annuler',
 			'journal.delete' => 'Supprimer',
 			'journal.photoLimit' => 'Limite de 3 photos par jour atteinte',
 			'journal.photoTooBig' => 'Photo trop volumineuse (max 500 Ko)',
 			'journal.addPhoto' => 'Ajouter une photo',
+			'journal.photoAdded' => 'Photo ajoutée au journal',
 			'journal.photoSource' => 'Source de la photo',
 			'journal.camera' => 'Appareil photo',
 			'journal.gallery' => 'Galerie',
@@ -7984,12 +8097,12 @@ extension on Translations {
 			'feasibility.gaps.fitness' => 'Forme insuffisante au test 6 minutes',
 			'feasibility.gaps.effort' => 'Effort global (IBP) supérieur à votre expérience',
 			'feasibility.formula.title' => 'Faisabilité pour ce trek',
-			'feasibility.formula.intro' => 'On compare l\'effort de chaque étape à ce que ton profil peut tenir sur une journée. Feu vert, orange ou rouge.',
+			'feasibility.formula.intro' => 'On compare l\'effort de chaque journée de marche à ce que ton profil peut tenir. Feu vert, orange ou rouge.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Plafond conseillé : ${value} km-énergie/jour (${level})',
-			'feasibility.formula.stagesTitle' => 'Étape par étape',
+			'feasibility.formula.stagesTitle' => 'Jour par jour',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m D+ = ${effort} km-énergie',
 			'feasibility.formula.globalTitle' => 'Verdict global',
-			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Étape la plus exigeante : ${stage}',
+			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Journée la plus exigeante : ${stage}',
 			'feasibility.formula.daysOver' => ({required Object count}) => '${count} jour(s) au-dessus de ton plafond',
 			'feasibility.formula.daysOverNone' => 'Aucune journée au-dessus de ton plafond',
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Facteur limitant : ${factor}',
@@ -7997,15 +8110,15 @@ extension on Translations {
 			'feasibility.formula.adviceTitle' => 'Conseils pour ton programme',
 			'feasibility.formula.generateProgram' => ({required Object days}) => 'Générer mon programme (${days} jours)',
 			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Programme généré sur ${days} jours — à toi de l\'ajuster.',
-			'feasibility.formula.noStages' => 'Aucune étape à évaluer pour le moment.',
+			'feasibility.formula.noStages' => 'Aucune journée à évaluer pour le moment.',
 			'feasibility.formula.levels.beginner' => 'débutant',
 			'feasibility.formula.levels.intermediate' => 'intermédiaire',
 			'feasibility.formula.levels.confirmed' => 'confirmé',
 			'feasibility.formula.levels.expert' => 'expert',
-			'feasibility.formula.verdicts.green' => 'Faisable',
-			'feasibility.formula.verdicts.orange' => 'Faisable avec préparation',
-			'feasibility.formula.verdicts.red' => 'Au-dessus de tes capacités',
-			'feasibility.formula.limitingFactors.distance' => 'la distance des étapes',
+			'feasibility.formula.verdicts.green' => 'Découpage faisable',
+			'feasibility.formula.verdicts.orange' => 'Découpage exigeant',
+			'feasibility.formula.verdicts.red' => 'Découpage trop serré',
+			'feasibility.formula.limitingFactors.distance' => 'la distance par jour',
 			'feasibility.formula.limitingFactors.elevation' => 'le dénivelé',
 			'feasibility.formula.limitingFactors.chaining' => 'l\'enchaînement des journées',
 			'feasibility.formula.limitingFactors.none' => 'aucun',
@@ -8014,10 +8127,10 @@ extension on Translations {
 			'feasibility.formula.advice.balancedOk' => 'Ton programme est équilibré : garde une marge et écoute ton corps.',
 			'feasibility.formula.advice.balanced' => 'Répartis les étapes pour lisser l\'effort au fil des jours.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.',
-			'feasibility.formula.advice.split' => ({required Object stage}) => 'Découpe l\'étape ${stage} en deux : elle dépasse nettement ton plafond.',
-			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après l\'étape ${stages}.',
+			'feasibility.formula.advice.split' => ({required Object stage}) => 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.',
+			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
-			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les étapes ${stages} : tes journées se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Découpage retenu : ${days} jours de marche.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.',
 			'feasibility.formula.energyUnitNotice' => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.',
@@ -8030,7 +8143,7 @@ extension on Translations {
 			'feasibility.formula.restExtrapolation' => 'Le seuil de repos vient d\'une mesure faite sur des sportifs, transposée à la randonnée itinérante. C\'est une transposition, et elle est dite.',
 			'feasibility.formula.restNotDecisive' => 'Ce chiffre s\'affiche et conseille, il ne décide pas : ton verdict reste celui de ta journée la plus dure.',
 			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Conseil : ${days} jour(s) de repos répartis dans ton programme ramènent ce chiffre sous son seuil.',
-			'feasibility.formula.restTwoDays' => 'Sur des étapes de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.',
+			'feasibility.formula.restTwoDays' => 'Sur des journées de même taille, un jour de repos par semaine ne suffit pas : il en faut deux.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Écart à ton habitude : ${value} (repère 0,8 à 1,3).',
 			'feasibility.formula.habitGapNotDecisive' => 'Cet écart est affiché, jamais décisif : aucune étude ne démontre qu\'il cause quoi que ce soit.',
 			'feasibility.formula.conditionsTitle' => 'Ce qui est entré dans ce verdict',
@@ -8045,11 +8158,11 @@ extension on Translations {
 			'feasibility.formula.winterInvalid' => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Jours de repos comptés dans ce verdict : ${count}.',
 			'feasibility.formula.restDaysNone' => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.',
-			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire étape est à ${worst}).',
+			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire est à ${worst}).',
 			'feasibility.formula.averageLoadInfo' => 'Ces deux chiffres se lisent ensemble : loin l\'un de l\'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s\'affiche, il ne décide pas.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.',
 			'feasibility.formula.durationStatementInfo' => 'Ce constat s\'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d\'en juger.',
-			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Ce qui pèse le plus sur cette étape : ${factor}',
+			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Ce qui pèse le plus sur cette journée : ${factor}',
 			'feasibility.flow.title' => 'Es-tu prêt pour ce trek ?',
 			'feasibility.flow.intro' => 'Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} étapes remplies',
@@ -8253,6 +8366,8 @@ extension on Translations {
 			'gamification.badge.firstStage.titre' => 'Première étape',
 			'gamification.badge.firstStage.description' => 'Tu as terminé ta première étape.',
 			'gamification.badge.firstTrek.titre' => 'Première randonnée',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.badge.firstTrek.description' => 'Tu as bouclé ta première randonnée complète.',
 			'gamification.badge.firstSegment.titre' => 'Premier segment',
 			'gamification.badge.firstSegment.description' => 'Tu as parcouru ton premier segment.',
@@ -8275,8 +8390,6 @@ extension on Translations {
 			'shareVisibility.stageResults' => 'Partager mes résultats d\'étape',
 			'shareVisibility.stageResultsDesc' => 'Une carte pseudonyme (sans données personnelles directes).',
 			'shareVisibility.leaderboard' => 'Apparaître dans les classements',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Classement par tranche, avec un pseudonyme.',
 			'shareVisibility.activityFeed' => 'Publier au fil d\'activité',
 			'shareVisibility.activityFeedDesc' => 'Tes activités apparaissent dans le fil, sous pseudonyme.',
@@ -8767,6 +8880,8 @@ extension on Translations {
 			'summary.empty.message' => 'Choisissez votre parcours et la durée pour voir le résumé de votre plan.',
 			'summary.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'summary.a11y.dayTile' => ({required Object day}) => 'Voir le détail du jour ${day}',
+			_ => null,
+		} ?? switch (path) {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Détails du jour de repos ${day}',
 			'summary.a11y.share' => 'Partager mon plan',
 			'import.title' => 'Importer un GPX',
@@ -8789,8 +8904,6 @@ extension on Translations {
 			'import.warningsSection' => 'Avertissements',
 			'import.warningOutOfBounds' => '{count} point(s) hors zone ignorés.',
 			'import.warningOffTrail' => '{percent}% des points sont éloignés de la trace du sentier.',
-			_ => null,
-		} ?? switch (path) {
 			'import.invalidTooFewPoints' => 'Fichier GPX insuffisant : {count} points (minimum 10).',
 			'import.invalidOutOfBounds' => 'La trace ne correspond pas à la zone de ce sentier.',
 			'import.errorUnreadable' => 'Impossible de lire le fichier.',
@@ -8846,6 +8959,7 @@ extension on Translations {
 			'hikerProfile.sexMale' => 'Homme',
 			'hikerProfile.sexUnspecified' => 'Non précisé',
 			'hikerProfile.fieldCountry' => 'Pays',
+			'hikerProfile.countryUnspecified' => 'Non précisé',
 			'hikerProfile.hintCountry' => 'Code (ex. FR)',
 			'hikerProfile.bmiLabel' => 'IMC',
 			'hikerProfile.bmiCategories.underweight' => 'Maigreur',

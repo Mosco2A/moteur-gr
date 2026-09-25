@@ -243,22 +243,72 @@ void main() {
     });
 
     test('le SAC est nomme, et UNE action est demandee', () {
-      const sac = <AppLocale, String>{
-        AppLocale.fr: 'sac',
-        AppLocale.en: 'pack',
-        AppLocale.de: 'rucksack',
-        AppLocale.es: 'mochila',
-        AppLocale.it: 'zaino',
-      };
-      for (final entree in sac.entries) {
+      for (final entree in _motSac.entries) {
         final w = entree.key.buildSync().checklist.weight;
         expect(w.descentAlertBody.toLowerCase(), contains(entree.value));
         expect(
             w.descentAlertBodyPackOnly.toLowerCase(), contains(entree.value));
       }
     });
+
+    test('LE TITRE est neutre : il n annonce pas un seul des deux poids', () {
+      // DEFAUT ATTRAPE PAR SKYNET A LA RELECTURE DU COMMIT 3f3d1dd — ce test
+      // est son garde-fou. Le corps annonce DEUX poids, mais le titre francais
+      // disait encore « Descentes : le poids de ton sac » : il n'en annoncait
+      // qu'un. Les quatre autres langues etaient deja neutres (« what you
+      // carry », « was du tragst », « lo que llevas », « cio che porti ») ; le
+      // francais etait le seul reste sur l'ancien cadrage, donc le seul faux —
+      // et dans la langue de Chris. Un titre qui annonce le sac au-dessus d'un
+      // corps qui parle de deux poids, c'est la demi-coherence qui fait dire
+      // « je ne comprends pas le texte ».
+      //
+      // LA REGLE, TESTEE : le titre ne NOMME NI l'un NI l'autre des deux poids.
+      // Il cadre ce qui descend, le corps chiffre. C'est aussi ce qui permet au
+      // MEME titre de coiffer la variante sac seul sans mentir — donc pas de
+      // second titre a maintenir, et la parite des cles reste intacte.
+      for (final entree in _motSac.entries) {
+        final titre =
+            entree.key.buildSync().checklist.weight.descentAlertTitle;
+        expect(titre.trim(), isNotEmpty);
+        expect(titre.toLowerCase(), isNot(contains(entree.value)),
+            reason: '${entree.key.languageCode} : le titre n annonce que le sac '
+                '(« $titre ») alors que le corps annonce deux poids');
+      }
+      // Et il ne bascule pas dans l'autre exces : il ne parle pas davantage du
+      // corps de la personne — le garde-fou de redaction vaut pour le titre.
+      const autrePoids = <AppLocale, List<String>>{
+        AppLocale.fr: ['poids de forme', 'imc', 'surpoids'],
+        AppLocale.en: ['fit weight', 'bmi', 'overweight'],
+        AppLocale.de: ['wohlfuhlgewicht', 'bmi', 'ubergewicht'],
+        AppLocale.es: ['peso de forma', 'imc', 'sobrepeso'],
+        AppLocale.it: ['peso di forma', 'imc', 'sovrappeso'],
+      };
+      for (final entree in autrePoids.entries) {
+        final titre = entree.key
+            .buildSync()
+            .checklist
+            .weight
+            .descentAlertTitle
+            .toLowerCase();
+        for (final mot in entree.value) {
+          expect(titre, isNot(contains(mot)),
+              reason: '${entree.key.languageCode} : le titre dit « $mot »');
+        }
+      }
+    });
   });
 }
+
+/// Le mot qui designe le SAC dans chaque langue. Sert deux fois : le corps doit
+/// le nommer (c'est la seule part sur laquelle Chris peut agir), le titre ne
+/// doit PAS le nommer (il coiffe les deux poids, pas un seul).
+const _motSac = <AppLocale, String>{
+  AppLocale.fr: 'sac',
+  AppLocale.en: 'pack',
+  AppLocale.de: 'rucksack',
+  AppLocale.es: 'mochila',
+  AppLocale.it: 'zaino',
+};
 
 /// Sac fabrique : le [ChecklistNotifier] reel lit la base, celui-ci rend l etat
 /// qu on lui donne.

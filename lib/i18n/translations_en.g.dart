@@ -256,6 +256,8 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get layersSubtitle => 'Choose what to show on the map';
 	@override String stageRemaining({required Object km}) => '${km} km left';
 	@override String get offTrackChip => 'Off track';
+	@override String get statsPendingNote => 'The dashes fill in as soon as you start the hike: these figures are measured while walking.';
+	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
 }
 
@@ -317,6 +319,8 @@ class _Translations$poi$en extends Translations$poi$fr {
 	@override String get emergency => 'Emergency';
 	@override String get danger => 'Danger';
 	@override String get shop => 'Shop';
+	@override String get accommodation => 'Accommodation';
+	@override String get info => 'Information';
 	@override String get filter => 'Filter points of interest';
 	@override String get altitude => 'Altitude';
 	@override String get hours => 'Opening hours';
@@ -480,6 +484,7 @@ class _Translations$journal$en extends Translations$journal$fr {
 	@override String get photoLimit => '3 photos per day limit reached';
 	@override String get photoTooBig => 'Photo too large (max 500 KB)';
 	@override String get addPhoto => 'Add a photo';
+	@override String get photoAdded => 'Photo added to the journal';
 	@override String get photoSource => 'Photo source';
 	@override String get camera => 'Camera';
 	@override String get gallery => 'Gallery';
@@ -1572,6 +1577,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get sexMale => 'Male';
 	@override String get sexUnspecified => 'Unspecified';
 	@override String get fieldCountry => 'Country';
+	@override String get countryUnspecified => 'Unspecified';
 	@override String get hintCountry => 'Code (e.g. FR)';
 	@override String get bmiLabel => 'BMI';
 	@override late final _Translations$hikerProfile$bmiCategories$en bmiCategories = _Translations$hikerProfile$bmiCategories$en._(_root);
@@ -1852,6 +1858,24 @@ class _Translations$hub$finishTrek$en extends Translations$hub$finishTrek$fr {
 	@override String get confirmBody => 'The trek will be marked as finished. Stages you haven\'t walked won\'t be validated. You can still review your adventure.';
 	@override String get confirm => 'Finish';
 	@override String get cancel => 'Cancel';
+}
+
+// Path: map.guide
+class _Translations$map$guide$en extends Translations$map$guide$fr {
+	_Translations$map$guide$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get buttonsTitle => 'Buttons';
+	@override String get position => 'Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.';
+	@override String get track => 'The trail line, in its own colour. It is the reference the off-track alert uses.';
+	@override String get centerOnMe => 'Brings the map back to your position after you have dragged it.';
+	@override String get photo => 'Takes a photo and adds it to the day\'s journal, without leaving the map.';
+	@override String get sos => 'Opens the emergency call with your GPS coordinates. To be used only in a real emergency.';
+	@override String get currentStage => 'What is left to walk on the current stage. A dash means the hike has not started yet.';
+	@override String get offTrack => 'Lights up when you move away from the line. Come back to the trail to clear it.';
+	@override late final _Translations$map$guide$poi$en poi = _Translations$map$guide$poi$en._(_root);
 }
 
 // Path: stage.difficulty
@@ -2272,12 +2296,12 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 
 	// Translations
 	@override String get title => 'Feasibility for this trek';
-	@override String get intro => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.';
+	@override String get intro => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.';
 	@override String ceilingLabel({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})';
-	@override String get stagesTitle => 'Stage by stage';
+	@override String get stagesTitle => 'Day by day';
 	@override String stageEffort({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km';
 	@override String get globalTitle => 'Overall verdict';
-	@override String hardestStage({required Object stage}) => 'Toughest stage: ${stage}';
+	@override String hardestStage({required Object stage}) => 'Toughest day: ${stage}';
 	@override String daysOver({required Object count}) => '${count} day(s) above your ceiling';
 	@override String get daysOverNone => 'No day above your ceiling';
 	@override String limitingLabel({required Object factor}) => 'Limiting factor: ${factor}';
@@ -2285,7 +2309,7 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String get adviceTitle => 'Tips for your plan';
 	@override String generateProgram({required Object days}) => 'Generate my plan (${days} days)';
 	@override String generateProgramDone({required Object days}) => 'Plan generated over ${days} days — tweak it as you like.';
-	@override String get noStages => 'No stage to assess yet.';
+	@override String get noStages => 'No day to assess yet.';
 	@override late final _Translations$feasibility$formula$levels$en levels = _Translations$feasibility$formula$levels$en._(_root);
 	@override late final _Translations$feasibility$formula$verdicts$en verdicts = _Translations$feasibility$formula$verdicts$en._(_root);
 	@override late final _Translations$feasibility$formula$limitingFactors$en limitingFactors = _Translations$feasibility$formula$limitingFactors$en._(_root);
@@ -2302,7 +2326,7 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String get restExtrapolation => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.';
 	@override String get restNotDecisive => 'This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.';
 	@override String restAdvisedLine({required Object days}) => 'Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.';
-	@override String get restTwoDays => 'On stages of equal size, one rest day a week is not enough: it takes two.';
+	@override String get restTwoDays => 'On days of equal size, one rest day a week is not enough: it takes two.';
 	@override String habitGap({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).';
 	@override String get habitGapNotDecisive => 'This gap is shown, never decisive: no study demonstrates that it causes anything.';
 	@override String get conditionsTitle => 'What went into this verdict';
@@ -2317,11 +2341,11 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String get winterInvalid => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.';
 	@override String restDaysCounted({required Object count}) => 'Rest days counted in this verdict: ${count}.';
 	@override String get restDaysNone => 'No rest day is set in your plan: add some and this figure moves.';
-	@override String averageLoad({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest stage is at ${worst}).';
+	@override String averageLoad({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest is at ${worst}).';
 	@override String get averageLoadInfo => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.';
 	@override String durationStatement({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.';
 	@override String get durationStatementInfo => 'This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.';
-	@override String stageDominantFactor({required Object factor}) => 'What weighs most on this stage: ${factor}';
+	@override String stageDominantFactor({required Object factor}) => 'What weighs most on this day: ${factor}';
 }
 
 // Path: feasibility.flow
@@ -3404,6 +3428,25 @@ class _Translations$sos$medicalId$en extends Translations$sos$medicalId$fr {
 	@override String get unavailable => 'Open the medical ID in your phone\'s Health settings.';
 }
 
+// Path: map.guide.poi
+class _Translations$map$guide$poi$en extends Translations$map$guide$poi$fr {
+	_Translations$map$guide$poi$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get water => 'A spring or fountain marked along the trail. A spring can run dry in summer: do not rely on it without checking.';
+	@override String get shelter => 'A refuge or shelter on the route. Tap the marker to see what is known: altitude, services, contact.';
+	@override String get accommodation => 'Lodging other than a refuge: guesthouse, room, hotel. Booking is made with the establishment itself.';
+	@override String get campsite => 'A campsite or bivouac spot. Bivouac rules depend on the land you cross: check before pitching a tent.';
+	@override String get shop => 'A shop where you can resupply. Opening hours are not guaranteed off season: keep a margin.';
+	@override String get restaurant => 'A restaurant or guest table on or very near the route.';
+	@override String get viewpoint => 'A notable viewpoint. A landmark for a break, not for navigation.';
+	@override String get danger => 'A passage flagged as tricky. Slow down and look at the ground before committing.';
+	@override String get emergency => 'An emergency point: post, helipad or emergency call point.';
+	@override String get info => 'A trail information sign or point.';
+}
+
 // Path: weather.alert.storm
 class _Translations$weather$alert$storm$en extends Translations$weather$alert$storm$fr {
 	_Translations$weather$alert$storm$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -3490,9 +3533,9 @@ class _Translations$feasibility$formula$verdicts$en extends Translations$feasibi
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get green => 'Feasible';
-	@override String get orange => 'Feasible with preparation';
-	@override String get red => 'Beyond your ability';
+	@override String get green => 'Feasible split';
+	@override String get orange => 'Demanding split';
+	@override String get red => 'Split too tight';
 }
 
 // Path: feasibility.formula.limitingFactors
@@ -3502,7 +3545,7 @@ class _Translations$feasibility$formula$limitingFactors$en extends Translations$
 	final TranslationsEn _root; // ignore: unused_field
 
 	// Translations
-	@override String get distance => 'the stage distances';
+	@override String get distance => 'the daily distance';
 	@override String get elevation => 'the elevation gain';
 	@override String get chaining => 'the day-to-day chaining';
 	@override String get none => 'none';
@@ -3520,10 +3563,10 @@ class _Translations$feasibility$formula$advice$en extends Translations$feasibili
 	@override String get balancedOk => 'Your plan is balanced: keep a margin and listen to your body.';
 	@override String get balanced => 'Spread the stages out to smooth the effort across the days.';
 	@override String optimalDays({required Object days, required Object current}) => 'Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.';
-	@override String split({required Object stage}) => 'Split stage ${stage} in two: it clearly exceeds your ceiling.';
-	@override String rest({required Object stages}) => 'Plan a rest day after stage ${stages}.';
+	@override String split({required Object stage}) => 'Split day ${stage} in two: it clearly exceeds your ceiling.';
+	@override String rest({required Object stages}) => 'Plan a rest day after day ${stages}.';
 	@override String training({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).';
-	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s), after stages ${stages}: your days look too much alike for the body to recover. It is advice, it does not change your verdict.';
+	@override String restAdvised({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.';
 }
 
 // Path: signalement.water.states
@@ -3942,6 +3985,25 @@ extension on TranslationsEn {
 			'map.layersSubtitle' => 'Choose what to show on the map',
 			'map.stageRemaining' => ({required Object km}) => '${km} km left',
 			'map.offTrackChip' => 'Off track',
+			'map.statsPendingNote' => 'The dashes fill in as soon as you start the hike: these figures are measured while walking.',
+			'map.guide.buttonsTitle' => 'Buttons',
+			'map.guide.position' => 'Your GPS position, updated as you walk. If the dot disappears, check that location access is allowed for the app.',
+			'map.guide.track' => 'The trail line, in its own colour. It is the reference the off-track alert uses.',
+			'map.guide.centerOnMe' => 'Brings the map back to your position after you have dragged it.',
+			'map.guide.photo' => 'Takes a photo and adds it to the day\'s journal, without leaving the map.',
+			'map.guide.sos' => 'Opens the emergency call with your GPS coordinates. To be used only in a real emergency.',
+			'map.guide.currentStage' => 'What is left to walk on the current stage. A dash means the hike has not started yet.',
+			'map.guide.offTrack' => 'Lights up when you move away from the line. Come back to the trail to clear it.',
+			'map.guide.poi.water' => 'A spring or fountain marked along the trail. A spring can run dry in summer: do not rely on it without checking.',
+			'map.guide.poi.shelter' => 'A refuge or shelter on the route. Tap the marker to see what is known: altitude, services, contact.',
+			'map.guide.poi.accommodation' => 'Lodging other than a refuge: guesthouse, room, hotel. Booking is made with the establishment itself.',
+			'map.guide.poi.campsite' => 'A campsite or bivouac spot. Bivouac rules depend on the land you cross: check before pitching a tent.',
+			'map.guide.poi.shop' => 'A shop where you can resupply. Opening hours are not guaranteed off season: keep a margin.',
+			'map.guide.poi.restaurant' => 'A restaurant or guest table on or very near the route.',
+			'map.guide.poi.viewpoint' => 'A notable viewpoint. A landmark for a break, not for navigation.',
+			'map.guide.poi.danger' => 'A passage flagged as tricky. Slow down and look at the ground before committing.',
+			'map.guide.poi.emergency' => 'An emergency point: post, helipad or emergency call point.',
+			'map.guide.poi.info' => 'A trail information sign or point.',
 			'map.supplyDismiss' => 'Dismiss alert',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Elevation',
@@ -3988,6 +4050,8 @@ extension on TranslationsEn {
 			'poi.emergency' => 'Emergency',
 			'poi.danger' => 'Danger',
 			'poi.shop' => 'Shop',
+			'poi.accommodation' => 'Accommodation',
+			'poi.info' => 'Information',
 			'poi.filter' => 'Filter points of interest',
 			'poi.altitude' => 'Altitude',
 			'poi.hours' => 'Opening hours',
@@ -4274,6 +4338,8 @@ extension on TranslationsEn {
 			'checklist.ui.bagValidatedSnack' => 'Pack validated!',
 			'checklist.ui.validationCancelledSnack' => 'Pack validation cancelled — you can edit your gear.',
 			'checklist.ui.missingTitle' => 'Missing gear',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.missingBody' => '{checked}/{total} required items checked.',
 			'checklist.ui.missingList' => 'Missing:',
 			'checklist.ui.understood' => 'Got it',
@@ -4295,14 +4361,13 @@ extension on TranslationsEn {
 			'journal.stage' => 'Stage',
 			'journal.yourNote' => 'Your note',
 			'journal.placeholder' => 'Describe your hiking day...',
-			_ => null,
-		} ?? switch (path) {
 			'journal.save' => 'Save',
 			'journal.cancel' => 'Cancel',
 			'journal.delete' => 'Delete',
 			'journal.photoLimit' => '3 photos per day limit reached',
 			'journal.photoTooBig' => 'Photo too large (max 500 KB)',
 			'journal.addPhoto' => 'Add a photo',
+			'journal.photoAdded' => 'Photo added to the journal',
 			'journal.photoSource' => 'Photo source',
 			'journal.camera' => 'Camera',
 			'journal.gallery' => 'Gallery',
@@ -4518,12 +4583,12 @@ extension on TranslationsEn {
 			'feasibility.gaps.fitness' => 'Fitness insufficient on the 6-minute test',
 			'feasibility.gaps.effort' => 'Overall effort (IBP) above your experience',
 			'feasibility.formula.title' => 'Feasibility for this trek',
-			'feasibility.formula.intro' => 'We compare each stage\'s effort to what your profile can handle in a day. Green, orange or red light.',
+			'feasibility.formula.intro' => 'We compare each walking day\'s effort to what your profile can handle. Green, orange or red light.',
 			'feasibility.formula.ceilingLabel' => ({required Object value, required Object level}) => 'Recommended ceiling: ${value} energy-km/day (${level})',
-			'feasibility.formula.stagesTitle' => 'Stage by stage',
+			'feasibility.formula.stagesTitle' => 'Day by day',
 			'feasibility.formula.stageEffort' => ({required Object distance, required Object elevation, required Object effort}) => '${distance} km + ${elevation} m ascent = ${effort} energy-km',
 			'feasibility.formula.globalTitle' => 'Overall verdict',
-			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Toughest stage: ${stage}',
+			'feasibility.formula.hardestStage' => ({required Object stage}) => 'Toughest day: ${stage}',
 			'feasibility.formula.daysOver' => ({required Object count}) => '${count} day(s) above your ceiling',
 			'feasibility.formula.daysOverNone' => 'No day above your ceiling',
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Limiting factor: ${factor}',
@@ -4531,15 +4596,15 @@ extension on TranslationsEn {
 			'feasibility.formula.adviceTitle' => 'Tips for your plan',
 			'feasibility.formula.generateProgram' => ({required Object days}) => 'Generate my plan (${days} days)',
 			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Plan generated over ${days} days — tweak it as you like.',
-			'feasibility.formula.noStages' => 'No stage to assess yet.',
+			'feasibility.formula.noStages' => 'No day to assess yet.',
 			'feasibility.formula.levels.beginner' => 'beginner',
 			'feasibility.formula.levels.intermediate' => 'intermediate',
 			'feasibility.formula.levels.confirmed' => 'confirmed',
 			'feasibility.formula.levels.expert' => 'expert',
-			'feasibility.formula.verdicts.green' => 'Feasible',
-			'feasibility.formula.verdicts.orange' => 'Feasible with preparation',
-			'feasibility.formula.verdicts.red' => 'Beyond your ability',
-			'feasibility.formula.limitingFactors.distance' => 'the stage distances',
+			'feasibility.formula.verdicts.green' => 'Feasible split',
+			'feasibility.formula.verdicts.orange' => 'Demanding split',
+			'feasibility.formula.verdicts.red' => 'Split too tight',
+			'feasibility.formula.limitingFactors.distance' => 'the daily distance',
 			'feasibility.formula.limitingFactors.elevation' => 'the elevation gain',
 			'feasibility.formula.limitingFactors.chaining' => 'the day-to-day chaining',
 			'feasibility.formula.limitingFactors.none' => 'none',
@@ -4548,10 +4613,10 @@ extension on TranslationsEn {
 			'feasibility.formula.advice.balancedOk' => 'Your plan is balanced: keep a margin and listen to your body.',
 			'feasibility.formula.advice.balanced' => 'Spread the stages out to smooth the effort across the days.',
 			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Aim for ${days} walking days (instead of ${current}) to stay under your ceiling.',
-			'feasibility.formula.advice.split' => ({required Object stage}) => 'Split stage ${stage} in two: it clearly exceeds your ceiling.',
-			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after stage ${stages}.',
+			'feasibility.formula.advice.split' => ({required Object stage}) => 'Split day ${stage} in two: it clearly exceeds your ceiling.',
+			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Plan a rest day after day ${stages}.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Train for ${weeks} weeks before departure (physical preparation).',
-			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s), after stages ${stages}: your days look too much alike for the body to recover. It is advice, it does not change your verdict.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Add ${days} rest day(s), after days ${stages}: they look too much alike for the body to recover. It is advice, it does not change your verdict.',
 			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Retained split: ${days} walking days.',
 			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'No split retained: the trail stays on its default ${days} days.',
 			'feasibility.formula.energyUnitNotice' => '1 km of flat ground is worth 42 m of ascent: that is the measured cost of walking uphill, not a house rule.',
@@ -4564,7 +4629,7 @@ extension on TranslationsEn {
 			'feasibility.formula.restExtrapolation' => 'The rest threshold comes from a measurement made on athletes, carried over to multi-day hiking. It is a transfer, and it is stated as one.',
 			'feasibility.formula.restNotDecisive' => 'This figure is shown and advises, it never decides: your verdict stays the one of your hardest day.',
 			'feasibility.formula.restAdvisedLine' => ({required Object days}) => 'Advice: ${days} rest day(s) spread through your plan bring this figure back under its threshold.',
-			'feasibility.formula.restTwoDays' => 'On stages of equal size, one rest day a week is not enough: it takes two.',
+			'feasibility.formula.restTwoDays' => 'On days of equal size, one rest day a week is not enough: it takes two.',
 			'feasibility.formula.habitGap' => ({required Object value}) => 'Gap to your habit: ${value} (reference 0.8 to 1.3).',
 			'feasibility.formula.habitGapNotDecisive' => 'This gap is shown, never decisive: no study demonstrates that it causes anything.',
 			'feasibility.formula.conditionsTitle' => 'What went into this verdict',
@@ -4579,11 +4644,11 @@ extension on TranslationsEn {
 			'feasibility.formula.winterInvalid' => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Rest days counted in this verdict: ${count}.',
 			'feasibility.formula.restDaysNone' => 'No rest day is set in your plan: add some and this figure moves.',
-			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest stage is at ${worst}).',
+			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Average daily load: ${value} (the hardest is at ${worst}).',
 			'feasibility.formula.averageLoadInfo' => 'These two figures are read together: far apart, the trek has one hard day; close together, it is hard every day. This is shown, it does not decide.',
 			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'This trek lasts ${days} walking days; your longest chained outing is ${done} days.',
 			'feasibility.formula.durationStatementInfo' => 'This is shown, it does not decide: no published measurement says after how many chained days a hiker drops off. Judge for yourself.',
-			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'What weighs most on this stage: ${factor}',
+			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'What weighs most on this day: ${factor}',
 			'feasibility.flow.title' => 'Are you ready for this trek?',
 			'feasibility.flow.intro' => 'Answer 3 quick steps: we work out your real level, then tell you if the trek is doable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} steps done',
@@ -4787,6 +4852,8 @@ extension on TranslationsEn {
 			'gamification.badge.firstStage.titre' => 'First stage',
 			'gamification.badge.firstStage.description' => 'You completed your first stage.',
 			'gamification.badge.firstTrek.titre' => 'First trek',
+			_ => null,
+		} ?? switch (path) {
 			'gamification.badge.firstTrek.description' => 'You finished your first full trek.',
 			'gamification.badge.firstSegment.titre' => 'First segment',
 			'gamification.badge.firstSegment.description' => 'You ran your first segment.',
@@ -4809,8 +4876,6 @@ extension on TranslationsEn {
 			'shareVisibility.stageResults' => 'Share my stage results',
 			'shareVisibility.stageResultsDesc' => 'A pseudonymous card (no direct personal data).',
 			'shareVisibility.leaderboard' => 'Appear in leaderboards',
-			_ => null,
-		} ?? switch (path) {
 			'shareVisibility.leaderboardDesc' => 'Ranking by group, using a pseudonym.',
 			'shareVisibility.activityFeed' => 'Post to the activity feed',
 			'shareVisibility.activityFeedDesc' => 'Your activities appear in the feed, under a pseudonym.',
@@ -5301,6 +5366,8 @@ extension on TranslationsEn {
 			'summary.empty.message' => 'Choose your route and duration to see your plan summary.',
 			'summary.empty.action' => 'SET UP ITINERARY',
 			'summary.a11y.dayTile' => ({required Object day}) => 'View details for day ${day}',
+			_ => null,
+		} ?? switch (path) {
 			'summary.a11y.restDayTile' => ({required Object day}) => 'Rest day ${day} details',
 			'summary.a11y.share' => 'Share my plan',
 			'import.title' => 'Import a GPX',
@@ -5323,8 +5390,6 @@ extension on TranslationsEn {
 			'import.warningsSection' => 'Warnings',
 			'import.warningOutOfBounds' => '{count} point(s) out of area ignored.',
 			'import.warningOffTrail' => '{percent}% of points are far from the trail.',
-			_ => null,
-		} ?? switch (path) {
 			'import.invalidTooFewPoints' => 'GPX file too small: {count} points (minimum 10).',
 			'import.invalidOutOfBounds' => 'The track does not match this trail\'s area.',
 			'import.errorUnreadable' => 'Unable to read the file.',
@@ -5380,6 +5445,7 @@ extension on TranslationsEn {
 			'hikerProfile.sexMale' => 'Male',
 			'hikerProfile.sexUnspecified' => 'Unspecified',
 			'hikerProfile.fieldCountry' => 'Country',
+			'hikerProfile.countryUnspecified' => 'Unspecified',
 			'hikerProfile.hintCountry' => 'Code (e.g. FR)',
 			'hikerProfile.bmiLabel' => 'BMI',
 			'hikerProfile.bmiCategories.underweight' => 'Underweight',

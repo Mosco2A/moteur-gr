@@ -405,17 +405,24 @@ Future<void> _ouvrirEntrainement(WidgetTester tester) async {
 
 /// Lit le libelle de verdict REELLEMENT affiche sur l'ecran Faisabilite.
 ///
-/// « Faisable » est un PREFIXE de « Faisable avec préparation » : on teste du
-/// PLUS LONG au PLUS COURT, sur l'egalite exacte du Text.
+/// LES LIBELLES SONT LUS DANS SLANG, PLUS JAMAIS RECOPIES (tache 552). Cette
+/// liste etait ecrite a la main et avait DEJA derive : elle cherchait « Beyond
+/// your current ability » quand l'application disait « Beyond your ability ».
+/// Un test qui recopie un libelle ne prouve rien le jour ou le libelle change —
+/// et les trois verdicts viennent d'etre reecrits pour porter sur le DECOUPAGE
+/// et non sur la personne.
+///
+/// Un libelle peut etre le PREFIXE d'un autre (c'etait le cas de « Faisable »
+/// dans « Faisable avec preparation ») : on trie du PLUS LONG au PLUS COURT et
+/// on teste l'egalite exacte du Text. Toutes les langues sont candidates, pour
+/// que la lecture ne depende pas de la locale du run.
 String? _lireBadgeAffiche(WidgetTester tester) {
-  const candidats = <String>[
-    'Au-dessus de tes capacités',
-    'Beyond your current ability',
-    'Faisable avec préparation',
-    'Feasible with preparation',
-    'Faisable',
-    'Feasible',
-  ];
+  final candidats = <String>[];
+  for (final locale in AppLocale.values) {
+    final v = locale.buildSync().feasibility.formula.verdicts;
+    candidats.addAll([v.green, v.orange, v.red]);
+  }
+  candidats.sort((a, b) => b.length.compareTo(a.length));
   for (final libelle in candidats) {
     if (find.text(libelle).evaluate().isNotEmpty) return libelle;
   }
@@ -423,13 +430,14 @@ String? _lireBadgeAffiche(WidgetTester tester) {
 }
 
 String _libelleAttendu(FeasibilityVerdict v) {
+  final verdicts = t.feasibility.formula.verdicts;
   switch (v) {
     case FeasibilityVerdict.green:
-      return 'Faisable';
+      return verdicts.green;
     case FeasibilityVerdict.orange:
-      return 'Faisable avec préparation';
+      return verdicts.orange;
     case FeasibilityVerdict.red:
-      return 'Au-dessus de tes capacités';
+      return verdicts.red;
   }
 }
 
