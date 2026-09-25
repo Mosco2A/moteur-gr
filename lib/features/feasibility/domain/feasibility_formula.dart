@@ -883,6 +883,11 @@ class FeasibilityFormula {
   ///   de repos est pose. Les jours de repos comptent comme CHARGE NULLE dans
   ///   la monotonie de Foster (#2-p).
   /// [conditions] : altitude et saison du depart.
+  /// [maxWalkingDays] : nombre MAXIMAL de jours de marche atteignable par le
+  ///   programme (= nombre d'etapes a repartir). Plafonne le nombre de jours
+  ///   CONSEILLE : une etape ne se coupe pas en deux, donc conseiller plus de
+  ///   jours qu'il n'y a d'etapes serait un conseil inapplicable. 0 = inconnu,
+  ///   aucun plafond.
   /// [scale] : bareme applique. V2 par defaut ; V1 uniquement pour reconstituer
   ///   la colonne « AVANT » des bascules de la campagne personas.
   static FeasibilityAssessment evaluate({
@@ -893,6 +898,7 @@ class FeasibilityFormula {
     int longestConsecutiveDaysDone = 0,
     Set<int> restAfterStageIndex = const {},
     TrekConditions conditions = TrekConditions.unknown,
+    int maxWalkingDays = 0,
     FeasibilityThresholds thresholds = FeasibilityThresholds.median,
     FeasibilityScale scale = FeasibilityScale.v2,
   }) {
@@ -971,7 +977,11 @@ class FeasibilityFormula {
 
     // 7. Reco entrainement + conseils de programme.
     final trainingWeeks = trainingWeeksFor(level, globalVerdict);
-    final suggestedDays = _suggestedWalkingDays(verdicts, capacity);
+    final suggestedDays = _suggestedWalkingDays(
+      verdicts,
+      capacity,
+      maxWalkingDays: maxWalkingDays,
+    );
     // Le repos CONSEILLE (GO-61) : calcule sur les memes energies que C3, donc
     // sur le meme chiffre que celui affiche.
     final recommendedRest = recommendedRestAfterStageIndex(
@@ -1241,20 +1251,31 @@ class FeasibilityFormula {
   }
 
   /// Nombre de jours de MARCHE optimal pour que la charge moyenne tienne sous la
-  /// capacite, en lissant les pics : max(nb d'etapes, ceil(energie totale /
-  /// capacite), nb d'etapes au-dessus de la capacite * 2 pour permettre le
+  /// capacite, en lissant les pics : max(nb de journees, ceil(energie totale /
+  /// capacite), nb de journees au-dessus de la capacite * 2 pour permettre le
   /// decoupage des pires).
+  ///
+  /// [maxWalkingDays] plafonne le resultat au nombre de journees REELLEMENT
+  /// atteignable (une etape ne se coupe pas en deux dans le programme). Le
+  /// plafond ne descend jamais sous le decoupage courant : conseiller MOINS de
+  /// jours que ce qui est deja pose n'a aucun sens ici, la fonction cherchant
+  /// toujours a etaler l'effort.
   static int _suggestedWalkingDays(
-      List<StageVerdict> verdicts, double capacity) {
+    List<StageVerdict> verdicts,
+    double capacity, {
+    int maxWalkingDays = 0,
+  }) {
     if (verdicts.isEmpty) return 0;
     final total = verdicts.map((v) => v.energyKm).reduce((a, b) => a + b);
     final byLoad =
         capacity > 0 ? (total / capacity).ceil() : verdicts.length;
-    // Chaque etape au-dessus de la capacite merite au moins d'etre coupee en 2.
+    // Chaque journee au-dessus de la capacite merite au moins d'etre coupee en 2.
     final overCount =
         verdicts.where((v) => capacity > 0 && v.energyKm > capacity).length;
     final byOver = verdicts.length + overCount;
-    return math.max(verdicts.length, math.max(byLoad, byOver));
+    final raw = math.max(verdicts.length, math.max(byLoad, byOver));
+    if (maxWalkingDays <= 0) return raw;
+    return math.min(raw, math.max(maxWalkingDays, verdicts.length));
   }
 
   /// Construit les conseils de programme (cles i18n + parametres). Coherent avec

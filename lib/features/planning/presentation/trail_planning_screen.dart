@@ -6,6 +6,7 @@ import '../../../core/models/stage.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../feasibility/providers/trek_feasibility_provider.dart';
 import '../../hub/providers/cockpit_start_providers.dart';
 import '../models/planned_day.dart';
 import '../providers/planned_days_provider.dart';
@@ -270,6 +271,18 @@ class _PlanningContent extends ConsumerWidget {
     final bounds = ref.watch(durationBoundsProvider(trailId));
     final selectedDuration = ref.watch(selectedDurationProvider);
 
+    // VERDICT DU DECOUPAGE COURANT (retour Chris 6c du 25/09, spec #100417).
+    // Mot pour mot : « le curseur jour change de couleur dans programme ». Le
+    // moteur unique evalue desormais le PROGRAMME REEL (tache 551) : bouger ce
+    // curseur regroupe ou separe les journees, donc change le verdict, donc la
+    // couleur du curseur. `maybeWhen` : un verdict encore en calcul ou
+    // indisponible (profil incomplet) ne colore rien et ne casse rien — le
+    // curseur reprend alors son ratio etapes/jour.
+    final verdict = ref.watch(feasibilityAssessmentProvider).maybeWhen(
+          data: (a) => a?.globalVerdict,
+          orElse: () => null,
+        );
+
     return Column(
       children: [
         _StatsHeader(stats: stats),
@@ -287,6 +300,8 @@ class _PlanningContent extends ConsumerWidget {
             // ou qu'on separe une etape. Source unique = les stats du programme.
             totalDays: stats.totalDays,
             restDays: stats.restDays,
+            // Le verdict du decoupage courant colore le curseur (retour 6c).
+            verdict: verdict,
             onDurationChanged: (value) => ref
                 .read(selectedDurationProvider.notifier)
                 .set(bounds.clampDuration(value)),

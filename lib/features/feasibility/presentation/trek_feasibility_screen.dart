@@ -461,6 +461,20 @@ class _VerdictView extends ConsumerWidget {
             const SizedBox(height: AppTheme.spacingLg),
           ],
 
+          // LE CONSEIL AVANT LE VERDICT (retour Chris 4, #100417) : combien de
+          // jours viser, combien de repos poser et ou, ou decouper — PUIS le
+          // feu. Voir [_AdviceFirst] pour le pourquoi.
+          _AdviceFirst(assessment: assessment, trailId: trailId),
+          const SizedBox(height: AppTheme.spacingLg),
+
+          // HIVER : LE VERDICT EST DECLARE NON VALIDE (#1-e, #8-d). Place AVANT
+          // le feu — une declaration de non-validite lue apres le verdict
+          // qu'elle annule arrive trop tard.
+          if (!assessment.isVerdictValid) ...[
+            const _WinterInvalidNotice(),
+            const SizedBox(height: AppTheme.spacingLg),
+          ],
+
           // Verdict global (feu tricolore).
           _VerdictBadge(verdict: assessment.globalVerdict),
           const SizedBox(height: AppTheme.spacingSm),
@@ -479,15 +493,6 @@ class _VerdictView extends ConsumerWidget {
           ),
           const SizedBox(height: AppTheme.spacingBase),
 
-          // HIVER : LE VERDICT EST DECLARE NON VALIDE (#1-e, #8-d). Place
-          // AVANT tout le reste — une declaration de non-validite lue apres le
-          // detail arrive trop tard. On ne durcit pas le chiffre, on dit qu'il
-          // ne s'applique pas.
-          if (!assessment.isVerdictValid) ...[
-            const _WinterInvalidNotice(),
-            const SizedBox(height: AppTheme.spacingLg),
-          ],
-
           // CE QUE LE FEU NE REGARDE PAS (#8-a). La mention s'est COUPEE EN
           // DEUX le 22/09 : la moitie « saison » est partie, puisque la saison
           // entre desormais dans le calcul ; la moitie « sac » est devenue
@@ -497,8 +502,8 @@ class _VerdictView extends ConsumerWidget {
           const _OutOfScopeNotice(),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // Synthese du verdict global : etape la plus dure, jours au-dessus,
-          // facteur limitant, reco entrainement.
+          // Synthese du verdict global : journee la plus dure, facteur
+          // limitant, reco entrainement.
           _GlobalSummary(assessment: assessment),
           const SizedBox(height: AppTheme.spacingLg),
 
@@ -519,30 +524,9 @@ class _VerdictView extends ConsumerWidget {
           ...assessment.stageVerdicts.map((v) => _StageTile(verdict: v)),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // Conseils de programme (jours optimal, decoupe, repos, entrainement).
-          if (assessment.advice.isNotEmpty) ...[
-            Text(f.formula.adviceTitle, style: theme.textTheme.titleMedium),
-            const SizedBox(height: AppTheme.spacingSm),
-            ...assessment.advice.map((a) => _AdviceTile(advice: a)),
-            const SizedBox(height: AppTheme.spacingLg),
-          ],
-
-          // R2f (#100122 / parite GR20 `feasibility_result_screen` bouton
-          // CONTINUER) : l'appli PROPOSE le planning, elle ne le demande pas.
-          // Ce bouton APPLIQUE la reco de la formule (#100068 : nb de jours
-          // optimal) a la SOURCE UNIQUE des jours (selectedDurationProvider),
-          // puis mene au Programme deja pre-rempli et modifiable.
-          _GenerateProgramButton(
-            trailId: trailId,
-            suggestedDays: assessment.suggestedDays,
-            recommendedRestDays: assessment.recommendedRestDays,
-          ),
-          const SizedBox(height: AppTheme.spacingSm),
-          // D2 (#100293) — CE QUI A ETE RETENU, ECRIT NOIR SUR BLANC. Sans
-          // cette ligne, choisir un decoupage ne laissait aucune trace a
-          // l'ecran : le bouton etait indistinguable d'un bouton mort.
-          const _RetainedPlanLine(),
-          const SizedBox(height: AppTheme.spacingLg),
+          // Les conseils, le bouton « Generer mon programme » et la ligne du
+          // decoupage retenu ne sont PLUS ici : ils ouvrent l'ecran
+          // ([_AdviceFirst]), avant le verdict — retour Chris 4 du 25/09.
 
           // Pont « es-tu pret ? » -> « voila comment le devenir » : prepa
           // physique (payant), porte d'entree definie par la spec.
@@ -568,6 +552,64 @@ class _VerdictView extends ConsumerWidget {
           _ProfileShortcuts(trailId: trailId, complete: hasProfile),
         ],
       ),
+    );
+  }
+}
+
+/// LE CONSEIL AVANT LE VERDICT (retour Chris 4 du 25/09, spec #100417).
+///
+/// CE QUI N'ALLAIT PAS, MOT POUR MOT : « Apres faisabilite ca me dit que c'est
+/// au-dessus de mes capacites et que je suis 3 jours au-dessus du plafond, ce
+/// qui 1/ ne veut rien dire 2/ je n'ai pas encore choisi le nombre de jours.
+/// C'est la qu'il faut me conseiller le nombre de jours, le nombre de jours de
+/// repos et la cadence des etapes, au lieu de me dire que c'est au-dessus de mes
+/// capacites. »
+///
+/// LE DEFAUT ETAIT UN ORDRE DE LECTURE, PAS UN CALCUL MANQUANT. Le nombre de
+/// jours conseille, les repos conseilles et l'etape a decouper etaient DEJA
+/// calcules et traduits dans les 5 langues ([FeasibilityAssessment.advice]) —
+/// mais affiches TOUT EN BAS, apres le feu, la synthese, le circuit, les
+/// conditions et les seize etapes. Le randonneur lisait donc un jugement avant
+/// d'avoir lu une seule proposition.
+///
+/// CE BLOC OUVRE DESORMAIS L'ECRAN : combien de jours viser, combien de repos
+/// poser et ou, ou decouper, puis le bouton qui APPLIQUE ce decoupage et la
+/// ligne qui dit ce qui est retenu. Le feu vient apres, et il porte sur le
+/// decoupage — jamais sur la personne.
+class _AdviceFirst extends StatelessWidget {
+  const _AdviceFirst({required this.assessment, required this.trailId});
+
+  final FeasibilityAssessment assessment;
+  final String trailId;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+    return Column(
+      key: const ValueKey('feasibility-advice-first'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        if (assessment.advice.isNotEmpty) ...[
+          Text(f.adviceTitle, style: theme.textTheme.titleMedium),
+          const SizedBox(height: AppTheme.spacingSm),
+          ...assessment.advice.map((a) => _AdviceTile(advice: a)),
+        ],
+        // R2f (#100122 / parite GR20 `feasibility_result_screen` bouton
+        // CONTINUER) : l'appli PROPOSE le planning, elle ne le demande pas. Ce
+        // bouton APPLIQUE le nombre de jours conseille a la SOURCE UNIQUE des
+        // jours (selectedDurationProvider), puis mene au Programme pre-rempli.
+        _GenerateProgramButton(
+          trailId: trailId,
+          suggestedDays: assessment.suggestedDays,
+          recommendedRestDays: assessment.recommendedRestDays,
+        ),
+        const SizedBox(height: AppTheme.spacingSm),
+        // D2 (#100293) — CE QUI A ETE RETENU, ECRIT NOIR SUR BLANC. Sans cette
+        // ligne, choisir un decoupage ne laissait aucune trace a l'ecran : le
+        // bouton etait indistinguable d'un bouton mort.
+        const _RetainedPlanLine(),
+      ],
     );
   }
 }
@@ -1078,15 +1120,14 @@ class _GlobalSummary extends StatelessWidget {
       ));
     }
 
-    // Jours au-dessus du plafond.
-    lines.add(_summaryLine(
-      theme,
-      Icons.calendar_today,
-      assessment.daysOverCapacity > 0
-          ? f.daysOver(count: assessment.daysOverCapacity)
-          : f.daysOverNone,
-      assessment.daysOverCapacity > 0 ? color : AppTheme.vertFacile,
-    ));
+    // LE JARGON « X JOUR(S) AU-DESSUS DE TON PLAFOND » EST PARTI (retour Chris
+    // 4 du 25/09). Mot pour mot : « je suis 3 jours au-dessus du plafond, ce qui
+    // ne veut rien dire ». Ce comptage est une grandeur INTERNE du moteur
+    // ([FeasibilityAssessment.daysOverCapacity], qui sert a nommer le facteur
+    // limitant quand plusieurs journees dures s'enchainent) : elle a sa place
+    // dans le calcul, aucune a l'ecran. Ce que le randonneur doit lire a la
+    // place, c'est le nombre de jours a viser — il est desormais EN TETE
+    // d'ecran ([_AdviceFirst]).
 
     // Facteur limitant nomme (si present).
     if (assessment.limitingFactor != LimitingFactor.none) {
@@ -1107,6 +1148,10 @@ class _GlobalSummary extends StatelessWidget {
         theme.colorScheme.primary,
       ));
     }
+
+    // Plus une ligne a dire (verdict vert, aucun facteur limitant, aucune reco)
+    // -> aucune carte vide : un encart sans contenu n'informe de rien.
+    if (lines.isEmpty) return const SizedBox.shrink();
 
     return AppCard(
       backgroundColor: color.withAlpha(14),
