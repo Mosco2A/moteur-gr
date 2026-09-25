@@ -123,6 +123,14 @@ void main() {
         find.widgetWithText(TextFormField, tp.fieldWeight), '72');
     await tester.pumpAndSettle();
 
+    // LE CHEMIN NORMAL PASSE PAR L'AUTORISATION (tache 560, N1). Ce test
+    // enregistrait auparavant sans jamais toucher la bascule de consentement —
+    // et il passait, parce que l'ecran ecrivait la morphologie malgre le refus.
+    // Il fallait donc le corriger ICI aussi : un test vert sur un
+    // enregistrement non consenti, c'est un test qui certifie le defaut.
+    await tester.tap(find.byType(SwitchListTile));
+    await tester.pumpAndSettle();
+
     await tester.tap(find.text(tp.save));
     await tester.pumpAndSettle();
 

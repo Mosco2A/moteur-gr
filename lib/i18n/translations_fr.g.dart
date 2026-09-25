@@ -723,8 +723,11 @@ class Translations$itinerary$fr {
 	/// fr: 'Voir sur la carte'
 	String get openMap => 'Voir sur la carte';
 
-	/// fr: '{count} étapes'
-	String get stageCount => '{count} étapes';
+	/// fr: '(one) {$n étape} (other) {$n étapes}'
+	String stageCount({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n,
+		one: '${n} étape',
+		other: '${n} étapes',
+	);
 }
 
 // Path: tracking
@@ -3223,6 +3226,9 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Fiche vide : renseignez au moins l'âge, la taille ou le poids.'
 	String get errorEmpty => 'Fiche vide : renseignez au moins l\'âge, la taille ou le poids.';
 
+	/// fr: 'Sans votre accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Cochez l'autorisation ci-dessus, puis enregistrez.'
+	String get errorConsentRequired => 'Sans votre accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Cochez l\'autorisation ci-dessus, puis enregistrez.';
+
 	/// fr: 'Sexe (optionnel)'
 	String get fieldSex => 'Sexe (optionnel)';
 
@@ -3243,11 +3249,6 @@ class Translations$hikerProfile$fr {
 
 	/// fr: 'Code (ex. FR)'
 	String get hintCountry => 'Code (ex. FR)';
-
-	/// fr: 'IMC'
-	String get bmiLabel => 'IMC';
-
-	late final Translations$hikerProfile$bmiCategories$fr bmiCategories = Translations$hikerProfile$bmiCategories$fr.internal(_root);
 
 	/// fr: 'Données de morphologie (article 9 RGPD)'
 	String get consentTitle => 'Données de morphologie (article 9 RGPD)';
@@ -6706,27 +6707,6 @@ class Translations$trekState$resumeOrphanDialog$fr {
 	String get abandon => 'Abandonner';
 }
 
-// Path: hikerProfile.bmiCategories
-class Translations$hikerProfile$bmiCategories$fr {
-	Translations$hikerProfile$bmiCategories$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Maigreur'
-	String get underweight => 'Maigreur';
-
-	/// fr: 'Corpulence normale'
-	String get normal => 'Corpulence normale';
-
-	/// fr: 'Surpoids'
-	String get overweight => 'Surpoids';
-
-	/// fr: 'Fort surpoids'
-	String get obese => 'Fort surpoids';
-}
-
 // Path: walkTest.levels
 class Translations$walkTest$levels$fr {
 	Translations$walkTest$levels$fr.internal(this._root);
@@ -7640,7 +7620,7 @@ extension on Translations {
 			'itinerary.restDay' => 'Jour de repos',
 			'itinerary.viewStage' => 'Voir l\'étape',
 			'itinerary.openMap' => 'Voir sur la carte',
-			'itinerary.stageCount' => '{count} étapes',
+			'itinerary.stageCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape', other: '${n} étapes', ), 
 			'tracking.start' => 'Démarrer',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Reprendre',
@@ -8989,6 +8969,7 @@ extension on Translations {
 			'hikerProfile.errorWeight' => 'Poids invalide (25 à 200 kg)',
 			'hikerProfile.errorCountry' => 'Code pays invalide (ex. FR)',
 			'hikerProfile.errorEmpty' => 'Fiche vide : renseignez au moins l\'âge, la taille ou le poids.',
+			'hikerProfile.errorConsentRequired' => 'Sans votre accord, rien n\'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d\'être effacé de cet appareil. Cochez l\'autorisation ci-dessus, puis enregistrez.',
 			'hikerProfile.fieldSex' => 'Sexe (optionnel)',
 			'hikerProfile.sexFemale' => 'Femme',
 			'hikerProfile.sexMale' => 'Homme',
@@ -8996,11 +8977,6 @@ extension on Translations {
 			'hikerProfile.fieldCountry' => 'Pays',
 			'hikerProfile.countryUnspecified' => 'Non précisé',
 			'hikerProfile.hintCountry' => 'Code (ex. FR)',
-			'hikerProfile.bmiLabel' => 'IMC',
-			'hikerProfile.bmiCategories.underweight' => 'Maigreur',
-			'hikerProfile.bmiCategories.normal' => 'Corpulence normale',
-			'hikerProfile.bmiCategories.overweight' => 'Surpoids',
-			'hikerProfile.bmiCategories.obese' => 'Fort surpoids',
 			'hikerProfile.consentTitle' => 'Données de morphologie (article 9 RGPD)',
 			'hikerProfile.consentBody' => 'Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.',
 			'hikerProfile.consentToggle' => 'J\'autorise l\'usage de ma morphologie pour la faisabilité',

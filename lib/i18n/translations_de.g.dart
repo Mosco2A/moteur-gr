@@ -403,7 +403,10 @@ class _Translations$itinerary$de extends Translations$itinerary$fr {
 	@override String get restDay => 'Ruhetag';
 	@override String get viewStage => 'Etappe ansehen';
 	@override String get openMap => 'Auf Karte ansehen';
-	@override String get stageCount => '{count} Etappen';
+	@override String stageCount({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n,
+		one: '${n} Etappe',
+		other: '${n} Etappen',
+	);
 }
 
 // Path: tracking
@@ -1574,6 +1577,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get errorWeight => 'Ungültiges Gewicht (25 bis 200 kg)';
 	@override String get errorCountry => 'Ungültiger Ländercode (z. B. FR)';
 	@override String get errorEmpty => 'Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.';
+	@override String get errorConsentRequired => 'Ohne Ihre Einwilligung wird nichts gespeichert: Alter, Grösse und Gewicht sind Gesundheitsdaten. Was gespeichert war, wurde soeben von diesem Gerät gelöscht. Aktivieren Sie oben die Zustimmung und speichern Sie erneut.';
 	@override String get fieldSex => 'Geschlecht (optional)';
 	@override String get sexFemale => 'Weiblich';
 	@override String get sexMale => 'Männlich';
@@ -1581,8 +1585,6 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get fieldCountry => 'Land';
 	@override String get countryUnspecified => 'Keine Angabe';
 	@override String get hintCountry => 'Code (z. B. FR)';
-	@override String get bmiLabel => 'BMI';
-	@override late final _Translations$hikerProfile$bmiCategories$de bmiCategories = _Translations$hikerProfile$bmiCategories$de._(_root);
 	@override String get consentTitle => 'Körperdaten (DSGVO Artikel 9)';
 	@override String get consentBody => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.';
 	@override String get consentToggle => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit';
@@ -3392,19 +3394,6 @@ class _Translations$trekState$resumeOrphanDialog$de extends Translations$trekSta
 	@override String get abandon => 'Abbrechen';
 }
 
-// Path: hikerProfile.bmiCategories
-class _Translations$hikerProfile$bmiCategories$de extends Translations$hikerProfile$bmiCategories$fr {
-	_Translations$hikerProfile$bmiCategories$de._(TranslationsDe root) : this._root = root, super.internal(root);
-
-	final TranslationsDe _root; // ignore: unused_field
-
-	// Translations
-	@override String get underweight => 'Untergewicht';
-	@override String get normal => 'Normalgewicht';
-	@override String get overweight => 'Übergewicht';
-	@override String get obese => 'Starkes Übergewicht';
-}
-
 // Path: walkTest.levels
 class _Translations$walkTest$levels$de extends Translations$walkTest$levels$fr {
 	_Translations$walkTest$levels$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -4113,7 +4102,7 @@ extension on TranslationsDe {
 			'itinerary.restDay' => 'Ruhetag',
 			'itinerary.viewStage' => 'Etappe ansehen',
 			'itinerary.openMap' => 'Auf Karte ansehen',
-			'itinerary.stageCount' => '{count} Etappen',
+			'itinerary.stageCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('de'))(n, one: '${n} Etappe', other: '${n} Etappen', ), 
 			'tracking.start' => 'Starten',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Fortsetzen',
@@ -5462,6 +5451,7 @@ extension on TranslationsDe {
 			'hikerProfile.errorWeight' => 'Ungültiges Gewicht (25 bis 200 kg)',
 			'hikerProfile.errorCountry' => 'Ungültiger Ländercode (z. B. FR)',
 			'hikerProfile.errorEmpty' => 'Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.',
+			'hikerProfile.errorConsentRequired' => 'Ohne Ihre Einwilligung wird nichts gespeichert: Alter, Grösse und Gewicht sind Gesundheitsdaten. Was gespeichert war, wurde soeben von diesem Gerät gelöscht. Aktivieren Sie oben die Zustimmung und speichern Sie erneut.',
 			'hikerProfile.fieldSex' => 'Geschlecht (optional)',
 			'hikerProfile.sexFemale' => 'Weiblich',
 			'hikerProfile.sexMale' => 'Männlich',
@@ -5469,11 +5459,6 @@ extension on TranslationsDe {
 			'hikerProfile.fieldCountry' => 'Land',
 			'hikerProfile.countryUnspecified' => 'Keine Angabe',
 			'hikerProfile.hintCountry' => 'Code (z. B. FR)',
-			'hikerProfile.bmiLabel' => 'BMI',
-			'hikerProfile.bmiCategories.underweight' => 'Untergewicht',
-			'hikerProfile.bmiCategories.normal' => 'Normalgewicht',
-			'hikerProfile.bmiCategories.overweight' => 'Übergewicht',
-			'hikerProfile.bmiCategories.obese' => 'Starkes Übergewicht',
 			'hikerProfile.consentTitle' => 'Körperdaten (DSGVO Artikel 9)',
 			'hikerProfile.consentBody' => 'Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.',
 			'hikerProfile.consentToggle' => 'Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit',

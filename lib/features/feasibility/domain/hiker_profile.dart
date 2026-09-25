@@ -75,25 +75,25 @@ abstract class HikerProfile with _$HikerProfile {
     return weightKg / (meters * meters);
   }
 
-  /// Categorie OMS de l'IMC (cle i18n stable), ou null si IMC indisponible.
-  ///
-  /// Seuils OMS : < 18.5 maigreur ; 18.5-25 normal ; 25-30 surpoids ;
-  /// >= 30 obesite. Cle destinee a `t.hikerProfile.bmiCategories.*`.
-  ///
-  /// LES SEUILS SONT OMS, LES MOTS A L'ECRAN NE LE SONT PAS (tache 552). La cle
-  /// `obese` garde son nom technique — c'est une borne de calcul — mais elle
-  /// s'affiche « Fort surpoids » dans les cinq langues. Arbitrage Chris du
-  /// 25/09, mot pour mot : « tu peux mettre fort surpoids au lieu d'obesite ...
-  /// on est pas medecin et on insulte pas les clients ». Ne jamais recabler le
-  /// libelle sur le vocabulaire clinique.
-  String? get bmiCategory {
-    final value = bmi;
-    if (value == null) return null;
-    if (value < 18.5) return 'underweight';
-    if (value < 25) return 'normal';
-    if (value < 30) return 'overweight';
-    return 'obese';
-  }
+  // IL N'Y A PLUS DE `bmiCategory` ICI, ET C'EST VOULU (tache 560, N2).
+  //
+  // Ce getter classait l'IMC en quatre categories (`underweight`, `normal`,
+  // `overweight`, `obese`) et ne servait QU'A UNE CHOSE : nommer la cle Slang
+  // d'un libelle affiche sur la fiche d'info. La tache 552 avait deja du
+  // rehabiller la categorie la plus haute (« Fort surpoids » au lieu
+  // d'« obesite ») ; la campagne personas 559 a montre que le probleme n'etait
+  // pas le MOT mais le FAIT MEME d'afficher un jugement sur le corps — et de
+  // l'afficher pendant la saisie, avant tout consentement article 9.
+  //
+  // L'affichage est parti, les cinq tables de traduction ont perdu
+  // `bmiCategories`, et ce getter part avec eux : le laisser en place, c'etait
+  // laisser une categorie toute prete a recabler sur un ecran, et des libelles
+  // a re-creer. #S14 (Zwolinski 2025, 162 randonneurs, p = 0,708) ne lie
+  // d'ailleurs aucune categorie d'IMC a la blessure en randonnee : cette
+  // classification n'a jamais rien eu a dire au randonneur.
+  //
+  // [bmi], lui, RESTE : c'est une grandeur, pas une etiquette, et
+  // `WalkTestNorms` l'utilise comme borne de calcul sans jamais l'afficher.
 
   /// Vrai si un rappel « consultation conseillee » doit etre montre (65+).
   bool get needsSeniorHealthReminder => age >= 65;

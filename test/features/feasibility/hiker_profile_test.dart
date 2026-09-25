@@ -15,16 +15,13 @@ void main() {
       expect(bmi, closeTo(22.857, 0.01));
     });
 
-    test('categories OMS', () {
-      expect(const HikerProfile(heightCm: 180, weightKg: 55).bmiCategory,
-          'underweight'); // 16.98
-      expect(const HikerProfile(heightCm: 175, weightKg: 70).bmiCategory,
-          'normal'); // 22.86
-      expect(const HikerProfile(heightCm: 175, weightKg: 85).bmiCategory,
-          'overweight'); // 27.76
-      expect(const HikerProfile(heightCm: 170, weightKg: 95).bmiCategory,
-          'obese'); // 32.87
-    });
+    // LE TEST « categories OMS » A ETE RETIRE AVEC LE GETTER (tache 560, N2).
+    // Il verifiait que `bmiCategory` rendait 'underweight' / 'normal' /
+    // 'overweight' / 'obese' — quatre cles qui ne servaient qu'a nommer un
+    // libelle affiche sur la fiche d'info. L'affichage, les libelles des cinq
+    // langues et le getter sont partis ensemble. Ce qui est desormais teste,
+    // c'est l'inverse : que rien de tout cela ne revienne a l'ecran — voir
+    // `consentement_article9_et_vocabulaire_test.dart`.
 
     test('isEmpty (aucune donnee), hasMorphology (taille+poids)', () {
       expect(HikerProfile.empty.isEmpty, isTrue);

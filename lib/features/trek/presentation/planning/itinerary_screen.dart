@@ -411,7 +411,14 @@ class _DayCard extends StatelessWidget {
         subtitle: Text(
           day.stageCount == 0
               ? t.itinerary.restDay
-              : '${t.itinerary.stageCount.replaceAll('{count}', '${day.stageCount}')}'
+              // PLURIEL PORTE PAR SLANG, PLUS PAR UN replaceAll (tache 560, N4).
+              // La cle etait « {count} etapes » et le nombre y etait substitue a
+              // la main : un jour a une seule etape affichait « 1 etapes ». La
+              // cle est desormais un pluriel Slang, donc chaque langue applique
+              // SA regle CLDR (en francais `one` couvre 0 et 1, en anglais 1
+              // seul) — un accord de plus a maintenir aurait ete un accord de
+              // plus a oublier.
+              : '${t.itinerary.stageCount(n: day.stageCount)}'
                     '  -  ${day.totalDistance.toStringAsFixed(1)} km'
                     '  -  D+ ${day.totalElevation} m',
         ),

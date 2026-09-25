@@ -33,6 +33,16 @@ class HikerProfileNotifier extends AsyncNotifier<HikerProfile> {
     await _repo.deleteProfile();
     state = const AsyncValue.data(HikerProfile.empty);
   }
+
+  /// EFFACE LA MORPHOLOGIE (age, taille, poids) — consentement article 9 refuse
+  /// ou retire (tache 560, N1).
+  ///
+  /// Un refus n'est pas seulement « on n'ecrit plus » : c'est « ce qui a ete
+  /// ecrit s'en va ». Voir [HikerProfileRepository.eraseMorphology] pour le
+  /// perimetre exact et pourquoi il s'arrete a ces trois champs.
+  Future<void> forgetMorphology() async {
+    state = await AsyncValue.guard(_repo.eraseMorphology);
+  }
 }
 
 /// Randos passees du randonneur (max 5) — StepWays LOT 4, Ph3.

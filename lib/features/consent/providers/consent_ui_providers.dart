@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/providers/service_providers.dart';
 import '../../../core/services/consent_service.dart';
+import '../../feasibility/providers/hiker_profile_provider.dart';
 
 /// Etat de consentement de TOUTES les finalites (lecture reactive).
 ///
@@ -49,11 +50,29 @@ class ConsentController {
     _ref.invalidate(consentPromptNeededProvider);
   }
 
-  /// Retire le consentement pour [purpose] (retractable a tout moment) puis
-  /// rafraichit l'etat affiche.
+  /// Retire le consentement pour [purpose] (retractable a tout moment), EFFACE
+  /// les donnees que ce consentement protegeait, puis rafraichit l'affichage.
+  ///
+  /// UNE REVOCATION EFFACE (tache 560, N1). Retirer une autorisation depuis les
+  /// Reglages ne changeait rien aux donnees deja enregistrees : l'ecran
+  /// affichait « refuse » pendant que la morphologie (age, taille, poids)
+  /// dormait intacte sur l'appareil. C'est exactement le defaut mesure sur la
+  /// fiche d'info par la campagne personas 559, a l'autre bout de
+  /// l'application. Une seule regle vaut aux deux endroits : ce que le
+  /// consentement protege s'en va avec lui.
+  ///
+  /// SEULE [ConsentPurpose.healthData] a aujourd'hui une donnee a effacer ici —
+  /// la morphologie de la fiche d'info. Les trois autres finalites
+  /// (navigation, partage social, signalement public) gouvernent des
+  /// traitements, pas un enregistrement local : leur revocation les arrete, il
+  /// n'y a rien a retirer de l'appareil. Le jour ou l'une d'elles stocke
+  /// quelque chose, c'est ici que son effacement se branche.
   Future<void> revoke(ConsentPurpose purpose) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
     await service.revoke(purpose);
+    if (purpose == ConsentPurpose.healthData) {
+      await _ref.read(hikerProfileProvider.notifier).forgetMorphology();
+    }
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);
   }

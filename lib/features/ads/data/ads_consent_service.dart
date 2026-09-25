@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:logger/logger.dart';
 
+import '../../../core/config/ad_config.dart';
 import '../../../core/error/error_handler.dart';
 
 final _log = Logger(printer: PrettyPrinter(methodCount: 0));
@@ -19,6 +20,44 @@ final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 /// Testable : les collaborateurs UMP/MobileAds sont injectables. En test, on
 /// fournit un fake qui simule « consentement obtenu / non requis » sans réseau.
 /// ZERO catch silencieux — toute erreur UMP est loggée via [ErrorHandler].
+///
+/// LE FORMULAIRE NE RECOUVRE PLUS L'APPLI EN PLEINE SESSION (tache 560, N3).
+/// La campagne personas 559 l'a photographié par-dessus les Réglages, le
+/// cockpit, le Programme et la carte de navigation — une vue NATIVE, donc
+/// invisible à tout test Flutter : seules les captures l'ont montré. Trois
+/// causes, trois verrous, et un constat mesuré plutôt que supposé.
+///
+///  1. IL ARRIVAIT TROP TARD. La séquence d'amorce est bornée à
+///     [_bootTimeout] ; passé ce délai, `Future.timeout` rend la main mais
+///     N'ANNULE PAS l'appel natif (l'API UMP n'offre aucune annulation). Le
+///     formulaire finissait donc par s'afficher quand il voulait — et à ce
+///     moment-là le randonneur était déjà sur un écran de travail. Le
+///     formulaire n'est désormais demandé QUE SI le budget d'amorce n'est pas
+///     déjà consommé quand on arrive à cette étape ([_formWithinBootWindow]) ;
+///     sinon il est REPORTÉ au prochain démarrage, où il retombera sur l'écran
+///     de chargement, à sa place.
+///  2. IL POUVAIT ÊTRE DEMANDÉ PLUSIEURS FOIS. [ensureConsentAndInit] est
+///     désormais À UN SEUL COUP par instance : le `Future` est mémorisé, donc
+///     deux appels (deux `watch`, une re-souscription) partagent la MÊME
+///     séquence UMP au lieu d'en lancer une seconde. Ce que le code seul
+///     établit : `adsReadyProvider` est un `FutureProvider` legacy, donc
+///     `isAutoDispose = false` sous Riverpod 3.3.2, et il est observé par une
+///     garde qui ne se démonte jamais — la séquence tourne donc une fois par
+///     PROCESSUS. Les quatre apparitions de la campagne viennent de onze
+///     lancements, pas d'une boucle : un formulaire jamais répondu reste
+///     « requis » et revient au lancement suivant.
+///  3. IL DEMANDAIT UN CONSENTEMENT POUR UNE PUBLICITÉ QUI N'EXISTE PAS. Le
+///     dépôt ne porte que les ad-units de TEST officiels Google et
+///     l'App ID de TEST du manifeste ; les identifiants de production sont
+///     injectés au build de release par `--dart-define`
+///     ([AdConfig.hasProductionUnits]). Tout build de test — l'APK de Chris, les
+///     onze runs de la campagne — posait donc une vraie question RGPD sur une
+///     régie qui n'est pas branchée. C'est ce qu'établit le code, et c'est
+///     vérifiable : le formulaire photographié s'intitule « Publisher Test
+///     Ads ». Sans identifiants de production, plus aucun formulaire n'est
+///     demandé. CONSÉQUENCE ASSUMÉE ET ÉCRITE : dans l'EEE, un build de test
+///     sans consentement déjà enregistré n'affichera pas de bannière de test —
+///     mieux vaut pas de bannière en debug qu'un formulaire par-dessus la carte.
 class AdsConsentService {
   AdsConsentService({
     ConsentInformation? consentInformation,
@@ -28,6 +67,7 @@ class AdsConsentService {
     Future<void> Function(RequestConfiguration)? updateRequestConfiguration,
     List<String> testDeviceIds = const <String>[],
     Duration bootTimeout = _bootTimeout,
+    bool? consentFormEnabled,
   }) : _bootBudget = bootTimeout,
        _consentInformation = consentInformation ?? ConsentInformation.instance,
        _loadAndShowIfRequired =
@@ -38,7 +78,8 @@ class AdsConsentService {
        _updateRequestConfiguration =
            updateRequestConfiguration ??
            MobileAds.instance.updateRequestConfiguration,
-       _testDeviceIds = testDeviceIds;
+       _testDeviceIds = testDeviceIds,
+       _consentFormEnabled = consentFormEnabled ?? AdConfig.hasProductionUnits;
 
   final ConsentInformation _consentInformation;
   final Future<void> Function(OnConsentFormDismissedListener)
@@ -46,6 +87,32 @@ class AdsConsentService {
   final Future<InitializationStatus> Function() _initializeAds;
   final Future<void> Function(RequestConfiguration) _updateRequestConfiguration;
   final List<String> _testDeviceIds;
+
+  /// Vrai si ce build a le droit de MONTRER le formulaire de consentement pub.
+  ///
+  /// Par défaut [AdConfig.hasProductionUnits] : un build qui ne porte que les
+  /// ad-units de test ne demande rien à personne. Injectable pour que le
+  /// comportement des DEUX branches soit testable sans build de release.
+  final bool _consentFormEnabled;
+
+  /// Séquence d'amorce mémorisée : une seule par instance (verrou 2).
+  Future<bool>? _boot;
+
+  /// Nombre de fois que le formulaire UMP a réellement été DEMANDÉ.
+  ///
+  /// Sert de preuve mesurable : « demandé une fois, au bon moment, jamais
+  /// par-dessus un écran de travail » ne se vérifie pas autrement depuis un
+  /// test Flutter, puisque le formulaire lui-même est une vue native.
+  int _consentFormRequests = 0;
+
+  /// Voir [_consentFormRequests].
+  int get consentFormRequests => _consentFormRequests;
+
+  /// Vrai si le formulaire a été VOLONTAIREMENT reporté (hors fenêtre d'amorce,
+  /// ou build sans identifiants de production). Aucun formulaire n'a alors été
+  /// affiché, et rien n'est cassé : il sera redemandé au prochain démarrage.
+  bool get consentFormDeferred => _consentFormDeferred;
+  bool _consentFormDeferred = false;
 
   /// Délai réellement appliqué (cf. [_bootTimeout]). Injectable pour que le
   /// comportement d'un UMP/AdMob qui répond APRÈS l'échéance soit testable sans
@@ -92,7 +159,17 @@ class AdsConsentService {
   /// ([_ensureConsentAndInitGuarded] ne se termine JAMAIS en erreur, qu'elle
   /// arrive avant ou après l'échéance) : il ne reste plus qu'une seule erreur
   /// possible, la `TimeoutException` du wrapper, et elle est attrapée ici.
-  Future<bool> ensureConsentAndInit() async {
+  ///
+  /// A UN SEUL COUP (tache 560, N3) : le `Future` est memorise. Deux appels sur
+  /// la meme instance partagent la meme sequence UMP — jamais deux formulaires.
+  /// Un resultat `false` est donc DEFINITIF pour ce processus : c'est voulu, la
+  /// pub n'est pas critique et un formulaire ne se re-tente pas dans le dos du
+  /// randonneur.
+  Future<bool> ensureConsentAndInit() => _boot ??= _ensureConsentAndInitBounded();
+
+  Future<bool> _ensureConsentAndInitBounded() async {
+    _bootClock.reset();
+    _bootClock.start();
     try {
       return await _ensureConsentAndInitGuarded().timeout(_bootBudget);
     } on TimeoutException {
@@ -191,8 +268,51 @@ class AdsConsentService {
     return completer.future;
   }
 
-  /// Affiche l'écran de consentement (CMP) si l'UMP l'exige.
+  /// Chronomètre de la séquence d'amorce : sert à savoir si l'on est ENCORE à
+  /// l'heure pour montrer un formulaire (verrou 1 de N3).
+  final Stopwatch _bootClock = Stopwatch();
+
+  /// Vrai si l'on est encore DANS la fenêtre d'amorce, donc si un formulaire
+  /// afficherait par-dessus l'écran de chargement et non par-dessus un écran de
+  /// travail.
+  ///
+  /// La marge (un quart du budget) tient compte du fait que le formulaire lui
+  /// -même met du temps à se charger : arriver ici à 5,9 s sur un budget de 6 s,
+  /// c'est arriver trop tard.
+  bool get _formWithinBootWindow =>
+      _bootClock.elapsed * 4 < _bootBudget * 3;
+
+  /// Affiche l'écran de consentement (CMP) si l'UMP l'exige — ET SEULEMENT SI
+  /// c'est le bon moment et le bon build (tache 560, N3).
+  ///
+  /// Deux refus possibles, tous deux tracés et JAMAIS silencieux :
+  ///  - build sans identifiants de production : on ne demande pas un
+  ///    consentement publicitaire pour une régie qui n'est pas branchée ;
+  ///  - budget d'amorce déjà consommé : le formulaire tomberait sur un écran de
+  ///    travail, on le reporte au prochain démarrage.
   Future<void> _loadFormIfRequired() async {
+    if (!_consentFormEnabled) {
+      _consentFormDeferred = true;
+      _log.i(
+        '[AdsConsentService] Formulaire de consentement pub NON demandé : ce '
+        'build ne porte que des ad-units de TEST (aucun identifiant de '
+        'production injecté). Aucune question RGPD posée pour une régie non '
+        'branchée.',
+      );
+      return;
+    }
+    if (!_formWithinBootWindow) {
+      _consentFormDeferred = true;
+      _log.i(
+        '[AdsConsentService] Formulaire de consentement pub REPORTÉ : le budget '
+        "d'amorce (${_bootBudget.inSeconds} s) est déjà consommé "
+        '(${_bootClock.elapsed.inMilliseconds} ms). L\'afficher maintenant le '
+        "poserait par-dessus l'écran en cours d'utilisation ; il sera redemandé "
+        'au prochain démarrage.',
+      );
+      return;
+    }
+    _consentFormRequests++;
     await _loadAndShowIfRequired((formError) {
       if (formError != null) {
         ErrorHandler.log(

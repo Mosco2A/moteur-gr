@@ -20,13 +20,35 @@ export '../domain/hiker_input_bounds.dart'
 
 /// Ecran « Fiche d'info » — 1ere page de la faisabilite (StepWays LOT 4, Ph1).
 ///
-/// Saisie du profil randonneur : age, taille, poids (=> IMC calcule LOCALEMENT),
-/// sexe (optionnel), pays (ISO). Morpho NON pre-remplie (vraies donnees = securite).
+/// Saisie du profil randonneur : age, taille, poids, sexe (optionnel), pays
+/// (ISO). Morpho NON pre-remplie (vraies donnees = securite).
 ///
 /// CONFIDENTIALITE (art. 9 RGPD) : la morpho est une donnee SENSIBLE. Elle
 /// reste locale (+ miroir cloud anonyme par hash, jamais nominatif) et n'est
 /// enregistree qu'apres consentement `ConsentPurpose.healthData` (finalite
 /// morpho). Tous les textes via Slang (`t.hikerProfile.*`) — zero texte en dur.
+///
+/// LE CONSENTEMENT DIT NON, ET L'ECRAN L'ECOUTE (tache 560, N1). Cet en-tete
+/// annonce depuis le premier jour que la morpho « n'est enregistree qu'apres
+/// consentement » ; le code, lui, revoquait le consentement puis appelait
+/// `save()` SANS CONDITION. La campagne personas 559 l'a mesure a l'usage :
+/// consentement laisse refuse, « Enregistrer » touche, ecran ferme comme un
+/// succes, et apres redemarrage 72 ans / 172 cm / 88 kg relus a l'ecran. Le
+/// refus est desormais APPLIQUE, en trois temps : (1) rien n'est enregistre ;
+/// (2) ce qui avait deja ete enregistre est EFFACE
+/// ([HikerProfileNotifier.forgetMorphology]) — une revocation efface, elle ne
+/// se contente pas de cesser d'ecrire ; (3) le randonneur le LIT, a l'endroit
+/// ou il vient d'appuyer, et l'ecran reste ouvert.
+///
+/// AUCUN JUGEMENT SUR LE CORPS N'EST AFFICHE ICI (tache 560, N2). L'ecran
+/// affichait « IMC 29.7 » et « Surpoids » pendant la saisie, donc AVANT tout
+/// consentement : un calcul de sante montre avant l'accord, et un vocabulaire
+/// que Chris a interdit a l'ecran le 25/09 (« on est pas medecin et on insulte
+/// pas les clients »). « IMC » figure au vocabulaire proscrit du dispositif
+/// poids (`body_weight_reference.dart` #7), et #S14 (Zwolinski 2025, 162
+/// randonneurs, p = 0,708) etablit qu'aucune relation ne lie categorie d'IMC et
+/// blessure : cet affichage n'informait donc meme pas. Les champs disent leurs
+/// bornes, et rien d'autre ne parle du corps de la personne.
 class HikerProfileScreen extends ConsumerStatefulWidget {
   const HikerProfileScreen({super.key});
 
@@ -40,13 +62,20 @@ class HikerProfileScreen extends ConsumerStatefulWidget {
 // bandeau « Materiel & Sac » applique EXACTEMENT la meme regle a la meme donnee.
 // Re-exportees ci-dessus : les appelants existants ne changent pas.
 
-/// IMC live borne — logique pure et testable du retour QA polish.
+/// IMC borne aux saisies PLAUSIBLES — logique pure et testable.
 ///
 /// Retourne l'IMC UNIQUEMENT si `heightCm` ET `weightKg` sont tous deux DANS LES
 /// BORNES metier (LOT 1 : taille [kHeightMinCm..kHeightMaxCm], poids
-/// [kWeightMinKg..kWeightMaxKg]). Sinon `null` -> l'ecran masque le bloc IMC.
-/// Evite d'afficher un IMC absurde tant que la saisie est invalide (ex. taille
-/// 800), et recalcule des que la saisie redevient valide.
+/// [kWeightMinKg..kWeightMaxKg]), `null` sinon : une taille de 800 cm ou un
+/// poids de 3261 kg ne produisent pas un IMC, ils ne produisent rien.
+///
+/// CE QU'ELLE N'ALIMENTE PLUS : AUCUN AFFICHAGE (tache 560, N2). Elle gouvernait
+/// la carte « IMC 29.7 / Surpoids » de cet ecran ; cette carte a ete retiree —
+/// un calcul de sante ne s'affiche pas avant consentement, et le vocabulaire de
+/// categorie est proscrit a l'ecran. La regle qu'elle porte — « pas d'IMC hors
+/// des bornes de saisie » — reste utile et reste testee (voir
+/// `hiker_profile_bmi_bounds_test.dart` et `hiker_input_bounds_test.dart`, qui
+/// tiennent par elle les bornes signalees par Chris : 8000 cm, 600000, 3261 kg).
 double? liveBmiWithinBounds(int? heightCm, double? weightKg) {
   if (heightCm == null || weightKg == null) return null;
   if (heightCm < kHeightMinCm || heightCm > kHeightMaxCm) return null;
@@ -74,6 +103,14 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   /// autres saisies invalides, elles, sont deja refusees proprement. La fiche
   /// vide recoit desormais le meme traitement.
   String? _emptyError;
+
+  /// Message « consentement article 9 refuse » (null = rien a signaler).
+  ///
+  /// Tache 560 (N1) : le refus etait MUET — l'ecran se fermait sur une
+  /// confirmation d'enregistrement pendant que la morpho partait sur le
+  /// telephone. Il parle maintenant, au meme endroit et dans le meme registre
+  /// visuel que le refus « fiche vide » : juste au-dessus du bouton.
+  String? _consentError;
 
   @override
   void initState() {
@@ -111,14 +148,6 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
   static String _formatWeight(double kg) =>
       kg == kg.roundToDouble() ? '${kg.round()}' : '$kg';
 
-  /// IMC live, calcule UNIQUEMENT si la saisie taille+poids est DANS LES BORNES
-  /// metier (voir [liveBmiWithinBounds]). `null` tant que la saisie est vide,
-  /// non numerique ou hors bornes -> le bloc IMC est masque.
-  double? get _liveBmi => liveBmiWithinBounds(
-        int.tryParse(_heightController.text.trim()),
-        double.tryParse(_weightController.text.trim().replaceAll(',', '.')),
-      );
-
   Future<void> _save() async {
     if (_saving) return;
     if (!(_formKey.currentState?.validate() ?? false)) return;
@@ -143,21 +172,47 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
 
     setState(() {
       _emptyError = null;
+      _consentError = null;
       _saving = true;
     });
 
-    // Consentement morpho (art. 9) : si la morpho est renseignee, exiger le
-    // consentement healthData (finalite morpho). Sinon, on n'enregistre pas.
+    // CONSENTEMENT MORPHO (ART. 9) — LE REFUS EST APPLIQUE, PAS SEULEMENT TRACE.
+    //
+    // Tout ce que cet ecran sait saisir — age, taille, poids — est une donnee de
+    // sante, et l'application le DIT au randonneur (`consentBody`, cinq
+    // langues). Le cas « rien de tout cela n'est renseigne » est deja sorti plus
+    // haut (`profile.isEmpty`) : arriver ici sans consentement signifie donc
+    // toujours qu'on s'apprete a ecrire de la donnee article 9 contre un refus.
+    //
+    // CE QUE FAISAIT CE BLOC (defaut N1, tache 560) : il appelait `revoke()`
+    // puis enchainait sur `save(profile)` SANS CONDITION. Il revoquait le
+    // consentement et enregistrait quand meme la donnee que ce consentement
+    // protege — et l'ecran se fermait sur « Fiche enregistree ».
     final consent = ref.read(consentServiceProvider);
     await consent.initialize();
-    if (profile.hasMorphology) {
-      if (_morphoConsent) {
-        await consent.grant(ConsentPurpose.healthData);
-      } else {
-        await consent.revoke(ConsentPurpose.healthData);
-      }
+
+    if (!_morphoConsent) {
+      // 1. Le refus est trace et horodate (retractable a tout moment, D4A-01).
+      await consent.revoke(ConsentPurpose.healthData);
+      // 2. Le refus EFFACE : une revocation fait disparaitre ce qui a deja ete
+      //    enregistre, elle ne se contente pas de cesser d'ecrire. Sans ce
+      //    temps-la, les 72 ans / 172 cm / 88 kg de la campagne resteraient sur
+      //    l'appareil, simplement plus rafraichis.
+      await ref.read(hikerProfileProvider.notifier).forgetMorphology();
+      // 3. Le refus se LIT, et l'ecran reste ouvert : un tap sur la bascule
+      //    au-dessus du bouton, un second tap sur « Enregistrer », et la fiche
+      //    part. Rien n'est perdu de la saisie en cours.
+      if (!mounted) return;
+      setState(() {
+        _saving = false;
+        _consentError = t.hikerProfile.errorConsentRequired;
+      });
+      return;
     }
 
+    // Accord explicite : le consentement est accorde AVANT l'ecriture, jamais
+    // apres — l'ordre importe si l'ecriture echoue.
+    await consent.grant(ConsentPurpose.healthData);
     await ref.read(hikerProfileProvider.notifier).save(profile);
 
     if (!mounted) return;
@@ -245,11 +300,14 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                           v, kWeightMinKg, kWeightMaxKg, tp.errorWeight),
                     ),
                     const SizedBox(height: AppTheme.spacingBase),
-                    // IMC calcule (live), affiche SEULEMENT si taille ET poids
-                    // sont saisis DANS LES BORNES (sinon `_liveBmi` == null et le
-                    // bloc est masque : pas d'IMC absurde sur saisie invalide).
-                    if (_liveBmi case final bmi?) _BmiCard(bmi: bmi),
-                    const SizedBox(height: AppTheme.spacingBase),
+                    // PAS DE CARTE IMC ICI, ET PLUS NULLE PART (tache 560, N2).
+                    // Ce qui s'affichait — « IMC 29.7 », puis « Surpoids » —
+                    // etait un calcul de sante montre PENDANT la saisie, donc
+                    // avant tout consentement, dans un vocabulaire interdit a
+                    // l'ecran. Rien ne le remplace : les champs annoncent deja
+                    // leurs bornes, et la faisabilite explique ailleurs ce qui
+                    // change pour la randonnee. On ne commente pas le corps de
+                    // la personne pour meubler un formulaire.
                     // Sexe (optionnel)
                     Text(tp.fieldSex, style: theme.textTheme.labelLarge),
                     const SizedBox(height: AppTheme.spacingSm),
@@ -287,13 +345,28 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                     // Consentement morpho (art. 9), isole et explicite.
                     _MorphoConsentTile(
                       value: _morphoConsent,
-                      onChanged: (v) => setState(() => _morphoConsent = v),
+                      onChanged: (v) => setState(() {
+                        _morphoConsent = v;
+                        // Accorder l'autorisation efface le refus affiche : le
+                        // message dirait le contraire de ce que la bascule
+                        // montre.
+                        if (v) _consentError = null;
+                      }),
                     ),
                     const SizedBox(height: AppTheme.spacingLg),
-                    // Refus « fiche vide », juste au-dessus du bouton : la ou
-                    // l'oeil se trouve au moment ou l'on appuie.
+                    // Refus « fiche vide » et refus « consentement article 9 »,
+                    // juste au-dessus du bouton : la ou l'oeil se trouve au
+                    // moment ou l'on appuie.
                     if (_emptyError case final message?) ...[
                       _FormError(message: message),
+                      const SizedBox(height: AppTheme.spacingSm),
+                    ],
+                    if (_consentError case final message?) ...[
+                      _FormError(
+                        message: message,
+                        widgetKey:
+                            const ValueKey('hiker-profile-consent-error'),
+                      ),
                       const SizedBox(height: AppTheme.spacingSm),
                     ],
                     AppButton(
@@ -368,13 +441,22 @@ class _PrivacyBanner extends StatelessWidget {
 /// Refus de formulaire, meme registre visuel que l'erreur d'un champ : icone
 /// d'alerte + texte dans la couleur d'erreur du theme.
 class _FormError extends StatelessWidget {
-  const _FormError({required this.message});
+  const _FormError({
+    required this.message,
+    this.widgetKey = const ValueKey('hiker-profile-empty-error'),
+  });
   final String message;
+
+  /// Cle de reperage du refus affiche. Par defaut celle du refus « fiche vide »
+  /// (historique, referencee par ses tests) ; le refus de consentement porte la
+  /// sienne pour qu'un test puisse distinguer LEQUEL des deux s'affiche.
+  final Key widgetKey;
+
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
     return Row(
-      key: const ValueKey('hiker-profile-empty-error'),
+      key: widgetKey,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Icon(Icons.error_outline, color: colors.error, size: 20),
@@ -393,57 +475,12 @@ class _FormError extends StatelessWidget {
   }
 }
 
-/// Carte affichant l'IMC calcule + sa categorie OMS (via Slang).
-class _BmiCard extends StatelessWidget {
-  const _BmiCard({required this.bmi});
-  final double bmi;
-
-  String _categoryKey(double v) {
-    if (v < 18.5) return 'underweight';
-    if (v < 25) return 'normal';
-    if (v < 30) return 'overweight';
-    return 'obese';
-  }
-
-  String _resolveCategory(String key) {
-    final resolved = t['hikerProfile.bmiCategories.$key'];
-    return resolved is String ? resolved : key;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colors = theme.colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingMd),
-      decoration: BoxDecoration(
-        color: colors.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.calculate_outlined, color: colors.primary),
-          const SizedBox(width: AppTheme.spacingSm),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${t.hikerProfile.bmiLabel} ${bmi.toStringAsFixed(1)}',
-                  style: theme.textTheme.titleMedium,
-                ),
-                Text(
-                  _resolveCategory(_categoryKey(bmi)),
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+// LA CARTE IMC A ETE SUPPRIMEE (tache 560, N2), PAS DEPLACEE NI COMMENTEE.
+// Elle affichait `t.hikerProfile.bmiLabel` (« IMC ») et une categorie tiree de
+// `t.hikerProfile.bmiCategories.*` (« Maigreur », « Corpulence normale »,
+// « Surpoids », « Fort surpoids »), pendant la saisie et avant tout
+// consentement. Les cles elles-memes sont sorties des cinq fichiers de
+// traduction : il n'y a plus rien a recabler par megarde.
 
 /// Bascule de consentement morpho (art. 9), isolee et explicite.
 class _MorphoConsentTile extends StatelessWidget {

@@ -325,7 +325,10 @@
     "restDay": "Ruhetag",
     "viewStage": "Etappe ansehen",
     "openMap": "Auf Karte ansehen",
-    "stageCount": "{count} Etappen"
+    "stageCount(plural)": {
+      "one": "$n Etappe",
+      "other": "$n Etappen"
+    }
   },
   "tracking": {
     "start": "Starten",
@@ -2004,6 +2007,7 @@
     "errorWeight": "Ungültiges Gewicht (25 bis 200 kg)",
     "errorCountry": "Ungültiger Ländercode (z. B. FR)",
     "errorEmpty": "Leeres Profil: Geben Sie mindestens Alter, Grösse oder Gewicht an.",
+    "errorConsentRequired": "Ohne Ihre Einwilligung wird nichts gespeichert: Alter, Grösse und Gewicht sind Gesundheitsdaten. Was gespeichert war, wurde soeben von diesem Gerät gelöscht. Aktivieren Sie oben die Zustimmung und speichern Sie erneut.",
     "fieldSex": "Geschlecht (optional)",
     "sexFemale": "Weiblich",
     "sexMale": "Männlich",
@@ -2011,13 +2015,6 @@
     "fieldCountry": "Land",
     "countryUnspecified": "Keine Angabe",
     "hintCountry": "Code (z. B. FR)",
-    "bmiLabel": "BMI",
-    "bmiCategories": {
-      "underweight": "Untergewicht",
-      "normal": "Normalgewicht",
-      "overweight": "Übergewicht",
-      "obese": "Starkes Übergewicht"
-    },
     "consentTitle": "Körperdaten (DSGVO Artikel 9)",
     "consentBody": "Alter, Grösse und Gewicht sind Gesundheitsdaten. Sie bleiben auf Ihrem Gerät und einer Sicherung ohne Ihren Namen oder Ihre E-Mail, nie im Klartext gesendet. Diese Einwilligung wird separat erfragt.",
     "consentToggle": "Ich erlaube die Nutzung meiner Körperdaten für die Machbarkeit",

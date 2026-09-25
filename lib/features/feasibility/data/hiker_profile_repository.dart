@@ -117,6 +117,43 @@ class HikerProfileRepository {
     await _profileDao.deleteByUserId(_userId);
   }
 
+  /// EFFACE LA MORPHOLOGIE — age, taille, poids — des deux etages de stockage
+  /// (prefs durables ET miroir Drift), et retourne ce qui reste.
+  ///
+  /// POURQUOI CETTE METHODE EXISTE (tache 560, N1). Un consentement article 9
+  /// refuse ou retire ne doit pas seulement faire CESSER l'ecriture : il doit
+  /// faire DISPARAITRE ce qui a deja ete ecrit. La campagne personas 559 a
+  /// mesure l'inverse : consentement laisse refuse, « Enregistrer » touche, et
+  /// apres redemarrage 72 ans / 172 cm / 88 kg relus a l'ecran. Cesser d'ecrire
+  /// aurait laisse ces trois valeurs sur l'appareil.
+  ///
+  /// CE QUI EST EFFACE, ET POURQUOI EXACTEMENT CES TROIS CHAMPS. Le perimetre
+  /// est celui que l'application DECLARE elle-meme au randonneur, mot pour mot
+  /// (`hikerProfile.consentBody`, cinq langues) : « Age, taille et poids sont
+  /// des donnees de sante ». Le sexe declare et le pays ne relevent pas de
+  /// l'article 9 et ne sont pas couverts par cette bascule : ils survivent, et
+  /// une fiche reduite a ces deux champs est [HikerProfile.isEmpty] — la
+  /// faisabilite retombe donc proprement sur son fallback, comme si rien
+  /// n'avait jamais ete saisi.
+  ///
+  /// A ne pas confondre avec [deleteProfile] (effacement TOTAL, droit a
+  /// l'effacement) : ici on retire une CATEGORIE de donnees, pas la fiche.
+  Future<HikerProfile> eraseMorphology() async {
+    final current = await getProfile();
+    final erased = current.copyWith(
+      age: 0,
+      heightCm: 0,
+      weightKg: 0,
+      updatedAt: DateTime.now(),
+    );
+    final prefs = await _preferences;
+    await prefs.setString(kHikerProfilePrefsKey, json.encode(erased.toJson()));
+    await _mirrorProfileToDrift(erased);
+    _log.d('[HikerProfileRepository] Morphologie effacee (consentement art. 9 '
+        'refuse ou retire)');
+    return erased;
+  }
+
   Future<void> _mirrorProfileToDrift(HikerProfile profile) async {
     await _profileDao.upsert(
       HikerProfileCompanion.insert(

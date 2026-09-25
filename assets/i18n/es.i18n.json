@@ -325,7 +325,10 @@
     "restDay": "Día de descanso",
     "viewStage": "Ver etapa",
     "openMap": "Ver en el mapa",
-    "stageCount": "{count} etapas"
+    "stageCount(plural)": {
+      "one": "$n etapa",
+      "other": "$n etapas"
+    }
   },
   "tracking": {
     "start": "Iniciar",
@@ -2004,6 +2007,7 @@
     "errorWeight": "Peso no válido (25 a 200 kg)",
     "errorCountry": "Código de país no válido (ej. FR)",
     "errorEmpty": "Ficha vacía: indique al menos la edad, la altura o el peso.",
+    "errorConsentRequired": "Sin tu consentimiento no se guarda nada: edad, altura y peso son datos de salud. Lo que estaba guardado acaba de borrarse de este dispositivo. Marca la autorización de arriba y vuelve a guardar.",
     "fieldSex": "Sexo (opcional)",
     "sexFemale": "Mujer",
     "sexMale": "Hombre",
@@ -2011,13 +2015,6 @@
     "fieldCountry": "País",
     "countryUnspecified": "Sin especificar",
     "hintCountry": "Código (p. ej. FR)",
-    "bmiLabel": "IMC",
-    "bmiCategories": {
-      "underweight": "Bajo peso",
-      "normal": "Peso normal",
-      "overweight": "Sobrepeso",
-      "obese": "Sobrepeso elevado"
-    },
     "consentTitle": "Datos corporales (RGPD artículo 9)",
     "consentBody": "Edad, altura y peso son datos de salud. Permanecen en tu dispositivo y en una copia sin tu nombre ni correo, nunca enviados en claro. Este consentimiento se pide por separado.",
     "consentToggle": "Autorizo el uso de mis datos corporales para la viabilidad",

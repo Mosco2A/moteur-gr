@@ -325,7 +325,10 @@
     "restDay": "Rest day",
     "viewStage": "View stage",
     "openMap": "View on map",
-    "stageCount": "{count} stages"
+    "stageCount(plural)": {
+      "one": "$n stage",
+      "other": "$n stages"
+    }
   },
   "tracking": {
     "start": "Start",
@@ -2004,6 +2007,7 @@
     "errorWeight": "Invalid weight (25 to 200 kg)",
     "errorCountry": "Invalid country code (e.g. FR)",
     "errorEmpty": "Empty profile: enter at least your age, height or weight.",
+    "errorConsentRequired": "Without your consent nothing is saved: age, height and weight are health data. Whatever had been saved has just been erased from this device. Tick the authorisation above, then save.",
     "fieldSex": "Sex (optional)",
     "sexFemale": "Female",
     "sexMale": "Male",
@@ -2011,13 +2015,6 @@
     "fieldCountry": "Country",
     "countryUnspecified": "Unspecified",
     "hintCountry": "Code (e.g. FR)",
-    "bmiLabel": "BMI",
-    "bmiCategories": {
-      "underweight": "Underweight",
-      "normal": "Normal weight",
-      "overweight": "Overweight",
-      "obese": "Significant overweight"
-    },
     "consentTitle": "Body metrics (GDPR article 9)",
     "consentBody": "Age, height and weight are health data. They stay on your device and a backup without your name or email, never sent in clear. This consent is asked separately.",
     "consentToggle": "I allow my body metrics to be used for feasibility",

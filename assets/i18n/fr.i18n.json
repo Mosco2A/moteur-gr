@@ -325,7 +325,10 @@
     "restDay": "Jour de repos",
     "viewStage": "Voir l'étape",
     "openMap": "Voir sur la carte",
-    "stageCount": "{count} étapes"
+    "stageCount(plural)": {
+      "one": "$n étape",
+      "other": "$n étapes"
+    }
   },
   "tracking": {
     "start": "Démarrer",
@@ -2004,6 +2007,7 @@
     "errorWeight": "Poids invalide (25 à 200 kg)",
     "errorCountry": "Code pays invalide (ex. FR)",
     "errorEmpty": "Fiche vide : renseignez au moins l'âge, la taille ou le poids.",
+    "errorConsentRequired": "Sans votre accord, rien n'est enregistré : âge, taille et poids sont des données de santé. Ce qui avait été enregistré vient d'être effacé de cet appareil. Cochez l'autorisation ci-dessus, puis enregistrez.",
     "fieldSex": "Sexe (optionnel)",
     "sexFemale": "Femme",
     "sexMale": "Homme",
@@ -2011,13 +2015,6 @@
     "fieldCountry": "Pays",
     "countryUnspecified": "Non précisé",
     "hintCountry": "Code (ex. FR)",
-    "bmiLabel": "IMC",
-    "bmiCategories": {
-      "underweight": "Maigreur",
-      "normal": "Corpulence normale",
-      "overweight": "Surpoids",
-      "obese": "Fort surpoids"
-    },
     "consentTitle": "Données de morphologie (article 9 RGPD)",
     "consentBody": "Âge, taille et poids sont des données de santé. Elles restent sur votre appareil et une sauvegarde sans votre nom ni e-mail, jamais transmises en clair. Ce consentement est demandé séparément.",
     "consentToggle": "J'autorise l'usage de ma morphologie pour la faisabilité",
