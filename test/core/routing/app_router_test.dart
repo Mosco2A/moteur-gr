@@ -158,7 +158,7 @@ void main() {
         .whereType<GoRoute>()
         .firstWhere((r) => r.path == '/trail/:id');
 
-    test('la route /trail/:id conserve ses 24 sous-routes (+ faisabilite L4)',
+    test('la route /trail/:id conserve ses 25 sous-routes (+ faisabilite L4)',
         () {
       // +1 : 'guides' (E33/E34 LOT D/D2, feature Guides villes cablee).
       // +1 : 'recap' (PARITE GR20 LOT 3 #99433, recap « Mon aventure »).
@@ -185,8 +185,14 @@ void main() {
       // +1 : 'adjust' (R12 LOT L9, « Adapter l'itineraire » : modifier la
       //      rando EN COURS sur les seuls jours/etapes non faits). Placee
       //      juste apres 'planning' (meme programme, autre moment de vie).
+      // +1 : 'packs' (tache 568, LOT Q — Q4c). La BOUTIQUE DE CARTES HORS LIGNE
+      //      (`PackStoreScreen`, `PackCard`, `pack_providers.dart`) existait,
+      //      etait localisee en 5 langues et couverte par `pack_store_ui_test`
+      //      — et n'avait AUCUNE route : seul un test savait l'instancier,
+      //      aucun geste utilisateur ne pouvait l'atteindre. Placee juste apres
+      //      'checklist' (meme moment de prepa : ce qu'on emporte).
       final trail = trailRoute();
-      expect(trail.routes.length, 24);
+      expect(trail.routes.length, 25);
       final subPaths = trail.routes.map((r) => (r as GoRoute).path).toList();
       expect(subPaths, [
         'stage/:num',
@@ -199,6 +205,7 @@ void main() {
         'summary',
         'itinerary',
         'checklist',
+        'packs',
         'nuitees',
         'feasibility',
         'hiker-profile',
@@ -230,6 +237,8 @@ void main() {
         'trail-summary',
         'trail-itinerary',
         'trail-checklist',
+        // tache 568, LOT Q : boutique de cartes hors ligne (ecran ressuscite).
+        'trail-packs',
         'trail-nuitees',
         'trail-feasibility',
         'trail-hiker-profile',

@@ -3,6 +3,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../notifications/providers/download_reminder_provider.dart';
+import '../../safety/providers/health_prepare_providers.dart';
 import '../../trek/providers/gps_providers.dart';
 
 /// Providers du DÉMARRAGE RÉEL du trek depuis le cockpit (StepWays LOT 3, Q1).
@@ -128,24 +129,41 @@ final prepareCoreStepsProvider = NotifierProvider.family<
   PrepareCoreStepsNotifier.new,
 );
 
-/// « Préparer terminé » (Q1, §12.1) : Itinéraire ET Date ET Programme.
+/// « Préparer terminé » (Q1, §12.1) : Itinéraire ET Date ET Programme, PLUS la
+/// FICHE MÉDICALE depuis la décision de Chris du 26/09 (tâche 568, LOT Q).
 ///
 /// - **Itinéraire** + **Programme** : dérivés de [prepareCoreStepsProvider]
 ///   (les 2 écrans cœur ont été ouverts/validés).
 /// - **Date** : dérivée du signal DÉJÀ persisté [downloadReminderProvider]
 ///   (`departureDate != null` = l'utilisateur a choisi une date de départ dans
 ///   le calendrier). Aucune persistance neuve pour la date.
+/// - **Fiche médicale** : dérivée de [healthPrepareDoneProvider] — fiche
+///   REMPLIE *et* conseils d'usage LUS. Décision de Chris, verbatim : « on ne
+///   demarre pas un trek sans avoir rempli sa fiche medicale et lu les conseils
+///   pour qu'elle soit applicable sur le sentier ». Les deux moitiés comptent :
+///   une fiche parfaite que personne ne sait ni trouver ni montrer ne sert à
+///   rien le jour de l'accident.
 ///
 /// C'est le SEUL critère d'ENABLE du bouton « Démarrer » (§12.5). La proximité
 /// GPS ne conditionne PAS l'enable.
+///
+/// LE MESSAGE D'AIDE SUIT (`t.hub.startGateHint`) : il annonçait « Itinéraire,
+/// Date et Programme » et a été réécrit dans les 5 langues pour nommer la
+/// quatrième condition. Un test verrouille qu'il contient le libellé exact de la
+/// carte qui y mène — un texte qui annonce autre chose que ce que le code exige
+/// est précisément le défaut que Chris trouve depuis deux jours.
 final prepareCoreDoneProvider = Provider.family<bool, String>((ref, trailId) {
   final steps = ref.watch(prepareCoreStepsProvider(trailId));
   final hasDate = ref.watch(
     downloadReminderProvider(trailId).select((s) => s.departureDate != null),
   );
+  // Signal de PERSONNE (pas de sentier) : la fiche médicale suit le randonneur
+  // d'un trek à l'autre, elle n'est pas à refaire par sentier.
+  final healthReady = ref.watch(healthPrepareDoneProvider);
   return steps.contains(PrepCoreStep.itinerary) &&
       steps.contains(PrepCoreStep.programme) &&
-      hasDate;
+      hasDate &&
+      healthReady;
 });
 
 /// État de proximité au point de départ de l'étape 1 (Q1, §12.5).

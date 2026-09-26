@@ -232,7 +232,7 @@ class _Translations$hub$de extends Translations$hub$fr {
 	@override late final _Translations$hub$trekCard$de trekCard = _Translations$hub$trekCard$de._(_root);
 	@override late final _Translations$hub$weather$de weather = _Translations$hub$weather$de._(_root);
 	@override String get startCta => 'Trek starten';
-	@override String get startGateHint => 'Schließe zuerst Route, Datum und Programm ab, um zu starten.';
+	@override String get startGateHint => 'Schließe zuerst Route, Datum, Programm und Medizinische Daten (Hinweise gelesen) ab, um zu starten.';
 	@override String get prepareExpand => 'Vorbereitung anzeigen';
 	@override String get prepareCollapse => 'Einklappen';
 	@override late final _Translations$hub$sections$de sections = _Translations$hub$sections$de._(_root);
@@ -1167,6 +1167,7 @@ class _Translations$health$de extends Translations$health$fr {
 	@override late final _Translations$health$a11y$de a11y = _Translations$health$a11y$de._(_root);
 	@override late final _Translations$health$delete$de delete = _Translations$health$delete$de._(_root);
 	@override late final _Translations$health$consent$de consent = _Translations$health$consent$de._(_root);
+	@override late final _Translations$health$advice$de advice = _Translations$health$advice$de._(_root);
 }
 
 // Path: trailSelection
@@ -1832,12 +1833,18 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get checklistSub => 'Bereite deinen Rucksack vor';
 	@override String get training => 'Körperliche Vorbereitung';
 	@override String get trainingSub => 'Ihr Trainingsprogramm';
+	@override String get health => 'Medizinische Daten';
+	@override String get healthSub => 'Vor dem Start ausfüllen';
+	@override String get packs => 'Offline-Karten';
+	@override String get packsSub => 'Kartenpakete des Weges laden';
 	@override String get offline => 'Wege entdecken';
 	@override String get offlineSub => 'Katalog durchsuchen';
 	@override String get group => 'Meine Gruppe';
 	@override String get groupSub => 'Ihre Begleiter verfolgen';
 	@override String get navigation => 'Navigation';
 	@override String get navigationSub => 'Karte und GPS-Tracking';
+	@override String get emergency => 'Notfall';
+	@override String get emergencySub => '112, Rettung und Kontakte';
 	@override String get journal => 'Tagebuch';
 	@override String get journalSub => 'Ihre Notizen und Erinnerungen';
 	@override String get accommodations => 'Unterkünfte';
@@ -1902,6 +1909,7 @@ class _Translations$map$guide$de extends Translations$map$guide$fr {
 	@override String get centerOnMe => 'Holt die Karte zu Ihrer Position zurück, nachdem Sie sie verschoben haben.';
 	@override String get photo => 'Macht ein Foto und legt es ins Tagebuch des Tages, ohne die Karte zu verlassen.';
 	@override String get sos => 'Öffnet den Notruf mit Ihren GPS-Koordinaten. Nur im echten Notfall zu benutzen.';
+	@override String get onlyInTrek => 'Nur sichtbar, sobald die Wanderung gestartet ist.';
 	@override String get currentStage => 'Was auf der laufenden Etappe noch zu gehen ist. Ein Strich bedeutet, dass die Wanderung noch nicht begonnen hat.';
 	@override String get offTrack => 'Leuchtet auf, wenn Sie sich von der Linie entfernen. Kehren Sie zum Weg zurück, damit sie verschwindet.';
 	@override late final _Translations$map$guide$poi$de poi = _Translations$map$guide$poi$de._(_root);
@@ -2819,6 +2827,22 @@ class _Translations$health$consent$de extends Translations$health$consent$fr {
 	// Translations
 	@override String get purpose => 'Diese Infos helfen den Rettungskräften. Sie bleiben auf deinem Telefon, werden nie ins Internet gesendet.';
 	@override String get manage => 'Meine Gesundheits-Einwilligung verwalten';
+}
+
+// Path: health.advice
+class _Translations$health$advice$de extends Translations$health$advice$fr {
+	_Translations$health$advice$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Hinweise für den Einsatz unterwegs';
+	@override String get whereToFind => 'Wo du sie findest, wenn du am Boden liegst: Deine Karte liegt unter Vorbereiten, Kachel « Medizinische Daten », und sie öffnet sich ohne Netz. Zeige sie deinen Begleitern vor dem Start — an dem Tag, an dem du nicht mehr sprechen kannst, sind sie es, die dein Telefon öffnen.';
+	@override String get showToRescue => 'Wie du sie der Rettung zeigst: Öffne diesen Bildschirm und reiche das Telefon weiter. Blutgruppe, Allergien, Medikamente, Arzt und Versicherung stehen in dieser Reihenfolge, im Klartext. Nichts wird ins Internet gesendet: Was du zeigst, ist genau das, was hier steht.';
+	@override String get phoneCard => 'Übertrage sie in die medizinische Karte deines Telefons: Sie erscheint auf dem Sperrbildschirm, ohne deinen Code. Ein Retter, der dein Telefon findet, kommt in zwei Schritten dorthin, auch ohne diese App zu kennen.';
+	@override String get paper => 'Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.';
+	@override String get ackButton => 'Ich habe diese Hinweise gelesen';
+	@override String get ackDone => 'Hinweise gelesen';
 }
 
 // Path: trailSelection.a11y
@@ -3960,7 +3984,7 @@ extension on TranslationsDe {
 			'hub.weather.alertStorm' => 'Gewitterwarnung',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Trek starten',
-			'hub.startGateHint' => 'Schließe zuerst Route, Datum und Programm ab, um zu starten.',
+			'hub.startGateHint' => 'Schließe zuerst Route, Datum, Programm und Medizinische Daten (Hinweise gelesen) ab, um zu starten.',
 			'hub.prepareExpand' => 'Vorbereitung anzeigen',
 			'hub.prepareCollapse' => 'Einklappen',
 			'hub.sections.prepare' => 'Vorbereiten',
@@ -3983,12 +4007,18 @@ extension on TranslationsDe {
 			'hub.cards.checklistSub' => 'Bereite deinen Rucksack vor',
 			'hub.cards.training' => 'Körperliche Vorbereitung',
 			'hub.cards.trainingSub' => 'Ihr Trainingsprogramm',
+			'hub.cards.health' => 'Medizinische Daten',
+			'hub.cards.healthSub' => 'Vor dem Start ausfüllen',
+			'hub.cards.packs' => 'Offline-Karten',
+			'hub.cards.packsSub' => 'Kartenpakete des Weges laden',
 			'hub.cards.offline' => 'Wege entdecken',
 			'hub.cards.offlineSub' => 'Katalog durchsuchen',
 			'hub.cards.group' => 'Meine Gruppe',
 			'hub.cards.groupSub' => 'Ihre Begleiter verfolgen',
 			'hub.cards.navigation' => 'Navigation',
 			'hub.cards.navigationSub' => 'Karte und GPS-Tracking',
+			'hub.cards.emergency' => 'Notfall',
+			'hub.cards.emergencySub' => '112, Rettung und Kontakte',
 			'hub.cards.journal' => 'Tagebuch',
 			'hub.cards.journalSub' => 'Ihre Notizen und Erinnerungen',
 			'hub.cards.accommodations' => 'Unterkünfte',
@@ -4035,6 +4065,7 @@ extension on TranslationsDe {
 			'map.guide.centerOnMe' => 'Holt die Karte zu Ihrer Position zurück, nachdem Sie sie verschoben haben.',
 			'map.guide.photo' => 'Macht ein Foto und legt es ins Tagebuch des Tages, ohne die Karte zu verlassen.',
 			'map.guide.sos' => 'Öffnet den Notruf mit Ihren GPS-Koordinaten. Nur im echten Notfall zu benutzen.',
+			'map.guide.onlyInTrek' => 'Nur sichtbar, sobald die Wanderung gestartet ist.',
 			'map.guide.currentStage' => 'Was auf der laufenden Etappe noch zu gehen ist. Ein Strich bedeutet, dass die Wanderung noch nicht begonnen hat.',
 			'map.guide.offTrack' => 'Leuchtet auf, wenn Sie sich von der Linie entfernen. Kehren Sie zum Weg zurück, damit sie verschwindet.',
 			'map.guide.poi.water' => 'Quelle oder Brunnen am Weg. Eine Quelle kann im Sommer trocken sein: verlassen Sie sich nicht ungeprüft darauf.',
@@ -4375,6 +4406,8 @@ extension on TranslationsDe {
 			'checklist.ui.shareGroup' => 'MIT DER GRUPPE TEILEN',
 			'checklist.ui.exportList' => 'LISTE EXPORTIEREN',
 			'checklist.ui.bagValidTitle' => 'Rucksack bestätigt',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.bagValidBody' => 'Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Referenzgewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?',
 			'checklist.ui.checkAgain' => 'Nochmal prüfen',
 			'checklist.ui.yesBagOk' => 'Ja, Rucksack OK',
@@ -4382,8 +4415,6 @@ extension on TranslationsDe {
 			'checklist.ui.validationCancelledSnack' => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.',
 			'checklist.ui.missingTitle' => 'Fehlende Ausrüstung',
 			'checklist.ui.missingBody' => '{checked}/{total} Pflichtartikel angehakt.',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.missingList' => 'Es fehlt:',
 			'checklist.ui.understood' => 'Verstanden',
 			'checklist.ui.validateAnyway' => 'Trotzdem bestätigen',
@@ -4889,6 +4920,8 @@ extension on TranslationsDe {
 			'social.reasonOther' => 'Andere',
 			'social.reportSend' => 'Meldung senden',
 			'social.reportSent' => 'Meldung gesendet. Unser Team prüft sie.',
+			_ => null,
+		} ?? switch (path) {
 			'social.syncPending' => 'Wartet auf Synchronisierung',
 			'social.synced' => 'Synchronisiert',
 			'social.activitySegment' => 'hat ein Segment absolviert',
@@ -4896,8 +4929,6 @@ extension on TranslationsDe {
 			'social.activityDefi' => 'hat bei einer Challenge Fortschritte gemacht',
 			'gamification.galleryTitle' => 'Meine Abzeichen',
 			'gamification.obtained' => 'Erhalten',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.locked' => 'Gesperrt',
 			'gamification.tierDebutant' => 'Anfänger',
 			'gamification.tierExpert' => 'Experte',
@@ -5058,6 +5089,13 @@ extension on TranslationsDe {
 			'health.delete.done' => 'Gesundheitskarte gelöscht.',
 			'health.consent.purpose' => 'Diese Infos helfen den Rettungskräften. Sie bleiben auf deinem Telefon, werden nie ins Internet gesendet.',
 			'health.consent.manage' => 'Meine Gesundheits-Einwilligung verwalten',
+			'health.advice.title' => 'Hinweise für den Einsatz unterwegs',
+			'health.advice.whereToFind' => 'Wo du sie findest, wenn du am Boden liegst: Deine Karte liegt unter Vorbereiten, Kachel « Medizinische Daten », und sie öffnet sich ohne Netz. Zeige sie deinen Begleitern vor dem Start — an dem Tag, an dem du nicht mehr sprechen kannst, sind sie es, die dein Telefon öffnen.',
+			'health.advice.showToRescue' => 'Wie du sie der Rettung zeigst: Öffne diesen Bildschirm und reiche das Telefon weiter. Blutgruppe, Allergien, Medikamente, Arzt und Versicherung stehen in dieser Reihenfolge, im Klartext. Nichts wird ins Internet gesendet: Was du zeigst, ist genau das, was hier steht.',
+			'health.advice.phoneCard' => 'Übertrage sie in die medizinische Karte deines Telefons: Sie erscheint auf dem Sperrbildschirm, ohne deinen Code. Ein Retter, der dein Telefon findet, kommt in zwei Schritten dorthin, auch ohne diese App zu kennen.',
+			'health.advice.paper' => 'Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.',
+			'health.advice.ackButton' => 'Ich habe diese Hinweise gelesen',
+			'health.advice.ackDone' => 'Hinweise gelesen',
 			'trailSelection.title' => 'Weg wechseln',
 			'trailSelection.subtitle' => 'Wähle den Weg zum Erkunden. Die ganze App (Karte, Etappen, Sehenswürdigkeiten, Pakete, Reiseführer) folgt deiner Auswahl.',
 			'trailSelection.current' => 'Aktiver Weg',
@@ -5396,6 +5434,8 @@ extension on TranslationsDe {
 			'shop.filterEmpty' => 'Kein Geschäft für diesen Filter.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'Details zu ${name} anzeigen',
 			'shop.a11y.call' => ({required Object label}) => '${label} anrufen',
+			_ => null,
+		} ?? switch (path) {
 			'shop.a11y.website' => 'Website öffnen',
 			'summary.title' => 'Planübersicht',
 			'summary.configTitle' => ({required Object name}) => 'Mein ${name}',
@@ -5410,8 +5450,6 @@ extension on TranslationsDe {
 			'summary.stats.elevationGain' => 'Aufstieg gesamt',
 			'summary.stats.elevationLoss' => 'Abstieg gesamt',
 			'summary.stats.duration' => 'Geschätzte Zeit',
-			_ => null,
-		} ?? switch (path) {
 			'summary.stats.stages' => 'Etappen',
 			'summary.stats.restDays' => 'Ruhetage',
 			'summary.dayByDay' => 'Tag für Tag',

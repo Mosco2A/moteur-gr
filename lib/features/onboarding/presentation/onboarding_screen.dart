@@ -105,7 +105,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                   children: [
                     _WelcomePage(tr: tr, theme: theme, appName: appName),
                     _LanguagePage(tr: tr, theme: theme),
-                    _DownloadPage(tr: tr, theme: theme, onBrowse: _goToCatalog),
+                    // Q1 (tache 568) : le bouton du contenu fait desormais les
+                    // DEUX gestes, dans le bon ordre (`_finish`) — et non plus
+                    // la seule navigation, que la garde du routeur annulait.
+                    _DownloadPage(tr: tr, theme: theme, onBrowse: _finish),
                   ],
                 ),
               ),
@@ -168,6 +171,18 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             // Bouton d'action — pleine largeur, ancre en bas. La largeur fixe
             // (double.infinity via SizedBox) n'est PAS une distribution de flex
             // -> non concernee par le bug RenderFlex de l'emulateur.
+            //
+            // Q1 (tache 568) — LE DOUBLON A DISPARU SUR LA DERNIERE PAGE. Cette
+            // zone portait « Commencer », qui menait EXACTEMENT au meme endroit
+            // que le bouton « Parcourir le catalogue » du contenu, sur le meme
+            // ecran et au meme instant. Un ecran qui propose deux fois la meme
+            // action n'a pas choisi — et c'est ce doublon qui a produit le
+            // defaut de Chris : les deux commandes ne faisaient pas la meme
+            // chose (l'une posait le drapeau d'onboarding, l'autre non), donc
+            // l'une marchait et l'autre paraissait morte. On garde le geste
+            // EXPLICITE (celui du contenu, avec son icone explore) et cette zone
+            // conserve son seul role legitime : « Suivant », sur les deux
+            // premieres pages.
             Positioned(
               left: 0,
               right: 0,
@@ -183,10 +198,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
                           label: tr.onboarding.next,
                           onPressed: _nextPage,
                         )
-                      : AppButton(
-                          label: tr.onboarding.getStarted,
-                          onPressed: _finish,
-                        ),
+                      : const SizedBox.shrink(),
                 ),
               ),
             ),
@@ -197,12 +209,23 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   }
 
   /// Termine l'onboarding (persiste le flag) puis bascule sur le catalogue.
+  ///
+  /// C'EST LE SEUL CHEMIN DE SORTIE DE CET ECRAN (tache 568, Q1). L'ORDRE EST LA
+  /// CORRECTION : `completeOnboarding` d'abord, la navigation ensuite. La garde
+  /// du routeur (`redirectForPath` : `if (!hasCompletedOnboarding) return
+  /// '/onboarding'`) est SYNCHRONE et lit la globale alignee par
+  /// `completeOnboarding` ; naviguer avant de la poser renvoyait AUSSITOT sur
+  /// l'onboarding, et le bouton paraissait mort. « Passer » et « Parcourir le
+  /// catalogue » passent tous deux par ici.
   Future<void> _finish() async {
     await completeOnboarding(ref);
     _goToCatalog();
   }
 
   /// Navigue vers le catalogue de sentiers (telechargement du premier sentier).
+  ///
+  /// PRIVE AU CHEMIN DE SORTIE : ne JAMAIS l'exposer directement a un bouton —
+  /// c'etait le defaut Q1 (navigation sans drapeau). Passer par [_finish].
   void _goToCatalog() {
     if (!mounted) return;
     context.go('/catalog');

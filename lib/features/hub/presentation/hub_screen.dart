@@ -295,6 +295,49 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                   subtitle: t.hub.cards.trainingSub,
                   onTap: () => context.push('/training'),
                 ),
+                // FICHE MEDICALE — PORTE D'ENTREE CREEE (tache 568, LOT Q, Q4b).
+                //
+                // CE QU'IL Y AVAIT AVANT : la fiche medicale (`/health`) n'etait
+                // atteignable QUE depuis l'ecran d'urgence — lui-meme sans
+                // aucune porte d'entree dans tout `lib/` (zero push/go vers
+                // `/emergency`). Une fonction entiere derriere une fonction
+                // fermee : personne ne pouvait remplir sa fiche.
+                //
+                // DECISION DE CHRIS DU 26/09 10:29, verbatim : « ca doit faire
+                // partie de la prepa, on ne demarre pas un trek sans avoir
+                // rempli sa fiche medicale et lu les conseils pour qu'elle soit
+                // applicable sur le sentier ». Elle est donc ICI, dans
+                // « Preparer » : GRATUITE (le SOS lui-meme reste au terrain
+                // paye, decision #99410) et atteignable HORS RANDO — la section
+                // Preparer est toujours presente, simplement repliee une fois
+                // parti ou rentre. Elle est aussi devenue une CONDITION DE
+                // DEMARRAGE (cf. `prepareCoreDoneProvider`) : la carte doit
+                // exister avant qu'on puisse exiger qu'elle soit faite.
+                //
+                // Place juste apres « Preparation physique » : c'est le meme
+                // moment de la prepa — ce qui concerne le corps du randonneur.
+                QuickAccessCard(
+                  icon: Icons.medical_information_outlined,
+                  title: t.hub.cards.health,
+                  subtitle: t.hub.cards.healthSub,
+                  onTap: () => context.push('/health'),
+                ),
+                // CARTES HORS LIGNE — ECRAN RESSUSCITE (tache 568, LOT Q, Q4c).
+                //
+                // `PackStoreScreen`, `PackCard` et `pack_providers.dart`
+                // existaient, testes (`pack_store_ui_test.dart`), et n'avaient
+                // MEME PAS DE ROUTE declaree dans le routeur : aucune URL ne
+                // designait cet ecran, donc aucun geste ne pouvait l'atteindre.
+                // La route `/trail/:id/packs` est creee par la meme tache et
+                // cette carte en est la porte. Telecharger les cartes d'un
+                // sentier est un geste de PREPARATION (on part couvert), pas de
+                // terrain : c'est trop tard une fois sans reseau.
+                QuickAccessCard(
+                  icon: Icons.download_for_offline_outlined,
+                  title: t.hub.cards.packs,
+                  subtitle: t.hub.cards.packsSub,
+                  onTap: () => context.push('/trail/$trailId/packs'),
+                ),
                 // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos
                 // nuits » (type de nuitee + reserve par nuit du programme).
                 // Route hors-shell atteinte via `context.push` -> retour propre
@@ -403,6 +446,36 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                     // pile -> retour propre vers le cockpit. go() ecrasait la pile
                     // (heritage shell/onglets, supprime).
                     onTap: () => context.push('/map'),
+                  ),
+                  // URGENCE — PORTE D'ENTREE CREEE (tache 568, LOT Q, Q4a).
+                  //
+                  // LE DEFAUT LE PLUS GRAVE DU LOT : l'ecran des contacts
+                  // d'urgence (112, secours regionaux du sentier, contacts
+                  // personnels, position GPS a lire aux secours) etait ECRIT,
+                  // ROUTE (`/emergency`), EXCLU DU GUARD pour rester atteignable
+                  // sans sentier... et sans AUCUNE porte : zero `push` et zero
+                  // `go` vers `/emergency` dans tout `lib/`. La fonction entiere
+                  // etait inatteignable, et elle emportait la fiche medicale
+                  // avec elle (seule porte vers `/health`).
+                  //
+                  // PLACE RETENUE : section « Randonner », donc VISIBLE
+                  // UNIQUEMENT EN RANDO ACTIVE. Cela respecte la decision du
+                  // 02/09 (#99410) : la securite est NATIVE AU TERRAIN. La
+                  // PREPARATION de cette securite (la fiche medicale) est, elle,
+                  // native a la preparation — c'est pourquoi les deux portes ne
+                  // sont pas dans la meme section.
+                  //
+                  // ICONE DISTINCTE DU SOS, VOLONTAIREMENT : la pastille
+                  // flottante [SosButton] (`Icons.emergency`) declenche l'APPEL
+                  // direct du 112 ; cette carte ouvre l'ECRAN des contacts. Deux
+                  // gestes differents, deux icones differentes — sans quoi on
+                  // recreerait le soupcon de « double acces SOS » qui a coute
+                  // une campagne QA (faux positif M1, #100175).
+                  QuickAccessCard(
+                    icon: Icons.contact_emergency_outlined,
+                    title: t.hub.cards.emergency,
+                    subtitle: t.hub.cards.emergencySub,
+                    onTap: () => context.push('/emergency'),
                   ),
                   // JOURNAL — ICI PENDANT LA RANDO (tache 558, decision Chris
                   // « En rando pour le rempli »). C'est la place de la

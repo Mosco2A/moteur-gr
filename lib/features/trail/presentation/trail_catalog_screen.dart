@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
+import '../../../core/routing/home_location_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -32,7 +33,29 @@ class TrailCatalogScreen extends ConsumerWidget {
     return Scaffold(
       // Ph5 (L6d) : AppHeader universel (catalogue — §4 header standard ; barre
       // filtres/tri non prevue concretement -> pas de barre contextuelle).
-      appBar: AppHeader(title: t.catalog.title),
+      //
+      // Q2 (tache 568) — LE RETOUR NE DERIVE PLUS VERS UN SENTIER QU'ON N'A PAS
+      // CHOISI. Defaut de Chris (26/09 09:48), verbatim : « un retour arriere
+      // arrive a mare a mare », a la premiere ouverture de l'application.
+      //
+      // MECANIQUE DU DEFAUT : on entre ici par `context.go('/catalog')`, qui
+      // REMPLACE la pile. Sans historique, `context.canPop()` est faux et
+      // l'`AppHeader` retombe sur l'accueil CONTEXTUEL
+      // ([homeLocationProvider]) — donc sur le COCKPIT (`/home`) des qu'une
+      // rando active existe. Le randonneur atterrissait sur le cockpit d'un
+      // sentier qu'il n'avait ni choisi ni telecharge.
+      //
+      // CORRECTIF : le catalogue FORCE son accueil de repli sur « Mes treks ».
+      // C'est le seul ecran ou la derivation maison/terrain n'a pas de sens : on
+      // vient ICI pour CHOISIR un sentier, le retour doit donc ramener a la liste
+      // des treks, jamais dans un trek. Les portes d'entree de l'accueil maison
+      // EMPILENT par ailleurs le catalogue (`push`), si bien qu'en usage nominal
+      // le retour DEPILE — ce repli ne sert qu'a l'arrivee depuis l'onboarding,
+      // pile vide.
+      appBar: AppHeader(
+        title: t.catalog.title,
+        homeLocation: HomeLocations.maison,
+      ),
       body: trails.isEmpty
           ? EmptyState(
               icon: Icons.explore_off,

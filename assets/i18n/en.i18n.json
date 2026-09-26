@@ -102,7 +102,7 @@
       "tempRange": "$min° / $max°"
     },
     "startCta": "Start the trek",
-    "startGateHint": "Complete Itinerary, Date and Programme first to start.",
+    "startGateHint": "Complete Itinerary, Date, Programme and Medical card (advice read) first to start.",
     "prepareExpand": "Show preparation",
     "prepareCollapse": "Collapse",
     "sections": {
@@ -128,12 +128,18 @@
       "checklistSub": "Prepare your backpack",
       "training": "Physical prep",
       "trainingSub": "Your training programme",
+      "health": "Medical card",
+      "healthSub": "Fill it in before you leave",
+      "packs": "Offline maps",
+      "packsSub": "Download the trail maps",
       "offline": "Discover trails",
       "offlineSub": "Browse the catalogue",
       "group": "My group",
       "groupSub": "Track your companions",
       "navigation": "Navigation",
       "navigationSub": "Map and GPS tracking",
+      "emergency": "Emergency",
+      "emergencySub": "112, rescue and contacts",
       "journal": "Journal",
       "journalSub": "Your notes and memories",
       "accommodations": "Accommodation",
@@ -188,6 +194,7 @@
       "centerOnMe": "Brings the map back to your position after you have dragged it.",
       "photo": "Takes a photo and adds it to the day's journal, without leaving the map.",
       "sos": "Opens the emergency call with your GPS coordinates. To be used only in a real emergency.",
+      "onlyInTrek": "Only visible once the hike has started.",
       "currentStage": "What is left to walk on the current stage. A dash means the hike has not started yet.",
       "offTrack": "Lights up when you move away from the line. Come back to the trail to clear it.",
       "poi": {
@@ -1432,6 +1439,15 @@
     "consent": {
       "purpose": "This info helps rescuers assist you. It stays on your phone, never sent over the internet.",
       "manage": "Manage my health consent"
+    },
+    "advice": {
+      "title": "How to use it on the trail",
+      "whereToFind": "Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.",
+      "showToRescue": "How to show it to rescuers: open this screen and hand over the phone. Blood group, allergies, treatments, doctor and insurance are listed in that order, in plain words. Nothing is sent over the internet: what you show is exactly what is written here.",
+      "phoneCard": "Copy it into your phone's own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.",
+      "paper": "Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.",
+      "ackButton": "I have read this advice",
+      "ackDone": "Advice read"
     }
   },
   "trailSelection": {

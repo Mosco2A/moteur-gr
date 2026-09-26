@@ -25,6 +25,7 @@ import '../../../i18n/translations.g.dart';
 import '../data/health_info_repository.dart';
 import '../domain/health_bounds.dart';
 import '../domain/models/health_info.dart';
+import '../providers/health_prepare_providers.dart';
 
 /// Provider du DAO sante (Drift).
 ///
@@ -96,6 +97,19 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
         _hasContent = _computeHasContent();
         _isLoading = false;
       });
+      // RE-SYNCHRONISATION DU SIGNAL DE PREPARATION (tache 568, LOT Q).
+      //
+      // La porte de demarrage du trek lit un signal en preferences
+      // ([HealthPrepStep.filled]) et non la base Drift (cf.
+      // `health_prepare_providers.dart` : la porte est une vue SYNCHRONE). Ce
+      // signal pourrait donc, en theorie, divergier de la donnee reelle — par
+      // exemple une fiche remplie AVANT que ce signal existe, ou effacee par un
+      // chemin qui ne passe pas par cet ecran. On l'aligne ICI, a chaque
+      // ouverture, sur ce que la base dit vraiment : le signal ne peut pas
+      // mentir durablement.
+      await ref
+          .read(healthPrepareStepsProvider.notifier)
+          .setFilled(info.hasData);
     }
   }
 
@@ -133,6 +147,10 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
 
     // Rafraichir le provider
     ref.invalidate(healthInfoProvider);
+
+    // La fiche vient de changer : le signal de preparation suit (tache 568). Une
+    // fiche enregistree VIDE ne compte pas comme remplie — `hasData` tranche.
+    await ref.read(healthPrepareStepsProvider.notifier).setFilled(info.hasData);
 
     if (mounted) {
       setState(() {
@@ -184,6 +202,11 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
     final repo = ref.read(healthInfoRepositoryProvider);
     await repo.delete();
     ref.invalidate(healthInfoProvider);
+
+    // Une fiche effacee n'est plus une fiche remplie : la porte de demarrage se
+    // REFERME (tache 568). Le signal suit la donnee, il ne lui survit pas — c'est
+    // la meme exigence que les LOTS J a O sur le droit a l'effacement.
+    await ref.read(healthPrepareStepsProvider.notifier).setFilled(false);
 
     if (!mounted) return;
     setState(() {
@@ -267,6 +290,15 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
                       _ConsentReminder(
                         onManage: () => context.push('/consent'),
                       ),
+                      const SizedBox(height: AppTheme.spacingMd),
+                      // CONSEILS D'USAGE TERRAIN + ACCUSE DE LECTURE (tache 568,
+                      // LOT Q). Decision de Chris du 26/09, verbatim : « on ne
+                      // demarre pas un trek sans avoir rempli sa fiche medicale
+                      // ET LU LES CONSEILS pour qu'elle soit applicable sur le
+                      // sentier ». Les conseils sont donc AVANT les champs : on
+                      // apprend a s'en servir, puis on la remplit — et non
+                      // l'inverse, d'autant que l'enregistrement depile l'ecran.
+                      const _UsageAdvice(),
                       const SizedBox(height: AppTheme.spacingLg),
                       // Groupe sanguin : liste fermee (ABO + Rhesus). Saisie
                       // limitee aux lettres A/B/O et aux signes +/-, valeur
@@ -435,6 +467,154 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
           borderRadius: BorderRadius.circular(AppTheme.radiusInput),
           borderSide: BorderSide(color: colors.primary, width: 2),
         ),
+      ),
+    );
+  }
+}
+
+/// CONSEILS D'USAGE TERRAIN de la fiche medicale + ACCUSE DE LECTURE (tache 568,
+/// LOT Q — decision de Chris du 26/09 10:29).
+///
+/// CE QUE CHRIS A DEMANDE, verbatim : « on ne demarre pas un trek sans avoir
+/// rempli sa fiche medicale et lu les conseils pour qu'elle soit applicable sur
+/// le sentier ». « Applicable sur le sentier » est la cle : une fiche parfaite
+/// que personne ne sait ou trouver ni comment montrer ne sert a rien le jour de
+/// l'accident.
+///
+/// LES QUATRE CHOSES QUE CES CONSEILS DISENT, et pourquoi chacune :
+///  1. OU LA TROUVER QUAND ON EST A TERRE — le blesse n'ouvre pas son telephone
+///     lui-meme ; ses compagnons doivent savoir ou aller AVANT le depart.
+///  2. COMMENT LA MONTRER AUX SECOURS — tendre l'ecran, dans l'ordre des
+///     informations dont un secouriste a besoin.
+///  3. POURQUOI LA RECOPIER DANS LA FICHE MEDICALE DU TELEPHONE — elle s'affiche
+///     ECRAN VERROUILLE, sans code : c'est le seul chemin qui fonctionne quand
+///     le secouriste ne connait pas cette application (la cle
+///     `sos.medicalId.hint` le disait deja, sans que personne ne l'explique).
+///  4. QU'UN PAPIER NE TOMBE JAMAIS EN PANNE DE BATTERIE — le telephone est le
+///     maillon faible de tout ce dispositif ; l'admettre est plus utile que le
+///     cacher.
+///
+/// ACCUSE DE LECTURE, PAS TEXTE DISPONIBLE : afficher un texte ne prouve pas
+/// qu'il a ete lu. Le geste est explicite et IRREVOCABLE (on ne « delit » pas un
+/// conseil), il est persiste par [healthPrepareStepsProvider] et il entre dans la
+/// porte de demarrage du trek. Une fois fait, l'invitation devient une
+/// confirmation — pas une case qu'on peut decocher par megarde.
+class _UsageAdvice extends ConsumerWidget {
+  const _UsageAdvice();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final a = t.health.advice;
+    final lu = ref.watch(healthPrepareStepsProvider).contains(
+          HealthPrepStep.adviceRead,
+        );
+
+    return Container(
+      key: const ValueKey('health-usage-advice'),
+      padding: const EdgeInsets.all(AppTheme.spacingMd),
+      decoration: BoxDecoration(
+        color: colors.primary.withAlpha(16),
+        borderRadius: BorderRadius.circular(AppTheme.radiusCard),
+        border: Border.all(color: colors.primary.withAlpha(60)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(Icons.menu_book_outlined, size: 20, color: colors.primary),
+              const SizedBox(width: AppTheme.spacingSm),
+              Expanded(
+                child: Text(
+                  a.title,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: colors.primary,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+          // Les quatre conseils, dans l'ordre de l'urgence reelle : d'abord ou
+          // elle est, ensuite comment la montrer, puis les deux filets (fiche du
+          // telephone, papier).
+          _AdviceLine(icon: Icons.place_outlined, text: a.whereToFind),
+          _AdviceLine(icon: Icons.volunteer_activism_outlined, text: a.showToRescue),
+          _AdviceLine(icon: Icons.phonelink_lock_outlined, text: a.phoneCard),
+          _AdviceLine(icon: Icons.description_outlined, text: a.paper),
+          const SizedBox(height: AppTheme.spacingSm),
+          if (lu)
+            Row(
+              children: [
+                Icon(Icons.check_circle, size: 20, color: colors.primary),
+                const SizedBox(width: AppTheme.spacingSm),
+                Expanded(
+                  child: Text(
+                    a.ackDone,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: colors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          else
+            Semantics(
+              button: true,
+              label: a.ackButton,
+              child: AppButton(
+                key: const ValueKey('health-advice-ack'),
+                variant: AppButtonVariant.outline,
+                icon: Icons.done_all,
+                label: a.ackButton,
+                onPressed: () => ref
+                    .read(healthPrepareStepsProvider.notifier)
+                    .markAdviceRead(),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Une ligne de conseil : puce iconique + texte (jamais de texte en dur).
+class _AdviceLine extends StatelessWidget {
+  const _AdviceLine({required this.icon, required this.text});
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Icon(
+              icon,
+              size: 18,
+              color: theme.colorScheme.onSurface.withAlpha(150),
+            ),
+          ),
+          const SizedBox(width: AppTheme.spacingSm),
+          Expanded(
+            child: Text(
+              text,
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withAlpha(215),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

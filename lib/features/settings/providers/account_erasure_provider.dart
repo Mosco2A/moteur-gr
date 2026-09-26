@@ -30,6 +30,8 @@ import '../../planning/providers/planning_provider.dart'
     show planningProvider, retainedDurationProvider;
 import '../../safety/presentation/health_info_screen.dart'
     show healthInfoRepositoryProvider;
+import '../../safety/providers/health_prepare_providers.dart'
+    show healthPrepareStepsProvider;
 import '../../share/providers/visibility_settings_provider.dart';
 import '../../trail/providers/progress_provider.dart';
 import '../../training/providers/training_plan_providers.dart'
@@ -222,6 +224,20 @@ void oublierLesDonneesPersonnellesEnMemoire(Ref ref) {
   // Programme). Ce signal ouvre le bouton « Demarrer » : le laisser en place
   // apres un effacement ferait croire a une preparation qui n'existe plus.
   ref.invalidate(prepareCoreStepsProvider);
+
+  // FEUILLE — LA FICHE MEDICALE COMME ETAPE DE PREPARATION (tache 568, LOT Q).
+  //
+  // Depuis la decision de Chris du 26/09, la fiche medicale REMPLIE et ses
+  // conseils d'usage LUS forment la QUATRIEME condition du bouton « Demarrer »
+  // ([healthPrepareDoneProvider] entre dans [prepareCoreDoneProvider]). La DONNEE
+  // de sante part deja (table effacee, et la RACINE
+  // `healthInfoRepositoryProvider` est invalidee plus haut) ; la cle de
+  // preferences part d'elle-meme, puisque `_wipeAllPersonalPrefs` DERIVE sa liste
+  // du store reel. Mais le notifier, lui, GARDE son etat : sans cette ligne, la
+  // porte de demarrage resterait OUVERTE sur une fiche medicale qui n'existe
+  // plus. C'est mot pour mot le defaut M1 — le disque propre, la memoire vive
+  // non — rejoue sur la piece la plus recente.
+  ref.invalidate(healthPrepareStepsProvider);
 
   // FEUILLE — LES REGLAGES DE PARTAGE ET DE VISIBILITE. Ce sont des opt-in
   // sociaux, donc des decisions de la personne sur ce qu'elle expose : ils

@@ -102,7 +102,7 @@
       "tempRange": "$min° / $max°"
     },
     "startCta": "Démarrer la randonnée",
-    "startGateHint": "Complète d'abord Itinéraire, Date et Programme pour démarrer.",
+    "startGateHint": "Complète d'abord Itinéraire, Date, Programme et Fiche médicale (conseils lus) pour démarrer.",
     "prepareExpand": "Voir la préparation",
     "prepareCollapse": "Réduire",
     "sections": {
@@ -128,12 +128,18 @@
       "checklistSub": "Préparez votre sac à dos",
       "training": "Préparation physique",
       "trainingSub": "Votre programme d'entraînement",
+      "health": "Fiche médicale",
+      "healthSub": "À remplir avant de partir",
+      "packs": "Cartes hors ligne",
+      "packsSub": "Télécharger les cartes du sentier",
       "offline": "Découvrir des sentiers",
       "offlineSub": "Parcourez le catalogue",
       "group": "Mon groupe",
       "groupSub": "Suivi de vos compagnons",
       "navigation": "Navigation",
       "navigationSub": "Carte et suivi GPS",
+      "emergency": "Urgence",
+      "emergencySub": "112, secours et contacts",
       "journal": "Journal",
       "journalSub": "Vos notes et souvenirs",
       "accommodations": "Hébergements",
@@ -188,6 +194,7 @@
       "centerOnMe": "Ramène la carte sur votre position après l'avoir déplacée du doigt.",
       "photo": "Prend une photo pour le journal du jour, sans quitter la carte.",
       "sos": "Ouvre l'appel d'urgence avec vos coordonnées GPS. À n'utiliser qu'en cas de réelle urgence.",
+      "onlyInTrek": "Visible seulement une fois la randonnée démarrée.",
       "currentStage": "Ce qu'il reste à marcher sur l'étape en cours. Un tiret signifie que la randonnée n'a pas encore démarré.",
       "offTrack": "S'allume quand vous vous éloignez du tracé. Revenez vers la ligne du sentier pour l'éteindre.",
       "poi": {
@@ -1432,6 +1439,15 @@
     "consent": {
       "purpose": "Ces infos servent à te secourir. Elles restent sur ton téléphone, jamais envoyées sur internet.",
       "manage": "Gérer mon consentement santé"
+    },
+    "advice": {
+      "title": "Conseils d'usage sur le sentier",
+      "whereToFind": "Où la trouver quand tu es à terre : ta fiche vit dans Préparer, carte « Fiche médicale », et elle s'ouvre sans réseau. Montre-la à tes compagnons de marche avant le départ — le jour où tu ne peux plus parler, c'est eux qui ouvriront ton téléphone.",
+      "showToRescue": "Comment la montrer aux secours : ouvre cet écran et tends le téléphone. Groupe sanguin, allergies, traitements, médecin et assurance y sont dans cet ordre, en clair. Rien n'est envoyé sur internet : ce que tu montres est exactement ce qui est écrit ici.",
+      "phoneCard": "Recopie-la dans la fiche médicale de ton téléphone : elle s'affiche écran verrouillé, sans ton code. Un secouriste qui trouve ton téléphone y accède en deux gestes, même s'il ne connaît pas cette application.",
+      "paper": "Garde une copie papier dans une poche de ton sac : un papier ne tombe jamais en panne de batterie, ne casse pas dans une chute et se lit sous la pluie.",
+      "ackButton": "J'ai lu ces conseils",
+      "ackDone": "Conseils lus"
     }
   },
   "trailSelection": {

@@ -102,7 +102,7 @@
       "tempRange": "$min° / $max°"
     },
     "startCta": "Trek starten",
-    "startGateHint": "Schließe zuerst Route, Datum und Programm ab, um zu starten.",
+    "startGateHint": "Schließe zuerst Route, Datum, Programm und Medizinische Daten (Hinweise gelesen) ab, um zu starten.",
     "prepareExpand": "Vorbereitung anzeigen",
     "prepareCollapse": "Einklappen",
     "sections": {
@@ -128,12 +128,18 @@
       "checklistSub": "Bereite deinen Rucksack vor",
       "training": "Körperliche Vorbereitung",
       "trainingSub": "Ihr Trainingsprogramm",
+      "health": "Medizinische Daten",
+      "healthSub": "Vor dem Start ausfüllen",
+      "packs": "Offline-Karten",
+      "packsSub": "Kartenpakete des Weges laden",
       "offline": "Wege entdecken",
       "offlineSub": "Katalog durchsuchen",
       "group": "Meine Gruppe",
       "groupSub": "Ihre Begleiter verfolgen",
       "navigation": "Navigation",
       "navigationSub": "Karte und GPS-Tracking",
+      "emergency": "Notfall",
+      "emergencySub": "112, Rettung und Kontakte",
       "journal": "Tagebuch",
       "journalSub": "Ihre Notizen und Erinnerungen",
       "accommodations": "Unterkünfte",
@@ -188,6 +194,7 @@
       "centerOnMe": "Holt die Karte zu Ihrer Position zurück, nachdem Sie sie verschoben haben.",
       "photo": "Macht ein Foto und legt es ins Tagebuch des Tages, ohne die Karte zu verlassen.",
       "sos": "Öffnet den Notruf mit Ihren GPS-Koordinaten. Nur im echten Notfall zu benutzen.",
+      "onlyInTrek": "Nur sichtbar, sobald die Wanderung gestartet ist.",
       "currentStage": "Was auf der laufenden Etappe noch zu gehen ist. Ein Strich bedeutet, dass die Wanderung noch nicht begonnen hat.",
       "offTrack": "Leuchtet auf, wenn Sie sich von der Linie entfernen. Kehren Sie zum Weg zurück, damit sie verschwindet.",
       "poi": {
@@ -1432,6 +1439,15 @@
     "consent": {
       "purpose": "Diese Infos helfen den Rettungskräften. Sie bleiben auf deinem Telefon, werden nie ins Internet gesendet.",
       "manage": "Meine Gesundheits-Einwilligung verwalten"
+    },
+    "advice": {
+      "title": "Hinweise für den Einsatz unterwegs",
+      "whereToFind": "Wo du sie findest, wenn du am Boden liegst: Deine Karte liegt unter Vorbereiten, Kachel « Medizinische Daten », und sie öffnet sich ohne Netz. Zeige sie deinen Begleitern vor dem Start — an dem Tag, an dem du nicht mehr sprechen kannst, sind sie es, die dein Telefon öffnen.",
+      "showToRescue": "Wie du sie der Rettung zeigst: Öffne diesen Bildschirm und reiche das Telefon weiter. Blutgruppe, Allergien, Medikamente, Arzt und Versicherung stehen in dieser Reihenfolge, im Klartext. Nichts wird ins Internet gesendet: Was du zeigst, ist genau das, was hier steht.",
+      "phoneCard": "Übertrage sie in die medizinische Karte deines Telefons: Sie erscheint auf dem Sperrbildschirm, ohne deinen Code. Ein Retter, der dein Telefon findet, kommt in zwei Schritten dorthin, auch ohne diese App zu kennen.",
+      "paper": "Bewahre eine Papierkopie in einer Tasche deines Rucksacks auf: Papier hat nie einen leeren Akku, zerbricht bei einem Sturz nicht und bleibt im Regen lesbar.",
+      "ackButton": "Ich habe diese Hinweise gelesen",
+      "ackDone": "Hinweise gelesen"
     }
   },
   "trailSelection": {

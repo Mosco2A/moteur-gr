@@ -102,7 +102,7 @@
       "tempRange": "$min° / $max°"
     },
     "startCta": "Iniciar el trek",
-    "startGateHint": "Completa antes Itinerario, Fecha y Programa para empezar.",
+    "startGateHint": "Completa antes Itinerario, Fecha, Programa y Ficha médica (consejos leídos) para empezar.",
     "prepareExpand": "Ver la preparación",
     "prepareCollapse": "Reducir",
     "sections": {
@@ -128,12 +128,18 @@
       "checklistSub": "Prepara tu mochila",
       "training": "Preparación física",
       "trainingSub": "Tu programa de entrenamiento",
+      "health": "Ficha médica",
+      "healthSub": "Rellénala antes de salir",
+      "packs": "Mapas sin conexión",
+      "packsSub": "Descarga los mapas del sendero",
       "offline": "Descubrir senderos",
       "offlineSub": "Explora el catálogo",
       "group": "Mi grupo",
       "groupSub": "Sigue a tus compañeros",
       "navigation": "Navegación",
       "navigationSub": "Mapa y seguimiento GPS",
+      "emergency": "Emergencia",
+      "emergencySub": "112, rescate y contactos",
       "journal": "Diario",
       "journalSub": "Tus notas y recuerdos",
       "accommodations": "Alojamientos",
@@ -188,6 +194,7 @@
       "centerOnMe": "Devuelve el mapa a su posición después de haberlo movido con el dedo.",
       "photo": "Hace una foto y la añade al diario del día, sin salir del mapa.",
       "sos": "Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.",
+      "onlyInTrek": "Solo visible una vez iniciada la ruta.",
       "currentStage": "Lo que queda por andar en la etapa en curso. Un guión significa que la ruta aún no ha empezado.",
       "offTrack": "Se enciende cuando se aleja del trazado. Vuelva a la línea del sendero para apagarlo.",
       "poi": {
@@ -1432,6 +1439,15 @@
     "consent": {
       "purpose": "Esta información sirve para socorrerte. Permanece en tu teléfono, nunca se envía por internet.",
       "manage": "Gestionar mi consentimiento de salud"
+    },
+    "advice": {
+      "title": "Consejos de uso en el sendero",
+      "whereToFind": "Dónde encontrarla cuando estás en el suelo: tu ficha vive en Preparar, tarjeta « Ficha médica », y se abre sin red. Muéstrala a tus compañeros de marcha antes de salir — el día en que ya no puedas hablar, serán ellos quienes abran tu teléfono.",
+      "showToRescue": "Cómo mostrarla al rescate: abre esta pantalla y entrega el teléfono. Grupo sanguíneo, alergias, tratamientos, médico y seguro están en ese orden, en claro. Nada se envía a internet: lo que muestras es exactamente lo que está escrito aquí.",
+      "phoneCard": "Cópiala en la ficha médica de tu teléfono: se muestra en la pantalla de bloqueo, sin tu código. Un rescatador que encuentre tu teléfono llega ahí en dos gestos, aunque no conozca esta aplicación.",
+      "paper": "Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.",
+      "ackButton": "He leído estos consejos",
+      "ackDone": "Consejos leídos"
     }
   },
   "trailSelection": {

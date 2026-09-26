@@ -45,6 +45,7 @@ import '../../features/safety/presentation/health_info_screen.dart';
 import '../../features/safety/presentation/signalement_screen.dart';
 import '../../features/training/presentation/training_screen.dart';
 import '../../features/onboarding/presentation/onboarding_screen.dart';
+import '../../features/packs/presentation/pack_store_screen.dart';
 import '../../features/trail_selection/presentation/trail_selection_screen.dart';
 import '../../features/treks/presentation/my_treks_screen.dart';
 import '../config/feature_flags.dart';
@@ -90,6 +91,7 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
 ///   /trail/:id/transport         - TRANSPORT (aller/retour, data-driven)
 ///   /trail/:id/shop              - RAVITAILLEMENT (commerces par etape, data-driven)
 ///   /trail/:id/checklist         - Checklist materiel
+///   /trail/:id/packs             - Boutique de cartes hors ligne (LOT Q, 568)
 ///   /trail/:id/feasibility       - Verdict de faisabilite (tricolore)
 ///   /trail/:id/tips              - Fiches conseils
 ///   /trail/:id/journal           - Journal de trek
@@ -358,6 +360,28 @@ final appRouter = GoRouter(
           path: 'checklist',
           name: 'trail-checklist',
           builder: (context, state) => const ChecklistScreen(),
+        ),
+        // BOUTIQUE DE CARTES HORS LIGNE (tache 568, LOT Q — Q4c).
+        //
+        // L'ECRAN EXISTAIT SANS ROUTE. `PackStoreScreen`, `PackCard` et
+        // `pack_providers.dart` etaient ecrits, localises en 5 langues et
+        // couverts par `pack_store_ui_test.dart` — et AUCUNE route ne les
+        // designait. Ce n'etait pas une route morte (S8 interdit une carte sans
+        // cible) : c'etait l'inverse, un ECRAN INATTEIGNABLE, que seul un test
+        // savait instancier. Chris l'a trouve en 40 minutes d'usage reel.
+        //
+        // Sous-route de `/trail/:id` parce que les packs sont PAR SENTIER
+        // ([PackStoreScreen.trailId], catalogue `PackCatalog.availablePacks`) :
+        // meme forme que checklist / tips / feasibility. Atteinte via
+        // `context.push` depuis la carte « Cartes hors ligne » de la section
+        // Preparer du HUB -> retour propre par la pile.
+        GoRoute(
+          path: 'packs',
+          name: 'trail-packs',
+          builder: (context, state) {
+            final trailId = state.pathParameters['id'] ?? '';
+            return PackStoreScreen(trailId: trailId);
+          },
         ),
         // PARITE GR20 (#99460) — NUITEES : assistant « Reserver vos nuits »
         // (clone GR20 `RefugeAssistantScreen`). Pour chaque nuit du programme :

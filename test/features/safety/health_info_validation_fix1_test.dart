@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
@@ -22,6 +23,12 @@ void main() {
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
+    // TACHE 568 (LOT Q) : l'ecran pose desormais un SIGNAL DE PREPARATION en
+    // preferences (fiche remplie / conseils lus, cf. `health_prepare_providers`)
+    // — c'est lui qui entre dans la porte de demarrage du trek. Sans magasin de
+    // preferences simule, l'enregistrement restait en attente et le bouton
+    // gardait son spinner : `pumpAndSettle` ne rendait plus la main.
+    SharedPreferences.setMockInitialValues(<String, Object>{});
   });
 
   tearDown(() async {

@@ -232,7 +232,7 @@ class _Translations$hub$en extends Translations$hub$fr {
 	@override late final _Translations$hub$trekCard$en trekCard = _Translations$hub$trekCard$en._(_root);
 	@override late final _Translations$hub$weather$en weather = _Translations$hub$weather$en._(_root);
 	@override String get startCta => 'Start the trek';
-	@override String get startGateHint => 'Complete Itinerary, Date and Programme first to start.';
+	@override String get startGateHint => 'Complete Itinerary, Date, Programme and Medical card (advice read) first to start.';
 	@override String get prepareExpand => 'Show preparation';
 	@override String get prepareCollapse => 'Collapse';
 	@override late final _Translations$hub$sections$en sections = _Translations$hub$sections$en._(_root);
@@ -1167,6 +1167,7 @@ class _Translations$health$en extends Translations$health$fr {
 	@override late final _Translations$health$a11y$en a11y = _Translations$health$a11y$en._(_root);
 	@override late final _Translations$health$delete$en delete = _Translations$health$delete$en._(_root);
 	@override late final _Translations$health$consent$en consent = _Translations$health$consent$en._(_root);
+	@override late final _Translations$health$advice$en advice = _Translations$health$advice$en._(_root);
 }
 
 // Path: trailSelection
@@ -1832,12 +1833,18 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get checklistSub => 'Prepare your backpack';
 	@override String get training => 'Physical prep';
 	@override String get trainingSub => 'Your training programme';
+	@override String get health => 'Medical card';
+	@override String get healthSub => 'Fill it in before you leave';
+	@override String get packs => 'Offline maps';
+	@override String get packsSub => 'Download the trail maps';
 	@override String get offline => 'Discover trails';
 	@override String get offlineSub => 'Browse the catalogue';
 	@override String get group => 'My group';
 	@override String get groupSub => 'Track your companions';
 	@override String get navigation => 'Navigation';
 	@override String get navigationSub => 'Map and GPS tracking';
+	@override String get emergency => 'Emergency';
+	@override String get emergencySub => '112, rescue and contacts';
 	@override String get journal => 'Journal';
 	@override String get journalSub => 'Your notes and memories';
 	@override String get accommodations => 'Accommodation';
@@ -1902,6 +1909,7 @@ class _Translations$map$guide$en extends Translations$map$guide$fr {
 	@override String get centerOnMe => 'Brings the map back to your position after you have dragged it.';
 	@override String get photo => 'Takes a photo and adds it to the day\'s journal, without leaving the map.';
 	@override String get sos => 'Opens the emergency call with your GPS coordinates. To be used only in a real emergency.';
+	@override String get onlyInTrek => 'Only visible once the hike has started.';
 	@override String get currentStage => 'What is left to walk on the current stage. A dash means the hike has not started yet.';
 	@override String get offTrack => 'Lights up when you move away from the line. Come back to the trail to clear it.';
 	@override late final _Translations$map$guide$poi$en poi = _Translations$map$guide$poi$en._(_root);
@@ -2819,6 +2827,22 @@ class _Translations$health$consent$en extends Translations$health$consent$fr {
 	// Translations
 	@override String get purpose => 'This info helps rescuers assist you. It stays on your phone, never sent over the internet.';
 	@override String get manage => 'Manage my health consent';
+}
+
+// Path: health.advice
+class _Translations$health$advice$en extends Translations$health$advice$fr {
+	_Translations$health$advice$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'How to use it on the trail';
+	@override String get whereToFind => 'Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.';
+	@override String get showToRescue => 'How to show it to rescuers: open this screen and hand over the phone. Blood group, allergies, treatments, doctor and insurance are listed in that order, in plain words. Nothing is sent over the internet: what you show is exactly what is written here.';
+	@override String get phoneCard => 'Copy it into your phone\'s own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.';
+	@override String get paper => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.';
+	@override String get ackButton => 'I have read this advice';
+	@override String get ackDone => 'Advice read';
 }
 
 // Path: trailSelection.a11y
@@ -3960,7 +3984,7 @@ extension on TranslationsEn {
 			'hub.weather.alertStorm' => 'Storm alert',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Start the trek',
-			'hub.startGateHint' => 'Complete Itinerary, Date and Programme first to start.',
+			'hub.startGateHint' => 'Complete Itinerary, Date, Programme and Medical card (advice read) first to start.',
 			'hub.prepareExpand' => 'Show preparation',
 			'hub.prepareCollapse' => 'Collapse',
 			'hub.sections.prepare' => 'Prepare',
@@ -3983,12 +4007,18 @@ extension on TranslationsEn {
 			'hub.cards.checklistSub' => 'Prepare your backpack',
 			'hub.cards.training' => 'Physical prep',
 			'hub.cards.trainingSub' => 'Your training programme',
+			'hub.cards.health' => 'Medical card',
+			'hub.cards.healthSub' => 'Fill it in before you leave',
+			'hub.cards.packs' => 'Offline maps',
+			'hub.cards.packsSub' => 'Download the trail maps',
 			'hub.cards.offline' => 'Discover trails',
 			'hub.cards.offlineSub' => 'Browse the catalogue',
 			'hub.cards.group' => 'My group',
 			'hub.cards.groupSub' => 'Track your companions',
 			'hub.cards.navigation' => 'Navigation',
 			'hub.cards.navigationSub' => 'Map and GPS tracking',
+			'hub.cards.emergency' => 'Emergency',
+			'hub.cards.emergencySub' => '112, rescue and contacts',
 			'hub.cards.journal' => 'Journal',
 			'hub.cards.journalSub' => 'Your notes and memories',
 			'hub.cards.accommodations' => 'Accommodation',
@@ -4035,6 +4065,7 @@ extension on TranslationsEn {
 			'map.guide.centerOnMe' => 'Brings the map back to your position after you have dragged it.',
 			'map.guide.photo' => 'Takes a photo and adds it to the day\'s journal, without leaving the map.',
 			'map.guide.sos' => 'Opens the emergency call with your GPS coordinates. To be used only in a real emergency.',
+			'map.guide.onlyInTrek' => 'Only visible once the hike has started.',
 			'map.guide.currentStage' => 'What is left to walk on the current stage. A dash means the hike has not started yet.',
 			'map.guide.offTrack' => 'Lights up when you move away from the line. Come back to the trail to clear it.',
 			'map.guide.poi.water' => 'A spring or fountain marked along the trail. A spring can run dry in summer: do not rely on it without checking.',
@@ -4375,6 +4406,8 @@ extension on TranslationsEn {
 			'checklist.ui.shareGroup' => 'SHARE WITH THE GROUP',
 			'checklist.ui.exportList' => 'EXPORT THE LIST',
 			'checklist.ui.bagValidTitle' => 'Pack validated',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.bagValidBody' => 'All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of the reference weight)\n\nAre you sure your pack is ready?',
 			'checklist.ui.checkAgain' => 'Check again',
 			'checklist.ui.yesBagOk' => 'Yes, pack OK',
@@ -4382,8 +4415,6 @@ extension on TranslationsEn {
 			'checklist.ui.validationCancelledSnack' => 'Pack validation cancelled — you can edit your gear.',
 			'checklist.ui.missingTitle' => 'Missing gear',
 			'checklist.ui.missingBody' => '{checked}/{total} required items checked.',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.missingList' => 'Missing:',
 			'checklist.ui.understood' => 'Got it',
 			'checklist.ui.validateAnyway' => 'Validate anyway',
@@ -4889,6 +4920,8 @@ extension on TranslationsEn {
 			'social.reasonOther' => 'Other',
 			'social.reportSend' => 'Send report',
 			'social.reportSent' => 'Report sent. Our team will review it.',
+			_ => null,
+		} ?? switch (path) {
 			'social.syncPending' => 'Waiting for sync',
 			'social.synced' => 'Synced',
 			'social.activitySegment' => 'completed a segment',
@@ -4896,8 +4929,6 @@ extension on TranslationsEn {
 			'social.activityDefi' => 'made progress on a challenge',
 			'gamification.galleryTitle' => 'My badges',
 			'gamification.obtained' => 'Earned',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.locked' => 'Locked',
 			'gamification.tierDebutant' => 'Beginner',
 			'gamification.tierExpert' => 'Expert',
@@ -5058,6 +5089,13 @@ extension on TranslationsEn {
 			'health.delete.done' => 'Health card deleted.',
 			'health.consent.purpose' => 'This info helps rescuers assist you. It stays on your phone, never sent over the internet.',
 			'health.consent.manage' => 'Manage my health consent',
+			'health.advice.title' => 'How to use it on the trail',
+			'health.advice.whereToFind' => 'Where to find it when you are down: your card lives under Prepare, the « Medical card » tile, and it opens with no network. Show it to your walking partners before you leave — the day you can no longer speak, they are the ones who will open your phone.',
+			'health.advice.showToRescue' => 'How to show it to rescuers: open this screen and hand over the phone. Blood group, allergies, treatments, doctor and insurance are listed in that order, in plain words. Nothing is sent over the internet: what you show is exactly what is written here.',
+			'health.advice.phoneCard' => 'Copy it into your phone\'s own medical ID: it shows on the lock screen, without your passcode. A rescuer who finds your phone gets there in two taps, even without knowing this app.',
+			'health.advice.paper' => 'Keep a paper copy in a pocket of your pack: paper never runs out of battery, does not break in a fall and stays readable in the rain.',
+			'health.advice.ackButton' => 'I have read this advice',
+			'health.advice.ackDone' => 'Advice read',
 			'trailSelection.title' => 'Switch trail',
 			'trailSelection.subtitle' => 'Pick the trail to explore. The whole app (map, stages, points of interest, packs, guides) follows your selection.',
 			'trailSelection.current' => 'Active trail',
@@ -5396,6 +5434,8 @@ extension on TranslationsEn {
 			'shop.filterEmpty' => 'No shop for this filter.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'View details for ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
+			_ => null,
+		} ?? switch (path) {
 			'shop.a11y.website' => 'Open website',
 			'summary.title' => 'Plan summary',
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',
@@ -5410,8 +5450,6 @@ extension on TranslationsEn {
 			'summary.stats.elevationGain' => 'Total ascent',
 			'summary.stats.elevationLoss' => 'Total descent',
 			'summary.stats.duration' => 'Estimated time',
-			_ => null,
-		} ?? switch (path) {
 			'summary.stats.stages' => 'Stages',
 			'summary.stats.restDays' => 'Rest days',
 			'summary.dayByDay' => 'Day by day',

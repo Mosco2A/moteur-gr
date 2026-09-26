@@ -8,6 +8,7 @@ import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
 import 'package:moteur_gr/features/safety/presentation/health_info_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Tests E57 (LOT D/D1) de la fiche INFO SANTÉ : câblage DAO Drift, rendu i18n
 /// et NON-RÉGRESSION overflow mobile (360/390/412).
@@ -24,6 +25,11 @@ void main() {
 
   setUp(() {
     db = AppDatabase(NativeDatabase.memory());
+    // TÂCHE 568 (LOT Q) : l'écran re-synchronise à l'ouverture un SIGNAL DE
+    // PRÉPARATION persisté en préférences (fiche remplie / conseils lus, cf.
+    // `health_prepare_providers.dart`) — il entre dans la porte de démarrage du
+    // trek. Magasin de préférences simulé obligatoire.
+    SharedPreferences.setMockInitialValues(<String, Object>{});
   });
 
   tearDown(() async {

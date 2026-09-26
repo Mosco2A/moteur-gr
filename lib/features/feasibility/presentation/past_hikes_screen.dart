@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -68,6 +69,12 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     }
     await ref.read(pastHikesProvider.notifier).saveAll(updated);
     if (mounted) {
+      // LE RETOUR DE CE CHEMIN, C'EST LA LISTE (tache 568, Q3). La feuille
+      // modale s'est deja fermee (`Navigator.pop` de `_HikeEditorSheet._submit`)
+      // et la rando apparait dans la liste juste derriere : le randonneur EST
+      // revenu la d'ou il venait. On ne depile PAS l'ecran ici — il en saisit
+      // jusqu'a cinq et redige sa note de difficultes en dessous. Le bouton qui
+      // conclut le passage sur l'ecran, et qui depile, est `_saveNote`.
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(t.pastHikes.saved)),
       );
@@ -81,16 +88,32 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     await ref.read(pastHikesProvider.notifier).saveAll(updated);
   }
 
+  /// Enregistre la note de difficultes PUIS RAMENE le randonneur (tache 568, Q3).
+  ///
+  /// DEFAUT DE CHRIS DU 26/09 09:59, verbatim : « Apres 5 derniere rando,
+  /// enregistrer dit que la note est enregistree mais ne revient pas a
+  /// faisabilite ». La methode sauvegardait, affichait la SnackBar et S ARRETAIT
+  /// LA : le randonneur restait sur l'ecran avec un message de succes et devait
+  /// retrouver le retour lui-meme. MEME MOTIF QUE LE BOUTON MORT DE L ACCUEIL
+  /// (Q1) : l'action reussit, la navigation ne suit pas.
+  ///
+  /// CE BOUTON CONCLUT LE PASSAGE SUR L ECRAN : il depile donc. Le chemin
+  /// d'ajout d'une rando, lui, ramene A LA LISTE (la feuille modale se ferme) et
+  /// NE depile PAS l'ecran — on en saisit jusqu'a cinq, et la note se redige en
+  /// dessous : depiler y rendrait « Ajouter une rando » inutilisable au-dela de
+  /// la premiere et jetterait la note en cours de frappe.
   Future<void> _saveNote() async {
     await ref
         .read(experienceNoteProvider.notifier)
         .save(_noteController.text.trim());
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(t.pastHikes.difficultiesSaved)),
-      );
-      FocusScope.of(context).unfocus();
-    }
+    if (!mounted) return;
+    FocusScope.of(context).unfocus();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(t.pastHikes.difficultiesSaved)),
+    );
+    // Retour la d'ou l'on venait (la faisabilite, en usage nominal). `pop` du
+    // routeur : la pile est preservee, aucun ecran n'est recree.
+    if (context.canPop()) context.pop();
   }
 
   @override

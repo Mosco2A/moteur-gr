@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:moteur_gr/features/hub/presentation/widgets/hub_start_trek_button.dart';
 import 'package:moteur_gr/features/hub/providers/cockpit_start_providers.dart';
 import 'package:moteur_gr/features/notifications/providers/download_reminder_provider.dart';
+import 'package:moteur_gr/features/safety/providers/health_prepare_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -30,6 +31,21 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   const trailId = 'mare-a-mare-centre';
+
+  /// TACHE 568 (LOT Q) — LA PORTE A GAGNE UNE QUATRIEME CONDITION.
+  ///
+  /// Decision de Chris du 26/09 10:29, verbatim : « on ne demarre pas un trek
+  /// sans avoir rempli sa fiche medicale et lu les conseils pour qu'elle soit
+  /// applicable sur le sentier ». Ces tests-ci portent sur la MECANIQUE de
+  /// rafraichissement de la vue derivee (lecon M4) et sur la COURSE de relecture
+  /// des preferences (lecon FIX-3) : la fiche medicale y est donc posee comme
+  /// ACQUISE, pour que ce qu'ils mesurent reste le trio historique. La regle de
+  /// la 4e condition, elle, est verrouillee par
+  /// `test/features/safety/fiche_medicale_condition_depart_568_test.dart` et par
+  /// `test/features/hub/providers/cockpit_start_providers_test.dart`.
+  const ficheMedicaleFaite = <String, Object>{
+    kHealthPrepareStepsKey: <String>['filled', 'adviceRead'],
+  };
 
   /// Enveloppe le bouton avec le minimum vital : Slang (libelles) + un routeur
   /// (le bouton pousse `/map` au succes) + un [ProviderScope] reel (aucun
@@ -73,7 +89,7 @@ void main() {
       'A CHAUD : le CTA passe de grise a ACTIF des le 3e signal, sans relancer '
       'l application (lecon M4 : une vue derivee doit se rafraichir)',
       (tester) async {
-        SharedPreferences.setMockInitialValues(<String, Object>{});
+        SharedPreferences.setMockInitialValues(ficheMedicaleFaite);
         await tester.pumpWidget(wrap());
         await tester.pumpAndSettle();
 
@@ -126,6 +142,7 @@ void main() {
         SharedPreferences.setMockInitialValues(<String, Object>{
           'prepare_core_steps_$trailId': <String>['itinerary', 'programme'],
           'departure_date_$trailId': '2026-10-20T00:00:00.000',
+          ...ficheMedicaleFaite,
         });
         await tester.pumpWidget(wrap());
         await tester.pumpAndSettle();
@@ -155,6 +172,7 @@ void main() {
         SharedPreferences.setMockInitialValues(<String, Object>{
           'prepare_core_steps_$trailId': <String>['programme'],
           'departure_date_$trailId': '2026-10-20T00:00:00.000',
+          ...ficheMedicaleFaite,
         });
         final c = ProviderContainer();
         addTearDown(c.dispose);

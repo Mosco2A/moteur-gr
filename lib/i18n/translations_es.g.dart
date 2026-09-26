@@ -232,7 +232,7 @@ class _Translations$hub$es extends Translations$hub$fr {
 	@override late final _Translations$hub$trekCard$es trekCard = _Translations$hub$trekCard$es._(_root);
 	@override late final _Translations$hub$weather$es weather = _Translations$hub$weather$es._(_root);
 	@override String get startCta => 'Iniciar el trek';
-	@override String get startGateHint => 'Completa antes Itinerario, Fecha y Programa para empezar.';
+	@override String get startGateHint => 'Completa antes Itinerario, Fecha, Programa y Ficha médica (consejos leídos) para empezar.';
 	@override String get prepareExpand => 'Ver la preparación';
 	@override String get prepareCollapse => 'Reducir';
 	@override late final _Translations$hub$sections$es sections = _Translations$hub$sections$es._(_root);
@@ -1167,6 +1167,7 @@ class _Translations$health$es extends Translations$health$fr {
 	@override late final _Translations$health$a11y$es a11y = _Translations$health$a11y$es._(_root);
 	@override late final _Translations$health$delete$es delete = _Translations$health$delete$es._(_root);
 	@override late final _Translations$health$consent$es consent = _Translations$health$consent$es._(_root);
+	@override late final _Translations$health$advice$es advice = _Translations$health$advice$es._(_root);
 }
 
 // Path: trailSelection
@@ -1832,12 +1833,18 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get checklistSub => 'Prepara tu mochila';
 	@override String get training => 'Preparación física';
 	@override String get trainingSub => 'Tu programa de entrenamiento';
+	@override String get health => 'Ficha médica';
+	@override String get healthSub => 'Rellénala antes de salir';
+	@override String get packs => 'Mapas sin conexión';
+	@override String get packsSub => 'Descarga los mapas del sendero';
 	@override String get offline => 'Descubrir senderos';
 	@override String get offlineSub => 'Explora el catálogo';
 	@override String get group => 'Mi grupo';
 	@override String get groupSub => 'Sigue a tus compañeros';
 	@override String get navigation => 'Navegación';
 	@override String get navigationSub => 'Mapa y seguimiento GPS';
+	@override String get emergency => 'Emergencia';
+	@override String get emergencySub => '112, rescate y contactos';
 	@override String get journal => 'Diario';
 	@override String get journalSub => 'Tus notas y recuerdos';
 	@override String get accommodations => 'Alojamientos';
@@ -1902,6 +1909,7 @@ class _Translations$map$guide$es extends Translations$map$guide$fr {
 	@override String get centerOnMe => 'Devuelve el mapa a su posición después de haberlo movido con el dedo.';
 	@override String get photo => 'Hace una foto y la añade al diario del día, sin salir del mapa.';
 	@override String get sos => 'Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.';
+	@override String get onlyInTrek => 'Solo visible una vez iniciada la ruta.';
 	@override String get currentStage => 'Lo que queda por andar en la etapa en curso. Un guión significa que la ruta aún no ha empezado.';
 	@override String get offTrack => 'Se enciende cuando se aleja del trazado. Vuelva a la línea del sendero para apagarlo.';
 	@override late final _Translations$map$guide$poi$es poi = _Translations$map$guide$poi$es._(_root);
@@ -2819,6 +2827,22 @@ class _Translations$health$consent$es extends Translations$health$consent$fr {
 	// Translations
 	@override String get purpose => 'Esta información sirve para socorrerte. Permanece en tu teléfono, nunca se envía por internet.';
 	@override String get manage => 'Gestionar mi consentimiento de salud';
+}
+
+// Path: health.advice
+class _Translations$health$advice$es extends Translations$health$advice$fr {
+	_Translations$health$advice$es._(TranslationsEs root) : this._root = root, super.internal(root);
+
+	final TranslationsEs _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Consejos de uso en el sendero';
+	@override String get whereToFind => 'Dónde encontrarla cuando estás en el suelo: tu ficha vive en Preparar, tarjeta « Ficha médica », y se abre sin red. Muéstrala a tus compañeros de marcha antes de salir — el día en que ya no puedas hablar, serán ellos quienes abran tu teléfono.';
+	@override String get showToRescue => 'Cómo mostrarla al rescate: abre esta pantalla y entrega el teléfono. Grupo sanguíneo, alergias, tratamientos, médico y seguro están en ese orden, en claro. Nada se envía a internet: lo que muestras es exactamente lo que está escrito aquí.';
+	@override String get phoneCard => 'Cópiala en la ficha médica de tu teléfono: se muestra en la pantalla de bloqueo, sin tu código. Un rescatador que encuentre tu teléfono llega ahí en dos gestos, aunque no conozca esta aplicación.';
+	@override String get paper => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.';
+	@override String get ackButton => 'He leído estos consejos';
+	@override String get ackDone => 'Consejos leídos';
 }
 
 // Path: trailSelection.a11y
@@ -3960,7 +3984,7 @@ extension on TranslationsEs {
 			'hub.weather.alertStorm' => 'Alerta de tormenta',
 			'hub.weather.tempRange' => ({required Object min, required Object max}) => '${min}° / ${max}°',
 			'hub.startCta' => 'Iniciar el trek',
-			'hub.startGateHint' => 'Completa antes Itinerario, Fecha y Programa para empezar.',
+			'hub.startGateHint' => 'Completa antes Itinerario, Fecha, Programa y Ficha médica (consejos leídos) para empezar.',
 			'hub.prepareExpand' => 'Ver la preparación',
 			'hub.prepareCollapse' => 'Reducir',
 			'hub.sections.prepare' => 'Preparar',
@@ -3983,12 +4007,18 @@ extension on TranslationsEs {
 			'hub.cards.checklistSub' => 'Prepara tu mochila',
 			'hub.cards.training' => 'Preparación física',
 			'hub.cards.trainingSub' => 'Tu programa de entrenamiento',
+			'hub.cards.health' => 'Ficha médica',
+			'hub.cards.healthSub' => 'Rellénala antes de salir',
+			'hub.cards.packs' => 'Mapas sin conexión',
+			'hub.cards.packsSub' => 'Descarga los mapas del sendero',
 			'hub.cards.offline' => 'Descubrir senderos',
 			'hub.cards.offlineSub' => 'Explora el catálogo',
 			'hub.cards.group' => 'Mi grupo',
 			'hub.cards.groupSub' => 'Sigue a tus compañeros',
 			'hub.cards.navigation' => 'Navegación',
 			'hub.cards.navigationSub' => 'Mapa y seguimiento GPS',
+			'hub.cards.emergency' => 'Emergencia',
+			'hub.cards.emergencySub' => '112, rescate y contactos',
 			'hub.cards.journal' => 'Diario',
 			'hub.cards.journalSub' => 'Tus notas y recuerdos',
 			'hub.cards.accommodations' => 'Alojamientos',
@@ -4035,6 +4065,7 @@ extension on TranslationsEs {
 			'map.guide.centerOnMe' => 'Devuelve el mapa a su posición después de haberlo movido con el dedo.',
 			'map.guide.photo' => 'Hace una foto y la añade al diario del día, sin salir del mapa.',
 			'map.guide.sos' => 'Abre la llamada de emergencia con sus coordenadas GPS. Solo para una emergencia real.',
+			'map.guide.onlyInTrek' => 'Solo visible una vez iniciada la ruta.',
 			'map.guide.currentStage' => 'Lo que queda por andar en la etapa en curso. Un guión significa que la ruta aún no ha empezado.',
 			'map.guide.offTrack' => 'Se enciende cuando se aleja del trazado. Vuelva a la línea del sendero para apagarlo.',
 			'map.guide.poi.water' => 'Manantial o fuente señalada en el sendero. Un manantial puede estar seco en verano: no cuente con él sin comprobarlo.',
@@ -4375,6 +4406,8 @@ extension on TranslationsEs {
 			'checklist.ui.shareGroup' => 'COMPARTIR CON EL GRUPO',
 			'checklist.ui.exportList' => 'EXPORTAR LA LISTA',
 			'checklist.ui.bagValidTitle' => 'Mochila validada',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.bagValidBody' => 'Los {total} artículos obligatorios están en tu mochila.\n\nPeso total: {weight} kg ({pct}% del peso de referencia)\n\nSeguro que tu mochila está lista?',
 			'checklist.ui.checkAgain' => 'Comprobar de nuevo',
 			'checklist.ui.yesBagOk' => 'Si, mochila OK',
@@ -4382,8 +4415,6 @@ extension on TranslationsEs {
 			'checklist.ui.validationCancelledSnack' => 'Validación anulada — puedes modificar tu equipo.',
 			'checklist.ui.missingTitle' => 'Equipo faltante',
 			'checklist.ui.missingBody' => '{checked}/{total} artículos obligatorios marcados.',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.missingList' => 'Falta:',
 			'checklist.ui.understood' => 'Entendido',
 			'checklist.ui.validateAnyway' => 'Validar de todos modos',
@@ -4889,6 +4920,8 @@ extension on TranslationsEs {
 			'social.reasonOther' => 'Otro',
 			'social.reportSend' => 'Enviar denuncia',
 			'social.reportSent' => 'Denuncia enviada. Nuestro equipo la revisará.',
+			_ => null,
+		} ?? switch (path) {
 			'social.syncPending' => 'Esperando sincronización',
 			'social.synced' => 'Sincronizado',
 			'social.activitySegment' => 'completó un segmento',
@@ -4896,8 +4929,6 @@ extension on TranslationsEs {
 			'social.activityDefi' => 'avanzó en un reto',
 			'gamification.galleryTitle' => 'Mis insignias',
 			'gamification.obtained' => 'Obtenida',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.locked' => 'Bloqueada',
 			'gamification.tierDebutant' => 'Principiante',
 			'gamification.tierExpert' => 'Experto',
@@ -5058,6 +5089,13 @@ extension on TranslationsEs {
 			'health.delete.done' => 'Ficha de salud borrada.',
 			'health.consent.purpose' => 'Esta información sirve para socorrerte. Permanece en tu teléfono, nunca se envía por internet.',
 			'health.consent.manage' => 'Gestionar mi consentimiento de salud',
+			'health.advice.title' => 'Consejos de uso en el sendero',
+			'health.advice.whereToFind' => 'Dónde encontrarla cuando estás en el suelo: tu ficha vive en Preparar, tarjeta « Ficha médica », y se abre sin red. Muéstrala a tus compañeros de marcha antes de salir — el día en que ya no puedas hablar, serán ellos quienes abran tu teléfono.',
+			'health.advice.showToRescue' => 'Cómo mostrarla al rescate: abre esta pantalla y entrega el teléfono. Grupo sanguíneo, alergias, tratamientos, médico y seguro están en ese orden, en claro. Nada se envía a internet: lo que muestras es exactamente lo que está escrito aquí.',
+			'health.advice.phoneCard' => 'Cópiala en la ficha médica de tu teléfono: se muestra en la pantalla de bloqueo, sin tu código. Un rescatador que encuentre tu teléfono llega ahí en dos gestos, aunque no conozca esta aplicación.',
+			'health.advice.paper' => 'Guarda una copia en papel en un bolsillo de tu mochila: el papel nunca se queda sin batería, no se rompe en una caída y se lee bajo la lluvia.',
+			'health.advice.ackButton' => 'He leído estos consejos',
+			'health.advice.ackDone' => 'Consejos leídos',
 			'trailSelection.title' => 'Cambiar de sendero',
 			'trailSelection.subtitle' => 'Elige el sendero a explorar. Toda la app (mapa, etapas, puntos de interés, packs, guías) sigue tu selección.',
 			'trailSelection.current' => 'Sendero activo',
@@ -5396,6 +5434,8 @@ extension on TranslationsEs {
 			'shop.filterEmpty' => 'Ningún comercio para este filtro.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'Ver detalles de ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Llamar a ${label}',
+			_ => null,
+		} ?? switch (path) {
 			'shop.a11y.website' => 'Abrir el sitio web',
 			'summary.title' => 'Síntesis del plan',
 			'summary.configTitle' => ({required Object name}) => 'Mi ${name}',
@@ -5410,8 +5450,6 @@ extension on TranslationsEs {
 			'summary.stats.elevationGain' => 'Desnivel positivo',
 			'summary.stats.elevationLoss' => 'Desnivel negativo',
 			'summary.stats.duration' => 'Tiempo estimado',
-			_ => null,
-		} ?? switch (path) {
 			'summary.stats.stages' => 'Etapas',
 			'summary.stats.restDays' => 'Días de descanso',
 			'summary.dayByDay' => 'Día a día',

@@ -149,11 +149,29 @@ class _MapGuideSheet extends ConsumerWidget {
                     label: t.journal.addPhoto,
                     description: t.map.guide.photo,
                   ),
+                  // SOS — L'ENTREE EST VRAIE, ET ELLE DIT MAINTENANT SA
+                  // CONDITION (tache 568, Q5).
+                  //
+                  // LE SOUPCON DE DEPART etait que le guide documentait « une
+                  // icone SOS qui n'existe sur aucun ecran ». LA MESURE DIT
+                  // AUTRE CHOSE, et il faut le dire : l'icone EXISTE, portee par
+                  // [SosButton] (`Icons.emergency`), pose dans la colonne de
+                  // gauche de cette meme carte (`map_screen.dart`) et en FAB du
+                  // cockpit. Ce qui etait FAUX, c'est le texte : cette pastille
+                  // SE MASQUE hors rando active, alors que ce guide s'ouvre a
+                  // tout moment depuis la carte. Un randonneur qui le lisait en
+                  // preparation cherchait un bouton absent.
+                  //
+                  // On ne retire donc pas l'entree — ce serait cacher la
+                  // fonction la plus importante de l'ecran. On rend le texte
+                  // EXACT, en nommant la condition, exactement comme la ligne
+                  // « etape en cours » nomme deja la sienne (« un tiret signifie
+                  // que la randonnee n'a pas encore demarre »).
                   _GuideRow(
                     icon: Icons.emergency,
                     color: AppTheme.rougeUrgence,
                     label: t.a11y.sos,
-                    description: t.map.guide.sos,
+                    description: '${t.map.guide.sos} ${t.map.guide.onlyInTrek}',
                   ),
                   _GuideRow(
                     icon: Icons.my_location,

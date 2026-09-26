@@ -50,10 +50,15 @@ class _MyTreksScreenState extends ConsumerState<MyTreksScreen>
   /// Barre contextuelle de l'accueil maison (SPEC §4) : Découvrir / Mon compte.
   @override
   List<ContextualAction> buildContextualActions(BuildContext context) => [
+        // Q2 (tache 568) — `push` ET NON `go`. Le `go` REMPLACAIT la pile : une
+        // fois au catalogue il n'y avait plus d'historique, et le retour (bouton
+        // comme geste systeme Android) retombait sur l'accueil contextuel, donc
+        // sur le COCKPIT d'un sentier non choisi — le defaut de Chris du 26/09.
+        // En empilant, le retour DEPILE naturellement vers « Mes treks ».
         ContextualAction(
           icon: Icons.explore_outlined,
           label: t.myTreks.discoverTitle,
-          onPressed: () => context.go('/catalog'),
+          onPressed: () => context.push('/catalog'),
         ),
         ContextualAction(
           icon: Icons.person_outline,
@@ -153,7 +158,8 @@ class _MyTreksBody extends ConsumerWidget {
               subtitle: t.myTreks.empty,
               action: FilledButton.icon(
                 key: const ValueKey('my-treks-empty-discover'),
-                onPressed: () => context.go('/catalog'),
+                // Q2 (tache 568) : `push`, pour que le retour depile vers ici.
+                onPressed: () => context.push('/catalog'),
                 icon: const Icon(Icons.explore_outlined),
                 label: Text(t.myTreks.discoverTitle),
               ),
@@ -189,7 +195,8 @@ class _MyTreksBody extends ConsumerWidget {
                 icon: Icons.explore_outlined,
                 title: t.myTreks.discoverTitle,
                 subtitle: t.myTreks.discoverSubtitle,
-                onTap: () => context.go('/catalog'),
+                // Q2 (tache 568) : `push`, pour que le retour depile vers ici.
+                onTap: () => context.push('/catalog'),
               ),
               QuickAccessCard(
                 icon: Icons.person_outline,
