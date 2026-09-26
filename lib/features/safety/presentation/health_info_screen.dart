@@ -164,7 +164,17 @@ class _HealthInfoScreenState extends ConsumerState<HealthInfoScreen> {
           duration: const Duration(seconds: 2),
         ),
       );
-      Navigator.of(context).pop();
+      // ON NE DEPILE QUE S'IL Y A QUELQUE CHOSE SOUS LA PAGE (tache 579, LOT X).
+      // Ce `pop()` etait inconditionnel. Quand la fiche est ouverte DIRECTEMENT
+      // — lien profond, notification, retour du systeme sur cette route — elle
+      // est la seule page de la pile : le `pop()` la retirait et laissait
+      // l'application sans aucune page ('You have popped the last page off of
+      // the stack'). En release, ou l'assertion ne se declenche pas, l'ecran
+      // restait fige : enregistrer ne produisait rien de visible au-dela du
+      // message. On reste sur la fiche quand il n'y a nulle part ou revenir —
+      // le message, lui, confirme l'enregistrement dans les deux cas.
+      final navigateur = Navigator.of(context);
+      if (navigateur.canPop()) navigateur.pop();
     }
   }
 

@@ -426,8 +426,16 @@ class _GpsDeniedView extends ConsumerWidget {
             Icon(Icons.location_off,
                 size: 56, color: theme.colorScheme.error),
             const SizedBox(height: AppTheme.spacingBase),
+            // DEUX CAUSES, DEUX PHRASES (tache 579). « Autorisez la
+            // localisation » n'a aucun sens quand il n'y a RIEN a autoriser :
+            // c'est l'appareil qui n'a pas su repondre. Annoncer la mauvaise
+            // cause envoie le randonneur chercher un reglage qui n'existe pas.
             Text(
-              wt.gpsDenied,
+              ref.watch(
+                walkTestControllerProvider.select((s) => s.gpsUnavailable),
+              )
+                  ? wt.gpsUnavailable
+                  : wt.gpsDenied,
               textAlign: TextAlign.center,
               style: theme.textTheme.bodyLarge,
             ),

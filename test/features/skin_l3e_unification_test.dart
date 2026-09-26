@@ -61,6 +61,12 @@ void main() {
       await tester.pump();
 
       expect(tapped, 1);
+
+      // Tache 579 : l'appui ouvre une fenetre d'essai d'une seconde, puis
+      // annonce l'echec. On la laisse passer pour ne pas finir le test avec un
+      // minuteur en vol.
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pump(const Duration(seconds: 5));
     });
 
     testWidgets('sans onRetry, aucun AppButton n\'est rendu', (tester) async {

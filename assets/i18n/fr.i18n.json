@@ -596,7 +596,8 @@
       "understood": "Compris",
       "validateAnyway": "Valider quand même",
       "bagValidatedMissingSnack": "Sac valide (avec items manquants) !",
-      "shareGroupHint": "Rejoignez un groupe pour partager votre checklist."
+      "shareGroupHint": "Rejoignez un groupe pour partager votre checklist.",
+      "shareFailed": "Le partage n'a pas pu s'ouvrir sur cet appareil."
     },
     "seasonalBanner": "Sac adapté à la saison ($season) et à votre sentier.",
     "seasons": {
@@ -847,7 +848,9 @@
     "send": "Envoyer",
     "sending": "Envoi...",
     "thanks": "Merci pour votre retour !",
-    "pending": "en attente"
+    "pending": "en attente",
+    "emptyMessage": "Écrivez votre message avant de l'envoyer.",
+    "sendFailed": "Votre message n'a pas pu être enregistré."
   },
   "auth": {
     "profile": "Profil",
@@ -1360,13 +1363,15 @@
       "delete": "Supprimer",
       "retry": "Réessayer",
       "buy": "Acheter ce pack",
-      "buyWithPrice": "Acheter ce pack — $price"
+      "buyWithPrice": "Acheter ce pack — $price",
+      "buyUnavailable": "L'achat n'est pas disponible sur cet appareil."
     },
     "progress": {
       "downloading": "Téléchargement… $done/$total",
       "verifying": "Vérification de l'intégrité…",
       "completed": "Pack prêt hors-ligne",
-      "error": "Échec du téléchargement"
+      "error": "Échec du téléchargement",
+      "errorSnack": "Le téléchargement n'a pas abouti."
     },
     "delete": {
       "confirmTitle": "Supprimer ce pack ?",
@@ -1858,7 +1863,8 @@
     "a11y": {
       "call": "Appeler $label",
       "website": "Ouvrir le site web"
-    }
+    },
+    "noneForTrail": "Aucune information de transport pour ce sentier."
   },
   "fireRisk": {
     "title": "Risque incendie",
@@ -2131,7 +2137,8 @@
       "excellent": "Excellent"
     },
     "absoluteScaleNotice": "Ton niveau est lu sur l'échelle de distance brute : la comparaison à une référence n'a pas été établie pour ta morphologie, on ne l'applique donc pas. Ton test, lui, reste parfaitement valable.",
-    "ageClampNotice": "Au-delà de 80 ans la référence du test s'arrête : elle est calculée comme à 80 ans, et on te le dit."
+    "ageClampNotice": "Au-delà de 80 ans la référence du test s'arrête : elle est calculée comme à 80 ans, et on te le dit.",
+    "gpsUnavailable": "La position n'est pas disponible sur cet appareil : le test ne peut pas mesurer la distance."
   },
   "pastHikes": {
     "title": "Vos 5 dernières randos",
@@ -2191,7 +2198,8 @@
       "action": "Fiche médicale du téléphone",
       "hint": "Affichez vos infos vitales aux secours, même écran verrouillé.",
       "unavailable": "Ouvrez la fiche médicale dans les réglages Santé de votre téléphone."
-    }
+    },
+    "cannotCall": "Impossible de lancer l'appel depuis cet appareil. Composez le $number."
   },
   "recovery": {
     "section": "Compte et reconnexion",
@@ -2215,6 +2223,9 @@
     "noPoiForStage": "Aucun point d'intérêt pour cette étape.",
     "viewOnMap": "Voir sur la carte",
     "error": "Erreur",
-    "pageNotFound": "Page introuvable : $path"
+    "pageNotFound": "Page introuvable : $path",
+    "retry": "Réessayer",
+    "retrying": "Nouvel essai…",
+    "retryFailed": "Le nouvel essai n'a pas abouti."
   }
 }

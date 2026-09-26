@@ -302,7 +302,16 @@ class ChecklistBottomActions extends ConsumerWidget {
 
   /// Partage texte de la checklist (parite GR20 : partage + export = meme
   /// action). Construit un recap des articles coches par categorie.
-  void _shareChecklist(BuildContext context, WidgetRef ref) {
+  ///
+  /// L'APPEL PARTAIT SANS QUE PERSONNE NE REGARDE CE QU'IL DEVENAIT (tache 579,
+  /// LOT X). `Share.share(...)` etait lance sans `await` et sans `catch` : quand
+  /// la feuille de partage ne peut pas s'ouvrir — aucune application cible, ou le
+  /// canal de la plateforme indisponible — l'echec partait dans le vide et les
+  /// deux boutons « PARTAGER AVEC LE GROUPE » et « EXPORTER LA LISTE » ne
+  /// produisaient RIEN. L'invariante V3 les a trouves morts tous les deux.
+  /// Desormais on attend le resultat, et un echec se dit.
+  Future<void> _shareChecklist(BuildContext context, WidgetRef ref) async {
+    final messenger = ScaffoldMessenger.of(context);
     final state = ref.read(checklistProvider);
     final buffer = StringBuffer('${t.checklist.title}\n');
     buffer.writeln(
@@ -329,7 +338,13 @@ class ChecklistBottomActions extends ConsumerWidget {
       }
       buffer.writeln('');
     }
-    Share.share(buffer.toString());
+    try {
+      await Share.share(buffer.toString());
+    } catch (_) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(t.checklist.ui.shareFailed)),
+      );
+    }
   }
 
   String _resolveCategoryName(String categoryKey) {

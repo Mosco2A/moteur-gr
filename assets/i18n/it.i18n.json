@@ -596,7 +596,8 @@
       "understood": "Capito",
       "validateAnyway": "Conferma comunque",
       "bagValidatedMissingSnack": "Zaino confermato (con articoli mancanti)!",
-      "shareGroupHint": "Unisciti a un gruppo per condividere la tua checklist."
+      "shareGroupHint": "Unisciti a un gruppo per condividere la tua checklist.",
+      "shareFailed": "La condivisione non si è potuta aprire su questo dispositivo."
     },
     "seasonalBanner": "Zaino adattato alla stagione ($season) e al tuo sentiero.",
     "seasons": {
@@ -847,7 +848,9 @@
     "send": "Invia",
     "sending": "Invio...",
     "thanks": "Grazie per il tuo feedback!",
-    "pending": "in attesa"
+    "pending": "in attesa",
+    "emptyMessage": "Scrivi il tuo messaggio prima di inviarlo.",
+    "sendFailed": "Il tuo messaggio non è stato salvato."
   },
   "auth": {
     "profile": "Profilo",
@@ -1360,13 +1363,15 @@
       "delete": "Elimina",
       "retry": "Riprova",
       "buy": "Acquista questo pacchetto",
-      "buyWithPrice": "Acquista questo pacchetto — $price"
+      "buyWithPrice": "Acquista questo pacchetto — $price",
+      "buyUnavailable": "L'acquisto non è disponibile su questo dispositivo."
     },
     "progress": {
       "downloading": "Scaricamento… $done/$total",
       "verifying": "Verifica integrità…",
       "completed": "Pacchetto pronto offline",
-      "error": "Scaricamento non riuscito"
+      "error": "Scaricamento non riuscito",
+      "errorSnack": "Il download non è andato a buon fine."
     },
     "delete": {
       "confirmTitle": "Eliminare questo pacchetto?",
@@ -1858,7 +1863,8 @@
     "a11y": {
       "call": "Chiama $label",
       "website": "Apri il sito web"
-    }
+    },
+    "noneForTrail": "Nessuna informazione sui trasporti per questo sentiero."
   },
   "fireRisk": {
     "title": "Rischio incendio",
@@ -2131,7 +2137,8 @@
       "excellent": "Eccellente"
     },
     "absoluteScaleNotice": "Il tuo livello è letto sulla scala di distanza grezza: il confronto con un riferimento non è stato stabilito per la tua corporatura, quindi non lo applichiamo. Il tuo test resta perfettamente valido.",
-    "ageClampNotice": "Oltre gli 80 anni il riferimento del test si ferma: è calcolato come a 80 anni, e te lo diciamo."
+    "ageClampNotice": "Oltre gli 80 anni il riferimento del test si ferma: è calcolato come a 80 anni, e te lo diciamo.",
+    "gpsUnavailable": "La posizione non è disponibile su questo dispositivo: il test non può misurare la distanza."
   },
   "pastHikes": {
     "title": "Le tue ultime 5 escursioni",
@@ -2191,7 +2198,8 @@
       "action": "Scheda medica del telefono",
       "hint": "Mostra i tuoi dati vitali ai soccorsi, anche a schermo bloccato.",
       "unavailable": "Apri la scheda medica nelle impostazioni Salute del telefono."
-    }
+    },
+    "cannotCall": "Questo dispositivo non può effettuare la chiamata. Componi $number."
   },
   "recovery": {
     "section": "Account e ripristino",
@@ -2215,6 +2223,9 @@
     "noPoiForStage": "Nessun punto di interesse per questa tappa.",
     "viewOnMap": "Vedi sulla mappa",
     "error": "Errore",
-    "pageNotFound": "Pagina non trovata: $path"
+    "pageNotFound": "Pagina non trovata: $path",
+    "retry": "Riprova",
+    "retrying": "Nuovo tentativo…",
+    "retryFailed": "Il nuovo tentativo non è riuscito."
   }
 }

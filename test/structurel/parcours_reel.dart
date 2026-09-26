@@ -27,7 +27,11 @@
 // dans `flutter test`, en secondes, sur la machine de n'importe qui.
 library;
 
+import 'dart:io';
+
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
@@ -89,6 +93,7 @@ Future<void> monterAppliReelle(
   etat.appliquer();
   _erreursCaptees.clear();
   _detournerLesErreursDeRendu();
+  brancherLesPlugins();
   SharedPreferences.setMockInitialValues(prefs);
   // La taille d'un telephone courant : un ecran trop petit fait deborder des
   // textes et fausse la lecture des gestes disponibles.
@@ -106,6 +111,88 @@ Future<void> monterAppliReelle(
     ),
   );
   await stabiliser(tester);
+}
+
+// ---------------------------------------------------------------------------
+// LE TELEPHONE DE CE TEST : un appareil qui ne sait rien faire de sortant
+// ---------------------------------------------------------------------------
+
+/// Branche des reponses aux canaux de plateforme utilises par l'application.
+///
+/// POURQUOI, ET C'EST LA DECOUVERTE LA PLUS COUTEUSE DU LOT X (tache 579).
+/// Dans un test de widgets, le temps est FEINT : `tester.pump` avance des
+/// minuteurs simules, il ne fait pas tourner la boucle d'evenements reelle. Or
+/// c'est cette boucle-la qui rapporte la reponse d'un canal de plateforme. Sans
+/// interlocuteur declare, un appel a `launchUrl`, `Share.share`,
+/// `getApplicationDocumentsDirectory` ou `Geolocator` NE REVIENT JAMAIS : il ne
+/// leve pas, il ne rend pas, il reste suspendu jusqu'a la fin du test.
+///
+/// Consequence directe sur la mesure : tout bouton dont l'action commence par un
+/// appel de plugin etait declare MORT par l'invariante — « Partager », « Voir le
+/// site », « Telecharger », « Demarrer le test ». Et il l'etait a tort : sur un
+/// telephone, ces appels reviennent. On mesurait un gel de l'environnement de
+/// test, pas un defaut de l'application.
+///
+/// CE QU'ON MODELISE ICI est un appareil HONNETE ET DEMUNI : il repond toujours,
+/// et il repond « je ne sais pas faire ». Aucune application capable d'ouvrir un
+/// lien, aucune feuille de partage, aucun service de localisation. C'est le pire
+/// telephone plausible — exactement celui sur lequel un bouton muet se voit. Le
+/// stockage local, lui, REPOND VRAIMENT (un dossier temporaire) : il existe sur
+/// tous les appareils, et le simuler en panne masquerait les vrais parcours.
+void brancherLesPlugins() {
+  final messager =
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+
+  void repondre(String canal, Future<Object?> Function(MethodCall) reponse) {
+    messager.setMockMethodCallHandler(MethodChannel(canal), reponse);
+    addTearDown(
+      () => messager.setMockMethodCallHandler(MethodChannel(canal), null),
+    );
+  }
+
+  // Aucune application ne peut ouvrir un lien ni composer un numero. Le
+  // `url_launcher` rend `false` — c'est son contrat quand rien ne peut ouvrir
+  // l'URL — et l'ecran doit le DIRE a l'utilisateur.
+  repondre('plugins.flutter.io/url_launcher', (appel) async => false);
+
+  // Aucune feuille de partage : l'appel echoue, et l'echec doit se voir.
+  repondre('dev.fluttercommunity.plus/share', (appel) async {
+    throw PlatformException(
+      code: 'indisponible',
+      message: 'aucune application de partage sur cet appareil',
+    );
+  });
+
+  // Pas de service de localisation. Le test de marche doit l'annoncer au lieu
+  // de rester fige sur son ecran d'accueil.
+  Future<Object?> pasDeGps(MethodCall appel) async {
+    switch (appel.method) {
+      case 'isLocationServiceEnabled':
+        return false;
+      case 'checkPermission':
+      case 'requestPermission':
+        return 0; // LocationPermission.denied
+      default:
+        return null;
+    }
+  }
+
+  for (final canal in const [
+    'flutter.baseflow.com/geolocator',
+    'flutter.baseflow.com/geolocator_android',
+    'flutter.baseflow.com/geolocator_apple',
+  ]) {
+    repondre(canal, pasDeGps);
+  }
+
+  // Le stockage local existe (dossier temporaire reel) : c'est le cas sur tout
+  // appareil, et le simuler absent ferait echouer des parcours pour une raison
+  // qui n'arrive jamais en vrai.
+  final dossier = Directory.systemTemp
+      .createTempSync('stepways_parcours_reel_')
+      .path;
+  repondre('plugins.flutter.io/path_provider', (appel) async => dossier);
+  repondre('plugins.flutter.io/path_provider_android', (appel) async => dossier);
 }
 
 /// Demonte l'application PROPREMENT a la fin d'un test.
@@ -147,7 +234,14 @@ Future<void> allerA(WidgetTester tester, String chemin) async {
 /// Un dialogue ou une feuille modale est pousse sur le navigateur racine :
 /// `go()` ne le referme pas. On le fait donc sauter par le geste retour du
 /// systeme, au plus deux fois, avant de renavigeur.
+///
+/// LES MESSAGES SONT BALAYES AUSSI (tache 579). Un `SnackBar` vit quatre
+/// secondes et ne part pas avec `handlePopRoute` : celui qu'un geste vient
+/// d'afficher etait donc TOUJOURS LA quand le geste suivant etait mesure,
+/// present avant comme apres — donc invisible dans la comparaison, et le geste
+/// suivant declare mort. C'est la mesure qui mentait, pas le bouton.
 Future<void> revenirSurLaRoute(WidgetTester tester, String chemin) async {
+  fermerLesMessages(tester);
   for (var i = 0; i < 2 && messageOuDialogueVisible(tester); i++) {
     await tester.binding.handlePopRoute();
     await stabiliser(tester, coups: 2);
@@ -155,6 +249,92 @@ Future<void> revenirSurLaRoute(WidgetTester tester, String chemin) async {
   appRouter.go(chemin);
   await stabiliser(tester, coups: 3);
   erreursDeRendu(tester);
+}
+
+/// Retire les messages (`SnackBar`) encore affiches, sans attendre leur duree.
+void fermerLesMessages(WidgetTester tester) {
+  for (final m
+      in tester.stateList<ScaffoldMessengerState>(
+        find.byType(ScaffoldMessenger),
+      )) {
+    m.clearSnackBars();
+  }
+}
+
+/// Amene [f] SOUS LE DOIGT : fait defiler l'ecran jusqu'a lui si besoin.
+///
+/// POURQUOI CE PAS EN PLUS, ET IL EST DECISIF (tache 579). Un ecran de
+/// preparation mesure deux mille pixels de haut ; le telephone en montre sept
+/// cent quatre-vingts. « Sauvegarder », « Valider mon sac », « Voir mon
+/// diplome », le choix de la main dominante etaient TOUS sous la ligne de
+/// flottaison. Le balayage tapait leurs coordonnees reelles — donc dans le
+/// vide, bien en dessous de la vitre — et `warnIfMissed: false` avalait
+/// l'echec : l'ecran ne changeait pas, le bouton etait declare mort. CINQ des
+/// douze routes rouges du LOT X etaient ce defaut de mesure, pas un defaut de
+/// l'application. Un utilisateur, lui, fait defiler avant d'appuyer.
+///
+/// Retourne `false` quand le geste reste hors de l'ecran malgre le defilement
+/// (aucun `Scrollable` parent, ou position figee) : l'appelant le declare alors
+/// NON JOUE. Jamais mort — on ne condamne pas un bouton qu'on n'a pas presse.
+Future<bool> amenerALEcran(WidgetTester tester, Finder f) async {
+  if (!_existe(f)) return false;
+  if (estSousLeDoigt(tester, f)) return true;
+  try {
+    await tester.ensureVisible(f);
+    await stabiliser(tester, coups: 2);
+  } catch (_) {
+    return false;
+  }
+  return _existe(f) && estSousLeDoigt(tester, f);
+}
+
+/// Le geste designe par [f] est-il ENCORE dans l'arbre ?
+///
+/// Un finder de RANG (`find.byType(X).at(3)`) ne rend pas une liste vide quand
+/// l'ecran s'est raccourci : il LEVE un `RangeError`. Le defilement peut
+/// justement raccourcir une liste paresseuse, donc ce cas arrive.
+bool _existe(Finder f) {
+  try {
+    return f.evaluate().isNotEmpty;
+  } catch (_) {
+    return false;
+  }
+}
+
+/// UN DOIGT POSE AU CENTRE DE [f] ATTEINDRAIT-IL VRAIMENT [f] ?
+///
+/// PAS « son centre est-il dans l'ecran » — ce raccourci s'est fait prendre
+/// (tache 579). Le bouton « J'ai lu ces conseils » se posait a cheval sur le
+/// haut de la page : son centre tombait trois pixels sous le bord, donc « dans
+/// l'ecran », mais SOUS LA BARRE DE TITRE. L'appui touchait la barre, le bouton
+/// ne recevait rien, et il etait declare mort. Seul un test de collision reel
+/// repond a la question : on pose le doigt, et on regarde ce qu'il rencontre.
+///
+/// La pile de collision va de la feuille vers la racine ; on remonte les parents
+/// de chaque element touche, car l'appui atterrit souvent sur un descendant (le
+/// texte du bouton) et non sur le bouton lui-meme.
+bool estSousLeDoigt(WidgetTester tester, Finder f) {
+  final RenderObject? cible;
+  final Offset centre;
+  try {
+    cible = f.evaluate().first.renderObject;
+    centre = tester.getCenter(f);
+  } catch (_) {
+    return false;
+  }
+  if (cible == null) return false;
+  final resultat = HitTestResult();
+  tester.binding.hitTestInView(resultat, centre, tester.view.viewId);
+  for (final entree in resultat.path) {
+    final touche = entree.target;
+    if (touche is! RenderObject) continue;
+    RenderObject? noeud = touche;
+    while (noeud != null) {
+      if (identical(noeud, cible)) return true;
+      noeud = noeud.parent;
+    }
+  }
+  return false;
 }
 
 /// Le chemin REELLEMENT affiche (apres application des gardes de redirection).
@@ -390,9 +570,34 @@ const gestesEvites = <String>[
   'chiamare',
 ];
 
+/// Les gestes SANS TEXTE qu'on ne tape pas non plus : ils n'ont qu'une icone.
+///
+/// LE TROU QUE LE LOT X A TROUVE (tache 579). Le garde [gestesEvites] lit un
+/// LIBELLE. Le bouton d'appel de l'ecran d'urgence n'en a pas : c'est un
+/// `IconButton` nu, et son libelle de rapport est « icone-58530 ». Aucun mot de
+/// la liste ne s'y trouve — le balayage a donc APPELE le numero d'urgence, et
+/// l'a fait a chaque execution. Un garde qui ne sait pas lire une icone n'est
+/// pas un garde, exactement comme celui qui ne parlait que francais (tache 573).
+/// Ces gestes sont testes NOMMEMENT (cf. `test/comportement/`).
+final Set<int> iconesEvitees = <int>{
+  Icons.phone.codePoint,
+  Icons.phone_in_talk.codePoint,
+  Icons.call.codePoint,
+  Icons.local_phone.codePoint,
+  Icons.sos.codePoint,
+  Icons.emergency.codePoint,
+  Icons.delete.codePoint,
+  Icons.delete_outline.codePoint,
+  Icons.delete_forever.codePoint,
+};
+
 bool estGesteEvite(String libelle) {
   final l = libelle.toLowerCase();
-  return gestesEvites.any(l.contains);
+  if (gestesEvites.any(l.contains)) return true;
+  final code = int.tryParse(
+    l.startsWith('icone-') ? l.substring('icone-'.length) : '',
+  );
+  return code != null && iconesEvitees.contains(code);
 }
 
 /// Le geste designe par [f] appartient-il a un SELECTEUR (un groupe d'options

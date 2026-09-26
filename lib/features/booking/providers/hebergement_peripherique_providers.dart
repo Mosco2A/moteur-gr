@@ -19,12 +19,26 @@ abstract interface class DeeplinkLauncher {
 class UrlLauncherDeeplink implements DeeplinkLauncher {
   const UrlLauncherDeeplink();
 
+  /// ELLE TRAHISSAIT SON PROPRE CONTRAT (tâche 579, LOT X). L'interface promet,
+  /// quelques lignes plus haut, de « retourner `false` […] sans lever
+  /// d'exception ». Or `canLaunchUrl` et `launchUrl` LÈVENT dès que le canal de
+  /// plateforme n'est pas là, ou qu'aucune application ne sait ouvrir le lien.
+  /// L'exception traversait l'écran, le `if (!opened)` qui devait afficher
+  /// « Impossible d'ouvrir ce lien » n'était jamais atteint, et le bouton
+  /// « Voir le site » ne produisait RIEN. Le garde existait : c'est le chemin
+  /// d'exception qui passait au-dessus de lui.
   @override
   Future<bool> open(String url) async {
     final uri = Uri.tryParse(url);
     if (uri == null) return false;
-    if (!await canLaunchUrl(uri)) return false;
-    return launchUrl(uri, mode: LaunchMode.externalApplication);
+    try {
+      if (!await canLaunchUrl(uri)) return false;
+      return await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } on Object {
+      // Un lien qu'on ne sait pas ouvrir est un `false`, jamais une exception :
+      // c'est ce que l'appelant attend pour pouvoir le DIRE à l'utilisateur.
+      return false;
+    }
   }
 }
 

@@ -701,6 +701,8 @@ class _Translations$feedback$en extends Translations$feedback$fr {
 	@override String get sending => 'Sending...';
 	@override String get thanks => 'Thank you for your feedback!';
 	@override String get pending => 'pending';
+	@override String get emptyMessage => 'Write your message before sending it.';
+	@override String get sendFailed => 'Your message could not be saved.';
 }
 
 // Path: auth
@@ -1417,6 +1419,7 @@ class _Translations$transport$en extends Translations$transport$fr {
 	@override String get adviceTitle => 'Practical tips';
 	@override String get website => 'Website';
 	@override late final _Translations$transport$a11y$en a11y = _Translations$transport$a11y$en._(_root);
+	@override String get noneForTrail => 'No transport information for this trail.';
 }
 
 // Path: fireRisk
@@ -1652,6 +1655,7 @@ class _Translations$walkTest$en extends Translations$walkTest$fr {
 	@override late final _Translations$walkTest$levels$en levels = _Translations$walkTest$levels$en._(_root);
 	@override String get absoluteScaleNotice => 'Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.';
 	@override String get ageClampNotice => 'Beyond 80 the test reference stops: it is computed as at 80, and we say so.';
+	@override String get gpsUnavailable => 'Location is not available on this device: the test cannot measure distance.';
 }
 
 // Path: pastHikes
@@ -1723,6 +1727,7 @@ class _Translations$sos$en extends Translations$sos$fr {
 	@override String get cancel => 'Cancel';
 	@override String get call => 'Call 112';
 	@override late final _Translations$sos$medicalId$en medicalId = _Translations$sos$medicalId$en._(_root);
+	@override String cannotCall({required Object number}) => 'This device cannot place the call. Dial ${number}.';
 }
 
 // Path: recovery
@@ -1761,6 +1766,9 @@ class _Translations$common$en extends Translations$common$fr {
 	@override String get viewOnMap => 'View on map';
 	@override String get error => 'Error';
 	@override String pageNotFound({required Object path}) => 'Page not found: ${path}';
+	@override String get retry => 'Try again';
+	@override String get retrying => 'Trying again…';
+	@override String get retryFailed => 'The new attempt did not work.';
 }
 
 // Path: hub.trekCard
@@ -2252,6 +2260,7 @@ class _Translations$checklist$ui$en extends Translations$checklist$ui$fr {
 	@override String get validateAnyway => 'Validate anyway';
 	@override String get bagValidatedMissingSnack => 'Pack validated (with missing items)!';
 	@override String get shareGroupHint => 'Join a group to share your checklist.';
+	@override String get shareFailed => 'Sharing could not open on this device.';
 }
 
 // Path: checklist.seasons
@@ -2707,6 +2716,7 @@ class _Translations$packs$actions$en extends Translations$packs$actions$fr {
 	@override String get retry => 'Retry';
 	@override String get buy => 'Buy this pack';
 	@override String buyWithPrice({required Object price}) => 'Buy this pack — ${price}';
+	@override String get buyUnavailable => 'Purchase is not available on this device.';
 }
 
 // Path: packs.progress
@@ -2720,6 +2730,7 @@ class _Translations$packs$progress$en extends Translations$packs$progress$fr {
 	@override String get verifying => 'Verifying integrity…';
 	@override String get completed => 'Pack ready offline';
 	@override String get error => 'Download failed';
+	@override String get errorSnack => 'The download did not complete.';
 }
 
 // Path: packs.delete
@@ -4476,6 +4487,7 @@ extension on TranslationsEn {
 			'checklist.ui.validateAnyway' => 'Validate anyway',
 			'checklist.ui.bagValidatedMissingSnack' => 'Pack validated (with missing items)!',
 			'checklist.ui.shareGroupHint' => 'Join a group to share your checklist.',
+			'checklist.ui.shareFailed' => 'Sharing could not open on this device.',
 			'checklist.seasonalBanner' => ({required Object season}) => 'Pack adapted to the season (${season}) and your trail.',
 			'checklist.seasons.winter' => 'winter',
 			'checklist.seasons.spring' => 'spring',
@@ -4686,6 +4698,8 @@ extension on TranslationsEn {
 			'feedback.sending' => 'Sending...',
 			'feedback.thanks' => 'Thank you for your feedback!',
 			'feedback.pending' => 'pending',
+			'feedback.emptyMessage' => 'Write your message before sending it.',
+			'feedback.sendFailed' => 'Your message could not be saved.',
 			'auth.profile' => 'Profile',
 			'auth.anonymous' => 'Hiker without account',
 			'auth.connectedVia' => 'Connected via',
@@ -4970,11 +4984,11 @@ extension on TranslationsEn {
 			'training.inviteSetDate' => 'Set your departure date in the Calendar to enable the countdown.',
 			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
 			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
+			_ => null,
+		} ?? switch (path) {
 			'training.freqPerWeek' => ({required Object n}) => '${n}× per week',
 			'training.freqOncePerPhase' => 'once during the phase',
 			'training.freqFinalWeek' => 'the final week only',
-			_ => null,
-		} ?? switch (path) {
 			'training.freqSourceNotice' => 'The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d\'Aventure and the 2020 WHO guidelines.',
 			'training.noDateWhy' => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.',
 			'training.tooShortTitle' => 'No preparation offered',
@@ -5098,10 +5112,12 @@ extension on TranslationsEn {
 			'packs.actions.retry' => 'Retry',
 			'packs.actions.buy' => 'Buy this pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Buy this pack — ${price}',
+			'packs.actions.buyUnavailable' => 'Purchase is not available on this device.',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Downloading… ${done}/${total}',
 			'packs.progress.verifying' => 'Verifying integrity…',
 			'packs.progress.completed' => 'Pack ready offline',
 			'packs.progress.error' => 'Download failed',
+			'packs.progress.errorSnack' => 'The download did not complete.',
 			'packs.delete.confirmTitle' => 'Delete this pack?',
 			'packs.delete.confirmBody' => 'The pack will be removed from the device to free up space. You can download it again later.',
 			'packs.delete.cancel' => 'Cancel',
@@ -5457,6 +5473,7 @@ extension on TranslationsEn {
 			'transport.website' => 'Website',
 			'transport.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'transport.a11y.website' => 'Open website',
+			'transport.noneForTrail' => 'No transport information for this trail.',
 			'fireRisk.title' => 'Fire risk',
 			'fireRisk.refresh' => 'Refresh',
 			'fireRisk.refreshed' => 'Data updated',
@@ -5481,14 +5498,14 @@ extension on TranslationsEn {
 			'fireRisk.level.veryHigh' => 'Very high',
 			'fireRisk.level.extreme' => 'Extreme',
 			'fireRisk.stagesTitle' => 'Risk by stage',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.stageBadge' => ({required Object number}) => 'S${number}',
 			'fireRisk.levelBadge' => ({required Object level}) => 'Lvl ${level}',
 			'fireRisk.dayLevel' => ({required Object level}) => 'Lvl ${level}',
 			'fireRisk.day.today' => 'Today',
 			'fireRisk.day.tomorrow' => 'Tmrw',
 			'fireRisk.day.plus' => ({required Object n}) => 'D+${n}',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.noRisk' => 'No fire risk currently reported',
 			'fireRisk.numbersTitle' => 'Useful numbers',
 			'fireRisk.number.firefighters' => 'Fire brigade',
@@ -5678,6 +5695,7 @@ extension on TranslationsEn {
 			'walkTest.levels.excellent' => 'Excellent',
 			'walkTest.absoluteScaleNotice' => 'Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.',
 			'walkTest.ageClampNotice' => 'Beyond 80 the test reference stops: it is computed as at 80, and we say so.',
+			'walkTest.gpsUnavailable' => 'Location is not available on this device: the test cannot measure distance.',
 			'pastHikes.title' => 'Your last 5 hikes',
 			'pastHikes.intro' => 'Add up to 5 notable hikes. We deduce your real level (pace, endurance, elevation habit) rather than a label.',
 			'pastHikes.addHike' => 'Add a hike',
@@ -5728,6 +5746,7 @@ extension on TranslationsEn {
 			'sos.medicalId.action' => 'Phone medical ID',
 			'sos.medicalId.hint' => 'Show your vital info to rescuers, even on the lock screen.',
 			'sos.medicalId.unavailable' => 'Open the medical ID in your phone\'s Health settings.',
+			'sos.cannotCall' => ({required Object number}) => 'This device cannot place the call. Dial ${number}.',
 			'recovery.section' => 'Account and recovery',
 			'recovery.sectionDesc' => 'View my recovery code',
 			'recovery.title' => 'My recovery code',
@@ -5748,6 +5767,9 @@ extension on TranslationsEn {
 			'common.viewOnMap' => 'View on map',
 			'common.error' => 'Error',
 			'common.pageNotFound' => ({required Object path}) => 'Page not found: ${path}',
+			'common.retry' => 'Try again',
+			'common.retrying' => 'Trying again…',
+			'common.retryFailed' => 'The new attempt did not work.',
 			_ => null,
 		};
 	}

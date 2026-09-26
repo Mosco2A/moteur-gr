@@ -596,7 +596,8 @@
       "understood": "Got it",
       "validateAnyway": "Validate anyway",
       "bagValidatedMissingSnack": "Pack validated (with missing items)!",
-      "shareGroupHint": "Join a group to share your checklist."
+      "shareGroupHint": "Join a group to share your checklist.",
+      "shareFailed": "Sharing could not open on this device."
     },
     "seasonalBanner": "Pack adapted to the season ($season) and your trail.",
     "seasons": {
@@ -847,7 +848,9 @@
     "send": "Send",
     "sending": "Sending...",
     "thanks": "Thank you for your feedback!",
-    "pending": "pending"
+    "pending": "pending",
+    "emptyMessage": "Write your message before sending it.",
+    "sendFailed": "Your message could not be saved."
   },
   "auth": {
     "profile": "Profile",
@@ -1360,13 +1363,15 @@
       "delete": "Delete",
       "retry": "Retry",
       "buy": "Buy this pack",
-      "buyWithPrice": "Buy this pack — $price"
+      "buyWithPrice": "Buy this pack — $price",
+      "buyUnavailable": "Purchase is not available on this device."
     },
     "progress": {
       "downloading": "Downloading… $done/$total",
       "verifying": "Verifying integrity…",
       "completed": "Pack ready offline",
-      "error": "Download failed"
+      "error": "Download failed",
+      "errorSnack": "The download did not complete."
     },
     "delete": {
       "confirmTitle": "Delete this pack?",
@@ -1858,7 +1863,8 @@
     "a11y": {
       "call": "Call $label",
       "website": "Open website"
-    }
+    },
+    "noneForTrail": "No transport information for this trail."
   },
   "fireRisk": {
     "title": "Fire risk",
@@ -2131,7 +2137,8 @@
       "excellent": "Excellent"
     },
     "absoluteScaleNotice": "Your level is read on the raw distance scale: the comparison to a reference was not established for your build, so we do not apply it. Your test itself remains perfectly valid.",
-    "ageClampNotice": "Beyond 80 the test reference stops: it is computed as at 80, and we say so."
+    "ageClampNotice": "Beyond 80 the test reference stops: it is computed as at 80, and we say so.",
+    "gpsUnavailable": "Location is not available on this device: the test cannot measure distance."
   },
   "pastHikes": {
     "title": "Your last 5 hikes",
@@ -2191,7 +2198,8 @@
       "action": "Phone medical ID",
       "hint": "Show your vital info to rescuers, even on the lock screen.",
       "unavailable": "Open the medical ID in your phone's Health settings."
-    }
+    },
+    "cannotCall": "This device cannot place the call. Dial $number."
   },
   "recovery": {
     "section": "Account and recovery",
@@ -2215,6 +2223,9 @@
     "noPoiForStage": "No point of interest for this stage.",
     "viewOnMap": "View on map",
     "error": "Error",
-    "pageNotFound": "Page not found: $path"
+    "pageNotFound": "Page not found: $path",
+    "retry": "Try again",
+    "retrying": "Trying again…",
+    "retryFailed": "The new attempt did not work."
   }
 }
