@@ -4459,17 +4459,15 @@ extension on TranslationsEn {
 			'checklist.ui.validateBag' => 'VALIDATE MY PACK',
 			'checklist.ui.cancelValidation' => 'CANCEL VALIDATION',
 			'checklist.ui.shoppingListButton' => 'SHOPPING LIST',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shareGroup' => 'SHARE WITH THE GROUP',
 			'checklist.ui.exportList' => 'EXPORT THE LIST',
 			'checklist.ui.bagValidTitle' => 'Pack validated',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.bagValidBody' => 'All {total} required items are in your pack.\n\nTotal weight: {weight} kg ({pct}% of the reference weight)\n\nAre you sure your pack is ready?',
 			'checklist.ui.checkAgain' => 'Check again',
 			'checklist.ui.yesBagOk' => 'Yes, pack OK',
 			'checklist.ui.bagValidatedSnack' => 'Pack validated!',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.validationCancelledSnack' => 'Pack validation cancelled — you can edit your gear.',
 			'checklist.ui.missingTitle' => 'Missing gear',
 			'checklist.ui.missingBody' => '{checked}/{total} required items checked.',
@@ -4975,6 +4973,8 @@ extension on TranslationsEn {
 			'training.freqPerWeek' => ({required Object n}) => '${n}× per week',
 			'training.freqOncePerPhase' => 'once during the phase',
 			'training.freqFinalWeek' => 'the final week only',
+			_ => null,
+		} ?? switch (path) {
 			'training.freqSourceNotice' => 'The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d\'Aventure and the 2020 WHO guidelines.',
 			'training.noDateWhy' => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.',
 			'training.tooShortTitle' => 'No preparation offered',
@@ -4983,8 +4983,6 @@ extension on TranslationsEn {
 			'eta.toNextWaypoint' => 'Next point',
 			'eta.toStageEnd' => 'Stage end',
 			'eta.confidenceHigh' => 'Reliable estimate',
-			_ => null,
-		} ?? switch (path) {
 			'eta.confidenceLow' => 'Approximate (weak GPS)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
 			'eta.durationM' => ({required Object m}) => '${m} min',
@@ -5002,8 +5000,6 @@ extension on TranslationsEn {
 			'social.report' => 'Report',
 			'social.reportTitle' => 'Report this post',
 			'social.reportReasonLabel' => 'Reason for reporting',
-			_ => null,
-		} ?? switch (path) {
 			'social.reasonSpam' => 'Spam or advertising',
 			'social.reasonAbuse' => 'Abusive or hateful content',
 			'social.reasonOther' => 'Other',
@@ -5013,8 +5009,6 @@ extension on TranslationsEn {
 			'social.synced' => 'Synced',
 			'social.activitySegment' => 'completed a segment',
 			'social.activityBadge' => 'earned a badge',
-			_ => null,
-		} ?? switch (path) {
 			'social.activityDefi' => 'made progress on a challenge',
 			'gamification.galleryTitle' => 'My badges',
 			'gamification.obtained' => 'Earned',
@@ -5493,6 +5487,8 @@ extension on TranslationsEn {
 			'fireRisk.day.today' => 'Today',
 			'fireRisk.day.tomorrow' => 'Tmrw',
 			'fireRisk.day.plus' => ({required Object n}) => 'D+${n}',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.noRisk' => 'No fire risk currently reported',
 			'fireRisk.numbersTitle' => 'Useful numbers',
 			'fireRisk.number.firefighters' => 'Fire brigade',
@@ -5501,8 +5497,6 @@ extension on TranslationsEn {
 			'fireRisk.empty.message' => 'The weather data needed to compute fire risk is not available right now. Try again once connected.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Call ${label} at ${number}',
 			'fireRisk.a11y.decree' => 'Open prefectural orders',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Risk level ${level} out of 5',
 			'fireRisk.refreshNothing' => 'Nothing to update right now.',
 			'fireRisk.refreshPartial' => ({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).',
@@ -5531,12 +5525,8 @@ extension on TranslationsEn {
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'shop.a11y.website' => 'Open website',
 			'summary.title' => 'Plan summary',
-			_ => null,
-		} ?? switch (path) {
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			'summary.direction' => 'Direction',
-			_ => null,
-		} ?? switch (path) {
 			'summary.duration' => 'Duration',
 			'summary.durationValue' => ({required Object days}) => '${days} walking days',
 			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} walking days + ${rest} rest',

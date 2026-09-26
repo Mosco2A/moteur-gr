@@ -4459,17 +4459,15 @@ extension on TranslationsDe {
 			'checklist.ui.validateBag' => 'RUCKSACK BESTÄTIGEN',
 			'checklist.ui.cancelValidation' => 'BESTÄTIGUNG AUFHEBEN',
 			'checklist.ui.shoppingListButton' => 'EINKAUFSLISTE',
+			_ => null,
+		} ?? switch (path) {
 			'checklist.ui.shareGroup' => 'MIT DER GRUPPE TEILEN',
 			'checklist.ui.exportList' => 'LISTE EXPORTIEREN',
 			'checklist.ui.bagValidTitle' => 'Rucksack bestätigt',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.bagValidBody' => 'Alle {total} Pflichtartikel sind im Rucksack.\n\nGesamtgewicht: {weight} kg ({pct}% des Referenzgewichts)\n\nBist du sicher, dass dein Rucksack fertig ist?',
 			'checklist.ui.checkAgain' => 'Nochmal prüfen',
 			'checklist.ui.yesBagOk' => 'Ja, Rucksack OK',
 			'checklist.ui.bagValidatedSnack' => 'Rucksack bestätigt!',
-			_ => null,
-		} ?? switch (path) {
 			'checklist.ui.validationCancelledSnack' => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.',
 			'checklist.ui.missingTitle' => 'Fehlende Ausrüstung',
 			'checklist.ui.missingBody' => '{checked}/{total} Pflichtartikel angehakt.',
@@ -4975,6 +4973,8 @@ extension on TranslationsDe {
 			'training.freqPerWeek' => ({required Object n}) => '${n}× pro Woche',
 			'training.freqOncePerPhase' => 'einmal in dieser Phase',
 			'training.freqFinalWeek' => 'nur in der letzten Woche',
+			_ => null,
+		} ?? switch (path) {
 			'training.freqSourceNotice' => 'Die Häufigkeiten sind keine selbst erfundenen Zahlen: 3 Ausdauer- und 2 Krafteinheiten pro Woche, 2 Ruhetage, nach REI (Conditioning for Backpacking), Terres d\'Aventure und den WHO-Empfehlungen 2020.',
 			'training.noDateWhy' => 'Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.',
 			'training.tooShortTitle' => 'Keine Vorbereitung angeboten',
@@ -4983,8 +4983,6 @@ extension on TranslationsDe {
 			'eta.toNextWaypoint' => 'Nächster Punkt',
 			'eta.toStageEnd' => 'Etappenende',
 			'eta.confidenceHigh' => 'Zuverlässige Schätzung',
-			_ => null,
-		} ?? switch (path) {
 			'eta.confidenceLow' => 'Ungefähr (schwaches GPS)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} Std ${m} Min',
 			'eta.durationM' => ({required Object m}) => '${m} Min',
@@ -5002,8 +5000,6 @@ extension on TranslationsDe {
 			'social.report' => 'Melden',
 			'social.reportTitle' => 'Diesen Beitrag melden',
 			'social.reportReasonLabel' => 'Grund der Meldung',
-			_ => null,
-		} ?? switch (path) {
 			'social.reasonSpam' => 'Spam oder Werbung',
 			'social.reasonAbuse' => 'Missbräuchlicher oder hasserfüllter Inhalt',
 			'social.reasonOther' => 'Andere',
@@ -5013,8 +5009,6 @@ extension on TranslationsDe {
 			'social.synced' => 'Synchronisiert',
 			'social.activitySegment' => 'hat ein Segment absolviert',
 			'social.activityBadge' => 'hat ein Abzeichen erhalten',
-			_ => null,
-		} ?? switch (path) {
 			'social.activityDefi' => 'hat bei einer Challenge Fortschritte gemacht',
 			'gamification.galleryTitle' => 'Meine Abzeichen',
 			'gamification.obtained' => 'Erhalten',
@@ -5493,6 +5487,8 @@ extension on TranslationsDe {
 			'fireRisk.day.today' => 'Heute',
 			'fireRisk.day.tomorrow' => 'Morgen',
 			'fireRisk.day.plus' => ({required Object n}) => 'T+${n}',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.noRisk' => 'Derzeit kein Brandrisiko gemeldet',
 			'fireRisk.numbersTitle' => 'Nützliche Nummern',
 			'fireRisk.number.firefighters' => 'Feuerwehr',
@@ -5501,8 +5497,6 @@ extension on TranslationsDe {
 			'fireRisk.empty.message' => 'Die zur Berechnung des Brandrisikos nötigen Wetterdaten sind derzeit nicht verfügbar. Versuchen Sie es erneut, sobald Sie verbunden sind.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => '${label} unter ${number} anrufen',
 			'fireRisk.a11y.decree' => 'Präfektorale Erlasse öffnen',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Risikostufe ${level} von 5',
 			'fireRisk.refreshNothing' => 'Derzeit nichts zu aktualisieren.',
 			'fireRisk.refreshPartial' => ({required Object done, required Object total}) => 'Teilweise aktualisiert: ${done} von ${total} Etappe(n).',
@@ -5531,12 +5525,8 @@ extension on TranslationsDe {
 			'shop.a11y.call' => ({required Object label}) => '${label} anrufen',
 			'shop.a11y.website' => 'Website öffnen',
 			'summary.title' => 'Planübersicht',
-			_ => null,
-		} ?? switch (path) {
 			'summary.configTitle' => ({required Object name}) => 'Mein ${name}',
 			'summary.direction' => 'Richtung',
-			_ => null,
-		} ?? switch (path) {
 			'summary.duration' => 'Dauer',
 			'summary.durationValue' => ({required Object days}) => '${days} Wandertage',
 			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} Wandertage + ${rest} Ruhetage',
