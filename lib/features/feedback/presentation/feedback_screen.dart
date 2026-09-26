@@ -146,15 +146,44 @@ class _FeedbackScreenState extends ConsumerState<FeedbackScreen> {
     );
   }
 
-  void _submitFeedback() {
+  /// Envoie le retour — ET DIT CE QUI SE PASSE DANS LES TROIS CAS (tache 579).
+  ///
+  /// DEUX SILENCES SE CUMULAIENT, et « Envoyer » etait mort :
+  ///
+  ///   * champ vide : `if (content.isEmpty) return;` — la fonction sortait par
+  ///     la porte de derriere sans un mot. L'utilisateur appuyait sur un bouton
+  ///     ACTIF et il ne se passait rien ; rien ne lui disait que le message
+  ///     manquait, puisque le bouton n'avait pas l'air desactive ;
+  ///   * envoi echoue : `submitFeedback` rend un booleen qui n'etait jamais lu.
+  ///     En cas d'echec l'ecran n'affichait RIEN — le message de remerciement
+  ///     n'apparait que sur `lastSubmitSuccess == true`, et rien ne couvrait le
+  ///     `false`. Un retour perdu, sans que personne le sache.
+  Future<void> _submitFeedback() async {
+    final messenger = ScaffoldMessenger.of(context);
     final content = _contentController.text.trim();
-    if (content.isEmpty) return;
+    if (content.isEmpty) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(t.feedback.emptyMessage)),
+      );
+      return;
+    }
 
-    ref
-        .read(feedbackProvider.notifier)
-        .submitFeedback(type: _selectedType, content: content, rating: _rating);
+    final envoye = await ref.read(feedbackProvider.notifier).submitFeedback(
+          type: _selectedType,
+          content: content,
+          rating: _rating,
+        );
+
+    if (!mounted) return;
+    if (!envoye) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(t.feedback.sendFailed)),
+      );
+      return;
+    }
 
     _contentController.clear();
     setState(() => _rating = null);
+    messenger.showSnackBar(SnackBar(content: Text(t.feedback.thanks)));
   }
 }

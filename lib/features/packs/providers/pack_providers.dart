@@ -112,12 +112,40 @@ class PackDownloadController extends StateNotifier<PackDownloadState> {
   final String _packId;
   StreamSubscription<PackDownloadProgress>? _sub;
 
+  /// Relit si le pack est deja present en local.
+  ///
+  /// LANCE PAR LE CONSTRUCTEUR, DONC ATTENDU PAR PERSONNE (tache 579, LOT X).
+  /// Quand le stockage local n'est pas joignable, cet appel levait dans le vide
+  /// : une erreur asynchrone sans destinataire, qui ne changeait aucun etat et
+  /// ne disait rien. Un pack qu'on ne sait pas lire est un pack qu'on considere
+  /// ABSENT — c'est le seul choix sur : il reste telechargeable, et l'echec
+  /// eventuel se dira au telechargement.
   Future<void> _refreshDownloaded() async {
-    final dl = await _service.isDownloaded(_packId);
-    if (mounted) state = state.copyWith(downloaded: dl);
+    try {
+      final dl = await _service.isDownloaded(_packId);
+      if (mounted) state = state.copyWith(downloaded: dl);
+    } on Object {
+      if (mounted) state = state.copyWith(downloaded: false);
+    }
   }
 
   /// Lance (ou relance) le telechargement du pack decrit par [manifest].
+  ///
+  /// DEUX DEFAUTS TENAIENT CE BOUTON MORT (tache 579, LOT X), et ils
+  /// s'annulaient l'un l'autre au point que rien ne se voyait :
+  ///
+  ///   1. le premier evenement du flux est `pending` — l'etat « en file » du
+  ///      service. Il arrivait juste apres que cette methode ait pose
+  ///      `downloading`, et l'ECRASAIT : la carte repassait de « en cours » a
+  ///      « Non telecharge / Telecharger », soit exactement son etat d'avant
+  ///      l'appui. Pour l'utilisateur, le bouton n'avait rien fait.
+  ///   2. `listen` n'avait pas de `onError`. Une erreur du flux — c'etait le cas
+  ///      ici, le stockage local levait — ne changeait donc AUCUN etat et
+  ///      finissait en erreur de zone non traitee, invisible.
+  ///
+  /// Une fois l'appui donne, l'ecran n'a plus le droit de revenir en arriere
+  /// sans le dire : `pending` est lu comme « en cours », et une erreur de flux
+  /// devient un etat d'erreur affiche.
   Future<void> download(PackManifest manifest) async {
     await _sub?.cancel();
     state = state.copyWith(
@@ -126,17 +154,29 @@ class PackDownloadController extends StateNotifier<PackDownloadState> {
       filesTotal: manifest.allRefs.length,
       clearError: true,
     );
-    _sub = _service.downloadPack(manifest).listen((p) {
-      if (!mounted) return;
-      state = state.copyWith(
-        status: p.status,
-        filesDone: p.filesDone,
-        filesTotal: p.filesTotal,
-        error: p.error,
-        downloaded: p.isCompleted ? true : state.downloaded,
-        clearError: p.error == null,
-      );
-    });
+    _sub = _service.downloadPack(manifest).listen(
+      (p) {
+        if (!mounted) return;
+        final statut = p.status == PackDownloadStatus.pending
+            ? PackDownloadStatus.downloading
+            : p.status;
+        state = state.copyWith(
+          status: statut,
+          filesDone: p.filesDone,
+          filesTotal: p.filesTotal,
+          error: p.error,
+          downloaded: p.isCompleted ? true : state.downloaded,
+          clearError: p.error == null,
+        );
+      },
+      onError: (Object e) {
+        if (!mounted) return;
+        state = state.copyWith(
+          status: PackDownloadStatus.error,
+          error: e.toString(),
+        );
+      },
+    );
   }
 
   /// Supprime le pack telecharge (libere l'espace). Retourne les octets liberes.

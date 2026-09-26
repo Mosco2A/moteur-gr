@@ -701,6 +701,8 @@ class _Translations$feedback$de extends Translations$feedback$fr {
 	@override String get sending => 'Wird gesendet...';
 	@override String get thanks => 'Vielen Dank für Ihr Feedback!';
 	@override String get pending => 'ausstehend';
+	@override String get emptyMessage => 'Schreiben Sie Ihre Nachricht, bevor Sie sie senden.';
+	@override String get sendFailed => 'Ihre Nachricht konnte nicht gespeichert werden.';
 }
 
 // Path: auth
@@ -1417,6 +1419,7 @@ class _Translations$transport$de extends Translations$transport$fr {
 	@override String get adviceTitle => 'Praktische Tipps';
 	@override String get website => 'Website';
 	@override late final _Translations$transport$a11y$de a11y = _Translations$transport$a11y$de._(_root);
+	@override String get noneForTrail => 'Keine Verkehrsinformationen für diesen Weg.';
 }
 
 // Path: fireRisk
@@ -1652,6 +1655,7 @@ class _Translations$walkTest$de extends Translations$walkTest$fr {
 	@override late final _Translations$walkTest$levels$de levels = _Translations$walkTest$levels$de._(_root);
 	@override String get absoluteScaleNotice => 'Dein Niveau wird auf der reinen Distanzskala gelesen: der Vergleich mit einem Referenzwert wurde für deinen Körperbau nicht erstellt, also wenden wir ihn nicht an. Dein Test selbst bleibt voll gültig.';
 	@override String get ageClampNotice => 'Über 80 Jahre endet der Referenzwert des Tests: er wird wie mit 80 berechnet, und wir sagen es dir.';
+	@override String get gpsUnavailable => 'Der Standort ist auf diesem Gerät nicht verfügbar: Der Test kann die Distanz nicht messen.';
 }
 
 // Path: pastHikes
@@ -1723,6 +1727,7 @@ class _Translations$sos$de extends Translations$sos$fr {
 	@override String get cancel => 'Abbrechen';
 	@override String get call => '112 anrufen';
 	@override late final _Translations$sos$medicalId$de medicalId = _Translations$sos$medicalId$de._(_root);
+	@override String cannotCall({required Object number}) => 'Dieses Gerät kann den Anruf nicht tätigen. Wählen Sie ${number}.';
 }
 
 // Path: recovery
@@ -1761,6 +1766,9 @@ class _Translations$common$de extends Translations$common$fr {
 	@override String get viewOnMap => 'Auf Karte anzeigen';
 	@override String get error => 'Fehler';
 	@override String pageNotFound({required Object path}) => 'Seite nicht gefunden: ${path}';
+	@override String get retry => 'Erneut versuchen';
+	@override String get retrying => 'Neuer Versuch…';
+	@override String get retryFailed => 'Der neue Versuch hat nicht funktioniert.';
 }
 
 // Path: hub.trekCard
@@ -2252,6 +2260,7 @@ class _Translations$checklist$ui$de extends Translations$checklist$ui$fr {
 	@override String get validateAnyway => 'Trotzdem bestätigen';
 	@override String get bagValidatedMissingSnack => 'Rucksack bestätigt (mit fehlenden Artikeln)!';
 	@override String get shareGroupHint => 'Tritt einer Gruppe bei, um deine Checkliste zu teilen.';
+	@override String get shareFailed => 'Das Teilen konnte auf diesem Gerät nicht geöffnet werden.';
 }
 
 // Path: checklist.seasons
@@ -2707,6 +2716,7 @@ class _Translations$packs$actions$de extends Translations$packs$actions$fr {
 	@override String get retry => 'Erneut versuchen';
 	@override String get buy => 'Dieses Paket kaufen';
 	@override String buyWithPrice({required Object price}) => 'Dieses Paket kaufen — ${price}';
+	@override String get buyUnavailable => 'Der Kauf ist auf diesem Gerät nicht verfügbar.';
 }
 
 // Path: packs.progress
@@ -2720,6 +2730,7 @@ class _Translations$packs$progress$de extends Translations$packs$progress$fr {
 	@override String get verifying => 'Integrität wird geprüft…';
 	@override String get completed => 'Paket offline bereit';
 	@override String get error => 'Download fehlgeschlagen';
+	@override String get errorSnack => 'Der Download wurde nicht abgeschlossen.';
 }
 
 // Path: packs.delete
@@ -4476,6 +4487,7 @@ extension on TranslationsDe {
 			'checklist.ui.validateAnyway' => 'Trotzdem bestätigen',
 			'checklist.ui.bagValidatedMissingSnack' => 'Rucksack bestätigt (mit fehlenden Artikeln)!',
 			'checklist.ui.shareGroupHint' => 'Tritt einer Gruppe bei, um deine Checkliste zu teilen.',
+			'checklist.ui.shareFailed' => 'Das Teilen konnte auf diesem Gerät nicht geöffnet werden.',
 			'checklist.seasonalBanner' => ({required Object season}) => 'Rucksack an die Saison (${season}) und Ihren Weg angepasst.',
 			'checklist.seasons.winter' => 'Winter',
 			'checklist.seasons.spring' => 'Frühling',
@@ -4686,6 +4698,8 @@ extension on TranslationsDe {
 			'feedback.sending' => 'Wird gesendet...',
 			'feedback.thanks' => 'Vielen Dank für Ihr Feedback!',
 			'feedback.pending' => 'ausstehend',
+			'feedback.emptyMessage' => 'Schreiben Sie Ihre Nachricht, bevor Sie sie senden.',
+			'feedback.sendFailed' => 'Ihre Nachricht konnte nicht gespeichert werden.',
 			'auth.profile' => 'Profil',
 			'auth.anonymous' => 'Wanderer ohne Konto',
 			'auth.connectedVia' => 'Verbunden über',
@@ -4970,11 +4984,11 @@ extension on TranslationsDe {
 			'training.inviteSetDate' => 'Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.',
 			'training.inviteFillProfile' => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.',
 			'training.cautionVerdictNotice' => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.',
+			_ => null,
+		} ?? switch (path) {
 			'training.freqPerWeek' => ({required Object n}) => '${n}× pro Woche',
 			'training.freqOncePerPhase' => 'einmal in dieser Phase',
 			'training.freqFinalWeek' => 'nur in der letzten Woche',
-			_ => null,
-		} ?? switch (path) {
 			'training.freqSourceNotice' => 'Die Häufigkeiten sind keine selbst erfundenen Zahlen: 3 Ausdauer- und 2 Krafteinheiten pro Woche, 2 Ruhetage, nach REI (Conditioning for Backpacking), Terres d\'Aventure und den WHO-Empfehlungen 2020.',
 			'training.noDateWhy' => 'Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.',
 			'training.tooShortTitle' => 'Keine Vorbereitung angeboten',
@@ -5098,10 +5112,12 @@ extension on TranslationsDe {
 			'packs.actions.retry' => 'Erneut versuchen',
 			'packs.actions.buy' => 'Dieses Paket kaufen',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Dieses Paket kaufen — ${price}',
+			'packs.actions.buyUnavailable' => 'Der Kauf ist auf diesem Gerät nicht verfügbar.',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Wird heruntergeladen… ${done}/${total}',
 			'packs.progress.verifying' => 'Integrität wird geprüft…',
 			'packs.progress.completed' => 'Paket offline bereit',
 			'packs.progress.error' => 'Download fehlgeschlagen',
+			'packs.progress.errorSnack' => 'Der Download wurde nicht abgeschlossen.',
 			'packs.delete.confirmTitle' => 'Dieses Paket löschen?',
 			'packs.delete.confirmBody' => 'Das Paket wird vom Gerät entfernt, um Speicher freizugeben. Du kannst es später erneut herunterladen.',
 			'packs.delete.cancel' => 'Abbrechen',
@@ -5457,6 +5473,7 @@ extension on TranslationsDe {
 			'transport.website' => 'Website',
 			'transport.a11y.call' => ({required Object label}) => '${label} anrufen',
 			'transport.a11y.website' => 'Website öffnen',
+			'transport.noneForTrail' => 'Keine Verkehrsinformationen für diesen Weg.',
 			'fireRisk.title' => 'Brandrisiko',
 			'fireRisk.refresh' => 'Aktualisieren',
 			'fireRisk.refreshed' => 'Daten aktualisiert',
@@ -5481,14 +5498,14 @@ extension on TranslationsDe {
 			'fireRisk.level.veryHigh' => 'Sehr hoch',
 			'fireRisk.level.extreme' => 'Extrem',
 			'fireRisk.stagesTitle' => 'Risiko pro Etappe',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.stageBadge' => ({required Object number}) => 'E${number}',
 			'fireRisk.levelBadge' => ({required Object level}) => 'St. ${level}',
 			'fireRisk.dayLevel' => ({required Object level}) => 'St. ${level}',
 			'fireRisk.day.today' => 'Heute',
 			'fireRisk.day.tomorrow' => 'Morgen',
 			'fireRisk.day.plus' => ({required Object n}) => 'T+${n}',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.noRisk' => 'Derzeit kein Brandrisiko gemeldet',
 			'fireRisk.numbersTitle' => 'Nützliche Nummern',
 			'fireRisk.number.firefighters' => 'Feuerwehr',
@@ -5678,6 +5695,7 @@ extension on TranslationsDe {
 			'walkTest.levels.excellent' => 'Ausgezeichnet',
 			'walkTest.absoluteScaleNotice' => 'Dein Niveau wird auf der reinen Distanzskala gelesen: der Vergleich mit einem Referenzwert wurde für deinen Körperbau nicht erstellt, also wenden wir ihn nicht an. Dein Test selbst bleibt voll gültig.',
 			'walkTest.ageClampNotice' => 'Über 80 Jahre endet der Referenzwert des Tests: er wird wie mit 80 berechnet, und wir sagen es dir.',
+			'walkTest.gpsUnavailable' => 'Der Standort ist auf diesem Gerät nicht verfügbar: Der Test kann die Distanz nicht messen.',
 			'pastHikes.title' => 'Ihre letzten 5 Touren',
 			'pastHikes.intro' => 'Fügen Sie bis zu 5 markante Touren hinzu. Wir leiten Ihr echtes Niveau ab (Tempo, Ausdauer, Höhengewöhnung) statt eines Etiketts.',
 			'pastHikes.addHike' => 'Tour hinzufügen',
@@ -5728,6 +5746,7 @@ extension on TranslationsDe {
 			'sos.medicalId.action' => 'Notfallpass des Telefons',
 			'sos.medicalId.hint' => 'Zeigen Sie den Rettungskräften Ihre Vitaldaten, auch im Sperrbildschirm.',
 			'sos.medicalId.unavailable' => 'Öffnen Sie den Notfallpass in den Gesundheitseinstellungen Ihres Telefons.',
+			'sos.cannotCall' => ({required Object number}) => 'Dieses Gerät kann den Anruf nicht tätigen. Wählen Sie ${number}.',
 			'recovery.section' => 'Konto und Wiederherstellung',
 			'recovery.sectionDesc' => 'Meinen Wiederherstellungscode anzeigen',
 			'recovery.title' => 'Mein Wiederherstellungscode',
@@ -5748,6 +5767,9 @@ extension on TranslationsDe {
 			'common.viewOnMap' => 'Auf Karte anzeigen',
 			'common.error' => 'Fehler',
 			'common.pageNotFound' => ({required Object path}) => 'Seite nicht gefunden: ${path}',
+			'common.retry' => 'Erneut versuchen',
+			'common.retrying' => 'Neuer Versuch…',
+			'common.retryFailed' => 'Der neue Versuch hat nicht funktioniert.',
 			_ => null,
 		};
 	}

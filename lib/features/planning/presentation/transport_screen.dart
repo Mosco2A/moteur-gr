@@ -62,6 +62,39 @@ class TransportScreen extends ConsumerWidget {
         ? data.forEndpoint(arrivalName, TransportRole.departure)
         : null;
 
+    // DEUX ONGLETS VIDES SONT DEUX BOUTONS MORTS (tache 579, LOT X).
+    //
+    // La tache 552 avait raison de supprimer les phrases qui promettaient des
+    // horaires pour « bientot » : une donnee absente ne se commente pas. Mais en
+    // les remplacant par un `SizedBox.shrink()`, elle a laisse DEUX ONGLETS
+    // PARFAITEMENT FONCTIONNELS qui font passer d'un ecran vide a un autre ecran
+    // vide. L'invariante V3 les a declares morts, et elle a raison : ils basculent
+    // sans rien produire. Appuyer, regarder, ne rien voir, recommencer sur l'autre
+    // onglet — c'est exactement le defaut que Chris a releve quatre fois le 26/09.
+    //
+    // La reponse n'est pas de remettre une promesse : c'est de RETIRER le geste.
+    // Sans aucune donnee transport, il n'y a plus d'onglet du tout, et l'ecran
+    // enonce un fait — « Aucune information de transport pour ce sentier » — sans
+    // date, sans « prochainement », sans rien a attendre.
+    final aucunContenu = (arrivalTab == null || !arrivalTab.hasContent) &&
+        (departureTab == null || !departureTab.hasContent);
+    if (aucunContenu) {
+      return Scaffold(
+        appBar: AppHeader(title: t.transport.title),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(AppTheme.spacingLg),
+            child: Text(
+              t.transport.noneForTrail,
+              key: const ValueKey('transport-aucune-donnee'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
+          ),
+        ),
+      );
+    }
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -130,9 +163,23 @@ class _TransportTabView extends StatelessWidget {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    // Aucune donnee transport disponible : on n'affiche RIEN (tache 552).
+    // UN ONGLET VIDE ENONCE LE FAIT (tache 579). La tache 552 avait retire les
+    // phrases qui PROMETTAIENT des horaires a venir — c'etait juste. Mais un
+    // onglet qui ne rend rien du tout fait de son onglet un geste mort : on
+    // appuie, l'ecran ne change pas. Le sens unique n'arrive ici que si l'AUTRE
+    // sens, lui, a des donnees (sinon il n'y a plus d'onglets du tout, voir
+    // [TransportScreen]). Une phrase factuelle, sans date et sans attente.
     if (info == null || !info!.hasContent) {
-      return const SizedBox.shrink();
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(AppTheme.spacingLg),
+          child: Text(
+            t.transport.noneForTrail,
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodyLarge,
+          ),
+        ),
+      );
     }
     final data = info!;
 

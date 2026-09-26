@@ -95,7 +95,7 @@ void main() {
 
       await tester.pumpAndSettle();
       expect(find.text(t.common.cannotLoadTrack), findsOneWidget);
-      expect(find.text('Reessayer'), findsOneWidget);
+      expect(find.text(t.common.retry), findsOneWidget);
     });
 
     testWidgets('affiche ErrorView quand le GPX est vide', (tester) async {

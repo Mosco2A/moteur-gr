@@ -48,6 +48,22 @@ class PackCard extends ConsumerWidget {
     );
     final purchase = ref.watch(packPurchaseServiceProvider);
 
+    // UN ECHEC DE TELECHARGEMENT SE DIT (tache 579, LOT X). Le passage a l'etat
+    // d'erreur ne changeait qu'une pastille et le libelle du bouton, deux
+    // details qu'on ne regarde pas quand on vient d'appuyer ; et avant ce lot il
+    // ne changeait meme pas ca, l'erreur n'arrivant jamais jusqu'a l'etat. Un
+    // message nomme le resultat, une fois, au moment ou il tombe.
+    ref.listen<PackDownloadState>(
+      packDownloadControllerProvider(pack.id),
+      (avant, apres) {
+        if (apres.isError && (avant == null || !avant.isError)) {
+          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+            SnackBar(content: Text(t.packs.progress.errorSnack)),
+          );
+        }
+      },
+    );
+
     // Libelle + couleur de l'etat (telecharge / maj dispo / non telecharge).
     final (String stateLabel, Color stateColor) = _stateLabel(t, theme, state);
 
@@ -113,6 +129,7 @@ class PackCard extends ConsumerWidget {
                 purchaseEnabled: purchase.purchaseEnabled,
                 onDownload: () => controller.download(manifest),
                 onDelete: () => _confirmDelete(context, ref, t),
+                onBuy: () => _acheter(context, ref, t),
               ),
             if (state.isError) ...[
               const SizedBox(height: AppTheme.spacingXs),
@@ -177,6 +194,24 @@ class PackCard extends ConsumerWidget {
         context,
       ).showSnackBar(SnackBar(content: Text(t.packs.delete.freed)));
     }
+  }
+
+  /// Lance l'achat du pack, et DIT quand il n'est pas possible (tache 579).
+  ///
+  /// [PackPurchaseService.buyPack] nomme toujours son refus ; ce refus n'etait
+  /// jamais demande, puisque le bouton portait un gestionnaire vide.
+  Future<void> _acheter(
+    BuildContext context,
+    WidgetRef ref,
+    Translations t,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final service = ref.read(packPurchaseServiceProvider);
+    final resultat = await service.buyPack(pack.id);
+    if (resultat.initiated) return; // Le store a pris la main : il se voit.
+    messenger.showSnackBar(
+      SnackBar(content: Text(t.packs.actions.buyUnavailable)),
+    );
   }
 }
 
@@ -260,6 +295,7 @@ class _PackActions extends StatelessWidget {
     required this.purchaseEnabled,
     required this.onDownload,
     required this.onDelete,
+    required this.onBuy,
   });
 
   final SentierPack pack;
@@ -269,6 +305,7 @@ class _PackActions extends StatelessWidget {
   final bool purchaseEnabled;
   final VoidCallback onDownload;
   final VoidCallback onDelete;
+  final VoidCallback onBuy;
 
   @override
   Widget build(BuildContext context) {
@@ -324,10 +361,17 @@ class _PackActions extends StatelessWidget {
           ),
         // Bouton acheter — UNIQUEMENT si la monetisation est activee (R2).
         // Tant que Christophe ne l'active pas, AUCUN bouton d'achat, AUCUN abo.
+        //
+        // IL PORTAIT UN GESTIONNAIRE VIDE (tache 579, LOT X) : `onPressed: () {}`,
+        // avec un commentaire promettant de le brancher « quand active ». Le
+        // jour ou la monetisation serait activee, ce bouton serait apparu et
+        // n'aurait rien fait — le defaut du lot, arme a l'avance. Il appelle
+        // desormais l'achat reel, et quand celui-ci n'est pas possible il le
+        // DIT au lieu de se taire.
         if (purchaseEnabled && !downloaded)
           TextButton(
             key: ValueKey('pack-buy-${pack.id}'),
-            onPressed: () {}, // branche au purchaseStream quand active (R2)
+            onPressed: onBuy,
             child: Text(t.packs.actions.buy),
           ),
       ],

@@ -596,7 +596,8 @@
       "understood": "Verstanden",
       "validateAnyway": "Trotzdem bestätigen",
       "bagValidatedMissingSnack": "Rucksack bestätigt (mit fehlenden Artikeln)!",
-      "shareGroupHint": "Tritt einer Gruppe bei, um deine Checkliste zu teilen."
+      "shareGroupHint": "Tritt einer Gruppe bei, um deine Checkliste zu teilen.",
+      "shareFailed": "Das Teilen konnte auf diesem Gerät nicht geöffnet werden."
     },
     "seasonalBanner": "Rucksack an die Saison ($season) und Ihren Weg angepasst.",
     "seasons": {
@@ -847,7 +848,9 @@
     "send": "Senden",
     "sending": "Wird gesendet...",
     "thanks": "Vielen Dank für Ihr Feedback!",
-    "pending": "ausstehend"
+    "pending": "ausstehend",
+    "emptyMessage": "Schreiben Sie Ihre Nachricht, bevor Sie sie senden.",
+    "sendFailed": "Ihre Nachricht konnte nicht gespeichert werden."
   },
   "auth": {
     "profile": "Profil",
@@ -1360,13 +1363,15 @@
       "delete": "Löschen",
       "retry": "Erneut versuchen",
       "buy": "Dieses Paket kaufen",
-      "buyWithPrice": "Dieses Paket kaufen — $price"
+      "buyWithPrice": "Dieses Paket kaufen — $price",
+      "buyUnavailable": "Der Kauf ist auf diesem Gerät nicht verfügbar."
     },
     "progress": {
       "downloading": "Wird heruntergeladen… $done/$total",
       "verifying": "Integrität wird geprüft…",
       "completed": "Paket offline bereit",
-      "error": "Download fehlgeschlagen"
+      "error": "Download fehlgeschlagen",
+      "errorSnack": "Der Download wurde nicht abgeschlossen."
     },
     "delete": {
       "confirmTitle": "Dieses Paket löschen?",
@@ -1858,7 +1863,8 @@
     "a11y": {
       "call": "$label anrufen",
       "website": "Website öffnen"
-    }
+    },
+    "noneForTrail": "Keine Verkehrsinformationen für diesen Weg."
   },
   "fireRisk": {
     "title": "Brandrisiko",
@@ -2131,7 +2137,8 @@
       "excellent": "Ausgezeichnet"
     },
     "absoluteScaleNotice": "Dein Niveau wird auf der reinen Distanzskala gelesen: der Vergleich mit einem Referenzwert wurde für deinen Körperbau nicht erstellt, also wenden wir ihn nicht an. Dein Test selbst bleibt voll gültig.",
-    "ageClampNotice": "Über 80 Jahre endet der Referenzwert des Tests: er wird wie mit 80 berechnet, und wir sagen es dir."
+    "ageClampNotice": "Über 80 Jahre endet der Referenzwert des Tests: er wird wie mit 80 berechnet, und wir sagen es dir.",
+    "gpsUnavailable": "Der Standort ist auf diesem Gerät nicht verfügbar: Der Test kann die Distanz nicht messen."
   },
   "pastHikes": {
     "title": "Ihre letzten 5 Touren",
@@ -2191,7 +2198,8 @@
       "action": "Notfallpass des Telefons",
       "hint": "Zeigen Sie den Rettungskräften Ihre Vitaldaten, auch im Sperrbildschirm.",
       "unavailable": "Öffnen Sie den Notfallpass in den Gesundheitseinstellungen Ihres Telefons."
-    }
+    },
+    "cannotCall": "Dieses Gerät kann den Anruf nicht tätigen. Wählen Sie $number."
   },
   "recovery": {
     "section": "Konto und Wiederherstellung",
@@ -2215,6 +2223,9 @@
     "noPoiForStage": "Kein interessanter Punkt für diese Etappe.",
     "viewOnMap": "Auf Karte anzeigen",
     "error": "Fehler",
-    "pageNotFound": "Seite nicht gefunden: $path"
+    "pageNotFound": "Seite nicht gefunden: $path",
+    "retry": "Erneut versuchen",
+    "retrying": "Neuer Versuch…",
+    "retryFailed": "Der neue Versuch hat nicht funktioniert."
   }
 }

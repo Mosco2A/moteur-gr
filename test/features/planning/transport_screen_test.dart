@@ -133,6 +133,57 @@ void main() {
     ],
   );
 
+  /// Donnees transport du SENS INVERSE (SN) : on rejoint Delta et on repart
+  /// d'Alpha. Le catalogue [testTransport] ne couvre que le sens NS ; sans ce
+  /// second jeu, l'ecran en sens SN n'a rien a montrer (tache 579, LOT X).
+  const testTransportSN = TrailTransport(
+    trailId: trailId,
+    endpoints: [
+      EndpointTransport(
+        endpointName: 'Delta',
+        role: TransportRole.arrival,
+        intro: 'Intro rejoindre Delta',
+        sections: [
+          TransportSection(
+            title: 'Depuis la gare',
+            mode: TransportModeKind.train,
+            options: [
+              TransportOption(
+                mode: TransportModeKind.train,
+                title: 'Train vers Delta',
+                description: 'Ligne de test inverse',
+                contact: '+33111111111',
+                contactLabel: 'Gare Delta',
+              ),
+            ],
+          ),
+        ],
+        advices: ['Conseil Delta inverse'],
+      ),
+      EndpointTransport(
+        endpointName: 'Alpha',
+        role: TransportRole.departure,
+        intro: 'Intro repartir Alpha',
+        sections: [
+          TransportSection(
+            title: 'Vers la ville',
+            mode: TransportModeKind.bus,
+            options: [
+              TransportOption(
+                mode: TransportModeKind.bus,
+                title: 'Bus depuis Alpha',
+                description: 'Retour ville inverse',
+                contact: '+33222222222',
+                contactLabel: 'Bus Alpha',
+              ),
+            ],
+          ),
+        ],
+        advices: ['Conseil Alpha inverse'],
+      ),
+    ],
+  );
+
   List<Override> baseOverrides({
     List<StageModel>? stages,
     TrailTransport? transport = testTransport,
@@ -357,7 +408,18 @@ void main() {
 
     testWidgets('direction inverse (SN) : les onglets suivent le sens choisi',
         (tester) async {
-      await tester.pumpWidget(wrap(overrides: baseOverrides(direction: 'SN')));
+      // LES DONNEES DU SENS EXAMINE (tache 579, LOT X). Ce test tournait avec
+      // le catalogue du sens NS, qui ne porte AUCUNE information pour le sens
+      // SN : les deux onglets etaient donc vides. Depuis le LOT X, un ecran
+      // sans la moindre donnee transport n'affiche plus d'onglet du tout —
+      // deux onglets qui menent a deux ecrans vides sont deux gestes morts. Le
+      // test fournit maintenant les donnees du sens qu'il examine, ce qui est
+      // d'ailleurs ce qu'il pretendait verifier.
+      await tester.pumpWidget(
+        wrap(
+          overrides: baseOverrides(direction: 'SN', transport: testTransportSN),
+        ),
+      );
       await settle(tester);
 
       // En sens inverse, on part de Delta et on arrive a Alpha.
@@ -369,13 +431,22 @@ void main() {
   // --- Fallback sans donnees -----------------------------------------------
 
   group('fallback sans donnees transport', () {
-    // RETOURNE PAR LA TACHE 552. Ce test exigeait l'etat vide « Transport
-    // bientot disponible » + « les informations seront ajoutees
-    // prochainement ». Retour Chris du 25/09 : « Tu les as, tu les a pas, si tu
-    // ne les a pas tu ne met rien ». Les quatre cles sont supprimees des cinq
-    // langues. Ce qui reste exige : l'ecran tient debout, les onglets sont la,
-    // et AUCUNE promesse ne s'affiche.
-    testWidgets('sentier sans donnees : rien de promis, pas de crash',
+    // RETOURNE PAR LA TACHE 552, PUIS PAR LA TACHE 579.
+    //
+    // 552 : ce test exigeait l'etat vide « Transport bientot disponible » + «
+    // les informations seront ajoutees prochainement ». Retour Chris du 25/09 :
+    // « Tu les as, tu les a pas, si tu ne les a pas tu ne met rien ». Les
+    // quatre cles ont ete supprimees des cinq langues, et le corps de l'onglet
+    // est devenu vide.
+    //
+    // 579 (LOT X) : ce corps vide a fabrique un autre defaut, celui que Chris
+    // deteste le plus. Les deux onglets RESTAIENT, parfaitement actifs, et
+    // faisaient passer d'un ecran vide a un autre ecran vide. On appuie, on
+    // regarde, rien ne change — l'invariante « aucun geste mort » les a
+    // declares morts, et elle avait raison. La reponse n'est pas de remettre
+    // une promesse : c'est de RETIRER le geste. Sans aucune donnee transport,
+    // il n'y a plus d'onglet, et l'ecran enonce un fait, sans date.
+    testWidgets('sentier sans donnees : aucun onglet, un fait, pas de crash',
         (tester) async {
       // Endpoints resolus (etapes presentes) mais AUCUNE donnee transport.
       await tester.pumpWidget(
@@ -383,16 +454,21 @@ void main() {
       );
       await settle(tester);
 
-      // Les onglets restent presents (titres d'endpoints resolus).
-      expect(find.text(t.transport.tabJoinNamed(name: 'Alpha')), findsOneWidget);
-      // Le corps ne dit RIEN — ni titre d'attente, ni date promise.
+      // PLUS AUCUN ONGLET : il n'y a rien derriere, donc rien a appuyer.
+      expect(find.byType(TabBar), findsNothing,
+          reason: 'deux onglets vides sont deux boutons qui ne produisent rien');
+      expect(find.byType(Tab), findsNothing);
+      expect(find.text(t.transport.tabJoinNamed(name: 'Alpha')), findsNothing);
+
+      // L'ecran DIT pourquoi il est vide — un fait, pas une promesse.
+      expect(find.text(t.transport.noneForTrail), findsOneWidget);
       for (final promesse in <String>[
         'bientôt',
         'bientot',
         'prochainement',
       ]) {
         expect(find.textContaining(promesse, skipOffstage: false), findsNothing,
-            reason: 'l onglet transport vide promet encore « $promesse »');
+            reason: 'l ecran transport vide promet encore « $promesse »');
       }
       // Aucune exception de layout/plugin n'a ete levee.
       expect(tester.takeException(), isNull);

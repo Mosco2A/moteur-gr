@@ -37,6 +37,7 @@ class WalkTestState {
     this.countdownRemaining = kWalkTestCountdown,
     this.distanceMeters = 0,
     this.result,
+    this.gpsUnavailable = false,
   });
 
   final WalkTestPhase phase;
@@ -53,12 +54,20 @@ class WalkTestState {
   /// Resultat date (non-null en phase [WalkTestPhase.done]).
   final WalkTestResult? result;
 
+  /// Vrai quand la position n'a pas pu etre DEMANDEE du tout (tache 579).
+  ///
+  /// Distingue « l'utilisateur a refuse » (message : autorisez la localisation)
+  /// de « l'appareil n'a pas su repondre » (message : la position n'est pas
+  /// disponible). Sans cette distinction, le second cas ne produisait RIEN.
+  final bool gpsUnavailable;
+
   WalkTestState copyWith({
     WalkTestPhase? phase,
     Duration? remaining,
     Duration? countdownRemaining,
     double? distanceMeters,
     WalkTestResult? result,
+    bool? gpsUnavailable,
   }) {
     return WalkTestState(
       phase: phase ?? this.phase,
@@ -66,6 +75,7 @@ class WalkTestState {
       countdownRemaining: countdownRemaining ?? this.countdownRemaining,
       distanceMeters: distanceMeters ?? this.distanceMeters,
       result: result ?? this.result,
+      gpsUnavailable: gpsUnavailable ?? this.gpsUnavailable,
     );
   }
 }
@@ -107,9 +117,27 @@ class WalkTestController extends Notifier<WalkTestState> {
     _reminderTitle = reminderTitle;
     _reminderBody = reminderBody;
     final gps = ref.read(gpsServiceProvider);
-    final permission = await gps.requestPermission();
+    // LA DEMANDE DE PERMISSION POUVAIT LEVER, ET PERSONNE NE LA RATTRAPAIT
+    // (tache 579, LOT X). `onPressed` rendait un `Future` que rien n'attendait :
+    // quand le service de localisation n'est pas joignable — pas de materiel,
+    // service systeme coupe, canal de plateforme absent — l'exception partait
+    // dans le vide et l'ecran restait EXACTEMENT le meme. Le randonneur appuyait
+    // sur « Demarrer le test », rien ne bougeait, et rien ne lui disait pourquoi.
+    final String permission;
+    try {
+      permission = await gps.requestPermission();
+    } on Object {
+      state = state.copyWith(
+        phase: WalkTestPhase.gpsDenied,
+        gpsUnavailable: true,
+      );
+      return;
+    }
     if (permission != GpsPermissionResultValues.granted) {
-      state = state.copyWith(phase: WalkTestPhase.gpsDenied);
+      state = state.copyWith(
+        phase: WalkTestPhase.gpsDenied,
+        gpsUnavailable: false,
+      );
       return;
     }
 

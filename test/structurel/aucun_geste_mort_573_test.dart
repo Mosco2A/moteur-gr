@@ -100,7 +100,20 @@ void main() {
           continue;
         }
 
+        // ON FAIT DEFILER AVANT D'APPUYER (tache 579). Sans ce pas, le balayage
+        // tapait les coordonnees d'un bouton situe a 1 900 pixels sur un ecran
+        // qui en montre 780 : le doigt tombait sous la vitre, rien ne se
+        // passait, et le bouton etait declare mort. Cinq des douze routes
+        // rouges du LOT X n'etaient que ca.
+        final atteignable = await amenerALEcran(tester, g.finder);
+        if (!atteignable) {
+          injouables.add('$g (hors ecran, impossible a amener sous le doigt)');
+          continue;
+        }
+
         final dansSelecteur = estDansUnSelecteur(g.finder);
+        // L'empreinte est prise APRES le defilement : sinon le defilement
+        // lui-meme passerait pour l'effet du bouton.
         final avant = empreinteEcran(tester);
         var tape = true;
         try {
@@ -109,7 +122,7 @@ void main() {
           tape = false;
         }
         if (!tape) {
-          injouables.add('$g (hors ecran ou non tapable)');
+          injouables.add('$g (non tapable)');
           continue;
         }
         // Six pompes apres l'appui, pas trois : un geste qui demarre un

@@ -108,7 +108,36 @@ class PackDownloadService {
     var done = 0;
     for (final ref in refs) {
       // REPRISE : ne pas retelecharger un fichier deja stocke.
-      if (await _storage.exists(packId, ref)) {
+      //
+      // CETTE LECTURE ETAIT HORS DU FILET (tache 579, LOT X). `exists` interroge
+      // le stockage local ; quand ce stockage n'est pas disponible — pas de
+      // dossier de documents, permission refusee, canal de plateforme absent —
+      // il LEVE. L'exception traversait alors le generateur et sortait du flux
+      // comme une ERREUR DE STREAM, pas comme un evenement `error`. La promesse
+      // ecrite en tete de cette methode (« N'emet JAMAIS d'exception : les
+      // erreurs deviennent un evenement `error` ») etait donc fausse des la
+      // premiere ligne de la boucle, et le bouton « Telecharger » ne produisait
+      // rien du tout.
+      final bool deja;
+      try {
+        deja = await _storage.exists(packId, ref);
+      } on Object catch (e, st) {
+        ErrorHandler.log(
+          e,
+          stackTrace: st,
+          context: 'PackDownloadService.downloadPack($packId/$ref) '
+              'lecture du stockage local',
+        );
+        yield PackDownloadProgress(
+          packId: packId,
+          status: PackDownloadStatus.error,
+          filesDone: done,
+          filesTotal: total,
+          error: e.toString(),
+        );
+        return;
+      }
+      if (deja) {
         done++;
         yield PackDownloadProgress(
           packId: packId,

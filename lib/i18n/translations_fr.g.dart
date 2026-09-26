@@ -1429,6 +1429,12 @@ class Translations$feedback$fr {
 
 	/// fr: 'en attente'
 	String get pending => 'en attente';
+
+	/// fr: 'Écrivez votre message avant de l'envoyer.'
+	String get emptyMessage => 'Écrivez votre message avant de l\'envoyer.';
+
+	/// fr: 'Votre message n'a pas pu être enregistré.'
+	String get sendFailed => 'Votre message n\'a pas pu être enregistré.';
 }
 
 // Path: auth
@@ -2888,6 +2894,9 @@ class Translations$transport$fr {
 	String get website => 'Site web';
 
 	late final Translations$transport$a11y$fr a11y = Translations$transport$a11y$fr.internal(_root);
+
+	/// fr: 'Aucune information de transport pour ce sentier.'
+	String get noneForTrail => 'Aucune information de transport pour ce sentier.';
 }
 
 // Path: fireRisk
@@ -3422,6 +3431,9 @@ class Translations$walkTest$fr {
 
 	/// fr: 'Au-delà de 80 ans la référence du test s'arrête : elle est calculée comme à 80 ans, et on te le dit.'
 	String get ageClampNotice => 'Au-delà de 80 ans la référence du test s\'arrête : elle est calculée comme à 80 ans, et on te le dit.';
+
+	/// fr: 'La position n'est pas disponible sur cet appareil : le test ne peut pas mesurer la distance.'
+	String get gpsUnavailable => 'La position n\'est pas disponible sur cet appareil : le test ne peut pas mesurer la distance.';
 }
 
 // Path: pastHikes
@@ -3579,6 +3591,9 @@ class Translations$sos$fr {
 	String get call => 'Appeler 112';
 
 	late final Translations$sos$medicalId$fr medicalId = Translations$sos$medicalId$fr.internal(_root);
+
+	/// fr: 'Impossible de lancer l'appel depuis cet appareil. Composez le $number.'
+	String cannotCall({required Object number}) => 'Impossible de lancer l\'appel depuis cet appareil. Composez le ${number}.';
 }
 
 // Path: recovery
@@ -3657,6 +3672,15 @@ class Translations$common$fr {
 
 	/// fr: 'Page introuvable : $path'
 	String pageNotFound({required Object path}) => 'Page introuvable : ${path}';
+
+	/// fr: 'Réessayer'
+	String get retry => 'Réessayer';
+
+	/// fr: 'Nouvel essai…'
+	String get retrying => 'Nouvel essai…';
+
+	/// fr: 'Le nouvel essai n'a pas abouti.'
+	String get retryFailed => 'Le nouvel essai n\'a pas abouti.';
 }
 
 // Path: hub.trekCard
@@ -4805,6 +4829,9 @@ class Translations$checklist$ui$fr {
 
 	/// fr: 'Rejoignez un groupe pour partager votre checklist.'
 	String get shareGroupHint => 'Rejoignez un groupe pour partager votre checklist.';
+
+	/// fr: 'Le partage n'a pas pu s'ouvrir sur cet appareil.'
+	String get shareFailed => 'Le partage n\'a pas pu s\'ouvrir sur cet appareil.';
 }
 
 // Path: checklist.seasons
@@ -5652,6 +5679,9 @@ class Translations$packs$actions$fr {
 
 	/// fr: 'Acheter ce pack — $price'
 	String buyWithPrice({required Object price}) => 'Acheter ce pack — ${price}';
+
+	/// fr: 'L'achat n'est pas disponible sur cet appareil.'
+	String get buyUnavailable => 'L\'achat n\'est pas disponible sur cet appareil.';
 }
 
 // Path: packs.progress
@@ -5673,6 +5703,9 @@ class Translations$packs$progress$fr {
 
 	/// fr: 'Échec du téléchargement'
 	String get error => 'Échec du téléchargement';
+
+	/// fr: 'Le téléchargement n'a pas abouti.'
+	String get errorSnack => 'Le téléchargement n\'a pas abouti.';
 }
 
 // Path: packs.delete
@@ -8127,6 +8160,7 @@ extension on Translations {
 			'checklist.ui.validateAnyway' => 'Valider quand même',
 			'checklist.ui.bagValidatedMissingSnack' => 'Sac valide (avec items manquants) !',
 			'checklist.ui.shareGroupHint' => 'Rejoignez un groupe pour partager votre checklist.',
+			'checklist.ui.shareFailed' => 'Le partage n\'a pas pu s\'ouvrir sur cet appareil.',
 			'checklist.seasonalBanner' => ({required Object season}) => 'Sac adapté à la saison (${season}) et à votre sentier.',
 			'checklist.seasons.winter' => 'hiver',
 			'checklist.seasons.spring' => 'printemps',
@@ -8337,6 +8371,8 @@ extension on Translations {
 			'feedback.sending' => 'Envoi...',
 			'feedback.thanks' => 'Merci pour votre retour !',
 			'feedback.pending' => 'en attente',
+			'feedback.emptyMessage' => 'Écrivez votre message avant de l\'envoyer.',
+			'feedback.sendFailed' => 'Votre message n\'a pas pu être enregistré.',
 			'auth.profile' => 'Profil',
 			'auth.anonymous' => 'Randonneur sans compte',
 			'auth.connectedVia' => 'Connecté via',
@@ -8621,11 +8657,11 @@ extension on Translations {
 			'training.inviteSetDate' => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.',
 			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
 			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
+			_ => null,
+		} ?? switch (path) {
 			'training.freqPerWeek' => ({required Object n}) => '${n}× par semaine',
 			'training.freqOncePerPhase' => 'une fois dans la phase',
 			'training.freqFinalWeek' => 'la dernière semaine seulement',
-			_ => null,
-		} ?? switch (path) {
 			'training.freqSourceNotice' => 'Les fréquences ne sont pas des chiffres maison : 3 séances d\'endurance et 2 de renforcement par semaine, 2 jours de repos, d\'après REI (Conditioning for Backpacking), Terres d\'Aventure et les recommandations 2020 de l\'OMS.',
 			'training.noDateWhy' => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s\'affiche.',
 			'training.tooShortTitle' => 'Aucune préparation proposée',
@@ -8749,10 +8785,12 @@ extension on Translations {
 			'packs.actions.retry' => 'Réessayer',
 			'packs.actions.buy' => 'Acheter ce pack',
 			'packs.actions.buyWithPrice' => ({required Object price}) => 'Acheter ce pack — ${price}',
+			'packs.actions.buyUnavailable' => 'L\'achat n\'est pas disponible sur cet appareil.',
 			'packs.progress.downloading' => ({required Object done, required Object total}) => 'Téléchargement… ${done}/${total}',
 			'packs.progress.verifying' => 'Vérification de l\'intégrité…',
 			'packs.progress.completed' => 'Pack prêt hors-ligne',
 			'packs.progress.error' => 'Échec du téléchargement',
+			'packs.progress.errorSnack' => 'Le téléchargement n\'a pas abouti.',
 			'packs.delete.confirmTitle' => 'Supprimer ce pack ?',
 			'packs.delete.confirmBody' => 'Le pack sera retiré de l\'appareil pour libérer de l\'espace. Vous pourrez le retélécharger.',
 			'packs.delete.cancel' => 'Annuler',
@@ -9108,6 +9146,7 @@ extension on Translations {
 			'transport.website' => 'Site web',
 			'transport.a11y.call' => ({required Object label}) => 'Appeler ${label}',
 			'transport.a11y.website' => 'Ouvrir le site web',
+			'transport.noneForTrail' => 'Aucune information de transport pour ce sentier.',
 			'fireRisk.title' => 'Risque incendie',
 			'fireRisk.refresh' => 'Actualiser',
 			'fireRisk.refreshed' => 'Données mises à jour',
@@ -9132,14 +9171,14 @@ extension on Translations {
 			'fireRisk.level.veryHigh' => 'Très élevé',
 			'fireRisk.level.extreme' => 'Extrême',
 			'fireRisk.stagesTitle' => 'Risque par étape',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.stageBadge' => ({required Object number}) => 'E${number}',
 			'fireRisk.levelBadge' => ({required Object level}) => 'Niv. ${level}',
 			'fireRisk.dayLevel' => ({required Object level}) => 'Niv. ${level}',
 			'fireRisk.day.today' => 'Auj.',
 			'fireRisk.day.tomorrow' => 'Demain',
 			'fireRisk.day.plus' => ({required Object n}) => 'J+${n}',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.noRisk' => 'Aucun risque incendie signalé actuellement',
 			'fireRisk.numbersTitle' => 'Numéros utiles',
 			'fireRisk.number.firefighters' => 'Pompiers',
@@ -9329,6 +9368,7 @@ extension on Translations {
 			'walkTest.levels.excellent' => 'Excellent',
 			'walkTest.absoluteScaleNotice' => 'Ton niveau est lu sur l\'échelle de distance brute : la comparaison à une référence n\'a pas été établie pour ta morphologie, on ne l\'applique donc pas. Ton test, lui, reste parfaitement valable.',
 			'walkTest.ageClampNotice' => 'Au-delà de 80 ans la référence du test s\'arrête : elle est calculée comme à 80 ans, et on te le dit.',
+			'walkTest.gpsUnavailable' => 'La position n\'est pas disponible sur cet appareil : le test ne peut pas mesurer la distance.',
 			'pastHikes.title' => 'Vos 5 dernières randos',
 			'pastHikes.intro' => 'Ajoutez jusqu\'à 5 randos notables. On en déduit votre niveau réel (rythme, endurance, habitude du dénivelé) plutôt qu\'une étiquette.',
 			'pastHikes.addHike' => 'Ajouter une rando',
@@ -9379,6 +9419,7 @@ extension on Translations {
 			'sos.medicalId.action' => 'Fiche médicale du téléphone',
 			'sos.medicalId.hint' => 'Affichez vos infos vitales aux secours, même écran verrouillé.',
 			'sos.medicalId.unavailable' => 'Ouvrez la fiche médicale dans les réglages Santé de votre téléphone.',
+			'sos.cannotCall' => ({required Object number}) => 'Impossible de lancer l\'appel depuis cet appareil. Composez le ${number}.',
 			'recovery.section' => 'Compte et reconnexion',
 			'recovery.sectionDesc' => 'Voir mon code de reconnexion',
 			'recovery.title' => 'Mon code de reconnexion',
@@ -9399,6 +9440,9 @@ extension on Translations {
 			'common.viewOnMap' => 'Voir sur la carte',
 			'common.error' => 'Erreur',
 			'common.pageNotFound' => ({required Object path}) => 'Page introuvable : ${path}',
+			'common.retry' => 'Réessayer',
+			'common.retrying' => 'Nouvel essai…',
+			'common.retryFailed' => 'Le nouvel essai n\'a pas abouti.',
 			_ => null,
 		};
 	}

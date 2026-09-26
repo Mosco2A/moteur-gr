@@ -243,19 +243,37 @@ class _EmergencyContactTile extends StatelessWidget {
   }
 
   /// Lance un appel telephonique -- K-05: appel immediat
+  ///
+  /// L'ECHEC ETAIT AVALE, SUR L'ECRAN D'URGENCE (tache 579, LOT X). Le `catch`
+  /// portait en commentaire « l'OS gere l'erreur si le tel ne peut pas
+  /// appeler ». C'est faux : si `launchUrl` LEVE, c'est precisement que l'OS n'a
+  /// rien gere — aucune application de telephonie, tablette sans radio, canal de
+  /// plateforme absent. Le randonneur appuyait sur le bouton d'appel des
+  /// secours, ne voyait rien, et pouvait croire que l'appel partait. C'est le
+  /// pire endroit de l'application pour se taire. Le numero est desormais donne
+  /// EN CLAIR dans le message, pour qu'il puisse etre compose a la main.
   Future<void> _callContact(
     BuildContext context,
     EmergencyContact contact,
   ) async {
     // E5.5a : retour haptique fort sur action critique (appel d'urgence).
     AppHaptics.heavy();
+    final messenger = ScaffoldMessenger.of(context);
     // Nettoyer le numero : retirer espaces pour le format tel:
     final cleanPhone = contact.phone.replaceAll(' ', '');
+    var lance = false;
     try {
       final uri = Uri.parse('tel:$cleanPhone');
-      await launchUrl(uri);
-    } catch (_) {
-      // Silencieux -- l'OS gere l'erreur si le tel ne peut pas appeler
+      lance = await launchUrl(uri);
+    } on Object {
+      lance = false;
     }
+    if (lance) return;
+    messenger.showSnackBar(
+      SnackBar(
+        content: Text(t.sos.cannotCall(number: contact.phone)),
+        duration: const Duration(seconds: 6),
+      ),
+    );
   }
 }
