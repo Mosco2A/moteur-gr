@@ -613,7 +613,7 @@ class _Translations$diploma$es extends Translations$diploma$fr {
 	@override String get recapStages => '{count} etapas completadas';
 	@override String get recapDistance => '{km} km recorridos';
 	@override String get recapElevation => '{meters} m de desnivel';
-	@override String get recapDuration => '{days} días de trekking';
+	@override String get recapDuration => '{days} días en total, marcha y descanso incluidos';
 	@override String get recapMapTrace => 'Trazado del recorrido';
 	@override String get recapNoMap => 'Trazado no disponible';
 	@override String get recapJournalEntries => '{count} notas del diario';
@@ -1207,6 +1207,8 @@ class _Translations$consent$es extends Translations$consent$fr {
 	@override String get notDecided => 'A la espera de tu elección';
 	@override String get acceptSelected => 'Confirmar mis elecciones';
 	@override String get declineAll => 'Rechazar todo';
+	@override String get declineAllNote => 'Rechazar todo retira tus cuatro permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puedes volver a conceder cualquiera en cualquier momento.';
+	@override String get declineAllCancel => 'Cancelar';
 	@override String get continueLabel => 'Continuar';
 	@override String get privacyPolicyLink => 'Leer la política de privacidad';
 	@override String get reviewNeeded => 'Nuestra política ha cambiado: revisa tus elecciones.';
@@ -1307,7 +1309,7 @@ class _Translations$recap$es extends Translations$recap$fr {
 	@override String get stages => '{done} / {total} etapas recorridas';
 	@override String get distance => '{km} km recorridos';
 	@override String get elevation => '{meters} m de desnivel positivo';
-	@override String get duration => '{days} días';
+	@override String get duration => '{days} días en total, marcha y descanso incluidos';
 	@override String get dates => 'Del {start} al {end}';
 	@override String get viewDiploma => 'Ver mi diploma';
 	@override String get viewJournal => 'Ver mi diario';
@@ -4637,7 +4639,7 @@ extension on TranslationsEs {
 			'diploma.recapStages' => '{count} etapas completadas',
 			'diploma.recapDistance' => '{km} km recorridos',
 			'diploma.recapElevation' => '{meters} m de desnivel',
-			'diploma.recapDuration' => '{days} días de trekking',
+			'diploma.recapDuration' => '{days} días en total, marcha y descanso incluidos',
 			'diploma.recapMapTrace' => 'Trazado del recorrido',
 			'diploma.recapNoMap' => 'Trazado no disponible',
 			'diploma.recapJournalEntries' => '{count} notas del diario',
@@ -5228,6 +5230,8 @@ extension on TranslationsEs {
 			'consent.notDecided' => 'A la espera de tu elección',
 			'consent.acceptSelected' => 'Confirmar mis elecciones',
 			'consent.declineAll' => 'Rechazar todo',
+			'consent.declineAllNote' => 'Rechazar todo retira tus cuatro permisos de una vez y borra los datos corporales (edad, altura, peso) guardados en este dispositivo. Puedes volver a conceder cualquiera en cualquier momento.',
+			'consent.declineAllCancel' => 'Cancelar',
 			'consent.continueLabel' => 'Continuar',
 			'consent.privacyPolicyLink' => 'Leer la política de privacidad',
 			'consent.reviewNeeded' => 'Nuestra política ha cambiado: revisa tus elecciones.',
@@ -5305,7 +5309,7 @@ extension on TranslationsEs {
 			'recap.stages' => '{done} / {total} etapas recorridas',
 			'recap.distance' => '{km} km recorridos',
 			'recap.elevation' => '{meters} m de desnivel positivo',
-			'recap.duration' => '{days} días',
+			'recap.duration' => '{days} días en total, marcha y descanso incluidos',
 			'recap.dates' => 'Del {start} al {end}',
 			'recap.viewDiploma' => 'Ver mi diploma',
 			'recap.viewJournal' => 'Ver mi diario',
@@ -5496,10 +5500,10 @@ extension on TranslationsEs {
 			'fireRisk.level.moderate' => 'Moderado',
 			'fireRisk.level.high' => 'Alto',
 			'fireRisk.level.veryHigh' => 'Muy alto',
-			'fireRisk.level.extreme' => 'Extremo',
-			'fireRisk.stagesTitle' => 'Riesgo por etapa',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.level.extreme' => 'Extremo',
+			'fireRisk.stagesTitle' => 'Riesgo por etapa',
 			'fireRisk.stageBadge' => ({required Object number}) => 'E${number}',
 			'fireRisk.levelBadge' => ({required Object level}) => 'Niv. ${level}',
 			'fireRisk.dayLevel' => ({required Object level}) => 'Niv. ${level}',
