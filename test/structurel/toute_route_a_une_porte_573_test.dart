@@ -37,6 +37,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'graphe_navigation.dart';
 import 'parcours_reel.dart';
+import 'registre_des_routes_dormantes.dart';
 
 /// Les routes SANS porte par CONCEPTION, et la raison de chacune.
 ///
@@ -57,6 +58,16 @@ const exceptionsDocumentees = <String, String>{
       'Ecran bloquant : la porte est la garde de redirection quand aucun '
           'sentier n est telecharge. Verifiee par le test des portes d entree.',
 };
+
+/// Une route est-elle DISPENSEE de porte — par conception, ou parce qu'elle est
+/// declaree dormante (tache 582) ?
+///
+/// Les deux listes ne disent pas la meme chose et ne doivent pas fusionner :
+/// une EXCEPTION dit « aucun geste ne doit y mener, jamais » ; une DORMANTE dit
+/// « la porte manque aujourd'hui, voici pourquoi et ce qui la rendra ».
+bool dispenseeDePorte(String gabarit) =>
+    exceptionsDocumentees.containsKey(gabarit) ||
+    registreDesRoutesDormantes.containsKey(gabarit);
 
 void main() {
   late List<RouteDeclaree> routes;
@@ -93,6 +104,39 @@ void main() {
     return null;
   }
 
+  /// Les routes qu'un doigt peut ATTEINDRE en partant d'une porte d'entree.
+  ///
+  /// Le graphe va d'une route vers les routes qu'on peut ouvrir depuis elle,
+  /// puis on le parcourt en largeur depuis les portes. [orphelines], s'il est
+  /// fourni, recoit les gestes portes par un fichier qu'aucun ecran n'atteint :
+  /// l'arete existe dans le source, mais personne ne peut la declencher.
+  Set<String> routesAtteintesDepuisLesPortes({List<String>? orphelines}) {
+    final sortantes = <String, Set<String>>{
+      for (final r in routes) r.gabarit: <String>{},
+    };
+    for (final a in aretes) {
+      final cible = cibleDe(a);
+      if (cible == null) continue;
+      final depuis =
+          routesPorteusesDuGeste(a.fichier, routeVersFichiers, importeurs);
+      if (depuis.isEmpty) {
+        orphelines?.add('$a');
+        continue;
+      }
+      for (final d in depuis) {
+        sortantes[d]?.add(cible);
+      }
+    }
+    final atteintes = <String>{};
+    final file = <String>[...portes];
+    while (file.isNotEmpty) {
+      final r = file.removeLast();
+      if (!atteintes.add(r)) continue;
+      file.addAll(sortantes[r] ?? const <String>{});
+    }
+    return atteintes;
+  }
+
   group('V1 — toute route declaree a une porte', () {
     test('AU MOINS UN GESTE de l application mene a chaque route', () {
       final entrantes = <String, List<String>>{};
@@ -108,7 +152,7 @@ void main() {
       final sansPorte = <String>[];
       for (final r in routes) {
         if (entrantes[r.gabarit]!.isNotEmpty) continue;
-        if (exceptionsDocumentees.containsKey(r.gabarit)) continue;
+        if (dispenseeDePorte(r.gabarit)) continue;
         if (portes.contains(r.gabarit)) continue;
         sansPorte.add(r.gabarit);
       }
@@ -128,40 +172,13 @@ void main() {
     });
 
     test('chaque route est atteignable DEPUIS une porte d entree', () {
-      // Le graphe : d'une route vers les routes qu'on peut ouvrir depuis elle.
-      final sortantes = <String, Set<String>>{
-        for (final r in routes) r.gabarit: <String>{},
-      };
       final orphelines = <String>[];
-      for (final a in aretes) {
-        final cible = cibleDe(a);
-        if (cible == null) continue;
-        final depuis =
-            routesPorteusesDuGeste(a.fichier, routeVersFichiers, importeurs);
-        if (depuis.isEmpty) {
-          // Geste porte par un fichier qu'aucun ecran n'atteint : l'arete
-          // existe, mais personne ne peut la declencher.
-          orphelines.add('$a');
-          continue;
-        }
-        for (final d in depuis) {
-          sortantes[d]?.add(cible);
-        }
-      }
-
-      // Parcours en largeur depuis les portes d'entree.
-      final atteintes = <String>{};
-      final file = <String>[...portes];
-      while (file.isNotEmpty) {
-        final r = file.removeLast();
-        if (!atteintes.add(r)) continue;
-        file.addAll(sortantes[r] ?? const <String>{});
-      }
+      final atteintes = routesAtteintesDepuisLesPortes(orphelines: orphelines);
 
       final injoignables = routes
           .map((r) => r.gabarit)
           .where((g) => !atteintes.contains(g))
-          .where((g) => !exceptionsDocumentees.containsKey(g))
+          .where((g) => !dispenseeDePorte(g))
           .toList();
 
       expect(
@@ -178,6 +195,51 @@ void main() {
             'Gestes portes par un fichier inatteignable : '
             '${orphelines.length}\n  ${orphelines.take(10).join('\n  ')}',
       );
+    });
+
+    test('le registre des routes dormantes ne pourrit pas', () {
+      // LES DENTS DU REGISTRE (tache 582). Une liste qui dispense de rougir
+      // devient, avec le temps, une liste qui CACHE. On lui met donc trois
+      // verrous, et ils mordent dans les deux sens.
+      final gabarits = routes.map((r) => r.gabarit).toSet();
+
+      // 1. Une entree doit correspondre a une route REELLEMENT declaree.
+      final fantomes = registreDesRoutesDormantes.keys
+          .where((g) => !gabarits.contains(g))
+          .toList();
+      expect(fantomes, isEmpty,
+          reason: 'CES ENTREES NE CORRESPONDENT A AUCUNE ROUTE : la route a ete '
+              'supprimee ou renommee, l entree ne protege plus rien et doit '
+              'partir du registre.\n  ${fantomes.join('\n  ')}');
+
+      // 2. Une route dormante qui a RETROUVE une porte doit sortir du registre.
+      //    Sans ce verrou, une route cablee resterait couverte a vie, et la
+      //    prochaine fois qu'on lui casserait sa porte, personne ne le verrait.
+      //
+      //    ON MESURE L'ATTEIGNABILITE, PAS LE NOMBRE D'ARETES. Une route peut
+      //    avoir des gestes entrants et rester endormie si ces gestes vivent
+      //    sur un ecran que personne n'atteint — c'est le cas de
+      //    `/trail/:id/map`, pousse seulement par les deux ecrans de la phase 1
+      //    eux-memes endormis. Compter les aretes aurait declare reveillee une
+      //    route que le randonneur ne peut toujours pas ouvrir.
+      final reveillees = registreDesRoutesDormantes.keys
+          .where(routesAtteintesDepuisLesPortes().contains)
+          .toList();
+      expect(reveillees, isEmpty,
+          reason: 'CES ROUTES ONT RETROUVE UNE PORTE : tres bien — mais elles '
+              'doivent alors SORTIR du registre des dormantes, sinon la garde '
+              'cesse de veiller sur elles.\n  ${reveillees.join('\n  ')}');
+
+      // 3. Raison ET reveil ecrits : c'est ce qui distingue une dette assumee
+      //    d'une exception muette.
+      final bavardes = <String>[];
+      registreDesRoutesDormantes.forEach((g, d) {
+        if (d.raison.trim().length < 40) bavardes.add('$g : raison trop courte');
+        if (d.reveil.trim().length < 20) bavardes.add('$g : reveil trop court');
+      });
+      expect(bavardes, isEmpty,
+          reason: 'UNE ROUTE ENDORMIE SANS RAISON NI REVEIL ECRITS est une '
+              'exception muette deguisee.\n  ${bavardes.join('\n  ')}');
     });
 
     test('les portes d entree existent VRAIMENT a l ecran', () {

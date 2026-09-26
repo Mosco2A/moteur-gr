@@ -477,6 +477,31 @@ class _HubScreenState extends ConsumerState<HubScreen> {
                     subtitle: t.hub.cards.emergencySub,
                     onTap: () => context.push('/emergency'),
                   ),
+                  // SIGNALEMENT TERRAIN — LA TROISIEME FONCTION QUE PERSONNE NE
+                  // POUVAIT ATTEINDRE (tache 582, LOT Z).
+                  //
+                  // Le LOT Q (tache 568) a donne leur porte aux contacts
+                  // d'urgence et a la fiche medicale. `/signalement` est reste
+                  // en arriere : route declaree (F6C-03), ecran ecrit, traduit
+                  // en cinq langues, table locale et file de synchronisation
+                  // completes — et ZERO `push` vers lui dans tout `lib/`. Il
+                  // n'avait pas perdu sa porte comme les guides des villes
+                  // (masques sur decision de Chris) ou le groupe (parke) : il
+                  // n'en avait JAMAIS EU. C'est LE CURIEUX qui l'a dit, et
+                  // c'etait le dernier de ses trois reproches encore debout.
+                  //
+                  // PLACE RETENUE : « Randonner », a cote de l'urgence, donc
+                  // visible uniquement en rando active. Signaler un obstacle,
+                  // un point d'eau a sec ou un danger est un geste de TERRAIN —
+                  // on ne signale pas ce qu'on n'a pas encore vu. Meme
+                  // raisonnement que la decision du 02/09 (#99410) qui a mis la
+                  // securite au terrain et sa PREPARATION a la preparation.
+                  QuickAccessCard(
+                    icon: Icons.report_problem_outlined,
+                    title: t.hub.cards.signalement,
+                    subtitle: t.hub.cards.signalementSub,
+                    onTap: () => context.push('/signalement'),
+                  ),
                   // JOURNAL — ICI PENDANT LA RANDO (tache 558, decision Chris
                   // « En rando pour le rempli »). C'est la place de la
                   // reference, et c'est un outil de TERRAIN : on ecrit son

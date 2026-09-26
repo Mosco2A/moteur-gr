@@ -140,6 +140,8 @@
       "navigationSub": "Map and GPS tracking",
       "emergency": "Emergency",
       "emergencySub": "112, rescue and contacts",
+      "signalement": "Report",
+      "signalementSub": "Obstacle, water point, hazard",
       "journal": "Journal",
       "journalSub": "Your notes and memories",
       "accommodations": "Accommodation",

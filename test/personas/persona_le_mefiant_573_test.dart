@@ -173,12 +173,25 @@ void main() {
       // cloud, et restaure) mais « est-ce LU ». Une donnee dont le seul lecteur
       // est son propre ecran de saisie ne sert a rien : c'est exactement la
       // liste des difficultes que Chris a fait retirer.
+      //
+      // UN COMMENTAIRE N'EST PAS UN LECTEUR (tache 582, LOT Z). Ce balayage
+      // lisait le source BRUT. Or le LOT S (tache 570, S2) a RETIRE
+      // `experienceNoteProvider` et laisse a sa place une pierre tombale qui
+      // explique le retrait — en NOMMANT le provider. La garde retrouvait donc
+      // ce nom dans le commentaire, comptait un fichier lecteur, et declarait
+      // morte une donnee DEJA SUPPRIMEE : elle criait au loup sur le cadavre du
+      // loup. Son propre code dit l'intention (« la donnee a ete retiree : tres
+      // bien ») ; c'est la LECTURE qui la trahissait.
+      // Meme piege et meme remede que la garde des ecrans sans route (tache
+      // 580, Y2) : on lit le source PRIVE DE SES COMMENTAIRES.
       final sources = fichiersSourceLib();
       final orphelines = <String>[];
       for (final e in donneesEtLeurLecteur.entries) {
         final fichiers = <String>[];
         for (final f in sources) {
-          if (f.readAsStringSync().contains(e.key)) fichiers.add(f.path);
+          if (sansCommentaires(f.readAsStringSync()).contains(e.key)) {
+            fichiers.add(f.path);
+          }
         }
         if (fichiers.isEmpty) continue; // la donnee a ete retiree : tres bien
         // Un seul fichier de saisie plus sa propre definition = personne ne lit.

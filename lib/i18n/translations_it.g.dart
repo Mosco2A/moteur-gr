@@ -1853,6 +1853,8 @@ class _Translations$hub$cards$it extends Translations$hub$cards$fr {
 	@override String get navigationSub => 'Mappa e tracciamento GPS';
 	@override String get emergency => 'Emergenza';
 	@override String get emergencySub => '112, soccorso e contatti';
+	@override String get signalement => 'Segnala';
+	@override String get signalementSub => 'Ostacolo, punto d\'acqua, pericolo';
 	@override String get journal => 'Diario';
 	@override String get journalSub => 'Le tue note e i ricordi';
 	@override String get accommodations => 'Alloggi';
@@ -4085,6 +4087,8 @@ extension on TranslationsIt {
 			'hub.cards.navigationSub' => 'Mappa e tracciamento GPS',
 			'hub.cards.emergency' => 'Emergenza',
 			'hub.cards.emergencySub' => '112, soccorso e contatti',
+			'hub.cards.signalement' => 'Segnala',
+			'hub.cards.signalementSub' => 'Ostacolo, punto d\'acqua, pericolo',
 			'hub.cards.journal' => 'Diario',
 			'hub.cards.journalSub' => 'Le tue note e i ricordi',
 			'hub.cards.accommodations' => 'Alloggi',
@@ -4470,10 +4474,10 @@ extension on TranslationsIt {
 			'checklist.ui.preDep8' => 'Scaricare le mappe offline',
 			'checklist.ui.bagOk' => 'ZAINO OK — PRONTO A PARTIRE',
 			'checklist.ui.validateBag' => 'CONFERMA IL MIO ZAINO',
-			'checklist.ui.cancelValidation' => 'ANNULLA LA CONFERMA',
-			'checklist.ui.shoppingListButton' => 'LISTA DELLA SPESA',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.cancelValidation' => 'ANNULLA LA CONFERMA',
+			'checklist.ui.shoppingListButton' => 'LISTA DELLA SPESA',
 			'checklist.ui.shareGroup' => 'CONDIVIDI CON IL GRUPPO',
 			'checklist.ui.exportList' => 'ESPORTA LA LISTA',
 			'checklist.ui.bagValidTitle' => 'Zaino confermato',
@@ -4984,10 +4988,10 @@ extension on TranslationsIt {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Settimane ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Obiettivo chiave',
 			'training.inviteSetDate' => 'Imposta la data di partenza nel Calendario per attivare il conto alla rovescia.',
-			'training.inviteFillProfile' => 'Compila la tua scheda per adattare il piano al tuo profilo.',
-			'training.cautionVerdictNotice' => 'La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.',
 			_ => null,
 		} ?? switch (path) {
+			'training.inviteFillProfile' => 'Compila la tua scheda per adattare il piano al tuo profilo.',
+			'training.cautionVerdictNotice' => 'La tua fattibilità invita alla prudenza: rispetta la progressione e non abbreviare la preparazione.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× a settimana',
 			'training.freqOncePerPhase' => 'una volta nella fase',
 			'training.freqFinalWeek' => 'solo l\'ultima settimana',
@@ -5498,10 +5502,10 @@ extension on TranslationsIt {
 			'fireRisk.level.none' => 'Nessuno',
 			'fireRisk.level.low' => 'Basso',
 			'fireRisk.level.moderate' => 'Moderato',
-			'fireRisk.level.high' => 'Elevato',
-			'fireRisk.level.veryHigh' => 'Molto elevato',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.level.high' => 'Elevato',
+			'fireRisk.level.veryHigh' => 'Molto elevato',
 			'fireRisk.level.extreme' => 'Estremo',
 			'fireRisk.stagesTitle' => 'Rischio per tappa',
 			'fireRisk.stageBadge' => ({required Object number}) => 'T${number}',

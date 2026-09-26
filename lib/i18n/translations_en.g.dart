@@ -1853,6 +1853,8 @@ class _Translations$hub$cards$en extends Translations$hub$cards$fr {
 	@override String get navigationSub => 'Map and GPS tracking';
 	@override String get emergency => 'Emergency';
 	@override String get emergencySub => '112, rescue and contacts';
+	@override String get signalement => 'Report';
+	@override String get signalementSub => 'Obstacle, water point, hazard';
 	@override String get journal => 'Journal';
 	@override String get journalSub => 'Your notes and memories';
 	@override String get accommodations => 'Accommodation';
@@ -4085,6 +4087,8 @@ extension on TranslationsEn {
 			'hub.cards.navigationSub' => 'Map and GPS tracking',
 			'hub.cards.emergency' => 'Emergency',
 			'hub.cards.emergencySub' => '112, rescue and contacts',
+			'hub.cards.signalement' => 'Report',
+			'hub.cards.signalementSub' => 'Obstacle, water point, hazard',
 			'hub.cards.journal' => 'Journal',
 			'hub.cards.journalSub' => 'Your notes and memories',
 			'hub.cards.accommodations' => 'Accommodation',
@@ -4470,10 +4474,10 @@ extension on TranslationsEn {
 			'checklist.ui.preDep8' => 'Download the offline maps',
 			'checklist.ui.bagOk' => 'PACK OK — READY TO GO',
 			'checklist.ui.validateBag' => 'VALIDATE MY PACK',
-			'checklist.ui.cancelValidation' => 'CANCEL VALIDATION',
-			'checklist.ui.shoppingListButton' => 'SHOPPING LIST',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.cancelValidation' => 'CANCEL VALIDATION',
+			'checklist.ui.shoppingListButton' => 'SHOPPING LIST',
 			'checklist.ui.shareGroup' => 'SHARE WITH THE GROUP',
 			'checklist.ui.exportList' => 'EXPORT THE LIST',
 			'checklist.ui.bagValidTitle' => 'Pack validated',
@@ -4984,10 +4988,10 @@ extension on TranslationsEn {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Weeks ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Key objective',
 			'training.inviteSetDate' => 'Set your departure date in the Calendar to enable the countdown.',
-			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
-			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
 			_ => null,
 		} ?? switch (path) {
+			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
+			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× per week',
 			'training.freqOncePerPhase' => 'once during the phase',
 			'training.freqFinalWeek' => 'the final week only',
@@ -5498,10 +5502,10 @@ extension on TranslationsEn {
 			'fireRisk.level.none' => 'None',
 			'fireRisk.level.low' => 'Low',
 			'fireRisk.level.moderate' => 'Moderate',
-			'fireRisk.level.high' => 'High',
-			'fireRisk.level.veryHigh' => 'Very high',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.level.high' => 'High',
+			'fireRisk.level.veryHigh' => 'Very high',
 			'fireRisk.level.extreme' => 'Extreme',
 			'fireRisk.stagesTitle' => 'Risk by stage',
 			'fireRisk.stageBadge' => ({required Object number}) => 'S${number}',

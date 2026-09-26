@@ -1853,6 +1853,8 @@ class _Translations$hub$cards$es extends Translations$hub$cards$fr {
 	@override String get navigationSub => 'Mapa y seguimiento GPS';
 	@override String get emergency => 'Emergencia';
 	@override String get emergencySub => '112, rescate y contactos';
+	@override String get signalement => 'Informar';
+	@override String get signalementSub => 'Obstáculo, punto de agua, peligro';
 	@override String get journal => 'Diario';
 	@override String get journalSub => 'Tus notas y recuerdos';
 	@override String get accommodations => 'Alojamientos';
@@ -4085,6 +4087,8 @@ extension on TranslationsEs {
 			'hub.cards.navigationSub' => 'Mapa y seguimiento GPS',
 			'hub.cards.emergency' => 'Emergencia',
 			'hub.cards.emergencySub' => '112, rescate y contactos',
+			'hub.cards.signalement' => 'Informar',
+			'hub.cards.signalementSub' => 'Obstáculo, punto de agua, peligro',
 			'hub.cards.journal' => 'Diario',
 			'hub.cards.journalSub' => 'Tus notas y recuerdos',
 			'hub.cards.accommodations' => 'Alojamientos',
@@ -4470,10 +4474,10 @@ extension on TranslationsEs {
 			'checklist.ui.preDep8' => 'Descargar los mapas offline',
 			'checklist.ui.bagOk' => 'MOCHILA OK — LISTA PARA SALIR',
 			'checklist.ui.validateBag' => 'VALIDAR MI MOCHILA',
-			'checklist.ui.cancelValidation' => 'ANULAR LA VALIDACIÓN',
-			'checklist.ui.shoppingListButton' => 'LISTA DE COMPRA',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.cancelValidation' => 'ANULAR LA VALIDACIÓN',
+			'checklist.ui.shoppingListButton' => 'LISTA DE COMPRA',
 			'checklist.ui.shareGroup' => 'COMPARTIR CON EL GRUPO',
 			'checklist.ui.exportList' => 'EXPORTAR LA LISTA',
 			'checklist.ui.bagValidTitle' => 'Mochila validada',
@@ -4984,10 +4988,10 @@ extension on TranslationsEs {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semanas ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Objetivo clave',
 			'training.inviteSetDate' => 'Fija tu fecha de salida en el Calendario para activar la cuenta atras.',
-			'training.inviteFillProfile' => 'Rellena tu ficha para adaptar el plan a tu perfil.',
-			'training.cautionVerdictNotice' => 'Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.',
 			_ => null,
 		} ?? switch (path) {
+			'training.inviteFillProfile' => 'Rellena tu ficha para adaptar el plan a tu perfil.',
+			'training.cautionVerdictNotice' => 'Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× por semana',
 			'training.freqOncePerPhase' => 'una vez en la fase',
 			'training.freqFinalWeek' => 'solo la última semana',
@@ -5498,10 +5502,10 @@ extension on TranslationsEs {
 			'fireRisk.level.none' => 'Ninguno',
 			'fireRisk.level.low' => 'Bajo',
 			'fireRisk.level.moderate' => 'Moderado',
-			'fireRisk.level.high' => 'Alto',
-			'fireRisk.level.veryHigh' => 'Muy alto',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.level.high' => 'Alto',
+			'fireRisk.level.veryHigh' => 'Muy alto',
 			'fireRisk.level.extreme' => 'Extremo',
 			'fireRisk.stagesTitle' => 'Riesgo por etapa',
 			'fireRisk.stageBadge' => ({required Object number}) => 'E${number}',

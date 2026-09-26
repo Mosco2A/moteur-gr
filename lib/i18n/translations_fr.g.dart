@@ -3862,6 +3862,12 @@ class Translations$hub$cards$fr {
 	/// fr: '112, secours et contacts'
 	String get emergencySub => '112, secours et contacts';
 
+	/// fr: 'Signaler'
+	String get signalement => 'Signaler';
+
+	/// fr: 'Obstacle, point d'eau, danger'
+	String get signalementSub => 'Obstacle, point d\'eau, danger';
+
 	/// fr: 'Journal'
 	String get journal => 'Journal';
 
@@ -7762,6 +7768,8 @@ extension on Translations {
 			'hub.cards.navigationSub' => 'Carte et suivi GPS',
 			'hub.cards.emergency' => 'Urgence',
 			'hub.cards.emergencySub' => '112, secours et contacts',
+			'hub.cards.signalement' => 'Signaler',
+			'hub.cards.signalementSub' => 'Obstacle, point d\'eau, danger',
 			'hub.cards.journal' => 'Journal',
 			'hub.cards.journalSub' => 'Vos notes et souvenirs',
 			'hub.cards.accommodations' => 'Hébergements',
@@ -8147,10 +8155,10 @@ extension on Translations {
 			'checklist.ui.preDep8' => 'Télécharger les cartes offline',
 			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
 			'checklist.ui.validateBag' => 'VALIDER MON SAC',
-			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
-			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
+			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
 			'checklist.ui.shareGroup' => 'PARTAGER AVEC LE GROUPE',
 			'checklist.ui.exportList' => 'EXPORTER LA LISTE',
 			'checklist.ui.bagValidTitle' => 'Sac valide',
@@ -8661,10 +8669,10 @@ extension on Translations {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Semaines ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Objectif clé',
 			'training.inviteSetDate' => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.',
-			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
-			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
 			_ => null,
 		} ?? switch (path) {
+			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
+			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× par semaine',
 			'training.freqOncePerPhase' => 'une fois dans la phase',
 			'training.freqFinalWeek' => 'la dernière semaine seulement',
@@ -9175,10 +9183,10 @@ extension on Translations {
 			'fireRisk.level.none' => 'Aucun',
 			'fireRisk.level.low' => 'Faible',
 			'fireRisk.level.moderate' => 'Modéré',
-			'fireRisk.level.high' => 'Élevé',
-			'fireRisk.level.veryHigh' => 'Très élevé',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.level.high' => 'Élevé',
+			'fireRisk.level.veryHigh' => 'Très élevé',
 			'fireRisk.level.extreme' => 'Extrême',
 			'fireRisk.stagesTitle' => 'Risque par étape',
 			'fireRisk.stageBadge' => ({required Object number}) => 'E${number}',

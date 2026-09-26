@@ -1853,6 +1853,8 @@ class _Translations$hub$cards$de extends Translations$hub$cards$fr {
 	@override String get navigationSub => 'Karte und GPS-Tracking';
 	@override String get emergency => 'Notfall';
 	@override String get emergencySub => '112, Rettung und Kontakte';
+	@override String get signalement => 'Melden';
+	@override String get signalementSub => 'Hindernis, Wasserstelle, Gefahr';
 	@override String get journal => 'Tagebuch';
 	@override String get journalSub => 'Ihre Notizen und Erinnerungen';
 	@override String get accommodations => 'Unterkünfte';
@@ -4085,6 +4087,8 @@ extension on TranslationsDe {
 			'hub.cards.navigationSub' => 'Karte und GPS-Tracking',
 			'hub.cards.emergency' => 'Notfall',
 			'hub.cards.emergencySub' => '112, Rettung und Kontakte',
+			'hub.cards.signalement' => 'Melden',
+			'hub.cards.signalementSub' => 'Hindernis, Wasserstelle, Gefahr',
 			'hub.cards.journal' => 'Tagebuch',
 			'hub.cards.journalSub' => 'Ihre Notizen und Erinnerungen',
 			'hub.cards.accommodations' => 'Unterkünfte',
@@ -4470,10 +4474,10 @@ extension on TranslationsDe {
 			'checklist.ui.preDep8' => 'Offline-Karten herunterladen',
 			'checklist.ui.bagOk' => 'RUCKSACK OK — STARTBEREIT',
 			'checklist.ui.validateBag' => 'RUCKSACK BESTÄTIGEN',
-			'checklist.ui.cancelValidation' => 'BESTÄTIGUNG AUFHEBEN',
-			'checklist.ui.shoppingListButton' => 'EINKAUFSLISTE',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.cancelValidation' => 'BESTÄTIGUNG AUFHEBEN',
+			'checklist.ui.shoppingListButton' => 'EINKAUFSLISTE',
 			'checklist.ui.shareGroup' => 'MIT DER GRUPPE TEILEN',
 			'checklist.ui.exportList' => 'LISTE EXPORTIEREN',
 			'checklist.ui.bagValidTitle' => 'Rucksack bestätigt',
@@ -4984,10 +4988,10 @@ extension on TranslationsDe {
 			'training.phaseWeeks' => ({required Object start, required Object end, required Object title}) => 'Wochen ${start}-${end} · ${title}',
 			'training.objectiveTitle' => 'Schlüsselziel',
 			'training.inviteSetDate' => 'Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.',
-			'training.inviteFillProfile' => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.',
-			'training.cautionVerdictNotice' => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.',
 			_ => null,
 		} ?? switch (path) {
+			'training.inviteFillProfile' => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.',
+			'training.cautionVerdictNotice' => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.',
 			'training.freqPerWeek' => ({required Object n}) => '${n}× pro Woche',
 			'training.freqOncePerPhase' => 'einmal in dieser Phase',
 			'training.freqFinalWeek' => 'nur in der letzten Woche',
@@ -5498,10 +5502,10 @@ extension on TranslationsDe {
 			'fireRisk.level.none' => 'Keine',
 			'fireRisk.level.low' => 'Gering',
 			'fireRisk.level.moderate' => 'Mäßig',
-			'fireRisk.level.high' => 'Hoch',
-			'fireRisk.level.veryHigh' => 'Sehr hoch',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.level.high' => 'Hoch',
+			'fireRisk.level.veryHigh' => 'Sehr hoch',
 			'fireRisk.level.extreme' => 'Extrem',
 			'fireRisk.stagesTitle' => 'Risiko pro Etappe',
 			'fireRisk.stageBadge' => ({required Object number}) => 'E${number}',
