@@ -596,18 +596,19 @@ class CloudSyncService {
         itemsSynced++;
       }
 
-      // --- 3. Note d'experience globale (texte libre) ---
-      final note = await pastHikesDao!.getNote(userId);
-      if (note != null) {
-        await _setWithLastWriteWins(
-          base.collection("profile").doc("experience_note"),
-          {
-            "free_text_difficulties": note.freeTextDifficulties,
-            "updated_at": note.updatedAt.toIso8601String(),
-          },
-        );
-        itemsSynced++;
-      }
+      // --- 3. Note d'experience globale : PLUS ENVOYEE (tache 570, S2) ---
+      //
+      // Le texte libre « difficultes » remontait ici sous
+      // `profile/experience_note` / `free_text_difficulties`. Il n'est plus
+      // collecte (champ retire de l'ecran, ecriture retiree du repository) :
+      // continuer a le televerser reviendrait a sortir du telephone une donnee
+      // personnelle que l'application ne demande plus et que personne ne lit.
+      // La minimisation (RGPD art. 5.1.c) vaut aussi pour la sauvegarde : ce
+      // qu'on ne collecte plus ne se sauvegarde plus.
+      //
+      // La restauration, elle, reste tolerante a un document deja present sur un
+      // compte existant (`restore_service.dart`) : on n'ecrit plus, on ne casse
+      // pas ce qui a ete ecrit hier.
 
       _log.d("[CloudSync] Miroir profil synchronise: $itemsSynced items");
       return CloudSyncResult(

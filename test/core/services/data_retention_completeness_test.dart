@@ -109,7 +109,21 @@ void main() {
         totalDistanceKm: 42,
       ),
     ]);
-    await repo.saveExperienceNote('genoux douloureux en descente');
+    // NOTE DE DIFFICULTES : SEMEE A LA MAIN, ET C'EST VOULU (tache 570, S2).
+    //
+    // L'application ne SAIT PLUS ecrire ce texte libre : le champ, son provider
+    // et `saveExperienceNote` ont ete retires, parce que la donnee etait
+    // collectee et lue par personne. Mais des telephones la portent DEJA, et
+    // c'est precisement cette population que l'article 17 doit servir. On seme
+    // donc la note comme une mise a jour la trouverait — dans les prefs ET dans
+    // le miroir Drift — pour exiger que l'effacement l'emporte encore.
+    await prefs.setString(
+        kHikerExperienceNotePrefsKey, 'genoux douloureux en descente');
+    await db.pastHikesDao.upsertNote(HikerExperienceNoteCompanion.insert(
+      userId: kHikerLocalUserId,
+      freeTextDifficulties: const Value('genoux douloureux en descente'),
+      updatedAt: fixedNow,
+    ));
     await repo.saveWalkTestResult(WalkTestResult(
       distanceMeters: 480,
       level: 'moyen',
@@ -168,7 +182,11 @@ void main() {
       expect(reloaded.age, 0);
       expect(reloaded.heightCm, 0);
       expect(reloaded.weightKg, 0);
-      expect(await repo.getExperienceNote(), isEmpty);
+      // La note heritee part des DEUX etages : la cle durable et le miroir.
+      expect(prefs.getString(kHikerExperienceNotePrefsKey), isNull,
+          reason: 'la note de difficultes heritee survit dans les prefs');
+      expect(await db.pastHikesDao.getNote(kHikerLocalUserId), isNull,
+          reason: 'la note de difficultes heritee survit dans le miroir Drift');
       expect(await repo.getWalkTestResult(), isNull);
       expect((await repo.loadPastHikes()), isEmpty);
     });

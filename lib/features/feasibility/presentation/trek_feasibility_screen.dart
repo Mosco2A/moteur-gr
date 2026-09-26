@@ -1013,6 +1013,24 @@ class _ConditionsSection extends StatelessWidget {
     // 5. La masse : hors du verdict, ET C'EST UNE PROPRIETE ASSUMEE (#3-d).
     lines.add(f.massNotCounted);
 
+    // 6. L'AGE : DANS le verdict, et il fallait le dire (tache 570, S1).
+    //
+    // CETTE SECTION AVAIT UN TROU, ET IL ETAIT DU MAUVAIS COTE. Elle declarait
+    // ce que le poids NE FAIT PAS (« ni ton poids ni celui de ton sac
+    // n'entrent dans ce verdict ») et taisait ce que l'age FAIT. Le randonneur
+    // pouvait donc en deduire l'inverse de la verite : que sa morphologie pese
+    // et que son age est decoratif. C'est exactement la lecture qui a fait
+    // conclure que « l'age ne sert a rien ».
+    //
+    // L'age agit a deux endroits : il retire un cran de niveau a partir de 60
+    // ans et deux a partir de 75 (`FeasibilityFormula.deriveLevel`), et il fixe
+    // la distance de reference du test de marche (`WalkTestNorms.predictedFor`,
+    // equations d'Enright). La ligne est STATIQUE comme celle de la masse : elle
+    // enonce la regle, pas la valeur de ce randonneur — la valeur, c'est sa
+    // fiche qui la porte, et cette section dit ce qui entre, pas ce qu'on sait
+    // de lui.
+    lines.add(f.ageCounted);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

@@ -305,27 +305,22 @@ class HikerProfileRepository {
     }
   }
 
-  // --- Note d'experience globale (texte libre) -----------------------------
-
-  /// Relit la note d'experience globale (texte libre « difficultes »).
-  Future<String> getExperienceNote() async {
-    final prefs = await _preferences;
-    return prefs.getString(kHikerExperienceNotePrefsKey) ?? '';
-  }
-
-  /// Sauvegarde la note d'experience globale (prefs + Drift). V1 : STOCKEE
-  /// seulement (l'IA la lira en V2, envoi anonymise).
-  Future<void> saveExperienceNote(String text) async {
-    final prefs = await _preferences;
-    await prefs.setString(kHikerExperienceNotePrefsKey, text);
-    await _pastHikesDao.upsertNote(
-      HikerExperienceNoteCompanion.insert(
-        userId: _userId,
-        freeTextDifficulties: Value(text),
-        updatedAt: DateTime.now(),
-      ),
-    );
-  }
+  // --- Note d'experience globale (texte libre) : PLUS D'ECRITURE ------------
+  //
+  // TACHE 570, S2 — `getExperienceNote` et `saveExperienceNote` sont retirees.
+  // Ce couple ecrivait le texte libre « difficultes » sur DEUX etages (prefs
+  // durables + miroir Drift), d'ou il partait au cloud et revenait a la
+  // restauration — pour n'etre jamais relu par aucune regle metier. Plus rien
+  // n'ecrit donc dans `hiker.experienceNote` ni dans la table de notes.
+  //
+  // CE QUI SUBSISTE, ET POURQUOI. La cle de prefs
+  // ([kHikerExperienceNotePrefsKey]) et l'effacement de la table restent, tous
+  // deux dans [eraseAllPersonalData] SEULEMENT : des telephones portent deja
+  // cette note, et arreter de collecter ne les nettoie pas. Retirer la ligne
+  // d'effacement en meme temps que la collecte laisserait ces textes sur
+  // l'appareil pour toujours, hors de portee du droit a l'oubli — c'est
+  // exactement le defaut que la tache 561 avait eu a corriger. La porte de
+  // sortie ferme donc apres tout le monde.
 
   // --- Test de marche 6 minutes (dernier resultat date) --------------------
 

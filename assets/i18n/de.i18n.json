@@ -802,19 +802,6 @@
     "noDateChosen": "Kein Datum gewählt",
     "departureDate": "Startdatum"
   },
-  "appearance": {
-    "title": "Erscheinungsbild",
-    "subtitle": "Wähle das Design der App",
-    "skinSentierVivant": "Lebendiger Pfad",
-    "skinSentierVivantDesc": "Modern und farbenfroh, die Wegfarbe im Mittelpunkt",
-    "skinTopographique": "Topografisch",
-    "skinTopographiqueDesc": "Stil einer Wanderkarte, Daten im Vordergrund",
-    "skinGrandAir": "Freiluft",
-    "skinGrandAirDesc": "Bildschirmfüllende Fotos, Abenteuertagebuch-Look",
-    "unavailableOnTrail": "Auf diesem Weg nicht verfügbar",
-    "changeSkin": "Design wechseln",
-    "selected": "Ausgewählt"
-  },
   "feedback": {
     "title": "Feedback",
     "type": "Feedbacktyp",
@@ -942,6 +929,7 @@
       "seasonNoSource": "Aufbruch im Frühling oder Herbst: keine veröffentlichte Messung erlaubt es, eine Wirkung zu beziffern. Die Jahreszeit ändert hier nichts, mangels Quelle.",
       "seasonMissing": "Kein Aufbruchsdatum gesetzt: die Jahreszeit ändert hier nichts, mangels Daten.",
       "massNotCounted": "Weder dein Gewicht noch das deines Rucksacks fließt in dieses Urteil ein, und das ist gewollt: es misst, was du nachweislich durchhältst. Mit 65 oder mit 95 kg erhält derselbe Mann dasselbe Urteil.",
+      "ageCounted": "Das Alter hingegen geht in dieses Urteil ein: Es legt die Referenzdistanz Ihres Gehtests fest und senkt die eingestufte Stufe ab 60 Jahren um eine, ab 75 Jahren um zwei. Die aerobe Kapazität sinkt mit dem Alter, das ist gemessen — es ist kein Urteil über Sie.",
       "winterInvalid": "Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.",
       "restDaysCounted": "In diesem Urteil gezählte Ruhetage: ${count}.",
       "restDaysNone": "In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.",
@@ -1164,7 +1152,13 @@
     "inviteSetDate": "Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.",
     "inviteFillProfile": "Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.",
     "cautionVerdictNotice": "Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.",
-    "departureTooClose": "Noch $days Tage: Plan auf die verfügbare Zeit verdichtet."
+    "freqPerWeek": "$n× pro Woche",
+    "freqOncePerPhase": "einmal in dieser Phase",
+    "freqFinalWeek": "nur in der letzten Woche",
+    "freqSourceNotice": "Die Häufigkeiten sind keine selbst erfundenen Zahlen: 3 Ausdauer- und 2 Krafteinheiten pro Woche, 2 Ruhetage, nach REI (Conditioning for Backpacking), Terres d'Aventure und den WHO-Empfehlungen 2020.",
+    "noDateWhy": "Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.",
+    "tooShortTitle": "Keine Vorbereitung angeboten",
+    "tooShortWhy": "Bis zur Abreise bleiben $days Tage, also weniger als $weeks Wochen. Es wird Ihnen keine körperliche Vorbereitung angeboten: unter $weeks Wochen gibt es keinen Aufbau, und ein in die Restzeit gepresstes Programm erzeugt Verletzungen, keine Form. Diese Untergrenze von $weeks Wochen ist die der Trekkinganbieter — Terres d'Aventure schreibt „beginnen Sie mindestens 2 Monate vor der Abreise mit dem Training“. Gehen Sie bis dahin regelmäßig wandern und suchen Sie keine Überlastung."
   },
   "eta": {
     "title": "Geschätzte Zeit",
@@ -2038,6 +2032,7 @@
     "fieldAge": "Alter",
     "hintAge": "In Jahren",
     "errorAge": "Ungültiges Alter (18 bis 120 Jahre)",
+    "ageUsage": "Wozu Ihr Alter dient: Es legt die Referenzdistanz Ihres Gehtests fest und senkt die eingestufte Stufe ab 60 Jahren um eine, ab 75 Jahren um zwei. Für nichts anderes wird es verwendet, und nichts davon verlässt Ihr Telefon.",
     "fieldHeight": "Grösse",
     "hintHeight": "In Zentimetern",
     "errorHeight": "Ungültige Grösse (60 bis 255 cm)",
@@ -2113,11 +2108,9 @@
     "editHike": "Tour bearbeiten",
     "deleteHike": "Löschen",
     "save": "Speichern",
+    "backToFeasibility": "Zurück zur Machbarkeit",
     "saved": "Touren gespeichert",
-    "maxReached": "Maximum von 5 Touren erreicht.",
-    "difficultiesTitle": "Aufgetretene Schwierigkeiten",
-    "difficultiesHint": "Ein Text für alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Höhe, Hitzestress...",
-    "difficultiesSaved": "Notiz gespeichert"
+    "maxReached": "Maximum von 5 Touren erreicht."
   },
   "ffrando": {
     "cotationTitle": "FFRandonnee-Bewertung",

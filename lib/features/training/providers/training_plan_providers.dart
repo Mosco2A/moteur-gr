@@ -59,17 +59,35 @@ final trainingDaysUntilDepartureProvider = Provider<int?>((ref) {
   return dep.difference(today).inDays;
 });
 
-/// Seuil (en jours) sous lequel le depart est « trop proche » -> plan condense.
+/// PLANCHER DE PREPARATION : 8 SEMAINES, ET C'EST UNE SOURCE, PAS UN REGLAGE.
 ///
-/// Repere produit : en dessous d'une phase (≈ 3 semaines) le plan complet ne
-/// tient plus, on avertit et on condense. DONNEE de reglage (pas une loi).
-const int kTrainingTooCloseThresholdDays = 21;
+/// Decision de Chris du 26/09, verbatim : « 8 semaines c'est le minimum en
+/// dessous duquel tu ne propose pas de prepa physique ». Ce chiffre n'est pas
+/// arbitraire et il n'est pas de nous : Terres d'Aventure, operateur de trek,
+/// ecrit « commencez a vous entrainer AU MOINS 2 MOIS avant de partir ». Deux
+/// mois = 8 semaines. Les sources qui vont plus loin (gr-go.fr : « 3 a 4 mois
+/// avant un trek de ce type » ; Randonner Malin : 6 mois pour un sedentaire) ne
+/// contredisent pas ce plancher, elles le confirment comme un MINIMUM.
+///
+/// CE QUE CE PLANCHER A REMPLACE. Un seuil « depart trop proche » de 21 jours
+/// vivait ici et faisait CONDENSER le plan sur le temps restant. Condenser une
+/// preparation a la montagne, c'est empiler la charge sans laisser le corps
+/// s'adapter : ca fabrique de la blessure, pas de la forme. En dessous du
+/// plancher on ne propose donc plus rien — et on dit pourquoi.
+const int kTrainingMinWeeks = 8;
 
-/// Vrai si le depart est pose ET trop proche pour derouler le plan complet.
-final trainingDepartureTooCloseProvider = Provider<bool>((ref) {
+/// Le plancher exprime en jours (ce que le compte a rebours manipule).
+const int kTrainingMinDays = kTrainingMinWeeks * 7;
+
+/// Vrai si une date est posee ET qu'il reste MOINS que le plancher.
+///
+/// Un depart deja passe (jours negatifs) n'est pas « trop court » : il n'y a
+/// plus de preparation a proposer du tout, et l'ecran le traite par l'absence
+/// de compte a rebours, pas par un refus motive.
+final trainingBelowMinimumProvider = Provider<bool>((ref) {
   final days = ref.watch(trainingDaysUntilDepartureProvider);
   if (days == null) return false;
-  return days >= 0 && days < kTrainingTooCloseThresholdDays;
+  return days >= 0 && days < kTrainingMinDays;
 });
 
 /// Personnalisation du plan DERIVEE du profil L4 (fiche + verdict).

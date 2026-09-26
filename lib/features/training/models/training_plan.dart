@@ -84,6 +84,22 @@ abstract class TrainingPhase with _$TrainingPhase {
       _$TrainingPhaseFromJson(json);
 }
 
+/// Rythme d'une seance : combien de fois, et quand (tache 570, S3-a).
+///
+/// Une seance sans rythme n'est pas une seance, c'est un TYPE de seance. Toutes
+/// les valeurs ici sont SOURCEES (voir [TrainingSession.timesPerWeek]).
+enum SessionOccurrence {
+  /// Seance HEBDOMADAIRE : [TrainingSession.timesPerWeek] fois par semaine.
+  weekly,
+
+  /// Seance a faire UNE FOIS dans la phase (ex. le test du materiel sur deux
+  /// jours enchaines : ce n'est pas un rythme, c'est un rendez-vous).
+  oncePerPhase,
+
+  /// Seance de la DERNIERE SEMAINE seulement (l'affutage).
+  finalWeek,
+}
+
 /// Une seance d'entrainement cochable (ligne d'un bloc de phase).
 ///
 /// L'identifiant [id] est STABLE et sert de cle de persistance locale (seances
@@ -102,7 +118,40 @@ abstract class TrainingSession with _$TrainingSession {
     @Default('') String labelDe,
     @Default('') String labelIt,
     @Default('') String labelEs,
+
+    /// FREQUENCE HEBDOMADAIRE de la seance (tache 570, S3-a).
+    ///
+    /// LE DEFAUT QUE CE CHAMP CORRIGE. Le plan listait des TYPES de seances
+    /// (« sortie cardio », « marche ») et l'ecran les presentait comme des
+    /// seances UNIQUES cochables : deux semaines de Fondation semblaient donc
+    /// ne demander qu'UNE sortie cardio. Retour Chris du 26/09, mot pour mot :
+    /// « une seule sortie cardio c'est vraiment peu idem pour la sortie
+    /// marche ». Le plan ne disait pas combien de fois — il le dit maintenant.
+    ///
+    /// AUCUN CHIFFRE N'EST INVENTE (regle #6178). La semaine de reference est
+    /// celle de REI Expert Advice, « Conditioning for Backpacking & Hiking » :
+    /// 3 seances de cardio non consecutives + 2 jours de renforcement non
+    /// consecutifs + 2 jours de repos. Le renforcement a 2 jours est confirme
+    /// par les recommandations 2020 de l'OMS (« muscle-strengthening activities
+    /// on 2 or more days a week »). La sortie longue hebdomadaire vient de
+    /// Terres d'Aventure (« marchez tous les week-ends, 5 a 6 h minimum, avec
+    /// un sac a dos de 5 a 10 kg »), le travail de denivele deux fois par
+    /// semaine de Randonner Malin (« monter 1500 marches et descendre 1500
+    /// marches 2 fois par semaine »).
+    ///
+    /// Ignore quand [occurrence] n'est pas [SessionOccurrence.weekly].
+    @Default(0) int timesPerWeek,
+
+    /// Rythme de la seance (hebdomadaire par defaut).
+    @Default(SessionOccurrence.weekly) SessionOccurrence occurrence,
   }) = _TrainingSession;
+
+  /// Vrai si la seance porte un rythme exploitable (affichable a l'ecran).
+  ///
+  /// Une seance hebdomadaire sans frequence est une DONNEE INCOMPLETE : l'ecran
+  /// n'affiche alors aucun rythme plutot qu'un « 0x par semaine » absurde.
+  bool get hasFrequency =>
+      occurrence != SessionOccurrence.weekly || timesPerWeek > 0;
 
   factory TrainingSession.fromJson(Map<String, dynamic> json) =>
       _$TrainingSessionFromJson(json);

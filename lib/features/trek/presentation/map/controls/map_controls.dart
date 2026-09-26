@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
 import '../../../../../i18n/translations.g.dart';
-import '../../../../settings/presentation/skin_selector.dart';
 
 /// Controles de carte — zoom in, zoom out, centrer sur moi.
 ///
@@ -26,30 +25,21 @@ class MapControls extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // Ordre de focus logique (a11y E5.3b) : changer de peau -> zoom + ->
-    // zoom - -> centrer.
+    // Ordre de focus logique (a11y E5.3b) : zoom + -> zoom - -> centrer.
+    //
+    // LE BOUTON « CHANGER DE PEAU » A ETE RETIRE (tache 570, S4). Il ouvrait le
+    // selecteur de peaux en bottom-sheet, c'est-a-dire un choix entre trois
+    // peaux dont deux ne changent rien a l'ecran (`cardStyle` et
+    // `photoScrimOpacity` ne sont lues par aucun widget, et Grand Air attend
+    // encore ses photos). Decision de Chris du 26/09 : « retire ». La carte
+    // reprend ses trois gestes de carte, et l'ordre de focus redescend de 0.
     return FocusTraversalGroup(
       policy: OrderedTraversalPolicy(),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Acces « Changer de peau » (SW-SKIN-L7) : ouvre le meme selecteur
-          // que les Reglages, en bottom-sheet. Le marcheur choisit sa peau
-          // directement depuis la carte (exige par le mandat).
           FocusTraversalOrder(
             order: const NumericFocusOrder(0),
-            child: FloatingActionButton.small(
-              heroTag: 'mapChangeSkin',
-              onPressed: () => showSkinSelectorSheet(context),
-              tooltip: t.appearance.changeSkin,
-              backgroundColor: colorScheme.primaryContainer,
-              foregroundColor: colorScheme.onPrimaryContainer,
-              child: const Icon(Icons.brush_outlined),
-            ),
-          ),
-          const SizedBox(height: 8),
-          FocusTraversalOrder(
-            order: const NumericFocusOrder(1),
             child: FloatingActionButton.small(
               heroTag: 'mapZoomIn',
               onPressed: _zoomIn,
@@ -61,7 +51,7 @@ class MapControls extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           FocusTraversalOrder(
-            order: const NumericFocusOrder(2),
+            order: const NumericFocusOrder(1),
             child: FloatingActionButton.small(
               heroTag: 'mapZoomOut',
               onPressed: _zoomOut,
@@ -73,7 +63,7 @@ class MapControls extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           FocusTraversalOrder(
-            order: const NumericFocusOrder(3),
+            order: const NumericFocusOrder(2),
             child: FloatingActionButton.small(
               heroTag: 'mapCenterOnMe',
               onPressed: onCenterOnMe,

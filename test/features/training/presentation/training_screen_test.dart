@@ -50,7 +50,18 @@ void main() {
 
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
-  Widget wrap({required bool isDemo, TrainingPlan? planOverride}) {
+  /// LA DATE DE DEPART EST DESORMAIS UNE CONDITION D'AFFICHAGE (tache 570, S3).
+  ///
+  /// Ces tests montaient l'ecran SANS date et attendaient le plan : c'etait
+  /// precisement le defaut releve par Chris (« tu fais un plan sans savoir quand
+  /// il part »). Le plan ne s'affiche plus sans date, ni sous huit semaines : la
+  /// rampe par defaut est donc un depart LOIN (90 jours), et les deux refus ont
+  /// leurs propres tests dans `training_frequency_and_floor_test.dart`.
+  Widget wrap({
+    required bool isDemo,
+    TrainingPlan? planOverride,
+    int daysUntilDeparture = 90,
+  }) {
     return ProviderScope(
       overrides: [
         trailConfigProvider.overrideWithValue(testTrailConfig),
@@ -58,6 +69,9 @@ void main() {
             .overrideWith((ref) async => isDemo),
         trainingPlanProvider.overrideWith(
           (ref) async => planOverride ?? plan,
+        ),
+        trainingDepartureDateProvider.overrideWithValue(
+          DateTime.now().add(Duration(days: daysUntilDeparture)),
         ),
       ],
       child: TranslationProvider(
@@ -93,9 +107,16 @@ void main() {
       await tester.pumpWidget(wrap(isDemo: false));
       await tester.pumpAndSettle();
 
-      // Pas de paywall ; l'objectif et la progression sont visibles.
+      // Pas de paywall ; l'objectif et la progression sont dans l'arbre.
+      //
+      // `skipOffstage: false` : la ligne qui NOMME LES SOURCES des frequences
+      // (tache 570, S3-a) s'insere entre les phases et l'objectif, et pousse ce
+      // dernier sous le pli du viewport de test par defaut. Ce qui est sous test
+      // ici est la PRESENCE de l'objectif dans un plan debloque, pas la hauteur
+      // du telephone : le defilement est verifie ailleurs.
       expect(find.text(t.training.unlock), findsNothing);
-      expect(find.text(t.training.objectiveTitle), findsOneWidget);
+      expect(find.text(t.training.objectiveTitle, skipOffstage: false),
+          findsOneWidget);
       // La 1re phase est ouverte par defaut -> ses seances sont cochables.
       expect(find.byType(CheckboxListTile), findsWidgets);
     });

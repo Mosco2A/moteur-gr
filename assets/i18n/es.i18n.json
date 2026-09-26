@@ -802,19 +802,6 @@
     "noDateChosen": "Ninguna fecha elegida",
     "departureDate": "Fecha de salida"
   },
-  "appearance": {
-    "title": "Apariencia",
-    "subtitle": "Elige el aspecto de la aplicación",
-    "skinSentierVivant": "Sendero Vivo",
-    "skinSentierVivantDesc": "Moderno y colorido, el color del sendero como protagonista",
-    "skinTopographique": "Topográfico",
-    "skinTopographiqueDesc": "Estilo mapa topográfico, datos en primer plano",
-    "skinGrandAir": "Aire Libre",
-    "skinGrandAirDesc": "Fotos a pantalla completa, ambiente de diario de aventura",
-    "unavailableOnTrail": "No disponible en este sendero",
-    "changeSkin": "Cambiar aspecto",
-    "selected": "Seleccionado"
-  },
   "feedback": {
     "title": "Comentarios",
     "type": "Tipo de comentario",
@@ -942,6 +929,7 @@
       "seasonNoSource": "Salida en primavera o en otoño: ninguna medida publicada permite cifrar un efecto. La estación no cambia nada aquí, por falta de fuente.",
       "seasonMissing": "No hay fecha de salida fijada: la estación no cambia nada aquí, por falta de dato.",
       "massNotCounted": "Ni tu peso ni el de tu mochila entran en este veredicto, y es a propósito: mide lo que has demostrado aguantar. A 65 o a 95 kg, el mismo hombre obtiene el mismo veredicto.",
+      "ageCounted": "La edad, en cambio, sí entra en este veredicto: fija la distancia de referencia de tu prueba de marcha y baja un nivel el asignado a partir de los 60 años, dos a partir de los 75. La capacidad aeróbica baja con la edad, está medido — no es un juicio sobre ti.",
       "winterInvalid": "Salida en invierno: este veredicto ya no se sostiene. Las clasificaciones de sendero solo valen con buen tiempo, terreno seco y nieve adecuada. No endurecemos la cifra, te decimos que no se aplica.",
       "restDaysCounted": "Días de descanso contados en este veredicto: ${count}.",
       "restDaysNone": "No hay ningún día de descanso en tu programa: pon alguno y esta cifra se mueve.",
@@ -1164,7 +1152,13 @@
     "inviteSetDate": "Fija tu fecha de salida en el Calendario para activar la cuenta atras.",
     "inviteFillProfile": "Rellena tu ficha para adaptar el plan a tu perfil.",
     "cautionVerdictNotice": "Tu viabilidad invita a la prudencia: respeta la progresión y no acortes la preparación.",
-    "departureTooClose": "Quedan $days días: plan condensado al tiempo disponible."
+    "freqPerWeek": "$n× por semana",
+    "freqOncePerPhase": "una vez en la fase",
+    "freqFinalWeek": "solo la última semana",
+    "freqSourceNotice": "Las frecuencias no son cifras de la casa: 3 sesiones de resistencia y 2 de refuerzo por semana, 2 días de descanso, según REI (Conditioning for Backpacking), Terres d'Aventure y las recomendaciones de la OMS de 2020.",
+    "noDateWhy": "Sin fecha de salida este plan no tiene final: no se puede saber en qué semana estás ni cuándo afinar. Pon tu fecha en el Calendario y el plan aparece.",
+    "tooShortTitle": "Ninguna preparación propuesta",
+    "tooShortWhy": "Quedan $days días para la salida, menos de $weeks semanas. No se te propone ninguna preparación física: por debajo de $weeks semanas no hay progresión que construir, y un programa apretado en el tiempo que queda produce lesiones, no forma. Este mínimo de $weeks semanas es el de los operadores de trek — Terres d'Aventure escribe « empieza a entrenar al menos 2 meses antes de partir ». Hasta entonces, camina con regularidad y no busques la sobrecarga."
   },
   "eta": {
     "title": "Tiempo estimado",
@@ -2038,6 +2032,7 @@
     "fieldAge": "Edad",
     "hintAge": "En años",
     "errorAge": "Edad no válida (18 a 120 años)",
+    "ageUsage": "Para qué sirve tu edad: fija la distancia de referencia de tu prueba de marcha y baja un nivel el asignado a partir de los 60 años, dos a partir de los 75. No sirve para nada más, y nada de eso sale de tu teléfono.",
     "fieldHeight": "Altura",
     "hintHeight": "En centímetros",
     "errorHeight": "Altura no válida (60 a 255 cm)",
@@ -2113,11 +2108,9 @@
     "editHike": "Editar ruta",
     "deleteHike": "Eliminar",
     "save": "Guardar",
+    "backToFeasibility": "Volver a la viabilidad",
     "saved": "Rutas guardadas",
-    "maxReached": "Máximo de 5 rutas alcanzado.",
-    "difficultiesTitle": "Dificultades encontradas",
-    "difficultiesHint": "Un solo texto para todas estas rutas: ampollas, rodillas en bajada, ahogo en altitud, golpe de calor...",
-    "difficultiesSaved": "Nota guardada"
+    "maxReached": "Máximo de 5 rutas alcanzado."
   },
   "ffrando": {
     "cotationTitle": "Clasificación FFRandonnee",

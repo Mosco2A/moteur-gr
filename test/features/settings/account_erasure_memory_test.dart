@@ -114,7 +114,19 @@ void main() {
       countryIso: 'FR',
     ));
     await repo.savePastHikes([randoSaisie]);
-    await repo.saveExperienceNote('genoux douloureux en descente');
+    // Note de difficultes HERITEE d'une version precedente : l'application ne
+    // sait plus l'ecrire (tache 570, S2) mais doit toujours savoir l'effacer.
+    // Semee sur ses deux etages, comme une mise a jour la trouverait.
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        kHikerExperienceNotePrefsKey, 'genoux douloureux en descente');
+    await container.read(databaseProvider).pastHikesDao.upsertNote(
+          HikerExperienceNoteCompanion.insert(
+            userId: kHikerLocalUserId,
+            freeTextDifficulties: const Value('genoux douloureux en descente'),
+            updatedAt: DateTime.utc(2026, 9, 25),
+          ),
+        );
     await repo.saveWalkTestResult(WalkTestResult(
       distanceMeters: 480,
       level: 'moyen',
@@ -151,13 +163,21 @@ void main() {
       await saisirLaFiche(container);
       expect((await container.read(hikerProfileProvider.future)).age, 72);
       expect(await container.read(walkTestResultProvider.future), isNotNull);
-      expect(await container.read(experienceNoteProvider.future), isNotEmpty);
+      expect(
+          (await SharedPreferences.getInstance())
+              .getString(kHikerExperienceNotePrefsKey),
+          isNotNull,
+          reason: 'le test ne prouve rien si la note heritee n a pas ete semee');
 
       await container.read(accountErasureProvider)();
 
       expect((await container.read(hikerProfileProvider.future)).isEmpty, isTrue);
       expect(await container.read(walkTestResultProvider.future), isNull);
-      expect(await container.read(experienceNoteProvider.future), isEmpty);
+      expect(
+          (await SharedPreferences.getInstance())
+              .getString(kHikerExperienceNotePrefsKey),
+          isNull,
+          reason: 'la note de difficultes heritee doit partir avec le reste');
     });
   });
 

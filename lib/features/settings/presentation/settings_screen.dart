@@ -11,7 +11,6 @@ import '../../../shared/widgets/app_header.dart';
 import '../../notifications/providers/notification_provider.dart';
 import '../providers/settings_provider.dart';
 import 'data_erasure_section.dart';
-import 'skin_selector.dart';
 
 /// Ecran des parametres complets.
 ///
@@ -44,9 +43,14 @@ class SettingsScreen extends ConsumerWidget {
           _buildThemeSection(context, ref, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // --- Apparence (peau visuelle, SW-SKIN-L7) ---
-          _buildAppearanceSection(context, theme, tr),
-          const SizedBox(height: AppTheme.spacingLg),
+          // --- PLUS DE SECTION APPARENCE (tache 570, S4) ---
+          // Elle offrait le choix entre trois peaux dont deux n'existent pas :
+          // sur les trois proprietes qui les distinguent, `headerStyle` est lue
+          // par un seul widget, `cardStyle` et `photoScrimOpacity` par personne,
+          // et Grand Air n'a meme pas ses photos. Decision de Chris du 26/09,
+          // un mot : « retire ». Le MOTEUR de peaux, lui, reste en place (voir
+          // `core/theme/skin_theme.dart`) pour que le choix puisse revenir le
+          // jour ou les trois peaux existent vraiment.
 
           // --- Cache ---
           _buildCacheSection(context, ref, theme, tr),
@@ -233,34 +237,6 @@ class SettingsScreen extends ConsumerWidget {
             }).toList(),
           ),
         ),
-      ],
-    );
-  }
-
-  /// Section apparence - selecteur de peau visuelle (SW-SKIN-L7).
-  ///
-  /// En-tete « Apparence » + sous-titre, puis le [SkinSelector] (3 tuiles peau
-  /// avec vignette schematique). Le selecteur porte deja ses propres tuiles
-  /// (cartes) et gere l'etat selectionne + le grisage de Grand Air non eligible.
-  Widget _buildAppearanceSection(
-    BuildContext context,
-    ThemeData theme,
-    Translations tr,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _sectionHeader(theme, Icons.brush_outlined, tr.appearance.title),
-        Padding(
-          padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
-          child: Text(
-            tr.appearance.subtitle,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ),
-        const SkinSelector(),
       ],
     );
   }

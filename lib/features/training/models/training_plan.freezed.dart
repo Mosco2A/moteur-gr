@@ -654,7 +654,29 @@ mixin _$TrainingSession {
 
 /// Identifiant STABLE de la seance (cle de persistance du coche).
  String get id;/// Libelle de la seance — francais (base).
- String get labelFr; String get labelEn; String get labelDe; String get labelIt; String get labelEs;
+ String get labelFr; String get labelEn; String get labelDe; String get labelIt; String get labelEs;/// FREQUENCE HEBDOMADAIRE de la seance (tache 570, S3-a).
+///
+/// LE DEFAUT QUE CE CHAMP CORRIGE. Le plan listait des TYPES de seances
+/// (« sortie cardio », « marche ») et l'ecran les presentait comme des
+/// seances UNIQUES cochables : deux semaines de Fondation semblaient donc
+/// ne demander qu'UNE sortie cardio. Retour Chris du 26/09, mot pour mot :
+/// « une seule sortie cardio c'est vraiment peu idem pour la sortie
+/// marche ». Le plan ne disait pas combien de fois — il le dit maintenant.
+///
+/// AUCUN CHIFFRE N'EST INVENTE (regle #6178). La semaine de reference est
+/// celle de REI Expert Advice, « Conditioning for Backpacking & Hiking » :
+/// 3 seances de cardio non consecutives + 2 jours de renforcement non
+/// consecutifs + 2 jours de repos. Le renforcement a 2 jours est confirme
+/// par les recommandations 2020 de l'OMS (« muscle-strengthening activities
+/// on 2 or more days a week »). La sortie longue hebdomadaire vient de
+/// Terres d'Aventure (« marchez tous les week-ends, 5 a 6 h minimum, avec
+/// un sac a dos de 5 a 10 kg »), le travail de denivele deux fois par
+/// semaine de Randonner Malin (« monter 1500 marches et descendre 1500
+/// marches 2 fois par semaine »).
+///
+/// Ignore quand [occurrence] n'est pas [SessionOccurrence.weekly].
+ int get timesPerWeek;/// Rythme de la seance (hebdomadaire par defaut).
+ SessionOccurrence get occurrence;
 /// Create a copy of TrainingSession
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -667,16 +689,16 @@ $TrainingSessionCopyWith<TrainingSession> get copyWith => _$TrainingSessionCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrainingSession&&(identical(other.id, id) || other.id == id)&&(identical(other.labelFr, labelFr) || other.labelFr == labelFr)&&(identical(other.labelEn, labelEn) || other.labelEn == labelEn)&&(identical(other.labelDe, labelDe) || other.labelDe == labelDe)&&(identical(other.labelIt, labelIt) || other.labelIt == labelIt)&&(identical(other.labelEs, labelEs) || other.labelEs == labelEs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TrainingSession&&(identical(other.id, id) || other.id == id)&&(identical(other.labelFr, labelFr) || other.labelFr == labelFr)&&(identical(other.labelEn, labelEn) || other.labelEn == labelEn)&&(identical(other.labelDe, labelDe) || other.labelDe == labelDe)&&(identical(other.labelIt, labelIt) || other.labelIt == labelIt)&&(identical(other.labelEs, labelEs) || other.labelEs == labelEs)&&(identical(other.timesPerWeek, timesPerWeek) || other.timesPerWeek == timesPerWeek)&&(identical(other.occurrence, occurrence) || other.occurrence == occurrence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,labelFr,labelEn,labelDe,labelIt,labelEs);
+int get hashCode => Object.hash(runtimeType,id,labelFr,labelEn,labelDe,labelIt,labelEs,timesPerWeek,occurrence);
 
 @override
 String toString() {
-  return 'TrainingSession(id: $id, labelFr: $labelFr, labelEn: $labelEn, labelDe: $labelDe, labelIt: $labelIt, labelEs: $labelEs)';
+  return 'TrainingSession(id: $id, labelFr: $labelFr, labelEn: $labelEn, labelDe: $labelDe, labelIt: $labelIt, labelEs: $labelEs, timesPerWeek: $timesPerWeek, occurrence: $occurrence)';
 }
 
 
@@ -687,7 +709,7 @@ abstract mixin class $TrainingSessionCopyWith<$Res>  {
   factory $TrainingSessionCopyWith(TrainingSession value, $Res Function(TrainingSession) _then) = _$TrainingSessionCopyWithImpl;
 @useResult
 $Res call({
- String id, String labelFr, String labelEn, String labelDe, String labelIt, String labelEs
+ String id, String labelFr, String labelEn, String labelDe, String labelIt, String labelEs, int timesPerWeek, SessionOccurrence occurrence
 });
 
 
@@ -704,7 +726,7 @@ class _$TrainingSessionCopyWithImpl<$Res>
 
 /// Create a copy of TrainingSession
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? labelFr = null,Object? labelEn = null,Object? labelDe = null,Object? labelIt = null,Object? labelEs = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? labelFr = null,Object? labelEn = null,Object? labelDe = null,Object? labelIt = null,Object? labelEs = null,Object? timesPerWeek = null,Object? occurrence = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,labelFr: null == labelFr ? _self.labelFr : labelFr // ignore: cast_nullable_to_non_nullable
@@ -712,7 +734,9 @@ as String,labelEn: null == labelEn ? _self.labelEn : labelEn // ignore: cast_nul
 as String,labelDe: null == labelDe ? _self.labelDe : labelDe // ignore: cast_nullable_to_non_nullable
 as String,labelIt: null == labelIt ? _self.labelIt : labelIt // ignore: cast_nullable_to_non_nullable
 as String,labelEs: null == labelEs ? _self.labelEs : labelEs // ignore: cast_nullable_to_non_nullable
-as String,
+as String,timesPerWeek: null == timesPerWeek ? _self.timesPerWeek : timesPerWeek // ignore: cast_nullable_to_non_nullable
+as int,occurrence: null == occurrence ? _self.occurrence : occurrence // ignore: cast_nullable_to_non_nullable
+as SessionOccurrence,
   ));
 }
 
@@ -797,10 +821,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String labelFr,  String labelEn,  String labelDe,  String labelIt,  String labelEs)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String labelFr,  String labelEn,  String labelDe,  String labelIt,  String labelEs,  int timesPerWeek,  SessionOccurrence occurrence)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TrainingSession() when $default != null:
-return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt,_that.labelEs);case _:
+return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt,_that.labelEs,_that.timesPerWeek,_that.occurrence);case _:
   return orElse();
 
 }
@@ -818,10 +842,10 @@ return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String labelFr,  String labelEn,  String labelDe,  String labelIt,  String labelEs)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String labelFr,  String labelEn,  String labelDe,  String labelIt,  String labelEs,  int timesPerWeek,  SessionOccurrence occurrence)  $default,) {final _that = this;
 switch (_that) {
 case _TrainingSession():
-return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt,_that.labelEs);case _:
+return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt,_that.labelEs,_that.timesPerWeek,_that.occurrence);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -838,10 +862,10 @@ return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String labelFr,  String labelEn,  String labelDe,  String labelIt,  String labelEs)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String labelFr,  String labelEn,  String labelDe,  String labelIt,  String labelEs,  int timesPerWeek,  SessionOccurrence occurrence)?  $default,) {final _that = this;
 switch (_that) {
 case _TrainingSession() when $default != null:
-return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt,_that.labelEs);case _:
+return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt,_that.labelEs,_that.timesPerWeek,_that.occurrence);case _:
   return null;
 
 }
@@ -853,7 +877,7 @@ return $default(_that.id,_that.labelFr,_that.labelEn,_that.labelDe,_that.labelIt
 @JsonSerializable()
 
 class _TrainingSession extends TrainingSession {
-  const _TrainingSession({required this.id, required this.labelFr, this.labelEn = '', this.labelDe = '', this.labelIt = '', this.labelEs = ''}): super._();
+  const _TrainingSession({required this.id, required this.labelFr, this.labelEn = '', this.labelDe = '', this.labelIt = '', this.labelEs = '', this.timesPerWeek = 0, this.occurrence = SessionOccurrence.weekly}): super._();
   factory _TrainingSession.fromJson(Map<String, dynamic> json) => _$TrainingSessionFromJson(json);
 
 /// Identifiant STABLE de la seance (cle de persistance du coche).
@@ -864,6 +888,30 @@ class _TrainingSession extends TrainingSession {
 @override@JsonKey() final  String labelDe;
 @override@JsonKey() final  String labelIt;
 @override@JsonKey() final  String labelEs;
+/// FREQUENCE HEBDOMADAIRE de la seance (tache 570, S3-a).
+///
+/// LE DEFAUT QUE CE CHAMP CORRIGE. Le plan listait des TYPES de seances
+/// (« sortie cardio », « marche ») et l'ecran les presentait comme des
+/// seances UNIQUES cochables : deux semaines de Fondation semblaient donc
+/// ne demander qu'UNE sortie cardio. Retour Chris du 26/09, mot pour mot :
+/// « une seule sortie cardio c'est vraiment peu idem pour la sortie
+/// marche ». Le plan ne disait pas combien de fois — il le dit maintenant.
+///
+/// AUCUN CHIFFRE N'EST INVENTE (regle #6178). La semaine de reference est
+/// celle de REI Expert Advice, « Conditioning for Backpacking & Hiking » :
+/// 3 seances de cardio non consecutives + 2 jours de renforcement non
+/// consecutifs + 2 jours de repos. Le renforcement a 2 jours est confirme
+/// par les recommandations 2020 de l'OMS (« muscle-strengthening activities
+/// on 2 or more days a week »). La sortie longue hebdomadaire vient de
+/// Terres d'Aventure (« marchez tous les week-ends, 5 a 6 h minimum, avec
+/// un sac a dos de 5 a 10 kg »), le travail de denivele deux fois par
+/// semaine de Randonner Malin (« monter 1500 marches et descendre 1500
+/// marches 2 fois par semaine »).
+///
+/// Ignore quand [occurrence] n'est pas [SessionOccurrence.weekly].
+@override@JsonKey() final  int timesPerWeek;
+/// Rythme de la seance (hebdomadaire par defaut).
+@override@JsonKey() final  SessionOccurrence occurrence;
 
 /// Create a copy of TrainingSession
 /// with the given fields replaced by the non-null parameter values.
@@ -878,16 +926,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrainingSession&&(identical(other.id, id) || other.id == id)&&(identical(other.labelFr, labelFr) || other.labelFr == labelFr)&&(identical(other.labelEn, labelEn) || other.labelEn == labelEn)&&(identical(other.labelDe, labelDe) || other.labelDe == labelDe)&&(identical(other.labelIt, labelIt) || other.labelIt == labelIt)&&(identical(other.labelEs, labelEs) || other.labelEs == labelEs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TrainingSession&&(identical(other.id, id) || other.id == id)&&(identical(other.labelFr, labelFr) || other.labelFr == labelFr)&&(identical(other.labelEn, labelEn) || other.labelEn == labelEn)&&(identical(other.labelDe, labelDe) || other.labelDe == labelDe)&&(identical(other.labelIt, labelIt) || other.labelIt == labelIt)&&(identical(other.labelEs, labelEs) || other.labelEs == labelEs)&&(identical(other.timesPerWeek, timesPerWeek) || other.timesPerWeek == timesPerWeek)&&(identical(other.occurrence, occurrence) || other.occurrence == occurrence));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,labelFr,labelEn,labelDe,labelIt,labelEs);
+int get hashCode => Object.hash(runtimeType,id,labelFr,labelEn,labelDe,labelIt,labelEs,timesPerWeek,occurrence);
 
 @override
 String toString() {
-  return 'TrainingSession(id: $id, labelFr: $labelFr, labelEn: $labelEn, labelDe: $labelDe, labelIt: $labelIt, labelEs: $labelEs)';
+  return 'TrainingSession(id: $id, labelFr: $labelFr, labelEn: $labelEn, labelDe: $labelDe, labelIt: $labelIt, labelEs: $labelEs, timesPerWeek: $timesPerWeek, occurrence: $occurrence)';
 }
 
 
@@ -898,7 +946,7 @@ abstract mixin class _$TrainingSessionCopyWith<$Res> implements $TrainingSession
   factory _$TrainingSessionCopyWith(_TrainingSession value, $Res Function(_TrainingSession) _then) = __$TrainingSessionCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String labelFr, String labelEn, String labelDe, String labelIt, String labelEs
+ String id, String labelFr, String labelEn, String labelDe, String labelIt, String labelEs, int timesPerWeek, SessionOccurrence occurrence
 });
 
 
@@ -915,7 +963,7 @@ class __$TrainingSessionCopyWithImpl<$Res>
 
 /// Create a copy of TrainingSession
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? labelFr = null,Object? labelEn = null,Object? labelDe = null,Object? labelIt = null,Object? labelEs = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? labelFr = null,Object? labelEn = null,Object? labelDe = null,Object? labelIt = null,Object? labelEs = null,Object? timesPerWeek = null,Object? occurrence = null,}) {
   return _then(_TrainingSession(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,labelFr: null == labelFr ? _self.labelFr : labelFr // ignore: cast_nullable_to_non_nullable
@@ -923,7 +971,9 @@ as String,labelEn: null == labelEn ? _self.labelEn : labelEn // ignore: cast_nul
 as String,labelDe: null == labelDe ? _self.labelDe : labelDe // ignore: cast_nullable_to_non_nullable
 as String,labelIt: null == labelIt ? _self.labelIt : labelIt // ignore: cast_nullable_to_non_nullable
 as String,labelEs: null == labelEs ? _self.labelEs : labelEs // ignore: cast_nullable_to_non_nullable
-as String,
+as String,timesPerWeek: null == timesPerWeek ? _self.timesPerWeek : timesPerWeek // ignore: cast_nullable_to_non_nullable
+as int,occurrence: null == occurrence ? _self.occurrence : occurrence // ignore: cast_nullable_to_non_nullable
+as SessionOccurrence,
   ));
 }
 

@@ -114,16 +114,16 @@ void main() {
     });
   });
 
-  group('Note d experience globale (texte libre)', () {
-    test('save + get de la note globale', () async {
-      expect(await repo.getExperienceNote(), '');
-      await repo.saveExperienceNote('genoux en descente, coup de chaud');
-      expect(await repo.getExperienceNote(),
-          'genoux en descente, coup de chaud');
-      final drift = await db.pastHikesDao.getNote(kHikerLocalUserId);
-      expect(drift?.freeTextDifficulties, 'genoux en descente, coup de chaud');
-    });
-  });
+  // LE GROUPE « NOTE D EXPERIENCE GLOBALE » A ETE RETIRE (tache 570, S2).
+  //
+  // Il verifiait l'aller-retour `saveExperienceNote` / `getExperienceNote`. Ces
+  // deux methodes n'existent plus : le texte libre « difficultes » etait ecrit
+  // sur deux etages, televerse au cloud, restaure — et relu par aucune regle
+  // metier. On ne teste pas un aller-retour qu'on vient de supprimer.
+  //
+  // CE QUI RESTE SOUS TEST, ET AILLEURS : l'EFFACEMENT de la note heritee, dans
+  // `data_retention_completeness_test.dart` et `account_erasement_memory_test`.
+  // Cesser de collecter ne nettoie pas les telephones deja servis.
 
   group('Test 6 min — resultat date (fallback si absent)', () {
     test('null si jamais fait', () async {

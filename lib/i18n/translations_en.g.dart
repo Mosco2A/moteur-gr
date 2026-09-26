@@ -61,7 +61,6 @@ class TranslationsEn extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$diploma$en diploma = _Translations$diploma$en._(_root);
 	@override late final _Translations$notifications$en notifications = _Translations$notifications$en._(_root);
 	@override late final _Translations$settings$en settings = _Translations$settings$en._(_root);
-	@override late final _Translations$appearance$en appearance = _Translations$appearance$en._(_root);
 	@override late final _Translations$feedback$en feedback = _Translations$feedback$en._(_root);
 	@override late final _Translations$auth$en auth = _Translations$auth$en._(_root);
 	@override late final _Translations$feasibility$en feasibility = _Translations$feasibility$en._(_root);
@@ -671,26 +670,6 @@ class _Translations$settings$en extends Translations$settings$fr {
 	@override String get departureDate => 'Departure date';
 }
 
-// Path: appearance
-class _Translations$appearance$en extends Translations$appearance$fr {
-	_Translations$appearance$en._(TranslationsEn root) : this._root = root, super.internal(root);
-
-	final TranslationsEn _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Appearance';
-	@override String get subtitle => 'Choose the app’s look and feel';
-	@override String get skinSentierVivant => 'Living Trail';
-	@override String get skinSentierVivantDesc => 'Modern and colorful, the trail color takes the stage';
-	@override String get skinTopographique => 'Topographic';
-	@override String get skinTopographiqueDesc => 'Ordnance-map style, data first';
-	@override String get skinGrandAir => 'Great Outdoors';
-	@override String get skinGrandAirDesc => 'Full-screen photos, adventure-journal feel';
-	@override String get unavailableOnTrail => 'Unavailable on this trail';
-	@override String get changeSkin => 'Change skin';
-	@override String get selected => 'Selected';
-}
-
 // Path: feedback
 class _Translations$feedback$en extends Translations$feedback$fr {
 	_Translations$feedback$en._(TranslationsEn root) : this._root = root, super.internal(root);
@@ -993,7 +972,13 @@ class _Translations$training$en extends Translations$training$fr {
 	@override String get inviteSetDate => 'Set your departure date in the Calendar to enable the countdown.';
 	@override String get inviteFillProfile => 'Fill in your info sheet to tailor the plan to your profile.';
 	@override String get cautionVerdictNotice => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.';
-	@override String departureTooClose({required Object days}) => '${days} days left: plan condensed to the available time.';
+	@override String freqPerWeek({required Object n}) => '${n}× per week';
+	@override String get freqOncePerPhase => 'once during the phase';
+	@override String get freqFinalWeek => 'the final week only';
+	@override String get freqSourceNotice => 'The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d\'Aventure and the 2020 WHO guidelines.';
+	@override String get noDateWhy => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.';
+	@override String get tooShortTitle => 'No preparation offered';
+	@override String tooShortWhy({required Object days, required Object weeks}) => 'There are ${days} days left before departure, less than ${weeks} weeks. No physical preparation is offered to you: below ${weeks} weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This ${weeks}-week floor is the one trek operators use — Terres d\'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.';
 }
 
 // Path: eta
@@ -1595,6 +1580,7 @@ class _Translations$hikerProfile$en extends Translations$hikerProfile$fr {
 	@override String get fieldAge => 'Age';
 	@override String get hintAge => 'In years';
 	@override String get errorAge => 'Invalid age (18 to 120 years)';
+	@override String get ageUsage => 'What your age is used for: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. It is used for nothing else, and none of it leaves your phone.';
 	@override String get fieldHeight => 'Height';
 	@override String get hintHeight => 'In centimetres';
 	@override String get errorHeight => 'Invalid height (60 to 255 cm)';
@@ -1679,11 +1665,9 @@ class _Translations$pastHikes$en extends Translations$pastHikes$fr {
 	@override String get editHike => 'Edit hike';
 	@override String get deleteHike => 'Delete';
 	@override String get save => 'Save';
+	@override String get backToFeasibility => 'Back to feasibility';
 	@override String get saved => 'Hikes saved';
 	@override String get maxReached => 'Maximum of 5 hikes reached.';
-	@override String get difficultiesTitle => 'Difficulties encountered';
-	@override String get difficultiesHint => 'One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...';
-	@override String get difficultiesSaved => 'Note saved';
 }
 
 // Path: ffrando
@@ -2375,6 +2359,7 @@ class _Translations$feasibility$formula$en extends Translations$feasibility$form
 	@override String get seasonNoSource => 'Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.';
 	@override String get seasonMissing => 'No departure date is set: the season changes nothing here, for lack of data.';
 	@override String get massNotCounted => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.';
+	@override String get ageCounted => 'Age, on the other hand, does enter this verdict: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. Aerobic capacity declines with age, that is measured — it is not a judgement about you.';
 	@override String get winterInvalid => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.';
 	@override String restDaysCounted({required Object count}) => 'Rest days counted in this verdict: ${count}.';
 	@override String get restDaysNone => 'No rest day is set in your plan: add some and this figure moves.';
@@ -4594,17 +4579,6 @@ extension on TranslationsEn {
 			'settings.versionLabel' => 'App version',
 			'settings.noDateChosen' => 'No date chosen',
 			'settings.departureDate' => 'Departure date',
-			'appearance.title' => 'Appearance',
-			'appearance.subtitle' => 'Choose the app’s look and feel',
-			'appearance.skinSentierVivant' => 'Living Trail',
-			'appearance.skinSentierVivantDesc' => 'Modern and colorful, the trail color takes the stage',
-			'appearance.skinTopographique' => 'Topographic',
-			'appearance.skinTopographiqueDesc' => 'Ordnance-map style, data first',
-			'appearance.skinGrandAir' => 'Great Outdoors',
-			'appearance.skinGrandAirDesc' => 'Full-screen photos, adventure-journal feel',
-			'appearance.unavailableOnTrail' => 'Unavailable on this trail',
-			'appearance.changeSkin' => 'Change skin',
-			'appearance.selected' => 'Selected',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Feedback type',
 			'feedback.bug' => 'Bug / Problem',
@@ -4716,6 +4690,7 @@ extension on TranslationsEn {
 			'feasibility.formula.seasonNoSource' => 'Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.',
 			'feasibility.formula.seasonMissing' => 'No departure date is set: the season changes nothing here, for lack of data.',
 			'feasibility.formula.massNotCounted' => 'Neither your weight nor your pack\'s enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.',
+			'feasibility.formula.ageCounted' => 'Age, on the other hand, does enter this verdict: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. Aerobic capacity declines with age, that is measured — it is not a judgement about you.',
 			'feasibility.formula.winterInvalid' => 'Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Rest days counted in this verdict: ${count}.',
 			'feasibility.formula.restDaysNone' => 'No rest day is set in your plan: add some and this figure moves.',
@@ -4893,7 +4868,13 @@ extension on TranslationsEn {
 			'training.inviteSetDate' => 'Set your departure date in the Calendar to enable the countdown.',
 			'training.inviteFillProfile' => 'Fill in your info sheet to tailor the plan to your profile.',
 			'training.cautionVerdictNotice' => 'Your feasibility calls for caution: follow the progression and do not cut the preparation short.',
-			'training.departureTooClose' => ({required Object days}) => '${days} days left: plan condensed to the available time.',
+			'training.freqPerWeek' => ({required Object n}) => '${n}× per week',
+			'training.freqOncePerPhase' => 'once during the phase',
+			'training.freqFinalWeek' => 'the final week only',
+			'training.freqSourceNotice' => 'The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d\'Aventure and the 2020 WHO guidelines.',
+			'training.noDateWhy' => 'Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.',
+			'training.tooShortTitle' => 'No preparation offered',
+			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'There are ${days} days left before departure, less than ${weeks} weeks. No physical preparation is offered to you: below ${weeks} weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This ${weeks}-week floor is the one trek operators use — Terres d\'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload.',
 			'eta.title' => 'Estimated time',
 			'eta.toNextWaypoint' => 'Next point',
 			'eta.toStageEnd' => 'Stage end',
@@ -4920,12 +4901,12 @@ extension on TranslationsEn {
 			'social.reasonOther' => 'Other',
 			'social.reportSend' => 'Send report',
 			'social.reportSent' => 'Report sent. Our team will review it.',
-			_ => null,
-		} ?? switch (path) {
 			'social.syncPending' => 'Waiting for sync',
 			'social.synced' => 'Synced',
 			'social.activitySegment' => 'completed a segment',
 			'social.activityBadge' => 'earned a badge',
+			_ => null,
+		} ?? switch (path) {
 			'social.activityDefi' => 'made progress on a challenge',
 			'gamification.galleryTitle' => 'My badges',
 			'gamification.obtained' => 'Earned',
@@ -5434,12 +5415,12 @@ extension on TranslationsEn {
 			'shop.filterEmpty' => 'No shop for this filter.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'View details for ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
-			_ => null,
-		} ?? switch (path) {
 			'shop.a11y.website' => 'Open website',
 			'summary.title' => 'Plan summary',
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			'summary.direction' => 'Direction',
+			_ => null,
+		} ?? switch (path) {
 			'summary.duration' => 'Duration',
 			'summary.durationValue' => ({required Object days}) => '${days} walking days',
 			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} walking days + ${rest} rest',
@@ -5539,6 +5520,7 @@ extension on TranslationsEn {
 			'hikerProfile.fieldAge' => 'Age',
 			'hikerProfile.hintAge' => 'In years',
 			'hikerProfile.errorAge' => 'Invalid age (18 to 120 years)',
+			'hikerProfile.ageUsage' => 'What your age is used for: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. It is used for nothing else, and none of it leaves your phone.',
 			'hikerProfile.fieldHeight' => 'Height',
 			'hikerProfile.hintHeight' => 'In centimetres',
 			'hikerProfile.errorHeight' => 'Invalid height (60 to 255 cm)',
@@ -5608,11 +5590,9 @@ extension on TranslationsEn {
 			'pastHikes.editHike' => 'Edit hike',
 			'pastHikes.deleteHike' => 'Delete',
 			'pastHikes.save' => 'Save',
+			'pastHikes.backToFeasibility' => 'Back to feasibility',
 			'pastHikes.saved' => 'Hikes saved',
 			'pastHikes.maxReached' => 'Maximum of 5 hikes reached.',
-			'pastHikes.difficultiesTitle' => 'Difficulties encountered',
-			'pastHikes.difficultiesHint' => 'One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...',
-			'pastHikes.difficultiesSaved' => 'Note saved',
 			'ffrando.cotationTitle' => 'FFRandonnee rating',
 			'ffrando.effort' => 'Effort',
 			'ffrando.technicite' => 'Technicality',

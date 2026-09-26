@@ -61,7 +61,6 @@ class TranslationsDe extends Translations with BaseTranslations<AppLocale, Trans
 	@override late final _Translations$diploma$de diploma = _Translations$diploma$de._(_root);
 	@override late final _Translations$notifications$de notifications = _Translations$notifications$de._(_root);
 	@override late final _Translations$settings$de settings = _Translations$settings$de._(_root);
-	@override late final _Translations$appearance$de appearance = _Translations$appearance$de._(_root);
 	@override late final _Translations$feedback$de feedback = _Translations$feedback$de._(_root);
 	@override late final _Translations$auth$de auth = _Translations$auth$de._(_root);
 	@override late final _Translations$feasibility$de feasibility = _Translations$feasibility$de._(_root);
@@ -671,26 +670,6 @@ class _Translations$settings$de extends Translations$settings$fr {
 	@override String get departureDate => 'Startdatum';
 }
 
-// Path: appearance
-class _Translations$appearance$de extends Translations$appearance$fr {
-	_Translations$appearance$de._(TranslationsDe root) : this._root = root, super.internal(root);
-
-	final TranslationsDe _root; // ignore: unused_field
-
-	// Translations
-	@override String get title => 'Erscheinungsbild';
-	@override String get subtitle => 'Wähle das Design der App';
-	@override String get skinSentierVivant => 'Lebendiger Pfad';
-	@override String get skinSentierVivantDesc => 'Modern und farbenfroh, die Wegfarbe im Mittelpunkt';
-	@override String get skinTopographique => 'Topografisch';
-	@override String get skinTopographiqueDesc => 'Stil einer Wanderkarte, Daten im Vordergrund';
-	@override String get skinGrandAir => 'Freiluft';
-	@override String get skinGrandAirDesc => 'Bildschirmfüllende Fotos, Abenteuertagebuch-Look';
-	@override String get unavailableOnTrail => 'Auf diesem Weg nicht verfügbar';
-	@override String get changeSkin => 'Design wechseln';
-	@override String get selected => 'Ausgewählt';
-}
-
 // Path: feedback
 class _Translations$feedback$de extends Translations$feedback$fr {
 	_Translations$feedback$de._(TranslationsDe root) : this._root = root, super.internal(root);
@@ -993,7 +972,13 @@ class _Translations$training$de extends Translations$training$fr {
 	@override String get inviteSetDate => 'Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.';
 	@override String get inviteFillProfile => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.';
 	@override String get cautionVerdictNotice => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.';
-	@override String departureTooClose({required Object days}) => 'Noch ${days} Tage: Plan auf die verfügbare Zeit verdichtet.';
+	@override String freqPerWeek({required Object n}) => '${n}× pro Woche';
+	@override String get freqOncePerPhase => 'einmal in dieser Phase';
+	@override String get freqFinalWeek => 'nur in der letzten Woche';
+	@override String get freqSourceNotice => 'Die Häufigkeiten sind keine selbst erfundenen Zahlen: 3 Ausdauer- und 2 Krafteinheiten pro Woche, 2 Ruhetage, nach REI (Conditioning for Backpacking), Terres d\'Aventure und den WHO-Empfehlungen 2020.';
+	@override String get noDateWhy => 'Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.';
+	@override String get tooShortTitle => 'Keine Vorbereitung angeboten';
+	@override String tooShortWhy({required Object days, required Object weeks}) => 'Bis zur Abreise bleiben ${days} Tage, also weniger als ${weeks} Wochen. Es wird Ihnen keine körperliche Vorbereitung angeboten: unter ${weeks} Wochen gibt es keinen Aufbau, und ein in die Restzeit gepresstes Programm erzeugt Verletzungen, keine Form. Diese Untergrenze von ${weeks} Wochen ist die der Trekkinganbieter — Terres d\'Aventure schreibt „beginnen Sie mindestens 2 Monate vor der Abreise mit dem Training“. Gehen Sie bis dahin regelmäßig wandern und suchen Sie keine Überlastung.';
 }
 
 // Path: eta
@@ -1595,6 +1580,7 @@ class _Translations$hikerProfile$de extends Translations$hikerProfile$fr {
 	@override String get fieldAge => 'Alter';
 	@override String get hintAge => 'In Jahren';
 	@override String get errorAge => 'Ungültiges Alter (18 bis 120 Jahre)';
+	@override String get ageUsage => 'Wozu Ihr Alter dient: Es legt die Referenzdistanz Ihres Gehtests fest und senkt die eingestufte Stufe ab 60 Jahren um eine, ab 75 Jahren um zwei. Für nichts anderes wird es verwendet, und nichts davon verlässt Ihr Telefon.';
 	@override String get fieldHeight => 'Grösse';
 	@override String get hintHeight => 'In Zentimetern';
 	@override String get errorHeight => 'Ungültige Grösse (60 bis 255 cm)';
@@ -1679,11 +1665,9 @@ class _Translations$pastHikes$de extends Translations$pastHikes$fr {
 	@override String get editHike => 'Tour bearbeiten';
 	@override String get deleteHike => 'Löschen';
 	@override String get save => 'Speichern';
+	@override String get backToFeasibility => 'Zurück zur Machbarkeit';
 	@override String get saved => 'Touren gespeichert';
 	@override String get maxReached => 'Maximum von 5 Touren erreicht.';
-	@override String get difficultiesTitle => 'Aufgetretene Schwierigkeiten';
-	@override String get difficultiesHint => 'Ein Text für alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Höhe, Hitzestress...';
-	@override String get difficultiesSaved => 'Notiz gespeichert';
 }
 
 // Path: ffrando
@@ -2375,6 +2359,7 @@ class _Translations$feasibility$formula$de extends Translations$feasibility$form
 	@override String get seasonNoSource => 'Aufbruch im Frühling oder Herbst: keine veröffentlichte Messung erlaubt es, eine Wirkung zu beziffern. Die Jahreszeit ändert hier nichts, mangels Quelle.';
 	@override String get seasonMissing => 'Kein Aufbruchsdatum gesetzt: die Jahreszeit ändert hier nichts, mangels Daten.';
 	@override String get massNotCounted => 'Weder dein Gewicht noch das deines Rucksacks fließt in dieses Urteil ein, und das ist gewollt: es misst, was du nachweislich durchhältst. Mit 65 oder mit 95 kg erhält derselbe Mann dasselbe Urteil.';
+	@override String get ageCounted => 'Das Alter hingegen geht in dieses Urteil ein: Es legt die Referenzdistanz Ihres Gehtests fest und senkt die eingestufte Stufe ab 60 Jahren um eine, ab 75 Jahren um zwei. Die aerobe Kapazität sinkt mit dem Alter, das ist gemessen — es ist kein Urteil über Sie.';
 	@override String get winterInvalid => 'Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.';
 	@override String restDaysCounted({required Object count}) => 'In diesem Urteil gezählte Ruhetage: ${count}.';
 	@override String get restDaysNone => 'In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.';
@@ -4594,17 +4579,6 @@ extension on TranslationsDe {
 			'settings.versionLabel' => 'App-Version',
 			'settings.noDateChosen' => 'Kein Datum gewählt',
 			'settings.departureDate' => 'Startdatum',
-			'appearance.title' => 'Erscheinungsbild',
-			'appearance.subtitle' => 'Wähle das Design der App',
-			'appearance.skinSentierVivant' => 'Lebendiger Pfad',
-			'appearance.skinSentierVivantDesc' => 'Modern und farbenfroh, die Wegfarbe im Mittelpunkt',
-			'appearance.skinTopographique' => 'Topografisch',
-			'appearance.skinTopographiqueDesc' => 'Stil einer Wanderkarte, Daten im Vordergrund',
-			'appearance.skinGrandAir' => 'Freiluft',
-			'appearance.skinGrandAirDesc' => 'Bildschirmfüllende Fotos, Abenteuertagebuch-Look',
-			'appearance.unavailableOnTrail' => 'Auf diesem Weg nicht verfügbar',
-			'appearance.changeSkin' => 'Design wechseln',
-			'appearance.selected' => 'Ausgewählt',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Feedbacktyp',
 			'feedback.bug' => 'Fehler / Problem',
@@ -4716,6 +4690,7 @@ extension on TranslationsDe {
 			'feasibility.formula.seasonNoSource' => 'Aufbruch im Frühling oder Herbst: keine veröffentlichte Messung erlaubt es, eine Wirkung zu beziffern. Die Jahreszeit ändert hier nichts, mangels Quelle.',
 			'feasibility.formula.seasonMissing' => 'Kein Aufbruchsdatum gesetzt: die Jahreszeit ändert hier nichts, mangels Daten.',
 			'feasibility.formula.massNotCounted' => 'Weder dein Gewicht noch das deines Rucksacks fließt in dieses Urteil ein, und das ist gewollt: es misst, was du nachweislich durchhältst. Mit 65 oder mit 95 kg erhält derselbe Mann dasselbe Urteil.',
+			'feasibility.formula.ageCounted' => 'Das Alter hingegen geht in dieses Urteil ein: Es legt die Referenzdistanz Ihres Gehtests fest und senkt die eingestufte Stufe ab 60 Jahren um eine, ab 75 Jahren um zwei. Die aerobe Kapazität sinkt mit dem Alter, das ist gemessen — es ist kein Urteil über Sie.',
 			'feasibility.formula.winterInvalid' => 'Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'In diesem Urteil gezählte Ruhetage: ${count}.',
 			'feasibility.formula.restDaysNone' => 'In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.',
@@ -4893,7 +4868,13 @@ extension on TranslationsDe {
 			'training.inviteSetDate' => 'Legen Sie Ihr Abreisedatum im Kalender fest, um den Countdown zu aktivieren.',
 			'training.inviteFillProfile' => 'Füllen Sie Ihr Datenblatt aus, um den Plan an Ihr Profil anzupassen.',
 			'training.cautionVerdictNotice' => 'Ihre Machbarkeit mahnt zur Vorsicht: halten Sie die Progression ein und kurzen Sie die Vorbereitung nicht.',
-			'training.departureTooClose' => ({required Object days}) => 'Noch ${days} Tage: Plan auf die verfügbare Zeit verdichtet.',
+			'training.freqPerWeek' => ({required Object n}) => '${n}× pro Woche',
+			'training.freqOncePerPhase' => 'einmal in dieser Phase',
+			'training.freqFinalWeek' => 'nur in der letzten Woche',
+			'training.freqSourceNotice' => 'Die Häufigkeiten sind keine selbst erfundenen Zahlen: 3 Ausdauer- und 2 Krafteinheiten pro Woche, 2 Ruhetage, nach REI (Conditioning for Backpacking), Terres d\'Aventure und den WHO-Empfehlungen 2020.',
+			'training.noDateWhy' => 'Ohne Abreisedatum hat dieser Plan kein Ende: Es lässt sich nicht sagen, in welcher Woche Sie sind oder wann das Tapering beginnt. Legen Sie Ihr Datum im Kalender fest, dann erscheint der Plan.',
+			'training.tooShortTitle' => 'Keine Vorbereitung angeboten',
+			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Bis zur Abreise bleiben ${days} Tage, also weniger als ${weeks} Wochen. Es wird Ihnen keine körperliche Vorbereitung angeboten: unter ${weeks} Wochen gibt es keinen Aufbau, und ein in die Restzeit gepresstes Programm erzeugt Verletzungen, keine Form. Diese Untergrenze von ${weeks} Wochen ist die der Trekkinganbieter — Terres d\'Aventure schreibt „beginnen Sie mindestens 2 Monate vor der Abreise mit dem Training“. Gehen Sie bis dahin regelmäßig wandern und suchen Sie keine Überlastung.',
 			'eta.title' => 'Geschätzte Zeit',
 			'eta.toNextWaypoint' => 'Nächster Punkt',
 			'eta.toStageEnd' => 'Etappenende',
@@ -4920,12 +4901,12 @@ extension on TranslationsDe {
 			'social.reasonOther' => 'Andere',
 			'social.reportSend' => 'Meldung senden',
 			'social.reportSent' => 'Meldung gesendet. Unser Team prüft sie.',
-			_ => null,
-		} ?? switch (path) {
 			'social.syncPending' => 'Wartet auf Synchronisierung',
 			'social.synced' => 'Synchronisiert',
 			'social.activitySegment' => 'hat ein Segment absolviert',
 			'social.activityBadge' => 'hat ein Abzeichen erhalten',
+			_ => null,
+		} ?? switch (path) {
 			'social.activityDefi' => 'hat bei einer Challenge Fortschritte gemacht',
 			'gamification.galleryTitle' => 'Meine Abzeichen',
 			'gamification.obtained' => 'Erhalten',
@@ -5434,12 +5415,12 @@ extension on TranslationsDe {
 			'shop.filterEmpty' => 'Kein Geschäft für diesen Filter.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'Details zu ${name} anzeigen',
 			'shop.a11y.call' => ({required Object label}) => '${label} anrufen',
-			_ => null,
-		} ?? switch (path) {
 			'shop.a11y.website' => 'Website öffnen',
 			'summary.title' => 'Planübersicht',
 			'summary.configTitle' => ({required Object name}) => 'Mein ${name}',
 			'summary.direction' => 'Richtung',
+			_ => null,
+		} ?? switch (path) {
 			'summary.duration' => 'Dauer',
 			'summary.durationValue' => ({required Object days}) => '${days} Wandertage',
 			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} Wandertage + ${rest} Ruhetage',
@@ -5539,6 +5520,7 @@ extension on TranslationsDe {
 			'hikerProfile.fieldAge' => 'Alter',
 			'hikerProfile.hintAge' => 'In Jahren',
 			'hikerProfile.errorAge' => 'Ungültiges Alter (18 bis 120 Jahre)',
+			'hikerProfile.ageUsage' => 'Wozu Ihr Alter dient: Es legt die Referenzdistanz Ihres Gehtests fest und senkt die eingestufte Stufe ab 60 Jahren um eine, ab 75 Jahren um zwei. Für nichts anderes wird es verwendet, und nichts davon verlässt Ihr Telefon.',
 			'hikerProfile.fieldHeight' => 'Grösse',
 			'hikerProfile.hintHeight' => 'In Zentimetern',
 			'hikerProfile.errorHeight' => 'Ungültige Grösse (60 bis 255 cm)',
@@ -5608,11 +5590,9 @@ extension on TranslationsDe {
 			'pastHikes.editHike' => 'Tour bearbeiten',
 			'pastHikes.deleteHike' => 'Löschen',
 			'pastHikes.save' => 'Speichern',
+			'pastHikes.backToFeasibility' => 'Zurück zur Machbarkeit',
 			'pastHikes.saved' => 'Touren gespeichert',
 			'pastHikes.maxReached' => 'Maximum von 5 Touren erreicht.',
-			'pastHikes.difficultiesTitle' => 'Aufgetretene Schwierigkeiten',
-			'pastHikes.difficultiesHint' => 'Ein Text für alle diese Touren: Blasen, Knie beim Abstieg, Atemnot in der Höhe, Hitzestress...',
-			'pastHikes.difficultiesSaved' => 'Notiz gespeichert',
 			'ffrando.cotationTitle' => 'FFRandonnee-Bewertung',
 			'ffrando.effort' => 'Anstrengung',
 			'ffrando.technicite' => 'Technik',

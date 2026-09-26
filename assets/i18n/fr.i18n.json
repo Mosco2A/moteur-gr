@@ -802,19 +802,6 @@
     "noDateChosen": "Aucune date choisie",
     "departureDate": "Date de départ"
   },
-  "appearance": {
-    "title": "Apparence",
-    "subtitle": "Choisissez l’habillage de l’application",
-    "skinSentierVivant": "Sentier Vivant",
-    "skinSentierVivantDesc": "Moderne et coloré, la couleur du sentier en vedette",
-    "skinTopographique": "Topographique",
-    "skinTopographiqueDesc": "Style carte d’état-major, données en avant",
-    "skinGrandAir": "Grand Air",
-    "skinGrandAirDesc": "Photos plein écran, ambiance carnet d’aventure",
-    "unavailableOnTrail": "Indisponible sur ce sentier",
-    "changeSkin": "Changer de peau",
-    "selected": "Sélectionné"
-  },
   "feedback": {
     "title": "Feedback",
     "type": "Type de retour",
@@ -942,6 +929,7 @@
       "seasonNoSource": "Départ au printemps ou en automne : aucune mesure publiée ne permet de chiffrer un effet. La saison ne change rien ici, faute de source.",
       "seasonMissing": "Aucune date de départ n'est posée : la saison ne change rien ici, faute de donnée.",
       "massNotCounted": "Ni ton poids ni celui de ton sac n'entrent dans ce verdict, et c'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.",
+      "ageCounted": "L'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l'âge, c'est mesuré — ce n'est pas un jugement sur toi.",
       "winterInvalid": "Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu'il ne s'applique pas.",
       "restDaysCounted": "Jours de repos comptés dans ce verdict : ${count}.",
       "restDaysNone": "Aucun jour de repos n'est posé dans ton programme : poses-en et ce chiffre bouge.",
@@ -1164,7 +1152,13 @@
     "inviteSetDate": "Posez votre date de départ dans le Calendrier pour caler le compte à rebours.",
     "inviteFillProfile": "Remplissez votre fiche de renseignement pour adapter le plan à votre profil.",
     "cautionVerdictNotice": "Votre faisabilité invite à la prudence : respectez la progression et n'écourtez pas la préparation.",
-    "departureTooClose": "Il reste $days jours : plan condensé sur le temps disponible."
+    "freqPerWeek": "$n× par semaine",
+    "freqOncePerPhase": "une fois dans la phase",
+    "freqFinalWeek": "la dernière semaine seulement",
+    "freqSourceNotice": "Les fréquences ne sont pas des chiffres maison : 3 séances d'endurance et 2 de renforcement par semaine, 2 jours de repos, d'après REI (Conditioning for Backpacking), Terres d'Aventure et les recommandations 2020 de l'OMS.",
+    "noDateWhy": "Sans date de départ, ce plan n'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s'affiche.",
+    "tooShortTitle": "Aucune préparation proposée",
+    "tooShortWhy": "Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge."
   },
   "eta": {
     "title": "Temps estimé",
@@ -2038,6 +2032,7 @@
     "fieldAge": "Âge",
     "hintAge": "En années",
     "errorAge": "Âge invalide (18 à 120 ans)",
+    "ageUsage": "À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d'autre, et rien n'en sort de votre téléphone.",
     "fieldHeight": "Taille",
     "hintHeight": "En centimètres",
     "errorHeight": "Taille invalide (60 à 255 cm)",
@@ -2113,11 +2108,9 @@
     "editHike": "Modifier la rando",
     "deleteHike": "Supprimer",
     "save": "Enregistrer",
+    "backToFeasibility": "Revenir à la faisabilité",
     "saved": "Randos enregistrées",
-    "maxReached": "Maximum de 5 randos atteint.",
-    "difficultiesTitle": "Difficultés rencontrées",
-    "difficultiesHint": "Un seul texte pour l'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...",
-    "difficultiesSaved": "Note enregistrée"
+    "maxReached": "Maximum de 5 randos atteint."
   },
   "ffrando": {
     "cotationTitle": "Cotation FFRandonnée",

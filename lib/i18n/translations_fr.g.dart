@@ -62,7 +62,6 @@ class Translations with BaseTranslations<AppLocale, Translations> {
 	late final Translations$diploma$fr diploma = Translations$diploma$fr.internal(_root);
 	late final Translations$notifications$fr notifications = Translations$notifications$fr.internal(_root);
 	late final Translations$settings$fr settings = Translations$settings$fr.internal(_root);
-	late final Translations$appearance$fr appearance = Translations$appearance$fr.internal(_root);
 	late final Translations$feedback$fr feedback = Translations$feedback$fr.internal(_root);
 	late final Translations$auth$fr auth = Translations$auth$fr.internal(_root);
 	late final Translations$feasibility$fr feasibility = Translations$feasibility$fr.internal(_root);
@@ -1357,48 +1356,6 @@ class Translations$settings$fr {
 	String get departureDate => 'Date de départ';
 }
 
-// Path: appearance
-class Translations$appearance$fr {
-	Translations$appearance$fr.internal(this._root);
-
-	final Translations _root; // ignore: unused_field
-
-	// Translations
-
-	/// fr: 'Apparence'
-	String get title => 'Apparence';
-
-	/// fr: 'Choisissez l’habillage de l’application'
-	String get subtitle => 'Choisissez l’habillage de l’application';
-
-	/// fr: 'Sentier Vivant'
-	String get skinSentierVivant => 'Sentier Vivant';
-
-	/// fr: 'Moderne et coloré, la couleur du sentier en vedette'
-	String get skinSentierVivantDesc => 'Moderne et coloré, la couleur du sentier en vedette';
-
-	/// fr: 'Topographique'
-	String get skinTopographique => 'Topographique';
-
-	/// fr: 'Style carte d’état-major, données en avant'
-	String get skinTopographiqueDesc => 'Style carte d’état-major, données en avant';
-
-	/// fr: 'Grand Air'
-	String get skinGrandAir => 'Grand Air';
-
-	/// fr: 'Photos plein écran, ambiance carnet d’aventure'
-	String get skinGrandAirDesc => 'Photos plein écran, ambiance carnet d’aventure';
-
-	/// fr: 'Indisponible sur ce sentier'
-	String get unavailableOnTrail => 'Indisponible sur ce sentier';
-
-	/// fr: 'Changer de peau'
-	String get changeSkin => 'Changer de peau';
-
-	/// fr: 'Sélectionné'
-	String get selected => 'Sélectionné';
-}
-
 // Path: feedback
 class Translations$feedback$fr {
 	Translations$feedback$fr.internal(this._root);
@@ -2026,8 +1983,26 @@ class Translations$training$fr {
 	/// fr: 'Votre faisabilité invite à la prudence : respectez la progression et n'écourtez pas la préparation.'
 	String get cautionVerdictNotice => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.';
 
-	/// fr: 'Il reste $days jours : plan condensé sur le temps disponible.'
-	String departureTooClose({required Object days}) => 'Il reste ${days} jours : plan condensé sur le temps disponible.';
+	/// fr: '$n× par semaine'
+	String freqPerWeek({required Object n}) => '${n}× par semaine';
+
+	/// fr: 'une fois dans la phase'
+	String get freqOncePerPhase => 'une fois dans la phase';
+
+	/// fr: 'la dernière semaine seulement'
+	String get freqFinalWeek => 'la dernière semaine seulement';
+
+	/// fr: 'Les fréquences ne sont pas des chiffres maison : 3 séances d'endurance et 2 de renforcement par semaine, 2 jours de repos, d'après REI (Conditioning for Backpacking), Terres d'Aventure et les recommandations 2020 de l'OMS.'
+	String get freqSourceNotice => 'Les fréquences ne sont pas des chiffres maison : 3 séances d\'endurance et 2 de renforcement par semaine, 2 jours de repos, d\'après REI (Conditioning for Backpacking), Terres d\'Aventure et les recommandations 2020 de l\'OMS.';
+
+	/// fr: 'Sans date de départ, ce plan n'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s'affiche.'
+	String get noDateWhy => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s\'affiche.';
+
+	/// fr: 'Aucune préparation proposée'
+	String get tooShortTitle => 'Aucune préparation proposée';
+
+	/// fr: 'Il reste $days jours avant le départ, soit moins de $weeks semaines. Aucune préparation physique ne vous est proposée : en dessous de $weeks semaines il n'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de $weeks semaines est celui des opérateurs de trek — Terres d'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D'ici là, marchez régulièrement et n'allez pas chercher la surcharge.'
+	String tooShortWhy({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne vous est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marchez régulièrement et n\'allez pas chercher la surcharge.';
 }
 
 // Path: eta
@@ -3257,6 +3232,9 @@ class Translations$hikerProfile$fr {
 	/// fr: 'Âge invalide (18 à 120 ans)'
 	String get errorAge => 'Âge invalide (18 à 120 ans)';
 
+	/// fr: 'À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d'autre, et rien n'en sort de votre téléphone.'
+	String get ageUsage => 'À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d\'autre, et rien n\'en sort de votre téléphone.';
+
 	/// fr: 'Taille'
 	String get fieldHeight => 'Taille';
 
@@ -3472,20 +3450,14 @@ class Translations$pastHikes$fr {
 	/// fr: 'Enregistrer'
 	String get save => 'Enregistrer';
 
+	/// fr: 'Revenir à la faisabilité'
+	String get backToFeasibility => 'Revenir à la faisabilité';
+
 	/// fr: 'Randos enregistrées'
 	String get saved => 'Randos enregistrées';
 
 	/// fr: 'Maximum de 5 randos atteint.'
 	String get maxReached => 'Maximum de 5 randos atteint.';
-
-	/// fr: 'Difficultés rencontrées'
-	String get difficultiesTitle => 'Difficultés rencontrées';
-
-	/// fr: 'Un seul texte pour l'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...'
-	String get difficultiesHint => 'Un seul texte pour l\'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...';
-
-	/// fr: 'Note enregistrée'
-	String get difficultiesSaved => 'Note enregistrée';
 }
 
 // Path: ffrando
@@ -5033,6 +5005,9 @@ class Translations$feasibility$formula$fr {
 
 	/// fr: 'Ni ton poids ni celui de ton sac n'entrent dans ce verdict, et c'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.'
 	String get massNotCounted => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict, et c\'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.';
+
+	/// fr: 'L'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l'âge, c'est mesuré — ce n'est pas un jugement sur toi.'
+	String get ageCounted => 'L\'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l\'âge, c\'est mesuré — ce n\'est pas un jugement sur toi.';
 
 	/// fr: 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu'il ne s'applique pas.'
 	String get winterInvalid => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.';
@@ -8179,17 +8154,6 @@ extension on Translations {
 			'settings.versionLabel' => 'Version de l\'application',
 			'settings.noDateChosen' => 'Aucune date choisie',
 			'settings.departureDate' => 'Date de départ',
-			'appearance.title' => 'Apparence',
-			'appearance.subtitle' => 'Choisissez l’habillage de l’application',
-			'appearance.skinSentierVivant' => 'Sentier Vivant',
-			'appearance.skinSentierVivantDesc' => 'Moderne et coloré, la couleur du sentier en vedette',
-			'appearance.skinTopographique' => 'Topographique',
-			'appearance.skinTopographiqueDesc' => 'Style carte d’état-major, données en avant',
-			'appearance.skinGrandAir' => 'Grand Air',
-			'appearance.skinGrandAirDesc' => 'Photos plein écran, ambiance carnet d’aventure',
-			'appearance.unavailableOnTrail' => 'Indisponible sur ce sentier',
-			'appearance.changeSkin' => 'Changer de peau',
-			'appearance.selected' => 'Sélectionné',
 			'feedback.title' => 'Feedback',
 			'feedback.type' => 'Type de retour',
 			'feedback.bug' => 'Bug / Problème',
@@ -8301,6 +8265,7 @@ extension on Translations {
 			'feasibility.formula.seasonNoSource' => 'Départ au printemps ou en automne : aucune mesure publiée ne permet de chiffrer un effet. La saison ne change rien ici, faute de source.',
 			'feasibility.formula.seasonMissing' => 'Aucune date de départ n\'est posée : la saison ne change rien ici, faute de donnée.',
 			'feasibility.formula.massNotCounted' => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict, et c\'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.',
+			'feasibility.formula.ageCounted' => 'L\'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l\'âge, c\'est mesuré — ce n\'est pas un jugement sur toi.',
 			'feasibility.formula.winterInvalid' => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Jours de repos comptés dans ce verdict : ${count}.',
 			'feasibility.formula.restDaysNone' => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.',
@@ -8478,7 +8443,13 @@ extension on Translations {
 			'training.inviteSetDate' => 'Posez votre date de départ dans le Calendrier pour caler le compte à rebours.',
 			'training.inviteFillProfile' => 'Remplissez votre fiche de renseignement pour adapter le plan à votre profil.',
 			'training.cautionVerdictNotice' => 'Votre faisabilité invite à la prudence : respectez la progression et n\'écourtez pas la préparation.',
-			'training.departureTooClose' => ({required Object days}) => 'Il reste ${days} jours : plan condensé sur le temps disponible.',
+			'training.freqPerWeek' => ({required Object n}) => '${n}× par semaine',
+			'training.freqOncePerPhase' => 'une fois dans la phase',
+			'training.freqFinalWeek' => 'la dernière semaine seulement',
+			'training.freqSourceNotice' => 'Les fréquences ne sont pas des chiffres maison : 3 séances d\'endurance et 2 de renforcement par semaine, 2 jours de repos, d\'après REI (Conditioning for Backpacking), Terres d\'Aventure et les recommandations 2020 de l\'OMS.',
+			'training.noDateWhy' => 'Sans date de départ, ce plan n\'a pas de fin : impossible de dire dans quelle semaine vous êtes, ni quand affûter. Posez votre date dans le Calendrier et le plan s\'affiche.',
+			'training.tooShortTitle' => 'Aucune préparation proposée',
+			'training.tooShortWhy' => ({required Object days, required Object weeks}) => 'Il reste ${days} jours avant le départ, soit moins de ${weeks} semaines. Aucune préparation physique ne vous est proposée : en dessous de ${weeks} semaines il n\'y a pas de progression à construire, et un programme tassé sur le temps qui reste fabrique de la blessure, pas de la forme. Ce plancher de ${weeks} semaines est celui des opérateurs de trek — Terres d\'Aventure écrit « commencez à vous entraîner au moins 2 mois avant de partir ». D\'ici là, marchez régulièrement et n\'allez pas chercher la surcharge.',
 			'eta.title' => 'Temps estimé',
 			'eta.toNextWaypoint' => 'Prochain point',
 			'eta.toStageEnd' => 'Fin d\'étape',
@@ -8505,12 +8476,12 @@ extension on Translations {
 			'social.reasonOther' => 'Autre',
 			'social.reportSend' => 'Envoyer le signalement',
 			'social.reportSent' => 'Signalement envoyé. Il sera examiné par notre équipe.',
-			_ => null,
-		} ?? switch (path) {
 			'social.syncPending' => 'En attente de synchronisation',
 			'social.synced' => 'Synchronisé',
 			'social.activitySegment' => 'a réalisé un segment',
 			'social.activityBadge' => 'a obtenu un badge',
+			_ => null,
+		} ?? switch (path) {
 			'social.activityDefi' => 'a progressé dans un défi',
 			'gamification.galleryTitle' => 'Mes badges',
 			'gamification.obtained' => 'Obtenu',
@@ -9019,12 +8990,12 @@ extension on Translations {
 			'shop.filterEmpty' => 'Aucun commerce pour ce filtre.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'Voir le détail de ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Appeler ${label}',
-			_ => null,
-		} ?? switch (path) {
 			'shop.a11y.website' => 'Ouvrir le site web',
 			'summary.title' => 'Résumé du plan',
 			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
 			'summary.direction' => 'Direction',
+			_ => null,
+		} ?? switch (path) {
 			'summary.duration' => 'Durée',
 			'summary.durationValue' => ({required Object days}) => '${days} jours de marche',
 			'summary.durationValueWithRest' => ({required Object days, required Object rest}) => '${days} jours de marche + ${rest} repos',
@@ -9124,6 +9095,7 @@ extension on Translations {
 			'hikerProfile.fieldAge' => 'Âge',
 			'hikerProfile.hintAge' => 'En années',
 			'hikerProfile.errorAge' => 'Âge invalide (18 à 120 ans)',
+			'hikerProfile.ageUsage' => 'À quoi sert votre âge : il fixe la distance de référence de votre test de marche, et il abaisse le niveau retenu d\'un cran à partir de 60 ans, de deux à partir de 75. Il ne sert à rien d\'autre, et rien n\'en sort de votre téléphone.',
 			'hikerProfile.fieldHeight' => 'Taille',
 			'hikerProfile.hintHeight' => 'En centimètres',
 			'hikerProfile.errorHeight' => 'Taille invalide (60 à 255 cm)',
@@ -9193,11 +9165,9 @@ extension on Translations {
 			'pastHikes.editHike' => 'Modifier la rando',
 			'pastHikes.deleteHike' => 'Supprimer',
 			'pastHikes.save' => 'Enregistrer',
+			'pastHikes.backToFeasibility' => 'Revenir à la faisabilité',
 			'pastHikes.saved' => 'Randos enregistrées',
 			'pastHikes.maxReached' => 'Maximum de 5 randos atteint.',
-			'pastHikes.difficultiesTitle' => 'Difficultés rencontrées',
-			'pastHikes.difficultiesHint' => 'Un seul texte pour l\'ensemble de ces randos : ampoules, genoux en descente, essoufflement en altitude, coup de chaud...',
-			'pastHikes.difficultiesSaved' => 'Note enregistrée',
 			'ffrando.cotationTitle' => 'Cotation FFRandonnée',
 			'ffrando.effort' => 'Effort',
 			'ffrando.technicite' => 'Technicité',

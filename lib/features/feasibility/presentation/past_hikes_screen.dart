@@ -14,8 +14,18 @@ import '../providers/hiker_profile_provider.dart';
 /// Ecran « Vos 5 dernieres randos » (StepWays LOT 4, Ph3).
 ///
 /// Interview des 5 dernieres randos notables [date, jours, marche moy/j, D+
-/// total, distance totale] + 1 champ texte libre GLOBAL « difficultes ». La
-/// faisabilite en DEDUIT le niveau reel. Tous textes via Slang (`t.pastHikes`).
+/// total, distance totale]. La faisabilite en DEDUIT le niveau reel. Tous
+/// textes via Slang (`t.pastHikes`).
+///
+/// LE CHAMP TEXTE LIBRE « DIFFICULTES » A ETE RETIRE (tache 570, S2). Il etait
+/// saisi, persiste en prefs, recopie dans un miroir Drift, synchronise au
+/// cloud, restaure a la reinstallation — ET LU PAR PERSONNE : son provider
+/// n'apparaissait que dans cet ecran et dans lui-meme, et le depot l'ecrivait
+/// noir sur blanc (« V1 : STOCKEE seulement, l'IA la lira en V2 »). Decision de
+/// Chris du 26/09 : « sinon tu le vire pour l'instant ». Collecter une donnee
+/// personnelle que rien ne lit n'est pas du code mort, c'est un manquement a la
+/// minimisation (RGPD art. 5.1.c) : elle part, et avec elle son etage de
+/// stockage et sa remontee au cloud.
 class PastHikesScreen extends ConsumerStatefulWidget {
   const PastHikesScreen({super.key});
 
@@ -24,15 +34,6 @@ class PastHikesScreen extends ConsumerStatefulWidget {
 }
 
 class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
-  final _noteController = TextEditingController();
-  bool _noteLoaded = false;
-
-  @override
-  void dispose() {
-    _noteController.dispose();
-    super.dispose();
-  }
-
   Future<void> _addOrEdit({PastHike? existing, required int count}) async {
     if (existing == null && count >= 5) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -88,31 +89,26 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     await ref.read(pastHikesProvider.notifier).saveAll(updated);
   }
 
-  /// Enregistre la note de difficultes PUIS RAMENE le randonneur (tache 568, Q3).
+  /// RAMENE le randonneur la d'ou il venait (acquis de la tache 568, Q3).
   ///
   /// DEFAUT DE CHRIS DU 26/09 09:59, verbatim : « Apres 5 derniere rando,
   /// enregistrer dit que la note est enregistree mais ne revient pas a
-  /// faisabilite ». La methode sauvegardait, affichait la SnackBar et S ARRETAIT
-  /// LA : le randonneur restait sur l'ecran avec un message de succes et devait
-  /// retrouver le retour lui-meme. MEME MOTIF QUE LE BOUTON MORT DE L ACCUEIL
-  /// (Q1) : l'action reussit, la navigation ne suit pas.
+  /// faisabilite ». La tache 568 avait ajoute ce retour a la sauvegarde de la
+  /// note ; la tache 570 a retire la note, PAS LE RETOUR — le randonneur a
+  /// toujours besoin d'une porte de sortie une fois ses randos saisies, et la
+  /// perdre serait une regression de la 568 deguisee en nettoyage.
   ///
-  /// CE BOUTON CONCLUT LE PASSAGE SUR L ECRAN : il depile donc. Le chemin
-  /// d'ajout d'une rando, lui, ramene A LA LISTE (la feuille modale se ferme) et
-  /// NE depile PAS l'ecran — on en saisit jusqu'a cinq, et la note se redige en
-  /// dessous : depiler y rendrait « Ajouter une rando » inutilisable au-dela de
-  /// la premiere et jetterait la note en cours de frappe.
-  Future<void> _saveNote() async {
-    await ref
-        .read(experienceNoteProvider.notifier)
-        .save(_noteController.text.trim());
-    if (!mounted) return;
+  /// CE BOUTON N'ENREGISTRE PLUS RIEN, ET IL NE LE DIT PLUS. Chaque rando est
+  /// deja persistee a son ajout (`saveAll` dans [_addOrEdit]) : annoncer
+  /// « Enregistrer » ici promettait une sauvegarde qui avait deja eu lieu. Le
+  /// libelle dit desormais ce que le geste fait vraiment.
+  ///
+  /// Le chemin d'ajout d'une rando, lui, ramene A LA LISTE (la feuille modale se
+  /// ferme) et NE depile PAS l'ecran — on en saisit jusqu'a cinq, et depiler y
+  /// rendrait « Ajouter une rando » inutilisable au-dela de la premiere.
+  void _backToFeasibility() {
     FocusScope.of(context).unfocus();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(t.pastHikes.difficultiesSaved)),
-    );
-    // Retour la d'ou l'on venait (la faisabilite, en usage nominal). `pop` du
-    // routeur : la pile est preservee, aucun ecran n'est recree.
+    // `pop` du routeur : la pile est preservee, aucun ecran n'est recree.
     if (context.canPop()) context.pop();
   }
 
@@ -121,15 +117,6 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
     final theme = Theme.of(context);
     final ph = t.pastHikes;
     final hikesAsync = ref.watch(pastHikesProvider);
-    final noteAsync = ref.watch(experienceNoteProvider);
-
-    // Hydrate le champ note une fois (sans ecraser la saisie en cours).
-    noteAsync.whenData((text) {
-      if (!_noteLoaded) {
-        _noteController.text = text;
-        _noteLoaded = true;
-      }
-    });
 
     return Scaffold(
       appBar: AppHeader(title: ph.title),
@@ -170,25 +157,14 @@ class _PastHikesScreenState extends ConsumerState<PastHikesScreen> {
                   onPressed: () => _addOrEdit(count: hikes.length),
                 ),
               const SizedBox(height: AppTheme.spacingXl),
-              // Champ texte libre GLOBAL « difficultes rencontrees ».
-              Text(ph.difficultiesTitle, style: theme.textTheme.titleMedium),
-              const SizedBox(height: AppTheme.spacingSm),
-              TextField(
-                controller: _noteController,
-                maxLines: 4,
-                decoration: InputDecoration(
-                  hintText: ph.difficultiesHint,
-                  border: OutlineInputBorder(
-                    borderRadius:
-                        BorderRadius.circular(AppTheme.radiusInput),
-                  ),
-                ),
-              ),
-              const SizedBox(height: AppTheme.spacingBase),
+              // PLUS DE CHAMP « DIFFICULTES RENCONTREES » ICI (tache 570, S2) :
+              // il etait stocke sur trois etages et lu par personne. Rien ne le
+              // remplace — on ne comble pas la place laissee par une donnee
+              // qu'on vient de juger inutile.
               AppButton(
-                icon: Icons.save,
-                label: ph.save,
-                onPressed: _saveNote,
+                icon: Icons.arrow_back,
+                label: ph.backToFeasibility,
+                onPressed: _backToFeasibility,
               ),
             ],
           );

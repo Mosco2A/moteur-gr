@@ -43,7 +43,8 @@ void main() {
         .widgetList<FocusTraversalOrder>(find.byType(FocusTraversalOrder))
         .map((w) => (w.order as NumericFocusOrder).order)
         .toList();
-    expect(orders, [0.0, 1.0, 2.0, 3.0]);
+    // Trois gestes de carte depuis le retrait du bouton de peau (tache 570).
+    expect(orders, [0.0, 1.0, 2.0]);
   });
 
   testWidgets('controles carte : labels d\'accessibilite (tooltips Slang)',
@@ -52,7 +53,6 @@ void main() {
       wrap(MapControls(mapController: MapController(), onCenterOnMe: () {})),
     );
 
-    expect(find.byTooltip(t.appearance.changeSkin), findsOneWidget);
     expect(find.byTooltip(t.a11y.zoomIn), findsOneWidget);
     expect(find.byTooltip(t.a11y.zoomOut), findsOneWidget);
     expect(find.byTooltip(t.a11y.centerOnMe), findsOneWidget);

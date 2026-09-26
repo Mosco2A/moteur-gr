@@ -72,7 +72,9 @@ void main() {
       expect(find.text(t.pastHikes.intro), findsOneWidget);
       expect(find.text(t.pastHikes.empty), findsOneWidget);
       expect(find.text(t.pastHikes.addHike), findsOneWidget);
-      expect(find.text(t.pastHikes.difficultiesTitle), findsOneWidget);
+      // Le titre « Difficultes rencontrees » a disparu avec son champ (tache
+      // 570, S2) ; c'est le bouton de retour qui conclut desormais l'ecran.
+      expect(find.text(t.pastHikes.backToFeasibility), findsOneWidget);
     });
 
     testWidgets('affiche les randos deja saisies (seed prefs)',

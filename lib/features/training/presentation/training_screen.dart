@@ -265,9 +265,58 @@ class _PlanContent extends ConsumerWidget {
     final theme = Theme.of(context);
 
     final daysUntil = ref.watch(trainingDaysUntilDepartureProvider);
-    final tooClose = ref.watch(trainingDepartureTooCloseProvider);
+    final belowMinimum = ref.watch(trainingBelowMinimumProvider);
     final perso = ref.watch(trainingPersonalizationProvider).value;
     final progress = ref.watch(trainingProgressProvider(trail.id));
+
+    // LE PLAN NE S'AFFICHE PLUS TOUJOURS (tache 570, S3-b et S3-c).
+    //
+    // DEUX REFUS, DEUX RAISONS DIFFERENTES, ET ON DIT LAQUELLE.
+    //
+    // (b) SANS DATE DE DEPART. Chris, verbatim : « en plus tu fais un plan sans
+    //     savoir quand il part ». Un plan progressif de huit semaines cale sur
+    //     un depart ne sait, sans ce depart, ni dans quelle semaine on se
+    //     trouve, ni quand affuter : ses phases « Semaines 1-2 / 3-5 / 6-8 » ne
+    //     designent alors rien, et sa derniere seance (« repos 48 h avant le
+    //     depart ») est un conseil sans date. L'ecran invitait deja a poser la
+    //     date — mais deroulait le plan par-dessus, ce qui rendait l'invite
+    //     decorative. Il ne le deroule plus.
+    //
+    // (c) SOUS LE PLANCHER DE HUIT SEMAINES. Chris : « 8 semaines c'est le
+    //     minimum en dessous duquel tu ne propose pas de prepa physique ». Ce
+    //     qui existait ici faisait l'inverse : sous 21 jours, un bandeau
+    //     annoncait un « plan condense sur le temps disponible » et les seances
+    //     restaient cochables. Condenser une preparation a la montagne, c'est
+    //     empiler la charge sans laisser le corps s'adapter — on ne propose donc
+    //     plus rien, et le refus est MOTIVE, plancher et source nommes.
+    //
+    // DANS LES DEUX CAS L'ECRAN RESTE DEBOUT ET UTILE : l'encart d'effort du
+    // sentier reste (il informe sans rien promettre), et c'est la raison du
+    // refus qui prend la place du plan — jamais un ecran vide.
+    if (daysUntil == null) {
+      return _NoPlanYet(
+        trail: trail,
+        plan: plan,
+        icon: Icons.event_available,
+        headline: tr.inviteSetDate,
+        explanation: tr.noDateWhy,
+        explanationKey: const ValueKey('training-no-date-why'),
+      );
+    }
+    if (belowMinimum) {
+      return _NoPlanYet(
+        trail: trail,
+        plan: plan,
+        daysUntilDeparture: daysUntil,
+        icon: Icons.hourglass_disabled,
+        headline: tr.tooShortTitle,
+        explanation: tr.tooShortWhy(
+          days: daysUntil,
+          weeks: kTrainingMinWeeks,
+        ),
+        explanationKey: const ValueKey('training-too-short-why'),
+      );
+    }
 
     // Seances du plan (IDs stables) pour borner la progression.
     final planSessionIds = {
@@ -280,30 +329,13 @@ class _PlanContent extends ConsumerWidget {
     return ListView(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       children: [
-        // --- Encart bleu : effort du sentier + compte a rebours (ou invite) ---
+        // --- Encart bleu : effort du sentier + compte a rebours ---
         _IntroEffortCard(
           trail: trail,
           plan: plan,
           daysUntilDeparture: daysUntil,
         ),
         const SizedBox(height: AppTheme.spacingBase),
-
-        // --- Etat « sans date » : pas de compte a rebours -> invite Calendrier ---
-        if (daysUntil == null) ...[
-          _InviteBanner(
-            icon: Icons.event_available,
-            message: tr.inviteSetDate,
-          ),
-          const SizedBox(height: AppTheme.spacingBase),
-        ],
-
-        // --- Etat « depart trop proche » : avertissement + plan condense ---
-        if (tooClose) ...[
-          _WarningBanner(
-            message: tr.departureTooClose(days: daysUntil ?? 0),
-          ),
-          const SizedBox(height: AppTheme.spacingBase),
-        ],
 
         // --- Etat « sans fiche » : invite non bloquante a remplir la fiche ---
         if (perso != null && !perso.hasProfile) ...[
@@ -340,11 +372,23 @@ class _PlanContent extends ConsumerWidget {
         for (final phase in plan.phases)
           _PhaseBlock(
             phase: phase,
-            condensed: tooClose,
             isDone: progress.isDone,
             onToggle: (id) =>
                 ref.read(trainingProgressProvider(trail.id).notifier).toggle(id),
           ),
+        const SizedBox(height: AppTheme.spacingSm),
+
+        // --- D'OU VIENNENT LES FREQUENCES (tache 570, S3-a) ---
+        // Le plan affiche maintenant des chiffres de rythme. Un chiffre de sante
+        // sans origine est un chiffre maison, et cette application ne s'autorise
+        // pas les chiffres maison : la ligne nomme les sources.
+        Text(
+          tr.freqSourceNotice,
+          key: const ValueKey('training-freq-sources'),
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurface.withAlpha(150),
+          ),
+        ),
         const SizedBox(height: AppTheme.spacingBase),
 
         // --- Encart orange : objectif chiffre (repere du sentier) ---
@@ -422,18 +466,19 @@ class _IntroEffortCard extends StatelessWidget {
 }
 
 /// Bloc de phase DEPLIABLE a seances COCHABLES (maquette). Replie par defaut
-/// sauf la 1re. En mode condense (depart trop proche), l'affichage reste mais
-/// la phase est marquee « condensee ».
+/// sauf la 1re.
+///
+/// PLUS DE MODE « CONDENSE » (tache 570, S3-c) : il servait a tasser le plan
+/// quand le depart etait proche. En dessous de huit semaines on ne propose plus
+/// de preparation du tout, donc il n'y a plus rien a condenser.
 class _PhaseBlock extends StatelessWidget {
   const _PhaseBlock({
     required this.phase,
-    required this.condensed,
     required this.isDone,
     required this.onToggle,
   });
 
   final TrainingPhase phase;
-  final bool condensed;
   final bool Function(String sessionId) isDone;
   final ValueChanged<String> onToggle;
 
@@ -493,6 +538,25 @@ class _PhaseBlock extends StatelessWidget {
                 ),
                 style: theme.textTheme.bodyMedium,
               ),
+              // LE RYTHME DE LA SEANCE (tache 570, S3-a).
+              //
+              // SANS LUI, CETTE LIGNE MENTAIT PAR OMISSION. Une case a cocher
+              // unique portant « Cardio 1 h » sur une phase de deux semaines se
+              // lit « une seule sortie cardio en quinze jours » — c'est
+              // exactement ce que Chris a lu, et il avait raison de le relever.
+              // Le plan portait des TYPES de seances, l'ecran affichait des
+              // seances. Le rythme leve l'ambiguite la ou elle nait : sur la
+              // ligne elle-meme.
+              subtitle: session.hasFrequency
+                  ? Text(
+                      _frequencyLabel(session),
+                      key: ValueKey('training-freq-${session.id}'),
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: theme.colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    )
+                  : null,
             ),
         ],
       ),
@@ -661,6 +725,106 @@ class _WarningBanner extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Traduit le RYTHME d'une seance (donnee) en texte lisible (couche UI).
+///
+/// Trois cas, et trois phrases differentes — parce que « 1x par semaine »,
+/// « une fois dans la phase » et « la derniere semaine seulement » ne se
+/// remplacent pas l'un l'autre : un test de materiel qu'on referait chaque
+/// semaine serait absurde, et un affutage repete pendant huit semaines n'est
+/// plus un affutage.
+String _frequencyLabel(TrainingSession session) {
+  switch (session.occurrence) {
+    case SessionOccurrence.oncePerPhase:
+      return t.training.freqOncePerPhase;
+    case SessionOccurrence.finalWeek:
+      return t.training.freqFinalWeek;
+    case SessionOccurrence.weekly:
+      return t.training.freqPerWeek(n: session.timesPerWeek);
+  }
+}
+
+/// ETAT « PAS DE PLAN, ET VOICI POURQUOI » (tache 570, S3-b et S3-c).
+///
+/// Sert les DEUX refus : date de depart absente, et depart sous le plancher de
+/// huit semaines. L'ecran garde son encart d'effort (informatif, sans promesse)
+/// et remplace le plan par la RAISON du refus. Jamais d'ecran vide, jamais de
+/// refus muet : c'est la meme regle que partout ailleurs dans cette
+/// application — on dit ce qu'on ne fait pas, et pourquoi.
+class _NoPlanYet extends StatelessWidget {
+  const _NoPlanYet({
+    required this.trail,
+    required this.plan,
+    required this.icon,
+    required this.headline,
+    required this.explanation,
+    required this.explanationKey,
+    this.daysUntilDeparture,
+  });
+
+  final TrailConfig trail;
+  final TrainingPlan plan;
+  final IconData icon;
+
+  /// Phrase courte qui NOMME le refus (ou l'invite).
+  final String headline;
+
+  /// Motif detaille du refus, sources comprises.
+  final String explanation;
+
+  /// Cle de reperage du motif (distingue les deux refus a l'oeil comme en test).
+  final Key explanationKey;
+
+  /// Compte a rebours, quand il existe (refus « trop court » seulement).
+  final int? daysUntilDeparture;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return ListView(
+      padding: const EdgeInsets.all(AppTheme.spacingBase),
+      children: [
+        _IntroEffortCard(
+          trail: trail,
+          plan: plan,
+          daysUntilDeparture: daysUntilDeparture,
+        ),
+        const SizedBox(height: AppTheme.spacingBase),
+        AppCard(
+          key: const ValueKey('training-no-plan'),
+          backgroundColor: AppTheme.orangeDifficile.withAlpha(20),
+          borderColor: AppTheme.orangeDifficile.withAlpha(80),
+          padding: const EdgeInsets.all(AppTheme.spacingBase),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(icon, color: AppTheme.orangeDifficile, size: 22),
+                  const SizedBox(width: AppTheme.spacingSm),
+                  Expanded(
+                    child: Text(
+                      headline,
+                      style: theme.textTheme.titleSmall
+                          ?.copyWith(fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: AppTheme.spacingSm),
+              Text(
+                explanation,
+                key: explanationKey,
+                style: theme.textTheme.bodySmall,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

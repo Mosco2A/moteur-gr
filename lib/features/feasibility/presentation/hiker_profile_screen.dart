@@ -268,6 +268,31 @@ class _HikerProfileScreenState extends ConsumerState<HikerProfileScreen> {
                       validator: (v) =>
                           _validateRange(v, kAgeMin, kAgeMax, tp.errorAge),
                     ),
+                    // L'AGE DIT A QUOI IL SERT (tache 570, S1).
+                    //
+                    // LA DEMANDE ETAIT DE LE RETIRER, SA PREMISSE ETAIT FAUSSE.
+                    // Chris : « si l'age ne sert a rien pas besoin de le
+                    // demander ». L'age sert, et a deux endroits verifies :
+                    // `FeasibilityFormula.deriveLevel` retire UN cran de niveau
+                    // a partir de 60 ans et DEUX a partir de 75 (VO2max -10 %
+                    // par decennie au-dela de 40 ans), et
+                    // `WalkTestNorms.predictedFor` le fait entrer dans la
+                    // prediction d'Enright qui fixe la distance de REFERENCE du
+                    // test de marche 6 min. La campagne qui avait conclu
+                    // l'inverse comparait 38 a 68 ans sur un profil DEJA au
+                    // plancher, la ou `math.max(0, rank - 1)` ne peut rien
+                    // retirer : elle a mesure une borne, pas une absence
+                    // d'effet.
+                    //
+                    // LE VRAI DEFAUT ETAIT CELUI-CI : l'ecran ne le DISAIT pas.
+                    // Une donnee de sante dont on n'explique pas l'usage est
+                    // une donnee arrachee, et la minimisation (RGPD art. 5.1.c)
+                    // demande de dire la finalite LA OU ON COLLECTE — pas dans
+                    // une politique que personne n'ouvre. La ligne est donc
+                    // collee au champ, et elle est chiffree : 60 ans, 75 ans,
+                    // le test de marche, et rien d'autre.
+                    const SizedBox(height: AppTheme.spacingXs),
+                    _FieldUsageNote(text: tp.ageUsage),
                     const SizedBox(height: AppTheme.spacingBase),
                     // Taille — borne [kHeightMinCm..kHeightMaxCm] cm, max 3
                     // chiffres (empeche physiquement 8000 / 600000 signales
@@ -430,6 +455,49 @@ class _PrivacyBanner extends StatelessWidget {
             child: Text(
               text,
               style: theme.textTheme.bodySmall?.copyWith(color: colors.primary),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// NOTE D'USAGE D'UN CHAMP (tache 570, S1) — « a quoi sert cette donnee ».
+///
+/// Registre volontairement DISCRET (pas un bandeau, pas une alerte) : c'est une
+/// explication, pas un avertissement. Elle se lit sous le champ qu'elle
+/// explique, jamais ailleurs — une finalite affichee loin de la saisie
+/// n'informe personne.
+class _FieldUsageNote extends StatelessWidget {
+  const _FieldUsageNote({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(left: AppTheme.spacingMd),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Icon(
+              Icons.info_outline,
+              size: 14,
+              color: theme.colorScheme.onSurface.withAlpha(140),
+            ),
+          ),
+          const SizedBox(width: AppTheme.spacingXs),
+          Expanded(
+            child: Text(
+              text,
+              key: const ValueKey('hiker-profile-age-usage'),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: theme.colorScheme.onSurface.withAlpha(170),
+              ),
             ),
           ),
         ],

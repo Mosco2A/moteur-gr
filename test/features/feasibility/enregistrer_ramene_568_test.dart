@@ -85,8 +85,8 @@ void main() {
 
   group('Q3 — apres un enregistrement reussi, on est ramene', () {
     testWidgets(
-      'la note de difficultes : enregistrer RAMENE a la faisabilite (et ne '
-      'laisse pas le randonneur chercher le retour)',
+      'le bouton du bas RAMENE a la faisabilite (et ne laisse pas le '
+      'randonneur chercher le retour)',
       (tester) async {
         tester.view.physicalSize = const Size(390, 2400);
         tester.view.devicePixelRatio = 1.0;
@@ -97,22 +97,17 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byType(PastHikesScreen), findsOneWidget);
 
-        // Le randonneur ecrit ses difficultes...
-        await tester.enterText(
-          find.byType(TextField).first,
-          'genoux en descente',
-        );
-        await tester.pumpAndSettle();
-
-        // ... et enregistre (le bouton du BAS de l'ecran, pas celui d'une
-        // feuille modale : aucune feuille n'est ouverte ici).
-        await tester.tap(find.text(t.pastHikes.save));
+        // PLUS DE NOTE A SAISIR AVANT (tache 570, S2) : le champ texte libre
+        // « difficultes » a ete retire. Le geste teste reste EXACTEMENT celui
+        // du defaut de Chris — appuyer sur le bouton du bas de l'ecran — et
+        // c'est son RETOUR qui est sous test, pas ce qu'il enregistrait.
+        await tester.tap(find.text(t.pastHikes.backToFeasibility));
         await tester.pumpAndSettle();
 
         expect(
           find.byType(PastHikesScreen),
           findsNothing,
-          reason: 'apres un enregistrement reussi, l ecran est depile',
+          reason: 'apres le geste de conclusion, l ecran est depile',
         );
         expect(
           find.text('FAISABILITE_TEMOIN'),
@@ -120,9 +115,16 @@ void main() {
           reason: 'on revient LA D OU L ON VENAIT (defaut Chris 26/09 09:59)',
         );
 
-        // Et la note est bien PERSISTEE (on ne ramene pas au prix du contenu).
-        final repo = HikerProfileRepository(db: db, prefs: prefs);
-        expect(await repo.getExperienceNote(), 'genoux en descente');
+        // LA NOTE N'EXISTE PLUS, LE RETOUR SI (tache 570, S2). Le champ texte
+        // libre « difficultes » a ete retire : il etait stocke sur trois etages
+        // et lu par personne. L'ACQUIS DE LA 568 EST ICI, et il est verifie
+        // au-dessus : le bouton ramene toujours a la faisabilite. Ce qui a
+        // change, c'est qu'il ne promet plus d'enregistrer ce qui n'existe pas.
+        expect(
+          prefs.getString(kHikerExperienceNotePrefsKey),
+          isNull,
+          reason: 'plus rien ne doit ecrire la note de difficultes',
+        );
       },
     );
 

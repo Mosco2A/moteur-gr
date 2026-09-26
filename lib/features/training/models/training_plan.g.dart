@@ -80,6 +80,10 @@ _TrainingSession _$TrainingSessionFromJson(Map<String, dynamic> json) =>
       labelDe: json['labelDe'] as String? ?? '',
       labelIt: json['labelIt'] as String? ?? '',
       labelEs: json['labelEs'] as String? ?? '',
+      timesPerWeek: (json['timesPerWeek'] as num?)?.toInt() ?? 0,
+      occurrence:
+          $enumDecodeNullable(_$SessionOccurrenceEnumMap, json['occurrence']) ??
+          SessionOccurrence.weekly,
     );
 
 Map<String, dynamic> _$TrainingSessionToJson(_TrainingSession instance) =>
@@ -90,7 +94,15 @@ Map<String, dynamic> _$TrainingSessionToJson(_TrainingSession instance) =>
       'labelDe': instance.labelDe,
       'labelIt': instance.labelIt,
       'labelEs': instance.labelEs,
+      'timesPerWeek': instance.timesPerWeek,
+      'occurrence': _$SessionOccurrenceEnumMap[instance.occurrence]!,
     };
+
+const _$SessionOccurrenceEnumMap = {
+  SessionOccurrence.weekly: 'weekly',
+  SessionOccurrence.oncePerPhase: 'oncePerPhase',
+  SessionOccurrence.finalWeek: 'finalWeek',
+};
 
 _TrainingObjective _$TrainingObjectiveFromJson(Map<String, dynamic> json) =>
     _TrainingObjective(

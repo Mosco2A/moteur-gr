@@ -802,19 +802,6 @@
     "noDateChosen": "No date chosen",
     "departureDate": "Departure date"
   },
-  "appearance": {
-    "title": "Appearance",
-    "subtitle": "Choose the app’s look and feel",
-    "skinSentierVivant": "Living Trail",
-    "skinSentierVivantDesc": "Modern and colorful, the trail color takes the stage",
-    "skinTopographique": "Topographic",
-    "skinTopographiqueDesc": "Ordnance-map style, data first",
-    "skinGrandAir": "Great Outdoors",
-    "skinGrandAirDesc": "Full-screen photos, adventure-journal feel",
-    "unavailableOnTrail": "Unavailable on this trail",
-    "changeSkin": "Change skin",
-    "selected": "Selected"
-  },
   "feedback": {
     "title": "Feedback",
     "type": "Feedback type",
@@ -942,6 +929,7 @@
       "seasonNoSource": "Spring or autumn departure: no published measurement allows an effect to be quantified. The season changes nothing here, for lack of a source.",
       "seasonMissing": "No departure date is set: the season changes nothing here, for lack of data.",
       "massNotCounted": "Neither your weight nor your pack's enters this verdict, and that is deliberate: it measures what you have demonstrated you can hold. At 65 or at 95 kg, the same man gets the same verdict.",
+      "ageCounted": "Age, on the other hand, does enter this verdict: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. Aerobic capacity declines with age, that is measured — it is not a judgement about you.",
       "winterInvalid": "Winter departure: this verdict no longer holds. Trail gradings are only valid in good weather, dry ground and suitable snow cover. We do not harden the number, we tell you it does not apply.",
       "restDaysCounted": "Rest days counted in this verdict: ${count}.",
       "restDaysNone": "No rest day is set in your plan: add some and this figure moves.",
@@ -1164,7 +1152,13 @@
     "inviteSetDate": "Set your departure date in the Calendar to enable the countdown.",
     "inviteFillProfile": "Fill in your info sheet to tailor the plan to your profile.",
     "cautionVerdictNotice": "Your feasibility calls for caution: follow the progression and do not cut the preparation short.",
-    "departureTooClose": "$days days left: plan condensed to the available time."
+    "freqPerWeek": "$n× per week",
+    "freqOncePerPhase": "once during the phase",
+    "freqFinalWeek": "the final week only",
+    "freqSourceNotice": "The frequencies are not in-house numbers: 3 endurance sessions and 2 strength sessions a week, 2 rest days, after REI (Conditioning for Backpacking), Terres d'Aventure and the 2020 WHO guidelines.",
+    "noDateWhy": "Without a departure date this plan has no end: there is no way to say which week you are in, or when to taper. Set your date in the Calendar and the plan appears.",
+    "tooShortTitle": "No preparation offered",
+    "tooShortWhy": "There are $days days left before departure, less than $weeks weeks. No physical preparation is offered to you: below $weeks weeks there is no progression to build, and a programme crammed into the time that remains produces injury, not fitness. This $weeks-week floor is the one trek operators use — Terres d'Aventure writes “start training at least 2 months before you leave”. Until then, walk regularly and do not go looking for overload."
   },
   "eta": {
     "title": "Estimated time",
@@ -2038,6 +2032,7 @@
     "fieldAge": "Age",
     "hintAge": "In years",
     "errorAge": "Invalid age (18 to 120 years)",
+    "ageUsage": "What your age is used for: it sets the reference distance of your walk test, and it lowers the retained level by one notch from 60, by two from 75. It is used for nothing else, and none of it leaves your phone.",
     "fieldHeight": "Height",
     "hintHeight": "In centimetres",
     "errorHeight": "Invalid height (60 to 255 cm)",
@@ -2113,11 +2108,9 @@
     "editHike": "Edit hike",
     "deleteHike": "Delete",
     "save": "Save",
+    "backToFeasibility": "Back to feasibility",
     "saved": "Hikes saved",
-    "maxReached": "Maximum of 5 hikes reached.",
-    "difficultiesTitle": "Difficulties encountered",
-    "difficultiesHint": "One text for all these hikes: blisters, knees on descents, breathlessness at altitude, heat stress...",
-    "difficultiesSaved": "Note saved"
+    "maxReached": "Maximum of 5 hikes reached."
   },
   "ffrando": {
     "cotationTitle": "FFRandonnee rating",
