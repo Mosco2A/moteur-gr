@@ -6,17 +6,23 @@ import '../../../core/models/stage.dart';
 import '../../checklist/domain/season.dart';
 import '../../map/providers/gpx_track_provider.dart';
 import '../../notifications/providers/download_reminder_provider.dart';
-import '../../planning/domain/planning_calculator.dart';
 import '../../planning/models/planned_day.dart';
 import '../../planning/providers/planned_days_provider.dart';
 import '../../trek/providers/gps_providers.dart';
 import '../../trek/providers/stage_providers.dart';
 import '../domain/feasibility_formula.dart';
+import '../domain/feasibility_program.dart';
 import '../domain/hiker_profile.dart';
 import '../domain/objective_profile.dart';
 import '../domain/walk_test_result.dart';
+import 'advised_program_provider.dart';
 import 'hiker_profile_provider.dart';
 import 'walk_test_provider.dart';
+
+/// [FeasibilityProgram] vit desormais dans le domaine (tache 569) : la recherche
+/// du conseil en a besoin hors de tout provider. Re-exportee pour que tout ce
+/// qui la lisait ici continue de la trouver.
+export '../domain/feasibility_program.dart' show FeasibilityProgram;
 
 /// UN SEUL MOTEUR DE VERDICT (campagne personas 21/09, MAJEUR-4).
 ///
@@ -301,64 +307,12 @@ final restDaysAfterStageProvider = Provider<Set<int>>((ref) {
 // sans programme), on retombe sur les etapes brutes — une etape par jour — qui
 // sont exactement le decoupage de reference du sentier. [fromProgram] dit
 // laquelle des deux sources a parle, pour que ce soit verifiable et non suppose.
+//
+// TACHE 569 : la classe [FeasibilityProgram] et sa conversion sont passees dans
+// le DOMAINE (`domain/feasibility_program.dart`), parce que la recherche du
+// conseil en a besoin hors de tout provider. Elle est re-exportee ici pour que
+// tout ce qui la lisait continue de la trouver au meme endroit.
 // ===========================================================================
-
-/// Le decoupage REEL evalue : une charge par jour de marche + les repos.
-class FeasibilityProgram {
-  const FeasibilityProgram({
-    required this.dayEfforts,
-    required this.restAfterDayIndex,
-    required this.stageCount,
-    required this.fromProgram,
-  });
-
-  /// Aucun decoupage evaluable (ni programme, ni etape brute).
-  static const empty = FeasibilityProgram(
-    dayEfforts: [],
-    restAfterDayIndex: {},
-    stageCount: 0,
-    fromProgram: false,
-  );
-
-  /// Une entree par JOUR DE MARCHE, dans l'ordre de marche. Les etapes d'un
-  /// jour regroupe y sont deja sommees (distance, D+, D−).
-  final List<StageEffort> dayEfforts;
-
-  /// Index 0-based des JOURS DE MARCHE apres lesquels un repos est pose.
-  ///
-  /// Exprime en JOURS, et non plus en etapes : c'est la sequence des charges
-  /// journalieres que la monotonie de Foster consomme (#2-p), et un jour
-  /// regroupe n'y compte que pour une charge.
-  final Set<int> restAfterDayIndex;
-
-  /// Nombre d'etapes DISTINCTES portees par ce decoupage.
-  ///
-  /// TACHE 558 : une etape PEUT desormais se couper en deux demi-journees, donc
-  /// elle peut apparaitre sur deux jours de marche — elle ne compte ici qu'une
-  /// fois. Le plafond du conseil n'est plus ce nombre mais [maxWalkingDays].
-  final int stageCount;
-
-  /// PLAFOND du nombre de jours de marche REELLEMENT atteignable (tache 558).
-  ///
-  /// Avant : le nombre d'etapes, parce qu'« une etape ne se coupe pas en deux
-  /// dans le programme ». Elle se coupe desormais, jusqu'a
-  /// [PlanningCalculator.maxDaysPerStage] journees — le conseil peut donc
-  /// proposer d'etaler au-dela du nombre d'etapes, et le curseur du Programme
-  /// sait l'atteindre. Un conseil inapplicable reste interdit : le plafond ne
-  /// depasse jamais ce que le decoupage permet.
-  int get maxWalkingDays =>
-      PlanningCalculator.maxWalkingDaysFor(stageCount);
-
-  /// Vrai si la source est le PROGRAMME du randonneur, faux si c'est le repli
-  /// sur les etapes brutes du sentier.
-  final bool fromProgram;
-
-  /// Nombre de jours de MARCHE du decoupage.
-  int get walkingDays => dayEfforts.length;
-
-  /// Vrai quand il n'y a rien a evaluer (aucun jour de marche).
-  bool get isEmpty => dayEfforts.isEmpty;
-}
 
 /// LE DECOUPAGE COURANT, source unique du verdict (retour Chris 5).
 ///
@@ -377,39 +331,11 @@ final feasibilityProgramProvider =
     days = const [];
   }
 
-  final efforts = <StageEffort>[];
-  final restAfterDay = <int>{};
-  // Etapes DISTINCTES : une etape coupee en deux demi-journees compte pour UNE
-  // (tache 558). Sinon le plafond du conseil doublerait a chaque decoupage.
-  final stageNumbers = <int>{};
-  for (final day in days) {
-    if (day.isRestDay || day.stages.isEmpty) {
-      // Aucun repos « avant la premiere journee » : il ne repose de rien.
-      if (efforts.isNotEmpty) restAfterDay.add(efforts.length - 1);
-      continue;
-    }
-    stageNumbers.addAll(day.stages.map((s) => s.stageNumber));
-    efforts.add(StageEffort(
-      index: efforts.length,
-      // Le nom de la JOURNEE : celui de son etape, ou les deux noms quand elle
-      // en regroupe deux. C'est ce que le randonneur marche ce jour-la.
-      name: day.stages.map((s) => s.name).join(' + '),
-      distanceKm: day.totalDistanceKm,
-      elevationGainM: day.totalElevationGainM,
-      // Le D− n'entre PAS dans le score (#1-d) : il classe les journees de
-      // l'alerte descente du dispositif poids (#4-l).
-      elevationLossM: day.totalElevationLossM,
-    ));
-  }
-
-  if (efforts.isNotEmpty) {
-    return FeasibilityProgram(
-      dayEfforts: efforts,
-      restAfterDayIndex: restAfterDay,
-      stageCount: stageNumbers.length,
-      fromProgram: true,
-    );
-  }
+  // LA CONVERSION EST ECRITE UNE SEULE FOIS (tache 569) : la meme que celle
+  // qu'emprunte la recherche du conseil, pour que le conseil porte exactement
+  // sur le decoupage que l'ecran affichera.
+  final fromDays = FeasibilityProgram.fromPlannedDays(days);
+  if (!fromDays.isEmpty) return fromDays;
 
   // REPLI : le decoupage de reference du sentier, une etape par jour.
   final rawStages = await ref.watch(stageEffortsProvider.future);
@@ -420,12 +346,8 @@ final feasibilityProgramProvider =
   } catch (_) {
     rawRest = const {};
   }
-  return FeasibilityProgram(
-    dayEfforts: rawStages,
-    restAfterDayIndex: rawRest,
-    stageCount: rawStages.length,
-    fromProgram: false,
-  );
+  return FeasibilityProgram.fromRawStages(rawStages,
+      restAfterStageIndex: rawRest);
 });
 
 /// Evaluation complete de faisabilite (etapes + circuit + conseils) — V2.
@@ -440,9 +362,17 @@ final feasibilityAssessmentProvider =
   final objective = await ref.watch(objectiveProfileProvider.future);
   final conditions = await ref.watch(trekConditionsProvider.future);
   final restDays = program.restAfterDayIndex;
+  // LE CONSEIL DE DUREE, CHERCHE PAR ESSAI REEL (tache 569, R1). Le moteur ne le
+  // calcule plus : il le recoit. C'est ce qui garantit que la valeur conseillee
+  // n'est jamais rouge — elle a ete essayee avant d'etre proposee.
+  final advice = await ref.watch(advisedProgramProvider.future);
   return FeasibilityFormula.evaluate(
     stages: program.dayEfforts,
     level: level,
+    durationAdvice: advice,
+    // R2 : sans choix du randonneur, les numeros de journees et le « au lieu de
+    // N » designent le decoupage de REFERENCE du sentier, pas le sien.
+    fromProgram: program.fromProgram,
     // PLAFOND DU CONSEIL : jamais plus de jours de marche que le decoupage
     // n'en permet — deux journees par etape depuis la tache 558. Sans cette
     // borne, l'ecran pouvait conseiller un nombre de jours que le curseur du

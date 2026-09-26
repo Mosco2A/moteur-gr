@@ -726,6 +726,12 @@ class Translations$itinerary$fr {
 		one: '${n} étape',
 		other: '${n} étapes',
 	);
+
+	/// fr: 'Jours au total'
+	String get daysTotal => 'Jours au total';
+
+	/// fr: '${walk} jours de marche + ${rest} jours de repos'
+	String daysBreakdown({required Object walk, required Object rest}) => '${walk} jours de marche + ${rest} jours de repos';
 }
 
 // Path: tracking
@@ -4926,11 +4932,11 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Conseils pour ton programme'
 	String get adviceTitle => 'Conseils pour ton programme';
 
-	/// fr: 'Générer mon programme (${days} jours)'
-	String generateProgram({required Object days}) => 'Générer mon programme (${days} jours)';
+	/// fr: 'Générer mon programme (${days} jours au total)'
+	String generateProgram({required Object days}) => 'Générer mon programme (${days} jours au total)';
 
-	/// fr: 'Programme généré sur ${days} jours — à toi de l'ajuster.'
-	String generateProgramDone({required Object days}) => 'Programme généré sur ${days} jours — à toi de l\'ajuster.';
+	/// fr: 'Programme généré sur ${days} jours au total — à toi de l'ajuster.'
+	String generateProgramDone({required Object days}) => 'Programme généré sur ${days} jours au total — à toi de l\'ajuster.';
 
 	/// fr: 'Aucune journée à évaluer pour le moment.'
 	String get noStages => 'Aucune journée à évaluer pour le moment.';
@@ -4940,11 +4946,11 @@ class Translations$feasibility$formula$fr {
 	late final Translations$feasibility$formula$limitingFactors$fr limitingFactors = Translations$feasibility$formula$limitingFactors$fr.internal(_root);
 	late final Translations$feasibility$formula$advice$fr advice = Translations$feasibility$formula$advice$fr.internal(_root);
 
-	/// fr: 'Découpage retenu : ${days} jours de marche.'
-	String retainedPlan({required Object days}) => 'Découpage retenu : ${days} jours de marche.';
+	/// fr: 'Découpage retenu : ${days} jours au total, marche et repos compris.'
+	String retainedPlan({required Object days}) => 'Découpage retenu : ${days} jours au total, marche et repos compris.';
 
-	/// fr: 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.'
-	String retainedPlanNone({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.';
+	/// fr: 'Aucun découpage retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.'
+	String retainedPlanNone({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.';
 
 	/// fr: '1 km de plat vaut 42 m de dénivelé : c'est le coût mesuré de la marche en pente, pas une règle maison.'
 	String get energyUnitNotice => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.';
@@ -4952,8 +4958,8 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Verdict du circuit'
 	String get circuitTitle => 'Verdict du circuit';
 
-	/// fr: 'Score du circuit : ${value}'
-	String circuitScore({required Object value}) => 'Score du circuit : ${value}';
+	/// fr: 'Score du circuit : ${value} — vert jusqu'à ${green}, orange jusqu'à ${orange}, rouge au-delà.'
+	String circuitScore({required Object value, required Object green, required Object orange}) => 'Score du circuit : ${value} — vert jusqu\'à ${green}, orange jusqu\'à ${orange}, rouge au-delà.';
 
 	/// fr: 'Le verdict du circuit est celui de ta journée la plus dure : rien d'autre ne le durcit.'
 	String get circuitIsWorstStage => 'Le verdict du circuit est celui de ta journée la plus dure : rien d\'autre ne le durcit.';
@@ -5003,11 +5009,11 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Départ en été : la capacité aérobie baisse de 7 %, c'est mesuré.'
 	String get heatApplied => 'Départ en été : la capacité aérobie baisse de 7 %, c\'est mesuré.';
 
-	/// fr: 'Départ au printemps ou en automne : aucune mesure publiée ne permet de chiffrer un effet. La saison ne change rien ici, faute de source.'
-	String get seasonNoSource => 'Départ au printemps ou en automne : aucune mesure publiée ne permet de chiffrer un effet. La saison ne change rien ici, faute de source.';
+	/// fr: 'Départ au printemps ou en automne : ce verdict s'applique tel quel. Seul l'été porte une mesure publiée (7 % de capacité aérobie en moins) ; pour ces deux saisons, aucun coefficient n'est appliqué.'
+	String get seasonNoSource => 'Départ au printemps ou en automne : ce verdict s\'applique tel quel. Seul l\'été porte une mesure publiée (7 % de capacité aérobie en moins) ; pour ces deux saisons, aucun coefficient n\'est appliqué.';
 
-	/// fr: 'Aucune date de départ n'est posée : la saison ne change rien ici, faute de donnée.'
-	String get seasonMissing => 'Aucune date de départ n\'est posée : la saison ne change rien ici, faute de donnée.';
+	/// fr: 'Ce verdict est calculé sans effet de saison : aucune date de départ n'est posée. Il vaut donc pour un départ hors été ; un départ en été le durcit de 7 %, et la date se pose au Calendrier.'
+	String get seasonMissing => 'Ce verdict est calculé sans effet de saison : aucune date de départ n\'est posée. Il vaut donc pour un départ hors été ; un départ en été le durcit de 7 %, et la date se pose au Calendrier.';
 
 	/// fr: 'Ni ton poids ni celui de ton sac n'entrent dans ce verdict, et c'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.'
 	String get massNotCounted => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict, et c\'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.';
@@ -5027,14 +5033,32 @@ class Translations$feasibility$formula$fr {
 	/// fr: 'Ces deux chiffres se lisent ensemble : loin l'un de l'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s'affiche, il ne décide pas.'
 	String get averageLoadInfo => 'Ces deux chiffres se lisent ensemble : loin l\'un de l\'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s\'affiche, il ne décide pas.';
 
-	/// fr: 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.'
-	String durationStatement({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.';
+	/// fr: 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours de marche d'affilée.'
+	String durationStatement({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours de marche d\'affilée.';
 
 	/// fr: 'Ce constat s'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d'en juger.'
 	String get durationStatementInfo => 'Ce constat s\'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d\'en juger.';
 
 	/// fr: 'Ce qui pèse le plus sur cette journée : ${factor}'
 	String stageDominantFactor({required Object factor}) => 'Ce qui pèse le plus sur cette journée : ${factor}';
+
+	/// fr: 'Comment ce verdict est calculé'
+	String get verdictHowTitle => 'Comment ce verdict est calculé';
+
+	/// fr: 'Ta journée la plus dure est ${stage} : ${distance} km et ${elevation} m de dénivelé positif.'
+	String verdictHowStage({required Object stage, required Object distance, required Object elevation}) => 'Ta journée la plus dure est ${stage} : ${distance} km et ${elevation} m de dénivelé positif.';
+
+	/// fr: 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.'
+	String verdictHowEnergy({required Object distance, required Object elevation, required Object energy}) => 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.';
+
+	/// fr: 'Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).'
+	String verdictHowCeiling({required Object capacity, required Object level}) => 'Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).';
+
+	/// fr: '${energy} ÷ ${capacity} = ${score}. Jusqu'à ${green} c'est vert, jusqu'à ${orange} c'est orange, au-delà c'est rouge.'
+	String verdictHowRatio({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Jusqu\'à ${green} c\'est vert, jusqu\'à ${orange} c\'est orange, au-delà c\'est rouge.';
+
+	/// fr: 'Rien ici ne sort d'une boîte noire : c'est cette division, et trois travaux publiés la nourrissent — Minetti 2002 pour l'unité d'énergie, MOVE 2026 pour l'altitude, Linsell 2020 pour la chaleur.'
+	String get verdictHowNoBlackBox => 'Rien ici ne sort d\'une boîte noire : c\'est cette division, et trois travaux publiés la nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.';
 }
 
 // Path: feasibility.flow
@@ -5951,11 +5975,8 @@ class Translations$programme$duration$fr {
 	/// fr: 'Nombre de jours'
 	String get label => 'Nombre de jours';
 
-	/// fr: '{count} j'
-	String get days => '{count} j';
-
-	/// fr: '{total} j (dont {rest} repos)'
-	String get daysWithRest => '{total} j (dont {rest} repos)';
+	/// fr: '{total} j au total (dont {rest} de repos)'
+	String get daysWithRest => '{total} j au total (dont {rest} de repos)';
 
 	/// fr: 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d'abord. Le repos, lui, ne change pas la difficulté d'une journée.'
 	String get splitNote => 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d\'abord. Le repos, lui, ne change pas la difficulté d\'une journée.';
@@ -5964,6 +5985,9 @@ class Translations$programme$duration$fr {
 	String get splitExhausted => 'Toutes les journées sont déjà coupées au plus court : le curseur n\'allègera plus le verdict.';
 
 	late final Translations$programme$duration$difficulty$fr difficulty = Translations$programme$duration$difficulty$fr.internal(_root);
+
+	/// fr: '{count} j au total'
+	String get daysTotal => '{count} j au total';
 }
 
 // Path: programme.stats
@@ -7054,23 +7078,32 @@ class Translations$feasibility$formula$advice$fr {
 	/// fr: 'Répartis les étapes pour lisser l'effort au fil des jours.'
 	String get balanced => 'Répartis les étapes pour lisser l\'effort au fil des jours.';
 
-	/// fr: 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.'
-	String optimalDays({required Object days, required Object current}) => 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.';
+	/// fr: 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos, au lieu des ${current} jours d'aujourd'hui.'
+	String optimalDays({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos, au lieu des ${current} jours d\'aujourd\'hui.';
 
-	/// fr: 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.'
-	String split({required Object stage}) => 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.';
-
-	/// fr: 'La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.'
-	String splitImpossible({required Object stage}) => 'La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n\'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.';
-
-	/// fr: 'Prévois un jour de repos après la journée ${stages}.'
-	String rest({required Object stages}) => 'Prévois un jour de repos après la journée ${stages}.';
+	/// fr: 'Prévois un jour de repos après la journée ${stages} de ton programme.'
+	String rest({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} de ton programme.';
 
 	/// fr: 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).'
 	String training({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).';
 
-	/// fr: 'Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
-	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
+	/// fr: 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
+	String restAdvised({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
+
+	/// fr: 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n'as encore rien choisi : le sentier en est à son découpage de référence, ${current} jours au total.'
+	String optimalDaysNoChoice({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son découpage de référence, ${current} jours au total.';
+
+	/// fr: 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s'arrête là où il y a un toit. La réponse, c'est l'entraînement : monter d'un cran relève ton plafond, et cette journée repasse dessous.'
+	String hardStageAlert({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.';
+
+	/// fr: 'Aucun nombre de jours ne rend ce sentier tenable pour toi aujourd'hui : la journée ${stage} reste au-dessus de ton plafond, même sur le découpage le plus étalé. On ne te conseille donc aucune durée — ce n'est plus une question de programme. Entraîne-toi, ou choisis un sentier moins exigeant.'
+	String noViableDuration({required Object stage}) => 'Aucun nombre de jours ne rend ce sentier tenable pour toi aujourd\'hui : la journée ${stage} reste au-dessus de ton plafond, même sur le découpage le plus étalé. On ne te conseille donc aucune durée — ce n\'est plus une question de programme. Entraîne-toi, ou choisis un sentier moins exigeant.';
+
+	/// fr: 'Prévois un jour de repos après la journée ${stages} du découpage de référence du sentier — tu n'as pas encore choisi le tien.'
+	String restReference({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien.';
+
+	/// fr: 'Pose ${days} jour(s) de repos, après les journées ${stages} du découpage de référence du sentier — tu n'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.'
+	String restAdvisedReference({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.';
 }
 
 // Path: signalement.water.states
@@ -7698,6 +7731,8 @@ extension on Translations {
 			'itinerary.viewStage' => 'Voir l\'étape',
 			'itinerary.openMap' => 'Voir sur la carte',
 			'itinerary.stageCount' => ({required num n}) => (_root.$meta.cardinalResolver ?? PluralResolvers.cardinal('fr'))(n, one: '${n} étape', other: '${n} étapes', ), 
+			'itinerary.daysTotal' => 'Jours au total',
+			'itinerary.daysBreakdown' => ({required Object walk, required Object rest}) => '${walk} jours de marche + ${rest} jours de repos',
 			'tracking.start' => 'Démarrer',
 			'tracking.pause' => 'Pause',
 			'tracking.resume' => 'Reprendre',
@@ -7937,10 +7972,10 @@ extension on Translations {
 			'checklist.ui.yesBagOk' => 'Oui, sac OK',
 			'checklist.ui.bagValidatedSnack' => 'Sac valide !',
 			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — vous pouvez modifier votre matériel.',
-			'checklist.ui.missingTitle' => 'Équipement manquant',
-			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.missingTitle' => 'Équipement manquant',
+			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			'checklist.ui.missingList' => 'Il manque :',
 			'checklist.ui.understood' => 'Compris',
 			'checklist.ui.validateAnyway' => 'Valider quand même',
@@ -8194,8 +8229,8 @@ extension on Translations {
 			'feasibility.formula.limitingLabel' => ({required Object factor}) => 'Facteur limitant : ${factor}',
 			'feasibility.formula.trainingReco' => ({required Object weeks}) => 'Entraînement conseillé : ${weeks} semaines avant le départ',
 			'feasibility.formula.adviceTitle' => 'Conseils pour ton programme',
-			'feasibility.formula.generateProgram' => ({required Object days}) => 'Générer mon programme (${days} jours)',
-			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Programme généré sur ${days} jours — à toi de l\'ajuster.',
+			'feasibility.formula.generateProgram' => ({required Object days}) => 'Générer mon programme (${days} jours au total)',
+			'feasibility.formula.generateProgramDone' => ({required Object days}) => 'Programme généré sur ${days} jours au total — à toi de l\'ajuster.',
 			'feasibility.formula.noStages' => 'Aucune journée à évaluer pour le moment.',
 			'feasibility.formula.levels.beginner' => 'débutant',
 			'feasibility.formula.levels.intermediate' => 'intermédiaire',
@@ -8212,17 +8247,20 @@ extension on Translations {
 			'feasibility.formula.limitingFactors.heat' => 'la chaleur de la saison',
 			'feasibility.formula.advice.balancedOk' => 'Ton programme est équilibré : garde une marge et écoute ton corps.',
 			'feasibility.formula.advice.balanced' => 'Répartis les étapes pour lisser l\'effort au fil des jours.',
-			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object current}) => 'Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.',
-			'feasibility.formula.advice.split' => ({required Object stage}) => 'Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.',
-			'feasibility.formula.advice.splitImpossible' => ({required Object stage}) => 'La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n\'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.',
-			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages}.',
+			'feasibility.formula.advice.optimalDays' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos, au lieu des ${current} jours d\'aujourd\'hui.',
+			'feasibility.formula.advice.rest' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} de ton programme.',
 			'feasibility.formula.advice.training' => ({required Object weeks}) => 'Prépare-toi ${weeks} semaines avant le départ (préparation physique).',
-			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
-			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Découpage retenu : ${days} jours de marche.',
-			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.',
+			'feasibility.formula.advice.restAdvised' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
+			'feasibility.formula.advice.optimalDaysNoChoice' => ({required Object days, required Object walk, required Object rest, required Object current}) => 'Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n\'as encore rien choisi : le sentier en est à son découpage de référence, ${current} jours au total.',
+			'feasibility.formula.advice.hardStageAlert' => ({required Object stage}) => 'La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s\'arrête là où il y a un toit. La réponse, c\'est l\'entraînement : monter d\'un cran relève ton plafond, et cette journée repasse dessous.',
+			'feasibility.formula.advice.noViableDuration' => ({required Object stage}) => 'Aucun nombre de jours ne rend ce sentier tenable pour toi aujourd\'hui : la journée ${stage} reste au-dessus de ton plafond, même sur le découpage le plus étalé. On ne te conseille donc aucune durée — ce n\'est plus une question de programme. Entraîne-toi, ou choisis un sentier moins exigeant.',
+			'feasibility.formula.advice.restReference' => ({required Object stages}) => 'Prévois un jour de repos après la journée ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien.',
+			'feasibility.formula.advice.restAdvisedReference' => ({required Object days, required Object stages}) => 'Pose ${days} jour(s) de repos, après les journées ${stages} du découpage de référence du sentier — tu n\'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C\'est un conseil, il ne change pas ton verdict.',
+			'feasibility.formula.retainedPlan' => ({required Object days}) => 'Découpage retenu : ${days} jours au total, marche et repos compris.',
+			'feasibility.formula.retainedPlanNone' => ({required Object days}) => 'Aucun découpage retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.',
 			'feasibility.formula.energyUnitNotice' => '1 km de plat vaut 42 m de dénivelé : c\'est le coût mesuré de la marche en pente, pas une règle maison.',
 			'feasibility.formula.circuitTitle' => 'Verdict du circuit',
-			'feasibility.formula.circuitScore' => ({required Object value}) => 'Score du circuit : ${value}',
+			'feasibility.formula.circuitScore' => ({required Object value, required Object green, required Object orange}) => 'Score du circuit : ${value} — vert jusqu\'à ${green}, orange jusqu\'à ${orange}, rouge au-delà.',
 			'feasibility.formula.circuitIsWorstStage' => 'Le verdict du circuit est celui de ta journée la plus dure : rien d\'autre ne le durcit.',
 			'feasibility.formula.restWindowWhole' => ({required Object days}) => 'Repos mesuré sur le trek entier (${days} jours).',
 			'feasibility.formula.restWindowSlice' => ({required Object start, required Object end}) => 'Repos mesuré sur la pire semaine : jours ${start} à ${end}.',
@@ -8239,17 +8277,23 @@ extension on Translations {
 			'feasibility.formula.altitudeBelowThreshold' => ({required Object value}) => 'Altitude : ${value} m au plus haut, sous les 1 500 m à partir desquels elle compte. Elle ne change rien ici.',
 			'feasibility.formula.altitudeMissing' => 'Altitude : la trace de ce sentier n\'en porte pas. Elle ne change rien ici faute de donnée — et non parce qu\'elle serait sans effet.',
 			'feasibility.formula.heatApplied' => 'Départ en été : la capacité aérobie baisse de 7 %, c\'est mesuré.',
-			'feasibility.formula.seasonNoSource' => 'Départ au printemps ou en automne : aucune mesure publiée ne permet de chiffrer un effet. La saison ne change rien ici, faute de source.',
-			'feasibility.formula.seasonMissing' => 'Aucune date de départ n\'est posée : la saison ne change rien ici, faute de donnée.',
+			'feasibility.formula.seasonNoSource' => 'Départ au printemps ou en automne : ce verdict s\'applique tel quel. Seul l\'été porte une mesure publiée (7 % de capacité aérobie en moins) ; pour ces deux saisons, aucun coefficient n\'est appliqué.',
+			'feasibility.formula.seasonMissing' => 'Ce verdict est calculé sans effet de saison : aucune date de départ n\'est posée. Il vaut donc pour un départ hors été ; un départ en été le durcit de 7 %, et la date se pose au Calendrier.',
 			'feasibility.formula.massNotCounted' => 'Ni ton poids ni celui de ton sac n\'entrent dans ce verdict, et c\'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.',
 			'feasibility.formula.winterInvalid' => 'Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu\'il ne s\'applique pas.',
 			'feasibility.formula.restDaysCounted' => ({required Object count}) => 'Jours de repos comptés dans ce verdict : ${count}.',
 			'feasibility.formula.restDaysNone' => 'Aucun jour de repos n\'est posé dans ton programme : poses-en et ce chiffre bouge.',
 			'feasibility.formula.averageLoad' => ({required Object value, required Object worst}) => 'Charge moyenne des journées : ${value} (la pire est à ${worst}).',
 			'feasibility.formula.averageLoadInfo' => 'Ces deux chiffres se lisent ensemble : loin l\'un de l\'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s\'affiche, il ne décide pas.',
-			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.',
+			'feasibility.formula.durationStatement' => ({required Object days, required Object done}) => 'Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours de marche d\'affilée.',
 			'feasibility.formula.durationStatementInfo' => 'Ce constat s\'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d\'en juger.',
 			'feasibility.formula.stageDominantFactor' => ({required Object factor}) => 'Ce qui pèse le plus sur cette journée : ${factor}',
+			'feasibility.formula.verdictHowTitle' => 'Comment ce verdict est calculé',
+			'feasibility.formula.verdictHowStage' => ({required Object stage, required Object distance, required Object elevation}) => 'Ta journée la plus dure est ${stage} : ${distance} km et ${elevation} m de dénivelé positif.',
+			'feasibility.formula.verdictHowEnergy' => ({required Object distance, required Object elevation, required Object energy}) => 'En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.',
+			'feasibility.formula.verdictHowCeiling' => ({required Object capacity, required Object level}) => 'Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).',
+			'feasibility.formula.verdictHowRatio' => ({required Object energy, required Object capacity, required Object score, required Object green, required Object orange}) => '${energy} ÷ ${capacity} = ${score}. Jusqu\'à ${green} c\'est vert, jusqu\'à ${orange} c\'est orange, au-delà c\'est rouge.',
+			'feasibility.formula.verdictHowNoBlackBox' => 'Rien ici ne sort d\'une boîte noire : c\'est cette division, et trois travaux publiés la nourrissent — Minetti 2002 pour l\'unité d\'énergie, MOVE 2026 pour l\'altitude, Linsell 2020 pour la chaleur.',
 			'feasibility.flow.title' => 'Es-tu prêt pour ce trek ?',
 			'feasibility.flow.intro' => 'Réponds à 3 étapes rapides : on en déduit ton niveau réel, puis on te dit si le trek est faisable.',
 			'feasibility.flow.progress' => ({required Object done, required Object total}) => '${done}/${total} étapes remplies',
@@ -8442,6 +8486,8 @@ extension on Translations {
 			'social.reportTitle' => 'Signaler cette publication',
 			'social.reportReasonLabel' => 'Motif du signalement',
 			'social.reasonSpam' => 'Spam ou publicité',
+			_ => null,
+		} ?? switch (path) {
 			'social.reasonAbuse' => 'Contenu abusif ou haineux',
 			'social.reasonOther' => 'Autre',
 			'social.reportSend' => 'Envoyer le signalement',
@@ -8453,8 +8499,6 @@ extension on Translations {
 			'social.activityDefi' => 'a progressé dans un défi',
 			'gamification.galleryTitle' => 'Mes badges',
 			'gamification.obtained' => 'Obtenu',
-			_ => null,
-		} ?? switch (path) {
 			'gamification.locked' => 'Verrouillé',
 			'gamification.tierDebutant' => 'Débutant',
 			'gamification.tierExpert' => 'Expert',
@@ -8747,14 +8791,14 @@ extension on Translations {
 			'programme.title' => 'Programme',
 			'programme.helpTooltip' => 'Aide',
 			'programme.duration.label' => 'Nombre de jours',
-			'programme.duration.days' => '{count} j',
-			'programme.duration.daysWithRest' => '{total} j (dont {rest} repos)',
+			'programme.duration.daysWithRest' => '{total} j au total (dont {rest} de repos)',
 			'programme.duration.splitNote' => 'Plus de jours = les journées les plus dures sont coupées en deux, la pire d\'abord. Le repos, lui, ne change pas la difficulté d\'une journée.',
 			'programme.duration.splitExhausted' => 'Toutes les journées sont déjà coupées au plus court : le curseur n\'allègera plus le verdict.',
 			'programme.duration.difficulty.comfortable' => 'Confortable',
 			'programme.duration.difficulty.standard' => 'Standard',
 			'programme.duration.difficulty.sporty' => 'Sportif',
 			'programme.duration.difficulty.demanding' => 'Très exigeant',
+			'programme.duration.daysTotal' => '{count} j au total',
 			'programme.stats.distance' => 'Distance',
 			'programme.stats.elevation' => 'D+',
 			'programme.stats.days' => 'Jours',
@@ -8956,6 +9000,8 @@ extension on Translations {
 			'shop.a11y.website' => 'Ouvrir le site web',
 			'summary.title' => 'Résumé du plan',
 			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
+			_ => null,
+		} ?? switch (path) {
 			'summary.direction' => 'Direction',
 			'summary.duration' => 'Durée',
 			'summary.durationValue' => ({required Object days}) => '${days} jours de marche',
@@ -8967,8 +9013,6 @@ extension on Translations {
 			'summary.stats.elevationGain' => 'D+ total',
 			'summary.stats.elevationLoss' => 'D- total',
 			'summary.stats.duration' => 'Durée estimée',
-			_ => null,
-		} ?? switch (path) {
 			'summary.stats.stages' => 'Étapes',
 			'summary.stats.restDays' => 'Jours de repos',
 			'summary.dayByDay' => 'Jour par jour',

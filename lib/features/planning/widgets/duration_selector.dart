@@ -179,11 +179,18 @@ class DurationSelector extends StatelessWidget {
 
     // Retour Chris #9 : le grand compteur = TOTAL de jours (marche + repos), qui
     // suit les repos ajoutes / etapes separees. Avec repos -> libelle detaille.
+    //
+    // TACHE 569 (R2) : IL DIT DESORMAIS QU'IL COMPTE UN TOTAL. Il affichait
+    // « 9 j », l'ecran Faisabilite conseillait « 9 jours » de MARCHE, et les
+    // deux 9 n'etaient pas le meme nombre — c'est le retour 7 de Chris, « vise
+    // 9 jours et ca propose 11 ». Aucun nombre de jours ne s'affiche plus sans
+    // dire s'il compte la marche, le repos ou le total, et ce curseur compte des
+    // totaux : ses bornes et sa bulle le disent aussi.
     final daysLabel = restDays > 0
         ? t.programme.duration.daysWithRest
               .replaceAll('{total}', '$totalDays')
               .replaceAll('{rest}', '$restDays')
-        : t.programme.duration.days.replaceAll('{count}', '$totalDays');
+        : t.programme.duration.daysTotal.replaceAll('{count}', '$totalDays');
 
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -250,7 +257,7 @@ class DurationSelector extends StatelessWidget {
             min: min,
             max: hasRange ? max : min + 1,
             divisions: divisions,
-            label: t.programme.duration.days.replaceAll(
+            label: t.programme.duration.daysTotal.replaceAll(
               '{count}',
               '${clamped.round()}',
             ),
@@ -265,11 +272,13 @@ class DurationSelector extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                t.programme.duration.days.replaceAll('{count}', '$minDuration'),
+                t.programme.duration.daysTotal
+                    .replaceAll('{count}', '$minDuration'),
                 style: theme.textTheme.bodySmall,
               ),
               Text(
-                t.programme.duration.days.replaceAll('{count}', '$maxDuration'),
+                t.programme.duration.daysTotal
+                    .replaceAll('{count}', '$maxDuration'),
                 style: theme.textTheme.bodySmall,
               ),
             ],

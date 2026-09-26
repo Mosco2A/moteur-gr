@@ -491,6 +491,11 @@ class _VerdictView extends ConsumerWidget {
               textAlign: TextAlign.center,
             ),
           ),
+          const SizedBox(height: AppTheme.spacingSm),
+
+          // LE CALCUL, LA OU LE VERDICT TOMBE (tache 569, R3). Colle sous le
+          // feu : c'est la que la question se pose.
+          _VerdictHowSection(assessment: assessment),
           const SizedBox(height: AppTheme.spacingBase),
 
           // CE QUE LE FEU NE REGARDE PAS : PLUS AUCUNE MENTION (tache 552).
@@ -612,12 +617,20 @@ class _AdviceFirst extends StatelessWidget {
         // CONTINUER) : l'appli PROPOSE le planning, elle ne le demande pas. Ce
         // bouton APPLIQUE le nombre de jours conseille a la SOURCE UNIQUE des
         // jours (selectedDurationProvider), puis mene au Programme pre-rempli.
-        _GenerateProgramButton(
-          trailId: trailId,
-          suggestedDays: assessment.suggestedDays,
-          recommendedRestDays: assessment.recommendedRestDays,
-        ),
-        const SizedBox(height: AppTheme.spacingSm),
+        //
+        // TACHE 569 (R1-c) : PAS DE BOUTON QUAND IL N'Y A RIEN A CONSEILLER. La
+        // recherche a essaye toutes les valeurs du curseur et aucune ne fait
+        // mieux que rouge : un bouton « Generer mon programme (N jours) »
+        // appliquerait alors une valeur que l'ecran declare mauvaise trois
+        // lignes plus haut. Le conseil franc ([advice.noViableDuration]) le dit
+        // a sa place.
+        if (assessment.isDurationAdvised) ...[
+          _GenerateProgramButton(
+            trailId: trailId,
+            suggestedTotalDays: assessment.suggestedTotalDays,
+          ),
+          const SizedBox(height: AppTheme.spacingSm),
+        ],
         // D2 (#100293) — CE QUI A ETE RETENU, ECRIT NOIR SUR BLANC. Sans cette
         // ligne, choisir un decoupage ne laissait aucune trace a l'ecran : le
         // bouton etait indistinguable d'un bouton mort.
@@ -681,44 +694,45 @@ class _RetainedPlanLine extends ConsumerWidget {
 
 /// Bouton « Generer mon programme » (R2f, parite GR20 « CONTINUER »).
 ///
-/// APPLIQUE la reco de la formule #100068 : fixe le nombre de jours de MARCHE
-/// optimal ([FeasibilityAssessment.suggestedDays]) sur la SOURCE UNIQUE
-/// ([selectedDurationProvider]) — borne aux durees possibles du sentier
-/// ([durationBoundsProvider]) — puis mene au Programme, deja pre-rempli et
+/// APPLIQUE la duree CONSEILLEE sur la SOURCE UNIQUE des jours
+/// ([selectedDurationProvider]), puis mene au Programme, deja pre-rempli et
 /// modifiable ([plannedDaysProvider] watch cette duree et se recompose seul, et
-/// l'Itineraire suit maintenant la meme source, R3). Un message confirme la
-/// duree appliquee. Le libelle indique la duree proposee pour etre explicite.
+/// l'Itineraire suit la meme source, R3). Un message confirme la duree
+/// appliquee, et le libelle l'annonce dans SON UNITE.
 ///
-/// D2 (#100293) : le choix est desormais RETENU DURABLEMENT
-/// ([retainedDurationProvider] -> SharedPreferences). Avant, il ne vivait
-/// qu'en memoire : la relance de l'application le perdait, et rien a l'ecran
-/// ne disait qu'un decoupage avait ete choisi.
+/// TACHE 569 — LE BOUTON N'ADDITIONNE PLUS RIEN, ET C'EST TOUT L'INTERET.
+/// Avant, il calculait sa cible lui-meme : `suggestedDays + recommendedRestDays`
+/// borne aux durees possibles. Trois grandeurs combinees ICI, dans la couche
+/// d'affichage, alors que le verdict se calcule ailleurs — c'est exactement par
+/// la que le conseil et le verdict pouvaient se contredire. Il applique
+/// desormais [FeasibilityAssessment.suggestedTotalDays], une valeur qui A ETE
+/// ESSAYEE par la recherche : son verdict est vert ou orange, jamais rouge. Et
+/// comme le curseur s'ouvre deja sur elle (R1-a), appuyer sur ce bouton ne
+/// deplace plus rien tant que le randonneur n'a pas bouge le curseur lui-meme —
+/// il retient le choix, ce qui est son autre role (D2).
+///
+/// D2 (#100293) : le choix est RETENU DURABLEMENT ([retainedDurationProvider] ->
+/// SharedPreferences). Avant, il ne vivait qu'en memoire : la relance de
+/// l'application le perdait, et rien a l'ecran ne disait qu'un decoupage avait
+/// ete choisi.
 class _GenerateProgramButton extends ConsumerWidget {
   const _GenerateProgramButton({
     required this.trailId,
-    required this.suggestedDays,
-    required this.recommendedRestDays,
+    required this.suggestedTotalDays,
   });
 
   final String trailId;
 
-  /// Nombre de jours de MARCHE optimal propose par la formule (#100068).
-  final int suggestedDays;
-
-  /// Jours de REPOS conseilles par le moteur (GO-61) — voir [build].
-  final int recommendedRestDays;
+  /// Jours TOTAUX (marche + repos) du programme conseille — l'unite du curseur.
+  final int suggestedTotalDays;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final f = t.feasibility.formula;
-    // Borne la reco aux durees realistes du sentier (nb d'etapes) : jamais moins
-    // d'un regroupement raisonnable, jamais plus que le max de repos possible.
+    // La reco est deja cherchee DANS les bornes du curseur ; le clamp ne reste
+    // que comme garde-fou pour les etats transitoires (etapes qui arrivent).
     final bounds = ref.watch(durationBoundsProvider(trailId));
-    // LES REPOS CONSEILLES SONT DANS LA DUREE PROPOSEE (GO-61). Sans eux, ce
-    // bouton REPRENAIT au randonneur les repos que le programme par defaut
-    // venait de lui poser : il appliquait le nombre de jours de MARCHE, donc un
-    // programme sans un seul jour de repos.
-    final target = bounds.clampDuration(suggestedDays + recommendedRestDays);
+    final target = bounds.clampDuration(suggestedTotalDays);
 
     return AppButton(
       minHeight: 52,
@@ -784,6 +798,96 @@ class _WinterInvalidNotice extends StatelessWidget {
   }
 }
 
+/// LE CALCUL, MONTRE LA OU LE VERDICT TOMBE (tache 569, R3).
+///
+/// CE QUE CHRIS A ECRIT, MOT POUR MOT : « Le verdict c'est du blabla d'IA, tu
+/// mexplique comment c'est calcule au moment ou ca le fait? » et « score 1,30
+/// sans echelle ca ne veut rien dire ».
+///
+/// IL N'Y A AUCUNE IA DANS CETTE APPLICATION — zero dependance, verifie — et
+/// c'est precisement le probleme : le moteur est une formule deterministe et
+/// sourcee, mais l'ecran affichait un verdict et un score nu, ce qui se lit
+/// exactement comme une boite noire. Un chiffre sans son echelle n'informe de
+/// rien : 1,30 peut etre bon ou catastrophique selon ou tombe le seuil.
+///
+/// CE BLOC MONTRE LA DIVISION, AVEC LES CHIFFRES REELS DU RANDONNEUR : la
+/// journee la plus dure et sa geometrie, sa conversion en km-energie (distance +
+/// D+ / 42, Minetti 2002), le plafond du jour du randonneur, le rapport des deux,
+/// et l'echelle qui dit ou tombent le vert et l'orange. Il ne dit JAMAIS « ce
+/// n'est pas une IA » — on ne se defend pas d'une accusation, on montre le
+/// calcul et on nomme les travaux qui le nourrissent.
+class _VerdictHowSection extends StatelessWidget {
+  const _VerdictHowSection({required this.assessment});
+  final FeasibilityAssessment assessment;
+
+  @override
+  Widget build(BuildContext context) {
+    final hardest = assessment.hardestStage;
+    if (hardest == null) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+    final f = t.feasibility.formula;
+    const thresholds = FeasibilityThresholds.median;
+
+    // Les memes chiffres que ceux qui ont produit la couleur, formates une
+    // seule fois : deux arrondis differents dans une division affichee se
+    // liraient comme une erreur de calcul.
+    final distance = _fmt(hardest.stage.distanceKm);
+    final energy = _fmt(hardest.energyKm);
+    final capacity = _fmt(hardest.capacityKm);
+
+    final lines = <String>[
+      f.verdictHowStage(
+        stage: hardest.stage.name,
+        distance: distance,
+        elevation: hardest.stage.elevationGainM,
+      ),
+      f.verdictHowEnergy(
+        distance: distance,
+        elevation: hardest.stage.elevationGainM,
+        energy: energy,
+      ),
+      f.verdictHowCeiling(
+        capacity: capacity,
+        level: _levelLabel(assessment.level),
+      ),
+      f.verdictHowRatio(
+        energy: energy,
+        capacity: capacity,
+        score: _fmt2(hardest.score),
+        green: _fmt2(thresholds.green),
+        orange: _fmt2(thresholds.orange),
+      ),
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(f.verdictHowTitle, style: theme.textTheme.titleMedium),
+        const SizedBox(height: AppTheme.spacingSm),
+        AppCard(
+          key: const ValueKey('feasibility-verdict-how'),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              for (final line in lines) ...[
+                Text(line, style: theme.textTheme.bodySmall),
+                const SizedBox(height: AppTheme.spacingXs),
+              ],
+              Text(
+                f.verdictHowNoBlackBox,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  fontStyle: FontStyle.italic,
+                  color: theme.colorScheme.onSurface.withAlpha(150),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 /// LE SCORE DE CIRCUIT (#2-m a #2-t) — les quatre contraintes, celle qui mord,
 /// et l'explication OBLIGATOIRE d'ARB-004.
 ///
@@ -806,8 +910,15 @@ class _CircuitSection extends StatelessWidget {
 
     final lines = <Widget>[];
 
+    // LE SCORE NE S'AFFICHE PLUS JAMAIS NU (tache 569, R3). Chris : « score 1,30
+    // sans echelle ca ne veut rien dire ». Il porte desormais ses deux seuils,
+    // au meme endroit et dans la meme phrase.
     lines.add(Text(
-      f.circuitScore(value: _fmt2(circuit.score)),
+      f.circuitScore(
+        value: _fmt2(circuit.score),
+        green: _fmt2(FeasibilityThresholds.median.green),
+        orange: _fmt2(FeasibilityThresholds.median.orange),
+      ),
       style: theme.textTheme.bodyMedium?.copyWith(
         fontWeight: FontWeight.w700,
         color: color,
@@ -1469,22 +1580,43 @@ String _adviceText(ProgramAdvice advice) {
       return a.balancedOk;
     case 'balanced':
       return a.balanced;
+    // TACHE 569 (R2) : le conseil de duree porte SES TROIS NOMBRES — jours de
+    // marche, jours de repos, total — et ne dit « au lieu de » que si le
+    // randonneur a reellement choisi un decoupage.
     case 'optimalDays':
       return a.optimalDays(
         days: advice.params['days'] ?? '',
+        walk: advice.params['walk'] ?? '',
+        rest: advice.params['rest'] ?? '',
         current: advice.params['current'] ?? '',
       );
-    case 'split':
-      return a.split(stage: advice.params['stage'] ?? '');
-    // TACHE 558 : la journee la plus dure est deja coupee au plus court et
-    // reste rouge. On ne conseille plus un decoupage que l'application ne sait
-    // pas faire — on dit ce qu'il en est, et ce que ca implique.
-    case 'splitImpossible':
-      return a.splitImpossible(stage: advice.params['stage'] ?? '');
+    case 'optimalDaysNoChoice':
+      return a.optimalDaysNoChoice(
+        days: advice.params['days'] ?? '',
+        walk: advice.params['walk'] ?? '',
+        rest: advice.params['rest'] ?? '',
+        current: advice.params['current'] ?? '',
+      );
+    // TACHE 569 (R4) : les cles `split` et `splitImpossible` ont DISPARU. On ne
+    // conseille plus de couper une etape en deux — une etape se termine la ou il
+    // y a un toit. Il reste l'alerte sur la journee, et l'entrainement.
+    case 'hardStageAlert':
+      return a.hardStageAlert(stage: advice.params['stage'] ?? '');
+    // TACHE 569 (R1-c) : aucune valeur du curseur ne fait mieux que rouge. On
+    // n'en conseille aucune, et on le dit.
+    case 'noViableDuration':
+      return a.noViableDuration(stage: advice.params['stage'] ?? '');
     case 'rest':
       return a.rest(stages: advice.params['stages'] ?? '');
+    case 'restReference':
+      return a.restReference(stages: advice.params['stages'] ?? '');
     case 'restAdvised':
       return a.restAdvised(
+        days: advice.params['days'] ?? '',
+        stages: advice.params['stages'] ?? '',
+      );
+    case 'restAdvisedReference':
+      return a.restAdvisedReference(
         days: advice.params['days'] ?? '',
         stages: advice.params['stages'] ?? '',
       );

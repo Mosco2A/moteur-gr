@@ -112,9 +112,15 @@ void main() {
     // quand l'app compte des journees est exactement ce qui fait dire a Chris
     // qu'il ne comprend pas le texte.
     //
-    // RESTE VOLONTAIREMENT HORS DE CETTE LISTE : advice.balanced (« Repartis les
-    // etapes pour lisser l'effort au fil des jours ») parle bien des etapes —
-    // c'est leur repartition DANS les journees, le mot y est juste.
+    // RESTENT VOLONTAIREMENT HORS DE CETTE LISTE, et pour la meme raison : ils
+    // parlent de l'ETAPE en tant qu'objet du topo, pas d'une journee mal nommee.
+    //   * advice.balanced (« Repartis les etapes pour lisser l'effort au fil des
+    //     jours ») : c'est leur repartition DANS les journees ;
+    //   * advice.hardStageAlert (tache 569, R4 — il remplace advice.split, qui
+    //     n'existe plus) : « une etape s'arrete la ou il y a un toit » est
+    //     precisement CE QU'ON EXPLIQUE au randonneur pour justifier qu'on ne
+    //     lui conseille plus de couper sa journee en deux. Retirer le mot y
+    //     detruirait l'argument.
     List<String> libellesJournee(AppLocale locale) {
       final f = locale.buildSync().feasibility.formula;
       return [
@@ -126,13 +132,15 @@ void main() {
         f.stageDominantFactor(factor: 'X'),
         f.restTwoDays,
         f.limitingFactors.distance,
-        f.advice.split(stage: 'X'),
+        f.advice.noViableDuration(stage: 'X'),
         f.advice.rest(stages: 'X'),
+        f.advice.restReference(stages: 'X'),
         f.advice.restAdvised(days: '1', stages: 'X'),
+        f.advice.restAdvisedReference(days: '1', stages: 'X'),
       ];
     }
 
-    test('le mot « etape » a disparu de ces onze libelles, en 5 langues', () {
+    test('le mot « etape » a disparu de ces treize libelles, en 5 langues', () {
       const motEtape = <AppLocale, String>{
         AppLocale.fr: 'étape',
         AppLocale.en: 'stage',
@@ -168,9 +176,15 @@ void main() {
         final aNommerLeJour = <String>[
           f.stagesTitle,
           f.hardestStage(stage: 'X'),
-          f.advice.split(stage: 'X'),
+          // Tache 569 (R4) : l'alerte remplace le conseil de decoupe, et elle
+          // doit nommer la JOURNEE qui fait mal — c'est elle que le randonneur
+          // va chercher dans sa liste.
+          f.advice.hardStageAlert(stage: 'X'),
+          f.advice.noViableDuration(stage: 'X'),
           f.advice.rest(stages: 'X'),
+          f.advice.restReference(stages: 'X'),
           f.advice.restAdvised(days: '1', stages: 'X'),
+          f.advice.restAdvisedReference(days: '1', stages: 'X'),
         ];
         for (final libelle in aNommerLeJour) {
           final nomme =

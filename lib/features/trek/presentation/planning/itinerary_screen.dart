@@ -120,6 +120,10 @@ class _ItineraryContent extends ConsumerWidget {
     final totalKm = days.fold<double>(0, (s, d) => s + d.totalDistance);
     final totalGain = days.fold<int>(0, (s, d) => s + d.totalElevation);
     final stageCount = days.fold<int>(0, (s, d) => s + d.stageCount);
+    // Un jour d'itineraire sans etape EST un jour de repos (projection de
+    // [PlannedDay.isRestDay] par [itineraryProvider]) : c'est ce qui permet de
+    // dire ce que le compteur de jours compte (tache 569, R2).
+    final restDayCount = days.where((d) => d.stages.isEmpty).length;
 
     // Retour Chris #12b : le controle du SENS n'a de sens que si le sentier
     // propose au moins deux sens de parcours (`TrailConfig.directions`).
@@ -134,6 +138,7 @@ class _ItineraryContent extends ConsumerWidget {
           totalKm: totalKm,
           totalGain: totalGain,
           dayCount: days.length,
+          restDayCount: restDayCount,
           stageCount: stageCount,
         ),
         if (showDirection) _DirectionControl(days: days),
@@ -319,17 +324,36 @@ class _Endpoint extends StatelessWidget {
 }
 
 /// En-tete de statistiques globales (parite GR20 _StatsHeader).
+///
+/// TACHE 569 (R2) — LE COMPTEUR DE JOURS DIT CE QU'IL COMPTE.
+///
+/// LE RETOUR DE CHRIS, MOT POUR MOT : « faisabilite dit 11 et itineraire propose
+/// 9 ». Les deux chiffres etaient JUSTES et ne parlaient pas de la meme chose :
+/// la Faisabilite conseillait 11 jours AU TOTAL, cet en-tete affichait les 9
+/// jours du programme courant sous un libelle « Jour » qui ne disait ni marche,
+/// ni repos, ni total. Deux nombres sans unite, c'est une contradiction pour
+/// celui qui lit.
+///
+/// Ce compteur compte des TOTAUX — un jour de repos est une journee de
+/// l'itineraire — et il le dit, avec le detail marche / repos juste en dessous.
 class _ItineraryStatsHeader extends StatelessWidget {
   const _ItineraryStatsHeader({
     required this.totalKm,
     required this.totalGain,
     required this.dayCount,
+    required this.restDayCount,
     required this.stageCount,
   });
 
   final double totalKm;
   final int totalGain;
+
+  /// Jours TOTAUX de l'itineraire (marche + repos).
   final int dayCount;
+
+  /// Jours de REPOS parmi eux.
+  final int restDayCount;
+
   final int stageCount;
 
   @override
@@ -338,16 +362,32 @@ class _ItineraryStatsHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingBase),
       color: theme.colorScheme.primary.withAlpha(20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: Column(
         children: [
-          _Stat(
-            label: t.itinerary.totalDistance,
-            value: '${totalKm.toStringAsFixed(0)} km',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _Stat(
+                label: t.itinerary.totalDistance,
+                value: '${totalKm.toStringAsFixed(0)} km',
+              ),
+              _Stat(label: t.itinerary.totalElevation, value: '$totalGain m'),
+              _Stat(label: t.itinerary.daysTotal, value: '$dayCount'),
+              _Stat(label: t.itinerary.stages, value: '$stageCount'),
+            ],
           ),
-          _Stat(label: t.itinerary.totalElevation, value: '$totalGain m'),
-          _Stat(label: t.itinerary.day, value: '$dayCount'),
-          _Stat(label: t.itinerary.stages, value: '$stageCount'),
+          const SizedBox(height: AppTheme.spacingXs),
+          Text(
+            t.itinerary.daysBreakdown(
+              walk: dayCount - restDayCount,
+              rest: restDayCount,
+            ),
+            key: const ValueKey('itinerary-days-breakdown'),
+            textAlign: TextAlign.center,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurface.withAlpha(170),
+            ),
+          ),
         ],
       ),
     );

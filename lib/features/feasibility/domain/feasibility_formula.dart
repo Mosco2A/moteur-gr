@@ -559,6 +559,47 @@ class ProgramAdvice {
   final Map<String, Object> params;
 }
 
+/// LE CONSEIL DE DUREE, TROUVE PAR ESSAI REEL (tache 569, R1).
+///
+/// POURQUOI CETTE VALEUR ENTRE DANS LE MOTEUR AU LIEU D'EN SORTIR. Le nombre de
+/// jours a conseiller ne peut pas etre calcule ici : il depend du MOTEUR DE
+/// REPARTITION (`PlanningCalculator`), qui regroupe et coupe les etapes, et le
+/// domaine de la formule ne connait pas les etapes du sentier — il ne voit que
+/// des charges deja journalieres. Toute tentative de le deviner d'ici a produit
+/// le defaut que Chris a vu : une formule de MOYENNE qui conseillait une valeur
+/// dont le MAXIMUM — donc le verdict — etait rouge.
+///
+/// Le conseil est donc cherche a l'exterieur ([ProgramPlanSearch.firstNonRed]),
+/// en construisant le vrai programme a chaque valeur du curseur et en le passant
+/// a [FeasibilityFormula.evaluate], puis INJECTE ici. Les deux calculs ne peuvent
+/// plus diverger : il n'y en a plus qu'un.
+class ProgramDurationAdvice {
+  const ProgramDurationAdvice({
+    required this.walkingDays,
+    required this.restDays,
+  });
+
+  /// AUCUNE DUREE N'EST CONSEILLABLE : la recherche a essaye toutes les valeurs
+  /// du curseur et toutes sont rouges (une etape indivisible au-dessus du
+  /// plafond, meme coupee en deux). L'application ne conseille alors RIEN et le
+  /// dit franchement — mieux vaut avouer qu'il n'y a pas de solution de
+  /// programme que d'en pointer une fausse.
+  static const impossible = ProgramDurationAdvice(walkingDays: 0, restDays: 0);
+
+  /// Jours de MARCHE du programme conseille.
+  final int walkingDays;
+
+  /// Jours de REPOS du programme conseille.
+  final int restDays;
+
+  /// Jours TOTAUX — l'unite du curseur, et celle dans laquelle le conseil
+  /// s'ecrit (retour 7 de Chris : « vise 9 jours et ca propose 11 »).
+  int get totalDays => walkingDays + restDays;
+
+  /// Vrai quand une duree est reellement conseillee.
+  bool get isViable => walkingDays > 0;
+}
+
 /// Resultat complet du moteur de faisabilite V2.
 class FeasibilityAssessment {
   const FeasibilityAssessment({
@@ -578,6 +619,10 @@ class FeasibilityAssessment {
     required this.recommendedTrainingWeeks,
     required this.advice,
     required this.suggestedDays,
+    required this.suggestedRestDays,
+    required this.isDurationSearched,
+    required this.isDurationAdvised,
+    required this.fromProgram,
     required this.restDaysPlanned,
     required this.recommendedRestAfterStageIndex,
     required this.walkingDays,
@@ -629,8 +674,46 @@ class FeasibilityAssessment {
   /// Conseils de programme (nb de jours optimal, decoupe, repos).
   final List<ProgramAdvice> advice;
 
-  /// Nombre de jours de MARCHE optimal propose (hors repos).
+  /// Nombre de jours de MARCHE du programme conseille (hors repos).
+  ///
+  /// NE S'AFFICHE JAMAIS SEUL (tache 569, R2) : un nombre de jours doit dire
+  /// s'il compte la marche, le repos ou le total. L'ecran ecrit les trois.
   final int suggestedDays;
+
+  /// Nombre de jours de REPOS du programme conseille.
+  final int suggestedRestDays;
+
+  /// Jours TOTAUX du programme conseille — L'UNITE DU CURSEUR (tache 569, R1-a).
+  ///
+  /// C'est cette valeur, et aucune autre, que le bouton « Generer mon
+  /// programme » applique et sur laquelle le curseur s'ouvre. Le retour 7 de
+  /// Chris — « vise 9 jours et ca propose 11 » — venait precisement de l'ecart
+  /// entre [suggestedDays] (marche) et ce total.
+  int get suggestedTotalDays => suggestedDays + suggestedRestDays;
+
+  /// Vrai quand une RECHERCHE de duree a eu lieu (tache 569, R1).
+  ///
+  /// Faux pour un appel de moteur nu : l'absence de recherche n'est pas une
+  /// preuve d'impossibilite, et l'ecran ne doit pas annoncer « aucune duree ne
+  /// marche » quand personne n'a cherche.
+  final bool isDurationSearched;
+
+  /// Vrai quand une duree est REELLEMENT conseillee.
+  ///
+  /// Faux quand la recherche a essaye toutes les valeurs du curseur et n'en a
+  /// trouve aucune qui ne soit pas rouge : l'application ne conseille alors
+  /// aucune valeur, n'affiche pas le bouton, et dit que l'etape bloque.
+  final bool isDurationAdvised;
+
+  /// Vrai si le decoupage evalue est celui CHOISI par le randonneur, faux s'il
+  /// s'agit du decoupage de REFERENCE du sentier (lot A, drapeau `fromProgram`).
+  ///
+  /// CE QUE CE DRAPEAU CHANGE A L'ECRAN (tache 569, R2). Les conseils qui
+  /// numerotent des journees — « pose un repos apres la journee 3 » — ne
+  /// designent pas la meme chose dans les deux cas, et « vise 11 jours AU LIEU
+  /// DE 7 » n'a aucun sens quand le randonneur n'a jamais choisi 7 : c'est le
+  /// decoupage du topo, pas le sien.
+  final bool fromProgram;
 
   /// Nombre de jours de REPOS pris en compte dans la contrainte C3.
   final int restDaysPlanned;
@@ -890,6 +973,16 @@ class FeasibilityFormula {
   ///   558 une etape se coupe en deux portions de meme energie, donc ce plafond
   ///   vaut deux journees par etape et non plus une seule. 0 = inconnu, aucun
   ///   plafond — et alors le decoupage est suppose possible, comme avant.
+  /// [durationAdvice] — LE CONSEIL DE DUREE (tache 569, R1). `null` = aucune
+  ///   recherche n'a eu lieu : le moteur retombe alors sur son estimation de
+  ///   lissage historique ([_suggestedWalkingDays]), qui ne garantit RIEN sur la
+  ///   couleur — c'est pourquoi le chemin de production en fournit toujours un
+  ///   ([advisedProgramProvider]). [ProgramDurationAdvice.impossible] = la
+  ///   recherche a eu lieu et AUCUNE valeur du curseur n'est meilleure que
+  ///   rouge : on ne conseille alors aucune duree.
+  /// [fromProgram] : le decoupage evalue est-il celui CHOISI par le randonneur
+  ///   (vrai) ou le decoupage de REFERENCE du sentier (faux) ? Pilote la
+  ///   formulation des conseils qui numerotent des journees (R2).
   /// [scale] : bareme applique. V2 par defaut ; V1 uniquement pour reconstituer
   ///   la colonne « AVANT » des bascules de la campagne personas.
   static FeasibilityAssessment evaluate({
@@ -901,6 +994,8 @@ class FeasibilityFormula {
     Set<int> restAfterStageIndex = const {},
     TrekConditions conditions = TrekConditions.unknown,
     int maxWalkingDays = 0,
+    ProgramDurationAdvice? durationAdvice,
+    bool fromProgram = true,
     FeasibilityThresholds thresholds = FeasibilityThresholds.median,
     FeasibilityScale scale = FeasibilityScale.v2,
   }) {
@@ -979,28 +1074,49 @@ class FeasibilityFormula {
 
     // 7. Reco entrainement + conseils de programme.
     final trainingWeeks = trainingWeeksFor(level, globalVerdict);
-    final suggestedDays = _suggestedWalkingDays(
-      verdicts,
-      capacity,
-      maxWalkingDays: maxWalkingDays,
-    );
     // Le repos CONSEILLE (GO-61) : calcule sur les memes energies que C3, donc
     // sur le meme chiffre que celui affiche.
     final recommendedRest = recommendedRestAfterStageIndex(
       verdicts.map((v) => v.energyKm).toList(),
     );
+
+    // LE CONSEIL DE DUREE (tache 569, R1) — trois cas, et un seul conseille.
+    final searched = durationAdvice != null;
+    final advised = durationAdvice?.isViable ?? true;
+    final int suggestedDays;
+    final int suggestedRestDays;
+    if (durationAdvice != null) {
+      // Recherche faite : on porte SON resultat, viable ou non. Quand rien
+      // n'est viable, les nombres retombent sur le programme courant — ils ne
+      // sont pas affiches, et surtout pas appliques.
+      suggestedDays = advised ? durationAdvice.walkingDays : stages.length;
+      suggestedRestDays =
+          advised ? durationAdvice.restDays : restAfterStageIndex.length;
+    } else {
+      // Aucune recherche : estimation de lissage historique. Elle ne garantit
+      // pas la couleur — voir [durationAdvice].
+      suggestedDays = _suggestedWalkingDays(
+        verdicts,
+        capacity,
+        maxWalkingDays: maxWalkingDays,
+      );
+      suggestedRestDays = recommendedRest.length;
+    }
+
     final advice = _buildAdvice(
       verdicts: verdicts,
       circuit: circuit,
       globalVerdict: globalVerdict,
       hardestIndex: hardestIndex,
-      suggestedDays: suggestedDays,
-      currentDays: stages.length,
+      suggestedTotalDays: suggestedDays + suggestedRestDays,
+      suggestedWalkingDays: suggestedDays,
+      suggestedRestDays: suggestedRestDays,
+      currentTotalDays: stages.length + restAfterStageIndex.length,
       trainingWeeks: trainingWeeks,
       recommendedRest: recommendedRest,
-      // TACHE 558 : le conseil de decoupage n'est emis que si le programme sait
-      // encore couper. Voir [_buildAdvice].
-      splitStillPossible: maxWalkingDays <= 0 || maxWalkingDays > stages.length,
+      durationAdvised: advised,
+      durationSearched: searched,
+      fromProgram: fromProgram,
     );
 
     return FeasibilityAssessment(
@@ -1020,6 +1136,10 @@ class FeasibilityFormula {
       recommendedTrainingWeeks: trainingWeeks,
       advice: advice,
       suggestedDays: suggestedDays,
+      suggestedRestDays: suggestedRestDays,
+      isDurationSearched: searched,
+      isDurationAdvised: advised,
+      fromProgram: fromProgram,
       restDaysPlanned: restAfterStageIndex.length,
       recommendedRestAfterStageIndex: recommendedRest,
       walkingDays: stages.length,
@@ -1255,10 +1375,23 @@ class FeasibilityFormula {
     return false;
   }
 
-  /// Nombre de jours de MARCHE optimal pour que la charge moyenne tienne sous la
-  /// capacite, en lissant les pics : max(nb de journees, ceil(energie totale /
-  /// capacite), nb de journees au-dessus de la capacite * 2 pour permettre le
-  /// decoupage des pires).
+  /// ESTIMATION DE LISSAGE HISTORIQUE — N'EST PLUS LE CONSEIL (tache 569).
+  ///
+  /// CE QU'ELLE CALCULE : le nombre de journees pour que la CHARGE MOYENNE
+  /// tienne sous la capacite, en lissant les pics : max(nb de journees,
+  /// ceil(energie totale / capacite), nb de journees au-dessus de la capacite
+  /// * 2 pour permettre le decoupage des pires).
+  ///
+  /// POURQUOI ELLE NE PEUT PAS ETRE LE CONSEIL, ET C'EST UNE DEMONSTRATION, PAS
+  /// UN AVIS. Le verdict vaut C1 = LE MAXIMUM des scores journaliers (GO-61).
+  /// Cette fonction vise une MOYENNE. Une moyenne ne borne pas un maximum :
+  /// viser la moyenne laisse la pire journee exactement ou elle est. Mesure sur
+  /// les 96 cellules de la campagne : 16 conseils dont le nombre, lu sur le
+  /// curseur, tombait sur un verdict ROUGE. Le conseil est desormais trouve par
+  /// ESSAI REEL ([ProgramPlanSearch.firstNonRed]) et INJECTE dans [evaluate] ;
+  /// cette fonction ne sert plus que de repli quand aucune recherche n'a eu lieu
+  /// (appels de moteur nu, reconstitution de la colonne « AVANT » de la
+  /// campagne).
   ///
   /// [maxWalkingDays] plafonne le resultat au nombre de journees REELLEMENT
   /// atteignable (une etape ne se coupe pas en deux dans le programme). Le
@@ -1284,17 +1417,39 @@ class FeasibilityFormula {
   }
 
   /// Construit les conseils de programme (cles i18n + parametres). Coherent avec
-  /// l'ecran Programme (LOT 2) : jours + repos + decoupe.
+  /// l'ecran Programme (LOT 2) : jours + repos.
+  ///
+  /// TACHE 569 — DEUX REGLES NOUVELLES, TOUTES DEUX TRANCHEES PAR CHRIS.
+  ///
+  /// R2 — TOUT NOMBRE DE JOURS PORTE SA NATURE. Aucun conseil n'ecrit plus un
+  /// nombre de jours sans dire s'il compte la marche, le repos ou le total, et
+  /// aucun n'ecrit « au lieu de N » quand le randonneur n'a rien choisi : N est
+  /// alors le decoupage de reference du topo. Les conseils qui NUMEROTENT des
+  /// journees disent de quel decoupage ils parlent, pour la meme raison.
+  ///
+  /// R4 — LE DECOUPAGE D'ETAPE N'EST PLUS JAMAIS CONSEILLE. Verbatim : « decoupe
+  /// la journee 1 en 2 === comment on fait???? pas une solution, mettre juste
+  /// une alerte coimme quoi elle va etre cramoisie, et puis il y a
+  /// l'entrainement non??? ». Une etape se termine la ou il y a un TOIT : couper
+  /// a mi-distance envoie quelqu'un dormir dans un ravin. Le MECANISME reste
+  /// ([PlanningCalculator.splitStage] et la borne a 2N du lot G sont conserves,
+  /// Chris l'a tranche) — c'est le CONSEIL qui disparait, remplace par une
+  /// alerte franche sur la journee et par l'entrainement, qui est la vraie
+  /// reponse : monter d'un cran releve le plafond, donc fait passer la journee.
   static List<ProgramAdvice> _buildAdvice({
     required List<StageVerdict> verdicts,
     required CircuitScore? circuit,
     required FeasibilityVerdict globalVerdict,
     required int hardestIndex,
-    required int suggestedDays,
-    required int currentDays,
+    required int suggestedTotalDays,
+    required int suggestedWalkingDays,
+    required int suggestedRestDays,
+    required int currentTotalDays,
     required int trainingWeeks,
     required Set<int> recommendedRest,
-    bool splitStillPossible = true,
+    required bool durationAdvised,
+    required bool durationSearched,
+    required bool fromProgram,
   }) {
     final advice = <ProgramAdvice>[];
 
@@ -1306,8 +1461,11 @@ class FeasibilityFormula {
     // est pas un.
     final c3 = circuit?.rest;
     final restAdvised = c3 != null && c3 > 1 && recommendedRest.isNotEmpty;
+    // R2 : les numeros de journees ne designent pas la meme chose selon que le
+    // randonneur a choisi son decoupage ou non. Deux formulations, une cle par
+    // situation — plutot qu'un seul texte ambigu.
     final restAdvice = ProgramAdvice(
-      key: 'restAdvised',
+      key: fromProgram ? 'restAdvised' : 'restAdvisedReference',
       params: {
         'days': recommendedRest.length,
         'stages':
@@ -1323,43 +1481,64 @@ class FeasibilityFormula {
       return advice;
     }
 
-    // Hors du vert, le repos passe DEVANT : conseiller « decoupe l'etape N »
+    // Hors du vert, le repos passe DEVANT : conseiller d'etaler les jours
     // quand c'est la recuperation qui manque enverrait dans le mur, lisser les
     // pics et poser des repos etant deux leviers OPPOSES (#2-t).
     if (restAdvised) advice.add(restAdvice);
 
-    // 1. Nombre de jours optimal (si plus que le decoupage actuel).
-    if (suggestedDays > currentDays) {
+    // 1. LA DUREE CONSEILLEE — OU L'AVEU QU'IL N'Y EN A PAS (tache 569, R1).
+    //
+    // Trois situations, et une seule conseille un nombre :
+    //   * la recherche a eu lieu et n'a RIEN trouve de mieux que rouge : on ne
+    //     conseille AUCUNE valeur et on dit franchement que cette journee-la
+    //     bloque, quoi qu'on fasse du programme. C'est le remplacant honnete du
+    //     « decoupe la journee N en deux » de la tache 558 ;
+    //   * une duree est conseillee et elle allonge le programme : on l'ecrit
+    //     avec SES TROIS NOMBRES (marche, repos, total — R2), et sans « au lieu
+    //     de » quand rien n'a encore ete choisi ;
+    //   * une duree est conseillee et c'est deja celle du randonneur : rien a
+    //     changer au rythme, on le dit.
+    if (durationSearched && !durationAdvised) {
       advice.add(ProgramAdvice(
-        key: 'optimalDays',
-        params: {'days': suggestedDays, 'current': currentDays},
+        key: 'noViableDuration',
+        params: {'stage': hardestIndex + 1},
+      ));
+    } else if (suggestedTotalDays > currentTotalDays) {
+      advice.add(ProgramAdvice(
+        key: fromProgram ? 'optimalDays' : 'optimalDaysNoChoice',
+        params: {
+          'days': suggestedTotalDays,
+          'walk': suggestedWalkingDays,
+          'rest': suggestedRestDays,
+          'current': currentTotalDays,
+        },
       ));
     } else {
       advice.add(const ProgramAdvice(key: 'balanced'));
     }
 
-    // 2. OU DECOUPER — ET SEULEMENT SI LE DECOUPAGE EXISTE (tache 558).
+    // 2. LA JOURNEE QUI FAIT MAL EST NOMMEE, ET ON NE CONSEILLE PLUS DE LA
+    //    COUPER (tache 569, R4).
     //
-    // CE QUI N'ALLAIT PAS, et la campagne personas l'a mesure sur l'emulateur :
-    // l'ecran conseillait « Decoupe la journee 1 en deux » sur la journee la
-    // plus dure du sentier — Ghisonaccia-Catastaghju, 35,2 km-energie — et
-    // « Separer » n'y faisait RIEN, parce que cette journee ne porte qu'UNE
-    // etape et que « Separer » ne savait que degrouper des etapes deja
-    // groupees. L'application conseillait donc la seule action capable de
-    // detendre le verdict, et ne l'offrait pas. Un conseil impossible est pire
-    // que pas de conseil : il fait chercher un bouton qui n'existe pas.
+    // CE QUI DISPARAIT, ET POURQUOI. La tache 558 conseillait « Decoupe la
+    // journee N en deux » (cle `split`), et, quand chaque etape occupait deja
+    // deux journees, « elle reste au-dessus meme coupee » (`splitImpossible`).
+    // Chris a tranche le 26/09 : couper une etape en deux, ce n'est pas une
+    // solution qu'on peut conseiller a quelqu'un, parce qu'une etape se termine
+    // la ou il y a un TOIT. Le point de coupe du modele est une interpolation
+    // sur le segment depart -> arrivee : conseiller de s'y arreter, c'est
+    // envoyer dormir dans un ravin.
     //
-    // DEUX CHANGEMENTS, dans cet ordre. D'abord « Separer » coupe desormais une
-    // etape entiere en deux portions de meme energie
-    // ([PlanningCalculator.splitStage]), donc le conseil est devenu VRAI.
-    // Ensuite, quand il n'y a plus rien a couper — chaque etape occupe deja
-    // deux journees — on ne conseille plus un decoupage : on DIT la verite, a
-    // savoir que cette journee-la depasse les capacites du randonneur meme
-    // coupee au plus court, et que ce n'est plus une question de programme.
+    // CE QUI RESTE : l'alerte. La journee est nommee, on dit qu'elle sera dure,
+    // et on renvoie a l'entrainement — qui est la vraie reponse, puisqu'il
+    // releve le plafond du randonneur, donc le denominateur du score, donc fait
+    // passer la journee. Le mecanisme de decoupage, lui, reste en place et
+    // disponible au curseur ; il n'est simplement plus recommande.
     if (hardestIndex >= 0 &&
-        verdicts[hardestIndex].verdict == FeasibilityVerdict.red) {
+        verdicts[hardestIndex].verdict == FeasibilityVerdict.red &&
+        !(durationSearched && !durationAdvised)) {
       advice.add(ProgramAdvice(
-        key: splitStillPossible ? 'split' : 'splitImpossible',
+        key: 'hardStageAlert',
         params: {'stage': hardestIndex + 1},
       ));
     }
@@ -1375,7 +1554,9 @@ class FeasibilityFormula {
         : _restDaySuggestions(verdicts);
     if (restAfter.isNotEmpty) {
       advice.add(ProgramAdvice(
-        key: 'rest',
+        // R2 : meme regle que `restAdvised` — on dit de quel decoupage ces
+        // numeros de journees parlent.
+        key: fromProgram ? 'rest' : 'restReference',
         params: {'stages': restAfter.map((i) => i + 1).join(', ')},
       ));
     }

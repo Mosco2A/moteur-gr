@@ -110,11 +110,45 @@ void main() {
     expect(find.textContaining('Entraînement conseillé'), findsOneWidget);
   });
 
-  testWidgets('affiche les conseils de programme (decoupe)', (tester) async {
-    await pumpScreen(tester,mixedAssessment());
+  testWidgets('affiche les conseils de programme (alerte journee dure)',
+      (tester) async {
+    await pumpScreen(tester, mixedAssessment());
     expect(find.text(t.feasibility.formula.adviceTitle), findsOneWidget);
-    // L'etape 1 est rouge -> conseil de decoupe present.
-    expect(find.textContaining('Découpe'), findsOneWidget);
+    // TACHE 569 (R4) : la journee 1 est rouge -> ALERTE, plus jamais un conseil
+    // de decoupe. Chris, 26/09 : « decoupe la journee 1 en 2 === comment on
+    // fait???? pas une solution ». Une etape s'arrete la ou il y a un toit.
+    expect(find.textContaining('Découpe la journée'), findsNothing);
+    expect(
+      find.text(t.feasibility.formula.advice.hardStageAlert(stage: 1)),
+      findsOneWidget,
+    );
+  });
+
+  // TACHE 569 (R3) — LE CALCUL EST MONTRE LA OU LE VERDICT TOMBE.
+  testWidgets('le verdict montre son calcul, avec les chiffres reels',
+      (tester) async {
+    await pumpScreen(tester, mixedAssessment());
+    expect(find.byKey(const ValueKey('feasibility-verdict-how')), findsOneWidget,
+        reason: 'Chris : « tu mexplique comment c est calcule au moment ou ca '
+            'le fait? »');
+    expect(find.text(t.feasibility.formula.verdictHowTitle), findsOneWidget);
+    // La journee la plus dure est nommee, avec sa geometrie reelle.
+    expect(find.textContaining('Depart -> Col'), findsWidgets);
+    expect(find.textContaining('1600'), findsWidgets);
+    // L'unite d'energie et les deux seuils de l'echelle sont dits ICI.
+    //
+    // SEPARATEUR DECIMAL : l'application ecrit les nombres avec un POINT
+    // (`toStringAsFixed`, convention de tout l'ecran depuis #100068) ; Chris les
+    // cite avec une virgule dans ses retours. Ce test suit ce que l'ecran
+    // affiche reellement — uniformiser la virgule est un chantier d'affichage a
+    // part, qui touche tous les chiffres de l'app et pas seulement ce bloc.
+    expect(find.textContaining('42'), findsWidgets);
+    expect(find.textContaining('0.85'), findsWidgets,
+        reason: 'Chris : « score 1,30 sans echelle ca ne veut rien dire » — le '
+            'seuil vert doit etre a l ecran');
+    expect(find.textContaining('1.10'), findsWidgets);
+    // Les trois travaux qui nourrissent la division sont nommes.
+    expect(find.text(t.feasibility.formula.verdictHowNoBlackBox), findsOneWidget);
   });
 
   testWidgets('assessment vert -> conseil equilibre, pas de facteur limitant',
@@ -248,6 +282,35 @@ void main() {
       expect(container.read(selectedDurationProvider), 6);
       // On a navigue vers le Programme du sentier (parite GR20 CONTINUER).
       expect(find.text('PLANNING test-trail'), findsOneWidget);
+    });
+
+    // TACHE 569 (R1-c) — QUAND AUCUNE VALEUR NE MARCHE, ON N'EN PROPOSE AUCUNE.
+    //
+    // Chris l'a tranche : mieux vaut avouer qu'il n'y a pas de solution de
+    // programme que d'en pointer une fausse. Un bouton « Generer mon programme
+    // (N jours) » sous un ecran qui declare N mauvais est le pire des deux
+    // mondes — c'est ce que faisait l'ancien code sur une etape indivisible.
+    testWidgets(
+        'aucune duree conseillee -> AUCUN bouton, et l ecran dit franchement '
+        'que l etape bloque', (tester) async {
+      final bloque = FeasibilityFormula.evaluate(
+        stages: [stage(0, 'Mur', 40, 3000)],
+        level: HikerLevel.beginner,
+        durationAdvice: ProgramDurationAdvice.impossible,
+      );
+      expect(bloque.isDurationAdvised, isFalse);
+      await pumpWithPlanningRoute(tester, bloque);
+
+      // Le conseil franc est a l'ecran, et il NOMME la journee qui bloque.
+      expect(
+        find.text(t.feasibility.formula.advice.noViableDuration(stage: 1)),
+        findsOneWidget,
+      );
+      // Et plus aucun bouton ne propose une duree : pas une seule valeur.
+      expect(find.widgetWithIcon(ElevatedButton, Icons.event_available),
+          findsNothing,
+          reason: 'le bouton appliquerait une duree que l ecran declare '
+              'mauvaise trois lignes plus haut');
     });
   });
 
