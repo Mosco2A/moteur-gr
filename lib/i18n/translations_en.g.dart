@@ -259,6 +259,7 @@ class _Translations$map$en extends Translations$map$fr {
 	@override String get offTrackChip => 'Off track';
 	@override late final _Translations$map$guide$en guide = _Translations$map$guide$en._(_root);
 	@override String get supplyDismiss => 'Dismiss alert';
+	@override String get pinMergedTitle => 'Several markers at the same place';
 }
 
 // Path: stage
@@ -4059,6 +4060,7 @@ extension on TranslationsEn {
 			'map.guide.poi.emergency' => 'An emergency point: post, helipad or emergency call point.',
 			'map.guide.poi.info' => 'A trail information sign or point.',
 			'map.supplyDismiss' => 'Dismiss alert',
+			'map.pinMergedTitle' => 'Several markers at the same place',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Elevation',
 			'stage.elevationGain' => 'Elevation gain',
@@ -4392,9 +4394,9 @@ extension on TranslationsEn {
 			'checklist.ui.checkAgain' => 'Check again',
 			'checklist.ui.yesBagOk' => 'Yes, pack OK',
 			'checklist.ui.bagValidatedSnack' => 'Pack validated!',
-			'checklist.ui.validationCancelledSnack' => 'Pack validation cancelled — you can edit your gear.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.validationCancelledSnack' => 'Pack validation cancelled — you can edit your gear.',
 			'checklist.ui.missingTitle' => 'Missing gear',
 			'checklist.ui.missingBody' => '{checked}/{total} required items checked.',
 			'checklist.ui.missingList' => 'Missing:',
@@ -4906,9 +4908,9 @@ extension on TranslationsEn {
 			'social.report' => 'Report',
 			'social.reportTitle' => 'Report this post',
 			'social.reportReasonLabel' => 'Reason for reporting',
-			'social.reasonSpam' => 'Spam or advertising',
 			_ => null,
 		} ?? switch (path) {
+			'social.reasonSpam' => 'Spam or advertising',
 			'social.reasonAbuse' => 'Abusive or hateful content',
 			'social.reasonOther' => 'Other',
 			'social.reportSend' => 'Send report',
@@ -5420,9 +5422,9 @@ extension on TranslationsEn {
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
 			'shop.a11y.website' => 'Open website',
 			'summary.title' => 'Plan summary',
-			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			_ => null,
 		} ?? switch (path) {
+			'summary.configTitle' => ({required Object name}) => 'My ${name}',
 			'summary.direction' => 'Direction',
 			'summary.duration' => 'Duration',
 			'summary.durationValue' => ({required Object days}) => '${days} walking days',

@@ -203,7 +203,8 @@
         "info": "Panneau ou point d'information du sentier."
       }
     },
-    "supplyDismiss": "Masquer l'alerte"
+    "supplyDismiss": "Masquer l'alerte",
+    "pinMergedTitle": "Plusieurs repères au même endroit"
   },
   "stage": {
     "distance": "Distance",

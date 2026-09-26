@@ -203,7 +203,8 @@
         "info": "Informationstafel oder Infopunkt am Weg."
       }
     },
-    "supplyDismiss": "Hinweis ausblenden"
+    "supplyDismiss": "Hinweis ausblenden",
+    "pinMergedTitle": "Mehrere Markierungen am selben Ort"
   },
   "stage": {
     "distance": "Entfernung",

@@ -203,7 +203,8 @@
         "info": "Pannello o punto informativo del sentiero."
       }
     },
-    "supplyDismiss": "Nascondi l'avviso"
+    "supplyDismiss": "Nascondi l'avviso",
+    "pinMergedTitle": "Più segnaposti nello stesso punto"
   },
   "stage": {
     "distance": "Distanza",

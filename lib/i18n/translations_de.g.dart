@@ -259,6 +259,7 @@ class _Translations$map$de extends Translations$map$fr {
 	@override String get offTrackChip => 'Abseits';
 	@override late final _Translations$map$guide$de guide = _Translations$map$guide$de._(_root);
 	@override String get supplyDismiss => 'Hinweis ausblenden';
+	@override String get pinMergedTitle => 'Mehrere Markierungen am selben Ort';
 }
 
 // Path: stage
@@ -4059,6 +4060,7 @@ extension on TranslationsDe {
 			'map.guide.poi.emergency' => 'Notfallpunkt: Station, Landeplatz oder Notrufsäule.',
 			'map.guide.poi.info' => 'Informationstafel oder Infopunkt am Weg.',
 			'map.supplyDismiss' => 'Hinweis ausblenden',
+			'map.pinMergedTitle' => 'Mehrere Markierungen am selben Ort',
 			'stage.distance' => 'Entfernung',
 			'stage.elevation' => 'Höhenunterschied',
 			'stage.elevationGain' => 'Höhenmeter aufwärts',
@@ -4392,9 +4394,9 @@ extension on TranslationsDe {
 			'checklist.ui.checkAgain' => 'Nochmal prüfen',
 			'checklist.ui.yesBagOk' => 'Ja, Rucksack OK',
 			'checklist.ui.bagValidatedSnack' => 'Rucksack bestätigt!',
-			'checklist.ui.validationCancelledSnack' => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.validationCancelledSnack' => 'Bestätigung aufgehoben — du kannst deine Ausrüstung ändern.',
 			'checklist.ui.missingTitle' => 'Fehlende Ausrüstung',
 			'checklist.ui.missingBody' => '{checked}/{total} Pflichtartikel angehakt.',
 			'checklist.ui.missingList' => 'Es fehlt:',
@@ -4906,9 +4908,9 @@ extension on TranslationsDe {
 			'social.report' => 'Melden',
 			'social.reportTitle' => 'Diesen Beitrag melden',
 			'social.reportReasonLabel' => 'Grund der Meldung',
-			'social.reasonSpam' => 'Spam oder Werbung',
 			_ => null,
 		} ?? switch (path) {
+			'social.reasonSpam' => 'Spam oder Werbung',
 			'social.reasonAbuse' => 'Missbräuchlicher oder hasserfüllter Inhalt',
 			'social.reasonOther' => 'Andere',
 			'social.reportSend' => 'Meldung senden',
@@ -5420,9 +5422,9 @@ extension on TranslationsDe {
 			'shop.a11y.call' => ({required Object label}) => '${label} anrufen',
 			'shop.a11y.website' => 'Website öffnen',
 			'summary.title' => 'Planübersicht',
-			'summary.configTitle' => ({required Object name}) => 'Mein ${name}',
 			_ => null,
 		} ?? switch (path) {
+			'summary.configTitle' => ({required Object name}) => 'Mein ${name}',
 			'summary.direction' => 'Richtung',
 			'summary.duration' => 'Dauer',
 			'summary.durationValue' => ({required Object days}) => '${days} Wandertage',

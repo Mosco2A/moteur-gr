@@ -441,6 +441,9 @@ class Translations$map$fr {
 
 	/// fr: 'Masquer l'alerte'
 	String get supplyDismiss => 'Masquer l\'alerte';
+
+	/// fr: 'Plusieurs repères au même endroit'
+	String get pinMergedTitle => 'Plusieurs repères au même endroit';
 }
 
 // Path: stage
@@ -7638,6 +7641,7 @@ extension on Translations {
 			'map.guide.poi.emergency' => 'Point de secours : poste, héliport ou borne d\'appel d\'urgence.',
 			'map.guide.poi.info' => 'Panneau ou point d\'information du sentier.',
 			'map.supplyDismiss' => 'Masquer l\'alerte',
+			'map.pinMergedTitle' => 'Plusieurs repères au même endroit',
 			'stage.distance' => 'Distance',
 			'stage.elevation' => 'Dénivelé',
 			'stage.elevationGain' => 'Dénivelé positif',
@@ -7971,9 +7975,9 @@ extension on Translations {
 			'checklist.ui.checkAgain' => 'Vérifier encore',
 			'checklist.ui.yesBagOk' => 'Oui, sac OK',
 			'checklist.ui.bagValidatedSnack' => 'Sac valide !',
-			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — vous pouvez modifier votre matériel.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.validationCancelledSnack' => 'Validation du sac annulée — vous pouvez modifier votre matériel.',
 			'checklist.ui.missingTitle' => 'Équipement manquant',
 			'checklist.ui.missingBody' => '{checked}/{total} équipements obligatoires cochés.',
 			'checklist.ui.missingList' => 'Il manque :',
@@ -8485,9 +8489,9 @@ extension on Translations {
 			'social.report' => 'Signaler',
 			'social.reportTitle' => 'Signaler cette publication',
 			'social.reportReasonLabel' => 'Motif du signalement',
-			'social.reasonSpam' => 'Spam ou publicité',
 			_ => null,
 		} ?? switch (path) {
+			'social.reasonSpam' => 'Spam ou publicité',
 			'social.reasonAbuse' => 'Contenu abusif ou haineux',
 			'social.reasonOther' => 'Autre',
 			'social.reportSend' => 'Envoyer le signalement',
@@ -8999,9 +9003,9 @@ extension on Translations {
 			'shop.a11y.call' => ({required Object label}) => 'Appeler ${label}',
 			'shop.a11y.website' => 'Ouvrir le site web',
 			'summary.title' => 'Résumé du plan',
-			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
 			_ => null,
 		} ?? switch (path) {
+			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',
 			'summary.direction' => 'Direction',
 			'summary.duration' => 'Durée',
 			'summary.durationValue' => ({required Object days}) => '${days} jours de marche',

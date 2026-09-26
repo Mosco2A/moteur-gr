@@ -30,7 +30,6 @@ import '../../../map/providers/track_position_provider.dart';
 import '../../../map/widgets/map_guide_sheet.dart';
 import '../../../map/widgets/off_track_banner.dart';
 import '../../../map/widgets/poi_filter_bar.dart';
-import '../../../map/widgets/poi_marker.dart';
 import '../../../map/widgets/poi_popup.dart';
 import '../../../map/widgets/stage_poi_checklist.dart';
 import '../../../map/widgets/stage_progress_bar.dart';
@@ -42,9 +41,10 @@ import '../../providers/gps_providers.dart';
 import '../../providers/live_trek_stats_provider.dart';
 import '../../providers/tracking_providers.dart';
 import 'controls/map_controls.dart';
-import 'layers/stage_markers_layer.dart';
 import 'layers/trace_layer.dart';
+import 'layers/trail_markers_layer.dart';
 import 'layers/user_position_layer.dart';
+import 'marker_overlap.dart';
 
 /// Provider du MapController, gere dans un Notifier pour le cycle de vie.
 ///
@@ -77,9 +77,11 @@ final mapControllerProvider =
 /// Generique multi-sentiers (donnees du sentier courant, zero hardcode), i18n
 /// Slang, a11y (SOS + calques labellises).
 ///
-/// Structure : Scaffold > Stack > FlutterMap(TileLayer, TraceLayer, PoiLayer,
-/// StageMarkersLayer, UserPositionLayer) + overlays (barre d'etape, controles,
-/// SOS, calques, banniere hors-trace).
+/// Structure : Scaffold > Stack > FlutterMap(TileLayer, TraceLayer,
+/// TrailMarkersLayer, UserPositionLayer) + overlays (barre d'etape, controles,
+/// SOS, calques, banniere hors-trace). Les etapes et les points d'interet
+/// partagent UNE couche depuis la tache 571 : deux couches empilees ne peuvent
+/// pas s'entendre sur un repere commun quand elles designent le meme lieu.
 /// ZERO ref.watch() dans build() -- chaque donnee passe par Consumer
 /// avec select() pour un rebuild minimal et chirurgical.
 ///
@@ -207,7 +209,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 ///
 /// Recoit les points bruts en parametre (deja charges).
 /// Utilise Consumer + select() pour chaque layer independant.
-/// Stack : FlutterMap (TileLayer + TraceLayer + PoiLayer + StageMarkersLayer
+/// Stack : FlutterMap (TileLayer + TraceLayer + TrailMarkersLayer
 /// + UserPositionLayer) en fond, overlays (barre d'etape, controles, SOS,
 /// calques, banniere hors-trace) par-dessus.
 class _MapContent extends StatefulWidget {
@@ -446,8 +448,30 @@ class _MapContentState extends State<_MapContent> {
                   ),
                 ),
 
-                // 3. Marqueurs d etapes (statiques -> RepaintBoundary +
-                //    clustering au-dela du seuil via le zoom courant)
+                // 3. LES REPERES DU SENTIER — ETAPES ET POINTS D'INTERET DANS
+                //    UNE COUCHE UNIQUE (tache 571).
+                //
+                //    Retour de Chris, mot pour mot : « 14rando les numeros
+                //    d'etapes son caches par les refucge, il ne faut pas que
+                //    les icones se superposent ».
+                //
+                //    IL Y AVAIT ICI DEUX COUCHES : les numeros d'etape, puis
+                //    les points d'interet peints PAR-DESSUS. Une etape se
+                //    termine a un hebergement et la suivante en repart : les
+                //    deux marqueurs tombent au MEME point par construction, et
+                //    l'icone de couchage avalait le numero d'etape — soit
+                //    l'information de reperage la plus utile de la carte.
+                //
+                //    Deux couches empilees ne peuvent pas s'entendre sur un
+                //    repere commun : chacune ignore ce que l'autre dessine.
+                //    D'ou UNE couche, qui voit les deux familles de reperes,
+                //    regroupe geometriquement celles qui designent le meme
+                //    lieu au zoom courant, et pose un repere qui porte les
+                //    deux informations. Aucun decalage : on fusionne ou on
+                //    separe, on ne deplace jamais un point sur une carte.
+                //
+                //    RepaintBoundary conserve : la couche reste statique
+                //    vis-a-vis de la position GPS.
                 Consumer(
                   builder: (context, ref, _) {
                     final stagesAsync = ref.watch(
@@ -455,9 +479,15 @@ class _MapContentState extends State<_MapContent> {
                         (async) => async.value,
                       ),
                     );
-                    final stages = stagesAsync ?? [];
+                    final stages = stagesAsync ?? const [];
+                    final poisAsync = ref.watch(
+                      mapPoisProvider(widget.trailId).select(
+                        (async) => async.value,
+                      ),
+                    );
+                    final pois = poisAsync ?? const <PoiModel>[];
 
-                    if (stages.isEmpty) {
+                    if (stages.isEmpty && pois.isEmpty) {
                       return const SizedBox.shrink();
                     }
 
@@ -481,53 +511,20 @@ class _MapContentState extends State<_MapContent> {
                         .toList();
 
                     return RepaintBoundary(
-                      child: StageMarkersLayer(
+                      child: TrailMarkersLayer(
                         stages: domainStages,
-                        zoom: _currentZoom.toDouble(),
+                        pois: pois,
+                        // La carte ne notifie son zoom qu'ARRONDI : on evalue
+                        // le recouvrement au plus petit zoom de la bande, donc
+                        // du cote prudent (cf. lowestZoomOfBand).
+                        zoom: MarkerOverlap.lowestZoomOfBand(_currentZoom),
+                        onPoiTap: (poi) => _showPoiDetails(context, poi),
                       ),
                     );
                   },
                 ),
 
-                // 4. Couche POI (parite GR20 : refuges/eau/points d'interet…),
-                //    filtree par type via le panneau Calques. RepaintBoundary :
-                //    isole le raster des marqueurs des rebuilds de position.
-                Consumer(
-                  builder: (context, ref, _) {
-                    final poisAsync = ref.watch(
-                      mapPoisProvider(widget.trailId).select(
-                        (async) => async.value,
-                      ),
-                    );
-                    final pois = poisAsync ?? const <PoiModel>[];
-                    if (pois.isEmpty) return const SizedBox.shrink();
-
-                    return RepaintBoundary(
-                      child: MarkerLayer(
-                        markers: [
-                          for (final poi in pois)
-                            Marker(
-                              point: LatLng(poi.lat, poi.lng),
-                              width: 36,
-                              height: 36,
-                              child: Semantics(
-                                button: true,
-                                label: t.a11y.poiMarker(name: poi.name),
-                                child: GestureDetector(
-                                  onTap: () => _showPoiDetails(context, poi),
-                                  child: ExcludeSemantics(
-                                    child: PoiMarker(type: poi.type),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-
-                // 5. Position utilisateur
+                // 4. Position utilisateur
                 Consumer(
                   builder: (context, ref, _) {
                     final positionAsync = ref.watch(

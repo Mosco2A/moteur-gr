@@ -259,6 +259,7 @@ class _Translations$map$it extends Translations$map$fr {
 	@override String get offTrackChip => 'Fuori traccia';
 	@override late final _Translations$map$guide$it guide = _Translations$map$guide$it._(_root);
 	@override String get supplyDismiss => 'Nascondi l\'avviso';
+	@override String get pinMergedTitle => 'Più segnaposti nello stesso punto';
 }
 
 // Path: stage
@@ -4059,6 +4060,7 @@ extension on TranslationsIt {
 			'map.guide.poi.emergency' => 'Punto di soccorso: presidio, elisuperficie o colonnina di chiamata d\'emergenza.',
 			'map.guide.poi.info' => 'Pannello o punto informativo del sentiero.',
 			'map.supplyDismiss' => 'Nascondi l\'avviso',
+			'map.pinMergedTitle' => 'Più segnaposti nello stesso punto',
 			'stage.distance' => 'Distanza',
 			'stage.elevation' => 'Dislivello',
 			'stage.elevationGain' => 'Dislivello positivo',
@@ -4392,9 +4394,9 @@ extension on TranslationsIt {
 			'checklist.ui.checkAgain' => 'Controlla ancora',
 			'checklist.ui.yesBagOk' => 'Si, zaino OK',
 			'checklist.ui.bagValidatedSnack' => 'Zaino confermato!',
-			'checklist.ui.validationCancelledSnack' => 'Conferma annullata — puoi modificare la tua attrezzatura.',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.validationCancelledSnack' => 'Conferma annullata — puoi modificare la tua attrezzatura.',
 			'checklist.ui.missingTitle' => 'Attrezzatura mancante',
 			'checklist.ui.missingBody' => '{checked}/{total} articoli obbligatori spuntati.',
 			'checklist.ui.missingList' => 'Manca:',
@@ -4906,9 +4908,9 @@ extension on TranslationsIt {
 			'social.report' => 'Segnala',
 			'social.reportTitle' => 'Segnala questo post',
 			'social.reportReasonLabel' => 'Motivo della segnalazione',
-			'social.reasonSpam' => 'Spam o pubblicità',
 			_ => null,
 		} ?? switch (path) {
+			'social.reasonSpam' => 'Spam o pubblicità',
 			'social.reasonAbuse' => 'Contenuto offensivo o di odio',
 			'social.reasonOther' => 'Altro',
 			'social.reportSend' => 'Invia segnalazione',
@@ -5420,9 +5422,9 @@ extension on TranslationsIt {
 			'shop.a11y.call' => ({required Object label}) => 'Chiama ${label}',
 			'shop.a11y.website' => 'Apri il sito web',
 			'summary.title' => 'Sintesi del piano',
-			'summary.configTitle' => ({required Object name}) => 'Il mio ${name}',
 			_ => null,
 		} ?? switch (path) {
+			'summary.configTitle' => ({required Object name}) => 'Il mio ${name}',
 			'summary.direction' => 'Direzione',
 			'summary.duration' => 'Durata',
 			'summary.durationValue' => ({required Object days}) => '${days} giorni di cammino',

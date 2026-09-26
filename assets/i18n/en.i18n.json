@@ -203,7 +203,8 @@
         "info": "A trail information sign or point."
       }
     },
-    "supplyDismiss": "Dismiss alert"
+    "supplyDismiss": "Dismiss alert",
+    "pinMergedTitle": "Several markers at the same place"
   },
   "stage": {
     "distance": "Distance",
