@@ -30,14 +30,23 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'graphe_navigation.dart';
 import 'parcours_reel.dart';
+import 'registre_des_dormants.dart';
 
-/// Les ecrans SANS route par conception, et la raison de chacun.
-const ecransDormantsDocumentes = <String, String>{
-  'NavPiloteScreen':
-      'Demonstrateur jetable de la refonte navigation (StepWays L8) : la route '
-          'a ete retiree volontairement, le fichier conserve comme reference '
-          'visuelle. A supprimer quand la refonte est cloturee.',
-};
+/// LES ECRANS SANS ROUTE PAR CONCEPTION SONT DESORMAIS DANS LEUR PROPRE
+/// REGISTRE (tache 580, Y2), avec pour chacun sa RAISON et ce qui le
+/// REVEILLERA : voir `registre_des_dormants.dart`.
+///
+/// CE QUI A CHANGE, ET POURQUOI. Cette liste-ci etait une liste d'exceptions :
+/// un nom, une phrase, et rien qui empeche de la laisser pourrir. Elle l'avait
+/// d'ailleurs fait — `NavPiloteScreen` y figurait encore alors que le fichier
+/// a ete SUPPRIME de `lib/` le 20/09/2026 (correctif L0-1) et qu'un garde
+/// interdit depuis ce nom de classe partout dans `lib/`. Une exception pour un
+/// ecran qui n'existe plus ne protege rien : elle entretient l'illusion qu'on
+/// sait de quoi on parle.
+///
+/// Le registre, lui, est VERIFIE dans les deux sens par le groupe « V2-c » plus
+/// bas : chaque dormant doit etre un ecran qui EXISTE et qui est REELLEMENT
+/// orphelin, et chacun doit porter une raison et un reveil ecrits.
 
 void main() {
   late List<File> sources;
@@ -45,51 +54,66 @@ void main() {
   late List<RouteDeclaree> routes;
   late Map<String, Set<String>> routeVersFichiers;
 
+  /// Les ecrans ECRITS : les classes publiques nommees `...Screen` d'un fichier
+  /// `*_screen.dart` de `presentation/`. Ce sont les unites que le routeur est
+  /// cense pouvoir construire. Nom -> fichier.
+  late Map<String, String> ecrans;
+
+  /// Les fichiers que le routeur construit, directement.
+  late Set<String> fichiersRoutes;
+
+  /// Un ecran peut aussi etre ouvert en modale (`showModalBottomSheet`,
+  /// `Navigator.push(MaterialPageRoute(builder: ...))`) : cite par un AUTRE
+  /// fichier, il n'est pas orphelin — il est atteint autrement.
+  late Map<String, Set<String>> citationsAilleurs;
+
+  /// Vrai quand personne ne peut ouvrir [nom] : ni route, ni citation.
+  bool estOrphelin(String nom) {
+    if (fichiersRoutes.contains(ecrans[nom])) return false;
+    return (citationsAilleurs[nom] ?? const <String>{}).isEmpty;
+  }
+
   setUpAll(() {
     sources = fichiersSourceLib();
     classeVersFichier = classesDeWidgetParFichier(sources);
     routes = routesDeclarees();
     routeVersFichiers = routesEtLeursFichiers(routes, classeVersFichier);
+
+    ecrans = <String, String>{};
+    for (final entree in classeVersFichier.entries) {
+      final f = entree.value;
+      if (!f.contains('/presentation/')) continue;
+      if (!f.endsWith('_screen.dart')) continue;
+      if (!entree.key.endsWith('Screen')) continue;
+      if (entree.key.startsWith('_')) continue;
+      ecrans[entree.key] = f;
+    }
+
+    fichiersRoutes = routeVersFichiers.values.expand((s) => s).toSet();
+
+    citationsAilleurs = <String, Set<String>>{};
+    for (final f in sources) {
+      // SANS LES COMMENTAIRES (tache 580, Y2) : une phrase de documentation qui
+      // NOMME un ecran n'ouvre rien. Lire le fichier entier laissait eteindre
+      // cette garde en ecrivant le nom de l'ecran dans un commentaire.
+      final src = sansCommentaires(f.readAsStringSync());
+      for (final nom in ecrans.keys) {
+        if (ecrans[nom] == f.path) continue; // sa propre definition
+        if (RegExp('\\b$nom\\b').hasMatch(src)) {
+          (citationsAilleurs[nom] ??= <String>{}).add(f.path);
+        }
+      }
+    }
   });
 
   group('V2-a — tout ecran ecrit a une route', () {
     test('aucun ecran de lib/features/**/presentation n est orphelin', () {
-      // Les ecrans : les classes publiques nommees `...Screen` d'un fichier
-      // `*_screen.dart` de `presentation/`. Ce sont les unites que le routeur
-      // est censé pouvoir construire.
-      final ecrans = <String, String>{};
-      for (final entree in classeVersFichier.entries) {
-        final f = entree.value;
-        if (!f.contains('/presentation/')) continue;
-        if (!f.endsWith('_screen.dart')) continue;
-        if (!entree.key.endsWith('Screen')) continue;
-        if (entree.key.startsWith('_')) continue;
-        ecrans[entree.key] = f;
-      }
       expect(ecrans, isNotEmpty, reason: 'aucun ecran trouve : lecture cassee');
-
-      // Les fichiers que le routeur construit, directement.
-      final fichiersRoutes = routeVersFichiers.values.expand((s) => s).toSet();
-
-      // Un ecran peut aussi etre ouvert en modale (`showModalBottomSheet`,
-      // `Navigator.push(MaterialPageRoute(builder: ...))`) : cite par un AUTRE
-      // fichier, il n'est pas orphelin — il est atteint autrement.
-      final citationsAilleurs = <String, Set<String>>{};
-      for (final f in sources) {
-        final src = f.readAsStringSync();
-        for (final nom in ecrans.keys) {
-          if (ecrans[nom] == f.path) continue; // sa propre definition
-          if (RegExp('\\b$nom\\b').hasMatch(src)) {
-            (citationsAilleurs[nom] ??= <String>{}).add(f.path);
-          }
-        }
-      }
 
       final orphelins = <String>[];
       for (final e in ecrans.entries) {
-        if (ecransDormantsDocumentes.containsKey(e.key)) continue;
-        if (fichiersRoutes.contains(e.value)) continue;
-        if ((citationsAilleurs[e.key] ?? const <String>{}).isNotEmpty) continue;
+        if (registreDesDormants.containsKey(e.key)) continue;
+        if (!estOrphelin(e.key)) continue;
         orphelins.add('${e.key}  (${e.value})');
       }
 
@@ -99,7 +123,12 @@ void main() {
         reason: 'CES ECRANS SONT ECRITS ET PERSONNE NE PEUT LES OUVRIR : ni '
             'route au routeur, ni citation ailleurs dans lib/. Ecrire un ecran '
             'sans route, c est livrer du code mort que la suite de tests '
-            'declare vert.\n  ${orphelins.join('\n  ')}',
+            'declare vert.\n  ${orphelins.join('\n  ')}\n'
+            'SI C EST DELIBERE — une fonction non livree, un ecran supplante — '
+            'il ne se tait pas tout seul : inscrivez-le dans '
+            '`test/structurel/registre_des_dormants.dart` avec sa RAISON et ce '
+            'qui le REVEILLERA. Un ecran declare dormant ne fait plus rougir '
+            'cette garde ; un ecran oublie, si.',
       );
     });
 
@@ -118,6 +147,69 @@ void main() {
               'app_router.dart : la lecture du routeur doit etre corrigee '
               'avant de faire confiance aux invariantes.\n'
               '  ${sansEcran.join('\n  ')}');
+    });
+  });
+
+  group('V2-c — le registre des dormants ne ment pas', () {
+    // UNE LISTE D'EXCEPTIONS QUI N'EST PAS VERIFIEE POURRIT. La precedente l'a
+    // fait : `NavPiloteScreen` y dormait encore alors que le fichier avait ete
+    // SUPPRIME de lib/ six jours plus tot. Ces trois tests sont le prix
+    // d'entree du registre — c'est ce qui fait la difference entre une dette
+    // ECRITE et une garde desamorcee.
+
+    test('chaque dormant designe un ecran qui EXISTE', () {
+      final inconnus = registreDesDormants.keys
+          .where((nom) => !ecrans.containsKey(nom))
+          .toList();
+      expect(
+        inconnus,
+        isEmpty,
+        reason: 'CES ENTREES NE DESIGNENT PLUS RIEN : l ecran a ete supprime '
+            'ou renomme, et son entree a survecu. Une exception pour un ecran '
+            'qui n existe plus n endort rien — elle entretient l illusion '
+            'qu on sait de quoi on parle. Retirez-la.\n'
+            '  ${inconnus.join('\n  ')}',
+      );
+    });
+
+    test('aucun dormant n a ete cable entre-temps', () {
+      // LA DETTE DOIT POUVOIR SE REMBOURSER. Le jour ou l'un de ces ecrans
+      // recoit sa route, son entree n'a plus lieu d'etre — et si elle reste,
+      // elle couvrira en silence le PROCHAIN ecran qui portera ce nom.
+      final reveilles = registreDesDormants.keys
+          .where(ecrans.containsKey)
+          .where((nom) => !estOrphelin(nom))
+          .toList();
+      expect(
+        reveilles,
+        isEmpty,
+        reason: 'CES ECRANS SONT DESORMAIS ATTEIGNABLES et restent declares '
+            'dormants. Le travail est fait : retirez leur entree du registre, '
+            'la garde reprend ses droits sur eux.\n  ${reveilles.join('\n  ')}',
+      );
+    });
+
+    test('chaque dormant porte une RAISON et un REVEIL ecrits', () {
+      // Le cout d'endormir un ecran doit rester superieur a celui de lui
+      // donner sa porte : une entree se merite en expliquant, pas en nommant.
+      final bacles = <String>[];
+      registreDesDormants.forEach((nom, dormant) {
+        if (dormant.raison.trim().length < 60) {
+          bacles.add('$nom : raison trop courte pour expliquer quoi que ce '
+              'soit (« ${dormant.raison.trim()} »)');
+        }
+        if (dormant.reveil.trim().length < 20) {
+          bacles.add('$nom : aucun reveil nomme (« ${dormant.reveil.trim()} »)');
+        }
+      });
+      expect(
+        bacles,
+        isEmpty,
+        reason: 'UNE ENTREE DE REGISTRE N EST PAS UNE LIGNE DE TODO. Chaque '
+            'dormant doit dire POURQUOI il dort et CE QUI LE REVEILLERA — '
+            'sinon la dette redevient muette, et le registre n est qu une '
+            'liste d exceptions de plus.\n  ${bacles.join('\n  ')}',
+      );
     });
   });
 

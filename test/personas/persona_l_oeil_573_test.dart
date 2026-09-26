@@ -35,7 +35,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:moteur_gr/core/models/poi.dart';
+import 'package:moteur_gr/features/trek/domain/models/stage.dart';
+import 'package:moteur_gr/features/trek/presentation/map/layers/trail_markers_layer.dart';
 
 import '../structurel/parcours_reel.dart';
 
@@ -72,61 +78,230 @@ void main() {
   });
 
   group('L OEIL — deux marqueurs au meme point se superposent', () {
-    test('les numeros d etape ne sont pas caches par les points d interet', () {
-      // LE DEFAUT EST STRUCTUREL, PAS ACCIDENTEL. Une etape se termine a un
-      // refuge ou dans un village : le marqueur de l'etape et celui du lieu sont
-      // au MEME point geographique. La carte pose deux couches distinctes, la
-      // seconde par-dessus la premiere. Aucun decalage ne reglera ca : il faut
-      // FUSIONNER le marqueur quand les deux coincident.
-      final trail = File('assets/data/mare_a_mare_centre.json');
-      expect(trail.existsSync(), isTrue);
-      final data = jsonDecode(trail.readAsStringSync()) as Map<String, dynamic>;
-      final stages = (data['stages'] as List).cast<Map<String, dynamic>>();
-      final pois = (data['pois'] as List?)?.cast<Map<String, dynamic>>() ?? [];
+    // CE TEST A ETE REECRIT (tache 580, point Y5), ET LA RAISON MERITE D'ETRE
+    // ECRITE ICI PLUTOT QU'EN MESSAGE DE COMMIT.
+    //
+    // LA PREMIERE VERSION CHERCHAIT, DANS `map_screen.dart`, LES CHAINES
+    // `MarkerCluster`, `marker_cluster` OU `fusionMarqueurs`. Elle avait devine
+    // COMMENT la fusion serait ecrite et verifiait cette devinette. Le LOT T
+    // (tache 571) a justement refuse de reutiliser `marker_cluster.dart` — il
+    // ne s'active qu'au-dela de 50 marqueurs, travaille couche par couche, rate
+    // les couples a cheval sur une frontiere de cellule et pose la bulle sur un
+    // centroide, donc deplace le repere — et a construit [MarkerOverlap] +
+    // [TrailMarkersLayer]. Resultat : le retour 13 de Chris etait FERME dans le
+    // code, et ce test restait ROUGE.
+    //
+    // UN FAUX ROUGE DANS UNE GARDE EST PIRE QU'UNE GARDE ABSENTE : il apprend a
+    // tout le monde a ignorer les rouges. Et c'est exactement la faute de
+    // methode que le LOT V denoncait chez les autres — mesurer une
+    // IMPLEMENTATION au lieu d'une PROPRIETE.
+    //
+    // LA PROPRIETE, ELLE, NE SE PERIME PAS : sur les donnees LIVREES du
+    // sentier, a tous les zooms, AUCUN COUPLE DE MARQUEURS RENDUS PAR LA CARTE
+    // NE SE RECOUVRE. Elle se mesure sur la liste de [Marker] que la couche
+    // remet a flutter_map — position, largeur, hauteur — avec une regle
+    // arithmetique ecrite ICI, independante du module mesure. Reecrire la
+    // fusion autrement, ou la supprimer, se voit ; la renommer ne se voit pas,
+    // et c'est bien ainsi.
 
-      double distanceKm(double la1, double ln1, double la2, double ln2) {
-        // Approximation plane, suffisante a l'echelle de quelques centaines de
-        // metres et sous la latitude de la Corse.
-        final dy = (la1 - la2) * 111.0;
-        final dx = (ln1 - ln2) * 83.0;
-        return math.sqrt(dx * dx + dy * dy);
-      }
+    /// Les donnees SEEDEES du sentier : celles que la carte dessine.
+    ///
+    /// L'ancienne version lisait `assets/data/mare_a_mare_centre.json`, qui ne
+    /// sert qu'aux hebergements ; les etapes et les points d'interet de la
+    /// carte viennent du dossier `mare_a_mare_centre/` (cf.
+    /// `mare_a_mare_centre_trail_config.dart`, `seedAssetsBase`). Le test
+    /// mesurait donc des coincidences sur des donnees que l'ecran n'affiche
+    /// pas.
+    List<Map<String, dynamic>> lire(String fichier) =>
+        (jsonDecode(File('assets/data/mare_a_mare_centre/$fichier')
+                .readAsStringSync()) as List)
+            .cast<Map<String, dynamic>>();
+
+    /// Distance geodesique en metres (haversine), calculee ici : le test ne
+    /// doit rien emprunter au code qu'il juge.
+    double metres(double la1, double ln1, double la2, double ln2) {
+      const r = 6371008.8;
+      double rad(double d) => d * math.pi / 180.0;
+      final dLat = rad(la2 - la1);
+      final dLng = rad(ln2 - ln1);
+      final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+          math.cos(rad(la1)) *
+              math.cos(rad(la2)) *
+              math.sin(dLng / 2) *
+              math.sin(dLng / 2);
+      return 2 * r * math.atan2(math.sqrt(a), math.sqrt(1 - a));
+    }
+
+    /// Metres couverts par un pixel d'ecran (formule slippy map standard).
+    double metresParPixel(double zoom, double latitude) =>
+        40075016.686 *
+        math.cos(latitude * math.pi / 180.0).abs() /
+        (256.0 * math.pow(2, zoom));
+
+    /// Les etapes et les lieux reels, prets pour la couche de la carte.
+    (List<Stage>, List<PoiModel>) sentierReel() {
+      final stages = [
+        for (final s in lire('stages.json'))
+          Stage(
+            id: s['id'] as String,
+            nameFr: s['nameFr'] as String,
+            distance: (s['distanceKm'] as num).toDouble(),
+            elevationGain: (s['elevationGainM'] as num).toInt(),
+            elevationLoss: (s['elevationLossM'] as num).toInt(),
+            orderIndex: (s['stageNumber'] as num).toInt(),
+            startLat: (s['startLat'] as num).toDouble(),
+            startLng: (s['startLng'] as num).toDouble(),
+            endLat: (s['endLat'] as num).toDouble(),
+            endLng: (s['endLng'] as num).toDouble(),
+          ),
+      ];
+      final pois = [
+        for (final p in lire('pois.json'))
+          PoiModel(
+            trailId: 'mare-a-mare-centre',
+            stageNumber: 0,
+            name: p['nameFr'] as String,
+            type: p['type'] as String,
+            lat: (p['lat'] as num).toDouble(),
+            lng: (p['lng'] as num).toDouble(),
+          ),
+      ];
+      return (stages, pois);
+    }
+
+    /// La bande de zoom utile d'une carte de randonnee, du sentier entier au
+    /// detail d'un hameau.
+    const zooms = <double>[
+      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
+      12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+    ];
+
+    /// Monte la couche de reperes du sentier et rend CE QUE LA CARTE DESSINE.
+    Future<List<Marker>> reperesRendus(
+      WidgetTester tester, {
+      required List<Stage> stages,
+      required List<PoiModel> pois,
+      required double zoom,
+    }) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: FlutterMap(
+              options: MapOptions(
+                initialCenter: LatLng(stages.first.startLat,
+                    stages.first.startLng),
+                initialZoom: zoom,
+              ),
+              children: [
+                TrailMarkersLayer(stages: stages, pois: pois, zoom: zoom),
+              ],
+            ),
+          ),
+        ),
+      );
+      await tester.pump();
+      final couches = tester.widgetList<MarkerLayer>(find.byType(MarkerLayer));
+      return [for (final c in couches) ...c.markers];
+    }
+
+    test('les donnees LIVREES posent bien des reperes au meme endroit — sans '
+        'quoi ce test ne prouverait rien', () {
+      // LE DEFAUT EST STRUCTUREL, PAS ACCIDENTEL. Une etape se TERMINE a un
+      // refuge ou dans un village et la suivante en REPART : le marqueur de
+      // l'etape et celui du lieu sont au MEME point par construction.
+      final (stages, pois) = sentierReel();
+      expect(stages, isNotEmpty, reason: 'lecture des etapes cassee');
+      expect(pois, isNotEmpty, reason: 'lecture des lieux cassee');
 
       final coincidences = <String>[];
       for (final s in stages) {
-        final la = (s['endLat'] as num).toDouble();
-        final ln = (s['endLng'] as num).toDouble();
         for (final p in pois) {
-          final pla = (p['lat'] as num?)?.toDouble();
-          final pln = (p['lng'] as num?)?.toDouble();
-          if (pla == null || pln == null) continue;
           // 300 m : a l'echelle d'affichage de la carte, deux marqueurs aussi
           // proches se chevauchent.
-          if (distanceKm(la, ln, pla, pln) > 0.3) continue;
-          coincidences.add('etape ${s['stageNumber']} et '
-              '${p['type']} « ${p['nameFr']} »');
+          if (metres(s.startLat, s.startLng, p.lat, p.lng) > 300) continue;
+          coincidences.add('etape ${s.orderIndex} et ${p.type} « ${p.name} »');
         }
       }
       expect(coincidences, isNotEmpty,
           reason: 'aucune coincidence trouvee dans les donnees livrees : la '
               'lecture est cassee, et ce test ne prouverait plus rien');
-
-      // LA CARTE DOIT FUSIONNER CES CAS. Le mecanisme de regroupement existe
-      // deja dans le meme dossier (`marker_cluster.dart`) et n'est pas utilise
-      // pour cette situation.
-      final carte = File('lib/features/trek/presentation/map/map_screen.dart');
-      expect(carte.existsSync(), isTrue);
-      final src = carte.readAsStringSync();
-      final fusionne = src.contains('MarkerCluster') ||
-          src.contains('marker_cluster') ||
-          src.contains('fusionMarqueurs');
-      expect(fusionne, isTrue,
-          reason: 'LES MARQUEURS SE SUPERPOSENT : ${coincidences.length} '
-              'coincidences a moins de 300 m dans les donnees LIVREES '
-              '(${coincidences.join(' ; ')}), et la carte pose deux couches '
-              'independantes sans jamais les fusionner. Le numero d etape passe '
-              'sous l icone du lieu — exactement le retour 13 de Chris.');
     });
+
+    testWidgets(
+      'AUCUN couple de marqueurs rendus ne se recouvre, a aucun zoom',
+      (tester) async {
+        final (stages, pois) = sentierReel();
+        final recouvrements = <String>[];
+
+        for (final zoom in zooms) {
+          final reperes = await reperesRendus(
+            tester,
+            stages: stages,
+            pois: pois,
+            zoom: zoom,
+          );
+          expect(reperes, isNotEmpty, reason: 'zoom $zoom : rien n est rendu');
+
+          for (var i = 0; i < reperes.length; i++) {
+            for (var j = i + 1; j < reperes.length; j++) {
+              final a = reperes[i];
+              final b = reperes[j];
+              final ecartM = metres(
+                a.point.latitude,
+                a.point.longitude,
+                b.point.latitude,
+                b.point.longitude,
+              );
+              final echelle = metresParPixel(
+                zoom,
+                (a.point.latitude + b.point.latitude) / 2,
+              );
+              final ecartPx = ecartM / echelle;
+              // Deux disques se touchent des que l'ecart entre leurs centres
+              // descend sous la somme de leurs rayons.
+              final minimum = (a.width + b.width) / 2;
+              if (ecartPx >= minimum) continue;
+              recouvrements.add('zoom $zoom : deux reperes a '
+                  '${ecartPx.toStringAsFixed(1)} px l un de l autre, alors '
+                  'qu il en faut ${minimum.toStringAsFixed(0)}');
+            }
+          }
+        }
+
+        expect(recouvrements, isEmpty,
+            reason: 'DES MARQUEURS SE MARCHENT DESSUS SUR LA CARTE LIVREE. Le '
+                'numero d etape passe sous l icone du lieu — le retour 13 de '
+                'Chris, verbatim : « 14rando les numeros d etapes son caches '
+                'par les refucge, il ne faut pas que les icones se '
+                'superposent ».\n  ${recouvrements.take(10).join('\n  ')}');
+      },
+    );
+
+    testWidgets(
+      'la fusion a bien LIEU : en vue large, le sentier ne montre plus une '
+      'icone par lieu mais une poignee de reperes',
+      (tester) async {
+        // SANS CE TEST, LE PRECEDENT SERAIT SATISFAIT PAR UNE CARTE QUI NE
+        // DESSINE RIEN. On exige donc que le nombre de reperes DIMINUE quand
+        // on s'eloigne, et qu'au plus fin chacun retrouve le sien — sauf les
+        // points reellement confondus, qu'aucun zoom ne peut separer.
+        final (stages, pois) = sentierReel();
+        final total = stages.length + pois.length;
+
+        final large = await reperesRendus(tester,
+            stages: stages, pois: pois, zoom: 11);
+        expect(large.length, lessThan(total),
+            reason: 'en vue large, $total icones restent empilees : rien n est '
+                'fusionne');
+
+        final fin = await reperesRendus(tester,
+            stages: stages, pois: pois, zoom: 22);
+        expect(fin.length, lessThanOrEqualTo(total));
+        expect(fin.length, greaterThan(large.length),
+            reason: 'au plus fin, les lieux distincts doivent reprendre chacun '
+                'leur repere : on ne fusionne pas ce qui se distingue');
+      },
+    );
   });
 
   group('L OEIL — ce qui est ECRIT et ce que l appli FAIT', () {

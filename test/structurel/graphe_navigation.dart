@@ -66,6 +66,85 @@ List<File> fichiersSourceLib() {
 
 String _normal(String p) => p.replaceAll('\\', '/');
 
+/// LE CODE SANS SES COMMENTAIRES — parce qu'UN COMMENTAIRE N'EST PAS UNE PORTE.
+///
+/// POURQUOI CETTE FONCTION EXISTE (tache 580, Y2). L'invariante V2 declare
+/// qu'un ecran est atteignable des qu'un AUTRE fichier de `lib/` cite son nom :
+/// c'est la facon d'attraper les ecrans ouverts en modale, qui n'ont pas de
+/// route. Mais le balayage lisait le fichier ENTIER, commentaires compris. Une
+/// simple phrase de documentation — « ce libelle ne vivait que sur
+/// `TelEcranScreen` » — suffisait donc a declarer joignable un ecran que
+/// personne ne peut ouvrir. La garde pouvait etre eteinte en ECRIVANT SON NOM.
+/// Le defaut a ete trouve en le declenchant : la doc du refus global (Y1) cite
+/// l'ecran d'accueil du consentement, et l'invariante a aussitot considere cet
+/// ecran comme cable.
+///
+/// CE QU'ELLE PRESERVE : les CHAINES. `'/trail/$id/weather'` et
+/// `"https://..."` restent intacts — y compris les chaines contenant `//`,
+/// qu'un retrait naif de commentaires amputerait, faisant disparaitre de
+/// vraies portes.
+String sansCommentaires(String source) {
+  final out = StringBuffer();
+  var i = 0;
+  while (i < source.length) {
+    if (source.startsWith('//', i)) {
+      final fin = source.indexOf('\n', i);
+      if (fin < 0) break;
+      out.write('\n');
+      i = fin + 1;
+      continue;
+    }
+    if (source.startsWith('/*', i)) {
+      final fin = source.indexOf('*/', i + 2);
+      out.write(' ');
+      i = fin < 0 ? source.length : fin + 2;
+      continue;
+    }
+    final delim = _delimiteurDeChaine(source, i);
+    if (delim != null) {
+      final fin = _finDeChaine(source, i, delim);
+      out.write(source.substring(i, fin));
+      i = fin;
+      continue;
+    }
+    out.write(source[i]);
+    i++;
+  }
+  return out.toString();
+}
+
+/// Le delimiteur de la chaine qui COMMENCE en [i], `null` si aucune.
+String? _delimiteurDeChaine(String s, int i) {
+  var j = i;
+  if (s[j] == 'r') {
+    // `r` n'est un prefixe de chaine brute que s'il ne termine pas un
+    // identifiant (`super`, `color`, une variable nommee `r`...).
+    final avant = i == 0 ? '' : s[i - 1];
+    if (RegExp(r'[\w$]').hasMatch(avant)) return null;
+    j++;
+    if (j >= s.length) return null;
+  }
+  final q = s[j];
+  if (q != "'" && q != '"') return null;
+  final triple = q * 3;
+  return s.startsWith(triple, j) ? triple : q;
+}
+
+/// L'index qui suit la chaine commencant en [i] avec le delimiteur [delim].
+int _finDeChaine(String s, int i, String delim) {
+  final brute = s[i] == 'r';
+  var j = i + (brute ? 1 : 0) + delim.length;
+  while (j < s.length) {
+    if (!brute && s[j] == r'\') {
+      j += 2;
+      continue;
+    }
+    if (s.startsWith(delim, j)) return j + delim.length;
+    j++;
+  }
+  return s.length;
+}
+
 /// Resout un import RELATIF (`'widgets/x.dart'`, `'../../core/y.dart'`) vers un
 /// chemin de depot (`lib/...`).
 ///

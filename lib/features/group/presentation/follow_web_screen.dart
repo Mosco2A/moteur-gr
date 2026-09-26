@@ -170,11 +170,21 @@ class _FollowWebScreenState extends ConsumerState<FollowWebScreen> {
       color: theme.colorScheme.surface,
       child: SafeArea(
         bottom: false,
+        // DEBORDEMENT MESURE (tache 580, Y3) : 67 pixels coupes sur la droite,
+        // sur un telephone courant. Le titre prenait sa largeur NATURELLE a
+        // cote d'un badge d'etat lui aussi libre de s'etendre : des que la
+        // somme des deux depasse la largeur de l'ecran, la fin du titre part
+        // hors champ SANS lever d'exception visible a l'utilisateur. Le
+        // titre devient [Flexible] : c'est lui qui cede, il se replie sur
+        // deux lignes, et le badge — la seule information qui dit si le suivi
+        // est vivant — reste entier. Rien n'est tronque, rien n'est deplace.
         child: Row(children: [
-          Text(
-            t.follow.title,
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontWeight: FontWeight.w600),
+          Flexible(
+            child: Text(
+              t.follow.title,
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(fontWeight: FontWeight.w600),
+            ),
           ),
           const SizedBox(width: AppTheme.spacingSm),
           _buildStatusBadge(theme),
