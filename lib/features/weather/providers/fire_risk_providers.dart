@@ -44,6 +44,7 @@ class StageFireRisk {
     required this.stageNumber,
     required this.stageName,
     required this.days,
+    this.arrivalName,
   });
 
   /// Numero de l'etape (1-indexed).
@@ -51,6 +52,12 @@ class StageFireRisk {
 
   /// Nom de l'etape (donnee du sentier).
   final String stageName;
+
+  /// Nom du LIEU D'ARRIVEE de l'etape (tache 572) — le point ou le niveau de
+  /// risque est evalue, puisque c'est ce point que le socle meteo interroge
+  /// desormais. Un niveau de risque sans lieu nomme ne dit pas OU se mefier.
+  /// `null` quand le sentier ne fournit pas la donnee (l'affichage se masque).
+  final String? arrivalName;
 
   /// Niveau de risque par jour (parite GR20 : detail par jour).
   final List<FireRiskDay> days;
@@ -150,6 +157,7 @@ final trailFireRiskProvider =
       result.add(StageFireRisk(
         stageNumber: stage.stageNumber,
         stageName: stage.name,
+        arrivalName: stage.arrivalName,
         days: const [],
       ));
       continue;
@@ -173,6 +181,7 @@ final trailFireRiskProvider =
     result.add(StageFireRisk(
       stageNumber: stage.stageNumber,
       stageName: stage.name,
+      arrivalName: stage.arrivalName,
       days: days,
     ));
   }

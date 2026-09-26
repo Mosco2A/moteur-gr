@@ -676,7 +676,7 @@
     "stormAlertsToggleOff": "Storm alerts off",
     "lastUpdate": "Updated $date",
     "guideTitle": "Understanding the weather",
-    "guideBody": "Forecasts cover 7 days for each stage. Watch storm and wind alerts: in the mountains, weather changes fast. When offline, the last saved data is shown.",
+    "guideBody": "Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day's arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.",
     "source": {
       "api": "Live data",
       "cache": "Saved data",
@@ -713,7 +713,35 @@
         "title": "Fire risk",
         "desc": "$value°C expected. High fire risk."
       }
-    }
+    },
+    "program": {
+      "title": "Weather stage by stage",
+      "subtitle": "The weather where you will be, on the day you will be there.",
+      "dayLabel": "Day $day",
+      "restDay": "Rest",
+      "place": "at $place",
+      "trendBadge": "Trend",
+      "trendHint": "Beyond $reliable days this is only a trend: a 10-day forecast is right about half the time.",
+      "beyondHorizon": "No forecast yet: forecasts only reach $horizon days ahead.",
+      "noData": "No data for this place.",
+      "unknownDeparture": "Pick your departure date: without it there is no way to tell which day you reach which stage."
+    },
+    "freshness": {
+      "justNow": "Fetched just now",
+      "at": "Fetched on $date",
+      "stale": "Fetched $duration ago, no update since",
+      "never": "Never fetched"
+    },
+    "duration": {
+      "seconds": "a few seconds",
+      "minutes": "$n min",
+      "hours": "${n} h",
+      "days": "$n d"
+    },
+    "refreshFailed": "Update failed. The data shown was fetched on $date.",
+    "refreshFailedNoData": "Update failed and no data is saved.",
+    "refreshedAt": "Data updated ($date)",
+    "refreshPartial": "Partial update: $done of $total stage(s)."
   },
   "share": {
     "title": "Share",
@@ -1881,7 +1909,11 @@
       "call": "Call $label at $number",
       "decree": "Open prefectural orders",
       "levelBadge": "Risk level $level out of 5"
-    }
+    },
+    "refreshNothing": "Nothing to update right now.",
+    "refreshPartial": "Partial update: $done of $total stage(s).",
+    "refreshedAt": "Data updated ($date)",
+    "stagePlace": "Arrival: $place"
   },
   "shop": {
     "title": "Supplies",

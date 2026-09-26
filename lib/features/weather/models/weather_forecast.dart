@@ -7,11 +7,63 @@ class WeatherForecast {
     required this.days,
     required this.latitude,
     required this.longitude,
+    this.fetchedAt,
   });
 
   final List<DayForecast> days;
   final double latitude;
   final double longitude;
+
+  /// INSTANT DU RELEVE — l'heure a laquelle ce bulletin a ete obtenu du
+  /// fournisseur (TACHE 572, U2/U3).
+  ///
+  /// C'ETAIT LA CAUSE DES DEUX BOUTONS MORTS. Le modele ne portait AUCUNE
+  /// notion de « quand est-ce que ca a ete releve », alors la ligne « MAJ » des
+  /// deux ecrans se rabattait sur `days.first.date`, c'est-a-dire le JOUR DU
+  /// BULLETIN (aujourd'hui a 00:00). Ce texte est le meme avant et apres un
+  /// rafraichissement REUSSI : l'appel partait, le cache etait reecrit, et
+  /// l'ecran affichait mot pour mot la meme chose. « La mise a jour ne produit
+  /// rien », verbatim de Chris, et il avait raison de le lire comme ca.
+  ///
+  /// Renseigne a la lecture du cache depuis la colonne `fetchedAt` de la ligne
+  /// Drift (source d'autorite : c'est la DB qui horodate l'ecriture) et a la
+  /// sortie de l'API. `null` seulement pour un bulletin construit en memoire
+  /// (seed de demonstration, fixture de test) : dans ce cas l'ecran dit
+  /// « jamais releve » au lieu d'inventer un age.
+  final DateTime? fetchedAt;
+
+  /// Age du bulletin a [now] (horloge injectable pour les tests).
+  ///
+  /// `null` quand l'instant du releve est inconnu — un age inconnu doit
+  /// s'afficher comme inconnu, jamais comme zero.
+  Duration? ageAt([DateTime? now]) => fetchedAt == null
+      ? null
+      : (now ?? DateTime.now()).difference(fetchedAt!);
+
+  /// Copie en fixant l'instant du releve (la DB fait autorite sur l'age).
+  WeatherForecast withFetchedAt(DateTime? at) => WeatherForecast(
+        days: days,
+        latitude: latitude,
+        longitude: longitude,
+        fetchedAt: at,
+      );
+
+  /// Prevision du JOUR CALENDAIRE [date] (comparaison a la journee, pas a
+  /// l'instant), ou `null` si ce jour n'est pas couvert par le bulletin.
+  ///
+  /// TACHE 572 (U1) : c'est l'acces dont le programme a besoin. Le randonneur ne
+  /// veut pas « le jour 3 du bulletin », il veut « le mardi 22, la ou je serai
+  /// ce mardi-la ». Les deux ne coincident que si le trek part aujourd'hui.
+  DayForecast? dayOn(DateTime date) {
+    for (final d in days) {
+      if (d.date.year == date.year &&
+          d.date.month == date.month &&
+          d.date.day == date.day) {
+        return d;
+      }
+    }
+    return null;
+  }
 
   /// Parse depuis la réponse JSON Open-Meteo
   factory WeatherForecast.fromOpenMeteo(Map<String, dynamic> json) {
@@ -58,16 +110,23 @@ class WeatherForecast {
         'latitude': latitude,
         'longitude': longitude,
         'days': days.map((d) => d.toJson()).toList(),
+        if (fetchedAt != null) 'fetchedAt': fetchedAt!.toIso8601String(),
       };
 
   /// Désérialise depuis le cache JSON
+  ///
+  /// `fetchedAt` est optionnel : les lignes de cache ecrites avant la tache 572
+  /// ne le portent pas. Le repository le renseigne alors depuis la colonne
+  /// `fetchedAt` de la ligne Drift, qui fait de toute facon autorite sur l'age.
   factory WeatherForecast.fromJson(Map<String, dynamic> json) {
+    final fetched = json['fetchedAt'] as String?;
     return WeatherForecast(
       latitude: (json['latitude'] as num).toDouble(),
       longitude: (json['longitude'] as num).toDouble(),
       days: (json['days'] as List)
           .map((d) => DayForecast.fromJson(d as Map<String, dynamic>))
           .toList(),
+      fetchedAt: fetched == null ? null : DateTime.tryParse(fetched),
     );
   }
 }

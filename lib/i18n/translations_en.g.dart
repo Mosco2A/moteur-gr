@@ -550,10 +550,17 @@ class _Translations$weather$en extends Translations$weather$fr {
 	@override String get stormAlertsToggleOff => 'Storm alerts off';
 	@override String lastUpdate({required Object date}) => 'Updated ${date}';
 	@override String get guideTitle => 'Understanding the weather';
-	@override String get guideBody => 'Forecasts cover 7 days for each stage. Watch storm and wind alerts: in the mountains, weather changes fast. When offline, the last saved data is shown.';
+	@override String get guideBody => 'Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day\'s arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.';
 	@override late final _Translations$weather$source$en source = _Translations$weather$source$en._(_root);
 	@override late final _Translations$weather$recommendation$en recommendation = _Translations$weather$recommendation$en._(_root);
 	@override late final _Translations$weather$alert$en alert = _Translations$weather$alert$en._(_root);
+	@override late final _Translations$weather$program$en program = _Translations$weather$program$en._(_root);
+	@override late final _Translations$weather$freshness$en freshness = _Translations$weather$freshness$en._(_root);
+	@override late final _Translations$weather$duration$en duration = _Translations$weather$duration$en._(_root);
+	@override String refreshFailed({required Object date}) => 'Update failed. The data shown was fetched on ${date}.';
+	@override String get refreshFailedNoData => 'Update failed and no data is saved.';
+	@override String refreshedAt({required Object date}) => 'Data updated (${date})';
+	@override String refreshPartial({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).';
 }
 
 // Path: share
@@ -1451,6 +1458,10 @@ class _Translations$fireRisk$en extends Translations$fireRisk$fr {
 	@override late final _Translations$fireRisk$number$en number = _Translations$fireRisk$number$en._(_root);
 	@override late final _Translations$fireRisk$empty$en empty = _Translations$fireRisk$empty$en._(_root);
 	@override late final _Translations$fireRisk$a11y$en a11y = _Translations$fireRisk$a11y$en._(_root);
+	@override String get refreshNothing => 'Nothing to update right now.';
+	@override String refreshPartial({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).';
+	@override String refreshedAt({required Object date}) => 'Data updated (${date})';
+	@override String stagePlace({required Object place}) => 'Arrival: ${place}';
 }
 
 // Path: shop
@@ -2307,6 +2318,51 @@ class _Translations$weather$alert$en extends Translations$weather$alert$fr {
 	@override late final _Translations$weather$alert$snow$en snow = _Translations$weather$alert$snow$en._(_root);
 	@override late final _Translations$weather$alert$uv$en uv = _Translations$weather$alert$uv$en._(_root);
 	@override late final _Translations$weather$alert$fire$en fire = _Translations$weather$alert$fire$en._(_root);
+}
+
+// Path: weather.program
+class _Translations$weather$program$en extends Translations$weather$program$fr {
+	_Translations$weather$program$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Weather stage by stage';
+	@override String get subtitle => 'The weather where you will be, on the day you will be there.';
+	@override String dayLabel({required Object day}) => 'Day ${day}';
+	@override String get restDay => 'Rest';
+	@override String place({required Object place}) => 'at ${place}';
+	@override String get trendBadge => 'Trend';
+	@override String trendHint({required Object reliable}) => 'Beyond ${reliable} days this is only a trend: a 10-day forecast is right about half the time.';
+	@override String beyondHorizon({required Object horizon}) => 'No forecast yet: forecasts only reach ${horizon} days ahead.';
+	@override String get noData => 'No data for this place.';
+	@override String get unknownDeparture => 'Pick your departure date: without it there is no way to tell which day you reach which stage.';
+}
+
+// Path: weather.freshness
+class _Translations$weather$freshness$en extends Translations$weather$freshness$fr {
+	_Translations$weather$freshness$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get justNow => 'Fetched just now';
+	@override String at({required Object date}) => 'Fetched on ${date}';
+	@override String stale({required Object duration}) => 'Fetched ${duration} ago, no update since';
+	@override String get never => 'Never fetched';
+}
+
+// Path: weather.duration
+class _Translations$weather$duration$en extends Translations$weather$duration$fr {
+	_Translations$weather$duration$en._(TranslationsEn root) : this._root = root, super.internal(root);
+
+	final TranslationsEn _root; // ignore: unused_field
+
+	// Translations
+	@override String get seconds => 'a few seconds';
+	@override String minutes({required Object n}) => '${n} min';
+	@override String hours({required Object n}) => '${n} h';
+	@override String days({required Object n}) => '${n} d';
 }
 
 // Path: feasibility.gaps
@@ -4495,7 +4551,7 @@ extension on TranslationsEn {
 			'weather.stormAlertsToggleOff' => 'Storm alerts off',
 			'weather.lastUpdate' => ({required Object date}) => 'Updated ${date}',
 			'weather.guideTitle' => 'Understanding the weather',
-			'weather.guideBody' => 'Forecasts cover 7 days for each stage. Watch storm and wind alerts: in the mountains, weather changes fast. When offline, the last saved data is shown.',
+			'weather.guideBody' => 'Forecasts are given STAGE BY STAGE: for each day of your plan, the weather at that day\'s arrival point. They reach 10 days at most; the first 7 are reliable, the next ones are only a trend, and beyond that the app says so instead of making it up. Every bulletin shows when it was fetched: in the mountains, with no network, the last fetch is what stays on screen.',
 			'weather.source.api' => 'Live data',
 			'weather.source.cache' => 'Saved data',
 			'weather.source.offline' => 'Offline',
@@ -4515,6 +4571,28 @@ extension on TranslationsEn {
 			'weather.alert.uv.desc' => ({required Object value}) => 'UV index ${value}. Maximum sun protection recommended.',
 			'weather.alert.fire.title' => 'Fire risk',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C expected. High fire risk.',
+			'weather.program.title' => 'Weather stage by stage',
+			'weather.program.subtitle' => 'The weather where you will be, on the day you will be there.',
+			'weather.program.dayLabel' => ({required Object day}) => 'Day ${day}',
+			'weather.program.restDay' => 'Rest',
+			'weather.program.place' => ({required Object place}) => 'at ${place}',
+			'weather.program.trendBadge' => 'Trend',
+			'weather.program.trendHint' => ({required Object reliable}) => 'Beyond ${reliable} days this is only a trend: a 10-day forecast is right about half the time.',
+			'weather.program.beyondHorizon' => ({required Object horizon}) => 'No forecast yet: forecasts only reach ${horizon} days ahead.',
+			'weather.program.noData' => 'No data for this place.',
+			'weather.program.unknownDeparture' => 'Pick your departure date: without it there is no way to tell which day you reach which stage.',
+			'weather.freshness.justNow' => 'Fetched just now',
+			'weather.freshness.at' => ({required Object date}) => 'Fetched on ${date}',
+			'weather.freshness.stale' => ({required Object duration}) => 'Fetched ${duration} ago, no update since',
+			'weather.freshness.never' => 'Never fetched',
+			'weather.duration.seconds' => 'a few seconds',
+			'weather.duration.minutes' => ({required Object n}) => '${n} min',
+			'weather.duration.hours' => ({required Object n}) => '${n} h',
+			'weather.duration.days' => ({required Object n}) => '${n} d',
+			'weather.refreshFailed' => ({required Object date}) => 'Update failed. The data shown was fetched on ${date}.',
+			'weather.refreshFailedNoData' => 'Update failed and no data is saved.',
+			'weather.refreshedAt' => ({required Object date}) => 'Data updated (${date})',
+			'weather.refreshPartial' => ({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).',
 			'share.title' => 'Share',
 			'share.generating' => 'Generating...',
 			'share.share' => 'Share',
@@ -4898,6 +4976,8 @@ extension on TranslationsEn {
 			'eta.toNextWaypoint' => 'Next point',
 			'eta.toStageEnd' => 'Stage end',
 			'eta.confidenceHigh' => 'Reliable estimate',
+			_ => null,
+		} ?? switch (path) {
 			'eta.confidenceLow' => 'Approximate (weak GPS)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
 			'eta.durationM' => ({required Object m}) => '${m} min',
@@ -4920,8 +5000,6 @@ extension on TranslationsEn {
 			'social.reasonOther' => 'Other',
 			'social.reportSend' => 'Send report',
 			'social.reportSent' => 'Report sent. Our team will review it.',
-			_ => null,
-		} ?? switch (path) {
 			'social.syncPending' => 'Waiting for sync',
 			'social.synced' => 'Synced',
 			'social.activitySegment' => 'completed a segment',
@@ -5412,7 +5490,13 @@ extension on TranslationsEn {
 			'fireRisk.empty.message' => 'The weather data needed to compute fire risk is not available right now. Try again once connected.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Call ${label} at ${number}',
 			'fireRisk.a11y.decree' => 'Open prefectural orders',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Risk level ${level} out of 5',
+			'fireRisk.refreshNothing' => 'Nothing to update right now.',
+			'fireRisk.refreshPartial' => ({required Object done, required Object total}) => 'Partial update: ${done} of ${total} stage(s).',
+			'fireRisk.refreshedAt' => ({required Object date}) => 'Data updated (${date})',
+			'fireRisk.stagePlace' => ({required Object place}) => 'Arrival: ${place}',
 			'shop.title' => 'Supplies',
 			'shop.filterAll' => 'All',
 			'shop.typeEpicerie' => 'Grocery',
@@ -5434,8 +5518,6 @@ extension on TranslationsEn {
 			'shop.filterEmpty' => 'No shop for this filter.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'View details for ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Call ${label}',
-			_ => null,
-		} ?? switch (path) {
 			'shop.a11y.website' => 'Open website',
 			'summary.title' => 'Plan summary',
 			'summary.configTitle' => ({required Object name}) => 'My ${name}',

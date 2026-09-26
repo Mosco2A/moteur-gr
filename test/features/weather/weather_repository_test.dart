@@ -64,9 +64,14 @@ void main() {
     test('fetchForecast via API mock retourne 3 jours de previsions', () async {
       // ARRANGE : client HTTP mock qui retourne la reponse Open-Meteo
       final mockClient = http_testing.MockClient((request) async {
-        // Verifier que l'URL contient les coordonnees dynamiques
-        expect(request.url.toString(), contains('latitude=42.508'));
-        expect(request.url.toString(), contains('longitude=8.855'));
+        // TACHE 572 — LE POINT ECHANTILLONNE EST L'ARRIVEE DE L'ETAPE
+        // (endLat/endLng), plus son depart. Ce que le randonneur veut savoir
+        // c'est « la meteo a l'endroit ou on est cense se trouver » : l'endroit
+        // ou il DORT, celui qui porte un nom et qu'on affiche a l'ecran.
+        // Nommer l'arrivee en interrogeant le depart aurait donne un bulletin
+        // pour un autre lieu — en montagne, ce n'est pas la meme temperature.
+        expect(request.url.toString(), contains('latitude=42.472'));
+        expect(request.url.toString(), contains('longitude=8.927'));
         return http.Response(
           jsonEncode(_mockApiResponse),
           200,
@@ -96,7 +101,7 @@ void main() {
       expect(forecast.days[2].weatherCode, 1);
 
       // Verifier que le cache a ete rempli
-      final cached = await cache.getCachedForecast(
+      final cached = await cache.getFreshForecast(
         trailId: 'sentier-bleu',
         stageNumber: 1,
       );
@@ -132,19 +137,23 @@ void main() {
 
       // Sauvegarder via API pour remplir le cache
       final forecast = await apiService.fetchForecast(
-        latitude: 42.508,
-        longitude: 8.855,
+        latitude: 42.472,
+        longitude: 8.927,
       );
       expect(forecast, isNotNull);
+      expect(forecast!.fetchedAt, isNotNull,
+          reason: 'TACHE 572 : un bulletin sans instant de releve ne permet a '
+              'aucun ecran de dire s\'il est frais : c\'etait la cause des '
+              'deux boutons de mise a jour muets.');
 
       await cacheValid.saveForecast(
         trailId: 'sentier-bleu',
         stageNumber: 1,
-        forecast: forecast!,
+        forecast: forecast,
       );
 
       // ACT & ASSERT : cache avec TTL long => retourne la prevision
-      final validResult = await cacheValid.getCachedForecast(
+      final validResult = await cacheValid.getFreshForecast(
         trailId: 'sentier-bleu',
         stageNumber: 1,
       );
@@ -153,7 +162,7 @@ void main() {
       expect(validResult!.days.length, 3);
 
       // ACT & ASSERT : cache avec TTL 0 => expire immediatement
-      final expiredResult = await cacheExpired.getCachedForecast(
+      final expiredResult = await cacheExpired.getFreshForecast(
         trailId: 'sentier-bleu',
         stageNumber: 1,
       );

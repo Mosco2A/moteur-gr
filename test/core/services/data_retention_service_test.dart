@@ -66,8 +66,20 @@ void main() {
   });
 
   group('purgeExpired — D4B-02', () {
-    test('supprime le cache meteo EXPIRE, garde le cache valide', () async {
-      // Cache expire (expiresAt < now).
+    test(
+        'supprime le cache meteo plus vieux que la politique ecrite (7 j), '
+        'GARDE le bulletin du matin dont le randonneur a besoin hors ligne',
+        () async {
+      // TACHE 572 — LA POLITIQUE ECRITE ET LE CODE NE DISAIENT PAS LA MEME
+      // CHOSE. `RetentionPolicy.cartoCache` documente « caches carto/meteo :
+      // 7 jours » alors que la purge effacait sur `expiresAt`, donc TROIS HEURES
+      // apres le releve. Sur le sentier : le randonneur telecharge sa meteo au
+      // refuge, marche quatre heures sans reseau, et l'application a efface le
+      // bulletin qu'il n'a plus aucun moyen de retelecharger. C'est la politique
+      // ecrite qui fait foi, et la purge porte desormais sur l'AGE du bulletin.
+
+      // Bulletin de ce matin : perime pour le RE-TELECHARGEMENT (expiresAt
+      // passe), mais c'est la seule meteo du randonneur -> il RESTE.
       await db.into(db.weatherCache).insert(WeatherCacheCompanion.insert(
             trailId: 'gr20',
             stageNumber: 1,
@@ -75,7 +87,7 @@ void main() {
             fetchedAt: fixedNow.subtract(const Duration(hours: 6)),
             expiresAt: fixedNow.subtract(const Duration(hours: 3)),
           ));
-      // Cache encore valide (expiresAt > now).
+      // Bulletin tout frais -> il reste aussi, evidemment.
       await db.into(db.weatherCache).insert(WeatherCacheCompanion.insert(
             trailId: 'gr20',
             stageNumber: 2,
@@ -83,14 +95,23 @@ void main() {
             fetchedAt: fixedNow,
             expiresAt: fixedNow.add(const Duration(hours: 3)),
           ));
+      // Bulletin de dix jours : plus aucune valeur pour personne -> il part.
+      await db.into(db.weatherCache).insert(WeatherCacheCompanion.insert(
+            trailId: 'gr20',
+            stageNumber: 3,
+            forecastJson: '{}',
+            fetchedAt: fixedNow.subtract(const Duration(days: 10)),
+            expiresAt: fixedNow.subtract(const Duration(days: 10)),
+          ));
 
       final service = await buildService();
       final report = await service.purgeExpired();
 
       expect(report.expiredWeatherCache, 1);
       final remaining = await db.select(db.weatherCache).get();
-      expect(remaining.length, 1);
-      expect(remaining.single.stageNumber, 2);
+      expect(remaining.map((r) => r.stageNumber).toList()..sort(), [1, 2],
+          reason: 'Le bulletin de ce matin survit a la purge : sans reseau, '
+              'c\'est tout ce que le randonneur a.');
     });
 
     test('supprime les contributions SYNCHRONISEES anciennes, garde le reste',

@@ -1076,12 +1076,27 @@ class Translations$weather$fr {
 	/// fr: 'Comprendre la météo'
 	String get guideTitle => 'Comprendre la météo';
 
-	/// fr: 'Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l'absence de réseau, les dernières données enregistrées sont affichées.'
-	String get guideBody => 'Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l\'absence de réseau, les dernières données enregistrées sont affichées.';
+	/// fr: 'Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu'une tendance, et au-delà l'application le dit au lieu d'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c'est le dernier relevé qui reste affiché.'
+	String get guideBody => 'Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d\'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu\'une tendance, et au-delà l\'application le dit au lieu d\'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c\'est le dernier relevé qui reste affiché.';
 
 	late final Translations$weather$source$fr source = Translations$weather$source$fr.internal(_root);
 	late final Translations$weather$recommendation$fr recommendation = Translations$weather$recommendation$fr.internal(_root);
 	late final Translations$weather$alert$fr alert = Translations$weather$alert$fr.internal(_root);
+	late final Translations$weather$program$fr program = Translations$weather$program$fr.internal(_root);
+	late final Translations$weather$freshness$fr freshness = Translations$weather$freshness$fr.internal(_root);
+	late final Translations$weather$duration$fr duration = Translations$weather$duration$fr.internal(_root);
+
+	/// fr: 'Mise à jour impossible. Les données affichées datent du $date.'
+	String refreshFailed({required Object date}) => 'Mise à jour impossible. Les données affichées datent du ${date}.';
+
+	/// fr: 'Mise à jour impossible et aucune donnée enregistrée.'
+	String get refreshFailedNoData => 'Mise à jour impossible et aucune donnée enregistrée.';
+
+	/// fr: 'Données mises à jour ($date)'
+	String refreshedAt({required Object date}) => 'Données mises à jour (${date})';
+
+	/// fr: 'Mise à jour partielle : $done étape(s) sur $total.'
+	String refreshPartial({required Object done, required Object total}) => 'Mise à jour partielle : ${done} étape(s) sur ${total}.';
 }
 
 // Path: share
@@ -2947,6 +2962,18 @@ class Translations$fireRisk$fr {
 	late final Translations$fireRisk$number$fr number = Translations$fireRisk$number$fr.internal(_root);
 	late final Translations$fireRisk$empty$fr empty = Translations$fireRisk$empty$fr.internal(_root);
 	late final Translations$fireRisk$a11y$fr a11y = Translations$fireRisk$a11y$fr.internal(_root);
+
+	/// fr: 'Rien à mettre à jour pour l'instant.'
+	String get refreshNothing => 'Rien à mettre à jour pour l\'instant.';
+
+	/// fr: 'Mise à jour partielle : $done étape(s) sur $total.'
+	String refreshPartial({required Object done, required Object total}) => 'Mise à jour partielle : ${done} étape(s) sur ${total}.';
+
+	/// fr: 'Données mises à jour ($date)'
+	String refreshedAt({required Object date}) => 'Données mises à jour (${date})';
+
+	/// fr: 'Arrivée : $place'
+	String stagePlace({required Object place}) => 'Arrivée : ${place}';
 }
 
 // Path: shop
@@ -4872,6 +4899,87 @@ class Translations$weather$alert$fr {
 	late final Translations$weather$alert$snow$fr snow = Translations$weather$alert$snow$fr.internal(_root);
 	late final Translations$weather$alert$uv$fr uv = Translations$weather$alert$uv$fr.internal(_root);
 	late final Translations$weather$alert$fire$fr fire = Translations$weather$alert$fire$fr.internal(_root);
+}
+
+// Path: weather.program
+class Translations$weather$program$fr {
+	Translations$weather$program$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Météo étape par étape'
+	String get title => 'Météo étape par étape';
+
+	/// fr: 'Le temps là où tu seras, le jour où tu y seras.'
+	String get subtitle => 'Le temps là où tu seras, le jour où tu y seras.';
+
+	/// fr: 'Jour $day'
+	String dayLabel({required Object day}) => 'Jour ${day}';
+
+	/// fr: 'Repos'
+	String get restDay => 'Repos';
+
+	/// fr: 'à $place'
+	String place({required Object place}) => 'à ${place}';
+
+	/// fr: 'Tendance'
+	String get trendBadge => 'Tendance';
+
+	/// fr: 'Au-delà de $reliable jours ce n'est plus qu'une tendance : une prévision à 10 jours ne se vérifie qu'une fois sur deux.'
+	String trendHint({required Object reliable}) => 'Au-delà de ${reliable} jours ce n\'est plus qu\'une tendance : une prévision à 10 jours ne se vérifie qu\'une fois sur deux.';
+
+	/// fr: 'Pas encore de prévision : les prévisions ne portent qu'à $horizon jours.'
+	String beyondHorizon({required Object horizon}) => 'Pas encore de prévision : les prévisions ne portent qu\'à ${horizon} jours.';
+
+	/// fr: 'Aucune donnée pour ce lieu.'
+	String get noData => 'Aucune donnée pour ce lieu.';
+
+	/// fr: 'Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape.'
+	String get unknownDeparture => 'Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape.';
+}
+
+// Path: weather.freshness
+class Translations$weather$freshness$fr {
+	Translations$weather$freshness$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'Relevé à l'instant'
+	String get justNow => 'Relevé à l\'instant';
+
+	/// fr: 'Relevé le $date'
+	String at({required Object date}) => 'Relevé le ${date}';
+
+	/// fr: 'Relevé il y a $duration, sans mise à jour depuis'
+	String stale({required Object duration}) => 'Relevé il y a ${duration}, sans mise à jour depuis';
+
+	/// fr: 'Jamais relevé'
+	String get never => 'Jamais relevé';
+}
+
+// Path: weather.duration
+class Translations$weather$duration$fr {
+	Translations$weather$duration$fr.internal(this._root);
+
+	final Translations _root; // ignore: unused_field
+
+	// Translations
+
+	/// fr: 'quelques secondes'
+	String get seconds => 'quelques secondes';
+
+	/// fr: '$n min'
+	String minutes({required Object n}) => '${n} min';
+
+	/// fr: '${n} h'
+	String hours({required Object n}) => '${n} h';
+
+	/// fr: '$n j'
+	String days({required Object n}) => '${n} j';
 }
 
 // Path: feasibility.gaps
@@ -8080,7 +8188,7 @@ extension on Translations {
 			'weather.stormAlertsToggleOff' => 'Alertes orage désactivées',
 			'weather.lastUpdate' => ({required Object date}) => 'Mis à jour ${date}',
 			'weather.guideTitle' => 'Comprendre la météo',
-			'weather.guideBody' => 'Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l\'absence de réseau, les dernières données enregistrées sont affichées.',
+			'weather.guideBody' => 'Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d\'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu\'une tendance, et au-delà l\'application le dit au lieu d\'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c\'est le dernier relevé qui reste affiché.',
 			'weather.source.api' => 'Données en direct',
 			'weather.source.cache' => 'Données enregistrées',
 			'weather.source.offline' => 'Hors ligne',
@@ -8100,6 +8208,28 @@ extension on Translations {
 			'weather.alert.uv.desc' => ({required Object value}) => 'Indice UV ${value}. Protection solaire maximale recommandée.',
 			'weather.alert.fire.title' => 'Risque incendie',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C prévus. Risque incendie élevé.',
+			'weather.program.title' => 'Météo étape par étape',
+			'weather.program.subtitle' => 'Le temps là où tu seras, le jour où tu y seras.',
+			'weather.program.dayLabel' => ({required Object day}) => 'Jour ${day}',
+			'weather.program.restDay' => 'Repos',
+			'weather.program.place' => ({required Object place}) => 'à ${place}',
+			'weather.program.trendBadge' => 'Tendance',
+			'weather.program.trendHint' => ({required Object reliable}) => 'Au-delà de ${reliable} jours ce n\'est plus qu\'une tendance : une prévision à 10 jours ne se vérifie qu\'une fois sur deux.',
+			'weather.program.beyondHorizon' => ({required Object horizon}) => 'Pas encore de prévision : les prévisions ne portent qu\'à ${horizon} jours.',
+			'weather.program.noData' => 'Aucune donnée pour ce lieu.',
+			'weather.program.unknownDeparture' => 'Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape.',
+			'weather.freshness.justNow' => 'Relevé à l\'instant',
+			'weather.freshness.at' => ({required Object date}) => 'Relevé le ${date}',
+			'weather.freshness.stale' => ({required Object duration}) => 'Relevé il y a ${duration}, sans mise à jour depuis',
+			'weather.freshness.never' => 'Jamais relevé',
+			'weather.duration.seconds' => 'quelques secondes',
+			'weather.duration.minutes' => ({required Object n}) => '${n} min',
+			'weather.duration.hours' => ({required Object n}) => '${n} h',
+			'weather.duration.days' => ({required Object n}) => '${n} j',
+			'weather.refreshFailed' => ({required Object date}) => 'Mise à jour impossible. Les données affichées datent du ${date}.',
+			'weather.refreshFailedNoData' => 'Mise à jour impossible et aucune donnée enregistrée.',
+			'weather.refreshedAt' => ({required Object date}) => 'Données mises à jour (${date})',
+			'weather.refreshPartial' => ({required Object done, required Object total}) => 'Mise à jour partielle : ${done} étape(s) sur ${total}.',
 			'share.title' => 'Partager',
 			'share.generating' => 'Génération...',
 			'share.share' => 'Partager',
@@ -8483,6 +8613,8 @@ extension on Translations {
 			'eta.toNextWaypoint' => 'Prochain point',
 			'eta.toStageEnd' => 'Fin d\'étape',
 			'eta.confidenceHigh' => 'Estimation fiable',
+			_ => null,
+		} ?? switch (path) {
 			'eta.confidenceLow' => 'Approximatif (GPS faible)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} h ${m} min',
 			'eta.durationM' => ({required Object m}) => '${m} min',
@@ -8505,8 +8637,6 @@ extension on Translations {
 			'social.reasonOther' => 'Autre',
 			'social.reportSend' => 'Envoyer le signalement',
 			'social.reportSent' => 'Signalement envoyé. Il sera examiné par notre équipe.',
-			_ => null,
-		} ?? switch (path) {
 			'social.syncPending' => 'En attente de synchronisation',
 			'social.synced' => 'Synchronisé',
 			'social.activitySegment' => 'a réalisé un segment',
@@ -8997,7 +9127,13 @@ extension on Translations {
 			'fireRisk.empty.message' => 'Les données météo nécessaires au calcul du risque incendie ne sont pas disponibles pour le moment. Réessayez une fois connecté.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => 'Appeler ${label} au ${number}',
 			'fireRisk.a11y.decree' => 'Ouvrir les arrêtés préfectoraux',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Niveau de risque ${level} sur 5',
+			'fireRisk.refreshNothing' => 'Rien à mettre à jour pour l\'instant.',
+			'fireRisk.refreshPartial' => ({required Object done, required Object total}) => 'Mise à jour partielle : ${done} étape(s) sur ${total}.',
+			'fireRisk.refreshedAt' => ({required Object date}) => 'Données mises à jour (${date})',
+			'fireRisk.stagePlace' => ({required Object place}) => 'Arrivée : ${place}',
 			'shop.title' => 'Ravitaillement',
 			'shop.filterAll' => 'Tous',
 			'shop.typeEpicerie' => 'Épicerie',
@@ -9019,8 +9155,6 @@ extension on Translations {
 			'shop.filterEmpty' => 'Aucun commerce pour ce filtre.',
 			'shop.a11y.openDetail' => ({required Object name}) => 'Voir le détail de ${name}',
 			'shop.a11y.call' => ({required Object label}) => 'Appeler ${label}',
-			_ => null,
-		} ?? switch (path) {
 			'shop.a11y.website' => 'Ouvrir le site web',
 			'summary.title' => 'Résumé du plan',
 			'summary.configTitle' => ({required Object name}) => 'Mon ${name}',

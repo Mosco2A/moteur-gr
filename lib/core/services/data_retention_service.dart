@@ -395,10 +395,20 @@ class DataRetentionService {
     final now = _now();
     final contribCutoff = now.subtract(_policy.syncedContributions);
 
-    // 1. Cache meteo expire (reutilise la logique TTL existante du DAO).
-    //    On passe la MEME horloge que le reste de la purge : sinon une entree
-    //    encore valide (expiresAt > now) serait supprimee a tort (D4B-02).
-    final expiredWeather = await _db.weatherCacheDao.clearExpired(now);
+    // 1. Cache meteo trop ANCIEN — au sens de la politique ecrite
+    //    ([RetentionPolicy.cartoCache] : 7 jours), et non du TTL de
+    //    re-telechargement (3 h).
+    //
+    //    TACHE 572 : ces deux durees etaient confondues. La purge appelait
+    //    `clearExpired`, qui efface sur `expiresAt`, donc TROIS HEURES apres le
+    //    releve — pendant que la politique de ce fichier documente sept JOURS
+    //    pour les caches carto/meteo. Consequence sur le sentier : le randonneur
+    //    telecharge sa meteo au refuge, marche, et trois heures plus tard
+    //    l'application a efface le bulletin qu'il n'a plus aucun moyen de
+    //    retelecharger. On purge desormais sur l'AGE du bulletin, avec la meme
+    //    horloge que le reste de la purge (D4B-02).
+    final expiredWeather = await _db.weatherCacheDao
+        .clearFetchedBefore(now.subtract(_policy.cartoCache));
 
     // 2. File de synchro terminee et ancienne.
     final oldSync = await _db.syncQueueDao
