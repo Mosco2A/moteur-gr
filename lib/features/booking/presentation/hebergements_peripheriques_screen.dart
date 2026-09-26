@@ -155,15 +155,25 @@ class _HebergementCard extends StatelessWidget {
             label: t.hebergement.detourAR(
               km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
             ),
+            // DEBORDEMENT MESURE (tache 580, Y3) : 117 pixels coupes sur la
+            // droite, le pire de l'application. La phrase du detour — le
+            // chiffre qui decide si on va dormir la ou ailleurs — tenait a
+            // cote d'une icone dans une [Row] qui ne laissait a personne la
+            // possibilite de se replier. Le texte devient [Expanded] : il
+            // passe a la ligne au lieu de sortir de la carte. L'icone garde
+            // sa taille, la [Semantics] au-dessus annonce toujours la phrase
+            // entiere — seule la mise en page change.
             child: Row(
               children: [
                 const Icon(Icons.directions_walk, size: 18),
                 const SizedBox(width: AppTheme.spacingXs),
-                Text(
-                  t.hebergement.detourAR(
-                    km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
+                Expanded(
+                  child: Text(
+                    t.hebergement.detourAR(
+                      km: hebergement.distanceAllerRetourKm.toStringAsFixed(1),
+                    ),
+                    style: theme.textTheme.bodyMedium,
                   ),
-                  style: theme.textTheme.bodyMedium,
                 ),
               ],
             ),

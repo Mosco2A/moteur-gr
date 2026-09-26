@@ -100,11 +100,57 @@ class ConsentController {
   Future<void> revoke(ConsentPurpose purpose) async {
     final service = await _ref.read(consentServiceReadyProvider.future);
     await service.revoke(purpose);
-    if (purpose == ConsentPurpose.healthData) {
-      await _ref.read(hikerProfileProvider.notifier).forgetMorphology();
+    await _effacerCeQueProtege(purpose);
+    _ref.invalidate(consentStatesProvider);
+    _ref.invalidate(consentPromptNeededProvider);
+  }
+
+  /// TOUT REFUSER EN UN SEUL GESTE (tache 580, Y1).
+  ///
+  /// POURQUOI CETTE METHODE EXISTE. Accorder se faisait finalite par finalite,
+  /// refuser aussi — mais le libelle « Tout refuser » (`consent.declineAll`),
+  /// traduit dans les cinq langues depuis le LOT 4, ne vivait que sur
+  /// `ConsentOnboardingScreen`, un ecran qu'aucune route n'ouvre. Le retrait
+  /// doit etre AUSSI SIMPLE QUE L'OCTROI (RGPD art. 7-3) : il lui fallait un
+  /// geste sur l'ecran que l'utilisateur atteint reellement.
+  ///
+  /// CE QU'ELLE FAIT, ET CE N'EST PAS UN AFFICHAGE :
+  ///  * elle pose une decision NEGATIVE HORODATEE sur CHAQUE finalite — un
+  ///    refus est une decision, pas un silence. Sans cela `needsPrompt`
+  ///    continuerait de reclamer un choix deja fait ;
+  ///  * elle EFFACE, pour chaque finalite, ce que ce consentement protegeait —
+  ///    par le meme chemin que [revoke], donc sans seconde definition de « ce
+  ///    que cette finalite garde sur l'appareil ».
+  ///
+  /// UN SEUL RAFRAICHISSEMENT A LA FIN : quatre invalidations successives
+  /// feraient reconstruire l'ecran a chaque finalite, avec des etats
+  /// intermediaires ou la moitie est refusee et l'autre non.
+  Future<void> declineAll() async {
+    final service = await _ref.read(consentServiceReadyProvider.future);
+    for (final purpose in ConsentPurpose.values) {
+      await service.revoke(purpose);
+      await _effacerCeQueProtege(purpose);
     }
     _ref.invalidate(consentStatesProvider);
     _ref.invalidate(consentPromptNeededProvider);
+  }
+
+  /// CE QUE LE RETRAIT DE [purpose] EMPORTE DE L'APPAREIL.
+  ///
+  /// UN SEUL ENDROIT, parce que [revoke] et [declineAll] doivent effacer
+  /// EXACTEMENT la meme chose : deux listes finiraient par diverger, et c'est
+  /// la divergence — pas l'oubli — qui produit un refus qui laisse des traces.
+  ///
+  /// SEULE [ConsentPurpose.healthData] a aujourd'hui une donnee a retirer ici :
+  /// la morphologie de la fiche randonneur (age, taille, poids), donnee de
+  /// sante au sens de l'article 9. Les trois autres finalites gouvernent des
+  /// TRAITEMENTS, pas un enregistrement local : leur retrait les arrete, il n'y
+  /// a rien a reprendre a l'appareil. Le jour ou l'une d'elles stocke quelque
+  /// chose, c'est ICI que son effacement se branche.
+  Future<void> _effacerCeQueProtege(ConsentPurpose purpose) async {
+    if (purpose == ConsentPurpose.healthData) {
+      await _ref.read(hikerProfileProvider.notifier).forgetMorphology();
+    }
   }
 
   /// Applique une decision booleenne (utilisee par les bascules de l'UI).

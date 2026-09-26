@@ -1220,8 +1220,8 @@ class Translations$diploma$fr {
 	/// fr: '{meters} m de dénivelé'
 	String get recapElevation => '{meters} m de dénivelé';
 
-	/// fr: '{days} jours de randonnée'
-	String get recapDuration => '{days} jours de randonnée';
+	/// fr: '{days} jours au total, marche et repos compris'
+	String get recapDuration => '{days} jours au total, marche et repos compris';
 
 	/// fr: 'Trace du parcours'
 	String get recapMapTrace => 'Trace du parcours';
@@ -2436,6 +2436,12 @@ class Translations$consent$fr {
 	/// fr: 'Tout refuser'
 	String get declineAll => 'Tout refuser';
 
+	/// fr: 'Tout refuser retire vos quatre autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.'
+	String get declineAllNote => 'Tout refuser retire vos quatre autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.';
+
+	/// fr: 'Annuler'
+	String get declineAllCancel => 'Annuler';
+
 	/// fr: 'Continuer'
 	String get continueLabel => 'Continuer';
 
@@ -2659,8 +2665,8 @@ class Translations$recap$fr {
 	/// fr: '{meters} m de dénivelé positif'
 	String get elevation => '{meters} m de dénivelé positif';
 
-	/// fr: '{days} jours'
-	String get duration => '{days} jours';
+	/// fr: '{days} jours au total, marche et repos compris'
+	String get duration => '{days} jours au total, marche et repos compris';
 
 	/// fr: 'Du {start} au {end}'
 	String get dates => 'Du {start} au {end}';
@@ -8276,7 +8282,7 @@ extension on Translations {
 			'diploma.recapStages' => '{count} étapes franchies',
 			'diploma.recapDistance' => '{km} km parcourus',
 			'diploma.recapElevation' => '{meters} m de dénivelé',
-			'diploma.recapDuration' => '{days} jours de randonnée',
+			'diploma.recapDuration' => '{days} jours au total, marche et repos compris',
 			'diploma.recapMapTrace' => 'Trace du parcours',
 			'diploma.recapNoMap' => 'Trace non disponible',
 			'diploma.recapJournalEntries' => '{count} notes de journal',
@@ -8863,6 +8869,8 @@ extension on Translations {
 			'consent.notDecided' => 'En attente de votre choix',
 			'consent.acceptSelected' => 'Valider mes choix',
 			'consent.declineAll' => 'Tout refuser',
+			'consent.declineAllNote' => 'Tout refuser retire vos quatre autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.',
+			'consent.declineAllCancel' => 'Annuler',
 			'consent.continueLabel' => 'Continuer',
 			'consent.privacyPolicyLink' => 'Lire la politique de confidentialité',
 			'consent.reviewNeeded' => 'Notre politique a évolué : merci de revoir vos choix.',
@@ -8940,7 +8948,7 @@ extension on Translations {
 			'recap.stages' => '{done} / {total} étapes parcourues',
 			'recap.distance' => '{km} km parcourus',
 			'recap.elevation' => '{meters} m de dénivelé positif',
-			'recap.duration' => '{days} jours',
+			'recap.duration' => '{days} jours au total, marche et repos compris',
 			'recap.dates' => 'Du {start} au {end}',
 			'recap.viewDiploma' => 'Voir mon diplôme',
 			'recap.viewJournal' => 'Voir mon journal',
@@ -9136,10 +9144,10 @@ extension on Translations {
 			'fireRisk.levelBadge' => ({required Object level}) => 'Niv. ${level}',
 			'fireRisk.dayLevel' => ({required Object level}) => 'Niv. ${level}',
 			'fireRisk.day.today' => 'Auj.',
-			'fireRisk.day.tomorrow' => 'Demain',
-			'fireRisk.day.plus' => ({required Object n}) => 'J+${n}',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.day.tomorrow' => 'Demain',
+			'fireRisk.day.plus' => ({required Object n}) => 'J+${n}',
 			'fireRisk.noRisk' => 'Aucun risque incendie signalé actuellement',
 			'fireRisk.numbersTitle' => 'Numéros utiles',
 			'fireRisk.number.firefighters' => 'Pompiers',

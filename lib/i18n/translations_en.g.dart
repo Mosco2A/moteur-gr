@@ -613,7 +613,7 @@ class _Translations$diploma$en extends Translations$diploma$fr {
 	@override String get recapStages => '{count} stages completed';
 	@override String get recapDistance => '{km} km covered';
 	@override String get recapElevation => '{meters} m elevation';
-	@override String get recapDuration => '{days} days of trekking';
+	@override String get recapDuration => '{days} days in total, walking and rest included';
 	@override String get recapMapTrace => 'Route trace';
 	@override String get recapNoMap => 'Trace not available';
 	@override String get recapJournalEntries => '{count} journal entries';
@@ -1205,6 +1205,8 @@ class _Translations$consent$en extends Translations$consent$fr {
 	@override String get notDecided => 'Awaiting your choice';
 	@override String get acceptSelected => 'Confirm my choices';
 	@override String get declineAll => 'Decline all';
+	@override String get declineAllNote => 'Decline all withdraws your four permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.';
+	@override String get declineAllCancel => 'Cancel';
 	@override String get continueLabel => 'Continue';
 	@override String get privacyPolicyLink => 'Read the privacy policy';
 	@override String get reviewNeeded => 'Our policy has changed: please review your choices.';
@@ -1305,7 +1307,7 @@ class _Translations$recap$en extends Translations$recap$fr {
 	@override String get stages => '{done} / {total} stages walked';
 	@override String get distance => '{km} km travelled';
 	@override String get elevation => '{meters} m of elevation gain';
-	@override String get duration => '{days} days';
+	@override String get duration => '{days} days in total, walking and rest included';
 	@override String get dates => 'From {start} to {end}';
 	@override String get viewDiploma => 'View my diploma';
 	@override String get viewJournal => 'View my journal';
@@ -4625,7 +4627,7 @@ extension on TranslationsEn {
 			'diploma.recapStages' => '{count} stages completed',
 			'diploma.recapDistance' => '{km} km covered',
 			'diploma.recapElevation' => '{meters} m elevation',
-			'diploma.recapDuration' => '{days} days of trekking',
+			'diploma.recapDuration' => '{days} days in total, walking and rest included',
 			'diploma.recapMapTrace' => 'Route trace',
 			'diploma.recapNoMap' => 'Trace not available',
 			'diploma.recapJournalEntries' => '{count} journal entries',
@@ -5212,6 +5214,8 @@ extension on TranslationsEn {
 			'consent.notDecided' => 'Awaiting your choice',
 			'consent.acceptSelected' => 'Confirm my choices',
 			'consent.declineAll' => 'Decline all',
+			'consent.declineAllNote' => 'Decline all withdraws your four permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.',
+			'consent.declineAllCancel' => 'Cancel',
 			'consent.continueLabel' => 'Continue',
 			'consent.privacyPolicyLink' => 'Read the privacy policy',
 			'consent.reviewNeeded' => 'Our policy has changed: please review your choices.',
@@ -5289,7 +5293,7 @@ extension on TranslationsEn {
 			'recap.stages' => '{done} / {total} stages walked',
 			'recap.distance' => '{km} km travelled',
 			'recap.elevation' => '{meters} m of elevation gain',
-			'recap.duration' => '{days} days',
+			'recap.duration' => '{days} days in total, walking and rest included',
 			'recap.dates' => 'From {start} to {end}',
 			'recap.viewDiploma' => 'View my diploma',
 			'recap.viewJournal' => 'View my journal',
@@ -5485,10 +5489,10 @@ extension on TranslationsEn {
 			'fireRisk.levelBadge' => ({required Object level}) => 'Lvl ${level}',
 			'fireRisk.dayLevel' => ({required Object level}) => 'Lvl ${level}',
 			'fireRisk.day.today' => 'Today',
-			'fireRisk.day.tomorrow' => 'Tmrw',
-			'fireRisk.day.plus' => ({required Object n}) => 'D+${n}',
 			_ => null,
 		} ?? switch (path) {
+			'fireRisk.day.tomorrow' => 'Tmrw',
+			'fireRisk.day.plus' => ({required Object n}) => 'D+${n}',
 			'fireRisk.noRisk' => 'No fire risk currently reported',
 			'fireRisk.numbersTitle' => 'Useful numbers',
 			'fireRisk.number.firefighters' => 'Fire brigade',
