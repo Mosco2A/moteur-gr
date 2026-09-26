@@ -676,7 +676,7 @@
     "stormAlertsToggleOff": "Alertas de tormenta desactivadas",
     "lastUpdate": "Actualizado $date",
     "guideTitle": "Entender la meteorología",
-    "guideBody": "Las previsiones cubren 7 días para cada etapa. Vigila las alertas de tormenta y viento: en la montaña el tiempo cambia rápido. Sin red se muestran los últimos datos guardados.",
+    "guideBody": "Las previsiones se dan ETAPA POR ETAPA: para cada día de tu programa, el tiempo en el punto de llegada de ese día. Alcanzan 10 días como máximo; los 7 primeros son fiables, los siguientes solo son una tendencia, y más allá la aplicación lo dice en lugar de inventarlo. Cada boletín muestra cuándo se obtuvo: en la montaña, sin red, lo que queda en pantalla es la última obtención.",
     "source": {
       "api": "Datos en directo",
       "cache": "Datos guardados",
@@ -713,7 +713,35 @@
         "title": "Riesgo de incendio",
         "desc": "$value°C previstos. Alto riesgo de incendio."
       }
-    }
+    },
+    "program": {
+      "title": "Meteorología etapa por etapa",
+      "subtitle": "El tiempo donde estarás, el día en que estarás allí.",
+      "dayLabel": "Día $day",
+      "restDay": "Descanso",
+      "place": "en $place",
+      "trendBadge": "Tendencia",
+      "trendHint": "Más allá de $reliable días solo es una tendencia: una previsión a 10 días acierta una vez de cada dos.",
+      "beyondHorizon": "Todavía sin previsión: las previsiones solo alcanzan $horizon días.",
+      "noData": "Sin datos para este lugar.",
+      "unknownDeparture": "Elige tu fecha de salida: sin ella no hay forma de saber qué día estarás en qué etapa."
+    },
+    "freshness": {
+      "justNow": "Obtenido ahora mismo",
+      "at": "Obtenido el $date",
+      "stale": "Obtenido hace $duration, sin actualizar desde entonces",
+      "never": "Nunca obtenido"
+    },
+    "duration": {
+      "seconds": "unos segundos",
+      "minutes": "$n min",
+      "hours": "${n} h",
+      "days": "$n d"
+    },
+    "refreshFailed": "Actualización imposible. Los datos mostrados son del $date.",
+    "refreshFailedNoData": "Actualización imposible y ningún dato guardado.",
+    "refreshedAt": "Datos actualizados ($date)",
+    "refreshPartial": "Actualización parcial: $done etapa(s) de $total."
   },
   "share": {
     "title": "Compartir",
@@ -1875,7 +1903,11 @@
       "call": "Llamar a $label al $number",
       "decree": "Abrir las órdenes prefectorales",
       "levelBadge": "Nivel de riesgo $level de 5"
-    }
+    },
+    "refreshNothing": "Nada que actualizar por ahora.",
+    "refreshPartial": "Actualización parcial: $done etapa(s) de $total.",
+    "refreshedAt": "Datos actualizados ($date)",
+    "stagePlace": "Llegada: $place"
   },
   "shop": {
     "title": "Avituallamiento",

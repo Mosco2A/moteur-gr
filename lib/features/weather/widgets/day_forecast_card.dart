@@ -9,10 +9,40 @@ import '../presentation/weather_date_format.dart';
 ///
 /// Affiche la température, les précipitations, le vent et l'UV
 /// avec un code couleur selon les conditions.
+///
+/// TACHE 572 — EN-TETE SURCHARGEABLE. La meteo etape par etape (U1) affiche la
+/// meme carte, mais titree par le JOUR DE PROGRAMME et son LIEU D'ARRIVEE au
+/// lieu de la seule date du bulletin. Plutot que de recopier le corps de cette
+/// carte (icone, temperatures, pastilles) dans un second widget — deux copies a
+/// maintenir, deux rendus qui divergent au premier correctif — on rend son
+/// en-tete surchargeable. Sans [title], le comportement est inchange.
 class DayForecastCard extends StatelessWidget {
-  const DayForecastCard({super.key, required this.day});
+  const DayForecastCard({
+    super.key,
+    required this.day,
+    this.title,
+    this.subtitle,
+    this.trailing,
+    this.extraChips = const [],
+    this.footnote,
+  });
 
   final DayForecast day;
+
+  /// Ligne de titre. `null` = date du bulletin (comportement d'origine).
+  final String? title;
+
+  /// Ligne sous le titre. `null` = description meteo (comportement d'origine).
+  final String? subtitle;
+
+  /// Badge affiche a droite du titre (ex. « Repos »).
+  final Widget? trailing;
+
+  /// Pastilles supplementaires apres pluie / vent / UV (ex. « Tendance »).
+  final List<Widget> extraChips;
+
+  /// Note en pied de carte (ex. la mise en garde sur la portee « tendance »).
+  final Widget? footnote;
 
   @override
   Widget build(BuildContext context) {
@@ -47,15 +77,31 @@ class DayForecastCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        formatWeatherDate(day.date, 'EEEE d MMM', languageCode),
-                        style: theme.textTheme.titleMedium,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              title ??
+                                  formatWeatherDate(
+                                      day.date, 'EEEE d MMM', languageCode),
+                              style: theme.textTheme.titleMedium,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          if (trailing != null) ...[
+                            const SizedBox(width: AppTheme.spacingXs),
+                            trailing!,
+                          ],
+                        ],
                       ),
                       Text(
-                        day.weatherDescription,
+                        subtitle ?? day.weatherDescription,
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: theme.colorScheme.onSurface.withAlpha(180),
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -106,8 +152,13 @@ class DayForecastCard extends StatelessWidget {
                   'UV ${day.uvIndex.round()}',
                   day.uvIndex >= 8,
                 ),
+                ...extraChips,
               ],
             ),
+            if (footnote != null) ...[
+              const SizedBox(height: AppTheme.spacingXs),
+              footnote!,
+            ],
           ],
         ),
     );

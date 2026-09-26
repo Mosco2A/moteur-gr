@@ -676,7 +676,7 @@
     "stormAlertsToggleOff": "Alertes orage désactivées",
     "lastUpdate": "Mis à jour $date",
     "guideTitle": "Comprendre la météo",
-    "guideBody": "Les prévisions couvrent 7 jours pour chaque étape. Surveillez les alertes orage et vent : en montagne, le temps change vite. En l'absence de réseau, les dernières données enregistrées sont affichées.",
+    "guideBody": "Les prévisions sont données ÉTAPE PAR ÉTAPE : pour chaque jour de ton programme, le temps au lieu d'arrivée de ce jour-là. Elles portent à 10 jours au plus ; les 7 premiers sont fiables, les suivants ne sont qu'une tendance, et au-delà l'application le dit au lieu d'inventer. Chaque bulletin affiche quand il a été relevé : en montagne, sans réseau, c'est le dernier relevé qui reste affiché.",
     "source": {
       "api": "Données en direct",
       "cache": "Données enregistrées",
@@ -713,7 +713,35 @@
         "title": "Risque incendie",
         "desc": "$value°C prévus. Risque incendie élevé."
       }
-    }
+    },
+    "program": {
+      "title": "Météo étape par étape",
+      "subtitle": "Le temps là où tu seras, le jour où tu y seras.",
+      "dayLabel": "Jour $day",
+      "restDay": "Repos",
+      "place": "à $place",
+      "trendBadge": "Tendance",
+      "trendHint": "Au-delà de $reliable jours ce n'est plus qu'une tendance : une prévision à 10 jours ne se vérifie qu'une fois sur deux.",
+      "beyondHorizon": "Pas encore de prévision : les prévisions ne portent qu'à $horizon jours.",
+      "noData": "Aucune donnée pour ce lieu.",
+      "unknownDeparture": "Choisis ta date de départ : sans elle, impossible de dire quel jour tu seras à quelle étape."
+    },
+    "freshness": {
+      "justNow": "Relevé à l'instant",
+      "at": "Relevé le $date",
+      "stale": "Relevé il y a $duration, sans mise à jour depuis",
+      "never": "Jamais relevé"
+    },
+    "duration": {
+      "seconds": "quelques secondes",
+      "minutes": "$n min",
+      "hours": "${n} h",
+      "days": "$n j"
+    },
+    "refreshFailed": "Mise à jour impossible. Les données affichées datent du $date.",
+    "refreshFailedNoData": "Mise à jour impossible et aucune donnée enregistrée.",
+    "refreshedAt": "Données mises à jour ($date)",
+    "refreshPartial": "Mise à jour partielle : $done étape(s) sur $total."
   },
   "share": {
     "title": "Partager",
@@ -1875,7 +1903,11 @@
       "call": "Appeler $label au $number",
       "decree": "Ouvrir les arrêtés préfectoraux",
       "levelBadge": "Niveau de risque $level sur 5"
-    }
+    },
+    "refreshNothing": "Rien à mettre à jour pour l'instant.",
+    "refreshPartial": "Mise à jour partielle : $done étape(s) sur $total.",
+    "refreshedAt": "Données mises à jour ($date)",
+    "stagePlace": "Arrivée : $place"
   },
   "shop": {
     "title": "Ravitaillement",

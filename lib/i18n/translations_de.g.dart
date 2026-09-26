@@ -549,10 +549,17 @@ class _Translations$weather$de extends Translations$weather$fr {
 	@override String get stormAlertsToggleOff => 'Gewitterwarnungen deaktiviert';
 	@override String lastUpdate({required Object date}) => 'Aktualisiert ${date}';
 	@override String get guideTitle => 'Das Wetter verstehen';
-	@override String get guideBody => 'Die Vorhersage umfasst 7 Tage für jede Etappe. Achten Sie auf Gewitter- und Windwarnungen: In den Bergen ändert sich das Wetter schnell. Ohne Netz werden die zuletzt gespeicherten Daten angezeigt.';
+	@override String get guideBody => 'Die Vorhersagen werden ETAPPE FÜR ETAPPE gegeben: für jeden Tag Ihres Programms das Wetter am Ankunftsort dieses Tages. Sie reichen maximal 10 Tage; die ersten 7 sind belastbar, die folgenden nur eine Tendenz, und darüber hinaus sagt die App es, statt etwas zu erfinden. Jeder Bericht zeigt, wann er abgerufen wurde: im Gebirge ohne Netz bleibt der letzte Abruf auf dem Bildschirm.';
 	@override late final _Translations$weather$source$de source = _Translations$weather$source$de._(_root);
 	@override late final _Translations$weather$recommendation$de recommendation = _Translations$weather$recommendation$de._(_root);
 	@override late final _Translations$weather$alert$de alert = _Translations$weather$alert$de._(_root);
+	@override late final _Translations$weather$program$de program = _Translations$weather$program$de._(_root);
+	@override late final _Translations$weather$freshness$de freshness = _Translations$weather$freshness$de._(_root);
+	@override late final _Translations$weather$duration$de duration = _Translations$weather$duration$de._(_root);
+	@override String refreshFailed({required Object date}) => 'Aktualisierung fehlgeschlagen. Die angezeigten Daten stammen vom ${date}.';
+	@override String get refreshFailedNoData => 'Aktualisierung fehlgeschlagen und keine Daten gespeichert.';
+	@override String refreshedAt({required Object date}) => 'Daten aktualisiert (${date})';
+	@override String refreshPartial({required Object done, required Object total}) => 'Teilweise aktualisiert: ${done} von ${total} Etappe(n).';
 }
 
 // Path: share
@@ -1436,6 +1443,10 @@ class _Translations$fireRisk$de extends Translations$fireRisk$fr {
 	@override late final _Translations$fireRisk$number$de number = _Translations$fireRisk$number$de._(_root);
 	@override late final _Translations$fireRisk$empty$de empty = _Translations$fireRisk$empty$de._(_root);
 	@override late final _Translations$fireRisk$a11y$de a11y = _Translations$fireRisk$a11y$de._(_root);
+	@override String get refreshNothing => 'Derzeit nichts zu aktualisieren.';
+	@override String refreshPartial({required Object done, required Object total}) => 'Teilweise aktualisiert: ${done} von ${total} Etappe(n).';
+	@override String refreshedAt({required Object date}) => 'Daten aktualisiert (${date})';
+	@override String stagePlace({required Object place}) => 'Ankunft: ${place}';
 }
 
 // Path: shop
@@ -2291,6 +2302,51 @@ class _Translations$weather$alert$de extends Translations$weather$alert$fr {
 	@override late final _Translations$weather$alert$snow$de snow = _Translations$weather$alert$snow$de._(_root);
 	@override late final _Translations$weather$alert$uv$de uv = _Translations$weather$alert$uv$de._(_root);
 	@override late final _Translations$weather$alert$fire$de fire = _Translations$weather$alert$fire$de._(_root);
+}
+
+// Path: weather.program
+class _Translations$weather$program$de extends Translations$weather$program$fr {
+	_Translations$weather$program$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get title => 'Wetter Etappe für Etappe';
+	@override String get subtitle => 'Das Wetter dort, wo Sie sein werden, an dem Tag, an dem Sie dort sind.';
+	@override String dayLabel({required Object day}) => 'Tag ${day}';
+	@override String get restDay => 'Ruhetag';
+	@override String place({required Object place}) => 'in ${place}';
+	@override String get trendBadge => 'Tendenz';
+	@override String trendHint({required Object reliable}) => 'Über ${reliable} Tage hinaus ist das nur noch eine Tendenz: eine 10-Tage-Vorhersage trifft etwa in der Hälfte der Fälle zu.';
+	@override String beyondHorizon({required Object horizon}) => 'Noch keine Vorhersage: Vorhersagen reichen nur ${horizon} Tage voraus.';
+	@override String get noData => 'Keine Daten für diesen Ort.';
+	@override String get unknownDeparture => 'Wählen Sie Ihr Abreisedatum: ohne es lässt sich nicht sagen, an welchem Tag Sie welche Etappe erreichen.';
+}
+
+// Path: weather.freshness
+class _Translations$weather$freshness$de extends Translations$weather$freshness$fr {
+	_Translations$weather$freshness$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get justNow => 'Gerade abgerufen';
+	@override String at({required Object date}) => 'Abgerufen am ${date}';
+	@override String stale({required Object duration}) => 'Vor ${duration} abgerufen, seither keine Aktualisierung';
+	@override String get never => 'Nie abgerufen';
+}
+
+// Path: weather.duration
+class _Translations$weather$duration$de extends Translations$weather$duration$fr {
+	_Translations$weather$duration$de._(TranslationsDe root) : this._root = root, super.internal(root);
+
+	final TranslationsDe _root; // ignore: unused_field
+
+	// Translations
+	@override String get seconds => 'einige Sekunden';
+	@override String minutes({required Object n}) => '${n} Min';
+	@override String hours({required Object n}) => '${n} Std';
+	@override String days({required Object n}) => '${n} T';
 }
 
 // Path: feasibility.gaps
@@ -4480,7 +4536,7 @@ extension on TranslationsDe {
 			'weather.stormAlertsToggleOff' => 'Gewitterwarnungen deaktiviert',
 			'weather.lastUpdate' => ({required Object date}) => 'Aktualisiert ${date}',
 			'weather.guideTitle' => 'Das Wetter verstehen',
-			'weather.guideBody' => 'Die Vorhersage umfasst 7 Tage für jede Etappe. Achten Sie auf Gewitter- und Windwarnungen: In den Bergen ändert sich das Wetter schnell. Ohne Netz werden die zuletzt gespeicherten Daten angezeigt.',
+			'weather.guideBody' => 'Die Vorhersagen werden ETAPPE FÜR ETAPPE gegeben: für jeden Tag Ihres Programms das Wetter am Ankunftsort dieses Tages. Sie reichen maximal 10 Tage; die ersten 7 sind belastbar, die folgenden nur eine Tendenz, und darüber hinaus sagt die App es, statt etwas zu erfinden. Jeder Bericht zeigt, wann er abgerufen wurde: im Gebirge ohne Netz bleibt der letzte Abruf auf dem Bildschirm.',
 			'weather.source.api' => 'Live-Daten',
 			'weather.source.cache' => 'Gespeicherte Daten',
 			'weather.source.offline' => 'Offline',
@@ -4500,6 +4556,28 @@ extension on TranslationsDe {
 			'weather.alert.uv.desc' => ({required Object value}) => 'UV-Index ${value}. Maximaler Sonnenschutz empfohlen.',
 			'weather.alert.fire.title' => 'Brandgefahr',
 			'weather.alert.fire.desc' => ({required Object value}) => '${value}°C erwartet. Hohe Brandgefahr.',
+			'weather.program.title' => 'Wetter Etappe für Etappe',
+			'weather.program.subtitle' => 'Das Wetter dort, wo Sie sein werden, an dem Tag, an dem Sie dort sind.',
+			'weather.program.dayLabel' => ({required Object day}) => 'Tag ${day}',
+			'weather.program.restDay' => 'Ruhetag',
+			'weather.program.place' => ({required Object place}) => 'in ${place}',
+			'weather.program.trendBadge' => 'Tendenz',
+			'weather.program.trendHint' => ({required Object reliable}) => 'Über ${reliable} Tage hinaus ist das nur noch eine Tendenz: eine 10-Tage-Vorhersage trifft etwa in der Hälfte der Fälle zu.',
+			'weather.program.beyondHorizon' => ({required Object horizon}) => 'Noch keine Vorhersage: Vorhersagen reichen nur ${horizon} Tage voraus.',
+			'weather.program.noData' => 'Keine Daten für diesen Ort.',
+			'weather.program.unknownDeparture' => 'Wählen Sie Ihr Abreisedatum: ohne es lässt sich nicht sagen, an welchem Tag Sie welche Etappe erreichen.',
+			'weather.freshness.justNow' => 'Gerade abgerufen',
+			'weather.freshness.at' => ({required Object date}) => 'Abgerufen am ${date}',
+			'weather.freshness.stale' => ({required Object duration}) => 'Vor ${duration} abgerufen, seither keine Aktualisierung',
+			'weather.freshness.never' => 'Nie abgerufen',
+			'weather.duration.seconds' => 'einige Sekunden',
+			'weather.duration.minutes' => ({required Object n}) => '${n} Min',
+			'weather.duration.hours' => ({required Object n}) => '${n} Std',
+			'weather.duration.days' => ({required Object n}) => '${n} T',
+			'weather.refreshFailed' => ({required Object date}) => 'Aktualisierung fehlgeschlagen. Die angezeigten Daten stammen vom ${date}.',
+			'weather.refreshFailedNoData' => 'Aktualisierung fehlgeschlagen und keine Daten gespeichert.',
+			'weather.refreshedAt' => ({required Object date}) => 'Daten aktualisiert (${date})',
+			'weather.refreshPartial' => ({required Object done, required Object total}) => 'Teilweise aktualisiert: ${done} von ${total} Etappe(n).',
 			'share.title' => 'Teilen',
 			'share.generating' => 'Wird generiert...',
 			'share.share' => 'Teilen',
@@ -4879,6 +4957,8 @@ extension on TranslationsDe {
 			'eta.toNextWaypoint' => 'Nächster Punkt',
 			'eta.toStageEnd' => 'Etappenende',
 			'eta.confidenceHigh' => 'Zuverlässige Schätzung',
+			_ => null,
+		} ?? switch (path) {
 			'eta.confidenceLow' => 'Ungefähr (schwaches GPS)',
 			'eta.durationHm' => ({required Object h, required Object m}) => '${h} Std ${m} Min',
 			'eta.durationM' => ({required Object m}) => '${m} Min',
@@ -5393,7 +5473,13 @@ extension on TranslationsDe {
 			'fireRisk.empty.message' => 'Die zur Berechnung des Brandrisikos nötigen Wetterdaten sind derzeit nicht verfügbar. Versuchen Sie es erneut, sobald Sie verbunden sind.',
 			'fireRisk.a11y.call' => ({required Object label, required Object number}) => '${label} unter ${number} anrufen',
 			'fireRisk.a11y.decree' => 'Präfektorale Erlasse öffnen',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.a11y.levelBadge' => ({required Object level}) => 'Risikostufe ${level} von 5',
+			'fireRisk.refreshNothing' => 'Derzeit nichts zu aktualisieren.',
+			'fireRisk.refreshPartial' => ({required Object done, required Object total}) => 'Teilweise aktualisiert: ${done} von ${total} Etappe(n).',
+			'fireRisk.refreshedAt' => ({required Object date}) => 'Daten aktualisiert (${date})',
+			'fireRisk.stagePlace' => ({required Object place}) => 'Ankunft: ${place}',
 			'shop.title' => 'Verpflegung',
 			'shop.filterAll' => 'Alle',
 			'shop.typeEpicerie' => 'Lebensmittel',

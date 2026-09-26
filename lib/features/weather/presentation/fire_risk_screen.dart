@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../core/network/connectivity_monitor.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -12,6 +11,7 @@ import '../domain/fire_risk.dart';
 import '../providers/current_stage_provider.dart';
 import '../providers/fire_risk_providers.dart';
 import '../providers/weather_providers.dart';
+import 'weather_freshness.dart';
 
 /// Ecran RISQUE INCENDIE (parite GR20 `FireRiskScreen`, data-driven — regle
 /// « donnees en externe » de Christophe #99460).
@@ -99,8 +99,12 @@ class FireRiskScreen extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 2. Bandeau MAJ (source + fraicheur).
-          _UpdateBanner(trailId: trailId),
+          // 2. Bandeau MAJ (source + fraicheur). Son bouton fait EXACTEMENT ce
+          // que fait celui de la barre de titre (tache 572, U3).
+          _UpdateBanner(
+            trailId: trailId,
+            onRefresh: () => _refreshAll(context, ref),
+          ),
           const SizedBox(height: AppTheme.spacingLg),
 
           // 3. Bandeau source FWI (transparence).
@@ -153,34 +157,73 @@ class FireRiskScreen extends ConsumerWidget {
   /// Rafraichit la meteo de TOUTES les etapes du sentier (parite GR20
   /// `forceRefresh`). Le socle StepWays est par etape : on relance le refresh de
   /// chaque etape resolue. [silent] : pas de SnackBar (pull-to-refresh).
+  ///
+  /// TACHE 572 (U3) — « indendie MAJ ne produit rien ». Le mecanisme partait
+  /// bien : chaque etape appelait Open-Meteo et reecrivait son cache. Deux
+  /// choses le rendaient invisible, et les deux sont corrigees ici.
+  ///
+  /// 1. LE MESSAGE MENTAIT. Quand `trailFireRiskProvider.stages` etait vide —
+  ///    etapes pas encore chargees, ou sentier hors ligne sans cache — la boucle
+  ///    devenait `Future.wait([])` : ZERO appel, et l'ecran affichait quand meme
+  ///    « Donnees mises a jour ». Un succes annonce pour un travail non fait est
+  ///    exactement ce que Chris a lu comme « ne produit rien ». On compte
+  ///    desormais ce qui a REELLEMENT abouti et on l'annonce : rien a faire,
+  ///    partiel, ou reussi avec l'heure du releve.
+  /// 2. LE `try/catch` ETAIT AVEUGLE. `refresh()` ne levait jamais : un echec
+  ///    reseau retournait `null` en interne et repartait en silence. Le `catch`
+  ///    ne pouvait donc pas se declencher, et le SnackBar d'erreur etait du code
+  ///    mort. `refresh()` rend maintenant un booleen, et c'est lui qu'on lit.
   Future<void> _refreshAll(
     BuildContext context,
     WidgetRef ref, {
     bool silent = false,
   }) async {
     final t = Translations.of(context);
+    final messenger = silent ? null : ScaffoldMessenger.of(context);
     final stages = ref.read(trailFireRiskProvider(trailId)).stages;
-    try {
-      await Future.wait([
-        for (final s in stages)
-          ref
-              .read(stageWeatherProvider(WeatherStageParams(
-                trailId: trailId,
-                stageNumber: s.stageNumber,
-              )).notifier)
-              .refresh(),
-      ]);
-      if (!silent && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.fireRisk.refreshed)),
-        );
-      }
-    } catch (_) {
-      if (!silent && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(t.fireRisk.refreshError)),
-        );
-      }
+
+    if (stages.isEmpty) {
+      messenger?.showSnackBar(
+        SnackBar(content: Text(t.fireRisk.refreshNothing)),
+      );
+      return;
+    }
+
+    final results = await Future.wait([
+      for (final s in stages)
+        ref
+            .read(stageWeatherProvider(WeatherStageParams(
+              trailId: trailId,
+              stageNumber: s.stageNumber,
+            )).notifier)
+            .refresh(),
+    ]);
+
+    if (messenger == null || !context.mounted) return;
+    final ok = results.where((r) => r).length;
+    if (ok == 0) {
+      messenger.showSnackBar(
+        SnackBar(content: Text(t.fireRisk.refreshError)),
+      );
+    } else if (ok < results.length) {
+      messenger.showSnackBar(SnackBar(
+        content: Text(
+          t.fireRisk.refreshPartial(done: ok, total: results.length),
+        ),
+      ));
+    } else {
+      final at = ref
+          .read(stageWeatherProvider(WeatherStageParams(
+            trailId: trailId,
+            stageNumber: stages.first.stageNumber,
+          )))
+          .forecast
+          ?.fetchedAt;
+      messenger.showSnackBar(SnackBar(
+        content: Text(t.fireRisk.refreshedAt(
+          date: at == null ? '-' : formatFetchedAt(at),
+        )),
+      ));
     }
   }
 }
@@ -189,53 +232,47 @@ class FireRiskScreen extends ConsumerWidget {
 // 2. Bandeau MAJ — fraicheur/source des donnees (parite GR20 « Derniere MAJ »).
 // ---------------------------------------------------------------------------
 
-/// Bandeau de fraicheur des donnees (parite GR20 : 4 cas — live / cache recent /
-/// cache ancien / jamais). StepWays derive la fraicheur de la date de la
-/// prevision de l'etape de reference + de l'etat cache/connectivite du socle.
+/// Bandeau de fraicheur des donnees (parite GR20 : live / recent / ancien /
+/// jamais).
+///
+/// TACHE 572 (U3) — ICI ETAIT LA CAUSE, ET ELLE TIENT EN UNE LIGNE. Ce bandeau
+/// calculait TOUT son texte sur `forecast.days.first.date`, c'est-a-dire le JOUR
+/// DU BULLETIN (aujourd'hui a 00:00), pas l'instant du releve. Il affichait donc
+/// « Derniere MAJ : 26/09/2026 00:00 » a neuf heures du matin comme a six heures
+/// du soir, avant comme apres un rafraichissement REUSSI : le texte etait
+/// identique au caractere pres. L'appel partait, le cache etait reecrit, le
+/// provider etait mis a jour — et la seule chose a l'ecran capable de le montrer
+/// racontait autre chose. C'est ca, « MAJ ne produit rien ».
+///
+/// Le bandeau lit desormais [WeatherForecast.fetchedAt], l'instant du releve, via
+/// la source unique [weatherFreshness]. Et son bouton rafraichit TOUT le sentier
+/// (comme celui de la barre de titre) et non plus la seule etape de reference :
+/// deux boutons cote a cote qui ne font pas la meme chose, c'est une autre facon
+/// de ne rien produire.
 class _UpdateBanner extends ConsumerWidget {
-  const _UpdateBanner({required this.trailId});
+  const _UpdateBanner({required this.trailId, required this.onRefresh});
 
   final String trailId;
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
 
-    // Etape de reference (1 par defaut) : porte la date de prevision servant
-    // d'horodatage global (parite GR20 : MAJ globale du lot meteo).
+    // Etape de reference : porte l'horodatage global du lot meteo (parite GR20).
     final refStage = ref.watch(referenceStageNumberProvider);
     final params = WeatherStageParams(trailId: trailId, stageNumber: refStage);
     final weather = ref.watch(stageWeatherProvider(params));
-    final online = ref.watch(connectivityProvider).value ==
-        ConnectivityStatusValues.online;
 
-    final firstDay = weather.forecast?.days.isNotEmpty == true
-        ? weather.forecast!.days.first
-        : null;
-
-    final String label;
-    final Color color;
-    if (firstDay == null) {
-      // Aucune donnee horodatee -> jamais mis a jour (cas fallback GR20).
-      color = AppTheme.rougeUrgence;
-      label = t.fireRisk.update.never;
-    } else if (!weather.isFromCache && online) {
-      // Donnees live (API).
-      color = AppTheme.vertFacile;
-      label = t.fireRisk.update.liveAt(date: _formatDate(firstDay.date));
-    } else {
-      // Cache : recent (< 3h) ou ancien (parite GR20 : seuil 3h).
-      final diff = DateTime.now().difference(firstDay.date);
-      if (diff.inHours < 3) {
-        color = AppTheme.jauneModere;
-        label = t.fireRisk.update
-            .cacheRecent(duration: _formatDuration(diff, t));
-      } else {
-        color = AppTheme.orangeDifficile;
-        label = t.fireRisk.update.cacheOld(date: _formatDate(firstDay.date));
-      }
-    }
+    final freshness =
+        weatherFreshness(fetchedAt: weather.forecast?.fetchedAt, t: t);
+    final color = switch (freshness.level) {
+      FreshnessLevel.fresh => AppTheme.vertFacile,
+      FreshnessLevel.recent => AppTheme.jauneModere,
+      FreshnessLevel.stale => AppTheme.orangeDifficile,
+      FreshnessLevel.unknown => AppTheme.rougeUrgence,
+    };
 
     return AppCard(
       child: Row(
@@ -244,14 +281,12 @@ class _UpdateBanner extends ConsumerWidget {
           const SizedBox(width: AppTheme.spacingSm),
           Expanded(
             child: Text(
-              label,
+              freshness.label,
               style: theme.textTheme.bodySmall?.copyWith(color: color),
             ),
           ),
           TextButton.icon(
-            onPressed: () => ref
-                .read(stageWeatherProvider(params).notifier)
-                .refresh(),
+            onPressed: onRefresh,
             icon: const Icon(Icons.refresh, size: 14),
             label: Text(t.fireRisk.refresh,
                 style: const TextStyle(fontSize: 12)),
@@ -531,10 +566,30 @@ class _StageFireCard extends StatelessWidget {
               ),
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
-                child: Text(
-                  stage.stageName,
-                  style: theme.textTheme.titleLarge?.copyWith(fontSize: 14),
-                  overflow: TextOverflow.ellipsis,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      stage.stageName,
+                      style: theme.textTheme.titleLarge?.copyWith(fontSize: 14),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                    ),
+                    // TACHE 572 : le LIEU ou le risque est evalue, nomme. Le
+                    // socle meteo interroge le point d'ARRIVEE de l'etape ; dire
+                    // « niveau 4 » sans dire OU ne permet pas de se mefier au
+                    // bon endroit. Masque si le sentier ne fournit pas le nom.
+                    if (stage.arrivalName != null &&
+                        stage.arrivalName!.trim().isNotEmpty)
+                      Text(
+                        t.fireRisk.stagePlace(place: stage.arrivalName!),
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurface.withAlpha(160),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                  ],
                 ),
               ),
               // Badge « Niv. X » (niveau max).
@@ -760,22 +815,10 @@ String _universalLabel(String key, Translations t) {
   }
 }
 
-/// Formate une date en JJ/MM/AAAA HH:MM (parite GR20 `_formatDate`).
-String _formatDate(DateTime dt) {
-  return '${dt.day.toString().padLeft(2, '0')}/'
-      '${dt.month.toString().padLeft(2, '0')}/'
-      '${dt.year} '
-      '${dt.hour.toString().padLeft(2, '0')}:'
-      '${dt.minute.toString().padLeft(2, '0')}';
-}
-
-/// Formate une duree en texte lisible via Slang (parite GR20 `_formatDuration`).
-String _formatDuration(Duration diff, Translations t) {
-  if (diff.inMinutes < 1) return t.fireRisk.duration.seconds;
-  if (diff.inMinutes < 60) return t.fireRisk.duration.minutes(n: diff.inMinutes);
-  if (diff.inHours < 24) return t.fireRisk.duration.hours(n: diff.inHours);
-  return t.fireRisk.duration.days(n: diff.inDays);
-}
+// TACHE 572 — `_formatDate` et `_formatDuration` ont ete RETIREES d'ici : elles
+// dupliquaient, pour cet ecran seul, un formatage de fraicheur que l'ecran meteo
+// refaisait de son cote. Les deux copies faisaient la meme erreur (horodater sur
+// le jour du bulletin). Il n'y a plus qu'une source : `weather_freshness.dart`.
 
 /// Ouvre une URL en application externe (parite GR20 : lien prefecture).
 Future<void> _openUrl(String urlStr) async {

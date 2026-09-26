@@ -676,7 +676,7 @@
     "stormAlertsToggleOff": "Gewitterwarnungen deaktiviert",
     "lastUpdate": "Aktualisiert $date",
     "guideTitle": "Das Wetter verstehen",
-    "guideBody": "Die Vorhersage umfasst 7 Tage für jede Etappe. Achten Sie auf Gewitter- und Windwarnungen: In den Bergen ändert sich das Wetter schnell. Ohne Netz werden die zuletzt gespeicherten Daten angezeigt.",
+    "guideBody": "Die Vorhersagen werden ETAPPE FÜR ETAPPE gegeben: für jeden Tag Ihres Programms das Wetter am Ankunftsort dieses Tages. Sie reichen maximal 10 Tage; die ersten 7 sind belastbar, die folgenden nur eine Tendenz, und darüber hinaus sagt die App es, statt etwas zu erfinden. Jeder Bericht zeigt, wann er abgerufen wurde: im Gebirge ohne Netz bleibt der letzte Abruf auf dem Bildschirm.",
     "source": {
       "api": "Live-Daten",
       "cache": "Gespeicherte Daten",
@@ -713,7 +713,35 @@
         "title": "Brandgefahr",
         "desc": "$value°C erwartet. Hohe Brandgefahr."
       }
-    }
+    },
+    "program": {
+      "title": "Wetter Etappe für Etappe",
+      "subtitle": "Das Wetter dort, wo Sie sein werden, an dem Tag, an dem Sie dort sind.",
+      "dayLabel": "Tag $day",
+      "restDay": "Ruhetag",
+      "place": "in $place",
+      "trendBadge": "Tendenz",
+      "trendHint": "Über $reliable Tage hinaus ist das nur noch eine Tendenz: eine 10-Tage-Vorhersage trifft etwa in der Hälfte der Fälle zu.",
+      "beyondHorizon": "Noch keine Vorhersage: Vorhersagen reichen nur $horizon Tage voraus.",
+      "noData": "Keine Daten für diesen Ort.",
+      "unknownDeparture": "Wählen Sie Ihr Abreisedatum: ohne es lässt sich nicht sagen, an welchem Tag Sie welche Etappe erreichen."
+    },
+    "freshness": {
+      "justNow": "Gerade abgerufen",
+      "at": "Abgerufen am $date",
+      "stale": "Vor $duration abgerufen, seither keine Aktualisierung",
+      "never": "Nie abgerufen"
+    },
+    "duration": {
+      "seconds": "einige Sekunden",
+      "minutes": "$n Min",
+      "hours": "${n} Std",
+      "days": "$n T"
+    },
+    "refreshFailed": "Aktualisierung fehlgeschlagen. Die angezeigten Daten stammen vom $date.",
+    "refreshFailedNoData": "Aktualisierung fehlgeschlagen und keine Daten gespeichert.",
+    "refreshedAt": "Daten aktualisiert ($date)",
+    "refreshPartial": "Teilweise aktualisiert: $done von $total Etappe(n)."
   },
   "share": {
     "title": "Teilen",
@@ -1875,7 +1903,11 @@
       "call": "$label unter $number anrufen",
       "decree": "Präfektorale Erlasse öffnen",
       "levelBadge": "Risikostufe $level von 5"
-    }
+    },
+    "refreshNothing": "Derzeit nichts zu aktualisieren.",
+    "refreshPartial": "Teilweise aktualisiert: $done von $total Etappe(n).",
+    "refreshedAt": "Daten aktualisiert ($date)",
+    "stagePlace": "Ankunft: $place"
   },
   "shop": {
     "title": "Verpflegung",

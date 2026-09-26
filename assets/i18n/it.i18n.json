@@ -676,7 +676,7 @@
     "stormAlertsToggleOff": "Allerte temporali disattivate",
     "lastUpdate": "Aggiornato $date",
     "guideTitle": "Capire il meteo",
-    "guideBody": "Le previsioni coprono 7 giorni per ogni tappa. Attenzione alle allerte temporali e vento: in montagna il tempo cambia in fretta. Senza rete vengono mostrati gli ultimi dati salvati.",
+    "guideBody": "Le previsioni sono date TAPPA PER TAPPA: per ogni giorno del tuo programma, il tempo al luogo di arrivo di quel giorno. Arrivano al massimo a 10 giorni; i primi 7 sono affidabili, i successivi sono solo una tendenza, e oltre l'app lo dice invece di inventare. Ogni bollettino mostra quando è stato rilevato: in montagna, senza rete, resta visibile l'ultimo rilevamento.",
     "source": {
       "api": "Dati in diretta",
       "cache": "Dati salvati",
@@ -713,7 +713,35 @@
         "title": "Rischio incendio",
         "desc": "$value°C previsti. Rischio incendio elevato."
       }
-    }
+    },
+    "program": {
+      "title": "Meteo tappa per tappa",
+      "subtitle": "Il tempo dove sarai, il giorno in cui vi sarai.",
+      "dayLabel": "Giorno $day",
+      "restDay": "Riposo",
+      "place": "a $place",
+      "trendBadge": "Tendenza",
+      "trendHint": "Oltre $reliable giorni è solo una tendenza: una previsione a 10 giorni si avvera circa una volta su due.",
+      "beyondHorizon": "Nessuna previsione ancora: le previsioni arrivano solo a $horizon giorni.",
+      "noData": "Nessun dato per questo luogo.",
+      "unknownDeparture": "Scegli la data di partenza: senza di essa è impossibile dire in che giorno sarai a quale tappa."
+    },
+    "freshness": {
+      "justNow": "Rilevato ora",
+      "at": "Rilevato il $date",
+      "stale": "Rilevato $duration fa, nessun aggiornamento da allora",
+      "never": "Mai rilevato"
+    },
+    "duration": {
+      "seconds": "pochi secondi",
+      "minutes": "$n min",
+      "hours": "${n} h",
+      "days": "$n g"
+    },
+    "refreshFailed": "Aggiornamento impossibile. I dati mostrati risalgono al $date.",
+    "refreshFailedNoData": "Aggiornamento impossibile e nessun dato salvato.",
+    "refreshedAt": "Dati aggiornati ($date)",
+    "refreshPartial": "Aggiornamento parziale: $done tappa/e su $total."
   },
   "share": {
     "title": "Condividi",
@@ -1875,7 +1903,11 @@
       "call": "Chiama $label al $number",
       "decree": "Apri le ordinanze prefettizie",
       "levelBadge": "Livello di rischio $level su 5"
-    }
+    },
+    "refreshNothing": "Nulla da aggiornare per ora.",
+    "refreshPartial": "Aggiornamento parziale: $done tappa/e su $total.",
+    "refreshedAt": "Dati aggiornati ($date)",
+    "stagePlace": "Arrivo: $place"
   },
   "shop": {
     "title": "Rifornimenti",
