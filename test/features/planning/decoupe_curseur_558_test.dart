@@ -325,29 +325,51 @@ void main() {
 
     final dures = [effort(0, 35.2, 1500), effort(1, 12.0, 400)];
 
-    test('quand le decoupage est possible : « decoupe cette journee »', () {
+    // TACHE 569 (R4) — LE DECOUPAGE N'EST PLUS JAMAIS CONSEILLE, ET LES DEUX
+    // TESTS CI-DESSOUS ONT CHANGE DE SENS AVEC LA DECISION.
+    //
+    // La tache 558 avait rendu le conseil « decoupe la journee N en deux » VRAI
+    // (« Separer » sait desormais couper une etape entiere) puis l'avait tu
+    // quand il n'y avait plus rien a couper. Chris a tranche le 26/09, verbatim :
+    // « decoupe la journee 1 en 2 === comment on fait???? pas une solution,
+    // mettre juste une alerte coimme quoi elle va etre cramoisie, et puis il y a
+    // l'entrainement non??? ». Une etape s'arrete la ou il y a un TOIT : le
+    // point de coupe du modele est une interpolation sur le segment depart ->
+    // arrivee, et conseiller de s'y arreter envoie dormir dans un ravin.
+    //
+    // Le MECANISME reste (splitStage, borne a 2N, curseur) — les tests des
+    // groupes precedents de ce fichier le verrouillent toujours. Ce qui
+    // disparait, c'est le conseil : une ALERTE nomme la journee, et
+    // l'entrainement est la vraie reponse.
+    test('une journee rouge : une ALERTE, jamais un conseil de coupe', () {
       final a = FeasibilityFormula.evaluate(
         stages: dures,
         level: HikerLevel.beginner,
-        // Deux journees par etape : il reste de la marge pour couper.
+        // Deux journees par etape : il reste de la marge pour couper — et on ne
+        // le conseille toujours pas.
         maxWalkingDays: 4,
       );
-      expect(a.advice.map((x) => x.key), contains('split'));
-      expect(a.advice.map((x) => x.key), isNot(contains('splitImpossible')));
+      final cles = a.advice.map((x) => x.key);
+      expect(cles, isNot(contains('split')));
+      expect(cles, isNot(contains('splitImpossible')));
+      expect(cles, contains('hardStageAlert'));
+      expect(cles, contains('training'),
+          reason: 's entrainer releve le plafond, donc fait passer la journee');
     });
 
-    test('quand il n y a plus rien a couper : on DIT la verite', () {
+    test('plus rien a couper : la meme alerte, et aucun conseil impossible', () {
       // maxWalkingDays == nombre de journees : le programme est au bout de ce
-      // qu il sait faire. Conseiller « decoupe » serait envoyer le randonneur
-      // chercher un bouton qui ne peut rien pour lui — c'est exactement ce qui
-      // a fait exploser Chris.
+      // qu il sait faire. L alerte ne change pas — elle ne promettait deja plus
+      // d action au randonneur.
       final a = FeasibilityFormula.evaluate(
         stages: dures,
         level: HikerLevel.beginner,
         maxWalkingDays: dures.length,
       );
-      expect(a.advice.map((x) => x.key), contains('splitImpossible'));
-      expect(a.advice.map((x) => x.key), isNot(contains('split')));
+      final cles = a.advice.map((x) => x.key);
+      expect(cles, contains('hardStageAlert'));
+      expect(cles, isNot(contains('split')));
+      expect(cles, isNot(contains('splitImpossible')));
       // Et on ne conseille pas non plus un nombre de jours inatteignable.
       expect(a.suggestedDays, lessThanOrEqualTo(dures.length));
     });

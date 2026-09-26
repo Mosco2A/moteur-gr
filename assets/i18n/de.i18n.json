@@ -210,7 +210,8 @@
         "info": "Informationstafel oder Infopunkt am Weg."
       }
     },
-    "supplyDismiss": "Hinweis ausblenden"
+    "supplyDismiss": "Hinweis ausblenden",
+    "pinMergedTitle": "Mehrere Markierungen am selben Ort"
   },
   "stage": {
     "distance": "Entfernung",
@@ -334,7 +335,9 @@
     "stageCount(plural)": {
       "one": "$n Etappe",
       "other": "$n Etappen"
-    }
+    },
+    "daysTotal": "Tage insgesamt",
+    "daysBreakdown": "${walk} Wandertage + ${rest} Ruhetage"
   },
   "tracking": {
     "start": "Starten",
@@ -901,8 +904,8 @@
       "limitingLabel": "Begrenzender Faktor: ${factor}",
       "trainingReco": "Empfohlenes Training: ${weeks} Wochen vor dem Start",
       "adviceTitle": "Tipps für deinen Plan",
-      "generateProgram": "Meinen Plan erstellen (${days} Tage)",
-      "generateProgramDone": "Plan über ${days} Tage erstellt — passe ihn nach Wunsch an.",
+      "generateProgram": "Meinen Plan erstellen (${days} Tage insgesamt)",
+      "generateProgramDone": "Plan über ${days} Tage insgesamt erstellt — passe ihn nach Wunsch an.",
       "noStages": "Noch kein Tag zu bewerten.",
       "levels": {
         "beginner": "Anfänger",
@@ -926,18 +929,21 @@
       "advice": {
         "balancedOk": "Dein Plan ist ausgewogen: Halte eine Reserve und höre auf deinen Körper.",
         "balanced": "Verteile die Etappen, um den Aufwand über die Tage zu glätten.",
-        "optimalDays": "Plane ${days} Wandertage (statt ${current}), um unter deiner Obergrenze zu bleiben.",
-        "split": "Teile Tag ${stage} in zwei: Er überschreitet deutlich deine Obergrenze.",
-        "splitImpossible": "Tag ${stage} liegt auch zweigeteilt über Ihren Möglichkeiten, und kürzer lässt er sich nicht teilen: Das ist keine Frage der Planung mehr. Trainieren Sie, warten Sie auf mildere Bedingungen, oder wählen Sie einen leichteren Weg.",
-        "rest": "Plane einen Ruhetag nach Tag ${stages}.",
+        "optimalDays": "Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage, statt der heutigen ${current} Tage.",
+        "rest": "Plane einen Ruhetag nach Tag ${stages} deines Plans.",
         "training": "Trainiere ${weeks} Wochen vor dem Start (körperliche Vorbereitung).",
-        "restAdvised": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
+        "restAdvised": "Setze ${days} Ruhetag(e) in deinen Plan ein, nach den Tagen ${stages}: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht.",
+        "optimalDaysNoChoice": "Plane ${days} Tage insgesamt: ${walk} Wandertage und ${rest} Ruhetage. Du hast noch nichts gewählt: die Tour steht auf ihrer Referenzaufteilung, ${current} Tage insgesamt.",
+        "hardStageAlert": "Tag ${stage} wird sehr hart: er liegt über deiner Tagesobergrenze. Wir raten nicht dazu, ihn zu zweiteilen — eine Etappe endet dort, wo ein Dach ist. Die Antwort ist Training: ein Niveau höher hebt deine Obergrenze, und dieser Tag fällt wieder darunter.",
+        "noViableDuration": "Keine Tageszahl macht diese Tour heute für dich machbar: Tag ${stage} bleibt selbst bei der weitesten Aufteilung über deiner Obergrenze. Wir empfehlen daher keine Dauer — das ist keine Frage der Planung mehr. Trainiere, oder wähle einen leichteren Weg.",
+        "restReference": "Plane einen Ruhetag nach Tag ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt.",
+        "restAdvisedReference": "Setze ${days} Ruhetag(e) ein, nach den Tagen ${stages} der Referenzaufteilung der Tour — du hast noch keine eigene gewählt: sie gleichen sich zu sehr, als dass sich der Körper erholen könnte. Das ist ein Rat, er ändert dein Urteil nicht."
       },
-      "retainedPlan": "Gewählte Aufteilung: ${days} Wandertage.",
-      "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen.",
+      "retainedPlan": "Gewählte Aufteilung: ${days} Tage insgesamt, Wandern und Ruhe inklusive.",
+      "retainedPlanNone": "Keine Aufteilung gewählt: die Tour bleibt bei ihren ${days} Standardtagen insgesamt, Wandern und Ruhe inklusive.",
       "energyUnitNotice": "1 km in der Ebene entspricht 42 m Aufstieg: das ist der gemessene Aufwand des Bergaufgehens, keine Hausregel.",
       "circuitTitle": "Urteil zur Runde",
-      "circuitScore": "Wert der Runde: ${value}",
+      "circuitScore": "Wert der Runde: ${value} — grün bis ${green}, orange bis ${orange}, darüber rot.",
       "circuitIsWorstStage": "Das Urteil zur Runde ist das deines härtesten Tages: nichts anderes macht es härter.",
       "restWindowWhole": "Ruhe über den ganzen Trek gemessen (${days} Tage).",
       "restWindowSlice": "Ruhe über die schlechteste Woche gemessen: Tage ${start} bis ${end}.",
@@ -954,8 +960,8 @@
       "altitudeBelowThreshold": "Höhe: ${value} m am höchsten Punkt, unter den 1 500 m, ab denen sie zählt. Sie ändert hier nichts.",
       "altitudeMissing": "Höhe: die Spur dieses Weges trägt keine. Sie ändert hier nichts mangels Daten — und nicht, weil sie ohne Wirkung wäre.",
       "heatApplied": "Aufbruch im Sommer: die aerobe Kapazität sinkt um 7 %, das ist gemessen.",
-      "seasonNoSource": "Aufbruch im Frühling oder Herbst: keine veröffentlichte Messung erlaubt es, eine Wirkung zu beziffern. Die Jahreszeit ändert hier nichts, mangels Quelle.",
-      "seasonMissing": "Kein Aufbruchsdatum gesetzt: die Jahreszeit ändert hier nichts, mangels Daten.",
+      "seasonNoSource": "Aufbruch im Frühling oder Herbst: dieses Urteil gilt unverändert. Nur der Sommer hat eine veröffentlichte Messung (7 % weniger aerobe Kapazität); für diese beiden Jahreszeiten wird kein Koeffizient angewandt.",
+      "seasonMissing": "Dieses Urteil wird ohne Jahreszeit-Effekt berechnet: es ist kein Aufbruchsdatum gesetzt. Es gilt also für einen Aufbruch außerhalb des Sommers; ein Sommeraufbruch verschärft es um 7 %, und das Datum wird im Kalender gesetzt.",
       "massNotCounted": "Weder dein Gewicht noch das deines Rucksacks fließt in dieses Urteil ein, und das ist gewollt: es misst, was du nachweislich durchhältst. Mit 65 oder mit 95 kg erhält derselbe Mann dasselbe Urteil.",
       "ageCounted": "Das Alter hingegen geht in dieses Urteil ein: Es legt die Referenzdistanz Ihres Gehtests fest und senkt die eingestufte Stufe ab 60 Jahren um eine, ab 75 Jahren um zwei. Die aerobe Kapazität sinkt mit dem Alter, das ist gemessen — es ist kein Urteil über Sie.",
       "winterInvalid": "Aufbruch im Winter: dieses Urteil hält nicht mehr. Wegbewertungen gelten nur bei gutem Wetter, trockenem Gelände und angepasster Schneelage. Wir verschärfen die Zahl nicht, wir sagen dir, dass sie nicht gilt.",
@@ -963,9 +969,15 @@
       "restDaysNone": "In deinem Programm ist kein Ruhetag gesetzt: setze welche, und diese Zahl bewegt sich.",
       "averageLoad": "Mittlere Tageslast: ${value} (die härteste liegt bei ${worst}).",
       "averageLoadInfo": "Diese beiden Zahlen liest man zusammen: weit auseinander hat der Trek einen harten Tag; nahe beieinander ist er jeden Tag hart. Das wird angezeigt, es entscheidet nicht.",
-      "durationStatement": "Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Tage.",
+      "durationStatement": "Dieser Trek dauert ${days} Wandertage; deine längste zusammenhängende Tour beträgt ${done} Wandertage in Folge.",
       "durationStatementInfo": "Das wird angezeigt, es entscheidet nicht: keine veröffentlichte Messung sagt, ab wie vielen zusammenhängenden Tagen ein Wanderer einbricht. Beurteile es selbst.",
-      "stageDominantFactor": "Was an diesem Tag am schwersten wiegt: ${factor}"
+      "stageDominantFactor": "Was an diesem Tag am schwersten wiegt: ${factor}",
+      "verdictHowTitle": "Wie dieses Urteil berechnet wird",
+      "verdictHowStage": "Dein härtester Tag ist ${stage}: ${distance} km und ${elevation} m Aufstieg.",
+      "verdictHowEnergy": "In Energie-km: ${distance} + ${elevation} ÷ 42 = ${energy}. Die 42 m Aufstieg, die 1 km in der Ebene entsprechen, sind der gemessene Aufwand des Bergaufgehens, keine Hausregel.",
+      "verdictHowCeiling": "Deine Tagesobergrenze liegt bei ${capacity} Energie-km (Niveau ${level}).",
+      "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Bis ${green} ist es grün, bis ${orange} orange, darüber rot.",
+      "verdictHowNoBlackBox": "Hier kommt nichts aus einer Blackbox: es ist diese Division, und drei veröffentlichte Arbeiten speisen sie — Minetti 2002 für die Energieeinheit, MOVE 2026 für die Höhe, Linsell 2020 für die Hitze."
     },
     "flow": {
       "title": "Bist du bereit für diese Tour?",
@@ -1632,8 +1644,7 @@
     "helpTooltip": "Hilfe",
     "duration": {
       "label": "Anzahl der Tage",
-      "days": "{count} T",
-      "daysWithRest": "{total} T (davon {rest} Ruhe)",
+      "daysWithRest": "{total} T insgesamt (davon {rest} Ruhe)",
       "splitNote": "Mehr Tage = die härtesten Tage werden zweigeteilt, der schwerste zuerst. Ruhe ändert nicht, wie hart ein einzelner Tag ist.",
       "splitExhausted": "Alle Tage sind schon so kurz wie möglich geteilt: Der Regler entlastet das Urteil nicht weiter.",
       "difficulty": {
@@ -1641,7 +1652,8 @@
         "standard": "Standard",
         "sporty": "Sportlich",
         "demanding": "Sehr anspruchsvoll"
-      }
+      },
+      "daysTotal": "{count} T insgesamt"
     },
     "stats": {
       "distance": "Distanz",

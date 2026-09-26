@@ -210,7 +210,8 @@
         "info": "Panneau ou point d'information du sentier."
       }
     },
-    "supplyDismiss": "Masquer l'alerte"
+    "supplyDismiss": "Masquer l'alerte",
+    "pinMergedTitle": "Plusieurs repères au même endroit"
   },
   "stage": {
     "distance": "Distance",
@@ -334,7 +335,9 @@
     "stageCount(plural)": {
       "one": "$n étape",
       "other": "$n étapes"
-    }
+    },
+    "daysTotal": "Jours au total",
+    "daysBreakdown": "${walk} jours de marche + ${rest} jours de repos"
   },
   "tracking": {
     "start": "Démarrer",
@@ -901,8 +904,8 @@
       "limitingLabel": "Facteur limitant : ${factor}",
       "trainingReco": "Entraînement conseillé : ${weeks} semaines avant le départ",
       "adviceTitle": "Conseils pour ton programme",
-      "generateProgram": "Générer mon programme (${days} jours)",
-      "generateProgramDone": "Programme généré sur ${days} jours — à toi de l'ajuster.",
+      "generateProgram": "Générer mon programme (${days} jours au total)",
+      "generateProgramDone": "Programme généré sur ${days} jours au total — à toi de l'ajuster.",
       "noStages": "Aucune journée à évaluer pour le moment.",
       "levels": {
         "beginner": "débutant",
@@ -926,18 +929,21 @@
       "advice": {
         "balancedOk": "Ton programme est équilibré : garde une marge et écoute ton corps.",
         "balanced": "Répartis les étapes pour lisser l'effort au fil des jours.",
-        "optimalDays": "Vise ${days} jours de marche (au lieu de ${current}) pour rester sous ton plafond.",
-        "split": "Découpe la journée ${stage} en deux : elle dépasse nettement ton plafond.",
-        "splitImpossible": "La journée ${stage} reste au-dessus de tes capacités même coupée en deux, et on ne la coupe pas plus court : ce n'est plus une question de programme. Entraîne-toi, attends des conditions plus clémentes, ou choisis un sentier moins exigeant.",
-        "rest": "Prévois un jour de repos après la journée ${stages}.",
+        "optimalDays": "Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos, au lieu des ${current} jours d'aujourd'hui.",
+        "rest": "Prévois un jour de repos après la journée ${stages} de ton programme.",
         "training": "Prépare-toi ${weeks} semaines avant le départ (préparation physique).",
-        "restAdvised": "Pose ${days} jour(s) de repos, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict."
+        "restAdvised": "Pose ${days} jour(s) de repos dans ton programme, après les journées ${stages} : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict.",
+        "optimalDaysNoChoice": "Vise ${days} jours au total : ${walk} jours de marche et ${rest} jours de repos. Tu n'as encore rien choisi : le sentier en est à son découpage de référence, ${current} jours au total.",
+        "hardStageAlert": "La journée ${stage} sera très dure : elle dépasse ton plafond du jour. On ne te conseille pas de la couper en deux — une étape s'arrête là où il y a un toit. La réponse, c'est l'entraînement : monter d'un cran relève ton plafond, et cette journée repasse dessous.",
+        "noViableDuration": "Aucun nombre de jours ne rend ce sentier tenable pour toi aujourd'hui : la journée ${stage} reste au-dessus de ton plafond, même sur le découpage le plus étalé. On ne te conseille donc aucune durée — ce n'est plus une question de programme. Entraîne-toi, ou choisis un sentier moins exigeant.",
+        "restReference": "Prévois un jour de repos après la journée ${stages} du découpage de référence du sentier — tu n'as pas encore choisi le tien.",
+        "restAdvisedReference": "Pose ${days} jour(s) de repos, après les journées ${stages} du découpage de référence du sentier — tu n'as pas encore choisi le tien : elles se ressemblent trop pour que le corps récupère. C'est un conseil, il ne change pas ton verdict."
       },
-      "retainedPlan": "Découpage retenu : ${days} jours de marche.",
-      "retainedPlanNone": "Aucun découpage retenu : le sentier reste sur ses ${days} jours par défaut.",
+      "retainedPlan": "Découpage retenu : ${days} jours au total, marche et repos compris.",
+      "retainedPlanNone": "Aucun découpage retenu : le sentier reste sur ses ${days} jours au total par défaut, marche et repos compris.",
       "energyUnitNotice": "1 km de plat vaut 42 m de dénivelé : c'est le coût mesuré de la marche en pente, pas une règle maison.",
       "circuitTitle": "Verdict du circuit",
-      "circuitScore": "Score du circuit : ${value}",
+      "circuitScore": "Score du circuit : ${value} — vert jusqu'à ${green}, orange jusqu'à ${orange}, rouge au-delà.",
       "circuitIsWorstStage": "Le verdict du circuit est celui de ta journée la plus dure : rien d'autre ne le durcit.",
       "restWindowWhole": "Repos mesuré sur le trek entier (${days} jours).",
       "restWindowSlice": "Repos mesuré sur la pire semaine : jours ${start} à ${end}.",
@@ -954,8 +960,8 @@
       "altitudeBelowThreshold": "Altitude : ${value} m au plus haut, sous les 1 500 m à partir desquels elle compte. Elle ne change rien ici.",
       "altitudeMissing": "Altitude : la trace de ce sentier n'en porte pas. Elle ne change rien ici faute de donnée — et non parce qu'elle serait sans effet.",
       "heatApplied": "Départ en été : la capacité aérobie baisse de 7 %, c'est mesuré.",
-      "seasonNoSource": "Départ au printemps ou en automne : aucune mesure publiée ne permet de chiffrer un effet. La saison ne change rien ici, faute de source.",
-      "seasonMissing": "Aucune date de départ n'est posée : la saison ne change rien ici, faute de donnée.",
+      "seasonNoSource": "Départ au printemps ou en automne : ce verdict s'applique tel quel. Seul l'été porte une mesure publiée (7 % de capacité aérobie en moins) ; pour ces deux saisons, aucun coefficient n'est appliqué.",
+      "seasonMissing": "Ce verdict est calculé sans effet de saison : aucune date de départ n'est posée. Il vaut donc pour un départ hors été ; un départ en été le durcit de 7 %, et la date se pose au Calendrier.",
       "massNotCounted": "Ni ton poids ni celui de ton sac n'entrent dans ce verdict, et c'est voulu : il mesure ce que tu as démontré tenir. À 65 ou à 95 kg, le même homme obtient le même verdict.",
       "ageCounted": "L'âge, lui, entre dans ce verdict : il fixe la distance de référence de ton test de marche, et il abaisse le niveau retenu d'un cran à partir de 60 ans, de deux à partir de 75. La capacité aérobie baisse avec l'âge, c'est mesuré — ce n'est pas un jugement sur toi.",
       "winterInvalid": "Départ en hiver : ce verdict ne tient plus. Les cotations de sentier ne valent que par bon temps, terrain sec et enneigement adapté. On ne durcit pas le chiffre, on te dit qu'il ne s'applique pas.",
@@ -963,9 +969,15 @@
       "restDaysNone": "Aucun jour de repos n'est posé dans ton programme : poses-en et ce chiffre bouge.",
       "averageLoad": "Charge moyenne des journées : ${value} (la pire est à ${worst}).",
       "averageLoadInfo": "Ces deux chiffres se lisent ensemble : loin l'un de l'autre, le trek a une journée dure ; proches, il est dur tous les jours. Ce constat s'affiche, il ne décide pas.",
-      "durationStatement": "Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours.",
+      "durationStatement": "Ce trek dure ${days} jours de marche ; ta plus longue sortie enchaînée est de ${done} jours de marche d'affilée.",
       "durationStatementInfo": "Ce constat s'affiche, il ne décide pas : aucune mesure publiée ne dit à partir de combien de jours enchaînés un randonneur décroche. À toi d'en juger.",
-      "stageDominantFactor": "Ce qui pèse le plus sur cette journée : ${factor}"
+      "stageDominantFactor": "Ce qui pèse le plus sur cette journée : ${factor}",
+      "verdictHowTitle": "Comment ce verdict est calculé",
+      "verdictHowStage": "Ta journée la plus dure est ${stage} : ${distance} km et ${elevation} m de dénivelé positif.",
+      "verdictHowEnergy": "En km-énergie : ${distance} + ${elevation} ÷ 42 = ${energy}. Les 42 m de dénivelé qui valent 1 km de plat sont le coût mesuré de la marche en pente, pas une règle maison.",
+      "verdictHowCeiling": "Ton plafond du jour est ${capacity} km-énergie (niveau ${level}).",
+      "verdictHowRatio": "${energy} ÷ ${capacity} = ${score}. Jusqu'à ${green} c'est vert, jusqu'à ${orange} c'est orange, au-delà c'est rouge.",
+      "verdictHowNoBlackBox": "Rien ici ne sort d'une boîte noire : c'est cette division, et trois travaux publiés la nourrissent — Minetti 2002 pour l'unité d'énergie, MOVE 2026 pour l'altitude, Linsell 2020 pour la chaleur."
     },
     "flow": {
       "title": "Es-tu prêt pour ce trek ?",
@@ -1632,8 +1644,7 @@
     "helpTooltip": "Aide",
     "duration": {
       "label": "Nombre de jours",
-      "days": "{count} j",
-      "daysWithRest": "{total} j (dont {rest} repos)",
+      "daysWithRest": "{total} j au total (dont {rest} de repos)",
       "splitNote": "Plus de jours = les journées les plus dures sont coupées en deux, la pire d'abord. Le repos, lui, ne change pas la difficulté d'une journée.",
       "splitExhausted": "Toutes les journées sont déjà coupées au plus court : le curseur n'allègera plus le verdict.",
       "difficulty": {
@@ -1641,7 +1652,8 @@
         "standard": "Standard",
         "sporty": "Sportif",
         "demanding": "Très exigeant"
-      }
+      },
+      "daysTotal": "{count} j au total"
     },
     "stats": {
       "distance": "Distance",

@@ -6,6 +6,8 @@ import '../../../core/engine/trail_engine.dart';
 import '../../../core/models/stage.dart';
 import '../../../features/trail/providers/stages_provider.dart';
 import '../../feasibility/domain/feasibility_formula.dart';
+import '../../feasibility/domain/program_plan_search.dart';
+import '../../feasibility/providers/advised_program_provider.dart';
 import '../data/retained_plan_store.dart';
 import '../domain/planning_calculator.dart';
 import '../models/day_plan.dart';
@@ -129,14 +131,40 @@ final defaultDurationWithRestProvider =
 /// Programme, l'Itineraire, le Calendrier et le Resume.
 ///
 /// = le decoupage RETENU par le randonneur s'il en a choisi un
-/// ([retainedDurationProvider]), sinon la duree par defaut du sentier REPOS
-/// CONSEILLES COMPRIS ([defaultDurationWithRestProvider], GO-61).
+/// ([retainedDurationProvider]), sinon LA DUREE CONSEILLEE quand elle existe
+/// (tache 569, R1-a), sinon la duree par defaut du sentier REPOS CONSEILLES
+/// COMPRIS ([defaultDurationWithRestProvider], GO-61).
+///
+/// LE CURSEUR S'OUVRE SUR LA VALEUR CONSEILLEE (tache 569, R1-a).
+///
+/// DECISION DE CHRIS DU 26/09, VERBATIM : « OK mais le curseur est celui
+/// conseille et il n'est jamais en rouge quand il est conseille en orange max ».
+/// Avant, le curseur s'ouvrait sur le decoupage du TOPO — sept jours de marche
+/// plus les repos conseilles — pendant que l'ecran Faisabilite conseillait une
+/// autre valeur quelques lignes plus haut. Le randonneur lisait donc deux
+/// chiffres, et celui sur lequel le curseur etait pose pouvait etre rouge.
+///
+/// LA VALEUR CONSEILLEE A ETE ESSAYEE AVANT D'ETRE PROPOSEE
+/// ([ProgramPlanSearch.firstNonRed]) : son verdict est vert ou orange, jamais
+/// rouge. Elle n'existe que si le profil est complet — un conseil est une sortie
+/// du moteur de verdict, il n'existe pas la ou le verdict n'existe pas.
+///
+/// HYDRATATION ASYNCHRONE, MEME PATRON QUE LE DECOUPAGE RETENU : tant que le
+/// conseil n'est pas calcule, on rend la duree par defaut du sentier, puis la
+/// valeur conseillee des qu'elle arrive. Un choix deja RETENU l'emporte toujours
+/// sur le conseil : le randonneur decide, l'application propose.
 class SelectedDurationNotifier extends Notifier<int> {
   @override
   int build() {
     final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
     final fallback = ref.watch(defaultDurationWithRestProvider(trailId));
-    return ref.watch(retainedDurationProvider) ?? fallback;
+    final retained = ref.watch(retainedDurationProvider);
+    if (retained != null) return retained;
+    final advised = ref.watch(advisedTotalDaysProvider).maybeWhen(
+          data: (days) => days,
+          orElse: () => null,
+        );
+    return advised ?? fallback;
   }
 
   /// Change la duree ET la retient durablement (D2) : toute duree choisie par
@@ -194,7 +222,7 @@ final planningProvider =
 /// RIEN a la pire journee, donc rien au verdict (GO-61). Le curseur butait
 /// exactement la ou il aurait commence a servir. La borne haute couvre
 /// desormais le DECOUPAGE : jusqu'a deux journees par etape, plus les repos.
-class DurationBounds {
+class DurationBounds implements DurationSearchBounds {
   const DurationBounds({
     required this.min,
     required this.max,
@@ -203,7 +231,10 @@ class DurationBounds {
   })  : _naturalMax = naturalMax,
         _restAllowance = restAllowance;
 
+  @override
   final int min;
+
+  @override
   final int max;
 
   final int? _naturalMax;
@@ -215,6 +246,7 @@ class DurationBounds {
   /// un repos mais un DECOUPAGE de la journee la plus dure. Sans ce plafond, le
   /// curseur ne saurait toujours qu'empiler des jours de repos — et le repos ne
   /// change rien a la pire journee, donc rien au verdict (GO-61).
+  @override
   int get restAllowance => _restAllowance ?? (max - min).clamp(0, max);
 
   /// DUREE NATURELLE MAXIMALE : une etape par jour de marche, plus le repos.
@@ -260,6 +292,7 @@ class DurationBounds {
   }
 
   /// Liste discrete des durees proposees (min..max inclus), pour le selecteur.
+  @override
   List<int> get options =>
       List<int>.generate(max - min + 1, (i) => min + i);
 

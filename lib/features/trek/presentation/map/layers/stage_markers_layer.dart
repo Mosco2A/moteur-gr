@@ -6,6 +6,72 @@ import '../../../../../i18n/translations.g.dart';
 import '../../../domain/models/stage.dart';
 import '../marker_cluster.dart';
 
+/// LE DISQUE NUMEROTE D'UNE ETAPE — le repere de parcours de la carte.
+///
+/// Extrait de [StageMarkersLayer] a la tache 571 pour qu'il n'existe qu'UNE
+/// definition de ce disque : la couche des etapes seules le dessine, et la
+/// couche unifiee du sentier (TrailMarkersLayer) le reutilise tel quel au
+/// coeur de ses reperes fusionnes. Deux dessins du meme repere finiraient par
+/// divergent — un liseré ici, une ombre la.
+class StageNumberCircle extends StatelessWidget {
+  const StageNumberCircle({
+    super.key,
+    required this.number,
+    required this.color,
+    this.size = 32.0,
+  });
+
+  /// Numero affiche au centre (l'ordre de l'etape dans le sentier).
+  final int number;
+
+  /// Couleur de fond du disque (cf. [stageMarkerColor]).
+  final Color color;
+
+  /// Diametre du disque en pixels.
+  final double size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        '$number',
+        style: TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: size * 0.375,
+        ),
+      ),
+    );
+  }
+}
+
+/// COULEUR DU DISQUE D'ETAPE selon sa place dans le sentier.
+///
+/// Premiere etape = vert (le depart), derniere = rouge (l'arrivee),
+/// intermediaires = bleu. Regle partagee avec TrailMarkersLayer depuis la
+/// tache 571 : le repere fusionne garde la couleur qu'il aurait eue seul.
+Color stageMarkerColor(int index, int total) {
+  if (total <= 1) return Colors.green;
+  if (index == 0) return Colors.green;
+  if (index == total - 1) return Colors.red;
+  return Colors.blue;
+}
+
 /// Composant marqueurs d'etapes - affiche un cercle numerote par etape.
 ///
 /// Encapsule un [MarkerLayer] flutter_map v8.
@@ -16,6 +82,13 @@ import '../marker_cluster.dart';
 /// fourni, les marqueurs proches sont agreges en bulles de cluster via
 /// [ClusteredMarkerLayer] (rare pour des etapes, mais garanti homogene
 /// avec le reste de la carte).
+///
+/// PORTEE DEPUIS LA TACHE 571 : cette couche dessine les etapes SEULES. Elle
+/// convient a une carte sans point d'interet, et c'est a ce titre qu'elle
+/// reste. L'ecran carte du sentier, lui, passe par TrailMarkersLayer, qui
+/// pose etapes ET points d'interet dans une couche UNIQUE — parce que deux
+/// couches empilees ne peuvent pas, par construction, s'entendre sur un
+/// repere commun quand elles designent le meme lieu.
 class StageMarkersLayer extends StatelessWidget {
   const StageMarkersLayer({
     super.key,
@@ -37,14 +110,6 @@ class StageMarkersLayer extends StatelessWidget {
   /// Niveau de zoom courant (active le clustering au-dela du seuil).
   final double? zoom;
 
-  /// Retourne la couleur du marqueur selon sa position dans la liste.
-  Color _markerColor(int index) {
-    if (stages.length <= 1) return Colors.green;
-    if (index == 0) return Colors.green;
-    if (index == stages.length - 1) return Colors.red;
-    return Colors.blue;
-  }
-
   /// Construit le marqueur visuel d'une etape (cercle numerote).
   Marker _stageMarker(int index) {
     final stage = stages[index];
@@ -58,28 +123,10 @@ class StageMarkersLayer extends StatelessWidget {
         child: GestureDetector(
           onTap: onStageTap != null ? () => onStageTap!(stage.id) : null,
           child: ExcludeSemantics(
-            child: Container(
-              decoration: BoxDecoration(
-                color: _markerColor(index),
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 2),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                '${stage.orderIndex}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
-                ),
-              ),
+            child: StageNumberCircle(
+              number: stage.orderIndex,
+              color: stageMarkerColor(index, stages.length),
+              size: markerSize,
             ),
           ),
         ),

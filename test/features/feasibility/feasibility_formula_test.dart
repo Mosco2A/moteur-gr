@@ -516,7 +516,11 @@ void main() {
       expect(r.isRestAdvised, isTrue);
     });
 
-    test('etape rouge -> conseil de decoupe (split) + jours optimal', () {
+    test('etape rouge -> ALERTE sur la journee (tache 569) + jours optimal', () {
+      // TACHE 569 (R4) : le conseil « decoupe la journee N en deux » a DISPARU,
+      // decision de Chris du 26/09 — une etape s'arrete la ou il y a un toit, et
+      // couper a mi-distance envoie dormir dans un ravin. La journee est NOMMEE
+      // par une ALERTE, et l'entrainement prend la place du conseil.
       final r = FeasibilityFormula.evaluate(
         stages: [
           stage(index: 0, distanceKm: 35, elevationGainM: 800), // rouge
@@ -525,9 +529,10 @@ void main() {
         level: HikerLevel.intermediate,
       );
       final keys = r.advice.map((a) => a.key).toList();
-      expect(keys, contains('split'));
-      final split = r.advice.firstWhere((a) => a.key == 'split');
-      expect(split.params['stage'], 1);
+      expect(keys, isNot(contains('split')));
+      expect(keys, contains('hardStageAlert'));
+      final alerte = r.advice.firstWhere((a) => a.key == 'hardStageAlert');
+      expect(alerte.params['stage'], 1);
       expect(r.suggestedDays, greaterThan(2));
     });
 
