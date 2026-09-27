@@ -14,6 +14,8 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../firebase/cloud_indisponible.dart';
+import '../firebase/firebase_service.dart';
 import 'moderation_service.dart';
 
 /// Nom de la collection des notifications de moderation (cf. firestore.rules
@@ -22,13 +24,28 @@ const String kReportsModerationCollection = 'reports_moderation';
 
 /// Implementation [ModerationStore] adossee a Cloud Firestore.
 class FirestoreModerationStore implements ModerationStore {
-  FirestoreModerationStore({FirebaseFirestore? firestore})
-      : _firestore = firestore;
+  FirestoreModerationStore({
+    required FirebaseService firebaseService,
+    FirebaseFirestore? firestore,
+  })  : _firebaseService = firebaseService,
+        _firestore = firestore;
+
+  /// 596 C4 — GARDE DE DISPONIBILITE. Les trois ecritures de ce magasin
+  /// (`saveReport`, `updateReport`, `applyContentState`) dereferencaient
+  /// `FirebaseFirestore.instance` sans aucune verification : c'est le chemin
+  /// « Signaler » d'un contenu, construit inconditionnellement par les
+  /// providers. Il ne plantait que parce que Firebase etait eteint partout.
+  final FirebaseService _firebaseService;
 
   FirebaseFirestore? _firestore;
 
   /// Accesseur Firestore (lazy init, comme [CloudSyncService], pour les tests).
-  FirebaseFirestore get _db => _firestore ??= FirebaseFirestore.instance;
+  FirebaseFirestore get _db {
+    if (!_firebaseService.isAvailable) {
+      throw const CloudIndisponibleException('moderation d un contenu');
+    }
+    return _firestore ??= FirebaseFirestore.instance;
+  }
 
   @override
   Future<void> saveReport(ModerationReport report) async {

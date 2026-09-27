@@ -2,8 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logger/logger.dart';
 
+import '../config/firebase_config.dart';
 import '../error/error_handler.dart';
+
+final _log = Logger(printer: PrettyPrinter(methodCount: 0));
 
 /// Service d'initialisation Firebase.
 ///
@@ -13,18 +17,40 @@ import '../error/error_handler.dart';
 ///
 /// Ref #81812 B2 offline montagne — persistence Firestore activee
 /// pour garantir l'acces aux donnees hors connexion en montagne.
+/// POURQUOI le cloud est absent (596 C4).
+///
+/// « Pas configure » et « configuration cassee » produisaient exactement le
+/// meme silence : `isAvailable == false`, sans un mot. Impossible de savoir, en
+/// lisant un journal, si Chris avait oublie de passer la variable de build ou
+/// si le SDK avait echoue. La cause est desormais NOMMEE.
+enum FirebaseIndisponible {
+  /// Aucun identifiant de projet fourni : mode local assume, pas une panne.
+  configurationAbsente,
+
+  /// Identifiant fourni mais l'initialisation a echoue (ou expire) : anomalie
+  /// a diagnostiquer — options natives absentes, reseau, projet inconnu...
+  echecInitialisation,
+}
+
 class FirebaseService {
-  FirebaseService._({required this.isAvailable});
+  FirebaseService._({required this.isAvailable, this.raisonIndisponible});
 
   /// Constructeur pour les tests unitaires.
-  FirebaseService.testOnly({required this.isAvailable});
+  FirebaseService.testOnly({required this.isAvailable})
+      : raisonIndisponible =
+            isAvailable ? null : FirebaseIndisponible.configurationAbsente;
 
   /// Factory pour un service Firebase indisponible (mode local/test).
-  factory FirebaseService.unavailable() =>
-      FirebaseService._(isAvailable: false);
+  factory FirebaseService.unavailable() => FirebaseService._(
+        isAvailable: false,
+        raisonIndisponible: FirebaseIndisponible.configurationAbsente,
+      );
 
   /// Indique si Firebase est disponible et initialise
   final bool isAvailable;
+
+  /// La cause de l'indisponibilite, nulle quand le cloud est disponible.
+  final FirebaseIndisponible? raisonIndisponible;
 
   /// Delai maximum d'attente de l'init Firebase au demarrage (offline-first).
   ///
@@ -56,8 +82,21 @@ class FirebaseService {
     String? firebaseProjectId,
     @visibleForTesting Duration? timeout,
   }) async {
-    if (firebaseProjectId == null) {
-      return FirebaseService._(isAvailable: false);
+    if (firebaseProjectId == null || firebaseProjectId.isEmpty) {
+      // MODE LOCAL ASSUME — ET DIT (596 C4). Sans cette ligne, l'absence totale
+      // de rapport de plantage n'avait aucune trace : rien, nulle part, ne
+      // signalait que la telemetrie etait eteinte. On ne plante pas, on
+      // fonctionne normalement, et on l'ecrit.
+      _log.i(
+        '[FirebaseService] MODE LOCAL : aucun identifiant de projet Firebase '
+        '(--dart-define=${FirebaseConfig.variableDeBuild}). L\'application '
+        'fonctionne normalement, mais AUCUN rapport de plantage ni aucune '
+        'statistique ne remontera.',
+      );
+      return FirebaseService._(
+        isAvailable: false,
+        raisonIndisponible: FirebaseIndisponible.configurationAbsente,
+      );
     }
 
     try {
@@ -71,13 +110,26 @@ class FirebaseService {
         cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
       );
 
+      _log.i('[FirebaseService] Services en ligne actifs (projet '
+          '$firebaseProjectId) — rapports de plantage et statistiques armes.');
       return FirebaseService._(isAvailable: true);
     } on Object catch (e, st) {
       // En cas d'echec OU de TIMEOUT (TimeoutException) d'init, fallback en mode
       // local plutot que de crasher/figer l'app (offline-first). Trace via le
       // handler d'erreurs (aucun catch silencieux).
+      //
+      // 596 C4 — LA CAUSE EST DISTINGUEE DE « PAS CONFIGURE » : ici un projet
+      // A ETE fourni et l'initialisation a echoue. C'est une anomalie, pas un
+      // choix. Cas le plus probable : les options natives manquent encore
+      // (`google-services.json` / `GoogleService-Info.plist` / greffon Gradle).
       ErrorHandler.log(e, stackTrace: st, context: 'FirebaseService.initialize');
-      return FirebaseService._(isAvailable: false);
+      _log.w('[FirebaseService] MODE LOCAL FORCE : le projet '
+          '$firebaseProjectId est configure mais l\'initialisation a ECHOUE. '
+          'Aucun rapport de plantage ne remontera.');
+      return FirebaseService._(
+        isAvailable: false,
+        raisonIndisponible: FirebaseIndisponible.echecInitialisation,
+      );
     }
   }
 }

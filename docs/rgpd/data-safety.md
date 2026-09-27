@@ -20,6 +20,30 @@
 | http (Open-Meteo, OSM) | IP transitoire + coordonnées du point demandé | Pas du « user data » au sens des formulaires, documenté par transparence |
 | Crashlytics / Analytics | **ABSENTS du code main** | Ne PAS déclarer « Crash logs »/« Analytics » tant que non mergés |
 
+### Mise à jour du 26/09/2026 — tâche 596 (remplace la ligne « Crashlytics / Analytics » ci-dessus)
+
+La ligne du tableau disait « ABSENTS du code main ». Ce n'est plus exact : trois
+câblages ont changé d'état. Détail, poste par poste.
+
+- **Crashlytics (rapports de plantage) — MAINTENANT CÂBLÉ.** Les filets
+  `ErrorNets` sont posés dès la première ligne de `main()`, le rapporteur est
+  branché dès que Firebase démarre, et la collecte crash est activée
+  explicitement (`AnalyticsService.setCrashCollection`). Elle était jusque-là
+  éteinte à l'insu de tous par `setConsent(granted: false)`, appelé dès la
+  construction du provider. **À DÉCLARER en « Crash logs »** dès que le premier
+  build avec `--dart-define=STEPWAYS_FIREBASE_PROJECT_ID` part en magasin. Sans
+  configuration Firebase (cas actuel), rien ne sort : rien à déclarer.
+- **Firebase Analytics (mesure d'usage) — CÂBLÉ MAIS COUPÉ.**
+  `setConsent(granted: true)` n'est appelé nulle part, et aucune finalité
+  « mesure d'usage » n'existe dans `ConsentPurpose`. Ne PAS déclarer
+  « Analytics » tant que cette finalité n'est pas créée et recueillie.
+- **Retours utilisateur (`user_feedback`) — MAINTENANT CÂBLÉ.** Le message écrit
+  par le randonneur part vraiment quand Firebase est configuré ; avant, il était
+  marqué « envoyé » sans partir, puis effacé de la file locale. Dépôt seul,
+  lecture réservée à l'équipe (règles Firestore). À déclarer en « Messages
+  in-app / autres contenus générés par l'utilisateur » dès que Firebase est
+  configuré.
+
 Données strictement locales (jamais transmises = **non « collectées »**
 au sens des deux stores) : photos du journal, traces GPS locales,
 données santé, contacts d'urgence, préférences.

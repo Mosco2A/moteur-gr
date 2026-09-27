@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/firebase/firebase_service.dart';
+import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -325,6 +326,55 @@ class SettingsScreen extends ConsumerWidget {
           Icons.notifications,
           tr.settings.notifications,
         ),
+        // LE TELEPHONE REFUSE LES NOTIFICATIONS — ET L ECRAN LE DIT (596 C3).
+        //
+        // `checkPermissions()` valait `async => true` : l'appli croyait
+        // TOUJOURS avoir le droit de notifier, et `permissionGranted` n'etait
+        // lu par personne. Le randonneur pouvait donc regler quatre rappels
+        // avec soin alors qu'aucun ne lui parviendrait jamais.
+        if (!notifications.permissionGranted)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppTheme.spacingSm),
+            child: AppCard(
+              padding: const EdgeInsets.all(AppTheme.spacingBase),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.notifications_off_outlined,
+                          color: AppTheme.orangeDifficile, size: 22),
+                      const SizedBox(width: AppTheme.spacingSm),
+                      Expanded(
+                        child: Text(
+                          tr.notifications.permissionBlockedTitle,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Text(
+                    tr.notifications.permissionBlockedBody,
+                    style: theme.textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: AppTheme.spacingSm),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: OutlinedButton.icon(
+                      icon: const Icon(Icons.notifications_active_outlined,
+                          size: 18),
+                      label: Text(tr.notifications.permissionAsk),
+                      onPressed: () => ref
+                          .read(notificationSettingsProvider.notifier)
+                          .requestPermissions(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         AppCard(
           padding: EdgeInsets.zero,
           child: Column(
@@ -482,7 +532,13 @@ class SettingsScreen extends ConsumerWidget {
             child: ListTile(
               leading: const Icon(Icons.vpn_key_outlined),
               title: Text(tr.recovery.title),
-              subtitle: Text(tr.recovery.sectionDesc),
+              // TACHE 596 (C2) : la porte reste — c'est une invariante du LOT Q
+              // — mais son sous-titre ne promet plus un code qui ne sera pas
+              // affiche. Tant que le coffre n'est pas alimente, il annonce
+              // l'etat reel, que l'ecran detaille ensuite.
+              subtitle: Text(CoffreDeReconnexion.alimente
+                  ? tr.recovery.sectionDesc
+                  : tr.recovery.noVaultTitle),
               trailing: const Icon(Icons.chevron_right),
               onTap: () => context.push('/recovery-code'),
             ),

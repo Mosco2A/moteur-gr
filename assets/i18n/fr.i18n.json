@@ -811,7 +811,10 @@
     "schedulerCountdownTitle": "Votre randonnée approche !",
     "schedulerCountdownBody": "Départ dans 2 jours. Vérifiez votre checklist et la météo.",
     "schedulerDailyTitle": "Bonne journée de randonnée !",
-    "schedulerDailyBody": "Consultez la météo et préparez votre étape du jour."
+    "schedulerDailyBody": "Consultez la météo et préparez votre étape du jour.",
+    "permissionBlockedTitle": "Notifications bloquées",
+    "permissionBlockedBody": "Votre téléphone refuse les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.",
+    "permissionAsk": "Autoriser les notifications"
   },
   "settings": {
     "title": "Paramètres",
@@ -856,7 +859,10 @@
     "thanks": "Merci pour votre retour !",
     "pending": "en attente",
     "emptyMessage": "Écrivez votre message avant de l'envoyer.",
-    "sendFailed": "Votre message n'a pas pu être enregistré."
+    "sendFailed": "Votre message n'a pas pu être enregistré.",
+    "keptLocally": "Enregistré sur ce téléphone. Votre retour partira dès que l'envoi sera possible.",
+    "keptLocallyNotice": "L'envoi des retours n'est pas encore ouvert : vos messages sont gardés sur ce téléphone.",
+    "sentThanks": "Merci, votre retour est parti."
   },
   "auth": {
     "profile": "Profil",
@@ -2251,7 +2257,9 @@
     "copy": "Copier le code",
     "copied": "Code copié",
     "warning": "Personne d'autre ne peut lire votre coffre, pas même nous. Si vous perdez ce code, vos données seront définitivement irrécupérables.",
-    "error": "Impossible de générer le code pour le moment."
+    "error": "Impossible de générer le code pour le moment.",
+    "noVaultTitle": "Pas encore de coffre à rouvrir",
+    "noVaultBody": "La sauvegarde en ligne n'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l'instant."
   },
   "common": {
     "cannotLoadStages": "Impossible de charger les étapes",

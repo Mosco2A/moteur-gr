@@ -648,6 +648,9 @@ class _Translations$notifications$de extends Translations$notifications$fr {
 	@override String get schedulerCountdownBody => 'Abreise in 2 Tagen. Prüfen Sie Ihre Checkliste und das Wetter.';
 	@override String get schedulerDailyTitle => 'Guten Trek-Tag!';
 	@override String get schedulerDailyBody => 'Prüfen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.';
+	@override String get permissionBlockedTitle => 'Benachrichtigungen blockiert';
+	@override String get permissionBlockedBody => 'Ihr Telefon blockiert Benachrichtigungen der App: Sie erhalten weder Erinnerungen noch Warnungen.';
+	@override String get permissionAsk => 'Benachrichtigungen erlauben';
 }
 
 // Path: settings
@@ -707,6 +710,9 @@ class _Translations$feedback$de extends Translations$feedback$fr {
 	@override String get pending => 'ausstehend';
 	@override String get emptyMessage => 'Schreiben Sie Ihre Nachricht, bevor Sie sie senden.';
 	@override String get sendFailed => 'Ihre Nachricht konnte nicht gespeichert werden.';
+	@override String get keptLocally => 'Auf diesem Telefon gespeichert. Ihre Rückmeldung wird gesendet, sobald der Versand möglich ist.';
+	@override String get keptLocallyNotice => 'Der Versand von Rückmeldungen ist noch nicht freigeschaltet: Ihre Nachrichten bleiben auf diesem Telefon.';
+	@override String get sentThanks => 'Danke, Ihre Rückmeldung wurde gesendet.';
 }
 
 // Path: auth
@@ -1783,6 +1789,8 @@ class _Translations$recovery$de extends Translations$recovery$fr {
 	@override String get copied => 'Code kopiert';
 	@override String get warning => 'Niemand sonst kann deinen Tresor lesen, auch wir nicht. Wenn du diesen Code verlierst, sind deine Daten unwiederbringlich verloren.';
 	@override String get error => 'Der Code kann derzeit nicht erzeugt werden.';
+	@override String get noVaultTitle => 'Noch kein Tresor zum Öffnen';
+	@override String get noVaultBody => 'Die Online-Sicherung ist auf dieser Installation nicht aktiviert: Ihre Daten bleiben auf diesem Telefon. Es gibt daher keinen Tresor, der anderswo geöffnet werden könnte, und vorerst keinen Code zum Notieren.';
 }
 
 // Path: common
@@ -4706,6 +4714,9 @@ extension on TranslationsDe {
 			'notifications.schedulerCountdownBody' => 'Abreise in 2 Tagen. Prüfen Sie Ihre Checkliste und das Wetter.',
 			'notifications.schedulerDailyTitle' => 'Guten Trek-Tag!',
 			'notifications.schedulerDailyBody' => 'Prüfen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.',
+			'notifications.permissionBlockedTitle' => 'Benachrichtigungen blockiert',
+			'notifications.permissionBlockedBody' => 'Ihr Telefon blockiert Benachrichtigungen der App: Sie erhalten weder Erinnerungen noch Warnungen.',
+			'notifications.permissionAsk' => 'Benachrichtigungen erlauben',
 			'settings.title' => 'Einstellungen',
 			'settings.language' => 'Sprache',
 			'settings.units' => 'Einheiten',
@@ -4747,6 +4758,9 @@ extension on TranslationsDe {
 			'feedback.pending' => 'ausstehend',
 			'feedback.emptyMessage' => 'Schreiben Sie Ihre Nachricht, bevor Sie sie senden.',
 			'feedback.sendFailed' => 'Ihre Nachricht konnte nicht gespeichert werden.',
+			'feedback.keptLocally' => 'Auf diesem Telefon gespeichert. Ihre Rückmeldung wird gesendet, sobald der Versand möglich ist.',
+			'feedback.keptLocallyNotice' => 'Der Versand von Rückmeldungen ist noch nicht freigeschaltet: Ihre Nachrichten bleiben auf diesem Telefon.',
+			'feedback.sentThanks' => 'Danke, Ihre Rückmeldung wurde gesendet.',
 			'auth.profile' => 'Profil',
 			'auth.anonymous' => 'Wanderer ohne Konto',
 			'auth.connectedVia' => 'Verbunden über',
@@ -5052,6 +5066,8 @@ extension on TranslationsDe {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Im Paket « ${trail} » enthalten.',
 			'training.paywallSubtitle' => 'Plan angepasst an Ihr Profil und Ihr Abreisedatum.',
 			'training.unlock' => 'Freischalten',
+			_ => null,
+		} ?? switch (path) {
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Ein progressiver ${weeks}-Wochen-Plan für die ${km} km und rund ${elevation} m Höhenmeter.',
 			'training.countdown' => ({required Object days}) => 'Abreise in ${days} Tagen',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan über ${n} Wochen',
@@ -5572,6 +5588,8 @@ extension on TranslationsDe {
 			'fireRisk.duration.hours' => ({required Object n}) => '${n} Std',
 			'fireRisk.duration.days' => ({required Object n}) => '${n} T',
 			'fireRisk.fwiSource' => 'Risikoindex basierend auf dem Fire Weather Index (FWI) von Open-Meteo (Modell Meteo-France). Der FWI ist der vom europäischen EFFIS-System zur Bewertung des Waldbrandrisikos verwendete Index.',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.regulation.title' => 'Vorschriften',
 			'fireRisk.regulation.decreeLink' => 'Präfektorale Erlasse ansehen',
 			'fireRisk.levelsTitle' => 'Risikostufen',
@@ -5840,6 +5858,8 @@ extension on TranslationsDe {
 			'recovery.copied' => 'Code kopiert',
 			'recovery.warning' => 'Niemand sonst kann deinen Tresor lesen, auch wir nicht. Wenn du diesen Code verlierst, sind deine Daten unwiederbringlich verloren.',
 			'recovery.error' => 'Der Code kann derzeit nicht erzeugt werden.',
+			'recovery.noVaultTitle' => 'Noch kein Tresor zum Öffnen',
+			'recovery.noVaultBody' => 'Die Online-Sicherung ist auf dieser Installation nicht aktiviert: Ihre Daten bleiben auf diesem Telefon. Es gibt daher keinen Tresor, der anderswo geöffnet werden könnte, und vorerst keinen Code zum Notieren.',
 			'common.cannotLoadStages' => 'Etappen können nicht geladen werden',
 			'common.noStages' => 'Keine Etappen verfügbar',
 			'common.cannotLoadStage' => 'Diese Etappe kann nicht geladen werden',

@@ -811,7 +811,10 @@
     "schedulerCountdownTitle": "Ihr Trek steht bevor!",
     "schedulerCountdownBody": "Abreise in 2 Tagen. Prüfen Sie Ihre Checkliste und das Wetter.",
     "schedulerDailyTitle": "Guten Trek-Tag!",
-    "schedulerDailyBody": "Prüfen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor."
+    "schedulerDailyBody": "Prüfen Sie das Wetter und bereiten Sie Ihre heutige Etappe vor.",
+    "permissionBlockedTitle": "Benachrichtigungen blockiert",
+    "permissionBlockedBody": "Ihr Telefon blockiert Benachrichtigungen der App: Sie erhalten weder Erinnerungen noch Warnungen.",
+    "permissionAsk": "Benachrichtigungen erlauben"
   },
   "settings": {
     "title": "Einstellungen",
@@ -856,7 +859,10 @@
     "thanks": "Vielen Dank für Ihr Feedback!",
     "pending": "ausstehend",
     "emptyMessage": "Schreiben Sie Ihre Nachricht, bevor Sie sie senden.",
-    "sendFailed": "Ihre Nachricht konnte nicht gespeichert werden."
+    "sendFailed": "Ihre Nachricht konnte nicht gespeichert werden.",
+    "keptLocally": "Auf diesem Telefon gespeichert. Ihre Rückmeldung wird gesendet, sobald der Versand möglich ist.",
+    "keptLocallyNotice": "Der Versand von Rückmeldungen ist noch nicht freigeschaltet: Ihre Nachrichten bleiben auf diesem Telefon.",
+    "sentThanks": "Danke, Ihre Rückmeldung wurde gesendet."
   },
   "auth": {
     "profile": "Profil",
@@ -2251,7 +2257,9 @@
     "copy": "Code kopieren",
     "copied": "Code kopiert",
     "warning": "Niemand sonst kann deinen Tresor lesen, auch wir nicht. Wenn du diesen Code verlierst, sind deine Daten unwiederbringlich verloren.",
-    "error": "Der Code kann derzeit nicht erzeugt werden."
+    "error": "Der Code kann derzeit nicht erzeugt werden.",
+    "noVaultTitle": "Noch kein Tresor zum Öffnen",
+    "noVaultBody": "Die Online-Sicherung ist auf dieser Installation nicht aktiviert: Ihre Daten bleiben auf diesem Telefon. Es gibt daher keinen Tresor, der anderswo geöffnet werden könnte, und vorerst keinen Code zum Notieren."
   },
   "common": {
     "cannotLoadStages": "Etappen können nicht geladen werden",

@@ -107,13 +107,33 @@ class AnalyticsService {
   static String anonymize(String value) =>
       sha256.convert(utf8.encode(value)).toString();
 
-  /// Accorde/retire le consentement. Bascule la collecte Analytics ET
-  /// Crashlytics. Opt-in : tant que [granted] est faux, rien n'est emis.
+  /// Accorde/retire le consentement de MESURE D'USAGE (Analytics).
+  ///
+  /// TACHE 596 (C4) — CETTE METHODE ETEIGNAIT AUSSI LES RAPPORTS DE PLANTAGE.
+  /// Elle appelait `_crash.setCollectionEnabled(granted)`, et le provider
+  /// l'invoque avec `granted: false` DES SA CONSTRUCTION (opt-in strict). Le
+  /// premier lecteur du provider coupait donc Crashlytics pour toute la
+  /// session : meme Firebase allume, meme les filets d'erreur poses, chaque
+  /// `recordError` serait parti a la poubelle. Un troisieme verrou, invisible,
+  /// sur le meme defaut — et le plus vicieux, parce qu'il annulait le
+  /// correctif des deux autres.
+  ///
+  /// Les deux collectes sont desormais SEPAREES : mesurer l'usage d'un
+  /// randonneur et savoir que l'appli a plante chez lui ne sont pas la meme
+  /// question, ne servent pas la meme finalite, et n'ont pas a partager le meme
+  /// interrupteur. Voir [setCrashCollection].
   Future<void> setConsent({required bool granted}) async {
     _consentGranted = granted;
     await _analytics.setCollectionEnabled(granted);
-    await _crash.setCollectionEnabled(granted);
   }
+
+  /// Allume/eteint LA REMONTEE DES PLANTAGES, independamment de [setConsent].
+  ///
+  /// Conséquence a assumer cote magasins : des que cette collecte est active,
+  /// la fiche Play « Data safety » doit declarer « Crash logs »
+  /// (cf. docs/rgpd/data-safety.md).
+  Future<void> setCrashCollection({required bool enabled}) =>
+      _crash.setCollectionEnabled(enabled);
 
   /// Ecran consulte (nom logique d'ecran, jamais d'identifiant utilisateur).
   Future<void> logScreenView(String screenName) async {
@@ -184,14 +204,20 @@ class AnalyticsService {
       });
 
   /// Erreur non fatale (capturee/geree).
+  ///
+  /// TACHE 596 (C4) : ces deux methodes etaient gardees par le consentement
+  /// ANALYTICS (`_consentGranted`), toujours faux — elles ne rapportaient donc
+  /// jamais rien, meme Firebase allume. Une panne n'est pas une mesure
+  /// d'usage : la remontee des plantages suit desormais [setCrashCollection]
+  /// (et, en dernier ressort, l'interrupteur de Crashlytics lui-meme).
   Future<void> recordError(Object error, StackTrace? stack) async {
-    if (!_consentGranted) return;
+    if (!_operational) return;
     await _crash.recordError(error, stack, fatal: false);
   }
 
   /// Erreur fatale (crash).
   Future<void> recordFatal(Object error, StackTrace? stack) async {
-    if (!_consentGranted) return;
+    if (!_operational) return;
     await _crash.recordError(error, stack, fatal: true);
   }
 
@@ -215,7 +241,14 @@ final analyticsServiceProvider = Provider<AnalyticsService>((ref) {
     analytics: FirebaseAnalyticsSink(),
     crash: FirebaseCrashSink(),
   );
-  // Opt-in strict : collecte coupee tant que le consentement n'est pas donne.
+  // Opt-in strict sur la MESURE D'USAGE : coupee tant que le consentement
+  // n'est pas donne. TACHE 596 (C4) : cet appel eteignait aussi Crashlytics —
+  // il ne touche plus que les evenements d'usage.
   unawaited(service.setConsent(granted: false));
+  // LES PLANTAGES, EUX, REMONTENT. C'est toute la raison d'etre du correctif :
+  // publier sans savoir que l'appli plante chez ses utilisateurs, c'est
+  // publier a l'aveugle. Un rapport de plantage ne mesure pas un usage, il
+  // signale une panne. A declarer en « Crash logs » cote magasins.
+  unawaited(service.setCrashCollection(enabled: true));
   return service;
 });

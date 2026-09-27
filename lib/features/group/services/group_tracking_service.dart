@@ -108,6 +108,12 @@ class GroupTrackingService {
   }
 
   Future<void> _pushPosition(double lat, double lng, {String? stageId}) async {
+    // 596 C4 — GARDE DE DISPONIBILITE. Toutes les methodes PUBLIQUES de cette
+    // classe verifiaient `isAvailable` ; ce chemin prive, lui, ne le faisait
+    // pas — et il est atteint par `_flushHourlyBuffer`, declenche par un
+    // MINUTEUR, pas par un point d'entree garde. C'etait le dernier
+    // dereferencement de `firestore` sans verification de l'application.
+    if (!firebaseService.isAvailable) return;
     if (_activeGroupCode == null || _currentUid == null) return;
     try {
       final docRef = firestore.collection('groups').doc(_activeGroupCode);

@@ -57,18 +57,47 @@ Cela génère :
 
 ### 3. Brancher l'init dans le code
 
-`lib/core/firebase/firebase_service.dart` appelle aujourd'hui
-`Firebase.initializeApp()` **sans options** (échec → mode local).
-Au wagon 3 :
+**Fait à la tâche 596 (C4) : le commutateur existe enfin.** Avant, aucune
+configuration de sentier ne renseignait `firebaseProjectId` et **aucun moyen
+n'existait de le renseigner** — `Firebase.initializeApp()` n'était donc jamais
+exécuté, à 100 % des démarrages, avec pour conséquence zéro rapport de plantage
+et zéro statistique.
+
+L'identifiant se passe désormais **au build**, comme les identifiants AdMob, et
+**n'est jamais écrit dans le dépôt** (un test balaie `lib/` et refuse toute clé
+en clair) :
+
+```bash
+flutter build apk --release \
+  --dart-define=STEPWAYS_FIREBASE_PROJECT_ID=stepways-prod
+```
+
+Sans cette variable, l'app démarre **normalement** en mode local et l'écrit dans
+ses journaux (`[FirebaseService] MODE LOCAL : …`). Elle ne plante jamais pour une
+configuration manquante. La cause est nommée dans
+`FirebaseService.raisonIndisponible` : `configurationAbsente` (rien n'a été
+fourni) ou `echecInitialisation` (fourni mais cassé) — ne pas confondre les deux
+est ce qui rend le diagnostic possible.
+
+**Il reste UNE chose à faire ici, et elle est indispensable :**
 
 ```dart
+// lib/core/firebase/firebase_service.dart
 await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
 );
 ```
 
-et passer un `firebaseProjectId` non nul dans le `TrailConfig` utilisé
-par `main.dart` (c'est le commutateur du mode cloud).
+Tant que `lib/firebase_options.dart` n'existe pas (généré à l'étape 2), passer la
+variable de build ne suffit pas : l'init échouera et l'app repassera en mode
+local avec la raison `echecInitialisation`. Il faut aussi, côté Android, ajouter
+les greffons Gradle `com.google.gms.google-services` et
+`com.google.firebase.crashlytics`, absents de `android/build.gradle.kts` et
+`android/app/build.gradle.kts`.
+
+**Les filets d'erreur, eux, sont déjà posés** (`ErrorNets`, appelé en première
+ligne de `main()`) : dès que Firebase démarre, le rapporteur Crashlytics est
+branché automatiquement et les plantages remontent.
 
 ### 4. Déployer règles + index Firestore
 

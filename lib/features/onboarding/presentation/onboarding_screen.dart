@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/engine/trail_engine.dart';
+import '../../../core/services/coffre_de_reconnexion.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../i18n/translations.g.dart';
@@ -427,12 +428,20 @@ class _DownloadPage extends StatelessWidget {
             label: tr.onboarding.browseCatalog,
             onPressed: onBrowse,
           ),
-          const SizedBox(height: AppTheme.spacingLg),
           // Finitions V1 (point 4) : NUDGE code de reconnexion (#99784). On
           // invite l'utilisateur a noter TOT son code (affichable dans les
           // reglages) — c'est la cle de son coffre, le perdre = donnees perdues.
           // Nudge discret (pas de blocage) : le code s'affiche a la demande.
-          _RecoveryNudge(tr: tr, theme: theme),
+          //
+          // TACHE 596 (C2) : ce conseil n'a de sens QUE si le coffre est
+          // reellement alimente. Il ne l'est pas — rien n'y ecrit, aucun ecran
+          // ne permet de saisir un code. Pousser le randonneur a noter la cle
+          // d'un coffre vide des sa premiere minute dans l'appli, c'est le faux
+          // succes le plus difficile a rattraper ensuite.
+          if (CoffreDeReconnexion.alimente) ...[
+            const SizedBox(height: AppTheme.spacingLg),
+            _RecoveryNudge(tr: tr, theme: theme),
+          ],
         ],
       ),
     );

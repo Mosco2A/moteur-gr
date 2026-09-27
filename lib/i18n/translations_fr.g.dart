@@ -1306,6 +1306,15 @@ class Translations$notifications$fr {
 
 	/// fr: 'Consultez la météo et préparez votre étape du jour.'
 	String get schedulerDailyBody => 'Consultez la météo et préparez votre étape du jour.';
+
+	/// fr: 'Notifications bloquées'
+	String get permissionBlockedTitle => 'Notifications bloquées';
+
+	/// fr: 'Votre téléphone refuse les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.'
+	String get permissionBlockedBody => 'Votre téléphone refuse les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.';
+
+	/// fr: 'Autoriser les notifications'
+	String get permissionAsk => 'Autoriser les notifications';
 }
 
 // Path: settings
@@ -1447,6 +1456,15 @@ class Translations$feedback$fr {
 
 	/// fr: 'Votre message n'a pas pu être enregistré.'
 	String get sendFailed => 'Votre message n\'a pas pu être enregistré.';
+
+	/// fr: 'Enregistré sur ce téléphone. Votre retour partira dès que l'envoi sera possible.'
+	String get keptLocally => 'Enregistré sur ce téléphone. Votre retour partira dès que l\'envoi sera possible.';
+
+	/// fr: 'L'envoi des retours n'est pas encore ouvert : vos messages sont gardés sur ce téléphone.'
+	String get keptLocallyNotice => 'L\'envoi des retours n\'est pas encore ouvert : vos messages sont gardés sur ce téléphone.';
+
+	/// fr: 'Merci, votre retour est parti.'
+	String get sentThanks => 'Merci, votre retour est parti.';
 }
 
 // Path: auth
@@ -3741,6 +3759,12 @@ class Translations$recovery$fr {
 
 	/// fr: 'Impossible de générer le code pour le moment.'
 	String get error => 'Impossible de générer le code pour le moment.';
+
+	/// fr: 'Pas encore de coffre à rouvrir'
+	String get noVaultTitle => 'Pas encore de coffre à rouvrir';
+
+	/// fr: 'La sauvegarde en ligne n'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l'instant.'
+	String get noVaultBody => 'La sauvegarde en ligne n\'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n\'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l\'instant.';
 }
 
 // Path: common
@@ -8461,6 +8485,9 @@ extension on Translations {
 			'notifications.schedulerCountdownBody' => 'Départ dans 2 jours. Vérifiez votre checklist et la météo.',
 			'notifications.schedulerDailyTitle' => 'Bonne journée de randonnée !',
 			'notifications.schedulerDailyBody' => 'Consultez la météo et préparez votre étape du jour.',
+			'notifications.permissionBlockedTitle' => 'Notifications bloquées',
+			'notifications.permissionBlockedBody' => 'Votre téléphone refuse les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.',
+			'notifications.permissionAsk' => 'Autoriser les notifications',
 			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',
 			'settings.units' => 'Unités',
@@ -8502,6 +8529,9 @@ extension on Translations {
 			'feedback.pending' => 'en attente',
 			'feedback.emptyMessage' => 'Écrivez votre message avant de l\'envoyer.',
 			'feedback.sendFailed' => 'Votre message n\'a pas pu être enregistré.',
+			'feedback.keptLocally' => 'Enregistré sur ce téléphone. Votre retour partira dès que l\'envoi sera possible.',
+			'feedback.keptLocallyNotice' => 'L\'envoi des retours n\'est pas encore ouvert : vos messages sont gardés sur ce téléphone.',
+			'feedback.sentThanks' => 'Merci, votre retour est parti.',
 			'auth.profile' => 'Profil',
 			'auth.anonymous' => 'Randonneur sans compte',
 			'auth.connectedVia' => 'Connecté via',
@@ -8807,6 +8837,8 @@ extension on Translations {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Inclus dans le pack « ${trail} ».',
 			'training.paywallSubtitle' => 'Plan adapté à votre profil et à votre date de départ.',
 			'training.unlock' => 'Débloquer',
+			_ => null,
+		} ?? switch (path) {
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un plan progressif sur ${weeks} semaines pour aborder les ${km} km et environ ${elevation} m de dénivelé.',
 			'training.countdown' => ({required Object days}) => 'Départ dans ${days} jours',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan sur ${n} semaines',
@@ -9327,6 +9359,8 @@ extension on Translations {
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}j',
 			'fireRisk.fwiSource' => 'Indice de risque basé sur le Fire Weather Index (FWI) fourni par Open-Meteo (modèle Météo-France). Le FWI est l\'indice utilisé par le système européen EFFIS pour évaluer le risque de feux de forêt.',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.regulation.title' => 'Réglementation',
 			'fireRisk.regulation.decreeLink' => 'Consulter les arrêtés préfectoraux',
 			'fireRisk.levelsTitle' => 'Niveaux de risque',
@@ -9595,6 +9629,8 @@ extension on Translations {
 			'recovery.copied' => 'Code copié',
 			'recovery.warning' => 'Personne d\'autre ne peut lire votre coffre, pas même nous. Si vous perdez ce code, vos données seront définitivement irrécupérables.',
 			'recovery.error' => 'Impossible de générer le code pour le moment.',
+			'recovery.noVaultTitle' => 'Pas encore de coffre à rouvrir',
+			'recovery.noVaultBody' => 'La sauvegarde en ligne n\'est pas activée sur cette installation : vos données restent sur ce téléphone. Il n\'y a donc aucun coffre à rouvrir ailleurs, et aucun code à noter pour l\'instant.',
 			'common.cannotLoadStages' => 'Impossible de charger les étapes',
 			'common.noStages' => 'Aucune étape disponible',
 			'common.cannotLoadStage' => 'Impossible de charger cette étape',

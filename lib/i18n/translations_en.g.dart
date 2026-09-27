@@ -648,6 +648,9 @@ class _Translations$notifications$en extends Translations$notifications$fr {
 	@override String get schedulerCountdownBody => 'Departure in 2 days. Check your checklist and the weather.';
 	@override String get schedulerDailyTitle => 'Have a great trek day!';
 	@override String get schedulerDailyBody => 'Check the weather and prepare today\'s stage.';
+	@override String get permissionBlockedTitle => 'Notifications blocked';
+	@override String get permissionBlockedBody => 'Your phone is blocking notifications from the app: no reminder and no alert will reach you.';
+	@override String get permissionAsk => 'Allow notifications';
 }
 
 // Path: settings
@@ -707,6 +710,9 @@ class _Translations$feedback$en extends Translations$feedback$fr {
 	@override String get pending => 'pending';
 	@override String get emptyMessage => 'Write your message before sending it.';
 	@override String get sendFailed => 'Your message could not be saved.';
+	@override String get keptLocally => 'Saved on this phone. Your feedback will be sent as soon as sending is possible.';
+	@override String get keptLocallyNotice => 'Feedback sending is not open yet: your messages are kept on this phone.';
+	@override String get sentThanks => 'Thank you, your feedback has been sent.';
 }
 
 // Path: auth
@@ -1783,6 +1789,8 @@ class _Translations$recovery$en extends Translations$recovery$fr {
 	@override String get copied => 'Code copied';
 	@override String get warning => 'No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.';
 	@override String get error => 'Unable to generate the code right now.';
+	@override String get noVaultTitle => 'No vault to unlock yet';
+	@override String get noVaultBody => 'Online backup is not enabled on this installation: your data stays on this phone. There is therefore no vault to unlock elsewhere, and no code to write down for now.';
 }
 
 // Path: common
@@ -4706,6 +4714,9 @@ extension on TranslationsEn {
 			'notifications.schedulerCountdownBody' => 'Departure in 2 days. Check your checklist and the weather.',
 			'notifications.schedulerDailyTitle' => 'Have a great trek day!',
 			'notifications.schedulerDailyBody' => 'Check the weather and prepare today\'s stage.',
+			'notifications.permissionBlockedTitle' => 'Notifications blocked',
+			'notifications.permissionBlockedBody' => 'Your phone is blocking notifications from the app: no reminder and no alert will reach you.',
+			'notifications.permissionAsk' => 'Allow notifications',
 			'settings.title' => 'Settings',
 			'settings.language' => 'Language',
 			'settings.units' => 'Units',
@@ -4747,6 +4758,9 @@ extension on TranslationsEn {
 			'feedback.pending' => 'pending',
 			'feedback.emptyMessage' => 'Write your message before sending it.',
 			'feedback.sendFailed' => 'Your message could not be saved.',
+			'feedback.keptLocally' => 'Saved on this phone. Your feedback will be sent as soon as sending is possible.',
+			'feedback.keptLocallyNotice' => 'Feedback sending is not open yet: your messages are kept on this phone.',
+			'feedback.sentThanks' => 'Thank you, your feedback has been sent.',
 			'auth.profile' => 'Profile',
 			'auth.anonymous' => 'Hiker without account',
 			'auth.connectedVia' => 'Connected via',
@@ -5052,6 +5066,8 @@ extension on TranslationsEn {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Included in the « ${trail} » pack.',
 			'training.paywallSubtitle' => 'Plan tailored to your profile and departure date.',
 			'training.unlock' => 'Unlock',
+			_ => null,
+		} ?? switch (path) {
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.',
 			'training.countdown' => ({required Object days}) => 'Departure in ${days} days',
 			'training.planOverWeeks' => ({required Object n}) => '${n}-week plan',
@@ -5572,6 +5588,8 @@ extension on TranslationsEn {
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}d',
 			'fireRisk.fwiSource' => 'Risk index based on the Fire Weather Index (FWI) provided by Open-Meteo (Meteo-France model). The FWI is the index used by the European EFFIS system to assess wildfire risk.',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.regulation.title' => 'Regulations',
 			'fireRisk.regulation.decreeLink' => 'View prefectural orders',
 			'fireRisk.levelsTitle' => 'Risk levels',
@@ -5840,6 +5858,8 @@ extension on TranslationsEn {
 			'recovery.copied' => 'Code copied',
 			'recovery.warning' => 'No one else can read your vault, not even us. If you lose this code, your data will be permanently unrecoverable.',
 			'recovery.error' => 'Unable to generate the code right now.',
+			'recovery.noVaultTitle' => 'No vault to unlock yet',
+			'recovery.noVaultBody' => 'Online backup is not enabled on this installation: your data stays on this phone. There is therefore no vault to unlock elsewhere, and no code to write down for now.',
 			'common.cannotLoadStages' => 'Unable to load stages',
 			'common.noStages' => 'No stages available',
 			'common.cannotLoadStage' => 'Unable to load this stage',
