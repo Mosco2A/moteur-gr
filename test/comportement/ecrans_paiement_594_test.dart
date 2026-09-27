@@ -108,8 +108,17 @@ void main() {
       expect(find.text(t.monetization.subscriptionSubtitle), findsOneWidget);
       expect(find.text(t.monetization.subscriptionIncludesNoAds),
           findsOneWidget);
-      expect(find.text(t.monetization.subscriptionIncludesAllowance),
-          findsOneWidget);
+      expect(
+        find.text(t.monetization.subscriptionIncludesAllowance(
+          steps: kSubscriberStepsAllowance!,
+        )),
+        findsOneWidget,
+        reason: 'la cagnotte annonce son NOMBRE depuis la decision de Chris '
+            'du 27/09 : deux etapes par mois',
+      );
+      // ET SON PRIX. Une page d abonnement sans prix ne vend rien.
+      expect(find.byKey(const ValueKey('abo-prix')), findsOneWidget,
+          reason: 'l abonnement coute 2 euros par mois, et l ecran le dit');
       // LE POINT QUI COMPTE : l abo ne debloque NI les outils complets NI la
       // realisation. L ecran doit le dire, sinon il vend autre chose.
       expect(find.text(t.monetization.subscriptionExcludes), findsOneWidget);

@@ -33,6 +33,19 @@ Widget _hostTrailSelection() => MaterialApp.router(
     );
 
 void main() {
+  /// LA LISTE DES SENTIERS EST PLUS LONGUE DEPUIS LA TACHE 601 : le catalogue
+  /// porte une entree de plus (le sentier de demonstration GRATUIT). Un ListView
+  /// ne CONSTRUIT pas ce qui est hors champ, et les dernieres cartes semblaient
+  /// donc absentes. On donne au test une fenetre assez haute pour porter tout le
+  /// catalogue : la question posee ici est « la liste montre-t-elle TOUS les
+  /// sentiers », pas « combien en tient-il sur un ecran de telephone ».
+  void fenetreHaute(WidgetTester tester) {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetPhysicalSize);
+  }
+
   Widget wrap({List<Override> overrides = const []}) {
     return ProviderScope(
       overrides: overrides,
@@ -45,6 +58,7 @@ void main() {
   testWidgets('liste tous les sentiers du catalogue (multi-sentiers)', (
     tester,
   ) async {
+    fenetreHaute(tester);
     await tester.pumpWidget(wrap());
     await tester.pumpAndSettle();
 
@@ -58,6 +72,7 @@ void main() {
   testWidgets('le sentier actif porte le badge + bouton desactive', (
     tester,
   ) async {
+    fenetreHaute(tester);
     // Sentier actif force sur le defaut du catalogue.
     await tester.pumpWidget(
       wrap(
@@ -94,6 +109,7 @@ void main() {
   testWidgets('selectionner un autre sentier bascule la config active', (
     tester,
   ) async {
+    fenetreHaute(tester);
     // Container partage pour lire l'etat apres l'action de l'UI.
     final container = ProviderContainer(
       overrides: [

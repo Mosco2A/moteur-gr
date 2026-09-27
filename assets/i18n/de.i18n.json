@@ -294,7 +294,8 @@
     "denied": "Standortzugriff verweigert",
     "disabled": "Standortdienst deaktiviert",
     "offTrack": "Abseits der Strecke",
-    "centerOnMe": "Auf meine Position zentrieren"
+    "centerOnMe": "Auf meine Position zentrieren",
+    "centeredOnTrack": "Standort nicht verfügbar — Karte auf die Route zentriert"
   },
   "navAlert": {
     "offTrackBanner": "Sie entfernen sich vom Weg — $meters m. Überprüfen Sie Ihre Position.",
@@ -1076,8 +1077,12 @@
     "emptyTitle": "Kein Weg verfügbar",
     "emptySubtitle": "Im Katalog wird noch kein Weg angeboten.",
     "a11y": {
-      "enterButton": "Weg $nom öffnen"
-    }
+      "enterButton": "Weg $nom öffnen",
+      "freeTrailBadge": "Kostenloser Weg"
+    },
+    "freeTrailName": "$nom — Kostenlose Demo",
+    "freeBadge": "Kostenlos",
+    "freeTrailTagline": "Die ersten $etapes Etappen, geschenkt. Alles funktioniert: Vorbereitung, Start, Navigation, Tagebuch, Ankunft."
   },
   "updates": {
     "readyTitle": "Update bereit",
@@ -1145,7 +1150,7 @@
     "subscriptionTitle": "Werbefreies Abo",
     "subscriptionSubtitle": "Keine Werbung, solange das Abo aktiv ist.",
     "subscriptionIncludesNoAds": "Keine Werbung in der gesamten App",
-    "subscriptionIncludesAllowance": "Ein Etappenguthaben in jedem Zeitraum",
+    "subscriptionIncludesAllowance": "$steps Etappen jeden Monat gutgeschrieben",
     "subscriptionExcludes": "Das Abo schaltet weder die vollständigen Werkzeuge noch die Durchführung einer Wanderung frei: dafür muss die Wanderung gekauft werden.",
     "subscriptionCta": "Abonnieren",
     "subscriptionActive": "Abo aktiv",
@@ -1157,7 +1162,9 @@
     "buyOutcomeOwned": "Wanderung freigeschaltet. Gute Tour!",
     "buyOutcomeAlreadyOwned": "Diese Wanderung ist bereits freigeschaltet.",
     "buyOutcomeOffline": "Es fehlen $steps Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
-    "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht."
+    "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.",
+    "subscriptionPrice": "$price pro Monat",
+    "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden."
   },
   "signalement": {
     "title": "Melden",

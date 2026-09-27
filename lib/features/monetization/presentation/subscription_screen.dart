@@ -21,9 +21,21 @@ import '../../../shared/widgets/app_header.dart';
 /// la realisation ». Un ecran qui vendrait l'abo sans l'ecrire vendrait autre
 /// chose que ce qui a ete decide.
 ///
-/// LA CAGNOTTE EST ANNONCEE, SON MONTANT NE L'EST PAS : il n'est chiffre ni
-/// dans le modele ni dans le code ([kSubscriberStepsAllowance] vaut `null`).
-/// L'ecran le dit au lieu d'inventer un nombre.
+/// IL DIT MAINTENANT CE QU'IL COUTE (tache 601). Chris a donne le chiffre le
+/// 27/09 12:26 : « Le prix on l'avait fixe a 2 euros mous = pub nul part et 2
+/// etapes cagnottes par mois ». L'ecran annoncait ce que l'abo donne et ce qu'il
+/// ne donne pas, sans jamais dire son PRIX — une page d'abonnement sans prix ne
+/// vend rien, et le prix vivait a l'oral, donc nulle part.
+///
+/// LA CAGNOTTE EST CHIFFREE, ET SA NATURE EST ECRITE : un versement MENSUEL, pas
+/// un cadeau de bienvenue. Les etapes creditees restent acquises a vie meme
+/// apres l'arret de l'abonnement (regle d'or #99404 : credits a vie, sans-pub lie
+/// a un etat actif) — l'ecran le dit, parce que c'est exactement la question que
+/// se pose quelqu'un qui hesite a se desabonner.
+///
+/// LE MECANISME « MONTANT NON DECIDE » RESTE CABLE : si un jour un chiffre
+/// repasse en attente ([kSubscriberStepsAllowance] a `null`), l'ecran le dit au
+/// lieu d'inventer un nombre.
 class SubscriptionScreen extends ConsumerStatefulWidget {
   const SubscriptionScreen({super.key});
 
@@ -80,6 +92,9 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final service = ref.watch(monetizationServiceProvider);
+    // Copie locale : une variable de haut niveau ne se promeut pas, et on veut
+    // lire le montant SANS le relire deux fois ni le recopier a l'ecran.
+    const cagnotte = kSubscriberStepsAllowance;
 
     return Scaffold(
       appBar: AppHeader(title: t.monetization.subscriptionTitle),
@@ -132,27 +147,65 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
             ),
             const SizedBox(height: AppTheme.spacingBase),
 
+            // --- LE PRIX --------------------------------------------------
+            // Une page d'abonnement sans prix ne vend rien. Il est lu dans la
+            // SOURCE UNIQUE (kSubscriptionPriceEur), jamais recopie a l'ecran.
+            AppCard(
+              key: const ValueKey('abo-prix'),
+              padding: const EdgeInsets.all(AppTheme.spacingBase),
+              child: Row(
+                children: [
+                  Icon(Icons.sell_outlined, color: theme.colorScheme.primary),
+                  const SizedBox(width: AppTheme.spacingMd),
+                  Expanded(
+                    child: Text(
+                      t.monetization.subscriptionPrice(
+                        price: t.monetization
+                            .packPrice(price: _euros(kSubscriptionPriceEur)),
+                      ),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingBase),
+
             // --- Ce que l'abo DONNE ----------------------------------------
             _Ligne(
               icon: Icons.block,
               label: t.monetization.subscriptionIncludesNoAds,
             ),
-            _Ligne(
-              icon: Icons.savings_outlined,
-              label: t.monetization.subscriptionIncludesAllowance,
-            ),
-            // Montant NON DECIDE : on le dit, on ne l'invente pas.
-            if (kSubscriberStepsAllowance == null)
+            // Montant NON DECIDE : on le dit, on ne l'invente pas. Decide
+            // (27/09) : on l'annonce avec son nombre et sa periodicite.
+            if (cagnotte == null)
+              _Ligne(
+                icon: Icons.savings_outlined,
+                label: t.monetization.subscriptionAllowancePending,
+              )
+            else ...[
+              _Ligne(
+                key: const ValueKey('abo-cagnotte'),
+                icon: Icons.savings_outlined,
+                label: t.monetization.subscriptionIncludesAllowance(
+                  steps: cagnotte,
+                ),
+              ),
+              // LE POINT QUI DECIDE UN DESABONNEMENT : les etapes creditees
+              // restent acquises, seul le sans-pub s'arrete.
               Padding(
                 padding: const EdgeInsets.only(left: AppTheme.spacingXl),
                 child: Text(
-                  t.monetization.subscriptionAllowancePending,
-                  key: const ValueKey('abo-cagnotte-en-attente'),
+                  t.monetization.subscriptionAllowanceForLife,
+                  key: const ValueKey('abo-cagnotte-a-vie'),
                   style: theme.textTheme.labelSmall?.copyWith(
                     color: AppTheme.grisTexteSecondaire,
                   ),
                 ),
               ),
+            ],
             const SizedBox(height: AppTheme.spacingBase),
 
             // --- Ce que l'abo NE DONNE PAS ---------------------------------
@@ -210,6 +263,15 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
     );
   }
 
+  /// Montant en euros, sans decimale inutile (« 2 » et non « 2.0 »).
+  ///
+  /// Meme regle d'ecriture que la grille des packs : le symbole monetaire est
+  /// porte par la traduction (`monetization.packPrice`), qui le place du bon cote
+  /// selon la langue.
+  static String _euros(double montant) => montant == montant.roundToDouble()
+      ? montant.toStringAsFixed(0)
+      : montant.toStringAsFixed(2);
+
   /// Date courte, sans dependance a une locale de formatage.
   String _jour(DateTime d) =>
       '${d.day.toString().padLeft(2, '0')}/'
@@ -218,7 +280,7 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
 
 /// Une ligne « ce que l'abo donne » (coche + libelle).
 class _Ligne extends StatelessWidget {
-  const _Ligne({required this.icon, required this.label});
+  const _Ligne({super.key, required this.icon, required this.label});
 
   final IconData icon;
   final String label;

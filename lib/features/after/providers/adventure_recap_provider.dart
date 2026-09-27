@@ -8,7 +8,6 @@ import '../../../core/data/database.dart' hide Stage;
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/geo/track_segment_stats.dart';
 import '../../../core/providers/database_provider.dart';
-import '../../../core/providers/service_providers.dart';
 import '../../trek/domain/models/stage.dart';
 import '../../trek/domain/models/trek_session.dart';
 import '../../trek/domain/trek_completion.dart';
@@ -23,8 +22,16 @@ import '../../trek/providers/stage_providers.dart';
 /// actif ([TrekSessionsDao.getLatestByTrailId]) — jamais des totaux statiques du
 /// sentier. C'est la parite avec GR20 : le diplome et le recap refletent le
 /// parcours reellement effectue (etapes marchees, distance/D+ parcourus), et le
-/// diplome est verrouille tant que le parcours n'a pas ete fini — sauf sur un
-/// sentier VITRINE, debloque pour la demonstration.
+/// diplome est verrouille tant que le parcours n'a pas ete fini.
+///
+/// PLUS AUCUNE EXCEPTION DE DEMONSTRATION (tache 601). Le diplome et le recap
+/// etaient DONNES d'office sur le sentier « vitrine » : le randonneur en demo
+/// voyait un diplome qu'il n'avait pas marche. Le sentier de demonstration est
+/// desormais un sentier GRATUIT de deux etapes, et deux etapes se marchent :
+/// l'arrivee et le diplome y sont ATTEIGNABLES pour de vrai. C'est exactement ce
+/// que Chris demandait — un sentier demo, pas un sentier bride demo — et c'est
+/// mieux qu'une exemption : le diplome reste verrouille par la MARCHE, jamais par
+/// l'argent, et cette regle est la meme pour tout le monde.
 
 /// Statut « brut » de la derniere session persistee (String extensible).
 const String kTrekStatusCompleted = 'completed';
@@ -40,34 +47,22 @@ final latestTrekSessionProvider = FutureProvider<TrekSession?>((ref) async {
   return db.trekSessionsDao.getLatestByTrailId(trailId);
 });
 
-/// Le sentier actif est-il une VITRINE de demonstration ?
+/// Le DIPLOME est-il deverrouille ? (gate finisher — UNE SEULE REGLE).
 ///
-/// Exception de parite (LOT 2/3) : sur une vitrine, le diplome et le recap sont
-/// debloques pour la demo (comme le mode demo « tout debloque » de GR20). Pilote
-/// par le flag de donnees [TrailConfig.isShowcaseTrail] (via
-/// [DemoModeService]) — jamais un id de localite en dur.
-final isShowcaseTrailProvider = Provider<bool>((ref) {
-  final trailId = ref.watch(trailConfigProvider.select((c) => c.id));
-  final demo = ref.watch(demoModeServiceProvider);
-  return demo.isShowcaseTrail(trailId);
-});
-
-/// Le DIPLOME est-il deverrouille ? (gate finisher + exception vitrine).
+/// PARITE GR20, LOT 3 (#99433), point 3.B(1) : le diplome n'est deverrouille QUE
+/// si le parcours a ete REELLEMENT parcouru en entier — la derniere session
+/// persistee porte `parcoursFullyWalked == true` (le finisher, cf.
+/// [TrekPlan.isFullyWalked] fige au franchissement de la porte). Tant que
+/// `!parcoursFullyWalked`, le diplome est VERROUILLE (equivalent du
+/// `status != completed` de GR20, mais sur l'etat de session reel).
 ///
-/// PARITE GR20, LOT 3 (#99433), point 3.B(1) :
-///  * Un sentier VITRINE est TOUJOURS deverrouille (demonstration) — parite avec
-///    le diplome GR20 debloque en mode demo.
-///  * Sinon (vrai trek non-vitrine), le diplome n'est deverrouille QUE si le
-///    parcours a ete REELLEMENT parcouru en entier : la derniere session
-///    persistee porte `parcoursFullyWalked == true` (le finisher, cf.
-///    [TrekPlan.isFullyWalked] fige au franchissement de la porte). Tant que
-///    `!parcoursFullyWalked`, le diplome est VERROUILLE (equivalent du
-///    `status != completed` de GR20, mais sur l'etat de session reel).
+/// L'EXCEPTION VITRINE EST PARTIE (tache 601) : elle offrait le diplome sans la
+/// marche. Sur le sentier gratuit de deux etapes, on le gagne — et un diplome
+/// gagne vaut infiniment mieux, en demonstration, qu'un diplome donne.
 ///
 /// Retourne false tant que la session n'est pas chargee (fail-closed : jamais de
 /// faux deverrouillage pendant le chargement).
 final isDiplomaUnlockedProvider = Provider<bool>((ref) {
-  if (ref.watch(isShowcaseTrailProvider)) return true;
   final session = ref.watch(latestTrekSessionProvider).value;
   return session?.parcoursFullyWalked ?? false;
 });
@@ -75,11 +70,11 @@ final isDiplomaUnlockedProvider = Provider<bool>((ref) {
 /// Le RECAP « Mon aventure » est-il accessible ?
 ///
 /// PARITE GR20, LOT 3 (#99433), point 3.A : accessible quand le trek est TERMINE
-/// (`completed`) OU ABANDONNE (`abandoned`) — plus la VITRINE (demo). Un abandon
-/// doit pouvoir revoir son aventure (parite `after/adventure_recap_screen.dart`
-/// GR20, chantier C #97501). Fail-closed pendant le chargement.
+/// (`completed`) OU ABANDONNE (`abandoned`). Un abandon doit pouvoir revoir son
+/// aventure (parite `after/adventure_recap_screen.dart` GR20, chantier C #97501).
+/// Fail-closed pendant le chargement. Plus d'exception vitrine (tache 601) : sur
+/// le sentier gratuit, le trek se termine vraiment.
 final isRecapAvailableProvider = Provider<bool>((ref) {
-  if (ref.watch(isShowcaseTrailProvider)) return true;
   final session = ref.watch(latestTrekSessionProvider).value;
   if (session == null) return false;
   return session.status == kTrekStatusCompleted ||

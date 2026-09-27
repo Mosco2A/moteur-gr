@@ -605,15 +605,38 @@ class _MapContentState extends State<_MapContent> {
                                 LatLng(pos.latitude, pos.longitude),
                                 mapController.camera.zoom,
                               );
-                            } else {
-                              // Fallback : recentrer sur le trace
-                              mapController.fitCamera(
-                                CameraFit.bounds(
-                                  bounds: bounds,
-                                  padding: const EdgeInsets.all(32),
-                                ),
-                              );
+                              return;
                             }
+                            // SANS POSITION, LE BOUTON LE DIT (tache 601).
+                            //
+                            // Il recentrait SILENCIEUSEMENT sur le trace. Quand
+                            // la camera est deja sur le trace — le cas a
+                            // l'ouverture de la carte — ce repli ne bouge rien :
+                            // le randonneur appuie sur « centrer sur moi », rien
+                            // ne se passe, et rien ne lui dit pourquoi. C'est un
+                            // bouton muet au sens de la regle du LOT X.
+                            //
+                            // POURQUOI PERSONNE NE L'AVAIT VU. L'invariante des
+                            // gestes morts ne l'atteignait pas : le bouton photo,
+                            // joue avant lui sur le meme ecran, restait suspendu
+                            // pour toujours sur le canal de l'appareil photo, si
+                            // bien que tous les gestes suivants etaient declares
+                            // « non joues » au lieu d'etre mesures. La tache 601
+                            // a donne au bouton photo une reponse immediate (le
+                            // paywall du sentier redevenu payant) : la mesure est
+                            // allee plus loin, et elle a trouve celui-ci.
+                            //
+                            // Le repli reste — il sert quand la camera a derive.
+                            // On ajoute la seule chose qui manquait : la RAISON.
+                            mapController.fitCamera(
+                              CameraFit.bounds(
+                                bounds: bounds,
+                                padding: const EdgeInsets.all(32),
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(t.gps.centeredOnTrack)),
+                            );
                           },
                         );
                       },

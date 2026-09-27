@@ -90,7 +90,7 @@ void main() {
       connectivityMonitor: _FakeConnectivityMonitor(online: online),
       nowFn: () => now,
       prefs: prefs,
-      showcaseTrailIds: showcase ?? const {},
+      freeTrailIds: showcase ?? const {},
     );
     await svc.load();
     if (walletSteps > 0) await wallet.credit(walletSteps);

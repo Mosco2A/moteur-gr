@@ -17,7 +17,13 @@ import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
 /// PARITE GR20, LOT 3 (#99433), point 3.B / critere (a) — le Diplome est
-/// VERROUILLE sur un vrai trek non fini et DEVERROUILLE sur une vitrine.
+/// VERROUILLE tant que le parcours n'a pas ete reellement marche.
+///
+/// TACHE 601 — L'EXCEPTION VITRINE EST PARTIE, ET LE TEST LE VERROUILLE. Un
+/// sentier declare « vitrine » recevait le diplome SANS l'avoir marche. Le
+/// diplome se gagne desormais par la MARCHE, pour tout le monde et sur tous
+/// les sentiers — y compris le sentier de demonstration GRATUIT, dont les deux
+/// etapes se marchent justement pour cela.
 void main() {
   const trailId = 'test-trail-diploma';
 
@@ -55,10 +61,7 @@ void main() {
         difficulty: const Value('moderate'),
       );
 
-  Future<void> pumpDiploma(
-    WidgetTester tester, {
-    bool showcase = false,
-  }) async {
+  Future<void> pumpDiploma(WidgetTester tester) async {
     LocaleSettings.setLocaleRaw('fr');
     await tester.pumpWidget(
       ProviderScope(
@@ -66,11 +69,7 @@ void main() {
           databaseProvider.overrideWithValue(db),
           trailConfigProvider.overrideWithValue(config),
           currentTrailIdProvider.overrideWith((ref) => trailId),
-          demoModeServiceProvider.overrideWithValue(
-            DemoModeService(
-              showcaseTrailIds: showcase ? {trailId} : <String>{},
-            ),
-          ),
+          demoModeServiceProvider.overrideWithValue(DemoModeService()),
         ],
         // AppHeader (Ph5/L6d) utilise GoRouter -> GoRouter minimal (+ /my-treks).
         child: MaterialApp.router(
@@ -100,8 +99,7 @@ void main() {
     await db.close();
   });
 
-  testWidgets('VRAI trek non fini (non-vitrine) : diplome VERROUILLE',
-      (tester) async {
+  testWidgets('trek non fini : diplome VERROUILLE', (tester) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
     // Session terminee mais parcours PAS entierement marche.
     await db.trekSessionsDao.upsertSession(TrekSession(
@@ -122,15 +120,19 @@ void main() {
     expect(find.text(t.diploma.yourName), findsNothing);
   });
 
-  testWidgets('VITRINE : diplome DEVERROUILLE (demo)', (tester) async {
+  testWidgets('AUCUNE SESSION : diplome VERROUILLE, meme en demonstration',
+      (tester) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    // Aucune session : sur un vrai trek ce serait verrouille.
-    await pumpDiploma(tester, showcase: true);
+    // Aucune session. AVANT LA TACHE 601, un sentier declare vitrine
+    // deverrouillait ici le diplome sans une seule etape marchee.
+    await pumpDiploma(tester);
 
-    // Deverrouille : pas de cadenas, le contenu du diplome est present.
-    expect(find.byIcon(Icons.lock_outline), findsNothing);
-    expect(find.text(t.diploma.yourName), findsOneWidget);
-    expect(find.text(t.diploma.recapStats), findsOneWidget);
+    expect(find.byIcon(Icons.lock_outline), findsOneWidget,
+        reason: 'un diplome se gagne par la marche, jamais par le prix du '
+            'sentier. Le sentier de demonstration est gratuit et court : on '
+            'y gagne le diplome pour de vrai, ce qui vaut infiniment mieux '
+            'en demonstration qu un diplome donne');
+    expect(find.text(t.diploma.yourName), findsNothing);
   });
 
   testWidgets(

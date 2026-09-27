@@ -294,7 +294,8 @@
     "denied": "Accesso alla posizione negato",
     "disabled": "Servizio di localizzazione disattivato",
     "offTrack": "Fuori tracciato",
-    "centerOnMe": "Centra sulla mia posizione"
+    "centerOnMe": "Centra sulla mia posizione",
+    "centeredOnTrack": "Posizione non disponibile — mappa ricentrata sul percorso"
   },
   "navAlert": {
     "offTrackBanner": "Ti stai allontanando dal sentiero — $meters m. Controlla la tua posizione.",
@@ -1076,8 +1077,12 @@
     "emptyTitle": "Nessun sentiero disponibile",
     "emptySubtitle": "Nessun sentiero è ancora proposto nel catalogo.",
     "a11y": {
-      "enterButton": "Entra nel sentiero $nom"
-    }
+      "enterButton": "Entra nel sentiero $nom",
+      "freeTrailBadge": "Sentiero gratuito"
+    },
+    "freeTrailName": "$nom — Demo gratuita",
+    "freeBadge": "Gratuito",
+    "freeTrailTagline": "Le prime $etapes tappe, in regalo. Funziona tutto: preparazione, partenza, navigazione, diario, arrivo."
   },
   "updates": {
     "readyTitle": "Aggiornamento pronto",
@@ -1145,7 +1150,7 @@
     "subscriptionTitle": "Abbonamento senza pubblicità",
     "subscriptionSubtitle": "Nessuna pubblicità ovunque, finché l'abbonamento è attivo.",
     "subscriptionIncludesNoAds": "Nessuna pubblicità in tutta l'app",
-    "subscriptionIncludesAllowance": "Un bonus di tappe a ogni periodo",
+    "subscriptionIncludesAllowance": "$steps tappe accreditate ogni mese",
     "subscriptionExcludes": "L'abbonamento non sblocca né gli strumenti completi né la realizzazione di un'escursione: per questo bisogna acquistare l'escursione.",
     "subscriptionCta": "Abbonati",
     "subscriptionActive": "Abbonamento attivo",
@@ -1157,7 +1162,9 @@
     "buyOutcomeOwned": "Escursione sbloccata. Buon cammino!",
     "buyOutcomeAlreadyOwned": "Questa escursione è già sbloccata.",
     "buyOutcomeOffline": "Mancano $steps tappe e il pagamento richiede una connessione. Non è stato addebitato nulla.",
-    "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla."
+    "buyOutcomeFailed": "Il pagamento non è andato a buon fine. Non è stato addebitato nulla.",
+    "subscriptionPrice": "$price al mese",
+    "subscriptionAllowanceForLife": "Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento."
   },
   "signalement": {
     "title": "Segnala",

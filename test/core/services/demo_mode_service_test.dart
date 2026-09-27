@@ -60,47 +60,58 @@ void main() {
     });
   });
 
-  // PARITE GR20, LOT 2 (2.A, #99433) — debridage de la VITRINE.
-  group('DemoModeService -- vitrine debloquee (LOT 2)', () {
-    test('vitrine NON bridee sans achat, autre sentier non achete BRIDE',
-        () async {
-      // Aucun achat. La vitrine est declaree via injection (equivaut au flag
-      // TrailConfig.isShowcaseTrail derive du catalogue), zero hardcode ici.
-      SharedPreferences.setMockInitialValues({});
-      final prefs = await SharedPreferences.getInstance();
-      final service = DemoModeService(
-        prefs: prefs,
-        showcaseTrailIds: {'vitrine-demo'},
-      );
-
-      // Vitrine : DEBRIDEE (GPS + journal jouables, pas de bandeau demo) meme
-      // sans achat.
-      expect(service.isShowcaseTrail('vitrine-demo'), isTrue);
-      expect(service.isDemoMode('vitrine-demo'), isFalse);
-      expect(service.isGpsEnabled('vitrine-demo'), isTrue);
-      expect(service.isJournalReadOnly('vitrine-demo'), isFalse);
-      expect(service.shouldShowDemoBanner('vitrine-demo'), isFalse);
-
-      // GARDE-FOU : un AUTRE sentier non achete reste BRIDE (modele a la carte
-      // intact).
-      expect(service.isDemoMode('sentier-payant'), isTrue);
-      expect(service.isGpsEnabled('sentier-payant'), isFalse);
-      expect(service.isJournalReadOnly('sentier-payant'), isTrue);
-    });
-
-    test('le sentier par defaut du catalogue est la vitrine (defaultTrail)',
-        () async {
-      // Sans injection : la source est le catalogue reel (flag isShowcaseTrail).
+  // TACHE 601 — CE SERVICE NE PORTE PLUS AUCUNE EXEMPTION.
+  //
+  // Il en portait une : un sentier declare « vitrine » n'etait JAMAIS en mode
+  // demo, meme non achete. Ce drapeau avait ete invente pour corriger une
+  // divergence relevee par un audit de parite, puis attribue a Christophe dans
+  // un commentaire de code alors qu'aucune decision ne le soutenait.
+  //
+  // CE QUE CES TESTS VERROUILLENT : ce service ne repond plus qu'a UNE question
+  // — ce trek a-t-il ete debloque ? Les sentiers GRATUITS ne passent pas par
+  // ici : leur jouabilite est resolue par `MonetizationService.accessFor`, qui
+  // lit leur PRIX. Une seule reponse, un seul endroit.
+  group('DemoModeService -- aucune exemption (tache 601)', () {
+    test('AUCUN sentier n echappe au mode demo sans achat, pas meme le '
+        'sentier GRATUIT du catalogue', () async {
       SharedPreferences.setMockInitialValues({});
       final prefs = await SharedPreferences.getInstance();
       final service = DemoModeService(prefs: prefs);
 
-      final defaultId = TrailCatalog.defaultTrail.id;
-      expect(TrailCatalog.defaultTrail.isShowcaseTrail, isTrue,
-          reason: 'La vitrine par defaut porte le flag isShowcaseTrail.');
-      expect(service.isDemoMode(defaultId), isFalse,
-          reason: 'La vitrine par defaut est jouable sans achat.');
-      expect(service.isGpsEnabled(defaultId), isTrue);
+      // Le catalogue porte bien un sentier gratuit (le sentier de demo).
+      expect(TrailCatalog.freeIds, isNotEmpty,
+          reason: 'la demonstration se fait sur un sentier GRATUIT du '
+              'catalogue, pas sur une exemption posee sur un sentier payant');
+
+      for (final id in TrailCatalog.ids) {
+        expect(service.isDemoMode(id), isTrue,
+            reason: 'sans achat et sans delegue, ce service repond « demo » '
+                'pour TOUS les sentiers, y compris $id. Il n a plus de liste '
+                'de privilegies a consulter');
+      }
+    });
+
+    test('le sentier par defaut du catalogue est PAYANT (il est redevenu '
+        'vendable)', () async {
+      expect(TrailCatalog.defaultTrail.isFreeTrail, isFalse,
+          reason: 'le Mare a Mare portait le drapeau vitrine, qui le rendait '
+              'jouable et sans-pub sans achat : il etait INVENDABLE. Le sentier '
+              'par defaut est de nouveau un sentier payant');
+      expect(TrailCatalog.defaultTrail.priceInStages,
+          TrailCatalog.defaultTrail.totalStages,
+          reason: 'son prix vaut une etape par etape — le defaut du modele');
+    });
+
+    test('le delegue de droits fait foi quand il est cable', () async {
+      SharedPreferences.setMockInitialValues({});
+      final prefs = await SharedPreferences.getInstance();
+      final service = DemoModeService(
+        prefs: prefs,
+        demoResolver: (trailId) async => trailId != 'debloque',
+      );
+
+      expect(await service.isDemoModeAsync('debloque'), isFalse);
+      expect(await service.isDemoModeAsync('autre'), isTrue);
     });
   });
 }

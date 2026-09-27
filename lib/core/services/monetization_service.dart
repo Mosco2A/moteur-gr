@@ -72,41 +72,62 @@ class StepPack {
 
 /// Niveau d'accès d'un trek (StepWays LOT 1 — remplace le booléen par-trek).
 ///
-/// Trois niveaux (`MODELE_ECO.md` du 08/09, §2) :
-///   - [free]       : trek ni possédé ni couvert par un abo → démo bridée + pub ;
+/// Quatre niveaux (`MODELE_ECO.md` du 08/09, §2, + sentier gratuit du 27/09) :
+///   - [free]       : trek PAYANT ni possédé ni couvert par un abo → démo
+///                    bridée + pub ;
+///   - [freeTrail]  : SENTIER GRATUIT (prix nul) → entièrement jouable, ET avec
+///                    pub, parce qu'il n'a rien payé ;
 ///   - [subscriber] : abo light actif → SANS PUB PARTOUT + cagnotte d'étapes,
 ///                    mais **ni les outils complets ni la réalisation** ;
-///   - [owned]      : trek acheté (ou vitrine) → outils COMPLETS pour ce trek,
-///                    réalisation, et sans pub sur ce trek.
+///   - [owned]      : trek acheté → outils COMPLETS pour ce trek, réalisation,
+///                    et sans pub sur ce trek.
 ///
-/// Un sentier VITRINE (parité GR20) est traité comme [owned] (jouable sans
-/// achat) — voir [MonetizationService.accessFor].
+/// POURQUOI UN QUATRIÈME NIVEAU (tâche 601), ET CE QU'IL RÉPARE. Cet enum
+/// confondait deux axes que le modèle sépare : le DROIT DE JOUER et le SANS-PUB.
+/// Tant que « jouable » et « sans pub » voulaient dire la même chose (`owned`),
+/// un sentier de démonstration entièrement jouable ne pouvait exister qu'en
+/// étant déclaré `owned` — ce que faisait le drapeau `isShowcaseTrail`, lui
+/// offrant au passage le sans-pub PERMANENT réservé à l'achat, donc gratuitement
+/// ce que l'abonnement fait payer. Le sentier gratuit est précisément le cas où
+/// les deux axes divergent : jouable ET avec pub. Nommer ce niveau supprime
+/// l'exemption plutôt que de la déplacer.
 enum TrailAccess {
-  /// Gratuit : démo bridée + pub (trek non débloqué).
+  /// Gratuit sur un sentier PAYANT : démo bridée + pub (trek non débloqué).
   free,
+
+  /// SENTIER GRATUIT (prix nul) : entièrement jouable, avec pub hors mode trek.
+  freeTrail,
 
   /// Abo light actif : sans-pub app-wide + cagnotte. RIEN de plus.
   subscriber,
 
-  /// Possédé (achat confirmé) ou vitrine.
+  /// Possédé — achat confirmé.
   owned;
 
   /// Le trek est-il JOUABLE (outils complets, carte GPS, journal, réalisation) ?
   ///
-  /// UNIQUEMENT pour [owned]. **CORRIGE LA CONTRADICTION A2a (tâche 594)** :
-  /// cette règle rendait jouable tout ce qui n'était pas [free], donc l'abonné
-  /// — et un abonné light obtenait ainsi les outils complets ET la réalisation
-  /// de TOUS les treks sans en acheter un seul. L'arbitrage du 08/09 dit
-  /// exactement l'inverse, et il **prime sur #99405** : « l'abonné NE débloque
-  /// PAS les outils complets ni la réalisation — pour les outils complets d'un
-  /// trek, il faut l'acheter (comme le gratuit) ».
-  bool get isPlayable => this == TrailAccess.owned;
+  /// [owned] (on a payé) ou [freeTrail] (il n'y avait rien à payer). PAS
+  /// l'abonné : **CORRIGE LA CONTRADICTION A2a (tâche 594)** — cette règle
+  /// rendait jouable tout ce qui n'était pas [free], donc l'abonné, et un abonné
+  /// light obtenait ainsi les outils complets ET la réalisation de TOUS les treks
+  /// sans en acheter un seul. L'arbitrage du 08/09 dit exactement l'inverse, et
+  /// il **prime sur #99405** : « l'abonné NE débloque PAS les outils complets ni
+  /// la réalisation — pour les outils complets d'un trek, il faut l'acheter
+  /// (comme le gratuit) ».
+  bool get isPlayable =>
+      this == TrailAccess.owned || this == TrailAccess.freeTrail;
 
   /// Faut-il afficher la pub pour ce niveau ? (source unique #99404)
   ///
-  /// Pub UNIQUEMENT en [free]. [subscriber] et [owned] sont sans-pub — c'est
-  /// ce que l'abo light donne, et c'est tout ce qu'il donne.
-  bool get showAds => this == TrailAccess.free;
+  /// Pub en [free] ET en [freeTrail] : le sans-pub est la contrepartie d'avoir
+  /// PAYÉ (§3, « trek acheté → sans pub sur ce trek »), pas d'être jouable. Un
+  /// sentier gratuit n'a rien payé, il reste donc dans le niveau gratuit du §2,
+  /// « AVEC pub » — et la règle de Chris « EN MODE TREK JAMAIS de publicité »
+  /// s'applique par-dessus, pour lui comme pour tous les autres.
+  /// [subscriber] et [owned] sont sans-pub — c'est ce que l'abo light donne, et
+  /// c'est tout ce qu'il donne.
+  bool get showAds =>
+      this == TrailAccess.free || this == TrailAccess.freeTrail;
 }
 
 /// Issue d'un versement de la CAGNOTTE de l'abonné (modèle éco §2, A5).
@@ -154,22 +175,52 @@ class PurchaseRestoreOutcome {
   String toString() => 'PurchaseRestoreOutcome($status, $itemsRestored)';
 }
 
-/// MONTANT DE LA CAGNOTTE DE L'ABONNÉ — **DÉCISION MANQUANTE (tâche 594, A5)**.
+/// MONTANT DE LA CAGNOTTE DE L'ABONNÉ — **DÉCIDÉ PAR CHRISTOPHE LE 27/09**.
 ///
-/// Le modèle éco du 08/09 dit que l'abo light donne « sans pub partout + une
-/// **cagnotte** d'étapes ». Le nombre d'étapes et la périodicité ne sont
-/// chiffrés NULLE PART : ni dans `MODELE_ECO.md`, ni dans le code (recherche
-/// `cagnotte`, `monthlyCredit`, `periodicCredit`, `subscriberCredit` : zéro
-/// résultat, constat de l'inventaire 593 §M4).
+/// Verbatim (27/09 12:26) : « Le prix on l'avait fixé à 2 euros mous = pub nul
+/// part et 2 étapes cagnottes par mois ». Deux étapes par mois, versées tant que
+/// l'abonnement est actif.
 ///
-/// Un chiffre inventé dans un modèle économique est une faute, pas un défaut :
-/// le MÉCANISME est implémenté ([MonetizationService.grantSubscriberAllowance])
-/// et la VALEUR reste ici, en un seul point nommé, à `null` = **non décidé**.
-/// Tant qu'elle vaut `null`, aucune étape n'est versée et l'appel le signale
-/// ([SubscriberAllowanceOutcome.pendingDecision]).
+/// LA VALEUR A ATTENDU SA DÉCISION, ELLE NE L'A PAS INVENTÉE. La tâche 594 avait
+/// implémenté le MÉCANISME complet ([MonetizationService.grantSubscriberAllowance])
+/// et laissé cette constante à `null` = non décidé, parce qu'un chiffre inventé
+/// dans un modèle économique est une faute et pas un défaut. Le prix avait été
+/// fixé à l'oral et jamais consigné : il l'est maintenant, ici et dans
+/// `MODELE_ECO.md`.
 ///
-/// Poser la décision = remplacer `null` par un nombre d'étapes. Rien d'autre.
-const int? kSubscriberStepsAllowance = null;
+/// CE QUE CETTE CAGNOTTE N'EST PAS : un cadeau de bienvenue. C'est un versement
+/// PÉRIODIQUE, borné par l'échéance de l'abonnement (une fois par période, cf.
+/// [kSubscriberAllowanceGrantedAtPrefsKey]), qui s'arrête avec l'abonnement. Les
+/// étapes déjà versées, elles, restent acquises À VIE — règle d'or #99404 :
+/// crédits à vie, sans-pub lié à un état actif. Les deux ne se mélangent pas.
+/// LE TYPE RESTE NULLABLE À DESSEIN : `null` = « pas décidé » est un MÉCANISME
+/// ([SubscriberAllowanceOutcome.pendingDecision]), pas un reste de brouillon.
+/// Il a servi une fois et resservira au prochain chiffre en attente ; le rendre
+/// non-nullable parce qu'une valeur est enfin posée supprimerait la seule façon
+/// qu'a ce code de dire « je ne sais pas encore » au lieu d'inventer.
+// ignore: unnecessary_nullable_for_final_variable_declarations
+const int? kSubscriberStepsAllowance = 2;
+
+/// PRIX DE L'ABONNEMENT, EN EUROS PAR MOIS — **DÉCIDÉ PAR CHRISTOPHE LE 27/09**.
+///
+/// Verbatim (27/09 12:26) : « Le prix on l'avait fixé à 2 euros mous = pub nul
+/// part et 2 étapes cagnottes par mois ».
+///
+/// CE QU'IL ACHÈTE, ET CE QU'IL N'ACHÈTE PAS. Sans publicité PARTOUT tant qu'il
+/// est actif, plus [kSubscriberStepsAllowance] étapes par mois. Il ne débloque NI
+/// les outils complets NI la réalisation d'un trek : pour cela il faut acheter le
+/// trek (arbitrage du 08/09, qui prime sur #99405 et reste entier).
+///
+/// UN PRIX QUI VIT À L'ORAL EST UN PRIX QU'ON AFFICHE FAUX LE JOUR OÙ ON
+/// L'AFFICHE. Il est déclaré ici, en un seul point, et l'écran d'abonnement le
+/// lit — il annonçait jusqu'ici ce que l'abo donne et ce qu'il ne donne pas, sans
+/// jamais dire ce qu'il coûte.
+///
+/// La PÉRIODE facturée est le mois. Ne pas la confondre avec
+/// [kSubscriptionNoAdsWindow] (31 jours), qui n'est pas une durée commerciale
+/// mais le temps pendant lequel l'appareil accepte de croire un reçu sans
+/// nouvelle preuve.
+const double kSubscriptionPriceEur = 2.0;
 
 /// Clé prefs : début de la période de cagnotte déjà versée (ISO-8601).
 const kSubscriberAllowanceGrantedAtPrefsKey =
@@ -362,7 +413,7 @@ class TrailFeatures {
 /// gardes de routes.
 ///
 /// Injection intégrale (tests) : collaborateurs + horloge [nowFn] (reward 24 h)
-/// + `showcaseTrailIds`. La persistance durable reste SharedPreferences via
+/// + `freeTrailIds`. La persistance durable reste SharedPreferences via
 /// [WalletStore] (DB volatile) ; ce service ne fait QUE la règle métier.
 class MonetizationService {
   MonetizationService({
@@ -373,7 +424,7 @@ class MonetizationService {
     required ConnectivityMonitor connectivityMonitor,
     DateTime Function()? nowFn,
     SharedPreferences? prefs,
-    Set<String>? showcaseTrailIds,
+    Set<String>? freeTrailIds,
   })  : _wallet = walletStore,
         _entitlementsDao = entitlementsDao,
         _noAdsDao = noAdsDao,
@@ -381,7 +432,7 @@ class MonetizationService {
         _connectivity = connectivityMonitor,
         _now = nowFn ?? DateTime.now,
         _prefs = prefs,
-        _showcaseTrailIds = showcaseTrailIds;
+        _freeTrailIds = freeTrailIds;
 
   final WalletStore _wallet;
   final TrekEntitlementsDao _entitlementsDao;
@@ -393,7 +444,9 @@ class MonetizationService {
   final DateTime Function() _now;
 
   SharedPreferences? _prefs;
-  final Set<String>? _showcaseTrailIds;
+
+  /// Sentiers GRATUITS (injectés en test, sinon dérivés du catalogue).
+  final Set<String>? _freeTrailIds;
 
   Future<SharedPreferences> get _preferences async =>
       _prefs ??= await SharedPreferences.getInstance();
@@ -403,12 +456,16 @@ class MonetizationService {
   /// Indique si l'état persisté a été chargé ([load]).
   bool get isLoaded => _loaded;
 
-  // --- Vitrine (parité GR20, LOT 2 #99433) ---------------------------------
+  // --- Sentiers GRATUITS (prix nul, tâche 601) ------------------------------
 
-  Set<String> get _showcase => _showcaseTrailIds ?? TrailCatalog.showcaseIds;
+  /// Ensemble effectif des sentiers gratuits (injection > catalogue).
+  Set<String> get _gratuits => _freeTrailIds ?? TrailCatalog.freeIds;
 
-  /// Vrai si [trailId] est un sentier VITRINE (débloqué jouable sans achat).
-  bool isShowcaseTrail(String trailId) => _showcase.contains(trailId);
+  /// Vrai si [trailId] est un sentier GRATUIT — son prix est nul.
+  ///
+  /// Dérive du PRIX porté par la donnée du catalogue, jamais d'un id de localité
+  /// en dur ni d'un drapeau d'exemption (tâche 601).
+  bool isFreeTrail(String trailId) => _gratuits.contains(trailId);
 
   // --- Boot / migration -----------------------------------------------------
 
@@ -503,22 +560,31 @@ class MonetizationService {
   Stream<TrekEntitlement?> watchEntitlement(String trailId) =>
       _entitlementsDao.watchByTrailId(trailId);
 
-  /// Niveau d'accès effectif du trek (spec §2.4) : owned > subscriber > free.
+  /// Niveau d'accès effectif du trek (spec §2.4) :
+  /// owned > freeTrail > subscriber > free.
   ///
-  /// Priorité : possédé/vitrine → [TrailAccess.owned] ; sinon abo actif →
-  /// [TrailAccess.subscriber] ; sinon [TrailAccess.free] (démo + pub).
+  /// Priorité : possédé → [TrailAccess.owned] ; sinon sentier GRATUIT →
+  /// [TrailAccess.freeTrail] ; sinon abo actif → [TrailAccess.subscriber] ;
+  /// sinon [TrailAccess.free] (démo bridée + pub).
+  ///
+  /// POURQUOI LE SENTIER GRATUIT PASSE AVANT L'ABONNÉ : le niveau doit rester
+  /// JOUABLE pour un abonné qui marche la démo. Son sans-pub, lui, ne dépend pas
+  /// de ce niveau — [isNoAdsActive] interroge l'abonnement séparément, parce que
+  /// « jouable » et « sans pub » sont deux axes distincts (tâche 601).
+  ///
+  /// ET POURQUOI `owned` PASSE AVANT LE GRATUIT : si un sentier gratuit devenait
+  /// payant un jour, un randonneur qui l'a réellement acheté garde son droit.
   Future<TrailAccess> accessFor(String trailId) async {
-    if (isShowcaseTrail(trailId) || await ownsTrail(trailId)) {
-      return TrailAccess.owned;
-    }
+    if (await ownsTrail(trailId)) return TrailAccess.owned;
+    if (isFreeTrail(trailId)) return TrailAccess.freeTrail;
     if (await isSubscriberActive()) return TrailAccess.subscriber;
     return TrailAccess.free;
   }
 
   /// LE DROIT DE **RÉALISER** LE TREK [trailId] (tâche 594, A1).
   ///
-  /// SOURCE UNIQUE du verrou de réalisation. Vrai UNIQUEMENT pour un trek
-  /// acheté (ou vitrine) : `accessFor == owned`.
+  /// SOURCE UNIQUE du verrou de réalisation. Vrai pour un trek ACHETÉ, et pour
+  /// un SENTIER GRATUIT — dont il n'y avait rien à acheter : `accessFor.isPlayable`.
   ///
   /// CE QUI MANQUAIT. Le modèle éco réserve la réalisation au trek acheté
   /// (§2, « Trek acheté : outils COMPLETS … + réalisation »). Le code ne la
@@ -535,7 +601,7 @@ class MonetizationService {
   /// HORS-LIGNE : dérive des droits Drift LOCAUX, aucun appel réseau — un
   /// payeur n'est jamais bloqué faute de réseau sur le sentier.
   Future<bool> canRealizeTrail(String trailId) async {
-    return (await accessFor(trailId)) == TrailAccess.owned;
+    return (await accessFor(trailId)).isPlayable;
   }
 
   /// Nombre d'étapes déjà acquises pour [trailId] (base du non-repaiement).
@@ -625,6 +691,21 @@ class MonetizationService {
     required int totalStages,
   }) async {
     if (await ownsTrail(trailId)) {
+      return PurchaseOutcome(
+        status: PurchaseStatusResult.alreadyOwned,
+        trailId: trailId,
+      );
+    }
+
+    // ON NE VEND PAS UN SENTIER GRATUIT (tâche 601). Son prix est nul : il n'y a
+    // rien à débiter, rien à compléter au store, et l'accès est DÉJÀ acquis.
+    //
+    // ET ON NE LUI POSE PAS DE DROIT D'ACHAT POUR AUTANT. Ce serait la même
+    // faute que le drapeau vitrine sous un autre nom : une ligne `owned` en base
+    // lui donnerait le sans-pub PERMANENT réservé à celui qui a payé. Sa
+    // gratuité est une propriété du catalogue, lue par [accessFor] ; elle n'a
+    // aucune raison de se recopier en droit acquis.
+    if (isFreeTrail(trailId)) {
       return PurchaseOutcome(
         status: PurchaseStatusResult.alreadyOwned,
         trailId: trailId,
@@ -881,12 +962,25 @@ class MonetizationService {
   /// SOURCE UNIQUE de la règle sans-pub (#99404) :
   /// `ownsTrail(trailId) || isSubscriberActive || isRewardNoAdsActive`.
   ///
-  /// La vitrine (parité GR20), jouable sans achat, est traitée sans-pub via
-  /// [accessFor] (niveau `owned`) — cohérent avec [TrailAccess.owned.showAds] ==
-  /// false. Aucune UI ne recalcule cette règle ; `AdService.shouldShowAd(isPaid:
-  /// …)` se branche dessus (branchement app-wide = ST7, hors périmètre ST4).
+  /// LE SANS-PUB EST LA CONTREPARTIE D'AVOIR PAYÉ, jamais d'être jouable
+  /// (modèle éco §3 : « trek acheté → sans pub sur ce trek »). Un SENTIER
+  /// GRATUIT ([TrailAccess.freeTrail]) est entièrement jouable et n'a rien
+  /// payé : il relève du niveau gratuit du §2, « AVEC pub ». C'est ce que
+  /// `accessFor` produit, et la nuance n'est pas décorative — le drapeau
+  /// vitrine, lui, résolvait le sentier de démonstration en `owned` et lui
+  /// offrait donc le sans-pub PERMANENT réservé à l'achat : il donnait
+  /// gratuitement ce que l'abonnement fait payer (tâche 601).
+  ///
+  /// CE QUI RESTE VRAI APRÈS UNE ANNULATION D'ABONNEMENT (règle de Chris,
+  /// 27/09 12:27 : « quand il arrête l'abonnement il revoit la pub partout sauf
+  /// sur les sentiers achetés ») : la première condition ne porte AUCUNE
+  /// échéance — la propriété d'un sentier est permanente. Arrêter l'abonnement
+  /// éteint la deuxième et laisse la première intacte.
+  ///
+  /// Aucune UI ne recalcule cette règle ; `AdService.shouldShowAd(isPaid: …)`
+  /// se branche dessus (branchement app-wide = ST7, hors périmètre ST4).
   Future<bool> isNoAdsActive(String trailId) async {
-    // owned OU vitrine (accessFor renvoie owned pour les deux).
+    // ACHETÉ : permanent, sans échéance (le « sauf » de la règle de Chris).
     if (await accessFor(trailId) == TrailAccess.owned) return true;
     if (await isSubscriberActive()) return true;
     if (await isRewardNoAdsActive()) return true;
@@ -988,19 +1082,21 @@ class MonetizationService {
     _log.d('[Monetization] reset');
   }
 
-  // --- Features (rétro-compat + parité vitrine) ----------------------------
+  // --- Features (rétro-compat) ----------------------------------------------
 
   /// Resynchronise le cache synchrone [FeatureFlags] premium depuis les droits.
   ///
-  /// `premium:trailId = owned || vitrine`. Les gardes de routes synchrones
-  /// lisent ce cache ; il est réalimenté au boot ([load]) et à chaque mutation.
+  /// `premium:trailId = owned`. Les gardes de routes synchrones lisent ce cache ;
+  /// il est réalimenté au boot ([load]) et à chaque mutation.
+  ///
+  /// LES SENTIERS GRATUITS N'Y ENTRENT PAS (tâche 601). `premium` dit « ce trek a
+  /// été PAYÉ » : y inscrire un sentier gratuit — ce que faisait la boucle
+  /// vitrine — c'est refabriquer l'exemption dans un cache. Leur jouabilité est
+  /// portée par [accessFor], source unique, qui lit leur prix.
   Future<void> _syncFeatureFlags() async {
     final entitlements = await _entitlementsDao.getAll();
     for (final e in entitlements) {
       FeatureFlags.setOverride('premium', e.trailId, enabled: e.owned);
-    }
-    for (final trailId in _showcase) {
-      FeatureFlags.setOverride('premium', trailId, enabled: true);
     }
   }
 

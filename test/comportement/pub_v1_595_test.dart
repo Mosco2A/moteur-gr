@@ -179,6 +179,7 @@ void main() {
     bool? pubPersonnalisee,
     TrackingSessionStatus tracking = TrackingSessionStatus.idle,
     TrekSession? sessionPersistee,
+    Set<String> sentiersGratuits = const <String>{},
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final iap = WalletIapService(
@@ -195,7 +196,7 @@ void main() {
       connectivityMonitor: _ReseauEnLigne(),
       nowFn: () => maintenant,
       prefs: prefs,
-      showcaseTrailIds: const <String>{},
+      freeTrailIds: sentiersGratuits,
     );
     await monetisation.load();
 
@@ -758,7 +759,7 @@ void main() {
         connectivityMonitor: _ReseauEnLigne(),
         nowFn: () => maintenant,
         prefs: prefs,
-        showcaseTrailIds: const <String>{},
+        freeTrailIds: const <String>{},
       );
       await monetisation.load();
       final c = ProviderContainer(
@@ -862,6 +863,85 @@ void main() {
       expect(fautifs, isEmpty,
           reason: 'le module du secours ne doit meme pas CONNAITRE le module '
               'publicitaire.\n  ${fautifs.join('\n  ')}');
+    });
+  });
+
+  // =========================================================================
+  // B7 — LA PUBLICITE SUR UN SENTIER GRATUIT (tache 601)
+  // =========================================================================
+  group('B7 — un sentier GRATUIT, la pub, et le mode trek', () {
+    // L'ARBITRAGE, ET SA RAISON. Le sentier de demonstration de StepWays est
+    // desormais un SENTIER GRATUIT du catalogue, entierement jouable. La question
+    // qu'il pose est neuve : etant gratuit, est-il avec ou sans publicite ?
+    //
+    // CE QUE DIT LE MODELE. Le sans-pub est la contrepartie d'avoir PAYE
+    // (MODELE_ECO section 3 : « trek achete -> sans pub sur ce trek » ; « abo
+    // actif -> sans pub partout tant qu'on paie » ; « reward video -> 24 h »).
+    // Trois etats payants, aucun autre. Un sentier gratuit n'en a aucun : il
+    // releve donc du niveau gratuit de la section 2, « AVEC pub ».
+    //
+    // ET CE QUE COUTERAIT L'INVERSE. Un sentier de demonstration sans publicite
+    // offrirait GRATUITEMENT le benefice principal de l'abonnement a 2 euros —
+    // « pub nulle part ». La demonstration cesserait de demontrer le produit
+    // payant pour le concurrencer. C'est exactement ce que faisait le drapeau
+    // vitrine, qui resolvait le sentier en « possede ».
+    //
+    // LA LIMITE, ELLE, EST ABSOLUE : en mode trek, JAMAIS. La regle de Chris ne
+    // connait pas d'exception, et un sentier gratuit n'en fabrique pas une.
+    const gratuit = 'sentier-gratuit';
+
+    test('hors mode trek : le sentier gratuit est AVEC pub', () async {
+      final (c, _) = await monterLeMonde(sentiersGratuits: {gratuit});
+
+      expect(await c.read(bannerAdProvider(gratuit).future), isNotNull,
+          reason: 'gratuit = avec pub (modele eco section 2). Le sans-pub se '
+              'paie : sentier achete, abonnement actif, ou recompense video');
+      expect(regie.demandes, hasLength(1),
+          reason: 'la demande part REELLEMENT a la regie — on ne mesure pas '
+              'des pixels');
+    });
+
+    test('EN MODE TREK sur le sentier gratuit : AUCUNE demande', () async {
+      final (c, _) = await monterLeMonde(
+        sentiersGratuits: {gratuit},
+        tracking: TrackingSessionStatus.recording,
+      );
+
+      expect(await c.read(bannerAdProvider(gratuit).future), isNull,
+          reason: '« EN MODE TREK JAMAIS » (Chris, 27/09 10:31) ne connait pas '
+              'd exception, et la gratuite du sentier n en cree pas une : le '
+              'randonneur qui marche ne voit pas de banniere, qu il ait paye '
+              'ce sentier ou non');
+      expect(regie.demandes, isEmpty,
+          reason: 'rien n est meme DEMANDE : la regle est evaluee avant le CMP');
+    });
+
+    test('un ABONNE actif : aucune pub sur le sentier gratuit non plus',
+        () async {
+      final (c, monetisation) =
+          await monterLeMonde(sentiersGratuits: {gratuit});
+      await monetisation.onSubscriptionValidated();
+
+      expect(await c.read(bannerAdProvider(gratuit).future), isNull,
+          reason: 'l abonnement a 2 euros donne « pub nulle part » tant qu il '
+              'est actif — un sentier gratuit n y fait pas exception');
+      expect(regie.demandes, isEmpty);
+    });
+
+    test('le sentier gratuit ne porte PAS le sans-pub permanent d un achat',
+        () async {
+      final (c, monetisation) =
+          await monterLeMonde(sentiersGratuits: {gratuit});
+      await portefeuille.credit(10);
+      expect((await monetisation.buyTrail('gr20', totalStages: 10)).isOwned,
+          isTrue);
+
+      expect(await c.read(bannerAdProvider('gr20').future), isNull,
+          reason: 'le sentier ACHETE est sans pub, et le reste');
+      expect(await c.read(bannerAdProvider(gratuit).future), isNotNull,
+          reason: 'le sentier GRATUIT, lui, n a rien paye : cette difference '
+              'est le coeur de la tache 601 — un achat donne un privilege '
+              'permanent, la gratuite n en donne aucun');
     });
   });
 }

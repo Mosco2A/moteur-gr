@@ -43,9 +43,19 @@ void main() {
       // du catalogue restent neutres (aucune localite Corse cablee), et surtout
       // le MOTEUR ne hardcode rien (cf. test dedie plus bas). On borne donc
       // l'interdiction aux sentiers != demo par defaut.
+      //
+      // TACHE 601 : le catalogue porte maintenant DEUX entrees Mare a Mare — le
+      // sentier payant et le sentier de demonstration GRATUIT, dont les donnees
+      // sont celles du premier. Le sentier gratuit a le meme droit que celui
+      // qu'il fait decouvrir a nommer sa vraie localite : c'est une DONNEE, et
+      // la genericite du moteur se prouve ailleurs (test dedie plus bas).
       const interdits = ['corse', 'corsica', 'mare a mare', 'mare-a-mare', 'mam'];
+      final sentiersMareAMare = <String>{
+        TrailCatalog.defaultTrail.id,
+        ...TrailCatalog.freeIds,
+      };
       final autres = TrailCatalog.all
-          .where((c) => c.id != TrailCatalog.defaultTrail.id);
+          .where((c) => !sentiersMareAMare.contains(c.id));
       for (final c in autres) {
         final blob = [
           c.id,

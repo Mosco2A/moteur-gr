@@ -22,8 +22,12 @@ import '../services/sensor_fusion_service.dart';
 ///
 /// RECONCILIE (StepWays LOT 1, ST4) : le mode demo est delegue a la SOURCE
 /// UNIQUE `MonetizationService` (droits Drift) via [DemoModeService.isDemoModeAsync],
-/// supprimant le doublon avec la cle prefs legacy `purchased_trail_ids`. La
-/// detection vitrine (`isShowcaseTrail`) reste autonome (catalogue).
+/// supprimant le doublon avec la cle prefs legacy `purchased_trail_ids`.
+///
+/// PLUS AUCUNE DETECTION AUTONOME (tache 601) : ce service portait une detection
+/// « vitrine » a lui, qui exemptait un sentier du mode demo sans passer par les
+/// droits. Les sentiers GRATUITS sont desormais resolus jouables par la source
+/// unique, qui lit leur prix — une seule reponse, un seul endroit.
 final demoModeServiceProvider = Provider<DemoModeService>(
   (ref) => DemoModeService(
     demoResolver: (trailId) =>

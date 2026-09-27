@@ -38,7 +38,7 @@ class TrailConfig {
     this.defaultDuration = 14,
     this.offlineFirst = true,
     this.hasPremium = false,
-    this.isShowcaseTrail = false,
+    this.priceStages,
     this.firebaseProjectId,
     this.emergencyNumbers = const [],
     this.seedAssetsBase,
@@ -98,19 +98,40 @@ class TrailConfig {
   /// Active les fonctionnalités premium
   final bool hasPremium;
 
-  /// Sentier VITRINE de démonstration (déblocage jouable sans achat).
+  /// PRIX du sentier, EN ÉTAPES. `null` = le prix vaut [totalStages].
   ///
-  /// PARITÉ GR20, LOT 2 (#99433) : le sentier de démonstration par défaut
-  /// (`TrailCatalog.defaultTrail`) est une VITRINE entièrement jouable —
-  /// GPS, journal et navigation actifs — SANS achat, pour que la démo se
-  /// démontre de bout en bout (parité avec le mode démo « tout débloqué » de
-  /// GR20). C'est un FLAG de DONNÉE porté par la config du sentier, jamais un
-  /// id de localité codé en dur dans le moteur.
+  /// L'unité du modèle économique est l'ÉTAPE (`MODELE_ECO.md` §1) : un trek de
+  /// N étapes coûte N étapes, calées sur le palier store à 0,99 €. Ce champ
+  /// EXISTE pour qu'un sentier puisse dire un prix DIFFÉRENT de son nombre
+  /// d'étapes — et le seul cas qui compte aujourd'hui est le prix ZÉRO : un
+  /// SENTIER GRATUIT ([isFreeTrail]).
   ///
-  /// GARDE-FOU (décision Christophe) : ce flag ne concerne QUE la vitrine. Le
-  /// modèle de monétisation à la carte reste INTACT sur tous les autres
-  /// sentiers (non-vitrine = mode démo / paywall inchangé). `false` par défaut.
-  final bool isShowcaseTrail;
+  /// POURQUOI UN PRIX ET PAS UN DRAPEAU « DÉMO », ET C'EST TOUT LE SUJET DE LA
+  /// TÂCHE 601. Ce champ remplace un booléen `isShowcaseTrail` qui disait « ce
+  /// sentier ÉCHAPPE au mode démo ». Une exemption est un TROU dans le modèle :
+  /// elle n'a pas de prix, elle ne se déduit de rien, et elle emporte tout ce
+  /// qui s'accroche à `owned` — y compris le sans-pub permanent réservé à
+  /// l'achat, que le sentier de démonstration recevait ainsi gratuitement. Un
+  /// PRIX, lui, est une ENTRÉE du modèle : de lui se déduisent l'accès (rien à
+  /// payer, donc jouable) et la publicité (rien de payé, donc niveau gratuit
+  /// du §2). Le drapeau avait par ailleurs été attribué à Christophe dans un
+  /// commentaire de code sans qu'aucune décision ne le soutienne, et il a dit
+  /// le 27/09 n'avoir jamais parlé de sentier vitrine.
+  ///
+  /// Un sentier gratuit n'est donc PAS un sentier payant débridé : c'est un
+  /// sentier de plus au catalogue, dont le prix est nul.
+  final int? priceStages;
+
+  /// Prix EFFECTIF du sentier en étapes (défaut : une étape par étape).
+  int get priceInStages => priceStages ?? totalStages;
+
+  /// Vrai si ce sentier est GRATUIT — son prix est nul.
+  ///
+  /// Gratuit par NATURE, pas par exemption : il n'y a rien à payer, donc rien
+  /// à débloquer. Corollaire assumé (modèle éco §2/§3) : n'ayant rien payé, il
+  /// relève du niveau gratuit côté publicité — hors mode trek, où la règle de
+  /// Chris « EN MODE TREK JAMAIS de publicité » prime sur tout.
+  bool get isFreeTrail => priceInStages == 0;
 
   /// ID du projet Firebase (null = pas de backend Firebase)
   final String? firebaseProjectId;

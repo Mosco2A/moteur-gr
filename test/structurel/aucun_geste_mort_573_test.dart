@@ -56,7 +56,30 @@ import 'parcours_reel.dart';
 /// cochee, un bouton « Actualiser » sur une donnee inchangee. La regle reste
 /// l'inverse par defaut — c'est au geste inerte de se justifier, jamais au test
 /// de deviner.
-const gestesInertesAssumes = <String, String>{};
+const gestesInertesAssumes = <String, String>{
+  // LE ZOOM ARRIERE DE LA CARTE (Icons.remove, 58646). CE N'EST PAS LE BOUTON
+  // QUI EST MUET, C'EST LA MESURE QUI EST AVEUGLE — et il faut le dire plutot
+  // que de laisser l'invariante crier au loup.
+  //
+  // [empreinteEcran] est faite de textes, d'icones, de couleurs de fond, de
+  // champs et de selections. Elle ne contient PAS la camera de la carte. Un
+  // geste dont le seul effet est de deplacer cette camera lui est donc invisible,
+  // quoi qu'il fasse reellement sur l'appareil. Le zoom AVANT est dans le meme
+  // cas et se trouve deja ecarte par [gestesEvites].
+  //
+  // POURQUOI CETTE LIGNE APPARAIT MAINTENANT (tache 601). La mesure n'atteignait
+  // pas ces boutons : sur le meme ecran, le bouton photo joue avant eux restait
+  // suspendu pour toujours sur le canal de l'appareil photo, et tous les gestes
+  // suivants etaient classes « non joues » au lieu d'etre mesures. Depuis que le
+  // sentier par defaut est redevenu PAYANT, ce bouton repond immediatement (il
+  // ouvre le paywall) : l'ecran se reconstruit, la mesure continue, et elle
+  // arrive jusqu'ici. Son voisin « centrer sur moi » etait, lui, VRAIMENT muet
+  // sans position — il a ete corrige (il dit desormais pourquoi il recentre sur
+  // le trace) et reste donc mesure.
+  'icone-58646': 'zoom arriere de la carte : l empreinte d ecran ne contient '
+      'pas la camera de la carte, donc aucun geste de camera ne peut y '
+      'apparaitre (le zoom avant est dans le meme cas, ecarte par gestesEvites)',
+};
 
 void main() {
   for (final r in routesDeclarees()) {

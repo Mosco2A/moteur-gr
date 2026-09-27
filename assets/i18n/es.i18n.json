@@ -294,7 +294,8 @@
     "denied": "Acceso a la ubicación denegado",
     "disabled": "Servicio de ubicación desactivado",
     "offTrack": "Fuera del sendero",
-    "centerOnMe": "Centrar en mi posición"
+    "centerOnMe": "Centrar en mi posición",
+    "centeredOnTrack": "Ubicación no disponible — mapa recentrado en el trazado"
   },
   "navAlert": {
     "offTrackBanner": "Te estás alejando del sendero — $meters m. Comprueba tu posición.",
@@ -1076,8 +1077,12 @@
     "emptyTitle": "Ningún sendero disponible",
     "emptySubtitle": "Aún no hay ningún sendero en el catálogo.",
     "a11y": {
-      "enterButton": "Entrar en el sendero $nom"
-    }
+      "enterButton": "Entrar en el sendero $nom",
+      "freeTrailBadge": "Sendero gratuito"
+    },
+    "freeTrailName": "$nom — Demo gratis",
+    "freeBadge": "Gratis",
+    "freeTrailTagline": "Las primeras $etapes etapas, de regalo. Todo funciona: preparación, salida, navegación, diario, llegada."
   },
   "updates": {
     "readyTitle": "Actualización lista",
@@ -1145,7 +1150,7 @@
     "subscriptionTitle": "Suscripción sin publicidad",
     "subscriptionSubtitle": "Sin publicidad en ningún sitio, mientras la suscripción esté activa.",
     "subscriptionIncludesNoAds": "Sin publicidad en toda la aplicación",
-    "subscriptionIncludesAllowance": "Un bote de etapas en cada periodo",
+    "subscriptionIncludesAllowance": "$steps etapas abonadas cada mes",
     "subscriptionExcludes": "La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.",
     "subscriptionCta": "Suscribirse",
     "subscriptionActive": "Suscripción activa",
@@ -1157,7 +1162,9 @@
     "buyOutcomeOwned": "Ruta desbloqueada. ¡Buen camino!",
     "buyOutcomeAlreadyOwned": "Esta ruta ya está desbloqueada.",
     "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
-    "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada."
+    "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
+    "subscriptionPrice": "$price al mes",
+    "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción."
   },
   "signalement": {
     "title": "Notificar",

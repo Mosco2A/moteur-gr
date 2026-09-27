@@ -16,6 +16,7 @@
 // Les groupes guides et diploma sont CONSERVES : ils portent sur des ecrans
 // bien vivants et verrouillent la meme regle de grammaire unifiee.
 
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,6 +38,7 @@ import 'package:moteur_gr/features/guides/domain/town_guide_catalog.dart';
 import 'package:moteur_gr/features/guides/presentation/town_guide_detail_screen.dart';
 import 'package:moteur_gr/features/guides/presentation/town_guides_screen.dart';
 import 'package:moteur_gr/features/guides/providers/guide_providers.dart';
+import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/app_button.dart';
 import 'package:moteur_gr/shared/widgets/app_card.dart';
@@ -190,18 +192,47 @@ void main() {
 
       LocaleSettings.setLocaleRaw('fr');
 
+      // LE DIPLOME SE GAGNE : on pose les etapes du sentier et une session dont
+      // le parcours a ete entierement marche. C'est la seule clef qui ouvre cet
+      // ecran depuis la tache 601, et c'est celle du randonneur.
+      await db.stagesDao.insertAll([
+        for (var n = 1; n <= testTrailConfig.totalStages; n++)
+          StagesCompanion(
+            trailId: Value(testTrailConfig.id),
+            stageNumber: Value(n),
+            name: Value('Etape $n'),
+            distanceKm: const Value(10.0),
+            elevationGainM: const Value(500),
+            elevationLossM: const Value(400),
+            description: const Value('desc'),
+            startLat: const Value(45.0),
+            startLng: const Value(3.0),
+            endLat: const Value(45.1),
+            endLng: const Value(3.1),
+            difficulty: const Value('moderate'),
+          ),
+      ]);
+      await db.trekSessionsDao.upsertSession(TrekSession(
+        id: 'sess-skin-diploma',
+        trailId: testTrailConfig.id,
+        startedAt: DateTime.utc(2026, 6, 15),
+        finishedAt: DateTime.utc(2026, 6, 20),
+        status: 'completed',
+        completedStages: const ['1', '2', '3', '4', '5'],
+        parcoursFullyWalked: true,
+      ));
+
       await tester.pumpWidget(
         ProviderScope(
           overrides: [
             databaseProvider.overrideWithValue(db),
             trailConfigProvider.overrideWithValue(testTrailConfig),
-            // PARITE GR20 LOT 3 (#99433) : le diplome est desormais gate au
-            // finisher. Pour tester la GRAMMAIRE des composants (AppCard/
-            // AppButton) on deverrouille via la VITRINE (testTrailConfig marque
-            // showcase) — le contenu du diplome est alors rendu.
-            demoModeServiceProvider.overrideWithValue(
-              DemoModeService(showcaseTrailIds: {testTrailConfig.id}),
-            ),
+            // PARITE GR20 LOT 3 (#99433) : le diplome est gate au FINISHER.
+            // Pour tester la GRAMMAIRE des composants (AppCard/AppButton), on
+            // deverrouille de la seule facon qui existe encore (tache 601) : une
+            // session REELLEMENT marchee, posee ci-dessus. L'ancien raccourci
+            // passait par l'exemption « vitrine », qui n'existe plus.
+            demoModeServiceProvider.overrideWithValue(DemoModeService()),
             // No-op review : evite l'appel plugin natif en post-frame.
             inAppReviewServiceProvider.overrideWithValue(
               _NoReviewService(db.reviewRequestsDao),

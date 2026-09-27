@@ -1,3 +1,4 @@
+import 'mare_a_mare_centre_demo_trail_config.dart';
 import 'mare_a_mare_centre_trail_config.dart';
 import 'pyrenees_trail_config.dart';
 import 'test_trail_config.dart';
@@ -24,10 +25,15 @@ abstract final class TrailCatalog {
   /// `const` : la liste est figee a la compilation en P2-P3 (#84627). L'ordre
   /// fait foi pour le selecteur de sentier (F8D-02).
   static const List<TrailConfig> all = <TrailConfig>[
-    // Sentier de demonstration reel de StepWays (PARITE GR20, LOT 1, #99423).
-    // EN TETE => devient [defaultTrail] : l'app demarre dessus. Reste une DONNEE
-    // (TrailConfig), le moteur ne hardcode aucune localite.
+    // Sentier reel PAYANT de StepWays (#99423). EN TETE => devient
+    // [defaultTrail] : l'app demarre dessus. Reste une DONNEE (TrailConfig), le
+    // moteur ne hardcode aucune localite.
     mareAMareCentreTrailConfig,
+    // Sentier de DEMONSTRATION, GRATUIT (tache 601). Decision de Chris du
+    // 27/09 12:24 : « il y a mare a mare ET mare a mare demo des le catalogue ».
+    // Deux entrees distinctes et visibles, pas une entree bridee. Il suit
+    // immediatement le sentier qu'il fait decouvrir : on les voit ensemble.
+    mareAMareCentreDemoTrailConfig,
     testTrailConfig,
     pyreneesTrailConfig,
   ];
@@ -40,20 +46,19 @@ abstract final class TrailCatalog {
   static List<String> get ids =>
       all.map((c) => c.id).toList(growable: false);
 
-  /// Identifiants des sentiers VITRINE (débloqués jouables sans achat).
+  /// Identifiants des sentiers GRATUITS — ceux dont le PRIX est nul.
   ///
-  /// PARITÉ GR20, LOT 2 (#99433). Dérivé du FLAG de données
-  /// [TrailConfig.isShowcaseTrail] — jamais d'id de localité codé en dur. Les
-  /// services de démo/monétisation lisent cet ensemble pour traiter la vitrine
-  /// comme débloquée tout en laissant le modèle à la carte intact ailleurs.
-  static Set<String> get showcaseIds => all
-      .where((c) => c.isShowcaseTrail)
-      .map((c) => c.id)
-      .toSet();
+  /// Dérivé du PRIX porté par la donnée ([TrailConfig.priceStages] à 0), jamais
+  /// d'un id de localité codé en dur. Remplace l'ancien `showcaseIds`, qui
+  /// dérivait d'un drapeau d'EXEMPTION (`isShowcaseTrail`) au lieu d'un prix :
+  /// la différence est de fond et pas de forme (tâche 601). Une exemption est un
+  /// trou dans le modèle ; un prix nul est une entrée du modèle, dont tout le
+  /// reste — accès, réalisation, publicité — se déduit.
+  static Set<String> get freeIds =>
+      all.where((c) => c.isFreeTrail).map((c) => c.id).toSet();
 
-  /// Vrai si [id] est un sentier vitrine (débloqué jouable sans achat).
-  static bool isShowcase(String? id) =>
-      id != null && showcaseIds.contains(id);
+  /// Vrai si [id] est un sentier GRATUIT (prix nul, donc rien à débloquer).
+  static bool isFree(String? id) => id != null && freeIds.contains(id);
 
   /// Retourne la config du sentier [id], ou null si inconnu.
   static TrailConfig? byId(String id) {

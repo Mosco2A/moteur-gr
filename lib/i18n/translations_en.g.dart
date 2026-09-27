@@ -348,6 +348,7 @@ class _Translations$gps$en extends Translations$gps$fr {
 	@override String get disabled => 'Location service disabled';
 	@override String get offTrack => 'Off track';
 	@override String get centerOnMe => 'Center on my position';
+	@override String get centeredOnTrack => 'Location unavailable — map recentred on the route';
 }
 
 // Path: navAlert
@@ -839,6 +840,9 @@ class _Translations$catalog$en extends Translations$catalog$fr {
 	@override String get emptyTitle => 'No trail available';
 	@override String get emptySubtitle => 'No trail is offered in the catalog yet.';
 	@override late final _Translations$catalog$a11y$en a11y = _Translations$catalog$a11y$en._(_root);
+	@override String freeTrailName({required Object nom}) => '${nom} — Free demo';
+	@override String get freeBadge => 'Free';
+	@override String freeTrailTagline({required Object etapes}) => 'The first ${etapes} stages, on us. Everything works: planning, start, navigation, journal, finish.';
 }
 
 // Path: updates
@@ -941,7 +945,7 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get subscriptionTitle => 'Ad-free subscription';
 	@override String get subscriptionSubtitle => 'No ads anywhere, as long as the subscription is active.';
 	@override String get subscriptionIncludesNoAds => 'No ads, across the whole app';
-	@override String get subscriptionIncludesAllowance => 'A step allowance every period';
+	@override String subscriptionIncludesAllowance({required Object steps}) => '${steps} stages credited every month';
 	@override String get subscriptionExcludes => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.';
 	@override String get subscriptionCta => 'Subscribe';
 	@override String get subscriptionActive => 'Subscription active';
@@ -954,6 +958,8 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get buyOutcomeAlreadyOwned => 'This hike is already unlocked.';
 	@override String buyOutcomeOffline({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.';
 	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
+	@override String subscriptionPrice({required Object price}) => '${price} per month';
+	@override String get subscriptionAllowanceForLife => 'Credited stages are yours for life, even if you stop the subscription.';
 }
 
 // Path: signalement
@@ -2557,6 +2563,7 @@ class _Translations$catalog$a11y$en extends Translations$catalog$a11y$fr {
 
 	// Translations
 	@override String enterButton({required Object nom}) => 'Enter trail ${nom}';
+	@override String get freeTrailBadge => 'Free trail';
 }
 
 // Path: signalement.types
@@ -4256,6 +4263,7 @@ extension on TranslationsEn {
 			'gps.disabled' => 'Location service disabled',
 			'gps.offTrack' => 'Off track',
 			'gps.centerOnMe' => 'Center on my position',
+			'gps.centeredOnTrack' => 'Location unavailable — map recentred on the route',
 			'navAlert.offTrackBanner' => ({required Object meters}) => 'You are moving away from the trail — ${meters} m. Check your position.',
 			'navAlert.offTrackNotifTitle' => 'You are leaving the trail',
 			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'You are moving away from the trail (${meters} m). Check your position.',
@@ -4518,9 +4526,9 @@ extension on TranslationsEn {
 			'checklist.ui.preDep7' => 'Check laces and boot tightness',
 			'checklist.ui.preDep8' => 'Download the offline maps',
 			'checklist.ui.bagOk' => 'PACK OK — READY TO GO',
-			'checklist.ui.validateBag' => 'VALIDATE MY PACK',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.validateBag' => 'VALIDATE MY PACK',
 			'checklist.ui.cancelValidation' => 'CANCEL VALIDATION',
 			'checklist.ui.shoppingListButton' => 'SHOPPING LIST',
 			'checklist.ui.shareGroup' => 'SHARE WITH THE GROUP',
@@ -4944,6 +4952,10 @@ extension on TranslationsEn {
 			'catalog.emptyTitle' => 'No trail available',
 			'catalog.emptySubtitle' => 'No trail is offered in the catalog yet.',
 			'catalog.a11y.enterButton' => ({required Object nom}) => 'Enter trail ${nom}',
+			'catalog.a11y.freeTrailBadge' => 'Free trail',
+			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Free demo',
+			'catalog.freeBadge' => 'Free',
+			'catalog.freeTrailTagline' => ({required Object etapes}) => 'The first ${etapes} stages, on us. Everything works: planning, start, navigation, journal, finish.',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -5001,7 +5013,7 @@ extension on TranslationsEn {
 			'monetization.subscriptionTitle' => 'Ad-free subscription',
 			'monetization.subscriptionSubtitle' => 'No ads anywhere, as long as the subscription is active.',
 			'monetization.subscriptionIncludesNoAds' => 'No ads, across the whole app',
-			'monetization.subscriptionIncludesAllowance' => 'A step allowance every period',
+			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} stages credited every month',
 			'monetization.subscriptionExcludes' => 'The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.',
 			'monetization.subscriptionCta' => 'Subscribe',
 			'monetization.subscriptionActive' => 'Subscription active',
@@ -5014,6 +5026,8 @@ extension on TranslationsEn {
 			'monetization.buyOutcomeAlreadyOwned' => 'This hike is already unlocked.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'You are ${steps} steps short and payment requires a connection. Nothing was charged.',
 			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
+			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
+			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
 			'signalement.title' => 'Report',
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
@@ -5026,6 +5040,8 @@ extension on TranslationsEn {
 			'signalement.savedPendingSync' => 'It will be shared as soon as the network is back.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} awaiting sync',
 			'signalement.close' => 'Close',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.water.reportAction' => 'Report status',
 			'signalement.water.reportCount' => '{n} report(s)',
 			'signalement.water.sheetTitle' => 'Water point status?',
@@ -5033,8 +5049,6 @@ extension on TranslationsEn {
 			'signalement.water.saved' => 'Thanks! Status saved.',
 			'signalement.water.states.available' => 'Water available',
 			'signalement.water.states.low' => 'Low flow',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.water.states.dry' => 'Dry',
 			'signalement.water.states.unknown' => 'Unknown status',
 			'hebergement.title' => 'Nearby accommodation',
@@ -5540,6 +5554,8 @@ extension on TranslationsEn {
 			'nuitees.types.bivouac' => 'Bivouac',
 			'nuitees.types.autreHebergement' => 'Other lodging',
 			'nuitees.guide.title' => 'Overnight stays guide',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guide.refuge' => 'Mountain accommodation, booking recommended in peak season.',
 			'nuitees.guide.gite' => 'Private stopover lodge, often with meals and showers.',
 			'nuitees.guide.bivouac' => 'Tent camping, subject to local regulations.',
@@ -5547,8 +5563,6 @@ extension on TranslationsEn {
 			'nuitees.guide.close' => 'Got it',
 			'nuitees.card.dayLabel' => 'D{n}',
 			'nuitees.card.noPlace' => 'Lodging',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.card.available' => '{count} lodgings available',
 			'nuitees.card.call' => 'Call {phone}',
 			'nuitees.card.lockedHint' => 'Uncheck the night to change the type',

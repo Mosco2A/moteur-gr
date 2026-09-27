@@ -48,7 +48,7 @@ void main() {
   });
 
   /// Fabrique un MonetizationService cable sur la DB en memoire.
-  Future<MonetizationService> makeService({Set<String>? showcase}) async {
+  Future<MonetizationService> makeService({Set<String>? gratuits}) async {
     final prefs = await SharedPreferences.getInstance();
     final iap = WalletIapService(
       walletStore: wallet,
@@ -64,7 +64,7 @@ void main() {
       connectivityMonitor: _FakeConnectivityMonitor(),
       nowFn: () => now,
       prefs: prefs,
-      showcaseTrailIds: showcase ?? const {},
+      freeTrailIds: gratuits ?? const {},
     );
     await svc.load();
     return svc;
@@ -124,12 +124,29 @@ void main() {
       expect(await showAdsFor(svc, 'gr20'), isTrue);
     });
 
-    test('sentier vitrine (parite GR20) -> sans-pub sans achat', () async {
-      final svc = await makeService(showcase: {'vitrine'});
-      expect(await svc.isNoAdsActive('vitrine'), isTrue);
-      expect(await showAdsFor(svc, 'vitrine'), isFalse);
-      // Un autre trail reste soumis a la pub.
+    test('sentier GRATUIT -> AVEC pub (il n a rien paye)', () async {
+      // TACHE 601 — CE TEST DISAIT L INVERSE, ET L INVERSE ETAIT UN CADEAU. Un
+      // sentier declare « vitrine » etait resolu `owned`, donc sans-pub
+      // PERMANENT — le privilege reserve a celui qui a paye. Il offrait
+      // gratuitement ce que l abonnement a 2 euros fait payer.
+      //
+      // La regle du modele (section 3) lie le sans-pub a un ETAT PAYANT ACTIF :
+      // sentier achete, abonnement actif, recompense de 24 h. Un sentier
+      // gratuit n a aucun de ces trois etats.
+      final svc = await makeService(gratuits: {'gratuit'});
+      expect(await svc.isNoAdsActive('gratuit'), isFalse);
+      expect(await showAdsFor(svc, 'gratuit'), isTrue);
+      // Un sentier ni gratuit ni achete : pub aussi.
       expect(await showAdsFor(svc, 'gr20'), isTrue);
+    });
+
+    test('un ABONNE n a pas de pub, meme sur le sentier GRATUIT', () async {
+      final svc = await makeService(gratuits: {'gratuit'});
+      await svc.onSubscriptionValidated();
+      expect(await svc.isNoAdsActive('gratuit'), isTrue,
+          reason: 'l abo a 2 euros donne le sans-pub PARTOUT tant qu il est '
+              'actif : un sentier gratuit n y fait pas exception');
+      expect(await showAdsFor(svc, 'gratuit'), isFalse);
     });
   });
 

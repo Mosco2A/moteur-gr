@@ -53,7 +53,22 @@ void main() {
     );
   }
 
+  /// LE CATALOGUE EST PLUS LONG DEPUIS LA TACHE 601 : il porte une entree de
+  /// plus (le sentier de demonstration GRATUIT). La liste depasse la hauteur du
+  /// viewport de test par defaut, et un ListView ne CONSTRUIT pas ce qui est
+  /// hors champ — les dernieres cartes semblaient alors absentes. On donne donc
+  /// au test une fenetre assez haute pour porter tout le catalogue : la question
+  /// posee ici est « le catalogue liste-t-il TOUS les sentiers », pas « combien
+  /// en tient-il sur un ecran de telephone ».
+  void fenetreHaute(WidgetTester tester) {
+    tester.view.physicalSize = const Size(1200, 4000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetDevicePixelRatio);
+    addTearDown(tester.view.resetPhysicalSize);
+  }
+
   testWidgets('liste les sentiers embarques du catalogue', (tester) async {
+    fenetreHaute(tester);
     await tester.pumpWidget(
       ProviderScope(
         child: TranslationProvider(
@@ -73,6 +88,7 @@ void main() {
   testWidgets(
       'taper Entrer ecrit la selection et ouvre le cockpit /home',
       (tester) async {
+    fenetreHaute(tester);
     // Container partage : selection initiale sur le sentier de test, on lira
     // l'etat apres l'action UI.
     final container = ProviderContainer(overrides: [
@@ -108,5 +124,101 @@ void main() {
     // PAS la carte live (issue 1).
     expect(find.text('STUB HOME COCKPIT'), findsOneWidget);
     expect(find.byKey(const ValueKey('trail-catalog-list')), findsNothing);
+  });
+
+  // =========================================================================
+  // TACHE 601 — DEUX ENTREES AU CATALOGUE, ET LA GRATUITE SE LIT
+  // =========================================================================
+  //
+  // Decision de Chris, 27/09 12:24, verbatim : « il faut un sentier demo, pas un
+  // sentier bride demo. Les donnees peuvent etre celle de mare a mare. Mais il y
+  // a mare a mare ET mare a mare demo des le catalogue ».
+  //
+  // Ce que ce groupe verifie est exactement ce qu'il voit a l'ecran : les deux
+  // entrees, et de quoi les distinguer SANS ouvrir ni l'une ni l'autre.
+  group('601 — le sentier payant et le sentier demo, tous deux au catalogue',
+      () {
+    testWidgets('les deux entrees Mare a Mare sont affichees', (tester) async {
+      fenetreHaute(tester);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: buildRouter()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('catalog-trail-mare-a-mare-centre')),
+        findsOneWidget,
+        reason: 'le sentier PAYANT reste au catalogue',
+      );
+      expect(
+        find.byKey(const ValueKey('catalog-trail-mare-a-mare-centre-demo')),
+        findsOneWidget,
+        reason: 'et le sentier DEMO gratuit y est aussi : deux entrees, pas '
+            'une entree bridee',
+      );
+    });
+
+    testWidgets('le sentier demo porte la pastille GRATUIT, le payant non',
+        (tester) async {
+      fenetreHaute(tester);
+      await tester.pumpWidget(
+        ProviderScope(
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: buildRouter()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const ValueKey('catalog-free-badge-mare-a-mare-centre-demo')),
+        findsOneWidget,
+        reason: 'un sentier gratuit le DIT, sinon le randonneur doit deviner',
+      );
+      expect(
+        find.byKey(const ValueKey('catalog-free-badge-mare-a-mare-centre')),
+        findsNothing,
+        reason: 'le sentier payant n est pas gratuit',
+      );
+      expect(find.text(t.catalog.freeBadge), findsOneWidget);
+    });
+
+    testWidgets('le sentier demo porte SON nom, dans la langue affichee',
+        (tester) async {
+      fenetreHaute(tester);
+      LocaleSettings.setLocaleRaw('fr');
+      await tester.pumpWidget(
+        ProviderScope(
+          child: TranslationProvider(
+            child: MaterialApp.router(routerConfig: buildRouter()),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      final demo = TrailCatalog.byId('mare-a-mare-centre-demo')!;
+      final paye = TrailCatalog.byId('mare-a-mare-centre')!;
+
+      // Le nom du sentier gratuit est COMPOSE : le nom propre du terrain, plus
+      // la mention de gratuite traduite. Les cinq langues portent la cle
+      // `catalog.freeTrailName` (parite verrouillee par test/i18n).
+      expect(
+        find.text(t.catalog.freeTrailName(nom: demo.displayName)),
+        findsOneWidget,
+        reason: 'Chris a demande que le sentier demo ait son propre nom dans '
+            'les cinq langues',
+      );
+      expect(find.text(paye.displayName), findsOneWidget,
+          reason: 'le sentier payant garde son nom propre, non traduit');
+      // Et il annonce ce qu'il contient : les deux premieres etapes.
+      expect(
+        find.text(t.catalog.freeTrailTagline(etapes: demo.totalStages)),
+        findsOneWidget,
+      );
+    });
   });
 }

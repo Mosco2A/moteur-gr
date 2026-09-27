@@ -89,7 +89,7 @@ void main() {
         trailConfigProvider.overrideWithValue(config),
         currentTrailIdProvider.overrideWith((ref) => trailId),
         demoModeServiceProvider.overrideWithValue(
-          DemoModeService(showcaseTrailIds: const <String>{}),
+          DemoModeService(),
         ),
       ]);
 

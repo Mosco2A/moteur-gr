@@ -348,6 +348,7 @@ class _Translations$gps$es extends Translations$gps$fr {
 	@override String get disabled => 'Servicio de ubicación desactivado';
 	@override String get offTrack => 'Fuera del sendero';
 	@override String get centerOnMe => 'Centrar en mi posición';
+	@override String get centeredOnTrack => 'Ubicación no disponible — mapa recentrado en el trazado';
 }
 
 // Path: navAlert
@@ -839,6 +840,9 @@ class _Translations$catalog$es extends Translations$catalog$fr {
 	@override String get emptyTitle => 'Ningún sendero disponible';
 	@override String get emptySubtitle => 'Aún no hay ningún sendero en el catálogo.';
 	@override late final _Translations$catalog$a11y$es a11y = _Translations$catalog$a11y$es._(_root);
+	@override String freeTrailName({required Object nom}) => '${nom} — Demo gratis';
+	@override String get freeBadge => 'Gratis';
+	@override String freeTrailTagline({required Object etapes}) => 'Las primeras ${etapes} etapas, de regalo. Todo funciona: preparación, salida, navegación, diario, llegada.';
 }
 
 // Path: updates
@@ -941,7 +945,7 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get subscriptionTitle => 'Suscripción sin publicidad';
 	@override String get subscriptionSubtitle => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.';
 	@override String get subscriptionIncludesNoAds => 'Sin publicidad en toda la aplicación';
-	@override String get subscriptionIncludesAllowance => 'Un bote de etapas en cada periodo';
+	@override String subscriptionIncludesAllowance({required Object steps}) => '${steps} etapas abonadas cada mes';
 	@override String get subscriptionExcludes => 'La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.';
 	@override String get subscriptionCta => 'Suscribirse';
 	@override String get subscriptionActive => 'Suscripción activa';
@@ -954,6 +958,8 @@ class _Translations$monetization$es extends Translations$monetization$fr {
 	@override String get buyOutcomeAlreadyOwned => 'Esta ruta ya está desbloqueada.';
 	@override String buyOutcomeOffline({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.';
 	@override String get buyOutcomeFailed => 'El pago no se ha completado. No se ha cobrado nada.';
+	@override String subscriptionPrice({required Object price}) => '${price} al mes';
+	@override String get subscriptionAllowanceForLife => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.';
 }
 
 // Path: signalement
@@ -2557,6 +2563,7 @@ class _Translations$catalog$a11y$es extends Translations$catalog$a11y$fr {
 
 	// Translations
 	@override String enterButton({required Object nom}) => 'Entrar en el sendero ${nom}';
+	@override String get freeTrailBadge => 'Sendero gratuito';
 }
 
 // Path: signalement.types
@@ -4256,6 +4263,7 @@ extension on TranslationsEs {
 			'gps.disabled' => 'Servicio de ubicación desactivado',
 			'gps.offTrack' => 'Fuera del sendero',
 			'gps.centerOnMe' => 'Centrar en mi posición',
+			'gps.centeredOnTrack' => 'Ubicación no disponible — mapa recentrado en el trazado',
 			'navAlert.offTrackBanner' => ({required Object meters}) => 'Te estás alejando del sendero — ${meters} m. Comprueba tu posición.',
 			'navAlert.offTrackNotifTitle' => 'Estás saliendo del sendero',
 			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Te estás alejando del sendero (${meters} m). Comprueba tu posición.',
@@ -4518,9 +4526,9 @@ extension on TranslationsEs {
 			'checklist.ui.preDep7' => 'Comprobar los cordones y el ajuste de las botas',
 			'checklist.ui.preDep8' => 'Descargar los mapas offline',
 			'checklist.ui.bagOk' => 'MOCHILA OK — LISTA PARA SALIR',
-			'checklist.ui.validateBag' => 'VALIDAR MI MOCHILA',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.validateBag' => 'VALIDAR MI MOCHILA',
 			'checklist.ui.cancelValidation' => 'ANULAR LA VALIDACIÓN',
 			'checklist.ui.shoppingListButton' => 'LISTA DE COMPRA',
 			'checklist.ui.shareGroup' => 'COMPARTIR CON EL GRUPO',
@@ -4944,6 +4952,10 @@ extension on TranslationsEs {
 			'catalog.emptyTitle' => 'Ningún sendero disponible',
 			'catalog.emptySubtitle' => 'Aún no hay ningún sendero en el catálogo.',
 			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entrar en el sendero ${nom}',
+			'catalog.a11y.freeTrailBadge' => 'Sendero gratuito',
+			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Demo gratis',
+			'catalog.freeBadge' => 'Gratis',
+			'catalog.freeTrailTagline' => ({required Object etapes}) => 'Las primeras ${etapes} etapas, de regalo. Todo funciona: preparación, salida, navegación, diario, llegada.',
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
@@ -5001,7 +5013,7 @@ extension on TranslationsEs {
 			'monetization.subscriptionTitle' => 'Suscripción sin publicidad',
 			'monetization.subscriptionSubtitle' => 'Sin publicidad en ningún sitio, mientras la suscripción esté activa.',
 			'monetization.subscriptionIncludesNoAds' => 'Sin publicidad en toda la aplicación',
-			'monetization.subscriptionIncludesAllowance' => 'Un bote de etapas en cada periodo',
+			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} etapas abonadas cada mes',
 			'monetization.subscriptionExcludes' => 'La suscripción no desbloquea ni las herramientas completas ni la realización de una ruta: para eso hay que comprar la ruta.',
 			'monetization.subscriptionCta' => 'Suscribirse',
 			'monetization.subscriptionActive' => 'Suscripción activa',
@@ -5014,6 +5026,8 @@ extension on TranslationsEs {
 			'monetization.buyOutcomeAlreadyOwned' => 'Esta ruta ya está desbloqueada.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Te faltan ${steps} etapas y el pago exige conexión. No se ha cobrado nada.',
 			'monetization.buyOutcomeFailed' => 'El pago no se ha completado. No se ha cobrado nada.',
+			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mes',
+			'monetization.subscriptionAllowanceForLife' => 'Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.',
 			'signalement.title' => 'Notificar',
 			'signalement.chooseType' => '¿Qué quieres notificar?',
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
@@ -5026,6 +5040,8 @@ extension on TranslationsEs {
 			'signalement.savedPendingSync' => 'Se compartirá en cuanto vuelva la red.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en espera de sincronización',
 			'signalement.close' => 'Cerrar',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.water.reportAction' => 'Informar del estado',
 			'signalement.water.reportCount' => '{n} informe(s)',
 			'signalement.water.sheetTitle' => '¿Estado del punto de agua?',
@@ -5033,8 +5049,6 @@ extension on TranslationsEs {
 			'signalement.water.saved' => '¡Gracias! Estado guardado.',
 			'signalement.water.states.available' => 'Agua disponible',
 			'signalement.water.states.low' => 'Caudal bajo',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.water.states.dry' => 'Seco',
 			'signalement.water.states.unknown' => 'Estado desconocido',
 			'hebergement.title' => 'Alojamientos cercanos',
@@ -5540,6 +5554,8 @@ extension on TranslationsEs {
 			'nuitees.types.bivouac' => 'Vivac',
 			'nuitees.types.autreHebergement' => 'Otro alojamiento',
 			'nuitees.guide.title' => 'Guía de pernoctaciones',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guide.refuge' => 'Alojamiento de montaña, se recomienda reservar en temporada alta.',
 			'nuitees.guide.gite' => 'Albergue de etapa privado, a menudo con comidas y duchas.',
 			'nuitees.guide.bivouac' => 'Acampada en tienda, según la normativa local.',
@@ -5547,8 +5563,6 @@ extension on TranslationsEs {
 			'nuitees.guide.close' => 'Entendido',
 			'nuitees.card.dayLabel' => 'D{n}',
 			'nuitees.card.noPlace' => 'Alojamiento',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.card.available' => '{count} alojamientos disponibles',
 			'nuitees.card.call' => 'Llamar {phone}',
 			'nuitees.card.lockedHint' => 'Desmarca la noche para cambiar el tipo',

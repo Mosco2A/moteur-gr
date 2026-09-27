@@ -29,7 +29,7 @@ class _FakeConnectivity extends ConnectivityMonitor {
       ConnectivityStatusValues.online;
 }
 
-TrailConfig _config(String id, {bool showcase = false, int stages = 10}) =>
+TrailConfig _config(String id, {bool gratuit = false, int stages = 10}) =>
     TrailConfig(
       id: id,
       name: id,
@@ -43,7 +43,8 @@ TrailConfig _config(String id, {bool showcase = false, int stages = 10}) =>
       primaryColorValue: 0xFF2E7D32,
       secondaryColorValue: 0xFF1565C0,
       gpxAssetPath: 'assets/gpx/$id.gpx',
-      isShowcaseTrail: showcase,
+      // Sentier GRATUIT = prix nul (tache 601), jamais un drapeau d'exemption.
+      priceStages: gratuit ? 0 : null,
     );
 
 void main() {
@@ -80,7 +81,7 @@ void main() {
       iapService: iap,
       connectivityMonitor: _FakeConnectivity(),
       prefs: prefs,
-      showcaseTrailIds: const {},
+      freeTrailIds: const {},
     );
     await svc.load();
     return svc;
@@ -127,14 +128,15 @@ void main() {
         completedStages: completed,
       );
 
-  group('ownedTrailIdsProvider — owned ∪ vitrine (branche wallet)', () {
-    test('union des droits owned et des sentiers vitrine', () async {
+  group('ownedTrailIdsProvider — owned ∪ sentiers GRATUITS (branche wallet)', () {
+    test('union des droits owned et des sentiers GRATUITS', () async {
       await markOwned('gr20');
-      // gr10 non owned -> exclu ; vitrine incluse sans achat.
+      // gr10 non owned -> exclu ; le sentier GRATUIT est inclus sans achat,
+      // parce que son prix est nul (tache 601) — pas par exemption.
       final container = makeContainer([
         _config('gr20'),
         _config('gr10'),
-        _config('demo', showcase: true),
+        _config('demo', gratuit: true),
       ]);
 
       final ids = await container.read(ownedTrailIdsProvider.future);
@@ -278,9 +280,9 @@ void main() {
 
     test('ne depend PAS des droits : reflete meme un sentier non possede',
         () async {
-      // Aucun entitlement pose, mais le sentier actif est jouable (vitrine) :
+      // Aucun entitlement pose, mais le sentier actif est jouable (GRATUIT) :
       // le cockpit doit tout de meme refleter son etat (owned = point de depart).
-      final container = cockpitContainer(_config('demo', showcase: true));
+      final container = cockpitContainer(_config('demo', gratuit: true));
 
       final summary = await container.read(currentTrailSummaryProvider.future);
       expect(summary, isNotNull);

@@ -109,9 +109,26 @@ class TrailCatalogScreen extends ConsumerWidget {
   }
 }
 
+/// LE NOM D'UN SENTIER TEL QUE LE RANDONNEUR LE LIT, dans SA langue.
+///
+/// Pour un sentier payant, c'est son nom propre — « Mare a Mare Centre » ne se
+/// traduit pas. Pour un SENTIER GRATUIT (tache 601), le nom se COMPOSE : le nom
+/// propre du terrain, plus la mention de gratuite dans les cinq langues
+/// (`catalog.freeTrailName`). Chris a demande que le sentier demo ait « son
+/// propre nom dans les cinq langues » : le voici, sans recopier cinq fois un
+/// toponyme corse qui est le meme partout.
+String trailDisplayName(Translations t, TrailConfig trail) => trail.isFreeTrail
+    ? t.catalog.freeTrailName(nom: trail.displayName)
+    : trail.displayName;
+
 /// Carte d'un sentier disponible au catalogue : nom, region, stats + bouton
 /// primaire "Entrer". Pas de notion de telechargement en P2-P3 (donnees
 /// embarquees) : le sentier est directement utilisable.
+///
+/// UN SENTIER GRATUIT LE DIT (tache 601) : pastille « Gratuit » sous son nom, et
+/// une ligne qui annonce ce qu'il contient. Le randonneur doit pouvoir choisir
+/// entre les DEUX entrees du Mare a Mare sans ouvrir ni l'une ni l'autre — c'est
+/// tout le sens de « il y a mare a mare ET mare a mare demo des le catalogue ».
 class _AvailableTrailCard extends StatelessWidget {
   const _AvailableTrailCard({required this.trail, required this.onEnter});
 
@@ -122,6 +139,7 @@ class _AvailableTrailCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Translations.of(context);
     final theme = Theme.of(context);
+    final nom = trailDisplayName(t, trail);
 
     // SW-SKIN-L3e : Card -> AppCard. key + margin conserves ; padding base porte
     // par AppCard (iso-rendu de la carte sentier du catalogue).
@@ -144,7 +162,7 @@ class _AvailableTrailCard extends StatelessWidget {
               const SizedBox(width: AppTheme.spacingSm),
               Expanded(
                 child: Text(
-                  trail.displayName,
+                  nom,
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
@@ -162,6 +180,39 @@ class _AvailableTrailCard extends StatelessWidget {
               color: AppTheme.grisTexteSecondaire,
             ),
           ),
+          // GRATUIT : la pastille, et ce que le sentier contient vraiment.
+          if (trail.isFreeTrail) ...[
+            const SizedBox(height: AppTheme.spacingXs),
+            Semantics(
+              label: t.catalog.a11y.freeTrailBadge,
+              child: Container(
+                key: ValueKey('catalog-free-badge-${trail.id}'),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppTheme.spacingSm,
+                  vertical: 2,
+                ),
+                decoration: BoxDecoration(
+                  color: AppTheme.vertFacile.withAlpha(28),
+                  borderRadius: BorderRadius.circular(AppTheme.spacingSm),
+                  border: Border.all(color: AppTheme.vertFacile.withAlpha(90)),
+                ),
+                child: Text(
+                  t.catalog.freeBadge,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    color: AppTheme.vertFacile,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            Text(
+              t.catalog.freeTrailTagline(etapes: trail.totalStages),
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
+            ),
+          ],
           const SizedBox(height: AppTheme.spacingXs),
           // Stats principales — Wrap pour ne pas deborder a textScale 2x.
           Wrap(
@@ -192,7 +243,7 @@ class _AvailableTrailCard extends StatelessWidget {
             width: double.infinity,
             child: Semantics(
               button: true,
-              label: t.catalog.a11y.enterButton(nom: trail.displayName),
+              label: t.catalog.a11y.enterButton(nom: nom),
               // SW-SKIN-L3e : FilledButton.icon -> AppButton primary (arbitrage
               // #A5), pleine largeur (SizedBox width infinity conserve).
               // key/Semantics(button+label) preserves.

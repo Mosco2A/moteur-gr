@@ -37,7 +37,7 @@ class _FakeConnectivityMonitor extends ConnectivityMonitor {
 ///   - abandon / reprise (rachat du seul complement restant, acquis conserves) ;
 ///   - isNoAdsActive (matrice #99404) ;
 ///   - migration legacy (2 cles prefs) idempotente ;
-///   - vitrine (parite GR20) preservee ;
+///   - sentier GRATUIT (prix nul) : jouable ET avec pub (tache 601) ;
 ///   - reset.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -63,11 +63,11 @@ void main() {
   /// Fabrique un service cable sur la DB en memoire.
   ///
   /// [walletSteps] credite le compte-etapes au demarrage ; [online] pilote le
-  /// faux moniteur ; [showcase] injecte les sentiers vitrine.
+  /// faux moniteur ; [gratuits] injecte les sentiers GRATUITS (prix nul).
   Future<MonetizationService> makeService({
     int walletSteps = 0,
     bool online = true,
-    Set<String>? showcase,
+    Set<String>? gratuits,
   }) async {
     final prefs = await SharedPreferences.getInstance();
     final iap = WalletIapService(
@@ -84,7 +84,7 @@ void main() {
       connectivityMonitor: _FakeConnectivityMonitor(online: online),
       nowFn: () => now,
       prefs: prefs,
-      showcaseTrailIds: showcase ?? const {},
+      freeTrailIds: gratuits ?? const {},
     );
     await svc.load();
     if (walletSteps > 0) await wallet.credit(walletSteps);
@@ -336,21 +336,44 @@ void main() {
     });
   });
 
-  group('ST4 vitrine (parite GR20) preservee', () {
-    test('vitrine = owned/jouable sans achat, autre sentier reste free',
+  // TACHE 601 — LE SENTIER GRATUIT REMPLACE LA VITRINE, ET CE N'EST PAS LE MEME
+  // OBJET. La vitrine etait resolue `owned` : elle recevait donc TOUT ce qui
+  // s'accroche a l'achat, sans-pub permanent compris. Un sentier gratuit est
+  // resolu `freeTrail` : jouable, et avec pub, parce qu'il n'a rien paye.
+  group('ST4 sentier GRATUIT (prix nul)', () {
+    test('jouable sans achat, AVEC pub, et sans devenir un sentier achete',
         () async {
-      final svc = await makeService(showcase: {'vitrine-demo'});
+      final svc = await makeService(gratuits: {'sentier-gratuit'});
 
-      expect(svc.isShowcaseTrail('vitrine-demo'), isTrue);
-      expect(await svc.ownsTrail('vitrine-demo'), isFalse,
-          reason: 'jouable sans etre "achetee"');
-      expect(await svc.accessFor('vitrine-demo'), TrailAccess.owned);
-      expect(await svc.isDemoMode('vitrine-demo'), isFalse);
-      expect(await svc.isNoAdsActive('vitrine-demo'), isTrue);
+      expect(svc.isFreeTrail('sentier-gratuit'), isTrue);
+      expect(await svc.ownsTrail('sentier-gratuit'), isFalse,
+          reason: 'jouable sans etre achete — et sans droit d achat pose');
+      expect(await svc.accessFor('sentier-gratuit'), TrailAccess.freeTrail);
+      expect(await svc.canRealizeTrail('sentier-gratuit'), isTrue,
+          reason: 'rien de bride : la realisation comprise');
+      expect(await svc.isDemoMode('sentier-gratuit'), isFalse);
+      expect(await svc.isNoAdsActive('sentier-gratuit'), isFalse,
+          reason: 'le sans-pub est la contrepartie d avoir PAYE (modele eco '
+              'section 3). Un sentier gratuit releve du niveau gratuit de la '
+              'section 2, « avec pub » — et c est exactement le privilege que '
+              'le drapeau vitrine lui offrait pour rien');
 
-      // GARDE-FOU : un autre sentier non achete reste en demo (modele intact).
+      // Un autre sentier non achete reste en demo bridee (modele intact).
       expect(await svc.isDemoMode('sentier-payant'), isTrue);
       expect(await svc.accessFor('sentier-payant'), TrailAccess.free);
+    });
+
+    test('on ne lui vend rien : aucune etape debitee, aucun droit pose',
+        () async {
+      final svc = await makeService(walletSteps: 9, gratuits: {'gratuit'});
+      final outcome = await svc.buyTrail('gratuit', totalStages: 3);
+
+      expect(outcome.status, PurchaseStatusResult.alreadyOwned);
+      expect(svc.walletSteps, 9, reason: 'son prix est nul');
+      expect(await svc.ownsTrail('gratuit'), isFalse,
+          reason: 'poser un droit `owned` lui redonnerait le sans-pub '
+              'permanent de l achat : ce serait le drapeau vitrine sous un '
+              'autre nom');
     });
   });
 

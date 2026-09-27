@@ -89,7 +89,7 @@ void main() {
       iapService: iap,
       connectivityMonitor: ConnectivityMonitor(),
       prefs: prefs,
-      showcaseTrailIds: const {},
+      freeTrailIds: const {},
     );
     await svc.load();
     // Wallet approvisionne pour que l'achat du paywall soit couvert (12 etapes).

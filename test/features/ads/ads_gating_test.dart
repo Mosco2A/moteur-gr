@@ -60,7 +60,7 @@ void main() {
       connectivityMonitor: _FakeConnectivityMonitor(),
       nowFn: () => now,
       prefs: prefs,
-      showcaseTrailIds: const {},
+      freeTrailIds: const {},
     );
     await svc.load();
     final container = ProviderContainer(

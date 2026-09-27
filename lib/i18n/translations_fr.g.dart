@@ -612,6 +612,9 @@ class Translations$gps$fr {
 
 	/// fr: 'Centrer sur ma position'
 	String get centerOnMe => 'Centrer sur ma position';
+
+	/// fr: 'Position introuvable — carte recentrée sur le tracé'
+	String get centeredOnTrack => 'Position introuvable — carte recentrée sur le tracé';
 }
 
 // Path: navAlert
@@ -1727,6 +1730,15 @@ class Translations$catalog$fr {
 	String get emptySubtitle => 'Aucun sentier n\'est encore proposé au catalogue.';
 
 	late final Translations$catalog$a11y$fr a11y = Translations$catalog$a11y$fr.internal(_root);
+
+	/// fr: '$nom — Démo gratuite'
+	String freeTrailName({required Object nom}) => '${nom} — Démo gratuite';
+
+	/// fr: 'Gratuit'
+	String get freeBadge => 'Gratuit';
+
+	/// fr: 'Les $etapes premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.'
+	String freeTrailTagline({required Object etapes}) => 'Les ${etapes} premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.';
 }
 
 // Path: updates
@@ -1944,8 +1956,8 @@ class Translations$monetization$fr {
 	/// fr: 'Aucune publicité, sur toute l'application'
 	String get subscriptionIncludesNoAds => 'Aucune publicité, sur toute l\'application';
 
-	/// fr: 'Une cagnotte d'étapes à chaque période'
-	String get subscriptionIncludesAllowance => 'Une cagnotte d\'étapes à chaque période';
+	/// fr: '$steps étapes créditées chaque mois'
+	String subscriptionIncludesAllowance({required Object steps}) => '${steps} étapes créditées chaque mois';
 
 	/// fr: 'L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.'
 	String get subscriptionExcludes => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.';
@@ -1982,6 +1994,12 @@ class Translations$monetization$fr {
 
 	/// fr: 'Le paiement n'a pas abouti. Rien n'a été débité.'
 	String get buyOutcomeFailed => 'Le paiement n\'a pas abouti. Rien n\'a été débité.';
+
+	/// fr: '$price par mois'
+	String subscriptionPrice({required Object price}) => '${price} par mois';
+
+	/// fr: 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.'
+	String get subscriptionAllowanceForLife => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.';
 }
 
 // Path: signalement
@@ -5467,6 +5485,9 @@ class Translations$catalog$a11y$fr {
 
 	/// fr: 'Entrer dans le sentier $nom'
 	String enterButton({required Object nom}) => 'Entrer dans le sentier ${nom}';
+
+	/// fr: 'Sentier gratuit'
+	String get freeTrailBadge => 'Sentier gratuit';
 }
 
 // Path: signalement.types
@@ -8027,6 +8048,7 @@ extension on Translations {
 			'gps.disabled' => 'Service de localisation désactivé',
 			'gps.offTrack' => 'Hors trace',
 			'gps.centerOnMe' => 'Centrer sur ma position',
+			'gps.centeredOnTrack' => 'Position introuvable — carte recentrée sur le tracé',
 			'navAlert.offTrackBanner' => ({required Object meters}) => 'Vous vous éloignez du sentier — ${meters} m. Vérifiez votre position.',
 			'navAlert.offTrackNotifTitle' => 'Vous quittez le sentier',
 			'navAlert.offTrackNotifBody' => ({required Object meters}) => 'Vous vous éloignez du sentier (${meters} m). Vérifiez votre position.',
@@ -8289,9 +8311,9 @@ extension on Translations {
 			'checklist.ui.preDep7' => 'Vérifier les lacets et le serrage des chaussures',
 			'checklist.ui.preDep8' => 'Télécharger les cartes offline',
 			'checklist.ui.bagOk' => 'SAC OK — PRÊT À PARTIR',
-			'checklist.ui.validateBag' => 'VALIDER MON SAC',
 			_ => null,
 		} ?? switch (path) {
+			'checklist.ui.validateBag' => 'VALIDER MON SAC',
 			'checklist.ui.cancelValidation' => 'ANNULER LA VALIDATION',
 			'checklist.ui.shoppingListButton' => 'LISTE D\'ACHAT',
 			'checklist.ui.shareGroup' => 'PARTAGER AVEC LE GROUPE',
@@ -8715,6 +8737,10 @@ extension on Translations {
 			'catalog.emptyTitle' => 'Aucun sentier disponible',
 			'catalog.emptySubtitle' => 'Aucun sentier n\'est encore proposé au catalogue.',
 			'catalog.a11y.enterButton' => ({required Object nom}) => 'Entrer dans le sentier ${nom}',
+			'catalog.a11y.freeTrailBadge' => 'Sentier gratuit',
+			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Démo gratuite',
+			'catalog.freeBadge' => 'Gratuit',
+			'catalog.freeTrailTagline' => ({required Object etapes}) => 'Les ${etapes} premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -8772,7 +8798,7 @@ extension on Translations {
 			'monetization.subscriptionTitle' => 'Abonnement sans publicité',
 			'monetization.subscriptionSubtitle' => 'Sans publicité partout, tant que l\'abonnement est actif.',
 			'monetization.subscriptionIncludesNoAds' => 'Aucune publicité, sur toute l\'application',
-			'monetization.subscriptionIncludesAllowance' => 'Une cagnotte d\'étapes à chaque période',
+			'monetization.subscriptionIncludesAllowance' => ({required Object steps}) => '${steps} étapes créditées chaque mois',
 			'monetization.subscriptionExcludes' => 'L\'abonnement ne débloque ni les outils complets ni la réalisation d\'une randonnée : pour cela, il faut acheter la randonnée.',
 			'monetization.subscriptionCta' => 'S\'abonner',
 			'monetization.subscriptionActive' => 'Abonnement actif',
@@ -8785,6 +8811,8 @@ extension on Translations {
 			'monetization.buyOutcomeAlreadyOwned' => 'Cette randonnée est déjà débloquée.',
 			'monetization.buyOutcomeOffline' => ({required Object steps}) => 'Il manque ${steps} étapes et le paiement exige une connexion. Rien n\'a été débité.',
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
+			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
+			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
 			'signalement.title' => 'Signaler',
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
@@ -8797,6 +8825,8 @@ extension on Translations {
 			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
 			'signalement.close' => 'Fermer',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.water.reportAction' => 'Signaler l\'état',
 			'signalement.water.reportCount' => '{n} signalement(s)',
 			'signalement.water.sheetTitle' => 'État du point d\'eau ?',
@@ -8804,8 +8834,6 @@ extension on Translations {
 			'signalement.water.saved' => 'Merci ! État enregistré.',
 			'signalement.water.states.available' => 'Eau disponible',
 			'signalement.water.states.low' => 'Débit faible',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.water.states.dry' => 'À sec',
 			'signalement.water.states.unknown' => 'État inconnu',
 			'hebergement.title' => 'Hébergements à proximité',
@@ -9311,6 +9339,8 @@ extension on Translations {
 			'nuitees.types.bivouac' => 'Bivouac',
 			'nuitees.types.autreHebergement' => 'Autre hébergement',
 			'nuitees.guide.title' => 'Guide des nuitées',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guide.refuge' => 'Hébergement de montagne, réservation recommandée en haute saison.',
 			'nuitees.guide.gite' => 'Hébergement d\'étape privé, souvent avec repas et douches.',
 			'nuitees.guide.bivouac' => 'Camping sous tente, selon la réglementation locale.',
@@ -9318,8 +9348,6 @@ extension on Translations {
 			'nuitees.guide.close' => 'Compris',
 			'nuitees.card.dayLabel' => 'J{n}',
 			'nuitees.card.noPlace' => 'Hébergement',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.card.available' => '{count} hébergements disponibles',
 			'nuitees.card.call' => 'Appeler {phone}',
 			'nuitees.card.lockedHint' => 'Décochez la nuit pour changer le type',

@@ -294,7 +294,8 @@
     "denied": "Accès à la localisation refusé",
     "disabled": "Service de localisation désactivé",
     "offTrack": "Hors trace",
-    "centerOnMe": "Centrer sur ma position"
+    "centerOnMe": "Centrer sur ma position",
+    "centeredOnTrack": "Position introuvable — carte recentrée sur le tracé"
   },
   "navAlert": {
     "offTrackBanner": "Vous vous éloignez du sentier — $meters m. Vérifiez votre position.",
@@ -1076,8 +1077,12 @@
     "emptyTitle": "Aucun sentier disponible",
     "emptySubtitle": "Aucun sentier n'est encore proposé au catalogue.",
     "a11y": {
-      "enterButton": "Entrer dans le sentier $nom"
-    }
+      "enterButton": "Entrer dans le sentier $nom",
+      "freeTrailBadge": "Sentier gratuit"
+    },
+    "freeTrailName": "$nom — Démo gratuite",
+    "freeBadge": "Gratuit",
+    "freeTrailTagline": "Les $etapes premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée."
   },
   "updates": {
     "readyTitle": "Mise à jour prête",
@@ -1145,7 +1150,7 @@
     "subscriptionTitle": "Abonnement sans publicité",
     "subscriptionSubtitle": "Sans publicité partout, tant que l'abonnement est actif.",
     "subscriptionIncludesNoAds": "Aucune publicité, sur toute l'application",
-    "subscriptionIncludesAllowance": "Une cagnotte d'étapes à chaque période",
+    "subscriptionIncludesAllowance": "$steps étapes créditées chaque mois",
     "subscriptionExcludes": "L'abonnement ne débloque ni les outils complets ni la réalisation d'une randonnée : pour cela, il faut acheter la randonnée.",
     "subscriptionCta": "S'abonner",
     "subscriptionActive": "Abonnement actif",
@@ -1157,7 +1162,9 @@
     "buyOutcomeOwned": "Randonnée débloquée. Bonne route !",
     "buyOutcomeAlreadyOwned": "Cette randonnée est déjà débloquée.",
     "buyOutcomeOffline": "Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.",
-    "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité."
+    "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité.",
+    "subscriptionPrice": "$price par mois",
+    "subscriptionAllowanceForLife": "Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement."
   },
   "signalement": {
     "title": "Signaler",

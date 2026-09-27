@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="MoteurGR-MareaMareCentreDemo"
+     xmlns="http://www.topografix.com/GPX/1/1"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://www.topografix.com/GPX/1/1
+       http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>Mare a Mare Centre</name>
+    <desc>Trace du sentier Mare a Mare Centre, traversee Est-Ouest de la Corse. 7 etapes de Ghisonaccia a Porticcio.</desc>
+  </metadata>
+  <trk>
+    <name>mare-a-mare-centre-demo</name>
+    <trkseg>
+      <!-- Etape 1 : Ghisonaccia - Catastaghju -->
+      <trkpt lat="42.0156" lon="9.4039"><ele>5</ele></trkpt>
+      <trkpt lat="42.0100" lon="9.3900"><ele>45</ele></trkpt>
+      <trkpt lat="42.0020" lon="9.3780"><ele>120</ele></trkpt>
+      <trkpt lat="41.9950" lon="9.3700"><ele>280</ele></trkpt>
+      <trkpt lat="41.9870" lon="9.3500"><ele>420</ele></trkpt>
+      <trkpt lat="41.9780" lon="9.3300"><ele>580</ele></trkpt>
+      <trkpt lat="41.9700" lon="9.3100"><ele>650</ele></trkpt>
+      <trkpt lat="41.9630" lon="9.2980"><ele>700</ele></trkpt>
+      <trkpt lat="41.9567" lon="9.2864"><ele>720</ele></trkpt>
+      <!-- Etape 2 : Catastaghju - Cozzano -->
+      <trkpt lat="41.9550" lon="9.2800"><ele>750</ele></trkpt>
+      <trkpt lat="41.9520" lon="9.2650"><ele>830</ele></trkpt>
+      <trkpt lat="41.9480" lon="9.2400"><ele>950</ele></trkpt>
+      <trkpt lat="41.9450" lon="9.2300"><ele>1020</ele></trkpt>
+      <trkpt lat="41.9430" lon="9.2200"><ele>1050</ele></trkpt>
+      <trkpt lat="41.9420" lon="9.2100"><ele>980</ele></trkpt>
+      <trkpt lat="41.9400" lon="9.2050"><ele>850</ele></trkpt>
+      <trkpt lat="41.9392" lon="9.1978"><ele>730</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

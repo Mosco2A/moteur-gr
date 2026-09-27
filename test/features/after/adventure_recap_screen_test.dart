@@ -72,10 +72,7 @@ void main() {
         parcoursFullyWalked: fullyWalked,
       );
 
-  Future<void> pumpRecap(
-    WidgetTester tester, {
-    bool showcase = false,
-  }) async {
+  Future<void> pumpRecap(WidgetTester tester) async {
     LocaleSettings.setLocaleRaw('fr');
     await tester.pumpWidget(
       ProviderScope(
@@ -83,11 +80,7 @@ void main() {
           databaseProvider.overrideWithValue(db),
           trailConfigProvider.overrideWithValue(config),
           currentTrailIdProvider.overrideWith((ref) => trailId),
-          demoModeServiceProvider.overrideWithValue(
-            DemoModeService(
-              showcaseTrailIds: showcase ? {trailId} : <String>{},
-            ),
-          ),
+          demoModeServiceProvider.overrideWithValue(DemoModeService()),
         ],
         // AppHeader (Ph5/L6d) utilise GoRouter -> GoRouter minimal (+ /my-treks).
         child: MaterialApp.router(
@@ -187,7 +180,7 @@ void main() {
     expect(find.text(t.recap.viewDiploma), findsNothing);
   });
 
-  testWidgets('ACTIF (ni fini ni abandonne, hors vitrine) : etat verrouille',
+  testWidgets('ACTIF (ni fini ni abandonne) : etat verrouille',
       (tester) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
     await db.trekSessionsDao.upsertSession(sess(status: 'active'));
@@ -202,14 +195,17 @@ void main() {
     expect(find.text(t.recap.partialTitle), findsNothing);
   });
 
-  testWidgets('VITRINE : recap accessible meme sans session', (tester) async {
+  testWidgets('AUCUNE SESSION : recap VERROUILLE, meme en demonstration',
+      (tester) async {
     await db.stagesDao.insertAll([stage(1), stage(2), stage(3), stage(4)]);
-    // Aucune session persistee.
-    await pumpRecap(tester, showcase: true);
+    // Aucune session persistee. AVANT LA TACHE 601, un sentier declare
+    // vitrine ouvrait ici « Mon aventure » sur une aventure inexistante.
+    await pumpRecap(tester);
 
-    // Accessible (demo) : pas d'etat verrouille.
-    expect(find.byIcon(Icons.lock_outline), findsNothing);
-    expect(find.text(t.recap.statsSection), findsOneWidget);
+    expect(find.byIcon(Icons.lock_outline), findsOneWidget,
+        reason: 'un recap sans aventure ne raconte rien. Sur le sentier '
+            'gratuit, le trek se termine vraiment : le recap s ouvre alors '
+            'sur des chiffres reels');
   });
 
   // -------------------------------------------------------------------------

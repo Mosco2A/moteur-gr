@@ -294,7 +294,8 @@
     "denied": "Location access denied",
     "disabled": "Location service disabled",
     "offTrack": "Off track",
-    "centerOnMe": "Center on my position"
+    "centerOnMe": "Center on my position",
+    "centeredOnTrack": "Location unavailable — map recentred on the route"
   },
   "navAlert": {
     "offTrackBanner": "You are moving away from the trail — $meters m. Check your position.",
@@ -1076,8 +1077,12 @@
     "emptyTitle": "No trail available",
     "emptySubtitle": "No trail is offered in the catalog yet.",
     "a11y": {
-      "enterButton": "Enter trail $nom"
-    }
+      "enterButton": "Enter trail $nom",
+      "freeTrailBadge": "Free trail"
+    },
+    "freeTrailName": "$nom — Free demo",
+    "freeBadge": "Free",
+    "freeTrailTagline": "The first $etapes stages, on us. Everything works: planning, start, navigation, journal, finish."
   },
   "updates": {
     "readyTitle": "Update ready",
@@ -1145,7 +1150,7 @@
     "subscriptionTitle": "Ad-free subscription",
     "subscriptionSubtitle": "No ads anywhere, as long as the subscription is active.",
     "subscriptionIncludesNoAds": "No ads, across the whole app",
-    "subscriptionIncludesAllowance": "A step allowance every period",
+    "subscriptionIncludesAllowance": "$steps stages credited every month",
     "subscriptionExcludes": "The subscription unlocks neither the full tools nor hiking itself: for that, you need to buy the hike.",
     "subscriptionCta": "Subscribe",
     "subscriptionActive": "Subscription active",
@@ -1157,7 +1162,9 @@
     "buyOutcomeOwned": "Hike unlocked. Enjoy the trail!",
     "buyOutcomeAlreadyOwned": "This hike is already unlocked.",
     "buyOutcomeOffline": "You are $steps steps short and payment requires a connection. Nothing was charged.",
-    "buyOutcomeFailed": "The payment did not go through. Nothing was charged."
+    "buyOutcomeFailed": "The payment did not go through. Nothing was charged.",
+    "subscriptionPrice": "$price per month",
+    "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription."
   },
   "signalement": {
     "title": "Report",

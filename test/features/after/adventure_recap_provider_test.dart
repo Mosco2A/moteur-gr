@@ -13,7 +13,8 @@ import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/stage_providers.dart';
 
 /// PARITE GR20, LOT 3 (#99433) — tests du socle « Apres le trek » :
-///   (a) diplome VERROUILLE sur un vrai trek non fini, DEVERROUILLE sur vitrine ;
+///   (a) diplome VERROUILLE tant que le parcours n'est pas reellement marche —
+///       plus aucune exception de demonstration (tache 601) ;
 ///   (b) les stats/DiplomaData refletent la SESSION REELLE, pas les totaux
 ///       statiques du sentier ;
 ///   (d) libelle Integral/partiel derive du parcours reel.
@@ -84,15 +85,14 @@ void main() {
         parcoursFullyWalked: fullyWalked,
       );
 
-  /// Container avec vitrine ON/OFF (injection [DemoModeService.showcaseTrailIds]).
-  ProviderContainer makeContainer({required bool showcase}) {
+  /// Container de test. Plus aucune bascule « vitrine » (tache 601) : le
+  /// diplome et le recap ne dependent QUE de la session reellement marchee.
+  ProviderContainer makeContainer() {
     return ProviderContainer(overrides: [
       databaseProvider.overrideWithValue(db),
       trailConfigProvider.overrideWithValue(config),
       currentTrailIdProvider.overrideWith((ref) => trailId),
-      demoModeServiceProvider.overrideWithValue(
-        DemoModeService(showcaseTrailIds: showcase ? {trailId} : <String>{}),
-      ),
+      demoModeServiceProvider.overrideWithValue(DemoModeService()),
     ]);
   }
 
@@ -127,8 +127,8 @@ void main() {
     });
   });
 
-  group('(a) Gate diplome finisher + exception vitrine', () {
-    test('VRAI trek non fini (non-vitrine) -> diplome VERROUILLE', () async {
+  group('(a) Gate diplome finisher — UNE SEULE REGLE, LA MARCHE', () {
+    test('trek non fini -> diplome VERROUILLE', () async {
       await seedStages();
       // Session enregistree mais parcours non entierement marche.
       await persistSession(sess(
@@ -137,16 +137,15 @@ void main() {
         fullyWalked: false,
       ));
 
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
 
-      expect(c.read(isShowcaseTrailProvider), isFalse);
       expect(c.read(isDiplomaUnlockedProvider), isFalse,
-          reason: 'Hors vitrine, !parcoursFullyWalked => verrouille.');
+          reason: '!parcoursFullyWalked => verrouille.');
     });
 
-    test('VRAI trek FINI (fullyWalked) -> diplome DEVERROUILLE', () async {
+    test('trek FINI (fullyWalked) -> diplome DEVERROUILLE', () async {
       await seedStages();
       await persistSession(sess(
         status: 'completed',
@@ -154,7 +153,7 @@ void main() {
         fullyWalked: true,
       ));
 
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
 
@@ -162,16 +161,19 @@ void main() {
           reason: 'parcoursFullyWalked => deverrouille.');
     });
 
-    test('VITRINE sans session -> diplome DEVERROUILLE (demo)', () async {
+    test('AUCUNE SESSION -> diplome VERROUILLE (plus d exception demo)',
+        () async {
       await seedStages();
-      // Aucune session persistee : sur un vrai trek ce serait verrouille.
-      final c = makeContainer(showcase: true);
+      // AVANT LA TACHE 601 : un sentier declare « vitrine » deverrouillait
+      // ici le diplome sans une seule etape marchee. Cette exception n existe
+      // plus, et le sentier de demonstration n en a pas besoin — il est
+      // gratuit et court, donc son diplome se GAGNE.
+      final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
 
-      expect(c.read(isShowcaseTrailProvider), isTrue);
-      expect(c.read(isDiplomaUnlockedProvider), isTrue,
-          reason: 'La vitrine deverrouille le diplome pour la demonstration.');
+      expect(c.read(isDiplomaUnlockedProvider), isFalse,
+          reason: 'sans session marchee, aucun diplome — pour personne.');
     });
   });
 
@@ -186,7 +188,7 @@ void main() {
         finishedAt: DateTime.utc(2026, 6, 17, 18),
       ));
 
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       final stats = await c.read(adventureStatsProvider.future);
 
@@ -208,7 +210,7 @@ void main() {
       await seedStages();
       await persistSession(sess(status: 'abandoned'));
 
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       final stats = await c.read(adventureStatsProvider.future);
 
@@ -231,7 +233,7 @@ void main() {
         finishedAt: DateTime.utc(2026, 6, 17, 18),
       ));
 
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       final stats = await c.read(adventureStatsProvider.future);
 
@@ -245,7 +247,7 @@ void main() {
   group('(c-support) Disponibilite du recap', () {
     test('TERMINE -> recap disponible', () async {
       await persistSession(sess(status: 'completed'));
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
       expect(c.read(isRecapAvailableProvider), isTrue);
@@ -253,33 +255,37 @@ void main() {
 
     test('ABANDONNE -> recap disponible', () async {
       await persistSession(sess(status: 'abandoned'));
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
       expect(c.read(isRecapAvailableProvider), isTrue);
     });
 
-    test('ACTIF (ni fini ni abandonne, hors vitrine) -> recap indisponible',
+    test('ACTIF (ni fini ni abandonne) -> recap indisponible',
         () async {
       await persistSession(sess(status: 'active'));
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
       expect(c.read(isRecapAvailableProvider), isFalse);
     });
 
-    test('VITRINE -> recap disponible meme sans session', () async {
-      final c = makeContainer(showcase: true);
+    test('AUCUNE SESSION -> recap INDISPONIBLE (plus d exception demo)',
+        () async {
+      // La vitrine ouvrait « Mon aventure » sur une aventure inexistante.
+      final c = makeContainer();
       addTearDown(c.dispose);
       await c.read(latestTrekSessionProvider.future);
-      expect(c.read(isRecapAvailableProvider), isTrue);
+      expect(c.read(isRecapAvailableProvider), isFalse,
+          reason: 'un recap sans aventure ne raconte rien ; sur le sentier '
+              'gratuit le trek se termine vraiment');
     });
   });
 
   group('(d) Libelle Integral / partiel (TrekCongratulations)', () {
     test('parcours ENTIER -> congratulations.isFull == true', () async {
       await seedStages();
-      final c = makeContainer(showcase: false);
+      final c = makeContainer();
       addTearDown(c.dispose);
       // Laisser stagesProvider se charger (domainStages -> plan).
       await c.read(stagesProvider.future);
