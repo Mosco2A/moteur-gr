@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,8 +16,21 @@ import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 void main() {
   late AppDatabase db;
 
-  setUp(() {
+  setUp(() async {
     db = AppDatabase(NativeDatabase.memory());
+    // LE DROIT DE REALISER EST DESORMAIS UNE CONDITION DU DEMARRAGE (tache 594,
+    // A1) : `ensureSingleActiveThenStart` refuse un trek non achete avant
+    // meme de regarder l'unicite. Ces tests-ci portent sur la machine
+    // d'UNICITE, pas sur l'argent : on leur donne donc le droit, une fois, et
+    // ils continuent de tester ce qu'ils testaient. Le refus d'achat a ses
+    // propres tests (`test/comportement/argent_594_test.dart`).
+    await db.trekEntitlementsDao.upsert(
+      TrekEntitlementsCompanion.insert(
+        trailId: 'gr20',
+        owned: const Value(true),
+        updatedAt: DateTime.utc(2026, 6, 1),
+      ),
+    );
   });
 
   tearDown(() async {
