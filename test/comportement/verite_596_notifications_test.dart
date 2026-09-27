@@ -21,6 +21,7 @@
 library;
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_local_notifications_platform_interface/flutter_local_notifications_platform_interface.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -28,8 +29,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/features/notifications/domain/notification_service.dart';
 import 'package:moteur_gr/features/notifications/providers/notification_provider.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/data/latest.dart' as tz_data;
+
+import '../structurel/parcours_reel.dart';
+
+/// Textes francais attendus a l'ecran (l'appli reelle demarre en fr).
+final _tr = AppLocale.fr.buildSync();
 
 /// Service espion : note ce qui a ete planifie et ce qui a ete annule.
 class ServiceEspion extends NotificationService {
@@ -84,6 +91,29 @@ class FakeAndroidPlateforme extends Fake
   @override
   Future<List<PendingNotificationRequest>> pendingNotificationRequests() async =>
       <PendingNotificationRequest>[];
+}
+
+/// Fait defiler l'ecran de bout en bout et rend TOUT ce que l'utilisateur peut
+/// y lire.
+///
+/// Les reglages sont une longue liste paresseuse : la section notifications
+/// n'est meme pas CONSTRUITE tant qu'on n'a pas fait defiler jusqu'a elle. Lire
+/// le premier ecran seulement ferait croire a l'absence de ce qui est simplement
+/// plus bas — le genre de faux negatif qui laisse passer un defaut.
+Future<List<String>> _textesDeToutLEcran(WidgetTester tester) async {
+  final vus = <String>{};
+  await stabiliser(tester, coups: 6);
+  vus.addAll(textesVisibles(tester));
+  final liste = find.byType(Scrollable);
+  if (!tester.any(liste)) return vus.toList();
+  for (var i = 0; i < 12; i++) {
+    await tester.drag(liste.first, const Offset(0, -320));
+    await stabiliser(tester, coups: 3);
+    final avant = vus.length;
+    vus.addAll(textesVisibles(tester));
+    if (vus.length == avant && i > 2) break; // plus rien de neuf : fin de liste
+  }
+  return vus.toList();
 }
 
 void main() {
@@ -216,6 +246,56 @@ void main() {
           reason: 'le randonneur a refuse les notifications au systeme et '
               'l ecran de reglages ne le sait pas');
       container.dispose();
+    });
+  });
+
+  group('LOT 596 C3 — CE QUE L ECRAN DIT quand le telephone bloque', () {
+    tearDown(() {
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    testWidgets(
+        '/settings — le refus du systeme est ANNONCE, avec de quoi l autoriser',
+        (tester) async {
+      // Le systeme refuse. On monte L APPLICATION REELLE (socle du LOT V) :
+      // `notificationServiceProvider` construit un vrai NotificationService,
+      // qui interrogera cette plateforme.
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      FlutterLocalNotificationsPlatform.instance =
+          FakeAndroidPlateforme(autorise: false);
+
+      await monterAppliReelle(tester, depart: '/settings');
+      final textes = await _textesDeToutLEcran(tester);
+
+      expect(textes, contains(_tr.notifications.permissionBlockedTitle),
+          reason: 'le randonneur reglait quatre rappels avec soin alors '
+              'qu aucun ne lui parviendrait : `permissionGranted` n etait lu '
+              'par personne');
+      expect(textes, contains(_tr.notifications.permissionAsk),
+          reason: 'annoncer le blocage sans offrir de le lever laisse '
+              'l utilisateur devant un mur');
+
+      await demonterAppli(tester);
+      erreursDeRendu(tester);
+      debugDefaultTargetPlatformOverride = null;
+    });
+
+    testWidgets('/settings — quand le systeme autorise, aucune alarme inutile',
+        (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      FlutterLocalNotificationsPlatform.instance =
+          FakeAndroidPlateforme(autorise: true);
+
+      await monterAppliReelle(tester, depart: '/settings');
+
+      expect(await _textesDeToutLEcran(tester),
+          isNot(contains(_tr.notifications.permissionBlockedTitle)),
+          reason: 'une alerte qui crie au loup use la confiance : elle ne doit '
+              'apparaitre que si le telephone bloque vraiment');
+
+      await demonterAppli(tester);
+      erreursDeRendu(tester);
+      debugDefaultTargetPlatformOverride = null;
     });
   });
 }
