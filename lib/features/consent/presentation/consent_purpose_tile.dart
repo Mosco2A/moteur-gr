@@ -37,6 +37,7 @@ class ConsentPurposeTile extends StatelessWidget {
           tr.consent.purposes.locationNavigation,
         ConsentPurpose.socialSharing => tr.consent.purposes.socialSharing,
         ConsentPurpose.publicReporting => tr.consent.purposes.publicReporting,
+        ConsentPurpose.advertising => tr.consent.purposes.advertising,
         ConsentPurpose.healthData => tr.consent.purposes.healthData,
       };
 
@@ -47,6 +48,7 @@ class ConsentPurposeTile extends StatelessWidget {
         ConsentPurpose.socialSharing => tr.consent.purposes.socialSharingDesc,
         ConsentPurpose.publicReporting =>
           tr.consent.purposes.publicReportingDesc,
+        ConsentPurpose.advertising => tr.consent.purposes.advertisingDesc,
         ConsentPurpose.healthData => tr.consent.purposes.healthDataDesc,
       };
 

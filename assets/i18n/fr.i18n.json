@@ -1510,7 +1510,7 @@
     "settingsTitle": "Confidentialité et consentement",
     "settingsIntro": "Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.",
     "settingsEntry": "Confidentialité et consentement",
-    "settingsEntryDesc": "Gérer mes autorisations (géolocalisation, partage, santé)",
+    "settingsEntryDesc": "Gérer mes autorisations (géolocalisation, partage, publicité, santé)",
     "purposes": {
       "locationNavigation": "Navigation personnelle",
       "locationNavigationDesc": "Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.",
@@ -1518,6 +1518,8 @@
       "socialSharingDesc": "Apparaître dans les classements et le fil communautaire, sous pseudonyme.",
       "publicReporting": "Signalement public",
       "publicReportingDesc": "Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.",
+      "advertising": "Publicité personnalisée",
+      "advertisingDesc": "Adapter les publicités à vos centres d'intérêt. Sans cette autorisation, l'application gratuite affiche toujours des publicités, mais elles ne sont pas ciblées et aucune donnée de ciblage ne quitte votre appareil.",
       "healthData": "Données de santé",
       "healthDataDesc": "Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d'effort."
     },
@@ -1531,10 +1533,11 @@
     "notDecided": "En attente de votre choix",
     "acceptSelected": "Valider mes choix",
     "declineAll": "Tout refuser",
-    "declineAllNote": "Tout refuser retire vos quatre autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.",
+    "declineAllNote": "Tout refuser retire vos cinq autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.",
     "declineAllCancel": "Annuler",
     "continueLabel": "Continuer",
     "privacyPolicyLink": "Lire la politique de confidentialité",
+    "adsPrivacyOptions": "Options de confidentialité publicitaire",
     "reviewNeeded": "Notre politique a évolué : merci de revoir vos choix.",
     "a11y": {
       "purposeToggle": "$purpose, actuellement $state",

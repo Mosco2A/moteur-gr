@@ -85,13 +85,21 @@
                 android:resource="@xml/widget_trek_info" />
         </receiver>
         <!-- AdMob (google_mobile_ads E4.13) — identifiant d'application
-             obligatoire, sans quoi le SDK Mobile Ads fait crasher l'app au
-             demarrage. Valeur = App ID de TEST PUBLIC officiel Google
-             (documente, libre d'usage en debug). L'App ID reel de production
-             sera depose plus tard via la config de release. -->
+             OBLIGATOIRE : sans lui le SDK Mobile Ads fait crasher l'app au
+             demarrage.
+
+             TACHE 595 (B3) — IL N'EST PLUS ECRIT ICI. La valeur etait figee en
+             dur dans ce fichier, donc NON injectable au build : impossible de
+             produire un APK de production sans modifier un fichier versionne.
+             C'etait d'autant plus incoherent que les EMPLACEMENTS publicitaires
+             (ad-units), eux, etaient deja proprement injectes par
+             `--dart-define` (`lib/core/config/ad_config.dart`). L'App ID
+             arrive desormais du build via le `manifestPlaceholder` `admobAppId`
+             (voir android/app/build.gradle.kts, qui documente l'injection et
+             retombe sur l'App ID de TEST public de Google). -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713" />
+            android:value="${admobAppId}" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

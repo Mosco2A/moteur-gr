@@ -1510,7 +1510,7 @@
     "settingsTitle": "Datenschutz und Einwilligung",
     "settingsIntro": "Verwalten Sie hier jede Berechtigung. Sie können eine Einwilligung jederzeit widerrufen, ohne Auswirkung auf den Rest.",
     "settingsEntry": "Datenschutz und Einwilligung",
-    "settingsEntryDesc": "Meine Berechtigungen verwalten (Standort, Teilen, Gesundheit)",
+    "settingsEntryDesc": "Meine Berechtigungen verwalten (Standort, Teilen, Werbung, Gesundheit)",
     "purposes": {
       "locationNavigation": "Persönliche Navigation",
       "locationNavigationDesc": "Ihren Standort für die Karte und die Etappenverfolgung nutzen. Bleibt auf Ihrem Gerät.",
@@ -1518,6 +1518,8 @@
       "socialSharingDesc": "Unter einem Pseudonym in Ranglisten und im Community-Feed erscheinen.",
       "publicReporting": "Öffentliche Meldungen",
       "publicReportingDesc": "Meldungen (Wasser, Gefahr, Bedingungen) veröffentlichen, die für andere Wanderer sichtbar sind.",
+      "advertising": "Personalisierte Werbung",
+      "advertisingDesc": "Werbung an Ihre Interessen anpassen. Ohne diese Berechtigung zeigt die kostenlose App weiterhin Werbung, sie ist jedoch nicht zielgerichtet und es verlassen keine Targeting-Daten Ihr Gerät.",
       "healthData": "Gesundheitsdaten",
       "healthDataDesc": "Ihre Herzfrequenz (Brustgurt oder Gesundheits-App) lesen, um Ihre Anstrengung genauer zu erfassen."
     },
@@ -1531,10 +1533,11 @@
     "notDecided": "Wartet auf Ihre Wahl",
     "acceptSelected": "Meine Auswahl bestätigen",
     "declineAll": "Alles ablehnen",
-    "declineAllNote": "Alles ablehnen widerruft Ihre vier Berechtigungen auf einmal und löscht die auf diesem Gerät gespeicherten Körperdaten (Alter, Größe, Gewicht). Sie können jede Berechtigung jederzeit wieder erteilen.",
+    "declineAllNote": "Alles ablehnen widerruft Ihre fünf Berechtigungen auf einmal und löscht die auf diesem Gerät gespeicherten Körperdaten (Alter, Größe, Gewicht). Sie können jede Berechtigung jederzeit wieder erteilen.",
     "declineAllCancel": "Abbrechen",
     "continueLabel": "Weiter",
     "privacyPolicyLink": "Datenschutzerklärung lesen",
+    "adsPrivacyOptions": "Datenschutzoptionen für Werbung",
     "reviewNeeded": "Unsere Richtlinie hat sich geändert: Bitte überprüfen Sie Ihre Auswahl.",
     "a11y": {
       "purposeToggle": "$purpose, aktuell $state",

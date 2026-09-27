@@ -1510,7 +1510,7 @@
     "settingsTitle": "Privacy and consent",
     "settingsIntro": "Manage each permission here. You can withdraw a consent at any time, with no effect on the rest.",
     "settingsEntry": "Privacy and consent",
-    "settingsEntryDesc": "Manage my permissions (location, sharing, health)",
+    "settingsEntryDesc": "Manage my permissions (location, sharing, advertising, health)",
     "purposes": {
       "locationNavigation": "Personal navigation",
       "locationNavigationDesc": "Use your location for the map and to track your stage. Stays on your device.",
@@ -1518,6 +1518,8 @@
       "socialSharingDesc": "Appear in leaderboards and the community feed, under a pseudonym.",
       "publicReporting": "Public reporting",
       "publicReportingDesc": "Post reports (water, hazard, conditions) visible to other hikers.",
+      "advertising": "Personalised advertising",
+      "advertisingDesc": "Tailor ads to your interests. Without this permission the free app still shows ads, but they are not targeted and no targeting data leaves your device.",
       "healthData": "Health data",
       "healthDataDesc": "Read your heart rate (chest strap or health app) to enrich your effort tracking."
     },
@@ -1531,10 +1533,11 @@
     "notDecided": "Awaiting your choice",
     "acceptSelected": "Confirm my choices",
     "declineAll": "Decline all",
-    "declineAllNote": "Decline all withdraws your four permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.",
+    "declineAllNote": "Decline all withdraws your five permissions at once and erases the body data (age, height, weight) stored on this device. You can grant any of them again at any time.",
     "declineAllCancel": "Cancel",
     "continueLabel": "Continue",
     "privacyPolicyLink": "Read the privacy policy",
+    "adsPrivacyOptions": "Advertising privacy options",
     "reviewNeeded": "Our policy has changed: please review your choices.",
     "a11y": {
       "purposeToggle": "$purpose, currently $state",

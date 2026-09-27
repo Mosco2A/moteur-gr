@@ -1,1 +1,15 @@
 #include "Generated.xcconfig"
+
+// ============================================================================
+// ADMOB — App ID iOS (tache 595, B3)
+// ============================================================================
+// Voir Debug.xcconfig pour le raisonnement complet. Meme mecanique, meme
+// defaut : l'App ID de TEST PUBLIC officiel de Google.
+//
+// CE QUE CHRIS DOIT FOURNIR POUR UNE V1 VENDABLE : l'App ID iOS reel de la
+// console AdMob, injecte AU BUILD —
+//   xcodebuild ... ADMOB_APP_ID_IOS=ca-app-pub-XXXXXXXX~YYYYYYYY
+// Il ne se colle PAS ici : ce fichier est versionne, et le test
+// `test/comportement/pub_v1_595_test.dart` (B3) refuse toute cle AdMob
+// etrangere au compte de test dans le depot.
+ADMOB_APP_ID_IOS=ca-app-pub-3940256099942544~1458002511

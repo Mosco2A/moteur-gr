@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../ads/presentation/banner_ad_slot.dart';
 import '../../safety/presentation/sos_button.dart';
 import '../../treks/providers/my_treks_provider.dart';
 import '../../trek/providers/tracking_providers.dart';
@@ -172,6 +173,26 @@ class _HubScreenState extends ConsumerState<HubScreen> {
       // plus aucun recouvrement, et le SOS se trouve au MEME endroit que sur la
       // carte -> une seule position a memoriser pour un geste d'urgence.
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      // --- LA BANNIERE PUBLICITAIRE (tache 595, B1) ---
+      //
+      // ICI, PARCE QUE C'EST LE MOMENT DE LA PREPARATION. Le modele economique
+      // dit « gratuit = consultation + demo bridee, AVEC pub » : le cockpit est
+      // l'ecran ou un randonneur qui n'a pas encore achete passe son temps. La
+      // banniere est indexee sur le trek courant — « trek achete = sans pub sur
+      // CE trek » — et l'abonnement comme la recompense de 24 h la coupent
+      // partout, par la meme source unique (#99404). Aucune regle n'est
+      // recalculee ici.
+      //
+      // PAS EN PHASE RANDO, ET CE N'EST PAS UNE COMMODITE. C'est la ou vit la
+      // pastille SOS ([SosButton] se masque lui-meme hors trek), et un bouton
+      // d'urgence ne se pose pas au-dessus d'une publicite : un doigt qui vise
+      // le secours ne doit jamais pouvoir ouvrir une regie. Le SOS ne porte
+      // AUCUNE publicite, nulle part — c'est la decision la mieux respectee du
+      // modele et elle le reste (test B5). Accessoirement, un trek en cours de
+      // realisation est un trek achete, donc sans pub de toute facon : la
+      // garde ne coute rien et elle ferme le cas ou les deux se croiseraient.
+      bottomNavigationBar:
+          showHike ? null : BannerAdSlot(trailId: trailId),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(AppTheme.spacingBase),

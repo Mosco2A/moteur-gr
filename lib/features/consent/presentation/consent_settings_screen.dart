@@ -7,6 +7,7 @@ import '../../../i18n/translations.g.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
+import '../../ads/providers/ads_providers.dart';
 import '../providers/consent_ui_providers.dart';
 import 'consent_purpose_tile.dart';
 
@@ -32,10 +33,17 @@ class ConsentSettingsScreen extends ConsumerWidget {
     final reviewNeededAsync = ref.watch(consentPromptNeededProvider);
     final controller = ref.read(consentControllerProvider);
 
+    // LA PUBLICITE EST UNE FINALITE COMME LES AUTRES (tache 595, B4). Elle
+    // entre dans la MEME liste, sous la MEME bascule, emportee par le MEME
+    // « Tout refuser » — c'est ca, « faire partie du dispositif ». Elle etait
+    // jusqu'ici gouvernee uniquement par le formulaire natif du CMP, qui ne
+    // parle a aucun ecran de l'application : l'intro de cet ecran promettait
+    // « gerez ici chaque autorisation » en en oubliant une.
     const standardPurposes = <ConsentPurpose>[
       ConsentPurpose.locationNavigation,
       ConsentPurpose.socialSharing,
       ConsentPurpose.publicReporting,
+      ConsentPurpose.advertising,
     ];
 
     return Scaffold(
@@ -120,6 +128,42 @@ class ConsentSettingsScreen extends ConsumerWidget {
                   ],
                 ),
               ),
+
+              // --- LA PORTE DES OPTIONS DE CONFIDENTIALITE PUB (tache 595) ---
+              //
+              // LE DEFAUT MESURE : `AdsConsentService.showPrivacyOptionsForm`
+              // et `isPrivacyOptionsRequired` etaient ECRITS et TESTES, et
+              // AUCUN geste de l'application ne les appelait. Le CMP de Google
+              // EXIGE pourtant un point d'entree permanent pour rouvrir le
+              // choix publicitaire ; sans lui, un randonneur de l'EEE qui a
+              // repondu une fois au formulaire natif ne pouvait plus jamais y
+              // revenir.
+              //
+              // POURQUOI ICI, ET PAS SUR UN ECRAN A LUI. Le formulaire CMP est
+              // une vue NATIVE, pas un ecran Flutter : lui dedier une route
+              // aurait ajoute un orphelin de plus a l'invariante « toute route
+              // a une porte » (tache 573), qui est verte. Un bouton sur
+              // l'ecran de consentement — qui a deja sa porte depuis les
+              // Reglages — la laisse verte et met le geste exactement la ou le
+              // randonneur vient gerer ses autorisations.
+              //
+              // IL N'APPARAIT QUE SI LE CMP LE RECLAME : hors EEE, ou sur un
+              // build sans identifiants de production (donc sans formulaire
+              // jamais affiche), un bouton qui ouvre le vide ne rend service a
+              // personne.
+              if (ref.watch(adsPrivacyOptionsRequiredProvider).value == true)
+                Semantics(
+                  button: true,
+                  label: tr.consent.adsPrivacyOptions,
+                  child: TextButton.icon(
+                    key: const ValueKey('consent-ads-privacy-options'),
+                    onPressed: () => ref
+                        .read(adsConsentServiceProvider)
+                        .showPrivacyOptionsForm(),
+                    icon: const Icon(Icons.tune_outlined),
+                    label: Text(tr.consent.adsPrivacyOptions),
+                  ),
+                ),
               const SizedBox(height: AppTheme.spacingLg),
 
               // --- Section SANTE isolee (art 9) ---

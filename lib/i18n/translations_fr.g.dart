@@ -2407,8 +2407,8 @@ class Translations$consent$fr {
 	/// fr: 'Confidentialité et consentement'
 	String get settingsEntry => 'Confidentialité et consentement';
 
-	/// fr: 'Gérer mes autorisations (géolocalisation, partage, santé)'
-	String get settingsEntryDesc => 'Gérer mes autorisations (géolocalisation, partage, santé)';
+	/// fr: 'Gérer mes autorisations (géolocalisation, partage, publicité, santé)'
+	String get settingsEntryDesc => 'Gérer mes autorisations (géolocalisation, partage, publicité, santé)';
 
 	late final Translations$consent$purposes$fr purposes = Translations$consent$purposes$fr.internal(_root);
 
@@ -2442,8 +2442,8 @@ class Translations$consent$fr {
 	/// fr: 'Tout refuser'
 	String get declineAll => 'Tout refuser';
 
-	/// fr: 'Tout refuser retire vos quatre autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.'
-	String get declineAllNote => 'Tout refuser retire vos quatre autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.';
+	/// fr: 'Tout refuser retire vos cinq autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.'
+	String get declineAllNote => 'Tout refuser retire vos cinq autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.';
 
 	/// fr: 'Annuler'
 	String get declineAllCancel => 'Annuler';
@@ -2453,6 +2453,9 @@ class Translations$consent$fr {
 
 	/// fr: 'Lire la politique de confidentialité'
 	String get privacyPolicyLink => 'Lire la politique de confidentialité';
+
+	/// fr: 'Options de confidentialité publicitaire'
+	String get adsPrivacyOptions => 'Options de confidentialité publicitaire';
 
 	/// fr: 'Notre politique a évolué : merci de revoir vos choix.'
 	String get reviewNeeded => 'Notre politique a évolué : merci de revoir vos choix.';
@@ -6041,6 +6044,12 @@ class Translations$consent$purposes$fr {
 	/// fr: 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.'
 	String get publicReportingDesc => 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.';
 
+	/// fr: 'Publicité personnalisée'
+	String get advertising => 'Publicité personnalisée';
+
+	/// fr: 'Adapter les publicités à vos centres d'intérêt. Sans cette autorisation, l'application gratuite affiche toujours des publicités, mais elles ne sont pas ciblées et aucune donnée de ciblage ne quitte votre appareil.'
+	String get advertisingDesc => 'Adapter les publicités à vos centres d\'intérêt. Sans cette autorisation, l\'application gratuite affiche toujours des publicités, mais elles ne sont pas ciblées et aucune donnée de ciblage ne quitte votre appareil.';
+
 	/// fr: 'Données de santé'
 	String get healthData => 'Données de santé';
 
@@ -8896,13 +8905,15 @@ extension on Translations {
 			'consent.settingsTitle' => 'Confidentialité et consentement',
 			'consent.settingsIntro' => 'Gérez ici chaque autorisation. Vous pouvez retirer un consentement à tout moment, sans conséquence sur le reste.',
 			'consent.settingsEntry' => 'Confidentialité et consentement',
-			'consent.settingsEntryDesc' => 'Gérer mes autorisations (géolocalisation, partage, santé)',
+			'consent.settingsEntryDesc' => 'Gérer mes autorisations (géolocalisation, partage, publicité, santé)',
 			'consent.purposes.locationNavigation' => 'Navigation personnelle',
 			'consent.purposes.locationNavigationDesc' => 'Utiliser votre position pour la carte et le suivi de votre étape. Reste sur votre appareil.',
 			'consent.purposes.socialSharing' => 'Partage social',
 			'consent.purposes.socialSharingDesc' => 'Apparaître dans les classements et le fil communautaire, sous pseudonyme.',
 			'consent.purposes.publicReporting' => 'Signalement public',
 			'consent.purposes.publicReportingDesc' => 'Publier des signalements (eau, danger, conditions) visibles par les autres randonneurs.',
+			'consent.purposes.advertising' => 'Publicité personnalisée',
+			'consent.purposes.advertisingDesc' => 'Adapter les publicités à vos centres d\'intérêt. Sans cette autorisation, l\'application gratuite affiche toujours des publicités, mais elles ne sont pas ciblées et aucune donnée de ciblage ne quitte votre appareil.',
 			'consent.purposes.healthData' => 'Données de santé',
 			'consent.purposes.healthDataDesc' => 'Lire votre fréquence cardiaque (ceinture ou appli santé) pour enrichir votre suivi d\'effort.',
 			'consent.healthBadge' => 'Donnée sensible',
@@ -8915,10 +8926,11 @@ extension on Translations {
 			'consent.notDecided' => 'En attente de votre choix',
 			'consent.acceptSelected' => 'Valider mes choix',
 			'consent.declineAll' => 'Tout refuser',
-			'consent.declineAllNote' => 'Tout refuser retire vos quatre autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.',
+			'consent.declineAllNote' => 'Tout refuser retire vos cinq autorisations d’un coup et efface la morphologie (âge, taille, poids) enregistrée sur cet appareil. Vous pourrez en réaccorder une à tout moment.',
 			'consent.declineAllCancel' => 'Annuler',
 			'consent.continueLabel' => 'Continuer',
 			'consent.privacyPolicyLink' => 'Lire la politique de confidentialité',
+			'consent.adsPrivacyOptions' => 'Options de confidentialité publicitaire',
 			'consent.reviewNeeded' => 'Notre politique a évolué : merci de revoir vos choix.',
 			'consent.a11y.purposeToggle' => ({required Object purpose, required Object state}) => '${purpose}, actuellement ${state}',
 			'consent.a11y.healthSection' => 'Section données de santé, consentement renforcé',
@@ -9180,11 +9192,11 @@ extension on Translations {
 			'fireRisk.regulation.title' => 'Réglementation',
 			'fireRisk.regulation.decreeLink' => 'Consulter les arrêtés préfectoraux',
 			'fireRisk.levelsTitle' => 'Niveaux de risque',
+			_ => null,
+		} ?? switch (path) {
 			'fireRisk.level.none' => 'Aucun',
 			'fireRisk.level.low' => 'Faible',
 			'fireRisk.level.moderate' => 'Modéré',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.high' => 'Élevé',
 			'fireRisk.level.veryHigh' => 'Très élevé',
 			'fireRisk.level.extreme' => 'Extrême',

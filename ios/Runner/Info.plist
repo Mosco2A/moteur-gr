@@ -40,6 +40,39 @@
 	<string>StepWays utilise le Bluetooth pour se connecter a votre ceinture cardiaque et afficher votre frequence cardiaque pendant la randonnee. Cette donnee reste sur votre telephone.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>StepWays lit (lecture seule) vos pas, frequence cardiaque, distance et calories depuis l app Sante pour afficher vos statistiques de randonnee. Ces donnees restent sur votre telephone.</string>
+	<!-- ================= ADMOB / iOS (tache 595, B3) =================
+	     LE DEFAUT REPARE : ce fichier ne portait AUCUN identifiant publicitaire,
+	     alors que le SDK Google Mobile Ads EXIGE GADApplicationIdentifier et
+	     refuse de s initialiser sans lui. Android portait au moins l App ID de
+	     TEST ; iOS n avait RIEN — la publicite y etait structurellement
+	     impossible, et l app aurait plante au demarrage du SDK.
+
+	     LA VALEUR N EST PAS ECRITE ICI. Elle vient du reglage de build
+	     ADMOB_APP_ID_IOS (ios/Flutter/Debug.xcconfig et Release.xcconfig), qui
+	     retombe sur l App ID de TEST public de Google. Aucune cle de production
+	     n entre dans ce depot. -->
+	<key>GADApplicationIdentifier</key>
+	<string>$(ADMOB_APP_ID_IOS)</string>
+	<!-- ATT (App Tracking Transparency) : texte OBLIGATOIRE des lors que l app
+	     peut demander l autorisation de suivi. Sans lui la demande est
+	     impossible et la revue App Store rejette le binaire. Le texte dit ce qui
+	     se passe VRAIMENT : refuser ne supprime pas la publicite du niveau
+	     gratuit, cela la rend non ciblee. -->
+	<key>NSUserTrackingUsageDescription</key>
+	<string>StepWays vous demande cette autorisation pour vous proposer des publicites adaptees a vos centres d&#8217;interet. Si vous refusez, l&#8217;application gratuite continue d&#8217;afficher des publicites, mais elles ne sont pas ciblees.</string>
+	<!-- SKAdNetwork : reseaux autorises a mesurer une installation issue d une
+	     publicite, sans identifiant personnel. Liste MINIMALE ET ASSUMEE :
+	     Google (AdMob), la seule regie branchee. Elle s allongera le jour ou une
+	     autre regie sera reellement utilisee — pas avant : une liste copiee de
+	     partout declare des partenaires qui ne traitent aucune donnee pour nous.
+	     -->
+	<key>SKAdNetworkItems</key>
+	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>cstr6suwn9.skadnetwork</string>
+		</dict>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

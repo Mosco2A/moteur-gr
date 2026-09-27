@@ -1,1 +1,21 @@
 #include "Generated.xcconfig"
+
+// ============================================================================
+// ADMOB — App ID iOS (tache 595, B3)
+// ============================================================================
+// LE DEFAUT REPARE : Info.plist ne portait AUCUN identifiant publicitaire,
+// alors que le SDK Google Mobile Ads EXIGE `GADApplicationIdentifier`. La cle
+// y est desormais, et elle lit CE reglage — la valeur ne vit donc jamais dans
+// un fichier de l'app.
+//
+// VALEUR PAR DEFAUT : l'App ID de TEST PUBLIC officiel de Google (documente,
+// libre d'usage, ne facture personne). Un build de developpement ou de recette
+// reste ainsi fonctionnel et inoffensif, sans qu'aucune cle reelle n'entre
+// dans ce depot.
+//
+// POUR UN BUILD DE PRODUCTION : surcharger sans modifier ce fichier —
+//   xcodebuild ... ADMOB_APP_ID_IOS=ca-app-pub-XXXXXXXX~YYYYYYYY
+// ou via une variable de groupe d'environnement Codemagic/CI. Le pendant
+// Android est le `manifestPlaceholder` `admobAppId`
+// (android/app/build.gradle.kts, propriete ou variable ADMOB_APP_ID_ANDROID).
+ADMOB_APP_ID_IOS=ca-app-pub-3940256099942544~1458002511
