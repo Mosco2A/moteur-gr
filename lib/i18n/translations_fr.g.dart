@@ -1310,8 +1310,8 @@ class Translations$notifications$fr {
 	/// fr: 'Notifications bloquées'
 	String get permissionBlockedTitle => 'Notifications bloquées';
 
-	/// fr: 'Votre téléphone refuse les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.'
-	String get permissionBlockedBody => 'Votre téléphone refuse les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.';
+	/// fr: 'Votre téléphone bloque les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.'
+	String get permissionBlockedBody => 'Votre téléphone bloque les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.';
 
 	/// fr: 'Autoriser les notifications'
 	String get permissionAsk => 'Autoriser les notifications';
@@ -8486,7 +8486,7 @@ extension on Translations {
 			'notifications.schedulerDailyTitle' => 'Bonne journée de randonnée !',
 			'notifications.schedulerDailyBody' => 'Consultez la météo et préparez votre étape du jour.',
 			'notifications.permissionBlockedTitle' => 'Notifications bloquées',
-			'notifications.permissionBlockedBody' => 'Votre téléphone refuse les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.',
+			'notifications.permissionBlockedBody' => 'Votre téléphone bloque les notifications de l\'application : aucun rappel, aucune alerte ne vous parviendra.',
 			'notifications.permissionAsk' => 'Autoriser les notifications',
 			'settings.title' => 'Paramètres',
 			'settings.language' => 'Langue',

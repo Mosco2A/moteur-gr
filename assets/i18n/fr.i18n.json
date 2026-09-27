@@ -813,7 +813,7 @@
     "schedulerDailyTitle": "Bonne journée de randonnée !",
     "schedulerDailyBody": "Consultez la météo et préparez votre étape du jour.",
     "permissionBlockedTitle": "Notifications bloquées",
-    "permissionBlockedBody": "Votre téléphone refuse les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.",
+    "permissionBlockedBody": "Votre téléphone bloque les notifications de l'application : aucun rappel, aucune alerte ne vous parviendra.",
     "permissionAsk": "Autoriser les notifications"
   },
   "settings": {
