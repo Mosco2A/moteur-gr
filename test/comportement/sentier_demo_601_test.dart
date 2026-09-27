@@ -29,6 +29,9 @@
 // CHAQUE TEST A ETE ECRIT ROUGE AVANT SA CORRECTION (regle du lot).
 library;
 
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/feature_flags.dart';
@@ -413,6 +416,104 @@ void main() {
           reason: 'elle se verse tant que l abonnement est actif, et elle '
               's arrete avec lui');
       expect(svc.walletSteps, 2, reason: 'les 2 etapes du mois paye restent');
+    });
+  });
+
+  // =========================================================================
+  // D8 — LES DONNEES DU SENTIER DEMO SONT BIEN CELLES DU MARE A MARE
+  // =========================================================================
+  //
+  // Chris : « Les donnees peuvent etre celle de mare a mare ». Elles le sont —
+  // les deux premieres etapes, reversees sous l'identifiant du sentier demo.
+  //
+  // CE GROUPE EST LE VERROU DE CETTE DERIVATION. Les deux jeux de donnees sont
+  // des fichiers distincts : sans test, ils divergeraient en silence le jour ou
+  // le Mare a Mare est corrige. Ici on les CONFRONTE, et on verifie aussi ce qui
+  // doit justement DIFFERER : les identifiants, sans quoi les jointures Drift
+  // melangeraient les deux sentiers et donc les deux progressions.
+  group('D8 — les donnees du demo sont celles du Mare a Mare, deux etapes', () {
+    List<Map<String, dynamic>> lire(String chemin) =>
+        (json.decode(File(chemin).readAsStringSync()) as List<dynamic>)
+            .cast<Map<String, dynamic>>();
+
+    final source = lire('assets/data/mare_a_mare_centre/stages.json');
+    final demo = lire('assets/data/mare_a_mare_centre_demo/stages.json');
+
+    test('le demo porte exactement les DEUX PREMIERES etapes de la source', () {
+      expect(demo, hasLength(2));
+      expect(source.length, greaterThan(2),
+          reason: 'la source est le sentier complet (7 etapes)');
+
+      for (var i = 0; i < demo.length; i++) {
+        expect(demo[i]['stageNumber'], source[i]['stageNumber']);
+        expect(demo[i]['distanceKm'], source[i]['distanceKm'],
+            reason: 'meme terrain, memes kilometres');
+        expect(demo[i]['elevationGainM'], source[i]['elevationGainM']);
+        expect(demo[i]['departureName'], source[i]['departureName']);
+        expect(demo[i]['arrivalName'], source[i]['arrivalName']);
+      }
+    });
+
+    test('les totaux annonces au catalogue sont la SOMME REELLE de ses etapes',
+        () {
+      final config = TrailCatalog.byId(kDemo)!;
+      final km = demo.fold<double>(
+          0, (t, e) => t + (e['distanceKm'] as num).toDouble());
+      final denivele =
+          demo.fold<int>(0, (t, e) => t + (e['elevationGainM'] as int));
+
+      expect(config.totalDistanceKm, km,
+          reason: 'un total recopie du sentier complet serait un mensonge '
+              'affiche : 84 km annonces pour 27 km de marche');
+      expect(config.totalElevationGain, denivele);
+      expect(config.totalStages, demo.length);
+    });
+
+    test('les identifiants DIFFERENT : aucune jointure ne peut les confondre',
+        () {
+      final idsSource = source.map((e) => e['id'] as String).toSet();
+      final idsDemo = demo.map((e) => e['id'] as String).toSet();
+
+      expect(idsDemo.intersection(idsSource), isEmpty,
+          reason: 'deux etapes portant le meme identifiant feraient une seule '
+              'ligne en base : la progression du demo se melangerait avec celle '
+              'du vrai sentier');
+      for (final etape in demo) {
+        expect(etape['trailId'], kDemo,
+            reason: 'chaque etape du demo est rattachee au sentier DEMO');
+      }
+      for (final etape in source) {
+        expect(etape['trailId'], kPayant);
+      }
+    });
+
+    test('les POI du demo sont rattaches aux etapes du demo', () {
+      final pois = lire('assets/data/mare_a_mare_centre_demo/pois.json');
+      final idsEtapes = demo.map((e) => e['id'] as String).toSet();
+
+      expect(pois, isNotEmpty,
+          reason: 'un sentier de demonstration sans POI ne demontre pas les POI');
+      for (final poi in pois) {
+        expect(idsEtapes, contains(poi['stageId']),
+            reason: 'un POI orphelin ne s afficherait sur aucune etape');
+        expect(poi['stageNumber'], lessThanOrEqualTo(2));
+      }
+    });
+
+    test('la trace GPX du demo est celle du demo, et plus courte', () {
+      final traceDemo =
+          File('assets/data/mare_a_mare_centre_demo/track.gpx').readAsStringSync();
+      final traceSource =
+          File('assets/data/mare_a_mare_centre/track.gpx').readAsStringSync();
+
+      expect(traceDemo, contains('<name>$kDemo</name>'),
+          reason: 'la trace nomme SON sentier');
+      expect(traceDemo.split('<trkpt').length,
+          lessThan(traceSource.split('<trkpt').length),
+          reason: 'deux etapes, pas sept : une trace de 84 km sur un sentier de '
+              '27 km serait un mensonge de plus');
+      expect(traceDemo, contains('</gpx>'),
+          reason: 'la trace tronquee reste un GPX VALIDE');
     });
   });
 }
