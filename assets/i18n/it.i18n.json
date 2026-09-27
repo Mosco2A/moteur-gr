@@ -1082,7 +1082,11 @@
     },
     "freeTrailName": "$nom — Demo gratuita",
     "freeBadge": "Gratuito",
-    "freeTrailTagline": "Le prime $etapes tappe, in regalo. Funziona tutto: preparazione, partenza, navigazione, diario, arrivo."
+    "freeTrailTagline": "Le prime $etapes tappe, in regalo. Funziona tutto: preparazione, partenza, navigazione, diario, arrivo.",
+    "loadFailedTitle": "Elenco dei sentieri non disponibile",
+    "loadFailedSubtitle": "Non è stato possibile recuperare l’elenco dei sentieri in questo momento. I sentieri già scaricati restano disponibili offline.",
+    "loadFailedRetry": "Riprova",
+    "staleNoticeOffline": "Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete."
   },
   "updates": {
     "readyTitle": "Aggiornamento pronto",

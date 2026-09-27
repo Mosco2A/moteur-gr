@@ -1739,6 +1739,18 @@ class Translations$catalog$fr {
 
 	/// fr: 'Les $etapes premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.'
 	String freeTrailTagline({required Object etapes}) => 'Les ${etapes} premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.';
+
+	/// fr: 'Liste des sentiers indisponible'
+	String get loadFailedTitle => 'Liste des sentiers indisponible';
+
+	/// fr: 'Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.'
+	String get loadFailedSubtitle => 'Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.';
+
+	/// fr: 'Réessayer'
+	String get loadFailedRetry => 'Réessayer';
+
+	/// fr: 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.'
+	String get staleNoticeOffline => 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.';
 }
 
 // Path: updates
@@ -8750,6 +8762,10 @@ extension on Translations {
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Démo gratuite',
 			'catalog.freeBadge' => 'Gratuit',
 			'catalog.freeTrailTagline' => ({required Object etapes}) => 'Les ${etapes} premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.',
+			'catalog.loadFailedTitle' => 'Liste des sentiers indisponible',
+			'catalog.loadFailedSubtitle' => 'Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.',
+			'catalog.loadFailedRetry' => 'Réessayer',
+			'catalog.staleNoticeOffline' => 'Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau.',
 			'updates.readyTitle' => 'Mise à jour prête',
 			'updates.readyBodyOne' => 'Un sentier a été mis à jour.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentiers ont été mis à jour.',
@@ -8830,12 +8846,12 @@ extension on Translations {
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
 			'signalement.types.eauASec' => 'Point d\'eau à sec',
 			'signalement.types.danger' => 'Danger',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Enregistré. Visible par les autres randonneurs après synchronisation réseau.',
 			'signalement.confirm' => 'Confirmer le signalement',
 			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.',
 			'signalement.savedTitle' => 'Signalement enregistré',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
 			'signalement.close' => 'Fermer',
@@ -9344,12 +9360,12 @@ extension on Translations {
 			'calendar.empty.message' => 'Choisissez votre parcours et la durée pour pouvoir configurer vos dates.',
 			'calendar.empty.action' => 'CONFIGURER L\'ITINÉRAIRE',
 			'nuitees.title' => 'Réservations nuitées',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Guide des nuitées',
 			'nuitees.infoBar' => 'Réservez chaque nuit à l\'avance en haute saison',
 			'nuitees.types.refuge' => 'Refuge',
 			'nuitees.types.gite' => 'Gîte',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Bivouac',
 			'nuitees.types.autreHebergement' => 'Autre hébergement',
 			'nuitees.guide.title' => 'Guide des nuitées',

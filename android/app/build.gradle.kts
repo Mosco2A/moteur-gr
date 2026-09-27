@@ -6,6 +6,9 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // TACHE 604 — greffons Firebase. Declares dans android/settings.gradle.kts.
+    id("com.google.gms.google-services")
+    id("com.google.firebase.crashlytics")
 }
 
 // P1-3 audit #327 [B-2] — signature release hors depot.
@@ -24,7 +27,7 @@ if (hasReleaseKeystore) {
 }
 
 android {
-    namespace = "com.only1cent.moteur_gr"
+    namespace = "com.only1cent.stepways"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -39,7 +42,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.only1cent.moteur_gr"
+        applicationId = "com.only1cent.stepways"
 
         // ---------------------------------------------------------------
         // ADMOB — L'APP ID ARRIVE DU BUILD, JAMAIS DU DEPOT (tache 595, B3)

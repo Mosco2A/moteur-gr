@@ -52,7 +52,7 @@ def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     avant_plan = "--avant-plan" in sys.argv
     serial = args[0] if len(args) > 0 else "emulator-5554"
-    pkg = args[1] if len(args) > 1 else "com.only1cent.moteur_gr"
+    pkg = args[1] if len(args) > 1 else "com.only1cent.stepways"
     dur = int(args[2]) if len(args) > 2 else 600
     perms = PERMS_AVANT_PLAN if avant_plan else PERMS
     end = time.time() + dur

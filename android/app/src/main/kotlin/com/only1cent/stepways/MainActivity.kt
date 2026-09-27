@@ -1,4 +1,4 @@
-package com.only1cent.moteur_gr
+package com.only1cent.stepways
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

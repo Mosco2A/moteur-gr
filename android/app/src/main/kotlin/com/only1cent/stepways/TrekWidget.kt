@@ -18,7 +18,7 @@
 // Config : res/xml/widget_trek_info.xml
 // Declare dans AndroidManifest.xml (receiver APPWIDGET_UPDATE)
 
-package com.only1cent.moteur_gr
+package com.only1cent.stepways
 
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider

@@ -1082,7 +1082,11 @@
     },
     "freeTrailName": "$nom — Démo gratuite",
     "freeBadge": "Gratuit",
-    "freeTrailTagline": "Les $etapes premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée."
+    "freeTrailTagline": "Les $etapes premières étapes, offertes. Tout fonctionne : préparation, départ, navigation, journal, arrivée.",
+    "loadFailedTitle": "Liste des sentiers indisponible",
+    "loadFailedSubtitle": "Impossible de récupérer la liste des sentiers pour le moment. Vos sentiers déjà téléchargés restent accessibles hors ligne.",
+    "loadFailedRetry": "Réessayer",
+    "staleNoticeOffline": "Hors ligne : voici vos sentiers déjà téléchargés. La liste complète se rafraîchira au retour du réseau."
   },
   "updates": {
     "readyTitle": "Mise à jour prête",

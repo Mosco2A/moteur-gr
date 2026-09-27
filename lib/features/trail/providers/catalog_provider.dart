@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
+import '../../../core/config/trail_data_source.dart';
 import '../../../core/data/daos/trail_manifests_dao.dart';
 import '../../../core/data/daos/trail_meta_dao.dart';
 import '../../../core/data/database.dart';
@@ -56,11 +57,38 @@ class CatalogEntry {
   final int? localVersion;
 }
 
+/// POURQUOI LA LISTE DES SENTIERS N A PAS PU ETRE RAFRAICHIE (tache 604).
+///
+/// CE QUI ETAIT CASSE, ET C EST LE POINT LE PLUS GRAVE DU LOT. Quand le
+/// manifeste distant echouait, `_loadCatalog()` retombait sur la base locale et
+/// rendait `CatalogState(entries: [...], isOffline: false)`. A l installation la
+/// base locale est VIDE : l ecran recevait donc une liste vide, avec
+/// `isOffline: false`, et AUCUNE trace de l echec. Un catalogue vide et un
+/// catalogue qui n a pas pu se charger produisaient exactement le meme etat —
+/// l utilisateur voyait un ecran vide sans un mot, et personne, ni lui ni un
+/// journal, ne pouvait distinguer « il n y a rien » de « je n ai pas pu
+/// regarder ».
+///
+/// La cause est desormais NOMMEE et portee par l etat, sur le meme principe que
+/// [FirebaseIndisponible] (tache 596) : un echec silencieux est un echec
+/// indiagnosticable.
+enum CatalogEchec {
+  /// Hors ligne : la liste distante n a pas ete demandee. Ce n est PAS une
+  /// panne — les sentiers deja telecharges restent accessibles.
+  horsLigne,
+
+  /// En ligne, mais le manifeste distant n a pas pu etre recupere (404, panne
+  /// serveur, espace de stockage non provisionne, reseau capricieux). Anomalie :
+  /// l ecran doit le DIRE et proposer de reessayer.
+  manifesteInjoignable,
+}
+
 /// Etat global du catalogue.
 class CatalogState {
   const CatalogState({
     required this.entries,
     required this.isOffline,
+    this.echec,
   });
 
   /// Liste combinee des sentiers (distants + statut local)
@@ -69,13 +97,30 @@ class CatalogState {
   /// Indique si l'appareil est hors ligne
   final bool isOffline;
 
+  /// Pourquoi la liste distante manque, ou `null` si elle a bien ete lue.
+  ///
+  /// Non nul AVEC des entrees = les sentiers deja telecharges sont la, mais la
+  /// liste n est pas a jour (hors ligne assume, cf. [CatalogEchec.horsLigne]).
+  final CatalogEchec? echec;
+
+  /// Vrai quand l ecran n a RIEN a montrer ET que la cause est un echec.
+  ///
+  /// C est exactement le cas qui produisait un ecran vide muet. L ecran doit
+  /// afficher un message et un bouton « reessayer » ([CatalogNotifier.refresh]),
+  /// jamais une liste vide sans explication.
+  bool get doitExpliquerAuLieuDeRienMontrer =>
+      entries.isEmpty && echec != null;
+
   CatalogState copyWith({
     List<CatalogEntry>? entries,
     bool? isOffline,
+    CatalogEchec? echec,
+    bool effacerEchec = false,
   }) {
     return CatalogState(
       entries: entries ?? this.entries,
       isOffline: isOffline ?? this.isOffline,
+      echec: effacerEchec ? null : (echec ?? this.echec),
     );
   }
 }
@@ -93,9 +138,14 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
   late TrailMetaDao _trailMetaDao;
   late ConnectivityMonitor _connectivity;
 
-  /// URL du manifeste distant
-  static const defaultManifestUrl =
-      'https://storage.googleapis.com/moteur-gr/manifest.json';
+  /// URL du manifeste distant.
+  ///
+  /// TACHE 604 — C ETAIT `storage.googleapis.com/moteur-gr/manifest.json`, EN
+  /// DUR, et cet espace de stockage n a jamais existe : 404 sur la racine comme
+  /// sur l objet. `update_downloader.dart` en portait une seconde copie, aussi
+  /// morte. Les deux lisent maintenant [TrailDataSource], seul endroit du moteur
+  /// qui sait ou vivent les donnees, et surchargeable au build.
+  static String get defaultManifestUrl => TrailDataSource.urlManifeste;
 
   @override
   Future<CatalogState> build() async {
@@ -129,19 +179,37 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
               ))
           .toList();
 
-      return CatalogState(entries: entries, isOffline: true);
+      // HORS LIGNE : NON NEGOCIABLE. Les sentiers deja telecharges restent
+      // accessibles au randonneur sans reseau — c est la raison d etre du
+      // produit. La cause est nommee pour que l ecran puisse dire « liste non
+      // rafraichie » au lieu de laisser croire que le catalogue est vide.
+      return CatalogState(
+        entries: entries,
+        isOffline: true,
+        echec: CatalogEchec.horsLigne,
+      );
     }
 
     // En ligne : fetch le manifeste distant
     final manifest = await _manifestService.fetchManifest(defaultManifestUrl);
     if (manifest == null) {
-      _log.w('[CatalogNotifier] Manifeste indisponible');
-      // Fallback sur les donnees locales
+      // L ECHEC EST DIT, PAS AVALE (tache 604). Avant, on rendait ici les
+      // entrees locales avec `isOffline: false` et rien d autre : a
+      // l installation la base locale est vide, donc l ecran recevait une liste
+      // vide SANS AUCUNE EXPLICATION, indistinguable d un catalogue
+      // legitimement vide. On garde le repli sur le local — ce qui est deja
+      // telecharge doit rester visible — mais on NOMME la cause.
+      _log.w(
+        '[CatalogNotifier] Manifeste distant injoignable ($defaultManifestUrl) '
+        '— repli sur les sentiers deja telecharges. La liste n est PAS a jour.',
+      );
       final localManifests = await _manifestsDao.getAll();
-      final entries = localManifests
-          .map(_buildEntryFromLocal)
-          .toList();
-      return CatalogState(entries: entries, isOffline: false);
+      final entries = localManifests.map(_buildEntryFromLocal).toList();
+      return CatalogState(
+        entries: entries,
+        isOffline: false,
+        echec: CatalogEchec.manifesteInjoignable,
+      );
     }
 
     // Sauvegarder le manifeste distant en base

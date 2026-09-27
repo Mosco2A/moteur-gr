@@ -36,7 +36,7 @@ if (Test-Path $log) { Move-Item $log "$log.$(Get-Date -Format yyyyMMdd-HHmmss).b
 # 1. LE LOG EXISTE AVANT LE DEMON.
 New-Item -ItemType File $log | Out-Null
 
-$pkg = 'com.only1cent.moteur_gr'
+$pkg = 'com.only1cent.stepways'
 $procs = @()
 
 function Start-Demon([string]$name, [string[]]$argv) {

@@ -46,7 +46,7 @@ abstract final class StoreSubscriptionLinks {
   /// plutot que la liste). Constante et non lue via `PackageInfo` : ce lien doit
   /// se construire sans aucun appel de plateforme, donc sans canal susceptible
   /// de ne pas repondre — la page d'annulation ne peut pas dependre de ca.
-  static const String androidPackageName = 'com.only1cent.moteur_gr';
+  static const String androidPackageName = 'com.only1cent.stepways';
 
   /// Page de gestion des abonnements Google Play, POUR CET ABONNEMENT.
   ///

@@ -1082,7 +1082,11 @@
     },
     "freeTrailName": "$nom — Demo gratis",
     "freeBadge": "Gratis",
-    "freeTrailTagline": "Las primeras $etapes etapas, de regalo. Todo funciona: preparación, salida, navegación, diario, llegada."
+    "freeTrailTagline": "Las primeras $etapes etapas, de regalo. Todo funciona: preparación, salida, navegación, diario, llegada.",
+    "loadFailedTitle": "Lista de senderos no disponible",
+    "loadFailedSubtitle": "No se ha podido recuperar la lista de senderos ahora mismo. Los senderos ya descargados siguen disponibles sin conexión.",
+    "loadFailedRetry": "Reintentar",
+    "staleNoticeOffline": "Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red."
   },
   "updates": {
     "readyTitle": "Actualización lista",

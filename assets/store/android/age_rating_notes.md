@@ -56,7 +56,7 @@ Les éléments suivants existent déjà sur `main` et ne doivent PAS être recr�
   LOCATION, FOREGROUND_SERVICE_LOCATION, POST_NOTIFICATIONS) + service
   `GeolocatorLocationService` typé `location`.
 - Configuration de signature (`signingConfigs` release/debug),
-  `minSdk = 23`, `targetSdk = 35`, `applicationId = com.only1cent.moteur_gr`.
+  `minSdk = 23`, `targetSdk = 35`, `applicationId = com.only1cent.stepways`.
 
 ## Politique de confidentialité
 

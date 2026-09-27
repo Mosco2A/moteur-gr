@@ -17,7 +17,7 @@ cible (Mare a Mare) est integre de maniere **parametrique** (assets +
 > `scripts/scan_secrets.sh` et la gate QA).
 
 Nom du package Dart : `moteur_gr`. ApplicationId / namespace :
-`com.only1cent.moteur_gr`.
+`com.only1cent.stepways`.
 
 ## Stack technique
 

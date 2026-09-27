@@ -843,6 +843,10 @@ class _Translations$catalog$de extends Translations$catalog$fr {
 	@override String freeTrailName({required Object nom}) => '${nom} — Kostenlose Demo';
 	@override String get freeBadge => 'Kostenlos';
 	@override String freeTrailTagline({required Object etapes}) => 'Die ersten ${etapes} Etappen, geschenkt. Alles funktioniert: Vorbereitung, Start, Navigation, Tagebuch, Ankunft.';
+	@override String get loadFailedTitle => 'Wegeliste nicht verfügbar';
+	@override String get loadFailedSubtitle => 'Die Wegeliste konnte derzeit nicht geladen werden. Bereits heruntergeladene Wege bleiben offline verfügbar.';
+	@override String get loadFailedRetry => 'Erneut versuchen';
+	@override String get staleNoticeOffline => 'Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist.';
 }
 
 // Path: updates
@@ -4959,6 +4963,10 @@ extension on TranslationsDe {
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Kostenlose Demo',
 			'catalog.freeBadge' => 'Kostenlos',
 			'catalog.freeTrailTagline' => ({required Object etapes}) => 'Die ersten ${etapes} Etappen, geschenkt. Alles funktioniert: Vorbereitung, Start, Navigation, Tagebuch, Ankunft.',
+			'catalog.loadFailedTitle' => 'Wegeliste nicht verfügbar',
+			'catalog.loadFailedSubtitle' => 'Die Wegeliste konnte derzeit nicht geladen werden. Bereits heruntergeladene Wege bleiben offline verfügbar.',
+			'catalog.loadFailedRetry' => 'Erneut versuchen',
+			'catalog.staleNoticeOffline' => 'Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist.',
 			'updates.readyTitle' => 'Update bereit',
 			'updates.readyBodyOne' => 'Ein Weg wurde aktualisiert.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} Wege wurden aktualisiert.',
@@ -5039,12 +5047,12 @@ extension on TranslationsDe {
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
 			'signalement.types.eauASec' => 'Trockene Wasserstelle',
 			'signalement.types.danger' => 'Gefahr',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Gespeichert. Für andere Wanderer sichtbar, sobald das Netzwerk synchronisiert.',
 			'signalement.confirm' => 'Meldung bestätigen',
 			'signalement.noLocation' => 'GPS-Position derzeit nicht verfügbar. Versuchen Sie es unter freiem Himmel erneut.',
 			'signalement.savedTitle' => 'Meldung gespeichert',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'Sie wird geteilt, sobald das Netzwerk wieder da ist.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} warten auf Synchronisierung',
 			'signalement.close' => 'Schließen',
@@ -5553,12 +5561,12 @@ extension on TranslationsDe {
 			'calendar.empty.message' => 'Wähle deine Route und Dauer, um deine Daten festzulegen.',
 			'calendar.empty.action' => 'ROUTE EINRICHTEN',
 			'nuitees.title' => 'Übernachtungen',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Übernachtungs-Ratgeber',
 			'nuitees.infoBar' => 'Buchen Sie jede Nacht in der Hochsaison im Voraus',
 			'nuitees.types.refuge' => 'Berghütte',
 			'nuitees.types.gite' => 'Herberge',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Biwak',
 			'nuitees.types.autreHebergement' => 'Andere Unterkunft',
 			'nuitees.guide.title' => 'Übernachtungs-Ratgeber',

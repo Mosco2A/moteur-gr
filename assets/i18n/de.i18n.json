@@ -1082,7 +1082,11 @@
     },
     "freeTrailName": "$nom — Kostenlose Demo",
     "freeBadge": "Kostenlos",
-    "freeTrailTagline": "Die ersten $etapes Etappen, geschenkt. Alles funktioniert: Vorbereitung, Start, Navigation, Tagebuch, Ankunft."
+    "freeTrailTagline": "Die ersten $etapes Etappen, geschenkt. Alles funktioniert: Vorbereitung, Start, Navigation, Tagebuch, Ankunft.",
+    "loadFailedTitle": "Wegeliste nicht verfügbar",
+    "loadFailedSubtitle": "Die Wegeliste konnte derzeit nicht geladen werden. Bereits heruntergeladene Wege bleiben offline verfügbar.",
+    "loadFailedRetry": "Erneut versuchen",
+    "staleNoticeOffline": "Offline: dies sind die bereits heruntergeladenen Wege. Die vollständige Liste wird aktualisiert, sobald du wieder online bist."
   },
   "updates": {
     "readyTitle": "Update bereit",

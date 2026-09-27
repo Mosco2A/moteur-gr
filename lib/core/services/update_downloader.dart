@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
 
 import '../../i18n/translations.g.dart';
+import '../config/trail_data_source.dart';
 import '../data/daos/trail_manifests_dao.dart';
 import '../models/trail_manifest.dart';
 import '../network/connectivity_monitor.dart';
@@ -65,11 +66,17 @@ Future<void> _defaultTaskRunner(
   await task();
 }
 
-/// Base par defaut des fichiers de donnees sentier.
+/// TACHE 604 — IL Y AVAIT ICI UNE ADRESSE EN DUR, ET ELLE ETAIT MORTE.
 ///
-/// Meme bucket que le manifeste du catalogue (catalog_provider).
-/// Surchargee par l application hote via le constructeur.
-const kDefaultTrailDataBaseUrl = 'https://storage.googleapis.com/moteur-gr';
+/// `const kDefaultTrailDataBaseUrl = 'https://storage.googleapis.com/moteur-gr'`
+/// pointait sur un espace de stockage qui n a JAMAIS existe (404 sur la racine
+/// comme sur l objet), et `catalog_provider.dart` en portait une SECONDE copie,
+/// tout aussi morte. Deux copies d une meme information fausse.
+///
+/// La constante disparait : [UpdateDownloader.dataBaseUrl] devient un
+/// REMPLACEMENT OPTIONNEL. Quand il est absent — le cas normal — chaque URL est
+/// resolue par [TrailDataSource], seul endroit du moteur qui sait ou vivent les
+/// donnees, et surchargeable au build.
 
 /// Service de telechargement delta en arriere-plan (E4.11c).
 ///
@@ -88,7 +95,7 @@ class UpdateDownloader {
     required this.manifestService,
     required this.dao,
     required this.connectivityMonitor,
-    this.dataBaseUrl = kDefaultTrailDataBaseUrl,
+    this.dataBaseUrl,
     FlutterLocalNotificationsPlugin? notificationsPlugin,
     BackgroundTaskRunner? backgroundRunner,
   })  : _notificationsPlugin =
@@ -101,8 +108,18 @@ class UpdateDownloader {
   final TrailManifestsDao dao;
   final ConnectivityMonitor connectivityMonitor;
 
-  /// Base d URL des fichiers de donnees (injectee, jamais en dur).
-  final String dataBaseUrl;
+  /// REMPLACEMENT optionnel de la base d URL des fichiers de donnees.
+  ///
+  /// `null` — le cas normal — signifie « demande a [TrailDataSource] », qui
+  /// resout depuis l espace de stockage Firebase du projet. Une valeur non nulle
+  /// sert a servir les donnees depuis un autre hebergeur (tests, recette, futur
+  /// miroir) sans reconstruire le moteur.
+  final String? dataBaseUrl;
+
+  /// URL des donnees de [cheminManifeste], remplacement honore s il existe.
+  String urlDonnees(String cheminManifeste) => dataBaseUrl == null
+      ? TrailDataSource.urlDonneesSentier(cheminManifeste)
+      : '$dataBaseUrl/$cheminManifeste';
 
   final FlutterLocalNotificationsPlugin _notificationsPlugin;
   final BackgroundTaskRunner _backgroundRunner;
@@ -242,7 +259,7 @@ class UpdateDownloader {
 
       await deltaUpdateService.downloadAndApplyDelta(
         trailId,
-        '$dataBaseUrl/${remoteEntry.filePath}',
+        urlDonnees(remoteEntry.filePath),
         changedTables: changedTables,
       );
 

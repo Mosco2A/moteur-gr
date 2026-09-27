@@ -843,6 +843,10 @@ class _Translations$catalog$it extends Translations$catalog$fr {
 	@override String freeTrailName({required Object nom}) => '${nom} — Demo gratuita';
 	@override String get freeBadge => 'Gratuito';
 	@override String freeTrailTagline({required Object etapes}) => 'Le prime ${etapes} tappe, in regalo. Funziona tutto: preparazione, partenza, navigazione, diario, arrivo.';
+	@override String get loadFailedTitle => 'Elenco dei sentieri non disponibile';
+	@override String get loadFailedSubtitle => 'Non è stato possibile recuperare l’elenco dei sentieri in questo momento. I sentieri già scaricati restano disponibili offline.';
+	@override String get loadFailedRetry => 'Riprova';
+	@override String get staleNoticeOffline => 'Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete.';
 }
 
 // Path: updates
@@ -4959,6 +4963,10 @@ extension on TranslationsIt {
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Demo gratuita',
 			'catalog.freeBadge' => 'Gratuito',
 			'catalog.freeTrailTagline' => ({required Object etapes}) => 'Le prime ${etapes} tappe, in regalo. Funziona tutto: preparazione, partenza, navigazione, diario, arrivo.',
+			'catalog.loadFailedTitle' => 'Elenco dei sentieri non disponibile',
+			'catalog.loadFailedSubtitle' => 'Non è stato possibile recuperare l’elenco dei sentieri in questo momento. I sentieri già scaricati restano disponibili offline.',
+			'catalog.loadFailedRetry' => 'Riprova',
+			'catalog.staleNoticeOffline' => 'Offline: questi sono i sentieri che hai già scaricato. L’elenco completo si aggiornerà al ritorno della rete.',
 			'updates.readyTitle' => 'Aggiornamento pronto',
 			'updates.readyBodyOne' => 'Un sentiero è stato aggiornato.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} sentieri sono stati aggiornati.',
@@ -5039,12 +5047,12 @@ extension on TranslationsIt {
 			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
 			'signalement.types.eauASec' => 'Punto d\'acqua a secco',
 			'signalement.types.danger' => 'Pericolo',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Salvato. Visibile agli altri escursionisti dopo la sincronizzazione di rete.',
 			'signalement.confirm' => 'Conferma segnalazione',
 			'signalement.noLocation' => 'Posizione GPS non disponibile al momento. Riprova sotto cielo aperto.',
 			'signalement.savedTitle' => 'Segnalazione salvata',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'Sarà condivisa appena la rete sarà disponibile.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
 			'signalement.close' => 'Chiudi',
@@ -5553,12 +5561,12 @@ extension on TranslationsIt {
 			'calendar.empty.message' => 'Scegli il percorso e la durata per poter configurare le tue date.',
 			'calendar.empty.action' => 'CONFIGURA L\'ITINERARIO',
 			'nuitees.title' => 'Pernottamenti',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Guida ai pernottamenti',
 			'nuitees.infoBar' => 'Prenota ogni notte in anticipo in alta stagione',
 			'nuitees.types.refuge' => 'Rifugio',
 			'nuitees.types.gite' => 'Ostello',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Bivacco',
 			'nuitees.types.autreHebergement' => 'Altro alloggio',
 			'nuitees.guide.title' => 'Guida ai pernottamenti',

@@ -1082,7 +1082,11 @@
     },
     "freeTrailName": "$nom — Free demo",
     "freeBadge": "Free",
-    "freeTrailTagline": "The first $etapes stages, on us. Everything works: planning, start, navigation, journal, finish."
+    "freeTrailTagline": "The first $etapes stages, on us. Everything works: planning, start, navigation, journal, finish.",
+    "loadFailedTitle": "Trail list unavailable",
+    "loadFailedSubtitle": "The trail list could not be retrieved right now. Trails you already downloaded remain available offline.",
+    "loadFailedRetry": "Try again",
+    "staleNoticeOffline": "Offline: these are the trails you already downloaded. The full list will refresh once you are back online."
   },
   "updates": {
     "readyTitle": "Update ready",

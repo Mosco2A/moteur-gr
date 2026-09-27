@@ -843,6 +843,10 @@ class _Translations$catalog$es extends Translations$catalog$fr {
 	@override String freeTrailName({required Object nom}) => '${nom} — Demo gratis';
 	@override String get freeBadge => 'Gratis';
 	@override String freeTrailTagline({required Object etapes}) => 'Las primeras ${etapes} etapas, de regalo. Todo funciona: preparación, salida, navegación, diario, llegada.';
+	@override String get loadFailedTitle => 'Lista de senderos no disponible';
+	@override String get loadFailedSubtitle => 'No se ha podido recuperar la lista de senderos ahora mismo. Los senderos ya descargados siguen disponibles sin conexión.';
+	@override String get loadFailedRetry => 'Reintentar';
+	@override String get staleNoticeOffline => 'Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red.';
 }
 
 // Path: updates
@@ -4959,6 +4963,10 @@ extension on TranslationsEs {
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Demo gratis',
 			'catalog.freeBadge' => 'Gratis',
 			'catalog.freeTrailTagline' => ({required Object etapes}) => 'Las primeras ${etapes} etapas, de regalo. Todo funciona: preparación, salida, navegación, diario, llegada.',
+			'catalog.loadFailedTitle' => 'Lista de senderos no disponible',
+			'catalog.loadFailedSubtitle' => 'No se ha podido recuperar la lista de senderos ahora mismo. Los senderos ya descargados siguen disponibles sin conexión.',
+			'catalog.loadFailedRetry' => 'Reintentar',
+			'catalog.staleNoticeOffline' => 'Sin conexión: estos son los senderos que ya has descargado. La lista completa se actualizará cuando vuelvas a tener red.',
 			'updates.readyTitle' => 'Actualización lista',
 			'updates.readyBodyOne' => 'Un sendero ha sido actualizado.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} senderos han sido actualizados.',
@@ -5039,12 +5047,12 @@ extension on TranslationsEs {
 			'signalement.types.obstacle' => 'Obstáculo en el sendero',
 			'signalement.types.eauASec' => 'Punto de agua seco',
 			'signalement.types.danger' => 'Peligro',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Guardado. Visible para otros senderistas tras la sincronización de red.',
 			'signalement.confirm' => 'Confirmar notificación',
 			'signalement.noLocation' => 'Posición GPS no disponible ahora. Inténtalo de nuevo a cielo abierto.',
 			'signalement.savedTitle' => 'Notificación guardada',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'Se compartirá en cuanto vuelva la red.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en espera de sincronización',
 			'signalement.close' => 'Cerrar',
@@ -5553,12 +5561,12 @@ extension on TranslationsEs {
 			'calendar.empty.message' => 'Elige tu ruta y la duración para poder configurar tus fechas.',
 			'calendar.empty.action' => 'CONFIGURAR EL ITINERARIO',
 			'nuitees.title' => 'Pernoctaciones',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Guía de pernoctaciones',
 			'nuitees.infoBar' => 'Reserva cada noche con antelación en temporada alta',
 			'nuitees.types.refuge' => 'Refugio',
 			'nuitees.types.gite' => 'Albergue',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Vivac',
 			'nuitees.types.autreHebergement' => 'Otro alojamiento',
 			'nuitees.guide.title' => 'Guía de pernoctaciones',

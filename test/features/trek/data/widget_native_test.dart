@@ -65,7 +65,7 @@ void main() {
 
       // TrekWidget.kt cable les RemoteViews (plus de TODO)
       final kotlin = File(
-        'android/app/src/main/kotlin/com/only1cent/moteur_gr/TrekWidget.kt',
+        'android/app/src/main/kotlin/com/only1cent/stepways/TrekWidget.kt',
       ).readAsStringSync();
       expect(kotlin,
           contains('RemoteViews(context.packageName, R.layout.widget_trek_progress)'));
@@ -94,7 +94,7 @@ void main() {
           File('ios/TrekWidget/TrekWidget.swift').readAsStringSync();
       expect(swift, contains('@main'));
       expect(swift, contains('WidgetBundle'));
-      expect(swift, contains('group.com.only1cent.moteurGr'));
+      expect(swift, contains('group.com.only1cent.stepways'));
 
       // Plus de couleur sentier hardcodee : fond pilote par le theme
       expect(swift, isNot(contains('#2D5016')));
@@ -141,7 +141,7 @@ void main() {
 
       // Coherence croisee avec les sources natives
       final kotlin = File(
-        'android/app/src/main/kotlin/com/only1cent/moteur_gr/TrekWidget.kt',
+        'android/app/src/main/kotlin/com/only1cent/stepways/TrekWidget.kt',
       ).readAsStringSync();
       final swift =
           File('ios/TrekWidget/TrekWidget.swift').readAsStringSync();

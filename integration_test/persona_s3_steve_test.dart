@@ -17,7 +17,7 @@
 //   le pipeline (position -> detection etape -> arrivee) s alimente.
 //
 // La permission de localisation doit etre accordee AVANT le run
-//   (`adb shell pm grant com.only1cent.moteur_gr android.permission.
+//   (`adb shell pm grant com.only1cent.stepways android.permission.
 //    ACCESS_FINE_LOCATION`) — fait par le lanceur.
 //
 // Pilote l UI reelle, capture chaque etape, LOGue les coincements. Zero modif app.

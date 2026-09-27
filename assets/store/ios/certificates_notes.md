@@ -8,7 +8,7 @@ commités — voir KeePass). Contenu générique : aucune marque de sentier.
 - Bundle ID : défini de façon DÉFINITIVE sur App Store Connect (format
   com.exemple.app). Doit correspondre à `PRODUCT_BUNDLE_IDENTIFIER` du projet
   Xcode (ios/Runner.xcodeproj). À aligner sur l'application Play
-  (com.only1cent.moteur_gr) selon la convention produit retenue.
+  (com.only1cent.stepways) selon la convention produit retenue.
 - Nom d'affichage : paramétrique (TrailConfig.displayName) côté app ;
   le nom App Store est saisi dans App Store Connect.
 

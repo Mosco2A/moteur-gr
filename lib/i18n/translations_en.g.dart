@@ -843,6 +843,10 @@ class _Translations$catalog$en extends Translations$catalog$fr {
 	@override String freeTrailName({required Object nom}) => '${nom} — Free demo';
 	@override String get freeBadge => 'Free';
 	@override String freeTrailTagline({required Object etapes}) => 'The first ${etapes} stages, on us. Everything works: planning, start, navigation, journal, finish.';
+	@override String get loadFailedTitle => 'Trail list unavailable';
+	@override String get loadFailedSubtitle => 'The trail list could not be retrieved right now. Trails you already downloaded remain available offline.';
+	@override String get loadFailedRetry => 'Try again';
+	@override String get staleNoticeOffline => 'Offline: these are the trails you already downloaded. The full list will refresh once you are back online.';
 }
 
 // Path: updates
@@ -4959,6 +4963,10 @@ extension on TranslationsEn {
 			'catalog.freeTrailName' => ({required Object nom}) => '${nom} — Free demo',
 			'catalog.freeBadge' => 'Free',
 			'catalog.freeTrailTagline' => ({required Object etapes}) => 'The first ${etapes} stages, on us. Everything works: planning, start, navigation, journal, finish.',
+			'catalog.loadFailedTitle' => 'Trail list unavailable',
+			'catalog.loadFailedSubtitle' => 'The trail list could not be retrieved right now. Trails you already downloaded remain available offline.',
+			'catalog.loadFailedRetry' => 'Try again',
+			'catalog.staleNoticeOffline' => 'Offline: these are the trails you already downloaded. The full list will refresh once you are back online.',
 			'updates.readyTitle' => 'Update ready',
 			'updates.readyBodyOne' => 'One trail has been updated.',
 			'updates.readyBodyMany' => ({required Object count}) => '${count} trails have been updated.',
@@ -5039,12 +5047,12 @@ extension on TranslationsEn {
 			'signalement.types.obstacle' => 'Obstacle on the trail',
 			'signalement.types.eauASec' => 'Dry water point',
 			'signalement.types.danger' => 'Danger',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.latencyBanner' => 'Saved. Visible to other hikers once the network syncs.',
 			'signalement.confirm' => 'Confirm report',
 			'signalement.noLocation' => 'GPS position unavailable right now. Try again under open sky.',
 			'signalement.savedTitle' => 'Report saved',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'It will be shared as soon as the network is back.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} awaiting sync',
 			'signalement.close' => 'Close',
@@ -5553,12 +5561,12 @@ extension on TranslationsEn {
 			'calendar.empty.message' => 'Choose your route and duration to be able to set up your dates.',
 			'calendar.empty.action' => 'SET UP THE ITINERARY',
 			'nuitees.title' => 'Overnight stays',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.guideTooltip' => 'Overnight stays guide',
 			'nuitees.infoBar' => 'Book each night in advance during peak season',
 			'nuitees.types.refuge' => 'Mountain hut',
 			'nuitees.types.gite' => 'Lodge',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Bivouac',
 			'nuitees.types.autreHebergement' => 'Other lodging',
 			'nuitees.guide.title' => 'Overnight stays guide',
