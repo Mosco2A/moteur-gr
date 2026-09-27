@@ -45,14 +45,16 @@
 //       mieux respectee du modele, et ce test est la pour qu'elle le reste
 //       quand quelqu'un, dans six mois, cherchera un emplacement de plus.
 //
-//  B6 — EN MODE TREK, JAMAIS. Regle de Chris, 27/09 10:31 : « MAIS EN MODE TREK
-//       JAMAIS !!! Il paye FORCEMENT en mode trek !!! » Elle tenait sur une
-//       condition ternaire au bas d'UN ecran, que rien ne verrouillait. Elle
-//       vit desormais dans la decision — donc partout — et ce groupe la mesure
-//       comme le reste : en comptant les demandes parties a la regie. Il met le
-//       trek en rando SANS droit d'achat, parce que la realisation gratuite est
-//       encore ouverte a cette heure : cette garde est la SEULE qui tienne la
-//       regle jusqu'a ce que le lot 594 atterrisse.
+//  B6 — RETIRE. Il mesurait une regle « EN MODE TREK JAMAIS » qui a vecu une
+//       demi-journee : posee le 27/09 au matin, RETIREE par Chris le meme jour
+//       a 14:41, verbatim : « TOUT PORTER LA PUB sauf si tu es abonne ou sur le
+//       trek que tu as achete .. Pas la peine de mettre plus de regles ». Deux
+//       exceptions, plus la recompense de 24 h du modele du 08/09 (#99404) —
+//       toutes trois portees par la source unique `isNoAdsActive`, que B2 mesure
+//       deja. Ses six tests sont partis avec elle plutot que d'etre retournes :
+//       ils affirmaient l'inverse de la regle en vigueur. Le seul cas qu'ils
+//       couvraient vraiment — marcher sans avoir paye — n'existe plus que sur un
+//       sentier GRATUIT, et B7 le mesure en le disant.
 library;
 
 import 'dart:io';
@@ -79,7 +81,6 @@ import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
 import 'package:moteur_gr/features/after/providers/adventure_recap_provider.dart'
     show latestTrekSessionProvider;
 import 'package:moteur_gr/features/consent/presentation/consent_settings_screen.dart';
-import 'package:moteur_gr/features/planning/providers/trek_edit_lock_provider.dart';
 import 'package:moteur_gr/features/trek/domain/models/trek_session.dart';
 import 'package:moteur_gr/features/trek/providers/tracking_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
@@ -651,168 +652,6 @@ void main() {
   });
 
   // =========================================================================
-  // B6 — EN MODE TREK, JAMAIS DE PUBLICITE
-  // =========================================================================
-  group('B6 — en mode trek, jamais', () {
-    // LA REGLE, DE CHRIS, VERBATIM (27/09 10:31) : « MAIS EN MODE TREK JAMAIS
-    // !!! Il paye FORCEMENT en mode trek !!! »
-    //
-    // POURQUOI CE GROUPE EXISTE ALORS QUE LE CODE RESPECTAIT DEJA LA REGLE. Le
-    // cockpit ne montait pas l'emplacement en phase rando — une condition
-    // ternaire, sur UN ecran, que rien ne verrouillait. La regle la plus forte
-    // du modele sur la publicite tenait donc sur une ligne que le prochain
-    // agent pouvait deplacer sans qu'aucun rouge n'apparaisse, et elle ne
-    // couvrait que le cockpit : un autre ecran porteur d'un emplacement aurait
-    // affiche de la publicite en pleine marche.
-    //
-    // ELLE VIT DESORMAIS DANS LA DECISION, donc partout a la fois, et ce
-    // groupe la mesure comme on mesure le reste du lot : en comptant LES
-    // DEMANDES PARTIES A LA REGIE. Chercher des pixels ne prouverait rien —
-    // une publicite chargee puis masquee a deja ete demandee.
-    //
-    // ET ELLE NE S'APPUIE SUR AUCUNE PROPRIETE QUI N'EXISTE PAS ENCORE. « Un
-    // trek en cours de realisation est un trek achete » n'est PAS vrai a cette
-    // heure : `TrekRecorder.start()` ne controle aucun droit, la realisation
-    // gratuite est encore ouverte (c'est le lot 594 qui la ferme). Les cas
-    // ci-dessous mettent donc le trek en rando SANS droit d'achat — c'est
-    // exactement la situation d'aujourd'hui, et c'est la seule qui prouve que
-    // cette garde tient la regle toute seule.
-
-    /// Une session ENCORE OUVERTE EN BASE : le cas du telephone rallume en
-    /// pleine marche. La session vivante repart vide, seule la base se souvient
-    /// qu'un trek est en cours. Sans ce deuxieme chemin, rallumer son telephone
-    /// sur le sentier ferait revenir la publicite.
-    TrekSession sessionOuverte() => TrekSession(
-          id: 'session-en-cours',
-          trailId: 'gr20',
-          startedAt: maintenant.subtract(const Duration(hours: 3)),
-        );
-
-    test('SESSION VIVANTE : aucune demande ne part a la regie, et le trek n est '
-        'meme pas achete', () async {
-      final (c, _) = await monterLeMonde(
-        tracking: TrackingSessionStatus.recording,
-      );
-
-      expect(await c.read(bannerAdProvider('gr20').future), isNull);
-      expect(regie.demandes, isEmpty,
-          reason: 'EN MODE TREK, JAMAIS. Le randonneur marche : il paie, ou il '
-              'marche gratuitement parce que la realisation gratuite n est pas '
-              'encore fermee — dans les deux cas il ne voit pas de publicite '
-              'sur le terrain.');
-    });
-
-    test('SESSION PERSISTEE (telephone rallume en pleine marche) : toujours '
-        'aucune demande', () async {
-      final (c, _) = await monterLeMonde(sessionPersistee: sessionOuverte());
-
-      expect(await c.read(bannerAdProvider('gr20').future), isNull);
-      expect(regie.demandes, isEmpty,
-          reason: 'la session vivante repart vide apres un redemarrage ; si la '
-              'garde ne lisait que celle-la, rallumer son telephone sur le '
-              'sentier ferait revenir la publicite');
-    });
-
-    test('LA REGLE VAUT PARTOUT, pas seulement sur le trek parcouru', () async {
-      final (c, _) = await monterLeMonde(
-        tracking: TrackingSessionStatus.recording,
-      );
-
-      // Le catalogue (aucun trek en contexte) et un AUTRE trek : en mode trek,
-      // aucun emplacement de l application ne demande quoi que ce soit.
-      expect(await c.read(bannerAdProvider(adContextHorsTrek).future), isNull);
-      expect(await c.read(bannerAdProvider('mare-a-mare').future), isNull);
-      expect(regie.demandes, isEmpty,
-          reason: 'c est le MODE qui interdit la publicite, pas le trek : '
-              'ouvrir le catalogue en pleine marche ne rouvre pas la regie');
-    });
-
-    test('HORS RANDO, la publicite revient : la garde ne coupe pas tout', () async {
-      // Le controle du controle. Une garde qui interdit toujours passerait les
-      // trois tests ci-dessus sans rien prouver.
-      final (c, _) = await monterLeMonde();
-
-      expect(await c.read(bannerAdProvider('gr20').future), isNotNull);
-      expect(regie.demandes, hasLength(1));
-    });
-
-    test('TANT QUE LA BASE N A PAS PARLE, aucune demande ne part', () async {
-      // LA FENETRE QUI AURAIT LAISSE PASSER LE CAS DE CHRIS. Au demarrage, la
-      // session vivante est VIDE et la session persistee pas encore lue. Si le
-      // doute se tranchait du cote de la regie, l application se croirait hors
-      // rando pendant une lecture de base — juste assez pour qu'une banniere
-      // part alors que le randonneur marche, telephone rallume sur le sentier.
-      //
-      // Ce test lit la decision SANS attendre la base, et exige le silence.
-      final prefs = await SharedPreferences.getInstance();
-      final iap = WalletIapService(
-        walletStore: portefeuille,
-        noAdsDao: db.noAdsDao,
-        testMode: true,
-      );
-      addTearDown(iap.stopListening);
-      final monetisation = MonetizationService(
-        walletStore: portefeuille,
-        entitlementsDao: db.trekEntitlementsDao,
-        noAdsDao: db.noAdsDao,
-        iapService: iap,
-        connectivityMonitor: _ReseauEnLigne(),
-        nowFn: () => maintenant,
-        prefs: prefs,
-        freeTrailIds: const <String>{},
-      );
-      await monetisation.load();
-      final c = ProviderContainer(
-        overrides: [
-          databaseProvider.overrideWithValue(db),
-          monetizationServiceProvider.overrideWithValue(monetisation),
-          monetizationReadyProvider.overrideWith((ref) async => monetisation),
-          adsReadyProvider.overrideWith((ref) async => true),
-          bannerAdPresenterProvider.overrideWithValue(regie),
-          trekSessionManagerProvider.overrideWith(
-            () => _TrackingFige(
-              const TrackingSessionState(status: TrackingSessionStatus.idle),
-            ),
-          ),
-          // La base met du temps a repondre, et elle finira par dire « aucune
-          // session » — mais la decision est prise AVANT.
-          latestTrekSessionProvider.overrideWith((ref) async {
-            await Future<void>.delayed(const Duration(milliseconds: 50));
-            return null;
-          }),
-        ],
-      );
-      addTearDown(c.dispose);
-
-      expect(c.read(enModeTrekProvider), isTrue,
-          reason: 'une situation inconnue se tranche du cote du randonneur');
-      expect(await c.read(bannerAdProvider('gr20').future), isNull);
-      expect(regie.demandes, isEmpty);
-    });
-
-    test('LA DECISION dit NON, et elle le dit en lisant la source qui existe',
-        () async {
-      // La garde ne se contente pas de rendre `null` : elle repond FAUX a la
-      // question « faut-il afficher », donc tout consommateur present ou futur
-      // de la decision est couvert, pas seulement l'emplacement.
-      //
-      // Et elle le lit sur la source EXISTANTE de « une rando est en cours »
-      // ([trekEditLockProvider]), pas sur une quatrieme definition maison : le
-      // test verifie les deux d'un coup, pour qu'un futur decouplage se voie.
-      final (c, _) = await monterLeMonde(
-        tracking: TrackingSessionStatus.recording,
-      );
-
-      expect(c.read(trekEditLockProvider).trekStarted, isTrue,
-          reason: 'le monde de ce test est bien en rando');
-      expect(c.read(enModeTrekProvider), isTrue);
-      expect(await c.read(shouldShowBannerProvider('gr20').future), isFalse,
-          reason: 'la decision doit dire NON avant meme qu un emplacement soit '
-              'monte');
-    });
-  });
-
-  // =========================================================================
   // B5 — LE SOS NE PORTE AUCUNE PUBLICITE, NULLE PART, JAMAIS
   // =========================================================================
   group('B5 — la limite qui ne se discute pas', () {
@@ -874,11 +713,12 @@ void main() {
     // desormais un SENTIER GRATUIT du catalogue, entierement jouable. La question
     // qu'il pose est neuve : etant gratuit, est-il avec ou sans publicite ?
     //
-    // CE QUE DIT LE MODELE. Le sans-pub est la contrepartie d'avoir PAYE
-    // (MODELE_ECO section 3 : « trek achete -> sans pub sur ce trek » ; « abo
-    // actif -> sans pub partout tant qu'on paie » ; « reward video -> 24 h »).
-    // Trois etats payants, aucun autre. Un sentier gratuit n'en a aucun : il
-    // releve donc du niveau gratuit de la section 2, « AVEC pub ».
+    // CE QUE DIT LE MODELE, ET CHRIS L'A RESIMPLIFIE LE 27/09 A 14:41, verbatim :
+    // « TOUT PORTER LA PUB sauf si tu es abonne ou sur le trek que tu as achete
+    // .. Pas la peine de mettre plus de regles ». Deux exceptions, plus la
+    // recompense video de 24 h de son modele du 08/09 (#99404). Le sans-pub est
+    // donc la contrepartie d'avoir PAYE, et rien d'autre. Un sentier gratuit n'a
+    // aucun de ces trois etats : il porte la pub.
     //
     // ET CE QUE COUTERAIT L'INVERSE. Un sentier de demonstration sans publicite
     // offrirait GRATUITEMENT le benefice principal de l'abonnement a 2 euros —
@@ -886,8 +726,14 @@ void main() {
     // payant pour le concurrencer. C'est exactement ce que faisait le drapeau
     // vitrine, qui resolvait le sentier en « possede ».
     //
-    // LA LIMITE, ELLE, EST ABSOLUE : en mode trek, JAMAIS. La regle de Chris ne
-    // connait pas d'exception, et un sentier gratuit n'en fabrique pas une.
+    // ET EN MARCHANT ? LA PUB AUSSI, ET C'EST ASSUME. Une garde « en mode trek
+    // jamais » a existe une demi-journee dans la decision ; Chris l'a retiree
+    // avec la phrase ci-dessus, apres qu'on lui ait montre ce cas precis. Sur un
+    // sentier PAYANT la question ne se pose pas — on ne le realise qu'en l'ayant
+    // achete, donc il est deja sans pub. Le sentier GRATUIT est le seul endroit
+    // ou l'on marche sans avoir paye, donc le seul ou la banniere peut
+    // apparaitre pendant la realisation. Le test ci-dessous le DIT, pour que
+    // personne ne le prenne pour un oubli et ne remette une garde.
     const gratuit = 'sentier-gratuit';
 
     test('hors mode trek : le sentier gratuit est AVEC pub', () async {
@@ -901,19 +747,41 @@ void main() {
               'des pixels');
     });
 
-    test('EN MODE TREK sur le sentier gratuit : AUCUNE demande', () async {
+    test('EN MARCHANT sur le sentier gratuit : la pub EST la, et c est voulu',
+        () async {
       final (c, _) = await monterLeMonde(
         sentiersGratuits: {gratuit},
         tracking: TrackingSessionStatus.recording,
       );
 
-      expect(await c.read(bannerAdProvider(gratuit).future), isNull,
-          reason: '« EN MODE TREK JAMAIS » (Chris, 27/09 10:31) ne connait pas '
-              'd exception, et la gratuite du sentier n en cree pas une : le '
-              'randonneur qui marche ne voit pas de banniere, qu il ait paye '
-              'ce sentier ou non');
-      expect(regie.demandes, isEmpty,
-          reason: 'rien n est meme DEMANDE : la regle est evaluee avant le CMP');
+      expect(await c.read(bannerAdProvider(gratuit).future), isNotNull,
+          reason: 'CE TEST DIT L INVERSE DE CE QU IL DISAIT LE MATIN DU 27/09, '
+              'et ce n est pas un relachement : Chris a retire sa garde « en '
+              'mode trek jamais » a 14:41 — « TOUT PORTER LA PUB sauf si tu es '
+              'abonne ou sur le trek que tu as achete .. Pas la peine de mettre '
+              'plus de regles ». Deux exceptions, pas trois. Un sentier gratuit '
+              'n est ni abonne ni achete, meme quand on le marche. NE REMETS PAS '
+              'DE GARDE ICI : ce serait ajouter la regle qu il vient d enlever');
+      expect(regie.demandes, hasLength(1));
+    });
+
+    test('marcher un sentier ACHETE reste sans pub — l exception suffit',
+        () async {
+      final (c, monetisation) = await monterLeMonde(
+        tracking: TrackingSessionStatus.recording,
+      );
+      await portefeuille.credit(10);
+      expect((await monetisation.buyTrail('gr20', totalStages: 10)).isOwned,
+          isTrue);
+
+      expect(await c.read(bannerAdProvider('gr20').future), isNull,
+          reason: 'VOILA POURQUOI LA GARDE ETAIT REDONDANTE SUR LES SENTIERS '
+              'PAYANTS, et c est le raisonnement que Chris tenait lui-meme le '
+              'matin : « il paye FORCEMENT en mode trek ». On ne realise un trek '
+              'payant qu en l ayant achete (verrou canRealizeTrail, lot 594), et '
+              'un trek achete est deja sans pub. L exception « sentier achete » '
+              'couvre donc toute la realisation payante, sans regle de plus');
+      expect(regie.demandes, isEmpty);
     });
 
     test('un ABONNE actif : aucune pub sur le sentier gratuit non plus',

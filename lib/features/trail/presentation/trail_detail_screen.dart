@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../core/config/trail_selection.dart';
 import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
@@ -152,7 +151,8 @@ class TrailDetailScreen extends ConsumerWidget {
   /// et la planification restent accessibles ici via les actions SECONDAIRES
   /// « Voir la carte » / « Planifier ».
   void _enterTrail(BuildContext context, WidgetRef ref) {
-    ref.read(selectedTrailIdProvider.notifier).state = trailId;
+    // Bascule resolue AVANT la navigation (cf. [choisirSentier]).
+    choisirSentier(ref, trailId);
     context.go('/home');
   }
 }

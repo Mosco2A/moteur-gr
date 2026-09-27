@@ -183,27 +183,24 @@ class _HubScreenState extends ConsumerState<HubScreen> {
       // partout, par la meme source unique (#99404). Aucune regle n'est
       // recalculee ici.
       //
-      // PAS EN PHASE RANDO — ET CETTE LIGNE N'EST PAS CE QUI TIENT LA REGLE.
+      // PAS EN PHASE RANDO, ET CE QUE CETTE LIGNE TIENT EST LA GEOMETRIE — PAS
+      // UNE REGLE DE PUBLICITE.
       //
-      // « EN MODE TREK JAMAIS » (Chris, 27/09 10:31) vit dans la DECISION
-      // ([enModeTrekProvider], lu par `shouldShowBannerProvider`), donc sur
-      // tous les ecrans a la fois et pas seulement ici. Une regle enoncee
-      // « jamais » ne peut pas dependre d'une condition posee ecran par ecran :
-      // le prochain emplacement publicitaire ne l'heriterait pas.
-      //
-      // CE QUE CETTE LIGNE-CI TIENT, ET C'EST AUTRE CHOSE : LA GEOMETRIE. En
-      // phase rando, le bas de l'ecran appartient a la pastille SOS
+      // En phase rando, le bas de l'ecran appartient a la pastille SOS
       // ([SosButton] se masque lui-meme hors trek). On n'y pose pas un
       // emplacement publicitaire, meme un emplacement qui ne demandera rien : un
       // doigt qui vise le secours ne doit jamais rencontrer une regie. Le SOS ne
       // porte AUCUNE publicite, nulle part (test B5).
       //
-      // CE QU'IL NE FAUT PAS CROIRE : que « un trek en cours de realisation est
-      // un trek achete, donc sans pub de toute facon ». C'est FAUX a cette
-      // heure — `TrekRecorder.start()` ne controle aucun droit, la realisation
-      // gratuite est encore ouverte, et c'est le lot 594 qui la ferme. La garde
-      // de la decision est donc aujourd'hui la SEULE qui tienne la regle pour un
-      // randonneur qui marche un trek qu'il n'a pas paye.
+      // ET IL N'Y A PLUS DE REGLE « EN MODE TREK JAMAIS » A HERITER. Elle a
+      // existe une demi-journee dans la decision publicitaire, et Chris l'a
+      // retiree le 27/09 14:41, verbatim : « TOUT PORTER LA PUB sauf si tu es
+      // abonne ou sur le trek que tu as achete .. Pas la peine de mettre plus de
+      // regles ». Deux exceptions, plus la recompense de 24 h du modele du 08/09.
+      // Ce cockpit-ci n'affiche de toute facon pas d'emplacement en rando, pour
+      // la raison de geometrie ci-dessus — mais ailleurs, un randonneur qui
+      // marche un sentier GRATUIT verra de la publicite, et c'est assume : voir
+      // `shouldShowBannerProvider`, qui porte la raison en entier.
       bottomNavigationBar:
           showHike ? null : BannerAdSlot(trailId: trailId),
       body: SafeArea(

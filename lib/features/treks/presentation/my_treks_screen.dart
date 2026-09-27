@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/config/trail_selection.dart';
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/contextual_actions_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
@@ -225,7 +226,8 @@ class _MyTreksBody extends ConsumerWidget {
   /// Selectionne le trek [id] : ecrit la selection puis bascule vers le cockpit
   /// (`/home`). Geste eprouve du catalogue — toute l'app suit le sentier choisi.
   void _selectTrek(WidgetRef ref, BuildContext context, String id) {
-    ref.read(selectedTrailIdProvider.notifier).state = id;
+    // Bascule resolue AVANT la navigation (cf. [choisirSentier]).
+    choisirSentier(ref, id);
     context.go('/home');
   }
 }

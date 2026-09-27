@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/routing/home_location_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../ads/presentation/banner_ad_slot.dart';
@@ -104,7 +105,10 @@ class TrailCatalogScreen extends ConsumerWidget {
   /// `push` d'ecran de detail — c'est un changement d'accueil contextuel, tout le
   /// contexte du sentier suit la selection (trailConfigProvider en derive).
   void _enterTrail(BuildContext context, WidgetRef ref, String trailId) {
-    ref.read(selectedTrailIdProvider.notifier).state = trailId;
+    // On CHANGE DE SENTIER, puis on change d'ecran — dans cet ordre, et la
+    // bascule est resolue avant la navigation ([choisirSentier] dit pourquoi :
+    // sans cela, quatre « setState during build » par bascule).
+    choisirSentier(ref, trailId);
     context.go('/home');
   }
 }

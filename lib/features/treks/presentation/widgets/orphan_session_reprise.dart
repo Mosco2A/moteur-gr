@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/config/trail_selection.dart';
+import '../../../../core/engine/trail_engine.dart';
 import '../../../trek/domain/models/trek_session.dart';
 import '../../../trek/providers/session_recovery_provider.dart';
 import '../../../trek/providers/tracking_providers.dart';
@@ -83,7 +84,8 @@ class _OrphanSessionRepriseState extends ConsumerState<OrphanSessionReprise> {
       case ResumeOrphanChoice.resume:
         // Rejoindre le cockpit du trek en cours : ecrire la selection puis
         // naviguer (la session reste en cours, la carte s'affichera « active »).
-        ref.read(selectedTrailIdProvider.notifier).state = session.trailId;
+        // Bascule resolue AVANT la navigation (cf. [choisirSentier]).
+        choisirSentier(ref, session.trailId);
         context.go('/home');
       case ResumeOrphanChoice.abandon:
         // Solder la session en base, puis invalider les vues derivees pour

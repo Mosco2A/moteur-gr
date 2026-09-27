@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/config/trail_config.dart';
 import '../../../core/config/trail_selection.dart';
+import '../../../core/engine/trail_engine.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
@@ -54,9 +55,11 @@ class TrailSelectionScreen extends ConsumerWidget {
 
   /// Active le sentier [trailId] : ecrit la selection, le reste de l'app suit.
   void _selectTrail(WidgetRef ref, String trailId) {
-    final notifier = ref.read(selectedTrailIdProvider.notifier);
-    if (notifier.state == trailId) return; // deja actif, no-op
-    notifier.state = trailId;
+    if (ref.read(selectedTrailIdProvider) == trailId) return; // deja actif
+    // Cet ecran-ci ne navigue pas, il reste sur place : le defaut de build ne
+    // l'atteint donc pas. On passe quand meme par le geste commun pour qu'il
+    // n'existe qu'UNE facon de basculer de sentier dans le depot.
+    choisirSentier(ref, trailId);
   }
 }
 
