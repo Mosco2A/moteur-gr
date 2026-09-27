@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/config/store_subscription_links.dart';
 import '../../../core/services/monetization_service.dart';
+import '../../../core/services/wallet_iap_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../i18n/translations.g.dart';
+import '../../booking/providers/hebergement_peripherique_providers.dart';
 import '../../../shared/widgets/app_button.dart';
 import '../../../shared/widgets/app_card.dart';
 import '../../../shared/widgets/app_header.dart';
@@ -85,6 +88,29 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
           },
         ),
       ),
+    );
+  }
+
+  /// ARRETER L'ABONNEMENT : ouvrir la page de gestion de la boutique.
+  ///
+  /// CE QUE CETTE METHODE NE FAIT PAS, ET NE DOIT PAS FAIRE : annuler. Google
+  /// Play et l'App Store facturent l'abonnement et interdisent un parcours
+  /// d'annulation interne qui contournerait leur facturation. Le seul geste
+  /// legitime — et celui que les deux documentations demandent — est d'OUVRIR
+  /// leur page d'abonnements. Sources en base #100700.
+  ///
+  /// ET SI LA BOUTIQUE NE S'OUVRE PAS, ON LE DIT. Un appareil sans Play Store,
+  /// un lien qu'aucune application ne sait ouvrir : le lanceur rend `false`, et
+  /// le randonneur doit entendre quoi faire. Un bouton qui echouerait en silence
+  /// sur une resiliation serait exactement le defaut que la loi vise.
+  Future<void> _arreterAbonnement() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final ouvert = await ref.read(deeplinkLauncherProvider).open(
+          StoreSubscriptionLinks.pour(productId: kWalletSubNoAdsMonthly),
+        );
+    if (!mounted || ouvert) return;
+    messenger.showSnackBar(
+      SnackBar(content: Text(t.monetization.cancelStoreUnavailable)),
     );
   }
 
@@ -239,6 +265,42 @@ class _SubscriptionScreenState extends ConsumerState<SubscriptionScreen> {
               onPressed: _occupe ? null : _souscrire,
             ),
             const SizedBox(height: AppTheme.spacingSm),
+
+            // --- ARRETER L'ABONNEMENT ---------------------------------------
+            //
+            // ICI, ET PAS AU FIN FOND DE L'APPLI. Exigence de Chris, 27/09
+            // 13:09 : « je veux un arreter votre abonnement en 3 clics comme le
+            // prevoit la loi, et pas planque au fin fond de l appli ». Le bouton
+            // est donc SOUS celui qui vend, a la MEME largeur, sur le MEME ecran
+            // qui dit ce que l'abo donne et ce qu'il ne donne pas. Le compte fait
+            // trois gestes depuis l'accueil : reglages, abonnement, arreter — et
+            // il est VERROUILLE PAR UN TEST qui les compte
+            // (`resiliation_trois_clics_601_test.dart`), parce qu'un nombre de
+            // gestes se mesure et ne se promet pas.
+            //
+            // IL N'ANNULE PAS, IL CONDUIT — et c'est la seule chose honnete
+            // qu'il puisse faire. L'abonnement est facture par la boutique, qui
+            // interdit tout parcours d'annulation interne contournant sa
+            // facturation. Un bouton qui pretendrait annuler en se contentant de
+            // journaliser serait un faux succes sur le sujet le plus sensible.
+            AppButton(
+              key: const ValueKey('abo-arreter'),
+              variant: AppButtonVariant.outline,
+              icon: Icons.cancel_outlined,
+              label: t.monetization.cancelCta,
+              onPressed: _occupe ? null : _arreterAbonnement,
+            ),
+            const SizedBox(height: AppTheme.spacingXs),
+            // CE QUE LE BOUTON FAIT, DIT AVANT L'APPUI : ou se passe l'arret,
+            // jusqu'a quand l'acces court, et ce qui reste acquis.
+            Text(
+              t.monetization.cancelExplains,
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: AppTheme.grisTexteSecondaire,
+              ),
+            ),
+            const SizedBox(height: AppTheme.spacingBase),
+
             AppButton(
               key: const ValueKey('restaurer-achats'),
               variant: AppButtonVariant.outline,

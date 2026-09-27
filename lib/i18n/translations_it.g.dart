@@ -960,6 +960,9 @@ class _Translations$monetization$it extends Translations$monetization$fr {
 	@override String get buyOutcomeFailed => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.';
 	@override String subscriptionPrice({required Object price}) => '${price} al mese';
 	@override String get subscriptionAllowanceForLife => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.';
+	@override String get cancelCta => 'Interrompere l’abbonamento';
+	@override String get cancelExplains => 'La disdetta avviene nello store che ti fattura (Google Play o l’App Store). Questo pulsante ti porta direttamente lì. Il tuo accesso dura fino alla fine del periodo già pagato e le tappe già accreditate restano tue.';
+	@override String get cancelStoreUnavailable => 'Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti.';
 }
 
 // Path: signalement
@@ -5028,6 +5031,9 @@ extension on TranslationsIt {
 			'monetization.buyOutcomeFailed' => 'Il pagamento non è andato a buon fine. Non è stato addebitato nulla.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} al mese',
 			'monetization.subscriptionAllowanceForLife' => 'Le tappe accreditate restano tue per sempre, anche se interrompi l’abbonamento.',
+			'monetization.cancelCta' => 'Interrompere l’abbonamento',
+			'monetization.cancelExplains' => 'La disdetta avviene nello store che ti fattura (Google Play o l’App Store). Questo pulsante ti porta direttamente lì. Il tuo accesso dura fino alla fine del periodo già pagato e le tappe già accreditate restano tue.',
+			'monetization.cancelStoreUnavailable' => 'Impossibile aprire lo store. Aprilo tu, poi vai su Abbonamenti.',
 			'signalement.title' => 'Segnala',
 			'signalement.chooseType' => 'Cosa vuoi segnalare?',
 			'signalement.types.obstacle' => 'Ostacolo sul sentiero',
@@ -5037,11 +5043,11 @@ extension on TranslationsIt {
 			'signalement.confirm' => 'Conferma segnalazione',
 			'signalement.noLocation' => 'Posizione GPS non disponibile al momento. Riprova sotto cielo aperto.',
 			'signalement.savedTitle' => 'Segnalazione salvata',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'Sarà condivisa appena la rete sarà disponibile.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} in attesa di sincronizzazione',
 			'signalement.close' => 'Chiudi',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.water.reportAction' => 'Segnala lo stato',
 			'signalement.water.reportCount' => '{n} segnalazione/i',
 			'signalement.water.sheetTitle' => 'Stato del punto d\'acqua?',
@@ -5551,11 +5557,11 @@ extension on TranslationsIt {
 			'nuitees.infoBar' => 'Prenota ogni notte in anticipo in alta stagione',
 			'nuitees.types.refuge' => 'Rifugio',
 			'nuitees.types.gite' => 'Ostello',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Bivacco',
 			'nuitees.types.autreHebergement' => 'Altro alloggio',
 			'nuitees.guide.title' => 'Guida ai pernottamenti',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guide.refuge' => 'Alloggio di montagna, prenotazione consigliata in alta stagione.',
 			'nuitees.guide.gite' => 'Ostello di tappa privato, spesso con pasti e docce.',
 			'nuitees.guide.bivouac' => 'Campeggio in tenda, secondo la normativa locale.',

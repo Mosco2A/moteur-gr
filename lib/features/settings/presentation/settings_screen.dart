@@ -32,6 +32,27 @@ class SettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.all(AppTheme.spacingBase),
         children: [
+          // --- Abonnement & achats — EN TETE (tache 601) ----------------------
+          //
+          // ELLE ETAIT NEUVIEME SUR DIX, juste avant le numero de version :
+          // derriere la langue, les unites, le theme, le cache, les
+          // notifications, le nuage, la vie privee, l'effacement et la
+          // reconnexion. C'est-a-dire exactement ce que Chris appelle
+          // « planque au fin fond de l appli » (27/09 13:09).
+          //
+          // POURQUOI ELLE PASSE PREMIERE, ET CE N'EST PAS UNE PREFERENCE DE
+          // GOUT. L'article L215-1-1 du code de la consommation exige que la
+          // resiliation soit GRATUITE, DIRECTE, PERMANENTE et FACILE D'ACCES
+          // (en vigueur depuis le 1er juin 2023 ; sources en base #100700).
+          // « Facile d'acces » et « neuvieme rubrique d'un ecran qui defile »
+          // ne vont pas ensemble. Et c'est aussi la rubrique la plus
+          // consequente pour celui qui paie : son argent.
+          //
+          // Le compte de gestes est verrouille par un test qui les COMPTE
+          // (`resiliation_trois_clics_601_test.dart`), pas par cette intention.
+          _buildPurchasesSection(context, theme, tr),
+          const SizedBox(height: AppTheme.spacingLg),
+
           // --- Langue ---
           _buildLanguageSection(context, ref, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
@@ -80,13 +101,8 @@ class SettingsScreen extends ConsumerWidget {
           _buildRecoverySection(context, theme, tr),
           const SizedBox(height: AppTheme.spacingLg),
 
-          // --- Achats (V1 ARGENT, tache 594 A3) ---
-          // Les deux ecrans de paiement et la restauration se trouvent ICI,
-          // parce que c'est la que le randonneur cherche ce qui touche a son
-          // compte — et parce que les deux boutiques EXIGENT un chemin de
-          // restauration atteignable pour accepter une publication.
-          _buildPurchasesSection(context, theme, tr),
-          const SizedBox(height: AppTheme.spacingLg),
+          // --- La section ACHATS a remonte EN TETE de cet ecran (tache 601).
+          // Elle etait ici, en avant-derniere position. Voir la raison en haut.
 
           // --- Version ---
           _buildVersionSection(context, theme, tr),

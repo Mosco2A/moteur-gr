@@ -2000,6 +2000,15 @@ class Translations$monetization$fr {
 
 	/// fr: 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.'
 	String get subscriptionAllowanceForLife => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.';
+
+	/// fr: 'Arrêter mon abonnement'
+	String get cancelCta => 'Arrêter mon abonnement';
+
+	/// fr: 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.'
+	String get cancelExplains => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.';
+
+	/// fr: 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.'
+	String get cancelStoreUnavailable => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.';
 }
 
 // Path: signalement
@@ -8813,6 +8822,9 @@ extension on Translations {
 			'monetization.buyOutcomeFailed' => 'Le paiement n\'a pas abouti. Rien n\'a été débité.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} par mois',
 			'monetization.subscriptionAllowanceForLife' => 'Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.',
+			'monetization.cancelCta' => 'Arrêter mon abonnement',
+			'monetization.cancelExplains' => 'L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.',
+			'monetization.cancelStoreUnavailable' => 'Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements.',
 			'signalement.title' => 'Signaler',
 			'signalement.chooseType' => 'Que voulez-vous signaler ?',
 			'signalement.types.obstacle' => 'Obstacle sur le sentier',
@@ -8822,11 +8834,11 @@ extension on Translations {
 			'signalement.confirm' => 'Confirmer le signalement',
 			'signalement.noLocation' => 'Position GPS indisponible pour le moment. Réessayez sous le ciel ouvert.',
 			'signalement.savedTitle' => 'Signalement enregistré',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'Il sera partagé dès le retour du réseau.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} en attente de synchronisation',
 			'signalement.close' => 'Fermer',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.water.reportAction' => 'Signaler l\'état',
 			'signalement.water.reportCount' => '{n} signalement(s)',
 			'signalement.water.sheetTitle' => 'État du point d\'eau ?',
@@ -9336,11 +9348,11 @@ extension on Translations {
 			'nuitees.infoBar' => 'Réservez chaque nuit à l\'avance en haute saison',
 			'nuitees.types.refuge' => 'Refuge',
 			'nuitees.types.gite' => 'Gîte',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Bivouac',
 			'nuitees.types.autreHebergement' => 'Autre hébergement',
 			'nuitees.guide.title' => 'Guide des nuitées',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guide.refuge' => 'Hébergement de montagne, réservation recommandée en haute saison.',
 			'nuitees.guide.gite' => 'Hébergement d\'étape privé, souvent avec repas et douches.',
 			'nuitees.guide.bivouac' => 'Camping sous tente, selon la réglementation locale.',

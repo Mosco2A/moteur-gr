@@ -960,6 +960,9 @@ class _Translations$monetization$de extends Translations$monetization$fr {
 	@override String get buyOutcomeFailed => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.';
 	@override String subscriptionPrice({required Object price}) => '${price} pro Monat';
 	@override String get subscriptionAllowanceForLife => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.';
+	@override String get cancelCta => 'Abo beenden';
+	@override String get cancelExplains => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.';
+	@override String get cancelStoreUnavailable => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.';
 }
 
 // Path: signalement
@@ -5028,6 +5031,9 @@ extension on TranslationsDe {
 			'monetization.buyOutcomeFailed' => 'Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} pro Monat',
 			'monetization.subscriptionAllowanceForLife' => 'Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.',
+			'monetization.cancelCta' => 'Abo beenden',
+			'monetization.cancelExplains' => 'Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.',
+			'monetization.cancelStoreUnavailable' => 'Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos.',
 			'signalement.title' => 'Melden',
 			'signalement.chooseType' => 'Was möchten Sie melden?',
 			'signalement.types.obstacle' => 'Hindernis auf dem Weg',
@@ -5037,11 +5043,11 @@ extension on TranslationsDe {
 			'signalement.confirm' => 'Meldung bestätigen',
 			'signalement.noLocation' => 'GPS-Position derzeit nicht verfügbar. Versuchen Sie es unter freiem Himmel erneut.',
 			'signalement.savedTitle' => 'Meldung gespeichert',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'Sie wird geteilt, sobald das Netzwerk wieder da ist.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} warten auf Synchronisierung',
 			'signalement.close' => 'Schließen',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.water.reportAction' => 'Zustand melden',
 			'signalement.water.reportCount' => '{n} Meldung(en)',
 			'signalement.water.sheetTitle' => 'Zustand der Wasserstelle?',
@@ -5551,11 +5557,11 @@ extension on TranslationsDe {
 			'nuitees.infoBar' => 'Buchen Sie jede Nacht in der Hochsaison im Voraus',
 			'nuitees.types.refuge' => 'Berghütte',
 			'nuitees.types.gite' => 'Herberge',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Biwak',
 			'nuitees.types.autreHebergement' => 'Andere Unterkunft',
 			'nuitees.guide.title' => 'Übernachtungs-Ratgeber',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guide.refuge' => 'Bergunterkunft, Reservierung in der Hochsaison empfohlen.',
 			'nuitees.guide.gite' => 'Private Etappenherberge, oft mit Mahlzeiten und Duschen.',
 			'nuitees.guide.bivouac' => 'Zeltcamping, je nach örtlicher Regelung.',

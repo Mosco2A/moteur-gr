@@ -1164,7 +1164,10 @@
     "buyOutcomeOffline": "Te faltan $steps etapas y el pago exige conexión. No se ha cobrado nada.",
     "buyOutcomeFailed": "El pago no se ha completado. No se ha cobrado nada.",
     "subscriptionPrice": "$price al mes",
-    "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción."
+    "subscriptionAllowanceForLife": "Las etapas abonadas son tuyas de por vida, aunque canceles la suscripción.",
+    "cancelCta": "Cancelar mi suscripción",
+    "cancelExplains": "La cancelación se hace en la tienda que te factura (Google Play o la App Store). Este botón te lleva allí directamente. Tu acceso dura hasta el final del periodo ya pagado, y las etapas ya abonadas siguen siendo tuyas.",
+    "cancelStoreUnavailable": "No se pudo abrir la tienda. Ábrela tú mismo y ve a Suscripciones."
   },
   "signalement": {
     "title": "Notificar",

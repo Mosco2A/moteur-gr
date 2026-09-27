@@ -960,6 +960,9 @@ class _Translations$monetization$en extends Translations$monetization$fr {
 	@override String get buyOutcomeFailed => 'The payment did not go through. Nothing was charged.';
 	@override String subscriptionPrice({required Object price}) => '${price} per month';
 	@override String get subscriptionAllowanceForLife => 'Credited stages are yours for life, even if you stop the subscription.';
+	@override String get cancelCta => 'Stop my subscription';
+	@override String get cancelExplains => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.';
+	@override String get cancelStoreUnavailable => 'The store could not be opened. Open it yourself, then go to Subscriptions.';
 }
 
 // Path: signalement
@@ -5028,6 +5031,9 @@ extension on TranslationsEn {
 			'monetization.buyOutcomeFailed' => 'The payment did not go through. Nothing was charged.',
 			'monetization.subscriptionPrice' => ({required Object price}) => '${price} per month',
 			'monetization.subscriptionAllowanceForLife' => 'Credited stages are yours for life, even if you stop the subscription.',
+			'monetization.cancelCta' => 'Stop my subscription',
+			'monetization.cancelExplains' => 'Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.',
+			'monetization.cancelStoreUnavailable' => 'The store could not be opened. Open it yourself, then go to Subscriptions.',
 			'signalement.title' => 'Report',
 			'signalement.chooseType' => 'What do you want to report?',
 			'signalement.types.obstacle' => 'Obstacle on the trail',
@@ -5037,11 +5043,11 @@ extension on TranslationsEn {
 			'signalement.confirm' => 'Confirm report',
 			'signalement.noLocation' => 'GPS position unavailable right now. Try again under open sky.',
 			'signalement.savedTitle' => 'Report saved',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.savedPendingSync' => 'It will be shared as soon as the network is back.',
 			'signalement.pendingCount' => ({required Object n}) => '${n} awaiting sync',
 			'signalement.close' => 'Close',
-			_ => null,
-		} ?? switch (path) {
 			'signalement.water.reportAction' => 'Report status',
 			'signalement.water.reportCount' => '{n} report(s)',
 			'signalement.water.sheetTitle' => 'Water point status?',
@@ -5551,11 +5557,11 @@ extension on TranslationsEn {
 			'nuitees.infoBar' => 'Book each night in advance during peak season',
 			'nuitees.types.refuge' => 'Mountain hut',
 			'nuitees.types.gite' => 'Lodge',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.types.bivouac' => 'Bivouac',
 			'nuitees.types.autreHebergement' => 'Other lodging',
 			'nuitees.guide.title' => 'Overnight stays guide',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.guide.refuge' => 'Mountain accommodation, booking recommended in peak season.',
 			'nuitees.guide.gite' => 'Private stopover lodge, often with meals and showers.',
 			'nuitees.guide.bivouac' => 'Tent camping, subject to local regulations.',

@@ -1164,7 +1164,10 @@
     "buyOutcomeOffline": "Es fehlen $steps Etappen und die Zahlung erfordert eine Verbindung. Es wurde nichts abgebucht.",
     "buyOutcomeFailed": "Die Zahlung war nicht erfolgreich. Es wurde nichts abgebucht.",
     "subscriptionPrice": "$price pro Monat",
-    "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden."
+    "subscriptionAllowanceForLife": "Gutgeschriebene Etappen bleiben dauerhaft Ihnen, auch wenn Sie das Abo beenden.",
+    "cancelCta": "Abo beenden",
+    "cancelExplains": "Die Kündigung erfolgt im Store, der Ihnen die Rechnung stellt (Google Play oder App Store). Diese Schaltfläche führt Sie direkt dorthin. Ihr Zugang läuft bis zum Ende des bereits bezahlten Zeitraums, und bereits gutgeschriebene Etappen bleiben Ihnen.",
+    "cancelStoreUnavailable": "Der Store konnte nicht geöffnet werden. Öffnen Sie ihn selbst und gehen Sie zu Abos."
   },
   "signalement": {
     "title": "Melden",

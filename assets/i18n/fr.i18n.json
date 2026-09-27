@@ -1164,7 +1164,10 @@
     "buyOutcomeOffline": "Il manque $steps étapes et le paiement exige une connexion. Rien n'a été débité.",
     "buyOutcomeFailed": "Le paiement n'a pas abouti. Rien n'a été débité.",
     "subscriptionPrice": "$price par mois",
-    "subscriptionAllowanceForLife": "Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement."
+    "subscriptionAllowanceForLife": "Les étapes créditées restent acquises à vie, même si vous arrêtez l’abonnement.",
+    "cancelCta": "Arrêter mon abonnement",
+    "cancelExplains": "L’arrêt se fait dans la boutique qui vous facture (Google Play ou l’App Store). Ce bouton vous y conduit directement. Votre accès court jusqu’à la fin de la période déjà payée, et les étapes déjà créditées vous restent.",
+    "cancelStoreUnavailable": "Impossible d’ouvrir la boutique. Ouvrez-la vous-même, puis Abonnements."
   },
   "signalement": {
     "title": "Signaler",

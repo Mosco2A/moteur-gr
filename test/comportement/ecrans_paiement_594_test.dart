@@ -129,7 +129,14 @@ void main() {
       await tester.pumpWidget(monter(const SubscriptionScreen()));
       await tester.pumpAndSettle();
 
+      // L ECRAN A GRANDI (tache 601) : il porte desormais le PRIX, le montant
+      // de la cagnotte et le bouton d arret de l abonnement exige par la loi. La
+      // restauration passe donc sous la ligne de flottaison d un ecran de test,
+      // et un ListView ne CONSTRUIT pas ce qui est hors champ. On fait defiler
+      // avant d appuyer, comme un utilisateur.
       final bouton = find.byKey(const ValueKey('restaurer-achats'));
+      await tester.scrollUntilVisible(bouton, 200);
+      await tester.pumpAndSettle();
       expect(bouton, findsOneWidget);
       await tester.tap(bouton);
       await tester.pumpAndSettle();

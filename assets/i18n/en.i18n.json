@@ -1164,7 +1164,10 @@
     "buyOutcomeOffline": "You are $steps steps short and payment requires a connection. Nothing was charged.",
     "buyOutcomeFailed": "The payment did not go through. Nothing was charged.",
     "subscriptionPrice": "$price per month",
-    "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription."
+    "subscriptionAllowanceForLife": "Credited stages are yours for life, even if you stop the subscription.",
+    "cancelCta": "Stop my subscription",
+    "cancelExplains": "Cancellation happens in the store that bills you (Google Play or the App Store). This button takes you straight there. Your access runs until the end of the period you have already paid for, and any credited stages stay yours.",
+    "cancelStoreUnavailable": "The store could not be opened. Open it yourself, then go to Subscriptions."
   },
   "signalement": {
     "title": "Report",
