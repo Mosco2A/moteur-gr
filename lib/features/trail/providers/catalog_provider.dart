@@ -331,6 +331,12 @@ class CatalogNotifier extends AsyncNotifier<CatalogState> {
             trailId,
             TrailDataSource.urlDonneesSentier(manifestEntry.filePath),
             revisionCible: manifestEntry.dataVersion,
+            // L EMPREINTE ANNONCEE VOYAGE AVEC L ADRESSE. Sans elle, la source
+            // REFUSE la copie (tache 607) : le controle est a fermeture par
+            // defaut, parce que le defaut que le lot 606 a du reparer etait
+            // precisement un second chemin de descente ajoute sans que rien ne
+            // l oblige a respecter le modele.
+            empreinteAttendue: manifestEntry.hash,
           );
 
       _log.d(

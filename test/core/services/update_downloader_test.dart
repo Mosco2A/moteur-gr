@@ -106,16 +106,24 @@ class FakeDeltaUpdateService extends DeltaUpdateService {
     return fakeDelta;
   }
 
+  /// Derniere empreinte annoncee au service (tache 607).
+  ///
+  /// Elle doit venir de la liste DISTANTE : c est l empreinte que le SERVEUR
+  /// annonce pour le fichier qu on va chercher, pas celle du cache local.
+  String? derniereEmpreinteAttendue;
+
   @override
   Future<ResultatSynchronisation> synchroniser(
     String trailId,
     String urlDonnees, {
     required int revisionCible,
+    required String? empreinteAttendue,
     int? revisionLocaleConnue,
   }) async {
     downloadCallCount++;
     lastDeltaUrl = urlDonnees;
     derniereRevisionCible = revisionCible;
+    derniereEmpreinteAttendue = empreinteAttendue;
     return bilan;
   }
 }
@@ -249,6 +257,15 @@ void main() {
 
       // Verification: la revision cible transmise est celle de la liste
       expect(fakeDeltaService.derniereRevisionCible, 5);
+
+      // Verification (tache 607) : l EMPREINTE ANNONCEE PAR LA LISTE DISTANTE
+      // voyage avec l adresse. Sans elle, la source refuse la copie — le
+      // controle d integrite est a fermeture par defaut, precisement pour qu un
+      // nouveau chemin de descente ne puisse pas l oublier comme le second
+      // chemin supprime au lot 606 avait oublie tout le modele de revision.
+      expect(fakeDeltaService.derniereEmpreinteAttendue, 'new_hash',
+          reason: 'elle vient de la liste DISTANTE (le fichier qu on va '
+              'chercher), pas du cache local');
 
       // Verification: l URL du delta est construite depuis la base
       // injectee + filePath du manifeste (pas de bucket code en dur)

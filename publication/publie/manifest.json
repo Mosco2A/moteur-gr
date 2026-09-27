@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 2,
+  "trails": [
+    {
+      "trailId": "gr-pyrenees",
+      "dataVersion": 1,
+      "hash": "",
+      "filePath": "",
+      "fileSize": 0,
+      "status": "draft",
+      "lastUpdated": "2026-09-27T21:11:10.855480Z",
+      "fiche": {
+        "name": "GR Pyrenees",
+        "displayName": "Traversee des Pyrenees",
+        "tagline": "D un versant a l autre de la chaine",
+        "region": "Pyrenees",
+        "country": "France",
+        "totalStages": 12,
+        "totalDistanceKm": 248.0,
+        "totalElevationGain": 16800,
+        "primaryColorValue": 4281236786,
+        "secondaryColorValue": 4279592384,
+        "directions": [
+          "EW",
+          "WE"
+        ],
+        "availableDurations": [
+          10,
+          12,
+          14,
+          18
+        ],
+        "defaultDuration": 12,
+        "emergencyNumbers": [
+          {
+            "name": "Secours montagne Pyrenees",
+            "phone": "+33561000000"
+          }
+        ],
+        "privacyPolicyUrl": "https://example.org/gr-pyrenees/privacy"
+      }
+    }
+  ]
+}

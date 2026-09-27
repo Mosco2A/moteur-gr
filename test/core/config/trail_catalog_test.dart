@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:moteur_gr/core/config/pyrenees_trail_config.dart';
@@ -32,7 +34,30 @@ void main() {
       final pyr = TrailCatalog.byId(pyreneesTrailConfig.id)!;
       expect(pyr.region, equals('Pyrenees'));
       expect(pyr.totalStages, greaterThan(0));
-      expect(pyr.gpxAssetPath, endsWith('.gpx'));
+    });
+
+    test('UNE TRACE DECLAREE EXISTE VRAIMENT — cette garde remplace celle qui '
+        'a laisse passer le defaut (tache 607)', () {
+      // CE QUE CE TEST VERIFIAIT AVANT, ET POURQUOI CA NE SUFFISAIT PAS.
+      // L assertion etait `expect(pyr.gpxAssetPath, endsWith('.gpx'))` : elle
+      // controlait la FORME d un chemin, jamais son existence. Or `gr-pyrenees`
+      // declarait `assets/gpx/gr_pyrenees.gpx`, fichier ABSENT du depot (mesure
+      // du 27/09 22:25 : `assets/gpx/` ne contient que `.gitkeep` et
+      // `test_trail.gpx`). Ce sentier etait donc au catalogue AVEC AUCUNE
+      // TRACE, et la carte affichait « impossible de charger la trace ». Un
+      // test vert sur un produit casse est pire qu un test absent.
+      for (final sentier in TrailCatalog.all) {
+        if (sentier.gpxAssetPath.isEmpty) continue;
+        expect(
+          File(sentier.gpxAssetPath).existsSync(),
+          isTrue,
+          reason: '${sentier.id} declare « ${sentier.gpxAssetPath} », absent du '
+              'depot. Un asset DECLARE qui ne se lit pas est une ERREUR a '
+              'l affichage de la carte, volontairement : mieux vaut un chemin '
+              'VIDE — une absence NOMMEE, que la carte sait traiter — qu un '
+              'chemin qui ment.',
+        );
+      }
     });
 
     test('les sentiers AUTRES que la demo restent neutres (genericite #84627)', () {

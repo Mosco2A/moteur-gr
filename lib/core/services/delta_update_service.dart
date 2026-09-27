@@ -143,12 +143,21 @@ class DeltaUpdateService {
   /// cles etrangeres ([MorceauxDeSentier.tous]) et non dans l ordre des clefs du
   /// JSON. L ancien code iterait sur `deltaJson.keys` et dependait donc de
   /// l ordre d ecriture du fichier — un hebergement avant son etape echouait.
+  ///
+  /// [repartirDeZero] efface d abord TOUTES les donnees locales du sentier, DANS
+  /// la transaction. Ce n est pas une optimisation inverse : c est la seule
+  /// reponse correcte quand le telephone est trop en retard pour que les
+  /// marqueurs de suppression aient ete conserves cote serveur
+  /// ([RevisionDeDonnee.exigeUneCopieComplete]). Sans l effacement, une
+  /// suppression purgee du fichier publie resterait sur le telephone pour
+  /// toujours.
   Future<ResultatSynchronisation> appliquerRevisions(
     String trailId,
     Map<String, dynamic> donnees, {
     required int revisionLocale,
     required int revisionCible,
     List<String> famillesLimitees = const [],
+    bool repartirDeZero = false,
   }) async {
     final inconnues = donnees.keys
         .where((k) => !MorceauxDeSentier.estConnu(k))
@@ -176,6 +185,12 @@ class DeltaUpdateService {
     // le repere de revision n est pas ecrit — le sentier reste « a prendre » au
     // lieu d etre a moitie copie.
     await db.transaction(() async {
+      // L EFFACEMENT FAIT PARTIE DE LA MEME TRANSACTION QUE LA REPOSE. Un
+      // effacement qui survivrait a l echec de la copie laisserait le randonneur
+      // SANS sentier, la ou il en avait un vieux : c est le pire des deux mondes,
+      // et c est exactement ce que la garantie #C1 interdit.
+      if (repartirDeZero) await _effacerLeSentier(trailId);
+
       for (final famille in familles) {
         final bilan = await _appliquerFamille(
           famille,
@@ -231,25 +246,114 @@ class DeltaUpdateService {
   /// tenir un verrou d ecriture SQLite : sur une liaison de montagne, une
   /// transaction ouverte pendant un transfert bloquerait la base pendant des
   /// minutes.
+  /// L INTEGRITE SE VERIFIE AVANT LA POSE, ET [empreinteAttendue] N EST PAS
+  /// FACULTATIVE. C est l empreinte que la liste publiee annonce pour ce fichier
+  /// (`TrailManifestEntry.hash`, #M3) : la source de fichier la compare aux
+  /// octets recus et leve AVANT de rendre quoi que ce soit, donc avant que la
+  /// transaction ne s ouvre. Un fichier tronque mais syntaxiquement valide — du
+  /// JSON parfaitement lisible coupe au milieu d une liste de points de trace —
+  /// passait la copie jusqu a la tache 607, et le randonneur partait avec une
+  /// trace incomplete que rien ne signalait.
+  ///
+  /// LE TELEPHONE TROP EN RETARD REPART DE ZERO, ET CE N EST PAS UN CONFORT. Le
+  /// serveur ne garde les marqueurs de suppression que sur une fenetre de
+  /// [RevisionDeDonnee.fenetreDeRetention] revisions (#X5). Au-dela, des
+  /// suppressions ont ete purgees sans avoir ete transmises : appliquer les
+  /// morceaux laisserait DEFINITIVEMENT un point d eau tari ou un refuge ferme
+  /// sur le telephone. On reprend donc tout depuis la revision zero, en effacant
+  /// d abord — dans la meme transaction.
   Future<ResultatSynchronisation> synchroniser(
     String trailId,
     String urlDonnees, {
     required int revisionCible,
+    required String? empreinteAttendue,
     int? revisionLocaleConnue,
   }) async {
     final locale = revisionLocaleConnue ?? await revisionLocale(trailId);
+
+    final copieComplete = RevisionDeDonnee.exigeUneCopieComplete(
+      revisionLocale: locale,
+      revisionCible: revisionCible,
+    );
+    if (copieComplete) {
+      _log.w(
+        '[Revision] $trailId : retard de ${revisionCible - locale} revisions, '
+        'au-dela de la fenetre de retention '
+        '(${RevisionDeDonnee.fenetreDeRetention}). Les marqueurs de suppression '
+        'de cette periode ne sont plus publies : COPIE COMPLETE depuis la '
+        'revision zero, donnees locales du sentier effacees d abord.',
+      );
+    }
+    final depuis =
+        copieComplete ? RevisionDeDonnee.revisionInitiale : locale;
+
     final aPrendre = await source.depuisLaRevision(
       trailId,
       adresse: urlDonnees,
-      revisionLocale: locale,
+      revisionLocale: depuis,
       revisionCible: revisionCible,
+      empreinteAttendue: empreinteAttendue,
     );
     return appliquerRevisions(
       trailId,
       aPrendre.parFamille,
-      revisionLocale: locale,
+      revisionLocale: depuis,
       revisionCible: revisionCible,
+      repartirDeZero: copieComplete,
     );
+  }
+
+  /// EFFACE TOUTES LES DONNEES LOCALES DU SENTIER, DANS L ORDRE INVERSE DES
+  /// CLEFS ETRANGERES.
+  ///
+  /// Le schema ne declare AUCUNE contrainte de clef etrangere au niveau de la
+  /// base (mesure : aucune table de sentier n appelle `references()`), donc aucune
+  /// cascade ne viendra faire ce travail. L ordre des familles est une convention
+  /// de l application, et l effacement doit la respecter a l envers : les points
+  /// de trace avant leur trace, les etapes apres ce qui s y rattache.
+  ///
+  /// LA PORTEE EST LE SENTIER, PAS LA BASE. Les identifiants sont resolus par
+  /// requete a chaque niveau : un `DELETE` non borne effacerait les autres
+  /// sentiers deja copies sur le telephone.
+  Future<void> _effacerLeSentier(String trailId) async {
+    final itineraires = (await trailItinerariesDao.getByTrailId(trailId))
+        .map((i) => i.id)
+        .toList();
+
+    final etapes = <String>[];
+    for (final itineraire in itineraires) {
+      etapes.addAll(
+        (await trailStagesDao.getByItineraryId(itineraire)).map((e) => e.id),
+      );
+    }
+
+    final traces = itineraires.isEmpty
+        ? const <String>[]
+        : (await (db.select(db.trailGpxTracks)
+                  ..where((t) => t.itineraryId.isIn(itineraires)))
+                .get())
+            .map((t) => t.id)
+            .toList();
+
+    if (traces.isNotEmpty) {
+      await (db.delete(db.trailGpxPoints)
+            ..where((t) => t.trackId.isIn(traces)))
+          .go();
+      await (db.delete(db.trailGpxTracks)..where((t) => t.id.isIn(traces))).go();
+    }
+    if (etapes.isNotEmpty) {
+      await (db.delete(db.trailPois)..where((t) => t.stageId.isIn(etapes))).go();
+      await (db.delete(db.trailAccommodations)
+            ..where((t) => t.stageId.isIn(etapes)))
+          .go();
+      await (db.delete(db.trailStages)..where((t) => t.id.isIn(etapes))).go();
+    }
+    if (itineraires.isNotEmpty) {
+      await (db.delete(db.trailItineraries)
+            ..where((t) => t.id.isIn(itineraires)))
+          .go();
+    }
+    await (db.delete(db.trailMeta)..where((t) => t.id.equals(trailId))).go();
   }
 
   /// Applique une famille : ecrit ce qui est plus recent, retire les tombes.

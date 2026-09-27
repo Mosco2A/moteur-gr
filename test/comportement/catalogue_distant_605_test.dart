@@ -17,6 +17,7 @@ import 'package:moteur_gr/core/data/daos/trail_meta_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_points_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_gpx_tracks_dao.dart';
 import 'package:moteur_gr/core/data/database.dart' hide TrailManifest;
+import 'package:moteur_gr/core/data/empreinte_de_publication.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/models/trail_manifest.dart';
 import 'package:moteur_gr/core/network/connectivity_monitor.dart';
@@ -105,8 +106,25 @@ const _sentierDistantSeul = TrailManifestEntry(
   fiche: _ficheSentierInconnu,
 );
 
+/// EMPREINTE DES OCTETS QUE LE DOUBLE SERT, PAR CHEMIN (tache 607).
+///
+/// Depuis la tache 607, l application VERIFIE l empreinte annoncee par la liste
+/// publiee AVANT d ecrire quoi que ce soit : un fichier tronque mais
+/// syntaxiquement valide ne doit rien poser. Le double doit donc annoncer
+/// l empreinte de ce qu il sert reellement — ce qui est aussi la verite de la
+/// vraie chaine, ou la liste et le fichier sortent du MEME outil
+/// (`tool/publier_sentier.dart`). Annoncer « h » ferait REFUSER la copie, et
+/// c est le comportement voulu, pas une gene de test.
+final Map<String, String> _empreintesServies = <String, String>{};
+
+String _empreinteServie(String chemin) => _empreintesServies[chemin]!;
+
 /// Un client HTTP qui sert le manifeste et les fichiers de donnees du double.
 MockClient _faussesDonnees(Map<String, Object> parChemin) {
+  for (final entree in parChemin.entries) {
+    _empreintesServies[entree.key] =
+        EmpreinteDePublication.duTexte(jsonEncode(entree.value));
+  }
   return MockClient((requete) async {
     for (final entree in parChemin.entries) {
       if (requete.url.toString().contains(Uri.encodeComponent(entree.key)) ||
@@ -492,6 +510,7 @@ void main() {
         'gr-aubrac',
         'https://double/gr_aubrac/v3.json',
         revisionCible: 3,
+        empreinteAttendue: _empreinteServie('gr_aubrac/v3.json'),
       );
 
       expect(bilan.ecrits, 2);
@@ -512,7 +531,8 @@ void main() {
       expect(await manifestes.needsUpdate('gr-aubrac'), isTrue);
 
       await svc.synchroniser('gr-aubrac', 'https://double/gr_aubrac/v3.json',
-          revisionCible: 3);
+          revisionCible: 3,
+          empreinteAttendue: _empreinteServie('gr_aubrac/v3.json'));
 
       expect(await svc.revisionLocale('gr-aubrac'), 3,
           reason: 'PERSONNE n ecrivait localVersion : `UpdateDownloader` '
@@ -533,7 +553,8 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
-      }).synchroniser('gr-aubrac', 'https://double/v3', revisionCible: 3);
+      }).synchroniser('gr-aubrac', 'https://double/v3',
+          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
 
       // Revision 4 : SEULE l etape a bouge (denivele corrige). Le point
       // d interet est republie tel quel, avec son ancienne revision.
@@ -542,7 +563,8 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 915, rev: 4)],
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
-      }).synchroniser('gr-aubrac', 'https://double/v4', revisionCible: 4);
+      }).synchroniser('gr-aubrac', 'https://double/v4',
+          revisionCible: 4, empreinteAttendue: _empreinteServie('v4'));
 
       expect(bilan.famillesTouchees, ['stages'],
           reason: 'AVANT : `_inferChangedTables(from, to)` rendait les sept '
@@ -564,11 +586,12 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
         },
       };
-      await service(donnees)
-          .synchroniser('gr-aubrac', 'https://double/v3', revisionCible: 3);
+      await service(donnees).synchroniser('gr-aubrac', 'https://double/v3',
+          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
 
-      final bilan = await service(donnees)
-          .synchroniser('gr-aubrac', 'https://double/v3', revisionCible: 3);
+      final bilan = await service(donnees).synchroniser(
+          'gr-aubrac', 'https://double/v3',
+          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
 
       expect(bilan.rienAFaire, isTrue);
       expect(bilan.famillesTouchees, isEmpty);
@@ -582,7 +605,8 @@ void main() {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800, rev: 3)],
           'pois': [_poi(id: 'aubrac-p1', rev: 3)],
         },
-      }).synchroniser('gr-aubrac', 'https://double/v3', revisionCible: 3);
+      }).synchroniser('gr-aubrac', 'https://double/v3',
+          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
 
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), hasLength(1));
 
@@ -594,7 +618,8 @@ void main() {
             {'id': 'aubrac-p1', 'rev': 5, 'supprime': true},
           ],
         },
-      }).synchroniser('gr-aubrac', 'https://double/v5', revisionCible: 5);
+      }).synchroniser('gr-aubrac', 'https://double/v5',
+          revisionCible: 5, empreinteAttendue: _empreinteServie('v5'));
 
       expect(bilan.supprimes, 1);
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), isEmpty,
@@ -619,7 +644,8 @@ void main() {
       });
 
       await expectLater(
-        svc.synchroniser('gr-aubrac', 'https://double/casse', revisionCible: 3),
+        svc.synchroniser('gr-aubrac', 'https://double/casse',
+            revisionCible: 3, empreinteAttendue: _empreinteServie('casse')),
         throwsA(anything),
       );
 
@@ -639,7 +665,8 @@ void main() {
         'sansrev': {
           'stages': [_etape(id: 'aubrac-s1', elevationGain: 800)],
         },
-      }).synchroniser('gr-aubrac', 'https://double/sansrev', revisionCible: 3);
+      }).synchroniser('gr-aubrac', 'https://double/sansrev',
+          revisionCible: 3, empreinteAttendue: _empreinteServie('sansrev'));
 
       expect(bilan.ecrits, 1);
       expect(
@@ -658,7 +685,8 @@ void main() {
             {'id': 'x', 'rev': 3},
           ],
         },
-      }).synchroniser('gr-aubrac', 'https://double/inconnue', revisionCible: 3);
+      }).synchroniser('gr-aubrac', 'https://double/inconnue',
+          revisionCible: 3, empreinteAttendue: _empreinteServie('inconnue'));
 
       expect(bilan.famillesTouchees, ['stages']);
     });

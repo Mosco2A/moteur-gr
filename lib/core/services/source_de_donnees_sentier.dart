@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
+import '../data/empreinte_de_publication.dart';
 import '../data/revision_de_donnee.dart';
 import '../models/trail_manifest.dart';
 
@@ -80,11 +81,18 @@ abstract interface class SourceDeDonneesSentier {
   ///
   /// [adresse] localise les donnees. Une source de fichier y lit une URL ; une
   /// source interrogeable peut l ignorer.
+  ///
+  /// [empreinteAttendue] est l empreinte SHA-256 annoncee par la liste publiee
+  /// (`TrailManifestEntry.hash`, #M3). ELLE N EST PAS FACULTATIVE POUR UNE SOURCE
+  /// DE FICHIER : c est la seule chose qui distingue un fichier complet d un
+  /// fichier tronque mais syntaxiquement valide. Une source interrogeable, qui ne
+  /// recoit pas de fichier, ne peut rien en faire et le dit.
   Future<MorceauxAPrendre> depuisLaRevision(
     String trailId, {
     required String adresse,
     required int revisionLocale,
     required int revisionCible,
+    String? empreinteAttendue,
   });
 }
 
@@ -136,6 +144,22 @@ class _Tri {
 /// desormais le meme chemin. Ce que ce service faisait EN PLUS et qu on ne
 /// reprend pas : son insertion famille par famille avec file de reprise, qui est
 /// exactement le demi-sentier que la copie atomique interdit (#C1).
+///
+/// ET DEPUIS LA TACHE 607, C EST ICI QUE L INTEGRITE SE VERIFIE — AVANT LA POSE.
+/// La specification annoncait depuis le lot 605 que `hash` garantit que le recu
+/// est le publie (#M3, #C4) ; le lot 606 a mesure que PERSONNE ne le calculait ni
+/// ne le comparait. Un fichier tronque a la moitie d une liste de points de trace
+/// reste du JSON valide : il passait la copie, sa revision locale etait inscrite,
+/// et le randonneur partait en montagne avec une trace coupee dont rien ne disait
+/// qu elle l etait — et plus aucune raison de retelecharger.
+///
+/// LE CONTROLE EST A FERMETURE PAR DEFAUT, ET C EST DELIBERE. Pas d empreinte
+/// annoncee, ou une empreinte illisible : la copie est REFUSEE, pas « acceptee
+/// sans verification ». La raison est dans l histoire recente du depot : le lot
+/// 606 a supprime un SECOND chemin de descente des donnees qui ignorait tout le
+/// modele de revision, simplement parce qu il avait ete ajoute sans que rien ne
+/// l oblige a le respecter. Une verification qu on peut omettre en ne passant pas
+/// un argument serait la meme faute, au meme endroit.
 class SourceFichierEntier implements SourceDeDonneesSentier {
   SourceFichierEntier({
     http.Client? httpClient,
@@ -157,8 +181,13 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
     required String adresse,
     required int revisionLocale,
     required int revisionCible,
+    String? empreinteAttendue,
   }) async {
-    final (donnees, octets) = await _telecharger(adresse);
+    final (donnees, octets) = await _telecharger(
+      adresse,
+      trailId: trailId,
+      empreinteAttendue: empreinteAttendue,
+    );
 
     final parFamille = <String, dynamic>{};
     var transferes = 0;
@@ -203,17 +232,49 @@ class SourceFichierEntier implements SourceDeDonneesSentier {
     );
   }
 
-  Future<(Map<String, dynamic>, int)> _telecharger(String url) async {
+  Future<(Map<String, dynamic>, int)> _telecharger(
+    String url, {
+    required String trailId,
+    required String? empreinteAttendue,
+  }) async {
     Object? derniereCause;
 
     for (var tentative = 1; tentative <= tentatives; tentative++) {
       try {
         final reponse = await _httpClient.get(Uri.parse(url));
         if (reponse.statusCode == 200) {
+          // L EMPREINTE SE VERIFIE SUR LES OCTETS, ET AVANT LE DECODAGE. Hacher
+          // apres un aller-retour par `jsonDecode` verifierait notre propre
+          // encodeur et laisserait passer exactement ce qu on veut attraper : un
+          // fichier coupe qui se reparse. Et l echec est leve AVANT de rendre
+          // quoi que ce soit, donc avant que la pose n ouvre sa transaction :
+          // rien n est ecrit, la revision locale ne bouge pas (#C1).
+          if (!EmpreinteDePublication.correspond(
+            reponse.bodyBytes,
+            empreinteAttendue,
+          )) {
+            throw EmpreinteInvalide(
+              trailId: trailId,
+              adresse: url,
+              attendue: empreinteAttendue,
+              obtenue:
+                  EmpreinteDePublication.normaliser(empreinteAttendue) == null
+                      ? null
+                      : EmpreinteDePublication.de(reponse.bodyBytes),
+              octets: reponse.bodyBytes.length,
+            );
+          }
           final corps = jsonDecode(reponse.body) as Map<String, dynamic>;
           return (corps, reponse.bodyBytes.length);
         }
         derniereCause = 'HTTP ${reponse.statusCode}';
+      } on EmpreinteInvalide catch (e) {
+        // UNE EMPREINTE NON CONFORME NE SE REESSAYE PAS. Ce n est pas un aléa de
+        // reseau : le serveur a servi un fichier qui n est pas celui qu il
+        // annonce. Trois tentatives donneraient trois fois le meme fichier et
+        // masqueraient la cause derriere un message de reseau.
+        _log.e('[Source fichier] $e');
+        rethrow;
       } catch (e) {
         derniereCause = e;
       }
@@ -273,12 +334,21 @@ class SourceInterrogeable implements SourceDeDonneesSentier {
   /// Les familles a interroger, dans l ordre des cles etrangeres.
   final List<String> familles;
 
+  /// L EMPREINTE DE FICHIER N A PAS DE SENS ICI, ET LE DIRE VAUT MIEUX QUE DE
+  /// L IGNORER EN SILENCE. Cette source ne recoit pas de fichier : elle recoit des
+  /// enregistrements, un par un. Il n y a donc rien dont l empreinte du fichier
+  /// publie (#M3) pourrait certifier l integrite. Le controle equivalent sur une
+  /// base interrogeable serait d une autre nature — une empreinte par
+  /// enregistrement, ou la garantie de transport du service — et il reste a
+  /// trancher le jour ou la console existe. `empreinteAttendue` est accepte pour
+  /// que les deux sources restent interchangeables, et delibere ment non utilise.
   @override
   Future<MorceauxAPrendre> depuisLaRevision(
     String trailId, {
     required String adresse,
     required int revisionLocale,
     required int revisionCible,
+    String? empreinteAttendue,
   }) async {
     final parFamille = <String, dynamic>{};
     var transferes = 0;

@@ -1,0 +1,31 @@
+{
+  "_pourquoi": "LE SENTIER DES PYRENEES EST RETIRE DU CATALOGUE JUSQU A CE QU IL AIT DE VRAIES DONNEES (tache 607). Il est COMPILE dans l application, et un sentier compile absent de la liste est CONSERVE au catalogue (#M10) : le retrait doit donc se DIRE. C est ce que fait cette entree, avec le statut draft (#M6). Ses chiffres sont explicitement fictifs (#84627) et il n a jamais eu de trace : son gpxAssetPath pointait sur un fichier absent du depot. Lui fabriquer une trace plausible aurait mis un itineraire de montagne INVENTE entre les mains d un randonneur. Le jour ou ses donnees reelles existent : ecrire les sept familles ici, passer status a active, republier — sans republier l application.",
+  "status": "draft",
+  "liste_seulement": true,
+  "trail_meta": {
+    "id": "gr-pyrenees",
+    "code": "PYRENEES"
+  },
+  "fiche": {
+    "name": "GR Pyrenees",
+    "displayName": "Traversee des Pyrenees",
+    "tagline": "D un versant a l autre de la chaine",
+    "region": "Pyrenees",
+    "country": "France",
+    "totalStages": 12,
+    "totalDistanceKm": 248.0,
+    "totalElevationGain": 16800,
+    "primaryColorValue": 4281236786,
+    "secondaryColorValue": 4279592384,
+    "directions": ["EW", "WE"],
+    "availableDurations": [10, 12, 14, 18],
+    "defaultDuration": 12,
+    "emergencyNumbers": [
+      {
+        "name": "Secours montagne Pyrenees",
+        "phone": "+33561000000"
+      }
+    ],
+    "privacyPolicyUrl": "https://example.org/gr-pyrenees/privacy"
+  }
+}

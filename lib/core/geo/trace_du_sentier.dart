@@ -103,9 +103,16 @@ class LecteurDeTrace {
   /// UN ASSET DECLARE QUI NE SE LIT PAS RESTE UNE ERREUR, et c est deliberе : la
   /// carte affiche aujourd hui « impossible de charger la trace » avec un bouton
   /// reessayer dans ce cas, et avaler l echec transformerait un fichier manquant
-  /// en carte silencieusement vide. Mesure a l appui : `gr-pyrenees` declare
-  /// `assets/gpx/gr_pyrenees.gpx`, qui N EXISTE PAS dans le depot — ce sentier
-  /// echoue donc deja, et il doit continuer a le DIRE.
+  /// en carte silencieusement vide.
+  ///
+  /// LA MESURE QUI ILLUSTRAIT CE PARAGRAPHE A ETE CORRIGEE (tache 607).
+  /// `gr-pyrenees` declarait `assets/gpx/gr_pyrenees.gpx`, absent du depot : ce
+  /// sentier ECHOUAIT DEJA, au catalogue et sans trace. La reponse n a pas ete
+  /// d avaler l erreur mais de ne plus mentir — son `gpxAssetPath` est VIDE,
+  /// donc son absence est NOMMEE, et une garde de `trail_catalog_test` verifie
+  /// desormais que tout chemin declare existe reellement dans le depot. Le
+  /// comportement decrit ci-dessus ne change pas : un chemin declare qui ne se
+  /// lit pas reste une erreur.
   Future<TraceDuSentier> lire({
     required String trailId,
     required String cheminAsset,

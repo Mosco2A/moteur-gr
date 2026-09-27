@@ -46,6 +46,64 @@ abstract final class RevisionDeDonnee {
   /// Revision de la premiere ouverture : rien n est copie, tout est plus recent.
   static const int revisionInitiale = 0;
 
+  /// COMBIEN DE REVISIONS DE MARQUEURS LE SERVEUR GARDE — ET DONC JUSQU OU UN
+  /// TELEPHONE EN RETARD PEUT ENCORE RATTRAPER PAR MORCEAUX.
+  ///
+  /// LE PROBLEME QUE CE NOMBRE TRANCHE (#X5, ouvert depuis le lot 606). Les
+  /// marqueurs de suppression s accumulent dans le fichier publie, indefiniment :
+  /// #R9 disait « garder le marqueur jusqu a ce que tous les telephones aient
+  /// depasse sa revision », condition INOBSERVABLE puisque l application ne
+  /// rapporte sa revision a personne. La retention est donc FIXE — dix
+  /// revisions — plutot qu un flux de telemetrie qui poserait une question RGPD
+  /// pour un simple menage de fichier.
+  ///
+  /// LES DEUX COTES LISENT CE MEME NOMBRE, ET CE N EST PAS UNE COMMODITE : C EST
+  /// CE QUI REND LA REGLE VRAIE. L outil de publication garde les marqueurs dont
+  /// la revision depasse `revisionCourante - fenetreDeRetention`
+  /// ([marqueurAConserver]) ; l application exige une copie complete des que son
+  /// retard depasse la MEME fenetre ([exigeUneCopieComplete]).
+  ///
+  /// DEMONSTRATION. Un telephone a la revision L face a un serveur a la revision
+  /// N a besoin de TOUS les marqueurs de revision comprise dans `]L, N]`. Le
+  /// serveur conserve ceux de revision `> N - fenetre`. Les deux ensembles
+  /// coincident si et seulement si `N - L <= fenetre`. Au-dela, des suppressions
+  /// ont ete purgees sans avoir jamais ete transmises : une mise a jour par
+  /// morceaux laisserait DEFINITIVEMENT sur le telephone un point d eau tari ou
+  /// un refuge ferme. D ou la copie complete, qui est la seule reponse correcte.
+  ///
+  /// Deux constantes independantes auraient donne un decalage silencieux, et du
+  /// mauvais cote : l application se croirait a jour.
+  static const int fenetreDeRetention = 10;
+
+  /// Vrai si le retard du telephone depasse la fenetre de retention serveur.
+  ///
+  /// Dans ce cas la mise a jour par morceaux n est plus « moins efficace », elle
+  /// est INSUFFISANTE. La seule reponse correcte est de reprendre le sentier
+  /// depuis la revision zero en effacant d abord ce qui est en base — c est ce
+  /// que fait `DeltaUpdateService.synchroniser`.
+  ///
+  /// Un telephone qui n a RIEN (revision zero) ne releve pas de ce cas : il
+  /// prend deja tout, par le chemin normal.
+  static bool exigeUneCopieComplete({
+    required int revisionLocale,
+    required int revisionCible,
+  }) {
+    if (revisionLocale <= revisionInitiale) return false;
+    return revisionCible - revisionLocale > fenetreDeRetention;
+  }
+
+  /// Vrai si un marqueur de revision [rev] doit encore etre publie quand le
+  /// sentier atteint [revisionCourante].
+  ///
+  /// C est la moitie SERVEUR de la meme regle, et elle vit ici pour que l outil
+  /// de publication et l application ne puissent pas diverger.
+  static bool marqueurAConserver({
+    required int rev,
+    required int revisionCourante,
+  }) {
+    return rev > revisionCourante - fenetreDeRetention;
+  }
+
   /// Revision portee par [donnee], ou [defaut] si elle n en declare pas.
   ///
   /// UNE DONNEE SANS REVISION EST TRAITEE COMME APPARTENANT A LA REVISION

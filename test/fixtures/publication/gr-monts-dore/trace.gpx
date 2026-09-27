@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TRACE D UN SENTIER INVENTE POUR EPROUVER L OUTIL DE PUBLICATION (tache 607).
+  Coordonnees FICTIVES. Ce fichier est un materiel de test : il vit sous test/,
+  jamais sous publication/sources/, precisement pour qu une donnee inventee ne
+  puisse pas etre deposee par megarde sur le serveur.
+-->
+<gpx version="1.1" creator="tache-607-materiel-de-test" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Tour des Monts Dore (fictif)</name>
+  </metadata>
+  <trk>
+    <name>Tour des Monts Dore (fictif)</name>
+    <trkseg>
+      <trkpt lat="45.5300" lon="2.8000"><ele>1050.0</ele></trkpt>
+      <trkpt lat="45.5340" lon="2.8070"><ele>1180.0</ele></trkpt>
+      <trkpt lat="45.5385" lon="2.8135"><ele>1340.0</ele></trkpt>
+      <trkpt lat="45.5420" lon="2.8190"><ele>1520.0</ele></trkpt>
+      <trkpt lat="45.5460" lon="2.8240"><ele>1685.0</ele></trkpt>
+      <trkpt lat="45.5505" lon="2.8295"><ele>1820.0</ele></trkpt>
+      <trkpt lat="45.5550" lon="2.8360"><ele>1730.0</ele></trkpt>
+      <trkpt lat="45.5600" lon="2.8430"><ele>1595.0</ele></trkpt>
+      <trkpt lat="45.5655" lon="2.8500"><ele>1410.0</ele></trkpt>
+      <trkpt lat="45.5710" lon="2.8575"><ele>1260.0</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

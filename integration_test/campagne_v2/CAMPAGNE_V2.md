@@ -288,9 +288,16 @@ exactement ce qu'il releve. Ligne L1 et L4 de la grille #100297. Ce n'est pas un
   pire fenetre.
 
 **Le sentier « GR Pyrenees » du catalogue est volontairement hors matrice, et c'est un cas de test
-a lui seul** : sa configuration declare `assets/gpx/gr_pyrenees.gpx`, **fichier qui n'existe pas**.
-C'est exactement la situation prevue par #2-h : altitude **absente -> `k_altitude = 1,00` ET on le
-dit**. Voir F3-4.
+a lui seul** : il n'a **aucune trace**. C'est exactement la situation prevue par #2-h : altitude
+**absente -> `k_altitude = 1,00` ET on le dit**. Voir F3-4.
+
+> **MISE A JOUR TACHE 607.** Sa configuration declarait `assets/gpx/gr_pyrenees.gpx`, **fichier
+> absent du depot** : le sentier n'echouait donc pas « faute d'altitude », il echouait a CHARGER sa
+> trace (« impossible de charger la trace » + bouton reessayer). Son `gpxAssetPath` est desormais
+> **VIDE** : l'absence est NOMMEE (`SourceDeLaTrace.aucune`) au lieu de lever, et c'est bien le cas
+> #2-h qui s'exerce. Le sentier est par ailleurs **retire du catalogue** par une entree `draft` de la
+> liste publiee (`publication/sources/gr-pyrenees/`, #M6) jusqu'a ce qu'il ait de vraies donnees :
+> pour jouer F3-4 sans depot serveur, le catalogue **compile** le montre toujours.
 
 ### 3.2 Les six personnages — donnees de matrice
 
@@ -413,10 +420,11 @@ Aux nouvelles bornes (`hiker_input_bounds.dart`, deja livre en tache 539 — age
 - **F3-3 — Le decoupage choisi persiste.** Non-regression du correctif D2 (`4d4efc1`, preuve
   `preuve_n2_faisabilite_test.dart`) : choisir un decoupage laisse une trace **ailleurs** que la ou
   on a agi, et **apres redemarrage**. Ligne L5 de la grille.
-- **F3-4 — Altitude absente, et on le dit.** Ouvrir le sentier **GR Pyrenees**, dont le GPX declare
-  n'existe pas. Attendu : `k_altitude = 1,00` **et la mention explicite que l'altitude n'a pas pu
-  etre prise en compte** (#2-h). Une neutralite silencieuse est un defaut : elle se confondrait avec
-  un sentier reellement bas.
+- **F3-4 — Altitude absente, et on le dit.** Ouvrir le sentier **GR Pyrenees**, qui n'a AUCUNE trace
+  (chemin d'asset vide depuis la tache 607, et rien en base tant qu'il n'est pas publie). Attendu :
+  `k_altitude = 1,00` **et la mention explicite que l'altitude n'a pas pu etre prise en compte**
+  (#2-h). Une neutralite silencieuse est un defaut : elle se confondrait avec un sentier reellement
+  bas. La carte, elle, doit afficher une trace VIDE nommee, pas une erreur de chargement.
 - **F3-5 — La mention hors-perimetre coupee en deux (#8-a).** Attendu : la moitie « saison »
   **disparait** (la saison entre desormais dans le calcul) ; la moitie « sac » devient
   **permanente**, avec la mesure qui la fonde (de 0 a 45 kg, le verdict ne bouge pas).

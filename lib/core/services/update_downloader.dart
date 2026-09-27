@@ -279,6 +279,9 @@ class UpdateDownloader {
         trailId,
         urlDonnees(remoteEntry.filePath),
         revisionCible: remoteEntry.dataVersion,
+        // L empreinte vient de la liste DISTANTE, pas du cache local : c est
+        // celle que le serveur annonce pour le fichier qu on va chercher.
+        empreinteAttendue: remoteEntry.hash,
         revisionLocaleConnue: ecart.fromVersion,
       );
 

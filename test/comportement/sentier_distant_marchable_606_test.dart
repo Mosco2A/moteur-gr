@@ -18,6 +18,7 @@ import 'package:moteur_gr/core/data/daos/trail_pois_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_stages_dao.dart';
 import 'package:moteur_gr/core/data/daos/trail_accommodations_dao.dart';
 import 'package:moteur_gr/core/data/database.dart' hide TrailManifest;
+import 'package:moteur_gr/core/data/empreinte_de_publication.dart';
 import 'package:moteur_gr/core/data/revision_de_donnee.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/geo/gpx_parser.dart';
@@ -83,8 +84,23 @@ class _FauxReseau extends ConnectivityMonitor {
   Stream<ConnectivityStatus> get onStatusChange => Stream.value(_statut);
 }
 
+/// EMPREINTE DES OCTETS QUE LE DOUBLE SERT, PAR CHEMIN (tache 607).
+///
+/// Depuis la tache 607, l application VERIFIE l empreinte annoncee par la liste
+/// publiee AVANT d ecrire quoi que ce soit (#X6, laisse ouvert par ce lot-ci).
+/// Le double annonce donc l empreinte de ce qu il sert reellement — ce qui est
+/// aussi la verite de la vraie chaine, ou la liste et le fichier sortent du MEME
+/// outil (`tool/publier_sentier.dart`).
+final Map<String, String> _empreintesServies = <String, String>{};
+
+String _empreinteServie(String chemin) => _empreintesServies[chemin]!;
+
 /// Client HTTP qui sert le manifeste et les fichiers de donnees du double.
 MockClient _fauxStockage(Map<String, Object> parChemin, {List<int>? appels}) {
+  for (final entree in parChemin.entries) {
+    _empreintesServies[entree.key] =
+        EmpreinteDePublication.duTexte(jsonEncode(entree.value));
+  }
   return MockClient((requete) async {
     appels?.add(1);
     for (final entree in parChemin.entries) {
@@ -115,10 +131,15 @@ const _ficheAubrac = TrailManifestFiche(
 );
 
 /// Le sentier NEUF : decrit entierement a distance, ABSENT des assets.
-const _entreeAubrac = TrailManifestEntry(
+///
+/// SON EMPREINTE EST CELLE DU FICHIER QU ON SERT (tache 607). Elle valait
+/// « h-aubrac-3 » tant que personne ne la verifiait ; elle est maintenant
+/// calculee sur les octets du fichier de donnees, comme la produirait
+/// `tool/publier_sentier.dart`.
+final _entreeAubrac = TrailManifestEntry(
   trailId: 'gr-aubrac',
   dataVersion: 3,
-  hash: 'h-aubrac-3',
+  hash: EmpreinteDePublication.duTexte(jsonEncode(_donneesAubrac())),
   filePath: 'gr_aubrac/v3.json',
   fileSize: 4096,
   status: 'active',
@@ -467,7 +488,7 @@ void main() {
       // Etat initial a la revision 3, par le chemin du fichier entier.
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: 3);
+          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
       expect(await TrailGpxPointsDao(db).getAll(), hasLength(5));
 
       // Revision 4 : SEULE l altitude de l etape a bouge. La source
@@ -503,6 +524,10 @@ void main() {
         'gr-aubrac',
         'ignoree',
         revisionCible: 4,
+        // UNE SOURCE INTERROGEABLE NE RECOIT PAS DE FICHIER : il n y a rien
+        // dont l empreinte du fichier publie pourrait certifier l integrite, et
+        // le dire vaut mieux que de l ignorer en silence.
+        empreinteAttendue: null,
       );
       expect(bilan.famillesTouchees, [MorceauxDeSentier.etapes]);
       expect(bilan.ecrits, 1);
@@ -528,6 +553,7 @@ void main() {
         adresse: 'https://double/v4',
         revisionLocale: 3,
         revisionCible: 4,
+        empreinteAttendue: _empreinteServie('v4'),
       );
 
       final interrogeable = SourceInterrogeable((trailId, famille, revMin) async {
@@ -563,10 +589,11 @@ void main() {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: 3);
+          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
 
       final bilan = await serviceAvec(servi: {'v3': _donneesAubrac()})
-          .synchroniser('gr-aubrac', 'https://double/v3', revisionCible: 3);
+          .synchroniser('gr-aubrac', 'https://double/v3',
+              revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
 
       expect(bilan.rienAFaire, isTrue);
       expect(bilan.famillesTouchees, isEmpty);
@@ -577,7 +604,7 @@ void main() {
       await poserLeManifeste();
       await serviceAvec(servi: {'v3': _donneesAubrac()}).synchroniser(
           'gr-aubrac', 'https://double/v3',
-          revisionCible: 3);
+          revisionCible: 3, empreinteAttendue: _empreinteServie('v3'));
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), hasLength(1));
 
       final bilan = await serviceAvec(servi: {
@@ -587,7 +614,8 @@ void main() {
             {'id': 'aubrac-p1', 'rev': 5, 'supprime': true},
           ],
         ),
-      }).synchroniser('gr-aubrac', 'https://double/v5', revisionCible: 5);
+      }).synchroniser('gr-aubrac', 'https://double/v5',
+          revisionCible: 5, empreinteAttendue: _empreinteServie('v5'));
 
       expect(bilan.supprimes, 1);
       expect(await TrailPoisDao(db).getByStageId('aubrac-s1'), isEmpty,
@@ -603,7 +631,9 @@ void main() {
 
       await expectLater(
         svc.synchroniser('gr-aubrac', 'https://double/absent',
-            revisionCible: 3),
+            revisionCible: 3,
+            empreinteAttendue:
+                EmpreinteDePublication.duTexte(jsonEncode(_donneesAubrac()))),
         throwsA(anything),
       );
 
@@ -655,6 +685,7 @@ void main() {
         adresse: 'https://double/v3',
         revisionLocale: RevisionDeDonnee.revisionInitiale,
         revisionCible: 3,
+        empreinteAttendue: _empreinteServie('v3'),
       );
 
       expect(aPrendre.retenus, 10,
