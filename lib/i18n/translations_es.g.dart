@@ -5033,14 +5033,14 @@ extension on TranslationsEs {
 			'signalement.water.saved' => '¡Gracias! Estado guardado.',
 			'signalement.water.states.available' => 'Agua disponible',
 			'signalement.water.states.low' => 'Caudal bajo',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.water.states.dry' => 'Seco',
 			'signalement.water.states.unknown' => 'Estado desconocido',
 			'hebergement.title' => 'Alojamientos cercanos',
 			'hebergement.facilitatorNote' => 'StepWays te dirige a los alojamientos. La reserva se hace en su sitio: ningún pago en la aplicación.',
 			'hebergement.detourAR' => ({required Object km}) => 'Desvío ida y vuelta: ${km} km',
 			'hebergement.openSite' => 'Ver el sitio',
-			_ => null,
-		} ?? switch (path) {
 			'hebergement.cannotOpen' => 'No se pudo abrir este enlace en este dispositivo.',
 			'hebergement.empty' => 'No hay alojamientos cerca por ahora.',
 			'hebergement.types.refuge' => 'Refugio',
@@ -5066,8 +5066,6 @@ extension on TranslationsEs {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Incluido en el pack « ${trail} ».',
 			'training.paywallSubtitle' => 'Plan adaptado a tu perfil y a tu fecha de salida.',
 			'training.unlock' => 'Desbloquear',
-			_ => null,
-		} ?? switch (path) {
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'Un plan progresivo de ${weeks} semanas para afrontar los ${km} km y unos ${elevation} m de desnivel.',
 			'training.countdown' => ({required Object days}) => 'Salida en ${days} días',
 			'training.planOverWeeks' => ({required Object n}) => 'Plan de ${n} semanas',
@@ -5549,6 +5547,8 @@ extension on TranslationsEs {
 			'nuitees.guide.close' => 'Entendido',
 			'nuitees.card.dayLabel' => 'D{n}',
 			'nuitees.card.noPlace' => 'Alojamiento',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.card.available' => '{count} alojamientos disponibles',
 			'nuitees.card.call' => 'Llamar {phone}',
 			'nuitees.card.lockedHint' => 'Desmarca la noche para cambiar el tipo',
@@ -5558,8 +5558,6 @@ extension on TranslationsEs {
 			'nuitees.summary.done' => '{count} OK',
 			'nuitees.summary.allBooked' => 'TODAS LAS NOCHES RESERVADAS',
 			'nuitees.empty.title' => 'Configura primero tu itinerario',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.empty.message' => 'Elige tu ruta y duración para preparar tus noches.',
 			'nuitees.empty.action' => 'CONFIGURAR ITINERARIO',
 			'transport.title' => 'Transporte',
@@ -5588,13 +5586,9 @@ extension on TranslationsEs {
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}d',
 			'fireRisk.fwiSource' => 'Índice de riesgo basado en el Fire Weather Index (FWI) proporcionado por Open-Meteo (modelo Meteo-France). El FWI es el índice utilizado por el sistema europeo EFFIS para evaluar el riesgo de incendios forestales.',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.regulation.title' => 'Normativa',
 			'fireRisk.regulation.decreeLink' => 'Consultar las órdenes prefectorales',
 			'fireRisk.levelsTitle' => 'Niveles de riesgo',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.none' => 'Ninguno',
 			'fireRisk.level.low' => 'Bajo',
 			'fireRisk.level.moderate' => 'Moderado',

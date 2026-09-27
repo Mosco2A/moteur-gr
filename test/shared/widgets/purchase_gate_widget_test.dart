@@ -8,7 +8,6 @@ import 'package:moteur_gr/core/network/connectivity_monitor.dart';
 import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/core/services/wallet_iap_service.dart';
 import 'package:moteur_gr/core/services/wallet_store.dart';
-import 'package:moteur_gr/features/ads/providers/ads_providers.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:moteur_gr/shared/widgets/paywall_sheet.dart';
 import 'package:moteur_gr/shared/widgets/purchase_gate_widget.dart';
@@ -43,6 +42,27 @@ void main() {
   // vitrine, l achat par le portefeuille — est intact, et la video recompensee
   // ne s affiche simplement pas, ce qui est le comportement CORRECT sur un
   // appareil sans regie.
+  //
+  // UNE SEULE CAUSE, DEUX DIAGNOSTICS, ET LA MESURE QUI LES REUNIT (tache 598).
+  // Les lots 594 et 595 ont croise ce rouge separement et ont accuse deux
+  // choses : `adsReadyProvider` (594) et le minuteur de six secondes d
+  // `AdsConsentService` (595). CE N EST PAS DEUX CAUSES : c est la TETE et la
+  // QUEUE d une seule chaine. `adsReadyProvider` est la PORTE par laquelle la
+  // vitrine entre dans le module ; le garde-fou de six secondes est le MINUTEUR
+  // qui reste pendant. Chronometre a la fusion, sur le depot reuni :
+  //   * sans aucun garde-fou, `adsReadyProvider` rend `false` en 6030 ms — soit
+  //     exactement `AdsConsentService._bootTimeout` — et la
+  //     `MissingPluginException` du canal `.../ump` s echappe dans la zone ;
+  //   * avec l appareil honnete ci-dessous, il rend `false` en 1 ms.
+  // Six mille trente millisecondes contre une : le minuteur EST le defaut, et le
+  // fermer a la source le SUPPRIME au lieu de le contourner.
+  //
+  // ON NE GARDE DONC QU UNE SEULE CORRECTION, et c est celle-ci. La surcharge de
+  // `adsReadyProvider` que portait le lot 594 a ete RETIREE a la reunion : elle
+  // fermait UNE porte alors que le lot 595 vient d en ouvrir d autres sur le
+  // meme module (le cockpit, le catalogue, `bannerAdProvider`), et deux
+  // corrections concurrentes du meme defaut fabriquent un troisieme bug. La
+  // fondation structurelle, elle, porte deja cinq autres fichiers de test.
   setUp(brancherAucuneRegiePub);
 
   late AppDatabase db;
@@ -87,17 +107,15 @@ void main() {
         monetizationServiceProvider.overrideWithValue(svc),
         // Service deja charge : le gate rebuild sur cet etat resolu.
         monetizationReadyProvider.overrideWith((ref) async => svc),
-        // LE ROUGE SUBI DE CE FICHIER VENAIT D'ICI (diagnostique tache 594).
-        // L'ecran paywall porte le CTA « regarder une pub » et lit
-        // `adsReadyProvider`, qui INITIALISE POUR DE VRAI le SDK publicitaire et
-        // le formulaire de consentement. Dans un test widget, cette
-        // initialisation laisse un minuteur vivant : l'assertion `!timersPending`
-        // tombait a la destruction de l'arbre, et seul le test qui OUVRE le
-        // paywall echouait — les trois autres n'y passent pas. Le commentaire
-        // en tete de `tearDownTree` accusait le stream Drift ; il etait
-        // innocent. On coupe la pub a la source : ce fichier teste le verrou
-        // d'achat, pas la regie publicitaire.
-        adsReadyProvider.overrideWith((ref) async => false),
+        // AUCUNE SURCHARGE DU MODULE PUBLICITAIRE ICI, ET C'EST VOULU
+        // (tache 598). Le lot 594 posait a cette ligne
+        // `adsReadyProvider.overrideWith(false)`. Son diagnostic etait juste —
+        // c'est bien par ce provider que la vitrine entre dans le module — mais
+        // c'etait la SECONDE correction du MEME defaut, deja ferme a sa source
+        // par `brancherAucuneRegiePub` (voir la mesure en tete de ce fichier).
+        // On garde la porte OUVERTE et l'appareil HONNETE : le CTA « regarder
+        // une pub » suit donc le vrai chemin de decision et disparait parce que
+        // l'appareil n'a pas de regie, pas parce qu'un test l'a debranche.
       ],
       child: MaterialApp(home: Scaffold(body: child)),
     );

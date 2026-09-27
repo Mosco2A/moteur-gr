@@ -5033,14 +5033,14 @@ extension on TranslationsEn {
 			'signalement.water.saved' => 'Thanks! Status saved.',
 			'signalement.water.states.available' => 'Water available',
 			'signalement.water.states.low' => 'Low flow',
+			_ => null,
+		} ?? switch (path) {
 			'signalement.water.states.dry' => 'Dry',
 			'signalement.water.states.unknown' => 'Unknown status',
 			'hebergement.title' => 'Nearby accommodation',
 			'hebergement.facilitatorNote' => 'StepWays points you to the hosts. Booking happens on their website: no payment inside the app.',
 			'hebergement.detourAR' => ({required Object km}) => 'Round-trip detour: ${km} km',
 			'hebergement.openSite' => 'View website',
-			_ => null,
-		} ?? switch (path) {
 			'hebergement.cannotOpen' => 'Could not open this link on this device.',
 			'hebergement.empty' => 'No accommodation listed nearby for now.',
 			'hebergement.types.refuge' => 'Mountain hut',
@@ -5066,8 +5066,6 @@ extension on TranslationsEn {
 			'training.paywallIncludedIn' => ({required Object trail}) => 'Included in the « ${trail} » pack.',
 			'training.paywallSubtitle' => 'Plan tailored to your profile and departure date.',
 			'training.unlock' => 'Unlock',
-			_ => null,
-		} ?? switch (path) {
 			'training.effortIntro' => ({required Object weeks, required Object km, required Object elevation}) => 'A progressive ${weeks}-week plan to tackle the ${km} km and about ${elevation} m of elevation gain.',
 			'training.countdown' => ({required Object days}) => 'Departure in ${days} days',
 			'training.planOverWeeks' => ({required Object n}) => '${n}-week plan',
@@ -5549,6 +5547,8 @@ extension on TranslationsEn {
 			'nuitees.guide.close' => 'Got it',
 			'nuitees.card.dayLabel' => 'D{n}',
 			'nuitees.card.noPlace' => 'Lodging',
+			_ => null,
+		} ?? switch (path) {
 			'nuitees.card.available' => '{count} lodgings available',
 			'nuitees.card.call' => 'Call {phone}',
 			'nuitees.card.lockedHint' => 'Uncheck the night to change the type',
@@ -5558,8 +5558,6 @@ extension on TranslationsEn {
 			'nuitees.summary.done' => '{count} done',
 			'nuitees.summary.allBooked' => 'ALL NIGHTS BOOKED',
 			'nuitees.empty.title' => 'Set up your itinerary first',
-			_ => null,
-		} ?? switch (path) {
 			'nuitees.empty.message' => 'Choose your route and duration to plan your nights.',
 			'nuitees.empty.action' => 'SET UP ITINERARY',
 			'transport.title' => 'Transport',
@@ -5588,13 +5586,9 @@ extension on TranslationsEn {
 			'fireRisk.duration.hours' => ({required Object n}) => '${n}h',
 			'fireRisk.duration.days' => ({required Object n}) => '${n}d',
 			'fireRisk.fwiSource' => 'Risk index based on the Fire Weather Index (FWI) provided by Open-Meteo (Meteo-France model). The FWI is the index used by the European EFFIS system to assess wildfire risk.',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.regulation.title' => 'Regulations',
 			'fireRisk.regulation.decreeLink' => 'View prefectural orders',
 			'fireRisk.levelsTitle' => 'Risk levels',
-			_ => null,
-		} ?? switch (path) {
 			'fireRisk.level.none' => 'None',
 			'fireRisk.level.low' => 'Low',
 			'fireRisk.level.moderate' => 'Moderate',
