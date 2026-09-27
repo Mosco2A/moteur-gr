@@ -2,7 +2,8 @@
 //
 // Couvre les exigences CNIL/RGPD du design #86166 :
 //   - AUCUNE case pre-cochee au 1er lancement (opt-in reel, acte positif)
-//   - granularite par finalite : 4 bascules distinctes
+//   - granularite par finalite : une bascule distincte par finalite (cinq
+//     depuis que la PUBLICITE fait partie du dispositif, tache 595)
 //   - finalite SANTE (art 9) presentee SEPAREMENT avec avertissement renforce
 //   - acte positif : cocher une finalite la persiste sans toucher les autres
 //   - lien vers la politique de confidentialite present
@@ -27,6 +28,19 @@ void main() {
     SharedPreferences.setMockInitialValues(<String, Object>{});
   });
 
+  // UNE SURFACE HAUTE (tache 595). L ecran est une liste PARESSEUSE : ce qui
+  // est hors champ n est pas construit, donc introuvable. Avec l arrivee de la
+  // finalite PUBLICITE — cinquieme bascule du dispositif — la section sante et
+  // ses avertissements sont passes sous la ligne de flottaison, et trois tests
+  // ont commence a mesurer la hauteur de la fenetre au lieu du contenu de
+  // l ecran. On regarde donc l ecran en entier.
+  setUp(() {
+    final vue = TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+    vue.physicalSize = const Size(1200, 4000);
+    vue.devicePixelRatio = 1.0;
+    addTearDown(vue.reset);
+  });
+
   Widget buildApp({VoidCallback? onContinue, VoidCallback? onPolicy}) {
     return ProviderScope(
       child: TranslationProvider(
@@ -47,7 +61,10 @@ void main() {
       await tester.pumpWidget(buildApp());
       await tester.pumpAndSettle();
 
-      // 4 bascules de consentement (une par finalite).
+      // Une bascule par finalite du dispositif — cinq depuis que la
+      // PUBLICITE en fait partie (tache 595). Le compte se lit sur l enum,
+      // jamais sur un nombre ecrit a la main : la prochaine finalite sera
+      // couverte le jour ou elle est ajoutee.
       final switches = tester.widgetList<Switch>(find.byType(Switch)).toList();
       expect(switches.length, ConsentPurpose.values.length);
 
@@ -57,7 +74,7 @@ void main() {
       }
     });
 
-    testWidgets('granularite : une bascule par finalite (4 distinctes)', (
+    testWidgets('granularite : une bascule par finalite, toutes distinctes', (
       tester,
     ) async {
       await tester.pumpWidget(buildApp());

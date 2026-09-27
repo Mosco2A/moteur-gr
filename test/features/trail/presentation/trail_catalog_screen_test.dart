@@ -10,6 +10,8 @@ import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/features/trail/presentation/trail_catalog_screen.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
+import '../../../structurel/regie_pub_absente.dart';
+
 /// Tests du cablage navigation depuis le catalogue (design #88246 ; FIX CYCLE 2
 /// issue 1).
 ///
@@ -23,6 +25,14 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 ///      trek. Aligne sur le geste de « Mes treks » (selection + `go('/home')`).
 /// C'est l'entree du coeur de l'app, auparavant orpheline.
 void main() {
+  // AUCUNE REGIE PUBLICITAIRE dans ce test (tache 595). L ecran monte ici
+  // porte desormais un emplacement de banniere : sans cette declaration, le
+  // test toucherait le SDK Google Mobile Ads, dont les canaux muets font
+  // pendre l amorce du consentement six secondes de temps reel (echec
+  // « Pending timers », sans rapport avec ce qui est verifie ici). La
+  // banniere a son propre test : test/comportement/pub_v1_595_test.dart.
+  setUp(brancherAucuneRegiePub);
+
   /// Routeur minimal : /catalog (ecran teste) + /home (stub cockpit) pour
   /// observer la navigation declenchee par le bouton "Entrer", sans dependances
   /// reelles.

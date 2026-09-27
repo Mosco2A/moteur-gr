@@ -38,13 +38,28 @@ final rewardedAdServiceProvider = Provider<RewardedAdService>((ref) {
   return svc;
 });
 
+/// Vrai si une bannière est SEULEMENT POSSIBLE (le CMP l'autorise).
+///
+/// Lu SANS attendre : `null` (en cours de résolution) vaut `false`. Sert à ne
+/// pas ouvrir d'observation de base de données pour une publicité qui n'aura
+/// pas lieu — voir [_trekDroitChangeProvider].
+bool _pubPossible(Ref ref) => ref.watch(adsReadyProvider).value ?? false;
+
 /// Les mouvements du DROIT d'un trek (un achat confirmé pose `owned`).
 ///
 /// Même signal que celui qui empêche le bandeau démo de rester périmé
 /// (`isDemoModeProvider`) : sans lui, acheter un trek pendant que la bannière
 /// est à l'écran ne l'éteignait qu'au changement d'écran.
+///
+/// SILENCIEUX TANT QU'AUCUNE PUBLICITÉ N'EST POSSIBLE. Observer la base pour
+/// décider d'une bannière qui ne sera de toute façon pas demandée coûterait
+/// deux abonnements Drift sur chaque écran porteur d'un emplacement — et ces
+/// abonnements posent un minuteur en se fermant, ce qui faisait échouer sur
+/// « Pending timers » des tests de structure qui ne parlent pas de publicité.
+/// Le symptôme était dans les tests, le gaspillage est réel en production.
 final _trekDroitChangeProvider =
     StreamProvider.autoDispose.family<TrekEntitlement?, String>((ref, trailId) {
+  if (!_pubPossible(ref)) return const Stream.empty();
   return ref.watch(monetizationServiceProvider).watchEntitlement(trailId);
 });
 
@@ -52,9 +67,11 @@ final _trekDroitChangeProvider =
 ///
 /// Une récompense vidéo créditée doit éteindre la bannière DANS LA SECONDE,
 /// pas au prochain démarrage : c'est la contrepartie que le randonneur vient
-/// littéralement de regarder.
+/// littéralement de regarder. Silencieux tant qu'aucune publicité n'est
+/// possible (même raison que [_trekDroitChangeProvider]).
 final _sansPubChangeProvider =
     StreamProvider.autoDispose<List<NoAdsStateData>>((ref) {
+  if (!_pubPossible(ref)) return const Stream.empty();
   return ref.watch(databaseProvider).noAdsDao.watchAll();
 });
 

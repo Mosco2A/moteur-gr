@@ -39,6 +39,8 @@ import 'package:moteur_gr/core/routing/app_router.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'regie_pub_absente.dart';
+
 // ---------------------------------------------------------------------------
 // Les drapeaux de l'application (etat de premier lancement)
 // ---------------------------------------------------------------------------
@@ -193,6 +195,14 @@ void brancherLesPlugins() {
       .path;
   repondre('plugins.flutter.io/path_provider', (appel) async => dossier);
   repondre('plugins.flutter.io/path_provider_android', (appel) async => dossier);
+
+  // AUCUNE REGIE PUBLICITAIRE (tache 595). Depuis que la banniere est branchee,
+  // le cockpit et le catalogue touchent le SDK Google Mobile Ads — dont les
+  // canaux muets font PENDRE l'amorce du consentement pendant six secondes de
+  // temps reel, et faisaient echouer ces tests sur « Pending timers » sans rien
+  // apprendre de l'application. L'appareil declare donc honnetement qu'il n'a
+  // pas de regie. Voir `regie_pub_absente.dart` pour la mecanique exacte.
+  brancherAucuneRegiePub();
 }
 
 /// Demonte l'application PROPREMENT a la fin d'un test.

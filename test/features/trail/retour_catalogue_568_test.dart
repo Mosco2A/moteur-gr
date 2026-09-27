@@ -12,6 +12,8 @@ import 'package:moteur_gr/features/treks/presentation/my_treks_screen.dart';
 import 'package:moteur_gr/features/treks/providers/my_treks_provider.dart';
 import 'package:moteur_gr/i18n/translations.g.dart';
 
+import '../../structurel/regie_pub_absente.dart';
+
 /// Q2 (tache 568, LOT Q) — LE RETOUR ARRIERE DU CATALOGUE TOMBAIT SUR UN
 /// SENTIER QU ON N AVAIT PAS CHOISI.
 ///
@@ -36,6 +38,15 @@ import 'package:moteur_gr/i18n/translations.g.dart';
 /// Les deux tests ont ete ecrits ROUGES.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // AUCUNE REGIE PUBLICITAIRE dans ce test (tache 595). L ecran monte ici
+  // porte desormais un emplacement de banniere : sans cette declaration, le
+  // test toucherait le SDK Google Mobile Ads, dont les canaux muets font
+  // pendre l amorce du consentement six secondes de temps reel (echec
+  // « Pending timers », sans rapport avec ce qui est verifie ici). La
+  // banniere a son propre test : test/comportement/pub_v1_595_test.dart.
+  setUp(brancherAucuneRegiePub);
+
 
   /// Un trek possede, pour que « Mes treks » ait quelque chose a afficher.
   const treks = <TrekSummary>[
