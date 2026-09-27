@@ -9,6 +9,7 @@ import 'package:moteur_gr/core/config/trail_config.dart';
 import 'package:moteur_gr/core/data/database.dart';
 import 'package:moteur_gr/core/engine/trail_engine.dart';
 import 'package:moteur_gr/core/providers/database_provider.dart';
+import 'package:moteur_gr/core/services/monetization_service.dart';
 import 'package:moteur_gr/features/checklist/presentation/checklist_screen.dart';
 import 'package:moteur_gr/features/checklist/providers/checklist_provider.dart';
 import 'package:moteur_gr/features/feasibility/domain/hiker_input_bounds.dart';
@@ -59,6 +60,15 @@ void main() {
       overrides: [
         databaseProvider.overrideWithValue(db),
         trailConfigProvider.overrideWithValue(testTrail),
+        // LE SAC EST DESORMAIS BRIDE EN DEMO (tache 594, A2c) : l ecran observe
+        // le droit d achat du sentier, et ce droit arrive par un stream Drift.
+        // Ici on le RESOUT d office (sentier debloque), pour deux raisons :
+        // ce fichier teste la SAISIE BORNEE, pas le verrou d achat ; et sans
+        // cela l annulation de la souscription laisse un minuteur vivant a la
+        // destruction de l arbre (assertion `!timersPending`), qui tombait sur
+        // un test different a chaque execution. Le bridage a ses propres tests
+        // (`test/comportement/demo_bridee_594_test.dart`).
+        isDemoModeProvider.overrideWith((ref, trailId) async => false),
       ],
       child: TranslationProvider(
         child: MaterialApp.router(
